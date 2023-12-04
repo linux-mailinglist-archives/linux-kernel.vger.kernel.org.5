@@ -2,54 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF95D803EE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E89DA803EE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:59:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233541AbjLDT7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:59:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
+        id S233483AbjLDT7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:59:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjLDT7C (ORCPT
+        with ESMTP id S231501AbjLDT7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:59:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F268CD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:59:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DAF1C433C7;
-        Mon,  4 Dec 2023 19:59:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701719949;
-        bh=MXwhypHm/2XEVlJLFiCiCiYnn0Tjqj3lKlj+8mfTxUs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mpfSE74YGQlBzvvMt4KY8SUzEJP3DhJpui6G7u6rqCeg765mjU1ONJHXxHWDuJsp5
-         fZX9acdqO8SEPmqSFWw1yq27R/JNHi1Zro7BADiK5WL66PulgsHKreFeY77PNrJKLP
-         Mr+YajXnDxCmN9N3n6C4zsJJc9Cqx3n5xNxHhZ+ueAQy8+VGcy5AQukV9HHE+KnuZT
-         1Vpn4Xb1MGzNur7Zh4M7O3o8MYBZIAuSFf9CWlgvwSeXc/5IFh9RooicFq0wWzU54u
-         7urAI+8n5q5DNDE75EcU7bJKKWjJFZfac95ajrj1Dc110oUCrKCMZZ+I0R5iptbRbz
-         H7tK/bectefgw==
-Date:   Mon, 4 Dec 2023 12:59:06 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: clang-nightly: vdso/compat_gettimeofday.h:152:15: error:
- instruction variant requires ARMv6 or later
-Message-ID: <20231204195906.GA2045328@dev-arch.thelio-3990X>
-References: <CA+G9fYvD72Vpfs2g8R+OJ6L8w9p_uaWbXpWMvnGAx_AOLabatw@mail.gmail.com>
- <20231204181304.GA2043538@dev-arch.thelio-3990X>
- <ZW4Zx4olPp0Owz0a@shell.armlinux.org.uk>
+        Mon, 4 Dec 2023 14:59:47 -0500
+Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55EBC4;
+        Mon,  4 Dec 2023 11:59:52 -0800 (PST)
+Received: from sunspire (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 2EBD128EE6F;
+        Mon,  4 Dec 2023 19:59:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1701719991;
+        bh=+nDCKIJsNn3sdyyepy9COQh7EZ5oRjjTsJna287/22o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=MD8ZZlFKvtWImQs7JJwrKccj+k60ADAYaEZ7WIw77iFiNWTb+l4QyeYz/AB9vjvI+
+         c/yESpc6WACDK1juAlgg9Bo2IR8LlL0DDogJpo0htY0W6HGaUCQeD9Jz24/4/hVKZ+
+         1ofZCbE9OELvU31DSTWaMS4Ly2deAvBofsl3Hsyk=
+Date:   Mon, 4 Dec 2023 21:59:49 +0200
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v6 2/2] iio: pressure: driver for Honeywell HSC/SSC series
+Message-ID: <ZW4vtQrmgUu29dP6@sunspire>
+References: <20231129170425.3562-1-petre.rodan@subdimension.ro>
+ <20231129170425.3562-2-petre.rodan@subdimension.ro>
+ <ZWdzz7VzCW5ctend@smile.fi.intel.com>
+ <ZWeNNMfqKquDYI9X@sunspire>
+ <ZWiPDlNJCbUAtIy8@smile.fi.intel.com>
+ <ZWtWAPcJTNrD9wgv@sunspire>
+ <ZW3Mvds9LFiK7aEz@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0roFwDt5J5hwuJL+"
 Content-Disposition: inline
-In-Reply-To: <ZW4Zx4olPp0Owz0a@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <ZW3Mvds9LFiK7aEz@smile.fi.intel.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,69 +63,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 06:26:15PM +0000, Russell King (Oracle) wrote:
-> On Mon, Dec 04, 2023 at 11:13:04AM -0700, Nathan Chancellor wrote:
-> > Hi Naresh,
-> > 
-> > On Mon, Dec 04, 2023 at 05:33:26PM +0530, Naresh Kamboju wrote:
-> > > Following build errors noticed on Linux next-20231204 tag with clang-nightly
-> > > for arm and arm64.
-> > > 
-> > > ## Test Regressions (compared to next-20231201)
-> > > * arm64, build
-> > >   - clang-nightly-defconfig
-> > >   - clang-nightly-defconfig-40bc7ee5
-> > >   - clang-nightly-lkftconfig
-> > >   - clang-nightly-lkftconfig-kselftest
-> > > 
-> > > * arm, build
-> > >   - clang-nightly-allnoconfig
-> > >   - clang-nightly-axm55xx_defconfig
-> > >   - clang-nightly-bcm2835_defconfig
-> > >   - clang-nightly-clps711x_defconfig
-> > >   - clang-nightly-defconfig
-> > >   - clang-nightly-exynos_defconfig
-> > >   - clang-nightly-imx_v6_v7_defconfig
-> > >   - clang-nightly-keystone_defconfig
-> > >   - clang-nightly-lkftconfig
-> > >   - clang-nightly-lkftconfig-kselftest
-> > >   - clang-nightly-omap2plus_defconfig
-> > >   - clang-nightly-pxa910_defconfig
-> > >   - clang-nightly-s3c6400_defconfig
-> > >   - clang-nightly-s5pv210_defconfig
-> > >   - clang-nightly-sama5_defconfig
-> > >   - clang-nightly-shmobile_defconfig
-> > >   - clang-nightly-tinyconfig
-> > >   - clang-nightly-u8500_defconfig
-> > >   - clang-nightly-vexpress_defconfig
-> > > 
-> > > 
-> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > > 
-> > > 
-> > > Build log on arm64:
-> > > ---------
-> > > In file included from lib/vdso/gettimeofday.c:5:
-> > > In file included from include/vdso/datapage.h:135:
-> > > arch/arm64/include/asm/vdso/compat_gettimeofday.h:152:15: error:
-> > > instruction variant requires ARMv6 or later
-> > >   152 |         asm volatile("mov %0, %1" : "=r"(ret) : "r"(_vdso_data));
-> > >       |                      ^
-> > > <inline asm>:1:2: note: instantiated into assembly here
-> > >     1 |         mov r4, r1
-> > >       |         ^
-> 
-> I have to wonder why Clang is complaining about "mov r4, r1" because
-> that certainly should not require "ARMv6 or later". On the face of it,
-> this to me looks like a bug in Clang.
 
-This is because the compat vDSO is compiled with '-mthumb' by default
-and Nick helpfully pointed out on IRC that prior to ARMv6, one of the
-operands to the mov had to be a HI register, which I do see in the ARM:
+--0roFwDt5J5hwuJL+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  Encoding T1     ARMv6*, ARMv7 if <Rd> and <Rm> both from R0-R7
-                  ARMv4T, ARMv5T*, ARMv6*, ARMv7 otherwise
-  MOV<c> <Rd>, <Rm>
 
-Cheers,
-Nathan
+hello,
+
+On Mon, Dec 04, 2023 at 02:57:33PM +0200, Andy Shevchenko wrote:
+> On Sat, Dec 02, 2023 at 06:06:24PM +0200, Petre Rodan wrote:
+> > On Thu, Nov 30, 2023 at 03:33:02PM +0200, Andy Shevchenko wrote:
+> > > On Wed, Nov 29, 2023 at 09:12:52PM +0200, Petre Rodan wrote:
+> > > > On Wed, Nov 29, 2023 at 07:24:31PM +0200, Andy Shevchenko wrote:
+> > > >=20
+> > > > 437:  ret =3D device_property_read_string(dev, "honeywell,pressure-=
+triplet",
+> > > > 					&triplet);
+> > > > [..]
+> > > > 455:	ret =3D match_string(hsc_triplet_variants, HSC_VARIANTS_MAX,
+> > > > 						triplet);
+> > > > 		if (ret < 0)
+> > > > 			return dev_err_probe(dev, -EINVAL,
+> > > > 				"honeywell,pressure-triplet is invalid\n");
+> > > >=20
+> > > > 		hsc->pmin =3D hsc_range_config[ret].pmin;
+> > > > 		hsc->pmax =3D hsc_range_config[ret].pmax;
+> > > >=20
+> > > > triplet is got via device_property_read_string(), is there some oth=
+er property
+> > > > function I should be using?
+> > >=20
+> > > I think I mentioned that API, but for your convenience
+> > > device_property_match_property_string().
+> >=20
+> > one of us is not sync-ed with 6.7.0-rc3 :)
+>=20
+> No, one of us is not synced with subsystem "for-next", which in this case
+> is IIO "togreg" (IIRC) and it definitely has the above mentioned API.
+
+v7 still contains the match_string().
+that is the API available in -current (6.7.0-rcx), which is the version you
+asked me to use a few weeks back.
+
+whenever your new API call will be merged (6.8+ according to your email exc=
+hange
+with Jonathan) into -current I will provide a patch.
+
+best regards,
+peter
+
+>=20
+> --=20
+> With Best Regards,
+> Andy Shevchenko
+>=20
+>=20
+>=20
+
+--=20
+petre rodan
+
+--0roFwDt5J5hwuJL+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmVuL7UACgkQzyaZmYRO
+fzB4xxAAg4++c2EfVeyasAxqVyaxt0/cEt/RDdKBiDUwn4NyAhTdDWslAzGbTssB
+K1Kcp9IwHVjLJ59Rgni3z2jlTbMQmpxAfYdMYfCgK6C0LfcRVIqdW+E1DzrZMkJA
+dQ2folIi3VBciFDNm6uezx1mX5qtpUYL5jgkOdxwP62K4VrFUHPz1UmCxEbZFIZj
+9ZHnkZQnp+teHbKl/CI3LFpOerzN3IOOtqqeWoy1i+c/wERq2JsIDgVZUjcmHPaW
+rShXD1Zfc3tEApzb0oqiboxVOHM5iQTZUwngR7trZrPoJFd6gns4FPv1xRTx//fL
+unkhZM7nqk83OUxuWnGx0JMya/gBNUSe/JxTQCiqALLwjYt//ApsXkiZetkaGL8J
+m27ELfYtC0eLjRHYS1tNRs07EO0JRMZxuhKoc4YUMfAnp4EkzFYF7h3foxhnTZrH
+Wk3pT3wmAhr6YIeHSFetJfcXacFnqxvKTHPFzd3XgJFdMJMuO/UJdknYl1vSCqSM
+ZoVPKugLgiWvCdLxr8etH3vIqdsoMvYlpmGRI6xNSVYftg98UBsY2KBmGwApl1xt
+d260zwVVxB49DgsjSRL4zXsysciw+QdJI1MF5djEMblR34f/owfjeGybGhGn3MR6
+w09EzwEJkLiTanx8PxLKTCmWOblXtfFcPrfSy0YfVH6iJQHwsb8=
+=aQ99
+-----END PGP SIGNATURE-----
+
+--0roFwDt5J5hwuJL+--
