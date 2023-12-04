@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6309B8031FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69ED78031EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343810AbjLDL6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:58:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
+        id S235407AbjLDL6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:58:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235387AbjLDL6A (ORCPT
+        with ESMTP id S234894AbjLDL6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:58:00 -0500
+        Mon, 4 Dec 2023 06:58:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890401988
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92487C433CD;
-        Mon,  4 Dec 2023 11:57:35 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1D919AB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83113C43391;
+        Mon,  4 Dec 2023 11:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701691057;
-        bh=4ABSoMNpXusCcWYdVc/Z/1r0KMCswnYJODyq0pzAGhg=;
+        s=k20201202; t=1701691059;
+        bh=f7mPCoikKyAxX+kfcbgmRu4ug6L+LPkQ+dYSgFSXlPY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIT8BTacH9XtFOb5K998EObxet0tpmzMtldqSatFkYdP4SGnNqZBjAFqqU1HrcA5M
-         NlhZr6RXfYTWdTC+oSNYp67XxNgFeeVIlCBBw6PvI5hvaj68vJfCwIzjS1cz4PB7Q1
-         u3Es51WnXfwdvHS9HTJtmvbq4vWabWEZnA7B/9h8KbRFZrUZ2cUE3qcgXCJ0/s9XpV
-         DZkOcbSVcBAWeOoM0Ry93dLlc85Dalpjj/S9cfJ1/YQA0KuAZ036Ho834gh9QDPft/
-         9K+wjJguaXKveLxXDp8jFFPCWZS6DpfthsMRwn8HuUm5N7zCmwr9ZJSbhJmWs+0c+k
-         L55zu4Gx39PdA==
+        b=R+jHt4x+nSEjuW01cDgKtc9kiRiD2SdnQ0deE6o2yur28Abjmd+mteEoC5EX5hGYl
+         WwFf/aGQVD7cK/QNkEYiN2WyIMOok0CAP+bRzshMJUq+JV8FxNybIS4RfUq9ps+DYs
+         b0KEPHDDdWJLzI/IlcQCKKmWHbUoW3AY07f8caszW3as77BaEC8i5d7Q+s7K1lf6U+
+         iJKZZdhyVcbP155OJL2U89uctz+E6AZSSAVd17wBQs6VU2MygoB4w9nuYd2s9dv4Cu
+         lPyBn7eLiYjo8ENI57IXmZLxMjO3KZKCvEmFJp2UyEQRiY6uwEj2+OQa6Ixd2T7fBI
+         ASP0AAnjxrYIQ==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-mips@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -34,9 +34,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         "Stephen Rothwell" <sfr@rothwell.id.au>,
         "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
         "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Subject: [PATCH 09/20] mips: unhide uasm_in_compat_space_p() declaration
-Date:   Mon,  4 Dec 2023 12:56:59 +0100
-Message-Id: <20231204115710.2247097-10-arnd@kernel.org>
+Subject: [PATCH 10/20] mips: fix setup_zero_pages() prototype
+Date:   Mon,  4 Dec 2023 12:57:00 +0100
+Message-Id: <20231204115710.2247097-11-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231204115710.2247097-1-arnd@kernel.org>
 References: <20231204115710.2247097-1-arnd@kernel.org>
@@ -54,32 +54,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-uasm_in_compat_space_p() has a conditional declaration but is defined
-unconditionally because of another local user, which causes a warning:
+setup_zero_pages() has a local declaration in a platform specific header,
+but that is not seen in the file it is defined in:
 
-arch/mips/mm/uasm.c:421:5: error: no previous prototype for 'uasm_in_compat_space_p' [-Werror=missing-prototypes]
+arch/mips/mm/init.c:60:6: error: no previous prototype for 'setup_zero_pages' [-Werror=missing-prototypes]
 
-Make the declaration unconditional to avoid this.
+Move it to the corresponding global header and include that where needed.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/mips/include/asm/uasm.h | 2 --
- 1 file changed, 2 deletions(-)
+ arch/mips/include/asm/mach-loongson64/mmzone.h | 1 -
+ arch/mips/include/asm/mmzone.h                 | 2 ++
+ arch/mips/mm/init.c                            | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/uasm.h b/arch/mips/include/asm/uasm.h
-index 296bcf31abb5..b43bfd445252 100644
---- a/arch/mips/include/asm/uasm.h
-+++ b/arch/mips/include/asm/uasm.h
-@@ -193,9 +193,7 @@ struct uasm_label {
+diff --git a/arch/mips/include/asm/mach-loongson64/mmzone.h b/arch/mips/include/asm/mach-loongson64/mmzone.h
+index ebb1deaa77b9..a3d65d37b8b5 100644
+--- a/arch/mips/include/asm/mach-loongson64/mmzone.h
++++ b/arch/mips/include/asm/mach-loongson64/mmzone.h
+@@ -18,7 +18,6 @@ extern struct pglist_data *__node_data[];
  
- void uasm_build_label(struct uasm_label **lab, u32 *addr,
- 			int lid);
--#ifdef CONFIG_64BIT
- int uasm_in_compat_space_p(long addr);
--#endif
- int uasm_rel_hi(long val);
- int uasm_rel_lo(long val);
- void UASM_i_LA_mostly(u32 **buf, unsigned int rs, long addr);
+ #define NODE_DATA(n)		(__node_data[n])
+ 
+-extern void setup_zero_pages(void);
+ extern void __init prom_init_numa_memory(void);
+ 
+ #endif /* _ASM_MACH_MMZONE_H */
+diff --git a/arch/mips/include/asm/mmzone.h b/arch/mips/include/asm/mmzone.h
+index 602a21aee9d4..14226ea42036 100644
+--- a/arch/mips/include/asm/mmzone.h
++++ b/arch/mips/include/asm/mmzone.h
+@@ -20,4 +20,6 @@
+ #define nid_to_addrbase(nid) 0
+ #endif
+ 
++extern void setup_zero_pages(void);
++
+ #endif /* _ASM_MMZONE_H_ */
+diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+index 5dcb525a8995..c2e0e5aebe90 100644
+--- a/arch/mips/mm/init.c
++++ b/arch/mips/mm/init.c
+@@ -38,6 +38,7 @@
+ #include <asm/dma.h>
+ #include <asm/maar.h>
+ #include <asm/mmu_context.h>
++#include <asm/mmzone.h>
+ #include <asm/sections.h>
+ #include <asm/pgalloc.h>
+ #include <asm/tlb.h>
 -- 
 2.39.2
 
