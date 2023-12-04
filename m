@@ -2,43 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA301803A4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A4E803A4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344868AbjLDQ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
+        id S1345654AbjLDQ32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:29:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344779AbjLDQ3O (ORCPT
+        with ESMTP id S1344930AbjLDQ3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:29:14 -0500
+        Mon, 4 Dec 2023 11:29:22 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CDC99
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:29:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5E64C433C8;
-        Mon,  4 Dec 2023 16:29:19 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A8399
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:29:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97740C433C7;
+        Mon,  4 Dec 2023 16:29:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701707361;
-        bh=l03PGOdUpXAjQJxyhn2jCXzYkIewX87iY4tJWHWgmbs=;
+        s=k20201202; t=1701707364;
+        bh=vhrxUvsCwsaGYvyyei5h55J9yp+nmIcuFyO/lJGVsJM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ElLbXAldfKAr1QHhgOyNO7vKUquxj2w/umm0r0AAKpwnRsqbsPw3RgXUFi5Y+zc8h
-         suMe0+B2kAiUofDF32HCEPrZVMHLL67XdH5C3WhzY3MR9QB0FscTWyFZu/O58NYyOz
-         K0CzmmBM/H3xwmDjtwf5QHCgKQRlq2VBnHzWj0owcVTfsvyRTgzaYuQLJ9TVh5IjGe
-         grY5mJV1AEsxE/UiL7LqDyab/5hOQjB0gDlU3OYC+br+d2wxq0TaYbw8bhNeaKm4tl
-         ImwdOL5kDQpQZ3ZYVk21NQsr3g6PoyuXtbydLGAdV9huQ9U3nP+4KJ9t/aslw9c3ya
-         UO8APZnBELu0A==
+        b=nlfqs1xKZp32xjV/6EKDBJ2qWN4k1GrusvYA6y+pDG1Nj3WAKnOLkUcGrPOZ0OGXz
+         G3GpcOBo/LbTOymRzzN87kHGm/k9MEmu2KVNhy+o0ANyGkKUPya2AQF1H4vW3ZOJqJ
+         hWr/bdZvrddYY7MeY6IAo/X9/v7xnSTZ9vj6VfispDV3rz3aQUHdFTYPjwuXB6KzoZ
+         RMslHsfXUZZL/2rLamNH2sudBW3P7VJyae7PSnKlRrawgvr6wNMZRFf9tRu3rjxX6S
+         ygYFPc/AcGJOf5wewz6kWRLZs4+R39dje2xLi6wgmnMF/f+XA68ImNDZmAOIdINyn5
+         shTvUc2qSCt+A==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Marian Postevca <posteuca@mutex.one>
-Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231202223001.8025-1-posteuca@mutex.one>
-References: <20231202223001.8025-1-posteuca@mutex.one>
-Subject: Re: [PATCH] ASoC: amd: acp: Add support for a new Huawei Matebook
- laptop
-Message-Id: <170170735951.96782.6842317047782976918.b4-ty@kernel.org>
-Date:   Mon, 04 Dec 2023 16:29:19 +0000
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231204074158.12026-1-dinghao.liu@zju.edu.cn>
+References: <20231204074158.12026-1-dinghao.liu@zju.edu.cn>
+Subject: Re: [PATCH] ASoC: wm_adsp: fix memleak in wm_adsp_buffer_populate
+Message-Id: <170170736133.96782.15219793902912289690.b4-ty@kernel.org>
+Date:   Mon, 04 Dec 2023 16:29:21 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -53,9 +58,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 03 Dec 2023 00:29:51 +0200, Marian Postevca wrote:
-> This commit adds support for Huawei MateBook D16 2021
-> with Ryzen 4600H in driver acp3x-es83xx.
+On Mon, 04 Dec 2023 15:41:56 +0800, Dinghao Liu wrote:
+> When wm_adsp_buffer_read() fails, we should free buf->regions.
+> Otherwise, the callers of wm_adsp_buffer_populate() will
+> directly free buf on failure, which makes buf->regions a leaked
+> memory.
 > 
 > 
 
@@ -65,8 +72,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: amd: acp: Add support for a new Huawei Matebook laptop
-      commit: b5338b1b901e41bd7cead66a0b3a796e9fa95684
+[1/1] ASoC: wm_adsp: fix memleak in wm_adsp_buffer_populate
+      commit: 29046a78a3c0a1f8fa0427f164caa222f003cf5b
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
