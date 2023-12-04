@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C28D80326D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 869C080327D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233104AbjLDMVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36188 "EHLO
+        id S1343912AbjLDMWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:22:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbjLDMVk (ORCPT
+        with ESMTP id S1343880AbjLDMWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:21:40 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368D0E5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:21:45 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54c7744a93fso2598647a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:21:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1701692503; x=1702297303; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q8RFfNckjuKt1jz+rzrb9C96eRyO85w6LaaTlbGWMzo=;
-        b=zTrCvs2eCip52po00dOtx2DzzrpJtMPOcRbQDM41h23Lx7hyqZxquQ69VS47qcYEMu
-         yG2brI5VZgUBHkfUJXTbD0K+qWqlZ/1GC/ZOHB8LD9LLFHTcfaDmXObrOoxtFjl2R3Gj
-         mQtUppBX715VHQdSeTPR4z8hQovq8amq899U2XrnbiFWqxXwwAM5gqJgnMBwOwf19Ngs
-         Kx5hWG5VOXcISr2x1YXfknjL/hHYkMMmOd3P2Gb09YWolz2PnH34nWfNQUDW0hRTRcVf
-         /njPrbJORv8hDzE0T6SPXaXnAKEs3AZatCrws3M3WGs9Ln5eF7zRQAZhGaZnDGbWSJFw
-         BoXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701692503; x=1702297303;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=q8RFfNckjuKt1jz+rzrb9C96eRyO85w6LaaTlbGWMzo=;
-        b=KlUl55Jh3k/2URg+WrsXHxmQhYwyKMXiVWy+vC+BsbzYBhLLnmYVLilEuqbJy+H/eP
-         wvdHqEyCA7csvVXH5kXAnFLRxQt3HorJ4dAlduI9SDKuPK9iz6436+2fn5HpERvfAUzi
-         99Z1GDSfgXTEkhGvH9e1XatG8vYExX46mN9eLPnBUh/v0xxG1KFd+m7/suA9pe/fmZF5
-         KxM2weqIMwNZHVT+pvrdrbS8NtxcIkaEkdbNyNKIxILmsWyGiYrJXmMBW/tYCaIYZYpV
-         7V29TFcvEGEXXv0ZRRQZVkJsxG2Ilai5wMiEEOp2jVN6E5YkyVANm3Fjkx5ujPPTvjSr
-         5V+g==
-X-Gm-Message-State: AOJu0YzMXJHtgMsAhSdW6pG1XHmP7nGWMnfNgVoX1c3KMfk3czi3U0zS
-        cmRxC9L8BGRv3kZoJdRahNslRA==
-X-Google-Smtp-Source: AGHT+IHKWbMqC/XghMiDqUXODnV4kB7sqmvxFiPQqj9C/x1YwTXvnOVPdhytEdl0d5XSJ62zUJ7Hsw==
-X-Received: by 2002:a50:9b50:0:b0:54c:4837:9a9b with SMTP id a16-20020a509b50000000b0054c48379a9bmr2873330edj.66.1701692503652;
-        Mon, 04 Dec 2023 04:21:43 -0800 (PST)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id dg28-20020a0564021d1c00b0054c9177d18esm2522554edb.2.2023.12.04.04.21.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 04:21:43 -0800 (PST)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 04 Dec 2023 13:21:42 +0100
-Message-Id: <CXFJNBNKTRHH.2CS6TO2MEGJWL@fairphone.com>
-Cc:     <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add UFS nodes for
- sc7280 soc
-From:   "Luca Weiss" <luca.weiss@fairphone.com>
-To:     "Nitin Rawat" <quic_nitirawa@quicinc.com>,
-        "Andy Gross" <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        "Manivannan Sadhasivam" <mani@kernel.org>,
-        "Alim Akhtar" <alim.akhtar@samsung.com>,
-        "Avri Altman" <avri.altman@wdc.com>,
-        "Bart Van Assche" <bvanassche@acm.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-X-Mailer: aerc 0.15.2
-References: <20231204-sc7280-ufs-v5-0-926ceed550da@fairphone.com>
- <20231204-sc7280-ufs-v5-2-926ceed550da@fairphone.com>
- <621388b9-dcee-4af2-9763-e5d623d722b7@quicinc.com>
-In-Reply-To: <621388b9-dcee-4af2-9763-e5d623d722b7@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        Mon, 4 Dec 2023 07:22:18 -0500
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1AB8D2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:22:23 -0800 (PST)
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231204122221epoutp012e907fc97fccfd0274031be2d54554e1~doFmkE6Uv1045610456epoutp01N
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:22:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231204122221epoutp012e907fc97fccfd0274031be2d54554e1~doFmkE6Uv1045610456epoutp01N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701692541;
+        bh=twgNFA4iDKQa4pdvQAkEYtsxfBwRyIBtkdkqfaeZcPs=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=JxZ+NAktZlMzWkAH5sSUsRSO6lLvElQ0pJnZt3jazB8AWdsUUdzbL4XWC2I36pNSJ
+         ePGxXMolxzD3r+eF9psAZRlO0jqifPFRWENhwnJTcgIfzVCiH07wvS8IUKL5b54LHT
+         hiwF2XbE2KFwBb53O9PnGXGyQGApKJEbTJlH3X6A=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+        20231204122220epcas1p41fd30a89ce948ddb6c3b4e74f911465c~doFmG_WFo1474214742epcas1p4w;
+        Mon,  4 Dec 2023 12:22:20 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.36.134]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4SkN8X0Qs7z4x9Pv; Mon,  4 Dec
+        2023 12:22:20 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        06.C6.10025.B74CD656; Mon,  4 Dec 2023 21:22:20 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231204122219epcas1p21f414dfe4a02d9807fb154a41089c306~doFlSJ9Ul2649126491epcas1p2e;
+        Mon,  4 Dec 2023 12:22:19 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231204122219epsmtrp181303614a120052d0711c5f24c0b0faa~doFlRlZ4m1093710937epsmtrp1-;
+        Mon,  4 Dec 2023 12:22:19 +0000 (GMT)
+X-AuditID: b6c32a39-c2bf870000002729-16-656dc47b7a55
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E8.61.08817.B74CD656; Mon,  4 Dec 2023 21:22:19 +0900 (KST)
+Received: from cw00choi03 (unknown [10.113.111.106]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231204122219epsmtip2b63d764548be868f719b6513b08cd817~doFlG7XH52215922159epsmtip2r;
+        Mon,  4 Dec 2023 12:22:19 +0000 (GMT)
+From:   "Chanwoo Choi" <cw00.choi@samsung.com>
+To:     "'Yaxiong Tian'" <iambestgod@outlook.com>,
+        <myungjoo.ham@samsung.com>
+Cc:     <linux-kernel@vger.kernel.org>, <tianyaxiong@kylinos.cn>
+In-Reply-To: <TYZPR01MB4784ADCD3E951E0863F3DB72D5B8A@TYZPR01MB4784.apcprd01.prod.exchangelabs.com>
+Subject: RE: [PATCH] extcon: fix possible name leak in extcon_dev_register()
+Date:   Mon, 4 Dec 2023 21:22:19 +0900
+Message-ID: <000e01da26ac$86a5e3a0$93f1aae0$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIWVBsunLntA6hL6XjhN+VB/008TgLGsp9QsAp7LhA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdlhTX7fmSG6qwZkFjBYPJz5gtbi8aw6b
+        xe3GFWwWP25tZHJg8djS+o/ZY/PrF8wefVtWMXp83iQXwBKVbZORmpiSWqSQmpecn5KZl26r
+        5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDtFJJoSwxpxQoFJBYXKykb2dTlF9akqqQ
+        kV9cYquUWpCSU2BaoFecmFtcmpeul5daYmVoYGBkClSYkJ3RevIna8Ee7op1d24yNTDu5uxi
+        5OSQEDCRmNOwgQnEFhLYwShx6aljFyMXkP2JUWLDxmY2COcbo8Tykw9ZYTo2L+xihkjsZZTo
+        en+CCcJ5ySjRcmEHUAsHB5uAjsSCH6EgDSICnhJ/pnSCrWAWsJFo+jOdBcTmFEiSmH7tKpgt
+        LOAjsX7WZrAaFgEViYYpC8HivAKWEtc3zYKyBSVOznzCAjFHXmL72znMEAcpSPx8uowVYpeV
+        xM5FT1ghakQkZne2gR0qIfCTXeL2h6lQH7hIHDzcxA5hC0u8Or4FypaSeNnfxg7RMJlR4uLr
+        11Dd6xklNq5sgVpnLLF/6WQmkC+ZBTQl1u/ShwgrSuz8PZcRYjOfxLuvPawgJRICvBIdbUIQ
+        JcoSlx/cZYKwJSUWt3eyTWBUmoXkt1lIfpuF5IdZCMsWMLKsYhRLLSjOTU8tNiwwhcd2cn7u
+        JkZwctSy3ME4/e0HvUOMTByMhxglOJiVRHjn3cpOFeJNSaysSi3Kjy8qzUktPsRoCgzticxS
+        osn5wPScVxJvaGJpYGJmZGxiYWhmqCTOe+5tb4qQQHpiSWp2ampBahFMHxMHp1QDkwK3xykh
+        O8cZ294o3t0kYvc75f+fjzHyy/q2/m9/vXF9J4Niw5ktJvWTXNuVlk8RML+vlLV2Z/WeSfef
+        z4toPSNZ2L5x65YWkVbxG3P9wpcsMny3eFfWjUM39EKzJVk/rumpP1zrlcj42e51xEZJu8/z
+        rgbq7ZgUH3n9tJ5Gl+XyLwrv15XdK8hQP1g5w0M7ZteL+Qf1bv5n37FZ2f9n4FIF1lumJ1uW
+        1Cpq/+2f8Tj3B8+JWX+ef5t78dyxw8af81fcrHXWPHCuiXl5SfMLx3V/9uvyVKtLO0d/Z2O+
+        IHnEe82Z7fnJuQrdNoEL960M1CvbmXmp9m5j4vGlhz9Gsxw/zuYZ8dVeaeKbm4UPNqkpsRRn
+        JBpqMRcVJwIAaDXoMRcEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrDLMWRmVeSWpSXmKPExsWy7bCSvG71kdxUgzmH1CweTnzAanF51xw2
+        i9uNK9gsftzayOTA4rGl9R+zx+bXL5g9+rasYvT4vEkugCWKyyYlNSezLLVI3y6BK6P15E/W
+        gj3cFevu3GRqYNzN2cXIySEhYCKxeWEXcxcjF4eQwG5GiSfTpzFDJCQlpl08CmRzANnCEocP
+        F0PUPGeUmDjvBRNInE1AR2LBj1CQchEBb4kj9+axgdjMAnYSc/e0MELUb2aUeLPhCStIglMg
+        SWL6tassILawgI/E+lmbmUBsFgEViYYpC8HivAKWEtc3zYKyBSVOznzCArKLWUBPom0jI8R8
+        eYntb+dAnakg8fPpMlaIG6wkdi6CWMUsICIxu7ONeQKj8Cwkk2YhTJqFZNIsJB0LGFlWMUqm
+        FhTnpucWGxYY5aWW6xUn5haX5qXrJefnbmIER4iW1g7GPas+6B1iZOJgPMQowcGsJMI771Z2
+        qhBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeb697U4QE0hNLUrNTUwtSi2CyTBycUg1MDq8jeh/G
+        Mx5Zc3jmN/VMXbmgf5s9LeQ2PlYuELz/e1vAZJ36zErLD97lUnqrwnU0tnjvcLoV9+nxrmOP
+        hdfnX54pLxQl5cv2xmAbc+/qEO0me9YMX9aoaTuSfqxX3lL4yfXVmaL5vMZv+9aukV8r/sdg
+        j/TSLzUvJ/zduff7TP3NGzfufMmfPGVW9CEjlSf5VSuvL/59S4D5fGNSV9tjixiNA4/029gb
+        u76x7bCwZvLN6T/lcrbnUc/OHaa7Jvcvy2s8HcP6tfp27I3MK5P8ExfH6f7Vm987m90/6bBF
+        24qCQofJulFHZ0yJikxKv3TLLHPBiiunnA5O8w3iWyXqvO/gsbqXjtudFLsW+MdPUGIpzkg0
+        1GIuKk4EABDkRND/AgAA
+X-CMS-MailID: 20231204122219epcas1p21f414dfe4a02d9807fb154a41089c306
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231124014941epcas1p2f6a6751a6a0aac64ffee54ddc74da0bb
+References: <CGME20231124014941epcas1p2f6a6751a6a0aac64ffee54ddc74da0bb@epcas1p2.samsung.com>
+        <TYZPR01MB4784ADCD3E951E0863F3DB72D5B8A@TYZPR01MB4784.apcprd01.prod.exchangelabs.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,143 +118,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Dec 4, 2023 at 1:15 PM CET, Nitin Rawat wrote:
->
->
-> On 12/4/2023 3:54 PM, Luca Weiss wrote:
-> > From: Nitin Rawat <quic_nitirawa@quicinc.com>
-> >=20
-> > Add UFS host controller and PHY nodes for sc7280 soc.
-> >=20
-> > Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> > Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org> # QCM6490 FP5
-> > [luca: various cleanups and additions as written in the cover letter]
-> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> > ---
-> >   arch/arm64/boot/dts/qcom/sc7280.dtsi | 74 +++++++++++++++++++++++++++=
-++++++++-
-> >   1 file changed, 73 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts=
-/qcom/sc7280.dtsi
-> > index 04bf85b0399a..8b08569f2191 100644
-> > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > @@ -15,6 +15,7 @@
-> >   #include <dt-bindings/dma/qcom-gpi.h>
-> >   #include <dt-bindings/firmware/qcom,scm.h>
-> >   #include <dt-bindings/gpio/gpio.h>
-> > +#include <dt-bindings/interconnect/qcom,icc.h>
-> >   #include <dt-bindings/interconnect/qcom,osm-l3.h>
-> >   #include <dt-bindings/interconnect/qcom,sc7280.h>
-> >   #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > @@ -906,7 +907,7 @@ gcc: clock-controller@100000 {
-> >   			clocks =3D <&rpmhcc RPMH_CXO_CLK>,
-> >   				 <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
-> >   				 <0>, <&pcie1_phy>,
-> > -				 <0>, <0>, <0>,
-> > +				 <&ufs_mem_phy 0>, <&ufs_mem_phy 1>, <&ufs_mem_phy 2>,
-> >   				 <&usb_1_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
-> >   			clock-names =3D "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
-> >   				      "pcie_0_pipe_clk", "pcie_1_pipe_clk",
-> > @@ -2238,6 +2239,77 @@ pcie1_phy: phy@1c0e000 {
-> >   			status =3D "disabled";
-> >   		};
-> >  =20
-> > +		ufs_mem_hc: ufs@1d84000 {
-> > +			compatible =3D "qcom,sc7280-ufshc", "qcom,ufshc",
-> > +				     "jedec,ufs-2.0";
-> > +			reg =3D <0x0 0x01d84000 0x0 0x3000>;
-> > +			interrupts =3D <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
-> > +			phys =3D <&ufs_mem_phy>;
-> > +			phy-names =3D "ufsphy";
-> > +			lanes-per-direction =3D <2>;
-> > +			#reset-cells =3D <1>;
-> > +			resets =3D <&gcc GCC_UFS_PHY_BCR>;
-> > +			reset-names =3D "rst";
-> > +
-> > +			power-domains =3D <&gcc GCC_UFS_PHY_GDSC>;
-> > +			required-opps =3D <&rpmhpd_opp_nom>;
-> > +
-> > +			iommus =3D <&apps_smmu 0x80 0x0>;
-> > +			dma-coherent;
-> > +
-> > +			interconnects =3D <&aggre1_noc MASTER_UFS_MEM QCOM_ICC_TAG_ALWAYS
-> > +					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
-> > +					<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
-> > +					 &cnoc2 SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ALWAYS>;
-> > +			interconnect-names =3D "ufs-ddr", "cpu-ufs";
-> > +
-> > +			clocks =3D <&gcc GCC_UFS_PHY_AXI_CLK>,
-> > +				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
-> > +				 <&gcc GCC_UFS_PHY_AHB_CLK>,
-> > +				 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
-> > +				 <&rpmhcc RPMH_CXO_CLK>,
-> > +				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
-> > +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
-> > +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
-> > +			clock-names =3D "core_clk",
-> > +				      "bus_aggr_clk",
-> > +				      "iface_clk",
-> > +				      "core_clk_unipro",
-> > +				      "ref_clk",
-> > +				      "tx_lane0_sync_clk",
-> > +				      "rx_lane0_sync_clk",
-> > +				      "rx_lane1_sync_clk";
-> > +			freq-table-hz =3D
-> > +				<75000000 300000000>,
-> > +				<0 0>,
-> > +				<0 0>,
-> > +				<75000000 300000000>,
-> > +				<0 0>,
-> > +				<0 0>,
-> > +				<0 0>,
-> > +				<0 0>;
-> > +			status =3D "disabled";
-> > +		};
-> > +
-> > +		ufs_mem_phy: phy@1d87000 {
-> > +			compatible =3D "qcom,sc7280-qmp-ufs-phy";
-> > +			reg =3D <0x0 0x01d87000 0x0 0xe00>;
-> > +			clocks =3D <&rpmhcc RPMH_CXO_CLK>,
-> > +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
-> > +				 <&gcc GCC_UFS_1_CLKREF_EN>;
-> > +			clock-names =3D "ref", "ref_aux", "qref";
-> > +
-> > +			power-domains =3D <&gcc GCC_UFS_PHY_GDSC>;
 
-Hi Nitin,
 
->
-> GCC_UFS_PHY_GDSC is UFS controller GDSC. For sc7280 Phy we don't need thi=
-s.
+> -----Original Message-----
+> From: Yaxiong Tian <iambestgod@outlook.com>
+> Sent: Friday, November 24, 2023 10:49 AM
+> To: myungjoo.ham@samsung.com; cw00.choi@samsung.com
+> Cc: linux-kernel@vger.kernel.org; tianyaxiong@kylinos.cn
+> Subject: [PATCH] extcon: fix possible name leak in extcon_dev_register()
+> 
+> From: Yaxiong Tian <tianyaxiong@kylinos.cn>
+> 
+> In the error path after calling dev_set_name(), the device name is leaked.
+> To fix this,Moving dev_set_name() after the error path and before
+> device_register.
+> 
+> Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+> ---
+>  drivers/extcon/extcon.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/extcon/extcon.c b/drivers/extcon/extcon.c index
+> 6f7a60d2ed91..e7f55c021e56 100644
+> --- a/drivers/extcon/extcon.c
+> +++ b/drivers/extcon/extcon.c
+> @@ -1280,8 +1280,6 @@ int extcon_dev_register(struct extcon_dev *edev)
+> 
+>  	edev->id = ret;
+> 
+> -	dev_set_name(&edev->dev, "extcon%d", edev->id);
+> -
+>  	ret = extcon_alloc_cables(edev);
+>  	if (ret < 0)
+>  		goto err_alloc_cables;
+> @@ -1310,6 +1308,7 @@ int extcon_dev_register(struct extcon_dev *edev)
+>  	RAW_INIT_NOTIFIER_HEAD(&edev->nh_all);
+> 
+>  	dev_set_drvdata(&edev->dev, edev);
+> +	dev_set_name(&edev->dev, "extcon%d", edev->id);
+>  	edev->state = 0;
+> 
+>  	ret = device_register(&edev->dev);
+> --
+> 2.25.1
 
-In the current dt-bindings the power-domains property is required.
 
-Is there another power-domain for the PHY to use, or do we need to
-adjust the bindings to not require power-domains property for ufs phy on
-sc7280?
+Applied it. Thanks.
 
-Also, with "PHY" in the name, it's interesting that this is not for the
-phy ;)
-
-Regards
-Luca
-
->
-> > +
-> > +			resets =3D <&ufs_mem_hc 0>;
-> > +			reset-names =3D "ufsphy";
-> > +
-> > +			#clock-cells =3D <1>;
-> > +			#phy-cells =3D <0>;
-> > +
-> > +			status =3D "disabled";
-> > +		};
-> > +
-> >   		ipa: ipa@1e40000 {
-> >   			compatible =3D "qcom,sc7280-ipa";
-> >  =20
-> >=20
+Best Regards,
+Chanwoo Choi
 
