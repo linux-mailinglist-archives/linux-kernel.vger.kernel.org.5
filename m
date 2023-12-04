@@ -2,142 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7481802A65
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2990802A77
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 04:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234359AbjLDCmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 21:42:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58320 "EHLO
+        id S234368AbjLDDBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 22:01:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjLDCmc (ORCPT
+        with ESMTP id S229510AbjLDDBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 21:42:32 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A656D9;
-        Sun,  3 Dec 2023 18:42:38 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2ca03103155so4974391fa.0;
-        Sun, 03 Dec 2023 18:42:38 -0800 (PST)
+        Sun, 3 Dec 2023 22:01:47 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A992E5
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 19:01:52 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ce403523e5so162597b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 19:01:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701657756; x=1702262556; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SEUh6K5iutasnoMeRQbvniZJyhB8EqO9DGWeSRBdHG8=;
-        b=U2OuZqmucqFts8pAMt/wdD4lmr34uN6jJ/2bh2Hb8iYEpve6PK1jjBFcAMnW2jXsW0
-         s9qMLepYbliqh1PIAorSrtzuxrHMcl8wTU42TkZaBwZMKIKvZG6bUoX2Nsm4huEBBKal
-         kOV79Z5gP7m8T3TSMukeasr+T49wCsxWnRFS7+T38XWk7vivD2NqeRluCPmPEOA/7XXl
-         8gs75xOLkFR3BA8umg/sUY5wQfANIOAZCgUwA01z6gKkcQh12fnV2NzpfacFv/a3bNmr
-         4Ofk9fi7NdyeLyYg5BM9J7qyIlDB6S863h0geH75v3xQxjJVYF0M4OarjUVYPio0nvOj
-         g4mw==
+        d=linaro.org; s=google; t=1701658912; x=1702263712; darn=vger.kernel.org;
+        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=CQYiiiRLontcDI44whmeD/LoEJVxuqfkBiryqv/zBTg=;
+        b=q3DwEmB4PoXI90W8n4dpmreCIn3QymFrI+vnck8BQ4dZsXgYzdXpJMmLdCZsaQ6W/D
+         cCuK7B29+4/j/SkY/E+9CTj9nzcV0g2DJ5jYfDlkyQ+Ovvj1Am9zG3tQH0rtpapkcr1h
+         jAwkf0pAEEkKC8bGb4InCLPTPtxTR1y+i7Uc/7KHnIieKwTm64vsRpjyd3APhjoiBaBO
+         ULZjb7JIafyeidTMh58sJPA/6HZysYsXrcLxEPfmTZpWPDzC7cgpN60Zn/w/U9YJQf3Z
+         ktGaDBSOto0r54hhNHk1gVGqZgPEcQcsRm/RNwTMI6xA6LplPnjn9zVvxD5/pB65rjb3
+         9eXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701657756; x=1702262556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SEUh6K5iutasnoMeRQbvniZJyhB8EqO9DGWeSRBdHG8=;
-        b=WIUeDHzytcpf0c/oZdrX7GeB/I9tDhKNEBoS46Wz/Zwqgw4x1E5WA/So1Wr04JSEDi
-         CNcG+HwMtydMbIfodpOfmBplpQPvBdncVDa08+MqTkR92TNtHnupWc525SytOhdEn74P
-         yASIHfkd+aIh+uL7x8fCe5rlRBAQergP4LQmVhoOZIFPt02vdkJndLx98/5Vx6hUfEfi
-         jWqVkDlGE9sYX7oiTGuzmvOf5mJu4bRnUWl85rbK+P1zRZ9tUqyX6cf/Am4afgV1EsxQ
-         n+Zd4pha3Undmp5tv1yZlwu302tQH7pY7GlLqr306SiOTvqnPxKmL+M0SJ56LlRza4Rs
-         mNHw==
-X-Gm-Message-State: AOJu0Yz8KemNXAHDqY4CmCvYkm1cpYqbyqyN2QzL+kcPLM5k2c4MGxgN
-        iUcjLfPC6+TZUnClqo7X5k3pYPQ9oTRT7X3dDnY=
-X-Google-Smtp-Source: AGHT+IFwUdfTpFRUP7l0fmhtGiz7fd+NP19pyuThwxbiypx7Ivz7rX5Zrc/KjwBbAY7wO0CJI2SrHgFWM/kImEvN9oM=
-X-Received: by 2002:a05:6512:ea1:b0:50b:f03c:1eaa with SMTP id
- bi33-20020a0565120ea100b0050bf03c1eaamr553100lfb.95.1701657756237; Sun, 03
- Dec 2023 18:42:36 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1694421911.git.haibo1.xu@intel.com> <64e0637cd6f22dd7557ed44bd2242001e7830d1c.1694421911.git.haibo1.xu@intel.com>
- <20230914-d2e594e7d84503ad14036e2d@orel> <CAJve8onhY534T=Hyncjfi4GfdZ+0D2xM+jRSaYCAWCdaKxPUcQ@mail.gmail.com>
-In-Reply-To: <CAJve8onhY534T=Hyncjfi4GfdZ+0D2xM+jRSaYCAWCdaKxPUcQ@mail.gmail.com>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Mon, 4 Dec 2023 10:42:24 +0800
-Message-ID: <CAJve8omitHDpijJaLV_wHk+5LXpsBUWF8_eTD4MeWKM-807Siw@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] KVM: riscv: selftests: Add sstc timer test
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        d=1e100.net; s=20230601; t=1701658912; x=1702263712;
+        h=mime-version:message-id:date:in-reply-to:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CQYiiiRLontcDI44whmeD/LoEJVxuqfkBiryqv/zBTg=;
+        b=fbxfFpPkIueJxoOz7lnXKyzgaEQGuP7SMIgsmLoSP+xTHqTgcusiDjkgBYr35gAI58
+         ZvF9/v/h3mnK+dqC2gSUUgX/39+od3V3KaDeaxSgjvZRjdNF7nei/T6DuJPjl7LiVCxN
+         RLpYLJtXzqMmDTnTRX16OkQc/dtD91QPALwOrRvh2baDyiMLcF2yZIMn3+6sP4vBw2kt
+         9Gf5Tbhq+XN8qqk5j6p5ytE8NCsmMtpeLuVOpWtfpgxE4uOhCIWHTzMaWjxOQl6ZjFP+
+         OS6iwyhq7qgoH7pubU21zz3AmtQvjt0uxeluIl6gn+Hfa7gxQnIlf/m8XNUd0t77w3Jk
+         HmYw==
+X-Gm-Message-State: AOJu0Ywz6PcWyOSdmtQXYt4Z3Om8Q23J89PIXBb8BostKHQq6B81ZSRJ
+        YCJPLrYHENwyUUBH0Ceqc4vFFA==
+X-Google-Smtp-Source: AGHT+IHFLJUBmtnWAvysao8TWHQlyk2Cfpox9jD8bkyNgUP4wKyxIxGZHkfjhvm//XUEUavLfPd53A==
+X-Received: by 2002:a05:6a20:748f:b0:18c:8fef:22cc with SMTP id p15-20020a056a20748f00b0018c8fef22ccmr1035248pzd.24.1701658911982;
+        Sun, 03 Dec 2023 19:01:51 -0800 (PST)
+Received: from localhost ([2804:14d:7e39:8470:979a:226c:de55:73de])
+        by smtp.gmail.com with ESMTPSA id c24-20020aa78818000000b006cd88728572sm6562301pfo.211.2023.12.03.19.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 19:01:51 -0800 (PST)
+References: <20231122-arm64-gcs-v7-0-201c483bd775@kernel.org>
+ <20231122-arm64-gcs-v7-13-201c483bd775@kernel.org>
+User-agent: mu4e 1.10.8; emacs 29.1
+From:   Thiago Jung Bauermann <thiago.bauermann@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
         James Morse <james.morse@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v7 13/39] arm64/mm: Map pages for guarded control stack
+In-reply-to: <20231122-arm64-gcs-v7-13-201c483bd775@kernel.org>
+Date:   Mon, 04 Dec 2023 00:01:49 -0300
+Message-ID: <87a5qqisbm.fsf@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 2:21=E2=80=AFPM Haibo Xu <xiaobo55x@gmail.com> wrot=
-e:
->
-> On Thu, Sep 14, 2023 at 5:52=E2=80=AFPM Andrew Jones <ajones@ventanamicro=
-.com> wrote:
-> >
-> > On Thu, Sep 14, 2023 at 09:37:03AM +0800, Haibo Xu wrote:
-> > > Add a KVM selftests to validate the Sstc timer functionality.
-> > > The test was ported from arm64 arch timer test.
-> >
-> > I just tried this test out. Running it over and over again on QEMU I se=
-e
-> > it works sometimes, but it frequently fails with the
-> > GUEST_ASSERT_EQ(config_iter + 1, irq_iter) assert and at least once I
-> > also saw the __GUEST_ASSERT(xcnt >=3D cmp) assert.
-> >
->
-> Good catch!
->
-> I can also reproduce this issue and it is a common problem for both
-> arm64 and riscv because it also happens in a arm64 Qemu VM.
->
-> It seems like a synchronization issue between host and guest shared
-> variables. Will double check the test code.
->
-> > Thanks,
-> > drew
 
-Hi Andrew,
+Hello,
 
-After several rounds of regression testing, some findings:
-1. The intermittent failure also happened on ARM64 Qemu VM, and even
-in the initial arch_timer commit(4959d8650e9f4).
-2. it didn't happen on a ARM64 HW(but a different failure occured
-during stress test)
-3. The failure have a close relationship with
-TIMER_TEST_ERR_MARGIN_US(default 100), and after increasing
-     the macro to 300, the failure couldn't reproduced in 1000 loops
-stress test in RISC-V Qemu VM
+Mark Brown <broonie@kernel.org> writes:
 
-So my suggestion is we can expose the TIMER_TEST_ERR_MARGIN_US
-parameter as an arch_timer test arg parameter
-and tune it based on a specific test environment.
+> diff --git a/arch/arm64/mm/mmap.c b/arch/arm64/mm/mmap.c
+> index 645fe60d000f..605d4e6edc1d 100644
+> --- a/arch/arm64/mm/mmap.c
+> +++ b/arch/arm64/mm/mmap.c
+> @@ -79,9 +79,20 @@ arch_initcall(adjust_protection_map);
+>  
+>  pgprot_t vm_get_page_prot(unsigned long vm_flags)
+>  {
+> -	pteval_t prot = pgprot_val(protection_map[vm_flags &
+> +	pteval_t prot;
+> +
+> +	/* If this is a GCS then only interpret VM_WRITE. */
+> +	if (system_supports_gcs() && (vm_flags & VM_SHADOW_STACK)) {
+> +		if (vm_flags & VM_WRITE)
+> +			prot = _PAGE_GCS;
+> +		else
+> +			prot = _PAGE_GCS_RO;
+> +	} else {
+> +		prot = pgprot_val(protection_map[vm_flags &
+>  				   (VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]);
+> +	}
+>  
+> +	/* VM_ARM64_BTI on a GCS is rejected in arch_valdiate_flags() */
 
-What's your opinion?
+s/valdiate/validate/
 
-Regards,
-Haibo
+>  	if (vm_flags & VM_ARM64_BTI)
+>  		prot |= PTE_GP;
+
+
+-- 
+Thiago
