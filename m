@@ -2,257 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B091B803D71
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D910803D85
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233396AbjLDSvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:51:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51324 "EHLO
+        id S230487AbjLDSxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:53:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjLDSu6 (ORCPT
+        with ESMTP id S229518AbjLDSxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:50:58 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D096AF;
-        Mon,  4 Dec 2023 10:51:04 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 14A361FE6A;
-        Mon,  4 Dec 2023 18:51:02 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F113513B65;
-        Mon,  4 Dec 2023 18:51:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id dGqaOpUfbmXlYQAAn2gu4w
-        (envelope-from <jack@suse.cz>); Mon, 04 Dec 2023 18:51:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 6870FA07DB; Mon,  4 Dec 2023 19:51:01 +0100 (CET)
-Date:   Mon, 4 Dec 2023 19:51:01 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Disseldorp <ddiss@suse.de>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        alsa-devel@alsa-project.org, ath10k@lists.infradead.org,
-        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-net-drivers@amd.com,
-        linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: Re: [PATCH v2 00/35] bitops: add atomic find_bit() operations
-Message-ID: <20231204185101.ddmkvsr2xxsmoh2u@quack3>
-References: <20231203192422.539300-1-yury.norov@gmail.com>
+        Mon, 4 Dec 2023 13:53:16 -0500
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12C70AB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:53:22 -0800 (PST)
+Received: by mail-vk1-xa32.google.com with SMTP id 71dfb90a1353d-4b2eaa89796so263378e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 10:53:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701716001; x=1702320801; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ubRXQTeiFt9GpRXI/6OBGRrpxykvw56RWRgyn02NYIk=;
+        b=S6FF8s6JTUHnHPfMyT9xpM2qy7C07lgemeTE3ulgzH8jwKxrDoeSF4ckOxxlZIXW/V
+         9L9ggAZaDJc9MQ+SuwA7XvfFlBylJM5EDCtguQaRPhLFx1OCByF+nfvydxtGLg6vjEiF
+         m1DhoJbRiiS/VXhQC+cyC2YaFhALk7K7IXg1tv17QeSVU3Rq4SucmiphY/8uDQ/BagNC
+         CQMMwjwV5SztwO8fUfWiN6LT8EmqXXDeXDbSyEyVXKmXvOYPoXaP9gWcYpJIFixUMgHA
+         ew42feiuFFRjc1vYadZnEjFtEfsL/77FbloapqiTxNa6NotWa3lDPl/M8VIsL9Ver49J
+         2cIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701716001; x=1702320801;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ubRXQTeiFt9GpRXI/6OBGRrpxykvw56RWRgyn02NYIk=;
+        b=sP2pJ9N52I6+lG+M9acD7fNw7Nnphi8H1sP8CXn9ERaT+PNqyGcUQdLFw+tp83bt+J
+         5JgUlcPu+i4kuZauooZF2nDe6mbpjgN3WH+7M+VdiF7O2Xp5EVEB+IaGJNBFtGVPN1VK
+         /LUf9l7Atm5xcAZO5VyXuu+zB51La+8ycWFdIs+/Ikz/h/cjcghmYrHtOHgeCBGnbV47
+         hgP0hd4/aSihx+9zDiCVDk20c04Ri2MbxuL1Xu7Mf1uuAVV4hC5ubDbmBoxK/zEw5tRy
+         S5hd9B25MjJdxmamglqdticMZ21/9l/ZqI5aRlP+8ej7fZRetmaU+kusEyPYTl70aeRJ
+         YnYQ==
+X-Gm-Message-State: AOJu0YzKazBjhNGtzy2w8vlL60QiuL2BgG75MpRg+E+aT8xeYHR9ipDJ
+        MK676KrouEWkRuyChyIqR7BBV6xtsua+jZ8iiZnAgWPbSgE=
+X-Google-Smtp-Source: AGHT+IElefo3g8xyw63YgpgwE6qjcPayyqksyAZn+TpsInT2m5BM3/xxggErNz95a8EeujF1i0HioktW+LG64o9DmKQ=
+X-Received: by 2002:ac5:c24f:0:b0:4b2:e003:e16 with SMTP id
+ n15-20020ac5c24f000000b004b2e0030e16mr1725996vkk.3.1701716001159; Mon, 04 Dec
+ 2023 10:53:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231203192422.539300-1-yury.norov@gmail.com>
-X-Spamd-Bar: ++++++++++++++
-X-Spam-Score: 14.88
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz;
-        dmarc=none
-X-Rspamd-Queue-Id: 14A361FE6A
-X-Spamd-Result: default: False [14.88 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(4.60)[~all];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         RCPT_COUNT_GT_50(0.00)[100];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         FORGED_RECIPIENTS(2.00)[m:yury.norov@gmail.com,m:davem@davemloft.net,m:jejb@linux.ibm.com,m:haris.iqbal@ionos.com,m:akinobu.mita@gmail.com,m:akpm@linux-foundation.org,m:andersson@kernel.org,m:bp@alien8.de,m:brauner@kernel.org,m:dave.hansen@linux.intel.com,m:ecree.xilinx@gmail.com,m:edumazet@google.com,m:fenghua.yu@intel.com,m:geert@linux-m68k.org,m:gregory.greenman@intel.com,m:hughd@google.com,m:kuba@kernel.org,m:axboe@kernel.dk,m:jirislaby@kernel.org,m:kvalo@kernel.org,m:kgraul@linux.ibm.com,m:isdn@linux-pingi.de,m:keescook@chromium.org,m:leon@kernel.org,m:mark.rutland@arm.com,m:habetsm.xilinx@gmail.com,m:mchehab@kernel.org,m:mpe@ellerman.id.au,m:npiggin@gmail.com,m:peterz@infradead.org,m:dalias@libc.org,m:robh@kernel.org,m:robin.murphy@arm.com,m:seanjc@google.com,m:xueshuai@linux.alibaba.com,m:rostedt@goodmis.org,m:tsbogend@alpha.franken.de,m:tglx@linutronix.de,m:wenjia@linux.ibm.com,m:will@kernel.org,m:alsa-devel@alsa-project.org,m:linux-net-drivers@amd.com,m:mpi3mr-linuxdrv.pdl
- @broadcom.com,m:x86@kernel.org,m:mirsad.todorovac@alu.unizg.hr,m:willy@infradead.org,m:andriy.shevchenko@linux.intel.com,m:maxim.kuvyrkov@linaro.org,m:klimov.linux@gmail.com,m:bvanassche@acm.org,s:s.shtylyov@omp.ru];
-         BAYES_HAM(-3.00)[100.00%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[wp.pl,xs4all.nl];
-         NEURAL_SPAM_SHORT(2.49)[0.832];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(1.20)[suse.cz];
-         TO_MATCH_ENVRCPT_SOME(0.00)[];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[vger.kernel.org,davemloft.net,zytor.com,linux.ibm.com,microsoft.com,ionos.com,gmail.com,linux-foundation.org,kernel.org,alien8.de,nvidia.com,opensource.wdc.com,linux.intel.com,suse.de,google.com,intel.com,linux-m68k.org,linuxfoundation.org,xs4all.nl,redhat.com,perex.cz,ziepe.ca,kernel.dk,resnulli.us,linux-pingi.de,chromium.org,arm.com,ellerman.id.au,monstr.eu,suse.com,infradead.org,realtek.com,libc.org,linux.alibaba.com,wp.pl,goodmis.org,alpha.franken.de,linutronix.de,users.sourceforge.jp,marvell.com,alsa-project.org,lists.infradead.org,lists.linux.dev,lists.linux-m68k.org,amd.com,lists.ozlabs.org,broadcom.com,suse.cz,alu.unizg.hr,rasmusvillemoes.dk,linaro.org,acm.org,omp.ru];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231204180428.925779-1-jaegeuk@kernel.org>
+In-Reply-To: <20231204180428.925779-1-jaegeuk@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Mon, 4 Dec 2023 10:53:10 -0800
+Message-ID: <CACOAw_x-QMsCyW9Tiw408TSfKXudBnJUJ7Pc3VkRmYQ-vi+eug@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH 1/4] f2fs: allocate new section if it's not new
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Yury!
+LGTM
 
-On Sun 03-12-23 11:23:47, Yury Norov wrote:
-> Add helpers around test_and_{set,clear}_bit() that allow to search for
-> clear or set bits and flip them atomically.
-> 
-> The target patterns may look like this:
-> 
-> 	for (idx = 0; idx < nbits; idx++)
-> 		if (test_and_clear_bit(idx, bitmap))
-> 			do_something(idx);
-> 
-> Or like this:
-> 
-> 	do {
-> 		bit = find_first_bit(bitmap, nbits);
-> 		if (bit >= nbits)
-> 			return nbits;
-> 	} while (!test_and_clear_bit(bit, bitmap));
-> 	return bit;
-> 
-> In both cases, the opencoded loop may be converted to a single function
-> or iterator call. Correspondingly:
-> 
-> 	for_each_test_and_clear_bit(idx, bitmap, nbits)
-> 		do_something(idx);
-> 
-> Or:
-> 	return find_and_clear_bit(bitmap, nbits);
-
-These are fine cleanups but they actually don't address the case that has
-triggered all these changes - namely the xarray use of find_next_bit() in
-xas_find_chunk().
-
-...
-> This series is a result of discussion [1]. All find_bit() functions imply
-> exclusive access to the bitmaps. However, KCSAN reports quite a number
-> of warnings related to find_bit() API. Some of them are not pointing
-> to real bugs because in many situations people intentionally allow
-> concurrent bitmap operations.
-> 
-> If so, find_bit() can be annotated such that KCSAN will ignore it:
-> 
->         bit = data_race(find_first_bit(bitmap, nbits));
-
-No, this is not a correct thing to do. If concurrent bitmap changes can
-happen, find_first_bit() as it is currently implemented isn't ever a safe
-choice because it can call __ffs(0) which is dangerous as you properly note
-above. I proposed adding READ_ONCE() into find_first_bit() / find_next_bit()
-implementation to fix this issue but you disliked that. So other option we
-have is adding find_first_bit() and find_next_bit() variants that take
-volatile 'addr' and we have to use these in code like xas_find_chunk()
-which cannot be converted to your new helpers.
-
-> This series addresses the other important case where people really need
-> atomic find ops. As the following patches show, the resulting code
-> looks safer and more verbose comparing to opencoded loops followed by
-> atomic bit flips.
-> 
-> In [1] Mirsad reported 2% slowdown in a single-thread search test when
-> switching find_bit() function to treat bitmaps as volatile arrays. On
-> the other hand, kernel robot in the same thread reported +3.7% to the
-> performance of will-it-scale.per_thread_ops test.
-
-It was actually me who reported the regression here [2] but whatever :)
-
-[2] https://lore.kernel.org/all/20231011150252.32737-1-jack@suse.cz
-
-> Assuming that our compilers are sane and generate better code against
-> properly annotated data, the above discrepancy doesn't look weird. When
-> running on non-volatile bitmaps, plain find_bit() outperforms atomic
-> find_and_bit(), and vice-versa.
-> 
-> So, all users of find_bit() API, where heavy concurrency is expected,
-> are encouraged to switch to atomic find_and_bit() as appropriate.
-
-Well, all users where any concurrency can happen should switch. Otherwise
-they are prone to the (admittedly mostly theoretical) data race issue.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+On Mon, Dec 4, 2023 at 10:06=E2=80=AFAM Jaegeuk Kim <jaegeuk@kernel.org> wr=
+ote:
+>
+> If fsck can allocate a new zone, it'd be better to use that instead of
+> allocating a new one.
+>
+> And, it modifies kernel messages.
+>
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  fs/f2fs/segment.c | 33 +++++++++++++++++----------------
+>  1 file changed, 17 insertions(+), 16 deletions(-)
+>
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 08e2f44a1264..9081c9af977a 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -4949,20 +4949,18 @@ static int check_zone_write_pointer(struct f2fs_s=
+b_info *sbi,
+>                 return ret;
+>         }
+>
+> -       if (is_set_ckpt_flags(sbi, CP_UMOUNT_FLAG)) {
+> -               /*
+> -                * If there are valid blocks and the write pointer doesn'=
+t match
+> -                * with them, we need to report the inconsistency and fil=
+l
+> -                * the zone till the end to close the zone. This inconsis=
+tency
+> -                * does not cause write error because the zone will not b=
+e
+> -                * selected for write operation until it get discarded.
+> -                */
+> -               f2fs_notice(sbi, "Valid blocks are not aligned with write=
+ "
+> +       /*
+> +        * If there are valid blocks and the write pointer doesn't match
+> +        * with them, we need to report the inconsistency and fill
+> +        * the zone till the end to close the zone. This inconsistency
+> +        * does not cause write error because the zone will not be
+> +        * selected for write operation until it get discarded.
+> +        */
+> +       f2fs_notice(sbi, "Valid blocks are not aligned with write "
+>                             "pointer: valid block[0x%x,0x%x] wp[0x%x,0x%x=
+]",
+>                             GET_SEGNO(sbi, last_valid_block),
+>                             GET_BLKOFF_FROM_SEG0(sbi, last_valid_block),
+>                             wp_segno, wp_blkoff);
+> -       }
+>
+>         ret =3D blkdev_zone_mgmt(fdev->bdev, REQ_OP_ZONE_FINISH,
+>                                 zone->start, zone->len, GFP_NOFS);
+> @@ -5053,15 +5051,18 @@ static int fix_curseg_write_pointer(struct f2fs_s=
+b_info *sbi, int type)
+>                 f2fs_notice(sbi, "Unaligned curseg[%d] with write pointer=
+: "
+>                             "curseg[0x%x,0x%x] wp[0x%x,0x%x]", type, cs->=
+segno,
+>                             cs->next_blkoff, wp_segno, wp_blkoff);
+> -       } else {
+> -               f2fs_notice(sbi, "Not successfully unmounted in the previ=
+ous "
+> -                           "mount");
+>         }
+>
+> -       f2fs_notice(sbi, "Assign new section to curseg[%d]: "
+> -                   "curseg[0x%x,0x%x]", type, cs->segno, cs->next_blkoff=
+);
+> +       /* Allocate a new section if it's not new. */
+> +       if (cs->next_blkoff) {
+> +               unsigned int old_segno =3D cs->segno, old_blkoff =3D cs->=
+next_blkoff;
+>
+> -       f2fs_allocate_new_section(sbi, type, true);
+> +               f2fs_allocate_new_section(sbi, type, true);
+> +               f2fs_notice(sbi, "Assign new section to curseg[%d]: "
+> +                               "[0x%x,0x%x] -> [0x%x,0x%x]",
+> +                               type, old_segno, old_blkoff,
+> +                               cs->segno, cs->next_blkoff);
+> +       }
+>
+>         /* check consistency of the zone curseg pointed to */
+>         if (check_zone_write_pointer(sbi, zbd, &zone))
+> --
+> 2.43.0.rc2.451.g8631bc7472-goog
+>
+>
+>
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
