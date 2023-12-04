@@ -2,212 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8CE803BFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD60D803BFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbjLDRtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        id S230514AbjLDRug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:50:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjLDRtb (ORCPT
+        with ESMTP id S229586AbjLDRue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:49:31 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8451113
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:49:36 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-33348e711e0so1036410f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:49:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701712175; x=1702316975; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9nMTL/hfEaPmfeAjvrqag0PKWdLeKIP4No4LGE5wQRg=;
-        b=v/wo/cmbdS5QPCQENYPfqrMbNveWokKVH1KXfmvECebw6NS4a5eWM6jlctIykLsXti
-         PpIihcNP3uKVDC7odSe8U5El9VpUx044HL0Wa/o7yziTGdPokVh8C/m3T4/trG3P20/B
-         QfCMsFL2OV+T2JOm7OtAUS4UvHdCyBQay7MC7XrCfplITIZKSEDMIh29vlL732r1+HYM
-         y4QAkljh/ru1ek3KMaefkflBsOlZB0bEMzcxpAzTkcWHhNBFZk3tHsoX3vyTZKBT/CUM
-         V7aYBiV3v3uC1UT3yPbJ/YOn6aLdv8tj/JkhSOXMoDtws1dfEJ3brCSGOpP/uyhmTeJt
-         BP9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701712175; x=1702316975;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9nMTL/hfEaPmfeAjvrqag0PKWdLeKIP4No4LGE5wQRg=;
-        b=w1cV95v6ByTaeEpKjDyCyddOJRMoAyUi+817vl+vMeDJZHa6/S+yUbz4iJWGXptcXn
-         CpfwQ6YJVvSDelnV0Cfhnr6brdS9Ljkp3N+nNKpnKnK9LTzlhXc9nneidD9ohwEQkuxb
-         z7A05pnSM50KzakT9g6UThitvybC/R3NAMUdimyb+XH1mC64hIhcyfSBDWpNFwCkOeLY
-         WNx4Rfd1BHSVoE/0vCf8ROn/pilHLMJdol4c4gwIOHRkTyGznLL2Sn8MfHJReUKRMqpJ
-         axT99E4q/piZD908c+XAdbyTWJCyl94v6oCjYe0QtZtM+dP87Wfac2PfFXyhwSDxfswr
-         nXJg==
-X-Gm-Message-State: AOJu0Yyy0QugOrDtAa4jk0kJRXlfJa6egHnuNVTY6KTAkwBjalUR/bqD
-        2yyKd/aV2GLyWd6P/TdqMLVhT+ivnrroYWYrJJU=
-X-Google-Smtp-Source: AGHT+IEZ7kB3cx7KQ8/SrkE8m8JSF0rnEkwEdjOi/inIqL/SKS50oF93F8hnwxRYY4xwJgZ52qJh7Q==
-X-Received: by 2002:a5d:5f49:0:b0:333:4296:3c0a with SMTP id cm9-20020a5d5f49000000b0033342963c0amr1444977wrb.133.1701712175176;
-        Mon, 04 Dec 2023 09:49:35 -0800 (PST)
-Received: from localhost ([2a01:cb19:95ba:5000:d6dd:417f:52ac:335b])
-        by smtp.gmail.com with ESMTPSA id b4-20020a5d4b84000000b003333c9ad4d6sm6652265wrt.116.2023.12.04.09.49.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 09:49:34 -0800 (PST)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Nas Chung <nas.chung@chipsnmedia.com>,
-        Jackson Lee <jackson.lee@chipsnmedia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Guillaume La Roque <glaroque@baylibre.com>,
-        Brandon Brnich <b-brnich@ti.com>,
-        Sebastian Fricke <sebastian.fricke@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: chips-media: wave5: fix panic on decoding
- DECODED_IDX_FLAG_SKIP
-In-Reply-To: <42c1c5e14a30730bc140b6791f25e55d434aa4e3.camel@ndufresne.ca>
-References: <20231129-wave5-panic-v1-1-e0fb5a1a8af4@baylibre.com>
- <42c1c5e14a30730bc140b6791f25e55d434aa4e3.camel@ndufresne.ca>
-Date:   Mon, 04 Dec 2023 18:49:34 +0100
-Message-ID: <87jzpt3ljl.fsf@baylibre.com>
+        Mon, 4 Dec 2023 12:50:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9768FA;
+        Mon,  4 Dec 2023 09:50:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701712240; x=1733248240;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=dP2gqvhdyuIc7UuUZhxvKqlHMQ8j8ifDZkXZKxj+rq8=;
+  b=jDde/L8VrkDjiH31O7yXkYy0yL2bwrlhrtRuTDH/Us0YEqEVoWYKbeJN
+   yqwrY2HMv4PSYmAGl6QDnm2poaGxmEPpqejOLMdOhlGD3AwW3Iy49Ogn9
+   AJpHNeBFkXCQvpLOE7ZQwu2ryzOnunZRCWo5zPCHE/Ns67Qfsic0qurTW
+   hFFBS5CEOoJgTC34T1EzGED0xKq+4qhUOfgiUJotLcEzsNYmoLzkrs8VH
+   s60qP7z+1tBHol6ZWJ8HegoJMdj2BFFq/AfSTRsKlGQ6/9LwFoJ0lMwhk
+   hAJCCzanITYHFiNdzykiyFq5u7zRnUp1Rs7NUN8T9s+aVA7MeBOGVZ1FH
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="458092331"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="458092331"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 09:50:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="894076328"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="894076328"
+Received: from jjstacey-mobl2.amr.corp.intel.com (HELO [10.213.160.16]) ([10.213.160.16])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 09:50:37 -0800
+Message-ID: <cc6c162407c69c53ec256bf887a0384361dd0516.camel@linux.intel.com>
+Subject: Re: [PATCH v2] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com
+Cc:     linux-pm@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jian Hui Lee <jianhui.lee@canonical.com>,
+        Even Xu <even.xu@intel.com>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 04 Dec 2023 12:50:35 -0500
+In-Reply-To: <20231108121940.288005-1-kai.heng.feng@canonical.com>
+References: <20231108121940.288005-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+SGkgS2FpLAoKU29ycnkgZm9yIGhlIGRlbGF5IGluIGdldHRpbmcgYmFjayBvbiB0aGlzLiBJIGhh
+dmUgYSBxdWVzdGlvbiBiZWxvdzoKCk9uIFdlZCwgMjAyMy0xMS0wOCBhdCAxNDoxOSArMDIwMCwg
+S2FpLUhlbmcgRmVuZyB3cm90ZToKPiBTaW5jZSBQQ0kgY29yZSBhbmQgQUNQSSBjb3JlIGFscmVh
+ZHkgaGFuZGxlcyBQQ0kgUE1FIHdha2UgYW5kIEdQRQo+IHdha2UKPiB3aGVuIHRoZSBkZXZpY2Ug
+aGFzIHdha2V1cCBjYXBhYmlsaXR5LCB1c2UgZGV2aWNlX2luaXRfd2FrZXVwKCkgdG8KPiBsZXQK
+PiB0aGVtIGRvIHRoZSB3YWtldXAgc2V0dGluZyB3b3JrLgo+IAo+IEFsc28gYWRkIGEgc2h1dGRv
+d24gY2FsbGJhY2sgd2hpY2ggdXNlcyBwY2lfcHJlcGFyZV90b19zbGVlcCgpIHRvIGxldAo+IFBD
+SSBhbmQgQUNQSSBzZXQgT09CIHdha2V1cCBmb3IgUzUuCj4gCj4gQ2M6IEppYW4gSHVpIExlZSA8
+amlhbmh1aS5sZWVAY2Fub25pY2FsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBLYWktSGVuZyBGZW5n
+IDxrYWkuaGVuZy5mZW5nQGNhbm9uaWNhbC5jb20+Cj4gLS0tCj4gdjI6Cj4gwqBSZWJhc2Ugb24g
+KCJISUQ6IGludGVsLWlzaC1oaWQ6IGlwYzogRGlzYWJsZSBhbmQgcmVlbmFibGUgQUNQSSBHUEUK
+PiBiaXQiKQo+IAo+IMKgZHJpdmVycy9oaWQvaW50ZWwtaXNoLWhpZC9pcGMvcGNpLWlzaC5jIHwg
+NjcgKysrKysrLS0tLS0tLS0tLS0tLS0tLS0KPiAtLQo+IMKgMSBmaWxlIGNoYW5nZWQsIDE1IGlu
+c2VydGlvbnMoKyksIDUyIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2hp
+ZC9pbnRlbC1pc2gtaGlkL2lwYy9wY2ktaXNoLmMKPiBiL2RyaXZlcnMvaGlkL2ludGVsLWlzaC1o
+aWQvaXBjL3BjaS1pc2guYwo+IGluZGV4IDcxMGZkYTVmMTllMS4uNjVlN2VlYjJmYTY0IDEwMDY0
+NAo+IC0tLSBhL2RyaXZlcnMvaGlkL2ludGVsLWlzaC1oaWQvaXBjL3BjaS1pc2guYwo+ICsrKyBi
+L2RyaXZlcnMvaGlkL2ludGVsLWlzaC1oaWQvaXBjL3BjaS1pc2guYwo+IEBAIC0xMTksNTAgKzEx
+OSw2IEBAIHN0YXRpYyBpbmxpbmUgYm9vbCBpc2hfc2hvdWxkX2xlYXZlX2QwaTMoc3RydWN0Cj4g
+cGNpX2RldiAqcGRldikKPiDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuICFwbV9yZXN1bWVfdmlhX2Zp
+cm13YXJlKCkgfHwgcGRldi0+ZGV2aWNlID09Cj4gQ0hWX0RFVklDRV9JRDsKPiDCoH0KPiDCoAo+
+IC1zdGF0aWMgaW50IGVuYWJsZV9ncGUoc3RydWN0IGRldmljZSAqZGV2KQo+IC17Cj4gLSNpZmRl
+ZiBDT05GSUdfQUNQSQo+IC3CoMKgwqDCoMKgwqDCoGFjcGlfc3RhdHVzIGFjcGlfc3RzOwo+IC3C
+oMKgwqDCoMKgwqDCoHN0cnVjdCBhY3BpX2RldmljZSAqYWRldjsKPiAtwqDCoMKgwqDCoMKgwqBz
+dHJ1Y3QgYWNwaV9kZXZpY2Vfd2FrZXVwICp3YWtldXA7Cj4gLQo+IC3CoMKgwqDCoMKgwqDCoGFk
+ZXYgPSBBQ1BJX0NPTVBBTklPTihkZXYpOwo+IC3CoMKgwqDCoMKgwqDCoGlmICghYWRldikgewo+
+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZXJyKGRldiwgImdldCBhY3BpIGhh
+bmRsZSBmYWlsZWRcbiIpOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4g
+LUVOT0RFVjsKPiAtwqDCoMKgwqDCoMKgwqB9Cj4gLcKgwqDCoMKgwqDCoMKgd2FrZXVwID0gJmFk
+ZXYtPndha2V1cDsKPiAtCj4gLcKgwqDCoMKgwqDCoMKgLyoKPiAtwqDCoMKgwqDCoMKgwqAgKiBD
+YWxsIGFjcGlfZGlzYWJsZV9ncGUoKSwgc28gdGhhdCByZWZlcmVuY2UgY291bnQKPiAtwqDCoMKg
+wqDCoMKgwqAgKiBncGVfZXZlbnRfaW5mby0+cnVudGltZV9jb3VudCBkb2Vzbid0IG92ZXJmbG93
+Lgo+IC3CoMKgwqDCoMKgwqDCoCAqIFdoZW4gZ3BlX2V2ZW50X2luZm8tPnJ1bnRpbWVfY291bnQg
+PSAwLCB0aGUgY2FsbAo+IC3CoMKgwqDCoMKgwqDCoCAqIHRvIGFjcGlfZGlzYWJsZV9ncGUoKSBz
+aW1wbHkgcmV0dXJuLgo+IC3CoMKgwqDCoMKgwqDCoCAqLwo+IC3CoMKgwqDCoMKgwqDCoGFjcGlf
+ZGlzYWJsZV9ncGUod2FrZXVwLT5ncGVfZGV2aWNlLCB3YWtldXAtPmdwZV9udW1iZXIpOwo+IC0K
+PiAtwqDCoMKgwqDCoMKgwqBhY3BpX3N0cyA9IGFjcGlfZW5hYmxlX2dwZSh3YWtldXAtPmdwZV9k
+ZXZpY2UsIHdha2V1cC0KPiA+Z3BlX251bWJlcik7Cj4gLcKgwqDCoMKgwqDCoMKgaWYgKEFDUElf
+RkFJTFVSRShhY3BpX3N0cykpIHsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2
+X2VycihkZXYsICJlbmFibGUgb3NlX2dwZSBmYWlsZWRcbiIpOwo+IC3CoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqByZXR1cm4gLUVJTzsKPiAtwqDCoMKgwqDCoMKgwqB9Cj4gLQo+IC3CoMKg
+wqDCoMKgwqDCoHJldHVybiAwOwo+IC0jZWxzZQo+IC3CoMKgwqDCoMKgwqDCoHJldHVybiAtRU5P
+REVWOwo+IC0jZW5kaWYKPiAtfQo+IC0KPiAtc3RhdGljIHZvaWQgZW5hYmxlX3BtZV93YWtlKHN0
+cnVjdCBwY2lfZGV2ICpwZGV2KQo+IC17Cj4gLcKgwqDCoMKgwqDCoMKgaWYgKChwY2lfcG1lX2Nh
+cGFibGUocGRldiwgUENJX0QwKSB8fAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHBjaV9wbWVf
+Y2FwYWJsZShwZGV2LCBQQ0lfRDNob3QpIHx8Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcGNp
+X3BtZV9jYXBhYmxlKHBkZXYsIFBDSV9EM2NvbGQpKSAmJiAhZW5hYmxlX2dwZSgmcGRldi0KPiA+
+ZGV2KSkgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwY2lfcG1lX2FjdGl2ZShw
+ZGV2LCB0cnVlKTsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2X2RiZygmcGRl
+di0+ZGV2LCAiaXNoIGlwYyBkcml2ZXIgcG1lIHdha2UKPiBlbmFibGVkXG4iKTsKPiAtwqDCoMKg
+wqDCoMKgwqB9Cj4gLX0KPiAtCj4gwqAvKioKPiDCoCAqIGlzaF9wcm9iZSgpIC0gUENJIGRyaXZl
+ciBwcm9iZSBjYWxsYmFjawo+IMKgICogQHBkZXY6wqDCoMKgwqDCoMKgcGNpIGRldmljZQo+IEBA
+IC0yMzMsNyArMTg5LDcgQEAgc3RhdGljIGludCBpc2hfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBk
+ZXYsIGNvbnN0Cj4gc3RydWN0IHBjaV9kZXZpY2VfaWQgKmVudCkKPiDCoAo+IMKgwqDCoMKgwqDC
+oMKgwqAvKiBFbmFibGUgUE1FIGZvciBFSEwgKi8KPiDCoMKgwqDCoMKgwqDCoMKgaWYgKHBkZXYt
+PmRldmljZSA9PSBFSExfQXhfREVWSUNFX0lEKQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBlbmFibGVfcG1lX3dha2UocGRldik7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoGRldmljZV9pbml0X3dha2V1cChkZXYsIHRydWUpOwoKRm9yIGFwcGxlIHRvIGFwcGxlIGNv
+bXBhcmlzb24sIHdoaWNoIHBhdGggd2lsbCBjYWxsCmh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29t
+L2xpbnV4L2xhdGVzdC9DL2lkZW50L19fcGNpX2VuYWJsZV93YWtlCndoaWNoIHdpbGwgY2FsbCBw
+Y2lfcG1lX2FjdGl2ZSgpPwoKVGhhbmtzLApTcmluaXZhcwoKPiDCoAo+IMKgwqDCoMKgwqDCoMKg
+wqByZXQgPSBpc2hfaW5pdChpc2h0cCk7Cj4gwqDCoMKgwqDCoMKgwqDCoGlmIChyZXQpCj4gQEAg
+LTI1Niw2ICsyMTIsMTkgQEAgc3RhdGljIHZvaWQgaXNoX3JlbW92ZShzdHJ1Y3QgcGNpX2RldiAq
+cGRldikKPiDCoMKgwqDCoMKgwqDCoMKgaXNoX2RldmljZV9kaXNhYmxlKGlzaHRwX2Rldik7Cj4g
+wqB9Cj4gwqAKPiArCj4gKy8qKgo+ICsgKiBpc2hfc2h1dGRvd24oKSAtIFBDSSBkcml2ZXIgc2h1
+dGRvd24gY2FsbGJhY2sKPiArICogQHBkZXY6wqDCoMKgwqDCoMKgcGNpIGRldmljZQo+ICsgKgo+
+ICsgKiBUaGlzIGZ1bmN0aW9uIHNldHMgdXAgd2FrZXVwIGZvciBTNQo+ICsgKi8KPiArc3RhdGlj
+IHZvaWQgaXNoX3NodXRkb3duKHN0cnVjdCBwY2lfZGV2ICpwZGV2KQo+ICt7Cj4gK8KgwqDCoMKg
+wqDCoMKgaWYgKHBkZXYtPmRldmljZSA9PSBFSExfQXhfREVWSUNFX0lEKQo+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBwY2lfcHJlcGFyZV90b19zbGVlcChwZGV2KTsKPiArfQo+ICsK
+PiDCoHN0YXRpYyBzdHJ1Y3QgZGV2aWNlIF9fbWF5YmVfdW51c2VkICppc2hfcmVzdW1lX2Rldmlj
+ZTsKPiDCoAo+IMKgLyogNTBtcyB0byBnZXQgcmVzdW1lIHJlc3BvbnNlICovCj4gQEAgLTM3OCwx
+MyArMzQ3LDYgQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBpc2hfcmVzdW1lKHN0cnVjdAo+
+IGRldmljZSAqZGV2aWNlKQo+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgcGNpX2RldiAqcGRldiA9
+IHRvX3BjaV9kZXYoZGV2aWNlKTsKPiDCoMKgwqDCoMKgwqDCoMKgc3RydWN0IGlzaHRwX2Rldmlj
+ZSAqZGV2ID0gcGNpX2dldF9kcnZkYXRhKHBkZXYpOwo+IMKgCj4gLcKgwqDCoMKgwqDCoMKgLyog
+YWRkIHRoaXMgdG8gZmluaXNoIHBvd2VyIGZsb3cgZm9yIEVITCAqLwo+IC3CoMKgwqDCoMKgwqDC
+oGlmIChkZXYtPnBkZXYtPmRldmljZSA9PSBFSExfQXhfREVWSUNFX0lEKSB7Cj4gLcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHBjaV9zZXRfcG93ZXJfc3RhdGUocGRldiwgUENJX0QwKTsK
+PiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZW5hYmxlX3BtZV93YWtlKHBkZXYpOwo+
+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkZXZfZGJnKGRldi0+ZGV2YywgInNldCBw
+b3dlciBzdGF0ZSB0byBEMCBmb3IKPiBlaGxcbiIpOwo+IC3CoMKgwqDCoMKgwqDCoH0KPiAtCj4g
+wqDCoMKgwqDCoMKgwqDCoGlzaF9yZXN1bWVfZGV2aWNlID0gZGV2aWNlOwo+IMKgwqDCoMKgwqDC
+oMKgwqBkZXYtPnJlc3VtZV9mbGFnID0gMTsKPiDCoAo+IEBAIC00MDAsNiArMzYyLDcgQEAgc3Rh
+dGljIHN0cnVjdCBwY2lfZHJpdmVyIGlzaF9kcml2ZXIgPSB7Cj4gwqDCoMKgwqDCoMKgwqDCoC5p
+ZF90YWJsZSA9IGlzaF9wY2lfdGJsLAo+IMKgwqDCoMKgwqDCoMKgwqAucHJvYmUgPSBpc2hfcHJv
+YmUsCj4gwqDCoMKgwqDCoMKgwqDCoC5yZW1vdmUgPSBpc2hfcmVtb3ZlLAo+ICvCoMKgwqDCoMKg
+wqDCoC5zaHV0ZG93biA9IGlzaF9zaHV0ZG93biwKPiDCoMKgwqDCoMKgwqDCoMKgLmRyaXZlci5w
+bSA9ICZpc2hfcG1fb3BzLAo+IMKgfTsKPiDCoAoK
 
-Thank you for your review.
-
-On Fri, Dec 01, 2023 at 15:18, Nicolas Dufresne <nicolas@ndufresne.ca> wrot=
-e:
-
-> Hi Mattijs,
->
-> Le mercredi 29 novembre 2023 =C3=A0 11:37 +0100, Mattijs Korpershoek a =
-=C3=A9crit=C2=A0:
->> The display frame region information received from the vpu also
->> contains the frame display index: info->index_frame_display.
->>=20
->> This index, being a s32, can be negative when a skip option is passed.
->> In that case, its value is DECODED_IDX_FLAG_SKIP (-2).
->>=20
->> When disp_idx =3D=3D -2, the following exception occurs:
->>=20
->> [ 1530.782246][ T1900] Hardware name: Texas Instruments AM62P5 SK (DT)
->> [ 1530.788501][ T1900] pstate: a0400005 (NzCv daif +PAN -UAO -TCO -DIT -=
-SSBS BTYPE=3D--)
->> [ 1530.796144][ T1900] pc : wave5_vpu_dec_get_output_info+0x300/0x308 [w=
-ave5]
->> [ 1530.803060][ T1900] lr : wave5_vpu_dec_get_output_info+0x80/0x308 [wa=
-ve5]
->> [ 1530.809873][ T1900] sp : ffffffc00b85bc00
->> [ 1530.813872][ T1900] x29: ffffffc00b85bc00 x28: 0000000000000000 x27: =
-0000000000000001
->> [ 1530.821695][ T1900] x26: 00000000fffffffd x25: 00000000ffffffff x24: =
-ffffff8812820000
->> [ 1530.829516][ T1900] x23: ffffff88199f7840 x22: ffffff8873f5e000 x21: =
-ffffffc00b85bc58
->> [ 1530.837336][ T1900] x20: 0000000000000000 x19: ffffff88199f7920 x18: =
-ffffffc00a899030
->> [ 1530.845156][ T1900] x17: 00000000529c6ef0 x16: 00000000529c6ef0 x15: =
-0000000000198487
->> [ 1530.852975][ T1900] x14: ffffffc009f2b650 x13: 0000000000058016 x12: =
-0000000005000000
->> [ 1530.860795][ T1900] x11: 0000000000000000 x10: 0000000000000000 x9 : =
-0000000000000000
->> [ 1530.868615][ T1900] x8 : 0000000000000000 x7 : 0000000000000000 x6 : =
-0000000000004086
->> [ 1530.876434][ T1900] x5 : 0000000000000001 x4 : ffffffc001454b94 x3 : =
-ffffffc001454d94
->> [ 1530.884256][ T1900] x2 : ffffffc00b8201d0 x1 : 0000000000000020 x0 : =
-0000000000000000
->> [ 1530.892087][ T1900] Call trace:
->> [ 1530.895225][ T1900]  wave5_vpu_dec_get_output_info+0x300/0x308 [wave5]
->> [ 1530.901788][ T1900]  wave5_vpu_dec_finish_decode+0x6c/0x3dc [wave5]
->> [ 1530.908081][ T1900]  wave5_vpu_irq_thread+0x140/0x168 [wave5]
->> [ 1530.913856][ T1900]  irq_thread_fn+0x44/0xa4
->> [ 1530.918154][ T1900]  irq_thread+0x15c/0x288
->> [ 1530.922330][ T1900]  kthread+0x104/0x1d4
->> [ 1530.926247][ T1900]  ret_from_fork+0x10/0x20
->> [ 1530.930520][ T1900] Code: 2a1f03ea 2a1f03eb 35ffef2c 17ffff74 (d42aa2=
-40)
->> [ 1530.937296][ T1900] ---[ end trace 0000000000000000 ]---
->> [ 1530.942596][ T1900] Kernel panic - not syncing: BRK handler: Fatal ex=
-ception
->> [ 1530.949629][ T1900] SMP: stopping secondary CPUs
->> [ 1530.954244][ T1900] Kernel Offset: disabled
->> [ 1530.958415][ T1900] CPU features: 0x00,00000000,00800184,0000421b
->> [ 1530.964496][ T1900] Memory Limit: none
->>=20
->> Move the disp_info assignment after testing that the index is positive
->> to avoid the exception.
->>=20
->> Fixes: 45d1a2b93277 ("media: chips-media: wave5: Add vpuapi layer")
->> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
->> ---
->>  drivers/media/platform/chips-media/wave5/wave5-vpuapi.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.c b/d=
-rivers/media/platform/chips-media/wave5/wave5-vpuapi.c
->> index 86b3993722db..1a3efb638dde 100644
->> --- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.c
->> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.c
->> @@ -508,8 +508,8 @@ int wave5_vpu_dec_get_output_info(struct vpu_instanc=
-e *inst, struct dec_output_i
->>  	info->rc_decoded =3D rect_info;
->>=20=20
->>  	disp_idx =3D info->index_frame_display;
->> -	disp_info =3D &p_dec_info->dec_out_info[disp_idx];
->>  	if (info->index_frame_display >=3D 0 && info->index_frame_display < WA=
-VE5_MAX_FBS) {
->> +		disp_info =3D &p_dec_info->dec_out_info[disp_idx];
->
-> I could not reproduce the crash, it probably depends on the compiler vers=
-ion and
-> compiler options. This negative index should normally generate a pointer,=
- even
-> if that points to bad location. I'd like to understand how that lead to a=
- crash.
-> If you have further information on this, I really like to get to the bott=
-om on
-> these subjects.
-
-I can reproduce it consistently with my setup:
-https://pastebin.com/0Mdfw1EC
-
-Here is a copy of the .config when my kernel is build:
-https://pastebin.com/RHxLV8cf
-
-I build the kernel via KLeaf (Android's way of building kernels) so I'm
-not sure how I can provide you with the exact compile command.
-
-I do know that LTO is used, if that gives any hint.
-
-If prefer chatting about this, I'm also reachable on irc (oftc.net, nicknam=
-e:
-mkorpershoek)
-
-Let me know if other information is needed to get to the bottom on this.
-
->
-> Meanwhile, this fix is obviously correct, we should not do that unless we=
- have a
-> valid index.
->
-> Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
->
->>  		if (info->index_frame_display !=3D info->index_frame_decoded) {
->>  			/*
->>  			 * when index_frame_decoded < 0, and index_frame_display >=3D 0
->>=20
->> ---
->> base-commit: a00b3f296eac3d43328615c3113e1a74143fc67a
->> change-id: 20231129-wave5-panic-82ea2d30042f
->>=20
->> Best regards,
