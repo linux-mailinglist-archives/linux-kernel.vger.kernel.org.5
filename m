@@ -2,132 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2157D802AAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 05:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7056E802AB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 05:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbjLDEED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 23:04:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S234389AbjLDEIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 23:08:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjLDEEC (ORCPT
+        with ESMTP id S229526AbjLDEII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 23:04:02 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 388A9D5;
-        Sun,  3 Dec 2023 20:04:05 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CE4F165C;
-        Sun,  3 Dec 2023 20:04:51 -0800 (PST)
-Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACAC43F762;
-        Sun,  3 Dec 2023 20:03:59 -0800 (PST)
-Message-ID: <86f91d68-207d-40a5-9d76-1cbb80e4f210@arm.com>
-Date:   Mon, 4 Dec 2023 09:33:56 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V15 1/8] arm64/sysreg: Add BRBE registers and fields
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        James Clark <james.clark@arm.com>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Sun, 3 Dec 2023 23:08:08 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7714BCD;
+        Sun,  3 Dec 2023 20:08:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1701662890;
+        bh=Mt4zD1tGaHWza6GlukoEY8R3eTQNovJ0fviSb32nqVE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ewJAXGH6U02n2FgyDaFgjxx238vOel2u39LFbW7foifF87ed0nAWrHhBijgyuXKVz
+         F/Wa3GaSdSvu0Wk7zE2Pg7wuScZYpwcp/YN0RFhQznQjeHAaNzPKEkNJd0T8Yxlnzi
+         MQwkogMp10QXfQpcYVWppbC0rrOGIyopo+TIrPsM6xBSqB78uRAzSfa/tjjy9unQ6A
+         iIFyRhnt2fuwuDkqPCs3Zjc5x+nzdmaWJ2PPhL/cH6ZfXzYFREiEYOLPEzid/lf9zU
+         jwE/OABx/ecltWMyRov7FYwsf/6SSkoA0wb5L+bCu1KNMTA1KQDp/j7CWPNEH0SAVq
+         sgk1u0lAl9LUQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sk9BK5V1Tz4xMw;
+        Mon,  4 Dec 2023 15:08:09 +1100 (AEDT)
+Date:   Mon, 4 Dec 2023 15:08:07 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org
-References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
- <20231201053906.1261704-2-anshuman.khandual@arm.com>
- <fd278f4e-0632-4474-8609-7711ad725f85@sirena.org.uk>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <fd278f4e-0632-4474-8609-7711ad725f85@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warnings after merge of the tip tree
+Message-ID: <20231204150807.600c2f09@canb.auug.org.au>
+In-Reply-To: <CAFULd4Yfh0=TkhoevuJP1kghP5VLFj2zP9av68_s2pez3n2iog@mail.gmail.com>
+References: <20231201112918.294b40b1@canb.auug.org.au>
+        <CAFULd4Yfh0=TkhoevuJP1kghP5VLFj2zP9av68_s2pez3n2iog@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/Dg2jyPmbbaRHaFvwrb0cc6+";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/Dg2jyPmbbaRHaFvwrb0cc6+
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
+Hi Uros,
 
-On 12/1/23 22:28, Mark Brown wrote:
-> On Fri, Dec 01, 2023 at 11:08:59AM +0530, Anshuman Khandual wrote:
-> 
-> This looks good apart from a few small omissions:
-> 
->> +SysregFields BRBINFx_EL1
-> 
->> +Enum	13:8		TYPE
->> +	0b000000	UNCOND_DIRECT
->> +	0b000001	INDIRECT
->> +	0b000010	DIRECT_LINK
->> +	0b000011	INDIRECT_LINK
->> +	0b000101	RET
->> +	0b000111	ERET
->> +	0b001000	COND_DIRECT
->> +	0b100001	DEBUG_HALT
->> +	0b100010	CALL
->> +	0b100011	TRAP
->> +	0b100100	SERROR
->> +	0b100110	INSN_DEBUG
->> +	0b100111	DATA_DEBUG
->> +	0b101010	ALIGN_FAULT
->> +	0b101011	INSN_FAULT
->> +	0b101100	DATA_FAULT
->> +	0b101110	IRQ
->> +	0b101111	FIQ
->> +	0b111001	DEBUG_EXIT
->> +EndEnum
-> 
-> DDI0601 2023-09 also defines 0b110000 as an IMPLEMENTATION DEFINED
-> exception to EL3.
+On Fri, 1 Dec 2023 13:09:45 +0100 Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> On Fri, Dec 1, 2023 at 1:29=E2=80=AFAM Stephen Rothwell <sfr@canb.auug.or=
+g.au> wrote:
+> >
+ > After merging the tip tree, today's linux-next build (x86_64 allmodconfi=
+g)
+> > produced these warnings:
+> >
+> > WARNING: modpost: EXPORT symbol "const_pcpu_hot" [vmlinux] version gene=
+ration failed, symbol will not be versioned.
+> > Is "const_pcpu_hot" prototyped in <asm/asm-prototypes.h>?
+> > WARNING: modpost: "const_pcpu_hot" [arch/x86/kernel/msr.ko] has no CRC!
+> > WARNING: modpost: "const_pcpu_hot" [arch/x86/kvm/kvm.ko] has no CRC! =20
+>=20
+> My build doesn't produce any warnings. A defconfig + enabling kvm.ko as m=
+odule:
+>=20
+> ...
+>  AR      built-in.a
+>  AR      vmlinux.a
+>  LD      vmlinux.o
+>  OBJCOPY modules.builtin.modinfo
+>  GEN     modules.builtin
+>  MODPOST Module.symvers
+>  CC      .vmlinux.export.o
+>  CC [M]  arch/x86/kvm/kvm.mod.o
+>  CC [M]  fs/efivarfs/efivarfs.mod.o
+> ...
+>=20
+> Does the attached patch help? Or is there anything else I should do to
+> trigger the above problem?
 
-Should this field be just IMPDEF or IMPDEF_TRAP_EL3 sounds better ?
+The patch does not help.  I am just doing an X86_64 allmodconfig build
+with CONFIG_WERROR=3Dn. gcc is
 
-> 
->> +SysregFields	BRBCR_ELx
->> +Res0	63:24
->> +Field	23 	EXCEPTION
->> +Field	22 	ERTN
->> +Res0	21:9
-> 
-> DDI0601 2023-09 defines bit 9 as FZPSS.
+$ x86_64-linux-gnu-gcc --version
+x86_64-linux-gnu-gcc (Debian 13.2.0-2) 13.2.0
 
-Sure, will update.
+This is a cross build with a ppc64le host.
 
-> 
->> +Sysreg	BRBINFINJ_EL1	2	1	9	1	0
-> 
->> +Enum	13:8		TYPE
->> +	0b000000	UNCOND_DIRECT
->> +	0b000001	INDIRECT
->> +	0b000010	DIRECT_LINK
->> +	0b000011	INDIRECT_LINK
->> +	0b000101	RET
->> +	0b000111	ERET
->> +	0b001000	COND_DIRECT
->> +	0b100001	DEBUG_HALT
->> +	0b100010	CALL
->> +	0b100011	TRAP
->> +	0b100100	SERROR
->> +	0b100110	INSN_DEBUG
->> +	0b100111	DATA_DEBUG
->> +	0b101010	ALIGN_FAULT
->> +	0b101011	INSN_FAULT
->> +	0b101100	DATA_FAULT
->> +	0b101110	IRQ
->> +	0b101111	FIQ
->> +	0b111001	DEBUG_EXIT
->> +EndEnum
-> 
-> DDI0601 2023-09 also defines 0b11000 as IMPLEMENTATION DEFINED exception
-> to EL3.
+--=20
+Cheers,
+Stephen Rothwell
 
-Should this field be just IMPDEF or IMPDEF_TRAP_EL3 sounds better ?
+--Sig_/Dg2jyPmbbaRHaFvwrb0cc6+
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Seems like BRBINFx_EL1 could be used for defining BRBINFINJ_EL1 as well.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVtUKcACgkQAVBC80lX
+0GyX5Qf+IJQio0mJpBjKa1FbCKwrDuxIAft+twott7IlJiGqoa7e2KjWcL1FtE1f
+FBjcAduG4o77sbjveubm/ygUQVYurLOYr5DgGRV76oEaw2BjAFGzyJV2610ukcz6
+nW108H/suWcSe9Scc6lG80eI6Rl4f5qXqHzNNYcsK2YXBMXvrVPKWVVwXbHStGe9
+tjvPjOnSJ6nv7m8fLuK0AyXwWJ9EgZgYSTcbUyqVvs57VWeQvipPeuUMkYGhauBq
+aElTkGciwGlqtGYMxMxCl2p3YoSY+E3lDJV+ExSG7jAsV4+maQejikyqCKbHG1qe
+V8ZPsglm0Yk7E86ich+vIA/6Ra8B2Q==
+=GxVn
+-----END PGP SIGNATURE-----
+
+--Sig_/Dg2jyPmbbaRHaFvwrb0cc6+--
