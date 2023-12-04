@@ -2,144 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BB480350A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6479980350B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233911AbjLDNfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:35:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
+        id S233916AbjLDNgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:36:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234041AbjLDNfk (ORCPT
+        with ESMTP id S233683AbjLDNgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:35:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF69DFF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:35:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701696945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rPLjkMKhb/yN6uza/CZonJukPPzHmDUsgYusJt0FzJI=;
-        b=OgTu38yHGzJm7mLQ0ToJUQ2qFTBGbL493Mati9774n2Iz+LsZT9qC0RB4VUVfOPmIoYXrk
-        3xzWCcVdXJeXtzhzsrtHOaa9USgHufyFP+yPP2NQWZ8eON7HQKiFbED0u3YLZz7r+MF5lv
-        JjTCx+Flqc1D2MImKMsRz/J8WjYQvfQ=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-282-15jMGRiJMdWVnIBXOZbIZA-1; Mon, 04 Dec 2023 08:35:44 -0500
-X-MC-Unique: 15jMGRiJMdWVnIBXOZbIZA-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4083717431eso31823935e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 05:35:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701696943; x=1702301743;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rPLjkMKhb/yN6uza/CZonJukPPzHmDUsgYusJt0FzJI=;
-        b=B1jpCrkRTd310riQiuc2tR1PkTL4jyKje0QmXIYfx3zAnNq+rjEN4C7F6C1vB5ROVK
-         GvL7e7voj6+CMOFgodVOdldaOJ5cE4mXWlvqG6dsmMPt3whTsjVmbqPYliLhGQQf89R5
-         XApfx1uXXNnVbZRSMxYF8WeBpfiK+zjkcszGeIEL860w0Ui0+GtORmBT+JBSNCECwjGX
-         kFujvoHyNZWIhIrlphgfagDP713h00Renk06RS2fHb9RqFJGa4fYOdmsxdcyb5FCnIQu
-         DfFJyriXpjT3h94o+1flhvs9rpkqO35qq6GPhugDoU4dsC8mtusnrML4WkSc8tKHxuhz
-         bwrQ==
-X-Gm-Message-State: AOJu0Yz9cw2t3X/LaGevdpH/FvmMSOc+FG35yZnYob2drH1Acp4H9g0E
-        aRqm2soi04wseTLuQ5O/D8/joj1oCEaNOleyG/TS0TwVlAWKV5vx2DpRwNQFN+QqtPEK6QdiKgo
-        8oaL/fEAlZ5el4ekGbp8dSM44
-X-Received: by 2002:a05:600c:5249:b0:40b:4812:22e2 with SMTP id fc9-20020a05600c524900b0040b481222e2mr3037647wmb.11.1701696943435;
-        Mon, 04 Dec 2023 05:35:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGDp2grvGqA7ydmNhVKG2SPd8szY8OykiJCR53YNzSTxnrJyMz3Bw/UJ5gx/+EYILIKlV3bSQ==
-X-Received: by 2002:a05:600c:5249:b0:40b:4812:22e2 with SMTP id fc9-20020a05600c524900b0040b481222e2mr3037640wmb.11.1701696943098;
-        Mon, 04 Dec 2023 05:35:43 -0800 (PST)
-Received: from redhat.com ([2.55.57.48])
-        by smtp.gmail.com with ESMTPSA id r12-20020a05600c458c00b0040b4b66110csm15028901wmo.22.2023.12.04.05.35.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 05:35:42 -0800 (PST)
-Date:   Mon, 4 Dec 2023 08:35:39 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Steven Sistare <steven.sistare@oracle.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        Eli Cohen <elic@nvidia.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Dragos Tatulea <dtatulea@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>
-Subject: Re: [PATCH V3] vdpa/mlx5: preserve CVQ vringh index
-Message-ID: <20231204083524-mutt-send-email-mst@kernel.org>
-References: <1699014387-194368-1-git-send-email-steven.sistare@oracle.com>
- <22981f62-5c57-41c4-8ed2-a11b7b93d062@oracle.com>
+        Mon, 4 Dec 2023 08:36:11 -0500
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF92EDF;
+        Mon,  4 Dec 2023 05:36:17 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1EABB5809B6;
+        Mon,  4 Dec 2023 08:36:17 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 04 Dec 2023 08:36:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1701696977; x=1701704177; bh=p7D+Xo7sPEhZfUDgxFaHhcvI5/bJ/iLJpT6
+        NsvxsYAY=; b=IZGCjp5+KhZHYP9OKsgoOTX1yVwwhMfz0Ru/FpC/dhIWHyccv21
+        xA0VVCYUSMQc5j97Gl/y2//YuV9ukG8cOnYnyyfOO/XyQ0EWdKuJ2/OikOCxLeUT
+        CFf3WiSdjNC+QvBWRD+9JUw/xMDNVhG9CxceOnEpzPCCi7L6XxHT3DSsfFOLLGAS
+        Z+SzyaITptKsIY+avthMJbnND3lS99R+CmmAIgvP2vfdZ1CzSyWaohyx3BERlL1q
+        54/vE725FufSZ6+ZLnLJcfnanLvaV224Zw2z5MpD5wKQAL5sbrjeY+BVGFXn/zTd
+        OEoUpQzMIREsaNiGt2rlVJUeN1Dx+mwhNaw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701696977; x=1701704177; bh=p7D+Xo7sPEhZfUDgxFaHhcvI5/bJ/iLJpT6
+        NsvxsYAY=; b=UvYgSbRfNSyVnc26zENUs39xAWEyRCnlO9+zMXCzIYBQJ/hkiJ9
+        hjzl4n3E6oiF/tbMteud8wxzDaP/z7gapO233sMAROkhmlPSoNIDsQN69HAUFUXM
+        r+d1IfDGbljeGLX0cvRrV0H3JnU1ji6dr8HkyDppTo82iqkJ0l7Q2N++36AIDvxN
+        je8iG+9ehO8KDvrs6ZPwHaai8zeyR1yD9Gq0rR1NPqfb6Ex461GCdmhj/iTLurdw
+        jE68mZqXTYnepCof2kGvMoDLJhirYglTiUc9LNqwKD2JlSlpialeF2FhmXaLx8HY
+        oCCzcuIvlGYeS1PEmFkCfy05/U+dT4CUjSA==
+X-ME-Sender: <xms:z9VtZQfirqF0BYj9BKCVd3PrUlw1DQu1Dqi5twx6J-wB9aFxaoXjlA>
+    <xme:z9VtZSOj8q5qsj1eeYeAhWpALGtcnKupgPwlblhMsELbHFIp003bp5EskuBfpkyvK
+    o-jkWGswG18787eNC0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejiedgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:z9VtZRhAhTEk4JVJMD3hEyszHXVjeKNeo_VcmNjhtmaPtLUucxEp_w>
+    <xmx:z9VtZV9GVfh7x_cvFFj6_9Po413Qhkwgz6cgodOTqKmDTJdTYT48fw>
+    <xmx:z9VtZcsUYNccizBRD4fwF3Y9xoHrZSeu8c4hmzBHscluk2bC8fRiZw>
+    <xmx:0dVtZZvgLsdcjOnykmLqVZFDB5FLcE5rnMnEcbgmqLKpA4GhhWlxPw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7849CB60089; Mon,  4 Dec 2023 08:36:15 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <22981f62-5c57-41c4-8ed2-a11b7b93d062@oracle.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <d20acea3-34fe-4c36-bfe2-323ece39db66@app.fastmail.com>
+In-Reply-To: <20231204123834.29247-2-pstanner@redhat.com>
+References: <20231204123834.29247-1-pstanner@redhat.com>
+ <20231204123834.29247-2-pstanner@redhat.com>
+Date:   Mon, 04 Dec 2023 14:35:55 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Philipp Stanner" <pstanner@redhat.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Hanjun Guo" <guohanjun@huawei.com>, "Neil Brown" <neilb@suse.de>,
+        "Kent Overstreet" <kent.overstreet@gmail.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
+        "John Sanpe" <sanpeqf@gmail.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        "David Gow" <davidgow@google.com>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "Shuah Khan" <skhan@linuxfoundation.org>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        "Yury Norov" <yury.norov@gmail.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Ben Dooks" <ben.dooks@codethink.co.uk>,
+        "Danilo Krummrich" <dakr@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>, stable@vger.kernel.org,
+        "Arnd Bergmann" <arnd@kernel.org>
+Subject: Re: [PATCH v3 1/5] lib/pci_iomap.c: fix cleanup bugs in pci_iounmap()
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's in my tee and I'm sending it to Linus.
+On Mon, Dec 4, 2023, at 13:38, Philipp Stanner wrote:
+> pci_iounmap() in lib/pci_iomap.c is supposed to check whether an addre=
+ss
+> is within ioport-range IF the config specifies that ioports exist. If
+> so, the port should be unmapped with ioport_unmap(). If not, it's a
+> generic MMIO address that has to be passed to iounmap().
+>
+> The bugs are:
+>   1. ioport_unmap() is missing entirely, so this function will never
+>      actually unmap a port.
+>   2. the #ifdef for the ioport-ranges accidentally also guards
+>      iounmap(), potentially compiling an empty function. This would
+>      cause the mapping to be leaked.
+>
+> Implement the missing call to ioport_unmap().
+>
+> Move the guard so that iounmap() will always be part of the function.
+>
+> CC: <stable@vger.kernel.org> # v5.15+
+> Fixes: 316e8d79a095 ("pci_iounmap'2: Electric Boogaloo: try to make=20
+> sense of it all")
+> Reported-by: Danilo Krummrich <dakr@redhat.com>
+> Suggested-by: Arnd Bergmann <arnd@kernel.org>
+> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+> ---
+> In case someone wants to look into that and provide patches for kernels
+> older than v5.15:
+> Note that this patch only applies to v5.15+ =E2=80=93 the leaks, howev=
+er, are
+> older. I went through the log briefly and it seems f5810e5c32923 alrea=
+dy
+> contains them in asm-generic/io.h.
 
-On Mon, Dec 04, 2023 at 08:33:22AM -0500, Steven Sistare wrote:
-> What's the decision here, pull it, or do not fix it?
-> 
-> - Steve
-> 
-> On 11/3/2023 8:26 AM, Steve Sistare wrote:
-> > mlx5_vdpa does not preserve userland's view of vring base for the control
-> > queue in the following sequence:
-> > 
-> > ioctl VHOST_SET_VRING_BASE
-> > ioctl VHOST_VDPA_SET_STATUS VIRTIO_CONFIG_S_DRIVER_OK
-> >   mlx5_vdpa_set_status()
-> >     setup_cvq_vring()
-> >       vringh_init_iotlb()
-> >         vringh_init_kern()
-> >           vrh->last_avail_idx = 0;
-> > ioctl VHOST_GET_VRING_BASE
-> > 
-> > To fix, restore the value of cvq->vring.last_avail_idx after calling
-> > vringh_init_iotlb.
-> > 
-> > Fixes: 5262912ef3cf ("vdpa/mlx5: Add support for control VQ and MAC setting")
-> > 
-> > Signed-off-by: Steve Sistare <steven.sistare@oracle.com>
-> > Acked-by: Eugenio Pérez <eperezma@redhat.com>
-> > Acked-by: Jason Wang <jasowang@redhat.com>
-> > ---
-> >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > index 946488b8989f..ca972af3c89a 100644
-> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > @@ -2795,13 +2795,18 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *mvdev)
-> >  	struct mlx5_control_vq *cvq = &mvdev->cvq;
-> >  	int err = 0;
-> >  
-> > -	if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-> > +	if (mvdev->actual_features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ)) {
-> > +		u16 idx = cvq->vring.last_avail_idx;
-> > +
-> >  		err = vringh_init_iotlb(&cvq->vring, mvdev->actual_features,
-> >  					MLX5_CVQ_MAX_ENT, false,
-> >  					(struct vring_desc *)(uintptr_t)cvq->desc_addr,
-> >  					(struct vring_avail *)(uintptr_t)cvq->driver_addr,
-> >  					(struct vring_used *)(uintptr_t)cvq->device_addr);
-> >  
-> > +		if (!err)
-> > +			cvq->vring.last_avail_idx = cvq->vring.last_used_idx = idx;
-> > +	}
-> >  	return err;
-> >  }
-> >  
-
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
