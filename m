@@ -2,247 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66236802E3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB901802E14
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234879AbjLDInI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51790 "EHLO
+        id S234871AbjLDIn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:43:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234871AbjLDImn (ORCPT
+        with ESMTP id S234940AbjLDInH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:42:43 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA5710E7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:42:41 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d076ebf79cso3905745ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 00:42:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701679361; x=1702284161; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jy3wE8QoVFuCdeDjxGiH3OX0Xt5eOjHqlvzeLRn8ddk=;
-        b=Wd0Z6rGNjRc9b4hUcNXqx9IQ++ziTaJhH8JU1uXF8xegGMMzg+InCmkYSuq6SM0Uzv
-         DNuCUWuFXuCDE2/bCzHmks5zfxZfrF5hxwtJidrknHE/7pEMsJ9qnJH9psyEmpEsGKHf
-         a4jYNBvBRRS72MiI6hvF9N1wr0jfXjf+1tTHQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701679361; x=1702284161;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jy3wE8QoVFuCdeDjxGiH3OX0Xt5eOjHqlvzeLRn8ddk=;
-        b=EJ23k2dFhNGh/doKkjtv+1616Zmeai/L4AQg89/7HSyZJ4ajKWpGwOn+DLigsPqg9n
-         nEHvRuEI27/35BGzZlom8v3FSceEH3l9ofcMYF8BGYIJxV03EQbjlwQpe4BGhc1W8CM3
-         htpAvJyGh7FsdcQEJVLEEwbo4KdO0pNyLhrft2kxpeyd18OhZoS/UKU2+baszXHkMHKj
-         /OdYV4t033iI59x6BOy3KjA7D2CSBlZ2BhnVaTp2VB4DdxkM+8x522K+Sw+8aj9gbYcq
-         oUQH2wW/I8T2yK9Y/kevzQw9OtxlhepIZbUUYuOWac+k1jn7Xfsub4XXP9AUg3NiTCwU
-         5DDA==
-X-Gm-Message-State: AOJu0YziCeplh/yV6op3VyMp/HcbVedDgbvWmtvBPIvoPyPI2z4hDKgZ
-        Jlwf4/CKimfzX2Gljh95qKKxUw==
-X-Google-Smtp-Source: AGHT+IEPGBPJ8kYyNF14VJdYMjPUal8vsvhVNFDhDwyTws8/JnGl7oITwY5R9dTBjQ+Tb0w+uP12tA==
-X-Received: by 2002:a17:903:1104:b0:1d0:8876:7082 with SMTP id n4-20020a170903110400b001d088767082mr961866plh.72.1701679360934;
-        Mon, 04 Dec 2023 00:42:40 -0800 (PST)
-Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:6084:72e2:9ac2:f115])
-        by smtp.gmail.com with ESMTPSA id p14-20020a1709028a8e00b001cfc3f73927sm7871795plo.9.2023.12.04.00.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 00:42:40 -0800 (PST)
-From:   Chen-Yu Tsai <wenst@chromium.org>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v3 9/9] arm64: dts: mediatek: Add MT8186 Magneton Chromebooks
-Date:   Mon,  4 Dec 2023 16:40:11 +0800
-Message-ID: <20231204084012.2281292-10-wenst@chromium.org>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-In-Reply-To: <20231204084012.2281292-1-wenst@chromium.org>
-References: <20231204084012.2281292-1-wenst@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 4 Dec 2023 03:43:07 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9E6173E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:42:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75A2BC433C8;
+        Mon,  4 Dec 2023 08:42:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701679370;
+        bh=2hI21E5d7yISQiEU7qyNrku3/qKcokHOmhNwgh0+Zzk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=J0JS+DS0T/xYERSJvf7SVSu3t8FBddNgtC8ZdvbhLYQGdcePXwU5pma2oVAZQuGNN
+         YB0JTppJ0yo50otMkg0tCS+dofexu50Gu4WLrsnNhvRgxDNCFztSRrG3IrU4me8GPb
+         EWRKQR9pukbBtu1lwKtj/u0i1vxVjMgf6QDqwXK8w0xxFhhixUmNHUZ4gnLkznt1ny
+         R8xed3hXpLbYtFXyh95K7BEefzRIeheVXR/3Y24tPLoc44+ODZSFQ84Y1f4Py3rpb3
+         x/EGmonseney/DAi0d4AN1VZhJLSeyM01YksyRDpYa0bHpvY4VPc3P/ZlGCdInfC/c
+         U5urf+24tTnzQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rA4XP-001962-VH;
+        Mon, 04 Dec 2023 08:42:48 +0000
+Date:   Mon, 04 Dec 2023 08:42:47 +0000
+Message-ID: <86ttoybbp4.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        Mark Brown <broonie@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
+Subject: Re: [PATCH V15 5/8] KVM: arm64: nvhe: Disable branch generation in nVHE guests
+In-Reply-To: <20231201053906.1261704-6-anshuman.khandual@arm.com>
+References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
+        <20231201053906.1261704-6-anshuman.khandual@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, broonie@kernel.org, james.clark@arm.com, robh@kernel.org, suzuki.poulose@arm.com, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, linux-perf-users@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add entries for the MT8186 based Chromebooks, also collectively known
-as the Lenovo IdeaPad Slim 3 Chromebook (14M868). It is also based on
-the "Steelix" design. Being a laptop instead of a convertible device,
-there is no stylus, which is similar to Rusty. However Magneton does
-not have ports on the right side of the device.
+On Fri, 01 Dec 2023 05:39:03 +0000,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+> 
+> Disable the BRBE before we enter the guest, saving the status and enable it
+> back once we get out of the guest. This is just to avoid capturing records
+> in the guest kernel/userspace, which would be confusing the samples.
 
-Three variants are listed separately. These use different touchscreen
-controllers, or lack a touchscreen altogether.
+Why does it have to be limited to non-VHE? What protects host EL0
+records from guest's EL0 execution when the host is VHE?
 
-Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
----
-Changes since v2:
-- Picked up Conor's ack
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Oliver Upton <oliver.upton@linux.dev>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: kvmarm@lists.linux.dev
+> Cc: linux-arm-kernel@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Changes in V15:
+> 
+> - Dropped runtime BRBE enable for setting DEBUG_STATE_SAVE_BRBE
+> - Dropped BRBFCR_EL1 from __debug_save_brbe()/__debug_restore_brbe()
+> - Always save the live SYS_BRBCR_EL1 in host context and then check if
+>   BRBE was enabled before resetting SYS_BRBCR_EL1 for the host
+> 
+>  arch/arm64/include/asm/kvm_host.h  |  4 ++++
+>  arch/arm64/kvm/debug.c             |  5 +++++
+>  arch/arm64/kvm/hyp/nvhe/debug-sr.c | 33 ++++++++++++++++++++++++++++++
+>  3 files changed, 42 insertions(+)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 68421c74283a..1faa0430d8dd 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -449,6 +449,8 @@ enum vcpu_sysreg {
+>  	CNTHV_CVAL_EL2,
+>  	PMSCR_EL1,	/* Statistical profiling extension */
+>  	TRFCR_EL1,	/* Self-hosted trace filters */
+> +	BRBCR_EL1,	/* Branch Record Buffer Control Register */
+> +	BRBFCR_EL1,	/* Branch Record Buffer Function Control Register */
 
-Changes since v1:
-- Reorder SKU numbers in descending order.
-- Mark missing components as disabled instead of deleting the node
-- Switched to interrupts-extended in touchscreen nodes
-- Dropped reset-gpios from touchscreen nodes
-- Drop status = "okay", which is the default
+Whose state is this? If this is limited to the host, it has no purpose
+in this enum. Once you add guest support, then it will make sense.
 
- arch/arm64/boot/dts/mediatek/Makefile         |  3 ++
- .../mt8186-corsola-magneton-sku393216.dts     | 39 +++++++++++++++++++
- .../mt8186-corsola-magneton-sku393217.dts     | 39 +++++++++++++++++++
- .../mt8186-corsola-magneton-sku393218.dts     | 26 +++++++++++++
- 4 files changed, 107 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts
+>
+>  	NR_SYS_REGS	/* Nothing after this line! */
+>  };
+> @@ -753,6 +755,8 @@ struct kvm_vcpu_arch {
+>  #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
+>  /* Save trace filter controls */
+>  #define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
+> +/* Save BRBE context if active  */
+> +#define DEBUG_STATE_SAVE_BRBE	__vcpu_single_flag(iflags, BIT(9))
+>  
+>  /* SVE enabled for host EL0 */
+>  #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
+> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+> index 2ab41b954512..fa46a70a9503 100644
+> --- a/arch/arm64/kvm/debug.c
+> +++ b/arch/arm64/kvm/debug.c
+> @@ -354,6 +354,10 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
+>  		    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
+>  			vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+>  	}
+> +
+> +	/* Check if we have BRBE implemented and available at the host */
+> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT))
+> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_BRBE);
+>  }
+>  
+>  void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
+> @@ -361,6 +365,7 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+> +	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_BRBE);
+>  }
+>  
+>  void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
+> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> index 6174f710948e..1994fc48b57c 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> @@ -93,6 +93,33 @@ static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt,
+>  		write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
+>  }
+>  
+> +static void __debug_save_brbe(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	ctxt_sys_reg(host_ctxt, BRBCR_EL1) = read_sysreg_s(SYS_BRBCR_EL1);
+> +
+> +	/* Check if the BRBE is enabled */
+> +	if (!(ctxt_sys_reg(host_ctxt, BRBCR_EL1) & (BRBCR_ELx_E0BRE | BRBCR_ELx_ExBRE)))
+> +		return;
 
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 6b05f1f2e645..7e365e9516ab 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -43,6 +43,9 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-kodama-sku32.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-pumpkin.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-magneton-sku393216.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-magneton-sku393217.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-magneton-sku393218.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-rusty-sku196608.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-steelix-sku131072.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8186-corsola-steelix-sku131073.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts
-new file mode 100644
-index 000000000000..c9673381ad3b
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393216.dts
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2022 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8186-corsola-steelix.dtsi"
-+
-+/ {
-+	model = "Google Magneton board";
-+	compatible = "google,steelix-sku393219", "google,steelix-sku393216",
-+		     "google,steelix", "mediatek,mt8186";
-+	chassis-type = "laptop";
-+};
-+
-+&gpio_keys {
-+	status = "disabled";
-+};
-+
-+&i2c1 {
-+	touchscreen@10 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x10>;
-+		interrupts-extended = <&pio 12 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&touchscreen_pins>;
-+		vdd-supply = <&pp3300_s3>;
-+		post-power-on-delay-ms = <350>;
-+		hid-descr-addr = <0x0001>;
-+	};
-+};
-+
-+&touchscreen {
-+	status = "disabled";
-+};
-+
-+&usb_c1 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts
-new file mode 100644
-index 000000000000..28e3bbe56421
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393217.dts
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2022 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8186-corsola-steelix.dtsi"
-+
-+/ {
-+	model = "Google Magneton board";
-+	compatible = "google,steelix-sku393220", "google,steelix-sku393217",
-+		     "google,steelix", "mediatek,mt8186";
-+	chassis-type = "laptop";
-+};
-+
-+&gpio_keys {
-+	status = "disabled";
-+};
-+
-+&i2c1 {
-+	touchscreen@40 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x40>;
-+		interrupts-extended = <&pio 12 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&touchscreen_pins>;
-+		vdd-supply = <&pp3300_s3>;
-+		post-power-on-delay-ms = <450>;
-+		hid-descr-addr = <0x0001>;
-+	};
-+};
-+
-+&touchscreen {
-+	status = "disabled";
-+};
-+
-+&usb_c1 {
-+	status = "disabled";
-+};
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts
-new file mode 100644
-index 000000000000..332894218f07
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola-magneton-sku393218.dts
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2022 Google LLC
-+ */
-+
-+/dts-v1/;
-+#include "mt8186-corsola-steelix.dtsi"
-+
-+/ {
-+	model = "Google Magneton board";
-+	compatible = "google,steelix-sku393221", "google,steelix-sku393218",
-+		     "google,steelix", "mediatek,mt8186";
-+	chassis-type = "laptop";
-+};
-+
-+&gpio_keys {
-+	status = "disabled";
-+};
-+
-+&touchscreen {
-+	status = "disabled";
-+};
-+
-+&usb_c1 {
-+	status = "disabled";
-+};
+Why save BRBCR_EL1 if there is nothing enabled? It isn't like it can
+change behind your back, can it?
+
+> +
+> +	/*
+> +	 * Prohibit branch record generation while we are in guest.
+> +	 * Since access to BRBCR_EL1 is trapped, the guest can't
+> +	 * modify the filtering set by the host.
+> +	 */
+> +	write_sysreg_s(0, SYS_BRBCR_EL1);
+> +	isb();
+
+What is the point of this ISB? We're at EL2, and this only affects
+EL1.
+
+> +}
+> +
+> +static void __debug_restore_brbe(struct kvm_cpu_context *host_ctxt)
+> +{
+> +	if (!ctxt_sys_reg(host_ctxt, BRBCR_EL1))
+> +		return;
+
+So on one side you're using a flag, and on the other you're using the
+*value*. You need some consistency.
+
+> +
+> +	/* Restore BRBE controls */
+> +	write_sysreg_s(ctxt_sys_reg(host_ctxt, BRBCR_EL1), SYS_BRBCR_EL1);
+> +	isb();
+
+Same question.
+
+> +}
+> +
+>  void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
+>  				    struct kvm_cpu_context *guest_ctxt)
+>  {
+> @@ -102,6 +129,10 @@ void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
+>  
+>  	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
+>  		__debug_save_trace(host_ctxt, guest_ctxt);
+> +
+> +	/* Disable BRBE branch records */
+> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_BRBE))
+> +		__debug_save_brbe(host_ctxt);
+>  }
+>  
+>  void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+> @@ -116,6 +147,8 @@ void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
+>  		__debug_restore_spe(host_ctxt);
+>  	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
+>  		__debug_restore_trace(host_ctxt, guest_ctxt);
+> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_BRBE))
+> +		__debug_restore_brbe(host_ctxt);
+>  }
+>  
+>  void __debug_switch_to_host(struct kvm_vcpu *vcpu)
+
+The lifetime of this flag seems bogus, specially when there is nothing
+to do, which will always be the arch-majority of the executions.
+
+	M.
+
 -- 
-2.43.0.rc2.451.g8631bc7472-goog
-
+Without deviation from the norm, progress is not possible.
