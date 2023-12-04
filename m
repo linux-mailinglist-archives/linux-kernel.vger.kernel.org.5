@@ -2,252 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D61F38035B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9054D8035B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344890AbjLDN6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:58:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
+        id S1344337AbjLDN6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:58:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234455AbjLDN6c (ORCPT
+        with ESMTP id S229711AbjLDN6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:58:32 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523EADF;
-        Mon,  4 Dec 2023 05:58:38 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SkQHV06pQz4f3lDP;
-        Mon,  4 Dec 2023 21:58:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id A685D1A050D;
-        Mon,  4 Dec 2023 21:58:34 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgDn6xEH221loLjkCg--.26902S7;
-        Mon, 04 Dec 2023 21:58:34 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     song@kernel.org, xni@redhat.com, yukuai3@huawei.com, neilb@suse.com
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH v4 md-fixes 3/3] md: fix stopping sync thread
-Date:   Mon,  4 Dec 2023 21:57:32 +0800
-Message-Id: <20231204135732.3647886-4-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231204135732.3647886-1-yukuai1@huaweicloud.com>
-References: <20231204135732.3647886-1-yukuai1@huaweicloud.com>
+        Mon, 4 Dec 2023 08:58:09 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792A590
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:58:15 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40bd5ea84d6so11787385e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 05:58:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=foundries.io; s=google; t=1701698294; x=1702303094; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Wn71OJAsHrUsi0hi6qKz41BqzfeWUDfsnSD1MArV6Y=;
+        b=Q/1b4G9Jbcgp4blJSRV8N8/MiGLqKz6vACPg/45GSn0lbbVI7jpJ+RcXUGHTipmB2n
+         jdxZtzHvmJeBWVUqfsySdrz+pJRBloYP67Z6LdVCu8jv48nDwe8b5BczRyqhFQ8ONy8F
+         j+IwCbQVJTYJE7pCAvasUEMOUqSiO0KUYBeHSiC9vd26h/e1Ovpchy7xFJfZQEyjrUv/
+         mmRgZfck/kbiC3XyRygUxUGwXYQ4Dm6dxO04RwvaeYT8XAPfgDK7mWlFejORnMsdMXBO
+         wUnh09tf8oz9joIDKz4WorOrOIq4u2NjnW1ad3UNlQanbO7GjQyOcn0YPkRB30muTg/v
+         ylPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701698294; x=1702303094;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1Wn71OJAsHrUsi0hi6qKz41BqzfeWUDfsnSD1MArV6Y=;
+        b=TWqZZC/5npjT794v8/QLxdJO3Gk7XT/s4QjaB37sxP/ICYOA2qBM1fCzfdSwLDOAV/
+         jTWKbf/vu/aCyHzwtd+N1vi34461r04I7i8XUi/ZJbYhW9qByiPVuJZcENNYT/UhJFqh
+         EC52Dt7JVNItafJ1uQZILiHtZaoyelpKIiTv07LgTwtSM50y0MUhkqI9ZtvpKcDNQXzJ
+         maeAw6tFzwSqE1jQAHxI0W20ikGcC2tiS8I0wMBdi1cCsoBRgj5WhRl4VtNxh6evwJz+
+         +W4E87gkSqCMI7RD5Dd23ksx0mRDAkKOzJ0+1I3jGYMP29mVeyVdE+Igv6v5a2TZ+XmT
+         /49A==
+X-Gm-Message-State: AOJu0YyTCwZRg1XLGOpCYUwJyoFKQc0Jp7+6fNqX669FWvDWUSxmfOpQ
+        gATBatY+0LbkmBPrgbR+SLj2vQ==
+X-Google-Smtp-Source: AGHT+IFeAAaNKjmvQvyhXB/RWQ1dcGIG/iQq6n7LDgKtxGw4htbGbrcJ1cjYN0N4sspWHS2O6S8Peg==
+X-Received: by 2002:a05:600c:348a:b0:40b:5e26:2379 with SMTP id a10-20020a05600c348a00b0040b5e262379mr3046913wmq.42.1701698293953;
+        Mon, 04 Dec 2023 05:58:13 -0800 (PST)
+Received: from trax (139.red-79-144-198.dynamicip.rima-tde.net. [79.144.198.139])
+        by smtp.gmail.com with ESMTPSA id r11-20020a5d498b000000b0033339da02f9sm6773310wrq.110.2023.12.04.05.58.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 05:58:13 -0800 (PST)
+From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
+X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
+Date:   Mon, 4 Dec 2023 14:58:11 +0100
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "CLoehle@hyperstone.com" <CLoehle@hyperstone.com>,
+        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+        "hare@suse.de" <hare@suse.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+        "asuk4.q@gmail.com" <asuk4.q@gmail.com>,
+        "yibin.ding@unisoc.com" <yibin.ding@unisoc.com>,
+        "victor.shih@genesyslogic.com.tw" <victor.shih@genesyslogic.com.tw>,
+        "marex@denx.de" <marex@denx.de>,
+        "rafael.beims@toradex.com" <rafael.beims@toradex.com>,
+        "robimarko@gmail.com" <robimarko@gmail.com>,
+        "ricardo@foundries.io" <ricardo@foundries.io>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv2] mmc: rpmb: add quirk MMC_QUIRK_BROKEN_RPMB_RETUNE
+Message-ID: <ZW3a8xneptC6y/N8@trax>
+References: <ZWkGZ7av1S4Clwdv@trax>
+ <ZWkKgU+J9atnJdqT@trax>
+ <ZWmN+k+wUWcXT5ID@trax>
+ <fecd033b-b2ea-4906-a320-22a5c2ede46c@intel.com>
+ <ZWoBqs/5m6tCuBGo@trax>
+ <ZWoTOm+8Y75TLz6q@trax>
+ <DM6PR04MB6575FF9532A9FC0EE91B5B37FC80A@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <ZWysTPapFyGJdu5d@trax>
+ <DM6PR04MB6575F9EB1C3309F64EEE6BCCFC86A@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <DM6PR04MB6575127DFCEC4C178F7E33B7FC86A@DM6PR04MB6575.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDn6xEH221loLjkCg--.26902S7
-X-Coremail-Antispam: 1UD129KBjvJXoW3JF43Xr13GF48ZFy5tw1DKFg_yoWxJw43p3
-        yftF98Jr48ArW3ZrWUKa4DZayrZw1jqayDtry3Wa4fJw1ftr43KFyY9FyUAFykJa4Fyr45
-        ZayrJFWfZFyqgr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9m14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR04MB6575127DFCEC4C178F7E33B7FC86A@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+On 04/12/23 12:59:07, Avri Altman wrote:
+> > > We could carry the patch internally (it seems harmless after all the
+> > > testing
+> > > done) but I'd much rather land it upstream if possible.
+> > Agreed.
+> Also, I am totally fine, and maybe it's even better, with adding this as a default behavior for all vendors.
+> I see no point in those tunings while accessing rpmb anyway.
+>
 
-Currently sync thread is stopped from multiple contex:
- - idle_sync_thread
- - frozen_sync_thread
- - __md_stop_writes
- - md_set_readonly
- - do_md_stop
+I'll repost then without the quirk.
 
-And there are some problems:
-1) sync_work is flushed while reconfig_mutex is grabbed, this can
-   deadlock because the work function will grab reconfig_mutex as well.
-2) md_reap_sync_thread() can't be called directly while md_do_sync() is
-   not finished yet, for example, commit 130443d60b1b ("md: refactor
-   idle/frozen_sync_thread() to fix deadlock").
-3) If MD_RECOVERY_RUNNING is not set, there is no need to stop
-   sync_thread at all because sync_thread must not be registered.
+In fact just this morning - I was about to update -  I was able to test
+on an early board revision with a different eMMC module (at the time
+RPMB wasnt validated) which upon reflashing also exhibited the issue
 
-Factor out a helper stop_sync_thread(), so that above contex will behave
-the same. Fix 1) by flushing sync_work after reconfig_mutex is released,
-before waiting for sync_thread to be done; Fix 2) bt letting daemon thread
-to unregister sync_thread; Fix 3) by always checking MD_RECOVERY_RUNNING
-first.
+see below:
 
-Fixes: db5e653d7c9f ("md: delay choosing sync action to md_start_sync()")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/md.c | 88 +++++++++++++++++++++----------------------------
- 1 file changed, 37 insertions(+), 51 deletions(-)
+# cat /sys/class/mmc_host/mmc0/mmc0\:0001/csd
+d02700328f5903ffffffffef86400000
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 2d8e45a1af23..7fb64c0b6cc1 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -4840,25 +4840,29 @@ action_show(struct mddev *mddev, char *page)
- 	return sprintf(page, "%s\n", type);
- }
- 
--static void stop_sync_thread(struct mddev *mddev)
-+/**
-+ * stop_sync_thread() - wait for sync_thread to stop if it's running.
-+ * @mddev:	the array.
-+ * @locked:	if set, reconfig_mutex will still be held after this function
-+ *		return; if not set, reconfig_mutex will be released after this
-+ *		function return.
-+ * @check_seq:	if set, only wait for curent running sync_thread to stop, noted
-+ *		that new sync_thread can still start.
-+ */
-+static void stop_sync_thread(struct mddev *mddev, bool locked, bool check_seq)
- {
--	if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--		return;
-+	int sync_seq;
- 
--	if (mddev_lock(mddev))
--		return;
-+	if (check_seq)
-+		sync_seq = atomic_read(&mddev->sync_seq);
- 
--	/*
--	 * Check again in case MD_RECOVERY_RUNNING is cleared before lock is
--	 * held.
--	 */
- 	if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
--		mddev_unlock(mddev);
-+		if (!locked)
-+			mddev_unlock(mddev);
- 		return;
- 	}
- 
--	if (work_pending(&mddev->sync_work))
--		flush_workqueue(md_misc_wq);
-+	mddev_unlock(mddev);
- 
- 	set_bit(MD_RECOVERY_INTR, &mddev->recovery);
- 	/*
-@@ -4866,8 +4870,15 @@ static void stop_sync_thread(struct mddev *mddev)
- 	 * never happen
- 	 */
- 	md_wakeup_thread_directly(mddev->sync_thread);
-+	if (work_pending(&mddev->sync_work))
-+		flush_work(&mddev->sync_work);
- 
--	mddev_unlock(mddev);
-+	wait_event(resync_wait,
-+		   !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) ||
-+		   (check_seq && sync_seq != atomic_read(&mddev->sync_seq)));
-+
-+	if (locked)
-+		mddev_lock_nointr(mddev);
- }
- 
- static void idle_sync_thread(struct mddev *mddev)
-@@ -4876,11 +4887,13 @@ static void idle_sync_thread(struct mddev *mddev)
- 
- 	mutex_lock(&mddev->sync_mutex);
- 	clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--	stop_sync_thread(mddev);
- 
--	wait_event(resync_wait, sync_seq != atomic_read(&mddev->sync_seq) ||
--			!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
-+	if (mddev_lock(mddev)) {
-+		mutex_unlock(&mddev->sync_mutex);
-+		return;
-+	}
- 
-+	stop_sync_thread(mddev, false, true);
- 	mutex_unlock(&mddev->sync_mutex);
- }
- 
-@@ -4888,11 +4901,13 @@ static void frozen_sync_thread(struct mddev *mddev)
- {
- 	mutex_lock(&mddev->sync_mutex);
- 	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--	stop_sync_thread(mddev);
- 
--	wait_event(resync_wait, mddev->sync_thread == NULL &&
--			!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
-+	if (mddev_lock(mddev)) {
-+		mutex_unlock(&mddev->sync_mutex);
-+		return;
-+	}
- 
-+	stop_sync_thread(mddev, false, false);
- 	mutex_unlock(&mddev->sync_mutex);
- }
- 
-@@ -6264,14 +6279,7 @@ static void md_clean(struct mddev *mddev)
- 
- static void __md_stop_writes(struct mddev *mddev)
- {
--	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--	if (work_pending(&mddev->sync_work))
--		flush_workqueue(md_misc_wq);
--	if (mddev->sync_thread) {
--		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
--		md_reap_sync_thread(mddev);
--	}
--
-+	stop_sync_thread(mddev, true, false);
- 	del_timer_sync(&mddev->safemode_timer);
- 
- 	if (mddev->pers && mddev->pers->quiesce) {
-@@ -6363,18 +6371,8 @@ static int md_set_readonly(struct mddev *mddev, struct block_device *bdev)
- 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		md_wakeup_thread(mddev->thread);
- 	}
--	if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
--
--	/*
--	 * Thread might be blocked waiting for metadata update which will now
--	 * never happen
--	 */
--	md_wakeup_thread_directly(mddev->sync_thread);
- 
--	mddev_unlock(mddev);
--	wait_event(resync_wait, !test_bit(MD_RECOVERY_RUNNING,
--					  &mddev->recovery));
-+	stop_sync_thread(mddev, false, false);
- 	wait_event(mddev->sb_wait,
- 		   !test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags));
- 	mddev_lock_nointr(mddev);
-@@ -6428,20 +6426,8 @@ static int do_md_stop(struct mddev *mddev, int mode,
- 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		md_wakeup_thread(mddev->thread);
- 	}
--	if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
- 
--	/*
--	 * Thread might be blocked waiting for metadata update which will now
--	 * never happen
--	 */
--	md_wakeup_thread_directly(mddev->sync_thread);
--
--	mddev_unlock(mddev);
--	wait_event(resync_wait, (mddev->sync_thread == NULL &&
--				 !test_bit(MD_RECOVERY_RUNNING,
--					   &mddev->recovery)));
--	mddev_lock_nointr(mddev);
-+	stop_sync_thread(mddev, true, false);
- 
- 	mutex_lock(&mddev->open_mutex);
- 	if ((mddev->pers && atomic_read(&mddev->openers) > !!bdev) ||
--- 
-2.39.2
+# cat /sys/class/mmc_host/mmc0/mmc0\:0001/name
+064GB2
 
+[  218.759036] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
+E/TC:? 0
+E/TC:? 0 TA panicked with code 0xffff0000
+E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
+E/LD:   arch: aarch64
+E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
+E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
+E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
+E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
+E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
+E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
+E/LD:  region  6: va 0xc0019000 pa 0x80dc4e298 size 0x002000 flags rw-- (param)
+E/LD:  region  7: va 0xc001b000 pa 0x80dd1c298 size 0x001000 flags rw-- (param)
+E/LD:  region  8: va 0xc0091000 pa 0x00001000 size 0x014000 flags r-xs [0]
+E/LD:  region  9: va 0xc00a5000 pa 0x00015000 size 0x008000 flags rw-s [0]
+E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc0091000
+E/LD:  Call stack:
+E/LD:   0xc0093a14
+E/LD:   0xc009131c
+E/LD:   0xc0094d40
+E/LD:   0xc0091624
+Read persistent value for bootupgrade_available failed: Exec format error
+Cant print the environment
+Error: fiovb_printenv command failed. Exiting.
+
+> Thanks,
+> Avri
+>
+> >
+> > Thanks,
+> > Avri
+> > >
+> > > >
+> > > > Thanks a lot for fixing this,
+> > > > Avri
+> > >
+> > > thanks everyone for the support.
+> > >
+> > > >
+> > > > (btw - yes - our manufacturer id is 0x45 - it is set differently in
+> > > > the mmc driver for historic reasons - Thank you for adding this.)
+> > > >
+> > > > >
+> > > > >
+> > > > > >
+> > > > > > >
+> > > > >
+> > > >
