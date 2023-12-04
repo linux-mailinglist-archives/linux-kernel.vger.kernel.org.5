@@ -2,100 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BA9803BCB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F33E803BCC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235529AbjLDRhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:37:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
+        id S231133AbjLDRjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:39:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234963AbjLDRhL (ORCPT
+        with ESMTP id S229513AbjLDRjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:37:11 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DEE192
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:36:40 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c09f5a7cfso16336715e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:36:40 -0800 (PST)
+        Mon, 4 Dec 2023 12:39:02 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4012E1;
+        Mon,  4 Dec 2023 09:39:06 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a1b7b6bf098so189220166b.1;
+        Mon, 04 Dec 2023 09:39:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701711399; x=1702316199; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZrH3TZ7rDJNZ1i1xkHsBwxvyHvELnk0ZpD7/x/oBw9Y=;
-        b=YdhkMhoGN1X3whSpOe/FsavSLt1BL7ZAEYCFyXKBvy4xL5/wMbF8Xnf94cxkpGUkj2
-         hevO8KVvQAQQ7OhmH8LXHaVun8jHAuVHf59P+DgXeKFIX0O4SbKO5jsdRVVHdOG33pC9
-         wYQCXLZdAwOymvJYoJHKUnY+ezt0dzK5VwZLhJtQrqjf8T1eEoAkg73GgeU1L0MPrJVM
-         0EbPytgwOIie/vgvAllONoh6HFJHDGTLfl0vRM5kJzLSLIh1GNKA4A4tFN8EhA7Daxgv
-         VKrEhBOR8YwrzC4DxUgrRMQM2KvfLaLPuEyYxpbter4gSn+SlXPDIF271bqFI/QQ5X0O
-         ClZg==
+        d=gmail.com; s=20230601; t=1701711545; x=1702316345; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RDbV8KEqo360AWt22zz09PqUE/cssUErxHrowGLoINk=;
+        b=hSA/3hnuwexjtdAnqzY9VgmYJ15X7WehPSXeJnGgERxDw29GpS2/TkaL8FFkQVJx/R
+         TyZHHI8gj2Xzw2f/deynAThNP4WB3adfwcuodv0ChQOX60YNhWaDvaFbt9pdvdfvnsWs
+         FOYH79uyAzQyFCfcjM4rXZBSC1CA3SYjnzcm8fSbl7y7xBCpaNPHRe50BPGMFc/tp3d3
+         kfTSBH733h8DLmZ7jLZNJ9jWYZHhUy6TD8/AnR7qbCT82sCtaWUW3gt3vvnSSDkwHi0N
+         WegBaiKcfpJB5qM9Tlq27t0MBb+A/dvbRt70RkZkH/SwU9zLgw+fwIYXPZ+gdUMROT2P
+         W0wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701711399; x=1702316199;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZrH3TZ7rDJNZ1i1xkHsBwxvyHvELnk0ZpD7/x/oBw9Y=;
-        b=vwqzyLQkjKar6VfF3wRACp2sylFfyRaP2ZI49sdnbc95OS1gGVcQIkEcAMTzHs3IHU
-         H2qw4MTfs7DL2nrvWG2uiI3n8rzEjluAdE1ZINBhN20TJ/SPpg9e64IY7mYa36H63vnH
-         n2bnWjZQGT2MhUBYkj8muxAWyAhqVdeWhqJ2pVkGHMhL8AmwwpAT8StaxXtCd+M4LO0e
-         itHl8RkXy5OzDv4GZWEVR3V1LVmLjQS7AcKJxY7qo3Bd4dIskojPrQEyRpHCGkTr0V0X
-         XV2V16ZtZPsM7vGKFadXjNpVAHYSSCAtSCrHI4k78jENr3WgnsI0cL0B+OaGgpi8CdIC
-         Pp6A==
-X-Gm-Message-State: AOJu0Yxcz4gUt9AJGrzP0hTfTCcvQCFeVByzYPcTlwq/kcjEQYBKcY1S
-        5TgdaOFkJO1xEl69WsHhQrlwjw==
-X-Google-Smtp-Source: AGHT+IHdnEyw7hSWzDnQ6Cq7koICvW6bO2UEREv9+4lNfMkR8SUMavgu503H0yzMUvZMLsKT14gfLg==
-X-Received: by 2002:a05:600c:3115:b0:40b:5e21:ec0e with SMTP id g21-20020a05600c311500b0040b5e21ec0emr2430132wmo.64.1701711399381;
-        Mon, 04 Dec 2023 09:36:39 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c831:1e47:2:5b96? ([2a05:6e02:1041:c10:c831:1e47:2:5b96])
-        by smtp.googlemail.com with ESMTPSA id l27-20020a05600c1d1b00b003feae747ff2sm19560106wms.35.2023.12.04.09.36.38
+        d=1e100.net; s=20230601; t=1701711545; x=1702316345;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RDbV8KEqo360AWt22zz09PqUE/cssUErxHrowGLoINk=;
+        b=DX5bZZwKJH/MQYfdfQ2aQxz9GeGWUcWWA71nOStH/AwiGp7RPZKLxdSlyjX6/Tuwyd
+         pk2+JdA8LIWIdScxm2OrQArlUn7MdQa8rl5DtOjQrZ+oR6gbSYWfQiPKSpraRxVG+JoC
+         bYDjZEuKVtLTNOc59yPTUShuojWHGLMMbA+MHnPVmfHklnUHjAooFEf//oqH3MH1sNRM
+         Jjh3WvERv1E5C/F+CVy4zrb7pAwDkM4YkgxBO8lCz5NC9qTQyqHYVUv5XrdBVC1NMer/
+         ll2z3iyqfnqlvbDVBl5ys8QFhsdVvUMXMB4gm+NWFVvJnZnPtSwm8dNn9bBqXohFNjBe
+         e34g==
+X-Gm-Message-State: AOJu0YzNEPKZlBUCRe/6HDvR4jzCAr9HyicWDsZlVwOaufsyHTpFA6TR
+        WbsxqXBrUZbJreE7xAM49srba0Gd+1E=
+X-Google-Smtp-Source: AGHT+IFY1TkeVeRGWBrgWf2i0O9q9pzjrUYsznblS+VoCoNd0mGuLFzQmCXoRFFl4jZvbkNMocSkjA==
+X-Received: by 2002:a17:906:1d4:b0:a1b:774f:df5c with SMTP id 20-20020a17090601d400b00a1b774fdf5cmr1686472ejj.14.1701711545198;
+        Mon, 04 Dec 2023 09:39:05 -0800 (PST)
+Received: from [192.168.2.1] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id mj9-20020a170906af8900b00a1907e36244sm5128328ejb.118.2023.12.04.09.39.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 09:36:39 -0800 (PST)
-Message-ID: <518bff9d-5cf8-4211-bdfb-7d8edb80d89c@linaro.org>
-Date:   Mon, 4 Dec 2023 18:36:38 +0100
+        Mon, 04 Dec 2023 09:39:04 -0800 (PST)
+Message-ID: <49c6afec-022f-02de-99a0-d409b64da198@gmail.com>
+Date:   Mon, 4 Dec 2023 18:39:03 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/6] dt-bindings: timer: Add StarFive JH8100 clint
-Content-Language: en-US
-To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>, kernel@esmil.dk,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+From:   Johan Jonker <jbx6244@gmail.com>
+Subject: [PATCH v1 1/3] dt-bindings: drm: rockchip: convert
+ inno_hdmi-rockchip.txt to yaml
+To:     heiko@sntech.de, hjc@rock-chips.com
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        krzk@kernel.org, conor+dt@kernel.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, tglx@linutronix.de,
-        conor@kernel.org, anup@brainfault.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, michal.simek@amd.com,
-        michael.zhu@starfivetech.com, drew@beagleboard.org
-Cc:     devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, leyfoon.tan@starfivetech.com,
-        Conor Dooley <conor.dooley@microchip.com>
-References: <20231201121410.95298-1-jeeheng.sia@starfivetech.com>
- <20231201121410.95298-4-jeeheng.sia@starfivetech.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20231201121410.95298-4-jeeheng.sia@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        conor+dt@kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/2023 13:14, Sia Jee Heng wrote:
-> Add compatible string for the StarFive JH8100 clint.
-> 
-> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
-> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
+Convert inno_hdmi-rockchip.txt to yaml.
 
-Applied 3/6, thanks
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Note for rob+dt:
+  Used enum to "soon" be able to add "rockchip,rk3128-inno-hdmi"
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Changed V1:
+  Rename file to more common layout
+  Add/fix hdmi_out port example
+---
+ .../display/rockchip/inno_hdmi-rockchip.txt   |  49 ---------
+ .../display/rockchip/rockchip,inno-hdmi.yaml  | 103 ++++++++++++++++++
+ 2 files changed, 103 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/rockchip/inno_hdmi-rockchip.txt
+ create mode 100644 Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/rockchip/inno_hdmi-rockchip.txt b/Documentation/devicetree/bindings/display/rockchip/inno_hdmi-rockchip.txt
+deleted file mode 100644
+index cec21714f0e0..000000000000
+--- a/Documentation/devicetree/bindings/display/rockchip/inno_hdmi-rockchip.txt
++++ /dev/null
+@@ -1,49 +0,0 @@
+-Rockchip specific extensions to the Innosilicon HDMI
+-================================
+-
+-Required properties:
+-- compatible:
+-	"rockchip,rk3036-inno-hdmi";
+-- reg:
+-	Physical base address and length of the controller's registers.
+-- clocks, clock-names:
+-	Phandle to hdmi controller clock, name should be "pclk"
+-- interrupts:
+-	HDMI interrupt number
+-- ports:
+-	Contain one port node with endpoint definitions as defined in
+-	Documentation/devicetree/bindings/graph.txt.
+-- pinctrl-0, pinctrl-name:
+-	Switch the iomux of HPD/CEC pins to HDMI function.
+-
+-Example:
+-hdmi: hdmi@20034000 {
+-	compatible = "rockchip,rk3036-inno-hdmi";
+-	reg = <0x20034000 0x4000>;
+-	interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+-	clocks = <&cru  PCLK_HDMI>;
+-	clock-names = "pclk";
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&hdmi_ctl>;
+-
+-	hdmi_in: port {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		hdmi_in_lcdc: endpoint@0 {
+-			reg = <0>;
+-			remote-endpoint = <&lcdc_out_hdmi>;
+-		};
+-	};
+-};
+-
+-&pinctrl {
+-	hdmi {
+-		hdmi_ctl: hdmi-ctl {
+-			rockchip,pins = <1 8  RK_FUNC_1 &pcfg_pull_none>,
+-					<1 9  RK_FUNC_1 &pcfg_pull_none>,
+-					<1 10 RK_FUNC_1 &pcfg_pull_none>,
+-					<1 11 RK_FUNC_1 &pcfg_pull_none>;
+-		};
+-	};
+-
+-};
+diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml
+new file mode 100644
+index 000000000000..96889c86849a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/rockchip/rockchip,inno-hdmi.yaml
+@@ -0,0 +1,103 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/rockchip/rockchip,inno-hdmi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip Innosilicon HDMI controller
++
++maintainers:
++  - Sandy Huang <hjc@rock-chips.com>
++  - Heiko Stuebner <heiko@sntech.de>
++
++properties:
++  compatible:
++    enum:
++      - rockchip,rk3036-inno-hdmi
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    const: pclk
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Port node with one endpoint connected to a vop node.
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          Port node with one endpoint connected to a hdmi-connector node.
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - pinctrl-0
++  - pinctrl-names
++  - ports
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3036-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/pinctrl/rockchip.h>
++    hdmi: hdmi@20034000 {
++      compatible = "rockchip,rk3036-inno-hdmi";
++      reg = <0x20034000 0x4000>;
++      interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&cru  PCLK_HDMI>;
++      clock-names = "pclk";
++      pinctrl-names = "default";
++      pinctrl-0 = <&hdmi_ctl>;
++
++      ports {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        hdmi_in: port@0 {
++          reg = <0>;
++          hdmi_in_vop: endpoint {
++            remote-endpoint = <&vop_out_hdmi>;
++          };
++        };
++
++        hdmi_out: port@1 {
++          reg = <1>;
++          hdmi_out_con: endpoint {
++            remote-endpoint = <&hdmi_con_in>;
++          };
++        };
++      };
++    };
++
++    pinctrl {
++      hdmi {
++        hdmi_ctl: hdmi-ctl {
++          rockchip,pins = <1 RK_PB0 1 &pcfg_pull_none>,
++                          <1 RK_PB1 1 &pcfg_pull_none>,
++                          <1 RK_PB2 1 &pcfg_pull_none>,
++                          <1 RK_PB3 1 &pcfg_pull_none>;
++        };
++      };
++    };
+--
+2.39.2
 
