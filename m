@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD87380321A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD1780320E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235420AbjLDL7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:59:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47566 "EHLO
+        id S235368AbjLDL7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:59:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235401AbjLDL6s (ORCPT
+        with ESMTP id S235423AbjLDL6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:58:48 -0500
+        Mon, 4 Dec 2023 06:58:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8185A1FC2
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 390ECC433AD;
-        Mon,  4 Dec 2023 11:57:51 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F801FCE
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C1F4C433D9;
+        Mon,  4 Dec 2023 11:57:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701691072;
-        bh=XNLXB9C9iANjifHx1nMXhDMMAGyy9Qfh4bqOEZ796KI=;
+        s=k20201202; t=1701691074;
+        bh=NYgjZuAn4gA//7iXGm7aNkqHSnPJFETs5an0l5cgV+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Io8rgrO6IONkw5FdvdLvBhvUKSNRrK/QWiQKGpgJoqXoJ2squCFeHfzLDaPf5HICZ
-         rD9evFe+7fhYFUQaycqFh8VadEs4JStBSUlWWWqassmTEO6MSgKXM+dwEdx7uXiptY
-         RTAnjkW6LDKYBrBMbD/58lMlFjzJoKI6XuaTVSkeZQjdWhp9kr39JM3MrUdHFVaC1e
-         iSnR1WlI3slJkVH9RrM0x6A2jWJUvXDb59se3p+pdjIbsG0KsGjzc1VR7f11gTmr2O
-         sks6Gmbxyo6bC9WjO+u7rKWdDXN6t3f5T3iypVlVcWHModGPt1+Ohlf5oLej1fIQxV
-         j+ATqkXkHK/Gw==
+        b=B1/Iub+MSlZW1iDrUy4L08L+EbcoD1yjvG8Aph0zyPg39RTH0wo+qGKA3+K9OhOBW
+         4qjWG7pum7bPnoCzH/+iw0TXMVM8JC3NY7EgfYGFpu0N6iZD8W+ON5r6U3eMXk+ttc
+         f2ah04f35h4+jIZNTFFozoSlHDGNCjluewwpi7dkEl7GkJ2Iyaxoni5qsyh7bynyin
+         E8ihOWf0p3qyjW0K8RH13y0pjgO00NlfqKfHnSayvG8R/EoePpqxYIeXtGTTfpPKr+
+         IP8TSoGwNedaBIQFPyD2IkD2cvrz/M8pdc/QoKzFyIprRNu2EHuPgyfxGsd7TV1+SO
+         WSoUZOD2wg6XA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-mips@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -34,9 +34,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         "Stephen Rothwell" <sfr@rothwell.id.au>,
         "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
         "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Subject: [PATCH 17/20] mips: suspend: include linux/suspend.h as needed
-Date:   Mon,  4 Dec 2023 12:57:07 +0100
-Message-Id: <20231204115710.2247097-18-arnd@kernel.org>
+Subject: [PATCH 18/20] mips: hide conditionally unused functions
+Date:   Mon,  4 Dec 2023 12:57:08 +0100
+Message-Id: <20231204115710.2247097-19-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231204115710.2247097-1-arnd@kernel.org>
 References: <20231204115710.2247097-1-arnd@kernel.org>
@@ -54,43 +54,62 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-A couple of functions are defined by the architecture and declared in
-linux/suspend.h, but mips is lacking the corresponding #include statement
-before the definition:
+A couple of functions are defined unconditionally but have a
+conditional declaration:
 
-arch/mips/power/cpu.c:16:6: warning: no previous prototype for 'save_processor_state' [-Wmissing-prototypes]
-arch/mips/power/cpu.c:26:6: warning: no previous prototype for 'restore_processor_state' [-Wmissing-prototypes]
-arch/mips/power/cpu.c:36:5: warning: no previous prototype for 'pfn_is_nosave' [-Wmissing-prototypes]
-arch/mips/power/hibernate.c:6:5: warning: no previous prototype for 'swsusp_arch_resume' [-Wmissing-prototypes]
+arch/mips/mm/tlb-r4k.c:461:12: error: no previous prototype for 'add_temporary_entry' [-Werror=missing-prototypes]
+arch/mips/mm/pgtable-64.c:92:7: error: no previous prototype for 'mk_pmd' [-Werror=missing-prototypes]
+arch/mips/mm/pgtable-64.c:101:6: error: no previous prototype for 'set_pmd_at' [-Werror=missing-prototypes]
+
+Since there are no callers in these configurations, add the same #ifdef
+checks around the definitions.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/mips/power/cpu.c       | 1 +
- arch/mips/power/hibernate.c | 1 +
- 2 files changed, 2 insertions(+)
+ arch/mips/mm/pgtable-64.c | 2 ++
+ arch/mips/mm/tlb-r4k.c    | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/arch/mips/power/cpu.c b/arch/mips/power/cpu.c
-index a15e29dfc7b3..d8ef7778e535 100644
---- a/arch/mips/power/cpu.c
-+++ b/arch/mips/power/cpu.c
-@@ -6,6 +6,7 @@
-  * Author: Hu Hongbing <huhb@lemote.com>
-  *	   Wu Zhangjin <wuzhangjin@gmail.com>
-  */
-+#include <linux/suspend.h>
- #include <asm/sections.h>
- #include <asm/fpu.h>
- #include <asm/dsp.h>
-diff --git a/arch/mips/power/hibernate.c b/arch/mips/power/hibernate.c
-index 94ab17c3c49d..192879e76c85 100644
---- a/arch/mips/power/hibernate.c
-+++ b/arch/mips/power/hibernate.c
-@@ -1,4 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
-+#include <linux/suspend.h>
- #include <asm/tlbflush.h>
+diff --git a/arch/mips/mm/pgtable-64.c b/arch/mips/mm/pgtable-64.c
+index c76d21f7dffb..1e544827dea9 100644
+--- a/arch/mips/mm/pgtable-64.c
++++ b/arch/mips/mm/pgtable-64.c
+@@ -89,6 +89,7 @@ void pud_init(void *addr)
+ }
+ #endif
  
- extern int restore_image(void);
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ pmd_t mk_pmd(struct page *page, pgprot_t prot)
+ {
+ 	pmd_t pmd;
+@@ -103,6 +104,7 @@ void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+ {
+ 	*pmdp = pmd;
+ }
++#endif
+ 
+ void __init pagetable_init(void)
+ {
+diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
+index 44411b20c7ec..7e2a0011a6fb 100644
+--- a/arch/mips/mm/tlb-r4k.c
++++ b/arch/mips/mm/tlb-r4k.c
+@@ -458,6 +458,7 @@ EXPORT_SYMBOL(has_transparent_hugepage);
+ 
+ int temp_tlb_entry;
+ 
++#ifndef CONFIG_64BIT
+ __init int add_temporary_entry(unsigned long entrylo0, unsigned long entrylo1,
+ 			       unsigned long entryhi, unsigned long pagemask)
+ {
+@@ -496,6 +497,7 @@ __init int add_temporary_entry(unsigned long entrylo0, unsigned long entrylo1,
+ 	local_irq_restore(flags);
+ 	return ret;
+ }
++#endif
+ 
+ static int ntlb;
+ static int __init set_ntlb(char *str)
 -- 
 2.39.2
 
