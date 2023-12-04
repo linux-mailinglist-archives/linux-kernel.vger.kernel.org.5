@@ -2,143 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1498D803458
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E91F803461
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbjLDNUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:20:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        id S234751AbjLDNUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:20:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233171AbjLDNUI (ORCPT
+        with ESMTP id S233857AbjLDNUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:20:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7AFA1;
-        Mon,  4 Dec 2023 05:20:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701696015; x=1733232015;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=4NPXnux+c7mfmuxeW1NdbPlpm/f/3Pww4CWNNGCbIWw=;
-  b=Q8auie4nwj65b8xzmnA7s6ko+WGC/N2slbZg3Rl0xiM2XhFFDyBZZXUF
-   Ip/1yz5WFIyp6Af5j3TIqBAzxa8gu49sM10h16+yaUKmlhrQDciY+j8jh
-   fQVtWOUbjIPv93g2ZRhcsaLzbxPWTEAbCv1Fz/p/1bpkfPzLMr5XqiXZ4
-   JFCjxcz1kec9lOXqsqUIJ75VFftcOo3BuQGc8b4h86vaTN7oeCiBsiGne
-   2t6NklBRbV0NHrAMZk1flo+leysn4rMkUBPmordLb0FulMMUCoQB0ykWI
-   DPi1mMH5B1zzdAfzKczTKsJ1NLd+DHf5zHauXpesbRlwGVBLjcf3+M7ph
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="396535976"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="396535976"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:20:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="770534305"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="770534305"
-Received: from malladhi-mobl.gar.corp.intel.com ([10.249.34.28])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:20:12 -0800
-Date:   Mon, 4 Dec 2023 15:20:09 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Dawei Li <dawei.li@shingroup.cn>
-cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>, jszhang@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        set_pte_at@outlook.com, stable@kernel.org
-Subject: Re: [PATCH] serial: dw8250: Make DLF feature independent of
- ADDITIONAL_FEATURE
-In-Reply-To: <20231204130820.2823688-1-dawei.li@shingroup.cn>
-Message-ID: <48f6fcce-4b5-a7c0-2fc0-989b9a2fba8@linux.intel.com>
-References: <20231204130820.2823688-1-dawei.li@shingroup.cn>
+        Mon, 4 Dec 2023 08:20:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F82D2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:20:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 477BAC433C8;
+        Mon,  4 Dec 2023 13:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701696022;
+        bh=XLgQk+IX4tiNjTmlNqPaVo9w7bfxQJRh0T5Rsm5i0/c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=PmsvB0U8hLwBaP94+Ot2ntzryjrUcU51l60nzuf0obSyBDD58+1kkMr3q/TL9rUuD
+         Dy1ALAUZGp4q7/VPiqGDgpTXavu/YNttLPoCys2HQJIVnYpVJysunygDqNp8WOGu5+
+         VLRHQ1O/x53ql3kdjhFpOEnuNk4NMzUtDZp0PIk/tDBCeK68SKGgWdKQi64wCOXy26
+         595KpnbDCpAUNCHZZy564BRAtkMh/sZYqtcvo7fN4k1ZD9fWCZK6KDrmA6huIePJCE
+         A+9L2j97u7VG6zRnwA/0pSfJUieuJ722vQiNgKbYtC3QJDodkR7KGGdahykSvHkF/2
+         3TTzGYXa3cmVQ==
+Message-ID: <de0a2345-864c-4dff-b965-e6600983011a@kernel.org>
+Date:   Mon, 4 Dec 2023 14:20:10 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 12/23] pinctrl: mediatek: Make use of
+ PINCTRL_GROUP_DESC()
+Content-Language: en-US
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
+ <20231129161459.1002323-13-andriy.shevchenko@linux.intel.com>
+ <CGME20231204114039eucas1p29c6f8a162191e58ff658d3a1c44429bf@eucas1p2.samsung.com>
+ <9e4e65de-7234-4234-8091-796277a1f1c5@samsung.com>
+ <ZW3PrSQWyZvvhN66@smile.fi.intel.com>
+ <b21b3f93-62d6-462b-8a2f-7b6f5532b417@kernel.org>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <b21b3f93-62d6-462b-8a2f-7b6f5532b417@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Dec 2023, Dawei Li wrote:
+On 04/12/2023 14:18, Krzysztof Kozlowski wrote:
+> On 04/12/2023 14:10, Andy Shevchenko wrote:
+>> On Mon, Dec 04, 2023 at 12:40:38PM +0100, Marek Szyprowski wrote:
+>>> On 29.11.2023 17:06, Andy Shevchenko wrote:
+>>>> Make use of PINCTRL_GROUP_DESC() instead of open coding it.
+>>
+>>> PINCTRL_GROUP_DESC() macro from drivers/pinctrl/core.h contains a cast
+>>> to (struct group_desc), what breaks users of the above macros.
+>>
+>> There is no cast (*).
+>> Thanks for report, I will check.
+>>
+>> But this was v4 of the series and LKP actually sent a positive feedback.
+>> Besides that I have tested this locally with modules enabled.
+>>
+>> *) It's a compound literal, _not_ a cast.
+>>    Taking above into consideration I'm wondering what compilers
+>>    are in use?
+> 
+> In my case: standard provided by Ubuntu 22.04, so: gcc version 11.4.0
+> (Ubuntu 11.4.0-1ubuntu1~22.04)
 
-> DW apb uart databook defines couples of configuration parameters of
-> dw8250 IP, among which there are 2 of them:
-> - ADDTIONAL_FEATURE
-> " Configure the peripheral to have the option to include FIFO status
->   registers, shadow registers and encoded parameter register. Also
->   configures the peripheral to have UART component version and the
->   peripheral ID registers. "
-> 
-> - FRACTIONAL_BAUD_DIVISOR_EN
-> " Configures the peripheral to have Fractional Baud Rate Divisor.
->   .... "
-> 
-> These two parameters are completely irrelevant, and supposed to be
-> independent of each other. However, in current dw8250 driver
-> implementation, they are hooked together.
-> 
-> The bug was hit when we are bringing up dw8250 IP on our hardware
-> platform, in which parameters are configured in such combination:
-> - ADDTIONAL_FEATURE disabled;
-> - FRACTIONAL_BAUD_DIVISOR_EN enabled;
-> 
-> Fixes: 701c5e73b296 ("serial: 8250_dw: add fractional divisor support")
-> Cc: stable@kernel.org
-> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> ---
->  drivers/tty/serial/8250/8250_dwlib.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_dwlib.c b/drivers/tty/serial/8250/8250_dwlib.c
-> index 84843e204a5e..136ad093c5b6 100644
-> --- a/drivers/tty/serial/8250/8250_dwlib.c
-> +++ b/drivers/tty/serial/8250/8250_dwlib.c
-> @@ -259,17 +259,6 @@ void dw8250_setup_port(struct uart_port *p)
->  	}
->  	up->capabilities |= UART_CAP_NOTEMT;
->  
-> -	/*
-> -	 * If the Component Version Register returns zero, we know that
-> -	 * ADDITIONAL_FEATURES are not enabled. No need to go any further.
-> -	 */
-> -	reg = dw8250_readl_ext(p, DW_UART_UCV);
-> -	if (!reg)
-> -		return;
-> -
-> -	dev_dbg(p->dev, "Designware UART version %c.%c%c\n",
-> -		(reg >> 24) & 0xff, (reg >> 16) & 0xff, (reg >> 8) & 0xff);
-> -
->  	/* Preserve value written by firmware or bootloader  */
->  	old_dlf = dw8250_readl_ext(p, DW_UART_DLF);
->  	dw8250_writel_ext(p, DW_UART_DLF, ~0U);
-> @@ -282,6 +271,17 @@ void dw8250_setup_port(struct uart_port *p)
->  		p->set_divisor = dw8250_set_divisor;
->  	}
->  
-> +	/*
-> +	 * If the Component Version Register returns zero, we know that
-> +	 * ADDITIONAL_FEATURES are not enabled. No need to go any further.
-> +	 */
-> +	reg = dw8250_readl_ext(p, DW_UART_UCV);
-> +	if (!reg)
-> +		return;
-> +
-> +	dev_dbg(p->dev, "Designware UART version %c.%c%c\n",
-> +		(reg >> 24) & 0xff, (reg >> 16) & 0xff, (reg >> 8) & 0xff);
-> +
->  	reg = dw8250_readl_ext(p, DW_UART_CPR);
->  	if (!reg) {
->  		reg = data->pdata->cpr_val;
-> 
+This was from my local machine. The ones used on the server are
+mentioned in one of the steps:
 
-The very same code change is already in tty-next (from another author).
+https://krzk.eu/#/builders/5/builds/2532/steps/5/logs/property_changes
 
--- 
- i.
+Best regards,
+Krzysztof
 
