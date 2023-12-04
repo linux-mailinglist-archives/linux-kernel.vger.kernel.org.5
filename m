@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2128803304
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:38:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2825A803302
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbjLDMiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        id S232203AbjLDMiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:38:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjLDMiS (ORCPT
+        with ESMTP id S230394AbjLDMiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:38:18 -0500
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F913106
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:38:24 -0800 (PST)
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-58d5657b6bbso6119636eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:38:24 -0800 (PST)
+        Mon, 4 Dec 2023 07:38:17 -0500
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9100C3
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:38:23 -0800 (PST)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6d8541e6cafso3467614a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:38:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1701693503; x=1702298303;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=h3vC9DKCks31qlZTLEOBhiTQthQAnOeHRO8hvXnpMao=;
-        b=cSnBArcm/snzPQEzr9KgXSA6E5j2gw47bKumdYkxGhjvlXHOkP3qUB5xQ4lix10Bss
-         wCOQv8NB9g5EfCoB/Yjxuod2szOdtx3Yx7DOlKVJ+rKiQH+/VPiYaBA+kw4HGiBMwWLP
-         voLf9Tr1HbZjiCAkLj1qAP0yZlE5M+GUkBbfqnaayxscBsBIz8N/73eAdvCw2RL1bzPL
-         zvA3lTw22WUK2kemse4WVZMTevHlJmjDOZleGlHLYnRzWYK4AUED2XS4Rxr9jyCQs4pA
-         BnsG+rN660uPlsny36w+OtPOccHuaAg461tLv8zp21CQSFHRXx3KJjH+UMFlUfUZOop9
-         0rug==
-X-Gm-Message-State: AOJu0YwFwBPQ58YK3JmIdHNCmISS9EigaUDZOuI+WwHtKuy9yqbG1AjZ
-        4QQG7j0iq1xpu0si2ESPKjea0+rAgBBsHm+prS+Qal4myqIj
-X-Google-Smtp-Source: AGHT+IESeNWC3Bgx3X6azwZbL3Ppc+gmrsehq+ZGEfKcbxjlmKt1DBtS1guViyUXax/NYtTEmFF/thOINVngKT4GFkzVR9CWhWIs
+        bh=H9ex8njANx8xLMq+LleaHJO8Je9o1d+q9WnLUOEn/Fw=;
+        b=Xh6cHb8q34fyQxWMsS2GdwsfIEMeR/ORtreQDE0ZEZYiKtMiHnEF+ZmddjFsWGn0UA
+         9oOACthUXjyDqgSD/gQYrfnzU/blN+NzyAluNsJPNdNEt0xCdPalL+WTlp/Q8fMWgaZD
+         VcxljiNPeeicq78P8Bh85iVkols3p69Gv3/N9oPj0KvpVyy3gCgS/IRbyA5TMsUUumyb
+         hjLvOxOh/uO4dCKwvs+akqBBvW9S8xtdbIk7XaFJqpCHvhS8BWQi7E5VPiZWunPehx+m
+         kjEL+XKQUEsdABHgq7wYe5AOOXqgsM5TLxUnktxaTFb1yrqPDzI/84NQzR7GXTFEDEVu
+         V9Vw==
+X-Gm-Message-State: AOJu0YxK2QkBzfzAAF/mXRPVHV/wWCl1g3bY14hdxX+e4/KKqvxCKGNl
+        xt54iH5eIffRwMPOzeePgSuhHz870T2h1iy6PJ+DkqUHgQMW
+X-Google-Smtp-Source: AGHT+IG4BnF6V3c1ra8kAveWVvbkMgZSTspVOuvZHNgnZzmDtNlqZOCBTlmHxRBZRU8peH0UXacGlKmq5DshwDWlwbGTz7Q3+kZw
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:d60c:b0:1fa:da34:99d9 with SMTP id
- a12-20020a056870d60c00b001fada3499d9mr2934304oaq.5.1701693503574; Mon, 04 Dec
+X-Received: by 2002:a05:6830:4682:b0:6d9:adfe:36ce with SMTP id
+ ay2-20020a056830468200b006d9adfe36cemr51380otb.3.1701693503288; Mon, 04 Dec
  2023 04:38:23 -0800 (PST)
 Date:   Mon, 04 Dec 2023 04:38:23 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cc17fb060bae647b@google.com>
-Subject: [syzbot] Monthly jfs report (Dec 2023)
-From:   syzbot <syzbot+list36f1468762da119bb5f8@syzkaller.appspotmail.com>
-To:     jfs-discussion@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000c7bcce060bae642f@google.com>
+Subject: [syzbot] Monthly bluetooth report (Dec 2023)
+From:   syzbot <syzbot+list5592d5c09aec7961e337@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello jfs maintainers/developers,
+Hello bluetooth maintainers/developers,
 
-This is a 31-day syzbot report for the jfs subsystem.
+This is a 31-day syzbot report for the bluetooth subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/jfs
+https://syzkaller.appspot.com/upstream/s/bluetooth
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 41 issues are still open and 20 have been fixed so far.
+During the period, 6 new issues were detected and 0 were fixed.
+In total, 35 issues are still open and 58 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref  Crashes Repro Title
-<1>  1436    Yes   general protection fault in lmLogSync (2)
-                   https://syzkaller.appspot.com/bug?extid=e14b1036481911ae4d77
-<2>  1187    Yes   UBSAN: array-index-out-of-bounds in xtInsert
-                   https://syzkaller.appspot.com/bug?extid=55a7541cfd25df68109e
-<3>  1102    Yes   kernel BUG in jfs_evict_inode
-                   https://syzkaller.appspot.com/bug?extid=9c0c58ea2e4887ab502e
-<4>  859     Yes   general protection fault in write_special_inodes
-                   https://syzkaller.appspot.com/bug?extid=c732e285f8fc38d15916
-<5>  441     Yes   kernel BUG in txUnlock
-                   https://syzkaller.appspot.com/bug?extid=a63afa301d1258d09267
-<6>  304     Yes   general protection fault in jfs_flush_journal
-                   https://syzkaller.appspot.com/bug?extid=194bfe3476f96782c0b6
-<7>  232     Yes   UBSAN: array-index-out-of-bounds in dbAllocBits
-                   https://syzkaller.appspot.com/bug?extid=ae2f5a27a07ae44b0f17
-<8>  219     Yes   KASAN: use-after-free Read in release_metapage
-                   https://syzkaller.appspot.com/bug?extid=f1521383cec5f7baaa94
-<9>  169     Yes   KASAN: null-ptr-deref Read in drop_buffers (2)
-                   https://syzkaller.appspot.com/bug?extid=d285c6d0b23c6033d520
-<10> 110     Yes   KASAN: use-after-free Read in diFree
-                   https://syzkaller.appspot.com/bug?extid=1964c915c8c3913b3d7a
+<1>  14730   Yes   possible deadlock in rfcomm_sk_state_change
+                   https://syzkaller.appspot.com/bug?extid=d7ce59b06b3eb14fd218
+<2>  7414    Yes   possible deadlock in rfcomm_dlc_exists
+                   https://syzkaller.appspot.com/bug?extid=b69a625d06e8ece26415
+<3>  4858    Yes   WARNING in hci_conn_timeout
+                   https://syzkaller.appspot.com/bug?extid=2446dd3cb07277388db6
+<4>  4864    Yes   possible deadlock in hci_dev_do_close
+                   https://syzkaller.appspot.com/bug?extid=4e3a76c5c505a3f49083
+<5>  2074    Yes   possible deadlock in hci_rfkill_set_block
+                   https://syzkaller.appspot.com/bug?extid=f93d183bc91522d90de9
+<6>  1321    Yes   KASAN: slab-use-after-free Read in hci_send_acl
+                   https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
+<7>  421     Yes   WARNING in call_timer_fn
+                   https://syzkaller.appspot.com/bug?extid=6fb78d577e89e69602f9
+<8>  170     No    possible deadlock in hci_unregister_dev
+                   https://syzkaller.appspot.com/bug?extid=c933391d8e4089f1f53e
+<9>  120     No    possible deadlock in discov_off
+                   https://syzkaller.appspot.com/bug?extid=f047480b1e906b46a3f4
+<10> 61      Yes   KASAN: slab-use-after-free Write in sco_sock_timeout
+                   https://syzkaller.appspot.com/bug?extid=4c0d0c4cde787116d465
 
 ---
 This report is generated by a bot. It may contain errors.
