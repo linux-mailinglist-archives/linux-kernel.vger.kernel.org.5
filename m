@@ -2,99 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF65A803B18
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0D5803B1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjLDRF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48560 "EHLO
+        id S229705AbjLDRG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:06:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLDRFY (ORCPT
+        with ESMTP id S229477AbjLDRGY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:05:24 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BEDBB;
-        Mon,  4 Dec 2023 09:05:30 -0800 (PST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4GlQeQ027506;
-        Mon, 4 Dec 2023 17:05:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=2llLb1kIui/MWBK5f5v9qS/SbcOOe6s6AriAs60t8Ug=;
- b=fzLLvkQb1DM2gdh/LTi4hceHSy7WHxg/kahmGee1PjA4qUbbTB55PtXtrnNEXf/vFYE7
- 7p6cmnTVpEvtd18li++iH/lCJltYEvh0EOdcMjVH0emYOkYei84mtqqCI/fbhRlXsP7a
- Ya6CcvP7cL41Sd8VUMz+Q5ww8hFkhgX8ttGaBml8cjVGOsaI6ATtqCkLDSD7j984j6wa
- her+WZZm+hBox1T8CUvDHBtpv0YJJiqRELYPntWzWI627Wrq9ictmEuPf6UflSCOxIra
- UuIjPruLRF9x9Q/FrfIUQveElaXueB8git7XZrbTwUh8mxQ6LQl/wl9qJ3HE4mXYL2rZ uQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usjkm0xfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 17:05:28 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4Glf3s029337;
-        Mon, 4 Dec 2023 17:05:28 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usjkm0x63-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 17:05:27 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4GwtZ1030022;
-        Mon, 4 Dec 2023 17:05:23 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urgdksdkr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 17:05:23 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4H5LjY17957484
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Dec 2023 17:05:21 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E659C58061;
-        Mon,  4 Dec 2023 17:05:20 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B071358043;
-        Mon,  4 Dec 2023 17:05:19 +0000 (GMT)
-Received: from [9.61.175.104] (unknown [9.61.175.104])
-        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Dec 2023 17:05:19 +0000 (GMT)
-Message-ID: <a4b9079e-2175-44dc-b59f-13644b9ea6c3@linux.ibm.com>
-Date:   Mon, 4 Dec 2023 12:05:19 -0500
+        Mon, 4 Dec 2023 12:06:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27E49BB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:06:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2EF7C433C7;
+        Mon,  4 Dec 2023 17:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701709590;
+        bh=yl7UEtwYIXWMb3aLTxITDLeUle/USlV/2Z6boVe2hB8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=sOGewpoEIzTFye2f4SvUDNjy+MF+Qk4QE+8JRduwLlhDi6ORo5PnBxN4nXL3iFag8
+         Xp7Wm4kwGYD2PP+odkSIz9Ph7/YBbZla0zlpCpInNK5AZf7A0DJWtW7YgrGhmCN54W
+         5crHOeWalZgBVEMZrXMOZI+x8rfD5r8y8L4SWSEyULP8hPrCloxz31M/zMoY+FRLaX
+         sBjwR+l46eMwMAmPN4gRWtUvaGpqI/OSSj0KgSBG19P49kZ881L9qSfjv5dj0h6l+O
+         X5eHiSxfc6JwQhG7Ncx1sA2ws3nUIZF6EeTHmSg1ju3QhzAd+2bZmQLkHLaqsESYyL
+         sAuYMewu6dsXg==
+Date:   Mon, 4 Dec 2023 17:06:23 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Crt Mori <cmo@melexis.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Andrew Hepp <andrew.hepp@ahepp.dev>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] iio: temperature: mlx90635 MLX90635 IR
+ Temperature sensor
+Message-ID: <20231204170623.0c0cd598@jic23-huawei>
+In-Reply-To: <CAKv63usxdfOviH=M6iUiNTtBFZVOseWUGz63Q-oJniBDFvTpSQ@mail.gmail.com>
+References: <cover.1701168726.git.cmo@melexis.com>
+        <c9db99819adb0cdd602394b27f97a3b8fe081148.1701168726.git.cmo@melexis.com>
+        <20231204142224.51f2ccdf@jic23-huawei>
+        <CAKv63usxdfOviH=M6iUiNTtBFZVOseWUGz63Q-oJniBDFvTpSQ@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
-Content-Language: en-US
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com,
-        Reinhard Buendgen <BUENDGEN@de.ibm.com>
-References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
- <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
- <1f4720d7-93f1-4e38-a3ad-abaf99596e7c@linux.ibm.com>
- <05cfc382-d01d-4370-b8bb-d3805e957f2e@linux.ibm.com>
- <20231204171506.42aa687f.pasic@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Organization: IBM
-In-Reply-To: <20231204171506.42aa687f.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: SXw2yfieEr_ilkyrdHoK7SZ5XNph7GGM
-X-Proofpoint-ORIG-GUID: VHLfMhw46t83gHS96TO14pddBVkFGPeI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_16,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 phishscore=0 spamscore=0 adultscore=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040130
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,47 +55,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 4 Dec 2023 16:34:30 +0100
+Crt Mori <cmo@melexis.com> wrote:
 
+> On Mon, 4 Dec 2023 at 15:22, Jonathan Cameron <jic23@kernel.org> wrote:
+> >  
+> ...
+> > > switches to Continuous power mode where measurements constantly change
+> > > without triggering.
+> > >
+> > > Signed-off-by: Crt Mori<cmo@melexis.com>  
+> >
+> > Hi Crt,
+> >
+> > I don't understand some of the regcache_cache_only() manipulation in here.
+> > If I understand the aim correctly it is to allow us to write settings whilst
+> > powered down (in sleep_step) that will then by synced to the device when it enters
+> > continuous mode?
+> >
+> > If so, I'd expect to only see manipulation of whether the caching is or or
+> > not at places where we transition state.  You currently have them in various
+> > other place. In some cases I scan see it's to allow a temporary change of
+> > state, but it's not obvious.  So perhaps a comment ever time you manually
+> > tweak whether writes hit the device or just stick in the regacache.
+> > That comment can explain why each of them is needed.
+> >
+> > A few other comments inline,
+> >
+> > Thanks,
+> >
+> > Jonathan
+> >  
+> 
+> While in Sleep Step mode, the EEPROM is powered down, but the cache
+> buffers those values. Still when you try to write or read a volatile
+> register (which should not be prevented by cache enabled as per my
+> opinion, but code says differently) in that mode, it returns -EBUSY
+> (as we discovered by code), so this kind of manipulation is needed to
+> enable write and read operations from volatile registers.
 
-On 12/4/23 11:15, Halil Pasic wrote:
-> On Mon, 4 Dec 2023 16:16:31 +0100
-> Christian Borntraeger <borntraeger@linux.ibm.com> wrote:
+So the cache trick is just meant for the eeprom?  Can you use two regmaps.
+(I've seen similar done for devices with different ways of reading which
+this 'kind of' corresponds to).
+One to cover the eeprom and the other the registers that always work.
+That should let you separately control if they are in caching state or
+not.
+Or just read the eeprom into a manually created cache on boot?
+
+> And you need
+> to trigger the measurement (burst mode) in that state, but since you
+> cannot read EEPROM, yet still need its values to calculate the final
+> temperature, the cache is used for this case. There is nothing to
+> re-cache when we get back as all registers I read/write to are marked
+> as volatile, so they would not be cached anyway..  
 > 
->> Am 04.12.23 um 15:53 schrieb Tony Krowiak:
->>>
->>>
->>> On 11/29/23 12:12, Christian Borntraeger wrote:
->>>> Am 29.11.23 um 15:35 schrieb Tony Krowiak:
->>>>> In the current implementation, response code 01 (AP queue number not valid)
->>>>> is handled as a default case along with other response codes returned from
->>>>> a queue reset operation that are not handled specifically. Barring a bug,
->>>>> response code 01 will occur only when a queue has been externally removed
->>>>> from the host's AP configuration; nn this case, the queue must
->>>>> be reset by the machine in order to avoid leaking crypto data if/when the
->>>>> queue is returned to the host's configuration. The response code 01 case
->>>>> will be handled specifically by logging a WARN message followed by cleaning
->>>>> up the IRQ resources.
->>>>>   
->>>>
->>>> To me it looks like this can be triggered by the LPAR admin, correct? So it
->>>> is not desireable but possible.
->>>> In that case I prefer to not use WARN, maybe use dev_warn or dev_err instead.
->>>> WARN can be a disruptive event if panic_on_warn is set.
->>>
->>> Yes, it can be triggered by the LPAR admin. I can't use dev_warn here because we don't have a reference to any device, but I can use pr_warn if that suffices.
->>
->> Ok, please use pr_warn then.
+> Thanks for the review - I still have some questions below (and explanation,
+> but not sure where to put those).
 > 
-> Shouldn't we rather make this an 'info'. I mean we probably do not want
-> people complaining about this condition. Yes it should be a best practice
-> to coordinate such things with the guest, and ideally remove the resource
-> from the guest first. But AFAIU our stack is supposed to be able to
-> handle something like this. IMHO issuing a warning is excessive measure.
-> I know Reinhard and Tony probably disagree with the last sentence
+> > > diff --git a/drivers/iio/temperature/Makefile b/drivers/iio/temperature/Makefile  
+> ...
+> > > + * @lock: Internal mutex for multiple reads for single measurement  
+> >
+> > Multiple reads shouldn't be a problem, unless someone else can do something
+> > destructive in between.  Perhaps a little more detail on why multiple reads matter?
+> >  
+> 
+> You trigger device to perform measurement in Sleep Step mode, so to
+> ensure both object and ambient temperature reads are from the same
+> triggered measurement, the mutex needs to be held. If for example in
+> between you would retrigger the measurement, then you would operate on
+> "invalid" data (shouldn't differ much, but I wanted to prevent that as
+> it might be 0).
+
+ok.  Just give a little bit more of that detail.  I'd not understood
+intent is to ensure one trigger -> one measurement.
+> 
+> > > + * @regmap: Regmap of the device
+> > > + * @emissivity: Object emissivity from 0 to 1000 where 1000 = 1.
+> > > + * @regulator: Regulator of the device
+> > > + * @powerstatus: Current POWER status of the device
+> > > + * @interaction_ts: Timestamp of the last temperature read that is used
+> > > + *               for power management in jiffies
+> > > + */  
+> ...
+> > > +     mutex_lock(&data->lock);
+> > > +     if (data->powerstatus == MLX90635_PWR_STATUS_SLEEP_STEP) {
+> > > +             regcache_cache_only(data->regmap, false);
+> > > +             ret = mlx90635_perform_measurement_burst(data);  
+> >
+> > Why is a burst needed here?  Perhaps a comment?
+> >  
+> 
+> Burst is from 90632 terminology (and our chip register map), but maybe
+> more general would be "trigger_measurement"?
+
+ok. But why only if in SLEEP_STEP?
+
+> 
+> > > +static int mlx90635_get_refresh_rate(struct mlx90635_data *data,
+> > > +                                  unsigned int *refresh_rate)
+> > > +{
+> > > +     unsigned int reg;
+> > > +     int ret;
+> > > +
+> > > +     if (data->powerstatus == MLX90635_PWR_STATUS_SLEEP_STEP)
+> > > +             regcache_cache_only(data->regmap, false);  
+> >
+> > Definitely needs a comment on why this is needed in this case.
+> >  
+> 
+> Here and below (where we turn it back to true?), but then I assume in
+> all other instances as well? Maybe a more general comment in the
+> sleep_step mode function?
+
+If we keep this, then yes I think we need comments on these - even if
+it's as simple as 'not accessing an eeprom register so we want to
+talk to the device'.
+> 
+> > > +
+> > > +     ret = regmap_read(data->regmap, MLX90635_REG_CTRL1, &reg);
+> > > +     if (ret < 0)
+> > > +             return ret;
+> > > +
+> > > +     if (data->powerstatus == MLX90635_PWR_STATUS_SLEEP_STEP)
+> > > +             regcache_cache_only(data->regmap, true);
+> > > +
+> > > +     *refresh_rate = FIELD_GET(MLX90635_CTRL1_REFRESH_RATE_MASK, reg);
+> > > +
+> > > +     return 0;
+> > > +}
+> > > +
+> > > +static const struct {
+> > > +     int val;
+> > > +     int val2;
+> > > +} mlx90635_freqs[] = {
+> > > +     {0, 200000},  
+> > Prefer spaces after { and before }  
+> 
+> ok.
+> 
+> > > +     {0, 500000},
+> > > +     {0, 900000},
+> > > +     {1, 700000},
+> > > +     {3, 0},
+> > > +     {4, 800000},
+> > > +     {6, 900000},
+> > > +     {8, 900000}
+> > > +};  
+> ...
+> > > +             if (i == ARRAY_SIZE(mlx90635_freqs))
+> > > +                     return -EINVAL;
+> > > +
+> > > +             if (data->powerstatus == MLX90635_PWR_STATUS_SLEEP_STEP)
+> > > +                     regcache_cache_only(data->regmap, false);  
+> >
+> > So here you want the rate to get through even though we otherwise have the
+> > device powered down?  Is that because some registers are safe for writes
+> > and not others?  If so you may need some locking to stop a race where you
+> > turn on writes here and someone else writes.
+> >  
+> 
+> Yes, exactly the case. Read/Write into registers (REG_) is possible in
+> all modes, but read of EEPROM is not (to save power the EEPROM is
+> turned off). I do not see how write race would get us into trouble
+> here since it is only 1, and as long as chip powerstatus is not
+> changed we should end up in correct state. I can wrap a mutex around
 > though.
 
-I don't feel strongly one way or the other. Anybody else?
+Assuming regcache_cache_only() isn't refcounted, you could end up with a
+second copy of this racing through and accessing the data after the
+first one turned the cache back on so the -EBUSY your mentioned.
 
 > 
-> Regards,
-> Halil
+> 
+> 
+> > > +
+> > > +             ret = regmap_write_bits(data->regmap, MLX90635_REG_CTRL1,
+> > > +                                     MLX90635_CTRL1_REFRESH_RATE_MASK, i);
+> > > +
+> > > +             if (data->powerstatus == MLX90635_PWR_STATUS_SLEEP_STEP)
+> > > +                     regcache_cache_only(data->regmap, true);
+> > > +             return ret;
+> > > +     default:
+> > > +             return -EINVAL;
+> > > +     }
+> > > +}  
+> >  
+
