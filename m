@@ -2,116 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F010803E03
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC3B4803E04
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbjLDTDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:03:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S231503AbjLDTDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:03:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbjLDTDN (ORCPT
+        with ESMTP id S231361AbjLDTDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:03:13 -0500
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5AAB2
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:03:19 -0800 (PST)
-Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-495d687b138so1157927e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:03:19 -0800 (PST)
+        Mon, 4 Dec 2023 14:03:14 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7C8F0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:03:20 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54c79cca895so1651a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:03:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701716598; x=1702321398; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701716599; x=1702321399; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r8OsxNuHP/Mk0jzn3oUdmiDmSoUgRFcHUL7SKw08Lik=;
-        b=T6I1TcbOttluAnwwZfPB0MHmBYk2fZZtv8IH9x76lUCfVl86sZ8QntmsVl9Wwh2d+i
-         3CZ0yPOROooSbBOAaCl19R/NeSYdyhlJc8MdeRn61Ld2QiD7KSgYiSMQwWQtDD8IHqUM
-         Ngvri/ITieowMJlQkw9Vl7HhxatH6IT/cWe2AEqvUCuKdHuTEZ35qq+c2xErY8MB1Jw1
-         Jvur6ZrjWKsdfxcikuu1LwNe0FgtEbYd6dZk6hffWUXhw52nNQeoeR0uB6pRivi+mczi
-         giZLW6o2X5pIj1ilKOuk7APX0sg0QBB0J7tBpZDMOVyov02OfgCGbbC3E0sLU0lEvNYj
-         YACg==
+        bh=3patIUasVYl44OnkTW8tZ5hoP9CKgx51bwg6aa1ps2o=;
+        b=dc+9PuTLb2jHcvB4hEzVyQCGkX/aD0XumWkuUrb7oSh7b4Fkoy3NpvV4WhKv9/kSYV
+         HXWSWrFEyPqZj1lat7+pj/nNzTpWD3fMaluk+6Azw6qtz/LZ29+tmAHEmRqb2ELtBXw5
+         rpUIhpdShPBgXUPpd1KkfOixNsq+1f7IxSPoWucyOt1jcoyRi0I290+zdvR4WZsoeAXi
+         fkblXM1/tvl/XFCmXG7/UK8kzyqcEkYXUpnE4xXSy6T5sq81XYT641+ca2lUGIUQOKk3
+         Wm0d5K6mN/LM8l24Dcd+UDrIQIRt+Iyb23QpnQWq/XDS4JzKvcaAWbZkoBhmqa3/tgGV
+         XC+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701716598; x=1702321398;
+        d=1e100.net; s=20230601; t=1701716599; x=1702321399;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=r8OsxNuHP/Mk0jzn3oUdmiDmSoUgRFcHUL7SKw08Lik=;
-        b=izuXe48CWSNWSv0jLHW45arDh8+zhCCzvTLS+t7DHResOXQMjQpYlzE6U33vSlka2v
-         7waRPy6JNdIcNNINuJVek412imgC0FZNmBb5TDGJ4GhsclxOvM1fls7OJz6lkzbjWCjz
-         577Lb6puA7dIFBq5KZKQJ2T1bsZNgDlMD/HJBZKTy6RWx0eJbRywnEcpw3yHQQwVISYr
-         5bzXXOh1DAe8waytMQNYxZ13hizXZNHIOVcC/UmgBrCxAFLPvgnb9lsrzI1DDJfUdux1
-         6I0NcM06/RV9M/0ueLBE8Z1kEYe5ZhCjQmKqrsUK7jkZJqmg+BduXHAXlBUEAa2LjOoz
-         atmg==
-X-Gm-Message-State: AOJu0Yyqa4RDeCBDlqRHhOvDakYQEMqjumqDHESCM3S6L3PSf/4a9BXL
-        FC+PBtcbTFd1K+5qvqPMz8wTGpfnW3m5ZsLB6+k=
-X-Google-Smtp-Source: AGHT+IGP/1uzSO8EfURseQLuaM0LLow2VMvh1hhECiFS7K5uBiO+q456UysWI4/cbldZAQYS2uIEU+ulphXknhBVooA=
-X-Received: by 2002:a05:6122:993:b0:4b2:e534:b5d1 with SMTP id
- g19-20020a056122099300b004b2e534b5d1mr1412281vkd.33.1701716597485; Mon, 04
- Dec 2023 11:03:17 -0800 (PST)
+        bh=3patIUasVYl44OnkTW8tZ5hoP9CKgx51bwg6aa1ps2o=;
+        b=NxPeQreVDr8N2BRK5Ci3gA+bO+GdtX/x26XXDgjosFM0dF4oHOyvB4fQLpA/3kMv42
+         XxdnFgnUOZ7ARFADhEIcpzJddOR3xAtie+b6vX6TVpQLNe0m78C+fiXDTWITmz9xfCzg
+         8Tdb473uZ4EUSRSjk3yx9sNZpeirajMZT+Gk442dz+hNw2PXPXKrmx/AVKS2AYvMKgcH
+         308nNZRcppIYQywRab7TvQ75i9FDqlSeaKJ5b4X8agpg733GxJcjRxTkkHe7/1Xum0jO
+         CuwGJN6ozdVlkmXEAOKXyh1uZvMg1i56I2h6Py1SDDdvFGuWRSJ4m3nFDIpa7qcpC/lI
+         kHJg==
+X-Gm-Message-State: AOJu0Yx0Y0trEYFHlmsinUiFzY/TM9FRPBx4pKQy25QQuxGIwhwWatEl
+        p3pi09tS4txTgkPNE667NjnM0KXxvfTs1lLSGym0BQ==
+X-Google-Smtp-Source: AGHT+IHpFP4IwRHSnWAcYG/jbBNlaN2sY1FYbD0QjhIdOW7/Z248wZPfkm9Gu2K33fIFIHTef2G1343PdDfnyw7fTR0=
+X-Received: by 2002:a50:99de:0:b0:54a:ee8b:7a99 with SMTP id
+ n30-20020a5099de000000b0054aee8b7a99mr320455edb.0.1701716599146; Mon, 04 Dec
+ 2023 11:03:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20231204180428.925779-1-jaegeuk@kernel.org> <20231204180428.925779-3-jaegeuk@kernel.org>
-In-Reply-To: <20231204180428.925779-3-jaegeuk@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Mon, 4 Dec 2023 11:03:06 -0800
-Message-ID: <CACOAw_xo_73xxqUty_2e6mvPA8A45MXEefOe8gr7f7owU1XuXQ@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 3/4] f2fs: check write pointers when checkpoint=disable
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
+References: <20231201021550.1109196-1-ilkka@os.amperecomputing.com> <20231201021550.1109196-3-ilkka@os.amperecomputing.com>
+In-Reply-To: <20231201021550.1109196-3-ilkka@os.amperecomputing.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 4 Dec 2023 11:03:07 -0800
+Message-ID: <CAP-5=fWKjRORSVh65cm+RMknS_-K=XQC2ew1VVaakvoX1X6CKw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] perf vendor events arm64: AmpereOne: Rename
+ BPU_FLUSH_MEM_FAULT to GPC_FLUSH_MEM_FAULT
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LGTM
+On Thu, Nov 30, 2023 at 6:16=E2=80=AFPM Ilkka Koskinen
+<ilkka@os.amperecomputing.com> wrote:
+>
+> The documentation wrongly called the event as BPU_FLUSH_MEM_FAULT and now
+> has been fixed. Correct the name in the perf tool as well.
+>
+> Fixes: a9650b7f6fc0 ("perf vendor events arm64: Add AmpereOne core PMU ev=
+ents")
+> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 
-On Mon, Dec 4, 2023 at 10:06=E2=80=AFAM Jaegeuk Kim <jaegeuk@kernel.org> wr=
-ote:
->
-> Even if f2fs was rebooted as staying checkpoint=3Ddisable, let's match th=
-e write
-> pointers all the time.
->
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Reviewed-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
 > ---
->  fs/f2fs/super.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  .../pmu-events/arch/arm64/ampere/ampereone/core-imp-def.json    | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 617340e9ea7f..9a874b4d1501 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -4741,7 +4741,7 @@ static int f2fs_fill_super(struct super_block *sb, =
-void *data, int silent)
->  #ifdef CONFIG_QUOTA
->         f2fs_recover_quota_end(sbi, quota_enabled);
->  #endif
-> -
-> +reset_checkpoint:
->         /*
->          * If the f2fs is not readonly and fsync data recovery succeeds,
->          * check zoned block devices' write pointer consistency.
-> @@ -4752,7 +4752,6 @@ static int f2fs_fill_super(struct super_block *sb, =
-void *data, int silent)
->                         goto free_meta;
->         }
->
-> -reset_checkpoint:
->         f2fs_init_inmem_curseg(sbi);
->
->         /* f2fs_recover_fsync_data() cleared this already */
+> diff --git a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/core-imp-d=
+ef.json b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/core-imp-def.js=
+on
+> index 88b23b85e33c..879ff21e0b17 100644
+> --- a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/core-imp-def.json
+> +++ b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/core-imp-def.json
+> @@ -110,7 +110,7 @@
+>      {
+>          "PublicDescription": "Flushes due to memory hazards",
+>          "EventCode": "0x121",
+> -        "EventName": "BPU_FLUSH_MEM_FAULT",
+> +        "EventName": "GPC_FLUSH_MEM_FAULT",
+>          "BriefDescription": "Flushes due to memory hazards"
+>      },
+>      {
 > --
-> 2.43.0.rc2.451.g8631bc7472-goog
+> 2.41.0
 >
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
