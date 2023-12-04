@@ -2,99 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BC7802E12
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F96802E22
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbjLDI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
+        id S230195AbjLDI70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:59:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbjLDI6P (ORCPT
+        with ESMTP id S229446AbjLDI7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:58:15 -0500
-X-Greylist: delayed 56456 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 00:58:18 PST
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2DD6CD7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:58:17 -0800 (PST)
-Received: from luzhipeng.223.5.5.5 (unknown [125.120.155.9])
-        by mail-app4 (Coremail) with SMTP id cS_KCgCHjTWblG1l1INIAA--.54724S2;
-        Mon, 04 Dec 2023 16:58:03 +0800 (CST)
-From:   Zhipeng Lu <alexious@zju.edu.cn>
-To:     alexious@zju.edu.cn
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jerome Glisse <jglisse@redhat.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] drm/radeon/dpm: fix a memleak in sumo_parse_power_table
-Date:   Mon,  4 Dec 2023 16:57:56 +0800
-Message-Id: <20231204085756.3303900-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+        Mon, 4 Dec 2023 03:59:22 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854C083;
+        Mon,  4 Dec 2023 00:59:28 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2ca0715f0faso5490491fa.0;
+        Mon, 04 Dec 2023 00:59:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701680367; x=1702285167; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zLkzq4LH7qNlQ4R2u0+qoSFWaByEk2XvcwE8gCptUKs=;
+        b=jAYaC39+pi18OkhVSnnxRUdhCOzE+J2SuWEAlT8EaKRILmEDV5T3cDhjhnyW2qSLvF
+         vWglB0wT6Hr7lnhFJZDG7pPXnWWp3pqsKtttW+W/Dj2LNOhffMNy8OGcGdySH+vlccIm
+         1ufzwPmBnCLEGy7JJgjdm3c53IRQ+N/rvFLvdoWuJ31HBY5TvoLP1i/dNt6K9ExYqk0T
+         c0bf5dIaEQih3M0mEsD259gqNcbnOHwUhQNVIlfXyl6G1ZdeZXx85IOgSzJqchCgPIbH
+         sgHC0fshUQ/JMjG6IAjCUQjYRbjmqWoUolkn5NncOMpxmN9UJ6mBZuwflAx8KXu8RkE8
+         Rzfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701680367; x=1702285167;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zLkzq4LH7qNlQ4R2u0+qoSFWaByEk2XvcwE8gCptUKs=;
+        b=Y3uCvIgKrgY6DW1SC8nMrCQhzWZ5Ia2NqY0ZkdlSwALj5xvKXv547eCLFRjPEn1Sce
+         4hKL8iKFBVO6dQftj8iirqHwqc3KDt0qLm/uqdbbUrivCYSg8LCp/+EIZd50r/6PMyRq
+         p+/L2X8jGoxcPj3f2J1F68iXT/5ribjD7iPs9TvG29q+nT8+Y/7/SC838ZMix5Ye2qIT
+         tZcZ45J99hzh0hkwNPXSkE5IRkgXUUeD/QdBlVmaszoRdlj3H90w706vilzSun3lOHAR
+         w8kZ9z7sXPWTLrYBIvFNrt/7F6QSlBRyl0noOPV/UpZtpnrEVfoqSShW5Y16kgjlrgGB
+         0aYw==
+X-Gm-Message-State: AOJu0Yz3/UK6+d4n+xLT5ZwwjTJqmiHJdAWD5Dgb/p+kSZtyQW8jTCFs
+        IgvITTMj3oASK9kiAW0GeNw=
+X-Google-Smtp-Source: AGHT+IE82gdSoQHkIX6sW/TGs1kWdZkYu7hNPBJN6aj+F37YHJCBIYDbXsGrUffPnYSoFa8FuAy5Sw==
+X-Received: by 2002:a2e:3814:0:b0:2c9:f71f:c00f with SMTP id f20-20020a2e3814000000b002c9f71fc00fmr1101183lja.30.1701680366458;
+        Mon, 04 Dec 2023 00:59:26 -0800 (PST)
+Received: from localhost.localdomain ([93.175.11.252])
+        by smtp.gmail.com with ESMTPSA id o5-20020a05651c050500b002ca0abab79bsm108294ljp.4.2023.12.04.00.59.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 00:59:26 -0800 (PST)
+From:   Daniil Maximov <daniil31415it@gmail.com>
+To:     Egor Pomozov <epomozov@marvell.com>
+Cc:     Daniil Maximov <daniil31415it@gmail.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: [PATCH] net: atlantic: Fix NULL dereference of skb pointer in
+Date:   Mon,  4 Dec 2023 11:58:10 +0300
+Message-Id: <20231204085810.1681386-1-daniil31415it@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cS_KCgCHjTWblG1l1INIAA--.54724S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF1kGFyfGryUtr1xXFWrZrb_yoW8Jw4rpa
-        1rGF909rW8Ja4jgr9FvF18tFWY9a1UG3yUGFZ7W3Wag3sxC3WjkF9ayrWjgryqvF4xur13
-        tF47Gr4xZF1j93DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
-        6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-        n2IY04v7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUP-B_UUUUU=
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rdev->pm.dpm.ps allocated by kcalloc should be freed in every
-following error-handling path. However, in the error-handling of
-rdev->pm.power_state[i].clock_info the rdev->pm.dpm.ps is not freed,
-resulting in a memleak in this function.
+If is_ptp_ring == true in the loop of __aq_ring_xdp_clean function,
+then a timestamp is stored from a packet in a field of skb object,
+which is not allocated at the moment of the call (skb == NULL).
 
-Fixes: 80ea2c129c76 ("drm/radeon/kms: add dpm support for sumo asics (v2)")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
+Generalize aq_ptp_extract_ts and other affected functions so they don't
+work with struct sk_buff*, but with struct skb_shared_hwtstamps*.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE
+
+Fixes: 26efaef759a1 ("net: atlantic: Implement xdp data plane")
+Signed-off-by: Daniil Maximov <daniil31415it@gmail.com>
 ---
+ .../net/ethernet/aquantia/atlantic/aq_ptp.c    | 10 +++++-----
+ .../net/ethernet/aquantia/atlantic/aq_ptp.h    |  4 ++--
+ .../net/ethernet/aquantia/atlantic/aq_ring.c   | 18 ++++++++++++------
+ 3 files changed, 19 insertions(+), 13 deletions(-)
 
-Changelog:
-
-v2: Adding {} to make if statement correct.
----
- drivers/gpu/drm/radeon/sumo_dpm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/radeon/sumo_dpm.c b/drivers/gpu/drm/radeon/sumo_dpm.c
-index f74f381af05f..d49c145db437 100644
---- a/drivers/gpu/drm/radeon/sumo_dpm.c
-+++ b/drivers/gpu/drm/radeon/sumo_dpm.c
-@@ -1493,8 +1493,10 @@ static int sumo_parse_power_table(struct radeon_device *rdev)
- 		non_clock_array_index = power_state->v2.nonClockInfoIndex;
- 		non_clock_info = (struct _ATOM_PPLIB_NONCLOCK_INFO *)
- 			&non_clock_info_array->nonClockInfo[non_clock_array_index];
--		if (!rdev->pm.power_state[i].clock_info)
-+		if (!rdev->pm.power_state[i].clock_info) {
-+			kfree(rdev->pm.dpm.ps);
- 			return -EINVAL;
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
+index 80b44043e6c5..28c9b6f1a54f 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
+@@ -553,17 +553,17 @@ void aq_ptp_tx_hwtstamp(struct aq_nic_s *aq_nic, u64 timestamp)
+ 
+ /* aq_ptp_rx_hwtstamp - utility function which checks for RX time stamp
+  * @adapter: pointer to adapter struct
+- * @skb: particular skb to send timestamp with
++ * @shhwtstamps: particular skb_shared_hwtstamps to save timestamp
+  *
+  * if the timestamp is valid, we convert it into the timecounter ns
+  * value, then store that result into the hwtstamps structure which
+  * is passed up the network stack
+  */
+-static void aq_ptp_rx_hwtstamp(struct aq_ptp_s *aq_ptp, struct sk_buff *skb,
++static void aq_ptp_rx_hwtstamp(struct aq_ptp_s *aq_ptp, struct skb_shared_hwtstamps *shhwtstamps,
+ 			       u64 timestamp)
+ {
+ 	timestamp -= atomic_read(&aq_ptp->offset_ingress);
+-	aq_ptp_convert_to_hwtstamp(aq_ptp, skb_hwtstamps(skb), timestamp);
++	aq_ptp_convert_to_hwtstamp(aq_ptp, shhwtstamps, timestamp);
+ }
+ 
+ void aq_ptp_hwtstamp_config_get(struct aq_ptp_s *aq_ptp,
+@@ -639,7 +639,7 @@ bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring)
+ 	       &aq_ptp->ptp_rx == ring || &aq_ptp->hwts_rx == ring;
+ }
+ 
+-u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
++u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
+ 		      unsigned int len)
+ {
+ 	struct aq_ptp_s *aq_ptp = aq_nic->aq_ptp;
+@@ -648,7 +648,7 @@ u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
+ 						   p, len, &timestamp);
+ 
+ 	if (ret > 0)
+-		aq_ptp_rx_hwtstamp(aq_ptp, skb, timestamp);
++		aq_ptp_rx_hwtstamp(aq_ptp, shhwtstamps, timestamp);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
+index 28ccb7ca2df9..210b723f2207 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
+@@ -67,7 +67,7 @@ int aq_ptp_hwtstamp_config_set(struct aq_ptp_s *aq_ptp,
+ /* Return either ring is belong to PTP or not*/
+ bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring);
+ 
+-u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
++u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
+ 		      unsigned int len);
+ 
+ struct ptp_clock *aq_ptp_get_ptp_clock(struct aq_ptp_s *aq_ptp);
+@@ -143,7 +143,7 @@ static inline bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring)
+ }
+ 
+ static inline u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic,
+-				    struct sk_buff *skb, u8 *p,
++				    struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
+ 				    unsigned int len)
+ {
+ 	return 0;
+diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
+index 4de22eed099a..694daeaf3e61 100644
+--- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
++++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
+@@ -647,7 +647,7 @@ static int __aq_ring_rx_clean(struct aq_ring_s *self, struct napi_struct *napi,
+ 		}
+ 		if (is_ptp_ring)
+ 			buff->len -=
+-				aq_ptp_extract_ts(self->aq_nic, skb,
++				aq_ptp_extract_ts(self->aq_nic, skb_hwtstamps(skb),
+ 						  aq_buf_vaddr(&buff->rxdata),
+ 						  buff->len);
+ 
+@@ -742,6 +742,8 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
+ 		struct aq_ring_buff_s *buff = &rx_ring->buff_ring[rx_ring->sw_head];
+ 		bool is_ptp_ring = aq_ptp_ring(rx_ring->aq_nic, rx_ring);
+ 		struct aq_ring_buff_s *buff_ = NULL;
++		u16 ptp_hwtstamp_len = 0;
++		struct skb_shared_hwtstamps shhwtstamps;
+ 		struct sk_buff *skb = NULL;
+ 		unsigned int next_ = 0U;
+ 		struct xdp_buff xdp;
+@@ -810,11 +812,12 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
+ 		hard_start = page_address(buff->rxdata.page) +
+ 			     buff->rxdata.pg_off - rx_ring->page_offset;
+ 
+-		if (is_ptp_ring)
+-			buff->len -=
+-				aq_ptp_extract_ts(rx_ring->aq_nic, skb,
+-						  aq_buf_vaddr(&buff->rxdata),
+-						  buff->len);
++		if (is_ptp_ring) {
++			ptp_hwtstamp_len = aq_ptp_extract_ts(rx_ring->aq_nic, &shhwtstamps,
++							     aq_buf_vaddr(&buff->rxdata),
++							     buff->len);
++			buff->len -= ptp_hwtstamp_len;
 +		}
- 		ps = kzalloc(sizeof(struct sumo_ps), GFP_KERNEL);
- 		if (ps == NULL) {
- 			kfree(rdev->pm.dpm.ps);
+ 
+ 		xdp_init_buff(&xdp, frame_sz, &rx_ring->xdp_rxq);
+ 		xdp_prepare_buff(&xdp, hard_start, rx_ring->page_offset,
+@@ -834,6 +837,9 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
+ 		if (IS_ERR(skb) || !skb)
+ 			continue;
+ 
++		if (ptp_hwtstamp_len > 0)
++			*skb_hwtstamps(skb) = shhwtstamps;
++
+ 		if (buff->is_vlan)
+ 			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
+ 					       buff->vlan_rx_tag);
 -- 
-2.34.1
+2.25.1
 
