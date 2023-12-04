@@ -2,81 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D770803F19
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0844A803F1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234809AbjLDUOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:14:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
+        id S231591AbjLDUPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:15:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234526AbjLDUO1 (ORCPT
+        with ESMTP id S230317AbjLDUPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:14:27 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D65183
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:14:33 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-58a7d13b00bso3339040eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 12:14:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1701720872; x=1702325672; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q/gPyzX5houMx56rDPPZ+T9jmCn/l6+TF2FXxv5O3eY=;
-        b=ebUgtJn2mw/Y9s+WswbHYIcizhkZA/nFFfxXu7g+x1/eEW3OFqvN5/MPebGMDyivN6
-         etV0F0c8jcMPMmME2inouU9l/X8+FBHykSMmDvlBA4fhJdlpNHUt7MOMqLwmii2Cwg28
-         co5HZJ29s8tvqSrp4lGresPxowtehWSV6yXhWWdGXkzrgcWsxsO6xFROBnnWLtr5TvlX
-         3HbhfbyQhqk6EUbYmexIydEKM2Oi0YlVuqz/7Hslx6PW58wnSDcOdSkGEbBebl/3EhLa
-         ALJc+RHWRbtnRUsquuJW4NfUZ1A7lx2loFZ7lnv7AdjDOCzqX2ZCLer0gDr7pyp7jkXn
-         m2WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701720872; x=1702325672;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q/gPyzX5houMx56rDPPZ+T9jmCn/l6+TF2FXxv5O3eY=;
-        b=tl6XIlC4Nu01dEgHGYViMop8H2KGQUhuLfeiF9EJH4AJxhq37kZ9MAsNU+KjBbq98O
-         m4hYPsPuVing8tG50BCty+j7KJGxg21d6E27PiwMMzbsGoI+9kGjmYzgnKHheJjfy0GU
-         Vz2arPnRvHzNBj55QT+/mkMwfZQ8H7o4424e7Zj0AlsETScfxtgsoS0D9nNXK9Q73SZq
-         dV/OEqb1VO10YkS1JW2s7c63Gg2gQFUUSX8cZbP9tRaIS7sUaMCYk19/XKLvB6WM9TNH
-         ZeaBy2KN9e9mQBOwDAjOAhwTIxGOMZxmwhoirNDumNvKLStHHBuucSbX0usErqYGcox9
-         K0AA==
-X-Gm-Message-State: AOJu0Yy0Eu4H6utJqR6YKofGyXxH1qTGS58DV8Cy2lD2cfe4oss3XHOb
-        p86nSDrdaeEBRdN7dpK82cC5XQ==
-X-Google-Smtp-Source: AGHT+IGXBET6MNwMSbamC/KP8JNoP1KrkiOsbvmJXhEms8xEvu2+WjJ2XqRplClC0SuDj74KcW06qA==
-X-Received: by 2002:a05:6359:5c2a:b0:170:17eb:377e with SMTP id pu42-20020a0563595c2a00b0017017eb377emr4548494rwb.38.1701720871846;
-        Mon, 04 Dec 2023 12:14:31 -0800 (PST)
-Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
-        by smtp.gmail.com with ESMTPSA id n7-20020a63f807000000b005b529d633b7sm7894060pgh.14.2023.12.04.12.14.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 12:14:31 -0800 (PST)
-From:   Kyle Huey <me@kylehuey.com>
-X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
-To:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org
-Cc:     Robert O'Callahan <robert@ocallahan.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf program suppresses SIGIO.
-Date:   Mon,  4 Dec 2023 12:14:06 -0800
-Message-Id: <20231204201406.341074-3-khuey@kylehuey.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231204201406.341074-1-khuey@kylehuey.com>
-References: <20231204201406.341074-1-khuey@kylehuey.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Mon, 4 Dec 2023 15:15:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86272D2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:15:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85EDC433C7;
+        Mon,  4 Dec 2023 20:15:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1701720925;
+        bh=Oa+AKNnfNJKYaj5c5DLXMZSQbG2uQbsRvEdWdjOKPxE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pvZROeSiPwT0U9Ds4tzHhAfzYiGa8TlQ8YX3RHsa7xnOqpQNt6rX2SdCG53uQ0Ax5
+         rOE+cr/D7DDykyuEdJQg3wsmj56gubbWf+APhs1arrAJqJW/sGzZf4Za3UVDl/kORY
+         WDvtLe1kGvWVrHW+rMQ4ZMZ9H2Tr/8IFN3pQAx/E=
+Date:   Mon, 4 Dec 2023 12:15:24 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Dmytro Maluka <dmaluka@chromium.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/thp: add CONFIG_TRANSPARENT_HUGEPAGE_NEVER option
+Message-Id: <20231204121524.dfa9f98e809c91b353968d34@linux-foundation.org>
+In-Reply-To: <ZW4vLV_LDFLf1cJQ@google.com>
+References: <20231204163254.2636289-1-dmaluka@chromium.org>
+        <20231204111301.7e087b2f851b30121561e8fc@linux-foundation.org>
+        <ZW4vLV_LDFLf1cJQ@google.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,147 +48,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test sets a hardware breakpoint and uses a bpf program to suppress the
-I/O availability signal if the ip matches the expected value.
+On Mon, 4 Dec 2023 20:57:33 +0100 Dmytro Maluka <dmaluka@chromium.org> wrote:
 
-Signed-off-by: Kyle Huey <khuey@kylehuey.com>
----
- .../selftests/bpf/prog_tests/perf_skip.c      | 95 +++++++++++++++++++
- .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
- 2 files changed, 118 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+> On Mon, Dec 04, 2023 at 11:13:01AM -0800, Andrew Morton wrote:
+> > On Mon,  4 Dec 2023 17:32:54 +0100 Dmytro Maluka <dmaluka@chromium.org> wrote:
+> > 
+> > > Add an option to disable transparent hugepages by default, in line with
+> > > the existing transparent_hugepage=never command line setting.
+> > > 
+> > > Rationale: khugepaged has its own non-negligible memory cost even if it
+> > > is not used by any applications, since it bumps up vm.min_free_kbytes to
+> > > its own required minimum in set_recommended_min_free_kbytes(). For
+> > > example, on a machine with 4GB RAM, with 3 mm zones and pageblock_order
+> > > == MAX_ORDER, starting khugepaged causes vm.min_free_kbytes increase
+> > > from 8MB to 132MB.
+> > > 
+> > > So if we use THP on machines with e.g. >=8GB of memory for better
+> > > performance, but avoid using it on lower-memory machines to avoid its
+> > > memory overhead, then for the same reason we also want to avoid even
+> > > starting khugepaged on those <8GB machines. So with
+> > > CONFIG_TRANSPARENT_HUGEPAGE_NEVER we can use the same kernel image on
+> > > both >=8GB and <8GB machines, with THP support enabled but khugepaged
+> > > not started by default. The userspace can then decide to enable THP
+> > > (i.e. start khugepaged) via sysfs if needed, based on the total amount
+> > > of memory.
+> > > 
+> > > This could also be achieved with the existing transparent_hugepage=never
+> > > setting in the kernel command line instead. But it seems cleaner to
+> > > avoid tweaking the command line for such a basic setting.
+> > > 
+> > > P.S. I see that CONFIG_TRANSPARENT_HUGEPAGE_NEVER was already proposed
+> > > in the past [1] but without an explanation of the purpose.
+> > > 
+> > > ...
+> > >
+> > > --- a/mm/Kconfig
+> > > +++ b/mm/Kconfig
+> > > @@ -859,6 +859,12 @@ choice
+> > >  	  madvise(MADV_HUGEPAGE) but it won't risk to increase the
+> > >  	  memory footprint of applications without a guaranteed
+> > >  	  benefit.
+> > > +
+> > > +	config TRANSPARENT_HUGEPAGE_NEVER
+> > > +		bool "never"
+> > > +	help
+> > > +	  Disabling Transparent Hugepage by default. It can still be
+> > 
+> > s/Disabling/Disable/
+> 
+> It is in line with the descriptions of TRANSPARENT_HUGEPAGE_ALWAYS and
+> TRANSPARENT_HUGEPAGE_MADVISE: "Enabling Transparent Hugepage ..."
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-new file mode 100644
-index 000000000000..b269a31669b7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <test_progs.h>
-+#include "test_perf_skip.skel.h"
-+#include <linux/hw_breakpoint.h>
-+#include <sys/mman.h>
-+
-+#define BPF_OBJECT            "test_perf_skip.bpf.o"
-+
-+static void handle_sig(int)
-+{
-+	ASSERT_OK(1, "perf event not skipped");
-+}
-+
-+static noinline int test_function(void)
-+{
-+	return 0;
-+}
-+
-+void serial_test_perf_skip(void)
-+{
-+	sighandler_t previous;
-+	int duration = 0;
-+	struct test_perf_skip *skel = NULL;
-+	int map_fd = -1;
-+	long page_size = sysconf(_SC_PAGE_SIZE);
-+	uintptr_t *ip = NULL;
-+	int prog_fd = -1;
-+	struct perf_event_attr attr = {0};
-+	int perf_fd = -1;
-+	struct f_owner_ex owner;
-+	int err;
-+
-+	previous = signal(SIGIO, handle_sig);
-+
-+	skel = test_perf_skip__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		goto cleanup;
-+
-+	prog_fd = bpf_program__fd(skel->progs.handler);
-+	if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
-+		goto cleanup;
-+
-+	map_fd = bpf_map__fd(skel->maps.ip);
-+	if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
-+		goto cleanup;
-+
-+	ip = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, map_fd, 0);
-+	if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
-+		goto cleanup;
-+
-+	*ip = (uintptr_t)test_function;
-+
-+	attr.type = PERF_TYPE_BREAKPOINT;
-+	attr.size = sizeof(attr);
-+	attr.bp_type = HW_BREAKPOINT_X;
-+	attr.bp_addr = (uintptr_t)test_function;
-+	attr.bp_len = sizeof(long);
-+	attr.sample_period = 1;
-+	attr.sample_type = PERF_SAMPLE_IP;
-+	attr.pinned = 1;
-+	attr.exclude_kernel = 1;
-+	attr.exclude_hv = 1;
-+	attr.precise_ip = 3;
-+
-+	perf_fd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-+	if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
-+		goto cleanup;
-+
-+	err = fcntl(perf_fd, F_SETFL, O_ASYNC);
-+	if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
-+		goto cleanup;
-+
-+	owner.type = F_OWNER_TID;
-+	owner.pid = gettid();
-+	err = fcntl(perf_fd, F_SETOWN_EX, &owner);
-+	if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
-+		goto cleanup;
-+
-+	err = ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-+	if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
-+		goto cleanup;
-+
-+	test_function();
-+
-+cleanup:
-+	if (perf_fd >= 0)
-+		close(perf_fd);
-+	if (ip)
-+		munmap(ip, page_size);
-+	if (skel)
-+		test_perf_skip__destroy(skel);
-+
-+	signal(SIGIO, previous);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-new file mode 100644
-index 000000000000..ef01a9161afe
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+	__type(key, uint32_t);
-+	__type(value, uintptr_t);
-+} ip SEC(".maps");
-+
-+SEC("perf_event")
-+int handler(struct bpf_perf_event_data *data)
-+{
-+	const uint32_t index = 0;
-+	uintptr_t *v = bpf_map_lookup_elem(&ip, &index);
-+
-+	return !(v && *v == PT_REGS_IP(&data->regs));
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
+Those are incorrect also.
 
+> > > +	  enabled at runtime via sysfs.
+> > >  endchoice
+> > 
+> > The patch adds the config option but doesn't use it?
+> 
+> I should have been more precise: it is not a new option but a new choice
+> for CONFIG_TRANSPARENT_HUGEPAGE, in addition to the existing ALWAYS and
+> MADVISE choices. In mm/huge_memory.c in the declaration of the
+> transparent_hugepage_flags variable, if either ALWAYS or MADVISE is
+> chosen, transparent_hugepage_flags is initialized with such a value
+> that makes khugepaged being started by default during bootup. This patch
+> allows enabling CONFIG_TRANSPARENT_HUGEPAGE without setting either
+> ALWAYS or MADVISE, so that transparent_hugepage_flags is initialized
+> with such a value that khugepaged is not started by default.
+
+OK, thanks.
