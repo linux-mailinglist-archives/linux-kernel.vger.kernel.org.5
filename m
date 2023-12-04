@@ -2,95 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEEA8035CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA278035CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:03:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344844AbjLDODU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:03:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234130AbjLDODS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234455AbjLDODS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 4 Dec 2023 09:03:18 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF24E5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:03:24 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54c671acd2eso3559820a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:03:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701698603; x=1702303403; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vZl9fhFqbyUE2QAE/hn5dn7UESqFuFxtWyhwIBYWh68=;
-        b=C5IGklQJhRwnYi30921QUPkD8R0hEDufd4lDoBEJ6AWG3CnSIy5MncFXEbpm/2t5YV
-         3wikMiCYnJ7RLG4VLMmIkeX5evG3okKtirwDUwVyCAyRo+jk2t+eKqf2jN0Nc2udwMSq
-         SDRh6l4V5vzgFadWHi159FlEWiNqKRyGv/5CxEZ29sUJOxyeQOABp8rf0y99bkrD5izI
-         3xJpqQJO4NoT/Cox/wpL9d9xhy/DWusM/GZL8vlWDdNhnKnANEUugvvs6Zu8RvW5xyvl
-         4xefNI0BreP+B9r1n8KSY7wcKo1eJBWczHfAONV9iE82FzAbDtPQ+BFfQLS2DVZQLLbN
-         4KZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701698603; x=1702303403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vZl9fhFqbyUE2QAE/hn5dn7UESqFuFxtWyhwIBYWh68=;
-        b=OUD+9eSdOZeJuITseV+0Wyxc9Vfi/JJE0z8W1joluiY7MVr2mtjfuvWBspkNhBnNrT
-         uaq4pmpaIgB4ylZ26wqWYpexEQCCckJr+J74HAvvMNVl9dHMcOlUJhZHbor25Livpf8Z
-         yD70LWjAuc72qhIn6nQf/ArmngUE0HgEnC331v2x6vHOT0mYXSjErgzg70OEk9At7UWD
-         4kDBzGttTXCjqWJYmJnJmFst4KOHq+Y9zMEUc0P4JzLPnsaUW+kF1OBu2bCU7TM1hTzy
-         LfneP16T0n/ajcyBkDzA69JUgVqf+WgJxWXZazRZi7Lwz1hSpfFE0UfRjiOOnz6uKaUL
-         vIEA==
-X-Gm-Message-State: AOJu0Yz7WauhWHx1VHmTUL5IaOr5o+gZyCW1GM6C5KAuYsHOIqm/Sf6i
-        ee0IvAquFRr5M9oVLAfoqPd6Y2nXjx65rJRtPhI=
-X-Google-Smtp-Source: AGHT+IHapyPGWDrdwM8q/14CfWC1MGm3nFhXi1RE1H768BLInmNVt4rdmD69rm96hFX1iTvjmmXLCe0s9kEjK1qfc+8=
-X-Received: by 2002:a50:999a:0:b0:54c:4837:93f1 with SMTP id
- m26-20020a50999a000000b0054c483793f1mr3229384edb.56.1701698602856; Mon, 04
- Dec 2023 06:03:22 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229711AbjLDODR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Dec 2023 09:03:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8868ADF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:03:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12D4AC433C8;
+        Mon,  4 Dec 2023 14:03:20 +0000 (UTC)
+Message-ID: <ab06b2c0-a290-46cd-9d97-3f9f6e3bbb36@xs4all.nl>
+Date:   Mon, 4 Dec 2023 15:03:19 +0100
 MIME-Version: 1.0
-References: <20231203232017.994963-1-ubizjak@gmail.com> <20231203232017.994963-3-ubizjak@gmail.com>
-In-Reply-To: <20231203232017.994963-3-ubizjak@gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Mon, 4 Dec 2023 15:03:11 +0100
-Message-ID: <CAFULd4aPtQ4YmBunxYf_jkSkw50rLgYqD_upnYqt8PH3NzYNWg@mail.gmail.com>
-Subject: Re: [PATCH -tip v2 3/3] x86/percpu: Avoid sparse warning with cast to
- named address space
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 03/36] media: microchip: Remove useless setting of
+ min_buffers_needed
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        matt.ranostay@konsulko.com
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com,
+        Eugen Hristev <eugen.hristev@collabora.com>
+References: <20231204132323.22811-1-benjamin.gaignard@collabora.com>
+ <20231204132323.22811-4-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ xsFNBFQ84W0BEAC7EF1iL4s3tY8cRTVkJT/297h0Hz0ypA+ByVM4CdU9sN6ua/YoFlr9k0K4
+ BFUlg7JzJoUuRbKxkYb8mmqOe722j7N3HO8+ofnio5cAP5W0WwDpM0kM84BeHU0aPSTsWiGR
+ yw55SOK2JBSq7hueotWLfJLobMWhQii0Zd83hGT9SIt9uHaHjgwmtTH7MSTIiaY6N14nw2Ud
+ C6Uykc1va0Wqqc2ov5ihgk/2k2SKa02ookQI3e79laOrbZl5BOXNKR9LguuOZdX4XYR3Zi6/
+ BsJ7pVCK9xkiVf8svlEl94IHb+sa1KrlgGv3fn5xgzDw8Z222TfFceDL/2EzUyTdWc4GaPMC
+ E/c1B4UOle6ZHg02+I8tZicjzj5+yffv1lB5A1btG+AmoZrgf0X2O1B96fqgHx8w9PIpVERN
+ YsmkfxvhfP3MO3oHh8UY1OLKdlKamMneCLk2up1Zlli347KMjHAVjBAiy8qOguKF9k7HOjif
+ JCLYTkggrRiEiE1xg4tblBNj8WGyKH+u/hwwwBqCd/Px2HvhAsJQ7DwuuB3vBAp845BJYUU3
+ 06kRihFqbO0vEt4QmcQDcbWINeZ2zX5TK7QQ91ldHdqJn6MhXulPKcM8tCkdD8YNXXKyKqNl
+ UVqXnarz8m2JCbHgjEkUlAJCNd6m3pfESLZwSWsLYL49R5yxIwARAQABzSFIYW5zIFZlcmt1
+ aWwgPGh2ZXJrdWlsQHhzNGFsbC5ubD7CwZUEEwECACgFAlQ84W0CGwMFCRLMAwAGCwkIBwMC
+ BhUIAgkKCwQWAgMBAh4BAheAACEJEL0tYUhmFDtMFiEEBSzee8IVBTtonxvKvS1hSGYUO0wT
+ 7w//frEmPBAwu3OdvAk9VDkH7X+7RcFpiuUcJxs3Xl6jpaA+SdwtZra6W1uMrs2RW8eXXiq/
+ 80HXJtYnal1Y8MKUBoUVhT/+5+KcMyfVQK3VFRHnNxCmC9HZV+qdyxAGwIscUd4hSlweuU6L
+ 6tI7Dls6NzKRSTFbbGNZCRgl8OrF01TBH+CZrcFIoDgpcJA5Pw84mxo+wd2BZjPA4TNyq1od
+ +slSRbDqFug1EqQaMVtUOdgaUgdlmjV0+GfBHoyCGedDE0knv+tRb8v5gNgv7M3hJO3Nrl+O
+ OJVoiW0G6OWVyq92NNCKJeDy8XCB1yHCKpBd4evO2bkJNV9xcgHtLrVqozqxZAiCRKN1elWF
+ 1fyG8KNquqItYedUr+wZZacqW+uzpVr9pZmUqpVCk9s92fzTzDZcGAxnyqkaO2QTgdhPJT2m
+ wpG2UwIKzzi13tmwakY7OAbXm76bGWVZCO3QTHVnNV8ku9wgeMc/ZGSLUT8hMDZlwEsW7u/D
+ qt+NlTKiOIQsSW7u7h3SFm7sMQo03X/taK9PJhS2BhhgnXg8mOa6U+yNaJy+eU0Lf5hEUiDC
+ vDOI5x++LD3pdrJVr/6ZB0Qg3/YzZ0dk+phQ+KlP6HyeO4LG662toMbFbeLcBjcC/ceEclII
+ 90QNEFSZKM6NVloM+NaZRYVO3ApxWkFu+1mrVTXOwU0EVDzhbQEQANzLiI6gHkIhBQKeQaYs
+ p2SSqF9c++9LOy5x6nbQ4s0X3oTKaMGfBZuiKkkU6NnHCSa0Az5ScRWLaRGu1PzjgcVwzl5O
+ sDawR1BtOG/XoPRNB2351PRp++W8TWo2viYYY0uJHKFHML+ku9q0P+NkdTzFGJLP+hn7x0RT
+ DMbhKTHO3H2xJz5TXNE9zTJuIfGAz3ShDpijvzYieY330BzZYfpgvCllDVM5E4XgfF4F/N90
+ wWKu50fMA01ufwu+99GEwTFVG2az5T9SXd7vfSgRSkzXy7hcnxj4IhOfM6Ts85/BjMeIpeqy
+ TDdsuetBgX9DMMWxMWl7BLeiMzMGrfkJ4tvlof0sVjurXibTibZyfyGR2ricg8iTbHyFaAzX
+ 2uFVoZaPxrp7udDfQ96sfz0hesF9Zi8d7NnNnMYbUmUtaS083L/l2EDKvCIkhSjd48XF+aO8
+ VhrCfbXWpGRaLcY/gxi2TXRYG9xCa7PINgz9SyO34sL6TeFPSZn4bPQV5O1j85Dj4jBecB1k
+ z2arzwlWWKMZUbR04HTeAuuvYvCKEMnfW3ABzdonh70QdqJbpQGfAF2p4/iCETKWuqefiOYn
+ pR8PqoQA1DYv3t7y9DIN5Jw/8Oj5wOeEybw6vTMB0rrnx+JaXvxeHSlFzHiD6il/ChDDkJ9J
+ /ejCHUQIl40wLSDRABEBAAHCwXwEGAECAA8FAlQ84W0CGwwFCRLMAwAAIQkQvS1hSGYUO0wW
+ IQQFLN57whUFO2ifG8q9LWFIZhQ7TA1WD/9yxJvQrpf6LcNrr8uMlQWCg2iz2q1LGt1Itkuu
+ KaavEF9nqHmoqhSfZeAIKAPn6xuYbGxXDrpN7dXCOH92fscLodZqZtK5FtbLvO572EPfxneY
+ UT7JzDc/5LT9cFFugTMOhq1BG62vUm/F6V91+unyp4dRlyryAeqEuISykhvjZCVHk/woaMZv
+ c1Dm4Uvkv0Ilelt3Pb9J7zhcx6sm5T7v16VceF96jG61bnJ2GFS+QZerZp3PY27XgtPxRxYj
+ AmFUeF486PHx/2Yi4u1rQpIpC5inPxIgR1+ZFvQrAV36SvLFfuMhyCAxV6WBlQc85ArOiQZB
+ Wm7L0repwr7zEJFEkdy8C81WRhMdPvHkAIh3RoY1SGcdB7rB3wCzfYkAuCBqaF7Zgfw8xkad
+ KEiQTexRbM1sc/I8ACpla3N26SfQwrfg6V7TIoweP0RwDrcf5PVvwSWsRQp2LxFCkwnCXOra
+ gYmkrmv0duG1FStpY+IIQn1TOkuXrciTVfZY1cZD0aVxwlxXBnUNZZNslldvXFtndxR0SFat
+ sflovhDxKyhFwXOP0Rv8H378/+14TaykknRBIKEc0+lcr+EMOSUR5eg4aURb8Gc3Uc7fgQ6q
+ UssTXzHPyj1hAyDpfu8DzAwlh4kKFTodxSsKAjI45SLjadSc94/5Gy8645Y1KgBzBPTH7Q==
+In-Reply-To: <20231204132323.22811-4-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 12:20=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> wro=
-te:
->
-> Currently sparse does not know about __seg_fs and __seg_fs named
-> address space qualifiers. Avoid thousands of warnings about unexpected
-> keyword at the end of cast operator by removing named address space
-> qualifier from __my_cpu_type() when __CHECKER__ is defined.
+On 04/12/2023 14:22, Benjamin Gaignard wrote:
+> This driver uses min_buffers_needed which vb2 uses to ensure
+> start_streaming is called when at least 'min_buffers_needed'
+> buffers are queued. However, this driver doesn't need this,
+> it can stream fine without any buffers queued.
+> Just drop this unnecessary restriction.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> CC: Eugen Hristev <eugen.hristev@collabora.com>
+> ---
+>  drivers/media/platform/microchip/microchip-isc-base.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/microchip/microchip-isc-base.c b/drivers/media/platform/microchip/microchip-isc-base.c
+> index 3fba0e2844b6..63c39981f47a 100644
+> --- a/drivers/media/platform/microchip/microchip-isc-base.c
+> +++ b/drivers/media/platform/microchip/microchip-isc-base.c
+> @@ -1821,7 +1821,6 @@ static int isc_async_complete(struct v4l2_async_notifier *notifier)
+>  	q->mem_ops		= &vb2_dma_contig_memops;
+>  	q->timestamp_flags	= V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+>  	q->lock			= &isc->lock;
+> -	q->min_buffers_needed	= 1;
 
-We have discussed this issue a bit on the linux-sparse ML [1], and the
-proposed solution is to define:
+I don't think this can be dropped. Looking at the isc_start_streaming() function
+it expects to have at least one buffer queued.
 
-+#define __seg_gs __attribute__((address_space(__seg_gs)))
-+#define __seg_fs __attribute__((address_space(__seg_fs)))
+Regards,
 
-as done in the attached patch.
+	Hans
 
-[1] https://lore.kernel.org/linux-sparse/CAFULd4YMcHhkSR4P5tq3ghLQyUCkiTOKS=
-6PQd1Bec-2NicUiwQ@mail.gmail.com/T/#md048c918cd2145c822727e3aa401326e166084=
-2f
+>  	q->dev			= isc->dev;
+>  
+>  	ret = vb2_queue_init(q);
 
-Uros.
