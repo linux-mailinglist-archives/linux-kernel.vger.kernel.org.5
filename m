@@ -2,74 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA39F803B25
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D61A803B27
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjLDRI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:08:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
+        id S230391AbjLDRJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:09:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjLDRI5 (ORCPT
+        with ESMTP id S229561AbjLDRJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:08:57 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F502CB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:09:03 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1b7b6bf098so182899066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:09:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701709742; x=1702314542; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cwXL8BrRM8BseBFb+FVnbs3rnml2/q46Wk4gm1RfHQc=;
-        b=mQ7w64KVcahmF99STsf781e+ZAJbzal+Ez3+SoeyMeGAdWmCdBNdAyLaeiv5I32IVh
-         xDYtwRjaosGN4/NDMZpodkgOozDUlNFBWaUCTkkJ9Exq3TpIVGpHedDgAnver1YWTE3D
-         A/k5ta8nU4A99G5tKOYopSJXtw9LV2um7DlPGFiFXppKQbkp00ecmo+l26U7t2yQ2IpQ
-         yaRgqYNu+zOb2wN2jb9yCVV+SHHXZo7k9ILAZk1XOgfY8KAj2U6/esb7yCVe1szuejdk
-         B2wZXBQ+AtkQ+9XeY5pMM+n5GS2lgSrbYYkQ0l/lXMJpjiP4zKIipFSyAYcGS42Dn33G
-         7msw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701709742; x=1702314542;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cwXL8BrRM8BseBFb+FVnbs3rnml2/q46Wk4gm1RfHQc=;
-        b=uie/ab2JMEElvf2pFldtYcfSv5Pktp1azn9LmC7IPt7lr+RuAWdw6j25Q9wPqnmqX9
-         /wrHk8SfmTueDS9rTPNWzenqtB8P+AH8bWm+pAyZvPpaGCNpO9oWNzq5ty7qV/Ex2G8y
-         nQFqD5+b5aG73EcwMDVYLXBhmz/kNsyPvZoM0/8x4/zW4v72WEC8b8k2DPktxSbbbzWj
-         W390Ow0XO1sWGsLZTQtJe3BIN+wN/vBMxT61XrJ4BtTYRuAfJRXy+O+knkfWFAO/Rxey
-         G8hN/UawCsjGSaOBIkffk8nYTfC4ba921FQxmfZudB/E2OdbJ7tDrsLMetu8mai9lFrc
-         WgpA==
-X-Gm-Message-State: AOJu0YxNmGmUpdlIBes9d7CJzDL+9Ji/bCuqjb/3yLljwBLFVxSvRhPu
-        9nWWMHZst/cUAwXSPs19Ui8ycA==
-X-Google-Smtp-Source: AGHT+IE6/SlKllvBRaAuPlE58JB7LAAvR5NP8IT6OxfCtQahmBOANENbG1qEgyja3170l7I7Cx6YCw==
-X-Received: by 2002:a17:907:100a:b0:a04:e1e7:d14c with SMTP id ox10-20020a170907100a00b00a04e1e7d14cmr5225697ejb.32.1701709741738;
-        Mon, 04 Dec 2023 09:09:01 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:3cb:7bb0:d925:8508:67e3:fb10? ([2a01:e0a:3cb:7bb0:d925:8508:67e3:fb10])
-        by smtp.gmail.com with ESMTPSA id b8-20020aa7c908000000b0054c738b6c31sm17013edt.55.2023.12.04.09.09.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 09:09:01 -0800 (PST)
-Message-ID: <b66dc60e-78ad-46f6-9ad6-430f288af018@linaro.org>
-Date:   Mon, 4 Dec 2023 18:08:59 +0100
+        Mon, 4 Dec 2023 12:09:23 -0500
+Received: from kozue.soulik.info (kozue.soulik.info [IPv6:2001:19f0:7000:8404:5400:ff:fe00:d7d6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544D7F0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:09:29 -0800 (PST)
+Received: from [192.168.10.7] (unknown [10.0.12.132])
+        by kozue.soulik.info (Postfix) with ESMTPSA id BB0652FEC41;
+        Tue,  5 Dec 2023 02:09:22 +0900 (JST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 kozue.soulik.info BB0652FEC41
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=soulik.info; s=mail;
+        t=1701709763; bh=leU52NKS+4j0SOtSDOYOhhz0uxpcfS2T59lZis83zKw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=O7ErB/CxKhYKG4nlGKr3vsziESDbTDQTjRWFfYVZyrBf+FCitbkZmVsu61itW5BZC
+         BkuhKzQiNSAx5PnL17tMdzbzYPgQ/GBUDRqn9TqyJCCrM6lOdEtd96b7Sl/Toh1ckQ
+         LbywmuN0R9VIAgtnYioVywWwsOj7UpZDT/mMv5eM=
+Message-ID: <1f282d44-7593-47f2-9572-131323f846a1@soulik.info>
+Date:   Tue, 5 Dec 2023 01:09:26 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: optee: os: toolchains would include linux target macros likes
- __linux__
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Randy Li <ayaka@soulik.info>
-Cc:     op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
-References: <bfba8d2c-646d-4d62-9f71-8e388e70f782@soulik.info>
- <CAHUa44FEkdtA+4AuoQnNEnObKzcUX3qkFD8iV8Z_pGJ7ZPWw2A@mail.gmail.com>
+Subject: Re: Could secure monitor let op-tee handle secure interrupter?
 Content-Language: en-US
-From:   Jerome Forissier <jerome.forissier@linaro.org>
-In-Reply-To: <CAHUa44FEkdtA+4AuoQnNEnObKzcUX3qkFD8iV8Z_pGJ7ZPWw2A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
+References: <de1c35aa-1cbf-450a-9953-eee557c8e8ce@soulik.info>
+ <CAFA6WYOUbix72jQ=UW8r_UspngBwVetnn89OdkN3skuzBqMhgg@mail.gmail.com>
+From:   Randy Li <ayaka@soulik.info>
+In-Reply-To: <CAFA6WYOUbix72jQ=UW8r_UspngBwVetnn89OdkN3skuzBqMhgg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -77,29 +49,64 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 12/4/23 17:34, Jens Wiklander wrote:
+On 2023/12/4 21:54, Sumit Garg wrote:
 > Hi Randy,
-> 
-> On Mon, Dec 4, 2023 at 2:39 PM Randy Li <ayaka@soulik.info> wrote:
->>
+>
+> On Mon, 27 Nov 2023 at 13:03, Randy Li via OP-TEE
+> <op-tee@lists.trustedfirmware.org> wrote:
 >> Hello
 >>
->> I wonder why Optee OS would use a linux target toolchains but not a bare
->> metal target(none os)?
-> 
-> I guess it started with that we didn't want to download both one Linux
-> and one bare metal toolchain. We need both AArch32 and AArch64
-> versions so it doubles up.
+>> I was wondering whether the current op-tee os support this that secure
+>> monitor would trigger the op-tee to handle the native interrupter
+>> without forwarding it to the REE?
+> I would suggest you to go through this doc [1] to see if it answers
+> all your questions. If not then let us know, we will help to clarify
+> further.
+>
+> [1] https://optee.readthedocs.io/en/latest/architecture/core.html#interrupt-handling
+>
+> -Sumit
 
-To expand on this: when building a complete OP-TEE setup like we do with
-https://github.com/OP-TEE/manifest, there are many different runtime
-environments: the Linux kernel, client applications, OP-TEE OS, Trusted
-Applications, EL3 firmware... Some of them require a Linux toolchain
-(the OP-TEE client library, tee-supplicant as well as the client
-applications). So the idea was, if we could build all the software with a
-Linux toolchain, it would simplify things. Since then we found out there
-are caveats but it mostly works.
+"When a secure interrupt is signaled by the Arm GIC, it shall reach the 
+OP-TEE OS interrupt exception vector. If the secure world is executing, 
+OP-TEE OS will handle interrupt straight from its exception vector."
 
--- 
-Jerome
+And Section "Deliver secure interrupt to secure world when SCR_NS is set"
+
+I think those are the answer to my initial question.
+
+But I didn't see such practice. In the recent changes to Linux kernel, 
+likes OP-TEE notifications, I think the most of platforms would like not 
+let the Secure OS handle the devices' interrupters? I didn't know such a 
+driver in Linux kernel either.
+
+When a CPU core, which is holding a spinlock, have been restored to 
+Secure context by monitor, would it halt the other cores which are 
+waiting for the release of that spinlock?
+
+Besides, when we use a spinlock in the kernel, in the most of time, we 
+except all IRQs are masked(spin_lock_irqsave), could this masked the 
+secure interrupter?
+
+Also, I didn't see there is a guideline about how OP-TEE os should 
+handle native interrupt in this case. If it took too much time, it may 
+lead an innocent process be regarded as hardlockup (or softlockup if it 
+turns to REE after all) in the linux kernel.
+
+>> If the answer is yes, could it lead to a dead lock when the linux kernel
+>> is holding a spinlock(usually irq is disabled in that CPU core) ?
+>>
+>> I didn't find much about how should we handle the secure interrupter
+>> from document, the general way seems to either forward it to REE or just
+>> don't use the secure interrupter at all.
+>>
+>> Let the REE handle the interrupter may not be a good idea, since the
+>> device could we should ack the interrupter in it, is protected by the
+>> trustzone, we need to switch CPU to secure mode to handle this tiny task.
+>>
+>> I wish I could know more solution about the interrupter here.
+>>
+>> Sincerely
+>>
+>> Randy
+>>
