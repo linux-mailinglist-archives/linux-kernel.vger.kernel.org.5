@@ -2,205 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0AB802E05
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F25802E36
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343614AbjLDIuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:50:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60688 "EHLO
+        id S230008AbjLDIyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:54:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343735AbjLDIur (ORCPT
+        with ESMTP id S229666AbjLDIyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:50:47 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2981911F;
-        Mon,  4 Dec 2023 00:50:53 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id 5F36D20B74C0; Mon,  4 Dec 2023 00:50:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5F36D20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701679852;
-        bh=+82ZmFRWEGviEskvJhBjDw/CYlrBPi2B0lQ9asHWocA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FG72TTRUO8BK7F1aqqE2fnikQCMuZI4qTS0WgkBu4sSkEAW7yIXTzXy58+I+LBTMg
-         kkJKNVQUYwaUGWbUXEG3eVxLzPlSl5g2cR6R7R/aUrH39vl87fQSIIf0fb9NBflrZC
-         mzKhFP068KZ3yBveHtZl2aXbvLv1fLkEtkkui8kg=
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        yury.norov@gmail.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     sch^Crabarti@microsoft.com, paulros@microsoft.com,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Subject: [PATCH V4 net-next] net: mana: Assigning IRQ affinity on HT cores
-Date:   Mon,  4 Dec 2023 00:50:41 -0800
-Message-Id: <1701679841-9359-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 03:54:23 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB4185;
+        Mon,  4 Dec 2023 00:54:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701680069; x=1733216069;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=ygCWSDYQlw1yVJhilY1MLD5z9RQ3sF3/7eRfaVIIdao=;
+  b=Se5bFtNzb4IOP4peI7Q+FZnoBX+xAULFCoC91BH4QQlJKjYsJ9r8nUMM
+   7Np0kNXTzVMbZc0v9oqIbcuOWxmCB8IWiu/m6sRPI9mc2Usx/ScMW+7Pf
+   Q80ffc8rwEAlom3kl3oe0cN8+1H1WdJ3jO7Tu8A2DhATDuRaxay3wlPfx
+   BT/QSnokL9VLymLgxDFRJrXzPhWewvYqEeu+eEV4p9JG7i7j2E6vKsxz7
+   fdxdRg0k/n/OIrOWn1O9uhNMEfmOgtBhSfdziPk/ZSTlRzRCtUG4hGHtn
+   j9tcnx/5w7wSdz53ByIPl5ynmlL4q5mNcnKkUy87Aw9o3WosatJ5oX+uj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="458025238"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="458025238"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 00:54:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="11894003"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 00:54:14 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     <sthanneeru.opensrc@micron.com>
+Cc:     <aneesh.kumar@linux.ibm.com>, <hannes@cmpxchg.org>,
+        <hasanalmaruf@fb.com>, <haowang3@fb.com>,
+        <gregory.price@memverge.com>, <dan.j.williams@intel.com>,
+        <mhocko@suse.com>, <tj@kernel.org>, <hezhongkun.hzk@bytedance.com>,
+        <fvdl@google.com>, <john@jagalactic.com>, <mirakhur@micron.com>,
+        <vtavarespetr@micron.com>, <Ravis.OpenSrc@micron.com>,
+        <Jonathan.Cameron@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-api@vger.kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [RFC PATCH 0/2] Node migration between memory tiers
+In-Reply-To: <20231130214858.1887-1-sthanneeru.opensrc@micron.com> (sthanneeru
+        opensrc's message of "Fri, 1 Dec 2023 03:18:56 +0530")
+References: <20231130214858.1887-1-sthanneeru.opensrc@micron.com>
+Date:   Mon, 04 Dec 2023 16:52:12 +0800
+Message-ID: <87o7f62vur.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Existing MANA design assigns IRQ to every CPU, including sibling
-hyper-threads. This may cause multiple IRQs to be active simultaneously
-in the same core and may reduce the network performance with RSS.
+<sthanneeru.opensrc@micron.com> writes:
 
-Improve the performance by assigning IRQ to non sibling CPUs in local
-NUMA node.
+> From: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+>
+> The memory tiers feature allows nodes with similar memory types
+> or performance characteristics to be grouped together in a
+> memory tier. However, there is currently no provision for
+> moving a node from one tier to another on demand.
+>
+> This patch series aims to support node migration between tiers
+> on demand by sysadmin/root user using the provided sysfs for
+> node migration. Each tier has a start abstract distance(adistance)
+> and range.
 
-Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
----
-V3 -> V4:
-* Used for_each_numa_hop_mask() macro and simplified the code.
-Thanks to Yury Norov for the suggestion.
-* Added code to assign hwc irq separately in mana_gd_setup_irqs.
+We have discussed migrating nodes (in fact nodes of a memory type)
+between tiers by sysadmin/root before.  The basic idea comes from
+Johannes.  It is summarized in page 11 of [1],
 
-V2 -> V3:
-* Created a helper function to get the next NUMA with CPU.
-* Added some error checks for unsuccessful memory allocation.
-* Fixed some comments on the code.
+[1] https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Li=
+ve%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
 
-V1 -> V2:
-* Simplified the code by removing filter_mask_list and using avail_cpus.
-* Addressed infinite loop issue when there are numa nodes with no CPUs.
-* Addressed uses of local numa node instead of 0 to start.
-* Removed uses of BUG_ON.
-* Placed cpus_read_lock in parent function to avoid num_online_cpus
-  to get changed before function finishes the affinity assignment.
----
- .../net/ethernet/microsoft/mana/gdma_main.c   | 70 +++++++++++++++++--
- 1 file changed, 63 insertions(+), 7 deletions(-)
+The abstract distance of a memory type (e.g., GPU HBM) can be adjusted
+via a sysfs knob (<memory_type>/abstract_distance_offset).
 
-diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-index 6367de0c2c2e..2194a53cce10 100644
---- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
-+++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
-@@ -1243,15 +1243,57 @@ void mana_gd_free_res_map(struct gdma_resource *r)
- 	r->size = 0;
- }
- 
-+static int irq_setup(int *irqs, int nvec, int start_numa_node)
-+{
-+	int i = 0, cpu, err = 0;
-+	const struct cpumask *node_cpumask;
-+	unsigned int  next_node = start_numa_node;
-+	cpumask_var_t visited_cpus, node_cpumask_temp;
-+
-+	if (!zalloc_cpumask_var(&visited_cpus, GFP_KERNEL)) {
-+		err = ENOMEM;
-+		return err;
-+	}
-+	if (!zalloc_cpumask_var(&node_cpumask_temp, GFP_KERNEL)) {
-+		err = -ENOMEM;
-+		return err;
-+	}
-+	rcu_read_lock();
-+	for_each_numa_hop_mask(node_cpumask, next_node) {
-+		cpumask_copy(node_cpumask_temp, node_cpumask);
-+		for_each_cpu(cpu, node_cpumask_temp) {
-+			cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
-+				       topology_sibling_cpumask(cpu));
-+			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
-+			if (++i == nvec)
-+				goto free_mask;
-+			cpumask_set_cpu(cpu, visited_cpus);
-+			if (cpumask_empty(node_cpumask_temp)) {
-+				cpumask_copy(node_cpumask_temp, node_cpumask);
-+				cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
-+					       visited_cpus);
-+				cpu = 0;
-+			}
-+		}
-+	}
-+free_mask:
-+	rcu_read_unlock();
-+	free_cpumask_var(visited_cpus);
-+	free_cpumask_var(node_cpumask_temp);
-+	return err;
-+}
-+
- static int mana_gd_setup_irqs(struct pci_dev *pdev)
- {
--	unsigned int max_queues_per_port = num_online_cpus();
- 	struct gdma_context *gc = pci_get_drvdata(pdev);
-+	unsigned int max_queues_per_port;
- 	struct gdma_irq_context *gic;
- 	unsigned int max_irqs, cpu;
--	int nvec, irq;
-+	int nvec, *irqs, irq;
- 	int err, i = 0, j;
- 
-+	cpus_read_lock();
-+	max_queues_per_port = num_online_cpus();
- 	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
- 		max_queues_per_port = MANA_MAX_NUM_QUEUES;
- 
-@@ -1261,6 +1303,11 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
- 	if (nvec < 0)
- 		return nvec;
-+	irqs = kmalloc_array(max_queues_per_port, sizeof(int), GFP_KERNEL);
-+	if (!irqs) {
-+		err = -ENOMEM;
-+		goto free_irq_vector;
-+	}
- 
- 	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
- 				   GFP_KERNEL);
-@@ -1287,21 +1334,28 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 			goto free_irq;
- 		}
- 
--		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-+		if (!i) {
-+			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
-+			cpu = cpumask_local_spread(i, gc->numa_node);
-+			irq_set_affinity_and_hint(irq, cpumask_of(cpu));
-+		} else {
-+			irqs[i - 1] = irq;
-+			err = request_irq(irqs[i - 1], mana_gd_intr, 0, gic->name, gic);
-+		}
- 		if (err)
- 			goto free_irq;
--
--		cpu = cpumask_local_spread(i, gc->numa_node);
--		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
- 	}
- 
-+	err = irq_setup(irqs, max_queues_per_port, gc->numa_node);
-+	if (err)
-+		goto free_irq;
- 	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
- 	if (err)
- 		goto free_irq;
- 
- 	gc->max_num_msix = nvec;
- 	gc->num_msix_usable = nvec;
--
-+	cpus_read_unlock();
- 	return 0;
- 
- free_irq:
-@@ -1314,8 +1368,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
- 	}
- 
- 	kfree(gc->irq_contexts);
-+	kfree(irqs);
- 	gc->irq_contexts = NULL;
- free_irq_vector:
-+	cpus_read_unlock();
- 	pci_free_irq_vectors(pdev);
- 	return err;
- }
--- 
-2.34.1
+I still think that the memory type is better to be used to change
+the abstract distance of nodes.  Do you agree?
 
+--
+Best Regards,
+Huang, Ying
+
+> To migrate a node to a tier, the corresponding node=E2=80=99s sysfs
+> adistance_offset is written with a value corresponding to
+> the tier=E2=80=99s adistance.
+>
+> Example: Move node2 to memory tier5 from its default tier(i.e 4)
+>
+> 1. Check default values:
+> $cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
+> 0-2
+>
+> $cat /sys/devices/system/node/node0/adistance_offset
+> 0
+> $cat /sys/devices/system/node/node1/adistance_offset
+> 0
+> $cat /sys/devices/system/node/node2/adistance_offset
+> 0
+>
+> 2. Move node2 to  tier5:
+>
+> To move node2 from emory_tier4 (adistance=3D512) to
+> emory_tier5 (abstract=3D640), set the `adistance_offset` of
+> node 2 to 128 (i.e., 512 + 128 =3D 640).
+>
+> Tier4 adistance start can be derved from tier-id
+> (i.e for tier4, 4 << 7 =3D 512).
+>
+> $echo 128 > /sys/devices/system/node/node2/adistance_offset
+> $cat /sys/devices/system/node/node2/adistance_offset
+> 128
+>
+> 3. Verify node2's tier id:
+>
+> $cat /sys/devices/virtual/memory_tiering/memory_tier5/nodelist
+> 2
+> $cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
+> 0-1
+>
+> Srinivasulu Thanneeru (2):
+>   base/node: Add sysfs for adistance_offset
+>   memory tier: Support node migration between tiers
+>
+>  drivers/base/node.c          | 51 +++++++++++++++++++++++
+>  include/linux/memory-tiers.h | 11 +++++
+>  include/linux/node.h         |  6 +++
+>  mm/memory-tiers.c            | 79 ++++++++++++++++++++----------------
+>  4 files changed, 113 insertions(+), 34 deletions(-)
