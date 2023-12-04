@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5E58031D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C6880320C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbjLDL44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:56:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39622 "EHLO
+        id S235417AbjLDMAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbjLDL4x (ORCPT
+        with ESMTP id S235400AbjLDL73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:56:53 -0500
+        Mon, 4 Dec 2023 06:59:29 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 05E2D107;
-        Mon,  4 Dec 2023 03:57:00 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FA4210E7;
+        Mon,  4 Dec 2023 03:58:10 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B898152B;
-        Mon,  4 Dec 2023 03:57:47 -0800 (PST)
-Received: from [10.57.5.136] (unknown [10.57.5.136])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3B8EA3F5A1;
-        Mon,  4 Dec 2023 03:56:58 -0800 (PST)
-Message-ID: <5ad40adf-aa79-4281-9cc3-2a1e7c10a356@arm.com>
-Date:   Mon, 4 Dec 2023 11:57:59 +0000
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AD3BD152B;
+        Mon,  4 Dec 2023 03:58:57 -0800 (PST)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC4533F5A1;
+        Mon,  4 Dec 2023 03:58:08 -0800 (PST)
+Date:   Mon, 4 Dec 2023 11:58:06 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     James Clark <james.clark@arm.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH V2 6/7] coresight: stm: Move ACPI support from AMBA
+ driver to platform driver
+Message-ID: <ZW2-zuTtV5GxaiFH@bogus>
+References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
+ <20231201062053.1268492-7-anshuman.khandual@arm.com>
+ <0adc3a16-0fc4-2a25-cd48-4667881b9490@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Various Exynos targets never return to no cooling
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     Mateusz Majewski <m.majewski2@samsung.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CGME20231113130451eucas1p293985c1bee8dc71b9c78a013663ce8e6@eucas1p2.samsung.com>
- <20231113130435.500353-1-m.majewski2@samsung.com>
- <93c5b287-a643-4e95-a38b-ed301d5cbcb2@arm.com>
-Content-Language: en-US
-In-Reply-To: <93c5b287-a643-4e95-a38b-ed301d5cbcb2@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0adc3a16-0fc4-2a25-cd48-4667881b9490@arm.com>
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
@@ -52,28 +53,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/14/23 10:32, Lukasz Luba wrote:
-> Hi Mateusz,
+On Mon, Dec 04, 2023 at 10:23:49AM +0000, James Clark wrote:
 > 
-> On 11/13/23 13:04, Mateusz Majewski wrote:
->> Hi,
->>
->> While working on some fixes on the Exynos thermal driver, I have found 
->> that some
->> of the Exynos-based boards will never return to no cooling. That is, 
->> after
->> heating the board a bit and letting it cool, we see in the sysfs 
->> output similar
->> to this:
->>
+> On 01/12/2023 06:20, Anshuman Khandual wrote:
+> > Add support for the stm devices in the platform driver, which can then be
+> > used on ACPI based platforms. This change would now allow runtime power
+> > management for ACPI based systems. The driver would try to enable the APB
+> > clock if available.
+> > 
+> > Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> > Cc: Sudeep Holla <sudeep.holla@arm.com>
+> > Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Cc: Mike Leach <mike.leach@linaro.org>
+> > Cc: James Clark <james.clark@arm.com>
+> > Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> > Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> > Cc: linux-acpi@vger.kernel.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: coresight@lists.linaro.org
+> > Cc: linux-stm32@st-md-mailman.stormreply.com
+> > Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> > ---
+> [...]
+> >  
+> > -module_amba_driver(stm_driver);
+> > +static int stm_platform_probe(struct platform_device *pdev)
+> > +{
+> > +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	int ret = 0;
+> > +
+> > +	pm_runtime_get_noresume(&pdev->dev);
+> > +	pm_runtime_set_active(&pdev->dev);
+> > +	pm_runtime_enable(&pdev->dev);
+> > +
+> > +	ret = __stm_probe(&pdev->dev, res, NULL);
+> 
+> Very minor nit, but this used to print this:
+> 
+>   coresight stm0: STM500 initialized
+> 
+> And now it prints this:
+> 
+>   coresight stm0: (null) initialized
+> 
+> (null) kind of makes it look a little bit like something has gone wrong.
+> Maybe we could just put "initialised" if you don't have a string from ACPI?
 
-Regarding this topic, I just wanted to tell you that I had conversation
-with Rafael & Daniel last Fri. Rafael gave me a hint to his latest work
-in his repo regarding potentially similar race with temperature value.
+Ah right, I too noticed this and forgot to mention. Just add a generic
+"STM" string for ACPI if we don't have a way to identify exact IP ?
 
-I'll have a look there and experiment next week, than come back to you.
-
+--
 Regards,
-Lukasz
+Sudeep
