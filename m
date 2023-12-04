@@ -2,125 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD17803CAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95809803CB2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbjLDSVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:21:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S231403AbjLDSW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:22:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjLDSVL (ORCPT
+        with ESMTP id S229518AbjLDSWY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:21:11 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F2FAA;
-        Mon,  4 Dec 2023 10:21:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AqgRiIU25Iyrb1pK/xZFkXqH0JgFhRw2lfSELu3vTXk=; b=cIQTrzt1QT6PLNkwG/peh1pk9J
-        iy3i6f17zLKYQG7VAD4z8aVMiugj5WZAhoM+FfIv9erKT82aoryJFj57uOUx3cjsk2fGj0cTzKFhL
-        TUpglAaD0ehEDE3dh5YKhJ7/4Wpb7LTxINIeWdjq8HX3+UljJsexKDLFi3RBih+ub7ti2qU2g0nEM
-        5mjxCVasfnlsBaZPpOn1rxAW0GwiM0BZZYB0Vh06emJvmWcXIA/Yv1CEzvXbpZIC598IJAHiJ8vPv
-        7ySr1nxlbGGM3y3xrQY35GS7h9PjBo7X/x7cKlh+Xwo0bf2vkk6wm2hLxpeysX19BOrfQROxpnxsQ
-        RLg2Guuw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rADYi-004PeY-0v;
-        Mon, 04 Dec 2023 18:20:44 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DCDDD300427; Mon,  4 Dec 2023 19:20:43 +0100 (CET)
-Date:   Mon, 4 Dec 2023 19:20:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arch@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jason Baron <jbaron@akamai.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Feng Tang <feng.tang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Subject: Re: [PATCH 5/5] x86/tsc: Make __use_tsc __ro_after_init
-Message-ID: <20231204182043.GB7299@noisy.programming.kicks-ass.net>
-References: <20231120105528.760306-1-vschneid@redhat.com>
- <20231120105528.760306-6-vschneid@redhat.com>
- <20231120120553.GU8262@noisy.programming.kicks-ass.net>
- <xhsmhcyvlc3mi.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        Mon, 4 Dec 2023 13:22:24 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3EBD2;
+        Mon,  4 Dec 2023 10:22:30 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BAC5F1FE65;
+        Mon,  4 Dec 2023 18:22:28 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A9FFF139E2;
+        Mon,  4 Dec 2023 18:22:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id 62t6KeQYbmVTWwAAn2gu4w
+        (envelope-from <jack@suse.cz>); Mon, 04 Dec 2023 18:22:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 36BC5A07DB; Mon,  4 Dec 2023 19:22:28 +0100 (CET)
+Date:   Mon, 4 Dec 2023 19:22:28 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+Subject: Re: [PATCH v2 03/35] lib/sbitmap; make __sbitmap_get_word() using
+ find_and_set_bit()
+Message-ID: <20231204182228.7qzfgjyfmx7ubmx2@quack3>
+References: <20231203192422.539300-1-yury.norov@gmail.com>
+ <20231203193307.542794-1-yury.norov@gmail.com>
+ <20231203193307.542794-2-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <xhsmhcyvlc3mi.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231203193307.542794-2-yury.norov@gmail.com>
+X-Spamd-Bar: +++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [13.99 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[vger.kernel.org,kernel.dk,suse.cz,alu.unizg.hr,infradead.org,rasmusvillemoes.dk,linux.intel.com,linaro.org,gmail.com,acm.org,omp.ru];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 13.99
+X-Rspamd-Queue-Id: BAC5F1FE65
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 05:51:49PM +0100, Valentin Schneider wrote:
-> On 20/11/23 13:05, Peter Zijlstra wrote:
-> > On Mon, Nov 20, 2023 at 11:55:28AM +0100, Valentin Schneider wrote:
-> >> __use_tsc is only ever enabled in __init tsc_enable_sched_clock(), so mark
-> >> it as __ro_after_init.
-> >>
-> >> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-> >> ---
-> >>  arch/x86/kernel/tsc.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> >> index 15f97c0abc9d0..f19b42ea40573 100644
-> >> --- a/arch/x86/kernel/tsc.c
-> >> +++ b/arch/x86/kernel/tsc.c
-> >> @@ -44,7 +44,7 @@ EXPORT_SYMBOL(tsc_khz);
-> >>  static int __read_mostly tsc_unstable;
-> >>  static unsigned int __initdata tsc_early_khz;
-> >>
-> >> -static DEFINE_STATIC_KEY_FALSE(__use_tsc);
-> >> +static DEFINE_STATIC_KEY_FALSE_RO(__use_tsc);
-> >
-> > So sure, we can absolutely do that, but do we want to take this one
-> > further perhaps? "notsc" on x86_64 makes no sense what so ever. Lets
-> > drag things into this millennium.
-> >
+On Sun 03-12-23 11:32:35, Yury Norov wrote:
+> __sbitmap_get_word() opencodes either find_and_set_bit_wrap(), or
+> find_and_set_next_bit() depending on hint and wrap parameters.
 > 
-> Just to make sure I follow: currently, for the static key to be enabled, we
-> (mostly) need:
-> o X86_FEATURE_TSC is in CPUID
-> o determine_cpu_tsc_frequencies()->pit_hpet_ptimer_calibrate_cpu() passes
+> Switch it to use the atomic find_bit() API. While here, simplify
+> sbitmap_find_bit_in_word(), which calls it.
 > 
-> IIUC all X86_64 systems have a TSC, so the CPUID feature should be a given.
-> 
-> AFAICT pit_hpt_ptimer_calibrate_cpu() relies on having either HPET or the
-> ACPI PM timer, the latter should be widely available, though X86_PM_TIMER
-> can be disabled via EXPERT - is that a fringe case we don't care about, or
-> did I miss something? I don't really know this stuff, and I'm trying to
-> write a changelog...
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
 
-Ah, I was mostly just going by the fact that all of x86_64 have TSC and
-disabling it makes no sense.
+Looks good to me. Feel free to add:
 
-TSC calibration is always 'fun', but I don't know of a system where its
-failure causes us to not use TSC, Thomas?
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  lib/sbitmap.c | 46 ++++++++--------------------------------------
+>  1 file changed, 8 insertions(+), 38 deletions(-)
+> 
+> diff --git a/lib/sbitmap.c b/lib/sbitmap.c
+> index d0a5081dfd12..b21aebd07fd6 100644
+> --- a/lib/sbitmap.c
+> +++ b/lib/sbitmap.c
+> @@ -133,38 +133,11 @@ void sbitmap_resize(struct sbitmap *sb, unsigned int depth)
+>  }
+>  EXPORT_SYMBOL_GPL(sbitmap_resize);
+>  
+> -static int __sbitmap_get_word(unsigned long *word, unsigned long depth,
+> +static inline int __sbitmap_get_word(unsigned long *word, unsigned long depth,
+>  			      unsigned int hint, bool wrap)
+>  {
+> -	int nr;
+> -
+> -	/* don't wrap if starting from 0 */
+> -	wrap = wrap && hint;
+> -
+> -	while (1) {
+> -		nr = find_next_zero_bit(word, depth, hint);
+> -		if (unlikely(nr >= depth)) {
+> -			/*
+> -			 * We started with an offset, and we didn't reset the
+> -			 * offset to 0 in a failure case, so start from 0 to
+> -			 * exhaust the map.
+> -			 */
+> -			if (hint && wrap) {
+> -				hint = 0;
+> -				continue;
+> -			}
+> -			return -1;
+> -		}
+> -
+> -		if (!test_and_set_bit_lock(nr, word))
+> -			break;
+> -
+> -		hint = nr + 1;
+> -		if (hint >= depth - 1)
+> -			hint = 0;
+> -	}
+> -
+> -	return nr;
+> +	return wrap ? find_and_set_bit_wrap_lock(word, depth, hint) :
+> +			find_and_set_next_bit_lock(word, depth, hint);
+>  }
+>  
+>  static int sbitmap_find_bit_in_word(struct sbitmap_word *map,
+> @@ -175,15 +148,12 @@ static int sbitmap_find_bit_in_word(struct sbitmap_word *map,
+>  	int nr;
+>  
+>  	do {
+> -		nr = __sbitmap_get_word(&map->word, depth,
+> -					alloc_hint, wrap);
+> -		if (nr != -1)
+> -			break;
+> -		if (!sbitmap_deferred_clear(map))
+> -			break;
+> -	} while (1);
+> +		nr = __sbitmap_get_word(&map->word, depth, alloc_hint, wrap);
+> +		if (nr < depth)
+> +			return nr;
+> +	} while (sbitmap_deferred_clear(map));
+>  
+> -	return nr;
+> +	return -1;
+>  }
+>  
+>  static int sbitmap_find_bit(struct sbitmap *sb,
+> -- 
+> 2.40.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
