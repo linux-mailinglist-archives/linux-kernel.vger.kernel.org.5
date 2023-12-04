@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA04804026
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29ED1804018
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346332AbjLDUij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:38:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
+        id S1346328AbjLDUh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:37:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346415AbjLDUiI (ORCPT
+        with ESMTP id S235571AbjLDUhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:38:08 -0500
+        Mon, 4 Dec 2023 15:37:25 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D089418A
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83702C433CA;
-        Mon,  4 Dec 2023 20:35:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6427B18E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14263C433D9;
+        Mon,  4 Dec 2023 20:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701722138;
-        bh=JoQKvsKwAx4AEsqDIDNCaa8l0yzT8lOSnPJsdDEaA/Y=;
+        s=k20201202; t=1701722140;
+        bh=1aSSTz76/mulK0UxRDrGBoJkZ0tRJ/L82eiGvkMYXJ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cVlUqEAG2z8M+w3pZ5hQQuKkljXtDq4BeWB+ARarqNUXpQcqd8L6FGSy48dz8rac1
-         InZbyMYDpo74yYfaLZMCQdyqgaKTauRG62cPnoLcZ9io3Jv/WiRkpQruUOw6/QZlAe
-         zksMmrib1y3J0LVkCBaf//jYe0atXb5yLedvOgEtXTwKM1u0Zrmi5c+NJbJ3ekTOHz
-         c18SZbvEmUK/mPvvtcpPAkBS82HDfXqWxCew1UeOY3rKwJT9G9xJYoXzL2gMDED+kO
-         cLHeop5R9Hs7aa3caWZd8AQm6uZpEMwFxU8CFmfgP3wbVTub1s6A+PJbunJgPW610v
-         eU5AAz7ZTg10A==
+        b=iHHkh8vfLgVkI4xN0UiPY4OMI9u8qL5y7Scl0cpk9UkyZpzE7L7b74ukyVRd3BvWb
+         3qGh+XZXubLvYvFSHohcBkxcEDaNhmOgz2gTCiu4H/NClWXLoIronQIFx3RxTZHqM8
+         yfLrxJo/gD2BAWRAcE5ZQjHsi2mg/gO8nCDECNO0YCKTB15aLaa7ceIeZ/7Qcj1b6v
+         EXHVBwWnbWtJHFyHF6w+T43FawSa6SJCQyWz5VSk7FLTAhXwcE8rqpoGtVUKqoQNox
+         qyKaxItvf4Vv+1+02ulex1vL7b1NzqEL89xNmo9GINpKP5nvpWb1slkBX3KFR8S+v0
+         2h4xwxdnjPZUQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Johannes Berg <johannes.berg@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.1 08/17] debugfs: fix automount d_fsdata usage
-Date:   Mon,  4 Dec 2023 15:34:53 -0500
-Message-ID: <20231204203514.2093855-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 09/17] debugfs: annotate debugfs handlers vs. removal with lockdep
+Date:   Mon,  4 Dec 2023 15:34:54 -0500
+Message-ID: <20231204203514.2093855-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204203514.2093855-1-sashal@kernel.org>
 References: <20231204203514.2093855-1-sashal@kernel.org>
@@ -55,145 +55,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 0ed04a1847a10297595ac24dc7d46b35fb35f90a ]
+[ Upstream commit f4acfcd4deb158b96595250cc332901b282d15b0 ]
 
-debugfs_create_automount() stores a function pointer in d_fsdata,
-but since commit 7c8d469877b1 ("debugfs: add support for more
-elaborate ->d_fsdata") debugfs_release_dentry() will free it, now
-conditionally on DEBUGFS_FSDATA_IS_REAL_FOPS_BIT, but that's not
-set for the function pointer in automount. As a result, removing
-an automount dentry would attempt to free the function pointer.
-Luckily, the only user of this (tracing) never removes it.
+When you take a lock in a debugfs handler but also try
+to remove the debugfs file under that lock, things can
+deadlock since the removal has to wait for all users
+to finish.
 
-Nevertheless, it's safer if we just handle the fsdata in one way,
-namely either DEBUGFS_FSDATA_IS_REAL_FOPS_BIT or allocated. Thus,
-change the automount to allocate it, and use the real_fops in the
-data to indicate whether or not automount is filled, rather than
-adding a type tag. At least for now this isn't actually needed,
-but the next changes will require it.
-
-Also check in debugfs_file_get() that it gets only called
-on regular files, just to make things clearer.
+Add lockdep annotations in debugfs_file_get()/_put()
+to catch such issues.
 
 Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/debugfs/file.c     |  8 ++++++++
- fs/debugfs/inode.c    | 27 ++++++++++++++++++++-------
- fs/debugfs/internal.h | 10 ++++++++--
- 3 files changed, 36 insertions(+), 9 deletions(-)
+ fs/debugfs/file.c     | 10 ++++++++++
+ fs/debugfs/inode.c    | 12 ++++++++++++
+ fs/debugfs/internal.h |  6 ++++++
+ 3 files changed, 28 insertions(+)
 
 diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index b54f470e0d031..b38304b444764 100644
+index b38304b444764..375af381bf005 100644
 --- a/fs/debugfs/file.c
 +++ b/fs/debugfs/file.c
-@@ -84,6 +84,14 @@ int debugfs_file_get(struct dentry *dentry)
- 	struct debugfs_fsdata *fsd;
- 	void *d_fsd;
+@@ -108,6 +108,12 @@ int debugfs_file_get(struct dentry *dentry)
+ 			kfree(fsd);
+ 			fsd = READ_ONCE(dentry->d_fsdata);
+ 		}
++#ifdef CONFIG_LOCKDEP
++		fsd->lock_name = kasprintf(GFP_KERNEL, "debugfs:%pd", dentry);
++		lockdep_register_key(&fsd->key);
++		lockdep_init_map(&fsd->lockdep_map, fsd->lock_name ?: "debugfs",
++				 &fsd->key, 0);
++#endif
+ 	}
  
-+	/*
-+	 * This could only happen if some debugfs user erroneously calls
-+	 * debugfs_file_get() on a dentry that isn't even a file, let
-+	 * them know about it.
-+	 */
-+	if (WARN_ON(!d_is_reg(dentry)))
-+		return -EINVAL;
+ 	/*
+@@ -124,6 +130,8 @@ int debugfs_file_get(struct dentry *dentry)
+ 	if (!refcount_inc_not_zero(&fsd->active_users))
+ 		return -EIO;
+ 
++	lock_map_acquire_read(&fsd->lockdep_map);
 +
- 	d_fsd = READ_ONCE(dentry->d_fsdata);
- 	if (!((unsigned long)d_fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)) {
- 		fsd = d_fsd;
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(debugfs_file_get);
+@@ -141,6 +149,8 @@ void debugfs_file_put(struct dentry *dentry)
+ {
+ 	struct debugfs_fsdata *fsd = READ_ONCE(dentry->d_fsdata);
+ 
++	lock_map_release(&fsd->lockdep_map);
++
+ 	if (refcount_dec_and_test(&fsd->active_users))
+ 		complete(&fsd->active_users_drained);
+ }
 diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
-index 2e8e112b19930..08ef685167ec5 100644
+index 08ef685167ec5..8fc470aa67823 100644
 --- a/fs/debugfs/inode.c
 +++ b/fs/debugfs/inode.c
-@@ -237,17 +237,19 @@ static const struct super_operations debugfs_super_operations = {
+@@ -242,6 +242,14 @@ static void debugfs_release_dentry(struct dentry *dentry)
+ 	if ((unsigned long)fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)
+ 		return;
  
- static void debugfs_release_dentry(struct dentry *dentry)
- {
--	void *fsd = dentry->d_fsdata;
-+	struct debugfs_fsdata *fsd = dentry->d_fsdata;
- 
--	if (!((unsigned long)fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT))
--		kfree(dentry->d_fsdata);
-+	if ((unsigned long)fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)
-+		return;
-+
-+	kfree(fsd);
- }
- 
- static struct vfsmount *debugfs_automount(struct path *path)
- {
--	debugfs_automount_t f;
--	f = (debugfs_automount_t)path->dentry->d_fsdata;
--	return f(path->dentry, d_inode(path->dentry)->i_private);
-+	struct debugfs_fsdata *fsd = path->dentry->d_fsdata;
-+
-+	return fsd->automount(path->dentry, d_inode(path->dentry)->i_private);
- }
- 
- static const struct dentry_operations debugfs_dops = {
-@@ -635,13 +637,23 @@ struct dentry *debugfs_create_automount(const char *name,
- 					void *data)
- {
- 	struct dentry *dentry = start_creating(name, parent);
-+	struct debugfs_fsdata *fsd;
- 	struct inode *inode;
- 
- 	if (IS_ERR(dentry))
- 		return dentry;
- 
-+	fsd = kzalloc(sizeof(*fsd), GFP_KERNEL);
-+	if (!fsd) {
-+		failed_creating(dentry);
-+		return ERR_PTR(-ENOMEM);
++	/* check it wasn't a dir (no fsdata) or automount (no real_fops) */
++	if (fsd && fsd->real_fops) {
++#ifdef CONFIG_LOCKDEP
++		lockdep_unregister_key(&fsd->key);
++		kfree(fsd->lock_name);
++#endif
 +	}
 +
-+	fsd->automount = f;
+ 	kfree(fsd);
+ }
+ 
+@@ -745,6 +753,10 @@ static void __debugfs_file_removed(struct dentry *dentry)
+ 	fsd = READ_ONCE(dentry->d_fsdata);
+ 	if ((unsigned long)fsd & DEBUGFS_FSDATA_IS_REAL_FOPS_BIT)
+ 		return;
 +
- 	if (!(debugfs_allow & DEBUGFS_ALLOW_API)) {
- 		failed_creating(dentry);
-+		kfree(fsd);
- 		return ERR_PTR(-EPERM);
- 	}
- 
-@@ -649,13 +661,14 @@ struct dentry *debugfs_create_automount(const char *name,
- 	if (unlikely(!inode)) {
- 		pr_err("out of free dentries, can not create automount '%s'\n",
- 		       name);
-+		kfree(fsd);
- 		return failed_creating(dentry);
- 	}
- 
- 	make_empty_dir_inode(inode);
- 	inode->i_flags |= S_AUTOMOUNT;
- 	inode->i_private = data;
--	dentry->d_fsdata = (void *)f;
-+	dentry->d_fsdata = fsd;
- 	/* directory inodes start off with i_nlink == 2 (for "." entry) */
- 	inc_nlink(inode);
- 	d_instantiate(dentry, inode);
++	lock_map_acquire(&fsd->lockdep_map);
++	lock_map_release(&fsd->lockdep_map);
++
+ 	if (!refcount_dec_and_test(&fsd->active_users))
+ 		wait_for_completion(&fsd->active_users_drained);
+ }
 diff --git a/fs/debugfs/internal.h b/fs/debugfs/internal.h
-index 92af8ae313134..f7c489b5a368c 100644
+index f7c489b5a368c..c7d61cfc97d26 100644
 --- a/fs/debugfs/internal.h
 +++ b/fs/debugfs/internal.h
-@@ -17,8 +17,14 @@ extern const struct file_operations debugfs_full_proxy_file_operations;
+@@ -7,6 +7,7 @@
  
- struct debugfs_fsdata {
- 	const struct file_operations *real_fops;
--	refcount_t active_users;
--	struct completion active_users_drained;
-+	union {
-+		/* automount_fn is used when real_fops is NULL */
-+		debugfs_automount_t automount;
-+		struct {
-+			refcount_t active_users;
-+			struct completion active_users_drained;
-+		};
-+	};
+ #ifndef _DEBUGFS_INTERNAL_H_
+ #define _DEBUGFS_INTERNAL_H_
++#include <linux/lockdep.h>
+ 
+ struct file_operations;
+ 
+@@ -23,6 +24,11 @@ struct debugfs_fsdata {
+ 		struct {
+ 			refcount_t active_users;
+ 			struct completion active_users_drained;
++#ifdef CONFIG_LOCKDEP
++			struct lockdep_map lockdep_map;
++			struct lock_class_key key;
++			char *lock_name;
++#endif
+ 		};
+ 	};
  };
- 
- /*
 -- 
 2.42.0
 
