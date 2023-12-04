@@ -2,101 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BE98029F5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 02:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FD78029F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 02:45:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234213AbjLDBl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 20:41:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        id S234212AbjLDBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 20:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234246AbjLDBl0 (ORCPT
+        with ESMTP id S229510AbjLDBpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 20:41:26 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D97113;
-        Sun,  3 Dec 2023 17:41:29 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6F9491FE32;
-        Mon,  4 Dec 2023 01:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1701654088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lkymK8+FGpdtWEr2DjC76ilxRN38gXSl47BR9KVwI44=;
-        b=MFcbchrvRstXWEZ81rPzAqXkGgUJi35bkxYRCPsga1K7pv0nSMCdl14cU2d1EwhEevTnya
-        l6Cl9TUJs8S4YUa9dE8rVcwPv/qnDXdlyM24hvT0J//29UAZJT/4ILSA+kyMvl9HBYRpEw
-        qZxRe60y6t/zVe2MAN74YMRT5omf2K4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1701654088;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lkymK8+FGpdtWEr2DjC76ilxRN38gXSl47BR9KVwI44=;
-        b=EW5Bh28GSnezmpy9IkUsNrpD5/0OiRn9N5qx+7v18x50AvBIrJ21ZGwN04mr/qYPdAKvZ9
-        N0HLriH/6KLdQkBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F355F1368D;
-        Mon,  4 Dec 2023 01:41:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id uwuPKEMubWWUOAAAD6G6ig
-        (envelope-from <neilb@suse.de>); Mon, 04 Dec 2023 01:41:23 +0000
-From:   NeilBrown <neilb@suse.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: [PATCH 2/2] nfsd: Don't leave work of closing files to a work queue.
-Date:   Mon,  4 Dec 2023 12:36:42 +1100
-Message-ID: <20231204014042.6754-3-neilb@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231204014042.6754-1-neilb@suse.de>
-References: <20231204014042.6754-1-neilb@suse.de>
+        Sun, 3 Dec 2023 20:45:08 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B659DF;
+        Sun,  3 Dec 2023 17:45:12 -0800 (PST)
+X-UUID: ee64416ed39e48bc895f2e239b83a94d-20231204
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:da4c46b1-07fa-4654-b582-41546c64ad46,IP:15,
+        URL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+        TION:release,TS:-25
+X-CID-INFO: VERSION:1.1.33,REQID:da4c46b1-07fa-4654-b582-41546c64ad46,IP:15,UR
+        L:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:-25
+X-CID-META: VersionHash:364b77b,CLOUDID:b2281a96-10ce-4e4b-85c2-c9b5229ff92b,B
+        ulkID:231204094504NWR6GREY,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: ee64416ed39e48bc895f2e239b83a94d-20231204
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1135152479; Mon, 04 Dec 2023 09:45:01 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, jeffrey.t.kirsher@intel.com,
+        shannon.nelson@amd.com
+Cc:     kunwu.chan@hotmail.com, intel-wired-lan@lists.osuosl.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kunwu Chan <chentao@kylinos.cn>,
+        Simon Horman <horms@kernel.org>,
+        Alexander Lobakin <aleksander.lobakin@intel.com>
+Subject: [PATCH v3 iwl-next] i40e: Use correct buffer size in i40e_dbg_command_read
+Date:   Mon,  4 Dec 2023 09:44:55 +0800
+Message-Id: <20231204014455.2444734-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spamd-Result: default: False [0.71 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         NEURAL_HAM_SHORT(-0.19)[-0.974];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-3.00)[100.00%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: 0.71
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,246 +61,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The work of closing a file can have non-trivial cost.  Doing it in a
-separate work queue thread means that cost isn't imposed on the nfsd
-threads and an imbalance can be created.
+The size of "i40e_dbg_command_buf" is 256, the size of "name"
+depends on "IFNAMSIZ", plus a null character and format size,
+the total size is more than 256.
 
-I have evidence from a customer site when nfsd is being asked to modify
-many millions of files which causes sufficient memory pressure that some
-cache (in XFS I think) gets cleaned earlier than would be ideal.  When
-__dput (from the workqueue) calls __dentry_kill, xfs_fs_destroy_inode()
-needs to synchronously read back previously cached info from storage.
-This slows down the single thread that is making all the final __dput()
-calls for all the nfsd threads with the net result that files are added
-to the delayed_fput_list faster than they are removed, and the system
-eventually runs out of memory.
+Improve readability and maintainability by replacing a hardcoded string
+allocation and formatting by the use of the kasprintf() helper.
 
-To avoid this work imbalance that exhausts memory, this patch moves all
-work for closing files into the nfsd threads.  This means that when the
-work imposes a cost, that cost appears where it would be expected - in
-the work of the nfsd thread.
-
-There are two changes to achieve this.
-
-1/ PF_RUNS_TASK_WORK is set and task_work_run() is called, so that the
-   final __dput() for any file closed by a given nfsd thread is handled
-   by that thread.  This ensures that the number of files that are
-   queued for a final close is limited by the number of threads and
-   cannot grow without bound.
-
-2/ Files opened for NFSv3 are never explicitly closed by the client and are
-  kept open by the server in the "filecache", which responds to memory
-  pressure, is garbage collected even when there is no pressure, and
-  sometimes closes files when there is particular need such as for
-  rename.  These files currently have filp_close() called in a dedicated
-  work queue, so their __dput() can have no effect on nfsd threads.
-
-  This patch discards the work queue and instead has each nfsd thread
-  call flip_close() on as many as 8 files from the filecache each time
-  it acts on a client request (or finds there are no pending client
-  requests).  If there are more to be closed, more threads are woken.
-  This spreads the work of __dput() over multiple threads and imposes
-  any cost on those threads.
-
-  The number 8 is somewhat arbitrary.  It needs to be greater than 1 to
-  ensure that files are closed more quickly than they can be added to
-  the cache.  It needs to be small enough to limit the per-request
-  delays that will be imposed on clients when all threads are busy
-  closing files.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
+Fixes: 02e9c290814c ("i40e: debugfs interface")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+Suggested-by: Simon Horman <horms@kernel.org>
+Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 ---
- fs/nfsd/filecache.c | 62 ++++++++++++++++++---------------------------
- fs/nfsd/filecache.h |  1 +
- fs/nfsd/nfssvc.c    |  6 +++++
- 3 files changed, 32 insertions(+), 37 deletions(-)
+v2
+   - Update the size calculation with IFNAMSIZ and sizeof(i40e_dbg_command_buf)
+v3
+   - Use kasprintf to improve readability and maintainability
+---
+ drivers/net/ethernet/intel/i40e/i40e_debugfs.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
-index ee9c923192e0..55268b7362d4 100644
---- a/fs/nfsd/filecache.c
-+++ b/fs/nfsd/filecache.c
-@@ -39,6 +39,7 @@
- #include <linux/fsnotify.h>
- #include <linux/seq_file.h>
- #include <linux/rhashtable.h>
-+#include <linux/task_work.h>
- 
- #include "vfs.h"
- #include "nfsd.h"
-@@ -61,13 +62,10 @@ static DEFINE_PER_CPU(unsigned long, nfsd_file_total_age);
- static DEFINE_PER_CPU(unsigned long, nfsd_file_evictions);
- 
- struct nfsd_fcache_disposal {
--	struct work_struct work;
- 	spinlock_t lock;
- 	struct list_head freeme;
- };
- 
--static struct workqueue_struct *nfsd_filecache_wq __read_mostly;
--
- static struct kmem_cache		*nfsd_file_slab;
- static struct kmem_cache		*nfsd_file_mark_slab;
- static struct list_lru			nfsd_file_lru;
-@@ -421,10 +419,31 @@ nfsd_file_dispose_list_delayed(struct list_head *dispose)
- 		spin_lock(&l->lock);
- 		list_move_tail(&nf->nf_lru, &l->freeme);
- 		spin_unlock(&l->lock);
--		queue_work(nfsd_filecache_wq, &l->work);
-+		svc_wake_up(nn->nfsd_serv);
- 	}
- }
- 
-+/**
-+ * nfsd_file_dispose_some
-+ *
-+ */
-+void nfsd_file_dispose_some(struct nfsd_net *nn)
-+{
-+	struct nfsd_fcache_disposal *l = nn->fcache_disposal;
-+	LIST_HEAD(dispose);
-+	int i;
-+
-+	if (list_empty(&l->freeme))
-+		return;
-+	spin_lock(&l->lock);
-+	for (i = 0; i < 8 && !list_empty(&l->freeme); i++)
-+		list_move(l->freeme.next, &dispose);
-+	spin_unlock(&l->lock);
-+	if (!list_empty(&l->freeme))
-+		svc_wake_up(nn->nfsd_serv);
-+	nfsd_file_dispose_list(&dispose);
-+}
-+
- /**
-  * nfsd_file_lru_cb - Examine an entry on the LRU list
-  * @item: LRU entry to examine
-@@ -635,28 +654,8 @@ nfsd_file_close_inode_sync(struct inode *inode)
- 		list_del_init(&nf->nf_lru);
- 		nfsd_file_free(nf);
- 	}
--	flush_delayed_fput();
--}
--
--/**
-- * nfsd_file_delayed_close - close unused nfsd_files
-- * @work: dummy
-- *
-- * Scrape the freeme list for this nfsd_net, and then dispose of them
-- * all.
-- */
--static void
--nfsd_file_delayed_close(struct work_struct *work)
--{
--	LIST_HEAD(head);
--	struct nfsd_fcache_disposal *l = container_of(work,
--			struct nfsd_fcache_disposal, work);
--
--	spin_lock(&l->lock);
--	list_splice_init(&l->freeme, &head);
--	spin_unlock(&l->lock);
--
--	nfsd_file_dispose_list(&head);
-+	/* Flush any delayed fput */
-+	task_work_run();
- }
- 
- static int
-@@ -721,10 +720,6 @@ nfsd_file_cache_init(void)
- 		return ret;
- 
- 	ret = -ENOMEM;
--	nfsd_filecache_wq = alloc_workqueue("nfsd_filecache", 0, 0);
--	if (!nfsd_filecache_wq)
--		goto out;
--
- 	nfsd_file_slab = kmem_cache_create("nfsd_file",
- 				sizeof(struct nfsd_file), 0, 0, NULL);
- 	if (!nfsd_file_slab) {
-@@ -739,7 +734,6 @@ nfsd_file_cache_init(void)
- 		goto out_err;
- 	}
- 
--
- 	ret = list_lru_init(&nfsd_file_lru);
- 	if (ret) {
- 		pr_err("nfsd: failed to init nfsd_file_lru: %d\n", ret);
-@@ -782,8 +776,6 @@ nfsd_file_cache_init(void)
- 	nfsd_file_slab = NULL;
- 	kmem_cache_destroy(nfsd_file_mark_slab);
- 	nfsd_file_mark_slab = NULL;
--	destroy_workqueue(nfsd_filecache_wq);
--	nfsd_filecache_wq = NULL;
- 	rhltable_destroy(&nfsd_file_rhltable);
- 	goto out;
- }
-@@ -829,7 +821,6 @@ nfsd_alloc_fcache_disposal(void)
- 	l = kmalloc(sizeof(*l), GFP_KERNEL);
- 	if (!l)
- 		return NULL;
--	INIT_WORK(&l->work, nfsd_file_delayed_close);
- 	spin_lock_init(&l->lock);
- 	INIT_LIST_HEAD(&l->freeme);
- 	return l;
-@@ -838,7 +829,6 @@ nfsd_alloc_fcache_disposal(void)
- static void
- nfsd_free_fcache_disposal(struct nfsd_fcache_disposal *l)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+index 88240571721a..a176de89de9c 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
+@@ -72,23 +72,22 @@ static ssize_t i40e_dbg_command_read(struct file *filp, char __user *buffer,
  {
--	cancel_work_sync(&l->work);
- 	nfsd_file_dispose_list(&l->freeme);
- 	kfree(l);
- }
-@@ -907,8 +897,6 @@ nfsd_file_cache_shutdown(void)
- 	fsnotify_wait_marks_destroyed();
- 	kmem_cache_destroy(nfsd_file_mark_slab);
- 	nfsd_file_mark_slab = NULL;
--	destroy_workqueue(nfsd_filecache_wq);
--	nfsd_filecache_wq = NULL;
- 	rhltable_destroy(&nfsd_file_rhltable);
+ 	struct i40e_pf *pf = filp->private_data;
+ 	int bytes_not_copied;
+-	int buf_size = 256;
+-	char *buf;
++	char *buf = NULL;
+ 	int len;
  
- 	for_each_possible_cpu(i) {
-diff --git a/fs/nfsd/filecache.h b/fs/nfsd/filecache.h
-index e54165a3224f..bc8c3363bbdf 100644
---- a/fs/nfsd/filecache.h
-+++ b/fs/nfsd/filecache.h
-@@ -56,6 +56,7 @@ void nfsd_file_cache_shutdown_net(struct net *net);
- void nfsd_file_put(struct nfsd_file *nf);
- struct nfsd_file *nfsd_file_get(struct nfsd_file *nf);
- void nfsd_file_close_inode_sync(struct inode *inode);
-+void nfsd_file_dispose_some(struct nfsd_net *nn);
- bool nfsd_file_is_cached(struct inode *inode);
- __be32 nfsd_file_acquire_gc(struct svc_rqst *rqstp, struct svc_fh *fhp,
- 		  unsigned int may_flags, struct nfsd_file **nfp);
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index c7af1095f6b5..02ea16636b54 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -13,6 +13,7 @@
- #include <linux/fs_struct.h>
- #include <linux/swap.h>
- #include <linux/siphash.h>
-+#include <linux/task_work.h>
+ 	/* don't allow partial reads */
+ 	if (*ppos != 0)
+ 		return 0;
+-	if (count < buf_size)
+-		return -ENOSPC;
  
- #include <linux/sunrpc/stats.h>
- #include <linux/sunrpc/svcsock.h>
-@@ -949,6 +950,7 @@ nfsd(void *vrqstp)
- 	}
+-	buf = kzalloc(buf_size, GFP_KERNEL);
++	buf = kasprintf(GFP_KERNEL, "%s: %s\n",
++			pf->vsi[pf->lan_vsi]->netdev->name,
++			i40e_dbg_command_buf);
+ 	if (!buf)
+ 		return -ENOSPC;
  
- 	current->fs->umask = 0;
-+	current->flags |= PF_RUNS_TASK_WORK;
+-	len = snprintf(buf, buf_size, "%s: %s\n",
+-		       pf->vsi[pf->lan_vsi]->netdev->name,
+-		       i40e_dbg_command_buf);
++	len = strlen(buf);
++	if (count < len)
++		return -ENOSPC;
  
- 	atomic_inc(&nfsdstats.th_cnt);
- 
-@@ -963,6 +965,10 @@ nfsd(void *vrqstp)
- 
- 		svc_recv(rqstp);
- 		validate_process_creds();
-+
-+		nfsd_file_dispose_some(nn);
-+		if (task_work_pending(current))
-+			task_work_run();
- 	}
- 
- 	atomic_dec(&nfsdstats.th_cnt);
+ 	bytes_not_copied = copy_to_user(buffer, buf, len);
+ 	kfree(buf);
 -- 
-2.43.0
+2.34.1
 
