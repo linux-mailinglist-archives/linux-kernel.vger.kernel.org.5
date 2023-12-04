@@ -2,118 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4D5803DEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C26803DED
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbjLDTAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:00:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
+        id S230081AbjLDTAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:00:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjLDTAd (ORCPT
+        with ESMTP id S231329AbjLDTAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:00:33 -0500
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9F3D5;
-        Mon,  4 Dec 2023 11:00:40 -0800 (PST)
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d001e4cf7cso19426805ad.2;
-        Mon, 04 Dec 2023 11:00:40 -0800 (PST)
+        Mon, 4 Dec 2023 14:00:49 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A1EFA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:00:54 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1b7b6bf098so205497466b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:00:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1701716453; x=1702321253; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RwD2XopKRhDcKNokK1u0ay6hI/ADWt3zA2G08pzMLDs=;
+        b=YHB3ssCOCDwZtDUNgKw3MksznWZjMVyxFC1JcjUaLSG7VSRsPbbH+Cdlq46VqRZD2q
+         +yXkOOt/gagi9hjRrmrscp9Gabhy0etxGJLOkfySYBNcdeLsKkCNVxHkusfxv2LnHBOu
+         KB2BgyTQL2keIyZSujG7L6y6KpILvtmhsZCwXGSwZ0VaHCAF8JOSuEjBh7O03SxsxsNJ
+         dpNNfbDxU0/IdNer8m+W7RF6p4a9kTfl497wDc1XLoKp+/vaxSnl0J2rAtbg6rPZBWPj
+         DkR/zdEtfXKrJNHZFmdcUlbkx4DeSnr7qkoXAe+hoNh6d/44n0w9VQ5V7IElgfUfH5Yt
+         ILUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701716439; x=1702321239;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N1TuqS/7C7MDnJYXgnCCq7sNkI/3dfj9oPHuyt6Lz0g=;
-        b=L50mEP/RjTLfGLZHinpsWm1fN2yS+mVPWeISYoi84N6RoRi97wZake/V2F0hDo9wsG
-         ht38us+Z8QtgBY+S5US7wowkICCqkQ6tA9xTC/4iATiV55O6vLa1Z71EUponCII4dQ85
-         QWZ7QzxRE0ei7nrL+dprw4l4o+GrUahU3/dTChReab3/pjrznUGojVQ8cZYGUgGEA+Iz
-         lG+dp1MhW/PtPNXgz5mTHsKEE5rETk1VoQE4nGnmP7rP+ncl9F9WGyHh5czGaTro3lO7
-         /Vm2E81mFfApXfXskdtf7QSZfF5flUGd9OfgwoCncBe4kg1srB8WKZ1kUcPwOFWYJnON
-         Yslw==
-X-Gm-Message-State: AOJu0Yw4xl3SElhIUTjYAjdSuRfnXP9XT3kQ3aUhEib0UbmQQLHCkH69
-        azS0+8KWL2Md/3TfTFAnhj8=
-X-Google-Smtp-Source: AGHT+IHHQ2rAL0Tvz4EmLO23SEvKXkdcMniEXebNQQPfxw8obQEF0UOva9F7zaPNEHq1byNEaiZN3A==
-X-Received: by 2002:a17:902:e5c8:b0:1d0:7d9a:3bc3 with SMTP id u8-20020a170902e5c800b001d07d9a3bc3mr2090541plf.79.1701716439379;
-        Mon, 04 Dec 2023 11:00:39 -0800 (PST)
-Received: from [10.46.23.145] ([156.39.10.100])
-        by smtp.gmail.com with ESMTPSA id i31-20020a63221f000000b005bd2b3a03eesm7940081pgi.6.2023.12.04.11.00.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 11:00:39 -0800 (PST)
-Message-ID: <590ade27-b4da-49be-933b-e9959aa0cd4c@acm.org>
-Date:   Mon, 4 Dec 2023 11:00:36 -0800
+        d=1e100.net; s=20230601; t=1701716453; x=1702321253;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RwD2XopKRhDcKNokK1u0ay6hI/ADWt3zA2G08pzMLDs=;
+        b=ZLXxSzxPafyOwRxN3aasDXH6iO8x7gQf8sLhFeHE9x97ud/5tpXqmaVJiGE5V+GThe
+         XWdl32sQgFERy2FKHu8k51xHEC96AIg+w9VlBQQEcDQj+3gUkt8E/iidHs+7AeG4RpBG
+         5e05/6kq3DGGtn488lFTFjKEWSUWWv1MpxuBqAB7yEbWWAZmFy/bdYt8uemdT+mdvWb4
+         6UVHQiOYHjEpC/1IwJUFOUWJ6afxPX7eZmtmg+swmsP6XkORattRW1zmcVOnGzuP1Yun
+         Bop8Km8sBp1fyaZ8qGlb6kEyeegjQx+LGmpmQj0dSwck/M6euv3fA+gyfRcB/Y9A0ayK
+         Tt7g==
+X-Gm-Message-State: AOJu0YxhNdKT3e01lJNS92/6wEcPP2L4Te7/QsbBem00uPOqZoDPNFg4
+        Hjd68Azg2KFyY0PPLywZb5ba7w==
+X-Google-Smtp-Source: AGHT+IFzrv0hg9IOKz1K3PFLsyMHrkOWrtKQ8BdaZhJ5DdJ1H/NpFvg56NDuPLgvP9b6cB4oV7YYyA==
+X-Received: by 2002:a17:906:c2:b0:a1a:e3c6:f50 with SMTP id 2-20020a17090600c200b00a1ae3c60f50mr2707164eji.66.1701716452786;
+        Mon, 04 Dec 2023 11:00:52 -0800 (PST)
+Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id dx9-20020a170906a84900b009fbc655335dsm5577614ejb.27.2023.12.04.11.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 11:00:51 -0800 (PST)
+From:   Dmitry Safonov <dima@arista.com>
+To:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH v5 0/7] TCP-AO fixes
+Date:   Mon,  4 Dec 2023 19:00:39 +0000
+Message-ID: <20231204190044.450107-1-dima@arista.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/3] ufs: core: Add CPU latency QoS support for ufs
- driver
-Content-Language: en-US
-To:     Maramaina Naresh <quic_mnaresh@quicinc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Peter Wang <peter.wang@mediatek.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, chu.stanley@gmail.com
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, quic_cang@quicinc.com,
-        quic_nguyenb@quicinc.com, Nitin Rawat <quic_nitirawa@quicinc.com>
-References: <20231204143101.64163-1-quic_mnaresh@quicinc.com>
- <20231204143101.64163-2-quic_mnaresh@quicinc.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231204143101.64163-2-quic_mnaresh@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/23 06:30, Maramaina Naresh wrote:
-> +	u32	(*config_qos_vote)(struct ufs_hba *hba);
+Hi,
 
-Please remove the above callback since this patch series does not
-introduce any instances of this callback.
+Changes from v4:
+- Dropped 2 patches on which there's no consensus. They will require
+  more work TBD if they may made acceptable. Those are:
+  o "net/tcp: Allow removing current/rnext TCP-AO keys on TCP_LISTEN sockets"
+  o "net/tcp: Store SNEs + SEQs on ao_info"
 
-> +
-> +	/* This capability allows the host controller driver to use the PM QoS
-> +	 * feature.
-> +	 */
-> +	UFSHCD_CAP_PM_QOS				= 1 << 13,
->   };
+Changes from v3:
+- Don't restrict adding any keys on TCP-AO connection in VRF, but only
+  the ones that don't match l3index (David)
 
-Why does it depend on the host driver whether or not PM QoS is
-enabled? Why isn't it enabled unconditionally?
+Changes from v2:
+- rwlocks are problematic in net code (Paolo)
+  Changed the SNE code to avoid spin/rw locks on RX/TX fastpath by
+  double-accounting SEQ numbers for TCP-AO enabled connections.
 
-> + * @pm_qos_req: PM QoS request handle
-> + * @pm_qos_init: flag to check if pm qos init completed
->    */
+Changes from v1:
+- Use tcp_can_repair_sock() helper to limit TCP_AO_REPAIR (Eric)
+- Instead of hook to listen() syscall, allow removing current/rnext keys
+  on TCP_LISTEN (addressing Eric's objection)
+- Add sne_lock to protect snd_sne/rcv_sne
+- Don't move used_tcp_ao in struct tcp_request_sock (Eric)
 
-Documentation for pm_qos_init is missing.
+I've been working on TCP-AO key-rotation selftests and as a result
+exercised some corner-cases that are not usually met in production.
 
->   struct ufs_hba {
->   	void __iomem *mmio_base;
-> @@ -1076,6 +1089,9 @@ struct ufs_hba {
->   	struct ufs_hw_queue *uhq;
->   	struct ufs_hw_queue *dev_cmd_queue;
->   	struct ufshcd_mcq_opr_info_t mcq_opr[OPR_MAX];
-> +	struct pm_qos_request pm_qos_req;
-> +	bool pm_qos_init;
-> +	u32 qos_vote;
+Here are a bunch of semi-related fixes:
+- Documentation typo (reported by Markus Elfring)
+- Proper alignment for TCP-AO option in TCP header that has MAC length
+  of non 4 bytes (now a selftest with randomized maclen/algorithm/etc
+  passes)
+- 3 uAPI restricting patches that disallow more things to userspace in
+  order to prevent it shooting itself in any parts of the body
+- SNEs READ_ONCE()/WRITE_ONCE() that went missing by my human factor
+- Avoid storing MAC length from SYN header as SYN-ACK will use
+  rnext_key.maclen (drops an extra check that fails on new selftests)
 
-Please rename "pm_qos_init" into "pm_qos_initialized".
+Please, consider applying/pulling.
+
+The following changes since commit 33cc938e65a98f1d29d0a18403dbbee050dcad9a:
+
+  Linux 6.7-rc4 (2023-12-03 18:52:56 +0900)
+
+are available in the Git repository at:
+
+  git@github.com:0x7f454c46/linux.git tcp-ao-post-merge-v5
+
+for you to fetch changes up to 13504cef7e321700d930e9c005db6759c21981a3:
+
+  net/tcp: Don't store TCP-AO maclen on reqsk (2023-12-04 18:23:30 +0000)
+
+----------------------------------------------------------------
 
 Thanks,
+             Dmitry
 
-Bart.
+Cc: David Ahern <dsahern@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Dmitry Safonov <0x7f454c46@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Francesco Ruggeri <fruggeri05@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Salam Noureddine <noureddine@arista.com>
+Cc: Simon Horman <horms@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Dmitry Safonov (5):
+  Documentation/tcp: Fix an obvious typo
+  net/tcp: Consistently align TCP-AO option in the header
+  net/tcp: Limit TCP_AO_REPAIR to non-listen sockets
+  net/tcp: Don't add key with non-matching VRF on connected sockets
+  net/tcp: Don't store TCP-AO maclen on reqsk
+
+ Documentation/networking/tcp_ao.rst |  2 +-
+ include/linux/tcp.h                 |  8 ++------
+ include/net/tcp_ao.h                |  6 ++++++
+ net/ipv4/tcp.c                      |  6 ++++++
+ net/ipv4/tcp_ao.c                   | 17 +++++++++++++----
+ net/ipv4/tcp_input.c                |  5 +++--
+ net/ipv4/tcp_ipv4.c                 |  4 ++--
+ net/ipv4/tcp_minisocks.c            |  2 +-
+ net/ipv4/tcp_output.c               | 15 ++++++---------
+ net/ipv6/tcp_ipv6.c                 |  2 +-
+ 10 files changed, 41 insertions(+), 26 deletions(-)
+
+
+base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
+-- 
+2.43.0
 
