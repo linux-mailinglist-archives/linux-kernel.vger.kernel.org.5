@@ -2,156 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1488804141
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0F7804145
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjLDWEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:04:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        id S229967AbjLDWFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjLDWEw (ORCPT
+        with ESMTP id S229556AbjLDWFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:04:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF630CB;
-        Mon,  4 Dec 2023 14:04:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701727498; x=1733263498;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4hdFpwxoWy6g4uIjhOcxul5k6qD6bNS8h15Ws3gqgH0=;
-  b=JH+vjFaLVnZz/4JMSXx/2KeqCaK9k02+rEmd1956KPUzd6gkadDtxOYN
-   Y6HuhjUvteVnpx/4TONiApvoxdODe7Tnk6e8iCS2YhFksBlPqxgJxiVbI
-   /IsGj19BXPlQZzq6aEbiTwMo6IB6B/09oaoXqfX41npmFVKdcDt7Po5kS
-   KXJMRjqwluY+1tP1Umf7IgkGmxjiuz7QoD/yq4RP8Sy/5Bi7t/vdX2tap
-   /kQlwVLZ4lxBzfV6dKRrXmIyFexxj7DDZ/NtezsKy0ncKregveiHyhCw5
-   zq1S0igAzkbLbl7m4KPpDr4SBC/ouH4mef371QQTV7GVCWMMKClGJbvOT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="378831952"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="378831952"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 14:04:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="17325751"
-Received: from gauravs1-mobl.amr.corp.intel.com (HELO [10.209.53.199]) ([10.209.53.199])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 14:04:57 -0800
-Message-ID: <9b221937-42df-4381-b79f-05fb41155f7a@intel.com>
-Date:   Mon, 4 Dec 2023 14:04:56 -0800
+        Mon, 4 Dec 2023 17:05:25 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8C9101;
+        Mon,  4 Dec 2023 14:05:30 -0800 (PST)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4LnuTB019687;
+        Mon, 4 Dec 2023 22:05:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=corp-2023-11-20;
+ bh=invrbxQpf8P68RHJgicOg1YulTXnzvQK2baOM8KCEak=;
+ b=PkFrz3QMVZQJPPjeIarg+zAnKb4mc4ZLTyWgsbva+sGVu7U0QFmQg52nKuzYIO9IuCMO
+ 3b2j4OHB9ierfY++hQ/BAcrgNKUpI/dOQWkCl7js5jG8188FCvXSPQUg93QLxgvkbtgD
+ MBFkNnugGE2Q6SG/5mdKHrD9hSmXaXfwVglM1wOH3RIrXLKeh2T7LSLbnGmZkWhBxiz3
+ 1unuxkzvoG55yT50Mjy/KiJeU626sU2qwdDtXRhjty6rtdZ7+8facF7Qd67uRoI65T4w
+ 0AAYyAvNScZJ0/M0cH2cCdhlO2OlrzpxzAbL2JEk00P7vVH0tpYf28N6yU0tGXLyVtf3 EQ== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uspm703xe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Dec 2023 22:05:09 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4Kjbce020707;
+        Mon, 4 Dec 2023 22:05:08 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu16hkdj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 04 Dec 2023 22:05:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=beWKceIUnDeG9mdfUhUJKOveiyIr7CTzy/AsMqvYc9PgjdXNJ/BOYzfeXKh2E6NOyfxwgbD67W6AAuGBbP/htHSTpLcVScsiSdbErG7iXej1JcSto92zfITGpjctPUMdCrlPSt4vxkGYwOjwBY4cVBa1DneVen/4uGDpuLUF1lP63n0v//0maqrDPDfFP9kf7+9+DsU60hJ3w3cjRK2zIbwDlj9DFWe8YwRN7q+dVTJHSBdJpQmOH66vxxowMvnFNTryuEq9z7ze9rInAmvBLHb6TR0qoYsjCzDfr48T0RpGjE6TOl/Zm60aUq9esr0P+kPh6grQTtvnE+ase3qB4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=invrbxQpf8P68RHJgicOg1YulTXnzvQK2baOM8KCEak=;
+ b=cSnV0h4hiyOtBWBNyQhyoHc+kJIIsx0EK1ASmKf/lH56hsmTU0vCWpGb7JptpWNPoo8ggCsud6jCDRAObgCr1VPyNJcNVOv0zpkITUnbf541CHPHioa56lIesBsVyY8Eo9X0wEnox+QqcgGFOXg0LkKg1qD7GIRa7FlqjReWMAYWNmuRW62vpMD48v22hXyrrr5ez8/z5Y70/n6ah5MIv3DkDJ0D9oIJOnnjU6IAs/Scd6dgPwezwkKbnsrdC1RUihCjog++YUfJlLXCwUdWdXPi60cTVzWv/6a1AZjzeAHjUpdOPDhtj9jR5a5lMZotzwWRKybG6503UAX+ajhExg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=invrbxQpf8P68RHJgicOg1YulTXnzvQK2baOM8KCEak=;
+ b=xtYuGEf10lUETwDbMKREN8m+P7nMgwiiDUhaC3qAAxek9qUk7pZXnpBsQngJ3cDq3R9smm4iW7ssWEftsWcemt3gIj43EDnb+cb5BVd1iHu5oiljKDV4uQuxF2uS6lKMHps0TncRUIE9EdL4DyYLKfWUipDb54lw7AwPWkB3x+4=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by BY5PR10MB4113.namprd10.prod.outlook.com (2603:10b6:a03:20d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
+ 2023 22:05:05 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::360b:b3c0:c5a9:3b3c]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::360b:b3c0:c5a9:3b3c%4]) with mapi id 15.20.7046.034; Mon, 4 Dec 2023
+ 22:05:05 +0000
+Date:   Mon, 4 Dec 2023 17:05:01 -0500
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     Anna Schumaker <anna@kernel.org>
+Cc:     chenxiaosongemail@foxmail.com, trond.myklebust@hammerspace.com,
+        jlayton@kernel.org, neilb@suse.de, kolga@netapp.com,
+        Dai.Ngo@oracle.com, tom@talpey.com, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chenxiaosong@kylinos.cn,
+        liuzhengyuan@kylinos.cn, huhai@kylinos.cn, liuyun01@kylinos.cn
+Subject: Re: [PATCH] NFSv4, NFSD: move enum nfs_cb_opnum4 to
+ include/linux/nfs4.h
+Message-ID: <ZW5NDYCmJtEWSEB4@tissot.1015granger.net>
+References: <tencent_03EDD0CAFBF93A9667CFCA1B68EDB4C4A109@qq.com>
+ <ZWy7ob2HhNRX7Z1b@tissot.1015granger.net>
+ <CAFX2JfmrGLmEsXccUGZ5drAJ9oxaqjTUxO0tPVgz_mf9YXZN+Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFX2JfmrGLmEsXccUGZ5drAJ9oxaqjTUxO0tPVgz_mf9YXZN+Q@mail.gmail.com>
+X-ClientProxiedBy: CH5PR03CA0001.namprd03.prod.outlook.com
+ (2603:10b6:610:1f1::29) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
- #MC due to erratum
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "sagis@google.com" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>, "Brown, Len" <len.brown@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Gao, Chao" <chao.gao@intel.com>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
- <b3b265f9-48fa-4574-a925-cbdaaa44a689@intel.com>
- <afc875ace6f9f955557f5c7e811b3046278e4c51.camel@intel.com>
- <bcff605a-3b8d-4dcc-a5cb-63dab1a74ed4@intel.com>
- <dfbfe327704f65575219d8b895cf9f55985758da.camel@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <dfbfe327704f65575219d8b895cf9f55985758da.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|BY5PR10MB4113:EE_
+X-MS-Office365-Filtering-Correlation-Id: c8012aea-229b-4272-f086-08dbf5151239
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aGzAkuQFwFQ1l2lp5EDZEon8q2W0/8aT8p5SSMynpXZ1EZ6dwweC+fkSRfgtZmXvIIihWOTIYoxbJEBjb+LRUcllUutoCurlVCsjcWPaUpMnhkpYcr7JIYmXHaw02jrelvAPtPtOYu5+uz5G4Xr1yLstoPOmsREmUopWcLwG8jms7BrFX18IGOVEeZdR4tv3eKCGoDhoSW2sJcZUt66R02MTfoHUnexcs5RwHTsOn9BXawmx94KHmVG/HYaZIU522I7T6wKKdqCHbF7NgmoyQIshxZ5m7Oyv/QSmtCr8Yn+6ctFgKCFyfv4qcBIrlvnbMKQfBZ1VdizA/ftqWbSJPGJW966DDXKHoGeJpWtDIzD3DsoTvaJ6rW7mCw5SkaHbdTSmOhL1vgn7WwwBqUZ2k1+FdQreMRZ7Zz5POdukXOq6p70gsMvXrDh3mpwz4knaYZnT2/6/yzJeM9Y1UMIxOnh/+xYvkU5RI22s2SHOTwMztzOHa0jb6r1H9oGWLWQR2skPcRK8GYe6sMX0Ky01gBn0gmPO5gT2TFfzKW/Kk9ICSkbbUGRB1mRNKL2v58hFmvHvRya5rzX/vL6IpfNnkXfrTl+ssxMCwqcxlNAWjvTj/2cTI51jmGvMjNwd95iZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(39860400002)(366004)(376002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(41300700001)(38100700002)(2906002)(83380400001)(5660300002)(7416002)(26005)(53546011)(9686003)(6512007)(478600001)(44832011)(6486002)(6666004)(86362001)(6506007)(4326008)(8936002)(66556008)(66476007)(8676002)(316002)(6916009)(66946007)(48020200002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dFRmVU9USk41VVVzdmxHYUN0ZmNoUnBZeFFjUlRHclV5K293YmU0dW5ZcVBn?=
+ =?utf-8?B?aHFtTnlJZVFGRVFCdTVidk1qN0xqSWpERHE1aEp0bFR0UTh0ckwzaTRwWThN?=
+ =?utf-8?B?M0pXbDRraWRmNzRVcUNyOWk3MnRmRlpFOHpqYzJ6V1RzTDQwdnIwNXFWVWNB?=
+ =?utf-8?B?K2xjUVBHQ3E2ZWQ5blhyeWd0cWJRckZwaDFuc0JlU1JrdVlrLzFGOUJKZ3hV?=
+ =?utf-8?B?bVpDWHNYZnkyVHo4S1RQK1ZjeXMzQnE3TjRpbTdWY2QxMW9BNGpyeXlPYkdv?=
+ =?utf-8?B?VVpJUWtXTy9vZUJCQlBvL3JKWlM3MDNUZVZrSXVtKzgwbU1SK0toYW5vc0U1?=
+ =?utf-8?B?NUdBYlFPbWl0WGRwdGpieEdoOFhJYkw4Q0pIUFJkbUZwMnIwTUl1ejVLV1RC?=
+ =?utf-8?B?T0ZtWnJNUkM4MktabmNwc2hQempoTkxERkkrZEpPbVg2UiswdFpodTRKSDYw?=
+ =?utf-8?B?OHNncTR1WlBIVFpteEcxTjJNODgvY1l5UERVUDA3QThuUmJxZzFvZm9OVlJG?=
+ =?utf-8?B?SzBRRGxyQUZvQnBydEFqYzY1cGR3MGE1aGlub2huYUd6bXBZMkYvS1VxN0ty?=
+ =?utf-8?B?OVZqMzA0OVhsR0luekxvcHM1WVY1RU9PK05JQ0tNS2NvSVMzTzRqa0M3Qm9V?=
+ =?utf-8?B?b3ZUN3lxUG8rQzVQdmN3WldaLys3SXFWdmxKMDNUQkIvSEpZbEJzZjEreEtO?=
+ =?utf-8?B?NE9VazJEWEwxZ3c3UVNEdE1NMy9taEJDTzBkYjlTa3lXNEdOOCtKek5jVFQ4?=
+ =?utf-8?B?YUE4MUNJdUZ6QjJFd3crTnBLOTVXdjhONnZSM09GUnd2OVlFcW0zWFRrNzdS?=
+ =?utf-8?B?ZlpJbjUyZjAxMU9adXB3bjA3eWgvaXhnOGZmMVNBR1BUOXl6NkVTenVaYWpP?=
+ =?utf-8?B?VDBibmZYTEVVOU1xNUEyZERvRTNwK1NNMmhubkR1UmZ3ZllDMmVvUG5SdE03?=
+ =?utf-8?B?NVEyVUEwWjJLTSs2MUJNaGZjOE9yS2JMS3dDUVdPVlA4dXB2cHRBQTU3RHV3?=
+ =?utf-8?B?c3FDRmpsZnpWV2orOCtmeGVING5MRlA0b1VZNk9hWG5OcTJIY1llOWl4Y3hW?=
+ =?utf-8?B?djdoY3cyd3Nva0o0TENKOWR3SVBKOEhGei8zVk9FYWZ1ZkhOL0VnZ0JWdzlM?=
+ =?utf-8?B?eUVLOS9uNkRmYlpTbTFGaE9zb2F3Si93cHJNRjR5alhRTDMxYVhNNEVjcG1V?=
+ =?utf-8?B?QjMrUldxYWtNY2NMRnpMWUV4SGJFNFNXaUh5dm9lbnB4TXZiNTBZcDdlcTlz?=
+ =?utf-8?B?RTVwcHlJSmxOMTNsb3hWWUdXSEVaSVBERVE5TFQzbnhNUWNHeUtNREpFdEh4?=
+ =?utf-8?B?ejFsQkE2WVcvaVpkMFZzdXFvZGw2SHVaZU9xN1NuSVhJQ29xNk1tVi9Ycld6?=
+ =?utf-8?B?cWJ6UmF3c3U1LzRGR01hU2dMc3hYZkMwYitpTkxESDVwK08yY3Yxb0k2dWN1?=
+ =?utf-8?B?WTBMZkJRVHppRnVLQkE4ZjVrSXJiWE0wK2pvSUlWbUZPdi9hS21zUmpYSUdm?=
+ =?utf-8?B?ekk3OVY3TDNWUDROb2hEVlBPcHVLTFZFTjVrbDlrMHIxcXR6d2ZXN3hsdDd3?=
+ =?utf-8?B?RkM0bEJJQlh1TlpFdWR6dk9RbUpORTRBVW9PL0lPV0FuL3JrTDBldVdnV3Vs?=
+ =?utf-8?B?M2lVSUZRUFBadnlhM2l1ZkhwL0pSdCtwaEZiYUhIVWk0U2RtK3ZoWlk5SFhi?=
+ =?utf-8?B?dEh6T3hHZ0dVc3FhK2RSRWoyM2xvdWtrMkFPR0p5ZzVVeVc4eGZ1QWlQREU3?=
+ =?utf-8?B?cXh4K0xSZ3FxcFZYejF1aGw5Tmh1ZkZjS1A5TWczVlZodmNQeUtZbWVWWTFq?=
+ =?utf-8?B?TEhxK0l2YThzUitKTnFPemUwa0FFanpEU3R6M0dHYnhlamUzb2I4aVVUUzdD?=
+ =?utf-8?B?b1pMTGZ1OW13Q0U1Z3hYSys1NXp1MllLUFBFZHd3Qy91OHJBZlNIZm9ZRDlm?=
+ =?utf-8?B?ZnI2WDI5azg0LzlITFdoZFlhM2VSQU5rNjdPWS9ucmFPVlplWVhyeUR0ajE3?=
+ =?utf-8?B?NmR1WDlEVXJqTGhhMHdqT1ZMVVkzcGFubEtxSm9OalBuK0IweHpBUkptUXhW?=
+ =?utf-8?B?TzZ5WUtzd2J1WHFOOEZWSWJ5YXI2OUJLTDFQd1djMkJKZk1BUHp6RWhrLzlr?=
+ =?utf-8?B?Q3M3UXZob0Z2MkNpbkdpcjlZdk04b2xWVU42VGxDcVl6R1pyVFJtZW43cnc2?=
+ =?utf-8?B?dEE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?YTB3c3NKSDBsZnRLMlhxUFQ4TDRqZkFPZTNUTjNWNEZDSVp0NzMrRUdZcDc3?=
+ =?utf-8?B?cit3WkppNWhzQjlhV3N1TWtvQmswZ0piZkdTbENoOEx6L2ZjMG9ycGtjSVFY?=
+ =?utf-8?B?cjJnUlhYeThpcnFwdU0vMFlERHFuaVFUY3djRHRQMkFtR2RFN0lvWlQwMmVX?=
+ =?utf-8?B?U1QzNC9uS0ZNZE1OaXhkOFZUdmhuTTVjWnlNcGcvL2YvejBVRzNIUENCWnBa?=
+ =?utf-8?B?MEF5Um5DM2pXWHZnTHB2clFHeVovTzBUSEZZYUhmTVBTbEQ4dHdENlk4OHB6?=
+ =?utf-8?B?RHRMWHR6WFBmblNSWXlCZVVXM1M3Vnp5WWhQKzVncXJML2R0Wkw0eWpuamo4?=
+ =?utf-8?B?U3FVMkp3ZlNiZTJTTGQ5alVQb1Fzc2VONjc1dEIxNXFCekhPNy9QUjB5bkpL?=
+ =?utf-8?B?UmdUckg4b214NExjaDd5Qzlxcm1KcDl0bGhOOHBtOUZqenU0MVFWSFZKZmto?=
+ =?utf-8?B?WWdoditkeWJjTmhha01HWXBiUDNzVkRjYmZXRSs3bUJCZ09LL3F0b2k5VGxU?=
+ =?utf-8?B?a0o3V3JxcS8yTjZOL2tZWnpoMVJ0ajNNNXNlWVE4bUp2K0hnVXk2N25tNlZJ?=
+ =?utf-8?B?aGppLyt5VWxJbEZSVWRTem9KN0JkMlp6UDB0a25nVWRFOUV0eWpyVjJJbWdq?=
+ =?utf-8?B?V3QySlFud2F6NGgvVlBSbGZTMW94d1FqK3gvQWdKQ0ZtOHpJbUpXWDhoc2xk?=
+ =?utf-8?B?U3BvY2ZpamhYN3lIZWQvSlN2VWRNMitjOU56ZFRIbDBXczA0aW1kaGtVbUla?=
+ =?utf-8?B?TmQwOHBJaXp1TFFiZ2tWYmdCamxtRGFCY25ReVY4K1UzNWlXOUZOZk9qcnJM?=
+ =?utf-8?B?ZmQ2TW1zb0JpVm0zS1dPQVZxanRkZW1IK3VBYnNnenZFYkUwaDNKVXN2b3dt?=
+ =?utf-8?B?eHJWZWVFL1ZlK0Y5Z1hLeVkvWUhiVnRvTWZ4dXh0VmQvcDBNUDU5b3hTMHZj?=
+ =?utf-8?B?MUN0NnN3QzFadzNzZEtlYUJDV2luOFgvN29OcUI5dVZJUHhnTjdPL2VwWTNM?=
+ =?utf-8?B?Y1JWbTczK1VXbXRXZ3BNVlVJUnU2SkgwTlh2Qk1iQUFHTUdiVzM0dGlWWXhH?=
+ =?utf-8?B?ZytwbDczTzFGeE9Jcm9iNVV6a3VxTlFGYWIyNnB4a3JnRS9Qa1N2RUJWbW41?=
+ =?utf-8?B?c2xNZmNmUEFkWGdtdFFScEtVaVRpRXZuSjRYeklxVk5FaGJHZE1kb1FCRTk1?=
+ =?utf-8?B?UlgwOHIrWGZBTzdjOWRPYWZCcXhjLy9naW5rM21PWHZNaWNkcE5QaVlKRTlS?=
+ =?utf-8?B?eXpJM0xrY1VMYWpBeENOQk1mWC94VVhNWmluVGFIcTdDMnJGSnB0bzZLbEZT?=
+ =?utf-8?Q?J/gr3eZxZuz6A=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8012aea-229b-4272-f086-08dbf5151239
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 22:05:05.4554
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4c1dIFUI1zhUepSaExeSjk0Ui4acoJ8i9LpEOISvgfgVm2fV7fp/C8ynLUbsMtz9fMJ6+D6Ffc22pQpnlUckAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4113
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_20,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 phishscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040173
+X-Proofpoint-ORIG-GUID: hmSvyMEzG1P2B0zK5s771pr4vysQYLK9
+X-Proofpoint-GUID: hmSvyMEzG1P2B0zK5s771pr4vysQYLK9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/23 13:00, Huang, Kai wrote:
->> tl;dr: I think even looking a #MC on the PAMT after the kvm module is
->> removed is a fool's errand.
-> Sorry I wasn't clear enough.  KVM actually turns off VMX when it destroys the
-> last VM, so the KVM module doesn't need to be removed to turn off VMX.  I used
-> "KVM can be unloaded" as an example to explain the PAMT can be working when VMX
-> is off.
+On Mon, Dec 04, 2023 at 03:31:44PM -0500, Anna Schumaker wrote:
+> On Sun, Dec 3, 2023 at 12:32 PM Chuck Lever <chuck.lever@oracle.com> wrote:
+> >
+> > On Sat, Dec 02, 2023 at 09:07:25PM +0000, chenxiaosongemail@foxmail.com wrote:
+> > > From: ChenXiaoSong <chenxiaosong@kylinos.cn>
+> > >
+> > > Callback operations enum is defined in client and server, move it to
+> > > common header file.
+> > >
+> > > Signed-off-by: ChenXiaoSong <chenxiaosong@kylinos.cn>
+> >
+> > LGTM.
+> >
+> > I can take this through the nfsd-next tree if I get an Acked-by:
+> > from the NFS client maintainers. If they would like to take this
+> > through the NFS client tree, let me know, and I will send my
+> > Acked-by.
+> 
+> Looks fine to me, and I'm okay with you taking it:
+> 
+> Acked-by: Anna Schumaker <Anna.Schumaker@netapp.com>
 
-Can't we just fix this by having KVM do an "extra" hardware_enable_all()
-before initializing the TDX module?  It's not wrong to say that TDX is a
-KVM user.  If KVm wants 'kvm_usage_count' to go back to 0, it can shut
-down the TDX module.  Then there's no PAMT to worry about.
+Thanks, everyone! Applied to nfsd-next for v6.8.
 
-The shutdown would be something like:
 
-	1. TDX module shutdown
-	2. Deallocate/Convert PAMT
-	3. vmxoff
+> > > ---
+> > >  fs/nfs/callback.h      | 19 -------------------
+> > >  fs/nfsd/nfs4callback.c | 26 +-------------------------
+> > >  include/linux/nfs4.h   | 22 ++++++++++++++++++++++
+> > >  3 files changed, 23 insertions(+), 44 deletions(-)
+> > >
+> > > diff --git a/fs/nfs/callback.h b/fs/nfs/callback.h
+> > > index ccd4f245cae2..0279b78b5fc9 100644
+> > > --- a/fs/nfs/callback.h
+> > > +++ b/fs/nfs/callback.h
+> > > @@ -19,25 +19,6 @@ enum nfs4_callback_procnum {
+> > >       CB_COMPOUND = 1,
+> > >  };
+> > >
+> > > -enum nfs4_callback_opnum {
+> > > -     OP_CB_GETATTR = 3,
+> > > -     OP_CB_RECALL  = 4,
+> > > -/* Callback operations new to NFSv4.1 */
+> > > -     OP_CB_LAYOUTRECALL  = 5,
+> > > -     OP_CB_NOTIFY        = 6,
+> > > -     OP_CB_PUSH_DELEG    = 7,
+> > > -     OP_CB_RECALL_ANY    = 8,
+> > > -     OP_CB_RECALLABLE_OBJ_AVAIL = 9,
+> > > -     OP_CB_RECALL_SLOT   = 10,
+> > > -     OP_CB_SEQUENCE      = 11,
+> > > -     OP_CB_WANTS_CANCELLED = 12,
+> > > -     OP_CB_NOTIFY_LOCK   = 13,
+> > > -     OP_CB_NOTIFY_DEVICEID = 14,
+> > > -/* Callback operations new to NFSv4.2 */
+> > > -     OP_CB_OFFLOAD = 15,
+> > > -     OP_CB_ILLEGAL = 10044,
+> > > -};
+> > > -
+> > >  struct nfs4_slot;
+> > >  struct cb_process_state {
+> > >       __be32                  drc_status;
+> > > diff --git a/fs/nfsd/nfs4callback.c b/fs/nfsd/nfs4callback.c
+> > > index 92bc109dabe6..30aa241038eb 100644
+> > > --- a/fs/nfsd/nfs4callback.c
+> > > +++ b/fs/nfsd/nfs4callback.c
+> > > @@ -31,6 +31,7 @@
+> > >   *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+> > >   */
+> > >
+> > > +#include <linux/nfs4.h>
+> > >  #include <linux/sunrpc/clnt.h>
+> > >  #include <linux/sunrpc/xprt.h>
+> > >  #include <linux/sunrpc/svc_xprt.h>
+> > > @@ -101,31 +102,6 @@ static int decode_cb_fattr4(struct xdr_stream *xdr, uint32_t *bitmap,
+> > >       return 0;
+> > >  }
+> > >
+> > > -/*
+> > > - *   nfs_cb_opnum4
+> > > - *
+> > > - *   enum nfs_cb_opnum4 {
+> > > - *           OP_CB_GETATTR           = 3,
+> > > - *             ...
+> > > - *   };
+> > > - */
+> > > -enum nfs_cb_opnum4 {
+> > > -     OP_CB_GETATTR                   = 3,
+> > > -     OP_CB_RECALL                    = 4,
+> > > -     OP_CB_LAYOUTRECALL              = 5,
+> > > -     OP_CB_NOTIFY                    = 6,
+> > > -     OP_CB_PUSH_DELEG                = 7,
+> > > -     OP_CB_RECALL_ANY                = 8,
+> > > -     OP_CB_RECALLABLE_OBJ_AVAIL      = 9,
+> > > -     OP_CB_RECALL_SLOT               = 10,
+> > > -     OP_CB_SEQUENCE                  = 11,
+> > > -     OP_CB_WANTS_CANCELLED           = 12,
+> > > -     OP_CB_NOTIFY_LOCK               = 13,
+> > > -     OP_CB_NOTIFY_DEVICEID           = 14,
+> > > -     OP_CB_OFFLOAD                   = 15,
+> > > -     OP_CB_ILLEGAL                   = 10044
+> > > -};
+> > > -
+> > >  static void encode_nfs_cb_opnum4(struct xdr_stream *xdr, enum nfs_cb_opnum4 op)
+> > >  {
+> > >       __be32 *p;
+> > > diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
+> > > index c11c4db34639..ef8d2d618d5b 100644
+> > > --- a/include/linux/nfs4.h
+> > > +++ b/include/linux/nfs4.h
+> > > @@ -869,4 +869,26 @@ enum {
+> > >       RCA4_TYPE_MASK_OTHER_LAYOUT_MAX = 15,
+> > >  };
+> > >
+> > > +enum nfs_cb_opnum4 {
+> > > +     OP_CB_GETATTR = 3,
+> > > +     OP_CB_RECALL  = 4,
+> > > +
+> > > +     /* Callback operations new to NFSv4.1 */
+> > > +     OP_CB_LAYOUTRECALL  = 5,
+> > > +     OP_CB_NOTIFY        = 6,
+> > > +     OP_CB_PUSH_DELEG    = 7,
+> > > +     OP_CB_RECALL_ANY    = 8,
+> > > +     OP_CB_RECALLABLE_OBJ_AVAIL = 9,
+> > > +     OP_CB_RECALL_SLOT   = 10,
+> > > +     OP_CB_SEQUENCE      = 11,
+> > > +     OP_CB_WANTS_CANCELLED = 12,
+> > > +     OP_CB_NOTIFY_LOCK   = 13,
+> > > +     OP_CB_NOTIFY_DEVICEID = 14,
+> > > +
+> > > +     /* Callback operations new to NFSv4.2 */
+> > > +     OP_CB_OFFLOAD = 15,
+> > > +
+> > > +     OP_CB_ILLEGAL = 10044,
+> > > +};
+> > > +
+> > >  #endif
+> > > --
+> > > 2.34.1
+> > >
+> > >
+> >
+> > --
+> > Chuck Lever
 
-Then, no SEAMCALL failure because of vmxoff can cause a PAMT-induced #MC
-to be missed.
+-- 
+Chuck Lever
