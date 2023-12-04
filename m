@@ -2,98 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 610AF802F12
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EDB5802F13
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbjLDJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
+        id S229603AbjLDJq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:46:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjLDJpw (ORCPT
+        with ESMTP id S229756AbjLDJqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:45:52 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89827B3;
-        Mon,  4 Dec 2023 01:45:58 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 92E45FEC;
-        Mon,  4 Dec 2023 01:46:45 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.44.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 443083F6C4;
-        Mon,  4 Dec 2023 01:45:57 -0800 (PST)
-Date:   Mon, 4 Dec 2023 09:45:54 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] drivers: perf: arm_pmu: Drop 'pmu_lock' element from
- 'struct pmu_hw_events'
-Message-ID: <ZW2f0kACNEp7-X-M@FVFF77S0Q05N>
-References: <20231115092805.737822-1-anshuman.khandual@arm.com>
- <20231115092805.737822-3-anshuman.khandual@arm.com>
+        Mon, 4 Dec 2023 04:46:25 -0500
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D8CC106;
+        Mon,  4 Dec 2023 01:46:29 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1701683177; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=pJudvDMWVylERXpP3nXifI54PwmHy6yRb7Ypnhpzgj7ZoVcDiGHBjsg/8R75Z5e1W6
+    DMfi3mnwbZA6YWq0v7fZaRxmysOJBQVtG0mcO0IE1tzcyMXrDztGOOdxmqRyIWNw+qgF
+    yMve/5gREh7iIgqlpV/ZQSQLQvXWGEfAFjxlYE/BTBl8sw5AecdjthMHTW+QZu/j1pVb
+    oTCJVAhUH6rAWUrFKlwmNOZUSZ1VvrKdyVJ3NuLqWXdnX7uAdFdk0vpyUJpzTy1MXVt1
+    O5P/k58x2wjTAkEvck3MSReq/6MmelJTZiK15FGh6QKvi1Qe2dmHiHm+wEupCFepOOd4
+    6BbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701683177;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
+    bh=vPDDwu/LFJBTyJh71GaE5A1eXeoeKpnofr6UkCT3JFc=;
+    b=bd2THfus25v89rcBx4MqjHLvnuJmGkBScugwnrIMCaFKKsevsnVAXqQBJSnUk9/T8P
+    tF8xQtZLkxJ4XzHKwcbiJAPd0nmExJKxt3Glr53CTt5yT7xpAmV/de93QwA94ku92AsD
+    CnyFogbpcvuSdBQZRPSyaMQAdJH+2JfzJBa3IttDUF93DvUEKUTRXqXlwhZ5A8yK0Df+
+    qy6Ss9A7SZp9sIEWt2GXodmOfa6O6EYwJOFtt1OOgwvcvoqLYG0bKQ8wT24Ix3kNS3WU
+    Td8K4AfTY3MElWi03nNmfMYwCDSANsdaKgvR5BhnOgieteffnl04weYE/pU3HbgOUu+U
+    R6aQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701683177;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
+    bh=vPDDwu/LFJBTyJh71GaE5A1eXeoeKpnofr6UkCT3JFc=;
+    b=rPk0hNXwy2KILWychu1slf4uvwLJiipWZ2W0xPHJ8gFStNsZUkEcqJTJVFbxf2dDV3
+    zDtjhGHKCPKWIvzbSidbDBq6LkPTzvtARTNy0ILUgv14avRr0VyV8HGgaeRRGtTQGyNO
+    kGmGUCknTErt4eLIEpv27DLIg39t8GXUWFs9TZuiJCpdL8VhN0t2rcHnEue8k+QeLTXJ
+    UjwV5U/WT1OPVitHhsrHJFI43AquUKs2lSlg2SS2Knp9HABnXCekPKc6GRnhqE5Z2JYx
+    9nMOkVCZOiM0HaC0XsfyG7ISWEBY5Wexg6GFPb1E0aw/SMrHVXvFfKpGu7lbyK7hG7v3
+    EXtA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701683177;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
+    bh=vPDDwu/LFJBTyJh71GaE5A1eXeoeKpnofr6UkCT3JFc=;
+    b=WBm/rMl4qC5EUAACv3CtuLo+TKvmcHiI9F+fVlKzN2o6kMxDlpRZk20CgOo64UwzJj
+    qNipme+P/lOSFYRJ/GAw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4l+/zY="
+Received: from [192.168.244.3]
+    by smtp.strato.de (RZmta 49.9.7 DYNA|AUTH)
+    with ESMTPSA id R5487bzB49kG9je
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 4 Dec 2023 10:46:16 +0100 (CET)
+From:   Stephan Gerhold <stephan@gerhold.net>
+Date:   Mon, 04 Dec 2023 10:46:11 +0100
+Subject: [PATCH] arm64: dts: qcom: Add missing vio-supply for AW2013
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115092805.737822-3-anshuman.khandual@arm.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231204-qcom-aw2013-vio-v1-1-5d264bb5c0b2@gerhold.net>
+X-B4-Tracking: v=1; b=H4sIAOKfbWUC/x3MQQ5AMBBA0avIrE3STkvCVcSCGsyC0iZIGnfXW
+ L7F/wkiB+EIbZEg8CVR/J6hywLcOuwLo0zZQIqMJmXxdH7D4SalDV7isdHT6BRVztYWcnUEnuX
+ 5j13/vh8qnxsnYQAAAA==
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Stephan Gerhold <stephan@gerhold.net>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 02:58:05PM +0530, Anshuman Khandual wrote:
-> As 'pmu_lock' element is not being used in any ARM PMU implementation, just
-> drop this from 'struct pmu_hw_events'.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Add the missing vio-supply to all usages of the AW2013 LED controller
+to ensure that the regulator needed for pull-up of the interrupt and
+I2C lines is really turned on. While this seems to have worked fine so
+far some of these regulators are not guaranteed to be always-on. For
+example, pm8916_l6 is typically turned off together with the display
+if there aren't any other devices (e.g. sensors) keeping it always-on.
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+Cc:  <stable@vger.kernel.org> # 6.6
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+I omitted the Fixes: tag here as it would be 5 separate commits, and
+it's really only useful to backport this to v6.6+ since this is where
+the necessary driver addition landed (see commit baca986e1f2c3 ("leds:
+aw2013: Enable pull-up supply for interrupt and I2C"). I'm not aware
+that anyone actually ran into trouble with this missing regulator yet.
+---
+ arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts  | 1 +
+ arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts | 1 +
+ arch/arm64/boot/dts/qcom/msm8953-xiaomi-mido.dts      | 1 +
+ arch/arm64/boot/dts/qcom/msm8953-xiaomi-tissot.dts    | 1 +
+ arch/arm64/boot/dts/qcom/msm8953-xiaomi-vince.dts     | 1 +
+ 5 files changed, 5 insertions(+)
 
-Mark.
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
+index 37fa55166918..5f24c40a6020 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-longcheer-l8150.dts
+@@ -104,6 +104,7 @@ led-controller@45 {
+ 		#size-cells = <0>;
+ 
+ 		vcc-supply = <&pm8916_l17>;
++		vio-supply = <&pm8916_l6>;
+ 
+ 		led@0 {
+ 			reg = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts b/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
+index d4b88c787e59..510b3b3c4e3c 100644
+--- a/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
++++ b/arch/arm64/boot/dts/qcom/msm8916-wingtech-wt88047.dts
+@@ -142,6 +142,7 @@ led-controller@45 {
+ 		#size-cells = <0>;
+ 
+ 		vcc-supply = <&pm8916_l16>;
++		vio-supply = <&pm8916_l5>;
+ 
+ 		led@0 {
+ 			reg = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8953-xiaomi-mido.dts b/arch/arm64/boot/dts/qcom/msm8953-xiaomi-mido.dts
+index ed95d09cedb1..6b9245cd8b0c 100644
+--- a/arch/arm64/boot/dts/qcom/msm8953-xiaomi-mido.dts
++++ b/arch/arm64/boot/dts/qcom/msm8953-xiaomi-mido.dts
+@@ -111,6 +111,7 @@ led-controller@45 {
+ 		reg = <0x45>;
+ 
+ 		vcc-supply = <&pm8953_l10>;
++		vio-supply = <&pm8953_l5>;
+ 
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8953-xiaomi-tissot.dts b/arch/arm64/boot/dts/qcom/msm8953-xiaomi-tissot.dts
+index 61ff629c9bf3..9ac4f507e321 100644
+--- a/arch/arm64/boot/dts/qcom/msm8953-xiaomi-tissot.dts
++++ b/arch/arm64/boot/dts/qcom/msm8953-xiaomi-tissot.dts
+@@ -104,6 +104,7 @@ led-controller@45 {
+ 		reg = <0x45>;
+ 
+ 		vcc-supply = <&pm8953_l10>;
++		vio-supply = <&pm8953_l5>;
+ 
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+diff --git a/arch/arm64/boot/dts/qcom/msm8953-xiaomi-vince.dts b/arch/arm64/boot/dts/qcom/msm8953-xiaomi-vince.dts
+index 1a1d3f92a511..b0588f30f8f1 100644
+--- a/arch/arm64/boot/dts/qcom/msm8953-xiaomi-vince.dts
++++ b/arch/arm64/boot/dts/qcom/msm8953-xiaomi-vince.dts
+@@ -113,6 +113,7 @@ led-controller@45 {
+ 		reg = <0x45>;
+ 
+ 		vcc-supply = <&pm8953_l10>;
++		vio-supply = <&pm8953_l5>;
+ 
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
 
-> ---
->  drivers/perf/arm_pmu.c       | 1 -
->  include/linux/perf/arm_pmu.h | 6 ------
->  2 files changed, 7 deletions(-)
-> 
-> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-> index d712a19e47ac..379479b50bdd 100644
-> --- a/drivers/perf/arm_pmu.c
-> +++ b/drivers/perf/arm_pmu.c
-> @@ -893,7 +893,6 @@ struct arm_pmu *armpmu_alloc(void)
->  		struct pmu_hw_events *events;
->  
->  		events = per_cpu_ptr(pmu->hw_events, cpu);
-> -		raw_spin_lock_init(&events->pmu_lock);
->  		events->percpu_pmu = pmu;
->  	}
->  
-> diff --git a/include/linux/perf/arm_pmu.h b/include/linux/perf/arm_pmu.h
-> index 143fbc10ecfe..e2503d48ddee 100644
-> --- a/include/linux/perf/arm_pmu.h
-> +++ b/include/linux/perf/arm_pmu.h
-> @@ -59,12 +59,6 @@ struct pmu_hw_events {
->  	 */
->  	DECLARE_BITMAP(used_mask, ARMPMU_MAX_HWEVENTS);
->  
-> -	/*
-> -	 * Hardware lock to serialize accesses to PMU registers. Needed for the
-> -	 * read/modify/write sequences.
-> -	 */
-> -	raw_spinlock_t		pmu_lock;
-> -
->  	/*
->  	 * When using percpu IRQs, we need a percpu dev_id. Place it here as we
->  	 * already have to allocate this struct per cpu.
-> -- 
-> 2.25.1
-> 
+---
+base-commit: adcad44bd1c73a5264bff525e334e2f6fc01bb9b
+change-id: 20231204-qcom-aw2013-vio-91dbc025c464
+
+Best regards,
+-- 
+Stephan Gerhold <stephan@gerhold.net>
+
