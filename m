@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40596802F6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1756D802F6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjLDJ5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        id S230396AbjLDJ5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:57:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjLDJ5U (ORCPT
+        with ESMTP id S229526AbjLDJ51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:57:20 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD9FB6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:57:26 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5cbcfdeaff3so49950507b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 01:57:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701683845; x=1702288645; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kyeYb+ql0SyNyhyMLosDv4p5iiN7RVdysjk96TvPY/U=;
-        b=VNrznMQZQXMwLXSN68X9g5/OdxpIohRK+oNslgHvKEP/xEBwGB7Y8aA4ftrOWHhzLv
-         CBj+C1vCGSO+LuYnvysjMY5SPehZXTq+RKMg3ieGrZPxonIy26dbh5OTdrfas3x/l3y0
-         tXk0fBMMJcQihEQNoyFpf4141mLrbx2CJu0LfyEpHl0oKnaOI8qJ9rFPzpu/CJRSvDdI
-         ZBS8678B9S8ezq4LzEE/ro3yEaiGssVVF4KHMSISDCq+Sjw9jmxJmmBU8CkQSl3dr9XF
-         R6orJ4atECtlChdpljU8XVcgpBKm7SZKBTUXPpnA3OdVcMa+e90bqvGhyUgwQOGgUvfi
-         2oaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701683845; x=1702288645;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kyeYb+ql0SyNyhyMLosDv4p5iiN7RVdysjk96TvPY/U=;
-        b=hCok4w2VAsO/cOwYFBqAy7NPtLb6oYOuKglsd/CVX6SUhF/ZuuFwkzY2QZzIf6vCea
-         IRRtfP7vxHVM9AQhpUeusAW+nsLAZyd8y1IR6JqNQSsQWWuXsbo+2UdmiHmIPqjqabJo
-         hVpdSbATtjZyt4IBgrxQGDTK+Nz2qiwIyh1xti9R6J3/zWZlT5o4wESZm6p5lhH3nQh9
-         vvdFz8wBAXhgx4NjgL78Cn61tcAGDhEAy3Vhsfc4neyY+mkpEPAyQZcshH3y+vgFtMqw
-         Xsfks3xkiKEtLU8zFkpvCFP9mbUMvmonEvbiJm6FTlrvwJsJtTocC9Ab5jrgp2MqlOlo
-         fWPw==
-X-Gm-Message-State: AOJu0YynkwQoK8J4x49A5AmgHXAzx1oyLYk9e3INQhJdS29htlMTdWJ6
-        SIqHmqp2Uq9jvGXVj4hm0BJXREmY4c5DtGE03CRs2w==
-X-Google-Smtp-Source: AGHT+IFPNuK+9cOIpKHmoinczKV8MminI3NreBuRG+6sy+RGo1WH4QD56pTWpN4kexe3XakI3kZkEOgDB4+bi46jBIc=
-X-Received: by 2002:a81:b626:0:b0:5d7:1940:f3db with SMTP id
- u38-20020a81b626000000b005d71940f3dbmr3037866ywh.67.1701683845464; Mon, 04
- Dec 2023 01:57:25 -0800 (PST)
+        Mon, 4 Dec 2023 04:57:27 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 66809B6;
+        Mon,  4 Dec 2023 01:57:33 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5FF87FEC;
+        Mon,  4 Dec 2023 01:58:20 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BEA293F6C4;
+        Mon,  4 Dec 2023 01:57:31 -0800 (PST)
+Message-ID: <2aec13e9-4ae3-676f-1ba8-c9e9a9241063@arm.com>
+Date:   Mon, 4 Dec 2023 09:57:31 +0000
 MIME-Version: 1.0
-References: <20231130024046.25938-1-quic_tengfan@quicinc.com>
- <20231130024046.25938-5-quic_tengfan@quicinc.com> <dx62durg3wmqviqdpecdqprd5wwkg4i7n5tgcab55axzssdeel@ftt35c6td2sh>
-In-Reply-To: <dx62durg3wmqviqdpecdqprd5wwkg4i7n5tgcab55axzssdeel@ftt35c6td2sh>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 4 Dec 2023 10:57:14 +0100
-Message-ID: <CACRpkdZRNvUY0rEY__v9wPy4bjuDSgFhEkXFHxixdfyKSw56Bg@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] pinctrl: qcom: sm4450: correct incorrect address offset
-To:     Bjorn Andersson <andersson@kernel.org>
-Cc:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
-        konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V2 1/7] coresight: replicator: Move ACPI support from AMBA
+ driver to platform driver
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
+ <20231201062053.1268492-2-anshuman.khandual@arm.com>
+ <20231201123515.gntwvhsxd5nzojn7@bogus>
+ <58882cab-89ce-4554-aee4-24e70d82fc09@arm.com>
+ <b9f407c7-62af-47e1-bea9-c494cdfed1e9@arm.com>
+Content-Language: en-US
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <b9f407c7-62af-47e1-bea9-c494cdfed1e9@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 1, 2023 at 10:33=E2=80=AFPM Bjorn Andersson <andersson@kernel.o=
-rg> wrote:
-> On Thu, Nov 30, 2023 at 10:40:46AM +0800, Tengfei Fan wrote:
-> > The address offset of 0x100000 is already provided in SM4450 DTSI, so
-> > subtract 0x100000 from the offset which used by ufs and sdc.
-> >
->
-> As Konrad points out, please fix the broken patch, don't add a separate
-> fix in the same series.
->
-> > Suggested-by: Can Guo <quic_cang@quicinc.com>
->
-> We unfortunately don't have a way to give credit to those providing
-> review feedback, so omit this when fixing patch #2.
 
-Just write in the commit message that Can Guo helped out in reviewing
-the driver (just some free text).
 
-Yours,
-Linus Walleij
+On 04/12/2023 04:48, Anshuman Khandual wrote:
+> 
+> 
+> On 12/4/23 09:56, Anshuman Khandual wrote:
+>>
+>>
+>> On 12/1/23 18:05, Sudeep Holla wrote:
+>>> On Fri, Dec 01, 2023 at 11:50:47AM +0530, Anshuman Khandual wrote:
+>>>> Add support for the dynamic replicator device in the platform driver, which
+>>>> can then be used on ACPI based platforms. This change would now allow
+>>>> runtime power management for repliacator devices on ACPI based systems.
+>>>>
+>>>> The driver would try to enable the APB clock if available. Also, rename the
+>>>> code to reflect the fact that it now handles both static and dynamic
+>>>> replicators.
+>>>>
+>>>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>>>
+>>> Except the minor nit below which may apply also for few other patches
+>>> in the series
+>>>
+>>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
+>>> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
+>>>
+>>> [...]
+>>>
+>>>> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+>>>> index b6be73034996..64de0bee02ec 100644
+>>>> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+>>>> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+>>>> @@ -38,6 +38,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
+>>>>  struct replicator_drvdata {
+>>>>  	void __iomem		*base;
+>>>>  	struct clk		*atclk;
+>>>> +	struct clk		*pclk;
+>>>
+>>> [minor nit] Perhaps can be documented as well ?
+>>
+>> Sure, will add the following comment above the structure.
+>>
+>> @pclk:    optional clock for the core parts of the replicator.
+> 
+> My bad, this will be the following instead.
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+> index 64de0bee02ec..44b9a77ec8aa 100644
+> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+> @@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
+>   * @base:      memory mapped base address for this component. Also indicates
+>   *             whether this one is programmable or not.
+>   * @atclk:     optional clock for the core parts of the replicator.
+> + * @pclk:      APB clock if present, otherwise NULL
+>   * @csdev:     component vitals needed by the framework
+>   * @spinlock:  serialize enable/disable operations.
+>   * @check_idfilter_val: check if the context is lost upon clock removal.
+> 
+> I will update replicator, tpiu, tmc, and stm devices.
+> 
+
+funnel is missing it as well. If you build with W=1 it shows up.
+
+> struct catu_drvdata and debug_drvdata do not have the comment section itself.
+> _______________________________________________
+> CoreSight mailing list -- coresight@lists.linaro.org
+> To unsubscribe send an email to coresight-leave@lists.linaro.org
