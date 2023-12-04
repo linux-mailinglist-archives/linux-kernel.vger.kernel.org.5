@@ -2,98 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDD88031D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5B28031FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230516AbjLDL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
+        id S233205AbjLDL5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:57:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbjLDL4z (ORCPT
+        with ESMTP id S232619AbjLDL5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:56:55 -0500
-Received: from mail-lf1-x14a.google.com (mail-lf1-x14a.google.com [IPv6:2a00:1450:4864:20::14a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ACDEFE
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:01 -0800 (PST)
-Received: by mail-lf1-x14a.google.com with SMTP id 2adb3069b0e04-50bfda09704so358596e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 03:57:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701691019; x=1702295819; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PMojC0XetKgNgROc6KyVduhanNyLbztP/wH6+z7tfDs=;
-        b=J+NGLoaX34iLStO3w5hhQ/024n7mIOWc999rrCSovurAXxyrpoU17iyoi1RX363ulN
-         IL9K+lvvbFwAosPbwFwGqaS0PyNt/TDmGLOj0aHLTuCikwYWz0tbProPNAKRFptztffb
-         I8hWhem+0wpUPopSHff2EHQemaXc9Vooz749WAGibJCqAJ40jJFh9Az9dkWhR9AZbF9t
-         eTzIcDG6Z4+Besdg+3VkIEpMnZngbbWT5R4vNE+ySqrG17heUC/peGmJORkRR9tu258U
-         BJVmXfXgidVNkrrI956Zx8MMSGDkbusRGU0qs7JD3WQ3RFsh8oHkt65VbylIdL6bG0p2
-         ZSKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701691019; x=1702295819;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PMojC0XetKgNgROc6KyVduhanNyLbztP/wH6+z7tfDs=;
-        b=A0jgBvGVTHj9Sx8uX9jP2MOj6JSp5yCrlyp2rIca+gqAmi/3r4EuidkiuhiFqyVGU2
-         0YP/Z5Zv2g8WjRptOKS0AuM5HYXeabuG8Wy1d6iDKsToOqKdLFFuZyw9Gfrnh+ADvDoW
-         G+vX2DcTdHFbp2gp6HZz47Mp2hmI+kR7Spa7Hym8FPBSDTfiu1MnM7hQ923031eNMaR7
-         obPus24qVx6Hn+RzbASFAKz+oRyJNuUTV+tg9KdRjo0gv6gmJVcfcJqf0yJxrRhegxN4
-         qPrBAF38xUiraHvpGCtwxOfmfjTGRmYh6SBMuGtEJcJMtXBVencI8RcWqpNo9WYds/3r
-         cr/Q==
-X-Gm-Message-State: AOJu0YxqwjXbzXmZeQoM02xMD+Gfbl7MUvmHZoDMwMgQchbmbRoihGRO
-        9+Uoyyoyn+a/ooSXepaKP32YqkzTfsM6pkw=
-X-Google-Smtp-Source: AGHT+IEBsE2UZSoezn1uFnP/LS3lzX5qJtDr9UegHm0cbXoH+RlHhXpQAoUBczSiOLK/k3wV7ETbM3uxE9u6wu0=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6512:33d3:b0:50b:fefb:f2fd with SMTP
- id d19-20020a05651233d300b0050bfefbf2fdmr2637lfg.1.1701691019555; Mon, 04 Dec
- 2023 03:56:59 -0800 (PST)
-Date:   Mon,  4 Dec 2023 11:56:52 +0000
-In-Reply-To: <20231201172212.1813387-6-cmllamas@google.com>
-Mime-Version: 1.0
-References: <20231201172212.1813387-6-cmllamas@google.com>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231204115652.39783-1-aliceryhl@google.com>
-Subject: Re: [PATCH v2 05/28] binder: fix unused alloc->free_async_space
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     cmllamas@google.com
-Cc:     arve@android.com, brauner@kernel.org, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, maco@android.com,
-        sherryy@android.com, surenb@google.com, tkjos@android.com,
-        Alice Ryhl <aliceryhl@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 06:57:25 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9337D51
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD456C433C9;
+        Mon,  4 Dec 2023 11:57:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701691043;
+        bh=IbjKyf0hdtAvqPD1GTOpKbdNaas5xVKf1Zdp6x9MKL4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fhAUsG1z0ypiGchO8PAikx1OrT66HMzPMSZknlE9PFGU1wZ2gvqbzqt16ue4eQtk3
+         3p8rW9ftXw/QQcUyL86s168LH4Y/0loprenU33OVLXo1eqjTfrPbxmGV7Y3g/oc/jS
+         kQ4YM2YM5X67Q/heA0v2GsWKLxiAeEdU9RF+/AAKJLOdeUgwnw8n0LjiRVNavv1Bme
+         4H1UjIdhJt8ZF3LIaPc2NmG47cEjahf1tLXwRTZHpSXcBW5DFSstOu872CaoW4zqBA
+         DjkUXumc8hDa6EZjcmB9CoiZaibYiGdDMGHs4TeyHbcK06j54OAFlzrX1ioAjBL5s0
+         U93KC0jL3MS2g==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-mips@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Stephen Rothwell" <sfr@rothwell.id.au>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Subject: [PATCH 02/20] mips: add asm/syscalls.h header
+Date:   Mon,  4 Dec 2023 12:56:52 +0100
+Message-Id: <20231204115710.2247097-3-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231204115710.2247097-1-arnd@kernel.org>
+References: <20231204115710.2247097-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Each transaction is associated with a 'struct binder_buffer' that stores
-> the metadata about its buffer area. Since commit 74310e06be4d ("android:
-> binder: Move buffer out of area shared with user space") this struct is
-> no longer embedded within the buffer itself but is instead allocated on
-> the heap to prevent userspace access to this driver-exclusive info.
-> 
-> Unfortunately, the space of this struct is still being accounted for in
-> the total buffer size calculation, specifically for async transactions.
-> This results in an additional 104 bytes added to every async buffer
-> request, and this area is never used.
-> 
-> This wasted space can be substantial. If we consider the maximum mmap
-> buffer space of SZ_4M, the driver will reserve half of it for async
-> transactions, or 0x200000. This area should, in theory, accommodate up
-> to 262,144 buffers of the minimum 8-byte size. However, after adding
-> the extra 'sizeof(struct binder_buffer)', the total number of buffers
-> drops to only 18,724, which is a sad 7.14% of the actual capacity.
-> 
-> This patch fixes the buffer size calculation to enable the utilization
-> of the entire async buffer space. This is expected to reduce the number
-> of -ENOSPC errors that are seen on the field.
-> 
-> Fixes: 74310e06be4d ("android: binder: Move buffer out of area shared with user space")
-> Signed-off-by: Carlos Llamas <cmllamas@google.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+System call prototypes are generally in linux/syscalls.h, but there are
+a couple of mips specific entry points that are missing there:
+
+arch/mips/kernel/signal.c:636:17: error: no previous prototype for 'sys_sigreturn' [-Werror=missing-prototypes]
+arch/mips/kernel/signal.c:673:17: error: no previous prototype for 'sys_rt_sigreturn' [-Werror=missing-prototypes]
+arch/mips/kernel/syscall.c:51:16: error: no previous prototype for 'sysm_pipe' [-Werror=missing-prototypes]
+arch/mips/kernel/mips-mt-fpaff.c:65:17: error: no previous prototype for 'mipsmt_sys_sched_setaffinity' [-Werror=missing-prototypes]
+arch/mips/kernel/mips-mt-fpaff.c:157:17: error: no previous prototype for 'mipsmt_sys_sched_getaffinity' [-Werror=missing-prototypes]
+
+Add these to a new asm/syscalls.h as we have in other architectures.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/mips/include/asm/syscalls.h | 33 ++++++++++++++++++++++++++++++++
+ arch/mips/kernel/linux32.c       |  1 +
+ arch/mips/kernel/mips-mt-fpaff.c |  1 +
+ arch/mips/kernel/signal.c        |  1 +
+ arch/mips/kernel/signal32.c      |  1 +
+ arch/mips/kernel/signal_n32.c    |  1 +
+ arch/mips/kernel/signal_o32.c    |  1 +
+ arch/mips/kernel/syscall.c       |  1 +
+ 8 files changed, 40 insertions(+)
+ create mode 100644 arch/mips/include/asm/syscalls.h
+
+diff --git a/arch/mips/include/asm/syscalls.h b/arch/mips/include/asm/syscalls.h
+new file mode 100644
+index 000000000000..59f9c0c9fa0a
+--- /dev/null
++++ b/arch/mips/include/asm/syscalls.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++#ifndef _ASM_MIPS_SYSCALLS_H
++#define _ASM_MIPS_SYSCALLS_H
++
++#include <linux/linkage.h>
++#include <linux/compat.h>
++
++asmlinkage void sys_sigreturn(void);
++asmlinkage void sys_rt_sigreturn(void);
++asmlinkage int sysm_pipe(void);
++asmlinkage long mipsmt_sys_sched_setaffinity(pid_t pid, unsigned int len,
++                                     unsigned long __user *user_mask_ptr);
++asmlinkage long mipsmt_sys_sched_getaffinity(pid_t pid, unsigned int len,
++                                     unsigned long __user *user_mask_ptr);
++asmlinkage long sys32_fallocate(int fd, int mode, unsigned offset_a2,
++				unsigned offset_a3, unsigned len_a4,
++				unsigned len_a5);
++asmlinkage long sys32_fadvise64_64(int fd, int __pad,
++				   unsigned long a2, unsigned long a3,
++				   unsigned long a4, unsigned long a5,
++				   int flags);
++asmlinkage ssize_t sys32_readahead(int fd, u32 pad0, u64 a2, u64 a3,
++				   size_t count);
++asmlinkage long sys32_sync_file_range(int fd, int __pad,
++				      unsigned long a2, unsigned long a3,
++				      unsigned long a4, unsigned long a5,
++				      int flags);
++asmlinkage void sys32_rt_sigreturn(void);
++asmlinkage void sys32_sigreturn(void);
++asmlinkage int sys32_sigsuspend(compat_sigset_t __user *uset);
++asmlinkage void sysn32_rt_sigreturn(void);
++
++#endif
+diff --git a/arch/mips/kernel/linux32.c b/arch/mips/kernel/linux32.c
+index 6b61be486303..a0c0a7a654e9 100644
+--- a/arch/mips/kernel/linux32.c
++++ b/arch/mips/kernel/linux32.c
+@@ -42,6 +42,7 @@
+ #include <linux/uaccess.h>
+ #include <asm/mmu_context.h>
+ #include <asm/mman.h>
++#include <asm/syscalls.h>
+ 
+ #ifdef __MIPSEB__
+ #define merge_64(r1, r2) ((((r1) & 0xffffffffUL) << 32) + ((r2) & 0xffffffffUL))
+diff --git a/arch/mips/kernel/mips-mt-fpaff.c b/arch/mips/kernel/mips-mt-fpaff.c
+index 67e130d3f038..10172fc4f627 100644
+--- a/arch/mips/kernel/mips-mt-fpaff.c
++++ b/arch/mips/kernel/mips-mt-fpaff.c
+@@ -15,6 +15,7 @@
+ #include <linux/security.h>
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
++#include <asm/syscalls.h>
+ 
+ /*
+  * CPU mask used to set process affinity for MT VPEs/TCs with FPUs
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index 479999b7f2de..ccbf580827f6 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -38,6 +38,7 @@
+ #include <asm/dsp.h>
+ #include <asm/inst.h>
+ #include <asm/msa.h>
++#include <asm/syscalls.h>
+ 
+ #include "signal-common.h"
+ 
+diff --git a/arch/mips/kernel/signal32.c b/arch/mips/kernel/signal32.c
+index 59b8965433c2..73081d4ee8c1 100644
+--- a/arch/mips/kernel/signal32.c
++++ b/arch/mips/kernel/signal32.c
+@@ -18,6 +18,7 @@
+ #include <asm/compat-signal.h>
+ #include <linux/uaccess.h>
+ #include <asm/unistd.h>
++#include <asm/syscalls.h>
+ 
+ #include "signal-common.h"
+ 
+diff --git a/arch/mips/kernel/signal_n32.c b/arch/mips/kernel/signal_n32.c
+index cfc77b69420a..ff2043d620ba 100644
+--- a/arch/mips/kernel/signal_n32.c
++++ b/arch/mips/kernel/signal_n32.c
+@@ -24,6 +24,7 @@
+ #include <asm/ucontext.h>
+ #include <asm/fpu.h>
+ #include <asm/cpu-features.h>
++#include <asm/syscalls.h>
+ 
+ #include "signal-common.h"
+ 
+diff --git a/arch/mips/kernel/signal_o32.c b/arch/mips/kernel/signal_o32.c
+index 299a7a28ca33..4f0458459650 100644
+--- a/arch/mips/kernel/signal_o32.c
++++ b/arch/mips/kernel/signal_o32.c
+@@ -19,6 +19,7 @@
+ #include <asm/dsp.h>
+ #include <asm/sim.h>
+ #include <asm/unistd.h>
++#include <asm/syscalls.h>
+ 
+ #include "signal-common.h"
+ 
+diff --git a/arch/mips/kernel/syscall.c b/arch/mips/kernel/syscall.c
+index ae93a607ddf7..1bfc34a2e5b3 100644
+--- a/arch/mips/kernel/syscall.c
++++ b/arch/mips/kernel/syscall.c
+@@ -39,6 +39,7 @@
+ #include <asm/shmparam.h>
+ #include <asm/sync.h>
+ #include <asm/sysmips.h>
++#include <asm/syscalls.h>
+ #include <asm/switch_to.h>
+ 
+ /*
+-- 
+2.39.2
+
