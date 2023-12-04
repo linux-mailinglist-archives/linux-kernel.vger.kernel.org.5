@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC5E803EE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1B3803EEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345117AbjLDUBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
+        id S232848AbjLDUCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjLDUBH (ORCPT
+        with ESMTP id S229983AbjLDUCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:01:07 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC77CD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:01:13 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54c79cca895so2559a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 12:01:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701720071; x=1702324871; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z4qUKdBMoTlxHYFiskzAv8nyrsjpTSREfKpRVBZmhZs=;
-        b=Th5CH+blKchcjlPg5H0iQyaw1E0Dc6XFMO2YZGfDy/gegzdrJV9MY8HsyBFSbVjkWz
-         xIvwuBOxwzs4NCh1XZsISIxN6XSp/hwQ/yNkKH5ZzIa3P6OqFmKeR0AXsH81/VticX6q
-         ebKskBIOZYmDj2stBTe5yvR/Df2u2U2Y+5fZJ7ekCrll2c7pFe1xnMSB7NeEfFBC9a+i
-         CxcNx2DzT5xhZ/0dpNcALRJUAspvjlEto6HOiYiVy3NZtfIz9vVRo5Qn8rDv2Qjc6uzG
-         51g4/5VW6vzAeY0+VWfJD+bJe6RMgYiZB2YcDn+IGedSlNmdGSHpBdlJAJY1fWjaSJAk
-         9Aiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701720071; x=1702324871;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z4qUKdBMoTlxHYFiskzAv8nyrsjpTSREfKpRVBZmhZs=;
-        b=EJkZSUfq2/wGjYI3H6u6FSPLMfTXxYfhXdC3u/pPlWuJlzqocvKrdS8QGxv21qU9YC
-         nx5p0vB+nkSABKTgKlwlJIhn0/S/6ZhPxzAfNn8aaKhJR9sGNkI5Cy7oT+J7vu2cCYIF
-         NPmsf4eF/QZBDM7RG4esYgofq72SHWwrCh0vZmxeWZFT79Cm4ksJ3a2jl46XVpw0omzH
-         tR876qw4nA28vY1DPzln8aZ9b/rictzcnTYmXIAgOAecv/inQ7zsdQUfffDmhajIptqb
-         hEmbKk/so5x0AHa+A25w6XJHe0x7h494RlXnX2YFOnVhelkmH9bs/5pm3MxZHMYJsboR
-         STIQ==
-X-Gm-Message-State: AOJu0YwlOsNt5mPF2NqGnHb2TmOBjW/spkjGpzrtdmy4sPfU+3IExsN5
-        26pkOaHbv6vn48KFuppGeAPBc8ZURudF0St/4llefA==
-X-Google-Smtp-Source: AGHT+IGCev6DWYvqpogCA90ucI81NLgaEa0nJpCTgU96onBY6t9QMetZ9gl1hjVPETCRlrC77Ev8Q3QIKkavLVKHwOQ=
-X-Received: by 2002:a50:99de:0:b0:54a:ee8b:7a99 with SMTP id
- n30-20020a5099de000000b0054aee8b7a99mr332954edb.0.1701720071324; Mon, 04 Dec
- 2023 12:01:11 -0800 (PST)
-MIME-Version: 1.0
-References: <ZW4piNbx3IenYnuw@debian.debian>
-In-Reply-To: <ZW4piNbx3IenYnuw@debian.debian>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 4 Dec 2023 21:01:00 +0100
-Message-ID: <CANn89iLww-JGAuyD4XFvpn1gy52hgHQwHE1o-UvHu6sU3-6ygw@mail.gmail.com>
-Subject: Re: [PATCH v4 net-next] packet: add a generic drop reason for receive
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Jesper Brouer <jesper@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 15:02:24 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB28C4;
+        Mon,  4 Dec 2023 12:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=Iudy9bNgGP1tF6Dq9Kz4Szt32tEwdS+2umgrF9xjPTQ=; b=iIggT4z2KmYa6t/offRhSz1vc6
+        IA3B/3moj35Y3iLfFSdAkkhntwaMvto5vgSfAyr9U74su9LF9jlrKRCHPqdbrHjWEy+z+ci2eat+1
+        pYRMjLfUg+Zt2OwBR+DsB6eIVBcm1cVZPU3kMdxOChF3Pe1jDf+W3FY0LiACl9zgkkLY=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:34148 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rAF96-0001DF-RY; Mon, 04 Dec 2023 15:02:25 -0500
+Date:   Mon, 4 Dec 2023 15:02:24 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jan =?ISO-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
+        Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <20231204150224.add8b07a59bf737edb0b5c1c@hugovil.com>
+In-Reply-To: <f6e93e9c-1c7a-424e-afe0-425b24b99e5c@sirena.org.uk>
+References: <20231201163846.a7c1d79daca7c6a2e1416a70@hugovil.com>
+        <f5277458-635a-4eca-a37d-c3b2e83eb4b9@sirena.org.uk>
+        <20231201171644.6f7ade89d4c2f744fa3556b7@hugovil.com>
+        <20231204112905.e58cf1b7bf94440f49188390@hugovil.com>
+        <06fa462c-5b48-410e-8656-4d0dbdbfa142@sirena.org.uk>
+        <20231204120151.f0afbee2ebc69e93e7977547@hugovil.com>
+        <50b24985-cb30-4a75-a15d-9c165a276f1d@sirena.org.uk>
+        <20231204135922.0355f030945920086d21b8b6@hugovil.com>
+        <66946666-eb33-431d-9870-7046c39ffb4e@sirena.org.uk>
+        <20231204144136.89fec6da9be49e3db96994e0@hugovil.com>
+        <f6e93e9c-1c7a-424e-afe0-425b24b99e5c@sirena.org.uk>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
+ corruption
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 8:33=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote:
->
-> Commit da37845fdce2 ("packet: uses kfree_skb() for errors.") switches
-> from consume_skb to kfree_skb to improve error handling. However, this
-> could bring a lot of noises when we monitor real packet drops in
-> kfree_skb[1], because in tpacket_rcv or packet_rcv only packet clones
-> can be freed, not actual packets.
->
-> Adding a generic drop reason to allow distinguish these "clone drops".
->
-> [1]: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-xcxLFU=
-K2Zj08A8MrLk9jzg@mail.gmail.com/
-> Fixes: da37845fdce2 ("packet: uses kfree_skb() for errors.")
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
+On Mon, 4 Dec 2023 19:48:05 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+> On Mon, Dec 04, 2023 at 02:41:36PM -0500, Hugo Villeneuve wrote:
+> 
+> > But that is not was my question was about. Here a pseudo code
+> > example to select "page" 1:
+> 
+> > 1. save original value of LCR register.
+> > 2. write 0xBF to LCR register
+> > 3. access desired register in page 1
+> > 4. restore original LCR value saved in step 1
+> 
+> > How do you do that with regmap range?
+> 
+> Are you saying that the selector has other, non-selector functions?
+
+Yes! There is no bit or bit range in that register that is used to
+select a praticular set of registers or "page". It is only when
+writing the special magic value of $BF that the IC switches to "page"
+1. And if the value is NOT $BF, then it switches back to "page" 0.
+
+When I told you if you could point to other IC/drivers that had the
+same configuration, I tough you were aware of this. That explains some
+of the confusion.
+
+> This is truly innovative hardware,...
+
+Well, I would not say innovative, but more "crappy" hardware design :)
+
+> ...generally the selector is just a 
+> bitfield that you write paging values to.
+
+This is also what I am accustomed to normally.
+
+>  You'd need to extend the core
+> so that it knows about this quirk, right now that's not possible and
+> we'll just leave the window pointing at whatever was last accessed.
+
+Ok. I am not sure that adding support for it would make sense, since I
+do not know of other ICs that could reuse this very specific and
+particular method for switching "paged" registers.
+
+Thank you,
+Hugo Villeneuve
