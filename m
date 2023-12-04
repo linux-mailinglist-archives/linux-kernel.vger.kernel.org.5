@@ -2,135 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DFC803DDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C21E803DE2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbjLDS7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:59:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42798 "EHLO
+        id S231192AbjLDS72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:59:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjLDS7W (ORCPT
+        with ESMTP id S230432AbjLDS7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:59:22 -0500
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44888F0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:59:28 -0800 (PST)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-464811e5b3cso1296172137.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 10:59:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701716367; x=1702321167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OhTNasiWgh+dkfX0Dm+ISFeJznRbPndi9WOsk0B0xUY=;
-        b=gVppsoUuN4dqz8Syy1kQUrjoI9C/nqzgvQfx9nxccS1+RNS89BFXrTngJIOrk1P6If
-         VplsZJ65o6IHbLWieGBql0IaVkQDWogVu+eI8is0EtgTP0CONumAwdj4iJfQys0/4eMk
-         Iryix0SeSnwxRXh2vSivhXqpgzPjawruaCoQ5ylbQvbXZ9QuXZa0BfcgdycQDQSAHn61
-         a4nSahHkBplyN0wqnAtQotFnTvEPpC6jXp5q+DbUtCi9EowADUZmq8jeuIr89+F+UB6n
-         xbQCIRISWxN9a3sFhAUCq3AEFFWk6PnBYeV0Hv2gnLd7K9HhxKM6WjOEUdOz9tG8WSi5
-         LU/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701716367; x=1702321167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OhTNasiWgh+dkfX0Dm+ISFeJznRbPndi9WOsk0B0xUY=;
-        b=pGFGDWbl1J2BYTAg735EwX3YB99f2wJ+vC0ZrCqNwKKPCcEFSOJzpGpexSJfiknSoz
-         iKSbMvEnCiElN9p4Re6KWb1CNr5z6vXST/SRVBkVGn2E0al7S203XIpsVmGtjmCXJTh9
-         gvUqQdKTTK3f3Os7vClnR4MK4vkYWcTuDGki9XT82D0iUUhaDojlvyTnmvsW1bsyeYJf
-         Hg5bmD5RJe6gPeFNyYRAco8dGip73hUZuothygncPdRwh3iQHqcw1wfK4S9acN9j714l
-         suJmz0Ll1XUSyaJmrYjtOrOiAFuyn4k7XGt4Mq3w5PTMwmvtajNrOUG0QkKshftt4rAH
-         tuWA==
-X-Gm-Message-State: AOJu0Yy5d2sIHuPUa1l3R1tIfXx0knbpQDzjCo9lQ7yUtUZHaWjoexmZ
-        xyuwy9LFrSGQp6YWFdU7yEkbxzDLKbtouHt8Ls/QIQ==
-X-Google-Smtp-Source: AGHT+IEfIkpQz/M9GZdrLZVheDNrcWpdTi70JO843+0WuxJNqy5io3mjCriO6X0r0jWpNfjDIVrEn82cF2d3kchgVn8=
-X-Received: by 2002:a05:6102:a53:b0:452:6d82:56e3 with SMTP id
- i19-20020a0561020a5300b004526d8256e3mr383189vss.6.1701716367163; Mon, 04 Dec
- 2023 10:59:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20231130133630.192490507@infradead.org> <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net> <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net> <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net> <20231204183354.GC7299@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231204183354.GC7299@noisy.programming.kicks-ass.net>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Mon, 4 Dec 2023 10:58:48 -0800
-Message-ID: <CABCJKudYc5GtO7TLV=d0-ZYFfBxofrV3-q1vpsaT3MD7oTKpnA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 13:59:23 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1790310F;
+        Mon,  4 Dec 2023 10:59:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=56pO4Svmr6AVJn7qAnmQe61nDF4lPq7pDPdbMfAgwAY=; b=c3EbNhLsrJUg5/7j6/oBpaQ9De
+        0jSjRoyLSEophZcLyIbn9knQI74e3eSL8DE8sr/jPahqm4WLrF0ZEovSMeLQJ7zJDxJ+LaH4zPYSd
+        eKTcv9Ul0OQBAJCxY9uTeFk1STx8IlpIbseSNk4BUcD19/Ge2kackeZxfWw+NDSYSVPc=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:37702 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rAEA6-0000rB-Bz; Mon, 04 Dec 2023 13:59:23 -0500
+Date:   Mon, 4 Dec 2023 13:59:22 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jan =?ISO-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
+        Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <20231204135922.0355f030945920086d21b8b6@hugovil.com>
+In-Reply-To: <50b24985-cb30-4a75-a15d-9c165a276f1d@sirena.org.uk>
+References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
+        <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
+        <ce3eaa82-66e9-404b-9062-0f628dc6164f@sirena.org.uk>
+        <20231201163846.a7c1d79daca7c6a2e1416a70@hugovil.com>
+        <f5277458-635a-4eca-a37d-c3b2e83eb4b9@sirena.org.uk>
+        <20231201171644.6f7ade89d4c2f744fa3556b7@hugovil.com>
+        <20231204112905.e58cf1b7bf94440f49188390@hugovil.com>
+        <06fa462c-5b48-410e-8656-4d0dbdbfa142@sirena.org.uk>
+        <20231204120151.f0afbee2ebc69e93e7977547@hugovil.com>
+        <50b24985-cb30-4a75-a15d-9c165a276f1d@sirena.org.uk>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
+ corruption
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 10:34=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> So afaict this is used through bpf_for_each_map_elem(), where the
-> argument still is properly callback_fn. However, in the desriptor
-> bpf_for_each_map_elem_proto the argument gets described as:
-> ARG_PTR_TO_FUNC, which in turn has a comment like:
->
->   ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
->
-> Which to me sounds like there is definite type punning involved. The
-> call in bpf_for_each_array_elem() is a regular C indirect call, which
-> gets adorned with the kCFI magic.
->
-> But I doubt the BPF function that gets used gets the correct matching
-> bits on.
->
-> TL;DR, I think this is a pre-existing problem with kCFI + eBPF and not
-> caused by my patches.
+On Mon, 4 Dec 2023 17:19:25 +0000
+Mark Brown <broonie@kernel.org> wrote:
 
-It is a pre-existing problem, I ran into the same failures when I
-looked into this briefly last year:
+> On Mon, Dec 04, 2023 at 12:01:51PM -0500, Hugo Villeneuve wrote:
+> > Mark Brown <broonie@kernel.org> wrote:
+> 
+> > > I don't understand what you mean here - you say that the addresses both
+> > > have addresses 0x1 and 0x81 but map to address 0x1.  What does the 0x81
+> > > refer to?  The comments in the driver seemed to indicate that there was
+> > > a single address which mapped to multiple underlying registers...
+> 
+> > I was referring to an example in da9063-i2c.c where they have
+> > these two registers:
+> 
+> > #define	DA9063_REG_STATUS_A		0x01
+> > #define	DA9063_REG_SEQ			0x81
+> 
+> > To access one or the other, you must select page 0 or 1 in page config
+> > selection register at address 0x00. It makes sense to me for this case.
+> 
+> That appears to be a bit confused in that they've mapped the window
+> through which you view the paged registers on top of the physical
+> register map - I suppose that will work but more through luck than
+> design.  The window is the physical address range through which the
+> actual registers can be accessed, the range is the virtual register
+> numbers through which users access the regmap.  It'll make things
+> clearer if they don't overlap.
 
-https://github.com/ClangBuiltLinux/linux/issues/1727
+Ok, that was probably not a good example, let's forget about it, for
+me at least :)
 
-In addition to bpf_for_each_array_elem, a few other callers also use
-the same function pointer type that doesn't match cfi_bpf_hash.
+I found a better example maybe with tas2770.c.
 
-Sami
+> > But for the sc16is7xx, for example you have these two
+> > independent registers, sharing the exact same address:
+> 
+> > #define SC16IS7XX_IIR_REG		(0x02) /* Interrupt Identification */
+> > #define SC16IS7XX_FCR_REG		(0x02) /* FIFO control */
+> 
+> > I am not sure if regmap range can be used with this configuration.
+> > Assuming regmap range would be properly setup, when we call
+> > regmap_read(regmap, SC16IS7XX_IIR_REG, &val), how does regmap would
+> > know that we want to access SC16IS7XX_IIR_REG and not SC16IS7XX_FCR_REG?
+> 
+> This is the exact situation this feature is supposed to handle, your
+> window is address 2 and then you should pick some random non-physical
+> numbers to map the two registers to for access by users.  The core will
+> then do appropriate physical accesses transparently to manage the
+> window.  The whole point here is to assign new, virtual addresses to the
+> two registers you're trying to access.
+
+Ok, I see.
+
+Based on tas2770.c, I am assuming I could redefine the code to look
+like this:
+
+/* SC16IS7XX register definitions */
+#define SC16IS7XX_REG(page, reg)        ((page * 128) + reg)
+
+#define SC16IS7XX_RHR_REG	SC16IS7XX_REG(0, 0x00) /* RX FIFO */
+#define SC16IS7XX_THR_REG	SC16IS7XX_REG(0, 0x00) /* TX FIFO */
+#define SC16IS7XX_IER_REG	SC16IS7XX_REG(0, 0x01) /* Interrupt enable */
+#define SC16IS7XX_IIR_REG	SC16IS7XX_REG(0, 0x02) /* Interrupt Identification (read) */
+#define SC16IS7XX_FCR_REG	SC16IS7XX_REG(0, 0x02) /* FIFO control (write) */
+#define SC16IS7XX_MCR_REG	SC16IS7XX_REG(0, 0x04) /* Modem Control */
+#define SC16IS7XX_LSR_REG	SC16IS7XX_REG(0, 0x05) /* Line Status */
+#define SC16IS7XX_MSR_REG	SC16IS7XX_REG(0, 0x06) /* Modem Status */
+#define SC16IS7XX_SPR_REG	SC16IS7XX_REG(0, 0x07) /* Scratch Pad */
+...
+#define SC16IS7XX_EFR_REG	SC16IS7XX_REG(1, 0x02) /* Enhanced Features */
+#define SC16IS7XX_XON1_REG	SC16IS7XX_REG(1, 0x04) /* Xon1 word */
+#define SC16IS7XX_XON2_REG	SC16IS7XX_REG(1, 0x05) /* Xon2 word */
+#define SC16IS7XX_XOFF1_REG	SC16IS7XX_REG(1, 0x06) /* Xoff1 word */
+#define SC16IS7XX_XOFF2_REG	SC16IS7XX_REG(1, 0x07) /* Xoff2 word */
+...
+
+static const struct regmap_range_cfg sc16is7xx_regmap_ranges[] = {
+	{
+		.range_min = 0,
+		.range_max = 1 * 128,
+		.selector_reg = SC16IS7XX_LCR_REG,
+		.selector_mask = 0xff,
+		.selector_shift = 0,
+		.window_start = 0,
+		.window_len = 128,
+	},
+};
+
+But here, selecting the proper "page" is not obvious,
+because to select page 1, we need to write a fixed value of 0xBF to
+the LCR register.
+
+And when selecting page 0, we must write the previous value that was
+in LCR _before_ we made the switch to page 1...
+
+How do we do that?
+
+Hugo.
+
+ 
+> > > Searching for struct regmap_range_cfg should show a lot of users in
+> > > mainline.
+> 
+> > Yes, I am trying to find a good example but I must download and read the
+> > datasheet for each one. If you could point to an IC/driver that uses
+> > regmap_range similar to IC sc16is7xx, it would really help.
+> 
+> Essentially all of them should be fine.  
