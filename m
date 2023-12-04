@@ -2,83 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2D2802E10
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501C0802E24
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229730AbjLDIwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:52:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        id S234690AbjLDIek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:34:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234725AbjLDIZo (ORCPT
+        with ESMTP id S229526AbjLDIej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:25:44 -0500
-Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320DFFE;
-        Mon,  4 Dec 2023 00:25:50 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id E4AA3204D9;
-        Mon,  4 Dec 2023 09:25:47 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id hvPwaSxxYUiK; Mon,  4 Dec 2023 09:25:47 +0100 (CET)
-Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Mon, 4 Dec 2023 03:34:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4051C1
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:34:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701678885;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9tcnzIexPrb0OUsvkaLGTMaO9LwJfJejgNnOdDmMeTA=;
+        b=OG47XKa1BklctfdNYzS51Nxdrnl3EcPNK6ux3NuORWABTHGxsa66FBSNgBip5E3YaohOcO
+        YEwM/ZFPZx7KlrjmwwoyIKjcn4CfkB2A2/Z5hlOpHMEr0PFyiH4E1BPwjTKfC9+9s32n03
+        pn0Yh7ehm6BfrDM7iA5fAEE3t4F9DjY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-542-TP6E8WNAO9SqzRiAn5erpQ-1; Mon,
+ 04 Dec 2023 03:34:40 -0500
+X-MC-Unique: TP6E8WNAO9SqzRiAn5erpQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 4C40920078;
-        Mon,  4 Dec 2023 09:25:47 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 4C40920078
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
-        s=202301; t=1701678347;
-        bh=6LGB45I5byCoMEvvTmFWKfhjgGrm1+u7IAc5pF3fXcc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=KwWu3BptcKE5mMLWl8mHeIi9qJxIyxohZ3pyPiU8GufgBcZRy11AsRCirUPTY3RQ5
-         VCuwAOdD4D+GLjwzzqx1CbPm/IV7UUyKjO5zDaHy7JJ76KnHdWhkYiJBa1+jQVCd8/
-         WhCMr8qRJOI7Oe6Z6dM/unK4csL4qMFT2PaB9f4kbIaooD4Ks7XPzx6bo99hCXx/Pv
-         B9U4v3BDF/XeDlHwKkMgRtWDKt0SX0DWReAbIC1e+0lAfqcmxD1TmpeUi6WkrEFUHl
-         D0oGMrMRGiFTY9e/9xvWryQ0LkLVPlrF2/+GQIVr9TUbardkk3RRGkhURoBQiqNKzU
-         5owz2QNMth0Qg==
-Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
-        by mailout2.secunet.com (Postfix) with ESMTP id 164F580004A;
-        Mon,  4 Dec 2023 09:25:47 +0100 (CET)
-Received: from mbx-essen-02.secunet.de (10.53.40.198) by
- cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 4 Dec 2023 09:25:46 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
- (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 4 Dec
- 2023 09:25:46 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 49F6131811E6; Mon,  4 Dec 2023 09:25:46 +0100 (CET)
-Date:   Mon, 4 Dec 2023 09:25:46 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, <antony.antony@secunet.com>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        Eddy Z <eddyz87@gmail.com>, <devel@linux-ipsec.org>,
-        Eyal Birger <eyal.birger@gmail.com>
-Subject: Re: [PATCH ipsec-next v3 0/9] Add bpf_xdp_get_xfrm_state() kfunc
-Message-ID: <ZW2NCm/pIthdpNgF@gauss3.secunet.de>
-References: <cover.1701462010.git.dxu@dxuuu.xyz>
- <CAADnVQKWrvec6ap_7O0Z5uAJe-pdrhuJk8LRkmWvGMM4iF9Frg@mail.gmail.com>
- <dkzlpw6sj7we5xteyvbwxufqzg6axwlrvb4arq23ecaiy5ayok@jg52fqjr4ftf>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0B4DD38476C0;
+        Mon,  4 Dec 2023 08:34:40 +0000 (UTC)
+Received: from localhost (unknown [10.72.113.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 09B38C1596F;
+        Mon,  4 Dec 2023 08:34:38 +0000 (UTC)
+Date:   Mon, 4 Dec 2023 16:34:36 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        akpm@linux-foundation.org, mick@ics.forth.gr,
+        changbin.du@intel.com, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu
+Subject: Re: [PATCH] riscv, kexec: fix the ifdeffery for
+ AFLAGS_kexec_relocate.o
+Message-ID: <ZW2PHF3HVUUH8+NV@MiWiFi-R3L-srv>
+References: <20231201062538.27240-1-bhe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dkzlpw6sj7we5xteyvbwxufqzg6axwlrvb4arq23ecaiy5ayok@jg52fqjr4ftf>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-essen-02.secunet.de (10.53.40.198)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231201062538.27240-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,34 +65,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 05:16:04PM -0700, Daniel Xu wrote:
-> On Fri, Dec 01, 2023 at 04:10:18PM -0800, Alexei Starovoitov wrote:
-> > On Fri, Dec 1, 2023 at 12:23 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > >
-> > >  include/net/xfrm.h                            |   9 +
-> > >  net/xfrm/Makefile                             |   1 +
-> > >  net/xfrm/xfrm_policy.c                        |   2 +
-> > >  net/xfrm/xfrm_state_bpf.c                     | 128 ++++++++++++++
-> > >  tools/lib/bpf/bpf_core_read.h                 |  34 ++++
-> > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 162 +++++++++++++++++-
-> > >  .../selftests/bpf/prog_tests/verifier.c       |   2 +
-> > >  tools/testing/selftests/bpf/progs/bpf_misc.h  |   1 +
-> > >  .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
-> > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 138 ++++++++-------
-> > >  .../bpf/progs/verifier_bitfield_write.c       | 100 +++++++++++
-> > >  tools/testing/selftests/bpf/test_loader.c     |   7 +
-> > >  tools/testing/selftests/bpf/test_tunnel.sh    |  92 ----------
-> > >  13 files changed, 522 insertions(+), 155 deletions(-)
-> > 
-> > I really think this should go via bpf-next tree.
-> > The bpf changes are much bigger than ipsec.
+CC Andrew.
+
+On 12/01/23 at 02:25pm, Baoquan He wrote:
+> This was introduced in commit fba8a8674f68 ("RISC-V: Add kexec
+> support").
 > 
-> Ack. Ended up picking up a lot of stuff along the way.
+> It should work on CONFIG_KEXEC_CORE, but not CONFIG_KEXEC only, since
+> we could set CONFIG_KEXEC_FILE=y and CONFIG_KEXEC=N, or only set
+> CONFIG_CRASH_DUMP=y and disable both CONFIG_KEXEC and CONFIG_KEXEC_FILE.
+> In these cases, the AFLAGS won't take effect with the current ifdeffery
+> for AFLAGS_kexec_relocate.o.
+> 
+> So fix it now.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/riscv/kernel/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'm fine with merging this via the bpf-next tree.
+Hi RISC-V people,
 
-Please consider to merge the bpf hepler functions
-to one file. We have already xfrm_interface_bpf.c
-and now you introduce xfrm_state_bpf.c.
+I didn't test this, while believe this need be fixed. Please help check
+if this is necessary.
 
-Try to merge this into a single xfrm_bpf.c file.
+
+Thanks
+Baoquan
+> 
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index fee22a3d1b53..82940b6a79a2 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -11,7 +11,7 @@ endif
+>  CFLAGS_syscall_table.o	+= $(call cc-option,-Wno-override-init,)
+>  CFLAGS_compat_syscall_table.o += $(call cc-option,-Wno-override-init,)
+>  
+> -ifdef CONFIG_KEXEC
+> +ifdef CONFIG_KEXEC_CORE
+>  AFLAGS_kexec_relocate.o := -mcmodel=medany $(call cc-option,-mno-relax)
+>  endif
+>  
+> -- 
+> 2.41.0
+> 
+
