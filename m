@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD7E803A82
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1187F803A85
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344652AbjLDQhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:37:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60494 "EHLO
+        id S234647AbjLDQiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230350AbjLDQhu (ORCPT
+        with ESMTP id S230350AbjLDQiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:37:50 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F66CA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:37:55 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-db510605572so2881949276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:37:55 -0800 (PST)
+        Mon, 4 Dec 2023 11:38:12 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D76B9
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:38:19 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cfc4af9668so19938365ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:38:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1701707875; x=1702312675; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8ytHym4TWHPiac4ZL1jwTfy0WQXCu4D326ivcWRp1+8=;
-        b=TlT3hWK1I0DJ9ddzjWuBGIDlZkUzyVkVZW8j0gesiMh9Dez5aGAnIEp82hORnczBHo
-         Oc1bOY9leTUFVfmEnAVYEAjQ+BeP3Vs7I69vrCRd3pG8qYxX2MCbgDZrT7+zHS7SrADd
-         VjuGUvzYJ7bouC+1YU9wkESP7oW1rBp4u7j2jmGmlDih/V4hqiPRuLXoA/o1la2bxFdY
-         RsCphPN36LLvxrtcdHhXIFbCgJCqQYR4cn0qj5PtI1t2O5KXh2qcvi49F1HYP+hzMdJk
-         YoDwWwFBOUulJl0WzZpVavUZa9jGXExDv1sUStj0a0xhegEK7i1mdly82CKV5F2zUCAu
-         BDRQ==
+        d=google.com; s=20230601; t=1701707899; x=1702312699; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qDk8VCjkq3XxlHbdv1HgLMD6AIZzaNXkLSxsVVtlfDU=;
+        b=ugkvx+DHP4h3V/3/qYu0LuPwb9lAqPV+dulupC0KssmtHBP1Tpaumi3PxrGrbcq9MK
+         9weBh3Z259AeuD+nMjPDM5uv7Fbun/MYMp7h3svlIwI19jvBxCFe1HaVVmOPY099BakM
+         XzVliDimplLnuHzE7IX3BL8IW6tG0t4w31qHQy9TRQ52GpRSWJOfBndVP99NSqfPDCs2
+         PdyXMpm51l4WZEqqZEq1SdXEifBJ18N+ICz/E2DkKDU2iwKmBRYVdYtPqG2WI3UPqVXy
+         zbAadWjmTop2y4iYkc7MvUU1tfJ/DUIFpoRHyR256ihxYV01KJGeOzc6n22oHr3cT7eT
+         YhmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701707875; x=1702312675;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8ytHym4TWHPiac4ZL1jwTfy0WQXCu4D326ivcWRp1+8=;
-        b=xHMyeGGK5PM8nCPh4rkomiWCNOvSEa+wyCePDvgmR7Bac00c4mjY5//8PWwrVAjMGe
-         6a6/In/bIkVFdgEw+nCAA9909I70sZEs8V9gP1wGt/k19au9S3ENwRXn+Dso/oBbjC1a
-         3/8HDErUS82Cz/okIVbVKleX9a3Vb0epNpKKAQPT7Q3VAiLGGGVy6CEmUFvkJF2eNQlG
-         S98WX0Gu+DeBpLvLHoHnSxOoSC7MHCWJIQgAqXa9ndYMYt6GjL60msEukswlpzJ++RBe
-         oHbxusHcOClLD+xSOAZPR0R/ZK+NHpYGqANj1dyScxZ9sr9C/jHSWjmuP2H18mJpoiTg
-         kapg==
-X-Gm-Message-State: AOJu0YyP/NX7Cv15/ALzxsEvjz0NOP0BBzsLCTBh9MtXxSoziFW2Zk3t
-        gu9RazRJIfXVxCjjk76uwBeJqBzPfCnvZAam7D0XcTodiwgatMc=
-X-Google-Smtp-Source: AGHT+IGHLVwglvYRPWt67Br5ifnmRNJxcf5z8ii0VblD/ojAEUODm/AY0mFoUTNPTX7Ihy0rdUkxqhhY5aNEp47h25A=
-X-Received: by 2002:a25:ab89:0:b0:db7:d0fb:c857 with SMTP id
- v9-20020a25ab89000000b00db7d0fbc857mr2651632ybi.51.1701707874962; Mon, 04 Dec
- 2023 08:37:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20231204120314.5718b5f6@canb.auug.org.au>
-In-Reply-To: <20231204120314.5718b5f6@canb.auug.org.au>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 4 Dec 2023 11:37:44 -0500
-Message-ID: <CAHC9VhSyv8XULS8UJe3oZsTjLxqdhi84TUMS_8vhJ5TC9uU4bw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the security tree with the block tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701707899; x=1702312699;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qDk8VCjkq3XxlHbdv1HgLMD6AIZzaNXkLSxsVVtlfDU=;
+        b=ADpQ48d3HDyw7NXHkdkg0wxKUOQeirVF37mg1DTHg4R7SyH1WCwE7A33iy5ieG6Mld
+         Rskh+Xw/BtIy3Oo33mcsOze9+8FLTfqboySnJD6T0/VgB1sIImLo272bVRmu8/6EQ2PF
+         1B2Js2t4DW+rPMiys7tngh6k1FAs8A7k6bzUPMBC1SB06cgTZNaxokWGeVqWo2RgiKH5
+         WyiWjdE8hpVqp3NzI8a+U2ZRYSEh8mjrVuWxS73NnPxW5oAs0xo70s2HattAhbEZW0PK
+         5bvDDq18uWfzpndAjRpG5Q6v6OZYbljgeY0HnAkyF++6RH3cBoW5VNEOB8C85W24Wt9e
+         Zgxg==
+X-Gm-Message-State: AOJu0YwMLwqdnyzhpABTYyIFHK0advAOWUPjF+ZOV0PuFs7/ODkGuULe
+        skS1U4FSQdv7nI/xmEF5aDGCWGZbzLg=
+X-Google-Smtp-Source: AGHT+IH0KOf6e9SiOq5ykueCM2o/G5wmIdosmf1/SYoTYHBbgp+mKLWEKcRI/yzXpAEsOcbbgjKj2C8Ipoo=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:8204:b0:1d0:71fc:b39c with SMTP id
+ x4-20020a170902820400b001d071fcb39cmr163767pln.3.1701707898848; Mon, 04 Dec
+ 2023 08:38:18 -0800 (PST)
+Date:   Mon, 4 Dec 2023 08:38:17 -0800
+In-Reply-To: <20231204150800.GD1493156@nvidia.com>
+Mime-Version: 1.0
+References: <20231202091211.13376-1-yan.y.zhao@intel.com> <20231204150800.GD1493156@nvidia.com>
+Message-ID: <ZW4AeZfCYgv6zcy4@google.com>
+Subject: Re: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com, pbonzini@redhat.com, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 3, 2023 at 8:03=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org.=
-au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the security tree got conflicts in:
->
->   security/selinux/hooks.c
->   security/smack/smack_lsm.c
->
-> between commit:
->
->   bf18dde00aa9 ("io_uring: split out cmd api into a separate header")
->
-> from the block tree and commit:
->
->   f3b8788cde61 ("LSM: Identify modules by more than name")
->
-> from the security tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc security/selinux/hooks.c
-> index 17ec5e109aec,b340425ccfae..000000000000
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@@ -91,7 -91,8 +91,8 @@@
->   #include <uapi/linux/mount.h>
->   #include <linux/fsnotify.h>
->   #include <linux/fanotify.h>
->  -#include <linux/io_uring.h>
->  +#include <linux/io_uring/cmd.h>
-> + #include <uapi/linux/lsm.h>
->
->   #include "avc.h"
->   #include "objsec.h"
-> diff --cc security/smack/smack_lsm.c
-> index 2cdaa46088a0,53336d7daa93..000000000000
-> --- a/security/smack/smack_lsm.c
-> +++ b/security/smack/smack_lsm.c
-> @@@ -42,7 -42,8 +42,8 @@@
->   #include <linux/fs_context.h>
->   #include <linux/fs_parser.h>
->   #include <linux/watch_queue.h>
->  -#include <linux/io_uring.h>
->  +#include <linux/io_uring/cmd.h>
-> + #include <uapi/linux/lsm.h>
->   #include "smack.h"
->
->   #define TRANS_TRUE    "TRUE"
+On Mon, Dec 04, 2023, Jason Gunthorpe wrote:
+> On Sat, Dec 02, 2023 at 05:12:11PM +0800, Yan Zhao wrote:
+> > In this series, term "exported" is used in place of "shared" to avoid
+> > confusion with terminology "shared EPT" in TDX.
+> > 
+> > The framework contains 3 main objects:
+> > 
+> > "KVM TDP FD" object - The interface of KVM to export TDP page tables.
+> >                       With this object, KVM allows external components to
+> >                       access a TDP page table exported by KVM.
+> 
+> I don't know much about the internals of kvm, but why have this extra
+> user visible piece?
 
-Thanks Stephen, the above patch looks fine to me.
+That I don't know, I haven't looked at the gory details of this RFC.
 
---=20
-paul-moore.com
+> Isn't there only one "TDP" per kvm fd?
+
+No.  In steady state, with TDP (EPT) enabled and assuming homogeneous capabilities
+across all vCPUs, KVM will have 3+ sets of TDP page tables *active* at any given time:
+
+  1. "Normal"
+  2. SMM
+  3-N. Guest (for L2, i.e. nested, VMs)
+
+The number of possible TDP page tables used for nested VMs is well bounded, but
+since devices obviously can't be nested VMs, I won't bother trying to explain the
+the various possibilities (nested NPT on AMD is downright ridiculous).
+
+Nested virtualization aside, devices are obviously not capable of running in SMM
+and so they all need to use the "normal" page tables.
+
+I highlighted "active" above because if _any_ memslot is deleted, KVM will invalidate
+*all* existing page tables and rebuild new page tables as needed.  So over the
+lifetime of a VM, KVM could theoretically use an infinite number of page tables.
