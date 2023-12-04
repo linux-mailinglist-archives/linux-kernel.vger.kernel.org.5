@@ -2,142 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1015E802E39
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7F9802E06
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343491AbjLDI5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53762 "EHLO
+        id S1343722AbjLDI5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:57:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234708AbjLDI50 (ORCPT
+        with ESMTP id S231652AbjLDI5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:57:26 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CA8F3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:57:33 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c09f4814eso11970915e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 00:57:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701680251; x=1702285051; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CmguLwHno4+ep63d/2yDufPK8h00mOPzfPbypUQQUes=;
-        b=wm+D+Cr/2hpPZaNmEgfm7IBMJ5KbbNRgF4Ed85HacNnpJ+sJiYSUL9kURrJYzDBnF+
-         hDDhV3IgKdjuWg+8mR/9lCtJyg5jVbeLqhB9qyx/XGfy9uw071xkAzM2UlAvrpEPDVZN
-         Ih7+v0CjRjLgMp6Rx8xZVZWtZIzcgCImL7H8bXOXhdgwl6bwZCSPpFjStL00XhXmxb0/
-         EhU3hZCVEZX7p8rlUC1WrSLRpsakbAGoDmXOaWSPMaK3svmQUdiTFSk1RL9oESNKTNJF
-         YyApPX0FFnkOKsPIZcPYBVqe90ZXasTdOdJtnkJIPgCsBe7ADp18Tk4lC+OoTHU7BlHW
-         4S+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701680251; x=1702285051;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CmguLwHno4+ep63d/2yDufPK8h00mOPzfPbypUQQUes=;
-        b=QpOfHOrBAaLg2fzrgSC8HVQzWmnrmUU46y+BP9weZKPBC/mEfcsXXA5uRBjWUbsoHc
-         b2ViHXwH4fJDmv9L6SE988bn5lK6lN00fxz0YeNCMIkY0LqTI4GbiNqQp9O6/92WmTtB
-         C6H886qUloz0PdHa5KsYzjXPKq/NUmaF6TjGuU1nEtRa21KEoOZ3iHCk7RXEpxd46mke
-         wm318k657RsA0cFjr0jiQALUU1uKTZXwFvLb66/TK4tvhxkppm1aubAdGAJN6DR5MDQY
-         qcifsvz6o7NfCn6scW6P14vhORYOIQYmD4O5Mci3Qev1I+C4CGGvPr+7j2R97sWdP8Ir
-         OQCQ==
-X-Gm-Message-State: AOJu0YyG6k4wflT/0EbBqoZALsYnFmwdDmLbEpQvmFYZ88wZMVhmj16E
-        4m/oajHzR131V+O8iCL34YiMzw==
-X-Google-Smtp-Source: AGHT+IGlHrnh/zRPQHg5kwgbA5JDhMx75IzN2GwOeCmQhdS3AylUMLuQ9R6672yKnucAuT2owNf8kw==
-X-Received: by 2002:a05:600c:3503:b0:40b:4b93:a369 with SMTP id h3-20020a05600c350300b0040b4b93a369mr2268142wmq.14.1701680251485;
-        Mon, 04 Dec 2023 00:57:31 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4cb1:229e:8c33:122a])
-        by smtp.gmail.com with ESMTPSA id l15-20020a05600c4f0f00b0040b33222a39sm17959138wmq.45.2023.12.04.00.57.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 00:57:31 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2] gpio: sim: implement the dbg_show() callback
-Date:   Mon,  4 Dec 2023 09:57:19 +0100
-Message-Id: <20231204085719.17928-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+        Mon, 4 Dec 2023 03:57:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB4C99B
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:57:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE04CC433C8;
+        Mon,  4 Dec 2023 08:57:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701680262;
+        bh=+B4GQ4Ad2RTZYOYLrUhnDHag0qxxB1/ZXy/K6xKY/bA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=D+dp7dWvcKGcJaJPPIGbZDvinEx4GUaK4YzxFzHaAferL7MmhKCZcWs8R2ZuWeslQ
+         Jc5QlXFiv2xR/0gKYjqJU54JdNWTMCw7rj+5DMvK2gB1o+EABLaeVAiPN3WZO9acdX
+         1dvi9NdOASfUuJZDAU3sDXN/s38zb1uXMRkXZKcRjVUGV3vK+nUcajVEAPXK/K4aCg
+         JxvVvA+YdVLw1pibjP/gwfMG8vO6latwCgil8I26X5D9Z3HS58ntlReOQi3B79RDH+
+         gN5Y9B+Jon6UgcCNJCx2KBvrVYnEzmgYoPIy+EnzckiYh4caSMaOwQPaxHij9FZ5pH
+         LDXG0DM0/2FSg==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jijie Shao <shaojijie@huawei.com>,
+        Hao Chen <chenhao418@huawei.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] net: hns3: reduce stack usage in hclge_dbg_dump_tm_pri()
+Date:   Mon,  4 Dec 2023 09:57:21 +0100
+Message-Id: <20231204085735.4112882-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-Provide a custom implementation of the dbg_show() callback that prints
-all requested lines together with their label, direction, value and
-bias. This improves the code coverage of GPIOLIB.
+This function exceeds the stack frame warning limit:
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c: In function 'hclge_dbg_dump_tm_pri':
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c:1039:1: error: the frame size of 1408 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+
+Use dynamic allocation for the largest stack object instead. It
+would be nice to rewrite this file to completely avoid the extra
+buffer and just use the one that was already allocated by debugfs,
+but that is a much larger change.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v1 -> v2:
-- use PTR_IF() instead of #ifdef
+v2: fix error handling leak
+---
+ .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 21 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
- drivers/gpio/gpio-sim.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-index 1928209491e1..49c3e51bf8e4 100644
---- a/drivers/gpio/gpio-sim.c
-+++ b/drivers/gpio/gpio-sim.c
-@@ -20,6 +20,7 @@
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/irq_sim.h>
-+#include <linux/kernel.h>
- #include <linux/list.h>
- #include <linux/minmax.h>
- #include <linux/mod_devicetable.h>
-@@ -28,6 +29,7 @@
- #include <linux/notifier.h>
- #include <linux/platform_device.h>
- #include <linux/property.h>
-+#include <linux/seq_file.h>
- #include <linux/slab.h>
- #include <linux/string.h>
- #include <linux/string_helpers.h>
-@@ -224,6 +226,25 @@ static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+index ff3f8f424ad9..8f94e13c1edf 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+@@ -981,7 +981,7 @@ static const struct hclge_dbg_item tm_pri_items[] = {
+ 
+ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+ {
+-	char data_str[ARRAY_SIZE(tm_pri_items)][HCLGE_DBG_DATA_STR_LEN];
++	char *data_str;
+ 	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
+ 	char *result[ARRAY_SIZE(tm_pri_items)], *sch_mode_str;
+ 	char content[HCLGE_DBG_TM_INFO_LEN];
+@@ -992,8 +992,13 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+ 	if (ret)
+ 		return ret;
+ 
++	data_str = kcalloc(ARRAY_SIZE(tm_pri_items), HCLGE_DBG_DATA_STR_LEN,
++			   GFP_KERNEL);
++	if (!data_str)
++		return -ENOMEM;
++
+ 	for (i = 0; i < ARRAY_SIZE(tm_pri_items); i++)
+-		result[i] = &data_str[i][0];
++		result[i] = &data_str[i * HCLGE_DBG_DATA_STR_LEN];
+ 
+ 	hclge_dbg_fill_content(content, sizeof(content), tm_pri_items,
+ 			       NULL, ARRAY_SIZE(tm_pri_items));
+@@ -1002,23 +1007,23 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+ 	for (i = 0; i < pri_num; i++) {
+ 		ret = hclge_tm_get_pri_sch_mode(hdev, i, &sch_mode);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 
+ 		ret = hclge_tm_get_pri_weight(hdev, i, &weight);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 
+ 		ret = hclge_tm_get_pri_shaper(hdev, i,
+ 					      HCLGE_OPC_TM_PRI_C_SHAPPING,
+ 					      &c_shaper_para);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 
+ 		ret = hclge_tm_get_pri_shaper(hdev, i,
+ 					      HCLGE_OPC_TM_PRI_P_SHAPPING,
+ 					      &p_shaper_para);
+ 		if (ret)
+-			return ret;
++			goto out;
+ 
+ 		sch_mode_str = sch_mode & HCLGE_TM_TX_SCHD_DWRR_MSK ? "dwrr" :
+ 			       "sp";
+@@ -1035,7 +1040,9 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+ 		pos += scnprintf(buf + pos, len - pos, "%s", content);
  	}
+ 
+-	return 0;
++out:
++	kfree(data_str);
++	return ret;
  }
  
-+static void gpio_sim_dbg_show(struct seq_file *seq, struct gpio_chip *gc)
-+{
-+	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
-+	const char *label;
-+	int i;
-+
-+	guard(mutex)(&chip->lock);
-+
-+	for_each_requested_gpio(gc, i, label)
-+		seq_printf(seq, " gpio-%-3d (%s) %s,%s\n",
-+			   gc->base + i,
-+			   label,
-+			   test_bit(i, chip->direction_map) ? "input" :
-+				test_bit(i, chip->value_map) ? "output-high" :
-+							       "output-low",
-+			   test_bit(i, chip->pull_map) ? "pull-up" :
-+							 "pull-down");
-+}
-+
- static ssize_t gpio_sim_sysfs_val_show(struct device *dev,
- 				       struct device_attribute *attr, char *buf)
- {
-@@ -460,6 +481,7 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
- 	gc->to_irq = gpio_sim_to_irq;
- 	gc->request = gpio_sim_request;
- 	gc->free = gpio_sim_free;
-+	gc->dbg_show = PTR_IF(IS_ENABLED(CONFIG_DEBUG_FS), gpio_sim_dbg_show);
- 	gc->can_sleep = true;
- 
- 	ret = devm_gpiochip_add_data(dev, gc, chip);
+ static const struct hclge_dbg_item tm_qset_items[] = {
 -- 
-2.40.1
+2.39.2
 
