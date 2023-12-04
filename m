@@ -2,218 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F96802E22
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A528802E09
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjLDI70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:59:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55666 "EHLO
+        id S231572AbjLDJAN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 04:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDI7W (ORCPT
+        with ESMTP id S230198AbjLDJAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:59:22 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854C083;
-        Mon,  4 Dec 2023 00:59:28 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2ca0715f0faso5490491fa.0;
-        Mon, 04 Dec 2023 00:59:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701680367; x=1702285167; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zLkzq4LH7qNlQ4R2u0+qoSFWaByEk2XvcwE8gCptUKs=;
-        b=jAYaC39+pi18OkhVSnnxRUdhCOzE+J2SuWEAlT8EaKRILmEDV5T3cDhjhnyW2qSLvF
-         vWglB0wT6Hr7lnhFJZDG7pPXnWWp3pqsKtttW+W/Dj2LNOhffMNy8OGcGdySH+vlccIm
-         1ufzwPmBnCLEGy7JJgjdm3c53IRQ+N/rvFLvdoWuJ31HBY5TvoLP1i/dNt6K9ExYqk0T
-         c0bf5dIaEQih3M0mEsD259gqNcbnOHwUhQNVIlfXyl6G1ZdeZXx85IOgSzJqchCgPIbH
-         sgHC0fshUQ/JMjG6IAjCUQjYRbjmqWoUolkn5NncOMpxmN9UJ6mBZuwflAx8KXu8RkE8
-         Rzfg==
+        Mon, 4 Dec 2023 04:00:10 -0500
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7E685;
+        Mon,  4 Dec 2023 01:00:16 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5cd81e76164so46172117b3.1;
+        Mon, 04 Dec 2023 01:00:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701680367; x=1702285167;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zLkzq4LH7qNlQ4R2u0+qoSFWaByEk2XvcwE8gCptUKs=;
-        b=Y3uCvIgKrgY6DW1SC8nMrCQhzWZ5Ia2NqY0ZkdlSwALj5xvKXv547eCLFRjPEn1Sce
-         4hKL8iKFBVO6dQftj8iirqHwqc3KDt0qLm/uqdbbUrivCYSg8LCp/+EIZd50r/6PMyRq
-         p+/L2X8jGoxcPj3f2J1F68iXT/5ribjD7iPs9TvG29q+nT8+Y/7/SC838ZMix5Ye2qIT
-         tZcZ45J99hzh0hkwNPXSkE5IRkgXUUeD/QdBlVmaszoRdlj3H90w706vilzSun3lOHAR
-         w8kZ9z7sXPWTLrYBIvFNrt/7F6QSlBRyl0noOPV/UpZtpnrEVfoqSShW5Y16kgjlrgGB
-         0aYw==
-X-Gm-Message-State: AOJu0Yz3/UK6+d4n+xLT5ZwwjTJqmiHJdAWD5Dgb/p+kSZtyQW8jTCFs
-        IgvITTMj3oASK9kiAW0GeNw=
-X-Google-Smtp-Source: AGHT+IE82gdSoQHkIX6sW/TGs1kWdZkYu7hNPBJN6aj+F37YHJCBIYDbXsGrUffPnYSoFa8FuAy5Sw==
-X-Received: by 2002:a2e:3814:0:b0:2c9:f71f:c00f with SMTP id f20-20020a2e3814000000b002c9f71fc00fmr1101183lja.30.1701680366458;
-        Mon, 04 Dec 2023 00:59:26 -0800 (PST)
-Received: from localhost.localdomain ([93.175.11.252])
-        by smtp.gmail.com with ESMTPSA id o5-20020a05651c050500b002ca0abab79bsm108294ljp.4.2023.12.04.00.59.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 00:59:26 -0800 (PST)
-From:   Daniil Maximov <daniil31415it@gmail.com>
-To:     Egor Pomozov <epomozov@marvell.com>
-Cc:     Daniil Maximov <daniil31415it@gmail.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH] net: atlantic: Fix NULL dereference of skb pointer in
-Date:   Mon,  4 Dec 2023 11:58:10 +0300
-Message-Id: <20231204085810.1681386-1-daniil31415it@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1701680415; x=1702285215;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zv4xm2Lr7Wl/3u3PM4BZ5e6ASOFA8kBT22UWNSzI29A=;
+        b=W4IcEPU/06rXnT8zKoV97sb61dfK4jvSzjiUKRd2h1ZIyGrOSEWewb93tkXsKxgV0A
+         fyS58euO9pu8E/Prk+l6TktdqcACF3vGncdOCtMy+fDvDZoWUOpNizD1SapCF0RWwX6O
+         YsuR8gHtx8OnYuPVHwooZhdRrP1knUbl8uAuUskgOPKHy+oYiguzK/1Ipb8zhRusOrIC
+         8kXq5aHCzc9YPk8ByTt7hGCsXbZUgql4kjw0i8VXu9DUdkYRUM/+v4we+hnqt/wVybT4
+         +KObvOxtQ5ZoAx6J+fPx7AYaFDBBQbUHT6RjAu8f48MK51cg5Usm8EFMslZZ5F9Ycp6b
+         /ozQ==
+X-Gm-Message-State: AOJu0YxZ2wOAHYwftq2KHj7FQYSatZvhZXiVTiKlxHcT9T8CnFhyDdZl
+        iwaID55UoVvq3WjwHFYsTJLOj0auQvS88A==
+X-Google-Smtp-Source: AGHT+IFLHN5lVcrEbK+UZgMtBA8xq+NoiT1Pt2RM2CuumlHSXQwJJCsSPcRznYrTmXwNk4ReaxfVGQ==
+X-Received: by 2002:a81:7847:0:b0:5d7:1940:dd77 with SMTP id t68-20020a817847000000b005d71940dd77mr2172352ywc.77.1701680415246;
+        Mon, 04 Dec 2023 01:00:15 -0800 (PST)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
+        by smtp.gmail.com with ESMTPSA id v136-20020a81488e000000b005d8bb479c51sm458655ywa.11.2023.12.04.01.00.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 01:00:15 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5d4f71f7e9fso27337927b3.0;
+        Mon, 04 Dec 2023 01:00:15 -0800 (PST)
+X-Received: by 2002:a81:d206:0:b0:5d7:6089:9617 with SMTP id
+ x6-20020a81d206000000b005d760899617mr2012816ywi.24.1701680414955; Mon, 04 Dec
+ 2023 01:00:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120070024.4079344-11-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdW9Unpw7NQOGWd4SeFV8XgvRYTKTXnt9Tsagb3Q3U9tNA@mail.gmail.com>
+ <96dd3f54-9560-4587-b4e8-bf75422ff5ef@tuxon.dev> <CAMuHMdWGbEhBdzK4Swu4uX05vX7H2Ow4uE1C=JVNOrdcbZYL=A@mail.gmail.com>
+ <b3701927-e41a-44d8-8f91-da245b76f532@tuxon.dev>
+In-Reply-To: <b3701927-e41a-44d8-8f91-da245b76f532@tuxon.dev>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 4 Dec 2023 10:00:03 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVmD7-AUn91SaOq1iOMkcGhi0WNvx8bCX3oD+xa-Bt98g@mail.gmail.com>
+Message-ID: <CAMuHMdVmD7-AUn91SaOq1iOMkcGhi0WNvx8bCX3oD+xa-Bt98g@mail.gmail.com>
+Subject: Re: [PATCH 10/14] arm64: renesas: r9a08g045: Add Ethernet nodes
+To:     claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@armlinux.org.uk, magnus.damm@gmail.com,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
+        broonie@kernel.org, alexander.stein@ew.tq-group.com,
+        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If is_ptp_ring == true in the loop of __aq_ring_xdp_clean function,
-then a timestamp is stored from a packet in a field of skb object,
-which is not allocated at the moment of the call (skb == NULL).
+Hi Claudiu,
 
-Generalize aq_ptp_extract_ts and other affected functions so they don't
-work with struct sk_buff*, but with struct skb_shared_hwtstamps*.
+On Mon, Dec 4, 2023 at 9:38 AM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
+> On 04.12.2023 10:02, Geert Uytterhoeven wrote:
+> > On Mon, Dec 4, 2023 at 8:41 AM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
+> >> On 01.12.2023 19:35, Geert Uytterhoeven wrote:
+> >>> On Mon, Nov 20, 2023 at 8:01 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> >>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >>>>
+> >>>> Add Ethernet nodes available on RZ/G3S (R9A08G045).
+> >>>>
+> >>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >>>
+> >>> Thanks for your patch!
+> >>>
+> >>>> --- a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
+> >>>> +++ b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
+> >>>> @@ -149,6 +149,38 @@ sdhi2: mmc@11c20000 {
+> >>>>                         status = "disabled";
+> >>>>                 };
+> >>>>
+> >>>> +               eth0: ethernet@11c30000 {
+> >>>> +                       compatible = "renesas,r9a08g045-gbeth", "renesas,rzg2l-gbeth";
+> >>>> +                       reg = <0 0x11c30000 0 0x10000>;
+> >>>> +                       interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
+> >>>> +                                    <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>,
+> >>>> +                                    <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
+> >>>> +                       interrupt-names = "mux", "fil", "arp_ns";
+> >>>> +                       clocks = <&cpg CPG_MOD R9A08G045_ETH0_CLK_AXI>,
+> >>>> +                                <&cpg CPG_MOD R9A08G045_ETH0_CLK_CHI>,
+> >>>> +                                <&cpg CPG_MOD R9A08G045_ETH0_REFCLK>;
+> >>>> +                       clock-names = "axi", "chi", "refclk";
+> >>>> +                       resets = <&cpg R9A08G045_ETH0_RST_HW_N>;
+> >>>> +                       power-domains = <&cpg>;
+> >>>
+> >>> Perhaps add a default phy mode, like on other SoCs?
+> >>>
+> >>>     phy-mode = "rgmii"';
+> >>
+> >> I skipped this (even it was available on the other SoCs) as I consider the
+> >> phy-mode is board specific.
+> >
+> > IC.  Still, it's good to have some consistency across boards.
+> >
+> >>> Also missing:
+> >>>
+> >>>     #address-cells = <1>;
+> >>>     #size-cells = <0>;
+> >>
+> >> Same for these.
+> >
+> > These are required, and always have the same values, so it makes more
+> > sense to have them in the SoC .dtsi file, once.
+>
+> I remember I had a compilation warning with an Ethernet controller
+> configured with fixed-link having #address-cells, #size-cells. With
+> fixed-link these were not needed.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE
+I think EtherAVB always use MDIO for management, so fixed-link is
+not applicable.
 
-Fixes: 26efaef759a1 ("net: atlantic: Implement xdp data plane")
-Signed-off-by: Daniil Maximov <daniil31415it@gmail.com>
----
- .../net/ethernet/aquantia/atlantic/aq_ptp.c    | 10 +++++-----
- .../net/ethernet/aquantia/atlantic/aq_ptp.h    |  4 ++--
- .../net/ethernet/aquantia/atlantic/aq_ring.c   | 18 ++++++++++++------
- 3 files changed, 19 insertions(+), 13 deletions(-)
+> Anyway... I'll keep all in dtsi if you prefer it this way.
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-index 80b44043e6c5..28c9b6f1a54f 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-@@ -553,17 +553,17 @@ void aq_ptp_tx_hwtstamp(struct aq_nic_s *aq_nic, u64 timestamp)
- 
- /* aq_ptp_rx_hwtstamp - utility function which checks for RX time stamp
-  * @adapter: pointer to adapter struct
-- * @skb: particular skb to send timestamp with
-+ * @shhwtstamps: particular skb_shared_hwtstamps to save timestamp
-  *
-  * if the timestamp is valid, we convert it into the timecounter ns
-  * value, then store that result into the hwtstamps structure which
-  * is passed up the network stack
-  */
--static void aq_ptp_rx_hwtstamp(struct aq_ptp_s *aq_ptp, struct sk_buff *skb,
-+static void aq_ptp_rx_hwtstamp(struct aq_ptp_s *aq_ptp, struct skb_shared_hwtstamps *shhwtstamps,
- 			       u64 timestamp)
- {
- 	timestamp -= atomic_read(&aq_ptp->offset_ingress);
--	aq_ptp_convert_to_hwtstamp(aq_ptp, skb_hwtstamps(skb), timestamp);
-+	aq_ptp_convert_to_hwtstamp(aq_ptp, shhwtstamps, timestamp);
- }
- 
- void aq_ptp_hwtstamp_config_get(struct aq_ptp_s *aq_ptp,
-@@ -639,7 +639,7 @@ bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring)
- 	       &aq_ptp->ptp_rx == ring || &aq_ptp->hwts_rx == ring;
- }
- 
--u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
-+u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
- 		      unsigned int len)
- {
- 	struct aq_ptp_s *aq_ptp = aq_nic->aq_ptp;
-@@ -648,7 +648,7 @@ u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
- 						   p, len, &timestamp);
- 
- 	if (ret > 0)
--		aq_ptp_rx_hwtstamp(aq_ptp, skb, timestamp);
-+		aq_ptp_rx_hwtstamp(aq_ptp, shhwtstamps, timestamp);
- 
- 	return ret;
- }
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
-index 28ccb7ca2df9..210b723f2207 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
-@@ -67,7 +67,7 @@ int aq_ptp_hwtstamp_config_set(struct aq_ptp_s *aq_ptp,
- /* Return either ring is belong to PTP or not*/
- bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring);
- 
--u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
-+u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
- 		      unsigned int len);
- 
- struct ptp_clock *aq_ptp_get_ptp_clock(struct aq_ptp_s *aq_ptp);
-@@ -143,7 +143,7 @@ static inline bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring)
- }
- 
- static inline u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic,
--				    struct sk_buff *skb, u8 *p,
-+				    struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
- 				    unsigned int len)
- {
- 	return 0;
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-index 4de22eed099a..694daeaf3e61 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-@@ -647,7 +647,7 @@ static int __aq_ring_rx_clean(struct aq_ring_s *self, struct napi_struct *napi,
- 		}
- 		if (is_ptp_ring)
- 			buff->len -=
--				aq_ptp_extract_ts(self->aq_nic, skb,
-+				aq_ptp_extract_ts(self->aq_nic, skb_hwtstamps(skb),
- 						  aq_buf_vaddr(&buff->rxdata),
- 						  buff->len);
- 
-@@ -742,6 +742,8 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
- 		struct aq_ring_buff_s *buff = &rx_ring->buff_ring[rx_ring->sw_head];
- 		bool is_ptp_ring = aq_ptp_ring(rx_ring->aq_nic, rx_ring);
- 		struct aq_ring_buff_s *buff_ = NULL;
-+		u16 ptp_hwtstamp_len = 0;
-+		struct skb_shared_hwtstamps shhwtstamps;
- 		struct sk_buff *skb = NULL;
- 		unsigned int next_ = 0U;
- 		struct xdp_buff xdp;
-@@ -810,11 +812,12 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
- 		hard_start = page_address(buff->rxdata.page) +
- 			     buff->rxdata.pg_off - rx_ring->page_offset;
- 
--		if (is_ptp_ring)
--			buff->len -=
--				aq_ptp_extract_ts(rx_ring->aq_nic, skb,
--						  aq_buf_vaddr(&buff->rxdata),
--						  buff->len);
-+		if (is_ptp_ring) {
-+			ptp_hwtstamp_len = aq_ptp_extract_ts(rx_ring->aq_nic, &shhwtstamps,
-+							     aq_buf_vaddr(&buff->rxdata),
-+							     buff->len);
-+			buff->len -= ptp_hwtstamp_len;
-+		}
- 
- 		xdp_init_buff(&xdp, frame_sz, &rx_ring->xdp_rxq);
- 		xdp_prepare_buff(&xdp, hard_start, rx_ring->page_offset,
-@@ -834,6 +837,9 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
- 		if (IS_ERR(skb) || !skb)
- 			continue;
- 
-+		if (ptp_hwtstamp_len > 0)
-+			*skb_hwtstamps(skb) = shhwtstamps;
-+
- 		if (buff->is_vlan)
- 			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
- 					       buff->vlan_rx_tag);
+Yes please, thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
