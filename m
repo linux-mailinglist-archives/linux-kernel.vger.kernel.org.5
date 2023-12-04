@@ -2,124 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D55803846
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E60F803848
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbjLDPHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:07:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49372 "EHLO
+        id S233612AbjLDPHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjLDPHg (ORCPT
+        with ESMTP id S231594AbjLDPHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:07:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700CCC4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:07:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADBC4C433C8;
-        Mon,  4 Dec 2023 15:07:39 +0000 (UTC)
-Message-ID: <5dfeaf67-b6c6-45be-bc28-04751376ea26@xs4all.nl>
-Date:   Mon, 4 Dec 2023 16:07:37 +0100
+        Mon, 4 Dec 2023 10:07:47 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D6BC4;
+        Mon,  4 Dec 2023 07:07:51 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231204150748euoutp02612dc70d95eb7aa494fda7f09bc801a2~dqWECJvV02140321403euoutp02I;
+        Mon,  4 Dec 2023 15:07:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231204150748euoutp02612dc70d95eb7aa494fda7f09bc801a2~dqWECJvV02140321403euoutp02I
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701702468;
+        bh=UduKPnQm68cXoxlHdEmWZOKtyfnkbxFsmJeY5avud44=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=MM+RUq0UtMW7ws7H0S0Ou7vD5Bb+wBju4aAGFv4Kt7/pWjTu95F68zZDBmZ1ugg/U
+         k/jFoeaGx2CjCIHbRFzDpe1BpW2vZ0XAkLZVShqt9wHehoNAoLx600dSQhE52i/PiN
+         M8QwqPB9bqLZas0CYERPA4zKDRM0HZy4dTBNIhRA=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231204150747eucas1p26333e09142452af0e86679cdc4da337d~dqWDs4D2V2804828048eucas1p2u;
+        Mon,  4 Dec 2023 15:07:47 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 8D.C6.09814.34BED656; Mon,  4
+        Dec 2023 15:07:47 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a~dqWDIvRbe0222702227eucas1p23;
+        Mon,  4 Dec 2023 15:07:47 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231204150747eusmtrp15777265caed2d957daeb1957804eccf0~dqWDIBHpR2293022930eusmtrp1Q;
+        Mon,  4 Dec 2023 15:07:47 +0000 (GMT)
+X-AuditID: cbfec7f4-711ff70000002656-8f-656deb4362d0
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id B0.F6.09274.34BED656; Mon,  4
+        Dec 2023 15:07:47 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231204150747eusmtip12a603491717507856a186d16753c948c~dqWC6ygJe0939309393eusmtip1X;
+        Mon,  4 Dec 2023 15:07:47 +0000 (GMT)
+Received: from localhost (106.110.32.133) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Mon, 4 Dec 2023 15:07:46 +0000
+Date:   Mon, 4 Dec 2023 16:07:44 +0100
+From:   Joel Granados <j.granados@samsung.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        <iommu@lists.linux.dev>, <linux-kselftest@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
+Message-ID: <20231204150744.db3hfpq4v55cuavn@localhost>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 31/36] media: starfive: Fix misuse of
- min_buffers_needed field
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        matt.ranostay@konsulko.com
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, kernel@collabora.com,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-References: <20231204132323.22811-1-benjamin.gaignard@collabora.com>
- <20231204132323.22811-32-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231204132323.22811-32-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="g7qzvqsc57itqwgz"
+Content-Disposition: inline
+In-Reply-To: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+X-Originating-IP: [106.110.32.133]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkk+LIzCtJLcpLzFFi42LZduzneV3n17mpBvf+mVhsnriVzeLXFwuL
+        pQfXs1g0rL7AajFzxglGi87ZG9gtlr7dym5xedccNovpd96zWex9+pjN4uCHJ6wWy8/OY7No
+        uWNqMffnNRYHPo8nB+cxeayZt4bRY/Gel0wem1Z1snncubaHzWPeyUCPyTeWM3q82DyT0aO3
+        +R2bx+dNch5bP99mCeCO4rJJSc3JLEst0rdL4MpYtvgGS8F0jYofLQ9ZGhibFLsYOTkkBEwk
+        9p6bzN7FyMUhJLCCUeLSkn1sEM4XRonGk0uYQKqEBD4zShx97gDT0bP6BhNE0XJGiVOTlkJ1
+        ABX92XEFytnMKLFk8TQWkBYWARWJ2e2rGEFsNgEdifNv7jB3MXJwiAioSzz7EgBSzyxwh1ni
+        1It7rCA1wgKeEu/XH2MDsXkFzCU6rz5nh7AFJU7OfMIC0sssUCGx72IkhCktsfwfB0gFp4C9
+        xPEzT1khDlWS+PqmF8qulTi15RbY0RIC3zgl/rxsZ4JIuEhsfbyUHcIWlnh1fAuULSNxenIP
+        C0TDZEaJ/f8+sEM4qxklljV+heq2lmi58oQd5AoJAUeJnVdZIEw+iRtvBUEqmIHMSdumM0OE
+        eSU62oQgGtUkVt97wzKBUXkWksdmITw2C+GxWWBzdCQW7P7EhiGsLbFs4WtmCNtWYt269ywL
+        GNlXMYqnlhbnpqcWG+WllusVJ+YWl+al6yXn525iBKbQ0/+Of9nBuPzVR71DjEwcjIcYVYCa
+        H21YfYFRiiUvPy9VSYR33q3sVCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8qinyqUIC6Yklqdmp
+        qQWpRTBZJg5OqQam2JwKBifhK68PO+dEnDTi0FKXfP0ktf39R86q6oMTRE8/Sd8d6V60dsvP
+        wyeY3swo4Nf9wsW44Ooe6xcNrwoaSj0tHhhWWIUbij7SYvFb5DFrRZaWtqbjR0vxO4/XJfh9
+        n2eotpTBiW3Dv32W/7sfW3PmfnhwpJPzUWr7m0nyagkGC2b/5FEOWmS1sP3Q71y/xje1liH2
+        ywr9ezf4T5OtmtBbxblquqiRZLv2wojrz56K5186Pf1N8Df3b64Hud4obJ/5js9MbdrEN/43
+        s7/dKUsomffzecn81q5Ky6tzn7zhusK95/j3lILWvu/SXO+el7mvsj+lMI/Pt/0I35XkhiID
+        v6LrNbr7dr8vb29XYinOSDTUYi4qTgQAyRVWRBwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsVy+t/xu7rOr3NTDU5+4rPYPHErm8WvLxYW
+        Sw+uZ7FoWH2B1WLmjBOMFp2zN7BbLH27ld3i8q45bBbT77xns9j79DGbxcEPT1gtlp+dx2bR
+        csfUYu7PaywOfB5PDs5j8lgzbw2jx+I9L5k8Nq3qZPO4c20Pm8e8k4Eek28sZ/R4sXkmo0dv
+        8zs2j8+b5Dy2fr7NEsAdpWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eT
+        kpqTWZZapG+XoJdx4cMP1oKpGhWTl2xgbGBsUOxi5OSQEDCR6Fl9g6mLkYtDSGApo0Tfz0es
+        EAkZiY1frkLZwhJ/rnWxQRR9ZJR48rWDBcLZzChxeP1uZpAqFgEVidntqxhBbDYBHYnzb+4A
+        xTk4RATUJZ59CQCpZxa4wyxx8MduFpAaYQFPiffrj7GB2LwC5hKdV5+zg9hCAnYSzz5uZIeI
+        C0qcnPmEBWQOs0CZROe/fAhTWmL5Pw6QCk4Be4njZ55C3akk8fVNL5RdK/H57zPGCYzCs5AM
+        moUwaBbCIJAKZgEtiRv/XjJhCGtLLFv4mhnCtpVYt+49ywJG9lWMIqmlxbnpucVGesWJucWl
+        eel6yfm5mxiBiWTbsZ9bdjCufPVR7xAjEwfjIUYVoM5HG1ZfYJRiycvPS1US4Z13KztViDcl
+        sbIqtSg/vqg0J7X4EKMpMAgnMkuJJucDU1xeSbyhmYGpoYmZpYGppZmxkjivZ0FHopBAemJJ
+        anZqakFqEUwfEwenVAPTCrfSs7NnXSxIdCgx+NG18kLPBK28pQmLBDg858YE/ZFjKmt/0J2j
+        Wf9Rje9E2hmliT42M3Q1Ut65G3ex75+1QCtX/rzPlYP/oh4e368f61jPriUnzvnterehi+Tc
+        74fXKj5/frScj3vq3bxqBRtFltaJpyx9WkWrrzX26H2cIX+hjdn8gorbyq3X2c3KDuxKj605
+        eLbEtX7uLIcSxaqoS67X8jbaPtorvcRUYMIUmfLbWdESnMWPb1+885Tr0gsWnjfrVs713cLc
+        d1z+0qEnOsuSwu3yH21mifNxkrnwteb+h0OXXqVc/Rbxz/Xi/nnM3x4Zr7l2PE2hZ5IPx5yz
+        UaV8iberChceZfexXF2vxFKckWioxVxUnAgAWaTaSbkDAAA=
+X-CMS-MailID: 20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a
+X-Msg-Generator: CA
+X-RootMTR: 20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a
+References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
+        <CGME20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a@eucas1p2.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 14:23, Benjamin Gaignard wrote:
-> 'min_buffers_needed' is suppose to be used to indicate the number
-> of buffers needed by DMA engine to start streaming.
-> starfive driver doesn't use DMA engine and just want to specify
-> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
-> That 'min_reqbufs_allocation' field purpose so use it.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Jack Zhu <jack.zhu@starfivetech.com>
-> CC: Changhuang Liang <changhuang.liang@starfivetech.com>
-> ---
->  drivers/staging/media/starfive/camss/stf-video.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/starfive/camss/stf-video.c b/drivers/staging/media/starfive/camss/stf-video.c
-> index 0b305f21eb53..25038e37e8a6 100644
-> --- a/drivers/staging/media/starfive/camss/stf-video.c
-> +++ b/drivers/staging/media/starfive/camss/stf-video.c
-> @@ -513,7 +513,7 @@ int stf_video_register(struct stfcamss_video *video,
->  	q->buf_struct_size = sizeof(struct stfcamss_buffer);
->  	q->dev = video->stfcamss->dev;
->  	q->lock = &video->q_lock;
-> -	q->min_buffers_needed = STFCAMSS_MIN_BUFFERS;
-> +	q->min_reqbufs_allocation = STFCAMSS_MIN_BUFFERS;
->  	ret = vb2_queue_init(q);
->  	if (ret < 0) {
->  		dev_err(video->stfcamss->dev,
+--g7qzvqsc57itqwgz
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's not clear to me if this driver can work without at least one buffer
-queued. This would need to be tested first.
+On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
+> Hi folks,
+>=20
+> This series implements the functionality of delivering IO page faults to
+> user space through the IOMMUFD framework for nested translation. Nested
+Does this mean the IOPF_CAPABLE HWPT needs to be parented by a HWPT
+created with IOMMU_HWPT_ALLOC_NEST_PARENT set?
 
-Regards,
+> translation is a hardware feature that supports two-stage translation
+> tables for IOMMU. The second-stage translation table is managed by the
+> host VMM, while the first-stage translation table is owned by user
+> space. This allows user space to control the IOMMU mappings for its
+> devices.
+>=20
+> When an IO page fault occurs on the first-stage translation table, the
+> IOMMU hardware can deliver the page fault to user space through the
+> IOMMUFD framework. User space can then handle the page fault and respond
+> to the device top-down through the IOMMUFD. This allows user space to
+> implement its own IO page fault handling policies.
+>=20
+> User space indicates its capability of handling IO page faults by
+> setting the IOMMU_HWPT_ALLOC_IOPF_CAPABLE flag when allocating a
+> hardware page table (HWPT). IOMMUFD will then set up its infrastructure
+> for page fault delivery. On a successful return of HWPT allocation, the
+> user can retrieve and respond to page faults by reading and writing to
+> the file descriptor (FD) returned in out_fault_fd.
+>=20
+> The iommu selftest framework has been updated to test the IO page fault
+> delivery and response functionality.
+>=20
+> This series is based on the latest implementation of nested translation
+> under discussion [1] and the page fault handling framework refactoring in
+> the IOMMU core [2].
+>=20
+> The series and related patches are available on GitHub: [3]
+>=20
+> [1] https://lore.kernel.org/linux-iommu/20230921075138.124099-1-yi.l.liu@=
+intel.com/
+> [2] https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@l=
+inux.intel.com/
+> [3] https://github.com/LuBaolu/intel-iommu/commits/iommufd-io-pgfault-del=
+ivery-v2
+>=20
+> Best regards,
+> baolu
+>=20
+> Change log:
+> v2:
+>  - Move all iommu refactoring patches into a sparated series and discuss
+>    it in a different thread. The latest patch series [v6] is available at
+>    https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@li=
+nux.intel.com/
+>  - We discussed the timeout of the pending page fault messages. We
+>    agreed that we shouldn't apply any timeout policy for the page fault
+>    handling in user space.
+>    https://lore.kernel.org/linux-iommu/20230616113232.GA84678@myrica/
+>  - Jason suggested that we adopt a simple file descriptor interface for
+>    reading and responding to I/O page requests, so that user space
+>    applications can improve performance using io_uring.
+>    https://lore.kernel.org/linux-iommu/ZJWjD1ajeem6pK3I@ziepe.ca/
+>=20
+> v1: https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@=
+linux.intel.com/
+>=20
+> Lu Baolu (6):
+>   iommu: Add iommu page fault cookie helpers
+>   iommufd: Add iommu page fault uapi data
+>   iommufd: Initializing and releasing IO page fault data
+>   iommufd: Deliver fault messages to user space
+>   iommufd/selftest: Add IOMMU_TEST_OP_TRIGGER_IOPF test support
+>   iommufd/selftest: Add coverage for IOMMU_TEST_OP_TRIGGER_IOPF
+>=20
+>  include/linux/iommu.h                         |   9 +
+>  drivers/iommu/iommu-priv.h                    |  15 +
+>  drivers/iommu/iommufd/iommufd_private.h       |  12 +
+>  drivers/iommu/iommufd/iommufd_test.h          |   8 +
+>  include/uapi/linux/iommufd.h                  |  65 +++++
+>  tools/testing/selftests/iommu/iommufd_utils.h |  66 ++++-
+>  drivers/iommu/io-pgfault.c                    |  50 ++++
+>  drivers/iommu/iommufd/device.c                |  69 ++++-
+>  drivers/iommu/iommufd/hw_pagetable.c          | 260 +++++++++++++++++-
+>  drivers/iommu/iommufd/selftest.c              |  56 ++++
+>  tools/testing/selftests/iommu/iommufd.c       |  24 +-
+>  .../selftests/iommu/iommufd_fail_nth.c        |   2 +-
+>  12 files changed, 620 insertions(+), 16 deletions(-)
+>=20
+> --=20
+> 2.34.1
+>=20
 
-	Hans
+--=20
+
+Joel Granados
+
+--g7qzvqsc57itqwgz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVt6zgACgkQupfNUreW
+QU/YxAv/amK6Yf/ek3gmC/YYj6UNyrZPgjipdI6JkSodKr8gwAAS/1zf9pAmXTwT
+3REQr0utcNlpQ8kpoAEuuufpScq9cG3QiVMZfH3XggOywuWLv3nhPsiynQnkBauq
+90r7lEUWUZd+fRZdM3IjaC96IqYDxQ1yKeIZ15ZJ3G5cf313NmTOP2nCUJoIb953
+MMY8L9R0fCkYpFo8R1rIh0sDJKc9V4jD6nQfhfGWG4Ip1jKSoI4ZrGlSVX+Apnqd
+bv/4+n0pypUK6h6jfVTDH5WTN+gpHGK3JxMuYVOh27rnkzZc/W5t5gEdcYK12ZzV
+T60qTF2kGs6rCNveylvvV62fN7LofVfxsYcHiak9+He/W0C1PhHwfgp399315kKo
+cNtIK+bk1EKyQJqct9h89mWcYIXsXl2jBeXY8O57u+Q7IRxST5KXiWNkc5XJowJq
+hSnK4E6QPJ4gFF6Vq1MYhjdYZyDD2n+UHY4cfjO9HXEmZ8zUya61u18uPRdy0Ils
+VPflK8/n
+=5JsO
+-----END PGP SIGNATURE-----
+
+--g7qzvqsc57itqwgz--
