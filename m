@@ -2,295 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4DB18038A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4904D8038AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbjLDPXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:23:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38058 "EHLO
+        id S234606AbjLDPXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:23:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234516AbjLDPXY (ORCPT
+        with ESMTP id S234119AbjLDPXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:23:24 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CEDF0;
-        Mon,  4 Dec 2023 07:23:29 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54bfa9b3ffaso5891059a12.1;
-        Mon, 04 Dec 2023 07:23:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701703408; x=1702308208; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mxYp/TPj2SDljkx7akhBocUojf/1bHbrDV2kmdKcuiw=;
-        b=jOWQ+NVgcA55mkrS1YmqfA6St67vuu1Sci23Ov0LAmtm7JCw3n72rwwNXa1QH8xBu2
-         6zH+DW9Psuo44vmLIEjCxVl94tGIwYrhUMq4n79IUflTELifgWsckVZ2eVLpiuE/vICK
-         V1jbzkp2UTv6d+KtgxOrqgWKk30LMQs6o2/6L6GyeMh1A88KwMKzLdV9mzh6gBvYWkYN
-         HR+3BUbI/uLUv8SN+qZ847+oaoF81p11naoaaxlwCELmNuwAxfvGoaIfflaEU4d8hbB1
-         O4hvsywb/8yXENsAEQG1H/pwFp4g10uObgB8qHaXTltCyL2/piFfDW8pxo+EF3yMhKa7
-         4dlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701703408; x=1702308208;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mxYp/TPj2SDljkx7akhBocUojf/1bHbrDV2kmdKcuiw=;
-        b=gNFTfbx8mZfS3eZM7Hw3RHYQ370c/gBhOlcrBWCKSndsW56mLpY7Pri+02MwatpIAs
-         WNjNu4P118zuS6hzG5bSdeUvzX90wE3Yp9+OAvZokp0XKUUsPf1vGGjpaG7/C1/HKctv
-         xC1iLHTFnzFRt6fivFrcs+o0LHfJkth09yZGF+ZF9bHA2gC2vXjely69C3vHIcm7k4pO
-         bZxPrGcdmk8cfXswaf2wb5TrNqRenNbxoH62kZWeLmyEeSMyufokEGB/xPrkHK4LYjEW
-         mynRkBNKflfaj8X+SrFEzvJ5yz48DGLHrBvbzsRbImBbBOKna9yDEg8w9jIBkQcmyM2Y
-         1qhA==
-X-Gm-Message-State: AOJu0YyqhSpimtX6YCV+T8Tkrh27bo0CcdwJ2kUCjHdvTezZ8jEqI/Hv
-        WrrPHigh00mo3VxWuoGTzA==
-X-Google-Smtp-Source: AGHT+IH6NaMxB0hD8p+w4THyQqPHgLUhFhYRDIhCfbDi49ieB3DqkYaAbCCN/8DRLm52i+pnC1Tesg==
-X-Received: by 2002:a17:907:2daa:b0:a19:a1ba:8cc2 with SMTP id gt42-20020a1709072daa00b00a19a1ba8cc2mr3994784ejc.96.1701703407956;
-        Mon, 04 Dec 2023 07:23:27 -0800 (PST)
-Received: from ?IPV6:2a02:810b:f40:4300:55ff:210b:5393:c9d7? ([2a02:810b:f40:4300:55ff:210b:5393:c9d7])
-        by smtp.gmail.com with ESMTPSA id s7-20020a170906bc4700b00a0f78db91c3sm5416316ejv.95.2023.12.04.07.23.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 07:23:27 -0800 (PST)
-Message-ID: <e58f5aa5-a4d4-4334-a7ff-aa139ec7166f@gmail.com>
-Date:   Mon, 4 Dec 2023 16:23:26 +0100
+        Mon, 4 Dec 2023 10:23:44 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2954CF2;
+        Mon,  4 Dec 2023 07:23:50 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 6BC34220D8;
+        Mon,  4 Dec 2023 15:23:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701703428; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MSfuO+OQqjKaU4tpQqlga4ZTtzNlctSschnkLgDRivg=;
+        b=Qx435/8aK+ZnOG7Hv2GM0J7AuyqsexLTDkphaopr7hyK/MeSQAylHN/RuGGYI0Te8D27OP
+        TkCVr4PXQ502a7kEIJzauKJeTbOclWyNnnLMWI36eLvPhBGvBOCtJ9Z0C5BJZs6lf2EcWG
+        FPRBE2s7R4YBMPA2g78KYOvPnbo+vFw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 427FA1398A;
+        Mon,  4 Dec 2023 15:23:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id feo9DATvbWUMUgAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Mon, 04 Dec 2023 15:23:48 +0000
+Date:   Mon, 4 Dec 2023 16:23:47 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
+Message-ID: <ZW3vAz9KF5wM3HgE@tiehlicka>
+References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
+ <ZWiw9cEsDap1Qm5h@tiehlicka>
+ <20231130165642.GA386439@cmpxchg.org>
+ <ZWmoTa7MlD7h9FYm@tiehlicka>
+ <20231201170955.GA694615@cmpxchg.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/5] ARM: dts: rockchip: Add power-controller for
- RK3128
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org
-References: <20231202125144.66052-1-knaerzche@gmail.com>
- <4891026.6YUMPnJmAY@diego> <4dec2316-f840-44ab-a07a-3d7f0e5e6d8f@gmail.com>
- <9588573.jRhZ6ZUK3Y@diego>
-Content-Language: en-US
-From:   Alex Bee <knaerzche@gmail.com>
-In-Reply-To: <9588573.jRhZ6ZUK3Y@diego>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201170955.GA694615@cmpxchg.org>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.30 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[19];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[gmail.com,linux.dev,google.com,vivo.com,vger.kernel.org,kvack.org,linux-foundation.org,redhat.com,infradead.org,intel.com,huawei.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.30
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On Fri 01-12-23 12:09:55, Johannes Weiner wrote:
+> On Fri, Dec 01, 2023 at 10:33:01AM +0100, Michal Hocko wrote:
+> > On Thu 30-11-23 11:56:42, Johannes Weiner wrote:
+> > [...]
+> > > So I wouldn't say it's merely a reclaim hint. It controls a very
+> > > concrete and influential factor in VM decision making. And since the
+> > > global swappiness is long-established ABI, I don't expect its meaning
+> > > to change significantly any time soon.
+> > 
+> > As I've said I am more worried about potential future changes which
+> > would modify existing, reduce or add more corner cases which would be
+> > seen as a change of behavior from the user space POV. That means that we
+> > would have to be really explicit about the fact that the reclaim is free
+> > to override the swappiness provided by user. So essentially a best
+> > effort interface without any actual guarantees. That surely makes it
+> > harder to use. Is it still useable?
+> 
+> But it's not free to override the setting as it pleases. I wrote a
+> detailed list of the current exceptions, and why the user wouldn't
+> have strong expectations of swappiness being respected in those
+> cases. Having reasonable limitations is not the same as everything
+> being up for grabs.
 
-Am 03.12.23 um 17:42 schrieb Heiko Stübner:
-> Hi Alex,
->
-> Am Sonntag, 3. Dezember 2023, 17:05:47 CET schrieb Alex Bee:
->> Am 02.12.23 um 18:46 schrieb Heiko Stübner:
->>> Am Samstag, 2. Dezember 2023, 17:36:15 CET schrieb Alex Bee:
->>>> Am 02.12.23 um 16:51 schrieb Heiko Stübner:
->>>>> Am Samstag, 2. Dezember 2023, 13:51:41 CET schrieb Alex Bee:
->>>>>> Add power controller and qos nodes for RK3128 in order to use
->>>>>> them as powerdomains.
->>>>> does the power-domain controller work with the incomplete set of
->>>>> pm-domains too?
->>>> Yes, it does - the missing domains can request idle only and can't be
->>>> powered on/off - if no one requests idle they are just up all the time.
->>>>
->>>>> What I have in mind is
->>>>> - adding the power-controller node with the existing set of power-domains
->>>>> - the gpu pm-domain is in there
->>>>> - adding the gpu parts
->>>> My main concern about adding them later was the change of the ABI after
->>>> they've been exposed in the SoC DT. If that's not an issue - sure: I can
->>>> add them in a separate series.
->>> An ABI change would be _changing_ the domain-ids in the rk3128-power.h
->>> I think :-) .
->> Well, an addition is still a change.
->>> Right now the existing domain ids in the header are already exposed to the
->>> world, so someone could already use them, but not the new ones.
->> I'm fully aware that nothing would ever hard fail anywhere if the new
->> domain ids get added later.
->>
->> Nevertheless we start using here an ABI which is known to be incomplete.
->> For no reason, as the patches (which I am now asked to remove from this
->> series) for completion are already there (here).
->>
->> Anyway, if you prefer it this way: I'm pleased to do so.
-> I was more thinking of accelerating the gpu-part of the series, as that
-> really is just waiting for the power-domain node that already has driver
-> support and domain-ids present.
->
-> It looks like you're feeling more strongly about that though, so I'll
-> definitly not pressure you ;-) .
+Well, I was not suggesting that future changes would be intentionally
+breaking swappiness. But look at the history, we've had times when
+swappiness was ignored most of the time due to heavy page cache bias.
+Now it is really hard to assume future reclaim changes but I can easily
+imagine that IO refault cost to balance file vs. anon lrus would be in
+future reclaim improvements and extensions.
 
-I'm really not insisting on this - I just didn't understand why you 
-would want this. And honestly I haven't considered merging timeline as 
-an argument.
+> Again, the swappiness setting is ABI, and people would definitely
+> complain if we ignored their request in an unexpected situation and
+> regressed their workloads.
+> 
+> I'm not against documenting the exceptions and limitations. Not just
+> for proactive reclaim, but for swappiness in general. But I don't
+> think it's fair to say that there are NO rules and NO userspace
+> contract around this parameter (and I'm the one who wrote most of the
+> balancing code that implements the swappiness control).
 
-So sure: Let's get the low hanging fruits merged for 6.8. Having the 
-power domains in the DT will also help for my upcoming hdmi / vop series.
+Right, but the behavior might change considerably between different
+kernel versions and that is something to be really careful about. One
+think I would really like to avoid is to provide any guarantee that
+swappiness X and nr_to_reclaim has an exact anon/file pages reclaimed
+or this is a regression because $VER-1 behaved that way. There might be
+very ligitimate reasons to use different heuristics in the memory
+reclaim.
 
-Alex
-
->
-> But I guess the split into IDs and driver change should still be
-> done, especially as the dt-binding-header likely will want an Ack
-> from the DT maintainers.
->
-> And the power-domain change will go through the new pmdomain
-> subsystem.
->
->
-> Heiko
->
->
->>>>> And a second series with
->>>>> - patch1 from here
->>>>> - a dts patch adding the additional pm-domains to rk3128.dtsi
->>>>> - I guess patch1 also should be split into a patch adding the binding-ids
->>>>>      and a separate patch for the code addition.
->>>> Yeah, I noticed this also :)
->>>>
->>>> Regards,
->>>>
->>>> Alex
->>>>
->>>>> Heiko
->>>>>
->>>>>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
->>>>>> ---
->>>>>>     arch/arm/boot/dts/rockchip/rk3128.dtsi | 101 +++++++++++++++++++++++++
->>>>>>     1 file changed, 101 insertions(+)
->>>>>>
->>>>>> diff --git a/arch/arm/boot/dts/rockchip/rk3128.dtsi b/arch/arm/boot/dts/rockchip/rk3128.dtsi
->>>>>> index 4e8b38604ecd..b72905db04f7 100644
->>>>>> --- a/arch/arm/boot/dts/rockchip/rk3128.dtsi
->>>>>> +++ b/arch/arm/boot/dts/rockchip/rk3128.dtsi
->>>>>> @@ -8,6 +8,7 @@
->>>>>>     #include <dt-bindings/interrupt-controller/arm-gic.h>
->>>>>>     #include <dt-bindings/interrupt-controller/irq.h>
->>>>>>     #include <dt-bindings/pinctrl/rockchip.h>
->>>>>> +#include <dt-bindings/power/rk3128-power.h>
->>>>>>     
->>>>>>     / {
->>>>>>     	compatible = "rockchip,rk3128";
->>>>>> @@ -133,6 +134,106 @@ smp-sram@0 {
->>>>>>     	pmu: syscon@100a0000 {
->>>>>>     		compatible = "rockchip,rk3128-pmu", "syscon", "simple-mfd";
->>>>>>     		reg = <0x100a0000 0x1000>;
->>>>>> +
->>>>>> +		power: power-controller {
->>>>>> +			compatible = "rockchip,rk3128-power-controller";
->>>>>> +			#power-domain-cells = <1>;
->>>>>> +			#address-cells = <1>;
->>>>>> +			#size-cells = <0>;
->>>>>> +
->>>>>> +			power-domain@RK3128_PD_VIO {
->>>>>> +				reg = <RK3128_PD_VIO>;
->>>>>> +				clocks = <&cru ACLK_CIF>,
->>>>>> +					 <&cru HCLK_CIF>,
->>>>>> +					 <&cru DCLK_EBC>,
->>>>>> +					 <&cru HCLK_EBC>,
->>>>>> +					 <&cru ACLK_IEP>,
->>>>>> +					 <&cru HCLK_IEP>,
->>>>>> +					 <&cru ACLK_LCDC0>,
->>>>>> +					 <&cru HCLK_LCDC0>,
->>>>>> +					 <&cru PCLK_MIPI>,
->>>>>> +					 <&cru ACLK_RGA>,
->>>>>> +					 <&cru HCLK_RGA>,
->>>>>> +					 <&cru ACLK_VIO0>,
->>>>>> +					 <&cru ACLK_VIO1>,
->>>>>> +					 <&cru HCLK_VIO>,
->>>>>> +					 <&cru HCLK_VIO_H2P>,
->>>>>> +					 <&cru DCLK_VOP>,
->>>>>> +					 <&cru SCLK_VOP>;
->>>>>> +				pm_qos = <&qos_ebc>,
->>>>>> +					 <&qos_iep>,
->>>>>> +					 <&qos_lcdc>,
->>>>>> +					 <&qos_rga>,
->>>>>> +					 <&qos_vip>;
->>>>>> +				#power-domain-cells = <0>;
->>>>>> +			};
->>>>>> +
->>>>>> +			power-domain@RK3128_PD_VIDEO {
->>>>>> +				reg = <RK3128_PD_VIDEO>;
->>>>>> +				clocks = <&cru ACLK_VDPU>,
->>>>>> +					 <&cru HCLK_VDPU>,
->>>>>> +					 <&cru ACLK_VEPU>,
->>>>>> +					 <&cru HCLK_VEPU>,
->>>>>> +					 <&cru SCLK_HEVC_CORE>;
->>>>>> +				pm_qos = <&qos_vpu>;
->>>>>> +				#power-domain-cells = <0>;
->>>>>> +			};
->>>>>> +
->>>>>> +			power-domain@RK3128_PD_GPU {
->>>>>> +				reg = <RK3128_PD_GPU>;
->>>>>> +				clocks = <&cru ACLK_GPU>;
->>>>>> +				pm_qos = <&qos_gpu>;
->>>>>> +				#power-domain-cells = <0>;
->>>>>> +			};
->>>>>> +
->>>>>> +			power-domain@RK3128_PD_CRYPTO {
->>>>>> +				reg = <RK3128_PD_CRYPTO>;
->>>>>> +				clocks = <&cru HCLK_CRYPTO>,
->>>>>> +					 <&cru SCLK_CRYPTO>;
->>>>>> +				pm_qos = <&qos_crypto>;
->>>>>> +				#power-domain-cells = <0>;
->>>>>> +			};
->>>>>> +		};
->>>>>> +	};
->>>>>> +
->>>>>> +	qos_crypto: qos@10128080 {
->>>>>> +		compatible = "rockchip,rk3128-qos", "syscon";
->>>>>> +		reg = <0x10128080 0x20>;
->>>>>> +	};
->>>>>> +
->>>>>> +	qos_gpu: qos@1012d000 {
->>>>>> +		compatible = "rockchip,rk3128-qos", "syscon";
->>>>>> +		reg = <0x1012d000 0x20>;
->>>>>> +	};
->>>>>> +
->>>>>> +	qos_vpu: qos@1012e000 {
->>>>>> +		compatible = "rockchip,rk3128-qos", "syscon";
->>>>>> +		reg = <0x1012e000 0x20>;
->>>>>> +	};
->>>>>> +
->>>>>> +	qos_rga: qos@1012f000 {
->>>>>> +		compatible = "rockchip,rk3128-qos", "syscon";
->>>>>> +		reg = <0x1012f000 0x20>;
->>>>>> +	};
->>>>>> +
->>>>>> +	qos_ebc: qos@1012f080 {
->>>>>> +		compatible = "rockchip,rk3128-qos", "syscon";
->>>>>> +		reg = <0x1012f080 0x20>;
->>>>>> +	};
->>>>>> +
->>>>>> +	qos_iep: qos@1012f100 {
->>>>>> +		compatible = "rockchip,rk3128-qos", "syscon";
->>>>>> +		reg = <0x1012f100 0x20>;
->>>>>> +	};
->>>>>> +
->>>>>> +	qos_lcdc: qos@1012f180 {
->>>>>> +		compatible = "rockchip,rk3128-qos", "syscon";
->>>>>> +		reg = <0x1012f180 0x20>;
->>>>>> +	};
->>>>>> +
->>>>>> +	qos_vip: qos@1012f200 {
->>>>>> +		compatible = "rockchip,rk3128-qos", "syscon";
->>>>>> +		reg = <0x1012f200 0x20>;
->>>>>>     	};
->>>>>>     
->>>>>>     	gic: interrupt-controller@10139000 {
->>>>>>
->>>>>
->>>
->>>
->
->
->
+Another option would be drop any heuristics when swappiness is provided
+for the memory.reclaim interface which would be much more predictable
+but it would also diverge from the normal reclaim and that is quite bad
+IMHO.
+-- 
+Michal Hocko
+SUSE Labs
