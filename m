@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3C8803114
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A5F803122
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343939AbjLDK7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:59:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
+        id S235567AbjLDLAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:00:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbjLDK7i (ORCPT
+        with ESMTP id S235414AbjLDK77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:59:38 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B907C0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:59:44 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1b75f59a12so87058866b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 02:59:43 -0800 (PST)
+        Mon, 4 Dec 2023 05:59:59 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C63116
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:00:00 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54c967010b2so2807883a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 02:59:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701687582; x=1702292382; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701687598; x=1702292398; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/0HgHBQ0hx8GhQGLQxTtBI+1qocQEqc+9+F9Qoq89AE=;
-        b=THxqjWhJP193OdEDpAs3IJsULiFS9oKHPkt8lB4o9dSj+1uIebsTDFoeY9pgEUIKWG
-         IPZ2l588LLqeC0H84+tY1m2Bu0PRFknR7w8uJVUuTbInVrb1YOGi2aP2hL8/usJW2rU0
-         DEt/RWipXa0svK3zAthSQp1ZWWe3tHtvzEC+ptjAjZvBWg43YCMDki+Ug8Ctqd4oZX7i
-         LjkS/m2kklWD2RjnYiVJ1h4DspsvuYhEsi++2fzY8Tlna9XPbHgWOWnZt+vtDxAp3Bvq
-         4oz/TgktmWM71iuvgnUaoUlY2hvZs+E3mOo1WCiQ8ouK/Y88Tl3ugbF1UOrWXdVLSInI
-         BWtA==
+        bh=0UZiTscdrvqfLrwy30AwVqngp6T7XzxdwFwSMft6nhU=;
+        b=z8GxFUzrTjz/WjrEsC/J1q1fF8XtJah/s1bHBE5mfAvZPMRsgpB5cIafOe+/r9vxr0
+         oz6ldwuoP5YaVpte6E7LI//dD/kRLOVDCFLbTHmTih1eH0ruIT33KYpeTKwDVCzZIzwh
+         3cKb2jbACiqwTM5pFZUfanYMxF2Xw+0q3LqQjVEQgHZTMQX7T3MVOQ904HH5/E3yU4gV
+         x/hHzKgEbUTocn4UdJcsYgyy6kJQY7Mr+dcMNJiKmIe+AuQg3R1QG7kQuzNtzYkKAAqO
+         MV50GPZS1bnoAdTrZfx3TfI9eh0xNBXLEXNWAxpJvEhtAy4LFwj56/jpQ8zkPEfazzOE
+         40DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701687582; x=1702292382;
+        d=1e100.net; s=20230601; t=1701687598; x=1702292398;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/0HgHBQ0hx8GhQGLQxTtBI+1qocQEqc+9+F9Qoq89AE=;
-        b=dhorjIMKX0VoilG8rAVKbLSDLq8/UGTqgLsiI9WSC6uZ8ytnrBWkr83l9YRldLrmds
-         w4BRpXop10Et38avht9Hwu7kvg4Gekf16tr47WA8U8kgDXY4PRr887XlCoixTtpogBwZ
-         FfqE0GLZqvZX9Hp/qmEPp/PGWg3nKT9QZzZgjF0DyB5T4d0zIC9t9vDMcLEAVPQP9tcW
-         /XksiskU4+SdwpycDQRvv22Q0HmntG1Ll4Hzebmo5OxhKBZEvkL/J32HKOZv3bXQUJMD
-         qYt7yKglxVCwnCikI6xqw+vIPc/vyWRe4lkc4kCfN6Q+pn7isgCHiXw0+hsn8ZTSMCoC
-         o2Og==
-X-Gm-Message-State: AOJu0YzndwZOZ22s6hbj4fQN1Z2PeM+Y7VygobI6iQcd+dAQy+d820sq
-        TnSdHe4Ysv+zuuxD1KwQV3cLgA==
-X-Google-Smtp-Source: AGHT+IGv4vUMb4KB9godAH5Y+diZk9TpgDQc8jfgSTmIpUrIMAi3Qm+1ZtlHQHqpQXnUwIL1Ho+pCg==
-X-Received: by 2002:a17:906:d3:b0:a1a:4f0a:2ede with SMTP id 19-20020a17090600d300b00a1a4f0a2edemr1468893eji.219.1701687582397;
-        Mon, 04 Dec 2023 02:59:42 -0800 (PST)
+        bh=0UZiTscdrvqfLrwy30AwVqngp6T7XzxdwFwSMft6nhU=;
+        b=nK8pQKq4pcK3ktUcirkyagdPj5wI6u5Ix9+XUQCwQTDaoNRQ8K2pCrta/kMA7WYuTQ
+         YnhLqMfwfsAVQXIILKCeOnEBxQffCkA+oBTgg/SlhAxyKcXg7DGve1XDrC1EHuO5mTNM
+         8FNeSACz/hhFbstfhEGsRuEeqyNRS9+CV3aurves0xCC327qkw2IlC0GRGtlyF79hDLH
+         58eoZiIarKMXQC/Vyv0MX4PH54g+zcUJXXtVkG2jZbd1w7VftYwvii8rH5Np4n7RrLw2
+         Az0mw0W2Vid8J3n6BPvJ3hWMLAoVtT6PCeP8S0BQZLAb3E1XgKb4hJvaCK3D/YpCbrE1
+         cQjA==
+X-Gm-Message-State: AOJu0YzIbPpITM4M2yh3sOqTNgDy3RtmwZwitynsAWhsjj9wTh9MGxF3
+        uUoaHnbF2i3vpeSdKttNGRDdig==
+X-Google-Smtp-Source: AGHT+IH6YNMJgPuilryBN3FihpD8caMksKHY0VPo7u2+B069qKRk7r4odWOBmch9unNmjJPoEsKOHg==
+X-Received: by 2002:a17:906:24b:b0:9a5:dc2b:6a5 with SMTP id 11-20020a170906024b00b009a5dc2b06a5mr5354376ejl.35.1701687598414;
+        Mon, 04 Dec 2023 02:59:58 -0800 (PST)
 Received: from ?IPV6:2001:1c06:2302:5600:366d:ca8f:f3af:381? (2001-1c06-2302-5600-366d-ca8f-f3af-0381.cable.dynamic.v6.ziggo.nl. [2001:1c06:2302:5600:366d:ca8f:f3af:381])
-        by smtp.gmail.com with ESMTPSA id jt14-20020a170906ca0e00b00a13f7286209sm5168944ejb.8.2023.12.04.02.59.41
+        by smtp.gmail.com with ESMTPSA id jt14-20020a170906ca0e00b00a13f7286209sm5168944ejb.8.2023.12.04.02.59.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 02:59:41 -0800 (PST)
-Message-ID: <1aa2b7c9-b512-4101-83b6-1a5d4ca8e2f6@linaro.org>
-Date:   Mon, 4 Dec 2023 11:59:40 +0100
+        Mon, 04 Dec 2023 02:59:57 -0800 (PST)
+Message-ID: <cd8af752-34ec-4ac3-8713-08add7d29b32@linaro.org>
+Date:   Mon, 4 Dec 2023 11:59:57 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: qcom: msm8916: Make blsp_dma
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: msm8939: Make blsp_dma
  controlled-remotely
 Content-Language: en-US
 To:     Stephan Gerhold <stephan@gerhold.net>,
@@ -64,13 +64,13 @@ Cc:     Andy Gross <agross@kernel.org>,
         linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, stable@vger.kernel.org
 References: <20231204-msm8916-blsp-dma-remote-v1-0-3e49c8838c8d@gerhold.net>
- <20231204-msm8916-blsp-dma-remote-v1-1-3e49c8838c8d@gerhold.net>
+ <20231204-msm8916-blsp-dma-remote-v1-2-3e49c8838c8d@gerhold.net>
 From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20231204-msm8916-blsp-dma-remote-v1-1-3e49c8838c8d@gerhold.net>
+In-Reply-To: <20231204-msm8916-blsp-dma-remote-v1-2-3e49c8838c8d@gerhold.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -95,24 +95,24 @@ On 04/12/2023 11:21, Stephan Gerhold wrote:
 > input/output becomes garbled with certain obscure firmware versions on
 > some devices.
 > 
-> [1]: https://git.codelinaro.org/clo/la/kernel/msm-3.10/-/blob/LA.BR.1.2.9.1-02310-8x16.0/arch/arm/boot/dts/qcom/msm8916.dtsi#L1466-1472
+> [1]: https://git.codelinaro.org/clo/la/kernel/msm-3.10/-/blob/LA.BR.1.2.9.1-02310-8x16.0/arch/arm/boot/dts/qcom/msm8939-common.dtsi#L866-872
 > 
 > Cc: <stable@vger.kernel.org> # 6.5
-> Fixes: a0e5fb103150 ("arm64: dts: qcom: Add msm8916 BLSP device nodes")
+> Fixes: 61550c6c156c ("arm64: dts: qcom: Add msm8939 SoC")
 > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
 > ---
 > This should only be backported to v6.5+ since it depends on commit
 > 8975dd41a9db ("dmaengine: qcom: bam_dma: allow omitting
 > num-{channels,ees}") which landed in v6.5.
 > ---
->   arch/arm64/boot/dts/qcom/msm8916.dtsi | 1 +
+>   arch/arm64/boot/dts/qcom/msm8939.dtsi | 1 +
 >   1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> index e8a14dd7e7c2..7f8327b0dbdb 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
-> @@ -2155,6 +2155,7 @@ blsp_dma: dma-controller@7884000 {
+> diff --git a/arch/arm64/boot/dts/qcom/msm8939.dtsi b/arch/arm64/boot/dts/qcom/msm8939.dtsi
+> index 95610a32750a..9eb8f1ceee99 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8939.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8939.dtsi
+> @@ -1761,6 +1761,7 @@ blsp_dma: dma-controller@7884000 {
 >   			clock-names = "bam_clk";
 >   			#dma-cells = <1>;
 >   			qcom,ee = <0>;
