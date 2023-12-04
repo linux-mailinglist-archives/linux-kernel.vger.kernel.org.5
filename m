@@ -2,246 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B8C803893
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D55C3803896
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbjLDPTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:19:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46818 "EHLO
+        id S234598AbjLDPTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:19:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234587AbjLDPTn (ORCPT
+        with ESMTP id S234364AbjLDPTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 10:19:43 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F7B116;
-        Mon,  4 Dec 2023 07:19:47 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4FADS0007678;
-        Mon, 4 Dec 2023 15:19:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : subject : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=OjA3YDYEX+inKfAoqDDEMGIKqJXxrQJ57lFryeMNyPg=;
- b=GPPjgPMVWKQ6VPNjR8nxC6Goi0GszwmYaqc36ZTXY3ynwulLglaE8oZKLLIo1m9S9KvS
- Yu4wAKKtrMKSxb1BcNZgmq+zku4bCeyLbpY0fsCg2w1Pw/K0f9wCIjQgvi7CcS/D37Y1
- HlMPgWuNAFxW/APAgEhtysBZ6vLJQZatiRxtphslHU720mcMZ05dqtAvg7YA9+xunNs5
- KgXFoK6fBMef81LDhs2BwAK1nbjQYbuHS+wZhWfEfxK0EY0maEHCUBIOrzOQOg0ON4xW
- akcdXRhHyETF7uBfw4hbAZpTd9HBuTdNbraVnBOHbSObfRviAzWXAxERP/zDy0aOlVxj 4g== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3usfxp0a4c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Dec 2023 15:19:23 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4F4NAG003898;
-        Mon, 4 Dec 2023 15:19:22 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu15yrrw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Dec 2023 15:19:22 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KrB0E0BP8me1iVGbqbescQQw0aDXPaDn52Rjmjp9SqEQYKwG2qPl3RxOYqCtqDF/IU+hlr5Cy2YSSqi0Pbgz9/B8APmZgDcWtJW+YE6mR1goWBA18IxNqQFWA3SGM/cfbpyZf0EGfWlCT+xvrHpjo2pDTGyfErIVQycjhfWra9EjNf7tWsw7BEmKZL+2mWHpgfAPqOjiuQG2E7MPkDj75b4ggNjp2qOVPlkMDuSk7da5uDr5LO9KGMtk7P8tj+06BjfefNozfq8F8X8IyDgiUwB7b5inXzSc3f4Gc8lyfjT9KJT08VWScfNAw98IvE6AdKeOYAMt2NLAOZZU7L+Q+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OjA3YDYEX+inKfAoqDDEMGIKqJXxrQJ57lFryeMNyPg=;
- b=M6Qp7OCFNy4mLK6Ekq6PNtqj4ADGEd2h9JcDrKfrVtgWEmUoVsQVJzP5WEbdq685U+UFdyVm/QW66fn3yJ80TalC1QvolF2OXqgSVK3QpLxl+aU3mcvUUp8KRmhS75FcK6JUZEB+ckg/GFtL1n03Pa87M0fzI7u1LaEf1ICC+LC3gdf8HMULpDdkzhY9pQe8DpKqDItykFqJiAwH9r1v/crvdF/DP6FVAPFz2gEo2k9vwp9rNEhQw/5jwdjt7ru/KhRLUwBog3OtnOz948Uttbevq3a2V8gC8H238XWUWeZ8VdOYSbNNrDnvJCWszxwL0ERZubaT9R1U9C2xP5PZLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OjA3YDYEX+inKfAoqDDEMGIKqJXxrQJ57lFryeMNyPg=;
- b=e8Nfg4qr06FqX6y9ITizNh8JwjjLrQdneO/XeSKNyQ6Sv+j6AtaovDJXgDI+ma9X/+0j+QkzEEaumcLABDCCVkODq5qZyz3xHe3/pIC0ic9qblL9gxn8bwEdKaTGyx8Dmma8clJJNnPUWLJk+RL0rywGWe2Kyp578smHLCV20SQ=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by DS7PR10MB5928.namprd10.prod.outlook.com (2603:10b6:8:84::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 15:19:19 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 15:19:19 +0000
-Message-ID: <a87d48a7-f2a8-40ae-8d9b-e4534ccc29b1@oracle.com>
-Date:   Mon, 4 Dec 2023 15:19:15 +0000
-User-Agent: Mozilla Thunderbird
-From:   John Garry <john.g.garry@oracle.com>
-Subject: Re: [PATCH 17/21] fs: xfs: iomap atomic write support
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-18-john.g.garry@oracle.com>
- <20231109152615.GB1521@lst.de>
- <a50a16ca-d4b9-a4d8-4230-833d82752bd2@oracle.com>
- <c78bcca7-8f09-41c7-adf0-03b42cde70d6@oracle.com>
- <20231128135619.GA12202@lst.de>
- <e4fb6875-e552-45aa-b193-58f15d9a786c@oracle.com>
- <20231204134509.GA25834@lst.de>
-Content-Language: en-US
-Organization: Oracle Corporation
-In-Reply-To: <20231204134509.GA25834@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO6P123CA0056.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:310::13) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C9CE6;
+        Mon,  4 Dec 2023 07:19:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701703186; x=1733239186;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7duCvxJohwRFrL2D1Xhx97UgdpUXIrQ+3gjQUf4KpDU=;
+  b=EzHSSCfBrGLaeYxU3Z570GQL1sa41ww1B+9PJEBtzVPVzcJlrnHCQbQX
+   9iDQSqH72wBShznTcs17F5EiwZaTMu5xLZ6uIOaLnJJZFixEZ2WwNKZVu
+   +PBGYYlkusQDxHbUolP1sYJCn0h220DHk5QQDdN71aAXzNqbITFI3Ia8Y
+   zi+IlejSyvBQlUQ0Yor1ExiiD4yL5drwAa0sC5nxfoxI770jyTA1tsO+s
+   3sBu+F6H8MnZqSOr57pny+N/12UaY0Bx6D1IIzWp+dPeFcA1zg1HN6KOK
+   1vfFD0KbLC1gC7rvc0oWyeZb3gjCg0iXpN07llo+8+CLO/WNqvzclyPDb
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="458069427"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="458069427"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 07:19:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1017890041"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="1017890041"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 07:19:39 -0800
+Received: from [10.212.98.74] (ssatyana-mobl2.amr.corp.intel.com [10.212.98.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 3925C580D4F;
+        Mon,  4 Dec 2023 07:19:38 -0800 (PST)
+Message-ID: <b4e39ac2-df3f-4ea4-bd12-62d61532f02f@linux.intel.com>
+Date:   Mon, 4 Dec 2023 10:19:36 -0500
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DS7PR10MB5928:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1bb691e6-7834-42fe-356b-08dbf4dc630d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0Abm/GwUqgn92jSKwarI0t1ASO0fR6BhkviJ7rfXm6alZsLaAaz7s/zumT47zHhvReYSg8wdM4P8Tv9So3e/C2rhfBhIEAh6on7rg3iyOeIP5qn99Jvyyu9COS2jWetseSnORI45T0sYXNO3JObkXqn5pxyJB9x9ciaY4T+amIw7edMexwi4YTiPHxQKESAU1CxaqZ5UHqUAXqcPRGCrAPn7iSNckTyZTDDvBjVCZOpmaV/Xiz2+sBtiPcrkv64P8zZy6ZOqtiX0UMq+aPYceUpvQt40aTIfYGZbdpudvA/eQxrT4iA8PJQo8uU8o6kZIYQwS9j2skaw0eTRVLvkP4y4ems6L1ts+sL4OP0AxC/fVbON9Q0yfCw72DjgXR5Fc1tONXvfgjXEjOEVFoK9w4gC2tZj/GBvZA3EHlkwUanKpLm7gzi9ATcvFGIx59yeASeTIeetEu07UKry5bkByeFImMqvxPHfd6jASjxzqRHmfpTLquG7yd5G0LFK1Ni6ORqJfWcV0bf3QA6xDo/VLKir+eCcWeQPEtisq4Js1BiRARGvwEfQhn1GPiibQTK1b8bpITJ+UECip56epn9bv+ZE/sJsvx5aPGwoLIia354lPxcwELLdMw5JzwpAwN/3fvwrEj1PD7ZVLQJqkmLrDQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(136003)(366004)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(26005)(478600001)(966005)(6486002)(83380400001)(36916002)(6666004)(6512007)(6506007)(53546011)(36756003)(2616005)(316002)(6916009)(66476007)(66946007)(66556008)(31686004)(38100700002)(5660300002)(4326008)(86362001)(2906002)(8936002)(8676002)(7416002)(31696002)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c0I5NTdFSzJqUmZqd3F0RDZQVzNVVUVFcEd3MzdOTnBiQzk1QjVuOFJPQzdO?=
- =?utf-8?B?a0RwKzByRkt2Nms1elVHY2J0R2FMdy8ybFVLeUJ6ZW9kdUs0akJXVlRsM3Rz?=
- =?utf-8?B?ZDdWOUE0QXZpVXpYVDl3Y0cwdUhEQUxBa0xtUG9vVEdnS0VPci9ObGdSWjdD?=
- =?utf-8?B?UCsrUWpkUTRpTk5QNE52bzNTUkNZQ2MyWk5xOVd0MEt0VG9rWTZwRzYwUS84?=
- =?utf-8?B?dlFLazAyQ3RkYnkxQlJhc2VrTnN6QVBhb05mSHhlMU1XM0ZnWHN3WTc3dG1J?=
- =?utf-8?B?S1paTmxyWkJXa0JtS1ZEemEwb3pUZWFwTVFDUHhOcmVkSGpuMXp3Vk1UU0hp?=
- =?utf-8?B?L3FzdnhWSHRlb2c4a0szUlV2Umh1dnZ4dWw2aGpLdW96N2NtZVlyd1ZjbEZD?=
- =?utf-8?B?VUQyYVlpc1o5cDRKQ3NUUmg2OFlXRkpQLzFaRFF2eXNkbmZmZko3SldxUVdZ?=
- =?utf-8?B?blJESEtYL1ZhVkQvU1ovMFVRMXJSbGE3b1JjYUlYbUhVTWo4S0FBVXJrTnoz?=
- =?utf-8?B?WXloN3czL1pzMWJCVWtQaWxBMEFkd1FkNzI0Vi9IYXRlK0t5N1B3RTl3ZHFQ?=
- =?utf-8?B?bWFNRlAzYytvdDRNTEN6eWM0ZkNDT25nSFR5RVc0N1NMY3dkTGRVRmFWMlVQ?=
- =?utf-8?B?MUNoNDR2cG9lSEVRbTljVE5JeGNnak9yaFcxODVkQ01IZWJCUDJIQnJyTjh1?=
- =?utf-8?B?Z0pON043V252ejl3czVlSUIwQ1J2ZFA0UUVydU1TV2tBa2lqdmJ5bGRVY2U1?=
- =?utf-8?B?VGxadmZJVXJpcnZMZ2YyVVgwcmhFaG9PZXR4UUZoVmx0SmFCamNkc2pYenJU?=
- =?utf-8?B?Tk9GTTFmaFErMFNPT2hKRmpoVVVMbjZMYzA1U2NCMnpqejE0OUhLTnZtbzJ6?=
- =?utf-8?B?TEhwS2hUWTZNVkcyZjdkYis2TGpVMUxtS3lzRDZHeVNSWmZQWnYwblk0cE5D?=
- =?utf-8?B?VzE4VXV5dzBaNGZmaGYyVEJwRWtpajJmdjJWY2dCcHFsQkI2QXNaMS9mdllI?=
- =?utf-8?B?QlUrMy9IVkdWeWY5bmVYM1dIcHM1QXV0NlFaOTRpY1YzcHFncGdNRXFWdzVu?=
- =?utf-8?B?WENRRVNySUM0aGJHRlFwSnd2YnRaeFBFMU13a1E4bUJOZUVSNU4yYzNGL1NV?=
- =?utf-8?B?WjlmREJGR2pNQThUayt2ZU43MXFRQ1ludGwycHhZemFlaXlLN21Ja0piVWxT?=
- =?utf-8?B?VDZNSFNsYzA5K0Q5aWhIVHFDZnVMNmcycnpTYUdHNjJFTnhXUXpaRmZmWTlq?=
- =?utf-8?B?R2w3SHdKeGRtZmN5U0YzZXFsRWp6NStEUXpJY1hyaEYzUGZGS3lDOXVLMlE3?=
- =?utf-8?B?Nm51YXNpQitNVVh5Z0dQRlo3SDE2eThPNVZNNkExV1N2WlFKYmNzejVxaTdi?=
- =?utf-8?B?M3VhU0VrdVl2Z3FQdDc2R2FEdEV5U0hoc2lIZG1ocDBzcldqTkUwQk5CRStU?=
- =?utf-8?B?Mm5nbitYWG1oMlVLN21XUjUrcHFpRDNOdERNNHFXallPOFE4UTRPdTkvc2ll?=
- =?utf-8?B?c2Vwb00rZXVsclV3Z3B5Zkk4RWUwRVBWMCtZanMyUDg4QlRTSXZxL3F5RG9H?=
- =?utf-8?B?UCtRcEcySzN5WUliNmx4WUlQVVV6Q2RZZlQwVE4ycEpyaHllVmNIeFRXcnJq?=
- =?utf-8?B?bVo3dGdHd1FFeDhMeDFiRHJPZ1k1enZCWmdOMkNKWG5GWGRSNFNLcHkwN3A2?=
- =?utf-8?B?NXIzYnEzZXJ6bjBmMHBoeGJVWmJreEpBTDhhejN4ZkQ1U2E3K2IrQkcxL25u?=
- =?utf-8?B?WmR5bTFEcUI5NTArenhGQ3hqaUNGc1RCU2RJdE1vamRtZkxYSFBiSHhhQm9j?=
- =?utf-8?B?VENpbXdFaiszZFN1elRFUEdYNWFlTklBKzM1eFc2SmxLTzh1QUhZYm9XUWp2?=
- =?utf-8?B?d3RXUkh2cG5aVWpWd3BNN2hTdlFielQ5MUtYbkVyU3l3ajhHb3pDSVNiakdy?=
- =?utf-8?B?c1pGb0MyU1FwaHV0NmdhTXAvSHJxRWpnT0Q1Sm9TUy9UUnYzQk9PQTI0Szc1?=
- =?utf-8?B?L1R6bXVsb0ZNVllhZnNvNEM3Z3hWUTl0VC9QY3RLVUlWVjJGTTdCNzV3ZU5w?=
- =?utf-8?B?bTd2Zyt4Slc1d2pFdW43blcvM1l5VkJpYm15S2IwMkRaNnQwRFpmNE5kUjk0?=
- =?utf-8?Q?LscVRwJ2BpvNCNwBk1aM/tNd2?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?aVFkRTlSOW9WQlk5bEtNNmZCN0R6RStnMzJWVkxsVVJGS1NuZE5La2dVVk1x?=
- =?utf-8?B?NzFiMUNyZ255WXRmYXVhUkJ2OG1OaW5rNFEzbVpaeHlVNk83bWdCeXBObzJj?=
- =?utf-8?B?RjFhSWNCNHZ4Um9YUDloY0tYc1RMRUVXZEpZTWNhTE5qWFFWQnZpQllTSVZo?=
- =?utf-8?B?YUtMMkNiVkRQMXVCUE9HMncxTVZNaEg1RnU4WVNSTlM4bUxrMGIwMkMvVkpr?=
- =?utf-8?B?QzBHRitpekdmTlJlSlJQTWFkeE84UG9GOFMvQzNwVmxPRFpPbWtkR29SWmdB?=
- =?utf-8?B?bTZiNmpQVmtnNW4vNTF1WGdXRkJaeHRTeG1KdjhGNWhuTmRMYmxkRWVTb3Ax?=
- =?utf-8?B?bkM2N1dha0xlN3dxMG1aTklOSjhaM0cycVdJMTdVMUlVSDdFL2hhK0NGaDQv?=
- =?utf-8?B?TVlOd2hrdjNaeXpxNGs0UGUyY1JDMzNXcmJqdHA0N2JOdWVCZzZwbVBMSlp3?=
- =?utf-8?B?VHpzdFBZOXhvd2tGWmFqRURRSDFhdWRzdDFXb25ReWpRbGdEMElWYVJoVTNW?=
- =?utf-8?B?c0IxdTlxNW5ZMU5GK01XNHRZSGZ6NnUzYi9DZCs5OG5OVXlvUm1oTmpMQ25Z?=
- =?utf-8?B?byt5dFN1SnNLVlY1U0ZMSlZOdGVPWU5ZbTEvL3ZYT3BTcDRxWmVRRjFQRnRI?=
- =?utf-8?B?RTB5U1dOajFBcUpnckMwTk4xZWZubSs3K0Q2WDZxdHRVaWZSTEdUeHpOSFBG?=
- =?utf-8?B?OUlnWmZhaE9lTzdSanZNVlV2SHNXS0NPMGQ1REcxU05kVUxCTHY1V1pFSzVF?=
- =?utf-8?B?VW1BQ0xBQ1EwZkNDWE5JeWJ1cXY3ODBIS2hYL3FZYTlzMnh6WUVTeWZSSXVp?=
- =?utf-8?B?YUJITG1pejA2UzNJWWswNW1MY0lvcHAyUnZWSHRpdmxwdFZuOHArOVhuN0JE?=
- =?utf-8?B?UnU3SFJxUFcwYjdtVHVLbGlvZnc2QzAraTBOT2JZL1RsSEd0MzFNcHZsU2pO?=
- =?utf-8?B?UmlQVlF4eUhtTXN5Q1J1TW1HRDJXTWRrMzFIb3ZHVjJKVGUvZ0xOekpsNDZr?=
- =?utf-8?B?Y212MmVEZkJXRExBaS9lTmtNcUEwU3JrdWtlV0ZxRWU0Tnc2SGNMaDI4OU1J?=
- =?utf-8?B?cno2UklSYU1PUkJwblQ2SlY3Y2RDVFkwSld0QkZndS9yYm1GVXRGU3R6MENu?=
- =?utf-8?B?QXVqNGphSHdZOEdQR2JQZGEyMGdyNitGb1pmMGw4aDlBMU5mVjNmQVdpVkpZ?=
- =?utf-8?B?WU1hb2lqeW5vazVBUGNjR0dWSEE0WERab1kxQWI0OEhqOENxeVphcHZ5R0dz?=
- =?utf-8?B?YlRoaUQ1NXF5TmpPbUlnMk5CQ295REcvenlidUxZSXFPbFhaMGRZK1ptdnVm?=
- =?utf-8?B?OHdUZi9GOEordFNhbGFFcjBxWDhGTUZrb1Mvd281N0ZwMnBlMjBYUVNsUlpj?=
- =?utf-8?B?enE4YUc3c0IvV0VzVjMxMGZnTWpoSnd6UnJkdU9nK3h3Kzcwb2pxdkUzMENO?=
- =?utf-8?B?bTRJVjBLbmNHaHlxbW51NndQUXNBK2c3bWRIV3JBPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1bb691e6-7834-42fe-356b-08dbf4dc630d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 15:19:19.7071
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aiCW0Ldj54Ug3pcZPASH1Oyjv34cSGJB8p/lfAIxytxjMusRnOHYQIAT3daFkIsC9ObvVMzvBqHxV9TpGctA9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5928
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_14,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 adultscore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040115
-X-Proofpoint-GUID: SlkNmeT4xmHaCe-VR9s6IAvIiOtMc-iS
-X-Proofpoint-ORIG-GUID: SlkNmeT4xmHaCe-VR9s6IAvIiOtMc-iS
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86/pmu: Prevent any host user from enabling PEBS
+ for profiling guest
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ian Rogers <irogers@google.com>
+References: <20231129095055.88060-1-likexu@tencent.com>
+ <6c4bd247-1f81-4b43-9e21-012f831d26b8@linux.intel.com>
+ <fd847e77-0510-48db-ad0b-5946458e2fb3@gmail.com>
+ <84903edf-96a7-40da-8bbb-52511b4ec893@linux.intel.com>
+ <df0b75de-a984-46fe-80e9-3c19b651883f@gmail.com>
+ <444c0244-e377-4b4d-b3f0-a9404f013b87@linux.intel.com>
+ <812822c4-8f24-4fc5-81eb-335abe46baa5@gmail.com>
+Content-Language: en-US
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <812822c4-8f24-4fc5-81eb-335abe46baa5@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 13:45, Christoph Hellwig wrote:
-> On Tue, Nov 28, 2023 at 05:42:10PM +0000, John Garry wrote:
->> ok, fine, it would not be required for XFS with CoW. Some concerns still:
->> a. device atomic write boundary, if any
->> b. other FSes which do not have CoW support. ext4 is already being used for
->> "atomic writes" in the field - see dubious amazon torn-write prevention.
-> 
-> What is the 'dubious amazon torn-write prevention'?
 
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/storage-twp.html
 
-AFAICS, this is without any kernel changes, so no guarantee of unwanted 
-splitting or merging of bios.
+On 2023-12-04 3:32 a.m., Like Xu wrote:
+> 
+> 
+> On 1/12/2023 10:38 pm, Liang, Kan wrote:
+>>
+>>
+>> On 2023-11-30 10:59 p.m., Like Xu wrote:
+>>> On 30/11/2023 11:49 pm, Liang, Kan wrote:
+>>>>
+>>>>
+>>>> On 2023-11-30 2:29 a.m., Like Xu wrote:
+>>>>> On 29/11/2023 10:38 pm, Liang, Kan wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2023-11-29 4:50 a.m., Like Xu wrote:
+>>>>>>> From: Like Xu <likexu@tencent.com>
+>>>>>>>
+>>>>>>> Stop using PEBS counters on host to profiling guest. Limit the
+>>>>>>> range of
+>>>>>>> enabled PEBS counters to only those counters enabled from the guest
+>>>>>>> PEBS
+>>>>>>> emulation perspective.
+>>>>>>>
+>>>>>>> If there is a perf-record agent on host that uses perf-tools events
+>>>>>>> like
+>>>>>>> "cpu-cycles:GP" (G for attr.exclude_host, P for max precise event
+>>>>>>> counter)
+>>>>>>> to capture guest performance events, then the guest will be hanged.
+>>>>>>> This is
+>>>>>>> because Intel DS-based PEBS buffer is addressed using the 64-bit
+>>>>>>> linear
+>>>>>>> address of the current {p/v}CPU context based on MSR_IA32_DS_AREA.
+>>>>>>>
+>>>>>>> Any perf user using PEBS counters to profile guest on host is, in
+>>>>>>> perf/core
+>>>>>>> implementation details, trying to set bits on
+>>>>>>> cpuc->intel_ctrl_guest_mask
+>>>>>>> and arr[pebs_enable].guest, much like the guest PEBS emulation
+>>>>>>> behaviour.
+>>>>>>> But the subsequent PEBS memory write, regardless of whether guest
+>>>>>>> PEBS is
+>>>>>>> enabled, can overshoot guest entry and corrupt guest memory.
+>>>>>>>
+>>>>>>> Profiling guest via PEBS-DS buffer on host is not supported at this
+>>>>>>> time.
+>>>>>>> Fix this by filtering the real configured value of
+>>>>>>> arr[pebs_enable].guest
+>>>>>>> with the emulated state of guest enabled PEBS counters, under the
+>>>>>>> condition
+>>>>>>> of none cross-mapped PEBS counters.
+>>>>>>
+>>>>>> So the counter will be silently disabled. The user never knows why
+>>>>>> nothing is sampled.
+>>>>>> Since we don't support the case, profiling guest via PEBS-DS
+>>>>>> buffer on
+>>>>>> host. Maybe we should error out when creating the event. For example
+>>>>>> (not tested),
+>>>>>
+>>>>> Test failed.
+>>>>>
+>>>>>>
+>>>>>> diff --git a/arch/x86/events/intel/core.c
+>>>>>> b/arch/x86/events/intel/core.c
+>>>>>> index 3871267d3237..24b90c70737f 100644
+>>>>>> --- a/arch/x86/events/intel/core.c
+>>>>>> +++ b/arch/x86/events/intel/core.c
+>>>>>> @@ -3958,6 +3958,10 @@ static int intel_pmu_hw_config(struct
+>>>>>> perf_event
+>>>>>> *event)
+>>>>>>             if ((event->attr.config & INTEL_ARCH_EVENT_MASK) ==
+>>>>>> INTEL_FIXED_VLBR_EVENT)
+>>>>>>                 return -EINVAL;
+>>>>>>
+>>>>>> +        /* Profiling guest via PEBS-DS buffer on host is not
+>>>>>> supported. */
+>>>>>> +        if (event->attr.exclude_host)
+>>>>>> +            return -EINVAL;
+>>>>>> +
+>>>>>
+>>>>> Guest PEBS emulation also sets this bit, a typical call stack looks
+>>>>> like:
+>>>>>
+>>>>>       intel_pmu_hw_config+0x441/0x4d0
+>>>>>       hsw_hw_config+0x12/0xa0
+>>>>>       x86_pmu_event_init+0x98/0x370
+>>>>>       perf_try_init_event+0x47/0x130
+>>>>>       perf_event_alloc+0x446/0xeb0
+>>>>>       perf_event_create_kernel_counter+0x38/0x190
+>>>>>       pmc_reprogram_counter.constprop.17+0xd9/0x230 [kvm]
+>>>>>       kvm_pmu_handle_event+0x1a6/0x310 [kvm]
+>>>>>       vcpu_enter_guest+0x1388/0x19b0 [kvm]
+>>>>>       vcpu_run+0x117/0x6c0 [kvm]
+>>>>>       kvm_arch_vcpu_ioctl_run+0x13d/0x4d0 [kvm]
+>>>>>       kvm_vcpu_ioctl+0x301/0x6e0 [kvm]
+>>>>>
+>>>>
+>>>> Oh right, the event from the KVM guest is also exclude_host.
+>>>> So we should only error out with the non-KVM exclude_host PEBS event.
+>>>>
+>>>>> Alternatively, this path is taken when using PEBS-via-PT to profile
+>>>>> guests on host.
+>>>>
+>>>> There is a is_pebs_pt(event), so we can skip the PEBS-via-PT.
+>>>>
+>>>> Seems we just need to distinguish a KVM event and a normal host event.
+>>>> I don't have a better way to do it except using
+>>>> event->overflow_handler_context, which is NULL for a normal host event.
+>>>
+>>> The assumption that event->overflow_handler_context == NULL is unsafe,
+>>> considering .overflow_handler_context hook has its acclaimed generality.
+>>>
+>>
+>> Yes, I agree it's very hacky.
+>>
+>> What we need here is a way to distinguish the KVM guest request from the
+>> others. How about the PF_VCPU flag?
+>>
+>>       if (event->attr.exclude_host &&
+>>           !is_pebs_pt(event) &&
+>>           (!(event->attach_state & PERF_ATTACH_TASK) ||
+>> !(current->flags &
+>> PF_VCPU))
+>>               return -EINVAL;
+> 
+> Unfortunately, the tests are not passed w/ the above diff.
 
-Anyway, there will still be !CoW FSes which people want to support.
+What's the exact failed perf command?
+
+Is it because that the KVM guest is mistakenly killed or the host
+command is not detected?
+
+> But it's good to know that there is PF_VCPU and more things to play
+> around with.
+> 
+> The AMD IBS also takes the precise path, but it puts the recorded values
+> on group of MSRs instead of the linear address-based memory.
+
+The check is in the intel_pmu_hw_config(). So AMD isn't impacted.
 
 > 
->> About b., we could add the pow-of-2 and file offset alignment requirement
->> for other FSes, but then need to add some method to advertise that
->> restriction.
-> 
-> We really need a better way to communicate I/O limitations anyway.
-> Something like XFS_IOC_DIOINFO on steroids.
-> 
->> Sure, but to me it is a concern that we have 2x paths to make robust a.
->> offload via hw, which may involve CoW b. no HW support, i.e. CoW always
-> 
-> Relying just on the hardware seems very limited, especially as there is
-> plenty of hardware that won't guarantee anything larger than 4k, and
-> plenty of NVMe hardware without has some other small limit like 32k
-> because it doesn't support multiple atomicy mode.
+> The root cause of this issue is the hardware limitation, just like what
+> we did
+> in the commit 26a4f3c08de4 ("perf/x86: disable PEBS on a guest entry"),
+> a similar fix should also belong in the context of directly configuring
+> VMX-switch related hardware configuration values.
+>
 
-So what would you propose as the next step? Would it to be first achieve 
-atomic write support for XFS with HW support + CoW to ensure contiguous 
-extents (and without XFS forcealign)?
+The above fix is different than this case. IIRC, It's caused by a ucode
+issue. So once there is a guest, SW has to explicitly disable the PEBS.
+Otherwise, the guest crashes even the host doesn't intend to profile the
+guest.
 
-> 
->> And for no HW support, if we don't follow the O_ATOMIC model of committing
->> nothing until a SYNC is issued, would we allocate, write, and later free a
->> new extent for each write, right?
-> 
-> Yes. Then again if you do data journalling you do that anyway, and as
-> one little project I'm doing right now shows that data journling is
-> often the fastest thing we can do for very small writes.
-
-Ignoring FSes, then how is this supposed to work for block devices? We 
-just always need HW support, right?
+While the case in the patch is apparently a violation of the current
+rules. I think it's better to detect it and error out early.
 
 Thanks,
-John
+Kan
 
+> I haven't find a better location than intel_guest_get_msrs().
+> 
+>>
+>>
+>>> I understand your motivation very well, but this is not the right move
+>>> (based on my previous history of being sprayed by Peter). For perf/core,
+>>> in-kernel perf_events should be treated equally, and the semantics of
+>>> kvm_pmu should only be accounted when a perf/core API is only used for
+>>> guest-only path. In this case for KVM perf_events,
+>>> intel_guest_get_msrs()
+>>> and x86_pmu_handle_guest_pebs() have this context.
+>>>
+>>>>
+>>>> diff --git a/arch/x86/events/intel/core.c
+>>>> b/arch/x86/events/intel/core.c
+>>>> index a968708ed1fb..c93a2aaff7c3 100644
+>>>> --- a/arch/x86/events/intel/core.c
+>>>> +++ b/arch/x86/events/intel/core.c
+>>>> @@ -3958,6 +3958,16 @@ static int intel_pmu_hw_config(struct perf_event
+>>>> *event)
+>>>>            if ((event->attr.config & INTEL_ARCH_EVENT_MASK) ==
+>>>> INTEL_FIXED_VLBR_EVENT)
+>>>>                return -EINVAL;
+>>>>
+>>>> +        /*
+>>>> +         * Profiling guest via PEBS-DS buffer on host is not
+>>>> supported.
+>>>> +         * The event->overflow_handler_context is to distinguish a KVM
+>>>> +         * event and a normal host event.
+>>>> +         */
+>>>> +        if (event->attr.exclude_host &&
+>>>> +            !is_pebs_pt(event) &&
+>>>> +            !event->overflow_handler_context)
+>>>> +            return -EINVAL;
+>>>> +
+>>>>            if (!(event->attr.freq || (event->attr.wakeup_events &&
+>>>> !event->attr.watermark))) {
+>>>>                event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
+>>>>                if (!(event->attr.sample_type &
+>>>>
+>>>>>
+>>>>> The status of the guest can only be queried in the NMI handler and
+>>>>> the func
+>>>>> intel_guest_get_msrs() in the perf/core context, where it's easier
+>>>>> and more
+>>>>> centrally to review this part of changes that affects vPMU for corner
+>>>>> cases.
+>>>>>
+>>>>> Maybe adding print info on the perf-tool side would help.
+>>>>>
+>>>>> For perf-tool users, it will get 0 number of sample for
+>>>>> "cpu-cycles:GP"
+>>>>> events,
+>>>>> just like other uncounted perf-tool events.
+>>>>
+>>>> perf-tool would never know such details, e.g., whether the platform
+>>>> supports PEBS-DS or other PEBS method. It's hard to tell if the 0 is
+>>>> because of an unsupported hardware or nothing sampled in the guest.
+>>>
+>>> It kind of looks like this use case to me:
+>>>
+>>>      perf record -e cycles -e cpu/event=0xf4,umask=0x10/ ./workload #
+>>> ICX
+>>>
+>>> # Total Lost Samples: 0
+>>> #
+>>> # Samples: 0  of event 'cpu/event=0xf4,umask=0x10/'
+>>> # Event count (approx.): 0
+>>>
+>>> A end-user has to check if the event-umask combination is supported
+>>> or not,
+>>> or nothing sampled for the workload. Is there any room for
+>>> improvement in
+>>> perf-tool to reduce the pain of this part ? If any, the same thing could
+>>> be applied
+>>> to cpu-cycles:GP, isn't it ?
+>>
+>> I don't think we can expect the end user knows such details. Most of
+>> them may even don't know what's PEBS-via-DS.
+> 
+> Maybe the following generic reminder helps:
+> 
+> # Total Lost Samples: 0
+> # Note: the event is not counted or unsupported.
+> #
+> # Samples: 0  of event 'cpu/event=0xf4,umask=0x10/'
+> # Event count (approx.): 0
+> 
+>>
+>> Thanks,
+>> Kan
+>>
+>>>
+>>>>
+>>>> Thanks,
+>>>> Kan
+>>>>>
+>>>>>>             if (!(event->attr.freq || (event->attr.wakeup_events &&
+>>>>>> !event->attr.watermark))) {
+>>>>>>                 event->hw.flags |= PERF_X86_EVENT_AUTO_RELOAD;
+>>>>>>                 if (!(event->attr.sample_type &
+>>>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Kan
+>>>>>>
+>>>>>>>
+>>>>>>> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>>>>>> Fixes: c59a1f106f5c ("KVM: x86/pmu: Add IA32_PEBS_ENABLE MSR
+>>>>>>> emulation for extended PEBS")
+>>>>>>> Signed-off-by: Like Xu <likexu@tencent.com>
+>>>>>>> ---
+>>>>>>>     arch/x86/events/intel/core.c | 8 +++++++-
+>>>>>>>     1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/arch/x86/events/intel/core.c
+>>>>>>> b/arch/x86/events/intel/core.c
+>>>>>>> index a08f794a0e79..17afd504c35b 100644
+>>>>>>> --- a/arch/x86/events/intel/core.c
+>>>>>>> +++ b/arch/x86/events/intel/core.c
+>>>>>>> @@ -4103,13 +4103,19 @@ static struct perf_guest_switch_msr
+>>>>>>> *intel_guest_get_msrs(int *nr, void *data)
+>>>>>>>             .guest = pebs_mask & ~cpuc->intel_ctrl_host_mask,
+>>>>>>>         };
+>>>>>>>     +    /* In any case, clear guest PEBS bits first. */
+>>>>>>> +    arr[global_ctrl].guest &= ~arr[pebs_enable].guest;
+>>>>>>> +
+>>>>>>>         if (arr[pebs_enable].host) {
+>>>>>>>             /* Disable guest PEBS if host PEBS is enabled. */
+>>>>>>>             arr[pebs_enable].guest = 0;
+>>>>>>>         } else {
+>>>>>>>             /* Disable guest PEBS thoroughly for cross-mapped PEBS
+>>>>>>> counters. */
+>>>>>>>             arr[pebs_enable].guest &=
+>>>>>>> ~kvm_pmu->host_cross_mapped_mask;
+>>>>>>> -        arr[global_ctrl].guest &= ~kvm_pmu->host_cross_mapped_mask;
+>>>>>>> +
+>>>>>>> +        /* Prevent any host user from enabling PEBS for profiling
+>>>>>>> guest. */
+>>>>>>> +        arr[pebs_enable].guest &= (kvm_pmu->pebs_enable &
+>>>>>>> kvm_pmu->global_ctrl);
+>>>>>>> +
+>>>>>>>             /* Set hw GLOBAL_CTRL bits for PEBS counter when it runs
+>>>>>>> for guest */
+>>>>>>>             arr[global_ctrl].guest |= arr[pebs_enable].guest;
+>>>>>>>         }
+>>>>>>>
+>>>>>>> base-commit: 6803fb00772cc50cd59a66bd8caaee5c84b13fcf
+> 
