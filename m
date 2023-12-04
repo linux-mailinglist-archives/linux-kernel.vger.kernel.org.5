@@ -2,147 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89DA803EE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC5E803EE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbjLDT7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:59:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
+        id S1345117AbjLDUBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:01:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231501AbjLDT7r (ORCPT
+        with ESMTP id S230317AbjLDUBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:59:47 -0500
-Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55EBC4;
-        Mon,  4 Dec 2023 11:59:52 -0800 (PST)
-Received: from sunspire (unknown [188.24.94.216])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by mail.subdimension.ro (Postfix) with ESMTPSA id 2EBD128EE6F;
-        Mon,  4 Dec 2023 19:59:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-        s=skycaves; t=1701719991;
-        bh=+nDCKIJsNn3sdyyepy9COQh7EZ5oRjjTsJna287/22o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=MD8ZZlFKvtWImQs7JJwrKccj+k60ADAYaEZ7WIw77iFiNWTb+l4QyeYz/AB9vjvI+
-         c/yESpc6WACDK1juAlgg9Bo2IR8LlL0DDogJpo0htY0W6HGaUCQeD9Jz24/4/hVKZ+
-         1ofZCbE9OELvU31DSTWaMS4Ly2deAvBofsl3Hsyk=
-Date:   Mon, 4 Dec 2023 21:59:49 +0200
-From:   Petre Rodan <petre.rodan@subdimension.ro>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v6 2/2] iio: pressure: driver for Honeywell HSC/SSC series
-Message-ID: <ZW4vtQrmgUu29dP6@sunspire>
-References: <20231129170425.3562-1-petre.rodan@subdimension.ro>
- <20231129170425.3562-2-petre.rodan@subdimension.ro>
- <ZWdzz7VzCW5ctend@smile.fi.intel.com>
- <ZWeNNMfqKquDYI9X@sunspire>
- <ZWiPDlNJCbUAtIy8@smile.fi.intel.com>
- <ZWtWAPcJTNrD9wgv@sunspire>
- <ZW3Mvds9LFiK7aEz@smile.fi.intel.com>
+        Mon, 4 Dec 2023 15:01:07 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC77CD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:01:13 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54c79cca895so2559a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 12:01:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701720071; x=1702324871; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z4qUKdBMoTlxHYFiskzAv8nyrsjpTSREfKpRVBZmhZs=;
+        b=Th5CH+blKchcjlPg5H0iQyaw1E0Dc6XFMO2YZGfDy/gegzdrJV9MY8HsyBFSbVjkWz
+         xIvwuBOxwzs4NCh1XZsISIxN6XSp/hwQ/yNkKH5ZzIa3P6OqFmKeR0AXsH81/VticX6q
+         ebKskBIOZYmDj2stBTe5yvR/Df2u2U2Y+5fZJ7ekCrll2c7pFe1xnMSB7NeEfFBC9a+i
+         CxcNx2DzT5xhZ/0dpNcALRJUAspvjlEto6HOiYiVy3NZtfIz9vVRo5Qn8rDv2Qjc6uzG
+         51g4/5VW6vzAeY0+VWfJD+bJe6RMgYiZB2YcDn+IGedSlNmdGSHpBdlJAJY1fWjaSJAk
+         9Aiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701720071; x=1702324871;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z4qUKdBMoTlxHYFiskzAv8nyrsjpTSREfKpRVBZmhZs=;
+        b=EJkZSUfq2/wGjYI3H6u6FSPLMfTXxYfhXdC3u/pPlWuJlzqocvKrdS8QGxv21qU9YC
+         nx5p0vB+nkSABKTgKlwlJIhn0/S/6ZhPxzAfNn8aaKhJR9sGNkI5Cy7oT+J7vu2cCYIF
+         NPmsf4eF/QZBDM7RG4esYgofq72SHWwrCh0vZmxeWZFT79Cm4ksJ3a2jl46XVpw0omzH
+         tR876qw4nA28vY1DPzln8aZ9b/rictzcnTYmXIAgOAecv/inQ7zsdQUfffDmhajIptqb
+         hEmbKk/so5x0AHa+A25w6XJHe0x7h494RlXnX2YFOnVhelkmH9bs/5pm3MxZHMYJsboR
+         STIQ==
+X-Gm-Message-State: AOJu0YwlOsNt5mPF2NqGnHb2TmOBjW/spkjGpzrtdmy4sPfU+3IExsN5
+        26pkOaHbv6vn48KFuppGeAPBc8ZURudF0St/4llefA==
+X-Google-Smtp-Source: AGHT+IGCev6DWYvqpogCA90ucI81NLgaEa0nJpCTgU96onBY6t9QMetZ9gl1hjVPETCRlrC77Ev8Q3QIKkavLVKHwOQ=
+X-Received: by 2002:a50:99de:0:b0:54a:ee8b:7a99 with SMTP id
+ n30-20020a5099de000000b0054aee8b7a99mr332954edb.0.1701720071324; Mon, 04 Dec
+ 2023 12:01:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0roFwDt5J5hwuJL+"
-Content-Disposition: inline
-In-Reply-To: <ZW3Mvds9LFiK7aEz@smile.fi.intel.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <ZW4piNbx3IenYnuw@debian.debian>
+In-Reply-To: <ZW4piNbx3IenYnuw@debian.debian>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 4 Dec 2023 21:01:00 +0100
+Message-ID: <CANn89iLww-JGAuyD4XFvpn1gy52hgHQwHE1o-UvHu6sU3-6ygw@mail.gmail.com>
+Subject: Re: [PATCH v4 net-next] packet: add a generic drop reason for receive
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
+        Jesper Brouer <jesper@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 4, 2023 at 8:33=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote:
+>
+> Commit da37845fdce2 ("packet: uses kfree_skb() for errors.") switches
+> from consume_skb to kfree_skb to improve error handling. However, this
+> could bring a lot of noises when we monitor real packet drops in
+> kfree_skb[1], because in tpacket_rcv or packet_rcv only packet clones
+> can be freed, not actual packets.
+>
+> Adding a generic drop reason to allow distinguish these "clone drops".
+>
+> [1]: https://lore.kernel.org/netdev/CABWYdi00L+O30Q=3DZah28QwZ_5RU-xcxLFU=
+K2Zj08A8MrLk9jzg@mail.gmail.com/
+> Fixes: da37845fdce2 ("packet: uses kfree_skb() for errors.")
+> Suggested-by: Eric Dumazet <edumazet@google.com>
+> Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> ---
 
---0roFwDt5J5hwuJL+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-hello,
-
-On Mon, Dec 04, 2023 at 02:57:33PM +0200, Andy Shevchenko wrote:
-> On Sat, Dec 02, 2023 at 06:06:24PM +0200, Petre Rodan wrote:
-> > On Thu, Nov 30, 2023 at 03:33:02PM +0200, Andy Shevchenko wrote:
-> > > On Wed, Nov 29, 2023 at 09:12:52PM +0200, Petre Rodan wrote:
-> > > > On Wed, Nov 29, 2023 at 07:24:31PM +0200, Andy Shevchenko wrote:
-> > > >=20
-> > > > 437:  ret =3D device_property_read_string(dev, "honeywell,pressure-=
-triplet",
-> > > > 					&triplet);
-> > > > [..]
-> > > > 455:	ret =3D match_string(hsc_triplet_variants, HSC_VARIANTS_MAX,
-> > > > 						triplet);
-> > > > 		if (ret < 0)
-> > > > 			return dev_err_probe(dev, -EINVAL,
-> > > > 				"honeywell,pressure-triplet is invalid\n");
-> > > >=20
-> > > > 		hsc->pmin =3D hsc_range_config[ret].pmin;
-> > > > 		hsc->pmax =3D hsc_range_config[ret].pmax;
-> > > >=20
-> > > > triplet is got via device_property_read_string(), is there some oth=
-er property
-> > > > function I should be using?
-> > >=20
-> > > I think I mentioned that API, but for your convenience
-> > > device_property_match_property_string().
-> >=20
-> > one of us is not sync-ed with 6.7.0-rc3 :)
->=20
-> No, one of us is not synced with subsystem "for-next", which in this case
-> is IIO "togreg" (IIRC) and it definitely has the above mentioned API.
-
-v7 still contains the match_string().
-that is the API available in -current (6.7.0-rcx), which is the version you
-asked me to use a few weeks back.
-
-whenever your new API call will be merged (6.8+ according to your email exc=
-hange
-with Jonathan) into -current I will provide a patch.
-
-best regards,
-peter
-
->=20
-> --=20
-> With Best Regards,
-> Andy Shevchenko
->=20
->=20
->=20
-
---=20
-petre rodan
-
---0roFwDt5J5hwuJL+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE2Ap/wXYVGTXsPl+pzyaZmYROfzAFAmVuL7UACgkQzyaZmYRO
-fzB4xxAAg4++c2EfVeyasAxqVyaxt0/cEt/RDdKBiDUwn4NyAhTdDWslAzGbTssB
-K1Kcp9IwHVjLJ59Rgni3z2jlTbMQmpxAfYdMYfCgK6C0LfcRVIqdW+E1DzrZMkJA
-dQ2folIi3VBciFDNm6uezx1mX5qtpUYL5jgkOdxwP62K4VrFUHPz1UmCxEbZFIZj
-9ZHnkZQnp+teHbKl/CI3LFpOerzN3IOOtqqeWoy1i+c/wERq2JsIDgVZUjcmHPaW
-rShXD1Zfc3tEApzb0oqiboxVOHM5iQTZUwngR7trZrPoJFd6gns4FPv1xRTx//fL
-unkhZM7nqk83OUxuWnGx0JMya/gBNUSe/JxTQCiqALLwjYt//ApsXkiZetkaGL8J
-m27ELfYtC0eLjRHYS1tNRs07EO0JRMZxuhKoc4YUMfAnp4EkzFYF7h3foxhnTZrH
-Wk3pT3wmAhr6YIeHSFetJfcXacFnqxvKTHPFzd3XgJFdMJMuO/UJdknYl1vSCqSM
-ZoVPKugLgiWvCdLxr8etH3vIqdsoMvYlpmGRI6xNSVYftg98UBsY2KBmGwApl1xt
-d260zwVVxB49DgsjSRL4zXsysciw+QdJI1MF5djEMblR34f/owfjeGybGhGn3MR6
-w09EzwEJkLiTanx8PxLKTCmWOblXtfFcPrfSy0YfVH6iJQHwsb8=
-=aQ99
------END PGP SIGNATURE-----
-
---0roFwDt5J5hwuJL+--
+Reviewed-by: Eric Dumazet <edumazet@google.com>
