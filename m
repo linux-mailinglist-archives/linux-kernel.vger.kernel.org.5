@@ -2,150 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75615803F0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E0F803F0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbjLDUKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
+        id S233573AbjLDULn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:11:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbjLDUKf (ORCPT
+        with ESMTP id S229983AbjLDULl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:10:35 -0500
-Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:c0c:51f3::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60780CD;
-        Mon,  4 Dec 2023 12:10:41 -0800 (PST)
-MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-        t=1701720639;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WaBKyZYjaJtgWFGIGCrbCOxg1wbzLZEM0lX/acM3Eu4=;
-        b=NyimGtKF40X/eyneyQwjvGAfs8vHIL9DGnFCDfkXzfMZrxGpjI8gtBwkgZMwwNFUiSHPDM
-        UrdaTLTKzN462kra74wKYVdGu5ZwJctWbKiRdNoZUtiiBYGf1hv7QmrEy22stV3R502y+u
-        OU+Dh39brqo9Nfy5XPDyObLfBKVbz+e8eLy9PTRaHQBJ++cnnV4GZBBptnpR7uM0YHDnFT
-        G7d6ZvvuUlRhuk9ZVySAs/ZB4QUgmiEXk+tE6RziliHj5MdTnm2NkHklljo+GUvWWB8DVD
-        uwaGhJ8NZY98CoNHjuumC6AC3YRU9pFXJJRtH6Fg4J4qZoPFPrgRktFYXGNcGg==
-Date:   Mon, 04 Dec 2023 21:10:39 +0100
-From:   Dragan Simic <dsimic@manjaro.org>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     heiko@sntech.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jay.xu@rock-chips.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] arm64: dts: rockchip: add gpio alias for gpio dt
- nodes
-In-Reply-To: <56daeead-1d35-44bb-00c0-614b84a986de@gmail.com>
-References: <89f2a229-9f14-d43f-c53d-5d4688e70456@gmail.com>
- <56daeead-1d35-44bb-00c0-614b84a986de@gmail.com>
-Message-ID: <87fcf1ed7d10c879bb0c8aa44f004dd5@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-        auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 15:11:41 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B78111
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:11:48 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d1ed4b268dso81180927b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 12:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701720707; x=1702325507; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YpOU2ooCLv1IE731eabYKj790tbuwogyFPv+sco5TvQ=;
+        b=Wvoe5OiGw4HQ7F6yUVfx7qJgDOLp+aQv5LrxmttJAUobmNUzzLmY9Urvh/qhwwzJjw
+         YpgQ2jX5Lbx7JshLTOvuZXyI6Sb/Mq0rJ4cs+tvn2SoOJ9JltkTeyErDITl4qPjmzv/M
+         cam8CpLEWDbqFDW8WndKsAbz1CAdKFdxhHtsyTd2Eae9kh8Azpm8pBtJZFFSlXgvKnw0
+         HLUCoe6+pPC39vppJHkxdjg+0QQJaKXAVth8HZHMcF1AkNErcWQkWWnO9h6PoikWSOCD
+         ZFbgNFz7v1+5GaABRYqswq/6Dc9kNsxA7c0D8eepFDFDwGvRys+JunVJCJ25II/yglEi
+         JdVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701720707; x=1702325507;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YpOU2ooCLv1IE731eabYKj790tbuwogyFPv+sco5TvQ=;
+        b=gxOgHq8jECCXDVmXBYOYTe1wS/h88Nl9rOyMJx2X1urlt+q3mDoMxgz8aaOTtgpAzI
+         V0FZinslXa9zJiGWkTUdrVCotatD1AQloH32eq2WlS2tyKWbxiLqpgoflW726xzmAxTF
+         jydJWWFRk+GIrtzVGL62SMuIx4L8BxFmf+HIyVGvzTBtFe1ZjK3EONidAXipuECe1CF0
+         473qvgfBPPB6JA/wEu5+jSXCbewMOOvpX5BAjRwZ8zhnpedXRI+GpX0L+JCqN0y5l0h3
+         +9gr7BCRmqo5Xa4iCkWZn0u4A/QetjJGhbQOGqZrqjjtv45GDLBalpoDGkl4jHhu/Cza
+         3c2A==
+X-Gm-Message-State: AOJu0Yy+MJdkvsRfgMVVXr0kK8KCrzPUNp8D5HSKnJlte7VSqYzJPwSH
+        nwR6a7S/82QwQ0R2TKA6s0vrylwNpdA=
+X-Google-Smtp-Source: AGHT+IHLvL7F4SnML9BnJOEYkMPzq+JUrdFdxVVPR0p4zxv+RrWuH0X6xOW9Hg/+32yf5Zr0Hl4RQumsq8c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:b650:0:b0:5d7:3abb:1424 with SMTP id
+ h16-20020a81b650000000b005d73abb1424mr169600ywk.6.1701720707487; Mon, 04 Dec
+ 2023 12:11:47 -0800 (PST)
+Date:   Mon, 4 Dec 2023 12:11:46 -0800
+In-Reply-To: <20231204195055.GA2692119@nvidia.com>
+Mime-Version: 1.0
+References: <20231202091211.13376-1-yan.y.zhao@intel.com> <ZW4Fx2U80L1PJKlh@google.com>
+ <20231204173028.GJ1493156@nvidia.com> <ZW4nCUS9VDk0DycG@google.com> <20231204195055.GA2692119@nvidia.com>
+Message-ID: <ZW4ygoqOq2JpXml3@google.com>
+Subject: Re: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com, pbonzini@redhat.com, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-02 19:22, Johan Jonker wrote:
-> Rockchip SoC TRM, SoC datasheet and board schematics always refer to
-> the same gpio numbers - even if not all are used for a specific board.
-> In order to not have to re-define them for every board add the
-> aliases to SoC dtsi files.
+On Mon, Dec 04, 2023, Jason Gunthorpe wrote:
+> On Mon, Dec 04, 2023 at 11:22:49AM -0800, Sean Christopherson wrote:
+> > I'm not suggesting full blown mirroring, all I'm suggesting is a fire-and-forget
+> > notifier for KVM to tell IOMMUFD "I've faulted in GFN A, you might want to do the
+> > same".
 > 
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> If we say the only thing this works with is the memfd version of KVM,
 
-Reviewed-by: Dragan Simic <dsimic@manjaro.org>
+That's likely a big "if", as guest_memfd is not and will not be a wholesale
+replacement of VMA-based guest memory, at least not in the forseeable future.
+I would be quite surprised if the target use cases for this could be moved to
+guest_memfd without losing required functionality.
 
-> ---
->  arch/arm64/boot/dts/rockchip/rk3308.dtsi | 5 +++++
->  arch/arm64/boot/dts/rockchip/rk3328.dtsi | 4 ++++
->  arch/arm64/boot/dts/rockchip/rk3368.dtsi | 4 ++++
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 5 +++++
->  4 files changed, 18 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> index 2ae4bb7d5e62..cfc0a87b5195 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-> @@ -20,6 +20,11 @@ / {
->  	#size-cells = <2>;
-> 
->  	aliases {
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
-> +		gpio3 = &gpio3;
-> +		gpio4 = &gpio4;
->  		i2c0 = &i2c0;
->  		i2c1 = &i2c1;
->  		i2c2 = &i2c2;
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> index e18f7c1c0724..76ea18bf11a0 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-> @@ -20,6 +20,10 @@ / {
->  	#size-cells = <2>;
-> 
->  	aliases {
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
-> +		gpio3 = &gpio3;
->  		serial0 = &uart0;
->  		serial1 = &uart1;
->  		serial2 = &uart2;
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-> b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-> index a4c5aaf1f457..fc7e3f2bc786 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-> @@ -20,6 +20,10 @@ / {
-> 
->  	aliases {
->  		ethernet0 = &gmac;
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
-> +		gpio3 = &gpio3;
->  		i2c0 = &i2c0;
->  		i2c1 = &i2c1;
->  		i2c2 = &i2c2;
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> index da0dfb237f85..dec2705d035d 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-> @@ -20,6 +20,11 @@ / {
-> 
->  	aliases {
->  		ethernet0 = &gmac;
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
-> +		gpio3 = &gpio3;
-> +		gpio4 = &gpio4;
->  		i2c0 = &i2c0;
->  		i2c1 = &i2c1;
->  		i2c2 = &i2c2;
-> --
-> 2.39.2
-> 
-> 
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+> could we design the memfd stuff to not have the same challenges with
+> mirroring as normal VMAs? 
+
+What challenges in particular are you concerned about?  And maybe also define
+"mirroring"?  E.g. ensuring that the CPU and IOMMU page tables are synchronized
+is very different than ensuring that the IOMMU page tables can only map memory
+that is mappable by the guest, i.e. that KVM can map into the CPU page tables.
