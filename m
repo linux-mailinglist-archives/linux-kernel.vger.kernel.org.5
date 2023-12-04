@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD79803CD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF775803CCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343537AbjLDSX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50016 "EHLO
+        id S1343943AbjLDSXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:23:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbjLDSXl (ORCPT
+        with ESMTP id S233396AbjLDSXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 13:23:41 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBB4186;
-        Mon,  4 Dec 2023 10:23:46 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B4IMtcF081650;
-        Mon, 4 Dec 2023 12:22:55 -0600
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C12CD134;
+        Mon,  4 Dec 2023 10:23:45 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B4IMuQL073821;
+        Mon, 4 Dec 2023 12:22:56 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701714175;
-        bh=2nMLoHZjmVIC5bz7SNEGOj0N9pS9iZCge0lbcW6Gklw=;
+        s=ti-com-17Q1; t=1701714176;
+        bh=IqQKvAZuXA3yBQTpe1fHB5C8are6FN8yp0Pg90xwIuI=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=nicHGW+H9t4cJbt/RUjRLWF3kKANxSB2OzqJwcg408u/ncoar5PtIHwrZbcNcBAgp
-         rZON1WwHOIASSjNyPjLc3nS2+5JKaacb4odT6n41Rb1r7W2Qtd1DOkyclkqSRgGI0X
-         Dub7DcdLjMjGxqAmWilvC4LHxUPkt/LJbTZbyNl8=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B4IMt9i091851
+        b=S2AZrqTCjO0HFh+CGsgOM8FZXaXjvfD4rsArKT+zuQDsB4bpPBHwm2zk00wag1PM0
+         qDJOH+kleI7xZ3CBeyJxqHWOqzVQ2QIGGxCmUKjeXzMirNlBrWbmX2zZ7EqeYAToPi
+         by7JK5O3s/x9oqRTiZDtXKjLOgfvNpAY4QowFilY=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B4IMuwW083433
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 Dec 2023 12:22:55 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 4 Dec 2023 12:22:56 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 4
- Dec 2023 12:22:55 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Dec 2023 12:22:56 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 4 Dec 2023 12:22:55 -0600
+ Frontend Transport; Mon, 4 Dec 2023 12:22:56 -0600
 Received: from fllv0039.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B4IMkxA042313;
-        Mon, 4 Dec 2023 12:22:54 -0600
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B4IMkxB042313;
+        Mon, 4 Dec 2023 12:22:55 -0600
 From:   Andrew Davis <afd@ti.com>
 To:     Frank Binns <frank.binns@imgtec.com>,
         Donald Robson <donald.robson@imgtec.com>,
@@ -66,9 +66,9 @@ CC:     <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-sunxi@lists.linux.dev>, <linux-omap@vger.kernel.org>,
         <linux-mips@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH RFC 07/10] ARM: dts: DRA7xx: Add device tree entry for SGX GPU
-Date:   Mon, 4 Dec 2023 12:22:42 -0600
-Message-ID: <20231204182245.33683-8-afd@ti.com>
+Subject: [PATCH RFC 08/10] arm64: dts: ti: k3-am654-main: Add device tree entry for SGX GPU
+Date:   Mon, 4 Dec 2023 12:22:43 -0600
+Message-ID: <20231204182245.33683-9-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231204182245.33683-1-afd@ti.com>
 References: <20231204182245.33683-1-afd@ti.com>
@@ -78,46 +78,39 @@ Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SGX GPU device entry to base DRA7x dtsi file.
+Add SGX GPU device entry to base AM654 dtsi file.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- arch/arm/boot/dts/ti/omap/dra7.dtsi | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/ti/k3-am65-main.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/arch/arm/boot/dts/ti/omap/dra7.dtsi b/arch/arm/boot/dts/ti/omap/dra7.dtsi
-index 6509c742fb58c..8527643cb69a8 100644
---- a/arch/arm/boot/dts/ti/omap/dra7.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/dra7.dtsi
-@@ -850,12 +850,19 @@ target-module@56000000 {
- 					<SYSC_IDLE_SMART>;
- 			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
- 					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>;
-+					<SYSC_IDLE_SMART>,
-+					<SYSC_IDLE_SMART_WKUP>;
- 			clocks = <&gpu_clkctrl DRA7_GPU_CLKCTRL 0>;
- 			clock-names = "fck";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges = <0 0x56000000 0x2000000>;
-+
-+			gpu@0 {
-+				compatible = "ti,am5728-gpu", "img,powervr-sgx544";
-+				reg = <0x0 0x10000>; /* 64kB */
-+				interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-+			};
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+index 29048d6577cf6..d3431aca41026 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-main.dtsi
+@@ -1044,6 +1044,13 @@ dss_ports: ports {
  		};
+ 	};
  
- 		crossbar_mpu: crossbar@4a002a48 {
++	gpu: gpu@7000000 {
++		compatible = "ti,am6548-gpu", "img,powervr-sgx544";
++		reg = <0x0 0x7000000 0x0 0x10000>;
++		interrupts = <GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>;
++		power-domains = <&k3_pds 65 TI_SCI_PD_EXCLUSIVE>;
++	};
++
+ 	ehrpwm0: pwm@3000000 {
+ 		compatible = "ti,am654-ehrpwm", "ti,am3352-ehrpwm";
+ 		#pwm-cells = <3>;
 -- 
 2.39.2
 
