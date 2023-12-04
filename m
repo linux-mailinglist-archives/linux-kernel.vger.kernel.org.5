@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2C1803AB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2492803AFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbjLDQrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
+        id S229954AbjLDQ6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234825AbjLDQrD (ORCPT
+        with ESMTP id S235025AbjLDQr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:47:03 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E524182
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:47:05 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a19ce1404e1so445461466b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:47:05 -0800 (PST)
+        Mon, 4 Dec 2023 11:47:26 -0500
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D9118C
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:47:28 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d33574f64eso50744547b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:47:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701708421; x=1702313221; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FveOruljDBZv6z+kbcKooVAiVbTn3vv2Y/JHOYB/pNg=;
-        b=UMWrlhdYGSNF03IpWJYP3no39/8MWucHcIrUkKLOaZwlYZpc5nzGL2rlrxrTBplEaL
-         zQGPGT0ZbKJyfDhAb/QW/V9kmyrfJBG/YcyzcefenWr5yS351dCge4MUOXsqSnPgBfGW
-         6K+zRYLCG93YutSMl3CKiaLCmt9N5645ZlE5Q=
+        d=linaro.org; s=google; t=1701708448; x=1702313248; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=3nepwvvRD/gfBaWMYXy5vN/GJrBOCZb1VaNVzHXVB1s=;
+        b=boiJBLSzrjKzUhNoa4jZ22WfGC/x1uE/BymTosCXeAIPhx6PHPczxHXfFCHQVhD++M
+         GyrbArh9ZY3TuoyiSBWFzfq3xSMScR1853+uXS8LH2M2taM4nTU78tRm/YXbncWkDrNh
+         +MtPOl6Avb2TrjxV+XsCr2fpliM1EtAqDkUdg/u7eU4WLsAfdiQLp8ZuEza2Ym81LKk/
+         R46tx1DiPD90Rrr/x59rTU5CsXkFs8p54oVIJpfC4lhagIskKnFoKpvPZNHSVdVU3uFt
+         bo2GkbiINYNrhUHaBYi6/exFNpBEzALh7CjlCtVHSaf+q1qoT0G8BR/6VDK3Nz+vuh7U
+         xY1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701708421; x=1702313221;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FveOruljDBZv6z+kbcKooVAiVbTn3vv2Y/JHOYB/pNg=;
-        b=HBM9D0YO4v3MfN4BU93UB7GXs0Ww07iE4GlJHaCaVgt3YDAxgSfV7n/fZ1gMhABF7a
-         LM7jgsfia2kdlwCXEBmMWxR0lP+UtirLreaaws76kX/OJM3eQlhGsNxA70PZDmHz5X5o
-         Efyol6jAOwAYO5MzsE1eR5Hzlzjy/xOhuYsgctGsGyFdnbBn2ezKBdU61WKOR+280cMK
-         ZBKHslIXxNTg22pqsXdNtDUdDDhFaIWLlpJeFmzwkVMe0V5kMF9gn3Q6Xkzw0ZnPHbv9
-         Cqba7FDyLBa4pYKvsAyy5tbxtI8xTiXnQsiCHZCWC0jKVdrus5G4grjLcgtekaP26xhN
-         jiEA==
-X-Gm-Message-State: AOJu0YxTf8G1w8bgeCFOXzVxyrZV2a6wJfJ0Sr/o41JJpW8up4cAMtBC
-        rKxFUq0nT/NACgaVt2y7o1n/6QnzwMAviwZu7vNrtUVF
-X-Google-Smtp-Source: AGHT+IFrWBu/WBm8vdFwVoIf0Q/PWEpOqDLyK29JMhL13qbCfqM0mgcBDqearNgdB8HPqmXj9cCThQ==
-X-Received: by 2002:a17:906:3488:b0:a19:a1ba:da71 with SMTP id g8-20020a170906348800b00a19a1bada71mr3594063ejb.152.1701708421262;
-        Mon, 04 Dec 2023 08:47:01 -0800 (PST)
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com. [209.85.128.44])
-        by smtp.gmail.com with ESMTPSA id a7-20020a1709062b0700b009fc8f309183sm5479147ejg.51.2023.12.04.08.47.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 08:47:00 -0800 (PST)
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so100655e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:47:00 -0800 (PST)
-X-Received: by 2002:a05:600c:257:b0:40b:4228:ee9a with SMTP id
- 23-20020a05600c025700b0040b4228ee9amr482510wmj.0.1701708419762; Mon, 04 Dec
- 2023 08:46:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701708448; x=1702313248;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3nepwvvRD/gfBaWMYXy5vN/GJrBOCZb1VaNVzHXVB1s=;
+        b=tuYKeqv7HAMHJB9OM/c+q/qDFGUQuBEEFVQt99kS6ju+fBR8p76JXw68CAroRJsGfJ
+         r0dXRVtpw9M9gJ9LjKpjxDc5bjTLfF4RpXV7M1jqq1wY3E1QVAJ+1Xcq1pGdBOJsoYdf
+         up+K9HCFZ4ApYHgFlDIuBS3U/gDm1MxbuYUKIXhNPpYRUR9oFWg0tmmoCIBMG/NhoehR
+         fIel6oIZWo1lCNiJDiX2WQT1kjLgJaDqMpppmdBkwFxvvVmPK0xgWJyqRPoSiYkRkPlY
+         3bMxpGP4QSqbd7dCF1rRtB5q3s5PIMMYdlD0GbKeBQvf5ch+zQvLOvGhSgvR5Rfa10Hg
+         sKTQ==
+X-Gm-Message-State: AOJu0Yzv/MOL0cAGy1fPNqZU2avGxyUsZWkqtgoqr0Hs3CleL8yn/Mq9
+        lFdaSzkeUO5sgtr4Alpyh0zQixMiDg1qgx5YaTfi1g==
+X-Google-Smtp-Source: AGHT+IHcFMkVwwmYMMqki+2Qc6dR02+fv6yJEbd0ifGsqlMUJ9h6kZC+DljYT4ID8A8TJWm7PVUVkQDg4bH96RGd4zo=
+X-Received: by 2002:a81:ae0f:0:b0:5d7:1940:b36a with SMTP id
+ m15-20020a81ae0f000000b005d71940b36amr3624983ywh.54.1701708448087; Mon, 04
+ Dec 2023 08:47:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20231201-x1e80100-drm-panel-edp-v2-1-b0173484631a@linaro.org>
-In-Reply-To: <20231201-x1e80100-drm-panel-edp-v2-1-b0173484631a@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 4 Dec 2023 08:46:44 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Wx_W-Jspx4S4k-Jze8eBm5zGanzqt0-fWjYZhHB_=1qQ@mail.gmail.com>
-Message-ID: <CAD=FV=Wx_W-Jspx4S4k-Jze8eBm5zGanzqt0-fWjYZhHB_=1qQ@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/panel-edp: Add SDC ATNA45AF01
-To:     Abel Vesa <abel.vesa@linaro.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <1701289898-12235-1-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqX0AWmLMrNo23cfsnU5q0ySDUkb1XTGwaxGt0eTPkLpg@mail.gmail.com> <1086300a-2c8e-f897-a0d7-84d36276a6b6@quicinc.com>
+In-Reply-To: <1086300a-2c8e-f897-a0d7-84d36276a6b6@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 4 Dec 2023 18:47:17 +0200
+Message-ID: <CAA8EJpq_zE5J584smV=Gido9G-spo7hPYZyf-7vr8ki+r9Az9g@mail.gmail.com>
+Subject: Re: [PATCH v1] drm/msm/dpu: improve DSC allocation
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,50 +73,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Dec 4, 2023 at 12:54=E2=80=AFAM Abel Vesa <abel.vesa@linaro.org> wr=
-ote:
+On Mon, 4 Dec 2023 at 18:37, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
 >
-> Add support for the SDC ATNA45AF01 panel.
 >
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
-> Changes in v2:
-> - moved the panel entry in the proper place, as suggested by Doug
-> - Link to v1: https://lore.kernel.org/r/20231201-x1e80100-drm-panel-edp-v=
-1-1-ef9def711d8a@linaro.org
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/pa=
-nel-edp.c
-> index 825fa2a0d8a5..78565c99b54d 100644
-> --- a/drivers/gpu/drm/panel/panel-edp.c
-> +++ b/drivers/gpu/drm/panel/panel-edp.c
-> @@ -1983,6 +1983,8 @@ static const struct edp_panel_entry edp_panels[] =
-=3D {
->         EDP_PANEL_ENTRY('K', 'D', 'C', 0x0809, &delay_200_500_e50, "KD116=
-N2930A15"),
->         EDP_PANEL_ENTRY('K', 'D', 'B', 0x1120, &delay_200_500_e80_d50, "1=
-16N29-30NK-C007"),
->
-> +       EDP_PANEL_ENTRY('S', 'D', 'C', 0x416d, &delay_100_500_e200, "ATNA=
-45AF01"),
-> +
+> On 11/29/2023 7:57 PM, Dmitry Baryshkov wrote:
+> > On Wed, 29 Nov 2023 at 22:31, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> >> A DCE (Display Compression Engine) contains two DSC hard slice encoders.
+> >> Each DCE start with even DSC encoder index followed by an odd DSC encoder
+> >> index. Each encoder can work independently. But Only two DSC encoders from
+> >> same DCE can be paired to work together to support merge mode. In addition,
+> >> the DSC with even index have to mapping to even pingpong index and DSC with
+> >> odd index have to mapping to odd pingpong index at its data path. This patch
+> >> improve DSC allocation mechanism with consideration of above factors.
+> > Is this applicable to old DSC 1.1 encoders?
+> yes, this algorithm should work with V1 too
 
-Looks fine to me now. I will note that e200 is pretty long and I
-wonder if you've got this because of a requirement of T3+T4+T5+T6+T8
-being more than 200ms. If so, I wonder if Pin-yen's patch [1] would
-help you optimize things?
+Are the limitations (odd:odd, allocation in pairs, etc) applicable to
+v1.1 encoders?
 
-In any case, this looks fine to me.
+I assume that at least 'allocate two consecutive DSC for DSC merge' is
+not applicable, since there are no separate DCE units.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> >
+> >> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> >> ---
+> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 94 +++++++++++++++++++++++++++++-----
+> >>   1 file changed, 82 insertions(+), 12 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> >> index f9215643..427d70d 100644
+> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+> >> @@ -466,24 +466,94 @@ static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+> >>                                 struct drm_encoder *enc,
+> >>                                 const struct msm_display_topology *top)
+> >>   {
+> >> -       int num_dsc = top->num_dsc;
+> >> -       int i;
+> >> +       int num_dsc = 0;
+> >> +       int i, pp_idx;
+> >> +       bool pair = false;
+> >> +       int dsc_idx[DSC_MAX - DSC_0];
+> >> +       uint32_t pp_to_enc_id[PINGPONG_MAX - PINGPONG_0];
+> >> +       int pp_max = PINGPONG_MAX - PINGPONG_0;
+> >> +
+> >> +       if (!top->num_dsc || !top->num_intf)
+> >> +               return 0;
+> >> +
+> >> +       /*
+> >> +        * Truth:
+> >> +        * 1) every layer mixer only connects to one pingpong
+> >> +        * 2) no pingpong split -- two layer mixers shared one pingpong
+> >> +        * 3) each DSC engine contains two dsc encoders
+> >> +        *    -- index(0,1), index (2,3),... etc
+> >> +        * 4) dsc pair can only happens with same DSC engine except 4 dsc
+> >> +        *    merge mode application (8k) which need two DSC engines
+> >> +        * 5) odd pingpong connect to odd dsc
+> >> +        * 6) even pingpong connect even dsc
+> >> +        */
+> >> +
+> >> +       /* num_dsc should be either 1, 2 or 4 */
+> >> +       if (top->num_dsc > top->num_intf)       /* merge mode */
+> >> +               pair = true;
+> >> +
+> >> +       /* fill working copy with pingpong list */
+> >> +       memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id, sizeof(pp_to_enc_id));
+> >> +
+> >> +       for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
+> > && num_dsc < top->num_dsc
+> >
+> >> +               if (!rm->dsc_blks[i])   /* end of dsc list */
+> >> +                       break;
+> > I'd say, it's `continue' instead, let's just skip the index.
+> >
+> >> -       /* check if DSC required are allocated or not */
+> >> -       for (i = 0; i < num_dsc; i++) {
+> >> -               if (!rm->dsc_blks[i]) {
+> >> -                       DPU_ERROR("DSC %d does not exist\n", i);
+> >> -                       return -EIO;
+> >> +               if (global_state->dsc_to_enc_id[i]) {   /* used */
+> >> +                       /* consective dsc index to be paired */
+> >> +                       if (pair && num_dsc) {  /* already start pairing, re start */
+> >> +                               num_dsc = 0;
+> >> +                               /* fill working copy with pingpong list */
+> >> +                               memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id,
+> >> +                                                               sizeof(pp_to_enc_id));
+> >> +                       }
+> >> +                       continue;
+> >>                  }
+> >>
+> >> -               if (global_state->dsc_to_enc_id[i]) {
+> >> -                       DPU_ERROR("DSC %d is already allocated\n", i);
+> >> -                       return -EIO;
+> >> +               /* odd index can not become start of pairing */
+> >> +               if (pair && (i & 0x01) && !num_dsc)
+> >> +                       continue;
+> > After looking at all conditions, can we have two different helpers?
+> > One which allocates a single DSC and another one which allocates a
+> > pair. For the pair you can skip odd indices at all and just check if
+> > DSC_i and DSC_i+1 are free.
+> >
+> >> +
+> >> +               /*
+> >> +                * find the pingpong index which had been reserved
+> >> +                * previously at layer mixer allocation
+> >> +                */
+> >> +               for (pp_idx = 0; pp_idx < pp_max; pp_idx++) {
+> >> +                       if (pp_to_enc_id[pp_idx] == enc->base.id)
+> >> +                               break;
+> >>                  }
+> >> +
+> >> +               /*
+> >> +                * dsc even index must map to pingpong even index
+> >> +                * dsc odd index must map to pingpong odd index
+> >> +                */
+> >> +               if ((i & 0x01) != (pp_idx & 0x01))
+> >> +                       continue;
+> >> +
+> >> +               /*
+> >> +                * delete pp_idx so that it can not be found at next search
+> >> +                * in the case of pairing
+> >> +                */
+> >> +               pp_to_enc_id[pp_idx] = NULL;
+> >> +
+> >> +               dsc_idx[num_dsc++] = i;
+> >> +               if (num_dsc >= top->num_dsc)
+> >> +                       break;
+> >>          }
+> >>
+> >> -       for (i = 0; i < num_dsc; i++)
+> >> -               global_state->dsc_to_enc_id[i] = enc->base.id;
+> >> +       if (num_dsc < top->num_dsc) {
+> >> +               DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
+> >> +                                               num_dsc, top->num_dsc );
+> >> +               return -ENAVAIL;
+> >> +       }
+> >> +
+> >> +       /* reserve dsc */
+> >> +       for (i = 0; i < top->num_dsc; i++) {
+> >> +               int j;
+> >> +
+> >> +               j = dsc_idx[i];
+> >> +               global_state->dsc_to_enc_id[j] = enc->base.id;
+> >> +       }
+> >>
+> >>          return 0;
+> >>   }
+> >> --
+> >> 2.7.4
+> >>
+> >
 
-...I'll wait a day in case you say this would be better atop Pin-yen's
-patch and want me to wait, but I also have no objections to landing
-this now and later optimizing the delays.
 
-[1] https://crrev.com/c/5052150
+
+-- 
+With best wishes
+Dmitry
