@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9111E802982
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 01:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA924802980
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 01:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233926AbjLDAcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 19:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43926 "EHLO
+        id S234158AbjLDAdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 19:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjLDAcm (ORCPT
+        with ESMTP id S229731AbjLDAdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 19:32:42 -0500
+        Sun, 3 Dec 2023 19:33:08 -0500
 Received: from ar2.dbzero.it (unknown [IPv6:2a00:6d41:10:195b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C096DB;
-        Sun,  3 Dec 2023 16:32:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615CEF3;
+        Sun,  3 Dec 2023 16:33:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=dividebyzero.it; s=20160415; h=Message-ID:References:In-Reply-To:Cc:To:
         Subject:From:Content-Transfer-Encoding:Content-Type:Date:MIME-Version:Sender:
         Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
         :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
         List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KCX/z8/d+lmUhr6gwHmo5sCy0U2X1rU51q6fT7ETS9k=; b=ijkYWrEDezvvp14LvOzLBVn5kt
-        CO+UYeKqtibIo/ynFbkDYNNuCP5F3lPtPPrTkAf/+MtCc422J35WJmIoJ28sYkQgLs3PmEIuDsk1S
-        yNQP1uWYgJh+84ujIpeVPyNijpb/OxXITHTtrr0E94lgeTOg2aHE6mO+HQfJWeloAYPg=;
+        bh=KCX/z8/d+lmUhr6gwHmo5sCy0U2X1rU51q6fT7ETS9k=; b=ezmf7HZ1uRm2IUqYJDsHM2VvIx
+        8HReDV+5BQXNqH3n4RPHqf+ZOTl0NH89ZJiqihUb3inDKwdv0py6E2VC1/0Ufe9FARS/0HZmBRwo+
+        VugYNM1hnjLLQglR87wxz6RCVKs67qQdZBk8dUYdtN513MSPztZ7yBKfIEE4lz8p6cLo=;
 Received:  by ar2.dbzero.it with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (Authenticated user: juri@dividebyzero.it)
         (envelope-from <juri@dividebyzero.it>)
-        id 1r9wsq-0002ZB-8X; Mon, 04 Dec 2023 01:32:24 +0100
+        id 1r9wtP-0002Zd-E5; Mon, 04 Dec 2023 01:32:59 +0100
 MIME-Version: 1.0
-Date:   Mon, 04 Dec 2023 00:32:22 +0000
+Date:   Mon, 04 Dec 2023 00:32:56 +0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 From:   juri@dividebyzero.it
@@ -50,8 +50,8 @@ References: <a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com>
  <024c4ad4-1a73-8c24-5e6f-f8c9f2f7b98f@redhat.com>
  <1884918.tdWV9SEqCh@dividebyzero.it>
  <77b3eed7-825d-41c5-a802-ea891a16f992@redhat.com>
-Message-ID: <29cfa375a005b4f3d695815d845c0406cc34845f@dividebyzero.it>
-X-Original-Message-ID: <29cfa375a005b4f3d695815d845c0406cc34845f@dividebyzero.it>
+Message-ID: <07b057618b72f301142585844ccdcaab75a716fe@dividebyzero.it>
+X-Original-Message-ID: <07b057618b72f301142585844ccdcaab75a716fe@dividebyzero.it>
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
         SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
