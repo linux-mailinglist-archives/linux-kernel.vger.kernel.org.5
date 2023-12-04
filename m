@@ -2,88 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3D3804096
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3E38040A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:00:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346250AbjLDU56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:57:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
+        id S233062AbjLDU7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:59:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235458AbjLDU5a (ORCPT
+        with ESMTP id S229741AbjLDU7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:57:30 -0500
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E456173B;
-        Mon,  4 Dec 2023 12:57:12 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 90418580A6A;
-        Mon,  4 Dec 2023 15:57:11 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 04 Dec 2023 15:57:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1701723431; x=
-        1701730631; bh=Xy5DWhMcuaQWz9hFzj8IU9Hd0UISUG5+/EyW9nquCao=; b=f
-        QoXufqYcQIqHDb6el7DTUJd0fBEdJBUVU5fChFUUxqhhNptIPWA2GRfZjS5By+kM
-        TSZmQy0jNI4S4C3Xzcf3SQxzfJaIp/4rzSJwhtM3BLXoAcPtTYwhRdUtsc7Cq+YQ
-        /vNbJhiEN+Ih45VmOsGphKUYIfa4A4q/ZPylcUTjClRfYMa/DICvhVYDcC4HIZ8H
-        K8hgEexMFRkSPklKC373I8YYyKagom68fe9bWDqJZIEI3n92ydmOfPDPNJKSS9tb
-        e4gjLLKfV8FYwNwiYqCqvEtH5YJKa3aMV4e1WyPkqejMUzTinX5ew+VlBFTNVdSv
-        7Em7dEUtrLlCGLAo/lEkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1701723431; x=
-        1701730631; bh=Xy5DWhMcuaQWz9hFzj8IU9Hd0UISUG5+/EyW9nquCao=; b=a
-        0G1dJFA48CvQe6gUE0On96JanSsLf7wueO3F1B4613z0EoYzIg2yB63UoGRCsIsQ
-        NHF3yMLdOovVFVpDNXfv1ncdAlBYvn2Zns/c/XcqOYOc9+Z7y3YQYE9pvp6pVlhf
-        FYyPUI/egIzvJMLHKr/1/CPKLENAfHBOLsbJH5XcwoxrE+8u6du607mPmAE+3HLv
-        BzrhJinolZmi0agqWryGkTo/eGouP5Hzkhr6GJIjXTE4+HXreHRA6NVoIFWqMctv
-        gPaZFilQ9twbCtVNEIFHXehy43p3fzOp/Ryynnqo1IOhwaVTd0/X70xKevH4cZKD
-        mkJXAU7wBQtbF5mIEKDVw==
-X-ME-Sender: <xms:Jz1uZbbPJAWqw1hbkmdCf0OIc5cXLyn_tIjNkGvN7IdMolIJ0nQHKQ>
-    <xme:Jz1uZaYQCNvJrlAuauPZ8-Gl2lyEQM4sFCIiNi-SBtGpT8IrUT4d9Kgs_0kG480R1
-    a9pn8eCLfkLt3i3Iw>
-X-ME-Received: <xmr:Jz1uZd-SzMW3Gag7dTS2UNdDBlimaWKPgkpl-aeaIOCSICynrGW6bqvQXCsYv9PSrl7NOA_GG3laktaAgl3tPSnMMU8FPCuC3tiH6H6a4O8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejiedgudeggecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:Jz1uZRpPhhDVYqaEh3YnUGp3rYsAfraByBKMTWkzoCK6HD41pqIbow>
-    <xmx:Jz1uZWrOfGi_yx1eBdyltH_ddZPfrJRG8CMf-ebmYxHw1yD4YYeoQg>
-    <xmx:Jz1uZXS7NVV8FytT-dssTKaa9AlvgQaSEIx8k0D_KPPqIAQ5UhMphA>
-    <xmx:Jz1uZZ5L0Gpt67rr6UlJRtzZaa7l8ZKhmdZumwqyfXC4A2OaOy6g7A>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 4 Dec 2023 15:57:09 -0500 (EST)
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     daniel@iogearbox.net, ast@kernel.org, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kuba@kernel.org, shuah@kernel.org, steffen.klassert@secunet.com,
-        antony.antony@secunet.com, alexei.starovoitov@gmail.com,
-        yonghong.song@linux.dev, eddyz87@gmail.com
-Cc:     mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        jolsa@kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, devel@linux-ipsec.org
-Subject: [PATCH bpf-next v4 10/10] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-Date:   Mon,  4 Dec 2023 13:56:30 -0700
-Message-ID: <ee451cb630f53ef9f71fed9af6fd516bc547468b.1701722991.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1701722991.git.dxu@dxuuu.xyz>
-References: <cover.1701722991.git.dxu@dxuuu.xyz>
+        Mon, 4 Dec 2023 15:59:51 -0500
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5152CB2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:59:57 -0800 (PST)
+Received: from mail.denx.de (unknown [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: festevam@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 20F2F876DA;
+        Mon,  4 Dec 2023 21:59:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1701723595;
+        bh=SmAvWJjBSFrmv67o9Uu6ysguaUrpN+50gXjQo05+N7g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ks5JPrOJvCgScLceDnfY8bT+W8LmLLvZZ/IXiA5upfpFlWiRLdTpOkC/7Sta7Gwxf
+         eOb50Hw873ylHu1boHUpji3k88yc55fORWAIBItop9Ly3sh2O0JqUXKiQUtR1yTe0E
+         Mu1Q1NbeVfcsBa2DbYJwoJD5T3YMBKxMCxiH+esfnve0E3qJ5HeNx8djNGzl7FPVR3
+         mB1/8e8x63415AJgcN3oHw2h2iBGw6rdIVrhV1yOwm4FJxLaQiRSiqorjgznZ8vuHx
+         t0nXhBDLkGhZ1JG9Pr8T7Z0CXOKzV+ZGdQ0E6PkD6ChfUtCZhorMeHAlVv0hMS1iXU
+         XVfUJuSXIyyjw==
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 04 Dec 2023 17:59:55 -0300
+From:   Fabio Estevam <festevam@denx.de>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     pratyush@kernel.org, michael@walle.cc,
+        linux-mtd@lists.infradead.org, takahiro.kuwano@infineon.com,
+        bacem.daassi@infineon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] mtd: spi-nor: introduce die erase
+In-Reply-To: <f9dc82f3-070a-42cd-a92d-83d031647867@linaro.org>
+References: <20231125123529.55686-1-tudor.ambarus@linaro.org>
+ <d7ce98eb-c920-413f-bbe9-059077a9dda7@linaro.org>
+ <6156a51f7eadc9594404bb0eacabe1a6@denx.de>
+ <f9dc82f3-070a-42cd-a92d-83d031647867@linaro.org>
+Message-ID: <8de7595d8f4839187fdbbe7e139016bc@denx.de>
+X-Sender: festevam@denx.de
+User-Agent: Roundcube Webmail/1.3.6
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,159 +62,237 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit extends test_tunnel selftest to test the new XDP xfrm state
-lookup kfunc.
+On 30/11/2023 07:42, Tudor Ambarus wrote:
 
-Co-developed-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
- .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
- 2 files changed, 67 insertions(+), 4 deletions(-)
+> Thanks, will do. Would you please replicate the tests that I did in
+> patch 3/5 for mt25qu01q? You'll have to modify a bit the offsets for 
+> the
+> die and cross die tests.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-index 2d7f8fa82ebd..fc804095d578 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-@@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 1 mode tunnel "
-+			"spi %d reqid 1 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 2 mode tunnel "
-+			"spi %d reqid 2 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
- 	 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 1 mode tunnel "
-+		    "spi %d reqid 1 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
- 	/* root -> at_ns0 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 2 mode tunnel "
-+		    "spi %d reqid 2 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
- 			    .attach_point = BPF_TC_INGRESS);
-+	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
- 	struct test_tunnel_kern *skel = NULL;
- 	struct nstoken *nstoken;
-+	int xdp_prog_fd;
- 	int tc_prog_fd;
- 	int ifindex;
- 	int err;
-@@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
- 	if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
- 		goto done;
- 
-+	/* attach xdp prog to tunnel dev */
-+	xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-+	if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-+	if (!ASSERT_OK(err, "bpf_xdp_attach"))
-+		goto done;
-+
- 	/* ping from at_ns0 namespace test */
- 	nstoken = open_netns("at_ns0");
- 	err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-@@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
- 		goto done;
- 	if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
- 		goto done;
-+	if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-+		goto done;
- 
- done:
- 	delete_xfrm_tunnel();
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 3a59eb9c34de..c0dd38616562 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap) __ksym;
-+struct xfrm_state *
-+bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-+		       u32 opts__sz) __ksym;
-+void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+volatile int xfrm_replay_window = 0;
-+
-+SEC("xdp")
-+int xfrm_get_state_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_xfrm_state_opts opts = {};
-+	struct xfrm_state *x = NULL;
-+	struct ip_esp_hdr *esph;
-+	struct bpf_dynptr ptr;
-+	u8 esph_buf[8] = {};
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+	u32 off;
-+
-+	if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-+		goto out;
-+
-+	off = sizeof(struct ethhdr);
-+	iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-+	if (!iph || iph->protocol != IPPROTO_ESP)
-+		goto out;
-+
-+	off += sizeof(struct iphdr);
-+	esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-+	if (!esph)
-+		goto out;
-+
-+	opts.netns_id = BPF_F_CURRENT_NETNS;
-+	opts.daddr.a4 = iph->daddr;
-+	opts.spi = esph->spi;
-+	opts.proto = IPPROTO_ESP;
-+	opts.family = AF_INET;
-+
-+	x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-+	if (!x || opts.error)
-+		goto out;
-+
-+	if (!x->replay_esn)
-+		goto out;
-+
-+	xfrm_replay_window = x->replay_esn->replay_window;
-+out:
-+	if (x)
-+		bpf_xdp_xfrm_state_release(x);
-+	return XDP_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.42.1
 
+Here it goes.
+
+Can this series be applied now?
+
+:~# cat /sys/bus/spi/devices/spi0.0/spi-nor/partname
+mt25qu01g
+
+:~# cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id
+20bb21104400
+
+:~# cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer
+st
+
+:~# xxd -p  
+/sys/devices/platform/soc@0/30800000.bus/30bb0000.spi/spi_master/spi0/spi0.0/spi-nor/sfdp
+53464450060101ff00060110300000ff84000102800000ffffffffffffff
+ffffffffffffffffffffffffffffffffffffe520fbffffffff3f29eb276b
+273b27bbffffffffffff27bbffff29eb0c2010d80f520000244a99008b8e
+03e1ac0127387a757a75fbbdd55c4a0f82ff81bd3d36ffffffffffffffff
+ffffffffffffffffffe7ffff21dcffff
+
+:~# sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+e49dfee6eeb73c55e94c07a8c7d352dd7d8774b830a64ed1059ef6e7bc833668  
+/sys/bus/spi/devices/spi0.0/spi-nor/sfdp
+
+:~# cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
+Supported read modes by the flash
+  1S-1S-1S
+   opcode	0x13
+   mode cycles	0
+   dummy cycles	0
+  1S-1S-2S
+   opcode	0x3c
+   mode cycles	1
+   dummy cycles	7
+  1S-2S-2S
+   opcode	0xbc
+   mode cycles	1
+   dummy cycles	7
+  2S-2S-2S
+   opcode	0xbc
+   mode cycles	1
+   dummy cycles	7
+  1S-1S-4S
+   opcode	0x6c
+   mode cycles	1
+   dummy cycles	7
+  1S-4S-4S
+   opcode	0xec
+   mode cycles	1
+   dummy cycles	9
+  4S-4S-4S
+   opcode	0xec
+   mode cycles	1
+   dummy cycles	9
+
+Supported page program modes by the flash
+  1S-1S-1S
+   opcode	0x12
+  1S-1S-4S
+   opcode	0x34
+  1S-4S-4S
+   opcode	0x3e
+
+:~# cat /sys/kernel/debug/spi-nor/spi0.0/params
+name		mt25qu01g
+id		20 bb 21 10 44 00
+size		128 MiB
+write size	1
+page size	256
+address nbytes	4
+flags		4B_OPCODES | HAS_4BAIT | HAS_16BIT_SR | SOFT_RESET
+
+opcodes
+  read		0x6c
+   dummy cycles	8
+  erase		0x21
+  program	0x12
+  8D extension	none
+
+protocols
+  read		1S-1S-4S
+  write		1S-1S-1S
+  register	1S-1S-1S
+
+erase commands
+  21 (4.00 KiB) [1]
+  dc (64.0 KiB) [3]
+  c4 (128 MiB)
+
+sector map
+  region (in hex)   | erase mask | flags
+  ------------------+------------+----------
+  00000000-07ffffff |     [ 123] |
+root@mcde3000a:~#
+
+:~# dd if=/dev/urandom of=./spi_test bs=1M count=2
+2+0 records in
+2+0 records out
+2097152 bytes (2.1 MB, 2.0 MiB) copied, 0.0303915 s, 69.0 MB/s
+
+:~# mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+:~# hexdump spi_read
+0000000 ffff ffff ffff ffff ffff ffff ffff ffff
+*
+0200000
+:~# sha256sum spi_read
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  
+spi_read
+:~# mtd_debug write /dev/mtd0 0 2097152 spi_test
+Copied 2097152 bytes from spi_test to address 0x00000000 in flash
+
+:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+:~# sha256sum spi*
+d5c15629e1fa019941cb820eff6ffd2a9008b5796bb23a67c351f42af48ce180  
+spi_read
+d5c15629e1fa019941cb820eff6ffd2a9008b5796bb23a67c351f42af48ce180  
+spi_test
+:~# mtd_debug erase /dev/mtd0 0 2097152
+Erased 2097152 bytes from address 0x00000000 in flash
+
+:~# mtd_debug read /dev/mtd0 0 2097152 spi_read
+Copied 2097152 bytes from address 0x00000000 in flash to spi_read
+:~# sha256sum spi*
+4bda3a28f4ffe603c0ec1258c0034d65a1a0d35ab7bd523a834608adabf03cc5  
+spi_read
+d5c15629e1fa019941cb820eff6ffd2a9008b5796bb23a67c351f42af48ce180  
+spi_test
+:~# mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 134217728 (128M)
+mtd.erasesize = 4096 (4K)
+mtd.writesize = 1
+mtd.oobsize = 0
+regions = 0
+
+
+real	0m0.005s
+user	0m0.001s
+sys	0m0.005s
+:~# time mtd_debug erase /dev/mtd0 0 134217728
+Erased 134217728 bytes from address 0x00000000 in flash
+
+real	0m1.768s
+user	0m0.001s
+sys	0m1.609s
+:~# echo "ta writes something into the first die" > firstdie
+:~# echo "ta writes something into the second die" > seconddie
+:~# ls -al
+total 4112
+drwx------ 2 root root    4096 Dec  4 20:36 .
+drwxr-xr-x 4 root root    4096 Mar  9  2018 ..
+-rw-r--r-- 1 root root      39 Dec  4 20:36 firstdie
+-rw-r--r-- 1 root root      40 Dec  4 20:36 seconddie
+-rw-r--r-- 1 root root 2097152 Dec  4 20:35 spi_read
+-rw-r--r-- 1 root root 2097152 Dec  4 20:32 spi_test
+:~# mtd_debug write /dev/mtd0 0 39 firstdie
+Copied 39 bytes from firstdie to address 0x00000000 in flash
+:~# mtd_debug write /dev/mtd0 67108864 40 seconddie
+Copied 40 bytes from seconddie to address 0x04000000 in flash
+:~# mtd_debug read /dev/mtd0 0 134217728 read
+Copied 134217728 bytes from address 0x00000000 in flash to read
+:~# hexdump -C read
+00000000  74 61 20 77 72 69 74 65  73 20 73 6f 6d 65 74 68  |ta writes 
+someth|
+00000010  69 6e 67 20 69 6e 74 6f  20 74 68 65 20 66 69 72  |ing into 
+the fir|
+00000020  73 74 20 64 69 65 0a ff  ff ff ff ff ff ff ff ff  |st 
+die..........|
+00000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+04000000  74 61 20 77 72 69 74 65  73 20 73 6f 6d 65 74 68  |ta writes 
+someth|
+04000010  69 6e 67 20 69 6e 74 6f  20 74 68 65 20 73 65 63  |ing into 
+the sec|
+04000020  6f 6e 64 20 64 69 65 0a  ff ff ff ff ff ff ff ff  |ond 
+die.........|
+04000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+08000000
+:~# time mtd_debug erase /dev/mtd0 0 134217728
+Erased 134217728 bytes from address 0x00000000 in flash
+
+real	0m2.029s
+user	0m0.001s
+sys	0m1.853s
+
+:~# echo "ta writes a something crossing the dice" > cross-dice
+:~# mtd_debug write /dev/mtd0 67108857 40 cross-dice
+Copied 40 bytes from cross-dice to address 0x03fffff9 in flash
+
+:~# mtd_debug read /dev/mtd0 0 134217728 read
+Copied 134217728 bytes from address 0x00000000 in flash to read
+:~# hexdump -C read
+00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+03fffff0  ff ff ff ff ff ff ff ff  ff 74 61 20 77 72 69 74  |.........ta 
+writ|
+04000000  65 73 20 61 20 73 6f 6d  65 74 68 69 6e 67 20 63  |es a 
+something c|
+04000010  72 6f 73 73 69 6e 67 20  74 68 65 20 64 69 63 65  |rossing the 
+dice|
+04000020  0a ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+04000030  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+08000000
+:~# mtd_debug read /dev/mtd0 67108857 40 read
+Copied 40 bytes from address 0x03fffff9 in flash to read
+:~# hexdump -C read
+00000000  74 61 20 77 72 69 74 65  73 20 61 20 73 6f 6d 65  |ta writes a 
+some|
+00000010  74 68 69 6e 67 20 63 72  6f 73 73 69 6e 67 20 74  |thing 
+crossing t|
+00000020  68 65 20 64 69 63 65 0a                           |he dice.|
+00000028
+:~#
