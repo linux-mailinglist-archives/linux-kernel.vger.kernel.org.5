@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B09AE803073
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F5B803081
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbjLDKgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
+        id S1343788AbjLDKhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343788AbjLDKgj (ORCPT
+        with ESMTP id S231817AbjLDKhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:36:39 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451AD85;
-        Mon,  4 Dec 2023 02:36:45 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7E015C0013;
-        Mon,  4 Dec 2023 10:36:41 +0000 (UTC)
+        Mon, 4 Dec 2023 05:37:33 -0500
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9C7B6;
+        Mon,  4 Dec 2023 02:37:39 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9748F60010;
+        Mon,  4 Dec 2023 10:37:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701686203;
+        t=1701686257;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vWRVj9OK7hUSxLhwt1pyFNkS3HCNWPbhWMWb3LBA5hs=;
-        b=W7kWzqHSMSWJb0Qf6yauIHA0xVfz+H18EZ0p9R7jr5nv/fv4h1MFVAU3Xap32qufOa56JK
-        ptnLBMt5ntBQzN7FvrIdQSzwzBPbrRgBBdM/vdfo+YLUBVrcbtY6pjkItMjtHk5GaDj2oY
-        6HhuDo+RqfQEQ32Y1HQ6Qq2Cww14FFbYUMaadq4GU0dm4hoGnJlEoLMi5wpIUknTCNPNAV
-        rDW7WHPMK056ejsMd45n+DaLFT0Q8wrExnIWRaLs29TyHRRhzrAkERiSgemWpOlzSCbVPE
-        fd+K/g3Vef4FJG7R+7axwHsi83MdVvxYb86C1K1s56EGbuTc1jKlVTmckXG4xw==
-Date:   Mon, 4 Dec 2023 11:36:40 +0100
+        bh=RnURjJz1zj2iI+Yo08gh8Y5xpFjyOss3hVk+wsOXKm8=;
+        b=jGrqD6aq+br++ssVKJLITkxZqRn5OtU0PmFkMwy1JHMs4Yr27JJXvdDuLlmazSBSV9wkTh
+        pjzadBBumg1jw3zflVi2UqDfTCrgectVRDLD/LE0P5p4BJyZQbMAI8v4L4A0i0HH82jXQL
+        4yFGII6gzx1nICwaGEqmzG/qZDu/iT36Cao6K3OvmUdjw7SnzYZ9YwXLWqQBDGW10I4gIN
+        R7Rxj2QBu3tSsw4ZaSwxRXV6JojayJf+3Dlz3bGIeCm2hJL7RcvLq7PGUb5JnK5AZ1+TTM
+        sge2LNL3bnJpC0L9asM90j7KIgmhGS4869MVOOq1CpLHvjSpmerdqI/KlRMEtg==
+Date:   Mon, 4 Dec 2023 11:37:32 +0100
 From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
 To:     davem@davemloft.net
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -51,40 +51,40 @@ Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
         =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>
-Subject: Re: [RFC PATCH net-next v3 06/13] netlink: specs: add phy-index as
- a header parameter
-Message-ID: <20231204113640.508ac88b@device.home>
-In-Reply-To: <20231201163704.1306431-7-maxime.chevallier@bootlin.com>
+Subject: Re: [RFC PATCH net-next v3 08/13] netlink: specs: add ethnl PHY_GET
+ command set
+Message-ID: <20231204113732.052e1b78@device.home>
+In-Reply-To: <20231201163704.1306431-9-maxime.chevallier@bootlin.com>
 References: <20231201163704.1306431-1-maxime.chevallier@bootlin.com>
-        <20231201163704.1306431-7-maxime.chevallier@bootlin.com>
+        <20231201163704.1306431-9-maxime.chevallier@bootlin.com>
 Organization: Bootlin
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub,
+Hi all,
 
-On Fri,  1 Dec 2023 17:36:56 +0100
+On Fri,  1 Dec 2023 17:36:58 +0100
 Maxime Chevallier <maxime.chevallier@bootlin.com> wrote:
 
-> Update the spec to take the newly introduced phy-index as a generic
-> request parameter, and bump the generated ethtool-user.c|h accordingly.
+> The PHY_GET command, supporting both DUMP and GET operations, is used to
+> retrieve the list of PHYs connected to a netdevice, and get topology
+> information to know where exactly it sits on the physical link.
+> 
+> Add the netlink specs corresponding to that command, and bump the
+> ethtool-user.c|h autogenerated files.
 
-Just saw
-https://lore.kernel.org/netdev/20231202211759.343719-1-kuba@kernel.org/
-
-I'll drop the ethtool-user stuff from next versions then, sorry for the
-noise
+Same as for patch 06, I'll drop the ethtool-user stuff for next version.
 
 Maxime
