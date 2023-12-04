@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59ADA803FF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88EC803FFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235520AbjLDUgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:36:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
+        id S1346155AbjLDUhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:37:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235485AbjLDUgd (ORCPT
+        with ESMTP id S1346297AbjLDUgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:36:33 -0500
+        Mon, 4 Dec 2023 15:36:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B66C2D6B
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:34:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E247C433CD;
-        Mon,  4 Dec 2023 20:34:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120CE30C3
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FDDC433CC;
+        Mon,  4 Dec 2023 20:34:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701722098;
-        bh=utnA4ZmxMlETtUMbXwSY4jNxpOOsInsvF7s/KcfzNhE=;
+        s=k20201202; t=1701722100;
+        bh=eGm+sBvt0gdj+0zTu3T2RywpCFcezynjcVTWXyJLyW4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dAOMjfBKK4fws254udE6FcHWyUyRRcLqNhri20RAc5Q6CtXX3dmf/wHdplAZZ02S/
-         GfTRcaRH6MhqcY5xqe0rET6cZPUgLY2tPoT85ZQVMc0oYkuzTgfTag85/Jy7/yrAJ1
-         QzWqZ7hVno2t1csZQB9hwjIBUPsEQYAt8jwmeD/sKwygptESF1dqn5acJdHd3N090K
-         5ea2/7cge4/2RjvA39F6GdkyVRApIeevDTh6WCOBa9HJnvCr8AvH9Bc4D1UUJaA9Ln
-         sV7Ag1Y0lApYbm32qTZHrQTimU+G33HL49Tcr4sDOmI3BrtMfBFtQ7y8aZsQXNGr7H
-         D9HWhHKYSztSA==
+        b=iVXk2owoS/1lAMxzsrTb8Vvzoc0KNIez8bAtw79bv0ZhaDpsgFVg1Hwkas8lCZP0I
+         ZEN3vYcWvKktIOtDbZ8UCeKDBfO1FJzBMK8OBtiIkn03By01jKLclQUHKXo883KqgI
+         ZpHvVC1Vo5nrlnkHwcoAMl2T2WGaYyiRmHpM/wPi5uvGZzI5t8RwzChlU09iFIhSGO
+         aZMpk0WRRPyZQtvcAl6iVazG5f8vdUxXg8If317wIA142M47puQPZwO5K/+YkbH0Vy
+         k8wWp1+Nrt6c2SZkUBCxoKPG7YKTr6Id3DQQ+dH3C0EuJBr7s+Xhqx7nPI9FtD1t2m
+         8pN70Gfbw1BeA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ming Lei <ming.lei@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
-        David Jeffery <djeffery@redhat.com>,
-        John Pittman <jpittman@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 31/32] blk-mq: don't count completed flush data request as inflight in case of quiesce
-Date:   Mon,  4 Dec 2023 15:32:51 -0500
-Message-ID: <20231204203317.2092321-31-sashal@kernel.org>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.6 32/32] nvme-core: check for too small lba shift
+Date:   Mon,  4 Dec 2023 15:32:52 -0500
+Message-ID: <20231204203317.2092321-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204203317.2092321-1-sashal@kernel.org>
 References: <20231204203317.2092321-1-sashal@kernel.org>
@@ -55,67 +53,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Keith Busch <kbusch@kernel.org>
 
-[ Upstream commit 0e4237ae8d159e3d28f3cd83146a46f576ffb586 ]
+[ Upstream commit 74fbc88e161424b3b96a22b23a8e3e1edab9d05c ]
 
-Request queue quiesce may interrupt flush sequence, and the original request
-may have been marked as COMPLETE, but can't get finished because of
-queue quiesce.
+The block layer doesn't support logical block sizes smaller than 512
+bytes. The nvme spec doesn't support that small either, but the driver
+isn't checking to make sure the device responded with usable data.
+Failing to catch this will result in a kernel bug, either from a
+division by zero when stacking, or a zero length bio.
 
-This way is fine from driver viewpoint, because flush sequence is block
-layer concept, and it isn't related with driver.
-
-However, driver(such as dm-rq) can call blk_mq_queue_inflight() to count &
-drain inflight requests, then the wait & drain never gets done because
-the completed & not-finished flush request is counted as inflight.
-
-Fix this issue by not counting completed flush data request as inflight in
-case of quiesce.
-
-Cc: Mike Snitzer <snitzer@kernel.org>
-Cc: David Jeffery <djeffery@redhat.com>
-Cc: John Pittman <jpittman@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20231201085605.577730-1-ming.lei@redhat.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-mq.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ drivers/nvme/host/core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 6ab7f360ff2ac..20ecd0ab616f7 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1511,14 +1511,26 @@ void blk_mq_delay_kick_requeue_list(struct request_queue *q,
- }
- EXPORT_SYMBOL(blk_mq_delay_kick_requeue_list);
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index b4521deb1c716..dfc0e02150911 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1890,9 +1890,10 @@ static void nvme_update_disk_info(struct gendisk *disk,
  
-+static bool blk_is_flush_data_rq(struct request *rq)
-+{
-+	return (rq->rq_flags & RQF_FLUSH_SEQ) && !is_flush_rq(rq);
-+}
-+
- static bool blk_mq_rq_inflight(struct request *rq, void *priv)
- {
  	/*
- 	 * If we find a request that isn't idle we know the queue is busy
- 	 * as it's checked in the iter.
- 	 * Return false to stop the iteration.
-+	 *
-+	 * In case of queue quiesce, if one flush data request is completed,
-+	 * don't count it as inflight given the flush sequence is suspended,
-+	 * and the original flush data request is invisible to driver, just
-+	 * like other pending requests because of quiesce
+ 	 * The block layer can't support LBA sizes larger than the page size
+-	 * yet, so catch this early and don't allow block I/O.
++	 * or smaller than a sector size yet, so catch this early and don't
++	 * allow block I/O.
  	 */
--	if (blk_mq_request_started(rq)) {
-+	if (blk_mq_request_started(rq) && !(blk_queue_quiesced(rq->q) &&
-+				blk_is_flush_data_rq(rq) &&
-+				blk_mq_request_completed(rq))) {
- 		bool *busy = priv;
- 
- 		*busy = true;
+-	if (ns->lba_shift > PAGE_SHIFT) {
++	if (ns->lba_shift > PAGE_SHIFT || ns->lba_shift < SECTOR_SHIFT) {
+ 		capacity = 0;
+ 		bs = (1 << 9);
+ 	}
 -- 
 2.42.0
 
