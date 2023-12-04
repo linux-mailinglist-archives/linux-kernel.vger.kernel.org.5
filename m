@@ -2,100 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE81802E45
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:15:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EB8802E43
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbjLDJOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:14:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S230441AbjLDJOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:14:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjLDJOw (ORCPT
+        with ESMTP id S230046AbjLDJOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:14:52 -0500
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D85D101
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:14:55 -0800 (PST)
-Received: from luzhipeng.223.5.5.5 (unknown [125.120.155.9])
-        by mail-app4 (Coremail) with SMTP id cS_KCgBn8tV3mG1l9ZVIAA--.54758S2;
-        Mon, 04 Dec 2023 17:14:31 +0800 (CST)
-From:   Zhipeng Lu <alexious@zju.edu.cn>
-To:     alexious@zju.edu.cn
-Cc:     Zack Rusin <zackr@vmware.com>,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthew Auld <matthew.auld@intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] drm/vmwgfx: fix a memleak in vmw_gmrid_man_get_node
-Date:   Mon,  4 Dec 2023 17:14:16 +0800
-Message-Id: <20231204091416.3308430-1-alexious@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+        Mon, 4 Dec 2023 04:14:42 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83B0E6;
+        Mon,  4 Dec 2023 01:14:48 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ce5a0c37cfso238169b3a.3;
+        Mon, 04 Dec 2023 01:14:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701681288; x=1702286088; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=td7arQQdUq802c/iq8WzPBS2L5rlsrypnKsRbx7YZ7Q=;
+        b=ng6vYGRCQP/ncD+Qvk22Gm7VEtdsYHiJGUlXc5AryQKJhrHw+02TbWkWR7LNKzrx3A
+         NbYb6zuImU5SO+QrYNIHtsTIq6yuvGQs5BDzZEOhyRXbAv2vy+JN9SlqJ5D/YpG0IAPV
+         Uk4mk+29kR4HA2mihb0fD460OOFipO87UcXLNQeBKOv+Ibj8gxtAmeopX2vWfyjWf5VJ
+         6mEbxn2k4A8lykg58oMnBF7bxtBuqkEYg+dt2DAGdSOP0PhOV00vIIoe4zU26NtssS9R
+         kEyB6/QtprfIhKKAf4mKV/Z5QJBjfjlDnUAqw9victdBSh0cpEiFXPefIqDNiXdw9j9N
+         7kZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701681288; x=1702286088;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=td7arQQdUq802c/iq8WzPBS2L5rlsrypnKsRbx7YZ7Q=;
+        b=Xj5RIA7wPzeiw5/eE7RRAccAfAyRyVFr4xzE1fpn+Zcf1K0bLuuP6tZu1yX32FYJFr
+         eqr2XapZ/4GnKfT1TQpKTAE9TD1AVT7fNFefHNMjmQ9GT52WIdeZAMBXOY3je+ZjCblU
+         usD9NRVmXytpnn66DkIQEy5/OUUp7Cb8AHtEdWqrgckUIr4te5A2DfgjYZTvQG7jVeuI
+         fUIktclcf0Hz/nsoOLodZZb3ggqFgZpPfhrE8wnuy23uCR0JxoS3yV5t2PF+laFqskV7
+         PUhGMLUsI6YCFM8fjq/BnqxPgiKG5sRCs4EK9XM30EFsGWiPTkXXujcw9SLbwbHuxMSP
+         n3Rg==
+X-Gm-Message-State: AOJu0YzMG2IqE0HaQqlljRgmUjjlv3iEJsNDltHxFuPNsFTx0YjTojq8
+        DtSyzMFp/N1gkXeMNr60blc=
+X-Google-Smtp-Source: AGHT+IFXKxEEFX8vP4aBeoqt1BTZEmVpqXJif6onxC1JfujMmktO4OxKGd9+qeCqhfM51JReO+Rvfg==
+X-Received: by 2002:a05:6a00:3495:b0:6ce:5312:c413 with SMTP id cp21-20020a056a00349500b006ce5312c413mr660791pfb.15.1701681288078;
+        Mon, 04 Dec 2023 01:14:48 -0800 (PST)
+Received: from [10.10.14.80] (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id m17-20020aa78a11000000b006be4bb0d2dcsm7349362pfa.149.2023.12.04.01.14.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 01:14:47 -0800 (PST)
+Message-ID: <ad6fb2a1-c376-4e03-8b18-12b228799bcc@gmail.com>
+Date:   Mon, 4 Dec 2023 17:14:45 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/2] Add Facebook Minerva Harma (AST2600) BMC
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20231204081029.2272626-1-peteryin.openbmc@gmail.com>
+ <fddcbad4-5368-4c2a-ba87-f4c4326a8385@linaro.org>
+ <3ff5dcd7-69a3-4098-92c6-ed1e8f0bd8f9@gmail.com>
+ <f2519d16-1b34-4d77-be69-cf80fa3415a1@linaro.org>
+From:   PeterYin <peteryin.openbmc@gmail.com>
+In-Reply-To: <f2519d16-1b34-4d77-be69-cf80fa3415a1@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cS_KCgBn8tV3mG1l9ZVIAA--.54758S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKr48WFykJw1fJF4xAFy5Arb_yoWDtrc_ua
-        yjqr1vq3y3uFn5uwnIv3s8ua12kw4ruFs7uFs5ta43J3sIqrykWry7Wr98Xw4xWFsrCryD
-        ua1UGw1fArnI9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbV8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
-        3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-        cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-        z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JUhNVgUUUUU=
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When ida_alloc_max fails, resources allocated before should be freed,
-including *res allocated by kmalloc and ttm_resource_init.
 
-Fixes: d3bcb4b02fe9 ("drm/vmwgfx: switch the TTM backends to self alloc")
-Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
----
 
-Changelog:
+Krzysztof Kozlowski 於 12/4/23 17:06 寫道:
+> On 04/12/2023 09:46, PeterYin wrote:
+>>
+>> Krzysztof Kozlowski 於 12/4/23 16:20 寫道:
+>>> On 04/12/2023 09:10, Peter Yin wrote:
+>>>> Summary:
+>>>> Add linux device tree entry related to Minerva Harma
+>>>> specific devices connected to BMC SoC.
+>>>>
+>>>> v4:https://lore.kernel.org/all/20231204054131.1845775-3-peter.yin@quantatw.com/
+>>>> v3:https://lore.kernel.org/all/20231123050415.3441429-3-peteryin.openbmc@gmail.com/
+>>>> v2:https://lore.kernel.org/all/cdbc75b9-3be1-4017-9bee-c8f161b6843c@linaro.org/
+>>>> v1:https://lore.kernel.org/all/20231024082404.735843-3-peteryin.openbmc@gmail.com/
+>>>>
+>>>> Change log
+>>>> v4 -> v5
+>>>>     - Rename document and file from minerva-harma to harma.
+>>>
+>>> You must explain that you dropped people's review for some reason.
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>> Due to changes in the project name and content, please assist in
+>> reviewing it.
+> 
+> When dropping people's tag, the patch changelog (---) should say that
+> you dropped people's tag.
+> 
+> Best regards,
+> Krzysztof
+> 
+Thank you for your explanation. I will pay attention to it next time.
 
-v2: Adding {} to correct the if statement
----
- drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c b/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c
-index ceb4d3d3b965..a0b47c9b33f5 100644
---- a/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c
-+++ b/drivers/gpu/drm/vmwgfx/vmwgfx_gmrid_manager.c
-@@ -64,8 +64,11 @@ static int vmw_gmrid_man_get_node(struct ttm_resource_manager *man,
- 	ttm_resource_init(bo, place, *res);
- 
- 	id = ida_alloc_max(&gman->gmr_ida, gman->max_gmr_ids - 1, GFP_KERNEL);
--	if (id < 0)
-+	if (id < 0) {
-+		ttm_resource_fini(man, *res);
-+		kfree(*res);
- 		return id;
-+	}
- 
- 	spin_lock(&gman->lock);
- 
--- 
-2.34.1
-
+Thanks,
+Peter.
