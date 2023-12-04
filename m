@@ -2,159 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EE0A804162
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10CC804166
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbjLDWNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:13:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
+        id S234466AbjLDWO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:14:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjLDWNd (ORCPT
+        with ESMTP id S229847AbjLDWOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:13:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D29CB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:13:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701728019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ArZo5LGYTBaOx/Vwapx48n76DlSMubqakK9kENEDfug=;
-        b=KBZdqTNvs6DEFlZicCzKa7UfMpTAup4yldI5tmzxBi99yyMHYhfrGx4isLmMiLS4Zi1XQ8
-        6vOIJ/XX4FMDRHiKr2+/PIfgWLdxB72a073luy+slD4p6/QEoX5W6CgHv12EOdDn8hhpoj
-        glfQG0GqSQlqADpICzh/eW00D6y9Iv8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-296-7cMHBwTLO56OA99lFMhS0w-1; Mon, 04 Dec 2023 17:13:37 -0500
-X-MC-Unique: 7cMHBwTLO56OA99lFMhS0w-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-54c7a341490so1569286a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 14:13:36 -0800 (PST)
+        Mon, 4 Dec 2023 17:14:54 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D560FF;
+        Mon,  4 Dec 2023 14:15:00 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a1a5772b8a5so363454966b.1;
+        Mon, 04 Dec 2023 14:14:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701728098; x=1702332898; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cT5ING78Aw6QvaBr7RPKXeEm1alnh4pQOnp24KNcG6U=;
+        b=LBcrlt+MKjEO3c31uU2GKLPLSDABi1fW5KFcLhihgKg3/4NIz0K0I0sn0nT/sIiwe9
+         7KhY/zMJWyRWpoCxmZF6Sm84vz6Ie0tWoHIOSR1NVoWHB+8pTnhM+P4f1fkU0lt3qW6v
+         B/nMBm3PptrsYM3tlMp+JoK3BBC6d3VH9AP8visDYkeyFtFc0dUoaFpSQmGnOwYpgNmi
+         zm05yPVl2uyF1VcRUrUOj3u+Z7zXEO/0N4ZS/XzjfmO8yBIobBKlPV+3DDQs/EhxxqmF
+         c+aN7EkQarbEYUkvYqzRnjhlLi0K5I3JMlX720yy4wrh+R7/FrXzj7lFI5Yeeaqhcv5D
+         BULg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701728015; x=1702332815;
+        d=1e100.net; s=20230601; t=1701728098; x=1702332898;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ArZo5LGYTBaOx/Vwapx48n76DlSMubqakK9kENEDfug=;
-        b=dq2a7YDBz0SXHQ7426Fu2yBe7S7uPLbhAfcl5shNcJRLr14jzlXZyVh/FxpIhzDHYo
-         QzQxfNihlF88Yu4ocTb8nIWlTFgRf5VLg3qZTjKOKfaaQzXiBZ1iTFhY+n9OA3YbOMgd
-         /Djv71RLWw/CcxMq9FZfH8h22yQ2F6nrfxHctAIq14Q7xrnV7JuD21QmpSMQ54GzdL23
-         Zvt5y9abXaBPApHRe+K0uo+iauzlorRuvWmPd6AWKxczI5MjVR3mYgJ7iLFMWFRD9y7Z
-         VnyBsKr36X4F/ToKU8ODPD+H+dg90BcMWxR8YIODsuAwcidoWasHz+/pDu3aOuiRwTAc
-         CIHg==
-X-Gm-Message-State: AOJu0Yzweq/qMjAHhj/2Qs1S7hXOGhOZLjxF2uYB9udb9maJ1Wmtj7pp
-        4o7qGT2b+bjXqZrUdVyob1a37QbmcToXRO4BL4JAlFmHs6zcB4GREqKINtz59BCfus4Xwjd+X1D
-        0GieltSDXi6CSOmnbJwgSwNex/yXjmiEsSeM0EK4N
-X-Received: by 2002:a05:6402:516b:b0:54c:5257:f3 with SMTP id d11-20020a056402516b00b0054c525700f3mr3015336ede.83.1701728015710;
-        Mon, 04 Dec 2023 14:13:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFqe51V0RtPfHz1FkjZCGSt46EpCWYnCgrnNtV50FNxDk0c5+hbeha8jwaf4Di4h6vle9HklM0dcqkIlazgQvk=
-X-Received: by 2002:a05:6402:516b:b0:54c:5257:f3 with SMTP id
- d11-20020a056402516b00b0054c525700f3mr3015327ede.83.1701728015401; Mon, 04
- Dec 2023 14:13:35 -0800 (PST)
+        bh=cT5ING78Aw6QvaBr7RPKXeEm1alnh4pQOnp24KNcG6U=;
+        b=w/NrVxx3J3XPJaWwZmCON9oTi9CWh/jeaUiHtQmZY1T1GnvJ891gTD8IcY+ciCgLNh
+         cf+9srdRa5Rh5SVc1Bqrz8/SqTNaXL7Cql51jhT1BNUEiV6CtgwEW+P9efkOiirPXwbw
+         45klZb6z+H6IaAsWcsOO/0tOdEj8ehE65kDyCz+J7KvXDCi079LGueQ3VRDat5GoZjEO
+         6ElP++dhI8XBlBkrYhsvB5ThN5X3508SqREFs7hh0WN10VGlQHqaekjphT+LyxpURGET
+         jiwEPk1JOMyY9mGUxc642be2Dn3HYSZYhePap/4YONMwJKuFiDGxJTL0ICV5deHetAaW
+         dsZg==
+X-Gm-Message-State: AOJu0YyQXHWH+sBdOahJXXt2bYEgIkXH+n2Bj9zqG4kEidFejvjOUk22
+        F9eJvKylFq5m6FJDajGQTay3kDjf9mfmpi8EkGJWZ8YWyzk=
+X-Google-Smtp-Source: AGHT+IFoeGilC7KQ6Unb3jfilMiyCDHGb3JBCgBI+bgOUtA4U8OnYlGMdCUBhy2PrVAbC60n5Rk0rZxYScsgRykKnXE=
+X-Received: by 2002:a17:906:74c2:b0:a19:a19b:78ac with SMTP id
+ z2-20020a17090674c200b00a19a19b78acmr2117622ejl.111.1701728098257; Mon, 04
+ Dec 2023 14:14:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20231202150807.2571103-1-srasheed@marvell.com> <CADEbmW12OWS6et2wp3skicUM=V81x8dS4_aySYP1Ok0kEc2M9Q@mail.gmail.com>
-In-Reply-To: <CADEbmW12OWS6et2wp3skicUM=V81x8dS4_aySYP1Ok0kEc2M9Q@mail.gmail.com>
-From:   Michal Schmidt <mschmidt@redhat.com>
-Date:   Mon, 4 Dec 2023 23:13:24 +0100
-Message-ID: <CADEbmW3K7QkfniBtmMt=SZtwZWez30F+sM=656wqmZR8=ig1jQ@mail.gmail.com>
-Subject: Re: [PATCH net v1] octeon_ep: initialise control mbox tasks before
- using APIs
-To:     Shinas Rasheed <srasheed@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hgani@marvell.com, vimleshk@marvell.com, egallen@redhat.com,
-        pabeni@redhat.com, horms@kernel.org, kuba@kernel.org,
-        davem@davemloft.net, wizhao@redhat.com, konguyen@redhat.com,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
+References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-3-khuey@kylehuey.com>
+In-Reply-To: <20231204201406.341074-3-khuey@kylehuey.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 4 Dec 2023 14:14:46 -0800
+Message-ID: <CAEf4BzbDKiP7femK5DZ8jeyK0u63KrV+FogEDVPaYS7mc4if7g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
+ program suppresses SIGIO.
+To:     Kyle Huey <me@kylehuey.com>
+Cc:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+        "Robert O'Callahan" <robert@ocallahan.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 11:10=E2=80=AFPM Michal Schmidt <mschmidt@redhat.com=
-> wrote:
+On Mon, Dec 4, 2023 at 12:14=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
 >
-> On Sat, Dec 2, 2023 at 4:08=E2=80=AFPM Shinas Rasheed <srasheed@marvell.c=
-om> wrote:
-> > Do INIT_WORK for the various workqueue tasks before the first
-> > invocation of any control net APIs. Since octep_ctrl_net_get_info
-> > was called before the control net receive work task was even
-> > initialised, the function call wasn't returning actual firmware
-> > info queried from Octeon.
+> The test sets a hardware breakpoint and uses a bpf program to suppress th=
+e
+> I/O availability signal if the ip matches the expected value.
 >
-> It might be more accurate to say that octep_ctrl_net_get_info depends
-> on the processing of OEI events. This happens in intr_poll_task.
-> That's why intr_poll_task needs to be queued earlier.
-> Did octep_send_mbox_req previously always fail with EAGAIN after
-          ^^^^^^^^^^^^^^^^^^^^^
-I meant octep_ctrl_net_get_info here.
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> ---
+>  .../selftests/bpf/prog_tests/perf_skip.c      | 95 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
+>  2 files changed, 118 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/t=
+esting/selftests/bpf/prog_tests/perf_skip.c
+> new file mode 100644
+> index 000000000000..b269a31669b7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> @@ -0,0 +1,95 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define _GNU_SOURCE
+> +#include <test_progs.h>
+> +#include "test_perf_skip.skel.h"
+> +#include <linux/hw_breakpoint.h>
+> +#include <sys/mman.h>
+> +
+> +#define BPF_OBJECT            "test_perf_skip.bpf.o"
 
-> running into the 500 ms timeout in octep_send_mbox_req?
->
-> Apropos octep_send_mbox_req... I think it has a race. "d" is put on
-> the ctrl_req_wait_list after sending the request to the hardware. If
-> the response arrives quickly, "d" might not yet be on the list when
-> process_mbox_resp looks for it.
-> Also, what protects ctrl_req_wait_list from concurrent access?
->
-> Michal
->
-> > Fixes: 8d6198a14e2b ("octeon_ep: support to fetch firmware info")
-> > Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
-> > ---
-> >  .../net/ethernet/marvell/octeon_ep/octep_main.c    | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/driv=
-ers/net/ethernet/marvell/octeon_ep/octep_main.c
-> > index 552970c7dec0..3e7bfd3e0f56 100644
-> > --- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-> > +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-> > @@ -1193,6 +1193,13 @@ int octep_device_setup(struct octep_device *oct)
-> >         if (ret)
-> >                 return ret;
-> >
-> > +       INIT_WORK(&oct->tx_timeout_task, octep_tx_timeout_task);
-> > +       INIT_WORK(&oct->ctrl_mbox_task, octep_ctrl_mbox_task);
-> > +       INIT_DELAYED_WORK(&oct->intr_poll_task, octep_intr_poll_task);
-> > +       oct->poll_non_ioq_intr =3D true;
-> > +       queue_delayed_work(octep_wq, &oct->intr_poll_task,
-> > +                          msecs_to_jiffies(OCTEP_INTR_POLL_TIME_MSECS)=
-);
-> > +
-> >         atomic_set(&oct->hb_miss_cnt, 0);
-> >         INIT_DELAYED_WORK(&oct->hb_task, octep_hb_timeout_task);
-> >
-> > @@ -1333,13 +1340,6 @@ static int octep_probe(struct pci_dev *pdev, con=
-st struct pci_device_id *ent)
-> >         queue_delayed_work(octep_wq, &octep_dev->hb_task,
-> >                            msecs_to_jiffies(octep_dev->conf->fw_info.hb=
-_interval));
-> >
-> > -       INIT_WORK(&octep_dev->tx_timeout_task, octep_tx_timeout_task);
-> > -       INIT_WORK(&octep_dev->ctrl_mbox_task, octep_ctrl_mbox_task);
-> > -       INIT_DELAYED_WORK(&octep_dev->intr_poll_task, octep_intr_poll_t=
-ask);
-> > -       octep_dev->poll_non_ioq_intr =3D true;
-> > -       queue_delayed_work(octep_wq, &octep_dev->intr_poll_task,
-> > -                          msecs_to_jiffies(OCTEP_INTR_POLL_TIME_MSECS)=
-);
-> > -
-> >         netdev->netdev_ops =3D &octep_netdev_ops;
-> >         octep_set_ethtool_ops(netdev);
-> >         netif_carrier_off(netdev);
-> > --
-> > 2.25.1
-> >
+leftover?
 
+> +
+> +static void handle_sig(int)
+> +{
+> +       ASSERT_OK(1, "perf event not skipped");
+> +}
+> +
+> +static noinline int test_function(void)
+> +{
+
+please add
+
+asm volatile ("");
+
+here to prevent compiler from actually inlining at the call site
+
+> +       return 0;
+> +}
+> +
+> +void serial_test_perf_skip(void)
+> +{
+> +       sighandler_t previous;
+> +       int duration =3D 0;
+> +       struct test_perf_skip *skel =3D NULL;
+> +       int map_fd =3D -1;
+> +       long page_size =3D sysconf(_SC_PAGE_SIZE);
+> +       uintptr_t *ip =3D NULL;
+> +       int prog_fd =3D -1;
+> +       struct perf_event_attr attr =3D {0};
+> +       int perf_fd =3D -1;
+> +       struct f_owner_ex owner;
+> +       int err;
+> +
+> +       previous =3D signal(SIGIO, handle_sig);
+> +
+> +       skel =3D test_perf_skip__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_load"))
+> +               goto cleanup;
+> +
+> +       prog_fd =3D bpf_program__fd(skel->progs.handler);
+> +       if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
+> +               goto cleanup;
+> +
+> +       map_fd =3D bpf_map__fd(skel->maps.ip);
+> +       if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
+> +               goto cleanup;
+> +
+> +       ip =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, =
+map_fd, 0);
+> +       if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
+> +               goto cleanup;
+> +
+> +       *ip =3D (uintptr_t)test_function;
+> +
+> +       attr.type =3D PERF_TYPE_BREAKPOINT;
+> +       attr.size =3D sizeof(attr);
+> +       attr.bp_type =3D HW_BREAKPOINT_X;
+> +       attr.bp_addr =3D (uintptr_t)test_function;
+> +       attr.bp_len =3D sizeof(long);
+> +       attr.sample_period =3D 1;
+> +       attr.sample_type =3D PERF_SAMPLE_IP;
+> +       attr.pinned =3D 1;
+> +       attr.exclude_kernel =3D 1;
+> +       attr.exclude_hv =3D 1;
+> +       attr.precise_ip =3D 3;
+> +
+> +       perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
+> +       if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
+
+please don't use CHECK() macro, stick to ASSERT_xxx()
+
+also, we are going to run all this on different hardware and VMs, see
+how we skip tests if hardware support is not there. See test__skip
+usage in prog_tests/perf_branches.c, as one example
+
+> +               goto cleanup;
+> +
+> +       err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
+
+I assume this is what will send SIGIO, right? Can you add a small
+comment explicitly saying this?
+
+> +       if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
+> +               goto cleanup;
+> +
+> +       owner.type =3D F_OWNER_TID;
+> +       owner.pid =3D gettid();
+> +       err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
+> +       if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
+> +               goto cleanup;
+> +
+> +       err =3D ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
+> +       if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
+> +               goto cleanup;
+
+we have a better way to do this, please use
+bpf_program__attach_perf_event() instead
+
+> +
+> +       test_function();
+> +
+> +cleanup:
+> +       if (perf_fd >=3D 0)
+> +               close(perf_fd);
+> +       if (ip)
+> +               munmap(ip, page_size);
+> +       if (skel)
+> +               test_perf_skip__destroy(skel);
+> +
+> +       signal(SIGIO, previous);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/t=
+esting/selftests/bpf/progs/test_perf_skip.c
+> new file mode 100644
+> index 000000000000..ef01a9161afe
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 1);
+> +       __uint(map_flags, BPF_F_MMAPABLE);
+> +       __type(key, uint32_t);
+> +       __type(value, uintptr_t);
+> +} ip SEC(".maps");
+
+please use global variable:
+
+__u64 ip;
+
+and then access it from user-space side through skeleton
+
+skel->bss.ip =3D &test_function;
+
+> +
+> +SEC("perf_event")
+> +int handler(struct bpf_perf_event_data *data)
+> +{
+> +       const uint32_t index =3D 0;
+> +       uintptr_t *v =3D bpf_map_lookup_elem(&ip, &index);
+> +
+> +       return !(v && *v =3D=3D PT_REGS_IP(&data->regs));
+
+and so we the above global var suggestion this will be just:
+
+return ip =3D=3D PT_REGS_IP(&data->regs);
+
+> +}
+> +
+> +char _license[] SEC("license") =3D "GPL";
+> --
+> 2.34.1
+>
