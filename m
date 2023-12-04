@@ -2,204 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E443F803E09
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 528E9803E10
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbjLDTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:05:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        id S231509AbjLDTHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:07:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjLDTE6 (ORCPT
+        with ESMTP id S231266AbjLDTHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:04:58 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD18BD7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:05:03 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d03bcf27e9so20605905ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:05:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701716703; x=1702321503; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WnV955wezI/faXxHbJEEhr+rw1fOAIjutAuKojl0JeQ=;
-        b=gIu8DFfmbeLzZPHUSXfLqemHw1kpK7yM5Tvn/fXm4QUHRJvPP8ndVvvmWGY7gyeEQ5
-         trHthDxtKRS1G748jxxjJtS2wycT1ua/LFJdwYRDwyE1kisjnRX0XdNYUXalvdSyO3Xf
-         p4OojoBVqw2svv+GGf7/sUF9F08sA+S16EOK2fxKfRUHil05/Z5sQ2tC5JKicdI9fhf2
-         vk/NjqlPYS01M53gPhXwLPH6Y/YKCYnEuigsx/upxKjc7w9YDZlc9F8/L/LEm7S0p4Xk
-         HGXvyh/FV+JBFzt3fOIaEtegU9YuATY3J7uuwRq6THxOJeg5WGSSP6S2HGBigZ65EqHg
-         Fyeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701716703; x=1702321503;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WnV955wezI/faXxHbJEEhr+rw1fOAIjutAuKojl0JeQ=;
-        b=QpWMqXOudiRZJ+hB8aHJv4MZsK839ELJby6Ox+8itOr2kLpkC76iV2WunOVGpUUyhp
-         MUJZ46hD/i3Fug13XlpP5Zyq0PL4rcQ8a1aDO8FXqePx9tR7jEVtvW2dhONTfLYTBvsP
-         vt/N2Z/e6I2CMR24nIPpO0WhurY2N/Pa7iRhfTXkGnUrwhs6UJC6chnRcy3FPfVOQvBK
-         KqTn8HiGfo+yTto/DM0ymMsV31Dy2TDB94agyNJxukW+hHDE6gwHpsWJ2yP3jaa36n1B
-         TL3couZCFvRlCX/pJnlLsQPG43CVxMqueqO45esx8s8AgjrHs5YHuMf0cWLTC4yiW2Wu
-         2Haw==
-X-Gm-Message-State: AOJu0YxyStlwQlgvMRXB/jRFjNRq+ILRZ6ne9o/wGynQEsf4GrPMnf4T
-        QG04kAvqr4qgHlSCqVPjP4mfiw==
-X-Google-Smtp-Source: AGHT+IH4DZanW/KNwa0uyD6pEUJfokz8iC0zod8aStQj4slf472OadpXT3yEwARfScyGLpgOau04BA==
-X-Received: by 2002:a17:902:dac7:b0:1d0:7d83:fdd9 with SMTP id q7-20020a170902dac700b001d07d83fdd9mr2350350plx.122.1701716703131;
-        Mon, 04 Dec 2023 11:05:03 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id y21-20020a170902ed5500b001d04c097d32sm7188363plb.270.2023.12.04.11.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 11:05:02 -0800 (PST)
-Date:   Mon, 4 Dec 2023 11:05:00 -0800
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: Use asm-generic for {read,write}{bwlq} and
- their relaxed variant
-Message-ID: <ZW4i3MqVRg21RmRV@ghost>
-References: <20231202133813.4003-1-jszhang@kernel.org>
+        Mon, 4 Dec 2023 14:07:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72F6D7
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701716839; x=1733252839;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+ksUC7k7dsrCMckhfycqnTyhivxgCIkSpxqzHRlpIh0=;
+  b=DtW7nCrdMTfjs4vPiL3G4Mu2cXxN38j8GFWGEe3t467BRZ5mOMtrHI3O
+   T6XXkod5tiePSSsc82LD2aKJfe/kfsz7bHj62qGleg3m+9iPI4QMGwKA7
+   kvxFeEIrbgWlIcN6S6bppFMgKz+X+T51SIsf0O3Fjwphr+L0bwcLhCeqQ
+   URvyQRVRVRz6uOcXUZz0QN4ViKwdsa6c33Ys3CANkHoA3q8HPQL2zE+Tc
+   FDWMUq8VSFpbSiAFApLb725tASaYy+JuiO0x+uLbAyx68CgIBus3T/eeA
+   POZk7GEVoZ5JGR4NlS0E3lFwLKT9lAkWYeeqW9frC0mDgd85gSO1FfBUd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="678865"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="678865"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 11:07:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="841164643"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="841164643"
+Received: from nstrutt-mobl1.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.209.45.160])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 11:07:17 -0800
+From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
+To:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
+        peterz@infradead.org, linux-kernel@vger.kernel.org
+Cc:     rick.p.edgecombe@intel.com, christina.schimpe@intel.com
+Subject: [PATCH] x86: Check if shadow stack is active for ssp_get()
+Date:   Mon,  4 Dec 2023 11:07:09 -0800
+Message-Id: <20231204190709.3907254-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231202133813.4003-1-jszhang@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 02, 2023 at 09:38:13PM +0800, Jisheng Zhang wrote:
-> The asm-generic implementation is functionally identical to the riscv
-> version. At the same time, the readl{q}_relaxed is replaced with the
-> raw version for nommu building.
-> 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
-> 
-> Since v1:
->  - fix nommu build
-> 
->  arch/riscv/include/asm/mmio.h  | 62 +---------------------------------
->  arch/riscv/include/asm/timex.h |  6 ++--
->  2 files changed, 4 insertions(+), 64 deletions(-)
-> 
-> diff --git a/arch/riscv/include/asm/mmio.h b/arch/riscv/include/asm/mmio.h
-> index 4c58ee7f95ec..a491590593ca 100644
-> --- a/arch/riscv/include/asm/mmio.h
-> +++ b/arch/riscv/include/asm/mmio.h
-> @@ -80,54 +80,7 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
->  #endif
->  
->  /*
-> - * Unordered I/O memory access primitives.  These are even more relaxed than
-> - * the relaxed versions, as they don't even order accesses between successive
-> - * operations to the I/O regions.
-> - */
-> -#define readb_cpu(c)		({ u8  __r = __raw_readb(c); __r; })
-> -#define readw_cpu(c)		({ u16 __r = le16_to_cpu((__force __le16)__raw_readw(c)); __r; })
-> -#define readl_cpu(c)		({ u32 __r = le32_to_cpu((__force __le32)__raw_readl(c)); __r; })
-> -
-> -#define writeb_cpu(v, c)	((void)__raw_writeb((v), (c)))
-> -#define writew_cpu(v, c)	((void)__raw_writew((__force u16)cpu_to_le16(v), (c)))
-> -#define writel_cpu(v, c)	((void)__raw_writel((__force u32)cpu_to_le32(v), (c)))
-> -
-> -#ifdef CONFIG_64BIT
-> -#define readq_cpu(c)		({ u64 __r = le64_to_cpu((__force __le64)__raw_readq(c)); __r; })
-> -#define writeq_cpu(v, c)	((void)__raw_writeq((__force u64)cpu_to_le64(v), (c)))
-> -#endif
-> -
-> -/*
-> - * Relaxed I/O memory access primitives. These follow the Device memory
-> - * ordering rules but do not guarantee any ordering relative to Normal memory
-> - * accesses.  These are defined to order the indicated access (either a read or
-> - * write) with all other I/O memory accesses to the same peripheral. Since the
-> - * platform specification defines that all I/O regions are strongly ordered on
-> - * channel 0, no explicit fences are required to enforce this ordering.
-> - */
-> -/* FIXME: These are now the same as asm-generic */
-> -#define __io_rbr()		do {} while (0)
-> -#define __io_rar()		do {} while (0)
-> -#define __io_rbw()		do {} while (0)
-> -#define __io_raw()		do {} while (0)
-> -
-> -#define readb_relaxed(c)	({ u8  __v; __io_rbr(); __v = readb_cpu(c); __io_rar(); __v; })
-> -#define readw_relaxed(c)	({ u16 __v; __io_rbr(); __v = readw_cpu(c); __io_rar(); __v; })
-> -#define readl_relaxed(c)	({ u32 __v; __io_rbr(); __v = readl_cpu(c); __io_rar(); __v; })
-> -
-> -#define writeb_relaxed(v, c)	({ __io_rbw(); writeb_cpu((v), (c)); __io_raw(); })
-> -#define writew_relaxed(v, c)	({ __io_rbw(); writew_cpu((v), (c)); __io_raw(); })
-> -#define writel_relaxed(v, c)	({ __io_rbw(); writel_cpu((v), (c)); __io_raw(); })
-> -
-> -#ifdef CONFIG_64BIT
-> -#define readq_relaxed(c)	({ u64 __v; __io_rbr(); __v = readq_cpu(c); __io_rar(); __v; })
-> -#define writeq_relaxed(v, c)	({ __io_rbw(); writeq_cpu((v), (c)); __io_raw(); })
-> -#endif
-> -
-> -/*
-> - * I/O memory access primitives.  Reads are ordered relative to any following
-> - * Normal memory read and delay() loop.  Writes are ordered relative to any
-> - * prior Normal memory write.  The memory barriers here are necessary as RISC-V
-> + * I/O barriers. The memory barriers here are necessary as RISC-V
->   * doesn't define any ordering between the memory space and the I/O space.
->   */
->  #define __io_br()	do {} while (0)
-> @@ -135,17 +88,4 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
->  #define __io_bw()	({ __asm__ __volatile__ ("fence w,o" : : : "memory"); })
->  #define __io_aw()	mmiowb_set_pending()
->  
-> -#define readb(c)	({ u8  __v; __io_br(); __v = readb_cpu(c); __io_ar(__v); __v; })
-> -#define readw(c)	({ u16 __v; __io_br(); __v = readw_cpu(c); __io_ar(__v); __v; })
-> -#define readl(c)	({ u32 __v; __io_br(); __v = readl_cpu(c); __io_ar(__v); __v; })
-> -
-> -#define writeb(v, c)	({ __io_bw(); writeb_cpu((v), (c)); __io_aw(); })
-> -#define writew(v, c)	({ __io_bw(); writew_cpu((v), (c)); __io_aw(); })
-> -#define writel(v, c)	({ __io_bw(); writel_cpu((v), (c)); __io_aw(); })
-> -
-> -#ifdef CONFIG_64BIT
-> -#define readq(c)	({ u64 __v; __io_br(); __v = readq_cpu(c); __io_ar(__v); __v; })
-> -#define writeq(v, c)	({ __io_bw(); writeq_cpu((v), (c)); __io_aw(); })
-> -#endif
-> -
->  #endif /* _ASM_RISCV_MMIO_H */
-> diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
-> index a06697846e69..9ff9f398f61a 100644
-> --- a/arch/riscv/include/asm/timex.h
-> +++ b/arch/riscv/include/asm/timex.h
-> @@ -17,18 +17,18 @@ typedef unsigned long cycles_t;
->  #ifdef CONFIG_64BIT
->  static inline cycles_t get_cycles(void)
->  {
-> -	return readq_relaxed(clint_time_val);
-> +	return __raw_readq(clint_time_val);
->  }
->  #else /* !CONFIG_64BIT */
->  static inline u32 get_cycles(void)
->  {
-> -	return readl_relaxed(((u32 *)clint_time_val));
-> +	return __raw_readl(((u32 *)clint_time_val));
->  }
->  #define get_cycles get_cycles
->  
->  static inline u32 get_cycles_hi(void)
->  {
-> -	return readl_relaxed(((u32 *)clint_time_val) + 1);
-> +	return __raw_readl(((u32 *)clint_time_val) + 1);
->  }
->  #define get_cycles_hi get_cycles_hi
->  #endif /* CONFIG_64BIT */
-> -- 
-> 2.42.0
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+The shadow stack regset ->set() handler (ssp_set()) checks the regset
+->active() handler (ssp_active()) to verify that shadow stack is active.
+When shadow stack is active, the XFEATURE_CET_USER xfeature will not be in
+the init state because there is at least one bit set (SHSTK_EN). So
+ssp_set() should be able to safely operate on the xfeature in the xsave
+buffer after checking ssp_active(). If it finds it is in the init state
+anyway, it warns because an unexpected situation has been encountered.
 
-Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
+But ssp_get(), the regset_get() handler, doesn't check ssp_active(). This
+was under the assumption that all the callers check the ->active()
+handler. It is indeed normally the case, but Christina Schimpe reports
+that and a warning like the following can be generated:
+
+WARNING: CPU: 5 PID: 1773 at arch/x86/kernel/fpu/regset.c:198 ssp_get+0x89/0xa0
+[...]
+Call Trace:
+<TASK>
+? show_regs+0x6e/0x80
+? ssp_get+0x89/0xa0
+? __warn+0x91/0x150
+? ssp_get+0x89/0xa0
+? report_bug+0x19d/0x1b0
+? handle_bug+0x46/0x80
+? exc_invalid_op+0x1d/0x80
+? asm_exc_invalid_op+0x1f/0x30
+? __pfx_ssp_get+0x10/0x10
+? ssp_get+0x89/0xa0
+? ssp_get+0x52/0xa0
+__regset_get+0xad/0xf0
+copy_regset_to_user+0x52/0xc0
+ptrace_regset+0x119/0x140
+ptrace_request+0x13c/0x850
+? wait_task_inactive+0x142/0x1d0
+? do_syscall_64+0x6d/0x90
+arch_ptrace+0x102/0x300
+[...]
+
+It turns out the PTRACE_GETREGSET path does not check ssp_active(). The
+issue could be fixed by just removing the warning, but it would be nicer
+to rely a check of ssp_active() which is much easier to reason about than
+xsave init state logic. So add a ssp_active() check in ssp_get() like
+there already is in ssp_set().
+
+Fixes: 2fab02b25ae7 ("x86: Add PTRACE interface for shadow stack")
+Reported-by: Christina Schimpe <christina.schimpe@intel.com>
+Tested-by: Christina Schimpe <christina.schimpe@intel.com>
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+---
+ arch/x86/kernel/fpu/regset.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+index 6bc1eb2a21bd..887b0b8e21e3 100644
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -190,7 +190,8 @@ int ssp_get(struct task_struct *target, const struct user_regset *regset,
+ 	struct fpu *fpu = &target->thread.fpu;
+ 	struct cet_user_state *cetregs;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
++	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) ||
++	    !ssp_active(target, regset))
+ 		return -ENODEV;
+ 
+ 	sync_fpstate(fpu);
+-- 
+2.34.1
 
