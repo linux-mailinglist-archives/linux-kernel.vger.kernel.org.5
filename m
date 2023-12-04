@@ -2,259 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A05E803ECE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE65803ED6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344953AbjLDTxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        id S1345197AbjLDTyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjLDTw7 (ORCPT
+        with ESMTP id S233785AbjLDTys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:52:59 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0475FD2
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:53:05 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FED91684;
-        Mon,  4 Dec 2023 11:53:51 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1DB4B3F5A1;
-        Mon,  4 Dec 2023 11:53:02 -0800 (PST)
-Message-ID: <993ea322-8cdb-4ab1-84d3-0a1cb40049c9@arm.com>
-Date:   Mon, 4 Dec 2023 19:53:01 +0000
+        Mon, 4 Dec 2023 14:54:48 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FC5120
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:54:54 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-67a8a745c43so35993106d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1701719693; x=1702324493; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JGHpcniqj4N4OVIiCaIFNQVtHMVvgMth5+0aM+Fp7ss=;
+        b=g8hKhZP0a7uwxMliF/GtyrDiywzEIRMn3by8xFgEk7Xpyk69ai9pPb7JuSRSyYsmcf
+         Dtr/DtqmTAvCIZRflijKhlLW1nQ1NvY4dke1GasvOE87V7hYrfw7l+43k9yEtpX9zvMS
+         DFzF8x2rKGlTz1H999X1gloUFTkpNoDqcF6+yjprBid5Q7+FV+R2JKkY/cK1v1igVeQj
+         X6Xg4eKEdG5BdLEh9Kj7Ipw7NDuvThXBazt5mfQwGAfoxakT71kR6NGk/vONNVCTVgwZ
+         scPOgwPKD34X2DFvWXkxVaF2yuv4hkEmoPljNCexsgwGUZXKqy2Hv5B8ohryeCOR7M8s
+         4FUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701719693; x=1702324493;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JGHpcniqj4N4OVIiCaIFNQVtHMVvgMth5+0aM+Fp7ss=;
+        b=U/n759LloCHApmuJKhVjHT6bg7xRj5xnfk5oRXhkdWPWKjzlSxEelv95Pm3mIOlyCe
+         BaEJDrce4DY0MzmoU2fuG+8VBMs7XuFk400j2f1Jlbn62iPUZfreXxGwq7kZswyueIAE
+         KofBAfWw0XXgVjy+HL8v6eXufsO30yUb6maV4crtWS9k3xQFR80pqrf0lW77Zlwzsta4
+         ONV6kWa5OUAGdlrxVDGnTKhYHEZGb0ROYuRpt1DbD8eN2c3WnHARtqUNTYkqTDSXLRjS
+         S0HxxODenUnyaEvv37ASJsuUmP7EC1l90c45KPWAMzuu69IVEF1k9Jw3HHcgl6rEWK9r
+         bwjA==
+X-Gm-Message-State: AOJu0Yyax7PbX5K/VsyWF+/rppskKaRCT9pFRzGnHpBMlx9V+Y1SDizP
+        EgAJLeHBeYOe3ocKlwGj13XfqQ==
+X-Google-Smtp-Source: AGHT+IGpQzkoEjzpqYLjRrG6QQOYQ6WgA8JZOQ7QLOJykpYca9iIy4BV9JC0iVY98WV8uaPFAB+4KA==
+X-Received: by 2002:ad4:58e5:0:b0:67a:c4d9:dc15 with SMTP id di5-20020ad458e5000000b0067ac4d9dc15mr18233qvb.43.1701719693130;
+        Mon, 04 Dec 2023 11:54:53 -0800 (PST)
+Received: from dell-precision-5540 ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id v11-20020a0cdd8b000000b0067ac1c30e80sm1459715qvk.120.2023.12.04.11.54.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 11:54:52 -0800 (PST)
+Date:   Mon, 4 Dec 2023 14:54:00 -0500
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Alain Volmat <alain.volmat@foss.st.com>
+Subject: Re: [PATCH] spi: stm32: enable controller before asserting CS
+Message-ID: <ZW4uWBpEc2_4JR2b@dell-precision-5540>
+References: <20231201214014.2539031-1-ben.wolsieffer@hefring.com>
+ <b070eb2a-05d7-4e6a-8de9-15179045d192@sirena.org.uk>
+ <ZWpoKEcM0ZeYAsBa@dell-precision-5540>
+ <9aa5e049-bd1c-41a6-b9b8-037ebb4f54b8@sirena.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 00/39] mm/rmap: interface overhaul
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>
-References: <20231204142146.91437-1-david@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231204142146.91437-1-david@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9aa5e049-bd1c-41a6-b9b8-037ebb4f54b8@sirena.org.uk>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 14:21, David Hildenbrand wrote:
-> Baed on mm-stable from a couple of days.
+On Mon, Dec 04, 2023 at 12:43:42PM +0000, Mark Brown wrote:
+> On Fri, Dec 01, 2023 at 06:11:36PM -0500, Ben Wolsieffer wrote:
+> > On Fri, Dec 01, 2023 at 09:50:33PM +0000, Mark Brown wrote:
+> > > On Fri, Dec 01, 2023 at 04:40:14PM -0500, Ben Wolsieffer wrote:
 > 
-> This series proposes an overhaul to our rmap interface, to get rid of the
-> "bool compound" / RMAP_COMPOUND parameter with the goal of making the
-> interface less error prone, more future proof, and more natural to extend
-> to "batching". Also, this converts the interface to always consume
-> folio+subpage, which speeds up operations on large folios.
+> > > This feels like it'd be a good fit for moving to runtime PM - that way
+> > > we avoid bouncing the controller on and off between messages which is
+> > > probably better anyway.  The driver already does pinctrl management for
+> > > the device there.
 > 
-> Further, this series adds PTE-batching variants for 4 rmap functions,
-> whereby only folio_add_anon_rmap_ptes() is used for batching in this series
-> when PTE-remapping a PMD-mapped THP.
+> > Yes, that probably makes sense. There are a few bits that can only be
+> > configured while the controller is disabled, but it doesn't look like
+> > that applies to any of the ones set in stm32_spi_prepare_msg().
+> 
+> > I'm a little hesitant to make big changes to the driver since I can only
+> > test them on an STM32F7 though.
+> 
+> It doesn't seem much more complex than what you're already proposing.
 
-I certainly support the objective you have here; making the interfaces clearer,
-more consistent and more amenable to batching. I'll try to find some time this
-week to review.
+I'm working on a new patch that uses runtime PM and will submit it soon.
 
+> > > It also occurs to me that this isn't going to work for devices which
+> > > chip select inverted - for them we can't stop driving chip select at all
+> > > since they need it held high when idle.  There aren't that many such
+> > > devices and it'd loose us the PM which is rather awkward...  I guess
+> > > that's an incremental issue with a more invasive fix though.
 > 
-> Ryan has series where we would make use of folio_remove_rmap_ptes() [1]
-> -- he carries his own batching variant right now -- and
-> folio_try_dup_anon_rmap_ptes()/folio_dup_file_rmap_ptes() [2].
+> > The driver only supports GPIO chip select rather than native, so I don't
+> > think this is a problem. Also, I don't think there's any difference
+> 
+> So mentioning the drive seems a bit confusing then?
 
-Note that the contpte series at [2] has a new patch in v3 (patch 2), which could
-benefit from folio_remove_rmap_ptes() or equivalent. My plan was to revive [1]
-on top of [2] once it is merged.
-
-> 
-> There is some overlap with both series (and some other work, like
-> multi-size THP [3]), so that will need some coordination, and likely a
-> stepwise inclusion.
-
-Selfishly, I'd really like to get my stuff merged as soon as there is no
-technical reason not to. I'd prefer not to add this as a dependency if we can
-help it.
-
-> 
-> I got that started [4], but it made sense to show the whole picture. The
-> patches of [4] are contained in here, with one additional patch added
-> ("mm/rmap: introduce and use hugetlb_try_share_anon_rmap()") and some
-> slight patch description changes.
-> 
-> In general, RMAP batching is an important optimization for PTE-mapped
-> THP, especially once we want to move towards a total mapcount or further,
-> as shown with my WIP patches on "mapped shared vs. mapped exclusively" [5].
-> 
-> The rmap batching part of [5] is also contained here in a slightly reworked
-> fork [and I found a bug du to the "compound" parameter handling in these
-> patches that should be fixed here :) ].
-> 
-> This series performs a lot of folio conversion, that could be separated
-> if there is a good reason. Most of the added LOC in the diff are only due
-> to documentation.
-> 
-> As we're moving to a pte/pmd interface where we clearly express the
-> mapping granularity we are dealing with, we first get the remainder of
-> hugetlb out of the way, as it is special and expected to remain special: it
-> treats everything as a "single logical PTE" and only currently allows
-> entire mappings.
-> 
-> Even if we'd ever support partial mappings, I strongly
-> assume the interface and implementation will still differ heavily:
-> hopefull we can avoid working on subpages/subpage mapcounts completely and
-> only add a "count" parameter for them to enable batching.
-> 
-> 
-> New (extended) hugetlb interface that operate on entire folio:
->  * hugetlb_add_new_anon_rmap() -> Already existed
->  * hugetlb_add_anon_rmap() -> Already existed
->  * hugetlb_try_dup_anon_rmap()
->  * hugetlb_try_share_anon_rmap()
->  * hugetlb_add_file_rmap()
->  * hugetlb_remove_rmap()
-> 
-> New "ordinary" interface for small folios / THP::
->  * folio_add_new_anon_rmap() -> Already existed
->  * folio_add_anon_rmap_[pte|ptes|pmd]()
->  * folio_try_dup_anon_rmap_[pte|ptes|pmd]()
->  * folio_try_share_anon_rmap_[pte|pmd]()
->  * folio_add_file_rmap_[pte|ptes|pmd]()
->  * folio_dup_file_rmap_[pte|ptes|pmd]()
->  * folio_remove_rmap_[pte|ptes|pmd]()
-
-I'm not sure if there are official guidelines, but personally if we are
-reworking the API, I'd take the opportunity to move "rmap" to the front of the
-name, rather than having it burried in the middle as it is for some of these:
-
-rmap_hugetlb_*()
-
-rmap_folio_*()
-
-I guess reading the patches will tell me, but what's the point of "ptes"? Surely
-you're either mapping at pte or pmd level, and the number of pages is determined
-by the folio size? (or presumably nr param passed in)
-
-Thanks,
-Ryan
-
-> 
-> folio_add_new_anon_rmap() will always map at the biggest granularity
-> possible (currently, a single PMD to cover a PMD-sized THP). Could be
-> extended if ever required.
-> 
-> In the future, we might want "_pud" variants and eventually "_pmds" variants
-> for batching. Further, if hugepd is ever a thing outside hugetlb code,
-> we might want some variants for that. All stuff for the distant future.
-> 
-> 
-> I ran some simple microbenchmarks from [5] on an Intel(R) Xeon(R) Silver
-> 4210R: munmap(), fork(), cow, MADV_DONTNEED on each PTE ... and PTE
-> remapping PMD-mapped THPs on 1 GiB of memory.
-> 
-> For small folios, there is barely a change (< 1 % performance improvement),
-> whereby fork() still stands out with 0.74% performance improvement, but
-> it might be just some noise. Folio optimizations don't help that much
-> with small folios.
-> 
-> For PTE-mapped THP:
-> * PTE-remapping a PMD-mapped THP is more than 10% faster.
->   -> RMAP batching
-> * fork() is more than 4% faster.
->   -> folio conversion
-> * MADV_DONTNEED is 2% faster
->   -> folio conversion
-> * COW by writing only a single byte on a COW-shared PTE
->   -> folio conversion
-> * munmap() is only slightly faster (< 1%).
-> 
-> [1] https://lkml.kernel.org/r/20230810103332.3062143-1-ryan.roberts@arm.com
-> [2] https://lkml.kernel.org/r/20231204105440.61448-1-ryan.roberts@arm.com
-> [3] https://lkml.kernel.org/r/20231204102027.57185-1-ryan.roberts@arm.com
-> [4] https://lkml.kernel.org/r/20231128145205.215026-1-david@redhat.com
-> [5] https://lkml.kernel.org/r/20231124132626.235350-1-david@redhat.com
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Ryan Roberts <ryan.roberts@arm.com>
-> Cc: Yin Fengwei <fengwei.yin@intel.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: Muchun Song <muchun.song@linux.dev>
-> Cc: Peter Xu <peterx@redhat.com>
-> 
-> David Hildenbrand (39):
->   mm/rmap: rename hugepage_add* to hugetlb_add*
->   mm/rmap: introduce and use hugetlb_remove_rmap()
->   mm/rmap: introduce and use hugetlb_add_file_rmap()
->   mm/rmap: introduce and use hugetlb_try_dup_anon_rmap()
->   mm/rmap: introduce and use hugetlb_try_share_anon_rmap()
->   mm/rmap: add hugetlb sanity checks
->   mm/rmap: convert folio_add_file_rmap_range() into
->     folio_add_file_rmap_[pte|ptes|pmd]()
->   mm/memory: page_add_file_rmap() -> folio_add_file_rmap_[pte|pmd]()
->   mm/huge_memory: page_add_file_rmap() -> folio_add_file_rmap_pmd()
->   mm/migrate: page_add_file_rmap() -> folio_add_file_rmap_pte()
->   mm/userfaultfd: page_add_file_rmap() -> folio_add_file_rmap_pte()
->   mm/rmap: remove page_add_file_rmap()
->   mm/rmap: factor out adding folio mappings into __folio_add_rmap()
->   mm/rmap: introduce folio_add_anon_rmap_[pte|ptes|pmd]()
->   mm/huge_memory: batch rmap operations in __split_huge_pmd_locked()
->   mm/huge_memory: page_add_anon_rmap() -> folio_add_anon_rmap_pmd()
->   mm/migrate: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
->   mm/ksm: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
->   mm/swapfile: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
->   mm/memory: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
->   mm/rmap: remove page_add_anon_rmap()
->   mm/rmap: remove RMAP_COMPOUND
->   mm/rmap: introduce folio_remove_rmap_[pte|ptes|pmd]()
->   kernel/events/uprobes: page_remove_rmap() -> folio_remove_rmap_pte()
->   mm/huge_memory: page_remove_rmap() -> folio_remove_rmap_pmd()
->   mm/khugepaged: page_remove_rmap() -> folio_remove_rmap_pte()
->   mm/ksm: page_remove_rmap() -> folio_remove_rmap_pte()
->   mm/memory: page_remove_rmap() -> folio_remove_rmap_pte()
->   mm/migrate_device: page_remove_rmap() -> folio_remove_rmap_pte()
->   mm/rmap: page_remove_rmap() -> folio_remove_rmap_pte()
->   Documentation: stop referring to page_remove_rmap()
->   mm/rmap: remove page_remove_rmap()
->   mm/rmap: convert page_dup_file_rmap() to
->     folio_dup_file_rmap_[pte|ptes|pmd]()
->   mm/rmap: introduce folio_try_dup_anon_rmap_[pte|ptes|pmd]()
->   mm/huge_memory: page_try_dup_anon_rmap() ->
->     folio_try_dup_anon_rmap_pmd()
->   mm/memory: page_try_dup_anon_rmap() -> folio_try_dup_anon_rmap_pte()
->   mm/rmap: remove page_try_dup_anon_rmap()
->   mm: convert page_try_share_anon_rmap() to
->     folio_try_share_anon_rmap_[pte|pmd]()
->   mm/rmap: rename COMPOUND_MAPPED to ENTIRELY_MAPPED
-> 
->  Documentation/mm/transhuge.rst       |   4 +-
->  Documentation/mm/unevictable-lru.rst |   4 +-
->  include/linux/mm.h                   |   6 +-
->  include/linux/rmap.h                 | 380 +++++++++++++++++++-----
->  kernel/events/uprobes.c              |   2 +-
->  mm/gup.c                             |   2 +-
->  mm/huge_memory.c                     |  85 +++---
->  mm/hugetlb.c                         |  21 +-
->  mm/internal.h                        |  12 +-
->  mm/khugepaged.c                      |  17 +-
->  mm/ksm.c                             |  15 +-
->  mm/memory-failure.c                  |   4 +-
->  mm/memory.c                          |  60 ++--
->  mm/migrate.c                         |  12 +-
->  mm/migrate_device.c                  |  41 +--
->  mm/mmu_gather.c                      |   2 +-
->  mm/rmap.c                            | 422 ++++++++++++++++-----------
->  mm/swapfile.c                        |   2 +-
->  mm/userfaultfd.c                     |   2 +-
->  19 files changed, 709 insertions(+), 384 deletions(-)
-> 
+Yes, I should have been more specific in the patch that only MOSI and
+CLK float when the controller is disabled and that CS remains driven.
 
