@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C34C8802FC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB57802FE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbjLDKMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:12:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        id S1343758AbjLDKOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbjLDKL6 (ORCPT
+        with ESMTP id S229601AbjLDKOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:11:58 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8223CC
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:12:04 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5d3687a6574so40819207b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 02:12:04 -0800 (PST)
+        Mon, 4 Dec 2023 05:14:17 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0769D5
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:14:23 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-db539f21712so2150251276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 02:14:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701684724; x=1702289524; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701684863; x=1702289663; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jkXCJmkJqeWYd/zTDegc9H+KdUDHav8RTJQmS9NsaoM=;
-        b=pdijNWDg+EvF4M+E/eR+fO8vHSzs56sKPbroIQ82r2KrpnRIpbr585JuRmMdGOlYic
-         dSQVHPVOqlMG/8GGhZACEqT+rTeXhGH/Sc4oVQaNAtON9D04Fj2QiAMnCUubvqnrDeC8
-         m1XaMPqk94xIdU1FxH2e1Pj5Ly9+LCAxdW5TqxMSQEJY1P66QgdjYruTwb/hZHXGGw7i
-         xkP9iljc2R0D/8sSIE2tKRXzvj0OI/oTyQignNjo936QEHVqc97OquC86TSv6fZ1yHyW
-         /r0fKd2UcciqWqjQihe/WYuAgHg7492tirpLgEOOr5HJdUdy4Q7PEx4agp2tTnIzpe6F
-         PmSA==
+        bh=x6T1DQnSXHpRdTd/LbBCSLbNlM8eSq6nAzUcVYf1VEk=;
+        b=Pb0AFZ2LmsJ7dhpXT5xnsH5/wNR4NZL7It5bY7zdIhPvjzwTxUctt23r2ApzHk3XG+
+         qXUKWHtpUBj6d8lhh2axjGxozUAJqwDtcVNuJYd9/eSGLrnWX/bKRQOjzT/aTOjceabB
+         pTIKfb33Sq98Mok/ZTO3/ELKjS/0xHs6ET5q4sApNqOi9mXNkxV0pkhZhVIptZ5SOO/i
+         um/wAtfPqYXuQW+/i2HwFPLkrwC0TL/OMjoR2guMhdVIXs8sEzPt9tnTAyZy51eNGVEZ
+         OC6ceHSLyqF8FdtWtkkK4zuJtakngf3Q7Ii+fdMa99GL4fNFjM/I3yG3rxbCCPUJcCyS
+         Y/Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701684724; x=1702289524;
+        d=1e100.net; s=20230601; t=1701684863; x=1702289663;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jkXCJmkJqeWYd/zTDegc9H+KdUDHav8RTJQmS9NsaoM=;
-        b=tzNYrSTu7mn7bG2giWPTmXSkwHAjL7/6t7KjBrJ4OEBPVXTFrALm8HDi1ML98CEQxP
-         Zj/Wxps23cgTsjitvPlmXstLCkns5zgKqMIC0eStaj436sBe6BVuHUkzprnk6q0yjVPY
-         yZxjO5JT4oI2/7R527u0j9hdezvOicPxLV3Lsg+jZ0MDTxLbb23HThxp0bBxqMbgZtW9
-         a0v17+FydKljch6WJhRc5iyoL5S7VGo3tHB2rx+IfoOhriUR+0I/hG5PpYfKU2ogDqXX
-         J/p5KTab6dWYJaEDSBzTL2Pgx8Yr4KoIUCI+DT351XLK9mxqagycxHWL5nLchx1J8Qcv
-         dUUQ==
-X-Gm-Message-State: AOJu0YwiizB3BSgMEHWHYnka6nCF4vfm1bgMe6iqCnaZbXWo8hxKHvm0
-        6mdJVX6ZalGoH9Luct9//mNRpfm0Imux0M64Yfd44w==
-X-Google-Smtp-Source: AGHT+IGRANTbZfpazl9zXKPI4jec0JQ5yJYaczShvgjPYYPvjqQ4flRZIPO2W6QsypTCTLuCTwb1KxCPPFCYFMYJSOE=
-X-Received: by 2002:a05:690c:e0d:b0:5d8:10a1:f504 with SMTP id
- cp13-20020a05690c0e0d00b005d810a1f504mr1121233ywb.82.1701684724084; Mon, 04
- Dec 2023 02:12:04 -0800 (PST)
+        bh=x6T1DQnSXHpRdTd/LbBCSLbNlM8eSq6nAzUcVYf1VEk=;
+        b=SvdV2AWS5XFtB9sO+rQiTq8vndNT6wqiQ02PT3GPCy0aZ1DecuGF1ofwDru8TP5KwP
+         CpVcoy7FPM0n2vqhcDf1FHJF5+MXNdULncLrIWpAp0RlVcM6a8/MEo2Fa0gHwMB9d1IC
+         y+zTj/D1U1hEqBzPSWKqQql2ddFbxi87d3DEFJUbzbG4xxUWYjrnLgeBiTESHyc1Dy9+
+         tN/z0OZrq3ivcpPODaCtn0kJDbzahutk3aPmkiXBgRdoJPgekOT6HIVe+W6VmmS2NH1G
+         IGJkAx0flqf8pO/+B1/5SEI+1Tl/U/QXc3RRIv8doJ2LrOWA66i6bKei63NYGmiwj7Rr
+         rSkw==
+X-Gm-Message-State: AOJu0YxYiKWjlN6M6KcWHxhJ8qwMTUysl2e0D9SSWIjjVJUHDOLet4mM
+        J7Spd396kquLu3CPvpSTV4ApjBT8GgwGDfP+TGAoGw==
+X-Google-Smtp-Source: AGHT+IHhuDurJ8RdbjXooRiGJLv52npQVT6/Px+lFRxxtrp8WQLTQQplQz795ifTJ1edDRCXEJYqWVyVZzD1Wpcw/tw=
+X-Received: by 2002:a25:6f8b:0:b0:daf:6330:cc1d with SMTP id
+ k133-20020a256f8b000000b00daf6330cc1dmr2323965ybc.24.1701684863177; Mon, 04
+ Dec 2023 02:14:23 -0800 (PST)
 MIME-Version: 1.0
 References: <fd8bf044799ae50a6291ae150ef87b4f1923cacb.1701422582.git.namcao@linutronix.de>
-In-Reply-To: <fd8bf044799ae50a6291ae150ef87b4f1923cacb.1701422582.git.namcao@linutronix.de>
+ <fe4c15dcc3074412326b8dc296b0cbccf79c49bf.1701422582.git.namcao@linutronix.de>
+In-Reply-To: <fe4c15dcc3074412326b8dc296b0cbccf79c49bf.1701422582.git.namcao@linutronix.de>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 4 Dec 2023 11:11:53 +0100
-Message-ID: <CACRpkdaSeE84VNhYmgnhEOJAqiDfVjFbhZSXCMeUVeGiNFz+BQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: starfive: jh7110: ignore disabled device
+Date:   Mon, 4 Dec 2023 11:14:12 +0100
+Message-ID: <CACRpkda0wdVgwTjX4bF411TEeZ96H+sqZVXaVgh4d5S2Ek_eZA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pinctrl: starfive: jh7100: ignore disabled device
  tree nodes
-To:     Nam Cao <namcao@linutronix.de>
+To:     Nam Cao <namcao@linutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
 Cc:     Emil Renner Berthing <kernel@esmil.dk>,
         Jianlong Huang <jianlong.huang@starfivetech.com>,
         Hal Feng <hal.feng@starfivetech.com>,
@@ -67,7 +70,7 @@ Cc:     Emil Renner Berthing <kernel@esmil.dk>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,12 +89,15 @@ e:
 >
 > Ignore disabled pin configuration nodes in device tree.
 >
-> Fixes: 447976ab62c5 ("pinctrl: starfive: Add StarFive JH7110 sys controll=
-er driver")
+> Fixes: ec648f6b7686 ("pinctrl: starfive: Add pinctrl driver for StarFive =
+SoCs")
 > Cc: stable@vger.kernel.org
 > Signed-off-by: Nam Cao <namcao@linutronix.de>
 
-This patch (1/2) applied for fixes.
+Patch applied for fixes.
+
+If there is some doubts about the saneness of this patch, seek input
+from the devicetree maintainers.
 
 Yours,
 Linus Walleij
