@@ -2,122 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6446F802E1A
+	by mail.lfdr.de (Postfix) with ESMTP id CAE8B802E1B
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbjLDJGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58264 "EHLO
+        id S230118AbjLDJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:07:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDJGS (ORCPT
+        with ESMTP id S229446AbjLDJHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:06:18 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEE0CD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:06:24 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50bf1e32571so1148968e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 01:06:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701680782; x=1702285582; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dpI9xZM0XaB87IyFNDAyIvRhCHFMtkr8V69k1tIDH+o=;
-        b=bZ6kRvHIIBIJg7PNNnAjxfAQDIRUgNVGJgOxOrdZOuGdgGtcBPqi/YPYAQZv2xbDLR
-         kS45n0mDXqFRyuFY4OAV6Kh89SlcVbMUsG6EHyvuU5M0H6wAF74OKgD8spbiWpqTW4M/
-         IqVXK89dZ2YIJfR45Tw9S4OfZBR//JM7603w9sDEHLSzDwMg8w/unPkNyDRqNKOYVq8y
-         DGKywgDNJfqacZqicpA/o35SLwHBm+JDMAlBjVkwEll6wdK4pqVeUn21m3IiMZCEnKpi
-         9ym0O0OmxNcs026ylZWjz7W8CB58CXTmrKEX5DOeZW2Oz4+o4Y0zFSEJG6BH9rQfoYD5
-         hXNw==
+        Mon, 4 Dec 2023 04:07:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C3ECD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:07:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701680830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AOT92qB4CMJ9QUbkuwnTO771HPULUzewrnuOIhnYnrA=;
+        b=V6fUcEMFkmJKX2j9SO2AVmOibMrQoaIH6zS6e2B+lveZqXiA30QQs+dSdPM6gisVqMvku9
+        9DROCT4E5kvyewyUiV0cIrHcoQuLLCLW2W5b9GLCoeX1vKzURH5GGfOttVSxzfDu65j8+g
+        8c4wfub5U4EopCY2b/fjCYTa1Dbazbc=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-626-idleBifQMLaQpkRyw0PE0A-1; Mon, 04 Dec 2023 04:07:09 -0500
+X-MC-Unique: idleBifQMLaQpkRyw0PE0A-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50bf44ff4a5so618949e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 01:07:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701680782; x=1702285582;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dpI9xZM0XaB87IyFNDAyIvRhCHFMtkr8V69k1tIDH+o=;
-        b=aJ0GtUCQwCbhnsEZ73PQVm6RDb++PwOg08P1837uBrvPRAfafO3bZYbtVCFaiG1HJf
-         v9buBEl5OTnEv5xmlFM8wGxmcvCGYITrO79X6Lzkr6dPXb1cslzoSc9hlkDAAkMOg7Jc
-         gkpZMIfTwDkVajqoWcppD6ZgvQNV6Z/3bF8h3o9++nCtZdRsJvkbbtDsiURW3cgOBjlG
-         f2pJ6QGwsDL//52mHzidlhHz8cBDgEhgtZxWHGYP9vOme0rT8hUl+4lWJYWk982ntWp4
-         iXV1h5o6YvVPOse59qF8d5c63nU7yeBt2EWmiG1/y4Xn8Y0B0KUPDcnaX5NVCaRUCvKW
-         pglA==
-X-Gm-Message-State: AOJu0YxKulmOgTTFts2qSXe/IkMA/GbqiDKp1iWLPPd2VHebVstdjbBF
-        PQ96flHf80EIGT/6iSsyPxNR/g==
-X-Google-Smtp-Source: AGHT+IFYv/0HAu5vPq9rkNJ9fqb8HVDuPqFCCsjAJ7OdM9ysmbHHw+CDNllr5uQoL2301LuxnY5bKg==
-X-Received: by 2002:a05:6512:48f:b0:50b:e056:396a with SMTP id v15-20020a056512048f00b0050be056396amr1595124lfq.28.1701680782666;
-        Mon, 04 Dec 2023 01:06:22 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id r15-20020ac25f8f000000b0050bc41caf04sm227404lfe.304.2023.12.04.01.06.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 01:06:22 -0800 (PST)
-Message-ID: <f2519d16-1b34-4d77-be69-cf80fa3415a1@linaro.org>
-Date:   Mon, 4 Dec 2023 10:06:19 +0100
+        d=1e100.net; s=20230601; t=1701680827; x=1702285627;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AOT92qB4CMJ9QUbkuwnTO771HPULUzewrnuOIhnYnrA=;
+        b=m/t4rwOakQpdl8J+WhY76vq/4BEgTPOkVuTY0I1Y2J5Qunof8CINEMZNzo48f2N+LB
+         LuyagRQyhG9Fb9XO0ltoRt/+oszv37EE+x89AvPzpJl3ywZwJCPGggWrDkS336oFnjv4
+         o3Camlxjw8R4HecuFonjAtpq1oqjPpA5L2WdDCSbPZtLOlI8V9RFxGIXG74gxDLHmokR
+         UCjH16P1FzqBtdYLc8FbwSoCxH4mU6B5cMXQDSR4lLEqqIiliXIEhxD06LDzHfS2/3yj
+         1D4Gw7ngACnFrL7q3H4VpIIAQnLI5GFlToGwvDUHc/kqJU6o0Ztk4dXni15QKJ+XvJPF
+         PgAQ==
+X-Gm-Message-State: AOJu0Yx/LAXwc2KhDhCMAyKcd78FdMazgOB7wmx6ct9/ODKLgznJ2fs7
+        LFUVFh3QHr77kgo9KG7zIuznL2m3ABXpjFWSEzO8PO7jhCvza5ScrPxTSiTXC6FV4dXpsu04SOE
+        0XyZiqN1ChVKmWsTYvZJOCl8cEe1wjiXqTocifN7Z
+X-Received: by 2002:ac2:5ddc:0:b0:50b:ed75:e41e with SMTP id x28-20020ac25ddc000000b0050bed75e41emr1071690lfq.137.1701680827486;
+        Mon, 04 Dec 2023 01:07:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFloYnZJhKiWXJvfZn9O+NlEFY8BvoUovFJHb+vkj50ZLTND8ieQqQqM7hWWze49I6e4qF+4+KMyiuUX3+Z9lo=
+X-Received: by 2002:ac2:5ddc:0:b0:50b:ed75:e41e with SMTP id
+ x28-20020ac25ddc000000b0050bed75e41emr1071685lfq.137.1701680827120; Mon, 04
+ Dec 2023 01:07:07 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/2] Add Facebook Minerva Harma (AST2600) BMC
-Content-Language: en-US
-To:     PeterYin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20231204081029.2272626-1-peteryin.openbmc@gmail.com>
- <fddcbad4-5368-4c2a-ba87-f4c4326a8385@linaro.org>
- <3ff5dcd7-69a3-4098-92c6-ed1e8f0bd8f9@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <3ff5dcd7-69a3-4098-92c6-ed1e8f0bd8f9@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231102143507.840-1-jiangkunkun@huawei.com> <87msvt6cc7.wl-maz@kernel.org>
+ <1fb8353e-e9c4-2570-c2ca-ec537c18ac4d@huawei.com> <86edh228xx.wl-maz@kernel.org>
+ <952bd5dc-dd20-acc3-d77e-c9b14e5728d3@huawei.com> <87fs0k94og.wl-maz@kernel.org>
+ <CACGkMEt5sapZjpyBSM5oX_=k1AcefEe5D4wtX=HqtHy4AD3j_g@mail.gmail.com>
+ <CACGkMEub4f0FWsrJzSK4e+9cC6LUNFm3vAcfSkpsp6pD=WM5qA@mail.gmail.com> <86r0k2bavu.wl-maz@kernel.org>
+In-Reply-To: <86r0k2bavu.wl-maz@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 4 Dec 2023 17:06:56 +0800
+Message-ID: <CACGkMEvLpHm+vEB80mc0QdzJkFK5bAt-gH72ypV-oOb7oJvB+A@mail.gmail.com>
+Subject: Re: [RFC PATCH] KVM: arm/arm64: GICv4: Support shared VLPI
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Kunkun Jiang <jiangkunkun@huawei.com>, dongli.zhang@oracle.com,
+        cohuck@redhat.com, stefanha@redhat.com, mst@redhat.com,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        wanghaibin.wang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,34 +90,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 09:46, PeterYin wrote:
-> 
-> Krzysztof Kozlowski 於 12/4/23 16:20 寫道:
->> On 04/12/2023 09:10, Peter Yin wrote:
->>> Summary:
->>> Add linux device tree entry related to Minerva Harma
->>> specific devices connected to BMC SoC.
->>>
->>> v4:https://lore.kernel.org/all/20231204054131.1845775-3-peter.yin@quantatw.com/
->>> v3:https://lore.kernel.org/all/20231123050415.3441429-3-peteryin.openbmc@gmail.com/
->>> v2:https://lore.kernel.org/all/cdbc75b9-3be1-4017-9bee-c8f161b6843c@linaro.org/
->>> v1:https://lore.kernel.org/all/20231024082404.735843-3-peteryin.openbmc@gmail.com/
->>>
->>> Change log
->>> v4 -> v5
->>>    - Rename document and file from minerva-harma to harma.
->>
->> You must explain that you dropped people's review for some reason.
->>
->> Best regards,
->> Krzysztof
->>
-> Due to changes in the project name and content, please assist in 
-> reviewing it.
+On Mon, Dec 4, 2023 at 5:00=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Mon, 04 Dec 2023 08:47:49 +0000,
+> Jason Wang <jasowang@redhat.com> wrote:
+> >
+> > On Mon, Dec 4, 2023 at 4:39=E2=80=AFPM Jason Wang <jasowang@redhat.com>=
+ wrote:
+> > >
+> > > On Sat, Dec 2, 2023 at 8:20=E2=80=AFPM Marc Zyngier <maz@kernel.org> =
+wrote:
+> > > >
+> > > > Hi Kunkun,
+> > > >
+> > > > On Wed, 08 Nov 2023 09:45:51 +0000,
+> > > > Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+> > > > >
+> > > > > Hi Marc,
+> > > > >
+> > > > > On 2023/11/6 23:33, Marc Zyngier wrote:
+> > > > > > On Mon, 06 Nov 2023 14:59:01 +0000,
+> > > > > > Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+> > > > > >> The virtio-pci driver write entry1-6
+> > > > > >> massage.data in the msix-table and trap to QEMU for processing=
+. The
+> > > > > >> massage.data is as follow:
+> > > > > >>> entry-0 0
+> > > > > >>> entry-1 1
+> > > > > >>> entry-2 1
+> > > > > >>> entry-3 1
+> > > > > >>> entry-4 1
+> > > > > >>> entry-5 1
+> > > > > >>> entry-6 1
+> > >
+> > > It looks like a bug from the driver. It should only use vector 0 and =
+1
+> > > in this case.
+> > >
+> > > Could you please check the queue_msix_vector for each queue in this c=
+ase?
+> >
+> > Or did you actually mean queue_msix_vector here? I'm not familiar with
+> > ARM but 0 doesn't seem to be a good message.data anyhow.
+>
+> Why? What's special about 0? 0 is a perfectly fine value.
 
-When dropping people's tag, the patch changelog (---) should say that
-you dropped people's tag.
+Ok, looks like I mis-read it as a message.addr. So it's fine.
 
-Best regards,
-Krzysztof
+Thanks
+
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
+>
 
