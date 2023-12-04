@@ -2,71 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 187FA8029B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 02:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B84808029B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 02:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjLDBCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 20:02:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
+        id S234160AbjLDBDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 20:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjLDBCp (ORCPT
+        with ESMTP id S229793AbjLDBDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 20:02:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEA1D7;
-        Sun,  3 Dec 2023 17:02:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701651771; x=1733187771;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=/HuHnYJELZ3s+Pg2jAz1DP57zcUQSq+bWviBQSQi96k=;
-  b=N5E2+top27vVKlKN+wlezayPzxcBdEAwNHtWzvIr/M95ELBUyJTh9C6U
-   A9UprC/b3x5zZSg1swvHjXUWxImOO+6a+AYezGGzRxk9vp7a+BehlYga0
-   qQOBsuk69nPzxdIOfQeHkjnoUjpSpjTVg74dpOb5et8HhOf75J3PL4Oaz
-   LltmuQJf++RnBXLrBrMVE/bW3qArVAIK/CDUxMZdW3YxmeILM5w3UFPSe
-   Xu7pGwIBT/+YCyw1ihC1i20Rlq36rSEdFqnSEbMUln0v1BFQKcK4my3yL
-   jTAUzA/9e3t7Q30VLmI0EJ99HqR3v3pP1yPJG5By4nWZJyV2matHmf2G0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="424834469"
-X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
-   d="scan'208";a="424834469"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 17:02:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="774101136"
-X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
-   d="scan'208";a="774101136"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmsmga007.fm.intel.com with ESMTP; 03 Dec 2023 17:02:39 -0800
-Message-ID: <1b82e10f-bf5c-4fca-b558-ce2e4fe9f128@linux.intel.com>
-Date:   Mon, 4 Dec 2023 08:58:07 +0800
+        Sun, 3 Dec 2023 20:03:14 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E431CB;
+        Sun,  3 Dec 2023 17:03:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1701651796;
+        bh=QTgVbSc8ljMVBQbD1I9Qp/eGoaOdEunqZnUVXlnbtNU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=f6CgkEb8+Ynj1frTRFyPaZPMDMX+2rdUiIb5ij7+RFQluV0ezZSe0YW5210aD9MQJ
+         yZD/lo/XxZFwJT7NIHdv+7YCy6BQjAhk59UNEZHbxDD5OLqZl9nGneJoVvkK3eobeT
+         Iz0L67MBTFg4sRwVIR5cLuXS2Vm5fNtMHu6yqf0wE+LAbi/kfIOwjGGv2qe0Qt2PR9
+         pZlespMIChAGuNLQqDd31uAShcl3bzbpcCWkqpO9COADSIeVNFEQCqPF16H0Z2JOce
+         cU20WOdzTiI6JO+xYCmYukS7roXsXV8MyipoAEMjes5lTHB/KIcy3kdkxdOkeFyV68
+         21wcQBBh1LCwA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sk54z6HTgz4xMv;
+        Mon,  4 Dec 2023 12:03:15 +1100 (AEDT)
+Date:   Mon, 4 Dec 2023 12:03:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paul Moore <paul@paul-moore.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: linux-next: manual merge of the security tree with the block tree
+Message-ID: <20231204120314.5718b5f6@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 11/12] iommu: Consolidate per-device fault data
- management
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
- <20231115030226.16700-12-baolu.lu@linux.intel.com>
- <20231201194602.GF1489931@ziepe.ca>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20231201194602.GF1489931@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: multipart/signed; boundary="Sig_/AvgUSqnof4ek/XouhAriC_P";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,65 +53,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/2/23 3:46 AM, Jason Gunthorpe wrote:
-> On Wed, Nov 15, 2023 at 11:02:25AM +0800, Lu Baolu wrote:
-> 
->> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> index d19031c1b0e6..c17d5979d70d 100644
->> --- a/include/linux/iommu.h
->> +++ b/include/linux/iommu.h
->> @@ -597,6 +597,8 @@ struct iommu_device {
->>   /**
->>    * struct iommu_fault_param - per-device IOMMU fault data
->>    * @lock: protect pending faults list
->> + * @users: user counter to manage the lifetime of the data, this field
->> + *         is protected by dev->iommu->lock.
->>    * @dev: the device that owns this param
->>    * @queue: IOPF queue
->>    * @queue_list: index into queue->devices
->> @@ -606,6 +608,7 @@ struct iommu_device {
->>    */
->>   struct iommu_fault_param {
->>   	struct mutex lock;
->> +	int users;
-> 
-> Use refcount_t for the debugging features
+--Sig_/AvgUSqnof4ek/XouhAriC_P
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yes.
+Hi all,
 
-> 
->>   	struct device *dev;
->>   	struct iopf_queue *queue;
-> 
-> But why do we need this to be refcounted? iopf_queue_remove_device()
-> is always called before we get to release? This struct isn't very big
-> so I'd just leave it allocated and free it during release?
+Today's linux-next merge of the security tree got conflicts in:
 
-iopf_queue_remove_device() should always be called before device
-release.
+  security/selinux/hooks.c
+  security/smack/smack_lsm.c
 
-The reference counter is implemented to synchronize access to the fault
-parameter among different paths. For example, iopf_queue_remove_device()
-removes the parameter, while iommu_report_device_fault() and
-iommu_page_response() have needs to reference it. These three paths
-could possibly happen in different threads.
+between commit:
 
-> 
->> @@ -72,23 +115,14 @@ static int iommu_handle_iopf(struct iommu_fault *fault, struct device *dev)
->>   	struct iopf_group *group;
->>   	struct iopf_fault *iopf, *next;
->>   	struct iommu_domain *domain = NULL;
->> -	struct iommu_fault_param *iopf_param;
->> -	struct dev_iommu *param = dev->iommu;
->> +	struct iommu_fault_param *iopf_param = dev->iommu->fault_param;
->>   
->> -	lockdep_assert_held(&param->lock);
->> +	lockdep_assert_held(&iopf_param->lock);
-> 
-> This patch seems like it is doing a few things, can the locking
-> changes be kept in their own patch?
+  bf18dde00aa9 ("io_uring: split out cmd api into a separate header")
 
-Yes. Let me try to.
+from the block tree and commit:
 
-Best regards,
-baolu
+  f3b8788cde61 ("LSM: Identify modules by more than name")
+
+from the security tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc security/selinux/hooks.c
+index 17ec5e109aec,b340425ccfae..000000000000
+--- a/security/selinux/hooks.c
++++ b/security/selinux/hooks.c
+@@@ -91,7 -91,8 +91,8 @@@
+  #include <uapi/linux/mount.h>
+  #include <linux/fsnotify.h>
+  #include <linux/fanotify.h>
+ -#include <linux/io_uring.h>
+ +#include <linux/io_uring/cmd.h>
++ #include <uapi/linux/lsm.h>
+ =20
+  #include "avc.h"
+  #include "objsec.h"
+diff --cc security/smack/smack_lsm.c
+index 2cdaa46088a0,53336d7daa93..000000000000
+--- a/security/smack/smack_lsm.c
++++ b/security/smack/smack_lsm.c
+@@@ -42,7 -42,8 +42,8 @@@
+  #include <linux/fs_context.h>
+  #include <linux/fs_parser.h>
+  #include <linux/watch_queue.h>
+ -#include <linux/io_uring.h>
+ +#include <linux/io_uring/cmd.h>
++ #include <uapi/linux/lsm.h>
+  #include "smack.h"
+ =20
+  #define TRANS_TRUE	"TRUE"
+
+--Sig_/AvgUSqnof4ek/XouhAriC_P
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVtJVMACgkQAVBC80lX
+0GxKcAf6AqLSO11wPsPuwQHQxgQ6FBkrjfx0CLVgMsi64ZeosRssAbgDzTyD/r0s
+pIDpE9SH5f/HfqIqY29lrpAbUcMLr1mtdRudXZXKpgXIPhvCRmSzIH671PjuoYGG
+CPxGoGIfnGXHUvs+r603Bllq+ifpklhm8sNtiTIoXpIPVdwZzHyk0QGfEc6/nnkO
+0NAA7ZAK3Mll7vr0qcz+EHSo9QrziSVXpIj2dyFAIqkvqC4WgCppI8P9wpTO4NgT
+bq+WIx3MpawMy4qyDIcFQLvPAbqePBs3XM7VSpe3mP8lABhfJ3jtZC3v56xCgM7Y
+bNbgv6mVIj1DdBJPjxOZexyv06E+Sg==
+=BpOO
+-----END PGP SIGNATURE-----
+
+--Sig_/AvgUSqnof4ek/XouhAriC_P--
