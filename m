@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB194803548
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FF080355A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbjLDNqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:46:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
+        id S233970AbjLDNtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233875AbjLDNqG (ORCPT
+        with ESMTP id S229711AbjLDNtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:46:06 -0500
+        Mon, 4 Dec 2023 08:49:13 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0554FD2;
-        Mon,  4 Dec 2023 05:46:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC7C3D2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:49:19 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1484B152B;
-        Mon,  4 Dec 2023 05:47:00 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA3AC152B;
+        Mon,  4 Dec 2023 05:50:06 -0800 (PST)
 Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7A82B3F5A1;
-        Mon,  4 Dec 2023 05:46:11 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7F3063F5A1;
+        Mon,  4 Dec 2023 05:49:18 -0800 (PST)
 From:   Sudeep Holla <sudeep.holla@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sudeep Holla <sudeep.holla@arm.com>
-Cc:     quic_mdtipton@quicinc.com, quic_asartor@quicinc.com,
-        quic_lingutla@quicinc.com, Sibi Sankar <quic_sibis@quicinc.com>,
-        linux-arm-msm@vger.kernel.org,
         Cristian Marussi <cristian.marussi@arm.com>
-Subject: Re: [PATCH 1/2] firmware: arm_scmi: Fix frequency truncation by promoting multiplier to u64
-Date:   Mon,  4 Dec 2023 13:46:05 +0000
-Message-ID: <170169746209.29716.16597269014104395598.b4-ty@arm.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, nicola.mazzucato@arm.com
+Subject: Re: [PATCH] firmware: arm_scmi: Add protocol versioning checks
+Date:   Mon,  4 Dec 2023 13:49:12 +0000
+Message-ID: <170169770105.30728.4184748461867553378.b4-ty@arm.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231130204343.503076-1-sudeep.holla@arm.com>
-References: <20231130204343.503076-1-sudeep.holla@arm.com>
+In-Reply-To: <20231201135858.2367651-1-cristian.marussi@arm.com>
+References: <20231201135858.2367651-1-cristian.marussi@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -46,20 +44,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 30 Nov 2023 20:43:42 +0000, Sudeep Holla wrote:
-> Fix the frequency truncation for all values equal to or greater 4GHz by
-> updating the multiplier 'mult_factor' to u64 type. It is also possible
-> that the multiplier itself can be greater than or equal to 2^32. So we need
-> to also fix the equation computing the value of the multiplier.
+On Fri, 01 Dec 2023 13:58:58 +0000, Cristian Marussi wrote:
+> Platform and agent supported protocols versions do not necessarily match.
 >
+> When talking to an older platform SCMI server, supporting only older
+> protocol versions, the kernel SCMI agent will downgrade the version of
+> the used protocol to match the platform one and avoid compatibility issues.
+>
+> In the case, instead, in which the agent happens to communicate with a
+> newer platform server which can support newer protocol versions unknown to
+> the agent, and potentially backward incompatible, the agent currently
+> carries on, silently, in a best-effort approach.
+>
+> [...]
 
-Applied to sudeep.holla/linux (for-next/scmi/fixes), thanks!
+Applied to sudeep.holla/linux (for-next/scmi/updates), thanks!
 
-[1/2] firmware: arm_scmi: Fix frequency truncation by promoting multiplier to u64
-      (Applied changing u64 to unsigned long to fix armv7 build)
-      https://git.kernel.org/sudeep.holla/c/8e3c98d9187e
-[2/2] firmware: arm_scmi: Fix possible frequency truncation when using level indexing mode
-      https://git.kernel.org/sudeep.holla/c/77f5032e94f2
+[1/1] firmware: arm_scmi: Add protocol versioning checks
+      https://git.kernel.org/sudeep.holla/c/b5efc28a754d
 --
 Regards,
 Sudeep
