@@ -2,219 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACB880339D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396A9803399
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbjLDM5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:57:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59086 "EHLO
+        id S233357AbjLDM5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232947AbjLDM5C (ORCPT
+        with ESMTP id S234896AbjLDM5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:57:02 -0500
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E7810E;
-        Mon,  4 Dec 2023 04:57:07 -0800 (PST)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1faf56466baso2336051fac.3;
-        Mon, 04 Dec 2023 04:57:07 -0800 (PST)
+        Mon, 4 Dec 2023 07:57:01 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1804D2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:57:06 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so45582615e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:57:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701694627; x=1702299427; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x7obvGCBMmltBjy5XbnnE2I2O+AT6oEkcBU325Ni1XM=;
-        b=f7+hcN9Z173XZusF6WIUkhRdkrGluTzsLmE1ukAsfO+iHpv6UwNmzK+4In/VIAq+w5
-         gzwn4pwlyPxa7R3Zzcf+TM9DDxsXQ8uPSCaUgw/hKWeuut8PEvBiDVJK5UCnPlEx6opj
-         tcCIGSc0q9dLc7cm0HppeY83lEa/X+zkuICZj/RacuZ71UnW3BpoVLcfHc6Ohj3Z/iwN
-         dkbfSpAC9966cbpA2rEQVfTBlu6zxpHH9V4B3mKl9rHJLM98nHbyb5r90gz62ylhOPX9
-         HWGSAj15SwINo5Q6Sr++x3iHdzfNcJ74CJ9m+nlB3h1Imtf2Mutbj1OBeXSsMlAL5+YO
-         sZig==
+        d=linaro.org; s=google; t=1701694625; x=1702299425; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OQxUoSlgKQDc8MMwqLTcF6hSga+T/gfF/ZomSBCTcmI=;
+        b=KbgyiyifcM8zvA9NCqCQ1IiP96m5rwlPWjyvZRZSIK4jDTWflvYmZE9SosbmZnnpB3
+         fW6kxOy+yEFlJgTBM6f75alq9kQlmE+meZCOGNKRRq6sPOLvaMEU66BbtFrsdqojA3Wn
+         UgRgXIDhFYc2Fo+fwbl7gfFRJmL5lvv/XoeL3FxLWlsLo3itspH8D1AHIYOH33McN/u7
+         TZ5jH4iMJPiGMZp68Rjdk93d8BpsDAe9UnMrzrXAN/UTsPdcEoKVFlCn2DdnWwl6mhvK
+         q9HSteKa7kTdQWaix5HWbvVZIYdF4/HCo9RjrVhi6ynCp8eWbl3burOiasUUeDd58I1d
+         JV7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701694627; x=1702299427;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x7obvGCBMmltBjy5XbnnE2I2O+AT6oEkcBU325Ni1XM=;
-        b=jK92zJd/D4h81Qt9ld4m4H89Lh8OFTziBqu3kLIqpkUs+rmQqpe7d1NPzj9rg3q93b
-         7P1F8Mh5BCrbwXQfu0iBd3+08o8EJeEygFQ+aI9gVw4+5YNp9AcSQJObDrSiulpcjZbY
-         S/0QNPwJn4NcJdsQGkhIdzgmN6dUiQU1+Rgm9y7sdUIFet/Jnzl/IWwWLypYZo2niro/
-         hVd/xoTDyxHTdmFvSoPypVq7LblH4Od2uiJ/0i0J3Q+iEHs9AaRpbwkhFIWhKag6x2QJ
-         Zek5ohcEa13PF0DnAZXX1j5KfxXGeVCkJMtNbdx1lGhGamfvMRxusOQlAiyjoPeuSYeB
-         ZMrw==
-X-Gm-Message-State: AOJu0YwjFxNE4Wx86XloJqnaFnwhjRIXmtqp4q/qfW9RxUfLMuavkkE1
-        3Rtk3NXokw8lriITDZEPt5Q=
-X-Google-Smtp-Source: AGHT+IFvpW5846gC1OX97+GsC+iqJkisXIF8htbICn6H5+/H37RciiMedCYdMsfPkXiayqXnoNfdvw==
-X-Received: by 2002:a05:6870:d613:b0:1fa:fc26:7f81 with SMTP id a19-20020a056870d61300b001fafc267f81mr5190047oaq.14.1701694626940;
-        Mon, 04 Dec 2023 04:57:06 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id wc12-20020a056871a50c00b001fa3c734bc5sm2827332oab.46.2023.12.04.04.57.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 04:57:06 -0800 (PST)
-From:   Chen Wang <unicornxw@gmail.com>
-To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
-        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
-        samuel.holland@sifive.com
-Cc:     Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v3 4/4] riscv: dts: add clock generator for Sophgo SG2042 SoC
-Date:   Mon,  4 Dec 2023 20:56:57 +0800
-Message-Id: <fef3c174118174ae1d2ac9ff3c18850cf8605afa.1701691923.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1701691923.git.unicorn_wang@outlook.com>
-References: <cover.1701691923.git.unicorn_wang@outlook.com>
+        d=1e100.net; s=20230601; t=1701694625; x=1702299425;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OQxUoSlgKQDc8MMwqLTcF6hSga+T/gfF/ZomSBCTcmI=;
+        b=WUA5qN/NgqVEMRktvBaDrueF134c5Pyp9LziAGxXjdSpyl7UnJe2THxeHTJ6OeLHeH
+         8y7zYLSRVdAOvVAd5oZyrLBYL+xhTR3UFwPqmlId9Ueto8gnQPfYd8m02dgboprOT+I/
+         4m/lyepJb8i6yMmxDIBQ4i9/8JdriVreDLzObUQ8lcwRXvo8432+vq+A8oH22l8bf3qq
+         kjkWWxHAyyfD3tz12jO55f64QMBY/LDiEWmeIfVbSxdVYe3YrBI16kLHqYTjCBgapv4U
+         vZNDUVUaAbwA8F+q3AxVI3Xk/AAIUnf+ITJq+3uWq+P82OfOP7GLFxJa3C4MQfmKzLFi
+         1Z6A==
+X-Gm-Message-State: AOJu0YzMSOK1gvmgGFRdYFm9ltkmusYGNM051YFu11MY+WwTvv4PLj06
+        C0Ggyo9pO+3xvk7L+CPlu4KHVA==
+X-Google-Smtp-Source: AGHT+IGWMvIc+OEdNJr1CsIP8UbVai4BWUfMDlunsOUJC+LgT5h4NJ8q3+IWPo/TPzxR+lv+Bs+jEg==
+X-Received: by 2002:a05:600c:4588:b0:40b:5e21:bdb5 with SMTP id r8-20020a05600c458800b0040b5e21bdb5mr2303118wmo.68.1701694625398;
+        Mon, 04 Dec 2023 04:57:05 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:58:12b5:777b:9d17? ([2a01:e0a:982:cbb0:58:12b5:777b:9d17])
+        by smtp.gmail.com with ESMTPSA id n16-20020a05600c501000b00407b93d8085sm18677041wmr.27.2023.12.04.04.57.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 04:57:04 -0800 (PST)
+Message-ID: <b52212f4-39a9-474c-87ea-72f6d08a8388@linaro.org>
+Date:   Mon, 4 Dec 2023 13:57:03 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v2 3/6] arm64: dts: qcom: sm8550: Add GPU nodes
+Content-Language: en-US, fr
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20231127-topic-a7xx_dt-v2-0-2a437588e563@linaro.org>
+ <20231127-topic-a7xx_dt-v2-3-2a437588e563@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231127-topic-a7xx_dt-v2-3-2a437588e563@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Wang <unicorn_wang@outlook.com>
+On 04/12/2023 13:55, Konrad Dybcio wrote:
+> Add the required nodes to support the A740 GPU.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>   arch/arm64/boot/dts/qcom/sm8550.dtsi | 166 +++++++++++++++++++++++++++++++++++
+>   1 file changed, 166 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> index 7bafb3d88d69..8f59085c804d 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> @@ -1984,6 +1984,128 @@ tcsr: clock-controller@1fc0000 {
+>   			#reset-cells = <1>;
+>   		};
+>   
+> +		gpu: gpu@3d00000 {
+> +			compatible = "qcom,adreno-43050a01", "qcom,adreno";
+> +			reg = <0x0 0x03d00000 0x0 0x40000>,
+> +			      <0x0 0x03d9e000 0x0 0x1000>,
+> +			      <0x0 0x03d61000 0x0 0x800>;
+> +			reg-names = "kgsl_3d0_reg_memory",
+> +				    "cx_mem",
+> +				    "cx_dbgc";
+> +
+> +			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
+> +
+> +			iommus = <&adreno_smmu 0 0x0>,
+> +				 <&adreno_smmu 1 0x0>;
+> +
+> +			operating-points-v2 = <&gpu_opp_table>;
+> +
+> +			qcom,gmu = <&gmu>;
+> +
+> +			status = "disabled";
+> +
+> +			zap-shader {
+> +				memory-region = <&gpu_micro_code_mem>;
+> +			};
+> +
+> +			/* Speedbin needs more work on A740+, keep only lower freqs */
+> +			gpu_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-680000000 {
+> +					opp-hz = /bits/ 64 <680000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
+> +				};
+> +
+> +				opp-615000000 {
+> +					opp-hz = /bits/ 64 <615000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L0>;
+> +				};
+> +
+> +				opp-550000000 {
+> +					opp-hz = /bits/ 64 <550000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
+> +				};
+> +
+> +				opp-475000000 {
+> +					opp-hz = /bits/ 64 <475000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_L1>;
+> +				};
+> +
+> +				opp-401000000 {
+> +					opp-hz = /bits/ 64 <401000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +				};
+> +
+> +				opp-348000000 {
+> +					opp-hz = /bits/ 64 <348000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D0>;
+> +				};
+> +
+> +				opp-295000000 {
+> +					opp-hz = /bits/ 64 <295000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D1>;
+> +				};
+> +
+> +				opp-220000000 {
+> +					opp-hz = /bits/ 64 <220000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS_D2>;
+> +				};
+> +			};
+> +		};
+> +
+> +		gmu: gmu@3d6a000 {
+> +			compatible = "qcom,adreno-gmu-740.1", "qcom,adreno-gmu";
+> +			reg = <0x0 0x03d6a000 0x0 0x35000>,
+> +			      <0x0 0x03d50000 0x0 0x10000>,
+> +			      <0x0 0x0b280000 0x0 0x10000>;
+> +			reg-names = "gmu", "rscc", "gmu_pdc";
+> +
+> +			interrupts = <GIC_SPI 304 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 305 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "hfi", "gmu";
+> +
+> +			clocks = <&gpucc GPU_CC_AHB_CLK>,
+> +				 <&gpucc GPU_CC_CX_GMU_CLK>,
+> +				 <&gpucc GPU_CC_CXO_CLK>,
+> +				 <&gcc GCC_DDRSS_GPU_AXI_CLK>,
+> +				 <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
+> +				 <&gpucc GPU_CC_HUB_CX_INT_CLK>,
+> +				 <&gpucc GPU_CC_DEMET_CLK>;
+> +			clock-names = "ahb",
+> +				      "gmu",
+> +				      "cxo",
+> +				      "axi",
+> +				      "memnoc",
+> +				      "hub",
+> +				      "demet";
+> +
+> +			power-domains = <&gpucc GPU_CC_CX_GDSC>,
+> +					<&gpucc GPU_CC_GX_GDSC>;
+> +			power-domain-names = "cx",
+> +					     "gx";
+> +
+> +			iommus = <&adreno_smmu 5 0x0>;
+> +
+> +			qcom,qmp = <&aoss_qmp>;
+> +
+> +			operating-points-v2 = <&gmu_opp_table>;
+> +
+> +			gmu_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-500000000 {
+> +					opp-hz = /bits/ 64 <500000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
+> +				};
+> +
+> +				opp-200000000 {
+> +					opp-hz = /bits/ 64 <200000000>;
+> +					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
+> +				};
+> +			};
+> +		};
+> +
+>   		gpucc: clock-controller@3d90000 {
+>   			compatible = "qcom,sm8550-gpucc";
+>   			reg = <0 0x03d90000 0 0xa000>;
+> @@ -1995,6 +2117,50 @@ gpucc: clock-controller@3d90000 {
+>   			#power-domain-cells = <1>;
+>   		};
+>   
+> +		adreno_smmu: iommu@3da0000 {
+> +			compatible = "qcom,sm8550-smmu-500", "qcom,adreno-smmu",
+> +				     "qcom,smmu-500", "arm,mmu-500";
+> +			reg = <0x0 0x03da0000 0x0 0x40000>;
+> +			#iommu-cells = <2>;
+> +			#global-interrupts = <1>;
+> +			interrupts = <GIC_SPI 673 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 677 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 678 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 679 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 680 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 681 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 682 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 683 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 684 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 685 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 686 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 687 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 422 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 476 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 574 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 575 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 576 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 577 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 659 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 661 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 664 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 665 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 666 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 668 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 669 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 699 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&gpucc GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK>,
+> +				 <&gcc GCC_GPU_MEMNOC_GFX_CLK>,
+> +				 <&gcc GCC_GPU_SNOC_DVM_GFX_CLK>,
+> +				 <&gpucc GPU_CC_AHB_CLK>;
+> +			clock-names = "hlos",
+> +				      "bus",
+> +				      "iface",
+> +				      "ahb";
+> +			power-domains = <&gpucc GPU_CC_CX_GDSC>;
+> +			dma-coherent;
+> +		};
+> +
+>   		remoteproc_mpss: remoteproc@4080000 {
+>   			compatible = "qcom,sm8550-mpss-pas";
+>   			reg = <0x0 0x04080000 0x0 0x4040>;
+> 
 
-Add clock generator node to device tree for SG2042, and enable clock for
-uart.
-
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |  4 +
- arch/riscv/boot/dts/sophgo/sg2042.dtsi        | 79 +++++++++++++++++++
- 2 files changed, 83 insertions(+)
-
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-index 49b4b9c2c101..0b3b3b2b0c64 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-+++ b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-@@ -14,6 +14,10 @@ chosen {
- 	};
- };
- 
-+&cgi {
-+	clock-frequency = <25000000>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index 93256540d078..ecc7758073af 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -5,6 +5,7 @@
- 
- /dts-v1/;
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/clock/sophgo,sg2042-clkgen.h>
- 
- #include "sg2042-cpus.dtsi"
- 
-@@ -18,6 +19,12 @@ aliases {
- 		serial0 = &uart0;
- 	};
- 
-+	cgi: oscillator {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi";
-+		#clock-cells = <0>;
-+	};
-+
- 	soc: soc {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
-@@ -311,12 +318,84 @@ intc: interrupt-controller@7090000000 {
- 			riscv,ndev = <224>;
- 		};
- 
-+		sys_ctrl: system-controller@7030010000 {
-+			compatible = "sophgo,sg2042-sysctrl";
-+			reg = <0x70 0x30010000 0x0 0x1000>;
-+		};
-+
-+		clkgen: clock-controller@7030012000 {
-+			compatible = "sophgo,sg2042-clkgen";
-+			reg = <0x70 0x30012000 0x0 0x1000>;
-+			system-ctrl = <&sys_ctrl>;
-+			#clock-cells = <1>;
-+			clocks = <&cgi>;
-+			assigned-clocks = \
-+				<&clkgen DIV_CLK_FPLL_RP_CPU_NORMAL_1>,
-+				<&clkgen DIV_CLK_FPLL_50M_A53>,
-+				<&clkgen DIV_CLK_FPLL_TOP_RP_CMN_DIV2>,
-+				<&clkgen DIV_CLK_FPLL_UART_500M>,
-+				<&clkgen DIV_CLK_FPLL_AHB_LPC>,
-+				<&clkgen DIV_CLK_FPLL_EFUSE>,
-+				<&clkgen DIV_CLK_FPLL_TX_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_PTP_REF_I_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_REF_ETH0>,
-+				<&clkgen DIV_CLK_FPLL_EMMC>,
-+				<&clkgen DIV_CLK_FPLL_SD>,
-+				<&clkgen DIV_CLK_FPLL_TOP_AXI0>,
-+				<&clkgen DIV_CLK_FPLL_TOP_AXI_HSPERI>,
-+				<&clkgen DIV_CLK_FPLL_AXI_DDR_1>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER1>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER2>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER3>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER4>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER5>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER6>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER7>,
-+				<&clkgen DIV_CLK_FPLL_DIV_TIMER8>,
-+				<&clkgen DIV_CLK_FPLL_100K_EMMC>,
-+				<&clkgen DIV_CLK_FPLL_100K_SD>,
-+				<&clkgen DIV_CLK_FPLL_GPIO_DB>,
-+				<&clkgen DIV_CLK_MPLL_RP_CPU_NORMAL_0>,
-+				<&clkgen DIV_CLK_MPLL_AXI_DDR_0>;
-+			assigned-clock-rates = \
-+				<2000000000>,
-+				<50000000>,
-+				<1000000000>,
-+				<500000000>,
-+				<200000000>,
-+				<25000000>,
-+				<125000000>,
-+				<50000000>,
-+				<25000000>,
-+				<100000000>,
-+				<100000000>,
-+				<100000000>,
-+				<250000000>,
-+				<1000000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<50000000>,
-+				<100000>,
-+				<100000>,
-+				<100000>,
-+				<2000000000>,
-+				<1000000000>;
-+		};
-+
- 		uart0: serial@7040000000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x00000070 0x40000000 0x00000000 0x00001000>;
- 			interrupt-parent = <&intc>;
- 			interrupts = <112 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-frequency = <500000000>;
-+			clocks = <&clkgen GATE_CLK_UART_500M>,
-+				 <&clkgen GATE_CLK_APB_UART>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
--- 
-2.25.1
-
+Tested-by: Neil Armstrong <neil.armstrong@linaro.org> # on SM8550-QRD
