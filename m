@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 400F6803360
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76ECD803367
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343919AbjLDMvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:51:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33728 "EHLO
+        id S1344100AbjLDMxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:53:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDMvn (ORCPT
+        with ESMTP id S229711AbjLDMxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:51:43 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 794F3A7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:51:50 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rA8Q8-00039O-JD; Mon, 04 Dec 2023 13:51:32 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rA8Q7-00DWSS-Ow; Mon, 04 Dec 2023 13:51:31 +0100
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rA8Q7-005E36-Lu; Mon, 04 Dec 2023 13:51:31 +0100
-Date:   Mon, 4 Dec 2023 13:51:31 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Kory Maincent <kory.maincent@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v2 3/8] net: pse-pd: Introduce PSE types
- enumeration
-Message-ID: <20231204125131.GE981228@pengutronix.de>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
- <20231201-feature_poe-v2-3-56d8cac607fa@bootlin.com>
+        Mon, 4 Dec 2023 07:53:15 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941B09C;
+        Mon,  4 Dec 2023 04:53:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vNi4oarUMe/eI8dB061LbFrYbcwH4xzlO/UEVWvv3R8=; b=d69pQhr9LJbL/XW8eP8KAhPxm+
+        hqvraksWyptXL7ALZD+jvHNZ/30GsSeIaBl+DmcuM1PLSrXgx+IXGiI5iyxJ6yV/+rpoaUxsd4xbB
+        N+EOR2c3hgfm00+DPl8vWJviJCpVPMKRjo4iROkZWR/AU00dPd5WpXzVSwYgaPVIZ0s1p1UE7fi0x
+        fLBbTa79LgpBION1ZpAWLKG9b5h34Q2p3l6Hx72EKN9vF/wz+ufS3LeTb9NHAbGjGSTMkDGwvE/Qa
+        VkDMejEaj/8wUNXQhA0fLXKeizJxFYVT5JvepAsMFIRl9uQKZ5EPDl4oGPOEpZigR4KEhvcnxGAaN
+        RFFkSA1Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1rA8RE-000h5B-Ai; Mon, 04 Dec 2023 12:52:40 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4CE783003F0; Mon,  4 Dec 2023 13:52:39 +0100 (CET)
+Date:   Mon, 4 Dec 2023 13:52:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231204125239.GA1319@noisy.programming.kicks-ass.net>
+References: <20231130133630.192490507@infradead.org>
+ <20231130134204.136058029@infradead.org>
+ <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
+ <20231204091334.GM3818@noisy.programming.kicks-ass.net>
+ <20231204111128.GV8262@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231201-feature_poe-v2-3-56d8cac607fa@bootlin.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231204111128.GV8262@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,14 +87,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 06:10:25PM +0100, Kory Maincent wrote:
-> +u32 pse_get_types(struct pse_control *psec);
+On Mon, Dec 04, 2023 at 12:11:28PM +0100, Peter Zijlstra wrote:
+> On Mon, Dec 04, 2023 at 10:13:34AM +0100, Peter Zijlstra wrote:
+> 
+> > > Just running test_progs it splats right away:
+> > > 
+> > > [   74.047757] kmemleak: Found object by alias at 0xffffffffa0001d80
+> > > [   74.048272] CPU: 14 PID: 104 Comm: kworker/14:0 Tainted: G        W
+> > >  O       6.7.0-rc3-00702-g41c30fec304d-dirty #5241
+> > > [   74.049118] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > [   74.050042] Workqueue: events bpf_prog_free_deferred
+> > > [   74.050448] Call Trace:
+> > > [   74.050663]  <TASK>
+> > > [   74.050841]  dump_stack_lvl+0x55/0x80
+> > > [   74.051141]  __find_and_remove_object+0xdb/0x110
+> > > [   74.051521]  kmemleak_free+0x41/0x70
+> > > [   74.051828]  vfree+0x36/0x130
+> > 
+> > Durr, I'll see if I can get that stuff running locally, and otherwise
+> > play with the robot as you suggested. Thanks!
+> 
+> I think it is bpf_jit_binary_pack_hdr(), which is using prog->bpf_func
+> as a start address for the image, instead of jit_data->image.
+> 
+> This used to be true, but now it's offset.
+> 
+> Let me see what to do about that...
 
-I would add here some helper function. Something like:
-pse_has_podl() or pse_has_c33()
+Not the prettiest of things, but the below seems to make the thing
+happy...
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+---
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 196cc1481dec..f4357c3211bc 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -3024,6 +3024,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 		prog->bpf_func = (void *)image + ctx.prog_offset;
+ 		prog->jited = 1;
+ 		prog->jited_len = proglen - ctx.prog_offset;
++		prog->aux->cfi_offset = ctx.prog_offset;
+ 	} else {
+ 		prog = orig_prog;
+ 	}
+@@ -3078,6 +3079,7 @@ void bpf_jit_free(struct bpf_prog *prog)
+ 			kvfree(jit_data->addrs);
+ 			kfree(jit_data);
+ 		}
++		prog->bpf_func = (void *)prog->bpf_func - prog->aux->cfi_offset;
+ 		hdr = bpf_jit_binary_pack_hdr(prog);
+ 		bpf_jit_binary_pack_free(hdr, NULL);
+ 		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 8b725776e70a..e5fa0852a20f 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1483,6 +1483,7 @@ struct bpf_prog_aux {
+ 		struct work_struct work;
+ 		struct rcu_head	rcu;
+ 	};
++	u32 cfi_offset;
+ };
+ 
+ struct bpf_prog {
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 5c84a935ba63..763742f4740f 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -121,6 +121,9 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
+ #endif
+ 
+ 	INIT_LIST_HEAD_RCU(&fp->aux->ksym.lnode);
++#ifdef CONFIG_FINEIBT
++	INIT_LIST_HEAD_RCU(&fp->aux->ksym_prefix.lnode);
++#endif
+ 	mutex_init(&fp->aux->used_maps_mutex);
+ 	mutex_init(&fp->aux->dst_mutex);
+ 
+@@ -709,6 +712,8 @@ void bpf_prog_kallsyms_del(struct bpf_prog *fp)
+ 
+ 	bpf_ksym_del(&fp->aux->ksym);
+ #ifdef CONFIG_FINEIBT
++	if (cfi_mode != CFI_FINEIBT)
++		return;
+ 	bpf_ksym_del(&fp->aux->ksym_prefix);
+ #endif
+ }
