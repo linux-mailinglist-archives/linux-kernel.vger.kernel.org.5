@@ -2,164 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD5A8032FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 020CF803337
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:41:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbjLDMh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:37:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
+        id S233165AbjLDMk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDMhz (ORCPT
+        with ESMTP id S235429AbjLDMkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:37:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D85A7;
-        Mon,  4 Dec 2023 04:38:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701693481; x=1733229481;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=TZrVBVYHyMnaUFgD9Dz65E//PVH6mwgAZHswEzueOr4=;
-  b=FrU/WiAOu7wxNHaZ2i1xm1KOvGT0pzVlQXNU9dQijE1kjdtb1UMuxhc2
-   Mvg2cx1yX8l+ubkA0Jxl1eT/NEoc31gXq4/1GIDs4DK3Mj6tnaqPz9EHe
-   yETc9TgzEHXSLWx/dCwoRSGal+DygC/wH5NMJoxjsVu6MhyMvHdKCbdWj
-   1SceTdorrIRBri7nOTOsZSJaHr0sVoRTWRPsuG8vbABhaJuPmvqGITKBQ
-   afSzbN9UgH6EXrPXrH7+bTm8e000csMzIkuRuXh0hEH3p8bJsTWeDvSoH
-   xyTmxT39/cMAs7z0pgTbXv3LYXXw58DBpT7SXWIlXkfJXbCu0gE7Vkoe/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="7016041"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="7016041"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 04:38:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="893991056"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="893991056"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 04:38:00 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 04:38:00 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 4 Dec 2023 04:37:59 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 04:37:59 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 04:37:59 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AYDsUA3+VLtTR18m9B7pk4V1EoOPxk6ru5zeyHqlhTmk55DTuxExY9uvrbkYcCh/hYIMmqxJ/pT0QU91IeMa3Y2OFeb14drX6JItGbScOjqTG7PRihJI39yLbRSePrPs6ML/s6z3DAes6rqaFYRgtA/tpLNSMXKqYRYn1UwGDU4kzAoU5X159oSuw10oS1KQzdVAk2cTBaxZyjJFjwHoBCaq1pZ5/05psj9dVukq0Ns3TjMiLIAHTSlqWvcOK1uhfJj9l4zYAPKjdSHNInBE/q4t15jabKFxCvA+gR4UNWrSvrpP5NbJfwiS2TGv3MBLlRCl/PRqVwSNu6sqcjIUNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dSss1bREvyO33QhOIN2EObEDBcJ/t7XfRRsY1vBhJQY=;
- b=AzfdJWR5Kt6yzwg/TJv2rRWKjFW98O+oJvNUhOixylt4/8BtsrlBac4ZVEGbtGX4HIb7CUuvtBACGHx3k2Pv1SqaoCFIgRxAc32A6ifUE6iyVfiHUyowu7wR6sYtpLaHoadQ2BdwEtVWMhzxK06y2Qc9pzJvLCHPHeCFUrnJFbcHRsCSMKH/Y2HE/Vm0TVVlDNM8bJHztTTnWinuSmVx1up5725OSPqdiR5VuVzdtgorgBqZmvFjSzxPHkev8ZXDGDxcf1354mmACG604mVPhAQjjXeWenjj3ERO8mZ9GDh416qrAIbeQ6ycOxdT1YmuCeJiUeLA9462xNx6gw47Mw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by SN7PR11MB6851.namprd11.prod.outlook.com (2603:10b6:806:2a3::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 12:37:57 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 12:37:57 +0000
-Message-ID: <7e088129-866a-499d-8105-ba245c744f14@intel.com>
-Date:   Mon, 4 Dec 2023 20:40:32 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 07/12] iommu: Merge iommu_fault_event and iopf_fault
-Content-Language: en-US
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-CC:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yan Zhao <yan.y.zhao@intel.com>, <iommu@lists.linux.dev>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
- <20231115030226.16700-8-baolu.lu@linux.intel.com>
-From:   Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <20231115030226.16700-8-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2P153CA0052.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::21)
- To DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+        Mon, 4 Dec 2023 07:40:43 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B14E1C0;
+        Mon,  4 Dec 2023 04:40:49 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50bfe99b6edso255009e87.1;
+        Mon, 04 Dec 2023 04:40:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701693648; x=1702298448; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vsvgyciOFfSmw/EJbODu9yWaFL86QzDmPatwDo6fAHA=;
+        b=Fjf1Kq7/tv9oz7JTqV64win0IKsNL3NWQEfjpZuPkkNen0d5gINb3pV8wOq+e+5mE9
+         DZrBIuu2sLrpbCtMNZRKTZJhqd37XsAO231t7gp9DTIKZmRj9937fS8h+631sirpirG7
+         nIwiKrP6My4OMqzSeG+tUfUZYYR5j5+5veVnKFBvLeKaE4Ljdx/FGw+iMyRxevOauZhB
+         peCYbW5pSDAALcqCr65/XJt9+5LouX8tlrVSHnSmGavqnVYUO2cTblRdnZ1q6fQYzNqF
+         DewAQTP00qjTAM9t6Muq8v7DiwzvkmJzW19dJgXHwuJFCiP97fQ6eZZhUOtGBvhXZEOX
+         qj1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701693648; x=1702298448;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vsvgyciOFfSmw/EJbODu9yWaFL86QzDmPatwDo6fAHA=;
+        b=pjC29NF12R9rzw1BLisL6whKAz0JhBEtsgznK9Sci1O0OnZo+yHRh8iKPuFUMZyoXt
+         J6Dyhae9VixBzH0jjTbB1e7JD+XB2Bw2VLFoU9woCqlt97R4ljUfKO5pVVGL4BfGg+1V
+         3ZbmAGtg4AOubYxQhEAs6JlZ0tDLS9H14jqXu+HhQior/kA0QUbHQNbP0xeJAq51EfAt
+         XWt6RXqeKXj5hmJOLk+HTjAiK5l/iai9p3K9TukuSNU5NLPDeTCZnljA+I6RjCOijReu
+         lymXOTKEk/59FTLSEu8dxODzFWfoxrGOciWCSs8GIcIrkC/zNhjokXIHmw5UqYEPv2fS
+         3ZsA==
+X-Gm-Message-State: AOJu0YyEHL7/NCeg9dgr8UQ0eQq65Ey47lgDDe+rQMYqQOHzul2EU/PU
+        u/wYyjW/S60S6X8x4qFfchE=
+X-Google-Smtp-Source: AGHT+IGt7rvUqmjUimncGXW2IXVdDHVFAV2T7wKaPCUQGmJMe3Y29H7WiKNl0nj1VyY+oyfMrbTxdA==
+X-Received: by 2002:ac2:560a:0:b0:50b:f041:e434 with SMTP id v10-20020ac2560a000000b0050bf041e434mr1055315lfd.70.1701693647568;
+        Mon, 04 Dec 2023 04:40:47 -0800 (PST)
+Received: from ?IPV6:2a02:2378:120d:1a46:8f76:bf32:c739:eb6e? ([2a02:2378:120d:1a46:8f76:bf32:c739:eb6e])
+        by smtp.gmail.com with ESMTPSA id q3-20020ac246e3000000b004fb7848bacbsm1250826lfo.46.2023.12.04.04.40.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 04:40:47 -0800 (PST)
+Message-ID: <0a035c62-9d35-4f85-b1f3-bcb7dea17d52@gmail.com>
+Date:   Mon, 4 Dec 2023 14:40:44 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|SN7PR11MB6851:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9748f84e-c82c-4564-890d-08dbf4c5d800
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZJqQmk2pyUn9AJudASnRr2PbtZUk7of+MSEz5rvL4aiPANORYLItRcKv3jvmDYYXxuyflNNw5K/2EhpIcpMOelfJ32oRsETE2gQmRNzJTH0H5nDjdO3opoNZpJBJ7PVntwY5f1fDyxERBavYcsiA56J9VXlMEQhR7dyMAJRtsOY1r3KK6C/zCaiZExqa/J9wNsSDlaq0tIDHxAbm+NpwKSeecjp7prNoklUlJk9VBGJUPpUj4Mamo1yooMrQZRLwR6fGjBFDcNX2028YCIKNk27yJ2nDyP3/DLB2Kkv2lXDyXtYD2mg40C0CDHqoVCQvFacmrtjdeNi1VG4ZRpjhzst4uj4ORhW7MkAJ5asnuFjjZpnQw35z6XcywX/lSNss1P+lMxAqHNugjwrGecWq6+N4KMSTdXTcrXJeMcXaAuIq65aNIB6Ezv8ggLGbEpFOtwH0PNfgeubJWIgGFMwXcB9hRMYo8cpXOXd7Gyz4sZRRCK5aI9Or/PXpzUMLgXak2Dpbu/4hMAAWF1gxn6KqYl/bzLs7Q83WxMVN80gVQoVEzq7B1FxTfepKQQ/wgt7J8CP91A67tXcRal+dMCZnUbnH5wuxKEJdU687zSHTLIfWKtjsfS4WsdK+h7SQ2Ya7wnxa5yXFzG81xm0bHfEmpg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(396003)(376002)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(478600001)(6512007)(2616005)(8936002)(8676002)(4326008)(38100700002)(66556008)(66476007)(66946007)(54906003)(110136005)(316002)(31686004)(26005)(83380400001)(6486002)(6666004)(53546011)(82960400001)(6506007)(31696002)(86362001)(5660300002)(7416002)(2906002)(41300700001)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Sm8rZFl0YjY4bzhWcnp5LzB5Y05aUUxraXY5c2ZpZUxOK3BhT2VNL0JnWVhk?=
- =?utf-8?B?cUV1UThQNktXWDQ2VlFNR1V4Tkhrd1pZejFEeWliem42MWVNNmVkZDZ3L1Bu?=
- =?utf-8?B?UUwvM2NtZ09CbktTZXNoai9mT2k0ZWNOTHhvYTN0ZjVzS3czMTZaYjJCOERo?=
- =?utf-8?B?cXJxZ3JLaU5WdjU1RGl6VkRPYU16aDZ4K2hPMmxDZVErTzNHdzBRWklIQ3Fh?=
- =?utf-8?B?bjllNlBRREFRaUovaXJVWEFTVmsyVGtXUkZWN0oxdEtYN21DZ2RrY1A2Mktj?=
- =?utf-8?B?ajVRVzQyeExjNXpmUzFrWUljM1gyNVhDV1pQOHdPZzVsMTJXbWdWWGJ3RUp3?=
- =?utf-8?B?M1pkVkM4N1lLV0dETkR1elNTUEZsaEg2WEFWSm9OVzFMZkg2bWJDMlVtM3ho?=
- =?utf-8?B?S1hsZTRST1drSDlIa2puRWVqakRtVVIwRUhhMGQ5RVRCYzdSS25kaVloNHVq?=
- =?utf-8?B?ZlJkRlVab0JBa2JndlcvUmRWbWJRUGxucE9WRFJLSmhGdXNQNW9FaHc2aE10?=
- =?utf-8?B?dENwVnZEOGpRcWhyUFVBVTZMaEwzYzJPVGVtclFnd1NPZ1E5aG1jemZSNTBv?=
- =?utf-8?B?K2Y1YjlkYVZpaUpZR3pMaElZWGg0Q1NyYWlNcEQvUlZhUU5kY2ZaU0wxa2Vw?=
- =?utf-8?B?SWN3d2swSHhFWmVNSUxZeHBaV3J6QTFlMlVTcVpZaDByKzRJY3g3c1hhbFJR?=
- =?utf-8?B?NUMyVitRbHJwQUR3c2RQRDdmeWwwWFhOVFJWUGhxUFBiRUYrRDJDZDVraUxZ?=
- =?utf-8?B?WmRvclBEZ2hBYnhlcFUyM1R3KzNNTkJLNkUyRnBpMHF1bHk2Q2ZRem40R3NO?=
- =?utf-8?B?OGhmdUc4NEFKb1ZXODZvNy9QMlV1bXIyUUw4cHRRRVpLL0lscGp3STR1SUhT?=
- =?utf-8?B?NnNxMzJHZFNpbWpySFZodDZ3Z1hITk1IYUExSGhiOThiRWpjVjNtVTFDU1Jt?=
- =?utf-8?B?RWRtYjllM3RQNFVqTG93TFArcW1EOHl0OFFldnk3WE5FeE5vcGxVWFVYUUdS?=
- =?utf-8?B?OVVraDJOa1ZENENsQy90c1A4MzJnbFhSWGpoRTd0THNPeWFCL250U1hqWHdR?=
- =?utf-8?B?NlRsS1ljY0o3NkRpbG1takorbjJ2L3lQam40YVZKUGtVamR5TXdyNDV0OWRX?=
- =?utf-8?B?M2xHbUhXai9GM2lDdHc0N25uam5MYWpGdk12aUFONDBFNmRKUklFUEFETGti?=
- =?utf-8?B?L0ZRWU9SS3pFOHdpYk4xOGhsYlU0dWNyQjdLeGc4amc1K2JwZ2Z3ZXQwbU5h?=
- =?utf-8?B?b2VrbTJ4WVFlMFlvZXpScTJxbW5xU2hOb1kyMzhRdjdYaUNWdUZYTUtrdStw?=
- =?utf-8?B?SEJCUFpVWDJSSStMZFdsclQycllrL3JrTWcwQkM1WkM3WXoveGRUdS85eXNK?=
- =?utf-8?B?SHNBeEw5bTZYSGJEQmdKOFdGTmc5RFZRdFNBT3ZlTC9jTlJvWENEdHFxU2ZS?=
- =?utf-8?B?UE9WSWluNi81WVFrZnZsbWl1UzVrNDZzS0YwUWIrZnFQSWVCa2JYSlFWZ2VY?=
- =?utf-8?B?SUxoeUdDT1BNVk1GWTJ0TU10OTM4NjBpUUFONmdkMHZlYytickt2bDgrTTAw?=
- =?utf-8?B?cHYrNjk5YjRXU3ROWDFKVkdsQnF6b1lQZ2kwKzIzVEg5RGYyTXJweHJtQVlZ?=
- =?utf-8?B?R3RqOS93N2MxNnpEMllBUkMvVmpBYzFKVjRDWGtDUXVFWHNmQ0xtVGRJdGJY?=
- =?utf-8?B?QVBYbEp2Mlp5N1UwQnBvMTN0RUJleXdONDBHMlBpSzdPY1dKZFhZNTM4VDY4?=
- =?utf-8?B?U1JvRXI3SXhWZkxuVXdGUEUzVjlMeGpPZnpyd0FJVXkvVDVLMkw0R3NNM0p5?=
- =?utf-8?B?aHRUTG91ZFRDNFZxWWQ1emQ1T3hJcmtTZU9oODhFblIyczVSNTVHcW91Tlgz?=
- =?utf-8?B?U2NiRzk0K0pkblY3OHNFRnJpWUFic2lXTGxCdGZOdWlQVGQrbFpUVDlWc083?=
- =?utf-8?B?KzVMV2s1WXUzNVROVyt3SXVOOEcrNmdiNm4vYkVkTW0yTEJVMHpMclgvRVNN?=
- =?utf-8?B?MUZOSlRoZXpjN0xSaXY1ak9qUTZRbmlqUTZDRS9uMkZXR3AvTTNHUllyMDRS?=
- =?utf-8?B?RzVtRkZTaVk5bEg0WVY3QmpVcHNSYnB3UW13cG13SWFYZk00T01iczlLOG44?=
- =?utf-8?Q?E1qqR1rSGYOz5pk2dqzhZ4F2k?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9748f84e-c82c-4564-890d-08dbf4c5d800
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 12:37:57.3771
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ly4V0R2hY0Nr2LKl90xmL7lx0d8zC6R/BuSzwCZssSSWUPBpp37Jf189tiyf+jOZUY+yDdV5C6kVOL0MrOOKRw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6851
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/5] dt-bindings: input/touchscreen: Add compatible for
+ IST3038B
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        Karel Balej <karelb@gimli.ms.mff.cuni.cz>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Karel Balej <balejk@matfyz.cz>
+References: <20231202125948.10345-1-karelb@gimli.ms.mff.cuni.cz>
+ <20231202125948.10345-3-karelb@gimli.ms.mff.cuni.cz>
+ <20231203-outskirts-reformat-e0a833903841@spud>
+From:   Markuss Broks <markuss.broks@gmail.com>
+In-Reply-To: <20231203-outskirts-reformat-e0a833903841@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -167,214 +86,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/15 11:02, Lu Baolu wrote:
-> The iommu_fault_event and iopf_fault data structures store the same
-> information about an iopf fault. They are also used in the same way.
-> Merge these two data structures into a single one to make the code
-> more concise and easier to maintain.
-> 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Tested-by: Yan Zhao <yan.y.zhao@intel.com>
-> ---
->   include/linux/iommu.h                       | 27 ++++++---------------
->   drivers/iommu/intel/iommu.h                 |  2 +-
->   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  4 +--
->   drivers/iommu/intel/svm.c                   |  5 ++--
->   drivers/iommu/io-pgfault.c                  |  5 ----
->   drivers/iommu/iommu.c                       |  8 +++---
->   6 files changed, 17 insertions(+), 34 deletions(-)
+Hi Conor,
 
-Reviewed-by: Yi Liu <yi.l.liu@intel.com>
+On 12/3/23 13:20, Conor Dooley wrote:
+> On Sat, Dec 02, 2023 at 01:48:33PM +0100, Karel Balej wrote:
+>> From: Markuss Broks <markuss.broks@gmail.com>
+>>
+>> Imagis IST3038B is a variant (firmware?) of Imagis IST3038 IC,
+>> add the compatible for it to the IST3038C bindings.
+> This one is better, but would be well served by mentioning what
+> specifically is different (register addresses or firmware commands?)
 
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index a45d92cc31ec..42b62bc8737a 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -40,7 +40,6 @@ struct iommu_domain_ops;
->   struct iommu_dirty_ops;
->   struct notifier_block;
->   struct iommu_sva;
-> -struct iommu_fault_event;
->   struct iommu_dma_cookie;
->   struct iopf_queue;
->   
-> @@ -121,6 +120,11 @@ struct iommu_page_response {
->   	u32	code;
->   };
->   
-> +struct iopf_fault {
-> +	struct iommu_fault fault;
-> +	/* node for pending lists */
-> +	struct list_head list;
-> +};
->   
->   /* iommu fault flags */
->   #define IOMMU_FAULT_READ	0x0
-> @@ -480,7 +484,7 @@ struct iommu_ops {
->   	int (*dev_disable_feat)(struct device *dev, enum iommu_dev_features f);
->   
->   	int (*page_response)(struct device *dev,
-> -			     struct iommu_fault_event *evt,
-> +			     struct iopf_fault *evt,
->   			     struct iommu_page_response *msg);
->   
->   	int (*def_domain_type)(struct device *dev);
-> @@ -572,20 +576,6 @@ struct iommu_device {
->   	u32 max_pasids;
->   };
->   
-> -/**
-> - * struct iommu_fault_event - Generic fault event
-> - *
-> - * Can represent recoverable faults such as a page requests or
-> - * unrecoverable faults such as DMA or IRQ remapping faults.
-> - *
-> - * @fault: fault descriptor
-> - * @list: pending fault event list, used for tracking responses
-> - */
-> -struct iommu_fault_event {
-> -	struct iommu_fault fault;
-> -	struct list_head list;
-> -};
-> -
->   /**
->    * struct iommu_fault_param - per-device IOMMU fault data
->    * @lock: protect pending faults list
-> @@ -720,8 +710,7 @@ extern struct iommu_group *iommu_group_get(struct device *dev);
->   extern struct iommu_group *iommu_group_ref_get(struct iommu_group *group);
->   extern void iommu_group_put(struct iommu_group *group);
->   
-> -extern int iommu_report_device_fault(struct device *dev,
-> -				     struct iommu_fault_event *evt);
-> +extern int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt);
->   extern int iommu_page_response(struct device *dev,
->   			       struct iommu_page_response *msg);
->   
-> @@ -1128,7 +1117,7 @@ static inline void iommu_group_put(struct iommu_group *group)
->   }
->   
->   static inline
-> -int iommu_report_device_fault(struct device *dev, struct iommu_fault_event *evt)
-> +int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
->   {
->   	return -ENODEV;
->   }
-> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-> index 65d37a138c75..a1ddd5132aae 100644
-> --- a/drivers/iommu/intel/iommu.h
-> +++ b/drivers/iommu/intel/iommu.h
-> @@ -905,7 +905,7 @@ struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
->   void intel_svm_check(struct intel_iommu *iommu);
->   int intel_svm_enable_prq(struct intel_iommu *iommu);
->   int intel_svm_finish_prq(struct intel_iommu *iommu);
-> -int intel_svm_page_response(struct device *dev, struct iommu_fault_event *evt,
-> +int intel_svm_page_response(struct device *dev, struct iopf_fault *evt,
->   			    struct iommu_page_response *msg);
->   struct iommu_domain *intel_svm_domain_alloc(void);
->   void intel_svm_remove_dev_pasid(struct device *dev, ioasid_t pasid);
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 505400538a2e..46780793b743 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -922,7 +922,7 @@ static int arm_smmu_cmdq_batch_submit(struct arm_smmu_device *smmu,
->   }
->   
->   static int arm_smmu_page_response(struct device *dev,
-> -				  struct iommu_fault_event *unused,
-> +				  struct iopf_fault *unused,
->   				  struct iommu_page_response *resp)
->   {
->   	struct arm_smmu_cmdq_ent cmd = {0};
-> @@ -1467,7 +1467,7 @@ static int arm_smmu_handle_evt(struct arm_smmu_device *smmu, u64 *evt)
->   	struct arm_smmu_master *master;
->   	bool ssid_valid = evt[0] & EVTQ_0_SSV;
->   	u32 sid = FIELD_GET(EVTQ_0_SID, evt[0]);
-> -	struct iommu_fault_event fault_evt = { };
-> +	struct iopf_fault fault_evt = { };
->   	struct iommu_fault *flt = &fault_evt.fault;
->   
->   	switch (FIELD_GET(EVTQ_0_ID, evt[0])) {
-> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> index 50a481c895b8..9de349ea215c 100644
-> --- a/drivers/iommu/intel/svm.c
-> +++ b/drivers/iommu/intel/svm.c
-> @@ -543,13 +543,12 @@ static int prq_to_iommu_prot(struct page_req_dsc *req)
->   static int intel_svm_prq_report(struct intel_iommu *iommu, struct device *dev,
->   				struct page_req_dsc *desc)
->   {
-> -	struct iommu_fault_event event;
-> +	struct iopf_fault event = { };
->   
->   	if (!dev || !dev_is_pci(dev))
->   		return -ENODEV;
->   
->   	/* Fill in event data for device specific processing */
-> -	memset(&event, 0, sizeof(struct iommu_fault_event));
->   	event.fault.type = IOMMU_FAULT_PAGE_REQ;
->   	event.fault.prm.addr = (u64)desc->addr << VTD_PAGE_SHIFT;
->   	event.fault.prm.pasid = desc->pasid;
-> @@ -721,7 +720,7 @@ static irqreturn_t prq_event_thread(int irq, void *d)
->   }
->   
->   int intel_svm_page_response(struct device *dev,
-> -			    struct iommu_fault_event *evt,
-> +			    struct iopf_fault *evt,
->   			    struct iommu_page_response *msg)
->   {
->   	struct iommu_fault_page_request *prm;
-> diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
-> index 31832aeacdba..c45977bb7da3 100644
-> --- a/drivers/iommu/io-pgfault.c
-> +++ b/drivers/iommu/io-pgfault.c
-> @@ -25,11 +25,6 @@ struct iopf_queue {
->   	struct mutex			lock;
->   };
->   
-> -struct iopf_fault {
-> -	struct iommu_fault		fault;
-> -	struct list_head		list;
-> -};
-> -
->   struct iopf_group {
->   	struct iopf_fault		last_fault;
->   	struct list_head		faults;
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 0c6700b6659a..36b597bb8a09 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -1312,10 +1312,10 @@ EXPORT_SYMBOL_GPL(iommu_group_put);
->    *
->    * Return 0 on success, or an error.
->    */
-> -int iommu_report_device_fault(struct device *dev, struct iommu_fault_event *evt)
-> +int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
->   {
->   	struct dev_iommu *param = dev->iommu;
-> -	struct iommu_fault_event *evt_pending = NULL;
-> +	struct iopf_fault *evt_pending = NULL;
->   	struct iommu_fault_param *fparam;
->   	int ret = 0;
->   
-> @@ -1328,7 +1328,7 @@ int iommu_report_device_fault(struct device *dev, struct iommu_fault_event *evt)
->   
->   	if (evt->fault.type == IOMMU_FAULT_PAGE_REQ &&
->   	    (evt->fault.prm.flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE)) {
-> -		evt_pending = kmemdup(evt, sizeof(struct iommu_fault_event),
-> +		evt_pending = kmemdup(evt, sizeof(struct iopf_fault),
->   				      GFP_KERNEL);
->   		if (!evt_pending) {
->   			ret = -ENOMEM;
-> @@ -1357,7 +1357,7 @@ int iommu_page_response(struct device *dev,
->   {
->   	bool needs_pasid;
->   	int ret = -EINVAL;
-> -	struct iommu_fault_event *evt;
-> +	struct iopf_fault *evt;
->   	struct iommu_fault_page_request *prm;
->   	struct dev_iommu *param = dev->iommu;
->   	const struct iommu_ops *ops = dev_iommu_ops(dev);
+I don't think anyone knows this other than Imagis itself. I would guess 
+it's different hardware, since register addresses are indeed different, 
+but on the other hand, there is a possibility that firmware on the MCU 
+could be responding to those commands. I suppose "... IST3038B is a 
+hardware variant of ... IST3038" would be more correct.
 
--- 
-Regards,
-Yi Liu
+The reason why I think it could be firmware-defined is because we have a 
+lot of variants (30xxA, 30xxB, 30xxC, plain 30xx), and the numbers 
+usually mean feature level/completeness, e.g. some don't support the 
+touch pressure or touchkeys, and we don't know what A/B/C/none means.
+
+>
+> Cheers,
+> Conor.
+>
+>> Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
+>> Signed-off-by: Karel Balej <balejk@matfyz.cz>
+>> ---
+>>   .../devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml   | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml b/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml
+>> index 0d6b033fd5fb..b5372c4eae56 100644
+>> --- a/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml
+>> +++ b/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml
+>> @@ -18,6 +18,7 @@ properties:
+>>   
+>>     compatible:
+>>       enum:
+>> +      - imagis,ist3038b
+>>         - imagis,ist3038c
+>>   
+>>     reg:
+>> -- 
+>> 2.43.0
+>>
+- Markuss
