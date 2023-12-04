@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBAB80364B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDCD980364E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbjLDOVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:21:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33372 "EHLO
+        id S1345074AbjLDOVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:21:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233342AbjLDOVq (ORCPT
+        with ESMTP id S235778AbjLDOVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:21:46 -0500
+        Mon, 4 Dec 2023 09:21:50 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B664A9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:21:51 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D56AA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:21:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701699710;
+        s=mimecast20190719; t=1701699715;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1DVxi53AdHJct3hXH5+VGS1svVEDHY6RYmwnFv3N0GA=;
-        b=cCjdf3X8BsX9IjgztuRF4tpXRzbn0UyMlM0kHlPVGPpaDrsNvgubKviTBOKcqlreZr1022
-        irCS8LaVAUGM3wV+X9jr58HiEHKKsNWDZjhCcsFHe7rE2nNxhm88GVUkUE9ZxlQfyAR9dd
-        nk8V2rawq0qIdwXW/AkAGCvhENtLD2Y=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DtTuMDxg2eg7y+J7YOtz8EtHkmHKA1dRnnRsMSbHZZc=;
+        b=e91Q9iwtovq72RMythexJP4UBBJqfPRhHq4HWDpYRzTFQtbVQukrY3ctkkr1whBgLRWCbv
+        J2fMcXy4iKu0XZmfg1RGQbM+Kur9vRaRNnlaxL+5LtDDnGeF7WOU1uLLNcIjD8OOruPbex
+        niHxOfUi7t5Wr2isA79ESdVWLORXOLE=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-480-Tpjb8xMcMU6W6IJk6zWHwA-1; Mon, 04 Dec 2023 09:21:49 -0500
-X-MC-Unique: Tpjb8xMcMU6W6IJk6zWHwA-1
+ us-mta-158-Hayy6FKhOPqtL2ERdoY8Jw-1; Mon, 04 Dec 2023 09:21:51 -0500
+X-MC-Unique: Hayy6FKhOPqtL2ERdoY8Jw-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8ED8A811E7E;
-        Mon,  4 Dec 2023 14:21:48 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 899C08F9201;
+        Mon,  4 Dec 2023 14:21:50 +0000 (UTC)
 Received: from t14s.fritz.box (unknown [10.39.195.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CB0DD2026D4C;
-        Mon,  4 Dec 2023 14:21:46 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C71B12026D4C;
+        Mon,  4 Dec 2023 14:21:48 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -48,10 +49,13 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Yin Fengwei <fengwei.yin@intel.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>
-Subject: [PATCH RFC 00/39] mm/rmap: interface overhaul
-Date:   Mon,  4 Dec 2023 15:21:07 +0100
-Message-ID: <20231204142146.91437-1-david@redhat.com>
+        Peter Xu <peterx@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH RFC 01/39] mm/rmap: rename hugepage_add* to hugetlb_add*
+Date:   Mon,  4 Dec 2023 15:21:08 +0100
+Message-ID: <20231204142146.91437-2-david@redhat.com>
+In-Reply-To: <20231204142146.91437-1-david@redhat.com>
+References: <20231204142146.91437-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
@@ -66,182 +70,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baed on mm-stable from a couple of days.
+Let's just call it "hugetlb_".
 
-This series proposes an overhaul to our rmap interface, to get rid of the
-"bool compound" / RMAP_COMPOUND parameter with the goal of making the
-interface less error prone, more future proof, and more natural to extend
-to "batching". Also, this converts the interface to always consume
-folio+subpage, which speeds up operations on large folios.
+Yes, it's all already inconsistent and confusing because we have a lot
+of "hugepage_" functions for legacy reasons. But "hugetlb" cannot possibly
+be confused with transparent huge pages, and it matches "hugetlb.c" and
+"folio_test_hugetlb()". So let's minimize confusion in rmap code.
 
-Further, this series adds PTE-batching variants for 4 rmap functions,
-whereby only folio_add_anon_rmap_ptes() is used for batching in this series
-when PTE-remapping a PMD-mapped THP.
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ include/linux/rmap.h | 4 ++--
+ mm/hugetlb.c         | 8 ++++----
+ mm/migrate.c         | 4 ++--
+ mm/rmap.c            | 8 ++++----
+ 4 files changed, 12 insertions(+), 12 deletions(-)
 
-Ryan has series where we would make use of folio_remove_rmap_ptes() [1]
--- he carries his own batching variant right now -- and
-folio_try_dup_anon_rmap_ptes()/folio_dup_file_rmap_ptes() [2].
-
-There is some overlap with both series (and some other work, like
-multi-size THP [3]), so that will need some coordination, and likely a
-stepwise inclusion.
-
-I got that started [4], but it made sense to show the whole picture. The
-patches of [4] are contained in here, with one additional patch added
-("mm/rmap: introduce and use hugetlb_try_share_anon_rmap()") and some
-slight patch description changes.
-
-In general, RMAP batching is an important optimization for PTE-mapped
-THP, especially once we want to move towards a total mapcount or further,
-as shown with my WIP patches on "mapped shared vs. mapped exclusively" [5].
-
-The rmap batching part of [5] is also contained here in a slightly reworked
-fork [and I found a bug du to the "compound" parameter handling in these
-patches that should be fixed here :) ].
-
-This series performs a lot of folio conversion, that could be separated
-if there is a good reason. Most of the added LOC in the diff are only due
-to documentation.
-
-As we're moving to a pte/pmd interface where we clearly express the
-mapping granularity we are dealing with, we first get the remainder of
-hugetlb out of the way, as it is special and expected to remain special: it
-treats everything as a "single logical PTE" and only currently allows
-entire mappings.
-
-Even if we'd ever support partial mappings, I strongly
-assume the interface and implementation will still differ heavily:
-hopefull we can avoid working on subpages/subpage mapcounts completely and
-only add a "count" parameter for them to enable batching.
-
-
-New (extended) hugetlb interface that operate on entire folio:
- * hugetlb_add_new_anon_rmap() -> Already existed
- * hugetlb_add_anon_rmap() -> Already existed
- * hugetlb_try_dup_anon_rmap()
- * hugetlb_try_share_anon_rmap()
- * hugetlb_add_file_rmap()
- * hugetlb_remove_rmap()
-
-New "ordinary" interface for small folios / THP::
- * folio_add_new_anon_rmap() -> Already existed
- * folio_add_anon_rmap_[pte|ptes|pmd]()
- * folio_try_dup_anon_rmap_[pte|ptes|pmd]()
- * folio_try_share_anon_rmap_[pte|pmd]()
- * folio_add_file_rmap_[pte|ptes|pmd]()
- * folio_dup_file_rmap_[pte|ptes|pmd]()
- * folio_remove_rmap_[pte|ptes|pmd]()
-
-folio_add_new_anon_rmap() will always map at the biggest granularity
-possible (currently, a single PMD to cover a PMD-sized THP). Could be
-extended if ever required.
-
-In the future, we might want "_pud" variants and eventually "_pmds" variants
-for batching. Further, if hugepd is ever a thing outside hugetlb code,
-we might want some variants for that. All stuff for the distant future.
-
-
-I ran some simple microbenchmarks from [5] on an Intel(R) Xeon(R) Silver
-4210R: munmap(), fork(), cow, MADV_DONTNEED on each PTE ... and PTE
-remapping PMD-mapped THPs on 1 GiB of memory.
-
-For small folios, there is barely a change (< 1 % performance improvement),
-whereby fork() still stands out with 0.74% performance improvement, but
-it might be just some noise. Folio optimizations don't help that much
-with small folios.
-
-For PTE-mapped THP:
-* PTE-remapping a PMD-mapped THP is more than 10% faster.
-  -> RMAP batching
-* fork() is more than 4% faster.
-  -> folio conversion
-* MADV_DONTNEED is 2% faster
-  -> folio conversion
-* COW by writing only a single byte on a COW-shared PTE
-  -> folio conversion
-* munmap() is only slightly faster (< 1%).
-
-[1] https://lkml.kernel.org/r/20230810103332.3062143-1-ryan.roberts@arm.com
-[2] https://lkml.kernel.org/r/20231204105440.61448-1-ryan.roberts@arm.com
-[3] https://lkml.kernel.org/r/20231204102027.57185-1-ryan.roberts@arm.com
-[4] https://lkml.kernel.org/r/20231128145205.215026-1-david@redhat.com
-[5] https://lkml.kernel.org/r/20231124132626.235350-1-david@redhat.com
-
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Yin Fengwei <fengwei.yin@intel.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Muchun Song <muchun.song@linux.dev>
-Cc: Peter Xu <peterx@redhat.com>
-
-David Hildenbrand (39):
-  mm/rmap: rename hugepage_add* to hugetlb_add*
-  mm/rmap: introduce and use hugetlb_remove_rmap()
-  mm/rmap: introduce and use hugetlb_add_file_rmap()
-  mm/rmap: introduce and use hugetlb_try_dup_anon_rmap()
-  mm/rmap: introduce and use hugetlb_try_share_anon_rmap()
-  mm/rmap: add hugetlb sanity checks
-  mm/rmap: convert folio_add_file_rmap_range() into
-    folio_add_file_rmap_[pte|ptes|pmd]()
-  mm/memory: page_add_file_rmap() -> folio_add_file_rmap_[pte|pmd]()
-  mm/huge_memory: page_add_file_rmap() -> folio_add_file_rmap_pmd()
-  mm/migrate: page_add_file_rmap() -> folio_add_file_rmap_pte()
-  mm/userfaultfd: page_add_file_rmap() -> folio_add_file_rmap_pte()
-  mm/rmap: remove page_add_file_rmap()
-  mm/rmap: factor out adding folio mappings into __folio_add_rmap()
-  mm/rmap: introduce folio_add_anon_rmap_[pte|ptes|pmd]()
-  mm/huge_memory: batch rmap operations in __split_huge_pmd_locked()
-  mm/huge_memory: page_add_anon_rmap() -> folio_add_anon_rmap_pmd()
-  mm/migrate: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
-  mm/ksm: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
-  mm/swapfile: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
-  mm/memory: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
-  mm/rmap: remove page_add_anon_rmap()
-  mm/rmap: remove RMAP_COMPOUND
-  mm/rmap: introduce folio_remove_rmap_[pte|ptes|pmd]()
-  kernel/events/uprobes: page_remove_rmap() -> folio_remove_rmap_pte()
-  mm/huge_memory: page_remove_rmap() -> folio_remove_rmap_pmd()
-  mm/khugepaged: page_remove_rmap() -> folio_remove_rmap_pte()
-  mm/ksm: page_remove_rmap() -> folio_remove_rmap_pte()
-  mm/memory: page_remove_rmap() -> folio_remove_rmap_pte()
-  mm/migrate_device: page_remove_rmap() -> folio_remove_rmap_pte()
-  mm/rmap: page_remove_rmap() -> folio_remove_rmap_pte()
-  Documentation: stop referring to page_remove_rmap()
-  mm/rmap: remove page_remove_rmap()
-  mm/rmap: convert page_dup_file_rmap() to
-    folio_dup_file_rmap_[pte|ptes|pmd]()
-  mm/rmap: introduce folio_try_dup_anon_rmap_[pte|ptes|pmd]()
-  mm/huge_memory: page_try_dup_anon_rmap() ->
-    folio_try_dup_anon_rmap_pmd()
-  mm/memory: page_try_dup_anon_rmap() -> folio_try_dup_anon_rmap_pte()
-  mm/rmap: remove page_try_dup_anon_rmap()
-  mm: convert page_try_share_anon_rmap() to
-    folio_try_share_anon_rmap_[pte|pmd]()
-  mm/rmap: rename COMPOUND_MAPPED to ENTIRELY_MAPPED
-
- Documentation/mm/transhuge.rst       |   4 +-
- Documentation/mm/unevictable-lru.rst |   4 +-
- include/linux/mm.h                   |   6 +-
- include/linux/rmap.h                 | 380 +++++++++++++++++++-----
- kernel/events/uprobes.c              |   2 +-
- mm/gup.c                             |   2 +-
- mm/huge_memory.c                     |  85 +++---
- mm/hugetlb.c                         |  21 +-
- mm/internal.h                        |  12 +-
- mm/khugepaged.c                      |  17 +-
- mm/ksm.c                             |  15 +-
- mm/memory-failure.c                  |   4 +-
- mm/memory.c                          |  60 ++--
- mm/migrate.c                         |  12 +-
- mm/migrate_device.c                  |  41 +--
- mm/mmu_gather.c                      |   2 +-
- mm/rmap.c                            | 422 ++++++++++++++++-----------
- mm/swapfile.c                        |   2 +-
- mm/userfaultfd.c                     |   2 +-
- 19 files changed, 709 insertions(+), 384 deletions(-)
-
+diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+index b26fe858fd444..4c5bfeb054636 100644
+--- a/include/linux/rmap.h
++++ b/include/linux/rmap.h
+@@ -203,9 +203,9 @@ void folio_add_file_rmap_range(struct folio *, struct page *, unsigned int nr,
+ void page_remove_rmap(struct page *, struct vm_area_struct *,
+ 		bool compound);
+ 
+-void hugepage_add_anon_rmap(struct folio *, struct vm_area_struct *,
++void hugetlb_add_anon_rmap(struct folio *, struct vm_area_struct *,
+ 		unsigned long address, rmap_t flags);
+-void hugepage_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
++void hugetlb_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
+ 		unsigned long address);
+ 
+ static inline void __page_dup_rmap(struct page *page, bool compound)
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 1169ef2f2176f..4cfa0679661e2 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5278,7 +5278,7 @@ hugetlb_install_folio(struct vm_area_struct *vma, pte_t *ptep, unsigned long add
+ 	pte_t newpte = make_huge_pte(vma, &new_folio->page, 1);
+ 
+ 	__folio_mark_uptodate(new_folio);
+-	hugepage_add_new_anon_rmap(new_folio, vma, addr);
++	hugetlb_add_new_anon_rmap(new_folio, vma, addr);
+ 	if (userfaultfd_wp(vma) && huge_pte_uffd_wp(old))
+ 		newpte = huge_pte_mkuffd_wp(newpte);
+ 	set_huge_pte_at(vma->vm_mm, addr, ptep, newpte, sz);
+@@ -5981,7 +5981,7 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		/* Break COW or unshare */
+ 		huge_ptep_clear_flush(vma, haddr, ptep);
+ 		page_remove_rmap(&old_folio->page, vma, true);
+-		hugepage_add_new_anon_rmap(new_folio, vma, haddr);
++		hugetlb_add_new_anon_rmap(new_folio, vma, haddr);
+ 		if (huge_pte_uffd_wp(pte))
+ 			newpte = huge_pte_mkuffd_wp(newpte);
+ 		set_huge_pte_at(mm, haddr, ptep, newpte, huge_page_size(h));
+@@ -6270,7 +6270,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+ 		goto backout;
+ 
+ 	if (anon_rmap)
+-		hugepage_add_new_anon_rmap(folio, vma, haddr);
++		hugetlb_add_new_anon_rmap(folio, vma, haddr);
+ 	else
+ 		page_dup_file_rmap(&folio->page, true);
+ 	new_pte = make_huge_pte(vma, &folio->page, ((vma->vm_flags & VM_WRITE)
+@@ -6725,7 +6725,7 @@ int hugetlb_mfill_atomic_pte(pte_t *dst_pte,
+ 	if (folio_in_pagecache)
+ 		page_dup_file_rmap(&folio->page, true);
+ 	else
+-		hugepage_add_new_anon_rmap(folio, dst_vma, dst_addr);
++		hugetlb_add_new_anon_rmap(folio, dst_vma, dst_addr);
+ 
+ 	/*
+ 	 * For either: (1) CONTINUE on a non-shared VMA, or (2) UFFDIO_COPY
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 35a88334bb3c2..4cb849fa0dd2c 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -249,8 +249,8 @@ static bool remove_migration_pte(struct folio *folio,
+ 
+ 			pte = arch_make_huge_pte(pte, shift, vma->vm_flags);
+ 			if (folio_test_anon(folio))
+-				hugepage_add_anon_rmap(folio, vma, pvmw.address,
+-						       rmap_flags);
++				hugetlb_add_anon_rmap(folio, vma, pvmw.address,
++						      rmap_flags);
+ 			else
+ 				page_dup_file_rmap(new, true);
+ 			set_huge_pte_at(vma->vm_mm, pvmw.address, pvmw.pte, pte,
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 7a27a2b418021..112467c30b2c9 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -2583,8 +2583,8 @@ void rmap_walk_locked(struct folio *folio, struct rmap_walk_control *rwc)
+  *
+  * RMAP_COMPOUND is ignored.
+  */
+-void hugepage_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+-			    unsigned long address, rmap_t flags)
++void hugetlb_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
++		unsigned long address, rmap_t flags)
+ {
+ 	VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
+ 
+@@ -2595,8 +2595,8 @@ void hugepage_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+ 			 PageAnonExclusive(&folio->page), folio);
+ }
+ 
+-void hugepage_add_new_anon_rmap(struct folio *folio,
+-			struct vm_area_struct *vma, unsigned long address)
++void hugetlb_add_new_anon_rmap(struct folio *folio,
++		struct vm_area_struct *vma, unsigned long address)
+ {
+ 	BUG_ON(address < vma->vm_start || address >= vma->vm_end);
+ 	/* increment count (starts at -1) */
 -- 
 2.41.0
 
