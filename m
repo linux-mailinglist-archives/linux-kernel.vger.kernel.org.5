@@ -2,133 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D738030B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAECA8030B4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:41:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231792AbjLDKlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:41:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
+        id S232957AbjLDKlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:41:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjLDKle (ORCPT
+        with ESMTP id S229873AbjLDKlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:41:34 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC91BB
+        Mon, 4 Dec 2023 05:41:35 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46E4E6
         for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:41:41 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54b8276361cso5235279a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 02:41:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701686499; x=1702291299; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=28XgFmjfh625VXQFy6sZqO8571DU9BRuNNIufn2+gPU=;
-        b=M9c4WvwjCH2GqMt457VU8JRuEfaBSNczcs4PhswAg6o8QgoKYxvY3PYYf1B5vbP8fD
-         bIpAnjVToe8GuQBsiS77jMdP2uabrNa3DluyBFGSbueItcVG60lYt3sKJmrVtHfNv9L6
-         yOAgfmhN6IiVtgL2qzRK56Ou16cEE9jk0McC3uveUC1XTOTE3zZ58LNXhRVP5ADGlgGk
-         nxJCwAC6JqycKE0sJJvlQnx/O9OZD8mDUvEhWvS9sptpmVwbC96aJddBMxzqibYbeJ4c
-         jYGhWleV7p7CbK0oRH5pVYYZcanaPgVOUSE/xMUMxdb3303gM4DfNuEaYcAG4Hww1nKw
-         Xl6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701686499; x=1702291299;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=28XgFmjfh625VXQFy6sZqO8571DU9BRuNNIufn2+gPU=;
-        b=MiZ4KjN4g2iJpL9/61S0ObtEfCrYPgdnJWrI1/wcxFrMQoBEro1OKObodwcFzgV4w6
-         UKwrGWcdaLyu4iFojOzpSk1qLdesOEFPrDnAzX9wrIuZ5mjdBZeyBYQYhrwES8Xg2amp
-         zbBy38Ho1zfihvP2XOQHBFLmCgC/H9u8j68NFYOS9VfiS+CRjxxCQyUHpA0I9qxs7uDl
-         bhj8VUQSQyGVl3C7SJCW0ly0ko1guJSAlTIav8DCetfuPhp/pMpmKIBCplL9GVIIL76M
-         B9TY61EyVeTIE5Hea6v6bOsHV8Mk+RnKMFq5+fqfeTB49SSg+F30eH/UsJtyy7BUcqgh
-         50QA==
-X-Gm-Message-State: AOJu0YyXIygOZmuqSD8NopYG7YGP8NeOAWkfSIB7l6mBAxnzrx0koppI
-        JM2Zw/Pn+xvSLxHgPwoKO6QlXg==
-X-Google-Smtp-Source: AGHT+IGV3c16x1plImWbu4nV2P7vZFQzLSzQQ0a4wo2sFM+k39x6r32KdecP4qbMSe6wnKvfQetgfA==
-X-Received: by 2002:a05:6402:22eb:b0:54c:d33a:5ea4 with SMTP id dn11-20020a05640222eb00b0054cd33a5ea4mr532856edb.65.1701686499621;
-        Mon, 04 Dec 2023 02:41:39 -0800 (PST)
-Received: from [192.168.209.83] (178235179097.dynamic-4-waw-k-1-3-0.vectranet.pl. [178.235.179.97])
-        by smtp.gmail.com with ESMTPSA id f10-20020a056402354a00b0054ca1d90410sm1985488edd.85.2023.12.04.02.41.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 02:41:39 -0800 (PST)
-Message-ID: <d1f1ee82-7997-4e36-a21a-7b70d2db9746@linaro.org>
-Date:   Mon, 4 Dec 2023 11:41:36 +0100
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 481AC1F8A8;
+        Mon,  4 Dec 2023 10:41:40 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 363D8139E2;
+        Mon,  4 Dec 2023 10:41:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id Iv7CC+SsbWUhRQAAn2gu4w
+        (envelope-from <dwagner@suse.de>); Mon, 04 Dec 2023 10:41:40 +0000
+Date:   Mon, 4 Dec 2023 11:41:39 +0100
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [RFC v2 2/3] nvme: move ns id info to struct nvme_ns_head
+Message-ID: <27uglzkgku6qeaaodmyb3sudajrkibjiapsg4hjuxy57hohauv@hnpb5zbedyrv>
+References: <20231201092735.28592-1-dwagner@suse.de>
+ <20231201092735.28592-3-dwagner@suse.de>
+ <20231204075134.GB29377@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ARM: dts: qcom: msm8226: Add CPU and SAW/ACC nodes
-To:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-References: <20231203-msm8226-cpu-v1-0-d18e83340b32@z3ntu.xyz>
- <20231203-msm8226-cpu-v1-2-d18e83340b32@z3ntu.xyz>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231203-msm8226-cpu-v1-2-d18e83340b32@z3ntu.xyz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204075134.GB29377@lst.de>
+X-Spamd-Bar: +++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [9.94 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         MID_RHS_NOT_FQDN(0.50)[];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         RCPT_COUNT_FIVE(0.00)[6];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_SPAM_LONG(2.65)[0.757];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 9.94
+X-Rspamd-Queue-Id: 481AC1F8A8
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3.12.2023 23:38, Luca Weiss wrote:
-> From: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+On Mon, Dec 04, 2023 at 08:51:34AM +0100, Christoph Hellwig wrote:
+> > +static void nvme_set_ref_tag(struct nvme_ns_head *head, struct nvme_command *cmnd,
 > 
-> Add CPU and SAW/ACC nodes to enable SMP on MSM8226.
+> .. and here.  I'm going to stop now, please also fix up all other
+> places.
+
+Sure, I'll update the patch accordingly.
+
+> >  void nvme_failover_req(struct request *req)
+> >  {
+> > -	struct nvme_ns *ns = req->q->queuedata;
+> > +	struct nvme_ns_head *head = req->q->queuedata;
+> > +	struct nvme_ctrl *ctrl = nvme_req(req)->ctrl;
+> > +	struct nvme_ns *ns;
+> >  	u16 status = nvme_req(req)->status & 0x7ff;
+> >  	unsigned long flags;
+> >  	struct bio *bio;
+> >  
+> > -	nvme_mpath_clear_current_path(ns);
+> > +	nvme_mpath_clear_current_path(head);
+> >  
+> >  	/*
+> >  	 * If we got back an ANA error, we know the controller is alive but not
+> >  	 * ready to serve this namespace.  Kick of a re-read of the ANA
+> >  	 * information page, and just try any other available path for now.
+> >  	 */
+> > -	if (nvme_is_ana_error(status) && ns->ctrl->ana_log_buf) {
+> > +	if (nvme_is_ana_error(status) && ctrl->ana_log_buf) {
+> > +		ns = nvme_find_get_ns(ctrl, head->ns_id);
 > 
-> Signed-off-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-> [luca: update some nodes to fix dtbs_check errors, reorder, cleanup]
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
-Looks like L2 SAW (@ 0xf9012000) is missing.. but then it's present
-on 8974.. but it's not bound by any driver :)
+> This looks unrelated.
 
-The nodes you added here look correct FWIW
+The problem I try to address here is, that we need the ns pointer to
+access the ns->flags for ANA state. Given that
+nvme_mpath_clear_current_path really wants the ns pointer as well, we
+need something like this at the beginning of this function.
 
-Konrad
+As I said, I didn't find any other way to get get from the head pointer
+to the ns pointer and this function is the only place where this is
+actually necessary to do (avoiding the list scan in nvme_find_get_ns).
+
+> 
+> > -bool nvme_mpath_clear_current_path(struct nvme_ns *ns)
+> > +bool nvme_mpath_clear_current_path(struct nvme_ns_head *head)
+> >  {
+> > -	struct nvme_ns_head *head = ns->head;
+> >  	bool changed = false;
+> >  	int node;
+> >  
+> > @@ -181,7 +183,7 @@ bool nvme_mpath_clear_current_path(struct nvme_ns *ns)
+> >  		goto out;
+> >  
+> >  	for_each_node(node) {
+> > -		if (ns == rcu_access_pointer(head->current_path[node])) {
+> > +		if (head == rcu_access_pointer(head->current_path[node])->head) {
+> 
+> and this can't work.  We need to check the actual ns for the path
+> selection, as that's kindof the point.
+
+Okay, makes sense. I'll drop this.
+
+Thanks,
+Daniel
