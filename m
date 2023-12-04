@@ -2,152 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5971E802ABA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 05:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99165802ACE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 05:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234388AbjLDEMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 23:12:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
+        id S234448AbjLDEOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 23:14:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjLDEMe (ORCPT
+        with ESMTP id S234489AbjLDEOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 23:12:34 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7A9D5
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 20:12:40 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b4d9e81deso42577435e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 20:12:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701663159; x=1702267959; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=uSIjHQyxvuiMYpm126xyxG1Zci+DFvN4cs1bYgkFaNU=;
-        b=AjY5m3WZdb4y9NSY8BGOtBrPZaPWeU7XUlaaMu0f7XApsVwQOMEWo7J1Q/h4cptJL0
-         WWyid3cNzIaR5YXKztsOQg+4HYThRlujOBTSNwqsnbM1O6427recNY9PdDv2ueh9asqW
-         HhhLhdHIoadO+UTtH4mSTjnBTu+AfJC6T2aiOT4vdoIlrbbcyoPRz8ntFLIj3D1gCYns
-         WADCVpCClK1PvpiXIkteKC9xWzu95V0WguA/xGfaGn4j1yDcQ8InpeiTw91a7JJjTxkk
-         1vWJsHE7VbEiYInMv8GOxwa1Q3chrXw3E536LJZA9dk1EKT/TnKWxwLnsKkEb090Rd8N
-         mppg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701663159; x=1702267959;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uSIjHQyxvuiMYpm126xyxG1Zci+DFvN4cs1bYgkFaNU=;
-        b=hlzZKEqMwkTk9bYx/p4rM7SZ/PbL/WskcZXHCW9lCNiqcJtuyx1q9cS6C/t/zzPobJ
-         X804YzAZ3ykpv4y8xLwf/cLTM9FcDQII7gYLzA0zS7Kl/RdF1nb1mZ70eOD2t/9w66AV
-         +MzRaElHSCCWun+yLuGysujSQBTjN2HIsvpIDB6LQDFdBOClU6VWeOHOJ0cTX7X1NCpd
-         H2+x17T+JIW2rM4kwOPeWxOX8z/RK0eFMOHAjZM2BgiBdJoUsdG7/PZyejfL/R6L25B0
-         SOdWFSfztW7oqnuoVIwl78jMlmIBdQBMb/tPw2GXzhK07d6ldq50u9RapMOQmqUfRERi
-         gN2Q==
-X-Gm-Message-State: AOJu0YzBHX0MFf4baTMYY2ue3UnB3hbPDZbAb1cZnjtjOSnQ6jn6rXp4
-        z9WBKOgtq/Q+8u+inCKhEGNg3w==
-X-Google-Smtp-Source: AGHT+IFZ3Amq/8upC2zDw7bfGR8OHocro9buNNWJ73bfkCMwsGdKd3TsSUm4vWCIpdfHvwBaPhtIBA==
-X-Received: by 2002:a05:600c:3b1d:b0:40b:5e1e:cf9 with SMTP id m29-20020a05600c3b1d00b0040b5e1e0cf9mr1855181wms.52.1701663159222;
-        Sun, 03 Dec 2023 20:12:39 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id b19-20020a05600c4e1300b0040648217f4fsm17107376wmq.39.2023.12.03.20.12.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 20:12:38 -0800 (PST)
-Date:   Mon, 4 Dec 2023 07:12:35 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Andrey Konovalov <andreyknvl@gmail.com>,
-        "Liu, Yujie" <yujie.liu@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        kernel test robot <lkp@intel.com>,
-        Haibo Li <haibo.li@mediatek.com>, linux-kernel@vger.kernel.org,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, xiaoming.yu@mediatek.com
-Subject: Re: [PATCH] fix comparison of unsigned expression < 0
-Message-ID: <ecf38b22-ee64-41e5-b9b5-c32fc1cb57bc@moroto.mountain>
-References: <20231128075532.110251-1-haibo.li@mediatek.com>
- <20231128172238.f80ed8dd74ab2a13eba33091@linux-foundation.org>
- <CA+fCnZcLwXn6crGF1E1cY3TknMaUN=H8-_hp0-cC+s8-wj95PQ@mail.gmail.com>
+        Sun, 3 Dec 2023 23:14:37 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36ADB197;
+        Sun,  3 Dec 2023 20:14:36 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B43Qtqk000570;
+        Mon, 4 Dec 2023 04:14:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=u/SrorPZafxayYbjMxackuDqOb8tJdzY5SKThHKYPTQ=;
+ b=atXaMwGTCFuU1GhHCX9S847/qPlv09oby5Bf17bmZncDQazdxnskOvot8jR6otczVj7Y
+ KVmgF1RnpzWc6iKwS4eFVgfSKO+bdjGBOtVC66V4CA2qEq70JPXxI6x70q4wPwXsYZ4J
+ Bepb90SP4/+MfvHNnFaEhqS8Fn1Hr3uv473PEDNHJ/CPtwfVc/eta5Ck3Y0uPyMeRcs+
+ k/BGHfPsKqCFj+95EK3HrTjzOvYPF+ISpqrZp9IFSW1GIhok6fRZVFkA8+ou9W4uZ3sg
+ KGSUq3u+dc9URV9JT16Zh0jvfnHvXOWixzDtwr+Zj/Z+PpdJKbckHQW9EBiAC7EqRU9r fg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uqukg2yf8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 04:13:59 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B44Dwvj026135
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Dec 2023 04:13:58 GMT
+Received: from hu-obabatun-lv.qualcomm.com (10.49.16.6) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 3 Dec 2023 20:13:55 -0800
+From:   Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>, <robh+dt@kernel.org>,
+        <frowand.list@gmail.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+Subject: [RFC PATCH v2 0/6] Dynamic allocation of reserved_mem array.
+Date:   Sun, 3 Dec 2023 20:13:33 -0800
+Message-ID: <20231204041339.9902-1-quic_obabatun@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+fCnZcLwXn6crGF1E1cY3TknMaUN=H8-_hp0-cC+s8-wj95PQ@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: f_xxp2rLqRz6X5iR4o4sfT7j4thv-3e_
+X-Proofpoint-ORIG-GUID: f_xxp2rLqRz6X5iR4o4sfT7j4thv-3e_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_01,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 adultscore=0
+ mlxscore=0 phishscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0
+ mlxlogscore=754 priorityscore=1501 suspectscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040029
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 04:01:47AM +0100, Andrey Konovalov wrote:
-> On Wed, Nov 29, 2023 at 2:22 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> >
-> > On Tue, 28 Nov 2023 15:55:32 +0800 Haibo Li <haibo.li@mediatek.com> wrote:
-> >
-> > > Kernel test robot reported:
-> > >
-> > > '''
-> > > mm/kasan/report.c:637 kasan_non_canonical_hook() warn:
-> > > unsigned 'addr' is never less than zero.
-> > > '''
-> > > The KASAN_SHADOW_OFFSET is 0 on loongarch64.
-> > >
-> > > To fix it,check the KASAN_SHADOW_OFFSET before do comparison.
-> > >
-> > > --- a/mm/kasan/report.c
-> > > +++ b/mm/kasan/report.c
-> > > @@ -634,10 +634,10 @@ void kasan_non_canonical_hook(unsigned long addr)
-> > >  {
-> > >       unsigned long orig_addr;
-> > >       const char *bug_type;
-> > > -
-> > > +#if KASAN_SHADOW_OFFSET > 0
-> > >       if (addr < KASAN_SHADOW_OFFSET)
-> > >               return;
-> > > -
-> > > +#endif
-> >
-> > We'd rather not add ugly ifdefs for a simple test like this.  If we
-> > replace "<" with "<=", does it fix?  I suspect that's wrong.
-> 
-> Changing the comparison into "<=" would be wrong.
-> 
+The reserved_mem array is used to store the data of the different
+reserved memory regions specified in the DT of a device.
+The array stores information such as the name, node, starting address,
+and size of a reserved memory region.
 
-I would say that changing it to <= is seldom the correct thing.  I've
-wanted to make that trigger a warning as well.
+The array is currently statically allocated with a size of
+MAX_RESERVED_REGIONS(64). This means that any system that specifies a
+number of reserved memory regions greater than MAX_RESERVED_REGIONS(64)
+will not have enough space to store the information for all the regions.
 
-> But I actually don't think we need to fix anything here.
-> 
-> This issue looks quite close to a similar comparison with 0 issue
-> Linus shared his opinion on here:
-> 
-> https://lore.kernel.org/all/Pine.LNX.4.58.0411230958260.20993@ppc970.osdl.org/
-> 
-> I don't know if the common consensus with the regard to issues like
-> that changed since then. But if not, perhaps we can treat this kernel
-> test robot report as a false positive.
+Therefore, this series extends the use of a static array for
+reserved_mem, and introduces a dynamically allocated array using
+memblock_alloc() based on the number of reserved memory regions
+specified in the DT.
 
-I would say that the consensus has changed somewhere around 2015 or
-so.  Unsigned comparisons to zero used to be one of the most common
-types of bugs in new code but now almost all subsystems have turned on
-the GCC warning for this.
+Memory gotten from memblock_alloc() is only writable after paging_init()
+is called, but the reserved memory regions need to be reserved before
+then so that the system does not create page table mappings for them.
 
-However, this is a Smatch warning and I agree with Linus on this.  For
-example, Smatch doesn't complain about the example code the Linus
-mentioned.
+Reserved memory regions can be divided into 2 groups.
+i) Statically-placed reserved memory regions
+i.e. regions defined in the DT using the @reg property.
+ii) Dynamically-placed reserved memory regions.
+i.e. regions specified in the DT using the @alloc_ranges
+    and @size properties.
 
-	if (a < 0 || a > X)
+It is possible to call memblock_reserve() and memblock_mark_nomap() on
+the statically-placed reserved memory regions and not need to save them
+to the array until after paging_init(), but this is not possible for the
+dynamically-placed reserved memory because the starting address of these
+regions need to be stored somewhere after they are allocated.
 
-And in this case, it's a one liner fix for me to add KASAN_SHADOW_OFFSET
-as an allowed macro and silence the warning.
+Therefore, this series achieves the allocation and population of the
+reserved_mem array in two steps:
 
-regards,
-dan carpenter
+1. Before paging_init()
+   Before paging_init() is called, iterate through the reserved_mem
+   nodes in the DT and do the following:
+   - Allocate memory for dynamically-placed reserved memory regions and
+     store their starting address in the static allocated reserved_mem
+     array.
+   - Call memblock_reserve() and memblock_mark_nomap() on all the
+     reserved memory regions as needed.
+   - Count the total number of reserved_mem nodes in the DT.
+
+2. After paging_init()
+   After paging_init() is called:
+   - Allocate new memory for the reserved_mem array based on the number
+     of reserved memory nodes in the DT.
+   - Transfer all the information that was stored in the static array
+     into the new array.
+   - Store the rest of the reserved_mem regions in the new array.
+     i.e. the statically-placed regions.
+
+The static array is no longer needed after this point, but there is
+currently no obvious way to free the memory. Therefore, the size of the
+initial static array is now defined using a config option.
+Because the array is used only before paging_init() to store the
+dynamically-placed reserved memory regions, the required size can vary
+from device to device. Therefore, scaling it can help get some memory
+savings.
+
+A possible solution to freeing the memory for the static array will be
+to mark it as __initdata. This will automatically free the memory once
+the init process is done running.
+The reason why this is not pursued in this series is because of
+the possibility of a use-after-free.
+If the dynamic allocation of the reserved_mem array fails, then future
+accesses of the reserved_mem array will still be referencing the static
+array. When the init process ends and the memory is freed up, any
+further attempts to use the reserved_mem array will result in a
+use-after-free.
+
+Note:
+
+- The limitation to this approach is that there is still a limit of
+  64 for dynamically reserved memory regions.
+- Upon further review, the series might need to be split up/duplicated
+  for other archs.
+
+
+Oreoluwa Babatunde (6):
+  of: reserved_mem: Change the order that reserved_mem regions are
+    stored
+  of: reserved_mem: Swicth call to unflatten_device_tree() to after
+    paging_init()
+  of: resevred_mem: Delay allocation of memory for dynamic regions
+  of: reserved_mem: Add code to use unflattened DT for reserved_mem
+    nodes
+  of: reserved_mem: Add code to dynamically allocate reserved_mem array
+  of: reserved_mem: Make MAX_RESERVED_REGIONS a config option
+
+ arch/loongarch/kernel/setup.c      |   2 +-
+ arch/mips/kernel/setup.c           |   3 +-
+ arch/nios2/kernel/setup.c          |   4 +-
+ arch/openrisc/kernel/setup.c       |   4 +-
+ arch/powerpc/kernel/setup-common.c |   3 +
+ arch/sh/kernel/setup.c             |   5 +-
+ arch/um/kernel/dtb.c               |   1 -
+ arch/um/kernel/um_arch.c           |   2 +
+ arch/xtensa/kernel/setup.c         |   4 +-
+ drivers/of/Kconfig                 |  13 +++
+ drivers/of/fdt.c                   |  39 +++++--
+ drivers/of/of_private.h            |   6 +-
+ drivers/of/of_reserved_mem.c       | 175 +++++++++++++++++++++--------
+ include/linux/of_reserved_mem.h    |   8 +-
+ kernel/dma/coherent.c              |   4 +-
+ kernel/dma/contiguous.c            |   8 +-
+ kernel/dma/swiotlb.c               |  10 +-
+ 17 files changed, 205 insertions(+), 86 deletions(-)
+
+-- 
+2.17.1
+
