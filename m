@@ -2,57 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B26E8803F34
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217F1803F40
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234862AbjLDUYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:24:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S1345463AbjLDUZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:25:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjLDUYI (ORCPT
+        with ESMTP id S235350AbjLDUZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:24:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82FB4AF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:24:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E507FC433C8;
-        Mon,  4 Dec 2023 20:24:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701721455;
-        bh=t6guQdtuvsHBXGA9XvBw3/0jpl3bZJRV5CbnFCzgr8o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WMc5oSRXoiHioGPOtY1GE/dQzL6bQNubzpwIBn8FdTOx62Zdn0JK4Pbjxw50QBPaI
-         0pk4xr8RFQfnHsNwxu7DKHDlRUEvOglimx3Q6XhlLrd57IA2ESTbAjfGjyaz5CN39/
-         K8Ge0PXIsBTJBM3Stqb6D163QI3ug/rVcdXScMQkQuR9CN1k48hpdnBsbE3WGvuL5S
-         BmNsgqx/EFaAP5FHyVSUYq3spfSfJJFWi5tSv8J9wUvTTIVMDV9peFKtqvBQdp1XuD
-         CtSMWerMrtNxo19B3lzLcFyPx++fSj9jPdgoN9wMBn3G6+jldf27MCQliXQ1hNGqyP
-         GOkh6hsdv3+IA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 49F2440094; Mon,  4 Dec 2023 17:24:12 -0300 (-03)
-Date:   Mon, 4 Dec 2023 17:24:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        atrajeev@linux.vnet.ibm.com
-Subject: Re: [PATCH v1] perf test: Add basic perf diff test
-Message-ID: <ZW41bFSyg/xQLcEg@kernel.org>
-References: <20231120190408.281826-1-irogers@google.com>
- <CAP-5=fWvADeeHVQObwk-eVNeOSC=eTTv2q8Rz4j3UtL5-6Getw@mail.gmail.com>
+        Mon, 4 Dec 2023 15:25:33 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DD9CCB;
+        Mon,  4 Dec 2023 12:25:39 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4JxZT6028697;
+        Mon, 4 Dec 2023 20:25:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=VoyLD+BBBgnkOe7m+0wyGjQqsPNxrHuUW5al5xZbTeg=;
+ b=m9woum7ukhrKgy2DlbVkq2m+pO/zRkSoTjp2rBy2klcmFL8JYacLW70LiypX0MjSaxe+
+ ORDAuC/8DKWmhkalXAUKTu2SA47IkuEPd0mc2rwoUdUrVJiGJSGBUkg1oTFYtbKqPEIN
+ VeCLf4ejhodQk8ZLMYW0T1ezbKVXmSCvRqt9kP5OY+dCvBXtuMeP7JGAXvzaPst1BNY4
+ h19w4vMysFfhbAPHPvH2pMs7L63NGP6OgbkK1xVAYvmqozBrhYJtBI6RIcxk1ZFSix4O
+ N0dENhlm2jcdlu8D5N6nMqlXYevBZWAmEIi7GJPf/nvhHL0WwrM8T9hDS29ca1QPPZEF mQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usjnqgfdc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 20:25:18 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4KPHqF006340
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Dec 2023 20:25:17 GMT
+Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
+ 2023 12:25:17 -0800
+Message-ID: <230fd6a4-c1d6-64af-1073-2effd5d44d8c@quicinc.com>
+Date:   Mon, 4 Dec 2023 12:25:16 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWvADeeHVQObwk-eVNeOSC=eTTv2q8Rz4j3UtL5-6Getw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Freedreno] [PATCH next] drm/msm/dp: add a missing unlock in
+ dp_hpd_plug_handle()
+Content-Language: en-US
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "Sean Paul" <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        "David Airlie" <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        "Vinod Polimera" <quic_vpolimer@quicinc.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <kernel-janitors@vger.kernel.org>, <error27@gmail.com>,
+        <dan.carpenter@linaro.org>
+References: <20231204171317.192427-1-harshit.m.mogalapalli@oracle.com>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20231204171317.192427-1-harshit.m.mogalapalli@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: f2EGCVjZ2PkGJvnv8FbQ_bzpg_EP3lOK
+X-Proofpoint-GUID: f2EGCVjZ2PkGJvnv8FbQ_bzpg_EP3lOK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_18,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 clxscore=1011 mlxscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2312040159
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -61,20 +92,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Dec 04, 2023 at 08:00:35AM -0800, Ian Rogers escreveu:
-> On Mon, Nov 20, 2023 at 11:04 AM Ian Rogers <irogers@google.com> wrote:
-> >
-> > There are some old bug reports on perf diff crashing:
-> > https://rhaas.blogspot.com/2012/06/perf-good-bad-ugly.html
-> >
-> > Happening across them I was prompted to add two very basic tests that
-> > will give some perf diff coverage.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
+
+
+On 12/4/2023 9:13 AM, Harshit Mogalapalli wrote:
+> When pm_runtime_resume_and_get() fails, unlock before returning.
 > 
-> Ping.
+> Fixes: 5814b8bf086a ("drm/msm/dp: incorporate pm_runtime framework into DP driver")
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> ---
+> This is based on static analysis with Smatch. Only compile tested.
+> ---
+>   drivers/gpu/drm/msm/dp/dp_display.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
 
-Thanks, applied to perf-tools-next.
-
-- Arnaldo
-
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
