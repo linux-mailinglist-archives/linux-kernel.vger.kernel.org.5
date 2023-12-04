@@ -2,209 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FA6802E25
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F8802E5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbjLDJCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
+        id S232530AbjLDJSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:18:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDJCK (ORCPT
+        with ESMTP id S229526AbjLDJSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:02:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FBD85
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:02:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701680536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=klUlZafuD5fySdh0flPq8If8aOTjdsGX9L5Pty3/G5Y=;
-        b=H4pzYKgC9B07lBfcz5w+5CcqcI2Ijf6XSOsmt852pBGarHUJs5E1V7+TWwH90OkP4gq1Yn
-        9SNNRrA9cf4UgBLmEaCQeNfGrBTz3aY4pWW+YdnXbJLZ/iIj6tC5NADarabOmUiAEPLDZY
-        cDibSEm6l0Qfizccm+8EVOM8DoThfgA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-534-NMjSjgO6PYG3fc1J8qOj5A-1; Mon, 04 Dec 2023 04:02:14 -0500
-X-MC-Unique: NMjSjgO6PYG3fc1J8qOj5A-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33349915d3cso585169f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 01:02:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701680532; x=1702285332;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=klUlZafuD5fySdh0flPq8If8aOTjdsGX9L5Pty3/G5Y=;
-        b=HneLtzaFILhSHsQoldJFgWzmE5rdkiNDZYxKt/HmAl4UcptyF70xxCJICB9dd9oapW
-         7ufwMbSpE3sawPssZMfB9wSgYhI9+RyCRzODTAzIm5OezPynmtmjwERxtVWonBVsa4jG
-         PyWot4G7GRu8N3sgHWwueuwPKDZMw8+07SjbGi5xNzhu5G238WsC9DLfeSJNzKUpfQ2B
-         ol2PQVu9sk7qSBdBQE7DKYaYMpneKcj453RLddbwdQVDxh3VuUQsbKAMnQKinbizqq+I
-         HZrOUC5/c6HNcyh7XnLIlFqh4RndJOg1vGUlQUpFtLRR/PcRi9atwB9dIn7rH9+hRIPO
-         IFFg==
-X-Gm-Message-State: AOJu0YzrRqnitTEUpKo91euxskZtgH1TqtXoT68zvcQWLZud7Ehdo5o3
-        8Effggx0URSLkDmyRrW278rkbXupqfC4iR+YBwlrmXFQ8VsiTgYAGxgHA23I2thTkmoqGUfBhaH
-        vt4D5qmK+QWn1bJPNl+l2I5cu
-X-Received: by 2002:a5d:570c:0:b0:333:2fd2:68de with SMTP id a12-20020a5d570c000000b003332fd268demr2993309wrv.113.1701680532076;
-        Mon, 04 Dec 2023 01:02:12 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE0ZQVyyx/zbTsZL1jvUz7Lg2aDNjkx9I4PA83zE9UwNtmP49rfhCh0xG6pgtoc8yUb5PljQw==
-X-Received: by 2002:a5d:570c:0:b0:333:2fd2:68de with SMTP id a12-20020a5d570c000000b003332fd268demr2993302wrv.113.1701680531755;
-        Mon, 04 Dec 2023 01:02:11 -0800 (PST)
-Received: from redhat.com ([2.55.11.133])
-        by smtp.gmail.com with ESMTPSA id o3-20020a5d6843000000b0033340d2b127sm4131457wrw.89.2023.12.04.01.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 01:02:11 -0800 (PST)
-Date:   Mon, 4 Dec 2023 04:02:07 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Suwan Kim <suwan.kim027@gmail.com>, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>, pbonzini@redhat.com
-Subject: Re: drivers/block/virtio_blk.c:570:68: warning: '%d' directive
- output may be truncated writing between 1 and 11 bytes into a region of size
- 7
-Message-ID: <20231204040038-mutt-send-email-mst@kernel.org>
-References: <202312041509.DIyvEt9h-lkp@intel.com>
+        Mon, 4 Dec 2023 04:18:01 -0500
+X-Greylist: delayed 951 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 01:18:06 PST
+Received: from HK2P15301CU002.outbound.protection.outlook.com (unknown [52.101.128.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E61CD;
+        Mon,  4 Dec 2023 01:18:06 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bFhx9EE1qlIX+Q7Zyf2D4ZpCzZMNr3lRbCIKNwsDTtJJM87BAH8zaAnoNt51L0PxpUgNGQ6zCNqbma3SLPM0s1s0hWbBfkG8BrI/lvUcLgRjYbt/7OZUwHXgBXkh8en77OT95TxuFa449qZCqPGPi0qqVVdj3Svw6FQ700tMKMoniOudvKi0LSdsEu2PxeRvQbBtCqoLNJV1MqkVucV5EJaeIgQO6akkv7d0+egWQEwllddGSRnja2kd9HosN5Z1Xm1RCc00ESydsNyX9iAcLwF8MPsyFPvR95HqrA2oHqiw6Nl1VkFIfw+xRWewBLALmEhHLIPO4DYHbxshw796jA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FPRXQ7jqmtZEeskhRlZXacQginW086HeJwETaGRIRxk=;
+ b=jD0Q+UqaV7BdLrdc29FMYpA8rWOICQYTJg8jZjKOg0GORtISmBV7ySUvdzz2SBFXYr0ApWaUilLJHOar2gngkPBucVNncIB8BPTtw4G3NkPMIbFMuU4t/gORiXiD9yFSUCP5INDqeeoUv6e6/PZkjVRFY8t2HMceSul5yJZnaNcqaTLj5uQFv+r88VxudpKlymx872iuaYGkt+svt3jedpEhI0ymLCQ6lhs+/NW2d/6XWgatdnL1Bja7HDyyWFWo+ZLGfLqJSWPP74YIjrz/QzjMog8d8brYZWjpyePUTLQuH6OJ1cn3KPs7DoTBQWQWnEmnfk0MeRdYrL6V2hSaqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FPRXQ7jqmtZEeskhRlZXacQginW086HeJwETaGRIRxk=;
+ b=P86MHjwHSLnKhJreAOndXGb4UtB+iqaMRFXl+0uXKywffS5JpEy8bXkX89lUNRd/DqGtkXrqVqP/IhDH0aCxVIzBExhtKAHGYBesBR+7nsnpTGpoZydZlqFlZqVdYsWAGGS8boBUo4p4YEN/8oDxrjUdDJmMyaC/DFqV91IknBk=
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM (2603:1096:301:fc::10)
+ by SI2P153MB0656.APCP153.PROD.OUTLOOK.COM (2603:1096:4:1fb::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7091.5; Mon, 4 Dec 2023 09:02:09 +0000
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a]) by PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a%7]) with mapi id 15.20.7091.001; Mon, 4 Dec 2023
+ 09:02:08 +0000
+From:   Souradeep Chakrabarti <schakrabarti@microsoft.com>
+To:     Yury Norov <yury.norov@gmail.com>,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+CC:     Jakub Kicinski <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Long Li <longli@microsoft.com>,
+        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Paul Rosswurm <paulros@microsoft.com>
+Subject: RE: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Thread-Topic: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Thread-Index: AQHaHIJKVWtqOkYgZ0uGtD+z/VnogLCFcX6AgAh9zECABD4XgIAApIsAgABRp4CABcJ08A==
+Date:   Mon, 4 Dec 2023 09:02:08 +0000
+Message-ID: <PUZP153MB078896BF398A5879FC4B3E61CC86A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <20231121154841.7fc019c8@kernel.org>
+ <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+ <ZWfwcYPLVo+4V8Ps@yury-ThinkPad>
+ <20231130120512.GA15408@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <ZWi+94B+N03pItJl@yury-ThinkPad>
+In-Reply-To: <ZWi+94B+N03pItJl@yury-ThinkPad>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=070f56b3-0de0-4fd4-8c66-df808ea91856;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-12-04T08:54:43Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PUZP153MB0788:EE_|SI2P153MB0656:EE_
+x-ms-office365-filtering-correlation-id: 5b4fe50c-633d-402f-d335-08dbf4a7b1d3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4/ih3uNkuqIOS8zbfvbRD+W6oUtjJjT07PXR3m4nRN3NsZacoep6pw6rIL2qvfsd0XZjRifTgyxUoJg+X3B46gCmT3U/bdG5UaGcHmyBtCGaDoJWQTVY0ugNqDvkTIeXzj5nNnmUiYEKG4jKgkl68qhbFdor6qmnASZs2l/L+71qSWmyQqIhqKTG05lAxTx+UU7rpBWPx7REW07tZbQVPrTvHq2dqrGdZneSWG5BR9tC+sRq67Y50IUMkF3nBCqQthejjMvPOwjHTRBKtJ7K+nc41sCtrEBHNKUhYlj7hXqgRCitvI/Aw4jmOtXQs1perhQuxYmGjFBPkslVjy+snFnonDDxxWSsNtszXWLcYmDsqzk3hY077Y8bKC2U9nrtJNkWbFXeZdXMgg34UlxVwyoEDRiBKjBHlnH/blPifk7IgTjTcPS0+SyAoRoajTkrTMK+2jid+hHnmfaMsi6Ss7DdEBOseqb4rovZSl9cSPBt1Z8KTQciiWbVKA/Kr6uO+6RX26Jq3zpumaApOyAgphIMsl9Y/MKzMnaLdlIFOZoojKmYDI4ueS3q+vjj8WN/7i1jxv11bIhT1SuYi3ZRU0W/jEEaWLWneBCwk87uXvJ46lDf2myqsyUEOlk22SEgoFzhhdv9GrxgvoxTpgIoq2jt5+BtWneYnCLiF4oCXDeeIk8j67CKFr/EUmKWcWmMaWcMxYinEwPZMtArsHtrvTDAwStTWEOuzvZ3vzLgp/qiEMQ/uf/YHQIHEgHDcFbx
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0788.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(366004)(346002)(136003)(230173577357003)(230273577357003)(230373577357003)(230922051799003)(230473577357003)(1800799012)(186009)(64100799003)(451199024)(55016003)(6506007)(9686003)(7696005)(33656002)(86362001)(966005)(10290500003)(38070700009)(83380400001)(478600001)(107886003)(54906003)(316002)(64756008)(110136005)(76116006)(66556008)(66476007)(66446008)(66946007)(71200400001)(52536014)(8936002)(8676002)(4326008)(7416002)(41300700001)(5660300002)(122000001)(8990500004)(2906002)(38100700002)(82950400001)(82960400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5pu/+Kuj0ocApqRNTubJ6YkA28nKo/lcDn6K7usHpo66FfHDTzdthEDC5Ntf?=
+ =?us-ascii?Q?zdSMKV8D927s4cMwCK9hy5xUfRsZKdca1cvhbhGmWM2KFRALwirvZgzl2OCL?=
+ =?us-ascii?Q?gjpAF5KpTutslu+5ZHi1KT0F4jvZXY7590HZ9BT/6MLQxnGgBBnQtgwQ0tH4?=
+ =?us-ascii?Q?iZj70h4EO+4EJJcUf9GML7KI64vLFpL6npCZMUqpbpZY6KAM3HKAJmQNAl/Q?=
+ =?us-ascii?Q?Qy2Sl+R4oW3A4ZXH6ehcfw9Fwr7wwQBPi1JGzaOCkfqDQupLANHDvzoADb5P?=
+ =?us-ascii?Q?yyHL4m3o+HGZLwReG08ZTB3lw8iw6+6SQA+pipGBPO3Nmm7AXtH0UH6Idsmr?=
+ =?us-ascii?Q?QTFY5XMMHwz9orZG9xlqhmO42FVKmDM8NcekcSgueDgsn88vLbR+e0s4vPk2?=
+ =?us-ascii?Q?zQenGSc+QmzoIOEobxE51pC1ZYifT0D3wOXQqY2N67VqAMKiUmNj0KtYFVyz?=
+ =?us-ascii?Q?ip4nR0YTbv03xEf704887MQap6FSeI17qe47a94DcYv1dzkgH5iXr1oN2zBS?=
+ =?us-ascii?Q?qO9o01lV/xUDVk+HM+/vCSyC3VTd6CjE/hNg0/qpdB3oKJx09EruITZcyPLr?=
+ =?us-ascii?Q?cnzUQv6PvhIH541ePFR3zDuuvxQGpLfr7DBdNiC+pOl2R2hEYv/pJMGbgYo1?=
+ =?us-ascii?Q?ndvoIFOhAgSNmhNfqfoF8MQ0tbgVCWzr4Ga+qux0vsCvB19tqosuZE2CJO8S?=
+ =?us-ascii?Q?5uKgHyUSLWkD1vhgiHzPBBQV8RnH1WVg8lrssgNCKnX3PegUJpTS0wQdS4gs?=
+ =?us-ascii?Q?N3ZHW3SA7t1ifBlLyITB6iKK4s+n3t8u0jc4ry2w0EbIkpl5Wx3Ip5TKkL9R?=
+ =?us-ascii?Q?fxtLE6pYt1c5or3I37VB+h1eu2Swi5vmll9BIrgfyaiGH63yOwarMVmIh1//?=
+ =?us-ascii?Q?XrFomZbV4ZSp6uFrbokiZ/OkuvKrUejUmf/a/aLELnUnbW3dH1+h5KGwD4s8?=
+ =?us-ascii?Q?p0HZwg2acLcXtldkcOFj6xP87Qz38wUePiJagZ6UzX1X5R027laNUawtnqEu?=
+ =?us-ascii?Q?CMMn1WbEVfFbuZm2bK4SOeD59WgbBQETo/+Trtf8dEaBmowLZvBNeKS2cbUA?=
+ =?us-ascii?Q?GIXwOW9UCTrC5kt8vclXtYZEmBjctWxfXcdTYy/ytrgjgF/ywA2oR5P6Lqze?=
+ =?us-ascii?Q?SRFKqwnW7AcmvoWHI7tIaRe8UgtX9J7Rojyf4kpeEPuGAy5DOTy21ovP85zV?=
+ =?us-ascii?Q?ShswwkQ/59jljjvIIpg1vWADDWxLBj26XmMfNKnDJ6MVqQRAW0YpzZmCJrP+?=
+ =?us-ascii?Q?pxth7vok9twn1s0IDgjXSYjySEdmi3wg902TZHoWUNd3dKJWTsgGOXMmLEK7?=
+ =?us-ascii?Q?EX53lf9vWjU8jOG3cSFLnUI1oU9DVh9lnhzWHKm3qCZOXB0jclmDwnAbn80P?=
+ =?us-ascii?Q?G2j2vdjPuVHxQDoVX94ZBVBAmkDrLmYTBkxdLOd+Hp6wGH3/jgi/CP72J89x?=
+ =?us-ascii?Q?KxT4zIdw9fgJ8o2e4XZxztAjGH9T8qZibwhVBik7mVHjIE9tVQlH6J+9NcuO?=
+ =?us-ascii?Q?AlJhubPwcbwvPMsJoz2UVFhxKQPjOi5l5Zbr5wP9Tmj/4/eFaNyNIQw0vPKY?=
+ =?us-ascii?Q?bFMt7nkCnN1PLtQGtUCf5O1bBL1H/GelcfsUD9zq?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202312041509.DIyvEt9h-lkp@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b4fe50c-633d-402f-d335-08dbf4a7b1d3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2023 09:02:08.2929
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Swgt/7UqyRojm2u5X+YsNbwD7XjnjvD3474LTn8lu0HYXdAgaF8tq9YSQdbFAzaCsXmWfQBJOb2QAChnEw+ip8eFC/cijYzfp57LLiZDwYs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SI2P153MB0656
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_HP_HELO_NORDNS,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 04:56:35PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-> commit: 4e0400525691d0e676dbe002641f9a61261f1e1b virtio-blk: support polling I/O
-> date:   1 year, 6 months ago
-> config: x86_64-buildonly-randconfig-006-20230906 (https://download.01.org/0day-ci/archive/20231204/202312041509.DIyvEt9h-lkp@intel.com/config)
-> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231204/202312041509.DIyvEt9h-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202312041509.DIyvEt9h-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    drivers/block/virtio_blk.c: In function 'init_vq':
-> >> drivers/block/virtio_blk.c:570:68: warning: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 7 [-Wformat-truncation=]
->      570 |                 snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_poll.%d", i);
->          |                                                                    ^~
->    drivers/block/virtio_blk.c:570:58: note: directive argument in the range [-2147483648, 65534]
->      570 |                 snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_poll.%d", i);
->          |                                                          ^~~~~~~~~~~~~
->    drivers/block/virtio_blk.c:570:17: note: 'snprintf' output between 11 and 21 bytes into a destination of size 16
->      570 |                 snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_poll.%d", i);
->          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> 
-> vim +570 drivers/block/virtio_blk.c
-> 
->    511	
->    512	static int init_vq(struct virtio_blk *vblk)
->    513	{
->    514		int err;
->    515		int i;
->    516		vq_callback_t **callbacks;
->    517		const char **names;
->    518		struct virtqueue **vqs;
->    519		unsigned short num_vqs;
->    520		unsigned int num_poll_vqs;
->    521		struct virtio_device *vdev = vblk->vdev;
->    522		struct irq_affinity desc = { 0, };
->    523	
->    524		err = virtio_cread_feature(vdev, VIRTIO_BLK_F_MQ,
->    525					   struct virtio_blk_config, num_queues,
->    526					   &num_vqs);
->    527		if (err)
->    528			num_vqs = 1;
->    529	
->    530		if (!err && !num_vqs) {
->    531			dev_err(&vdev->dev, "MQ advertised but zero queues reported\n");
->    532			return -EINVAL;
->    533		}
->    534	
->    535		num_vqs = min_t(unsigned int,
->    536				min_not_zero(num_request_queues, nr_cpu_ids),
->    537				num_vqs);
->    538	
->    539		num_poll_vqs = min_t(unsigned int, poll_queues, num_vqs - 1);
->    540	
->    541		vblk->io_queues[HCTX_TYPE_DEFAULT] = num_vqs - num_poll_vqs;
->    542		vblk->io_queues[HCTX_TYPE_READ] = 0;
->    543		vblk->io_queues[HCTX_TYPE_POLL] = num_poll_vqs;
->    544	
->    545		dev_info(&vdev->dev, "%d/%d/%d default/read/poll queues\n",
->    546					vblk->io_queues[HCTX_TYPE_DEFAULT],
->    547					vblk->io_queues[HCTX_TYPE_READ],
->    548					vblk->io_queues[HCTX_TYPE_POLL]);
->    549	
->    550		vblk->vqs = kmalloc_array(num_vqs, sizeof(*vblk->vqs), GFP_KERNEL);
->    551		if (!vblk->vqs)
->    552			return -ENOMEM;
->    553	
->    554		names = kmalloc_array(num_vqs, sizeof(*names), GFP_KERNEL);
->    555		callbacks = kmalloc_array(num_vqs, sizeof(*callbacks), GFP_KERNEL);
->    556		vqs = kmalloc_array(num_vqs, sizeof(*vqs), GFP_KERNEL);
->    557		if (!names || !callbacks || !vqs) {
->    558			err = -ENOMEM;
->    559			goto out;
->    560		}
->    561	
->    562		for (i = 0; i < num_vqs - num_poll_vqs; i++) {
->    563			callbacks[i] = virtblk_done;
->    564			snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req.%d", i);
->    565			names[i] = vblk->vqs[i].name;
->    566		}
->    567	
->    568		for (; i < num_vqs; i++) {
->    569			callbacks[i] = NULL;
->  > 570			snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_poll.%d", i);
->    571			names[i] = vblk->vqs[i].name;
->    572		}
->    573	
->    574		/* Discover virtqueues and write information to configuration.  */
->    575		err = virtio_find_vqs(vdev, num_vqs, vqs, callbacks, names, &desc);
->    576		if (err)
->    577			goto out;
->    578	
->    579		for (i = 0; i < num_vqs; i++) {
->    580			spin_lock_init(&vblk->vqs[i].lock);
->    581			vblk->vqs[i].vq = vqs[i];
->    582		}
->    583		vblk->num_vqs = num_vqs;
->    584	
->    585	out:
->    586		kfree(vqs);
->    587		kfree(callbacks);
->    588		kfree(names);
->    589		if (err)
->    590			kfree(vblk->vqs);
->    591		return err;
->    592	}
->    593	
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
 
-Stefan, Paolo,
-It's a false positive but do we want to fix it? Make i unsigned?
 
--- 
-MST
-
+>-----Original Message-----
+>From: Yury Norov <yury.norov@gmail.com>
+>Sent: Thursday, November 30, 2023 10:27 PM
+>To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+>Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Jakub Kicinski
+><kuba@kernel.org>; KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
+>pabeni@redhat.com; Long Li <longli@microsoft.com>;
+>sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
+>ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de;
+>linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
+>kernel@vger.kernel.org; linux-rdma@vger.kernel.org; Paul Rosswurm
+><paulros@microsoft.com>
+>Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
+>affinity on HT cores
+>
+>[You don't often get email from yury.norov@gmail.com. Learn why this is
+>important at https://aka.ms/LearnAboutSenderIdentification ]
+>
+>On Thu, Nov 30, 2023 at 04:05:12AM -0800, Souradeep Chakrabarti wrote:
+>> On Wed, Nov 29, 2023 at 06:16:17PM -0800, Yury Norov wrote:
+>> > On Mon, Nov 27, 2023 at 09:36:38AM +0000, Souradeep Chakrabarti
+>wrote:
+>> > >
+>> > >
+>> > > >-----Original Message-----
+>> > > >From: Jakub Kicinski <kuba@kernel.org>
+>> > > >Sent: Wednesday, November 22, 2023 5:19 AM
+>> > > >To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+>> > > >Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+>> > > ><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+>> > > ><decui@microsoft.com>; davem@davemloft.net;
+>edumazet@google.com;
+>> > > >pabeni@redhat.com; Long Li <longli@microsoft.com>;
+>> > > >sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
+>> > > >ssengar@linux.microsoft.com; vkuznets@redhat.com;
+>> > > >tglx@linutronix.de; linux- hyperv@vger.kernel.org;
+>> > > >netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> > > >linux-rdma@vger.kernel.org; Souradeep Chakrabarti
+>> > > ><schakrabarti@microsoft.com>; Paul Rosswurm
+>> > > ><paulros@microsoft.com>
+>> > > >Subject: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning
+>> > > >IRQ affinity on HT cores
+>> > > >
+>> > > >On Tue, 21 Nov 2023 05:54:37 -0800 Souradeep Chakrabarti wrote:
+>> > > >> Existing MANA design assigns IRQ to every CPUs, including
+>> > > >> sibling hyper-threads in a core. This causes multiple IRQs to
+>> > > >> work on same CPU and may reduce the network performance with RSS.
+>> > > >>
+>> > > >> Improve the performance by adhering the configuration for RSS,
+>> > > >> which assigns IRQ on HT cores.
+>> > > >
+>> > > >Drivers should not have to carry 120 LoC for something as basic as
+>spreading IRQs.
+>> > > >Please take a look at include/linux/topology.h and if there's
+>> > > >nothing that fits your needs there - add it. That way other drivers=
+ can
+>reuse it.
+>> > > Because of the current design idea, it is easier to keep things
+>> > > inside the mana driver code here. As the idea of IRQ distribution he=
+re is :
+>> > > 1)Loop through interrupts to assign CPU 2)Find non sibling online
+>> > > CPU from local NUMA and assign the IRQs on them.
+>> > > 3)If number of IRQs is more than number of non-sibling CPU in that
+>> > > NUMA node, then assign on sibling CPU of that node.
+>> > > 4)Keep doing it till all the online CPUs are used or no more IRQs.
+>> > > 5)If all CPUs in that node are used, goto next NUMA node with CPU.
+>> > > Keep doing 2 and 3.
+>> > > 6) If all CPUs in all NUMA nodes are used, but still there are
+>> > > IRQs then wrap over from first local NUMA node and continue doing
+>> > > 2, 3 4 till all IRQs are assigned.
+>> >
+>> > Hi Souradeep,
+>> >
+>> > (Thanks Jakub for sharing this thread with me)
+>> >
+>> > If I understand your intention right, you can leverage the existing
+>> > cpumask_local_spread().
+>> >
+>> > But I think I've got something better for you. The below series adds
+>> > a for_each_numa_cpu() iterator, which may help you doing most of the
+>> > job without messing with nodes internals.
+>> >
+>> > https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flo
+>> > re.kernel.org%2Fnetdev%2FZD3l6FBnUh9vTIGc%40yury-
+>ThinkPad%2FT%2F&dat
+>> >
+>a=3D05%7C01%7Cschakrabarti%40microsoft.com%7C79dfb421db6f463627250
+>8dbf
+>> >
+>1c5c19e%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C6383696
+>04095521
+>> >
+>996%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2lu
+>MzIiLCJB
+>> >
+>TiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sdata=3DpDUpYWo3K7
+>uoz2q50GQ
+>> > 1UKuPF2PwFagiT5pwrXhQXPk%3D&reserved=3D0
+>> >
+>> Thanks Yur and Jakub. I was trying to find this patch, but unable to fin=
+d it on
+>that thread.
+>> Also in net-next I am unable to find it. Can you please tell, if it has =
+been
+>committed?
+>> If not can you please point me out the correct patch for this macro.
+>> It will be really helpful.
+>
+>Try this branch. I just rebased it on top of bitmap-for-next, but didn't r=
+e-test.
+>You may need to exclude the "sched: drop for_each_numa_hop_mask()" patch.
+>
+>https://nam06.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fgithu
+>b.com%2Fnorov%2Flinux%2Fcommits%2Ffor_each_numa_cpu&data=3D05%7C0
+>1%7Cschakrabarti%40microsoft.com%7C79dfb421db6f4636272508dbf1c5c1
+>9e%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C638369604095
+>529277%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV
+>2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000%7C%7C%7C&sdata=3DW
+>wmd%2BvQS7YHIwFKyL9OLd8iYttJ4ZIqQyxU3Ex8UOkY%3D&reserved=3D0
+>
+>> > By using it, the pseudocode implementing your algorithm may look
+>> > like this:
+>> >
+>> >         unsigned int cpu, hop;
+>> >         unsigned int irq =3D 0;
+>> >
+>> > again:
+>> >         cpu =3D get_cpu();
+>> >         node =3D cpu_to_node(cpu);
+>> >         cpumask_copy(cpus, cpu_online_mask);
+>> >
+>> >         for_each_numa_cpu(cpu, hop, node, cpus) {
+>> >                 /* All siblings are the same for IRQ spreading purpose=
+ */
+>> >                 irq_set_affinity_and_hint(irq,
+>> > topology_sibling_cpumask());
+>> >
+>> >                 /* One IRQ per sibling group */
+>> >                 cpumask_andnot(cpus, cpus,
+>> > topology_sibling_cpumask());
+>> >
+>> >                 if (++irq =3D=3D num_irqs)
+>> >                         break;
+>> >         }
+>> >
+>> >         if (irq < num_irqs)
+>> >                 goto again;
+>> >
+>> > (Completely not tested, just an idea.)
+>> >
+>> I have done similar kind of change for our driver, but constraint here
+>> is that total number of IRQs can be equal to the total number of
+>> online CPUs, in some setup. It is either equal to the number of online C=
+PUs or
+>maximum 64 IRQs if online CPUs are more than that.
+>
+>Not sure I understand you. If you're talking about my proposal, there's
+>seemingly no constraints on number of CPUs/IRQs.
+>
+>> So my proposed change is following:
+>>
+>> +static int irq_setup(int *irqs, int nvec, int start_numa_node) {
+>> +       cpumask_var_t node_cpumask;
+>> +       int i, cpu, err =3D 0;
+>> +       unsigned int  next_node;
+>> +       cpumask_t visited_cpus;
+>> +       unsigned int start_node =3D start_numa_node;
+>> +       i =3D 0;
+>> +       if (!alloc_cpumask_var(&node_cpumask, GFP_KERNEL)) {
+>> +               err =3D -ENOMEM;
+>> +               goto free_mask;
+>> +       }
+>> +       cpumask_andnot(&visited_cpus, &visited_cpus, &visited_cpus);
+>> +       start_node =3D 1;
+>> +       for_each_next_node_with_cpus(start_node, next_node) {
+>
+>If your goal is to maximize locality, this doesn't seem to be correct.
+>for_each_next_node_with_cpus() is based on next_node(), and so enumerates
+>nodes in a numerically increasing order. On real machines, it's possible t=
+hat
+>numerically adjacent node is not the topologically nearest.
+>
+>To approach that, for every node kernel maintains a list of equally distan=
+t nodes
+>grouped into hops. You may likely want to use for_each_numa_hop_mask
+>iterator, which iterated over hops in increasing distance order, instead o=
+f
+>NUMA node numbers.
+>
+>But I would like to see for_each_numa_cpu() finally merged as a simpler an=
+d
+>nicer alternative.
+>
+>> +               cpumask_copy(node_cpumask, cpumask_of_node(next_node));
+>> +               for_each_cpu(cpu, node_cpumask) {
+>> +                       cpumask_andnot(node_cpumask, node_cpumask,
+>> +                                      topology_sibling_cpumask(cpu));
+>> +                       irq_set_affinity_and_hint(irqs[i], cpumask_of(cp=
+u));
+>> +                       if(++i =3D=3D nvec)
+>> +                               goto free_mask;
+>> +                       cpumask_set_cpu(cpu, &visited_cpus);
+>> +                       if (cpumask_empty(node_cpumask) &&
+>cpumask_weight(&visited_cpus) <
+>> +                           nr_cpus_node(next_node)) {
+>> +                               cpumask_copy(node_cpumask,
+>cpumask_of_node(next_node));
+>> +                               cpumask_andnot(node_cpumask, node_cpumas=
+k,
+>&visited_cpus);
+>> +                               cpu =3D cpumask_first(node_cpumask);
+>> +                       }
+>> +               }
+>> +               if (next_online_node(next_node) =3D=3D MAX_NUMNODES)
+>> +                       next_node =3D first_online_node;
+>> +       }
+>> +free_mask:
+>> +       free_cpumask_var(node_cpumask);
+>> +       return err;
+>> +}
+>>
+>> I can definitely use the for_each_numa_cpu() instead of my proposed
+>> for_each_next_node_with_cpus() macro here and that will make it cleaner.
+>> Thanks for the suggestion.
+>
+>Sure.
+>
+>Can you please share performance measurements for a solution you'll finall=
+y
+>choose? Would be interesting to compare different approaches.
+I have compared spreading IRQs across numa  with IRQs spread inside local
+NUMA, and the performance was 14 percent better for later.
+I have shared the V4 patch with for_each_numa_hop_mask() macro.
+>
+>Thanks,
+>Yury
