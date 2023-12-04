@@ -2,82 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC74E802EA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:34:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDDB6802EA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234790AbjLDJe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:34:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34306 "EHLO
+        id S229953AbjLDJdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjLDJe0 (ORCPT
+        with ESMTP id S234788AbjLDJdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:34:26 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A33C95;
-        Mon,  4 Dec 2023 01:34:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1701682472; x=1733218472;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+j7cDUoUbhZgg3CFqMSvC7LEHqMyVmx87LysErGNBg0=;
-  b=b1ZJ69R2XqYx0INST3lazjYZk+RY4sje3XaYIY3KYl+Ur7wRqNfHDDhQ
-   l+P3DFZNZ4GPgirSX0Zm04rG9QrycC0hPntwgtz0XFVYLwK5tEt97vt9e
-   JxQ8uREcdSsmXEPvPFF74+BSM3zZuP4H+GW1o1+ggg20V1IbbNWoGyXL4
-   uXL8iB791MVQ2LWeUn0jb7pXO32nd149p4niOxY8XNOX1V/zMTPdPCFoJ
-   6XKvGRALAM3ENDBfzsUjdZ6zT3cPneiWYE7eN4H56BGsNX0QZHAaXmB39
-   VZXspz335klC8SgkIzOlg/p8dFO40eT0S9SiuXyyPkWc0FfFaiHN1Xdrr
-   A==;
-X-CSE-ConnectionGUID: LI86M10uTVibW23RhRt8lw==
-X-CSE-MsgGUID: 6MsAR5MTRiiJ4ozhiHII+g==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="asc'?scan'208";a="12709204"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2023 02:34:31 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 02:33:29 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Mon, 4 Dec 2023 02:33:26 -0700
-Date:   Mon, 4 Dec 2023 09:32:56 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Chen Wang <unicorn_wang@outlook.com>
-CC:     Inochi Amaoto <inochiama@outlook.com>,
-        Conor Dooley <conor@kernel.org>,
-        Chao Wei <chao.wei@sophgo.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup@brainfault.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>
-Subject: Re: [PATCH v4 0/7] Add Huashan Pi board support
-Message-ID: <20231204-crane-wolf-95f32865db62@wendy>
-References: <MA0P287MB033290A6C8B15202E31E43CCFE80A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
- <IA1PR20MB49537B177B6F3614D8D1E3E6BB87A@IA1PR20MB4953.namprd20.prod.outlook.com>
- <MA0P287MB0332AE2378D633B8A2DCFB77FE86A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+        Mon, 4 Dec 2023 04:33:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D824FD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:33:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F31ABC433C7;
+        Mon,  4 Dec 2023 09:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701682390;
+        bh=vB8lCoBUTdZMjJNGpuqpA44Y595SsonNAART47Zyvi4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tt/KrIt8+kPOXxH+cpLndZy/lmbUVptSb6qGW7voPOcd28sxyY/dgZXdpMgeOki/0
+         ToNRUr3HOpB9m6hrfG72U8xhngOX3W0Gl7UlGwvGytegiO5d2uL4srb/DHXV3WuU3D
+         yljUBN9UlLAl05Xj7TpcB9/9jNkFazbOv/RMEkM4ZK6A06Oy8BRqvOyfDb58YH77rM
+         6OLp3IMu3oezGZw25OsYegeF8mIeg1T7Zyca8tZjO7R66oqpLrj+6d0M7ZkuUTNvbL
+         SLZL4V+8bFzmy4KKPnFldQAMNPWIDpj7+xtADNqwFGWrBKQCSiDOJOluaKmLghrU6Q
+         GrmqK+ksKYgCQ==
+Date:   Mon, 4 Dec 2023 09:33:01 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Bhavya Kapoor <b-kapoor@ti.com>
+Cc:     Wadim Egorov <w.egorov@phytec.de>, <lars@metafoo.de>,
+        <robh@kernel.org>, <heiko@sntech.de>, <peter.ujfalusi@ti.com>,
+        <mugunthanvnm@ti.com>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <nm@ti.com>,
+        <upstream@lists.phytec.de>
+Subject: Re: [PATCH v2] iio: adc: ti_am335x_adc: Fix return value check of
+ tiadc_request_dma()
+Message-ID: <20231204093301.05c19b96@jic23-huawei>
+In-Reply-To: <0c26613b-4aba-4e1e-bf0e-57feff23e303@ti.com>
+References: <20230925134427.214556-1-w.egorov@phytec.de>
+        <20231005150917.2d0c833e@jic23-huawei>
+        <a58ae80e-e281-425a-9b72-bad8fd305e6a@phytec.de>
+        <0c26613b-4aba-4e1e-bf0e-57feff23e303@ti.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="McIyWL/yGKMUQDuC"
-Content-Disposition: inline
-In-Reply-To: <MA0P287MB0332AE2378D633B8A2DCFB77FE86A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,62 +57,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---McIyWL/yGKMUQDuC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 27 Nov 2023 15:14:29 +0530
+Bhavya Kapoor <b-kapoor@ti.com> wrote:
 
-On Mon, Dec 04, 2023 at 05:15:36PM +0800, Chen Wang wrote:
+> LGTM !!=F0=9F=99=82
 >=20
-> On 2023/12/4 7:32, Inochi Amaoto wrote:
-> > > On 2023/12/2 0:21, Conor Dooley wrote:
+> On 24/11/23 5:41 pm, Wadim Egorov wrote:
+> >
+> > Am 05.10.23 um 16:09 schrieb Jonathan Cameron: =20
+> >> On Mon, 25 Sep 2023 15:44:27 +0200
+> >> Wadim Egorov <w.egorov@phytec.de> wrote:
+> >> =20
+> >>> Fix wrong handling of a DMA request where the probing only failed
+> >>> if -EPROPE_DEFER was returned. Instead, let us fail if a non -ENODEV
+> >>> value is returned. This makes DMAs explicitly optional. Even if the
+> >>> DMA request is unsuccessfully, the ADC can still work properly.
+> >>> We do also handle the defer probe case by making use of=20
+> >>> dev_err_probe().
+> >>>
+> >>> Fixes: f438b9da75eb ("drivers: iio: ti_am335x_adc: add dma support")
+> >>> Signed-off-by: Wadim Egorov <w.egorov@phytec.de> =20
+> Reviewed-by: Bhavya Kapoor <b-kapoor@ti.com>
 
-> > > As far as I know, sophgo's SoC product names all start with "sg", whi=
-le products starting with "cv" come from CVITEK (another chip company). CVI=
-TEK was acquired by sophgo a year ago, so now many SOC product names that o=
-riginally started with "cv" are being repackaged and changed to start with =
-"sg".
-> > >=20
-> > > For the cv1800b adopted by Duo, Sophgo has made it clear that it will=
- not change its codename.
-> > >=20
-> > > But I heard that for other products, such as the cv1812h used by Huas=
-hanpi, sophgo may change their names in the future, but sophgo has not offi=
-cially confirmed it yet. Looks like sophgo themselves are still in the proc=
-ess of digesting cv's products, ;)
-> > >=20
-> > > Since we have just started to support cv1812h and have not done much =
-work yet, I suggest not to merge this patch into the mainline, and wait unt=
-il there is clear news before doing this to avoid introducing unnecessary m=
-odifications later.
-> > >=20
-> > Hi Chen,
-> >=20
-> > There is a update for you. The cv1812h does not have the A53 core as the
-> > sg200x does. Maybe we should treat cv1812h as a trim of sg200x, not just
-> > a reband.
-> >=20
-> > According to this information, I suggest to preserve these code for
-> > cv1812h, it can make upstream the new soc eaiser. Also, adding a new
-> > compatible is not too hard, and it is necessary if we have new soc.
-> > Otherwise, the one with Huashan Pi now may be confused because it have
-> > a old version.
->=20
-> Thanks Inochi for your info, let's just preserve these code for huashan pi
-> now and keep watching on what's going on then.
+Applied to the fixes-togreg branch of iio.git and marked for stable.
 
-Could you explain on what you mean by "preserve"? I'm a little unsure.
+> >> +CC Bhavya,
+> >>
+> >> Could you take a look at this given you had comments on v1. =20
+> >
+> > Bhavya, any comments on this?
+> > If not, is there anything else that is blocking this patch?
+> >
+> > Regards,
+> > Wadim
+> > =20
+> >>
+> >> Thanks,
+> >>
+> >> Jonathan
+> >> =20
+> >>> ---
+> >>> v2:
+> >>> =C2=A0=C2=A0 - Update description
+> >>> =C2=A0=C2=A0 - Drop line break after Fixes tag
+> >>> =C2=A0=C2=A0 - Move decision about optional DMA into probe/caller
+> >>> ---
+> >>> =C2=A0 drivers/iio/adc/ti_am335x_adc.c | 4 +++-
+> >>> =C2=A0 1 file changed, 3 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/iio/adc/ti_am335x_adc.c=20
+> >>> b/drivers/iio/adc/ti_am335x_adc.c
+> >>> index 8db7a01cb5fb..5f8795986995 100644
+> >>> --- a/drivers/iio/adc/ti_am335x_adc.c
+> >>> +++ b/drivers/iio/adc/ti_am335x_adc.c
+> >>> @@ -670,8 +670,10 @@ static int tiadc_probe(struct platform_device=20
+> >>> *pdev)
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 platform_set_drvdata(pdev, indio_dev);
+> >>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 err =3D tiadc_request_dma(pdev,=
+ adc_dev);
+> >>> -=C2=A0=C2=A0=C2=A0 if (err && err =3D=3D -EPROBE_DEFER)
+> >>> +=C2=A0=C2=A0=C2=A0 if (err && err !=3D -ENODEV) {
+> >>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev_err_probe(&pdev->dev,=
+ err, "DMA request failed\n");
+> >>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto err_dma;
+> >>> +=C2=A0=C2=A0=C2=A0 }
+> >>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0; =20
 
-
---McIyWL/yGKMUQDuC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZW2cyAAKCRB4tDGHoIJi
-0iWtAQCTE8NoHTJcLy2WVDAg8jnv9rQILz7SbYqbBacA3DtmgAD/XtNuvBNLfda8
-3vRc65P/zhIlckuMqFgMuwxMxDUS+wo=
-=aCtm
------END PGP SIGNATURE-----
-
---McIyWL/yGKMUQDuC--
