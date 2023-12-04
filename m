@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B45A68040E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B00C38040E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234164AbjLDVOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 16:14:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
+        id S234149AbjLDVOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 16:14:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234141AbjLDVOL (ORCPT
+        with ESMTP id S234201AbjLDVOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 16:14:11 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CD5119;
-        Mon,  4 Dec 2023 13:14:18 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B4LECaL100668;
-        Mon, 4 Dec 2023 15:14:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701724452;
-        bh=/p3SSQqurLWTP0Aou1pLxTZAlPiXFsX8T2x34W8Vaio=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=exm1LBDBXtSsN1H2ExnmTrXETkti8B4ws68NIEJmj00oRIi6x8IGijTqT3OOpADEk
-         ZVZ4R9Jle/R4ZuAtFd7hr2J1fMbd6zYTLDQ29CHk50s1OvCSTG27MJAZdL9rHg5v5t
-         phAxYaq347/wPtbqp/aPtLSopdyRHvI57OScgbzo=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B4LECOb126096
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 Dec 2023 15:14:12 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 4
- Dec 2023 15:14:12 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 4 Dec 2023 15:14:12 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B4LECGh107972;
-        Mon, 4 Dec 2023 15:14:12 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Andrew Davis <afd@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am625-beagleplay: Use UART name in pinmux name
-Date:   Mon, 4 Dec 2023 15:14:10 -0600
-Message-ID: <170172444812.2631504.2797072320742159946.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231127193602.151499-1-afd@ti.com>
-References: <20231127193602.151499-1-afd@ti.com>
+        Mon, 4 Dec 2023 16:14:30 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BABFF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 13:14:36 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50beed2a46eso837e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 13:14:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701724475; x=1702329275; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HC3Kqwq0MMmfCoFQwZgAsJVop+/+8BNQbF/H1UQSrUk=;
+        b=J2/rlFDhgONMIXUDqpLdS4TQWKgnZarLU0gr6cz+RN8nkSezO7l1iXgTt6M6IxsokO
+         3adCAlWhq3jMoD2XHdSFGZ4cE5S1EECTwjhoLR0ssOd6FKa7uT3+rZ7rW8mmxwPH6fJ1
+         TdfIPWLG5SiSrjnjtqNAu9Z+Iq/GkqVuwnuZ2WnJfO8qAIPM/4btBdMHCqqbmRX15iRy
+         ET9wM4cVKtBV/U1cbMlcUwuz5vSbPk3ulBFcykWZfIu3kw0DhyQQf5955SQOEUlD1sYu
+         /t7+pHNwMq5amjzQAdrS2RxF2sHbtFN80Sulii6vGBoxx5OhDiTiC/71MvfXnYg6k8m3
+         koTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701724475; x=1702329275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HC3Kqwq0MMmfCoFQwZgAsJVop+/+8BNQbF/H1UQSrUk=;
+        b=eUJ/hwENa347Ap7w2Dw6lTzKbMlQZlC5Js1yR1ycqzGbSsFARpgFLySvUoaTecZwEE
+         7sGVceiqyfudb/+5l81OOvlC03Tc3AXz63hKNuE35xnsH3BuFbITtE04Bp0+qiWNoVOV
+         0XLkI3yPb9il/z7L6wIRqRMq7RrSiyeAUo2d54GVHKS4SGApOGPNOgrwOorF3uYbijhG
+         PuuI/6PsLxgzRbMeQikRwVbxqJsPM9+mx7QJLrg+bKYLH9t3V4ZM2S6eRPh3iFgqQMaJ
+         e+VN8sMeTHR483OfnsuFnr2fOoFva0luW7CB8jdJL0GJoLqLIOnLr2EkVYsiMW+U0alN
+         RVKQ==
+X-Gm-Message-State: AOJu0Yzcxo/VZhTnINSOaYj0br5Ek4sT7SE33s3OKD9zn3Htf2wafm92
+        7QNJnwcG+G9ow0tHuoVUK63WKt+MuYDhyl1Srfkgvg==
+X-Google-Smtp-Source: AGHT+IHFNQl9WEbRcWJgH4WIhG5b7q61jmODDxGI8iaboRfnh21mH+fe1Ktul9AFsgSTRW5UVuMiGdR5g8dxC5LoCTU=
+X-Received: by 2002:a05:6512:12c4:b0:50b:fc76:42c with SMTP id
+ p4-20020a05651212c400b0050bfc76042cmr87811lfg.2.1701724474909; Mon, 04 Dec
+ 2023 13:14:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231201235031.475293-1-irogers@google.com> <20231201235031.475293-9-irogers@google.com>
+ <CAP-5=fUtoi7ynQ-x_7rrv_vYoTZfS_14COA1MskOFVXJ_jCDew@mail.gmail.com> <ZW420ecpaSjwykny@kernel.org>
+In-Reply-To: <ZW420ecpaSjwykny@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 4 Dec 2023 13:14:23 -0800
+Message-ID: <CAP-5=fXq2CTwSO8QVRdgz2uR73DrGU9qD3z5gPPD3ZEncsn36w@mail.gmail.com>
+Subject: Re: [PATCH v1 9/9] perf tests: Add option to run tests in parallel
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        John Garry <john.g.garry@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew Davis,
+On Mon, Dec 4, 2023 at 12:30=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Fri, Dec 01, 2023 at 06:06:12PM -0800, Ian Rogers escreveu:
+> > On Fri, Dec 1, 2023 at 3:50=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> > >
+> > > By default tests are forked, add an option (-p or --parallel) so that
+> > > the forked tests are all started in parallel and then their output
+> > > gathered serially. This is opt-in as running in parallel can cause
+> > > test flakes.
+> > >
+> > > Rather than fork within the code, the start_command/finish_command
+> > > from libsubcmd are used. This changes how stderr and stdout are
+> > > handled.
+> > >
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> >
+> > Actually, I think this patch needs more work. The verbose output is
+> > degraded and missing in some cases. Suggestions on how to fix welcome.
+>
+> I'll think about, but to make progress I think the first 8 patches in
+> this series can be considered now?
 
-On Mon, 27 Nov 2023 13:36:02 -0600, Andrew Davis wrote:
-> The main_uart0 may not always be the console, but it will always be
-> the UART0 in MAIN domain. Name the pinmux node to match. This makes
-> it consistent with all other TI SoC based boards.
-> 
-> 
+That would be great. Thanks!
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
-
-[1/1] arm64: dts: ti: k3-am625-beagleplay: Use UART name in pinmux name
-      commit: 649e121f9301a4d275b68323a9807b762618e516
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+Ian
