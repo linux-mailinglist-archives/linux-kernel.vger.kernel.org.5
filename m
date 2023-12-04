@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D88EC803FFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADB3804014
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346155AbjLDUhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
+        id S1346026AbjLDUht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:37:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346297AbjLDUgm (ORCPT
+        with ESMTP id S1346046AbjLDUhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:36:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 120CE30C3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FDDC433CC;
-        Mon,  4 Dec 2023 20:34:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701722100;
-        bh=eGm+sBvt0gdj+0zTu3T2RywpCFcezynjcVTWXyJLyW4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iVXk2owoS/1lAMxzsrTb8Vvzoc0KNIez8bAtw79bv0ZhaDpsgFVg1Hwkas8lCZP0I
-         ZEN3vYcWvKktIOtDbZ8UCeKDBfO1FJzBMK8OBtiIkn03By01jKLclQUHKXo883KqgI
-         ZpHvVC1Vo5nrlnkHwcoAMl2T2WGaYyiRmHpM/wPi5uvGZzI5t8RwzChlU09iFIhSGO
-         aZMpk0WRRPyZQtvcAl6iVazG5f8vdUxXg8If317wIA142M47puQPZwO5K/+YkbH0Vy
-         k8wWp1+Nrt6c2SZkUBCxoKPG7YKTr6Id3DQQ+dH3C0EuJBr7s+Xhqx7nPI9FtD1t2m
-         8pN70Gfbw1BeA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 32/32] nvme-core: check for too small lba shift
-Date:   Mon,  4 Dec 2023 15:32:52 -0500
-Message-ID: <20231204203317.2092321-32-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231204203317.2092321-1-sashal@kernel.org>
-References: <20231204203317.2092321-1-sashal@kernel.org>
+        Mon, 4 Dec 2023 15:37:21 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E502384F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:37 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-423c28db22eso49750971cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 12:35:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1701722135; x=1702326935; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DyOt6WNJoyGPyyAGB/bMPPXRQGKI15oaDucC2U+fr/M=;
+        b=KHFAu1tqEjUF818xvyy2DPCcHiLL60PxQAUJW6qaDAdQ2Q7R96QliiQrEajn5P0MOB
+         8mhH03+0zJt0HNlN/FDzTGxHPM2wD4cBVLqyiicYpbM9vqEHpWUSMuGmwzcLdIi6E38p
+         hTsh1rzrMSwXqNKLbZZaE6alC4yQPtNNE7GaXeC6ksZucFIZCzc/tvj+N1GhZff7cU2j
+         fcSFU7VHFxVKCye85uQ9AkicYxi2APKZ/QB0Q3LdQ75qzJobrHo4HbNvapWYh5JHmnqp
+         8zdY0HPOUDZwsYzzdMqele1oy9x5nDawgBlwhaxjEc6WtHP+hRyi5aO+rOU43YMdIOg3
+         ZPvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701722135; x=1702326935;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DyOt6WNJoyGPyyAGB/bMPPXRQGKI15oaDucC2U+fr/M=;
+        b=eOlhdJGDmzbDjmdUeyU8GSNM0z9sCtGesvGFr+r5lZqeQOUOPFzajVYsp1YqylyLG8
+         ZsaFwKqdGIeKwJ+hLhYJT15kxLa0RwUJ3gUERA4U/4LKgemTMj+ArEWdCruTKTz68+u9
+         iwJKQpGHMN3roOq61F6N/xBCWM3x4oYpwBFgs+E1w0gUhXnwTllAtlnsZdVOFfIikuGS
+         d+fXX9yIOFzUTmwaLuubpTGFr/ACFyeHiMutlg/NEN2lQwX88dwP3XcT2mzp59mBaFh1
+         TIuVOQiEDE5cfDRceQaWSsRJUdVMuMcfJiWSt0bWZxj8qc0OXk6MolDTggumvJrtZC6y
+         VxDA==
+X-Gm-Message-State: AOJu0YzX40GN5PkFfWuOYqBflE0o+YbjRNRwAOEyWo35s7KDgzhX+zlX
+        T6Nar9T+67abHCp7gPBZESsG8pUFgOJjCamIOHM=
+X-Google-Smtp-Source: AGHT+IHQVPJUpnF0jpAxRYOUbhikG4xN8M9TPSoPIYVN8gwSA7y9CB1MpGu7A2cRrqTvvdjC++88Hg==
+X-Received: by 2002:a05:6214:519d:b0:67a:5815:9996 with SMTP id kl29-20020a056214519d00b0067a58159996mr217380qvb.6.1701722135213;
+        Mon, 04 Dec 2023 12:35:35 -0800 (PST)
+Received: from localhost.localdomain ([50.212.55.89])
+        by smtp.gmail.com with ESMTPSA id jo23-20020a056214501700b0067ac930d17asm1123469qvb.141.2023.12.04.12.35.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 12:35:34 -0800 (PST)
+From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: [PATCH 0/2] stm32: fix GPIO level interrupts
+Date:   Mon,  4 Dec 2023 15:33:55 -0500
+Message-ID: <20231204203357.2897008-1-ben.wolsieffer@hefring.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.4
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Keith Busch <kbusch@kernel.org>
+GPIO level interrupts on the STM32 were behaving like edge interrupts.
+The STM32 lacks hardware support for GPIO level interrupts, therefore
+the pinctrl driver contains code to emulate them using edge interrupts,
+but this was not working.
 
-[ Upstream commit 74fbc88e161424b3b96a22b23a8e3e1edab9d05c ]
+First, the STM32 EXTI interrupt controller driver lacked support for
+retriggering interrupts, and second, the wrong IRQ handler was being
+used because the parent interrupt was an edge interrupt.
 
-The block layer doesn't support logical block sizes smaller than 512
-bytes. The nvme spec doesn't support that small either, but the driver
-isn't checking to make sure the device responded with usable data.
-Failing to catch this will result in a kernel bug, either from a
-division by zero when stacking, or a zero length bio.
+Ben Wolsieffer (2):
+  irqchip/stm32-exti: support retriggering on STM32 MCUs
+  pinctrl: stm32: fix GPIO level interrupts
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/nvme/host/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/irqchip/irq-stm32-exti.c      | 13 +++++++++++++
+ drivers/pinctrl/stm32/pinctrl-stm32.c |  3 +++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index b4521deb1c716..dfc0e02150911 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -1890,9 +1890,10 @@ static void nvme_update_disk_info(struct gendisk *disk,
- 
- 	/*
- 	 * The block layer can't support LBA sizes larger than the page size
--	 * yet, so catch this early and don't allow block I/O.
-+	 * or smaller than a sector size yet, so catch this early and don't
-+	 * allow block I/O.
- 	 */
--	if (ns->lba_shift > PAGE_SHIFT) {
-+	if (ns->lba_shift > PAGE_SHIFT || ns->lba_shift < SECTOR_SHIFT) {
- 		capacity = 0;
- 		bs = (1 << 9);
- 	}
 -- 
-2.42.0
+2.42.1
 
