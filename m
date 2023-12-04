@@ -2,67 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A48FC8033D0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9919A8033E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233565AbjLDNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:07:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
+        id S235334AbjLDNH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:07:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232947AbjLDNHe (ORCPT
+        with ESMTP id S235313AbjLDNHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:07:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B717FA7;
-        Mon,  4 Dec 2023 05:07:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701695260; x=1733231260;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=rwfeHVUdIJbFUBsUHDPSqcnPbouutdp0s8W6pWKb+Y4=;
-  b=fsgXxWRQ89m4nUroXsW8cNZiVAFyIkyNiUyf+4W9A8wxcEl0dcf6/OHN
-   0lRvV3dfulQDh/7rnREljYFb4WFLZIENwuWIdDmwgTWUnxW7HzaIfl3ex
-   ZN4S3/Cs0E2w8BFR/z1H2LmDf5gdeZLaBTckYzs/aDb9SqaJvY3TSf+hb
-   O+j/bt9fJDxXaxXaLLf0RjuotT1CgRHXFb17dvQheY5hqmB4jsTvnl9N5
-   UTe3cthvCNNc47QmHS5r2FtuamSEk9RpQMiX4eIqHmgzvuPIckptx+4S/
-   AVrdwdq/WTKLP0x45BtoDcs6XuyybGFMqnhqGK7gXRvscfaja3sJcwCWQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="15275123"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="15275123"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:07:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="861373354"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="861373354"
-Received: from malladhi-mobl.gar.corp.intel.com ([10.249.34.28])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:07:12 -0800
-Date:   Mon, 4 Dec 2023 15:07:06 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Vadim Pasternak <vadimp@nvidia.com>
-cc:     Kunwu Chan <chentao@kylinos.cn>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        Shravan Ramani <shravankr@nvidia.com>,
-        "jiri@resnulli.us" <jiri@resnulli.us>,
-        "kunwu.chan@hotmail.com" <kunwu.chan@hotmail.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-Subject: RE: [PATCH v2] platform/mellanox: Add some null/error pointer checks
- to mlxbf-pmc.c
-In-Reply-To: <BN9PR12MB5381B3408452445483B7281EAF81A@BN9PR12MB5381.namprd12.prod.outlook.com>
-Message-ID: <b2fa490-4e48-44a6-64d3-45ef4f5c14b@linux.intel.com>
-References: <20231201055447.2356001-1-chentao@kylinos.cn> <BN9PR12MB5381B3408452445483B7281EAF81A@BN9PR12MB5381.namprd12.prod.outlook.com>
+        Mon, 4 Dec 2023 08:07:50 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BB1FF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:07:55 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40bda47c489so23828345e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 05:07:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701695274; x=1702300074; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0SVyYW6HMoNCW9ahkMqcZ8lqPYY7XQP+vwUVqyb0ygQ=;
+        b=KPPmZZYcsw8U0DuoQoljmYBpgiG2P6hv8sddWj3Mh26hUyr8DcsMPoBsPYMrvWsK8a
+         lMqhKDJbJ/81bncJGfNLbCwhdD15DtXjpanQWYU6uSsUcguN4LabUzUxv0PmTw5CmwFz
+         R0NvrIUiK/CmRX4/u3MzTlBsDVD+2lvnADmwg/bIQ2xQHLyM/aBSHmv6IRn8W8K345oM
+         oCdUQQkdZKMP7fMF5geVyEKXvyNISTpIycH6J2h6cpLkypixD9MI/R8G+QfXCVn7h42H
+         ciAfyV2XsQdAMb5V4EfIzc8Urukvputr/IuqF53vh/HMfqGGefN6q30ACru1KWf6+gKo
+         IE1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701695274; x=1702300074;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0SVyYW6HMoNCW9ahkMqcZ8lqPYY7XQP+vwUVqyb0ygQ=;
+        b=pGl3aNVX6ncmTQ8BY5ogGMyBA53taWRh7uH7B/JXgvgvLrg7JscLy6QseHk4lXrJHk
+         CApx03N8zSFRLekYCCUeb0aF6zqb+mwqEo8U3lNmIfgdivijj3pW5lKEPo5/Qepv1MkE
+         m3chxctjGBfoqCDthblEf4LQXJ9CLKLabxq8GrgALCEJZQVj6Q3+QKQfI2zz9QpXKLkb
+         6ojU8jQyHqtY5hUVvAGT6bLVLvkZkrZOiaooBsIcJZ567Wv2wzgkatulZjoM+q9xajEv
+         Bx1OKmeHKBFTllzCJzK0URc+IsuusWJRz1hf2t65AIElRQgH26U0wmN9s2zU0LeJ3lzh
+         YdmA==
+X-Gm-Message-State: AOJu0Yw3gqMreTe35wEQ6BNvmIqGrMcIqWefqXFW7iyPf3ATz0aJ2WNq
+        SF6HIDSvnGXxTfQ+7Rnt0vhTfw==
+X-Google-Smtp-Source: AGHT+IFecRLXQz2AHpn4bOjQGLLjyAvR2s143US6vjsmmDLeqWRurF3VWG48Mt2S0ySIM+ApD18afw==
+X-Received: by 2002:a05:600c:224d:b0:40b:625a:d8e3 with SMTP id a13-20020a05600c224d00b0040b625ad8e3mr2289968wmm.150.1701695273863;
+        Mon, 04 Dec 2023 05:07:53 -0800 (PST)
+Received: from [127.0.1.1] ([82.77.85.67])
+        by smtp.gmail.com with ESMTPSA id n10-20020a05600c4f8a00b004053e9276easm18494166wmq.32.2023.12.04.05.07.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 05:07:53 -0800 (PST)
+From:   Abel Vesa <abel.vesa@linaro.org>
+Subject: [PATCH v2 0/7] phy: qcom: Add register offsets for v6 and v7
+Date:   Mon, 04 Dec 2023 15:07:34 +0200
+Message-Id: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v2-0-21956ae0c5c3@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1694539297-1701695235=:3149"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABbPbWUC/5WOQQ6DIBREr2JY9zf4VWq76j0aF6gfJVGwoLTGe
+ PeiN2gymzeLN7MxT06TZ49kY46C9tqaCHhJWNNL0xHoNjJDjlmaIsLUr/Be5NDYcYQgjiCHcAN
+ DH7BKeZo9FNQWWDZlqQSyqKqlJ6idNE0fZWYZhlhOjpT+ntuvKnKv/Wzdel4J6dH+uRpS4NDes
+ 5y3mUAh8uegjXT2al3Hqn3ff+UlirbuAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Abel Vesa <abel.vesa@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2164; i=abel.vesa@linaro.org;
+ h=from:subject:message-id; bh=N6WiaC0IuCi1ECGstgxOqRPHVLNEYuAK33Yhs193vd0=;
+ b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlbc8a+atua4Lv+IhEVqXjoaDuE/uoIZkAhn068
+ 61kaInVsWGJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZW3PGgAKCRAbX0TJAJUV
+ VonNEACr2PgUXJehYKPOc5JHpLfUGKTohkTStQ7f3xzwujMXpEqaIPe7zESp+SG2LuXlxVbub5E
+ hu0MuM6ijQn5cHpMKaONrx0KM+doV6S8YTTUD1KpSoD4Wzd2bJZNT8MC+ySv+01beK/MBQNjf6Q
+ KOJsQ22iBsPBV+SiYQfTm13ZctYSSkLkjH1ErZwGYv4I6FAELt9odz7Qs4LNn6U6RuDITsaC83u
+ gn0EN8dhZInHslNtX5A0YHoozPjBRFyXoumDcnuA7TruqkyTAwlaDJSJ1aMclvziKf3zgPNGqpy
+ BsPgYDMya9tq9SwmA4pEkwHCymggVXva/rpswV88qafjmoohIQd8Rfr8d45HOY9N8dXKbLx/ev7
+ 7NBSwUVNmkqBa5UV6D/ko1wZFmLbVIGR0t3xdpEKpzzpYECu+jlTDAIJjiBK+imvsfgxjDYbacY
+ b9IjRdK9Nz5sjMXHrbgIRTXZ6VnHjQPO0uRrJfgWyJm6Khj/6e60jhGVxJgEEhOOBIWYEPzuLG/
+ lkmhyplPar2fsQKu+95UqQ6Dud27lVpBUbpWksI0/6poeXFsqqQRnDBpVZ+ZbAa2e2mE7Aat/Fq
+ Ipfpli+F8EtrTiXpul0KjavmxRdAqh3cdN/V2O9ao2MD1kT4nuH/69LagOUF9dwFoP3k/Ik3QoV
+ T1UOVVaxWs8XhLw==
+X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
+ fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,48 +95,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This patchset adds some missing register offsets for the v6 and v6.20,
+as well as the new v7 ones. These register offsets are used by the
+new Qualcomm Snapdragon X Elite (X1E80100) platform.
 
---8323329-1694539297-1701695235=:3149
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+Changes in v2:
+- added Dmitry's R-b tag to patches no. 1, 2 and 6
+- dropped the duplicates of PCS v7 offsets from USB PCS v7 header, like Dmitry suggested
+- fixed comment to suggest v7 (instead of v6) in qserdes com v7 and pcs
+  v7 header files, like Dmitry suggested
+- renamed PCS v7 RX_CONFIG to CDR_RESET_TIME, which is the correct name
+- dropped the "_USB" substring from the include guard of phy-qcom-qmp-qserdes-txrx-v7.h
+- reordered the SO_GAIN_RATE_2 offset in the phy-qcom-qmp-qserdes-txrx-v6_20.h 
+- Link to v1: https://lore.kernel.org/r/20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v1-0-d9340d362664@linaro.org
 
-> > Subject: [PATCH v2] platform/mellanox: Add some null/error pointer checks to
-> > mlxbf-pmc.c
-> > 
-> > devm_kasprintf() returns a pointer to dynamically allocated memory which
-> > can be NULL upon failure.
-> > devm_hwmon_device_register_with_groups return a error pointer upon
-> > failure.
-> > 
-> > Compile-tested only.
-> > 
-> > Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox
-> > BlueField PMC driver")
-> > Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > Suggested-by: Vadim Pasternak <vadimp@nvidia.com>
-> > Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> 
-> Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
+---
+Abel Vesa (7):
+      phy: qcom-qmp: qserdes-com: Add some more v6 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add some more v6.20 register offsets
+      phy: qcom-qmp: pcs: Add v7 register offsets
+      phy: qcom-qmp: pcs-usb: Add v7 register offsets
+      phy: qcom-qmp: qserdes-com: Add v7 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add V6 N4 register offsets
+      phy: qcom-qmp: qserdes-txrx: Add v7 register offsets
 
-> >  		attr->dev_attr.attr.name = devm_kasprintf(dev, GFP_KERNEL,
-> >  							  "enable");
-> > +		if (!attr->dev_attr.attr.name)
-> > +			return -ENOMEM;
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-usb-v7.h     | 15 ++++
+ drivers/phy/qualcomm/phy-qcom-qmp-pcs-v7.h         | 28 +++++++
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |  5 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v7.h | 86 ++++++++++++++++++++++
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6.h    |  1 +
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_20.h |  4 +
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_n4.h | 51 +++++++++++++
+ .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h    | 78 ++++++++++++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp.h                |  6 ++
+ 9 files changed, 274 insertions(+)
+---
+base-commit: 629a3b49f3f957e975253c54846090b8d5ed2e9b
+change-id: 20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-5ed528c88f62
 
-> >  	pmc->hwmon_dev = devm_hwmon_device_register_with_groups(
-> >  		dev, "bfperf", pmc, pmc->groups);
-> > +	if (IS_ERR(pmc->hwmon_dev))
-> > +		return PTR_ERR(pmc->hwmon_dev);
-
-Thank you both, applied to review-ilpo and will go into fixes branch once 
-LKP has had its chance to build this.
-
-In the end, I decided to split the devm_kasprintf() and 
-devm_hwmon_device_register_with_groups() changes into separate commits.
-
+Best regards,
 -- 
- i.
+Abel Vesa <abel.vesa@linaro.org>
 
---8323329-1694539297-1701695235=:3149--
