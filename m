@@ -2,58 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BEA802F21
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4CA3802F3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjLDJra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:47:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        id S234750AbjLDJsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbjLDJrZ (ORCPT
+        with ESMTP id S232619AbjLDJsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:47:25 -0500
+        Mon, 4 Dec 2023 04:48:41 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D517100
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:47:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 091F9C433C7;
-        Mon,  4 Dec 2023 09:47:30 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BBA1A6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:48:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C395C433C9;
+        Mon,  4 Dec 2023 09:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701683251;
-        bh=NH8cg+cJw4u4aOtEuZrNuL2Wt2x8+s9YJY7ecsjb6ws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C3cpLYDtpuujRrytU+r+NrUsaHBHcnRvBvd/wD2QIZWlJ0pCHCdE+wMaXeAUqTMbz
-         WzA6BS4CRxyA9k/S91yLilxMmS6zLQesCjvLEPdk+7F1gzVGrxsNtVhaUegSsKLNwW
-         8AbX8f9MQkN/0aWQcyrGY1zsAFqs3z18/puJphsqLeHOsq1hFnnH23D8XktRc0v++K
-         +o9px/Zh6SXyQuDqHGo27ZdlLkonr2DuoF5NcaXvxF6ncD9B7JLqg8QfaF/Wbb4928
-         RHImSJN11QqULHdiBE1XFB3mz3ZGqrrdpEZhBo9wEMe6rImO5p6YQQj54HW/aF8OGf
-         qvCjqbuph1i1g==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1rA5Yg-0000N9-3D;
-        Mon, 04 Dec 2023 10:48:11 +0100
-Date:   Mon, 4 Dec 2023 10:48:10 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: pinctrl: qcom,pmic-mpp: clean up example
-Message-ID: <ZW2gWhzMV0FiB9oM@hovoldconsulting.com>
-References: <20231130172834.12653-1-johan+linaro@kernel.org>
- <20231201144320.GA977713-robh@kernel.org>
- <ZWoQXHnQbJuoxmw0@hovoldconsulting.com>
- <CAL_JsqKh=MG_8TtKap5LvUY-u=KTdGrpb-Sf7MAd1JNqQGue8Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL_JsqKh=MG_8TtKap5LvUY-u=KTdGrpb-Sf7MAd1JNqQGue8Q@mail.gmail.com>
+        s=k20201202; t=1701683326;
+        bh=yNTn+lo9iJFblE8uJSJYW/MDX2kZlMSkXIwtZK0ules=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kG+QczZNv7lU4kl4ZK7CWd/mEtQsYCDOsNX467mpyPrISdLCKF7XBSGugBYGBFN7o
+         WTKQ0JWQWH58dIf8RArZb4eVJqiFUqdbotqDqhMyS2WGAf8fGU05d8Q8h28GiO4mfG
+         NpLMISSU/LlVvu0IusQsli/rqXJ5eVapdqOlAUI8aDNzfdJSZZXuzpeOwyKIK1nAMq
+         FcpnpZE9If7rBodbgIQSg8LF9gd0K2ScJcxdk6LasBYWGHMZHENODaUedTzR2H/QTH
+         tjNS77nKtrAS31w3fLvuZBZ8fSCG4+Km/JKX+MNc3JoTxoEaYRyHhpy56DG8+waM8z
+         Abafdi9zeAaZA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rA5ZD-001AZc-F3;
+        Mon, 04 Dec 2023 09:48:43 +0000
+Date:   Mon, 04 Dec 2023 09:48:43 +0000
+Message-ID: <86o7f6b8n8.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, suzuki.poulose@arm.com, broonie@kernel.org,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Jintack Lim <jintack.lim@linaro.org>,
+        Fuad Tabba <tabba@google.com>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Akihiko Odaki <akihiko.odaki@daynix.com>,
+        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] arm64: KVM: Add iflag for FEAT_TRF
+In-Reply-To: <20231019165510.1966367-4-james.clark@arm.com>
+References: <20231019165510.1966367-1-james.clark@arm.com>
+        <20231019165510.1966367-4-james.clark@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: james.clark@arm.com, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, suzuki.poulose@arm.com, broonie@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mike.leach@linaro.org, leo.yan@linaro.org, alexander.shishkin@linux.intel.com, anshuman.khandual@arm.com, robh@kernel.org, jintack.lim@linaro.org, tabba@google.com, kristina.martsenko@arm.com, akihiko.odaki@daynix.com, joey.gouly@arm.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -64,35 +77,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 01:51:06PM -0600, Rob Herring wrote:
-> On Fri, Dec 1, 2023 at 10:56 AM Johan Hovold <johan@kernel.org> wrote:
-> > On Fri, Dec 01, 2023 at 08:43:20AM -0600, Rob Herring wrote:
-
-> > > This is fine, but I prefer these MFDs have 1 complete example rather
-> > > than piecemeal examples for each child device.
-> >
-> > Yeah, this is not ideal. The closest thing we've got are the examples
-> > in:
-> >
-> >         Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-> >
-> > Are you suggesting eventually dropping the examples from the child node
-> > bindings and adding (several) complete examples in the parent one?
+On Thu, 19 Oct 2023 17:55:01 +0100,
+James Clark <james.clark@arm.com> wrote:
 > 
-> Yes, but if the child nodes are truly reused across multiple PMICs
-> then, it is probably a worthwhile exception. There's not a great deal
-> of reuse on most MFDs.
-
-Yes, they are indeed reused by multiple PMICs in this case.
- 
-> > I guess there would need to be more than one if you want to cover all
-> > the various child nodes with real examples.
+> Add an extra iflag to signify if the TRFCR register is accessible.
+> Because TRBE requires FEAT_TRF, DEBUG_STATE_SAVE_TRBE still has the same
+> behavior even though it's only set when FEAT_TRF is present.
 > 
-> We don't want examples to be exhaustive permutations of every
-> possibility either.
+> The following holes are left in struct kvm_vcpu_arch, but there aren't
+> enough other 8 bit fields to rearrange it to leave any hole smaller than
+> 7 bytes:
+> 
+>   u8                         cflags;               /*  2292     1 */
+>   /* XXX 1 byte hole, try to pack */
+>   u16                        iflags;               /*  2294     2 */
+>   u8                         sflags;               /*  2296     1 */
+>   bool                       pause;                /*  2297     1 */
+>   /* XXX 6 bytes hole, try to pack */
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h |  4 +++-
+>  arch/arm64/kvm/debug.c            | 22 ++++++++++++++++++----
+>  2 files changed, 21 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 7c82927ddaf2..0f0bf8e641bd 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -535,7 +535,7 @@ struct kvm_vcpu_arch {
+>  	u8 cflags;
+>  
+>  	/* Input flags to the hypervisor code, potentially cleared after use */
+> -	u8 iflags;
+> +	u16 iflags;
+>  
+>  	/* State flags for kernel bookkeeping, unused by the hypervisor code */
+>  	u8 sflags;
+> @@ -741,6 +741,8 @@ struct kvm_vcpu_arch {
+>  #define DEBUG_STATE_SAVE_TRBE	__vcpu_single_flag(iflags, BIT(6))
+>  /* vcpu running in HYP context */
+>  #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
+> +/* Save trace filter controls */
+> +#define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
+>  
+>  /* SVE enabled for host EL0 */
+>  #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
+> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+> index 8725291cb00a..20cdd40b3c42 100644
+> --- a/arch/arm64/kvm/debug.c
+> +++ b/arch/arm64/kvm/debug.c
+> @@ -331,14 +331,28 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
+>  	    !(read_sysreg_s(SYS_PMBIDR_EL1) & BIT(PMBIDR_EL1_P_SHIFT)))
+>  		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+>  
+> -	/* Check if we have TRBE implemented and available at the host */
+> -	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
+> -	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
+> -		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+> +	/*
+> +	 * Save TRFCR on nVHE if FEAT_TRF (TraceFilt) exists. This will be
+> +	 * done in cases where use of TRBE doesn't completely disable trace and
+> +	 * handles the exclude_host/exclude_guest rules of the trace session.
 
-Not every possible permutation but I guess we'd want coverage of all the
-various child nodes still (i.e. the child node examples that would have
-been removed).
+This comment provides zero information. What will be done? Under which
+conditions? What are the rules?
 
-Johan
+> +	 */
+> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceFilt_SHIFT)) {
+> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+> +		/*
+> +		 * Check if we have TRBE implemented and available at the host. If it's
+> +		 * in use at the time of guest switch it will need to be disabled and
+> +		 * then restored. The architecture mandates FEAT_TRF with TRBE, so we
+> +		 * only need to check for TRBE after TRF.
+> +		 */
+> +		if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
+> +		    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
+> +			vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
+> +	}
+
+Multiple questions:
+
+- Why is it safe to trust the local CPU's capability rather than the
+  consolidated view from the cpufeature infrastructure?
+
+- Why defer the saving of the registers if there are no changes made
+  to them in the interval?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
