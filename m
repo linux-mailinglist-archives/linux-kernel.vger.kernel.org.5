@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F59B803215
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F15803219
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:04:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbjLDMD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40938 "EHLO
+        id S1343911AbjLDMDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:03:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbjLDMDb (ORCPT
+        with ESMTP id S233053AbjLDMDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 07:03:31 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E38332695
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:02:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1280212F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:02:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701691374; x=1733227374;
+  t=1701691373; x=1733227373;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=a1jjXXoLUFd7zsXOiIKzk39zBd56oD+C0S/M+VltldI=;
-  b=PqHM5yNMWw8OKW8dP7l/i4TESPcrMCJDW+u/GarWbwzmdxiokXwgBCjC
-   toRkDjxiPc3WBApLOFUe1yuxhLSqM1fTQnkqFqCm4WbjBqnNlmqDtXkDa
-   x6t5HeGYxbByjOogV1oNDvwlYJtVDTURGFsOkLmASG0J8b4zI2bnDwGmN
-   gGolGNX++g7HBwuy4LKuwqIOcshL51bhgvovFyjAqFQYDulz1WUiN7MbS
-   WPGpcKQAb1tDx65kDOuC/2MrJpHBhQcOoD9dB+ce3FKfLPZjWDEOz6rK0
-   t86lVUCBP9s+tk8KW6oTYkY/9D8SOMXIzEfsQar+mEwz3kI6AsN8OtK6W
+  bh=AfoyPVRgdnYgARogzQH6MmY+YxG4vVbRFMl7FitYhUk=;
+  b=fQhe5EY/ECdZIM72lJqfDRmnM6cKpIiNiHsorRUcap25YPXJ2j9Bg156
+   q3XoAIoZT59YB3TExjgWv/Xxj1T2iogrL1CGTKjWko8S8j4APYsBbOgrA
+   Il6cklzTmm+wcBeJ4zJ9uf6ss7KYra98MI9UxVr1cOtXlL1oLvNxpKmTJ
+   FJT7+DhE5dXwTlMq9NUs0dOUZ/ED/zxIov16/9Azs3k4PW22DWC+t2rEh
+   UDKwqh6/g6OubxXgK9KEg/0tBmWjp4MuU6R9bQP/2jM5oyBM0gglzjHVk
+   bCEbkiCJ7WtWDhS0tboAvxw5wDPB9uNhHHb3zYKSk8ILzYxM/kNYIhw4p
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="373154191"
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="373154179"
 X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="373154191"
+   d="scan'208";a="373154179"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 04:02:52 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="1017826174"
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="1017826170"
 X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="1017826174"
+   d="scan'208";a="1017826170"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by fmsmga006.fm.intel.com with ESMTP; 04 Dec 2023 04:02:50 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rA7ey-0007iG-2a;
+        id 1rA7ey-0007i4-1e;
         Mon, 04 Dec 2023 12:02:48 +0000
-Date:   Mon, 4 Dec 2023 20:02:31 +0800
+Date:   Mon, 4 Dec 2023 20:02:33 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Frederic Weisbecker <frederic@kernel.org>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
@@ -50,7 +50,7 @@ Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
         Nicolas Saenz Julienne <nsaenzju@redhat.com>
 Subject: kernel/context_tracking.c:80: warning: Function parameter or member
  'state' not described in '__ct_user_enter'
-Message-ID: <202312041910.LfOZgZi8-lkp@intel.com>
+Message-ID: <202312041922.YZCcEPYD-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -72,14 +72,14 @@ tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git maste
 head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
 commit: e67198cc05b8ecbb7b8e2d8ef9fb5c8d26821873 context_tracking: Take idle eqs entrypoints over RCU
 date:   1 year, 5 months ago
-config: x86_64-buildonly-randconfig-004-20230906 (https://download.01.org/0day-ci/archive/20231204/202312041910.LfOZgZi8-lkp@intel.com/config)
+config: x86_64-buildonly-randconfig-006-20230906 (https://download.01.org/0day-ci/archive/20231204/202312041922.YZCcEPYD-lkp@intel.com/config)
 compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231204/202312041910.LfOZgZi8-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231204/202312041922.YZCcEPYD-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312041910.LfOZgZi8-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312041922.YZCcEPYD-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
