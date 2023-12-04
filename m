@@ -2,84 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C040802B9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 07:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E64F6802B9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 07:28:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230255AbjLDGXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 01:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
+        id S230176AbjLDG23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 01:28:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDGXJ (ORCPT
+        with ESMTP id S229446AbjLDG21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 01:23:09 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0139DF;
-        Sun,  3 Dec 2023 22:23:13 -0800 (PST)
-X-UUID: dc1967f88d7547b9bb334034848caa36-20231204
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:f20d8732-0eeb-4bee-8f43-b9fd4762c27a,IP:5,U
-        RL:0,TC:0,Content:0,EDM:-30,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:-40
-X-CID-INFO: VERSION:1.1.33,REQID:f20d8732-0eeb-4bee-8f43-b9fd4762c27a,IP:5,URL
-        :0,TC:0,Content:0,EDM:-30,RT:0,SF:-15,FILE:0,BULK:0,RULE:EDM_GN8D19FE,ACTI
-        ON:release,TS:-40
-X-CID-META: VersionHash:364b77b,CLOUDID:75ba5f73-1bd3-4f48-b671-ada88705968c,B
-        ulkID:231204142249O93CDZ8U,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-        02,TC:nil,Content:0,EDM:2,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: dc1967f88d7547b9bb334034848caa36-20231204
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 559205209; Mon, 04 Dec 2023 14:22:48 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     bhelgaas@google.com, lizhi.hou@amd.com, robh@kernel.org
-Cc:     kunwu.chan@hotmail.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] PCI: Fix null pointer dereference in of_pci_prop_compatible
-Date:   Mon,  4 Dec 2023 14:22:45 +0800
-Message-Id: <20231204062245.2453512-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Mon, 4 Dec 2023 01:28:27 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F24CC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 22:28:32 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50bc22c836bso5462152e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 22:28:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701671311; x=1702276111; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nKeCfLZc7mdf5ttEOE5xpGWsNMCS5nBu7bohK0rYA9k=;
+        b=cxx1r+XXew+5s+HnBUjs9bSZmFf1RrhwwZDVsG1B+j/MITFaoTbHWKgHOhiW3qydkw
+         s8tWVThoy8yct0MUtGo7xf9dTnNaJNzDqfMIBThvpiF1MADlftto1/VQnB9Jg/jN9swv
+         qtbTm3gOL0TojgktRRfmW992C/4HWC0BarWkE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701671311; x=1702276111;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nKeCfLZc7mdf5ttEOE5xpGWsNMCS5nBu7bohK0rYA9k=;
+        b=Ba/CAiLwup3VN1ivAENNN9kS3VEw4hEQKHElYrKj47WQqSSK3owDu7uNSXOkiCQ+Uf
+         ob8IXL9XCqSio4f4HLKsvhr035z177eSHTOrxwSMx3pDNDhmYAjAqlMSozOGW/v2LujM
+         8Hw4BsYuTbv3krypSdDbOe4vJ1OuELFUtf5yrdyPuMqye9x+CxgZD6P/A7OSSo7w5YJq
+         oBVlopqI0EXIyu0sRqTg+drSonlVxnXvQKfNXUnmD7tFBWqcoOS1G/I4HDzoUjKSqKiK
+         C+vkP+Y3Xm54AJF8Wqw1FDMEpFXaKM9AHN+/ZXxu3aQU3omRUx1y4ktc2wiAuWdr99TV
+         QfzQ==
+X-Gm-Message-State: AOJu0Yy8I9a7Br3+hk5qX6Fxr7H0JiGnOy0WhKi/95PO+Rg5MuEsJaQP
+        xyTTSPWIkmLSis7qOT5nKuRxZSN4tQXYuE/SJXzA/g==
+X-Google-Smtp-Source: AGHT+IG95fL6ZmhFrrdBZs1yHZpwJEkMdnWR6Z3TRg/FZYz0mqiHrefYfWV2agXhFMwbCcFaJSeavkE3C7jpb9RAWYc=
+X-Received: by 2002:a05:6512:368f:b0:50b:f88a:dd63 with SMTP id
+ d15-20020a056512368f00b0050bf88add63mr334344lfs.102.1701671311129; Sun, 03
+ Dec 2023 22:28:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+References: <20231128084236.157152-1-wenst@chromium.org> <20231128084236.157152-2-wenst@chromium.org>
+ <CAD=FV=V_v11eZ6+3gUwOvdWGNM9owG7zCK5EiezTY7RJ3eaEMw@mail.gmail.com>
+In-Reply-To: <CAD=FV=V_v11eZ6+3gUwOvdWGNM9owG7zCK5EiezTY7RJ3eaEMw@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 4 Dec 2023 14:28:20 +0800
+Message-ID: <CAGXv+5GiwgF4CJBPT7JucV8qEMY0jLAvT3TqRzvLjCKcVMZ0Mg@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 1/5] of: dynamic: Add of_changeset_update_prop_string
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        chrome-platform@lists.linux.dev, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure.
+On Sat, Dec 2, 2023 at 9:01=E2=80=AFAM Doug Anderson <dianders@chromium.org=
+> wrote:
+>
+> Hi,
+>
+> On Tue, Nov 28, 2023 at 12:45=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org=
+> wrote:
+> >
+> > @@ -1039,3 +1039,50 @@ int of_changeset_add_prop_u32_array(struct of_ch=
+angeset *ocs,
+> >         return ret;
+> >  }
+> >  EXPORT_SYMBOL_GPL(of_changeset_add_prop_u32_array);
+> > +
+> > +static int of_changeset_update_prop_helper(struct of_changeset *ocs,
+> > +                                          struct device_node *np,
+> > +                                          const struct property *pp)
+> > +{
+> > +       struct property *new_pp;
+> > +       int ret;
+> > +
+> > +       new_pp =3D __of_prop_dup(pp, GFP_KERNEL);
+> > +       if (!new_pp)
+> > +               return -ENOMEM;
+> > +
+> > +       ret =3D of_changeset_update_property(ocs, np, new_pp);
+> > +       if (ret) {
+> > +               kfree(new_pp->name);
+> > +               kfree(new_pp->value);
+> > +               kfree(new_pp);
+>
+> Given that this is the 3rd copy of the freeing logic, does it make
+> sense to make __of_prop_free() that's documented to free what was
+> returned by __of_prop_dupe()?
 
-Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/pci/of_property.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Makes sense.  There's also one in property_list_free(). I'll add a patch
+for it.
 
-diff --git a/drivers/pci/of_property.c b/drivers/pci/of_property.c
-index c2c7334152bc..5e16bbff3ba4 100644
---- a/drivers/pci/of_property.c
-+++ b/drivers/pci/of_property.c
-@@ -304,6 +304,11 @@ static int of_pci_prop_compatible(struct pci_dev *pdev,
- 	compat_strs[PROP_COMPAT_PCICLASS_CCSS] =
- 		kasprintf(GFP_KERNEL, "pciclass,%04x", pdev->class >> 8);
- 
-+	if (!compat_strs[PROP_COMPAT_PCI_VVVV_DDDD] ||
-+	    !compat_strs[PROP_COMPAT_PCICLASS_CCSSPP] ||
-+	    !compat_strs[PROP_COMPAT_PCICLASS_CCSS])
-+		return -ENOMEM;
-+
- 	ret = of_changeset_add_prop_string_array(ocs, np, "compatible",
- 						 compat_strs, PROP_COMPAT_NUM);
- 	for (i = 0; i < PROP_COMPAT_NUM; i++)
--- 
-2.34.1
-
+ChenYu
