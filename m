@@ -2,217 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8FD80386E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F334A803870
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233727AbjLDPOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33754 "EHLO
+        id S234045AbjLDPPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:15:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbjLDPOL (ORCPT
+        with ESMTP id S231594AbjLDPPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:14:11 -0500
-Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 372C8B2
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:14:16 -0800 (PST)
-Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
-        by mx07-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B4CVdxb002904;
-        Mon, 4 Dec 2023 15:14:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-        from:to:cc:subject:date:message-id:content-transfer-encoding
-        :content-type:mime-version; s=dk201812; bh=I7bGQIm5CVXfDI/YejAY4
-        qETZDC23MLl6vYwVDhYLgc=; b=uKVPhxxlJa68DakiiOLVI/mjvhGWBh7Oeru9J
-        AZC/dDuiWgOuGEcFJ+txk9CDwjBt4GH2yUhhJKBZPTVIk8xi9UAsRJ3Wee3GXy0P
-        YJeLqpJNTxJE7EpIo4q4WpR+CFRPbQPwivSrQKUZoMNUIIvjqoGhj4l1nPaX2M8B
-        J2SbUFvifCLwrRNKwcdNVf+Ra9prI42G8y97dJoiMt9dGz/x/7dU6N6a1EF8akCr
-        DKxAgzWnYaPmXqR7mdKoRuRfOVG5neEr9scMR8a3oc6WuRE6nJzMFMNz4RV0dluS
-        XRebvJfRcM8FGlszKocHlfqIx+ydyrIzq5k0R96lPZUINQR2Q==
-Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
-        by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3uqwhw9ja0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 04 Dec 2023 15:13:59 +0000 (GMT)
-Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
- HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 15:13:59 +0000
-Received: from GBR01-CWX-obe.outbound.protection.outlook.com (104.47.85.41) by
- email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Mon, 4 Dec 2023 15:13:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CmCgN8se91dFtALHve586D0sV7BCXY3eKNUiusZqb0e+AKeeFQmSua3DWsPn+fVD84DCBBYAQjBCTLmMkX5LB67yuixzEgXzz6lnpPedtnGySKps8SBB3vtTcg0KgNH1DdNMpaV1hdAhEmF6fOy1hAQLpqfeg3tg2ef4+rtatYGoz2UE0DqqLZpX6+TdWdJq/k/JA7vWm0CWftC/m299bLB9zE+IeRJm4GoOUZCQk3uwQGEOeIXJOz4um8P/8iGRkyI0qFqwdHAPOTxvZCBxyxbhSpdRr7xD83Rosweu80BeMKCb9E7k+238mgfMMjutakpgm3F2KX7fKonjUlwOmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I7bGQIm5CVXfDI/YejAY4qETZDC23MLl6vYwVDhYLgc=;
- b=D7kpYkiC/Yy/GwvD0jv7BYNzKbgfj8Y78OgciGLxMC/hWeoTqs7j5CixOp+OnC/oEwyfvwQW4PxjQyQBjZtJxvAkM3e/ERq+T4YAU5CiilF/7MlzRopzy84OVP84k2roKSRelOuYXgdRxZw+fJaqJeW1F1NulAi7qUkihqRoQUCC6tx4Fy9duFC+4UfX1LAQFZM2rmOUi34CWQOmxIwH+VqrBgt8E2rAajD0E535BCIuX7Fi0rUwJEqvSe8AX1LgfO632oD7mAQf0Z733Vzx2GmbdBTXsowsLEXx7VxJ5ZUMcYWgHpDeRMlanlXg/y9vPi1WROoUDkDUBpe+uZr7lQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I7bGQIm5CVXfDI/YejAY4qETZDC23MLl6vYwVDhYLgc=;
- b=i2xZ4H61cfoouDU3hgNqBqojcj500VMXGwtFOCe3MpLNQXPYuuBrJaCiPrCl+B15SQIrLIiJuTNMzxgorx9iu9JgIbktyP8g8jb0suhhEIyKMZUfD7ZbSLI3hIbY5VEtBx/Gg07mC//k9nFKS01H261rG7JzNQoLAJA/HMkPCKE=
-Received: from CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1a0::8)
- by LO2P265MB2608.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:143::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 15:13:57 +0000
-Received: from CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a85a:76f7:c085:2b34]) by CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a85a:76f7:c085:2b34%3]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 15:13:57 +0000
-From:   Donald Robson <donald.robson@imgtec.com>
-To:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
-        <matt.coster@imgtec.com>, <maarten.lankhorst@linux.intel.com>,
-        <mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
-        <daniel@ffwll.ch>, kernel test robot <lkp@intel.com>
-Subject: [PATCH v2] drm/imagination: Removed unused functions in pvr_fw_trace
-Date:   Mon,  4 Dec 2023 15:13:37 +0000
-Message-Id: <20231204151337.60930-1-donald.robson@imgtec.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO2P123CA0032.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600::20)
- To CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1a0::8)
+        Mon, 4 Dec 2023 10:15:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FCEB2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:15:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08FE8C433C7;
+        Mon,  4 Dec 2023 15:15:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701702923;
+        bh=BOM1EV4bba9ClKDdr+6k5WZ62Teyd2Rgs3hahYp9izU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LUQ/JInBnw5u1yUBx5xwlGXP3zGOWSnHAHgjcjOFSt2LaTNvH/Wv1HGtE/A1I5xvG
+         IPZolxBQTkEFTyh2zuOtZC1SqLsPRS6dhNeW+DQ0OXzdAxSozQx7bEoNyPgZkBD68z
+         hjki1mfO12qJWC5nqLDwwztW6ippl+hpJvIXSEBlt0GHp/FhmpB+VIe9N1O7mp9BEV
+         pek0XoAOUGO9VlpSWNvLWrNnlHuY5F2fhTuvdFhtpbFbdVCE9QZxdkkS3zV93eUgD9
+         no6gIb5Km2xfKFp39bJqSfpOJVO0rRwPY4Q5Esyq5Bbn2dej/uybaU2mblNjKer9w7
+         XjuCRgMGdQMvg==
+Date:   Mon, 4 Dec 2023 15:15:14 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
+Cc:     David Lechner <dlechner@baylibre.com>, nuno.sa@analog.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: Re: [PATCH 04/12] iio: adc: ad9467: fix reset gpio handling
+Message-ID: <20231204151514.4e2c8ada@jic23-huawei>
+In-Reply-To: <3925cb4b6453644c889675c20329b3477a06fcd5.camel@gmail.com>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+        <20231121-dev-iio-backend-v1-4-6a3d542eba35@analog.com>
+        <CAMknhBGCqnzCp6vQ+59Z-SybScvbtU7aWdAD6KnP1e6=q60gVQ@mail.gmail.com>
+        <d534c3323c32d4ed2aedae19a9f101be90ef0cc7.camel@gmail.com>
+        <CAMknhBGjm2ja9HOenOWi9O5Ao8qUg=gT=_Vz8CyxQ=pfNX2EJQ@mail.gmail.com>
+        <3925cb4b6453644c889675c20329b3477a06fcd5.camel@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CWLP265MB5770:EE_|LO2P265MB2608:EE_
-X-MS-Office365-Filtering-Correlation-Id: a435fa6e-8af4-48fb-2489-08dbf4dba2f4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3jm/wWyANElYGZIWtAmnMB9/DOMKZUo18FiJY/QqshY923o0pGSW+OdQIM6Mo9BRK+4+RIdjWb8Azd0ZKStQ4c52SySlcZkzJhB6F4eCLzZOdx1bF/BXrp9TKLpitfoqqMZ4E4aXqWTy6fYHgSraUR8qm8hm/jfyTncg8K+BdwmKr4nD5uHH5z0D2fsyv3lQ+IXk8TNuwYVZC5Cnb370Aej4ANrh46T8ROyN/OHTKTiEeSp2G5sDSqIAf3J/AbrlX36dxcePbinz5DbaLDRVY/ewNfUVioLJYCKp8wgQg+H1tdqa1fSohtwNy1LHdO2WfnQAHm+1r/BX2dF3kjNrvz4UvS2AQBw13EdWzU/+q45SJN45CpLbQSw1XpwJei29yd8FqhutG2YyJezxYpA8R0KCs4MxxnNUhzqyosw5i7wB+ZXdDQfuaKDqnXVVzDV7SSRT8r7XVxX+YrBIB24RBd7KYi8XQi7uOhhUbRKpzncEsuSEsUm0a8jjPP80y9uvtNF2F0231YuoIWm1+2R5C8Miu3hPYV/bm51nQEXEDbdetw8OnM9OsmWDz8q1kAZ5J8zJSEFtBn2HNbzKwvIXc0Rn/9aHsczBZcBKUk0MZwQDaiSMIlG0dwqbJOnjYW2uYFoa11Jc05XHkQezJylNVw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39850400004)(376002)(366004)(136003)(230922051799003)(230273577357003)(230173577357003)(64100799003)(1800799012)(451199024)(186009)(2616005)(44832011)(8936002)(8676002)(86362001)(83380400001)(38100700002)(52116002)(6506007)(6512007)(26005)(1076003)(6666004)(478600001)(966005)(6486002)(316002)(66556008)(66946007)(66476007)(2906002)(38350700005)(36756003)(41300700001)(4326008)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/690LToo1Lw7vdRLDM3pwsKmAhTZhc2dQ6FFDKhaemT1L5y9MLCrWR+2gwn1?=
- =?us-ascii?Q?Z+x6T2knpznA0BYRmWMFtdRXlkdGe0KapglMdlvUC9irMWR1W+hxXeDlxdZC?=
- =?us-ascii?Q?2n1sc4NubaoSH/Xl7GiRCjARB9VlXT4+cKTKT4qx2Mlf5WdeXM6NRvmC2zA4?=
- =?us-ascii?Q?q7O0CUMWxhkcMVdK7JqvtuqxFrUYY6Mk4+0dlChN0zBTF5Qh/PiMObCvZr/b?=
- =?us-ascii?Q?FCRsukU8OqBSPVVLeA8qddqov97GZuFt3cX+wBhOeBqvfqSweVjcGashiuHN?=
- =?us-ascii?Q?V9wNEvvKUqvI7Pwh6xd2fhuUoboxEpHNFqCB8276gy7NqFvU3e8dX7b2T5yq?=
- =?us-ascii?Q?EchPBdtz9y9s8DtO6QkD6f73zZFY4frOEHUA0vSmggiW5G3N6QO9d45otF+p?=
- =?us-ascii?Q?eubq5LMslBAj9KUm8Yi24n4RxaUobqCGB5PkXryVhV6B+kfBPqXGMxLNhMv5?=
- =?us-ascii?Q?oa+evU88vOkCc3BDPkSjy7hnLYE6GqfdflcGWOHiw0XY+1+R9GmY3nywg3z4?=
- =?us-ascii?Q?35Fbd5QYPhCFvFTDrK5YeMdm7ZfMdW96/EWIQpkTqLojodGe0eIxwWFXjGij?=
- =?us-ascii?Q?CZwHLcd6ase7ROkLxvtsslLJ2vk+4bVBPvtzrtLQK2NtYKhU9kErMpp6pva2?=
- =?us-ascii?Q?M3DLFWzJvNagC5uZPQuN0YhyFGWBqxyXdAl55hWgrePyMDCiGGq9hJsu5P46?=
- =?us-ascii?Q?2pzIPw4qshFkHoa2aOGTPT11bw3MNBZV38Rdv35AoRUXvIXi5tgyyRAngFzj?=
- =?us-ascii?Q?ZYCSCNIr59BzhI7IkdIlRh/B7bpln/5GIDWHt6ILofe0qy8AK90hB5rHimmF?=
- =?us-ascii?Q?zHisVbl/UcL5gS8QfprKkZKRK+fl0SurIkVveEC9h0PdbcqqrBLLyT+LOTg0?=
- =?us-ascii?Q?5ISt5EeypYcOzxyk1McyTnJ45iifRr5xM4N+fI2MpT42S2omx9rFew7QqH2D?=
- =?us-ascii?Q?tKa5oeiCV1X8Gp23M+SZ3BrHN95+iE3J0Q729qqM8C9weyBl7NJOAD2744gQ?=
- =?us-ascii?Q?X7ux6voJs/sSkVWqzDzsNhdSO9Vn/dCvl8cBB+viT/rj0h3Jwn1HHqwZnjmw?=
- =?us-ascii?Q?9ckvHcJPhYtm9NgEgSsA6BekE2NF5pgGy5Nghn5tbBtZhVOGKZ3474yobtqW?=
- =?us-ascii?Q?nX4VOAPKI0+D6hZ03Iw6ZUZMCWEjBITRo9ZTemO+xaW1qxqdO+Xdlw8ArDxq?=
- =?us-ascii?Q?dSRPz/B7Lkg4voGTpIeAGQAd6Y0MYO+QC6zRpKzRpWj9ro5PC9ssJaa3IZ4v?=
- =?us-ascii?Q?3WbP4MSCYBIAqNp3H+9tTwffHXYHFn1MfUPZB1R/hsScWC0O2n9QXqV+QqF+?=
- =?us-ascii?Q?wDCV+WJW0rbsD8SGhkNh6VjnXiv9J5tk7O4KzClWrhPrT3PSxXJPzjowIkhJ?=
- =?us-ascii?Q?H7sjI3cNSWfGF+NUiTYhpdigCvKwzJQNu8tnzwkrlUG2enVKjaMYbWDJ1xpr?=
- =?us-ascii?Q?49/9SL9eeiX/UV4QOkEBwmon6VOAEpMeYoOYtXPwJgDeFP7aBIyW+mZGHHFV?=
- =?us-ascii?Q?3581YxaISz2IdDR910/0B3VQJ2JcUMx4XD1rgUVqW29EgImEZlwPm/ZIrIEB?=
- =?us-ascii?Q?Jx74OA4+U10lp+afZQCAER9KZLQyhiU6VG2emSYxo2ZbXmKdzYoIemFnZKyy?=
- =?us-ascii?Q?nw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a435fa6e-8af4-48fb-2489-08dbf4dba2f4
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 15:13:57.3287
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i5/07CLrGB8pULOzt7SSZ+HzMoKk5QPR4/YuLxDhbid3YZdQx2LvJ+UshD2EjHwl6sQ9j5QvaJtObWf6BCkTUbB4BmzApUnV6gun5CHdPTs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO2P265MB2608
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-GUID: 9c3CLMFPJ51CC12F8vMsdi_OFi_SJwVS
-X-Proofpoint-ORIG-GUID: 9c3CLMFPJ51CC12F8vMsdi_OFi_SJwVS
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixing the warning below due to an unused file level vtable. Removing
-only this causes additional warnings for the now unused functions, so
-I've removed those too.
+On Sat, 02 Dec 2023 09:36:47 +0100
+Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
 
->> drivers/gpu/drm/imagination/pvr_fw_trace.c:205:37: warning: 'pvr_fw_trace_group_mask_fops' defined but not used [-Wunused-const-variable=]
-     205 | static const struct file_operations pvr_fw_trace_group_mask_fops = {
-         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> On Fri, 2023-12-01 at 11:01 -0600, David Lechner wrote:
+> > On Fri, Dec 1, 2023 at 2:47=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.=
+com> wrote: =20
+> > >=20
+> > > On Thu, 2023-11-30 at 15:41 -0600, David Lechner wrote: =20
+> > > > On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
+> > > > <devnull+nuno.sa.analog.com@kernel.org> wrote: =20
+> > > > >=20
+> > > > > From: Nuno Sa <nuno.sa@analog.com>
+> > > > >=20
+> > > > > The reset gpio was being requested with GPIOD_OUT_LOW which means=
+, not
+> > > > > asserted. Then it was being asserted but never de-asserted which =
+means
+> > > > > the devices was left in reset. Fix it by de-asserting the gpio. =
+=20
+> > > >=20
+> > > > It could be helpful to update the devicetree bindings to state the
+> > > > expected active-high or active-low setting for this gpio so it is
+> > > > clear which state means asserted.
+> > > >  =20
+> > >=20
+> > > You could state that the chip is active low but I don't see that chan=
+ge that
+> > > important for now. Not sure if this is clear and maybe that's why you=
+r comment.
+> > > GPIOD_OUT_HIGH has nothing to do with active high or low. It just mea=
+ns, "get me
+> > > the
+> > > pin in the asserted state".
+> > >  =20
+> >=20
+> > I would assume that this bug happened in the first place because
+> > someone forgot GPIOD_OUT_LOW in the devicetree when they were
+> > developing the driver. So this is why I suggested that updating the
+> > devicetree binding docs so that future users are less likely to make
+> > the same mistake. Currently, the bindings don't even have reset-gpios
+> > in the examples. =20
+>=20
+> Hmm, I think you're missing the point... The bug has nothing to do with d=
+evicetree.
+> This is what was happening:
+>=20
+> 1) We were calling devm_gpiod_get_optional() with GPIOD_OUT_LOW. What thi=
+s means is
+> that you get an output gpio deasserted. Hence the device is out of reset.=
+ And here is
+> the important part... what you have in dts does not matter. If you have a=
+ctive low,
+> it means the pin level will be 1. If you have high, the pin level is 0. A=
+nd this is
+> all handled by gpiolib for you.=20
+>=20
+> 2) Then, we called gpiod_direction_output(..., 1), which means set the di=
+rection out
+> (which is actually not needed since it was already done when getting the =
+pin) and
+> assert the pin. Hence, reset the device. And we were never de-asserting t=
+he pin so
+> the device would be left in reset.
 
-Changes since v1:
-- Corrected hash in Fixes tag.
+Functionally I believe David is correct.   Flipping the DT would 'fix' this.
+It's all down to a nreset vs reset pin description.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311302054.MVYPxFCE-lkp@intel.com/
-Fixes: cb56cd610866 ("drm/imagination: Add firmware trace to debugfs")
-Signed-off-by: Donald Robson <donald.robson@imgtec.com>
----
- drivers/gpu/drm/imagination/pvr_fw_trace.c | 44 ----------------------
- 1 file changed, 44 deletions(-)
+In this case I guess it's defined a a 'not reset' on the datasheet which is=
+ what
+is causing the confusion.  It's not uncommon for people to refer to a reset=
+ when
+they mean a "not reset" with assumptions on polarity to match.
 
-diff --git a/drivers/gpu/drm/imagination/pvr_fw_trace.c b/drivers/gpu/drm/imagination/pvr_fw_trace.c
-index 87a42fb6ace6..30f41a10a0cf 100644
---- a/drivers/gpu/drm/imagination/pvr_fw_trace.c
-+++ b/drivers/gpu/drm/imagination/pvr_fw_trace.c
-@@ -167,50 +167,6 @@ update_logtype(struct pvr_device *pvr_dev, u32 group_mask)
- 
- #if defined(CONFIG_DEBUG_FS)
- 
--static int fw_trace_group_mask_show(struct seq_file *m, void *data)
--{
--	struct pvr_device *pvr_dev = m->private;
--
--	seq_printf(m, "%08x\n", pvr_dev->fw_dev.fw_trace.group_mask);
--
--	return 0;
--}
--
--static int fw_trace_group_mask_open(struct inode *inode, struct file *file)
--{
--	return single_open(file, fw_trace_group_mask_show, inode->i_private);
--}
--
--static ssize_t fw_trace_group_mask_write(struct file *file, const char __user *ubuf, size_t len,
--					 loff_t *offp)
--{
--	struct seq_file *m = file->private_data;
--	struct pvr_device *pvr_dev = m->private;
--	u32 new_group_mask;
--	int err;
--
--	err = kstrtouint_from_user(ubuf, len, 0, &new_group_mask);
--	if (err)
--		return err;
--
--	err = update_logtype(pvr_dev, new_group_mask);
--	if (err)
--		return err;
--
--	pvr_dev->fw_dev.fw_trace.group_mask = new_group_mask;
--
--	return (ssize_t)len;
--}
--
--static const struct file_operations pvr_fw_trace_group_mask_fops = {
--	.owner = THIS_MODULE,
--	.open = fw_trace_group_mask_open,
--	.read = seq_read,
--	.write = fw_trace_group_mask_write,
--	.llseek = default_llseek,
--	.release = single_release,
--};
--
- struct pvr_fw_trace_seq_data {
- 	/** @buffer: Pointer to copy of trace data. */
- 	u32 *buffer;
--- 
-2.25.1
+Jonathan
+
+
+
+>=20
+> - Nuno S=C3=A1
 
