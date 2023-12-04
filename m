@@ -2,63 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 331528035AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8E18035B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234041AbjLDN5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:57:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
+        id S1344843AbjLDN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:58:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDN5J (ORCPT
+        with ESMTP id S229711AbjLDN6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:57:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9014390
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:57:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2C03C433C8;
-        Mon,  4 Dec 2023 13:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701698236;
-        bh=P61qJT7k6TtCOcd2ljpk3rt4h0DdkrkYLDxklJ+6th4=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=kFy3SNdFk/IecCWU/k9jrIllvNd4aYD8qAEhXYvdFJJ4lXo1METiaJvuddcv96/zB
-         ZIHdJxRQSXQpnJzB4JuANAyxZIXNN05m+FlUJva4Y2FqTXq07Wu0SLYqi+Cq7UWd9p
-         /xutoEFpB7pORUXVaFLJaq30WM+4xG7c/fqk1o98f2d96ZGNbUgGMW9aDseiPCnx9U
-         jRYbPPvch+KEkFnbH0kAb4ukvE8EjQR2fzYF3XwUr9teB6TIA+rXb6r0zxOdJSuP8T
-         DMjqk9enOL+klccrAWdXtjO6A+Xul2Mb0tiQ23Oepcgg5zWYWpRMKC+YNuQvGQhx6X
-         m2p7SxIgeUQUQ==
-From:   Maxime Ripard <mripard@kernel.org>
-To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Frank Binns <frank.binns@imgtec.com>
-Cc:     donald.robson@imgtec.com, matt.coster@imgtec.com
-In-Reply-To: <20231204132847.1307340-1-frank.binns@imgtec.com>
-References: <20231204132847.1307340-1-frank.binns@imgtec.com>
-Subject: Re: (subset) [PATCH] MAINTAINERS: Document Imagination PowerVR
- driver patches go via drm-misc
-Message-Id: <170169823361.9852.12738363315803901923.b4-ty@kernel.org>
-Date:   Mon, 04 Dec 2023 14:57:13 +0100
+        Mon, 4 Dec 2023 08:58:30 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7A290;
+        Mon,  4 Dec 2023 05:58:36 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SkQHW2JSrz4f3jXf;
+        Mon,  4 Dec 2023 21:58:31 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 78A831A0195;
+        Mon,  4 Dec 2023 21:58:33 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgDn6xEH221loLjkCg--.26902S4;
+        Mon, 04 Dec 2023 21:58:33 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org, xni@redhat.com, yukuai3@huawei.com, neilb@suse.com
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH v4 md-fixes 0/3] md: fix stopping sync thread
+Date:   Mon,  4 Dec 2023 21:57:29 +0800
+Message-Id: <20231204135732.3647886-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgDn6xEH221loLjkCg--.26902S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5_7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2js
+        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
+        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
+        CFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Dec 2023 13:28:47 +0000, Frank Binns wrote:
-> This is the tree used by nearly all other DRM drivers, so use it for the
-> PowerVR driver as well.
-> 
-> 
+From: Yu Kuai <yukuai3@huawei.com>
 
-Applied to drm/drm-misc (drm-misc-next).
+Changes in v4:
+ - add fix tag in patch 2;
+ - rework patch 3, as suggested by Song Liu;
 
-Thanks!
-Maxime
+Changes in v3:
+- split bugfix patches for md-fixes
+
+Changes in v2:
+ - add patch 2;
+ - split some patches from v1 that will be sent separately;
+ - rework some commit message;
+ - rework patch 5;
+
+Yu Kuai (3):
+  md: fix missing flush of sync_work
+  md: don't leave 'MD_RECOVERY_FROZEN' in error path of
+    md_set_readonly()
+  md: fix stopping sync thread
+
+ drivers/md/md.c | 112 +++++++++++++++++++++---------------------------
+ 1 file changed, 50 insertions(+), 62 deletions(-)
+
+-- 
+2.39.2
 
