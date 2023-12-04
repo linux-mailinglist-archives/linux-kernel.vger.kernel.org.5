@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA8C8036CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:33:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7528036D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345222AbjLDOdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:33:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
+        id S235883AbjLDOdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:33:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbjLDOc4 (ORCPT
+        with ESMTP id S235845AbjLDOdB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:32:56 -0500
+        Mon, 4 Dec 2023 09:33:01 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46A526B9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:32:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DE00C433C7;
-        Mon,  4 Dec 2023 14:32:00 +0000 (UTC)
-Message-ID: <e643956e-2bcc-4d58-aa10-8e71fc4b9f10@xs4all.nl>
-Date:   Mon, 4 Dec 2023 15:31:59 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927292D63
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:32:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B4DDC433C7;
+        Mon,  4 Dec 2023 14:32:28 +0000 (UTC)
+Message-ID: <45420f0c-57c8-4ec9-add6-943de53c1604@xs4all.nl>
+Date:   Mon, 4 Dec 2023 15:32:28 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 13/36] media: ti: j721e-csi2rx: Remove useless setting
- of min_buffers_needed
+Subject: Re: [PATCH v2 14/36] media: ti: omap: Remove useless setting of
+ min_buffers_needed
 Content-Language: en-US, nl
 To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
         mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         matt.ranostay@konsulko.com
 Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, kernel@collabora.com,
-        Jai Luthra <j-luthra@ti.com>
+        linux-staging@lists.linux.dev, kernel@collabora.com
 References: <20231204132323.22811-1-benjamin.gaignard@collabora.com>
- <20231204132323.22811-14-benjamin.gaignard@collabora.com>
+ <20231204132323.22811-15-benjamin.gaignard@collabora.com>
 From:   Hans Verkuil <hverkuil@xs4all.nl>
 Autocrypt: addr=hverkuil@xs4all.nl; keydata=
  xsFNBFQ84W0BEAC7EF1iL4s3tY8cRTVkJT/297h0Hz0ypA+ByVM4CdU9sN6ua/YoFlr9k0K4
@@ -76,7 +75,7 @@ Autocrypt: addr=hverkuil@xs4all.nl; keydata=
  gYmkrmv0duG1FStpY+IIQn1TOkuXrciTVfZY1cZD0aVxwlxXBnUNZZNslldvXFtndxR0SFat
  sflovhDxKyhFwXOP0Rv8H378/+14TaykknRBIKEc0+lcr+EMOSUR5eg4aURb8Gc3Uc7fgQ6q
  UssTXzHPyj1hAyDpfu8DzAwlh4kKFTodxSsKAjI45SLjadSc94/5Gy8645Y1KgBzBPTH7Q==
-In-Reply-To: <20231204132323.22811-14-benjamin.gaignard@collabora.com>
+In-Reply-To: <20231204132323.22811-15-benjamin.gaignard@collabora.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
@@ -96,23 +95,22 @@ On 04/12/2023 14:23, Benjamin Gaignard wrote:
 > Just drop this unnecessary restriction.
 > 
 > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Jai Luthra <j-luthra@ti.com>
 > ---
->  drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c | 1 -
+>  drivers/media/platform/ti/omap/omap_vout.c | 1 -
 >  1 file changed, 1 deletion(-)
 > 
-> diff --git a/drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c b/drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c
-> index ada61391c8d2..1e5f68f50afb 100644
-> --- a/drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c
-> +++ b/drivers/media/platform/ti/j721e-csi2rx/j721e-csi2rx.c
-> @@ -873,7 +873,6 @@ static int ti_csi2rx_init_vb2q(struct ti_csi2rx_dev *csi)
->  	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
->  	q->dev = dmaengine_get_dma_device(csi->dma.chan);
->  	q->lock = &csi->mutex;
-> -	q->min_buffers_needed = 1;
+> diff --git a/drivers/media/platform/ti/omap/omap_vout.c b/drivers/media/platform/ti/omap/omap_vout.c
+> index 72ce903717d3..f67a45f1441b 100644
+> --- a/drivers/media/platform/ti/omap/omap_vout.c
+> +++ b/drivers/media/platform/ti/omap/omap_vout.c
+> @@ -1404,7 +1404,6 @@ static int __init omap_vout_setup_video_data(struct omap_vout_device *vout)
+>  	vq->ops = &omap_vout_vb2_ops;
+>  	vq->mem_ops = &vb2_dma_contig_memops;
+>  	vq->lock = &vout->lock;
+> -	vq->min_buffers_needed = 1;
+>  	vfd->queue = vq;
 >  
->  	ret = vb2_queue_init(q);
->  	if (ret)
+>  	ret = vb2_queue_init(vq);
 
 Drop this patch, this is needed.
 
