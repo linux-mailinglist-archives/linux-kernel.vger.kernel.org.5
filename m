@@ -2,159 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3EB803A99
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2C1803AB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbjLDQnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45096 "EHLO
+        id S230490AbjLDQrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLDQnL (ORCPT
+        with ESMTP id S234825AbjLDQrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:43:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8999B
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:43:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98168C433C8;
-        Mon,  4 Dec 2023 16:43:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701708197;
-        bh=V1mySgUnMOQnDd2cfqMCPNmlYJkptWErl3Ep+QPr+jA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SfI4RaXSCgrisms7dzOtmSTKBnyjNFvVG8yGYptKwmhvyhEMWzt2DKdqIPf2suEYr
-         ewLN21bwOqvfVP2/g5MTRXiHsr9pafzqDYiH7yhYMHdeIZjHnTV1CY24Ln4rHkdHka
-         3p0rHkF94o7Qyad+nPmDNLDFK+MiH9Wh5hNsTjKyy5SzNOn3IJ12j5tM7jrV0+kEDJ
-         BUiPXJAhCzWEkZhV0VOFPmThXVTMRA/GX/C7SYHbHxnQgLYGp5Qxrcj8t9o3xAirbq
-         OohmweG7pUkOSm2XsX+nt9X/HIV2E3xWy7MOqNXAx1N8rpOSve74Kr/mdC8x8JRJ4F
-         GcWqMza3Sbq+Q==
-Date:   Mon, 4 Dec 2023 08:46:39 -0800
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
-Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@quicinc.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] pinctrl: Add lock to ensure the state atomization
-Message-ID: <wmpsnz3lhqsqglwkbr5ohrywqeufrjmtobhnprvf4o6iarc5x6@6jeuqck4n2nc>
-References: <20231201152931.31161-1-quic_aiquny@quicinc.com>
- <6jlui5h7d2rs37sdvvwmii55mwhm5dzfo2m62hwt53mkx4z32a@aw5kcghe4bik>
- <4d85fda9-6e00-4bb4-b8a8-85c5e66635bf@quicinc.com>
+        Mon, 4 Dec 2023 11:47:03 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E524182
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:47:05 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a19ce1404e1so445461466b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701708421; x=1702313221; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FveOruljDBZv6z+kbcKooVAiVbTn3vv2Y/JHOYB/pNg=;
+        b=UMWrlhdYGSNF03IpWJYP3no39/8MWucHcIrUkKLOaZwlYZpc5nzGL2rlrxrTBplEaL
+         zQGPGT0ZbKJyfDhAb/QW/V9kmyrfJBG/YcyzcefenWr5yS351dCge4MUOXsqSnPgBfGW
+         6K+zRYLCG93YutSMl3CKiaLCmt9N5645ZlE5Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701708421; x=1702313221;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FveOruljDBZv6z+kbcKooVAiVbTn3vv2Y/JHOYB/pNg=;
+        b=HBM9D0YO4v3MfN4BU93UB7GXs0Ww07iE4GlJHaCaVgt3YDAxgSfV7n/fZ1gMhABF7a
+         LM7jgsfia2kdlwCXEBmMWxR0lP+UtirLreaaws76kX/OJM3eQlhGsNxA70PZDmHz5X5o
+         Efyol6jAOwAYO5MzsE1eR5Hzlzjy/xOhuYsgctGsGyFdnbBn2ezKBdU61WKOR+280cMK
+         ZBKHslIXxNTg22pqsXdNtDUdDDhFaIWLlpJeFmzwkVMe0V5kMF9gn3Q6Xkzw0ZnPHbv9
+         Cqba7FDyLBa4pYKvsAyy5tbxtI8xTiXnQsiCHZCWC0jKVdrus5G4grjLcgtekaP26xhN
+         jiEA==
+X-Gm-Message-State: AOJu0YxTf8G1w8bgeCFOXzVxyrZV2a6wJfJ0Sr/o41JJpW8up4cAMtBC
+        rKxFUq0nT/NACgaVt2y7o1n/6QnzwMAviwZu7vNrtUVF
+X-Google-Smtp-Source: AGHT+IFrWBu/WBm8vdFwVoIf0Q/PWEpOqDLyK29JMhL13qbCfqM0mgcBDqearNgdB8HPqmXj9cCThQ==
+X-Received: by 2002:a17:906:3488:b0:a19:a1ba:da71 with SMTP id g8-20020a170906348800b00a19a1bada71mr3594063ejb.152.1701708421262;
+        Mon, 04 Dec 2023 08:47:01 -0800 (PST)
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com. [209.85.128.44])
+        by smtp.gmail.com with ESMTPSA id a7-20020a1709062b0700b009fc8f309183sm5479147ejg.51.2023.12.04.08.47.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 08:47:00 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so100655e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:47:00 -0800 (PST)
+X-Received: by 2002:a05:600c:257:b0:40b:4228:ee9a with SMTP id
+ 23-20020a05600c025700b0040b4228ee9amr482510wmj.0.1701708419762; Mon, 04 Dec
+ 2023 08:46:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4d85fda9-6e00-4bb4-b8a8-85c5e66635bf@quicinc.com>
+References: <20231201-x1e80100-drm-panel-edp-v2-1-b0173484631a@linaro.org>
+In-Reply-To: <20231201-x1e80100-drm-panel-edp-v2-1-b0173484631a@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 4 Dec 2023 08:46:44 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Wx_W-Jspx4S4k-Jze8eBm5zGanzqt0-fWjYZhHB_=1qQ@mail.gmail.com>
+Message-ID: <CAD=FV=Wx_W-Jspx4S4k-Jze8eBm5zGanzqt0-fWjYZhHB_=1qQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/panel-edp: Add SDC ATNA45AF01
+To:     Abel Vesa <abel.vesa@linaro.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 05:57:42PM +0800, Aiqun(Maria) Yu wrote:
-> On 12/2/2023 4:39 AM, Bjorn Andersson wrote:
-> > On Fri, Dec 01, 2023 at 11:29:31PM +0800, Maria Yu wrote:
-> > > Currently pinctrl_select_state is an export symbol and don't have
-> > > effective re-entrance protect design. And possible of pinctrl state
-> > > changed during pinctrl_commit_state handling. Add per pinctrl lock to
-> > > ensure the old state and new state transition atomization.
-> > > Move dev error print message right before old_state pinctrl_select_state
-> > > and out of lock protection to avoid console related driver call
-> > > pinctrl_select_state recursively.
-> > 
-> > I'm uncertain about the validity of having client code call this api in
-> > a racy manner. I'm likely just missing something here... It would be
-> > nice if this scenario was described in a little bit more detail.
-> Hi Bjorn,
-> 
-> we've got a customer dump that the real racy happened, and the system
-> frequently have printk message like:
->   "not freeing pin xx (xxx) as part of deactivating group xxx - it is
-> already used for some other setting".
-> Finally the system crashed after the flood log.
-> 
+Hi,
 
-Sounds like we have a valid issue, but let's make sure that we
-describe the problem on its technical grounds in the commit that is
-upstreamed - if nothing else, so that others can determine if the
-solution matches their bug reports.
+On Mon, Dec 4, 2023 at 12:54=E2=80=AFAM Abel Vesa <abel.vesa@linaro.org> wr=
+ote:
+>
+> Add support for the SDC ATNA45AF01 panel.
+>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+> Changes in v2:
+> - moved the panel entry in the proper place, as suggested by Doug
+> - Link to v1: https://lore.kernel.org/r/20231201-x1e80100-drm-panel-edp-v=
+1-1-ef9def711d8a@linaro.org
+> ---
+>  drivers/gpu/drm/panel/panel-edp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/pa=
+nel-edp.c
+> index 825fa2a0d8a5..78565c99b54d 100644
+> --- a/drivers/gpu/drm/panel/panel-edp.c
+> +++ b/drivers/gpu/drm/panel/panel-edp.c
+> @@ -1983,6 +1983,8 @@ static const struct edp_panel_entry edp_panels[] =
+=3D {
+>         EDP_PANEL_ENTRY('K', 'D', 'C', 0x0809, &delay_200_500_e50, "KD116=
+N2930A15"),
+>         EDP_PANEL_ENTRY('K', 'D', 'B', 0x1120, &delay_200_500_e80_d50, "1=
+16N29-30NK-C007"),
+>
+> +       EDP_PANEL_ENTRY('S', 'D', 'C', 0x416d, &delay_100_500_e200, "ATNA=
+45AF01"),
+> +
 
-> We've inform the customer to check their own client code which called this
-> api, to have proper lock to avoid racy of per dev pinctrl_select_state call
-> from customer driver end.
-> For example:
-> LOCK;
-> pinctrl_select_state();
+Looks fine to me now. I will note that e200 is pretty long and I
+wonder if you've got this because of a requirement of T3+T4+T5+T6+T8
+being more than 200ms. If so, I wonder if Pin-yen's patch [1] would
+help you optimize things?
 
-Placing a lock inside pinctrl_select_state() will not make this whole
-sequence atomic, so if the client driver needs to know that the state
-remains from here until the "other hardware behaviors" below, something
-more is needed.
+In any case, this looks fine to me.
 
-Perhaps I'm misunderstanding what you're saying though?
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-> gpio pulling;
-> udelay();
-> check state;
-> other hardware behaviors;
-> UNLOCK;
-> 
-> While it is still unnecessary the volatile re-load of p->state for the
-> interation and so I upstream a patch like link[2].
-> 
-> while during the merge discussion, upstream maintainer suggest to have the
-> lock issue fixed, instead of only READ_ONCE for the interation.
-> I think it is also make sense since although current in-tree driver have
-> take care of each pinctrl_select_state call, since it is a export symbole
-> and we've see the similar issue continuously (a year back ago also we've
-> seen similar issue before[3]).
-> 
+...I'll wait a day in case you say this would be better atop Pin-yen's
+patch and want me to wait, but I also have no objections to landing
+this now and later optimizing the delays.
 
-I think you're correcting a real problem, in that two contexts calling
-pinctrl_select_state() seems to be able to cause non-deterministic
-results. But is the motivation "pinctrl_select_state() is an
-EXPORT_SYMBOL, so let's make it thread safe", or is the motivation
-"during async probing of devices it's possible to end up in
-pinctrl_select_state() from multiple contexts simultaneously, so make it
-thread safe"?
-
-> The whole serials discussion can be found link here:
-> [1] https://lore.kernel.org/lkml/e011b3e9-7c09-4214-8e9c-90e12c38bbaa@quicinc.com/
-> [2]
-> https://lore.kernel.org/lkml/20231115102824.23727-1-quic_aiquny@quicinc.com/
-> [3]
-> https://lore.kernel.org/lkml/20221027065408.36977-1-quic_aiquny@quicinc.com/
-> 
-> > 
-> > The recursive error print sounds like a distinct problem of its own,
-> > that warrants being introduced in a patch of its own. But as with the
-> > other part, I'm not able to spot a code path in the upstream kernel
-> > where this hppens, so please properly describe the scenario where
-> > touching the console would result back in another pinctrl_select_state().
-> For this part, I am thinking about a spin lock is introduced and have the
-> error log out of the lock will be safer.
-> The current patch disable irq during the lock, and some console driver rely
-> on interrupt to get tx dma/fifo ready.
-
-Logging outside the region with interrupts disabled make total sense,
-I'm definitely in favor of this.
-
-> Also console driver will be a pinctrl client, so avoid unnecessary recursive
-> in theory.
-
-I don't think a console driver should pinctrl_select_state() from its
-tx path, that's why I'm asking.
-
-But perhaps I'm missing some scenario, if so please describe this in the
-commit message.
-
-> Just incase some out of tree concole driver was able to use the
-> pinctrl_select_state in console write related APIs as well.
-
-If there is a valid usage pattern I think we should consider that, but
-we do not care about out-of-tree drivers misusing/abusing framework
-APIs.
-
-Regards,
-Bjorn
+[1] https://crrev.com/c/5052150
