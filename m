@@ -2,336 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC4280352F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 145A880352E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344391AbjLDNjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
+        id S235744AbjLDNjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:39:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235726AbjLDNjZ (ORCPT
+        with ESMTP id S235655AbjLDNjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:39:25 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD45419A5;
-        Mon,  4 Dec 2023 05:39:10 -0800 (PST)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4ClLZW000906;
-        Mon, 4 Dec 2023 13:39:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=JWXu4qy8zsoHGMYQ4VpZBTPvSXI9OX0ldDgJDtioPbo=;
- b=CDBdu+nxXnZY4hjJDqhX4u3Kgk2A3nrN6rdVtWxp/o4VqXaGqztVvYyEY0uxl9Q+HY8N
- oMSvPgBWE2+zFcZt2fmrUNkgWLxbPgZ04hIEzHBtxMGFnYSlqIn7ws8eL17GXnv/5EpH
- CDjdybrudWHSfeWT9shPLUxJjKxAWfODp7gu8wednIwIV+VpZxB22grcB281coPisriF
- Zy0uaGVDeUkvF5RsSvZyBKrWxPetZRtu9BQRAPvfEtTFvjMUjQXHbuGUBipGcn5RgDnb
- EpMn6mRgT28vQGT3EW/G74NHe7qcDhF4pxCVAkh5z7obc0SeZgLWsEMQd63wmkVP4cLc 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usex6hrys-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 13:39:04 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4CmBAm005380;
-        Mon, 4 Dec 2023 13:39:04 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usex6hry8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 13:39:04 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4AnGWn015310;
-        Mon, 4 Dec 2023 13:39:03 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3urewt8hve-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 13:39:02 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4Dd1Wi63504832
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Dec 2023 13:39:01 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3349D20040;
-        Mon,  4 Dec 2023 13:39:01 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E724A20043;
-        Mon,  4 Dec 2023 13:38:53 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.24.253])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Mon,  4 Dec 2023 13:38:53 +0000 (GMT)
-Date:   Mon, 4 Dec 2023 19:08:47 +0530
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
-Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
- DIO
-Message-ID: <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: pqMqYZoB5u1kPGItM7FXb3lU_mohMlQE
-X-Proofpoint-GUID: AmoxTpAGqRo9ZBjsPI0fNlAXgV9Pduud
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+        Mon, 4 Dec 2023 08:39:23 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0BF9191;
+        Mon,  4 Dec 2023 05:39:09 -0800 (PST)
+Received: from [100.66.64.18] (unknown [108.143.43.187])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 246E020B74C1;
+        Mon,  4 Dec 2023 05:39:03 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 246E020B74C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1701697148;
+        bh=BtY3bVxPtr2XdgE2ZvKoiT1mqgpjS0iGQgzugKiTo+A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hy/8PsmfTgS7df7xb+x9yGMaoEJdmcwSkjs0qSk4z8IGyhirMOK7pvLeWIx9kAeOA
+         oH52/3UsyfwuFtBdEP/mYS8f65zzZxyUm6kE2TIPyHtdRgRlur5d0PJVff+1AfFnjC
+         dUkGUg41jrA0GKxcGRmUSz9LShxyjqXmVJaaNSlU=
+Message-ID: <8747ed90-72b8-49bf-8df7-5c5f06056fe2@linux.microsoft.com>
+Date:   Mon, 4 Dec 2023 14:39:03 +0100
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_12,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 clxscore=1015 adultscore=0 lowpriorityscore=0 spamscore=0
- malwarescore=0 bulkscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2312040102
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
+ TDX init
+Content-Language: en-US
+To:     "Reshetova, Elena" <elena.reshetova@intel.com>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
+        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
+        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
+        "cascardo@canonical.com" <cascardo@canonical.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michael Kelley <mhkelley58@gmail.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Cui, Dexuan" <decui@microsoft.com>
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+ <0799b692-4b26-4e00-9cec-fdc4c929ea58@linux.microsoft.com>
+ <20231129164049.GVZWdpkVlc8nUvl/jx@fat_crate.local>
+ <DM8PR11MB575085570AF48AF4690986EDE782A@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20231130075559.GAZWhAD5ScHoxbbTxL@fat_crate.local>
+ <DM8PR11MB575049E0C9F36001F0F374CEE782A@DM8PR11MB5750.namprd11.prod.outlook.com>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <DM8PR11MB575049E0C9F36001F0F374CEE782A@DM8PR11MB5750.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
+On 30/11/2023 09:31, Reshetova, Elena wrote:
+> 
+>> On Thu, Nov 30, 2023 at 07:08:00AM +0000, Reshetova, Elena wrote:
+>>> ...
+>>> 3. Normal TDX 1.0 guest that is unaware that it runs in partitioned
+>>>    environment
+>>> 4. and so on
+>>
+>> There's a reason I call it a virt zoo.
+>>
+>>> I don’t know if AMD architecture would support all this spectrum of
+>>> the guests through.
+>>
+>> I hear threats...
+> 
+> No threats whatsoever, I just truly don’t know details of SEV architecture
+> on this and how it envisioned to operate under this nesting scenario.
+> I raised this point to see if we can build the common understanding 
+> on this. My personal understanding (please correct me) was that SEV
+> would also allow different types of L2 guests, so I think we should be
+> aligning on this.
+I don't think SNP allows the level of freedom you describe. But regardless
+of the possibilities, I can't think of users of this technology actually
+being interested in running all of these options. Would love to hear someone
+speak up.
 
-Thanks for the review. 
+I think of VMPLs provided by SNP and the TD-partitioning L1/L2 scheme as
+the equivalent of ARM's trustzone/EL3 concept. It lets you separate high
+privilege operations into a hardware isolated context. In this case it's
+within the same confidential computing boundary. That's our use case.
+ 
+> 
+>>
+>>> Instead we should have a flexible way for the L2 guest to discover
+>>> the virt environment it runs in (as modelled by L1 VMM) and the
+>>> baseline should not to assume it is a TDX or SEV guest, but assume
+>>> this is some special virt guest (or legacy guest, whatever approach
+>>> is cleaner) and expose additional interfaces to it.
+>>
+>> You can do flexible all you want but all that guest zoo is using the
+>> kernel. The same code base which boots on gazillion incarnations of real
+>> hardware. And we have trouble keeping that code base clean already.
+> 
+> Fully agree, I wasn’t objecting this. What I was objecting is to make
+> explicit assumptions on what the L2 guest under TDX partitioning is. 
+> 
 
-On Mon, Dec 04, 2023 at 10:36:01AM +0000, John Garry wrote:
-> On 30/11/2023 13:53, Ojaswin Mujoo wrote:
-> 
-> Thanks for putting this together.
-> 
-> > This patch series builds on top of John Gary's atomic direct write
-> > patch series [1] and enables this support in ext4. This is a 2 step
-> > process:
-> > 
-> > 1. Enable aligned allocation in ext4 mballoc. This allows us to allocate
-> > power-of-2 aligned physical blocks, which is needed for atomic writes.
-> > 
-> > 2. Hook the direct IO path in ext4 to use aligned allocation to obtain
-> > physical blocks at a given alignment, which is needed for atomic IO. If
-> > for any reason we are not able to obtain blocks at given alignment we
-> > fail the atomic write.
-> 
-> So are we supposed to be doing atomic writes on unwritten ranges only in the
-> file to get the aligned allocations?
+That's fair, my intention was to have this simple logic (if td-partitioning,
+then this and this is given) until a different user of TD-partitioning comes
+along and then we figure out which parts generalize.
 
-If we do an atomic write on a hole, ext4 will give us an aligned extent
-provided the hole is big enough to accomodate it. 
+>>
+>> Now, all those weird guests come along, they're more or less
+>> "compatible" but not fully. So they have to do an exception here,
+>> disable some feature there which they don't want/support/cannot/bla. Or
+>> they use a paravisor which does *some* of the work for them so that
+>> needs to be accomodated too.
+>>
+>> And so they start sprinkling around all those "differences" around the
+>> kernel. And turn it into an unmaintainable mess. We've been here before
+>> - last time it was called "if (XEN)"... and we're already getting there
+>> again only with two L1 encrypted guests technologies. I'm currently
+>> working on trimming down some of the SEV mess we've already added...
+>>
+>> So - and I've said this a bunch of times already - whatever guest type
+>> it is, its interaction with the main kernel better be properly designed
+>> and abstracted away so that it doesn't turn into a mess.
+> 
+> Yes, agree, so what are our options and overall strategy on this? 
+> We can try to push as much as possible complexity into L1 VMM in this
+> scenario to keep the guest kernel almost free from these sprinkling differences.
+> Afterall the L1 VMM can emulate whatever it wants for the guest.
+> We can also see if there is a true need to add another virtualization
+> abstraction here, i.e. "nested encrypted guest". But to justify this one
+> we need to have usecases/scenarios where L1 VMM actually cannot run
+> L2 guest (legacy or TDX enabled) as it is. 
+> @Jeremi Piotrowski do you have such usecase/scenarios you can describe?
+> > Any other options we should be considering as overall strategy? 
 
-However, if we do an atomic write on a existing extent (written or
-unwritten) ext4 would check if it satisfies the alignment and length
-requirement and returns an error if it doesn't. Since we don't have cow
-like functionality afaik the only way we could let this kind of write go
-through is by punching the pre-existing extent which is not something we
-can directly do in the same write operation, hence we return error.
+Just taking a step back: we're big SNP and TDX users. The only kind of guest
+that meets our users needs on both SNP and TDX and that we support across
+our server fleet is closest to what you listed as 2:
+"guest with a CoCo security module (paravisor) and targeted CoCo enlightenments".
 
-> 
-> I actually tried that, and I got a WARN triggered:
-> 
-> # mkfs.ext4 /dev/sda
-> mke2fs 1.46.5 (30-Dec-2021)
-> Creating filesystem with 358400 1k blocks and 89760 inodes
-> Filesystem UUID: 7543a44b-2957-4ddc-9d4a-db3a5fd019c9
-> Superblock backups stored on blocks:
->         8193, 24577, 40961, 57345, 73729, 204801, 221185
-> 
-> Allocating group tables: done
-> Writing inode tables: done
-> Creating journal (8192 blocks): done
-> Writing superblocks and filesystem accounting information: done
-> 
-> [   12.745889] mkfs.ext4 (150) used greatest stack depth: 13304 bytes left
-> # mount /dev/sda mnt
-> [   12.798804] EXT4-fs (sda): mounted filesystem
-> 7543a44b-2957-4ddc-9d4a-db3a5fd019c9 r/w with ordered data mode. Quota
-> mode: none.
-> # touch mnt/file
-> #
-> # /test-statx -a /root/mnt/file
-> statx(/root/mnt/file) = 0
-> dump_statx results=5fff
->   Size: 0               Blocks: 0          IO Block: 1024    regular file
-> Device: 08:00           Inode: 12          Links: 1
-> Access: (0644/-rw-r--r--)  Uid:     0   Gid:     0
-> Access: 2023-12-04 10:27:40.002848720+0000
-> Modify: 2023-12-04 10:27:40.002848720+0000
-> Change: 2023-12-04 10:27:40.002848720+0000
->  Birth: 2023-12-04 10:27:40.002848720+0000
-> stx_attributes_mask=0x703874
->         STATX_ATTR_WRITE_ATOMIC set
->         unit min: 1024
->         uunit max: 524288
-> Attributes: 0000000000400000 (........ ........ ........ ........
-> ........ .?--.... ..---... .---.-..)
-> #
-> 
-> 
-> 
-> looks ok so far, then write 4KB at offset 0:
-> 
-> # /test-pwritev2 -a -d -p 0 -l 4096  /root/mnt/file
-> file=/root/mnt/file write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
-> [   46.813720] ------------[ cut here ]------------
-> [   46.814934] WARNING: CPU: 1 PID: 158 at fs/ext4/mballoc.c:2991
-> ext4_mb_regular_allocator+0xeca/0xf20
-> [   46.816344] Modules linked in:
-> [   46.816831] CPU: 1 PID: 158 Comm: test-pwritev2 Not tainted
-> 6.7.0-rc1-00038-gae3807f27e7d-dirty #968
-> [   46.818220] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
-> BIOS rel-1.16.0-0-gd239552c-rebuilt.opensuse.org 04/01/2014
-> [   46.819886] RIP: 0010:ext4_mb_regular_allocator+0xeca/0xf20
-> [   46.820734] Code: fd ff ff f0 41 ff 81 e4 03 00 00 e9 63 fd ff ff
-> 90 0f 0b 90 e9 fe f3 ff ff 90 48 c7 c7 e2 7a b2 86 44 89 ca e8 f7 f1
-> d2 ff 90 <0f> 0b 90 90 45 8b 44 24 3c e9 d4 f3 ff ff 4d 8b 45 08 4c 89
-> c2 4d
-> [   46.823577] RSP: 0018:ffffb77dc056b7c0 EFLAGS: 00010286
-> [   46.824379] RAX: 0000000000000000 RBX: ffff9b2ad77dea80 RCX:
-> 0000000000000000
-> [   46.825458] RDX: 0000000000000001 RSI: ffff9b2b3491b5c0 RDI:
-> ffff9b2b3491b5c0
-> [   46.826557] RBP: ffff9b2adc7cd000 R08: 0000000000000000 R09:
-> c0000000ffffdfff
-> [   46.827634] R10: ffff9b2adcb9d780 R11: ffffb77dc056b648 R12:
-> ffff9b2ac6778000
-> [   46.828714] R13: ffff9b2adc7cd000 R14: ffff9b2adc7d0000 R15:
-> 000000000000002a
-> [   46.829796] FS:  00007f726dece740(0000) GS:ffff9b2b34900000(0000)
-> knlGS:0000000000000000
-> [   46.830706] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   46.831299] CR2: 0000000001ed72b8 CR3: 000000001c794006 CR4:
-> 0000000000370ef0
-> [   46.832041] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
-> 0000000000000000
-> [   46.832813] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7:
-> 0000000000000400
-> [   46.833546] Call Trace:
-> [   46.833901]  <TASK>
-> [   46.834163]  ? __warn+0x78/0x130
-> [   46.834504]  ? ext4_mb_regular_allocator+0xeca/0xf20
-> [   46.835037]  ? report_bug+0xf8/0x1e0
-> [   46.835527]  ? console_unlock+0x45/0xd0
-> [   46.835963]  ? handle_bug+0x40/0x70
-> [   46.836419]  ? exc_invalid_op+0x13/0x70
-> [   46.836865]  ? asm_exc_invalid_op+0x16/0x20
-> [   46.837329]  ? ext4_mb_regular_allocator+0xeca/0xf20
-> [   46.837852]  ext4_mb_new_blocks+0x7e8/0xe60
-> [   46.838382]  ? __kmalloc+0x4b/0x130
-> [   46.838824]  ? __kmalloc+0x4b/0x130
-> [   46.839243]  ? ext4_find_extent+0x347/0x360
-> [   46.839743]  ext4_ext_map_blocks+0xc44/0xff0
-> [   46.840395]  ext4_map_blocks+0x162/0x5b0
-> [   46.841010]  ? jbd2__journal_start+0x84/0x1f0
-> [   46.841694]  ext4_map_blocks_aligned+0x20/0xa0
-> [   46.842382]  ext4_iomap_begin+0x1e9/0x320
-> [   46.843006]  iomap_iter+0x16d/0x350
-> [   46.843554]  __iomap_dio_rw+0x3be/0x830
-> [   46.844150]  iomap_dio_rw+0x9/0x30
-> [   46.844680]  ext4_file_write_iter+0x597/0x800
-> [   46.845346]  do_iter_readv_writev+0xe1/0x150
-> [   46.846029]  do_iter_write+0x86/0x1f0
-> [   46.846638]  vfs_writev+0x96/0x190
-> [   46.847176]  ? do_pwritev+0x98/0xd0
-> [   46.847721]  do_pwritev+0x98/0xd0
-> [   46.848230]  ? syscall_trace_enter.isra.19+0x130/0x1b0
-> [   46.849028]  do_syscall_64+0x42/0xf0
-> [   46.849590]  entry_SYSCALL_64_after_hwframe+0x6f/0x77
-> [   46.850405] RIP: 0033:0x7f726df9666f
-> [   46.850964] Code: d5 41 54 49 89 f4 55 89 fd 53 44 89 c3 48 83 ec
-> 18 80 3d bb fd 0b 00 00 74 2a 45 89 c1 49 89 ca 45 31 c0 b8 48 01 00
-> 00 0f 05 <48> 3d 00 f0 ff ff 76 5c 48 8b 15 7a 77 0b 00 f7 d8 64 89 02
-> 48 83
-> [   46.854020] RSP: 002b:00007fff28b9bff0 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000148
-> [   46.855178] RAX: ffffffffffffffda RBX: 0000000000000024 RCX:
-> 00007f726df9666f
-> [   46.856248] RDX: 0000000000000001 RSI: 00007fff28b9c050 RDI:
-> 0000000000000003
-> [   46.857303] RBP: 0000000000000003 R08: 0000000000000000 R09:
-> 0000000000000024
-> [   46.858365] R10: 0000000000000000 R11: 0000000000000246 R12:
-> 00007fff28b9c050
-> [   46.859407] R13: 0000000000000001 R14: 0000000000000000 R15:
-> 00007f726e08aa60
-> [   46.860448]  </TASK>
-> [   46.860797] ---[ end trace 0000000000000000 ]---
-> [   46.861497] EXT4-fs warning (device sda):
-> ext4_map_blocks_aligned:520: Returned extent couldn't satisfy
-> alignment requirements
-> main wrote -1 bytes at offset 0
-> [   46.863855] test-pwritev2 (158) used greatest stack depth: 11920 bytes
-> left
-> #
-> 
-> Please note that I tested on my own dev branch, which contains changes over
-> [1], but I expect it would not make a difference for this test.
+We're aligned on the need to push complexity out of the kernel which is exactly
+what has happened (also across vendors): the guest is mostly unconcerned by the
+differences between TDX and SNP (except notification hypercall in the I/O path),
+does not need all the changes in the early boot code that TDX/SNP have forced,
+switches page visibility with the same hypercall for both etc.
 
-Hmm this should not ideally happen, can you please share your test
-script with me if possible?
+I'm not aware of use cases for fully legacy guests, and my guess is they would suffer
+from excessive overhead.
+
+I am also not aware of use cases for "pretending to be an TDX 1.0 guest". Doing that
+removes opportunities to share kernel code with normal guests and SNP guests on hyperv.
+I'd also like to point out something that Michael wrote here[1] regarding paravisor
+interfaces:
+"But it seems like any kind of (forwarding) scheme needs to be a well-defined contract
+that would work for both TDX and SEV-SNP."
+
+[1]: https://lore.kernel.org/lkml/SN6PR02MB415717E09C249A31F2A4E229D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com/
+
+Another thing to note: in SNP you *need* to interact with VMPL0 (~L1 VMM) when
+running at other VMPLs (eg. pvalidate and rmpadjust only possible at VMPL0) so
+the kernel needs to cooperate with VMPL0 to operate. On skimming the TD-part
+spec I'm not sure how "supporting fast-path I/O" would be possible with supporting
+a "TDX 1.0 guest" with no TD-part awareness (if you need to trap all TDVMCALL then
+that's not OK).
+
+Now back to the topic at hand: I think what's needed is to stop treating
+X86_FEATURE_TDX_GUEST as an all-or-nothing thing. Split out the individual
+enlightenment into separate CC attributes, allow them to be selected without
+requiring you to buy the whole zoo. I don't think we need a "nested encrypted guest"
+abstraction.
+
+Jeremi
 
 > 
+> Best Regards,
+> Elena.
 > 
-> > 
-> > Currently this RFC does not impose any restrictions for atomic and non-atomic
-> > allocations to any inode,  which also leaves policy decisions to user-space
-> > as much as possible. So, for example, the user space can:
-> > 
-> >   * Do an atomic direct IO at any alignment and size provided it
-> >     satisfies underlying device constraints. The only restriction for now
-> >     is that it should be power of 2 len and atleast of FS block size.
-> > 
-> >   * Do any combination of non atomic and atomic writes on the same file
-> >     in any order. As long as the user space is passing the RWF_ATOMIC flag
-> >     to pwritev2() it is guaranteed to do an atomic IO (or fail if not
-> >     possible).
-> > 
-> > There are some TODOs on the allocator side which are remaining like...
-> > 
-> > 1.  Fallback to original request size when normalized request size (due to
-> >      preallocation) allocation is not possible.
-> > 2.  Testing some edge cases.
-> > 
-> > But since all the basic test scenarios were covered, hence we wanted to get
-> > this RFC out for discussion on atomic write support for DIO in ext4.
-> > 
-> > Further points for discussion -
-> > 
-> > 1. We might need an inode flag to identify that the inode has blocks/extents
-> > atomically allocated. So that other userspace tools do not move the blocks of
-> > the inode for e.g. during resize/fsck etc.
-> >    a. Should inode be marked as atomic similar to how we have IS_DAX(inode)
-> >    implementation? Any thoughts?
-> > 
-> > 2. Should there be support for open flags like O_ATOMIC. So that in case if
-> > user wants to do only atomic writes to an open fd, then all writes can be
-> > considered atomic.
-> > 
-> > 3. Do we need to have any feature compat flags for FS? (IMO) It doesn't look
-> > like since say if there are block allocations done which were done atomically,
-> > it should not matter to FS w.r.t compatibility.
-> > 
-> > 4. Mostly aligned allocations are required when we don't have data=journal
-> > mode. So should we return -EIO with data journalling mode for DIO request?
-> > 
-> > Script to test using pwritev2() can be found here:
-> > https://gist.github.com/OjaswinM/e67accee3cbb7832bd3f1a9543c01da9
-> 
-> Please note that the posix_memalign() call in the program should PAGE align.
+>>
+>> Thx.
+>>
+>> --
+>> Regards/Gruss,
+>>     Boris.
+>>
+>> https://people.kernel.org/tglx/notes-about-netiquette
 
-Why do you say that? direct IO seems to be working when the userspace
-buffer is 512 byte aligned, am I missing something?
-
-Regards,
-ojaswin
-
-PS: I'm on vacation this week so might be a bit slow to address all the
-review comments.
-
-> 
-> Thanks,
-> John
