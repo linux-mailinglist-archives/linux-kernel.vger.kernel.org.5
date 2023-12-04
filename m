@@ -2,159 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 702B1802BFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB61802C03
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230023AbjLDHYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 02:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
+        id S234584AbjLDH0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 02:26:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjLDHYu (ORCPT
+        with ESMTP id S234599AbjLDH0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 02:24:50 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24226F3
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 23:24:55 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50be3eed85aso2304704e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 23:24:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701674693; x=1702279493; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Xxz1IMztyI/DW8EzDBtMH+QkyqwQ5t+SJRSYEC/SOc=;
-        b=iD65mHNYTVsaATpGhHMlCRNLFfSnxqdxPDshLNMj8FIn6q4HrsMPDzouP/sVNn+O7u
-         CuE3d9eXxoLV7rrBLNHZnIHAmuDwHHtGpnZlc31uWuGslkLhr0FPq7E/qhpAMAgAY6e7
-         801yX/7aXIVD7UAd3gLgXEA4W2xc2tkIXwtHA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701674693; x=1702279493;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6Xxz1IMztyI/DW8EzDBtMH+QkyqwQ5t+SJRSYEC/SOc=;
-        b=a8UsoMSDjiU9sX+OZvdJl2NdgCusTALU1pzd11NhGPVNzM1Azgnq0/9VFv+ixI9br4
-         URZYA7BJFSmfDvbub/6yIr0dI0Ket9hvBm3rRRN9qomckMJ3UY1XNbSYK3nUXcHYbppZ
-         waf9RshP20Er9Apmv9iWGcQavoEqlHrfjoXp0F9FuPeZDdiRSLVvzlAMls82d0YIFC7e
-         ins6vg8y0/ILKlTkPpJErfAvLrE7IN8LhOYpfXsa0jiuuGjJE+fJi+9GkQYgJrURxSka
-         wDEbfNze+YukAo6YA9wIgTEI/Xee4P2Oi6buUDU1EzD3Q27C2B2SrL4KiermRcwYOIVO
-         L7QQ==
-X-Gm-Message-State: AOJu0YxxmvYOSKuJACVz2K/bOzgT9HyB+knBAMnCMGgwoMVSrMzfNsV6
-        3ZroB5fOWOh9rjrc309YecF4DPWlQSz62PpW/9y9HMp+mYbKQhOCQho=
-X-Google-Smtp-Source: AGHT+IFtbMn5A8+mOCK7ju+ZruOqp6ANHem62c8eBAnYZlXhRPomaeKDI0QPJC1GJ9Q8Tj324VrRaJX0WX0KLLlp1+M=
-X-Received: by 2002:a19:ac4a:0:b0:50b:f51a:299a with SMTP id
- r10-20020a19ac4a000000b0050bf51a299amr600460lfc.32.1701674693388; Sun, 03 Dec
- 2023 23:24:53 -0800 (PST)
+        Mon, 4 Dec 2023 02:26:04 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB906109;
+        Sun,  3 Dec 2023 23:26:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1701674768; x=1733210768;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OnA7/tb/qn6bAGUzgTDAT2ga2PQa5Pg9LbgHUXsCOok=;
+  b=DFuLY5tjoDQ0JuEdIuCFTK2/OZeBFNcT7A6DCoivle5tp2l3Ao0lHisS
+   F7d6N/uKwrhSxeC9tvmGZafCDCh5/pTsKh8+FrOlQ3X6mn4FC8AY7k8bs
+   0a2gYUfCEi2UV2DRG6ifi8lOvBHBRTfjfIjCOntauDq1saZO5jcPIQg+B
+   IDWrYgJ2PIHuauudPnyNZJmlCyRATNbnr3oA2Yg02REp/jtRTIi5hx2xo
+   6r9iqn+N8G4uminpQnmHijA6eCtlY2WOgoC0v56QXfQ+Pv9CABzPjPqjC
+   myQzzpl7/XASmPyOEWyMnD1dMMNdCCKwCaz9z7ATjFNVKnTcUoFN1BWZN
+   A==;
+X-CSE-ConnectionGUID: 0Vk3FHtMTeWoDESsJ/0r0A==
+X-CSE-MsgGUID: 338xrwkrRcqrIiydXkIT0A==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="13528937"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2023 00:26:08 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Dec 2023 00:25:50 -0700
+Received: from virtualbox.microchip.com (10.10.85.11) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Mon, 4 Dec 2023 00:25:48 -0700
+From:   Mihai Sain <mihai.sain@microchip.com>
+To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+        <alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <cristian.birsan@microchip.com>,
+        Mihai Sain <mihai.sain@microchip.com>
+Subject: [PATCH] ARM: dts: microchip: sama5d27_wlsom1_ek: Remove mmc-ddr-3_3v property from sdmmc0 node
+Date:   Mon, 4 Dec 2023 09:25:37 +0200
+Message-ID: <20231204072537.2991-1-mihai.sain@microchip.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-References: <20231128084236.157152-1-wenst@chromium.org> <20231128084236.157152-4-wenst@chromium.org>
- <CAD=FV=XV0+G=uFBE_n6WFGVW2szGcKToZgCNTdSrNf3LVk9MOQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=XV0+G=uFBE_n6WFGVW2szGcKToZgCNTdSrNf3LVk9MOQ@mail.gmail.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 4 Dec 2023 15:24:42 +0800
-Message-ID: <CAGXv+5Hz3wfjCRa2AiOQgOv7zo8bzAmtG=a=jWJhO2MZNrFtpw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 3/5] platform/chrome: Introduce device tree
- hardware prober
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Tzung-Bi Shih <tzungbi@kernel.org>,
-        chrome-platform@lists.linux.dev, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
-        rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 2, 2023 at 8:58=E2=80=AFAM Doug Anderson <dianders@chromium.org=
-> wrote:
->
-> Hi,
->
-> On Tue, Nov 28, 2023 at 12:45=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org=
-> wrote:
-> >
-> > @@ -61,6 +61,17 @@ config CHROMEOS_TBMC
-> >           To compile this driver as a module, choose M here: the
-> >           module will be called chromeos_tbmc.
-> >
-> > +config CHROMEOS_OF_HW_PROBER
-> > +       bool "ChromeOS Device Tree Hardware Prober"
->
-> Any reason that it can't be a module?
+On board the sdmmc0 interface is wired to a SD Card socket.
+According with mmc-controller bindings, the mmc-ddr-3_3v property
+is used for eMMC devices to enable high-speed DDR mode (3.3V I/O).
+Remove the mmc-ddr-3_3v property from sdmmc0 node.
 
-No technical one. However if it's a module, the user has to manually load
-it. So I think it's more of a usability thing.
+Signed-off-by: Mihai Sain <mihai.sain@microchip.com>
+---
+ arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
-OOTH I think this needs to be a module if I2C is built as a module.
-Somehow I had thought of it at one point but then it slipped my mind.
+diff --git a/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts b/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
+index e055b9e2fe34..15239834d886 100644
+--- a/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
++++ b/arch/arm/boot/dts/microchip/at91-sama5d27_wlsom1_ek.dts
+@@ -197,7 +197,6 @@ qspi1_flash: flash@0 {
+ 
+ &sdmmc0 {
+ 	bus-width = <4>;
+-	mmc-ddr-3_3v;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_sdmmc0_default>;
+ 	status = "okay";
+-- 
+2.43.0
 
-> > +       depends on OF
-> > +       depends on I2C
-> > +       select OF_DYNAMIC
-> > +       default OF
->
-> You probably don't want "default OF". This means that everyone will
-> automatically get this new driver enabled which is unlikely to be
-> right.
-
-I thought this whole section was guarded behind KCONFIG_CHROME_PLATFORMS.
-So if the user has CHROME_PLATFORMS enabled and has OF enabled, they
-likely need the prober.
-
-> > +static int chromeos_of_hw_prober_probe(struct platform_device *pdev)
-> > +{
-> > +       for (size_t i =3D 0; i < ARRAY_SIZE(hw_prober_platforms); i++)
-> > +               if (of_machine_is_compatible(hw_prober_platforms[i].com=
-patible)) {
-> > +                       int ret;
-> > +
-> > +                       ret =3D hw_prober_platforms[i].prober(&pdev->de=
-v,
-> > +                                                           hw_prober_p=
-latforms[i].data);
-> > +                       if (ret)
->
-> Should it only check for -EPROBE_DEFER here? ...and then maybe warn
-> for other cases and go through the loop? If there's some error
-> enabling the touchscreen I'd still want the trackpad to probe...
-
-Makes sense. However there's no extra information to give in the
-warning though.
-
-> > +                               return ret;
-> > +               }
-> > +
-> > +       return 0;
->
-> Random thought: once we get here, the driver is useless / just wasting
-> memory. Any way to have it freed? ;-)
-
-I don't think there is a good way to do that, except maybe marking all
-the functions as __init? But that likely doesn't work in combination
-with deferred probing (say the i2c driver is a module).
-
-ChenYu
