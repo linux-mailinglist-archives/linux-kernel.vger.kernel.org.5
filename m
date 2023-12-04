@@ -2,78 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD86803E60
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 731C3803E7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:36:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjLDT1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:27:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40778 "EHLO
+        id S232466AbjLDTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:35:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjLDT1P (ORCPT
+        with ESMTP id S235383AbjLDTff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:27:15 -0500
-X-Greylist: delayed 230 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 11:27:21 PST
-Received: from mx.sdf.org (mx.sdf.org [205.166.94.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6E05AC
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:27:21 -0800 (PST)
-Received: from sdf.org (IDENT:xuser@sdf.org [205.166.94.16])
-        by mx.sdf.org (8.16.1/8.14.5) with ESMTPS id 3B4JNSdf018971
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits) verified NO)
-        for <linux-kernel@vger.kernel.org>; Mon, 4 Dec 2023 19:23:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sdf.org; s=sdf.org;
-        t=1701717810; bh=pXouHljU6wy8igDdyuIOKjLjmhOSVhrdlVlJPvMkFBI=;
-        h=Date:From:To:Subject;
-        b=aABln2AajdTYHwGk6qQ/geJPQRr05uiw4gozqSF6ch1INXboIUQbOdM/IzX6mqQ9K
-         D1Cx0tb5yKySVD7DgbWEaAFcNyUjXN8BUmXTdhKvQIMYtOqRtpih7LgnkaYHTiHmLo
-         omXeyt//2VT5zZzwka6YgeNr0WG7d4NJXPmaZAY8=
-Received: (from xuser@localhost)
-        by sdf.org (8.16.1/8.12.8/Submit) id 3B4JNRS1002936;
-        Mon, 4 Dec 2023 19:23:27 GMT
-Date:   Mon, 4 Dec 2023 14:34:51 -0500 (EST)
-From:   xuser <xuser@sdf.org>
-X-X-Sender: xuser@x86toapple.org
-To:     linux-kernel@vger.kernel.org
-Subject: Re: kernel prolems kernel version "3.2.0-4-amd64 #1 SMP Debian3.2.78-1
- x86_64 GNU/Linux"
-Message-ID: <alpine.DEB.2.02.2312041433230.3769@x86toapple.org>
-User-Agent: Alpine 2.02 (DEB 1266 2009-07-14)
+        Mon, 4 Dec 2023 14:35:35 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5948710E9;
+        Mon,  4 Dec 2023 11:35:31 -0800 (PST)
+Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1rAEiq-0007pC-B2; Mon, 04 Dec 2023 20:35:16 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jay.xu@rock-chips.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] ARM: dts: rockchip: add gpio alias for gpio dt nodes
+Date:   Mon, 04 Dec 2023 20:35:15 +0100
+Message-ID: <62868103.matp6XCIr4@diego>
+In-Reply-To: <89f2a229-9f14-d43f-c53d-5d4688e70456@gmail.com>
+References: <89f2a229-9f14-d43f-c53d-5d4688e70456@gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-What does this mean:?
-;--------------------------------------------------------------------------
-[ 8805.024090] PM: Restoring platform NVS memory
-[ 8805.024090] Extended CMOS year: 2000
-[ 8805.024090] Enabling non-boot CPUs ...
-[ 8805.024090] Booting Node 0 Processor 1 APIC 0x1
-[ 8805.024090] smpboot cpu 1: start_ip = 9a000
-[ 8805.020085] Calibrating delay loop (skipped) already calibrated this CPU
-[ 8805.036130] CPU1 is up
-[ 8805.037927] ACPI: Waking up from system sleep state S4
-[ 8805.070012] Uhhuh. NMI received for unknown reason 21 on CPU 0.
-[ 8805.070012] Do you have a strange power saving mode enabled?
-[ 8805.070012] Dazed and confused, but trying to continue
-[ 8806.141328] PM: early restore of devices complete after 16.802 msecs
-[ 8806.233942] e1000e 0000:00:19.0: setting latency timer to 64
-[ 8806.233995] e1000e 0000:00:19.0: irq 45 for MSI/MSI-X
-[ 8806.234198] uhci_hcd 0000:00:1a.0: setting latency timer to 64
-[ 8806.234222] usb usb3: root hub lost power or was reset
-[ 8806.234235] uhci_hcd 0000:00:1a.1: setting latency timer to 64
-[ 8806.234257] usb usb4: root hub lost power or was reset
-[ 8806.234267] uhci_hcd 0000:00:1a.2: setting latency timer to 64
-[ 8806.234290] usb usb5: root hub lost power or was reset
-[ 8806.234302] ehci_hcd 0000:00:1a.7: setting latency timer to 64
-;----------------------------------------------------------------------
-This happens after hibernating
-Thanks,
---Xuser x86
+Hi Johan,
+
+Am Samstag, 2. Dezember 2023, 19:22:01 CET schrieb Johan Jonker:
+> Rockchip SoC TRM, SoC datasheet and board schematics always refer to
+> the same gpio numbers - even if not all are used for a specific board.
+> In order to not have to re-define them for every board add the
+> aliases to SoC dtsi files.
+> 
+> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+
+patch itself looks good, but I don't understand the authorship situation.
+As these two signed-off-bys are now it would suggest that you picked up
+Jianqun Xu's patch, but then the author would need to be different.
+
+Or do you want to declare this via a
+Co-Developed-by: Jianqun Xu <jay.xu@rock-chips.com>
+
+
+Thanks
+Heiko
+
+> ---
+> 
+> Changed V1:
+>   rebase
+>   remove rk3066 gpio5 alias
+> ---
+>  arch/arm/boot/dts/rockchip/rk3036.dtsi  | 3 +++
+>  arch/arm/boot/dts/rockchip/rk3066a.dtsi | 5 +++++
+>  arch/arm/boot/dts/rockchip/rk322x.dtsi  | 4 ++++
+>  arch/arm/boot/dts/rockchip/rk3288.dtsi  | 9 +++++++++
+>  arch/arm/boot/dts/rockchip/rk3xxx.dtsi  | 4 ++++
+>  5 files changed, 25 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/rockchip/rk3036.dtsi b/arch/arm/boot/dts/rockchip/rk3036.dtsi
+> index 78686fc72ce6..8aa2e0864fed 100644
+> --- a/arch/arm/boot/dts/rockchip/rk3036.dtsi
+> +++ b/arch/arm/boot/dts/rockchip/rk3036.dtsi
+> @@ -17,6 +17,9 @@ / {
+>  	interrupt-parent = <&gic>;
+> 
+>  	aliases {
+> +		gpio0 = &gpio0;
+> +		gpio1 = &gpio1;
+> +		gpio2 = &gpio2;
+>  		i2c0 = &i2c0;
+>  		i2c1 = &i2c1;
+>  		i2c2 = &i2c2;
+> diff --git a/arch/arm/boot/dts/rockchip/rk3066a.dtsi b/arch/arm/boot/dts/rockchip/rk3066a.dtsi
+> index de9915d946f7..30139f21de64 100644
+> --- a/arch/arm/boot/dts/rockchip/rk3066a.dtsi
+> +++ b/arch/arm/boot/dts/rockchip/rk3066a.dtsi
+> @@ -13,6 +13,11 @@
+>  / {
+>  	compatible = "rockchip,rk3066a";
+> 
+> +	aliases {
+> +		gpio4 = &gpio4;
+> +		gpio6 = &gpio6;
+> +	};
+> +
+>  	cpus {
+>  		#address-cells = <1>;
+>  		#size-cells = <0>;
+> diff --git a/arch/arm/boot/dts/rockchip/rk322x.dtsi b/arch/arm/boot/dts/rockchip/rk322x.dtsi
+> index a721744cbfd1..831561fc1814 100644
+> --- a/arch/arm/boot/dts/rockchip/rk322x.dtsi
+> +++ b/arch/arm/boot/dts/rockchip/rk322x.dtsi
+> @@ -15,6 +15,10 @@ / {
+>  	interrupt-parent = <&gic>;
+> 
+>  	aliases {
+> +		gpio0 = &gpio0;
+> +		gpio1 = &gpio1;
+> +		gpio2 = &gpio2;
+> +		gpio3 = &gpio3;
+>  		serial0 = &uart0;
+>  		serial1 = &uart1;
+>  		serial2 = &uart2;
+> diff --git a/arch/arm/boot/dts/rockchip/rk3288.dtsi b/arch/arm/boot/dts/rockchip/rk3288.dtsi
+> index cb9cdaddffd4..ead343dc3df1 100644
+> --- a/arch/arm/boot/dts/rockchip/rk3288.dtsi
+> +++ b/arch/arm/boot/dts/rockchip/rk3288.dtsi
+> @@ -19,6 +19,15 @@ / {
+> 
+>  	aliases {
+>  		ethernet0 = &gmac;
+> +		gpio0 = &gpio0;
+> +		gpio1 = &gpio1;
+> +		gpio2 = &gpio2;
+> +		gpio3 = &gpio3;
+> +		gpio4 = &gpio4;
+> +		gpio5 = &gpio5;
+> +		gpio6 = &gpio6;
+> +		gpio7 = &gpio7;
+> +		gpio8 = &gpio8;
+>  		i2c0 = &i2c0;
+>  		i2c1 = &i2c1;
+>  		i2c2 = &i2c2;
+> diff --git a/arch/arm/boot/dts/rockchip/rk3xxx.dtsi b/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
+> index cb4e42ede56a..f37137f298d5 100644
+> --- a/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
+> +++ b/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
+> @@ -16,6 +16,10 @@ / {
+> 
+>  	aliases {
+>  		ethernet0 = &emac;
+> +		gpio0 = &gpio0;
+> +		gpio1 = &gpio1;
+> +		gpio2 = &gpio2;
+> +		gpio3 = &gpio3;
+>  		i2c0 = &i2c0;
+>  		i2c1 = &i2c1;
+>  		i2c2 = &i2c2;
+> --
+> 2.39.2
+> 
+> 
+
+
+
 
