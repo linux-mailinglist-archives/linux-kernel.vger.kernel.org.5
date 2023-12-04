@@ -2,133 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D21803889
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB35380388E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbjLDPTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:19:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
+        id S234521AbjLDPTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbjLDPTI (ORCPT
+        with ESMTP id S234432AbjLDPTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:19:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3FBA5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:19:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701703156; x=1733239156;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=HrPuf3RtcFKj+a3zVlizOd1McaTeRaEp1C41H0DqCdo=;
-  b=V1RNqtgc+TVrOmBOJz+7/eLESC8TGXARyap7AAoYRCV3C+DMrJHhTjUv
-   GSxHGq5LFjNuujnGONEiRZpykO3QL4BMV3f4E36M77Bu+2PcZn4xDS1bW
-   nTQUKcP2v308AzztNxAxgf867Xuyq5Oh9kYE33T1UX50IJwNEX7gO+EJv
-   2eZ4m6D1do4B/XUKVqCjpP0/DKVpiTw/P12gawXEScRB55PlnBkRZvWbc
-   58X35zV3wdXZn8NxxRulAakmQl94CNQKQgiJIlPbsgAO+tHVIuK/f7dHD
-   tESxJCw0mMkqXtpldTRyEK3ay7G00bjKpkN8FBQFxS86hZPwBLmf7i5kL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="801135"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="801135"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 07:19:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="861405026"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="861405026"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 04 Dec 2023 07:19:13 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAAj1-0007pu-0i;
-        Mon, 04 Dec 2023 15:19:11 +0000
-Date:   Mon, 4 Dec 2023 23:18:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/video/fbdev/omap/lcdc.c:642:23: sparse: sparse: incorrect
- type in assignment (different address spaces)
-Message-ID: <202312042207.lG7YN0oe-lkp@intel.com>
+        Mon, 4 Dec 2023 10:19:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD14F0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:19:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F5EFC433C8;
+        Mon,  4 Dec 2023 15:19:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701703160;
+        bh=5sEvSdS3ZKittuPMVcViM6IheLlMNVV6ts0oVk77otY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YousOfmMHBUnvlRCr32wRy8FZAF1dTCiHuVIv7Kp2hghkRxjzn4MqQ2IV42kUi7mm
+         O9QiotGnaRLRKMgVT9kSHYI+B0kNX5sGLb3YOcF/kzMaCF31Y2xt0yqhBWBqIRMDWq
+         uq5Arw2zDAQiMqdZtJirTTKNWaFMN4ppVhJsgzYHfyspehGngnpOAabogB9WgdXQnn
+         O0L+CzECjLKWu7s6MDvRCZY1fhRKbvtqjh7ujY9+PsMOHqFuWPemkJgn6KTSvMlH2b
+         Yjqm/OreLE8I7rJN96gXBgSlgoMwvs2dcppvhwEqvWaOMXxt3EldipR0L6XUx4VriV
+         gXJgWFPGyGguw==
+Date:   Mon, 4 Dec 2023 15:19:10 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>
+Cc:     <nuno.sa@analog.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: Re: [PATCH 05/12] iio: adc: ad9467: don't ignore error codes
+Message-ID: <20231204151910.6ab1728f@jic23-huawei>
+In-Reply-To: <20231121-dev-iio-backend-v1-5-6a3d542eba35@analog.com>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+        <20231121-dev-iio-backend-v1-5-6a3d542eba35@analog.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-commit: 804f7f19c2e2928aeb8eafef8379fe8b8d13f98b fbdev: omap: avoid using mach/*.h files
-date:   1 year, 7 months ago
-config: arm-randconfig-r131-20231117 (https://download.01.org/0day-ci/archive/20231204/202312042207.lG7YN0oe-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231204/202312042207.lG7YN0oe-lkp@intel.com/reproduce)
+On Tue, 21 Nov 2023 11:20:18 +0100
+Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312042207.lG7YN0oe-lkp@intel.com/
+> From: Nuno Sa <nuno.sa@analog.com>
+> 
+> Make sure functions that return errors are not ignored.
+> 
+> Fixes: ad6797120238 ("iio: adc: ad9467: add support AD9467 ADC")
+> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> ---
+>  drivers/iio/adc/ad9467.c | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
+> index 368ea57be117..04474dbfa631 100644
+> --- a/drivers/iio/adc/ad9467.c
+> +++ b/drivers/iio/adc/ad9467.c
+> @@ -6,6 +6,7 @@
+>   */
+>  
+>  #include <linux/module.h>
+> +#include <linux/mutex.h>
+David noted this one...
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/video/fbdev/omap/lcdc.c:642:23: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *vaddr @@     got void *static [addressable] [assigned] [toplevel] vram_virt @@
-   drivers/video/fbdev/omap/lcdc.c:642:23: sparse:     expected void [noderef] __iomem *vaddr
-   drivers/video/fbdev/omap/lcdc.c:642:23: sparse:     got void *static [addressable] [assigned] [toplevel] vram_virt
-   drivers/video/fbdev/omap/lcdc.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/umh.h, include/linux/kmod.h, ...):
-   include/linux/page-flags.h:258:46: sparse: sparse: self-comparison always evaluates to false
---
->> drivers/video/fbdev/omap/omapfb_main.c:1027:11: sparse: sparse: cast removes address space '__iomem' of expression
-   drivers/video/fbdev/omap/omapfb_main.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/radix-tree.h, ...):
-   include/linux/page-flags.h:258:46: sparse: sparse: self-comparison always evaluates to false
---
->> drivers/video/fbdev/omap/lcd_mipid.c:451:23: sparse: sparse: cast to restricted __be32
-   drivers/video/fbdev/omap/lcd_mipid.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/radix-tree.h, ...):
-   include/linux/page-flags.h:258:46: sparse: sparse: self-comparison always evaluates to false
+>  #include <linux/device.h>
+>  #include <linux/kernel.h>
+>  #include <linux/slab.h>
+> @@ -160,11 +161,12 @@ static int ad9467_reg_access(struct adi_axi_adc_conv *conv, unsigned int reg,
+>  	struct spi_device *spi = st->spi;
+>  	int ret;
+>  
+> -	if (readval == NULL) {
+> +	if (!readval) {
 
-vim +642 drivers/video/fbdev/omap/lcdc.c
+Nothing wrong with tidying this up if the !readval syntax is more common
+in the driver, but it doesn't have anything to do with the fix, so not in this
+patch.
 
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  620  
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  621  static int alloc_fbmem(struct omapfb_mem_region *region)
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  622  {
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  623  	int bpp;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  624  	int frame_size;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  625  	struct lcd_panel *panel = lcdc.fbdev->panel;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  626  
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  627  	bpp = panel->bpp;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  628  	if (bpp == 12)
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  629  		bpp = 16;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  630  	frame_size = PAGE_ALIGN(panel->x_res * bpp / 8 * panel->y_res);
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  631  	if (region->size > frame_size)
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  632  		frame_size = region->size;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  633  	lcdc.vram_size = frame_size;
-f6e45661f9be54 drivers/video/fbdev/omap/lcdc.c Luis R. Rodriguez 2016-01-22  634  	lcdc.vram_virt = dma_alloc_wc(lcdc.fbdev->dev, lcdc.vram_size,
-f6e45661f9be54 drivers/video/fbdev/omap/lcdc.c Luis R. Rodriguez 2016-01-22  635  				      &lcdc.vram_phys, GFP_KERNEL);
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  636  	if (lcdc.vram_virt == NULL) {
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  637  		dev_err(lcdc.fbdev->dev, "unable to allocate FB DMA memory\n");
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  638  		return -ENOMEM;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  639  	}
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  640  	region->size = frame_size;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  641  	region->paddr = lcdc.vram_phys;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17 @642  	region->vaddr = lcdc.vram_virt;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  643  	region->alloc = 1;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  644  
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  645  	memset(lcdc.vram_virt, 0, lcdc.vram_size);
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  646  
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  647  	return 0;
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  648  }
-569755c706f0f9 drivers/video/omap/lcdc.c       Imre Deak         2007-07-17  649  
+>  		ret = ad9467_spi_write(spi, reg, writeval);
+> -		ad9467_spi_write(spi, AN877_ADC_REG_TRANSFER,
+> -				 AN877_ADC_TRANSFER_SYNC);
+> -		return ret;
+> +		if (ret)
+> +			return ret;
+> +		return ad9467_spi_write(spi, AN877_ADC_REG_TRANSFER,
+> +					AN877_ADC_TRANSFER_SYNC);
+>  	}
+>  
+>  	ret = ad9467_spi_read(spi, reg);
+> @@ -274,6 +276,8 @@ static int ad9467_get_scale(struct adi_axi_adc_conv *conv, int *val, int *val2)
+>  	unsigned int i, vref_val;
+unsigned and you check it for < 0 ..
 
-:::::: The code at line 642 was first introduced by commit
-:::::: 569755c706f0f94409edd2ae60b9878cb420844f OMAP: add TI OMAP1 internal LCD controller
+>  
+>  	vref_val = ad9467_spi_read(st->spi, AN877_ADC_REG_VREF);
+> +	if (vref_val < 0)
+> +		return vref_val;
 
-:::::: TO: Imre Deak <imre.deak@solidboot.com>
-:::::: CC: Linus Torvalds <torvalds@woody.linux-foundation.org>
+int ret = ...
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	vref_val = ret & info1->vref_mask; 
+if not an error.
+
+
+>  
+>  	vref_val &= info1->vref_mask;
+>  
+> @@ -296,6 +300,7 @@ static int ad9467_set_scale(struct adi_axi_adc_conv *conv, int val, int val2)
+>  	struct ad9467_state *st = adi_axi_adc_conv_priv(conv);
+>  	unsigned int scale_val[2];
+>  	unsigned int i;
+> +	int ret;
+>  
+>  	if (val != 0)
+>  		return -EINVAL;
+> @@ -305,11 +310,13 @@ static int ad9467_set_scale(struct adi_axi_adc_conv *conv, int val, int val2)
+>  		if (scale_val[0] != val || scale_val[1] != val2)
+>  			continue;
+>  
+> -		ad9467_spi_write(st->spi, AN877_ADC_REG_VREF,
+> -				 info->scale_table[i][1]);
+> -		ad9467_spi_write(st->spi, AN877_ADC_REG_TRANSFER,
+> -				 AN877_ADC_TRANSFER_SYNC);
+> -		return 0;
+> +		ret = ad9467_spi_write(st->spi, AN877_ADC_REG_VREF,
+> +				       info->scale_table[i][1]);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		return ad9467_spi_write(st->spi, AN877_ADC_REG_TRANSFER,
+> +					AN877_ADC_TRANSFER_SYNC);
+>  	}
+>  
+>  	return -EINVAL;
+> 
+
