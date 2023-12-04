@@ -2,101 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E077C802A61
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7481802A65
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234375AbjLDCkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 21:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53144 "EHLO
+        id S234359AbjLDCmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 21:42:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229918AbjLDCki (ORCPT
+        with ESMTP id S229510AbjLDCmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 21:40:38 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC06C5;
-        Sun,  3 Dec 2023 18:40:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LVTxDRpbm4m8/L9l+PdmnoSZZXeKUDl437Ufb7hbh2I=; b=XueloJ4XOx6AvGagXXqf5zKEn6
-        Kd5AGBMar6KgXfVvTp/7bdTGl3DdqsgzJxNve8zpIAvjgBZF3V0eQGEADal6zwOjS3aNKL4ftzMLN
-        rjoiFwGFS3yizzESIkiPgOhziQogNXixp2rvMHVbe9hH6vo5z528uimva4HJN9LTEaMy3hA4xJJ6p
-        2J6Go6+2sdlMnM6i2xxXWn5D9YFtLk7fb+WBiY5TRAwsMUSUTJSyv4r4slX7mtCWJzKfssciHJsOZ
-        28eiZSUBaWqnd0eNWVAQ3j0FXQmUQpq9iWRRp65vJ4AaWDeVACyNu+yHrrr2reHauRZY7zS8495/5
-        wOj7nPaA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r9ysp-006nG8-1T;
-        Mon, 04 Dec 2023 02:40:31 +0000
-Date:   Mon, 4 Dec 2023 02:40:31 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] Allow a kthread to declare that it calls
- task_work_run()
-Message-ID: <20231204024031.GV38156@ZenIV>
-References: <20231204014042.6754-1-neilb@suse.de>
- <20231204014042.6754-2-neilb@suse.de>
+        Sun, 3 Dec 2023 21:42:32 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A656D9;
+        Sun,  3 Dec 2023 18:42:38 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2ca03103155so4974391fa.0;
+        Sun, 03 Dec 2023 18:42:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701657756; x=1702262556; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SEUh6K5iutasnoMeRQbvniZJyhB8EqO9DGWeSRBdHG8=;
+        b=U2OuZqmucqFts8pAMt/wdD4lmr34uN6jJ/2bh2Hb8iYEpve6PK1jjBFcAMnW2jXsW0
+         s9qMLepYbliqh1PIAorSrtzuxrHMcl8wTU42TkZaBwZMKIKvZG6bUoX2Nsm4huEBBKal
+         kOV79Z5gP7m8T3TSMukeasr+T49wCsxWnRFS7+T38XWk7vivD2NqeRluCPmPEOA/7XXl
+         8gs75xOLkFR3BA8umg/sUY5wQfANIOAZCgUwA01z6gKkcQh12fnV2NzpfacFv/a3bNmr
+         4Ofk9fi7NdyeLyYg5BM9J7qyIlDB6S863h0geH75v3xQxjJVYF0M4OarjUVYPio0nvOj
+         g4mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701657756; x=1702262556;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SEUh6K5iutasnoMeRQbvniZJyhB8EqO9DGWeSRBdHG8=;
+        b=WIUeDHzytcpf0c/oZdrX7GeB/I9tDhKNEBoS46Wz/Zwqgw4x1E5WA/So1Wr04JSEDi
+         CNcG+HwMtydMbIfodpOfmBplpQPvBdncVDa08+MqTkR92TNtHnupWc525SytOhdEn74P
+         yASIHfkd+aIh+uL7x8fCe5rlRBAQergP4LQmVhoOZIFPt02vdkJndLx98/5Vx6hUfEfi
+         jWqVkDlGE9sYX7oiTGuzmvOf5mJu4bRnUWl85rbK+P1zRZ9tUqyX6cf/Am4afgV1EsxQ
+         n+Zd4pha3Undmp5tv1yZlwu302tQH7pY7GlLqr306SiOTvqnPxKmL+M0SJ56LlRza4Rs
+         mNHw==
+X-Gm-Message-State: AOJu0Yz8KemNXAHDqY4CmCvYkm1cpYqbyqyN2QzL+kcPLM5k2c4MGxgN
+        iUcjLfPC6+TZUnClqo7X5k3pYPQ9oTRT7X3dDnY=
+X-Google-Smtp-Source: AGHT+IFwUdfTpFRUP7l0fmhtGiz7fd+NP19pyuThwxbiypx7Ivz7rX5Zrc/KjwBbAY7wO0CJI2SrHgFWM/kImEvN9oM=
+X-Received: by 2002:a05:6512:ea1:b0:50b:f03c:1eaa with SMTP id
+ bi33-20020a0565120ea100b0050bf03c1eaamr553100lfb.95.1701657756237; Sun, 03
+ Dec 2023 18:42:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204014042.6754-2-neilb@suse.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1694421911.git.haibo1.xu@intel.com> <64e0637cd6f22dd7557ed44bd2242001e7830d1c.1694421911.git.haibo1.xu@intel.com>
+ <20230914-d2e594e7d84503ad14036e2d@orel> <CAJve8onhY534T=Hyncjfi4GfdZ+0D2xM+jRSaYCAWCdaKxPUcQ@mail.gmail.com>
+In-Reply-To: <CAJve8onhY534T=Hyncjfi4GfdZ+0D2xM+jRSaYCAWCdaKxPUcQ@mail.gmail.com>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Mon, 4 Dec 2023 10:42:24 +0800
+Message-ID: <CAJve8omitHDpijJaLV_wHk+5LXpsBUWF8_eTD4MeWKM-807Siw@mail.gmail.com>
+Subject: Re: [PATCH v3 9/9] KVM: riscv: selftests: Add sstc timer test
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 12:36:41PM +1100, NeilBrown wrote:
+On Fri, Sep 15, 2023 at 2:21=E2=80=AFPM Haibo Xu <xiaobo55x@gmail.com> wrot=
+e:
+>
+> On Thu, Sep 14, 2023 at 5:52=E2=80=AFPM Andrew Jones <ajones@ventanamicro=
+.com> wrote:
+> >
+> > On Thu, Sep 14, 2023 at 09:37:03AM +0800, Haibo Xu wrote:
+> > > Add a KVM selftests to validate the Sstc timer functionality.
+> > > The test was ported from arm64 arch timer test.
+> >
+> > I just tried this test out. Running it over and over again on QEMU I se=
+e
+> > it works sometimes, but it frequently fails with the
+> > GUEST_ASSERT_EQ(config_iter + 1, irq_iter) assert and at least once I
+> > also saw the __GUEST_ASSERT(xcnt >=3D cmp) assert.
+> >
+>
+> Good catch!
+>
+> I can also reproduce this issue and it is a common problem for both
+> arm64 and riscv because it also happens in a arm64 Qemu VM.
+>
+> It seems like a synchronization issue between host and guest shared
+> variables. Will double check the test code.
+>
+> > Thanks,
+> > drew
 
-> This means that any cost for doing the work is not imposed on the kernel
-> thread, and importantly excessive amounts of work cannot apply
-> back-pressure to reduce the amount of new work queued.
+Hi Andrew,
 
-It also means that a stuck ->release() won't end up with stuck
-kernel thread...
+After several rounds of regression testing, some findings:
+1. The intermittent failure also happened on ARM64 Qemu VM, and even
+in the initial arch_timer commit(4959d8650e9f4).
+2. it didn't happen on a ARM64 HW(but a different failure occured
+during stress test)
+3. The failure have a close relationship with
+TIMER_TEST_ERR_MARGIN_US(default 100), and after increasing
+     the macro to 300, the failure couldn't reproduced in 1000 loops
+stress test in RISC-V Qemu VM
 
-> earlier than would be ideal.  When __dput (from the workqueue) calls
+So my suggestion is we can expose the TIMER_TEST_ERR_MARGIN_US
+parameter as an arch_timer test arg parameter
+and tune it based on a specific test environment.
 
-WTF is that __dput thing?  __fput, perhaps?
+What's your opinion?
 
-> This patch adds a new process flag PF_RUNS_TASK_WORK which is now used
-> instead of PF_KTHREAD to determine whether it is sensible to queue
-> something to task_works.  This flag is always set for non-kernel threads.
-
-*ugh*
-
-What's that flag for?  task_work_add() always can fail; any caller must
-have a fallback to cope with that possibility; fput() certainly does.
-
-Just have the kernel threads born with ->task_works set to &work_exited
-and provide a primitive that would flip it from that to NULL.
-
-> @@ -1328,7 +1328,7 @@ static void mntput_no_expire(struct mount *mnt)
->  
->  	if (likely(!(mnt->mnt.mnt_flags & MNT_INTERNAL))) {
->  		struct task_struct *task = current;
-> -		if (likely(!(task->flags & PF_KTHREAD))) {
-> +		if (likely((task->flags & PF_RUNS_TASK_WORK))) {
->  			init_task_work(&mnt->mnt_rcu, __cleanup_mnt);
->  			if (!task_work_add(task, &mnt->mnt_rcu, TWA_RESUME))
->  				return;
-
-Now, *that* is something I have much stronger objections to.
-Stuck filesystem shutdown is far more likely than stuck
-->release().  You are seriously asking for trouble here.
-
-Why would you want to have nfsd block on that?
+Regards,
+Haibo
