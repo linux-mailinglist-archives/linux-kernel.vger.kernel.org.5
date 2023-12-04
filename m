@@ -2,108 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C02802BBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 07:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C2C802BBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 07:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234560AbjLDGy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 01:54:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49732 "EHLO
+        id S234563AbjLDGzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 01:55:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDGyy (ORCPT
+        with ESMTP id S234564AbjLDGzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 01:54:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1105ED5;
-        Sun,  3 Dec 2023 22:55:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701672901; x=1733208901;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=DkI6Gqdi3oM5F1BCGG/SyVaLLGeuLY9c6+WsMZZX+HU=;
-  b=ct2yt0LBod7DpN68pdzMxw7R/apgJ/tUkjHyv8brE7hBcNr2rnftldnl
-   jb3JCP7nF2Okc9z3FV/Glvp9P5TCxMBYT5U/RzIz9d3SsQrPBkddyhMpn
-   xKuyjZhay6i9xahY9NAfdUzSqHYgXHO2mSggqn2FLql2TuAkKUo4/tr2w
-   VFCBWai5alOIxlF3co8l4aiQ2szSYHeQBF56/ckMMcYtzNMT55Y8+Qgcm
-   KpBuTQ7JfsEq1yW7Hvtk3wqmEUndC0Erewlh/P6ZxRn1PA9MBKY0SwLtc
-   Jd+74YmeTuhXFSJQ2wHSCnhUd5rasnwocxt8/sMCxb/YK2OpelWkPD034
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="573866"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="573866"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 22:55:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="888430244"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="888430244"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.44.211])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 22:54:55 -0800
-Message-ID: <cc1f77b9-6a3f-4574-8d45-8c2ded43b589@intel.com>
-Date:   Mon, 4 Dec 2023 08:54:54 +0200
+        Mon, 4 Dec 2023 01:55:18 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F06D8
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 22:55:24 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c0e7b8a9bso383675e9.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 22:55:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701672922; x=1702277722; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VWZ3xHevBq7/IxqTa8ww23Un8tQbcWbjjl38PMj7wwE=;
+        b=gwdkrzOZTFR7hPAOSNEDMyW4f2boxhy/6Qp5kuoeE6Fdbj7LJWsXGoUqs4rDq70Avg
+         A9FbDsGljK+dGRTEfAgtzBe9PsbUo7deGfw3QwsnjwAD7t7Ck96MdERhsewZ3uFsvIaT
+         xAKDmWmZfOv8YixeQM8epp/SDcD9cQb+FpWWpG6xvv4g84bXl3f04fTsUDRsvSmX0xix
+         QUqRLEgfuKcYyysGqj8vjwGIcR5a1TwttnCWxSHXERrs5lzUZvrfL97s2iTm83+fosG/
+         Ln7+StBeVuoJrWtUSUobZVdtuGueQxqMmI2DzzGUROe+ld4fJWC0X1mRuxkvchsa5SOo
+         rwWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701672922; x=1702277722;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VWZ3xHevBq7/IxqTa8ww23Un8tQbcWbjjl38PMj7wwE=;
+        b=M9+VBYVKDfmt3cw1aK8Vt8fZ70DU2WX4TyaCIcfy/VJGKQ3ENUOkgmK/GJaIV4jBAW
+         wHoDuE806CCNLUVLG6AOU7qP+yNIlh5amn4f9SYC74Qdyi9VNiafkaOj/+c+cOTzABlV
+         kPnaUN/tHn90PXBGgOtz39sIZvJyk2rBf3iwuAcFyr7aTTflV9byMCCzDxRsGjNXKgH8
+         0eIHEJhIvm1+p7tuttplvksBOCqoWqkpJZqzNrkqcxbyV0q6vmBLsuLNLuEdJK1+duZ4
+         44HKd6XdxXHqMv9JB1U3/aZybS/Odtr48jjp8eszADFWrtj+7MR1nkkepTDgViu/aHgQ
+         Thow==
+X-Gm-Message-State: AOJu0Ywm6N3b1GwOHVP1/Z4ArU87kox1b6KUVWypZz4ASiOMBBYOvaSc
+        itZydiwrf0UEHU8yTF6/MaFWhDaGItbZ7eUzE1s=
+X-Google-Smtp-Source: AGHT+IFiOHRh6KgggrgE9oHGoBI0IKj+Fa+i1jkpxKqSlUGD/Fc2nUUAsmd23wu7naHM5HjvVzS9Qw==
+X-Received: by 2002:a05:600c:4e8b:b0:40b:5e21:dd1c with SMTP id f11-20020a05600c4e8b00b0040b5e21dd1cmr2258397wmq.74.1701672922626;
+        Sun, 03 Dec 2023 22:55:22 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id bd22-20020a05600c1f1600b004090798d29csm13892825wmb.15.2023.12.03.22.55.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 22:55:22 -0800 (PST)
+Date:   Mon, 4 Dec 2023 09:55:19 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: arch/nios2/kernel/time.c:223 nios2_timer_get_base_and_freq() warn:
+ '*base' from of_iomap() not released on lines: 220.
+Message-ID: <49db8904-e10d-4c91-be72-3dc182fb6e39@suswa.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/9] perf tests: Avoid fork in perf_has_symbol test
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        James Clark <james.clark@arm.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        John Garry <john.g.garry@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <20231201235031.475293-1-irogers@google.com>
- <20231201235031.475293-3-irogers@google.com>
-Content-Language: en-US
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231201235031.475293-3-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/23 01:50, Ian Rogers wrote:
-> perf test -vv Symbols is used to indentify symbols within the perf
-> binary. Add the -F flag so that the test command doesn't fork the test
-> before running. This removes a little overhead.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
+commit: dd1364a7439be4d20f87637a72eb7bd4553827f0 clocksource/drivers/nios2: Convert init function to return error
+config: nios2-randconfig-r081-20231120 (https://download.01.org/0day-ci/archive/20231204/202312040334.l78lahzX-lkp@intel.com/config)
+compiler: nios2-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231204/202312040334.l78lahzX-lkp@intel.com/reproduce)
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202312040334.l78lahzX-lkp@intel.com/
 
-> ---
->  tools/perf/tests/shell/lib/perf_has_symbol.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/shell/lib/perf_has_symbol.sh b/tools/perf/tests/shell/lib/perf_has_symbol.sh
-> index 5d59c32ae3e7..561c93b75d77 100644
-> --- a/tools/perf/tests/shell/lib/perf_has_symbol.sh
-> +++ b/tools/perf/tests/shell/lib/perf_has_symbol.sh
-> @@ -3,7 +3,7 @@
->  
->  perf_has_symbol()
->  {
-> -	if perf test -vv "Symbols" 2>&1 | grep "[[:space:]]$1$"; then
-> +	if perf test -vv -F "Symbols" 2>&1 | grep "[[:space:]]$1$"; then
->  		echo "perf does have symbol '$1'"
->  		return 0
->  	fi
+New smatch warnings:
+arch/nios2/kernel/time.c:223 nios2_timer_get_base_and_freq() warn: '*base' from of_iomap() not released on lines: 220.
+
+Old smatch warnings:
+internal error: arch/nios2/include/asm/irqflags.h:25 SQL error #2: near "and": syntax error
+internal error: arch/nios2/include/asm/irqflags.h:25 SQL: 'select * from return_states where  and type = 1044 and parameter = -1 and key = '$' limit 1;'
+arch/nios2/kernel/time.c:139 nios2_timer_config() warn: inconsistent indenting
+
+vim +223 arch/nios2/kernel/time.c
+
+dd1364a7439be4 Daniel Lezcano 2016-06-07  209  static int __init nios2_timer_get_base_and_freq(struct device_node *np,
+4182de9e6356c0 Ley Foon Tan   2014-11-06  210  				void __iomem **base, u32 *freq)
+4182de9e6356c0 Ley Foon Tan   2014-11-06  211  {
+4182de9e6356c0 Ley Foon Tan   2014-11-06  212  	*base = of_iomap(np, 0);
+dd1364a7439be4 Daniel Lezcano 2016-06-07  213  	if (!*base) {
+dd1364a7439be4 Daniel Lezcano 2016-06-07  214  		pr_crit("Unable to map reg for %s\n", np->name);
+dd1364a7439be4 Daniel Lezcano 2016-06-07  215  		return -ENXIO;
+dd1364a7439be4 Daniel Lezcano 2016-06-07  216  	}
+dd1364a7439be4 Daniel Lezcano 2016-06-07  217  
+dd1364a7439be4 Daniel Lezcano 2016-06-07  218  	if (of_property_read_u32(np, "clock-frequency", freq)) {
+dd1364a7439be4 Daniel Lezcano 2016-06-07  219  		pr_crit("Unable to get %s clock frequency\n", np->name);
+dd1364a7439be4 Daniel Lezcano 2016-06-07  220  		return -EINVAL;
+
+Over the weekend the kbuild bot started going through some truly ancient
+warnings.  Apparently we're supposed to iounmap() on this error path.
+
+dd1364a7439be4 Daniel Lezcano 2016-06-07  221  	}
+4182de9e6356c0 Ley Foon Tan   2014-11-06  222  
+dd1364a7439be4 Daniel Lezcano 2016-06-07 @223  	return 0;
+4182de9e6356c0 Ley Foon Tan   2014-11-06  224  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
