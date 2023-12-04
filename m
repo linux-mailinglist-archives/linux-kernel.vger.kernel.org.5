@@ -2,159 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A528802E09
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0A8802E13
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231572AbjLDJAN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 04:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54594 "EHLO
+        id S1343697AbjLDJAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230198AbjLDJAK (ORCPT
+        with ESMTP id S232342AbjLDJAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:00:10 -0500
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7E685;
-        Mon,  4 Dec 2023 01:00:16 -0800 (PST)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5cd81e76164so46172117b3.1;
-        Mon, 04 Dec 2023 01:00:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701680415; x=1702285215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zv4xm2Lr7Wl/3u3PM4BZ5e6ASOFA8kBT22UWNSzI29A=;
-        b=W4IcEPU/06rXnT8zKoV97sb61dfK4jvSzjiUKRd2h1ZIyGrOSEWewb93tkXsKxgV0A
-         fyS58euO9pu8E/Prk+l6TktdqcACF3vGncdOCtMy+fDvDZoWUOpNizD1SapCF0RWwX6O
-         YsuR8gHtx8OnYuPVHwooZhdRrP1knUbl8uAuUskgOPKHy+oYiguzK/1Ipb8zhRusOrIC
-         8kXq5aHCzc9YPk8ByTt7hGCsXbZUgql4kjw0i8VXu9DUdkYRUM/+v4we+hnqt/wVybT4
-         +KObvOxtQ5ZoAx6J+fPx7AYaFDBBQbUHT6RjAu8f48MK51cg5Usm8EFMslZZ5F9Ycp6b
-         /ozQ==
-X-Gm-Message-State: AOJu0YxZ2wOAHYwftq2KHj7FQYSatZvhZXiVTiKlxHcT9T8CnFhyDdZl
-        iwaID55UoVvq3WjwHFYsTJLOj0auQvS88A==
-X-Google-Smtp-Source: AGHT+IFLHN5lVcrEbK+UZgMtBA8xq+NoiT1Pt2RM2CuumlHSXQwJJCsSPcRznYrTmXwNk4ReaxfVGQ==
-X-Received: by 2002:a81:7847:0:b0:5d7:1940:dd77 with SMTP id t68-20020a817847000000b005d71940dd77mr2172352ywc.77.1701680415246;
-        Mon, 04 Dec 2023 01:00:15 -0800 (PST)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id v136-20020a81488e000000b005d8bb479c51sm458655ywa.11.2023.12.04.01.00.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 01:00:15 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5d4f71f7e9fso27337927b3.0;
-        Mon, 04 Dec 2023 01:00:15 -0800 (PST)
-X-Received: by 2002:a81:d206:0:b0:5d7:6089:9617 with SMTP id
- x6-20020a81d206000000b005d760899617mr2012816ywi.24.1701680414955; Mon, 04 Dec
- 2023 01:00:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120070024.4079344-11-claudiu.beznea.uj@bp.renesas.com>
- <CAMuHMdW9Unpw7NQOGWd4SeFV8XgvRYTKTXnt9Tsagb3Q3U9tNA@mail.gmail.com>
- <96dd3f54-9560-4587-b4e8-bf75422ff5ef@tuxon.dev> <CAMuHMdWGbEhBdzK4Swu4uX05vX7H2Ow4uE1C=JVNOrdcbZYL=A@mail.gmail.com>
- <b3701927-e41a-44d8-8f91-da245b76f532@tuxon.dev>
-In-Reply-To: <b3701927-e41a-44d8-8f91-da245b76f532@tuxon.dev>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Dec 2023 10:00:03 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVmD7-AUn91SaOq1iOMkcGhi0WNvx8bCX3oD+xa-Bt98g@mail.gmail.com>
-Message-ID: <CAMuHMdVmD7-AUn91SaOq1iOMkcGhi0WNvx8bCX3oD+xa-Bt98g@mail.gmail.com>
-Subject: Re: [PATCH 10/14] arm64: renesas: r9a08g045: Add Ethernet nodes
-To:     claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@armlinux.org.uk, magnus.damm@gmail.com,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
-        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
-        broonie@kernel.org, alexander.stein@ew.tq-group.com,
-        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 04:00:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD5C100
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:00:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D406C433C9;
+        Mon,  4 Dec 2023 09:00:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701680424;
+        bh=Gt8qQX0dLBoE9A1NhesBli+9toqY41S3mdlGK2o31zc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ehcE4IcFZUD7pZB7iulQ0fpBf0Mlo8JQv+mrUqSTAyOj9fm/6a94Jol0kc2M8WqKG
+         gS5IQ4tntoQUlCPgUxLI5ynkqggB+UQrELfBdO6cEArTcj4d9HopDRqxxXpnQumX7O
+         LoTeiFa3Hnqjz02T3tm3V0SkAMpmrpx06J0UvuiScWI/3MVKehKx+3F9xKEpKWoZFZ
+         dwIK89Nmjrlx1FVg1VE3fcCok8GnMlZ5bH9JNL42yhFndfnxkYVzAul9bvHhx85f+v
+         djAliMwgBMG7ZcvPTGEli7Fz5u1IF2kMdKn6B32z5YxE3qZ9QJmoHDPvm5szSMxuyB
+         TzGebDC9D+sig==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rA4oP-0019X3-Ly;
+        Mon, 04 Dec 2023 09:00:21 +0000
+Date:   Mon, 04 Dec 2023 09:00:21 +0000
+Message-ID: <86r0k2bavu.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Kunkun Jiang <jiangkunkun@huawei.com>, dongli.zhang@oracle.com,
+        cohuck@redhat.com, stefanha@redhat.com, mst@redhat.com,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        wanghaibin.wang@huawei.com
+Subject: Re: [RFC PATCH] KVM: arm/arm64: GICv4: Support shared VLPI
+In-Reply-To: <CACGkMEub4f0FWsrJzSK4e+9cC6LUNFm3vAcfSkpsp6pD=WM5qA@mail.gmail.com>
+References: <20231102143507.840-1-jiangkunkun@huawei.com>
+        <87msvt6cc7.wl-maz@kernel.org>
+        <1fb8353e-e9c4-2570-c2ca-ec537c18ac4d@huawei.com>
+        <86edh228xx.wl-maz@kernel.org>
+        <952bd5dc-dd20-acc3-d77e-c9b14e5728d3@huawei.com>
+        <87fs0k94og.wl-maz@kernel.org>
+        <CACGkMEt5sapZjpyBSM5oX_=k1AcefEe5D4wtX=HqtHy4AD3j_g@mail.gmail.com>
+        <CACGkMEub4f0FWsrJzSK4e+9cC6LUNFm3vAcfSkpsp6pD=WM5qA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jasowang@redhat.com, jiangkunkun@huawei.com, dongli.zhang@oracle.com, cohuck@redhat.com, stefanha@redhat.com, mst@redhat.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, gshan@redhat.com, jean-philippe@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, wanghaibin.wang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
-
-On Mon, Dec 4, 2023 at 9:38 AM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
-> On 04.12.2023 10:02, Geert Uytterhoeven wrote:
-> > On Mon, Dec 4, 2023 at 8:41 AM claudiu beznea <claudiu.beznea@tuxon.dev> wrote:
-> >> On 01.12.2023 19:35, Geert Uytterhoeven wrote:
-> >>> On Mon, Nov 20, 2023 at 8:01 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> >>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >>>>
-> >>>> Add Ethernet nodes available on RZ/G3S (R9A08G045).
-> >>>>
-> >>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> >>>
-> >>> Thanks for your patch!
-> >>>
-> >>>> --- a/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-> >>>> +++ b/arch/arm64/boot/dts/renesas/r9a08g045.dtsi
-> >>>> @@ -149,6 +149,38 @@ sdhi2: mmc@11c20000 {
-> >>>>                         status = "disabled";
-> >>>>                 };
-> >>>>
-> >>>> +               eth0: ethernet@11c30000 {
-> >>>> +                       compatible = "renesas,r9a08g045-gbeth", "renesas,rzg2l-gbeth";
-> >>>> +                       reg = <0 0x11c30000 0 0x10000>;
-> >>>> +                       interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>,
-> >>>> +                                    <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>,
-> >>>> +                                    <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
-> >>>> +                       interrupt-names = "mux", "fil", "arp_ns";
-> >>>> +                       clocks = <&cpg CPG_MOD R9A08G045_ETH0_CLK_AXI>,
-> >>>> +                                <&cpg CPG_MOD R9A08G045_ETH0_CLK_CHI>,
-> >>>> +                                <&cpg CPG_MOD R9A08G045_ETH0_REFCLK>;
-> >>>> +                       clock-names = "axi", "chi", "refclk";
-> >>>> +                       resets = <&cpg R9A08G045_ETH0_RST_HW_N>;
-> >>>> +                       power-domains = <&cpg>;
-> >>>
-> >>> Perhaps add a default phy mode, like on other SoCs?
-> >>>
-> >>>     phy-mode = "rgmii"';
-> >>
-> >> I skipped this (even it was available on the other SoCs) as I consider the
-> >> phy-mode is board specific.
+On Mon, 04 Dec 2023 08:47:49 +0000,
+Jason Wang <jasowang@redhat.com> wrote:
+>=20
+> On Mon, Dec 4, 2023 at 4:39=E2=80=AFPM Jason Wang <jasowang@redhat.com> w=
+rote:
 > >
-> > IC.  Still, it's good to have some consistency across boards.
+> > On Sat, Dec 2, 2023 at 8:20=E2=80=AFPM Marc Zyngier <maz@kernel.org> wr=
+ote:
+> > >
+> > > Hi Kunkun,
+> > >
+> > > On Wed, 08 Nov 2023 09:45:51 +0000,
+> > > Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+> > > >
+> > > > Hi Marc,
+> > > >
+> > > > On 2023/11/6 23:33, Marc Zyngier wrote:
+> > > > > On Mon, 06 Nov 2023 14:59:01 +0000,
+> > > > > Kunkun Jiang <jiangkunkun@huawei.com> wrote:
+> > > > >> The virtio-pci driver write entry1-6
+> > > > >> massage.data in the msix-table and trap to QEMU for processing. =
+The
+> > > > >> massage.data is as follow:
+> > > > >>> entry-0 0
+> > > > >>> entry-1 1
+> > > > >>> entry-2 1
+> > > > >>> entry-3 1
+> > > > >>> entry-4 1
+> > > > >>> entry-5 1
+> > > > >>> entry-6 1
 > >
-> >>> Also missing:
-> >>>
-> >>>     #address-cells = <1>;
-> >>>     #size-cells = <0>;
-> >>
-> >> Same for these.
+> > It looks like a bug from the driver. It should only use vector 0 and 1
+> > in this case.
 > >
-> > These are required, and always have the same values, so it makes more
-> > sense to have them in the SoC .dtsi file, once.
->
-> I remember I had a compilation warning with an Ethernet controller
-> configured with fixed-link having #address-cells, #size-cells. With
-> fixed-link these were not needed.
+> > Could you please check the queue_msix_vector for each queue in this cas=
+e?
+>=20
+> Or did you actually mean queue_msix_vector here? I'm not familiar with
+> ARM but 0 doesn't seem to be a good message.data anyhow.
 
-I think EtherAVB always use MDIO for management, so fixed-link is
-not applicable.
+Why? What's special about 0? 0 is a perfectly fine value.
 
-> Anyway... I'll keep all in dtsi if you prefer it this way.
+	M.
 
-Yes please, thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--=20
+Without deviation from the norm, progress is not possible.
