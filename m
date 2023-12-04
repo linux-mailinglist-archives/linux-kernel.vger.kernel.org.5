@@ -2,144 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 883FA8041D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB038041D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:46:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234285AbjLDWqp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 17:46:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51084 "EHLO
+        id S231522AbjLDWqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234255AbjLDWqn (ORCPT
+        with ESMTP id S229703AbjLDWqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:46:43 -0500
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9138A9B;
-        Mon,  4 Dec 2023 14:46:49 -0800 (PST)
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so1901720a12.0;
-        Mon, 04 Dec 2023 14:46:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701730009; x=1702334809;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LwdYS3W7LrNgkr4g+R3rXOTMxy7LyncKsnMZAwvDxzA=;
-        b=OSHrbVPDciijAzOaY3+sreYE3LmiSUC3WFrGdv9aku/jm0RaxNNommO3PnVczzHxGX
-         vcT/OWOV6gGXceQDzIOJlzGW7Nf/NQI9MZe+1Wr8/gXutBrsMmf+meLnR9ZU7cycm4G5
-         P6QOmGBCxX6Ujzcjquvz9Sk2TXGl8kSUQqsALOV5YNmwJisGnPEO+HH1NnbbWb00wMd7
-         o1DfPx7qVKzc92i6pYoTEWXUwzxYVDCXCJX/QQbb8TXX4eoVq0I69vhTh4Rc0vXbrX4u
-         sEPt78mHMTPbq6K2sA8JTnoSCieqT47yusu5KteG+KblMHkK6qRuwGh2uK1swShyJtoY
-         GaAQ==
-X-Gm-Message-State: AOJu0YyHHXUNehOvQcT9tqvHq0g+uwGzxTiDjfgA7AVN5T8aBJZi/vtv
-        TPlcfOfWVyoIVUYTEj+pQgZYrk6HN760SlQZ+oQ=
-X-Google-Smtp-Source: AGHT+IGUFco2rR/+xB69zGaID+AA+8euhHgTNPvXTxjMib4H74P51lc8L80pWnSmaEW0XTIenuSeqbXh6fE8vtkDrzU=
-X-Received: by 2002:a05:6a20:8f15:b0:18c:159b:777 with SMTP id
- b21-20020a056a208f1500b0018c159b0777mr31046328pzk.26.1701730008727; Mon, 04
- Dec 2023 14:46:48 -0800 (PST)
+        Mon, 4 Dec 2023 17:46:38 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E009B
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:46:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=1SvhhogXKYPRX45z1KqNA56S/+FRW1MivpZ9wWcaoxw=; b=kpP98aY7s6WDXYPI2nX5SHAdAS
+        RHYgMOYMafV75SVtyBASxGo/27LmR+bD8xV/nlv6ir/Ofw8ZyA7HW7p5F1tSkQkhGzu2gyOYFGhS4
+        rPPV0JzEeZ9SAxPp4ifTBxfhb3eZ8nT4REp/oF2vkLER+NIf9bGBanhzYgJPxcAIcgKcTVrGXYLi9
+        ZH8sx8rFBbK4P2t9EAgAqv/Hx4F+0Nc821cCaQZijkAxh9f5KjbIpS497Kq/6lSO2I0RhFsbk2qQN
+        ZNlIC/S/2NXyGIoIzaxyO5glmEKTLJ+xp3cVDA9qZ0/fYaYKOn9f+9byFBIAOA1h8jg7j6VB+4pE5
+        5BjCkmhw==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAHi6-005jdv-1L;
+        Mon, 04 Dec 2023 22:46:42 +0000
+Message-ID: <61f2de49-131f-4619-b62e-dfe2f5b6bf3c@infradead.org>
+Date:   Mon, 4 Dec 2023 14:46:41 -0800
 MIME-Version: 1.0
-References: <20231128175441.721579-1-namhyung@kernel.org> <CAP-5=fWfKqgT60TFRALw8vTDQT7VFV+0+eo1rFSSH3eVrjzPmA@mail.gmail.com>
- <CAM9d7chKmDETK6Ea2wyR8L21jyHWcPHbKavarnq-JmNA-AoUnQ@mail.gmail.com> <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
-In-Reply-To: <CAP-5=fUf6R=bsfg7i8atFApJBY-=zWUBMq7inFsCPZhB+w2==Q@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 4 Dec 2023 14:46:37 -0800
-Message-ID: <CAM9d7cjDiu=dksnhboJFT4uPQJcvGMB-vBt96v3i7Kqy5LKRMw@mail.gmail.com>
-Subject: Re: [PATCHSET 0/8] perf annotate: Make annotation_options global (v1)
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: drivers/usb/gadget/function/f_uac1_legacy.c:1: warning: no
+ structured comments found
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Felipe Balbi <felipe.balbi@linux.intel.com>
+References: <202311211052.RsFuk4Gr-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <202311211052.RsFuk4Gr-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 10:37 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Wed, Nov 29, 2023 at 3:56 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hi Ian,
-> >
-> > On Tue, Nov 28, 2023 at 11:14 AM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Tue, Nov 28, 2023 at 9:54 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > It used to have annotation_options for each command separately (for
-> > > > example, perf report, annotate, and top), but we can make it global as
-> > > > they never used together (with different settings).  This would save
-> > > > some memory for each symbol when annotation is enabled.
-> > > >
-> > > > This code is available at 'perf/annotate-option-v1' branch in
-> > > >
-> > > >   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-> > > >
-> > > > Thanks,
-> > > > Namhyung
-> > >
-> > > Thanks for doing this and I think it is progress. I think there is a
-> > > common problem with having things be an option rather than say part of
-> > > session. Having a global variable seems unfortunate but I'm not sure
-> > > if in all locations we have easy access to the session.
-> >
-> > That's not the case when you deal with hist entry or TUI browser.
-> > I think that's the reason we have the option in the annotation.
-> >
-> >
-> > > The rough
-> > > structure with annotations as I understand it is:
-> > >
-> > > session has machines
-> > > a machine has dsos
-> > > a dso has symbols
-> > > a symbol has an annotation
-> >
-> > That's true.  But the annotation struct is used only if
-> > symbol__annotation_init() is called.
->
-> Right. I find this approach likely to lead to errors, such as a symbol
-> created globally before symbol__annotation_init() was called breaking
-> the container_of assumptions.
+Hi ktr,
 
-Sure, but that's a different issue.  Maybe we can add a hash table
-to map a symbol to annotation or annotated_source directly.  But
-I don't think we need annotation_option for each symbol/annotation.
+On 11/20/23 18:31, kernel test robot wrote:
+> Hi Ruslan,
+> 
+> FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   98b1cc82c4affc16f5598d4fa14b1858671b2263
+> commit: d355339eecd986648420e05f8c958fbc78dbb382 usb: gadget: function: make current f_uac1 implementation legacy
+> date:   6 years ago
+> config: i386-randconfig-002-20231120 (https://download.01.org/0day-ci/archive/20231121/202311211052.RsFuk4Gr-lkp@intel.com/config)
+> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211052.RsFuk4Gr-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311211052.RsFuk4Gr-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
 
->
-> > >
-> > > Annotation is something of unfortunate abstraction as it covers things
-> > > like an IPC per symbol (why hard code to just IPC?) and things like
-> > > source files and line numbers.
-> >
-> > Right, that's why I splitted the struct annotated_branch.
-> >
-> > >
-> > > A recent success story where we got rid of a configuration variable
-> > > was by switching to lazy allocation with sorting by name for symbols
-> > > within a dso. If we could have a lazy allocation model with
-> > > annotations then maybe we can do away with large hammers like global
-> > > options.
-> >
-> > Maybe I can move the pointer to option into the annotated_source
-> > which is allocated lazily.  But I don't think it needs to keep the option
-> > for each symbol or annotation.  It's usually to control some display
-> > behaviors in the disasm output globally.  So I think it's better to have
-> > a global variable.
->
-> Sgtm. My point wasn't to criticize, I think this is a good change, I
-> was just trying to imagine doing things in a way that could overall
-> reduce complexity
+I can't reproduce any of these warnings.
 
-Yep, thanks for your review.  Can I get your ACKs? :)
-Namhyung
+I think that you should reevaluate something here.
+
+
+>>> drivers/usb/gadget/function/f_uac1_legacy.c:1: warning: no structured comments found
+> --
+>>> drivers/usb/gadget/function/u_uac1_legacy.c:33: warning: No description found for parameter 'i'
+>>> drivers/usb/gadget/function/u_uac1_legacy.c:33: warning: No description found for parameter 'val'
+>>> drivers/usb/gadget/function/u_uac1_legacy.c:96: warning: No description found for parameter 'snd'
+>>> drivers/usb/gadget/function/u_uac1_legacy.c:156: warning: No description found for parameter 'card'
+>>> drivers/usb/gadget/function/u_uac1_legacy.c:156: warning: No description found for parameter 'buf'
+>>> drivers/usb/gadget/function/u_uac1_legacy.c:156: warning: No description found for parameter 'count'
+>    drivers/usb/gadget/function/u_uac1_legacy.c:205: warning: No description found for parameter 'card'
+>>> drivers/usb/gadget/function/u_uac1_legacy.c:265: warning: No description found for parameter 'gau'
+>    drivers/usb/gadget/function/u_uac1_legacy.c:294: warning: No description found for parameter 'card'
+>>> drivers/usb/gadget/function/u_uac1_legacy.c:311: warning: No description found for parameter 'the_card'
+> 
+> 
+> vim +1 drivers/usb/gadget/function/f_uac1_legacy.c
+> 
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03  @1  /*
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03   2   * f_audio.c -- USB Audio class function driver
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03   3    *
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03   4   * Copyright (C) 2008 Bryan Wu <cooloney@kernel.org>
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03   5   * Copyright (C) 2008 Analog Devices, Inc
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03   6   *
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03   7   * Enter bugs at http://blackfin.uclinux.org/
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03   8   *
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03   9   * Licensed under the GPL-2 or later.
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03  10   */
+> c6994e6f067cf0 drivers/usb/gadget/f_audio.c Bryan Wu 2009-06-03  11  
+> 
+> :::::: The code at line 1 was first introduced by commit
+> :::::: c6994e6f067cf0fc4c6cca3d164018b1150916f8 USB: gadget: add USB Audio Gadget driver
+> 
+> :::::: TO: Bryan Wu <cooloney@kernel.org>
+> :::::: CC: Greg Kroah-Hartman <gregkh@suse.de>
+> 
+
+-- 
+~Randy
