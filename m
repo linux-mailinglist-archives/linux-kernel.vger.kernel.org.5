@@ -2,129 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A8E803AAB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0693803A95
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345337AbjLDQk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:40:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
+        id S230018AbjLDQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:41:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbjLDQkn (ORCPT
+        with ESMTP id S229477AbjLDQlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:40:43 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455D19A
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:40:50 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-35d374bebe3so3364915ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:40:50 -0800 (PST)
+        Mon, 4 Dec 2023 11:41:44 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B789A;
+        Mon,  4 Dec 2023 08:41:50 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3316a4bc37dso4392857f8f.2;
+        Mon, 04 Dec 2023 08:41:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1701708049; x=1702312849; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9sem4dBhG2CeNb+zQtPy2koVbwBzo9IeMdXvsFSGQ+A=;
-        b=TNdfyWdJN77ddjbzIgbR+8/wpK6XowI9y+NNVyPLMKjFLTi7bsfqDe73UU2IJ7Fa03
-         gxfpXH0hcfpVfcziI8cXf7aKXSKJa4XepLXyyc+HX1RLMD67y1r5Ubjd9vQ2GCvUGcny
-         ZBf4PxYu+HpPUnIe4NdTXxo7avyY6Wm3aKFevvQzCBw9uvNdJ3lE8Gcr4XK4ZgmQWR5Q
-         wLj/H31rfxLX8LpD8XZyWn1DW58Wgu3Xg74/OJh4Btcj99mbRD6o4kEZgDEotpCsFcco
-         jBbyQJHOgda3NDfQeOXFc6pFx4HsistN0qjOQb6Dh4RFWnPFkVipyWJD9ZqPHWxMm53B
-         ep+w==
+        d=gmail.com; s=20230601; t=1701708109; x=1702312909; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6KJn9AsRhet3LPMYrxQkrFL4xXi1HWQlnhRfWLxXAos=;
+        b=m6lrwR/c9DqngHxTbixY+YNJLxMl0kjS8z6N0zWzZmTK2aeOvirReyrDNXFCIkoGKl
+         HcoM+6G0BL7SMpJNFmm8+F36uGiXJO666QuxI/AsNZQ2pRDvxbvoq1c03rr8HitmoADu
+         Ju4IuleYLBoZi/yokWAGIlTSHOvQAXpmBwjlcexawbDswnBQ72Nffdwi1VeZsn63UcIc
+         HlhkJxWkZmmO9JrEd5tOHFCpraDSLvPqnG7MlSsN3fKSGO3y4pxYga8ewrd3jj4/WcYT
+         OJEshNJVxITKcq6XHvnTwvpOv246S2dzbL4M0YDjqbm6uAwMRhMdFa/JO9FdGjyNaxgf
+         j9fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701708049; x=1702312849;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9sem4dBhG2CeNb+zQtPy2koVbwBzo9IeMdXvsFSGQ+A=;
-        b=rSQ5t5XG+Sk6jbhZVa1Bn72Q+8eE/TE/4kuTvaLY2ZsEIkz6/ml62DtDyrnaF61xbo
-         qdqglIfWbjh7BBDIYi+v701x9tSz65MbHPwucpZ37rAZTrlMgJDi3iRMDiCGP0M7/h1q
-         t8hPBG053rF9Ybyototn3HdDP8bE/m2er4q3UxYVtHExQwrC7GvNXEg/K3cQUkIYUgcF
-         N/AK3sfu8HdFZOXBAbx5jlVafZwNCxMxWFw7+SGwyxnwFl6drVkUch6UC+Ge1Wdmd/Wu
-         nCZwv/rIr8sHZoYbrctwvNhd3Vtf/VmSoqBopKMsss6ReaJCt2DVcpkkAQb1iw9FjbCG
-         GZEQ==
-X-Gm-Message-State: AOJu0YyPIBjAnYB6MWU2SZB1HGVIN6lBJmyPwi9iVGZ3YZOhVW8cEyAO
-        8eZUl9DQHzxS1QJpPmwrAnMLzUawQSZ6D861BIOrRw==
-X-Google-Smtp-Source: AGHT+IHvUIpJLZVyPxIMGP6Dj+9jzvG6ivqjN19NmObktY/8JqJk5q03LyMK6kxbN7K0vEiKyuS96A==
-X-Received: by 2002:a05:6602:2245:b0:7b3:5be5:fa55 with SMTP id o5-20020a056602224500b007b35be5fa55mr32608290ioo.2.1701708049570;
-        Mon, 04 Dec 2023 08:40:49 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id do36-20020a0566384ca400b0046494245f0fsm2664717jab.26.2023.12.04.08.40.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 08:40:49 -0800 (PST)
-Message-ID: <cf00a996-c262-4457-93de-ca7960ad6df6@kernel.dk>
-Date:   Mon, 4 Dec 2023 09:40:48 -0700
+        d=1e100.net; s=20230601; t=1701708109; x=1702312909;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6KJn9AsRhet3LPMYrxQkrFL4xXi1HWQlnhRfWLxXAos=;
+        b=WrFgx0Fnmrc80QV23uIT6LPj0PreENUFVVkM+lfw1k64iQF7imslCPOaB0OFmZ4nQL
+         gK1yBhlVaeyjAM3YqE40ekoyE3LzmUWNmv11hICNeV9ptRskfzyjjxiQ3X6NpN8Suw7l
+         zgG8nRPqYmzDWL8HHApyrpEj/FfN+7obHVl6uPhk3In+UiRWZuKwpRHcJBD2z/LrN618
+         ELs3F15dXAEqTlDZ/HDzRHgutwCO+8Y3okkc6xtZLG03ref0nt4V5PvN1+OqM43Rfhhv
+         rSbuMnNbIFI4Zy7XFSueRMQ21HZXqSWbdzY/euqGlp+u2UyBgESSlrrHhGYv5laVg3di
+         nqYw==
+X-Gm-Message-State: AOJu0YyApnUBs4oLOZMjLHPrPyiiujUVcX05qa6fFwqRCYJ3GoQx4oco
+        hxl2FVEBSjGDKLwSxME3LvA=
+X-Google-Smtp-Source: AGHT+IGGQsZJ3eOLPq6l8Ehu4n5FPqXCh2VbaytPpR3qjhezSmcei/sWQ9i5KU8NMKyMFwH4pcjblA==
+X-Received: by 2002:a5d:40c4:0:b0:333:1ca5:7954 with SMTP id b4-20020a5d40c4000000b003331ca57954mr3089959wrq.69.1701708108943;
+        Mon, 04 Dec 2023 08:41:48 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id j28-20020adfb31c000000b003333d46a9e8sm6415350wrd.56.2023.12.04.08.41.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 08:41:48 -0800 (PST)
+Message-ID: <9b11a42d83dfe77215bafae1d116375ee2398ae6.camel@gmail.com>
+Subject: Re: [PATCH 04/12] iio: adc: ad9467: fix reset gpio handling
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     David Lechner <dlechner@baylibre.com>, nuno.sa@analog.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Date:   Mon, 04 Dec 2023 17:41:48 +0100
+In-Reply-To: <20231204151514.4e2c8ada@jic23-huawei>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+         <20231121-dev-iio-backend-v1-4-6a3d542eba35@analog.com>
+         <CAMknhBGCqnzCp6vQ+59Z-SybScvbtU7aWdAD6KnP1e6=q60gVQ@mail.gmail.com>
+         <d534c3323c32d4ed2aedae19a9f101be90ef0cc7.camel@gmail.com>
+         <CAMknhBGjm2ja9HOenOWi9O5Ao8qUg=gT=_Vz8CyxQ=pfNX2EJQ@mail.gmail.com>
+         <3925cb4b6453644c889675c20329b3477a06fcd5.camel@gmail.com>
+         <20231204151514.4e2c8ada@jic23-huawei>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] tee: Use iov_iter to better support shared buffer
- registration
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Sumit Garg <sumit.garg@linaro.org>,
-        Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
-References: <20231129164439.1130903-1-arnaud.pouliquen@foss.st.com>
- <CAFA6WYP=_BPt_x1FxeVdAdB_mMjdz8QzvkfFXx-5msy8PZG6nA@mail.gmail.com>
- <60b67bd5-36c3-4318-9a2b-bcf172681d45@foss.st.com>
- <CAFA6WYN9eJ1vGTKfGXy7M709=aGkg1oF3odK7iGRUBokbKtqzw@mail.gmail.com>
- <40902a86-3b88-45bc-bb6f-2de0eb48dc9d@foss.st.com>
- <CAFA6WYPGkpVN-XP7eAzLXMReRi7FBp3boKzhMfasasuE=XWBow@mail.gmail.com>
- <438a8b44-ea5f-4e13-bd7e-e1c2e2a481c4@kernel.dk>
-In-Reply-To: <438a8b44-ea5f-4e13-bd7e-e1c2e2a481c4@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/23 9:36 AM, Jens Axboe wrote:
-> On 12/4/23 5:42 AM, Sumit Garg wrote:
->> IMO, access_ok() should be the first thing that import_ubuf() or
->> import_single_range() should do, something as follows:
->>
->> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
->> index 8ff6824a1005..4aee0371824c 100644
->> --- a/lib/iov_iter.c
->> +++ b/lib/iov_iter.c
->> @@ -1384,10 +1384,10 @@ EXPORT_SYMBOL(import_single_range);
->>
->>  int import_ubuf(int rw, void __user *buf, size_t len, struct iov_iter *i)
->>  {
->> -       if (len > MAX_RW_COUNT)
->> -               len = MAX_RW_COUNT;
->>         if (unlikely(!access_ok(buf, len)))
->>                 return -EFAULT;
->> +       if (len > MAX_RW_COUNT)
->> +               len = MAX_RW_COUNT;
->>
->>         iov_iter_ubuf(i, rw, buf, len);
->>         return 0;
->>
->> Jens A., Al Viro,
->>
->> Was there any particular reason which I am unaware of to perform
->> access_ok() check on modified input length?
-> 
-> This change makes sense to me, and seems consistent with what is done
-> elsewhere too.
+On Mon, 2023-12-04 at 15:15 +0000, Jonathan Cameron wrote:
+> On Sat, 02 Dec 2023 09:36:47 +0100
+> Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+>=20
+> > On Fri, 2023-12-01 at 11:01 -0600, David Lechner wrote:
+> > > On Fri, Dec 1, 2023 at 2:47=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmai=
+l.com> wrote:=C2=A0=20
+> > > >=20
+> > > > On Thu, 2023-11-30 at 15:41 -0600, David Lechner wrote:=C2=A0=20
+> > > > > On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
+> > > > > <devnull+nuno.sa.analog.com@kernel.org> wrote:=C2=A0=20
+> > > > > >=20
+> > > > > > From: Nuno Sa <nuno.sa@analog.com>
+> > > > > >=20
+> > > > > > The reset gpio was being requested with GPIOD_OUT_LOW which mea=
+ns, not
+> > > > > > asserted. Then it was being asserted but never de-asserted whic=
+h means
+> > > > > > the devices was left in reset. Fix it by de-asserting the gpio.=
+=C2=A0=20
+> > > > >=20
+> > > > > It could be helpful to update the devicetree bindings to state th=
+e
+> > > > > expected active-high or active-low setting for this gpio so it is
+> > > > > clear which state means asserted.
+> > > > > =C2=A0=20
+> > > >=20
+> > > > You could state that the chip is active low but I don't see that ch=
+ange that
+> > > > important for now. Not sure if this is clear and maybe that's why y=
+our
+> > > > comment.
+> > > > GPIOD_OUT_HIGH has nothing to do with active high or low. It just m=
+eans, "get
+> > > > me
+> > > > the
+> > > > pin in the asserted state".
+> > > > =C2=A0=20
+> > >=20
+> > > I would assume that this bug happened in the first place because
+> > > someone forgot GPIOD_OUT_LOW in the devicetree when they were
+> > > developing the driver. So this is why I suggested that updating the
+> > > devicetree binding docs so that future users are less likely to make
+> > > the same mistake. Currently, the bindings don't even have reset-gpios
+> > > in the examples.=C2=A0=20
+> >=20
+> > Hmm, I think you're missing the point... The bug has nothing to do with
+> > devicetree.
+> > This is what was happening:
+> >=20
+> > 1) We were calling devm_gpiod_get_optional() with GPIOD_OUT_LOW. What t=
+his means
+> > is
+> > that you get an output gpio deasserted. Hence the device is out of rese=
+t. And
+> > here is
+> > the important part... what you have in dts does not matter. If you have=
+ active
+> > low,
+> > it means the pin level will be 1. If you have high, the pin level is 0.=
+ And this
+> > is
+> > all handled by gpiolib for you.=20
+> >=20
+> > 2) Then, we called gpiod_direction_output(..., 1), which means set the =
+direction
+> > out
+> > (which is actually not needed since it was already done when getting th=
+e pin) and
+> > assert the pin. Hence, reset the device. And we were never de-asserting=
+ the pin
+> > so
+> > the device would be left in reset.
+>=20
+> Functionally I believe David is correct.=C2=A0=C2=A0 Flipping the DT woul=
+d 'fix' this.
+> It's all down to a nreset vs reset pin description.
+>=20
 
-For some reason I missed import_single_range(), which does it the same
-way as import_ubuf() currently does - cap the range before the
-access_ok() check. The vec variants sum as they go, but access_ok()
-before the range.
+Ahh I see. Well would not really be a fix :)
 
-I think part of the issue here is that the single range imports return 0
-for success and -ERROR otherwise. This means that the caller does not
-know if the full range was imported or not. OTOH, we always cap any data
-transfer at MAX_RW_COUNT, so may make more sense to fix up the caller
-here.
-
--- 
-Jens Axboe
+- Nuno S=C3=A1
 
