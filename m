@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0529A802904
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 00:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9A480294E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 01:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233984AbjLCXfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 18:35:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
+        id S234083AbjLDAOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 19:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjLCXfJ (ORCPT
+        with ESMTP id S229731AbjLDAOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 18:35:09 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E058D7;
-        Sun,  3 Dec 2023 15:35:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701646514;
-        bh=4SeuYyjE6NX5ofJ9uaA1W0ZgO2sJUY+tLHUi7w+Ap5c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IrDTteuUcrRsDwpYS7m9X6E0gy4gLyJ1QefQD54VPqI4TlhtstRBi/MagkhYWjiUA
-         HiR90IP0SZhNuOXscpwB2CqKOkEk/f6ctdrtOY5e9W7cVKiU/Pm5z8Vt4BOlDq5VFH
-         z/5bFeTx6Ie4SaHAbNxSTbqIHplNp7Acppxn2XxX1iYPRqmWghA36X8Eh4ol76e+4m
-         CrqwGsee+SmG7Rylz3VuS4EOh8S2Vy+F0X7WbRIkwi0xF3a1ussrknXuhwxQLefAzn
-         R8TRW5f4MCzt27Wrtd4Nop83aWdHi8cjqazsy26vU96h5kFTnUFAJjo2iugkJAidJJ
-         5QMhO9v0EJ9NA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sk37M2YYyz4xKZ;
-        Mon,  4 Dec 2023 10:35:11 +1100 (AEDT)
-Date:   Mon, 4 Dec 2023 10:35:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Yu Kuai <yukuai3@huawei.com>
-Subject: linux-next: manual merge of the vfs-brauner tree with Linus' tree
-Message-ID: <20231204103510.0eb5ea5f@canb.auug.org.au>
+        Sun, 3 Dec 2023 19:14:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0C9D9
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 16:14:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701648884; x=1733184884;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=5kdrLrpwo2s9pDOQzUrjNOl63Rh0NoSwz0oYnQLUK3g=;
+  b=I2R2rPZVewSDHbji7wHwFFUmb1KslyWhVHFXEATl91+qgfmcheqwPirW
+   N5D2bVU8Swy8BA9H4L4PPFyJSWQ05yQgnySeiRwESpGWlDC2WxRaXQlx2
+   hvH+msAf5Db1lFGCpSGBgaEH8V1Z8SVn3L515ZgXPPXK4Dc9/2CfDhxzh
+   nrmkMTVFiVvrEu48okA745r97h1K6Bwl4SL/ejY1EfwUSDsStdzJF20qq
+   T3m4griI5reytAf6fRYIgy5delFsKgkHWuFcEjANhFMlM/Btw7NGS1iWf
+   LgFWHCtqgZueclCcNNVcKNpn7swpV2LTpLqt3CAVV8xT3x9oLf59iNZlz
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="547749"
+X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
+   d="scan'208";a="547749"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 16:14:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="774093438"
+X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
+   d="scan'208";a="774093438"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 03 Dec 2023 16:14:41 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r9wbe-0007HM-34;
+        Mon, 04 Dec 2023 00:14:38 +0000
+Date:   Mon, 4 Dec 2023 08:14:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Subject: drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted
+ __virtio16
+Message-ID: <202312040724.O4m0RXc4-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/pWxTEZ4vOXMwEmPh+.KR_n5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/pWxTEZ4vOXMwEmPh+.KR_n5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
+commit: d877322bc1adcab9850732275670409e8bcca4c4 openrisc: Fix issue with get_user for 64-bit values
+date:   3 years, 3 months ago
+config: openrisc-randconfig-r131-20231102 (https://download.01.org/0day-ci/archive/20231204/202312040724.O4m0RXc4-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231204/202312040724.O4m0RXc4-lkp@intel.com/reproduce)
 
-Hi all,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312040724.O4m0RXc4-lkp@intel.com/
 
-Today's linux-next merge of the vfs-brauner tree got a conflict in:
+sparse warnings: (new ones prefixed by >>)
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: restricted __virtio16 degrades to integer
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: restricted __virtio16 degrades to integer
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
+>> drivers/vhost/vringh.c:567:18: sparse: sparse: cast to restricted __virtio16
 
-  include/linux/blk_types.h
+vim +567 drivers/vhost/vringh.c
 
-between commit:
+f87d0fbb579818 Rusty Russell      2013-03-20  562  
+f87d0fbb579818 Rusty Russell      2013-03-20  563  /* Userspace access helpers: in this case, addresses are really userspace. */
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  564  static inline int getu16_user(const struct vringh *vrh, u16 *val, const __virtio16 *p)
+f87d0fbb579818 Rusty Russell      2013-03-20  565  {
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  566  	__virtio16 v = 0;
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12 @567  	int rc = get_user(v, (__force __virtio16 __user *)p);
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  568  	*val = vringh16_to_cpu(vrh, v);
+b9f7ac8c72894c Michael S. Tsirkin 2014-12-12  569  	return rc;
+f87d0fbb579818 Rusty Russell      2013-03-20  570  }
+f87d0fbb579818 Rusty Russell      2013-03-20  571  
 
-  67d995e06953 ("block: warn once for each partition in bio_check_ro()")
+:::::: The code at line 567 was first introduced by commit
+:::::: b9f7ac8c72894c19bf258a54ecaa708df4ffbe80 vringh: update for virtio 1.0 APIs
 
-from Linus' tree and commit:
+:::::: TO: Michael S. Tsirkin <mst@redhat.com>
+:::::: CC: Michael S. Tsirkin <mst@redhat.com>
 
-  ed5cc702d311 ("block: Add config option to not allow writing to mounted d=
-evices")
-
-from the vfs-brauner tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/blk_types.h
-index b29ebd53417d,52e264d5a830..000000000000
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@@ -70,7 -66,7 +67,8 @@@ struct block_device=20
-  #ifdef CONFIG_FAIL_MAKE_REQUEST
-  	bool			bd_make_it_fail;
-  #endif
- +	bool			bd_ro_warned;
-+ 	int			bd_writers;
-  	/*
-  	 * keep this out-of-line as it's both big and not needed in the fast
-  	 * path
-
---Sig_/pWxTEZ4vOXMwEmPh+.KR_n5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVtEK4ACgkQAVBC80lX
-0GzeLQf9GK26ZpgubASvbXlGIj73n6T4gjxAcBJiR0lbGU2LtjNKkut5lhyXtF1b
-QnI9gEF9HGPnR0bhZE7rOK1/yctqNUpPoSp+G3PWvS+ywN/tnI7Kbav6nyc+DxV/
-edjmXz2t1nemcYPrfZf+jTgnlkcTBitzaJfxHS8AjM1xHtLHgyVKOaVTSUXPIKKX
-DSjAgnmAlX6AibfAMEQZpinnSmbPzyQiUAR/8CLDXJbA7502Ce9H5Z/unJXkRBL9
-SjNFdET2zsxbztbjq+R1Ub5X2pU4iKDK9r4etmnv7gyc38y0JGWfrs5tMYHAAEoP
-6JMIExv7dZHeXF4dgqtLMbQq/X0BwA==
-=EaOI
------END PGP SIGNATURE-----
-
---Sig_/pWxTEZ4vOXMwEmPh+.KR_n5--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
