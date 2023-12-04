@@ -2,142 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6479980350B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D434080350E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233916AbjLDNgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:36:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        id S1344330AbjLDNgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:36:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233683AbjLDNgL (ORCPT
+        with ESMTP id S233683AbjLDNgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:36:11 -0500
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF92EDF;
-        Mon,  4 Dec 2023 05:36:17 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1EABB5809B6;
-        Mon,  4 Dec 2023 08:36:17 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 04 Dec 2023 08:36:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1701696977; x=1701704177; bh=p7D+Xo7sPEhZfUDgxFaHhcvI5/bJ/iLJpT6
-        NsvxsYAY=; b=IZGCjp5+KhZHYP9OKsgoOTX1yVwwhMfz0Ru/FpC/dhIWHyccv21
-        xA0VVCYUSMQc5j97Gl/y2//YuV9ukG8cOnYnyyfOO/XyQ0EWdKuJ2/OikOCxLeUT
-        CFf3WiSdjNC+QvBWRD+9JUw/xMDNVhG9CxceOnEpzPCCi7L6XxHT3DSsfFOLLGAS
-        Z+SzyaITptKsIY+avthMJbnND3lS99R+CmmAIgvP2vfdZ1CzSyWaohyx3BERlL1q
-        54/vE725FufSZ6+ZLnLJcfnanLvaV224Zw2z5MpD5wKQAL5sbrjeY+BVGFXn/zTd
-        OEoUpQzMIREsaNiGt2rlVJUeN1Dx+mwhNaw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1701696977; x=1701704177; bh=p7D+Xo7sPEhZfUDgxFaHhcvI5/bJ/iLJpT6
-        NsvxsYAY=; b=UvYgSbRfNSyVnc26zENUs39xAWEyRCnlO9+zMXCzIYBQJ/hkiJ9
-        hjzl4n3E6oiF/tbMteud8wxzDaP/z7gapO233sMAROkhmlPSoNIDsQN69HAUFUXM
-        r+d1IfDGbljeGLX0cvRrV0H3JnU1ji6dr8HkyDppTo82iqkJ0l7Q2N++36AIDvxN
-        je8iG+9ehO8KDvrs6ZPwHaai8zeyR1yD9Gq0rR1NPqfb6Ex461GCdmhj/iTLurdw
-        jE68mZqXTYnepCof2kGvMoDLJhirYglTiUc9LNqwKD2JlSlpialeF2FhmXaLx8HY
-        oCCzcuIvlGYeS1PEmFkCfy05/U+dT4CUjSA==
-X-ME-Sender: <xms:z9VtZQfirqF0BYj9BKCVd3PrUlw1DQu1Dqi5twx6J-wB9aFxaoXjlA>
-    <xme:z9VtZSOj8q5qsj1eeYeAhWpALGtcnKupgPwlblhMsELbHFIp003bp5EskuBfpkyvK
-    o-jkWGswG18787eNC0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejiedgheehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:z9VtZRhAhTEk4JVJMD3hEyszHXVjeKNeo_VcmNjhtmaPtLUucxEp_w>
-    <xmx:z9VtZV9GVfh7x_cvFFj6_9Po413Qhkwgz6cgodOTqKmDTJdTYT48fw>
-    <xmx:z9VtZcsUYNccizBRD4fwF3Y9xoHrZSeu8c4hmzBHscluk2bC8fRiZw>
-    <xmx:0dVtZZvgLsdcjOnykmLqVZFDB5FLcE5rnMnEcbgmqLKpA4GhhWlxPw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7849CB60089; Mon,  4 Dec 2023 08:36:15 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Mon, 4 Dec 2023 08:36:47 -0500
+Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C052DDF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:36:53 -0800 (PST)
+Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
+        by mx07-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B49RV2D003429;
+        Mon, 4 Dec 2023 13:36:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:content-transfer-encoding
+        :content-type:mime-version; s=dk201812; bh=kKIIKEvDN5siqvKD6fMSD
+        BkrdGO2pjDobwMBtaSJADc=; b=EvWKDH35VnAg3D6wJspCZQHDwzvLFnN6BZrq/
+        e4Q8OFEJKI9vEf7AuYg3g0vB+hAmkwHWzEESNYeMvPjQllHOFrouvmtZ9se4ga7d
+        C52AUgwb709iFiOud+P5ckISu3FYn+IIak7Hj7nK2JuuV1+uBt8w9DsukO5gTwwF
+        VAPv5UOONxZDPqaso3L/OHfVhr+4CLot8l7m2jCMUADyZQhzYMK9VtR/Ba6EpWjo
+        ScmLo9uMQMdJsQ9LtBMfMHrMikJ9VZXto8X1yThcwAoYM01N2sNiN5kd1/a1DUMm
+        fh6DHcNVRIPTLYims/l7yO1ds47LbLSti7C8hwRh6bIME7aOg==
+Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
+        by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3uqwhw9g4h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 04 Dec 2023 13:36:37 +0000 (GMT)
+Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
+ HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Dec 2023 13:36:36 +0000
+Received: from GBR01-CWX-obe.outbound.protection.outlook.com (104.47.85.40) by
+ email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Mon, 4 Dec 2023 13:36:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FBqLfm4jo/UCEj7RLOo6gSntc3OmOqWK7Ylo0w4rCnnPcMnZSidoCYYEahfeU9Y1uly8k+DrNzb1aw4MSwx6m+jIFh0WzIUJD3+qlj/fMSamFQbJjJMj5Z69nVp/8P8IHKZo7rZIlewnIIHC2UGyUV2rAj9LxDHVz68H/QJVuxdKwqBGtgp3rOMY/5nHoOguO2FTt996Bu2x1IkJ5DocS123F/0LXtQJ8lt7i4Dz8DmbMqGs+I8IVATDsbEvpmbTmonZ+JyMmh7KIL1ok0my7eryWTOwW6MsqClpoO4x9K1r0orxMBgWJVy0ekUwliYjvLE3xZmtuCvJL4LjoI6Rtg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kKIIKEvDN5siqvKD6fMSDBkrdGO2pjDobwMBtaSJADc=;
+ b=ifxvbG98IdYraJPF6IA7jQO8fvEobnMUsWJqzbEannv6z0VQIi4qBstvnydmd3LRW3mDLR6tkFYzCAquQv8MUUtHQZElLukPcvpUVqTwEpOecuj2BIuRcE3WQa6V8PmMCLes4UgocD/c7o9Bo5hcR+l1NHHcZIlzTRhOyuOKNd9ctWNy8gDYqCKlNzIAiHmHlM9AYsggWNek6nEnua9C+AKuKGoAeTzCWuzmWXdJIQMp+Sq5C8e/G7dUmBA0Oi64o4ql5urAHpU8IEQvgFGdA7kj7WBptyw8dJhPrXtyqTB7F54x1beAgvUw3H3JviJvxPdGr4RLuMK5Rowg32Q8Xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kKIIKEvDN5siqvKD6fMSDBkrdGO2pjDobwMBtaSJADc=;
+ b=jPOvZ7jOg2kkougAqHwoGOub/oDr8E6ChlNN5WWiq576FFtDq++2FRvsIVYzgN3vLS2QJMGrspmCQIS42vhm/x0aSJOdZhj+akamVwoKC/TBjybJBQ501W1ONpXzxs0ZHFDhyrteQcDYz+0J7fIYMtLm5rJ5uz12P++RfHk2LxA=
+Received: from CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1a0::8)
+ by CWXP265MB2389.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:7e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
+ 2023 13:36:35 +0000
+Received: from CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a85a:76f7:c085:2b34]) by CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a85a:76f7:c085:2b34%3]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 13:36:35 +0000
+From:   Donald Robson <donald.robson@imgtec.com>
+To:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <frank.binns@imgtec.com>, <donald.robson@imgtec.com>,
+        <matt.coster@imgtec.com>, <maarten.lankhorst@linux.intel.com>,
+        <mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
+        <daniel@ffwll.ch>, kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/2] drm/imagination: Removed unused functions in pvr_fw_trace
+Date:   Mon,  4 Dec 2023 13:36:11 +0000
+Message-Id: <20231204133611.53913-1-donald.robson@imgtec.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P123CA0677.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:351::20) To CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:400:1a0::8)
 MIME-Version: 1.0
-Message-Id: <d20acea3-34fe-4c36-bfe2-323ece39db66@app.fastmail.com>
-In-Reply-To: <20231204123834.29247-2-pstanner@redhat.com>
-References: <20231204123834.29247-1-pstanner@redhat.com>
- <20231204123834.29247-2-pstanner@redhat.com>
-Date:   Mon, 04 Dec 2023 14:35:55 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Philipp Stanner" <pstanner@redhat.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Hanjun Guo" <guohanjun@huawei.com>, "Neil Brown" <neilb@suse.de>,
-        "Kent Overstreet" <kent.overstreet@gmail.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
-        "John Sanpe" <sanpeqf@gmail.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "David Gow" <davidgow@google.com>,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "Shuah Khan" <skhan@linuxfoundation.org>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        "Yury Norov" <yury.norov@gmail.com>,
-        "Jason Baron" <jbaron@akamai.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Ben Dooks" <ben.dooks@codethink.co.uk>,
-        "Danilo Krummrich" <dakr@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>, stable@vger.kernel.org,
-        "Arnd Bergmann" <arnd@kernel.org>
-Subject: Re: [PATCH v3 1/5] lib/pci_iomap.c: fix cleanup bugs in pci_iounmap()
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP265MB5770:EE_|CWXP265MB2389:EE_
+X-MS-Office365-Filtering-Correlation-Id: a2a9db46-9a04-426e-e6c4-08dbf4ce08c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YWOxc0f/18fDW4wQgnsLVyFumH30tywUIQHjJhRBDsbqoo3ir3IfQuG+TDLRQk6SSLkb3ba4W/JUuNPMoWZDeooIj48Gpzdplu3pdMKu9J4mwVSZwK0IutUkh9XSIfzynVjpmpHQ/M4NATuMkAk9oHIMUIvRdNvcqlKqBlmecM4d0GNNLXQvfT+oEOkE1RNIJCBFpsh+H5JzbvdCQj/CpmRZMo21WaKD11cybjlFgpoh0RyIV+U7GC9oXN3FrPrFIN/bOB7uQ+OcGteMFWzWcivpO6O4jnA19bB94HvnHDUyhXKBle+uyjeijeSYDcFlxQiZaxixT+V3VQXgpsg400eCqomkS6pDqcWjiYGhLQ5cqQgXjvU6tEJA58jXdDpDBhyg9/e2I7uhpRSnT09FvZZm2gX1Ohk7bMm/GLxXXvvvBYwY3H0ag7ybhR3XWtE2jxwAccVI3GrVvYRqeKaDA4nrFzTeilkbWnp/zquisR8rBKZq0slBypAd7cYgjEzAnnMgcEwOCgwybdv65bhZecI2Fml27mJ2FPlO0vpTnZ3a6tWVQIx78vHVUl4pn4so+lKfKfDM0CV63+Pq/znG9Cqjn93xUKFd7JXiDMNN/3GM7CJthkT9Z+gYYlqxKkx0CT94pMEY+DK54nHIdtKg1Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(39850400004)(366004)(230922051799003)(230273577357003)(230173577357003)(1800799012)(186009)(451199024)(64100799003)(1076003)(2616005)(8676002)(4326008)(8936002)(6512007)(6506007)(52116002)(83380400001)(26005)(6486002)(966005)(478600001)(6666004)(66476007)(66946007)(66556008)(316002)(2906002)(36756003)(38350700005)(41300700001)(38100700002)(44832011)(86362001)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EwJsaXDw+2m6G/1vtcarul3DHqpiNGP9B4BzkBxA19xP9XjOoOc/ZpLDYvEg?=
+ =?us-ascii?Q?+NSsFMKB1TkOmlu9NKrUK2v63IUQ7AjswIlWtmSZjs8cYqIxrC3hDN08FIHU?=
+ =?us-ascii?Q?USEbZeHzrvPOooPUiyfQbU2oI8FkXtpuV+igYl4ys3Y3ibIzzBtvK1ZhwIwV?=
+ =?us-ascii?Q?QPhu6Ub44vpVu5C5hBU5VckePl6gtZdau7zeHXb5KhlxN6xO/XrtwNd2K6QA?=
+ =?us-ascii?Q?Y+HYkIprijh/hEAYPkxdV+zUbmMq3CqPBoOkSCHkXHnehs+HaElMXoczM8lu?=
+ =?us-ascii?Q?xCkaU74n5vrVh+aEDNqyv5wHljlpOrAvK8mNCl8VTf6MKbMhQgg/s3LHOQNx?=
+ =?us-ascii?Q?c/dZAC9GjbH7MEeZX/KIa5MWuQnGTqGmjQVEoq03tGf7uFvFaZlFwsV12Vpe?=
+ =?us-ascii?Q?XkLtyVFaw7Ddnv0cWwodiZgdHdv+tkz0n4gaZgK4LsZuuAa1Ut8F41j0ev7L?=
+ =?us-ascii?Q?G4di0IBG9F2onrPXEv3sp63lGgmaOJTdD7K69dGH7kgslJCu8msb4UZQ35n+?=
+ =?us-ascii?Q?1q75vA6fQ1DZ6yeUJWUaBm0AKM8DVuLCMrXzYtKwE6KTcOc0/dU8gpwP+3O0?=
+ =?us-ascii?Q?9jeOIcnxXB3iJuSJJ1RjoOST3kPJnp7kIjGSZZ9OeScNZ69A5FNOFbWbLbyd?=
+ =?us-ascii?Q?nEG9Nvpbf6UKR0UUGoJqaY1U4VlTp5B3ltRR3Ecs6vp/TuwGh8lQz9D9wNQO?=
+ =?us-ascii?Q?djXBdaLS/gSiRpXjrxAMBquP45zS/4pnsKtwBOSeUnlkWMzseJsZrPtEWJ/+?=
+ =?us-ascii?Q?pSCQfgy2GLiU6AcKz7tmeI+obDY/r7O2bK8ASXIirNleRjMVPa5WHnQowjyF?=
+ =?us-ascii?Q?RYWCH/1n4siJhhE1TWo88NT/MYtc/aXrEdHBUKuckisawl53gnUQ7mKECbhp?=
+ =?us-ascii?Q?XJJbs9LvEv6NG4Z+eoQDyyzRqMZA1+bzFdXnIS1uSPstOew06uJ6jsanPiJ2?=
+ =?us-ascii?Q?IugVq7LipZR+eoE+Jc7WVV5HdnwBlGOkXAQeKS3qV9FK+M7OnVmQny6HL5eA?=
+ =?us-ascii?Q?66BeTzpyrad6Cn9u2XhwQXP4F8197/DrURRONGTaKR5SP6XiKuFr0AIxdNbR?=
+ =?us-ascii?Q?o5/WzCzUiKXFbtLnODhWyTzh3CKo+pmh9u47fTqAwVNKqdZocqzklnB31WOz?=
+ =?us-ascii?Q?px8y/zFhc4PhtCdQ7zj2D3glPYrUoumT7eHFj4NGMSfoBILVdVHY2cceeSjS?=
+ =?us-ascii?Q?UlIDKnTPmLaUFuNrFhj7oRXtaIM5QKeANzg/eRPInYX/UQx/Sk6iEKECFkYq?=
+ =?us-ascii?Q?YSG3Qa9EyErf0ThsWJFOAse2TbkNxnbmooPgI5jUL7pODNFrkn1HHpYKxZG8?=
+ =?us-ascii?Q?hpn/nRGy5rEY6Z/k1JG1YkKkuQl4kuE7SZr77teN6TyfAQm0XYxMShKkmG3W?=
+ =?us-ascii?Q?MVJxItlHqEd6SK6mWdbUbXU3Ieh5h2VFnZkw06/yJF5sI/QdbhVs2Yjg41LO?=
+ =?us-ascii?Q?b+6cyIZiaOdHwBr+WRZfPjTAoKKxnUelu8RURM9efRHq8nhn89eKyUcOOtAf?=
+ =?us-ascii?Q?b2VBDZCzJ3PiePrihPnCSOyLRzaOJQRB8Kp/djS6CDsfTc34XS8+SGkmnQo5?=
+ =?us-ascii?Q?tFJtBF0xQUL06B27FwGt64945OVmyHOXNJpg4bz2vAm8bESrwbsAio0+vOVR?=
+ =?us-ascii?Q?xg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2a9db46-9a04-426e-e6c4-08dbf4ce08c3
+X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 13:36:35.1928
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LX37Ax3Me5rNCKMDSD7en9vIoMbwV21sey8Mx9OtPr5IGV63LoMntE7m3ewud1JXNZ7NcIemNetIai/kad8sKUBtPhVsU+UTOV3L5JMb8Ck=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2389
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-GUID: pP7d2Pk51SyxniYPK9gY5cA_80gGjits
+X-Proofpoint-ORIG-GUID: pP7d2Pk51SyxniYPK9gY5cA_80gGjits
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023, at 13:38, Philipp Stanner wrote:
-> pci_iounmap() in lib/pci_iomap.c is supposed to check whether an addre=
-ss
-> is within ioport-range IF the config specifies that ioports exist. If
-> so, the port should be unmapped with ioport_unmap(). If not, it's a
-> generic MMIO address that has to be passed to iounmap().
->
-> The bugs are:
->   1. ioport_unmap() is missing entirely, so this function will never
->      actually unmap a port.
->   2. the #ifdef for the ioport-ranges accidentally also guards
->      iounmap(), potentially compiling an empty function. This would
->      cause the mapping to be leaked.
->
-> Implement the missing call to ioport_unmap().
->
-> Move the guard so that iounmap() will always be part of the function.
->
-> CC: <stable@vger.kernel.org> # v5.15+
-> Fixes: 316e8d79a095 ("pci_iounmap'2: Electric Boogaloo: try to make=20
-> sense of it all")
-> Reported-by: Danilo Krummrich <dakr@redhat.com>
-> Suggested-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-> ---
-> In case someone wants to look into that and provide patches for kernels
-> older than v5.15:
-> Note that this patch only applies to v5.15+ =E2=80=93 the leaks, howev=
-er, are
-> older. I went through the log briefly and it seems f5810e5c32923 alrea=
-dy
-> contains them in asm-generic/io.h.
+Fixing the warning below due to an unused file level vtable. Removing
+only this causes additional warnings for the now unused functions, so
+I've removed those too.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+>> drivers/gpu/drm/imagination/pvr_fw_trace.c:205:37: warning: 'pvr_fw_trace_group_mask_fops' defined but not used [-Wunused-const-variable=]
+     205 | static const struct file_operations pvr_fw_trace_group_mask_fops = {
+         |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311302054.MVYPxFCE-lkp@intel.com/
+Fixes: c98cc92ab6ce ("drm/imagination: Add firmware trace to debugfs")
+Signed-off-by: Donald Robson <donald.robson@imgtec.com>
+---
+ drivers/gpu/drm/imagination/pvr_fw_trace.c | 44 ----------------------
+ 1 file changed, 44 deletions(-)
+
+diff --git a/drivers/gpu/drm/imagination/pvr_fw_trace.c b/drivers/gpu/drm/imagination/pvr_fw_trace.c
+index 87a42fb6ace6..30f41a10a0cf 100644
+--- a/drivers/gpu/drm/imagination/pvr_fw_trace.c
++++ b/drivers/gpu/drm/imagination/pvr_fw_trace.c
+@@ -167,50 +167,6 @@ update_logtype(struct pvr_device *pvr_dev, u32 group_mask)
+ 
+ #if defined(CONFIG_DEBUG_FS)
+ 
+-static int fw_trace_group_mask_show(struct seq_file *m, void *data)
+-{
+-	struct pvr_device *pvr_dev = m->private;
+-
+-	seq_printf(m, "%08x\n", pvr_dev->fw_dev.fw_trace.group_mask);
+-
+-	return 0;
+-}
+-
+-static int fw_trace_group_mask_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, fw_trace_group_mask_show, inode->i_private);
+-}
+-
+-static ssize_t fw_trace_group_mask_write(struct file *file, const char __user *ubuf, size_t len,
+-					 loff_t *offp)
+-{
+-	struct seq_file *m = file->private_data;
+-	struct pvr_device *pvr_dev = m->private;
+-	u32 new_group_mask;
+-	int err;
+-
+-	err = kstrtouint_from_user(ubuf, len, 0, &new_group_mask);
+-	if (err)
+-		return err;
+-
+-	err = update_logtype(pvr_dev, new_group_mask);
+-	if (err)
+-		return err;
+-
+-	pvr_dev->fw_dev.fw_trace.group_mask = new_group_mask;
+-
+-	return (ssize_t)len;
+-}
+-
+-static const struct file_operations pvr_fw_trace_group_mask_fops = {
+-	.owner = THIS_MODULE,
+-	.open = fw_trace_group_mask_open,
+-	.read = seq_read,
+-	.write = fw_trace_group_mask_write,
+-	.llseek = default_llseek,
+-	.release = single_release,
+-};
+-
+ struct pvr_fw_trace_seq_data {
+ 	/** @buffer: Pointer to copy of trace data. */
+ 	u32 *buffer;
+-- 
+2.25.1
+
