@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5748030FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F3A8030FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344024AbjLDKzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:55:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
+        id S1344034AbjLDKzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:55:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235313AbjLDKzO (ORCPT
+        with ESMTP id S1344017AbjLDKzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:55:14 -0500
+        Mon, 4 Dec 2023 05:55:16 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 553D2138
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:55:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B032F19F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:55:18 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07857139F;
-        Mon,  4 Dec 2023 02:56:02 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A2EA61650;
+        Mon,  4 Dec 2023 02:56:05 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 53EE93F6C4;
-        Mon,  4 Dec 2023 02:55:11 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF7523F6C4;
+        Mon,  4 Dec 2023 02:55:14 -0800 (PST)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -49,9 +49,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
 Cc:     Ryan Roberts <ryan.roberts@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 05/15] arm64/mm: pte_clear(): New layer to manage contig bit
-Date:   Mon,  4 Dec 2023 10:54:30 +0000
-Message-Id: <20231204105440.61448-6-ryan.roberts@arm.com>
+Subject: [PATCH v3 06/15] arm64/mm: ptep_get_and_clear(): New layer to manage contig bit
+Date:   Mon,  4 Dec 2023 10:54:31 +0000
+Message-Id: <20231204105440.61448-7-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231204105440.61448-1-ryan.roberts@arm.com>
 References: <20231204105440.61448-1-ryan.roberts@arm.com>
@@ -80,72 +80,64 @@ existing uses.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/arm64/include/asm/pgtable.h | 3 ++-
- arch/arm64/mm/fixmap.c           | 2 +-
- arch/arm64/mm/hugetlbpage.c      | 2 +-
- arch/arm64/mm/mmu.c              | 2 +-
- 4 files changed, 5 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 5 +++--
+ arch/arm64/mm/hugetlbpage.c      | 6 +++---
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 323ec91add60..1464e990580a 100644
+index 1464e990580a..994597a0bb0f 100644
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -93,7 +93,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
- 	__pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+@@ -941,8 +941,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ }
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
  
- #define pte_none(pte)		(!pte_val(pte))
--#define pte_clear(mm, addr, ptep) \
-+#define __pte_clear(mm, addr, ptep) \
- 				__set_pte(ptep, __pte(0))
- #define pte_page(pte)		(pfn_to_page(pte_pfn(pte)))
- 
-@@ -1121,6 +1121,7 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
- 
+-#define __HAVE_ARCH_PTEP_GET_AND_CLEAR
+-static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
++static inline pte_t __ptep_get_and_clear(struct mm_struct *mm,
+ 				       unsigned long address, pte_t *ptep)
+ {
+ 	pte_t pte = __pte(xchg_relaxed(&pte_val(*ptep), 0));
+@@ -1122,6 +1121,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
  #define set_pte					__set_pte
  #define set_ptes				__set_ptes
-+#define pte_clear				__pte_clear
+ #define pte_clear				__pte_clear
++#define __HAVE_ARCH_PTEP_GET_AND_CLEAR
++#define ptep_get_and_clear			__ptep_get_and_clear
  
  #endif /* !__ASSEMBLY__ */
  
-diff --git a/arch/arm64/mm/fixmap.c b/arch/arm64/mm/fixmap.c
-index 51cd4501816d..bfc02568805a 100644
---- a/arch/arm64/mm/fixmap.c
-+++ b/arch/arm64/mm/fixmap.c
-@@ -123,7 +123,7 @@ void __set_fixmap(enum fixed_addresses idx,
- 	if (pgprot_val(flags)) {
- 		__set_pte(ptep, pfn_pte(phys >> PAGE_SHIFT, flags));
- 	} else {
--		pte_clear(&init_mm, addr, ptep);
-+		__pte_clear(&init_mm, addr, ptep);
- 		flush_tlb_kernel_range(addr, addr+PAGE_SIZE);
- 	}
- }
 diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index 741cb53672fd..510b2d4b89a9 100644
+index 510b2d4b89a9..c2a753541d13 100644
 --- a/arch/arm64/mm/hugetlbpage.c
 +++ b/arch/arm64/mm/hugetlbpage.c
-@@ -400,7 +400,7 @@ void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
- 	ncontig = num_contig_ptes(sz, &pgsize);
+@@ -188,7 +188,7 @@ static pte_t get_clear_contig(struct mm_struct *mm,
+ 	unsigned long i;
+ 
+ 	for (i = 0; i < ncontig; i++, addr += pgsize, ptep++) {
+-		pte_t pte = ptep_get_and_clear(mm, addr, ptep);
++		pte_t pte = __ptep_get_and_clear(mm, addr, ptep);
+ 
+ 		/*
+ 		 * If HW_AFDBM is enabled, then the HW could turn on
+@@ -236,7 +236,7 @@ static void clear_flush(struct mm_struct *mm,
+ 	unsigned long i, saddr = addr;
  
  	for (i = 0; i < ncontig; i++, addr += pgsize, ptep++)
--		pte_clear(mm, addr, ptep);
-+		__pte_clear(mm, addr, ptep);
+-		ptep_clear(mm, addr, ptep);
++		__ptep_get_and_clear(mm, addr, ptep);
+ 
+ 	flush_tlb_range(&vma, saddr, addr);
  }
+@@ -411,7 +411,7 @@ pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
+ 	pte_t orig_pte = ptep_get(ptep);
  
- pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index e884279b268e..080e9b50f595 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -859,7 +859,7 @@ static void unmap_hotplug_pte_range(pmd_t *pmdp, unsigned long addr,
- 			continue;
+ 	if (!pte_cont(orig_pte))
+-		return ptep_get_and_clear(mm, addr, ptep);
++		return __ptep_get_and_clear(mm, addr, ptep);
  
- 		WARN_ON(!pte_present(pte));
--		pte_clear(&init_mm, addr, ptep);
-+		__pte_clear(&init_mm, addr, ptep);
- 		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
- 		if (free_mapped)
- 			free_hotplug_page_range(pte_page(pte),
+ 	ncontig = find_num_contig(mm, addr, ptep, &pgsize);
+ 
 -- 
 2.25.1
 
