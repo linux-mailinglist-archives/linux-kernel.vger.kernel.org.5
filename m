@@ -2,171 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA95D803BE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA06803BEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbjLDRpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:45:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
+        id S230295AbjLDRrL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 12:47:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjLDRpn (ORCPT
+        with ESMTP id S229498AbjLDRrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:45:43 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5022FDF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:45:50 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4G0R29019293;
-        Mon, 4 Dec 2023 17:45:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=VXEkGrebY6EpaoRxkLmNRIq8U7rbzpMW/SZKy6MWvnw=;
- b=aEoYVP5L4QFfqM7inlb02XdDHBsP+ORGDABZDtgJZSwf5A7Cn8J+C4b/4A1NzgcAyGax
- xe8RKr6j9FCSaVsGSM6sUB/h7Mx/OfhBGv/BGnb77OZE6IZi9uFm6buzawtQRGy38HTv
- w5w2uGY8pmLu4Ne7iDzszyUiuk55aEXRjQhqVu+Hu9QIj9/2isDn2gKVIY1V7zerIZf3
- UZtqnE0dijP0QFDkYpp5hRP2LhTyuggbfqSflJovy5mOa9YjwULq3ziq2DsODXkEeQgp
- he+BPCdonISPfVhlcBGDqmK/h52D8wS/DSmbKGU60MU1444mNChBdcjpTq5vvmpGMyfZ dg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usdf7h3wb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 17:45:22 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4HjKI2004582
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Dec 2023 17:45:20 GMT
-Received: from [10.110.73.134] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
- 2023 09:45:20 -0800
-Message-ID: <4a2d6fb2-e3b5-dd5d-7a66-d514e091eb41@quicinc.com>
-Date:   Mon, 4 Dec 2023 09:45:19 -0800
+        Mon, 4 Dec 2023 12:47:10 -0500
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702D4F3;
+        Mon,  4 Dec 2023 09:47:16 -0800 (PST)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1fb1620a00eso575917fac.1;
+        Mon, 04 Dec 2023 09:47:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701712035; x=1702316835;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YLxhbHxHs0yyW58U+USrAp9QZYXyCCBbOT0f2qo1Lmw=;
+        b=Scj0c0/PQKWNuW9DfEoB5V+mrGtkuR4dZzpmVETXHLKLjFJF1PPr8XqdzpVqMgY5Aa
+         06kStxIrvvqdhBjyRmwS4AAFj36+wvlIbkC+5k1LqD2pnaWSNlPkbV9xKweLqeQIaFCz
+         cq8lptJ1/cbwzOyrgg+Msl2vCqTA61MOOkoNik0cW7+Kb+39y/oVPFKCJ5f1YmrmcHPB
+         zSwuFEI46FaypSqsGkn85hsuuBmMA/s5/EofjX0plNbCfhw0NX54UwP3AwEHTfjzgHp/
+         jAgUtOOTvePyhFkwOeXmEYU3wnpjfr3iB0gFOGikx+mKpwhLluhpZgd/fgCXKkqz69u+
+         hF+A==
+X-Gm-Message-State: AOJu0YzK0oFP9HK8vvp+/IJ6GcfUU+TkgX4Ra/qv3kw2hk7vjoNDi5CM
+        Zfj0aRoW55ME1tjzWvGYeNym4Sf3e7KNs3MigzA=
+X-Google-Smtp-Source: AGHT+IG9XswzgrLgYJtdTDaf8gWSyrFBQ4WCE+EubF3UY9rkdQ4XYJYZxIhR3tHSoqMCUpWcXa3k1oTkJ3kzQk8MkcY=
+X-Received: by 2002:a05:6870:e38a:b0:1fb:25fb:fabc with SMTP id
+ x10-20020a056870e38a00b001fb25fbfabcmr6338860oad.5.1701712035690; Mon, 04 Dec
+ 2023 09:47:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [Freedreno] [PATCH] drm: improve the documentation of connector
- hpd ops
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     <jani.nikula@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        <freedreno@lists.freedesktop.org>, <andersson@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>,
-        "Maxime Ripard" <mripard@kernel.org>, <quic_parellan@quicinc.com>,
-        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
-        <quic_jesszhan@quicinc.com>, David Airlie <airlied@gmail.com>
-References: <20230920201358.27597-1-quic_abhinavk@quicinc.com>
- <20231203142441.GA26644@pendragon.ideasonboard.com>
- <CAA8EJpoykwsMWX+msDAB3TZaBmwE4iA4fiDiA-iOELmWd50s-w@mail.gmail.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpoykwsMWX+msDAB3TZaBmwE4iA4fiDiA-iOELmWd50s-w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: EkHT7SJ4frOUXAXSx2l67_zfmBQsrdaS
-X-Proofpoint-GUID: EkHT7SJ4frOUXAXSx2l67_zfmBQsrdaS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_17,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0
- spamscore=0 clxscore=1011 adultscore=0 phishscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040137
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <12338384.O9o76ZdvQC@kreacher> <4883151.31r3eYUQgx@kreacher> <b3c86caf-635d-416b-af98-9e26f2a68948@linaro.org>
+In-Reply-To: <b3c86caf-635d-416b-af98-9e26f2a68948@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 4 Dec 2023 18:47:04 +0100
+Message-ID: <CAJZ5v0hEo_HPMR=wVsHDTjPrEBLXgBHwom491rEiLJfapg6Rhg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] thermal: sysfs: Rework the handling of trip point updates
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
+On Mon, Dec 4, 2023 at 5:55 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>
+>
+> Hi Rafael,
+>
+> On 04/12/2023 15:50, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Both trip_point_temp_store() and trip_point_hyst_store() use
+> > thermal_zone_set_trip() to update a given trip point, but none of them
+> > actually needs to change more than one field in struct thermal_trip
+> > representing it.  However, each of them effectively calls
+> > __thermal_zone_get_trip() twice in a row for the same trip index value,
+> > once directly and once via thermal_zone_set_trip(), which is not
+> > particularly efficient, and the way in which thermal_zone_set_trip()
+> > carries out the update is not particularly straightforward.
+> >
+> > Moreover, input processing need not be done under the thermal zone lock
+> > in any of these functions.
+> >
+> > Rework trip_point_temp_store() and trip_point_hyst_store() to address
+> > the above, move the part of thermal_zone_set_trip() that is still
+> > useful to a new function called thermal_zone_trip_updated() and drop
+> > the rest of it.
+> >
+> > While at it, make trip_point_hyst_store() reject negative hysteresis
+> > values.
+> >
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > v2 -> v3: No changes
+> >
+> > v1 -> v2: Still check device_is_registered() under the zone lock
+> >
+> > ---
+> >   drivers/thermal/thermal_core.h  |    2 +
+> >   drivers/thermal/thermal_sysfs.c |   75 ++++++++++++++++++++++++++++------------
+> >   drivers/thermal/thermal_trip.c  |   45 ++++--------------------
+> >   include/linux/thermal.h         |    4 --
+> >   4 files changed, 64 insertions(+), 62 deletions(-)
+> >
+> > Index: linux-pm/drivers/thermal/thermal_sysfs.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/thermal/thermal_sysfs.c
+> > +++ linux-pm/drivers/thermal/thermal_sysfs.c
+> > @@ -78,6 +78,19 @@ mode_store(struct device *dev, struct de
+> >       return count;
+> >   }
+> >
+> > +static int check_thermal_zone_and_trip_id(struct device *dev,
+> > +                                       struct thermal_zone_device *tz,
+> > +                                       int trip_id)
+> > +{
+> > +     if (!device_is_registered(dev))
+> > +             return -ENODEV;
+> > +
+> > +     if (trip_id < 0 || trip_id >= tz->num_trips)
+> > +             return -EINVAL;
+>
+> I'm not sure if this check is useful. The function is called from
+> trip_point_*_store() which is providing the trip id from the file name
+> parsing which is in turn built from an existing trip id. There is no
+> reason the trip id is going to be wrong.
 
-On 12/3/2023 10:14 AM, Dmitry Baryshkov wrote:
-> On Sun, 3 Dec 2023 at 16:24, Laurent Pinchart
-> <laurent.pinchart@ideasonboard.com> wrote:
->>
->> Hi Abhinav,
->>
->> Thank you for the patch (and thank to Dmitry for pinging me on IRC, this
->> patch got burried in my inbox).
->>
->> On Wed, Sep 20, 2023 at 01:13:58PM -0700, Abhinav Kumar wrote:
->>> While making the changes in [1], it was noted that the documentation
->>> of the enable_hpd() and disable_hpd() does not make it clear that
->>> these ops should not try to do hpd state maintenance and should only
->>> attempt to enable/disable hpd related hardware for the connector.
->>
->> s/attempt to //
-> 
-> I can probably fix this while applying the patch.
-> 
+I can drop the check just fine.
 
-Thank you Laurent and Dmitry.
-
->>
->>>
->>> The state management of these calls to make sure these calls are
->>> balanced is handled by the DRM core and we should keep it that way
->>> to minimize the overhead in the drivers which implement these ops.
->>>
->>> [1]: https://patchwork.freedesktop.org/patch/558387/
->>>
->>
->> You could add a
->>
->> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->>
->>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->>
->> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->>
->>> ---
->>>   include/drm/drm_modeset_helper_vtables.h | 10 ++++++++++
->>>   1 file changed, 10 insertions(+)
->>>
->>> diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
->>> index e3c3ac615909..a33cf7488737 100644
->>> --- a/include/drm/drm_modeset_helper_vtables.h
->>> +++ b/include/drm/drm_modeset_helper_vtables.h
->>> @@ -1154,6 +1154,11 @@ struct drm_connector_helper_funcs {
->>>         * This operation is optional.
->>>         *
->>>         * This callback is used by the drm_kms_helper_poll_enable() helpers.
->>> +      *
->>> +      * This operation does not need to perform any hpd state tracking as
->>> +      * the DRM core handles that maintenance and ensures the calls to enable
->>> +      * and disable hpd are balanced.
->>> +      *
->>>         */
->>>        void (*enable_hpd)(struct drm_connector *connector);
->>>
->>> @@ -1165,6 +1170,11 @@ struct drm_connector_helper_funcs {
->>>         * This operation is optional.
->>>         *
->>>         * This callback is used by the drm_kms_helper_poll_disable() helpers.
->>> +      *
->>> +      * This operation does not need to perform any hpd state tracking as
->>> +      * the DRM core handles that maintenance and ensures the calls to enable
->>> +      * and disable hpd are balanced.
->>> +      *
->>>         */
->>>        void (*disable_hpd)(struct drm_connector *connector);
->>>   };
->>
->> --
->> Regards,
->>
->> Laurent Pinchart
-> 
-> 
-> 
+Do you have any other comments on this patch?
