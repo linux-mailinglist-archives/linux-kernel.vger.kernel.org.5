@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4122C802EE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFF9802EE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235337AbjLDJk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:40:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53862 "EHLO
+        id S235306AbjLDJkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:40:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235298AbjLDJkB (ORCPT
+        with ESMTP id S234916AbjLDJjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:40:01 -0500
+        Mon, 4 Dec 2023 04:39:53 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D5511F;
-        Mon,  4 Dec 2023 01:39:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E408D11A;
+        Mon,  4 Dec 2023 01:39:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=8ZmAUMpjWfI1B/Ma4euS1POKJrZM+zq/pwDtgORWvEc=; b=FC/UR0CiYDmD1lg2YNafE0u8li
-        V7kroPRWHIgQ2/E/iiUueEIj1uUgoAEPxumPvomDI6eB1boaDNpS+xHF8wBxJZQpBWsZpXaJrm6Cc
-        cK825dGuTUbyp02KfhCJtl+XVWRJws9bjmZLPmB1Z4y9uL4QVqNOm+XJaLk45wagD56VsPcIRzCXf
-        zF3DadFti78h/5AlaHjW0ncY33DERXcbn0t3HXKvRF7BKgDDRUMUUKbQpiN7VZyL//20MiE6J8YHc
-        nB22u8bGlf/mkrq8eV9wrtG3b4DseXA8uT1Kvzg7L+7BCOJ4P4H7KUoxUNV60xmQpTD43+sWYE8Qe
-        YY8dUfaQ==;
+        bh=hovFmglboAd1PTUKIc8q/eAFcPeS4SThi+Ejk6Ow87o=; b=HZt/sTRXVWWpY54+u0ELel8mQl
+        r2VOv0Zmd6b7hGtm877EBapQsyIqKAEI7MecYEEXbV5Ci1995HCDmM71QGXQFpe68MDmbI8v6oMRQ
+        C0C6R+H8/NModt5JmRNXzeYZNTMutMT55mv6lNr+H7a3EZU/O5HsQtQJWtgTV3FTXRTaMClSH/BAv
+        bRj3WmOQHgh4kJ7ReCmzNKQrdl6XjcBLsmWaqXRWG6lUOGnaajRE7NneQR8vb8+WbN0dSItwfuG+R
+        BaWzICX22woghbGQvQvFM1sHE6YD147/Na2aBwP4uHDzjoDzBG8zZevEoRjpAyFIxLwJuVjhpLD+4
+        OGzkgG2Q==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rA5QZ-000X0a-66; Mon, 04 Dec 2023 09:39:47 +0000
+        id 1rA5QZ-000X0b-6y; Mon, 04 Dec 2023 09:39:47 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-        id A8328300FAE; Mon,  4 Dec 2023 10:39:45 +0100 (CET)
-Message-Id: <20231204093732.204792131@infradead.org>
+        id ABFC830198F; Mon,  4 Dec 2023 10:39:45 +0100 (CET)
+Message-Id: <20231204093732.323101886@infradead.org>
 User-Agent: quilt/0.65
-Date:   Mon, 04 Dec 2023 10:37:10 +0100
+Date:   Mon, 04 Dec 2023 10:37:11 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Sean Christopherson <seanjc@google.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
@@ -40,7 +40,7 @@ To:     Sean Christopherson <seanjc@google.com>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, x86@kernel.org,
         kvm@vger.kernel.org
-Subject: [PATCH 08/11] objtool: Collapse annotate sequences
+Subject: [PATCH 09/11] x86/kvm/emulate: Implement test_cc() in C
 References: <20231204093702.989848513@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,151 +54,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce read_annotate() runs by collapsing subsequent runs into a
-single call.
+Current test_cc() uses the fastop infrastructure to test flags using
+SETcc instructions. However, int3_emulate_jcc() already fully
+implements the flags->CC mapping, use that.
+
+Removes a pile of gnarly asm.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/objtool/check.c |   87 ++++++++++++++++++--------------------------------
- 1 file changed, 32 insertions(+), 55 deletions(-)
+ arch/x86/include/asm/text-patching.h |   20 +++++++++++++-------
+ arch/x86/kvm/emulate.c               |   34 ++--------------------------------
+ 2 files changed, 15 insertions(+), 39 deletions(-)
 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -2308,21 +2308,24 @@ static int read_annotate(struct objtool_
- 	return 0;
+--- a/arch/x86/include/asm/text-patching.h
++++ b/arch/x86/include/asm/text-patching.h
+@@ -186,9 +186,9 @@ void int3_emulate_ret(struct pt_regs *re
  }
  
--static int __annotate_ignore_alts(struct objtool_file *file, int type, struct instruction *insn)
-+static int __annotate_early(struct objtool_file *file, int type, struct instruction *insn)
+ static __always_inline
+-void int3_emulate_jcc(struct pt_regs *regs, u8 cc, unsigned long ip, unsigned long disp)
++bool __emulate_cc(unsigned long flags, u8 cc)
  {
--	if (type != ANNOTYPE_IGNORE_ALTS)
--		return 0;
-+	switch (type) {
-+	case ANNOTYPE_IGNORE_ALTS:
-+		insn->ignore_alts = true;
-+		break;
+-	static const unsigned long jcc_mask[6] = {
++	static const unsigned long cc_mask[6] = {
+ 		[0] = X86_EFLAGS_OF,
+ 		[1] = X86_EFLAGS_CF,
+ 		[2] = X86_EFLAGS_ZF,
+@@ -201,15 +201,21 @@ void int3_emulate_jcc(struct pt_regs *re
+ 	bool match;
  
--	insn->ignore_alts = true;
--	return 0;
--}
-+	/*
-+	 * Must be before read_unwind_hints() since that needs insn->noendbr.
-+	 */
-+	case ANNOTYPE_NOENDBR:
-+		insn->noendbr = 1;
-+		break;
- 
--static int __annotate_noendbr(struct objtool_file *file, int type, struct instruction *insn)
--{
--	if (type != ANNOTYPE_NOENDBR)
--		return 0;
-+	default:
-+		break;
-+	}
- 
--	insn->noendbr = 1;
- 	return 0;
- }
- 
-@@ -2356,26 +2359,21 @@ static int __annotate_ifc(struct objtool
- 	return 0;
- }
- 
--static int __annotate_retpoline_safe(struct objtool_file *file, int type, struct instruction *insn)
-+static int __annotate_late(struct objtool_file *file, int type, struct instruction *insn)
- {
--	if (type != ANNOTYPE_RETPOLINE_SAFE)
--		return 0;
--
--	if (insn->type != INSN_JUMP_DYNAMIC &&
--	    insn->type != INSN_CALL_DYNAMIC &&
--	    insn->type != INSN_RETURN &&
--	    insn->type != INSN_NOP) {
--		WARN_INSN(insn, "retpoline_safe hint not an indirect jump/call/ret/nop");
--		return -1;
--	}
-+	switch (type) {
-+	case ANNOTYPE_RETPOLINE_SAFE:
-+		if (insn->type != INSN_JUMP_DYNAMIC &&
-+		    insn->type != INSN_CALL_DYNAMIC &&
-+		    insn->type != INSN_RETURN &&
-+		    insn->type != INSN_NOP) {
-+			WARN_INSN(insn, "retpoline_safe hint not an indirect jump/call/ret/nop");
-+			return -1;
-+		}
- 
--	insn->retpoline_safe = true;
--	return 0;
--}
-+		insn->retpoline_safe = true;
-+		break;
- 
--static int __annotate_instr(struct objtool_file *file, int type, struct instruction *insn)
--{
--	switch (type) {
- 	case ANNOTYPE_INSTR_BEGIN:
- 		insn->instr++;
- 		break;
-@@ -2384,6 +2382,10 @@ static int __annotate_instr(struct objto
- 		insn->instr--;
- 		break;
- 
-+	case ANNOTYPE_UNRET_BEGIN:
-+		insn->unret = 1;
-+		break;
-+
- 	default:
- 		break;
+ 	if (cc < 0xc) {
+-		match = regs->flags & jcc_mask[cc >> 1];
++		match = flags & cc_mask[cc >> 1];
+ 	} else {
+-		match = ((regs->flags & X86_EFLAGS_SF) >> X86_EFLAGS_SF_BIT) ^
+-			((regs->flags & X86_EFLAGS_OF) >> X86_EFLAGS_OF_BIT);
++		match = ((flags & X86_EFLAGS_SF) >> X86_EFLAGS_SF_BIT) ^
++			((flags & X86_EFLAGS_OF) >> X86_EFLAGS_OF_BIT);
+ 		if (cc >= 0xe)
+-			match = match || (regs->flags & X86_EFLAGS_ZF);
++			match = match || (flags & X86_EFLAGS_ZF);
  	}
-@@ -2391,16 +2393,6 @@ static int __annotate_instr(struct objto
- 	return 0;
+ 
+-	if ((match && !invert) || (!match && invert))
++	return (match && !invert) || (!match && invert);
++}
++
++static __always_inline
++void int3_emulate_jcc(struct pt_regs *regs, u8 cc, unsigned long ip, unsigned long disp)
++{
++	if (__emulate_cc(regs->flags, cc))
+ 		ip += disp;
+ 
+ 	int3_emulate_jmp(regs, ip);
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -26,6 +26,7 @@
+ #include <asm/debugreg.h>
+ #include <asm/nospec-branch.h>
+ #include <asm/ibt.h>
++#include <asm/text-patching.h>
+ 
+ #include "x86.h"
+ #include "tss.h"
+@@ -416,31 +417,6 @@ static int fastop(struct x86_emulate_ctx
+ 	ON64(FOP3E(op##q, rax, rdx, cl)) \
+ 	FOP_END
+ 
+-/* Special case for SETcc - 1 instruction per cc */
+-#define FOP_SETCC(op) \
+-	FOP_FUNC(op) \
+-	#op " %al \n\t" \
+-	FOP_RET(op)
+-
+-FOP_START(setcc)
+-FOP_SETCC(seto)
+-FOP_SETCC(setno)
+-FOP_SETCC(setc)
+-FOP_SETCC(setnc)
+-FOP_SETCC(setz)
+-FOP_SETCC(setnz)
+-FOP_SETCC(setbe)
+-FOP_SETCC(setnbe)
+-FOP_SETCC(sets)
+-FOP_SETCC(setns)
+-FOP_SETCC(setp)
+-FOP_SETCC(setnp)
+-FOP_SETCC(setl)
+-FOP_SETCC(setnl)
+-FOP_SETCC(setle)
+-FOP_SETCC(setnle)
+-FOP_END;
+-
+ FOP_START(salc)
+ FOP_FUNC(salc)
+ "pushf; sbb %al, %al; popf \n\t"
+@@ -1063,13 +1039,7 @@ static int em_bsr_c(struct x86_emulate_c
+ 
+ static __always_inline u8 test_cc(unsigned int condition, unsigned long flags)
+ {
+-	u8 rc;
+-	void (*fop)(void) = (void *)em_setcc + FASTOP_SIZE * (condition & 0xf);
+-
+-	flags = (flags & EFLAGS_MASK) | X86_EFLAGS_IF;
+-	asm("push %[flags]; popf; " CALL_NOSPEC
+-	    : "=a"(rc) : [thunk_target]"r"(fop), [flags]"r"(flags));
+-	return rc;
++	return __emulate_cc(flags, condition & 0xf);
  }
  
--static int __annotate_unret(struct objtool_file *file, int type, struct instruction *insn)
--{
--	if (type != ANNOTYPE_UNRET_BEGIN)
--		return 0;
--
--	insn->unret = 1;
--	return 0;
--
--}
--
- /*
-  * Return true if name matches an instrumentation function, where calls to that
-  * function from noinstr code can safely be removed, but compilers won't do so.
-@@ -2507,14 +2499,7 @@ static int decode_sections(struct objtoo
- 	add_ignores(file);
- 	add_uaccess_safe(file);
- 
--	ret = read_annotate(file, __annotate_ignore_alts);
--	if (ret)
--		return ret;
--
--	/*
--	 * Must be before read_unwind_hints() since that needs insn->noendbr.
--	 */
--	ret = read_annotate(file, __annotate_noendbr);
-+	ret = read_annotate(file, __annotate_early);
- 	if (ret)
- 		return ret;
- 
-@@ -2560,15 +2545,7 @@ static int decode_sections(struct objtoo
- 	if (ret)
- 		return ret;
- 
--	ret = read_annotate(file, __annotate_retpoline_safe);
--	if (ret)
--		return ret;
--
--	ret = read_annotate(file, __annotate_instr);
--	if (ret)
--		return ret;
--
--	ret = read_annotate(file, __annotate_unret);
-+	ret = read_annotate(file, __annotate_late);
- 	if (ret)
- 		return ret;
- 
+ static void fetch_register_operand(struct operand *op)
 
 
