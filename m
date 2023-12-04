@@ -2,193 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 105B7802A2B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544F4802A2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:13:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbjLDCKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 21:10:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57048 "EHLO
+        id S234307AbjLDCL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 21:11:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjLDCKH (ORCPT
+        with ESMTP id S229510AbjLDCL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 21:10:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA5D95
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 18:10:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701655812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=7DpzMW9l8USWbr/TXZ2mqrkhEXzMDf/T6QpMPtMWGcY=;
-        b=PZxFMb4ikpguo6/50z+wahNUXz7rsowHLzy4/8oemB4IumejVxkQK4ozcSds12L92ympoF
-        +dyinJn5EVR43bVtN0mv/I+ALMJ02PJ6r+SiA5TYGv5R21Pjshnt64GpSwPsCFzfa8gSUU
-        rC9u6W6TSSbdPmenUEKit1RJGJ7C40E=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-500-Xng4ZFAwNOuBMcJ3cikbmA-1; Sun, 03 Dec 2023 21:10:09 -0500
-X-MC-Unique: Xng4ZFAwNOuBMcJ3cikbmA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 801BF811E86;
-        Mon,  4 Dec 2023 02:10:08 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C25C5C1596F;
-        Mon,  4 Dec 2023 02:10:07 +0000 (UTC)
-Date:   Mon, 4 Dec 2023 10:10:04 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, akpm@linux-foundation.org,
-        ignat@cloudflare.com, linux-next@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kexec@lists.infradead.org, eric_devolder@yahoo.com
-Subject: Re: Re: linux-next: Tree for Dec 1 (riscv, crash_core)
-Message-ID: <ZW00/Cfk47Cc3kGo@MiWiFi-R3L-srv>
+        Sun, 3 Dec 2023 21:11:56 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D28E8B3;
+        Sun,  3 Dec 2023 18:12:01 -0800 (PST)
+Received: from loongson.cn (unknown [10.20.42.173])
+        by gateway (Coremail) with SMTP id _____8Cx7+twNW1lJ6I+AA--.58446S3;
+        Mon, 04 Dec 2023 10:12:00 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxO9xsNW1le8lTAA--.53472S3;
+        Mon, 04 Dec 2023 10:11:58 +0800 (CST)
+Subject: Re: [PATCH v5 4/4] KVM: selftests: Add test cases for LoongArch
+To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
+        Shuah Khan <shuah@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>, Vipin Sharma <vipinsh@google.com>
+References: <20231130111804.2227570-1-zhaotianrui@loongson.cn>
+ <20231130111804.2227570-5-zhaotianrui@loongson.cn>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <ebdc956b-6235-370f-97d1-c24540c05047@loongson.cn>
+Date:   Mon, 4 Dec 2023 10:11:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231130111804.2227570-5-zhaotianrui@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxO9xsNW1le8lTAA--.53472S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7uw17Kr4DtFyDCF4kGFW3urX_yoW8KFWrpF
+        yI9r1jvFWxurs3Jwn3Gw4DZan3Cr9Fgr40gFy3Kw18ur98J348JF1xKasrKFsYgw45Xa1Y
+        v3WrKwnruayDA3XCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUP2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
+        WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1l
+        IxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU00eHDUUUU
+        U==
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-eric_devolder@yahoo.com, ignat@cloudflare.com,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	kexec <kexec@lists.infradead.org>
-Bcc: bhe@redhat.com
-Subject: Re: linux-next: Tree for Dec 1 (riscv, crash_core)
-Reply-To: 
-In-Reply-To: <bbd1bbfb-c482-433d-bce9-2b591b8e855e@infradead.org>
 
-On 12/01/23 at 11:53am, Randy Dunlap wrote:
+
+On 2023/11/30 下午7:18, Tianrui Zhao wrote:
+> There are some KVM common test cases supported by LoongArch:
+> 	demand_paging_test
+> 	dirty_log_perf_test
+> 	dirty_log_test
+> 	guest_print_test
+> 	kvm_binary_stats_test
+> 	kvm_create_max_vcpus
+> 	kvm_page_table_test
+> 	memslot_modification_stress_test
+> 	memslot_perf_test
+> 	set_memory_region_test
+> And other test cases are not supported by LoongArch. For example,
+> we do not support rseq_test, as the glibc do not support it.
 > 
+> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> ---
+>   tools/testing/selftests/kvm/Makefile | 15 +++++++++++++++
+>   1 file changed, 15 insertions(+)
 > 
-> On 11/30/23 18:37, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > Changes since 20231130:
-> > 
-> 
-> on riscv 32-bit or 64-bit, with
-> # CONFIG_MMU is not set
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index a5963ab9215..9d099d48013 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -65,6 +65,10 @@ LIBKVM_s390x += lib/s390x/ucall.c
+>   LIBKVM_riscv += lib/riscv/processor.c
+>   LIBKVM_riscv += lib/riscv/ucall.c
+>   
+> +LIBKVM_loongarch += lib/loongarch/processor.c
+> +LIBKVM_loongarch += lib/loongarch/ucall.c
+> +LIBKVM_loongarch += lib/loongarch/exception.S
+> +
+>   # Non-compiled test targets
+>   TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
+>   
+> @@ -202,6 +206,17 @@ TEST_GEN_PROGS_riscv += kvm_binary_stats_test
+>   
+>   SPLIT_TESTS += get-reg-list
+>   
+> +TEST_GEN_PROGS_loongarch += demand_paging_test
+> +TEST_GEN_PROGS_loongarch += dirty_log_perf_test
+> +TEST_GEN_PROGS_loongarch += dirty_log_test
+> +TEST_GEN_PROGS_loongarch += guest_print_test
+> +TEST_GEN_PROGS_loongarch += kvm_binary_stats_test
+> +TEST_GEN_PROGS_loongarch += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_loongarch += kvm_page_table_test
+> +TEST_GEN_PROGS_loongarch += memslot_modification_stress_test
+> +TEST_GEN_PROGS_loongarch += memslot_perf_test
+> +TEST_GEN_PROGS_loongarch += set_memory_region_test
+rseq_test is not supported by LoongArch kernel, and get-reg-list 
+interface is not supported by KVM now, arch specific testcases
+will be added later also.
 
-Thanks for providing the kernel config to ease reproduction. In the config,
-there are:
-
-CONFIG_CRASH_CORE=y
-CONFIG_KEXEC_CORE=y
-CONFIG_CRASH_DUMP=y
-......
-# CONFIG_MMU is not set
-
-After investigation, I found this happened after Ignat's patch:
-commit 1c7a3fa49ef7 ("kexec: drop dependency on ARCH_SUPPORTS_KEXEC from CRASH_DUMP")
-
-Copy above commit change here for reference, and also risc-v's
-ARCH_SUPPORTS_KEXEC depends on MMU:
---------------------------------------------------------
-diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
-index fc38f1ae3a30..946dffa048b7 100644
---- a/kernel/Kconfig.kexec
-+++ b/kernel/Kconfig.kexec
-@@ -96,7 +96,6 @@ config KEXEC_JUMP
- config CRASH_DUMP
-        bool "kernel crash dumps"
-        depends on ARCH_SUPPORTS_CRASH_DUMP
--       depends on ARCH_SUPPORTS_KEXEC
-        select CRASH_CORE
-        select KEXEC_CORE
-        help
-
-arch/riscv/Kconfig
----------------------
-config ARCH_SUPPORTS_KEXEC
-        def_bool MMU
-
-Before Ignat's patch, once CONFIG_MMU is unset, CONFIG_CRASH_DUMP,
-CONFIG_KEXEC_CORE, CONFIG_CRASH_CORE are all unset automatically. The
-crash_core codes are not compiled. That's why no compiling error is
-seen.
-
-After Ignat's patch applied, we can enable CONFIG_CRASH_DUMP,
-CONFIG_KEXEC_CORE, CONFIG_CRASH_CORE independently. However, there are
-several macro definitions, such as VA_BITS, VMEMMAP_START, VMEMMAP_END,
-MODULES_VADDR, MODULES_END are only available when CONFIG_MMU=y.
-
-I made two patches to decouple the kexec/crash code with CONFIG_MMU. Not
-sure if risc-v wants that.
-
-Or we can simply add dependency on MMU for ARCH_SUPPORTS_CRASH_DUMP.
-Then when CONFIG_MMU=n, CONFIG_CRASH_DUMP, CONFIG_KEXEC_CORE,
-CONFIG_CRASH_CORE will be unset too. Please help check which one need be
-taken.
-
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 24c1799e2ec4..03d290da7262 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -708,6 +708,7 @@ config ARCH_SUPPORTS_KEXEC_PURGATORY
- 
- config ARCH_SUPPORTS_CRASH_DUMP
- 	def_bool y
-+	depends on MMU=y
- 
- config ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
- 	def_bool CRASH_CORE
-
-> 
-> In file included from ../arch/riscv/kernel/crash_core.c:3:
-> ../arch/riscv/kernel/crash_core.c: In function 'arch_crash_save_vmcoreinfo':
-> ../arch/riscv/kernel/crash_core.c:8:27: error: 'VA_BITS' undeclared (first use in this function)
->     8 |         VMCOREINFO_NUMBER(VA_BITS);
->       |                           ^~~~~~~
-> ../include/linux/crash_core.h:78:64: note: in definition of macro 'VMCOREINFO_NUMBER'
->    78 |         vmcoreinfo_append_str("NUMBER(%s)=%ld\n", #name, (long)name)
->       |                                                                ^~~~
-> ../arch/riscv/kernel/crash_core.c:8:27: note: each undeclared identifier is reported only once for each function it appears in
->     8 |         VMCOREINFO_NUMBER(VA_BITS);
->       |                           ^~~~~~~
-> ../include/linux/crash_core.h:78:64: note: in definition of macro 'VMCOREINFO_NUMBER'
->    78 |         vmcoreinfo_append_str("NUMBER(%s)=%ld\n", #name, (long)name)
->       |                                                                ^~~~
-> ../arch/riscv/kernel/crash_core.c:12:58: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'int' [-Wformat=]
->    12 |         vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
->       |                                                        ~~^
->       |                                                          |
->       |                                                          long unsigned int
->       |                                                        %x
-> ../arch/riscv/kernel/crash_core.c:14:64: error: 'VMEMMAP_START' undeclared (first use in this function)
->    14 |         vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
->       |                                                                ^~~~~~~~~~~~~
-> ../arch/riscv/kernel/crash_core.c:15:62: error: 'VMEMMAP_END' undeclared (first use in this function); did you mean 'MEMREMAP_ENC'?
->    15 |         vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
->       |                                                              ^~~~~~~~~~~
->       |                                                              MEMREMAP_ENC
-> 
-> 64-bit only: 
-> 
-> ../arch/riscv/kernel/crash_core.c:17:64: error: 'MODULES_VADDR' undeclared (first use in this function)
->    17 |         vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
->       |                                                                ^~~~~~~~~~~~~
-> ../arch/riscv/kernel/crash_core.c:18:62: error: 'MODULES_END' undeclared (first use in this function)
->    18 |         vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
->       |                                                              ^~~~~~~~~~~
-> 
-> 
-> 
-> -- 
-> ~Randy
+Reviewed-by: Bibo Mao <maobibo@loongson.cn>
+> +
+>   TEST_PROGS += $(TEST_PROGS_$(ARCH_DIR))
+>   TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(ARCH_DIR))
+>   TEST_GEN_PROGS_EXTENDED += $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
 > 
 
