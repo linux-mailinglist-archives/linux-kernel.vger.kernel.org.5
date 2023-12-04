@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43EEA803F06
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75615803F0B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345431AbjLDUKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
+        id S233824AbjLDUKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:10:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjLDUKL (ORCPT
+        with ESMTP id S233461AbjLDUKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:10:11 -0500
+        Mon, 4 Dec 2023 15:10:35 -0500
 Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:c0c:51f3::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BAAC4;
-        Mon,  4 Dec 2023 12:10:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60780CD;
+        Mon,  4 Dec 2023 12:10:41 -0800 (PST)
 MIME-Version: 1.0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-        t=1701720614;
+        t=1701720639;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GPWhJUYk0ESW19LBMCm1nhIdTuA7Ta7q5+UkwQrVXRM=;
-        b=WbIOjvF1u40bccMbkb9nsw74YrYjBq9Llpoi82xLrpCrhRsYCpohF4Ym0CmHiuws7ggald
-        6qmk9T41rs2Pd5vn5fHQRsR9r0Q5eBeGHT/hNHd/yV3uKKi0O8nSyHWKBls+ZNp/sgCKTW
-        RY3tr6qYaoid8kTX4zH2UQFjdpwh9ulAwp7OEpBe435XG4Thg46woseiE1mt/SaX/xpcMy
-        6UDm1n4kc5oQQxw5ODM3tQ8hysqslRQp4fE/YYE0icfH9JtyWfWobPQ2wXpW7q3tndnyHG
-        twR8fSsBksELFKNMbE6uomavA0EilXZy5KzKapw522s2vOXmKFZSo5d4GyQF4w==
-Date:   Mon, 04 Dec 2023 21:10:14 +0100
+        bh=WaBKyZYjaJtgWFGIGCrbCOxg1wbzLZEM0lX/acM3Eu4=;
+        b=NyimGtKF40X/eyneyQwjvGAfs8vHIL9DGnFCDfkXzfMZrxGpjI8gtBwkgZMwwNFUiSHPDM
+        UrdaTLTKzN462kra74wKYVdGu5ZwJctWbKiRdNoZUtiiBYGf1hv7QmrEy22stV3R502y+u
+        OU+Dh39brqo9Nfy5XPDyObLfBKVbz+e8eLy9PTRaHQBJ++cnnV4GZBBptnpR7uM0YHDnFT
+        G7d6ZvvuUlRhuk9ZVySAs/ZB4QUgmiEXk+tE6RziliHj5MdTnm2NkHklljo+GUvWWB8DVD
+        uwaGhJ8NZY98CoNHjuumC6AC3YRU9pFXJJRtH6Fg4J4qZoPFPrgRktFYXGNcGg==
+Date:   Mon, 04 Dec 2023 21:10:39 +0100
 From:   Dragan Simic <dsimic@manjaro.org>
 To:     Johan Jonker <jbx6244@gmail.com>
 Cc:     heiko@sntech.de, robh+dt@kernel.org,
@@ -36,11 +36,12 @@ Cc:     heiko@sntech.de, robh+dt@kernel.org,
         jay.xu@rock-chips.com, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] ARM: dts: rockchip: add gpio alias for gpio dt
+Subject: Re: [PATCH v1 2/2] arm64: dts: rockchip: add gpio alias for gpio dt
  nodes
-In-Reply-To: <89f2a229-9f14-d43f-c53d-5d4688e70456@gmail.com>
+In-Reply-To: <56daeead-1d35-44bb-00c0-614b84a986de@gmail.com>
 References: <89f2a229-9f14-d43f-c53d-5d4688e70456@gmail.com>
-Message-ID: <8787c5328e4ce368d35c8aa376c528d0@manjaro.org>
+ <56daeead-1d35-44bb-00c0-614b84a986de@gmail.com>
+Message-ID: <87fcf1ed7d10c879bb0c8aa44f004dd5@manjaro.org>
 X-Sender: dsimic@manjaro.org
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
@@ -68,57 +69,36 @@ On 2023-12-02 19:22, Johan Jonker wrote:
 Reviewed-by: Dragan Simic <dsimic@manjaro.org>
 
 > ---
+>  arch/arm64/boot/dts/rockchip/rk3308.dtsi | 5 +++++
+>  arch/arm64/boot/dts/rockchip/rk3328.dtsi | 4 ++++
+>  arch/arm64/boot/dts/rockchip/rk3368.dtsi | 4 ++++
+>  arch/arm64/boot/dts/rockchip/rk3399.dtsi | 5 +++++
+>  4 files changed, 18 insertions(+)
 > 
-> Changed V1:
->   rebase
->   remove rk3066 gpio5 alias
-> ---
->  arch/arm/boot/dts/rockchip/rk3036.dtsi  | 3 +++
->  arch/arm/boot/dts/rockchip/rk3066a.dtsi | 5 +++++
->  arch/arm/boot/dts/rockchip/rk322x.dtsi  | 4 ++++
->  arch/arm/boot/dts/rockchip/rk3288.dtsi  | 9 +++++++++
->  arch/arm/boot/dts/rockchip/rk3xxx.dtsi  | 4 ++++
->  5 files changed, 25 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/rockchip/rk3036.dtsi
-> b/arch/arm/boot/dts/rockchip/rk3036.dtsi
-> index 78686fc72ce6..8aa2e0864fed 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3036.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3036.dtsi
-> @@ -17,6 +17,9 @@ / {
->  	interrupt-parent = <&gic>;
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+> b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+> index 2ae4bb7d5e62..cfc0a87b5195 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
+> @@ -20,6 +20,11 @@ / {
+>  	#size-cells = <2>;
 > 
 >  	aliases {
 > +		gpio0 = &gpio0;
 > +		gpio1 = &gpio1;
 > +		gpio2 = &gpio2;
+> +		gpio3 = &gpio3;
+> +		gpio4 = &gpio4;
 >  		i2c0 = &i2c0;
 >  		i2c1 = &i2c1;
 >  		i2c2 = &i2c2;
-> diff --git a/arch/arm/boot/dts/rockchip/rk3066a.dtsi
-> b/arch/arm/boot/dts/rockchip/rk3066a.dtsi
-> index de9915d946f7..30139f21de64 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3066a.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3066a.dtsi
-> @@ -13,6 +13,11 @@
->  / {
->  	compatible = "rockchip,rk3066a";
-> 
-> +	aliases {
-> +		gpio4 = &gpio4;
-> +		gpio6 = &gpio6;
-> +	};
-> +
->  	cpus {
->  		#address-cells = <1>;
->  		#size-cells = <0>;
-> diff --git a/arch/arm/boot/dts/rockchip/rk322x.dtsi
-> b/arch/arm/boot/dts/rockchip/rk322x.dtsi
-> index a721744cbfd1..831561fc1814 100644
-> --- a/arch/arm/boot/dts/rockchip/rk322x.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk322x.dtsi
-> @@ -15,6 +15,10 @@ / {
->  	interrupt-parent = <&gic>;
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> index e18f7c1c0724..76ea18bf11a0 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+> @@ -20,6 +20,10 @@ / {
+>  	#size-cells = <2>;
 > 
 >  	aliases {
 > +		gpio0 = &gpio0;
@@ -128,12 +108,28 @@ Reviewed-by: Dragan Simic <dsimic@manjaro.org>
 >  		serial0 = &uart0;
 >  		serial1 = &uart1;
 >  		serial2 = &uart2;
-> diff --git a/arch/arm/boot/dts/rockchip/rk3288.dtsi
-> b/arch/arm/boot/dts/rockchip/rk3288.dtsi
-> index cb9cdaddffd4..ead343dc3df1 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3288.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3288.dtsi
-> @@ -19,6 +19,15 @@ / {
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
+> b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
+> index a4c5aaf1f457..fc7e3f2bc786 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
+> @@ -20,6 +20,10 @@ / {
+> 
+>  	aliases {
+>  		ethernet0 = &gmac;
+> +		gpio0 = &gpio0;
+> +		gpio1 = &gpio1;
+> +		gpio2 = &gpio2;
+> +		gpio3 = &gpio3;
+>  		i2c0 = &i2c0;
+>  		i2c1 = &i2c1;
+>  		i2c2 = &i2c2;
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> index da0dfb237f85..dec2705d035d 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+> @@ -20,6 +20,11 @@ / {
 > 
 >  	aliases {
 >  		ethernet0 = &gmac;
@@ -142,26 +138,6 @@ Reviewed-by: Dragan Simic <dsimic@manjaro.org>
 > +		gpio2 = &gpio2;
 > +		gpio3 = &gpio3;
 > +		gpio4 = &gpio4;
-> +		gpio5 = &gpio5;
-> +		gpio6 = &gpio6;
-> +		gpio7 = &gpio7;
-> +		gpio8 = &gpio8;
->  		i2c0 = &i2c0;
->  		i2c1 = &i2c1;
->  		i2c2 = &i2c2;
-> diff --git a/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-> b/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-> index cb4e42ede56a..f37137f298d5 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-> @@ -16,6 +16,10 @@ / {
-> 
->  	aliases {
->  		ethernet0 = &emac;
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
-> +		gpio3 = &gpio3;
 >  		i2c0 = &i2c0;
 >  		i2c1 = &i2c1;
 >  		i2c2 = &i2c2;
