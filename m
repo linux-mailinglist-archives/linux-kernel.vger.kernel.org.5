@@ -2,148 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 518BA802C5C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:51:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 906FB802C62
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234711AbjLDHvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 02:51:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        id S234704AbjLDHwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 02:52:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234685AbjLDHvP (ORCPT
+        with ESMTP id S234690AbjLDHv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 02:51:15 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1367FF3
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 23:51:20 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a196f84d217so397872566b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 23:51:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701676278; x=1702281078; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=arTRaSO7qb6afExZuPum4dyf3xlHerUlvm4TwoAJ7bo=;
-        b=V4s1S9NcQDNJGyAZYFKI9EVIkt3mqhz0BhYj/jBjpf/wEgzMPvH/XrV23bh11dKivG
-         mOW7AwlYkZuKlI1aErYHybFmcxheF74EM1YJqeqK8ygh6j68m5xCpFWvd2s1v41iueNp
-         NkeiphGXsyYitwIqSPoZVWK3C5cEznkYuzlkcmxUQA5u8dSbdryQ4szBQLkErJr0RwTp
-         VysmN4zehvdZwzt5k7G3gRnuSHTuGYAlDxOQof5j0NnHqIqcMnP7zurAZ0vOD4RWg8rE
-         QbsHyH/sOA/0QzT/JAyfTCebhOsjsMj9iiYtQes0CHQxrX4vBisPIYAXqt8G/JU2xmro
-         SKoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701676278; x=1702281078;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=arTRaSO7qb6afExZuPum4dyf3xlHerUlvm4TwoAJ7bo=;
-        b=N5xewECkOjkN9NtgcUzPeg8a25BDxtTDRszZ11pBbNw6sd7GeTkRPQQ0iH+iroR8Cl
-         Kh4UgDg8Fmnf9rd+/RUM8iJRLmyHugw4DRqs0YVcasXsczpqEWPETCjSHQ71Sbj7Wcie
-         vsyK7XaG0/suSSl7cQ890goDlld8vYUijirBH7piSCJr1YOZNRfDL4Nv8XHwfIeJ0Bk7
-         T2JtHprAsh65jlGKo23wVAT2hqvYDXHNkIXN8gZ3sSKvu0CpkyxF1BNRJ0ZrXvGVumPj
-         PA4yMoADWPM4IUYGJbOL1Z+18eh8ZsrQhId+akC+BrAfSTBbJRL6FOCc1IqcfWAwY544
-         FNGA==
-X-Gm-Message-State: AOJu0YyCPMknRFgzJKAXDNSvy41Ivw9Cm38aygzv/pVsNYjWI6lt1tIf
-        Dxpe6t28oBckPz6ew/75dxrxfQ==
-X-Google-Smtp-Source: AGHT+IGU4wYxHD6TOqoPdgUQdxysOxQy4nBbwxzlUrixFStp0EoRpziwnF1+QzV7A/z4bBcuk/mp6A==
-X-Received: by 2002:a17:907:3ad1:b0:a19:a1ba:8ccb with SMTP id fi17-20020a1709073ad100b00a19a1ba8ccbmr2367531ejc.105.1701676278547;
-        Sun, 03 Dec 2023 23:51:18 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id p20-20020a170906229400b00a18db59797dsm4694966eja.127.2023.12.03.23.51.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Dec 2023 23:51:17 -0800 (PST)
-Message-ID: <ed981149-5d96-43a9-9534-c1e52443a983@linaro.org>
-Date:   Mon, 4 Dec 2023 08:51:15 +0100
+        Mon, 4 Dec 2023 02:51:59 -0500
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BAAF0;
+        Sun,  3 Dec 2023 23:52:04 -0800 (PST)
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+        by mail5.25mail.st (Postfix) with ESMTPSA id 96BD36049B;
+        Mon,  4 Dec 2023 07:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+        s=25mailst; t=1701676323;
+        bh=XWo9gVPTMw/Jq0RjiBpbhpIaqutznCtnJEvdD0CoMg4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P+bely7rNEVVgt2juKTgYntibbAPc4QjgIoWYc2/D4hZNw1OMxX1DmvuLTHKDujdO
+         eUpE7S7GNk6PTaLFtdNfq4QKQoQoDCqcFsBAuquHxq+NQVzf1bQGCw7Wqec/0GSaKp
+         TtVeEB308gFErEL+thsLamtqaKl9jI6GmYC/0ncvHTaqx+yGK3PB2iLwlcUcb2oddD
+         Tj7SykeS9eQKqMEOAQ6cXuwSQW5gOw9U33L63lIrrcIkWolbjIFsAfw14GNhp0r/j4
+         4Z9JkCUc+UX6iviCMwKRNVFZuHtEeQ+lLxkHdPwDNVKssLmlb7qrOfOPrIsJPtg4wE
+         fueDCrerrQ2gw==
+Date:   Mon, 4 Dec 2023 09:51:31 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v3 0/3] Add support for DEVNAME:0.0 style hardware based
+ addressing
+Message-ID: <20231204075131.GK5169@atomide.com>
+References: <20231121113203.61341-1-tony@atomide.com>
+ <ZWnvc6-LnXdjOQLY@alley>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/23] pinctrl: Convert struct group_desc to use struct
- pingroup
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
- <CACRpkdZAriTP3iOgmwvoAH-3-aO_ugoEkBHE7mHH5YLxhMXSXg@mail.gmail.com>
- <b2175abe-b989-4b77-891e-67e8240ba0be@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <b2175abe-b989-4b77-891e-67e8240ba0be@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWnvc6-LnXdjOQLY@alley>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -151,32 +63,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 08:49, Krzysztof Kozlowski wrote:
-> On 01/12/2023 15:05, Linus Walleij wrote:
->> On Wed, Nov 29, 2023 at 5:15 PM Andy Shevchenko
->> <andriy.shevchenko@linux.intel.com> wrote:
->>
->>> The struct group_desc has a lot of duplication with struct pingroup.
->>> Deduplicate that by embeddind the latter in the former and convert
->>> users.
->>>
->>> Linus, assuming everything is fine, I can push this to my tree.
->>> Or you can apply it (assumming all CIs and people are happy with
->>> the series).
->>
->> I applied the series to devel so we get some rotation in linux-next,
->> augmenting the relevant commit messages as discussed!
->>
+* Petr Mladek <pmladek@suse.com> [231201 14:36]:
+> Well, my understanding is that it solves the problem only for the newly
+> added console=DEVICENAME:0.0 format. But it does not handle the
+> existing problems with matching console names passed via earlycon=
+> and console= parameters. Am I right?
+
+Yes that's where the remaining problems are.
+
+> Now, the bad news. This patchset causes regressions which are
+> not acceptable. I have found two so far but there might be more.
 > 
-> ... and this next fails to build on standard defconfig:
-> https://krzk.eu/#/builders/76/builds/420/steps/9/logs/stdio
+> I used the following kernel command line:
 > 
-> I did not bisect yet, so I am just guessing that error looks like
-> something introduced here.
+>    earlycon=uart8250,io,0x3f8,115200 console=ttyS0,115200 console=tty0 ignore_loglevel log_buf_len=1M
+> 
+> 
+> 1. The patchset caused that /dev/console became associated with
+>    ttyS0 instead of tty0, see the "C" flag:
+> 
+> 	original # cat /proc/consoles
+> 	tty0                 -WU (EC    )    4:1
+> 	ttyS0                -W- (E  p a)    4:64
+> 
+>    vs.
+> 
+> 	patched # cat /proc/consoles
+> 	ttyS0                -W- (EC p a)    4:64
+> 	tty0                 -WU (E     )    4:1
+> 
+>    This is most likely caused by the different ordering of
+>    __add_preferred_console() calls.
 
-One more for arm32 defconfig:
-https://krzk.eu/#/builders/5/builds/2532/steps/9/logs/stdio
+Yes I noticed that too. We can't drop the console parsing from
+console_setup() until we have some solution for flagging
+register_console() that we do have a console specified on the
+kernel command line and try_enable_default_console() should not
+be called. It seems some changes to the console_set_on_cmdline
+handling might do the trick here.
 
-Best regards,
-Krzysztof
+>    The ordering is important because it defines which console
+>    will get associated with /dev/console. It is a so called
+>    preferred console defined by the last console= parameter.
+> 
+>    Unfortunately also the ordering of the other parameters
+>    is important when a console defined by the last console=
+>    parameter is not registered at all. In this case,
+>    /dev/console gets associated with the first console
+>    with tty binding according to the order on the command line.
+> 
+>    If you think that it is weird behavior then I agree.
+>    But it is a historical mess. It is how people used it
+>    when the various features were added. Many changes
+>    in this code caused regressions and had to be reverted.
 
+Yeah agreed it's a mess :)
+
+>    See the following to get the picture:
+> 
+>        + commit c6c7d83b9c9e6a8 ("Revert "console: don't
+> 	 prefer first registered if DT specifies stdout-path")
+> 
+>        + commit dac8bbbae1d0ccb ("Revert "printk: fix double
+> 	 printing with earlycon"").
+
+OK thanks.
+
+> 2. The serial console gets registered much later with this
+>    patchset:
+> 
+> 	original # dmesg | grep printk:
+> 	[    0.000000] printk: legacy bootconsole [uart8250] enabled
+> 	[    0.000000] printk: debug: ignoring loglevel setting.
+> 	[    0.016859] printk: log_buf_len: 1048576 bytes
+> 	[    0.017324] printk: early log buf free: 259624(99%)
+> 	[    0.141859] printk: legacy console [tty0] enabled
+> 	[    0.142399] printk: legacy bootconsole [uart8250] disabled
+> 	[    0.143032] printk: legacy console [ttyS0] enabled
+> 
+>    vs.
+> 
+> 	patched # dmesg | grep printk:
+> 	[    0.000000] printk: legacy bootconsole [uart8250] enabled
+> 	[    0.000000] printk: debug: ignoring loglevel setting.
+> 	[    0.018142] printk: log_buf_len: 1048576 bytes
+> 	[    0.018757] printk: early log buf free: 259624(99%)
+> 	[    0.160706] printk: legacy console [tty0] enabled
+> 	[    0.161213] printk: legacy bootconsole [uart8250] disabled
+> 	[    1.592929] printk: legacy console [ttyS0] enabled
+> 
+>    This is pretty bad because it would complicate or even prevent
+>    debugging of the boot stage via serial console.
+
+I think I have a patch coming for 8250 isa ports for that issue.
+This issue should go away if we call add_preferred_console_match()
+from serial8250_isa_init_ports() with options for the port like
+"ttyS0", "ttyS", 0.
+
+>    The graphical console is not usable when the system dies. Also
+>    finding the right arguments for the earlycon= parameter is
+>    tricky so that people enable it only when they have to debug
+>    very early messages.
+> 
+> 
+> I am going to look at the patches more closely to see if I could
+> provide some hints.
+
+Great, help with the early console handling is much appreciated.
+
+I'll post an updated patchset this week that does not touch
+console_setup() beyond saving the console options. And then we
+hopefully have something that avoids the regressions and can be
+used for further changes later on.
+
+Regards,
+
+Tony
