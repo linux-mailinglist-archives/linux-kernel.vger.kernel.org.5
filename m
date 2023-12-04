@@ -2,272 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B84A802E80
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9441C802E84
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229735AbjLDJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:27:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        id S229947AbjLDJ1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjLDJ1c (ORCPT
+        with ESMTP id S229699AbjLDJ1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:27:32 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2381FCD;
-        Mon,  4 Dec 2023 01:27:39 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B49HTHx023343;
-        Mon, 4 Dec 2023 09:27:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=mHOSP91UGlrDyTekPdpCVZ0JFoRE6i1/0MxMuFLxR5Q=;
- b=FkYIMgNKfOulFFjo023MIWo5TjuqPjV0H+M3HvfEVHeERoaou+j6bUW20R4Kq6uDPwt5
- ptlL6NKNiYYh+MyVrgiZt+7ntWFEZM3d7NzBqM1WJEtsGd2BQchlMoPBs/Rr2xKS2bY9
- vCose2er6j+TvOHv3nOpMUUyjZTqAhB+AyGNVUrBNPvV4g5+pNxQQVDUpaeTR4FwoF64
- XXMEFPs8hAg8P/pozo38KI+dTy/oqE5+p5ad+iU3ulFbRJdrO757K6jwbbPJujRztbhA
- iQ0q5eZbBayCSrfnODR5dYxoHYvWIYVAbWQUmtFZ1Eya2hvNlV9yiY/kY3M6fW+4PVRH kw== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3usc0h80qh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Dec 2023 09:27:09 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B47rX8o005997;
-        Mon, 4 Dec 2023 09:27:08 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2040.outbound.protection.outlook.com [104.47.51.40])
-        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu15a1d5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Dec 2023 09:27:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MmSvJ/NN6QDO16q5jc+9V0uaztZB4xSKtAi82G/4fxBbVf5/LItnUKb+AXOquMZ8+2vCSyBVjaodJPnarUF0zrR1ghCQjAVOgcyRKDvBt2gNP9uyPSDapjA9ENRXvRU7eLGTgIghC2hSsuesI0YrvD1JzRfK0MU1NIhz8FdNFepVyMZxBxzYu9EImMTOlYEu1RYKuFKRxCfj/+CsFfksKau13D7eSQWw7LRsTCLZqfZHLNfDjIb9QE0keQYvM0GACpE1xPRkhDcW4NxGYKm9N9uj5YXJ5zbmf7F3L08Sik/Uj57gL4jMTh/HnAgP6tQIe+5hct1r42Ouai0LBpKdTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mHOSP91UGlrDyTekPdpCVZ0JFoRE6i1/0MxMuFLxR5Q=;
- b=TokWqO1uQvJqqtoCM0UMxDFDYg32Rps8zKiY8aEfY8GZvz4on3Wp3bIRLY3/wgvJt9wYobsWFYN+FKB/+sPigTT5zTPrS9Tqjrs3lbhRhGJy9kpZPGiVjurKBA6YJT06+hxNZAZtX1ALdkNZdlMYcz0GcPTEbrHbsL3A/86AFWPpL4jPS2jE9kPGeGmHDSgs6+J+R4Z5JARpulU7qd0rb/0OZaXjozL0Xp3ryMhJXgkMxwe3OMEnOTnM9vlhG7Gg+1A51dJUCQqdr+6dHKlZPxcmIYkxumGqRV7xUtyhURYYesz60A98zmyx/IReqSPZ+uF3xlWRjv2wdED20W5yCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mHOSP91UGlrDyTekPdpCVZ0JFoRE6i1/0MxMuFLxR5Q=;
- b=JFDn1qtfN+1LTrNSCWeXgjV80hnlQS4HULhlDa3iw9dOFW8qQx6IXabwzBQXutEhR98slB1pK9082gCooAguV3Wi3KNE9sTJjhXqnbOgoRwjs1B/AQJ4vlGJQ+8sJdqAtbNo9uniVMvod/TNasGzLbmY50wG8G+Yico8HV67eAA=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by SA2PR10MB4521.namprd10.prod.outlook.com (2603:10b6:806:117::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 09:27:05 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 09:27:05 +0000
-Message-ID: <03a87103-0721-412c-92f5-9fd605dc0c74@oracle.com>
-Date:   Mon, 4 Dec 2023 09:27:00 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/21] block: Add fops atomic write support
-Content-Language: en-US
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-11-john.g.garry@oracle.com> <ZW05th/c0sNbM2Zf@fedora>
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <ZW05th/c0sNbM2Zf@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0265.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:a1::13) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        Mon, 4 Dec 2023 04:27:46 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7F3BBD8;
+        Mon,  4 Dec 2023 01:27:52 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 702AA1650;
+        Mon,  4 Dec 2023 01:28:38 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A46113F6C4;
+        Mon,  4 Dec 2023 01:27:47 -0800 (PST)
+Message-ID: <744be4e0-48e0-4c77-825c-711386dd205f@arm.com>
+Date:   Mon, 4 Dec 2023 09:27:45 +0000
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SA2PR10MB4521:EE_
-X-MS-Office365-Filtering-Correlation-Id: e17f6d68-81aa-411d-0969-08dbf4ab2e3a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mENNQiMjcBWLqAkWq0JODPGZ2ZuWIu41DTAJXmCRtKCTu55rpmCvLq3Q8Sz+DzY3xcp81HAphuyGFAlpSUDd+5H/lISrLz5XUB0+DIWmg66VXqdZaNhjFjR+Lf1a8cnfsyUTFiLWu1b33T1sekqJ6nAIrQDvFrfRbIkk6bK+AwF/Uqe6bjTkKQs3uhxW6zUjoiVacYZbYY1ecAGI/UG22phL5vhg+RP4//NMQDNc9nGgYnPcSfdLPGcDB+1iaW0p4jfvQR86k1ujP6ThooXLNPpe0nRZl4UvACJenkVVqedckarUaV0O5yXeGbTHR4/x0ijACSHh27xXqTcsWJbYtyIX4fC4OKLSzNmoJgjZCC3KT0k2Gzvh8KR/Q5rIR4lndc0uZaXHVwCD+GHppLlObc0QxRsVG4UaFLWdvfdIt+vuc5X0WRVfm+sAcAPrE/cos0YKYe7tX05sdaRMzHluXQqIhCIKh2bYmq0F/ITjCNADRj0TV8DOOFV5uwMPRfn4sSj3s3vyb6cV/bBJHHeAGAAyKBD/KROtlZrX39Iit82XLwk567YrDfReFfgPoUA+Gm3N/Agj7AReWSxzXsc4lZaYrskp2sPaBZsAZYhrrVv6BqhdHlNznG/lnzTNmJxrm6ob185HXHfFndyqS1X26A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(136003)(376002)(366004)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(66556008)(66476007)(66946007)(316002)(6916009)(478600001)(6486002)(6666004)(7416002)(5660300002)(41300700001)(36756003)(38100700002)(2906002)(31696002)(86362001)(4326008)(8676002)(8936002)(31686004)(2616005)(83380400001)(26005)(6512007)(53546011)(36916002)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bVpIbVkrY1pQSmxhZGlRRUszbWdUbkMwRFc2U0dPRU5BOVdSY3huVWlkcW1n?=
- =?utf-8?B?akZxVk1FZGtFUWhjckJnSHU2cE1rZVByMFF4V1gyVnBxRFdsdHJBS09SQXNJ?=
- =?utf-8?B?bXhBOHRQWGNtYXA3UHZZb281c3pUYkV1OXl2WXNuKzBwVWFXN1pmMUZxeXRK?=
- =?utf-8?B?R2VyeXJibmZHNDBrbkZHVzBhazBNTTVERVJRWUkxVmxlNTY4U2EwZTBiNmFw?=
- =?utf-8?B?RXZhVENoOTdTZDVLUnRXcndvS254RktXRkQ1cUREL2NKd2FPcGtyc3BKVG44?=
- =?utf-8?B?cCtUVWt6S3JWcW1zU1NONkVhMi9McFZiRTRTeHFSd285RUpiQmwwN3pXTHRM?=
- =?utf-8?B?cHhxVW43d1M3d29aa0NLTWNNV0QxdFpLd1h2R29wSG1RZ3Jseng2UURsTU0x?=
- =?utf-8?B?bVh0K0VpbUUyRFJ5UmxET3hvRjdtSlVNQXM5TGlGcUg2YnVOTVVOV25JRnU4?=
- =?utf-8?B?L2xBeVNabUR6NzVmeE0xREI4cy9CS3hzZ1ZwSWNvZ0pjUGtsTXhXOVFORm9E?=
- =?utf-8?B?SXhnSTUvQVhRbTdhWnAwczkwWlN4N1ROelAzWXIyZDhhb0NobnpaaGl0R3JE?=
- =?utf-8?B?cFdrOEx3RHlnUExkalg2Q2lmcDRCeWJjcm1NakNmU2IvOWhrNGIwNEtxYlRh?=
- =?utf-8?B?SDhMMGl2c1p3c25Wa1FiUys5MmtxbG0vZnhhVm9RODNZbGdCUDJDQXljVHAz?=
- =?utf-8?B?ekE5aHZJMVo0emUzSEpEK2JPWU5CZDREMGkwbGpxNDhlRnpvRmRmSlR0YUJD?=
- =?utf-8?B?TSt5MVVPY2JFbnMzTUNFcnYyNmpYRkJPcXQwMG1Yb3BxR3FEK3ZmT0dDOEpM?=
- =?utf-8?B?Sm5URjZySjNMVlpCZjE5cGhrRWh4d3JXOWRJUmE2RVVSenp4c2hOeXRsZ3Vn?=
- =?utf-8?B?V2dpUlRPUkF1c0xTenY5NzF6MVp1SkNhdkFqZmpvSzdjUUxqVW5TUHljTDl6?=
- =?utf-8?B?dmtSa05DZDlUOTZpVm9SempnVG5XQW1XZlBaeHo3aGRUVzVpTDVhVHJ4QlNT?=
- =?utf-8?B?aDNEeTVVYWE5RktXLzc1OTM1ZlRwRlF3NnRXRUJsYmZNNi9FNkFKS3B1VWNF?=
- =?utf-8?B?eEFYbFgzZmttTGFaY1dJUVJFYk8zdGRYa0R3YXBzZWpIWG0vYnlub25xQ1Rr?=
- =?utf-8?B?NW5BY0dFOEIzcEcrK2tKaXFndVEwYWlhaXBMZVdkWElNZWlnSGVFZzV3K2xa?=
- =?utf-8?B?SUxheXNrRVNIMkhOWGp4NWdqOFFJWEsrK3pmZjllb0RxL3NNMjZyVHdVanMy?=
- =?utf-8?B?azJVT2NTbUNkVUxncWF6MURrc09LYzNjV0I5NlJIaUNUV3hRang3QXRBOFdZ?=
- =?utf-8?B?NTZVbDZCcmtSLzBOTjNLK2EwZ2pBaHZJZE01TWJjSUVLdm42VlBQblhLK2NC?=
- =?utf-8?B?Y0N6a0h5MStlY3ZZM01sRzNnKy92MkwwT0tSckFaMUxKT29kOFhuN08zTmhr?=
- =?utf-8?B?QzVZTkYyRWNJSmVxdTVWTlVXRmhiTFRad3dWYXVQTnl6OFRMTEcyS1lFcWhH?=
- =?utf-8?B?U1hwR2lKTWJXRmlUM2NyQkNUMUdnY2xsWGI1N2JsZjRhdEhKYUo3NXI0MW11?=
- =?utf-8?B?NUlIc2JuUExRYkpyTmh5TURZR280cytSWmpxa0p3SlpyRjhmcGhNNlhvU1NG?=
- =?utf-8?B?NE43R3RUNVpicUwwUzhrTG91dUhaQWJCVFZvanFZSFFYZU9Xc1pjeW5mQkxz?=
- =?utf-8?B?bUhpVys2UXZGV3B1d05RK3Z5c3AxQnorTS9qSEQyUjRLU2Y2ZkovTy8rU2Mr?=
- =?utf-8?B?NTJncXRZVkVFQ1FYUlR3MHJSQkp4bnN4b3RHUXNrcDFkTTc5RVRTakhiSFJH?=
- =?utf-8?B?STJQNVNOd3RDcE1qTUMwVXU5Z2RKVVJpNmtYNVpIUUNubXFQL1pSSkV5dFds?=
- =?utf-8?B?SHVzSFJySzZ3TUZBeTNqMWUrOU1PRy9lTmVwZkhZU1NzWkk1WWk2ZGlwMFdQ?=
- =?utf-8?B?YWhlNlB3QWdUMHBRUkxjS3pXWStoenorUDRMVS9aeUwybXFuYmprSWtTWm1s?=
- =?utf-8?B?ZE5VUDNWQzI0d3NwbGovTFZkTnlndTIyUi80NlBSUkVIZ25kWGk3cjc5YUVU?=
- =?utf-8?B?aHp4bDZ3NkxGa3dzREprdWRVUGNjUDZ3UkJGeXNYKzdPWFhXMzNZUjZpSno2?=
- =?utf-8?Q?NMgPCqurv6VrnSn9+r3FtXq99?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?YStqVk03c1RQUStESHJVbDBzb2hmTVRydHFaYlMzbSt2Zm9McTkzUkJ3cmtQ?=
- =?utf-8?B?RzdiT1NpVzI0Vk5Id0hYVjV6S0MvQlFyNUZIZmFTZU1BaXErU0luNjRqR1BY?=
- =?utf-8?B?VnV3RmFtTzRQd2xBWEw0VHJVemlFTm5DSHVUcHN0bGo5WTVTUVhUUnI5OFhF?=
- =?utf-8?B?eVpmdm5UVThCK0MwSHRKMzZsem1EZVZqZ1pMNlZSYlBhVmhzbXBkZ3lUK3kx?=
- =?utf-8?B?YkZIU1lab042dUZpNWtlSVNnUFdZUUpLSUtpZ0drZ092U21qRkFUaEpkYUI3?=
- =?utf-8?B?SXV3WWVGd3daSytwTDhEY2Y4ejJmNzBoMk8rMWYrN3BaWHBIbEJjU2paWHBy?=
- =?utf-8?B?K25jdEpvOW15bTA3N2ZOSnJodms1ZWkxOS9iOTkwSTNSYXdjYlNva09EZXRx?=
- =?utf-8?B?cUpqUHdyTEZndEt6L1o3bW5oVThPZ05PYlhjQk9HK3FIcm1hMVJRQkRGcHl2?=
- =?utf-8?B?cnBmSzArT29hek9YNzBmaUh5QkJyRlBkcHZCT0VudVl2MDNFY3dLRmd6VG9o?=
- =?utf-8?B?N1E5ZzhyeVIvYjZOUXlOTXB6WDhmYUFqNTVjb1BlRnYwVU1wL0V4c3R0WnRz?=
- =?utf-8?B?OXBqdGQyRUFtbTJBUUhqK1RVQUxqUjlwM1gwLzdxV1p4MHhuWDB0dkY4VlFx?=
- =?utf-8?B?azFhTHZHVTJyck1zWnVSZ2VLVDhpL2lFNDJSVDJjUHNBVWQ2S3FlMy93N1lH?=
- =?utf-8?B?b0tkcytCcG5GanRUOFRHcGVpNkw5ZEcvNE9NOHZYUUd6TnlnT2QrSWF0REox?=
- =?utf-8?B?bWZTa1g0cXJHa0x5bjM3aVFIUGhLMFlaQnZxKzlSNUl2bTAyMFlBTzROQzll?=
- =?utf-8?B?eG8zYlVWVUM3SUdZLzFrWDAxZDJqanZ1Q2x0UExKUVZZRHRWcTVYRnlUeUll?=
- =?utf-8?B?TE1QdktvSzI0V0RPWTQzamVkRmc4YkxVbk0wTE9tdnBIQnpFOWx6ZjBpOEZM?=
- =?utf-8?B?MzQrcTVocitLMmJ6bEJQZmxSeUFpeUcwR0tILzcyVmE0Q3Erd3M1NW00YUsv?=
- =?utf-8?B?RGNCYXE2bHB1MFVseHozL1FYcUdrR2p6SHpDSFFpK3FRTllWZjFzbUxzN3N6?=
- =?utf-8?B?VE54ZVR1di92WUYrQXJwRjlDYitiSkFEVy9yallQNkdyU0hYRFU1ZS8yV0tB?=
- =?utf-8?B?SVI4ZXRralRTeXQ4QyttWWR4N1dsbnFvUlo3VlhKVWF5ZGpCWVR6T1gwUlor?=
- =?utf-8?B?aUVMbkQxWDZ2NkJOd1BsOFpyNHJGQVBBeFN4ODhHeDU0dkc2S0dwa3FMYnhz?=
- =?utf-8?B?N0M4MmppTWw4eUZCWmJOb0RQWldNSENqWTJZNXBGZzNrSEU1UmFZU0ErdUZy?=
- =?utf-8?B?ZFB2clVNUDkxcVF1QnlyWmNUbmJiTUxqaHBsZ0Q4dUF2c0lzMDVicm5LQ0t6?=
- =?utf-8?B?b2FSL3g3VEhlQTJzdWpCaWdUVE9sc0lCZXgzNlM5RElBa2trMEsxQ05ZaGFs?=
- =?utf-8?B?NFV3N1BtemxpRnBra244aXRWMkhWdGpSOCtIQlBRPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e17f6d68-81aa-411d-0969-08dbf4ab2e3a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 09:27:05.7153
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OQGsHtfjfmijZRYE5SSNDzqBb1Wu+X5PsetSp78c6FkGeQY7wy9j29t9JDRCUe1DfHM/5Yko1WdtBb6UrmhD4w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4521
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_06,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 phishscore=0 malwarescore=0 spamscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040071
-X-Proofpoint-GUID: lq9WZejnx554_9JE7ZNA1YXnizVtAzIZ
-X-Proofpoint-ORIG-GUID: lq9WZejnx554_9JE7ZNA1YXnizVtAzIZ
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Content-Language: en-GB
+To:     Suren Baghdasaryan <surenb@google.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20231121171643.3719880-1-surenb@google.com>
+ <20231121171643.3719880-6-surenb@google.com>
+ <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
+ <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
+ <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com>
+ <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
+ <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 02:30, Ming Lei wrote:
-
-Hi Ming,
-
->> +static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
->> +			      struct iov_iter *iter)
->> +{
->> +	unsigned int atomic_write_unit_min_bytes =
->> +			queue_atomic_write_unit_min_bytes(bdev_get_queue(bdev));
->> +	unsigned int atomic_write_unit_max_bytes =
->> +			queue_atomic_write_unit_max_bytes(bdev_get_queue(bdev));
->> +
->> +	if (!atomic_write_unit_min_bytes)
->> +		return false;
-> The above check should have be moved to limit setting code path.
-
-Sorry, I didn't fully understand your point.
-
-I added this here (as opposed to the caller), as I was not really 
-worried about speeding up the failure path. Are you saying to call even 
-earlier in submission path?
-
+On 04/12/2023 04:09, Suren Baghdasaryan wrote:
+> On Sat, Dec 2, 2023 at 2:11 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 02.12.23 09:04, Ryan Roberts wrote:
+>>> On 01/12/2023 20:47, David Hildenbrand wrote:
+>>>> On 01.12.23 10:29, Ryan Roberts wrote:
+>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
+>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
+>>>>>> into destination buffer while checking the contents of both after
+>>>>>> the move. After the operation the content of the destination buffer
+>>>>>> should match the original source buffer's content while the source
+>>>>>> buffer should be zeroed. Separate tests are designed for PMD aligned and
+>>>>>> unaligned cases because they utilize different code paths in the kernel.
+>>>>>>
+>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>>>>>> ---
+>>>>>>    tools/testing/selftests/mm/uffd-common.c     |  24 +++
+>>>>>>    tools/testing/selftests/mm/uffd-common.h     |   1 +
+>>>>>>    tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
+>>>>>>    3 files changed, 214 insertions(+)
+>>>>>>
+>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
+>>>>>> b/tools/testing/selftests/mm/uffd-common.c
+>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
+>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
+>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
+>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
+>>>>>>        return __copy_page(ufd, offset, false, wp);
+>>>>>>    }
+>>>>>>    +int move_page(int ufd, unsigned long offset, unsigned long len)
+>>>>>> +{
+>>>>>> +    struct uffdio_move uffdio_move;
+>>>>>> +
+>>>>>> +    if (offset + len > nr_pages * page_size)
+>>>>>> +        err("unexpected offset %lu and length %lu\n", offset, len);
+>>>>>> +    uffdio_move.dst = (unsigned long) area_dst + offset;
+>>>>>> +    uffdio_move.src = (unsigned long) area_src + offset;
+>>>>>> +    uffdio_move.len = len;
+>>>>>> +    uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
+>>>>>> +    uffdio_move.move = 0;
+>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
+>>>>>> +        /* real retval in uffdio_move.move */
+>>>>>> +        if (uffdio_move.move != -EEXIST)
+>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
+>>>>>> +                (int64_t)uffdio_move.move);
+>>>>>
+>>>>> Hi Suren,
+>>>>>
+>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
+>>>>>
+>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=16,
+>>>>> @uffd-common.c:648)
+>>>>>
+>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged any further, but
+>>>>> happy to go deeper if you can direct.
+>>>>
+>>>> Does it trigger reliably? Which pagesize is that kernel using?
+>>>
+>>> Yep, although very occasionally it fails with EAGAIN. 4K kernel; see other email
+>>> for full config.
+>>>
+>>>>
+>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault() uses
+>>>> default_huge_page_size(), which reads the default hugetlb size.
+>>>
+>>> My kernel command line is explicitly seting the default huge page size to 2M.
+>>>
+>>
+>> Okay, so that likely won't affect it.
+>>
+>> I can only guess that it has to do with the alignment of the virtual
+>> area we are testing with, and that we do seem to get more odd patterns
+>> on arm64.
+>>
+>> uffd_move_test_common() is a bit more elaborate, but if we aligned the
+>> src+start area up, surely "step_count" cannot be left unmodified?
+>>
+>> So assuming we get either an unaligned source or an unaligned dst from
+>> mmap(), I am not convinced that we won't be moving areas that are not
+>> necessarily fully backed by PMDs and maybe don't even fall into the VMA
+>> of interest?
+>>
+>> Not sure if that could trigger the THP splitting issue, though.
+>>
+>> But I just quickly scanned that test setup, could be I am missing
+>> something. It might make sense to just print the mmap'ed range and the
+>> actual ranges we are trying to move. Maybe something "obvious" can be
+>> observed.
 > 
->> +	if (pos % atomic_write_unit_min_bytes)
->> +		return false;
->> +	if (iov_iter_count(iter) % atomic_write_unit_min_bytes)
->> +		return false;
->> +	if (!is_power_of_2(iov_iter_count(iter)))
->> +		return false;
->> +	if (iov_iter_count(iter) > atomic_write_unit_max_bytes)
->> +		return false;
->> +	if (pos % iov_iter_count(iter))
->> +		return false;
-> I am a bit confused about relation between atomic_write_unit_max_bytes and
-> atomic_write_max_bytes.
+> I was able to reproduce the issue on an Android device and after
+> implementing David's suggestions to split the large folio and after
+> replacing default_huge_page_size() with read_pmd_pagesize(), the
+> move-pmd test started working for me. Ryan, could you please apply
+> attached patches (over mm-unstable) and try the test again?
 
-I think that naming could be improved. Or even just drop merging (and 
-atomic_write_max_bytes concept) until we show it to improve performance.
+Yep, all fixed with those patches!
 
-So generally atomic_write_unit_max_bytes will be same as 
-atomic_write_max_bytes, however it could be different if:
-a. request queue nr hw segments or other request queue limits needs to 
-restrict atomic_write_unit_max_bytes
-b. atomic_write_unit_max_bytes does not need to be a power-of-2 and 
-atomic_write_max_bytes does. So essentially:
-atomic_write_unit_max_bytes = rounddown_pow_of_2(atomic_write_max_bytes)
 
+> Thanks,
+> Suren.
 > 
-> Here the max IO length is limited to be <= atomic_write_unit_max_bytes,
-> so looks userspace can only submit IO with write-atomic-unit naturally
-> aligned IO(such as, 4k, 8k, 16k, 32k, ...), 
+>>
+>> --
+>> Cheers,
+>>
+>> David / dhildenb
+>>
 
-correct
-
-> but these user IOs are
-> allowed to be merged to big one if naturally alignment is respected and
-> the merged IO size is <= atomic_write_max_bytes.
-
-correct, but the resultant merged IO does not have have to be naturally 
-aligned.
-
-> 
-> Is my understanding right? 
-
-Yes, but...
-
-> If yes, I'd suggest to document the point,
-> and the last two checks could be change to:
-> 
-> 	/* naturally aligned */
-> 	if (pos % iov_iter_count(iter))
-> 		return false;
-> 
-> 	if (iov_iter_count(iter) > atomic_write_max_bytes)
-> 		return false;
-
-.. we would not be merging at this point as this is just IO submission 
-to the block layer, so atomic_write_max_bytes does not come into play 
-yet. If you check patch 7/21, you will see that we limit IO size to 
-atomic_write_max_bytes, which is relevant merging.
-
-Thanks,
-John
