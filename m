@@ -2,282 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65308803B5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:24:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C21F803B6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbjLDRYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:24:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48036 "EHLO
+        id S234949AbjLDRZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:25:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjLDRYW (ORCPT
+        with ESMTP id S229485AbjLDRZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:24:22 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49012B9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:24:27 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-423e04781d3so575711cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:24:27 -0800 (PST)
+        Mon, 4 Dec 2023 12:25:33 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D54B83;
+        Mon,  4 Dec 2023 09:25:39 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40c08af319cso18909375e9.2;
+        Mon, 04 Dec 2023 09:25:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701710666; x=1702315466; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GP4cvc0Driv28VGSNnxC3FA51bSIIb687QRO9gk4a5M=;
-        b=eokOZBp06cKJSsoVwc+zSM5fLYK9paQQR8+ZvV1fZ2c2MrQ0In6DtNVDa4VXLveSwe
-         /b6kXk7gqjZWINjppurJvwP9StVb3jkgkBsXZSMpp5lP97IAFx0UZbvmbHBUZrPjkGqZ
-         786tix4UuGVMmwbMQMxaLt5cil8CzDaXWMoJhd3nedifTygZV/bKXtYoncuspWg7j+rG
-         +wjAD6LwEIReFCOO+hTmYlg/BqeTjtnzUA7TwS6i2XxtXrhkTzNq9hMQbniG+J9M8GQm
-         my39tDwcKTBIlhRcCygBaMT1zvx2P7tz0ynOSYW01fuKU0Dg2plLpMVl9K5V146IPixK
-         T+qw==
+        d=gmail.com; s=20230601; t=1701710738; x=1702315538; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=F/67VX4B4sjgrRJxe42EkDnSLKfXlU5YkrCZ/4KluE8=;
+        b=I+urM3M4+CAHDXtCKxwIs0mJSkskdD6iG6EvyJl4iQoZa41KPE6paklhGPhWmQt22O
+         aXq0a89W9L6nzIuVFbOCVod51KaagSoCXzp8blRpSfgqpH6h2shAzMFW09IDV6kvWOnS
+         TRSAN9p4b9sysriS3ICvi87I2UsTwKbABSsr13fT2JNEBSO7alttdQe95L+/1MEBoAsI
+         IhqcETlm8Oi1629gDieXlshavYrTBBkYuDlBegE2Z1xRpWaqAbIa+12u3y2IgX0EBlBa
+         LlqZ4lTUTKSPNHeapTGwVWVkKfwvXmG/yHeEzVLqz4uVzgtqsBtkiKG1GehWKwzSQW6C
+         rukQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701710666; x=1702315466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GP4cvc0Driv28VGSNnxC3FA51bSIIb687QRO9gk4a5M=;
-        b=YOgUeXIts+GHU3UnXtnIAqrP95fLl9BAYmjCcjGH3oRPMr6abv5gIT3iVzt2yBoDsv
-         Y/9C8/U29DYUjRV5wGPUPytHkwLJlmeM79ASrslW4bszI2w9OeyICExtbX6i1u9GhjO9
-         Ps9AF/MnpryEzMpFJdqHATbuh4pZzV/biV54/Jqr1TMLP8RPriICDBfPTrytQEH0gDfP
-         uJgg2u1BuvD6K1jxJWr1ck14/2Sr7KvZBNQ3ADbhzz5Jf3jVsoL4xHDeEj2M0IhHwLCF
-         QGt8R6p2hP9zb4en0iY5JDuiz68jHMm+8vwROVDiZRclKQjTb2RmSgtBM8GuL4AIqDbb
-         C48g==
-X-Gm-Message-State: AOJu0Yw4lq6kLtb7lyhEgGK839hCsQEsl5g1uNJhRmj4jBr0OuZp4sqj
-        XqwFEvxIurnkqf5VgCW5IBsCnLs5QYDHIH03adb5zQ==
-X-Google-Smtp-Source: AGHT+IHxH3q4A/7JsH6yk/RnS8O2o0T5tf68JUS/fiRWVu/44O9eklOOT/sed1ITRauNUnIQE+Y11mSDXlOTlggE+2s=
-X-Received: by 2002:ac8:5a08:0:b0:421:6310:b4a6 with SMTP id
- n8-20020ac85a08000000b004216310b4a6mr862294qta.8.1701710665858; Mon, 04 Dec
- 2023 09:24:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701710738; x=1702315538;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F/67VX4B4sjgrRJxe42EkDnSLKfXlU5YkrCZ/4KluE8=;
+        b=UPN52DtaC9wY+MjsPUVPAWYMti9mdu+iTy6x11KLsBBaOgKFdRRiskYQQFDhqeq5m1
+         /flo0IwOlrKSgy3hcEvbumocp+wtgbzl0nZv1q4jmwKu2VJ2p7itQ6UDHplCGPkbBNCV
+         M3nC2DoTrUZd0W4HBnkdXMAwzORLwwokAC2aJQ3UXFNkkK9fY1SRwnAU1G3LiHd5ialk
+         xNDVtJKkCB9zwbDrdhQo1Ci/uwlwlrNN2SPqbzzmU2t/LoeL5wLE/BGPRG2Q5P+DspW2
+         0k83rDJr5C07nZ6Ga0Fg8sorIRe11d/W6lRuL6Mi1mTnYqXzIYovBNaa9hfnaHaw99f/
+         zkeQ==
+X-Gm-Message-State: AOJu0Yys5nrf+tAL2Lg8YLfdh1qjnopyX7gsIam9kgXmEqdbSAjay18j
+        Pws7OATmMI3cCMgKfMYucLw=
+X-Google-Smtp-Source: AGHT+IH+4eUTn1wB6eNuU4GMd08OsofYLBoZfpeY7NFDBH3guemfxBUQp4MObpRWTuNwklKuM9aYnQ==
+X-Received: by 2002:a05:600c:1d94:b0:40b:5e21:ec28 with SMTP id p20-20020a05600c1d9400b0040b5e21ec28mr2583746wms.90.1701710737464;
+        Mon, 04 Dec 2023 09:25:37 -0800 (PST)
+Received: from krava ([83.240.63.158])
+        by smtp.gmail.com with ESMTPSA id p23-20020a05600c1d9700b0040b3645a7c2sm19657919wms.40.2023.12.04.09.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 09:25:37 -0800 (PST)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Mon, 4 Dec 2023 18:25:34 +0100
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <ZW4LjmUKj1q6RWdL@krava>
+References: <20231130133630.192490507@infradead.org>
+ <20231130134204.136058029@infradead.org>
+ <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
+ <20231204091334.GM3818@noisy.programming.kicks-ass.net>
+ <20231204111128.GV8262@noisy.programming.kicks-ass.net>
+ <20231204125239.GA1319@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20230807174159.1140957-1-kyletso@google.com> <20230807174159.1140957-2-kyletso@google.com>
- <20230821162517.GA1832382-robh@kernel.org> <CAGZ6i=0ey+94YYgc=os5iQ_pNmNVB=qZQD0=jB4fRTKggZPSWA@mail.gmail.com>
- <CAL_JsqLjAooY27pG4GQHRdpiB_=0RCYrkKOjzAvmvz=5yU71Og@mail.gmail.com>
-In-Reply-To: <CAL_JsqLjAooY27pG4GQHRdpiB_=0RCYrkKOjzAvmvz=5yU71Og@mail.gmail.com>
-From:   Kyle Tso <kyletso@google.com>
-Date:   Tue, 5 Dec 2023 01:24:09 +0800
-Message-ID: <CAGZ6i=2qoi12OJGNmuvVm7wDgbGTnuywpuC=EYZ_MfdNPazNqw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: connector: Add child nodes for
- multiple PD capabilities
-To:     Rob Herring <robh@kernel.org>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, badhri@google.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204125239.GA1319@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 11:36=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
-e:
->
-> On Wed, Oct 18, 2023 at 12:19=E2=80=AFPM Kyle Tso <kyletso@google.com> wr=
-ote:
-> >
-> > On Tue, Aug 22, 2023 at 12:25=E2=80=AFAM Rob Herring <robh@kernel.org> =
-wrote:
-> > >
-> >
-> > Sorry for the late response...
-> >
-> > > On Tue, Aug 08, 2023 at 01:41:58AM +0800, Kyle Tso wrote:
-> > > > Define a new optional property "capabilities" which is a child node
-> > > > under connector to contain multiple USB Power Delivery capabilities=
-.
-> > > >
-> > > > Define a new property with pattern (e.g. caps-0, caps-1) which is a
-> > >
-> > > A property in json-schema terms, but for DT it's a node not a propert=
-y.
-> > > 'Define a child node ...' would be clearer.
-> > >
-> >
-> > Will do in the future patch
-> >
-> > > > child node under "capabilities". Each node contains PDO data of a
-> > > > selectable Power Delivery capability.
-> > > >
-> > > > Also define common properties for source-pdos, sink-pdos, and
-> > > > op-sink-microwatt that can be referenced.
-> > >
-> > > Why do we need this? What issue does this solve? The commit message
-> > > should answer those questions (always).
-> > >
-> >
-> > Will state the rationale in the future patch
-> >
-> > > > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > > > ---
-> > > > v1 -> v2:
-> > > > - move source/sink-pdos to $defs and reference them in properties
-> > > >
-> > > >  .../bindings/connector/usb-connector.yaml     | 80 +++++++++++++--=
-----
-> > > >  1 file changed, 57 insertions(+), 23 deletions(-)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/connector/usb-connec=
-tor.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> > > > index 1c4d3eb87763..c6b02dbda83f 100644
-> > > > --- a/Documentation/devicetree/bindings/connector/usb-connector.yam=
-l
-> > > > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yam=
-l
-> > > > @@ -117,28 +117,10 @@ properties:
-> > > >    # The following are optional properties for "usb-c-connector" wi=
-th power
-> > > >    # delivery support.
-> > > >    source-pdos:
-> > > > -    description: An array of u32 with each entry providing support=
-ed power
-> > > > -      source data object(PDO), the detailed bit definitions of PDO=
- can be found
-> > > > -      in "Universal Serial Bus Power Delivery Specification" chapt=
-er 6.4.1.2
-> > > > -      Source_Capabilities Message, the order of each entry(PDO) sh=
-ould follow
-> > > > -      the PD spec chapter 6.4.1. Required for power source and pow=
-er dual role.
-> > > > -      User can specify the source PDO array via PDO_FIXED/BATT/VAR=
-/PPS_APDO()
-> > > > -      defined in dt-bindings/usb/pd.h.
-> > > > -    minItems: 1
-> > > > -    maxItems: 7
-> > > > -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > +    $ref: "#/$defs/source-pdos"
-> > > >
-> > > >    sink-pdos:
-> > > > -    description: An array of u32 with each entry providing support=
-ed power sink
-> > > > -      data object(PDO), the detailed bit definitions of PDO can be=
- found in
-> > > > -      "Universal Serial Bus Power Delivery Specification" chapter =
-6.4.1.3
-> > > > -      Sink Capabilities Message, the order of each entry(PDO) shou=
-ld follow the
-> > > > -      PD spec chapter 6.4.1. Required for power sink and power dua=
-l role. User
-> > > > -      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_AP=
-DO() defined
-> > > > -      in dt-bindings/usb/pd.h.
-> > > > -    minItems: 1
-> > > > -    maxItems: 7
-> > > > -    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > > +    $ref: "#/$defs/sink-pdos"
-> > > >
-> > > >    sink-vdos:
-> > > >      description: An array of u32 with each entry, a Vendor Defined=
- Message Object (VDO),
-> > > > @@ -164,9 +146,7 @@ properties:
-> > > >      $ref: /schemas/types.yaml#/definitions/uint32-array
-> > > >
-> > > >    op-sink-microwatt:
-> > > > -    description: Sink required operating power in microwatt, if so=
-urce can't
-> > > > -      offer the power, Capability Mismatch is set. Required for po=
-wer sink and
-> > > > -      power dual role.
-> > > > +    $ref: "#/$defs/op-sink-microwatt"
-> > > >
-> > > >    port:
-> > > >      $ref: /schemas/graph.yaml#/properties/port
-> > > > @@ -228,6 +208,30 @@ properties:
-> > > >        SNK_READY for non-pd link.
-> > > >      type: boolean
-> > > >
-> > > > +  capabilities:
-> > > > +    description: A child node to contain all the selectable USB Po=
-wer Delivery capabilities.
-> > > > +    type: object
-> > > > +
-> > > > +    patternProperties:
-> > > > +      "^caps-[0-9]+$":
-> > > > +        description: Child nodes under "capabilities" node. Each n=
-ode contains a selectable USB
-> > > > +          Power Delivery capability.
-> > > > +        type: object
-> > > > +
-> > > > +        properties:
-> > > > +          source-pdos:
-> > > > +            $ref: "#/$defs/source-pdos"
-> > > > +
-> > > > +          sink-pdos:
-> > > > +            $ref: "#/$defs/sink-pdos"
-> > > > +
-> > > > +          op-sink-microwatt:
-> > > > +            $ref: "#/$defs/op-sink-microwatt"
-> > > > +
-> > > > +        additionalProperties: false
-> > > > +
-> > > > +    additionalProperties: false
-> > > > +
-> > > >  dependencies:
-> > > >    sink-vdos-v1: [ 'sink-vdos' ]
-> > > >    sink-vdos: [ 'sink-vdos-v1' ]
-> > > > @@ -235,6 +239,36 @@ dependencies:
-> > > >  required:
-> > > >    - compatible
-> > > >
-> > > > +$defs:
-> > >
-> > > Make this:
-> > >
-> > > $defs:
-> > >   capabilities:
-> > >     properties:
-> > >       ...
-> > >
-> > > And then just reference "#/$defs/capabilities" at the top-level and i=
-n
-> > > caps-[0-9] node schema.
-> > >
-> > > You'll need to use unevaluatedProperties instead of additionalPropert=
-ies
-> > > as well.
-> > >
-> >
-> > I am sorry I don't understand this part. Could you explain more?
-> >
-> > In $defs, define a whole structure of "capabilities" which has
-> > patternProperties "caps-[0-9]+", and inside "caps-[0-9]+" there are
-> > properties "source/sink-pdos" ?
->
-> No, define a list of properties under a def. Here's a more complete examp=
-le:
->
-> $defs:
->   capabilities:
->     properties:
->       source-pdos:
->         ...
->
->       sink-pdos:
->         ...
->
-> And then add "$ref: '#/$defs/capabilities'" at the top-level of this
-> schema doc and under "caps-[0-9]+":
->
->     patternProperties:
->       "^caps-[0-9]+$":
->         description: Child nodes under "capabilities" node. Each node
-> contains a selectable USB
->           Power Delivery capability.
->         type: object
->         $ref: "#/$defs/capabilities"
->         unevaluatedProperties: false
->
-> unevaluatedProperties is needed because it can "see" properties
-> defined in a $ref to get the full list of properties for a node.
->
-> Rob
+On Mon, Dec 04, 2023 at 01:52:39PM +0100, Peter Zijlstra wrote:
+> On Mon, Dec 04, 2023 at 12:11:28PM +0100, Peter Zijlstra wrote:
+> > On Mon, Dec 04, 2023 at 10:13:34AM +0100, Peter Zijlstra wrote:
+> > 
+> > > > Just running test_progs it splats right away:
+> > > > 
+> > > > [   74.047757] kmemleak: Found object by alias at 0xffffffffa0001d80
+> > > > [   74.048272] CPU: 14 PID: 104 Comm: kworker/14:0 Tainted: G        W
+> > > >  O       6.7.0-rc3-00702-g41c30fec304d-dirty #5241
+> > > > [   74.049118] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > > [   74.050042] Workqueue: events bpf_prog_free_deferred
+> > > > [   74.050448] Call Trace:
+> > > > [   74.050663]  <TASK>
+> > > > [   74.050841]  dump_stack_lvl+0x55/0x80
+> > > > [   74.051141]  __find_and_remove_object+0xdb/0x110
+> > > > [   74.051521]  kmemleak_free+0x41/0x70
+> > > > [   74.051828]  vfree+0x36/0x130
+> > > 
+> > > Durr, I'll see if I can get that stuff running locally, and otherwise
+> > > play with the robot as you suggested. Thanks!
+> > 
+> > I think it is bpf_jit_binary_pack_hdr(), which is using prog->bpf_func
+> > as a start address for the image, instead of jit_data->image.
+> > 
+> > This used to be true, but now it's offset.
+> > 
+> > Let me see what to do about that...
+> 
+> Not the prettiest of things, but the below seems to make the thing
+> happy...
+> 
 
-Thanks! Will update in v4
+hyea,
+that boots properly for me but gives crash below when running bpf tests
 
-Kyle
+jirka
+
+
+---
+[  482.145182][  T699] RIP: 0010:bpf_for_each_array_elem+0xbb/0x120
+[  482.145672][  T699] Code: 4c 01 f5 89 5c 24 04 4c 89 e7 48 8d 74 24 04 48 89 ea 4c 89 fd 4c 89 f9 45 31 c0 4d 89 eb 41 ba ef 86 cd 67 45 03 53 f1 74 02 <0f> 0b 41 ff d3 0f 1f 00 48 85 c0 75 0e 48 8d 43 01 41 8b 4c 24 24
+[  482.147221][  T699] RSP: 0018:ffffc900017e3e88 EFLAGS: 00010217
+[  482.147702][  T699] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc900017e3ed8
+[  482.152162][  T699] RDX: ffff888152eb0210 RSI: ffffc900017e3e8c RDI: ffff888152eb0000
+[  482.152770][  T699] RBP: ffffc900017e3ed8 R08: 0000000000000000 R09: 0000000000000000
+[  482.153350][  T699] R10: 000000004704ef28 R11: ffffffffa0012774 R12: ffff888152eb0000
+[  482.153951][  T699] R13: ffffffffa0012774 R14: ffff888152eb0210 R15: ffffc900017e3ed8
+[  482.154554][  T699] FS:  00007fa60d4fdd00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
+[  482.155138][  T699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  482.155564][  T699] CR2: 00007fa60d7d8000 CR3: 00000001502a2005 CR4: 0000000000770ef0
+[  482.156095][  T699] PKRU: 55555554
+[  482.156349][  T699] Call Trace:
+[  482.156596][  T699]  <TASK>
+[  482.156816][  T699]  ? __die_body+0x68/0xb0
+[  482.157138][  T699]  ? die+0xba/0xe0
+[  482.157456][  T699]  ? do_trap+0xa5/0x180
+[  482.157826][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
+[  482.158277][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
+[  482.158711][  T699]  ? do_error_trap+0xc4/0x140
+[  482.159052][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
+[  482.159506][  T699]  ? handle_invalid_op+0x2c/0x40
+[  482.159906][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
+[  482.160990][  T699]  ? exc_invalid_op+0x38/0x60
+[  482.161375][  T699]  ? asm_exc_invalid_op+0x1a/0x20
+[  482.161788][  T699]  ? 0xffffffffa0012774
+[  482.162149][  T699]  ? 0xffffffffa0012774
+[  482.162513][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
+[  482.162905][  T699]  bpf_prog_ca45ea7f9cb8ac1a_inner_map+0x94/0x98
+[  482.163471][  T699]  bpf_trampoline_6442549234+0x47/0x1000
+[  482.163981][  T699]  __x64_sys_getpgid+0x9/0x20
+[  482.164770][  T699]  do_syscall_64+0x53/0x110
+[  482.165184][  T699]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+[  482.165646][  T699] RIP: 0033:0x7fa60d6c5b4d
+[  482.166005][  T699] Code: c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8b 92 0c 00 f7 d8 64 89 01 48
+[  482.169662][  T699] RSP: 002b:00007ffddfcf99e8 EFLAGS: 00000202 ORIG_RAX: 0000000000000079
+[  482.170582][  T699] RAX: ffffffffffffffda RBX: 00007ffddfcf9d98 RCX: 00007fa60d6c5b4d
+[  482.171376][  T699] RDX: 0000000000000002 RSI: 0000000000000000 RDI: 0000557baa5ab850
+[  482.172010][  T699] RBP: 00007ffddfcf9b30 R08: 0000000000000000 R09: 0000000000000000
+[  482.172665][  T699] R10: 0000000000000064 R11: 0000000000000202 R12: 0000000000000001
+[  482.173359][  T699] R13: 0000000000000000 R14: 00007fa60d80d000 R15: 0000557ba6ab9790
+[  482.174014][  T699]  </TASK>
+[  482.174289][  T699] Modules linked in: bpf_testmod(OE) intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel kvm_intel rapl iTCO_wdt iTCO_vendor_support i2c_i801 i2c_smbus lpc_ich drm loop drm_panel_orientation_quirks zram
+[  482.176040][  T699] ---[ end trace 0000000000000000 ]---
+[  482.176534][  T699] RIP: 0010:bpf_for_each_array_elem+0xbb/0x120
+[  482.177215][  T699] Code: 4c 01 f5 89 5c 24 04 4c 89 e7 48 8d 74 24 04 48 89 ea 4c 89 fd 4c 89 f9 45 31 c0 4d 89 eb 41 ba ef 86 cd 67 45 03 53 f1 74 02 <0f> 0b 41 ff d3 0f 1f 00 48 85 c0 75 0e 48 8d 43 01 41 8b 4c 24 24
+[  482.179405][  T699] RSP: 0018:ffffc900017e3e88 EFLAGS: 00010217
+[  482.179971][  T699] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc900017e3ed8
+[  482.180615][  T699] RDX: ffff888152eb0210 RSI: ffffc900017e3e8c RDI: ffff888152eb0000
+[  482.181195][  T699] RBP: ffffc900017e3ed8 R08: 0000000000000000 R09: 0000000000000000
+[  482.181805][  T699] R10: 000000004704ef28 R11: ffffffffa0012774 R12: ffff888152eb0000
+[  482.182411][  T699] R13: ffffffffa0012774 R14: ffff888152eb0210 R15: ffffc900017e3ed8
+[  482.183043][  T699] FS:  00007fa60d4fdd00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
+[  482.183753][  T699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  482.184361][  T699] CR2: 00007fa60d7d8000 CR3: 00000001502a2005 CR4: 0000000000770ef0
+[  482.185649][  T699] PKRU: 55555554
+[  482.185985][  T699] BUG: sleeping function called from invalid context at include/linux/percpu-rwsem.h:49
+[  482.186846][  T699] in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 699, name: test_progs
+[  482.187590][  T699] preempt_count: 0, expected: 0
+[  482.188055][  T699] RCU nest depth: 1, expected: 0
+[  482.188460][  T699] INFO: lockdep is turned off.
+[  482.188861][  T699] CPU: 1 PID: 699 Comm: test_progs Tainted: G      D    OE      6.7.0-rc3+ #118 bfe8e46ac948d811e03ae3149ad95ea179efe638
+[  482.189821][  T699] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
+[  482.191140][  T699] Call Trace:
+[  482.191469][  T699]  <TASK>
+[  482.191766][  T699]  dump_stack_lvl+0xbd/0x120
+[  482.192222][  T699]  __might_resched+0x24a/0x280
+[  482.192694][  T699]  exit_signals+0x31/0x280
+[  482.193123][  T699]  do_exit+0x1a6/0xbb0
+[  482.193511][  T699]  ? bpf_trampoline_6442549234+0x47/0x1000
+[  482.194025][  T699]  make_task_dead+0x94/0x180
+[  482.194469][  T699]  rewind_stack_and_make_dead+0x17/0x20
+[  482.194968][  T699] RIP: 0033:0x7fa60d6c5b4d
+[  482.195399][  T699] Code: c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 8b 92 0c 00 f7 d8 64 89 01 48
+[  482.197082][  T699] RSP: 002b:00007ffddfcf99e8 EFLAGS: 00000202 ORIG_RAX: 0000000000000079
+[  482.197887][  T699] RAX: ffffffffffffffda RBX: 00007ffddfcf9d98 RCX: 00007fa60d6c5b4d
+[  482.198604][  T699] RDX: 0000000000000002 RSI: 0000000000000000 RDI: 0000557baa5ab850
+[  482.199327][  T699] RBP: 00007ffddfcf9b30 R08: 0000000000000000 R09: 0000000000000000
+[  482.200035][  T699] R10: 0000000000000064 R11: 0000000000000202 R12: 0000000000000001
+[  482.200765][  T699] R13: 0000000000000000 R14: 00007fa60d80d000 R15: 0000557ba6ab9790
+[  482.201499][  T699]  </TASK>
