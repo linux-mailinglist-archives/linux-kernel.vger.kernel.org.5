@@ -2,135 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C930803D98
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C54803DD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344455AbjLDSyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:54:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38648 "EHLO
+        id S231480AbjLDS4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231368AbjLDSyM (ORCPT
+        with ESMTP id S231325AbjLDS4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:54:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67510182;
-        Mon,  4 Dec 2023 10:54:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701716055; x=1733252055;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=fZDidZslMkY7XjR1qX39lqLvrgEO82GII5KjdZw9iqc=;
-  b=nNqN6FgyRwxsh3tYvion6wlixzsa/vAzO4w8gGH7PruojWSze9QSP4wE
-   yazvSn4os55To/oDATCWw43M5IB2DFbIPVupbzaJFHiR8N9ZKxyr724xt
-   kTxKnPo0ibdubi6yggTIDvMsj4vkXewAqOf5Ua832toNDVdvZkgPj9vNS
-   gIj+RLzFi6RXACosJI3ZAXp7e46Kq/wQyR9fEXtSq41Elp4RrAgm0hB5T
-   pD2b8OrItRNfvA3s7OtRAiMwRAuxs7tEVGHLWI2ezZETF51skLNoHiqxt
-   B2XFA6RxMwnAQhRPD68NTEtHoemasZS5UnO9VXP6Nxa/WCTRcZuC2Rh1R
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="838543"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="838543"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 10:54:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="836687212"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="836687212"
-Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 10:54:08 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Subject: [PATCH v13 8/8] x86/resctrl: Update documentation with Sub-NUMA cluster changes
-Date:   Mon,  4 Dec 2023 10:53:57 -0800
-Message-ID: <20231204185357.120501-9-tony.luck@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231204185357.120501-1-tony.luck@intel.com>
-References: <20231130003418.89964-1-tony.luck@intel.com>
- <20231204185357.120501-1-tony.luck@intel.com>
+        Mon, 4 Dec 2023 13:56:39 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA3B192;
+        Mon,  4 Dec 2023 10:56:43 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4AnJnS030162;
+        Mon, 4 Dec 2023 18:54:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=u/SrorPZafxayYbjMxackuDqOb8tJdzY5SKThHKYPTQ=;
+ b=cUpnBesmJ0Q/ndhaB4jUSNeyRTRFoiK+DWFkqsvHaDa+yKEIoN/glK9IbiFSFoh4dmto
+ Z5lmPRv3LKksHPZHWF/O0Te95LzMnqE5WCVVWYe7wLcUwbp19lvkRlx63zOVhZ6cxyIb
+ o9HkzUdhRq/J/8p3q6VDxdVehOQiPFvKdKx4ZlRNLtDEZ58hXRSu0vYlT9QBg5UhnDVx
+ rCcYn3eQjTB38P6jSPlvhhMojIhBU8DEb11UCvXtommVdk5Uk73YtoYBbJ7D1icxjKvr
+ V5HLeYkUhVB8T3MUuG5zsWKGwPD3BQfCjdLu3LheT8Ik1vNSMTlBkYk/sVngSgK3oWH+ ew== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usdbn99vj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 18:54:44 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4Ishj2026173
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Dec 2023 18:54:43 GMT
+Received: from hu-obabatun-lv.qualcomm.com (10.49.16.6) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 4 Dec 2023 10:54:40 -0800
+From:   Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>, <robh+dt@kernel.org>,
+        <frowand.list@gmail.com>, <dinguyen@kernel.org>,
+        <chenhuacai@kernel.org>, <tsbogend@alpha.franken.de>,
+        <jonas@southpole.se>, <stefan.kristiansson@saunalahti.fi>,
+        <shorne@gmail.com>, <mpe@ellerman.id.au>,
+        <ysato@users.sourceforge.jp>, <dalias@libc.org>,
+        <glaubitz@physik.fu-berlin.de>, <richard@nod.at>,
+        <anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
+        <chris@zankel.net>, <jcmvbkbc@gmail.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
+        Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+Subject: [RFC PATCH v2 0/6] Dynamic allocation of reserved_mem array.
+Date:   Mon, 4 Dec 2023 10:54:03 -0800
+Message-ID: <20231204185409.19615-1-quic_obabatun@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _rIspjjdC3n-dCGKhnKBFWB_zbwuogNd
+X-Proofpoint-GUID: _rIspjjdC3n-dCGKhnKBFWB_zbwuogNd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_18,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=804 phishscore=0
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2312040146
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With Sub-NUMA Cluster mode enabled the scope of monitoring resources is
-per-NODE instead of per-L3 cache. Suffixes of directories with "L3" in
-their name refer to Sub-NUMA nodes instead of L3 cache ids.
+The reserved_mem array is used to store the data of the different
+reserved memory regions specified in the DT of a device.
+The array stores information such as the name, node, starting address,
+and size of a reserved memory region.
 
-Users should be aware that SNC mode also affects the amount of L3 cache
-available for allocation within each SNC node.
+The array is currently statically allocated with a size of
+MAX_RESERVED_REGIONS(64). This means that any system that specifies a
+number of reserved memory regions greater than MAX_RESERVED_REGIONS(64)
+will not have enough space to store the information for all the regions.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
-Tested-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Reviewed-by: Peter Newman <peternewman@google.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
----
- Documentation/arch/x86/resctrl.rst | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+Therefore, this series extends the use of a static array for
+reserved_mem, and introduces a dynamically allocated array using
+memblock_alloc() based on the number of reserved memory regions
+specified in the DT.
 
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index a6279df64a9d..15f1cff6ee76 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -366,10 +366,10 @@ When control is enabled all CTRL_MON groups will also contain:
- When monitoring is enabled all MON groups will also contain:
- 
- "mon_data":
--	This contains a set of files organized by L3 domain and by
--	RDT event. E.g. on a system with two L3 domains there will
--	be subdirectories "mon_L3_00" and "mon_L3_01".	Each of these
--	directories have one file per event (e.g. "llc_occupancy",
-+	This contains a set of files organized by L3 domain or by NUMA
-+	node (depending on whether Sub-NUMA Cluster (SNC) mode is disabled
-+	or enabled respectively) and by RDT event.  Each of these
-+	directories has one file per event (e.g. "llc_occupancy",
- 	"mbm_total_bytes", and "mbm_local_bytes"). In a MON group these
- 	files provide a read out of the current value of the event for
- 	all tasks in the group. In CTRL_MON groups these files provide
-@@ -478,6 +478,23 @@ if non-contiguous 1s value is supported. On a system with a 20-bit mask
- each bit represents 5% of the capacity of the cache. You could partition
- the cache into four equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
- 
-+Notes on Sub-NUMA Cluster mode
-+==============================
-+When SNC mode is enabled, Linux may load balance tasks between Sub-NUMA
-+nodes much more readily than between regular NUMA nodes since the CPUs
-+on Sub-NUMA nodes share the same L3 cache and the system may report
-+the NUMA distance between Sub-NUMA nodes with a lower value than used
-+for regular NUMA nodes.  Users who do not bind tasks to the CPUs of a
-+specific Sub-NUMA node must read the "llc_occupancy", "mbm_total_bytes",
-+and "mbm_local_bytes" for all Sub-NUMA nodes where the tasks may execute
-+to get the full view of traffic for which the tasks were the source.
-+
-+The cache allocation feature still provides the same number of
-+bits in a mask to control allocation into the L3 cache, but each
-+of those ways has its capacity reduced because the cache is divided
-+between the SNC nodes. The values reported in the resctrl
-+"size" files are adjusted accordingly.
-+
- Memory bandwidth Allocation and monitoring
- ==========================================
- 
+Memory gotten from memblock_alloc() is only writable after paging_init()
+is called, but the reserved memory regions need to be reserved before
+then so that the system does not create page table mappings for them.
+
+Reserved memory regions can be divided into 2 groups.
+i) Statically-placed reserved memory regions
+i.e. regions defined in the DT using the @reg property.
+ii) Dynamically-placed reserved memory regions.
+i.e. regions specified in the DT using the @alloc_ranges
+    and @size properties.
+
+It is possible to call memblock_reserve() and memblock_mark_nomap() on
+the statically-placed reserved memory regions and not need to save them
+to the array until after paging_init(), but this is not possible for the
+dynamically-placed reserved memory because the starting address of these
+regions need to be stored somewhere after they are allocated.
+
+Therefore, this series achieves the allocation and population of the
+reserved_mem array in two steps:
+
+1. Before paging_init()
+   Before paging_init() is called, iterate through the reserved_mem
+   nodes in the DT and do the following:
+   - Allocate memory for dynamically-placed reserved memory regions and
+     store their starting address in the static allocated reserved_mem
+     array.
+   - Call memblock_reserve() and memblock_mark_nomap() on all the
+     reserved memory regions as needed.
+   - Count the total number of reserved_mem nodes in the DT.
+
+2. After paging_init()
+   After paging_init() is called:
+   - Allocate new memory for the reserved_mem array based on the number
+     of reserved memory nodes in the DT.
+   - Transfer all the information that was stored in the static array
+     into the new array.
+   - Store the rest of the reserved_mem regions in the new array.
+     i.e. the statically-placed regions.
+
+The static array is no longer needed after this point, but there is
+currently no obvious way to free the memory. Therefore, the size of the
+initial static array is now defined using a config option.
+Because the array is used only before paging_init() to store the
+dynamically-placed reserved memory regions, the required size can vary
+from device to device. Therefore, scaling it can help get some memory
+savings.
+
+A possible solution to freeing the memory for the static array will be
+to mark it as __initdata. This will automatically free the memory once
+the init process is done running.
+The reason why this is not pursued in this series is because of
+the possibility of a use-after-free.
+If the dynamic allocation of the reserved_mem array fails, then future
+accesses of the reserved_mem array will still be referencing the static
+array. When the init process ends and the memory is freed up, any
+further attempts to use the reserved_mem array will result in a
+use-after-free.
+
+Note:
+
+- The limitation to this approach is that there is still a limit of
+  64 for dynamically reserved memory regions.
+- Upon further review, the series might need to be split up/duplicated
+  for other archs.
+
+
+Oreoluwa Babatunde (6):
+  of: reserved_mem: Change the order that reserved_mem regions are
+    stored
+  of: reserved_mem: Swicth call to unflatten_device_tree() to after
+    paging_init()
+  of: resevred_mem: Delay allocation of memory for dynamic regions
+  of: reserved_mem: Add code to use unflattened DT for reserved_mem
+    nodes
+  of: reserved_mem: Add code to dynamically allocate reserved_mem array
+  of: reserved_mem: Make MAX_RESERVED_REGIONS a config option
+
+ arch/loongarch/kernel/setup.c      |   2 +-
+ arch/mips/kernel/setup.c           |   3 +-
+ arch/nios2/kernel/setup.c          |   4 +-
+ arch/openrisc/kernel/setup.c       |   4 +-
+ arch/powerpc/kernel/setup-common.c |   3 +
+ arch/sh/kernel/setup.c             |   5 +-
+ arch/um/kernel/dtb.c               |   1 -
+ arch/um/kernel/um_arch.c           |   2 +
+ arch/xtensa/kernel/setup.c         |   4 +-
+ drivers/of/Kconfig                 |  13 +++
+ drivers/of/fdt.c                   |  39 +++++--
+ drivers/of/of_private.h            |   6 +-
+ drivers/of/of_reserved_mem.c       | 175 +++++++++++++++++++++--------
+ include/linux/of_reserved_mem.h    |   8 +-
+ kernel/dma/coherent.c              |   4 +-
+ kernel/dma/contiguous.c            |   8 +-
+ kernel/dma/swiotlb.c               |  10 +-
+ 17 files changed, 205 insertions(+), 86 deletions(-)
+
 -- 
-2.41.0
+2.17.1
 
