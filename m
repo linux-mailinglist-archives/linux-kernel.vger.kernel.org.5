@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A9A8039C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511068039CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344509AbjLDQKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        id S1343904AbjLDQLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:11:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234930AbjLDQJ6 (ORCPT
+        with ESMTP id S230496AbjLDQLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:09:58 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D6E95;
-        Mon,  4 Dec 2023 08:10:04 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50bf3efe2cbso1503881e87.2;
-        Mon, 04 Dec 2023 08:10:04 -0800 (PST)
+        Mon, 4 Dec 2023 11:11:21 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B0CAA4
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:11:27 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-4254adc1f1cso14988971cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:11:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701706203; x=1702311003; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=sXEOTOPt4KaksZ2Jf2sfO5Vl3iy+KKQQtD8/P41+pGw=;
-        b=Kh5LUkE8YqnjGFJxe89IBCMf7pJZOhCxfkTX43GoIhry2vghgxm1PgqJLl6QplI4Ro
-         KGmeLot6ItieAYeOVzU+a72iDdEqpOJI/E2MZCiHAALDBYwny/taOTl11m7kiGIOdVFU
-         39wFJCo57B7lrUrFfHzRzAgAtM5ITLkDAyov+kfK1thyA/oQhH68J9oirr1nH9jVJVqk
-         jz0L1QnUcJ/SFcC5xgP3SPiQIDlR9e3fERSdTL0615qzbqftFGFtp4mHk5BuXfTzAhB4
-         dfKEvkIFlAOibpYo0qUn2trKIRuWMdvcOq6L1SJSdUz0e5ZGgVUAYslF/kWR2AFiVOHk
-         UWUg==
+        d=linaro.org; s=google; t=1701706286; x=1702311086; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wLbHKm7/lgDwaDgnbAdnxLd6DuvDCpDhtD1Uof8rcGw=;
+        b=RgJubYn9d3a+5NL3NzXps+vk+f/9/6fUUaUsNcFbAXYWn+BMcn778z75Hp9MOlUy4s
+         +e5i1fcUNM+rGTC8e4BCpIOhuhLCibFvjN/M35sCRYbHmO9YNc4QlY2uWrnVutilQbPd
+         jXVwY307KEhI+irNVsgV/vO8GVq1yYct8JCDtSqtrVXKiCeixPi/UTKgEGGYC1yvOWDq
+         ErZo9+MkpmM62tudt/y5M1DJt6/0fQjaCEnKLHwD1AiAjAOQotJCUGcZEuxwQVaRdOYE
+         9woX+JEIU0TueQbv0ZZKmwFl2kj5jCoBiQJbkBFfhXjWOFnCO1ne0YISEy/4qqKrl8T+
+         HvdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701706203; x=1702311003;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sXEOTOPt4KaksZ2Jf2sfO5Vl3iy+KKQQtD8/P41+pGw=;
-        b=pDWwGdu2M/XgZbPk/jVGpG7SOHNi1oJwtKgIifOTgLuVUZtWAuHmjzFub+EINeYjiI
-         gq7aylMV7fChkTiJr9IaIFOf+NH9RBKarVBSRh0vOojDawpkj7c0YMHDzHUoiIwnxYt6
-         GyygEUnmD3tp927zy5rKpnn3TV3OXJMzyn5gRMKcBfcZawdS9tQsC5UfokLbR8nVmpH2
-         mfx5ipIaGsDX2Bz4R3k0TvAKbZ6b5W8w7bw+nEwDy6qYdLxEPhDWjruef23KdKeL3Kj1
-         9Fj1LPi2O+64o0Lmy4CT779LIKgjM+KPA9O5sqCUyaIjtV+WwHv52aQqVYjosaCU9Mo2
-         wR6g==
-X-Gm-Message-State: AOJu0YyS/D1pXtwI2TekagGFsJ7jRoJSbxf0iSCOihe4hUkjYih6v5qC
-        MLHeaCWXY1yyK6eN4e7+ndw=
-X-Google-Smtp-Source: AGHT+IGrgSTLeQgZNtNCnwebWfodvyf80a3JECT6ZZpgKiAz9YVmobqovZ1KD/dkW1dsBBl3lfBa/Q==
-X-Received: by 2002:a19:380d:0:b0:50b:f110:20c with SMTP id f13-20020a19380d000000b0050bf110020cmr558107lfa.217.1701706202672;
-        Mon, 04 Dec 2023 08:10:02 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id p8-20020a5d59a8000000b003333ed23356sm6067577wrr.4.2023.12.04.08.10.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 08:10:02 -0800 (PST)
-Message-ID: <69a7ca77055fc57cff6d6be95fb5796723171230.camel@gmail.com>
-Subject: Re: [PATCH 06/12] iio: adc: ad9467: add mutex to struct ad9467_state
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Nuno Sa via B4 Relay 
-        <devnull+nuno.sa.analog.com@kernel.org>
-Cc:     nuno.sa@analog.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Date:   Mon, 04 Dec 2023 17:10:01 +0100
-In-Reply-To: <20231204152301.6c212539@jic23-huawei>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-         <20231121-dev-iio-backend-v1-6-6a3d542eba35@analog.com>
-         <20231204152301.6c212539@jic23-huawei>
+        d=1e100.net; s=20230601; t=1701706286; x=1702311086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wLbHKm7/lgDwaDgnbAdnxLd6DuvDCpDhtD1Uof8rcGw=;
+        b=DBwyoo97Ts8n58U8NNkgaF3dVseplxw7PlEPiSKZiHAQ0lh+TgotfknTsy6rtThQV+
+         Wjju8tLqGiS59uHO/nZscZl+JqkvFFLD+jkTuyA5I4Jt47IbZNfjvNRFVSSgjCty5hz/
+         lel68SsGauAPjQGHMMEQVjmZpEyhbFItLz74vRGpiub/X12DHsX64LYJakIo1PgS29+k
+         IxS3WUBHR2ZyPm8P5VUw25a5nyHrCS5x9T7wbpKki4CP1AQnJM1+no8WauFUQtjjoJ1a
+         Co4r5W95yvNftqav1I+hNOP5Rev6C1ib+jBKrWixYfQeKKKW/lCeYTge/lvSoZPZ5d95
+         Yn8A==
+X-Gm-Message-State: AOJu0YwaexgtRLQcQwLaNgxn3QFSwfM+J+RfMe6fGHkjHiDicKpqB5lt
+        K7GlYx0sHjb860/E9N2rVoXDv9ZamWQFstsC4DbBGq9WpqUviu6t
+X-Google-Smtp-Source: AGHT+IHBS8kRiofFIAnp2NheRRLUlynDbNs7sfwICW3mhCfWGD2kg7si6Z5hPhudSKJDOq7nZ91lKDfllxaXCPPZwZc=
+X-Received: by 2002:a0c:e609:0:b0:67a:d238:8e31 with SMTP id
+ z9-20020a0ce609000000b0067ad2388e31mr795444qvm.105.1701706286113; Mon, 04 Dec
+ 2023 08:11:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20231114095217.1142360-1-jens.wiklander@linaro.org>
+In-Reply-To: <20231114095217.1142360-1-jens.wiklander@linaro.org>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Mon, 4 Dec 2023 17:11:14 +0100
+Message-ID: <CAHUa44Hw5=91VpE9T_vtv=2+Pmy5=zH4yMnSiAAWFedxEihXPg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] OP-TEE kernel private shared memory optimizations
+To:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Shyam Saini <shyamsaini@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-12-04 at 15:23 +0000, Jonathan Cameron wrote:
-> On Tue, 21 Nov 2023 11:20:19 +0100
-> Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
->=20
-> > From: Nuno Sa <nuno.sa@analog.com>
-> >=20
-> > When calling ad9467_set_scale(), multiple calls to ad9467_spi_write()
-> > are done which means we need to properly protect the whole operation so
-> > we are sure we will be in a sane state if two concurrent calls occur.
-> >=20
-> > Fixes: ad6797120238 ("iio: adc: ad9467: add support AD9467 ADC")
-> > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> > ---
-> > =C2=A0drivers/iio/adc/ad9467.c | 6 +++++-
-> > =C2=A01 file changed, 5 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
-> > index 04474dbfa631..91821dee03b7 100644
-> > --- a/drivers/iio/adc/ad9467.c
-> > +++ b/drivers/iio/adc/ad9467.c
-> > @@ -4,7 +4,7 @@
-> > =C2=A0 *
-> > =C2=A0 * Copyright 2012-2020 Analog Devices Inc.
-> > =C2=A0 */
-> > -
-> > +#include <linux/cleanup.h>
-> > =C2=A0#include <linux/module.h>
-> > =C2=A0#include <linux/mutex.h>
-> > =C2=A0#include <linux/device.h>
-> > @@ -122,6 +122,8 @@ struct ad9467_state {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned int=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0output_mode;
-> > =C2=A0
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct gpio_desc=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0*pwrdown_gpio;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* protect against concurren=
-t accesses to the device */
-> Not very specific.=C2=A0 Concurrent access usually fine at granularity of
-> individual read/write as the bus locks protect it.=C2=A0 What state
-> is actually being protected?=C2=A0 A shared buffer or some state that we
-> need to ensure remains consistent between driver and device?
+On Tue, Nov 14, 2023 at 10:52=E2=80=AFAM Jens Wiklander
+<jens.wiklander@linaro.org> wrote:
+>
+> Hi,
+>
+> This patch set optimizes OP-TEE driver private shared memory allocated as
+> dynamic shared memory (not from the static shared memory pool). The first
+> patch handles kernel private RPC allocatations larger than one page and t=
+he
+> second changes from alloc_pages_exact() instead of alloc_pages() for more
+> efficient memory usage.
+>
+> v1->v2:
+> * Split into two patches as requested
+>
+> v2->v3:
+> * Simplified optee_pool_op_alloc_helper() by always doing the same thing
+>
+> Thanks,
+> Jens
+>
+> Jens Wiklander (2):
+>   optee: add page list to kernel private shared memory
+>   optee: allocate shared memory with alloc_pages_exact()
+>
+>  drivers/tee/optee/core.c    | 44 +++++++++++++++++++-----------------
+>  drivers/tee/optee/smc_abi.c | 45 +++++++++++++++++--------------------
+>  2 files changed, 44 insertions(+), 45 deletions(-)
+>
+>
+> base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+> --
+> 2.34.1
+>
 
-At this point not any buffer/data... Just making sure things remain consist=
-ent
-(typical case when you have multiple reads/writes to the device). That's wh=
-y a tried
-to emphasize "accesses to the device". Maybe I should make it explicit I'm =
-speaking
-about multiple reads/writes.
+I'm picking up this.
 
-- Nuno S=C3=A1
->=20
+Thanks,
+Jens
