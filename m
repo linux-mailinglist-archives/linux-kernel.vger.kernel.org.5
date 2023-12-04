@@ -2,207 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C48803C44
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B96C803C49
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbjLDSGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:06:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43904 "EHLO
+        id S231383AbjLDSHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbjLDSGc (ORCPT
+        with ESMTP id S230103AbjLDSHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:06:32 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369CEFA;
-        Mon,  4 Dec 2023 10:06:39 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4I1RPk006928;
-        Mon, 4 Dec 2023 18:06:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=Qxj73s5an90wupVqHvruaYylCXXG4beRmYypCpMiQCs=;
- b=goYvvsX5hjN7xhn8kXnbob0hIPAlhQT8fhX9mX3EcpCp65xJK71j2BlYDRwxtmEf76Rj
- TMjMUpyNmmWatwKWB3uQ9123UmtvUnwMGQTiniHLyJ6AK/WXRtGWknYGhucMjoLyhHLT
- NIexZ9uNSlxSJir8felsuOMqMyJkuHw/+FCTWLVRz6rzoBGiJ6VnUhsIZ8Iasfgp9dUz
- iQgi4UctFwPL+t24jkJjq82VUYNdsqw0b6WJhMV9chWZqM0H0RYKX/YojDO+4cbfTNci
- 6jYC6+SXjZX06VYID7rUwUlP3xTObdqX3iVVrqv17Ld9VNQXnJd6b2oxXL53uwmBKCLb XA== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uskp9r0pm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Dec 2023 18:06:15 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4HjGHp003922;
-        Mon, 4 Dec 2023 18:06:14 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu167reg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 04 Dec 2023 18:06:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O2JnnYf2mbB+iK4XrkwaJI1DDL9YKQuZqCHWUnqWohGWF3SV9OpHCJsr1VVLfKbZEqb8KJ2EAb1gmgIVXJBjXOcworFsImzdTZRSE/f/MidVKcX4hnA+YZgL/ojWNaqe7wUFiL1UU66WW5G6NcA6X0CrWHLUKfsuYXZW3suavfNNH9kdheEufvpnncOvJVh3VowFqMVlnCEyX3KSqDpXmbqJcRISXlXya0vmzm8HuIDYfylMPeNxXRbsAinCb7MwJAeT/KWyeMiQtMP5KQ25FUFKafhqakO2TjDKqy472EdmW12qBsaNw1RzHDwTW9IIXUnvT5q2nSmpjT/U2gl4OQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qxj73s5an90wupVqHvruaYylCXXG4beRmYypCpMiQCs=;
- b=DxREn2PHQgnJnFf3GIzclJ45JE4I+EQgfS/On40etIXZCFeNPKgfLF7acip9nbhM5POH6dkcyjsf9Am/VeK7HzixRG2KlVww58BWPuGDiLfs6IBsTBJ0mfkH3GRwfFHrA5BXj+RJ92u7G7tzWTfaxXrTcVXiaKiZA+oCBTV1FDGTsLNVXeZF/D4RbehTkCTwkeOJsvmdZdJMdf3uY9ePF3ZTst9FrwxbYBIJ1Oyo9A8dFqZ49++aJT53q/ONozW57X6MH+zSbnmZv8ZoIgWmO5ZdutebVaqk51uLKTK0wvKLXS2C6W+KaN+M+fx5E2p1gYjkWJyzSAUmRDsaTMwXPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 4 Dec 2023 13:07:04 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 816DD129;
+        Mon,  4 Dec 2023 10:07:10 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6ce46470647so821732b3a.1;
+        Mon, 04 Dec 2023 10:07:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qxj73s5an90wupVqHvruaYylCXXG4beRmYypCpMiQCs=;
- b=Z8USXsMFY3jPPHCbHZ186vmdbmU4GvbVp3+ikeE7Qz0qqzmwcxhQp6E0+cP22+5b5oEG7a3m8wYWUP+Uh/MXuOQIbUWojzrx7xlz8tOUdTfuOg9PA5MJEQhA5eLvAgTmSaUb7Xvuyyi8mt+cZzXzqbBAI3s94az5GeEbrSb/A5g=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by SJ0PR10MB4542.namprd10.prod.outlook.com (2603:10b6:a03:2da::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.29; Mon, 4 Dec
- 2023 18:06:08 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 18:06:08 +0000
-Message-ID: <52d64bce-5852-4527-8677-f04e23015e34@oracle.com>
-Date:   Mon, 4 Dec 2023 18:06:06 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 17/21] fs: xfs: iomap atomic write support
-Content-Language: en-US
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-18-john.g.garry@oracle.com>
- <20231109152615.GB1521@lst.de>
- <a50a16ca-d4b9-a4d8-4230-833d82752bd2@oracle.com>
- <c78bcca7-8f09-41c7-adf0-03b42cde70d6@oracle.com>
- <20231128135619.GA12202@lst.de>
- <e4fb6875-e552-45aa-b193-58f15d9a786c@oracle.com>
- <20231204134509.GA25834@lst.de>
- <a87d48a7-f2a8-40ae-8d9b-e4534ccc29b1@oracle.com>
- <20231204153912.GA3580@lst.de>
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <20231204153912.GA3580@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0405.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:189::14) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=gmail.com; s=20230601; t=1701713230; x=1702318030; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
+        b=Sbzk/cJarJS+HKABhyq9ZXjIKHReZXRZD2BmG6K1tjWjkQP6qWn2M1Hej+A0irmaku
+         MiQQibihKqnyE5TVi9uvaP+TQXi4717965Cj5SWoxsFXT08rL/dq7gcQha9HMJ+iJ6E4
+         BVSsykoGX1GtN128YVvHFOLoVXyY9pSvbwxF1qFD/Yff8eCGgX7GFA1jKFa07niVVpY4
+         d9OCXuF3WhLpOcz+yEjCxARi6Zebpvmf8U8x8xjf+1Jj/H4bG5JnvtbOkN1l+9J9gmEl
+         oiEG7ELXzD08vZaeO7QyUcVFM2Rqj1v3KKn+P22m3559f6bBVfzqLvxbIyP1mZuhfgJK
+         shBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701713230; x=1702318030;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vnKGL9rVmaXJ0k7UQTGGb8qgGBw3yaFYXulmlj0ClVk=;
+        b=AYyMCAiofwW1w8/LKfRAUteUMOKs3IGWzjKZ81HOLm4Qog7YCel+I5tMBELYkYd3Ic
+         C4T4qpkFlGZeeXP+bncCihQfhjeGD3TsJFVqGBXi/XIjoPO4B2kA2Qlk2CwoPwhDujan
+         +NNUBj2hdZwzJF+J3y4w2hEVmDWduaQnATolFiBBR9nrKzAorPwLhVN5eBryUxtqzHrX
+         V+Fk7vGMXsTDRx7WiPSB9OD38PTNnbefsY008s69lgAXGCZSuKzQm1is49s8RxAW7uOj
+         fmc91cbZIRseHKFcBH1ZvFv+pbAs/b98BwWxq9xVaO3s3RAhfCBsGBSyGFZhNwjbcZOo
+         v/lw==
+X-Gm-Message-State: AOJu0YygE6uwIjeYYcpP+0PeLWzLwNjgGit6simtM/p2Q2tE1GHwtNrK
+        68fyZnN9/CqU4w30ZC6sDjE=
+X-Google-Smtp-Source: AGHT+IGDIGeeBa7UWPj4E4w2SIGHBjZgGz8oxGqwAWzNb+KD7mpnEvIno4bt3NIHORxil3wMtNwC4w==
+X-Received: by 2002:a05:6a20:1448:b0:18c:374c:6e64 with SMTP id a8-20020a056a20144800b0018c374c6e64mr27716780pzi.36.1701713229690;
+        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::4:27ef])
+        by smtp.gmail.com with ESMTPSA id u2-20020a056a00158200b006cdd507ca2esm7943470pfk.167.2023.12.04.10.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 10:07:09 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 4 Dec 2023 08:07:07 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "coreteam@netfilter.org" <coreteam@netfilter.org>,
+        "dm-devel@lists.linux.dev" <dm-devel@lists.linux.dev>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "gfs2@lists.linux.dev" <gfs2@lists.linux.dev>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-cachefs@redhat.com" <linux-cachefs@redhat.com>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-erofs@lists.ozlabs.org" <linux-erofs@lists.ozlabs.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        "linux-fscrypt@vger.kernel.org" <linux-fscrypt@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "nbd@other.debian.org" <nbd@other.debian.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ntb@lists.linux.dev" <ntb@lists.linux.dev>,
+        "open-iscsi@googlegroups.com" <open-iscsi@googlegroups.com>,
+        "oss-drivers@corigine.com" <oss-drivers@corigine.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
+        "wireguard@lists.zx2c4.com" <wireguard@lists.zx2c4.com>
+Subject: Re: Performance drop due to alloc_workqueue() misuse and recent
+ change
+Message-ID: <ZW4VS3Z0auYCjg-W@slm.duckdns.org>
+References: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SJ0PR10MB4542:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6c1c236b-0d7d-41b1-4a37-08dbf4f3b0c2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7VfHK/DC/WMLpCeMZwD3jHunGQdytREU7BvPwm5D0Wmxotdnp1txOi1630b0Oqfgjl7Ig868gq40ZCAur2yP4Yq3Cz+X5z/bwEpewv/he40sMicPFxEEPRD30ZGjWgWg+yp7tXp08LFX0t1WmVKhQzvkMsgi1qnCGgqqhPewS6b67crWiwnOkaqQmlfaJm6iWtDTlAw5eiIbjbnSJHRK3juPYphQ8n2Qz6uKk23G7XCZPKvMxa1pEo7fH9yd0dCIpAHk54R2uJkPgeASqTPIOfFPeubbtwebsEmShSb1aeFoR5jJ8cyMP7ocbokoqh88GeNTq7cushmvd5lBzWpbCjUFV+HAHUhQnWxgn65qWtmWxiZfPzvWJCUhBE8KG3cwsHxlw6xpZ8A704FLm1J/xSDo2RP4bMt7vypYzG42d45ne3Tmsv8WS8n2P9BVlFgDoIaoXA6cdqNqigd20ucS4GjL1cCKGn6KBHtMCy5wfeqwd+8+h8L35Wbyni35O2gBf+d+K1rpgHqvpqO/RcaP0xEkM0xaQhfSwsYGkPlqD9To6SGBme0qyKc86HDi6cLTCSy/4WBWxPqe7nbEB9tEl+v0Ummix6raFGfLKXcD0Ltuz1GxmTsXyj/Q4/WsRAGiw04Nk3sMhoGxCXFSSEem2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(39860400002)(366004)(396003)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(66476007)(66556008)(66946007)(316002)(6916009)(478600001)(6486002)(38100700002)(4744005)(7416002)(5660300002)(36756003)(41300700001)(2906002)(86362001)(31696002)(8936002)(31686004)(2616005)(4326008)(83380400001)(53546011)(8676002)(26005)(6512007)(36916002)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U0NOdlN5Syszb0FFdVE0MlEyV1JzT1diVHprWXlvWnBoNGRSOVlKYmR3N0pM?=
- =?utf-8?B?aHl2N1BzMU1PRlZhUzJoWCtjTGlEVElXOHdmSVR5UWdDb05wak1kdWFaRU9Y?=
- =?utf-8?B?V0FDdjQycnREaXkyOVhiUUdZWWpLK3VZM0ZkMFkyUWJBeFQ3Z01vcGNuNGRE?=
- =?utf-8?B?VTIwWXgzYnp3S1BqaWthWGp6dDR1UzFGeG1CNWxGTXBkUTBscURHZlprMkQy?=
- =?utf-8?B?Q3dQYkJVd2dTa3pjNGloU0xnNVZJN05HRnVZN0FCN2pIcFgydTNTc0ZjVU5B?=
- =?utf-8?B?eGsyd0x3MXg1TnlyWkN3QUxBR1FnYTl0cm9qL0VaVnlnSjhsamIxdGhMSXNo?=
- =?utf-8?B?eEpZYnp4b1lOZUtVZTdaTW9OemxZVVl4bFVyMlBTMVhaUzl1RTdYSXFTRXZM?=
- =?utf-8?B?T1dGa3c4VzIwSjkwV21uZ243TmorcXVKdXYvUmdmK1hwYXdaam9lMHRjeXZG?=
- =?utf-8?B?cmlrSVNUSUNQb2FxQkdpYXRNYVdzQ2c4SHBqdXNKTmtib2krV0JVbXIrSzVE?=
- =?utf-8?B?U1pad1MvNXJrSDhTci9CL0lzQ2FPTFJ5UGZ6NHZ4SVhhdmh5dk1qNEdwUHJw?=
- =?utf-8?B?MlNkb2tIcEJmZUxRNEpEbFZVL3NBYXFob2lSeW5oemZGRjVrTFd5dWtGc3pa?=
- =?utf-8?B?YmdUazNsNlFVY05XdXl5ODlxTEY5dVZ0eWJIdTFRWG8vSFBwcFBqSVRVcHJi?=
- =?utf-8?B?bWh1MTFzdW1yWm5mZnl3NEJYb0lhcWplMnlkdGVjY292bTRXdUNUZEFCWXlJ?=
- =?utf-8?B?RWpSbTdkTE9yTk45K2NSNEdNaUNhOWpLWmVwTFlLWk4rNzFnMnI4YjBSMWVr?=
- =?utf-8?B?S2FzbjNMVmhHMEJwSXgvY2lqZVZPRVFZT3h5amNOZDNKaWttMEp0UmdGVmVz?=
- =?utf-8?B?L3hrZTJhOG5kWHA3QW12RXNNdnNuQXd4VjVTNXBXY2NZcVFHY3QwVElUQWg2?=
- =?utf-8?B?NDFZeTJxeEZabS9uMXFkd056enM0SjNnb1c0cmMxNGFTVURKdnZ2UnhqUWcr?=
- =?utf-8?B?aDJqR0tMZjZ0b0FUSkQrRFNGTis1Q2VFNktnRS80a1lBN2hhVnRjZjlqRnpu?=
- =?utf-8?B?SFJnV1A1b0YvVlcycFpoWU1wVkloMmNlWW8yMXI1aGtsZ3VJODB4bGdvcVZk?=
- =?utf-8?B?Vm55VDRiQ2FVRDYzSFJjTE5kb1cxK1dCOWRTK3BIZUYvL3l0Qnk4UlBVSnJF?=
- =?utf-8?B?dWx0U3BpMWF0bGtuVlh5UVNra3ArTm4xdkxjaStIUnJ3Zkpvd2lXclZEeWww?=
- =?utf-8?B?Z1plZVh4c0RlSkE0dWpMN1laWWpRMkdlUm5yUit5cHNtT2Qva0p4SVVUa1A1?=
- =?utf-8?B?UDhYa3Z0YU1SbStIZG1IVStocG9UcU9JazVqM3VmNms2RWIwaXFMREN2Mk90?=
- =?utf-8?B?STJmUERWbXp0L1pVWjZrZUlxWi9ZNXkvTWJjUVU4dnhPR3RVUE40UGJLMTZE?=
- =?utf-8?B?WVJjQjRpaWIvL0JBeWxOMFNmQVpXQ2FHZ3E0aTZCamt3ay96ZnFJcXhFemtl?=
- =?utf-8?B?TzhRNCtTa0RPR1g5VHI5VDYvR21tTzVtVWErZ01zdmcxUWczUGJtTlRuK3hm?=
- =?utf-8?B?bFVOLzZPZnB5anA2WUM2OS9CRUwwSU9qaWJhd0xuMjdwZ1BvWjBsTVhWbHBI?=
- =?utf-8?B?Q3lRanlVYTcwUXcyTlovYTUxYWlsc3FDWkF2UHk3dVp0ck5VM29LSzlsZkQw?=
- =?utf-8?B?U3cxcndTU1ZzRjhnaGUxUTl2aFl1bVZpN1krMjA5ZzRvYVRWODlzTXdBeGZK?=
- =?utf-8?B?b25IeU5ORmpUc0ZtK0ppREY0V2FWZVBUS0FvemgxbDJidU80b0JnZjFLbTh4?=
- =?utf-8?B?MkozR0EwS09jd2huTm9mb1pTc1NjcDNkR1NSQy90Sy9UYWIzRzA4T3J5MUhq?=
- =?utf-8?B?Z2Q4M0tKV2lzWWdVTFRBOHRvc1lsdDBta0daeENxOGM0cUpkLzVxQmVNMUVM?=
- =?utf-8?B?NXg0NWtiNzRjWCtHWnRDSE5wSloweHp6TWx3cG15aEVaV1Z2WU5NZFgxOTFG?=
- =?utf-8?B?OTVPMEZ6YnNLd1RMWENMVk0wc251VDdNRkpob3pJWE9KSmtjclJ0WWRja3Fa?=
- =?utf-8?B?c0dSNHd1aEN2T2NHV0pCSyt6UmZpUGJwZU96T1h4S3M3dDIrQWYxdnNpRU9Z?=
- =?utf-8?B?M3BOenR4eXhuV0hvd0lVSis3bDg4cXFWMEgvOEs1Z2lZVjlETmt2Q1ZESXIw?=
- =?utf-8?B?UWc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?MHJlakxYS3REL0x0elJtSXBYVmw4MnZtbk51NktuSEN2R3BJcmpjaTE3KzhI?=
- =?utf-8?B?TnBKdG9jclFrOFFPL2FNeFJCUmQ1ZTJlSGtjSWRzZUtkMm1IV2NrWnByRWty?=
- =?utf-8?B?anI3U1lmR2tTanpOUkRVYnZYenVja3N0USs5WTdTcEJOVSszQXp5WmljZDA5?=
- =?utf-8?B?ZGdEaDNNS2JVUGVZdWhnOFMvN1lzMXZlcjRRS3duemEraDh3TmNwR2NRcnF5?=
- =?utf-8?B?RWllalNITWVQSURtNWpjS0VNVGNFKzNPOWZGeC9QRWpKL0I4Q1llSkJ1em52?=
- =?utf-8?B?MmhzOWhNbWtYWTFJSFJNVWV0enpZbS93a2VRMVg4WE9pQWhhcnRNeExTVWlD?=
- =?utf-8?B?cW1vWUhTMTVYYUNsVzN1MDROeGJobUZmVXZYbDF0dzV4NVRMckNOKzJsMXFv?=
- =?utf-8?B?RENtZkVPRnlyZzJpSTJhZmtOeENHM3lpVFRyTXM0UmtoMmFFTGllNGxvbHl6?=
- =?utf-8?B?SFM2b1VEZitmK0RubDdoTVdwVzlNeE1ZYkxoTmhFc3poZDdpUTBEQ2hFTHRp?=
- =?utf-8?B?WTRRdkZuNS82a05Qa2NGTXNpZ05BaTZLNEc0MkV5WFpKbGhyanZhcm1Rd09T?=
- =?utf-8?B?NVQ1bEhZUkE2enpLdlpRZHdNb2ZnOCtLTzJBRjIvb1FOMnRubnpNazZsVFgz?=
- =?utf-8?B?amVxZXJnbGk4ZlVrcDMyN3lhNGNpZ2wxWkMzU256TThTNjhVMTFxcXcvek9R?=
- =?utf-8?B?SVNJR1U2WlM3dXlXd3hpc1pwWDcyUTJRWlNiVUdwNDRQVVVPZ3hSaFJvaGlE?=
- =?utf-8?B?dzVuLy9ucWdLdHEwOXVqYXF3ejM3cUhpSnVHR0E1YjNNdUVLYndwdFFTNUpN?=
- =?utf-8?B?bFdXN0pvSGNPUFN2MVcvd2UzUXJydUtEbGdsUEUzVDF2bm9oY1k4STdNbnU0?=
- =?utf-8?B?bFJMd2N1TWRXYkRsZVdwZGZLbDluTnlKVlZ2MWsyeVh3YmJMQmNFdVdrYUhQ?=
- =?utf-8?B?ck85QUsvUDlDOEExaUpMMEoxeTZzbmppT1VQRnV3R2YzdTBnWXNSRlZRNmRr?=
- =?utf-8?B?UEo5YzRFNTU3ZmQ2d0pJcGlsbFhNbzhhUEpLNnRBZEZDNE5tT1pvRXBqV1F5?=
- =?utf-8?B?WVRNeEVzUkc0LzBPR0xVeloxM29iRFhYOFJTK2ZnMzdYL1gzZTlEeHRFVXdQ?=
- =?utf-8?B?YUdxQThmQ0dtaFpHbmVPbmE0Z00zM0xPdUFPTVgxVFdpUHVEUEtIWk41eG81?=
- =?utf-8?B?VC9RTUxsSXJUMFU1QXpVSGhpSW1SMmN6bVZXNkNBWHFseXAyZ09iRmYraG5S?=
- =?utf-8?B?dzhVUWdqUDhHZnBlR08xQVgvTnZYbDBxWEFKUk9sNjJUeXdmUFJwTllOODBv?=
- =?utf-8?B?a3FUNnJOSk4vNHhScU51dTMzZmNjVXVnWlhyaWRxbW5XUHhZWmhucUozM2xQ?=
- =?utf-8?B?aUlON2V0UmRuaHFWRTBKaEc1eHljUytIQ29XcEFQZHNZQmR1VDdaMTRqcWth?=
- =?utf-8?B?Z1F6UnhVeEllWUdtRVpmbnJUdllqVkVYZnB4S01RPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c1c236b-0d7d-41b1-4a37-08dbf4f3b0c2
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 18:06:08.5373
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hgZFai2VMAwEmlF+nHoZhgAPt+CQd6qVfqZS87ty8t6dzzJQah4/X5Z/L6EGvsDeveonOpvF88MV8iUHzyE7fA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4542
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_17,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- suspectscore=0 malwarescore=0 adultscore=0 phishscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040139
-X-Proofpoint-ORIG-GUID: 5lbiXrgAFNqPWWJ7Neva07L18kjc6kVw
-X-Proofpoint-GUID: 5lbiXrgAFNqPWWJ7Neva07L18kjc6kVw
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbu6wiwu3sdhmhikb2w6lns7b27gbobfavhjj57kwi2quafgwl@htjcc5oikcr3>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 15:39, Christoph Hellwig wrote:
->> So what would you propose as the next step? Would it to be first achieve
->> atomic write support for XFS with HW support + CoW to ensure contiguous
->> extents (and without XFS forcealign)?
-> I think the very first priority is just block device support without
-> any fs enablement.  We just need to make sure the API isn't too limited
-> for additional use cases.
+Hello,
 
-Sounds ok
+On Mon, Dec 04, 2023 at 04:03:47PM +0000, Naohiro Aota wrote:
+> Recently, commit 636b927eba5b ("workqueue: Make unbound workqueues to use
+> per-cpu pool_workqueues") changed WQ_UNBOUND workqueue's behavior. It
+> changed the meaning of alloc_workqueue()'s max_active from an upper limit
+> imposed per NUMA node to a limit per CPU. As a result, massive number of
+> workers can be running at the same time, especially if the workqueue user
+> thinks the max_active is a global limit.
+> 
+> Actually, it is already written it is per-CPU limit in the documentation
+> before the commit. However, several callers seem to misuse max_active,
+> maybe thinking it is a global limit. It is an unexpected behavior change
+> for them.
+
+Right, and the behavior has been like that for a very long time and there
+was no other way to achieve reasonable level of concurrency, so the current
+situation is expected.
+
+> For example, these callers set max_active = num_online_cpus(), which is a
+> suspicious limit applying to per-CPU. This config means we can have nr_cpu
+> * nr_cpu active tasks working at the same time.
+
+Yeah, that sounds like a good indicator.
+
+> fs/f2fs/data.c: sbi->post_read_wq = alloc_workqueue("f2fs_post_read_wq",
+> fs/f2fs/data.c-                                          WQ_UNBOUND | WQ_HIGHPRI,
+> fs/f2fs/data.c-                                          num_online_cpus());
+> 
+> fs/crypto/crypto.c:     fscrypt_read_workqueue = alloc_workqueue("fscrypt_read_queue",
+> fs/crypto/crypto.c-                                              WQ_UNBOUND | WQ_HIGHPRI,
+> fs/crypto/crypto.c-                                              num_online_cpus());
+> 
+> fs/verity/verify.c:     fsverity_read_workqueue = alloc_workqueue("fsverity_read_queue",
+> fs/verity/verify.c-                                               WQ_HIGHPRI,
+> fs/verity/verify.c-                                               num_online_cpus());
+> 
+> drivers/crypto/hisilicon/qm.c:  qm->wq = alloc_workqueue("%s", WQ_HIGHPRI | WQ_MEM_RECLAIM |
+> drivers/crypto/hisilicon/qm.c-                           WQ_UNBOUND, num_online_cpus(),
+> drivers/crypto/hisilicon/qm.c-                           pci_name(qm->pdev));
+> 
+> block/blk-crypto-fallback.c:    blk_crypto_wq = alloc_workqueue("blk_crypto_wq",
+> block/blk-crypto-fallback.c-                                    WQ_UNBOUND | WQ_HIGHPRI |
+> block/blk-crypto-fallback.c-                                    WQ_MEM_RECLAIM, num_online_cpus());
+> 
+> drivers/md/dm-crypt.c:          cc->crypt_queue = alloc_workqueue("kcryptd/%s",
+> drivers/md/dm-crypt.c-                                            WQ_CPU_INTENSIVE | WQ_MEM_RECLAIM | WQ_UNBOUND,
+> drivers/md/dm-crypt.c-                                            num_online_cpus(), devname);
+
+Most of these work items are CPU bound but not completley so. e.g.
+kcrypt_crypt_write_continue() does wait_for_completion(), so setting
+max_active to 1 likely isn't what they want either. They mostly want some
+reasonable system-wide concurrency limit w.r.t. the CPU count while keeping
+some level of flexibility in terms of task placement.
+
+The previous max_active wasn't great for this because its meaning changed
+depending on the number of nodes. Now, the meaning doesn't change but it's
+not really useful for the above purpose. It's only useful for avoiding
+melting the system completely.
+
+One way to go about it is to declare that concurrency level management for
+unbound workqueue is on users but that seems not ideal given many use cases
+would want it anyway.
+
+Let me think it over but I think the right way to go about it is going the
+other direction - ie. making max_active apply to the whole system regardless
+of the number of nodes / ccx's / whatever.
+
+> Furthermore, the change affects performance in a certain case.
+> 
+> Btrfs creates several WQ_UNBOUND workqueues with a default max_active =
+> min(NRCPUS + 2, 8). As my machine has 96 CPUs with NUMA disabled, this
+> max_active config allows running over 700 active works. Before the commit,
+> it is limited to 8 if NUMA is disabled or limited to 16 if NUMA nodes is 2.
+> 
+> I reverted the workqueue code back to before the commit, and I ran the
+> following fio command on RAID0 btrfs on 6 SSDs.
+> 
+> fio --group_reporting --eta=always --eta-interval=30s --eta-newline=30s \
+>     --rw=write --fallocate=none \
+>     --direct=1 --ioengine=libaio --iodepth=32 \
+>     --filesize=100G \
+>     --blocksize=64k \
+>     --time_based --runtime=300s \
+>     --end_fsync=1 \
+>     --directory=${MNT} \
+>     --name=writer --numjobs=32
+> 
+> By changing workqueue's max_active, the result varies.
+> 
+> - wq max_active=8   (intended limit by btrfs?)
+>   WRITE: bw=2495MiB/s (2616MB/s), 2495MiB/s-2495MiB/s (2616MB/s-2616MB/s), io=753GiB (808GB), run=308953-308953msec
+> - wq max_active=16  (actual limit on 2 NUMA nodes setup)
+>   WRITE: bw=1736MiB/s (1820MB/s), 1736MiB/s-1736MiB/s (1820MB/s-1820MB/s), io=670GiB (720GB), run=395532-395532msec
+> - wq max_active=768 (simulating current limit)
+>   WRITE: bw=1276MiB/s (1338MB/s), 1276MiB/s-1276MiB/s (1338MB/s-1338MB/s), io=375GiB (403GB), run=300984-300984msec
+> 
+> The current performance is slower than the previous limit (max_active=16)
+> by 27%, or it is 50% slower than the intended limit.  The performance drop
+> might be due to contention of the btrfs-endio-write works. There are over
+> 700 kworker instances were created and 100 works are on the 'D' state
+> competing for a lock.
+> 
+> More specifically, I tested the same workload on the commit.
+> 
+> - At commit 636b927eba5b ("workqueue: Make unbound workqueues to use per-cpu pool_workqueues")
+>   WRITE: bw=1191MiB/s (1249MB/s), 1191MiB/s-1191MiB/s (1249MB/s-1249MB/s), io=350GiB (376GB), run=300714-300714msec
+> - At the previous commit = 4cbfd3de73 ("workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug")
+>   WRITE: bw=1747MiB/s (1832MB/s), 1747MiB/s-1747MiB/s (1832MB/s-1832MB/s), io=748GiB (803GB), run=438134-438134msec
+> 
+> So, it is -31.8% performance down with the commit.
+> 
+> In summary, we misuse max_active, considering it is a global limit. And,
+> the recent commit introduced a huge performance drop in some cases.  We
+> need to review alloc_workqueue() usage to check if its max_active setting
+> is proper or not.
+
+Thanks a lot for the report. I think it's a lot more reasonable to assume
+that max_active is global for unbound workqueues. The current workqueue
+behavior is not very intuitive or useful. I'll try to find something more
+reasonable. Thanks for the report and analysis. Much appreciated.
+
+Thanks.
+
+-- 
+tejun
