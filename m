@@ -2,69 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B89803645
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBAB80364B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbjLDOUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
+        id S234234AbjLDOVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345047AbjLDOUW (ORCPT
+        with ESMTP id S233342AbjLDOVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:20:22 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C6CA9;
-        Mon,  4 Dec 2023 06:20:27 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4CxpN6022056;
-        Mon, 4 Dec 2023 06:20:19 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=b73DVrXn6ak7fqgTHQnpyL4JKRxZ4EwAz3xP4X5tgp8=;
- b=IZHYVg3SM0uU/0QWq6llBOHq29soD/av3MTRPoEWZoBQ8o8rlxwB3+iyfOLk92/kddDu
- gYhDmkF9uEzr/P6iwkzG+drpdStm8S1NFUQqJpyVCWaucztvxt0cZcgTm2t3Qm1nOXaa
- F4crWe/w7Ct8e8nkOolF6xrxhTyOrh/b4CdvY/u3TRiKel8glTu6n8O5lxyR+Nc+f8pV
- NNWf/qLGI00AFuxikloItuXGjsKmgn5Hh/kBQgmTpsY1LzCqoRxGeY0h6wJcI6nElWUk
- Qs/1+4EbYNJfj8NNCBb23SvUf+y+xESDUgmIRBQtsTrjWVKpc2HCUQo7HF8KL3P7c2om ww== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3ur2tvde9u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 06:20:19 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 4 Dec
- 2023 06:20:17 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 4 Dec 2023 06:20:17 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 32D223F709D;
-        Mon,  4 Dec 2023 06:20:12 -0800 (PST)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>, <horms@kernel.org>,
-        <wojciech.drewek@intel.com>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH v6 2/2] octeontx2-pf: TC flower offload support for mirror
-Date:   Mon, 4 Dec 2023 19:49:56 +0530
-Message-ID: <20231204141956.3956942-3-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231204141956.3956942-1-sumang@marvell.com>
-References: <20231204141956.3956942-1-sumang@marvell.com>
+        Mon, 4 Dec 2023 09:21:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B664A9
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:21:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701699710;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=1DVxi53AdHJct3hXH5+VGS1svVEDHY6RYmwnFv3N0GA=;
+        b=cCjdf3X8BsX9IjgztuRF4tpXRzbn0UyMlM0kHlPVGPpaDrsNvgubKviTBOKcqlreZr1022
+        irCS8LaVAUGM3wV+X9jr58HiEHKKsNWDZjhCcsFHe7rE2nNxhm88GVUkUE9ZxlQfyAR9dd
+        nk8V2rawq0qIdwXW/AkAGCvhENtLD2Y=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-480-Tpjb8xMcMU6W6IJk6zWHwA-1; Mon, 04 Dec 2023 09:21:49 -0500
+X-MC-Unique: Tpjb8xMcMU6W6IJk6zWHwA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8ED8A811E7E;
+        Mon,  4 Dec 2023 14:21:48 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.195.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CB0DD2026D4C;
+        Mon,  4 Dec 2023 14:21:46 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Xu <peterx@redhat.com>
+Subject: [PATCH RFC 00/39] mm/rmap: interface overhaul
+Date:   Mon,  4 Dec 2023 15:21:07 +0100
+Message-ID: <20231204142146.91437-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: WjWFm3xhfrqFMZYvn8FyOsoMS4d7Ovxp
-X-Proofpoint-GUID: WjWFm3xhfrqFMZYvn8FyOsoMS4d7Ovxp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_12,2023-12-04_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,203 +66,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends TC flower offload support for mirroring ingress
-traffic to a different PF/VF. Below is an example command,
+Baed on mm-stable from a couple of days.
 
-'tc filter add dev eth1 ingress protocol ip flower src_ip <ip-addr>
-skip_sw action mirred ingress mirror dev eth2'
+This series proposes an overhaul to our rmap interface, to get rid of the
+"bool compound" / RMAP_COMPOUND parameter with the goal of making the
+interface less error prone, more future proof, and more natural to extend
+to "batching". Also, this converts the interface to always consume
+folio+subpage, which speeds up operations on large folios.
 
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-Reviewed-by: Simon Horman <horms@kernel.org>
----
- .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 113 +++++++++++++++++-
- 1 file changed, 110 insertions(+), 3 deletions(-)
+Further, this series adds PTE-batching variants for 4 rmap functions,
+whereby only folio_add_anon_rmap_ptes() is used for batching in this series
+when PTE-remapping a PMD-mapped THP.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 757806be48a2..0750fdcbcfd3 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -29,6 +29,8 @@
- 
- #define OTX2_UNSUPP_LSE_DEPTH		GENMASK(6, 4)
- 
-+#define MCAST_INVALID_GRP		(-1U)
-+
- struct otx2_tc_flow_stats {
- 	u64 bytes;
- 	u64 pkts;
-@@ -50,6 +52,7 @@ struct otx2_tc_flow {
- 	u64				rate;
- 	u32				burst;
- 	bool				is_pps;
-+	u32				mcast_grp_idx;
- };
- 
- static void otx2_get_egress_burst_cfg(struct otx2_nic *nic, u32 burst,
-@@ -355,22 +358,96 @@ static int otx2_tc_act_set_police(struct otx2_nic *nic,
- 	return rc;
- }
- 
-+static int otx2_tc_update_mcast(struct otx2_nic *nic,
-+				struct npc_install_flow_req *req,
-+				struct netlink_ext_ack *extack,
-+				struct otx2_tc_flow *node,
-+				struct nix_mcast_grp_update_req *ureq,
-+				u8 num_intf)
-+{
-+	struct nix_mcast_grp_update_req *grp_update_req;
-+	struct nix_mcast_grp_create_req *creq;
-+	struct nix_mcast_grp_create_rsp *crsp;
-+	u32 grp_index;
-+	int rc;
-+
-+	mutex_lock(&nic->mbox.lock);
-+	creq = otx2_mbox_alloc_msg_nix_mcast_grp_create(&nic->mbox);
-+	if (!creq) {
-+		rc = -ENOMEM;
-+		goto error;
-+	}
-+
-+	creq->dir = NIX_MCAST_INGRESS;
-+	/* Send message to AF */
-+	rc = otx2_sync_mbox_msg(&nic->mbox);
-+	if (rc) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to create multicast group");
-+		goto error;
-+	}
-+
-+	crsp = (struct nix_mcast_grp_create_rsp *)otx2_mbox_get_rsp(&nic->mbox.mbox,
-+			0,
-+			&creq->hdr);
-+	if (IS_ERR(crsp)) {
-+		rc = PTR_ERR(crsp);
-+		goto error;
-+	}
-+
-+	grp_index = crsp->mcast_grp_idx;
-+	grp_update_req = otx2_mbox_alloc_msg_nix_mcast_grp_update(&nic->mbox);
-+	if (!grp_update_req) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
-+		rc = -ENOMEM;
-+		goto error;
-+	}
-+
-+	ureq->op = NIX_MCAST_OP_ADD_ENTRY;
-+	ureq->mcast_grp_idx = grp_index;
-+	ureq->num_mce_entry = num_intf;
-+	ureq->pcifunc[0] = nic->pcifunc;
-+	ureq->channel[0] = nic->hw.tx_chan_base;
-+
-+	ureq->dest_type[0] = NIX_RX_RSS;
-+	ureq->rq_rss_index[0] = 0;
-+	memcpy(&ureq->hdr, &grp_update_req->hdr, sizeof(struct mbox_msghdr));
-+	memcpy(grp_update_req, ureq, sizeof(struct nix_mcast_grp_update_req));
-+
-+	/* Send message to AF */
-+	rc = otx2_sync_mbox_msg(&nic->mbox);
-+	if (rc) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
-+		goto error;
-+	}
-+
-+	mutex_unlock(&nic->mbox.lock);
-+	req->op = NIX_RX_ACTIONOP_MCAST;
-+	req->index = grp_index;
-+	node->mcast_grp_idx = grp_index;
-+	return 0;
-+
-+error:
-+	mutex_unlock(&nic->mbox.lock);
-+	return rc;
-+}
-+
- static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 				 struct flow_action *flow_action,
- 				 struct npc_install_flow_req *req,
- 				 struct flow_cls_offload *f,
- 				 struct otx2_tc_flow *node)
- {
-+	struct nix_mcast_grp_update_req dummy_grp_update_req = { 0 };
- 	struct netlink_ext_ack *extack = f->common.extack;
-+	bool pps = false, mcast = false;
- 	struct flow_action_entry *act;
- 	struct net_device *target;
- 	struct otx2_nic *priv;
- 	u32 burst, mark = 0;
- 	u8 nr_police = 0;
--	bool pps = false;
-+	u8 num_intf = 1;
-+	int err, i;
- 	u64 rate;
--	int err;
--	int i;
- 
- 	if (!flow_action_has_entries(flow_action)) {
- 		NL_SET_ERR_MSG_MOD(extack, "no tc actions specified");
-@@ -442,11 +519,30 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 			req->index = act->rx_queue;
- 			break;
- 
-+		case FLOW_ACTION_MIRRED_INGRESS:
-+			target = act->dev;
-+			priv = netdev_priv(target);
-+			dummy_grp_update_req.pcifunc[num_intf] = priv->pcifunc;
-+			dummy_grp_update_req.channel[num_intf] = priv->hw.tx_chan_base;
-+			dummy_grp_update_req.dest_type[num_intf] = NIX_RX_RSS;
-+			dummy_grp_update_req.rq_rss_index[num_intf] = 0;
-+			mcast = true;
-+			num_intf++;
-+			break;
-+
- 		default:
- 			return -EOPNOTSUPP;
- 		}
- 	}
- 
-+	if (mcast) {
-+		err = otx2_tc_update_mcast(nic, req, extack, node,
-+					   &dummy_grp_update_req,
-+					   num_intf);
-+		if (err)
-+			return err;
-+	}
-+
- 	if (nr_police > 1) {
- 		NL_SET_ERR_MSG_MOD(extack,
- 				   "rate limit police offload requires a single action");
-@@ -1066,6 +1162,7 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 			    struct flow_cls_offload *tc_flow_cmd)
- {
- 	struct otx2_flow_config *flow_cfg = nic->flow_cfg;
-+	struct nix_mcast_grp_destroy_req *grp_destroy_req;
- 	struct otx2_tc_flow *flow_node;
- 	int err;
- 
-@@ -1101,6 +1198,15 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 	}
- 
- free_mcam_flow:
-+	/* Remove the multicast/mirror related nodes */
-+	if (flow_node->mcast_grp_idx != MCAST_INVALID_GRP) {
-+		mutex_lock(&nic->mbox.lock);
-+		grp_destroy_req = otx2_mbox_alloc_msg_nix_mcast_grp_destroy(&nic->mbox);
-+		grp_destroy_req->mcast_grp_idx = flow_node->mcast_grp_idx;
-+		otx2_sync_mbox_msg(&nic->mbox);
-+		mutex_unlock(&nic->mbox.lock);
-+	}
-+
- 	otx2_del_mcam_flow_entry(nic, flow_node->entry, NULL);
- 	otx2_tc_update_mcam_table(nic, flow_cfg, flow_node, false);
- 	kfree_rcu(flow_node, rcu);
-@@ -1138,6 +1244,7 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- 	spin_lock_init(&new_node->lock);
- 	new_node->cookie = tc_flow_cmd->cookie;
- 	new_node->prio = tc_flow_cmd->common.prio;
-+	new_node->mcast_grp_idx = MCAST_INVALID_GRP;
- 
- 	memset(&dummy, 0, sizeof(struct npc_install_flow_req));
- 
+Ryan has series where we would make use of folio_remove_rmap_ptes() [1]
+-- he carries his own batching variant right now -- and
+folio_try_dup_anon_rmap_ptes()/folio_dup_file_rmap_ptes() [2].
+
+There is some overlap with both series (and some other work, like
+multi-size THP [3]), so that will need some coordination, and likely a
+stepwise inclusion.
+
+I got that started [4], but it made sense to show the whole picture. The
+patches of [4] are contained in here, with one additional patch added
+("mm/rmap: introduce and use hugetlb_try_share_anon_rmap()") and some
+slight patch description changes.
+
+In general, RMAP batching is an important optimization for PTE-mapped
+THP, especially once we want to move towards a total mapcount or further,
+as shown with my WIP patches on "mapped shared vs. mapped exclusively" [5].
+
+The rmap batching part of [5] is also contained here in a slightly reworked
+fork [and I found a bug du to the "compound" parameter handling in these
+patches that should be fixed here :) ].
+
+This series performs a lot of folio conversion, that could be separated
+if there is a good reason. Most of the added LOC in the diff are only due
+to documentation.
+
+As we're moving to a pte/pmd interface where we clearly express the
+mapping granularity we are dealing with, we first get the remainder of
+hugetlb out of the way, as it is special and expected to remain special: it
+treats everything as a "single logical PTE" and only currently allows
+entire mappings.
+
+Even if we'd ever support partial mappings, I strongly
+assume the interface and implementation will still differ heavily:
+hopefull we can avoid working on subpages/subpage mapcounts completely and
+only add a "count" parameter for them to enable batching.
+
+
+New (extended) hugetlb interface that operate on entire folio:
+ * hugetlb_add_new_anon_rmap() -> Already existed
+ * hugetlb_add_anon_rmap() -> Already existed
+ * hugetlb_try_dup_anon_rmap()
+ * hugetlb_try_share_anon_rmap()
+ * hugetlb_add_file_rmap()
+ * hugetlb_remove_rmap()
+
+New "ordinary" interface for small folios / THP::
+ * folio_add_new_anon_rmap() -> Already existed
+ * folio_add_anon_rmap_[pte|ptes|pmd]()
+ * folio_try_dup_anon_rmap_[pte|ptes|pmd]()
+ * folio_try_share_anon_rmap_[pte|pmd]()
+ * folio_add_file_rmap_[pte|ptes|pmd]()
+ * folio_dup_file_rmap_[pte|ptes|pmd]()
+ * folio_remove_rmap_[pte|ptes|pmd]()
+
+folio_add_new_anon_rmap() will always map at the biggest granularity
+possible (currently, a single PMD to cover a PMD-sized THP). Could be
+extended if ever required.
+
+In the future, we might want "_pud" variants and eventually "_pmds" variants
+for batching. Further, if hugepd is ever a thing outside hugetlb code,
+we might want some variants for that. All stuff for the distant future.
+
+
+I ran some simple microbenchmarks from [5] on an Intel(R) Xeon(R) Silver
+4210R: munmap(), fork(), cow, MADV_DONTNEED on each PTE ... and PTE
+remapping PMD-mapped THPs on 1 GiB of memory.
+
+For small folios, there is barely a change (< 1 % performance improvement),
+whereby fork() still stands out with 0.74% performance improvement, but
+it might be just some noise. Folio optimizations don't help that much
+with small folios.
+
+For PTE-mapped THP:
+* PTE-remapping a PMD-mapped THP is more than 10% faster.
+  -> RMAP batching
+* fork() is more than 4% faster.
+  -> folio conversion
+* MADV_DONTNEED is 2% faster
+  -> folio conversion
+* COW by writing only a single byte on a COW-shared PTE
+  -> folio conversion
+* munmap() is only slightly faster (< 1%).
+
+[1] https://lkml.kernel.org/r/20230810103332.3062143-1-ryan.roberts@arm.com
+[2] https://lkml.kernel.org/r/20231204105440.61448-1-ryan.roberts@arm.com
+[3] https://lkml.kernel.org/r/20231204102027.57185-1-ryan.roberts@arm.com
+[4] https://lkml.kernel.org/r/20231128145205.215026-1-david@redhat.com
+[5] https://lkml.kernel.org/r/20231124132626.235350-1-david@redhat.com
+
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Yin Fengwei <fengwei.yin@intel.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Muchun Song <muchun.song@linux.dev>
+Cc: Peter Xu <peterx@redhat.com>
+
+David Hildenbrand (39):
+  mm/rmap: rename hugepage_add* to hugetlb_add*
+  mm/rmap: introduce and use hugetlb_remove_rmap()
+  mm/rmap: introduce and use hugetlb_add_file_rmap()
+  mm/rmap: introduce and use hugetlb_try_dup_anon_rmap()
+  mm/rmap: introduce and use hugetlb_try_share_anon_rmap()
+  mm/rmap: add hugetlb sanity checks
+  mm/rmap: convert folio_add_file_rmap_range() into
+    folio_add_file_rmap_[pte|ptes|pmd]()
+  mm/memory: page_add_file_rmap() -> folio_add_file_rmap_[pte|pmd]()
+  mm/huge_memory: page_add_file_rmap() -> folio_add_file_rmap_pmd()
+  mm/migrate: page_add_file_rmap() -> folio_add_file_rmap_pte()
+  mm/userfaultfd: page_add_file_rmap() -> folio_add_file_rmap_pte()
+  mm/rmap: remove page_add_file_rmap()
+  mm/rmap: factor out adding folio mappings into __folio_add_rmap()
+  mm/rmap: introduce folio_add_anon_rmap_[pte|ptes|pmd]()
+  mm/huge_memory: batch rmap operations in __split_huge_pmd_locked()
+  mm/huge_memory: page_add_anon_rmap() -> folio_add_anon_rmap_pmd()
+  mm/migrate: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
+  mm/ksm: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
+  mm/swapfile: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
+  mm/memory: page_add_anon_rmap() -> folio_add_anon_rmap_pte()
+  mm/rmap: remove page_add_anon_rmap()
+  mm/rmap: remove RMAP_COMPOUND
+  mm/rmap: introduce folio_remove_rmap_[pte|ptes|pmd]()
+  kernel/events/uprobes: page_remove_rmap() -> folio_remove_rmap_pte()
+  mm/huge_memory: page_remove_rmap() -> folio_remove_rmap_pmd()
+  mm/khugepaged: page_remove_rmap() -> folio_remove_rmap_pte()
+  mm/ksm: page_remove_rmap() -> folio_remove_rmap_pte()
+  mm/memory: page_remove_rmap() -> folio_remove_rmap_pte()
+  mm/migrate_device: page_remove_rmap() -> folio_remove_rmap_pte()
+  mm/rmap: page_remove_rmap() -> folio_remove_rmap_pte()
+  Documentation: stop referring to page_remove_rmap()
+  mm/rmap: remove page_remove_rmap()
+  mm/rmap: convert page_dup_file_rmap() to
+    folio_dup_file_rmap_[pte|ptes|pmd]()
+  mm/rmap: introduce folio_try_dup_anon_rmap_[pte|ptes|pmd]()
+  mm/huge_memory: page_try_dup_anon_rmap() ->
+    folio_try_dup_anon_rmap_pmd()
+  mm/memory: page_try_dup_anon_rmap() -> folio_try_dup_anon_rmap_pte()
+  mm/rmap: remove page_try_dup_anon_rmap()
+  mm: convert page_try_share_anon_rmap() to
+    folio_try_share_anon_rmap_[pte|pmd]()
+  mm/rmap: rename COMPOUND_MAPPED to ENTIRELY_MAPPED
+
+ Documentation/mm/transhuge.rst       |   4 +-
+ Documentation/mm/unevictable-lru.rst |   4 +-
+ include/linux/mm.h                   |   6 +-
+ include/linux/rmap.h                 | 380 +++++++++++++++++++-----
+ kernel/events/uprobes.c              |   2 +-
+ mm/gup.c                             |   2 +-
+ mm/huge_memory.c                     |  85 +++---
+ mm/hugetlb.c                         |  21 +-
+ mm/internal.h                        |  12 +-
+ mm/khugepaged.c                      |  17 +-
+ mm/ksm.c                             |  15 +-
+ mm/memory-failure.c                  |   4 +-
+ mm/memory.c                          |  60 ++--
+ mm/migrate.c                         |  12 +-
+ mm/migrate_device.c                  |  41 +--
+ mm/mmu_gather.c                      |   2 +-
+ mm/rmap.c                            | 422 ++++++++++++++++-----------
+ mm/swapfile.c                        |   2 +-
+ mm/userfaultfd.c                     |   2 +-
+ 19 files changed, 709 insertions(+), 384 deletions(-)
+
 -- 
-2.25.1
+2.41.0
 
