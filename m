@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9061A8036D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8A9803696
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345062AbjLDOdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        id S236019AbjLDO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:27:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236047AbjLDOdj (ORCPT
+        with ESMTP id S235883AbjLDO1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:33:39 -0500
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD7AC3ABD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:24:05 -0800 (PST)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4b2d237ab87so322093e0c.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:24:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701699844; x=1702304644; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oaBLe1cZFsz9gEp4lVhVDjfyffYP1pw8mzotW316g4Y=;
-        b=h1GUep3NhWulNleHajGa70Wqx5KKz9MqeJwb4E36PpV4vOHBCVj2drKCe7O7q7blC5
-         2cDK3u0jTPiOoQLbzMHtPIynmblK5vdIhGaj5osoOWSw4nLwPzhON1b9DEtQsAGAfMvP
-         7bYlBwlMmq/yI7UPblzekRtppPTkIiVWTY4fejP6dyVyyhXks1FdkREsUCklgTfQBjLv
-         obX0Plqobde16xjQVC3CquXSNVv97X9cUPJKo5lTjaFF1O5zLZV7w413I2phEsGLKnUa
-         akTWJUyfPE8pyERqs2rjgZbg+cyUlMIbogFOGDKpYzdtpRABtfKrd1hM4KUc4j0ioJF1
-         WdEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701699844; x=1702304644;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oaBLe1cZFsz9gEp4lVhVDjfyffYP1pw8mzotW316g4Y=;
-        b=hcIZxZwC8TOALAY8XoME+HjvEZNSxqmnogfIwGOnd/KSkqadHKo9rEfeI73QehSzlP
-         83wPslBT81rpvjGrLkcvQzZLRbLKUdLwzQFAE8nslc7YYOAInx2g6rDVZMU4IFv3DkKe
-         zf0evrK7AEKJOsG7Ytow7YocE4Rm2syfE6lLUj7YgTER//TBmaDFsDzHgcApDAebDE9q
-         KbK8X0NA3jp0+aSqSx5T/CcNMHaMMX9PwBddshgy45kygOEwoAHybZOSsMrVHR56V21M
-         6V0Nh4XJzS5P4086WKKv4n0gjMOoeRH17i+4ObbpYPsWU3fOqDk3JjzP2Hk+3BtfkAjm
-         NY9g==
-X-Gm-Message-State: AOJu0YxqmBJfKyEifK95fjnKoxtt0474RkFvoH6/UOIYlmxKl04uKGmx
-        UGuIcKo3LNY5uefeQYKlFljTtv4c9QC9vjhwKavTXA==
-X-Google-Smtp-Source: AGHT+IH4nqTK2DR96olJWeUMLo3ok8bQakofeYUjUMWWplhdlPjo1jpH5t1pUchGUEVIDYHnnJc/WSjMMUTeR9YwxBo=
-X-Received: by 2002:a05:6122:3091:b0:4b2:c554:d2b4 with SMTP id
- cd17-20020a056122309100b004b2c554d2b4mr1938077vkb.22.1701699844565; Mon, 04
- Dec 2023 06:24:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20231201172212.1813387-12-cmllamas@google.com>
- <20231204115704.40543-1-aliceryhl@google.com> <ZW3goGJBeqTsScI7@google.com>
-In-Reply-To: <ZW3goGJBeqTsScI7@google.com>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Mon, 4 Dec 2023 15:23:53 +0100
-Message-ID: <CAH5fLgh4S3ByyYp_FohkovMsBPXo6S-0VzowWMFhQBUDNMgTLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 11/28] binder: do unlocked work in binder_alloc_new_buf()
-To:     Carlos Llamas <cmllamas@google.com>
-Cc:     arve@android.com, brauner@kernel.org, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, maco@android.com, surenb@google.com,
-        tkjos@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 4 Dec 2023 09:27:22 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB39D50
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:24:16 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 67F81220C2;
+        Mon,  4 Dec 2023 14:24:14 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2CF2E139AA;
+        Mon,  4 Dec 2023 14:24:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 2T0hBw7hbWVONwAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Mon, 04 Dec 2023 14:24:14 +0000
+Date:   Mon, 04 Dec 2023 15:24:13 +0100
+Message-ID: <87o7f682r6.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Bin Li <bin.li@canonical.com>
+Cc:     tiwai@suse.com, kailang@realtek.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, aaron.ma@canonical.com,
+        libin.charles@gmail.com
+Subject: Re: [PATCH] ALSA: hda/realtek: Enable headset on Lenovo M90 Gen5
+In-Reply-To: <20231204100450.642783-1-bin.li@canonical.com>
+References: <20231204100450.642783-1-bin.li@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Bar: +++++++++++
+X-Spam-Score: 11.94
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of tiwai@suse.de) smtp.mailfrom=tiwai@suse.de;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none)
+X-Rspamd-Queue-Id: 67F81220C2
+X-Spamd-Result: default: False [11.94 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         BAYES_HAM(-0.65)[82.58%];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[suse.com,realtek.com,alsa-project.org,vger.kernel.org,canonical.com,gmail.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 3:22=E2=80=AFPM Carlos Llamas <cmllamas@google.com> =
-wrote:
-> On Mon, Dec 04, 2023 at 11:57:04AM +0000, 'Alice Ryhl' via kernel-team wr=
-ote:
-> > You could also write this as:
-> >
-> >       if (!IS_ERR(buffer)) {
-> >               buffer->data_size =3D data_size;
-> >               buffer->offsets_size =3D offsets_size;
-> >               buffer->extra_buffers_size =3D extra_buffers_size;
-> >       }
-> >
-> >       mutex_unlock(&alloc->mutex);
-> >       return buffer;
->
-> There is a subsequent patch that adds more work after this and makes the
-> goto statement a better fit (patch 19/28)... at least IMO.
+On Mon, 04 Dec 2023 11:04:50 +0100,
+Bin Li wrote:
+> 
+> Lenovo M90 Gen5 is equipped with ALC897, and it needs
+> ALC897_FIXUP_HEADSET_MIC_PIN quirk to make its headset mic work.
+> 
+> Signed-off-by: Bin Li <bin.li@canonical.com>
 
-Ah, ok. SGTM!
+Thanks, applied now.
 
-Alice
+
+Takashi
