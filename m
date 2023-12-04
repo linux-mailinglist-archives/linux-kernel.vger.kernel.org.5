@@ -2,92 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9054D8035B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D638035BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344337AbjLDN6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:58:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
+        id S1344854AbjLDN7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:59:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDN6J (ORCPT
+        with ESMTP id S233871AbjLDN7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:58:09 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792A590
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:58:15 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40bd5ea84d6so11787385e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 05:58:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=foundries.io; s=google; t=1701698294; x=1702303094; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Wn71OJAsHrUsi0hi6qKz41BqzfeWUDfsnSD1MArV6Y=;
-        b=Q/1b4G9Jbcgp4blJSRV8N8/MiGLqKz6vACPg/45GSn0lbbVI7jpJ+RcXUGHTipmB2n
-         jdxZtzHvmJeBWVUqfsySdrz+pJRBloYP67Z6LdVCu8jv48nDwe8b5BczRyqhFQ8ONy8F
-         j+IwCbQVJTYJE7pCAvasUEMOUqSiO0KUYBeHSiC9vd26h/e1Ovpchy7xFJfZQEyjrUv/
-         mmRgZfck/kbiC3XyRygUxUGwXYQ4Dm6dxO04RwvaeYT8XAPfgDK7mWlFejORnMsdMXBO
-         wUnh09tf8oz9joIDKz4WorOrOIq4u2NjnW1ad3UNlQanbO7GjQyOcn0YPkRB30muTg/v
-         ylPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701698294; x=1702303094;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1Wn71OJAsHrUsi0hi6qKz41BqzfeWUDfsnSD1MArV6Y=;
-        b=TWqZZC/5npjT794v8/QLxdJO3Gk7XT/s4QjaB37sxP/ICYOA2qBM1fCzfdSwLDOAV/
-         jTWKbf/vu/aCyHzwtd+N1vi34461r04I7i8XUi/ZJbYhW9qByiPVuJZcENNYT/UhJFqh
-         EC52Dt7JVNItafJ1uQZILiHtZaoyelpKIiTv07LgTwtSM50y0MUhkqI9ZtvpKcDNQXzJ
-         maeAw6tFzwSqE1jQAHxI0W20ikGcC2tiS8I0wMBdi1cCsoBRgj5WhRl4VtNxh6evwJz+
-         +W4E87gkSqCMI7RD5Dd23ksx0mRDAkKOzJ0+1I3jGYMP29mVeyVdE+Igv6v5a2TZ+XmT
-         /49A==
-X-Gm-Message-State: AOJu0YyTCwZRg1XLGOpCYUwJyoFKQc0Jp7+6fNqX669FWvDWUSxmfOpQ
-        gATBatY+0LbkmBPrgbR+SLj2vQ==
-X-Google-Smtp-Source: AGHT+IFeAAaNKjmvQvyhXB/RWQ1dcGIG/iQq6n7LDgKtxGw4htbGbrcJ1cjYN0N4sspWHS2O6S8Peg==
-X-Received: by 2002:a05:600c:348a:b0:40b:5e26:2379 with SMTP id a10-20020a05600c348a00b0040b5e262379mr3046913wmq.42.1701698293953;
-        Mon, 04 Dec 2023 05:58:13 -0800 (PST)
-Received: from trax (139.red-79-144-198.dynamicip.rima-tde.net. [79.144.198.139])
-        by smtp.gmail.com with ESMTPSA id r11-20020a5d498b000000b0033339da02f9sm6773310wrq.110.2023.12.04.05.58.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 05:58:13 -0800 (PST)
-From:   "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-X-Google-Original-From: "Jorge Ramirez-Ortiz, Foundries" <JorgeRamirez-Ortiz>
-Date:   Mon, 4 Dec 2023 14:58:11 +0100
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "CLoehle@hyperstone.com" <CLoehle@hyperstone.com>,
-        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
-        "hare@suse.de" <hare@suse.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
-        "asuk4.q@gmail.com" <asuk4.q@gmail.com>,
-        "yibin.ding@unisoc.com" <yibin.ding@unisoc.com>,
-        "victor.shih@genesyslogic.com.tw" <victor.shih@genesyslogic.com.tw>,
-        "marex@denx.de" <marex@denx.de>,
-        "rafael.beims@toradex.com" <rafael.beims@toradex.com>,
-        "robimarko@gmail.com" <robimarko@gmail.com>,
-        "ricardo@foundries.io" <ricardo@foundries.io>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCHv2] mmc: rpmb: add quirk MMC_QUIRK_BROKEN_RPMB_RETUNE
-Message-ID: <ZW3a8xneptC6y/N8@trax>
-References: <ZWkGZ7av1S4Clwdv@trax>
- <ZWkKgU+J9atnJdqT@trax>
- <ZWmN+k+wUWcXT5ID@trax>
- <fecd033b-b2ea-4906-a320-22a5c2ede46c@intel.com>
- <ZWoBqs/5m6tCuBGo@trax>
- <ZWoTOm+8Y75TLz6q@trax>
- <DM6PR04MB6575FF9532A9FC0EE91B5B37FC80A@DM6PR04MB6575.namprd04.prod.outlook.com>
- <ZWysTPapFyGJdu5d@trax>
- <DM6PR04MB6575F9EB1C3309F64EEE6BCCFC86A@DM6PR04MB6575.namprd04.prod.outlook.com>
- <DM6PR04MB6575127DFCEC4C178F7E33B7FC86A@DM6PR04MB6575.namprd04.prod.outlook.com>
+        Mon, 4 Dec 2023 08:59:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A3C101
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:59:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 896D7C433CB;
+        Mon,  4 Dec 2023 13:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701698363;
+        bh=bYySYTrY6km8QqIBfS1jsCvf7BxtvotE514DmN2BI3g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dvUKm6gEnRW/J2hJ2oXjEQevmQcNzI85MBDgq1ep44eZv3hCnekO1VJHRylY64pBZ
+         +kkCz/e1jnXaI+mV0ssMZRFKAMLRxiM/YJTjAGhY14jDoswMm2pNyCC6SXyjQEBVAK
+         avfydmD6j5hKbP2YrwYdrmghVLgS98T5Me9Tf/URFMSd07P5BRQXIi2/MKU0dOGvBB
+         m00W6gakm4+Z0Ombnbn+/zyWp8ehNyYIh88kfsKLXOizXam0s709XNJyFTcCnj8akb
+         XX7HH62V4I4j/u4ZN+QL+6zWky9HeFSZ05yMHcwGAfNom8KOFikiRnnlbElvddsKKt
+         a+nI1ZVO8x8Cw==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-50be0f13aa6so2389491e87.1;
+        Mon, 04 Dec 2023 05:59:23 -0800 (PST)
+X-Gm-Message-State: AOJu0Yx8T3rX1fCjod1rF4edzuf4DHrpqW/+gQkv1P+IBOqyRuiWf7UW
+        PS2XmSFKxGL1uETuss/NgjT7if6C/hxp9zNQCA==
+X-Google-Smtp-Source: AGHT+IHuLivC4GXamj5oh/MQSiPcrWiOW16KFkNBu3Zbi06bV91fPOeuY+xFcDhir6rlKE98/glumC1DZxfX5xrl5Pw=
+X-Received: by 2002:a05:6512:3711:b0:50b:ffd7:d7b8 with SMTP id
+ z17-20020a056512371100b0050bffd7d7b8mr57741lfr.21.1701698361702; Mon, 04 Dec
+ 2023 05:59:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR04MB6575127DFCEC4C178F7E33B7FC86A@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+References: <20231130165700.685764-1-herve.codina@bootlin.com>
+ <CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com> <20231204134335.3ded3d46@bootlin.com>
+In-Reply-To: <20231204134335.3ded3d46@bootlin.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 4 Dec 2023 07:59:09 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
+Message-ID: <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+        Sonal Santan <sonal.santan@amd.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -96,74 +70,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/23 12:59:07, Avri Altman wrote:
-> > > We could carry the patch internally (it seems harmless after all the
-> > > testing
-> > > done) but I'd much rather land it upstream if possible.
-> > Agreed.
-> Also, I am totally fine, and maybe it's even better, with adding this as a default behavior for all vendors.
-> I see no point in those tunings while accessing rpmb anyway.
+On Mon, Dec 4, 2023 at 6:43=E2=80=AFAM Herve Codina <herve.codina@bootlin.c=
+om> wrote:
 >
-
-I'll repost then without the quirk.
-
-In fact just this morning - I was about to update -  I was able to test
-on an early board revision with a different eMMC module (at the time
-RPMB wasnt validated) which upon reflashing also exhibited the issue
-
-see below:
-
-# cat /sys/class/mmc_host/mmc0/mmc0\:0001/csd
-d02700328f5903ffffffffef86400000
-
-# cat /sys/class/mmc_host/mmc0/mmc0\:0001/name
-064GB2
-
-[  218.759036] sdhci-arasan ff160000.mmc: __mmc_blk_ioctl_cmd: data error -84
-E/TC:? 0
-E/TC:? 0 TA panicked with code 0xffff0000
-E/LD:  Status of TA 22250a54-0bf1-48fe-8002-7b20f1c9c9b1
-E/LD:   arch: aarch64
-E/LD:  region  0: va 0xc0004000 pa 0x7e200000 size 0x002000 flags rw-s (ldelf)
-E/LD:  region  1: va 0xc0006000 pa 0x7e202000 size 0x008000 flags r-xs (ldelf)
-E/LD:  region  2: va 0xc000e000 pa 0x7e20a000 size 0x001000 flags rw-s (ldelf)
-E/LD:  region  3: va 0xc000f000 pa 0x7e20b000 size 0x004000 flags rw-s (ldelf)
-E/LD:  region  4: va 0xc0013000 pa 0x7e20f000 size 0x001000 flags r--s
-E/LD:  region  5: va 0xc0014000 pa 0x7e22c000 size 0x005000 flags rw-s (stack)
-E/LD:  region  6: va 0xc0019000 pa 0x80dc4e298 size 0x002000 flags rw-- (param)
-E/LD:  region  7: va 0xc001b000 pa 0x80dd1c298 size 0x001000 flags rw-- (param)
-E/LD:  region  8: va 0xc0091000 pa 0x00001000 size 0x014000 flags r-xs [0]
-E/LD:  region  9: va 0xc00a5000 pa 0x00015000 size 0x008000 flags rw-s [0]
-E/LD:   [0] 22250a54-0bf1-48fe-8002-7b20f1c9c9b1 @ 0xc0091000
-E/LD:  Call stack:
-E/LD:   0xc0093a14
-E/LD:   0xc009131c
-E/LD:   0xc0094d40
-E/LD:   0xc0091624
-Read persistent value for bootupgrade_available failed: Exec format error
-Cant print the environment
-Error: fiovb_printenv command failed. Exiting.
-
-> Thanks,
-> Avri
+> Hi Rob,
 >
+> On Fri, 1 Dec 2023 16:26:45 -0600
+> Rob Herring <robh@kernel.org> wrote:
+>
+> > On Thu, Nov 30, 2023 at 10:57=E2=80=AFAM Herve Codina <herve.codina@boo=
+tlin.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > The commit 407d1a51921e ("PCI: Create device tree node for bridge")
+> > > creates of_node for PCI devices.
+> > > During the insertion handling of these new DT nodes done by of_platfo=
+rm,
+> > > new devices (struct device) are created.
+> > > For each PCI devices a struct device is already present (created and
+> > > handled by the PCI core).
+> > > Creating a new device from a DT node leads to some kind of wrong stru=
+ct
+> > > device duplication to represent the exact same PCI device.
+> > >
+> > > This patch series first introduces device_{add,remove}_of_node() in
+> > > order to add or remove a newly created of_node to an already existing
+> > > device.
+> > > Then it fixes the DT node creation for PCI devices to add or remove t=
+he
+> > > created node to the existing PCI device without any new device creati=
+on.
 > >
-> > Thanks,
-> > Avri
-> > >
-> > > >
-> > > > Thanks a lot for fixing this,
-> > > > Avri
-> > >
-> > > thanks everyone for the support.
-> > >
-> > > >
-> > > > (btw - yes - our manufacturer id is 0x45 - it is set differently in
-> > > > the mmc driver for historic reasons - Thank you for adding this.)
-> > > >
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > >
-> > > > >
-> > > >
+> > I think the simpler solution is to get the DT node created earlier. We
+> > are just asking for pain if the DT node is set for the device at
+> > different times compared to static DT nodes.
+> >
+> > The following fixes the lack of of_node link. The DT unittest fails
+> > with the change though and I don't see why.
+> >
+> > Also, no idea if the bridge part works because my qemu setup doesn't
+> > create bridges (anyone got a magic cmdline to create them?).
+> >
+> > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> > index 9c2137dae429..46b252bbe500 100644
+> > --- a/drivers/pci/bus.c
+> > +++ b/drivers/pci/bus.c
+> > @@ -342,8 +342,6 @@ void pci_bus_add_device(struct pci_dev *dev)
+> >          */
+> >         pcibios_bus_add_device(dev);
+> >         pci_fixup_device(pci_fixup_final, dev);
+> > -       if (pci_is_bridge(dev))
+> > -               of_pci_make_dev_node(dev);
+> >         pci_create_sysfs_dev_files(dev);
+> >         pci_proc_attach_device(dev);
+> >         pci_bridge_d3_update(dev);
+> > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> > index 51e3dd0ea5ab..e15eaf0127fc 100644
+> > --- a/drivers/pci/of.c
+> > +++ b/drivers/pci/of.c
+> > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
+> >                 return 0;
+> >
+> >         node =3D of_pci_find_child_device(dev->bus->dev.of_node, dev->d=
+evfn);
+> > +       if (!node && pci_is_bridge(dev))
+> > +               of_pci_make_dev_node(dev);
+> >         if (!node)
+> >                 return 0;
+>
+> Maybe it is too early.
+> of_pci_make_dev_node() creates a node and fills some properties based on
+> some already set values available in the PCI device such as its struct re=
+source
+> values.
+> We need to have some values set by the PCI infra in order to create our D=
+T node
+> with correct values.
+
+Indeed, that's probably the issue I'm having. In that case,
+DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
+device_add().
+
+I think modifying sysfs after device_add() is going to race with
+userspace. Userspace is notified of a new device, and then the of_node
+link may or may not be there when it reads sysfs. Also, not sure if
+we'll need DT modaliases with PCI devices, but they won't work if the
+DT node is not set before device_add().
+
+Rob
