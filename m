@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2548036DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098438036E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345114AbjLDOe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46866 "EHLO
+        id S1345083AbjLDOfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:35:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbjLDOek (ORCPT
+        with ESMTP id S233602AbjLDOfT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:34:40 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625A711A
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:34:44 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-59b5484fbe6so51258227b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701700483; x=1702305283; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UBJs9HC3lM8sYwTRCXh1LpvZlOzGYSuuBBbJkIOs//U=;
-        b=YaB/gZUfhLPXoqYnr1QPK96+E7oKc6HgYxa0Hoe+qWsBI0OsLUZqhiE+ee2/6cddv5
-         ctTn9H9sDwBnpQzSu8BF8XEJdCGa5xXSJvP4Zl1SGlZbS6nNZI2UY/BkLtX/7ZZYevrv
-         QkheP15F2U0dRWjJS7dr1C/myPZ8gIu+/2aOHUzlvn1F5qWxN70Lgmuv2z8T/obv1CiY
-         bmSo7omQmPwIY/2dJO0igkk9MfllyzQ/56IAjytLwUVGgVE7fOmnbkXPaJ2jJFnaZ9IY
-         roUN6luf3OYzgLdOCmKTB39WkRtMRcCuYi1GjVHANlpNYm62sJqadxUzZ0SwxBZqeEir
-         PyIA==
+        Mon, 4 Dec 2023 09:35:19 -0500
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8E1189
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:35:25 -0800 (PST)
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-58dc5e3cd7bso5393900eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:35:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701700483; x=1702305283;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UBJs9HC3lM8sYwTRCXh1LpvZlOzGYSuuBBbJkIOs//U=;
-        b=YWAxgjJFE0WBpgmnhH94GJPCno8AnZaf3d9nspdjSMZ1VXJW38vK9Ik6L36+xj+/Ll
-         UQ4tfX0rdYOMXuJ/5hzG42InvUCrvsW5uLLLuO5bqwGh3qB9kJugkj1sNRWhSSUEYxAS
-         0ektjx9Ev3ZYOI/khq8BfwOU00ne1Ao3hjf68nF+uB0LdBxcq68b+swirMMBeuwcOViI
-         Ir8qOmotPW/w0efmXyDqVSqsqufW0+6GzhXPFvMBaUSDO7oIAkcZddSHDPYV/wUGM4iC
-         Rv7WrvZec+aT3nJrRL17Mh2mJr3UFEpo3c4PkIZE+/ZTonjyfpW0Pt5EojAsuIjMk1ed
-         HAhg==
-X-Gm-Message-State: AOJu0YxZmC5mV/Em8w7pH+y2hMz2Pu2b9p0Rix5puGcqBY88+giybYQc
-        UViqbAUCA0SDHm16u9aAAho/g7U2Kh1btbKfArfA6w==
-X-Google-Smtp-Source: AGHT+IEQBiggNpMjfj9oThMBY/8bdATSwaG+XOy2BXMbwSykTrdtIUthOTH1NAuFhyC+vQtpeQxbkyOnMjBb+nYhN8M=
-X-Received: by 2002:a05:690c:82c:b0:5d6:aea0:2236 with SMTP id
- by12-20020a05690c082c00b005d6aea02236mr3471440ywb.26.1701700483592; Mon, 04
- Dec 2023 06:34:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701700525; x=1702305325;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l7LnU8RknCJWsPsqm7RXDpRlRmyk9PFdTymemdD1BB0=;
+        b=UeViRpFvTwR/jmnm7LpqDOfMFOM5lpoTujer1SLMgE4++WhtpzcyOmDNGwPPJHTZdu
+         WnDH7YfPAarA6f/qwqTuqUIpKA6bMZ9oq8LMHA6ldhgJCAMpnmgjTwxiueSCtUGX1E5+
+         SfpMRfM3MUgJugL1xuCn/alyFU30se/pUk4swUjDADvRxjoYL8tbKlK9I3o63yFyaEmg
+         JVClb3BSsttBW7MkvAGRGYBZRBDJ2KqiYNma5QELiWTsQ0wmza8YaOCEwQTyLv+p6iVc
+         uh4e97hyDmTbQStymYMeO19O9u98D0nk2nnvIAMj/M+DE3KKe945dpKOcn6/QHgo725d
+         SjJw==
+X-Gm-Message-State: AOJu0Yy6XXAK8rtSBqZFV1nzog/vwQlPVvB/bp6qoNKpUw0HnHbpWRwQ
+        nZec1Y8E/1q3MTd/APvT7hvCYtiP+t5r6s58Bcz3EYVOdYbX
+X-Google-Smtp-Source: AGHT+IHT3NWz/uh6K0jGolZs7daejkq97Tqs4R/UZgXVTOfGS7B2im6mm2gusbDRj6n3heAiSw2fT9HRkL/yzzPbyEONKMNUWrjB
 MIME-Version: 1.0
-References: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v2-0-21956ae0c5c3@linaro.org>
- <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v2-7-21956ae0c5c3@linaro.org>
-In-Reply-To: <20231122-phy-qualcomm-v6-v6-20-v7-new-offsets-v2-7-21956ae0c5c3@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 4 Dec 2023 16:34:32 +0200
-Message-ID: <CAA8EJpryFUtWU1PPHzW2+gkz9UOzWPTvao3NTS0ABhLO4HMFgw@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] phy: qcom-qmp: qserdes-txrx: Add v7 register offsets
-To:     Abel Vesa <abel.vesa@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org
+X-Received: by 2002:a4a:eb85:0:b0:58d:3c4b:ee40 with SMTP id
+ d5-20020a4aeb85000000b0058d3c4bee40mr2648387ooj.0.1701700524964; Mon, 04 Dec
+ 2023 06:35:24 -0800 (PST)
+Date:   Mon, 04 Dec 2023 06:35:24 -0800
+In-Reply-To: <0000000000009393ba059691c6a3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004e04c2060bb007f9@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in j1939_session_get_by_addr
+From:   syzbot <syzbot+d9536adc269404a984f8@syzkaller.appspotmail.com>
+To:     Jose.Abreu@synopsys.com, arvid.brodin@alten.se,
+        davem@davemloft.net, dvyukov@google.com,
+        ilias.apalodimas@linaro.org, joabreu@synopsys.com,
+        jose.abreu@synopsys.com, kernel@pengutronix.de,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
+        nogikh@google.com, robin@protonic.nl, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com, tonymarislogistics@yandex.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Dec 2023 at 15:08, Abel Vesa <abel.vesa@linaro.org> wrote:
->
-> The X1E80100 platform bumps the HW version of QMP phy to v7 for USB and PCIE.
-> Add the new qserdes TX RX offsets in a dedicated header file.
->
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v7.h    | 78 ++++++++++++++++++++++
->  drivers/phy/qualcomm/phy-qcom-qmp.h                |  1 +
->  2 files changed, 79 insertions(+)
+This bug is marked as fixed by commit:
+can: j1939: transport: make sure the aborted session will be deactivated only once
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
+#syz fix: exact-commit-title
 
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
--- 
-With best wishes
-Dmitry
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d9536adc269404a984f8
+
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
