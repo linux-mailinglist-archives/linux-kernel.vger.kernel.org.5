@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75CA4804157
+	by mail.lfdr.de (Postfix) with ESMTP id CA574804158
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231479AbjLDWJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:09:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
+        id S234021AbjLDWJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:09:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjLDWJn (ORCPT
+        with ESMTP id S229556AbjLDWJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 17:09:43 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09FFFF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:09:49 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5c6910e93e3so123342a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 14:09:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1701727789; x=1702332589; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N7YVZRS1Yk2p3iV3hbb4MrgXwpXbi4TeT5VGkU/u+Jk=;
-        b=KqMZiWIu6Huk1KRv62/VLR70dCPjpFds0G8v2g0RW8hC/DSworJnr6ZLlYFO2j3c88
-         hYt0tr1acI6wUHCWFiu7iY1jpRvkg1u8+yu9FZd5fuC8Zf+jlvjquBCuceBwUmcx8e6C
-         tQxq1a6mza04HO9xXTeS620tIojtLyJHI29WYy2ChNCSz01NTw+772Nd0CqqV+eXo5/v
-         WPYcaPYgTu3/7VJW0ooRbRSH56JUPEQLJeN/ZqZ2X8+G/ImlxtpTe2tJ/rKD6wGGTPU/
-         MqFenhCRgBmedtBNgv8emQ5Tjr/YO+/jCl1UcYKdG7J4J/STnzMJ0jN25nDqFX/C4VI/
-         Xz1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701727789; x=1702332589;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N7YVZRS1Yk2p3iV3hbb4MrgXwpXbi4TeT5VGkU/u+Jk=;
-        b=izBv6GPcvYq8M0o0YkSEqZGMQly6ejSNHmXizYPS9X41GPJtCLw7T52itAxilpUGmz
-         5hgvFY9ETLdiwsI1UaRnZEhviEPor6v+9sLWKzDG2p+wJk4z5OcPxffR5tmmsM9mOWtK
-         yD+/cx8GVedZQ7PvW3im+X+E0JNk5uOveeAJQQLsHqR6P2yiS9e3IZAFWUMCFrycSXHy
-         ubVk0qxeIib8gGtMSlSMgRaosxKA5n6uttgV1NtW69Jt94KOShuPtgRSeBgKL83XQGu8
-         b28W6SctZ20WWYJXeAFd+osWiLpds1hN8FsHNLnvmpqvOWijoPJ1rrfdpKdoOvjHO9At
-         xLrg==
-X-Gm-Message-State: AOJu0YwhHUQBGDbw7ENNHENRNUM3jYZeDz8ZXH+BGEOo8ri4zAT4Tipz
-        zOSRbYpvjcJNbu8EuunAq7mEDg==
-X-Google-Smtp-Source: AGHT+IHDv1b42RKXKN4tRifZv0mEX5EckA+D3oEFHeJfjju4L9UJaftPOWecVThY8YBY1KMQIFUJ4A==
-X-Received: by 2002:a17:903:234a:b0:1d0:b693:ae30 with SMTP id c10-20020a170903234a00b001d0b693ae30mr2493966plh.6.1701727789078;
-        Mon, 04 Dec 2023 14:09:49 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id t4-20020a170902bc4400b001bf11cf2e21sm5844131plz.210.2023.12.04.14.09.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 14:09:46 -0800 (PST)
-Message-ID: <a070b6bd-0092-405e-99d2-00002596c0bc@kernel.dk>
-Date:   Mon, 4 Dec 2023 15:09:44 -0700
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A073101
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:09:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CD97C433C8;
+        Mon,  4 Dec 2023 22:09:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701727789;
+        bh=PZdKYgteRXQG7u/EvbdA+FWt1apI/KIe+HMcfOKH5vU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mb9PhsVKnePwJFmD2sdP/1C7zlcmt1BjE9MU72qkhHdZlhoVdu2LNwVD1N+MqoLP+
+         YCQWe6vfigdh5Zxi1wCYWLLWCE/HsR7ogxOU3MRHTI5/nEvCu11AYoVYPhSe05Yc8F
+         BuDAWJtpdkcfFZSclP4ZnexZ3Uy+qCLubUKEQdzJNC2FjDRUteIL3Hzq0/TBCz1ATK
+         2wmD7wXSd+hD9GK1eaJC3NNVcGc71lEf5lv0DsHU9DsY6X/Bd2RjjO4c6L+I7FL2qb
+         bey/gLhNmEgJHzjP7Vsb/PGWJIjPkrNR5zoa7rT3LBwF3TchfC8356Nafph3aUCVM+
+         U+JgpKIJxjPOA==
+Date:   Mon, 4 Dec 2023 22:09:45 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Jan =?iso-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
+        Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
+ corruption
+Message-ID: <26710a0a-4390-4056-8734-812480346b6c@sirena.org.uk>
+References: <20231201171644.6f7ade89d4c2f744fa3556b7@hugovil.com>
+ <20231204112905.e58cf1b7bf94440f49188390@hugovil.com>
+ <06fa462c-5b48-410e-8656-4d0dbdbfa142@sirena.org.uk>
+ <20231204120151.f0afbee2ebc69e93e7977547@hugovil.com>
+ <50b24985-cb30-4a75-a15d-9c165a276f1d@sirena.org.uk>
+ <20231204135922.0355f030945920086d21b8b6@hugovil.com>
+ <66946666-eb33-431d-9870-7046c39ffb4e@sirena.org.uk>
+ <20231204144136.89fec6da9be49e3db96994e0@hugovil.com>
+ <f6e93e9c-1c7a-424e-afe0-425b24b99e5c@sirena.org.uk>
+ <20231204150224.add8b07a59bf737edb0b5c1c@hugovil.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] Allow a kthread to declare that it calls
- task_work_run()
-Content-Language: en-US
-To:     NeilBrown <neilb@suse.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-References: <20231204014042.6754-1-neilb@suse.de>
- <20231204014042.6754-2-neilb@suse.de>
- <e9a1cfed-42e9-4174-bbb3-1a3680cf6a5c@kernel.dk>
- <170172377302.7109.11739406555273171485@noble.neil.brown.name>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <170172377302.7109.11739406555273171485@noble.neil.brown.name>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EVdV5P8BE7EA9jWc"
+Content-Disposition: inline
+In-Reply-To: <20231204150224.add8b07a59bf737edb0b5c1c@hugovil.com>
+X-Cookie: For office use only.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/23 2:02 PM, NeilBrown wrote:
-> It isn't clear to me what _GPL is appropriate, but maybe the rules
-> changed since last I looked..... are there rules?
-> 
-> My reasoning was that the call is effectively part of the user-space
-> ABI.  A user-space process can call this trivially by invoking any
-> system call.  The user-space ABI is explicitly a boundary which the GPL
-> does not cross.  So it doesn't seem appropriate to prevent non-GPL
-> kernel code from doing something that non-GPL user-space code can
-> trivially do.
 
-By that reasoning, basically everything in the kernel should be non-GPL
-marked. And while task_work can get used by the application, it happens
-only indirectly or implicitly. So I don't think this reasoning is sound
-at all, it's not an exported ABI or API by itself.
+--EVdV5P8BE7EA9jWc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-For me, the more core of an export it is, the stronger the reason it
-should be GPL. FWIW, I don't think exporting task_work functionality is
-a good idea in the first place, but if there's a strong reason to do so,
-it should most certainly not be accessible to non-GPL modules. Basically
-NO new export should be non-GPL.
+On Mon, Dec 04, 2023 at 03:02:24PM -0500, Hugo Villeneuve wrote:
+> Mark Brown <broonie@kernel.org> wrote:
 
--- 
-Jens Axboe
+> > This is truly innovative hardware,...
 
+> Well, I would not say innovative, but more "crappy" hardware design :)
+
+I didn't say it was *good* innovation.
+
+> >  You'd need to extend the core
+> > so that it knows about this quirk, right now that's not possible and
+> > we'll just leave the window pointing at whatever was last accessed.
+
+> Ok. I am not sure that adding support for it would make sense, since I
+> do not know of other ICs that could reuse this very specific and
+> particular method for switching "paged" registers.
+
+Yeah, I'm drawing a blank there.  The thing that springs to mind is
+optimisation with wanting to always be on a particular page for fast
+interrupt handling or something but that feels rather thin.
+
+--EVdV5P8BE7EA9jWc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVuTigACgkQJNaLcl1U
+h9BROAgAhI9t64zxEMrM1wLApkfngKVB6u40SuVQrGZo1euGjw+A325QoAySSJ3O
+Ul+YUTbNHN/5cueUh+xfifIe3xbacmc35Ws8X57JnWfXILCUFv1/scl+TLw5kcbr
+gNa6f+00BRjLoBKh3yrZ0d3uXTn8ZhFavtEQbhFyPcrnoLbHnp1qC7rWexGVupeB
+/ioqukeOySGZbfX55Y4UTuvEA/ok3vWLz9XDIUOLdAbsej0JGkfP/YEmF3/GJpHq
+9TuWL5Yo2OTye9bS94iQDUmoDn4U7VwIIAHwJ2WTpvWWJ2WhlEVmevBQz3ED1rqV
+AYiE6/aZG5JahtTH4yc51aTAelp3lg==
+=4Rkn
+-----END PGP SIGNATURE-----
+
+--EVdV5P8BE7EA9jWc--
