@@ -2,175 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDA0803587
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CA7803589
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233875AbjLDNxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38942 "EHLO
+        id S1344716AbjLDNxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235654AbjLDNxE (ORCPT
+        with ESMTP id S235609AbjLDNxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:53:04 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E47181
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:53:09 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40b595bf5d2so46887965e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 05:53:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701697988; x=1702302788; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=caHOksw5I0x/otbSLvQvnBWXc9OQUPmugqhHhV4G93g=;
-        b=LRUpT1wQeIrQYLsXKyXMArsuOByyVHStSRnnp5rb/sYhPWkG7lkWkG1843gmyQEEFy
-         0onKeRqATsCJSHGRVQIc2PiRRJ3WguhM97h7qRalZz4Y6PB4MnL5tCOfPZxHG6z+eXyQ
-         cg1kHj4kO7DZbls5Ah/qoslTee0/O8Z8HfMbS8tFSmhc4IbJ0XKVfkIMLyV/gRkkmY5k
-         ZfeMt1Q4S8LIahxmOE4RNAqdGjqmgOJoRXK/DCk51MNAeNRqHK+VbTEOzHPH9PYJ5i5E
-         s/B18M/e2mJLaZ8MOLoQpYi9UnlZjxPaBi3ICwWfswervEKOW6giNhgDLygfSoraOsDJ
-         g0RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701697988; x=1702302788;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=caHOksw5I0x/otbSLvQvnBWXc9OQUPmugqhHhV4G93g=;
-        b=KCvStSeuLzW4iQES/T5nbbxkdI6R3CZ73d7V3t+ZV3w2l9SdSkqvqZ9/ZkdpEAeBon
-         G+DGnMRWLvOvumLABYbGrW8LFQ3bAEdhvmD+1gS0tQ5/F6eMi4B7QHfdqxt8kLBBoByi
-         b8XAyBeUW0fDT3ZQq6iuLQdDs0W0OjURuKxokVZcyXmP62Ga5DgIGEgtkYlKjeaX8Cl+
-         3GJFJZ5dm5g4pXyWtjT0IjGRqRmfjeWIHshp0r3gW2djjK87vfxIG/wPLSfr75aJzjVm
-         +U23myg6aRMDZL9SbbmzMKKca2x+BR37yMHdiTjn3+LD2tVxFhzzZgOdY32nNWjbeGfE
-         s7xQ==
-X-Gm-Message-State: AOJu0Yz2LlJho9tN8SybwzQvkHxcMpJdQEI5HwN2uora7RAgfpwFicD9
-        2Mo91+HXrc15P3SGfp0oLLqUyw==
-X-Google-Smtp-Source: AGHT+IHZZ6atFrXFiYIGXh1lMDQZw4HmJbJRHC9P20p593Wf0++RCyxVXc0+Prz/gHfzVPvFoNqyTA==
-X-Received: by 2002:a05:600c:d6:b0:40c:909:3642 with SMTP id u22-20020a05600c00d600b0040c09093642mr910809wmm.216.1701697987800;
-        Mon, 04 Dec 2023 05:53:07 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:58:12b5:777b:9d17? ([2a01:e0a:982:cbb0:58:12b5:777b:9d17])
-        by smtp.gmail.com with ESMTPSA id p11-20020a05600c468b00b0040b561924bbsm16752989wmo.21.2023.12.04.05.53.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 05:53:07 -0800 (PST)
-Message-ID: <75c11af4-3f5e-4909-a3d3-8feea947d4ea@linaro.org>
-Date:   Mon, 4 Dec 2023 14:53:05 +0100
+        Mon, 4 Dec 2023 08:53:16 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9A9E5;
+        Mon,  4 Dec 2023 05:53:22 -0800 (PST)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B47ABGq012871;
+        Mon, 4 Dec 2023 07:53:10 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=t
+        Hr3GFB2AAZ+8RQEf5NqMNxRghhA7v6HdOduQdJcU38=; b=LW9cSdPm0Jjg0vNdD
+        UQPu0Zz/8Vsw4uUVKZMcjxeFwA34087WaNCtKz0Z10iaGTbmBvAhyQ6U+tp6ZZwR
+        BT0cxTKi5mqAM/j84mTWPIXg17z3ppR2MVZeBwuBDmKdslqZlfia+f4lhxCcJ5/n
+        fBaMCFlpeLX0JaZMByb7Sn8KFDsWaXUBBbIXU7HV+YtsgvBGqWvTv/k67l57KX4I
+        IznGu83hAKwN3mZgxrV2ffNvHvoeW+BZdnG+ODqgWmGRmFftonqRuAnFC3w+F9ZO
+        jIuAm/Nn9CpWI0y5aCsHjU8AcbUUmmzJtkrxCo9NnwQgkUBJYSFas0RNMzodhV5K
+        f90EQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ur2v21wh7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 07:53:09 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
+ 2023 13:53:07 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Mon, 4 Dec 2023 13:53:07 +0000
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.82])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 39ADD468;
+        Mon,  4 Dec 2023 13:53:07 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
+        <peter.ujfalusi@linux.intel.com>, <yung-chuan.liao@linux.intel.com>
+CC:     <kai.vehmanen@linux.intel.com>, <cezary.rojewski@intel.com>,
+        <ranjani.sridharan@linux.intel.com>, <alsa-devel@alsa-project.org>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH v2] ASoC: Intel: soc-acpi-intel-tgl-match: add cs42l43 and cs56l56 support
+Date:   Mon, 4 Dec 2023 13:53:07 +0000
+Message-ID: <20231204135307.2169282-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/bridge: nxp-ptn3460: fix i2c_master_send() error
- checking
-Content-Language: en-US, fr
-To:     Dan Carpenter <dan.carpenter@linaro.org>,
-        Sean Paul <seanpaul@chromium.org>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Inki Dae <inki.dae@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <0cdc2dce-ca89-451a-9774-1482ab2f4762@moroto.mountain>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <0cdc2dce-ca89-451a-9774-1482ab2f4762@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: q4qY35oE08cDeYYWgDuMtvu6D8fvmtQT
+X-Proofpoint-GUID: q4qY35oE08cDeYYWgDuMtvu6D8fvmtQT
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 13:29, Dan Carpenter wrote:
-> The i2c_master_send/recv() functions return negative error codes or the
-> number of bytes that were able to be sent/received.  This code has
-> two problems.  1)  Instead of checking if all the bytes were sent or
-> received, it checks that at least one byte was sent or received.
-> 2) If there was a partial send/receive then we should return a negative
-> error code but this code returns success.
-> 
-> Fixes: a9fe713d7d45 ("drm/bridge: Add PTN3460 bridge driver")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
-> This is from static analysis and code review.  It's always a concern
-> when you add stricter error handling that something will break.
-> 
->   drivers/gpu/drm/bridge/nxp-ptn3460.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/nxp-ptn3460.c b/drivers/gpu/drm/bridge/nxp-ptn3460.c
-> index d81920227a8a..9b7eb8c669c1 100644
-> --- a/drivers/gpu/drm/bridge/nxp-ptn3460.c
-> +++ b/drivers/gpu/drm/bridge/nxp-ptn3460.c
-> @@ -56,13 +56,13 @@ static int ptn3460_read_bytes(struct ptn3460_bridge *ptn_bridge, char addr,
->   	ret = i2c_master_send(ptn_bridge->client, &addr, 1);
->   	if (ret <= 0) {
->   		DRM_ERROR("Failed to send i2c command, ret=%d\n", ret);
-> -		return ret;
-> +		return ret ?: -EIO;
->   	}
->   
->   	ret = i2c_master_recv(ptn_bridge->client, buf, len);
-> -	if (ret <= 0) {
-> +	if (ret != len) {
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-This is impossible, i2c_transfer_buffer_flags() returns len as-is if no error, so
-ret can only be negative or equal to len. The original code is right.
+This is a test configuration for UpExtreme with Cirrus Logic
+CS35L56-EIGHT-C board.
 
->   		DRM_ERROR("Failed to recv i2c data, ret=%d\n", ret);
-> -		return ret;
-> +		return ret < 0 ? ret : -EIO;
->   	}
->   
->   	return 0;
-> @@ -78,9 +78,9 @@ static int ptn3460_write_byte(struct ptn3460_bridge *ptn_bridge, char addr,
->   	buf[1] = val;
->   
->   	ret = i2c_master_send(ptn_bridge->client, buf, ARRAY_SIZE(buf));
-> -	if (ret <= 0) {
-> +	if (ret != ARRAY_SIZE(buf)) {
+The codec layout is configured as:
+    - Link3: CS42L43 Jack
+    - Link0: 2x CS35L56 Speaker (amps 1 and 2)
+    - Link1: 2x CS35L56 Speaker (amps 7 and 8)
 
-Ditto
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+Changes since V1:
+- Changed ALSA prefixes for CS35L56 to 'AMPn'
+- Renumbered the CS35L56 prefixes to match the numbering of the
+  OUTn speaker sockets on the EIGHT-C board
+---
+ .../intel/common/soc-acpi-intel-tgl-match.c   | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
 
->   		DRM_ERROR("Failed to send i2c command, ret=%d\n", ret);
-> -		return ret;
-> +		return ret < 0 ? ret : -EIO;
->   	}
->   
->   	return 0;
+diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+index 5804926c8b56..e5f721ba5ed4 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+@@ -41,6 +41,20 @@ static const struct snd_soc_acpi_endpoint spk_r_endpoint = {
+ 	.group_id = 1,
+ };
+ 
++static const struct snd_soc_acpi_endpoint spk_2_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 2,
++	.group_id = 1,
++};
++
++static const struct snd_soc_acpi_endpoint spk_3_endpoint = {
++	.num = 0,
++	.aggregated = 1,
++	.group_position = 3,
++	.group_id = 1,
++};
++
+ static const struct snd_soc_acpi_endpoint rt712_endpoints[] = {
+ 	{
+ 		.num = 0,
+@@ -400,6 +414,64 @@ static const struct snd_soc_acpi_link_adr tgl_712_only[] = {
+ 	{}
+ };
+ 
++static const struct snd_soc_acpi_adr_device cs42l43_3_adr[] = {
++	{
++		.adr = 0x00033001FA424301ull,
++		.num_endpoints = 1,
++		.endpoints = &single_endpoint,
++		.name_prefix = "cs42l43"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device cs35l56_0_adr[] = {
++	{
++		.adr = 0x00003301FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_r_endpoint,
++		.name_prefix = "AMP1"
++	},
++	{
++		.adr = 0x00003201FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_3_endpoint,
++		.name_prefix = "AMP2"
++	}
++};
++
++static const struct snd_soc_acpi_adr_device cs35l56_1_adr[] = {
++	{
++		.adr = 0x00013701FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_l_endpoint,
++		.name_prefix = "AMP8"
++	},
++	{
++		.adr = 0x00013601FA355601ull,
++		.num_endpoints = 1,
++		.endpoints = &spk_2_endpoint,
++		.name_prefix = "AMP7"
++	}
++};
++
++static const struct snd_soc_acpi_link_adr tgl_cs42l43_cs35l56[] = {
++	{
++		.mask = BIT(3),
++		.num_adr = ARRAY_SIZE(cs42l43_3_adr),
++		.adr_d = cs42l43_3_adr,
++	},
++	{
++		.mask = BIT(0),
++		.num_adr = ARRAY_SIZE(cs35l56_0_adr),
++		.adr_d = cs35l56_0_adr,
++	},
++	{
++		.mask = BIT(1),
++		.num_adr = ARRAY_SIZE(cs35l56_1_adr),
++		.adr_d = cs35l56_1_adr,
++	},
++	{}
++};
++
+ static const struct snd_soc_acpi_codecs tgl_max98373_amp = {
+ 	.num_codecs = 1,
+ 	.codecs = {"MX98373"}
+@@ -494,6 +566,12 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_tgl_sdw_machines[] = {
+ 		.drv_name = "sof_sdw",
+ 		.sof_tplg_filename = "sof-tgl-rt715-rt711-rt1308-mono.tplg",
+ 	},
++	{
++		.link_mask = 0xB,
++		.links = tgl_cs42l43_cs35l56,
++		.drv_name = "sof_sdw",
++		.sof_tplg_filename = "sof-tgl-cs42l43-l3-cs35l56-l01.tplg",
++	},
+ 	{
+ 		.link_mask = 0xF, /* 4 active links required */
+ 		.links = tgl_3_in_1_default,
+-- 
+2.30.2
 
