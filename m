@@ -2,55 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E70FA803599
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A7C8035A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:56:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344551AbjLDNys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:54:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
+        id S1344848AbjLDN4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:56:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344800AbjLDNyp (ORCPT
+        with ESMTP id S1344942AbjLDNz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:54:45 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA0C102;
-        Mon,  4 Dec 2023 05:54:49 -0800 (PST)
-Received: from nicolas-tpx395.localdomain (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: nicolas)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 62C2E660711D;
-        Mon,  4 Dec 2023 13:54:47 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701698088;
-        bh=PVA41weTM/0r0G0fLxhp7nE8jfHRfSplJAtdMTUdgZ4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=eZ08aZ5MePVxoXFWfBYnB3A5i11+zswsy2wL/1AOb+9/8NCNEEMAUaKS4Go3Z3469
-         HANX77Z6NZr0nuyGou6b3HGJOVvpc/JgdOrWBNj2GumIRSRfiGiO4jOJuolJ41rU4i
-         ut1ks1YTprC9BxLz6Sap8zzObnYVM3xMEk9vtBIK8oY8APIH0970GFGxMqde+/+kGh
-         ZMRDzUmUX5ndB199DPB5S5KZ5c0OJT8cRb7gZpTIrv0wh5xl7CVRmMNGAkXoVxhKSd
-         4sN1MArsB6j/s1aSHC3TvrN3jbExGgxp5fCNRZ9ojMZdSfuT5ecUAMvcGNJkyPtt3w
-         b299/RnvKgJ4w==
-Message-ID: <a097944d068ecc8e1121350bb7dffb058859f032.camel@collabora.com>
-Subject: Re: [PATCH] Fix memory leaks in wave5_vpu_open_enc() and
- wave5_vpu_open_dec()
-From:   Nicolas Dufresne <nicolas.dufresne@collabora.com>
-To:     Zeng Chi <zengchi@kylinos.cn>, nas.chung@chipsnmedia.com,
-        jackson.lee@chipsnmedia.com, mchehab@kernel.org,
-        sebastian.fricke@collabora.com, hverkuil-cisco@xs4all.nl,
-        bob.beckett@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 04 Dec 2023 08:54:37 -0500
-In-Reply-To: <20231204083957.2835095-1-zengchi@kylinos.cn>
-References: <20231204083957.2835095-1-zengchi@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 4 Dec 2023 08:55:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D450D8
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 05:56:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701698161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tdFDUUUxOwtqPAheyaZp8n0eSygz3dRJqXpqGDk9O5Q=;
+        b=PW2zCJuWpLUXK23CJ8z5Pg8D+zFmzZzpS4AmIp4JjJawelGRU3mmrAJAqFeQiLMDAx8WmH
+        gu4/+34CsKyjxx4Bybs6Jh9Y1K6f1rQRpv3j6U9YxL/Ifigmy9EZpiXq/Y26n1Qtj+kruQ
+        87R1U5ZjJVq8uE7rZhzVSjGIreQX+PU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-2-bV-F8dXdMwCSORcBjk2d4g-1; Mon, 04 Dec 2023 08:54:55 -0500
+X-MC-Unique: bV-F8dXdMwCSORcBjk2d4g-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-54cd896ead4so917876a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 05:54:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701698094; x=1702302894;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tdFDUUUxOwtqPAheyaZp8n0eSygz3dRJqXpqGDk9O5Q=;
+        b=C8ScmtBbaU9/0NFMQhBX5gSXJaXaaMaHvI1OF9nmIK7u4dknBvJAOetPPSHuAkcDTr
+         4e3FnoFHG6AkkAVm+cQjpYLyhl9zsU+brbtTCPWTL+MKrYSbKV+p3l2WFdK4SklIM8JH
+         3qcjf4gDX7/KBK2fE/xf7mXtKtFLsd6SQr0HORBFV6eq5uV1265WA7pJdRdJiHlVabis
+         lIY7QbLfY0MMLgY2bO241o6MKWY3vrdZBhDujAyTNX2x5z/5ctbyajGf6iJm2DQnMJmY
+         ufjVp/06+IKjdLf/NnsesD1CeFo224wQ0wCnOGPVCbshqefailrsNqRPwMXTZb+9AXrd
+         XV3Q==
+X-Gm-Message-State: AOJu0Yyh4B/0/OhT0MCnjNoIcucM2e4aMMmd1Dc6Mb8Kt1fXAjCcgZAe
+        aC2A6Ba5Jjm2Z2rQKsoEchVJbYbgKZLB5PayxJ9W+UHVEtLvV5eA9ghTxonWAKpyN225o4n8uFg
+        rg6yvyqrd53F2svSwBU5mdY48
+X-Received: by 2002:aa7:d687:0:b0:54a:ff0f:78d6 with SMTP id d7-20020aa7d687000000b0054aff0f78d6mr5984861edr.0.1701698094342;
+        Mon, 04 Dec 2023 05:54:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEdHSKd36vR1S9KTgm43Ou5IlRgJNwlqoeCr0Zp/NxaBzJiQa38fIfp+9swWnt+ed9BqebUCw==
+X-Received: by 2002:aa7:d687:0:b0:54a:ff0f:78d6 with SMTP id d7-20020aa7d687000000b0054aff0f78d6mr5984845edr.0.1701698094053;
+        Mon, 04 Dec 2023 05:54:54 -0800 (PST)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id g2-20020a056402320200b0054ca3697e2csm2146885eda.25.2023.12.04.05.54.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 05:54:53 -0800 (PST)
+Message-ID: <93b172c0-79ad-47d0-9948-e286917c18bb@redhat.com>
+Date:   Mon, 4 Dec 2023 14:54:52 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: PROBLEM: asus_nb_wmi sends KEY_BRIGHTNESSDOWN on pressing CAPS
+ Lock and PrntScrn on Zenbook S 13 UX5304VA
+Content-Language: en-US
+To:     juri@dividebyzero.it, James John <me@donjajo.com>,
+        Corentin Chary <corentin.chary@gmail.com>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     platform-driver-x86@vger.kernel.org,
+        acpi4asus-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com>
+ <39b5f902-3a7e-fc04-254e-776bf61f57e2@redhat.com>
+ <024c4ad4-1a73-8c24-5e6f-f8c9f2f7b98f@redhat.com>
+ <1884918.tdWV9SEqCh@dividebyzero.it>
+ <77b3eed7-825d-41c5-a802-ea891a16f992@redhat.com>
+ <07b057618b72f301142585844ccdcaab75a716fe@dividebyzero.it>
+ <f656f81bb288e69878ca001ec3e27c3ad647e7ea@dividebyzero.it>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <f656f81bb288e69878ca001ec3e27c3ad647e7ea@dividebyzero.it>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,58 +93,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-Le lundi 04 d=C3=A9cembre 2023 =C3=A0 16:39 +0800, Zeng Chi a =C3=A9crit=C2=
-=A0:
-> This patch fixes memory leaks on error escapes in wave5_vpu_open_enc()
-> and wave5_vpu_open_dec().
->=20
-> Fixes: 9707a6254a8a ("media: chips-media: wave5: Add the v4l2 layer")
-> Signed-off-by: Zeng Chi <zengchi@kylinos.cn>
-> ---
->  drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c | 4 +++-
->  drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c | 4 +++-
->  2 files changed, 6 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/d=
-rivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> index 8b1417ece96e..2d3e8a184f93 100644
-> --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
-> @@ -1792,8 +1792,10 @@ static int wave5_vpu_open_dec(struct file *filp)
->  	int ret =3D 0;
-> =20
->  	inst =3D kzalloc(sizeof(*inst), GFP_KERNEL);
-> -	if (!inst)
-> +	if (!inst) {
-> +		kfree(inst);
+On 12/4/23 14:06, juri@dividebyzero.it wrote:
+> December 4, 2023 at 01:32, juri@dividebyzero.it wrote:
+>>
+>> Thank you for the reply, and sorry for the delay.
+>>
+>> As I was gathering the information you asked for I realized that the behavior has changed in the meantime, and I am not sure of the reason why (but I guess due to some package update, possibly unrelated to this).
+>>
+>> If I understand correctly, now the events are no longer reported by the Asus WMI driver, but by the Intel backlight driver. Because of this the backlight variations are once again reported by the DM (KDE Plasma 5, on Arch Linux) in 5% increments, and no longer seem to be under EC control (i.e. the backlight is no longer adjustable during boot, before the DE is up).
+>> The new behavior persist even downgrading the kernel and the firmware package, so I'm not sure which package may be responsible for the change.
+>>
+> 
+> Investigating further I found that that the change was not due to an updated package, but because I mistakenly removed a kernel cmdline argument, i.e. `"acpi_osi=!Windows 2012"`. Restoring it the behavior returns to the same as before. 
+> 
+>> Booting into Debian Bookworm (v6.1.0-13) the old behavior is restored (i.e. the one before the previous patches), with Asus-WMI once again in control (so I guess that at least the change do not persist across reboots).
+>>
+>> For the aforementioned reasons I can no longer reproduce the issue on the original environment (KDE Plasma 5 on Arch Linux) but the behavior on Gnome on Debian is basically the same as before, so I'll be using that.
+>> In both cases (now on Debian, and previously on Arch) the brightness has a granularity on 10-ish steps (0-100% in increments of 10% for KDE Plasma on Arch, and 9 unnamed steps on Gnome on Debian), and no "double-change" seem to be occurring.
+> 
+>> On Debian: 
+>>>
+>>> $ ls -l /sys/class/backlight/
+>>>  total 0
+>>>  lrwxrwxrwx 1 root root 0 Dec 4 00:26 acpi_video0 -> ../../devices/pci0000:00/0000:00:01.0/0000:01:00.0/backlight/acpi_video0
+>>>  lrwxrwxrwx 1 root root 0 Dec 4 00:26 acpi_video1 -> ../../devices/pci0000:00/0000:00:02.0/backlight/acpi_video1
+>>>
+>>
+>> On Arch:
+>>>
+>>> ls -l /sys/class/backlight/ 
+>>>  totale 0
+>>>  lrwxrwxrwx 1 root root 0 4 dic 00.43 intel_backlight -> ../../devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-1/intel_backlight
+>>>
+>>
+>> On Debian:
+>> * `max_brightness` is `10` on both devices;
+>> * `brightness` goes from 1 to 10 following the screen brighness only for `acpi_video0`, while in `acpi_video1` it is stuck at `10`; 
+>> * `actual_brightness` follows the screen brightness on both devices.
+>>
+>> On Arch:
+>> * `max_brighness` is 4296;
+>> * `brightness` changes in steps of 215 units for each 5% reported increment;
+>> * `actual_brightness` is the same as `brighness`.
+>>
+>> Notice that before the latest change in behavior the output on Arch was IIRC the same as now on Debian, but unfortunately I haven't recorded it so I cannot say with absolute certainty.
+> 
+> Restoring `"acpi_osi=!Windows 2012"`, on Arch Linux the result is:
+>> % uname -a                                                                                                                                                            
+>> Linux Arch-Zenbook 6.1.64-1-lts #1 SMP PREEMPT_DYNAMIC Tue, 28 Nov 2023 19:37:35 +0000 x86_64 GNU/Linux
+>> % ls -l /sys/class/backlight                                                                                                                                        
+>> totale 0
+>> lrwxrwxrwx 1 root root 0  4 dic 13.41 acpi_video0 -> ../../devices/pci0000:00/0000:00:01.0/0000:01:00.0/backlight/acpi_video0
+>> lrwxrwxrwx 1 root root 0  4 dic 13.41 acpi_video1 -> ../../devices/pci0000:00/0000:00:02.0/backlight/acpi_video1
+> 
+> * `max_brightness` is `10` on both devices;
+> * `brighness` is stuck at `10` on both;
+> * `actual_brightness` goes from 0 to 10 only on `acpi_video1`, while is stuck at 10 on `acpi_video0`.
+> 
+> Notice that with this kernel and configuration I again have the `unknown key code` messages and no OSD feedback, which I wasn't able to replicate in the previous message.
 
-The allocation failed, there is nothing to free here (kfree(null) is a no-o=
-p).
-This patch does not do what it pretends to do.
+Ok, that is good to know. Is there any specific reason why you are passing
+"acpi_osi=!Windows 2012" on the kernel commandline?
 
-Nicolas
+Generally speaking passing any other kernel arguments then those used
+to specify the root filesystem and things like "quiet" is not advisable.
 
->  		return -ENOMEM;
-> +	}
-> =20
->  	inst->dev =3D dev;
->  	inst->type =3D VPU_INST_TYPE_DEC;
-> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c b/d=
-rivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> index f29cfa3af94a..cbf6cb6e07aa 100644
-> --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
-> @@ -1537,8 +1537,10 @@ static int wave5_vpu_open_enc(struct file *filp)
->  	int ret =3D 0;
-> =20
->  	inst =3D kzalloc(sizeof(*inst), GFP_KERNEL);
-> -	if (!inst)
-> +	if (!inst) {
-> +		kfree(inst);
->  		return -ENOMEM;
-> +	}
->  	v4l2_ctrl_hdl =3D &inst->v4l2_ctrl_hdl;
-> =20
->  	inst->dev =3D dev;
+Everything should just work without passing any special options and if things
+do not work without special options then that is a bug which needs to be fixed.
 
+Regards,
+
+hans
 
