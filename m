@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD99B803700
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EB8803703
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:36:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345495AbjLDOgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
+        id S1345318AbjLDOgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:36:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbjLDOgf (ORCPT
+        with ESMTP id S235879AbjLDOge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:36:35 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FBF4127;
+        Mon, 4 Dec 2023 09:36:34 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFEE129;
         Mon,  4 Dec 2023 06:36:40 -0800 (PST)
-Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SkR39201vz1P9FR;
-        Mon,  4 Dec 2023 22:32:53 +0800 (CST)
+Received: from kwepemm000007.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SkR1n60Y9z14L9f;
+        Mon,  4 Dec 2023 22:31:41 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemm000007.china.huawei.com (7.193.23.189) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
 CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
         <liuyonglong@huawei.com>, <shaojijie@huawei.com>,
         <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V3 net 1/2] net: hns: fix wrong head when modify the tx feature when sending packets
-Date:   Mon, 4 Dec 2023 22:32:31 +0800
-Message-ID: <20231204143232.3221542-2-shaojijie@huawei.com>
+Subject: [PATCH V3 net 2/2] net: hns: fix fake link up on xge port
+Date:   Mon, 4 Dec 2023 22:32:32 +0800
+Message-ID: <20231204143232.3221542-3-shaojijie@huawei.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20231204143232.3221542-1-shaojijie@huawei.com>
 References: <20231204143232.3221542-1-shaojijie@huawei.com>
@@ -53,152 +53,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yonglong Liu <liuyonglong@huawei.com>
 
-Upon changing the tx feature, the hns driver will modify the
-maybe_stop_tx() and fill_desc() functions, if the modify happens
-during packet sending, will cause the hardware and software
-pointers do not match, and the port can not work anymore.
+If a xge port just connect with an optical module and no fiber,
+it may have a fake link up because there may be interference on
+the hardware. This patch adds an anti-shake to avoid the problem.
+And the time of anti-shake is base on tests.
 
-This patch deletes the maybe_stop_tx() and fill_desc() functions
-modification when setting tx feature, and use the skb_is_gro()
-to determine which functions to use in the tx path.
-
-Fixes: 38f616da1c28 ("net:hns: Add support of ethtool TSO set option for Hip06 in HNS")
+Fixes: b917078c1c10 ("net: hns: Add ACPI support to check SFP present")
 Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
 Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
 ---
- drivers/net/ethernet/hisilicon/hns/hns_enet.c | 53 +++++++++++--------
- drivers/net/ethernet/hisilicon/hns/hns_enet.h |  3 +-
- 2 files changed, 33 insertions(+), 23 deletions(-)
+ .../net/ethernet/hisilicon/hns/hns_dsaf_mac.c | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_enet.c b/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-index 0900abf5c508..8a713eed4465 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_enet.c
-@@ -142,7 +142,8 @@ MODULE_DEVICE_TABLE(acpi, hns_enet_acpi_match);
+diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
+index 928d934cb21a..f75668c47935 100644
+--- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
++++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
+@@ -66,6 +66,27 @@ static enum mac_mode hns_get_enet_interface(const struct hns_mac_cb *mac_cb)
+ 	}
+ }
  
- static void fill_desc(struct hnae_ring *ring, void *priv,
- 		      int size, dma_addr_t dma, int frag_end,
--		      int buf_num, enum hns_desc_type type, int mtu)
-+		      int buf_num, enum hns_desc_type type, int mtu,
-+		      bool is_gso)
++static u32 hns_mac_link_anti_shake(struct mac_driver *mac_ctrl_drv)
++{
++#define HNS_MAC_LINK_WAIT_TIME 5
++#define HNS_MAC_LINK_WAIT_CNT 40
++
++	u32 link_status = 0;
++	int i;
++
++	if (!mac_ctrl_drv->get_link_status)
++		return link_status;
++
++	for (i = 0; i < HNS_MAC_LINK_WAIT_CNT; i++) {
++		msleep(HNS_MAC_LINK_WAIT_TIME);
++		mac_ctrl_drv->get_link_status(mac_ctrl_drv, &link_status);
++		if (!link_status)
++			break;
++	}
++
++	return link_status;
++}
++
+ void hns_mac_get_link_status(struct hns_mac_cb *mac_cb, u32 *link_status)
  {
- 	struct hnae_desc *desc = &ring->desc[ring->next_to_use];
- 	struct hnae_desc_cb *desc_cb = &ring->desc_cb[ring->next_to_use];
-@@ -275,6 +276,15 @@ static int hns_nic_maybe_stop_tso(
- 	return 0;
- }
- 
-+static int hns_nic_maybe_stop_tx_v2(struct sk_buff **out_skb, int *bnum,
-+				    struct hnae_ring *ring)
-+{
-+	if (skb_is_gso(*out_skb))
-+		return hns_nic_maybe_stop_tso(out_skb, bnum, ring);
-+	else
-+		return hns_nic_maybe_stop_tx(out_skb, bnum, ring);
-+}
+ 	struct mac_driver *mac_ctrl_drv;
+@@ -83,6 +104,14 @@ void hns_mac_get_link_status(struct hns_mac_cb *mac_cb, u32 *link_status)
+ 							       &sfp_prsnt);
+ 		if (!ret)
+ 			*link_status = *link_status && sfp_prsnt;
 +
- static void fill_tso_desc(struct hnae_ring *ring, void *priv,
- 			  int size, dma_addr_t dma, int frag_end,
- 			  int buf_num, enum hns_desc_type type, int mtu)
-@@ -300,6 +310,19 @@ static void fill_tso_desc(struct hnae_ring *ring, void *priv,
- 				mtu);
- }
- 
-+static void fill_desc_v2(struct hnae_ring *ring, void *priv,
-+			 int size, dma_addr_t dma, int frag_end,
-+			 int buf_num, enum hns_desc_type type, int mtu,
-+			 bool is_gso)
-+{
-+	if (is_gso)
-+		fill_tso_desc(ring, priv, size, dma, frag_end, buf_num, type,
-+			      mtu);
-+	else
-+		fill_v2_desc(ring, priv, size, dma, frag_end, buf_num, type,
-+			     mtu);
-+}
-+
- netdev_tx_t hns_nic_net_xmit_hw(struct net_device *ndev,
- 				struct sk_buff *skb,
- 				struct hns_nic_ring_data *ring_data)
-@@ -313,6 +336,7 @@ netdev_tx_t hns_nic_net_xmit_hw(struct net_device *ndev,
- 	int seg_num;
- 	dma_addr_t dma;
- 	int size, next_to_use;
-+	bool is_gso;
- 	int i;
- 
- 	switch (priv->ops.maybe_stop_tx(&skb, &buf_num, ring)) {
-@@ -339,8 +363,9 @@ netdev_tx_t hns_nic_net_xmit_hw(struct net_device *ndev,
- 		ring->stats.sw_err_cnt++;
- 		goto out_err_tx_ok;
- 	}
-+	is_gso = skb_is_gso(skb);
- 	priv->ops.fill_desc(ring, skb, size, dma, seg_num == 1 ? 1 : 0,
--			    buf_num, DESC_TYPE_SKB, ndev->mtu);
-+			    buf_num, DESC_TYPE_SKB, ndev->mtu, is_gso);
- 
- 	/* fill the fragments */
- 	for (i = 1; i < seg_num; i++) {
-@@ -354,7 +379,7 @@ netdev_tx_t hns_nic_net_xmit_hw(struct net_device *ndev,
- 		}
- 		priv->ops.fill_desc(ring, skb_frag_page(frag), size, dma,
- 				    seg_num - 1 == i ? 1 : 0, buf_num,
--				    DESC_TYPE_PAGE, ndev->mtu);
-+				    DESC_TYPE_PAGE, ndev->mtu, is_gso);
++		/* for FIBER port, it may have a fake link up.
++		 * when the link status changes from down to up, we need to do
++		 * anti-shake. the anti-shake time is base on tests.
++		 * only FIBER port need to do this.
++		 */
++		if (*link_status && !mac_cb->link)
++			*link_status = hns_mac_link_anti_shake(mac_ctrl_drv);
  	}
  
- 	/*complete translate all packets*/
-@@ -1776,15 +1801,6 @@ static int hns_nic_set_features(struct net_device *netdev,
- 			netdev_info(netdev, "enet v1 do not support tso!\n");
- 		break;
- 	default:
--		if (features & (NETIF_F_TSO | NETIF_F_TSO6)) {
--			priv->ops.fill_desc = fill_tso_desc;
--			priv->ops.maybe_stop_tx = hns_nic_maybe_stop_tso;
--			/* The chip only support 7*4096 */
--			netif_set_tso_max_size(netdev, 7 * 4096);
--		} else {
--			priv->ops.fill_desc = fill_v2_desc;
--			priv->ops.maybe_stop_tx = hns_nic_maybe_stop_tx;
--		}
- 		break;
- 	}
- 	netdev->features = features;
-@@ -2159,16 +2175,9 @@ static void hns_nic_set_priv_ops(struct net_device *netdev)
- 		priv->ops.maybe_stop_tx = hns_nic_maybe_stop_tx;
- 	} else {
- 		priv->ops.get_rxd_bnum = get_v2rx_desc_bnum;
--		if ((netdev->features & NETIF_F_TSO) ||
--		    (netdev->features & NETIF_F_TSO6)) {
--			priv->ops.fill_desc = fill_tso_desc;
--			priv->ops.maybe_stop_tx = hns_nic_maybe_stop_tso;
--			/* This chip only support 7*4096 */
--			netif_set_tso_max_size(netdev, 7 * 4096);
--		} else {
--			priv->ops.fill_desc = fill_v2_desc;
--			priv->ops.maybe_stop_tx = hns_nic_maybe_stop_tx;
--		}
-+		priv->ops.fill_desc = fill_desc_v2;
-+		priv->ops.maybe_stop_tx = hns_nic_maybe_stop_tx_v2;
-+		netif_set_tso_max_size(netdev, 7 * 4096);
- 		/* enable tso when init
- 		 * control tso on/off through TSE bit in bd
- 		 */
-diff --git a/drivers/net/ethernet/hisilicon/hns/hns_enet.h b/drivers/net/ethernet/hisilicon/hns/hns_enet.h
-index ffa9d6573f54..3f3ee032f631 100644
---- a/drivers/net/ethernet/hisilicon/hns/hns_enet.h
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_enet.h
-@@ -44,7 +44,8 @@ struct hns_nic_ring_data {
- struct hns_nic_ops {
- 	void (*fill_desc)(struct hnae_ring *ring, void *priv,
- 			  int size, dma_addr_t dma, int frag_end,
--			  int buf_num, enum hns_desc_type type, int mtu);
-+			  int buf_num, enum hns_desc_type type, int mtu,
-+			  bool is_gso);
- 	int (*maybe_stop_tx)(struct sk_buff **out_skb,
- 			     int *bnum, struct hnae_ring *ring);
- 	void (*get_rxd_bnum)(u32 bnum_flag, int *out_bnum);
+ 	mac_cb->link = *link_status;
 -- 
 2.30.0
 
