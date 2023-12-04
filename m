@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69ED78031EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D9F803202
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235407AbjLDL6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
+        id S1343846AbjLDL67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:58:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234894AbjLDL6I (ORCPT
+        with ESMTP id S1343803AbjLDL6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:58:08 -0500
+        Mon, 4 Dec 2023 06:58:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1D919AB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83113C43391;
-        Mon,  4 Dec 2023 11:57:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98281BC0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 726FFC43395;
+        Mon,  4 Dec 2023 11:57:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701691059;
-        bh=f7mPCoikKyAxX+kfcbgmRu4ug6L+LPkQ+dYSgFSXlPY=;
+        s=k20201202; t=1701691061;
+        bh=TN+helZA3bPv2YjKOOvsbQc10ej/I0xDQI0yWDQmgfs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R+jHt4x+nSEjuW01cDgKtc9kiRiD2SdnQ0deE6o2yur28Abjmd+mteEoC5EX5hGYl
-         WwFf/aGQVD7cK/QNkEYiN2WyIMOok0CAP+bRzshMJUq+JV8FxNybIS4RfUq9ps+DYs
-         b0KEPHDDdWJLzI/IlcQCKKmWHbUoW3AY07f8caszW3as77BaEC8i5d7Q+s7K1lf6U+
-         iJKZZdhyVcbP155OJL2U89uctz+E6AZSSAVd17wBQs6VU2MygoB4w9nuYd2s9dv4Cu
-         lPyBn7eLiYjo8ENI57IXmZLxMjO3KZKCvEmFJp2UyEQRiY6uwEj2+OQa6Ixd2T7fBI
-         ASP0AAnjxrYIQ==
+        b=O0qjci0KWVyXGoGetwLAdxCbm3vMP8PwEkoyqEAI4sdba9umtQj+C0CjCz/+VCNHt
+         78dAPC0khV3FBaDdebhE5AVNwQldlJnkXvD8wa2BZ9TAkf+aHEpe9k7WZaU7z+Frsx
+         9ROjnLRKResu/hhZ8yh3uMJ1CexSrTKe+5vA6wbLE3SEG9eQgtfqTDfP0l5OVDLKOM
+         bvQwa5x1yXV5P03JcUcfXAoi8Lmrc8ufouFNwfD9IY7hc104mQdi0pYkv0fRESsPLg
+         R/REziphpRYuQNQ+t20SI/gYNxs0m/qKxr/a9mU0wGDJmMAKIeoDRF32GwZmHTNnqf
+         w3cn2BNnu8jLQ==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     linux-mips@vger.kernel.org
 Cc:     Arnd Bergmann <arnd@arndb.de>,
@@ -34,9 +34,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>,
         "Stephen Rothwell" <sfr@rothwell.id.au>,
         "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
         "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Subject: [PATCH 10/20] mips: fix setup_zero_pages() prototype
-Date:   Mon,  4 Dec 2023 12:57:00 +0100
-Message-Id: <20231204115710.2247097-11-arnd@kernel.org>
+Subject: [PATCH 11/20] mips: fix tlb_init() prototype
+Date:   Mon,  4 Dec 2023 12:57:01 +0100
+Message-Id: <20231204115710.2247097-12-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231204115710.2247097-1-arnd@kernel.org>
 References: <20231204115710.2247097-1-arnd@kernel.org>
@@ -54,55 +54,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-setup_zero_pages() has a local declaration in a platform specific header,
-but that is not seen in the file it is defined in:
+There are two definitions for tlb_init(), but no global declaration:
 
-arch/mips/mm/init.c:60:6: error: no previous prototype for 'setup_zero_pages' [-Werror=missing-prototypes]
+arch/mips/mm/tlb-r4k.c:552:6: error: no previous prototype for 'tlb_init' [-Werror=missing-prototypes]
+arch/mips/mm/tlb-r3k.c:244:6: error: no previous prototype for 'tlb_init' [-Werror=missing-prototypes]
 
-Move it to the corresponding global header and include that where needed.
+Move the declaration to asm/setup.h and included it as needed.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/mips/include/asm/mach-loongson64/mmzone.h | 1 -
- arch/mips/include/asm/mmzone.h                 | 2 ++
- arch/mips/mm/init.c                            | 1 +
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ arch/mips/include/asm/setup.h | 1 +
+ arch/mips/kernel/traps.c      | 2 --
+ arch/mips/mm/tlb-r3k.c        | 1 +
+ arch/mips/mm/tlb-r4k.c        | 1 +
+ 4 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-loongson64/mmzone.h b/arch/mips/include/asm/mach-loongson64/mmzone.h
-index ebb1deaa77b9..a3d65d37b8b5 100644
---- a/arch/mips/include/asm/mach-loongson64/mmzone.h
-+++ b/arch/mips/include/asm/mach-loongson64/mmzone.h
-@@ -18,7 +18,6 @@ extern struct pglist_data *__node_data[];
+diff --git a/arch/mips/include/asm/setup.h b/arch/mips/include/asm/setup.h
+index 8c56b862fd9c..4dce41138bad 100644
+--- a/arch/mips/include/asm/setup.h
++++ b/arch/mips/include/asm/setup.h
+@@ -27,5 +27,6 @@ extern unsigned long ebase;
+ extern unsigned int hwrena;
+ extern void per_cpu_trap_init(bool);
+ extern void cpu_cache_init(void);
++extern void tlb_init(void);
  
- #define NODE_DATA(n)		(__node_data[n])
+ #endif /* __SETUP_H */
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6b0261..c58c0c3c5b40 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2157,8 +2157,6 @@ void *set_vi_handler(int n, vi_handler_t addr)
+ 	return set_vi_srs_handler(n, addr, 0);
+ }
  
--extern void setup_zero_pages(void);
- extern void __init prom_init_numa_memory(void);
+-extern void tlb_init(void);
+-
+ /*
+  * Timer interrupt
+  */
+diff --git a/arch/mips/mm/tlb-r3k.c b/arch/mips/mm/tlb-r3k.c
+index 1fb2cf8c8bfa..f6db65410c65 100644
+--- a/arch/mips/mm/tlb-r3k.c
++++ b/arch/mips/mm/tlb-r3k.c
+@@ -23,6 +23,7 @@
+ #include <asm/io.h>
+ #include <asm/bootinfo.h>
+ #include <asm/cpu.h>
++#include <asm/setup.h>
+ #include <asm/tlbex.h>
  
- #endif /* _ASM_MACH_MMZONE_H */
-diff --git a/arch/mips/include/asm/mmzone.h b/arch/mips/include/asm/mmzone.h
-index 602a21aee9d4..14226ea42036 100644
---- a/arch/mips/include/asm/mmzone.h
-+++ b/arch/mips/include/asm/mmzone.h
-@@ -20,4 +20,6 @@
- #define nid_to_addrbase(nid) 0
- #endif
- 
-+extern void setup_zero_pages(void);
-+
- #endif /* _ASM_MMZONE_H_ */
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 5dcb525a8995..c2e0e5aebe90 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -38,6 +38,7 @@
- #include <asm/dma.h>
- #include <asm/maar.h>
- #include <asm/mmu_context.h>
-+#include <asm/mmzone.h>
- #include <asm/sections.h>
- #include <asm/pgalloc.h>
+ #undef DEBUG_TLB
+diff --git a/arch/mips/mm/tlb-r4k.c b/arch/mips/mm/tlb-r4k.c
+index a542b255019a..44411b20c7ec 100644
+--- a/arch/mips/mm/tlb-r4k.c
++++ b/arch/mips/mm/tlb-r4k.c
+@@ -24,6 +24,7 @@
  #include <asm/tlb.h>
+ #include <asm/tlbex.h>
+ #include <asm/tlbmisc.h>
++#include <asm/setup.h>
+ 
+ /*
+  * LOONGSON-2 has a 4 entry itlb which is a subset of jtlb, LOONGSON-3 has
 -- 
 2.39.2
 
