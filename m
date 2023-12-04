@@ -2,170 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B75AE80336B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F46A80336E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344115AbjLDMxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:53:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
+        id S1344126AbjLDMyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDMxe (ORCPT
+        with ESMTP id S229944AbjLDMya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:53:34 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE190C0;
-        Mon,  4 Dec 2023 04:53:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1701694420; x=1733230420;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HdUGpKAxSFIn+PH7iL9D+/kVSuOVunnGsl9L0zIDHME=;
-  b=KzPaBXZup421uE6KJWQvRSMlF6OK/hdNAWQ0H5R4i6DGnmotjJV4+Pv0
-   C+i916dIF7rUvaD0nASZQ4EuC4/eYaq2q4NWOYubYDuuyEFcRp97kS0d9
-   6PPIFXLtMIXsrJdd7kItzpoAO048n3sX89V5q8dCEc6Ao8XMhN6ZFcm0J
-   aJ1eA8pSnntEgJ0Ycircv3ID5EJ1fkjyPOorVBfcplXMJBMLC99n5S6+9
-   iQz8bmbU4bm/FibPBxX8Dld2F8rlBrsWJ2Pq4QhzlLBjrpJOSUnUq3kH6
-   FJUkxnJVrBAdRPxVgf9fduSv5XAP94tfX2DFjqeABqwggu6q/rTiQcJPe
-   Q==;
-X-CSE-ConnectionGUID: hl/R1P4LRW6u9LnPnoG1PQ==
-X-CSE-MsgGUID: m9nCz6fVTi69cFHzmcHKpg==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="asc'?scan'208";a="12652088"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2023 05:53:38 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
- chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 05:53:30 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Mon, 4 Dec 2023 05:53:27 -0700
-Date:   Mon, 4 Dec 2023 12:52:57 +0000
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Markuss Broks <markuss.broks@gmail.com>
-CC:     Conor Dooley <conor@kernel.org>,
-        Karel Balej <karelb@gimli.ms.mff.cuni.cz>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        <linux-input@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>, Karel Balej <balejk@matfyz.cz>
-Subject: Re: [PATCH v3 2/5] dt-bindings: input/touchscreen: Add compatible
- for IST3038B
-Message-ID: <20231204-stooge-impotent-fe8d2d9177e4@wendy>
-References: <20231202125948.10345-1-karelb@gimli.ms.mff.cuni.cz>
- <20231202125948.10345-3-karelb@gimli.ms.mff.cuni.cz>
- <20231203-outskirts-reformat-e0a833903841@spud>
- <0a035c62-9d35-4f85-b1f3-bcb7dea17d52@gmail.com>
+        Mon, 4 Dec 2023 07:54:30 -0500
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96AD0C0;
+        Mon,  4 Dec 2023 04:54:36 -0800 (PST)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-1faf46f96ebso1892396fac.1;
+        Mon, 04 Dec 2023 04:54:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701694475; x=1702299275; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x/xu9nwzbmHnEYotXUPce3P+9ytlR88YxCwCFXrncBQ=;
+        b=f+vv5CGKnacNhoMKUFEqbh69TZUcH9zQoh68CqSr84lFod0/HL5WRyfYHBs/fxsgTY
+         yVXfLAylYAMEcr/+4TzViipoB6iugGys2idFgWB35YfWm15CjrvfOA2bVrODaCW88WBY
+         MSM+Zt/MxckxQFHgQh7O++jDui9rb0ZtA0+LbEehuffvJ2u+GK4GCwsS5R6ZPZ5bzsId
+         ENlv2VrTmCmBEWhQ1Z6JYqksTMRB/vYQkntivwavZXCcNPwZG4Y219bN/Y7nk0zWrJlj
+         PGtOoGOzTRcQEfY39Pl8JAuHzADfq12dZJCRT/rkqfInFiepl61tKgFT1xIk4+/HbUUN
+         pvoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701694475; x=1702299275;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x/xu9nwzbmHnEYotXUPce3P+9ytlR88YxCwCFXrncBQ=;
+        b=nGybAqHTmtJxtxoAAamwmKUCeubDGO37ymmJzUud0AqStRoqjMlEgJNPRtNky3hi5M
+         DulCnDWk5kyZ/iD+1JVV7vf04nLA7jjRIZ7DXAEEuy7rLnH2HIhiI73bw/4OCSJpY3uY
+         OlZadgJs+euvAn26+8tUq55dJMUb3J0j7ws63jRYDBau+6WeVq4HfBrbeDlurpOkbv3R
+         jVSh01N41Kz+WMGXVtstIpnXqZiDSYUK8YPAr20LCgGAnNfRukqkapLW7EXkd7X8xOdf
+         IYLmP4S1VVcphBa1QEKkhVeSZY4Dfxxakk3V11RZRzJGB+DRUDesNNalUrdKfL4QIw6b
+         Q8NA==
+X-Gm-Message-State: AOJu0Yzc4HmkCV5sJI4JAKA39wbqsVDVe6EhcVmWBEWm7MtkgjzVB0EF
+        /rY9to4RMmW4v1Dk9VY+9cM=
+X-Google-Smtp-Source: AGHT+IFZHG4AC4TOrdwhcJaZ3XL0RRIPK/tNTU1fuESVfRAIIm33CjmYgFNjdPKxK8OINpa69r4WEQ==
+X-Received: by 2002:a05:6871:58f:b0:1fa:f52a:ad2b with SMTP id u15-20020a056871058f00b001faf52aad2bmr6168296oan.8.1701694474816;
+        Mon, 04 Dec 2023 04:54:34 -0800 (PST)
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id pa18-20020a0568701d1200b001faff1908d3sm2068107oab.53.2023.12.04.04.54.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 04:54:34 -0800 (PST)
+From:   Chen Wang <unicornxw@gmail.com>
+To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+        samuel.holland@sifive.com
+Cc:     Chen Wang <unicorn_wang@outlook.com>
+Subject: [PATCH v3 0/4] riscv: sophgo: add clock support for sg2042
+Date:   Mon,  4 Dec 2023 20:54:24 +0800
+Message-Id: <cover.1701691923.git.unicorn_wang@outlook.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BFu57CgKFWeoAbz6"
-Content-Disposition: inline
-In-Reply-To: <0a035c62-9d35-4f85-b1f3-bcb7dea17d52@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---BFu57CgKFWeoAbz6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Chen Wang <unicorn_wang@outlook.com>
 
-On Mon, Dec 04, 2023 at 02:40:44PM +0200, Markuss Broks wrote:
-> On 12/3/23 13:20, Conor Dooley wrote:
-> > On Sat, Dec 02, 2023 at 01:48:33PM +0100, Karel Balej wrote:
-> > > From: Markuss Broks <markuss.broks@gmail.com>
-> > >=20
-> > > Imagis IST3038B is a variant (firmware?) of Imagis IST3038 IC,
-> > > add the compatible for it to the IST3038C bindings.
-> > This one is better, but would be well served by mentioning what
-> > specifically is different (register addresses or firmware commands?)
->=20
-> I don't think anyone knows this other than Imagis itself. I would guess i=
-t's
-> different hardware, since register addresses are indeed different, but on
-> the other hand, there is a possibility that firmware on the MCU could be
-> responding to those commands. I suppose "... IST3038B is a hardware varia=
-nt
-> of ... IST3038" would be more correct.
+This series adds clock controller support for sophgo sg2042.
 
-Only Imagis might know the specifics, but you (plural) have made driver
-changes so you know what is different in terms of the programming model.
-I'm just asking for you to mention how the programming model varies in
-the commit message. Otherwise I can't know whether you should have added
-a fallback compatible, without going and reading your driver change. The
-commit message for the bindings should stand on its own merit in that
-regard.
-"Variant" alone does not suffice, as many variants of devices have a
-compatible programming model, be that for a subset of features or
-complete compatibility.
+Thanks,
+Chen
 
-> The reason why I think it could be firmware-defined is because we have a =
-lot
-> of variants (30xxA, 30xxB, 30xxC, plain 30xx), and the numbers usually me=
-an
-> feature level/completeness, e.g. some don't support the touch pressure or
-> touchkeys, and we don't know what A/B/C/none means.
+---
 
-Ultimately whether it is due to firmware or the hardware isn't
-particular important, just mention what is incompatibly different.
+Changes in v3:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [3].
+  - DTS: don't use syscon but define sg2042 specific system control node. More
+    background info can read [4].
+  - Updating minor issues in dt-bindings as per input from reviews.
 
-Cheers,
-Conor.
+Changes in v2:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [2].
+  - Squashed the patch adding clock definitions with the patch adding the
+    binding for the clock controller.
+  - Updating dt-binding for syscon, remove oneOf for property compatible;
+    define clock controller as child of syscon.
+  - DTS changes: merge sg2042-clock.dtsi into sg2042.dtsi; move clock-frequency
+    property of osc to board devicethree due to the oscillator is outside the
+    SoC.
+  - Fixed some bugs in driver code during testing, including removing warnings
+    for rv32_defconfig.
+  - Updated MAINTAINERS info.
+
+Changes in v1:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [1].
+
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v1 [1]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v2 [2]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v3 [3]
+Link: https://lore.kernel.org/linux-riscv/MA0P287MB03329AE180378E1A2E034374FE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/ [4]
+
+---
+
+Chen Wang (4):
+  dt-bindings: soc: sophgo: Add Sophgo system control module
+  dt-bindings: clock: sophgo: Add SG2042 bindings
+  clk: sophgo: Add SG2042 clock generator driver
+  riscv: dts: add clock generator for Sophgo SG2042 SoC
+
+ .../clock/sophgo/sophgo,sg2042-clkgen.yaml    |   50 +
+ .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     |   35 +
+ MAINTAINERS                                   |    7 +
+ .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |    4 +
+ arch/riscv/boot/dts/sophgo/sg2042.dtsi        |   79 +
+ drivers/clk/Kconfig                           |    1 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/sophgo/Kconfig                    |    8 +
+ drivers/clk/sophgo/Makefile                   |    2 +
+ drivers/clk/sophgo/clk-sophgo-sg2042.c        | 1371 +++++++++++++++++
+ drivers/clk/sophgo/clk-sophgo-sg2042.h        |  226 +++
+ .../dt-bindings/clock/sophgo,sg2042-clkgen.h  |  169 ++
+ 12 files changed, 1953 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo/sophgo,sg2042-clkgen.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+ create mode 100644 drivers/clk/sophgo/Kconfig
+ create mode 100644 drivers/clk/sophgo/Makefile
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.c
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.h
+ create mode 100644 include/dt-bindings/clock/sophgo,sg2042-clkgen.h
 
 
-> > > Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
-> > > Signed-off-by: Karel Balej <balejk@matfyz.cz>
-> > > ---
-> > >   .../devicetree/bindings/input/touchscreen/imagis,ist3038c.yaml   | =
-1 +
-> > >   1 file changed, 1 insertion(+)
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/input/touchscreen/imag=
-is,ist3038c.yaml b/Documentation/devicetree/bindings/input/touchscreen/imag=
-is,ist3038c.yaml
-> > > index 0d6b033fd5fb..b5372c4eae56 100644
-> > > --- a/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3=
-038c.yaml
-> > > +++ b/Documentation/devicetree/bindings/input/touchscreen/imagis,ist3=
-038c.yaml
-> > > @@ -18,6 +18,7 @@ properties:
-> > >     compatible:
-> > >       enum:
-> > > +      - imagis,ist3038b
-> > >         - imagis,ist3038c
-> > >     reg:
-> > > --=20
-> > > 2.43.0
-> > >=20
-> - Markuss
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+-- 
+2.25.1
 
---BFu57CgKFWeoAbz6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZW3LqQAKCRB4tDGHoIJi
-0rCWAP4gThPAB9EJ6NjESl6ryX3gO0BfCj8UNHASwMJcmRL3GgD/bFa4X++Poy3R
-YiCIDUDAw8pGfZvpoOGoQot7N2vpLw8=
-=O6OL
------END PGP SIGNATURE-----
-
---BFu57CgKFWeoAbz6--
