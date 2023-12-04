@@ -2,107 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E14580361E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:11:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F5A80361A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbjLDOLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:11:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
+        id S1344923AbjLDOL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbjLDOLs (ORCPT
+        with ESMTP id S231801AbjLDOL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:11:48 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F135FE5;
-        Mon,  4 Dec 2023 06:11:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701699114; x=1733235114;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=1HeNEWRwAtwYmP+jZvWhZuHAj19jgWYYeZZNwN/jM6A=;
-  b=YNAKnZ+/hflBMFiL5HukqIxOEQyo3qhBMAKhtq3Qt9uiQl5+vHY5etAw
-   E3dr9K8vVxnPZ4U8oh24Qd4xx+bmMHQO5b2B5BzCM6tFFD9S3yYAGY7vD
-   4KSrz47YFXAzntmmjlukhJh/SvwOkS/o1lXNl53sTVUKU7wBxt36NRemM
-   OuzdUuWb4dTEZExIBQHexlyfyjyrJqQIdj3l5IvlU4ssTVtt2vZlP0NWi
-   39Fxd5dCz4Bj/QZ0QpLCHfmTwFnQpn/fQ3NFToZL5uT/XDcEGkW5F7WbW
-   A8a8J0ONvdQocGTefCE5m9heF4W8eJJEd9kdwl4o/9Q1kD1oxjkshPycA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="424902980"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="424902980"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 06:11:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="770539384"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="770539384"
-Received: from malladhi-mobl.gar.corp.intel.com ([10.249.34.28])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 06:11:51 -0800
-Date:   Mon, 4 Dec 2023 16:11:47 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        markgross@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/5] platform/x86: ISST: Process read/write blocked
- feature status
-In-Reply-To: <d3b0dd08-4eca-4268-8b13-e60bd3d85524@redhat.com>
-Message-ID: <e64acb49-608b-a673-c145-7b6bf4c38d5a@linux.intel.com>
-References: <20231130214751.3100418-1-srinivas.pandruvada@linux.intel.com> <20231130214751.3100418-5-srinivas.pandruvada@linux.intel.com> <d3b0dd08-4eca-4268-8b13-e60bd3d85524@redhat.com>
+        Mon, 4 Dec 2023 09:11:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC99AA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:11:32 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60460C433C7;
+        Mon,  4 Dec 2023 14:11:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701699092;
+        bh=pZhSxzLDzMwLZSfKGfa6FYFeoHxIe+AuaBCdsEgSWVk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qW9ttmgJAe2sgcaGpxz/Sox+kGWSziuO6ntnuQksxQfiD6B2ZimW1Rd0k2PDgfmaA
+         aqtLe6wElfihVrxd0buHMlcDAZXIOZjIOSF4u8FUlPTG2boYnjV3OzCkRu2Lsyv4oZ
+         6C70WhJBgwiVfcGoVEGZ2qSC3k5UV/P03pBKdmROoS4pJlKh+7EO9hPwZWe9iuFizq
+         xcDh2hhhu7HUtUJqq1EW4+rt6RwGSyttvMewlFs4l/ZkAt1JS1VxU8k9QuQevrHCM9
+         qLcom1jzpiFwUeTUuKx+63WL79fCUTkfQ+SJYxmRH6k2PKcHe+60Zhrx9N5+k0EThg
+         Vb+sIYAO5NqgQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1rA9gE-0003ez-07;
+        Mon, 04 Dec 2023 15:12:14 +0100
+Date:   Mon, 4 Dec 2023 15:12:14 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Ayush Singh <ayushdevel1325@gmail.com>
+Cc:     greybus-dev@lists.linaro.org, elder@kernel.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        jkridner@beagleboard.org, kernel test robot <yujie.liu@intel.com>
+Subject: Re: [PATCH V3] greybus: gb-beagleplay: Ensure le for values in
+ transport
+Message-ID: <ZW3ePt-c4Mu43DOV@hovoldconsulting.com>
+References: <20231204131008.384583-1-ayushdevel1325@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1301914211-1701699113=:3149"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204131008.384583-1-ayushdevel1325@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1301914211-1701699113=:3149
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Mon, 4 Dec 2023, Hans de Goede wrote:
-> On 11/30/23 22:47, Srinivas Pandruvada wrote:
-> > When a feature is read blocked, don't continue to read SST information
-> > and register with SST core.
-> > 
-> > When the feature is write blocked, continue to offer read interface for
-> > SST parameters, but don't allow any operation to change state. A state
-> > change results from SST level change, feature change or class of service
-> > change.
-> > 
-> > Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> > ---
-> > v2
-> > - Change read_blocked, write_blocked to bool
-> > - Move the check for power_domain_info->write_blocked for SST-CP
-> > to only write operations
+On Mon, Dec 04, 2023 at 06:40:06PM +0530, Ayush Singh wrote:
+> Ensure that the following values are little-endian:
+> - header->pad (which is used for cport_id)
+> - header->size
 > 
-> Thanks, patch looks good to me:
+> Fixes: ec558bbfea67 ("greybus: Add BeaglePlay Linux Driver")
+> Reported-by: kernel test robot <yujie.liu@intel.com>
+> Closes: https://lore.kernel.org/r/202311072329.Xogj7hGW-lkp@intel.com/
+> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+> ---
+> V3:
+> - Fix endiness while sending.
+> V2: https://lists.linaro.org/archives/list/greybus-dev@lists.linaro.org/thread/L53UN5ROSG4M6OE7CU5Y3L5F44T6ZPCC/
+> - Ensure endianess for header->pad
+> V1: https://lists.linaro.org/archives/list/greybus-dev@lists.linaro.org/message/K7UJ6PEAWBLNDMHLT2IO6OP5LQISHRUO/
 > 
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+>  drivers/greybus/gb-beagleplay.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
 > 
-> Did you drop Ilpo's Reviewed-by from v1 on purpose
-> because of the changes ? Or did you forget to add it ?
+> diff --git a/drivers/greybus/gb-beagleplay.c b/drivers/greybus/gb-beagleplay.c
+> index 43318c1993ba..8b21c3e1e612 100644
+> --- a/drivers/greybus/gb-beagleplay.c
+> +++ b/drivers/greybus/gb-beagleplay.c
+> @@ -93,9 +93,9 @@ static void hdlc_rx_greybus_frame(struct gb_beagleplay *bg, u8 *buf, u16 len)
+>  	memcpy(&cport_id, hdr->pad, sizeof(cport_id));
+>  
+>  	dev_dbg(&bg->sd->dev, "Greybus Operation %u type %X cport %u status %u received",
+> -		hdr->operation_id, hdr->type, cport_id, hdr->result);
+> +		hdr->operation_id, hdr->type, le16_to_cpu(cport_id), hdr->result);
+>  
+> -	greybus_data_rcvd(bg->gb_hd, cport_id, buf, len);
+> +	greybus_data_rcvd(bg->gb_hd, le16_to_cpu(cport_id), buf, len);
 
-No he didn't because this patch had an issue in v1 so I never gave my 
-rev-by for this patch. ;-)
+This looks broken; a quick against mainline (and linux-next) check shows
+cport_id to be u16.
 
-But here it's now for v2:
+I think you want get_unaligned_le16() or something instead of that
+memcpy() above.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+But that just begs the question: why has this driver repurposed the pad
+bytes like this? The header still says that these shall be set to zero.
 
--- 
- i.
+>  }
+>  
+>  static void hdlc_rx_dbg_frame(const struct gb_beagleplay *bg, const char *buf, u16 len)
+> @@ -340,14 +340,15 @@ static int gb_message_send(struct gb_host_device *hd, u16 cport, struct gb_messa
+>  {
+>  	struct gb_beagleplay *bg = dev_get_drvdata(&hd->dev);
+>  	struct hdlc_payload payloads[2];
+> +	__le16 cport_id = cpu_to_le16(cport);
+>  
+>  	dev_dbg(&hd->dev, "Sending greybus message with Operation %u, Type: %X on Cport %u",
+>  		msg->header->operation_id, msg->header->type, cport);
+>  
+> -	if (msg->header->size > RX_HDLC_PAYLOAD)
+> +	if (le16_to_cpu(msg->header->size) > RX_HDLC_PAYLOAD)
+>  		return dev_err_probe(&hd->dev, -E2BIG, "Greybus message too big");
+>  
+> -	memcpy(msg->header->pad, &cport, sizeof(cport));
+> +	memcpy(msg->header->pad, &cport_id, sizeof(cport_id));
 
---8323329-1301914211-1701699113=:3149--
+put_unaligned_le16(), if the driver should be messing with the pad
+bytes like this at all...
+
+>  
+>  	payloads[0].buf = msg->header;
+>  	payloads[0].len = sizeof(*msg->header);
+
+Johan
