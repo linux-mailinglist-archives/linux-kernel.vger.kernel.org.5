@@ -2,19 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73471802CA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 09:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74578802CA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 09:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343652AbjLDIFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:05:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40586 "EHLO
+        id S1343677AbjLDIFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:05:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDIFK (ORCPT
+        with ESMTP id S229827AbjLDIFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 03:05:10 -0500
-X-Greylist: delayed 122 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 00:05:14 PST
 Received: from mail.nsr.re.kr (unknown [210.104.33.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D26CB
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D291FE
         for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:05:14 -0800 (PST)
 Received: from 210.104.33.70 (nsr.re.kr)
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
@@ -32,9 +31,9 @@ To:     Herbert Xu <herbert@gondor.apana.org.au>,
         "H. Peter Anvin" <hpa@zytor.com>
 Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
         Dongsoo Lee <letrhee@nsr.re.kr>
-Subject: [PATCH 3/5] blk-crypto: Add LEA-256-XTS blk-crypto support
-Date:   Mon,  4 Dec 2023 08:02:15 +0000
-Message-Id: <20231204080217.9407-4-letrehee@nsr.re.kr>
+Subject: [PATCH 4/5] fscrypt: Add LEA-256-XTS, LEA-256-CTS support
+Date:   Mon,  4 Dec 2023 08:02:16 +0000
+Message-Id: <20231204080217.9407-5-letrehee@nsr.re.kr>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231204080217.9407-1-letrehee@nsr.re.kr>
 References: <20231204080217.9407-1-letrehee@nsr.re.kr>
@@ -51,52 +50,102 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dongsoo Lee <letrhee@nsr.re.kr>
 
-Add LEA-256-XTS blk-crypto support
-
-LEA is a 128-bit block cipher developed by South Korea.
-
-LEA is a Korean national standard (KS X 3246) and included in the
-ISO/IEC 29192-2:2019 standard (Information security - Lightweight
-cryptography - Part 2: Block ciphers).
-
-Enable the LEA to be used in block inline encryption. This can be
-used via blk-crypto-fallback, when using the "inlinecrypt" mount
-option in fscrypt.
+It uses LEA-256-XTS for file encryption and LEA-256-CTS-CBC for
+filename encryption. Includes constant changes as the number of
+supported ciphers increases.
 
 Signed-off-by: Dongsoo Lee <letrhee@nsr.re.kr>
 ---
- block/blk-crypto.c         | 6 ++++++
- include/linux/blk-crypto.h | 1 +
- 2 files changed, 7 insertions(+)
+ fs/crypto/fscrypt_private.h        |  2 +-
+ fs/crypto/keysetup.c               | 15 +++++++++++++++
+ fs/crypto/policy.c                 |  4 ++++
+ include/uapi/linux/fscrypt.h       |  4 +++-
+ tools/include/uapi/linux/fscrypt.h |  4 +++-
+ 5 files changed, 26 insertions(+), 3 deletions(-)
 
-diff --git a/block/blk-crypto.c b/block/blk-crypto.c
-index 4d760b092deb..b847706bbc59 100644
---- a/block/blk-crypto.c
-+++ b/block/blk-crypto.c
-@@ -43,6 +43,12 @@ const struct blk_crypto_mode blk_crypto_modes[] = {
- 		.keysize = 32,
- 		.ivsize = 16,
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 1892356cf924..1f0502999804 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -31,7 +31,7 @@
+ #define FSCRYPT_CONTEXT_V2	2
+ 
+ /* Keep this in sync with include/uapi/linux/fscrypt.h */
+-#define FSCRYPT_MODE_MAX	FSCRYPT_MODE_AES_256_HCTR2
++#define FSCRYPT_MODE_MAX	FSCRYPT_MODE_LEA_256_CTS
+ 
+ struct fscrypt_context_v1 {
+ 	u8 version; /* FSCRYPT_CONTEXT_V1 */
+diff --git a/fs/crypto/keysetup.c b/fs/crypto/keysetup.c
+index d71f7c799e79..f8b0116e43a3 100644
+--- a/fs/crypto/keysetup.c
++++ b/fs/crypto/keysetup.c
+@@ -74,6 +74,21 @@ struct fscrypt_mode fscrypt_modes[] = {
+ 		.security_strength = 32,
+ 		.ivsize = 32,
  	},
-+	[BLK_ENCRYPTION_MODE_LEA_256_XTS] = {
-+		.name = "LEA-256-XTS",
++	[FSCRYPT_MODE_LEA_256_XTS] = {
++		.friendly_name = "LEA-256-XTS",
 +		.cipher_str = "xts(lea)",
 +		.keysize = 64,
++		.security_strength = 32,
++		.ivsize = 16,
++		.blk_crypto_mode = BLK_ENCRYPTION_MODE_LEA_256_XTS,
++	},
++	[FSCRYPT_MODE_LEA_256_CTS] = {
++		.friendly_name = "LEA-256-CTS-CBC",
++		.cipher_str = "cts(cbc(lea))",
++		.keysize = 32,
++		.security_strength = 32,
 +		.ivsize = 16,
 +	},
  };
  
- /*
-diff --git a/include/linux/blk-crypto.h b/include/linux/blk-crypto.h
-index 5e5822c18ee4..b6bf2a5c58ed 100644
---- a/include/linux/blk-crypto.h
-+++ b/include/linux/blk-crypto.h
-@@ -14,6 +14,7 @@ enum blk_crypto_mode_num {
- 	BLK_ENCRYPTION_MODE_AES_128_CBC_ESSIV,
- 	BLK_ENCRYPTION_MODE_ADIANTUM,
- 	BLK_ENCRYPTION_MODE_SM4_XTS,
-+	BLK_ENCRYPTION_MODE_LEA_256_XTS,
- 	BLK_ENCRYPTION_MODE_MAX,
- };
+ static DEFINE_MUTEX(fscrypt_mode_key_setup_mutex);
+diff --git a/fs/crypto/policy.c b/fs/crypto/policy.c
+index 701259991277..b9bb175a11c7 100644
+--- a/fs/crypto/policy.c
++++ b/fs/crypto/policy.c
+@@ -94,6 +94,10 @@ static bool fscrypt_valid_enc_modes_v2(u32 contents_mode, u32 filenames_mode)
+ 	    filenames_mode == FSCRYPT_MODE_SM4_CTS)
+ 		return true;
  
++	if (contents_mode == FSCRYPT_MODE_LEA_256_XTS &&
++	    filenames_mode == FSCRYPT_MODE_LEA_256_CTS)
++		return true;
++
+ 	return fscrypt_valid_enc_modes_v1(contents_mode, filenames_mode);
+ }
+ 
+diff --git a/include/uapi/linux/fscrypt.h b/include/uapi/linux/fscrypt.h
+index 7a8f4c290187..c3c5a04f85c8 100644
+--- a/include/uapi/linux/fscrypt.h
++++ b/include/uapi/linux/fscrypt.h
+@@ -30,7 +30,9 @@
+ #define FSCRYPT_MODE_SM4_CTS			8
+ #define FSCRYPT_MODE_ADIANTUM			9
+ #define FSCRYPT_MODE_AES_256_HCTR2		10
+-/* If adding a mode number > 10, update FSCRYPT_MODE_MAX in fscrypt_private.h */
++#define FSCRYPT_MODE_LEA_256_XTS		11
++#define FSCRYPT_MODE_LEA_256_CTS		12
++/* If adding a mode number > 12, update FSCRYPT_MODE_MAX in fscrypt_private.h */
+ 
+ /*
+  * Legacy policy version; ad-hoc KDF and no key verification.
+diff --git a/tools/include/uapi/linux/fscrypt.h b/tools/include/uapi/linux/fscrypt.h
+index fd1fb0d5389d..df3c8af98210 100644
+--- a/tools/include/uapi/linux/fscrypt.h
++++ b/tools/include/uapi/linux/fscrypt.h
+@@ -30,7 +30,9 @@
+ #define FSCRYPT_MODE_SM4_CTS			8
+ #define FSCRYPT_MODE_ADIANTUM			9
+ #define FSCRYPT_MODE_AES_256_HCTR2		10
+-/* If adding a mode number > 10, update FSCRYPT_MODE_MAX in fscrypt_private.h */
++#define FSCRYPT_MODE_LEA_256_XTS		11
++#define FSCRYPT_MODE_LEA_256_CTS		12
++/* If adding a mode number > 12, update FSCRYPT_MODE_MAX in fscrypt_private.h */
+ 
+ /*
+  * Legacy policy version; ad-hoc KDF and no key verification.
 -- 
 2.40.1
