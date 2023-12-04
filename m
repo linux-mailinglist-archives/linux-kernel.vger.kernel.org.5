@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BFCF8042BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF3C8042BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234672AbjLDXqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 18:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52694 "EHLO
+        id S234712AbjLDXqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 18:46:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234611AbjLDXqJ (ORCPT
+        with ESMTP id S234577AbjLDXqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 18:46:09 -0500
 Received: from irl.hu (irl.hu [95.85.9.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B52FF
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E24FFA
         for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 15:46:14 -0800 (PST)
 Received: from fedori.lan (51b68398.dsl.pool.telekom.hu [::ffff:81.182.131.152])
   (AUTH: CRAM-MD5 soyer@irl.hu, )
   by irl.hu with ESMTPSA
-  id 00000000000710AB.00000000656E64C3.00114EBC; Tue, 05 Dec 2023 00:46:11 +0100
+  id 00000000000710AC.00000000656E64C4.00114ECE; Tue, 05 Dec 2023 00:46:12 +0100
 From:   Gergo Koteles <soyer@irl.hu>
 To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
         Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
@@ -26,10 +26,10 @@ To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Gergo Koteles <soyer@irl.hu>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH 1/2] ASoc: tas2563: DSP Firmware loading support
-Date:   Tue,  5 Dec 2023 00:45:37 +0100
-Message-ID: <c7d0fc477393550cc29624f33361d94ad987259f.1701733441.git.soyer@irl.hu>
+        Gergo Koteles <soyer@irl.hu>
+Subject: [PATCH 2/2] ALSA: hda/tas2563: Add tas2563 HDA driver
+Date:   Tue,  5 Dec 2023 00:45:38 +0100
+Message-ID: <4a2f31d4eb8479789ceb1daf2e93ec0e25c23171.1701733441.git.soyer@irl.hu>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1701733441.git.soyer@irl.hu>
 References: <cover.1701733441.git.soyer@irl.hu>
@@ -46,519 +46,672 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TAS2563 device has a DSP that can run firmware.
-The firmware can contain up to 5 programs and 10 configurations to
-support alternate audio processing.
+Create tas2563 side codec HDA driver for Lenovo Yoga 7 14ARB7 laptops.
+It has two smart amplifiers that can load firmware (tuning file) and
+calibration data. The calibration data can be read from EFI variables.
+All of the tas2563s in the laptop will be aggregated as one audio
+speaker. The code supports realtek codec as the primary codec.
 
-Firmware loading is done dymacally and the program and configuration
-selection is done by the user.
-
-The binary itself contains a list of instructions for either a single
-mode write or a burst write.  The single mode write is list of register
-writes to different books and pages within the register map.
-The burst writes is a block of data that is written to a specific
-location in memory.
-
-The firmware loader must parse and load the blocks in real time as the
-binary may contain different audio profiles.
-
-If the DSP is not needed to do audio preocessing then the DSP program
-can be turned off and the device will effectively turn off the DSP.
-
-RFC patch:
-https://lore.kernel.org/lkml/6d6aaed3-dac8-e1ec-436c-9b04273df2b3@ti.com/T/
-
-Co-developed-by: Dan Murphy <dmurphy@ti.com>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
 Signed-off-by: Gergo Koteles <soyer@irl.hu>
 ---
- {sound/soc/codecs => include/sound}/tas2562.h |   3 +
- include/sound/tas25xx-dsp.h                   | 100 +++++++
- sound/soc/codecs/Kconfig                      |   7 +
- sound/soc/codecs/Makefile                     |   2 +
- sound/soc/codecs/tas2562.c                    |   2 +-
- sound/soc/codecs/tas25xx-dsp.c                | 282 ++++++++++++++++++
- 6 files changed, 395 insertions(+), 1 deletion(-)
- rename {sound/soc/codecs => include/sound}/tas2562.h (97%)
- create mode 100644 include/sound/tas25xx-dsp.h
- create mode 100644 sound/soc/codecs/tas25xx-dsp.c
+ include/sound/tas2562.h         |   5 +
+ sound/pci/hda/Kconfig           |  14 +
+ sound/pci/hda/Makefile          |   2 +
+ sound/pci/hda/patch_realtek.c   |  22 +-
+ sound/pci/hda/tas2563_hda_i2c.c | 508 ++++++++++++++++++++++++++++++++
+ 5 files changed, 547 insertions(+), 4 deletions(-)
+ create mode 100644 sound/pci/hda/tas2563_hda_i2c.c
 
-diff --git a/sound/soc/codecs/tas2562.h b/include/sound/tas2562.h
-similarity index 97%
-rename from sound/soc/codecs/tas2562.h
-rename to include/sound/tas2562.h
-index 55b2a1f52ca3..f000e8f5dc88 100644
---- a/sound/soc/codecs/tas2562.h
+diff --git a/include/sound/tas2562.h b/include/sound/tas2562.h
+index f000e8f5dc88..6d246a5db433 100644
+--- a/include/sound/tas2562.h
 +++ b/include/sound/tas2562.h
-@@ -11,6 +11,7 @@
- #define __TAS2562_H__
+@@ -33,6 +33,11 @@
+ #define TAS2562_TDM_CFG9	TAS2562_REG(0, 0x0f)
+ #define TAS2562_TDM_CFG10	TAS2562_REG(0, 0x10)
+ #define TAS2562_TDM_DET		TAS2562_REG(0, 0x11)
++#define TAS2562_BOOST_CFG1	TAS2562_REG(0, 0x33)
++#define TAS2562_BOOST_CFG2	TAS2562_REG(0, 0x34)
++#define TAS2562_BOOST_CFG3	TAS2562_REG(0, 0x35)
++#define TAS2562_BOOST_CFG4	TAS2562_REG(0, 0x40)
++#define TAS2562_ASI_CONFIG3	TAS2562_REG(0, 0x46)
+ #define TAS2562_REV_ID		TAS2562_REG(0, 0x7d)
  
- #define TAS2562_PAGE_CTRL	0x00
-+#define TAS2562_BOOK_CTRL	0x7f
+ #define TAS2562_RX_OFF_MASK	GENMASK(5, 1)
+diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
+index 0d7502d6e060..364d1331f597 100644
+--- a/sound/pci/hda/Kconfig
++++ b/sound/pci/hda/Kconfig
+@@ -179,6 +179,20 @@ config SND_HDA_SCODEC_TAS2781_I2C
+ comment "Set to Y if you want auto-loading the side codec driver"
+ 	depends on SND_HDA=y && SND_HDA_SCODEC_TAS2781_I2C=m
  
- #define TAS2562_REG(page, reg)	((page * 128) + reg)
- 
-@@ -44,6 +45,8 @@
- #define TAS2562_DVC_CFG3	TAS2562_REG(2, 0x0e)
- #define TAS2562_DVC_CFG4	TAS2562_REG(2, 0x0f)
- 
-+#define TAS25XX_DSP_MODE	TAS2562_REG(1, 0x02)
-+
- #define TAS2562_RESET	BIT(0)
- 
- #define TAS2562_MODE_MASK	GENMASK(1,0)
-diff --git a/include/sound/tas25xx-dsp.h b/include/sound/tas25xx-dsp.h
-new file mode 100644
-index 000000000000..855e62bcf816
---- /dev/null
-+++ b/include/sound/tas25xx-dsp.h
-@@ -0,0 +1,100 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * tas25xx_dsp_loader.h - Texas Instruments TAS25xx Mono Audio Amplifier
-+ *
-+ * Copyright (C) 2020 Texas Instruments Incorporated -  http://www.ti.com
-+ *
-+ * Author: Dan Murphy <dmurphy@ti.com>
-+ */
-+
-+#ifndef _TAS25XX_DSP_LOADER_H
-+#define _TAS25XX_DSP_LOADER_H
-+
-+#define TAS25XX_NAME_SIZE	64
-+#define TAS25XX_PROG_SIZE	5
-+#define TAS25XX_CONFIG_SIZE	10
-+
-+#define TAS25XX_CMD_SING_W	0x1
-+#define TAS25XX_CMD_BURST	0x2
-+#define TAS25XX_CMD_DELAY	0x3
-+
-+struct tas25xx_cmd_reg {
-+	u8 book;
-+	u8 page;
-+	u8 offset;
-+	u8 data;
-+};
-+
-+struct tas25xx_cmd_hdr {
-+	u16 cmd_type;
-+	u16 length;
-+};
-+
-+struct tas25xx_cmd {
-+	struct tas25xx_cmd_hdr hdr;
-+	struct tas25xx_cmd_reg reg;
-+};
-+
-+struct tas25xx_block_data {
-+	u32 block_type;
-+	u16 pram_checksum;
-+	u16 yram_checksum;
-+	u32 block_size;
-+	u32 num_subblocks;
-+};
-+
-+struct tas25xx_program_info {
-+	char name[TAS25XX_NAME_SIZE];
-+	u8 app_mode;
-+	u8 pdm_i2s_mode;
-+	u8 isns_pd;
-+	u8 vsns_pd;
-+	u8 reserved_1;
-+	u16 reserved_2;
-+	u8 ldg_power_up;
-+	struct tas25xx_block_data blk_data;
-+};
-+
-+struct tas25xx_config_info {
-+	char name[TAS25XX_NAME_SIZE];
-+	u16 devices;
-+	u16 program;
-+	u32 samp_rate;
-+	u16 clk_src;
-+	u16 sbclk_fs_ratio;
-+	u32 clk_freq;
-+	u32 num_blocks;
-+	struct tas25xx_block_data blk_data;
-+};
-+
-+struct tas25xx_fw_hdr {
-+	u32 magic_num;
-+	u32 image_size;
-+	u32 checksum;
-+	u32 version_num;
-+	u32 dsp_version;
-+	u32 drv_fw_version;
-+	u32 timestamp;
-+	char firmware_name[TAS25XX_NAME_SIZE];
-+	u16 dev_family;
-+	u16 dev_subfamily;
-+	u32 num_programs;
-+	u32 prog_size[TAS25XX_PROG_SIZE];
-+	u32 num_configs;
-+	u32 config_size[TAS25XX_CONFIG_SIZE];
-+};
-+
-+struct tas25xx_fw_data {
-+	struct tas25xx_fw_hdr *hdr;
-+	u8 *config_data;
-+	u8 *prog_data;
-+};
-+
-+struct tas25xx_fw_data *tas25xx_parse_fw(struct device *dev,
-+	const struct firmware *fw);
-+int tas25xx_write_config(struct device *dev, struct regmap *regmap,
-+	struct tas25xx_fw_data *fw_data, int config_num);
-+int tas25xx_write_program(struct device *dev, struct regmap *regmap,
-+	struct tas25xx_fw_data *fw_data, int prog_num);
-+
-+#endif /* _TAS25XX_DSP_LOADER_H */
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index f1e1dbc509f6..86e66d7e4bdc 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -238,6 +238,7 @@ config SND_SOC_ALL_CODECS
- 	imply SND_SOC_STI_SAS
- 	imply SND_SOC_TAS2552
- 	imply SND_SOC_TAS2562
-+	imply SND_SOC_TAS2562_DSP
- 	imply SND_SOC_TAS2764
- 	imply SND_SOC_TAS2770
- 	imply SND_SOC_TAS2780
-@@ -1761,6 +1762,12 @@ config SND_SOC_TAS2552
- 	tristate "Texas Instruments TAS2552 Mono Audio amplifier"
- 	depends on I2C
- 
-+config SND_SOC_TAS25XX_DSP
++config SND_HDA_SCODEC_TAS2563_I2C
++	tristate "Build TAS2563 HD-audio side codec support for I2C Bus"
 +	depends on I2C
-+	select REGMAP_I2C
-+	tristate
-+	default n
++	depends on ACPI
++	depends on EFI
++	depends on SND_SOC
++	select SND_SOC_TAS25XX_DSP
++	help
++	  Say Y or M here to include TAS2563 I2C HD-audio side codec support
++	  in snd-hda-intel driver, such as ALC287.
 +
- config SND_SOC_TAS2562
- 	tristate "Texas Instruments TAS2562 Mono Audio amplifier"
- 	depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index a87e56938ce5..807fcbb43cf5 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -378,6 +378,7 @@ snd-soc-max98504-objs := max98504.o
- snd-soc-simple-amplifier-objs := simple-amplifier.o
- snd-soc-tpa6130a2-objs := tpa6130a2.o
- snd-soc-tas2552-objs := tas2552.o
-+snd-soc-tas25xx-dsp-objs := tas25xx-dsp.o
- snd-soc-tas2562-objs := tas2562.o
- snd-soc-tas2764-objs := tas2764.o
- snd-soc-tas2780-objs := tas2780.o
-@@ -651,6 +652,7 @@ obj-$(CONFIG_SND_SOC_STAC9766)	+= snd-soc-stac9766.o
- obj-$(CONFIG_SND_SOC_STI_SAS)	+= snd-soc-sti-sas.o
- obj-$(CONFIG_SND_SOC_TAS2552)	+= snd-soc-tas2552.o
- obj-$(CONFIG_SND_SOC_TAS2562)	+= snd-soc-tas2562.o
-+obj-$(CONFIG_SND_SOC_TAS25XX_DSP)	+= snd-soc-tas25xx-dsp.o
- obj-$(CONFIG_SND_SOC_TAS2764)	+= snd-soc-tas2764.o
- obj-$(CONFIG_SND_SOC_TAS2780)	+= snd-soc-tas2780.o
- obj-$(CONFIG_SND_SOC_TAS2781_COMLIB)	+= snd-soc-tas2781-comlib.o
-diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
-index 962c2cdfa017..ca6e9d60b255 100644
---- a/sound/soc/codecs/tas2562.c
-+++ b/sound/soc/codecs/tas2562.c
-@@ -20,7 +20,7 @@
- #include <sound/soc-dapm.h>
- #include <sound/tlv.h>
++comment "Set to Y if you want auto-loading the side codec driver"
++	depends on SND_HDA=y && SND_HDA_SCODEC_TAS2562_I2C=m
++
+ config SND_HDA_CODEC_REALTEK
+ 	tristate "Build Realtek HD-audio codec support"
+ 	select SND_HDA_GENERIC
+diff --git a/sound/pci/hda/Makefile b/sound/pci/hda/Makefile
+index f00fc9ed6096..d746fab82d89 100644
+--- a/sound/pci/hda/Makefile
++++ b/sound/pci/hda/Makefile
+@@ -36,6 +36,7 @@ snd-hda-scodec-cs35l56-i2c-objs :=	cs35l56_hda_i2c.o
+ snd-hda-scodec-cs35l56-spi-objs :=	cs35l56_hda_spi.o
+ snd-hda-cs-dsp-ctls-objs :=		hda_cs_dsp_ctl.o
+ snd-hda-scodec-tas2781-i2c-objs :=	tas2781_hda_i2c.o
++snd-hda-scodec-tas2563-i2c-objs :=	tas2563_hda_i2c.o
  
--#include "tas2562.h"
-+#include <sound/tas2562.h>
+ # common driver
+ obj-$(CONFIG_SND_HDA) := snd-hda-codec.o
+@@ -64,6 +65,7 @@ obj-$(CONFIG_SND_HDA_SCODEC_CS35L56_I2C) += snd-hda-scodec-cs35l56-i2c.o
+ obj-$(CONFIG_SND_HDA_SCODEC_CS35L56_SPI) += snd-hda-scodec-cs35l56-spi.o
+ obj-$(CONFIG_SND_HDA_CS_DSP_CONTROLS) += snd-hda-cs-dsp-ctls.o
+ obj-$(CONFIG_SND_HDA_SCODEC_TAS2781_I2C) += snd-hda-scodec-tas2781-i2c.o
++obj-$(CONFIG_SND_HDA_SCODEC_TAS2563_I2C) += snd-hda-scodec-tas2563-i2c.o
  
- #define TAS2562_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |\
- 			 SNDRV_PCM_FORMAT_S32_LE)
-diff --git a/sound/soc/codecs/tas25xx-dsp.c b/sound/soc/codecs/tas25xx-dsp.c
+ # this must be the last entry after codec drivers;
+ # otherwise the codec patches won't be hooked before the PCI probe
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 9677c09cf7a9..1d3e9f77c9d4 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6770,7 +6770,7 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
+ 	return !strcmp(d + n, tmp);
+ }
+ 
+-static int comp_match_tas2781_dev_name(struct device *dev,
++static int comp_match_tas2xxx_dev_name(struct device *dev,
+ 	void *data)
+ {
+ 	struct scodec_dev_name *p = data;
+@@ -6823,7 +6823,7 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
+ 	}
+ }
+ 
+-static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
++static void tas2xxx_generic_fixup(struct hda_codec *cdc, int action,
+ 	const char *bus, const char *hid)
+ {
+ 	struct device *dev = hda_codec_dev(cdc);
+@@ -6841,7 +6841,7 @@ static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
+ 		rec->index = 0;
+ 		spec->comps[0].codec = cdc;
+ 		component_match_add(dev, &spec->match,
+-			comp_match_tas2781_dev_name, rec);
++			comp_match_tas2xxx_dev_name, rec);
+ 		ret = component_master_add_with_match(dev, &comp_master_ops,
+ 			spec->match);
+ 		if (ret)
+@@ -6888,7 +6888,13 @@ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
+ static void tas2781_fixup_i2c(struct hda_codec *cdc,
+ 	const struct hda_fixup *fix, int action)
+ {
+-	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
++	 tas2xxx_generic_fixup(cdc, action, "i2c", "TIAS2781");
++}
++
++static void tas2563_fixup_i2c(struct hda_codec *cdc,
++	const struct hda_fixup *fix, int action)
++{
++	 tas2xxx_generic_fixup(cdc, action, "i2c", "INT8866");
+ }
+ 
+ /* for alc295_fixup_hp_top_speakers */
+@@ -7358,6 +7364,7 @@ enum {
+ 	ALC236_FIXUP_DELL_DUAL_CODECS,
+ 	ALC287_FIXUP_CS35L41_I2C_2_THINKPAD_ACPI,
+ 	ALC287_FIXUP_TAS2781_I2C,
++	ALC287_FIXUP_TAS2563_I2C,
+ 	ALC245_FIXUP_HP_MUTE_LED_COEFBIT,
+ 	ALC245_FIXUP_HP_X360_MUTE_LEDS,
+ 	ALC287_FIXUP_THINKPAD_I2S_SPK,
+@@ -9447,6 +9454,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_THINKPAD_ACPI,
+ 	},
++	[ALC287_FIXUP_TAS2563_I2C] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = tas2563_fixup_i2c,
++		.chained = true,
++		.chain_id = ALC285_FIXUP_THINKPAD_HEADSET_JACK,
++	},
+ 	[ALC245_FIXUP_HP_MUTE_LED_COEFBIT] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc245_fixup_hp_mute_led_coefbit,
+@@ -10056,6 +10069,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
+ 	SND_PCI_QUIRK(0x17aa, 0x3855, "Legion 7 16ITHG6", ALC287_FIXUP_LEGION_16ITHG6),
+ 	SND_PCI_QUIRK(0x17aa, 0x3869, "Lenovo Yoga7 14IAL7", ALC287_FIXUP_YOGA9_14IAP7_BASS_SPK_PIN),
++	SND_PCI_QUIRK(0x17aa, 0x3870, "Lenovo Yoga 7 14ARB7", ALC287_FIXUP_TAS2563_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x387d, "Yoga S780-16 pro Quad AAC", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x387e, "Yoga S780-16 pro Quad YC", ALC287_FIXUP_TAS2781_I2C),
+ 	SND_PCI_QUIRK(0x17aa, 0x3881, "YB9 dual power mode2 YC", ALC287_FIXUP_TAS2781_I2C),
+diff --git a/sound/pci/hda/tas2563_hda_i2c.c b/sound/pci/hda/tas2563_hda_i2c.c
 new file mode 100644
-index 000000000000..d5081fa01441
+index 000000000000..14f7c1ab6cbc
 --- /dev/null
-+++ b/sound/soc/codecs/tas25xx-dsp.c
-@@ -0,0 +1,282 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/sound/pci/hda/tas2563_hda_i2c.c
+@@ -0,0 +1,508 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +//
-+// Firmware loader for the Texas Instruments TAS25XX DSP
-+// Copyright (C) 2020 Texas Instruments Inc.
++// TAS2563 HDA I2C driver
++//
++// Copyright (C) 2023 Gergo Koteles <soyer@irl.hu>
 +
-+#include <linux/module.h>
-+#include <linux/errno.h>
-+#include <linux/device.h>
++#include <linux/acpi.h>
++#include <linux/crc8.h>
++#include <linux/crc32.h>
++#include <linux/efi.h>
 +#include <linux/firmware.h>
 +#include <linux/i2c.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/pm_runtime.h>
 +#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/delay.h>
++#include <sound/hda_codec.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
 +
 +#include <sound/tas2562.h>
 +#include <sound/tas25xx-dsp.h>
 +
++#include "hda_local.h"
++#include "hda_auto_parser.h"
++#include "hda_component.h"
++#include "hda_jack.h"
++#include "hda_generic.h"
 +
-+static void tas25xx_process_fw_delay(struct tas25xx_cmd *cmd)
-+{
-+	mdelay(cpu_to_be16(cmd->hdr.length));
-+}
++#define TAS2563_GLOBAL_ADDR		0x48
++#define TAS2563_MAX_CHANNELS	2
 +
-+static int tas25xx_process_fw_single(struct regmap *regmap,
-+	struct tas25xx_cmd *cmd)
++#define TAS2562_SW_RESET_RESET	BIT(0)
++#define TAS2562_PWR_ACTIVE	0
++#define TAS2562_PWR_SUSPEND	BIT(1)
++
++
++#define TAS2563_CAL_POWER	TAS2562_REG(0x0d, 0x3c)
++#define TAS2563_CAL_R0		TAS2562_REG(0x0f, 0x34)
++#define TAS2563_CAL_INVR0	TAS2562_REG(0x0f, 0x40)
++#define TAS2563_CAL_R0_LOW	TAS2562_REG(0x0f, 0x48)
++#define TAS2563_CAL_TLIM	TAS2562_REG(0x10, 0x14)
++#define TAS2563_CAL_N		5
++#define TAS2563_CAL_DATA_SIZE	4
++
++static unsigned int cal_regs[TAS2563_CAL_N] = {
++	TAS2563_CAL_POWER, TAS2563_CAL_R0, TAS2563_CAL_INVR0,
++	TAS2563_CAL_R0_LOW, TAS2563_CAL_TLIM,
++};
++
++static efi_guid_t efi_guid = EFI_GUID(0x1f52d2a1, 0xbb3a, 0x457d, 0xbc, 0x09,
++		0x43, 0xa3, 0xf4, 0x31, 0x0a, 0x92);
++
++static efi_char16_t *efi_var_names[TAS2563_MAX_CHANNELS][TAS2563_CAL_N] = {
++	{ L"Power_1", L"R0_1", L"InvR0_1", L"R0_Low_1", L"TLim_1" },
++	{ L"Power_2", L"R0_2", L"InvR0_2", L"R0_Low_2", L"TLim_2" },
++};
++
++struct tas2563_dev {
++	unsigned char dev_id;
++	unsigned int i2c_addr;
++	struct i2c_client *client;
++	struct regmap *regmap;
++	uint32_t cal_data[TAS2563_CAL_N];
++};
++
++struct tas2563_data {
++	struct device *dev;
++	struct i2c_client *client;
++	struct tas2563_dev tasdevs[TAS2563_MAX_CHANNELS];
++	unsigned char ndev;
++	char firmware_name[32];
++	struct tas25xx_fw_data *fw_data;
++};
++
++static const struct regmap_range_cfg tas2563_ranges[] = {
++	{
++		.range_min = 0,
++		.range_max = 255 * 128,
++		.selector_reg = TAS2562_PAGE_CTRL,
++		.selector_mask = 0xff,
++		.selector_shift = 0,
++		.window_start = 0,
++		.window_len = 128,
++	},
++};
++
++static const struct regmap_config tas2563_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++
++	.max_register = 255 * 128,
++	.cache_type = REGCACHE_NONE,
++	.ranges = tas2563_ranges,
++	.num_ranges = ARRAY_SIZE(tas2563_ranges),
++};
++
++#define TAS2563_REG_INIT_N 12
++static const struct reg_default tas2563_reg_init[TAS2563_MAX_CHANNELS]
++	[TAS2563_REG_INIT_N] = {
++	{
++		{ TAS2562_TDM_CFG2, 0x5a },
++		{ TAS2562_TDM_CFG4, 0xf3 },
++		{ TAS2562_TDM_CFG5, 0x42 },
++		{ TAS2562_TDM_CFG6, 0x40 },
++		{ TAS2562_BOOST_CFG1, 0xd4 },
++		{ TAS2562_BOOST_CFG3, 0xa4 },
++		{ TAS2562_REG(0x00, 0x36), 0x0b },
++		{ TAS2562_REG(0x00, 0x38), 0x21 },
++		{ TAS2562_REG(0x00, 0x3c), 0x58 },
++		{ TAS2562_BOOST_CFG4, 0xb6 },
++		{ TAS2562_ASI_CONFIG3, 0x04},
++		{ TAS2562_REG(0x00, 0x47), 0xb1 },
++	},
++	{
++		{ TAS2562_TDM_CFG2, 0x6a },
++		{ TAS2562_TDM_CFG4, 0x93 },
++		{ TAS2562_TDM_CFG5, 0x46 },
++		{ TAS2562_TDM_CFG6, 0x44 },
++		{ TAS2562_BOOST_CFG1, 0xd4 },
++		{ TAS2562_BOOST_CFG3, 0xa4 },
++		{ TAS2562_REG(0x00, 0x36), 0x0c },
++		{ TAS2562_REG(0x00, 0x38), 0x21 },
++		{ TAS2562_REG(0x00, 0x3c), 0x58 },
++		{ TAS2562_BOOST_CFG4, 0xb6 },
++		{ TAS2562_ASI_CONFIG3, 0x05},
++		{ TAS2562_REG(0x00, 0x47), 0xb0 },
++	},
++};
++
++static void tas2563_set_power(struct tas2563_data *tas2563, char power)
 +{
 +	int ret;
-+	int num_writes = cpu_to_be16(cmd->hdr.length);
-+	struct tas25xx_cmd_reg *reg = &cmd->reg;
 +
-+	for (int i = 0; i < num_writes; i++, reg++) {
-+		/* Reset Page to 0 to access BOOK_CTRL */
-+		ret = regmap_write(regmap, TAS2562_PAGE_CTRL, 0);
-+		if (ret)
-+			return ret;
++	if (!tas2563->fw_data)
++		return;
 +
-+		ret = regmap_write(regmap, TAS2562_BOOK_CTRL, reg->book);
-+		if (ret)
-+			return ret;
++	for (int i = 0; i < tas2563->ndev; ++i) {
++		struct regmap *regmap = tas2563->tasdevs[i].regmap;
 +
-+		ret = regmap_write(regmap, TAS2562_REG(reg->page, reg->offset),
-+			reg->data);
++		ret = regmap_write(regmap, TAS2562_PWR_CTRL, power);
 +		if (ret)
-+			return ret;
++			dev_err(tas2563->dev, "Error setting power\n");
++	}
++}
++
++static void tas2563_tasdev_setup(struct tas2563_data *tas2563,
++	struct tas2563_dev *tasdev)
++{
++	int ret;
++	struct regmap *regmap = tasdev->regmap;
++
++	if (!tas2563->fw_data)
++		return;
++
++	ret = regmap_write(regmap, TAS2562_SW_RESET, TAS2562_SW_RESET_RESET);
++	if (ret)
++		dev_err(tas2563->dev, "Error resetting device\n");
++
++	ret = tas25xx_write_program(tas2563->dev, regmap, tas2563->fw_data, 0);
++	if (ret)
++		dev_err(tas2563->dev, "Error writing program\n");
++
++	ret = tas25xx_write_config(tas2563->dev, regmap, tas2563->fw_data, 0);
++	if (ret)
++		dev_err(tas2563->dev, "Error writing config\n");
++
++	for (int i = 0; i < TAS2563_REG_INIT_N; ++i) {
++		struct reg_default reg = tas2563_reg_init[tasdev->dev_id][i];
++
++		ret = regmap_write(regmap, reg.reg, reg.def);
++		if (ret)
++			dev_err(tas2563->dev, "Error writing init regs\n");
 +	}
 +
-+	return 0;
++	ret = regmap_write(regmap, TAS25XX_DSP_MODE, 1);
++	if (ret)
++		dev_err(tas2563->dev, "Error enabling DSP\n");
++
++	for (int i = 0; i < TAS2563_CAL_N; ++i) {
++		ret = regmap_bulk_write(regmap, cal_regs[i],
++			&tasdev->cal_data[i], TAS2563_CAL_DATA_SIZE);
++		if (ret)
++			dev_err(tas2563->dev, "Error writing calib regs\n");
++	}
++
++	ret = regmap_write(regmap, TAS2562_PWR_CTRL, 0);
++	if (ret)
++		dev_err(tas2563->dev, "Error setting power on\n");
 +}
 +
-+static int tas25xx_process_fw_burst(struct regmap *regmap,
-+	struct tas25xx_cmd *cmd)
++static void tas2563_fw_loaded(const struct firmware *fw, void *context)
 +{
-+	int ret;
++	struct tas2563_data *tas2563 = context;
 +
-+	/* Reset Page to 0 to access BOOK_CTRL */
-+	ret = regmap_write(regmap, TAS2562_PAGE_CTRL, 0);
-+	if (ret)
-+		return ret;
++	if (!fw)
++		return;
 +
-+	ret = regmap_write(regmap, TAS2562_BOOK_CTRL, cmd->reg.book);
-+	if (ret)
-+		return ret;
++	tas2563->fw_data = tas25xx_parse_fw(tas2563->dev, fw);
++	if (!tas2563->fw_data) {
++		dev_err(tas2563->dev, "Failed to parse firmware\n");
++		return;
++	}
 +
-+	ret = regmap_bulk_write(regmap, TAS2562_REG(cmd->reg.page, cmd->reg.offset), &cmd[1],
-+				cpu_to_be16(cmd->hdr.length));
-+	if (ret)
-+		return ret;
-+
-+	return 0;
++	for (int i = 0; i < tas2563->ndev; ++i)
++		tas2563_tasdev_setup(tas2563, &tas2563->tasdevs[i]);
 +}
 +
-+static int tas25xx_process_block(struct device *dev, struct regmap *regmap,
-+	struct tas25xx_cmd *cmd, int max_block_size)
++static void tas2563_hda_playback_hook(struct device *dev, int action)
 +{
-+	int ret;
-+	int block_read;
++	struct tas2563_data *tas2563 = dev_get_drvdata(dev);
 +
-+	const int hdr_size = sizeof(struct tas25xx_cmd_hdr);
-+	const int reg_size = sizeof(struct tas25xx_cmd_reg);
-+	const int cmd_size = sizeof(struct tas25xx_cmd);
-+
-+	switch (cpu_to_be16(cmd->hdr.cmd_type)) {
-+	case TAS25XX_CMD_SING_W:
-+		block_read = cpu_to_be16(cmd->hdr.length) * reg_size + hdr_size;
++	dev_dbg(tas2563->dev, "%s: action = %d\n", __func__, action);
++	switch (action) {
++	case HDA_GEN_PCM_ACT_OPEN:
++		pm_runtime_get_sync(dev);
++		tas2563_set_power(tas2563, TAS2562_PWR_ACTIVE);
 +		break;
-+	case TAS25XX_CMD_BURST:
-+		block_read = cpu_to_be16(cmd->hdr.length) + cmd_size;
-+		break;
-+	case TAS25XX_CMD_DELAY:
-+		block_read = 4;
++	case HDA_GEN_PCM_ACT_CLOSE:
++		tas2563_set_power(tas2563, TAS2562_PWR_SUSPEND);
++		pm_runtime_mark_last_busy(dev);
++		pm_runtime_put_autosuspend(dev);
 +		break;
 +	default:
-+		block_read = 0;
++		dev_dbg(tas2563->dev, "Playback action not supported: %d\n",
++			action);
++		break;
 +	}
-+
-+	if (block_read > max_block_size) {
-+		dev_err(dev,
-+			"Corrupt firmware: block_read > max_block_size %d %d\n",
-+			block_read, max_block_size);
-+		return -EINVAL;
-+	}
-+
-+	switch (cpu_to_be16(cmd->hdr.cmd_type)) {
-+	case TAS25XX_CMD_SING_W:
-+		ret = tas25xx_process_fw_single(regmap, cmd);
-+		if (ret) {
-+			dev_err(dev, "Failed to process single write %d\n",
-+				ret);
-+			return ret;
-+		}
-+		break;
-+	case TAS25XX_CMD_BURST:
-+		ret = tas25xx_process_fw_burst(regmap, cmd);
-+		if (ret) {
-+			dev_err(dev, "Failed to process burst write %d\n", ret);
-+			return ret;
-+		}
-+		break;
-+	case TAS25XX_CMD_DELAY:
-+		tas25xx_process_fw_delay(cmd);
-+		break;
-+	default:
-+		dev_warn(dev, "Unknown cmd type %d\n",
-+			cpu_to_be16(cmd->hdr.cmd_type));
-+		break;
-+	};
-+
-+	return block_read;
 +}
 +
-+
-+int tas25xx_write_program(struct device *dev, struct regmap *regmap,
-+	struct tas25xx_fw_data *fw_data, int prog_num)
++static int tas2563_hda_bind(struct device *dev, struct device *master,
++	void *master_data)
 +{
-+	int offset = 0;
-+	int length = 0;
-+	struct tas25xx_program_info *prog_info;
-+	struct tas25xx_fw_hdr *hdr = fw_data->hdr;
-+	struct tas25xx_cmd *cmd;
++	struct tas2563_data *tas2563 = dev_get_drvdata(dev);
++	struct hda_component *comps = master_data;
++	struct hda_codec *codec;
++	int ret;
 +
-+	if (prog_num > cpu_to_be32(hdr->num_programs))
++	if (!comps)
 +		return -EINVAL;
 +
-+	for (int i = 0; i < prog_num; i++)
-+		offset += cpu_to_be32(hdr->prog_size[i]);
++	if (comps->dev)
++		return -EBUSY;
++	comps->dev = dev;
++	codec = comps->codec;
 +
-+	prog_info = (struct tas25xx_program_info *)&fw_data->prog_data[offset];
-+	dev_info(dev, "Write program %d: %s\n", prog_num, prog_info->name);
++	pm_runtime_get_sync(dev);
 +
-+	int max_offset = offset + cpu_to_be32(hdr->prog_size[prog_num]);
-+	int num_subblocks = cpu_to_be32(prog_info->blk_data.num_subblocks);
++	strscpy(comps->name, dev_name(dev), sizeof(comps->name));
++	scnprintf(tas2563->firmware_name, 32, "TAS2563-%08X.bin",
++		codec->core.subsystem_id);
 +
-+	offset += sizeof(struct tas25xx_program_info);
++	ret = request_firmware_nowait(THIS_MODULE, FW_ACTION_UEVENT,
++				tas2563->firmware_name, tas2563->dev,
++				GFP_KERNEL, tas2563,
++				tas2563_fw_loaded);
++	if (ret)
++		dev_err(tas2563->dev, "request_firmware_nowait err: %d\n",
++			ret);
 +
-+	for (int i = 0; i < num_subblocks; i++) {
-+		cmd = (struct tas25xx_cmd *)&fw_data->prog_data[offset];
-+		length = tas25xx_process_block(dev, regmap, cmd,
-+			max_offset - offset);
-+		if (length < 0)
-+			return length;
++	comps->playback_hook = tas2563_hda_playback_hook;
 +
-+		offset += length;
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
++	return ret;
++}
++
++static void tas2563_hda_unbind(struct device *dev,
++	struct device *master, void *master_data)
++{
++	struct hda_component *comps = master_data;
++
++	if (comps->dev != dev)
++		return;
++
++	comps->dev = NULL;
++	comps->playback_hook = NULL;
++}
++
++static const struct component_ops tas2563_hda_comp_ops = {
++	.bind = tas2563_hda_bind,
++	.unbind = tas2563_hda_unbind,
++};
++
++static int tas2563_tasdev_init_regmap(struct tas2563_data *tas2563,
++	struct tas2563_dev *tasdev)
++{
++	tasdev->regmap = devm_regmap_init_i2c(tasdev->client,
++		&tas2563_regmap_config);
++	if (IS_ERR(tasdev->regmap))
++		return PTR_ERR(tasdev->regmap);
++	return 0;
++}
++
++static int tas2563_tasdev_init_client(struct tas2563_data *tas2563,
++	struct tas2563_dev *tasdev)
++{
++	tasdev->client = tas2563->client->addr == tasdev->i2c_addr
++		? tas2563->client : devm_i2c_new_dummy_device(tas2563->dev,
++				tas2563->client->adapter, tasdev->i2c_addr);
++	if (IS_ERR(tasdev->client))
++		return PTR_ERR(tasdev->client);
++	return 0;
++}
++
++/* Update the calibrate data, including speaker impedance, f0, etc, into algo.
++ * Calibrate data is done by manufacturer in the factory. These data are used
++ * by Algo for calucating the speaker temperature, speaker membrance excursion
++ * and f0 in real time during playback.
++ */
++static int tas2563_tasdev_read_efi(struct tas2563_data *tas2563,
++	struct tas2563_dev *tasdev)
++{
++	efi_status_t status;
++	unsigned int attr;
++	unsigned long max_size = TAS2563_CAL_DATA_SIZE;
++
++	for (int i = 0; i < TAS2563_CAL_N; ++i) {
++		status = efi.get_variable(efi_var_names[tasdev->dev_id][i],
++			&efi_guid, &attr, &max_size,
++			&tasdev->cal_data[i]);
++		if (status != EFI_SUCCESS)
++			return -EINVAL;
++		tasdev->cal_data[i] = cpu_to_be32(tasdev->cal_data[i]);
 +	}
 +
-+	/* Reset Book to 0 */
-+	regmap_write(regmap, TAS2562_PAGE_CTRL, 0);
-+	regmap_write(regmap, TAS2562_BOOK_CTRL, 0);
++	dev_info(tas2563->dev,
++		"Calibration data %d: power:%08x r0:%08x inv_r0:%08x r0_low:%08x tlim:%08x\n",
++		tasdev->dev_id, tasdev->cal_data[0], tasdev->cal_data[1],
++		tasdev->cal_data[2], tasdev->cal_data[3], tasdev->cal_data[4]);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(tas25xx_write_program);
 +
-+int tas25xx_write_config(struct device *dev, struct regmap *regmap,
-+	struct tas25xx_fw_data *fw_data, int config_num)
++static int tas2563_get_i2c_res(struct acpi_resource *ares, void *data)
 +{
-+	int offset = 0;
-+	int length = 0;
-+	struct tas25xx_config_info *cfg_info;
-+	struct tas25xx_fw_hdr *hdr = fw_data->hdr;
-+	struct tas25xx_cmd *cmd;
++	struct tas2563_data *tas2563 = data;
++	struct acpi_resource_i2c_serialbus *sb;
++	struct tas2563_dev *tasdev;
 +
-+	if (config_num > cpu_to_be32(hdr->num_configs))
-+		return -EINVAL;
++	if (i2c_acpi_get_i2c_resource(ares, &sb)) {
++		if (tas2563->ndev < 2 &&
++			sb->slave_address != TAS2563_GLOBAL_ADDR) {
++			tasdev = &tas2563->tasdevs[tas2563->ndev];
++			tasdev->dev_id = tas2563->ndev;
++			tasdev->i2c_addr =
++				(unsigned int)sb->slave_address;
++			tas2563->ndev++;
++		}
++	}
++	return 1;
++}
 +
-+	for (int i = 0; i < config_num; i++)
-+		offset += cpu_to_be32(hdr->config_size[i]);
++static int tas2563_read_acpi(struct tas2563_data *tas2563)
++{
++	struct acpi_device *adev;
++	LIST_HEAD(resources);
++	int ret;
 +
-+	cfg_info = (struct tas25xx_config_info *)&fw_data->config_data[offset];
-+	dev_info(dev, "Write config %d: %s\n", config_num, cfg_info->name);
-+
-+	int max_offset = offset + cpu_to_be32(hdr->config_size[config_num]);
-+	int num_subblocks = cpu_to_be32(cfg_info->blk_data.num_subblocks);
-+
-+	offset += sizeof(struct tas25xx_config_info);
-+
-+	for (int i = 0; i < num_subblocks; i++) {
-+		cmd = (struct tas25xx_cmd *)&fw_data->config_data[offset];
-+		length = tas25xx_process_block(dev, regmap, cmd,
-+			max_offset - offset);
-+		if (length < 0)
-+			return length;
-+
-+		offset += length;
++	adev = ACPI_COMPANION(tas2563->dev);
++	if (!adev) {
++		dev_err(tas2563->dev, "Error could not get ACPI device\n");
++		return -ENODEV;
 +	}
 +
-+	/* Reset Book to 0 */
-+	regmap_write(regmap, TAS2562_PAGE_CTRL, 0);
-+	regmap_write(regmap, TAS2562_BOOK_CTRL, 0);
++	ret = acpi_dev_get_resources(adev, &resources, tas2563_get_i2c_res,
++		tas2563);
++	if (ret < 0) {
++		dev_err(tas2563->dev, "Read acpi error, ret: %d\n", ret);
++		return ret;
++	}
++
++	acpi_dev_free_resource_list(&resources);
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(tas25xx_write_config);
 +
-+
-+struct tas25xx_fw_data *tas25xx_parse_fw(struct device *dev,
-+	const struct firmware *fw)
++static int tas2563_hda_i2c_probe(struct i2c_client *client)
 +{
-+	u32 total_prog_sz = 0;
-+	u32 total_config_sz = 0;
-+	u32 prog_num = 0;
-+	u32 config_num = 0;
-+	int hdr_size = sizeof(struct tas25xx_fw_hdr);
-+	struct tas25xx_fw_data *fw_data = NULL;
++	struct tas2563_data *tas2563;
++	int ret;
 +
-+	fw_data = devm_kzalloc(dev, sizeof(struct tas25xx_fw_data), GFP_KERNEL);
-+	if (!fw_data)
-+		goto err_fw;
++	tas2563 = devm_kzalloc(&client->dev, sizeof(struct tas2563_data),
++		GFP_KERNEL);
++	if (!tas2563)
++		return -ENOMEM;
++	tas2563->dev = &client->dev;
++	tas2563->client = client;
 +
-+	if (fw->size < hdr_size)
-+		goto err_data;
++	dev_set_drvdata(tas2563->dev, tas2563);
 +
-+	fw_data->hdr = devm_kzalloc(dev, hdr_size, GFP_KERNEL);
-+	if (!fw_data->hdr)
-+		goto err_data;
++	ret = tas2563_read_acpi(tas2563);
++	if (ret)
++		return dev_err_probe(tas2563->dev, ret,
++			"Platform not supported\n");
 +
-+	memcpy(fw_data->hdr, &fw->data[0], hdr_size);
++	for (int i = 0; i < tas2563->ndev; ++i) {
++		struct tas2563_dev *tasdev = &tas2563->tasdevs[i];
 +
-+	for (int i = 0; i < cpu_to_be32(fw_data->hdr->num_programs); i++)
-+		total_prog_sz += cpu_to_be32(fw_data->hdr->prog_size[i]);
++		ret = tas2563_tasdev_read_efi(tas2563, tasdev);
++		if (ret)
++			return dev_err_probe(tas2563->dev, ret,
++				"Calibration data cannot be read from EFI\n");
 +
-+	for (int i = 0; i < cpu_to_be32(fw_data->hdr->num_configs); i++)
-+		total_config_sz += cpu_to_be32(fw_data->hdr->config_size[i]);
++		ret = tas2563_tasdev_init_client(tas2563, tasdev);
++		if (ret)
++			return dev_err_probe(tas2563->dev, ret,
++				"Failed to init i2c client\n");
 +
-+	if (fw->size < hdr_size + total_prog_sz + total_config_sz)
-+		goto err_hdr;
++		ret = tas2563_tasdev_init_regmap(tas2563, tasdev);
++		if (ret)
++			return dev_err_probe(tas2563->dev, ret,
++				"Failed to allocate register map\n");
++	}
 +
-+	fw_data->prog_data = devm_kzalloc(dev, total_prog_sz, GFP_KERNEL);
-+	if (!fw_data->prog_data)
-+		goto err_hdr;
++	ret = component_add(tas2563->dev, &tas2563_hda_comp_ops);
++	if (ret) {
++		return dev_err_probe(tas2563->dev, ret,
++			"Register component failed\n");
++	}
 +
-+	memcpy(fw_data->prog_data, &fw->data[hdr_size], total_prog_sz);
++	pm_runtime_set_autosuspend_delay(tas2563->dev, 3000);
++	pm_runtime_use_autosuspend(tas2563->dev);
++	pm_runtime_mark_last_busy(tas2563->dev);
++	pm_runtime_set_active(tas2563->dev);
++	pm_runtime_get_noresume(tas2563->dev);
++	pm_runtime_enable(tas2563->dev);
 +
-+	fw_data->config_data = devm_kzalloc(dev, total_config_sz, GFP_KERNEL);
-+	if (!fw_data->config_data)
-+		goto err_prog;
++	pm_runtime_put_autosuspend(tas2563->dev);
 +
-+	memcpy(fw_data->config_data, &fw->data[hdr_size + total_prog_sz],
-+		total_config_sz);
-+
-+	prog_num = cpu_to_be32(fw_data->hdr->num_programs);
-+	config_num = cpu_to_be32(fw_data->hdr->num_configs);
-+	dev_info(dev, "Firmware loaded: programs %d, configs %d\n",
-+		prog_num, config_num);
-+
-+	return fw_data;
-+
-+err_prog:
-+	devm_kfree(dev, fw_data->prog_data);
-+err_hdr:
-+	devm_kfree(dev, fw_data->hdr);
-+err_data:
-+	devm_kfree(dev, fw_data);
-+err_fw:
-+	release_firmware(fw);
-+
-+	return NULL;
++	return 0;
 +}
-+EXPORT_SYMBOL_GPL(tas25xx_parse_fw);
 +
-+MODULE_DESCRIPTION("TAS25xx DSP library");
-+MODULE_AUTHOR("Dan Murphy <dmurphy@ti.com>");
++static void tas2563_hda_i2c_remove(struct i2c_client *client)
++{
++	struct tas2563_data *tas2563 = dev_get_drvdata(&client->dev);
++
++	pm_runtime_get_sync(tas2563->dev);
++	pm_runtime_disable(tas2563->dev);
++
++	component_del(tas2563->dev, &tas2563_hda_comp_ops);
++
++	pm_runtime_put_noidle(tas2563->dev);
++}
++
++static int tas2563_system_suspend(struct device *dev)
++{
++	struct tas2563_data *tas2563 = dev_get_drvdata(dev);
++	int ret;
++
++	dev_dbg(tas2563->dev, "System Suspend\n");
++
++	ret = pm_runtime_force_suspend(dev);
++	if (ret)
++		return ret;
++
++	return 0;
++}
++
++static int tas2563_system_resume(struct device *dev)
++{
++	int ret;
++	struct tas2563_data *tas2563 = dev_get_drvdata(dev);
++
++	dev_dbg(tas2563->dev, "System Resume\n");
++
++	ret = pm_runtime_force_resume(dev);
++	if (ret)
++		return ret;
++
++	for (int i = 0; i < tas2563->ndev; ++i)
++		tas2563_tasdev_setup(tas2563, &tas2563->tasdevs[i]);
++
++	return 0;
++}
++
++static const struct dev_pm_ops tas2563_hda_pm_ops = {
++	SYSTEM_SLEEP_PM_OPS(tas2563_system_suspend, tas2563_system_resume)
++};
++
++static const struct i2c_device_id tas2563_hda_i2c_id[] = {
++	{ "tas2563-hda", 0 },
++	{}
++};
++
++static const struct acpi_device_id tas2563_acpi_hda_match[] = {
++	{"INT8866", 0 },
++	{}
++};
++MODULE_DEVICE_TABLE(acpi, tas2563_acpi_hda_match);
++
++static struct i2c_driver tas2563_hda_i2c_driver = {
++	.driver = {
++		.name		= "tas2563-hda",
++		.acpi_match_table = tas2563_acpi_hda_match,
++		.pm		= &tas2563_hda_pm_ops,
++	},
++	.id_table	= tas2563_hda_i2c_id,
++	.probe		= tas2563_hda_i2c_probe,
++	.remove		= tas2563_hda_i2c_remove,
++};
++module_i2c_driver(tas2563_hda_i2c_driver);
++
++MODULE_DESCRIPTION("TAS2563 HDA Driver");
++MODULE_AUTHOR("Gergo Koteles <soyer@irl.hu>");
 +MODULE_LICENSE("GPL");
++MODULE_IMPORT_NS(SND_SOC_TAS25XX_DSP);
 -- 
 2.43.0
 
