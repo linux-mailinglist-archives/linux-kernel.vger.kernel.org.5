@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD6B8031CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB158031EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjLDLzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:55:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
+        id S232898AbjLDL5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:57:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbjLDLzS (ORCPT
+        with ESMTP id S232850AbjLDL5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:55:18 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34B9F3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:55:24 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rA7Xi-0000dh-PN; Mon, 04 Dec 2023 12:55:18 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rA7Xh-00DVSK-Pl; Mon, 04 Dec 2023 12:55:17 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rA7Xh-00E1So-Gg; Mon, 04 Dec 2023 12:55:17 +0100
-Date:   Mon, 4 Dec 2023 12:55:17 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Yangtao Li <frank.li@vivo.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpuidle: kirkwood: Convert to platform remove callback
- returning void
-Message-ID: <20231204115517.zxjgi6ateobjj52d@pengutronix.de>
-References: <20230712094014.41787-1-frank.li@vivo.com>
+        Mon, 4 Dec 2023 06:57:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D29194
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:57:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04B03C433CA;
+        Mon,  4 Dec 2023 11:57:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701691039;
+        bh=q9RFRmQz//PfuZnmNFqtqm4IBejSJpfxv/MO9WQSm6g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=otFmRzW1jBZI0ynTl9GruW+vDoZYr9DfIOVxxXZTzV7ocbkPeeo2AR9iIizr6yomB
+         gBEK2bIqKaJ3pQIW+CdlfKUUQHxyS7Ioq+Lpdf+v00FOvP7YQA1+QZ0+OjRTxl9LIg
+         aTJqnmCsfAN9XncqnH3VXyXxzDk/Svi7xxFa6mVrScrYl6zXMmZ1VnRiZ4dAWWE9lZ
+         6bxEu3F4qUx5/wuX0IsjLW3tRviuujMLEATEmCllddvZU96iybTU73CbayMP07gJBn
+         0yrS3gEg2c5U6yxNUk+txhHtGKaQ3iac6LSEGX2L/PXyFfmkHkafyVIyhWmW3CXCD0
+         Lz8li42kCefpA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-mips@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Stephen Rothwell" <sfr@rothwell.id.au>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Subject: [PATCH 00/20] mips: address -Wmissing-prototypes warnings
+Date:   Mon,  4 Dec 2023 12:56:50 +0100
+Message-Id: <20231204115710.2247097-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wql4bbahif3ubg5s"
-Content-Disposition: inline
-In-Reply-To: <20230712094014.41787-1-frank.li@vivo.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
---wql4bbahif3ubg5s
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+As promised, I've now addressed the -Wmissing-prototypes warnings that
+showed up in mips as the last major architecture after my patch to
+enable the option everywhere.
 
-On Wed, Jul 12, 2023 at 05:40:13PM +0800, Yangtao Li wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is (mostly) ignored
-> and this typically results in resource leaks. To improve here there is a
-> quest to make the remove callback return void. In the first step of this
-> quest all drivers are converted to .remove_new() which already returns
-> void.
->=20
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
->=20
-> Cc: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-> Signed-off-by: Yangtao Li <frank.li@vivo.com>
+This should result in a clean build for the defconfig and allmodconfig
+builds, but the older platforms that are not yet converted to
+CONFFIG_MIPS_GENERIC_KERNEL tend to still have some remaining warnings
+in platform specific code that someone needs to address.
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+The patches could either go through Thomas's mips tree, or
+alternatively through linux-mm along with the hexagon patches
+that Andrew has already merged.
 
-Can you pick this up?
+      Arnd
 
-Best regards
-Uwe
+Link: https://lore.kernel.org/lkml/ebb5b1a2-ed27-4a77-b62b-1d3f19bddd85@app.fastmail.com/
+Cc: "Andrew Morton" <akpm@linux-foundation.org>
+Cc: "Stephen Rothwell" <sfr@rothwell.id.au>
+Cc: "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+Cc: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+Cc: linux-mips@vger.kernel.org
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Arnd Bergmann (20):
+  mips: decompress: fix add missing prototypes
+  mips: add asm/syscalls.h header
+  mips: add missing declarations for trap handlers
+  mips: rs870e: stop exporting local functions
+  mips: signal: move sigcontext declarations to header
+  mips: mark local function static if possible
+  mips: move build_tlb_refill_handler() prototype
+  mips: move jump_label_apply_nops() declaration to header
+  mips: unhide uasm_in_compat_space_p() declaration
+  mips: fix setup_zero_pages() prototype
+  mips: fix tlb_init() prototype
+  mips: move cache declarations into header
+  mips: add missing declarations
+  mips: spram: fix missing prototype warning for spram_config
+  mips: mt: include asm/mips_mt.h
+  mips: remove extraneous asm-generic/iomap.h include
+  mips: suspend: include linux/suspend.h as needed
+  mips: hide conditionally unused functions
+  mips: smp: fix setup_profiling_timer() prototype
+  mips: kexec: include linux/reboot.h
 
---wql4bbahif3ubg5s
-Content-Type: application/pgp-signature; name="signature.asc"
+ arch/mips/boot/compressed/dbg.c               |  2 ++
+ arch/mips/boot/compressed/decompress.c        | 16 ++-------
+ arch/mips/boot/compressed/decompress.h        | 24 ++++++++++++++
+ arch/mips/boot/compressed/string.c            |  1 +
+ arch/mips/include/asm/cache.h                 |  6 ++++
+ arch/mips/include/asm/io.h                    |  2 --
+ arch/mips/include/asm/jump_label.h            |  3 ++
+ .../mips/include/asm/mach-loongson64/mmzone.h |  1 -
+ arch/mips/include/asm/mmzone.h                |  2 ++
+ arch/mips/include/asm/processor.h             |  2 ++
+ arch/mips/include/asm/r4kcache.h              |  4 +++
+ arch/mips/include/asm/setup.h                 |  1 +
+ arch/mips/include/asm/signal.h                |  1 +
+ arch/mips/include/asm/smp.h                   |  2 ++
+ arch/mips/include/asm/spram.h                 |  2 +-
+ arch/mips/include/asm/syscalls.h              | 33 +++++++++++++++++++
+ arch/mips/include/asm/tlbex.h                 |  1 +
+ arch/mips/include/asm/traps.h                 | 23 +++++++++++++
+ arch/mips/include/asm/uasm.h                  |  2 --
+ arch/mips/kernel/cpu-probe.c                  |  1 -
+ arch/mips/kernel/cpu-r3k-probe.c              |  1 -
+ arch/mips/kernel/linux32.c                    |  1 +
+ arch/mips/kernel/machine_kexec.c              |  1 +
+ arch/mips/kernel/mips-cm.c                    |  2 +-
+ arch/mips/kernel/mips-mt-fpaff.c              |  1 +
+ arch/mips/kernel/mips-mt.c                    |  1 +
+ arch/mips/kernel/module.c                     |  3 +-
+ arch/mips/kernel/r4k-bugs64.c                 |  1 +
+ arch/mips/kernel/signal-common.h              |  3 ++
+ arch/mips/kernel/signal.c                     |  1 +
+ arch/mips/kernel/signal32.c                   |  1 +
+ arch/mips/kernel/signal_n32.c                 |  4 +--
+ arch/mips/kernel/signal_o32.c                 |  1 +
+ arch/mips/kernel/smp.c                        |  3 ++
+ arch/mips/kernel/spram.c                      |  1 +
+ arch/mips/kernel/syscall.c                    |  1 +
+ arch/mips/kernel/traps.c                      |  2 --
+ arch/mips/kernel/unaligned.c                  |  1 +
+ arch/mips/mm/c-r4k.c                          |  6 +---
+ arch/mips/mm/cache.c                          |  6 ----
+ arch/mips/mm/fault.c                          |  1 +
+ arch/mips/mm/init.c                           |  1 +
+ arch/mips/mm/pgtable-64.c                     |  2 ++
+ arch/mips/mm/tlb-r3k.c                        |  4 +--
+ arch/mips/mm/tlb-r4k.c                        |  6 ++--
+ arch/mips/power/cpu.c                         |  1 +
+ arch/mips/power/hibernate.c                   |  1 +
+ drivers/platform/mips/rs780e-acpi.c           | 12 +++----
+ 48 files changed, 145 insertions(+), 53 deletions(-)
+ create mode 100644 arch/mips/boot/compressed/decompress.h
+ create mode 100644 arch/mips/include/asm/syscalls.h
 
------BEGIN PGP SIGNATURE-----
+-- 
+2.39.2
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVtviQACgkQj4D7WH0S
-/k5RVAf9GssNsesa0iKADCcIdZ5sTs4QcBmxOLz6FhLgc0e4kZB7HPxoLP9t+VbV
-/qR0w8tyX3KPQEcdEuRc8jkmlCJczPAs5t6T7eKW3YQsYesBdW/ACDge6hnjC0Ja
-H/KmLgaZD39rcdSrOmVY4vFzo04sXVkiCqEFKUAwWs9ahF75Jru3Ei40M79JQuXm
-g87s15i2rzUqpN+LQN26ZMH5T9HYneFmPjZRoypYr7mSeewcKewmWhS3qJbJKJ3/
-1qtx6IaaO05+QJdEud87Bch0Dxa2N10XKrD4teSpvQdAy5tPTRwSFGPylQG6Zs7n
-1E7r/q9XvnhWwDxLuqUrtok8vVuEDw==
-=HURS
------END PGP SIGNATURE-----
-
---wql4bbahif3ubg5s--
