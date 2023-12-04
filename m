@@ -2,119 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A8B80319F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DC68031A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbjLDLhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:37:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45704 "EHLO
+        id S232458AbjLDLiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:38:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDLhd (ORCPT
+        with ESMTP id S230163AbjLDLiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:37:33 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B927E6;
-        Mon,  4 Dec 2023 03:37:39 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 65BA0152B;
-        Mon,  4 Dec 2023 03:38:26 -0800 (PST)
-Received: from [10.163.35.18] (unknown [10.163.35.18])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCBD23F6C4;
-        Mon,  4 Dec 2023 03:37:34 -0800 (PST)
-Message-ID: <dbcd6fa5-1385-41d7-905e-d77b536c5d33@arm.com>
-Date:   Mon, 4 Dec 2023 17:07:30 +0530
+        Mon, 4 Dec 2023 06:38:10 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D290DD5;
+        Mon,  4 Dec 2023 03:38:16 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54c79968ffbso2379854a12.3;
+        Mon, 04 Dec 2023 03:38:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701689895; x=1702294695; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/TshOAyXPwgpEMcSujG2nmniqgvta5JHY6dbp5d3/QQ=;
+        b=D1qUjECQaTH9vrawjQidP3EgYswoWAnGxoGdxp3jdgEHy5UvqpFGOpYK938/7J1z9/
+         Wqu6bXe22Wg7jVrC4DHn0L/6l8DBUS6agE8iX5Hiauz1kXvljJWXV2yuIhMm5C+cG86N
+         xsP7e445fXxp7x47IYyc+8JV77QJ+K8Ye4JM05T7ad6BiIIIbb5MTPIXyihDEW5ZCkw8
+         YBLXv0sS8lUyK1kYoVGRlUCePvSWxM4yv4WaMX0aGke/9ozUpSdUhMpwQJANC664yXMI
+         R/fNO5fzSS2I0N218KMOZKHVbFYDWMWle8qDkmMbiMVVlAmfTapbKjRsIjB30Z1jOhKG
+         xQUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701689895; x=1702294695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/TshOAyXPwgpEMcSujG2nmniqgvta5JHY6dbp5d3/QQ=;
+        b=IWue88jxOJokokIqmMNq20nybu+f6DT+Aq7nMJsq9Rt0HdKXE2Vc90LTkd7E5zlPDj
+         Dd+q/IV9m2zZuoqX/2qp3Qmw6Mbt4GDiVSHBqUT4xVrzk/wBOQaZGf75n+D46udOPFYh
+         eiRWYY7544HkaGm6lLuuGg90OiAXNa4lmZEFvH9Xr7AY9XBozbuV/Rubt4M1bwYyiBQw
+         hD+lwaiUHcMbC5FK2rNNYie7ilpFCBaWu8TaZzDrbKh6GEW+1zAPMRXmg2k8KPwrZSsF
+         DKhHUjUbwyvqfPK0n7AIprGZcxRcLTF8Btlr8JVb01GMoQ5T/pKFoRRiXWaO1CLwcoE3
+         QkUw==
+X-Gm-Message-State: AOJu0YyQqj2uwRJM1KZlv1qfF7MvBFCOVb1mdBFp/QBrcZwrh8vM8ddM
+        GcQx1JMsjm7oZzWTGr7UseTeKJYNuqJekZ0pOcm/6xYEpTw=
+X-Google-Smtp-Source: AGHT+IFhQPSht53hH+KJU08jzHUqjQ69yCeOObv98M4zwamnkX/04Bw9md0GCg5VFBhdebBH9UpS4WWiOKD4RY1hgng=
+X-Received: by 2002:a05:6402:28a4:b0:54c:e4d9:758b with SMTP id
+ eg36-20020a05640228a400b0054ce4d9758bmr337039edb.34.1701689895032; Mon, 04
+ Dec 2023 03:38:15 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/7] coresight: replicator: Move ACPI support from AMBA
- driver to platform driver
-Content-Language: en-US
-To:     James Clark <james.clark@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
- <20231201062053.1268492-2-anshuman.khandual@arm.com>
- <20231201123515.gntwvhsxd5nzojn7@bogus>
- <58882cab-89ce-4554-aee4-24e70d82fc09@arm.com>
- <b9f407c7-62af-47e1-bea9-c494cdfed1e9@arm.com>
- <2aec13e9-4ae3-676f-1ba8-c9e9a9241063@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <2aec13e9-4ae3-676f-1ba8-c9e9a9241063@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231204033549.2020289-1-wenst@chromium.org>
+In-Reply-To: <20231204033549.2020289-1-wenst@chromium.org>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Mon, 4 Dec 2023 13:38:02 +0200
+Message-ID: <CAEnQRZBseYM8FO+fJND6pxhDrH+TFc8k6Aoj4ScNwXaz+Whmng@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: SOF: Move sof_of_machine_select() to core.c from sof-of-dev.c
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 4, 2023 at 5:46=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> wr=
+ote:
+>
+> This reverts commit 014fdeb0d747304111cfecf93df4407c1a0c80db.
+>
+> Commit 014fdeb0d747 ("ASoC: SOF: Move sof_of_machine_select() to
+> sof-of-dev.c from sof-audio.c") caused a circular dependency between
+> the snd_sof and snd_sof_of modules:
+>
+>         depmod: ERROR: Cycle detected: snd_sof -> snd_sof_of -> snd_sof
+>         depmod: ERROR: Found 2 modules in dependency cycles!
+>
+> Move the function back with sof_machine_select().
+>
+> Fixes: 014fdeb0d747 ("ASoC: SOF: Move sof_of_machine_select() to sof-of-d=
+ev.c from sof-audio.c")
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
+Thanks for fixing this.
 
-On 12/4/23 15:27, James Clark wrote:
-> 
-> On 04/12/2023 04:48, Anshuman Khandual wrote:
->>
->> On 12/4/23 09:56, Anshuman Khandual wrote:
->>>
->>> On 12/1/23 18:05, Sudeep Holla wrote:
->>>> On Fri, Dec 01, 2023 at 11:50:47AM +0530, Anshuman Khandual wrote:
->>>>> Add support for the dynamic replicator device in the platform driver, which
->>>>> can then be used on ACPI based platforms. This change would now allow
->>>>> runtime power management for repliacator devices on ACPI based systems.
->>>>>
->>>>> The driver would try to enable the APB clock if available. Also, rename the
->>>>> code to reflect the fact that it now handles both static and dynamic
->>>>> replicators.
->>>>>
->>>>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
->>>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
->>>> Except the minor nit below which may apply also for few other patches
->>>> in the series
->>>>
->>>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
->>>> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
->>>>
->>>> [...]
->>>>
->>>>> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
->>>>> index b6be73034996..64de0bee02ec 100644
->>>>> --- a/drivers/hwtracing/coresight/coresight-replicator.c
->>>>> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
->>>>> @@ -38,6 +38,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
->>>>>  struct replicator_drvdata {
->>>>>  	void __iomem		*base;
->>>>>  	struct clk		*atclk;
->>>>> +	struct clk		*pclk;
->>>> [minor nit] Perhaps can be documented as well ?
->>> Sure, will add the following comment above the structure.
->>>
->>> @pclk:    optional clock for the core parts of the replicator.
->> My bad, this will be the following instead.
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
->> index 64de0bee02ec..44b9a77ec8aa 100644
->> --- a/drivers/hwtracing/coresight/coresight-replicator.c
->> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
->> @@ -31,6 +31,7 @@ DEFINE_CORESIGHT_DEVLIST(replicator_devs, "replicator");
->>   * @base:      memory mapped base address for this component. Also indicates
->>   *             whether this one is programmable or not.
->>   * @atclk:     optional clock for the core parts of the replicator.
->> + * @pclk:      APB clock if present, otherwise NULL
->>   * @csdev:     component vitals needed by the framework
->>   * @spinlock:  serialize enable/disable operations.
->>   * @check_idfilter_val: check if the context is lost upon clock removal.
->>
->> I will update replicator, tpiu, tmc, and stm devices.
->>
-> funnel is missing it as well. If you build with W=1 it shows up.
-
-Updated, done.
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
