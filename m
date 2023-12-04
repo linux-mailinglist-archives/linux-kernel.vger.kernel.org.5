@@ -2,48 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FE380414C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:06:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75CA4804157
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:09:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbjLDWF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:05:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
+        id S231479AbjLDWJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234252AbjLDWFt (ORCPT
+        with ESMTP id S229847AbjLDWJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:05:49 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2933A130;
-        Mon,  4 Dec 2023 14:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701727549;
-        bh=u8QKEqgw1lWdKU3HMKBvExEXQRW3gD1GYo/TOI2dnVQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rYNVpU5gDOwPj9MLTqFCXrSxqDVlrr9QhKy+BhH5e/DSmjhlxnItTHuaSoeyW+BHb
-         VidrYmogBlsIB6T+n7kunyclCOJEzHs49cWfQ1QDCQcbMJGg4X3Ijf1vZ6PDC/DTmq
-         KDyDQ2DQlu/ZlT9omhmV1r8XIyWIk8equsFbajr+/jkFDQeYWJrOPmAFXEoBJjj0Sn
-         gVXWo/th/EmdNJgN02axPWySgLa+eAVgdFNdFzp+qXNclR3BNhvX4U/g5VRqxp1c+7
-         1WF94bCMmwIjmvmHqZqLhkfC+vWkR4b4NxsvcCN/fB5Njkjg1fPTHCBAaYtcGILNDu
-         t0EVpllixZ08Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Skd5m74Vlz4x5M;
-        Tue,  5 Dec 2023 09:05:48 +1100 (AEDT)
-Date:   Tue, 5 Dec 2023 09:05:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the asm-generic tree with the mm tree
-Message-ID: <20231205090546.7dffe3aa@canb.auug.org.au>
+        Mon, 4 Dec 2023 17:09:43 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09FFFF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:09:49 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5c6910e93e3so123342a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 14:09:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1701727789; x=1702332589; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N7YVZRS1Yk2p3iV3hbb4MrgXwpXbi4TeT5VGkU/u+Jk=;
+        b=KqMZiWIu6Huk1KRv62/VLR70dCPjpFds0G8v2g0RW8hC/DSworJnr6ZLlYFO2j3c88
+         hYt0tr1acI6wUHCWFiu7iY1jpRvkg1u8+yu9FZd5fuC8Zf+jlvjquBCuceBwUmcx8e6C
+         tQxq1a6mza04HO9xXTeS620tIojtLyJHI29WYy2ChNCSz01NTw+772Nd0CqqV+eXo5/v
+         WPYcaPYgTu3/7VJW0ooRbRSH56JUPEQLJeN/ZqZ2X8+G/ImlxtpTe2tJ/rKD6wGGTPU/
+         MqFenhCRgBmedtBNgv8emQ5Tjr/YO+/jCl1UcYKdG7J4J/STnzMJ0jN25nDqFX/C4VI/
+         Xz1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701727789; x=1702332589;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N7YVZRS1Yk2p3iV3hbb4MrgXwpXbi4TeT5VGkU/u+Jk=;
+        b=izBv6GPcvYq8M0o0YkSEqZGMQly6ejSNHmXizYPS9X41GPJtCLw7T52itAxilpUGmz
+         5hgvFY9ETLdiwsI1UaRnZEhviEPor6v+9sLWKzDG2p+wJk4z5OcPxffR5tmmsM9mOWtK
+         yD+/cx8GVedZQ7PvW3im+X+E0JNk5uOveeAJQQLsHqR6P2yiS9e3IZAFWUMCFrycSXHy
+         ubVk0qxeIib8gGtMSlSMgRaosxKA5n6uttgV1NtW69Jt94KOShuPtgRSeBgKL83XQGu8
+         b28W6SctZ20WWYJXeAFd+osWiLpds1hN8FsHNLnvmpqvOWijoPJ1rrfdpKdoOvjHO9At
+         xLrg==
+X-Gm-Message-State: AOJu0YwhHUQBGDbw7ENNHENRNUM3jYZeDz8ZXH+BGEOo8ri4zAT4Tipz
+        zOSRbYpvjcJNbu8EuunAq7mEDg==
+X-Google-Smtp-Source: AGHT+IHDv1b42RKXKN4tRifZv0mEX5EckA+D3oEFHeJfjju4L9UJaftPOWecVThY8YBY1KMQIFUJ4A==
+X-Received: by 2002:a17:903:234a:b0:1d0:b693:ae30 with SMTP id c10-20020a170903234a00b001d0b693ae30mr2493966plh.6.1701727789078;
+        Mon, 04 Dec 2023 14:09:49 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id t4-20020a170902bc4400b001bf11cf2e21sm5844131plz.210.2023.12.04.14.09.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 14:09:46 -0800 (PST)
+Message-ID: <a070b6bd-0092-405e-99d2-00002596c0bc@kernel.dk>
+Date:   Mon, 4 Dec 2023 15:09:44 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VBYqBJXGz5xwbMxQnhHuZk9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] Allow a kthread to declare that it calls
+ task_work_run()
+Content-Language: en-US
+To:     NeilBrown <neilb@suse.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+References: <20231204014042.6754-1-neilb@suse.de>
+ <20231204014042.6754-2-neilb@suse.de>
+ <e9a1cfed-42e9-4174-bbb3-1a3680cf6a5c@kernel.dk>
+ <170172377302.7109.11739406555273171485@noble.neil.brown.name>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <170172377302.7109.11739406555273171485@noble.neil.brown.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,87 +86,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VBYqBJXGz5xwbMxQnhHuZk9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 12/4/23 2:02 PM, NeilBrown wrote:
+> It isn't clear to me what _GPL is appropriate, but maybe the rules
+> changed since last I looked..... are there rules?
+> 
+> My reasoning was that the call is effectively part of the user-space
+> ABI.  A user-space process can call this trivially by invoking any
+> system call.  The user-space ABI is explicitly a boundary which the GPL
+> does not cross.  So it doesn't seem appropriate to prevent non-GPL
+> kernel code from doing something that non-GPL user-space code can
+> trivially do.
 
-Hi all,
+By that reasoning, basically everything in the kernel should be non-GPL
+marked. And while task_work can get used by the application, it happens
+only indirectly or implicitly. So I don't think this reasoning is sound
+at all, it's not an exported ABI or API by itself.
 
-Today's linux-next merge of the asm-generic tree got a conflict in:
+For me, the more core of an export it is, the stronger the reason it
+should be GPL. FWIW, I don't think exporting task_work functionality is
+a good idea in the first place, but if there's a strong reason to do so,
+it should most certainly not be accessible to non-GPL modules. Basically
+NO new export should be non-GPL.
 
-  arch/mips/include/asm/traps.h
+-- 
+Jens Axboe
 
-between commit:
-
-  6b281b05cbcc ("mips: add missing declarations for trap handlers")
-
-from the mm tree and commit:
-
-  23f8c1823bd4 ("arch: add do_page_fault prototypes")
-
-from the asm-generic tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/mips/include/asm/traps.h
-index 2c2b26f1e464,d4d9f8a8fdea..000000000000
---- a/arch/mips/include/asm/traps.h
-+++ b/arch/mips/include/asm/traps.h
-@@@ -39,28 -39,7 +39,30 @@@ extern char except_vec_nmi[]
-  	register_nmi_notifier(&fn##_nb);				\
-  })
- =20
- +asmlinkage void do_ade(struct pt_regs *regs);
- +asmlinkage void do_be(struct pt_regs *regs);
- +asmlinkage void do_ov(struct pt_regs *regs);
- +asmlinkage void do_fpe(struct pt_regs *regs, unsigned long fcr31);
- +asmlinkage void do_bp(struct pt_regs *regs);
- +asmlinkage void do_tr(struct pt_regs *regs);
- +asmlinkage void do_ri(struct pt_regs *regs);
- +asmlinkage void do_cpu(struct pt_regs *regs);
- +asmlinkage void do_msa_fpe(struct pt_regs *regs, unsigned int msacsr);
- +asmlinkage void do_msa(struct pt_regs *regs);
- +asmlinkage void do_mdmx(struct pt_regs *regs);
- +asmlinkage void do_watch(struct pt_regs *regs);
- +asmlinkage void do_mcheck(struct pt_regs *regs);
- +asmlinkage void do_mt(struct pt_regs *regs);
- +asmlinkage void do_dsp(struct pt_regs *regs);
- +asmlinkage void do_reserved(struct pt_regs *regs);
- +asmlinkage void do_ftlb(void);
- +asmlinkage void do_gsexc(struct pt_regs *regs, u32 diag1);
- +asmlinkage void do_daddi_ov(struct pt_regs *regs);
- +
- +asmlinkage void cache_parity_error(void);
- +asmlinkage void ejtag_exception_handler(struct pt_regs *regs);
- +asmlinkage void __noreturn nmi_exception_handler(struct pt_regs *regs);
-+ asmlinkage void do_page_fault(struct pt_regs *regs,
-+ 	unsigned long write, unsigned long address);
- =20
-  #endif /* _ASM_TRAPS_H */
-
---Sig_/VBYqBJXGz5xwbMxQnhHuZk9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVuTToACgkQAVBC80lX
-0GxyXAf/Z9tKTD17hXu4lNOF7mgeQmQ87sTn6cPQMIbZ0CfAGBbNVpWC3mirSzEB
-gOOUxEvgiSLEv36vioe0StTQ73olGDc0by2m7GhXGb0g9pTG9xAxUUFW6AHnhMLU
-MoDEORA+Ns1IkXmkB6ECsu4dm2dj1lAYU6eq7KxjFgUOdgWV8uGvMhqONxCOMHCr
-phb19Tny/PZXnDiDM1ADXx2+Csz+P6K0posY7v96dM15VbL4UyloKWxwbCA4o+2i
-+VR6lDQ+Mdf2qZPU3z0kg9cekp9Y26tns58mnLwE91gIzCoRwfJYdDyIr/+5iY5z
-WRpT6zggimGtMevFmdQ5IOwrrZt0GQ==
-=W7Pp
------END PGP SIGNATURE-----
-
---Sig_/VBYqBJXGz5xwbMxQnhHuZk9--
