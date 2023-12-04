@@ -2,499 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7B780383B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB05080383C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234589AbjLDPCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:02:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        id S233353AbjLDPDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:03:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234341AbjLDPC3 (ORCPT
+        with ESMTP id S231952AbjLDPDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:02:29 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE161FF6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:01:54 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40b595bf5d2so47834245e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 07:01:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701702112; x=1702306912; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YyQjwB41P2sJ7VB94p2BF38IdSB862nJMYo7d9Whe6g=;
-        b=juOx9fdGtYkleCLFcGqRC804nUPXMyWum1tO3Ogc0Ol9QHDLy+1J5rtFB5NtofkaGg
-         MGsgWZQp5LWBYacVhBQzv58DfD/3ztkNNJJzmaQqOltIh1EPf18ugpYt4Pz2WKN8FjiL
-         tshpuJHBV4auEcRq1J28HdMrCwTf0MzdztxqJT8K7hFyE8CrM6+/PhqpJAqHOAwQftCY
-         gmBk/ZCCZhsHIxHM46lLlD5K4uKVCBFcsFzvKbNWlrNDts1i83fnB2UrbC02uz74p/SX
-         D+pdYG9kyBaRMIwfNvzxD0taFHJtgEloW9R+6UvlgOfvquMT1QvXE0pS7P8JxaUVLay/
-         kHow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701702112; x=1702306912;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YyQjwB41P2sJ7VB94p2BF38IdSB862nJMYo7d9Whe6g=;
-        b=llIwNq5tpNpElUmq2NA3iM1JgZgxAvDPfLNapOq/uTkcLS+/7eqto7rVapalTwYrpR
-         XT+SoHetx/aVQlI1SrluGEFNHNFNJxJD0n6Zx0tWnP3loP2NTiEIJ8LXhdAv4sZm3/vX
-         lyKq+B5ajf3Y/XSedKU9zby2cYVkF7pgI+xKg/D2UYgJhw63kyb5woS7kU+GJzjzGAh4
-         LChOqEfpjARkH7Hmfkc6kXln5IJpZcMnL5ZzdEZJaz9mDKB+V77JaQ5uNa4hdtDkSdF8
-         z0SnYeuXGu6ExN+PykFCaxTjVWZjCouD2PJpKXTnfx3w+kcE6ao2HWYp4AKykmdta9xx
-         cR4Q==
-X-Gm-Message-State: AOJu0YwGfYur4Mq+k1CC6635PBraXuwqr1CM10hIZKLfA9EQcjWBllx5
-        1GfmVSMrU236rupXWQHvXj2TTjU2J7omzmi73jk=
-X-Google-Smtp-Source: AGHT+IHyo0t7T20wG/OQ34j1hymKytxT/IaT7sIbgz5CI0YAHaZEY7q/nVfZhDLlk0coFUE4WfhfCg==
-X-Received: by 2002:a7b:cb10:0:b0:40b:5e21:c5ca with SMTP id u16-20020a7bcb10000000b0040b5e21c5camr1836083wmj.152.1701702112501;
-        Mon, 04 Dec 2023 07:01:52 -0800 (PST)
-Received: from [127.0.1.1] ([82.77.85.67])
-        by smtp.gmail.com with ESMTPSA id n16-20020a05600c501000b00407b93d8085sm19041661wmr.27.2023.12.04.07.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 07:01:50 -0800 (PST)
-From:   Abel Vesa <abel.vesa@linaro.org>
-Date:   Mon, 04 Dec 2023 17:01:37 +0200
-Subject: [PATCH v2 2/2] phy: qcom: edp: Add X1E80100 eDP and DP PHYs
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231122-phy-qualcomm-edp-x1e80100-v2-2-114e789f0195@linaro.org>
-References: <20231122-phy-qualcomm-edp-x1e80100-v2-0-114e789f0195@linaro.org>
-In-Reply-To: <20231122-phy-qualcomm-edp-x1e80100-v2-0-114e789f0195@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13105; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=yzAR56f2Lp3eXFOZtLKu0fCRHwuWB9D2QAmcoaCDeTo=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlbenYhIxrAHpVDG9QakDhCebS72UbLgrjJAVIN
- rlr0MuvtXuJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZW3p2AAKCRAbX0TJAJUV
- Vo7VD/0fIPGe8wCw3bUIFKYNteS3np8AqfTrU/IlayI5VLA3R0pcFKImOWUIK6ALI4wmeC9bv72
- jHTQuzQzS7BQwOUfF9BpMuYRuEC5NjexYHYcmhfVhyluy1ErnIIMxD9lgpXiP4JKT6IezklKVmt
- 9qRSt880HNLUKf+1+V/RMtKMr22JK6VMWMBaOivbWae4RyeWm/GLOn+RGvxaDWY5O6tqStwiaV2
- 4mIK8TkxCxHLZLkhClqKn/Uh0uuhk09A6tOwjuEw9XkjiOmmWBgsO+yy9JUMRLV5yF2qTTcRq3M
- RyNVTQjrJDXBUSyQQTdHsdtjNqfb3Vm+C/PCdn7uy4ogXXe4t8RtY3FcARfMqSaO40Rphkn9BRG
- DfnLrIPZGtedqT2WQ4Uk48iFgqejb/kN6Kc9jQQ9K+pwzUW1SnTdgGfC1L08s4uBLLGb3Sca5W7
- 5bnx5J7eTDNcOGR5x/Bka/vQN3smTEXq8Yd5dPkCdgc/3CQTyZG4UdxBsVR2w1eid4xFqqXePn/
- Fd2fk+Rv+AJV1ipEshsujvkj4/pHTCbGZx7ddV4gpVujfGuI45BLfaZnSUIdpH7TjLbCv/32cTQ
- /mGv9xZQLSyeTdmz6vefuDDmCxe4Pzmou3LlNxjlUEqxVq5lAh8OywjlDJe5Z7QACwkH/kpISMy
- YVuZB1pS8kRWbkA==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 10:03:46 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEDAC4;
+        Mon,  4 Dec 2023 07:03:51 -0800 (PST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4Exrmi003821;
+        Mon, 4 Dec 2023 15:02:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=1M+Lb7RENQgWWhXI/S8gGx7CVn38cCrH9gi8fM6ANxk=;
+ b=mRF4r2OCNy2A3Q36eSmIFv+fGgfC9k6w0Z53J0FiB9WvOJvflQA/5EGTKe8kqv16IyN7
+ 9SsQL8wx670mRgkFNiNW3bFss2Zy0ZRV5QVvk7XkcE5K7zOCcfeOcUpD/VsDvWjP1lk1
+ u48AIIdoUJbJ56R9xW+Y87T9IFnMHdCii/WvWwPugqFpqW9SjgG+fPzn/WDboDhea2TR
+ bE87HNx6QaFADbj1UD8YgNnOjcJCUPMn3+Sk9HeChQAWkooBJXsv52i/82IHm6KVIRq5
+ UINrSGEXdlxYeUZVSjA0MXaEfHX8t1hvyZAASEI4ScB+sZqcxofgtFXoxrRcfglCqSoE OA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ush1602tm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 15:02:03 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4F0Nt2005079;
+        Mon, 4 Dec 2023 15:02:03 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ush1602sh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 15:02:03 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4EJf6O017843;
+        Mon, 4 Dec 2023 15:02:01 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8awk6g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 15:02:01 +0000
+Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
+        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4F20MM31392126
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Dec 2023 15:02:01 GMT
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D247D58055;
+        Mon,  4 Dec 2023 15:02:00 +0000 (GMT)
+Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 59CD85803F;
+        Mon,  4 Dec 2023 15:01:58 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.81.193])
+        by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Dec 2023 15:01:58 +0000 (GMT)
+Message-ID: <99c92965c2b2c49253967d56f2a4e5f1d2c881f2.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
+ blob for integrity_iint_cache
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Mon, 04 Dec 2023 10:01:57 -0500
+In-Reply-To: <5f441267b6468b98e51a08d247a7ae066a60ff0c.camel@huaweicloud.com>
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+         <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+         <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
+         <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
+         <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
+         <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
+         <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
+         <CAHC9VhROnfBoaOy2MurdSpcE_poo_6Qy9d2U3g6m2NRRHaqz4Q@mail.gmail.com>
+         <5f441267b6468b98e51a08d247a7ae066a60ff0c.camel@huaweicloud.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: WLTcmefykaHbDOEIiLJwsS3WymVSyxpp
+X-Proofpoint-GUID: xRtCrWQrHAe-uEV4KEeAH2kUbps7vgkn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_13,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ spamscore=0 bulkscore=0 suspectscore=0 lowpriorityscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040112
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm X1E80100 platform has a number of eDP and DP PHY instances,
-add support for these.
+On Mon, 2023-12-04 at 14:26 +0100, Roberto Sassu wrote:
+> On Thu, 2023-11-30 at 11:34 -0500, Paul Moore wrote:
+> > On Wed, Nov 29, 2023 at 1:47 PM Roberto Sassu
+> > <roberto.sassu@huaweicloud.com> wrote:
+> > > On 11/29/2023 6:22 PM, Paul Moore wrote:
+> > > > On Wed, Nov 29, 2023 at 7:28 AM Roberto Sassu
+> > > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > > 
+> > > > > On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
+> > > > > > On Mon, Nov 20, 2023 at 3:16 AM Roberto Sassu
+> > > > > > <roberto.sassu@huaweicloud.com> wrote:
+> > > > > > > On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
+> > > > > > > > On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+> > > > > > > > > 
+> > > > > > > > > Before the security field of kernel objects could be shared among LSMs with
+> > > > > > > > > the LSM stacking feature, IMA and EVM had to rely on an alternative storage
+> > > > > > > > > of inode metadata. The association between inode metadata and inode is
+> > > > > > > > > maintained through an rbtree.
+> > > > > > > > > 
+> > > > > > > > > Because of this alternative storage mechanism, there was no need to use
+> > > > > > > > > disjoint inode metadata, so IMA and EVM today still share them.
+> > > > > > > > > 
+> > > > > > > > > With the reservation mechanism offered by the LSM infrastructure, the
+> > > > > > > > > rbtree is no longer necessary, as each LSM could reserve a space in the
+> > > > > > > > > security blob for each inode. However, since IMA and EVM share the
+> > > > > > > > > inode metadata, they cannot directly reserve the space for them.
+> > > > > > > > > 
+> > > > > > > > > Instead, request from the 'integrity' LSM a space in the security blob for
+> > > > > > > > > the pointer of inode metadata (integrity_iint_cache structure). The other
+> > > > > > > > > reason for keeping the 'integrity' LSM is to preserve the original ordering
+> > > > > > > > > of IMA and EVM functions as when they were hardcoded.
+> > > > > > > > > 
+> > > > > > > > > Prefer reserving space for a pointer to allocating the integrity_iint_cache
+> > > > > > > > > structure directly, as IMA would require it only for a subset of inodes.
+> > > > > > > > > Always allocating it would cause a waste of memory.
+> > > > > > > > > 
+> > > > > > > > > Introduce two primitives for getting and setting the pointer of
+> > > > > > > > > integrity_iint_cache in the security blob, respectively
+> > > > > > > > > integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
+> > > > > > > > > the code more understandable, as they directly replace rbtree operations.
+> > > > > > > > > 
+> > > > > > > > > Locking is not needed, as access to inode metadata is not shared, it is per
+> > > > > > > > > inode.
+> > > > > > > > > 
+> > > > > > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > > > > > > > Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+> > > > > > > > > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > > > > > > > > ---
+> > > > > > > > >   security/integrity/iint.c      | 71 +++++-----------------------------
+> > > > > > > > >   security/integrity/integrity.h | 20 +++++++++-
+> > > > > > > > >   2 files changed, 29 insertions(+), 62 deletions(-)
+> > > > > > > > > 
+> > > > > > > > > diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+> > > > > > > > > index 882fde2a2607..a5edd3c70784 100644
+> > > > > > > > > --- a/security/integrity/iint.c
+> > > > > > > > > +++ b/security/integrity/iint.c
+> > > > > > > > > @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
+> > > > > > > > >      return 0;
+> > > > > > > > >   }
+> > > > > > > > > 
+> > > > > > > > > +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
+> > > > > > > > > +   .lbs_inode = sizeof(struct integrity_iint_cache *),
+> > > > > > > > > +};
+> > > > > > > > 
+> > > > > > > > I'll admit that I'm likely missing an important detail, but is there
+> > > > > > > > a reason why you couldn't stash the integrity_iint_cache struct
+> > > > > > > > directly in the inode's security blob instead of the pointer?  For
+> > > > > > > > example:
+> > > > > > > > 
+> > > > > > > >    struct lsm_blob_sizes ... = {
+> > > > > > > >      .lbs_inode = sizeof(struct integrity_iint_cache),
+> > > > > > > >    };
+> > > > > > > > 
+> > > > > > > >    struct integrity_iint_cache *integrity_inode_get(inode)
+> > > > > > > >    {
+> > > > > > > >      if (unlikely(!inode->isecurity))
+> > > > > > > >        return NULL;
+> > > > > > > >      return inode->i_security + integrity_blob_sizes.lbs_inode;
+> > > > > > > >    }
+> > > > > > > 
+> > > > > > > It would increase memory occupation. Sometimes the IMA policy
+> > > > > > > encompasses a small subset of the inodes. Allocating the full
+> > > > > > > integrity_iint_cache would be a waste of memory, I guess?
+> > > > > > 
+> > > > > > Perhaps, but if it allows us to remove another layer of dynamic memory
+> > > > > > I would argue that it may be worth the cost.  It's also worth
+> > > > > > considering the size of integrity_iint_cache, while it isn't small, it
+> > > > > > isn't exactly huge either.
+> > > > > > 
+> > > > > > > On the other hand... (did not think fully about that) if we embed the
+> > > > > > > full structure in the security blob, we already have a mutex available
+> > > > > > > to use, and we don't need to take the inode lock (?).
+> > > > > > 
+> > > > > > That would be excellent, getting rid of a layer of locking would be significant.
+> > > > > > 
+> > > > > > > I'm fully convinced that we can improve the implementation
+> > > > > > > significantly. I just was really hoping to go step by step and not
+> > > > > > > accumulating improvements as dependency for moving IMA and EVM to the
+> > > > > > > LSM infrastructure.
+> > > > > > 
+> > > > > > I understand, and I agree that an iterative approach is a good idea, I
+> > > > > > just want to make sure we keep things tidy from a user perspective,
+> > > > > > i.e. not exposing the "integrity" LSM when it isn't required.
+> > > > > 
+> > > > > Ok, I went back to it again.
+> > > > > 
+> > > > > I think trying to separate integrity metadata is premature now, too
+> > > > > many things at the same time.
+> > > > 
+> > > > I'm not bothered by the size of the patchset, it is more important
+> > > > that we do The Right Thing.  I would like to hear in more detail why
+> > > > you don't think this will work, I'm not interested in hearing about
+> > > > difficult it may be, I'm interested in hearing about what challenges
+> > > > we need to solve to do this properly.
+> > > 
+> > > The right thing in my opinion is to achieve the goal with the minimal
+> > > set of changes, in the most intuitive way.
+> > 
+> > Once again, I want to stress that I don't care about the size of the
+> > change, the number of patches in a patchset, etc.  While it's always
+> > nice to be able to minimize the number of changes in a patch/patchset,
+> > that is secondary to making sure we are doing the right thing over the
+> > long term.  This is especially important when we are talking about
+> > things that are user visible.
+> > 
+> > > Until now, there was no solution that could achieve the primary goal of
+> > > this patch set (moving IMA and EVM to the LSM infrastructure) and, at
+> > > the same time, achieve the additional goal you set of removing the
+> > > 'integrity' LSM.
+> > 
+> > We need to stop thinking about the "integrity" code as a LSM, it isn't
+> > a LSM.  It's a vestigial implementation detail that was necessary back
+> > when there could only be one LSM active at a time and there was a
+> > desire to have IMA/EVM active in conjunction with one of the LSMs,
+> > i.e. Smack, SELinux, etc.
+> > 
+> > IMA and EVM are (or will be) LSMs, "integrity" is not.  I recognize
+> > that eliminating the need for the "integrity" code is a relatively new
+> > addition to this effort, but that is only because I didn't properly
+> > understand the relationship between IMA, EVM, and the "integrity" code
+> > until recently.  The elimination of the shared "integrity" code is
+> > consistent with promoting IMA and EVM as full LSMs, if there is core
+> > functionality that cannot be split up into the IMA and/or EVM LSMs
+> > then we need to look at how to support that without exposing that
+> > implementation detail/hack to userspace.  Maybe that means direct
+> > calls between IMA and EVM, maybe that means preserving some of the
+> > common integrity code hidden from userspace, maybe that means adding
+> > functionality to the LSM layer, maybe that means something else?
+> > Let's think on this to come up with something that we can all accept
+> > as a long term solution instead of just doing the quick and easy
+> > option.
+> 
+> If the result of this patch set should be that IMA and EVM become
+> proper LSMs without the shared integrity layer, instead of collapsing
+> all changes in this patch set, I think we should first verify if IMA
+> and EVM can be really independent. Once we guarantee that, we can
+> proceed making the proper LSMs.
+> 
+> These are the changes I have in mind:
+> 
+> 1) Fix evm_verifyxattr(), and make it work without integrity_iint_cache
+> 2) Remove the integrity_iint_cache parameter from evm_verifyxattr(),
+>    since the other callers are not going to use it
+> 3) Create an internal function with the original parameters to be used
+>    by IMA
+> 4) Introduce evm_post_path_mknod(), which similarly to
+>    ima_post_path_mknod(), sets IMA_NEW_FILE for new files
+> 5) Add hardcoded call to evm_post_path_mknod() after
+>    ima_post_path_mknod() in security.c
+> 
+> If we think that this is good enough, we proceed with the move of IMA
+> and EVM functions to the LSM infrastructure (patches v7 19-21).
+> 
+> The next patches are going to be similar to patches v6 22-23, but
+> unlike those, their goal would be simply to split metadata, not to make
+> IMA and EVM independent, which at this point has been addressed
+> separately in the prerequisite patches.
+> 
+> The final patch is to remove the 'integrity' LSM and the integrity
+> metadata management code, which now is not used anymore.
+> 
+> Would that work?
 
-Co-developed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-edp.c | 230 +++++++++++++++++++++++++++++++++---
- 1 file changed, 212 insertions(+), 18 deletions(-)
+Sounds good to me.
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
-index 8e5078304646..702d49c18044 100644
---- a/drivers/phy/qualcomm/phy-qcom-edp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-edp.c
-@@ -23,6 +23,11 @@
- 
- #include "phy-qcom-qmp.h"
- 
-+enum {
-+	QSERDES_V4,
-+	QSERDES_V6,
-+};
-+
- /* EDP_PHY registers */
- #define DP_PHY_CFG                              0x0010
- #define DP_PHY_CFG_1                            0x0014
-@@ -70,6 +75,7 @@
- 
- struct qcom_edp_cfg {
- 	bool is_dp;
-+	int qserdes_version;
- 
- 	/* DP PHY swing and pre_emphasis tables */
- 	const u8 (*swing_hbr_rbr)[4][4];
-@@ -94,7 +100,7 @@ struct qcom_edp {
- 
- 	struct phy_configure_opts_dp dp_opts;
- 
--	struct clk_bulk_data clks[2];
-+	struct clk_bulk_data clks[3];
- 	struct regulator_bulk_data supplies[2];
- };
- 
-@@ -126,8 +132,18 @@ static const u8 dp_pre_emp_hbr2_hbr3[4][4] = {
- 	{ 0x04, 0xff, 0xff, 0xff }
- };
- 
--static const struct qcom_edp_cfg dp_phy_cfg = {
-+static const struct qcom_edp_cfg dp_v4_phy_cfg = {
-+	.is_dp = true,
-+	.qserdes_version = QSERDES_V4,
-+	.swing_hbr_rbr = &dp_swing_hbr_rbr,
-+	.swing_hbr3_hbr2 = &dp_swing_hbr2_hbr3,
-+	.pre_emphasis_hbr_rbr = &dp_pre_emp_hbr_rbr,
-+	.pre_emphasis_hbr3_hbr2 = &dp_pre_emp_hbr2_hbr3,
-+};
-+
-+static const struct qcom_edp_cfg dp_v6_phy_cfg = {
- 	.is_dp = true,
-+	.qserdes_version = QSERDES_V6,
- 	.swing_hbr_rbr = &dp_swing_hbr_rbr,
- 	.swing_hbr3_hbr2 = &dp_swing_hbr2_hbr3,
- 	.pre_emphasis_hbr_rbr = &dp_pre_emp_hbr_rbr,
-@@ -162,8 +178,18 @@ static const u8 edp_pre_emp_hbr2_hbr3[4][4] = {
- 	{ 0x00, 0xff, 0xff, 0xff }
- };
- 
--static const struct qcom_edp_cfg edp_phy_cfg = {
-+static const struct qcom_edp_cfg edp_v4_phy_cfg = {
-+	.is_dp = false,
-+	.qserdes_version = QSERDES_V4,
-+	.swing_hbr_rbr = &edp_swing_hbr_rbr,
-+	.swing_hbr3_hbr2 = &edp_swing_hbr2_hbr3,
-+	.pre_emphasis_hbr_rbr = &edp_pre_emp_hbr_rbr,
-+	.pre_emphasis_hbr3_hbr2 = &edp_pre_emp_hbr2_hbr3,
-+};
-+
-+static const struct qcom_edp_cfg edp_v6_phy_cfg = {
- 	.is_dp = false,
-+	.qserdes_version = QSERDES_V6,
- 	.swing_hbr_rbr = &edp_swing_hbr_rbr,
- 	.swing_hbr3_hbr2 = &edp_swing_hbr2_hbr3,
- 	.pre_emphasis_hbr_rbr = &edp_pre_emp_hbr_rbr,
-@@ -190,7 +216,10 @@ static int qcom_edp_phy_init(struct phy *phy)
- 	       edp->edp + DP_PHY_PD_CTL);
- 
- 	/* Turn on BIAS current for PHY/PLL */
--	writel(0x17, edp->pll + QSERDES_V4_COM_BIAS_EN_CLKBUFLR_EN);
-+	if (cfg->qserdes_version == QSERDES_V6)
-+		writel(0x1f, edp->pll + QSERDES_V6_COM_PLL_BIAS_EN_CLK_BUFLR_EN);
-+	else
-+		writel(0x17, edp->pll + QSERDES_V4_COM_BIAS_EN_CLKBUFLR_EN);
- 
- 	writel(DP_PHY_PD_CTL_PSR_PWRDN, edp->edp + DP_PHY_PD_CTL);
- 	msleep(20);
-@@ -261,7 +290,10 @@ static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configur
- 	if (swing == 0xff || emph == 0xff)
- 		return -EINVAL;
- 
--	ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-+	if (cfg->qserdes_version == QSERDES_V6)
-+		ldo_config = 0x91;
-+	else
-+		ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
- 
- 	writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
- 	writel(swing, edp->tx0 + TXn_TX_DRV_LVL);
-@@ -288,7 +320,7 @@ static int qcom_edp_phy_configure(struct phy *phy, union phy_configure_opts *opt
- 	return ret;
- }
- 
--static int qcom_edp_configure_ssc(const struct qcom_edp *edp)
-+static int qcom_edp_configure_ssc_v4(const struct qcom_edp *edp)
- {
- 	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
- 	u32 step1;
-@@ -322,7 +354,41 @@ static int qcom_edp_configure_ssc(const struct qcom_edp *edp)
- 	return 0;
- }
- 
--static int qcom_edp_configure_pll(const struct qcom_edp *edp)
-+static int qcom_edp_configure_ssc_v6(const struct qcom_edp *edp)
-+{
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+	u32 step1;
-+	u32 step2;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+	case 2700:
-+	case 8100:
-+		step1 = 0x92;
-+		step2 = 0x01;
-+		break;
-+
-+	case 5400:
-+		step1 = 0x18;
-+		step2 = 0x02;
-+		break;
-+
-+	default:
-+		/* Other link rates aren't supported */
-+		return -EINVAL;
-+	}
-+
-+	writel(0x01, edp->pll + QSERDES_V6_COM_SSC_EN_CENTER);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_SSC_ADJ_PER1);
-+	writel(0x6b, edp->pll + QSERDES_V6_COM_SSC_PER1);
-+	writel(0x02, edp->pll + QSERDES_V6_COM_SSC_PER2);
-+	writel(step1, edp->pll + QSERDES_V6_COM_SSC_STEP_SIZE1_MODE0);
-+	writel(step2, edp->pll + QSERDES_V6_COM_SSC_STEP_SIZE2_MODE0);
-+
-+	return 0;
-+}
-+
-+static int qcom_edp_configure_pll_v4(const struct qcom_edp *edp)
- {
- 	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
- 	u32 div_frac_start2_mode0;
-@@ -349,6 +415,7 @@ static int qcom_edp_configure_pll(const struct qcom_edp *edp)
- 		div_frac_start3_mode0 = 0x07;
- 		lock_cmp1_mode0 = 0x0f;
- 		lock_cmp2_mode0 = 0x0e;
-+
- 		break;
- 
- 	case 5400:
-@@ -358,6 +425,7 @@ static int qcom_edp_configure_pll(const struct qcom_edp *edp)
- 		div_frac_start3_mode0 = 0x0a;
- 		lock_cmp1_mode0 = 0x1f;
- 		lock_cmp2_mode0 = 0x1c;
-+
- 		break;
- 
- 	case 8100:
-@@ -367,6 +435,7 @@ static int qcom_edp_configure_pll(const struct qcom_edp *edp)
- 		div_frac_start3_mode0 = 0x07;
- 		lock_cmp1_mode0 = 0x2f;
- 		lock_cmp2_mode0 = 0x2a;
-+
- 		break;
- 
- 	default:
-@@ -408,6 +477,103 @@ static int qcom_edp_configure_pll(const struct qcom_edp *edp)
- 	return 0;
- }
- 
-+static int qcom_edp_configure_pll_v6(const struct qcom_edp *edp)
-+{
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+	u32 div_frac_start2_mode0;
-+	u32 div_frac_start3_mode0;
-+	u32 dec_start_mode0;
-+	u32 lock_cmp1_mode0;
-+	u32 lock_cmp2_mode0;
-+	u32 code1_mode0;
-+	u32 code2_mode0;
-+	u32 hsclk_sel;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+		hsclk_sel = 0x5;
-+		dec_start_mode0 = 0x34;
-+		div_frac_start2_mode0 = 0xc0;
-+		div_frac_start3_mode0 = 0x0b;
-+		lock_cmp1_mode0 = 0x37;
-+		lock_cmp2_mode0 = 0x04;
-+		code1_mode0 = 0x71;
-+		code2_mode0 = 0x0C;
-+		break;
-+
-+	case 2700:
-+		hsclk_sel = 0x3;
-+		dec_start_mode0 = 0x34;
-+		div_frac_start2_mode0 = 0xc0;
-+		div_frac_start3_mode0 = 0x0b;
-+		lock_cmp1_mode0 = 0x07;
-+		lock_cmp2_mode0 = 0x07;
-+		code1_mode0 = 0x71;
-+		code2_mode0 = 0x0C;
-+		break;
-+
-+	case 5400:
-+		hsclk_sel = 0x1;
-+		dec_start_mode0 = 0x46;
-+		div_frac_start2_mode0 = 0x00;
-+		div_frac_start3_mode0 = 0x05;
-+		lock_cmp1_mode0 = 0x0f;
-+		lock_cmp2_mode0 = 0x0e;
-+		code1_mode0 = 0x97;
-+		code2_mode0 = 0x10;
-+		break;
-+
-+	case 8100:
-+		hsclk_sel = 0x0;
-+		dec_start_mode0 = 0x34;
-+		div_frac_start2_mode0 = 0xc0;
-+		div_frac_start3_mode0 = 0x0b;
-+		lock_cmp1_mode0 = 0x17;
-+		lock_cmp2_mode0 = 0x15;
-+		code1_mode0 = 0x71;
-+		code2_mode0 = 0x0C;
-+		break;
-+
-+	default:
-+		/* Other link rates aren't supported */
-+		return -EINVAL;
-+	}
-+
-+	writel(0x01, edp->pll + QSERDES_V6_COM_SVS_MODE_CLK_SEL);
-+	writel(0x0b, edp->pll + QSERDES_V6_COM_SYSCLK_EN_SEL);
-+	writel(0x02, edp->pll + QSERDES_V6_COM_SYS_CLK_CTRL);
-+	writel(0x0c, edp->pll + QSERDES_V6_COM_CLK_ENABLE1);
-+	writel(0x06, edp->pll + QSERDES_V6_COM_SYSCLK_BUF_ENABLE);
-+	writel(0x30, edp->pll + QSERDES_V6_COM_CLK_SELECT);
-+	writel(hsclk_sel, edp->pll + QSERDES_V6_COM_HSCLK_SEL_1);
-+	writel(0x07, edp->pll + QSERDES_V6_COM_PLL_IVCO);
-+	writel(0x08, edp->pll + QSERDES_V6_COM_LOCK_CMP_EN);
-+	writel(0x36, edp->pll + QSERDES_V6_COM_PLL_CCTRL_MODE0);
-+	writel(0x16, edp->pll + QSERDES_V6_COM_PLL_RCTRL_MODE0);
-+	writel(0x6, edp->pll + QSERDES_V6_COM_CP_CTRL_MODE0);
-+	writel(dec_start_mode0, edp->pll + QSERDES_V6_COM_DEC_START_MODE0);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_DIV_FRAC_START1_MODE0);
-+	writel(div_frac_start2_mode0, edp->pll + QSERDES_V6_COM_DIV_FRAC_START2_MODE0);
-+	writel(div_frac_start3_mode0, edp->pll + QSERDES_V6_COM_DIV_FRAC_START3_MODE0);
-+	writel(0x12, edp->pll + QSERDES_V6_COM_CMN_CONFIG_1);
-+	writel(0x3f, edp->pll + QSERDES_V6_COM_INTEGLOOP_GAIN0_MODE0);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_INTEGLOOP_GAIN1_MODE0);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_VCO_TUNE_MAP);
-+	writel(lock_cmp1_mode0, edp->pll + QSERDES_V6_COM_LOCK_CMP1_MODE0);
-+	writel(lock_cmp2_mode0, edp->pll + QSERDES_V6_COM_LOCK_CMP2_MODE0);
-+
-+	writel(0x0a, edp->pll + QSERDES_V6_COM_BG_TIMER);
-+	writel(0x14, edp->pll + QSERDES_V6_COM_PLL_CORE_CLK_DIV_MODE0);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_VCO_TUNE_CTRL);
-+	writel(0x17, edp->pll + QSERDES_V6_COM_PLL_BIAS_EN_CLK_BUFLR_EN);
-+	writel(0x0f, edp->pll + QSERDES_V6_COM_CORE_CLK_EN);
-+
-+	writel(code1_mode0, edp->pll + QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE1_MODE0);
-+	writel(code2_mode0, edp->pll + QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE2_MODE0);
-+
-+	return 0;
-+}
-+
- static int qcom_edp_set_vco_div(const struct qcom_edp *edp, unsigned long *pixel_freq)
- {
- 	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-@@ -462,13 +628,22 @@ static int qcom_edp_phy_power_on(struct phy *phy)
- 	       edp->edp + DP_PHY_PD_CTL);
- 	writel(0xfc, edp->edp + DP_PHY_MODE);
- 
--	timeout = readl_poll_timeout(edp->pll + QSERDES_V4_COM_CMN_STATUS,
--				     val, val & BIT(7), 5, 200);
-+	if (cfg->qserdes_version == QSERDES_V6) {
-+		timeout = readl_poll_timeout(edp->pll + QSERDES_V6_COM_CMN_STATUS,
-+					     val, val & BIT(7), 5, 200);
-+	} else {
-+		timeout = readl_poll_timeout(edp->pll + QSERDES_V4_COM_CMN_STATUS,
-+					     val, val & BIT(7), 5, 200);
-+	}
-+
- 	if (timeout)
- 		return timeout;
- 
- 
--	ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-+	if (cfg->qserdes_version == QSERDES_V6)
-+		ldo_config = 0x91;
-+	else
-+		ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
- 
- 	writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
- 	writel(ldo_config, edp->tx1 + TXn_LDO_CONFIG);
-@@ -476,12 +651,20 @@ static int qcom_edp_phy_power_on(struct phy *phy)
- 	writel(0x00, edp->tx1 + TXn_LANE_MODE_1);
- 
- 	if (edp->dp_opts.ssc) {
--		ret = qcom_edp_configure_ssc(edp);
-+		if (cfg->qserdes_version == QSERDES_V6)
-+			ret = qcom_edp_configure_ssc_v6(edp);
-+		else
-+			ret = qcom_edp_configure_ssc_v4(edp);
-+
- 		if (ret)
- 			return ret;
- 	}
- 
--	ret = qcom_edp_configure_pll(edp);
-+	if (cfg->qserdes_version == QSERDES_V6)
-+		ret = qcom_edp_configure_pll_v6(edp);
-+	else
-+		ret = qcom_edp_configure_pll_v4(edp);
-+
- 	if (ret)
- 		return ret;
- 
-@@ -512,10 +695,18 @@ static int qcom_edp_phy_power_on(struct phy *phy)
- 	writel(0x01, edp->edp + DP_PHY_CFG);
- 	writel(0x09, edp->edp + DP_PHY_CFG);
- 
--	writel(0x20, edp->pll + QSERDES_V4_COM_RESETSM_CNTRL);
-+	if (cfg->qserdes_version == QSERDES_V6) {
-+		writel(0x20, edp->pll + QSERDES_V6_COM_RESETSM_CNTRL);
-+
-+		timeout = readl_poll_timeout(edp->pll + QSERDES_V6_COM_C_READY_STATUS,
-+					     val, val & BIT(0), 500, 10000);
-+	} else {
-+		writel(0x20, edp->pll + QSERDES_V4_COM_RESETSM_CNTRL);
-+
-+		timeout = readl_poll_timeout(edp->pll + QSERDES_V4_COM_C_READY_STATUS,
-+					     val, val & BIT(0), 500, 10000);
-+	}
- 
--	timeout = readl_poll_timeout(edp->pll + QSERDES_V4_COM_C_READY_STATUS,
--				     val, val & BIT(0), 500, 10000);
- 	if (timeout)
- 		return timeout;
- 
-@@ -744,7 +935,6 @@ static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
- 	data = devm_kzalloc(edp->dev, struct_size(data, hws, 2), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
--	data->num = 2;
- 
- 	snprintf(name, sizeof(name), "%s::link_clk", dev_name(edp->dev));
- 	init.ops = &qcom_edp_dp_link_clk_ops;
-@@ -764,6 +954,7 @@ static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
- 
- 	data->hws[0] = &edp->dp_link_hw;
- 	data->hws[1] = &edp->dp_pixel_hw;
-+	data->num = 2;
- 
- 	return devm_of_clk_add_hw_provider(edp->dev, of_clk_hw_onecell_get, data);
- }
-@@ -806,6 +997,7 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
- 
- 	edp->supplies[0].supply = "vdda-phy";
- 	edp->supplies[1].supply = "vdda-pll";
-+	edp->clks[2].id = "tcsr";
- 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(edp->supplies), edp->supplies);
- 	if (ret)
- 		return ret;
-@@ -841,8 +1033,10 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
- static const struct of_device_id qcom_edp_phy_match_table[] = {
- 	{ .compatible = "qcom,sc7280-edp-phy" },
- 	{ .compatible = "qcom,sc8180x-edp-phy" },
--	{ .compatible = "qcom,sc8280xp-dp-phy", .data = &dp_phy_cfg },
--	{ .compatible = "qcom,sc8280xp-edp-phy", .data = &edp_phy_cfg },
-+	{ .compatible = "qcom,sc8280xp-dp-phy", .data = &dp_v4_phy_cfg },
-+	{ .compatible = "qcom,sc8280xp-edp-phy", .data = &edp_v4_phy_cfg },
-+	{ .compatible = "qcom,x1e80100-dp-phy", .data = &dp_v6_phy_cfg },
-+	{ .compatible = "qcom,x1e80100-edp-phy", .data = &edp_v6_phy_cfg },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_edp_phy_match_table);
-
--- 
-2.34.1
+Mimi
 
