@@ -2,135 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2E4802EEF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0786802EF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235444AbjLDJlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
+        id S230226AbjLDJme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:42:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235631AbjLDJlD (ORCPT
+        with ESMTP id S235390AbjLDJmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:41:03 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE01D4E;
-        Mon,  4 Dec 2023 01:40:59 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B48h1r0000668;
-        Mon, 4 Dec 2023 09:40:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=3VDOrhhpZyHwMsETPwhmSxEMw1K/gH1++xxfU+EXW1A=;
- b=lnGn8ljX7gazFX7P7FvYTxxOH0QhcWnSdeJqWR5e0w6abBTSPr9OxhfFwvMhEYl2Xc4z
- 6aOtoLDzGohrrZPLzsP2TP8t7IlXy+f8Zg9d6YTlMgUoSxus8KxgBWSkgRrYkzH9mpNx
- 8nGm07vSgEWJEQddYPQpRcMQoHzYuktpWaGpOFsvSQ7735VLj7n+iqN8DhOUDbZ5ykio
- hVmtvz1RSYrM6NSVAY6B1P8FZhJobp+GYAih/EPRAjPsjJF+Ntk8/LGtGIsnREzb9uyy
- 6oZWeSj/1TT4N2AFjcJ47YAlnPJ0sn4q+KXjuU3wBuE4TimhXeCgNWQDJclrNfeUTAcQ 3A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usbgf1t94-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 09:40:27 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B49dt2u009497;
-        Mon, 4 Dec 2023 09:40:27 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usbgf1t81-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 09:40:26 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B474PvC007667;
-        Mon, 4 Dec 2023 09:40:25 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urgdkq7j9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 09:40:25 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B49eM2V13697734
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Dec 2023 09:40:22 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 216222004E;
-        Mon,  4 Dec 2023 09:40:22 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3ACA20040;
-        Mon,  4 Dec 2023 09:40:20 +0000 (GMT)
-Received: from [9.179.21.199] (unknown [9.179.21.199])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Dec 2023 09:40:20 +0000 (GMT)
-Message-ID: <b344c321-b481-48b0-8165-c3ab604fc397@linux.ibm.com>
-Date:   Mon, 4 Dec 2023 10:40:20 +0100
+        Mon, 4 Dec 2023 04:42:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9909A10C
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:42:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8994FC433C8;
+        Mon,  4 Dec 2023 09:42:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701682926;
+        bh=XrenbCCTdGXlEOxkDWc34E9QbP9g/lZxyxwOkJJWXeg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZyUwmHe4oVNmRXSWmRDb3GxHNO03t017k9iIewJS6AzZJ7VNkLiWXpJPsYK6+KAsy
+         KGr4x66lKRC3oABCMIxYSagV6JgqfJxD15eO84RDUNpxgj9IMfADLKO0P4VZ/md3Z0
+         uwiavKyB6CA4eZB8a7rICcocLAQLIyeX5jxJXkMvvKTSxfO6NIS4lufcXrN0h/d3D9
+         3/XRmIbBF6buFGqzyPEvgAImVbW9wuOWAawXMSZwjDg0mNrRSzL10HINLTubAAlf65
+         Q5Y8/ZPEdbpDi/uDRfllkGDMHRnGwp31hEfB+4SsPiehWsxTyiQOPs9dXTzI9Q0OHK
+         JL2vwMweCNWJg==
+Date:   Mon, 4 Dec 2023 09:41:57 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     <Marius.Cristea@microchip.com>
+Cc:     <conor@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <lars@metafoo.de>,
+        <linux-iio@vger.kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: adc: adding dt-bindings for
+ PAC193X
+Message-ID: <20231204094157.775f604e@jic23-huawei>
+In-Reply-To: <1fb7d32772cb5e76a5f1fd6b8f3b32754f8a9395.camel@microchip.com>
+References: <20231025134404.131485-1-marius.cristea@microchip.com>
+        <20231025134404.131485-2-marius.cristea@microchip.com>
+        <20231025-cheddar-tucking-b2ea777ed4f9@spud>
+        <937af3ec4012c6ec1d66285660d8c56dcf356703.camel@microchip.com>
+        <20231026-perkiness-financial-55313e297230@spud>
+        <20231027152625.44b26d80@jic23-huawei>
+        <1fb7d32772cb5e76a5f1fd6b8f3b32754f8a9395.camel@microchip.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 31/35] net: smc: use find_and_set_bit() in
- smc_wr_tx_get_free_slot_index()
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-References: <20231203192422.539300-1-yury.norov@gmail.com>
- <20231203193307.542794-1-yury.norov@gmail.com>
- <20231203193307.542794-30-yury.norov@gmail.com>
-Content-Language: en-US
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <20231203193307.542794-30-yury.norov@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: uDGvSNUw8E8DooRP5CCwhJb8Fm9JXTzZ
-X-Proofpoint-GUID: CljkFlSZokllTUzPLp-H0mqHW8RlSY7-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_06,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 impostorscore=0 phishscore=0 adultscore=0 mlxlogscore=812
- priorityscore=1501 mlxscore=0 malwarescore=0 bulkscore=0 clxscore=1011
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040072
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 7 Nov 2023 08:55:48 +0000
+<Marius.Cristea@microchip.com> wrote:
 
+> Hi
+>=20
+> On Fri, 2023-10-27 at 15:26 +0100, Jonathan Cameron wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you
+> > know the content is safe
+> >=20
+> > On Thu, 26 Oct 2023 17:08:07 +0100
+> > Conor Dooley <conor@kernel.org> wrote:
+> >  =20
+> > > On Thu, Oct 26, 2023 at 03:23:46PM +0000,
+> > > Marius.Cristea@microchip.com=C2=A0wrote: =20
+> > > > Hi Conor,
+> > > >=20
+> > > > On Wed, 2023-10-25 at 16:08 +0100, Conor Dooley wrote: =20
+> > > > > Hey Marius,
+> > > > >=20
+> > > > > On Wed, Oct 25, 2023 at 04:44:03PM +0300,
+> > > > > marius.cristea@microchip.com=C2=A0wrote: =20
+> > > > > > From: Marius Cristea <marius.cristea@microchip.com>
+> > > > > >=20
+> > > > > > This is the device tree schema for iio driver for
+> > > > > > Microchip PAC193X series of Power Monitors with Accumulator.
+> > > > > >=20
+> > > > > >  =20
+> ......
+> > > > > > +
+> > > > > > +=C2=A0 reg:
+> > > > > > +=C2=A0=C2=A0=C2=A0 maxItems: 1
+> > > > > > +
+> > > > > > +=C2=A0 "#address-cells":
+> > > > > > +=C2=A0=C2=A0=C2=A0 const: 1
+> > > > > > +
+> > > > > > +=C2=A0 "#size-cells":
+> > > > > > +=C2=A0=C2=A0=C2=A0 const: 0
+> > > > > > +
+> > > > > > +=C2=A0 interrupts:
+> > > > > > +=C2=A0=C2=A0=C2=A0 description: IRQ line of the ADC
+> > > > > > +=C2=A0=C2=A0=C2=A0 maxItems: 1
+> > > > > > +
+> > > > > > +=C2=A0 drive-open-drain:
+> > > > > > +=C2=A0=C2=A0=C2=A0 description: The IRQ signal is configured a=
+s open-drain.
+> > > > > > +=C2=A0=C2=A0=C2=A0 type: boolean
+> > > > > > +=C2=A0=C2=A0=C2=A0 maxItems: 1
+> > > > > > +
+> > > > > > +=C2=A0 microchip,slow-io:
+> > > > > > +=C2=A0=C2=A0=C2=A0 type: boolean
+> > > > > > +=C2=A0=C2=A0=C2=A0 description: |
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 A GPIO used to trigger a change=
+ is sampling rate
+> > > > > > (lowering
+> > > > > > the chip power consumption).
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 In default mode, if this pin is=
+ forced high, sampling
+> > > > > > rate
+> > > > > > is forced to eight
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 samples/second. When it is forc=
+ed low, the sampling
+> > > > > > rate is
+> > > > > > 1024 samples/second unless
+> > > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 a different sample rate has bee=
+n programmed. =20
+> > > > >=20
+> > > > > This description doesn't really make sense to me - if a GPIO is
+> > > > > used
+> > > > > to
+> > > > > drive the pin low or high, why do we need a property? A DT
+> > > > > property
+> > > > > implies that this is a static configuration depending on the
+> > > > > board,
+> > > > > but
+> > > > > reading the description this seems to be something that can be
+> > > > > toggled
+> > > > > at runtime.
+> > > > > I do note though, that this GPIO is not documented in the
+> > > > > binding, so
+> > > > > I
+> > > > > suppose what really needs to happen here is document the gpio
+> > > > > so that
+> > > > > the driver can determine at runtime what state this pin is in?
+> > > > >=20
+> > > > > Also, you say "In default mode", but don't mention what the
+> > > > > non-
+> > > > > default
+> > > > > mode is. What happens in the other mode? =20
+> > >  =20
+> > > > This is a "double function" pin. On the PAC193x there is the
+> > > > SLOW/ALERT
+> > > > pin. At runtime this pin could be configured as an input to the
+> > > > PAC and
+> > > > the functionality will be "SLOW" that means if it is forced high,
+> > > > the
+> > > > PAC will work in low power mode by changing the sample rate to 8
+> > > > SPS.
+> > > > If it's forced low the PAC will work at it's full sample rate. =20
+> > >=20
+> > > Since this is a runtime thing, it doesn't make sense to have a
+> > > property
+> > > that is set at dts creation time that decides what mode the pin is
+> > > in.
+> > >  =20
+> > > > "SLOW" is the default function of the pin but it may be
+> > > > programmed to
+> > > > function as ALERT pin (Open Collector when functioning as ALERT,
+> > > > requires pull-up resistor to VDD I/O). This time the pin will be
+> > > > set as
+> > > > output from PAC (ALERT functionality) to trigger an interrupt to
+> > > > the
+> > > > system (this is covered by the interrupts and drive-open-drain). =20
+> > >=20
+> > > Hmm, at the risk of getting out of my depth with what the GPIO
+> > > subsystem
+> > > is capable of doing, I would expect to see something like
+> > >=20
+> > > sampling-rate-gpios:
+> > > =C2=A0 description:
+> > > =C2=A0=C2=A0=C2=A0 <what you have above>
+> > > =C2=A0 maxItems: 1
+> > >=20
+> > > Which would allow the driver to either drive this pin via the gpio
+> > > subsystem, or to use the interrupt property to use it as an
+> > > interrupt
+> > > instead.
+> > >=20
+> > > Perhaps Jonathan etc knows better for these sort of dual mode pins. =
+=20
+> >=20
+> > Beyond them being a pain? The fun is they may get wired to interrupt
+> > controllers that are also GPIOs or they may not (and the other way
+> > around
+> > with them wired to GPIO pins that aren't interrupt pins).
+> >=20
+> > I don't understand the usecase for the SLOW control.
+> > Given it seems software can override the use for SLOW I'd be tempted
+> > to
+> > always do that.
+> > Thus making this pin useable only as an optional interrupt.
+> >=20
+> > If someone hard wires it to high or low that is harmless if we aren't
+> > letting it control anything.
+> >  =20
+>=20
+> Here I was trying to define/describe 3 possible situations:
+> - 1) the pin is not used at all, so it doesn't matter if it's connected
+> somewhere
+>=20
+> - 2) the pin is user configured as "interrupt" and it's connected to
+> the interrupt controller (this case is not supported in the driver
+> right now)
+>=20
+> - 3) the pin is user configured as "SLOW" (this case is not supported
+> in the driver right now). That means it should be connected to a GPIO
+> pin. This function (SLOW control) will automatically change the PAC
+> internal sampling frequency to lower the PAC internal power
+> consumption. For example, the PAC could be configured to a sample rate
+> of 1024 samples/s (it will consume maximum current). Using the SLOW
+> control, the chip will internally change to 8 samples/s but the math
+> internally will "behave" as the 1024 samples/s but at a much lower
+> power consumption. It's very useful in case the system wants to lower
+> power consumption (we still need to measure battery power consumption
+> even if the system is put into a low power state). PAC internal power
+> consumption is proportional to the number of channels used and also the
+> sampling frequency.
 
-On 03.12.23 20:33, Yury Norov wrote:
-> The function opencodes find_and_set_bit() with a for_each() loop. Use
-> it, and make the whole function a simple almost one-liner.
-> 
-> While here, drop explicit initialization of *idx, because it's already
-> initialized by the caller in case of ENOLINK, or set properly with
-> ->wr_tx_mask, if nothing is found, in case of EBUSY.
-> 
-> CC: Tony Lu <tonylu@linux.alibaba.com>
-> CC: Alexandra Winter <wintera@linux.ibm.com>
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
+So far so good, but how does 3 differ from just setting the chip to sample
+at 8 samples/s, which I believe we can do from software?
 
-Reviewed-by: Alexandra Winter <wintera@linux.ibm.com>
+Anyhow, for a DT binding, provide both gpio and interrupt as optional
+and the driver can make up it's mind on what to do if both are provided.
 
+Jonathan
 
-Thanks a lot for the great helper function!
-I guess the top-level maintainers will figure out, how this series best finds its way upstream.
+>=20
+>=20
+>=20
+> > >  =20
+> > > > The system could work fine without this pin. The driver doesn't
+> > > > use
+> > > > interrupt at this time, but it could be extended. =20
+> > >=20
+> > > Cheers,
+> > > Conor. =20
+> >  =20
+>=20
+> Thanks,
+> Marius
+
