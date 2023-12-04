@@ -2,65 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4C38038F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA0A8038FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbjLDPiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:38:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
+        id S234629AbjLDPjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:39:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbjLDPiL (ORCPT
+        with ESMTP id S234647AbjLDPjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:38:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C981FC0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:38:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701704296;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=seX/SDI/jMTwPP8d5rMNciSYOZJKlVgmv/OT9coCj5g=;
-        b=VtPuj32avMUCXSv9s3xCshzDc4hjUeAKOutK8XbSLdsbBmN23Ba85vCwEpqTra8ykvn0Pn
-        Qx4XyoT9nnwgTCh5YW/ahwouQACs8cKSyCZVtGnO2bk2AC4y8BqL9AXolIQuYedtmwS07M
-        0zr8VCkEqJcAd0Kf2TWA9UrsNakDDFw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-9-BwYS5IDnOmyxJYurhDYIqw-1; Mon, 04 Dec 2023 10:38:10 -0500
-X-MC-Unique: BwYS5IDnOmyxJYurhDYIqw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7C350811E88;
-        Mon,  4 Dec 2023 15:38:09 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.121])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B081E1C060AE;
-        Mon,  4 Dec 2023 15:38:08 +0000 (UTC)
-Date:   Mon, 4 Dec 2023 23:38:05 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
-        joe@perches.com, nathan@kernel.org
-Subject: Re: [PATCH v3 5/7] kexec_file, ricv: print out debugging message if
- required
-Message-ID: <ZW3yXWJ7rTrtZzyg@MiWiFi-R3L-srv>
-References: <20231130023955.5257-1-bhe@redhat.com>
- <20231130023955.5257-6-bhe@redhat.com>
- <20231201-blog-blasphemy-985d2665903c@wendy>
+        Mon, 4 Dec 2023 10:39:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E7E1F3
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:39:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB0F8C433C8;
+        Mon,  4 Dec 2023 15:39:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701704346;
+        bh=G3X+vmde+cr11/lAMlOMQHfGd+SQv6ekjh9J8L55ZRY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CVZpLFeqSXJ+oqgWCvDcEICrbiSZaOdS+ZZIIYPJPyEynaYyEaqQBTFia3KGSAvQM
+         LeA522/+DiQBb67g6AqvgJxMZBGqLnwdqey1BuqYfanwfE7HIyAFqZ4VtZaedSgHW7
+         wDysUfO7qMGadjo3YCWhj26TQx25+SnUbP1EGwAfc/7m8xr7G20oA8+EoubfK9eqAw
+         AkduxD8F9Tkm1jEW9+WUTo5mRhBMImuICHbMqFzYahEJ4CBdo9v7p9ac0dBvnFRzDF
+         3GA01P9uc1n7CknA2RYxzjDIB7thFxTfDFeKSXPkvhM5IZwJ7zNO8xBfNZzTautCgc
+         ZPzhPGWeyeFqw==
+Date:   Mon, 4 Dec 2023 15:38:55 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org>
+Cc:     <nuno.sa@analog.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Subject: Re: [PATCH 03/12] iio: add the IIO backend framework
+Message-ID: <20231204153855.71c9926f@jic23-huawei>
+In-Reply-To: <20231121-dev-iio-backend-v1-3-6a3d542eba35@analog.com>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+        <20231121-dev-iio-backend-v1-3-6a3d542eba35@analog.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201-blog-blasphemy-985d2665903c@wendy>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,104 +58,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/23 at 10:38am, Conor Dooley wrote:
-> On Thu, Nov 30, 2023 at 10:39:53AM +0800, Baoquan He wrote:
-> 
-> $subject has a typo in the arch bit :)
+On Tue, 21 Nov 2023 11:20:16 +0100
+Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
 
-Indeed, will fix if need report. Thanks for careful checking.
+> From: Nuno Sa <nuno.sa@analog.com>
+> 
+> This is a Framework to handle complex IIO aggregate devices.
+> 
+> The typical architecture is to have one device as the frontend device which
+> can be "linked" against one or multiple backend devices. All the IIO and
+> userspace interface is expected to be registers/managed by the frontend
+> device which will callback into the backends when needed (to get/set
+> some configuration that it does not directly control).
+
+As this is first place backend / frontend terminology used (I think), make
+sure to give an example so people understand what sorts of IP / devices thes
+might be.
 
 > 
-> > Replace pr_debug() with the newly added kexec_dprintk() in kexec_file
-> > loading related codes.
+> The basic framework interface is pretty simple:
+>  - Backends should register themselves with @devm_iio_backend_register()
+>  - Frontend devices should get backends with @devm_iio_backend_get()
 > 
-> Commit messages should be understandable in isolation, but this only
-> explains (part of) what is obvious in the diff. Why is this change
-> being made?
+> Signed-off-by: Nuno Sa <nuno.sa@analog.com>
 
-The purpose has been detailedly described in cover letter and patch 1
-log. Andrew has picked these patches into his tree and grabbed the cover
-letter log into the relevant commit for people's later checking. All
-these seven patches will be present in mainline together. This is common
-way when posting patch series? Please let me know if I misunderstand
-anything.
-> 
-> > 
-> > And also remove kexec_image_info() because the content has been printed
-> > out in generic code.
-> > 
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > ---
-> >  arch/riscv/kernel/elf_kexec.c     | 11 ++++++-----
-> >  arch/riscv/kernel/machine_kexec.c | 26 --------------------------
-> >  2 files changed, 6 insertions(+), 31 deletions(-)
-> > 
-> > diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_kexec.c
-> > index e60fbd8660c4..5bd1ec3341fe 100644
-> > --- a/arch/riscv/kernel/elf_kexec.c
-> > +++ b/arch/riscv/kernel/elf_kexec.c
-> > @@ -216,7 +216,6 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> >  	if (ret)
-> >  		goto out;
-> >  	kernel_start = image->start;
-> > -	pr_notice("The entry point of kernel at 0x%lx\n", image->start);
-> >  
-> >  	/* Add the kernel binary to the image */
-> >  	ret = riscv_kexec_elf_load(image, &ehdr, &elf_info,
-> > @@ -252,8 +251,8 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> >  		image->elf_load_addr = kbuf.mem;
-> >  		image->elf_headers_sz = headers_sz;
-> >  
-> > -		pr_debug("Loaded elf core header at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
-> > -			 image->elf_load_addr, kbuf.bufsz, kbuf.memsz);
-> > +		kexec_dprintk("Loaded elf core header at 0x%lx bufsz=0x%lx memsz=0x%lx\n",
-> > +			      image->elf_load_addr, kbuf.bufsz, kbuf.memsz);
-> >  
-> >  		/* Setup cmdline for kdump kernel case */
-> >  		modified_cmdline = setup_kdump_cmdline(image, cmdline,
-> > @@ -275,6 +274,8 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> >  		pr_err("Error loading purgatory ret=%d\n", ret);
-> >  		goto out;
-> >  	}
-> > +	kexec_dprintk("Loaded purgatory at 0x%lx\n", kbuf.mem);
-> > +
-> >  	ret = kexec_purgatory_get_set_symbol(image, "riscv_kernel_entry",
-> >  					     &kernel_start,
-> >  					     sizeof(kernel_start), 0);
-> > @@ -293,7 +294,7 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> >  		if (ret)
-> >  			goto out;
-> >  		initrd_pbase = kbuf.mem;
-> 
-> > -		pr_notice("Loaded initrd at 0x%lx\n", initrd_pbase);
-> > +		kexec_dprintk("Loaded initrd at 0x%lx\n", initrd_pbase);
-> 
-> This is not a pr_debug().
-> 
-> >  	}
-> >  
-> >  	/* Add the DTB to the image */
-> > @@ -318,7 +319,7 @@ static void *elf_kexec_load(struct kimage *image, char *kernel_buf,
-> >  	}
-> >  	/* Cache the fdt buffer address for memory cleanup */
-> >  	image->arch.fdt = fdt;
-> 
-> > -	pr_notice("Loaded device tree at 0x%lx\n", kbuf.mem);
-> > +	kexec_dprintk("Loaded device tree at 0x%lx\n", kbuf.mem);
-> 
-> Neither is this. Why are they being moved from pr_notice()?
+Looks good to me in general.  I'll need to have a really close read though
+before we merge this as there may be sticky corners! (hopefully not)
 
-You are right. 
 
-While always printing out the loaded location of purgatory and
-device tree doesn't make sense. It will be confusing when users
-see these even when they do normal kexec/kdump loading. It should be
-changed to pr_debug().
+...
 
-Which way do you suggest?
-1) change it back to pr_debug(), fix it in another patch;
-2) keep it as is in the patch;
+> +static LIST_HEAD(iio_back_list);
+> +static DEFINE_MUTEX(iio_back_lock);
+> +
+> +/*
+> + * Helper macros to properly call backend ops. The main point for these macros
+> + * is to properly lock the backend mutex on every call plus checking if the
+> + * backend device is still around (by looking at the *ops pointer).
+If just checking if it is around rather thank looking for a bug, then
+I'd suggest a lighter choice than WARN_ON_x 
 
-Thanks
-Baoquan
+Btw, there were some interesting discussions on lifetimes and consumer / provider
+models at plumbers. I think https://www.youtube.com/watch?v=bHaMMnIH6AM will be
+the video.   Suggested the approach of not refcounting but instead allowing for
+a deliberate removal of access similar to your check on ops here (and the one
+we do in core IIO for similar purposes).  Sounded interesting but I've not
+explored what it would really mean to switch to that model yet.
+
+> + */
+> +#define iio_backend_op_call(back, op, args...) ({ \
+> +	struct iio_backend *__back = back; \
+> +	int __ret; \
+> +			\
+> +	guard(mutex)(&__back->lock); \
+> +	if (WARN_ON_ONCE(!__back->ops)) \
+> +		__ret = -ENODEV; \
+> +	else if (!__back->ops->op) \
+> +		__ret = -EOPNOTSUPP; \
+> +	else \
+> +		__ret = __back->ops->op(__back, ##args); \
+> +	\
+> +	__ret; \
+> +})
 
