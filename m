@@ -2,56 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E001D802C06
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702B1802BFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbjLDH0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 02:26:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
+        id S230023AbjLDHYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 02:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234593AbjLDH0J (ORCPT
+        with ESMTP id S229693AbjLDHYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 02:26:09 -0500
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393D3FF;
-        Sun,  3 Dec 2023 23:26:14 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 595A08471;
-        Mon,  4 Dec 2023 15:26:06 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 4 Dec
- 2023 15:26:06 +0800
-Received: from [192.168.125.88] (183.27.97.199) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 4 Dec
- 2023 15:26:05 +0800
-Message-ID: <26cd5320-e520-4614-9628-df1a1f47b34a@starfivetech.com>
-Date:   Mon, 4 Dec 2023 15:22:54 +0800
+        Mon, 4 Dec 2023 02:24:50 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24226F3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 23:24:55 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50be3eed85aso2304704e87.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 23:24:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701674693; x=1702279493; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Xxz1IMztyI/DW8EzDBtMH+QkyqwQ5t+SJRSYEC/SOc=;
+        b=iD65mHNYTVsaATpGhHMlCRNLFfSnxqdxPDshLNMj8FIn6q4HrsMPDzouP/sVNn+O7u
+         CuE3d9eXxoLV7rrBLNHZnIHAmuDwHHtGpnZlc31uWuGslkLhr0FPq7E/qhpAMAgAY6e7
+         801yX/7aXIVD7UAd3gLgXEA4W2xc2tkIXwtHA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701674693; x=1702279493;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6Xxz1IMztyI/DW8EzDBtMH+QkyqwQ5t+SJRSYEC/SOc=;
+        b=a8UsoMSDjiU9sX+OZvdJl2NdgCusTALU1pzd11NhGPVNzM1Azgnq0/9VFv+ixI9br4
+         URZYA7BJFSmfDvbub/6yIr0dI0Ket9hvBm3rRRN9qomckMJ3UY1XNbSYK3nUXcHYbppZ
+         waf9RshP20Er9Apmv9iWGcQavoEqlHrfjoXp0F9FuPeZDdiRSLVvzlAMls82d0YIFC7e
+         ins6vg8y0/ILKlTkPpJErfAvLrE7IN8LhOYpfXsa0jiuuGjJE+fJi+9GkQYgJrURxSka
+         wDEbfNze+YukAo6YA9wIgTEI/Xee4P2Oi6buUDU1EzD3Q27C2B2SrL4KiermRcwYOIVO
+         L7QQ==
+X-Gm-Message-State: AOJu0YxxmvYOSKuJACVz2K/bOzgT9HyB+knBAMnCMGgwoMVSrMzfNsV6
+        3ZroB5fOWOh9rjrc309YecF4DPWlQSz62PpW/9y9HMp+mYbKQhOCQho=
+X-Google-Smtp-Source: AGHT+IFtbMn5A8+mOCK7ju+ZruOqp6ANHem62c8eBAnYZlXhRPomaeKDI0QPJC1GJ9Q8Tj324VrRaJX0WX0KLLlp1+M=
+X-Received: by 2002:a19:ac4a:0:b0:50b:f51a:299a with SMTP id
+ r10-20020a19ac4a000000b0050bf51a299amr600460lfc.32.1701674693388; Sun, 03 Dec
+ 2023 23:24:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/2] phy: starfive: Add mipi dphy tx support
-Content-Language: en-US
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        <devicetree@vger.kernel.org>, <linux-phy@lists.infradead.org>
-CC:     <vkoul@kernel.org>, <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <minda.chen@starfivetech.com>, <changhuang.liang@starfivetech.com>,
-        <rogerq@kernel.org>, <geert+renesas@glider.be>,
-        <keith.zhao@starfivetech.com>, <linux-kernel@vger.kernel.org>
-References: <20231117130421.79261-1-shengyang.chen@starfivetech.com>
- <20231117130421.79261-3-shengyang.chen@starfivetech.com>
- <939b96b8727054729207211f25ff91ccf8328e28.camel@pengutronix.de>
-From:   Shengyang Chen <shengyang.chen@starfivetech.com>
-In-Reply-To: <939b96b8727054729207211f25ff91ccf8328e28.camel@pengutronix.de>
+References: <20231128084236.157152-1-wenst@chromium.org> <20231128084236.157152-4-wenst@chromium.org>
+ <CAD=FV=XV0+G=uFBE_n6WFGVW2szGcKToZgCNTdSrNf3LVk9MOQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=XV0+G=uFBE_n6WFGVW2szGcKToZgCNTdSrNf3LVk9MOQ@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 4 Dec 2023 15:24:42 +0800
+Message-ID: <CAGXv+5Hz3wfjCRa2AiOQgOv7zo8bzAmtG=a=jWJhO2MZNrFtpw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 3/5] platform/chrome: Introduce device tree
+ hardware prober
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        chrome-platform@lists.linux.dev, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.97.199]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,130 +89,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Philipp,
+On Sat, Dec 2, 2023 at 8:58=E2=80=AFAM Doug Anderson <dianders@chromium.org=
+> wrote:
+>
+> Hi,
+>
+> On Tue, Nov 28, 2023 at 12:45=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org=
+> wrote:
+> >
+> > @@ -61,6 +61,17 @@ config CHROMEOS_TBMC
+> >           To compile this driver as a module, choose M here: the
+> >           module will be called chromeos_tbmc.
+> >
+> > +config CHROMEOS_OF_HW_PROBER
+> > +       bool "ChromeOS Device Tree Hardware Prober"
+>
+> Any reason that it can't be a module?
 
-Thanks for review and comment.
+No technical one. However if it's a module, the user has to manually load
+it. So I think it's more of a usability thing.
 
-On 2023/11/27 21:17, Philipp Zabel wrote:
-> On Fr, 2023-11-17 at 21:04 +0800, Shengyang Chen wrote:
->> Add mipi dphy tx support for the StarFive JH7110 SoC.
->> It is used to transfer DSI data.
->> 
->> Signed-off-by: Shengyang Chen <shengyang.chen@starfivetech.com>
->> ---
-> [...]
->> diff --git a/drivers/phy/starfive/phy-jh7110-dphy-tx.c b/drivers/phy/starfive/phy-jh7110-dphy-tx.c
->> new file mode 100644
->> index 000000000000..69aa172563e4
->> --- /dev/null
->> +++ b/drivers/phy/starfive/phy-jh7110-dphy-tx.c
->> @@ -0,0 +1,542 @@
-> [...]
->> +static int stf_dphy_probe(struct platform_device *pdev)
->> +{
-> [...]
->> +	dphy->topsys = devm_platform_ioremap_resource(pdev, 0);
->> +	if (IS_ERR(dphy->topsys)) {
->> +		ret = PTR_ERR(dphy->topsys);
->> +		return ret;
-> 
-> This could be shortened to:
-> 
-> 		return PTR_ERR(dphy->topsys);
-> 
+OOTH I think this needs to be a module if I2C is built as a module.
+Somehow I had thought of it at one point but then it slipped my mind.
 
-ok, will shortened to "return PTR_ERR(dphy->topsys);" 
+> > +       depends on OF
+> > +       depends on I2C
+> > +       select OF_DYNAMIC
+> > +       default OF
+>
+> You probably don't want "default OF". This means that everyone will
+> automatically get this new driver enabled which is unlikely to be
+> right.
 
->> +	}
->> +
->> +	pm_runtime_enable(&pdev->dev);
->> +
->> +	dphy->mipitx_0p9 = devm_regulator_get(&pdev->dev, "mipi_0p9");
->> +	if (IS_ERR(dphy->mipitx_0p9)) {
->> +		ret = PTR_ERR(dphy->mipitx_0p9);
->> +		return ret;
-> 
-> Same as above.
-> 
+I thought this whole section was guarded behind KCONFIG_CHROME_PLATFORMS.
+So if the user has CHROME_PLATFORMS enabled and has OF enabled, they
+likely need the prober.
 
-ok, will fix it.
+> > +static int chromeos_of_hw_prober_probe(struct platform_device *pdev)
+> > +{
+> > +       for (size_t i =3D 0; i < ARRAY_SIZE(hw_prober_platforms); i++)
+> > +               if (of_machine_is_compatible(hw_prober_platforms[i].com=
+patible)) {
+> > +                       int ret;
+> > +
+> > +                       ret =3D hw_prober_platforms[i].prober(&pdev->de=
+v,
+> > +                                                           hw_prober_p=
+latforms[i].data);
+> > +                       if (ret)
+>
+> Should it only check for -EPROBE_DEFER here? ...and then maybe warn
+> for other cases and go through the loop? If there's some error
+> enabling the touchscreen I'd still want the trackpad to probe...
 
->> +	}
->> +
->> +	dphy->txesc_clk = devm_clk_get(&pdev->dev, "dphy_txesc");
->> +	if (IS_ERR(dphy->txesc_clk)) {
->> +		ret = PTR_ERR(dphy->txesc_clk);
->> +		dev_err(&pdev->dev, "txesc_clk get error\n");
->> +		return ret;
-> 
-> Consider using dev_err_probe():
-> 
-> 		return dev_err_probe(&pdev->dev, PTR_ERR(dphy->txesc_clk),
-> 				     "txesc_clk get error\n");
-> 
-> And the same for the error paths below.
-> 
+Makes sense. However there's no extra information to give in the
+warning though.
 
-ok, it will be tried and verified. It will be used if no problem.
+> > +                               return ret;
+> > +               }
+> > +
+> > +       return 0;
+>
+> Random thought: once we get here, the driver is useless / just wasting
+> memory. Any way to have it freed? ;-)
 
->> +	}
->> +
->> +	dphy->sys_rst = reset_control_get_exclusive(&pdev->dev, "dphy_sys");
-> 
-> Why not devm_reset_control_get_exclusive()?
-> 
+I don't think there is a good way to do that, except maybe marking all
+the functions as __init? But that likely doesn't work in combination
+with deferred probing (say the i2c driver is a module).
 
-ok, it will be tried and verified. It will be used if no problem.
-
->> +	if (IS_ERR(dphy->sys_rst)) {
->> +		ret = PTR_ERR(dphy->sys_rst);
->> +		dev_err(&pdev->dev, "sys_rst get error\n");
->> +		return ret;
->> +	}
->> +
->> +	dphy->txbytehs_rst = reset_control_get_exclusive(&pdev->dev, "dsi_txbytehs");
-> 
-> Same as above.
-> 
-
-ok, I'll follow up on this.
-
->> +	if (IS_ERR(dphy->txbytehs_rst)) {
->> +		dev_err(&pdev->dev, "Failed to get txbytehs_rst\n");
->> +		return PTR_ERR(dphy->txbytehs_rst);
->> +	}
->> +
->> +	dphy->phy = devm_phy_create(&pdev->dev, NULL, &stf_dphy_ops);
->> +	if (IS_ERR(dphy->phy)) {
->> +		ret = PTR_ERR(dphy->phy);
->> +		dev_err(&pdev->dev, "Failed to create phy\n");
->> +		return ret;
->> +	}
->> +	phy_set_drvdata(dphy->phy, dphy);
->> +
->> +	phy_provider = devm_of_phy_provider_register(&pdev->dev, of_phy_simple_xlate);
->> +	if (IS_ERR(phy_provider)) {
->> +		ret = PTR_ERR(phy_provider);
->> +		dev_err(&pdev->dev, "Failed to create phy\n");
->> +		return ret;
->> +	}
->> +
->> +	return PTR_ERR_OR_ZERO(phy_provider);
-> 
-> This can not be reached in the error case, so just:
-> 
-> 	return 0;
-> 
-> should suffice.
-> 
-
-ok, will fix it.
-
-> 
-> regards
-> Philipp
-
-thanks a lot.
-
-Best Regards,
-Shengyang
+ChenYu
