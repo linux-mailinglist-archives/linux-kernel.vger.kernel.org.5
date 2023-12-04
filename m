@@ -2,448 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED766804295
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71288042A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbjLDXeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 18:34:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
+        id S231515AbjLDXjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 18:39:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjLDXeE (ORCPT
+        with ESMTP id S229668AbjLDXjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 18:34:04 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5635DC3;
-        Mon,  4 Dec 2023 15:34:09 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id 38308e7fff4ca-2c9f85eff28so31628721fa.3;
-        Mon, 04 Dec 2023 15:34:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701732847; x=1702337647; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EaLwUM/X6BTpPGziK4zF0Fhh5e9dkHy8RdQ/gNBLN5s=;
-        b=mDEHGgrYRW9BnEqBKyCt4vn5SLUPYQ8UXdbK20/UYx+CQTyb8/NLTnYAjIDUchLsAx
-         Ibc4rUvd6OBW5Yyj5VuQJJwrUUQ7PGJd2Lyh7XSOigr2nMGpQXFPdmfLhhEXRYtuaG2S
-         GOGp2K0afUdWSgYTV4RnhMS0U0XCGO1/iimbLVLhSvDyRP+XvKh76pBATzLWNLZlWCyN
-         99jScIAOsr77anaV9Ynss+M6dqlUlKfl4rQH7UU/gI1WSg4AiBZuHup0n70l6tpUKzsH
-         SAqR0Iw0/Ppl3/gZqSdYdomkuNsVU4H7r7H8KobpQzru09wxPwBp0dF7e66SBfXYoF++
-         KnXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701732847; x=1702337647;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EaLwUM/X6BTpPGziK4zF0Fhh5e9dkHy8RdQ/gNBLN5s=;
-        b=XKQ0QKbHcXbQlZhdJq1ma3zhC99FWowLHUNpVpKweBYIwGTgp4CROSdE15Axg1R0W0
-         5sJlsm027RRHWvwosrWQfPvRV3htmhtlXfCCxM3EghFNg3rvJ58Xof42buG/5kyV/Fo2
-         qZd+IhjWHRbdq82Y1APDn7WabmwLUlmj//GXgtnHU2DJVjhFr9wnoFEpbe5VJAhjeW/N
-         EtOeNebPy4xp/mMrKVqwBfcgVwzXy967VmcMkOio+TZNu/nz6jUDPIC0EpdkDAprQISX
-         dqvTWG4xj9CWX377XsUPq2+hl1ucNpnynFveZ8euWHNL4iKzwPZ+PP3fy2W6056lnHvK
-         VFRg==
-X-Gm-Message-State: AOJu0YzGB9NTaYotuTyrXj2xr2rHSXfQCZFEMY6sLhkKWkhK8BC19h0j
-        WRkp8xLepFVpClk44uEN3xCyyDNBhvL69g==
-X-Google-Smtp-Source: AGHT+IG1kI3tcjDICa5UlVodr+K6x5G4TeGugcFIxrGcLidlC2Bh+3pWukfuyz54nhAU360PrzdAhQ==
-X-Received: by 2002:a2e:9184:0:b0:2c9:f7d3:7d61 with SMTP id f4-20020a2e9184000000b002c9f7d37d61mr1683049ljg.82.1701732847164;
-        Mon, 04 Dec 2023 15:34:07 -0800 (PST)
-Received: from localhost (86-83-145-178.fixed.kpn.net. [86.83.145.178])
-        by smtp.gmail.com with ESMTPSA id i16-20020a1709061cd000b009b2cc87b8c3sm5774701ejh.52.2023.12.04.15.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 15:34:06 -0800 (PST)
-From:   laburnumT <laburnumtec@gmail.com>
-X-Google-Original-From: laburnumT <laburnumTec@gmail.com>
-Date:   Tue, 5 Dec 2023 00:34:04 +0100
-To:     gregkh@linuxfoundation.org
-Cc:     linux-fbdev@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: sm750fb: fix coding style camelCase issue
-Message-ID: <20231204233404.goxljpo2jpwlotig@flo-XPS-13-7390>
+        Mon, 4 Dec 2023 18:39:01 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E5DC3;
+        Mon,  4 Dec 2023 15:39:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701733148; x=1733269148;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Ng8WuUy2oOVp5gipxCg4vh0wElvDGg5aQyTzHiU/fY0=;
+  b=DA2tD3wiOehpipEsRCSksJu4w1Xh4U/SqgjKHNm1J085H6lOhXBciZN0
+   Odf7UCJmgdmGFZbCJGq6VZSP3zZ2nQHjxvu5UrzpTjIPr11LGC+8FfjRq
+   izmEhF/Ar5E6jvMYBSZBbl7229Q3zJcspEHkWz2DZbGhpTPeTbQ8pScmU
+   9FuIUy518RH7S7ika4bXZDhGYRpLT4lM5E1/lmAYjnZxap9yYl96AtCGC
+   HzFxakGFJOI8S1KC19NIVre6NkVn0iSJ+lhtDNP7SHd8N5XCXIc/xtl33
+   4cLWI8tKEeHeZPWQzsDmik3IHSnbtCF6Fjc4XIF5bou1vbYXuVtNOlxNE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="373260563"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="373260563"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 15:39:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="17328184"
+Received: from gauravs1-mobl.amr.corp.intel.com (HELO [10.209.53.199]) ([10.209.53.199])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 15:39:07 -0800
+Message-ID: <1a5b18b2-3072-46d9-9d44-38589cb54e40@intel.com>
+Date:   Mon, 4 Dec 2023 15:39:06 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="votmzjuwq6leiwsp"
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
+ #MC due to erratum
+Content-Language: en-US
+To:     "Huang, Kai" <kai.huang@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     "rafael@kernel.org" <rafael@kernel.org>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "sagis@google.com" <sagis@google.com>,
+        "imammedo@redhat.com" <imammedo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>, "Brown, Len" <len.brown@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+References: <cover.1699527082.git.kai.huang@intel.com>
+ <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
+ <b3b265f9-48fa-4574-a925-cbdaaa44a689@intel.com>
+ <afc875ace6f9f955557f5c7e811b3046278e4c51.camel@intel.com>
+ <bcff605a-3b8d-4dcc-a5cb-63dab1a74ed4@intel.com>
+ <dfbfe327704f65575219d8b895cf9f55985758da.camel@intel.com>
+ <9b221937-42df-4381-b79f-05fb41155f7a@intel.com>
+ <c12073937fcca2c2e72f9964675ef4ac5dddb6fb.camel@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <c12073937fcca2c2e72f9964675ef4ac5dddb6fb.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/4/23 15:24, Huang, Kai wrote:
+> On Mon, 2023-12-04 at 14:04 -0800, Hansen, Dave wrote:
+...
+> In ancient time KVM used to immediately enable VMX when it is loaded, but later
+> it was changed to only enable VMX when there's active VM because of the above
+> reason.
+> 
+> See commit 10474ae8945ce ("KVM: Activate Virtualization On Demand").
 
---votmzjuwq6leiwsp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fine.  This doesn't need to change ... until you load TDX.  Once you
+initialize the TDX module, no more out-of-tree VMMs for you.
 
-Fixed camelCase issues in ddk750_sii164.c and impacted files.
+That doesn't seem too insane.  This is yet *ANOTHER* reason that doing
+dynamic TDX module initialization is a good idea.
 
-Signed-off-by: laburnumT <laburnumTec@gmail.com>
----
- drivers/staging/sm750fb/ddk750_dvi.c    |  16 +--
- drivers/staging/sm750fb/ddk750_sii164.c | 130 ++++++++++++------------
- drivers/staging/sm750fb/ddk750_sii164.h |  16 +--
- 3 files changed, 81 insertions(+), 81 deletions(-)
+>> It's not wrong to say that TDX is a
+>> KVM user.  If KVm wants 'kvm_usage_count' to go back to 0, it can shut
+>> down the TDX module.  Then there's no PAMT to worry about.
+>>
+>> The shutdown would be something like:
+>>
+>>       1. TDX module shutdown
+>>       2. Deallocate/Convert PAMT
+>>       3. vmxoff
+>>
+>> Then, no SEAMCALL failure because of vmxoff can cause a PAMT-induced #MC
+>> to be missed.
+> 
+> The limitation is once the TDX module is shutdown, it cannot be initialized
+> again unless it is runtimely updated.
+> 
+> Long-termly, if we go this design then there might be other problems when other
+> kernel components are using TDX.  For example, the VT-d driver will need to be
+> changed to support TDX-IO, and it will need to enable TDX module much earlier
+> than KVM to do some initialization.  It might need to some TDX work (e.g.,
+> cleanup) while KVM is unloaded.  I am not super familiar with TDX-IO but looks
+> we might have some problem here if we go with such design.
 
-diff --git a/drivers/staging/sm750fb/ddk750_dvi.c b/drivers/staging/sm750fb=
-/ddk750_dvi.c
-index 8b81e8642f9e..40d92e4bd1f9 100644
---- a/drivers/staging/sm750fb/ddk750_dvi.c
-+++ b/drivers/staging/sm750fb/ddk750_dvi.c
-@@ -16,15 +16,15 @@ static struct dvi_ctrl_device dcft_supported_dvi_contro=
-ller[] =3D {
- 	{
- 		.init =3D sii164_init_chip,
- 		.get_vendor_id =3D sii164_get_vendor_id,
--		.get_device_id =3D sii164GetDeviceID,
-+		.get_device_id =3D sii164_get_device_id,
- #ifdef SII164_FULL_FUNCTIONS
--		.reset_chip =3D sii164ResetChip,
--		.get_chip_string =3D sii164GetChipString,
--		.set_power =3D sii164SetPower,
--		.enable_hot_plug_detection =3D sii164EnableHotPlugDetection,
--		.is_connected =3D sii164IsConnected,
--		.check_interrupt =3D sii164CheckInterrupt,
--		.clear_interrupt =3D sii164ClearInterrupt,
-+		.reset_chip =3D sii164_reset_chip,
-+		.get_chip_string =3D sii164_get_chip_string,
-+		.set_power =3D sii164_set_power,
-+		.enable_hot_plug_detection =3D sii164_enable_hotplug_detection,
-+		.is_connected =3D sii164_is_connected,
-+		.check_interrupt =3D sii164_check_interrupt,
-+		.clear_interrupt =3D sii164_clear_interrupt,
- #endif
- 	},
- #endif
-diff --git a/drivers/staging/sm750fb/ddk750_sii164.c b/drivers/staging/sm75=
-0fb/ddk750_sii164.c
-index 2532b60245ac..596a00101352 100644
---- a/drivers/staging/sm750fb/ddk750_sii164.c
-+++ b/drivers/staging/sm750fb/ddk750_sii164.c
-@@ -25,7 +25,7 @@
-=20
- #ifdef SII164_FULL_FUNCTIONS
- /* Name of the DVI Controller chip */
--static char *gDviCtrlChipName =3D "Silicon Image SiI 164";
-+static char *g_dvi_ctrl_chip_name =3D "Silicon Image SiI 164";
- #endif
-=20
- /*
-@@ -37,33 +37,33 @@ static char *gDviCtrlChipName =3D "Silicon Image SiI 16=
-4";
-  */
- unsigned short sii164_get_vendor_id(void)
- {
--	unsigned short vendorID;
-+	unsigned short vendor_id;
-=20
--	vendorID =3D ((unsigned short)i2cReadReg(SII164_I2C_ADDRESS,
--					       SII164_VENDOR_ID_HIGH) << 8) |
--		   (unsigned short)i2cReadReg(SII164_I2C_ADDRESS,
--					      SII164_VENDOR_ID_LOW);
-+	vendor_id =3D ((unsigned short)i2cReadReg(SII164_I2C_ADDRESS,
-+						SII164_VENDOR_ID_HIGH) << 8) |
-+		    (unsigned short)i2cReadReg(SII164_I2C_ADDRESS,
-+					       SII164_VENDOR_ID_LOW);
-=20
--	return vendorID;
-+	return vendor_id;
- }
-=20
- /*
-- *  sii164GetDeviceID
-+ *  sii164_get_device_id
-  *      This function gets the device ID of the DVI controller chip.
-  *
-  *  Output:
-  *      Device ID
-  */
--unsigned short sii164GetDeviceID(void)
-+unsigned short sii164_get_device_id(void)
- {
--	unsigned short deviceID;
-+	unsigned short device_id;
-=20
--	deviceID =3D ((unsigned short)i2cReadReg(SII164_I2C_ADDRESS,
--					       SII164_DEVICE_ID_HIGH) << 8) |
--		   (unsigned short)i2cReadReg(SII164_I2C_ADDRESS,
--					      SII164_DEVICE_ID_LOW);
-+	device_id =3D ((unsigned short)i2cReadReg(SII164_I2C_ADDRESS,
-+						SII164_DEVICE_ID_HIGH) << 8) |
-+		    (unsigned short)i2cReadReg(SII164_I2C_ADDRESS,
-+					       SII164_DEVICE_ID_LOW);
-=20
--	return deviceID;
-+	return device_id;
- }
-=20
- /*
-@@ -141,7 +141,7 @@ long sii164_init_chip(unsigned char edge_select,
-=20
- 	/* Check if SII164 Chip exists */
- 	if ((sii164_get_vendor_id() =3D=3D SII164_VENDOR_ID) &&
--	    (sii164GetDeviceID() =3D=3D SII164_DEVICE_ID)) {
-+	    (sii164_get_device_id() =3D=3D SII164_DEVICE_ID)) {
- 		/*
- 		 *  Initialize SII164 controller chip.
- 		 */
-@@ -250,41 +250,41 @@ long sii164_init_chip(unsigned char edge_select,
- #ifdef SII164_FULL_FUNCTIONS
-=20
- /*
-- *  sii164ResetChip
-+ *  sii164_reset_chip
-  *      This function resets the DVI Controller Chip.
-  */
--void sii164ResetChip(void)
-+void sii164_reset_chip(void)
- {
- 	/* Power down */
--	sii164SetPower(0);
--	sii164SetPower(1);
-+	sii164_set_power(0);
-+	sii164_set_power(1);
- }
-=20
- /*
-- * sii164GetChipString
-+ * sii164_get_chip_string
-  *      This function returns a char string name of the current DVI Contro=
-ller
-  *      chip.
-  *
-  *      It's convenient for application need to display the chip name.
-  */
--char *sii164GetChipString(void)
-+char *sii164_get_chip_string(void)
- {
--	return gDviCtrlChipName;
-+	return g_dvi_ctrl_chip_name;
- }
-=20
- /*
-- *  sii164SetPower
-+ *  sii164_set_power
-  *      This function sets the power configuration of the DVI Controller C=
-hip.
-  *
-  *  Input:
-- *      powerUp - Flag to set the power down or up
-+ *      power_up - Flag to set the power down or up
-  */
--void sii164SetPower(unsigned char powerUp)
-+void sii164_set_power(unsigned char power_up)
- {
- 	unsigned char config;
-=20
- 	config =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_CONFIGURATION);
--	if (powerUp =3D=3D 1) {
-+	if (power_up =3D=3D 1) {
- 		/* Power up the chip */
- 		config &=3D ~SII164_CONFIGURATION_POWER_MASK;
- 		config |=3D SII164_CONFIGURATION_POWER_NORMAL;
-@@ -298,109 +298,109 @@ void sii164SetPower(unsigned char powerUp)
- }
-=20
- /*
-- *  sii164SelectHotPlugDetectionMode
-+ *  sii164_select_hotplug_detection_mode
-  *      This function selects the mode of the hot plug detection.
-  */
- static
--void sii164SelectHotPlugDetectionMode(enum sii164_hot_plug_mode hotPlugMod=
-e)
-+void sii164_select_hotplug_detection_mode(enum sii164_hot_plug_mode hotplu=
-g_mode)
- {
--	unsigned char detectReg;
-+	unsigned char detect_reg;
-=20
--	detectReg =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT) &
--		    ~SII164_DETECT_MONITOR_SENSE_OUTPUT_FLAG;
--	switch (hotPlugMode) {
-+	detect_reg =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT) &
-+		     ~SII164_DETECT_MONITOR_SENSE_OUTPUT_FLAG;
-+	switch (hotplug_mode) {
- 	case SII164_HOTPLUG_DISABLE:
--		detectReg |=3D SII164_DETECT_MONITOR_SENSE_OUTPUT_HIGH;
-+		detect_reg |=3D SII164_DETECT_MONITOR_SENSE_OUTPUT_HIGH;
- 		break;
- 	case SII164_HOTPLUG_USE_MDI:
--		detectReg &=3D ~SII164_DETECT_INTERRUPT_MASK;
--		detectReg |=3D SII164_DETECT_INTERRUPT_BY_HTPLG_PIN;
--		detectReg |=3D SII164_DETECT_MONITOR_SENSE_OUTPUT_MDI;
-+		detect_reg &=3D ~SII164_DETECT_INTERRUPT_MASK;
-+		detect_reg |=3D SII164_DETECT_INTERRUPT_BY_HTPLG_PIN;
-+		detect_reg |=3D SII164_DETECT_MONITOR_SENSE_OUTPUT_MDI;
- 		break;
- 	case SII164_HOTPLUG_USE_RSEN:
--		detectReg |=3D SII164_DETECT_MONITOR_SENSE_OUTPUT_RSEN;
-+		detect_reg |=3D SII164_DETECT_MONITOR_SENSE_OUTPUT_RSEN;
- 		break;
- 	case SII164_HOTPLUG_USE_HTPLG:
--		detectReg |=3D SII164_DETECT_MONITOR_SENSE_OUTPUT_HTPLG;
-+		detect_reg |=3D SII164_DETECT_MONITOR_SENSE_OUTPUT_HTPLG;
- 		break;
- 	}
-=20
--	i2cWriteReg(SII164_I2C_ADDRESS, SII164_DETECT, detectReg);
-+	i2cWriteReg(SII164_I2C_ADDRESS, SII164_DETECT, detect_reg);
- }
-=20
- /*
-- *  sii164EnableHotPlugDetection
-+ *  sii164_enable_hotplug_detection
-  *      This function enables the Hot Plug detection.
-  *
-- *  enableHotPlug   - Enable (=3D1) / disable (=3D0) Hot Plug detection
-+ *  enable_hotplug   - Enable (=3D1) / disable (=3D0) Hot Plug detection
-  */
--void sii164EnableHotPlugDetection(unsigned char enableHotPlug)
-+void sii164_enable_hotplug_detection(unsigned char enable_hotplug)
- {
--	unsigned char detectReg;
-+	unsigned char detect_reg;
-=20
--	detectReg =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT);
-+	detect_reg =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT);
-=20
- 	/* Depending on each DVI controller, need to enable the hot plug based
- 	 * on each individual chip design.
- 	 */
--	if (enableHotPlug !=3D 0)
--		sii164SelectHotPlugDetectionMode(SII164_HOTPLUG_USE_MDI);
-+	if (enable_hotplug !=3D 0)
-+		sii164_select_hotplug_detection_mode(SII164_HOTPLUG_USE_MDI);
- 	else
--		sii164SelectHotPlugDetectionMode(SII164_HOTPLUG_DISABLE);
-+		sii164_select_hotplug_detection_mode(SII164_HOTPLUG_DISABLE);
- }
-=20
- /*
-- *  sii164IsConnected
-+ *  sii164_is_connected
-  *      Check if the DVI Monitor is connected.
-  *
-  *  Output:
-  *      0   - Not Connected
-  *      1   - Connected
-  */
--unsigned char sii164IsConnected(void)
-+unsigned char sii164_is_connected(void)
- {
--	unsigned char hotPlugValue;
-+	unsigned char hotplug_value;
-=20
--	hotPlugValue =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT) &
--		       SII164_DETECT_HOT_PLUG_STATUS_MASK;
--	if (hotPlugValue =3D=3D SII164_DETECT_HOT_PLUG_STATUS_ON)
-+	hotplug_value =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT) &
-+			SII164_DETECT_HOT_PLUG_STATUS_MASK;
-+	if (hotplug_value =3D=3D SII164_DETECT_HOT_PLUG_STATUS_ON)
- 		return 1;
- 	else
- 		return 0;
- }
-=20
- /*
-- *  sii164CheckInterrupt
-+ *  sii164_check_interrupt
-  *      Checks if interrupt has occurred.
-  *
-  *  Output:
-  *      0   - No interrupt
-  *      1   - Interrupt occurs
-  */
--unsigned char sii164CheckInterrupt(void)
-+unsigned char sii164_check_interrupt(void)
- {
--	unsigned char detectReg;
-+	unsigned char detect_reg;
-=20
--	detectReg =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT) &
--		    SII164_DETECT_MONITOR_STATE_MASK;
--	if (detectReg =3D=3D SII164_DETECT_MONITOR_STATE_CHANGE)
-+	detect_reg =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT) &
-+		     SII164_DETECT_MONITOR_STATE_MASK;
-+	if (detect_reg =3D=3D SII164_DETECT_MONITOR_STATE_CHANGE)
- 		return 1;
- 	else
- 		return 0;
- }
-=20
- /*
-- *  sii164ClearInterrupt
-+ *  sii164_clear_interrupt
-  *      Clear the hot plug interrupt.
-  */
--void sii164ClearInterrupt(void)
-+void sii164_clear_interrupt(void)
- {
--	unsigned char detectReg;
-+	unsigned char detect_reg;
-=20
- 	/* Clear the MDI interrupt */
--	detectReg =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT);
-+	detect_reg =3D i2cReadReg(SII164_I2C_ADDRESS, SII164_DETECT);
- 	i2cWriteReg(SII164_I2C_ADDRESS, SII164_DETECT,
--		    detectReg | SII164_DETECT_MONITOR_STATE_CLEAR);
-+		    detect_reg | SII164_DETECT_MONITOR_STATE_CLEAR);
- }
-=20
- #endif
-diff --git a/drivers/staging/sm750fb/ddk750_sii164.h b/drivers/staging/sm75=
-0fb/ddk750_sii164.h
-index 71a7c1cb42c4..52c087a15095 100644
---- a/drivers/staging/sm750fb/ddk750_sii164.h
-+++ b/drivers/staging/sm750fb/ddk750_sii164.h
-@@ -28,16 +28,16 @@ long sii164_init_chip(unsigned char edgeSelect,
- 		      unsigned char pllFilterValue);
-=20
- unsigned short sii164_get_vendor_id(void);
--unsigned short sii164GetDeviceID(void);
-+unsigned short sii164_get_device_id(void);
-=20
- #ifdef SII164_FULL_FUNCTIONS
--void sii164ResetChip(void);
--char *sii164GetChipString(void);
--void sii164SetPower(unsigned char powerUp);
--void sii164EnableHotPlugDetection(unsigned char enableHotPlug);
--unsigned char sii164IsConnected(void);
--unsigned char sii164CheckInterrupt(void);
--void sii164ClearInterrupt(void);
-+void sii164_reset_chip(void);
-+char *sii164_get_chip_string(void);
-+void sii164_set_power(unsigned char power_up);
-+void sii164_enable_hotplug_detection(unsigned char enable_hotplug);
-+unsigned char sii164_is_connected(void);
-+unsigned char sii164_check_interrupt(void);
-+void sii164_clear_interrupt(void);
- #endif
- /*
-  * below register definition is used for
---=20
-2.34.1
+The burden for who does vmxon will simply need to change from KVM itself
+to some common code that KVM depends on.  Probably not dissimilar to
+those nutty (sorry folks, just calling it as I see 'em) multi-KVM module
+patches that are floating around.
 
-
---votmzjuwq6leiwsp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEZG3C7x3FyKMfkYRK/mAkXmbbWfsFAmVuYesACgkQ/mAkXmbb
-Wftq4w//diGE37qR6yPqybaxRK+dT3BPFKnKLJP414ptv8vERlEZcoXmRGAyN0br
-9aI786ddeXQ/79KGZAd1U/gkKmY+wG0WFXDFWL3itbJL1z4juoJ2ZyPP6x+3orec
-KqwNKnpzySC44e/HHw4hrQFnfYsazlenRUjpBysqQrTBH7RmbnHL6DAds89Z18Pi
-uPM8ynd6OX+FLGNV2XFuI/YgTfAE3t5u8a75dn8F1q8jfGCea/krpTtnNdhbV3BS
-UZjZWeYkz+Hg5cLVOx8bKjo/QvJjdr97dBcaIXTMV9TzLFEIU/LG0WooTqwigFvp
-yH1BgTm1jCmHkxg73ywh9x2oaOCYwbDdFfxAUgzqKy3daKY9RTyP72xwqcP2u1bI
-FAZWAAPAoXkjxCUNPW3i7DwR77QtPQ/Yz/BOZ/HlJZRBEbmf6rc9JYgmEzne+rdi
-LEvuAPoI420gTGcodOGwEsBX7ztirh+6QzLs8GcUrDzilUy6iF4XRIy3dkBf/pyz
-AxsvXNlzd0EYzeSotp9Qh1vS6k36lNFle8DLOXiDlqRLeK8P0ElOsdQtRISfi3O1
-Y03bnb59tD4XrQOyVaJ+YU1r/wBBwUcSiUCmmbu/VkB6wuZz3LIvwEp6GFD1Etjo
-Rqm4AChrjrftTGh9kkPaFkrEqI0fhuVRrOzUsbS9KHnegB7TQMU=
-=x71A
------END PGP SIGNATURE-----
-
---votmzjuwq6leiwsp--
