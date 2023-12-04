@@ -2,85 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988F9803301
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2128803304
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbjLDMiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:38:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
+        id S233166AbjLDMiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:38:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDMiQ (ORCPT
+        with ESMTP id S230012AbjLDMiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:38:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751FFC3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:38:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F30EFC433C9;
-        Mon,  4 Dec 2023 12:38:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701693502;
-        bh=yqaR6ErWHcshvm8N6QI3ct1mVUW7AZz/LWvjQ4StwVk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fNDZesLDtBLB2L1RV/aHfUQjfHfL4TVTLkgiDAJCuUT/8/odnkovPAHHSudBFPJ2c
-         Cc5WI3rpUcAhe9RZXTngZR8E6Tu64WSzuASNeEqMRQAqRUNquXNdfRWnP67md/QWhk
-         dIsplNbK5pioHaVQVzH2zV90KfGZ/wq+++awwYCFUwFNLkZnzK5fiBTyf6LJq+KmTy
-         qJR/94hvBpFEbyg4R6ydXqNOQ93QiAD29Ipbe34GoVij7Tgl0gLI4H6CnznFFSwhIu
-         jzEMCEUJ12DVEEqEyHEXY78rjIgAExBR3PHvkUzP16G9yGOcDARkipIckP5JjLlMgJ
-         cVeere0t9pmwQ==
-Date:   Mon, 4 Dec 2023 12:38:16 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Kunwu Chan <chentao@kylinos.cn>
-Cc:     pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
-        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, daniel.baluta@nxp.com,
-        kai.vehmanen@linux.intel.com, perex@perex.cz, tiwai@suse.com,
-        chao.song@intel.com, kunwu.chan@hotmail.com,
-        sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: SOF: Fix null pointer dereference in sof_pci_probe
-Message-ID: <7ddeea58-f5d8-415c-8c07-c34be04d6a9c@sirena.org.uk>
-References: <20231123155424.1275919-1-chentao@kylinos.cn>
+        Mon, 4 Dec 2023 07:38:18 -0500
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F913106
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:38:24 -0800 (PST)
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-58d5657b6bbso6119636eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:38:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701693503; x=1702298303;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h3vC9DKCks31qlZTLEOBhiTQthQAnOeHRO8hvXnpMao=;
+        b=cSnBArcm/snzPQEzr9KgXSA6E5j2gw47bKumdYkxGhjvlXHOkP3qUB5xQ4lix10Bss
+         wCOQv8NB9g5EfCoB/Yjxuod2szOdtx3Yx7DOlKVJ+rKiQH+/VPiYaBA+kw4HGiBMwWLP
+         voLf9Tr1HbZjiCAkLj1qAP0yZlE5M+GUkBbfqnaayxscBsBIz8N/73eAdvCw2RL1bzPL
+         zvA3lTw22WUK2kemse4WVZMTevHlJmjDOZleGlHLYnRzWYK4AUED2XS4Rxr9jyCQs4pA
+         BnsG+rN660uPlsny36w+OtPOccHuaAg461tLv8zp21CQSFHRXx3KJjH+UMFlUfUZOop9
+         0rug==
+X-Gm-Message-State: AOJu0YwFwBPQ58YK3JmIdHNCmISS9EigaUDZOuI+WwHtKuy9yqbG1AjZ
+        4QQG7j0iq1xpu0si2ESPKjea0+rAgBBsHm+prS+Qal4myqIj
+X-Google-Smtp-Source: AGHT+IESeNWC3Bgx3X6azwZbL3Ppc+gmrsehq+ZGEfKcbxjlmKt1DBtS1guViyUXax/NYtTEmFF/thOINVngKT4GFkzVR9CWhWIs
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="d0eSK/GLwNSV2WiC"
-Content-Disposition: inline
-In-Reply-To: <20231123155424.1275919-1-chentao@kylinos.cn>
-X-Cookie: no maintenance:
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:d60c:b0:1fa:da34:99d9 with SMTP id
+ a12-20020a056870d60c00b001fada3499d9mr2934304oaq.5.1701693503574; Mon, 04 Dec
+ 2023 04:38:23 -0800 (PST)
+Date:   Mon, 04 Dec 2023 04:38:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cc17fb060bae647b@google.com>
+Subject: [syzbot] Monthly jfs report (Dec 2023)
+From:   syzbot <syzbot+list36f1468762da119bb5f8@syzkaller.appspotmail.com>
+To:     jfs-discussion@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello jfs maintainers/developers,
 
---d0eSK/GLwNSV2WiC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is a 31-day syzbot report for the jfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/jfs
 
-On Thu, Nov 23, 2023 at 11:54:24PM +0800, Kunwu Chan wrote:
-> devm_kasprintf() returns a pointer to dynamically allocated memory
-> which can be NULL upon failure.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 41 issues are still open and 20 have been fixed so far.
 
-In addition to the issues others mentioned this doesn't apply against
-current code, please check and resend.
+Some of the still happening issues:
 
---d0eSK/GLwNSV2WiC
-Content-Type: application/pgp-signature; name="signature.asc"
+Ref  Crashes Repro Title
+<1>  1436    Yes   general protection fault in lmLogSync (2)
+                   https://syzkaller.appspot.com/bug?extid=e14b1036481911ae4d77
+<2>  1187    Yes   UBSAN: array-index-out-of-bounds in xtInsert
+                   https://syzkaller.appspot.com/bug?extid=55a7541cfd25df68109e
+<3>  1102    Yes   kernel BUG in jfs_evict_inode
+                   https://syzkaller.appspot.com/bug?extid=9c0c58ea2e4887ab502e
+<4>  859     Yes   general protection fault in write_special_inodes
+                   https://syzkaller.appspot.com/bug?extid=c732e285f8fc38d15916
+<5>  441     Yes   kernel BUG in txUnlock
+                   https://syzkaller.appspot.com/bug?extid=a63afa301d1258d09267
+<6>  304     Yes   general protection fault in jfs_flush_journal
+                   https://syzkaller.appspot.com/bug?extid=194bfe3476f96782c0b6
+<7>  232     Yes   UBSAN: array-index-out-of-bounds in dbAllocBits
+                   https://syzkaller.appspot.com/bug?extid=ae2f5a27a07ae44b0f17
+<8>  219     Yes   KASAN: use-after-free Read in release_metapage
+                   https://syzkaller.appspot.com/bug?extid=f1521383cec5f7baaa94
+<9>  169     Yes   KASAN: null-ptr-deref Read in drop_buffers (2)
+                   https://syzkaller.appspot.com/bug?extid=d285c6d0b23c6033d520
+<10> 110     Yes   KASAN: use-after-free Read in diFree
+                   https://syzkaller.appspot.com/bug?extid=1964c915c8c3913b3d7a
 
------BEGIN PGP SIGNATURE-----
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVtyDcACgkQJNaLcl1U
-h9AkMgf+L+6WbJTiUIc2x5NzzC90SYhe4VZkSX5nDk0tim8631mq3u/Aw5PYWYlQ
-J/9yRTpDiNAhPHYBNBQPFPw5h+OtXs+9kvhmsOZUim018b7sohjzXr9Y0p8C4yAB
-zWL72CrBEGjPyw/jZlUQYsPl2Jfeuudj/MQwVKbtuXeLgbJbAdpmjTV3dOqaELXw
-SHENzHmSVx4GZlvNVVi4u2IO24v09WrjM+HpJRW/amFmSwq+jV2A1cnt/LZpDbrO
-p2rAlxXqOnjy1ciPBhHFhZ63js4ciuvpKYZa6bSBkyH6+zNzT+WViYnrKqwLLqYD
-QFByAyqvfoNzyEqIPZcRtevmf+5QMA==
-=8sV2
------END PGP SIGNATURE-----
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
---d0eSK/GLwNSV2WiC--
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
