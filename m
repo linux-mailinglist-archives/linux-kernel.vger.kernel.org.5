@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D51C80370E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E69588036F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345355AbjLDOia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:38:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        id S1345479AbjLDOgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:36:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236099AbjLDOiS (ORCPT
+        with ESMTP id S233602AbjLDOgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:38:18 -0500
+        Mon, 4 Dec 2023 09:36:03 -0500
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A076A3C16;
-        Mon,  4 Dec 2023 06:31:55 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4ERbqY018068;
-        Mon, 4 Dec 2023 14:31:37 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C71106;
+        Mon,  4 Dec 2023 06:36:09 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4AnLQp030548;
+        Mon, 4 Dec 2023 14:31:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=QUCFZf71Zi8Tixij1h1jdelRie3GQ/DKnvw4qTvIlcA=;
- b=cCtihzaf+/UNKnNlHyNy/PXbdiBBc63EwsdbE9pWg917o9kkSpVOm8epgufsWQalEmks
- HaglxFJWpTF3x7KUl9bCYoKM0J7eSIsn1oeXSqIjlYN/JmAsS3BAHNec2cUJ7qiDXjKL
- a5boltzDVxs3Nmo6C/k8rkcHF5ErmgLUuk0j0jnRNUAjt1YQmlgF0i4/ol72BpovYJ4K
- H9jCDuod1jlk13HuCG10YaEjtVnSDwpmiZ8e34R4syGsW6Uk/A25OP3aqhWI1ue3vNrZ
- mGW2XFMm3LViuhTR01loq77GYv9EEFGskFaU+caBE/pfxBfrHLiRAFqFFzy0DBfep+ss Dg== 
+ bh=Cjni/hlpt/X+AaOx2fHWVROji8DsyjSHHQQ+GVNzNUg=;
+ b=LWP6pyjYUsT4/MFb4+r5u/WMrk/e+YoMOspl5Knu1uifXtlJzri3CeufIuVeaW0vKt3w
+ YWif8nqfTjaLSbFpm+Kp5VXpayZwSJarHWqoqUDY3nGE3DO/wNsLnB35kXTTE6fKr2Qc
+ ireka6/OCU3gBIh5PWeBzh+w/aFNY0l1HIccUchsT6738cHsWJheCd9HxvLON2CfbVGl
+ s4jt//NRZvDnYXDp/BWtUTv4Qe101UP3+WPtPBBGssMkB/fSM/VK+WweBW/O95+uLK8X
+ niADSbBVo9Dop2veTP1JPzJXWuA5FQ/V9Nm2kV1c2IT6/8I4vNG7AttdP8LNkGfeJ5HX hA== 
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usghcr0cd-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usdbn8m82-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 14:31:36 +0000
+        Mon, 04 Dec 2023 14:31:43 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4EVZGe019554
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4EVfPl019600
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Dec 2023 14:31:35 GMT
+        Mon, 4 Dec 2023 14:31:41 GMT
 Received: from hu-mnaresh-hyd.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 4 Dec 2023 06:31:29 -0800
+ 15.2.1118.40; Mon, 4 Dec 2023 06:31:35 -0800
 From:   Maramaina Naresh <quic_mnaresh@quicinc.com>
 To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -57,10 +57,10 @@ CC:     Alim Akhtar <alim.akhtar@samsung.com>,
         <linux-mediatek@lists.infradead.org>,
         <linux-arm-msm@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <quic_cang@quicinc.com>,
-        <quic_nguyenb@quicinc.com>, Nitin Rawat <quic_nitirawa@quicinc.com>
-Subject: [PATCH V2 1/3] ufs: core: Add CPU latency QoS support for ufs driver
-Date:   Mon, 4 Dec 2023 20:00:59 +0530
-Message-ID: <20231204143101.64163-2-quic_mnaresh@quicinc.com>
+        <quic_nguyenb@quicinc.com>
+Subject: [PATCH V2 2/3] ufs: ufs-mediatek: Enable CPU latency PM QoS support for MEDIATEK SoC
+Date:   Mon, 4 Dec 2023 20:01:00 +0530
+Message-ID: <20231204143101.64163-3-quic_mnaresh@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231204143101.64163-1-quic_mnaresh@quicinc.com>
 References: <20231204143101.64163-1-quic_mnaresh@quicinc.com>
@@ -72,16 +72,16 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4g6kFdhW0GWU1fjn6cZ0aserfFbkSVQq
-X-Proofpoint-GUID: 4g6kFdhW0GWU1fjn6cZ0aserfFbkSVQq
+X-Proofpoint-ORIG-GUID: ygjjDnGUt9ZU1vBNg46PmO1f0ZZXD18j
+X-Proofpoint-GUID: ygjjDnGUt9ZU1vBNg46PmO1f0ZZXD18j
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-04_13,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- adultscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
- clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2312040108
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 clxscore=1015 spamscore=0
+ malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2312040106
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -91,238 +91,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register ufs driver to CPU latency PM QoS framework can improves
-ufs device random io performance.
+Revert the existing PM QoS feature from MEDIATEK UFS driver as similar
+PM QoS feature implementation is moved to core ufshcd and also enable
+CPU latency PM QoS capability for MEDIATEK SoC.
 
-PM QoS initialization will insert new QoS request into the CPU
-latency QoS list with the maximum latency PM_QOS_DEFAULT_VALUE
-value.
-
-UFS driver will vote for performance mode on scale up and power
-save mode for scale down.
-
-If clock scaling feature is not enabled then voting will be based
-on clock on or off condition.
-
-tiotest benchmark tool io performance results on sm8550 platform:
-
-1. Without PM QoS support
-	Type (Speed in)    | Average of 18 iterations
-	Random Write(IPOS) | 41065.13
-	Random Read(IPOS)  | 37101.3
-
-2. With PM QoS support
-	Type (Speed in)    | Average of 18 iterations
-	Random Write(IPOS) | 46784.9
-	Random Read(IPOS)  | 42943.4
-(Improvement % with PM QoS = ~15%).
-
-Co-developed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
 Signed-off-by: Maramaina Naresh <quic_mnaresh@quicinc.com>
 ---
- drivers/ufs/core/ufshcd-priv.h |  8 +++++
- drivers/ufs/core/ufshcd.c      | 62 ++++++++++++++++++++++++++++++++++
- include/ufs/ufshcd.h           | 16 +++++++++
- 3 files changed, 86 insertions(+)
+ drivers/ufs/host/ufs-mediatek.c | 20 +++-----------------
+ drivers/ufs/host/ufs-mediatek.h |  3 ---
+ 2 files changed, 3 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/ufs/core/ufshcd-priv.h b/drivers/ufs/core/ufshcd-priv.h
-index f42d99ce5bf1..536805f6c4e1 100644
---- a/drivers/ufs/core/ufshcd-priv.h
-+++ b/drivers/ufs/core/ufshcd-priv.h
-@@ -241,6 +241,14 @@ static inline void ufshcd_vops_config_scaling_param(struct ufs_hba *hba,
- 		hba->vops->config_scaling_param(hba, p, data);
+diff --git a/drivers/ufs/host/ufs-mediatek.c b/drivers/ufs/host/ufs-mediatek.c
+index fc61790d289b..d8ece88103b9 100644
+--- a/drivers/ufs/host/ufs-mediatek.c
++++ b/drivers/ufs/host/ufs-mediatek.c
+@@ -17,7 +17,6 @@
+ #include <linux/of_platform.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
+-#include <linux/pm_qos.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/reset.h>
+ #include <linux/soc/mediatek/mtk_sip_svc.h>
+@@ -626,21 +625,9 @@ static void ufs_mtk_init_host_caps(struct ufs_hba *hba)
+ 	dev_info(hba->dev, "caps: 0x%x", host->caps);
  }
  
-+static inline u32 ufshcd_vops_config_qos_vote(struct ufs_hba *hba)
-+{
-+	if (hba->vops && hba->vops->config_qos_vote)
-+		return hba->vops->config_qos_vote(hba);
-+
-+	return UFSHCD_QOS_DEFAULT_VOTE;
-+}
-+
- static inline void ufshcd_vops_reinit_notify(struct ufs_hba *hba)
+-static void ufs_mtk_boost_pm_qos(struct ufs_hba *hba, bool boost)
+-{
+-	struct ufs_mtk_host *host = ufshcd_get_variant(hba);
+-
+-	if (!host || !host->pm_qos_init)
+-		return;
+-
+-	cpu_latency_qos_update_request(&host->pm_qos_req,
+-				       boost ? 0 : PM_QOS_DEFAULT_VALUE);
+-}
+-
+ static void ufs_mtk_scale_perf(struct ufs_hba *hba, bool scale_up)
  {
- 	if (hba->vops && hba->vops->reinit_notify)
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index ae9936fc6ffb..13370febd2b5 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -1001,6 +1001,20 @@ static bool ufshcd_is_unipro_pa_params_tuning_req(struct ufs_hba *hba)
- 	return ufshcd_get_local_unipro_ver(hba) < UFS_UNIPRO_VER_1_6;
+ 	ufs_mtk_boost_crypt(hba, scale_up);
+-	ufs_mtk_boost_pm_qos(hba, scale_up);
  }
  
-+/**
-+ * ufshcd_pm_qos_perf - vote for PM QoS performance or power save mode
-+ * @hba: per adapter instance
-+ * @on: If True, vote for perf PM QoS mode otherwise power save mode
-+ */
-+static void ufshcd_pm_qos_perf(struct ufs_hba *hba, bool on)
-+{
-+	if (!hba->pm_qos_init)
-+		return;
-+
-+	cpu_latency_qos_update_request(&hba->pm_qos_req, on ? hba->qos_vote
-+							: PM_QOS_DEFAULT_VALUE);
-+}
-+
- /**
-  * ufshcd_set_clk_freq - set UFS controller clock frequencies
-  * @hba: per adapter instance
-@@ -1153,6 +1167,10 @@ static int ufshcd_scale_clks(struct ufs_hba *hba, unsigned long freq,
- 	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
- 			(scale_up ? "up" : "down"),
- 			ktime_to_us(ktime_sub(ktime_get(), start)), ret);
-+
-+	if (!ret)
-+		ufshcd_pm_qos_perf(hba, scale_up);
-+
- 	return ret;
- }
+ static void ufs_mtk_pwr_ctrl(struct ufs_hba *hba, bool on)
+@@ -937,6 +924,9 @@ static int ufs_mtk_init(struct ufs_hba *hba)
+ 	/* Enable clk scaling*/
+ 	hba->caps |= UFSHCD_CAP_CLK_SCALING;
  
-@@ -9204,6 +9222,8 @@ static int ufshcd_setup_clocks(struct ufs_hba *hba, bool on)
- 	if (ret)
- 		return ret;
- 
-+	if (!ufshcd_is_clkscaling_supported(hba))
-+		ufshcd_pm_qos_perf(hba, on);
- out:
- 	if (ret) {
- 		list_for_each_entry(clki, head, list) {
-@@ -9296,6 +9316,45 @@ static int ufshcd_init_clocks(struct ufs_hba *hba)
- 	return ret;
- }
- 
-+/**
-+ * ufshcd_pm_qos_init - initialize PM QoS instance
-+ * @hba: per adapter instance
-+ */
-+static void ufshcd_pm_qos_init(struct ufs_hba *hba)
-+{
-+	if (!(hba->caps & UFSHCD_CAP_PM_QOS))
-+		return;
++	/* Enable PM QoS */
++	hba->caps |= UFSHCD_CAP_PM_QOS;
 +
-+	/*
-+	 * called to configure PM QoS vote value for UFS host,
-+	 * expecting qos vote return value from caller else
-+	 * default vote value will be return.
-+	 */
-+	hba->qos_vote = ufshcd_vops_config_qos_vote(hba);
-+	cpu_latency_qos_add_request(&hba->pm_qos_req,
-+					PM_QOS_DEFAULT_VALUE);
-+
-+	if (cpu_latency_qos_request_active(&hba->pm_qos_req))
-+		hba->pm_qos_init = true;
-+
-+	dev_dbg(hba->dev, "%s: QoS %s, qos_vote: %u\n", __func__,
-+		hba->pm_qos_init ? "initialized" : "uninitialized",
-+		hba->qos_vote);
-+}
-+
-+/**
-+ * ufshcd_pm_qos_exit - remove instance from PM QoS
-+ * @hba: per adapter instance
-+ */
-+static void ufshcd_pm_qos_exit(struct ufs_hba *hba)
-+{
-+	if (!hba->pm_qos_init)
-+		return;
-+
-+	cpu_latency_qos_remove_request(&hba->pm_qos_req);
-+	hba->pm_qos_init = false;
-+}
-+
- static int ufshcd_variant_hba_init(struct ufs_hba *hba)
- {
- 	int err = 0;
-@@ -9381,6 +9440,7 @@ static int ufshcd_hba_init(struct ufs_hba *hba)
- static void ufshcd_hba_exit(struct ufs_hba *hba)
- {
- 	if (hba->is_powered) {
-+		ufshcd_pm_qos_exit(hba);
- 		ufshcd_exit_clk_scaling(hba);
- 		ufshcd_exit_clk_gating(hba);
- 		if (hba->eh_wq)
-@@ -10030,6 +10090,7 @@ static int ufshcd_suspend(struct ufs_hba *hba)
- 	ufshcd_vreg_set_lpm(hba);
- 	/* Put the host controller in low power mode if possible */
- 	ufshcd_hba_vreg_set_lpm(hba);
-+	ufshcd_pm_qos_perf(hba, false);
- 	return ret;
- }
+ 	hba->quirks |= UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL;
+ 	hba->quirks |= UFSHCD_QUIRK_MCQ_BROKEN_INTR;
+ 	hba->quirks |= UFSHCD_QUIRK_MCQ_BROKEN_RTC;
+@@ -959,10 +949,6 @@ static int ufs_mtk_init(struct ufs_hba *hba)
  
-@@ -10576,6 +10637,7 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- 	ufs_sysfs_add_nodes(hba->dev);
+ 	host->ip_ver = ufshcd_readl(hba, REG_UFS_MTK_IP_VER);
  
- 	device_enable_async_suspend(dev);
-+	ufshcd_pm_qos_init(hba);
- 	return 0;
+-	/* Initialize pm-qos request */
+-	cpu_latency_qos_add_request(&host->pm_qos_req, PM_QOS_DEFAULT_VALUE);
+-	host->pm_qos_init = true;
+-
+ 	goto out;
  
- free_tmf_queue:
-diff --git a/include/ufs/ufshcd.h b/include/ufs/ufshcd.h
-index d862c8ddce03..e9f2bad8934e 100644
---- a/include/ufs/ufshcd.h
-+++ b/include/ufs/ufshcd.h
-@@ -320,6 +320,9 @@ struct ufs_pwr_mode_info {
-  * @phy_initialization: used to initialize phys
-  * @device_reset: called to issue a reset pulse on the UFS device
-  * @config_scaling_param: called to configure clock scaling parameters
-+ * @config_qos_vote: called to configure PM QoS vote value for UFS host,
-+ *		     expecting qos vote return value from caller else
-+		     default vote value will be return
-  * @program_key: program or evict an inline encryption key
-  * @event_notify: called to notify important events
-  * @reinit_notify: called to notify reinit of UFSHCD during max gear switch
-@@ -362,6 +365,7 @@ struct ufs_hba_variant_ops {
- 	void	(*config_scaling_param)(struct ufs_hba *hba,
- 				struct devfreq_dev_profile *profile,
- 				struct devfreq_simple_ondemand_data *data);
-+	u32	(*config_qos_vote)(struct ufs_hba *hba);
- 	int	(*program_key)(struct ufs_hba *hba,
- 			       const union ufs_crypto_cfg_entry *cfg, int slot);
- 	void	(*event_notify)(struct ufs_hba *hba,
-@@ -720,6 +724,11 @@ enum ufshcd_caps {
- 	 * WriteBooster when scaling the clock down.
- 	 */
- 	UFSHCD_CAP_WB_WITH_CLK_SCALING			= 1 << 12,
-+
-+	/* This capability allows the host controller driver to use the PM QoS
-+	 * feature.
-+	 */
-+	UFSHCD_CAP_PM_QOS				= 1 << 13,
- };
+ out_variant_clear:
+diff --git a/drivers/ufs/host/ufs-mediatek.h b/drivers/ufs/host/ufs-mediatek.h
+index f76e80d91729..38eab95b0f79 100644
+--- a/drivers/ufs/host/ufs-mediatek.h
++++ b/drivers/ufs/host/ufs-mediatek.h
+@@ -7,7 +7,6 @@
+ #define _UFS_MEDIATEK_H
  
- struct ufs_hba_variant_params {
-@@ -793,6 +802,8 @@ enum ufshcd_mcq_opr {
- 	OPR_MAX,
- };
+ #include <linux/bitops.h>
+-#include <linux/pm_qos.h>
+ #include <linux/soc/mediatek/mtk_sip_svc.h>
  
-+#define UFSHCD_QOS_DEFAULT_VOTE 0
-+
- /**
-  * struct ufs_hba - per adapter private structure
-  * @mmio_base: UFSHCI base register address
-@@ -912,6 +923,8 @@ enum ufshcd_mcq_opr {
-  * @mcq_base: Multi circular queue registers base address
-  * @uhq: array of supported hardware queues
-  * @dev_cmd_queue: Queue for issuing device management commands
-+ * @pm_qos_req: PM QoS request handle
-+ * @pm_qos_init: flag to check if pm qos init completed
-  */
- struct ufs_hba {
- 	void __iomem *mmio_base;
-@@ -1076,6 +1089,9 @@ struct ufs_hba {
- 	struct ufs_hw_queue *uhq;
- 	struct ufs_hw_queue *dev_cmd_queue;
- 	struct ufshcd_mcq_opr_info_t mcq_opr[OPR_MAX];
-+	struct pm_qos_request pm_qos_req;
-+	bool pm_qos_init;
-+	u32 qos_vote;
- };
+ /*
+@@ -167,7 +166,6 @@ struct ufs_mtk_mcq_intr_info {
  
- /**
+ struct ufs_mtk_host {
+ 	struct phy *mphy;
+-	struct pm_qos_request pm_qos_req;
+ 	struct regulator *reg_va09;
+ 	struct reset_control *hci_reset;
+ 	struct reset_control *unipro_reset;
+@@ -178,7 +176,6 @@ struct ufs_mtk_host {
+ 	struct ufs_mtk_hw_ver hw_ver;
+ 	enum ufs_mtk_host_caps caps;
+ 	bool mphy_powered_on;
+-	bool pm_qos_init;
+ 	bool unipro_lpm;
+ 	bool ref_clk_enabled;
+ 	u16 ref_clk_ungating_wait_us;
 -- 
 2.34.1
 
