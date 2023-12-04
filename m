@@ -2,157 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B35ED8041A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75808041A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbjLDWVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:21:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
+        id S234513AbjLDWVn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 17:21:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235484AbjLDWVW (ORCPT
+        with ESMTP id S234558AbjLDWV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:21:22 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1269C19B4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:21:06 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d0a7b72203so12507985ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 14:21:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701728465; x=1702333265; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ehtQUXwRDZKnRhPirJrr51oPYToKsRQq0IW02tneMYk=;
-        b=CHiBSIMt7cCtjE0xahD6goP/Gv2seDpXWIKksbEDlzNJeAQCuE1BBt6O85BOvlICpU
-         vfrZeMw6uynrOsRr1LdVB7XQd7EjPP7hw0A+NGdDKOTqPjRjcibLluM/rfLl4iNoFcV5
-         r2rspn6wt0bzeTU1qwfxfnF8bWzbBo9lbzw3s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701728465; x=1702333265;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ehtQUXwRDZKnRhPirJrr51oPYToKsRQq0IW02tneMYk=;
-        b=qMDYPQi6ovdIOj7CSirh6Q4sQnIBdrUm67YGqJFjy3JEzdTgBV+90Tp0DyiEVnwqSu
-         M3SAWbj3TZ9PQJuyi9qaAXNVYcGCwERLWH4faWj7ZHS9YUcd43sYqBzHI36sPVB5hUFD
-         YlY1UHCYTZVT2GDGDn3nM8C9zzL/D9qnhT/OJGI+UqfJKRu5AtvQ/WAKnlpRolmyhnM6
-         PhoprJ1wZL7X2QL3VkAg/MzhohZ4DnsKAOkl4hcHrqST2SANFY3Zx3+fiav7ZIj71UjV
-         yt97WfRf2bVuegrm1oJ3ilwvLCsHkI67eEsr7YoJ+tRcuOgZN0tU2S/I5Ur8vXoO+vCn
-         bBGw==
-X-Gm-Message-State: AOJu0YzOGLlyG682ex/jHM4bpEopiEZ2In4PKWHZlaeYkI1LsR9g0fyF
-        fI6p7EZg1IuogNSNGCI6/fQtqA==
-X-Google-Smtp-Source: AGHT+IEClAA5AROgHOJAOd4Gtv6KL71/ZWQlR+Vg9YJXC8KdewByNC/42QtAGDPVsAEKARgH/jvh5w==
-X-Received: by 2002:a17:902:f544:b0:1cf:c649:529c with SMTP id h4-20020a170902f54400b001cfc649529cmr6001552plf.18.1701728465486;
-        Mon, 04 Dec 2023 14:21:05 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m3-20020a170902c44300b001d084f4fad5sm3707362plm.2.2023.12.04.14.21.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 14:21:04 -0800 (PST)
-Date:   Mon, 4 Dec 2023 14:21:04 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Michael Walle <mwalle@kernel.org>,
-        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] netlink: Return unsigned value for nla_len()
-Message-ID: <202312041420.886C9F3@keescook>
-References: <20231202202539.it.704-kees@kernel.org>
- <95924d9e-b373-40fd-993c-25b0bae55e61@6wind.com>
+        Mon, 4 Dec 2023 17:21:26 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AEBE102;
+        Mon,  4 Dec 2023 14:21:19 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D2E451FE77;
+        Mon,  4 Dec 2023 22:21:17 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B734F139AA;
+        Mon,  4 Dec 2023 22:21:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id IJHnFthQbmX8bAAAD6G6ig
+        (envelope-from <neilb@suse.de>); Mon, 04 Dec 2023 22:21:12 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <95924d9e-b373-40fd-993c-25b0bae55e61@6wind.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Chuck Lever" <chuck.lever@oracle.com>
+Cc:     "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Juri Lelli" <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] nfsd: Don't leave work of closing files to a work queue.
+In-reply-to: <ZW4FMaXIbJpz9q1P@tissot.1015granger.net>
+References: <20231204014042.6754-1-neilb@suse.de>,
+ <20231204014042.6754-3-neilb@suse.de>,
+ <ZW4FMaXIbJpz9q1P@tissot.1015granger.net>
+Date:   Tue, 05 Dec 2023 09:21:08 +1100
+Message-id: <170172846859.7109.7793736990503454731@noble.neil.brown.name>
+X-Spamd-Bar: ++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [6.40 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_SPAM_LONG(2.61)[0.745];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 6.40
+X-Rspamd-Queue-Id: D2E451FE77
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 10:22:25AM +0100, Nicolas Dichtel wrote:
-> Le 02/12/2023 à 21:25, Kees Cook a écrit :
-> > The return value from nla_len() is never expected to be negative, and can
-> > never be more than struct nlattr::nla_len (a u16). Adjust the prototype
-> > on the function. This will let GCC's value range optimization passes
-> > know that the return can never be negative, and can never be larger than
-> > u16. As recently discussed[1], this silences the following warning in
-> > GCC 12+:
+On Tue, 05 Dec 2023, Chuck Lever wrote:
+> On Mon, Dec 04, 2023 at 12:36:42PM +1100, NeilBrown wrote:
+> > The work of closing a file can have non-trivial cost.  Doing it in a
+> > separate work queue thread means that cost isn't imposed on the nfsd
+> > threads and an imbalance can be created.
 > > 
-> > net/wireless/nl80211.c: In function 'nl80211_set_cqm_rssi.isra':
-> > net/wireless/nl80211.c:12892:17: warning: 'memcpy' specified bound 18446744073709551615 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
-> > 12892 |                 memcpy(cqm_config->rssi_thresholds, thresholds,
-> >       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > 12893 |                        flex_array_size(cqm_config, rssi_thresholds,
-> >       |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > 12894 |                                        n_thresholds));
-> >       |                                        ~~~~~~~~~~~~~~
+> > I have evidence from a customer site when nfsd is being asked to modify
+> > many millions of files which causes sufficient memory pressure that some
+> > cache (in XFS I think) gets cleaned earlier than would be ideal.  When
+> > __dput (from the workqueue) calls __dentry_kill, xfs_fs_destroy_inode()
+> > needs to synchronously read back previously cached info from storage.
+> > This slows down the single thread that is making all the final __dput()
+> > calls for all the nfsd threads with the net result that files are added
+> > to the delayed_fput_list faster than they are removed, and the system
+> > eventually runs out of memory.
 > > 
-> > A future change would be to clamp the subtraction to make sure it never
-> > wraps around if nla_len is somehow less than NLA_HDRLEN, which would
-> > have the additional benefit of being defensive in the face of nlattr
-> > corruption or logic errors.
+> > To avoid this work imbalance that exhausts memory, this patch moves all
+> > work for closing files into the nfsd threads.  This means that when the
+> > work imposes a cost, that cost appears where it would be expected - in
+> > the work of the nfsd thread.
+> 
+> Thanks for pursuing this next step in the evolution of the NFSD
+> file cache.
+> 
+> Your problem statement should mention whether you have observed the
+> issue with an NFSv3 or an NFSv4 workload or if you see this issue
+> with both, since those two use cases are handled very differently
+> within the file cache implementation.
+
+I have added:
+
+=============
+The customer was using NFSv4.  I can demonstrate the same problem using
+NFSv3 or NFSv4 (which close files in different ways) by adding
+msleep(25) to for FMODE_WRITE files in __fput().  This simulates
+slowness in the final close and when writing through nfsd it causes
+/proc/sys/fs/file-nr to grow without bound.
+==============
+
+> 
+> 
+> > There are two changes to achieve this.
 > > 
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202311090752.hWcJWAHL-lkp@intel.com/ [1]
-> > Cc: Jakub Kicinski <kuba@kernel.org>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Eric Dumazet <edumazet@google.com>
-> > Cc: Paolo Abeni <pabeni@redhat.com>
-> > Cc: Johannes Berg <johannes@sipsolutions.net>
-> > Cc: Jeff Johnson <quic_jjohnson@quicinc.com>
-> > Cc: Michael Walle <mwalle@kernel.org>
-> > Cc: Max Schulze <max.schulze@online.de>
-> > Cc: netdev@vger.kernel.org
-> > Cc: linux-wireless@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > 1/ PF_RUNS_TASK_WORK is set and task_work_run() is called, so that the
+> >    final __dput() for any file closed by a given nfsd thread is handled
+> >    by that thread.  This ensures that the number of files that are
+> >    queued for a final close is limited by the number of threads and
+> >    cannot grow without bound.
+> > 
+> > 2/ Files opened for NFSv3 are never explicitly closed by the client and are
+> >   kept open by the server in the "filecache", which responds to memory
+> >   pressure, is garbage collected even when there is no pressure, and
+> >   sometimes closes files when there is particular need such as for
+> >   rename.
+> 
+> There is a good reason for close-on-rename: IIRC we want to avoid
+> triggering a silly-rename on NFS re-exports.
+> 
+> Also, I think we do want to close cached garbage-collected files
+> quickly, even without memory pressure. Files left open in this way
+> can conflict with subsequent NFSv4 OPENs that might hand out a
+> delegation as long as no other clients are using them. Files held
+> open by the file cache will interfere with that.
+
+Yes - I agree all this behaviour is appropriate.  I was just setting out
+the current behaviour of the filecache so that effect of the proposed
+changes would be easier to understand.
+
+> 
+> 
+> >   These files currently have filp_close() called in a dedicated
+> >   work queue, so their __dput() can have no effect on nfsd threads.
+> > 
+> >   This patch discards the work queue and instead has each nfsd thread
+> >   call flip_close() on as many as 8 files from the filecache each time
+> >   it acts on a client request (or finds there are no pending client
+> >   requests).  If there are more to be closed, more threads are woken.
+> >   This spreads the work of __dput() over multiple threads and imposes
+> >   any cost on those threads.
+> > 
+> >   The number 8 is somewhat arbitrary.  It needs to be greater than 1 to
+> >   ensure that files are closed more quickly than they can be added to
+> >   the cache.  It needs to be small enough to limit the per-request
+> >   delays that will be imposed on clients when all threads are busy
+> >   closing files.
+> 
+> IMO we want to explicitly separate the mechanisms of handling
+> garbage-collected files and non-garbage-collected files.
+
+I think we already have explicit separation.
+garbage-collected files are handled to nfsd_file_display_list_delayed(),
+either when they fall off the lru or through nfsd_file_close_inode() -
+which is used by lease and fsnotify callbacks.
+
+non-garbage collected files are closed directly by nfsd_file_put().
+
+> 
+> In the non-garbage-collected (NFSv4) case, the kthread can wait
+> for everything it has opened to be closed. task_work seems
+> appropriate for that IIUC.
+
+Agreed.  The task_work change is all that we need for NFSv4.
+
+> 
+> The problem with handling a limited number of garbage-collected
+> items is that once the RPC workload stops, any remaining open
+> files will remain open because garbage collection has effectively
+> stopped. We really need those files closed out within a couple of
+> seconds.
+
+Why would garbage collection stop?
+nfsd_filecache_laundrette is still running on the system_wq.  It will
+continue to garbage collect and queue files using
+nfsd_file_display_list_delayed().
+That will wake up an nfsd thread if none is running.  The thread will
+close a few, but will first wake another thread if there was more than
+it was willing to manage.  So the closing of files should proceed
+promptly, and if any close operation takes a non-trivial amount of time,
+more threads will be woken and work will proceed in parallel.
+
+> 
+> We used to have watermarks in the nfsd_file_put() path to kick
+> garbage-collection if there were too many open files. Instead,
+> waiting for the GC thread to make progress before recycling the
+> kthread might be beneficial.
+
+"too many" is only meaningful in the context of memory usage.  Having
+the shrinker callback is exactly the right way to address this - nothing
+else is needed.
+
+The GC thread is expected to be CPU intensive.  The main cause of delay
+is skipping over lots of files that cannot be closed yet - looking for
+files that can.  This could delay the closing of files, but not nearly
+as much as the delays I saw caused by synchronous IO.
+
+We might be able to improve the situation a bit by queuing files as soon
+as list_lru_walk finds them, rather than gathering them all into a list
+and the queuing them one by one from that list.
+
+It isn't clear to me that there is an issue here that needs fixing.
+
+> 
+> And, as we discussed in a previous thread, replacing the per-
+> namespace worker with a parallel mechanism would help GC proceed
+> more quickly to reduce the flush/close backlog for NFSv3.
+
+This patch discards the per-namespace worker.
+
+The GC step (searching the LRU list for "garbage") is still
+single-threaded.  The filecache is shared by all net-namespaces and
+there is a single GC thread for the filecache.
+
+Files that are found *were* filp_close()ed by per-net-fs work-items.
+With this patch the filp_close() is called by the nfsd threads.
+
+The file __fput of those files *was* handled by a single system-wide
+work-item.  With this patch they are called by the nfsd thread which
+called the filp_close().
+
+> 
+> 
+> > Signed-off-by: NeilBrown <neilb@suse.de>
 > > ---
-> >  v2:
-> >  - do not clamp return value (kuba)
-> >  - adjust NLA_HDRLEN to be u16 also
-> >  v1: https://lore.kernel.org/all/20231130200058.work.520-kees@kernel.org/
-> > ---
-> >  include/net/netlink.h        | 2 +-
-> >  include/uapi/linux/netlink.h | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >  fs/nfsd/filecache.c | 62 ++++++++++++++++++---------------------------
+> >  fs/nfsd/filecache.h |  1 +
+> >  fs/nfsd/nfssvc.c    |  6 +++++
+> >  3 files changed, 32 insertions(+), 37 deletions(-)
 > > 
-> > diff --git a/include/net/netlink.h b/include/net/netlink.h
-> > index 83bdf787aeee..7678a596a86b 100644
-> > --- a/include/net/netlink.h
-> > +++ b/include/net/netlink.h
-> > @@ -1200,7 +1200,7 @@ static inline void *nla_data(const struct nlattr *nla)
-> >   * nla_len - length of payload
-> >   * @nla: netlink attribute
-> >   */
-> > -static inline int nla_len(const struct nlattr *nla)
-> > +static inline u16 nla_len(const struct nlattr *nla)
-> >  {
-> >  	return nla->nla_len - NLA_HDRLEN;
-> >  }
-> > diff --git a/include/uapi/linux/netlink.h b/include/uapi/linux/netlink.h
-> > index f87aaf28a649..270feed9fd63 100644
-> > --- a/include/uapi/linux/netlink.h
-> > +++ b/include/uapi/linux/netlink.h
-> > @@ -247,7 +247,7 @@ struct nlattr {
+> > diff --git a/fs/nfsd/filecache.c b/fs/nfsd/filecache.c
+> > index ee9c923192e0..55268b7362d4 100644
+> > --- a/fs/nfsd/filecache.c
+> > +++ b/fs/nfsd/filecache.c
+> > @@ -39,6 +39,7 @@
+> >  #include <linux/fsnotify.h>
+> >  #include <linux/seq_file.h>
+> >  #include <linux/rhashtable.h>
+> > +#include <linux/task_work.h>
 > >  
-> >  #define NLA_ALIGNTO		4
-> >  #define NLA_ALIGN(len)		(((len) + NLA_ALIGNTO - 1) & ~(NLA_ALIGNTO - 1))
-> > -#define NLA_HDRLEN		((int) NLA_ALIGN(sizeof(struct nlattr)))
-> > +#define NLA_HDRLEN		((__u16) NLA_ALIGN(sizeof(struct nlattr)))
-> I wonder if this may break the compilation of some userspace tools with errors
-> like comparing signed and unsigned values.
+> >  #include "vfs.h"
+> >  #include "nfsd.h"
+> > @@ -61,13 +62,10 @@ static DEFINE_PER_CPU(unsigned long, nfsd_file_total_age);
+> >  static DEFINE_PER_CPU(unsigned long, nfsd_file_evictions);
+> >  
+> >  struct nfsd_fcache_disposal {
+> > -	struct work_struct work;
+> >  	spinlock_t lock;
+> >  	struct list_head freeme;
+> >  };
+> >  
+> > -static struct workqueue_struct *nfsd_filecache_wq __read_mostly;
+> > -
+> >  static struct kmem_cache		*nfsd_file_slab;
+> >  static struct kmem_cache		*nfsd_file_mark_slab;
+> >  static struct list_lru			nfsd_file_lru;
+> > @@ -421,10 +419,31 @@ nfsd_file_dispose_list_delayed(struct list_head *dispose)
+> >  		spin_lock(&l->lock);
+> >  		list_move_tail(&nf->nf_lru, &l->freeme);
+> >  		spin_unlock(&l->lock);
+> > -		queue_work(nfsd_filecache_wq, &l->work);
+> > +		svc_wake_up(nn->nfsd_serv);
+> >  	}
+> >  }
+> >  
+> > +/**
+> > + * nfsd_file_dispose_some
+> 
+> This needs a short description and:
+> 
+>  * @nn: namespace to check
+> 
+> Or something more enlightening than that.
+> 
+> Also, the function name exposes mechanism; I think I'd prefer a name
+> that is more abstract, such as nfsd_file_net_release() ?
 
-Should I drop this part, then?
+Sometimes exposing mechanism is a good thing.  It means the casual reader
+can get a sense of what the function does without having to look at the
+function.
+So I still prefer my name, but I changed to nfsd_file_net_dispose() so
+as suit your preference, but follow the established pattern of using the
+word "dispose".  "release" usually just drops a reference.  "dispose"
+makes it clear that the thing is going away now.
 
--- 
-Kees Cook
+/**
+ * nfsd_file_net_dispose - deal with nfsd_files wait to be disposed.
+ * @nn: nfsd_net in which to find files to be disposed.
+ *
+ * When files held open for nfsv3 are removed from the filecache, whether
+ * due to memory pressure or garbage collection, they are queued to
+ * a per-net-ns queue.  This function completes the disposal, either
+ * directly or by waking another nfsd thread to help with the work.
+ */
+ 
+> 
+> > + *
+> > + */
+> > +void nfsd_file_dispose_some(struct nfsd_net *nn)
+> > +{
+> > +	struct nfsd_fcache_disposal *l = nn->fcache_disposal;
+> > +	LIST_HEAD(dispose);
+> > +	int i;
+> > +
+> > +	if (list_empty(&l->freeme))
+> > +		return;
+> > +	spin_lock(&l->lock);
+> > +	for (i = 0; i < 8 && !list_empty(&l->freeme); i++)
+> > +		list_move(l->freeme.next, &dispose);
+> > +	spin_unlock(&l->lock);
+> > +	if (!list_empty(&l->freeme))
+> > +		svc_wake_up(nn->nfsd_serv);
+> > +	nfsd_file_dispose_list(&dispose);
+..
+> > @@ -949,6 +950,7 @@ nfsd(void *vrqstp)
+> >  	}
+> >  
+> >  	current->fs->umask = 0;
+> > +	current->flags |= PF_RUNS_TASK_WORK;
+> >  
+> >  	atomic_inc(&nfsdstats.th_cnt);
+> >  
+> > @@ -963,6 +965,10 @@ nfsd(void *vrqstp)
+> >  
+> >  		svc_recv(rqstp);
+> >  		validate_process_creds();
+> > +
+> > +		nfsd_file_dispose_some(nn);
+> > +		if (task_work_pending(current))
+> > +			task_work_run();
+> 
+> I'd prefer that these task_work details reside inside
+> nfsd_file_dispose_some(), or whatever we want to call to call it ...
+
+I don't agree.  They are performing quite separate tasks.
+nfsd_file_net_dispose() is disposing files queued for this net.
+task_run_work() is finalising the close of any file closed by this
+thread, including those used for NFSv4 that are not touched by
+nfsd_file_dispose_some().
+I don't think they belong in the same function.
+
+Thanks,
+NeilBrown
