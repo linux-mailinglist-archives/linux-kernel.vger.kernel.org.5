@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C854802E18
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C926C802E2B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232671AbjLDIrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:47:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
+        id S234846AbjLDIrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjLDIrB (ORCPT
+        with ESMTP id S230154AbjLDIrX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:47:01 -0500
-X-Greylist: delayed 55780 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 00:47:04 PST
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6F11A4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:47:04 -0800 (PST)
-Received: from alexious$zju.edu.cn ( [124.90.105.255] ) by
- ajax-webmail-mail-app4 (Coremail) ; Mon, 4 Dec 2023 16:46:54 +0800
- (GMT+08:00)
-X-Originating-IP: [124.90.105.255]
-Date:   Mon, 4 Dec 2023 16:46:54 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   alexious@zju.edu.cn
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     "Alex Deucher" <alexander.deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "David Airlie" <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        "Jerome Glisse" <jglisse@redhat.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Mon, 4 Dec 2023 03:47:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD4C9B
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:47:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EB18C433C8;
+        Mon,  4 Dec 2023 08:47:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701679649;
+        bh=yWpIH3H9GnySfKiZ2biNF5eZOOjjW8G9znn26WMmWq8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Bt3tvQd17fxJG1QhyKLzWmqZhTgFXCUi8NohfV/BqaRjuxBDL9Fj93TEqKVCQ3prU
+         cECFd3wX7hGQ1ZsUi1sVIDMP1aDiiYTgo30xsobza+llJl7HUKfOl7kkwRGQroloEl
+         yd2Q8qCHNPURUuMjaU/6j+kOWycz0WtS3sXUOyrE3qfJ0RfyJuklEFWgs1tcOV3oXr
+         x869c6XKfR4pe6BA3BUr8dc6woUP3GgRaQiA0e9xzy5syhPrdc0yyIIv0EFZ11zBg+
+         El8TBWLd6TH3ElkOkDmVHbNPpODQxtFJYZbsMQLOInyjm0yqJ75sqGIHTuYHICIIgG
+         yggzDxlBMAi+Q==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Juergen Gross <jgross@suse.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org,
         linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] drm/radeon/dpm: fix a memleak in
- sumo_parse_power_table
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
- 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <b1fa2827-61fb-4594-8f80-e5083be8d5fa@amd.com>
-References: <20231203171643.3287229-1-alexious@zju.edu.cn>
- <b1fa2827-61fb-4594-8f80-e5083be8d5fa@amd.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Subject: [PATCH 1/2] x86/xen: add CPU dependencies for 32-bit build
+Date:   Mon,  4 Dec 2023 09:47:01 +0100
+Message-Id: <20231204084722.3789473-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Message-ID: <7a726f38.19f2f.18c340249f7.Coremail.alexious@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgDHzTX_kW1lKXdIAA--.13484W
-X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgUTAGVsUQg1KAABsY
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBBbSAwMy4xMi4yMyB1bSAxODoxNiBzY2hyaWViIFpoaXBlbmcgTHU6Cj4gPiBUaGUgcmRldi0+
-cG0uZHBtLnBzIGFsbG9jYXRlZCBieSBrY2FsbG9jIHNob3VsZCBiZSBmcmVlZCBpbiBldmVyeQo+
-ID4gZm9sbG93aW5nIGVycm9yLWhhbmRsaW5nIHBhdGguIEhvd2V2ZXIsIGluIHRoZSBlcnJvci1o
-YW5kbGluZyBvZgo+ID4gcmRldi0+cG0ucG93ZXJfc3RhdGVbaV0uY2xvY2tfaW5mbyB0aGUgcmRl
-di0+cG0uZHBtLnBzIGlzIG5vdCBmcmVlZCwKPiA+IHJlc3VsdGluZyBpbiBhIG1lbWxlYWsgaW4g
-dGhpcyBmdW5jdGlvbi4KPiA+Cj4gPiBGaXhlczogODBlYTJjMTI5Yzc2ICgiZHJtL3JhZGVvbi9r
-bXM6IGFkZCBkcG0gc3VwcG9ydCBmb3Igc3VtbyBhc2ljcyAodjIpIikKPiA+IFNpZ25lZC1vZmYt
-Ynk6IFpoaXBlbmcgTHUgPGFsZXhpb3VzQHpqdS5lZHUuY24+Cj4gPiAtLS0KPiA+ICAgZHJpdmVy
-cy9ncHUvZHJtL3JhZGVvbi9zdW1vX2RwbS5jIHwgMSArCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAx
-IGluc2VydGlvbigrKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vcmFkZW9u
-L3N1bW9fZHBtLmMgYi9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3N1bW9fZHBtLmMKPiA+IGluZGV4
-IGY3NGYzODFhZjA1Zi4uYmRlNjQwMDUzNzA4IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUv
-ZHJtL3JhZGVvbi9zdW1vX2RwbS5jCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3N1
-bW9fZHBtLmMKPiA+IEBAIC0xNDk0LDYgKzE0OTQsNyBAQCBzdGF0aWMgaW50IHN1bW9fcGFyc2Vf
-cG93ZXJfdGFibGUoc3RydWN0IHJhZGVvbl9kZXZpY2UgKnJkZXYpCj4gPiAgIAkJbm9uX2Nsb2Nr
-X2luZm8gPSAoc3RydWN0IF9BVE9NX1BQTElCX05PTkNMT0NLX0lORk8gKikKPiA+ICAgCQkJJm5v
-bl9jbG9ja19pbmZvX2FycmF5LT5ub25DbG9ja0luZm9bbm9uX2Nsb2NrX2FycmF5X2luZGV4XTsK
-PiA+ICAgCQlpZiAoIXJkZXYtPnBtLnBvd2VyX3N0YXRlW2ldLmNsb2NrX2luZm8pCj4gPiArCQkJ
-a2ZyZWUocmRldi0+cG0uZHBtLnBzKTsKPiA+ICAgCQkJcmV0dXJuIC1FSU5WQUw7Cj4gCj4gVGhh
-dCBjaGFuZ2UgaXMgb2J2aW91c2x5IG5vdCBjb3JyZWN0IHNpbmNlIHlvdSBub3cgYWx3YXlzIHJl
-dHVybiAtRUlOVkFMLgo+IAo+IFlvdSBuZWVkIHRvIGF0IGxlYXN0IGFkZCB7fSBoZXJlLgo+IAoK
-SSdtIHNvcnJ5IGZvciBteSBtaXN0YWtlIGFuZCBJJ2xsIHNlbmQgYSBuZXcgcGF0Y2ggc29vbi4K
-ClJlZ2FyZHMsClpoaXBlbmcK
+From: Arnd Bergmann <arnd@arndb.de>
+
+Xen only supports modern CPUs even when running a 32-bit kernel, and it now
+requires a kernel built for a 64 byte (or larger) cache line:
+
+In file included from <command-line>:
+In function 'xen_vcpu_setup',
+    inlined from 'xen_vcpu_setup_restore' at arch/x86/xen/enlighten.c:111:3,
+    inlined from 'xen_vcpu_restore' at arch/x86/xen/enlighten.c:141:3:
+include/linux/compiler_types.h:435:45: error: call to '__compiletime_assert_287' declared with attribute error: BUILD_BUG_ON failed: sizeof(*vcpup) > SMP_CACHE_BYTES
+arch/x86/xen/enlighten.c:166:9: note: in expansion of macro 'BUILD_BUG_ON'
+  166 |         BUILD_BUG_ON(sizeof(*vcpup) > SMP_CACHE_BYTES);
+      |         ^~~~~~~~~~~~
+
+Enforce the dependency with a whitelist of CPU configurations. In normal
+distro kernels, CONFIG_X86_GENERIC is enabled, and this works fine. When this
+is not set, still allow Xen to be built on kernels that target a 64-bit
+capable CPU.
+
+Fixes: db2832309a82 ("x86/xen: fix percpu vcpu_info allocation")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/x86/xen/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/xen/Kconfig b/arch/x86/xen/Kconfig
+index 9b1ec5d8c99c..a65fc2ae15b4 100644
+--- a/arch/x86/xen/Kconfig
++++ b/arch/x86/xen/Kconfig
+@@ -9,6 +9,7 @@ config XEN
+ 	select PARAVIRT_CLOCK
+ 	select X86_HV_CALLBACK_VECTOR
+ 	depends on X86_64 || (X86_32 && X86_PAE)
++	depends on X86_64 || (X86_GENERIC || MPENTIUM4 || MCORE2 || MATOM || MK8)
+ 	depends on X86_LOCAL_APIC && X86_TSC
+ 	help
+ 	  This is the Linux Xen port.  Enabling this will allow the
+-- 
+2.39.2
+
