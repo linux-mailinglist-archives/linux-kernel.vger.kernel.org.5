@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44178029A9
+	by mail.lfdr.de (Postfix) with ESMTP id 1895B8029A8
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 01:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234180AbjLDA4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 19:56:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53804 "EHLO
+        id S234193AbjLDA4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 19:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbjLDA4N (ORCPT
+        with ESMTP id S234187AbjLDA4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 19:56:13 -0500
+        Sun, 3 Dec 2023 19:56:15 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9667FDB
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 16:56:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A6EE3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 16:56:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701651376; x=1733187376;
+  t=1701651380; x=1733187380;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=N1m2FgfeJd7EYp9t50bsylaS/HSZzX+QgPDpfP3BPM4=;
-  b=AGi/cOzdScrHq8ZeaO7c0RSr0hruvX2m3X91P2FHlLYjPZroh8TgM3ah
-   JISvIQd8ZB2LkTNbH3asWGJXgx+uaSFAoaBJorhAhWnysI45GHImKUpA+
-   SFNJTN8K0W38XDlX43ewOhoBAN49llqouvdul7hwiw5LU/vpxXe7fYLc5
-   Rb3v4ApDtdJHChXO3JRuMmZ6+H28j1YwDl1B+jHTKzMbHGJGgmhHaJKjL
-   fJTVaNw9jKMOHRnKU42Ax3MHnMeXYbKy9Qy7tgj3FvbH+R2Lj/U8J7K3x
-   oxb3H28LbMBL0pmhyoDM5wB0UMqbCREIisBYoj5fDIsHGYzLWZx5On8pf
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="393406174"
+  bh=72e1M3J9aryPX6HEQz2VVfmxSKjHpEWh4TFbPZNpZLI=;
+  b=HXN4BG3Neci6eG1yv8foxXJ9+kq5u+kL6CyJWl9KrW4rXveI9YhyuZO4
+   Yv+hElKBmMynkEmx98ZhdXu0y5+LzHAPDMowzaZkod2A1S4LRl6KWpTP1
+   Sg5tGqEtjI5pd3dDQkv0sZfpA7MMmFlZEAh3El9EIZgZFKvNnHZP4M582
+   68bAIIkQsnsT2wKWK8cKFVONNMAqUiN5/aPAdZZ4qP4LJtm4PxQxhxQ3u
+   cqqg9BiF0oylZcEVg+GEraiLSwrsAfYYjtK2gAX1JvWOisi8YTZI8zALp
+   bwUOhWMxvSfUKbRvtFw6gs9DPJ8PuXnwEhHktyeCd+XP/JClIapU7uREg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="393406179"
 X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
-   d="scan'208";a="393406174"
+   d="scan'208";a="393406179"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 16:56:09 -0800
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 16:56:16 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="861212189"
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="861212196"
 X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
-   d="scan'208";a="861212189"
+   d="scan'208";a="861212196"
 Received: from shsensorbuild2.sh.intel.com ([10.239.134.197])
-  by FMSMGA003.fm.intel.com with ESMTP; 03 Dec 2023 16:56:06 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Dec 2023 16:56:13 -0800
 From:   Wentong Wu <wentong.wu@intel.com>
 To:     gregkh@linuxfoundation.org, tomas.winkler@intel.com,
         hdegoede@redhat.com, krzk@kernel.org
 Cc:     andriy.shevchenko@linux.intel.com, sakari.ailus@linux.intel.com,
         alexander.usyskin@intel.com, zhifeng.wang@intel.com,
         linux-kernel@vger.kernel.org, Wentong Wu <wentong.wu@intel.com>
-Subject: [PATCH v2 1/2] mei: Add transport driver for IVSC device
-Date:   Mon,  4 Dec 2023 08:55:43 +0800
-Message-Id: <1701651344-20723-2-git-send-email-wentong.wu@intel.com>
+Subject: [PATCH v2 2/2] mei: Add MEI hardware support for IVSC device
+Date:   Mon,  4 Dec 2023 08:55:44 +0800
+Message-Id: <1701651344-20723-3-git-send-email-wentong.wu@intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1701651344-20723-1-git-send-email-wentong.wu@intel.com>
 References: <1701651344-20723-1-git-send-email-wentong.wu@intel.com>
@@ -61,1510 +61,513 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Intel visual sensing controller (IVSC) device is designed to control
-the camera sharing between host IPU for media usage and IVSC for context
-sensing (face detection).
+The protocol used for the IVSC device to communicate with HOST is MEI.
+The MEI hardware interfaces for the IVSC device are implemented.
 
-IVSC is exposed to HOST as an SPI device and the message protocol over
-the SPI BUS for communicating with the IVSC device is implemented. This
-is the backend of mei framework for IVSC device, which usually handles
-the hardware data transfer. The mei_csi and mei_ace are the clients of
-IVSC mei framework.
-
-The firmware downloading for the IVSC device is implemented as well.
+The APIs are exposed by MEI framework to mei clients, e.g. mei_csi and
+mei_ace.
 
 Signed-off-by: Wentong Wu <wentong.wu@intel.com>
+Reviewed-by: Alexander Usyskin <alexander.usyskin@intel.com>
 Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 ---
- drivers/misc/mei/Kconfig         |  11 +
- drivers/misc/mei/Makefile        |   4 +
- drivers/misc/mei/vsc-fw-loader.c | 822 +++++++++++++++++++++++++++++++++++++++
- drivers/misc/mei/vsc-tp.c        | 555 ++++++++++++++++++++++++++
- drivers/misc/mei/vsc-tp.h        |  50 +++
- 5 files changed, 1442 insertions(+)
- create mode 100644 drivers/misc/mei/vsc-fw-loader.c
- create mode 100644 drivers/misc/mei/vsc-tp.c
- create mode 100644 drivers/misc/mei/vsc-tp.h
+ drivers/misc/mei/Kconfig        |  13 ++
+ drivers/misc/mei/Makefile       |   3 +
+ drivers/misc/mei/platform-vsc.c | 450 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 466 insertions(+)
+ create mode 100644 drivers/misc/mei/platform-vsc.c
 
 diff --git a/drivers/misc/mei/Kconfig b/drivers/misc/mei/Kconfig
-index 37db142..470957a 100644
+index 470957a..858bd70 100644
 --- a/drivers/misc/mei/Kconfig
 +++ b/drivers/misc/mei/Kconfig
-@@ -60,6 +60,17 @@ config INTEL_MEI_GSC
- 	  tasks such as graphics card firmware update and security
- 	  tasks.
+@@ -71,6 +71,19 @@ config INTEL_MEI_VSC_HW
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called mei-vsc-hw.
  
-+config INTEL_MEI_VSC_HW
-+	tristate "Intel visual sensing controller device transport driver"
-+	depends on ACPI && SPI
-+	depends on GPIOLIB || COMPILE_TEST
++config INTEL_MEI_VSC
++	tristate "Intel visual sensing controller device with ME interface"
++	depends on INTEL_MEI_VSC_HW
++	depends on INTEL_MEI
 +	help
-+	  Intel SPI transport driver between host and Intel visual sensing
-+	  controller (IVSC) device.
++	  Intel MEI over SPI driver for Intel visual sensing controller
++	  (IVSC) device embedded in IA platform. It supports camera sharing
++	  between IVSC for context sensing and IPU for typical media usage.
++	  Select this config should enable transport layer for IVSC device.
 +
 +	  This driver can also be built as a module. If so, the module
-+	  will be called mei-vsc-hw.
++	  will be called mei-vsc.
 +
  source "drivers/misc/mei/hdcp/Kconfig"
  source "drivers/misc/mei/pxp/Kconfig"
  source "drivers/misc/mei/gsc_proxy/Kconfig"
 diff --git a/drivers/misc/mei/Makefile b/drivers/misc/mei/Makefile
-index 14aee25..3d0da19 100644
+index 3d0da19..6f9fdbf 100644
 --- a/drivers/misc/mei/Makefile
 +++ b/drivers/misc/mei/Makefile
-@@ -31,3 +31,7 @@ CFLAGS_mei-trace.o = -I$(src)
- obj-$(CONFIG_INTEL_MEI_HDCP) += hdcp/
- obj-$(CONFIG_INTEL_MEI_PXP) += pxp/
- obj-$(CONFIG_INTEL_MEI_GSC_PROXY) += gsc_proxy/
+@@ -35,3 +35,6 @@ obj-$(CONFIG_INTEL_MEI_GSC_PROXY) += gsc_proxy/
+ obj-$(CONFIG_INTEL_MEI_VSC_HW) += mei-vsc-hw.o
+ mei-vsc-hw-y := vsc-tp.o
+ mei-vsc-hw-y += vsc-fw-loader.o
 +
-+obj-$(CONFIG_INTEL_MEI_VSC_HW) += mei-vsc-hw.o
-+mei-vsc-hw-y := vsc-tp.o
-+mei-vsc-hw-y += vsc-fw-loader.o
-diff --git a/drivers/misc/mei/vsc-fw-loader.c b/drivers/misc/mei/vsc-fw-loader.c
++obj-$(CONFIG_INTEL_MEI_VSC) += mei-vsc.o
++mei-vsc-y := platform-vsc.o
+diff --git a/drivers/misc/mei/platform-vsc.c b/drivers/misc/mei/platform-vsc.c
 new file mode 100644
-index 0000000..3e151f0
+index 0000000..8d303c6
 --- /dev/null
-+++ b/drivers/misc/mei/vsc-fw-loader.c
-@@ -0,0 +1,822 @@
++++ b/drivers/misc/mei/platform-vsc.c
+@@ -0,0 +1,450 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + * Copyright (c) 2023, Intel Corporation.
-+ * Intel Visual Sensing Controller Transport Layer Linux driver
++ * Intel Visual Sensing Controller Interface Linux driver
 + */
 +
-+#include <linux/acpi.h>
 +#include <linux/align.h>
-+#include <linux/bitfield.h>
-+#include <linux/bits.h>
++#include <linux/cache.h>
 +#include <linux/cleanup.h>
-+#include <linux/firmware.h>
-+#include <linux/sizes.h>
-+#include <linux/slab.h>
-+#include <linux/string_helpers.h>
-+#include <linux/types.h>
-+
-+#include <asm-generic/unaligned.h>
-+
-+#include "vsc-tp.h"
-+
-+#define VSC_MAGIC_NUM			0x49505343 /* IPSC */
-+#define VSC_MAGIC_FW			0x49574653 /* IWFS */
-+#define VSC_MAGIC_FILE			0x46564353 /* FVCS */
-+
-+#define VSC_ADDR_BASE			0xE0030000
-+#define VSC_EFUSE_ADDR			(VSC_ADDR_BASE + 0x038)
-+#define VSC_STRAP_ADDR			(VSC_ADDR_BASE + 0x100)
-+
-+#define VSC_STRAP_KEY_SRC_MASK		BIT(0)
-+#define VSC_STRAP_KEY_SRC_PRODUCT	1
-+
-+#define VSC_MAINSTEPPING_VERSION_MASK	GENMASK(7, 4)
-+#define VSC_MAINSTEPPING_VERSION_A	0
-+
-+#define VSC_SUBSTEPPING_VERSION_MASK	GENMASK(3, 0)
-+#define VSC_SUBSTEPPING_VERSION_0	0
-+#define VSC_SUBSTEPPING_VERSION_1	2
-+
-+#define VSC_BOOT_IMG_OPTION_MASK	GENMASK(15, 0)
-+
-+#define VSC_SKU_CFG_LOCATION		0x5001A000
-+#define VSC_SKU_MAX_SIZE		4100u
-+
-+#define VSC_ACE_IMG_CNT			2
-+#define VSC_CSI_IMG_CNT			4
-+#define VSC_IMG_CNT_MAX			6
-+
-+#define VSC_ROM_PKG_SIZE		256u
-+#define VSC_FW_PKG_SIZE			512u
-+
-+#define VSC_CSI_IMAGE_NAME_FMT		"ivsc_fw_a1.bin"
-+#define VSC_CSI_IMAGE_NAME_FMT_PROD	"ivsc_fw_a1_%s.bin"
-+#define VSC_ACE_IMAGE_NAME_FMT		"ivsc_pkg_%s_0_a1.bin"
-+#define VSC_ACE_IMAGE_NAME_FMT_PROD	"ivsc_pkg_%s_0_a1_%s.bin"
-+#define VSC_CFG_IMAGE_NAME_FMT		"ivsc_skucfg_%s_0_1_a1.bin"
-+#define VSC_CFG_IMAGE_NAME_FMT_PROD	"ivsc_skucfg_%s_0_1_a1_%s.bin"
-+
-+#define VSC_IMAGE_FOLDER_FMT		"vsc/soc_a1"
-+#define VSC_IMAGE_FOLDER_FMT_PROD	"vsc/soc_a1_%s"
-+
-+#define VSC_IMAGE_NAME_MAX_LEN		64
-+#define VSC_IMAGE_PATH_MAX_LEN		128
-+
-+#define VSC_SENSOR_NAME_MAX_LEN		16
-+#define VSC_IMAGE_FOLDER_NAME_MAX_LEN	32
-+#define VSC_IMAGE_NAME_SUFFIX_MAX_LEN	8
-+
-+/* command id */
-+enum {
-+	VSC_CMD_QUERY = 0,
-+	VSC_CMD_DL_SET = 1,
-+	VSC_CMD_DL_START = 2,
-+	VSC_CMD_DL_CONT = 3,
-+	VSC_CMD_DUMP_MEM = 4,
-+	VSC_CMD_GET_CONT = 8,
-+	VSC_CMD_CAM_BOOT = 10,
-+};
-+
-+/* command ack token */
-+enum {
-+	VSC_TOKEN_BOOTLOADER_REQ = 1,
-+	VSC_TOKEN_DUMP_RESP = 4,
-+	VSC_TOKEN_ERROR = 7,
-+};
-+
-+/* image type */
-+enum {
-+	VSC_IMG_BOOTLOADER_TYPE = 1,
-+	VSC_IMG_CSI_EM7D_TYPE,
-+	VSC_IMG_CSI_SEM_TYPE,
-+	VSC_IMG_CSI_RUNTIME_TYPE,
-+	VSC_IMG_ACE_VISION_TYPE,
-+	VSC_IMG_ACE_CFG_TYPE,
-+	VSC_IMG_SKU_CFG_TYPE,
-+};
-+
-+/* image fragments */
-+enum {
-+	VSC_IMG_BOOTLOADER_FRAG,
-+	VSC_IMG_CSI_SEM_FRAG,
-+	VSC_IMG_CSI_RUNTIME_FRAG,
-+	VSC_IMG_ACE_VISION_FRAG,
-+	VSC_IMG_ACE_CFG_FRAG,
-+	VSC_IMG_CSI_EM7D_FRAG,
-+	VSC_IMG_SKU_CFG_FRAG,
-+	VSC_IMG_FRAG_MAX
-+};
-+
-+struct vsc_rom_cmd {
-+	__le32 magic;
-+	__u8 cmd_id;
-+	union {
-+		/* download start */
-+		struct {
-+			__u8 img_type;
-+			__le16 option;
-+			__le32 img_len;
-+			__le32 img_loc;
-+			__le32 crc;
-+			DECLARE_FLEX_ARRAY(__u8, res);
-+		} __packed dl_start;
-+		/* download set */
-+		struct {
-+			__u8 option;
-+			__le16 img_cnt;
-+			DECLARE_FLEX_ARRAY(__le32, payload);
-+		} __packed dl_set;
-+		/* download continue */
-+		struct {
-+			__u8 end_flag;
-+			__le16 len;
-+			/* 8 is the offset of payload */
-+			__u8 payload[VSC_ROM_PKG_SIZE - 8];
-+		} __packed dl_cont;
-+		/* dump memory */
-+		struct {
-+			__u8 res;
-+			__le16 len;
-+			__le32 addr;
-+			DECLARE_FLEX_ARRAY(__u8, payload);
-+		} __packed dump_mem;
-+		/* 5 is the offset of padding */
-+		__u8 padding[VSC_ROM_PKG_SIZE - 5];
-+	} data;
-+};
-+
-+struct vsc_rom_cmd_ack {
-+	__le32 magic;
-+	__u8 token;
-+	__u8 type;
-+	__u8 res[2];
-+	__u8 payload[];
-+};
-+
-+struct vsc_fw_cmd {
-+	__le32 magic;
-+	__u8 cmd_id;
-+	union {
-+		struct {
-+			__le16 option;
-+			__u8 img_type;
-+			__le32 img_len;
-+			__le32 img_loc;
-+			__le32 crc;
-+			DECLARE_FLEX_ARRAY(__u8, res);
-+		} __packed dl_start;
-+		struct {
-+			__le16 option;
-+			__u8 img_cnt;
-+			DECLARE_FLEX_ARRAY(__le32, payload);
-+		} __packed dl_set;
-+		struct {
-+			__le32 addr;
-+			__u8 len;
-+			DECLARE_FLEX_ARRAY(__u8, payload);
-+		} __packed dump_mem;
-+		struct {
-+			__u8 resv[3];
-+			__le32 crc;
-+			DECLARE_FLEX_ARRAY(__u8, payload);
-+		} __packed boot;
-+		/* 5 is the offset of padding */
-+		__u8 padding[VSC_FW_PKG_SIZE - 5];
-+	} data;
-+};
-+
-+struct vsc_img {
-+	__le32 magic;
-+	__le32 option;
-+	__le32 image_count;
-+	__le32 image_location[VSC_IMG_CNT_MAX];
-+};
-+
-+struct vsc_fw_sign {
-+	__le32 magic;
-+	__le32 image_size;
-+	__u8 image[];
-+};
-+
-+struct vsc_image_code_data {
-+	/* fragment index */
-+	u8 frag_index;
-+	/* image type */
-+	u8 image_type;
-+};
-+
-+struct vsc_img_frag {
-+	u8 type;
-+	u32 location;
-+	const u8 *data;
-+	u32 size;
-+};
-+
-+/**
-+ * struct vsc_fw_loader - represent vsc firmware loader
-+ * @dev: device used to request fimware
-+ * @tp: transport layer used with the firmware loader
-+ * @csi: CSI image
-+ * @ace: ACE image
-+ * @cfg: config image
-+ * @tx_buf: tx buffer
-+ * @rx_buf: rx buffer
-+ * @option: command option
-+ * @count: total image count
-+ * @key_src: key source
-+ * @folder: image folder
-+ * @sensor_name: camera sensor name
-+ * @suffix: image name suffix
-+ * @frags: image fragments
-+ */
-+struct vsc_fw_loader {
-+	struct device *dev;
-+	struct vsc_tp *tp;
-+
-+	const struct firmware *csi;
-+	const struct firmware *ace;
-+	const struct firmware *cfg;
-+
-+	void *tx_buf;
-+	void *rx_buf;
-+
-+	u16 option;
-+	u16 count;
-+	u32 key_src;
-+
-+	char folder[VSC_IMAGE_FOLDER_NAME_MAX_LEN];
-+	char sensor_name[VSC_SENSOR_NAME_MAX_LEN];
-+	char suffix[VSC_IMAGE_NAME_SUFFIX_MAX_LEN];
-+
-+	struct vsc_img_frag frags[VSC_IMG_FRAG_MAX];
-+};
-+
-+static inline u32 vsc_sum_crc(void *data, size_t size)
-+{
-+	u32 crc = 0;
-+	size_t i;
-+
-+	for (i = 0; i < size; i++)
-+		crc += *((u8 *)data + i);
-+
-+	return crc;
-+}
-+
-+/* get sensor name to construct image name */
-+static int vsc_get_sensor_name(struct vsc_fw_loader *fw_loader,
-+			       struct device *dev)
-+{
-+	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER };
-+	union acpi_object obj = {
-+		.type = ACPI_TYPE_INTEGER,
-+		.integer.value = 1,
-+	};
-+	struct acpi_object_list arg_list = {
-+		.count = 1,
-+		.pointer = &obj,
-+	};
-+	union acpi_object *ret_obj;
-+	acpi_handle handle;
-+	acpi_status status;
-+	int ret = 0;
-+
-+	handle = ACPI_HANDLE(dev);
-+	if (!handle)
-+		return -EINVAL;
-+
-+	status = acpi_evaluate_object(handle, "SID", &arg_list, &buffer);
-+	if (ACPI_FAILURE(status)) {
-+		dev_err(dev, "can't evaluate SID method: %d\n", status);
-+		return -ENODEV;
-+	}
-+
-+	ret_obj = buffer.pointer;
-+	if (!ret_obj) {
-+		dev_err(dev, "can't locate ACPI buffer\n");
-+		return -ENODEV;
-+	}
-+
-+	if (ret_obj->type != ACPI_TYPE_STRING) {
-+		dev_err(dev, "found non-string entry\n");
-+		ret = -ENODEV;
-+		goto out_free_buff;
-+	}
-+
-+	/* string length excludes trailing NUL */
-+	if (ret_obj->string.length >= sizeof(fw_loader->sensor_name)) {
-+		dev_err(dev, "sensor name buffer too small\n");
-+		ret = -EINVAL;
-+		goto out_free_buff;
-+	}
-+
-+	memcpy(fw_loader->sensor_name, ret_obj->string.pointer,
-+	       ret_obj->string.length);
-+
-+	string_lower(fw_loader->sensor_name, fw_loader->sensor_name);
-+
-+out_free_buff:
-+	ACPI_FREE(buffer.pointer);
-+
-+	return ret;
-+}
-+
-+static int vsc_identify_silicon(struct vsc_fw_loader *fw_loader)
-+{
-+	struct vsc_rom_cmd_ack *ack = fw_loader->rx_buf;
-+	struct vsc_rom_cmd *cmd = fw_loader->tx_buf;
-+	u8 version, sub_version;
-+	int ret;
-+
-+	/* identify stepping information */
-+	cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+	cmd->cmd_id = VSC_CMD_DUMP_MEM;
-+	cmd->data.dump_mem.addr = cpu_to_le32(VSC_EFUSE_ADDR);
-+	cmd->data.dump_mem.len = cpu_to_le16(sizeof(__le32));
-+	ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, ack, VSC_ROM_PKG_SIZE);
-+	if (ret)
-+		return ret;
-+	if (ack->token == VSC_TOKEN_ERROR)
-+		return -EINVAL;
-+
-+	cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+	cmd->cmd_id = VSC_CMD_GET_CONT;
-+	ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, ack, VSC_ROM_PKG_SIZE);
-+	if (ret)
-+		return ret;
-+	if (ack->token != VSC_TOKEN_DUMP_RESP)
-+		return -EINVAL;
-+
-+	version = FIELD_GET(VSC_MAINSTEPPING_VERSION_MASK, ack->payload[0]);
-+	sub_version = FIELD_GET(VSC_SUBSTEPPING_VERSION_MASK, ack->payload[0]);
-+
-+	if (version != VSC_MAINSTEPPING_VERSION_A)
-+		return -EINVAL;
-+
-+	if (sub_version != VSC_SUBSTEPPING_VERSION_0 &&
-+	    sub_version != VSC_SUBSTEPPING_VERSION_1)
-+		return -EINVAL;
-+
-+	dev_info(fw_loader->dev, "silicon stepping version is %u:%u\n",
-+		 version, sub_version);
-+
-+	/* identify strap information */
-+	cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+	cmd->cmd_id = VSC_CMD_DUMP_MEM;
-+	cmd->data.dump_mem.addr = cpu_to_le32(VSC_STRAP_ADDR);
-+	cmd->data.dump_mem.len = cpu_to_le16(sizeof(__le32));
-+	ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, ack, VSC_ROM_PKG_SIZE);
-+	if (ret)
-+		return ret;
-+	if (ack->token == VSC_TOKEN_ERROR)
-+		return -EINVAL;
-+
-+	cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+	cmd->cmd_id = VSC_CMD_GET_CONT;
-+	ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, ack, VSC_ROM_PKG_SIZE);
-+	if (ret)
-+		return ret;
-+	if (ack->token != VSC_TOKEN_DUMP_RESP)
-+		return -EINVAL;
-+
-+	fw_loader->key_src = FIELD_GET(VSC_STRAP_KEY_SRC_MASK, ack->payload[2]);
-+
-+	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
-+		strscpy(fw_loader->suffix, "prod", sizeof(fw_loader->suffix));
-+
-+	return 0;
-+}
-+
-+static int vsc_identify_csi_image(struct vsc_fw_loader *fw_loader)
-+{
-+	char path[VSC_IMAGE_PATH_MAX_LEN];
-+	char name[VSC_IMAGE_NAME_MAX_LEN];
-+	const struct firmware *image;
-+	struct vsc_fw_sign *sign;
-+	struct vsc_img *img;
-+	unsigned int i;
-+	int ret;
-+
-+	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
-+		snprintf(name, sizeof(name), VSC_CSI_IMAGE_NAME_FMT_PROD,
-+			 fw_loader->suffix);
-+	else
-+		snprintf(name, sizeof(name), VSC_CSI_IMAGE_NAME_FMT);
-+
-+	snprintf(path, sizeof(path), "%s/%s", fw_loader->folder, name);
-+
-+	ret = request_firmware(&image, path, fw_loader->dev);
-+	if (ret)
-+		return ret;
-+
-+	img = (struct vsc_img *)image->data;
-+	if (!img) {
-+		ret = -ENOENT;
-+		goto err_release_image;
-+	}
-+
-+	if (le32_to_cpu(img->magic) != VSC_MAGIC_FILE) {
-+		ret = -EINVAL;
-+		goto err_release_image;
-+	}
-+
-+	if (le32_to_cpu(img->image_count) != VSC_CSI_IMG_CNT) {
-+		ret = -EINVAL;
-+		goto err_release_image;
-+	}
-+	fw_loader->count += le32_to_cpu(img->image_count) - 1;
-+
-+	fw_loader->option =
-+		FIELD_GET(VSC_BOOT_IMG_OPTION_MASK, le32_to_cpu(img->option));
-+
-+	sign = (struct vsc_fw_sign *)
-+		(img->image_location + le32_to_cpu(img->image_count));
-+
-+	for (i = 0; i < VSC_CSI_IMG_CNT; i++) {
-+		/* mapping from CSI image index to image code data */
-+		static const struct vsc_image_code_data csi_image_map[] = {
-+			{ VSC_IMG_BOOTLOADER_FRAG, VSC_IMG_BOOTLOADER_TYPE },
-+			{ VSC_IMG_CSI_SEM_FRAG, VSC_IMG_CSI_SEM_TYPE },
-+			{ VSC_IMG_CSI_RUNTIME_FRAG, VSC_IMG_CSI_RUNTIME_TYPE },
-+			{ VSC_IMG_CSI_EM7D_FRAG, VSC_IMG_CSI_EM7D_TYPE },
-+		};
-+		struct vsc_img_frag *frag;
-+
-+		if ((u8 *)sign + sizeof(*sign) > image->data + image->size) {
-+			ret = -EINVAL;
-+			goto err_release_image;
-+		}
-+
-+		if (le32_to_cpu(sign->magic) != VSC_MAGIC_FW) {
-+			ret = -EINVAL;
-+			goto err_release_image;
-+		}
-+
-+		if (!le32_to_cpu(img->image_location[i])) {
-+			ret = -EINVAL;
-+			goto err_release_image;
-+		}
-+
-+		frag = &fw_loader->frags[csi_image_map[i].frag_index];
-+
-+		frag->data = sign->image;
-+		frag->size = le32_to_cpu(sign->image_size);
-+		frag->location = le32_to_cpu(img->image_location[i]);
-+		frag->type = csi_image_map[i].image_type;
-+
-+		sign = (struct vsc_fw_sign *)
-+			(sign->image + le32_to_cpu(sign->image_size));
-+	}
-+
-+	fw_loader->csi = image;
-+
-+	return 0;
-+
-+err_release_image:
-+	release_firmware(image);
-+
-+	return ret;
-+}
-+
-+static int vsc_identify_ace_image(struct vsc_fw_loader *fw_loader)
-+{
-+	char path[VSC_IMAGE_PATH_MAX_LEN];
-+	char name[VSC_IMAGE_NAME_MAX_LEN];
-+	const struct firmware *image;
-+	struct vsc_fw_sign *sign;
-+	struct vsc_img *img;
-+	unsigned int i;
-+	int ret;
-+
-+	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
-+		snprintf(name, sizeof(name), VSC_ACE_IMAGE_NAME_FMT_PROD,
-+			 fw_loader->sensor_name, fw_loader->suffix);
-+	else
-+		snprintf(name, sizeof(name), VSC_ACE_IMAGE_NAME_FMT,
-+			 fw_loader->sensor_name);
-+
-+	snprintf(path, sizeof(path), "%s/%s", fw_loader->folder, name);
-+
-+	ret = request_firmware(&image, path, fw_loader->dev);
-+	if (ret)
-+		return ret;
-+
-+	img = (struct vsc_img *)image->data;
-+	if (!img) {
-+		ret = -ENOENT;
-+		goto err_release_image;
-+	}
-+
-+	if (le32_to_cpu(img->magic) != VSC_MAGIC_FILE) {
-+		ret = -EINVAL;
-+		goto err_release_image;
-+	}
-+
-+	if (le32_to_cpu(img->image_count) != VSC_ACE_IMG_CNT) {
-+		ret = -EINVAL;
-+		goto err_release_image;
-+	}
-+	fw_loader->count += le32_to_cpu(img->image_count);
-+
-+	sign = (struct vsc_fw_sign *)
-+		(img->image_location + le32_to_cpu(img->image_count));
-+
-+	for (i = 0; i < VSC_ACE_IMG_CNT; i++) {
-+		/* mapping from ACE image index to image code data */
-+		static const struct vsc_image_code_data ace_image_map[] = {
-+			{ VSC_IMG_ACE_VISION_FRAG, VSC_IMG_ACE_VISION_TYPE },
-+			{ VSC_IMG_ACE_CFG_FRAG, VSC_IMG_ACE_CFG_TYPE },
-+		};
-+		struct vsc_img_frag *frag, *last_frag;
-+		u8 frag_index;
-+
-+		if ((u8 *)sign + sizeof(*sign) > image->data + image->size) {
-+			ret = -EINVAL;
-+			goto err_release_image;
-+		}
-+
-+		if (le32_to_cpu(sign->magic) != VSC_MAGIC_FW) {
-+			ret = -EINVAL;
-+			goto err_release_image;
-+		}
-+
-+		frag_index = ace_image_map[i].frag_index;
-+		frag = &fw_loader->frags[frag_index];
-+
-+		frag->data = sign->image;
-+		frag->size = le32_to_cpu(sign->image_size);
-+		frag->location = le32_to_cpu(img->image_location[i]);
-+		frag->type = ace_image_map[i].image_type;
-+
-+		if (!frag->location) {
-+			last_frag = &fw_loader->frags[frag_index - 1];
-+			frag->location =
-+				ALIGN(last_frag->location + last_frag->size, SZ_4K);
-+		}
-+
-+		sign = (struct vsc_fw_sign *)
-+			(sign->image + le32_to_cpu(sign->image_size));
-+	}
-+
-+	fw_loader->ace = image;
-+
-+	return 0;
-+
-+err_release_image:
-+	release_firmware(image);
-+
-+	return ret;
-+}
-+
-+static int vsc_identify_cfg_image(struct vsc_fw_loader *fw_loader)
-+{
-+	struct vsc_img_frag *frag = &fw_loader->frags[VSC_IMG_SKU_CFG_FRAG];
-+	char path[VSC_IMAGE_PATH_MAX_LEN];
-+	char name[VSC_IMAGE_NAME_MAX_LEN];
-+	const struct firmware *image;
-+	u32 size;
-+	int ret;
-+
-+	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
-+		snprintf(name, sizeof(name), VSC_CFG_IMAGE_NAME_FMT_PROD,
-+			 fw_loader->sensor_name, fw_loader->suffix);
-+	else
-+		snprintf(name, sizeof(name), VSC_CFG_IMAGE_NAME_FMT,
-+			 fw_loader->sensor_name);
-+
-+	snprintf(path, sizeof(path), "%s/%s", fw_loader->folder, name);
-+
-+	ret = request_firmware(&image, path, fw_loader->dev);
-+	if (ret)
-+		return ret;
-+
-+	/* identify image size */
-+	if (image->size <= sizeof(u32) || image->size > VSC_SKU_MAX_SIZE) {
-+		ret = -EINVAL;
-+		goto err_release_image;
-+	}
-+
-+	size = le32_to_cpu(*((__le32 *)image->data)) + sizeof(u32);
-+	if (image->size != size) {
-+		ret = -EINVAL;
-+		goto err_release_image;
-+	}
-+
-+	frag->data = image->data;
-+	frag->size = image->size;
-+	frag->type = VSC_IMG_SKU_CFG_TYPE;
-+	frag->location = VSC_SKU_CFG_LOCATION;
-+
-+	fw_loader->cfg = image;
-+
-+	return 0;
-+
-+err_release_image:
-+	release_firmware(image);
-+
-+	return ret;
-+}
-+
-+static int vsc_download_bootloader(struct vsc_fw_loader *fw_loader)
-+{
-+	struct vsc_img_frag *frag = &fw_loader->frags[VSC_IMG_BOOTLOADER_FRAG];
-+	struct vsc_rom_cmd_ack *ack = fw_loader->rx_buf;
-+	struct vsc_rom_cmd *cmd = fw_loader->tx_buf;
-+	u32 len, c_len;
-+	size_t remain;
-+	const u8 *p;
-+	int ret;
-+
-+	cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+	cmd->cmd_id = VSC_CMD_QUERY;
-+	ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, ack, VSC_ROM_PKG_SIZE);
-+	if (ret)
-+		return ret;
-+	if (ack->token != VSC_TOKEN_DUMP_RESP &&
-+	    ack->token != VSC_TOKEN_BOOTLOADER_REQ)
-+		return -EINVAL;
-+
-+	cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+	cmd->cmd_id = VSC_CMD_DL_START;
-+	cmd->data.dl_start.option = cpu_to_le16(fw_loader->option);
-+	cmd->data.dl_start.img_type = frag->type;
-+	cmd->data.dl_start.img_len = cpu_to_le32(frag->size);
-+	cmd->data.dl_start.img_loc = cpu_to_le32(frag->location);
-+
-+	c_len = offsetof(struct vsc_rom_cmd, data.dl_start.crc);
-+	cmd->data.dl_start.crc = cpu_to_le32(vsc_sum_crc(cmd, c_len));
-+
-+	ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, NULL, VSC_ROM_PKG_SIZE);
-+	if (ret)
-+		return ret;
-+
-+	p = frag->data;
-+	remain = frag->size;
-+
-+	/* download image data */
-+	while (remain > 0) {
-+		len = min(remain, sizeof(cmd->data.dl_cont.payload));
-+
-+		cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+		cmd->cmd_id = VSC_CMD_DL_CONT;
-+		cmd->data.dl_cont.len = cpu_to_le16(len);
-+		cmd->data.dl_cont.end_flag = remain == len;
-+		memcpy(cmd->data.dl_cont.payload, p, len);
-+
-+		ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, NULL, VSC_ROM_PKG_SIZE);
-+		if (ret)
-+			return ret;
-+
-+		p += len;
-+		remain -= len;
-+	}
-+
-+	return 0;
-+}
-+
-+static int vsc_download_firmware(struct vsc_fw_loader *fw_loader)
-+{
-+	struct vsc_fw_cmd *cmd = fw_loader->tx_buf;
-+	unsigned int i, index = 0;
-+	u32 c_len;
-+	int ret;
-+
-+	cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+	cmd->cmd_id = VSC_CMD_DL_SET;
-+	cmd->data.dl_set.img_cnt = cpu_to_le16(fw_loader->count);
-+	put_unaligned_le16(fw_loader->option, &cmd->data.dl_set.option);
-+
-+	for (i = VSC_IMG_CSI_SEM_FRAG; i <= VSC_IMG_CSI_EM7D_FRAG; i++) {
-+		struct vsc_img_frag *frag = &fw_loader->frags[i];
-+
-+		cmd->data.dl_set.payload[index++] = cpu_to_le32(frag->location);
-+		cmd->data.dl_set.payload[index++] = cpu_to_le32(frag->size);
-+	}
-+
-+	c_len = offsetof(struct vsc_fw_cmd, data.dl_set.payload[index]);
-+	cmd->data.dl_set.payload[index] = cpu_to_le32(vsc_sum_crc(cmd, c_len));
-+
-+	ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, NULL, VSC_FW_PKG_SIZE);
-+	if (ret)
-+		return ret;
-+
-+	for (i = VSC_IMG_CSI_SEM_FRAG; i < VSC_IMG_FRAG_MAX; i++) {
-+		struct vsc_img_frag *frag = &fw_loader->frags[i];
-+		const u8 *p;
-+		u32 remain;
-+
-+		cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+		cmd->cmd_id = VSC_CMD_DL_START;
-+		cmd->data.dl_start.img_type = frag->type;
-+		cmd->data.dl_start.img_len = cpu_to_le32(frag->size);
-+		cmd->data.dl_start.img_loc = cpu_to_le32(frag->location);
-+		put_unaligned_le16(fw_loader->option, &cmd->data.dl_start.option);
-+
-+		c_len = offsetof(struct vsc_fw_cmd, data.dl_start.crc);
-+		cmd->data.dl_start.crc = cpu_to_le32(vsc_sum_crc(cmd, c_len));
-+
-+		ret = vsc_tp_rom_xfer(fw_loader->tp, cmd, NULL, VSC_FW_PKG_SIZE);
-+		if (ret)
-+			return ret;
-+
-+		p = frag->data;
-+		remain = frag->size;
-+
-+		/* download image data */
-+		while (remain > 0) {
-+			u32 len = min(remain, VSC_FW_PKG_SIZE);
-+
-+			memcpy(fw_loader->tx_buf, p, len);
-+			memset(fw_loader->tx_buf + len, 0, VSC_FW_PKG_SIZE - len);
-+
-+			ret = vsc_tp_rom_xfer(fw_loader->tp, fw_loader->tx_buf,
-+					      NULL, VSC_FW_PKG_SIZE);
-+			if (ret)
-+				break;
-+
-+			p += len;
-+			remain -= len;
-+		}
-+	}
-+
-+	cmd->magic = cpu_to_le32(VSC_MAGIC_NUM);
-+	cmd->cmd_id = VSC_CMD_CAM_BOOT;
-+
-+	c_len = offsetof(struct vsc_fw_cmd, data.dl_start.crc);
-+	cmd->data.boot.crc = cpu_to_le32(vsc_sum_crc(cmd, c_len));
-+
-+	return vsc_tp_rom_xfer(fw_loader->tp, cmd, NULL, VSC_FW_PKG_SIZE);
-+}
-+
-+/**
-+ * vsc_tp_init - init vsc_tp
-+ * @tp: vsc_tp device handle
-+ * @dev: device node for mei vsc device
-+ * Return: 0 in case of success, negative value in case of error
-+ */
-+int vsc_tp_init(struct vsc_tp *tp, struct device *dev)
-+{
-+	struct vsc_fw_loader *fw_loader __free(kfree) = NULL;
-+	void *tx_buf __free(kfree) = NULL;
-+	void *rx_buf __free(kfree) = NULL;
-+	int ret;
-+
-+	fw_loader = kzalloc(sizeof(*fw_loader), GFP_KERNEL);
-+	if (!fw_loader)
-+		return -ENOMEM;
-+
-+	tx_buf = kzalloc(VSC_FW_PKG_SIZE, GFP_KERNEL);
-+	if (!tx_buf)
-+		return -ENOMEM;
-+
-+	rx_buf = kzalloc(VSC_FW_PKG_SIZE, GFP_KERNEL);
-+	if (!rx_buf)
-+		return -ENOMEM;
-+
-+	fw_loader->tx_buf = tx_buf;
-+	fw_loader->rx_buf = rx_buf;
-+
-+	fw_loader->tp = tp;
-+	fw_loader->dev = dev;
-+
-+	ret = vsc_get_sensor_name(fw_loader, dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = vsc_identify_silicon(fw_loader);
-+	if (ret)
-+		return ret;
-+
-+	if (fw_loader->key_src == VSC_STRAP_KEY_SRC_PRODUCT)
-+		snprintf(fw_loader->folder, sizeof(fw_loader->folder),
-+			 VSC_IMAGE_FOLDER_FMT_PROD, fw_loader->suffix);
-+	else
-+		snprintf(fw_loader->folder, sizeof(fw_loader->folder),
-+			 VSC_IMAGE_FOLDER_FMT);
-+
-+	ret = vsc_identify_csi_image(fw_loader);
-+	if (ret)
-+		return ret;
-+
-+	ret = vsc_identify_ace_image(fw_loader);
-+	if (ret)
-+		goto err_release_csi;
-+
-+	ret = vsc_identify_cfg_image(fw_loader);
-+	if (ret)
-+		goto err_release_ace;
-+
-+	ret = vsc_download_bootloader(fw_loader);
-+	if (!ret)
-+		ret = vsc_download_firmware(fw_loader);
-+
-+	release_firmware(fw_loader->cfg);
-+
-+err_release_ace:
-+	release_firmware(fw_loader->ace);
-+
-+err_release_csi:
-+	release_firmware(fw_loader->csi);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_init, VSC_TP);
-diff --git a/drivers/misc/mei/vsc-tp.c b/drivers/misc/mei/vsc-tp.c
-new file mode 100644
-index 0000000..6f4a4be
---- /dev/null
-+++ b/drivers/misc/mei/vsc-tp.c
-@@ -0,0 +1,555 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023, Intel Corporation.
-+ * Intel Visual Sensing Controller Transport Layer Linux driver
-+ */
-+
-+#include <linux/acpi.h>
-+#include <linux/cleanup.h>
-+#include <linux/crc32.h>
-+#include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/interrupt.h>
 +#include <linux/iopoll.h>
-+#include <linux/irq.h>
-+#include <linux/irqreturn.h>
++#include <linux/list.h>
++#include <linux/mei.h>
 +#include <linux/module.h>
 +#include <linux/mutex.h>
++#include <linux/overflow.h>
 +#include <linux/platform_device.h>
-+#include <linux/spi/spi.h>
++#include <linux/pm_runtime.h>
++#include <linux/timekeeping.h>
 +#include <linux/types.h>
 +
++#include <asm-generic/bug.h>
++#include <asm-generic/unaligned.h>
++
++#include "mei_dev.h"
 +#include "vsc-tp.h"
 +
-+#define VSC_TP_RESET_PIN_TOGGLE_INTERVAL_MS	20
-+#define VSC_TP_ROM_BOOTUP_DELAY_MS		10
-+#define VSC_TP_ROM_XFER_POLL_TIMEOUT_US		(500 * USEC_PER_MSEC)
-+#define VSC_TP_ROM_XFER_POLL_DELAY_US		(20 * USEC_PER_MSEC)
-+#define VSC_TP_WAIT_FW_ASSERTED_TIMEOUT		(2 * HZ)
-+#define VSC_TP_MAX_XFER_COUNT			5
++#define MEI_VSC_DRV_NAME		"intel_vsc"
 +
-+#define VSC_TP_PACKET_SYNC			0x31
-+#define VSC_TP_CRC_SIZE				sizeof(u32)
-+#define VSC_TP_MAX_MSG_SIZE			2048
-+/* SPI xfer timeout size */
-+#define VSC_TP_XFER_TIMEOUT_BYTES		700
-+#define VSC_TP_PACKET_PADDING_SIZE		1
-+#define VSC_TP_PACKET_SIZE(pkt) \
-+	(sizeof(struct vsc_tp_packet) + le16_to_cpu((pkt)->len) + VSC_TP_CRC_SIZE)
-+#define VSC_TP_MAX_PACKET_SIZE \
-+	(sizeof(struct vsc_tp_packet) + VSC_TP_MAX_MSG_SIZE + VSC_TP_CRC_SIZE)
-+#define VSC_TP_MAX_XFER_SIZE \
-+	(VSC_TP_MAX_PACKET_SIZE + VSC_TP_XFER_TIMEOUT_BYTES)
-+#define VSC_TP_NEXT_XFER_LEN(len, offset) \
-+	(len + sizeof(struct vsc_tp_packet) + VSC_TP_CRC_SIZE - offset + VSC_TP_PACKET_PADDING_SIZE)
++#define MEI_VSC_MAX_MSG_SIZE		512
 +
-+struct vsc_tp_packet {
-+	__u8 sync;
-+	__u8 cmd;
-+	__le16 len;
-+	__le32 seq;
-+	__u8 buf[] __counted_by(len);
++#define MEI_VSC_POLL_DELAY_US		(50 * USEC_PER_MSEC)
++#define MEI_VSC_POLL_TIMEOUT_US		(200 * USEC_PER_MSEC)
++
++#define mei_dev_to_vsc_hw(dev)		((struct mei_vsc_hw *)((dev)->hw))
++
++struct mei_vsc_host_timestamp {
++	u64 realtime;
++	u64 boottime;
 +};
 +
-+struct vsc_tp {
-+	/* do the actual data transfer */
-+	struct spi_device *spi;
++struct mei_vsc_hw {
++	struct vsc_tp *tp;
 +
-+	/* bind with mei framework */
-+	struct platform_device *pdev;
++	bool fw_ready;
++	bool host_ready;
 +
-+	struct gpio_desc *wakeuphost;
-+	struct gpio_desc *resetfw;
-+	struct gpio_desc *wakeupfw;
++	atomic_t write_lock_cnt;
 +
-+	/* command sequence number */
-+	u32 seq;
++	u32 rx_len;
++	u32 rx_hdr;
 +
-+	/* command buffer */
-+	void *tx_buf;
-+	void *rx_buf;
-+
-+	atomic_t assert_cnt;
-+	wait_queue_head_t xfer_wait;
-+
-+	vsc_tp_event_cb_t event_notify;
-+	void *event_notify_context;
-+
-+	/* used to protect command download */
-+	struct mutex mutex;
++	/* buffer for tx */
++	char tx_buf[MEI_VSC_MAX_MSG_SIZE + sizeof(struct mei_msg_hdr)] ____cacheline_aligned;
++	/* buffer for rx */
++	char rx_buf[MEI_VSC_MAX_MSG_SIZE + sizeof(struct mei_msg_hdr)] ____cacheline_aligned;
 +};
 +
-+/* GPIO resources */
-+static const struct acpi_gpio_params wakeuphost_gpio = { 0, 0, false };
-+static const struct acpi_gpio_params wakeuphostint_gpio = { 1, 0, false };
-+static const struct acpi_gpio_params resetfw_gpio = { 2, 0, false };
-+static const struct acpi_gpio_params wakeupfw = { 3, 0, false };
-+
-+static const struct acpi_gpio_mapping vsc_tp_acpi_gpios[] = {
-+	{ "wakeuphost-gpios", &wakeuphost_gpio, 1 },
-+	{ "wakeuphostint-gpios", &wakeuphostint_gpio, 1 },
-+	{ "resetfw-gpios", &resetfw_gpio, 1 },
-+	{ "wakeupfw-gpios", &wakeupfw, 1 },
-+	{}
-+};
-+
-+/* wakeup firmware and wait for response */
-+static int vsc_tp_wakeup_request(struct vsc_tp *tp)
++static int mei_vsc_read_helper(struct mei_vsc_hw *hw, u8 *buf,
++			       u32 max_len)
 +{
-+	int ret;
-+
-+	gpiod_set_value_cansleep(tp->wakeupfw, 0);
-+
-+	ret = wait_event_timeout(tp->xfer_wait,
-+				 atomic_read(&tp->assert_cnt) &&
-+				 gpiod_get_value_cansleep(tp->wakeuphost),
-+				 VSC_TP_WAIT_FW_ASSERTED_TIMEOUT);
-+	if (!ret)
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
-+static void vsc_tp_wakeup_release(struct vsc_tp *tp)
-+{
-+	atomic_dec_if_positive(&tp->assert_cnt);
-+
-+	gpiod_set_value_cansleep(tp->wakeupfw, 1);
-+}
-+
-+static int vsc_tp_dev_xfer(struct vsc_tp *tp, void *obuf, void *ibuf, size_t len)
-+{
-+	struct spi_message msg = { 0 };
-+	struct spi_transfer xfer = {
-+		.tx_buf = obuf,
-+		.rx_buf = ibuf,
-+		.len = len,
++	struct mei_vsc_host_timestamp ts = {
++		.realtime = ktime_to_ns(ktime_get_real()),
++		.boottime = ktime_to_ns(ktime_get_boottime()),
 +	};
 +
-+	spi_message_init_with_transfers(&msg, &xfer, 1);
-+
-+	return spi_sync_locked(tp->spi, &msg);
++	return vsc_tp_xfer(hw->tp, VSC_TP_CMD_READ, &ts, sizeof(ts),
++			   buf, max_len);
 +}
 +
-+static int vsc_tp_xfer_helper(struct vsc_tp *tp, struct vsc_tp_packet *pkt,
-+			      void *ibuf, u16 ilen)
++static int mei_vsc_write_helper(struct mei_vsc_hw *hw, u8 *buf, u32 len)
 +{
-+	int ret, offset = 0, cpy_len, src_len, dst_len = sizeof(struct vsc_tp_packet);
-+	int next_xfer_len = VSC_TP_PACKET_SIZE(pkt) + VSC_TP_XFER_TIMEOUT_BYTES;
-+	u8 *src, *crc_src, *rx_buf = tp->rx_buf;
-+	int count_down = VSC_TP_MAX_XFER_COUNT;
-+	u32 recv_crc = 0, crc = ~0;
-+	struct vsc_tp_packet ack;
-+	u8 *dst = (u8 *)&ack;
-+	bool synced = false;
++	u8 status;
 +
-+	do {
-+		ret = vsc_tp_dev_xfer(tp, pkt, rx_buf, next_xfer_len);
-+		if (ret)
-+			return ret;
-+		memset(pkt, 0, VSC_TP_MAX_XFER_SIZE);
-+
-+		if (synced) {
-+			src = rx_buf;
-+			src_len = next_xfer_len;
-+		} else {
-+			src = memchr(rx_buf, VSC_TP_PACKET_SYNC, next_xfer_len);
-+			if (!src)
-+				continue;
-+			synced = true;
-+			src_len = next_xfer_len - (src - rx_buf);
-+		}
-+
-+		/* traverse received data */
-+		while (src_len > 0) {
-+			cpy_len = min(src_len, dst_len);
-+			memcpy(dst, src, cpy_len);
-+			crc_src = src;
-+			src += cpy_len;
-+			src_len -= cpy_len;
-+			dst += cpy_len;
-+			dst_len -= cpy_len;
-+
-+			if (offset < sizeof(ack)) {
-+				offset += cpy_len;
-+				crc = crc32(crc, crc_src, cpy_len);
-+
-+				if (!src_len)
-+					continue;
-+
-+				if (le16_to_cpu(ack.len)) {
-+					dst = ibuf;
-+					dst_len = min(ilen, le16_to_cpu(ack.len));
-+				} else {
-+					dst = (u8 *)&recv_crc;
-+					dst_len = sizeof(recv_crc);
-+				}
-+			} else if (offset < sizeof(ack) + le16_to_cpu(ack.len)) {
-+				offset += cpy_len;
-+				crc = crc32(crc, crc_src, cpy_len);
-+
-+				if (src_len) {
-+					int remain = sizeof(ack) + le16_to_cpu(ack.len) - offset;
-+
-+					cpy_len = min(src_len, remain);
-+					offset += cpy_len;
-+					crc = crc32(crc, src, cpy_len);
-+					src += cpy_len;
-+					src_len -= cpy_len;
-+					if (src_len) {
-+						dst = (u8 *)&recv_crc;
-+						dst_len = sizeof(recv_crc);
-+						continue;
-+					}
-+				}
-+				next_xfer_len = VSC_TP_NEXT_XFER_LEN(le16_to_cpu(ack.len), offset);
-+			} else if (offset < sizeof(ack) + le16_to_cpu(ack.len) + VSC_TP_CRC_SIZE) {
-+				offset += cpy_len;
-+
-+				if (src_len) {
-+					/* terminate the traverse */
-+					next_xfer_len = 0;
-+					break;
-+				}
-+				next_xfer_len = VSC_TP_NEXT_XFER_LEN(le16_to_cpu(ack.len), offset);
-+			}
-+		}
-+	} while (next_xfer_len > 0 && --count_down);
-+
-+	if (next_xfer_len > 0)
-+		return -EAGAIN;
-+
-+	if (~recv_crc != crc || le32_to_cpu(ack.seq) != tp->seq) {
-+		dev_err(&tp->spi->dev, "recv crc or seq error\n");
-+		return -EINVAL;
-+	}
-+
-+	if (ack.cmd == VSC_TP_CMD_ACK || ack.cmd == VSC_TP_CMD_NACK ||
-+	    ack.cmd == VSC_TP_CMD_BUSY) {
-+		dev_err(&tp->spi->dev, "recv cmd ack error\n");
-+		return -EAGAIN;
-+	}
-+
-+	return min(le16_to_cpu(ack.len), ilen);
++	return vsc_tp_xfer(hw->tp, VSC_TP_CMD_WRITE, buf, len, &status,
++			   sizeof(status));
 +}
 +
-+/**
-+ * vsc_tp_xfer - transfer data to firmware
-+ * @tp: vsc_tp device handle
-+ * @cmd: the command to be sent to the device
-+ * @obuf: the tx buffer to be sent to the device
-+ * @olen: the length of tx buffer
-+ * @ibuf: the rx buffer to receive from the device
-+ * @ilen: the length of rx buffer
-+ * Return: the length of received data in case of success,
-+ *	otherwise negative value
-+ */
-+int vsc_tp_xfer(struct vsc_tp *tp, u8 cmd, const void *obuf, size_t olen,
-+		void *ibuf, size_t ilen)
++static int mei_vsc_fw_status(struct mei_device *mei_dev,
++			     struct mei_fw_status *fw_status)
 +{
-+	struct vsc_tp_packet *pkt = tp->tx_buf;
-+	u32 crc;
-+	int ret;
-+
-+	if (!obuf || !ibuf || olen > VSC_TP_MAX_MSG_SIZE)
++	if (!fw_status)
 +		return -EINVAL;
 +
-+	guard(mutex)(&tp->mutex);
-+
-+	pkt->sync = VSC_TP_PACKET_SYNC;
-+	pkt->cmd = cmd;
-+	pkt->len = cpu_to_le16(olen);
-+	pkt->seq = cpu_to_le32(++tp->seq);
-+	memcpy(pkt->buf, obuf, olen);
-+
-+	crc = ~crc32(~0, (u8 *)pkt, sizeof(pkt) + olen);
-+	memcpy(pkt->buf + olen, &crc, sizeof(crc));
-+
-+	ret = vsc_tp_wakeup_request(tp);
-+	if (unlikely(ret))
-+		dev_err(&tp->spi->dev, "wakeup firmware failed ret: %d\n", ret);
-+	else
-+		ret = vsc_tp_xfer_helper(tp, pkt, ibuf, ilen);
-+
-+	vsc_tp_wakeup_release(tp);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_xfer, VSC_TP);
-+
-+/**
-+ * vsc_tp_rom_xfer - transfer data to rom code
-+ * @tp: vsc_tp device handle
-+ * @obuf: the data buffer to be sent to the device
-+ * @ibuf: the buffer to receive data from the device
-+ * @len: the length of tx buffer and rx buffer
-+ * Return: 0 in case of success, negative value in case of error
-+ */
-+int vsc_tp_rom_xfer(struct vsc_tp *tp, const void *obuf, void *ibuf, size_t len)
-+{
-+	size_t words = len / sizeof(__be32);
-+	int ret;
-+
-+	if (len % sizeof(__be32) || len > VSC_TP_MAX_MSG_SIZE)
-+		return -EINVAL;
-+
-+	guard(mutex)(&tp->mutex);
-+
-+	/* rom xfer is big endian */
-+	cpu_to_be32_array(tp->tx_buf, obuf, words);
-+
-+	ret = read_poll_timeout(gpiod_get_value_cansleep, ret,
-+				!ret, VSC_TP_ROM_XFER_POLL_DELAY_US,
-+				VSC_TP_ROM_XFER_POLL_TIMEOUT_US, false,
-+				tp->wakeuphost);
-+	if (ret) {
-+		dev_err(&tp->spi->dev, "wait rom failed ret: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = vsc_tp_dev_xfer(tp, tp->tx_buf, tp->rx_buf, len);
-+	if (ret)
-+		return ret;
-+
-+	if (ibuf)
-+		cpu_to_be32_array(ibuf, tp->rx_buf, words);
-+
-+	return ret;
-+}
-+
-+/**
-+ * vsc_tp_reset - reset vsc transport layer
-+ * @tp: vsc_tp device handle
-+ */
-+void vsc_tp_reset(struct vsc_tp *tp)
-+{
-+	disable_irq(tp->spi->irq);
-+
-+	/* toggle reset pin */
-+	gpiod_set_value_cansleep(tp->resetfw, 0);
-+	msleep(VSC_TP_RESET_PIN_TOGGLE_INTERVAL_MS);
-+	gpiod_set_value_cansleep(tp->resetfw, 1);
-+
-+	/* wait for ROM */
-+	msleep(VSC_TP_ROM_BOOTUP_DELAY_MS);
-+
-+	/*
-+	 * Set default host wakeup pin to non-active
-+	 * to avoid unexpected host irq interrupt.
-+	 */
-+	gpiod_set_value_cansleep(tp->wakeupfw, 1);
-+
-+	atomic_set(&tp->assert_cnt, 0);
-+
-+	enable_irq(tp->spi->irq);
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_reset, VSC_TP);
-+
-+/**
-+ * vsc_tp_need_read - check if device has data to sent
-+ * @tp: vsc_tp device handle
-+ * Return: true if device has data to sent, otherwise false
-+ */
-+bool vsc_tp_need_read(struct vsc_tp *tp)
-+{
-+	if (!atomic_read(&tp->assert_cnt))
-+		return false;
-+	if (!gpiod_get_value_cansleep(tp->wakeuphost))
-+		return false;
-+	if (!gpiod_get_value_cansleep(tp->wakeupfw))
-+		return false;
-+
-+	return true;
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_need_read, VSC_TP);
-+
-+/**
-+ * vsc_tp_register_event_cb - register a callback function to receive event
-+ * @tp: vsc_tp device handle
-+ * @event_cb: callback function
-+ * @context: execution context of event callback
-+ * Return: 0 in case of success, negative value in case of error
-+ */
-+int vsc_tp_register_event_cb(struct vsc_tp *tp, vsc_tp_event_cb_t event_cb,
-+			    void *context)
-+{
-+	tp->event_notify = event_cb;
-+	tp->event_notify_context = context;
++	fw_status->count = 0;
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_register_event_cb, VSC_TP);
 +
-+/**
-+ * vsc_tp_intr_synchronize - synchronize vsc_tp interrupt
-+ * @tp: vsc_tp device handle
-+ */
-+void vsc_tp_intr_synchronize(struct vsc_tp *tp)
++static inline enum mei_pg_state mei_vsc_pg_state(struct mei_device *mei_dev)
 +{
-+	synchronize_irq(tp->spi->irq);
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_intr_synchronize, VSC_TP);
-+
-+/**
-+ * vsc_tp_intr_enable - enable vsc_tp interrupt
-+ * @tp: vsc_tp device handle
-+ */
-+void vsc_tp_intr_enable(struct vsc_tp *tp)
-+{
-+	enable_irq(tp->spi->irq);
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_intr_enable, VSC_TP);
-+
-+/**
-+ * vsc_tp_intr_disable - disable vsc_tp interrupt
-+ * @tp: vsc_tp device handle
-+ */
-+void vsc_tp_intr_disable(struct vsc_tp *tp)
-+{
-+	disable_irq(tp->spi->irq);
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_intr_disable, VSC_TP);
-+
-+static irqreturn_t vsc_tp_isr(int irq, void *data)
-+{
-+	struct vsc_tp *tp = data;
-+
-+	atomic_inc(&tp->assert_cnt);
-+
-+	wake_up(&tp->xfer_wait);
-+
-+	return IRQ_WAKE_THREAD;
++	return MEI_PG_OFF;
 +}
 +
-+static irqreturn_t vsc_tp_thread_isr(int irq, void *data)
++static void mei_vsc_intr_enable(struct mei_device *mei_dev)
 +{
-+	struct vsc_tp *tp = data;
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
 +
-+	if (tp->event_notify)
-+		tp->event_notify(tp->event_notify_context);
-+
-+	return IRQ_HANDLED;
++	vsc_tp_intr_enable(hw->tp);
 +}
 +
-+static int vsc_tp_match_any(struct acpi_device *adev, void *data)
++static void mei_vsc_intr_disable(struct mei_device *mei_dev)
 +{
-+	struct acpi_device **__adev = data;
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
 +
-+	*__adev = adev;
-+
-+	return 1;
++	vsc_tp_intr_disable(hw->tp);
 +}
 +
-+static int vsc_tp_probe(struct spi_device *spi)
++/* mei framework requires this ops */
++static void mei_vsc_intr_clear(struct mei_device *mei_dev)
 +{
-+	struct platform_device_info pinfo = { 0 };
-+	struct device *dev = &spi->dev;
-+	struct platform_device *pdev;
-+	struct acpi_device *adev;
++}
++
++/* wait for pending irq handler */
++static void mei_vsc_synchronize_irq(struct mei_device *mei_dev)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++
++	vsc_tp_intr_synchronize(hw->tp);
++}
++
++static int mei_vsc_hw_config(struct mei_device *mei_dev)
++{
++	return 0;
++}
++
++static bool mei_vsc_host_is_ready(struct mei_device *mei_dev)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++
++	return hw->host_ready;
++}
++
++static bool mei_vsc_hw_is_ready(struct mei_device *mei_dev)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++
++	return hw->fw_ready;
++}
++
++static int mei_vsc_hw_start(struct mei_device *mei_dev)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++	int ret, rlen;
++	u8 buf;
++
++	hw->host_ready = true;
++
++	vsc_tp_intr_enable(hw->tp);
++
++	ret = read_poll_timeout(mei_vsc_read_helper, rlen,
++				rlen >= 0, MEI_VSC_POLL_DELAY_US,
++				MEI_VSC_POLL_TIMEOUT_US, true,
++				hw, &buf, sizeof(buf));
++	if (ret) {
++		dev_err(mei_dev->dev, "wait fw ready failed: %d\n", ret);
++		return ret;
++	}
++
++	hw->fw_ready = true;
++
++	return 0;
++}
++
++static bool mei_vsc_hbuf_is_ready(struct mei_device *mei_dev)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++
++	return atomic_read(&hw->write_lock_cnt) == 0;
++}
++
++static int mei_vsc_hbuf_empty_slots(struct mei_device *mei_dev)
++{
++	return MEI_VSC_MAX_MSG_SIZE / MEI_SLOT_SIZE;
++}
++
++static u32 mei_vsc_hbuf_depth(const struct mei_device *mei_dev)
++{
++	return MEI_VSC_MAX_MSG_SIZE / MEI_SLOT_SIZE;
++}
++
++static int mei_vsc_write(struct mei_device *mei_dev,
++			 const void *hdr, size_t hdr_len,
++			 const void *data, size_t data_len)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++	char *buf = hw->tx_buf;
++	int ret;
++
++	if (WARN_ON(!hdr || !IS_ALIGNED(hdr_len, 4)))
++		return -EINVAL;
++
++	if (!data || data_len > MEI_VSC_MAX_MSG_SIZE)
++		return -EINVAL;
++
++	atomic_inc(&hw->write_lock_cnt);
++
++	memcpy(buf, hdr, hdr_len);
++	memcpy(buf + hdr_len, data, data_len);
++
++	ret = mei_vsc_write_helper(hw, buf, hdr_len + data_len);
++
++	atomic_dec_if_positive(&hw->write_lock_cnt);
++
++	return ret < 0 ? ret : 0;
++}
++
++static inline u32 mei_vsc_read(const struct mei_device *mei_dev)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++	int ret;
++
++	ret = mei_vsc_read_helper(hw, hw->rx_buf, sizeof(hw->rx_buf));
++	if (ret < 0 || ret < sizeof(u32))
++		return 0;
++	hw->rx_len = ret;
++
++	hw->rx_hdr = get_unaligned_le32(hw->rx_buf);
++
++	return hw->rx_hdr;
++}
++
++static int mei_vsc_count_full_read_slots(struct mei_device *mei_dev)
++{
++	return MEI_VSC_MAX_MSG_SIZE / MEI_SLOT_SIZE;
++}
++
++static int mei_vsc_read_slots(struct mei_device *mei_dev, unsigned char *buf,
++			      unsigned long len)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++	struct mei_msg_hdr *hdr;
++
++	hdr = (struct mei_msg_hdr *)&hw->rx_hdr;
++	if (len != hdr->length || hdr->length + sizeof(*hdr) != hw->rx_len)
++		return -EINVAL;
++
++	memcpy(buf, hw->rx_buf + sizeof(*hdr), len);
++
++	return 0;
++}
++
++static bool mei_vsc_pg_in_transition(struct mei_device *mei_dev)
++{
++	return mei_dev->pg_event >= MEI_PG_EVENT_WAIT &&
++	       mei_dev->pg_event <= MEI_PG_EVENT_INTR_WAIT;
++}
++
++static bool mei_vsc_pg_is_enabled(struct mei_device *mei_dev)
++{
++	return false;
++}
++
++static int mei_vsc_hw_reset(struct mei_device *mei_dev, bool intr_enable)
++{
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++
++	vsc_tp_reset(hw->tp);
++
++	vsc_tp_intr_disable(hw->tp);
++
++	return vsc_tp_init(hw->tp, mei_dev->dev);
++}
++
++static const struct mei_hw_ops mei_vsc_hw_ops = {
++	.fw_status = mei_vsc_fw_status,
++	.pg_state = mei_vsc_pg_state,
++
++	.host_is_ready = mei_vsc_host_is_ready,
++	.hw_is_ready = mei_vsc_hw_is_ready,
++	.hw_reset = mei_vsc_hw_reset,
++	.hw_config = mei_vsc_hw_config,
++	.hw_start = mei_vsc_hw_start,
++
++	.pg_in_transition = mei_vsc_pg_in_transition,
++	.pg_is_enabled = mei_vsc_pg_is_enabled,
++
++	.intr_clear = mei_vsc_intr_clear,
++	.intr_enable = mei_vsc_intr_enable,
++	.intr_disable = mei_vsc_intr_disable,
++	.synchronize_irq = mei_vsc_synchronize_irq,
++
++	.hbuf_free_slots = mei_vsc_hbuf_empty_slots,
++	.hbuf_is_ready = mei_vsc_hbuf_is_ready,
++	.hbuf_depth = mei_vsc_hbuf_depth,
++	.write = mei_vsc_write,
++
++	.rdbuf_full_slots = mei_vsc_count_full_read_slots,
++	.read_hdr = mei_vsc_read,
++	.read = mei_vsc_read_slots,
++};
++
++static void mei_vsc_event_cb(void *context)
++{
++	struct mei_device *mei_dev = context;
++	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
++	struct list_head cmpl_list;
++	s32 slots;
++	int ret;
++
++	if (mei_dev->dev_state == MEI_DEV_RESETTING ||
++	    mei_dev->dev_state == MEI_DEV_INITIALIZING)
++		return;
++
++	INIT_LIST_HEAD(&cmpl_list);
++
++	guard(mutex)(&mei_dev->device_lock);
++
++	while (vsc_tp_need_read(hw->tp)) {
++		/* check slots available for reading */
++		slots = mei_count_full_read_slots(mei_dev);
++
++		ret = mei_irq_read_handler(mei_dev, &cmpl_list, &slots);
++		if (ret) {
++			if (ret != -ENODATA) {
++				if (mei_dev->dev_state != MEI_DEV_RESETTING &&
++				    mei_dev->dev_state != MEI_DEV_POWER_DOWN)
++					schedule_work(&mei_dev->reset_work);
++			}
++
++			return;
++		}
++	}
++
++	mei_dev->hbuf_is_ready = mei_hbuf_is_ready(mei_dev);
++	ret = mei_irq_write_handler(mei_dev, &cmpl_list);
++	if (ret)
++		dev_err(mei_dev->dev, "dispatch write request failed: %d\n", ret);
++
++	mei_dev->hbuf_is_ready = mei_hbuf_is_ready(mei_dev);
++	mei_irq_compl_handler(mei_dev, &cmpl_list);
++}
++
++static int mei_vsc_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct mei_device *mei_dev;
++	struct mei_vsc_hw *hw;
 +	struct vsc_tp *tp;
 +	int ret;
 +
-+	tp = devm_kzalloc(dev, sizeof(*tp), GFP_KERNEL);
++	tp = *(struct vsc_tp **)dev_get_platdata(dev);
 +	if (!tp)
++		return dev_err_probe(dev, -ENODEV, "no platform data\n");
++
++	mei_dev = devm_kzalloc(dev, size_add(sizeof(*mei_dev), sizeof(*hw)),
++			       GFP_KERNEL);
++	if (!mei_dev)
 +		return -ENOMEM;
 +
-+	tp->tx_buf = devm_kzalloc(dev, VSC_TP_MAX_XFER_SIZE, GFP_KERNEL);
-+	if (!tp->tx_buf)
-+		return -ENOMEM;
++	mei_device_init(mei_dev, dev, false, &mei_vsc_hw_ops);
++	mei_dev->fw_f_fw_ver_supported = 0;
++	mei_dev->kind = "ivsc";
 +
-+	tp->rx_buf = devm_kzalloc(dev, VSC_TP_MAX_XFER_SIZE, GFP_KERNEL);
-+	if (!tp->rx_buf)
-+		return -ENOMEM;
++	hw = mei_dev_to_vsc_hw(mei_dev);
++	atomic_set(&hw->write_lock_cnt, 0);
++	hw->tp = tp;
 +
-+	ret = devm_acpi_dev_add_driver_gpios(dev, vsc_tp_acpi_gpios);
-+	if (ret)
-+		return ret;
++	platform_set_drvdata(pdev, mei_dev);
 +
-+	tp->wakeuphost = devm_gpiod_get(dev, "wakeuphost", GPIOD_IN);
-+	if (IS_ERR(tp->wakeuphost))
-+		return PTR_ERR(tp->wakeuphost);
++	vsc_tp_register_event_cb(tp, mei_vsc_event_cb, mei_dev);
 +
-+	tp->resetfw = devm_gpiod_get(dev, "resetfw", GPIOD_OUT_HIGH);
-+	if (IS_ERR(tp->resetfw))
-+		return PTR_ERR(tp->resetfw);
-+
-+	tp->wakeupfw = devm_gpiod_get(dev, "wakeupfw", GPIOD_OUT_HIGH);
-+	if (IS_ERR(tp->wakeupfw))
-+		return PTR_ERR(tp->wakeupfw);
-+
-+	atomic_set(&tp->assert_cnt, 0);
-+	init_waitqueue_head(&tp->xfer_wait);
-+	tp->spi = spi;
-+
-+	irq_set_status_flags(spi->irq, IRQ_DISABLE_UNLAZY);
-+	ret = devm_request_threaded_irq(dev, spi->irq, vsc_tp_isr,
-+					vsc_tp_thread_isr,
-+					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+					dev_name(dev), tp);
-+	if (ret)
-+		return ret;
-+
-+	mutex_init(&tp->mutex);
-+
-+	/* only one child acpi device */
-+	ret = acpi_dev_for_each_child(ACPI_COMPANION(dev),
-+				      vsc_tp_match_any, &adev);
-+	if (!ret) {
-+		ret = -ENODEV;
-+		goto err_destroy_lock;
-+	}
-+	pinfo.fwnode = acpi_fwnode_handle(adev);
-+
-+	pinfo.name = "intel_vsc";
-+	pinfo.data = &tp;
-+	pinfo.size_data = sizeof(tp);
-+	pinfo.id = PLATFORM_DEVID_NONE;
-+
-+	pdev = platform_device_register_full(&pinfo);
-+	if (IS_ERR(pdev)) {
-+		ret = PTR_ERR(pdev);
-+		goto err_destroy_lock;
++	ret = mei_start(mei_dev);
++	if (ret) {
++		dev_err_probe(dev, ret, "init hw failed\n");
++		goto err_cancel;
 +	}
 +
-+	tp->pdev = pdev;
-+	spi_set_drvdata(spi, tp);
++	ret = mei_register(mei_dev, dev);
++	if (ret)
++		goto err_stop;
++
++	pm_runtime_enable(mei_dev->dev);
 +
 +	return 0;
 +
-+err_destroy_lock:
-+	mutex_destroy(&tp->mutex);
++err_stop:
++	mei_stop(mei_dev);
++
++err_cancel:
++	mei_cancel_work(mei_dev);
++
++	mei_disable_interrupts(mei_dev);
 +
 +	return ret;
 +}
 +
-+static void vsc_tp_remove(struct spi_device *spi)
++static int mei_vsc_remove(struct platform_device *pdev)
 +{
-+	struct vsc_tp *tp = spi_get_drvdata(spi);
++	struct mei_device *mei_dev = platform_get_drvdata(pdev);
 +
-+	platform_device_unregister(tp->pdev);
++	pm_runtime_disable(mei_dev->dev);
 +
-+	mutex_destroy(&tp->mutex);
++	mei_stop(mei_dev);
++
++	mei_disable_interrupts(mei_dev);
++
++	mei_deregister(mei_dev);
++
++	return 0;
 +}
 +
-+static const struct acpi_device_id vsc_tp_acpi_ids[] = {
-+	{ "INTC1009" }, /* Raptor Lake */
-+	{ "INTC1058" }, /* Tiger Lake */
-+	{ "INTC1094" }, /* Alder Lake */
-+	{}
-+};
-+MODULE_DEVICE_TABLE(acpi, vsc_tp_acpi_ids);
++static int mei_vsc_suspend(struct device *dev)
++{
++	struct mei_device *mei_dev = dev_get_drvdata(dev);
 +
-+static struct spi_driver vsc_tp_driver = {
-+	.probe = vsc_tp_probe,
-+	.remove = vsc_tp_remove,
++	mei_stop(mei_dev);
++
++	return 0;
++}
++
++static int mei_vsc_resume(struct device *dev)
++{
++	struct mei_device *mei_dev = dev_get_drvdata(dev);
++	int ret;
++
++	ret = mei_restart(mei_dev);
++	if (ret)
++		return ret;
++
++	/* start timer if stopped in suspend */
++	schedule_delayed_work(&mei_dev->timer_work, HZ);
++
++	return 0;
++}
++
++static DEFINE_SIMPLE_DEV_PM_OPS(mei_vsc_pm_ops, mei_vsc_suspend, mei_vsc_resume);
++
++static const struct platform_device_id mei_vsc_id_table[] = {
++	{ MEI_VSC_DRV_NAME },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(platform, mei_vsc_id_table);
++
++static struct platform_driver mei_vsc_drv = {
++	.probe = mei_vsc_probe,
++	.remove = mei_vsc_remove,
++	.id_table = mei_vsc_id_table,
 +	.driver = {
-+		.name = "vsc-tp",
-+		.acpi_match_table = vsc_tp_acpi_ids,
++		.name = MEI_VSC_DRV_NAME,
++		.pm = &mei_vsc_pm_ops,
++		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
 +	},
 +};
-+module_spi_driver(vsc_tp_driver);
++module_platform_driver(mei_vsc_drv);
 +
 +MODULE_AUTHOR("Wentong Wu <wentong.wu@intel.com>");
 +MODULE_AUTHOR("Zhifeng Wang <zhifeng.wang@intel.com>");
-+MODULE_DESCRIPTION("Intel Visual Sensing Controller Transport Layer");
++MODULE_DESCRIPTION("Intel Visual Sensing Controller Interface");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/misc/mei/vsc-tp.h b/drivers/misc/mei/vsc-tp.h
-new file mode 100644
-index 0000000..f9513dd
---- /dev/null
-+++ b/drivers/misc/mei/vsc-tp.h
-@@ -0,0 +1,50 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2023, Intel Corporation.
-+ * Intel Visual Sensing Controller Transport Layer Linux driver
-+ */
-+
-+#ifndef _VSC_TP_H_
-+#define _VSC_TP_H_
-+
-+#include <linux/types.h>
-+
-+#define VSC_TP_CMD_WRITE	0x01
-+#define VSC_TP_CMD_READ		0x02
-+
-+#define VSC_TP_CMD_ACK		0x10
-+#define VSC_TP_CMD_NACK		0x11
-+#define VSC_TP_CMD_BUSY		0x12
-+
-+struct vsc_tp;
-+
-+/**
-+ * typedef vsc_event_cb_t - event callback function signature
-+ * @context: the execution context of who registered this callback
-+ *
-+ * The callback function is called in interrupt context and the data
-+ * payload is only valid during the call. If the user needs access
-+ * the data payload later, it must copy the payload.
-+ */
-+typedef void (*vsc_tp_event_cb_t)(void *context);
-+
-+int vsc_tp_rom_xfer(struct vsc_tp *tp, const void *obuf, void *ibuf,
-+		    size_t len);
-+
-+int vsc_tp_xfer(struct vsc_tp *tp, u8 cmd, const void *obuf, size_t olen,
-+		void *ibuf, size_t ilen);
-+
-+int vsc_tp_register_event_cb(struct vsc_tp *tp, vsc_tp_event_cb_t event_cb,
-+			     void *context);
-+
-+void vsc_tp_intr_enable(struct vsc_tp *tp);
-+void vsc_tp_intr_disable(struct vsc_tp *tp);
-+void vsc_tp_intr_synchronize(struct vsc_tp *tp);
-+
-+void vsc_tp_reset(struct vsc_tp *tp);
-+
-+bool vsc_tp_need_read(struct vsc_tp *tp);
-+
-+int vsc_tp_init(struct vsc_tp *tp, struct device *dev);
-+
-+#endif
++MODULE_IMPORT_NS(VSC_TP);
 -- 
 2.7.4
 
