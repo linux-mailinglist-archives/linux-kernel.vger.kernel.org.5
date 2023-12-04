@@ -2,112 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5A4803715
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A8380371B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345226AbjLDOjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:39:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        id S234227AbjLDOlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:41:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233871AbjLDOjI (ORCPT
+        with ESMTP id S233871AbjLDOlD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:39:08 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803D7F0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:39:14 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6ce3935ffedso1839184b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:39:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701700754; x=1702305554; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0jLlSu3/GaVGbEpaSldOKV5ftevDhGsXDKnanlgCeDI=;
-        b=izfQkdaj/z90zcSMjM/MxthXdpmN95lppXo3MvbHTfnMscN4Mvw9R2rhSiNb9KbfAC
-         1UpsdW6cFHrwbVuFjrLnaxByg8k+2XOYF8bWYXqbvpb/DQAeQXHgLqsWnoq5gVRyMO8U
-         a8nK99R9Puc4zf9PV3KKOr/Zlo4uc5SH4AzwijtXMTtg7g0sxYX5du6q8n+5xiEA0nhs
-         Gu/mtiskAh4Xgzldh2q5f4Apzwgw/y2jIFdq2C35c32j0w9SYELIUaFtQCt6N77OdFKW
-         orc5UG1jEguqyKuS4zc2e4vsGCFiWs7MDQgkoWmFt2oFZpzpmP+TkoEfwMH5/JVpVGup
-         z/gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701700754; x=1702305554;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0jLlSu3/GaVGbEpaSldOKV5ftevDhGsXDKnanlgCeDI=;
-        b=GI1FuH3Oj4Qbi2J1di4PSUv5dlj0TsEYzlXrHJLSHTCmK54KNA+DEfuDN+8IkWmNPw
-         bKh5mBIxs8KaqaAt/KgUbO2yeGN7m0tewVkqmrcYgBr1bf7DfeFzTWrVi8wvFp3T0LW9
-         v+31RZgIic2gzZOLVUHGKf0YeBFll3+jmVZxjYcCdCY3hAl5BCHWXlmmecSykMo0B4hz
-         V8bGy096IUEgDXjKKMNM/9kKbW4fhhRI/eRw57YK23bIcE1mPdI3F8gy+BUurBwEIi6D
-         QRLuQKaXhE293Hvzr/p2FRcks1HuRYv5Gq0EZVwWfj3Xwdut6h4kyDxBj5tW9WtItTSS
-         IokQ==
-X-Gm-Message-State: AOJu0Yxs53Fc7uRzShGYZA/hFVRfrG/GEBtVSR7nkCt20H1UpbyLs47y
-        kkxsNY9QrTPs/SESpLjKO6EaLw==
-X-Google-Smtp-Source: AGHT+IFOer8+VToEvlzAjqJ8WKjvLUnocdKB9fczASUXK2IJ5yrMKzucY9IvJFV773qLe0FZSKLgzg==
-X-Received: by 2002:a05:6a20:3945:b0:18f:97c:8a35 with SMTP id r5-20020a056a20394500b0018f097c8a35mr5699397pzg.96.1701700753765;
-        Mon, 04 Dec 2023 06:39:13 -0800 (PST)
-Received: from google.com (170.102.105.34.bc.googleusercontent.com. [34.105.102.170])
-        by smtp.gmail.com with ESMTPSA id s16-20020a056a00179000b006c0316485f9sm3449035pfg.64.2023.12.04.06.39.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 06:39:13 -0800 (PST)
-Date:   Mon, 4 Dec 2023 14:39:10 +0000
-From:   Carlos Llamas <cmllamas@google.com>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     arve@android.com, brauner@kernel.org, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, maco@android.com, surenb@google.com,
-        tkjos@android.com
-Subject: Re: [PATCH v2 23/28] binder: document the final page calculation
-Message-ID: <ZW3kjj6KC73zpnw4@google.com>
-References: <20231201172212.1813387-24-cmllamas@google.com>
- <20231204115727.42370-1-aliceryhl@google.com>
+        Mon, 4 Dec 2023 09:41:03 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A28A9;
+        Mon,  4 Dec 2023 06:41:08 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6870A1FCE8;
+        Mon,  4 Dec 2023 14:41:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701700867; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oZ5GBwYG9yYyA/BLwztwhsbyqCCEQU8wZSQHMYMGfGY=;
+        b=wI8PwYjECnoMx/1ik3UIhSJavowayEM+Pt/v9tfVpsUA+C4764jEXunRHprIqNyw/U1Sbk
+        KjgDmS4iz2mCv68mYCe4BgGO+rxagYTrhx4H0BbFblac0C4iqIQ4gddyq86tZiC+RNwCh/
+        b0eaE0rM9MSkL8xJHsQOUbQ5/TwQ7jw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701700867;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oZ5GBwYG9yYyA/BLwztwhsbyqCCEQU8wZSQHMYMGfGY=;
+        b=WDJyYUy/wKTW5vIqC5AvqhpoCXROn9S9aKSSGTZ9qQGvx1ZPFMk61NomQeOKeZKbFPsVeR
+        bYjWQyquj9MyxnCA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A433139E2;
+        Mon,  4 Dec 2023 14:41:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id wngFFgPlbWUwGAAAn2gu4w
+        (envelope-from <jack@suse.cz>); Mon, 04 Dec 2023 14:41:07 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id EDD24A07DB; Mon,  4 Dec 2023 15:41:06 +0100 (CET)
+Date:   Mon, 4 Dec 2023 15:41:06 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, willy@infradead.org,
+        akpm@linux-foundation.org, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
+ DIO write race with buffered read
+Message-ID: <20231204144106.fk4yxc422gppifsz@quack3>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
+ <20231204121120.mpxntey47rluhcfi@quack3>
+ <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231204115727.42370-1-aliceryhl@google.com>
-X-Spam-Status: No, score=-13.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -2.10
+X-Spamd-Result: default: False [-2.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[suse.cz,kvack.org,vger.kernel.org,mit.edu,dilger.ca,infradead.org,linux-foundation.org,gmail.com,huawei.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 11:57:27AM +0000, Alice Ryhl wrote:
-> > The code to determine the page range for binder_lru_freelist_del() is
-> > quite obscure. It leverages the buffer_size calculated before doing an
-> > oversized buffer split. This is used to figure out if the last page is
-> > being shared with another active buffer. If so, the page gets trimmed
-> > out of the range as it has been previously removed from the freelist.
-> > 
-> > This would be equivalent to getting the start page of the next in-use
-> > buffer explicitly. However, the code for this is much larger as we can
-> > see in binder_free_buf_locked() routine. Instead, lets settle on
-> > documenting the tricky step and using better names for now.
-> > 
-> > I believe an ideal solution would be to count the binder_page->users to
-> > determine when a page should be added or removed from the freelist.
-> > However, this is a much bigger change than what I'm willing to risk at
-> > this time.
-> > 
-> > Signed-off-by: Carlos Llamas <cmllamas@google.com>
+On Mon 04-12-23 21:50:18, Baokun Li wrote:
+> On 2023/12/4 20:11, Jan Kara wrote:
+> > On Sat 02-12-23 17:14:30, Baokun Li wrote:
+> > > Recently, while running some pressure tests on MYSQL, noticed that
+> > > occasionally a "corrupted data in log event" error would be reported.
+> > > After analyzing the error, I found that extending DIO write and buffered
+> > > read were competing, resulting in some zero-filled page end being read.
+> > > Since ext4 buffered read doesn't hold an inode lock, and there is no
+> > > field in the page to indicate the valid data size, it seems to me that
+> > > it is impossible to solve this problem perfectly without changing these
+> > > two things.
+> > Yes, combining buffered reads with direct IO writes is a recipe for
+> > problems and pretty much in the "don't do it" territory. So honestly I'd
+> > consider this a MYSQL bug. Were you able to identify why does MYSQL use
+> > buffered read in this case? It is just something specific to the test
+> > you're doing?
+> The problem is with a one-master-twoslave MYSQL database with three
+> physical machines, and using sysbench pressure testing on each of the
+> three machines, the problem occurs about once every two to three hours.
 > 
-> Yes, this does help somewhat.
+> The problem is with the relay log file, and when the problem occurs, the
+> middle dozens of bytes of the file are read as all zeros, while the data on
+> disk is not. This is a journal-like file where a write process gets the data
+> from
+> the master node and writes it locally, and another replay process reads the
+> file and performs the replay operation accordingly (some SQL statements).
+> The problem is that when replaying, it finds that the data read is
+> corrupted,
+> not valid SQL data, while the data on disk is normal.
 > 
-> However, `curr_last_page` is actually not the last page. It's the last
-> page plus one, since `binder_lru_freelist_del` is exclusive on this
-> argument. Maybe rename it to `curr_after_last_page` or something like
-> that? Or maybe even just `curr_last_page_plus_one`.
+> It's not confirmed that buffered reads vs direct IO writes is actually
+> causing this issue, but this is the only scenario that we can reproduce
+> with our local simplified scripts. Also, after merging in patch 1, the
+> MYSQL pressure test scenario has now been tested for 5 days and has not
+> been reproduced.
+> 
+> I'll double-check the problem scenario, although buffered reads with
+> buffered writes doesn't seem to have this problem.
 
-hmmm, I don't know. I think this could be more confusing, the plus-one
-is only because of the way that binder_lru_freelist_del() processes the
-final page. So you could interpret the name both ways. Do we _really_
-need the extra comments to make it clear?
+Yeah, from what you write it seems that the replay code is using buffered
+reads on the journal file. I guess you could confirm that with a bit of
+kernel tracing but the symptoms look pretty convincing. Did you try talking
+to MYSQL guys about why they are doing this?
 
-This solution is too complex anyway, it should really be replaced with a
-binder_page->nr_users to determine when to add/remove from the lru.
+> > > In this series, the first patch reads the inode size twice, and takes the
+> > > smaller of the two values as the copyout limit to avoid copying data that
+> > > was not actually read (0-padding) into the user buffer and causing data
+> > > corruption. This greatly reduces the probability of problems under 4k
+> > > page. However, the problem is still easily triggered under 64k page.
+> > > 
+> > > The second patch waits for the existing dio write to complete and
+> > > invalidate the stale page cache before performing a new buffered read
+> > > in ext4, avoiding data corruption by copying the stale page cache to
+> > > the user buffer. This makes it much less likely that the problem will
+> > > be triggered in a 64k page.
+> > > 
+> > > Do we have a plan to add a lock to the ext4 buffered read or a field in
+> > > the page that indicates the size of the valid data in the page? Or does
+> > > anyone have a better idea?
+> > No, there are no plans to address this AFAIK. Because such locking will
+> > slow down all the well behaved applications to fix a corner case for
+> > application doing unsupported things. Sure we must not crash the kernel,
+> > corrupt the filesystem or leak sensitive (e.g. uninitialized) data if app
+> > combines buffered and direct IO but returning zeros instead of valid data
+> > is in my opinion fully within the range of acceptable behavior for such
+> > case.
+> > 
+> I also feel that a scenario like buffered reads + DIO writes is strange.
+> But theoretically when read doesn't return an error, the data read
+> shouldn't be wrong.  And I tested that xfs guarantees data consistency in
+> this scenario, which is why I thought it might be buggy.
 
---
-Carlos Llamas
+Yes, XFS has inherited stronger consistency guarantees from IRIX times than
+Linux filesystems traditionally had. We generally don't even guarantee
+buffered read vs buffered write atomicity (i.e., buffered read can see a
+torn buffered write).
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
