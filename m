@@ -2,144 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C9E803453
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:19:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1498D803458
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbjLDNTT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 08:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
+        id S233486AbjLDNUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233869AbjLDNTR (ORCPT
+        with ESMTP id S233171AbjLDNUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:19:17 -0500
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67331AC;
-        Mon,  4 Dec 2023 05:19:23 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5d719a2004fso10240947b3.3;
-        Mon, 04 Dec 2023 05:19:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701695962; x=1702300762;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v7AO3faWlvMvzFGUJAneEsk6GWi1KDY1Vy4IkAizcS0=;
-        b=cpYgPruj9p97D4SoJVDVp2vW2SYqthsNBZRirijbyK8jkjX0czjNjIzlCXFAt6huXS
-         gbANWi0yWWoFeHFkynctfvTeI1F8oNtS3XncF7VMmqX7yAd16OSS74ujDxRw3c/iOsy4
-         JKBoVuauB3FRjC1OkfSeqDZvOVjBEWmfKqjckVxgGk1WCbI5CVZOUVu7NTUrIn0JDplD
-         7NFicrrszC+wthwyOBPREXjMDRBmIFOCJ9j6xA64sTae+0cYKOp8IA6MrlDNeOrGEPlN
-         EKkjXhCI0OqSVbHixUiim3D+tUA/R4TNT9Mpd2RHSxi795psh3XN+vE38aHHIM5Z68ru
-         cAHg==
-X-Gm-Message-State: AOJu0YwHV9LX/nUdX8gonPDv0VW6mxSVHPZEC+lheU9vmkKn3ujMP9XW
-        bPkffHJjli3lJO9kSzNGS+eO39iXJy/bmA==
-X-Google-Smtp-Source: AGHT+IH0VKUDv24tvSmAazQRnlXP9+T4YfLARM1CtfY0h2bve31r2fNRXEPfI4XUFEC4arik/Itptw==
-X-Received: by 2002:a81:af05:0:b0:5c0:fc45:a249 with SMTP id n5-20020a81af05000000b005c0fc45a249mr1285432ywh.40.1701695962430;
-        Mon, 04 Dec 2023 05:19:22 -0800 (PST)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id z142-20020a0dd794000000b005d7fd6368a6sm1231559ywd.37.2023.12.04.05.19.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 05:19:21 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5d8ddcc433fso5154607b3.1;
-        Mon, 04 Dec 2023 05:19:21 -0800 (PST)
-X-Received: by 2002:a05:690c:8:b0:5d8:2f65:cf71 with SMTP id
- bc8-20020a05690c000800b005d82f65cf71mr1206068ywb.86.1701695961634; Mon, 04
- Dec 2023 05:19:21 -0800 (PST)
+        Mon, 4 Dec 2023 08:20:08 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7AFA1;
+        Mon,  4 Dec 2023 05:20:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701696015; x=1733232015;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=4NPXnux+c7mfmuxeW1NdbPlpm/f/3Pww4CWNNGCbIWw=;
+  b=Q8auie4nwj65b8xzmnA7s6ko+WGC/N2slbZg3Rl0xiM2XhFFDyBZZXUF
+   Ip/1yz5WFIyp6Af5j3TIqBAzxa8gu49sM10h16+yaUKmlhrQDciY+j8jh
+   fQVtWOUbjIPv93g2ZRhcsaLzbxPWTEAbCv1Fz/p/1bpkfPzLMr5XqiXZ4
+   JFCjxcz1kec9lOXqsqUIJ75VFftcOo3BuQGc8b4h86vaTN7oeCiBsiGne
+   2t6NklBRbV0NHrAMZk1flo+leysn4rMkUBPmordLb0FulMMUCoQB0ykWI
+   DPi1mMH5B1zzdAfzKczTKsJ1NLd+DHf5zHauXpesbRlwGVBLjcf3+M7ph
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="396535976"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="396535976"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:20:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="770534305"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="770534305"
+Received: from malladhi-mobl.gar.corp.intel.com ([10.249.34.28])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:20:12 -0800
+Date:   Mon, 4 Dec 2023 15:20:09 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Dawei Li <dawei.li@shingroup.cn>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>, jszhang@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        set_pte_at@outlook.com, stable@kernel.org
+Subject: Re: [PATCH] serial: dw8250: Make DLF feature independent of
+ ADDITIONAL_FEATURE
+In-Reply-To: <20231204130820.2823688-1-dawei.li@shingroup.cn>
+Message-ID: <48f6fcce-4b5-a7c0-2fc0-989b9a2fba8@linux.intel.com>
+References: <20231204130820.2823688-1-dawei.li@shingroup.cn>
 MIME-Version: 1.0
-References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
- <20231129161459.1002323-13-andriy.shevchenko@linux.intel.com>
- <CGME20231204114039eucas1p29c6f8a162191e58ff658d3a1c44429bf@eucas1p2.samsung.com>
- <9e4e65de-7234-4234-8091-796277a1f1c5@samsung.com> <ZW3PrSQWyZvvhN66@smile.fi.intel.com>
-In-Reply-To: <ZW3PrSQWyZvvhN66@smile.fi.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Dec 2023 14:19:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdU-E7jemjAS0EunWFPq1LfF9vcNE+50ah4WH9oD1TXYew@mail.gmail.com>
-Message-ID: <CAMuHMdU-E7jemjAS0EunWFPq1LfF9vcNE+50ah4WH9oD1TXYew@mail.gmail.com>
-Subject: Re: [PATCH v4 12/23] pinctrl: mediatek: Make use of PINCTRL_GROUP_DESC()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Mon, 4 Dec 2023, Dawei Li wrote:
 
-On Mon, Dec 4, 2023 at 2:10 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> On Mon, Dec 04, 2023 at 12:40:38PM +0100, Marek Szyprowski wrote:
-> > On 29.11.2023 17:06, Andy Shevchenko wrote:
-> > > Make use of PINCTRL_GROUP_DESC() instead of open coding it.
->
-> > PINCTRL_GROUP_DESC() macro from drivers/pinctrl/core.h contains a cast
-> > to (struct group_desc), what breaks users of the above macros.
->
-> There is no cast (*).
-> Thanks for report, I will check.
->
-> But this was v4 of the series and LKP actually sent a positive feedback.
-> Besides that I have tested this locally with modules enabled.
->
-> *) It's a compound literal, _not_ a cast.
->    Taking above into consideration I'm wondering what compilers
->    are in use?
+> DW apb uart databook defines couples of configuration parameters of
+> dw8250 IP, among which there are 2 of them:
+> - ADDTIONAL_FEATURE
+> " Configure the peripheral to have the option to include FIFO status
+>   registers, shadow registers and encoded parameter register. Also
+>   configures the peripheral to have UART component version and the
+>   peripheral ID registers. "
+> 
+> - FRACTIONAL_BAUD_DIVISOR_EN
+> " Configures the peripheral to have Fractional Baud Rate Divisor.
+>   .... "
+> 
+> These two parameters are completely irrelevant, and supposed to be
+> independent of each other. However, in current dw8250 driver
+> implementation, they are hooked together.
+> 
+> The bug was hit when we are bringing up dw8250 IP on our hardware
+> platform, in which parameters are configured in such combination:
+> - ADDTIONAL_FEATURE disabled;
+> - FRACTIONAL_BAUD_DIVISOR_EN enabled;
+> 
+> Fixes: 701c5e73b296 ("serial: 8250_dw: add fractional divisor support")
+> Cc: stable@kernel.org
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>  drivers/tty/serial/8250/8250_dwlib.c | 22 +++++++++++-----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/8250/8250_dwlib.c b/drivers/tty/serial/8250/8250_dwlib.c
+> index 84843e204a5e..136ad093c5b6 100644
+> --- a/drivers/tty/serial/8250/8250_dwlib.c
+> +++ b/drivers/tty/serial/8250/8250_dwlib.c
+> @@ -259,17 +259,6 @@ void dw8250_setup_port(struct uart_port *p)
+>  	}
+>  	up->capabilities |= UART_CAP_NOTEMT;
+>  
+> -	/*
+> -	 * If the Component Version Register returns zero, we know that
+> -	 * ADDITIONAL_FEATURES are not enabled. No need to go any further.
+> -	 */
+> -	reg = dw8250_readl_ext(p, DW_UART_UCV);
+> -	if (!reg)
+> -		return;
+> -
+> -	dev_dbg(p->dev, "Designware UART version %c.%c%c\n",
+> -		(reg >> 24) & 0xff, (reg >> 16) & 0xff, (reg >> 8) & 0xff);
+> -
+>  	/* Preserve value written by firmware or bootloader  */
+>  	old_dlf = dw8250_readl_ext(p, DW_UART_DLF);
+>  	dw8250_writel_ext(p, DW_UART_DLF, ~0U);
+> @@ -282,6 +271,17 @@ void dw8250_setup_port(struct uart_port *p)
+>  		p->set_divisor = dw8250_set_divisor;
+>  	}
+>  
+> +	/*
+> +	 * If the Component Version Register returns zero, we know that
+> +	 * ADDITIONAL_FEATURES are not enabled. No need to go any further.
+> +	 */
+> +	reg = dw8250_readl_ext(p, DW_UART_UCV);
+> +	if (!reg)
+> +		return;
+> +
+> +	dev_dbg(p->dev, "Designware UART version %c.%c%c\n",
+> +		(reg >> 24) & 0xff, (reg >> 16) & 0xff, (reg >> 8) & 0xff);
+> +
+>  	reg = dw8250_readl_ext(p, DW_UART_CPR);
+>  	if (!reg) {
+>  		reg = data->pdata->cpr_val;
+> 
 
-kisskb reported the following m68k failures to me:
-    linux-next/m68k-allmodconfig/m68k-gcc8
-    linux-next/m68k-allmodconfig/m68k-gcc11
-    linux-next/m68k-allmodconfig/m68k-gcc12
-
-However, according to [1], linux-next/m68k-allmodconfig/m68k-gcc13
-did succeed, so I guess you are using gcc13?
-
-[1] http://kisskb.ellerman.id.au/kisskb/head/629a3b49f3f957e975253c54846090b8d5ed2e9b/
-
-Gr{oetje,eeting}s,
-
-                        Geert
+The very same code change is already in tty-next (from another author).
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+ i.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
