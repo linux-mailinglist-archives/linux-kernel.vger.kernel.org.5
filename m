@@ -2,200 +2,385 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3486802BB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 07:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3067A802BB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 07:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234515AbjLDGls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 01:41:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
+        id S230227AbjLDGsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 01:48:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjLDGlr (ORCPT
+        with ESMTP id S229446AbjLDGsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 01:41:47 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B75D2
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 22:41:52 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40b397793aaso24678405e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 22:41:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701672111; x=1702276911; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ApmB2pUDSXbw3GASD2VuKcH2dVbqTsGey4cd15/8X7k=;
-        b=IkS0GHNDwaudZOJuhNgGLZrcVr7ihYuiGthg/4LHX+cGFfUVOsBzAzu9xWjDY13JlK
-         pQBHXazv5HBxygXUOGyXRp2Yl1y6OmJOhGoVyV+RK+IU8UqNMeZOtc0wqQurokv9XfKR
-         9SOZE57Ug1uxpG4RFoSUc5NHXsP6ZSpOXWSWKFiKrgu9lkob5JzGb8uUwpbuY66LZKMd
-         GlyM1szdfMRs1tyn3whBq0qltk4Z2j2vMHx1UpmX1i+2QIL0jJs5voSQhVjiVzkgda9F
-         52ghiD1brKIIZuwzTE/eWj+ltQFjh6bIl+ZLuMQRvWIprA8oFA2PTIHxLPMcfW6h1xX7
-         3a1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701672111; x=1702276911;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ApmB2pUDSXbw3GASD2VuKcH2dVbqTsGey4cd15/8X7k=;
-        b=l6jJJn3Ua+i+nbqhNNdiUqT6KzVosOb07m+hykriFrrpCySJou4deMg3vOS1J9fx7y
-         9ox8bijJgdWIyGgAqcxJt9BmLY/+ajBbliMhS04c6ZWkWAWjt4z6H2zOmrk8UWqvJB2H
-         ZdyrZQUCYaudreobAKc2hr8Kzf8FrhXb54nyd1EL/5iqR1cNiUDQviAY7cOMPLW0TLaP
-         ydkD+qqjuAZZIMnnKIlp3Czsc0/jwvAcvIpzQblA6Z+L0mhTPHaocLvdbp6POHHMLC17
-         wo+mcsfPoNv+2CV1mVruN1mfrIq6+UdlaRuHbHPq8thiidnx/gV9i3cbHrQcJPuS2wiP
-         Xo2Q==
-X-Gm-Message-State: AOJu0Yw1eVSe4qnniHmlMwIgLwJqE+krHEzeu1IzzrGGomn9XSKUvnvn
-        umzKyXWBNuUvbDVrPHMUosSkIQ==
-X-Google-Smtp-Source: AGHT+IGTGf6yHFfA5ku1l5PLwahClR/h62xhyVRdgQu+YIgTbEkkykxXiu9yo5aJbxw4GsFSRqJEsQ==
-X-Received: by 2002:a05:600c:45c6:b0:40b:5e56:7b45 with SMTP id s6-20020a05600c45c600b0040b5e567b45mr2791016wmo.142.1701672110620;
-        Sun, 03 Dec 2023 22:41:50 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id fa23-20020a05600c519700b003fee6e170f9sm13725019wmb.45.2023.12.03.22.41.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 22:41:50 -0800 (PST)
-Date:   Mon, 4 Dec 2023 09:41:46 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev, Hector Martin <marcan@marcan.st>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>
-Subject: drivers/irqchip/irq-apple-aic.c:941 aic_of_ic_init() error:
- uninitialized symbol 'off'.
-Message-ID: <ec3c78c4-6d16-4e42-b9b3-a1ba709dc991@suswa.mountain>
+        Mon, 4 Dec 2023 01:48:36 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD6EDD5;
+        Sun,  3 Dec 2023 22:48:41 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 06EEB165C;
+        Sun,  3 Dec 2023 22:49:28 -0800 (PST)
+Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B14373F5A1;
+        Sun,  3 Dec 2023 22:48:36 -0800 (PST)
+Message-ID: <7c7acbf5-a6d5-4fe6-92ca-c5b3be2e85af@arm.com>
+Date:   Mon, 4 Dec 2023 12:18:33 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 3/7] coresight: catu: Move ACPI support from AMBA
+ driver to platform driver
+Content-Language: en-US
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
+ <20231201062053.1268492-4-anshuman.khandual@arm.com>
+ <56e9bc16-7962-46c6-858d-53aa7a6c8555@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <56e9bc16-7962-46c6-858d-53aa7a6c8555@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-commit: dc97fd6fec009957e81026055fc99a03877ff3b8 irqchip/apple-aic: Dynamically compute register offsets
-config: arm64-randconfig-r081-20231127 (https://download.01.org/0day-ci/archive/20231203/202312032327.J915WcaL-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce: (https://download.01.org/0day-ci/archive/20231203/202312032327.J915WcaL-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202312032327.J915WcaL-lkp@intel.com/
 
-New smatch warnings:
-drivers/irqchip/irq-apple-aic.c:941 aic_of_ic_init() error: uninitialized symbol 'off'.
+On 12/1/23 19:11, Suzuki K Poulose wrote:
+> Hi Anshuman,
+> 
+> On 01/12/2023 06:20, Anshuman Khandual wrote:
+>> Add support for the catu devices in a new platform driver, which can then
+>> be used on ACPI based platforms. This change would now allow runtime power
+>> management for ACPI based systems. The driver would try to enable the APB
+>> clock if available.
+> 
+> This doesn't talk about the new helper. As such I would prefer that to be a separate preparatory patch. See below.
 
-Old smatch warnings:
-drivers/irqchip/irq-apple-aic.c:920 aic_of_ic_init() warn: possible memory leak of 'irqc'
-drivers/irqchip/irq-apple-aic.c:998 aic_of_ic_init() warn: 'regs' from of_iomap() not released on lines: 914,920.
+Makes sense.
 
-vim +/off +941 drivers/irqchip/irq-apple-aic.c
+> 
+>>
+>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: coresight@lists.linaro.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>   drivers/acpi/arm64/amba.c                    |   1 -
+>>   drivers/hwtracing/coresight/coresight-catu.c | 130 ++++++++++++++++---
+>>   drivers/hwtracing/coresight/coresight-catu.h |   1 +
+>>   drivers/hwtracing/coresight/coresight-core.c |  29 +++++
+>>   include/linux/coresight.h                    |   7 +
+>>   5 files changed, 149 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/acpi/arm64/amba.c b/drivers/acpi/arm64/amba.c
+>> index afb6afb66967..587061b0fd2f 100644
+>> --- a/drivers/acpi/arm64/amba.c
+>> +++ b/drivers/acpi/arm64/amba.c
+>> @@ -27,7 +27,6 @@ static const struct acpi_device_id amba_id_list[] = {
+>>       {"ARMHC503", 0}, /* ARM CoreSight Debug */
+>>       {"ARMHC979", 0}, /* ARM CoreSight TPIU */
+>>       {"ARMHC97C", 0}, /* ARM CoreSight SoC-400 TMC, SoC-600 ETF/ETB */
+>> -    {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>>       {"", 0},
+>>   };
+>>   diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
+>> index 3949ded0d4fa..ba5ee7d158dd 100644
+>> --- a/drivers/hwtracing/coresight/coresight-catu.c
+>> +++ b/drivers/hwtracing/coresight/coresight-catu.c
+>> @@ -7,6 +7,8 @@
+>>    * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>    */
+>>   +#include <linux/platform_device.h>
+>> +#include <linux/acpi.h>
+>>   #include <linux/amba/bus.h>
+>>   #include <linux/device.h>
+>>   #include <linux/dma-mapping.h>
+>> @@ -502,28 +504,20 @@ static const struct coresight_ops catu_ops = {
+>>       .helper_ops = &catu_helper_ops,
+>>   };
+>>   -static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>> +static int __catu_probe(struct device *dev, struct resource *res)
+>>   {
+>>       int ret = 0;
+>>       u32 dma_mask;
+>> -    struct catu_drvdata *drvdata;
+>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>>       struct coresight_desc catu_desc;
+>>       struct coresight_platform_data *pdata = NULL;
+>> -    struct device *dev = &adev->dev;
+>>       void __iomem *base;
+>>         catu_desc.name = coresight_alloc_device_name(&catu_devs, dev);
+>>       if (!catu_desc.name)
+>>           return -ENOMEM;
+>>   -    drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+>> -    if (!drvdata) {
+>> -        ret = -ENOMEM;
+>> -        goto out;
+>> -    }
+>> -
+>> -    dev_set_drvdata(dev, drvdata);
+>> -    base = devm_ioremap_resource(dev, &adev->res);
+>> +    base = devm_ioremap_resource(dev, res);
+>>       if (IS_ERR(base)) {
+>>           ret = PTR_ERR(base);
+>>           goto out;
+>> @@ -568,18 +562,35 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>>       if (IS_ERR(drvdata->csdev))
+>>           ret = PTR_ERR(drvdata->csdev);
+>>       else
+>> -        pm_runtime_put(&adev->dev);
+>> +        pm_runtime_put(dev);
+>>   out:
+>>       return ret;
+>>   }
+>>   -static void catu_remove(struct amba_device *adev)
+>> +static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>> +{
+>> +    struct catu_drvdata *drvdata;
+>> +
+>> +    drvdata = devm_kzalloc(&adev->dev, sizeof(*drvdata), GFP_KERNEL);
+>> +    if (!drvdata)
+>> +        return -ENOMEM;
+>> +
+>> +    amba_set_drvdata(adev, drvdata);
+>> +    return __catu_probe(&adev->dev, &adev->res);
+>> +}
+>> +
+>> +static void __catu_remove(struct device *dev)
+>>   {
+>> -    struct catu_drvdata *drvdata = dev_get_drvdata(&adev->dev);
+>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>>         coresight_unregister(drvdata->csdev);
+>>   }
+>>   +static void catu_remove(struct amba_device *adev)
+>> +{
+>> +    __catu_remove(&adev->dev);
+>> +}
+>> +
+>>   static struct amba_id catu_ids[] = {
+>>       CS_AMBA_ID(0x000bb9ee),
+>>       {},
+>> @@ -598,13 +609,96 @@ static struct amba_driver catu_driver = {
+>>       .id_table            = catu_ids,
+>>   };
+>>   +static int catu_platform_probe(struct platform_device *pdev)
+>> +{
+>> +    struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +    struct catu_drvdata *drvdata;
+>> +    int ret = 0;
+>> +
+>> +    drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+>> +    if (!drvdata)
+>> +        return -ENOMEM;
+>> +
+>> +    drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
+>> +    if (IS_ERR(drvdata->pclk))
+>> +        return -ENODEV;
+>> +
+>> +    if (res) {
+>> +        drvdata->base = devm_ioremap_resource(&pdev->dev, res);
+>> +        if (IS_ERR(drvdata->base)) {
+>> +            clk_put(drvdata->pclk);
+>> +            return PTR_ERR(drvdata->base);
+>> +        }
+>> +    }
+>> +
+>> +    pm_runtime_get_noresume(&pdev->dev);
+>> +    pm_runtime_set_active(&pdev->dev);
+>> +    pm_runtime_enable(&pdev->dev);
+>> +
+>> +    dev_set_drvdata(&pdev->dev, drvdata);
+>> +    ret = __catu_probe(&pdev->dev, res);
+>> +    if (ret) {
+>> +        pm_runtime_put_noidle(&pdev->dev);
+>> +        pm_runtime_disable(&pdev->dev);
+>> +    }
+>> +    return ret;
+>> +}
+>> +
+>> +static int catu_platform_remove(struct platform_device *pdev)
+>> +{
+>> +    __catu_remove(&pdev->dev);
+>> +    return 0;
+>> +}
+>> +
+>> +#ifdef CONFIG_PM
+>> +static int catu_runtime_suspend(struct device *dev)
+>> +{
+>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>> +
+>> +    if (drvdata->pclk && !IS_ERR_OR_NULL(drvdata->pclk))
+> 
+> Only the second part is needed. IS_ERR_OR_NULL() already checks for NULL.
 
-76cde26394114f Hector Martin 2021-01-21   900  static int __init aic_of_ic_init(struct device_node *node, struct device_node *parent)
-76cde26394114f Hector Martin 2021-01-21   901  {
-76cde26394114f Hector Martin 2021-01-21   902  	int i;
-dc97fd6fec0099 Hector Martin 2022-03-10   903  	u32 off;
-76cde26394114f Hector Martin 2021-01-21   904  	void __iomem *regs;
-76cde26394114f Hector Martin 2021-01-21   905  	struct aic_irq_chip *irqc;
-2cf68211664acd Hector Martin 2022-03-10   906  	const struct of_device_id *match;
-76cde26394114f Hector Martin 2021-01-21   907  
-76cde26394114f Hector Martin 2021-01-21   908  	regs = of_iomap(node, 0);
-76cde26394114f Hector Martin 2021-01-21   909  	if (WARN_ON(!regs))
-76cde26394114f Hector Martin 2021-01-21   910  		return -EIO;
-76cde26394114f Hector Martin 2021-01-21   911  
-76cde26394114f Hector Martin 2021-01-21   912  	irqc = kzalloc(sizeof(*irqc), GFP_KERNEL);
-76cde26394114f Hector Martin 2021-01-21   913  	if (!irqc)
-76cde26394114f Hector Martin 2021-01-21   914  		return -ENOMEM;
-76cde26394114f Hector Martin 2021-01-21   915  
-76cde26394114f Hector Martin 2021-01-21   916  	irqc->base = regs;
-76cde26394114f Hector Martin 2021-01-21   917  
-2cf68211664acd Hector Martin 2022-03-10   918  	match = of_match_node(aic_info_match, node);
-2cf68211664acd Hector Martin 2022-03-10   919  	if (!match)
-2cf68211664acd Hector Martin 2022-03-10   920  		return -ENODEV;
-2cf68211664acd Hector Martin 2022-03-10   921  
-2cf68211664acd Hector Martin 2022-03-10   922  	irqc->info = *(struct aic_info *)match->data;
-2cf68211664acd Hector Martin 2022-03-10   923  
-2cf68211664acd Hector Martin 2022-03-10   924  	aic_irqc = irqc;
-2cf68211664acd Hector Martin 2022-03-10   925  
-dc97fd6fec0099 Hector Martin 2022-03-10   926  	switch (irqc->info.version) {
-dc97fd6fec0099 Hector Martin 2022-03-10   927  	case 1: {
-dc97fd6fec0099 Hector Martin 2022-03-10   928  		u32 info;
-dc97fd6fec0099 Hector Martin 2022-03-10   929  
-76cde26394114f Hector Martin 2021-01-21   930  		info = aic_ic_read(irqc, AIC_INFO);
-7c841f5f6fa3f9 Hector Martin 2022-03-10   931  		irqc->nr_irq = FIELD_GET(AIC_INFO_NR_IRQ, info);
-dc97fd6fec0099 Hector Martin 2022-03-10   932  		irqc->max_irq = AIC_MAX_IRQ;
-dc97fd6fec0099 Hector Martin 2022-03-10   933  
-dc97fd6fec0099 Hector Martin 2022-03-10   934  		off = irqc->info.target_cpu;
-dc97fd6fec0099 Hector Martin 2022-03-10   935  		off += sizeof(u32) * irqc->max_irq; /* TARGET_CPU */
-dc97fd6fec0099 Hector Martin 2022-03-10   936  
-dc97fd6fec0099 Hector Martin 2022-03-10   937  		break;
-dc97fd6fec0099 Hector Martin 2022-03-10   938  	}
+Actually, the first check here should be for valid drvdata instead,
+ensuring that subsequent de-referencing for drvdata->pclk does not
+crash. Will do this replacement for all affected patches.
 
-not default statement.
+> 
+>> +        clk_disable_unprepare(drvdata->pclk);
+>> +    return 0;
+>> +}
+>> +
+>> +static int catu_runtime_resume(struct device *dev)
+>> +{
+>> +    struct catu_drvdata *drvdata = dev_get_drvdata(dev);
+>> +
+>> +    if (drvdata->pclk && !IS_ERR_OR_NULL(drvdata->pclk))
+> 
+> Same here.
+> 
+>> +        clk_prepare_enable(drvdata->pclk);
+>> +    return 0;
+>> +}
+>> +#endif
+>> +
+>> +static const struct dev_pm_ops catu_dev_pm_ops = {
+>> +    SET_RUNTIME_PM_OPS(catu_runtime_suspend, catu_runtime_resume, NULL)
+>> +};
+>> +
+>> +#ifdef CONFIG_ACPI
+>> +static const struct acpi_device_id catu_acpi_ids[] = {
+>> +    {"ARMHC9CA", 0}, /* ARM CoreSight CATU */
+>> +    {},
+>> +};
+>> +
+>> +MODULE_DEVICE_TABLE(acpi, catu_acpi_ids);
+>> +#endif
+>> +
+>> +static struct platform_driver catu_platform_driver = {
+>> +    .probe    = catu_platform_probe,
+>> +    .remove    = catu_platform_remove,
+>> +    .driver    = {
+>> +        .name            = "coresight-catu-platform",
+>> +        .acpi_match_table    = ACPI_PTR(catu_acpi_ids),
+>> +        .suppress_bind_attrs    = true,
+>> +        .pm            = &catu_dev_pm_ops,
+>> +    },
+>> +};
+>> +
+>>   static int __init catu_init(void)
+>>   {
+>>       int ret;
+>>   -    ret = amba_driver_register(&catu_driver);
+>> -    if (ret)
+>> -        pr_info("Error registering catu driver\n");
+>> +    ret = coresight_init_driver("catu", &catu_driver, &catu_platform_driver);
+>>       tmc_etr_set_catu_ops(&etr_catu_buf_ops);
+>>       return ret;
+>>   }
+>> @@ -612,7 +706,7 @@ static int __init catu_init(void)
+>>   static void __exit catu_exit(void)
+>>   {
+>>       tmc_etr_remove_catu_ops();
+>> -    amba_driver_unregister(&catu_driver);
+>> +    coresight_remove_driver(&catu_driver, &catu_platform_driver);
+>>   }
+>>     module_init(catu_init);
+>> diff --git a/drivers/hwtracing/coresight/coresight-catu.h b/drivers/hwtracing/coresight/coresight-catu.h
+>> index 442e034bbfba..141feac1c14b 100644
+>> --- a/drivers/hwtracing/coresight/coresight-catu.h
+>> +++ b/drivers/hwtracing/coresight/coresight-catu.h
+>> @@ -61,6 +61,7 @@
+>>   #define CATU_IRQEN_OFF        0x0
+>>     struct catu_drvdata {
+>> +    struct clk *pclk;
+>>       void __iomem *base;
+>>       struct coresight_device *csdev;
+>>       int irq;
+>> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+>> index 9fabe00a40d6..ede9b0723f95 100644
+>> --- a/drivers/hwtracing/coresight/coresight-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-core.c
+>> @@ -1833,6 +1833,35 @@ static void __exit coresight_exit(void)
+>>   module_init(coresight_init);
+>>   module_exit(coresight_exit);
+>>   
+> 
+> ---8>---
+> 
+>> +int coresight_init_driver(const char *drv, struct amba_driver *amba_drv,
+>> +              struct platform_driver *pdev_drv)
+>> +{
+>> +    int ret;
+>> +
+>> +    ret = amba_driver_register(amba_drv);
+>> +    if (ret) {
+>> +        pr_err("%s: error registering AMBA driver\n", drv);
+>> +        return ret;
+>> +    }
+>> +
+>> +    ret = platform_driver_register(pdev_drv);
+>> +    if (!ret)
+>> +        return 0;
+>> +
+>> +    pr_err("%s: error registering platform driver\n", drv);
+>> +    amba_driver_unregister(amba_drv);
+>> +    return ret;
+>> +}
+>> +EXPORT_SYMBOL_GPL(coresight_init_driver);
+>> +
+>> +void coresight_remove_driver(struct amba_driver *amba_drv,
+>> +                 struct platform_driver *pdev_drv)
+>> +{
+>> +    amba_driver_unregister(amba_drv);
+>> +    platform_driver_unregister(pdev_drv);
+>> +}
+>> +EXPORT_SYMBOL_GPL(coresight_remove_driver);
+> 
+> Please could we split this into a separate patch itself ? Also, can we not use them for the other components ? funnel, replicator ?
 
-dc97fd6fec0099 Hector Martin 2022-03-10   939  	}
-dc97fd6fec0099 Hector Martin 2022-03-10   940  
-dc97fd6fec0099 Hector Martin 2022-03-10  @941  	irqc->info.sw_set = off;
-dc97fd6fec0099 Hector Martin 2022-03-10   942  	off += sizeof(u32) * (irqc->max_irq >> 5); /* SW_SET */
-dc97fd6fec0099 Hector Martin 2022-03-10   943  	irqc->info.sw_clr = off;
-dc97fd6fec0099 Hector Martin 2022-03-10   944  	off += sizeof(u32) * (irqc->max_irq >> 5); /* SW_CLR */
-dc97fd6fec0099 Hector Martin 2022-03-10   945  	irqc->info.mask_set = off;
-dc97fd6fec0099 Hector Martin 2022-03-10   946  	off += sizeof(u32) * (irqc->max_irq >> 5); /* MASK_SET */
-dc97fd6fec0099 Hector Martin 2022-03-10   947  	irqc->info.mask_clr = off;
-dc97fd6fec0099 Hector Martin 2022-03-10   948  	off += sizeof(u32) * (irqc->max_irq >> 5); /* MASK_CLR */
-dc97fd6fec0099 Hector Martin 2022-03-10   949  	off += sizeof(u32) * (irqc->max_irq >> 5); /* HW_STATE */
-76cde26394114f Hector Martin 2021-01-21   950  
-2cf68211664acd Hector Martin 2022-03-10   951  	if (irqc->info.fast_ipi)
-2cf68211664acd Hector Martin 2022-03-10   952  		static_branch_enable(&use_fast_ipi);
-2cf68211664acd Hector Martin 2022-03-10   953  	else
-2cf68211664acd Hector Martin 2022-03-10   954  		static_branch_disable(&use_fast_ipi);
-2cf68211664acd Hector Martin 2022-03-10   955  
-7c841f5f6fa3f9 Hector Martin 2022-03-10   956  	irqc->hw_domain = irq_domain_create_tree(of_node_to_fwnode(node),
-76cde26394114f Hector Martin 2021-01-21   957  						 &aic_irq_domain_ops, irqc);
-76cde26394114f Hector Martin 2021-01-21   958  	if (WARN_ON(!irqc->hw_domain)) {
-76cde26394114f Hector Martin 2021-01-21   959  		iounmap(irqc->base);
-76cde26394114f Hector Martin 2021-01-21   960  		kfree(irqc);
-76cde26394114f Hector Martin 2021-01-21   961  		return -ENODEV;
-76cde26394114f Hector Martin 2021-01-21   962  	}
-76cde26394114f Hector Martin 2021-01-21   963  
-76cde26394114f Hector Martin 2021-01-21   964  	irq_domain_update_bus_token(irqc->hw_domain, DOMAIN_BUS_WIRED);
-76cde26394114f Hector Martin 2021-01-21   965  
-76cde26394114f Hector Martin 2021-01-21   966  	if (aic_init_smp(irqc, node)) {
-76cde26394114f Hector Martin 2021-01-21   967  		irq_domain_remove(irqc->hw_domain);
-76cde26394114f Hector Martin 2021-01-21   968  		iounmap(irqc->base);
-76cde26394114f Hector Martin 2021-01-21   969  		kfree(irqc);
-76cde26394114f Hector Martin 2021-01-21   970  		return -ENODEV;
-76cde26394114f Hector Martin 2021-01-21   971  	}
-76cde26394114f Hector Martin 2021-01-21   972  
-76cde26394114f Hector Martin 2021-01-21   973  	set_handle_irq(aic_handle_irq);
-76cde26394114f Hector Martin 2021-01-21   974  	set_handle_fiq(aic_handle_fiq);
-76cde26394114f Hector Martin 2021-01-21   975  
-7c841f5f6fa3f9 Hector Martin 2022-03-10   976  	for (i = 0; i < BITS_TO_U32(irqc->nr_irq); i++)
-dc97fd6fec0099 Hector Martin 2022-03-10   977  		aic_ic_write(irqc, irqc->info.mask_set + i * 4, U32_MAX);
-7c841f5f6fa3f9 Hector Martin 2022-03-10   978  	for (i = 0; i < BITS_TO_U32(irqc->nr_irq); i++)
-dc97fd6fec0099 Hector Martin 2022-03-10   979  		aic_ic_write(irqc, irqc->info.sw_clr + i * 4, U32_MAX);
-7c841f5f6fa3f9 Hector Martin 2022-03-10   980  	for (i = 0; i < irqc->nr_irq; i++)
-dc97fd6fec0099 Hector Martin 2022-03-10   981  		aic_ic_write(irqc, irqc->info.target_cpu + i * 4, 1);
-76cde26394114f Hector Martin 2021-01-21   982  
-76cde26394114f Hector Martin 2021-01-21   983  	if (!is_kernel_in_hyp_mode())
-76cde26394114f Hector Martin 2021-01-21   984  		pr_info("Kernel running in EL1, mapping interrupts");
-76cde26394114f Hector Martin 2021-01-21   985  
-2cf68211664acd Hector Martin 2022-03-10   986  	if (static_branch_likely(&use_fast_ipi))
-2cf68211664acd Hector Martin 2022-03-10   987  		pr_info("Using Fast IPIs");
-2cf68211664acd Hector Martin 2022-03-10   988  
-76cde26394114f Hector Martin 2021-01-21   989  	cpuhp_setup_state(CPUHP_AP_IRQ_APPLE_AIC_STARTING,
-76cde26394114f Hector Martin 2021-01-21   990  			  "irqchip/apple-aic/ipi:starting",
-76cde26394114f Hector Martin 2021-01-21   991  			  aic_init_cpu, NULL);
-76cde26394114f Hector Martin 2021-01-21   992  
-b6ca556c352979 Marc Zyngier  2021-02-28   993  	vgic_set_kvm_info(&vgic_info);
-b6ca556c352979 Marc Zyngier  2021-02-28   994  
-dc97fd6fec0099 Hector Martin 2022-03-10   995  	pr_info("Initialized with %d/%d IRQs, %d FIQs, %d vIPIs",
-dc97fd6fec0099 Hector Martin 2022-03-10   996  		irqc->nr_irq, irqc->max_irq, AIC_NR_FIQ, AIC_NR_SWIPI);
-76cde26394114f Hector Martin 2021-01-21   997  
-76cde26394114f Hector Martin 2021-01-21   998  	return 0;
-76cde26394114f Hector Martin 2021-01-21   999  }
+Sure, will split the helpers addition along with their header changes
+into a separate patch at the beginning of this series, and then use
+them for funnel and replicator devices in subsequent patches.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+> 
+> 
+>> +
+>>   MODULE_LICENSE("GPL v2");
+>>   MODULE_AUTHOR("Pratik Patel <pratikp@codeaurora.org>");
+>>   MODULE_AUTHOR("Mathieu Poirier <mathieu.poirier@linaro.org>");
+>> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+>> index a269fffaf991..be7fe3793763 100644
+>> --- a/include/linux/coresight.h
+>> +++ b/include/linux/coresight.h
+>> @@ -12,6 +12,8 @@
+>>   #include <linux/io.h>
+>>   #include <linux/perf_event.h>
+>>   #include <linux/sched.h>
+>> +#include <linux/amba/bus.h>
+>> +#include <linux/platform_device.h>
+>>     /* Peripheral id registers (0xFD0-0xFEC) */
+>>   #define CORESIGHT_PERIPHIDR4    0xfd0
+>> @@ -597,6 +599,11 @@ void coresight_relaxed_write64(struct coresight_device *csdev,
+>>                      u64 val, u32 offset);
+>>   void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset);
+>>   +int coresight_init_driver(const char *drv, struct amba_driver *amba_drv,
+>> +              struct platform_driver *pdev_drv);
+>> +
+>> +void coresight_remove_driver(struct amba_driver *amba_drv,
+>> +                 struct platform_driver *pdev_drv);
+>>   #else
+>>   static inline struct coresight_device *
+>>   coresight_register(struct coresight_desc *desc) { return NULL; }
+> 
+> 
+> Suzuki
