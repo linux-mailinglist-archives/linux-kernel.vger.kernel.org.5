@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57820803AC6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:49:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B80FA803AFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbjLDQsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
+        id S230160AbjLDQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:58:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjLDQsw (ORCPT
+        with ESMTP id S235395AbjLDQtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:48:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1153AC
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:48:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701708537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DlFD7GhwLjb9S13yNsgkI3KXvw6iVqGQQvaiU30gBvU=;
-        b=Il0kLUyM12rNafdXjZQvm82s/fpgXndxk/nOX7x4wEx9en6Yy9cXcYPsbZcAgj2GJmfJfm
-        UeZFM+x1qbaVjLdye1j5QLqj/uHfmHJyhPi702sod4aWKdDrI8jNK/fp9uFFH+ys2zj1Sy
-        IkjWYy7Gldug/+OOuGYG5CNDhinBAa0=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-235-yFlc80ULO6GoJA8YRmdZJw-1; Mon, 04 Dec 2023 11:48:56 -0500
-X-MC-Unique: yFlc80ULO6GoJA8YRmdZJw-1
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7b395875bd0so114632839f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:48:56 -0800 (PST)
+        Mon, 4 Dec 2023 11:49:19 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8633C0;
+        Mon,  4 Dec 2023 08:49:25 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3334a701cbbso978029f8f.0;
+        Mon, 04 Dec 2023 08:49:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701708564; x=1702313364; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=s7FP95rE9QTVcfU2H6+B7dd6w71sV7PtM/IxstkThp4=;
+        b=IjIifOXYcKU+Dp4S47CJ0RDdc1ETeVG+xnkr2HU9erJgD1NSLDw6PkE8ZeTmx+qJWT
+         qn4hNgQldu9jMe0+L/qwUJPqY2RNjJiLfN7/9rQWs4qtuSEvr4kBiwvMAf25Vk5fmK+J
+         5S6OidZgVokpBMvNVwSVCX/YQoWLV41gx+nR8i5Hm3akNZptYL+643NWSROO2aIhzc44
+         pB5agQdN7R20ycB6FS31rEDYBoUtr0uzazl+Pzs6q3ApNFFkQYxeDXlF60lY+W17rLyp
+         3ZxbaCUJ9A4p8RPxOWR7RTGR0WF1le6X16YqQ2eQ6dudIz/C3jtomvhooXK6A3dFv5vy
+         oMHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701708535; x=1702313335;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DlFD7GhwLjb9S13yNsgkI3KXvw6iVqGQQvaiU30gBvU=;
-        b=XerfXk07deeAwk4eSlc8dKirzrPXUUqV1KydC7omfCMBDuA/yo/yiCvWJ9vDtVJRuC
-         wc1D8kVe+hVtgozWDm+n1HAHNEquNYU9tgOBicKDr51GoIyg786tBPOOgsLZIviT0gLr
-         ota38/0xe4ItAvktra83kH1YuNUftE9wGKykz2RWW1Q1tcmanuPb6C7nvFtVLr1zNPfW
-         k5e0P3dNgyPHRIvLBKILl8F3v43WjeMqH7gsnTdrAD3xgHnGrJut1gGxOp3bRfKtoguz
-         aJWy6glBmwjd5h58wU7kweTj2dEgEOe/XYfgWTS7EQimkzj1tZU8Zjy7RX1dafLMDqlx
-         a0nA==
-X-Gm-Message-State: AOJu0Yxo8DaOmbARQ+ypd0E3x4MtH0+8XZGsFlbECK9YLJOV5brt8Jjy
-        yyB4VKbu6VjZQlN4R0TdjfAauNI/FvJzn6mU8ntr5cdZ4QQNpFw/+mEM1N5MWOw2ad5o0PwdcNW
-        W7iBS4K/8IxKO6Rd3cQ77LpHw
-X-Received: by 2002:a05:6602:2245:b0:7b3:5be5:fa55 with SMTP id o5-20020a056602224500b007b35be5fa55mr32630809ioo.2.1701708535613;
-        Mon, 04 Dec 2023 08:48:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHMbZTTWxY8DAhdNOUcz7fb265lA/l2cJEQ3I487U8F0Nm42ahY5dHXJJc8+VpefYo3r7ArvA==
-X-Received: by 2002:a05:6602:2245:b0:7b3:5be5:fa55 with SMTP id o5-20020a056602224500b007b35be5fa55mr32630779ioo.2.1701708535343;
-        Mon, 04 Dec 2023 08:48:55 -0800 (PST)
-Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id b10-20020a02a58a000000b00463fb5dd52dsm2637378jam.57.2023.12.04.08.48.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 08:48:55 -0800 (PST)
-Date:   Mon, 4 Dec 2023 11:48:52 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in
- hugepd processing
-Message-ID: <ZW4C9I2LHmZY-COM@x1n>
-References: <ZV21GCbG48nTLDzn@infradead.org>
- <ZV90JcnQ1RGud/0R@casper.infradead.org>
- <ZV-KQ0e0y9BTsHGv@x1n>
- <d2313c1d-1e50-49b7-bed7-840431af799a@arm.com>
- <ZV-sJsdFfXiCkylv@x1n>
- <510adc26-9aed-4745-8807-dba071fadbbe@arm.com>
- <ZWDKV0XNjplc_vUP@x1n>
- <ZWj_EgljG3NwS5r1@x1n>
- <283da12c-14f1-4255-b3c4-ab933f3373c4@csgroup.eu>
- <01aad92f-b1e0-4f31-b905-8b1c2012ebab@arm.com>
+        d=1e100.net; s=20230601; t=1701708564; x=1702313364;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s7FP95rE9QTVcfU2H6+B7dd6w71sV7PtM/IxstkThp4=;
+        b=Eap+O4CWqbIzcUsqVIaXnJ/0nKj60HOTRlNqi/R2lnPUENNrIDdHazRP7xKltH/5/W
+         KwEtVIEQdMTYsdeNMy1jzsF1tmZNn1539j125vimoWGsNYoC8G8ORbvU5IQ8nm2vXine
+         McRQljefb765LsFD91rOpZuHkkl4zyn1G/Z74WFqRsPSGZTRMRRd9F+8ood7YSckInvr
+         jWHgsj/fvi5ys0sim5vRyUC4aum7VqRxopezCNKKs1ZV4/F9+RSpSVquZu3Lru3VBgLs
+         QiEIrJbvPe+N4w0rv9F/QEUQZ2dromtgwqIssW6JQ9Rj11gdp/rLtwpj1D/M0UEcO+Rl
+         SOBw==
+X-Gm-Message-State: AOJu0YzjsfxFdzKP4+l92lf+/pTfdRxNlaaxc2/i2mPMbXPWvL2is3O/
+        IKoLHUfxxPH9/2Z70hFS8q0=
+X-Google-Smtp-Source: AGHT+IHdOkgQRVHu3jcclKybvEYBcjOFHYhiXAMmLGis+CFMOi9Z9BZer6qBdzxQwfuA9OIsHCGSTA==
+X-Received: by 2002:a5d:4643:0:b0:333:4156:2763 with SMTP id j3-20020a5d4643000000b0033341562763mr1332368wrs.140.1701708563864;
+        Mon, 04 Dec 2023 08:49:23 -0800 (PST)
+Received: from [172.25.98.130] ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id q4-20020a05600000c400b003333fa3d043sm5972220wrx.12.2023.12.04.08.49.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 08:49:23 -0800 (PST)
+Message-ID: <9dbb81f8-7c75-411d-a77c-b670302f0dfe@gmail.com>
+Date:   Mon, 4 Dec 2023 18:49:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <01aad92f-b1e0-4f31-b905-8b1c2012ebab@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Ceclan Dumitru <mitrutzceclan@gmail.com>
+Subject: Re: [PATCH v6 2/2] iio: adc: ad7173: add AD7173 driver
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231123152331.5751-1-user@HYB-hhAwRlzzMZb>
+ <20231123152331.5751-2-user@HYB-hhAwRlzzMZb>
+ <20231125172125.1b0f1ae7@jic23-huawei>
+Content-Language: en-US
+In-Reply-To: <20231125172125.1b0f1ae7@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 11:11:26AM +0000, Ryan Roberts wrote:
-> To be honest, while I understand pte_cont() and friends, I don't understand
-> their relevance (or at least potential future relevance) to GUP?
 
-GUP in general can be smarter to recognize if a pte/pmd is a cont_pte and
-fetch the whole pte/pmd range if the caller specified.  Now it loops over
-each pte/pmd.
 
-Fast-gup is better as it at least doesn't take pgtable lock, for cont_pte
-it looks inside gup_pte_range() which is good enough, but it'll still do
-folio checks for each sub-pte, even though the 2nd+ folio checks should be
-mostly the same (if to ignore races when the folio changed within the time
-of processing the cont_pte chunk).
+On 11/25/23 19:21, Jonathan Cameron wrote:
+> On Thu, 23 Nov 2023 17:23:22 +0200
+> mitrutzceclan <mitrutzceclan@gmail.com> wrote:
+> 
+>> From: Dumitru Ceclan <mitrutzceclan@gmail.com>
 
-Slow-gup (as of what this series is about so far) doesn't do that either,
-for each cont_pte whole entry it'll loop N times, frequently taking and
-releasing the pgtable lock.  A smarter slow-gup can fundamentallly setup
-follow_page_context.page_mask if it sees a cont_pte.  There might be a
-challenge on whether holding the head page's refcount would stablize the
-whole folio, but that may be another question to ask.
+...
+>> +	st->regulators[0].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_EXT_REF];
+>> +	st->regulators[1].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_EXT_REF2];
+>> +	st->regulators[2].supply = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_AVDD1_AVSS];
+>> +
+>> +	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(st->regulators),
+>> +				      st->regulators);
+> 
+> If only some of them are supplied, the driver works fine as long as no channel is using them?
+> If so should probably get the optionally then check for availability of the ones you
+> want.  I'm sure someone will just wire up ref.  Incidentally, ref2 isn't there for all chips
+> I think, so we should not get it on the ones where it can't exist.
+> 
 
-I think I also overlooked that PPC_8XX also has cont_pte support, so we
-actually have three users indeed, if not counting potential future archs
-adding support to also get that same tlb benefit.
 
-Thanks,
+This sets a dummy regulator in place if no proper supply is found. Then
+the call regulator_get_voltage() on the dummy will fail. About getting
+ref2, sure, I'll set the string only with the right ID.
 
--- 
-Peter Xu
+...
+>> +		ret = ad7173_get_ref_voltage_milli(st, (u8)ref_sel);
+>> +		if (ret < 0)
+>> +			return dev_err_probe(dev, ret,
+>> +					     "Cannot use reference %u", ref_sel);
 
+Here the probe would not continue if a channel selects a supply that is
+not available in the DT.
