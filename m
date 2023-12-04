@@ -2,119 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BCF803CEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7483803CB4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344394AbjLDSYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:24:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50022 "EHLO
+        id S232357AbjLDSXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:23:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbjLDSXo (ORCPT
+        with ESMTP id S230437AbjLDSXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:23:44 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47341130;
-        Mon,  4 Dec 2023 10:23:50 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B4IMwk7034910;
-        Mon, 4 Dec 2023 12:22:58 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701714178;
-        bh=PWj0D2WMvRJ11gnfwf0SZ44vgMNZaHz/OZM54jmoFVs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=JBeVn6LSLGMkNjL+d/YkWu4H0o6fxo2MdR5Fms74roq7LZv8+Z2jnVYCFSJbjrLwz
-         V59XS90IBgp+WehEBwrM7H8jiDTGvWpjxKoJf4rRAmU8SBURe4NRt7gXlIBTMHhfBL
-         /oEAueViMAEbU6Bl8TZbxfVCw7h7jOSA6ZoVDWiU=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B4IMw6W091872
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 Dec 2023 12:22:58 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 4
- Dec 2023 12:22:57 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 4 Dec 2023 12:22:57 -0600
-Received: from fllv0039.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B4IMkxD042313;
-        Mon, 4 Dec 2023 12:22:56 -0600
-From:   Andrew Davis <afd@ti.com>
-To:     Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Adam Ford <aford173@gmail.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>
-CC:     <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <linux-omap@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH RFC 10/10] MIPS: DTS: jz4780: Add device tree entry for SGX GPU
-Date:   Mon, 4 Dec 2023 12:22:45 -0600
-Message-ID: <20231204182245.33683-11-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231204182245.33683-1-afd@ti.com>
-References: <20231204182245.33683-1-afd@ti.com>
+        Mon, 4 Dec 2023 13:23:11 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F7DD5;
+        Mon,  4 Dec 2023 10:23:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=OVfC8HmVSUtxQSExvUxbBU1pNZlzr2LJhw+rAKbX5PE=; b=yocSKJDCG9Uq3lu3L6Vrl+Aa1r
+        hRWP9mRlH8sq12iLzchSEn00N5gmtrXOrFxLBNbR5mZygwpfm35B6cyE+GVr+/PzVFYlmkHqrAwvr
+        iIE5YHq2YvOTv8yWAuDG1g2luAQ9ig0vVnSn7XLSMu+D7/SPDmP2V78Fe3cj5XQug/dcyZ2X+MlNr
+        pLAJlYa5DIv3yhIoRvY18doA0PBzavkAmkkl8VLUKq+nG7ker/GZ8/nnZqdFecoAx0X10dVEH0AW0
+        6cGst5/hVpu9tiNV+37ht5O02SqHfmN5alCAKSWBmod/hT3V7vYe9wq3qzhqKiISEDdpBQBQZbYTI
+        w96wF+BQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49384)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rADay-0005sX-2j;
+        Mon, 04 Dec 2023 18:23:06 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rADaw-0000tZ-LP; Mon, 04 Dec 2023 18:23:02 +0000
+Date:   Mon, 4 Dec 2023 18:23:02 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, acpica-devel@lists.linuxfoundation.org,
+        linux-csky@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-parisc@vger.kernel.org,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>
+Subject: Re: [RFC PATCH v3 00/39] ACPI/arm64: add support for virtual
+ cpuhotplug
+Message-ID: <ZW4ZBkj2oCmxv55T@shell.armlinux.org.uk>
+References: <ZTffkAdOqL2pI2la@shell.armlinux.org.uk>
+ <CAJZ5v0j-73_+9U3ngDAf9w1ADDhBTKctJdWboqUk-okH2TQGyg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAJZ5v0j-73_+9U3ngDAf9w1ADDhBTKctJdWboqUk-okH2TQGyg@mail.gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SGX GPU device entry to base jz4780 dtsi file.
+On Tue, Oct 24, 2023 at 08:26:58PM +0200, Rafael J. Wysocki wrote:
+> On Tue, Oct 24, 2023 at 5:15 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > Hi,
+> >
+> > I'm posting James' patch set updated with most of the review comments
+> > from his RFC v2 series back in September. Individual patches have a
+> > changelog attached at the bottom of the commit message. Those which
+> > I have finished updating have my S-o-b on them, those which still have
+> > outstanding review comments from RFC v2 do not. In some of these cases
+> > I've asked questions and am waiting for responses.
+> >
+> > I'm posting this as RFC v3 because there's still some unaddressed
+> > comments and it's clearly not ready for merging. Even if it was ready
+> > to be merged, it is too late in this development cycle to be taking
+> > this change in, so there would be little point posting it non-RFC.
+> > Also James stated that he's waiting for confirmation from the
+> > Kubernetes/Kata folk - I have no idea what the status is there.
+> >
+> > I will be sending each patch individually to a wider audience
+> > appropriate for that patch - apologies to those missing out on this
+> > cover message. I have added more mailing lists to the series with the
+> > exception of the acpica list in a hope of this cover message also
+> > reaching those folk.
+> >
+> > The changes that aren't included are:
+> >
+> > 1. Updates for my patch that was merged via Thomas (thanks!):
+> >    c4dd854f740c cpu-hotplug: Provide prototypes for arch CPU registration
+> >    rather than having this change spread through James' patches.
+> >
+> > 2. New patch - simplification of PA-RISC's smp_prepare_boot_cpu()
+> >
+> > 3. Moved "ACPI: Use the acpi_device_is_present() helper in more places"
+> >    and "ACPI: Rename acpi_scan_device_not_present() to be about
+> >    enumeration" to the beginning of the series - these two patches are
+> >    already queued up for merging into 6.7.
+> >
+> > 4. Moved "arm64, irqchip/gic-v3, ACPI: Move MADT GICC enabled check into
+> >    a helper" to the beginning of the series, which has been submitted,
+> >    but as yet the fate of that posting isn't known.
+> >
+> > The first four patches in this series are provided for completness only.
+> >
+> > There is an additional patch in James' git tree that isn't in the set
+> > of patches that James posted: "ACPI: processor: Only call
+> > arch_unregister_cpu() if HOTPLUG_CPU is selected" which looks to me to
+> > be a workaround for arch_unregister_cpu() being under the ifdef. I've
+> > commented on this on the RFC v2 posting making a suggestion, but as yet
+> > haven't had any response.
+> >
+> > I've included almost all of James' original covering body below the
+> > diffstat.
+> >
+> > The reason that I'm doing this is to help move this code forward so
+> > hopefully it can be merged - which is why I have been keen to dig out
+> > from James' patches anything that can be merged and submit it
+> > separately, since this is a feature for which some users have a
+> > definite need for.
+> 
+> I've gone through the series and there is at least one thing in it
+> that concerns me a lot and some others that at least appear to be
+> really questionable.
+> 
+> I need more time to send comments which I'm not going to do before the
+> 6.7 merge window (sorry), but from what I can say right now, this is
+> not looking good.
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Hi Rafael,
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index 18affff85ce38..5ea6833f5e872 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -460,6 +460,17 @@ hdmi: hdmi@10180000 {
- 		status = "disabled";
- 	};
- 
-+	gpu: gpu@13040000 {
-+		compatible = "ingenic,jz4780-gpu", "img,powervr-sgx540";
-+		reg = <0x13040000 0x4000>;
-+
-+		clocks = <&cgu JZ4780_CLK_GPU>;
-+		clock-names = "core";
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <63>;
-+	};
-+
- 	lcdc0: lcdc0@13050000 {
- 		compatible = "ingenic,jz4780-lcd";
- 		reg = <0x13050000 0x1800>;
+Will you be able to send your comments, so that we can find out what
+your other concerns are please? I'm getting questions from interested
+parties who want to know what your concerns are.
+
+Nothing much has changed to the ACPI changes, so I think it's still
+valid to have the comments back for this.
+
+Thanks.
+
 -- 
-2.39.2
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
