@@ -2,50 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D8C803288
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D455E80328B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343819AbjLDMZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:25:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
+        id S229848AbjLDMZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:25:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbjLDMY7 (ORCPT
+        with ESMTP id S233019AbjLDMZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:24:59 -0500
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DC1C3;
-        Mon,  4 Dec 2023 04:25:03 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0VxpGiOb_1701692699;
-Received: from 30.221.130.147(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0VxpGiOb_1701692699)
-          by smtp.aliyun-inc.com;
-          Mon, 04 Dec 2023 20:25:01 +0800
-Message-ID: <3f8dfc86-c27a-f1df-0a58-35fb4948e526@linux.alibaba.com>
-Date:   Mon, 4 Dec 2023 20:24:59 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net-next v3 5/7] net/smc: compatible with 128-bits extend
- GID of virtual ISM device
-To:     Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
-Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
-        raspl@linux.ibm.com, schnelle@linux.ibm.com,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1701343695-122657-1-git-send-email-guwen@linux.alibaba.com>
- <1701343695-122657-6-git-send-email-guwen@linux.alibaba.com>
- <19b288d3-5434-40b1-93fa-7db47e417f60@linux.ibm.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <19b288d3-5434-40b1-93fa-7db47e417f60@linux.ibm.com>
+        Mon, 4 Dec 2023 07:25:22 -0500
+Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn20800.outbound.protection.outlook.com [IPv6:2a01:111:f403:281c::800])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEE7CD;
+        Mon,  4 Dec 2023 04:25:29 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lkpxHpDHyqaPPOtZC1Jnb5b23VtEaxsjEihAITQ+NW7Hbl1iREopjZ8kgNQ1V+NxgvxiW8DPlLb9TDXs41P47wzl0/EMhNk3ZDa2/ZePNhFDWRvyRLOHlTikgpU0UaJMX9ENSwaPUkja33iO+AKfCpzX3bsPoUeHxtDDdKNmG86srBNmCyWE3KieMoX9u7wkBOXa3RwR+kTJw0kSYBaPq1MJbrYv44+EXqyTDRCMvZqbePGWR9cjJNxkW9jsBQAEKaFe3tQreLnhOoDFL2keTZ5hY30BtW22zDBT9+EJSh44fe5QDrJOWt8QxJpQM45JpcLA98kKmaLHM4BFwDeFMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B43zteGYEB+Svgl8FbBTODYFMHVkgWDwDnQxnZU/N5g=;
+ b=UfN+ci5fcvotjL0jap0Q0jfqQcL7xZbF/3TI+Ch00f+xjdheT4pH6iGWNLizBZ5h4+3ms8XE5V5UydZsh8EL+1B+6hBv+i3vGvFnOY0yeehaX2Q9PAPK14+olkbc9e27G2IhiVm+Ca7Wbag5543DB1wdI+WSMZij4fkDzUS7TjCnjv+nkZGcHf+aulk+h9ILsh+RNBBUT+03mZTidskdBULnvTMnMZzo3LKqspsg1zZ4CiBjcRB5bKwxUQPZAaESb1OXoqL5nfpwgXbwHwWN0UJhMUDWUJ2eNN7rOg04ZjNinSyBH74A/LCfiKonOOJrromeI/A5Z2ggyVaZNCcZMw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B43zteGYEB+Svgl8FbBTODYFMHVkgWDwDnQxnZU/N5g=;
+ b=Xy+uhazpOLK9rWSLVYDM4Xvbn43ynIILzEEVSOUb4/DYtXdQ6y69tYkZdx6u/RDpPFW97tsdZxLXBdQdM4BnQSl102AKzGPTaCHHYdEDzvIFClq7Yy77bDoGXoIhWXYctrP7/myV4c1zi41ag7zqVG0lj2Us7t9b1NwI7F0YK3iX1e1LNTee0jOHPz7WLfaQ5LNT5tU3FyuWLwTEQ0mlssrLFTytXKz4uPNKWWtKb+X6+fwhy5qJBuxq3SU0w0V5KJlmuQSKbLaBfhCiWRT2q0djP7JYPehZKTYsYPGflQUAlRzcKYqGpGgtZF46wMh/mRDQ7IqGq9RTSfiEO/6fXA==
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
+ PN0P287MB0601.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:163::14) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.33; Mon, 4 Dec 2023 12:25:19 +0000
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::b1a7:eee7:e903:9ef3]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::b1a7:eee7:e903:9ef3%7]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 12:25:19 +0000
+Message-ID: <MA0P287MB0332862DC235652C83B4EC2EFE86A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+Date:   Mon, 4 Dec 2023 20:25:13 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/7] Add Huashan Pi board support
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Inochi Amaoto <inochiama@outlook.com>,
+        Conor Dooley <conor@kernel.org>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Anup Patel <anup@brainfault.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <MA0P287MB033290A6C8B15202E31E43CCFE80A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <IA1PR20MB49537B177B6F3614D8D1E3E6BB87A@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <MA0P287MB0332AE2378D633B8A2DCFB77FE86A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+ <20231204-crane-wolf-95f32865db62@wendy>
+From:   Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <20231204-crane-wolf-95f32865db62@wendy>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-14.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-TMN:  [AoBE0TxFN4rZphkfgfxLIZjer/394qBm]
+X-ClientProxiedBy: SGXP274CA0015.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::27)
+ To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5)
+X-Microsoft-Original-Message-ID: <5eb4c63d-6af0-4f4d-b918-d6af42a9ea62@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN0P287MB0601:EE_
+X-MS-Office365-Filtering-Correlation-Id: d49b98dd-ba98-4738-f89c-08dbf4c4139c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CyMeu96QqvkX3cgt7Fni6F6YsKh8BImv6c1MXTc9nV8eXkexzmb3wonUUBW0JSLX3roXwe6yCk/MV66oTdm98jedf9PVb9moiJNAL/yAZyVvcOGFLL92ewQFFeNiT+STrpZGbPIXpeRpzlX+kU6WLg3TuB5HitSAmhfMTcpNNWqfnMo/y6mOrMVWZKXRXcakPujvC3LU6cjEK/75HGpH1gcwXgV5TunuYl4vQWwx170rcOJmFJBk6vjm9FFit73+oIdq819vZySxRl9SOiFL7OyLJLszCAdid672k/WonopI3HYIyUTWlYcxryvN9nTWBcRVPvuUjJvqDVKP7hmAF0+leXFf/+6R0YQC+smrtnpPQvRsIRpSKysEAoUwy/4RyKmLDidICl+cCcjZm0Sf16iK9M7n5QEn0z13AZ4bL8NF6GhWOCVpHDsMqwikv+vfes0AjiRb8z17eKN/saG5Aou6eRdghVFlbctSUCYqXCdOg4ODRaFVNLtQNgNVZNbeJg98ChGdC6yrRhLj1PgvFgzoSiQV/+lw93Pdl5pIXT2os927czoYnC2vqohOuDN1
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MTd4eEd2TmhqZUV3OVRWQlVyN3pBYTZwSVpEK082dFNzbm56S3JXOXB4UGxs?=
+ =?utf-8?B?SCtldlBCeFMzNzROZ3ZGeW5tL0Mrdi9oVWtSNHJYK2QwcjA5ZGJDdUF0MTl5?=
+ =?utf-8?B?a0JvbktRWDAyTHFZU1BEdDJzRGlaL2J2ZGRoMFBzUUdwQ0dGWGI1ZlBhWVJH?=
+ =?utf-8?B?L3RydjROZ01jUkJXK2ttdk9HN2ZlNk1iTVB5RVRCa3d5OGNMbmlneFk1WkUw?=
+ =?utf-8?B?Y096YW1SWmhQL1Z4aHhRK0pTVEJDV2t2WmxydWc5MDlkbkZQZTFYNklkODNJ?=
+ =?utf-8?B?eEtTVXpHWVAyaEpObzl4TEZjZjFsckRBeDNwSE85ZlFnVjNEeEVlbExCYTZC?=
+ =?utf-8?B?UGdOcWxlMjY0clhmSEY4d3RwUFVzNXFsS1ZSTUtIdW1tbjRLQklKa05QMkpv?=
+ =?utf-8?B?ZU1tRXpMQThjTjBRUkV5WHYzODNQOGI0Z0hHbHhIeUlIM3dNNHA2dDI3M0th?=
+ =?utf-8?B?SnJLdFNwbjlQZEM1ODMxZTdndFFWdlhFRWRyeUN2L0hoS3NEcFEzQ0h3NW9N?=
+ =?utf-8?B?dVAyMUJvR1BVeGw3LzdzYjRKbGhtTWNndjBGLzJtWEZBZy9selQzK0FjU0xU?=
+ =?utf-8?B?ZTFzUGVONi9wUCtaU2hBVFFMTVJQZ01EVUNJZGsvZnQ5ditMcllTaktLaVVs?=
+ =?utf-8?B?STFzRlpzbWlSejE3MHlBb21OM3FHcEVrYnhoQ1RkVnRwaDJyRHRCdTRiMGpp?=
+ =?utf-8?B?eGo4dHEyVXhKdnZCN250RUxSdGltUTBpZjNzMnAra01xMm04SHRqWWZYYWpj?=
+ =?utf-8?B?MmJlRXkrNzk3eVVDR0ZwQ0lESzc2bVpvd29OSEtBVm1yREN6WW50WGtUU3dq?=
+ =?utf-8?B?VU0rbDdic1o4dy9qR3loLzVxbUVCS1J4NUpYL3lFb1dadU0wY2FxZUd0VXI5?=
+ =?utf-8?B?YVhLOXk0aTFoT0l1MHIwQ3JEUlg0cFBsKzdxZEJyNENsWDZtNWp5V0FiUlY5?=
+ =?utf-8?B?RkJxZCtITjY3RlNrWHByMXRMSDJEdllmcjZ0Zi9JOWxBdFJObTJxbm1hL0p5?=
+ =?utf-8?B?eXJJWW5wVDR0RDBRZ1QyUzQzSnBHR00vMi9leWhSU3hTNHZBcDBEWEk2Qnhu?=
+ =?utf-8?B?WlZReWs4OEFTZHlGbm9tazV1cDBpcU0xakhwWDRpa1hzZW42UnlKb0g3NXNt?=
+ =?utf-8?B?OXlEeE85QXdBRkhySVV4d1BEdzB5eVIwSWx5T0JJSE15WTVjZFFQV1R5VTM1?=
+ =?utf-8?B?Z3JmdnRJcXFwaXlUTStiai8yNlRDZDFXYThPdTk1cDVhSnBZU1kwakRpN0hR?=
+ =?utf-8?B?ZTB6QytNaDllZ21ueVZmQTAyUXEvVDNQeUVlRk14T0twZE1QaERETHVXRkRW?=
+ =?utf-8?B?OFRHbFdNTjFPbTd1Q01ybG1LaGhlNGp5d1ZPVDZKWW5odHdIK0JhQUxLaklP?=
+ =?utf-8?B?ak5maG1LK0pMTXM3Sk96NG9YdjlrMWd3WFBoWlZPbCtYMTlKUWdPU1BoYmV4?=
+ =?utf-8?B?aU1TVDA5NmJuMU9kUFg3bW1uTHNoZ2k4dVM3NlpDY3pjNkV4enFRUlJQVXNm?=
+ =?utf-8?B?aVU5bkZQMkFTS1Y3ajNDZUVadXFPeTM5V0JyUlZmNkwvSWp3czdPcVovNEF3?=
+ =?utf-8?B?eitOTUxWQVJKWHp3aWp3WHR0bzhOSzBFVjdxUjAwUmlnUzJOTzcweDVwSmdz?=
+ =?utf-8?Q?e6zCZ6sasrMLR5yp9w3XRMQMLrSAJeON3NK4odQuOK7w=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d49b98dd-ba98-4738-f89c-08dbf4c4139c
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 12:25:18.9745
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN0P287MB0601
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,456 +127,42 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Thank you very much for review. See below.
+On 2023/12/4 17:32, Conor Dooley wrote:
+> On Mon, Dec 04, 2023 at 05:15:36PM +0800, Chen Wang wrote:
+>> On 2023/12/4 7:32, Inochi Amaoto wrote:
+>>>> On 2023/12/2 0:21, Conor Dooley wrote:
+>>>> As far as I know, sophgo's SoC product names all start with "sg", while products starting with "cv" come from CVITEK (another chip company). CVITEK was acquired by sophgo a year ago, so now many SOC product names that originally started with "cv" are being repackaged and changed to start with "sg".
+>>>>
+>>>> For the cv1800b adopted by Duo, Sophgo has made it clear that it will not change its codename.
+>>>>
+>>>> But I heard that for other products, such as the cv1812h used by Huashanpi, sophgo may change their names in the future, but sophgo has not officially confirmed it yet. Looks like sophgo themselves are still in the process of digesting cv's products, ;)
+>>>>
+>>>> Since we have just started to support cv1812h and have not done much work yet, I suggest not to merge this patch into the mainline, and wait until there is clear news before doing this to avoid introducing unnecessary modifications later.
+>>>>
+>>> Hi Chen,
+>>>
+>>> There is a update for you. The cv1812h does not have the A53 core as the
+>>> sg200x does. Maybe we should treat cv1812h as a trim of sg200x, not just
+>>> a reband.
+>>>
+>>> According to this information, I suggest to preserve these code for
+>>> cv1812h, it can make upstream the new soc eaiser. Also, adding a new
+>>> compatible is not too hard, and it is necessary if we have new soc.
+>>> Otherwise, the one with Huashan Pi now may be confused because it have
+>>> a old version.
+>> Thanks Inochi for your info, let's just preserve these code for huashan pi
+>> now and keep watching on what's going on then.
+> Could you explain on what you mean by "preserve"? I'm a little unsure.
 
-On 2023/12/2 00:30, Alexandra Winter wrote:
-> 
-> 
-> On 30.11.23 12:28, Wen Gu wrote:
-> [...]
->> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
->> index 766a1f1..d1e18bf 100644
->> --- a/net/smc/af_smc.c
->> +++ b/net/smc/af_smc.c
-> [...]
->> @@ -1048,7 +1048,8 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
->>   {
->>   	int rc = SMC_CLC_DECL_NOSMCDDEV;
->>   	struct smcd_dev *smcd;
->> -	int i = 1;
->> +	int i = 1, entry = 1;
->> +	bool is_virtual;
->>   	u16 chid;
->>   
->>   	if (smcd_indicated(ini->smc_type_v1))
->> @@ -1060,14 +1061,23 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
->>   		chid = smc_ism_get_chid(smcd);
->>   		if (!smc_find_ism_v2_is_unique_chid(chid, ini, i))
->>   			continue;
->> +		is_virtual = __smc_ism_is_virtual(chid);
->>   		if (!smc_pnet_is_pnetid_set(smcd->pnetid) ||
->>   		    smc_pnet_is_ndev_pnetid(sock_net(&smc->sk), smcd->pnetid)) {
->> +			if (is_virtual && entry == SMC_MAX_ISM_DEVS)
->> +				/* only one GID-CHID entry left in CLC Proposal SMC-Dv2
->> +				 * extension. but a virtual ISM device's GID takes two
->> +				 * entries. So give up it and try the next potential ISM
->> +				 * device.
->> +				 */
-> 
-> It is really importatnt to note that virtual ISMs take 2 entries.
-> But it is still hard to understand this piece of code. e.g. I was wondering for a while,
-> why you mention CLC here...
-> Maybe it would be easier to understand this, if you rename SMC_MAX_ISM_DEVS to something else?
-> Something like SMCD_MAX_V2_GID_ENTRIES?
-> 
+hi, Conor,
 
-I agree.
+I meant keeping your changes on riscv-dt-for-next and continue 
+submitting this patch ([PATCH v4 0/7] Add Huashan Pi board support) to 
+upstream.
 
-But I perfer to define a new macro to represent the max ISMv2 entries in CLC proposal message,
-e.g. SMCD_CLC_MAX_V2_GID_ENTRIES, and keep using SMC_MAX_ISM_DEVS to represent the max devices
-that can be proposed. Both semantics are required in the code, such as:
+Sorry for my poor english, hope I have explained it well. :$
 
-ini->ism_dev[SMC_MAX_ISM_DEVS]        | smcd_v2_ext->gidchid[SMCD_CLC_MAX_V2_GID_ENTRIES]
--------------------------------------------------------------------------------------------
-[1:virtual_ISM_1]                     | [1:virtual_ISM_1 GID]
-                                       | [2:virtual_ISM_1 extension GID]
-[2:ISM_2]                             | [3:ISM_2 GID/CHID]
-[3:ISM_3]                             | [4:ISM_3 GID/CHID]
+Thanks,
 
-And SMC_MAX_ISM_DEVS is required no more than SMCD_CLC_MAX_V2_GID_ENTRIES.
+Chen
 
->> +				continue;
->>   			ini->ism_dev[i] = smcd;
->>   			ini->ism_chid[i] = chid;
->>   			ini->is_smcd = true;
->>   			rc = 0;
->>   			i++;
->> -			if (i > SMC_MAX_ISM_DEVS)
->> +			entry = is_virtual ? entry + 2 : entry + 1;
->> +			if (entry > SMC_MAX_ISM_DEVS)
->>   				break;
->>   		}
->>   	}
-> [...]
-> 
-> 
-> 
->> @@ -2154,18 +2176,35 @@ static void smc_find_ism_v2_device_serv(struct smc_sock *new_smc,
->>   	smcd_v2_ext = smc_get_clc_smcd_v2_ext(smc_v2_ext);
->>   
->>   	mutex_lock(&smcd_dev_list.mutex);
->> -	if (pclc_smcd->ism.chid)
->> +	if (pclc_smcd->ism.chid) {
->>   		/* check for ISM device matching proposed native ISM device */
->> +		smcd_gid.gid = ntohll(pclc_smcd->ism.gid);
->> +		smcd_gid.gid_ext = 0;
->>   		smc_check_ism_v2_match(ini, ntohs(pclc_smcd->ism.chid),
->> -				       ntohll(pclc_smcd->ism.gid), &matches);
->> +				       &smcd_gid, &matches);
->> +	}
->>   	for (i = 1; i <= smc_v2_ext->hdr.ism_gid_cnt; i++) {
-> 
-> IMO the following code would be easier to read, if you change the above to count
-> from i = 0; i < smc_v2_ext->hdr.ism_gid_cnt;
-> and then use i and i+1 as indexes below.
-> 
-
-Thank you. I will change this.
-
->>   		/* check for ISM devices matching proposed non-native ISM
->>   		 * devices
->>   		 */
->> -		smc_check_ism_v2_match(ini,
->> -				       ntohs(smcd_v2_ext->gidchid[i - 1].chid),
->> -				       ntohll(smcd_v2_ext->gidchid[i - 1].gid),
->> -				       &matches);
->> +		smcd_gid.gid = ntohll(smcd_v2_ext->gidchid[i - 1].gid);
->> +		smcd_gid.gid_ext = 0;
->> +		chid = ntohs(smcd_v2_ext->gidchid[i - 1].chid);
->> +		if (__smc_ism_is_virtual(chid)) {
->> +			if (i == smc_v2_ext->hdr.ism_gid_cnt ||
->> +			    chid != ntohs(smcd_v2_ext->gidchid[i].chid))
->> +				/* a virtual ISM device takes two GID-CHID entries
->> +				 * and CHID of the second entry repeats that of the
->> +				 * first entry.
->> +				 *
->> +				 * So check if the second GID-CHID entry exists and
->> +				 * the CHIDs of these two entries are the same.
->> +				 */
->> +				continue;
->> +
->> +			smcd_gid.gid_ext = ntohll(smcd_v2_ext->gidchid[i++].gid);
->> +		}
->> +		smc_check_ism_v2_match(ini, chid, &smcd_gid, &matches);
->>   	}
->>   	mutex_unlock(&smcd_dev_list.mutex);
->>   
-> [...]
-> 
-> 
-> 
->> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
->> index e2e437b..2d8bc0b 100644
->> --- a/net/smc/smc_clc.c
->> +++ b/net/smc/smc_clc.c
-> [...]
->> @@ -1020,23 +1033,28 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
->>   	if (first_contact)
->>   		clc->hdr.typev2 |= SMC_FIRST_CONTACT_MASK;
->>   	if (conn->lgr->is_smcd) {
-> 
-> It would be nice to have 2 subfunctions for ism and rdma instead of this large if/else block.
-> 
-
-OK. I will introduce two subfunctions in a separate patch.
-
->> +		struct smcd_gid smcd_gid;
->> +		u16 chid;
->> +
->>   		/* SMC-D specific settings */
->>   		memcpy(clc->hdr.eyecatcher, SMCD_EYECATCHER,
->>   		       sizeof(SMCD_EYECATCHER));
->> +		conn->lgr->smcd->ops->get_local_gid(conn->lgr->smcd, &smcd_gid);
->>   		clc->hdr.typev1 = SMC_TYPE_D;
->> -		clc->d0.gid =
->> -			conn->lgr->smcd->ops->get_local_gid(conn->lgr->smcd);
->> -		clc->d0.token = conn->rmb_desc->token;
->> +		clc->d0.gid = htonll(smcd_gid.gid);
->> +		clc->d0.token = htonll(conn->rmb_desc->token);
->>   		clc->d0.dmbe_size = conn->rmbe_size_comp;
->>   		clc->d0.dmbe_idx = 0;
->>   		memcpy(&clc->d0.linkid, conn->lgr->id, SMC_LGR_ID_SIZE);
->>   		if (version == SMC_V1) {
->>   			clc->hdr.length = htons(SMCD_CLC_ACCEPT_CONFIRM_LEN);
->>   		} else {
->> -			clc_v2->d1.chid =
->> -				htons(smc_ism_get_chid(conn->lgr->smcd));
->> +			chid = smc_ism_get_chid(conn->lgr->smcd);
->> +			clc_v2->d1.chid = htons(chid);
->>   			if (eid && eid[0])
->>   				memcpy(clc_v2->d1.eid, eid, SMC_MAX_EID_LEN);
->> +			if (__smc_ism_is_virtual(chid))
->> +				clc_v2->d1.gid_ext = htonll(smcd_gid.gid_ext);
->>   			len = SMCD_CLC_ACCEPT_CONFIRM_LEN_V2;
->>   			if (first_contact) {
->>   				fce_len = smc_clc_fill_fce_v2x(&fce_v2x, ini);
->> diff --git a/net/smc/smc_clc.h b/net/smc/smc_clc.h
->> index e64c235..dcc63f4 100644
->> --- a/net/smc/smc_clc.h
->> +++ b/net/smc/smc_clc.h
->> @@ -205,8 +205,8 @@ struct smcr_clc_msg_accept_confirm {	/* SMCR accept/confirm */
->>   } __packed;
->>   
->>   struct smcd_clc_msg_accept_confirm_common {	/* SMCD accept/confirm */
->> -	u64 gid;		/* Sender GID */
->> -	u64 token;		/* DMB token */
->> +	__be64 gid;		/* Sender GID */
->> +	__be64 token;		/* DMB token */
-> 
-> Good catch, that this needs to be __be. (including the host to net conversions you did above)
-> This is not related to the subject of this patch though. So either this should be in a separate patch
-> or at least mentioned in the commit message.
-> 
-
-Thank you. I will doing this in a separate patch.
-
->>   	u8 dmbe_idx;		/* DMBE index */
->>   #if defined(__BIG_ENDIAN_BITFIELD)
->>   	u8 dmbe_size : 4,	/* buf size (compressed) */
->> @@ -285,8 +285,8 @@ struct smc_clc_msg_accept_confirm_v2 {	/* clc accept / confirm message */
->>   			struct smcd_clc_msg_accept_confirm_common d0;
->>   			__be16 chid;
->>   			u8 eid[SMC_MAX_EID_LEN];
->> -			u8 reserved5[8];
->> -		} d1;
->> +			__be64 gid_ext;
->> +		} __packed d1;
->>   	};
->>   };
->>   
->> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
->> index d520ee6..32eece5 100644
->> --- a/net/smc/smc_core.c
->> +++ b/net/smc/smc_core.> @@ -506,6 +506,7 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
->>   {
->>   	char smc_pnet[SMC_MAX_PNETID_LEN + 1];
->>   	struct smcd_dev *smcd = lgr->smcd;
->> +	struct smcd_gid smcd_gid;
->>   	struct nlattr *attrs;
->>   	void *nlh;
->>   
->> @@ -521,11 +522,11 @@ static int smc_nl_fill_smcd_lgr(struct smc_link_group *lgr,
->>   
->>   	if (nla_put_u32(skb, SMC_NLA_LGR_D_ID, *((u32 *)&lgr->id)))
->>   		goto errattr;
->> +	smcd->ops->get_local_gid(smcd, &smcd_gid);
->>   	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_GID,
->> -			      smcd->ops->get_local_gid(smcd),
->> -				  SMC_NLA_LGR_D_PAD))
->> +			      smcd_gid.gid, SMC_NLA_LGR_D_PAD))
->>   		goto errattr;
->> -	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_GID, lgr->peer_gid,
->> +	if (nla_put_u64_64bit(skb, SMC_NLA_LGR_D_PEER_GID, lgr->peer_gid.gid,
->>   			      SMC_NLA_LGR_D_PAD))
->>   		goto errattr;
-> 
-> For virtual ism, you will only see the first half of the GID.
-> Is that acceptable? Today we use netlink only for display purposes.
-> What if somebody uses the netlink content as functional input to a user space program?
-> 
-
-Thank you for the consideration. I will improve the netlink code about GID.
-
-> 
->>   	if (nla_put_u8(skb, SMC_NLA_LGR_D_VLAN_ID, lgr->vlan_id))
->> @@ -876,7 +877,10 @@ static int smc_lgr_create(struct smc_sock *smc, struct smc_init_info *ini)
->>   		/* SMC-D specific settings */
-> 
-> 
-> I guess I never really understood, why we define a single linkgroup for SMC-D.
-> Probably because SMC-R linkgroups were implemented before SMC-D support was added.
-My understand is similar to yours, that SMC-D reuses LGR concept to anchor all
-connections with a specific peer.
-
-> To all: Do we want to keep that concept?
-> 
-> 
-I guess the concern is that the 'group' semantic is not clear in SMC-D?
-IMHO it is acceptable and SMC-R also supports single link now. So I tend to keep
-the concept in both SMC-R and SMC-D. Let's hear some other opinions as well.
-
->>   		smcd = ini->ism_dev[ini->ism_selected];
->>   		get_device(smcd->ops->get_dev(smcd));
->> -		lgr->peer_gid = ini->ism_peer_gid[ini->ism_selected];
->> +		lgr->peer_gid.gid =
->> +			ini->ism_peer_gid[ini->ism_selected].gid;
->> +		lgr->peer_gid.gid_ext =
->> +			ini->ism_peer_gid[ini->ism_selected].gid_ext;
->>   		lgr->smcd = ini->ism_dev[ini->ism_selected];
->>   		lgr_list = &ini->ism_dev[ini->ism_selected]->lgr_list;
->>   		lgr_lock = &lgr->smcd->lgr_lock;
->> @@ -1514,7 +1518,8 @@ void smc_lgr_terminate_sched(struct smc_link_group *lgr)
->>   }
->>   
->>   /* Called when peer lgr shutdown (regularly or abnormally) is received */
->> -void smc_smcd_terminate(struct smcd_dev *dev, u64 peer_gid, unsigned short vlan)
->> +void smc_smcd_terminate(struct smcd_dev *dev, struct smcd_gid *peer_gid,
->> +			unsigned short vlan)
->>   {
->>   	struct smc_link_group *lgr, *l;
->>   	LIST_HEAD(lgr_free_list);
->> @@ -1522,9 +1527,12 @@ void smc_smcd_terminate(struct smcd_dev *dev, u64 peer_gid, unsigned short vlan)
->>   	/* run common cleanup function and build free list */
->>   	spin_lock_bh(&dev->lgr_lock);
->>   	list_for_each_entry_safe(lgr, l, &dev->lgr_list, list) {
->> -		if ((!peer_gid || lgr->peer_gid == peer_gid) &&
->> +		if ((!peer_gid->gid ||
->> +		     (lgr->peer_gid.gid == peer_gid->gid &&
->> +		      !smc_ism_is_virtual(dev) ? 1 :
->> +		      lgr->peer_gid.gid_ext == peer_gid->gid_ext)) &&
->>   		    (vlan == VLAN_VID_MASK || lgr->vlan_id == vlan)) {
->> -			if (peer_gid) /* peer triggered termination */
->> +			if (peer_gid->gid) /* peer triggered termination */
->>   				lgr->peer_shutdown = 1;
->>   			list_move(&lgr->list, &lgr_free_list);
->>   			lgr->freeing = 1;
->> @@ -1859,10 +1867,12 @@ static bool smcr_lgr_match(struct smc_link_group *lgr, u8 smcr_version,
->>   	return false;
->>   }
->>   
->> -static bool smcd_lgr_match(struct smc_link_group *lgr,
->> -			   struct smcd_dev *smcismdev, u64 peer_gid)
->> +static bool smcd_lgr_match(struct smc_link_group *lgr, struct smcd_dev *smcismdev,
->> +			   struct smcd_gid *peer_gid)
->>   {
->> -	return lgr->peer_gid == peer_gid && lgr->smcd == smcismdev;
->> +	return lgr->peer_gid.gid == peer_gid->gid && lgr->smcd == smcismdev &&
->> +		smc_ism_is_virtual(smcismdev) ?
->> +		(lgr->peer_gid.gid_ext == peer_gid->gid_ext) : 1;
->>   }
->>   
->>   /* create a new SMC connection (and a new link group if necessary) */
->> @@ -1892,7 +1902,7 @@ int smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini)
->>   		write_lock_bh(&lgr->conns_lock);
->>   		if ((ini->is_smcd ?
->>   		     smcd_lgr_match(lgr, ini->ism_dev[ini->ism_selected],
->> -				    ini->ism_peer_gid[ini->ism_selected]) :
->> +				    &ini->ism_peer_gid[ini->ism_selected]) :
->>   		     smcr_lgr_match(lgr, ini->smcr_version,
->>   				    ini->peer_systemid,
->>   				    ini->peer_gid, ini->peer_mac, role,
-> [...]
->> diff --git a/net/smc/smc_diag.c b/net/smc/smc_diag.c
->> index a584613..c180c18 100644
->> --- a/net/smc/smc_diag.c
->> +++ b/net/smc/smc_diag.c
->> @@ -21,6 +21,7 @@
->>   
->>   #include "smc.h"
->>   #include "smc_core.h"
->> +#include "smc_ism.h"
->>   
->>   struct smc_diag_dump_ctx {
->>   	int pos[2];
->> @@ -168,12 +169,14 @@ static int __smc_diag_dump(struct sock *sk, struct sk_buff *skb,
->>   		struct smc_connection *conn = &smc->conn;
->>   		struct smcd_diag_dmbinfo dinfo;
->>   		struct smcd_dev *smcd = conn->lgr->smcd;
->> +		struct smcd_gid smcd_gid;
->>   
->>   		memset(&dinfo, 0, sizeof(dinfo));
->>   
->>   		dinfo.linkid = *((u32 *)conn->lgr->id);
->> -		dinfo.peer_gid = conn->lgr->peer_gid;
->> -		dinfo.my_gid = smcd->ops->get_local_gid(smcd);
->> +		dinfo.peer_gid = conn->lgr->peer_gid.gid;
->> +		smcd->ops->get_local_gid(smcd, &smcd_gid);
->> +		dinfo.my_gid = smcd_gid.gid;
-> 
-> For virtual ism, you will only see the first half of the GID.
-> Is that acceptable?
-
-Thanks. I will improve the netlink code about extended GID.
-> 
->>   		dinfo.token = conn->rmb_desc->token;
->>   		dinfo.peer_token = conn->peer_token;
->>   
->> diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
->> index fbee249..a33f861 100644
->> --- a/net/smc/smc_ism.c
->> +++ b/net/smc/smc_ism.c
-> 
-> Some of the content of this file is specific to s390 firmware ISMs and some is
-> relevant to all future ism devices.
-> IMO there is some more work to do to create a clean "smcd-protocol to scmd-device" interface.
-> Maybe also some moving between this file and drivers/s390/net/ism_drv.c
-> 
-> Maybe this would be a good next patchset?
-> 
-> Whoever takes this work, remember:
-> https://lore.kernel.org/netdev/1c6bdfbf-54c1-4251-916e-9a703a9f644c@infradead.org/T/
-> We want to be able to combine SMC, ISM and future kernel modules in any combination.
-> Gerd's patch above was meant to solve the current problem. For additional ism devices,
-> we need some more improvements, I think.
-> 
->
-That's a good suggestion.
-
-The clean interface requires general consideration. I think it's better to design it
-after loopback-ism is introduced since loopback-ism can be an appropriate example to
-see what should be remained in smc_ism.{c|h} for all kinds of ISMs and what should be
-moved to specific drivers.
-
-I will record it to my list, but I am not sure if I can find an s390 environment to
-develop and test. And anyone else who has interests in this, feel free to take, just
-remember to let others know.
-
-> 
-> 
-> 
->> @@ -44,7 +44,8 @@ static void smcd_handle_irq(struct ism_dev *ism, unsigned int dmbno,
->>   #endif
->>   
->>   /* Test if an ISM communication is possible - same CPC */
->> -int smc_ism_cantalk(u64 peer_gid, unsigned short vlan_id, struct smcd_dev *smcd)
->> +int smc_ism_cantalk(struct smcd_gid *peer_gid, unsigned short vlan_id,
->> +		    struct smcd_dev *smcd)
->>   {
->>   	return smcd->ops->query_remote_gid(smcd, peer_gid, vlan_id ? 1 : 0,
->>   					   vlan_id);
->> @@ -208,7 +209,7 @@ int smc_ism_register_dmb(struct smc_link_group *lgr, int dmb_len,
->>   	dmb.dmb_len = dmb_len;
->>   	dmb.sba_idx = dmb_desc->sba_idx;
->>   	dmb.vlan_id = lgr->vlan_id;
->> -	dmb.rgid = lgr->peer_gid;
->> +	dmb.rgid = lgr->peer_gid.gid;
->>   	rc = lgr->smcd->ops->register_dmb(lgr->smcd, &dmb, &smc_ism_client);
->>   	if (!rc) {
->>   		dmb_desc->sba_idx = dmb.sba_idx;
->> @@ -340,18 +341,20 @@ struct smc_ism_event_work {
->>   
->>   static void smcd_handle_sw_event(struct smc_ism_event_work *wrk)
->>   {
->> +	struct smcd_gid peer_gid = { .gid = wrk->event.tok,
->> +				     .gid_ext = 0 };
->>   	union smcd_sw_event_info ev_info;
->>   
->>   	ev_info.info = wrk->event.info;
->>   	switch (wrk->event.code) {
->>   	case ISM_EVENT_CODE_SHUTDOWN:	/* Peer shut down DMBs */
->> -		smc_smcd_terminate(wrk->smcd, wrk->event.tok, ev_info.vlan_id);
->> +		smc_smcd_terminate(wrk->smcd, &peer_gid, ev_info.vlan_id);
->>   		break;
->>   	case ISM_EVENT_CODE_TESTLINK:	/* Activity timer */
->>   		if (ev_info.code == ISM_EVENT_REQUEST) {
->>   			ev_info.code = ISM_EVENT_RESPONSE;
->>   			wrk->smcd->ops->signal_event(wrk->smcd,
->> -						     wrk->event.tok,
->> +						     &peer_gid,
->>   						     ISM_EVENT_REQUEST_IR,
->>   						     ISM_EVENT_CODE_TESTLINK,
->>   						     ev_info.info);
->> @@ -365,10 +368,12 @@ static void smc_ism_event_work(struct work_struct *work)
->>   {
->>   	struct smc_ism_event_work *wrk =
->>   		container_of(work, struct smc_ism_event_work, work);
->> +	struct smcd_gid smcd_gid = { .gid = wrk->event.tok,
->> +				     .gid_ext = 0 };
->>   
->>   	switch (wrk->event.type) {
->>   	case ISM_EVENT_GID:	/* GID event, token is peer GID */
->> -		smc_smcd_terminate(wrk->smcd, wrk->event.tok, VLAN_VID_MASK);
->> +		smc_smcd_terminate(wrk->smcd, &smcd_gid, VLAN_VID_MASK);
->>   		break;
->>   	case ISM_EVENT_DMB:
->>   		break;
->> @@ -525,7 +530,7 @@ int smc_ism_signal_shutdown(struct smc_link_group *lgr)
->>   	memcpy(ev_info.uid, lgr->id, SMC_LGR_ID_SIZE);
->>   	ev_info.vlan_id = lgr->vlan_id;
->>   	ev_info.code = ISM_EVENT_REQUEST;
->> -	rc = lgr->smcd->ops->signal_event(lgr->smcd, lgr->peer_gid,
->> +	rc = lgr->smcd->ops->signal_event(lgr->smcd, &lgr->peer_gid,
->>   					  ISM_EVENT_REQUEST_IR,
->>   					  ISM_EVENT_CODE_SHUTDOWN,
->>   					  ev_info.info);
-> [...]
