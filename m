@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71288042A2
+	by mail.lfdr.de (Postfix) with ESMTP id 617878042A1
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbjLDXjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 18:39:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
+        id S234581AbjLDXjV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 18:39:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjLDXjB (ORCPT
+        with ESMTP id S229742AbjLDXjS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 18:39:01 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E5DC3;
-        Mon,  4 Dec 2023 15:39:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701733148; x=1733269148;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ng8WuUy2oOVp5gipxCg4vh0wElvDGg5aQyTzHiU/fY0=;
-  b=DA2tD3wiOehpipEsRCSksJu4w1Xh4U/SqgjKHNm1J085H6lOhXBciZN0
-   Odf7UCJmgdmGFZbCJGq6VZSP3zZ2nQHjxvu5UrzpTjIPr11LGC+8FfjRq
-   izmEhF/Ar5E6jvMYBSZBbl7229Q3zJcspEHkWz2DZbGhpTPeTbQ8pScmU
-   9FuIUy518RH7S7ika4bXZDhGYRpLT4lM5E1/lmAYjnZxap9yYl96AtCGC
-   HzFxakGFJOI8S1KC19NIVre6NkVn0iSJ+lhtDNP7SHd8N5XCXIc/xtl33
-   4cLWI8tKEeHeZPWQzsDmik3IHSnbtCF6Fjc4XIF5bou1vbYXuVtNOlxNE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="373260563"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="373260563"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 15:39:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="17328184"
-Received: from gauravs1-mobl.amr.corp.intel.com (HELO [10.209.53.199]) ([10.209.53.199])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 15:39:07 -0800
-Message-ID: <1a5b18b2-3072-46d9-9d44-38589cb54e40@intel.com>
-Date:   Mon, 4 Dec 2023 15:39:06 -0800
+        Mon, 4 Dec 2023 18:39:18 -0500
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D0E111;
+        Mon,  4 Dec 2023 15:39:20 -0800 (PST)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5c66b093b86so1605819a12.0;
+        Mon, 04 Dec 2023 15:39:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701733160; x=1702337960;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MiEB5WVQCF9UL/yEGcP5ywJ1Glq90gPG/bPJvMK8tRA=;
+        b=ndmAoD0nemrlwqgYlaN7WBuO46ZeZqsinfs5rM4vT+tdv+xIANB4WMsoET6Q8UyJJu
+         HPWRnaeMmpZln7KacGTA0/incP7T3gPOYlhLgkz6JtCp5naByh11udXL96cELDfJHzhD
+         zY9ey4dFIvgPXExIY5Rifd3z0G9sJP64ZcI/jqC1U1L/rlwclOVQQykgxoYZX8I2YVEB
+         ET04epSXl8VBSd1XP+0n9nZ5LQxLO8CFwBbzCVF+D2JKakzoYz74PfkKhwZGmKkCpUj/
+         Fo5/er1Wg3DfWsKwRnxbQa9W3/nq/IzDEeUyXATRbe3+Qe2ghLfXuUSL47gJrtDJbVKq
+         TRKg==
+X-Gm-Message-State: AOJu0YxrvvB9BTgLQeo+sVBdtR5tc9/ol1rfdSphScASOOIZVCppRSsY
+        yw2NocfdLRZmm4diXbrv7eElE9vrmtGYzW8cqPQ=
+X-Google-Smtp-Source: AGHT+IEE3dQ6SeJfeoYHnnk6ofcJGZYyWWv1VvcvLwagnm513ddlLyTmjavhxGOwwNeOpcqtiypOYaE5417Ok7CDHY8=
+X-Received: by 2002:a17:90b:4c12:b0:286:6cd8:ef18 with SMTP id
+ na18-20020a17090b4c1200b002866cd8ef18mr323218pjb.48.1701733159820; Mon, 04
+ Dec 2023 15:39:19 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
- #MC due to erratum
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "rafael@kernel.org" <rafael@kernel.org>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "sagis@google.com" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>, "Brown, Len" <len.brown@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
- <b3b265f9-48fa-4574-a925-cbdaaa44a689@intel.com>
- <afc875ace6f9f955557f5c7e811b3046278e4c51.camel@intel.com>
- <bcff605a-3b8d-4dcc-a5cb-63dab1a74ed4@intel.com>
- <dfbfe327704f65575219d8b895cf9f55985758da.camel@intel.com>
- <9b221937-42df-4381-b79f-05fb41155f7a@intel.com>
- <c12073937fcca2c2e72f9964675ef4ac5dddb6fb.camel@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <c12073937fcca2c2e72f9964675ef4ac5dddb6fb.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-13-irogers@google.com>
+In-Reply-To: <20231127220902.1315692-13-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 4 Dec 2023 15:39:08 -0800
+Message-ID: <CAM9d7cgrx7vjLtnSt6Y4q+vtok=kSy6V83xe0c6cT6BVY2m-oA@mail.gmail.com>
+Subject: Re: [PATCH v5 12/50] perf map: Simplify map_ip/unmap_ip and make map
+ size smaller
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -136,46 +91,334 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/23 15:24, Huang, Kai wrote:
-> On Mon, 2023-12-04 at 14:04 -0800, Hansen, Dave wrote:
-...
-> In ancient time KVM used to immediately enable VMX when it is loaded, but later
-> it was changed to only enable VMX when there's active VM because of the above
-> reason.
-> 
-> See commit 10474ae8945ce ("KVM: Activate Virtualization On Demand").
+Hi Ian,
 
-Fine.  This doesn't need to change ... until you load TDX.  Once you
-initialize the TDX module, no more out-of-tree VMMs for you.
+On Mon, Nov 27, 2023 at 2:09 PM Ian Rogers <irogers@google.com> wrote:
+>
+> When mapping an IP it is either an identity mapping or a DSO relative
+> mapping, so a single bit is required in the struct to identify
+> this. The current code uses function pointers, adding 2 pointers per
+> map and also pushing the size of a map beyond 1 cache line. Switch to
+> using a byte to identify the mapping type (as well as priv and
+> erange_warned), to avoid any masking. Change struct maps's layout to
+> avoid holes.
+>
+> Before:
+> ```
+> struct map {
+>         u64                        start;                /*     0     8 */
+>         u64                        end;                  /*     8     8 */
+>         _Bool                      erange_warned:1;      /*    16: 0  1 */
+>         _Bool                      priv:1;               /*    16: 1  1 */
+>
+>         /* XXX 6 bits hole, try to pack */
+>         /* XXX 3 bytes hole, try to pack */
+>
+>         u32                        prot;                 /*    20     4 */
+>         u64                        pgoff;                /*    24     8 */
+>         u64                        reloc;                /*    32     8 */
+>         u64                        (*map_ip)(const struct map  *, u64); /*    40     8 */
+>         u64                        (*unmap_ip)(const struct map  *, u64); /*    48     8 */
+>         struct dso *               dso;                  /*    56     8 */
+>         /* --- cacheline 1 boundary (64 bytes) --- */
+>         refcount_t                 refcnt;               /*    64     4 */
+>         u32                        flags;                /*    68     4 */
+>
+>         /* size: 72, cachelines: 2, members: 12 */
+>         /* sum members: 68, holes: 1, sum holes: 3 */
+>         /* sum bitfield members: 2 bits, bit holes: 1, sum bit holes: 6 bits */
+>         /* last cacheline: 8 bytes */
+> };
+> ```
+>
+> After:
+> ```
+> struct map {
+>         u64                        start;                /*     0     8 */
+>         u64                        end;                  /*     8     8 */
+>         u64                        pgoff;                /*    16     8 */
+>         u64                        reloc;                /*    24     8 */
+>         struct dso *               dso;                  /*    32     8 */
+>         refcount_t                 refcnt;               /*    40     4 */
+>         u32                        prot;                 /*    44     4 */
+>         u32                        flags;                /*    48     4 */
+>         enum mapping_type          mapping_type:8;       /*    52: 0  4 */
+>
+>         /* Bitfield combined with next fields */
+>
+>         _Bool                      erange_warned;        /*    53     1 */
+>         _Bool                      priv;                 /*    54     1 */
+>
+>         /* size: 56, cachelines: 1, members: 11 */
+>         /* padding: 1 */
+>         /* last cacheline: 56 bytes */
+> };
+> ```
 
-That doesn't seem too insane.  This is yet *ANOTHER* reason that doing
-dynamic TDX module initialization is a good idea.
+Thanks for doing this!  I really wanted to clean up the map
+code and to make it more intuitive.
 
->> It's not wrong to say that TDX is a
->> KVM user.  If KVm wants 'kvm_usage_count' to go back to 0, it can shut
->> down the TDX module.  Then there's no PAMT to worry about.
->>
->> The shutdown would be something like:
->>
->>       1. TDX module shutdown
->>       2. Deallocate/Convert PAMT
->>       3. vmxoff
->>
->> Then, no SEAMCALL failure because of vmxoff can cause a PAMT-induced #MC
->> to be missed.
-> 
-> The limitation is once the TDX module is shutdown, it cannot be initialized
-> again unless it is runtimely updated.
-> 
-> Long-termly, if we go this design then there might be other problems when other
-> kernel components are using TDX.  For example, the VT-d driver will need to be
-> changed to support TDX-IO, and it will need to enable TDX module much earlier
-> than KVM to do some initialization.  It might need to some TDX work (e.g.,
-> cleanup) while KVM is unloaded.  I am not super familiar with TDX-IO but looks
-> we might have some problem here if we go with such design.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-The burden for who does vmxon will simply need to change from KVM itself
-to some common code that KVM depends on.  Probably not dissimilar to
-those nutty (sorry folks, just calling it as I see 'em) multi-KVM module
-patches that are floating around.
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
+A few nitpicks below.
+
+> ---
+>  tools/perf/util/machine.c    |  3 +-
+>  tools/perf/util/map.c        | 20 +--------
+>  tools/perf/util/map.h        | 83 +++++++++++++++++++-----------------
+>  tools/perf/util/symbol-elf.c |  6 +--
+>  tools/perf/util/symbol.c     |  6 +--
+>  5 files changed, 50 insertions(+), 68 deletions(-)
+>
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index be3dab9d5253..b6831a1f909d 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -1360,8 +1360,7 @@ __machine__create_kernel_maps(struct machine *machine, struct dso *kernel)
+>         if (machine->vmlinux_map == NULL)
+>                 return -ENOMEM;
+>
+> -       map__set_map_ip(machine->vmlinux_map, identity__map_ip);
+> -       map__set_unmap_ip(machine->vmlinux_map, identity__map_ip);
+> +       map__set_mapping_type(machine->vmlinux_map, MAPPING_TYPE__IDENTITY);
+>         return maps__insert(machine__kernel_maps(machine), machine->vmlinux_map);
+>  }
+>
+> diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+> index f64b83004421..54c67cb7ecef 100644
+> --- a/tools/perf/util/map.c
+> +++ b/tools/perf/util/map.c
+> @@ -109,8 +109,7 @@ void map__init(struct map *map, u64 start, u64 end, u64 pgoff, struct dso *dso)
+>         map__set_pgoff(map, pgoff);
+>         map__set_reloc(map, 0);
+>         map__set_dso(map, dso__get(dso));
+> -       map__set_map_ip(map, map__dso_map_ip);
+> -       map__set_unmap_ip(map, map__dso_unmap_ip);
+> +       map__set_mapping_type(map, MAPPING_TYPE__DSO);
+>         map__set_erange_warned(map, false);
+>         refcount_set(map__refcnt(map), 1);
+>  }
+> @@ -172,7 +171,7 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
+>                 map__init(result, start, start + len, pgoff, dso);
+>
+>                 if (anon || no_dso) {
+> -                       map->map_ip = map->unmap_ip = identity__map_ip;
+> +                       map->mapping_type = MAPPING_TYPE__IDENTITY;
+>
+>                         /*
+>                          * Set memory without DSO as loaded. All map__find_*
+> @@ -630,18 +629,3 @@ struct maps *map__kmaps(struct map *map)
+>         }
+>         return kmap->kmaps;
+>  }
+> -
+> -u64 map__dso_map_ip(const struct map *map, u64 ip)
+> -{
+> -       return ip - map__start(map) + map__pgoff(map);
+> -}
+> -
+> -u64 map__dso_unmap_ip(const struct map *map, u64 ip)
+> -{
+> -       return ip + map__start(map) - map__pgoff(map);
+> -}
+> -
+> -u64 identity__map_ip(const struct map *map __maybe_unused, u64 ip)
+> -{
+> -       return ip;
+> -}
+> diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+> index 1b53d53adc86..3a3b7757da5f 100644
+> --- a/tools/perf/util/map.h
+> +++ b/tools/perf/util/map.h
+> @@ -16,23 +16,25 @@ struct dso;
+>  struct maps;
+>  struct machine;
+>
+> +enum mapping_type {
+> +       /* map__map_ip/map__unmap_ip are given as offsets in the DSO. */
+> +       MAPPING_TYPE__DSO,
+
+I slightly prefer __PIC than __DSO, but won't argue. :)
+
+> +       /* map__map_ip/map__unmap_ip are just the given ip value. */
+> +       MAPPING_TYPE__IDENTITY,
+> +};
+> +
+>  DECLARE_RC_STRUCT(map) {
+>         u64                     start;
+>         u64                     end;
+> -       bool                    erange_warned:1;
+> -       bool                    priv:1;
+> -       u32                     prot;
+>         u64                     pgoff;
+>         u64                     reloc;
+> -
+> -       /* ip -> dso rip */
+> -       u64                     (*map_ip)(const struct map *, u64);
+> -       /* dso rip -> ip */
+> -       u64                     (*unmap_ip)(const struct map *, u64);
+> -
+>         struct dso              *dso;
+>         refcount_t              refcnt;
+> +       u32                     prot;
+>         u32                     flags;
+> +       enum mapping_type       mapping_type:8;
+> +       bool                    erange_warned;
+> +       bool                    priv;
+>  };
+>
+>  struct kmap;
+> @@ -41,38 +43,11 @@ struct kmap *__map__kmap(struct map *map);
+>  struct kmap *map__kmap(struct map *map);
+>  struct maps *map__kmaps(struct map *map);
+>
+> -/* ip -> dso rip */
+> -u64 map__dso_map_ip(const struct map *map, u64 ip);
+> -/* dso rip -> ip */
+> -u64 map__dso_unmap_ip(const struct map *map, u64 ip);
+> -/* Returns ip */
+> -u64 identity__map_ip(const struct map *map __maybe_unused, u64 ip);
+> -
+>  static inline struct dso *map__dso(const struct map *map)
+>  {
+>         return RC_CHK_ACCESS(map)->dso;
+>  }
+>
+> -static inline u64 map__map_ip(const struct map *map, u64 ip)
+> -{
+> -       return RC_CHK_ACCESS(map)->map_ip(map, ip);
+> -}
+> -
+> -static inline u64 map__unmap_ip(const struct map *map, u64 ip)
+> -{
+> -       return RC_CHK_ACCESS(map)->unmap_ip(map, ip);
+> -}
+> -
+> -static inline void *map__map_ip_ptr(struct map *map)
+> -{
+> -       return RC_CHK_ACCESS(map)->map_ip;
+> -}
+> -
+> -static inline void* map__unmap_ip_ptr(struct map *map)
+> -{
+> -       return RC_CHK_ACCESS(map)->unmap_ip;
+> -}
+> -
+>  static inline u64 map__start(const struct map *map)
+>  {
+>         return RC_CHK_ACCESS(map)->start;
+> @@ -123,6 +98,34 @@ static inline size_t map__size(const struct map *map)
+>         return map__end(map) - map__start(map);
+>  }
+>
+> +/* ip -> dso rip */
+> +static inline u64 map__dso_map_ip(const struct map *map, u64 ip)
+> +{
+> +       return ip - map__start(map) + map__pgoff(map);
+> +}
+> +
+> +/* dso rip -> ip */
+> +static inline u64 map__dso_unmap_ip(const struct map *map, u64 ip)
+
+I think it's better to use 'rip' consistently in the variable name
+if possible.
+
+Thanks,
+Namhyung
+
+
+> +{
+> +       return ip + map__start(map) - map__pgoff(map);
+> +}
+> +
+> +static inline u64 map__map_ip(const struct map *map, u64 ip)
+> +{
+> +       if ((RC_CHK_ACCESS(map)->mapping_type) == MAPPING_TYPE__DSO)
+> +               return map__dso_map_ip(map, ip);
+> +       else
+> +               return ip;
+> +}
+> +
+> +static inline u64 map__unmap_ip(const struct map *map, u64 ip)
+> +{
+> +       if ((RC_CHK_ACCESS(map)->mapping_type) == MAPPING_TYPE__DSO)
+> +               return map__dso_unmap_ip(map, ip);
+> +       else
+> +               return ip;
+> +}
+> +
+>  /* rip/ip <-> addr suitable for passing to `objdump --start-address=` */
+>  u64 map__rip_2objdump(struct map *map, u64 rip);
+>
+> @@ -294,13 +297,13 @@ static inline void map__set_dso(struct map *map, struct dso *dso)
+>         RC_CHK_ACCESS(map)->dso = dso;
+>  }
+>
+> -static inline void map__set_map_ip(struct map *map, u64 (*map_ip)(const struct map *map, u64 ip))
+> +static inline void map__set_mapping_type(struct map *map, enum mapping_type type)
+>  {
+> -       RC_CHK_ACCESS(map)->map_ip = map_ip;
+> +       RC_CHK_ACCESS(map)->mapping_type = type;
+>  }
+>
+> -static inline void map__set_unmap_ip(struct map *map, u64 (*unmap_ip)(const struct map *map, u64 rip))
+> +static inline enum mapping_type map__mapping_type(struct map *map)
+>  {
+> -       RC_CHK_ACCESS(map)->unmap_ip = unmap_ip;
+> +       return RC_CHK_ACCESS(map)->mapping_type;
+>  }
+>  #endif /* __PERF_MAP_H */
+> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> index 9e7eeaf616b8..4b934ed3bfd1 100644
+> --- a/tools/perf/util/symbol-elf.c
+> +++ b/tools/perf/util/symbol-elf.c
+> @@ -1392,8 +1392,7 @@ static int dso__process_kernel_symbol(struct dso *dso, struct map *map,
+>                         map__set_start(map, shdr->sh_addr + ref_reloc(kmap));
+>                         map__set_end(map, map__start(map) + shdr->sh_size);
+>                         map__set_pgoff(map, shdr->sh_offset);
+> -                       map__set_map_ip(map, map__dso_map_ip);
+> -                       map__set_unmap_ip(map, map__dso_unmap_ip);
+> +                       map__set_mapping_type(map, MAPPING_TYPE__DSO);
+>                         /* Ensure maps are correctly ordered */
+>                         if (kmaps) {
+>                                 int err;
+> @@ -1455,8 +1454,7 @@ static int dso__process_kernel_symbol(struct dso *dso, struct map *map,
+>                         map__set_end(curr_map, map__start(curr_map) + shdr->sh_size);
+>                         map__set_pgoff(curr_map, shdr->sh_offset);
+>                 } else {
+> -                       map__set_map_ip(curr_map, identity__map_ip);
+> -                       map__set_unmap_ip(curr_map, identity__map_ip);
+> +                       map__set_mapping_type(curr_map, MAPPING_TYPE__IDENTITY);
+>                 }
+>                 curr_dso->symtab_type = dso->symtab_type;
+>                 if (maps__insert(kmaps, curr_map))
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index 82cc74b9358e..314c0263bf3c 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -956,8 +956,7 @@ static int maps__split_kallsyms(struct maps *kmaps, struct dso *dso, u64 delta,
+>                                 return -1;
+>                         }
+>
+> -                       map__set_map_ip(curr_map, identity__map_ip);
+> -                       map__set_unmap_ip(curr_map, identity__map_ip);
+> +                       map__set_mapping_type(curr_map, MAPPING_TYPE__IDENTITY);
+>                         if (maps__insert(kmaps, curr_map)) {
+>                                 dso__put(ndso);
+>                                 return -1;
+> @@ -1475,8 +1474,7 @@ static int dso__load_kcore(struct dso *dso, struct map *map,
+>                         map__set_start(map, map__start(new_map));
+>                         map__set_end(map, map__end(new_map));
+>                         map__set_pgoff(map, map__pgoff(new_map));
+> -                       map__set_map_ip(map, map__map_ip_ptr(new_map));
+> -                       map__set_unmap_ip(map, map__unmap_ip_ptr(new_map));
+> +                       map__set_mapping_type(map, map__mapping_type(new_map));
+>                         /* Ensure maps are correctly ordered */
+>                         map_ref = map__get(map);
+>                         maps__remove(kmaps, map_ref);
+> --
+> 2.43.0.rc1.413.gea7ed67945-goog
+>
