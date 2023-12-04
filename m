@@ -2,124 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA16803C26
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:59:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFB9803C22
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbjLDR67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:58:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
+        id S231213AbjLDR6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjLDR6w (ORCPT
+        with ESMTP id S229542AbjLDR6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:58:52 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BD6101;
-        Mon,  4 Dec 2023 09:58:58 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4Gv7FV008630;
-        Mon, 4 Dec 2023 17:58:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6C0foyF5t1y3XKDKp8sjegbAV7/WSl9ZRbI12FZB9pU=;
- b=PnwjeFlxmbR9XDrlWWhs/KbFj4oWu74Q3107ieD/QaQAXo5H8Z5yN+i7snBI8ZEXTeb7
- +oewcvWHtZs+K1X31gzz3juNm96WZfvpzd33O5qMkAS41wauTW+55Tskj3GZM6Idux4R
- lgirp4Y20fDlD1gSh8K/wMph7tKkAE+4yJfyG9izGizwude8DHjTD4eD1nZkA2WwUo78
- HBSqa5mOPbTArxEsVCt85sDBoMf3DSuQKuLPyCj5969XJ8pVc3aU30UKX9tmQGTAJRR0
- 19REkSg5tLaiSlgcpWFj2Pb2F34N5LCDp8GtT0qRbfq/93EkcKScafsLV4Ssh06lXH1L XQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usjnqg5c4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 17:58:24 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4HwNkJ017781
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Dec 2023 17:58:23 GMT
-Received: from [10.110.73.134] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
- 2023 09:58:23 -0800
-Message-ID: <840c8b10-c1c2-b380-bdf8-e04899bc33ad@quicinc.com>
-Date:   Mon, 4 Dec 2023 09:58:22 -0800
+        Mon, 4 Dec 2023 12:58:48 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97803FF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:58:50 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50bed6c1716so103e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:58:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701712729; x=1702317529; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=M2dGUfstuu9hpA5P20OKWEe6aEE9pZqEiqGcMNxwt0Y=;
+        b=N7a8lt2kM/YN9dmxStcic1qHKCmGYYSHPbgDaK3TQn76v3gG1JfQnsw63Nqp9eNRbs
+         qhosLPAKMkxaZvGZ0zedlcb25nke8nHRcdhd/6M4M5oPeKBGBqkbKB0SDz/zIl/JGy3m
+         tVpi3skSAAhNHzEJqooRURHyOeOhQTwmDq+QQpu2CvCjBC6hKEEm75TrIC7lRrEhrd/U
+         CDWzvAC0t4CU58gjlaNT/u6P0AaO1vTF4/MroR5U1RIihOufmpoypxWxK41NuSkLjJpM
+         c+aMQ1u76zfl8gtMX6Me/DbnGDz7JDNXeHaSFdPtF9skBd7KYkycPiWVDVzGfpYOtRdw
+         vohw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701712729; x=1702317529;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M2dGUfstuu9hpA5P20OKWEe6aEE9pZqEiqGcMNxwt0Y=;
+        b=l95ADpecwfygqny8sfV5rwQ64Niq9SrF14MoZlM7PnK6gF4yw36Av3nlIl7SI8BJoy
+         kMzGCdbzWF/UU1+lY5WyP77VJZafBT0EtNVdkE7Vu9yPND0hIR8XYlZNH2HDFJKpFV9N
+         48tgYmc54+UpPD4b4d1vx3SYeRbJ3h3WtNQiPCnPi206KH94YW5j6sJ/utr8tUd7NODj
+         HDiKtVSjcNvMGSJEWNYGuhIEL6FNxArNpWoXVQZUKfVjclrmsztxtsevbK++EM8PhFsC
+         UlvvlZtvCZPcr+WEr+5qtjCm3OIogg/QISAtzfpbVUcWU7N/Wwn7u151WcnG+KwiJDav
+         vQ4A==
+X-Gm-Message-State: AOJu0YysIP0jFmX/cLhO8l0EGwP20iftw4AsbPyD9OnaCd+cZcuZUpsB
+        VsTvcRAzHFW5wNacYbJtEiaSr7Hw4kzI7WuQevnuXA==
+X-Google-Smtp-Source: AGHT+IHspoH9apSWcUgPcEWJCkpeYvSoli8ODebiezNEvagGADeVfPIhvJmNnKaXWLk6htJi6ipiIFDIY61wlipGWh8=
+X-Received: by 2002:ac2:4ac1:0:b0:50b:f115:7ffb with SMTP id
+ m1-20020ac24ac1000000b0050bf1157ffbmr71731lfp.0.1701712728350; Mon, 04 Dec
+ 2023 09:58:48 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: (subset) [PATCH RFC v7 00/10] Support for Solid Fill Planes
-Content-Language: en-US
-To:     Simon Ser <contact@emersion.fr>
-CC:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "Jessica Zhang" <quic_jesszhan@quicinc.com>, <ppaalanen@gmail.com>,
-        <laurent.pinchart@ideasonboard.com>, <sebastian.wick@redhat.com>,
-        <ville.syrjala@linux.intel.com>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <freedreno@lists.freedesktop.org>,
-        <wayland-devel@lists.freedesktop.org>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sebastian Wick <sebastian@sebastianwick.net>
-References: <20231027-solid-fill-v7-0-780188bfa7b2@quicinc.com>
- <170155324921.2215646.4829699354481827834.b4-ty@linaro.org>
- <OiX1EToyQ0JBECS-Vs6IOw1vqLTt42PYkTlTCBhsPUi-VXC2UoLjkRfEW-OFucxsTqz93Q3IIXZZ3Lw_Lqs1dFt4YbuFSUGrKfDPnnKDCbw=@emersion.fr>
- <44a3fbd4-44fb-0a39-65be-e680e03b1b6e@quicinc.com>
- <jLtQnAu4g7zRJxEwwoX5HhVfleNLflhi9mUGTQAVKV4QaZt_D7NIOov31MKHu3zdEls3ULzYEiQNGeL4gKRpjjU1VDbl4DDhEBldXXrYzNA=@emersion.fr>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <jLtQnAu4g7zRJxEwwoX5HhVfleNLflhi9mUGTQAVKV4QaZt_D7NIOov31MKHu3zdEls3ULzYEiQNGeL4gKRpjjU1VDbl4DDhEBldXXrYzNA=@emersion.fr>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: zEx4t-5umwSk_1qrTS_4DZiRbhhYli5Q
-X-Proofpoint-GUID: zEx4t-5umwSk_1qrTS_4DZiRbhhYli5Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_17,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 mlxscore=0 suspectscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 mlxlogscore=615
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2312040138
-X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231204171807.3313022-1-mark.rutland@arm.com>
+In-Reply-To: <20231204171807.3313022-1-mark.rutland@arm.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 4 Dec 2023 18:58:35 +0100
+Message-ID: <CACT4Y+avSyKoW-i=GzDT0iAi7SnQg21BanNK1GjkQsKKBUCKNg@mail.gmail.com>
+Subject: Re: [PATCH] kcov: remove stale RANDOMIZE_BASE text
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        alex.popov@linux.com, andreyknvl@gmail.com, bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 4 Dec 2023 at 18:18, Mark Rutland <mark.rutland@arm.com> wrote:
+>
+> The Kconfig help text for CONFIG_KCOV describes that recorded PC values
+> will not be stable across machines or reboots when RANDOMIZE_BASE is
+> selected. This was the case when KCOV was introduced in commit:
+>
+>   5c9a8750a6409c63 ("kernel: add kcov code coverage")
+>
+> However, this changed in commit:
+>
+>   4983f0ab7ffaad1e ("kcov: make kcov work properly with KASLR enabled")
+>
+> Since that commit KCOV always subtracts the KASLR offset from PC values,
+> which ensures that these are stable across machines and across reboots
+> even when RANDOMIZE_BASE is selected.
+>
+> Unfortunately, that commit failed to update the Kconfig help text, which
+> still suggests disabling RANDOMIZE_BASE even though this is no longer
+> necessary.
+>
+> Remove the stale Kconfig text.
+>
+> Reported-by: Borislav Petkov <bp@alien8.de>
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Popov <alex.popov@linux.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
 
+Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
 
-On 12/4/2023 9:57 AM, Simon Ser wrote:
-> On Monday, December 4th, 2023 at 18:51, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
-> 
->>> Where are the IGT and userspace for this uAPI addition?
->>
->> Yes, we made IGT changes to test and validate this. We will post them on
->> the IGT dev list shortly and CC you.
->>
->> We do not have a compositor change yet for this as we primarily used IGT
->> to validate this.
-> 
-> Yes, please post the IGT.
-> 
->> Can we re-try to land this once IGT changes are accepted?
-> 
-> There will need to be a user-space implementation as well, since this is
-> a hard requirement for new uAPI [1]. Maybe I'll give this a go if I have
-> time.
-> 
+Thanks for fixing this.
 
-Much appreciated.
-
-> [1]: https://dri.freedesktop.org/docs/drm/gpu/drm-uapi.html#open-source-userspace-requirements
+> ---
+>  lib/Kconfig.debug | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index cc7d53d9dc019..e77873cf85c78 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -2103,10 +2103,6 @@ config KCOV
+>           KCOV exposes kernel code coverage information in a form suitable
+>           for coverage-guided fuzzing (randomized testing).
+>
+> -         If RANDOMIZE_BASE is enabled, PC values will not be stable across
+> -         different machines and across reboots. If you need stable PC values,
+> -         disable RANDOMIZE_BASE.
+> -
+>           For more details, see Documentation/dev-tools/kcov.rst.
+>
+>  config KCOV_ENABLE_COMPARISONS
+> --
+> 2.30.2
+>
