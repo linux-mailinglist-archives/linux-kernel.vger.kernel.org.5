@@ -2,142 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AEE802E0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1015E802E39
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbjLDI5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43974 "EHLO
+        id S1343491AbjLDI5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234853AbjLDI5Y (ORCPT
+        with ESMTP id S234708AbjLDI50 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:57:24 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC441AA;
-        Mon,  4 Dec 2023 00:57:23 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0801F20003;
-        Mon,  4 Dec 2023 08:57:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701680241;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=as+mUhZT9eKzCHaYz+7jVrwGQR55Ba1FhGnt3+3ZvD4=;
-        b=aLnlFZs512kyZLhaL3DHgbAlUoXp2N1gGvZOufQmRNHTCa1fqpyXM3bgzNhyNY6XOknKXD
-        0YIFWli7WoqNp21U/ur77cwQn0WrPrE2ul8xSNcXOYKdvXkZiLBgj4gLgLLyKxaFfkwoi6
-        Biu07W/nk84JjvHjEQxkR5c2SHnUG+VEJ/EZuwLHz0UJBZwMkUt+vEz9xUd99SO+lEpVE3
-        lL8BRWhMmAdrq8m17DWn9z22TOh9wmar5itZ4oRodqvowGvCgO36lMDmfGA6TOMJQHGk+W
-        6AgW4MSJ5n66bER0fVws5s4uWFIbabBzPbiersoxoBEKNw8oIRRL0N1zEYEecg==
-Date:   Mon, 4 Dec 2023 09:57:18 +0100
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Zhang Shurong <zhang_shurong@foxmail.com>
-Cc:     alex.aring@gmail.com, stefan@datenfreihafen.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        harperchen1110@gmail.com
-Subject: Re: [PATCH RESEND] mac802154: Fix uninit-value access in
- ieee802154_hdr_push_sechdr
-Message-ID: <20231204095718.40ccb1ee@xps-13>
-In-Reply-To: <tencent_1C04CA8D66ADC45608D89687B4020B2A8706@qq.com>
-References: <tencent_1C04CA8D66ADC45608D89687B4020B2A8706@qq.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 4 Dec 2023 03:57:26 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CA8F3
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:57:33 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c09f4814eso11970915e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 00:57:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701680251; x=1702285051; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CmguLwHno4+ep63d/2yDufPK8h00mOPzfPbypUQQUes=;
+        b=wm+D+Cr/2hpPZaNmEgfm7IBMJ5KbbNRgF4Ed85HacNnpJ+sJiYSUL9kURrJYzDBnF+
+         hDDhV3IgKdjuWg+8mR/9lCtJyg5jVbeLqhB9qyx/XGfy9uw071xkAzM2UlAvrpEPDVZN
+         Ih7+v0CjRjLgMp6Rx8xZVZWtZIzcgCImL7H8bXOXhdgwl6bwZCSPpFjStL00XhXmxb0/
+         EhU3hZCVEZX7p8rlUC1WrSLRpsakbAGoDmXOaWSPMaK3svmQUdiTFSk1RL9oESNKTNJF
+         YyApPX0FFnkOKsPIZcPYBVqe90ZXasTdOdJtnkJIPgCsBe7ADp18Tk4lC+OoTHU7BlHW
+         4S+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701680251; x=1702285051;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CmguLwHno4+ep63d/2yDufPK8h00mOPzfPbypUQQUes=;
+        b=QpOfHOrBAaLg2fzrgSC8HVQzWmnrmUU46y+BP9weZKPBC/mEfcsXXA5uRBjWUbsoHc
+         b2ViHXwH4fJDmv9L6SE988bn5lK6lN00fxz0YeNCMIkY0LqTI4GbiNqQp9O6/92WmTtB
+         C6H886qUloz0PdHa5KsYzjXPKq/NUmaF6TjGuU1nEtRa21KEoOZ3iHCk7RXEpxd46mke
+         wm318k657RsA0cFjr0jiQALUU1uKTZXwFvLb66/TK4tvhxkppm1aubAdGAJN6DR5MDQY
+         qcifsvz6o7NfCn6scW6P14vhORYOIQYmD4O5Mci3Qev1I+C4CGGvPr+7j2R97sWdP8Ir
+         OQCQ==
+X-Gm-Message-State: AOJu0YyG6k4wflT/0EbBqoZALsYnFmwdDmLbEpQvmFYZ88wZMVhmj16E
+        4m/oajHzR131V+O8iCL34YiMzw==
+X-Google-Smtp-Source: AGHT+IGlHrnh/zRPQHg5kwgbA5JDhMx75IzN2GwOeCmQhdS3AylUMLuQ9R6672yKnucAuT2owNf8kw==
+X-Received: by 2002:a05:600c:3503:b0:40b:4b93:a369 with SMTP id h3-20020a05600c350300b0040b4b93a369mr2268142wmq.14.1701680251485;
+        Mon, 04 Dec 2023 00:57:31 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4cb1:229e:8c33:122a])
+        by smtp.gmail.com with ESMTPSA id l15-20020a05600c4f0f00b0040b33222a39sm17959138wmq.45.2023.12.04.00.57.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 00:57:31 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v2] gpio: sim: implement the dbg_show() callback
+Date:   Mon,  4 Dec 2023 09:57:19 +0100
+Message-Id: <20231204085719.17928-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhang,
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-zhang_shurong@foxmail.com wrote on Sat,  2 Dec 2023 22:58:52 +0800:
+Provide a custom implementation of the dbg_show() callback that prints
+all requested lines together with their label, direction, value and
+bias. This improves the code coverage of GPIOLIB.
 
-> The syzkaller reported an issue:
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+v1 -> v2:
+- use PTR_IF() instead of #ifdef
 
-Subject should start with [PATCH wpan]
+ drivers/gpio/gpio-sim.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
->=20
-> BUG: KMSAN: uninit-value in ieee802154_hdr_push_sechdr net/ieee802154/hea=
-der_ops.c:54 [inline]
-> BUG: KMSAN: uninit-value in ieee802154_hdr_push+0x971/0xb90 net/ieee80215=
-4/header_ops.c:108
->  ieee802154_hdr_push_sechdr net/ieee802154/header_ops.c:54 [inline]
->  ieee802154_hdr_push+0x971/0xb90 net/ieee802154/header_ops.c:108
->  ieee802154_header_create+0x9c0/0xc00 net/mac802154/iface.c:396
->  wpan_dev_hard_header include/net/cfg802154.h:494 [inline]
->  dgram_sendmsg+0xd1d/0x1500 net/ieee802154/socket.c:677
->  ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
->  sock_sendmsg_nosec net/socket.c:725 [inline]
->  sock_sendmsg net/socket.c:748 [inline]
->  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2494
->  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2548
->  __sys_sendmsg+0x225/0x3c0 net/socket.c:2577
->  __compat_sys_sendmsg net/compat.c:346 [inline]
->  __do_compat_sys_sendmsg net/compat.c:353 [inline]
->  __se_compat_sys_sendmsg net/compat.c:350 [inline]
->=20
-> We found hdr->key_id_mode is uninitialized in mac802154_set_header_securi=
-ty()
-> which indicates hdr.fc.security_enabled should be 0. However, it is set t=
-o be cb->secen before.
-> Later, ieee802154_hdr_push_sechdr is invoked, causing KMSAN complains uni=
-nit-value issue.
+diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+index 1928209491e1..49c3e51bf8e4 100644
+--- a/drivers/gpio/gpio-sim.c
++++ b/drivers/gpio/gpio-sim.c
+@@ -20,6 +20,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/irq_sim.h>
++#include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/minmax.h>
+ #include <linux/mod_devicetable.h>
+@@ -28,6 +29,7 @@
+ #include <linux/notifier.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
++#include <linux/seq_file.h>
+ #include <linux/slab.h>
+ #include <linux/string.h>
+ #include <linux/string_helpers.h>
+@@ -224,6 +226,25 @@ static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
+ 	}
+ }
+ 
++static void gpio_sim_dbg_show(struct seq_file *seq, struct gpio_chip *gc)
++{
++	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
++	const char *label;
++	int i;
++
++	guard(mutex)(&chip->lock);
++
++	for_each_requested_gpio(gc, i, label)
++		seq_printf(seq, " gpio-%-3d (%s) %s,%s\n",
++			   gc->base + i,
++			   label,
++			   test_bit(i, chip->direction_map) ? "input" :
++				test_bit(i, chip->value_map) ? "output-high" :
++							       "output-low",
++			   test_bit(i, chip->pull_map) ? "pull-up" :
++							 "pull-down");
++}
++
+ static ssize_t gpio_sim_sysfs_val_show(struct device *dev,
+ 				       struct device_attribute *attr, char *buf)
+ {
+@@ -460,6 +481,7 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
+ 	gc->to_irq = gpio_sim_to_irq;
+ 	gc->request = gpio_sim_request;
+ 	gc->free = gpio_sim_free;
++	gc->dbg_show = PTR_IF(IS_ENABLED(CONFIG_DEBUG_FS), gpio_sim_dbg_show);
+ 	gc->can_sleep = true;
+ 
+ 	ret = devm_gpiochip_add_data(dev, gc, chip);
+-- 
+2.40.1
 
-I am not too deeply involved in the security header but for me it feels
-like your patch does the opposite of what's needed. We should maybe
-initialize hdr->key_id_mode based on the value in cb->secen, no? (maybe
-Alexander will have a better understanding than I have).
-
-> Since mac802154_set_header_security() sets hdr.fc.security_enabled based =
-on the variables
-> ieee802154_sub_if_data *sdata and ieee802154_mac_cb *cb in a collaborativ=
-e manner.
-> Therefore, we should not set security_enabled prior to mac802154_set_head=
-er_security().
->=20
-> Fixed it by removing the line that sets the hdr.fc.security_enabled.
->=20
-> Syzkaller don't provide repro, and I provide a syz repro like:
-> r0 =3D syz_init_net_socket$802154_dgram(0x24, 0x2, 0x0)
-> setsockopt$WPAN_SECURITY(r0, 0x0, 0x1, &(0x7f0000000000)=3D0x2, 0x4)
-> setsockopt$WPAN_SECURITY(r0, 0x0, 0x1, &(0x7f0000000080), 0x4)
-> sendmsg$802154_dgram(r0, &(0x7f0000000100)=3D{&(0x7f0000000040)=3D{0x24, =
-@short}, 0x14, &(0x7f00000000c0)=3D{0x0}}, 0x0)
->=20
-> Fixes: 32edc40ae65c ("ieee802154: change _cb handling slightly")
-> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
-> ---
-
-This is a resend, a message in a shortlog to express why is welcome. If
-it's a ping, then no need to resend.
-
->  net/mac802154/iface.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
-> index c0e2da5072be..c99b6e40a5db 100644
-> --- a/net/mac802154/iface.c
-> +++ b/net/mac802154/iface.c
-> @@ -368,7 +368,6 @@ static int ieee802154_header_create(struct sk_buff *s=
-kb,
-> =20
->  	memset(&hdr.fc, 0, sizeof(hdr.fc));
->  	hdr.fc.type =3D cb->type;
-> -	hdr.fc.security_enabled =3D cb->secen;
->  	hdr.fc.ack_request =3D cb->ackreq;
->  	hdr.seq =3D atomic_inc_return(&dev->ieee802154_ptr->dsn) & 0xFF;
-> =20
-
-
-Thanks,
-Miqu=C3=A8l
