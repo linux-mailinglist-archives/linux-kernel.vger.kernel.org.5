@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16DE680401D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304DF80401F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbjLDUiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:38:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
+        id S235521AbjLDUiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:38:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346169AbjLDUhi (ORCPT
+        with ESMTP id S235484AbjLDUhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:37:38 -0500
+        Mon, 4 Dec 2023 15:37:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6BE1FC9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9076C433C7;
-        Mon,  4 Dec 2023 20:35:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CFD01FDA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04B31C43397;
+        Mon,  4 Dec 2023 20:35:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701722145;
-        bh=W49vv/JqMjouqkjwibwavXXrMU6TnI5qndMQ4YxP1eY=;
+        s=k20201202; t=1701722147;
+        bh=Vg2WRlecHzYl6Wy/s/Zl7StswlBpuuA/P7jhlpQlIQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tFO35PCLdomiqVBBFQJcF+asRYNDqXmOKeo6PnkehoztYPMAxaPMEbk2X3Xii0Fp3
-         tpMG30FP9wjyrzoLfM3yYpb7nVVe/1xiBUTtWw7Q4VsL8BsUplN9/t2GNGx8wOBDlA
-         Wl907MyRN2K2aezxYr+qOWGxGkIrHEJp8rJtlCaw+iJ9CYS7gVvN1ICja/jo0eIgAg
-         KX3Hvx8pZ/qgjgbx1cZPJZiM6CF2z31KmAgR7zpXqwkux19hu4HDukx62VhZ2tzKeG
-         qXpj4eKqnOhukqwCIpTM/8StILwEKylW0JMamZotOReB6AWIapYz7uCV6v0aBbAw5J
-         m7v2CxmDAkKYA==
+        b=TWp698Y9Iyn/iV/Wqo4mheli1mqSaWTPjsdstMgGcd8ky/e5uWULnPJPRrdq8lNNx
+         fpqrTfwxKMHf1vGrykMERe5aksOfMsvlE6CWBYGH22MJzo29F6nixd2FGCjvxwvqJU
+         TlPADF04BrV0cvPqCClAeIfomzQd5VkId2YwuT+XzqOLAr66LzEmmOU9HqJ8Puf08S
+         Hrtw/lRAoEL3yOZZJrwixE/y9625Eyg+0eNYnHmHyAwktz8Hrj02Wk9Vv6Ev5xsZEv
+         8WzZts6kkIdyr4AiuaFk9VzAoah1H1stfxk5RAIA6RpJgLGl9RNCCVn0F+uwgzcQcX
+         TiUZ2oWiHmICA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
-        perex@perex.cz, tiwai@suse.com, linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 11/17] ALSA: hda: intel-nhlt: Ignore vbps when looking for DMIC 32 bps format
-Date:   Mon,  4 Dec 2023 15:34:56 -0500
-Message-ID: <20231204203514.2093855-11-sashal@kernel.org>
+Cc:     Maurizio Lombardi <mlombard@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 12/17] nvme-core: fix a memory leak in nvme_ns_info_from_identify()
+Date:   Mon,  4 Dec 2023 15:34:57 -0500
+Message-ID: <20231204203514.2093855-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204203514.2093855-1-sashal@kernel.org>
 References: <20231204203514.2093855-1-sashal@kernel.org>
@@ -56,101 +55,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+From: Maurizio Lombardi <mlombard@redhat.com>
 
-[ Upstream commit 7b4c93a50a2ebbbaf656cc4fa6aca74a6166d85b ]
+[ Upstream commit e3139cef8257fcab1725441e2fd5fd0ccb5481b1 ]
 
-When looking up DMIC blob from the NHLT table and the format is 32 bits,
-ignore the vbps matching for 32 bps for DMIC since some NHLT table have
-the vbps as 24, some have it as 32.
-The DMIC hardware supports only one type of 32 bit sample size, which is
-24 bit sampling on the MSB side and bits[1:0] is used for indicating the
-channel number.
+In case of error, free the nvme_id_ns structure that was allocated
+by nvme_identify_ns().
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20231127111658.17275-1-peter.ujfalusi@linux.intel.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Maurizio Lombardi <mlombard@redhat.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Reviewed-by: Kanchan Joshi <joshi.k@samsung.com>
+Signed-off-by: Keith Busch <kbusch@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/hda/intel-nhlt.c | 33 +++++++++++++++++++++++++++++----
- 1 file changed, 29 insertions(+), 4 deletions(-)
+ drivers/nvme/host/core.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/hda/intel-nhlt.c b/sound/hda/intel-nhlt.c
-index 2c4dfc0b7e342..696a958d93e9c 100644
---- a/sound/hda/intel-nhlt.c
-+++ b/sound/hda/intel-nhlt.c
-@@ -238,7 +238,7 @@ EXPORT_SYMBOL(intel_nhlt_ssp_mclk_mask);
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 25ddfabc58f73..0590c0b81fca9 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1511,7 +1511,8 @@ static int nvme_ns_info_from_identify(struct nvme_ctrl *ctrl,
+ 	if (id->ncap == 0) {
+ 		/* namespace not allocated or attached */
+ 		info->is_removed = true;
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto error;
+ 	}
  
- static struct nhlt_specific_cfg *
- nhlt_get_specific_cfg(struct device *dev, struct nhlt_fmt *fmt, u8 num_ch,
--		      u32 rate, u8 vbps, u8 bps)
-+		      u32 rate, u8 vbps, u8 bps, bool ignore_vbps)
- {
- 	struct nhlt_fmt_cfg *cfg = fmt->fmt_config;
- 	struct wav_fmt *wfmt;
-@@ -255,8 +255,12 @@ nhlt_get_specific_cfg(struct device *dev, struct nhlt_fmt *fmt, u8 num_ch,
- 		dev_dbg(dev, "Endpoint format: ch=%d fmt=%d/%d rate=%d\n",
- 			wfmt->channels, _vbps, _bps, wfmt->samples_per_sec);
+ 	info->anagrpid = id->anagrpid;
+@@ -1529,8 +1530,10 @@ static int nvme_ns_info_from_identify(struct nvme_ctrl *ctrl,
+ 		    !memchr_inv(ids->nguid, 0, sizeof(ids->nguid)))
+ 			memcpy(ids->nguid, id->nguid, sizeof(ids->nguid));
+ 	}
++
++error:
+ 	kfree(id);
+-	return 0;
++	return ret;
+ }
  
-+		/*
-+		 * When looking for exact match of configuration ignore the vbps
-+		 * from NHLT table when ignore_vbps is true
-+		 */
- 		if (wfmt->channels == num_ch && wfmt->samples_per_sec == rate &&
--		    vbps == _vbps && bps == _bps)
-+		    (ignore_vbps || vbps == _vbps) && bps == _bps)
- 			return &cfg->config;
- 
- 		cfg = (struct nhlt_fmt_cfg *)(cfg->config.caps + cfg->config.size);
-@@ -289,6 +293,7 @@ intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- {
- 	struct nhlt_specific_cfg *cfg;
- 	struct nhlt_endpoint *epnt;
-+	bool ignore_vbps = false;
- 	struct nhlt_fmt *fmt;
- 	int i;
- 
-@@ -298,7 +303,26 @@ intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 	dev_dbg(dev, "Looking for configuration:\n");
- 	dev_dbg(dev, "  vbus_id=%d link_type=%d dir=%d, dev_type=%d\n",
- 		bus_id, link_type, dir, dev_type);
--	dev_dbg(dev, "  ch=%d fmt=%d/%d rate=%d\n", num_ch, vbps, bps, rate);
-+	if (link_type == NHLT_LINK_DMIC && bps == 32 && (vbps == 24 || vbps == 32)) {
-+		/*
-+		 * The DMIC hardware supports only one type of 32 bits sample
-+		 * size, which is 24 bit sampling on the MSB side and bits[1:0]
-+		 * are used for indicating the channel number.
-+		 * It has been observed that some NHLT tables have the vbps
-+		 * specified as 32 while some uses 24.
-+		 * The format these variations describe are identical, the
-+		 * hardware is configured and behaves the same way.
-+		 * Note: when the samples assumed to be vbps=32 then the 'noise'
-+		 * introduced by the lower two bits (channel number) have no
-+		 * real life implication on audio quality.
-+		 */
-+		dev_dbg(dev,
-+			"  ch=%d fmt=%d rate=%d (vbps is ignored for DMIC 32bit format)\n",
-+			num_ch, bps, rate);
-+		ignore_vbps = true;
-+	} else {
-+		dev_dbg(dev, "  ch=%d fmt=%d/%d rate=%d\n", num_ch, vbps, bps, rate);
-+	}
- 	dev_dbg(dev, "Endpoint count=%d\n", nhlt->endpoint_count);
- 
- 	epnt = (struct nhlt_endpoint *)nhlt->desc;
-@@ -307,7 +331,8 @@ intel_nhlt_get_endpoint_blob(struct device *dev, struct nhlt_acpi_table *nhlt,
- 		if (nhlt_check_ep_match(dev, epnt, bus_id, link_type, dir, dev_type)) {
- 			fmt = (struct nhlt_fmt *)(epnt->config.caps + epnt->config.size);
- 
--			cfg = nhlt_get_specific_cfg(dev, fmt, num_ch, rate, vbps, bps);
-+			cfg = nhlt_get_specific_cfg(dev, fmt, num_ch, rate,
-+						    vbps, bps, ignore_vbps);
- 			if (cfg)
- 				return cfg;
- 		}
+ static int nvme_ns_info_from_id_cs_indep(struct nvme_ctrl *ctrl,
 -- 
 2.42.0
 
