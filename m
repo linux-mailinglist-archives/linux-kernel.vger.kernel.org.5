@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C899803F7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE545803F7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:34:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346316AbjLDUeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:34:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
+        id S233864AbjLDUeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:34:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346129AbjLDUdl (ORCPT
+        with ESMTP id S235528AbjLDUdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:33:41 -0500
+        Mon, 4 Dec 2023 15:33:46 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB181BD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:33:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A8A2C433C7;
-        Mon,  4 Dec 2023 20:33:42 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB37129
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:33:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8362C433D9;
+        Mon,  4 Dec 2023 20:33:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701722024;
-        bh=40ewDILkJWQcO31G58cjJ0L3RCQpKqcx73H5B5VDZvw=;
+        s=k20201202; t=1701722026;
+        bh=AIeWwXRelijdVQAE+IrIDAn5zmzSCs+pcDzGtmCLkS0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b4aWd4t4td4C0EqD9IrW+Q8FLRpJM0p+/OHXF9zHEOMDNXpOZ6I5f2/3zURvtRGpc
-         PqssrxAf+PFRYr9R9VZLZ+NpRiR9u/hCrXYqYEMW5w7e293sDURoHvT6cZTbl01RcM
-         ykZ8jfo/HZQFl0viMRnMNFmwDaniGpcfOdjxlkkB3u3UX7LLUOIzkCOwaR9nr+Q9cD
-         V6tjOX5OcrzzMrc38CNXnKec5tQezZKQNKap8uhIwnl17wicgppTXZ5sc7m0sEg2/p
-         Nmhx4e7cRVyqDFYE4F/wCYRwHWhUdFIPt2YSVO4WKqgWaBt5piPj4xHmo0Zokue6eR
-         kS0GYyoI5Uvdw==
+        b=ezGADa6moBp/Mjbkoq6S2YDpnmoO1e+hu5Nyk6XZafZY42vQBEglGFecM6E3Hnp7Z
+         ulmet4vFbbJmrsSfEvM3K4hP08cFO4MYD4Vhz6Bwcttpc7dyaZEDeqfjm4Cx3M7FT1
+         J5MKSxzCvUjTvWuGlgOETm4TWgiiPGHb2zZW6p6qKMqlVP1msevxGN7jUyiWs3c402
+         Ep7ISMkIQ+hy7Ev0iuABANehaotR35zCm7f8NXLgvWD5GJ3KjNG+2eAEwN+a4ZdR2o
+         BlnRLRZ9D/0nWBQGSYAeEJh+7F3+EVGO3zoQ4h2dnwhxCifmUENKrjgzK1jW+eBAPu
+         mukzFbjEXdkQw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Edward Adam Davis <eadavis@qq.com>,
-        syzbot+b834a6b2decad004cfa1@syzkaller.appspotmail.com,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, matttbe@kernel.org,
-        martineau@kernel.org, edumazet@google.com, kuba@kernel.org,
-        netdev@vger.kernel.org, mptcp@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 10/32] mptcp: fix uninit-value in mptcp_incoming_options
-Date:   Mon,  4 Dec 2023 15:32:30 -0500
-Message-ID: <20231204203317.2092321-10-sashal@kernel.org>
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        syzbot+7e59a5bfc7a897247e18@syzkaller.appspotmail.com,
+        Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 11/32] wifi: cfg80211: lock wiphy mutex for rfkill poll
+Date:   Mon,  4 Dec 2023 15:32:31 -0500
+Message-ID: <20231204203317.2092321-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204203317.2092321-1-sashal@kernel.org>
 References: <20231204203317.2092321-1-sashal@kernel.org>
@@ -57,33 +56,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Edward Adam Davis <eadavis@qq.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 237ff253f2d4f6307b7b20434d7cbcc67693298b ]
+[ Upstream commit 8e2f6f2366219b3304b227bdd2f04b64c92e3e12 ]
 
-Added initialization use_ack to mptcp_parse_option().
+We want to guarantee the mutex is held for pretty much
+all operations, so ensure that here as well.
 
-Reported-by: syzbot+b834a6b2decad004cfa1@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: syzbot+7e59a5bfc7a897247e18@syzkaller.appspotmail.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mptcp/options.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/wireless/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/mptcp/options.c b/net/mptcp/options.c
-index cd15ec73073e0..c53914012d01d 100644
---- a/net/mptcp/options.c
-+++ b/net/mptcp/options.c
-@@ -108,6 +108,7 @@ static void mptcp_parse_option(const struct sk_buff *skb,
- 			mp_opt->suboptions |= OPTION_MPTCP_DSS;
- 			mp_opt->use_map = 1;
- 			mp_opt->mpc_map = 1;
-+			mp_opt->use_ack = 0;
- 			mp_opt->data_len = get_unaligned_be16(ptr);
- 			ptr += 2;
- 		}
+diff --git a/net/wireless/core.c b/net/wireless/core.c
+index 563cfbe3237c9..f6ada0a729778 100644
+--- a/net/wireless/core.c
++++ b/net/wireless/core.c
+@@ -221,7 +221,9 @@ static void cfg80211_rfkill_poll(struct rfkill *rfkill, void *data)
+ {
+ 	struct cfg80211_registered_device *rdev = data;
+ 
++	wiphy_lock(&rdev->wiphy);
+ 	rdev_rfkill_poll(rdev);
++	wiphy_unlock(&rdev->wiphy);
+ }
+ 
+ void cfg80211_stop_p2p_device(struct cfg80211_registered_device *rdev,
 -- 
 2.42.0
 
