@@ -2,174 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D2F8029A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 01:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECAF8029A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 01:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbjLDAvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 19:51:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
+        id S234161AbjLDA4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 19:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbjLDAvq (ORCPT
+        with ESMTP id S229869AbjLDA4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 19:51:46 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CCCDB;
-        Sun,  3 Dec 2023 16:51:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701651110;
-        bh=Opj6twM4acMBCpY7T23VTzRC6W4CJ1xxdOLVZ0BFwGY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PNAnU1fNgJ32W0hGwE141ESRcRgmPsdmNRAmufzHkJKRI4Fiavz0IwFyvIRBtLUpf
-         T9ClY2QGqGkGvGUTANJb9Lwqi/BzFxasMIX1jCuD4mn08IpedB0jswkpKUiLuJiHTv
-         I7ujGXEgxPWKcU9XdSM0YKEzxvs4r9b7ztl0khRBEa0E2wypMSpBXQS8SckDP442cV
-         D/vwINh0JzvHvgwPPqT5sgARdrR9Q7Ps7OxlZfBLH9Oa7oRnsqvn5dtyTZLVtkQGlI
-         bV+/GUeaof+/di1naCRaKj1mQtR1YenzV7czHxy5gGqExytOSxomtVvKvKHPyTQyYB
-         VJAvBfYlf78Kg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sk4qn6b5hz4xhZ;
-        Mon,  4 Dec 2023 11:51:49 +1100 (AEDT)
-Date:   Mon, 4 Dec 2023 11:51:48 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: linux-next: manual merge of the kvm tree with the vfs-brauner
- tree
-Message-ID: <20231204115148.0b09243b@canb.auug.org.au>
-In-Reply-To: <20231122125539.5a7df3a3@canb.auug.org.au>
-References: <20231122125539.5a7df3a3@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/8r2oWaKZaSmteXC+67jB/fz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 3 Dec 2023 19:56:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61ECBD7
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 16:56:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701651375; x=1733187375;
+  h=from:to:cc:subject:date:message-id;
+  bh=zb8oftfqk82UeCnS01ntPGlL3LP4p1h8hJr37z80CQY=;
+  b=jL2rUAPXKbQnqsfIr5Uy7M2E0ul5anMgv6yS2l2q4eHyVwu8s15oCITm
+   TMol3sZGhdZeeLF+idipl7V41GCciU23RO4/JeWq7J9tnaqo3rMqmVHuK
+   yK49cEOSCXI/GSwIh4U6CkeM0ZqEWRjYPkhuhGh03pLqWDJrVy2XLLVJn
+   uAnPfIMRXqKiNEq8LVhWvre9Yxnpoz6YK3BNMD7vkV1XbsR/GpgXy3D1w
+   CmS0MxoY0wxEZQNmfaFl7bl+075tvzwbvAl5Un6qeVdk2RXDo29QJulJc
+   Mj6FuGrlJeIYMmmq9C1iwVHmpBLTrYULX5k+z6tBF9rVpBMsZr/BXkYXy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="393406170"
+X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
+   d="scan'208";a="393406170"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 16:56:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="861212183"
+X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
+   d="scan'208";a="861212183"
+Received: from shsensorbuild2.sh.intel.com ([10.239.134.197])
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Dec 2023 16:56:01 -0800
+From:   Wentong Wu <wentong.wu@intel.com>
+To:     gregkh@linuxfoundation.org, tomas.winkler@intel.com,
+        hdegoede@redhat.com, krzk@kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, sakari.ailus@linux.intel.com,
+        alexander.usyskin@intel.com, zhifeng.wang@intel.com,
+        linux-kernel@vger.kernel.org, Wentong Wu <wentong.wu@intel.com>
+Subject: [PATCH v2 0/2] misc: mei: Add support for IVSC device
+Date:   Mon,  4 Dec 2023 08:55:42 +0800
+Message-Id: <1701651344-20723-1-git-send-email-wentong.wu@intel.com>
+X-Mailer: git-send-email 2.7.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/8r2oWaKZaSmteXC+67jB/fz
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The Intel visual sensing controller (IVSC) device is designed to
+control the camera sharing between host IPU for media usage and
+IVSC for context sensing (face detection).
 
-Hi all,
+IVSC is exposed to host as a SPI device and the protocol used
+for communicating with host is MEI. This driver implements the
+transport protocol and MEI hardware interfaces for IVSC device.
 
-On Wed, 22 Nov 2023 12:55:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the kvm tree got a conflict in:
->=20
->   include/linux/pagemap.h
->=20
-> between commit:
->=20
->   762321dab9a7 ("filemap: add a per-mapping stable writes flag")
+The firmware downloading for IVSC device is implemented as well.
 
-This is now in Linus' tree.
+---
+v2:
+  - change to `depends on INTEL_MEI_VSC_HW` for INTEL_MEI_VSC Kconfig
+  - remove MODULE_ALIAS and add MODULE_DEVICE_TABLE in platform-vsc.c
 
-> from the vfs-brauner tree and commit:
->=20
->   0003e2a41468 ("mm: Add AS_UNMOVABLE to mark mapping as completely unmov=
-able")
->=20
-> from the kvm tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+Wentong Wu (2):
+  mei: Add transport driver for IVSC device
+  mei: Add MEI hardware support for IVSC device
 
-The current resolution is below.
+ drivers/misc/mei/Kconfig         |  24 ++
+ drivers/misc/mei/Makefile        |   7 +
+ drivers/misc/mei/platform-vsc.c  | 450 +++++++++++++++++++++
+ drivers/misc/mei/vsc-fw-loader.c | 822 +++++++++++++++++++++++++++++++++++++++
+ drivers/misc/mei/vsc-tp.c        | 555 ++++++++++++++++++++++++++
+ drivers/misc/mei/vsc-tp.h        |  50 +++
+ 6 files changed, 1908 insertions(+)
+ create mode 100644 drivers/misc/mei/platform-vsc.c
+ create mode 100644 drivers/misc/mei/vsc-fw-loader.c
+ create mode 100644 drivers/misc/mei/vsc-tp.c
+ create mode 100644 drivers/misc/mei/vsc-tp.h
 
---=20
-Cheers,
-Stephen Rothwell
+-- 
+2.7.4
 
-diff --cc include/linux/pagemap.h
-index 06142ff7f9ce,bf2965b01b35..c2d90588c0bf
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@@ -203,9 -203,8 +203,10 @@@ enum mapping_flags=20
-  	/* writeback related tags are not used */
-  	AS_NO_WRITEBACK_TAGS =3D 5,
-  	AS_LARGE_FOLIO_SUPPORT =3D 6,
- -	AS_RELEASE_ALWAYS =3D 7,	/* Call ->release_folio(), even if no private d=
-ata */
- -	AS_UNMOVABLE	=3D 8,	/* The mapping cannot be moved, ever */
- +	AS_RELEASE_ALWAYS,	/* Call ->release_folio(), even if no private data */
- +	AS_STABLE_WRITES,	/* must wait for writeback before modifying
- +				   folio contents */
-++	AS_UNMOVABLE,		/* The mapping cannot be moved, ever */
-  };
- =20
-  /**
-@@@ -291,21 -290,22 +292,37 @@@ static inline void mapping_clear_releas
-  	clear_bit(AS_RELEASE_ALWAYS, &mapping->flags);
-  }
- =20
-+ static inline void mapping_set_unmovable(struct address_space *mapping)
-+ {
-+ 	/*
-+ 	 * It's expected unmovable mappings are also unevictable. Compaction
-+ 	 * migrate scanner (isolate_migratepages_block()) relies on this to
-+ 	 * reduce page locking.
-+ 	 */
-+ 	set_bit(AS_UNEVICTABLE, &mapping->flags);
-+ 	set_bit(AS_UNMOVABLE, &mapping->flags);
-+ }
-+=20
-+ static inline bool mapping_unmovable(struct address_space *mapping)
-+ {
-+ 	return test_bit(AS_UNMOVABLE, &mapping->flags);
-+ }
-+=20
- +static inline bool mapping_stable_writes(const struct address_space *mapp=
-ing)
- +{
- +	return test_bit(AS_STABLE_WRITES, &mapping->flags);
- +}
- +
- +static inline void mapping_set_stable_writes(struct address_space *mappin=
-g)
- +{
- +	set_bit(AS_STABLE_WRITES, &mapping->flags);
- +}
- +
- +static inline void mapping_clear_stable_writes(struct address_space *mapp=
-ing)
- +{
- +	clear_bit(AS_STABLE_WRITES, &mapping->flags);
- +}
- +
-  static inline gfp_t mapping_gfp_mask(struct address_space * mapping)
-  {
-  	return mapping->gfp_mask;
-
---Sig_/8r2oWaKZaSmteXC+67jB/fz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVtIqQACgkQAVBC80lX
-0GzjWAf/X1tCPBNu95zV0Mq9esX+qPvDhfWOLbieaYGzjpHNlL9AXomcCbRTg8GF
-8AtLG8v42IHH6GkeeETor1NiGcSv/BYyEa9ibvoO48x00YSKt8rAqUQKg4nBgXVa
-/FNzujmiXacB+a+cgb4tyqlBYGMzadQOvR4am1UkTq249AYUw4fhphJqpQ+ggPPo
-L/XsayunYH1AcUD1FpHLNmx2GeRrHuOXBFK3drqkK9JXlWNRHT5LW/5VuoTPUM/G
-I3ueJ//hmBZGStJaSK3wE+lqmK7B1iEYjAajupkwu4XdWlDK0wUsX5KJxn2gjPp/
-nhXaagOvwtGfZ1qv8sPuPf9HjmwWqA==
-=U7sa
------END PGP SIGNATURE-----
-
---Sig_/8r2oWaKZaSmteXC+67jB/fz--
