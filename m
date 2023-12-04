@@ -2,133 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8463A803979
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB37B803990
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343972AbjLDQDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:03:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        id S234771AbjLDQEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:04:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234633AbjLDQDr (ORCPT
+        with ESMTP id S231328AbjLDQEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:03:47 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1008EA4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:03:54 -0800 (PST)
-Date:   Mon, 4 Dec 2023 17:03:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701705832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oOGKvQa+fD1H+3fJFY5r6c8uqdzNpto7YjAjUn5AcY0=;
-        b=dpoiyQpkZqd+2evWeKtSi1P8xf0rf9vXzPmGHc6oWblsnmNoTMz9RQR434dvHSTf0Lg4mI
-        2q4I0UgltZ9u3gUlmNoUCHYha4EtxHONuqS99YbVIX1Ore/77+UhP8Bp+wbaJC0Kvfd+iP
-        wXZAab0aukZBo7RVG3hD2XZdOqvz3pfjIJh8nco4CEhjwOL+QdNleCZA8GJH1B6EHZ+yvQ
-        Mf5jShs46Vt06LLgmEqti+/Iuy0RPTsC/BXcj+wL9HQLfqRh9aXAMIFIBxhsd+AqpnunX7
-        QLlMHDgtB57WL004UxHaLTqWIN7jn0qQGVqYDmuftkCqYpIb1Hh1YiaY2ftC8A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701705832;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=oOGKvQa+fD1H+3fJFY5r6c8uqdzNpto7YjAjUn5AcY0=;
-        b=b9GXWlF6yHaVfbz5YlE9faTuI1oRyyQGPVLDbIe7882o09LJh/Z3Q/uHEGi40++uhPo/zq
-        NFaP6QvjXe4XQ4Dg==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 12/32] timers: Fix nextevt calculation when no timers
- are pending
-Message-ID: <20231204160350.OTCnqCJf@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-13-anna-maria@linutronix.de>
+        Mon, 4 Dec 2023 11:04:40 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99D7AC;
+        Mon,  4 Dec 2023 08:04:46 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4FEVvg005446;
+        Mon, 4 Dec 2023 16:04:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=7SyjEZYix8RBtB52xZQgB2+0lCKxgrfJUq97NfAQsHg=;
+ b=g42ijmI7q87bYocyUZZz6GyVLgBjDsSTVl/xah26NDsRXq03zXLU3DqZViuo1cS0gzYP
+ 900uS1MlfbvTHLmGMdSuwZQHUcvWXo1bOyu1Lgdxaw0qjUNV+KqZPxVjdQ/VXV2ZKMUV
+ 9T5gOWST7Zc0lKinvjs60T6qjZa30FejhcmjsUF5SFpP1DJE/yCzP6AUmK1VaIAXvRs2
+ gjdjg2LcQEveES+nhcBZE3/hXj85xujlfbei6n3uAPLhQkeVJ5H5u4Ultf0jtJEzq4C1
+ vix+T16wDtjSFlWUVi8zCI++8ItvIYKDMSw0Y54bZhh+oFZh/JHsjNjablmKkPzsLQx9 cg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uqwbqmec6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 16:04:43 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4G4goT021466
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Dec 2023 16:04:42 GMT
+Received: from [10.110.89.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
+ 2023 08:04:39 -0800
+Message-ID: <e3817ea6-3cdc-418f-bbeb-ed93e7f537e3@quicinc.com>
+Date:   Mon, 4 Dec 2023 08:04:38 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231201092654.34614-13-anna-maria@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/4] pinctrl: qcom: Add SM4450 pinctrl driver
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Tengfei Fan <quic_tengfan@quicinc.com>, <andersson@kernel.org>,
+        <agross@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linus.walleij@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231130024046.25938-1-quic_tengfan@quicinc.com>
+ <20231130024046.25938-3-quic_tengfan@quicinc.com>
+ <1d2fbb36-9476-4f32-8bcd-33fd5dcbd6e4@kernel.org>
+ <d192f32a-130f-4568-9622-d3465c709853@quicinc.com>
+ <1b65f67a-8142-4690-af6e-4a0bf641b7be@kernel.org>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <1b65f67a-8142-4690-af6e-4a0bf641b7be@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: QTtMnbm3_qEodrRL0BT35rbhPm5kbEM6
+X-Proofpoint-GUID: QTtMnbm3_qEodrRL0BT35rbhPm5kbEM6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_15,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
+ lowpriorityscore=0 priorityscore=1501 malwarescore=0 spamscore=0
+ suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=801 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040122
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-01 10:26:34 [+0100], Anna-Maria Behnsen wrote:
-> When no timer is queued into an empty timer base, the next_expiry will not
-> be updated. It was originally calculated as
+On 12/3/2023 11:56 PM, Krzysztof Kozlowski wrote:
+> On 04/12/2023 02:57, Tengfei Fan wrote:
+>>
+>>
+>> 在 11/30/2023 7:57 PM, Krzysztof Kozlowski 写道:
+>>> On 30/11/2023 03:40, Tengfei Fan wrote:
+>>>> Add pinctrl driver for TLMM block found in SM4450 SoC.
+>>>>
+>>>> Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>>>> ---
+>>>>   drivers/pinctrl/qcom/Kconfig.msm      |    8 +
+>>>>   drivers/pinctrl/qcom/Makefile         |    1 +
+>>>>   drivers/pinctrl/qcom/pinctrl-sm4450.c | 1013 +++++++++++++++++++++++++
+>>>>   3 files changed, 1022 insertions(+)
+>>>>   create mode 100644 drivers/pinctrl/qcom/pinctrl-sm4450.c
+>>>>
+>>>
+>>> Hm, was this patch ever built?
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>> This patch has been built before, I will check and compare if there are 
+>> any errors and changes when I submitted this patch series.
+>>
 > 
->   base->clk + NEXT_TIMER_MAX_DELTA
+> No, it wasn't built. I just tried - applied it and:
 > 
-> When the timer base stays empty long enough (> NEXT_TIMER_MAX_DELTA), the
-> next_expiry value of the empty base suggests that there is a timer pending
-> soon. This might be more a kind of a theoretical problem, but the fix
-> doesn't hurt.
+> pinctrl-sm4450.c:996:19: error: initialization of ‘int (*)(struct
+> platform_device *)’ from incompatible pointer type ‘void (*)(struct
+> platform_device *)’ [-Werror=incompatible-pointer-types]
+>   996 |         .remove = msm_pinctrl_remove,
+>       |                   ^~~~~~~~~~~~~~~~~~
+> ../drivers/pinctrl/qcom/pinctrl-sm4450.c:996:19: note: (near
+> initialization for ‘sm4450_tlmm_driver.remove’)
+> 
+> So you just sent a patch which was not even compiled.
+> 
+> NAK.
+> 
+> Best regards,
+> Krzysztof
+> 
 
-So __run_timers() sets base::next_expiry to base->clk +
-NEXT_TIMER_MAX_DELTA and then we have no more timers enqueued.
+The problem here is patch 2/4 incorrectly initializes .remove and patch
+3/4 changes it to correctly use .remove_new. Bisection at patch 2
+doesn't build.
 
-But wouldn't base->timers_pending remain false? Therefore it would use
-"expires = KTIME_MAX" as return value (well cmp_next_hrtimer_event())?
-
-Based on the code as of #11, it would only set timer_base::is_idle
-wrongly false if it wraps around. Other than that, I don't see an issue.
-What do I miss?
-
-If you update it regardless here then it would make a difference to
-run_local_timers() assuming we have still hrtimer which expire and this
-next_expiry check might raise a softirq since it does not consider the
-timers_pending value.
-
-> Use only base->next_expiry value as nextevt when timers are
-> pending. Otherwise nextevt will be jiffies + NEXT_TIMER_MAX_DELTA. As all
-> information is in place, update base->next_expiry value of the empty timer
-> base as well.
-
-or consider timers_pending in run_local_timers()? An additional read vs
-write?
-
-> --- a/kernel/time/timer.c
-> +++ b/kernel/time/timer.c
-> @@ -1944,10 +1943,20 @@ u64 get_next_timer_interrupt(unsigned long basej, u64 basem)
->  	__forward_timer_base(base, basej);
->  
->  	if (base->timers_pending) {
-> +		nextevt = base->next_expiry;
-> +
->  		/* If we missed a tick already, force 0 delta */
->  		if (time_before(nextevt, basej))
->  			nextevt = basej;
->  		expires = basem + (u64)(nextevt - basej) * TICK_NSEC;
-> +	} else {
-> +		/*
-> +		 * Move next_expiry for the empty base into the future to
-> +		 * prevent a unnecessary raise of the timer softirq when the
-                           an
-> +		 * next_expiry value will be reached even if there is no timer
-> +		 * pending.
-> +		 */
-> +		base->next_expiry = nextevt;
->  	}
->  
->  	/*
-
-Sebastian
+Those two patches should be squashed
