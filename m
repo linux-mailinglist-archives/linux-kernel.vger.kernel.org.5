@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 199BA802DF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F8F802E33
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343625AbjLDIoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:44:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52012 "EHLO
+        id S1343690AbjLDIoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:44:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235367AbjLDIoO (ORCPT
+        with ESMTP id S235309AbjLDIoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:44:14 -0500
+        Mon, 4 Dec 2023 03:44:34 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B96198B
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:43:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DAA6C433C8;
-        Mon,  4 Dec 2023 08:43:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7880D1B9
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:44:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6551C433C7;
+        Mon,  4 Dec 2023 08:44:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701679430;
-        bh=lDOXjN/W84Vq3sykgf0bUUGkHQwP88whG8TRkS7Nx44=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=WVLjR8vdJwdvEjNXZSMe8Lp1vcM5owgcUib2prYQjTy0EgDp0Om8FIjXQcQ1rbcbQ
-         fQLWWvEOllo3g9AmgI7Gjg7cOagUiRiV7SnKfzGFuNkCuA0rbBz65oBUfqTwreubxD
-         QVQdwh2v5ZRtFRbx9CDxwJN5LNyFBjlU3ciSzYovIt2RuI0hdP0x5KETnIWYCmskBK
-         kKCcVdf6QvWPD3uE8T4h9PdVMciyQjO9UtIlvW6JloR7eQN7kFuAWmV79kmcBkWDKm
-         5JpF+Qki6Casz1xtMtz5hQ2LSrHqd87jUHqVH8/B2v5Y+VcZgjM+VrCJ9OQeStZJSv
-         CF1MrnJ1MrbRA==
-From:   Maxime Ripard <mripard@kernel.org>
-To:     airlied@redhat.com, kraxel@redhat.com,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        airlied@gmail.com, daniel@ffwll.ch,
-        heminhong <heminhong@kylinos.cn>
-Cc:     virtualization@lists.linux.dev, spice-devel@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231110055031.57360-1-heminhong@kylinos.cn>
-References: <20231110055031.57360-1-heminhong@kylinos.cn>
-Subject: Re: [PATCH] drm/qxl: remove unused declaration
-Message-Id: <170167942791.3617818.9387915211880062681.b4-ty@kernel.org>
-Date:   Mon, 04 Dec 2023 09:43:47 +0100
+        s=k20201202; t=1701679454;
+        bh=xpgPzulNevCUlsiFp2dMGa9+E23juK/4xiRXU8jbrZI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gFePe9RdWDFr3EKCrhfUl0e058tQhYJziFpa8yaN3dgBfmjplJZ9qi0/Tc+rwjCLP
+         rEMOyKPmOgH8KFEs2421n+fT4vOuF41M7oRIU8vr6XFrytPfdiLcZ3YKhgTePVfkvG
+         m7vl5fPtC7j9bqtyHRTQjPJhegtSoLtfVpIucaZO9K6cwPvZD0VT6/b3P13SnH3pfs
+         Hs6S4AHl1bumAZBkKWc4nelEpqMCgoqkdVxZGoMQBw90+d1KPfFGT1BpTzNUBwWEs2
+         WgoRgUNI9F/fMMuzLJ7dzaS/PDFiPMwqCcpKxHOoRLjvpkD37lYNIoNGhB44JA1ku3
+         nr8tAJJzWi+UA==
+Date:   Mon, 4 Dec 2023 09:44:11 +0100
+From:   mripard <mripard@kernel.org>
+To:     =?utf-8?B?5L2V5pWP57qi?= <heminhong@kylinos.cn>
+Cc:     airlied <airlied@redhat.com>, kraxel <kraxel@redhat.com>,
+        "maarten.lankhorst" <maarten.lankhorst@linux.intel.com>,
+        tzimmermann <tzimmermann@suse.de>, airlied <airlied@gmail.com>,
+        daniel <daniel@ffwll.ch>,
+        virtualization <virtualization@lists.linux.dev>,
+        spice-devel <spice-devel@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: Friendly ping. I think this patch was =?utf-8?Q?forgotten=2E?=
+ =?utf-8?B?Ly/lm57lpI06?= [PATCH] drm/qxl: remove unused declaration
+Message-ID: <kk4xtz2zxe37ner7cl5qvlk6jhciu7hgvpltf7gddphepnxqwg@noe3lrmff3ax>
+References: <1290mcwo8vf-129368jicj0@nsmail7.0.0--kylin--1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="mrjqp5qcdvleulqp"
+Content-Disposition: inline
+In-Reply-To: <1290mcwo8vf-129368jicj0@nsmail7.0.0--kylin--1>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -53,15 +57,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Nov 2023 13:50:31 +0800, heminhong wrote:
-> Some functions are never used by the driver,
-> removing the functions declaration, it can be reducing program size,
-> and improving code readability and maintainability.
-> 
-> 
 
-Applied to drm/drm-misc (drm-misc-next).
+--mrjqp5qcdvleulqp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks!
-Maxime
+Applied, thanks for the reminder
 
+--mrjqp5qcdvleulqp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZW2RWwAKCRDj7w1vZxhR
+xTKFAQClXxO9sDpuh6JQFW2Xg1PnWk1Pz9aynBWEXekfGLIqLgEAh0s5I+A5LU+X
++S+NsqIYz+28V3nfD/itBaG2c2ON8ws=
+=wUoA
+-----END PGP SIGNATURE-----
+
+--mrjqp5qcdvleulqp--
