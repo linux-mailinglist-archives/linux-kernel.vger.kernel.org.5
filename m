@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 859798037BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E1380375D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345919AbjLDOpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
+        id S236005AbjLDOpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:45:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236005AbjLDOpS (ORCPT
+        with ESMTP id S236091AbjLDOp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:45:18 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECC719A7;
-        Mon,  4 Dec 2023 06:44:49 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1d0538d9bbcso27099765ad.3;
-        Mon, 04 Dec 2023 06:44:49 -0800 (PST)
+        Mon, 4 Dec 2023 09:45:29 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7C811A;
+        Mon,  4 Dec 2023 06:44:54 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d04c097e34so22914875ad.0;
+        Mon, 04 Dec 2023 06:44:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701701088; x=1702305888; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701701093; x=1702305893; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7eRLjlThPLhM7zIw6XvrWrrbob10TfqT1M4cq4iJfTE=;
-        b=VtDFUM3IswYKjFC6VBYY7ucRJ7NImAHtJ94e7EcNY4Ht6AIzWAK3y6TZHFqSQr6AJf
-         XrhMZTZeN6wXY7kJozyRPTL/A2d+7GjFWKTHihb7rLqQpZyoXiJ78+6OgkAZS8DnKcCd
-         a2G7H2jxIQL9+eVzgw5JWugYu8HFhRdxoE0B5i51yrEt/lJoBjj8LCtOtO6EOmJW3Xfk
-         8d8Bp59lEVdmQkCUmVbHud0ww3o+sg3//xCr2E0bE6wTpdtwqiuPlen63FNW0gEkVfsj
-         4bB4yuWXZ/i7J4OOTGGmEDSNx2qH8pWzwcoWsg5oJMbQoIriV2mZKcVMCs5DF4KY7fpU
-         AoPQ==
+        bh=Mr+hGVgKYHho74r9Sx7X0qX3CfwxBFy5+SbXUpW0SOc=;
+        b=Y+F1yFneH4pImBvGjSM2mUy8q7TSAuIi1uzLkNViECxQBuce23e2quAyn998cp072f
+         BGn6UJJ3BgVqbc/LkMjwNzp4E8gWvB+LhFA2M1MoIpw9qcomhn7Y0FsEXSAyy/5jIcIh
+         o5vtz+PR8RL/BEQNM7+T+5V5njdCPmMja8plrgFDi6aQCsBSAFDYSbywV4fD7GD5HxuU
+         YTWLZEK45+j3SmyFYcLCcCpGtwHFy8f7e/Wv6YIBOv3GxTSE63ooSYt4z8b9QH/6ktw8
+         +ylINmvX0Mf0e8cN/6B5GF3SjPXYm083hxf09DmZcOEhHNyYNo9SADvgoHJDlCQjbOLV
+         k1RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701701088; x=1702305888;
+        d=1e100.net; s=20230601; t=1701701093; x=1702305893;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7eRLjlThPLhM7zIw6XvrWrrbob10TfqT1M4cq4iJfTE=;
-        b=fiRXS3PPUJ5vjvm/QvGWV7sNdQph3E6y3aDRORDR5NToKr5IG+rdLUqhKM63qx46TD
-         7VhTlrZpZRie6n7fwmdX/BGve/opMukD/KFFNDi6pXm6ZSa0Mw+EIQR0P9lEkrtP0qhP
-         AYSTcs1lZp450gDDKB9LQAMBYW/WHgLM1y/TItRpnmoQd0PsThZb7Bid540KKhD42m1Z
-         hmneSlzt+NsqJ+q0wkwmKHcbIvKYpIUsfEldza8DwHSRAUOUKyNTKvLIliwgdc5v6dU9
-         /5UUJt0cstFURbHOn3WKSCWDee6ci/oWZ6cB67/uPIRFYlfYRYoRzQdnDqZZ17FyM9w6
-         Wd6w==
-X-Gm-Message-State: AOJu0YzZ6Mp2m76gHEr2iWJ8x7vfcPL3qgs9KF5Okhvmm8BR01GRFVPC
-        9n09tkdC88utDtBWb3hnm14=
-X-Google-Smtp-Source: AGHT+IGTgdMm1IrP9P0QKhOOvICj9TIyyaKAwxubN0u1nWy9phktn3LnrrLnNFT21DIFr3oeklgtcg==
-X-Received: by 2002:a17:903:647:b0:1d0:8e61:102a with SMTP id kh7-20020a170903064700b001d08e61102amr2321909plb.90.1701701088620;
-        Mon, 04 Dec 2023 06:44:48 -0800 (PST)
+        bh=Mr+hGVgKYHho74r9Sx7X0qX3CfwxBFy5+SbXUpW0SOc=;
+        b=LhsG6ocfeT6AxgGF5OscD2/FTVArH1idZRwq0r0bVsY30S1JP4Ych6QA8fLoqsewjv
+         kQx5+UoyDqw+UNUZHNGRLVdbeVyeaH4vP11LF1+4t7d1qLBIxwrT9LvnYJMguLNeHY06
+         FfZtQSecE7WHTIYYIjMPJLmCoHBxtP9I5t0IOqDw6I/JKLzecJfkwDbvnRvPlBVOkR/H
+         5bjWZ9D1mzzlooYXX/WZ59sGkd+0vHEhnFxF4tVfAMe5sqQeE2v90wVri64LqzrsRzQq
+         4GgKO9C4OuxHQFZ/CvnMgKIF6XVXXZBkP9KUMn+Ehjx0ewomTs6nRyX2ZRJ+WMUtmxos
+         rV0Q==
+X-Gm-Message-State: AOJu0YwI7UPKNEGQARG0mBMfJuFTGiZfpDoUbcMZfay9OdwKb7Rwxiil
+        ohUILc32PwBnPuSjkNq09P8=
+X-Google-Smtp-Source: AGHT+IHGfqxKkWM24FH6lMaewZHVoejZM4kN49I5j0/eGqPj4SfnwIrxljFk/WuUSR53XiDmDqdXbw==
+X-Received: by 2002:a17:902:dac8:b0:1d0:700b:3f78 with SMTP id q8-20020a170902dac800b001d0700b3f78mr4602429plx.50.1701701093156;
+        Mon, 04 Dec 2023 06:44:53 -0800 (PST)
 Received: from localhost.localdomain ([49.205.242.26])
-        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001cfb99d8b82sm6446815plk.136.2023.12.04.06.44.45
+        by smtp.gmail.com with ESMTPSA id l6-20020a170902d34600b001cfb99d8b82sm6446815plk.136.2023.12.04.06.44.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 06:44:48 -0800 (PST)
+        Mon, 04 Dec 2023 06:44:52 -0800 (PST)
 From:   Anand Moon <linux.amoon@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
+To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Icenowy Zheng <uwu@icenowy.me>
-Cc:     Anand Moon <linux.amoon@gmail.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-amlogic@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the Genesys Logic GL3523 hub
-Date:   Mon,  4 Dec 2023 20:14:25 +0530
-Message-ID: <20231204144429.45197-2-linux.amoon@gmail.com>
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Anand Moon <linux.amoon@gmail.com>,
+        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 2/2] arm64: dts: amlogic: Used onboard usb hub reset on odroid n2
+Date:   Mon,  4 Dec 2023 20:14:26 +0530
+Message-ID: <20231204144429.45197-3-linux.amoon@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204144429.45197-1-linux.amoon@gmail.com>
 References: <20231204144429.45197-1-linux.amoon@gmail.com>
@@ -80,128 +79,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the binding example for the USB3.1 Genesys Logic GL3523
-integrates with USB 3.1 Gen 1 Super Speed and USB 2.0 High-Speed
-hub.
+On Odroid n2/n2+ previously use gpio-hog to reset the usb hub,
+switch to used on-board usb hub reset to enable the usb hub
+and enable power to hub.
 
-For onboard hub controllers that support USB 3.x and USB 2.0 hubs
-with shared resets and power supplies, this property is used to identify
-the hubs with which these are shared.
-
-GL3523 has built-in 5V to 3.3V and 5V to 1.2V regulators, which serves
-power to the USB HUB, it uses 5V power regulator.
-
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
-V6: fix the description of the regulators
-Updated the commit message for regulator updates.
-add reviewed by Conor Dooley
-[1] https://lore.kernel.org/all/20231130053130.21966-2-linux.amoon@gmail.com/
-v5: upgrade peer-hub description : Conor Dooley
-[0] https://www.genesyslogic.com.tw/en/product_view.php?show=67 [Block Diagram]
-v4: Fix the description of peer-hub and update the commit message.
-Schematics of the Odroid N2+
-https://dn.odroid.com/S922X/ODROID-N2/Schematic/odroid-n2_rev0.6_20210121.pdf
-V3: fix the dt_binding_check error, added new example for Genesys GL3523
-v2: added Genesys GL3523 binding
-v1: none
+V6:none
+V5:none
+V4:none
+V3:none
+V2:none
+V1:none
 ---
- .../bindings/usb/genesys,gl850g.yaml          | 65 +++++++++++++++++--
- 1 file changed, 61 insertions(+), 4 deletions(-)
+ .../dts/amlogic/meson-g12b-odroid-n2.dtsi     | 36 ++++++++++++-------
+ 1 file changed, 24 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-index ee08b9c3721f..c6f63a69396d 100644
---- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-+++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-@@ -9,9 +9,6 @@ title: Genesys Logic USB hub controller
- maintainers:
-   - Icenowy Zheng <uwu@icenowy.me>
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+index 91c9769fda20..9e671444eca6 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+@@ -31,6 +31,30 @@ hub_5v: regulator-hub_5v {
+ 		enable-active-high;
+ 	};
  
--allOf:
--  - $ref: usb-device.yaml#
--
- properties:
-   compatible:
-     enum:
-@@ -27,12 +24,46 @@ properties:
++	/* USB hub supports both USB 2.0 and USB 3.0 root hub */
++	usb-hub {
++		dr_mode = "host";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		/* 2.0 hub on port 1 */
++		hub_2_0: hub@1 {
++			compatible = "usb5e3,610";
++			reg = <1>;
++			peer-hub = <&hub_3_0>;
++			vdd-supply = <&usb_pwr_en>;
++		};
++
++		/* 3.0 hub on port 4 */
++		hub_3_0: hub@2 {
++			compatible = "usb5e3,620";
++			reg = <2>;
++			peer-hub = <&hub_2_0>;
++			reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>;
++			vdd-supply = <&vcc_5v>;
++		};
++	};
++
+ 	sound {
+ 		compatible = "amlogic,axg-sound-card";
+ 		model = "ODROID-N2";
+@@ -234,18 +258,6 @@ &gpio {
+ 		"PIN_3",  /* GPIOX_17 */
+ 		"PIN_5",  /* GPIOX_18 */
+ 		"PIN_36"; /* GPIOX_19 */
+-	/*
+-	 * WARNING: The USB Hub on the Odroid-N2 needs a reset signal
+-	 * to be turned high in order to be detected by the USB Controller
+-	 * This signal should be handled by a USB specific power sequence
+-	 * in order to reset the Hub when USB bus is powered down.
+-	 */
+-	usb-hub-hog {
+-		gpio-hog;
+-		gpios = <GPIOH_4 GPIO_ACTIVE_HIGH>;
+-		output-high;
+-		line-name = "usb-hub-reset";
+-	};
+ };
  
-   vdd-supply:
-     description:
--      the regulator that provides 3.3V core power to the hub.
-+      The regulator that provides 3.3V or 5.0V core power to the hub.
-+
-+  peer-hub:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      For onboard hub controllers that support USB 3.x and USB 2.0 hubs
-+      with shared resets and power supplies, this property is used to identify
-+      the hubs with which these are shared.
- 
- required:
-   - compatible
-   - reg
- 
-+allOf:
-+  - $ref: usb-device.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - usb5e3,608
-+    then:
-+      properties:
-+        peer-hub: false
-+        vdd-supply: false
-+        reset-gpios: true
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - usb5e3,610
-+              - usb5e3,620
-+    then:
-+      properties:
-+        peer-hub: true
-+        vdd-supply: true
-+        reset-gpios: true
-+
- additionalProperties: false
- 
- examples:
-@@ -49,3 +80,29 @@ examples:
-             reset-gpios = <&pio 7 2 GPIO_ACTIVE_LOW>;
-         };
-     };
-+
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    usb {
-+        dr_mode = "host";
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        /* 2.0 hub on port 1 */
-+        hub_2_0: hub@1 {
-+            compatible = "usb5e3,610";
-+            reg = <1>;
-+            peer-hub = <&hub_3_0>;
-+            reset-gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
-+            vdd-supply = <&vcc_5v>;
-+        };
-+
-+        /* 3.1 hub on port 4 */
-+        hub_3_0: hub@2 {
-+            compatible = "usb5e3,620";
-+            reg = <2>;
-+            peer-hub = <&hub_2_0>;
-+            reset-gpios = <&gpio 20 GPIO_ACTIVE_LOW>;
-+            vdd-supply = <&vcc_5v>;
-+        };
-+    };
+ &i2c3 {
 -- 
 2.42.0
 
