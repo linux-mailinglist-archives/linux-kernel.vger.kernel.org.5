@@ -2,261 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB793803CFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD17803CFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjLDS1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:27:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
+        id S231299AbjLDS31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:29:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbjLDS1d (ORCPT
+        with ESMTP id S229501AbjLDS3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:27:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F296CFA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:27:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701714457;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=MsCR3w3iP/fbWtFIHfml8iFRMkitafuttFnD2iLIZic=;
-        b=dBVshDLA9/kD70QjW2dzwAsUUez8cwbp5f7te6ajHlBUeH33WJ2I9barhnmd17/BW9FdfD
-        v/MHPgYmGjRpPg8rngUroh24AxduCMlvTJTHDjN0SWx87T5xn8d9G5zbebhi35tfenACg8
-        5gYPr/aK0wNTZJtDeuOkqKg0NMBD2Ds=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-106-fBoutNhjPPOXUJOM2u6U1w-1; Mon, 04 Dec 2023 13:27:36 -0500
-X-MC-Unique: fBoutNhjPPOXUJOM2u6U1w-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332ee20a40fso3729906f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 10:27:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701714455; x=1702319255;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MsCR3w3iP/fbWtFIHfml8iFRMkitafuttFnD2iLIZic=;
-        b=Smz3ESmSXqv+l/BhdAOIz+odAdNuxGRjDThwuo0rpTSzO9sYjsSfDFQVruVs8xGbVh
-         seij4pjblv1357BE7Rqbhc0Yii8PYtitngtmGeQF3SozdmChTF0F+eKAXkUZ9At41R+6
-         EB/pAEm8594UBakMginA6dNwFL+RLViJEQeNoVwREVk/IVYgCgFF1M2vNItPTWs+ZBkC
-         l/8+lrHHfTqN/DovyyaCEbGwBzbLqybalPaTODvogAeUCnDQiUNsHRPOjQzfxHPrVrrj
-         HNN4Z3mTDdEOYJEmuKbDwmI1FfrIG/zf0sOOP0GwX7qKkBuT2+F9R6lqdZPrt02jiOmt
-         KIUg==
-X-Gm-Message-State: AOJu0YwerbXhs6uO7dtSbV6+gavhf9lKnoOcyOhdmymHqf06J3Izf8Uo
-        Ty0Wh0Sq2ABk5a83VzhimhnIxcHRsesO4IXa27DVFSw+3uBolk5Xp6J36HLeUvm0kCPv0cBpSgh
-        tBZjL9/qmBK27pqWE3s0+eaoK
-X-Received: by 2002:a5d:4402:0:b0:333:2fd2:6f64 with SMTP id z2-20020a5d4402000000b003332fd26f64mr3528673wrq.110.1701714455266;
-        Mon, 04 Dec 2023 10:27:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGSV8kYq6adpaC56C7Llu3Yl8ioyuD6XQmmCo/8TnVNJ6VX5WXiBhZpY16lx0rh5pfD/VchbQ==
-X-Received: by 2002:a5d:4402:0:b0:333:2fd2:6f64 with SMTP id z2-20020a5d4402000000b003332fd26f64mr3528665wrq.110.1701714454771;
-        Mon, 04 Dec 2023 10:27:34 -0800 (PST)
-Received: from ?IPV6:2003:cb:c722:3700:6501:8925:6f9:fcdc? (p200300cbc72237006501892506f9fcdc.dip0.t-ipconnect.de. [2003:cb:c722:3700:6501:8925:6f9:fcdc])
-        by smtp.gmail.com with ESMTPSA id w3-20020a5d6803000000b003333eadd206sm6363571wru.27.2023.12.04.10.27.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 10:27:34 -0800 (PST)
-Message-ID: <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com>
-Date:   Mon, 4 Dec 2023 19:27:32 +0100
+        Mon, 4 Dec 2023 13:29:25 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2053.outbound.protection.outlook.com [40.107.243.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 362D7CA;
+        Mon,  4 Dec 2023 10:29:32 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OI7C01GIil0K+kPe0HVm8YMl05dWf1cQtBcb5pbD8hWMvhrsHXJlSG7gxjN6ena89uWVovmaJfTAynCO2QwI+fhcBjIYgMbweUUwDHhBx64mFNqx2Kkl0+8/AyzmFiC3qPz0BOJHI2Ce+tQ4Ria3b0morkhtKIUNyA06QIiMxecXBETX+ByXI4MWcaTYwuSW7gj7YFlJudArKnODnFTbEpq3m6TE0NRejyLv1ZAMgnWlU4WAcNgIOP+i3U9Luh0SDbhTplURf6mA7t0U5w66pqcbqW0ILt5bld/gA/RXp7esJCXDR2WXq9lslzoxUAS1EQyvFftRxRv+CMOX6zHiww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iWoj+9+ONXt07rg4xxiLNstyB8SGeskGu4jfefGtOSU=;
+ b=QNuw835XbwRIz/9iF+GFkWwJ6ADlJvkgqWSP/fDC+Cv24HlXj6Nb5cva95veRuu2aYgnpoCIH2yygPN0ZeCOb6GvkrirFuDy+tQet03SaAyz8tOtU/sF6jkKTvxkFB3752F7zgcOdI9ZqglocuhA05+uQgT5BprwAaVuwlwU99v3UjnPIc9Wo63ZC7m+sO2pSE1JRKDMF6tq4BdZjbui5Xg+0Na+fdilRxpTuvNX1cfRPmVySKQnZxqmZls88LRfOKTrIGBl+9IIxyuyiZ3JycxWZoLQdBVwz8DwAj2IzrOZcX9+7iL2uJ50RX690bxthbSrdIJr1Q2Meipq5oYWGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iWoj+9+ONXt07rg4xxiLNstyB8SGeskGu4jfefGtOSU=;
+ b=Zjo9P/G+YcQqWnnZpXdx+hcJKR6WnXKSHfbtqen4ofWuHWYqL4dsVx4DIjLmVGTVyrWFd1plSLwx51orsQppr5jSR0p8tN2SxUQkOOisHr4SXQgXGGIQWgBdWz706N1u8WkrislDTzK1cy6KUeUtJt9p58UZ1l9miPxwPDdbkb2r310dhHl5g1IbFi+pjWu5J5c2qbMmHeid2KusjppdnFipo8Vc51z5R2N0H1zi9r+zBsA47xgx35ZU16NMbSoe0GetRRn1hQ47aBMhk9fRiQ1KcyOm8fEwQD6iiOWpnl8yz/Ev24B0UzdZ0rlslxH7Z1nFkS5lDMlSGdhiuUScCw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH7PR12MB6489.namprd12.prod.outlook.com (2603:10b6:510:1f7::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
+ 2023 18:29:29 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 18:29:29 +0000
+Date:   Mon, 4 Dec 2023 14:29:28 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
+        pbonzini@redhat.com, seanjc@google.com, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH 12/42] iommufd: Introduce allocation data info and
+ flag for KVM managed HWPT
+Message-ID: <20231204182928.GL1493156@nvidia.com>
+References: <20231202091211.13376-1-yan.y.zhao@intel.com>
+ <20231202092113.14141-1-yan.y.zhao@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231202092113.14141-1-yan.y.zhao@intel.com>
+X-ClientProxiedBy: BL1PR13CA0158.namprd13.prod.outlook.com
+ (2603:10b6:208:2bd::13) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-Content-Language: en-US
-To:     Suren Baghdasaryan <surenb@google.com>,
-        Ryan Roberts <ryan.roberts@arm.com>
-Cc:     akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <20231121171643.3719880-1-surenb@google.com>
- <20231121171643.3719880-6-surenb@google.com>
- <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
- <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
- <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com>
- <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
- <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
- <744be4e0-48e0-4c77-825c-711386dd205f@arm.com>
- <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB6489:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4999aedc-1ad9-4e8b-020d-08dbf4f6f3f8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SelSkJW0VkUXtSE94eqj9JfcmjNu8URznZf2xWe2VT3vtxP7YAttKsxtCf/dXG5iFgR/XhlrGudE+RYC3IVcTTjcruYgmxaIV5CT4fzU0AYfC2mMmIDzUOwiKEC+RPLPcdt0oUhrUXmMXalX6JXBw0RdAEKh+RmeRA5FiVB59IK+fCY6PdDs5GfmlbQ1GTiekJH8dX/K1RWCxUnmQD/EHPqfNXie4QdhtuCBlbE890LXaBG48ay9QqCtDJL6UAGkSOCrU/ZAna1RVUPFXMOQyr1ofRdV2HDUEFGTKoM/mhhGtLHvIVPuQVKbdsI+a4n+mcdLoky6eTiXZDl8cwrBlVQKKi+Hp/JnUgsK8VYOiHfeHB4cicomdvzBelbXAYpxu+R5Bwxh2CqI+bN78WmsN5Np3V5tATW8arnUXKMb8TiJPX0Ree2dJEBHY8t93UsMdGaTuKSNshGb3tVOP/WNu/GRBjIsllQ8pONrSVkDAAyagv49Af7XJtuJQ0UNmCQFKheMMXx8SFytFNEgDPyRDxwidb8INmLVJmCdzVz5urJxwCit4yE0bPuikB+8LUWs
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(136003)(39860400002)(366004)(376002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(6916009)(66556008)(8936002)(316002)(66476007)(86362001)(8676002)(4326008)(6486002)(478600001)(66946007)(41300700001)(36756003)(4744005)(2906002)(5660300002)(7416002)(33656002)(26005)(2616005)(1076003)(6506007)(6512007)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EuvlWEih/bP9HMj4Cm1IzfPcmZVe7E6vnOS12CM0OnAqpNPMcZ3RXnMyqU3K?=
+ =?us-ascii?Q?o6ZJJwkEkhQAKTSlW1DJ0cP/jI+5rb9oEYBGYJKInfdI9w2+Q9iF8/vIWZCW?=
+ =?us-ascii?Q?8hOgfAe1AU6o/0e9Yr0kkFLmz476L3EPT2qh+urSvWyBECsWpMI/wWI1gStX?=
+ =?us-ascii?Q?Kej2unlSbzNZ7nfCP+t8yxOcpv8/kH4LIZM9QRUlvNtYAZACJXcRrCaxs9UR?=
+ =?us-ascii?Q?ziUlQGxj8OsjuiAW2BeRfvALIO7dvNtYnF4a5Ju3MLONW+CWYhRvjQ9qOrVY?=
+ =?us-ascii?Q?0iYWDL0SwRhe1uAt9qTjezdMZ9N7Aoqa3EcS28WYlE8UyyNn2HtZa1Mj4xxH?=
+ =?us-ascii?Q?DPvNABJZRoYmrvcOG3L+o8+afPVuYO2AxiYtfbjl3MOtafpDg15QjWyCbBiK?=
+ =?us-ascii?Q?T5u+tmPKT9zcVZAlm6qAjrqDfttT0OnQqC5UhU9r3VmV9/B/fkDPMH2up2pw?=
+ =?us-ascii?Q?MeDK+eweQivPYjDDDA8DuEUE6q6m0PT3HyJx/QyDunDRjsw/90adFUA6wJ7F?=
+ =?us-ascii?Q?oymH7PpqARw+JoaTund7mKqFhONYotHD76CaI9jIV4GdLBbGGN0wtZX2sgCr?=
+ =?us-ascii?Q?RH68U8i90QmMcZpOhHhfQjPPhIdTCQn6AiVOcHNH7pqC1F5JaPGRAShrEVZk?=
+ =?us-ascii?Q?V2Vi/Kkc/z43vfLmWlnnO3z6xF16+HbRnQnCBT6b+OOq0pZLn7cC0mdCqAjD?=
+ =?us-ascii?Q?D6K5t3MYkkLjFOzTpaFcLYO63YkXUTLpu9BEJgCT5x0WU6bSDahtduTdIEhD?=
+ =?us-ascii?Q?pNPIVj+TVIHNzN+b10aX/LwzzCx9nPTsSqvLvJnBWQLhOt2WxLLI74YbHGrs?=
+ =?us-ascii?Q?2EW1OBuJUHm/OXFNk4Tnv1sZZyRtYkBNC51fNkhLS/7sWw0+8W8n+BOlTCg0?=
+ =?us-ascii?Q?Wly9F+5S77BSEN9R47xLPW2BeMbYiArsT43jYnTDpIZl3m5HOlnTU5k5TYoQ?=
+ =?us-ascii?Q?8rw7W3rCD1WInCoixeO3/rCiDuSgY0bhNpB8RLdhdcw0uejA0+M+xBzEBDG2?=
+ =?us-ascii?Q?WvF7Vkzlqt/qZiF0pivZmzzSZGlQGGf762/Fs3TpHKsb2Ef7jWy0oXLWg2ME?=
+ =?us-ascii?Q?9acR+guIwXQCNby8Qarsa+lFtGZJ5uVdfcBgSQ2gofuqbBs8L0B+Hg/v8Wpy?=
+ =?us-ascii?Q?srt6yuIcZqNJzsXK/TgQoYwrDsApPNnjOAR0DecR6cezJmCgmOfjkGrodyLY?=
+ =?us-ascii?Q?fAhcE1yPXZWZ9axgTio0UcblKK9Wq2mhjmC6YF4hodMBUlH4O7EWo5Iijsv1?=
+ =?us-ascii?Q?Ilymy4a11/7lGencvvI5OcoARFAWjiiAxD34j5JAu2YcsufXYpxTPDEhk2He?=
+ =?us-ascii?Q?dwZuZFP3qePvwLb0vDt7vfMtlRWn+w4tkJ4N+jlK+rrT4fty11g5PhbTtFpx?=
+ =?us-ascii?Q?Qazfb3nw2mnmXAYXRrYAtLMRjjGvsVUcxuLIH1UBax4wG5MOINAyLUYHgYK6?=
+ =?us-ascii?Q?rAgmJeJKKbYHfkZLbLIIO2MFEAoMXTD7QDSCA7fYzQUg1qaLDO+QzhhtNa5F?=
+ =?us-ascii?Q?AOy3w/0djkzOGRHXT3aKtl29XLHTnjNGMdO0yWsqta5kPYsMXb1TCpA4nPTL?=
+ =?us-ascii?Q?9ho8oUO5YfttHIGriobJ56OFSQuiYTlg0DpPtSP0?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4999aedc-1ad9-4e8b-020d-08dbf4f6f3f8
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 18:29:29.6392
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4f0TNdN/QT4tOOho5IQfwBIkemQRAKuU0cB/oyWX5iXq9EtHvTE5rFSn10Qg1hdD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6489
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.12.23 17:35, Suren Baghdasaryan wrote:
-> On Mon, Dec 4, 2023 at 1:27 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 04/12/2023 04:09, Suren Baghdasaryan wrote:
->>> On Sat, Dec 2, 2023 at 2:11 AM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 02.12.23 09:04, Ryan Roberts wrote:
->>>>> On 01/12/2023 20:47, David Hildenbrand wrote:
->>>>>> On 01.12.23 10:29, Ryan Roberts wrote:
->>>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
->>>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
->>>>>>>> into destination buffer while checking the contents of both after
->>>>>>>> the move. After the operation the content of the destination buffer
->>>>>>>> should match the original source buffer's content while the source
->>>>>>>> buffer should be zeroed. Separate tests are designed for PMD aligned and
->>>>>>>> unaligned cases because they utilize different code paths in the kernel.
->>>>>>>>
->>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->>>>>>>> ---
->>>>>>>>     tools/testing/selftests/mm/uffd-common.c     |  24 +++
->>>>>>>>     tools/testing/selftests/mm/uffd-common.h     |   1 +
->>>>>>>>     tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
->>>>>>>>     3 files changed, 214 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
->>>>>>>> b/tools/testing/selftests/mm/uffd-common.c
->>>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
->>>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
->>>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
->>>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
->>>>>>>>         return __copy_page(ufd, offset, false, wp);
->>>>>>>>     }
->>>>>>>>     +int move_page(int ufd, unsigned long offset, unsigned long len)
->>>>>>>> +{
->>>>>>>> +    struct uffdio_move uffdio_move;
->>>>>>>> +
->>>>>>>> +    if (offset + len > nr_pages * page_size)
->>>>>>>> +        err("unexpected offset %lu and length %lu\n", offset, len);
->>>>>>>> +    uffdio_move.dst = (unsigned long) area_dst + offset;
->>>>>>>> +    uffdio_move.src = (unsigned long) area_src + offset;
->>>>>>>> +    uffdio_move.len = len;
->>>>>>>> +    uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
->>>>>>>> +    uffdio_move.move = 0;
->>>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
->>>>>>>> +        /* real retval in uffdio_move.move */
->>>>>>>> +        if (uffdio_move.move != -EEXIST)
->>>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
->>>>>>>> +                (int64_t)uffdio_move.move);
->>>>>>>
->>>>>>> Hi Suren,
->>>>>>>
->>>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
->>>>>>>
->>>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=16,
->>>>>>> @uffd-common.c:648)
->>>>>>>
->>>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged any further, but
->>>>>>> happy to go deeper if you can direct.
->>>>>>
->>>>>> Does it trigger reliably? Which pagesize is that kernel using?
->>>>>
->>>>> Yep, although very occasionally it fails with EAGAIN. 4K kernel; see other email
->>>>> for full config.
->>>>>
->>>>>>
->>>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault() uses
->>>>>> default_huge_page_size(), which reads the default hugetlb size.
->>>>>
->>>>> My kernel command line is explicitly seting the default huge page size to 2M.
->>>>>
->>>>
->>>> Okay, so that likely won't affect it.
->>>>
->>>> I can only guess that it has to do with the alignment of the virtual
->>>> area we are testing with, and that we do seem to get more odd patterns
->>>> on arm64.
->>>>
->>>> uffd_move_test_common() is a bit more elaborate, but if we aligned the
->>>> src+start area up, surely "step_count" cannot be left unmodified?
->>>>
->>>> So assuming we get either an unaligned source or an unaligned dst from
->>>> mmap(), I am not convinced that we won't be moving areas that are not
->>>> necessarily fully backed by PMDs and maybe don't even fall into the VMA
->>>> of interest?
->>>>
->>>> Not sure if that could trigger the THP splitting issue, though.
->>>>
->>>> But I just quickly scanned that test setup, could be I am missing
->>>> something. It might make sense to just print the mmap'ed range and the
->>>> actual ranges we are trying to move. Maybe something "obvious" can be
->>>> observed.
->>>
->>> I was able to reproduce the issue on an Android device and after
->>> implementing David's suggestions to split the large folio and after
->>> replacing default_huge_page_size() with read_pmd_pagesize(), the
->>> move-pmd test started working for me. Ryan, could you please apply
->>> attached patches (over mm-unstable) and try the test again?
->>
->> Yep, all fixed with those patches!
-> 
-> Great! Thanks for testing and confirming. I'll post an updated
-> patchset later today and will ask Andrew to replace the current one
-> with it.
-> I'll also look into the reasons we need to split PMD on ARM64 in this
-> test. It's good that this happened and we were able to test the PMD
-> split path but I'm curious about the reason. It's possible my address
-> alignment calculations are  somehow incorrect.
+On Sat, Dec 02, 2023 at 05:21:13PM +0800, Yan Zhao wrote:
 
-I only skimmed the diff briefly, but likely you also want to try 
-splitting in move_pages_pte(), if you encounter an already-pte-mapped THP.
+> @@ -413,11 +422,13 @@ struct iommu_hwpt_arm_smmuv3 {
+>   * @IOMMU_HWPT_DATA_NONE: no data
+>   * @IOMMU_HWPT_DATA_VTD_S1: Intel VT-d stage-1 page table
+>   * @IOMMU_HWPT_DATA_ARM_SMMUV3: ARM SMMUv3 Context Descriptor Table
+> + * @IOMMU_HWPT_DATA_KVM: KVM managed stage-2 page table
+>   */
+>  enum iommu_hwpt_data_type {
+>  	IOMMU_HWPT_DATA_NONE,
+>  	IOMMU_HWPT_DATA_VTD_S1,
+>  	IOMMU_HWPT_DATA_ARM_SMMUV3,
+> +	IOMMU_HWPT_DATA_KVM,
+>  };
 
--- 
-Cheers,
+Definately no, the HWPT_DATA is for the *driver* - it should not be
+"kvm".
 
-David / dhildenb
+Add the kvm fd to the main structure
 
+Jason
