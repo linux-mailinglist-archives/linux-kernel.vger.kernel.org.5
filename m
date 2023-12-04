@@ -2,72 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7AE5802A44
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C943B802A48
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbjLDC14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 21:27:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        id S234352AbjLDCaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 21:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbjLDC1z (ORCPT
+        with ESMTP id S230141AbjLDCa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 21:27:55 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E6BC1
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 18:27:59 -0800 (PST)
-X-UUID: a156a3a52da548fca377d46206efd6dc-20231204
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:58783b7a-b7ad-4933-98ae-b467bde845a3,IP:10,
-        URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:-10
-X-CID-INFO: VERSION:1.1.33,REQID:58783b7a-b7ad-4933-98ae-b467bde845a3,IP:10,UR
-        L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-10
-X-CID-META: VersionHash:364b77b,CLOUDID:5fb5c560-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:231204102756QBXUMQUM,BulkQuantity:0,Recheck:0,SF:19|44|66|38|24|17|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: a156a3a52da548fca377d46206efd6dc-20231204
-X-User: chentao@kylinos.cn
-Received: from [172.21.13.26] [(116.128.244.171)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1655860228; Mon, 04 Dec 2023 10:27:53 +0800
-Message-ID: <2a0d2c32-5548-445e-a67e-db48157685d7@kylinos.cn>
-Date:   Mon, 4 Dec 2023 10:27:47 +0800
+        Sun, 3 Dec 2023 21:30:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CABACB
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 18:30:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701657035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tJPC9DmNEur0ykkO9N98kEn1eLUMAn1MYmT0jUvM8c4=;
+        b=G38GN337NQt5j2GRJ2axbt910/RCAPRbMaWg4IjPpko8KLKELHX2DegWp690eqk7DV2xmb
+        zJlqVCFKyl6URUn+MFr3OgNJYjhPpW9jCyHlxbERoO/OnEoYPm4BxerRH0zoTagODz09MK
+        q4T+3py7qZWQ1YiLhHxFLBifZ9CSAsk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-517-kyPI3YZUPXWYIekSdoIZ4Q-1; Sun, 03 Dec 2023 21:30:32 -0500
+X-MC-Unique: kyPI3YZUPXWYIekSdoIZ4Q-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 384798007B3;
+        Mon,  4 Dec 2023 02:30:31 +0000 (UTC)
+Received: from fedora (unknown [10.72.120.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1AF4A492BFE;
+        Mon,  4 Dec 2023 02:30:18 +0000 (UTC)
+Date:   Mon, 4 Dec 2023 10:30:14 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org, ming.lei@redhat.com
+Subject: Re: [PATCH 10/21] block: Add fops atomic write support
+Message-ID: <ZW05th/c0sNbM2Zf@fedora>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-11-john.g.garry@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] powerpc/mm: Fix null-pointer dereference in
- pgtable_cache_add
-Content-Language: en-US
-To:     Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu
-Cc:     kunwu.chan@hotmail.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20231130090953.2322490-1-chentao@kylinos.cn>
- <87cyvq1b2f.fsf@mail.lhotse>
-From:   Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <87cyvq1b2f.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929102726.2985188-11-john.g.garry@oracle.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sure,i'll follow your suggestion in v3 patch:
-1. set new to NULL
-2. add a 'if' judgment before 'kmem_cache_create'
+On Fri, Sep 29, 2023 at 10:27:15AM +0000, John Garry wrote:
+> Add support for atomic writes, as follows:
+> - Ensure that the IO follows all the atomic writes rules, like must be
+>   naturally aligned
+> - Set REQ_ATOMIC
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  block/fops.c | 42 +++++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/block/fops.c b/block/fops.c
+> index acff3d5d22d4..516669ad69e5 100644
+> --- a/block/fops.c
+> +++ b/block/fops.c
+> @@ -41,6 +41,29 @@ static bool blkdev_dio_unaligned(struct block_device *bdev, loff_t pos,
+>  		!bdev_iter_is_aligned(bdev, iter);
+>  }
+>  
+> +static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
+> +			      struct iov_iter *iter)
+> +{
+> +	unsigned int atomic_write_unit_min_bytes =
+> +			queue_atomic_write_unit_min_bytes(bdev_get_queue(bdev));
+> +	unsigned int atomic_write_unit_max_bytes =
+> +			queue_atomic_write_unit_max_bytes(bdev_get_queue(bdev));
+> +
+> +	if (!atomic_write_unit_min_bytes)
+> +		return false;
 
-Thanks,
-Kunwu
+The above check should have be moved to limit setting code path.
 
-On 2023/12/1 18:17, Michael Ellerman wrote:
-> avoid two calls to panic
+> +	if (pos % atomic_write_unit_min_bytes)
+> +		return false;
+> +	if (iov_iter_count(iter) % atomic_write_unit_min_bytes)
+> +		return false;
+> +	if (!is_power_of_2(iov_iter_count(iter)))
+> +		return false;
+> +	if (iov_iter_count(iter) > atomic_write_unit_max_bytes)
+> +		return false;
+> +	if (pos % iov_iter_count(iter))
+> +		return false;
+
+I am a bit confused about relation between atomic_write_unit_max_bytes and
+atomic_write_max_bytes.
+
+Here the max IO length is limited to be <= atomic_write_unit_max_bytes,
+so looks userspace can only submit IO with write-atomic-unit naturally
+aligned IO(such as, 4k, 8k, 16k, 32k, ...), but these user IOs are
+allowed to be merged to big one if naturally alignment is respected and
+the merged IO size is <= atomic_write_max_bytes.
+
+Is my understanding right? If yes, I'd suggest to document the point,
+and the last two checks could be change to:
+
+	/* naturally aligned */
+	if (pos % iov_iter_count(iter))
+		return false;
+
+	if (iov_iter_count(iter) > atomic_write_max_bytes)
+		return false;
+
+Thanks, 
+Ming
+
