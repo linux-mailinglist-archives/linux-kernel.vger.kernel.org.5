@@ -2,170 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3D9802C97
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 09:02:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0761802CA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 09:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343543AbjLDICY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:02:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
+        id S230076AbjLDIFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDICX (ORCPT
+        with ESMTP id S229881AbjLDIFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:02:23 -0500
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2080.outbound.protection.outlook.com [40.92.52.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79585AC;
-        Mon,  4 Dec 2023 00:02:28 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NDeQaZU9jlmg6RTKIGYLdxxGLSpF/gHRX6sn/jOvd0VR518Z24i32zMGfMX1ffCc8GQGJmFs221NFo6CV6h6cgnVKGwEp+ltEcQZvNZisFc5mjUjcOLezvWc13gUdFqXERpwC9a78yf1loOVMgy8oNxLq1XJvVoWEWkFQqAAHq+yhUHWtBYvJmsnQ2KIILT56m85xfrcDgngrlRYFFgGil7nSoUfhN5g+budiiSGduqODsPbkLlWd2LcYkm1oGh0CLjkwtWAUb3tLUI8pxDcAyC62XfA9fgoIfTmxHrk1JyBVkAz/Ww+UxNfMX7jGBhwBvFc4TpY7woPZucwwSdWQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=R16B4foL4La4oRinSIw0VyaexNtQkw39QD16LQwMmrI=;
- b=jrm/bRBxD/hWdCpkON0/x4tf1YVkKEkzTyOKAwywQ0URDt05bgInMbo/lNUp0FBHM42yNleEWMQVuqrzKMHmpYaB78PaCFHxHe+s8Cx7348ShocYjNv1KeHtvxsSD4Zun6MB26jQy2pMIkQ44qZL44mokRgfr5ZsJ32lHGeU+LO8qGiPOZ4dSA5d8efvmB73ejzmLXqRVbd1MPlIVLdhInSGBbxEFS4RLpAqdIA476VzeKl3immC29hceEWfaBS1LfiEj4tvRbfCxzN8obT2lVeENSH8qeee+GJ6LhRPEtqFoXRh1PJ3psNhLGwCSNZG9HlSFmKTy8dKsmJ4PiYY9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R16B4foL4La4oRinSIw0VyaexNtQkw39QD16LQwMmrI=;
- b=nLK6DBs9z8OrdN6ga64ttmxPUg98Rj1TEV1wBbg0bv6biNZlp6aSyr2SUSfZuYgQ3rgehjDoJwvKHdCgXB1pcBgz802Ikp4FKUqs1Omjs3Wdm9g5EtC30HW6GEv+BPgAGw2/NPVXhhY1F5WnJ70hMHhFHUDo5nwyCuFhlgGcB7iNJ0xuvGm7dRTEh8Ij74UuR8yFrWR5A4GbOwyfBv8AWp1LjMQ46PCM4HKgHG6iQmklon6CklMKyfkM/VsffkkYB+bDN9yGXZnvOrVWsdLsfsT+wN4eeoqa8zxt0amams8M4GwKmOLL9VQdYM+qQk4KBIrmIhDM9Wx4oEKjKLufcg==
-Received: from TYZPR01MB4784.apcprd01.prod.exchangelabs.com
- (2603:1096:400:28d::9) by SEYPR01MB5484.apcprd01.prod.exchangelabs.com
- (2603:1096:101:142::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 08:02:24 +0000
-Received: from TYZPR01MB4784.apcprd01.prod.exchangelabs.com
- ([fe80::5074:605e:7b60:3ad4]) by TYZPR01MB4784.apcprd01.prod.exchangelabs.com
- ([fe80::5074:605e:7b60:3ad4%5]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 08:02:24 +0000
-From:   Yaxiong Tian <iambestgod@outlook.com>
-To:     mathias.nyman@intel.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tianyaxiong@kylinos.cn
-Subject: [PATCH] usb:xhci: Avoid hub_event() stuck when xHC restore state timeout
-Date:   Mon,  4 Dec 2023 16:02:11 +0800
-Message-ID: <TYZPR01MB4784CB3058AC1B5787DB6601D586A@TYZPR01MB4784.apcprd01.prod.exchangelabs.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [6kwSLCW32Oq8QARCfydWDi/9ocrN/Tt+dXP3zw5mKHA=]
-X-ClientProxiedBy: TYAPR01CA0053.jpnprd01.prod.outlook.com
- (2603:1096:404:2b::17) To TYZPR01MB4784.apcprd01.prod.exchangelabs.com
- (2603:1096:400:28d::9)
-X-Microsoft-Original-Message-ID: <20231204080211.159632-1-iambestgod@outlook.com>
+        Mon, 4 Dec 2023 03:05:10 -0500
+Received: from mail.nsr.re.kr (unknown [210.104.33.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AD8F0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:05:14 -0800 (PST)
+Received: from 210.104.33.70 (nsr.re.kr)
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128 bits))
+        by mail.nsr.re.kr with SMTP; Mon, 04 Dec 2023 17:02:52 +0900
+X-Sender: letrehee@nsr.re.kr
+Received: from 192.168.155.188 ([192.168.155.188])
+          by mail.nsr.re.kr (Crinity Message Backbone-7.0.1) with SMTP ID 319;
+          Mon, 4 Dec 2023 17:02:47 +0900 (KST)
+From:   Dongsoo Lee <letrehee@nsr.re.kr>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dongsoo Lee <letrhee@nsr.re.kr>
+Subject: [PATCH 0/5] crypto: LEA block cipher implementation
+Date:   Mon,  4 Dec 2023 08:02:12 +0000
+Message-Id: <20231204080217.9407-1-letrehee@nsr.re.kr>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR01MB4784:EE_|SEYPR01MB5484:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5f631a92-bbf1-4435-33bc-08dbf49f58f4
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GC+pPbXrhoFBMlETlL7YgT7fXW4AszOtOkYLh34g02xm5TbH9XleZmWQYjDe521muvma/9z744q3IAsdUuCRpZIjBolIysD2EZMQdbcq9v2x/wLhNzDzeR/o24Lp1ohFpC9q765fJ6A07GsH8YiPJzbqHr9qErEH+6XZD+3ojzK8DDfxNmfz+bh9HrwGnhSyvAHDvThES/jmPzcI+SMGHZszncgs3/gHM0vHYfjGqI81N0oapU8sQpTaEluuY+ycvGRyYw+C1fG5TSZPgzeEZkmylh/6eMA0CMmMLCeyJ9uxZcI/yDG90T6k7mHj7yduAJKiQ3A94Jvlsaqe/VlG9pFBWy3OBnOjDiHcs5TX1ynkkEF24oeJ3ALLejaU95ExFSgwxCOmLKQYiFKIcQCEW/vlok0evEwX8vZ6i3Kylsa3XhXrH4FiR0l4FCRriCQrLR2t7Ar2f0+wrpKi10QQelqcN0VEv33ZznJ+5LcY67SHugJtI67qrV227GQKPjhjFe/g6cdIuax0sGRLLZujm/Ot9RQ2h9VmUelNgaYiWvDGfL/IMMeYyMzrFVo6MUhp
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?riIuNHvwCWh8eExQAy/K0yZo5KNlC/ovNZYlSxljJ4G34tIiwua4893wosuz?=
- =?us-ascii?Q?rHp61qfBYRa6GXAVsTiDTF+gqol6T0DiS3mVnfvM0BL1vw/nDxROAtxdZc84?=
- =?us-ascii?Q?ZtlaoVTvMOlOujg+r8ox13pjYhb8qcUFrkn+oIIPq71eGemVeaYWL+ukSpDN?=
- =?us-ascii?Q?Z/+3PyjjJTtIJ9bZiTa+vU9Ye53KvJBJEqvhH9AErek+KQPkfVu0Y1nON0ri?=
- =?us-ascii?Q?n4r8hIQEaah0YruEAI9V4ZxlBZAVfz8LRv9G+dEZjAJJ8SDLBposSSRvo6Zi?=
- =?us-ascii?Q?vtg8iHObdNTUYuPiisrRwSSDPPokWRJkfZQiQmrvfwasmoF72mtndoCZAcql?=
- =?us-ascii?Q?8PvABlkhQuShPLNRQPOr1u9V+A2eC7b6p5DoFkUsdKYHw45uxwURS1oAjgpB?=
- =?us-ascii?Q?49CTIhEiVHDTBK6gSCRgpsjD5bF460hgWs/egFhkaI56WRPXbGb/DvpF0F/W?=
- =?us-ascii?Q?O8QPLjHsKuOCKpsjN8epCva1ImEs0gphtsRzz5z1xrdcxSmROvEWFweRH8OG?=
- =?us-ascii?Q?sTgIOTR4jFpTmwMtmWF3DYcWaGdiU2ZVMqf/noju5Cd9OuMnCkgQAQFiGj8c?=
- =?us-ascii?Q?ZgWRjxMZB+3fNYvBLMjiPJFHG8seRt3NGPluYZvsMd9ooCYx74F7XEE6G4nu?=
- =?us-ascii?Q?mZUcGee1PIHfLwtLBEDXIMbQNrVji61+tI4UTs7DF5REdQFZ62rnKhKGPS5a?=
- =?us-ascii?Q?6gtdgOmLryNxj4DrxDm2FWNFfumPD3VIj/z9IV9ta6N9By7hcMHQ3qzWkHen?=
- =?us-ascii?Q?wEFnYtScbPgdKhkZljfYS6fdBzU6UtwTGrSc5WTH0YvUHDPRgSb1tQr6xhu+?=
- =?us-ascii?Q?2Tp1Aw5UGuvyouacrkd7XFf7yrRgDTRUenJNHQ4jxUS9qwggeQkB+PXNsiBR?=
- =?us-ascii?Q?M/wm2uuzbnWtBPLWdMoqtmGmNPXVKrfglMy2UO/A2kG/gVSnT3e7HtBYzaPF?=
- =?us-ascii?Q?6k/BqHkkqJMOWVXS/kQHmBPiiH8bSdCmyd8MTAD5p8qgXP+R6aJmCpAObR/5?=
- =?us-ascii?Q?Ti52GRoUwulcPfsMxnxu8/zQWjhFR4ASGXV+UknE0shYNIbXEkpy5Kjq9ITE?=
- =?us-ascii?Q?gQEctfSaUFiNDeD392hIzek5a/htpzE2diKY7Z0UMYRBHt1WSiXq/ONQAlvN?=
- =?us-ascii?Q?L7YYMzbvU8GbB4VYWeMC+oJBq7TviobJwx29yaHuItxkybpv3AkEaK/tHmMi?=
- =?us-ascii?Q?+t1gOtxiX/ZIPov4T0JWmo7wJYhvOoSMLfcIEHgfnhvWXCZh8yhpa6zOq0E?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f631a92-bbf1-4435-33bc-08dbf49f58f4
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB4784.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 08:02:24.0962
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR01MB5484
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yaxiong Tian <tianyaxiong@kylinos.cn>
+From: Dongsoo Lee <letrhee@nsr.re.kr>
 
-when xHc restore state timeout,the xhci_reusme() return -ETIMEDOUT
-instantly. After usb_hc_died() called ,they kick hub_wq to running
-hub_event() but the wq is freezd. When suspend ends,hub_evnet realy
-running and sticking.
-Such as:
-[  968.794016][ 2] [   T37] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-disables this message.
-[  968.802969][ 2] [   T37] kworker/2:3     D    0   999      2 0x00000028
-[  968.809579][ 2] [   T37] Workqueue: usb_hub_wq hub_event
-[  968.814885][ 2] [   T37] Call trace:
-[  968.818455][ 2] [   T37]  __switch_to+0xd4/0x138
-[  968.823067][ 2] [   T37]  __schedule+0x2dc/0x6a0
-[  968.827680][ 2] [   T37]  schedule+0x34/0xb0
-[  968.831947][ 2] [   T37]  schedule_timeout+0x1e0/0x298
-[  968.837079][ 2] [   T37]  __wait_for_common+0xf0/0x208
-[  968.842212][ 2] [   T37]  wait_for_completion+0x1c/0x28
-[  968.847432][ 2] [   T37]  xhci_configure_endpoint+0x104/0x640
-[  968.853173][ 2] [   T37]  xhci_check_bandwidth+0x140/0x2e0
-[  968.858652][ 2] [   T37]  usb_hcd_alloc_bandwidth+0x1c8/0x348
-[  968.864393][ 2] [   T37]  usb_disable_device+0x198/0x260
-[  968.869698][ 2] [   T37]  usb_disconnect+0xdc/0x3a0
-[  968.874571][ 2] [   T37]  usb_disconnect+0xbc/0x3a0
-[  968.879441][ 2] [   T37]  hub_quiesce+0xa0/0x108
-[  968.884053][ 2] [   T37]  hub_event+0x4d4/0x1558
-[  968.888664][ 2] [   T37]  kretprobe_trampoline+0x0/0xc4
-[  968.893884][ 2] [   T37]  worker_thread+0x4c/0x488
-[  968.898668][ 2] [   T37]  kthread+0xf8/0x128
-[  968.902933][ 2] [   T37]  ret_from_fork+0x10/0x18
+This submission contains a generic C implementation of the LEA cipher and test vectors for it. It also includes modifications to use the LEA in fscrypt.
 
-The result is that you cannot suspend again.because the wq can't
-be freezed.Also hard to reboot,when some application visited this
-piece.
+The LEA algorithm is a lightweight block cipher that processes data blocks of 128-bits and has three different key lengths, each with a different number of rounds:
 
-The reason of stuck is that some access related to xhci hardware
-is being called.But xhci has problem,at least not running.(
-when xhci_restore_registers(),the xhci will load op_regs.The
-CMD_RUN will clear in xhci_suspend().)
+- LEA-128: 128-bit key, 24 rounds,
+- LEA-192: 192-bit key, 28 rounds, and
+- LEA-256: 256-bit key, 32 rounds.
 
-So using XHCI_STATE_DYING flag,to avoid any code to touching
-hardware immediately.hub_event() will complete.The usb_hc_died
-tasks will be completed and some sys interfaces will be removed.
+The round function of LEA consists of 32-bit ARX (modular Addition, bitwise Rotation, and bitwise XOR) operations. See [2, 5, 7] for details.
 
-Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
----
- drivers/usb/host/xhci.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+LEA is a Korean national standard block cipher, described in "KS X 3246"[1] and is also included in the international standard, "ISO/IEC 29192-2:2019 standard"[2].
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index cb885ddc2032..f0ddd7421e1f 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -1044,7 +1044,8 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
- 		 */
- 		if (xhci_handshake(&xhci->op_regs->status,
- 			      STS_RESTORE, 0, 100 * 1000)) {
--			xhci_warn(xhci, "WARN: xHC restore state timeout\n");
-+			xhci_err(xhci, "xHC restore state timeout, assume dead\n");
-+			xhci->xhc_state |= XHCI_STATE_DYING;
- 			spin_unlock_irq(&xhci->lock);
- 			return -ETIMEDOUT;
- 		}
+It is one of the approved block ciphers for the current Korean Cryptographic Module Validation Program (KCMVP).
+
+At the time of submission, no successful attack on full-round LEA is known. As is typical for iterated block ciphers, reduced-round variants have been attacked. The best published attacks on LEA in the standard attack model (CPA/CCA with unknown key) are boomerang attacks and differential linear attacks. The security margin to the whole rounds ratio is greater than 29% against various existing cryptanalytic techniques for block ciphers. [3]
+
+We expect that the first application of the patch would be the disk encryption on the Gooroom platform ('Gooroom' is a Korean word, meaning 'cloud') [4]. The Gooroom platform is a government-driven Debian-based Linux distribution in South Korea. In Korea, there are many crypto companies that want to bundle Linux into their products and sell them. They create their own Gooroom platforms by modifying the original Gooroom platform for their services. (Of course, the Gooroom platform is not mandatory, and companies wishing to use Linux are free to choose an appropriate distribution.) BTW, in Korea, many crypto companies want to use LEA, because LEA is one of the block ciphers of the KCMVP, a validation program for commercial crypto S/W to be delivered to the Korean government.
+
+Currently, the Gooroom platform uses AES-XTS for disk encryption. The main reason for submitting this patch is to make disk encryption with LEA (e.g. LEA-XTS) available on there. If this submission is accepted, LEA can be used without any additional modifications in dm-crypt, a module that provides disk encryption functionality within the kernel.
+
+This patch also includes a modification to enable LEA for use in fscrypt, another data-at-rest encryption method available within the kernel, and a modification to blk-crypto-fallback to enable the "inlinecrypt" mount option in fscrypt.
+
+The Linux Crypto API already has another Korean block cipher, ARIA, also one of the block ciphers of the KCVMP. However, LEA is more widely used than ARIA in industry nowadays, because LEA is one of the lightweight cryptography standard of ISO/IEC [2] and performs well on low-end devices that support 32-bit operations. So we think they are complementary to each other.
+
+In general, it's obvious that the hardware-accelerated AES is the best performer. However, there exist not only environments where the hardware-accelerated AES is not supported, but also situations where AES is not preferred for various reasons. In these cases, if someone wants to encrypt using a block cipher, LEA could be an alternative.
+
+This submission includes a SIMD implementation for the x86-64 platform. The LEA cipher consists of 32-bit integer addition, rotation, and XOR operations, allowing for 4 blocks (XMM), 8 blocks (YMM), and 16 blocks (ZMM) of parallelism depending on the size of the registers. In addition, AVX2 and AVX-512F have more instructions to increase parallel encryption performance, which can be implemented differently even though they use the same registers. Therefore, lea-x86_64 selects the appropriate implementation in one glue code at module initialization. If additional SIMD instructions are added in the future, such as AVX10, this can be handled as well.
+
+Below are the speedtest performed with the tcrypt module for AES, LEA, ARIA, and Adiantum on three different platforms (AMD Ryzen 9 5950X, Intel(R) Core(TM) i5-12600K, and Intel(R) Xeon(R) Gold 6254).
+
+(4,096-byte block enc/decryption results in the tcrypt speedtest. Unit: cycles)
+
+- AMD Ryzen 9 5950X (Virtual Machine)
+  - aesni        ecb 128-bit key:  1,956 /   1,892
+  - aesni        ecb 256-bit key:  2,086 /   2,098
+  - lea-x86_64   ecb 128-bit key:  5,647 /   6,133
+  - lea-x86_64   ecb 256-bit key:  6,702 /   7,444
+  - aria-avx2    ecb 128-bit key:  8,316 /   8,153
+  - aria-avx2    ecb 256-bit key: 10,539 /  10,550
+
+  - aesni        cbc 128-bit key:  7,758 /   1,830
+  - aesni        cbc 256-bit key: 10,660 /   2,071
+  - lea-x86_64   cbc 128-bit key: 22,501 /   6,283
+  - lea-x86_64   cbc 256-bit key: 28,125 /   7,592
+
+  - aesni        ctr 128-bit key:  1,514 /   1,505
+  - aesni        ctr 256-bit key:  1,884 /   1,867
+  - lea-x86_64   ctr 128-bit key:  5,804 /   5,792
+  - lea-x86_64   ctr 256-bit key:  6,958 /   6,951
+  - aria-avx2    ctr 128-bit key:  8,819 /   8,736
+  - aria-avx2    ctr 256-bit key: 11,101 /  10,636
+
+  - adiantum(xchacha12-simd,...):  8,390 /   8,427
+  - adiantum(xchacha20-simd,...):  9,698 /   9,732
+
+  - aesni        xts 256-bit key:  2,177 /   2,165
+  - aesni        xts 512-bit key:  2,589 /   2,527
+  - lea-x86_64   xts 256-bit key:  6,488 /   6,745
+  - lea-x86_64   xts 512-bit key:  7,484 /   8,083
+
+  - aes-generic  ecb 128-bit key: 35,768 /  36,329
+  - aes-generic  ecb 256-bit key: 35,785 /  35,237
+  - lea-generic  ecb 128-bit key: 30,719 /  38,092
+  - lea-generic  ecb 256-bit key: 35,373 /  46,941
+  - aria-generic ecb 128-bit key:186,660 / 188,674
+  - aria-generic ecb 256-bit key:247,919 / 245,527
+
+- Intel(R) Core(TM) i5-12600K (microcode 0x15, AVX-512F Enabled)
+  - aesni        ecb 128-bit key:  1,436 /   1,441
+  - aesni        ecb 256-bit key:  1,984 /   1,987
+  - lea-x86_64   ecb 128-bit key:  5,318 /   5,916
+  - lea-x86_64   ecb 256-bit key:  6,209 /   7,071
+  - aria-avx512  ecb 128-bit key:  4,786 /   4,799
+  - aria-avx512  ecb 256-bit key:  5,988 /   5,989
+
+  - aesni        cbc 128-bit key:  8,741 /   1,467
+  - aesni        cbc 256-bit key: 11,803 /   1,995
+  - lea-x86_64   cbc 128-bit key: 31,070 /   6,063
+  - lea-x86_64   cbc 256-bit key: 39,117 /   7,173
+
+  - aesni        ctr 128-bit key:  2,120 /   2,112
+  - aesni        ctr 256-bit key:  2,588 /   2,595
+  - lea-x86_64   ctr 128-bit key:  4,438 /   4,397
+  - lea-x86_64   ctr 256-bit key:  5,217 /   5,196
+  - aria-avx512  ctr 128-bit key:  6,270 /   6,272
+  - aria-avx512  ctr 256-bit key:  7,469 /   7,473
+
+  - adiantum(xchacha12-simd,...):  7,526 /   7,453
+  - adiantum(xchacha20-simd,...):  8,983 /   8,892
+
+  - aesni        xts 256-bit key:  2,234 /   2,241
+  - aesni        xts 512-bit key:  2,525 /   2,538
+  - lea-x86_64   xts 256-bit key:  6,687 /   7,333
+  - lea-x86_64   xts 512-bit key:  7,626 /   8,457
+
+  - aes-generic  ecb 128-bit key: 34,399 /  34,765
+  - aes-generic  ecb 256-bit key: 48,568 /  49,245
+  - lea-generic  ecb 128-bit key: 23,576 /  36,230
+  - lea-generic  ecb 256-bit key: 31,715 /  50,461
+  - aria-generic ecb 128-bit key:108,227 / 108,135
+  - aria-generic ecb 256-bit key:146,669 / 145,993
+
+- Intel(R) Xeon(R) Gold 6254 (Virtual Machine)
+  - aesni        ecb 128-bit key:  3,390 /   3,396
+  - aesni        ecb 256-bit key:  4,533 /   4,549
+  - lea-x86_64   ecb 128-bit key:  5,500 /   6,594
+  - lea-x86_64   ecb 256-bit key:  6,506 /   7,467
+  - aria-avx2    ecb 128-bit key: 14,109 /  13,573
+  - aria-avx2    ecb 256-bit key: 17,605 /  16,955
+
+  - aesni        cbc 128-bit key: 12,559 /   3,544
+  - aesni        cbc 256-bit key: 17,150 /   4,681
+  - lea-x86_64   cbc 128-bit key: 33,471 /   5,900
+  - lea-x86_64   cbc 256-bit key: 41,024 /   6,948
+
+  - aesni        ctr 128-bit key:  3,099 /   3,095
+  - aesni        ctr 256-bit key:  4,126 /   4,124
+  - lea-x86_64   ctr 128-bit key:  5,054 /   4,909
+  - lea-x86_64   ctr 256-bit key:  5,795 /   5,797
+  - aria-avx2    ctr 128-bit key: 13,439 /  13,017
+  - aria-avx2    ctr 256-bit key: 17,325 /  16,731
+
+  - adiantum(xchacha12-simd,...):  9,064 /   9,006
+  - adiantum(xchacha20-simd,...): 10,702 /  10,628
+
+  - aesni        xts 256-bit key:  3,886 /   3,857
+  - aesni        xts 512-bit key:  4,949 /   5,008
+  - lea-x86_64   xts 256-bit key:  6,457 /   7,409
+  - lea-x86_64   xts 512-bit key:  7,438 /   8,510
+
+  - aes-generic  ecb 128-bit key: 49,438 /  48,803
+  - aes-generic  ecb 256-bit key: 72,348 /  73,804
+  - lea-generic  ecb 128-bit key: 30,300 /  45,072
+  - lea-generic  ecb 256-bit key: 39,054 /  60,472
+  - aria-generic ecb 128-bit key:189,850 / 175,073
+  - aria-generic ecb 256-bit key:243,704 / 228,347
+
+If this submission is accepted, future submissions may include an LEA implementation for aarch64 and an implementation with masks for AVX-512F.
+
+Although the designers of LEA did not provide test vectors in their paper [5], the ISO/IEC standard [2] and the KS standard [1] do. Furthermore, the Block Cipher LEA Specification("블록암호 LEA 규격서", written in Korean) document on the LEA introduction page [6] and the Wikipedia article on LEA [7] show the same test vectors as in the standards.
+
+The test vectors for ECB, CBC, CTR, and GCM modes included in the testmgr module are taken from the KCMVP Cryptographic Algorithm Verification Criteria V3.0("KCMVP 검증대상 암호알고리즘 검증기준 V3.0", written in Korean) [8]. Test vectors for the XTS mode were generated by ourselves, and we crosschecked them using Crypto++ [9] and testmgr on Linux.
+
+The implementation was tested with kernel module tcrypt.ko and passed the selftest using the above-mentioned test vectors. It also has been tested with CONFIG_CRYPTO_MANAGER_EXTRA_TESTS. The fscrypt patch was tested using a modified tool by forking https://github.com/google/fscrypt.
+
+The AVX2 and AVX-512F implementations were tested on the device that performed the speedtest, while the SSE2 implementation was tested using QEMU's x86-64 binary emulation.
+
+[1] KS X 3246, 128-bit block cipher LEA.
+[2] ISO/IEC 29192-2:2019, Information security — Lightweight cryptography — Part 2: Block ciphers.
+[3] Yi, Chen, et al. "Differential-Linear Approximation Semi-Unconstrained Searching and Partition Tree: Application to LEA and Speck", Asiacrypt 2023. (eprint 2023/1414)
+[4] https://github.com/gooroom https://www.gooroom.kr/
+[5] Hong, Deukjo, et al. "LEA: A 128-bit block cipher for fast encryption on common processors.", WISA 2013.
+[6] https://seed.kisa.or.kr/kisa/algorithm/EgovLeaInfo.do
+[7] https://en.wikipedia.org/wiki/LEA_(cipher)
+[8] https://seed.kisa.or.kr/kisa/kcmvp/EgovVerification.do
+[9] https://www.cryptopp.com/
+
+Changelog:
+v5:
+- Added SSE2/AVX2/AVX-512F implementation
+  - Single glue code to determine proper SIMD acceleration
+- Adjusted ordering within structures to align with 16-byte boundaries.
+- Added more test vectors.
+  - Increased the maximum test-vector length to evaluate 16-block parallelism.
+  - Added the CBC-CTS test vector.
+v4:
+- Removed documentation to describe LEAs in fscrypt.
+v3:
+- Added implementations to enable LEA in fscrypt and blk-crypt.
+v2:
+- Reimplemented the Generic C implementation as a Loop version.
+  - The decryption code was adapted from an optimized implementation by Eric Biggers.
+    https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/commit/?h=old/wip-lea&id=1d1cbba14380f8a1abc76baf939b9e51de047fb6
+- Removed AVX2 SIMD implementation.
+- Added comments for functions.
+- Improved the description in Kconfig.
+- Added test vectors from the standard documentation.
+
+Dongsoo Lee (5):
+  crypto: LEA block cipher implementation
+  crypto: add LEA testmgr tests
+  blk-crypto: Add LEA-256-XTS blk-crypto support
+  fscrypt: Add LEA-256-XTS, LEA-256-CTS support
+  crypto: LEA block cipher x86_64 optimization
+
+ arch/x86/crypto/Kconfig            |   29 +
+ arch/x86/crypto/Makefile           |    3 +
+ arch/x86/crypto/lea-x86_64-asm.S   | 2272 +++++++++++++++++++++
+ arch/x86/crypto/lea-x86_64-glue.c  |  820 ++++++++
+ block/blk-crypto.c                 |    6 +
+ crypto/Kconfig                     |   18 +
+ crypto/Makefile                    |    1 +
+ crypto/lea_generic.c               |  410 ++++
+ crypto/tcrypt.c                    |   97 +
+ crypto/testmgr.c                   |   38 +
+ crypto/testmgr.h                   | 3022 ++++++++++++++++++++++++++++
+ fs/crypto/fscrypt_private.h        |    2 +-
+ fs/crypto/keysetup.c               |   15 +
+ fs/crypto/policy.c                 |    4 +
+ include/crypto/lea.h               |   44 +
+ include/linux/blk-crypto.h         |    1 +
+ include/uapi/linux/fscrypt.h       |    4 +-
+ tools/include/uapi/linux/fscrypt.h |    4 +-
+ 18 files changed, 6787 insertions(+), 3 deletions(-)
+ create mode 100644 arch/x86/crypto/lea-x86_64-asm.S
+ create mode 100644 arch/x86/crypto/lea-x86_64-glue.c
+ create mode 100644 crypto/lea_generic.c
+ create mode 100644 include/crypto/lea.h
+
 -- 
-2.25.1
-
+2.40.1
