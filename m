@@ -2,107 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B74803D5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:42:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52325803D65
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233016AbjLDSl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S231397AbjLDSpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:45:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbjLDSl5 (ORCPT
+        with ESMTP id S229501AbjLDSpH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:41:57 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75127FA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:42:03 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cbe716b511so3645618b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 10:42:03 -0800 (PST)
+        Mon, 4 Dec 2023 13:45:07 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E33AF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:45:13 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-dae0ab8ac3eso3188763276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 10:45:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701715323; x=1702320123; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JwMqSnGo4QDjm2pjAxkXN4dZgMZZOVKqtY+jomMdbrk=;
-        b=3O97Yzblkyul4rL0GZ9xmqurBw508llq3Otj/rv5MDRvqBDkwaeSdXnG0QsgvYhToZ
-         fUDYE3f7vg9n2chE2pyNDZLLk/u+4oSOArLgLNcBQvCHgpBQWKvws15ON2f0jvzyzRtI
-         zFUi6wdO2W9udTo+oz0p20S4TueEI/+MOlHLmmhTp7xfa6OQ32chdVB5lgl1HZq9xxS0
-         zCUWAQruOjmvXO5aG9OSr48iQo6npUgoeV6E+kq/I4DgOfN0hutf8jGrFPtR724cPnPX
-         VLlI67djac5Oq/TJN2wov1X9u0zzPV5TJSeVVK5vwSKvOJAWajwgn7HPLKn3XiudI2Q0
-         rqTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701715323; x=1702320123;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701715512; x=1702320312; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JwMqSnGo4QDjm2pjAxkXN4dZgMZZOVKqtY+jomMdbrk=;
-        b=K1HiTWCVAQgFCPpLOT2BRaBSl2zNp5/oMtgK5f8y+lG1ph0mHYrZpnRpP11G4q/004
-         TPl3MCDhQfOD2tAsr3jBERrCdPqO6UjTfbbKJF+fK2bTO4c48Cs3o0ybZCm9cUrkD+g4
-         CNwx49tAnvhU+DTiOm4vpi76UvtKJ5AxsIvu9QzHAbycEBCNgcyXJR6vboSybbK4th1p
-         kfYK4lc6Ua2bH/7MFlko+QKM+p/CUHf+CufYbE5Jq1EoEk/PrKXbvSdhXgpTVvn/nMpJ
-         SVW5NcaCCSaoPJooSOGZSEyzW/NrNfdyHUa4O7/PLqpcL+NeFxqANYGbuQgGN7wR3l4h
-         Afdg==
-X-Gm-Message-State: AOJu0YyoRnnsEAMqfbajbl6SvyJIXUpt0YccRvP7/deQJT7XdDfKFzSF
-        33Z/bXjpWu2LMZ0Vd2NcYTG12g==
-X-Google-Smtp-Source: AGHT+IHKEES0EPsD+IyXZ6wxSaPge1KMCqc5mn24C5+zo1vqFwVwrwwwLQ+SFGxsjolXMOrQ4oEdmg==
-X-Received: by 2002:a05:6a00:340f:b0:6ce:58d3:34ee with SMTP id cn15-20020a056a00340f00b006ce58d334eemr2724pfb.30.1701715322912;
-        Mon, 04 Dec 2023 10:42:02 -0800 (PST)
-Received: from ghost ([12.44.203.122])
-        by smtp.gmail.com with ESMTPSA id j8-20020aa783c8000000b006c320b9897fsm7954921pfn.126.2023.12.04.10.42.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 10:42:02 -0800 (PST)
-Date:   Mon, 4 Dec 2023 10:42:00 -0800
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     Andreas Schwab <schwab@linux-m68k.org>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Ron Economos <re@w6rz.net>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] riscv: Safely remove entries from relocation list
-Message-ID: <ZW4dePVEM8sslNAJ@ghost>
-References: <20231122-module_linking_freeing-v3-0-8e9e412a3305@rivosinc.com>
- <20231122-module_linking_freeing-v3-1-8e9e412a3305@rivosinc.com>
- <87bkbfzddr.fsf@igel.home>
+        bh=mcZOoagNfuYTwGb5c2DFpOJBXe5yhQOWEede9pD77Ig=;
+        b=WIk10nMV2BCmk09kq1RcejScfm1H4GbA1WaN6N2hjPGAt9vabcP3+Bw4rn13G2CbPz
+         Aei3See4eTMNPB9ZAdQMKVoWY/YDIQvKXtzA800IzF+4iFNQgd27Py95diJiW0vjMhwq
+         0MTLMhhqsvoK/ti37T1uPROmisleD5FFumFRbX2W1+ZO0zd0miTXyMBTm91odgTA30fb
+         IaiX7ECQ495Sazr2JLn8snsW8e7n/xHNQ6nG7EmSHpB7Mu/w/eULT7+jUGkeGC0oAlGk
+         wz/D4U951GyPLJi2YXVHbD0CiwumaW5VGeHtLzxiW+gkqdDYxGtR8yOi6gwDLuJtQin4
+         WDrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701715512; x=1702320312;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mcZOoagNfuYTwGb5c2DFpOJBXe5yhQOWEede9pD77Ig=;
+        b=XSSs/ZPlqwbOfpbkCzZe5YB3GPUjdRPr2tI/gn1lxIZw7YNylSeYqkwPTdA1dZXNmK
+         EWNw2rx3u8GhKNOdOQP80xw4/grfznBvapfdUqOCEgbzzRqvNs/YRdANwz8rKGttbxta
+         C2AI03/Fx5rVUwkDxo3kXWgKHEl2qhRNGQ9C2YxsNhOZeak1i+b5tCn+aOuIZpqrfXMx
+         HsHJVyQT+pDNWhIgHOhGWeK2dodVHajfXpfP60hu/LyilY6YK7BPQDGooYn7RfqtUdkJ
+         +KSznE057HUGKZj+JFWWBsOFlSnoTA3ar4jh2KpHtDcW0QxT8hzhSCwfY8upulkgo9Ld
+         ePLQ==
+X-Gm-Message-State: AOJu0YxQkpmlmuWjHJBDPdC3S/MwN45hmJqhLenFEJEPi0RK5VoqCW4f
+        O5VPiOhmvR3qT3e9vbFz2chfU7Z+i6aPE5VHHgZAqw==
+X-Google-Smtp-Source: AGHT+IG53Tprrzwkx2dmHW1+f8sbtKAiaQTT6sp9hmu4pFfnOzhawf2KKqgXFHmoLoh1lXYguEgo9GKmyXRuXChp0oE=
+X-Received: by 2002:a5b:b07:0:b0:db7:dacf:6fdf with SMTP id
+ z7-20020a5b0b07000000b00db7dacf6fdfmr3544806ybp.103.1701715511977; Mon, 04
+ Dec 2023 10:45:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bkbfzddr.fsf@igel.home>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231121171643.3719880-1-surenb@google.com> <20231121171643.3719880-6-surenb@google.com>
+ <b3c882d2-0135-430c-8179-784f78be0902@arm.com> <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
+ <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com> <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
+ <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
+ <744be4e0-48e0-4c77-825c-711386dd205f@arm.com> <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
+ <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com>
+In-Reply-To: <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 4 Dec 2023 10:44:59 -0800
+Message-ID: <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 11:42:08AM +0100, Andreas Schwab wrote:
-> On Nov 22 2023, Charlie Jenkins wrote:
-> 
-> > @@ -683,17 +700,29 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
-> >  
-> >  	if (!found) {
-> >  		rel_head = kmalloc(sizeof(*rel_head), GFP_KERNEL);
-> > +
-> > +		if (!rel_head)
-> > +			return -ENOMEM;
-> > +
-> >  		rel_head->rel_entry =
-> >  			kmalloc(sizeof(struct list_head), GFP_KERNEL);
-> > +
-> > +		if (!rel_head->rel_entry)
-> > +			return -ENOMEM;
-> 
-> This leaks rel_head on error.
-> 
-> -- 
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> "And now for something completely different."
+On Mon, Dec 4, 2023 at 10:27=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 04.12.23 17:35, Suren Baghdasaryan wrote:
+> > On Mon, Dec 4, 2023 at 1:27=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.c=
+om> wrote:
+> >>
+> >> On 04/12/2023 04:09, Suren Baghdasaryan wrote:
+> >>> On Sat, Dec 2, 2023 at 2:11=E2=80=AFAM David Hildenbrand <david@redha=
+t.com> wrote:
+> >>>>
+> >>>> On 02.12.23 09:04, Ryan Roberts wrote:
+> >>>>> On 01/12/2023 20:47, David Hildenbrand wrote:
+> >>>>>> On 01.12.23 10:29, Ryan Roberts wrote:
+> >>>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
+> >>>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move sour=
+ce
+> >>>>>>>> into destination buffer while checking the contents of both afte=
+r
+> >>>>>>>> the move. After the operation the content of the destination buf=
+fer
+> >>>>>>>> should match the original source buffer's content while the sour=
+ce
+> >>>>>>>> buffer should be zeroed. Separate tests are designed for PMD ali=
+gned and
+> >>>>>>>> unaligned cases because they utilize different code paths in the=
+ kernel.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> >>>>>>>> ---
+> >>>>>>>>     tools/testing/selftests/mm/uffd-common.c     |  24 +++
+> >>>>>>>>     tools/testing/selftests/mm/uffd-common.h     |   1 +
+> >>>>>>>>     tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++=
+++++++++++
+> >>>>>>>>     3 files changed, 214 insertions(+)
+> >>>>>>>>
+> >>>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
+> >>>>>>>> b/tools/testing/selftests/mm/uffd-common.c
+> >>>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
+> >>>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
+> >>>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
+> >>>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset=
+, bool wp)
+> >>>>>>>>         return __copy_page(ufd, offset, false, wp);
+> >>>>>>>>     }
+> >>>>>>>>     +int move_page(int ufd, unsigned long offset, unsigned long =
+len)
+> >>>>>>>> +{
+> >>>>>>>> +    struct uffdio_move uffdio_move;
+> >>>>>>>> +
+> >>>>>>>> +    if (offset + len > nr_pages * page_size)
+> >>>>>>>> +        err("unexpected offset %lu and length %lu\n", offset, l=
+en);
+> >>>>>>>> +    uffdio_move.dst =3D (unsigned long) area_dst + offset;
+> >>>>>>>> +    uffdio_move.src =3D (unsigned long) area_src + offset;
+> >>>>>>>> +    uffdio_move.len =3D len;
+> >>>>>>>> +    uffdio_move.mode =3D UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
+> >>>>>>>> +    uffdio_move.move =3D 0;
+> >>>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
+> >>>>>>>> +        /* real retval in uffdio_move.move */
+> >>>>>>>> +        if (uffdio_move.move !=3D -EEXIST)
+> >>>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
+> >>>>>>>> +                (int64_t)uffdio_move.move);
+> >>>>>>>
+> >>>>>>> Hi Suren,
+> >>>>>>>
+> >>>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
+> >>>>>>>
+> >>>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=
+=3D16,
+> >>>>>>> @uffd-common.c:648)
+> >>>>>>>
+> >>>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged any f=
+urther, but
+> >>>>>>> happy to go deeper if you can direct.
+> >>>>>>
+> >>>>>> Does it trigger reliably? Which pagesize is that kernel using?
+> >>>>>
+> >>>>> Yep, although very occasionally it fails with EAGAIN. 4K kernel; se=
+e other email
+> >>>>> for full config.
+> >>>>>
+> >>>>>>
+> >>>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault() =
+uses
+> >>>>>> default_huge_page_size(), which reads the default hugetlb size.
+> >>>>>
+> >>>>> My kernel command line is explicitly seting the default huge page s=
+ize to 2M.
+> >>>>>
+> >>>>
+> >>>> Okay, so that likely won't affect it.
+> >>>>
+> >>>> I can only guess that it has to do with the alignment of the virtual
+> >>>> area we are testing with, and that we do seem to get more odd patter=
+ns
+> >>>> on arm64.
+> >>>>
+> >>>> uffd_move_test_common() is a bit more elaborate, but if we aligned t=
+he
+> >>>> src+start area up, surely "step_count" cannot be left unmodified?
+> >>>>
+> >>>> So assuming we get either an unaligned source or an unaligned dst fr=
+om
+> >>>> mmap(), I am not convinced that we won't be moving areas that are no=
+t
+> >>>> necessarily fully backed by PMDs and maybe don't even fall into the =
+VMA
+> >>>> of interest?
+> >>>>
+> >>>> Not sure if that could trigger the THP splitting issue, though.
+> >>>>
+> >>>> But I just quickly scanned that test setup, could be I am missing
+> >>>> something. It might make sense to just print the mmap'ed range and t=
+he
+> >>>> actual ranges we are trying to move. Maybe something "obvious" can b=
+e
+> >>>> observed.
+> >>>
+> >>> I was able to reproduce the issue on an Android device and after
+> >>> implementing David's suggestions to split the large folio and after
+> >>> replacing default_huge_page_size() with read_pmd_pagesize(), the
+> >>> move-pmd test started working for me. Ryan, could you please apply
+> >>> attached patches (over mm-unstable) and try the test again?
+> >>
+> >> Yep, all fixed with those patches!
+> >
+> > Great! Thanks for testing and confirming. I'll post an updated
+> > patchset later today and will ask Andrew to replace the current one
+> > with it.
+> > I'll also look into the reasons we need to split PMD on ARM64 in this
+> > test. It's good that this happened and we were able to test the PMD
+> > split path but I'm curious about the reason. It's possible my address
+> > alignment calculations are  somehow incorrect.
+>
+> I only skimmed the diff briefly, but likely you also want to try
+> splitting in move_pages_pte(), if you encounter an already-pte-mapped THP=
+.
 
-Thank you for pointing this out, I fixed this issue in the next version
-but forgot to respond to this thread.
+Huh, good point. I might be able to move the folio splitting code into
+pte-mapped case and do a retry after splitting. That should minimize
+the additional code required. Will do and post a new set shortly.
+Thanks!
 
-https://lore.kernel.org/linux-riscv/20231127-module_linking_freeing-v4-1-a2ca1d7027d0@rivosinc.com/
-
-- Charlie
-
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
