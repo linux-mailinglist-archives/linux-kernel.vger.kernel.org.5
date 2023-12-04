@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F006280367D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DE380367A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345192AbjLDOYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:24:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        id S1345126AbjLDOYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:24:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235870AbjLDOYN (ORCPT
+        with ESMTP id S1345266AbjLDOYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:24:13 -0500
+        Mon, 4 Dec 2023 09:24:10 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0756B210A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7018F2105
         for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:22:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701699773;
+        s=mimecast20190719; t=1701699772;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wmC0HbMgxf2wn+iz2jDhVN1M/dlanF/535x+xcS2yyw=;
-        b=NqqW0uZEQlsoBadTPWHP/iGo1h4bNQCRSHnmK2iKLGnE0NSSOOkbWn+bSCTIKQtZeIR6Jw
-        UqXNQYT8PJbOF4363mdtsh8GouYZLzhcITRpBUk9TjDypHAij6uXIzaKq4ciLz72AYQzWV
-        IpEYAGnGTeljVlLsqrgvO0scSac/mAw=
+        bh=hz7uaUsseOxwoTHd/q5qxZ6Zu8cM7Yp8tdIii7iwU6Q=;
+        b=H6z3m8e/e40vfDeqZdC7U3FCCiHPCMX7LDc/oO8/KuJ6P3IEOCSfj8AD039JZ2oWoKM6CB
+        vElj8bSoXa1Y8AMgHlqOAW9bZQy/zjV2OAX7XMlngvjNB23D59wuZt8cblWG8mhNWhu1pC
+        J62Y6ioxuGAkYXI9HPcCRgRXFTCLZL8=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-668-0wmHc9idP7KPtoNc59ZDjA-1; Mon, 04 Dec 2023 09:22:47 -0500
-X-MC-Unique: 0wmHc9idP7KPtoNc59ZDjA-1
+ us-mta-270-2PY8J7EQOv2OTifGixg-kQ-1; Mon, 04 Dec 2023 09:22:48 -0500
+X-MC-Unique: 2PY8J7EQOv2OTifGixg-kQ-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FEA085A5B5;
-        Mon,  4 Dec 2023 14:22:45 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9F0CD8314FB;
+        Mon,  4 Dec 2023 14:22:47 +0000 (UTC)
 Received: from t14s.fritz.box (unknown [10.39.195.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BA6A22026D4C;
-        Mon,  4 Dec 2023 14:22:43 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 01FC72026D68;
+        Mon,  4 Dec 2023 14:22:45 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
@@ -50,9 +50,9 @@ Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Muchun Song <muchun.song@linux.dev>,
         Peter Xu <peterx@redhat.com>
-Subject: [PATCH RFC 30/39] mm/rmap: page_remove_rmap() -> folio_remove_rmap_pte()
-Date:   Mon,  4 Dec 2023 15:21:37 +0100
-Message-ID: <20231204142146.91437-31-david@redhat.com>
+Subject: [PATCH RFC 31/39] Documentation: stop referring to page_remove_rmap()
+Date:   Mon,  4 Dec 2023 15:21:38 +0100
+Message-ID: <20231204142146.91437-32-david@redhat.com>
 In-Reply-To: <20231204142146.91437-1-david@redhat.com>
 References: <20231204142146.91437-1-david@redhat.com>
 MIME-Version: 1.0
@@ -69,62 +69,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's convert try_to_unmap_one() and try_to_migrate_one().
+Refer to folio_remove_rmap_*() instaed.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/rmap.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Documentation/mm/transhuge.rst       | 2 +-
+ Documentation/mm/unevictable-lru.rst | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 50b6909157ac1..4a0114d04ab48 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1598,7 +1598,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
+diff --git a/Documentation/mm/transhuge.rst b/Documentation/mm/transhuge.rst
+index 9a607059ea11c..cf81272a6b8b6 100644
+--- a/Documentation/mm/transhuge.rst
++++ b/Documentation/mm/transhuge.rst
+@@ -156,7 +156,7 @@ Partial unmap and deferred_split_folio()
  
- 	/*
- 	 * When racing against e.g. zap_pte_range() on another cpu,
--	 * in between its ptep_get_and_clear_full() and page_remove_rmap(),
-+	 * in between its ptep_get_and_clear_full() and folio_remove_rmap_*(),
- 	 * try_to_unmap() may return before page_mapped() has become false,
- 	 * if page table locking is skipped: use TTU_SYNC to wait for that.
- 	 */
-@@ -1879,7 +1879,7 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
- 		if (unlikely(folio_test_hugetlb(folio)))
- 			hugetlb_remove_rmap(folio);
- 		else
--			page_remove_rmap(subpage, vma, false);
-+			folio_remove_rmap_pte(folio, subpage, vma);
- 		if (vma->vm_flags & VM_LOCKED)
- 			mlock_drain_local();
- 		folio_put(folio);
-@@ -1947,7 +1947,7 @@ static bool try_to_migrate_one(struct folio *folio, struct vm_area_struct *vma,
+ Unmapping part of THP (with munmap() or other way) is not going to free
+ memory immediately. Instead, we detect that a subpage of THP is not in use
+-in page_remove_rmap() and queue the THP for splitting if memory pressure
++in folio_remove_rmap_*() and queue the THP for splitting if memory pressure
+ comes. Splitting will free up unused subpages.
  
- 	/*
- 	 * When racing against e.g. zap_pte_range() on another cpu,
--	 * in between its ptep_get_and_clear_full() and page_remove_rmap(),
-+	 * in between its ptep_get_and_clear_full() and folio_remove_rmap_*(),
- 	 * try_to_migrate() may return before page_mapped() has become false,
- 	 * if page table locking is skipped: use TTU_SYNC to wait for that.
- 	 */
-@@ -2240,7 +2240,7 @@ static bool try_to_migrate_one(struct folio *folio, struct vm_area_struct *vma,
- 		if (unlikely(folio_test_hugetlb(folio)))
- 			hugetlb_remove_rmap(folio);
- 		else
--			page_remove_rmap(subpage, vma, false);
-+			folio_remove_rmap_pte(folio, subpage, vma);
- 		if (vma->vm_flags & VM_LOCKED)
- 			mlock_drain_local();
- 		folio_put(folio);
-@@ -2379,7 +2379,7 @@ static bool page_make_device_exclusive_one(struct folio *folio,
- 		 * There is a reference on the page for the swap entry which has
- 		 * been removed, so shouldn't take another.
- 		 */
--		page_remove_rmap(subpage, vma, false);
-+		folio_remove_rmap_pte(folio, subpage, vma);
- 	}
+ Splitting the page right away is not an option due to locking context in
+diff --git a/Documentation/mm/unevictable-lru.rst b/Documentation/mm/unevictable-lru.rst
+index 67f1338440a50..b6a07a26b10d5 100644
+--- a/Documentation/mm/unevictable-lru.rst
++++ b/Documentation/mm/unevictable-lru.rst
+@@ -486,7 +486,7 @@ munlock the pages if we're removing the last VM_LOCKED VMA that maps the pages.
+ Before the unevictable/mlock changes, mlocking did not mark the pages in any
+ way, so unmapping them required no processing.
  
- 	mmu_notifier_invalidate_range_end(&range);
+-For each PTE (or PMD) being unmapped from a VMA, page_remove_rmap() calls
++For each PTE (or PMD) being unmapped from a VMA, folio_remove_rmap_*() calls
+ munlock_vma_folio(), which calls munlock_folio() when the VMA is VM_LOCKED
+ (unless it was a PTE mapping of a part of a transparent huge page).
+ 
+@@ -511,7 +511,7 @@ userspace; truncation even unmaps and deletes any private anonymous pages
+ which had been Copied-On-Write from the file pages now being truncated.
+ 
+ Mlocked pages can be munlocked and deleted in this way: like with munmap(),
+-for each PTE (or PMD) being unmapped from a VMA, page_remove_rmap() calls
++for each PTE (or PMD) being unmapped from a VMA, folio_remove_rmap_*() calls
+ munlock_vma_folio(), which calls munlock_folio() when the VMA is VM_LOCKED
+ (unless it was a PTE mapping of a part of a transparent huge page).
+ 
 -- 
 2.41.0
 
