@@ -2,169 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E02803192
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 811F4803193
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbjLDLcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:32:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
+        id S231247AbjLDLd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjLDLcX (ORCPT
+        with ESMTP id S229602AbjLDLdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:32:23 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B65AB0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:32:27 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40bd5eaa66eso23410175e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 03:32:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1701689545; x=1702294345; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=k24kTPlVkd21kNiwlx5AXtWzxUb1iLhkKqVaC17WY/Y=;
-        b=DgEI5NwvqWa1JxsCZlJaR1i7usMgEBVTqktWA5lLzSpDAcg/9u9JHtn97EJw7SLWs0
-         NzN5cuU73wiRRJJbEjCVKgWXaZrf9H6A43Sq0++8tMDK7x0mosDfCklfJKB8YGXQX/A1
-         buqijPUs8ySkWxQE80o7Ok3tINXSBmNi+12DjRuoYi8uROW6Sf7yv9bV8Wt7JL2pAG5n
-         T8p+eda8XEiBS9DWIAnNuAiuuzunEyRrivbf1+x2BMz2TEnRhIlqdTxbDBttfHSqJmuM
-         x1oFRM0fsN+q8UyLBJJ2O19jsoCODfZU/3WbkZbs0d3qHxdcC8znQr9p+E35Eis280MY
-         5eyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701689545; x=1702294345;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k24kTPlVkd21kNiwlx5AXtWzxUb1iLhkKqVaC17WY/Y=;
-        b=VEATU+GWUZPnsi9Dl5ikptat5Tdzf4Pru6wgocJsH34NZXsTznvlHdHv6ETFVyBifS
-         UlMkCrDecm6I9drMH/4MEVySTbvA7YDs2vQyILkd8YD0JAveHEyndmwLo+HWGRXra4ln
-         BliLQyD33fxp3DREQji2eaQKCLP0L8XEYLfSheO7quHtrq/AjpSPWRzme4OPPfFr2Q0E
-         a5JoS0rp61ivfvJDL9c7mEVvZw9DFXIB00RO7OeLLyyJOmQvR5h+BS+0VftRI/14pi3P
-         G2zvsQSIglQMAmYK8KSWJKA2/2hP47UZkU2pIMnZIvM7E5xc/+yIScv/jzMdSjTfqeeH
-         hh6A==
-X-Gm-Message-State: AOJu0Yz0MqcRxBdAvXsOuXXlY3ddRIq/XR0ZnRxlp3Xe7rVRMC8KDjtO
-        GrF3/14bU+6em+dGtG11b9Hr+A==
-X-Google-Smtp-Source: AGHT+IErNZnZcr/TyviXxvsAwPQtN/v+Nlqzyb1HJSfOFwnV8njyLvYHhsJtg7HkXjuZQ5dLEL6OcQ==
-X-Received: by 2002:a05:600c:5d5:b0:40b:5e21:ec33 with SMTP id p21-20020a05600c05d500b0040b5e21ec33mr2310718wmd.101.1701689545469;
-        Mon, 04 Dec 2023 03:32:25 -0800 (PST)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id u2-20020a05600c138200b00405d9a950a2sm18390025wmf.28.2023.12.04.03.32.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 03:32:24 -0800 (PST)
-Date:   Mon, 4 Dec 2023 12:32:24 +0100
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <xiaobo55x@gmail.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 9/9] KVM: riscv: selftests: Add sstc timer test
-Message-ID: <20231204-980c95cca344f718ac6a48b6@orel>
-References: <cover.1694421911.git.haibo1.xu@intel.com>
- <64e0637cd6f22dd7557ed44bd2242001e7830d1c.1694421911.git.haibo1.xu@intel.com>
- <20230914-d2e594e7d84503ad14036e2d@orel>
- <CAJve8onhY534T=Hyncjfi4GfdZ+0D2xM+jRSaYCAWCdaKxPUcQ@mail.gmail.com>
- <CAJve8omitHDpijJaLV_wHk+5LXpsBUWF8_eTD4MeWKM-807Siw@mail.gmail.com>
+        Mon, 4 Dec 2023 06:33:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B406B0;
+        Mon,  4 Dec 2023 03:34:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701689642; x=1733225642;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=mXvRkmXLfgor2iho/IhL1gImLWrqp5l3U0QromWXKnk=;
+  b=NR2+UbjhOy7ywJj81WiAphBd98CmIlLNVcsRwd3tz+vfuZIdRFjzYcH8
+   zBpAAkm3680LYRRpEseOKPsDalZMPlSsY5S8FJZYZ8X1nlSGuxQRIZYjv
+   +XEhj70qXx360HEo3KK6F9fyYIgGg9BWNrJLgmr/Qrxhsl9/smQt2BI4W
+   l9FeFzWGyoCcJwECsfiUfv6od37BkBTMY4MT2z9he1uSm0s7BelYcc14R
+   d4O3u9Gwvhpe9ANwrB7AmFeqCs5aEMOA/jav9rVoz88xmKjWs6v7qVf0J
+   iG0Ba3Ldid0g3uiz9T7yZT2SeUyN2MEMf6uZgubqCdeXOyNvpafdp02QQ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="390878531"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="390878531"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 03:34:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="841007981"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="841007981"
+Received: from epologov-mobl2.ccr.corp.intel.com (HELO [10.249.32.181]) ([10.249.32.181])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 03:33:57 -0800
+Message-ID: <1e1430fb-d1d6-476d-a2d1-64ce2c86daa6@linux.intel.com>
+Date:   Mon, 4 Dec 2023 13:34:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: SOF: Fix null pointer dereference in sof_pci_probe
+Content-Language: en-US
+To:     Kunwu Chan <chentao@kylinos.cn>,
+        pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+        yung-chuan.liao@linux.intel.com, ranjani.sridharan@linux.intel.com,
+        daniel.baluta@nxp.com, kai.vehmanen@linux.intel.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        chao.song@intel.com
+Cc:     kunwu.chan@hotmail.com, sound-open-firmware@alsa-project.org,
+        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231123155424.1275919-1-chentao@kylinos.cn>
+From:   =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+In-Reply-To: <20231123155424.1275919-1-chentao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJve8omitHDpijJaLV_wHk+5LXpsBUWF8_eTD4MeWKM-807Siw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 10:42:24AM +0800, Haibo Xu wrote:
-> On Fri, Sep 15, 2023 at 2:21 PM Haibo Xu <xiaobo55x@gmail.com> wrote:
-> >
-> > On Thu, Sep 14, 2023 at 5:52 PM Andrew Jones <ajones@ventanamicro.com> wrote:
-> > >
-> > > On Thu, Sep 14, 2023 at 09:37:03AM +0800, Haibo Xu wrote:
-> > > > Add a KVM selftests to validate the Sstc timer functionality.
-> > > > The test was ported from arm64 arch timer test.
-> > >
-> > > I just tried this test out. Running it over and over again on QEMU I see
-> > > it works sometimes, but it frequently fails with the
-> > > GUEST_ASSERT_EQ(config_iter + 1, irq_iter) assert and at least once I
-> > > also saw the __GUEST_ASSERT(xcnt >= cmp) assert.
-> > >
-> >
-> > Good catch!
-> >
-> > I can also reproduce this issue and it is a common problem for both
-> > arm64 and riscv because it also happens in a arm64 Qemu VM.
-> >
-> > It seems like a synchronization issue between host and guest shared
-> > variables. Will double check the test code.
-> >
-> > > Thanks,
-> > > drew
+
+
+On 23/11/2023 17:54, Kunwu Chan wrote:
+> devm_kasprintf() returns a pointer to dynamically allocated memory
+> which can be NULL upon failure.
 > 
-> Hi Andrew,
+> Fixes: 46207ca24545 ("ASoC: SOF: pci: change the default firmware path when the community key is used")
+> Fixes: 25bbc0c59ee1 ("ASoC: SOF: Add path definition for external firmware libraries")
+> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+
+This patch cannot fix both commits as at 46207ca24545 the lib path was
+not present.
+Please don't bundle unrelated fixes, it makes maintainers life harder.
+
+As a note: if the allocation fails it is not going to cause null
+dereference as the code checks !sof_pdata->*_prefix to see if it is
+provided (override) or not (use default).
+At most it will cause the kernel to 'ignore' the path override, but if
+this allocation fails this is least of our problem ;)
+
+> ---
+>  sound/soc/sof/sof-pci-dev.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> After several rounds of regression testing, some findings:
-> 1. The intermittent failure also happened on ARM64 Qemu VM, and even
-> in the initial arch_timer commit(4959d8650e9f4).
-> 2. it didn't happen on a ARM64 HW(but a different failure occured
-> during stress test)
-> 3. The failure have a close relationship with
-> TIMER_TEST_ERR_MARGIN_US(default 100), and after increasing
->      the macro to 300, the failure couldn't reproduced in 1000 loops
-> stress test in RISC-V Qemu VM
-> 
-> So my suggestion is we can expose the TIMER_TEST_ERR_MARGIN_US
-> parameter as an arch_timer test arg parameter
-> and tune it based on a specific test environment.
-> 
-> What's your opinion?
+> diff --git a/sound/soc/sof/sof-pci-dev.c b/sound/soc/sof/sof-pci-dev.c
+> index 64b326e3ef85..75a9bfa5bfbe 100644
+> --- a/sound/soc/sof/sof-pci-dev.c
+> +++ b/sound/soc/sof/sof-pci-dev.c
+> @@ -282,6 +282,10 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+>  			devm_kasprintf(dev, GFP_KERNEL, "%s/%s",
+>  				       sof_pdata->desc->default_fw_path[sof_pdata->ipc_type],
+>  				       "community");
+> +		if (!sof_pdata->fw_filename_prefix) {
+> +			ret = -ENOMEM;	
+> +			goto out;
+> +		}
+>  
+>  		dev_dbg(dev,
+>  			"Platform uses community key, changed fw path to %s\n",
+> @@ -303,6 +307,10 @@ int sof_pci_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+>  				devm_kasprintf(dev, GFP_KERNEL, "%s/%s",
+>  					sof_pdata->desc->default_lib_path[sof_pdata->ipc_type],
+>  					"community");
+> +			if (!sof_pdata->fw_lib_prefix) {
+> +				ret = -ENOMEM;
+> +				goto out;
+> +			}
+>  
+>  			dev_dbg(dev,
+>  				"Platform uses community key, changed fw_lib path to %s\n",
 
-The concept of "timeout for an interrupt to arrive" is always going to
-leave us exposed to random failures. Your suggestion of making the
-timeout user configurable is probably the best we can do. I would
-suggest also adding more descriptive failure text and a hint about
-trying to adjust the timeout.
-
-Or, one thing we do in kvm-unit-tests, is to reduce typical delays while
-allowing expected delays to be longer by looping over a shorter delay and
-a non-fatal check, i.e.
-
- pass = false;
- for (i = 0; i < 10; i++) {
-   udelay(100);
-   if (check(...)) {
-      pass = true;
-      break;
-   }
- }
- assert(pass);
-
-We could try that approach here too.
-
-Thanks,
-drew
+-- 
+Péter
