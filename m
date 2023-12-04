@@ -2,85 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F68280363D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F1B803641
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234189AbjLDOTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:19:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
+        id S234153AbjLDOUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbjLDOTW (ORCPT
+        with ESMTP id S231801AbjLDOUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:19:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0B583
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:19:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701699567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=CVxcuA5O7vtHxh6BDYzSDk/ZrvKnBNgsg9DsBQMzwt4=;
-        b=Z+bK1SI4IQrYpF41cd5T6gHyOTrd7KSb6wdLM6TbT94CfCax0FpjBNddzeC2GY2sFcev/U
-        NB8OKJUH89R4ROMRGoNfV3N/I+US4cjnMC5NLBNBI4VoP517Y1JS3xh27n1qRzDlrI9j9z
-        YFnIg9Jbg+BqxvdgydNs+wAZmIsSbok=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-622-vZHMhj1hMcmqbVk7arzpDA-1; Mon, 04 Dec 2023 09:19:26 -0500
-X-MC-Unique: vZHMhj1hMcmqbVk7arzpDA-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-54455e2a5c8so3351486a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:19:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701699565; x=1702304365;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVxcuA5O7vtHxh6BDYzSDk/ZrvKnBNgsg9DsBQMzwt4=;
-        b=pMKoAim/LLqJFQ7Oqp9Sk4ypEjvw8g1kDXsVATNYA5NKq1k51GrHNK+tlsANvMxel1
-         vHsXfT5q66uV05OpKMhXJ2JWyd+Y2N8V6g6wSMPsY/d3D08W9oB/4sPvO11Z4+enae9v
-         y2lbzjX1JEd64qEXCI5S1xujeUJdL7k+azJxx/u409iWU0reZ2pM4Ru9wWwtJzNg1wR8
-         NVZ8+plrWGqsn3bMMNi2l9NQYhnwC8XK/DSB67fOY4PNhxeOKY4wQIB9TFA22CGPlQDo
-         BzTIU+RZ0GySokVZ59R0stvZ9OouD2MV6FI6isG/57frXuCgiyGpkQmuBrJR321dNvjf
-         UDHg==
-X-Gm-Message-State: AOJu0YxZpsnmXe+5iBpnFQ0L4ayNzWPum12BqpL5FFSbKuvO0bqOcXCo
-        1L9D892mvqZW7L7oILbv1wjn6Q03R5Uec6daURysj59SzIdAbowNs7JbiU6x+oqu7hXO4vNoxBp
-        YSsy0TY98DSDUb2yh2Q3OEy4e
-X-Received: by 2002:a17:906:51de:b0:a19:a19b:55f0 with SMTP id v30-20020a17090651de00b00a19a19b55f0mr284930ejk.128.1701699565256;
-        Mon, 04 Dec 2023 06:19:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE/EGVsdST4KQF6EyBnFKk8CMoutzazJzlTXbos+FVQn2CFyvQ/oSKstzczb4hmwV+z2HH0sw==
-X-Received: by 2002:a17:906:51de:b0:a19:a19b:55f0 with SMTP id v30-20020a17090651de00b00a19a19b55f0mr284924ejk.128.1701699565007;
-        Mon, 04 Dec 2023 06:19:25 -0800 (PST)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id cb26-20020a170906a45a00b00a0958af2387sm5291092ejb.201.2023.12.04.06.19.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 06:19:24 -0800 (PST)
-Message-ID: <5601c760-dc79-4131-99f0-961d5cdcfbc2@redhat.com>
-Date:   Mon, 4 Dec 2023 15:19:23 +0100
+        Mon, 4 Dec 2023 09:20:08 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D7083;
+        Mon,  4 Dec 2023 06:20:13 -0800 (PST)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4CxqrN022063;
+        Mon, 4 Dec 2023 06:20:06 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=5gwLQo8YB8K198lIdN110Kpr4qLxBNopymD5p73eots=;
+ b=JjOmfs1JCf82Gxedjqx7OSjVZmpD5NOJXX624N4pJ+qHEXYTJ5k7nmru6KDsTH16Jl2P
+ JrYDZxhql93F+NI49HrMvVaE3g75uxuGRLdgdKz0rEMGxKQaJ/2LHMf8nlxSfn36aMWP
+ u0m00l8lHUxn4EpXGrgIzVTZ5ecGnL7Na33+Wx+gTh49uMZSeCdAtJsP53NBNxh9UMaQ
+ P85XoxK4a42v6CqhOvUAYeoc6RrsXNZ9WY5tGGY8lw4OhRsI6bnjDC9r1sevcdmyjGFo
+ cM+Y28w1D4r4Fl+hUEUumcOwMmrLbnkn2L1h1lKSAKXVCu9K7WkYW5DMKJaM798VY/5/ Dw== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3ur2tvde98-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 06:20:05 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 4 Dec
+ 2023 06:20:04 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 4 Dec 2023 06:20:04 -0800
+Received: from localhost.localdomain (unknown [10.28.36.166])
+        by maili.marvell.com (Postfix) with ESMTP id 9F5353F7099;
+        Mon,  4 Dec 2023 06:19:59 -0800 (PST)
+From:   Suman Ghosh <sumang@marvell.com>
+To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lcherian@marvell.com>, <jerinj@marvell.com>, <horms@kernel.org>,
+        <wojciech.drewek@intel.com>
+CC:     Suman Ghosh <sumang@marvell.com>
+Subject: [net-next PATCH v6 0/2] octeontx2: Multicast/mirror offload changes
+Date:   Mon, 4 Dec 2023 19:49:54 +0530
+Message-ID: <20231204141956.3956942-1-sumang@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/5] platform/x86: ISST: Process read/write blocked
- feature status
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        markgross@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231130214751.3100418-1-srinivas.pandruvada@linux.intel.com>
- <20231130214751.3100418-5-srinivas.pandruvada@linux.intel.com>
- <d3b0dd08-4eca-4268-8b13-e60bd3d85524@redhat.com>
- <e64acb49-608b-a673-c145-7b6bf4c38d5a@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <e64acb49-608b-a673-c145-7b6bf4c38d5a@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: aY_OdZD_WKs-U2tf7-v6kjnSCdzcQhFE
+X-Proofpoint-GUID: aY_OdZD_WKs-U2tf7-v6kjnSCdzcQhFE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_12,2023-12-04_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,45 +69,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This patchset includes changes to support TC multicast/mirror offload.
 
-On 12/4/23 15:11, Ilpo Järvinen wrote:
-> On Mon, 4 Dec 2023, Hans de Goede wrote:
->> On 11/30/23 22:47, Srinivas Pandruvada wrote:
->>> When a feature is read blocked, don't continue to read SST information
->>> and register with SST core.
->>>
->>> When the feature is write blocked, continue to offer read interface for
->>> SST parameters, but don't allow any operation to change state. A state
->>> change results from SST level change, feature change or class of service
->>> change.
->>>
->>> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
->>> ---
->>> v2
->>> - Change read_blocked, write_blocked to bool
->>> - Move the check for power_domain_info->write_blocked for SST-CP
->>> to only write operations
->>
->> Thanks, patch looks good to me:
->>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->>
->> Did you drop Ilpo's Reviewed-by from v1 on purpose
->> because of the changes ? Or did you forget to add it ?
-> 
-> No he didn't because this patch had an issue in v1 so I never gave my 
-> rev-by for this patch. ;-)
+Patch #1: Adds changes to support new mailbox to offload multicast/mirror
+offload.
 
-Ah, there are 2 patches with "Process read/write blocked feature status"
-as part of the subject, that confused me :)
+Patch #2: Adds TC related changes which uses the newly added mailboxes to
+offload multicast/mirror rules.
 
-> But here it's now for v2:
-> 
-> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Suman Ghosh (2):
+  octeontx2-af: Add new mbox to support multicast/mirror offload
+  octeontx2-pf: TC flower offload support for mirror
 
-Thanks & Regards,
+v6 changes:
+- Rebased on TOT.
 
-Hans
+v5 changes:
+- Updated patch#1.
+  Using hlist_for_each_entry_safe() in function nix_add_mce_list_entry()
+  for node deletion.
+ 
+v4 changes:
+- Updated pacth#1 based on comments from Paolo. The major change is to
+  simplify mutex_lock/unlock logic in function
+  rvu_mbox_handler_nix_mcast_grp_update(),
+  rvu_mbox_handler_nix_mcast_grp_destroy() and
+  rvu_nix_mcast_flr_free_entries().
+  Added one extra variable in the mailbox to indicate if the
+  update/delete request is from AF or not. If AF is requesting for
+  update/delete then the caller is taking the lock.
 
+v3 changes:
+- Updated patch#1 based on comments from Wojciech and Simon.
+  The comments were mostly based on some missed mutex_unlock and
+  code reorganization.
+
+v2 changes:
+- Updated small nits based on review comments from Wojciech Drewek
+  in file drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  72 ++
+ .../net/ethernet/marvell/octeontx2/af/rvu.c   |   6 +-
+ .../net/ethernet/marvell/octeontx2/af/rvu.h   |  39 +-
+ .../ethernet/marvell/octeontx2/af/rvu_nix.c   | 702 +++++++++++++++++-
+ .../ethernet/marvell/octeontx2/af/rvu_npc.c   |  14 +-
+ .../marvell/octeontx2/af/rvu_npc_fs.c         |  73 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 113 ++-
+ 7 files changed, 978 insertions(+), 41 deletions(-)
+
+-- 
+2.25.1
 
