@@ -2,99 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F49803E8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5616803E98
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232543AbjLDTjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:39:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        id S233250AbjLDTmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:42:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjLDTjA (ORCPT
+        with ESMTP id S231501AbjLDTmR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:39:00 -0500
-Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F7EB6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:39:07 -0800 (PST)
-Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5d7a47d06eeso22818027b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:39:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701718746; x=1702323546; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YTaRrGnNYWJXMSaCAkRjN5SkjpY2VkDKl0lQohgIOR8=;
-        b=bRBqh33+WEasPCrXglkOCn49BOxneLpHspnV+h1wN69C1SjEIa9ZVvF/elRuMy6SzB
-         7/FKOSfVChrx2/VN1RB6kNzBjYgFtfO8G3JsWaLrtpd8vXWDO0oYCMSQrI0zrnQsqtSt
-         IHjOkoLTg29XwYn6QFuvvseTSuMgoeKhX/y121yhRXMcs4PnBR4MpvwfWaCYyRA7+mEP
-         18NKqoLxb0F7l5ob5qN9o8PLsHfSaPLqFG8QzuMiXAzU7nay7r8qBqvCRI02+LYYC5wL
-         XHo0lJm1KOuOvyrfuHOKGJcW+/ek2Sso3fQPjkz89LUSFkiwZDwZHh2FZIhEnbZMhEw8
-         YRPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701718746; x=1702323546;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YTaRrGnNYWJXMSaCAkRjN5SkjpY2VkDKl0lQohgIOR8=;
-        b=SjhrGEccb1fBGBStwvMoVPglQj1jeKgijY0Paij4jxqJJDAO94mAaLm9NJKq0DyQ5V
-         fPifkBOaqvsN8FtTlXD9AqVIB5EN9zcZhapb/C6Gxb1meY4nJdsD7+OLgApVChk6qDky
-         tqG4OQHxdQ9T8V4rxeTZTuwQrYmRZS2GBpAH/3p4htTAwaCRghhLPd1GWoLiVwairscO
-         L/WCwsjmvXYwqXv/Xk3247vv6SaYN7EiL6TxBGkl6pYRRFP/vkL0jRgKfWv81BmC2qce
-         zGmx1lIIzP/hY55z6FjC6gHMOdWNsbLASE9MylPpMh5qabMSmSKwpOt9Gc5auCBWrJZd
-         nreA==
-X-Gm-Message-State: AOJu0YznpxMx4QMNxCYFxN07iqCjH0UJcn2ViuPLwzAR9rdKC4vnbmvl
-        cONgVOp5sN9awFa5R0lbEPRV/yaw7oY4HBrdTikKOw==
-X-Google-Smtp-Source: AGHT+IHnf+wIvLq0T+FY2Q4ycS6tDbC03pIpYzm4f+CmPYNLG73XmpwNsbHDjLnCXb2W1bDF/n+0HHpOQ1t0sBPlJMI=
-X-Received: by 2002:a25:2cd:0:b0:db5:4e94:67cd with SMTP id
- 196-20020a2502cd000000b00db54e9467cdmr3836892ybc.58.1701718746667; Mon, 04
- Dec 2023 11:39:06 -0800 (PST)
+        Mon, 4 Dec 2023 14:42:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C910FF0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:42:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701718944; x=1733254944;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=jr6ZC4QTHiMBOoU079Jyk/SGSEVXDbkp/sLimQ9ENpE=;
+  b=XpbNo9GdLNPUDbp3F6U7qRcwpUyX6gEjZJT+IqeJIF7rnHDufWvTpRk6
+   vWzIkgd0gF+SoC0ARIl8Iz/dj8ljVYPTQgrt663TzvHOjt2heIUfvu6kW
+   YW1shSUd3OvIQR01UQ1OPWgfgYsEKvEQ4YyfG/IXJg9OQYZbmzGRHRqQC
+   zQDCExRHmtL2CfC2p9DBYI/z34I0XzpjJ14uKH+MfDwsrzY827dw7HFbi
+   TgpNgzBc1ns52rhE9PGWUwPrYAJWFDo7I60DqkZVfhWLa+Ej9ZXjPoBI9
+   oeI7/24p1dB3Ag6NqdR6e9o0tDEK9lbt7PJ+6bgnkOU47QHdiw7UnYX+X
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="855510"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="855510"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 11:41:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="861493062"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="861493062"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Dec 2023 11:41:44 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAEou-00081v-05;
+        Mon, 04 Dec 2023 19:41:34 +0000
+Date:   Tue, 5 Dec 2023 03:40:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: io_uring/poll.c:819:40: sparse: sparse: incorrect type in argument 2
+ (different base types)
+Message-ID: <202312050238.labqn1bV-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231204171317.192427-1-harshit.m.mogalapalli@oracle.com>
-In-Reply-To: <20231204171317.192427-1-harshit.m.mogalapalli@oracle.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 4 Dec 2023 21:38:55 +0200
-Message-ID: <CAA8EJpqdJFxM=Ervg6Gx3umV=K7HaprAa2RrtSjxtv_qv1VO7w@mail.gmail.com>
-Subject: Re: [PATCH next] drm/msm/dp: add a missing unlock in dp_hpd_plug_handle()
-To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Vinod Polimera <quic_vpolimer@quicinc.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        dan.carpenter@linaro.org, kernel-janitors@vger.kernel.org,
-        error27@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Dec 2023 at 19:13, Harshit Mogalapalli
-<harshit.m.mogalapalli@oracle.com> wrote:
->
-> When pm_runtime_resume_and_get() fails, unlock before returning.
->
-> Fixes: 5814b8bf086a ("drm/msm/dp: incorporate pm_runtime framework into DP driver")
-> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> ---
-> This is based on static analysis with Smatch. Only compile tested.
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 1 +
->  1 file changed, 1 insertion(+)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
+commit: 063a007996bf725ba4c7d8741701670be9858300 io_uring: change arm poll return values
+date:   1 year, 4 months ago
+config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231205/202312050238.labqn1bV-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312050238.labqn1bV-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312050238.labqn1bV-lkp@intel.com/
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+sparse warnings: (new ones prefixed by >>)
+   io_uring/poll.c: note: in included file (through io_uring/io_uring.h):
+   io_uring/slist.h:138:29: sparse: sparse: no newline at end of file
+   io_uring/poll.c:222:38: sparse: sparse: incorrect type in assignment (different base types) @@     expected signed int [usertype] res @@     got restricted __poll_t @@
+   io_uring/poll.c:222:38: sparse:     expected signed int [usertype] res
+   io_uring/poll.c:222:38: sparse:     got restricted __poll_t
+   io_uring/poll.c:233:56: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:232:66: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __poll_t [usertype] val @@     got unsigned int @@
+   io_uring/poll.c:232:66: sparse:     expected restricted __poll_t [usertype] val
+   io_uring/poll.c:232:66: sparse:     got unsigned int
+   io_uring/poll.c:232:52: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __poll_t [usertype] mask @@     got unsigned short @@
+   io_uring/poll.c:232:52: sparse:     expected restricted __poll_t [usertype] mask
+   io_uring/poll.c:232:52: sparse:     got unsigned short
+   io_uring/poll.c:236:46: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected signed int [usertype] res @@     got restricted __poll_t [usertype] mask @@
+   io_uring/poll.c:236:46: sparse:     expected signed int [usertype] res
+   io_uring/poll.c:236:46: sparse:     got restricted __poll_t [usertype] mask
+   io_uring/poll.c:264:63: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:264:57: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected restricted __poll_t [usertype] val @@     got unsigned int @@
+   io_uring/poll.c:264:57: sparse:     expected restricted __poll_t [usertype] val
+   io_uring/poll.c:264:57: sparse:     got unsigned int
+   io_uring/poll.c:372:40: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected int mask @@     got restricted __poll_t [usertype] mask @@
+   io_uring/poll.c:372:40: sparse:     expected int mask
+   io_uring/poll.c:372:40: sparse:     got restricted __poll_t [usertype] mask
+   io_uring/poll.c:491:40: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected int mask @@     got restricted __poll_t [assigned] [usertype] mask @@
+   io_uring/poll.c:491:40: sparse:     expected int mask
+   io_uring/poll.c:491:40: sparse:     got restricted __poll_t [assigned] [usertype] mask
+   io_uring/poll.c:543:45: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:543:43: sparse: sparse: incorrect type in initializer (different base types) @@     expected restricted __poll_t [usertype] mask @@     got unsigned int @@
+   io_uring/poll.c:543:43: sparse:     expected restricted __poll_t [usertype] mask
+   io_uring/poll.c:543:43: sparse:     got unsigned int
+   io_uring/poll.c:588:38: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected int mask @@     got restricted __poll_t [assigned] [usertype] mask @@
+   io_uring/poll.c:588:38: sparse:     expected int mask
+   io_uring/poll.c:588:38: sparse:     got restricted __poll_t [assigned] [usertype] mask
+   io_uring/poll.c:588:55: sparse: sparse: incorrect type in argument 3 (different base types) @@     expected int events @@     got restricted __poll_t [usertype] events @@
+   io_uring/poll.c:588:55: sparse:     expected int events
+   io_uring/poll.c:588:55: sparse:     got restricted __poll_t [usertype] events
+   io_uring/poll.c:745:24: sparse: sparse: invalid assignment: |=
+   io_uring/poll.c:745:24: sparse:    left side has type unsigned int
+   io_uring/poll.c:745:24: sparse:    right side has type restricted __poll_t
+   io_uring/poll.c:747:24: sparse: sparse: invalid assignment: |=
+   io_uring/poll.c:747:24: sparse:    left side has type unsigned int
+   io_uring/poll.c:747:24: sparse:    right side has type restricted __poll_t
+   io_uring/poll.c:749:55: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:748:29: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:748:38: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __poll_t @@     got unsigned int @@
+   io_uring/poll.c:748:38: sparse:     expected restricted __poll_t
+   io_uring/poll.c:748:38: sparse:     got unsigned int
+>> io_uring/poll.c:819:40: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected signed int [usertype] res @@     got restricted __poll_t [addressable] [assigned] [usertype] result_mask @@
+   io_uring/poll.c:819:40: sparse:     expected signed int [usertype] res
+   io_uring/poll.c:819:40: sparse:     got restricted __poll_t [addressable] [assigned] [usertype] result_mask
+   io_uring/poll.c:873:38: sparse: sparse: invalid assignment: &=
+   io_uring/poll.c:873:38: sparse:    left side has type restricted __poll_t
+   io_uring/poll.c:873:38: sparse:    right side has type int
+   io_uring/poll.c:874:52: sparse: sparse: restricted __poll_t degrades to integer
+   io_uring/poll.c:874:38: sparse: sparse: invalid assignment: |=
+   io_uring/poll.c:874:38: sparse:    left side has type restricted __poll_t
+   io_uring/poll.c:874:38: sparse:    right side has type unsigned int
+   io_uring/poll.c:632:24: sparse: sparse: context imbalance in 'io_poll_find' - wrong count at exit
+   io_uring/poll.c:661:24: sparse: sparse: context imbalance in 'io_poll_file_find' - wrong count at exit
+   io_uring/poll.c:716:28: sparse: sparse: context imbalance in '__io_poll_cancel' - unexpected unlock
+   io_uring/poll.c:843:28: sparse: sparse: context imbalance in 'io_poll_remove' - unexpected unlock
+
+vim +819 io_uring/poll.c
+
+   798	
+   799	int io_poll_add(struct io_kiocb *req, unsigned int issue_flags)
+   800	{
+   801		struct io_poll *poll = io_kiocb_to_cmd(req);
+   802		struct io_poll_table ipt;
+   803		int ret;
+   804	
+   805		ipt.pt._qproc = io_poll_queue_proc;
+   806	
+   807		/*
+   808		 * If sqpoll or single issuer, there is no contention for ->uring_lock
+   809		 * and we'll end up holding it in tw handlers anyway.
+   810		 */
+   811		if (!(issue_flags & IO_URING_F_UNLOCKED) &&
+   812		    (req->ctx->flags & (IORING_SETUP_SQPOLL | IORING_SETUP_SINGLE_ISSUER)))
+   813			req->flags |= REQ_F_HASH_LOCKED;
+   814		else
+   815			req->flags &= ~REQ_F_HASH_LOCKED;
+   816	
+   817		ret = __io_arm_poll_handler(req, poll, &ipt, poll->events);
+   818		if (ret) {
+ > 819			io_req_set_res(req, ipt.result_mask, 0);
+   820			return IOU_OK;
+   821		}
+   822		if (ipt.error) {
+   823			req_set_fail(req);
+   824			return ipt.error;
+   825		}
+   826	
+   827		return IOU_ISSUE_SKIP_COMPLETE;
+   828	}
+   829	
 
 -- 
-With best wishes
-Dmitry
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
