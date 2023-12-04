@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 764A5802E04
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C854802E18
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234773AbjLDIst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:48:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
+        id S232671AbjLDIrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:47:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230008AbjLDIss (ORCPT
+        with ESMTP id S229563AbjLDIrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:48:48 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C13FA4;
-        Mon,  4 Dec 2023 00:48:54 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2223192a12.1;
-        Mon, 04 Dec 2023 00:48:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701679734; x=1702284534; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ST2h/PONfnZyu/0urr3vsm15K/qMqFc6bAJOz5sjZGk=;
-        b=Nh487HWxZUe0V8piH/6NUCYPy5Kpo2TZ+i+xPkH9zByf2DfataNHfLwMr3gwXN/mL8
-         TBEeVu2+uXBIHENyXyBY701g4w0A9BD6+7fpdnfBzscHNLoHmw+QVWMrvFopo6isf77K
-         03cla3tdgks4MkzLXkBDsHfQtWxT1O+X/CV4zSF9cpY2ldT0+F/53SUr9UJh9NYj7HYF
-         CqdVy5/XPx86wdcimYKKgSTCVAXi22BIDzWzxi3Ve3KFWKx2+0qcamPLNa8SC90EwUig
-         Z5yh6YTaiAMwES/6lHhTSqpVc/ZadHfndmYukVidHiyHgkqyb1dBA/dBUZreOEzlK1nJ
-         hEcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701679734; x=1702284534;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ST2h/PONfnZyu/0urr3vsm15K/qMqFc6bAJOz5sjZGk=;
-        b=IXpJD69djRe54eZpLe/mlMLQCHhXtLooStxA6/vVAIGguIpRzV7yQdNw6U/TrdRXan
-         Q8qFke8Yu2ccYu381rqpgtQSzGMklISRFgOgiYjpwGN9SVcjDPDUMHMop0wEvItDGrQT
-         s5rP5KrIr8+jXAMeUiYcMLYuhq89f/+5mVs0ZWii9LxfwY+V0LmoaflxzYKI3sa5PPL8
-         Nrtt1VJ1OEia+0Pun5YxR9P3hOUIqiXkxX0QJQc+n7EvO9WbT9MaksQTQ/wVTlspvGP3
-         SifMjOK/pqyZkr2KBIzVPl4tzFAy6HQ4jwkFgj4EyFjx3SzTYr/bo7GtpUDoAmRygAH3
-         6zFA==
-X-Gm-Message-State: AOJu0YyjBeJT0bmvLuiCwcQjyLbKA/VDr2ciwyjrkglIVJg+GR+HfATa
-        Kl4WRLm+DEQgbq4FdRT/OH4=
-X-Google-Smtp-Source: AGHT+IFn9+aaDvJQIaTTT9fhCQOFpYf2DG2sHOPojRJV8T11hDylXF7KIzTFFXItytXtfbP6QIHFjw==
-X-Received: by 2002:a05:6a21:1cb0:b0:18f:97c:8a3a with SMTP id sf48-20020a056a211cb000b0018f097c8a3amr3614507pzb.101.1701679733801;
-        Mon, 04 Dec 2023 00:48:53 -0800 (PST)
-Received: from [10.10.14.80] (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id v4-20020a634644000000b0058901200bbbsm7186819pgk.40.2023.12.04.00.48.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 00:48:53 -0800 (PST)
-Message-ID: <3ff5dcd7-69a3-4098-92c6-ed1e8f0bd8f9@gmail.com>
-Date:   Mon, 4 Dec 2023 16:46:41 +0800
+        Mon, 4 Dec 2023 03:47:01 -0500
+X-Greylist: delayed 55780 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Dec 2023 00:47:04 PST
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6F11A4
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:47:04 -0800 (PST)
+Received: from alexious$zju.edu.cn ( [124.90.105.255] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Mon, 4 Dec 2023 16:46:54 +0800
+ (GMT+08:00)
+X-Originating-IP: [124.90.105.255]
+Date:   Mon, 4 Dec 2023 16:46:54 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   alexious@zju.edu.cn
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     "Alex Deucher" <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "David Airlie" <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] drm/radeon/dpm: fix a memleak in
+ sumo_parse_power_table
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
+ 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <b1fa2827-61fb-4594-8f80-e5083be8d5fa@amd.com>
+References: <20231203171643.3287229-1-alexious@zju.edu.cn>
+ <b1fa2827-61fb-4594-8f80-e5083be8d5fa@amd.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/2] Add Facebook Minerva Harma (AST2600) BMC
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20231204081029.2272626-1-peteryin.openbmc@gmail.com>
- <fddcbad4-5368-4c2a-ba87-f4c4326a8385@linaro.org>
-Content-Language: en-US
-From:   PeterYin <peteryin.openbmc@gmail.com>
-In-Reply-To: <fddcbad4-5368-4c2a-ba87-f4c4326a8385@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <7a726f38.19f2f.18c340249f7.Coremail.alexious@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgDHzTX_kW1lKXdIAA--.13484W
+X-CM-SenderInfo: qrsrjiarszq6lmxovvfxof0/1tbiAgUTAGVsUQg1KAABsY
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Krzysztof Kozlowski 於 12/4/23 16:20 寫道:
-> On 04/12/2023 09:10, Peter Yin wrote:
->> Summary:
->> Add linux device tree entry related to Minerva Harma
->> specific devices connected to BMC SoC.
->>
->> v4:https://lore.kernel.org/all/20231204054131.1845775-3-peter.yin@quantatw.com/
->> v3:https://lore.kernel.org/all/20231123050415.3441429-3-peteryin.openbmc@gmail.com/
->> v2:https://lore.kernel.org/all/cdbc75b9-3be1-4017-9bee-c8f161b6843c@linaro.org/
->> v1:https://lore.kernel.org/all/20231024082404.735843-3-peteryin.openbmc@gmail.com/
->>
->> Change log
->> v4 -> v5
->>    - Rename document and file from minerva-harma to harma.
-> 
-> You must explain that you dropped people's review for some reason.
-> 
-> Best regards,
-> Krzysztof
-> 
-Due to changes in the project name and content, please assist in 
-reviewing it.
-
-Thanks,
-Peter.
+PiBBbSAwMy4xMi4yMyB1bSAxODoxNiBzY2hyaWViIFpoaXBlbmcgTHU6Cj4gPiBUaGUgcmRldi0+
+cG0uZHBtLnBzIGFsbG9jYXRlZCBieSBrY2FsbG9jIHNob3VsZCBiZSBmcmVlZCBpbiBldmVyeQo+
+ID4gZm9sbG93aW5nIGVycm9yLWhhbmRsaW5nIHBhdGguIEhvd2V2ZXIsIGluIHRoZSBlcnJvci1o
+YW5kbGluZyBvZgo+ID4gcmRldi0+cG0ucG93ZXJfc3RhdGVbaV0uY2xvY2tfaW5mbyB0aGUgcmRl
+di0+cG0uZHBtLnBzIGlzIG5vdCBmcmVlZCwKPiA+IHJlc3VsdGluZyBpbiBhIG1lbWxlYWsgaW4g
+dGhpcyBmdW5jdGlvbi4KPiA+Cj4gPiBGaXhlczogODBlYTJjMTI5Yzc2ICgiZHJtL3JhZGVvbi9r
+bXM6IGFkZCBkcG0gc3VwcG9ydCBmb3Igc3VtbyBhc2ljcyAodjIpIikKPiA+IFNpZ25lZC1vZmYt
+Ynk6IFpoaXBlbmcgTHUgPGFsZXhpb3VzQHpqdS5lZHUuY24+Cj4gPiAtLS0KPiA+ICAgZHJpdmVy
+cy9ncHUvZHJtL3JhZGVvbi9zdW1vX2RwbS5jIHwgMSArCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCAx
+IGluc2VydGlvbigrKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vcmFkZW9u
+L3N1bW9fZHBtLmMgYi9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3N1bW9fZHBtLmMKPiA+IGluZGV4
+IGY3NGYzODFhZjA1Zi4uYmRlNjQwMDUzNzA4IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUv
+ZHJtL3JhZGVvbi9zdW1vX2RwbS5jCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vcmFkZW9uL3N1
+bW9fZHBtLmMKPiA+IEBAIC0xNDk0LDYgKzE0OTQsNyBAQCBzdGF0aWMgaW50IHN1bW9fcGFyc2Vf
+cG93ZXJfdGFibGUoc3RydWN0IHJhZGVvbl9kZXZpY2UgKnJkZXYpCj4gPiAgIAkJbm9uX2Nsb2Nr
+X2luZm8gPSAoc3RydWN0IF9BVE9NX1BQTElCX05PTkNMT0NLX0lORk8gKikKPiA+ICAgCQkJJm5v
+bl9jbG9ja19pbmZvX2FycmF5LT5ub25DbG9ja0luZm9bbm9uX2Nsb2NrX2FycmF5X2luZGV4XTsK
+PiA+ICAgCQlpZiAoIXJkZXYtPnBtLnBvd2VyX3N0YXRlW2ldLmNsb2NrX2luZm8pCj4gPiArCQkJ
+a2ZyZWUocmRldi0+cG0uZHBtLnBzKTsKPiA+ICAgCQkJcmV0dXJuIC1FSU5WQUw7Cj4gCj4gVGhh
+dCBjaGFuZ2UgaXMgb2J2aW91c2x5IG5vdCBjb3JyZWN0IHNpbmNlIHlvdSBub3cgYWx3YXlzIHJl
+dHVybiAtRUlOVkFMLgo+IAo+IFlvdSBuZWVkIHRvIGF0IGxlYXN0IGFkZCB7fSBoZXJlLgo+IAoK
+SSdtIHNvcnJ5IGZvciBteSBtaXN0YWtlIGFuZCBJJ2xsIHNlbmQgYSBuZXcgcGF0Y2ggc29vbi4K
+ClJlZ2FyZHMsClpoaXBlbmcK
