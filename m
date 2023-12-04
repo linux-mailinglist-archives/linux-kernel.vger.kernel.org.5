@@ -2,124 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7FE802E1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF67802E23
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbjLDIxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47126 "EHLO
+        id S230149AbjLDIxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:53:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjLDIxP (ORCPT
+        with ESMTP id S229714AbjLDIx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:53:15 -0500
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61C8A5;
-        Mon,  4 Dec 2023 00:53:21 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 329673200A47;
-        Mon,  4 Dec 2023 03:53:20 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 04 Dec 2023 03:53:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701679999; x=1701766399; bh=Br
-        16u4cy0eZPz1W9bH0/WzZdoUCb+AJe3NiNEj7iIgY=; b=JW/UsSWkD948Fg19mR
-        voYDi7cVd2O4lWh8Ou5OAttoXr4tMOquxA6BcBpkEZkx9abHHkoeKXvGy0SxUOjT
-        3GYJ43X9b0+JEZ65+uhe/xpnaGzhr1q3vKjCQ441IY8flwvFXvdz/nxlMBTkKbRN
-        Nnn29dj5mdNOdTM+P7+7an9qAMBms1D4NVY9wi5+S0tSyFT/jnTH3stup76UG5Pu
-        NKoN9t3fxS6UGxypCXAI28vCSZ8+glOFMVbWm5DFcHLbbP6xG7DwDvAI5zhr8ccC
-        0cjNMlXqsDLxjh/otHquIIdbI4EE85o2pVnA4Fsg4hJJhIkeg3HIDZ7kN9bpSl82
-        44uw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701679999; x=1701766399; bh=Br16u4cy0eZPz
-        1W9bH0/WzZdoUCb+AJe3NiNEj7iIgY=; b=g68+rVPu15+TVdPRo4ftiIvKidQAT
-        6Iyi4FAu/e2Mbp6yrDAajRE9qZoA3fCnNsOKR6i7810rovSuriQ/nz/DXysH97gP
-        RE+jAgM86VA3Pkt/BmACKVinI+VLNCeuHrfbYW+6EQVaw+rtjj/zr6Dh5v62JU30
-        iwyiurjQkxAn3A996NxWCft9cEUeb1Lwip7JXTzQZ0zpI9WDA1lTndgNvlc5vnoX
-        KFgEIOc6OUFKNFqGHdxoSasWXP/f12/W1gVff8bgun63HR80H6dpZ1/IkneRrzaW
-        kY92X7GSwbjJW8oiqAc35ikZgHWlJxlKIDA+ZvaYpYXENC40XbGew5YDw==
-X-ME-Sender: <xms:f5NtZeclmHlcNyIFS48u56XsTrFe6tub6IymnhOOllefrE2dQlzOvQ>
-    <xme:f5NtZYPJvwIU2-eQQlr5VWiKidN52tpKyDQkYnmd5cKskxSPM1OInNKL00M-8okOy
-    KLYq_kIozdPk8Kt7ns>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejhedguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:f5NtZfjW2NC78EZis4Wu7wE3_P-WSaXyXbLGmIDmymaPDSpm6iFUSA>
-    <xmx:f5NtZb_D-T4K49mZxhuFoX07sZW1CX9An0mfZK_hKPMfRFsFmsW-Qw>
-    <xmx:f5NtZau2jYjzxJzMeHqNby2NDJnnCr_yjC0J0xniGukm1cIsT9TY7A>
-    <xmx:f5NtZYBty1gTC-pKbdpA-h4gz0bBBOSNiGjEeNHVrBcm1Co3Gcxn2Q>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 70EE1B60089; Mon,  4 Dec 2023 03:53:19 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Mon, 4 Dec 2023 03:53:28 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBB6FA5;
+        Mon,  4 Dec 2023 00:53:34 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B46sMRR027299;
+        Mon, 4 Dec 2023 08:53:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=DNPW1/ETFxKq/RnXD14axskSrLhfYGFY6SaSrdF8b0A=;
+ b=lK8uDfOn8N0dBdSaCmHVYByTU9F/KjqRMJKTmeBf7lX4SWs78+vliwV6l6yLOR6VwjkD
+ SHDvTDxlZ5naPzvbRJAcLz0EdFsucBwOIhEYG0pBYE+KqjSw0skSzN9489J+VDdAibwH
+ C+EaxQT5CTsdtjmFY2DLvgNwq1YbDh71XYDGQq1908RpYFF7s3Ljx4mSzeNhL5Iw8ChK
+ s5qpJe3gslZfsC+mSUgnphsoxoZ4PZqO3tQ3W3BEr6ZQ2jntNgNxk08YGbne1LVafjLM
+ iB//ASKZmSD7q6oHM0i8VzuSqq7vJiuxTxi6M7fe2wpHBX5LeNKxzYS66A2LeQZZz84d 0w== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uqwrvuahm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 08:53:17 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B48rGCN029415
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Dec 2023 08:53:16 GMT
+Received: from [10.253.9.254] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
+ 2023 00:53:12 -0800
+Message-ID: <312f2ea7-e0a5-4f0e-884d-85c3450e1ce3@quicinc.com>
+Date:   Mon, 4 Dec 2023 16:53:10 +0800
 MIME-Version: 1.0
-Message-Id: <dc1ba294-233a-4308-81df-23783487b817@app.fastmail.com>
-In-Reply-To: <5402aa8a-a20f-4d28-bd36-3b88702ea6ae@huawei.com>
-References: <20231204072932.1077878-1-arnd@kernel.org>
- <5402aa8a-a20f-4d28-bd36-3b88702ea6ae@huawei.com>
-Date:   Mon, 04 Dec 2023 09:52:58 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Jijie Shao" <shaojijie@huawei.com>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Yisen Zhuang" <yisen.zhuang@huawei.com>,
-        "Salil Mehta" <salil.mehta@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>
-Cc:     "Hao Chen" <chenhao418@huawei.com>,
-        Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: hns3: reduce stack usage in hclge_dbg_dump_tm_pri()
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/9] net: mdio: ipq4019: Enable GPIO reset for ipq5332
+ platform
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
+        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-4-quic_luoj@quicinc.com>
+ <e740a206-37af-49b1-a6b6-baa3c99165c0@lunn.ch>
+ <33246b49-2579-4889-9fcb-babec5003a88@quicinc.com>
+ <dd2c3cfa-f7ee-4abb-9eff-2aac04fa914f@lunn.ch>
+Content-Language: en-US
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <dd2c3cfa-f7ee-4abb-9eff-2aac04fa914f@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: uil2KWJSHYT_R_mIUcPECDgqjouLWb4y
+X-Proofpoint-GUID: uil2KWJSHYT_R_mIUcPECDgqjouLWb4y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_06,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=812
+ suspectscore=0 priorityscore=1501 mlxscore=0 spamscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040066
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023, at 09:31, Jijie Shao wrote:
-> on 2023/12/4 15:29, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->>
->>
->> @@ -981,7 +981,7 @@ static const struct hclge_dbg_item tm_pri_items[] = {
->>   
->>   static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
->>   {
->> -	char data_str[ARRAY_SIZE(tm_pri_items)][HCLGE_DBG_DATA_STR_LEN];
->> +	char *data_str;
->>   	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
->>   	char *result[ARRAY_SIZE(tm_pri_items)], *sch_mode_str;
->>   	char content[HCLGE_DBG_TM_INFO_LEN];
->> @@ -991,9 +991,13 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
->>   	ret = hclge_tm_get_pri_num(hdev, &pri_num);
->>   	if (ret)
->>   		return ret;
->
-> Thanks,
->   But it would be better if there is an empty line here.
-
-ok
-
->
-> all exception condition also need to free memory before return. eg:
 
 
-Indeed, I'll send a v2 in a bit.
+On 11/17/2023 1:20 AM, Andrew Lunn wrote:
+>> FYI, here is the sequence to bring up qca8084.
+>> a. enable clock output to qca8084.
+>> b. do gpio reset of qca8084.
+>> c. customize MDIO address and initialization configurations.
+>> d. the PHY ID can be acquired.
+> 
+> This all sounds like it is specific to the qca8084, so it should be in
+> the driver for the qca8084.
+> 
+> Its been pointed out you can get the driver to load by using the PHY
+> ID in the compatible. You want the SoC clock driver to export a CCF
+> clock, which the PHY driver can use. The PHY driver should also be
+> able to get the GPIO. So i think the PHY driver can do all this.
+> 
+>       Andrew
 
-     Arnd
+Hi Andrew,
+If i put the GPIO reset in the PHY device tree node, the PHY probe
+function will be postponed to be called instead of being called
+during the MDIO bus register, which leads to the PCS can't be
+created correctly because of reading PHY capability failed before
+the PHY probe function called.
+
+my device tree nodes are as below.
+
+ethernet_device {
+	phy-handle = <&phy3>;
+	phy-mode = "2500base-x";
+	...
+};
+
+mdio@90000 {
+	phy3: ethernet-phy@3 {
+		compatible = "ethernet-phy-id004d.d180";
+		reg = <4>;
+		reset-gpios = <&tlmm 51 GPIO_ACTIVE_LOW>;
+		reset-assert-us = <100000>;
+		reset-deassert-us = <100000>;
+		clocks = <...>;
+		clock-names = "...";
+	};
+};
+
+Since the PHY probe function of phy3 is postponed instead of
+called during the MDIO bus driver register, and the initialization
+of qca8084 is not called when the ethernet_device driver is called
+to create PCS, where the phy3 capability is checked, which is failed
+since the qca8084 PHY probe is not called.
+
+Any idea to resolve this call sequence issue?
+Thanks.
+
