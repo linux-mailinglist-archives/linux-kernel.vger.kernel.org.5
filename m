@@ -2,65 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A267803E66
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE083803E67
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231320AbjLDTaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:30:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
+        id S230389AbjLDTaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:30:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjLDT37 (ORCPT
+        with ESMTP id S230317AbjLDTaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:29:59 -0500
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7288B6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:30:05 -0800 (PST)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-58e256505f7so1496254eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:30:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701718205; x=1702323005;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rkh649P5swTHC96T9y/w4miqT3snggWcTsKeWpqgnz4=;
-        b=iwkEH/GoI7xz6BMBum5Qd2lt/0GTr2XhAEb0pTljj5aQfH8LN++GuSAECV7IcSSV5/
-         nQs7TkGRLD9GvSzWyA3oaK+KRPOT9SM81nY+JCoeIvSCySnceyW9y3wiwW4UofbA/RGr
-         R4fg/q7qOvQDfCwwePu08cLPFrlATb1wE7ZZGlsa+XZon5QZjGWJQiurUyKrujtNfDRO
-         hQ7oZu0rtip9DBRNMMk5kZKGTGE4P421QIAlsrxDcIL5Id1UXSzxq4ei37TI43OuJJ3/
-         d/4DE9zQ3Z1O90l+6Ln/J3JH3BV9PG/KKKtoneZVk/sq+J+Bg9xskCLq8PacVIiL5pPx
-         QkAQ==
-X-Gm-Message-State: AOJu0YwVaJJ3N4DAsKXszfHe+vZEPt2gk4ADvg4GCklBDSN063JF7Q4T
-        ngZo2G08u7eXwG1hJjUIzvqN3x1a+rgLPdN4
-X-Google-Smtp-Source: AGHT+IGhccHy9SqwR+G0d2RpkPE6ELIl/0DoQRxnwLQM1LSotUDm+ILilCD03/nynymSgcDoG0PGpg==
-X-Received: by 2002:a4a:b388:0:b0:58e:1c47:879e with SMTP id p8-20020a4ab388000000b0058e1c47879emr3426535ooo.19.1701718204674;
-        Mon, 04 Dec 2023 11:30:04 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id bn29-20020a05620a2add00b0077d5c5af0c1sm4463804qkb.6.2023.12.04.11.30.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 11:30:04 -0800 (PST)
-Date:   Mon, 4 Dec 2023 13:30:01 -0600
-From:   David Vernet <void@manifault.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
-        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
-        kprateek.nayak@amd.com, aaron.lu@intel.com,
-        wuyun.abel@bytedance.com, kernel-team@meta.com,
-        aboorvad@linux.vnet.ibm.com, yu.c.chen@intel.com
-Subject: Re: [PATCH v3 0/7] sched: Implement shared runqueue in CFS
-Message-ID: <20231204193001.GA53255@maniforge>
-References: <20230809221218.163894-1-void@manifault.com>
+        Mon, 4 Dec 2023 14:30:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CEEE6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:30:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C41C4C433C8;
+        Mon,  4 Dec 2023 19:30:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701718225;
+        bh=Xc/MU6W/EB84lggpE5Bjsxpht9lSHmzC1hC1M4lx884=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=EIrkIvfJx7lLroPkfiSuyIr8ejNpLxRnXsF1yGkl2Ky4cpWXvctPtw5qtC8x/tGBU
+         X1cTT47I6wpCUUXgc1QA2SwXe23rgU2OFeACkr0kP+6AN/4K426O26H9ylO5kUnSBa
+         9ZVnY2WFpD3x7ZE6SG3uGEkx/4scop4w7MNQ5ecCx1qsRbCqeV9PLi5MUKxKvp2Nv6
+         yzTLdNnKS8noBJ1k/YEwQehbTEzrRH1AzzVAwWqMmcoDu5+M77rvWo6j9Ej13HaadR
+         hPH2tl7zbQwUTIWXYcwhEy+gmmwAe5H/olgiVQRrxJQTdIo/5T0D6m3Ceiclh8Gkve
+         I4HmfmbAMP2dg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Cc:     sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231204033549.2020289-1-wenst@chromium.org>
+References: <20231204033549.2020289-1-wenst@chromium.org>
+Subject: Re: [PATCH] ASoC: SOF: Move sof_of_machine_select() to core.c from
+ sof-of-dev.c
+Message-Id: <170171822243.157597.14987594819577549531.b4-ty@kernel.org>
+Date:   Mon, 04 Dec 2023 19:30:22 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230809221218.163894-1-void@manifault.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-5c066
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,25 +60,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 09, 2023 at 05:12:11PM -0500, David Vernet wrote:
-> Changes
-> -------
+On Mon, 04 Dec 2023 11:35:47 +0800, Chen-Yu Tsai wrote:
+> This reverts commit 014fdeb0d747304111cfecf93df4407c1a0c80db.
 > 
-> This is v3 of the shared runqueue patchset. This patch set is based off
-> of commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when cfs
-> bandwidth in use") on the sched/core branch of tip.git.
+> Commit 014fdeb0d747 ("ASoC: SOF: Move sof_of_machine_select() to
+> sof-of-dev.c from sof-audio.c") caused a circular dependency between
+> the snd_sof and snd_sof_of modules:
 > 
-> v1 (RFC): https://lore.kernel.org/lkml/20230613052004.2836135-1-void@manifault.com/
-> v2: https://lore.kernel.org/lkml/20230710200342.358255-1-void@manifault.com/
+> 	depmod: ERROR: Cycle detected: snd_sof -> snd_sof_of -> snd_sof
+> 	depmod: ERROR: Found 2 modules in dependency cycles!
+> 
+> [...]
 
-Hello everyone,
+Applied to
 
-I wanted to give an update on this, as I've been promising a v4 of the
-patch set for quite some time. I ran more experiments over the last few
-weeks, and EEVDF has changed the performance profile of the SHARED_RUNQ
-feature quite a bit compared to what we were observing with CFS. We may
-pick this back up again at a later point, but for now we're going to
-take a step back and re-evaluate.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: SOF: Move sof_of_machine_select() to core.c from sof-of-dev.c
+      commit: d0ae9dc48e24f5f704abcbb2dca3e4651bf0ff59
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
-David
+Mark
+
