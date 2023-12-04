@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A32A0803441
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41B1803445
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233513AbjLDNQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:16:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40598 "EHLO
+        id S233741AbjLDNRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:17:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDNQp (ORCPT
+        with ESMTP id S229711AbjLDNRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:16:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA5FAC;
-        Mon,  4 Dec 2023 05:16:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701695812; x=1733231812;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ruNQAEGel56sXK2lguhT42sAf9ycNnOllBZQjHkiz68=;
-  b=PJWi8vuAeDGxWmC51xOgTiB7Xwmd+3IsWThqlM69FemK1I7ldZaurLM3
-   TARm+gcD43ls55I2Q72/39L0Yef7FHoDTwEmC66R8rNtk1vZikF7Ft/bS
-   A3XqwGC7dBcvOzeDjMS3q04OXdlEcKypy47jVyioKncz6EsFnZPmy8Ksl
-   40ByOlgx9BrT7+z1MUPlSMUHfwugqZoPGSXbJ82SatM8NqkPcsywc0u6V
-   U18yfhxYNnMUtJ2qd+eb0vX2MxYKR7tOlZnSWt9iD5MbP+wlwr7QAlx35
-   s4HpL8ELMwXkOUHplEfyvy6H5BQLNdWCBYSmaRaGuBcf7CgLKQwdvrjna
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="629373"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="629373"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:16:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="774254311"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="774254311"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 05:16:50 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rA8oZ-00000001kz7-47cN;
-        Mon, 04 Dec 2023 15:16:47 +0200
-Date:   Mon, 4 Dec 2023 15:16:47 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v3 02/10] gpio: wm831x: use gpiochip_dup_line_label()
-Message-ID: <ZW3RPxjsNPacT9Si@smile.fi.intel.com>
-References: <20231204093509.19225-1-brgl@bgdev.pl>
- <20231204093509.19225-3-brgl@bgdev.pl>
+        Mon, 4 Dec 2023 08:17:05 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 308AE95;
+        Mon,  4 Dec 2023 05:17:12 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BED3152B;
+        Mon,  4 Dec 2023 05:17:59 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C4E13F5A1;
+        Mon,  4 Dec 2023 05:17:10 -0800 (PST)
+Message-ID: <7825dcd4-94e1-7a5f-b388-90e748dfc47f@arm.com>
+Date:   Mon, 4 Dec 2023 13:17:10 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204093509.19225-3-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V2 6/7] coresight: stm: Move ACPI support from AMBA driver
+ to platform driver
+Content-Language: en-US
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
+        Sudeep Holla <Sudeep.Holla@arm.com>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
+ <20231201062053.1268492-7-anshuman.khandual@arm.com>
+ <0adc3a16-0fc4-2a25-cd48-4667881b9490@arm.com>
+ <e53cec31-9452-4c2a-a3a1-b6ef33be8e22@arm.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <e53cec31-9452-4c2a-a3a1-b6ef33be8e22@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 10:35:01AM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+
+
+On 04/12/2023 11:50, Anshuman Khandual wrote:
 > 
-> Use the new gpiochip_dup_line_label() helper to safely retrieve the
-> descriptor label.
+> 
+> On 12/4/23 15:53, James Clark wrote:
+>>
+>>
+>> On 01/12/2023 06:20, Anshuman Khandual wrote:
+>>> Add support for the stm devices in the platform driver, which can then be
+>>> used on ACPI based platforms. This change would now allow runtime power
+>>> management for ACPI based systems. The driver would try to enable the APB
+>>> clock if available.
+>>>
+>>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>> Cc: James Clark <james.clark@arm.com>
+>>> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+>>> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+>>> Cc: linux-acpi@vger.kernel.org
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Cc: coresight@lists.linaro.org
+>>> Cc: linux-stm32@st-md-mailman.stormreply.com
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>> [...]
+>>>  
+>>> -module_amba_driver(stm_driver);
+>>> +static int stm_platform_probe(struct platform_device *pdev)
+>>> +{
+>>> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>> +	int ret = 0;
+>>> +
+>>> +	pm_runtime_get_noresume(&pdev->dev);
+>>> +	pm_runtime_set_active(&pdev->dev);
+>>> +	pm_runtime_enable(&pdev->dev);
+>>> +
+>>> +	ret = __stm_probe(&pdev->dev, res, NULL);
+>>
+>> Very minor nit, but this used to print this:
+>>
+>>   coresight stm0: STM500 initialized
+>>
+>> And now it prints this:
+>>
+>>   coresight stm0: (null) initialized
+>>
+>> (null) kind of makes it look a little bit like something has gone wrong.
+>> Maybe we could just put "initialised" if you don't have a string from ACPI?
+> 
+> __stm_probe() gets called from both AMBA and platform driver paths. Even though
+> a NULL check inside dev_info(..."%s initialized\n",...) could be added, but how
+> to differentiate it from a scenario when coresight_get_uci_data() returns NULL ?
 
-...
-
->  	for (i = 0; i < chip->ngpio; i++) {
->  		int gpio = i + chip->base;
->  		int reg;
-> -		const char *label, *pull, *powerdomain;
-> +		const char *pull, *powerdomain;
-
-Make it reversed xmas tree?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Sudeep's suggestion seems ok, just add a hard coded string instead of
+the NULL. And keep the coresight_get_uci_data() the same.
