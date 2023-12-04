@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E2D1802E30
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F75802E2A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbjLDIyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:54:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60228 "EHLO
+        id S230173AbjLDIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjLDIya (ORCPT
+        with ESMTP id S229922AbjLDIzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:54:30 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DACC9B
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:54:34 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c09d0b045so11046595e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 00:54:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701680072; x=1702284872; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IsEvf1UWeFflvqJIT9N20f+Hk4m+lbh6KScDBJtlrds=;
-        b=ODEXPiIWNDW9Ht0oIWS15Cffy3PBD8BVJ9o4BsOrc8Mrw0V0i7eFspumqZJCLHCMNt
-         bkqJ8fhqdoTSkm0gLRpCgAbULL3LpFeWGoRUPT/umhWZgXIJgi3BUfMakIbJTj/q6ghK
-         1yLwG3eT2k16EHx/xzOs6C7LjHJz55Kb4QOhGP2McPZ8LrIb5X/MPz3n7X0b3fVde6E2
-         9dO8T0UPQyhwBPsyVBaPl5Wc2O6wBnVXBKWt6pcMbzlBQBTp9AxE+8MRLd6XGSsvVti8
-         iuqjmfqUOtpIlNTB0WTgKpFvS40KHqFz08ERbWVmoX4HAU6iCplVyEYHme8Dmq9CS3WV
-         8AJA==
+        Mon, 4 Dec 2023 03:55:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4974CCD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:55:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701680114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0AN6JCFDsnCGduiL8fNvKVYamhB7M2dQghKbiuZenRQ=;
+        b=hKttobFFBexPdGcwBKlWGWQijl4smwvSFj/zv1+j1plYUDtWT50gsRLwitqfemyXgK/44o
+        G2a6QDzfR9Nfj+HI0LZeRfAk+cMX4jdRyCp0fPPpjQFqwnwnFnAMu7sog9ZnEvREmpCtxW
+        hiXRaqeOv9maH4a1Bkm/Zhe3WMq6CO4=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-515--Xu5OZOBMtK0IV56aSUi-w-1; Mon, 04 Dec 2023 03:55:13 -0500
+X-MC-Unique: -Xu5OZOBMtK0IV56aSUi-w-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33344663fbcso905918f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 00:55:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701680072; x=1702284872;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IsEvf1UWeFflvqJIT9N20f+Hk4m+lbh6KScDBJtlrds=;
-        b=tZxiGDmR7+0Ewy7t81Fr8aBaT2OZm7A/wh3zgXn9A/x61X9y9gp5K/m7OrRSo5uZff
-         yMiSgAV56zXpxqvbaj0tSXi2LDtxo/Bp+JxAYUejE0lueOX9JdBO+jEMKoIli69Vltsk
-         Nj/VckO5g84wLyVNd+CXe2AU/qx2Noqpa0wbHQUDaOKPf50NODLNdDnsSZfz8vhgrBkE
-         7U5IG78mqU2kMpK3JEsQxiG3iZymnVGN4tv/rFYg8bUIqK3LA7UWdUvGO3rIykgRBUxz
-         xULWQ+eydWDJnndOpmopaaVCBjrZ9BWy7ascTUf6kDLdBQl6YPmJJQmTTuMDDOnNc5TR
-         EDrA==
-X-Gm-Message-State: AOJu0Yx25frchjSrPWSU0+Yg2N4U8etVdG7ExUSdADR9hHvnbiQkKRDG
-        +o1VpVDHOsYBuG6jNSWbyG8br09rrSeIR7pZyHI=
-X-Google-Smtp-Source: AGHT+IH0r4KISOv4zNLTHDu5aAObSJfPRuwpaA2b804m+NoRAtFaT8xHRVLh9GA+fEiOEeWqWLvSZw==
-X-Received: by 2002:a05:600c:4f04:b0:40b:5e21:c5e9 with SMTP id l4-20020a05600c4f0400b0040b5e21c5e9mr1711141wmq.183.1701680072148;
-        Mon, 04 Dec 2023 00:54:32 -0800 (PST)
-Received: from [127.0.1.1] ([82.77.85.67])
-        by smtp.gmail.com with ESMTPSA id fc12-20020a05600c524c00b0040b400711f5sm17963958wmb.7.2023.12.04.00.54.30
+        d=1e100.net; s=20230601; t=1701680112; x=1702284912;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0AN6JCFDsnCGduiL8fNvKVYamhB7M2dQghKbiuZenRQ=;
+        b=khCV1cSjxgdfAyqhLcl/XcA+Qmn0OlVXb4B6BGb/HBxVd6yOYaADwyTEhMqw+7D1kq
+         m/13n+wEpKmuZNxfRvHnZI6JNPjlw/qhHo66oTLkp5wXu7wXngWVYbGEiKTz6iQ/N7vx
+         zFfEHjG28Ov+766HlktGulojV4VkZv4fRQO0IIrBOOThSguVc3uAGlR3Ai1cudcvseDX
+         9weE8X4igaOKj3NgsAmJPPeyn1VQaTwZFJc8q2Nr2SsgoIFTzyHIIjk2ZRtYg17KmEr/
+         f8I6ntmS6YEk6JukZPcgjitAWXNZEuOiTCQa87R5GQXjcNy1l+XTBmLpFFqzmZ6xXHI3
+         Rbcw==
+X-Gm-Message-State: AOJu0Yy7f252Hzir7WQa2ogj7OSc1crsmXh2SzR676DyjJ8/gQ2GVYtB
+        9sQYwKEWgy9PgiwQADwg0CO+DGaQRlS8+W23u2ioj5rmHUNbOlJqsS4JuHoQOehOkqKjAAdJLuL
+        2KNbIYYq4xhU6spKyhVrnW6lr
+X-Received: by 2002:adf:fe03:0:b0:333:2fd2:765e with SMTP id n3-20020adffe03000000b003332fd2765emr1292014wrr.79.1701680112062;
+        Mon, 04 Dec 2023 00:55:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF6o767vIbm8ZsJXOcZvJBzFh+btgTQgB0JYi5+5AiuODwwmWvCd5ESmGDV8zXhTYkKs+bnzA==
+X-Received: by 2002:adf:fe03:0:b0:333:2fd2:765e with SMTP id n3-20020adffe03000000b003332fd2765emr1292008wrr.79.1701680111648;
+        Mon, 04 Dec 2023 00:55:11 -0800 (PST)
+Received: from redhat.com ([2.55.57.48])
+        by smtp.gmail.com with ESMTPSA id b12-20020a05600010cc00b0033340aa3de2sm4299066wrx.14.2023.12.04.00.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 00:54:31 -0800 (PST)
-From:   Abel Vesa <abel.vesa@linaro.org>
-Date:   Mon, 04 Dec 2023 10:54:25 +0200
-Subject: [PATCH v2] drm/panel-edp: Add SDC ATNA45AF01
+        Mon, 04 Dec 2023 00:55:11 -0800 (PST)
+Date:   Mon, 4 Dec 2023 03:55:07 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Dragos Tatulea <dtatulea@nvidia.com>
+Cc:     "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
+        Parav Pandit <parav@nvidia.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "eperezma@redhat.com" <eperezma@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "si-wei.liu@oracle.com" <si-wei.liu@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "galp@nvidia.com" <galp@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [PATCH vhost 0/7] vdpa/mlx5: Add support for resumable vqs
+Message-ID: <20231204035443-mutt-send-email-mst@kernel.org>
+References: <20231201104857.665737-1-dtatulea@nvidia.com>
+ <20231202152523-mutt-send-email-mst@kernel.org>
+ <aff0361edcb0fd0c384bf297e71d25fb77570e15.camel@nvidia.com>
+ <20231203112324-mutt-send-email-mst@kernel.org>
+ <e088b2ac7a197352429d2f5382848907f98c1129.camel@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231201-x1e80100-drm-panel-edp-v2-1-b0173484631a@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAMCTbWUC/4WNQQ6CMBAAv0L27Jpu1Qie/IfhUOgCTWrbbJVgC
- H+38gGPM8lkVsgsjjPcqhWEZ5ddDAX0oYJ+MmFkdLYwaKVPpBXhQlwrUgqtPDGZwB7ZJuTmbHt
- b64viDkrcmczYiQn9VPLw9r7IJDy4Zb892sKTy68on30+08/+/cyEhDw0locrka3N3btgJB6jj
- NBu2/YFNmlYctIAAAA=
-To:     Douglas Anderson <dianders@chromium.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1320; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=LBmH7u4KmtRScnC6X68jFgBzF0WRRB7mXPFU47y7t2o=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBlbZPCJl0hiu7IjYuG+DGLBQfQJ6LEb0gshDxsg
- yGqwiFeC+aJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZW2TwgAKCRAbX0TJAJUV
- VgN1D/wJGfLSpDM4gKqzU66yRFsrXi92I74q6ZJnpPGuNwIil88J5USzuEBJiPoHFFrtwB5nAM7
- C6RQ+HZIOYtsYBN/cQ+Dvd2HWAxuw7JbKNpJ7OgzzVLqN9cC0jYKD9/Fq4z2a2hqqz9SelH8kWz
- PmZL5uP1Tn0Mw3aGHZbD909D5JV+LPs+hCOae/rbuRhoRJGQ5BJ7kx5Bg8KD4wF6UJ7Q4NNUyUg
- dsakX3SmxceFt2zn9LQfOxmQAMOYk91DzyXTcv0BJhBEfkRnwy3R8VvTONR43bNbPFrdKgkGx9k
- p8MBAm6I0/x45Q9VqjHYQLMI/vmce8lut/fU5lLy/aq06P0M4Se3CjT7tW3xZ6yx53tfRLk8Kdx
- RqpfOg7VNm9N3ruSTWAChfasghcQrLqabawVcnDr56FUuDcP/3BSZS3cV/REUrxe9KCTwRJv08q
- 7OOccFhSGmcWKRoFIgqS+xNO8ku4lBRxWpSloGlt1fJF96ttX9RpS9Dn6OYigx4lcvcyf8DHPgi
- SvRZQBaK7GTB0nEH98k9iZ/xPur3euzkV1cHE+DeoWAArPBQcv7jpMa406grApJamSTjZixfb4o
- 9GZU3l47XVz9OWWQz8KPd4LdF9oZnGA5ujLoK5lMYJWgtRyZFqMjTaBu/uoASI9I6QyF4rSkDpv
- RNLoydugxFcdltw==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e088b2ac7a197352429d2f5382848907f98c1129.camel@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -98,36 +92,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the SDC ATNA45AF01 panel.
+On Mon, Dec 04, 2023 at 08:53:26AM +0000, Dragos Tatulea wrote:
+> On Sun, 2023-12-03 at 11:23 -0500, Michael S. Tsirkin wrote:
+> > On Sun, Dec 03, 2023 at 03:21:01PM +0000, Dragos Tatulea wrote:
+> > > On Sat, 2023-12-02 at 15:26 -0500, Michael S. Tsirkin wrote:
+> > > > On Fri, Dec 01, 2023 at 12:48:50PM +0200, Dragos Tatulea wrote:
+> > > > > Add support for resumable vqs in the driver. This is a firmware feature
+> > > > > that can be used for the following benefits:
+> > > > > - Full device .suspend/.resume.
+> > > > > - .set_map doesn't need to destroy and create new vqs anymore just to
+> > > > >   update the map. When resumable vqs are supported it is enough to
+> > > > >   suspend the vqs, set the new maps, and then resume the vqs.
+> > > > > 
+> > > > > The first patch exposes the relevant bits in mlx5_ifc.h. That means it
+> > > > > needs to be applied to the mlx5-vhost tree [0] first.
+> > > > 
+> > > > I didn't get this. Why does this need to go through that tree?
+> > > > Is there a dependency on some other commit from that tree?
+> > > > 
+> > > To avoid merge issues in Linus's tree in mlx5_ifc.h. The idea is the same as for
+> > > the "vq descriptor mappings" patchset [1].
+> > > 
+> > > Thanks,
+> > > Dragos
+> > 
+> > Are there other changes in that area that will cause non-trivial merge
+> > conflicts?
+> > 
+> There are pending changes in mlx5_ifc.h for net-next. I haven't seen any changes
+> around the touched structure but I would prefer not to take any risk.
+> 
+> Thanks,
+> Dragos
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
-Changes in v2:
-- moved the panel entry in the proper place, as suggested by Doug
-- Link to v1: https://lore.kernel.org/r/20231201-x1e80100-drm-panel-edp-v1-1-ef9def711d8a@linaro.org
----
- drivers/gpu/drm/panel/panel-edp.c | 2 ++
- 1 file changed, 2 insertions(+)
+This is exactly what linux-next is for.
 
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index 825fa2a0d8a5..78565c99b54d 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -1983,6 +1983,8 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('K', 'D', 'C', 0x0809, &delay_200_500_e50, "KD116N2930A15"),
- 	EDP_PANEL_ENTRY('K', 'D', 'B', 0x1120, &delay_200_500_e80_d50, "116N29-30NK-C007"),
- 
-+	EDP_PANEL_ENTRY('S', 'D', 'C', 0x416d, &delay_100_500_e200, "ATNA45AF01"),
-+
- 	EDP_PANEL_ENTRY('S', 'H', 'P', 0x1511, &delay_200_500_e50, "LQ140M1JW48"),
- 	EDP_PANEL_ENTRY('S', 'H', 'P', 0x1523, &sharp_lq140m1jw46.delay, "LQ140M1JW46"),
- 	EDP_PANEL_ENTRY('S', 'H', 'P', 0x154c, &delay_200_500_p2e100, "LQ116M1JW10"),
 
----
-base-commit: 5eda217cee887e595ba2265435862d585d399769
-change-id: 20231201-x1e80100-drm-panel-edp-e94dcd8250eb
-
-Best regards,
--- 
-Abel Vesa <abel.vesa@linaro.org>
+> > > > > Once applied
+> > > > > there, the change has to be pulled from mlx5-vhost into the vhost tree
+> > > > > and only then the remaining patches can be applied. Same flow as the vq
+> > > > > descriptor mappings patchset [1].
+> > > > > 
+> > > > > To be able to use resumable vqs properly, support for selectively modifying
+> > > > > vq parameters was needed. This is what the middle part of the series
+> > > > > consists of.
+> > > > > 
+> > > > > [0] https://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git/log/?h=mlx5-vhost
+> > > > > [1] https://lore.kernel.org/virtualization/20231018171456.1624030-2-dtatulea@nvidia.com/
+> > > > > 
+> > > > > Dragos Tatulea (7):
+> > > > >   vdpa/mlx5: Expose resumable vq capability
+> > > > >   vdpa/mlx5: Split function into locked and unlocked variants
+> > > > >   vdpa/mlx5: Allow modifying multiple vq fields in one modify command
+> > > > >   vdpa/mlx5: Introduce per vq and device resume
+> > > > >   vdpa/mlx5: Mark vq addrs for modification in hw vq
+> > > > >   vdpa/mlx5: Mark vq state for modification in hw vq
+> > > > >   vdpa/mlx5: Use vq suspend/resume during .set_map
+> > > > > 
+> > > > >  drivers/vdpa/mlx5/core/mr.c        |  31 +++---
+> > > > >  drivers/vdpa/mlx5/net/mlx5_vnet.c  | 172 +++++++++++++++++++++++++----
+> > > > >  include/linux/mlx5/mlx5_ifc.h      |   3 +-
+> > > > >  include/linux/mlx5/mlx5_ifc_vdpa.h |   4 +
+> > > > >  4 files changed, 174 insertions(+), 36 deletions(-)
+> > > > > 
+> > > > > -- 
+> > > > > 2.42.0
+> > > > 
+> > > 
+> > 
+> 
 
