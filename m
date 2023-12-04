@@ -2,142 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03EE38036C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA148036BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:31:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345464AbjLDObO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:31:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
+        id S1345157AbjLDObM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:31:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346172AbjLDOat (ORCPT
+        with ESMTP id S1346153AbjLDOas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:30:49 -0500
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA34186;
-        Mon,  4 Dec 2023 06:29:31 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C86B9580948;
-        Mon,  4 Dec 2023 09:29:30 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 04 Dec 2023 09:29:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701700170; x=1701707370; bh=82
-        6yxGHLvKOrBxd7Hd1e9g5EjsLv6zmYuM80wh46KKE=; b=Lj4ikQMVRMBDHagNlC
-        YQgSteBDqhRnfrm9Ku5aNywOXhuxNsGpUO4m/FGo3vtgsjEa32I6R17NJRI86sZ5
-        TAjD8dPSR3MgK7OFOvOIbii1I8ReyreBT/6qlji0tM780e3jtGv0H/LihldZ4ZSQ
-        0sb7ZTAfPUJc3WI+E7J59sT4w4rARxKE65A+4F9zD0vVJZRw28uy/ZfyPY/gh8fC
-        rnWbAKLcbjoNismGWm+8p5asoD7lOJka+6GDKrDiS01EbTEc3QDkI+OB2xEv9RQl
-        rjIvpFX6MM+IlE5EfDr47OQvpOyk0aZ39O4PuUlfAQoAve7fxD6OOVLhxI2uk/za
-        ATaA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701700170; x=1701707370; bh=826yxGHLvKOrB
-        xd7Hd1e9g5EjsLv6zmYuM80wh46KKE=; b=JQufUQL0mUFBQJBOptInpLuw3oJFa
-        33wfnoqHFWL41QNU8kPtG7B9OPz5rgEqTlRC2MxQJqu4xEH5HHjfM64DFzhS/Z0V
-        hpY0znEyMQPMg+WWP+B6MreZ5A5V9G2RH2P1uj4MKwpfk2k9jocjCXTVbBhdS1ow
-        Ue4x6f3ilk0N0JZP+JEHSmZM0WM3njLSSjgpr8aO8VgMuqj/ecnIarz08VsR087t
-        cm4uGSri2sMmasOw7Gcd5G1pvW60nZMOkb4Im33h7ApY8yCKM8uRrVYNgs4eFm/w
-        bglpTSdi1eTY2wwfuaWGSz7UzkuTb9b+bVwh/Dt3izR1rJcBXDf9q098Q==
-X-ME-Sender: <xms:SeJtZWg6svZDBbVud1Ua0JwM4qA_gnIEnzRtd4C1twiFyVg3-s4Fkg>
-    <xme:SeJtZXBqMnrNcqUtOx8TBmCSlsG5n_qE2xjDtE_QZmJdtUddB3q3D5dREAiiCCiF-
-    2HPnXqvlIUZNaMOWJc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejiedgieejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:SeJtZeFJuIk9O1oUscNi2M8kr2BynAlOMK3WmaI_D2X3eLcd7bHGrg>
-    <xmx:SeJtZfQGJ7ToaiFdj7uOnVLZje6IuNYP3CEWOXXiwsUa55gbgNWUBA>
-    <xmx:SeJtZTzyEALPBz_I5AwxT21KGFBDYvbDsTSAGJW5_xcBrX1hG3Awug>
-    <xmx:SuJtZWhSLXKyVW4AWBKN1mYB561Sxzjgxx52cE5IuCk5Pyog1TFfVw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 47AEAB60089; Mon,  4 Dec 2023 09:29:29 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+        Mon, 4 Dec 2023 09:30:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13615184
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:29:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D2E7C433C8;
+        Mon,  4 Dec 2023 14:29:22 +0000 (UTC)
+Message-ID: <8527a401-46a8-4916-993f-ede154eccd9b@xs4all.nl>
+Date:   Mon, 4 Dec 2023 15:29:20 +0100
 MIME-Version: 1.0
-Message-Id: <6d6918ac-a310-45d2-b5fe-c70595918b80@app.fastmail.com>
-In-Reply-To: <e5d53e44709f7da1ba4b8f8a4687efcffdd6addb.camel@redhat.com>
-References: <20231204123834.29247-1-pstanner@redhat.com>
- <20231204123834.29247-6-pstanner@redhat.com>
- <2648aef32cd5a2272cd3ce8cd7ed5b29b2d21cad.camel@redhat.com>
- <05173886-444c-4bae-b1a5-d2b068e9c4a5@app.fastmail.com>
- <e5d53e44709f7da1ba4b8f8a4687efcffdd6addb.camel@redhat.com>
-Date:   Mon, 04 Dec 2023 15:29:07 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Philipp Stanner" <pstanner@redhat.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "Hanjun Guo" <guohanjun@huawei.com>, "Neil Brown" <neilb@suse.de>,
-        "Kent Overstreet" <kent.overstreet@gmail.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
-        "John Sanpe" <sanpeqf@gmail.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "David Gow" <davidgow@google.com>,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "Shuah Khan" <skhan@linuxfoundation.org>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        "Yury Norov" <yury.norov@gmail.com>,
-        "Jason Baron" <jbaron@akamai.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Ben Dooks" <ben.dooks@codethink.co.uk>,
-        "Danilo Krummrich" <dakr@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>, stable@vger.kernel.org,
-        "Arnd Bergmann" <arnd@kernel.org>
-Subject: Re: [PATCH v3 5/5] lib, pci: unify generic pci_iounmap()
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/36] media: ti: am437x: Remove useless setting of
+ min_buffers_needed
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        matt.ranostay@konsulko.com
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+References: <20231204132323.22811-1-benjamin.gaignard@collabora.com>
+ <20231204132323.22811-11-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20231204132323.22811-11-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023, at 15:09, Philipp Stanner wrote:
-> On Mon, 2023-12-04 at 14:50 +0100, Arnd Bergmann wrote:
->> On Mon, Dec 4, 2023, at 14:39, Philipp Stanner wrote:
->> > On Mon, 2023-12-04 at 13:38 +0100, Philipp Stanner wrote:
->
-> Ok, makes sense.
->
-> But should we then adjust iomem_is_ioport() in asm-generic/io.h, as
-> well, so that it matches IO_COND()'s behavior?
->
-> It currently does this:
->
-> 	uintptr_t start = (uintptr_t)PCI_IOBASE;
-> 	uintptr_t addr = (uintptr_t)addr_raw;
->
-> 	if (addr >= start && addr < start + IO_SPACE_LIMIT)
-> 		return true;
->
-> and if the architecture does not set PCI_IOBASE, then it's set per
-> default to 0, as well.
->
-> So we have two inconsistent definitons
+On 04/12/2023 14:22, Benjamin Gaignard wrote:
+> This driver uses min_buffers_needed which vb2 uses to ensure
+> start_streaming is called when at least 'min_buffers_needed'
+> buffers are queued. However, this driver doesn't need this,
+> it can stream fine without any buffers queued.
+> Just drop this unnecessary restriction.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> CC: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+> ---
+>  drivers/media/platform/ti/am437x/am437x-vpfe.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/ti/am437x/am437x-vpfe.c b/drivers/media/platform/ti/am437x/am437x-vpfe.c
+> index f18acf9286a2..228920450e7a 100644
+> --- a/drivers/media/platform/ti/am437x/am437x-vpfe.c
+> +++ b/drivers/media/platform/ti/am437x/am437x-vpfe.c
+> @@ -2234,7 +2234,6 @@ static int vpfe_probe_complete(struct vpfe_device *vpfe)
+>  	q->buf_struct_size = sizeof(struct vpfe_cap_buffer);
+>  	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+>  	q->lock = &vpfe->lock;
+> -	q->min_buffers_needed = 1;
+>  	q->dev = vpfe->pdev;
+>  
+>  	err = vb2_queue_init(q);
 
-No, I would also keep the logic here, since it makes more sense
-and the inconsistency is only for the corner case that doesn't
-hit in practice.
+This driver needs one buffer as well, so drop this patch.
 
-The PCI_IOBASE==0 case should never happen here, as that doesn't
-work with the generic inb(). I think the only target left that
-has I/O ports but doesn't set PCI_IOBASE at all is sparc, but
-that is special in a number of ways. 
+Regards,
 
-     Arnd
+	Hans
