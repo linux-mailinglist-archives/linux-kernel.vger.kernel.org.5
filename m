@@ -2,143 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5B2802D12
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 09:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB87D802D15
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 09:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343575AbjLDIVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
+        id S1343499AbjLDIWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:22:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343560AbjLDIVR (ORCPT
+        with ESMTP id S229526AbjLDIWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:21:17 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73B64FE;
-        Mon,  4 Dec 2023 00:21:22 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B48LBJQ017952;
-        Mon, 4 Dec 2023 02:21:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701678071;
-        bh=SrzSEbF1L6Dn1jONiUv1v2MfL73aErTwA8r7OAfU4VE=;
-        h=Date:CC:Subject:To:References:From:In-Reply-To;
-        b=Ta01uNa1P3zno6fimrDN67MrrxU99UqHFioBL9XHLtKkSwLzwYUpTi30VzptqX4TM
-         LjpVHCgBa61kpjeccUJ8mTF2Xi/NRITIatPx5aYyjWZfkWVs3x+lPK7fnlT4r1uiWr
-         QWJbkkKTyhl1H2nE3c2NkT9+UHRa9hPAUaxI3Vu8=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B48LB40081234
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 4 Dec 2023 02:21:11 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 4
- Dec 2023 02:21:10 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 4 Dec 2023 02:21:10 -0600
-Received: from [172.24.227.9] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B48L81p021380;
-        Mon, 4 Dec 2023 02:21:08 -0600
-Message-ID: <a4ca48fb-2e87-494a-bc71-8970d7f8c6a0@ti.com>
-Date:   Mon, 4 Dec 2023 13:51:07 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC:     <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <vigneshr@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH 0/4] Add APIs to request TX/RX DMA channels by ID
-Content-Language: en-US
-To:     =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-References: <20231114083906.3143548-1-s-vadapalli@ti.com>
- <9d465de4-3930-4856-9d8e-7deb567a628f@gmail.com>
- <c693efec-ab67-44bb-8871-a40dc408f278@ti.com>
- <ed1d0221-d0ee-4a7d-8955-d5973027d113@gmail.com>
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <ed1d0221-d0ee-4a7d-8955-d5973027d113@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Mon, 4 Dec 2023 03:22:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 221A4CB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:22:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A425BC433C7;
+        Mon,  4 Dec 2023 08:22:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701678148;
+        bh=d5xd1DNNe8JHTchZ1N0VUvsvu4Wgsp0ilZmuF8NZBgQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gLvzMSTejitY38rVbVjqGTXEH+MOT+PcFUG93c0YgGr336/kcmHuZtMyWAJUur9dj
+         ylPSMIrRC6wrFF6JH8llfP4lnxofw9JWIRKnnRbtGCKoUGUmv+BvE3zqzIXchLcyIJ
+         mN17ecVhBQKZ+dWBJT03lM6eIzrvq3+6DCrCLjqF0YaafhQ/cwUi5brHnGaFs86F8I
+         4b4iOCkO3HIr/O4KlY6DcVzLuCyIZfchlvHG3+jOPQHbJfDpNjrPmWxRBahk/mvnEW
+         MFOGWM7jIeEf4pzDdJPtfQVNnDvtINBdxCPnCpYJn/bidcPDKIQxzXDyMbQL9ojseN
+         70ErEzj5WRZbw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rA4Di-0018lj-9m;
+        Mon, 04 Dec 2023 08:22:26 +0000
+Date:   Mon, 04 Dec 2023 08:22:25 +0000
+Message-ID: <86v89ebcn2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        Mark Brown <broonie@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Suzuki Poulose <suzuki.poulose@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-perf-users@vger.kernel.org,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
+Subject: Re: [PATCH V15 2/8] KVM: arm64: Prevent guest accesses into BRBE system registers/instructions
+In-Reply-To: <20231201053906.1261704-3-anshuman.khandual@arm.com>
+References: <20231201053906.1261704-1-anshuman.khandual@arm.com>
+        <20231201053906.1261704-3-anshuman.khandual@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com, broonie@kernel.org, james.clark@arm.com, robh@kernel.org, suzuki.poulose@arm.com, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, linux-perf-users@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, kvmarm@lists.linux.dev
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Péter,
-
-On 22/11/23 20:52, Péter Ujfalusi wrote:
-> Hi Siddharth,
+On Fri, 01 Dec 2023 05:39:00 +0000,
+Anshuman Khandual <anshuman.khandual@arm.com> wrote:
 > 
-> On 17/11/2023 07:55, Siddharth Vadapalli wrote:
->>> I would really like to follow a standard binding since what will happen
->>> if the firmware will start to provision channels/flows for DMAengine
->>> users? It is not that simple to hack that around.
->>
->> Please consider the following use-case for which the APIs are being added by
->> this series. I apologize for not explaining the idea behind the APIs in more
->> detail earlier.
->>
->> Firmware running on a remote core is in control of a peripheral (CPSW Ethernet
->> Switch for example) and shares the peripheral across software running on
->> different cores. The control path between the Firmware and the Clients on
->> various cores is via RPMsg, while the data path used by the Clients is the DMA
->> Channels. In the example where Clients send data to the shared peripheral over
->> DMA, the Clients send RPMsg based requests to the Firmware to obtain the
->> allocated thead IDs. Firmware allocates the thread IDs by making a request to
->> TISCI Resource Manager followed by sharing the thread IDs to the Clients.
->>
->> In such use cases, the Linux Client is probed by RPMsg endpoint discovery over
->> the RPMsg bus. Therefore, there is no device-tree corresponding to the Client
->> device. The Client knows the DMA Channel IDs as well as the RX Flow details from
->> the Firmware. Knowing these details, the Client can request the configuration of
->> the TX and RX Channels/Flows by using the DMA APIs which this series adds.
+> Currently BRBE feature is not supported in a guest environment. This hides
+> BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field. This also
+> blocks guest accesses into BRBE system registers and instructions as if the
+> underlying hardware never implemented FEAT_BRBE feature.
 > 
-> I see, so the CPSW will be probed in a similar way as USB peripherals
-> for example? The CPSW does not have a DT entry at all? Is this correct?
-
-I apologize for the delayed response. Yes, the CPSW instance which shall be in
-control of Firmware running on the remote core will not have a DT entry. The
-Linux Client driver shall be probed when the Firmware announces its endpoint
-over the RPMsg bus, which the Client driver shall register with the RPMsg framework.
-
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Oliver Upton <oliver.upton@linux.dev>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: kvmarm@lists.linux.dev
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/arm64/kvm/sys_regs.c | 130 ++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 130 insertions(+)
 > 
->> Please let me know in case of any suggestions for an implementation which shall
->> address the above use-case.
-> 
-> How does the driver knows how to request a DMA resource from the remote
-> core? How that scales with different SoCs and even with changes in the
-> firmware?
+> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> index 4735e1b37fb3..42701065b3cd 100644
+> --- a/arch/arm64/kvm/sys_regs.c
+> +++ b/arch/arm64/kvm/sys_regs.c
+> @@ -1583,6 +1583,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
+>  	/* Hide SPE from guests */
+>  	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
+>  
+> +	/* Hide BRBE from guests */
+> +	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
+> +
+>  	return val;
+>  }
+>  
+> @@ -2042,6 +2045,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
+>  	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
+>  	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
+> +	{ SYS_DESC(OP_BRB_IALL), undef_access },
+> +	{ SYS_DESC(OP_BRB_INJ), undef_access },
+>  
+>  	DBG_BCR_BVR_WCR_WVR_EL1(0),
+>  	DBG_BCR_BVR_WCR_WVR_EL1(1),
+> @@ -2072,6 +2077,131 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+>  	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
+>  	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
+>  
+> +	/*
+> +	 * BRBE branch record sysreg address space is interleaved between
+> +	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
+> +	 */
+> +	{ SYS_DESC(SYS_BRBINF0_EL1), undef_access },
+> +	{ SYS_DESC(SYS_BRBSRC0_EL1), undef_access },
+> +	{ SYS_DESC(SYS_BRBTGT0_EL1), undef_access },
+> +	{ SYS_DESC(SYS_BRBINF16_EL1), undef_access },
+> +	{ SYS_DESC(SYS_BRBSRC16_EL1), undef_access },
+> +	{ SYS_DESC(SYS_BRBTGT16_EL1), undef_access },
 
-After getting probed, the Client driver communicates with Firmware via RPMsg,
-requesting details of the allocated resources including the TX Channels and RX
-Flows. Knowing these parameters, the Client driver can use the newly added DMA
-APIs to request TX Channel and RX Flows by IDs. The only dependency here is that
-the Client driver needs to know which DMA instance to request these resources
-from. That information is hard coded in the driver's data in the form of the
-compatible used for the DMA instance, thereby allowing the Client driver to get
-a reference to the DMA controller node using the of_find_compatible_node() API.
+Surely we can do better than this wall of text. Please look at what we
+do for the debug registers, and adopt a similar pattern. This should
+result in one line per group of 3 registers.
 
-Since all the resource allocation information comes from Firmware, the
-device-specific details will be hard coded in the Firmware while the Client
-driver can be used across all K3 SoCs which have the same DMA APIs.
+What is the plan for KVM support beyond this?
 
-> 
-> You are right, this is in a grey area. The DMA channel as it is
-> controlled by the remote processor, it lends a thread to clients on
-> other cores (like Linux) via RPMsg.
-> Well, it is similar to how non DT is working in a way.
-> 
-> This CPSW type is not yet supported mainline, right?
-
-Yes, it is not yet supported in mainline. This series is a dependency for
-upstreaming the Client driver.
+	M.
 
 -- 
-Regards,
-Siddharth.
+Without deviation from the norm, progress is not possible.
