@@ -2,230 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F27E80360A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F6480360C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344932AbjLDOJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:09:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42532 "EHLO
+        id S1344960AbjLDOJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:09:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233342AbjLDOJS (ORCPT
+        with ESMTP id S234497AbjLDOJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:09:18 -0500
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E33683;
-        Mon,  4 Dec 2023 06:09:23 -0800 (PST)
-Received: from [141.14.220.40] (g40.guest.molgen.mpg.de [141.14.220.40])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 371C261E5FE03;
-        Mon,  4 Dec 2023 15:08:20 +0100 (CET)
-Message-ID: <83ad1add-314e-4e1a-bfd4-30123b032460@molgen.mpg.de>
-Date:   Mon, 4 Dec 2023 15:08:19 +0100
+        Mon, 4 Dec 2023 09:09:29 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701EEB9;
+        Mon,  4 Dec 2023 06:09:35 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54c5d041c23so3924959a12.2;
+        Mon, 04 Dec 2023 06:09:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701698974; x=1702303774; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=C7YWLKYL+TZy0FDvwaUZBqPs1GQRI/NVi7Z/lE5VeVA=;
+        b=iPjoApDheAbwNKXWg+iBUUId++BWtFfaG3BS3rI2km/wTHvNrt3Q1adq5XnTgNH3cb
+         uGVC18b0YXQr9fWajlr/oxTyoS8UbnqP56Kam2fOZKTM4oOURNm1/3OiDP4gYijYFxuF
+         AYpwWW5+nyeFHZ1z4kDGM2NjP7j+tmuIY9d3xHZXcSFpXtDBJi+uFIJZK8tGOo3VpiMs
+         oBCQCPgwbzgDxBL3Fybl3kcuen7B1fcApQ5wuy9yCB2skGuHuoQXBnbW/ruZ29hJRluA
+         Nty6yLevq7aHEFQ5ZP5XqkinBvB3RmcOPpWzYhsuQ/vK690BgUFGkb2r5BFyfdGuOS6w
+         8t9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701698974; x=1702303774;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C7YWLKYL+TZy0FDvwaUZBqPs1GQRI/NVi7Z/lE5VeVA=;
+        b=atDx/gPN4tQ2JN2vaErjf8ILnKEcgNWXamHzMYUQoEOBjSjryaFOZJW4IsNBKOFbhB
+         +mttE73lH38qHpeHjVM9PD0ldaVqDlHLNkwxzRG0H0DooFSBSuqfjJVU/C088ePNdHhD
+         hpPv2zZjgrxEEcCqZjEVLYvAFdZLzbNu/FKJcSGXUUBVXUySA51m3sQjmkLXq9Wrq2FK
+         bdQWCogUwprI+guRr5UF0vYXnNBFPU3r0g7RXIyvGdnBypc3Pf6ZnjaLzEz9iWat14v7
+         d3O3wL5jRTQgt9Luwl4HKtv8j+UyRwnm8QfbhLY+nlMFklT3g31bB7UYJtbtwuJT/Xmo
+         d0tw==
+X-Gm-Message-State: AOJu0YyqeS9wjBR7T7f5HrA1NmlSjciMQ1c4UGXOXzUBwvTu3y5MmXB8
+        ICJN4V9n9zJTTGqmDsElbeg=
+X-Google-Smtp-Source: AGHT+IEKL6I3Me3IGNDzZQExj7E7RsatGLFgDyXh3e3OviqfoXTTEGQeOZ/7ee3tEg3WaSqPC9bDzw==
+X-Received: by 2002:a17:906:73c2:b0:a19:d40a:d1e8 with SMTP id n2-20020a17090673c200b00a19d40ad1e8mr1648024ejl.180.1701698973692;
+        Mon, 04 Dec 2023 06:09:33 -0800 (PST)
+Received: from mail ([87.66.46.106])
+        by smtp.gmail.com with ESMTPSA id gq18-20020a170906e25200b009ad89697c86sm5416098ejb.144.2023.12.04.06.09.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 06:09:33 -0800 (PST)
+Date:   Mon, 4 Dec 2023 15:09:32 +0100
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Dan Carpenter <error27@gmail.com>, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-sparse@vger.kernel.org
+Subject: Re: drivers/pci/pcie/../pci.h:325:17: sparse: sparse: cast from
+ restricted pci_channel_state_t
+Message-ID: <ilupya2l2yaseiokhgal65alkzbubylgz3nkdabqipi3xhbzxi@dkbofpqmuwdn>
+References: <Y/7ZzYyisv1ylrho@kadam>
+ <Y/7YN7U9Q2iqNDFo@kadam>
+ <20231203165932.GA6480@wunner.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] md: split MD_RECOVERY_NEEDED out of mddev_resume
-Content-Language: en-US
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
-        dm-devel@lists.linux.dev, song@kernel.org, yukuai3@huawei.com,
-        janpieter.sollie@edpnet.be, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-References: <20231204031703.3102254-1-yukuai1@huaweicloud.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20231204031703.3102254-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231203165932.GA6480@wunner.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Yu,
-
-
-Thank you for your patch.
-
-Am 04.12.23 um 04:17 schrieb Yu Kuai:
-> From: Yu Kuai <yukuai3@huawei.com>
+On Sun, Dec 03, 2023 at 05:59:32PM +0100, Lukas Wunner wrote:
+> Hi Dan,
 > 
-> New mddev_resume() calls are added to synchroniza IO with array
-
-synchronize
-
-> reconfiguration, however, this introduce a regression while adding it in
-
-1.  Maybe: … performance regression …
-2.  introduce*s*
-
-> md_start_sync():
+> > > Please advise whether these sparse warnings are false positives which
+> > > can be ignored and if they aren't, how to resolve them.  If you happen
+> > > to know the rationale for the cast, I'd be grateful if you could shed
+> > > some light on it.  Thanks a lot!
+> > 
+> > The question is more why is pci_channel_state_t declared as __bit_wise.
+> > __bit_wise data can only be used through accessor functions, like user
+> > pointers have to go through copy_from_user() and endian data has to go
+> > through le32_to_cpu() etc.
 > 
-> 1) someone set MD_RECOVERY_NEEDED first;
+> __bitwise is not only to ensure endian correctness.  It can be used to
+> define data types which are integer-based, but treated as a distinct
+> data type by sparse.  A pci_channel_state_t value cannot be assigned
+> to an integer variable of a different type, for example.
 
-set*s*
-
-> 2) daemon thread grab reconfig_mutex, then clear MD_RECOVERY_NEEDED and
->     queue a new sync work;
-
-grab*s*, clear*s*, queue*s*
-
-> 3) daemon thread release reconfig_mutex;
-
-release*s*
-
-> 4) in md_start_sync
->     a) check that there are spares that can be added/removed, then suspend
->        the array;
->     b) remove_and_add_spares may not be called, or called without really
->        add/remove spares;
->     c) resume the array, then set MD_RECOVERY_NEEDED again!
+Correct. It was done on purpose to make a sort of 'strong' enum type,
+and thus warn if pci_channel_state_t values are mixed with some other types.
+ 
+> A few arches define arch_xchg() and arch_cmpxchg() as pure macros.
+> The sparse warning for pci_channel_state_t does not appear on those
+> arches.  (These are:  arc csky riscv x86)
 > 
-> Loop between 2 - 4, then mddev_suspend() will be called quite often, for
-> consequence, normal IO will be quite slow.
+> All other arches use a mix of macros and static inlines to define
+> arch_xchg() and arch_cmpxchg().  The static inlines use unsigned long
+> as argument and return types and the macros cast the argument type to
+> unsigned long.
+>
+> Why are the casts necessary?  Because there are callers of xchg() and
+> cmpxchg() which pass pointers instead of integers as arguments.
 
-It’d be great if you could document the exact “test case”, and numbers.
+Hmmm, I'm missing the precise context but it make me wonder what's happening
+on 64-bit archs where enums are usually only 32-bit ...
 
-> Fix this problem by spliting MD_RECOVERY_NEEDED out of mddev_resume(), so
-
-split*t*ing
-
-> that md_start_sync() won't set such flag and hence the loop will be broken.
+> Examples include llist_del_all(), __wake_q_add(), mark_oom_victim(),
+> fsnotify_attach_connector_to_object().  (Note that NULL is defined as
+> "(void *)0".)
 > 
-> Fixes: bc08041b32ab ("md: suspend array in md_start_sync() if array need reconfiguration")
-> Reported-and-tested-by: Janpieter Sollie <janpieter.sollie@edpnet.be>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218200
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->   drivers/md/dm-raid.c   | 1 +
->   drivers/md/md-bitmap.c | 2 ++
->   drivers/md/md.c        | 6 +++++-
->   drivers/md/raid5.c     | 4 ++++
->   4 files changed, 12 insertions(+), 1 deletion(-)
+> When using xchg() or cmpxchg() with __bitwise arguments (as is done
+> by commit 74ff8864cc84 in pci_dev_set_io_state()), the arches which
+> define arch_xchg() and arch_cmpxchg() with static inlines see sparse
+> warnings because the __bitwise arguments are cast to unsigned long.
+> Those arches are:  alpha arm arm64 hexagon loongarch m68k mips openrisc
+> parisc powerpc s390 sh sparc xtensa
+
+OK, if the underlying macros do as:
+	switch (size) {
+	case 1: ...
+then things are ok there (but only if the size is given by a sizeof() of
+the correct type (not casted to long or something).
+
+> Indeed adding __force to the cast, as you suggest, should avoid the
+> issue.  sparse cannot parse the inline assembler, so it does not
+> understand that arch_xchg() and arch_cmpxchg() internally perform a
+> comparison and/or assignment.  By adding __force, we therefore do not
+> lose any validation coverage.
+
+Yes, indeed, using __force inside specific accessors or any low-level macros,
+like here these arch_xchg(), is OK. It's done in plenty of similar cases.
+
+> A better approach might be to teach sparse that arch_xchg() and
+> arch_cmpxchg() internally perform a comparison and/or assignment.
+> Then sparse could validate the argument and return value types.
 > 
-> diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-> index eb009d6bb03a..e9c0d70f7fe5 100644
-> --- a/drivers/md/dm-raid.c
-> +++ b/drivers/md/dm-raid.c
-> @@ -4059,6 +4059,7 @@ static void raid_resume(struct dm_target *ti)
->   		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->   		mddev->ro = 0;
->   		mddev->in_sync = 0;
-> +		set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   		mddev_unlock_and_resume(mddev);
->   	}
->   }
-> diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-> index 9672f75c3050..16112750ee64 100644
-> --- a/drivers/md/md-bitmap.c
-> +++ b/drivers/md/md-bitmap.c
-> @@ -2428,6 +2428,7 @@ location_store(struct mddev *mddev, const char *buf, size_t len)
->   	}
->   	rv = 0;
->   out:
-> +	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   	if (rv)
->   		return rv;
-> @@ -2571,6 +2572,7 @@ backlog_store(struct mddev *mddev, const char *buf, size_t len)
->   	if (old_mwb != backlog)
->   		md_bitmap_update_sb(mddev->bitmap);
->   
-> +	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   	return len;
->   }
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 4b1e8007dd15..48a1b12f3c2c 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -515,7 +515,6 @@ void mddev_resume(struct mddev *mddev)
->   	percpu_ref_resurrect(&mddev->active_io);
->   	wake_up(&mddev->sb_wait);
->   
-> -	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	md_wakeup_thread(mddev->thread);
->   	md_wakeup_thread(mddev->sync_thread); /* possibly kick off a reshape */
->   
-> @@ -4146,6 +4145,7 @@ level_store(struct mddev *mddev, const char *buf, size_t len)
->   	md_new_event();
->   	rv = len;
->   out_unlock:
-> +	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   	return rv;
->   }
-> @@ -4652,6 +4652,8 @@ new_dev_store(struct mddev *mddev, const char *buf, size_t len)
->    out:
->   	if (err)
->   		export_rdev(rdev, mddev);
-> +	else
-> +		set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   	if (!err)
->   		md_new_event();
-> @@ -5533,6 +5535,7 @@ serialize_policy_store(struct mddev *mddev, const char *buf, size_t len)
->   		mddev_destroy_serial_pool(mddev, NULL);
->   	mddev->serialize_policy = value;
->   unlock:
-> +	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   	return err ?: len;
->   }
-> @@ -6593,6 +6596,7 @@ static void autorun_devices(int part)
->   					export_rdev(rdev, mddev);
->   			}
->   			autorun_array(mddev);
-> +			set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   			mddev_unlock_and_resume(mddev);
->   		}
->   		/* on success, candidates will be empty, on error
-> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-> index 42ba3581cfea..f88f92517a18 100644
-> --- a/drivers/md/raid5.c
-> +++ b/drivers/md/raid5.c
-> @@ -6989,6 +6989,7 @@ raid5_store_stripe_size(struct mddev  *mddev, const char *page, size_t len)
->   	mutex_unlock(&conf->cache_size_mutex);
->   
->   out_unlock:
-> +	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   	return err ?: len;
->   }
-> @@ -7090,6 +7091,7 @@ raid5_store_skip_copy(struct mddev *mddev, const char *page, size_t len)
->   		else
->   			blk_queue_flag_clear(QUEUE_FLAG_STABLE_WRITES, q);
->   	}
-> +	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   	return err ?: len;
->   }
-> @@ -7169,6 +7171,7 @@ raid5_store_group_thread_cnt(struct mddev *mddev, const char *page, size_t len)
->   			kfree(old_groups);
->   		}
->   	}
-> +	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   
->   	return err ?: len;
-> @@ -8920,6 +8923,7 @@ static int raid5_change_consistency_policy(struct mddev *mddev, const char *buf)
->   	if (!err)
->   		md_update_sb(mddev, 1);
->   
-> +	set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
->   	mddev_unlock_and_resume(mddev);
->   
->   	return err;
+> builtin.c in the sparse source code already contains functions
+> to handle __atomic_exchange() and __atomic_compare_exchange(),
+> so I think xchg() and cmpxchg() should be handled there as well.
 
-Acked-by: Paul Menzel <pmenzel@molgen.mpg.de>
+I don't agree. Sparse shouldn't know about the semantics of functions
+in the kernel. Sparse offers some tools (annotations like the __bitwise,
+noderef or address_space attributes for __user, __iomem, ... and type
+checking stricter than standard/GCC C). By using these annotations, the
+kernel can define a stricter semantic, that better suits its needs,
+Sparse should know nothing about this, it's not its job.
 
-
-Kind regards,
-
-Paul
+Best regards,
+-- Luc
