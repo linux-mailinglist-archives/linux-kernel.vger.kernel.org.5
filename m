@@ -2,121 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5BC802BD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:04:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A14E7802BDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234585AbjLDHE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 02:04:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
+        id S234580AbjLDHEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 02:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbjLDHEZ (ORCPT
+        with ESMTP id S229446AbjLDHEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 02:04:25 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CFF9D5;
-        Sun,  3 Dec 2023 23:04:31 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SkF5g51Crz4f3lgC;
-        Mon,  4 Dec 2023 15:04:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 5A9AA1A0E29;
-        Mon,  4 Dec 2023 15:04:28 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgDX2hD5eW1lTQvKCg--.62157S6;
-        Mon, 04 Dec 2023 15:04:28 +0800 (CST)
-From:   linan666@huaweicloud.com
-To:     song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com
-Subject: [PATCH 2/2] md/raid1: support read error check
-Date:   Mon,  4 Dec 2023 15:03:27 +0800
-Message-Id: <20231204070327.3150356-3-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231204070327.3150356-1-linan666@huaweicloud.com>
-References: <20231204070327.3150356-1-linan666@huaweicloud.com>
+        Mon, 4 Dec 2023 02:04:50 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11E2D8;
+        Sun,  3 Dec 2023 23:04:56 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1ce28faa92dso11600065ad.2;
+        Sun, 03 Dec 2023 23:04:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701673496; x=1702278296; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=N1vpjPPczaDWxidWWEbF4RZb6CCdsDsvJw92nhMFM8Y=;
+        b=QV8Ac/hnAqU7LnUAyFgeAUYO8BNpYeqbmv7Fjr0WhNSLR86hsFQkt7AZk7uw+T2kq8
+         MdVIGY6yVlpd99ZsKTZdLOk8OHQ6AkKbocNtdCU3FcV2YkHkS7Q95N5xv8z/82SakgKH
+         K4tzfeSWBGL4513p9qkbTESetYS15jEOyPwqXUOzh4FEXTIMbUo6RHu7VD89OvA5rmIx
+         81Fx/jLLN/jGNUe4+WgVwqTGzNfJd10YNyo/d3B2Y07lz95oj74p4NLTbfWze6+AvW6z
+         Nyc7HN+qNaRHVcMcoTPHXFTBHb/Fi0aOT+ECJsCB49WR0E9JXni/GQbV94S6N0ho2mG1
+         CHaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701673496; x=1702278296;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N1vpjPPczaDWxidWWEbF4RZb6CCdsDsvJw92nhMFM8Y=;
+        b=TJhQZ+db7KEj8AHsEQlQlJAlnJMQhoHXdpdemiRJuazTiR6U3rhyhiwnK0h/ZftPPq
+         XE4fqJtAxMPfG361VNlfryBJpRNhm20rKvZSi8KmweRtTcqrmpbQUd9J//ZCNZXiM7nw
+         VcVNNDyC46whueIGRTKmPaU4fkGfolS7QG4XveIPfKdgPpvUT9juAG2Qz1PZeqEU3A18
+         I2KwyFOIKiYIlHp+qYp1X1f7EsdcFPOEynuJCRXZf/kdXokXlUeuZALLuSy6RJ3ZyKj4
+         DEH4KhWPRPsY8FHtWA8klB3FqkzQ8KSlNAvoQGMSNhJV4gs/SAuq/uAqvciyyrNPa1oy
+         sd7w==
+X-Gm-Message-State: AOJu0YyGFoumIfM/hIXRxm2Wty5ziy7CAZhv95TCDRPv8bzoP6d2lAy3
+        Cwk0L/CP8k9bjS6heQNTeco=
+X-Google-Smtp-Source: AGHT+IFGQ1tOXEmLAVKqsR7L9UDk4NEuOYXIcXkAIqxH4/1OI0J79Nsp8GNhIOISl/dF3LevXvviSA==
+X-Received: by 2002:a17:902:9302:b0:1d0:91a0:a29 with SMTP id bc2-20020a170902930200b001d091a00a29mr594579plb.6.1701673496136;
+        Sun, 03 Dec 2023 23:04:56 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u5-20020a170902e5c500b001c62e3e1286sm7679347plf.166.2023.12.03.23.04.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Dec 2023 23:04:55 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <4d978188-b924-4f43-a619-fb5307828440@roeck-us.net>
+Date:   Sun, 3 Dec 2023 23:04:53 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDX2hD5eW1lTQvKCg--.62157S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1kZF13uF17JryxGF17Wrg_yoW8Aw4kpa
-        15AF95ArW5J345Zw1DJFWDC3WFk34fKay8Ar95Jw4Ig3s3trZ8KFWjga4agrn8GFn8Gr13
-        X398Gr4DCFs7tFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBlb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-        A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrV
-        ACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWU
-        JVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lw4CEc2x0rVAKj4xxMx
-        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
-        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwI
-        xGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWx
-        JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
-        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU89L05UUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/2] hwmon: Driver for Nuvoton NCT736X
+Content-Language: en-US
+To:     baneric926@gmail.com, jdelvare@suse.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        corbet@lwn.net
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        openbmc@lists.ozlabs.org, kwliu@nuvoton.com, kcfeng0@nuvoton.com,
+        DELPHINE_CHIU@wiwynn.com, Bonnie_Lo@wiwynn.com
+References: <20231204055650.788388-1-kcfeng0@nuvoton.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20231204055650.788388-1-kcfeng0@nuvoton.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Nan <linan122@huawei.com>
+On 12/3/23 21:56, baneric926@gmail.com wrote:
+> From: Ban Feng <baneric926@gmail.com>
+> 
+> NCT736X is an I2C based hardware monitoring chip from Nuvoton.
+> 
 
-After commit 1e50915fe0bb ("raid: improve MD/raid10 handling of correctable
-read errors."), rdev will be set to faulty if it reads data error to many
-times in raid10. Add this mechanism to raid1 now.
+No, it isn't. Such a chip does not exist. The chips are apparently
+NCT7362Y and NCT7363Y. No wildcards in filenames, variables, etc.,
+please. Pick one name (nct7362y) instead and reference both chips
+where appropriate.
 
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- drivers/md/raid1.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index 9348f1709512..be4e654744c1 100644
---- a/drivers/md/raid1.c
-+++ b/drivers/md/raid1.c
-@@ -2257,16 +2257,24 @@ static void sync_request_write(struct mddev *mddev, struct r1bio *r1_bio)
-  *	3.	Performs writes following reads for array synchronising.
-  */
- 
--static void fix_read_error(struct r1conf *conf, int read_disk,
--			   sector_t sect, int sectors)
-+static void fix_read_error(struct r1conf *conf, struct r1bio *r1_bio)
- {
-+	sector_t sect = r1_bio->sector;
-+	int sectors = r1_bio->sectors;
-+	int read_disk = r1_bio->read_disk;
- 	struct mddev *mddev = conf->mddev;
-+	struct md_rdev *rdev = rcu_dereference(conf->mirrors[read_disk].rdev);
-+
-+	if (exceed_read_errors(mddev, rdev)) {
-+		r1_bio->bios[r1_bio->read_disk] = IO_BLOCKED;
-+		return;
-+	}
-+
- 	while(sectors) {
- 		int s = sectors;
- 		int d = read_disk;
- 		int success = 0;
- 		int start;
--		struct md_rdev *rdev;
- 
- 		if (s > (PAGE_SIZE>>9))
- 			s = PAGE_SIZE >> 9;
-@@ -2507,8 +2515,7 @@ static void handle_read_error(struct r1conf *conf, struct r1bio *r1_bio)
- 	if (mddev->ro == 0
- 	    && !test_bit(FailFast, &rdev->flags)) {
- 		freeze_array(conf, 1);
--		fix_read_error(conf, r1_bio->read_disk,
--			       r1_bio->sector, r1_bio->sectors);
-+		fix_read_error(conf, r1_bio);
- 		unfreeze_array(conf);
- 	} else if (mddev->ro == 0 && test_bit(FailFast, &rdev->flags)) {
- 		md_error(mddev, rdev);
--- 
-2.39.2
+Guenter
 
