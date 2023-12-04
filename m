@@ -2,152 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3039803B8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E73803B8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbjLDRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
+        id S229485AbjLDRaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:30:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjLDRaH (ORCPT
+        with ESMTP id S229488AbjLDRa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:30:07 -0500
-Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5E583
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:30:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1701711013; x=1733247013;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fQvqyzhKNSpH75iOyv0njx6smvL8ePbeR9+sM58QB7c=;
-  b=fHewXLSBvrBymwFtXRQxYOpue4DLbsCrrahQnan88K2/wAtI8egyQH+p
-   30DjARUDdHNXAmFsXQzX3xhsZkKlSt1RUBEuz7c+gub+M8UnMoVpYkOYo
-   jqurDPvP7MIFgJsYQiwWkGjlQRZlkp3nWTeq3BfZsuTEnu0NTzmAQX7xa
-   A=;
-X-IronPort-AV: E=Sophos;i="6.04,250,1695686400"; 
-   d="scan'208";a="48146294"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-7dc0ecf1.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:30:09 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
-        by email-inbound-relay-iad-1e-m6i4x-7dc0ecf1.us-east-1.amazon.com (Postfix) with ESMTPS id 0A36F80E0A;
-        Mon,  4 Dec 2023 17:30:04 +0000 (UTC)
-Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:51872]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.8.2:2525] with esmtp (Farcaster)
- id 5544904f-6150-4258-b571-018841d91ae0; Mon, 4 Dec 2023 17:30:04 +0000 (UTC)
-X-Farcaster-Flow-ID: 5544904f-6150-4258-b571-018841d91ae0
-Received: from EX19D037UWC002.ant.amazon.com (10.13.139.250) by
- EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 4 Dec 2023 17:30:03 +0000
-Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
- EX19D037UWC002.ant.amazon.com (10.13.139.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 4 Dec 2023 17:30:02 +0000
-Received: from dev-dsk-jalliste-1c-e3349c3e.eu-west-1.amazon.com
- (10.13.244.142) by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39 via Frontend Transport; Mon, 4 Dec 2023 17:30:01 +0000
-From:   Jack Allister <jalliste@amazon.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
-        <rafael@kernel.org>, <len.brown@intel.com>
-CC:     Jack Allister <jalliste@amazon.com>,
-        Paul Durrant <pdurrant@amazon.com>, Jue Wang <juew@amazon.com>,
-        Usama Arif <usama.arif@bytedance.com>, <x86@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at performance
-Date:   Mon, 4 Dec 2023 17:28:48 +0000
-Message-ID: <20231204172849.18753-1-jalliste@amazon.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 4 Dec 2023 12:30:28 -0500
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2056.outbound.protection.outlook.com [40.107.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3633DC0;
+        Mon,  4 Dec 2023 09:30:34 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Db2qQJPF9rZqemYT464A/fOdU028w9fdikXFomhmgirdr60gmgS1ZjF6A89am1OJh5rEhxzUUBK8ydL6SrYnw7a5btYXZ95gvUUdUqhjF2E2J29cbxFbbm4qp52nYxDn4NRMhoFVx9yuop7aFILTCYrr3nnSwq5cdWH+E2Y8XCMuZ5Ti/mNJjCDf+IEV/ApuJEwpI2cA05N6C9CEwYMY3uHkaKXb80Oals4hWiJrgyXcMe1fUKq5OGmw6VI3DMsxOk2V2mljfjVvNOIFuYEDTNrd5RNLZ50mPrZRRfCYF17+NPc/r5vt+AxyUpZSW+sHlk55Z8h8ebinbJzeMc5RxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6VAT1mPhTSEAPwE1fvGIjV6jQxeJGVrGepcj52ejD5w=;
+ b=mbmYx1eH9GIEoKQDXB1IIlXziL3hcHi2oz+8MLWH4n9IN5nrRQcsj8kNRk6TMnQev8DoDjTm4P5n0gG63Y6WKnKMgiAgPytIb7JmlxyDsz3DwYOr7SigfRHQymTDe5T4Rb4ueujqy0AKbATKUuC5Ncy70u+pQ+YHcMhM/bR4SHW31avT158Dp+0RIvq3NooBzFxM5JCcMYoQu37B/V4t8pxPvwTRefPXsHr11N3si7n6VIQPNG7iS4om9K6TD2qPynnHFL2YEN7VHWSQRM3AVL4l6tXDBatUPkJPCMu6lQjIZtKLqBKNEz9w2WVSNZ2NdDzUDuP1Fm0hpQiFo4lQ6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6VAT1mPhTSEAPwE1fvGIjV6jQxeJGVrGepcj52ejD5w=;
+ b=YwVTfPu7CSuS94Fe80UXgOkPsDknigxPQLuk4s1y5apUvax4D7kpQFXJ95z6NtAciUsKk4VWGB3kjDqHsrc4noWDeXM/Sx5ODXn5DcElESWsKqLsr9vvtmdpRnOWABLixMLlfAgKXKfovVvvrEAd0vCpVThZOY5UqYFsiHvU79fAcdHV7J6XDb/MLRiOvA6fXH0uUIMAHwoooWFiGbvSgKVeIm4E40b/H76WWMXy2ay91usOc0HY1E5Ra+piSjsA5odQeqzwldOFHYCkYPiCn+CxxsD9DoM2b+N0H9CC00+1QNfc3L2KfpD6YkY1pOadC9ZQbnqHEYtCJQybVSeVng==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DS0PR12MB7801.namprd12.prod.outlook.com (2603:10b6:8:140::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
+ 2023 17:30:29 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 17:30:29 +0000
+Date:   Mon, 4 Dec 2023 13:30:28 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com, pbonzini@redhat.com, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
+Message-ID: <20231204173028.GJ1493156@nvidia.com>
+References: <20231202091211.13376-1-yan.y.zhao@intel.com>
+ <ZW4Fx2U80L1PJKlh@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZW4Fx2U80L1PJKlh@google.com>
+X-ClientProxiedBy: BLAPR03CA0022.namprd03.prod.outlook.com
+ (2603:10b6:208:32b::27) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB7801:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef126a39-f212-4e8b-eb6e-08dbf4eeb573
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kEyTG2DG6OUQ6eJ/8vepvgtrXblJ+uxZ0yURjWJB5CXh6OBnLdZgk6NmCW9pc3jlCtFDo1nrbfSFCSkybZgYWjxzEAFkWwbfL17SwL3xjY53Mu2izwS2fgRAUoBIW3IWdthGO+kiI4OUJ4H/oCZemR/WVibtkWCNhqrMenuImw/GO1Ywfp1RcgWTvOWBKYpc910yIEbthGDVdAvis+iLnLxaHM15maP1fmutWACA3QGSj4Ppcc+6hMxocW84D1mm9J1RyO+JOICkOXHo2kr6k4VOY5Xalea3TS357GPDm0nxIv7YcSPOIkup57cSh5fggmgM+gEjcfaIbQGbUy6b4xs3cI3oDAragDa+bmdfuKxy+e0QMwBWwPpL9aMFQGic4LSphybKhkIgO0ItNKziznW5+57//Qkcj3JpHHew5262nb29NQ1g7K7Ki9Nt0tqch1JTESGz5xJp3iecMDqyZm5l8IAggSIbC9OiZ4xweeWtWdeI/nB7Wn3cyoXk/lN6Rm4ejyKlaXmqCEaBiyhjXsMoJUpwaoiDolMKrBsEuMGQBqp2NGTkftiooVXBXGH4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(66556008)(66476007)(66946007)(316002)(6916009)(478600001)(6486002)(38100700002)(7416002)(5660300002)(36756003)(41300700001)(2906002)(33656002)(86362001)(4326008)(8676002)(8936002)(1076003)(2616005)(83380400001)(26005)(6512007)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4mtBC+LyVR3NsbGHNuJRz6AEMrAEPgkSfbSdDs0G0VK2wIC4j52vVTMwIxqM?=
+ =?us-ascii?Q?QI5Vml2VkgXK/VYQTXZWIsy2qy4KNpr9FMPVcxHZny0lRlirR3oB+4bnwLw6?=
+ =?us-ascii?Q?tvVorqNiMvOY/U/Og0I8MMj3kZPCG5sej+mlCRk5Vdd+9VjK/HlCQnW52UGn?=
+ =?us-ascii?Q?UQ1k8kiq6TfBWrwHOFaggxb7y2N8mt8jZ6e4QZfyHg/XjE1cvR2YhEQYHHUd?=
+ =?us-ascii?Q?tLaWKmGilbO2QSswDypfRz4FeETqwrS2C2IGiYfEZcBhu2hONiJF08XeIc+H?=
+ =?us-ascii?Q?J7/qgM2saGkOV+PIshthKuC0hNdiSUTGUYzOC0GxRAg3ybq9FK+vXWo00o0J?=
+ =?us-ascii?Q?/HTt0bt4uKr1UKTk8qy0vx9dkaH0xikak4UvaROvldJ6ZlXG02J1Xm4oButk?=
+ =?us-ascii?Q?EN2P2E/npst9EwHQ2wB5kmbhvYa1cPBixXetDYrxmTMTxHYd/w7n/KRi+zoy?=
+ =?us-ascii?Q?2cXDqex2+Cln2bAGYpKs1o2Tk1zhxodSNArUzDfnxye+6gmcJ12aAPABGR1e?=
+ =?us-ascii?Q?8JyVeU2Dsxa9JVJ/l48Sug85TG6WAHc2MtG1tYnBYhV6F0EjFCKc9sfxnb5X?=
+ =?us-ascii?Q?8qYvkBcTepnEwa/TEZK2WeRg6Y88lujRhVYt6mBn4I4ZNdZdET/SnzPDwUDk?=
+ =?us-ascii?Q?mexCnw2uVpVVPz12MF8w2Xbv+JHm+8/ku6+j3eLBXRm2Fr8/pNpiCcqHvQiQ?=
+ =?us-ascii?Q?nyPqIcabU6GIjQw2GIUllUOKMbhcKS8FZWRHJ+uyugeRT+PbJNf7nSNyawoZ?=
+ =?us-ascii?Q?R+dsJeNbOVW5KgFVJaaPgcj8cNd9UOiuTHBbe3ZkgwlxDDT/bggt4lHZ+IFY?=
+ =?us-ascii?Q?XiYqLTlLSAYEyfObTyhGc5qKsFRTMRwS5w+eElkOSaloSWOeJDhNy+5shO0z?=
+ =?us-ascii?Q?+iM1X6iMJT5U48tAiuyAu6cvBosrols8LgsxVxTdrZWJy2SwJfPKJcuWbs0W?=
+ =?us-ascii?Q?iVV7zXIlShh8AC6tjJd37TST6r0hY1cYcSehS/gm7Zr7f9TSSGogvy922GXk?=
+ =?us-ascii?Q?hkq1YdeCC9cHdXnnf8vWfmbmwo9mLY7NzR8rW0nVsGE9uQmukmeL19REneXA?=
+ =?us-ascii?Q?zHzx2gtpQ05hIjtm/h0GktUCeQ5C0mU9029p7cGkDDyUXbsVJgEkP1B52rmp?=
+ =?us-ascii?Q?JvWSpaA/6lrSHnv3omuy0MJs0MWlYHeCJq+GN7lbWxiPw4rtLVD46fbh0xiq?=
+ =?us-ascii?Q?RYzPidH8RT7K3h3mwqLthI6680ltQfhpFAJoGgg75b+uwoB09Bi7zH3wIVtb?=
+ =?us-ascii?Q?HJzxnjJo2fhv0JNgdb6EwSua3jbPwqjNlMEVarb7WAIp/QqDfvLpyuWt6knz?=
+ =?us-ascii?Q?rEzB5kYItErRh6yxC9VWcbU/vjNFi6+KW8NZCVI+WtDWY3FRCMAHUN38d41e?=
+ =?us-ascii?Q?HtfxEKRDgFjRTTqvwQLGZlT5FmAarYLKYleJt734Q3ov6ld3wrhFjMKSHxdg?=
+ =?us-ascii?Q?CDjHguHTXnh1Z4P32XyfREqWGIi3ATuPhGkdLZwxTVmb1GNaLBFK+raWyy3L?=
+ =?us-ascii?Q?aAgLMQ9tfSz5JIXZYNjF0vQEmjOeZ7e9bVEGGZMnBs+D/KsrJyhfnsA06WIx?=
+ =?us-ascii?Q?aScHO8Wqi/tW1XwLCEplaz6zJn8QlazWQYjjT9NX?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef126a39-f212-4e8b-eb6e-08dbf4eeb573
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 17:30:28.8949
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Il8tgf+oO+OsXttnjHkN8e4mSLdxGk8cRVmDy/z1iJinSy6RJJ8vEL9WGky9WANZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7801
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are certain scenarios where it may be intentional that the EPB was
-set at to 0/ENERGY_PERF_BIAS_PERFORMANCE on kernel boot. For example, in
-data centers a kexec/live-update of the kernel may be performed regularly.
+On Mon, Dec 04, 2023 at 09:00:55AM -0800, Sean Christopherson wrote:
 
-Usually this live-update is time critical and defaulting of the bias back
-to ENERGY_PERF_BIAS_NORMAL may actually be detrimental to the overall
-update time if processors' time to ramp up/boost are affected.
+> There are more approaches beyond having IOMMUFD and KVM be
+> completely separate entities.  E.g. extract the bulk of KVM's "TDP
+> MMU" implementation to common code so that IOMMUFD doesn't need to
+> reinvent the wheel.
 
-This patch introduces a kernel command line "intel_epb_keep_performance"
-which will leave the EPB at performance if during the restoration code path
-it is detected as such.
+We've pretty much done this already, it is called "hmm" and it is what
+the IO world uses. Merging/splitting huge page is just something that
+needs some coding in the page table code, that people want for other
+reasons anyhow.
 
-Signed-off-by: Jack Allister <jalliste@amazon.com>
-Cc: Paul Durrant <pdurrant@amazon.com>
-Cc: Jue Wang <juew@amazon.com>
-Cc: Usama Arif <usama.arif@bytedance.com>
----
- arch/x86/kernel/cpu/intel_epb.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+> - Subjects IOMMUFD to all of KVM's historical baggage, e.g. the memslot deletion
+>   mess, the truly nasty MTRR emulation (which I still hope to delete), the NX
+>   hugepage mitigation, etc.
 
-diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
-index e4c3ba91321c..0c7dd092f723 100644
---- a/arch/x86/kernel/cpu/intel_epb.c
-+++ b/arch/x86/kernel/cpu/intel_epb.c
-@@ -50,7 +50,8 @@
-  * the OS will do that anyway.  That sometimes is problematic, as it may cause
-  * the system battery to drain too fast, for example, so it is better to adjust
-  * it on CPU bring-up and if the initial EPB value for a given CPU is 0, the
-- * kernel changes it to 6 ('normal').
-+ * kernel changes it to 6 ('normal'). This however is overridable via
-+ * intel_epb_keep_performance if required.
-  */
- 
- static DEFINE_PER_CPU(u8, saved_epb);
-@@ -75,6 +76,8 @@ static u8 energ_perf_values[] = {
- 	[EPB_INDEX_POWERSAVE] = ENERGY_PERF_BIAS_POWERSAVE,
- };
- 
-+static bool intel_epb_keep_performance __read_mostly;
-+
- static int intel_epb_save(void)
- {
- 	u64 epb;
-@@ -107,8 +110,12 @@ static void intel_epb_restore(void)
- 		 */
- 		val = epb & EPB_MASK;
- 		if (val == ENERGY_PERF_BIAS_PERFORMANCE) {
--			val = energ_perf_values[EPB_INDEX_NORMAL];
--			pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
-+			if (!intel_epb_keep_performance) {
-+				val = energ_perf_values[EPB_INDEX_NORMAL];
-+				pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
-+			} else {
-+				pr_warn_once("ENERGY_PERF_BIAS: Kept at 'performance', no change\n");
-+			}
- 		}
- 	}
- 	wrmsrl(MSR_IA32_ENERGY_PERF_BIAS, (epb & ~EPB_MASK) | val);
-@@ -213,6 +220,12 @@ static const struct x86_cpu_id intel_epb_normal[] = {
- 	{}
- };
- 
-+static __init int intel_epb_keep_performance_setup(char *str)
-+{
-+	return kstrtobool(str, &intel_epb_keep_performance);
-+}
-+early_param("intel_epb_keep_performance", intel_epb_keep_performance_setup);
-+
- static __init int intel_epb_init(void)
- {
- 	const struct x86_cpu_id *id = x86_match_cpu(intel_epb_normal);
--- 
-2.40.1
+Does it? I think that just remains isolated in kvm. The output from
+KVM is only a radix table top pointer, it is up to KVM how to manage
+it still.
 
+> I'm not convinced that memory consumption is all that interesting.  If a VM is
+> mapping the majority of memory into a device, then odds are good that the guest
+> is backed with at least 2MiB page, if not 1GiB pages, at which point the memory
+> overhead for pages tables is quite small, especially relative to the total amount
+> of memory overheads for such systems.
+
+AFAIK the main argument is performance. It is similar to why we want
+to do IOMMU SVA with MM page table sharing.
+
+If IOMMU mirrors/shadows/copies a page table using something like HMM
+techniques then the invalidations will mark ranges of IOVA as
+non-present and faults will occur to trigger hmm_range_fault to do the
+shadowing.
+
+This means that pretty much all IO will always encounter a non-present
+fault, certainly at the start and maybe worse while ongoing.
+
+On the other hand, if we share the exact page table then natural CPU
+touches will usually make the page present before an IO happens in
+almost all cases and we don't have to take the horribly expensive IO
+page fault at all.
+
+We were not able to make bi-dir notifiers with with the CPU mm, I'm
+not sure that is "relatively easy" :(
+
+Jason
