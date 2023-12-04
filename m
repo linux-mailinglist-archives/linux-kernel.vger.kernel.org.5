@@ -2,87 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27998802F24
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C629F802F2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjLDJrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55364 "EHLO
+        id S229723AbjLDJrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:47:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbjLDJrY (ORCPT
+        with ESMTP id S232748AbjLDJrp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:47:24 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB0CFD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:47:30 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-db544987c79so2612851276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 01:47:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701683249; x=1702288049; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I/Va0kOOCQXMJr2TQKWKwJ9zWUP7bBtr/H8JK5walkU=;
-        b=zkuwnamvBvJpJncHSIT7eWV87jlt1VfEXLXEGuAo8/GRKGsPcChVxAZ9UgKvNgmUes
-         R4PO8bnoJRTwVtlqrxJKZwN20ij9jSgCBDDsdbXvWCHUp9XX86+tTFCWQogUfBwWF/Fc
-         Gttd3+ITjvX3AqIv4b+St4K4sW84a3RmYjZbJr4CENY7G/m8HwC8zOz/vQ8r+QoXfLbn
-         XAo9KXv0g/xexyBdWH4As88DtS1XqC00XbkC4hUf05HyBOxuOCLIqo4yrRf4kNI1mXtg
-         Ob4pEnp2AF09w3jRDjC0LfSqKvLcMGLBDbVdthYlDHEZ0p173x9hEueXaa4ino2RWPR5
-         LMww==
+        Mon, 4 Dec 2023 04:47:45 -0500
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D37125
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:47:51 -0800 (PST)
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9B85F3FB62
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1701683267;
+        bh=ocWHzI4I/IJpjMhErnBIZA0ZO+r+qla4DpGX2b6C1P0=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=NmdrRMqz6Dn8pVCxdLH0b38V1DL0b54B2JMSS/NCd7mJDPKWRg4MPVWLNFlC2pQ4o
+         6TbXJTyt+RQuBq+MfuUnR9+2ddn/0yXKRlZNyDhMy167W16hTaExy7ufwdus3NZ1qS
+         qguGFa9MRVcJfQ6Upz0VoEyV9dlnJXGlNxCcVkxnXFVJ4WSVrUYVSYw58P1Huy30Sn
+         nqam6XoCwPjmcLlgczDJOpUG2BZaj3cgixf78zHxY3QlgLMzMjEUT3hWba5tfQ2cuQ
+         7ZWek5il3sTfdjzp2TBbtIrpXqzdj9IfdPUoxJkagc61qa2mhAFLQCJT7803/ONhqw
+         RTvhs9YALp1uA==
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6d9a5700c38so657940a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 01:47:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701683249; x=1702288049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I/Va0kOOCQXMJr2TQKWKwJ9zWUP7bBtr/H8JK5walkU=;
-        b=H5f0VxHF2UGXj31vvPbJMy2pAwKEbt0O8It1/XAocFZTBbhXusoL8vIu97Rr+n7kCW
-         RZP+5Y6H8norVRt0NnBoFG4eDouehCqk2I7+EtFcpqyzR90ozjIHpdsL4OqyvA9jxDq9
-         iROKB3k9RKyUTtu3QG7NjaKxTmYLFyB4EIHwvf+z8SgcLj4Ak1AuOv0UZ0r7nvnrXTV7
-         QmiO0s5DZCk0tquS6sNyeUxu7LETCggsPWfAMPyLRxk9YRxhDlfVmvOFdYp4J2mThfHP
-         qeluRV0TXSKGcgJfjs1yc/hvCMQdW2crToMZh0NpLhv/i3RxHrk9wW+t/38UAn51WwSr
-         HfJg==
-X-Gm-Message-State: AOJu0Yw7Gec5WZV/xi2GdRqBxtJtX9yFgEnl+VuH+V5bWyb2fgiNaM/g
-        dzt67J702hmXhQISkA0OFP5ju96jsi+P6o95cBjHRA==
-X-Google-Smtp-Source: AGHT+IHzmn4R3eDwNqxLIvsLdnuOrMgDl1kyI5pUXW4FtxkQmVJw7pplvdOzdsQmeJxtozIgo/BWo3hmtyPbnRvdWuw=
-X-Received: by 2002:a25:824b:0:b0:db7:dacf:6fe4 with SMTP id
- d11-20020a25824b000000b00db7dacf6fe4mr2504494ybn.108.1701683249364; Mon, 04
- Dec 2023 01:47:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20231122144744.2222207-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231122144744.2222207-1-andriy.shevchenko@linux.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 4 Dec 2023 10:47:17 +0100
-Message-ID: <CACRpkdZtCOwmVa7_vyCfs5i3GVdvopNAGA3rPyij0EeLr8e4MA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/1] pinctrl: mediatek: Switch to use no-IRQ PM helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sean Wang <sean.wang@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
+        d=1e100.net; s=20230601; t=1701683266; x=1702288066;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ocWHzI4I/IJpjMhErnBIZA0ZO+r+qla4DpGX2b6C1P0=;
+        b=Ydb0/A1NfpegEHz/n6VLngQA/A1VtUA/8UIEP0E2GfPdDOCMyHbYTHTThdO6F/AJE9
+         SrVDGfJcwn8eW2wKwT7kByGd6VlybMO2mfd2wVD8u9xePv2j3uWGNvX+Z4pgslr7aruj
+         LqROlppK3Afo8T5ZPnhKKKkKFZ4hv8aTuWzxd0KtjaLEjlCNj8EULiXKeKY3NrJE5Ds5
+         qcMbYUGG+zLGAZy/yBfnDieJhKG0gYakkEeJ12YpnQFetFLCJ8Le/Ef/u9em1KA7+IAS
+         30/rYmt4JkILZ7uwdviOd3mRKxsiZoQdMP0GlH8uQVbOlt4oYjCsppUBMhmEw6ZbCpdU
+         jXYA==
+X-Gm-Message-State: AOJu0Yyrh1QFpngsQQE2Aep4lVX1RLaexzgCByWOjtM2/ih/oV+cv4CW
+        PLczTD0YnaRQDc8Wf1V1qLHaCE0NbG0wU9ZB5++yiS8DGQ7wBH58QWiAatSvQbdOHIn7o/L7Uho
+        8hBFa9mEi6su0xyaPG/04YCoqzSSo89h7TKHuRlzVrmlVP9Qj9pxIa5uCnw==
+X-Received: by 2002:a9d:7f0e:0:b0:6d8:74e2:6372 with SMTP id j14-20020a9d7f0e000000b006d874e26372mr3825841otq.76.1701683266646;
+        Mon, 04 Dec 2023 01:47:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGgZV7GOcP10ElEBcdLXqU6APkmXlqtrKTI9+ZUsE1OOlySmmnZwzKu0ALesi4xbldlngNAXeDz6+sW1IKUSAA=
+X-Received: by 2002:a9d:7f0e:0:b0:6d8:74e2:6372 with SMTP id
+ j14-20020a9d7f0e000000b006d874e26372mr3825830otq.76.1701683266357; Mon, 04
+ Dec 2023 01:47:46 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 4 Dec 2023 01:47:45 -0800
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20231129-th1520_mmc_dts-v7-2-c77fc19caa6f@baylibre.com>
+References: <20231129-th1520_mmc_dts-v7-0-c77fc19caa6f@baylibre.com> <20231129-th1520_mmc_dts-v7-2-c77fc19caa6f@baylibre.com>
+Mime-Version: 1.0
+Date:   Mon, 4 Dec 2023 01:47:45 -0800
+Message-ID: <CAJM55Z-qc7gc0fO-K8byqvpOBjDxFD4dP57mFHuijvpOzBWObQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/4] riscv: dts: thead: Add TH1520 mmc controllers and
+ sdhci clock
+To:     Drew Fustini <dfustini@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 3:49=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-
-> Since pm.h provides a helper for system no-IRQ PM callbacks,
-> switch the driver to use it instead of open coded variant.
+Drew Fustini wrote:
+> Add node for the SDHCI fixed clock. Add mmc0 node for the first mmc
+> controller instance which is typically connected to the eMMC device.
+> Add mmc1 node for the second mmc controller instance which is typically
+> connected to microSD slot.
 >
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> ---
+>  arch/riscv/boot/dts/thead/th1520.dtsi | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+>
+> diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
+> index ba4d2c673ac8..af4fdcd82e0b 100644
+> --- a/arch/riscv/boot/dts/thead/th1520.dtsi
+> +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
+> @@ -146,6 +146,13 @@ uart_sclk: uart-sclk-clock {
+>  		#clock-cells = <0>;
+>  	};
+>
+> +	sdhci_clk: sdhci-clock {
+> +		compatible = "fixed-clock";
+> +		clock-frequency = <198000000>;
+> +		clock-output-names = "sdhci_clk";
+> +		#clock-cells = <0>;
+> +	};
+> +
+>  	soc {
+>  		compatible = "simple-bus";
+>  		interrupt-parent = <&plic>;
+> @@ -304,6 +311,24 @@ dmac0: dma-controller@ffefc00000 {
+>  			status = "disabled";
+>  		};
+>
+> +		mmc0: mmc@ffe7080000 {
+> +			compatible = "thead,th1520-dwcmshc";
+> +			reg = <0xff 0xe7080000 0x0 0x10000>;
+> +			interrupts = <62 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&sdhci_clk>;
+> +			clock-names = "core";
+> +			status = "disabled";
+> +		};
+> +
+> +		mmc1: mmc@ffe7090000 {
+> +			compatible = "thead,th1520-dwcmshc";
+> +			reg = <0xff 0xe7090000 0x0 0x10000>;
+> +			interrupts = <64 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&sdhci_clk>;
+> +			clock-names = "core";
+> +			status = "disabled";
+> +		};
+> +
 
-Patch applied!
+Hi Drew,
 
-Yours,
-Linus Walleij
+This doesn't seem to match the documentation shared here:
+https://lore.kernel.org/linux-riscv/5f437109d2be2b8843f549a661054a2e3ec0d66e.camel@xry111.site/
+From the TH1520 System User Manual.pdf in there, I'd expect something like
+
+	emmc: mmc@ffe7080000 {
+		compatible = "thead,th1520-dwcmshc";
+		reg = <0xff 0xe7080000 0x0 0x10000>;
+		...
+	};
+
+	sdio0: mmc@ffe7090000 {
+		compatible = "thead,th1520-dwcmshc";
+		reg = <0xff 0xe7090000 0x0 0x10000>;
+		...
+	};
+
+	sdio1: mmc@ffe70a0000 {
+		compatible = "thead,th1520-dwcmshc";
+		reg = <0xff 0xe70a0000 0x0 0x10000>;
+		...
+	};
+
+/Emil
