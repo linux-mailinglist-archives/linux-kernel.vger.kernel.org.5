@@ -2,161 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5C2803AA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3EB803A99
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbjLDQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:45:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
+        id S230398AbjLDQnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLDQpC (ORCPT
+        with ESMTP id S229477AbjLDQnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:45:02 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 301939B;
-        Mon,  4 Dec 2023 08:45:08 -0800 (PST)
-Received: from [172.20.10.13] (unknown [83.232.59.81])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0511820B74C0;
-        Mon,  4 Dec 2023 08:44:51 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0511820B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701708307;
-        bh=WmfHCN3jVeLCujfeKdxoJP9+xwCwqUAHJemHoreeygQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=KFlFC6V35RPeaHC9w0beCchXcugku32yKVEsntKZ3fKxjfVgUqS68wvMhqXHdbBbE
-         frmWEegr00kCD9RMUNe6mjL52CJ2jwKyND8zZ9wRe7sMGxSgqsnpQUDI2HGBVnZi7k
-         M82u7dWOIncYGS28B/PcXwmhxyVDQCkk1nOwdxog=
-Message-ID: <450a50ba-4c87-4137-9feb-de8f17e3dfa6@linux.microsoft.com>
-Date:   Mon, 4 Dec 2023 17:44:48 +0100
+        Mon, 4 Dec 2023 11:43:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8999B
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:43:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98168C433C8;
+        Mon,  4 Dec 2023 16:43:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701708197;
+        bh=V1mySgUnMOQnDd2cfqMCPNmlYJkptWErl3Ep+QPr+jA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SfI4RaXSCgrisms7dzOtmSTKBnyjNFvVG8yGYptKwmhvyhEMWzt2DKdqIPf2suEYr
+         ewLN21bwOqvfVP2/g5MTRXiHsr9pafzqDYiH7yhYMHdeIZjHnTV1CY24Ln4rHkdHka
+         3p0rHkF94o7Qyad+nPmDNLDFK+MiH9Wh5hNsTjKyy5SzNOn3IJ12j5tM7jrV0+kEDJ
+         BUiPXJAhCzWEkZhV0VOFPmThXVTMRA/GX/C7SYHbHxnQgLYGp5Qxrcj8t9o3xAirbq
+         OohmweG7pUkOSm2XsX+nt9X/HIV2E3xWy7MOqNXAx1N8rpOSve74Kr/mdC8x8JRJ4F
+         GcWqMza3Sbq+Q==
+Date:   Mon, 4 Dec 2023 08:46:39 -0800
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+Cc:     linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@quicinc.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] pinctrl: Add lock to ensure the state atomization
+Message-ID: <wmpsnz3lhqsqglwkbr5ohrywqeufrjmtobhnprvf4o6iarc5x6@6jeuqck4n2nc>
+References: <20231201152931.31161-1-quic_aiquny@quicinc.com>
+ <6jlui5h7d2rs37sdvvwmii55mwhm5dzfo2m62hwt53mkx4z32a@aw5kcghe4bik>
+ <4d85fda9-6e00-4bb4-b8a8-85c5e66635bf@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <0799b692-4b26-4e00-9cec-fdc4c929ea58@linux.microsoft.com>
- <20231129164049.GVZWdpkVlc8nUvl/jx@fat_crate.local>
- <DM8PR11MB575085570AF48AF4690986EDE782A@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20231130075559.GAZWhAD5ScHoxbbTxL@fat_crate.local>
- <DM8PR11MB575049E0C9F36001F0F374CEE782A@DM8PR11MB5750.namprd11.prod.outlook.com>
- <20231130092119.GBZWhUD6LscxYOpxNl@fat_crate.local>
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20231130092119.GBZWhUD6LscxYOpxNl@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d85fda9-6e00-4bb4-b8a8-85c5e66635bf@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/11/2023 10:21, Borislav Petkov wrote:
-> On Thu, Nov 30, 2023 at 08:31:03AM +0000, Reshetova, Elena wrote:
->> No threats whatsoever,
+On Mon, Dec 04, 2023 at 05:57:42PM +0800, Aiqun(Maria) Yu wrote:
+> On 12/2/2023 4:39 AM, Bjorn Andersson wrote:
+> > On Fri, Dec 01, 2023 at 11:29:31PM +0800, Maria Yu wrote:
+> > > Currently pinctrl_select_state is an export symbol and don't have
+> > > effective re-entrance protect design. And possible of pinctrl state
+> > > changed during pinctrl_commit_state handling. Add per pinctrl lock to
+> > > ensure the old state and new state transition atomization.
+> > > Move dev error print message right before old_state pinctrl_select_state
+> > > and out of lock protection to avoid console related driver call
+> > > pinctrl_select_state recursively.
+> > 
+> > I'm uncertain about the validity of having client code call this api in
+> > a racy manner. I'm likely just missing something here... It would be
+> > nice if this scenario was described in a little bit more detail.
+> Hi Bjorn,
 > 
-> I don't mean you - others. :-)
-> 
->> I just truly don’t know details of SEV architecture on this and how it
->> envisioned to operate under this nesting scenario.  I raised this
->> point to see if we can build the common understanding on this. My
->> personal understanding (please correct me) was that SEV would also
->> allow different types of L2 guests, so I think we should be aligning
->> on this.
-> 
-> Yes, makes sense. The only L2 thing I've heard of is some Azure setup.
-
-"L2" is the Intel terminology in TD-partitioning (see figure 11.2 in [1]),
-but Azure uses it for the exact same thing as VMPLs in SEV-SNP. On the AMD
-side the community is working on Coconut SVSM[2] and there was an AMD SVSM[3]
-project before that, both of them have the same idea as the Azure paravisor.
-SUSE, Red Hat, IBM and others are active in SVSM development, we've also started
-contributing. I think this kind of usage will also appear on TDX soon.
-
-[1]: https://cdrdv2.intel.com/v1/dl/getContent/773039
-[2]: https://github.com/coconut-svsm/svsm
-[3]: https://github.com/AMDESE/linux-svsm
-
-> 
->> Yes, agree, so what are our options and overall strategy on this?  We
->> can try to push as much as possible complexity into L1 VMM in this
->> scenario to keep the guest kernel almost free from these sprinkling
->> differences.
-> 
-> I like that angle. :)
-> 
->> Afterall the L1 VMM can emulate whatever it wants for the guest.
->> We can also see if there is a true need to add another virtualization
->> abstraction here, i.e. "nested encrypted guest".
-> 
-> Yes, that too. I'm sceptical but there are use cases with that paravisor
-> thing and being able to run an unmodified guest, i.e., something like
-> a very old OS which no one develops anymore but customers simply can't
-> part ways with it for raisins
-
-I don't think we'll be seeing Windows XP TDX/SNP guests :)
-
-The primary use case for the paravisor (/SVSM) is pretty common across the
-the industry and projects that I shared: TPM emulation. Then comes the
-other stuff: live migration, "trustlets", further device emulation. All this
-inside the confidential boundary.
-
-> 
->> Any other options we should be considering as overall strategy?
-> 
-> The less the kernel knows about guests, the better, I'd say.
+> we've got a customer dump that the real racy happened, and the system
+> frequently have printk message like:
+>   "not freeing pin xx (xxx) as part of deactivating group xxx - it is
+> already used for some other setting".
+> Finally the system crashed after the flood log.
 > 
 
-The challenge lies in navigating the Venn diagram of: standard guest,
-TDX guest and SNP guest. Is a "guest" more "TDX" or more "Hyper-V" (or KVM/Vmware)?
-Should the TDX (and SNP) code be extended with more knowledge of hypervisor
-interfaces or should the hypervisor interfaces know more about TDX/SNP.
+Sounds like we have a valid issue, but let's make sure that we
+describe the problem on its technical grounds in the commit that is
+upstreamed - if nothing else, so that others can determine if the
+solution matches their bug reports.
 
-I'd love it if we all had some agreement on this. I posted these patches
-based on suggestions that TDX guest-ness takes precedence.
+> We've inform the customer to check their own client code which called this
+> api, to have proper lock to avoid racy of per dev pinctrl_select_state call
+> from customer driver end.
+> For example:
+> LOCK;
+> pinctrl_select_state();
 
-> The other thing I'm missing most of the time is, people come with those
-> patches enabling this and that but nowhere does it say: "we would love
-> to have this because of this great idea we had" or "brings so much more
-> performance" or "amazing code quality imrpovement" or, or other great
-> reason.
+Placing a lock inside pinctrl_select_state() will not make this whole
+sequence atomic, so if the client driver needs to know that the state
+remains from here until the "other hardware behaviors" below, something
+more is needed.
+
+Perhaps I'm misunderstanding what you're saying though?
+
+> gpio pulling;
+> udelay();
+> check state;
+> other hardware behaviors;
+> UNLOCK;
 > 
-> Rather, it is "yeah, we do this and you should support it". Well, nope.
+> While it is still unnecessary the volatile re-load of p->state for the
+> interation and so I upstream a patch like link[2].
 > 
-I hear you, that's we've been making an effort to be more open about use cases
-and capabilities along with patches. We also care about simplifying the code
-to make it easier to follow the flows. I think the whole kernel has come
-a long way since the first confidential guest patches were posted.
-
-Jeremi
-
-> Thx.
+> while during the merge discussion, upstream maintainer suggest to have the
+> lock issue fixed, instead of only READ_ONCE for the interation.
+> I think it is also make sense since although current in-tree driver have
+> take care of each pinctrl_select_state call, since it is a export symbole
+> and we've see the similar issue continuously (a year back ago also we've
+> seen similar issue before[3]).
 > 
 
+I think you're correcting a real problem, in that two contexts calling
+pinctrl_select_state() seems to be able to cause non-deterministic
+results. But is the motivation "pinctrl_select_state() is an
+EXPORT_SYMBOL, so let's make it thread safe", or is the motivation
+"during async probing of devices it's possible to end up in
+pinctrl_select_state() from multiple contexts simultaneously, so make it
+thread safe"?
+
+> The whole serials discussion can be found link here:
+> [1] https://lore.kernel.org/lkml/e011b3e9-7c09-4214-8e9c-90e12c38bbaa@quicinc.com/
+> [2]
+> https://lore.kernel.org/lkml/20231115102824.23727-1-quic_aiquny@quicinc.com/
+> [3]
+> https://lore.kernel.org/lkml/20221027065408.36977-1-quic_aiquny@quicinc.com/
+> 
+> > 
+> > The recursive error print sounds like a distinct problem of its own,
+> > that warrants being introduced in a patch of its own. But as with the
+> > other part, I'm not able to spot a code path in the upstream kernel
+> > where this hppens, so please properly describe the scenario where
+> > touching the console would result back in another pinctrl_select_state().
+> For this part, I am thinking about a spin lock is introduced and have the
+> error log out of the lock will be safer.
+> The current patch disable irq during the lock, and some console driver rely
+> on interrupt to get tx dma/fifo ready.
+
+Logging outside the region with interrupts disabled make total sense,
+I'm definitely in favor of this.
+
+> Also console driver will be a pinctrl client, so avoid unnecessary recursive
+> in theory.
+
+I don't think a console driver should pinctrl_select_state() from its
+tx path, that's why I'm asking.
+
+But perhaps I'm missing some scenario, if so please describe this in the
+commit message.
+
+> Just incase some out of tree concole driver was able to use the
+> pinctrl_select_state in console write related APIs as well.
+
+If there is a valid usage pattern I think we should consider that, but
+we do not care about out-of-tree drivers misusing/abusing framework
+APIs.
+
+Regards,
+Bjorn
