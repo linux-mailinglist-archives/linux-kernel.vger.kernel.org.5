@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA754803A47
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2789F803A4A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344756AbjLDQ25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:28:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37822 "EHLO
+        id S1344793AbjLDQ3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:29:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbjLDQ2z (ORCPT
+        with ESMTP id S1344769AbjLDQ3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:28:55 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB1BA4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:29:01 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1d048d38881so17011045ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:29:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701707341; x=1702312141; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dna9IRTvJmD8ExOInd9+w4ObVdAr/u4RKwVkYvL9yHY=;
-        b=bjFpM03CPAVIxq0q9w+DK/hrF7Tx4xpRITd3ybiqdiaka5P7Nrm0HauSicbGy/FCR1
-         t4tz+LdDNRgtAXLLsQceuMeoU6DnbNbGcB3TJOwGaVPKsjLPgLQQ48vd8YgvoM0Bo0Gq
-         5+jzjd6IPuYQmXOCPcEEQkpDc1cDYcPsTdUZio99KMj2aP2aODuMDXaHgPTzjp9hzSgG
-         7ffPvYdaopxc/B/XV9McGWmrk9zmlMOVMVkvNHgqKoCEyN1oGtApTJb/YLyQr6t5A6o0
-         Wea5x4GQQKf8XWouFRZ2vHoVPslzX9eeqvxPbfxxoVFYZd9s9gXWDqKXdMBQAk+H4O0E
-         kdVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701707341; x=1702312141;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dna9IRTvJmD8ExOInd9+w4ObVdAr/u4RKwVkYvL9yHY=;
-        b=dXfqA/rHBOAFVVCFCqXpo62CH3iTSaik7nDz86FvgfYsV3+5LMa3PZx9qwPZ3Iy2z7
-         LqmJTRfHJY9knd5IzmeB2rLtfYCuwKeRSNPdorp4EeRFfb3+ja07cBCFTIq8mq+lbZ4L
-         8HshOhZYbVVmNFBi62XaVCVTlIoVHhSeG0wnB8UWKvMee5mLY8FT5408gaxXY6NbffZX
-         L/iL3aMEid8KUzQv4KhvF2myq3xSvAoxu2lreqBcpWjCTKy9RScB6b4pgqOw5/vePkaH
-         STaZH5visA+DdfNfDzIxHPLC+cKUjyR/ydSruerbXcrVHTAwU7BZdDyijpaZdVLPG90f
-         vQJA==
-X-Gm-Message-State: AOJu0YxxO9ZTRqzqrG5ERpkE++nZ04aoSjNJFUH6qKlZQov3GLTXs/UV
-        kblziLkZ44YOkqKvwSaizkIzSjeM4bU=
-X-Google-Smtp-Source: AGHT+IG5K3i8a2a+1KXgVnHwtc2SefenxymyOCDG3NeLGydXF6V2t+WuJa/YBa3tPD/Jjd6A2oF5cA==
-X-Received: by 2002:a17:903:11c8:b0:1cf:5760:43f9 with SMTP id q8-20020a17090311c800b001cf576043f9mr2277719plh.64.1701707340915;
-        Mon, 04 Dec 2023 08:29:00 -0800 (PST)
-Received: from ?IPV6:2401:4900:1f3e:53bf:50c7:2988:e019:4b97? ([2401:4900:1f3e:53bf:50c7:2988:e019:4b97])
-        by smtp.gmail.com with ESMTPSA id t9-20020a170902b20900b001cf5d0e7e05sm3720816plr.109.2023.12.04.08.28.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 08:29:00 -0800 (PST)
-Message-ID: <7ead544b-9234-483f-aacb-55ed05b01fa3@gmail.com>
-Date:   Mon, 4 Dec 2023 21:58:55 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3] greybus: gb-beagleplay: Ensure le for values in
- transport
-To:     Johan Hovold <johan@kernel.org>
-Cc:     greybus-dev@lists.linaro.org, elder@kernel.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        jkridner@beagleboard.org, kernel test robot <yujie.liu@intel.com>
-References: <20231204131008.384583-1-ayushdevel1325@gmail.com>
- <ZW3ePt-c4Mu43DOV@hovoldconsulting.com>
-Content-Language: en-US
-From:   Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <ZW3ePt-c4Mu43DOV@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Mon, 4 Dec 2023 11:29:14 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A519195;
+        Mon,  4 Dec 2023 08:29:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=wGtsBteNQqaSCK4EDE+x10UvfaU6Z2WzVNRFRs3sZQ0=; b=jR6Vi1byfKj4eEfDp2We+QPSLh
+        UFAyOexoNSlfHvl0g0BPwhYUERxVte5s/JZGzRqs5Vch4quYzPZRqQ5fiQ/SUuEMst8NAkjk1Lsj8
+        KYMl1CxgPiOchAoGzXFHbDIHKrAWUrWMcuXYDh2+nY0qsEP4DQ45u6DwwUu9vFPycUoE=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:32824 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1rABog-0008Ca-4H; Mon, 04 Dec 2023 11:29:06 -0500
+Date:   Mon, 4 Dec 2023 11:29:05 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Jan =?ISO-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
+        Cosmin Tanislav <cosmin.tanislav@analog.com>,
+        linux-serial@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Message-Id: <20231204112905.e58cf1b7bf94440f49188390@hugovil.com>
+In-Reply-To: <20231201171644.6f7ade89d4c2f744fa3556b7@hugovil.com>
+References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
+        <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
+        <ce3eaa82-66e9-404b-9062-0f628dc6164f@sirena.org.uk>
+        <20231201163846.a7c1d79daca7c6a2e1416a70@hugovil.com>
+        <f5277458-635a-4eca-a37d-c3b2e83eb4b9@sirena.org.uk>
+        <20231201171644.6f7ade89d4c2f744fa3556b7@hugovil.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
+ corruption
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 1 Dec 2023 17:16:44 -0500
+Hugo Villeneuve <hugo@hugovil.com> wrote:
 
-On 12/4/23 19:42, Johan Hovold wrote:
-> On Mon, Dec 04, 2023 at 06:40:06PM +0530, Ayush Singh wrote:
->> Ensure that the following values are little-endian:
->> - header->pad (which is used for cport_id)
->> - header->size
->>
->> Fixes: ec558bbfea67 ("greybus: Add BeaglePlay Linux Driver")
->> Reported-by: kernel test robot <yujie.liu@intel.com>
->> Closes: https://lore.kernel.org/r/202311072329.Xogj7hGW-lkp@intel.com/
->> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
->> ---
->> V3:
->> - Fix endiness while sending.
->> V2: https://lists.linaro.org/archives/list/greybus-dev@lists.linaro.org/thread/L53UN5ROSG4M6OE7CU5Y3L5F44T6ZPCC/
->> - Ensure endianess for header->pad
->> V1: https://lists.linaro.org/archives/list/greybus-dev@lists.linaro.org/message/K7UJ6PEAWBLNDMHLT2IO6OP5LQISHRUO/
->>
->>   drivers/greybus/gb-beagleplay.c | 9 +++++----
->>   1 file changed, 5 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/greybus/gb-beagleplay.c b/drivers/greybus/gb-beagleplay.c
->> index 43318c1993ba..8b21c3e1e612 100644
->> --- a/drivers/greybus/gb-beagleplay.c
->> +++ b/drivers/greybus/gb-beagleplay.c
->> @@ -93,9 +93,9 @@ static void hdlc_rx_greybus_frame(struct gb_beagleplay *bg, u8 *buf, u16 len)
->>   	memcpy(&cport_id, hdr->pad, sizeof(cport_id));
->>   
->>   	dev_dbg(&bg->sd->dev, "Greybus Operation %u type %X cport %u status %u received",
->> -		hdr->operation_id, hdr->type, cport_id, hdr->result);
->> +		hdr->operation_id, hdr->type, le16_to_cpu(cport_id), hdr->result);
->>   
->> -	greybus_data_rcvd(bg->gb_hd, cport_id, buf, len);
->> +	greybus_data_rcvd(bg->gb_hd, le16_to_cpu(cport_id), buf, len);
-> This looks broken; a quick against mainline (and linux-next) check shows
-> cport_id to be u16.
->
-> I think you want get_unaligned_le16() or something instead of that
-> memcpy() above.
-Thanks, will do.
->
-> But that just begs the question: why has this driver repurposed the pad
-> bytes like this? The header still says that these shall be set to zero.
+> On Fri, 1 Dec 2023 21:41:48 +0000
+> Mark Brown <broonie@kernel.org> wrote:
+> 
+> > On Fri, Dec 01, 2023 at 04:38:46PM -0500, Hugo Villeneuve wrote:
+> > > Mark Brown <broonie@kernel.org> wrote:
+> > 
+> > > > If you're working on that driver it'd also be good to update the current
+> > > > use of cache bypass for the enhanced features/interrupt identification
+> > > > register (and anything else in there, that did seem to be the only one)
+> > > > to use regmap ranges instead - that'd remove the need for the efr_lock
+> > > > and be a much more sensible/idiomatic use of the regmap APIs.
+> > 
+> > > I will also look to remove the efr_lock, altough it has more
+> > > implications since this ship has some registers that share a common
+> > > address, and selected by bits in other registers, and I think this
+> > > is why there is this efr_lock.
+> > 
+> > Right, the registers sharing a common address with the register selected
+> > by bits in another register is what regmap ranges support - the less
+> > creative use of this is banked blocks of registers with a selector
+> > register which picks which page bank is in use, that's moderately common
+> > especially for TI.
+> 
+> Hi Mark,
+> thanks for the info, I was not aware of that, and will look into it.
+> 
+> Hugo Villeneuve.
 
-So, the reason is multiplexing. The original gbridge setup used to do 
-this, so I followed it when I moved gbridge to the coprocessor (during 
-GSoC).
+Hi Mark,
+I am having a hard time finding documentation on how regmap ranges
+work.
 
-Using the padding for storing cport information allows not having to 
-wrap the message in some other format at the two transport layers (UART 
-and TCP sockets) beagle connect is using.This also seems better than 
-trying to do something bespoke, especially since the padding bytes are 
-not being used for anything else.
+Do you have an example of a driver which is using regmap ranges like it
+should be done in this driver, that is using the exact same address for
+two or more registers? I found an example, but it doesn't seem
+applicable to the sc16is7xx driver because the two registers do not
+share a common address, for example they have addresses like 0x01 and
+0x81, even though with the proper page selection, they finally map to
+address 0x01.
 
-The initial spec was for project Ara (modular smartphone), so the 
-current use for IoT is significantly different from the initial goals of 
-the protocol. Maybe a future version of the spec can be more focused on 
-IoT, but that will probably only happen once it has proven somewhat 
-useful in this space.
-
-Ayush Singh
-
+Thank you,
+Hugo Villeneuve
