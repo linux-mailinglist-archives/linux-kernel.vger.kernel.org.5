@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2059480349B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:25:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADAAB80349D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344641AbjLDNY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:24:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
+        id S1344503AbjLDNY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:24:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344503AbjLDNYO (ORCPT
+        with ESMTP id S1344513AbjLDNYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 08:24:14 -0500
+        Mon, 4 Dec 2023 08:24:19 -0500
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC801103;
-        Mon,  4 Dec 2023 05:24:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00410D8;
+        Mon,  4 Dec 2023 05:24:15 -0800 (PST)
 Received: from benjamin-XPS-13-9310.. (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id CA691660715D;
-        Mon,  4 Dec 2023 13:24:12 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 50E6B66072A4;
+        Mon,  4 Dec 2023 13:24:14 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701696253;
-        bh=ayBhyvSUe+u4AtwC/rm89lTriRSE3ewHkfysyr3gsEM=;
+        s=mail; t=1701696254;
+        bh=q+PBOieh7TUOZfOTD/eax3kPGizf1naDWVCgdVzk/Rg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jHh7yxhrTOed0YJHpL+E4A6fJlIVw0a6JFHHV6uSNJqC09iqvj8joJHefNA4ayG2S
-         kLatJQCfnpDaRXBM3agihjPTM7S4hw02WFF62F7Zxcbxn/SlhPvKzYkUBrXPTPJgwM
-         k0Nxg/v8UyXQ3APyWJHuLRxbwXQChDXS1jmY4v/xRBSTWY2gK5c5X5iR14beAIlpCU
-         en1CbluLf+7j7WtS5HJG0LsC7LrKIK3crTmd3HcOUgN9544FHjTM01OP4BpYbWWXBh
-         1mQcmTjDEuymy3YrQncMjtQ8kt/JHBCzm7OuizEv9yhOIDChiu6rVH0dn4fyJr2zQC
-         NqSOIWfnFWeYQ==
+        b=d+ot2jI04YYP3nNR4UaNzhMsi2OZw+QIwwxMc1qtNVNr2FZVmsM8qk2SnXAwymoiy
+         YHFHpH26jUSYcsTSJc6NDNnWsNSvL/vEirCI4D7Vyi4u2d/Mi5y92f3c+qQ0toA4rF
+         iaZp4BOWgLaUUYk+DCauT/jaJJc8KTNzBQIfo1XNVjDHfLMkQWDiEV7uXyllW1Pu8S
+         F/OQ7P/8s2+syp5bL39Sggb3KDBEcVSC1896Y2CSbVC0VeO8EEaDiFyJ9ETdYGq/ij
+         7Zz8sIdixI6XoEX5+pC6Z1c4z2Uh8wMmDQKSoMl2flZjeu0owqGUSp4AOPKQsb2kfy
+         6lWfp2P42sW5g==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     hverkuil@xs4all.nl, mchehab@kernel.org, tfiga@chromium.org,
         m.szyprowski@samsung.com, matt.ranostay@konsulko.com
 Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
         linux-staging@lists.linux.dev, kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Joseph Liu <kwliu@nuvoton.com>, Marvin Lin <kflin@nuvoton.com>,
-        openbmc@lists.ozlabs.org
-Subject: [PATCH v2 22/36] media: nuvoton: Fix misuse of min_buffers_needed field
-Date:   Mon,  4 Dec 2023 14:23:09 +0100
-Message-Id: <20231204132323.22811-23-benjamin.gaignard@collabora.com>
+        Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
+Subject: [PATCH v2 23/36] media: sti: hva: Fix misuse of min_buffers_needed field
+Date:   Mon,  4 Dec 2023 14:23:10 +0100
+Message-Id: <20231204132323.22811-24-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231204132323.22811-1-benjamin.gaignard@collabora.com>
 References: <20231204132323.22811-1-benjamin.gaignard@collabora.com>
@@ -59,31 +58,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 'min_buffers_needed' is suppose to be used to indicate the number
 of buffers needed by DMA engine to start streaming.
-nuvoton driver doesn't use DMA engine and just want to specify
+hva driver doesn't use DMA engine and just want to specify
 the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
 That 'min_reqbufs_allocation' field purpose so use it.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-CC: Joseph Liu <kwliu@nuvoton.com>
-CC: Marvin Lin <kflin@nuvoton.com>
-CC: openbmc@lists.ozlabs.org
+CC: Jean-Christophe Trotin <jean-christophe.trotin@foss.st.com>
 ---
- drivers/media/platform/nuvoton/npcm-video.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/platform/st/sti/hva/hva-v4l2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/nuvoton/npcm-video.c b/drivers/media/platform/nuvoton/npcm-video.c
-index 267e301f2b26..6c122508be1d 100644
---- a/drivers/media/platform/nuvoton/npcm-video.c
-+++ b/drivers/media/platform/nuvoton/npcm-video.c
-@@ -1612,7 +1612,7 @@ static int npcm_video_setup_video(struct npcm_video *video)
- 	vbq->drv_priv = video;
- 	vbq->buf_struct_size = sizeof(struct npcm_video_buffer);
- 	vbq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
--	vbq->min_buffers_needed = 3;
-+	vbq->min_reqbufs_allocation = 3;
+diff --git a/drivers/media/platform/st/sti/hva/hva-v4l2.c b/drivers/media/platform/st/sti/hva/hva-v4l2.c
+index cfe83e9dc01b..d7bc25b0d69e 100644
+--- a/drivers/media/platform/st/sti/hva/hva-v4l2.c
++++ b/drivers/media/platform/st/sti/hva/hva-v4l2.c
+@@ -1142,7 +1142,7 @@ static int hva_queue_init(void *priv, struct vb2_queue *src_vq,
  
- 	rc = vb2_queue_init(vbq);
- 	if (rc) {
+ 	src_vq->type = V4L2_BUF_TYPE_VIDEO_OUTPUT;
+ 	src_vq->buf_struct_size = sizeof(struct hva_frame);
+-	src_vq->min_buffers_needed = MIN_FRAMES;
++	src_vq->min_reqbufs_allocation = MIN_FRAMES;
+ 	src_vq->dev = ctx->hva_dev->dev;
+ 
+ 	ret = queue_init(ctx, src_vq);
+@@ -1151,7 +1151,7 @@ static int hva_queue_init(void *priv, struct vb2_queue *src_vq,
+ 
+ 	dst_vq->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+ 	dst_vq->buf_struct_size = sizeof(struct hva_stream);
+-	dst_vq->min_buffers_needed = MIN_STREAMS;
++	dst_vq->min_reqbufs_allocation = MIN_STREAMS;
+ 	dst_vq->dev = ctx->hva_dev->dev;
+ 
+ 	return queue_init(ctx, dst_vq);
 -- 
 2.39.2
 
