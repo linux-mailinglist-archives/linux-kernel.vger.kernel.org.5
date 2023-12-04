@@ -2,96 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC878032BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:31:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31BA8032C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344076AbjLDMb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:31:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
+        id S1344075AbjLDMcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:32:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232380AbjLDMbP (ORCPT
+        with ESMTP id S1343990AbjLDMcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:31:15 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6BB100
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:31:20 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c0873cf84so15287895e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:31:20 -0800 (PST)
+        Mon, 4 Dec 2023 07:32:32 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F60C90;
+        Mon,  4 Dec 2023 04:32:38 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2868605fa4aso688659a91.0;
+        Mon, 04 Dec 2023 04:32:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1701693078; x=1702297878; darn=vger.kernel.org;
-        h=mime-version:user-agent:references:message-id:in-reply-to:subject
-         :cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W55/T9K6+K8UUWjjypa9TYy5bFm9BSQxOhQzpcpwFHU=;
-        b=cx2cuEvwmmOfaQaFFuYLcGVg225tEU7qu5HUIvPrYhEtuq7byST0CVcWBWHHjeicAL
-         P1eBeR891ioXEbfJvrypwAh6zkKP9YXoyPpLGZT8IaOl6IRRMppZcdpmrtijMzI9aMwd
-         i9As71Ed0mDWWzJWCoZJsjD1CWHUJ3eQ3ovFXg1n1PXaR+zqHFk/PUWMirkafdyb5jgb
-         d3kD+v91m5PM1D5puj01QuYHu4tomTiup+g/DIQkaVpo0b49E0viOMFkErcYR6X4nPxq
-         mCCwfV/8v5qFLSVcJRsW1ZnDG4KBILJPR3yrjfa3GeQrf74b/1b3og1ts6mxCs7Tt9YL
-         CZAA==
+        d=gmail.com; s=20230601; t=1701693158; x=1702297958; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FeUluZdbuz4qXykwEGYGUnpL1h98Vn/bpDODCjyLf2A=;
+        b=BjbXncJDE/ZZcGSsLuUtAapw2tHgNlX6wTf0UAflJVzdxqwC17ToGQCFEdpkSUsnJW
+         GhCSRJp3HtfEoJ18kFzonEg2OmP9ZnvISYuAU3bEw7yxiwFNFKnUpKcLhdB/1L+u6v+n
+         IaIL9vIPqrMjjXWuQG9IBI1/wNJQ/8KpV/6tlVgcPpRj9aigGspApyw1sWSl/VNczy2b
+         8OJsXl3ceTnOIo8zEANTPxpxu2XIJJMqWmZODy3H3EhUuOjrbIJNy/P8sl2eCr5dzMKH
+         EA5DejpXdmagB90aPIljYmLN2jHik9AbhA2TlX/Xd4k4gc3ov0stB/iZ499nsSyC2YcU
+         2HTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701693078; x=1702297878;
-        h=mime-version:user-agent:references:message-id:in-reply-to:subject
-         :cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W55/T9K6+K8UUWjjypa9TYy5bFm9BSQxOhQzpcpwFHU=;
-        b=SaHvVgkw2QhSDxPu9qfWri2G+NyPugNQT2qYibyjxPFp0IBjFFl8aoEo/aKjiQOf0J
-         1I2vqwlX2aUmKQeaJAZg3c+bB/GLPu3wnH9iCBnlcuZXgnSsgyJZ5gQAxKIlV+FEV0W4
-         bibKIysRuPQHDcRgXYD8HOriu62qHLN8vX4M0jPpwoojpc70rjNHpaRgH1C2H5XCscNp
-         dREVxYOYbAVEc/+llUT8d+UQFGQM9hSpI5GljYsCS1ZN+0M944668M/BkMnKCGKOHykx
-         e0MoLMu/DpoNp6B4qenjemR2pWA/4TOo1WD5HrZfSvg2uHjs2+ECofGN7ZPOQmVdssqD
-         t3lg==
-X-Gm-Message-State: AOJu0Yzu7u8jGe0q3TrlWZIB8cFeZrryH/Lmo333w3Q6JxyLy+bSun0f
-        4/0frYCMjmdjXlx55b10wvgaGA==
-X-Google-Smtp-Source: AGHT+IHB8BRFdhuNviEObNj50i/Qccig1rQTpxR703fqIvFCYt8GYXuVrTy0FmlwVcezeH1TnfE56A==
-X-Received: by 2002:a05:600c:5128:b0:40b:5e21:d370 with SMTP id o40-20020a05600c512800b0040b5e21d370mr2452561wms.121.1701693078623;
-        Mon, 04 Dec 2023 04:31:18 -0800 (PST)
-Received: from localhost ([193.86.92.180])
-        by smtp.gmail.com with ESMTPSA id bh12-20020a05600c3d0c00b0040b2976eb02sm14922744wmb.10.2023.12.04.04.31.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 Dec 2023 04:31:18 -0800 (PST)
-From:   Jiri Kosina <jkosina@suse.com>
-X-Google-Original-From: Jiri Kosina <jikos@kernel.org>
-Date:   Mon, 4 Dec 2023 13:31:18 +0100 (CET)
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-cc:     srinivas.pandruvada@linux.intel.com, benjamin.tissoires@redhat.com,
-        linux-pm@vger.kernel.org, linux-pci@vger.kernel.org,
-        Jian Hui Lee <jianhui.lee@canonical.com>,
-        Even Xu <even.xu@intel.com>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] HID: intel-ish-hid: ipc: Rework EHL OOB wakeup
-In-Reply-To: <20231108121940.288005-1-kai.heng.feng@canonical.com>
-Message-ID: <nycvar.YFH.7.76.2312041331050.29220@cbobk.fhfr.pm>
-References: <20231108121940.288005-1-kai.heng.feng@canonical.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        d=1e100.net; s=20230601; t=1701693158; x=1702297958;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FeUluZdbuz4qXykwEGYGUnpL1h98Vn/bpDODCjyLf2A=;
+        b=XnUIBleR6CffTmepCznBZ+OhA1kIhsJne8YkJe4ZX8omGQHV2oG0igiXatyWaLRmRV
+         /L9Pf1fyzxLWL7FUrDMkh7fMApC6nWPrh82Wbm7zew2M4648axMrh0MXASnrpJBsxFTM
+         D4D/KWaxBx+WtWZwx29M8JxXOJKrObYsTAukNtYudWPelhXQEvv7XlefFB/wQZhrOKZf
+         G8stNemaQauekcx0Yvn0qO0+qFXCStAjQBrorggWTevW8r0tV8m2Zi0uqEIHp+/8/b09
+         aBstG0SHtSxBeK21Hcd2E3fjEm3m++12AEvGGBTaBjoEDnU/K/9DHNEHGNE+JHgw3bBw
+         ysaQ==
+X-Gm-Message-State: AOJu0YxLYQgLg1mzzfH2FX9XjQrUaZKk4D24FzOivOEPTvH6pGXe7CnV
+        wEi9Mvv7nlRut1nE2oBmq3ITuQyAmo+c1RT3//o=
+X-Google-Smtp-Source: AGHT+IHflUBHCU7Z+kqr/CgADB+8CLOedZMAabWjB5KJ3i5MqIup37UaaaUMVqaeL7qnekkRkNP+THq76UHB+VUfCaE=
+X-Received: by 2002:a17:90a:1d7:b0:286:b052:7ead with SMTP id
+ 23-20020a17090a01d700b00286b0527eadmr727178pjd.95.1701693157822; Mon, 04 Dec
+ 2023 04:32:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+From:   xingwei lee <xrivendell7@gmail.com>
+Date:   Mon, 4 Dec 2023 20:32:24 +0800
+Message-ID: <CABOYnLykDP2YS5_8+BnT8psWOBEAsGJKq1C1c0TtRW0op07s+A@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in dev_watchdog
+To:     syzbot+db9ad150a8969744d703@syzkaller.appspotmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com,
+        jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev,
+        mhiramat@kernel.org, rostedt@goodmis.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com,
+        yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Nov 2023, Kai-Heng Feng wrote:
+hello
+I reproduced this bug with repro.c and repro.txt
 
-> Since PCI core and ACPI core already handles PCI PME wake and GPE wake
-> when the device has wakeup capability, use device_init_wakeup() to let
-> them do the wakeup setting work.
-> 
-> Also add a shutdown callback which uses pci_prepare_to_sleep() to let
-> PCI and ACPI set OOB wakeup for S5.
-> 
-> Cc: Jian Hui Lee <jianhui.lee@canonical.com>
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+=* repro.txt =*
+r0 = syz_clone(0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
+ptrace(0x10, r0)
+r1 = bpf$BPF_PROG_RAW_TRACEPOINT_LOAD(0x5, &(0x7f0000000200)={0x18,
+0x4, &(0x7f00000002c0)=ANY=[@ANYBLOB="180100001c00000000000000120000f1850000006d00000095"],
+&(0x7f0000000000)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0,
+0x2}, 0x80)
+bpf$BPF_RAW_TRACEPOINT_OPEN(0x11,
+&(0x7f0000000200)={&(0x7f0000000340)='kfree\x00', r1}, 0x10)
 
-Srinivas, do you please have any feedback on this patch?
+=* repro.c =*
+// autogenerated by syzkaller (https://github.com/google/syzkaller)
 
-Thanks,
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sched.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/prctl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
 
--- 
-Jiri Kosina
-SUSE Labs
+#ifndef __NR_bpf
+#define __NR_bpf 321
+#endif
 
+static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
+
+static uint64_t current_time_ms(void) {
+  struct timespec ts;
+  if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
+  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+static bool write_file(const char* file, const char* what, ...) {
+  char buf[1024];
+  va_list args;
+  va_start(args, what);
+  vsnprintf(buf, sizeof(buf), what, args);
+  va_end(args);
+  buf[sizeof(buf) - 1] = 0;
+  int len = strlen(buf);
+  int fd = open(file, O_WRONLY | O_CLOEXEC);
+  if (fd == -1) return false;
+  if (write(fd, buf, len) != len) {
+    int err = errno;
+    close(fd);
+    errno = err;
+    return false;
+  }
+  close(fd);
+  return true;
+}
+
+static void kill_and_wait(int pid, int* status) {
+  kill(-pid, SIGKILL);
+  kill(pid, SIGKILL);
+  for (int i = 0; i < 100; i++) {
+    if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
+    usleep(1000);
+  }
+  DIR* dir = opendir("/sys/fs/fuse/connections");
+  if (dir) {
+    for (;;) {
+      struct dirent* ent = readdir(dir);
+      if (!ent) break;
+      if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
+        continue;
+      char abort[300];
+      snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
+               ent->d_name);
+      int fd = open(abort, O_WRONLY);
+      if (fd == -1) {
+        continue;
+      }
+      if (write(fd, abort, 1) < 0) {
+      }
+      close(fd);
+    }
+    closedir(dir);
+  } else {
+  }
+  while (waitpid(-1, status, __WALL) != pid) {
+  }
+}
+
+static void setup_test() {
+  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+  setpgrp();
+  write_file("/proc/self/oom_score_adj", "1000");
+}
+
+#define USLEEP_FORKED_CHILD (3 * 50 * 1000)
+
+static long handle_clone_ret(long ret) {
+  if (ret != 0) {
+    return ret;
+  }
+  usleep(USLEEP_FORKED_CHILD);
+  syscall(__NR_exit, 0);
+  while (1) {
+  }
+}
+
+static long syz_clone(volatile long flags, volatile long stack,
+                      volatile long stack_len, volatile long ptid,
+                      volatile long ctid, volatile long tls) {
+  long sp = (stack + stack_len) & ~15;
+  long ret = (long)syscall(__NR_clone, flags & ~CLONE_VM, sp, ptid, ctid, tls);
+  return handle_clone_ret(ret);
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void) {
+  int iter = 0;
+  for (;; iter++) {
+    int pid = fork();
+    if (pid < 0) exit(1);
+    if (pid == 0) {
+      setup_test();
+      execute_one();
+      exit(0);
+    }
+    int status = 0;
+    uint64_t start = current_time_ms();
+    for (;;) {
+      if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
+      sleep_ms(1);
+      if (current_time_ms() - start < 5000) continue;
+      kill_and_wait(pid, &status);
+      break;
+    }
+  }
+}
+
+uint64_t r[2] = {0x0, 0xffffffffffffffff};
+
+void execute_one(void) {
+  intptr_t res = 0;
+  res = -1;
+  res = syz_clone(/*flags=*/0, /*stack=*/0, /*stack_len=*/0, /*parentid=*/0,
+                  /*childtid=*/0, /*tls=*/0);
+  if (res != -1) r[0] = res;
+  syscall(__NR_ptrace, /*req=*/0x10ul, /*pid=*/r[0], 0, 0);
+  *(uint32_t*)0x20000200 = 0x18;
+  *(uint32_t*)0x20000204 = 4;
+  *(uint64_t*)0x20000208 = 0x200002c0;
+  memcpy((void*)0x200002c0,
+         "\x18\x01\x00\x00\x1c\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\xf1\x85"
+         "\x00\x00\x00\x6d\x00\x00\x00\x95",
+         25);
+  *(uint64_t*)0x20000210 = 0x20000000;
+  memcpy((void*)0x20000000, "GPL\000", 4);
+  *(uint32_t*)0x20000218 = 0;
+  *(uint32_t*)0x2000021c = 0;
+  *(uint64_t*)0x20000220 = 0;
+  *(uint32_t*)0x20000228 = 0;
+  *(uint32_t*)0x2000022c = 0;
+  memset((void*)0x20000230, 0, 16);
+  *(uint32_t*)0x20000240 = 0;
+  *(uint32_t*)0x20000244 = 2;
+  *(uint32_t*)0x20000248 = -1;
+  *(uint32_t*)0x2000024c = 8;
+  *(uint64_t*)0x20000250 = 0;
+  *(uint32_t*)0x20000258 = 0;
+  *(uint32_t*)0x2000025c = 0x10;
+  *(uint64_t*)0x20000260 = 0;
+  *(uint32_t*)0x20000268 = 0;
+  *(uint32_t*)0x2000026c = 0;
+  *(uint32_t*)0x20000270 = 0;
+  *(uint32_t*)0x20000274 = 0;
+  *(uint64_t*)0x20000278 = 0;
+  *(uint64_t*)0x20000280 = 0;
+  *(uint32_t*)0x20000288 = 0x10;
+  *(uint32_t*)0x2000028c = 0;
+  res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x20000200ul, /*size=*/0x80ul);
+  if (res != -1) r[1] = res;
+  *(uint64_t*)0x20000200 = 0x20000340;
+  memcpy((void*)0x20000340, "kfree\000", 6);
+  *(uint32_t*)0x20000208 = r[1];
+  syscall(__NR_bpf, /*cmd=*/0x11ul, /*arg=*/0x20000200ul, /*size=*/0x10ul);
+}
+int main(void) {
+  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
+          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
+  loop();
+  return 0;
+}
+
+and also https://gist.github.com/xrivendell7/569542ed0113dc5f98753ea8c5305912
