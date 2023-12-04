@@ -2,164 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E73803B8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED304803B9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229485AbjLDRaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:30:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
+        id S234067AbjLDRdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:33:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjLDRa2 (ORCPT
+        with ESMTP id S229488AbjLDRd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:30:28 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2056.outbound.protection.outlook.com [40.107.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3633DC0;
-        Mon,  4 Dec 2023 09:30:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Db2qQJPF9rZqemYT464A/fOdU028w9fdikXFomhmgirdr60gmgS1ZjF6A89am1OJh5rEhxzUUBK8ydL6SrYnw7a5btYXZ95gvUUdUqhjF2E2J29cbxFbbm4qp52nYxDn4NRMhoFVx9yuop7aFILTCYrr3nnSwq5cdWH+E2Y8XCMuZ5Ti/mNJjCDf+IEV/ApuJEwpI2cA05N6C9CEwYMY3uHkaKXb80Oals4hWiJrgyXcMe1fUKq5OGmw6VI3DMsxOk2V2mljfjVvNOIFuYEDTNrd5RNLZ50mPrZRRfCYF17+NPc/r5vt+AxyUpZSW+sHlk55Z8h8ebinbJzeMc5RxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6VAT1mPhTSEAPwE1fvGIjV6jQxeJGVrGepcj52ejD5w=;
- b=mbmYx1eH9GIEoKQDXB1IIlXziL3hcHi2oz+8MLWH4n9IN5nrRQcsj8kNRk6TMnQev8DoDjTm4P5n0gG63Y6WKnKMgiAgPytIb7JmlxyDsz3DwYOr7SigfRHQymTDe5T4Rb4ueujqy0AKbATKUuC5Ncy70u+pQ+YHcMhM/bR4SHW31avT158Dp+0RIvq3NooBzFxM5JCcMYoQu37B/V4t8pxPvwTRefPXsHr11N3si7n6VIQPNG7iS4om9K6TD2qPynnHFL2YEN7VHWSQRM3AVL4l6tXDBatUPkJPCMu6lQjIZtKLqBKNEz9w2WVSNZ2NdDzUDuP1Fm0hpQiFo4lQ6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6VAT1mPhTSEAPwE1fvGIjV6jQxeJGVrGepcj52ejD5w=;
- b=YwVTfPu7CSuS94Fe80UXgOkPsDknigxPQLuk4s1y5apUvax4D7kpQFXJ95z6NtAciUsKk4VWGB3kjDqHsrc4noWDeXM/Sx5ODXn5DcElESWsKqLsr9vvtmdpRnOWABLixMLlfAgKXKfovVvvrEAd0vCpVThZOY5UqYFsiHvU79fAcdHV7J6XDb/MLRiOvA6fXH0uUIMAHwoooWFiGbvSgKVeIm4E40b/H76WWMXy2ay91usOc0HY1E5Ra+piSjsA5odQeqzwldOFHYCkYPiCn+CxxsD9DoM2b+N0H9CC00+1QNfc3L2KfpD6YkY1pOadC9ZQbnqHEYtCJQybVSeVng==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DS0PR12MB7801.namprd12.prod.outlook.com (2603:10b6:8:140::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
- 2023 17:30:29 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 17:30:29 +0000
-Date:   Mon, 4 Dec 2023 13:30:28 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, pbonzini@redhat.com, joro@8bytes.org,
-        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
-        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
-Subject: Re: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
-Message-ID: <20231204173028.GJ1493156@nvidia.com>
-References: <20231202091211.13376-1-yan.y.zhao@intel.com>
- <ZW4Fx2U80L1PJKlh@google.com>
+        Mon, 4 Dec 2023 12:33:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A86BA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:33:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701711214; x=1733247214;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=tm472bhj1mgn39K6p4g1VDzuW05DNjEf6P3PlSrfgaE=;
+  b=cpuieT3+Z7J3MNUi9CUqy4PUg7NNOv+4vJpOiYFb25iAU0hGxf5/UdZU
+   xsJx80o6LrYpmrAVNZJm50Rae/2b5JycZphO9MTgyrtZG8hXLHtg/JsIb
+   MiRJ9x0ftG3AuNnpeQ7BFNc49oLh0DstPArKmGZI3VRDqtGVjM6WtZdzq
+   Q+JvbI7Kx4Qh2ZHrG4+KpMXF2GgUJXmhlrzKuAISpOba4fbG4oXx8Jv4C
+   BNEVjKzgd6Fqt8UayXBBG159bLzi0XpCZvvRSVCMRUbvsuNpT1IUcOQZx
+   qLuYTg490MylojyFZerCI5BzjX7JAGnczQ1hQ3hVpxnFgPmUYpogi+CC0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="384174441"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="384174441"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 09:33:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764027146"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="764027146"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 04 Dec 2023 09:33:31 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rACoy-0007xR-2k;
+        Mon, 04 Dec 2023 17:33:28 +0000
+Date:   Tue, 5 Dec 2023 01:32:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: drivers/gpu/drm/nouveau/nouveau_ioc32.c:2: warning: Cannot
+ understand  * \file mga_ioc32.c
+Message-ID: <202312050000.EAJuyFfY-lkp@intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZW4Fx2U80L1PJKlh@google.com>
-X-ClientProxiedBy: BLAPR03CA0022.namprd03.prod.outlook.com
- (2603:10b6:208:32b::27) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB7801:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef126a39-f212-4e8b-eb6e-08dbf4eeb573
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kEyTG2DG6OUQ6eJ/8vepvgtrXblJ+uxZ0yURjWJB5CXh6OBnLdZgk6NmCW9pc3jlCtFDo1nrbfSFCSkybZgYWjxzEAFkWwbfL17SwL3xjY53Mu2izwS2fgRAUoBIW3IWdthGO+kiI4OUJ4H/oCZemR/WVibtkWCNhqrMenuImw/GO1Ywfp1RcgWTvOWBKYpc910yIEbthGDVdAvis+iLnLxaHM15maP1fmutWACA3QGSj4Ppcc+6hMxocW84D1mm9J1RyO+JOICkOXHo2kr6k4VOY5Xalea3TS357GPDm0nxIv7YcSPOIkup57cSh5fggmgM+gEjcfaIbQGbUy6b4xs3cI3oDAragDa+bmdfuKxy+e0QMwBWwPpL9aMFQGic4LSphybKhkIgO0ItNKziznW5+57//Qkcj3JpHHew5262nb29NQ1g7K7Ki9Nt0tqch1JTESGz5xJp3iecMDqyZm5l8IAggSIbC9OiZ4xweeWtWdeI/nB7Wn3cyoXk/lN6Rm4ejyKlaXmqCEaBiyhjXsMoJUpwaoiDolMKrBsEuMGQBqp2NGTkftiooVXBXGH4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(66556008)(66476007)(66946007)(316002)(6916009)(478600001)(6486002)(38100700002)(7416002)(5660300002)(36756003)(41300700001)(2906002)(33656002)(86362001)(4326008)(8676002)(8936002)(1076003)(2616005)(83380400001)(26005)(6512007)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4mtBC+LyVR3NsbGHNuJRz6AEMrAEPgkSfbSdDs0G0VK2wIC4j52vVTMwIxqM?=
- =?us-ascii?Q?QI5Vml2VkgXK/VYQTXZWIsy2qy4KNpr9FMPVcxHZny0lRlirR3oB+4bnwLw6?=
- =?us-ascii?Q?tvVorqNiMvOY/U/Og0I8MMj3kZPCG5sej+mlCRk5Vdd+9VjK/HlCQnW52UGn?=
- =?us-ascii?Q?UQ1k8kiq6TfBWrwHOFaggxb7y2N8mt8jZ6e4QZfyHg/XjE1cvR2YhEQYHHUd?=
- =?us-ascii?Q?tLaWKmGilbO2QSswDypfRz4FeETqwrS2C2IGiYfEZcBhu2hONiJF08XeIc+H?=
- =?us-ascii?Q?J7/qgM2saGkOV+PIshthKuC0hNdiSUTGUYzOC0GxRAg3ybq9FK+vXWo00o0J?=
- =?us-ascii?Q?/HTt0bt4uKr1UKTk8qy0vx9dkaH0xikak4UvaROvldJ6ZlXG02J1Xm4oButk?=
- =?us-ascii?Q?EN2P2E/npst9EwHQ2wB5kmbhvYa1cPBixXetDYrxmTMTxHYd/w7n/KRi+zoy?=
- =?us-ascii?Q?2cXDqex2+Cln2bAGYpKs1o2Tk1zhxodSNArUzDfnxye+6gmcJ12aAPABGR1e?=
- =?us-ascii?Q?8JyVeU2Dsxa9JVJ/l48Sug85TG6WAHc2MtG1tYnBYhV6F0EjFCKc9sfxnb5X?=
- =?us-ascii?Q?8qYvkBcTepnEwa/TEZK2WeRg6Y88lujRhVYt6mBn4I4ZNdZdET/SnzPDwUDk?=
- =?us-ascii?Q?mexCnw2uVpVVPz12MF8w2Xbv+JHm+8/ku6+j3eLBXRm2Fr8/pNpiCcqHvQiQ?=
- =?us-ascii?Q?nyPqIcabU6GIjQw2GIUllUOKMbhcKS8FZWRHJ+uyugeRT+PbJNf7nSNyawoZ?=
- =?us-ascii?Q?R+dsJeNbOVW5KgFVJaaPgcj8cNd9UOiuTHBbe3ZkgwlxDDT/bggt4lHZ+IFY?=
- =?us-ascii?Q?XiYqLTlLSAYEyfObTyhGc5qKsFRTMRwS5w+eElkOSaloSWOeJDhNy+5shO0z?=
- =?us-ascii?Q?+iM1X6iMJT5U48tAiuyAu6cvBosrols8LgsxVxTdrZWJy2SwJfPKJcuWbs0W?=
- =?us-ascii?Q?iVV7zXIlShh8AC6tjJd37TST6r0hY1cYcSehS/gm7Zr7f9TSSGogvy922GXk?=
- =?us-ascii?Q?hkq1YdeCC9cHdXnnf8vWfmbmwo9mLY7NzR8rW0nVsGE9uQmukmeL19REneXA?=
- =?us-ascii?Q?zHzx2gtpQ05hIjtm/h0GktUCeQ5C0mU9029p7cGkDDyUXbsVJgEkP1B52rmp?=
- =?us-ascii?Q?JvWSpaA/6lrSHnv3omuy0MJs0MWlYHeCJq+GN7lbWxiPw4rtLVD46fbh0xiq?=
- =?us-ascii?Q?RYzPidH8RT7K3h3mwqLthI6680ltQfhpFAJoGgg75b+uwoB09Bi7zH3wIVtb?=
- =?us-ascii?Q?HJzxnjJo2fhv0JNgdb6EwSua3jbPwqjNlMEVarb7WAIp/QqDfvLpyuWt6knz?=
- =?us-ascii?Q?rEzB5kYItErRh6yxC9VWcbU/vjNFi6+KW8NZCVI+WtDWY3FRCMAHUN38d41e?=
- =?us-ascii?Q?HtfxEKRDgFjRTTqvwQLGZlT5FmAarYLKYleJt734Q3ov6ld3wrhFjMKSHxdg?=
- =?us-ascii?Q?CDjHguHTXnh1Z4P32XyfREqWGIi3ATuPhGkdLZwxTVmb1GNaLBFK+raWyy3L?=
- =?us-ascii?Q?aAgLMQ9tfSz5JIXZYNjF0vQEmjOeZ7e9bVEGGZMnBs+D/KsrJyhfnsA06WIx?=
- =?us-ascii?Q?aScHO8Wqi/tW1XwLCEplaz6zJn8QlazWQYjjT9NX?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef126a39-f212-4e8b-eb6e-08dbf4eeb573
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 17:30:28.8949
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Il8tgf+oO+OsXttnjHkN8e4mSLdxGk8cRVmDy/z1iJinSy6RJJ8vEL9WGky9WANZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7801
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 09:00:55AM -0800, Sean Christopherson wrote:
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
+commit: 83a44a4f47ad20997aebb311fc678a13cde391d7 x86: Remove toolchain check for X32 ABI capability
+date:   1 year, 9 months ago
+config: x86_64-buildonly-randconfig-005-20230918 (https://download.01.org/0day-ci/archive/20231205/202312050000.EAJuyFfY-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312050000.EAJuyFfY-lkp@intel.com/reproduce)
 
-> There are more approaches beyond having IOMMUFD and KVM be
-> completely separate entities.  E.g. extract the bulk of KVM's "TDP
-> MMU" implementation to common code so that IOMMUFD doesn't need to
-> reinvent the wheel.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312050000.EAJuyFfY-lkp@intel.com/
 
-We've pretty much done this already, it is called "hmm" and it is what
-the IO world uses. Merging/splitting huge page is just something that
-needs some coding in the page table code, that people want for other
-reasons anyhow.
+All warnings (new ones prefixed by >>):
 
-> - Subjects IOMMUFD to all of KVM's historical baggage, e.g. the memslot deletion
->   mess, the truly nasty MTRR emulation (which I still hope to delete), the NX
->   hugepage mitigation, etc.
+>> drivers/gpu/drm/nouveau/nouveau_ioc32.c:2: warning: Cannot understand  * \file mga_ioc32.c
+    on line 2 - I thought it was a doc line
+>> drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'filp' not described in 'nouveau_compat_ioctl'
+>> drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'cmd' not described in 'nouveau_compat_ioctl'
+>> drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: Function parameter or member 'arg' not described in 'nouveau_compat_ioctl'
+>> drivers/gpu/drm/nouveau/nouveau_ioc32.c:52: warning: expecting prototype for Called whenever a 32-bit process running under a 64(). Prototype was for nouveau_compat_ioctl() instead
 
-Does it? I think that just remains isolated in kvm. The output from
-KVM is only a radix table top pointer, it is up to KVM how to manage
-it still.
 
-> I'm not convinced that memory consumption is all that interesting.  If a VM is
-> mapping the majority of memory into a device, then odds are good that the guest
-> is backed with at least 2MiB page, if not 1GiB pages, at which point the memory
-> overhead for pages tables is quite small, especially relative to the total amount
-> of memory overheads for such systems.
+vim +2 drivers/gpu/drm/nouveau/nouveau_ioc32.c
 
-AFAIK the main argument is performance. It is similar to why we want
-to do IOMMU SVA with MM page table sharing.
+6ee738610f41b5 Ben Skeggs   2009-12-11  @2   * \file mga_ioc32.c
+6ee738610f41b5 Ben Skeggs   2009-12-11   3   *
+6ee738610f41b5 Ben Skeggs   2009-12-11   4   * 32-bit ioctl compatibility routines for the MGA DRM.
+6ee738610f41b5 Ben Skeggs   2009-12-11   5   *
+6ee738610f41b5 Ben Skeggs   2009-12-11   6   * \author Dave Airlie <airlied@linux.ie> with code from patches by Egbert Eich
+6ee738610f41b5 Ben Skeggs   2009-12-11   7   *
+6ee738610f41b5 Ben Skeggs   2009-12-11   8   *
+6ee738610f41b5 Ben Skeggs   2009-12-11   9   * Copyright (C) Paul Mackerras 2005
+6ee738610f41b5 Ben Skeggs   2009-12-11  10   * Copyright (C) Egbert Eich 2003,2004
+6ee738610f41b5 Ben Skeggs   2009-12-11  11   * Copyright (C) Dave Airlie 2005
+6ee738610f41b5 Ben Skeggs   2009-12-11  12   * All Rights Reserved.
+6ee738610f41b5 Ben Skeggs   2009-12-11  13   *
+6ee738610f41b5 Ben Skeggs   2009-12-11  14   * Permission is hereby granted, free of charge, to any person obtaining a
+6ee738610f41b5 Ben Skeggs   2009-12-11  15   * copy of this software and associated documentation files (the "Software"),
+6ee738610f41b5 Ben Skeggs   2009-12-11  16   * to deal in the Software without restriction, including without limitation
+6ee738610f41b5 Ben Skeggs   2009-12-11  17   * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+6ee738610f41b5 Ben Skeggs   2009-12-11  18   * and/or sell copies of the Software, and to permit persons to whom the
+6ee738610f41b5 Ben Skeggs   2009-12-11  19   * Software is furnished to do so, subject to the following conditions:
+6ee738610f41b5 Ben Skeggs   2009-12-11  20   *
+6ee738610f41b5 Ben Skeggs   2009-12-11  21   * The above copyright notice and this permission notice (including the next
+6ee738610f41b5 Ben Skeggs   2009-12-11  22   * paragraph) shall be included in all copies or substantial portions of the
+6ee738610f41b5 Ben Skeggs   2009-12-11  23   * Software.
+6ee738610f41b5 Ben Skeggs   2009-12-11  24   *
+6ee738610f41b5 Ben Skeggs   2009-12-11  25   * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+6ee738610f41b5 Ben Skeggs   2009-12-11  26   * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+6ee738610f41b5 Ben Skeggs   2009-12-11  27   * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+6ee738610f41b5 Ben Skeggs   2009-12-11  28   * THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+6ee738610f41b5 Ben Skeggs   2009-12-11  29   * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+6ee738610f41b5 Ben Skeggs   2009-12-11  30   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+6ee738610f41b5 Ben Skeggs   2009-12-11  31   * IN THE SOFTWARE.
+6ee738610f41b5 Ben Skeggs   2009-12-11  32   */
+6ee738610f41b5 Ben Skeggs   2009-12-11  33  
+6ee738610f41b5 Ben Skeggs   2009-12-11  34  #include <linux/compat.h>
+6ee738610f41b5 Ben Skeggs   2009-12-11  35  
+690ae20c0426f8 Sam Ravnborg 2019-05-19  36  #include <drm/drm.h>
+690ae20c0426f8 Sam Ravnborg 2019-05-19  37  #include <drm/drm_ioctl.h>
+6ee738610f41b5 Ben Skeggs   2009-12-11  38  
+fce875d647171f Ben Skeggs   2012-07-26  39  #include "nouveau_ioctl.h"
+6ee738610f41b5 Ben Skeggs   2009-12-11  40  
+6ee738610f41b5 Ben Skeggs   2009-12-11  41  /**
+6ee738610f41b5 Ben Skeggs   2009-12-11  42   * Called whenever a 32-bit process running under a 64-bit kernel
+6ee738610f41b5 Ben Skeggs   2009-12-11  43   * performs an ioctl on /dev/dri/card<n>.
+6ee738610f41b5 Ben Skeggs   2009-12-11  44   *
+6ee738610f41b5 Ben Skeggs   2009-12-11  45   * \param filp file pointer.
+6ee738610f41b5 Ben Skeggs   2009-12-11  46   * \param cmd command.
+6ee738610f41b5 Ben Skeggs   2009-12-11  47   * \param arg user argument.
+6ee738610f41b5 Ben Skeggs   2009-12-11  48   * \return zero on success or negative number on failure.
+6ee738610f41b5 Ben Skeggs   2009-12-11  49   */
+6ee738610f41b5 Ben Skeggs   2009-12-11  50  long nouveau_compat_ioctl(struct file *filp, unsigned int cmd,
+6ee738610f41b5 Ben Skeggs   2009-12-11  51  			 unsigned long arg)
+6ee738610f41b5 Ben Skeggs   2009-12-11 @52  {
+6ee738610f41b5 Ben Skeggs   2009-12-11  53  	unsigned int nr = DRM_IOCTL_NR(cmd);
+6ee738610f41b5 Ben Skeggs   2009-12-11  54  	drm_ioctl_compat_t *fn = NULL;
+6ee738610f41b5 Ben Skeggs   2009-12-11  55  	int ret;
+6ee738610f41b5 Ben Skeggs   2009-12-11  56  
+6ee738610f41b5 Ben Skeggs   2009-12-11  57  	if (nr < DRM_COMMAND_BASE)
+6ee738610f41b5 Ben Skeggs   2009-12-11  58  		return drm_compat_ioctl(filp, cmd, arg);
+6ee738610f41b5 Ben Skeggs   2009-12-11  59  
 
-If IOMMU mirrors/shadows/copies a page table using something like HMM
-techniques then the invalidations will mark ranges of IOVA as
-non-present and faults will occur to trigger hmm_range_fault to do the
-shadowing.
+:::::: The code at line 2 was first introduced by commit
+:::::: 6ee738610f41b59733f63718f0bdbcba7d3a3f12 drm/nouveau: Add DRM driver for NVIDIA GPUs
 
-This means that pretty much all IO will always encounter a non-present
-fault, certainly at the start and maybe worse while ongoing.
+:::::: TO: Ben Skeggs <bskeggs@redhat.com>
+:::::: CC: Dave Airlie <airlied@redhat.com>
 
-On the other hand, if we share the exact page table then natural CPU
-touches will usually make the page present before an IO happens in
-almost all cases and we don't have to take the horribly expensive IO
-page fault at all.
-
-We were not able to make bi-dir notifiers with with the CPU mm, I'm
-not sure that is "relatively easy" :(
-
-Jason
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
