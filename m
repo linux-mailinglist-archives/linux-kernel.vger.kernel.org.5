@@ -2,94 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFA2803234
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:11:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE4C803232
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbjLDMLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:11:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        id S230363AbjLDMK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbjLDMKs (ORCPT
+        with ESMTP id S231391AbjLDMKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:10:48 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EFFE5;
-        Mon,  4 Dec 2023 04:10:54 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4BrJMB012672;
-        Mon, 4 Dec 2023 12:10:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=AsOqQXAR0gQhB26871PoX5uPp0Ak4aLDT3tNkVI0gA8=;
- b=eKX8zC9fFcvaGzMHZLW87SY3X6m9qnLxjuWXplZiyycVBaZI0Ho5oOVpLFpx4DM94RpL
- 2SUOTW1SjBnD7Jl2lB85iXnHrE4DCU+72kR2hRCLZQzdQ5YFHwHmPlqXwLiLcxp/Cg8G
- ewxwSc2QX+eE9UplY62eZ+Nz2j6Cehl+Ncqf9iRECiwCP0cQX+cbOULpLg93Szp0NRNk
- oId4+Ww8jpg8KipYyvA3c2lteV/ShtLMNI4mGLOhmagt3UIdtEV9+uNK4F0dW+RJ0gf4
- yplCBc9aBWCCBwNYikZfslxdKtDSeU2Rm8DK6xqL8YLwShCZE0o8sOf1OJI3SOpCHPem 5Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3use9p8n4k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 12:10:52 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4C7s6f015706;
-        Mon, 4 Dec 2023 12:10:52 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3use9p8n3e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 12:10:51 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4AmwEh012807;
-        Mon, 4 Dec 2023 12:10:50 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8dmrms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 12:10:50 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4CAl9c5177860
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Dec 2023 12:10:47 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B900220040;
-        Mon,  4 Dec 2023 12:10:47 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F17F92004B;
-        Mon,  4 Dec 2023 12:10:46 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.42.250])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Mon,  4 Dec 2023 12:10:46 +0000 (GMT)
-Date:   Mon, 4 Dec 2023 13:10:45 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
-        kwankhede@nvidia.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
-Message-ID: <20231204131045.217586a3.pasic@linux.ibm.com>
-In-Reply-To: <20231129143529.260264-1-akrowiak@linux.ibm.com>
-References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 4 Dec 2023 07:10:43 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A671FD2;
+        Mon,  4 Dec 2023 04:10:49 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1rA7mh-0000e8-Iq; Mon, 04 Dec 2023 13:10:47 +0100
+Message-ID: <17bd838f-12a0-43c2-a45c-46021083170b@leemhuis.info>
+Date:   Mon, 4 Dec 2023 13:10:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: block/badblocks.c warning in 6.7-rc2
+Content-Language: en-US, de-DE
+To:     Coly Li <colyli@suse.de>, Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Block Devices <linux-block@vger.kernel.org>,
+        Linux RAID <linux-raid@vger.kernel.org>,
+        Linux bcachefs <linux-bcachefs@vger.kernel.org>,
+        Xiao Ni <xni@redhat.com>, Geliang Tang <geliang.tang@suse.com>,
+        Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Janpieter Sollie <janpieter.sollie@edpnet.be>
+References: <562a2442-d098-4972-baa1-5a843e06b180@gmail.com>
+ <C8305655-3749-411B-A696-E07E95882215@suse.de>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <C8305655-3749-411B-A696-E07E95882215@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: udFSVoH8M4s5xBiha-8LsNCuMHQ464hu
-X-Proofpoint-GUID: qo-3VEq_SYMOh_Hi6ddOdqDiV-VjbLZH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_10,2023-11-30_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=974 clxscore=1011 mlxscore=0 bulkscore=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 malwarescore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2312040092
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701691849;400920e5;
+X-HE-SMSGID: 1rA7mh-0000e8-Iq
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -97,30 +53,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 09:35:24 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> In the current implementation, response code 01 (AP queue number not valid)
-> is handled as a default case along with other response codes returned from
-> a queue reset operation that are not handled specifically. Barring a bug,
-> response code 01 will occur only when a queue has been externally removed
-> from the host's AP configuration; nn this case, the queue must
-> be reset by the machine in order to avoid leaking crypto data if/when the
-> queue is returned to the host's configuration.
-
-s/if\/when/at latest before/
-
-I would argue that some of the cleanups need to happen before even 01 is
-reflected...
-
-The code comments may also require a similar rewording. With that fixed:
-Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
-
-Regards,
-Halil
-
-> The response code 01 case
-> will be handled specifically by logging a WARN message followed by cleaning
-> up the IRQ resources.
+On 29.11.23 09:08, Coly Li wrote:
+>> 2023年11月29日 07:47，Bagas Sanjaya <bagasdotme@gmail.com> 写道：
+>>
+>> I notice a regression report that is rather well-handled on Bugzilla [1].
+>> Quoting from it:
+>>
+>>>
+>>> when booting from 6.7-rc2, compiled with clang, I get this warning on one of my 3 bcachefs volumes:
+>>> WARNING: CPU: 3 PID: 712 at block/badblocks.c:1284 badblocks_check (block/badblocks.c:1284) 
+>>> The reason why isn't clear, but the stack trace points to an error in md error handling.
+>>> This bug didn't happen in 6.6
+>>> there are 3 commits in 6.7-rc2 which may cause them,
+>>> in attachment:
+>>> - decoded stacktrace of dmesg
+>>> - kernel .config
+>> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218184
 > 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> It seems the improved bad blocks code caught a zero-size bio request
+> from upper layer, this improper behavior was silently neglected before.
+> It might be too early or simple to decide this is a regression,
+
+Well, it's often better to add an issue to the tracking even if there is
+a chance that it's not a real regression, as the issue might otherwise
+fall through the cracks. But given...
+
+> especially Janpieter closes the report for now.
+
+...this I agree that this is likely not worth tracking, hence:
+
+#regzbot inconclusive: maybe not a regression and report can not
+reproduce it anymore
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
