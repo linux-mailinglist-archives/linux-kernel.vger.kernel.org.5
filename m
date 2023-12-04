@@ -2,119 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 805F8802E2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31EC802E11
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343607AbjLDIrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46872 "EHLO
+        id S1343691AbjLDIsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:48:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjLDIra (ORCPT
+        with ESMTP id S234773AbjLDIsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:47:30 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59E0D6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:47:36 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-46442e22afcso3216431137.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 00:47:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701679656; x=1702284456; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QQFJC/lIslhrNgCZNKBvXAQuBkogMhzm+Hv1+HgK/cM=;
-        b=YgYlS5lr2SYlrCUsE5Zl9uvSP0dk+OoawAMbv/m0e8ha+pSzPWybr+36Cltc/HV670
-         nq7N5HQ5E+VI1WP939Razwa531lBhZuA0WF1UVy4o+3cef5GUi4pIrMipX1CdVJqF45A
-         IBVmSuy7iCqgs6t42z8v07Gvx+4X/VWi0pY+HCGZFdbt6EtLjeMibbA1T7iFqjqOGh+S
-         G/YHXGJIIcrY4HaW/AraWHQGMNTR/JkA01wvJwkJlF6HfvIFQ4IQMUw4B2f0enh5Ahny
-         c/g2foYYipNkt/NS8OGVcF58c1+Y151NwtkRhOAEWzfJF+nU7jh7Ukj/twirQufBwsYt
-         AzPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701679656; x=1702284456;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QQFJC/lIslhrNgCZNKBvXAQuBkogMhzm+Hv1+HgK/cM=;
-        b=mK+IQGqDX4gerwSwZI7CnkKUPCNnEKOM9Hf3bhONJaIfnYLmRtcoeiJTCwpv8JmpcG
-         ekS7aXlnOTSkCspS9I7mGzDPcplBn4QG1xiAQiOPkedAQXdD6JnyniLQla9g91p8GSgx
-         fETsC1INiaSr8g9tzVXMGxTA5UNOE2i2lZUG379wyUeICCzAh8fHgkC91+1eBRMTQg8B
-         UcKOm82mSlHnxXOG/dDCoO6kd/0uuNzuVFkTIejH4X0GpayKGWXbWTkHtR0+ZLjNsxqJ
-         025443I7IO1sltLuQWHUQxls6FIeiBVm6KO32gi+biDb1wXyF8CslrKRRFifyFaVe3lT
-         w6cg==
-X-Gm-Message-State: AOJu0YzB4U1bwKgH2pW5+KT+2H3ZbHCcDgktPgQXWWvJT/Gdas+fn4Bk
-        PbrGpuObgRBE5Vvb6grJgUjwUglKyZ24pPr9V1p5kw==
-X-Google-Smtp-Source: AGHT+IG3LUoh00KXMXQlrpMr9Jb7+DMmhWlx8mJmMVfKWMaLyEBWVqyP9p1kQbqF2OqNfz4sBvsVackm9Q/ip1aUITU=
-X-Received: by 2002:a05:6102:b0b:b0:464:77f1:f349 with SMTP id
- b11-20020a0561020b0b00b0046477f1f349mr1990967vst.23.1701679655921; Mon, 04
- Dec 2023 00:47:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20231115165915.2936349-1-brgl@bgdev.pl> <CAMRc=MfoE93Aum4s-pweeb_idqYgUG-DBpXnhT5UW_WhVkLwHw@mail.gmail.com>
-In-Reply-To: <CAMRc=MfoE93Aum4s-pweeb_idqYgUG-DBpXnhT5UW_WhVkLwHw@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 4 Dec 2023 09:47:24 +0100
-Message-ID: <CAMRc=Md6fCbXco-VOZeDM=cAy_a6HGjM8N5jse5OM7AXSha4dw@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 0/4] genirq/irq_sim: misc updates
-To:     Yury Norov <yury.norov@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 03:48:13 -0500
+Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F34385
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:48:18 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.190.71.14])
+        by mail-app4 (Coremail) with SMTP id cS_KCgAnLzc_km1la3hIAA--.18836S4;
+        Mon, 04 Dec 2023 16:48:07 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
+Cc:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+        Chandrakanth patil <chandrakanth.patil@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Shu Wang <shuwang@redhat.com>, megaraidlinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: megaraid_sas: fix a use-after-free in megasas_alloc_cmdlist_fusion
+Date:   Mon,  4 Dec 2023 16:47:27 +0800
+Message-Id: <20231204084727.23114-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgAnLzc_km1la3hIAA--.18836S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrur1ftryDuF1xGFyUJFWkWFg_yoWkKrc_ur
+        4FyF9Fvry2qrs3A3yxCrZYkrWIyr1jv3ykKr4Sgr4Skwn7Jr9rG3ZrKrn2vFZrG3yqkFy3
+        K3W5Jr4xCwn7XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbskFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgITBmVsUQg1UgAAsi
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 10:18=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
->
-> On Wed, Nov 15, 2023 at 5:59=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
-l> wrote:
-> >
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Here are a couple of updates to the interrupt simulator. Two are minor:
-> > remove an unused field and reorder includes for readability. The third
-> > one simplifies the error paths by using new cleanup macros. To that end
-> > we also add a cleanup definition for dynamic bitmaps.
-> >
-> > Resending rebased on top of v6.7-rc1 and with tags collected.
-> >
-> > v1 -> v2:
-> > - add a NULL-pointer check to the bitmap cleanup macro as advised by
-> >   Peter Zijlstra
-> > - initialize managed pointers when declaring them to create a clear pai=
-ring
-> >   between the type and the cleanup action
-> >
-> > Bartosz Golaszewski (4):
-> >   bitmap: define a cleanup function for bitmaps
-> >   genirq/irq_sim: remove unused field from struct irq_sim_irq_ctx
-> >   genirq/irq_sim: order headers alphabetically
-> >   genirq/irq_sim: shrink code by using cleanup helpers
-> >
-> >  include/linux/bitmap.h |  3 +++
-> >  kernel/irq/irq_sim.c   | 30 ++++++++++++------------------
-> >  2 files changed, 15 insertions(+), 18 deletions(-)
-> >
-> > --
-> > 2.40.1
-> >
->
-> It's been two weeks since this submission and ~2.5 months since the
-> first one so I guess, a gentle ping is in order. This is not a very
-> controversial series - can this be applied?
->
-> Bart
+When kzalloc() fails, megasas_alloc_cmdlist_fusion will free
+fusion->cmd_list and its array elements. However, the caller
+megasas_alloc_cmds_fusion() will call megasas_free_cmds_fusion()
+on the same failure, which tries to free fusion->cmd_list again
+and leads to a use-after-free. Fix this by setting
+fusion->cmd_list to NULL after kfree().
 
-Another ping...
+Fixes: 70c54e210ee9 ("scsi: megaraid_sas: fix memleak in megasas_alloc_cmdlist_fusion")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/scsi/megaraid/megaraid_sas_fusion.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Bartosz
+diff --git a/drivers/scsi/megaraid/megaraid_sas_fusion.c b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+index c60014e07b44..a47735e64624 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_fusion.c
++++ b/drivers/scsi/megaraid/megaraid_sas_fusion.c
+@@ -613,6 +613,7 @@ megasas_alloc_cmdlist_fusion(struct megasas_instance *instance)
+ 			for (j = 0; j < i; j++)
+ 				kfree(fusion->cmd_list[j]);
+ 			kfree(fusion->cmd_list);
++			fusion->cmd_list = NULL;
+ 			dev_err(&instance->pdev->dev,
+ 				"Failed from %s %d\n",  __func__, __LINE__);
+ 			return -ENOMEM;
+-- 
+2.17.1
+
