@@ -2,133 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D60803C97
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3B3803CA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:17:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjLDSQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:16:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48434 "EHLO
+        id S232166AbjLDSRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbjLDSQl (ORCPT
+        with ESMTP id S232199AbjLDSRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:16:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 658A1CA;
-        Mon,  4 Dec 2023 10:16:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701713808; x=1733249808;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/IRu8CoFEU+yM59MMBNJJ8QuzWoxaN8B65KXast7tec=;
-  b=cssjppck7scXQ4bDnlAVhuntd+xPzoLAT5JpC3y8wC2EOo57czHrrgCt
-   CQD/C+DXOym51lG99kHktUshyW0VSL6/gp2/4qr8LixE8p99nC0PqsFI2
-   V3hWH6eAfSfcRZZJZmX2AA14+8byIVwe0m7pc27PUgIiTZuOfUGjqlft8
-   xrbeThLd2AygP+DQFtijGeIa0JQVMiKkNDo0soK9ICObDdIAIEJCB5vws
-   FfCCH9Yo8bLIvMAatIZ2kQxPClZo1QZ2WZNvKsuqngDBmL0k3WNqcaP7d
-   mrZJUNhfBj9x8MfEVpuX+u2CUEoqAUvf50UBnDAR8LQjD4lYi6UJLKv5f
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="15318973"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="15318973"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 10:16:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="914521551"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="914521551"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 10:16:47 -0800
-Date:   Mon, 4 Dec 2023 10:16:46 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     "Moger, Babu" <babu.moger@amd.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v5] x86/resctrl: Add event choices for mba_MBps
-Message-ID: <ZW4XjqxfYBFZId6H@agluck-desk3>
-References: <20231128231439.81691-1-tony.luck@intel.com>
- <20231201214737.104444-1-tony.luck@intel.com>
- <fd8a44a1-9001-4e3e-a1a9-63e7f737e6e1@amd.com>
+        Mon, 4 Dec 2023 13:17:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41E4184
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:17:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50E2DC433C7;
+        Mon,  4 Dec 2023 18:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701713844;
+        bh=Fi3pCbX8xBLieIUl9i0+l3BnMEoZrFImzIzLlsbdmlc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NBX05rBXcx3ydA9sc8mTA1ymvmz4Tbzz4ipYsOMzJwDp1ClUWoLQipwGJy1B2ADNR
+         YkmKuZ/Lqx86w+MELHqE7hN5P9AVRcAPrpwA7neD/d19X4kRo7PdpNTUupwLmn1Qwe
+         6lUjhNpN/xXHzmSxNbvhGgyGB5/RcsEuLlTFfM9AhlTDYdcgkRXdABeUgl4DZhzENz
+         xL4IUZsGH0M10mKsRlQj1A1tLf3ODzjze5ZGrjJgqE0Swe1YxLiscoZJ1wBVU93r+L
+         LIO9sv41gm4RohmK+Qfx20R7yOGMPoKjm6cgaLxOnYOQKe28gj5s3EaFRVNHZYBOfg
+         wsvkI/ci8fS+Q==
+Date:   Mon, 4 Dec 2023 10:17:23 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dchinner@redhat.com
+Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
+ is atomic
+Message-ID: <20231204181723.GW361584@frogsfrogsfrogs>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
+ <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
+ <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
+ <ZWpZJicSjW2XqMmp@dread.disaster.area>
+ <2aced048-4d4b-4a48-9a45-049f73763697@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fd8a44a1-9001-4e3e-a1a9-63e7f737e6e1@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2aced048-4d4b-4a48-9a45-049f73763697@oracle.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 10:24:58AM -0600, Moger, Babu wrote:
-> Hi Tony,
->
-> You are intending to achieve two things at once here.
-> 1. Adding new mount option
-> 2. Changing behaviour for the current option.
-> I think you need to split this patch into two. Few comments below.
+On Mon, Dec 04, 2023 at 09:02:56AM +0000, John Garry wrote:
+> On 01/12/2023 22:07, Dave Chinner wrote:
+> > > Sure, and I think that we need a better story for supporting buffered IO for
+> > > atomic writes.
+> > > 
+> > > Currently we have:
+> > > - man pages tell us RWF_ATOMIC is only supported for direct IO
+> > > - statx gives atomic write unit min/max, not explicitly telling us it's for
+> > > direct IO
+> > > - RWF_ATOMIC is ignored for !O_DIRECT
+> > > 
+> > > So I am thinking of expanding statx support to enable querying of atomic
+> > > write capabilities for buffered IO and direct IO separately.
+> > You're over complicating this way too much by trying to restrict the
+> > functionality down to just what you want to implement right now.
+> > 
+> > RWF_ATOMIC is no different to RWF_NOWAIT. The API doesn't decide
+> > what can be supported - the filesystems themselves decide what part
+> > of the API they can support and implement those pieces.
+> 
+> Sure, but for RWF_ATOMIC we still have the associated statx call to tell us
+> whether atomic writes are supported for a file and the specific range
+> capability.
+> 
+> > 
+> > TO go back to RWF_NOWAIT, for a long time we (XFS) only supported
+> > RWF_NOWAIT on DIO, and buffered reads and writes were given
+> > -EOPNOTSUPP by the filesystem. Then other filesystems started
+> > supporting DIO with RWF_NOWAIT. Then buffered read support was added
+> > to the page cache and XFS, and as other filesystems were converted
+> > they removed the RWF_NOWAIT exclusion check from their read IO
+> > paths.
+> > 
+> > We are now in the same place with buffered write support for
+> > RWF_NOWAIT. XFS, the page cache and iomap allow buffered writes w/
+> > RWF_NOWAIT, but ext4, btrfs and f2fs still all return -EOPNOTSUPP
+> > because they don't support non-blocking buffered writes yet.
+> > 
+> > This is the same model we should be applying with RWF_ATOMIC - we
+> > know that over time we'll be able to expand support for atomic
+> > writes across both direct and buffered IO, so we should not be
+> > restricting the API or infrastructure to only allow RWF_ATOMIC w/
+> > DIO.
+> 
+> Agreed.
+> 
+> > Just have the filesystems reject RWF_ATOMIC w/ -EOPNOTSUPP if
+> > they don't support it,
+> 
+> Yes, I was going to add this regardless.
+> 
+> > and for those that do it is conditional on
+> > whther the filesystem supports it for the given type of IO being
+> > done.
+> > 
+> > Seriously - an application can easily probe for RWF_ATOMIC support
+> > without needing information to be directly exposed in statx() - just
+> > open a O_TMPFILE, issue the type of RWF_ATOMIC IO you require to be
+> > supported, and if it returns -EOPNOTSUPP then it you can't use
+> > RWF_ATOMIC optimisations in the application....
+> 
+> ok, if that is the done thing.
+> 
+> So I can't imagine that atomic write unit range will be different for direct
+> IO and buffered IO (ignoring for a moment Christoph's idea for CoW always
+> for no HW offload) when supported. But it seems that we may have a scenario
+> where statx tells is that atomic writes are supported for a file, and a DIO
+> write succeeds and a buffered IO write may return -EOPNOTSUPP. If that's
+> acceptable then I'll work towards that.
+> 
+> If we could just run statx on a file descriptor here then that would be
+> simpler...
 
-Hi Babu,
+statx(fd, "", AT_EMPTY_PATH, ...); ?
 
-Thanks for looking at this patch.
+--D
 
-You are right. I will split the patch into two as you suggest.
-
-> On 12/1/23 15:47, Tony Luck wrote:
-> > The MBA Software Controller(mba_sc) is a feedback loop that uses
-> > measurements of local memory bandwidth to adjust MBA throttling levels to
-> > keep workloads in a resctrl group within a target bandwidth set in the
-> > schemata file.
-> >
-> > But on Intel systems the memory bandwidth monitoring events are
-> > independently enumerated. It is possible for a system to support
-> > total memory bandwidth monitoring, but not support local bandwidth
-> > monitoring. On such a system a user could not enable mba_sc mode.
-> > Users will see this highly unhelpful error message from mount:
-> >
-> >  # mount -t resctrl -o mba_MBps resctrl /sys/fs/resctrl
-> >  mount: /sys/fs/resctrl: wrong fs type, bad option, bad superblock on
-> >  resctrl, missing codepage or helper program, or other error.
-> >  dmesg(1) may have more information after failed mount system call.
-> >
-> > dmesg(1) does not provide any additional information.
-> >
-> > Add a new mount option "mba_MBps_event=[local|total]" that allows
-> > a user to specify which monitoring event to use. Also modify the
-> > existing "mba_MBps" option to switch to total bandwidth monitoring
-> > if local monitoring is not available.
->
-> I am not sure why you need both these options. I feel you just need one of
-> these options.
-
-I should have included "changes since v4" in with this message, and
-pasted in some parts of this earlier messge from the discussion about
-v4:
-
-https://lore.kernel.org/all/ZWpF5m4mIeZdK8kv@agluck-desk3/
-
-Having the option take "local" would give a way for a user to
-avoid the failover to using "total" if they really didn't want
-that to happen.
-
-Not in that message, because I didn't think of it until later, it
-opens the door for different events in the future.
-
-But I'm also open to other suggestions on naming and function of
-mount options here.
-
-Thanks
-
--Tony
+> Thanks,
+> John
+> 
+> 
+> 
