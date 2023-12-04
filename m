@@ -2,198 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF868039DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E058039DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234783AbjLDQOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:14:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
+        id S1344581AbjLDQPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:15:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjLDQOo (ORCPT
+        with ESMTP id S234807AbjLDQPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:14:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CBFB0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:14:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 970F3C433C7;
-        Mon,  4 Dec 2023 16:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701706490;
-        bh=SwEWkG/uCW/5Tacu2wjWGIOYBAsWvLMMutQ89lrq+CE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N346Pndsdr5C3wi2upjUoGzHZNenjnIGD4awErFqjGNAAdRyPnZdWSK8JGYpdoecv
-         j/BmEMplNLzOiX8xkbp2i6KKX0XN590J9vy+PaNwoTjR4Ks9XfnMLlbAT89oOXWGaJ
-         C/MzQOdwR1dBxtaOl5bhVKKCBLT20JGnqv+04pxBF3G/hop5GCe7OCL4WfZiTTCK9c
-         AMVvchAGsdLiSHvA1gqpPpFayD2mU0+vw31B0dcDkFVFh3fGD4X8/MV354FPbcqm3y
-         XYVBD6GcYW35X7iBaNISLOsOy2/da0trz/ZBL950aRavFOcNHgIxCOpcT/3+f2oqvy
-         2njAfgN4yL/+g==
-Date:   Mon, 4 Dec 2023 16:14:45 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
-        joe@perches.com, nathan@kernel.org
-Subject: Re: [PATCH v3 5/7] kexec_file, ricv: print out debugging message if
- required
-Message-ID: <20231204-liftoff-enclosure-d3e3daf0ab6e@spud>
-References: <20231130023955.5257-1-bhe@redhat.com>
- <20231130023955.5257-6-bhe@redhat.com>
- <20231201-blog-blasphemy-985d2665903c@wendy>
- <ZW3yXWJ7rTrtZzyg@MiWiFi-R3L-srv>
+        Mon, 4 Dec 2023 11:15:13 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EAFFD;
+        Mon,  4 Dec 2023 08:15:18 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4G8IYW002645;
+        Mon, 4 Dec 2023 16:15:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=gIhamb+YTQS7+bRTda0XXQ3oydAJZG5OiZDJQU0Lp7k=;
+ b=E+xcD4+HetHsxNPubUZE0D5xL7YsCnYF8fqqpl7ihyo+du5H0p4nG9JPYRuAB2C+FQZf
+ H95Pc4JfAE6+PNwccpBnTY9OCGl/QmuG8JI1ERPdlm429S/lf9z2MSzuaRXOqwkeXtQZ
+ f6c7Madj8hlj/Bk5R35KrgBUJZI82NbxGodBFxQyl9MmEPC0eFUiTvptR2s3TdioFGr2
+ MMVBYn8r0UnyOCzxEqE1iM7lEbqFF54gYoLFHgpIRsLPSUBDafRsP/owx9dD0VE3hrHJ
+ wIqSaAAxU0EUKK4/Pry1K6nnoExf26/tWq+QIHfRKpwSQ05wzfCWA3je0ah1yLIJmJyu 5g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usj19ga9h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 16:15:16 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4G8iDi003783;
+        Mon, 4 Dec 2023 16:15:15 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usj19ga85-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 16:15:15 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4EJYUb031969;
+        Mon, 4 Dec 2023 16:15:14 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3urh4k8tb2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 16:15:14 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4GF97218350808
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Dec 2023 16:15:09 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E63E20040;
+        Mon,  4 Dec 2023 16:15:09 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 93DE520043;
+        Mon,  4 Dec 2023 16:15:08 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.42.250])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Mon,  4 Dec 2023 16:15:08 +0000 (GMT)
+Date:   Mon, 4 Dec 2023 17:15:06 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        jjherne@linux.ibm.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Reinhard Buendgen <BUENDGEN@de.ibm.com>
+Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
+Message-ID: <20231204171506.42aa687f.pasic@linux.ibm.com>
+In-Reply-To: <05cfc382-d01d-4370-b8bb-d3805e957f2e@linux.ibm.com>
+References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+        <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
+        <1f4720d7-93f1-4e38-a3ad-abaf99596e7c@linux.ibm.com>
+        <05cfc382-d01d-4370-b8bb-d3805e957f2e@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rDkxBxq3zHBt7ZDu"
-Content-Disposition: inline
-In-Reply-To: <ZW3yXWJ7rTrtZzyg@MiWiFi-R3L-srv>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: xAz2SV2zrP2AZsKkNEJOoTfdsI4OnB3d
+X-Proofpoint-ORIG-GUID: rqJwcRd2Q9_vHLqIb00RNjAe9i4GewGO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_15,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
+ phishscore=0 mlxscore=0 clxscore=1015 adultscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040123
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 4 Dec 2023 16:16:31 +0100
+Christian Borntraeger <borntraeger@linux.ibm.com> wrote:
 
---rDkxBxq3zHBt7ZDu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Am 04.12.23 um 15:53 schrieb Tony Krowiak:
+> > 
+> > 
+> > On 11/29/23 12:12, Christian Borntraeger wrote:  
+> >> Am 29.11.23 um 15:35 schrieb Tony Krowiak:  
+> >>> In the current implementation, response code 01 (AP queue number not valid)
+> >>> is handled as a default case along with other response codes returned from
+> >>> a queue reset operation that are not handled specifically. Barring a bug,
+> >>> response code 01 will occur only when a queue has been externally removed
+> >>> from the host's AP configuration; nn this case, the queue must
+> >>> be reset by the machine in order to avoid leaking crypto data if/when the
+> >>> queue is returned to the host's configuration. The response code 01 case
+> >>> will be handled specifically by logging a WARN message followed by cleaning
+> >>> up the IRQ resources.
+> >>>  
+> >>
+> >> To me it looks like this can be triggered by the LPAR admin, correct? So it
+> >> is not desireable but possible.
+> >> In that case I prefer to not use WARN, maybe use dev_warn or dev_err instead.
+> >> WARN can be a disruptive event if panic_on_warn is set.  
+> > 
+> > Yes, it can be triggered by the LPAR admin. I can't use dev_warn here because we don't have a reference to any device, but I can use pr_warn if that suffices.  
+> 
+> Ok, please use pr_warn then.
 
-On Mon, Dec 04, 2023 at 11:38:05PM +0800, Baoquan He wrote:
-> On 12/01/23 at 10:38am, Conor Dooley wrote:
-> > On Thu, Nov 30, 2023 at 10:39:53AM +0800, Baoquan He wrote:
-> >=20
-> > $subject has a typo in the arch bit :)
->=20
-> Indeed, will fix if need report. Thanks for careful checking.
->=20
-> >=20
-> > > Replace pr_debug() with the newly added kexec_dprintk() in kexec_file
-> > > loading related codes.
-> >=20
-> > Commit messages should be understandable in isolation, but this only
-> > explains (part of) what is obvious in the diff. Why is this change
-> > being made?
->=20
-> The purpose has been detailedly described in cover letter and patch 1
-> log. Andrew has picked these patches into his tree and grabbed the cover
-> letter log into the relevant commit for people's later checking. All
-> these seven patches will be present in mainline together. This is common
-> way when posting patch series? Please let me know if I misunderstand
-> anything.
+Shouldn't we rather make this an 'info'. I mean we probably do not want
+people complaining about this condition. Yes it should be a best practice
+to coordinate such things with the guest, and ideally remove the resource
+from the guest first. But AFAIU our stack is supposed to be able to
+handle something like this. IMHO issuing a warning is excessive measure.
+I know Reinhard and Tony probably disagree with the last sentence
+though. 
 
-Each patch having a commit message that explains why a change is being
-made is the expectation. It is especially useful to explain the why
-here, since it is not just a mechanical conversion of pr_debug()s as the
-commit message suggests.
-
-> >=20
-> > >=20
-> > > And also remove kexec_image_info() because the content has been print=
-ed
-> > > out in generic code.
-> > >=20
-> > > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > > ---
-> > >  arch/riscv/kernel/elf_kexec.c     | 11 ++++++-----
-> > >  arch/riscv/kernel/machine_kexec.c | 26 --------------------------
-> > >  2 files changed, 6 insertions(+), 31 deletions(-)
-> > >=20
-> > > diff --git a/arch/riscv/kernel/elf_kexec.c b/arch/riscv/kernel/elf_ke=
-xec.c
-> > > index e60fbd8660c4..5bd1ec3341fe 100644
-> > > --- a/arch/riscv/kernel/elf_kexec.c
-> > > +++ b/arch/riscv/kernel/elf_kexec.c
-> > > @@ -216,7 +216,6 @@ static void *elf_kexec_load(struct kimage *image,=
- char *kernel_buf,
-> > >  	if (ret)
-> > >  		goto out;
-> > >  	kernel_start =3D image->start;
-> > > -	pr_notice("The entry point of kernel at 0x%lx\n", image->start);
-> > > =20
-> > >  	/* Add the kernel binary to the image */
-> > >  	ret =3D riscv_kexec_elf_load(image, &ehdr, &elf_info,
-> > > @@ -252,8 +251,8 @@ static void *elf_kexec_load(struct kimage *image,=
- char *kernel_buf,
-> > >  		image->elf_load_addr =3D kbuf.mem;
-> > >  		image->elf_headers_sz =3D headers_sz;
-> > > =20
-> > > -		pr_debug("Loaded elf core header at 0x%lx bufsz=3D0x%lx memsz=3D0x=
-%lx\n",
-> > > -			 image->elf_load_addr, kbuf.bufsz, kbuf.memsz);
-> > > +		kexec_dprintk("Loaded elf core header at 0x%lx bufsz=3D0x%lx memsz=
-=3D0x%lx\n",
-> > > +			      image->elf_load_addr, kbuf.bufsz, kbuf.memsz);
-> > > =20
-> > >  		/* Setup cmdline for kdump kernel case */
-> > >  		modified_cmdline =3D setup_kdump_cmdline(image, cmdline,
-> > > @@ -275,6 +274,8 @@ static void *elf_kexec_load(struct kimage *image,=
- char *kernel_buf,
-> > >  		pr_err("Error loading purgatory ret=3D%d\n", ret);
-> > >  		goto out;
-> > >  	}
-> > > +	kexec_dprintk("Loaded purgatory at 0x%lx\n", kbuf.mem);
-> > > +
-> > >  	ret =3D kexec_purgatory_get_set_symbol(image, "riscv_kernel_entry",
-> > >  					     &kernel_start,
-> > >  					     sizeof(kernel_start), 0);
-> > > @@ -293,7 +294,7 @@ static void *elf_kexec_load(struct kimage *image,=
- char *kernel_buf,
-> > >  		if (ret)
-> > >  			goto out;
-> > >  		initrd_pbase =3D kbuf.mem;
-> >=20
-> > > -		pr_notice("Loaded initrd at 0x%lx\n", initrd_pbase);
-> > > +		kexec_dprintk("Loaded initrd at 0x%lx\n", initrd_pbase);
-> >=20
-> > This is not a pr_debug().
-> >=20
-> > >  	}
-> > > =20
-> > >  	/* Add the DTB to the image */
-> > > @@ -318,7 +319,7 @@ static void *elf_kexec_load(struct kimage *image,=
- char *kernel_buf,
-> > >  	}
-> > >  	/* Cache the fdt buffer address for memory cleanup */
-> > >  	image->arch.fdt =3D fdt;
-> >=20
-> > > -	pr_notice("Loaded device tree at 0x%lx\n", kbuf.mem);
-> > > +	kexec_dprintk("Loaded device tree at 0x%lx\n", kbuf.mem);
-> >=20
-> > Neither is this. Why are they being moved from pr_notice()?
->=20
-> You are right.=20
->=20
-> While always printing out the loaded location of purgatory and
-> device tree doesn't make sense. It will be confusing when users
-> see these even when they do normal kexec/kdump loading. It should be
-> changed to pr_debug().
->=20
-> Which way do you suggest?
-> 1) change it back to pr_debug(), fix it in another patch;
-> 2) keep it as is in the patch;
-
-Personally I think it is fine to change them all in one patch, but the
-rationale for converting pr_notice() to your new debug infrastructure
-needs to be in the commit message.
-
-Thanks,
-Conor.
-
---rDkxBxq3zHBt7ZDu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZW369QAKCRB4tDGHoIJi
-0nMJAP4uVUovqQeQ+fYVKmAG4c00oB2z4haO+u5+2U2Cf9yrYwD/f9u0S9FMCfzY
-i2AY9z+9fRLSvxY457Xg9s0W3YULlwE=
-=OJ5C
------END PGP SIGNATURE-----
-
---rDkxBxq3zHBt7ZDu--
+Regards,
+Halil
