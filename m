@@ -2,54 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEAD804147
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:05:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD5680414F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbjLDWFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:05:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
+        id S234284AbjLDWGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:06:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbjLDWF2 (ORCPT
+        with ESMTP id S234243AbjLDWF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:05:28 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA16CD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:05:35 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rAH4G-0003Eq-Uv; Mon, 04 Dec 2023 23:05:32 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rAH4G-00DbY6-I5; Mon, 04 Dec 2023 23:05:32 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rAH4G-00EMXA-95; Mon, 04 Dec 2023 23:05:32 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH v2 3/3] w1: gpio: rename pointer to driver data from pdata to ddata
-Date:   Mon,  4 Dec 2023 23:05:23 +0100
-Message-ID:  <f863cacc485a701268164c9734b6d4aef23dae3e.1701727212.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1701727212.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1701727212.git.u.kleine-koenig@pengutronix.de>
+        Mon, 4 Dec 2023 17:05:57 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9061D1B1;
+        Mon,  4 Dec 2023 14:06:02 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4M3GBw012810;
+        Mon, 4 Dec 2023 22:06:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=b8zszDt2p6JE51wc2mk2G0Ctwu6+vbxgVY4sza9DnWw=;
+ b=MkbZCp3TAN5kwdnTxEL7Abxs85UzTgQXYn1mFqbRX+ajhJRXN7UnXbtxNhbgj2VPfJ+j
+ 4mB74zJ3+ECHXtgJz1dMgphoWAqjjYzXLMDGl1uuUBQk6oR8eHsoSjKLX7f9gZHpJnLW
+ /HV8/aEcJz3ECuUFMgHjOoRMFD0WLr5YSEm6GG6cOm2LGcb1q5gfMFXjvcvxbP5MHlkg
+ MZ4U4cCMyJKHBvEq4x9TR6KxfhVXRY8ZZGrsuSZJ8mmhJzb3gCcQRKCS81nFTIanycBX
+ Kh8Trkf3sj/k1YCMa4gh7Euz5Y6A4YIKZQi8OX3Iji7EEH51ut3cFbFNHXXjnksqOpaT GQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usq7m839b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 22:06:00 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4M3Dpk012633;
+        Mon, 4 Dec 2023 22:05:59 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usq7m838t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 22:05:59 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4KYKcp030504;
+        Mon, 4 Dec 2023 22:05:58 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8ayptr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 22:05:58 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4M5tAl44761370
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Dec 2023 22:05:55 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63E5D2004F;
+        Mon,  4 Dec 2023 22:05:55 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8D4372004E;
+        Mon,  4 Dec 2023 22:05:54 +0000 (GMT)
+Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.42.250])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Mon,  4 Dec 2023 22:05:54 +0000 (GMT)
+Date:   Mon, 4 Dec 2023 23:05:29 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
+Message-ID: <20231204230529.07bf7b79.pasic@linux.ibm.com>
+In-Reply-To: <7c0d0ad2-b814-47b1-80e9-28ad62af6476@linux.ibm.com>
+References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+        <20231204131045.217586a3.pasic@linux.ibm.com>
+        <7c0d0ad2-b814-47b1-80e9-28ad62af6476@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4335; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=xHTjgY4K9af7P1vNMusocVvYmeNn9kGZK5/hjxTbjaU=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlbk0iwrlaqHGrugWKtZmWyfwV958P94eltYw5k s9bGNTaSpGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZW5NIgAKCRCPgPtYfRL+ TqFkB/9dHTTrpvTiJhJauqJI0ZRre/cfyGBfu6hDGN+SGMJexK2NZrucAy8W81E85QyamsZpttt N3fL5og4hOD+DFYEU1C4cjfkTOzWTc5NHk02RXzcg38yhET1YI+BeyQ8577bxTbE+5GOJyym3yD 11as0zhIKVXjldIEaLOSX2mj4JSKU4c8Yy6X4aJnYc1E3gIW7ltEl+S9N0901eU+njaxBmGeu6l o1jGlRfrUq+zNSf5H/Fr+AE50ue5B6/tXTRurGj3Btyg/IK9wIUtGpgCBP5OQACFLODTa63Tiag vUpjxW2CUQ6ZaKUfQIFxyl38WtPBLDK1S67KHRRzrpmn5gxU
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: biHgFghmGhXfZq86iu98AAh8z6ahVtRl
+X-Proofpoint-GUID: dXhf9GkvCvgY8IQBR-H2Bh_l_oX4VzgF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_20,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=910
+ impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015 priorityscore=1501
+ bulkscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040173
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,147 +99,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pdata is a relict when this was still platform data.
+On Mon, 4 Dec 2023 12:51:49 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/w1/masters/w1-gpio.c | 54 ++++++++++++++++++------------------
- 1 file changed, 27 insertions(+), 27 deletions(-)
+> > s/if\/when/at latest before/
+> > 
+> > I would argue that some of the cleanups need to happen before even 01 is
+> > reflected...  
+> 
+> To what cleanups are you referring?
 
-diff --git a/drivers/w1/masters/w1-gpio.c b/drivers/w1/masters/w1-gpio.c
-index 67596428f69b..05c67038ed20 100644
---- a/drivers/w1/masters/w1-gpio.c
-+++ b/drivers/w1/masters/w1-gpio.c
-@@ -25,25 +25,25 @@ struct w1_gpio_ddata {
- 
- static u8 w1_gpio_set_pullup(void *data, int delay)
- {
--	struct w1_gpio_ddata *pdata = data;
-+	struct w1_gpio_ddata *ddata = data;
- 
- 	if (delay) {
--		pdata->pullup_duration = delay;
-+		ddata->pullup_duration = delay;
- 	} else {
--		if (pdata->pullup_duration) {
-+		if (ddata->pullup_duration) {
- 			/*
- 			 * This will OVERRIDE open drain emulation and force-pull
- 			 * the line high for some time.
- 			 */
--			gpiod_set_raw_value(pdata->gpiod, 1);
--			msleep(pdata->pullup_duration);
-+			gpiod_set_raw_value(ddata->gpiod, 1);
-+			msleep(ddata->pullup_duration);
- 			/*
- 			 * This will simply set the line as input since we are doing
- 			 * open drain emulation in the GPIO library.
- 			 */
--			gpiod_set_value(pdata->gpiod, 1);
-+			gpiod_set_value(ddata->gpiod, 1);
- 		}
--		pdata->pullup_duration = 0;
-+		ddata->pullup_duration = 0;
- 	}
- 
- 	return 0;
-@@ -51,16 +51,16 @@ static u8 w1_gpio_set_pullup(void *data, int delay)
- 
- static void w1_gpio_write_bit(void *data, u8 bit)
- {
--	struct w1_gpio_ddata *pdata = data;
-+	struct w1_gpio_ddata *ddata = data;
- 
--	gpiod_set_value(pdata->gpiod, bit);
-+	gpiod_set_value(ddata->gpiod, bit);
- }
- 
- static u8 w1_gpio_read_bit(void *data)
- {
--	struct w1_gpio_ddata *pdata = data;
-+	struct w1_gpio_ddata *ddata = data;
- 
--	return gpiod_get_value(pdata->gpiod) ? 1 : 0;
-+	return gpiod_get_value(ddata->gpiod) ? 1 : 0;
- }
- 
- #if defined(CONFIG_OF)
-@@ -74,15 +74,15 @@ MODULE_DEVICE_TABLE(of, w1_gpio_dt_ids);
- static int w1_gpio_probe(struct platform_device *pdev)
- {
- 	struct w1_bus_master *master;
--	struct w1_gpio_ddata *pdata;
-+	struct w1_gpio_ddata *ddata;
- 	struct device *dev = &pdev->dev;
- 	struct device_node *np = dev->of_node;
- 	/* Enforce open drain mode by default */
- 	enum gpiod_flags gflags = GPIOD_OUT_LOW_OPEN_DRAIN;
- 	int err;
- 
--	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
--	if (!pdata)
-+	ddata = devm_kzalloc(&pdev->dev, sizeof(*ddata), GFP_KERNEL);
-+	if (!ddata)
- 		return -ENOMEM;
- 
- 	/*
-@@ -99,23 +99,23 @@ static int w1_gpio_probe(struct platform_device *pdev)
- 	if (!master)
- 		return -ENOMEM;
- 
--	pdata->gpiod = devm_gpiod_get_index(dev, NULL, 0, gflags);
--	if (IS_ERR(pdata->gpiod)) {
-+	ddata->gpiod = devm_gpiod_get_index(dev, NULL, 0, gflags);
-+	if (IS_ERR(ddata->gpiod)) {
- 		dev_err(dev, "gpio_request (pin) failed\n");
--		return PTR_ERR(pdata->gpiod);
-+		return PTR_ERR(ddata->gpiod);
- 	}
- 
--	pdata->pullup_gpiod =
-+	ddata->pullup_gpiod =
- 		devm_gpiod_get_index_optional(dev, NULL, 1, GPIOD_OUT_LOW);
--	if (IS_ERR(pdata->pullup_gpiod)) {
-+	if (IS_ERR(ddata->pullup_gpiod)) {
- 		dev_err(dev, "gpio_request_one "
- 			"(ext_pullup_enable_pin) failed\n");
--		return PTR_ERR(pdata->pullup_gpiod);
-+		return PTR_ERR(ddata->pullup_gpiod);
- 	}
- 
--	master->data = pdata;
-+	master->data = ddata;
- 	master->read_bit = w1_gpio_read_bit;
--	gpiod_direction_output(pdata->gpiod, 1);
-+	gpiod_direction_output(ddata->gpiod, 1);
- 	master->write_bit = w1_gpio_write_bit;
- 
- 	/*
-@@ -133,8 +133,8 @@ static int w1_gpio_probe(struct platform_device *pdev)
- 		return err;
- 	}
- 
--	if (pdata->pullup_gpiod)
--		gpiod_set_value(pdata->pullup_gpiod, 1);
-+	if (ddata->pullup_gpiod)
-+		gpiod_set_value(ddata->pullup_gpiod, 1);
- 
- 	platform_set_drvdata(pdev, master);
- 
-@@ -144,10 +144,10 @@ static int w1_gpio_probe(struct platform_device *pdev)
- static int w1_gpio_remove(struct platform_device *pdev)
- {
- 	struct w1_bus_master *master = platform_get_drvdata(pdev);
--	struct w1_gpio_ddata *pdata = master->data;
-+	struct w1_gpio_ddata *ddata = master->data;
- 
--	if (pdata->pullup_gpiod)
--		gpiod_set_value(pdata->pullup_gpiod, 0);
-+	if (ddata->pullup_gpiod)
-+		gpiod_set_value(ddata->pullup_gpiod, 0);
- 
- 	w1_remove_master_device(master);
- 
--- 
-2.42.0
+Event notification and interruption disablement for starters. Otherwise
+OS has no way to figure out when is GISA and NIB safe to deallocate.
+Those actions are part of the reset process. I.e. some of the reset stuff
+can be deferred at most until the queue is made accessible again, some
+not so much. 
 
+Regards,
+Halil
