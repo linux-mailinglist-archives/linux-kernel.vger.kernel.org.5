@@ -2,63 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C124803E2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 384D9803E2D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234857AbjLDTOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
+        id S234869AbjLDTOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231577AbjLDTOX (ORCPT
+        with ESMTP id S231462AbjLDTOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:14:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3437CF0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:14:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8608FC433C9;
-        Mon,  4 Dec 2023 19:14:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701717269;
-        bh=kfWReJzoKyST0mYqrsmPO5P8wLRuTmZubW3mAnPQP1g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=cgoZfdq9gW9Pr9xKC3b01h9h3v8ELo9+WYL+fDpUCEbba0Kz1rfxZrAVrfOiZ5ruo
-         YYDDg+vGo/pozOJAZgQK+y7PQcUAxfjLp6o0Ooy6UQWcHYTSXGnDvlAmy/gGlqd5KB
-         b240NbfpFBWcCsgduQYsKm1O4Dtc0KWopgQSlnpsbNvjKfcpCNbqOnvKX17fn73iuM
-         GyuyUC9MRhbkFtHIt5uMPCk+mnhGG8PoLRI0F+Z2WcSpw3wtlgyziIknClpvQkUn21
-         KheiX6gnBS2zjZ/rNqJwvtF8Mfp/WUhOkqSZIAqDOi1apTQrjxAyT85f3u8xQOv3Zu
-         yD8PBrrw69Wqg==
-Date:   Mon, 4 Dec 2023 13:14:27 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
-        Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Michael Kelley <mhklinux@outlook.com>
-Subject: Re: [PATCH v2 14/35] PCI: hv: switch hv_get_dom_num() to use atomic
- find_bit()
-Message-ID: <20231204191427.GA623236@bhelgaas>
+        Mon, 4 Dec 2023 14:14:33 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958A1187;
+        Mon,  4 Dec 2023 11:14:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=avd9kpVhWVz2B8M8Ybf0Aja5DrFeuHw1R35QMA4ZI+c=; b=fr99GW5caHfSxsY/5+j9x6lnD0
+        l/95EYHH/31qeCFDn35JABWm/dAXSF0CNShkcWkyDCkYGAFRUmR+y84+2r1y4bw8lkUNYlL+Mzjqs
+        qYzB0IAWXTNSmaEbHmjrcwZQiwoOOObUmEfzfRNvd4DQu2LqpAHlZ7FWjfEa8Lj5O5YJz9BnMr+p2
+        IO0egqlQgdGtdgK8c6kiCRBj+jd/6duuU9aojp7Nkq5SQed9xM+z4XPSViC7w9YIOyYsyxXfjKJw0
+        oanG7uyO9tlhDS8lvMuZ/NDhrD19v0pMGU22BOyHIHjOaO5cy9bgG3o5CNcCgGQLu9iE2Ghtyjb+I
+        tR0c9H0g==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAEOo-005QO4-2M;
+        Mon, 04 Dec 2023 19:14:34 +0000
+Message-ID: <17633619-fde3-4f36-b047-413e79c8116f@infradead.org>
+Date:   Mon, 4 Dec 2023 11:14:34 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231203193307.542794-13-yury.norov@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] riscv, kexec: fix dependency of two items
+Content-Language: en-US
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, akpm@linux-foundation.org,
+        ignat@cloudflare.com, linux-next@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kexec@lists.infradead.org, eric_devolder@yahoo.com
+References: <ZW00/Cfk47Cc3kGo@MiWiFi-R3L-srv>
+ <ZW04G/SKnhbE5mnX@MiWiFi-R3L-srv>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZW04G/SKnhbE5mnX@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,58 +56,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 03, 2023 at 11:32:46AM -0800, Yury Norov wrote:
-> The function traverses bitmap with for_each_clear_bit() just to allocate
-> a bit atomically. We can do it better with a dedicated find_and_set_bit().
 
-No objection from me, but please tweak the subject line to match
-previous hv history, i.e., capitalize the first word after the prefix:
 
-  PCI: hv: Use atomic find_and_set_bit()
+On 12/3/23 18:23, Baoquan He wrote:
+> Drop the dependency on MMU from ARCH_SUPPORTS_KEXEC and
+> ARCH_SUPPORTS_KEXEC_FILE because CONFIG_MMU could be disabled while
+> people may still want to have KEXEC/KEXEC_FILE functionality.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
 
-I think there's value in using similar phrasing across the whole
-series.  Some subjects say "optimize xyz()", some say "rework xyz()",
-some "rework xyz()", etc.  I think it's more informative to include
-the "atomic" and "find_bit()" ideas in the subject than the specific
-functions that *use* it.
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
 
-I also like how some of the other commit logs clearly say what the
-patch does, e.g., "Simplify by using dedicated find_and_set_bit()", as
-opposed to just "We can do it better ..." which technically doesn't
-say what the patch does.
+Thanks.
 
-Very nice simplification in all these users, thanks for doing it!
-
-I assume you'll merge these all together since they depend on [01/35],
-so:
-
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> Reviewed-by: Michael Kelley <mhklinux@outlook.com>
 > ---
->  drivers/pci/controller/pci-hyperv.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+>  arch/riscv/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index 30c7dfeccb16..033b1fb7f4eb 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -3605,12 +3605,9 @@ static u16 hv_get_dom_num(u16 dom)
->  	if (test_and_set_bit(dom, hvpci_dom_map) == 0)
->  		return dom;
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 95a2a06acc6a..24c1799e2ec4 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -685,7 +685,7 @@ config RISCV_BOOT_SPINWAIT
+>  	  If unsure what to do here, say N.
 >  
-> -	for_each_clear_bit(i, hvpci_dom_map, HVPCI_DOM_MAP_SIZE) {
-> -		if (test_and_set_bit(i, hvpci_dom_map) == 0)
-> -			return i;
-> -	}
-> +	i = find_and_set_bit(hvpci_dom_map, HVPCI_DOM_MAP_SIZE);
+>  config ARCH_SUPPORTS_KEXEC
+> -	def_bool MMU
+> +	def_bool y
 >  
-> -	return HVPCI_DOM_INVALID;
-> +	return i < HVPCI_DOM_MAP_SIZE ? i : HVPCI_DOM_INVALID;
->  }
+>  config ARCH_SELECTS_KEXEC
+>  	def_bool y
+> @@ -693,7 +693,7 @@ config ARCH_SELECTS_KEXEC
+>  	select HOTPLUG_CPU if SMP
 >  
->  /**
-> -- 
-> 2.40.1
-> 
+>  config ARCH_SUPPORTS_KEXEC_FILE
+> -	def_bool 64BIT && MMU
+> +	def_bool 64BIT
+>  
+>  config ARCH_SELECTS_KEXEC_FILE
+>  	def_bool y
+
+-- 
+~Randy
