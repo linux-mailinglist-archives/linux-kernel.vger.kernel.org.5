@@ -2,268 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C422A804114
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBECF804118
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234343AbjLDVo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 16:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38474 "EHLO
+        id S234517AbjLDVoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 16:44:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjLDVo1 (ORCPT
+        with ESMTP id S234445AbjLDVof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 16:44:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29821CD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 13:44:33 -0800 (PST)
+        Mon, 4 Dec 2023 16:44:35 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EBE1101
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 13:44:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701726273; x=1733262273;
+  t=1701726278; x=1733262278;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=iNJZGm91Ibr6J8esVUNzX4TuaPkqF6V07nw5A9qII8Y=;
-  b=N+zIgYYpSlINx3j04mpCcTt0zfvKm8wQ3r42R07KIRgOLiUR30PQk9q7
-   dsNjmqzsdmJWSC/c4/OsD7grpkwPpAVL3HTMwdjyFSC4kzamXzHT2sGV8
-   uljo7ByVX+cUjfuO+sJLiC4Ncjwede9Wq9AgxaimRTyO+O9vi6A7bXtMG
-   i8M9kb9eEuod0CRt0IGI6KYiiBPKMTNfehpom9eYxzz/9aJ9VL67bm0Ul
-   Z0GpfBEthvq6vhPejCbp//z4y7MjFJpi7O3uBa+PB0AvObZT06/SM8oAH
-   p7UYv6Jd3OHpC7nLKYkL0Rcr1VY787aG6uw9r/975/hdTVPHVbsAvJ1b4
+  bh=hb0FnfC2VZ5UsdsmGvmo5jMt8lUxoOZJ8ZvO3FiOiCk=;
+  b=E9lkzF6kxhfb4As1ELdsmJAQsENgYoNgAy8aOrheUj56fKkzGDBqKiBC
+   kQ0VwUk+bwj2a4LZ4g2RVclkXi5Kh3B6cMl6qd3jcck6IxPam6ax+iwwn
+   Bb4NxgfkFNFYElYs0ORGJZLnr/uY4XcVMQ9yMqF5liREMb/m962Rf4LBn
+   F9pUPi5AIIb4lecrGtmh1kAeHXEEXqoNGYZiM3LKoHbjJ/ZFEX1JRnUHl
+   KONVwhTfpOdsVlk4UNAHlLhz9BbZ5gf6Dlci/csPv/yPuzHMGnUIq8x1M
+   HwuViknCGcvRH/465YRl828SZJ8faatSqF0K1MKOtuth23QLp9jMFLZTn
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="378829575"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="460296263"
 X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="378829575"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 13:44:32 -0800
+   d="scan'208";a="460296263"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 13:44:32 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="841205965"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="914575944"
 X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="841205965"
+   d="scan'208";a="914575944"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 04 Dec 2023 13:44:31 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 04 Dec 2023 13:44:31 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rAGjt-00086h-00;
-        Mon, 04 Dec 2023 21:44:29 +0000
-Date:   Tue, 5 Dec 2023 05:44:12 +0800
+        id 1rAGjs-00086f-31;
+        Mon, 04 Dec 2023 21:44:28 +0000
+Date:   Tue, 5 Dec 2023 05:44:13 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Jeff LaBundy <jeff@labundy.com>
+To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: drivers/input/misc/iqs626a.c:780:61: warning: '%d' directive output
- may be truncated writing between 1 and 10 bytes into a region of size 2
-Message-ID: <202312050442.h4TNpY9h-lkp@intel.com>
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1
+ (different address spaces)
+Message-ID: <202312050445.sUkSCUIl-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff,
-
-FYI, the error/warning still remains.
-
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-commit: 4d3d2694e168c542b088eef5059d31498f679020 Input: iqs626a - drop unused device node references
-date:   10 months ago
-config: x86_64-buildonly-randconfig-004-20230906 (https://download.01.org/0day-ci/archive/20231205/202312050442.h4TNpY9h-lkp@intel.com/config)
+commit: e362359ace6f87c201531872486ff295df306d13 posix-cpu-timers: Cleanup CPU timers before freeing them during exec
+date:   1 year, 4 months ago
+config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231205/202312050445.sUkSCUIl-lkp@intel.com/config)
 compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312050442.h4TNpY9h-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312050445.sUkSCUIl-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312050442.h4TNpY9h-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312050445.sUkSCUIl-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+   fs/exec.c:422:31: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected char const [noderef] __user * @@     got void * @@
+   fs/exec.c:422:31: sparse:     expected char const [noderef] __user *
+   fs/exec.c:422:31: sparse:     got void *
+   fs/exec.c:1051:48: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   fs/exec.c:1051:48: sparse:     expected struct sighand_struct *oldsighand
+   fs/exec.c:1051:48: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   fs/exec.c:1158:56: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *parent @@
+   fs/exec.c:1158:56: sparse:     expected struct task_struct *parent
+   fs/exec.c:1158:56: sparse:     got struct task_struct [noderef] __rcu *parent
+   fs/exec.c:1193:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   fs/exec.c:1193:47: sparse:     expected struct sighand_struct *oldsighand
+   fs/exec.c:1193:47: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+>> fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   fs/exec.c:1307:26: sparse:     expected struct spinlock [usertype] *lock
+   fs/exec.c:1307:26: sparse:     got struct spinlock [noderef] __rcu *
+   fs/exec.c:1309:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   fs/exec.c:1309:28: sparse:     expected struct spinlock [usertype] *lock
+   fs/exec.c:1309:28: sparse:     got struct spinlock [noderef] __rcu *
+   fs/exec.c:1766:70: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *parent @@
+   fs/exec.c:1766:70: sparse:     expected struct task_struct *tsk
+   fs/exec.c:1766:70: sparse:     got struct task_struct [noderef] __rcu *parent
 
-   drivers/input/misc/iqs626a.c: In function 'iqs626_parse_trackpad':
->> drivers/input/misc/iqs626a.c:780:61: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 2 [-Wformat-truncation=]
-     780 |                 snprintf(tc_name, sizeof(tc_name), "channel-%d", i);
-         |                                                             ^~
-   drivers/input/misc/iqs626a.c:780:52: note: directive argument in the range [0, 2147483646]
-     780 |                 snprintf(tc_name, sizeof(tc_name), "channel-%d", i);
-         |                                                    ^~~~~~~~~~~~
-   drivers/input/misc/iqs626a.c:780:17: note: 'snprintf' output between 10 and 19 bytes into a destination of size 10
-     780 |                 snprintf(tc_name, sizeof(tc_name), "channel-%d", i);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vim +1307 fs/exec.c
 
-
-vim +780 drivers/input/misc/iqs626a.c
-
-   712	
-   713	static int iqs626_parse_trackpad(struct iqs626_private *iqs626,
-   714					 struct fwnode_handle *ch_node,
-   715					 enum iqs626_ch_id ch_id)
-   716	{
-   717		struct iqs626_sys_reg *sys_reg = &iqs626->sys_reg;
-   718		struct i2c_client *client = iqs626->client;
-   719		u8 *hyst = &sys_reg->tp_grp_reg.hyst;
-   720		int error, count, i;
-   721		unsigned int val;
-   722	
-   723		if (!fwnode_property_read_u32(ch_node, "azoteq,lta-update", &val)) {
-   724			if (val > IQS626_MISC_A_TPx_LTA_UPDATE_MAX) {
-   725				dev_err(&client->dev,
-   726					"Invalid %s channel update rate: %u\n",
-   727					fwnode_get_name(ch_node), val);
-   728				return -EINVAL;
-   729			}
-   730	
-   731			sys_reg->misc_a &= ~IQS626_MISC_A_TPx_LTA_UPDATE_MASK;
-   732			sys_reg->misc_a |= (val << IQS626_MISC_A_TPx_LTA_UPDATE_SHIFT);
-   733		}
-   734	
-   735		if (!fwnode_property_read_u32(ch_node, "azoteq,filt-str-trackpad",
-   736					      &val)) {
-   737			if (val > IQS626_FILT_STR_MAX) {
-   738				dev_err(&client->dev,
-   739					"Invalid %s channel filter strength: %u\n",
-   740					fwnode_get_name(ch_node), val);
-   741				return -EINVAL;
-   742			}
-   743	
-   744			sys_reg->misc_b &= ~IQS626_MISC_B_FILT_STR_TPx;
-   745			sys_reg->misc_b |= val;
-   746		}
-   747	
-   748		if (!fwnode_property_read_u32(ch_node, "azoteq,filt-str-np-cnt",
-   749					      &val)) {
-   750			if (val > IQS626_FILT_STR_MAX) {
-   751				dev_err(&client->dev,
-   752					"Invalid %s channel filter strength: %u\n",
-   753					fwnode_get_name(ch_node), val);
-   754				return -EINVAL;
-   755			}
-   756	
-   757			*hyst &= ~IQS626_FILT_STR_NP_TPx_MASK;
-   758			*hyst |= (val << IQS626_FILT_STR_NP_TPx_SHIFT);
-   759		}
-   760	
-   761		if (!fwnode_property_read_u32(ch_node, "azoteq,filt-str-lp-cnt",
-   762					      &val)) {
-   763			if (val > IQS626_FILT_STR_MAX) {
-   764				dev_err(&client->dev,
-   765					"Invalid %s channel filter strength: %u\n",
-   766					fwnode_get_name(ch_node), val);
-   767				return -EINVAL;
-   768			}
-   769	
-   770			*hyst &= ~IQS626_FILT_STR_LP_TPx_MASK;
-   771			*hyst |= (val << IQS626_FILT_STR_LP_TPx_SHIFT);
-   772		}
-   773	
-   774		for (i = 0; i < iqs626_channels[ch_id].num_ch; i++) {
-   775			u8 *ati_base = &sys_reg->tp_grp_reg.ch_reg_tp[i].ati_base;
-   776			u8 *thresh = &sys_reg->tp_grp_reg.ch_reg_tp[i].thresh;
-   777			struct fwnode_handle *tc_node;
-   778			char tc_name[10];
-   779	
- > 780			snprintf(tc_name, sizeof(tc_name), "channel-%d", i);
-   781	
-   782			tc_node = fwnode_get_named_child_node(ch_node, tc_name);
-   783			if (!tc_node)
-   784				continue;
-   785	
-   786			if (!fwnode_property_read_u32(tc_node, "azoteq,ati-base",
-   787						      &val)) {
-   788				if (val < IQS626_TPx_ATI_BASE_MIN ||
-   789				    val > IQS626_TPx_ATI_BASE_MAX) {
-   790					dev_err(&client->dev,
-   791						"Invalid %s %s ATI base: %u\n",
-   792						fwnode_get_name(ch_node), tc_name, val);
-   793					fwnode_handle_put(tc_node);
-   794					return -EINVAL;
-   795				}
-   796	
-   797				*ati_base = val - IQS626_TPx_ATI_BASE_MIN;
-   798			}
-   799	
-   800			if (!fwnode_property_read_u32(tc_node, "azoteq,thresh",
-   801						      &val)) {
-   802				if (val > IQS626_CHx_THRESH_MAX) {
-   803					dev_err(&client->dev,
-   804						"Invalid %s %s threshold: %u\n",
-   805						fwnode_get_name(ch_node), tc_name, val);
-   806					fwnode_handle_put(tc_node);
-   807					return -EINVAL;
-   808				}
-   809	
-   810				*thresh = val;
-   811			}
-   812	
-   813			fwnode_handle_put(tc_node);
-   814		}
-   815	
-   816		if (!fwnode_property_present(ch_node, "linux,keycodes"))
-   817			return 0;
-   818	
-   819		count = fwnode_property_count_u32(ch_node, "linux,keycodes");
-   820		if (count > IQS626_NUM_GESTURES) {
-   821			dev_err(&client->dev, "Too many keycodes present\n");
-   822			return -EINVAL;
-   823		} else if (count < 0) {
-   824			dev_err(&client->dev, "Failed to count keycodes: %d\n", count);
-   825			return count;
-   826		}
-   827	
-   828		error = fwnode_property_read_u32_array(ch_node, "linux,keycodes",
-   829						       iqs626->tp_code, count);
-   830		if (error) {
-   831			dev_err(&client->dev, "Failed to read keycodes: %d\n", error);
-   832			return error;
-   833		}
-   834	
-   835		sys_reg->misc_b &= ~IQS626_MISC_B_TPx_SWIPE;
-   836		if (fwnode_property_present(ch_node, "azoteq,gesture-swipe"))
-   837			sys_reg->misc_b |= IQS626_MISC_B_TPx_SWIPE;
-   838	
-   839		if (!fwnode_property_read_u32(ch_node, "azoteq,timeout-tap-ms",
-   840					      &val)) {
-   841			if (val > IQS626_TIMEOUT_TAP_MS_MAX) {
-   842				dev_err(&client->dev,
-   843					"Invalid %s channel timeout: %u\n",
-   844					fwnode_get_name(ch_node), val);
-   845				return -EINVAL;
-   846			}
-   847	
-   848			sys_reg->timeout_tap = val / 16;
-   849		}
-   850	
-   851		if (!fwnode_property_read_u32(ch_node, "azoteq,timeout-swipe-ms",
-   852					      &val)) {
-   853			if (val > IQS626_TIMEOUT_SWIPE_MS_MAX) {
-   854				dev_err(&client->dev,
-   855					"Invalid %s channel timeout: %u\n",
-   856					fwnode_get_name(ch_node), val);
-   857				return -EINVAL;
-   858			}
-   859	
-   860			sys_reg->timeout_swipe = val / 16;
-   861		}
-   862	
-   863		if (!fwnode_property_read_u32(ch_node, "azoteq,thresh-swipe",
-   864					      &val)) {
-   865			if (val > IQS626_THRESH_SWIPE_MAX) {
-   866				dev_err(&client->dev,
-   867					"Invalid %s channel threshold: %u\n",
-   868					fwnode_get_name(ch_node), val);
-   869				return -EINVAL;
-   870			}
-   871	
-   872			sys_reg->thresh_swipe = val;
-   873		}
-   874	
-   875		sys_reg->event_mask &= ~IQS626_EVENT_MASK_GESTURE;
-   876	
-   877		return 0;
-   878	}
-   879	
+  1243	
+  1244	/*
+  1245	 * Calling this is the point of no return. None of the failures will be
+  1246	 * seen by userspace since either the process is already taking a fatal
+  1247	 * signal (via de_thread() or coredump), or will have SEGV raised
+  1248	 * (after exec_mmap()) by search_binary_handler (see below).
+  1249	 */
+  1250	int begin_new_exec(struct linux_binprm * bprm)
+  1251	{
+  1252		struct task_struct *me = current;
+  1253		int retval;
+  1254	
+  1255		/* Once we are committed compute the creds */
+  1256		retval = bprm_creds_from_file(bprm);
+  1257		if (retval)
+  1258			return retval;
+  1259	
+  1260		/*
+  1261		 * Ensure all future errors are fatal.
+  1262		 */
+  1263		bprm->point_of_no_return = true;
+  1264	
+  1265		/*
+  1266		 * Make this the only thread in the thread group.
+  1267		 */
+  1268		retval = de_thread(me);
+  1269		if (retval)
+  1270			goto out;
+  1271	
+  1272		/*
+  1273		 * Cancel any io_uring activity across execve
+  1274		 */
+  1275		io_uring_task_cancel();
+  1276	
+  1277		/* Ensure the files table is not shared. */
+  1278		retval = unshare_files();
+  1279		if (retval)
+  1280			goto out;
+  1281	
+  1282		/*
+  1283		 * Must be called _before_ exec_mmap() as bprm->mm is
+  1284		 * not visible until then. This also enables the update
+  1285		 * to be lockless.
+  1286		 */
+  1287		retval = set_mm_exe_file(bprm->mm, bprm->file);
+  1288		if (retval)
+  1289			goto out;
+  1290	
+  1291		/* If the binary is not readable then enforce mm->dumpable=0 */
+  1292		would_dump(bprm, bprm->file);
+  1293		if (bprm->have_execfd)
+  1294			would_dump(bprm, bprm->executable);
+  1295	
+  1296		/*
+  1297		 * Release all of the old mmap stuff
+  1298		 */
+  1299		acct_arg_size(bprm, 0);
+  1300		retval = exec_mmap(bprm->mm);
+  1301		if (retval)
+  1302			goto out;
+  1303	
+  1304		bprm->mm = NULL;
+  1305	
+  1306	#ifdef CONFIG_POSIX_TIMERS
+> 1307		spin_lock_irq(&me->sighand->siglock);
+  1308		posix_cpu_timers_exit(me);
+  1309		spin_unlock_irq(&me->sighand->siglock);
+  1310		exit_itimers(me);
+  1311		flush_itimer_signals();
+  1312	#endif
+  1313	
+  1314		/*
+  1315		 * Make the signal table private.
+  1316		 */
+  1317		retval = unshare_sighand(me);
+  1318		if (retval)
+  1319			goto out_unlock;
+  1320	
+  1321		me->flags &= ~(PF_RANDOMIZE | PF_FORKNOEXEC |
+  1322						PF_NOFREEZE | PF_NO_SETAFFINITY);
+  1323		flush_thread();
+  1324		me->personality &= ~bprm->per_clear;
+  1325	
+  1326		clear_syscall_work_syscall_user_dispatch(me);
+  1327	
+  1328		/*
+  1329		 * We have to apply CLOEXEC before we change whether the process is
+  1330		 * dumpable (in setup_new_exec) to avoid a race with a process in userspace
+  1331		 * trying to access the should-be-closed file descriptors of a process
+  1332		 * undergoing exec(2).
+  1333		 */
+  1334		do_close_on_exec(me->files);
+  1335	
+  1336		if (bprm->secureexec) {
+  1337			/* Make sure parent cannot signal privileged process. */
+  1338			me->pdeath_signal = 0;
+  1339	
+  1340			/*
+  1341			 * For secureexec, reset the stack limit to sane default to
+  1342			 * avoid bad behavior from the prior rlimits. This has to
+  1343			 * happen before arch_pick_mmap_layout(), which examines
+  1344			 * RLIMIT_STACK, but after the point of no return to avoid
+  1345			 * needing to clean up the change on failure.
+  1346			 */
+  1347			if (bprm->rlim_stack.rlim_cur > _STK_LIM)
+  1348				bprm->rlim_stack.rlim_cur = _STK_LIM;
+  1349		}
+  1350	
+  1351		me->sas_ss_sp = me->sas_ss_size = 0;
+  1352	
+  1353		/*
+  1354		 * Figure out dumpability. Note that this checking only of current
+  1355		 * is wrong, but userspace depends on it. This should be testing
+  1356		 * bprm->secureexec instead.
+  1357		 */
+  1358		if (bprm->interp_flags & BINPRM_FLAGS_ENFORCE_NONDUMP ||
+  1359		    !(uid_eq(current_euid(), current_uid()) &&
+  1360		      gid_eq(current_egid(), current_gid())))
+  1361			set_dumpable(current->mm, suid_dumpable);
+  1362		else
+  1363			set_dumpable(current->mm, SUID_DUMP_USER);
+  1364	
+  1365		perf_event_exec();
+  1366		__set_task_comm(me, kbasename(bprm->filename), true);
+  1367	
+  1368		/* An exec changes our domain. We are no longer part of the thread
+  1369		   group */
+  1370		WRITE_ONCE(me->self_exec_id, me->self_exec_id + 1);
+  1371		flush_signal_handlers(me, 0);
+  1372	
+  1373		retval = set_cred_ucounts(bprm->cred);
+  1374		if (retval < 0)
+  1375			goto out_unlock;
+  1376	
+  1377		/*
+  1378		 * install the new credentials for this executable
+  1379		 */
+  1380		security_bprm_committing_creds(bprm);
+  1381	
+  1382		commit_creds(bprm->cred);
+  1383		bprm->cred = NULL;
+  1384	
+  1385		/*
+  1386		 * Disable monitoring for regular users
+  1387		 * when executing setuid binaries. Must
+  1388		 * wait until new credentials are committed
+  1389		 * by commit_creds() above
+  1390		 */
+  1391		if (get_dumpable(me->mm) != SUID_DUMP_USER)
+  1392			perf_event_exit_task(me);
+  1393		/*
+  1394		 * cred_guard_mutex must be held at least to this point to prevent
+  1395		 * ptrace_attach() from altering our determination of the task's
+  1396		 * credentials; any time after this it may be unlocked.
+  1397		 */
+  1398		security_bprm_committed_creds(bprm);
+  1399	
+  1400		/* Pass the opened binary to the interpreter. */
+  1401		if (bprm->have_execfd) {
+  1402			retval = get_unused_fd_flags(0);
+  1403			if (retval < 0)
+  1404				goto out_unlock;
+  1405			fd_install(retval, bprm->executable);
+  1406			bprm->executable = NULL;
+  1407			bprm->execfd = retval;
+  1408		}
+  1409		return 0;
+  1410	
+  1411	out_unlock:
+  1412		up_write(&me->signal->exec_update_lock);
+  1413	out:
+  1414		return retval;
+  1415	}
+  1416	EXPORT_SYMBOL(begin_new_exec);
+  1417	
 
 -- 
 0-DAY CI Kernel Test Service
