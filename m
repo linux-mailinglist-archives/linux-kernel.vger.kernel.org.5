@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02A238036A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884DB8036A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:28:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbjLDO2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:28:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
+        id S1345173AbjLDO2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:28:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236070AbjLDO1z (ORCPT
+        with ESMTP id S236035AbjLDO2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:27:55 -0500
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56642129;
-        Mon,  4 Dec 2023 06:25:20 -0800 (PST)
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-58e1ddc68b2so1737630eaf.2;
-        Mon, 04 Dec 2023 06:25:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701699920; x=1702304720;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Lhhmi8w8FhrDZiDw2dpqrrV8WQgs4nmlcgmnrIZW9vM=;
-        b=RYBGE3x62o0/TbHadOb1SnzkaSgy2Sd+5iP4z2j1n2bb/yU8P5jRW8Ygd2oLKGFXl/
-         C3hJ3kX40jllyM/pzhFyHN80C4UtujjUDZWWtqsEJzleXJDgb3e1c5IZzFSHNmU9Wm4S
-         GG2WPkpg05UukWmU99Dmi1sRWyK4CgmX6/qCxJ0quCQdN5Larzv1ILSzrY1nW5jF4lxg
-         L0sYW64varrZ+MTXk2ztIGkz1Cn2mNLup8N5Ed0PLgn/ruVeKfKVdzNTySB8dov4Gy8/
-         SgThDidT8m30+vUAh4DxWRB+eVJWo/hv26KnXUOoySwwSXz6Pqg4j0tKyZefIPP70nes
-         OB6Q==
-X-Gm-Message-State: AOJu0YwOvxQEGHnokL/+QZhckH8s6q8F2WBVi5YUFJlVZzGspYBBmaUD
-        jgdKHfZyLYpgTAGIdkt0Nw==
-X-Google-Smtp-Source: AGHT+IHUIM+kCotvnxNhLlPOfisb9roK9l9+KaY7l/Gbx+B9GlChh+E50rzm8GoEQ40QIBw//sepKg==
-X-Received: by 2002:a05:6820:a82:b0:58e:1c48:4953 with SMTP id de2-20020a0568200a8200b0058e1c484953mr2535013oob.13.1701699919830;
-        Mon, 04 Dec 2023 06:25:19 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id x16-20020a4a6210000000b00587aaf6add7sm1976179ooc.9.2023.12.04.06.25.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 06:25:19 -0800 (PST)
-Received: (nullmailer pid 1225685 invoked by uid 1000);
-        Mon, 04 Dec 2023 14:25:17 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Mon, 4 Dec 2023 09:28:20 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7CF1980;
+        Mon,  4 Dec 2023 06:25:45 -0800 (PST)
+Received: from [100.73.184.104] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ehristev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C49AF6602F41;
+        Mon,  4 Dec 2023 14:25:42 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701699943;
+        bh=45qXgp1iDx7haVo6dkVdFUgNfcmTAjlnwXu2xpNKsZo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=lQniG4ZJYWxPaV1HSOIqtVAWjSzGmKi2vsdfo4cM1yjiu4aYRTHXClqKyEuW868p7
+         53cc9cOVW9f6M5KnDqx6E9OkAxvAwOdOxmTNviSbCE+dBZD1lfAcSNaipcpR8NB7A8
+         g6kYnNH18Daust2n6vr8wgl03H5pFlAk3sV1ncZijg0faDCKLiJD3WAmBDBRsncrVU
+         /T0aNfukD2lspZZpB0LK5T9lO/57th8wW9lcBgghzxnRxVDxYPrQmJq5L1JHYAWqXL
+         4HX23oGE5yYfsyeMzrvz0Yyr5EWVRacxLImOtI45GuUpNdaB+Ch3tIQhsJg/07Fj7g
+         kzu3Hn8r+x3+A==
+Message-ID: <1823eb2d-49bf-40b1-8952-c084fe2f8a88@collabora.com>
+Date:   Mon, 4 Dec 2023 16:25:39 +0200
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Chen Wang <unicornxw@gmail.com>
-Cc:     guoren@kernel.org, robh+dt@kernel.org, samuel.holland@sifive.com,
-        jszhang@kernel.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, richardcochran@gmail.com,
-        paul.walmsley@sifive.com, conor@kernel.org, inochiama@outlook.com,
-        linux-clk@vger.kernel.org, Chen Wang <unicorn_wang@outlook.com>,
-        palmer@dabbelt.com, sboyd@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, xiaoguang.xing@sophgo.com,
-        devicetree@vger.kernel.org, chao.wei@sophgo.com,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com
-In-Reply-To: <14616bce163d689a4e640ab7b372421ca8306a92.1701691923.git.unicorn_wang@outlook.com>
-References: <cover.1701691923.git.unicorn_wang@outlook.com>
- <14616bce163d689a4e640ab7b372421ca8306a92.1701691923.git.unicorn_wang@outlook.com>
-Message-Id: <170169991797.1225669.8378193409195638634.robh@kernel.org>
-Subject: Re: [PATCH v3 1/4] dt-bindings: soc: sophgo: Add Sophgo system
- control module
-Date:   Mon, 04 Dec 2023 08:25:17 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 03/36] media: microchip: Remove useless setting of
+ min_buffers_needed
+Content-Language: en-US
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        matt.ranostay@konsulko.com
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com
+References: <20231204132323.22811-1-benjamin.gaignard@collabora.com>
+ <20231204132323.22811-4-benjamin.gaignard@collabora.com>
+ <ab06b2c0-a290-46cd-9d97-3f9f6e3bbb36@xs4all.nl>
+From:   Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <ab06b2c0-a290-46cd-9d97-3f9f6e3bbb36@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 04 Dec 2023 20:54:53 +0800, Chen Wang wrote:
-> From: Chen Wang <unicorn_wang@outlook.com>
+On 12/4/23 16:03, Hans Verkuil wrote:
+> On 04/12/2023 14:22, Benjamin Gaignard wrote:
+>> This driver uses min_buffers_needed which vb2 uses to ensure
+>> start_streaming is called when at least 'min_buffers_needed'
+>> buffers are queued. However, this driver doesn't need this,
+>> it can stream fine without any buffers queued.
+>> Just drop this unnecessary restriction.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> CC: Eugen Hristev <eugen.hristev@collabora.com>
+>> ---
+>>  drivers/media/platform/microchip/microchip-isc-base.c | 1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/media/platform/microchip/microchip-isc-base.c b/drivers/media/platform/microchip/microchip-isc-base.c
+>> index 3fba0e2844b6..63c39981f47a 100644
+>> --- a/drivers/media/platform/microchip/microchip-isc-base.c
+>> +++ b/drivers/media/platform/microchip/microchip-isc-base.c
+>> @@ -1821,7 +1821,6 @@ static int isc_async_complete(struct v4l2_async_notifier *notifier)
+>>  	q->mem_ops		= &vb2_dma_contig_memops;
+>>  	q->timestamp_flags	= V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+>>  	q->lock			= &isc->lock;
+>> -	q->min_buffers_needed	= 1;
 > 
-> Add documentation to describe Sophgo System Controller for SG2042.
+> I don't think this can be dropped. Looking at the isc_start_streaming() function
+> it expects to have at least one buffer queued.
+
+Stream goes frame by frame with DMA directly into the buffers.
+Will this still work without any buffers queued ?
+
 > 
-> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> ---
->  .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     | 35 +++++++++++++++++++
->  1 file changed, 35 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+> Regards,
 > 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.example.dtb: /example-0/system-controller@30010000: failed to match any schema with compatible: ['sophgo,sg2042-sysctl']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/14616bce163d689a4e640ab7b372421ca8306a92.1701691923.git.unicorn_wang@outlook.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+> 	Hans
+> 
+>>  	q->dev			= isc->dev;
+>>  
+>>  	ret = vb2_queue_init(q);
+> 
 
