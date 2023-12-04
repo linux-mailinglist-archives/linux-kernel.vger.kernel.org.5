@@ -2,179 +2,537 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8C3802F07
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B814802F0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjLDJoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:44:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        id S229700AbjLDJpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:45:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjLDJn6 (ORCPT
+        with ESMTP id S229532AbjLDJpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:43:58 -0500
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2078.outbound.protection.outlook.com [40.107.8.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3039113;
-        Mon,  4 Dec 2023 01:44:02 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T8+0NyYiUdr8xDtefcTRZWouCWPqXpKlWQ5pGo5gdhxVw+64+572vpfh6XTUsy5bZnVKR0ClRrHN7wcaCQ4vh9sAEL5/HSpncPn25JtWxO+dHbeJ1v5dHwpMv4dA7hdNaDTBSClE5MIyWSog95kAXyWUcu6tkbzd2wfXETttc8hb2ylM9rFBMR2GqMAy50vnJF68UBxZ1KYxobbICKm9TJkJmFF2gyEQo3xN3TTXeoffK8r926xgm/56ctAFayYIZpRG1MrwhWKlGDYT58Q/XFfGXv+1eB2o1KCyHR4OexqbUliRDvn5h4zIywUoltiAYGRzIrhAxRdQF70gVeuCqg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mk0rnq/J91yQs8Y7pa5dDentfdUgynNxpBnu2QD1TLw=;
- b=G0lOFAkU77IsUqu417O0DxiDo50wJJI79Ow7urmCPS68hUXbifM14RX7HQ1YfDvb3ncc7G1RUh1wyg03wCq9SI14SbinQpV+5xTzJrLoGPUyaPOsbnWJfsqnmEaFsICIc7m3/fq98xrAUuOdy8ncO+DhpnWOnXVryhTRDy3jAYg1c55X/9s4VBjkcwjQLw1gBBO0NVt7Lg/qam4g9lqI4nL9Vx4VMloc1SvyI9w4mbca2apoHWBta/KCWdrQAF7DXqohYQezKyYSsCTdDiUZY9/4arHs6VE8Wl8Qe14/ihh6XmvGhzkChFugjeXYnit7cai5p+CLYFPkX6ZJYcJR7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=theobroma-systems.com; dmarc=pass action=none
- header.from=theobroma-systems.com; dkim=pass header.d=theobroma-systems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=theobroma-systems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mk0rnq/J91yQs8Y7pa5dDentfdUgynNxpBnu2QD1TLw=;
- b=SlCTUglN8oFmNrDCTCG0HrLGoTkUHSxQfD/sTyFEF0gCLmfXrrK0S9meWcilgMZ9heFJLl+LmfGfqvY2WZ6TDgstdhPCiSheEmt16HVFJbHRMgKgqr9BBAyIdN5x6VzrWShJ+iUDm7nhSyMr3qKxXD6DH6AmowzUxAfrDwzFfcRKlxsmgDzUx97gnWmRfDSribDVpFOTnFIq9QZNrcdtR1gQNDpw17WNPY6tntRmOBYxsZnSuNOVCcNHioypkMkQa1SLQrTqvsPUJepRgQPFoZFPMnIdYUXOGbEcytKo5tCIN1J+++V7sjedwUKUuYxmd/iDN1w5JJ9NxOFYTlqtEQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=theobroma-systems.com;
-Received: from DU2PR04MB8536.eurprd04.prod.outlook.com (2603:10a6:10:2d7::10)
- by DU2PR04MB8966.eurprd04.prod.outlook.com (2603:10a6:10:2e1::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.22; Mon, 4 Dec
- 2023 09:43:59 +0000
-Received: from DU2PR04MB8536.eurprd04.prod.outlook.com
- ([fe80::9ee0:71d6:cd29:289a]) by DU2PR04MB8536.eurprd04.prod.outlook.com
- ([fe80::9ee0:71d6:cd29:289a%7]) with mapi id 15.20.7068.022; Mon, 4 Dec 2023
- 09:43:59 +0000
-Message-ID: <b36e07f0-a8d6-4623-8531-4c3eef5dece6@theobroma-systems.com>
-Date:   Mon, 4 Dec 2023 10:43:56 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: mdio: enable optional clock when registering a phy
- from devicetree
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>, Heiko Stuebner <heiko@sntech.de>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Heiko Stuebner <heiko.stuebner@cherry.de>
-References: <20231201142453.324697-1-heiko@sntech.de>
- <84c102fa-e3f4-4454-82c9-95eea7eeb941@lunn.ch>
-From:   Quentin Schulz <quentin.schulz@theobroma-systems.com>
-In-Reply-To: <84c102fa-e3f4-4454-82c9-95eea7eeb941@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0157.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ba::12) To DU2PR04MB8536.eurprd04.prod.outlook.com
- (2603:10a6:10:2d7::10)
+        Mon, 4 Dec 2023 04:45:22 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DB85CB2;
+        Mon,  4 Dec 2023 01:45:27 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E018EFEC;
+        Mon,  4 Dec 2023 01:46:14 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.44.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F6443F6C4;
+        Mon,  4 Dec 2023 01:45:26 -0800 (PST)
+Date:   Mon, 4 Dec 2023 09:45:21 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm: perf: Remove PMU locking
+Message-ID: <ZW2fsXX-cTpjm9KA@FVFF77S0Q05N>
+References: <20231115092805.737822-1-anshuman.khandual@arm.com>
+ <20231115092805.737822-2-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU2PR04MB8536:EE_|DU2PR04MB8966:EE_
-X-MS-Office365-Filtering-Correlation-Id: aa2e2b97-9b81-4512-5dad-08dbf4ad8a44
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YroV16e+tdqZdKFlpBGaoCMTBgD9p7OrDOHmOYY0YkX3W/AGNf8YHxn+zSYNiOQMoySxTFxoPPZUqDwwdWE26ncvO+yM9OqaiczchakDICAb3klHS+sULibzdmuGpm9TroWJCh17R/npgaZlxP1qRvJfkfRncjO4xYhfJcYOe/IkeMM4I5iMZwh0zrm60v+mSZdFDJyqgBa8bNgQjyZUc9HV1apdVc4dqb58RkM+7XF2584HsIogLpcRDHrIxuBXxbSnIfCLml5vMc/0tBXJFM8vkZQ5qzALMPwq89lbbMazTv7xnaww51gp5YmXfjL64R2JMV6yduU1FfAOUD0UGCr6W9tGzdALArzlqU7l97nboqybTz1wulz9xq699VKHQMgzYaj7i9xht2jBmepYKF+eaJTby+MMJT5XMSl5fF6DrDoq4NzRVroMXQaTOfj46woy2YJ9Zj91lDMJ5ZMdc2sc3+lUpyCFY3+z2XHIW8bzkzbgEzZzaAzHKico2AsZdPBZxf7yS3xwjKKIvIUsGArgtMIOwcIL7GUKuHkpWw5y6KgH6pwppjbbF8dfoavOGVR24Y5TvUZp7XRE2WtCFynliKo+7iDQLoHVSkNYjtBrVqKK5XJlxML9n8FCRnxuhlkcQek2FJVV4vCRAIFr4Lej1h01zUKIPRm5F5InDPHHZFPq6kGJF3D2AGodz2kg8Eo/sgf96/7EHf2UEwpQez+myOlyd7QY7lYx3ed+gNY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8536.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39840400004)(396003)(346002)(136003)(230173577357003)(230922051799003)(230473577357003)(230373577357003)(230273577357003)(64100799003)(451199024)(186009)(1800799012)(7416002)(5660300002)(31686004)(110136005)(316002)(4326008)(44832011)(66946007)(66556008)(66476007)(38100700002)(41300700001)(2616005)(83380400001)(26005)(8676002)(31696002)(8936002)(36756003)(86362001)(6666004)(6486002)(107886003)(2906002)(966005)(53546011)(6512007)(478600001)(6506007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WVlDQWdsL0NQdlRYdm1YdEsrdkViUDREcUc5aGpvV29TQUhFaUo3cEpsZ2sw?=
- =?utf-8?B?ZGxWWlpjRUI1Z2x2L1NjUEZxRnJYQURJQ3Y5ZjJHSFArcjYrS2dPeCt5Wmg5?=
- =?utf-8?B?TXNja05CRVp4K05KU2FWeXlTc3BmK2xGMC9iUStlU2d5L1pxb1ladHRPa0FZ?=
- =?utf-8?B?eUM0eHE4eTBLTUFvM2pCY3BQMTRKSmd6L1Rjem5DL2VBbWo5K1dMTXBLdEpC?=
- =?utf-8?B?QTd5dG1ENWFET2l3K2pRb1R2ZlpCQnpUVi8wTDVxZE9abEh2dmVaUzI3emhk?=
- =?utf-8?B?NnBJV0lYSlFHTW16OE9BZU1OdFluQmYzdWR3NGtYNENIclJiUU9uQitWcXBi?=
- =?utf-8?B?ZzI4UG9EODVNOHgvczkvcU5hS2JJeHdNTkVvMXlnZkphYVI0aCt6RTRYV2di?=
- =?utf-8?B?QXVOSDY5cmcyWWx0VVBuNUd6aG9DbEFGOTkzaGpFTVgyLy9kdGhucURkRnFJ?=
- =?utf-8?B?eXhxYVZNRk9qKzllamU1bkl0cmdES1hlMlFLN3ZrWG1DcVhLKzJIZlFqVUhw?=
- =?utf-8?B?VkZOTC95YW9KdFkzTVU2cWRuZ0ZwTm5QcHBJQWJkUG4yUFphOWliUXJDYTk0?=
- =?utf-8?B?cjdxOEdVVnJkZ3o4V3NSN0ZsUGhSenBGR3RJb2NoSE1UUTkzSFpicTdyZVRw?=
- =?utf-8?B?d0ZxSGhxMjBmTE51YVNYeVZBUGVWRThyOVNNemNtMnNVZEplelp2Q1VLU2Ji?=
- =?utf-8?B?UjNTTURsdGxMeklPazRTdHNBYVRQaXlYcXA3UjFFZVllYlg3QjhrbXdGMkpP?=
- =?utf-8?B?ejBiR1ZIZnAwOC9Yc00rVk5lR0xPRUtwaG5wRzhxb3pPR0dXVDlsUkxWOFg5?=
- =?utf-8?B?a05YcXRMQjhQV0ZMbjBsVDBwMGl6aGxqL3MxVStHZzZxUmVwS0NBbjJndjUw?=
- =?utf-8?B?cGNDNURTcDJFSmVuSEFDSXBGc25qNDgxQzVMOHZVZzNzUG1ZNVk4WmVFeUdn?=
- =?utf-8?B?OERjMzhkWjhpb3pvZGkrUVFMM3dEczRRRHUyckQrTnN6bXE4MXNwaCt5dXBl?=
- =?utf-8?B?TlRtZy9FOU1sUzBQOVF5RExkTDVraTVaZnZrNXJ2dXE4VmV1Q3d0YjlLcGRD?=
- =?utf-8?B?dlhCclNwZmhGdCtKWnNucW9vNnZybXVhWGNZbE0vN01TQ3JaU2NqS0hQTHMr?=
- =?utf-8?B?eVVkUVpobzVuUnNTdnp6K1hRTDdERWV2SXJSVEt6anQwaU1uUXVIeVRxUldw?=
- =?utf-8?B?VUwvZGFkTDdiUU9yc3c4cXN5bENrRjRpY2JhNHdkSjU3VEVvVTYrbDZnWERn?=
- =?utf-8?B?TUtXaU92Q1ZsQ3lJcUlZeGFNRFJMZXd4WURrRWMzSXRGUVJuUFh3Z05DT2JD?=
- =?utf-8?B?NmNSWnF5OUNsYlBzb2RONDY5bjBUMDVvOHRmN21ZaVl2Y0gzdzBlV1pxM0sv?=
- =?utf-8?B?N2ExazRGc0xWUHlpV1NCbXZUN0RJMGJqbVkrRWJwbUVuYzhUMzNiRFNyd3hB?=
- =?utf-8?B?cmxoREl0T3lqQUozUGE0MTA0UXpzeEVBdW1JS3p4Z0cwc0VGc1hkUGh5cWMy?=
- =?utf-8?B?RGQ0bGlNNHg0NzNHdFRRb3prcFkwZUVFajBxQ0d1eHQ5QVZjVDlETlZucDc1?=
- =?utf-8?B?a00yTk1lU3lqQmJ6RXZUT0pKdW41aEtSK3pnUlpONnJaMHA5TldFZ0xjWFdS?=
- =?utf-8?B?VHd1anAvRVgwS0loclZuYnBaWWljc0h5dkZRa0d2MThRajhWQ3hRNzhoTFZO?=
- =?utf-8?B?R2s3QU52dlRYcnNueVRia29XZEZobjV4eU1xQm9aR0UvMlNSNDI1UWFiWlkv?=
- =?utf-8?B?RHNqcEpLN0g2S1VGRFJqR2doTUZTakNBQjVDclZQdDJxdXJOUzJrYUhPYjFF?=
- =?utf-8?B?VzZvQm04OXY1QUJaM3lJRituLzBCaFhKZVVvOTk1VFpNbHJYL0pBRXN3Q25L?=
- =?utf-8?B?cGMzY3RuNDFDZzA0d1k0QjBzNDB5RTJnSWhnMW9rOE4rWnpkbDQvc0R5TStn?=
- =?utf-8?B?aHkySXdzWmZoNFdpbHJ5cXltK2oxa1RqZUlXSmVoUm5rTm50YWRVdnRWS3FZ?=
- =?utf-8?B?b1JwbjAzVDRMdHJGTnNBY0c2am41YVYxdEwzSzhVMWRpZkxYNTFGL2hFanBT?=
- =?utf-8?B?alJESlBLbWZaZ1p2VXBqdVpwbFpxVld4UzBiRlFYN3RidXh1Q0hseWIzbjRO?=
- =?utf-8?B?b29ES1F4OUluUStxQnJLU3RCME5TWDh4dGZxNFJUNUx3V0IxUW93SWJoLytY?=
- =?utf-8?Q?zl7RPz2C+Sqy77VnF9amLsI=3D?=
-X-OriginatorOrg: theobroma-systems.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa2e2b97-9b81-4512-5dad-08dbf4ad8a44
-X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8536.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 09:43:59.0089
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5e0e1b52-21b5-4e7b-83bb-514ec460677e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TVHaeCOC60WNcDNlGfWTX/BEWvK3JXYTu9pnmWONVlTHi3JDZh0qUswMjNan4QbrWnXnjob/ZgBhnvx9/Lb8UkUwUYqFRHcl0pgc2+2LeLzdeG/4P4jI3UXxcwKm23xY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8966
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115092805.737822-2-anshuman.khandual@arm.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
-
-On 12/1/23 23:15, Andrew Lunn wrote:
-> [You don't often get email from andrew@lunn.ch. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+On Wed, Nov 15, 2023 at 02:58:04PM +0530, Anshuman Khandual wrote:
+> The PMU is disabled and enabled, and the counters are programmed from
+> contexts where interrupts or preemption is disabled.
 > 
-> On Fri, Dec 01, 2023 at 03:24:53PM +0100, Heiko Stuebner wrote:
->> From: Heiko Stuebner <heiko.stuebner@cherry.de>
->>
->> The ethernet-phy binding (now) specifys that phys can declare a clock
->> supply. Phy driver itself will handle this when probing the phy-driver.
->>
->> But there is a gap when trying to detect phys, because the mdio-bus needs
->> to talk to the phy to get its phy-id. Using actual phy-ids in the dt like
->>         compatible = "ethernet-phy-id0022.1640",
->>                      "ethernet-phy-ieee802.3-c22";
->> of course circumvents this, but in turn hard-codes the phy.
->>
->> With boards often having multiple phy options and the mdio-bus being able
->> to actually probe devices, this feels like a step back.
->>
->> So check for the existence of a phy-clock per the -dtbinding in the
->> of_mdiobus_register_phy() and enable the clock around the
->> fwnode_mdiobus_register_phy() call which tries to determine the phy-id.
+> The functions to toggle the PMU and to program the PMU counters access the
+> registers directly and don't access data modified by the interrupt handler.
+> That, and the fact that they're always called from non-preemptible
+> contexts, means that we don't need to disable interrupts or use a spinlock.
 > 
-> Why handle this separately to the reset GPIO and the reset controller?
+> This is very similar to an earlier change on arm64 platform.
 > 
+> commit 2a0e2a02e4b7 ("arm64: perf: Remove PMU locking").
 
-I was just wondering about this as well. Right now, we put the reset on 
-the MAC controller device tree node for our board (c.f. 
-https://lore.kernel.org/linux-arm-kernel/20231201191103.343097-1-heiko@sntech.de/) 
-because otherwise it doesn't work.
+I realise the commit message is a copy of the wording from 2a0e2a02e4b7, but
+some of this isn't quite right; could we please replace that with:
 
-I assume this is because the phy net subsystem is not handling the reset 
-at the proper time (it does so before probing the PHY driver, which is 
-too late because the auto-detection mechanism has already run before and 
-the MAC couldn't find the PHY ID since the PHY wasn't reset properly at 
-that time).
+| Currently the 32-bit arm PMU drivers use the pmu_hw_events::lock spinlock in
+| their arm_pmu::{start,stop,enable,disable}() callbacks to protect hardware
+| state and event data.
+|
+| This locking is not necessary as the perf core code already provides mutual
+| exclusion, disabling interrupts to serialize against the IRQ handler, and
+| using perf_event_context::lock to protect against concurrent modifications of
+| events cross-cpu.
+|
+| The locking was removed from the arm64 (now PMUv3) PMU driver in commit:
+|
+|   2a0e2a02e4b7 ("arm64: perf: Remove PMU locking")
+|
+| ... and the same reasoning applies to all the 32-bit PMU drivers.
+|
+| Remove the locking from the 32-bit PMU drivers.
 
-I think essentially we would need to have both the reset assert/deassert 
-and clock enabling/disabling in the same location as this patch is 
-suggesting to make all of this work.
+With that wording:
 
-I'll not investigate this, because Florian NACK'ed the whole thing. I do 
-not personally have an interest in fixing only the reset, because we 
-need the clock to be enabled for the auto-detection mechanism to work.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Cheers,
-Quentin
+Mark.
+
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: linux-perf-users@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/arm/kernel/perf_event_v6.c     | 28 ++++--------------
+>  arch/arm/kernel/perf_event_v7.c     | 44 -----------------------------
+>  arch/arm/kernel/perf_event_xscale.c | 44 ++++++-----------------------
+>  3 files changed, 13 insertions(+), 103 deletions(-)
+> 
+> diff --git a/arch/arm/kernel/perf_event_v6.c b/arch/arm/kernel/perf_event_v6.c
+> index 1ae99deeec54..8fc080c9e4fb 100644
+> --- a/arch/arm/kernel/perf_event_v6.c
+> +++ b/arch/arm/kernel/perf_event_v6.c
+> @@ -268,10 +268,8 @@ static inline void armv6pmu_write_counter(struct perf_event *event, u64 value)
+>  
+>  static void armv6pmu_enable_event(struct perf_event *event)
+>  {
+> -	unsigned long val, mask, evt, flags;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	unsigned long val, mask, evt;
+>  	struct hw_perf_event *hwc = &event->hw;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	if (ARMV6_CYCLE_COUNTER == idx) {
+> @@ -294,12 +292,10 @@ static void armv6pmu_enable_event(struct perf_event *event)
+>  	 * Mask out the current event and set the counter to count the event
+>  	 * that we're interested in.
+>  	 */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = armv6_pmcr_read();
+>  	val &= ~mask;
+>  	val |= evt;
+>  	armv6_pmcr_write(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static irqreturn_t
+> @@ -362,26 +358,20 @@ armv6pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>  
+>  static void armv6pmu_start(struct arm_pmu *cpu_pmu)
+>  {
+> -	unsigned long flags, val;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long val;
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = armv6_pmcr_read();
+>  	val |= ARMV6_PMCR_ENABLE;
+>  	armv6_pmcr_write(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void armv6pmu_stop(struct arm_pmu *cpu_pmu)
+>  {
+> -	unsigned long flags, val;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long val;
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = armv6_pmcr_read();
+>  	val &= ~ARMV6_PMCR_ENABLE;
+>  	armv6_pmcr_write(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static int
+> @@ -419,10 +409,8 @@ static void armv6pmu_clear_event_idx(struct pmu_hw_events *cpuc,
+>  
+>  static void armv6pmu_disable_event(struct perf_event *event)
+>  {
+> -	unsigned long val, mask, evt, flags;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	unsigned long val, mask, evt;
+>  	struct hw_perf_event *hwc = &event->hw;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	if (ARMV6_CYCLE_COUNTER == idx) {
+> @@ -444,20 +432,16 @@ static void armv6pmu_disable_event(struct perf_event *event)
+>  	 * of ETM bus signal assertion cycles. The external reporting should
+>  	 * be disabled and so this should never increment.
+>  	 */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = armv6_pmcr_read();
+>  	val &= ~mask;
+>  	val |= evt;
+>  	armv6_pmcr_write(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void armv6mpcore_pmu_disable_event(struct perf_event *event)
+>  {
+> -	unsigned long val, mask, flags, evt = 0;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	unsigned long val, mask, evt = 0;
+>  	struct hw_perf_event *hwc = &event->hw;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	if (ARMV6_CYCLE_COUNTER == idx) {
+> @@ -475,12 +459,10 @@ static void armv6mpcore_pmu_disable_event(struct perf_event *event)
+>  	 * Unlike UP ARMv6, we don't have a way of stopping the counters. We
+>  	 * simply disable the interrupt reporting.
+>  	 */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = armv6_pmcr_read();
+>  	val &= ~mask;
+>  	val |= evt;
+>  	armv6_pmcr_write(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static int armv6_map_event(struct perf_event *event)
+> diff --git a/arch/arm/kernel/perf_event_v7.c b/arch/arm/kernel/perf_event_v7.c
+> index eb2190477da1..c890354b04e9 100644
+> --- a/arch/arm/kernel/perf_event_v7.c
+> +++ b/arch/arm/kernel/perf_event_v7.c
+> @@ -870,10 +870,8 @@ static void armv7_pmnc_dump_regs(struct arm_pmu *cpu_pmu)
+>  
+>  static void armv7pmu_enable_event(struct perf_event *event)
+>  {
+> -	unsigned long flags;
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	if (!armv7_pmnc_counter_valid(cpu_pmu, idx)) {
+> @@ -886,7 +884,6 @@ static void armv7pmu_enable_event(struct perf_event *event)
+>  	 * Enable counter and interrupt, and set the counter to count
+>  	 * the event that we're interested in.
+>  	 */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  
+>  	/*
+>  	 * Disable counter
+> @@ -910,16 +907,12 @@ static void armv7pmu_enable_event(struct perf_event *event)
+>  	 * Enable counter
+>  	 */
+>  	armv7_pmnc_enable_counter(idx);
+> -
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void armv7pmu_disable_event(struct perf_event *event)
+>  {
+> -	unsigned long flags;
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	if (!armv7_pmnc_counter_valid(cpu_pmu, idx)) {
+> @@ -931,7 +924,6 @@ static void armv7pmu_disable_event(struct perf_event *event)
+>  	/*
+>  	 * Disable counter and interrupt
+>  	 */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  
+>  	/*
+>  	 * Disable counter
+> @@ -942,8 +934,6 @@ static void armv7pmu_disable_event(struct perf_event *event)
+>  	 * Disable interrupt for this counter
+>  	 */
+>  	armv7_pmnc_disable_intens(idx);
+> -
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static irqreturn_t armv7pmu_handle_irq(struct arm_pmu *cpu_pmu)
+> @@ -1009,24 +999,14 @@ static irqreturn_t armv7pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>  
+>  static void armv7pmu_start(struct arm_pmu *cpu_pmu)
+>  {
+> -	unsigned long flags;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+> -
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	/* Enable all counters */
+>  	armv7_pmnc_write(armv7_pmnc_read() | ARMV7_PMNC_E);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void armv7pmu_stop(struct arm_pmu *cpu_pmu)
+>  {
+> -	unsigned long flags;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+> -
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	/* Disable all counters */
+>  	armv7_pmnc_write(armv7_pmnc_read() & ~ARMV7_PMNC_E);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static int armv7pmu_get_event_idx(struct pmu_hw_events *cpuc,
+> @@ -1492,14 +1472,10 @@ static void krait_clearpmu(u32 config_base)
+>  
+>  static void krait_pmu_disable_event(struct perf_event *event)
+>  {
+> -	unsigned long flags;
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	int idx = hwc->idx;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  
+>  	/* Disable counter and interrupt */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  
+>  	/* Disable counter */
+>  	armv7_pmnc_disable_counter(idx);
+> @@ -1512,23 +1488,17 @@ static void krait_pmu_disable_event(struct perf_event *event)
+>  
+>  	/* Disable interrupt for this counter */
+>  	armv7_pmnc_disable_intens(idx);
+> -
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void krait_pmu_enable_event(struct perf_event *event)
+>  {
+> -	unsigned long flags;
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	int idx = hwc->idx;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  
+>  	/*
+>  	 * Enable counter and interrupt, and set the counter to count
+>  	 * the event that we're interested in.
+>  	 */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  
+>  	/* Disable counter */
+>  	armv7_pmnc_disable_counter(idx);
+> @@ -1548,8 +1518,6 @@ static void krait_pmu_enable_event(struct perf_event *event)
+>  
+>  	/* Enable counter */
+>  	armv7_pmnc_enable_counter(idx);
+> -
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void krait_pmu_reset(void *info)
+> @@ -1825,14 +1793,10 @@ static void scorpion_clearpmu(u32 config_base)
+>  
+>  static void scorpion_pmu_disable_event(struct perf_event *event)
+>  {
+> -	unsigned long flags;
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	int idx = hwc->idx;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  
+>  	/* Disable counter and interrupt */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  
+>  	/* Disable counter */
+>  	armv7_pmnc_disable_counter(idx);
+> @@ -1845,23 +1809,17 @@ static void scorpion_pmu_disable_event(struct perf_event *event)
+>  
+>  	/* Disable interrupt for this counter */
+>  	armv7_pmnc_disable_intens(idx);
+> -
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void scorpion_pmu_enable_event(struct perf_event *event)
+>  {
+> -	unsigned long flags;
+>  	struct hw_perf_event *hwc = &event->hw;
+>  	int idx = hwc->idx;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  
+>  	/*
+>  	 * Enable counter and interrupt, and set the counter to count
+>  	 * the event that we're interested in.
+>  	 */
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  
+>  	/* Disable counter */
+>  	armv7_pmnc_disable_counter(idx);
+> @@ -1881,8 +1839,6 @@ static void scorpion_pmu_enable_event(struct perf_event *event)
+>  
+>  	/* Enable counter */
+>  	armv7_pmnc_enable_counter(idx);
+> -
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void scorpion_pmu_reset(void *info)
+> diff --git a/arch/arm/kernel/perf_event_xscale.c b/arch/arm/kernel/perf_event_xscale.c
+> index f6cdcacfb96d..7a2ba1c689a7 100644
+> --- a/arch/arm/kernel/perf_event_xscale.c
+> +++ b/arch/arm/kernel/perf_event_xscale.c
+> @@ -203,10 +203,8 @@ xscale1pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>  
+>  static void xscale1pmu_enable_event(struct perf_event *event)
+>  {
+> -	unsigned long val, mask, evt, flags;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	unsigned long val, mask, evt;
+>  	struct hw_perf_event *hwc = &event->hw;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	switch (idx) {
+> @@ -229,20 +227,16 @@ static void xscale1pmu_enable_event(struct perf_event *event)
+>  		return;
+>  	}
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = xscale1pmu_read_pmnc();
+>  	val &= ~mask;
+>  	val |= evt;
+>  	xscale1pmu_write_pmnc(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void xscale1pmu_disable_event(struct perf_event *event)
+>  {
+> -	unsigned long val, mask, evt, flags;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	unsigned long val, mask, evt;
+>  	struct hw_perf_event *hwc = &event->hw;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	switch (idx) {
+> @@ -263,12 +257,10 @@ static void xscale1pmu_disable_event(struct perf_event *event)
+>  		return;
+>  	}
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = xscale1pmu_read_pmnc();
+>  	val &= ~mask;
+>  	val |= evt;
+>  	xscale1pmu_write_pmnc(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static int
+> @@ -300,26 +292,20 @@ static void xscalepmu_clear_event_idx(struct pmu_hw_events *cpuc,
+>  
+>  static void xscale1pmu_start(struct arm_pmu *cpu_pmu)
+>  {
+> -	unsigned long flags, val;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long val;
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = xscale1pmu_read_pmnc();
+>  	val |= XSCALE_PMU_ENABLE;
+>  	xscale1pmu_write_pmnc(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void xscale1pmu_stop(struct arm_pmu *cpu_pmu)
+>  {
+> -	unsigned long flags, val;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long val;
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = xscale1pmu_read_pmnc();
+>  	val &= ~XSCALE_PMU_ENABLE;
+>  	xscale1pmu_write_pmnc(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static inline u64 xscale1pmu_read_counter(struct perf_event *event)
+> @@ -549,10 +535,8 @@ xscale2pmu_handle_irq(struct arm_pmu *cpu_pmu)
+>  
+>  static void xscale2pmu_enable_event(struct perf_event *event)
+>  {
+> -	unsigned long flags, ien, evtsel;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	unsigned long ien, evtsel;
+>  	struct hw_perf_event *hwc = &event->hw;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	ien = xscale2pmu_read_int_enable();
+> @@ -587,18 +571,14 @@ static void xscale2pmu_enable_event(struct perf_event *event)
+>  		return;
+>  	}
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	xscale2pmu_write_event_select(evtsel);
+>  	xscale2pmu_write_int_enable(ien);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void xscale2pmu_disable_event(struct perf_event *event)
+>  {
+> -	unsigned long flags, ien, evtsel, of_flags;
+> -	struct arm_pmu *cpu_pmu = to_arm_pmu(event->pmu);
+> +	unsigned long ien, evtsel, of_flags;
+>  	struct hw_perf_event *hwc = &event->hw;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+>  	int idx = hwc->idx;
+>  
+>  	ien = xscale2pmu_read_int_enable();
+> @@ -638,11 +618,9 @@ static void xscale2pmu_disable_event(struct perf_event *event)
+>  		return;
+>  	}
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	xscale2pmu_write_event_select(evtsel);
+>  	xscale2pmu_write_int_enable(ien);
+>  	xscale2pmu_write_overflow_flags(of_flags);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static int
+> @@ -663,26 +641,20 @@ xscale2pmu_get_event_idx(struct pmu_hw_events *cpuc,
+>  
+>  static void xscale2pmu_start(struct arm_pmu *cpu_pmu)
+>  {
+> -	unsigned long flags, val;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long val;
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = xscale2pmu_read_pmnc() & ~XSCALE_PMU_CNT64;
+>  	val |= XSCALE_PMU_ENABLE;
+>  	xscale2pmu_write_pmnc(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static void xscale2pmu_stop(struct arm_pmu *cpu_pmu)
+>  {
+> -	unsigned long flags, val;
+> -	struct pmu_hw_events *events = this_cpu_ptr(cpu_pmu->hw_events);
+> +	unsigned long val;
+>  
+> -	raw_spin_lock_irqsave(&events->pmu_lock, flags);
+>  	val = xscale2pmu_read_pmnc();
+>  	val &= ~XSCALE_PMU_ENABLE;
+>  	xscale2pmu_write_pmnc(val);
+> -	raw_spin_unlock_irqrestore(&events->pmu_lock, flags);
+>  }
+>  
+>  static inline u64 xscale2pmu_read_counter(struct perf_event *event)
+> -- 
+> 2.25.1
+> 
