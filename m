@@ -2,180 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 906FB802C62
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACE6802C60
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234704AbjLDHwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 02:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
+        id S234685AbjLDHvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 02:51:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbjLDHv7 (ORCPT
+        with ESMTP id S230025AbjLDHvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 02:51:59 -0500
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BAAF0;
-        Sun,  3 Dec 2023 23:52:04 -0800 (PST)
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id 96BD36049B;
-        Mon,  4 Dec 2023 07:51:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1701676323;
-        bh=XWo9gVPTMw/Jq0RjiBpbhpIaqutznCtnJEvdD0CoMg4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P+bely7rNEVVgt2juKTgYntibbAPc4QjgIoWYc2/D4hZNw1OMxX1DmvuLTHKDujdO
-         eUpE7S7GNk6PTaLFtdNfq4QKQoQoDCqcFsBAuquHxq+NQVzf1bQGCw7Wqec/0GSaKp
-         TtVeEB308gFErEL+thsLamtqaKl9jI6GmYC/0ncvHTaqx+yGK3PB2iLwlcUcb2oddD
-         Tj7SykeS9eQKqMEOAQ6cXuwSQW5gOw9U33L63lIrrcIkWolbjIFsAfw14GNhp0r/j4
-         4Z9JkCUc+UX6iviCMwKRNVFZuHtEeQ+lLxkHdPwDNVKssLmlb7qrOfOPrIsJPtg4wE
-         fueDCrerrQ2gw==
-Date:   Mon, 4 Dec 2023 09:51:31 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Add support for DEVNAME:0.0 style hardware based
- addressing
-Message-ID: <20231204075131.GK5169@atomide.com>
-References: <20231121113203.61341-1-tony@atomide.com>
- <ZWnvc6-LnXdjOQLY@alley>
+        Mon, 4 Dec 2023 02:51:33 -0500
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D02FF
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 23:51:38 -0800 (PST)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id EC0DA227A8E; Mon,  4 Dec 2023 08:51:34 +0100 (CET)
+Date:   Mon, 4 Dec 2023 08:51:34 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [RFC v2 2/3] nvme: move ns id info to struct nvme_ns_head
+Message-ID: <20231204075134.GB29377@lst.de>
+References: <20231201092735.28592-1-dwagner@suse.de> <20231201092735.28592-3-dwagner@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWnvc6-LnXdjOQLY@alley>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231201092735.28592-3-dwagner@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Petr Mladek <pmladek@suse.com> [231201 14:36]:
-> Well, my understanding is that it solves the problem only for the newly
-> added console=DEVICENAME:0.0 format. But it does not handle the
-> existing problems with matching console names passed via earlycon=
-> and console= parameters. Am I right?
+> +	if (head) {
+>  		pr_err_ratelimited("%s: %s(0x%x) @ LBA %llu, %llu blocks, %s (sct 0x%x / sc 0x%x) %s%s\n",
+> -		       ns->disk ? ns->disk->disk_name : "?",
+> +		       head->disk ? head->disk->disk_name : "?",
+>  		       nvme_get_opcode_str(nr->cmd->common.opcode),
+>  		       nr->cmd->common.opcode,
+> -		       (unsigned long long)nvme_sect_to_lba(ns, blk_rq_pos(req)),
+> -		       (unsigned long long)blk_rq_bytes(req) >> ns->lba_shift,
+> +		       (unsigned long long)nvme_sect_to_lba(head, blk_rq_pos(req)),
 
-Yes that's where the remaining problems are.
+Please avoid the overly long line here.  Best done by removing the pointless
+unsigned long long casts, as u64 is always an unsigned long long in the
+kernel these days.
 
-> Now, the bad news. This patchset causes regressions which are
-> not acceptable. I have found two so far but there might be more.
-> 
-> I used the following kernel command line:
-> 
->    earlycon=uart8250,io,0x3f8,115200 console=ttyS0,115200 console=tty0 ignore_loglevel log_buf_len=1M
-> 
-> 
-> 1. The patchset caused that /dev/console became associated with
->    ttyS0 instead of tty0, see the "C" flag:
-> 
-> 	original # cat /proc/consoles
-> 	tty0                 -WU (EC    )    4:1
-> 	ttyS0                -W- (E  p a)    4:64
-> 
->    vs.
-> 
-> 	patched # cat /proc/consoles
-> 	ttyS0                -W- (EC p a)    4:64
-> 	tty0                 -WU (E     )    4:1
-> 
->    This is most likely caused by the different ordering of
->    __add_preferred_console() calls.
+> -			u64 slba = nvme_sect_to_lba(ns, bio->bi_iter.bi_sector);
+> -			u32 nlb = bio->bi_iter.bi_size >> ns->lba_shift;
+> +			u64 slba = nvme_sect_to_lba(head, bio->bi_iter.bi_sector);
 
-Yes I noticed that too. We can't drop the console parsing from
-console_setup() until we have some solution for flagging
-register_console() that we do have a console specified on the
-kernel command line and try_enable_default_console() should not
-be called. It seems some changes to the console_set_on_cmdline
-handling might do the trick here.
+Please avoid the overly long line here as well.
 
->    The ordering is important because it defines which console
->    will get associated with /dev/console. It is a so called
->    preferred console defined by the last console= parameter.
-> 
->    Unfortunately also the ordering of the other parameters
->    is important when a console defined by the last console=
->    parameter is not registered at all. In this case,
->    /dev/console gets associated with the first console
->    with tty binding according to the order on the command line.
-> 
->    If you think that it is weird behavior then I agree.
->    But it is a historical mess. It is how people used it
->    when the various features were added. Many changes
->    in this code caused regressions and had to be reverted.
+> +static void nvme_set_ref_tag(struct nvme_ns_head *head, struct nvme_command *cmnd,
 
-Yeah agreed it's a mess :)
+.. and here.  I'm going to stop now, please also fix up all other
+places.
 
->    See the following to get the picture:
-> 
->        + commit c6c7d83b9c9e6a8 ("Revert "console: don't
-> 	 prefer first registered if DT specifies stdout-path")
-> 
->        + commit dac8bbbae1d0ccb ("Revert "printk: fix double
-> 	 printing with earlycon"").
+>  void nvme_failover_req(struct request *req)
+>  {
+> -	struct nvme_ns *ns = req->q->queuedata;
+> +	struct nvme_ns_head *head = req->q->queuedata;
+> +	struct nvme_ctrl *ctrl = nvme_req(req)->ctrl;
+> +	struct nvme_ns *ns;
+>  	u16 status = nvme_req(req)->status & 0x7ff;
+>  	unsigned long flags;
+>  	struct bio *bio;
+>  
+> -	nvme_mpath_clear_current_path(ns);
+> +	nvme_mpath_clear_current_path(head);
+>  
+>  	/*
+>  	 * If we got back an ANA error, we know the controller is alive but not
+>  	 * ready to serve this namespace.  Kick of a re-read of the ANA
+>  	 * information page, and just try any other available path for now.
+>  	 */
+> -	if (nvme_is_ana_error(status) && ns->ctrl->ana_log_buf) {
+> +	if (nvme_is_ana_error(status) && ctrl->ana_log_buf) {
+> +		ns = nvme_find_get_ns(ctrl, head->ns_id);
 
-OK thanks.
+This looks unrelated.
 
-> 2. The serial console gets registered much later with this
->    patchset:
-> 
-> 	original # dmesg | grep printk:
-> 	[    0.000000] printk: legacy bootconsole [uart8250] enabled
-> 	[    0.000000] printk: debug: ignoring loglevel setting.
-> 	[    0.016859] printk: log_buf_len: 1048576 bytes
-> 	[    0.017324] printk: early log buf free: 259624(99%)
-> 	[    0.141859] printk: legacy console [tty0] enabled
-> 	[    0.142399] printk: legacy bootconsole [uart8250] disabled
-> 	[    0.143032] printk: legacy console [ttyS0] enabled
-> 
->    vs.
-> 
-> 	patched # dmesg | grep printk:
-> 	[    0.000000] printk: legacy bootconsole [uart8250] enabled
-> 	[    0.000000] printk: debug: ignoring loglevel setting.
-> 	[    0.018142] printk: log_buf_len: 1048576 bytes
-> 	[    0.018757] printk: early log buf free: 259624(99%)
-> 	[    0.160706] printk: legacy console [tty0] enabled
-> 	[    0.161213] printk: legacy bootconsole [uart8250] disabled
-> 	[    1.592929] printk: legacy console [ttyS0] enabled
-> 
->    This is pretty bad because it would complicate or even prevent
->    debugging of the boot stage via serial console.
+> -bool nvme_mpath_clear_current_path(struct nvme_ns *ns)
+> +bool nvme_mpath_clear_current_path(struct nvme_ns_head *head)
+>  {
+> -	struct nvme_ns_head *head = ns->head;
+>  	bool changed = false;
+>  	int node;
+>  
+> @@ -181,7 +183,7 @@ bool nvme_mpath_clear_current_path(struct nvme_ns *ns)
+>  		goto out;
+>  
+>  	for_each_node(node) {
+> -		if (ns == rcu_access_pointer(head->current_path[node])) {
+> +		if (head == rcu_access_pointer(head->current_path[node])->head) {
 
-I think I have a patch coming for 8250 isa ports for that issue.
-This issue should go away if we call add_preferred_console_match()
-from serial8250_isa_init_ports() with options for the port like
-"ttyS0", "ttyS", 0.
+and this can't work.  We need to check the actual ns for the path
+selection, as that's kindof the point.
 
->    The graphical console is not usable when the system dies. Also
->    finding the right arguments for the earlycon= parameter is
->    tricky so that people enable it only when they have to debug
->    very early messages.
-> 
-> 
-> I am going to look at the patches more closely to see if I could
-> provide some hints.
-
-Great, help with the early console handling is much appreciated.
-
-I'll post an updated patchset this week that does not touch
-console_setup() beyond saving the console options. And then we
-hopefully have something that avoids the regressions and can be
-used for further changes later on.
-
-Regards,
-
-Tony
