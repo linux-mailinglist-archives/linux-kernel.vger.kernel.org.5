@@ -2,91 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BAD804164
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3710804168
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbjLDWOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:14:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
+        id S234490AbjLDWPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:15:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjLDWOr (ORCPT
+        with ESMTP id S229847AbjLDWO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:14:47 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAE3FA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:14:54 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5c69ecda229so618002a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 14:14:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701728094; x=1702332894; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=o7NAHp/MgTm9SnzSWNXfFwt/FdMVpyaPo3ZgisLjz/I=;
-        b=WRb+46fTXqd5sRdJUueaTb020qZkOMghj3gRWtOIcX5OORMR1f759TGn9hNrPjV1fa
-         jOF6uUinAkleHsKcOr7UPmTJsnAat8VVbMua8PRWX9RjEaOIHU3OEvjP2NQBBdR/NKDy
-         Y3tF22aS/ES5WNGUohCppwFUSxUXyz7R2FD2A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701728094; x=1702332894;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o7NAHp/MgTm9SnzSWNXfFwt/FdMVpyaPo3ZgisLjz/I=;
-        b=tXRgjU5kcuKaibQS+7MZAC/5wos/5AcQecs6rmOsco/9jdu1ArdaHlJSZoSyA6lbSr
-         M+dJ6miG3dy1iuwh3eSL0yJ+25wXB+v2/+HRPGMtAH1ucBfAzXJg9FNH9sLw5pyhmuRn
-         21U3Ca/V4iPOVNM4aVGBB2T4VuNFqjHFZ86IO1JUobmLn5TFaz5Vtp8tmDgkquhqO2Zd
-         drBRJEBN/2vp9ZWRY9It//0WW1oE8oMciOWPh5KNtDMHT+Ss1Zcyn5quyrvbbMq1C676
-         uKnST2op+kmy3NbO8e3s61OQt+LFNpJ6Z+mf1GrxyTD4W4OAVNz5AfrAaM2fTsl4NpC8
-         kR2g==
-X-Gm-Message-State: AOJu0YzAETYe2VEtc4QPC9esToGLXApcs13jdDlrbJEu4JfOuvP/Q2hG
-        o1ANUzuI7xzVLtlhrinmHDcXwQ==
-X-Google-Smtp-Source: AGHT+IEkvdihAqbNhlhSGxMupjG8dnFLuD0j5JoZv99BA2GbgcxonJ/mSfL3Y7TTC0ZNcKA4UdPv0g==
-X-Received: by 2002:a05:6a21:1cb0:b0:18f:97c:9276 with SMTP id sf48-20020a056a211cb000b0018f097c9276mr1608801pzb.91.1701728093815;
-        Mon, 04 Dec 2023 14:14:53 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d5-20020a17090a8d8500b002867adefbd4sm4108188pjo.48.2023.12.04.14.14.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 14:14:52 -0800 (PST)
-Date:   Mon, 4 Dec 2023 14:14:51 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Granados <j.granados@samsung.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 08/18] stackleak: don't modify ctl_table argument
-Message-ID: <202312041414.441475830B@keescook>
-References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
- <20231204-const-sysctl-v2-8-7a5060b11447@weissschuh.net>
+        Mon, 4 Dec 2023 17:14:58 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFDA2FF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:15:03 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2146540E025E;
+        Mon,  4 Dec 2023 22:15:02 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 27-xfoZL0UxI; Mon,  4 Dec 2023 22:15:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701728100; bh=U8NuLJqSAzsrFzM8akP53EFrDTdJYEnJkE7Ri2t+fos=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JMhvRlYht6UF1qvW180ZyJAVlrs068SM27D2lSj8C22yqtaS2H90OF0hZ6Q2QcHed
+         s9Rn2u4GI2aCrulCk308ObnQi9mbTOsYwuJaYJnYdMNuaYAoMhGmH/ePiaVNP7+VDB
+         qnIOAIRI1O2u/IW96Cb23p1t0NNXXdGf2/09ZE7mrSiZnWBDj8p6bAOAA5bKO99dT2
+         PZLuAnFn0c9W6pMIdeSM81tC0BXWZ1syp6BnRl5Bry4MC1+X4Uwx6EkusJLJFjPh/4
+         riOW+I1xk1/qOY5LPghMmGJ8oLI9Lp0c1eJbJfIWe1u4MP3BlL8NcmG/bETLysVhuG
+         3/aslSbEyZ+GnoUEgLBcBSVUBGLqpccm2B/HrNDSeOS9Ff56UvtekW5/kmXXJGSTRL
+         cdFjkwteywMgBqofQFP1IerYL3RePy/MS80+TDayxhVX9NgoiqO67dhXphfd+ZicFw
+         msm6vRqEoiVe43wxTXBZ+TlWBC/G0MUBVw5vqyyhVWr+1gE1e+gOIUa9b3tVlE78XD
+         tdq5E2W6FXCpC9T0w6JcVKHM1IYIr5bLE14Z3IrY2vEmtslNIpYunA3ZkndLtM9tPN
+         UsCO4iB9KCZnYhmJG/JGBrU/I7kb9dc0qZXFcODC+bc1ByVowIrXQlN38goTx5HFv8
+         OW6F0cXrK2G8WkMewiZ92Lkc=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 481E940E01AD;
+        Mon,  4 Dec 2023 22:14:56 +0000 (UTC)
+Date:   Mon, 4 Dec 2023 23:14:55 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     X86 ML <x86@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/sev: Do the C-bit verification only on the BSP
+Message-ID: <20231204221455.GFZW5PX/goIKpeYlwT@fat_crate.local>
+References: <20231130132601.10317-1-bp@alien8.de>
+ <1726d92e-2574-40dc-8991-eed0184f957e@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231204-const-sysctl-v2-8-7a5060b11447@weissschuh.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1726d92e-2574-40dc-8991-eed0184f957e@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 08:52:21AM +0100, Thomas Weiﬂschuh wrote:
-> In a future commit the proc_handlers will change to
-> "const struct ctl_table".
-> As a preparation for that adapt the logic to work with a temporary
-> variable, similar to how it is done in other parts of the kernel.
-> 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+On Mon, Dec 04, 2023 at 10:06:42AM -0600, Tom Lendacky wrote:
+> You're ignoring RAX now on return, so you can probably just make
+> sev_verify_cbit() a void function now. You would still need to save RAX
+> because of the calling convention, though, so it doesn't make this code any
+> cleaner (other than the comment could then just say restore CR3 value).
+> You're call, I'm good either way.
 
-Looks good -- thanks for catching the table-modification cases.
+I'm thinking I should leave that change for the patch which converts
+sev_verify_cbit() to C...
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Thx for looking.
 
 -- 
-Kees Cook
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
