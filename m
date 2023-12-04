@@ -2,49 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D93803FF0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59ADA803FF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346251AbjLDUgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:36:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56126 "EHLO
+        id S235520AbjLDUgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346225AbjLDUg2 (ORCPT
+        with ESMTP id S235485AbjLDUgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:36:28 -0500
+        Mon, 4 Dec 2023 15:36:33 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0D32D5B
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:34:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACBB4C433C9;
-        Mon,  4 Dec 2023 20:34:54 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B66C2D6B
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:34:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E247C433CD;
+        Mon,  4 Dec 2023 20:34:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701722097;
-        bh=ow15m191T2FC0cIqsGJ4ULBd4rLZzTNHYOB2ZQL0wPQ=;
+        s=k20201202; t=1701722098;
+        bh=utnA4ZmxMlETtUMbXwSY4jNxpOOsInsvF7s/KcfzNhE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PY8E8Pxg5mOL9VHMgoPG+EeGcRbY2enwd0XO8kcbx48zvhh26sId77SRwIiqS0Cz8
-         HVOnxoCBR17Y8YZplK2zf3rWHzZwxGUiF0wvls6+yyocPcbCOTMhorNT5SFVngDDQo
-         pMwsnG79gkvEM3p/67xTX5Xsh02jcjF28h726fifVg+Fe9aF85BXI6GhPZnlO2GbWa
-         lUKFMLkdtnX9h4PdaQxK1oMqpF+WnDp/0dl9bSJXvySFAtYphDiXYT20M2s38ihKOD
-         eFYzwNMhhox0lV5l+rdb5YKToWI/fABXUHOQQSo4MaXdHBivXnvX3jJZjq2RT4oNMt
-         4TFgnRzokdxWg==
+        b=dAOMjfBKK4fws254udE6FcHWyUyRRcLqNhri20RAc5Q6CtXX3dmf/wHdplAZZ02S/
+         GfTRcaRH6MhqcY5xqe0rET6cZPUgLY2tPoT85ZQVMc0oYkuzTgfTag85/Jy7/yrAJ1
+         QzWqZ7hVno2t1csZQB9hwjIBUPsEQYAt8jwmeD/sKwygptESF1dqn5acJdHd3N090K
+         5ea2/7cge4/2RjvA39F6GdkyVRApIeevDTh6WCOBa9HJnvCr8AvH9Bc4D1UUJaA9Ln
+         sV7Ag1Y0lApYbm32qTZHrQTimU+G33HL49Tcr4sDOmI3BrtMfBFtQ7y8aZsQXNGr7H
+         D9HWhHKYSztSA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        airlied@gmail.com, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.6 30/32] Revert "drm/prime: Unexport helpers for fd/handle conversion"
-Date:   Mon,  4 Dec 2023 15:32:50 -0500
-Message-ID: <20231204203317.2092321-30-sashal@kernel.org>
+Cc:     Ming Lei <ming.lei@redhat.com>, Mike Snitzer <snitzer@kernel.org>,
+        David Jeffery <djeffery@redhat.com>,
+        John Pittman <jpittman@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 31/32] blk-mq: don't count completed flush data request as inflight in case of quiesce
+Date:   Mon,  4 Dec 2023 15:32:51 -0500
+Message-ID: <20231204203317.2092321-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204203317.2092321-1-sashal@kernel.org>
 References: <20231204203317.2092321-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.4
@@ -59,146 +55,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Kuehling <Felix.Kuehling@amd.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 0514f63cfff38a0dcb7ba9c5f245827edc0c5107 ]
+[ Upstream commit 0e4237ae8d159e3d28f3cd83146a46f576ffb586 ]
 
-This reverts commit 71a7974ac7019afeec105a54447ae1dc7216cbb3.
+Request queue quiesce may interrupt flush sequence, and the original request
+may have been marked as COMPLETE, but can't get finished because of
+queue quiesce.
 
-These helper functions are needed for KFD to export and import DMABufs
-the right way without duplicating the tracking of DMABufs associated with
-GEM objects while ensuring that move notifier callbacks are working as
-intended.
+This way is fine from driver viewpoint, because flush sequence is block
+layer concept, and it isn't related with driver.
 
-CC: Christian König <christian.koenig@amd.com>
-CC: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-Acked-by: Daniel Vetter <daniel@ffwll.ch>
-Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+However, driver(such as dm-rq) can call blk_mq_queue_inflight() to count &
+drain inflight requests, then the wait & drain never gets done because
+the completed & not-finished flush request is counted as inflight.
+
+Fix this issue by not counting completed flush data request as inflight in
+case of quiesce.
+
+Cc: Mike Snitzer <snitzer@kernel.org>
+Cc: David Jeffery <djeffery@redhat.com>
+Cc: John Pittman <jpittman@redhat.com>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20231201085605.577730-1-ming.lei@redhat.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_prime.c | 33 ++++++++++++++++++---------------
- include/drm/drm_prime.h     |  7 +++++++
- 2 files changed, 25 insertions(+), 15 deletions(-)
+ block/blk-mq.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-index 63b709a67471b..834a5e28abbe5 100644
---- a/drivers/gpu/drm/drm_prime.c
-+++ b/drivers/gpu/drm/drm_prime.c
-@@ -278,7 +278,7 @@ void drm_gem_dmabuf_release(struct dma_buf *dma_buf)
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 6ab7f360ff2ac..20ecd0ab616f7 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -1511,14 +1511,26 @@ void blk_mq_delay_kick_requeue_list(struct request_queue *q,
  }
- EXPORT_SYMBOL(drm_gem_dmabuf_release);
+ EXPORT_SYMBOL(blk_mq_delay_kick_requeue_list);
  
--/*
-+/**
-  * drm_gem_prime_fd_to_handle - PRIME import function for GEM drivers
-  * @dev: drm_device to import into
-  * @file_priv: drm file-private structure
-@@ -292,9 +292,9 @@ EXPORT_SYMBOL(drm_gem_dmabuf_release);
-  *
-  * Returns 0 on success or a negative error code on failure.
-  */
--static int drm_gem_prime_fd_to_handle(struct drm_device *dev,
--				      struct drm_file *file_priv, int prime_fd,
--				      uint32_t *handle)
-+int drm_gem_prime_fd_to_handle(struct drm_device *dev,
-+			       struct drm_file *file_priv, int prime_fd,
-+			       uint32_t *handle)
- {
- 	struct dma_buf *dma_buf;
- 	struct drm_gem_object *obj;
-@@ -360,6 +360,7 @@ static int drm_gem_prime_fd_to_handle(struct drm_device *dev,
- 	dma_buf_put(dma_buf);
- 	return ret;
- }
-+EXPORT_SYMBOL(drm_gem_prime_fd_to_handle);
- 
- int drm_prime_fd_to_handle_ioctl(struct drm_device *dev, void *data,
- 				 struct drm_file *file_priv)
-@@ -408,7 +409,7 @@ static struct dma_buf *export_and_register_object(struct drm_device *dev,
- 	return dmabuf;
- }
- 
--/*
-+/**
-  * drm_gem_prime_handle_to_fd - PRIME export function for GEM drivers
-  * @dev: dev to export the buffer from
-  * @file_priv: drm file-private structure
-@@ -421,10 +422,10 @@ static struct dma_buf *export_and_register_object(struct drm_device *dev,
-  * The actual exporting from GEM object to a dma-buf is done through the
-  * &drm_gem_object_funcs.export callback.
-  */
--static int drm_gem_prime_handle_to_fd(struct drm_device *dev,
--				      struct drm_file *file_priv, uint32_t handle,
--				      uint32_t flags,
--				      int *prime_fd)
-+int drm_gem_prime_handle_to_fd(struct drm_device *dev,
-+			       struct drm_file *file_priv, uint32_t handle,
-+			       uint32_t flags,
-+			       int *prime_fd)
- {
- 	struct drm_gem_object *obj;
- 	int ret = 0;
-@@ -506,6 +507,7 @@ static int drm_gem_prime_handle_to_fd(struct drm_device *dev,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL(drm_gem_prime_handle_to_fd);
- 
- int drm_prime_handle_to_fd_ioctl(struct drm_device *dev, void *data,
- 				 struct drm_file *file_priv)
-@@ -864,9 +866,9 @@ EXPORT_SYMBOL(drm_prime_get_contiguous_size);
-  * @obj: GEM object to export
-  * @flags: flags like DRM_CLOEXEC and DRM_RDWR
-  *
-- * This is the implementation of the &drm_gem_object_funcs.export functions
-- * for GEM drivers using the PRIME helpers. It is used as the default for
-- * drivers that do not set their own.
-+ * This is the implementation of the &drm_gem_object_funcs.export functions for GEM drivers
-+ * using the PRIME helpers. It is used as the default in
-+ * drm_gem_prime_handle_to_fd().
-  */
- struct dma_buf *drm_gem_prime_export(struct drm_gem_object *obj,
- 				     int flags)
-@@ -962,9 +964,10 @@ EXPORT_SYMBOL(drm_gem_prime_import_dev);
-  * @dev: drm_device to import into
-  * @dma_buf: dma-buf object to import
-  *
-- * This is the implementation of the gem_prime_import functions for GEM
-- * drivers using the PRIME helpers. It is the default for drivers that do
-- * not set their own &drm_driver.gem_prime_import.
-+ * This is the implementation of the gem_prime_import functions for GEM drivers
-+ * using the PRIME helpers. Drivers can use this as their
-+ * &drm_driver.gem_prime_import implementation. It is used as the default
-+ * implementation in drm_gem_prime_fd_to_handle().
-  *
-  * Drivers must arrange to call drm_prime_gem_destroy() from their
-  * &drm_gem_object_funcs.free hook when using this function.
-diff --git a/include/drm/drm_prime.h b/include/drm/drm_prime.h
-index a7abf9f3e6972..2a1d01e5b56b8 100644
---- a/include/drm/drm_prime.h
-+++ b/include/drm/drm_prime.h
-@@ -60,12 +60,19 @@ enum dma_data_direction;
- 
- struct drm_device;
- struct drm_gem_object;
-+struct drm_file;
- 
- /* core prime functions */
- struct dma_buf *drm_gem_dmabuf_export(struct drm_device *dev,
- 				      struct dma_buf_export_info *exp_info);
- void drm_gem_dmabuf_release(struct dma_buf *dma_buf);
- 
-+int drm_gem_prime_fd_to_handle(struct drm_device *dev,
-+			       struct drm_file *file_priv, int prime_fd, uint32_t *handle);
-+int drm_gem_prime_handle_to_fd(struct drm_device *dev,
-+			       struct drm_file *file_priv, uint32_t handle, uint32_t flags,
-+			       int *prime_fd);
++static bool blk_is_flush_data_rq(struct request *rq)
++{
++	return (rq->rq_flags & RQF_FLUSH_SEQ) && !is_flush_rq(rq);
++}
 +
- /* helper functions for exporting */
- int drm_gem_map_attach(struct dma_buf *dma_buf,
- 		       struct dma_buf_attachment *attach);
+ static bool blk_mq_rq_inflight(struct request *rq, void *priv)
+ {
+ 	/*
+ 	 * If we find a request that isn't idle we know the queue is busy
+ 	 * as it's checked in the iter.
+ 	 * Return false to stop the iteration.
++	 *
++	 * In case of queue quiesce, if one flush data request is completed,
++	 * don't count it as inflight given the flush sequence is suspended,
++	 * and the original flush data request is invisible to driver, just
++	 * like other pending requests because of quiesce
+ 	 */
+-	if (blk_mq_request_started(rq)) {
++	if (blk_mq_request_started(rq) && !(blk_queue_quiesced(rq->q) &&
++				blk_is_flush_data_rq(rq) &&
++				blk_mq_request_completed(rq))) {
+ 		bool *busy = priv;
+ 
+ 		*busy = true;
 -- 
 2.42.0
 
