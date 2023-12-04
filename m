@@ -2,59 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 735BE803AF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0C8803AFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbjLDQ5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:57:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        id S231172AbjLDQ6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:58:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjLDQ5Q (ORCPT
+        with ESMTP id S229561AbjLDQ6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:57:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D431B6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:57:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4CF0C433C7;
-        Mon,  4 Dec 2023 16:57:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701709042;
-        bh=JA7nhAup9DhpJ8fK0a5UXnLHxxlgRw9Qra34O3M0DLk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IywsxXmNxf7EfN8QV1/tjNFauk1pAJS2Fvopu37F53svBUnGN1aLpLbTI4n25GtAk
-         o5rJ3xFaYQR1WyIJ5oMX2r0dt86WEbsXw1epmbKVrpeCF26v2i0S3RdcEAWDF60CnU
-         BUmC9C/TRCS1suPXC6Wf5dawBknoTPYYrYmy8oCg/AuVG2nD0Pt4FVw8nTq11dtXCk
-         1vizr32+OhUsxpJCgBlXZAJV5mVwYdKTV8RKvVlrmt+ZoE83qPuMJHywUrO1y2q69L
-         p74R/U0zhaO7yCLtDXc1GZII6lvKf3cn3vXqBcpBl2+cv5016NkayySOv3wsQshiTm
-         J2s9ImCusIjew==
-Date:   Mon, 4 Dec 2023 16:57:12 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc:     David Lechner <dlechner@baylibre.com>, nuno.sa@analog.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH 10/12] iio: adc: ad9467: convert to backend framework
-Message-ID: <20231204165712.73a8e7dd@jic23-huawei>
-In-Reply-To: <f0a65ba32a6e988ec5f99a3a02ab5414f28ff106.camel@gmail.com>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-        <20231121-dev-iio-backend-v1-10-6a3d542eba35@analog.com>
-        <CAMknhBFbLju8UQJ7Uz85kHKrbK4mzt=wTRdnp40+PwWCJa5dsA@mail.gmail.com>
-        <026fa80d29054750937cd077b7f4f689de4e18f2.camel@gmail.com>
-        <20231204154810.3f2f3f83@jic23-huawei>
-        <f0a65ba32a6e988ec5f99a3a02ab5414f28ff106.camel@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 4 Dec 2023 11:58:04 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8576CB9
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:58:10 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D5CE11F894;
+        Mon,  4 Dec 2023 16:58:08 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC0D01398A;
+        Mon,  4 Dec 2023 16:58:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id WmKLLSAFbmU2eAAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Mon, 04 Dec 2023 16:58:08 +0000
+Message-ID: <7cd33b23-64f5-a736-ea69-b29e40d42e78@suse.cz>
+Date:   Mon, 4 Dec 2023 17:58:08 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v5 6/9] slub: Delay freezing of partial slabs
+Content-Language: en-US
+To:     Chengming Zhou <chengming.zhou@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        roman.gushchin@linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20231102032330.1036151-1-chengming.zhou@linux.dev>
+ <20231102032330.1036151-7-chengming.zhou@linux.dev>
+ <CAB=+i9TK-_WcmQLVV5BTvngfTfTZra0Xi-XZ2m8JGbamwWDuoA@mail.gmail.com>
+ <98763097-d05e-40cd-afe0-4df65083d104@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <98763097-d05e-40cd-afe0-4df65083d104@linux.dev>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [5.39 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         BAYES_HAM(-3.00)[100.00%];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_SEVEN(0.00)[11];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+         FREEMAIL_TO(0.00)[linux.dev,gmail.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 5.39
+X-Rspamd-Queue-Id: D5CE11F894
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,183 +96,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Dec 2023 17:23:12 +0100
-Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+On 12/3/23 11:15, Chengming Zhou wrote:
+> On 2023/12/3 14:53, Hyeonggon Yoo wrote:
+>> On Thu, Nov 2, 2023 at 12:25 PM <chengming.zhou@linux.dev> wrote:
+>>>
+>>> From: Chengming Zhou <zhouchengming@bytedance.com>
+>>>
+>>> Now we will freeze slabs when moving them out of node partial list to
+>>> cpu partial list, this method needs two cmpxchg_double operations:
+>>>
+>>> 1. freeze slab (acquire_slab()) under the node list_lock
+>>> 2. get_freelist() when pick used in ___slab_alloc()
+>>>
+>>> Actually we don't need to freeze when moving slabs out of node partial
+>>> list, we can delay freezing to when use slab freelist in ___slab_alloc(),
+>>> so we can save one cmpxchg_double().
+>>>
+>>> And there are other good points:
+>>>  - The moving of slabs between node partial list and cpu partial list
+>>>    becomes simpler, since we don't need to freeze or unfreeze at all.
+>>>
+>>>  - The node list_lock contention would be less, since we don't need to
+>>>    freeze any slab under the node list_lock.
+>>>
+>>> We can achieve this because there is no concurrent path would manipulate
+>>> the partial slab list except the __slab_free() path, which is now
+>>> serialized by slab_test_node_partial() under the list_lock.
+>>>
+>>> Since the slab returned by get_partial() interfaces is not frozen anymore
+>>> and no freelist is returned in the partial_context, so we need to use the
+>>> introduced freeze_slab() to freeze it and get its freelist.
+>>>
+>>> Similarly, the slabs on the CPU partial list are not frozen anymore,
+>>> we need to freeze_slab() on it before use.
+>>>
+>>> We can now delete acquire_slab() as it became unused.
+>>>
+>>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>>> Tested-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>>> ---
+>>>  mm/slub.c | 113 +++++++++++-------------------------------------------
+>>>  1 file changed, 23 insertions(+), 90 deletions(-)
+>>>
+>>> diff --git a/mm/slub.c b/mm/slub.c
+>>> index edf567971679..bcb5b2c4e213 100644
+>>> --- a/mm/slub.c
+>>> +++ b/mm/slub.c
+>>> @@ -2234,51 +2234,6 @@ static void *alloc_single_from_new_slab(struct kmem_cache *s,
+>>>         return object;
+>>>  }
+>>>
+>>> -/*
+>>> - * Remove slab from the partial list, freeze it and
+>>> - * return the pointer to the freelist.
+>>> - *
+>>> - * Returns a list of objects or NULL if it fails.
+>>> - */
+>>> -static inline void *acquire_slab(struct kmem_cache *s,
+>>> -               struct kmem_cache_node *n, struct slab *slab,
+>>> -               int mode)
+>> 
+>> Nit: alloc_single_from_partial()'s comment still refers to acquire_slab().
+>> 
+> 
+> Ah, right! It should be changed to remove_partial().
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 437485a2408d..623c17a4cdd6 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2463,7 +2463,7 @@ static inline void remove_partial(struct kmem_cache_node *n,
+>  }
+> 
+>  /*
+> - * Called only for kmem_cache_debug() caches instead of acquire_slab(), with a
+> + * Called only for kmem_cache_debug() caches instead of remove_partial(), with a
+>   * slab from the n->partial list. Remove only a single object from the slab, do
+>   * the alloc_debug_processing() checks and leave the slab on the list, or move
+>   * it to full list if it was the last free object.
+> 
+> Hi Vlastimil, could you please help to fold it?
 
-> On Mon, 2023-12-04 at 15:48 +0000, Jonathan Cameron wrote:
-> > On Fri, 01 Dec 2023 10:08:27 +0100
-> > Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
-> >  =20
-> > > On Thu, 2023-11-30 at 17:30 -0600, David Lechner wrote: =20
-> > > > On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
-> > > > <devnull+nuno.sa.analog.com@kernel.org> wrote:=C2=A0  =20
-> > > > >=20
-> > > > > From: Nuno Sa <nuno.sa@analog.com>
-> > > > >=20
-> > > > > Convert the driver to use the new IIO backend framework. The devi=
-ce
-> > > > > functionality is expected to be the same (meaning no added or rem=
-oved
-> > > > > features).=C2=A0  =20
-> > > >=20
-> > > > Missing a devicetree bindings patch before this one?
-> > > > =C2=A0  =20
-> > > > >=20
-> > > > > Also note this patch effectively breaks ABI and that's needed so =
-we can
-> > > > > properly support this device and add needed features making use o=
-f the
-> > > > > new IIO framework.=C2=A0  =20
-> > > >=20
-> > > > Can you be more specific about what is actually breaking?
-> > > > =C2=A0  =20
-> > > > >=20
-> > > > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> > > > > ---
-> > > > > =C2=A0drivers/iio/adc/Kconfig=C2=A0 |=C2=A0=C2=A0 2 +-
-> > > > > =C2=A0drivers/iio/adc/ad9467.c | 256 ++++++++++++++++++++++++++++=
-+----------------
-> > > > > --
-> > > > > =C2=A02 files changed, 157 insertions(+), 101 deletions(-)
-> > > > >=20
-> > > > > diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-> > > > > index 1e2b7a2c67c6..af56df63beff 100644
-> > > > > --- a/drivers/iio/adc/Kconfig
-> > > > > +++ b/drivers/iio/adc/Kconfig
-> > > > > @@ -275,7 +275,7 @@ config AD799X
-> > > > > =C2=A0config AD9467
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tristate "Analog Devic=
-es AD9467 High Speed ADC driver"
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 depends on SPI
-> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 depends on ADI_AXI_ADC
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select IIO_BACKEND
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 help
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Say yes he=
-re to build support for Analog Devices:
-> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * AD9467 1=
-6-Bit, 200 MSPS/250 MSPS Analog-to-Digital Converter
-> > > > > diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
-> > > > > index 5db5690ccee8..8b0402e73ace 100644
-> > > > > --- a/drivers/iio/adc/ad9467.c
-> > > > > +++ b/drivers/iio/adc/ad9467.c=C2=A0  =20
-> > > >=20
-> > > > <snip>
-> > > > =C2=A0  =20
-> > > > > +static int ad9467_buffer_get(struct iio_dev *indio_dev)=C2=A0  =
-=20
-> > > >=20
-> > > > perhaps a more descriptive name: ad9467_buffer_setup_optional?
-> > > > =C2=A0  =20
-> > >=20
-> > > Hmm, no strong feeling. So yeah, can do as you suggest. Even though, =
-now that I'm
-> > > thinking, I'm not so sure if this is just some legacy thing we had in=
- ADI tree. I
-> > > wonder if it actually makes sense for a device like with no buffering=
- support?!
-> > > =C2=A0 =20
-> > > > > +{
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct device *dev =3D indi=
-o_dev->dev.parent;
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 const char *dma_name;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!device_property_presen=
-t(dev, "dmas"))
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 return 0;
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (device_property_read_st=
-ring(dev, "dma-names", &dma_name))
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 dma_name =3D "rx";
-> > > > > +
-> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return devm_iio_dmaengine_b=
-uffer_setup(dev, indio_dev, dma_name);=C2=A0  =20
-> > > >=20
-> > > > The device tree bindings for "adi,ad9467" don't include dma propert=
-ies
-> > > > (nor should they). Perhaps the DMA lookup should be a callback to t=
-he
-> > > > backend? Or something similar to the SPI Engine offload that we are
-> > > > working on?
-> > > > =C2=A0  =20
-> > >=20
-> > > Oh yes, I need to update the bindings. In the link I sent you we can =
-see my
-> > > thoughts
-> > > on this. In theory, hardwarewise, it would actually make sense for th=
-e DMA to be
-> > > on
-> > > the backend device because that's where the connection is in HW. Howe=
-ver, since
-> > > we
-> > > want to have the IIO interface in the frontend, it would be hard to d=
-o that
-> > > without
-> > > hacking devm_iio_dmaengine_buffer_setup().=C2=A0I mean, lifetime wise=
- it would be far
-> > > from
-> > > wise to have the DMA buffer associated to a completely different devi=
-ce than the
-> > > IIO
-> > > parent device. I mean, one way could just be export iio_dmaengine_buf=
-fer_free()
-> > > and
-> > > iio_dmaengine_buffer_alloc() so we can actually control the lifetime =
-of the
-> > > buffer
-> > > from the frontend device. If Jonathan is fine with this, I'm on board=
- for it.... =20
-> >=20
-> > It is going to be fiddly but I'd kind of expect the front end to be usi=
-ng a more
-> > abstracted interface to tell the backend to start grabbing data.=C2=A0 =
-Maybe that ends
-> > up being so slim it's just these interfaces and it's not sensible to wr=
-ap it
-> > though.
-> >  =20
->=20
-> Likely I'm missing your point but the discussion here is where the DMA bu=
-ffer should
-> be allocated. In theory, in the backend (at least on ADI usecases - it's =
-the proper
-> representation of the HW) but as we have the iio device in the frontend, =
-it's more
-> appropriate to have the buffer there. Or at least to have a way to contro=
-l the buffer
-> lifetime from there...
-
-My instinct was put it in the backened and proxy / interfaces as necessary =
-but (based
-on my vague recollection of how this works) at times these DMA buffers are =
-handed off
-to userspace which is a front end problem rather than the hardware.  So I g=
-uess it's
-a question of who logically creates them?  Then as  you say provide the con=
-trols for
-the other part to mess with their lifetimes or at least ensure the stick ar=
-ound whilst
-it expects them to.
-
->=20
-> On the our usecases, it's not like we tell the backend to grab data, we j=
-ust use the
-> normal .update_scan_mode() to enable/disable the channels in the backend =
-so when we
-> enable the buffer (and the frontend starts receiving and sending data via=
- the serial
-> interface) the data paths are enabaled/disabled accordingly. Bah, yeah, i=
-n a way is
-> another wording for "grab" or "grab not" :)
-
-Yup. It's not as easily separated as simple always on analog only front end=
-s. Someone
-drives the clock ultimately and that could be either end in theory at least.
-
-What fun.
-
-J
->=20
-> - Nuno S=C3=A1
+Done, thanks.
 
