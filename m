@@ -2,145 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59192802C30
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E9E802C32
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbjLDHin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 02:38:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38244 "EHLO
+        id S234657AbjLDHjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 02:39:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjLDHil (ORCPT
+        with ESMTP id S229526AbjLDHjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 02:38:41 -0500
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C335FF2;
-        Sun,  3 Dec 2023 23:38:47 -0800 (PST)
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 68013520362;
-        Mon,  4 Dec 2023 08:38:46 +0100 (CET)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 4 Dec
- 2023 08:38:46 +0100
-From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
-To:     <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
-        <corbet@lwn.net>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <hgajjar@de.adit-jv.com>, <tj@kernel.org>,
-        <paulmck@kernel.org>, <Martin.Mueller5@de.bosch.com>
-Subject: [PATCH v4] usb: hub: Add quirk to decrease IN-ep poll interval for Microchip USB491x hub
-Date:   Mon, 4 Dec 2023 08:38:34 +0100
-Message-ID: <20231204073834.112509-1-hgajjar@de.adit-jv.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 4 Dec 2023 02:39:44 -0500
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0542B9;
+        Sun,  3 Dec 2023 23:39:49 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4AD80FF80D;
+        Mon,  4 Dec 2023 07:39:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701675588;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cRUKEOLaBNW54hC/SjZRZq9kvMNZbNawFCdC45IWWRs=;
+        b=cu9dftXhymvoiaDBauOgIu/E3amisoupSkHWRIOpGs+5BBbSsbJko/wSSTq1Jr4GaQ7QKs
+        qoRt+tvo+CAB3GkS+gJKKbNeMxlrtPAaDSVZuueadMiAvKrhBv95gktNzL8k3R8ghwpQFq
+        8vNy9m/sewGgTDB9PvLxE8zv1nhjAnbRuyRD2ozH9c3v6zmRoaYTenVhOhHCbIvOT/Ek72
+        K26oGwif3UOsi3FBHO/0jcPGlISS/62f+DR26+qbH3zo2fSpxZ0fR5Vih2l7mFoGKUkC7M
+        JNG1Eln2WAlj6HHdWkUPwU6jx7VDbynjOJcHYuCK6rwnTwTvJoC6yAiaQgYtCg==
+Date:   Mon, 4 Dec 2023 08:39:46 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     dregan <dregan@broadcom.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] mtd: rawnand: Add deassert_wp comment
+Message-ID: <20231204083939.34f989a9@xps-13>
+In-Reply-To: <20231201212446.189491-1-dregan@broadcom.com>
+References: <20231201212446.189491-1-dregan@broadcom.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.72.93.77]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a potential delay in notifying Linux USB drivers of downstream
-USB bus activity when connecting a high-speed or superSpeed device via the
-Microchip USB491x hub. This delay is due to the fixed bInterval value of
-12 in the silicon of the Microchip USB491x hub.
+Hi David,
 
-Microchip requested to ignore the device descriptor and decrease that
-value to 9 as it was too late to modify that in silicon.
+dregan@broadcom.com wrote on Fri,  1 Dec 2023 13:24:46 -0800:
 
-This patch speeds up the USB enummeration process that helps to pass
-Apple Carplay certifications and improve the User experience when utilizing
-the USB device via Microchip Multihost USB491x Hub.
+> From: David Regan <dregan@broadcom.com>
+>=20
+> Add deassert_wp description comment
+>=20
+> Signed-off-by: David Regan <dregan@broadcom.com>
 
-A new hub quirk HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL speeds up
-the notification process for Microchip USB491x hub by limiting
-the maximum bInterval value to 9.
+Thanks, I will probably squash it with the original commit.
 
-Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
----
-changes since version 1:
-	- Move implementation from config.c and quirk.c to hub.c as this is hub
-	  specific changes.
-	- Improve commit message.
-	- Link to v1 - https://lore.kernel.org/all/20231123081948.58776-1-hgajjar@de.adit-jv.com/
-
-changes since version 2:
-    - Call usb_set_interface after updating the bInterval to Tell the HCD about modification
-	- Link to v2 - https://lore.kernel.org/all/20231130084855.119937-1-hgajjar@de.adit-jv.com/
-
-changes since version 3:
-    - Change HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL value from 0x08 to 0x04
-	- Link to v3 - https://lore.kernel.org/all/20231201144705.97385-1-hgajjar@de.adit-jv.com/
----
- drivers/usb/core/hub.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index b4584a0cd484..365ba65fc281 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -47,12 +47,18 @@
- #define USB_VENDOR_TEXAS_INSTRUMENTS		0x0451
- #define USB_PRODUCT_TUSB8041_USB3		0x8140
- #define USB_PRODUCT_TUSB8041_USB2		0x8142
-+#define USB_VENDOR_MICROCHIP			0x0424
-+#define USB_PRODUCT_USB4913			0x4913
-+#define USB_PRODUCT_USB4914			0x4914
-+#define USB_PRODUCT_USB4915			0x4915
- #define HUB_QUIRK_CHECK_PORT_AUTOSUSPEND	0x01
- #define HUB_QUIRK_DISABLE_AUTOSUSPEND		0x02
-+#define HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL	0x04
- 
- #define USB_TP_TRANSMISSION_DELAY	40	/* ns */
- #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
- #define USB_PING_RESPONSE_TIME		400	/* ns */
-+#define USB_REDUCE_FRAME_INTR_BINTERVAL	9
- 
- /* Protect struct usb_device->state and ->children members
-  * Note: Both are also protected by ->dev.sem, except that ->state can
-@@ -1927,6 +1933,14 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
- 		usb_autopm_get_interface_no_resume(intf);
- 	}
- 
-+	if ((id->driver_info & HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL) &&
-+	    desc->endpoint[0].desc.bInterval > USB_REDUCE_FRAME_INTR_BINTERVAL) {
-+		desc->endpoint[0].desc.bInterval =
-+			USB_REDUCE_FRAME_INTR_BINTERVAL;
-+		/* Tell the HCD about the interrupt ep's new bInterval */
-+		usb_set_interface(hdev, 0, 0);
-+	}
-+
- 	if (hub_configure(hub, &desc->endpoint[0].desc) >= 0) {
- 		onboard_hub_create_pdevs(hdev, &hub->onboard_hub_devs);
- 
-@@ -5918,6 +5932,21 @@ static const struct usb_device_id hub_id_table[] = {
-       .idVendor = USB_VENDOR_TEXAS_INSTRUMENTS,
-       .idProduct = USB_PRODUCT_TUSB8041_USB3,
-       .driver_info = HUB_QUIRK_DISABLE_AUTOSUSPEND},
-+	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
-+			| USB_DEVICE_ID_MATCH_PRODUCT,
-+	  .idVendor = USB_VENDOR_MICROCHIP,
-+	  .idProduct = USB_PRODUCT_USB4913,
-+	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
-+	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
-+			| USB_DEVICE_ID_MATCH_PRODUCT,
-+	  .idVendor = USB_VENDOR_MICROCHIP,
-+	  .idProduct = USB_PRODUCT_USB4914,
-+	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
-+	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
-+			| USB_DEVICE_ID_MATCH_PRODUCT,
-+	  .idVendor = USB_VENDOR_MICROCHIP,
-+	  .idProduct = USB_PRODUCT_USB4915,
-+	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
-     { .match_flags = USB_DEVICE_ID_MATCH_DEV_CLASS,
-       .bDeviceClass = USB_CLASS_HUB},
-     { .match_flags = USB_DEVICE_ID_MATCH_INT_CLASS,
--- 
-2.17.1
-
+Miqu=C3=A8l
