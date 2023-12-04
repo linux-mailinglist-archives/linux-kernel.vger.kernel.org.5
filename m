@@ -2,235 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F07803967
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:02:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC01803975
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344362AbjLDQCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:02:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        id S1344474AbjLDQCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343821AbjLDQCW (ORCPT
+        with ESMTP id S1344461AbjLDQC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:02:22 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D96A4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:02:27 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50bed6c1716so4331e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:02:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701705745; x=1702310545; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WQ2P2DIXwhgKhhwYGyDwt80vx5OoeNcQyaY+/r8aj90=;
-        b=4NaqWmWD8EDEweOrsP9IvOC5oRnT/RymNgEBkb5ubQq4RIgVh/i3lX5i5nHBZvt7lU
-         Tsj44RpQJzSt/mwL/vF7EfHgL8/7qJxL5GSmtpMX3hdWTPPRALPU0z/duAL+KkNFeRj7
-         LP9jJgXofMnzTpsFK16fB7UCOWUhHW+w1IGUkMIXwqNWio6eJmFI4tM9ibVJJ5z7fSwq
-         X6lbvncRdIuraUxeU/DO6n638K9H2nVMQrUIQhVT8Y1mACdiJaqdrNmvdAlFmcUnetPF
-         rnGDWrI7iDkottbqBtIVrARndWvnO8q25scj61+7Ix1Gfzg6MockqbXvUj3CVaa+rWwo
-         LFnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701705745; x=1702310545;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WQ2P2DIXwhgKhhwYGyDwt80vx5OoeNcQyaY+/r8aj90=;
-        b=Rg7iMyop3LflGc+obtMZQizeZFAJm5arn4sCZtJ9Tf0MLN+pd4ZKawKh5c9vnAgk1V
-         OtvDEv2fzqILko4JSDNFN0TAzsuqvD3Rm5ZEar8c05hj9lH63/0wWRnqEw4sAM9ZcshH
-         BpoVNMoett0P3r89qfxKi/6kpE4zvMrXQsLQjSHW0z9LNmDuA/P8KIkyKeZlTDNUP8cg
-         yYMQOqaQNAg7+AIxEtePT1pqfBonQqXIciQFSqFArI5Wm6gWW7Xrf/ZQgop4Cjb7nNdQ
-         Mbas22a49WY4Tj/dRB+84yjWpbGKHfPnNeQpEoTSOVX5eKNddAK9ed0ftLg4pN9XWYMq
-         NaOQ==
-X-Gm-Message-State: AOJu0Yws5DS2oQhGoMS79ZiZuJUwMOXXSZHclhzMcw8NLy2aSIuGJcw4
-        az6v/5P+23tiMDlfF+gEOgn9+3z2JkBAHtvscToMgg==
-X-Google-Smtp-Source: AGHT+IHj4uLu+WSvDvzSwDCLdQQVmw+l0i3kspCFy3QiZ95TI6mhSs5DLPr1Y974T+FrmmFSgDhQ7yinZbjI07pZc4Q=
-X-Received: by 2002:a05:6512:b9f:b0:50b:cdd5:b54a with SMTP id
- b31-20020a0565120b9f00b0050bcdd5b54amr264842lfv.3.1701705745406; Mon, 04 Dec
- 2023 08:02:25 -0800 (PST)
+        Mon, 4 Dec 2023 11:02:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8784E95;
+        Mon,  4 Dec 2023 08:02:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701705754; x=1733241754;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=XNcK+nowG13Y865Fjff3FDTvFJmZG2WRC888K2sx/o0=;
+  b=Fku5W+sMy8iBM7D/n3hL378vSuVSR9c8WlUhlqIiZNy3LaGTV7fvhcOV
+   3LolxtdbOJYDqNYEAUrtXRH85kHMnano9qphTB3bWbTkqtGIH1VqeD6De
+   928YwY0NI5+YLVco2aOh/ndKJRxJ57f60VH06ABXfB2xB1LBIGWIb1ptS
+   my7LPHYO30rIvaKRNCjGfGxRC5NQ697/vMkhpWng1fZ/9OlgP6QusW1tJ
+   79dfGAL+MKGY78perCo99yrbJz2SIO0jsw7EPAmyH/6S/zu/1aAlgQ5ly
+   TTYWRGuU941147mBZATQvvU7teMm13qy4JkJF9wzohVuX17ULC4xKWJIL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="631786"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="631786"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 08:02:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="861419788"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="861419788"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 08:02:24 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1rABOl-00000001nOJ-2TZj;
+        Mon, 04 Dec 2023 18:02:19 +0200
+Date:   Mon, 4 Dec 2023 18:02:19 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: [PATCH v4 12/23] pinctrl: mediatek: Make use of
+ PINCTRL_GROUP_DESC()
+Message-ID: <ZW34C47rt80Ng8SA@smile.fi.intel.com>
+References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
+ <20231129161459.1002323-13-andriy.shevchenko@linux.intel.com>
+ <CGME20231204114039eucas1p29c6f8a162191e58ff658d3a1c44429bf@eucas1p2.samsung.com>
+ <9e4e65de-7234-4234-8091-796277a1f1c5@samsung.com>
+ <ZW3PrSQWyZvvhN66@smile.fi.intel.com>
+ <CAMuHMdU-E7jemjAS0EunWFPq1LfF9vcNE+50ah4WH9oD1TXYew@mail.gmail.com>
+ <ZW3U5-LBqWiyxB6-@smile.fi.intel.com>
+ <CAMuHMdVz=dLaBt-Td0UdOOs79ju7UfX_2vUcy8Kdeo9aSP+edw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231121000420.368075-1-irogers@google.com>
-In-Reply-To: <20231121000420.368075-1-irogers@google.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 4 Dec 2023 08:02:13 -0800
-Message-ID: <CAP-5=fUTuBjF8HJZAvXHkM4FjL05gjDcevKUruEXJHYRUhXygA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] perf evsel: Fallback to task-clock when not system wide
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdVz=dLaBt-Td0UdOOs79ju7UfX_2vUcy8Kdeo9aSP+edw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 4:04=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
->
-> When the cycles event isn't available evsel will fallback to the
-> cpu-clock software event. task-clock is similar to cpu-clock but only
-> runs when the process is running. Falling back to cpu-clock when not
-> system wide leads to confusion, by falling back to task-clock it is
-> hoped the confusion is less.
->
-> Pass the target to determine if task-clock is more appropriate. Update
-> a nearby comment and debug string for the change.
->
-> ---
-> v2. Use target__has_cpu as suggested by Namhyung.
-> https://lpc.events/event/17/contributions/1556/
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
+On Mon, Dec 04, 2023 at 02:39:37PM +0100, Geert Uytterhoeven wrote:
+> On Mon, Dec 4, 2023 at 2:32 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Dec 04, 2023 at 02:19:10PM +0100, Geert Uytterhoeven wrote:
+> > > On Mon, Dec 4, 2023 at 2:10 PM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > On Mon, Dec 04, 2023 at 12:40:38PM +0100, Marek Szyprowski wrote:
+> > > > > On 29.11.2023 17:06, Andy Shevchenko wrote:
+> > > > > > Make use of PINCTRL_GROUP_DESC() instead of open coding it.
+> > > >
+> > > > > PINCTRL_GROUP_DESC() macro from drivers/pinctrl/core.h contains a cast
+> > > > > to (struct group_desc), what breaks users of the above macros.
+> > > >
+> > > > There is no cast (*).
+> > > > Thanks for report, I will check.
+> > > >
+> > > > But this was v4 of the series and LKP actually sent a positive feedback.
+> > > > Besides that I have tested this locally with modules enabled.
+> > > >
+> > > > *) It's a compound literal, _not_ a cast.
+> > > >    Taking above into consideration I'm wondering what compilers
+> > > >    are in use?
+> > >
+> > > kisskb reported the following m68k failures to me:
+> > >     linux-next/m68k-allmodconfig/m68k-gcc8
+> > >     linux-next/m68k-allmodconfig/m68k-gcc11
+> > >     linux-next/m68k-allmodconfig/m68k-gcc12
+> > >
+> > > However, according to [1], linux-next/m68k-allmodconfig/m68k-gcc13
+> > > did succeed, so I guess you are using gcc13?
+> >
+> > Yes, I compiled with these:
+> >
+> > $ gcc --version
+> > gcc (Debian 13.2.0-5) 13.2.0
+> 
+> Time to install and try an older version ;-)
 
-Ping.
+Yeah, compound literals seems the often-to-break topic (as per GCC bugzilla).
+Tried with GCC 8 for ARM64 and indeed it doesn't build it well.
 
-Thanks,
-Ian
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> ---
->  tools/perf/builtin-record.c |  2 +-
->  tools/perf/builtin-stat.c   |  2 +-
->  tools/perf/builtin-top.c    |  2 +-
->  tools/perf/util/evsel.c     | 18 ++++++++++--------
->  tools/perf/util/evsel.h     |  3 ++-
->  5 files changed, 15 insertions(+), 12 deletions(-)
->
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 8ec818568662..d8bb59511fdd 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1350,7 +1350,7 @@ static int record__open(struct record *rec)
->         evlist__for_each_entry(evlist, pos) {
->  try_again:
->                 if (evsel__open(pos, pos->core.cpus, pos->core.threads) <=
- 0) {
-> -                       if (evsel__fallback(pos, errno, msg, sizeof(msg))=
-) {
-> +                       if (evsel__fallback(pos, &opts->target, errno, ms=
-g, sizeof(msg))) {
->                                 if (verbose > 0)
->                                         ui__warning("%s\n", msg);
->                                 goto try_again;
-> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-> index a3af805a1d57..d8e5d6f7a87a 100644
-> --- a/tools/perf/builtin-stat.c
-> +++ b/tools/perf/builtin-stat.c
-> @@ -653,7 +653,7 @@ static enum counter_recovery stat_handle_error(struct=
- evsel *counter)
->                 if ((evsel__leader(counter) !=3D counter) ||
->                     !(counter->core.leader->nr_members > 1))
->                         return COUNTER_SKIP;
-> -       } else if (evsel__fallback(counter, errno, msg, sizeof(msg))) {
-> +       } else if (evsel__fallback(counter, &target, errno, msg, sizeof(m=
-sg))) {
->                 if (verbose > 0)
->                         ui__warning("%s\n", msg);
->                 return COUNTER_RETRY;
-> diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-> index ea8c7eca5eee..1e42bd1c7d5a 100644
-> --- a/tools/perf/builtin-top.c
-> +++ b/tools/perf/builtin-top.c
-> @@ -1044,7 +1044,7 @@ static int perf_top__start_counters(struct perf_top=
- *top)
->                             perf_top_overwrite_fallback(top, counter))
->                                 goto try_again;
->
-> -                       if (evsel__fallback(counter, errno, msg, sizeof(m=
-sg))) {
-> +                       if (evsel__fallback(counter, &opts->target, errno=
-, msg, sizeof(msg))) {
->                                 if (verbose > 0)
->                                         ui__warning("%s\n", msg);
->                                 goto try_again;
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index a5da74e3a517..532f34d9fcb5 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -2853,7 +2853,8 @@ u64 evsel__intval_common(struct evsel *evsel, struc=
-t perf_sample *sample, const
->
->  #endif
->
-> -bool evsel__fallback(struct evsel *evsel, int err, char *msg, size_t msg=
-size)
-> +bool evsel__fallback(struct evsel *evsel, struct target *target, int err=
-,
-> +                    char *msg, size_t msgsize)
->  {
->         int paranoid;
->
-> @@ -2861,18 +2862,19 @@ bool evsel__fallback(struct evsel *evsel, int err=
-, char *msg, size_t msgsize)
->             evsel->core.attr.type   =3D=3D PERF_TYPE_HARDWARE &&
->             evsel->core.attr.config =3D=3D PERF_COUNT_HW_CPU_CYCLES) {
->                 /*
-> -                * If it's cycles then fall back to hrtimer based
-> -                * cpu-clock-tick sw counter, which is always available e=
-ven if
-> -                * no PMU support.
-> +                * If it's cycles then fall back to hrtimer based cpu-clo=
-ck sw
-> +                * counter, which is always available even if no PMU supp=
-ort.
->                  *
->                  * PPC returns ENXIO until 2.6.37 (behavior changed with =
-commit
->                  * b0a873e).
->                  */
-> -               scnprintf(msg, msgsize, "%s",
-> -"The cycles event is not supported, trying to fall back to cpu-clock-tic=
-ks");
-> -
->                 evsel->core.attr.type   =3D PERF_TYPE_SOFTWARE;
-> -               evsel->core.attr.config =3D PERF_COUNT_SW_CPU_CLOCK;
-> +               evsel->core.attr.config =3D target__has_cpu(target)
-> +                       ? PERF_COUNT_SW_CPU_CLOCK
-> +                       : PERF_COUNT_SW_TASK_CLOCK;
-> +               scnprintf(msg, msgsize,
-> +                       "The cycles event is not supported, trying to fal=
-l back to %s",
-> +                       target__has_cpu(target) ? "cpu-clock" : "task-clo=
-ck");
->
->                 zfree(&evsel->name);
->                 return true;
-> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-> index f19ac9f027ef..efbb6e848287 100644
-> --- a/tools/perf/util/evsel.h
-> +++ b/tools/perf/util/evsel.h
-> @@ -460,7 +460,8 @@ static inline bool evsel__is_clock(const struct evsel=
- *evsel)
->                evsel__match(evsel, SOFTWARE, SW_TASK_CLOCK);
->  }
->
-> -bool evsel__fallback(struct evsel *evsel, int err, char *msg, size_t msg=
-size);
-> +bool evsel__fallback(struct evsel *evsel, struct target *target, int err=
-,
-> +                    char *msg, size_t msgsize);
->  int evsel__open_strerror(struct evsel *evsel, struct target *target,
->                          int err, char *msg, size_t size);
->
-> --
-> 2.43.0.rc1.413.gea7ed67945-goog
->
+
