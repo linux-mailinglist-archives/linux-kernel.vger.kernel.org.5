@@ -2,199 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E951A80315C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA22803165
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232622AbjLDLSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:18:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47404 "EHLO
+        id S229519AbjLDLU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:20:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjLDLSH (ORCPT
+        with ESMTP id S231571AbjLDLUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:18:07 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2067.outbound.protection.outlook.com [40.107.92.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390ABF2;
-        Mon,  4 Dec 2023 03:18:13 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N0OrbPyreJHsWfw9T9zLDKzKMG/vwmjLlq+HZoohj6EAKQulo/xPm9+jsUppkC/nkEbt3w1bNJrOVqpbFTIt4SkcscopnW7zaT8ENucxNg4K+vEHjskCuB+tXYZmCr2N/Mo4NAzQFx58/0GSDsZJ75BXS0yPfzEP+GelqHjRmPgD7vMnZv9BJJyVRfazRESfKHB5doT8LKhZLEsRhEeVXu1fFDACLh39V4TkhhH5ArNns6l6ZH9LJWJzj3ZrD+I2deJpLWnn+T/yTBbxtbYIh5SzUANjVJ7QM4UTmTHGogbpZSI4bzFWN6PnpW4Nl7xW0b2KiWihKMGbJm0lnQLIHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=S+ajSa1ufEm+NgGsAHlGcfmzEM7d34qX7xxOqLGNc8U=;
- b=WdjtdgD5oejMrsFJkRNpAMftDwY9qDfqXzrb4BazqJo/WieD1rwARf0LUiUjRo4gR9JxwHxv/c4Lg2+Rzx2f+X0r4PyZqVgIUuiOrBJAnvvKWME0fnaBUYUFC1Rb7g1l4L5TknPhxA3EeSuMouvlA96iCMxK15J38Upk9zDi+gTldFtffIinWMq1TqCHL6yFDCfs4heWITcnFoTppUOo0KW/Z3UDnEVwvbUW5Zii6biFZwLz8En6WMwc/spFwBGRkzhWpWMuQSwChXwR75br3WUCQh5Zx5I/QR5xCZhMhcI/RZD54FjB5NmmLJtooFifgBz8Vij0eu429SFwulNseg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S+ajSa1ufEm+NgGsAHlGcfmzEM7d34qX7xxOqLGNc8U=;
- b=owl4kYEHM0eADqMjaIkpoXpN1V1UZ3otTd6bGrb6WDHhqyUjNQVRdHV3zUaX3G51G8NlI5Ui1DUKJhsBA3Pnp2meYElBVbwy8igQX1iUl090w95YSSf0w2ClpT1DYaLTbCJSUVi79fbVRJAOIxSMkS9rx7xFe9g4WgwD4r6u6ZhawTPFnlR0EWQqHqCbZJCa0q9Nrhvk+gnBMWn5AxWhX6jBwbXOIO9YyoOFgmytEC4rOtu+11EAc1c/hfA3ihlJJnfXh8a2RcSbbOQ/N4GSN3N38yB7eUb2DiVWiCei/pdzJ2rVKCgNrlE0k4/x+8P8oYvnxMH2gIaXVL/OkwXlxg==
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com (2603:10b6:5:1b6::13)
- by LV2PR12MB5989.namprd12.prod.outlook.com (2603:10b6:408:171::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 11:18:08 +0000
-Received: from DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::bd76:47ad:38a9:a258]) by DM6PR12MB5565.namprd12.prod.outlook.com
- ([fe80::bd76:47ad:38a9:a258%5]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 11:18:08 +0000
-From:   Dragos Tatulea <dtatulea@nvidia.com>
-To:     "mst@redhat.com" <mst@redhat.com>
-CC:     "xuanzhuo@linux.alibaba.com" <xuanzhuo@linux.alibaba.com>,
-        Parav Pandit <parav@nvidia.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "eperezma@redhat.com" <eperezma@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "si-wei.liu@oracle.com" <si-wei.liu@oracle.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "galp@nvidia.com" <galp@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [PATCH vhost 0/7] vdpa/mlx5: Add support for resumable vqs
-Thread-Topic: [PATCH vhost 0/7] vdpa/mlx5: Add support for resumable vqs
-Thread-Index: AQHaJEQPCu8G+as30EOn77AjCdP4t7CWcwSAgAE9GACAABGOAIABFHyAgAAAeoCAAAXdAIAAHlcAgAADwIA=
-Date:   Mon, 4 Dec 2023 11:18:08 +0000
-Message-ID: <5b6d62f205b34ea25441b14313bb632f15f0c428.camel@nvidia.com>
-References: <20231201104857.665737-1-dtatulea@nvidia.com>
-         <20231202152523-mutt-send-email-mst@kernel.org>
-         <aff0361edcb0fd0c384bf297e71d25fb77570e15.camel@nvidia.com>
-         <20231203112324-mutt-send-email-mst@kernel.org>
-         <e088b2ac7a197352429d2f5382848907f98c1129.camel@nvidia.com>
-         <20231204035443-mutt-send-email-mst@kernel.org>
-         <b9f5c48788daa3ac335b589b2ad23ea8366c08ba.camel@nvidia.com>
-         <20231204060300-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231204060300-mutt-send-email-mst@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.50.1 (3.50.1-1.fc39) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR12MB5565:EE_|LV2PR12MB5989:EE_
-x-ms-office365-filtering-correlation-id: a615c4ad-a0f4-4324-374b-08dbf4bab198
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: o/x/xvPRY1/5Zs51+miTwLQQuSi71ZPxjIxd2r91EdPW3eU4Ma97MbTfgbbQU9693Ec90LeEJtWPpzl6cilQsnwWYsny0Sv7LAF/bOG65VZ4RU7vcJm8BWjWURV+5kp7+2/BRvacPI9/7s4mYA6ppJFASJzx+/ToMsPMhJ1z5EMa7CIhxuPSBhuasWPGyCq3uHpxU1qtzxyqG6GwOgbeKiPYbc8pUPjIWB3/ODATyAGhOUMf4D6ZvVkG5zmGfWEfEr23oUmnHLifdJo/qDyw6E2AeVUXdNj661/toMCVFGochnFHCUqydl3xcgLnx6QIl1rqE/y7II7SFrLLQpZVhLDoMEqtMqpTYjcppQscg/NHknDMp3buTbPl1DDE3Hhdg1umuMlcu2mIlhK1rFGDL1OfusmM2vWCCpZTOgm27rZcpp03Ic5/S6kkDXcaSZd8Zf1/DSqzXAs/Gyi9CNBAzEQcTka4GDbCxDVQSokZc61+h744kadIsdjvSywgPbkXOa7HM2yksSHRVkIE+i6D3E5Og3tc9/TGf0kPl1B7/gqidWQKF0J+XCCfL9RdjR2mkUNFzxG9RzdE883xsNuiaTXi1ZE5/nQI755V3M4aVhUHkOmtdaehvYbe/o/aMhc2cWSGPWIGkrDn3nKEQG0i0nR25P2FtYhlWwOuUgkPrz8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5565.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39860400002)(366004)(346002)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(86362001)(36756003)(2906002)(5660300002)(41300700001)(38070700009)(6506007)(6512007)(2616005)(83380400001)(478600001)(71200400001)(966005)(6486002)(38100700002)(122000001)(91956017)(8936002)(76116006)(66446008)(66476007)(66556008)(66946007)(54906003)(6916009)(64756008)(316002)(8676002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?K2psdVRKQ1ROb1NZUTJOQ0plbjZJYVE5Nnk4L0J0ZUVmQS8wakFiUndxL1lq?=
- =?utf-8?B?VytqcTVYa0V1enpuYnlRSkFWVEJCSWE3Y2hpSnZnM1lqSjA4NVRHNlRzemcr?=
- =?utf-8?B?SVk2aFVLRFlHVm5oWndUZG5Xci95bFdIejVsM2dsR1VzOTFYVTRPaDFMbmtF?=
- =?utf-8?B?dmFMMXBJbDRuTGI1cXZQUWpWVlpVc0JtM00wVzNhd1hVWUs2Wkt6M3pXNGln?=
- =?utf-8?B?QWpMNUFkNTF4MDZpYldDYzJKcXluZkFlOUIzK3Fsb0QrMGRJNmhKMWVGWXdB?=
- =?utf-8?B?RE1LeDFqYWNjT2hPUW9kUlB3TVdic3pXbTg5QU8vdnQ1M3BrenI1bnlDamhm?=
- =?utf-8?B?VWNBWjA1bnRyajZwN29TTnlabXBBTXJLaDBhdVptTGVWcHkzODJJZVozTnZo?=
- =?utf-8?B?YmxodlB4Y1RwOVdOSVdyb1BhcGRHVnVpMHhkK2plcUI5V28vSkxLZzU1NktP?=
- =?utf-8?B?UjhJOUtwUHRZd0hGczJ1bnhLUFozNXJsQldzZlV4NXFhZEhnNXNpMmVUcHdk?=
- =?utf-8?B?d2ZOeEo4QVB2TjA2SmNBemZwMkZmKzJWejA2ZW8xS3FlSCtTYTJWejdQRzNR?=
- =?utf-8?B?OGRoUUdpdUsrT2dJajN2OC9Da2k4NFdPc0pXUGhNTHlCMkhvMTJEMHppZ0tt?=
- =?utf-8?B?empRdFczdzJteTk0ZXdyeHZXMjRkVDIyZ0NXaFF6MTV1bE9iVXBsdkRyR051?=
- =?utf-8?B?MG1oanBibE4xN0wvQU1ieEN1M1B2b2NqUURPdXk3ayt2L0c4NUljQ0VOTU9k?=
- =?utf-8?B?VkpnckhGMklmSjZhSjJmR1hFQzA4aG8rY2RMbUlxaTJadlpKVVBsZG9XcXNR?=
- =?utf-8?B?TTlXNlNqaDRaaDEvY1VaVmtjUkd2QnNXUzZhd3NTMnlEZm13QkZ3RnhnZk9u?=
- =?utf-8?B?YUYzMHEzTVNxeHU3SGw0eUNPbFB1b3V5dWdnallQRklTbExFNExxKzdmK244?=
- =?utf-8?B?M2NFdzBsVTJ5a0VwODR2b0pBSEl1V3hWczZ5bDl3Y3M1ZDhrMlNCajIweWR2?=
- =?utf-8?B?TFExdEowV0tXc1pBU1JHRk9RTXoxaHhZSlJIZ3VHVThNQ2c5amQzUXA1QU81?=
- =?utf-8?B?ZDdHT0VIdE5hSFlsYUkzUklNeGdrWnl1Y202a1pGckVjL3dDZVh2UVpxc0JR?=
- =?utf-8?B?WEtsb2JuZlR4dXIycXlCc2tEZHFyMUhwR3E4UzRVTXZkOUVMRklsT0pFbUpz?=
- =?utf-8?B?U1ZlT01meHU1U1lGQnhSMXBKcjRsTEpxWVlmalZ5NWVyTFhxMU9BM281Wlla?=
- =?utf-8?B?UzdPNlh4OGRMNGE3V3NzZVZuRmNQWGtPM2xoWDBydlN2OG5NNW5ZYUhFQktK?=
- =?utf-8?B?ejVBSlFHMVdoMGx6aTJFR3hoanJMMzRBMXRnZVFCc1RqT25xcmxIVVZ2RnVB?=
- =?utf-8?B?SjFrZnFBcGFxc0VGcSs0aEhUcDB1RDVkdU04aWp6UDVuRFZRdEttSXUwMUFE?=
- =?utf-8?B?d0FsZlRRczF5bUwxZng2WmJCdkhVaW1OZUpsSnloTG9Reis2M2ZNSWI0aHgv?=
- =?utf-8?B?bjdQdFU4OXltYWhqeEVGNHpjRTlHMDZmQzVESkZWd2RPbDh0MWtkb2hzaHV1?=
- =?utf-8?B?TG93RTNHUDF1Ym4rR2l2cWxsd0E2Ujc4RG9HYnBQVklPUVN4UzVqUjVWK2ho?=
- =?utf-8?B?Uzd3bC9RQ3MzOTZ6UEQzZWtHTXBoaFkwcFltQjhwdTZiUjQ3RUZaek9YdWw5?=
- =?utf-8?B?MUFWMnZGVjRXYzJibnhqZklGRng2Wkg1dThZR1ZTNCt3ZEZvYjRFU1NtYkFF?=
- =?utf-8?B?dE1MS1YwOEt5NVhkMWZuQ05BM3FFNXVMUXpad2I5cFE3M2VVME9acFgwcVdZ?=
- =?utf-8?B?MW0xRXZrUWZrZ3dvWWxmS2I2ZVg3T0FuYTVDbzAzci8rak5tYUNLTnVMalky?=
- =?utf-8?B?UFJESCs1NGdTdTJWL2orQlVwYWl1dEg3Vm83NFAxaHdtMkFOak1WSFFNQ2lJ?=
- =?utf-8?B?TWYxci92bHVlbExWTVJZT3JveVE4a3M4NStYL0h1NnhmVzdWeXAyeS94N3hn?=
- =?utf-8?B?Tkp3bDZpUGFUeEE2K0ZsYTRCVS9LdVRJcnZqaWxjcDAyT1MyZzNOc3J4RjNs?=
- =?utf-8?B?MmFIeEROb0lxS1FsM3RnZGQ3N3RSNEpaeW5GNkgyWHpTRUhKUEw1dVJ0TnZE?=
- =?utf-8?B?MW5BY0hTQ29kclZmT3FONU1GSmJXU3lkT3RDMnpmYmxVVEpxVnpSWnBEQWkv?=
- =?utf-8?Q?Q653+Wl7dWzpfz49SkuCvZ7Xxsz3QhW3+CcBR9wdgWjz?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3D0DBA85CDE17A48B84B6F5EA8753B45@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 4 Dec 2023 06:20:25 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B58E6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:20:30 -0800 (PST)
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D953D6602030;
+        Mon,  4 Dec 2023 11:20:27 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701688828;
+        bh=cZeI5VKu1LE+0g50TIvM40Dlj8CQw2yZgDTALs1PHU0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=buSFgO4rAzYsi+vvoqP2Clk3yGypsraT+LVLmh2mmv5LcqDgb6ihDfku0yaCby9Q9
+         u4KCCtQqFynTk9mMnYK+dXZuInrI1VBgNNjQnQXcUDfgYw+/871X/Whbh1QMptTDml
+         n8T3PPC+WNuSiE5Tn2g+0poOhnJT7kGz+r7ERyr+B6q5AGeklD0aW408fWMxi9Wj0w
+         t5una1nqiNjsuvZtItmVOwsaxI+8O2od7Fq0cAi30yZ8byofY/kwkRSvhifQkKL9mL
+         CoWAXOXhJwJ/WVh60CJQvs1NtHTkIWGmaC3S0BcmCJI5aweoLfUzUJZju3n0mRG0d9
+         BFZN2B0hDE1Xg==
+Message-ID: <8b58d97d-7643-46bd-b702-b315addf32a1@collabora.com>
+Date:   Mon, 4 Dec 2023 12:20:25 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5565.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a615c4ad-a0f4-4324-374b-08dbf4bab198
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2023 11:18:08.3587
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4YfbZpFxds5mM9YOgHUsLHFd0blnQtYHAtUwhKd6X3AKPTy7dSDea/BuwbcYgVbcOEEguSgR99ol3h6kZRS4Rg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5989
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] drm/panfrost: Synchronize and disable interrupts
+ before powering off
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, m.szyprowski@samsung.com,
+        krzysztof.kozlowski@linaro.org
+References: <20231201104027.35273-1-angelogioacchino.delregno@collabora.com>
+ <20231201104027.35273-4-angelogioacchino.delregno@collabora.com>
+ <20231201121437.7d5cdefb@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231201121437.7d5cdefb@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTEyLTA0IGF0IDA2OjA0IC0wNTAwLCBNaWNoYWVsIFMuIFRzaXJraW4gd3Jv
-dGU6DQo+IE9uIE1vbiwgRGVjIDA0LCAyMDIzIGF0IDA5OjE2OjA3QU0gKzAwMDAsIERyYWdvcyBU
-YXR1bGVhIHdyb3RlOg0KPiA+IE9uIE1vbiwgMjAyMy0xMi0wNCBhdCAwMzo1NSAtMDUwMCwgTWlj
-aGFlbCBTLiBUc2lya2luIHdyb3RlOg0KPiA+ID4gT24gTW9uLCBEZWMgMDQsIDIwMjMgYXQgMDg6
-NTM6MjZBTSArMDAwMCwgRHJhZ29zIFRhdHVsZWEgd3JvdGU6DQo+ID4gPiA+IE9uIFN1biwgMjAy
-My0xMi0wMyBhdCAxMToyMyAtMDUwMCwgTWljaGFlbCBTLiBUc2lya2luIHdyb3RlOg0KPiA+ID4g
-PiA+IE9uIFN1biwgRGVjIDAzLCAyMDIzIGF0IDAzOjIxOjAxUE0gKzAwMDAsIERyYWdvcyBUYXR1
-bGVhIHdyb3RlOg0KPiA+ID4gPiA+ID4gT24gU2F0LCAyMDIzLTEyLTAyIGF0IDE1OjI2IC0wNTAw
-LCBNaWNoYWVsIFMuIFRzaXJraW4gd3JvdGU6DQo+ID4gPiA+ID4gPiA+IE9uIEZyaSwgRGVjIDAx
-LCAyMDIzIGF0IDEyOjQ4OjUwUE0gKzAyMDAsIERyYWdvcyBUYXR1bGVhIHdyb3RlOg0KPiA+ID4g
-PiA+ID4gPiA+IEFkZCBzdXBwb3J0IGZvciByZXN1bWFibGUgdnFzIGluIHRoZSBkcml2ZXIuIFRo
-aXMgaXMgYSBmaXJtd2FyZSBmZWF0dXJlDQo+ID4gPiA+ID4gPiA+ID4gdGhhdCBjYW4gYmUgdXNl
-ZCBmb3IgdGhlIGZvbGxvd2luZyBiZW5lZml0czoNCj4gPiA+ID4gPiA+ID4gPiAtIEZ1bGwgZGV2
-aWNlIC5zdXNwZW5kLy5yZXN1bWUuDQo+ID4gPiA+ID4gPiA+ID4gLSAuc2V0X21hcCBkb2Vzbid0
-IG5lZWQgdG8gZGVzdHJveSBhbmQgY3JlYXRlIG5ldyB2cXMgYW55bW9yZSBqdXN0IHRvDQo+ID4g
-PiA+ID4gPiA+ID4gICB1cGRhdGUgdGhlIG1hcC4gV2hlbiByZXN1bWFibGUgdnFzIGFyZSBzdXBw
-b3J0ZWQgaXQgaXMgZW5vdWdoIHRvDQo+ID4gPiA+ID4gPiA+ID4gICBzdXNwZW5kIHRoZSB2cXMs
-IHNldCB0aGUgbmV3IG1hcHMsIGFuZCB0aGVuIHJlc3VtZSB0aGUgdnFzLg0KPiA+ID4gPiA+ID4g
-PiA+IA0KPiA+ID4gPiA+ID4gPiA+IFRoZSBmaXJzdCBwYXRjaCBleHBvc2VzIHRoZSByZWxldmFu
-dCBiaXRzIGluIG1seDVfaWZjLmguIFRoYXQgbWVhbnMgaXQNCj4gPiA+ID4gPiA+ID4gPiBuZWVk
-cyB0byBiZSBhcHBsaWVkIHRvIHRoZSBtbHg1LXZob3N0IHRyZWUgWzBdIGZpcnN0Lg0KPiA+ID4g
-PiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gSSBkaWRuJ3QgZ2V0IHRoaXMuIFdoeSBkb2VzIHRoaXMg
-bmVlZCB0byBnbyB0aHJvdWdoIHRoYXQgdHJlZT8NCj4gPiA+ID4gPiA+ID4gSXMgdGhlcmUgYSBk
-ZXBlbmRlbmN5IG9uIHNvbWUgb3RoZXIgY29tbWl0IGZyb20gdGhhdCB0cmVlPw0KPiA+ID4gPiA+
-ID4gPiANCj4gPiA+ID4gPiA+IFRvIGF2b2lkIG1lcmdlIGlzc3VlcyBpbiBMaW51cydzIHRyZWUg
-aW4gbWx4NV9pZmMuaC4gVGhlIGlkZWEgaXMgdGhlIHNhbWUgYXMgZm9yDQo+ID4gPiA+ID4gPiB0
-aGUgInZxIGRlc2NyaXB0b3IgbWFwcGluZ3MiIHBhdGNoc2V0IFsxXS4NCj4gPiA+ID4gPiA+IA0K
-PiA+ID4gPiA+ID4gVGhhbmtzLA0KPiA+ID4gPiA+ID4gRHJhZ29zDQo+ID4gPiA+ID4gDQo+ID4g
-PiA+ID4gQXJlIHRoZXJlIG90aGVyIGNoYW5nZXMgaW4gdGhhdCBhcmVhIHRoYXQgd2lsbCBjYXVz
-ZSBub24tdHJpdmlhbCBtZXJnZQ0KPiA+ID4gPiA+IGNvbmZsaWN0cz8NCj4gPiA+ID4gPiANCj4g
-PiA+ID4gVGhlcmUgYXJlIHBlbmRpbmcgY2hhbmdlcyBpbiBtbHg1X2lmYy5oIGZvciBuZXQtbmV4
-dC4gSSBoYXZlbid0IHNlZW4gYW55IGNoYW5nZXMNCj4gPiA+ID4gYXJvdW5kIHRoZSB0b3VjaGVk
-IHN0cnVjdHVyZSBidXQgSSB3b3VsZCBwcmVmZXIgbm90IHRvIHRha2UgYW55IHJpc2suDQo+ID4g
-PiA+IA0KPiA+ID4gPiBUaGFua3MsDQo+ID4gPiA+IERyYWdvcw0KPiA+ID4gDQo+ID4gPiBUaGlz
-IGlzIGV4YWN0bHkgd2hhdCBsaW51eC1uZXh0IGlzIGZvci4NCj4gPiA+IA0KPiA+IE5vdCBzdXJl
-IHdoYXQgdGhlIHN1Z2dlc3Rpb24gaXMgaGVyZS4gSXMgaXQ6DQo+ID4gDQo+ID4gMSkgVG8gcG9z
-dCBwYXRjaCAxLzcgdG8gbmV0LW5leHQ/IFRoZW4gd2UnZCBoYXZlIHRvIHdhaXQgZm9yIGEgZmV3
-IHdlZWtzIHRvIG1ha2UNCj4gPiBzdXJlIHRoYXQgaXQgZ2V0cyBpbnRvIHRoZSBuZXh0IHRyZWUu
-DQo+ID4gDQo+ID4gb3IgDQo+ID4gDQo+ID4gMikgVG8gYXBwbHkgaXQgaW50byB0aGUgdmhvc3Qg
-dHJlZSBkaXJlY3RseT8gVGhlbiB3ZSBydW4gdGhlIHJpc2sgb2YgaGF2aW5nDQo+ID4gbWVyZ2Ug
-aXNzdWVzLg0KPiA+IA0KPiA+IFRoZSAicHVsbCBmcm9tIGJyYW5jaCIgYXBwcm9hY2ggZm9yIGNy
-b3NzIHN1YnN5c3RlbSBjaGFuZ2VzIHdhcyBzdWdnZXN0ZWQgYnkNCj4gPiBMaW51cyB0aGlzIG1l
-cmdlIGlzc3VlLg0KPiA+IA0KPiA+IFswXQ0KPiA+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2Fs
-bC9DQSs1NWFGeHhvTz1pN25lR0JSR1dfYWZIc1NaN0steDZmTU84di04cG8zTHNfRXcwUmdAbWFp
-bC5nbWFpbC5jb20vDQo+ID4gDQo+ID4gVGhhbmtzLA0KPiA+IERyYWdvcw0KPiANCj4gSSB3aWxs
-IHBhcmsgdGhpcyBpbiBteSB0cmVlIGZvciBub3cgc28gaXQgY2FuIGdldCB0ZXN0aW5nIGluIGxp
-bnV4IG5leHQuDQo+IFdoZW4gaXQncyBhdmFpbGFibGUgaW4gc29tZSBvdGhlciB0cmVlIGFzIHdl
-bGwsIGxldCBtZSBrbm93IGFuZA0KPiBJJ2xsIGZpZ3VyZSBpdCBvdXQuDQo+IA0KVGhhbmtzISBC
-dXQgZG9uJ3QgcGFyayBpdCBqdXN0IHlldC4gSSB3b3VsZCBsaWtlIHRvIHNlbmQgYSB2MiBpbiB0
-aGUgbmV4dCBmZXcNCmRheXMgdGhhdCBjb250YWlucyAyIG1vcmUgcGF0Y2hlcyBvbiB0b3AuIEkn
-dmUgc2VudCB0aGUgdjEgZWFybHkgdG8gZ2V0IHJldmlld3MNCmZvciB0aGUgYnVsayBvZiB0aGUg
-d29yay4gRm9yZ290IHRvIG1lbnRpb24gdGhhdCBpbiB0aGUgY292ZXIgbGV0dGVyLiBNeSBiYWQs
-DQpzb3JyeS4NCg0KVGhhbmtzLA0KRHJhZ29zDQoNCg==
+Il 01/12/23 12:14, Boris Brezillon ha scritto:
+> On Fri,  1 Dec 2023 11:40:27 +0100
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> wrote:
+> 
+>> To make sure that we don't unintentionally perform any unclocked and/or
+>> unpowered R/W operation on GPU registers, before turning off clocks and
+>> regulators we must make sure that no GPU, JOB or MMU ISR execution is
+>> pending: doing that required to add a mechanism to synchronize the
+> 
+>                        ^ requires the addition of a mechanism...
+> 
+>> interrupts on suspend.
+>>
+>> Add functions panfrost_{gpu,job,mmu}_suspend_irq() which will perform
+>> interrupts masking and ISR execution synchronization, and then call
+>> those in the panfrost_device_runtime_suspend() handler in the exact
+>> sequence of job (may require mmu!) -> mmu -> gpu.
+>>
+>> As a side note, JOB and MMU suspend_irq functions needed some special
+>> treatment: as their interrupt handlers will unmask interrupts, it was
+>> necessary to add a bitmap for `is_suspended` which is used to address
+> 
+>              to add an `is_suspended` bitmap which is used...
+> 
+>> the possible corner case of unintentional IRQ unmasking because of ISR
+>> execution after a call to synchronize_irq().
+> 
+> Also fixes the case where the interrupt handler is called when the
+> device is suspended because the IRQ line is shared with another device.
+> No need to update the commit message for that though.
+> 
+>>
+>> At resume, clear each is_suspended bit in the reset path of JOB/MMU
+>> to allow unmasking the interrupts.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   drivers/gpu/drm/panfrost/panfrost_device.c |  3 +++
+>>   drivers/gpu/drm/panfrost/panfrost_device.h |  7 +++++++
+>>   drivers/gpu/drm/panfrost/panfrost_gpu.c    |  6 ++++++
+>>   drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
+>>   drivers/gpu/drm/panfrost/panfrost_job.c    | 20 +++++++++++++++++---
+>>   drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
+>>   drivers/gpu/drm/panfrost/panfrost_mmu.c    | 19 ++++++++++++++++---
+>>   drivers/gpu/drm/panfrost/panfrost_mmu.h    |  1 +
+>>   8 files changed, 52 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> index c90ad5ee34e7..a45e4addcc19 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+>> @@ -421,6 +421,9 @@ static int panfrost_device_runtime_suspend(struct device *dev)
+>>   		return -EBUSY;
+>>   
+>>   	panfrost_devfreq_suspend(pfdev);
+>> +	panfrost_job_suspend_irq(pfdev);
+>> +	panfrost_mmu_suspend_irq(pfdev);
+>> +	panfrost_gpu_suspend_irq(pfdev);
+>>   	panfrost_gpu_power_off(pfdev);
+>>   
+>>   	return 0;
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> index 54a8aad54259..5c24f01f8904 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>> @@ -25,6 +25,12 @@ struct panfrost_perfcnt;
+>>   #define NUM_JOB_SLOTS 3
+>>   #define MAX_PM_DOMAINS 5
+>>   
+>> +enum panfrost_drv_comp_bits {
+>> +	PANFROST_COMP_BIT_MMU,
+>> +	PANFROST_COMP_BIT_JOB,
+> 
+> I think we need one for the GPU interrupt too, for the
+> irq-line-is-shared-with-another-device thing I was mentioning.
+> 
+
+Yes, I've also reordered the entries by name for v4.
+
+>> +	PANFROST_COMP_BIT_MAX
+>> +};
+>> +
+>>   /**
+>>    * enum panfrost_gpu_pm - Supported kernel power management features
+>>    * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
+>> @@ -109,6 +115,7 @@ struct panfrost_device {
+>>   
+>>   	struct panfrost_features features;
+>>   	const struct panfrost_compatible *comp;
+>> +	DECLARE_BITMAP(is_suspended, PANFROST_COMP_BIT_MAX);
+>>   
+>>   	spinlock_t as_lock;
+>>   	unsigned long as_in_use_mask;
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> index 7adc4441fa14..3a6a4fe7aca1 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+>> @@ -452,6 +452,12 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>>   		dev_err(pfdev->dev, "l2 power transition timeout");
+>>   }
+>>   
+>> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
+>> +{
+> 
+>          set_bit(PANFROST_COMP_BIT_GPU, pfdev->is_suspended);
+> 
+> here, and an extra check in panfrost_gpu_irq_handler() to bail out
+> before the register accesses if PANFROST_COMP_BIT_GPU is set.
+> 
+
+Right.
+
+>> +	gpu_write(pfdev, GPU_INT_MASK, 0);
+>> +	synchronize_irq(pfdev->gpu_irq);
+>> +}
+>> +
+>>   int panfrost_gpu_init(struct panfrost_device *pfdev)
+>>   {
+>>   	int err;
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+>> index 876fdad9f721..d841b86504ea 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+>> @@ -15,6 +15,7 @@ u32 panfrost_gpu_get_latest_flush_id(struct panfrost_device *pfdev);
+>>   int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
+>>   void panfrost_gpu_power_on(struct panfrost_device *pfdev);
+>>   void panfrost_gpu_power_off(struct panfrost_device *pfdev);
+>> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev);
+>>   
+>>   void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
+>>   void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> index f9446e197428..7600e7741211 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+>> @@ -405,6 +405,8 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev)
+>>   	int j;
+>>   	u32 irq_mask = 0;
+>>   
+>> +	clear_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended);
+>> +
+>>   	for (j = 0; j < NUM_JOB_SLOTS; j++) {
+>>   		irq_mask |= MK_JS_MASK(j);
+>>   	}
+>> @@ -413,6 +415,14 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev)
+>>   	job_write(pfdev, JOB_INT_MASK, irq_mask);
+>>   }
+>>   
+>> +void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
+>> +{
+>> +	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended);
+>> +
+>> +	job_write(pfdev, JOB_INT_MASK, 0);
+>> +	synchronize_irq(pfdev->js->irq);
+>> +}
+>> +
+>>   static void panfrost_job_handle_err(struct panfrost_device *pfdev,
+>>   				    struct panfrost_job *job,
+>>   				    unsigned int js)
+>> @@ -792,9 +802,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
+>>   	struct panfrost_device *pfdev = data;
+>>   
+>>   	panfrost_job_handle_irqs(pfdev);
+>> -	job_write(pfdev, JOB_INT_MASK,
+>> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
+>> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
+>> +
+>> +	/* Enable interrupts only if we're not about to get suspended */
+>> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended))
+>> +		job_write(pfdev, JOB_INT_MASK,
+>> +			  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
+>> +			  GENMASK(NUM_JOB_SLOTS - 1, 0));
+>> +
+> 
+> Missing if (test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspended)) in
+> panfrost_job_irq_handler(), to make sure you don't access the registers
+> if the GPU is suspended.
+> 
+
+Ok.
+
+Cheers,
+Angelo
