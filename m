@@ -2,125 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44ABB803CF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60665803CF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbjLDS02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:26:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59156 "EHLO
+        id S230368AbjLDS1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:27:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbjLDS0P (ORCPT
+        with ESMTP id S230103AbjLDS1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:26:15 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A88C192
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:26:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Bwa+mWa9t9Jyqa5fhOpyXs9O2/cRDmN3kPMWCUex0Jc=; b=k9XwJYVGkMrMDLoLh4nAjQ10yB
-        JA82oqtLwxB4l8ixHe0Q1l6os0C5NTD7yuLM1NPFI3oCR9SvPLcyltEikswkChKWWqoNeYfmdIs5B
-        NNd0/t8gi9tN7LlZJxFuVvV3JPPPgOCF1mmBzPFFBG/ilKFFIcD6EiskOCj7Osg5lmsWu164eg+a+
-        h6bvegq1DwigISF2gmGAZmZmvKykmF0Bwb4K1RpJRxZx1XW/lzfsX2hTO2bYy78knkwHgDDp4N2zp
-        Fr3v/V4Rbny7qCaUtk3KIo2+2/ZKGZ+fRLOHwgjrQ5ugtQwoXLFK7np4jVt9iWBnlmaRfURNeWeW9
-        OMUuOnBg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:32798)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rADe1-0005u1-1B;
-        Mon, 04 Dec 2023 18:26:13 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rADe3-0000th-5Q; Mon, 04 Dec 2023 18:26:15 +0000
-Date:   Mon, 4 Dec 2023 18:26:15 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: clang-nightly: vdso/compat_gettimeofday.h:152:15: error:
- instruction variant requires ARMv6 or later
-Message-ID: <ZW4Zx4olPp0Owz0a@shell.armlinux.org.uk>
-References: <CA+G9fYvD72Vpfs2g8R+OJ6L8w9p_uaWbXpWMvnGAx_AOLabatw@mail.gmail.com>
- <20231204181304.GA2043538@dev-arch.thelio-3990X>
+        Mon, 4 Dec 2023 13:27:17 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC968116
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:27:23 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6d8029dae41so2567558a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 10:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701714443; x=1702319243; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qKS/R0LCdw8slEjKVFrwMfnGQ9/6ujHp7Vv1Nk4Yan8=;
+        b=FZXYB47FYZIX9F3TrJOuufzJseJDQxuaY1jZYY20B7A8H/xuuJOvOMVMpFXTdWE62K
+         tYFWBtcz+9ZkbsxCH0qkBmg4VH+TypW8ff7EbODWCJaNO0a4HQWDg3yV+yPmScvR1ni5
+         ro4nWW45AfEIBgIhtVeZmHZUFLCQHrrD2MTFGGNr0VGscDhPB4A8fJTWdZXlivoTzkTg
+         1rqUC93llDAXNdxCtaDI3Cwkx9iy+cEHJ81XNoDTI4nRi0uj8zZFoOTivvXmLh/xMD2O
+         mXzIuDHkOPZVHewffPYL2LCXeoRBz5NjmiztOZvfq7mAvk3n5ZEvLd99IWyk+1u9JEVH
+         V3EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701714443; x=1702319243;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qKS/R0LCdw8slEjKVFrwMfnGQ9/6ujHp7Vv1Nk4Yan8=;
+        b=supH4AT1kExAed2rET8fLHuDGKI3LrIHQPqVECktJTYuNGMNOp4ZJmez+ocUAMAwZO
+         m2AQASzXuhBAcXUhslC8wxLPs2At1iqDwTh4r4AoxTGQtBYySmh4PN/tzaigjLokX7sm
+         GBQS7asLR+QwJQ7Wcw78GDN9rDnzymX4oOSfsPYo5kwn/mnuVL87+YjajlT8hRiHFo0k
+         Cb3klsL9qasXD2hpyGhzM5PKG4sq18gRGhNkryIYiiBUtaLMuftSlnnCNu9xK0UsO/fi
+         L69NcaPuDwXSTz/pW3F1IcgRV2jkA2r+Fxj2d34JCEMzsWqvTqd3VgS1XYx7hqj2eb7+
+         XDNg==
+X-Gm-Message-State: AOJu0Yz2PoznCa5Pg18tf7silv9nie06ZIZLxPQeBmiR6Ckg42CHBE96
+        VBvIt4MyZy/Ln7n5g+KYu+edjnpCH005Rb3WeVQ=
+X-Google-Smtp-Source: AGHT+IFpRbGI/d8p6DZaN7Pl996L2VYH9OmYnQ82PEmp4ww76xvcUbv12dovgxqEXpefd1J4UKlyWX2fWtvfy0137U0=
+X-Received: by 2002:a05:6871:878a:b0:1fb:186d:73f2 with SMTP id
+ td10-20020a056871878a00b001fb186d73f2mr4684487oab.32.1701714442949; Mon, 04
+ Dec 2023 10:27:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204181304.GA2043538@dev-arch.thelio-3990X>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <20231204085756.3303900-1-alexious@zju.edu.cn>
+In-Reply-To: <20231204085756.3303900-1-alexious@zju.edu.cn>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 4 Dec 2023 13:27:11 -0500
+Message-ID: <CADnq5_M0UodAHEkZR+naBELpeJXDexa5WHgp5DEzpP5ympAmaA@mail.gmail.com>
+Subject: Re: [PATCH] [v2] drm/radeon/dpm: fix a memleak in sumo_parse_power_table
+To:     Zhipeng Lu <alexious@zju.edu.cn>
+Cc:     "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, Jerome Glisse <jglisse@redhat.com>,
+        dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 11:13:04AM -0700, Nathan Chancellor wrote:
-> Hi Naresh,
-> 
-> On Mon, Dec 04, 2023 at 05:33:26PM +0530, Naresh Kamboju wrote:
-> > Following build errors noticed on Linux next-20231204 tag with clang-nightly
-> > for arm and arm64.
-> > 
-> > ## Test Regressions (compared to next-20231201)
-> > * arm64, build
-> >   - clang-nightly-defconfig
-> >   - clang-nightly-defconfig-40bc7ee5
-> >   - clang-nightly-lkftconfig
-> >   - clang-nightly-lkftconfig-kselftest
-> > 
-> > * arm, build
-> >   - clang-nightly-allnoconfig
-> >   - clang-nightly-axm55xx_defconfig
-> >   - clang-nightly-bcm2835_defconfig
-> >   - clang-nightly-clps711x_defconfig
-> >   - clang-nightly-defconfig
-> >   - clang-nightly-exynos_defconfig
-> >   - clang-nightly-imx_v6_v7_defconfig
-> >   - clang-nightly-keystone_defconfig
-> >   - clang-nightly-lkftconfig
-> >   - clang-nightly-lkftconfig-kselftest
-> >   - clang-nightly-omap2plus_defconfig
-> >   - clang-nightly-pxa910_defconfig
-> >   - clang-nightly-s3c6400_defconfig
-> >   - clang-nightly-s5pv210_defconfig
-> >   - clang-nightly-sama5_defconfig
-> >   - clang-nightly-shmobile_defconfig
-> >   - clang-nightly-tinyconfig
-> >   - clang-nightly-u8500_defconfig
-> >   - clang-nightly-vexpress_defconfig
-> > 
-> > 
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > 
-> > 
-> > Build log on arm64:
-> > ---------
-> > In file included from lib/vdso/gettimeofday.c:5:
-> > In file included from include/vdso/datapage.h:135:
-> > arch/arm64/include/asm/vdso/compat_gettimeofday.h:152:15: error:
-> > instruction variant requires ARMv6 or later
-> >   152 |         asm volatile("mov %0, %1" : "=r"(ret) : "r"(_vdso_data));
-> >       |                      ^
-> > <inline asm>:1:2: note: instantiated into assembly here
-> >     1 |         mov r4, r1
-> >       |         ^
+On Mon, Dec 4, 2023 at 5:39=E2=80=AFAM Zhipeng Lu <alexious@zju.edu.cn> wro=
+te:
+>
+> The rdev->pm.dpm.ps allocated by kcalloc should be freed in every
+> following error-handling path. However, in the error-handling of
+> rdev->pm.power_state[i].clock_info the rdev->pm.dpm.ps is not freed,
+> resulting in a memleak in this function.
+>
+> Fixes: 80ea2c129c76 ("drm/radeon/kms: add dpm support for sumo asics (v2)=
+")
+> Signed-off-by: Zhipeng Lu <alexious@zju.edu.cn>
 
-I have to wonder why Clang is complaining about "mov r4, r1" because
-that certainly should not require "ARMv6 or later". On the face of it,
-this to me looks like a bug in Clang.
+Applied.  Thanks!
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> ---
+>
+> Changelog:
+>
+> v2: Adding {} to make if statement correct.
+> ---
+>  drivers/gpu/drm/radeon/sumo_dpm.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/sumo_dpm.c b/drivers/gpu/drm/radeon/s=
+umo_dpm.c
+> index f74f381af05f..d49c145db437 100644
+> --- a/drivers/gpu/drm/radeon/sumo_dpm.c
+> +++ b/drivers/gpu/drm/radeon/sumo_dpm.c
+> @@ -1493,8 +1493,10 @@ static int sumo_parse_power_table(struct radeon_de=
+vice *rdev)
+>                 non_clock_array_index =3D power_state->v2.nonClockInfoInd=
+ex;
+>                 non_clock_info =3D (struct _ATOM_PPLIB_NONCLOCK_INFO *)
+>                         &non_clock_info_array->nonClockInfo[non_clock_arr=
+ay_index];
+> -               if (!rdev->pm.power_state[i].clock_info)
+> +               if (!rdev->pm.power_state[i].clock_info) {
+> +                       kfree(rdev->pm.dpm.ps);
+>                         return -EINVAL;
+> +               }
+>                 ps =3D kzalloc(sizeof(struct sumo_ps), GFP_KERNEL);
+>                 if (ps =3D=3D NULL) {
+>                         kfree(rdev->pm.dpm.ps);
+> --
+> 2.34.1
+>
