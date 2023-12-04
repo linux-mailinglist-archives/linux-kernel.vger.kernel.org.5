@@ -2,154 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED17E803D23
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:34:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A15803D21
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbjLDSe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51262 "EHLO
+        id S231398AbjLDSeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:34:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjLDSe1 (ORCPT
+        with ESMTP id S229501AbjLDSeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:34:27 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E89FF;
-        Mon,  4 Dec 2023 10:34:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yRxkmI4dXPVCTApSsXOOM346LAa1g76vwgSBu1bA/08=; b=u2cVkyxLqoUOqz1TA/dDurEImX
-        yd+RKQfGNzDw1nNzm7F9pDtqQt51c1WaOKmTKmAbAROOiek+hm8k6eZisRZ/QWEyDAbQFc+SykZth
-        yo1Jqw2hGSDZx0/kwV/QhUbR1CaOvc39CcdS6VXzjuqXt4HYSSGFkZCVv/chpwHXClxU600842aLI
-        poUrNAgUfXs1GTMxHRcsbo3DI/Uyx2B0XaXImtz+wS5a8oBto19jcxToog2JblpiSQQodC47SWxtq
-        uoUKbAOA8OTlQYtBciApJtmEJWfW4deFx0DxiGRyt/1iUxUN98T1XdrCmGbwL4cixtGF6odl8Z3oi
-        wU5Z7Stg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rADlT-000x6k-F8; Mon, 04 Dec 2023 18:33:56 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5462830057C; Mon,  4 Dec 2023 19:33:54 +0100 (CET)
-Date:   Mon, 4 Dec 2023 19:33:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231204183354.GC7299@noisy.programming.kicks-ass.net>
-References: <20231130133630.192490507@infradead.org>
- <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
-MIME-Version: 1.0
+        Mon, 4 Dec 2023 13:34:07 -0500
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2071.outbound.protection.outlook.com [40.107.212.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18165CA;
+        Mon,  4 Dec 2023 10:34:13 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BSRpzsRU2aGv4nMPsNoEr7MjyZ3Ic/b0a+vOi7hteAj3JlYopUoOykcNyeDo75XVlio9iwfFwwzmzVYbJrJA6hjwrnCg+vfQCnVPVGsEuGLUBiKupAd3J5iFDazgcjQCRefU6PbTIUlf4VpIs5EDqVlGMk/5v19UDiKw8NP5jgrnU9imk3qQWz6xSQ9r7aA3oq/D3MMXiOtg7l3r1DXkvolCZEqJahCh2FX1fI27NNnqIewS1kLF++IR80Y9Fu9eQGLgB8IsnNSoutcVt6zEkzRzwNodh1+y7+apkB6xH8LOc3MiPFyBBLuIrRQKwnvRljmA9FUaHBIlLqrSi2gyug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lg0+BtjDFeHe0us2M/RPK2MlDOQTpPFHiG8ht9T74OA=;
+ b=ST4fyinW2JxfrkhROYRQpgRW+ligHMmsrC+L3DDKhjc8Q9hc/j1gj2gLm+7ZGD6AWrUDK8RPnK6OwB0av45Zxvq8TTY6gEIVgjoP9p//sTKWbAf5mg0uwKG7WzQ4CcQ2pBlYeUJE0jPBZ7j/xaNQAEpX8WzlQsBOE72FK8oQteq11Whu41ekKiM/lUv1Ela3lZdHS/V7weW5RiNENTiHAjvhxS6Q/rgzNRoTs+tvjNUaH+cCs5NrF/AwGggsbe31pbZDnDnUs0jQXe+s5EvnhzpHMX43B0oDS8MUMcg4dvy1EdJ6VNL+F9HPZpO1R7KSzAKzkB7eeckCre9FRHMjRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lg0+BtjDFeHe0us2M/RPK2MlDOQTpPFHiG8ht9T74OA=;
+ b=IoNK+A2UngsgnpdV610DppyY7we7l3LuhjKikcQXGalgPiAn/jc2Dk8npSrc3Ot++uyL/XNm5ZVwmZ+T6LGefFn3FDskokCYF6IM2WE+o2TGNU1m05xNWHQOLl4nMj00NrH1X4Ulkqi2D8SH7Vlc7a5lRDU4ob5PDLJxuvMRiIGO1t5JYRvy0D/YFfv0FsJdZoW5goCOuzBusnw7V41rJD8LyO2tKxRZCSWHlgBcilkmlr+OGySvYEKrVuo20f+2sbVEgIl2fcZftY0LMQSXcvSllP/yzHszZqHLiduqK9Al+pnNh1pj8RfV7d3TMmNiGwBeVClTY56+CsO60ci2VA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH0PR12MB8461.namprd12.prod.outlook.com (2603:10b6:610:183::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
+ 2023 18:34:11 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 18:34:10 +0000
+Date:   Mon, 4 Dec 2023 14:34:10 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
+        pbonzini@redhat.com, seanjc@google.com, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH 14/42] iommufd: Enable KVM HW page table object to be
+ proxy between KVM and IOMMU
+Message-ID: <20231204183410.GM1493156@nvidia.com>
+References: <20231202091211.13376-1-yan.y.zhao@intel.com>
+ <20231202092216.14278-1-yan.y.zhao@intel.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231204181614.GA7299@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231202092216.14278-1-yan.y.zhao@intel.com>
+X-ClientProxiedBy: BL1PR13CA0429.namprd13.prod.outlook.com
+ (2603:10b6:208:2c3::14) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH0PR12MB8461:EE_
+X-MS-Office365-Filtering-Correlation-Id: 967ebbbd-898d-4276-0001-08dbf4f79ba3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c0n4gDFGH2NCIX5sNSNc7QH+JE7sT06xOnhfFu1iqpKcXBt98U3NkOasmMfK5YYEUapctjbkphM3VdkcRTxfDteHjrZ0f721LgToGSyXxl3tkL3ivH45YB9x88YX89RNzPRTkQIjbVTKM+1L7t+3To1WBtxTcsUcrKz0BZc5zCdvU+Q8fcNW2YvK7VRAYXnmKXjNwvk+ib8G8P0GeF2G6VLCGr8lxbZK8xv+OpNZ4jK6qh50hJSOpTuU2JM6Y26xCMG6mlG27oBvolkbBkzLTubhzvxmjl7YVCMYTUy91Zsrv/JxTJelHraGwl7dj1dxJd83o+rMqvp4zD66quL8t8YV2HjUQUCDKHMIGLNPxUphI75cYQhbbejg7Q3Guy2wMpfJOcIqJxQqvkGaFtmo0mRsA9kTzWUYUu8GFitoxpXO8CGOdnuKfXZkiTbwHlb6dX8mgxEYS7hZsPbTl+YuPxCeBclYwsz9+MNjQDUWcQGNk11U9E1w2QvumtvOL4zxk7v2YshZ7aWOd0omFlUzmRz+h7Qk/zvtPCqmecZ79hM9e+9husew9rlVCjCs6aal
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(39860400002)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(6916009)(66556008)(66476007)(66946007)(4326008)(8676002)(8936002)(316002)(6486002)(478600001)(5660300002)(7416002)(4744005)(36756003)(41300700001)(33656002)(2906002)(86362001)(83380400001)(2616005)(26005)(1076003)(38100700002)(6506007)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JoXx+Sv4gtlqTMtvfAYpE23kkcoDLBR1MdFBF3IJYMRaSwxDpA/3OJ6yMB8c?=
+ =?us-ascii?Q?ym3gOyBImKwXAEnTXA1UVqGADwFN2+xbY+4DLkHMG6amOBPt3a0ydKh77jdt?=
+ =?us-ascii?Q?h3g4xd8gm+ZhhovbZSFfGWApSzD7tvi3er/MDyjhScwbm4aNeArgo4loB/QA?=
+ =?us-ascii?Q?vCvQgQA1/Fp/5j6eelMhfnB8ZQHtS9+sKs5hBqhSyOjvOu+7ZHqlJKI6IttX?=
+ =?us-ascii?Q?qFagmnqX99jssAkABd/U83Yug2V5/dwbJhUw3m4NzhXyhy3DwJS72nrkUAWK?=
+ =?us-ascii?Q?AC8eAKD8lhaBUDFmtrwGnGtaUl9qQdrec4eu64T95+6eM3Bo04TK9a/g0/09?=
+ =?us-ascii?Q?AJANThm/s18iu6RZazaasCqhLsVYW0d3kTXYoUbG2kKYPd/Dp7C0LaBS+EHh?=
+ =?us-ascii?Q?NbNqQSYSE47DOBB1yzNfcVcvv9Yxersa6/R/yNilwHdwJ+YIEFDx2k/3IXjv?=
+ =?us-ascii?Q?wS3h+kTxbHBFiE2s1UEV8uWmUtExNFDlbZ85gphNSUK0zchHpcqqdPu6q3DZ?=
+ =?us-ascii?Q?Ibq7UeN720L1O5SLyFy+FPJiFZiL/4pCWLRz07pSE+8b+mXldjDGfqVigAbi?=
+ =?us-ascii?Q?uc3Xu2ucFk1x1NjAFAQiopCtWupmCFlY3p1Z/wO8RhvWlk9YTZB61F/042FA?=
+ =?us-ascii?Q?MRUQRXxHQ6Z4gn1tQaSzNMRhncTWTUMkDQLgEjo8X8aBrctfVe1mQoj3QTrD?=
+ =?us-ascii?Q?Wv+S3eV//fFWOWlyCcyU41T6w+sA1UU1Qv6oYfyLu4rQDJdqmyri1aIP+F6O?=
+ =?us-ascii?Q?VwGH/ThWIW0YWrAmI74VQrdgrSQuKntdJVUZT8L+hKuzZKYvtSGKJM8kQtOE?=
+ =?us-ascii?Q?VPzCNfLplkqhc5RQvEXHWAdjMQixlfOAJUHhQlDbJju1aN2o3fOUXOPpxh/I?=
+ =?us-ascii?Q?jLrf6PTjbN2TXxOieFNK9oW/c5SVts1XoNwKYnI6cEzr3eFL7czYuJHbcwF9?=
+ =?us-ascii?Q?3Y8XhbEJsNWC1slB0VrANw407mRLvv61XDKuzmWkMBXNT/4v/I66Lem3nah2?=
+ =?us-ascii?Q?Vdp1sS+8YJ3n3aTfF3gB+aWej/hC6ziSaG63MoHGogKpGFIlvWJU9QUxGOAt?=
+ =?us-ascii?Q?UG06E2D7i0jB1228VA1BFgxs7884yAs/UYK6EjFcEqsHqDfEpEnK3EDhImyC?=
+ =?us-ascii?Q?MF9blQFefUByLJ27PzSMt9y3Dry+FiA5KwYsfad1wo+eWcuiloapoqRRhpgV?=
+ =?us-ascii?Q?0zXNyrcch9xwDEV/4RG9Mf90p5TmeG6QueeYnk7iFVGVCWhFP5MaL7+GuPVi?=
+ =?us-ascii?Q?6Vk4WpSOCtIqQ6Pha8gk7mU0zXsRy88tcXWr35Vrv3oGeXr7BkNVvQJjeLNa?=
+ =?us-ascii?Q?XDw58Y0MUdeHwhrS4giNr2z5xCZV0REp48huyme32T+vSSFtM4p0KHx/HR6r?=
+ =?us-ascii?Q?pvfxWPvQKk1Ei2HCxI2wiCrPcxmKRwzrCGWUipF0MvPt9f3Hir7sLk+QPXDP?=
+ =?us-ascii?Q?ysGOIXsZTxD3d8RQLHEy3sIQydpbnMmX2DE1gG5tRcoG2LddCm4LkTGI5Ijr?=
+ =?us-ascii?Q?mS+zMoQtm1ZQDPIaSxiO92+g0Bw2myhWbNZngyGFm68JqZu5vQiUMOuKm5af?=
+ =?us-ascii?Q?YoGDy16nQoauixEWNrNZ1Pb13pjfpcollECSkV8s?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 967ebbbd-898d-4276-0001-08dbf4f79ba3
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 18:34:10.9386
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PBYqUnFKSnMUoUVA8/MvExULWD02tNTZIyb722mvijODi3CfNjf1+5nCfNh+JyEB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB8461
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 07:16:14PM +0100, Peter Zijlstra wrote:
-> On Mon, Dec 04, 2023 at 06:25:34PM +0100, Jiri Olsa wrote:
-> 
-> > that boots properly for me but gives crash below when running bpf tests
-> 
-> OK, more funnies..
-> 
-> > [  482.145182][  T699] RIP: 0010:bpf_for_each_array_elem+0xbb/0x120
-> > [  482.145672][  T699] Code: 4c 01 f5 89 5c 24 04 4c 89 e7 48 8d 74 24 04 48 89 ea 4c 89 fd 4c 89 f9 45 31 c0 4d 89 eb 41 ba ef 86 cd 67 45 03 53 f1 74 02 <0f> 0b 41 ff d3 0f 1f 00 48 85 c0 75 0e 48 8d 43 01 41 8b 4c 24 24
-> > [  482.147221][  T699] RSP: 0018:ffffc900017e3e88 EFLAGS: 00010217
-> > [  482.147702][  T699] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc900017e3ed8
-> > [  482.152162][  T699] RDX: ffff888152eb0210 RSI: ffffc900017e3e8c RDI: ffff888152eb0000
-> > [  482.152770][  T699] RBP: ffffc900017e3ed8 R08: 0000000000000000 R09: 0000000000000000
-> > [  482.153350][  T699] R10: 000000004704ef28 R11: ffffffffa0012774 R12: ffff888152eb0000
-> > [  482.153951][  T699] R13: ffffffffa0012774 R14: ffff888152eb0210 R15: ffffc900017e3ed8
-> > [  482.154554][  T699] FS:  00007fa60d4fdd00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
-> > [  482.155138][  T699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  482.155564][  T699] CR2: 00007fa60d7d8000 CR3: 00000001502a2005 CR4: 0000000000770ef0
-> > [  482.156095][  T699] PKRU: 55555554
-> > [  482.156349][  T699] Call Trace:
-> > [  482.156596][  T699]  <TASK>
-> > [  482.156816][  T699]  ? __die_body+0x68/0xb0
-> > [  482.157138][  T699]  ? die+0xba/0xe0
-> > [  482.157456][  T699]  ? do_trap+0xa5/0x180
-> > [  482.157826][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.158277][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.158711][  T699]  ? do_error_trap+0xc4/0x140
-> > [  482.159052][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.159506][  T699]  ? handle_invalid_op+0x2c/0x40
-> > [  482.159906][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.160990][  T699]  ? exc_invalid_op+0x38/0x60
-> > [  482.161375][  T699]  ? asm_exc_invalid_op+0x1a/0x20
-> > [  482.161788][  T699]  ? 0xffffffffa0012774
-> > [  482.162149][  T699]  ? 0xffffffffa0012774
-> > [  482.162513][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.162905][  T699]  bpf_prog_ca45ea7f9cb8ac1a_inner_map+0x94/0x98
-> > [  482.163471][  T699]  bpf_trampoline_6442549234+0x47/0x1000
-> 
-> Looks like this trips an #UD, I'll go try and figure out what this
-> bpf_for_each_array_elem() does to cause this. Looks like it has an
-> indirect call, could be the callback_fn thing has a CFI mis-match.
+On Sat, Dec 02, 2023 at 05:22:16PM +0800, Yan Zhao wrote:
+> +config IOMMUFD_KVM_HWPT
+> +	bool "Supports KVM managed HW page tables"
+> +	default n
+> +	help
+> +	  Selecting this option will allow IOMMUFD to create IOMMU stage 2
+> +	  page tables whose paging structure and mappings are managed by
+> +	  KVM MMU. IOMMUFD serves as proxy between KVM and IOMMU driver to
+> +	  allow IOMMU driver to get paging structure meta data and cache
+> +	  invalidate notifications from KVM.
 
-So afaict this is used through bpf_for_each_map_elem(), where the
-argument still is properly callback_fn. However, in the desriptor
-bpf_for_each_map_elem_proto the argument gets described as:
-ARG_PTR_TO_FUNC, which in turn has a comment like:
+I'm not sure we need a user selectable kconfig for this..
 
-  ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
+Just turn it on if we have kvm turned on an iommu driver implements it
 
-Which to me sounds like there is definite type punning involved. The
-call in bpf_for_each_array_elem() is a regular C indirect call, which
-gets adorned with the kCFI magic.
-
-But I doubt the BPF function that gets used gets the correct matching
-bits on.
-
-TL;DR, I think this is a pre-existing problem with kCFI + eBPF and not
-caused by my patches.
-
-Could any of you bpf knowledgeable folks please explain me exactly what
-gets used as the function pointer in this case? -- I'm not sure I can
-follow along well enough to begin looking for a solution at this point
-:/
+Jason
