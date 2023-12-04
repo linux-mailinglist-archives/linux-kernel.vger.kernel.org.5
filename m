@@ -2,133 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F73803C9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D845803C9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbjLDSQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:16:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
+        id S232596AbjLDSQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:16:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbjLDSQw (ORCPT
+        with ESMTP id S231783AbjLDSQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:16:52 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390D9CA;
-        Mon,  4 Dec 2023 10:16:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Fn5JFW3pO8Hqb0ORpcMbTe073F/4Aqe2CPCyASjreaI=; b=am2z3bzAwP5fDSazla1LoLuAIW
-        7UNSeQLcPhNDSKwjU2Ynb3sdQEpdjr8Og7fJUTUaYqJmzIJ5IZoSnyUmqckF2pltTDnF2k5LTE0GH
-        RzSf2Hae7KnpHMR/RBb4YoTG4fCBmGwdMvFP4JqYFI1t+zlrcDY7DG5O5cdNo22vxrX1rralbVNgK
-        QXBTLkH7YJhtAx5UA1j9cdtIu9NYDmrgI/fRBt0cFlv0Yy0vCgeZpb213bWM40LDgqPS9gmHY7yDZ
-        1iLK/lxekfYTdOJ1O9gOicnVTb4T0l/NyJSCK3FfV8Sk1aIAdZaqEky2baWQI7niPgXUh/7T3YFk8
-        DK/o29cw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rADUO-004Pbk-0b;
-        Mon, 04 Dec 2023 18:16:16 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DACA1300427; Mon,  4 Dec 2023 19:16:14 +0100 (CET)
-Date:   Mon, 4 Dec 2023 19:16:14 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231204181614.GA7299@noisy.programming.kicks-ass.net>
-References: <20231130133630.192490507@infradead.org>
- <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
+        Mon, 4 Dec 2023 13:16:55 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC5D102;
+        Mon,  4 Dec 2023 10:17:01 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-67ac0ef6bb8so8697936d6.1;
+        Mon, 04 Dec 2023 10:17:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701713820; x=1702318620; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zKrXivUU4s4Ix2KPkaOEslUQnUKTTONTEc2Vza38tik=;
+        b=j1HuygikMrss4wFMFaflL5a3Q052DFQw7th+z96H0bHVSeojVlDQ7GuPTTmUI8UcC3
+         ia1ncSq6P3bFs2sIsYVL4PTa0osLuXOX0KH9JOkDcdakzcDcuwy2QaU3HA54ez9a5weZ
+         hryza/0SOF0IHkgR0I3GAy6620Rtf3t462zXKEEa/E8tphp5YK1dMwXeJEypH93EOHdV
+         zKWnwXOGRNnBd2vhpdHJuv8c0HASA245Ig9f++Y4i0skwDbWfJ2nbs2p9TzZ/D2Jsw2c
+         sP/SwOMPIOCZK3/gn0zawuyDTRS/lcpR47880h0Z43Py8jOoG1WPwslcvtKjMfdMN9Ug
+         HyFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701713820; x=1702318620;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zKrXivUU4s4Ix2KPkaOEslUQnUKTTONTEc2Vza38tik=;
+        b=Eo1fJlTdYNxlvwTA8xLdAFmUDVKRiUUcXXxjEQnDAOl227X7bHtX74+srUBCS3cLtN
+         ewLUHTrb5cC5ulapo4UKDLFD52v9gPDMq4uWVPX/F7NgtCeu6Gbv6eVTnHwbosFxIBQ/
+         05Y1jvZXG6rXzk7y0lNJB+vVhWgr2SMfeTPnuI5NyAQmJ+yca4TVXML8+ZbtK4GPYSGf
+         I7zZ7iQr/Y6c6KaH1AdEdFVrhjz3lK4fPq6qLB74egVPyPcEfkNYmEzNMCQ0lhfRhS6c
+         JLGirycTQ+vYi6PHZm29z14mzNPzRXA/sGijPvAPNYnZZUn3joZfOmFZKctz2FOWSuCA
+         FotQ==
+X-Gm-Message-State: AOJu0YwLYF815m/ypcI7NP9DS3HMAlWzuEZjtRhIW15HhEVpFkFzVhyl
+        EgoNQx0noNqV1uNZdIIiclu4gLQ/v17WSjDq0X0=
+X-Google-Smtp-Source: AGHT+IENXN54JfD+GXTqScuy8jrajcws4TOEJiG6ht7UYF6f/npWH1zpa4uDEUtYwikXtEemxs1oijBNhnLkIElizdQ=
+X-Received: by 2002:a0c:fec7:0:b0:67a:cafa:ce13 with SMTP id
+ z7-20020a0cfec7000000b0067acaface13mr1629751qvs.53.1701713820408; Mon, 04 Dec
+ 2023 10:17:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW4LjmUKj1q6RWdL@krava>
+References: <20231204180603.470421-1-gnstark@salutedevices.com> <20231204180603.470421-5-gnstark@salutedevices.com>
+In-Reply-To: <20231204180603.470421-5-gnstark@salutedevices.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 4 Dec 2023 20:16:24 +0200
+Message-ID: <CAHp75VeNhGFtmjQOR5K52bmb3t6ufqtMoS-1mLkk_swDgO+-gg@mail.gmail.com>
+Subject: Re: [PATCH v2 04/10] leds: aw200xx: use devm API to cleanup module's resources
+To:     George Stark <gnstark@salutedevices.com>
+Cc:     pavel@ucw.cz, lee@kernel.org, vadimp@nvidia.com,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        hdegoede@redhat.com, mazziesaccount@gmail.com, jic23@kernel.org,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel@salutedevices.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 06:25:34PM +0100, Jiri Olsa wrote:
+On Mon, Dec 4, 2023 at 8:07=E2=80=AFPM George Stark <gnstark@salutedevices.=
+com> wrote:
+>
+> In this driver LEDs are registered using devm_led_classdev_register()
+> so they are automatically unregistered after module's remove() is done.
+> led_classdev_unregister() calls module's led_set_brightness() to turn off
+> the LEDs and that callback uses resources which were destroyed already
+> in module's remove() so use devm API instead of remove().
 
-> that boots properly for me but gives crash below when running bpf tests
+...
 
-OK, more funnies..
+> +static void aw200xx_chip_reset_action(void *data)
+> +{
+> +       const struct aw200xx *chip =3D (struct aw200xx *)data;
+> +
+> +       aw200xx_chip_reset(chip);
+> +}
+> +
+> +static void aw200xx_disable_action(void *data)
+> +{
+> +       const struct aw200xx *chip =3D (struct aw200xx *)data;
+> +
+> +       aw200xx_disable(chip);
+> +}
 
-> [  482.145182][  T699] RIP: 0010:bpf_for_each_array_elem+0xbb/0x120
-> [  482.145672][  T699] Code: 4c 01 f5 89 5c 24 04 4c 89 e7 48 8d 74 24 04 48 89 ea 4c 89 fd 4c 89 f9 45 31 c0 4d 89 eb 41 ba ef 86 cd 67 45 03 53 f1 74 02 <0f> 0b 41 ff d3 0f 1f 00 48 85 c0 75 0e 48 8d 43 01 41 8b 4c 24 24
-> [  482.147221][  T699] RSP: 0018:ffffc900017e3e88 EFLAGS: 00010217
-> [  482.147702][  T699] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc900017e3ed8
-> [  482.152162][  T699] RDX: ffff888152eb0210 RSI: ffffc900017e3e8c RDI: ffff888152eb0000
-> [  482.152770][  T699] RBP: ffffc900017e3ed8 R08: 0000000000000000 R09: 0000000000000000
-> [  482.153350][  T699] R10: 000000004704ef28 R11: ffffffffa0012774 R12: ffff888152eb0000
-> [  482.153951][  T699] R13: ffffffffa0012774 R14: ffff888152eb0210 R15: ffffc900017e3ed8
-> [  482.154554][  T699] FS:  00007fa60d4fdd00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
-> [  482.155138][  T699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  482.155564][  T699] CR2: 00007fa60d7d8000 CR3: 00000001502a2005 CR4: 0000000000770ef0
-> [  482.156095][  T699] PKRU: 55555554
-> [  482.156349][  T699] Call Trace:
-> [  482.156596][  T699]  <TASK>
-> [  482.156816][  T699]  ? __die_body+0x68/0xb0
-> [  482.157138][  T699]  ? die+0xba/0xe0
-> [  482.157456][  T699]  ? do_trap+0xa5/0x180
-> [  482.157826][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> [  482.158277][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> [  482.158711][  T699]  ? do_error_trap+0xc4/0x140
-> [  482.159052][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> [  482.159506][  T699]  ? handle_invalid_op+0x2c/0x40
-> [  482.159906][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> [  482.160990][  T699]  ? exc_invalid_op+0x38/0x60
-> [  482.161375][  T699]  ? asm_exc_invalid_op+0x1a/0x20
-> [  482.161788][  T699]  ? 0xffffffffa0012774
-> [  482.162149][  T699]  ? 0xffffffffa0012774
-> [  482.162513][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> [  482.162905][  T699]  bpf_prog_ca45ea7f9cb8ac1a_inner_map+0x94/0x98
-> [  482.163471][  T699]  bpf_trampoline_6442549234+0x47/0x1000
+They can be made oneliners.
 
-Looks like this trips an #UD, I'll go try and figure out what this
-bpf_for_each_array_elem() does to cause this. Looks like it has an
-indirect call, could be the callback_fn thing has a CFI mis-match.
+...
 
+> +       if (devm_mutex_init(&client->dev, &chip->mutex))
+> +               return -ENOMEM;
 
+Do not shadow the real error code.
+
+--=20
+With Best Regards,
+Andy Shevchenko
