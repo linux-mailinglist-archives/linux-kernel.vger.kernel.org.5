@@ -2,156 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64196803729
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C73A80373A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbjLDOmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:42:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
+        id S1345910AbjLDOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:44:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233602AbjLDOmY (ORCPT
+        with ESMTP id S235874AbjLDOoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:42:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E50DA9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:42:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB7D9C433C7;
-        Mon,  4 Dec 2023 14:42:27 +0000 (UTC)
-Message-ID: <5bc3e0e7-36b4-4553-8a2a-353fe533fe78@xs4all.nl>
-Date:   Mon, 4 Dec 2023 15:42:26 +0100
+        Mon, 4 Dec 2023 09:44:15 -0500
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA8EFD;
+        Mon,  4 Dec 2023 06:44:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:To:From; bh=EhQi3onL9GpEqJYUYdTVsT5Q2f0NwXP08T0ndFJ/c7M=; b=aTxlUtH06
+        VlLvCE9ceDi8kZAqPwZofP2Wp9wkcSYAWChi0ExMNgvIzt+1sbkygWUSu/qkm5fD6fdnFAwM0tiy6
+        Nr9uCHWMmqY3npFk8DCYOgKus5MJ22786Ii2KZJghUQN9Jea+POrOkaDZiYFt0gn/n9Xw28R3fI49
+        28d9t3Xs=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1rAAAs-0003d8-1y; Mon, 04 Dec 2023 14:43:54 +0000
+Received: from 54-240-197-231.amazon.com ([54.240.197.231] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1rAAAr-00088g-Ng; Mon, 04 Dec 2023 14:43:53 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, Shuah Khan <shuah@kernel.org>,
+        kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v10 00/19] KVM: xen: update shared_info and vcpu_info handling
+Date:   Mon,  4 Dec 2023 14:43:15 +0000
+Message-Id: <20231204144334.910-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 17/36] media: test-drivers: Fix misuse of
- min_buffers_needed field
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        matt.ranostay@konsulko.com
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, kernel@collabora.com,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-References: <20231204132323.22811-1-benjamin.gaignard@collabora.com>
- <20231204132323.22811-18-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231204132323.22811-18-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 14:23, Benjamin Gaignard wrote:
-> 'min_buffers_needed' is suppose to be used to indicate the number
-> of buffers needed by DMA engine to start streaming.
-> Obvious test-drivers don't use DMA engine and just want to specify
-> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
-> That 'min_reqbufs_allocation' field purpose so use it.
-> While at it rename function parameter.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Shuah Khan <skhan@linuxfoundation.org>
-> CC: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> ---
->  drivers/media/test-drivers/vimc/vimc-capture.c | 2 +-
->  drivers/media/test-drivers/vivid/vivid-core.c  | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
-> index aa944270e716..97693561f1e4 100644
-> --- a/drivers/media/test-drivers/vimc/vimc-capture.c
-> +++ b/drivers/media/test-drivers/vimc/vimc-capture.c
-> @@ -432,7 +432,7 @@ static struct vimc_ent_device *vimc_capture_add(struct vimc_device *vimc,
->  	q->mem_ops = vimc_allocator == VIMC_ALLOCATOR_DMA_CONTIG
->  		   ? &vb2_dma_contig_memops : &vb2_vmalloc_memops;
->  	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
-> -	q->min_buffers_needed = 2;
-> +	q->min_reqbufs_allocation = 2;
->  	q->lock = &vcapture->lock;
->  	q->dev = v4l2_dev->dev;
->  
+From: Paul Durrant <pdurrant@amazon.com>
 
-That's OK.
+There are four new patches in the series over what was in version 9 [1]:
 
-> diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
-> index 353f035fcd19..b4e888ac6016 100644
-> --- a/drivers/media/test-drivers/vivid/vivid-core.c
-> +++ b/drivers/media/test-drivers/vivid/vivid-core.c
-> @@ -861,7 +861,7 @@ static const struct media_device_ops vivid_media_ops = {
->  static int vivid_create_queue(struct vivid_dev *dev,
->  			      struct vb2_queue *q,
->  			      u32 buf_type,
-> -			      unsigned int min_buffers_needed,
-> +			      unsigned int min_reqbufs_allocation,
->  			      const struct vb2_ops *ops)
->  {
->  	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE && dev->multiplanar)
-> @@ -898,7 +898,7 @@ static int vivid_create_queue(struct vivid_dev *dev,
->  	q->mem_ops = allocators[dev->inst] == 1 ? &vb2_dma_contig_memops :
->  						  &vb2_vmalloc_memops;
->  	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
-> -	q->min_buffers_needed = supports_requests[dev->inst] ? 0 : min_buffers_needed;
-> +	q->min_reqbufs_allocation = supports_requests[dev->inst] ? 0 : min_reqbufs_allocation;
+* KVM: xen: separate initialization of shared_info cache and content
+* KVM: xen: (re-)initialize shared_info if guest (32/64-bit) mode is set
 
-But here you can simplify this to:
+These deal with a missing re-initialization of shared_info if either the
+guest or VMM changes the 'long_mode' flag. This was discovred in testing
+when the guest wallclock reverted to the Unix epoch because the pvclock
+information in the shared_info page was not in the correct place, and so
+the guest read zeroes instead.
 
-	q->min_reqbufs_allocation = min_reqbufs_allocation;
+* KVM: xen: don't block on pfncache locks in kvm_xen_set_evtchn_fast()
+* KVM: pfncache: check the need for invalidation under read lock first
 
-The 'supports_requests' restriction is only relevant for q->min_buffers_needed.
+The first of these fixes a bug discovered when compiling the kernel with
+CONFIG_PROVE_RAW_LOCK_NESTING: kvm_xen_set_evtchn_fast() can be called from
+the callback of a HRTIMER_MODE_ABS_HARD timer and hence be executed in
+IRQ context. It should therefore not block on any lock. Thus two
+occurrences of a read_lock() are converted to a read_trylock() which
+kick the code down a slow-path if they fail.
+The second patch removes a 'false' contention on the pfncache lock that
+could result in taking that slow-path: the MMU notifier callback need only
+take a pfncache read lock; it only need take a write lock if a match is
+found.
 
-Regards,
+Apart from these new patches...
 
-	Hans
+* KVM: xen: split up kvm_xen_set_evtchn_fast()
 
->  	q->lock = &dev->mutex;
->  	q->dev = dev->v4l2_dev.dev;
->  	q->supports_requests = supports_requests[dev->inst];
+... has been re-worked to (hopefully) improve readability and also validate
+the 'correct' vcpu_info structure depending on whether the guest is in long
+mode or not.
+
+[1] https://lore.kernel.org/kvm/20231122121822.1042-1-paul@xen.org/
+
+Paul Durrant (19):
+  KVM: pfncache: Add a map helper function
+  KVM: pfncache: remove unnecessary exports
+  KVM: xen: mark guest pages dirty with the pfncache lock held
+  KVM: pfncache: add a mark-dirty helper
+  KVM: pfncache: remove KVM_GUEST_USES_PFN usage
+  KVM: pfncache: stop open-coding offset_in_page()
+  KVM: pfncache: include page offset in uhva and use it consistently
+  KVM: pfncache: allow a cache to be activated with a fixed (userspace)
+    HVA
+  KVM: xen: separate initialization of shared_info cache and content
+  KVM: xen: (re-)initialize shared_info if guest (32/64-bit) mode is set
+  KVM: xen: allow shared_info to be mapped by fixed HVA
+  KVM: xen: allow vcpu_info to be mapped by fixed HVA
+  KVM: selftests / xen: map shared_info using HVA rather than GFN
+  KVM: selftests / xen: re-map vcpu_info using HVA rather than GPA
+  KVM: xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
+  KVM: xen: split up kvm_xen_set_evtchn_fast()
+  KVM: xen: don't block on pfncache locks in kvm_xen_set_evtchn_fast()
+  KVM: pfncache: check the need for invalidation under read lock first
+  KVM: xen: allow vcpu_info content to be 'safely' copied
+
+ Documentation/virt/kvm/api.rst                |  53 ++-
+ arch/x86/kvm/x86.c                            |   7 +-
+ arch/x86/kvm/xen.c                            | 358 +++++++++++-------
+ include/linux/kvm_host.h                      |  40 +-
+ include/linux/kvm_types.h                     |   8 -
+ include/uapi/linux/kvm.h                      |   9 +-
+ .../selftests/kvm/x86_64/xen_shinfo_test.c    |  59 ++-
+ virt/kvm/pfncache.c                           | 185 ++++-----
+ 8 files changed, 461 insertions(+), 258 deletions(-)
+
+
+base-commit: 1ab097653e4dd8d23272d028a61352c23486fd4a
+-- 
+2.39.2
 
