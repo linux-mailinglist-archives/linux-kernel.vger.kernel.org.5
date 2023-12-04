@@ -2,221 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB10803B88
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3039803B8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbjLDR2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49554 "EHLO
+        id S231737AbjLDRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:30:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjLDR2i (ORCPT
+        with ESMTP id S229485AbjLDRaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:28:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B4083
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:28:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32552C433C9;
-        Mon,  4 Dec 2023 17:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701710924;
-        bh=sEKlI3C/mqiBPRMBfT0JN8/Sv+NXXINcYieBw/LbIEQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tjVot5b+m2Io2oBsrBcgpcjM0Bzy0HqqgF1lwjFT4DXwXTEjfVqwC2kidBWh8OPEw
-         C66rIUDLRpZB4azvIZqig/2sxfjnZNooo0zhXkaXsRubyp2aOqVasvBOa7940iFbxn
-         iv10DWkw9819W6X8GgCdPRfkTRB8qBJJhaafwzCT00lpwrwj7RxueESa2AnGMSibGB
-         carz7WLzuW+IykWwl9TPs1jXTu5YpoMn0RKXCscNUilbzCLJ/fM6Z2M/3uIU4l0cZn
-         yukOyPAknMFrm3n5nReCgtpU+CYxEPy42HMvFiCCnwas3Jlr6QeyKwUsu3o/eAgc7A
-         cwGzfWT2+TmBA==
-Date:   Mon, 4 Dec 2023 22:58:29 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Luca Weiss <luca.weiss@fairphone.com>
-Cc:     Nitin Rawat <quic_nitirawa@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add UFS nodes for
- sc7280 soc
-Message-ID: <20231204172829.GA69580@thinkpad>
-References: <20231204-sc7280-ufs-v5-0-926ceed550da@fairphone.com>
- <20231204-sc7280-ufs-v5-2-926ceed550da@fairphone.com>
- <621388b9-dcee-4af2-9763-e5d623d722b7@quicinc.com>
- <CXFJNBNKTRHH.2CS6TO2MEGJWL@fairphone.com>
+        Mon, 4 Dec 2023 12:30:07 -0500
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5E583
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:30:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701711013; x=1733247013;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=fQvqyzhKNSpH75iOyv0njx6smvL8ePbeR9+sM58QB7c=;
+  b=fHewXLSBvrBymwFtXRQxYOpue4DLbsCrrahQnan88K2/wAtI8egyQH+p
+   30DjARUDdHNXAmFsXQzX3xhsZkKlSt1RUBEuz7c+gub+M8UnMoVpYkOYo
+   jqurDPvP7MIFgJsYQiwWkGjlQRZlkp3nWTeq3BfZsuTEnu0NTzmAQX7xa
+   A=;
+X-IronPort-AV: E=Sophos;i="6.04,250,1695686400"; 
+   d="scan'208";a="48146294"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-7dc0ecf1.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:30:09 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+        by email-inbound-relay-iad-1e-m6i4x-7dc0ecf1.us-east-1.amazon.com (Postfix) with ESMTPS id 0A36F80E0A;
+        Mon,  4 Dec 2023 17:30:04 +0000 (UTC)
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.38.20:51872]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.8.2:2525] with esmtp (Farcaster)
+ id 5544904f-6150-4258-b571-018841d91ae0; Mon, 4 Dec 2023 17:30:04 +0000 (UTC)
+X-Farcaster-Flow-ID: 5544904f-6150-4258-b571-018841d91ae0
+Received: from EX19D037UWC002.ant.amazon.com (10.13.139.250) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Mon, 4 Dec 2023 17:30:03 +0000
+Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
+ EX19D037UWC002.ant.amazon.com (10.13.139.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 4 Dec 2023 17:30:02 +0000
+Received: from dev-dsk-jalliste-1c-e3349c3e.eu-west-1.amazon.com
+ (10.13.244.142) by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39 via Frontend Transport; Mon, 4 Dec 2023 17:30:01 +0000
+From:   Jack Allister <jalliste@amazon.com>
+To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
+        <rafael@kernel.org>, <len.brown@intel.com>
+CC:     Jack Allister <jalliste@amazon.com>,
+        Paul Durrant <pdurrant@amazon.com>, Jue Wang <juew@amazon.com>,
+        Usama Arif <usama.arif@bytedance.com>, <x86@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at performance
+Date:   Mon, 4 Dec 2023 17:28:48 +0000
+Message-ID: <20231204172849.18753-1-jalliste@amazon.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CXFJNBNKTRHH.2CS6TO2MEGJWL@fairphone.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 01:21:42PM +0100, Luca Weiss wrote:
-> On Mon Dec 4, 2023 at 1:15 PM CET, Nitin Rawat wrote:
-> >
-> >
-> > On 12/4/2023 3:54 PM, Luca Weiss wrote:
-> > > From: Nitin Rawat <quic_nitirawa@quicinc.com>
-> > > 
-> > > Add UFS host controller and PHY nodes for sc7280 soc.
-> > > 
-> > > Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> > > Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > > Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org> # QCM6490 FP5
-> > > [luca: various cleanups and additions as written in the cover letter]
-> > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> > > ---
-> > >   arch/arm64/boot/dts/qcom/sc7280.dtsi | 74 +++++++++++++++++++++++++++++++++++-
-> > >   1 file changed, 73 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > index 04bf85b0399a..8b08569f2191 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > @@ -15,6 +15,7 @@
-> > >   #include <dt-bindings/dma/qcom-gpi.h>
-> > >   #include <dt-bindings/firmware/qcom,scm.h>
-> > >   #include <dt-bindings/gpio/gpio.h>
-> > > +#include <dt-bindings/interconnect/qcom,icc.h>
-> > >   #include <dt-bindings/interconnect/qcom,osm-l3.h>
-> > >   #include <dt-bindings/interconnect/qcom,sc7280.h>
-> > >   #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > @@ -906,7 +907,7 @@ gcc: clock-controller@100000 {
-> > >   			clocks = <&rpmhcc RPMH_CXO_CLK>,
-> > >   				 <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
-> > >   				 <0>, <&pcie1_phy>,
-> > > -				 <0>, <0>, <0>,
-> > > +				 <&ufs_mem_phy 0>, <&ufs_mem_phy 1>, <&ufs_mem_phy 2>,
-> > >   				 <&usb_1_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
-> > >   			clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
-> > >   				      "pcie_0_pipe_clk", "pcie_1_pipe_clk",
-> > > @@ -2238,6 +2239,77 @@ pcie1_phy: phy@1c0e000 {
-> > >   			status = "disabled";
-> > >   		};
-> > >   
-> > > +		ufs_mem_hc: ufs@1d84000 {
-> > > +			compatible = "qcom,sc7280-ufshc", "qcom,ufshc",
-> > > +				     "jedec,ufs-2.0";
-> > > +			reg = <0x0 0x01d84000 0x0 0x3000>;
-> > > +			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
-> > > +			phys = <&ufs_mem_phy>;
-> > > +			phy-names = "ufsphy";
-> > > +			lanes-per-direction = <2>;
-> > > +			#reset-cells = <1>;
-> > > +			resets = <&gcc GCC_UFS_PHY_BCR>;
-> > > +			reset-names = "rst";
-> > > +
-> > > +			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
-> > > +			required-opps = <&rpmhpd_opp_nom>;
-> > > +
-> > > +			iommus = <&apps_smmu 0x80 0x0>;
-> > > +			dma-coherent;
-> > > +
-> > > +			interconnects = <&aggre1_noc MASTER_UFS_MEM QCOM_ICC_TAG_ALWAYS
-> > > +					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
-> > > +					<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
-> > > +					 &cnoc2 SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ALWAYS>;
-> > > +			interconnect-names = "ufs-ddr", "cpu-ufs";
-> > > +
-> > > +			clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
-> > > +				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
-> > > +				 <&gcc GCC_UFS_PHY_AHB_CLK>,
-> > > +				 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
-> > > +				 <&rpmhcc RPMH_CXO_CLK>,
-> > > +				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
-> > > +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
-> > > +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
-> > > +			clock-names = "core_clk",
-> > > +				      "bus_aggr_clk",
-> > > +				      "iface_clk",
-> > > +				      "core_clk_unipro",
-> > > +				      "ref_clk",
-> > > +				      "tx_lane0_sync_clk",
-> > > +				      "rx_lane0_sync_clk",
-> > > +				      "rx_lane1_sync_clk";
-> > > +			freq-table-hz =
-> > > +				<75000000 300000000>,
-> > > +				<0 0>,
-> > > +				<0 0>,
-> > > +				<75000000 300000000>,
-> > > +				<0 0>,
-> > > +				<0 0>,
-> > > +				<0 0>,
-> > > +				<0 0>;
-> > > +			status = "disabled";
-> > > +		};
-> > > +
-> > > +		ufs_mem_phy: phy@1d87000 {
-> > > +			compatible = "qcom,sc7280-qmp-ufs-phy";
-> > > +			reg = <0x0 0x01d87000 0x0 0xe00>;
-> > > +			clocks = <&rpmhcc RPMH_CXO_CLK>,
-> > > +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
-> > > +				 <&gcc GCC_UFS_1_CLKREF_EN>;
-> > > +			clock-names = "ref", "ref_aux", "qref";
-> > > +
-> > > +			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
-> 
-> Hi Nitin,
-> 
-> >
-> > GCC_UFS_PHY_GDSC is UFS controller GDSC. For sc7280 Phy we don't need this.
-> 
-> In the current dt-bindings the power-domains property is required.
-> 
-> Is there another power-domain for the PHY to use, or do we need to
-> adjust the bindings to not require power-domains property for ufs phy on
-> sc7280?
-> 
+There are certain scenarios where it may be intentional that the EPB was
+set at to 0/ENERGY_PERF_BIAS_PERFORMANCE on kernel boot. For example, in
+data centers a kexec/live-update of the kernel may be performed regularly.
 
-PHYs are backed by MX power domain. So you should use that.
+Usually this live-update is time critical and defaulting of the bias back
+to ENERGY_PERF_BIAS_NORMAL may actually be detrimental to the overall
+update time if processors' time to ramp up/boost are affected.
 
-> Also, with "PHY" in the name, it's interesting that this is not for the
-> phy ;)
-> 
+This patch introduces a kernel command line "intel_epb_keep_performance"
+which will leave the EPB at performance if during the restoration code path
+it is detected as such.
 
-Yes, confusing indeed. But the controllers (PCIe, UFS, USB etc...) are backed by
-GDSCs and all the analog components (PHYs) belong to MX domain since it is kind
-of always ON.
+Signed-off-by: Jack Allister <jalliste@amazon.com>
+Cc: Paul Durrant <pdurrant@amazon.com>
+Cc: Jue Wang <juew@amazon.com>
+Cc: Usama Arif <usama.arif@bytedance.com>
+---
+ arch/x86/kernel/cpu/intel_epb.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-I'll submit a series to fix this for the rest of the SoCs.
-
-- Mani
-
-> Regards
-> Luca
-> 
-> >
-> > > +
-> > > +			resets = <&ufs_mem_hc 0>;
-> > > +			reset-names = "ufsphy";
-> > > +
-> > > +			#clock-cells = <1>;
-> > > +			#phy-cells = <0>;
-> > > +
-> > > +			status = "disabled";
-> > > +		};
-> > > +
-> > >   		ipa: ipa@1e40000 {
-> > >   			compatible = "qcom,sc7280-ipa";
-> > >   
-> > > 
-> 
-
+diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
+index e4c3ba91321c..0c7dd092f723 100644
+--- a/arch/x86/kernel/cpu/intel_epb.c
++++ b/arch/x86/kernel/cpu/intel_epb.c
+@@ -50,7 +50,8 @@
+  * the OS will do that anyway.  That sometimes is problematic, as it may cause
+  * the system battery to drain too fast, for example, so it is better to adjust
+  * it on CPU bring-up and if the initial EPB value for a given CPU is 0, the
+- * kernel changes it to 6 ('normal').
++ * kernel changes it to 6 ('normal'). This however is overridable via
++ * intel_epb_keep_performance if required.
+  */
+ 
+ static DEFINE_PER_CPU(u8, saved_epb);
+@@ -75,6 +76,8 @@ static u8 energ_perf_values[] = {
+ 	[EPB_INDEX_POWERSAVE] = ENERGY_PERF_BIAS_POWERSAVE,
+ };
+ 
++static bool intel_epb_keep_performance __read_mostly;
++
+ static int intel_epb_save(void)
+ {
+ 	u64 epb;
+@@ -107,8 +110,12 @@ static void intel_epb_restore(void)
+ 		 */
+ 		val = epb & EPB_MASK;
+ 		if (val == ENERGY_PERF_BIAS_PERFORMANCE) {
+-			val = energ_perf_values[EPB_INDEX_NORMAL];
+-			pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
++			if (!intel_epb_keep_performance) {
++				val = energ_perf_values[EPB_INDEX_NORMAL];
++				pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
++			} else {
++				pr_warn_once("ENERGY_PERF_BIAS: Kept at 'performance', no change\n");
++			}
+ 		}
+ 	}
+ 	wrmsrl(MSR_IA32_ENERGY_PERF_BIAS, (epb & ~EPB_MASK) | val);
+@@ -213,6 +220,12 @@ static const struct x86_cpu_id intel_epb_normal[] = {
+ 	{}
+ };
+ 
++static __init int intel_epb_keep_performance_setup(char *str)
++{
++	return kstrtobool(str, &intel_epb_keep_performance);
++}
++early_param("intel_epb_keep_performance", intel_epb_keep_performance_setup);
++
+ static __init int intel_epb_init(void)
+ {
+ 	const struct x86_cpu_id *id = x86_match_cpu(intel_epb_normal);
 -- 
-மணிவண்ணன் சதாசிவம்
+2.40.1
+
