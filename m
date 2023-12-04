@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B5E803B23
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA39F803B25
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbjLDRIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:08:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
+        id S229535AbjLDRI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:08:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjLDRIR (ORCPT
+        with ESMTP id S229561AbjLDRI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:08:17 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F1DCD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:08:23 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b595bf5d2so49443305e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:08:23 -0800 (PST)
+        Mon, 4 Dec 2023 12:08:57 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F502CB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:09:03 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1b7b6bf098so182899066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:09:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1701709702; x=1702314502; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1701709742; x=1702314542; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=eM2Bf2WoC1yvqXGfr4khi6TDVXFpyxPzOUHleHrubpg=;
-        b=W1Hp4fyVhOpqZS8p3cF5mIFuDz6mEbLDXeLzHaub3VV6UMDKtTVKyro0BgOH0+NuRe
-         uadbFzvxY5hDvwX13GifbmGiqGSSk9D/vQ6DWpzoNdY3MqUXdkwjYoAQUt8Mh/V1G5TX
-         3x2aj10HT1RUfMoPYnBrtgh6gfbPG4rV0M+29molgPq5GwezjOm710S8WWvLgfj/eC/8
-         gxLUenkjAlSn3q1I3thxZ7YoFuS7XVgBXkszOAG4j3dGizbd+fXTHR5cMpaMFDIlWf5X
-         t8FzN0DgtERGHyjrmvmkU1aZSmptLB5pYRT8UZxAFky8hR7Ythf8U/5/BrrQQ7dpIccK
-         BiNg==
+        bh=cwXL8BrRM8BseBFb+FVnbs3rnml2/q46Wk4gm1RfHQc=;
+        b=mQ7w64KVcahmF99STsf781e+ZAJbzal+Ez3+SoeyMeGAdWmCdBNdAyLaeiv5I32IVh
+         xDYtwRjaosGN4/NDMZpodkgOozDUlNFBWaUCTkkJ9Exq3TpIVGpHedDgAnver1YWTE3D
+         A/k5ta8nU4A99G5tKOYopSJXtw9LV2um7DlPGFiFXppKQbkp00ecmo+l26U7t2yQ2IpQ
+         yaRgqYNu+zOb2wN2jb9yCVV+SHHXZo7k9ILAZk1XOgfY8KAj2U6/esb7yCVe1szuejdk
+         B2wZXBQ+AtkQ+9XeY5pMM+n5GS2lgSrbYYkQ0l/lXMJpjiP4zKIipFSyAYcGS42Dn33G
+         7msw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701709702; x=1702314502;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1701709742; x=1702314542;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eM2Bf2WoC1yvqXGfr4khi6TDVXFpyxPzOUHleHrubpg=;
-        b=ZENW3NbOsUh7LuGLoi+Fu4U7OTt/OtYrM2ZvW5pgO5pIURsftjsnC5TMC6Xq9lLjuK
-         Kfp9EU1lWzH3IzmFY25VnHMRYUj/2QPVqiQnDAHUjfqIzvpdY3H29eNOTDFUOTQMhrA0
-         BwScvpQ6LktLnd4bY1deb323cHNXuChlm/22xvsxJ9O5+BLHxitUZ9AQ5hr3oHPL0orj
-         3g/xsgjxbbMkFlInSHKTLA54O0jd+x/NExrZ4gHc3aacmykjxj3PNjZiyub8ZHRebMqe
-         G+lX3962bz1dXjRHt+6aTwIgJaJ82HQ5Uf/J4wNoqt9zZwuwU/Tiq4s8QP1KHOv6OFbr
-         WlCw==
-X-Gm-Message-State: AOJu0Yw7JZ1PAUODGK61YXGobG241LQLQUG6c4/X16yuQk6uyNZayeag
-        AEYQx+BpCalfs8v9sH+95BPynA==
-X-Google-Smtp-Source: AGHT+IHsbfqa9QPkIow4yLzsiSHbNp9DKxut6KL9bOx2g6HB59PsiIezFgw/f5llkoaX6xiR1Zr9/A==
-X-Received: by 2002:a05:600c:5247:b0:40b:5e59:99a8 with SMTP id fc7-20020a05600c524700b0040b5e5999a8mr1862808wmb.200.1701709701454;
-        Mon, 04 Dec 2023 09:08:21 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id p6-20020a05600c468600b0040c0902dc22sm6127004wmo.31.2023.12.04.09.08.19
+        bh=cwXL8BrRM8BseBFb+FVnbs3rnml2/q46Wk4gm1RfHQc=;
+        b=uie/ab2JMEElvf2pFldtYcfSv5Pktp1azn9LmC7IPt7lr+RuAWdw6j25Q9wPqnmqX9
+         /wrHk8SfmTueDS9rTPNWzenqtB8P+AH8bWm+pAyZvPpaGCNpO9oWNzq5ty7qV/Ex2G8y
+         nQFqD5+b5aG73EcwMDVYLXBhmz/kNsyPvZoM0/8x4/zW4v72WEC8b8k2DPktxSbbbzWj
+         W390Ow0XO1sWGsLZTQtJe3BIN+wN/vBMxT61XrJ4BtTYRuAfJRXy+O+knkfWFAO/Rxey
+         G8hN/UawCsjGSaOBIkffk8nYTfC4ba921FQxmfZudB/E2OdbJ7tDrsLMetu8mai9lFrc
+         WgpA==
+X-Gm-Message-State: AOJu0YxNmGmUpdlIBes9d7CJzDL+9Ji/bCuqjb/3yLljwBLFVxSvRhPu
+        9nWWMHZst/cUAwXSPs19Ui8ycA==
+X-Google-Smtp-Source: AGHT+IE6/SlKllvBRaAuPlE58JB7LAAvR5NP8IT6OxfCtQahmBOANENbG1qEgyja3170l7I7Cx6YCw==
+X-Received: by 2002:a17:907:100a:b0:a04:e1e7:d14c with SMTP id ox10-20020a170907100a00b00a04e1e7d14cmr5225697ejb.32.1701709741738;
+        Mon, 04 Dec 2023 09:09:01 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:3cb:7bb0:d925:8508:67e3:fb10? ([2a01:e0a:3cb:7bb0:d925:8508:67e3:fb10])
+        by smtp.gmail.com with ESMTPSA id b8-20020aa7c908000000b0054c738b6c31sm17013edt.55.2023.12.04.09.09.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 09:08:20 -0800 (PST)
-Message-ID: <45d63402-bd0f-4593-8e57-042c0753f3e3@arista.com>
-Date:   Mon, 4 Dec 2023 17:08:20 +0000
+        Mon, 04 Dec 2023 09:09:01 -0800 (PST)
+Message-ID: <b66dc60e-78ad-46f6-9ad6-430f288af018@linaro.org>
+Date:   Mon, 4 Dec 2023 18:08:59 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/7] net/tcp: Store SNEs + SEQs on ao_info
+Subject: Re: optee: os: toolchains would include linux target macros likes
+ __linux__
+To:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Randy Li <ayaka@soulik.info>
+Cc:     op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
+References: <bfba8d2c-646d-4d62-9f71-8e388e70f782@soulik.info>
+ <CAHUa44FEkdtA+4AuoQnNEnObKzcUX3qkFD8iV8Z_pGJ7ZPWw2A@mail.gmail.com>
 Content-Language: en-US
-To:     Simon Horman <horms@kernel.org>
-Cc:     David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        netdev@vger.kernel.org
-References: <20231129165721.337302-1-dima@arista.com>
- <20231129165721.337302-7-dima@arista.com> <20231202171612.GC50400@kernel.org>
-From:   Dmitry Safonov <dima@arista.com>
-In-Reply-To: <20231202171612.GC50400@kernel.org>
+From:   Jerome Forissier <jerome.forissier@linaro.org>
+In-Reply-To: <CAHUa44FEkdtA+4AuoQnNEnObKzcUX3qkFD8iV8Z_pGJ7ZPWw2A@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,64 +76,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
 
-On 12/2/23 17:16, Simon Horman wrote:
-> On Wed, Nov 29, 2023 at 04:57:20PM +0000, Dmitry Safonov wrote:
->> RFC 5925 (6.2):
->>> TCP-AO emulates a 64-bit sequence number space by inferring when to
->>> increment the high-order 32-bit portion (the SNE) based on
->>> transitions in the low-order portion (the TCP sequence number).
+
+On 12/4/23 17:34, Jens Wiklander wrote:
+> Hi Randy,
+> 
+> On Mon, Dec 4, 2023 at 2:39 PM Randy Li <ayaka@soulik.info> wrote:
 >>
->> snd_sne and rcv_sne are the upper 4 bytes of extended SEQ number.
->> Unfortunately, reading two 4-bytes pointers can't be performed
->> atomically (without synchronization).
+>> Hello
 >>
->> In order to avoid locks on TCP fastpath, let's just double-account for
->> SEQ changes: snd_una/rcv_nxt will be lower 4 bytes of snd_sne/rcv_sne.
->>
->> Fixes: 64382c71a557 ("net/tcp: Add TCP-AO SNE support")
->> Signed-off-by: Dmitry Safonov <dima@arista.com>
+>> I wonder why Optee OS would use a linux target toolchains but not a bare
+>> metal target(none os)?
 > 
-> ...
-> 
->> diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
->> index 647781080613..b8ef25d4b632 100644
->> --- a/include/net/tcp_ao.h
->> +++ b/include/net/tcp_ao.h
->> @@ -121,8 +121,8 @@ struct tcp_ao_info {
->>  	 * - for time-wait sockets the basis is tw_rcv_nxt/tw_snd_nxt.
->>  	 *   tw_snd_nxt is not expected to change, while tw_rcv_nxt may.
->>  	 */
->> -	u32			snd_sne;
->> -	u32			rcv_sne;
->> +	u64			snd_sne;
->> +	u64			rcv_sne;
->>  	refcount_t		refcnt;		/* Protects twsk destruction */
->>  	struct rcu_head		rcu;
->>  };
-> 
-> Hi Dmitry,
-> 
-> In tcp_ao.c:tcp_ao_connect_init() there is a local
-> variable:
-> 
->         struct tcp_ao_info *ao_info;
-> 
-> And the following assignment occurs:
-> 
->                 ao_info->snd_sne = htonl(tp->write_seq);
-> 
-> Is this still correct in light of the change of the type of snd_sne?
+> I guess it started with that we didn't want to download both one Linux
+> and one bare metal toolchain. We need both AArch32 and AArch64
+> versions so it doubles up.
 
-Thanks for the report.
-Yes, it's correct as lower 4-bytes are initialized as initial SEQ.
-I'll add a cast for it if I'll go with v5 for this patch.
+To expand on this: when building a complete OP-TEE setup like we do with
+https://github.com/OP-TEE/manifest, there are many different runtime
+environments: the Linux kernel, client applications, OP-TEE OS, Trusted
+Applications, EL3 firmware... Some of them require a Linux toolchain
+(the OP-TEE client library, tee-supplicant as well as the client
+applications). So the idea was, if we could build all the software with a
+Linux toolchain, it would simplify things. Since then we found out there
+are caveats but it mostly works.
 
-> 
-> Flagged by Sparse.
-> 
-
-Thanks,
-             Dmitry
-
+-- 
+Jerome
