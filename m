@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CD680391A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A9C80391C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbjLDPqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
+        id S234665AbjLDPqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:46:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjLDPqJ (ORCPT
+        with ESMTP id S230496AbjLDPqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:46:09 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0588B0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:46:15 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-77f0e76c948so73314285a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 07:46:15 -0800 (PST)
+        Mon, 4 Dec 2023 10:46:34 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1279BB0;
+        Mon,  4 Dec 2023 07:46:41 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3333fbbeab9so1629642f8f.2;
+        Mon, 04 Dec 2023 07:46:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701704775; x=1702309575; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y8iquwFJQyk71rcAf7xkyhz3akCPnZ/KEnHmlA88vUE=;
-        b=GSUQDSm5t8HvtbZvi02K5jNSrBWa7EXWLMTt88RQxn3nfqkKvWqrbMnDPMVh63TSIV
-         eChCyvaTYtbgWCaww0/b65ZwY2QcKTK8FQEujdcigBPmRrAKS255b8bOQWrHsA4gAgv6
-         8IvPY1jVhq+2DAkbwsZww2RVGkpP/DlkrZPXyWmliGI6Ttc3S+JzxTQGdPu8uCNh7VfL
-         r9DWo6SBuvho2npytT0Ps0rLLeUKz+yTMEpHwVTeyC6skSaOa3r/1Hwc1wZh6kMJjisG
-         MebYADY5xL32bwjHpUx88YBvBAVX5ZfM0xvDKZK0Hb6AK346EXBNRMKeCEBM19qenGQQ
-         dwqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701704775; x=1702309575;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701704799; x=1702309599; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Y8iquwFJQyk71rcAf7xkyhz3akCPnZ/KEnHmlA88vUE=;
-        b=SU7iFQatmNCZoyEMWBi3uWeV6nHgoK3edkj15UAMm7bz3GR/hJ+snxF7iDjGpmCoiW
-         LywFKgCddR+6J6D5NZHhyLLc/xeWa9K6QMb3mNsQuWiYWYZgvwmAV1tMZujDER2NDCyg
-         g6MaEnYiCT2hYJ/Wb8gKekEdBk4zVT/sbFZTzyh1aVc6WvOQFZvqRI8Jw5yvIzM2TvMl
-         +42Bu24gPdAYoJoZOpQBcXRDJM3fy71gaIMd/MlqPFxWXrLOMsLYjdZnvfloMvLq4bN6
-         dIuu/DyH/Y/ghPbHmf+9bBrkSPJLFk5QUXCdrNjV6xVWTBcpvhYOlOnbqHajFS3s7+zx
-         T6TQ==
-X-Gm-Message-State: AOJu0Yy4pEKwlu1UCROsRVghOvpuxWb3erMuggutBGP4kb12y/KgxMCh
-        NE7dcSRKwdhh6LgV6wo0a9EMpQ==
-X-Google-Smtp-Source: AGHT+IHZ/YjqhcwYOYNjJPJwfMXPr4ZvabEUYITVmxFGu7AYOahIpSZeLYjDRbOsJKMlo5t+5tEaqw==
-X-Received: by 2002:ae9:f808:0:b0:77b:d6fe:8412 with SMTP id x8-20020ae9f808000000b0077bd6fe8412mr5286240qkh.38.1701704774948;
-        Mon, 04 Dec 2023 07:46:14 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id d23-20020a05620a159700b0077d749de2a3sm4355611qkk.67.2023.12.04.07.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 07:46:14 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1rAB9C-00B400-1E;
-        Mon, 04 Dec 2023 11:46:14 -0400
-Date:   Mon, 4 Dec 2023 11:46:14 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        alex.williamson@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio: account iommu allocations
-Message-ID: <20231204154614.GO1489931@ziepe.ca>
-References: <20231130200900.2320829-1-pasha.tatashin@soleen.com>
+        bh=amuIbHDzAqT6Bi8G+JeF8+U+6uTvPFyg5L8vg4OnGtE=;
+        b=jiNBf39KnHXR+xpCcNzLvlEARTxj22HWfK5HZx+B0wDkr4HXzBxHIJUvskI+bQP+OK
+         PtCyJoZ0kaGdJK7atwPF2AQ+jUipJE5CsC63oWFan5zpI2sSVgyerJDaPUUyXnoqV/09
+         oAXn2couPit2yH7PL0JXCde30LszbobSmPKk2yz8L8XseHoTefME9oxQ/vNm3YCfuKzl
+         24dGOQVisG8JwRDHBfYTTLUpfpUfigVXHWQ4C5sWv9Nt1kPqVZJYm+gJGD1a07V9o0jt
+         +Jk1QU9STysfLp+wHejrdmACL4B3OPcstLzDhtOPujEvZAxF3QQ8ejSupFNbT484FFq3
+         rlKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701704799; x=1702309599;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=amuIbHDzAqT6Bi8G+JeF8+U+6uTvPFyg5L8vg4OnGtE=;
+        b=kALgXUE/GQ9L58wwYQy1yyC9Vugno2nLP0m4QOsaXFIC63jCbPvdG2ahR6Mkrz/NAn
+         8DtJn7i0vJMUoH+oNtiOZaGr9uzmxWSrxV3KJr1req5HSXEN63k9jiR5VxcDVUtz4gMI
+         flYK+NnHL9n5/L8ZitYOA4wfL69zJFdMtBa4ziiaU0/uinoSCsyK9uva9Cn7VcOeMjqy
+         Unlw5IzL3/26MalmrbNISa/NzHeh4bDAAFrQJxbrPt57ksEW0eocmJNOso9Pchwpf0S6
+         fy260GjaeKQbfhv61DPbMksw2sCvZiaAXyx96V0uEvwf4hoZfYEcMfAY2+U9eLK6nzsG
+         T1kQ==
+X-Gm-Message-State: AOJu0YwkM2ET+jLSfHkdi0yDA5fAJzHK4nBXH55oq4mWnO/ZejeBkN8n
+        1NGxigWWtOb4QqMkMQq0pHYiL3bvb9capqg5gIQ=
+X-Google-Smtp-Source: AGHT+IFnfE01G1Fydy8ah3RTw57Wy7GZBdDIq6Kik/wzS2EFcysgajtUkf8AxStMS/FZ+lMMmn4QQLvddMETW2/0lIc=
+X-Received: by 2002:a5d:4534:0:b0:333:2fd2:68f2 with SMTP id
+ j20-20020a5d4534000000b003332fd268f2mr3128201wra.133.1701704799369; Mon, 04
+ Dec 2023 07:46:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130200900.2320829-1-pasha.tatashin@soleen.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231130205010.it.412-kees@kernel.org>
+In-Reply-To: <20231130205010.it.412-kees@kernel.org>
+From:   Ronald Monthero <debug.penguin32@gmail.com>
+Date:   Tue, 5 Dec 2023 01:46:27 +1000
+Message-ID: <CALk6UxrWjHAfUXQZF4UcA-iwW92gpmfc41LBETC5_wDXn4zWww@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] qnx4: Avoid confusing compiler about buffer lengths
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Anders Larsen <al@alarsen.net>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 08:09:00PM +0000, Pasha Tatashin wrote:
-> iommu allocations should be accounted in order to allow admins to
-> monitor and limit the amount of iommu memory.
-> 
-> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> ---
->  drivers/vfio/vfio_iommu_type1.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> This patch is spinned of from the series:
+Cheers Kees,
+BR,
+ronald
+
+
+On Fri, Dec 1, 2023 at 6:51=E2=80=AFAM Kees Cook <keescook@chromium.org> wr=
+ote:
 >
->https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
-
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-
-Jason
+> Hi,
+>
+> This attempts to fix the issue Ronald Monthero found[1]. Avoids using a
+> too-short struct buffer when reading the string, by using the existing
+> struct union.
+>
+> -Kees
+>
+> [1] https://lore.kernel.org/lkml/20231112095353.579855-1-debug.penguin32@=
+gmail.com/
+>
+> v2:
+>  - Use BUILD_BUG_ON() instead of _Static_assert()
+> v1: https://lore.kernel.org/all/20231118032638.work.955-kees@kernel.org/
+>
+> Kees Cook (2):
+>   qnx4: Extract dir entry filename processing into helper
+>   qnx4: Use get_directory_fname() in qnx4_match()
+>
+>  fs/qnx4/dir.c   | 52 ++++++------------------------------------
+>  fs/qnx4/namei.c | 29 +++++++++---------------
+>  fs/qnx4/qnx4.h  | 60 +++++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 78 insertions(+), 63 deletions(-)
+>
+> --
+> 2.34.1
+>
