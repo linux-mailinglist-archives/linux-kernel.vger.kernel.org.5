@@ -2,78 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDEB802E98
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:30:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD72C802E9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbjLDJad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
+        id S232489AbjLDJcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:32:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbjLDJa1 (ORCPT
+        with ESMTP id S229517AbjLDJcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:30:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C13FD6;
-        Mon,  4 Dec 2023 01:30:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701682233; x=1733218233;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=o0v8o+XtHGMscrSv359utGlA1pDAUKnyad14ly7KCOM=;
-  b=eawrxYmVZrBqn0rtbH8C/gJGUATHibyD4jmc5kdJFeP3mhVYIdDOBop0
-   sH29xKZbFZC11CMNXulzSWG19tWVb26UNmLL3UwAZBYjKLJkd6kJt8lEs
-   qhUk0rMqr4y9kvrUTWol8LzIeH+nDQbI+PG7gQ4wzcdjmdHDKrZhqOuU0
-   i51uKMFNuH7QLUecZcGXJ7+AuTqbi5Zc3gpeC6u+O5KRF/Xv5HO8UgX7S
-   xmsWxSf3BUPbvMv7lq0GsI1NNvt0qWf3UXvJbIpOf082mW/XG8WhHHsHP
-   ZK2AGm7+pe06J0jP6mtUjIelRcrIJPmERdETSVt3MXBsJpSW0qkfvFOes
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="397594306"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="397594306"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 01:30:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="943819114"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="943819114"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 01:30:27 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 658F91206B4;
-        Mon,  4 Dec 2023 11:30:24 +0200 (EET)
-Date:   Mon, 4 Dec 2023 09:30:24 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Tommaso Merciai <tomm.merciai@gmail.com>
-Cc:     laurent.pinchart@ideasonboard.com, martin.hecht@avnet.eu,
-        michael.roeder@avnet.eu, linuxfancy@googlegroups.com,
-        mhecht73@gmail.com, christophe.jaillet@wanadoo.fr,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v14 3/3] media: i2c: Add support for alvium camera
-Message-ID: <ZW2cMPpbDN8xrOM9@kekkonen.localdomain>
-References: <20231124093011.2095073-1-tomm.merciai@gmail.com>
- <20231124093011.2095073-4-tomm.merciai@gmail.com>
- <ZWpJcS7aJmnRm1CB@kekkonen.localdomain>
- <ZWr5my7SVKE2HPTZ@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
+        Mon, 4 Dec 2023 04:32:51 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B751CD;
+        Mon,  4 Dec 2023 01:32:56 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B48O3Lv010901;
+        Mon, 4 Dec 2023 09:32:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=+2dzB1mYFGyLCkmougLVhYk5OsIZ0RK8nGP0PrVepZE=;
+ b=kGya+9ptpy9hTZd09o2xmeuZ4Gua94FAaAq38pjB6wJE9PGY5pxqmWfUOQdp5IeLfMq2
+ r07K6kNj7PGNO2ACgwE+bzQh/jXmQ4AmuGmuzWEjh4gvZtOKZmPZIqxeViAjxgycD6p7
+ xuDy1Qf1L4xKdNuUbunGjEvx29IJYHKee0hYosuQeQiDUnLNkcYwlSf5Qmnm+agnsxPY
+ alTSU4yhtaG0NPcidxvmWlrpdmbuvgP/JOwySlvImJv8MgVmLidGMeirXtLS/NBbTGjG
+ xJHkv8dFCIWj0cFZ6AeuYma0qcr45nFicT/+ugGqHmls7hADhZSOTq6Zt0b+EEnXqCSC ig== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uqv673jbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 09:32:42 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B49WfsV002441
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Dec 2023 09:32:41 GMT
+Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
+ 2023 01:32:36 -0800
+Message-ID: <42b34fbc-7db6-b7de-c3d4-fd20e8df3a90@quicinc.com>
+Date:   Mon, 4 Dec 2023 15:02:33 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWr5my7SVKE2HPTZ@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v5] bus: mhi: host: Add tracing support
+Content-Language: en-US
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
+References: <20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com>
+ <15c0130a-1a4b-c08b-714b-05166f48d23b@quicinc.com>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <15c0130a-1a4b-c08b-714b-05166f48d23b@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 7zP8B4q8ArXludJpvWcneSwCVTCz_XLU
+X-Proofpoint-GUID: 7zP8B4q8ArXludJpvWcneSwCVTCz_XLU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_06,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
+ clxscore=1011 mlxscore=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2312040071
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,271 +86,332 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tommaso,
 
-On Sat, Dec 02, 2023 at 10:32:11AM +0100, Tommaso Merciai wrote:
-> Hi Sakari,
-> Thanks for your comments.
-> 
-> On Fri, Dec 01, 2023 at 09:00:33PM +0000, Sakari Ailus wrote:
-> > Hi Tommaso,
-> > 
-> > A few more comments below...
-> > 
-> > On Fri, Nov 24, 2023 at 10:30:07AM +0100, Tommaso Merciai wrote:
-> > 
-> > ...
-> > 
-> > > +static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
-> > > +{
-> > > +	struct device *dev = &alvium->i2c_client->dev;
-> > > +	struct alvium_bcrm_vers *v;
-> > > +	u64 val;
-> > > +	int ret;
-> > > +
-> > > +	ret = alvium_read(alvium, REG_BCRM_VERSION_R, &val, NULL);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	v = (struct alvium_bcrm_vers *)&val;
-> > 
-> > You're still reading the entire struct using a single read. :-( This won't
-> > work on a BE machine as while the struct fields are in the same memory
-> > locations, the respective data in a single 64-bit value is not.
-> 
-> What about splitting REG_BCRM_VERSION_R in:
-> 
-> #define REG_BCRM_MINOR_VERSION_R			CCI_REG16(0x0000)
-> #define REG_BCRM_MAJOR_VERSION_R			CCI_REG16(0x0002)
-> 
-> and REG_BCRM_DEVICE_FIRMWARE_VERSION_R in:
-> 
-> #define REG_BCRM_DEVICE_FW_SPEC_VERSION_R		REG_BCRM_V4L2_8BIT(0x0010)
-> #define REG_BCRM_DEVICE_FW_MAJOR_VERSION_R		REG_BCRM_V4L2_8BIT(0x0011)
-> #define REG_BCRM_DEVICE_FW_MINOR_VERSION_R		REG_BCRM_V4L2_16BIT(0x0012)
-> #define REG_BCRM_DEVICE_FW_PATCH_VERSION_R		REG_BCRM_V4L2_32BIT(0x0014)
-> 
-> 
-> Then reading those values as a single values as you suggest:
-> 
-> static int alvium_get_bcrm_vers(struct alvium_dev *alvium)
-> {
-> 	struct device *dev = &alvium->i2c_client->dev;
-> 	u64 min, maj;
-> 	int ret = 0;
-> 
-> 	ret = alvium_read(alvium, REG_BCRM_MINOR_VERSION_R, &min, &ret);
-> 	ret = alvium_read(alvium, REG_BCRM_MAJOR_VERSION_R, &maj, &ret);
-> 	if (ret)
-> 		return ret;
-> 
-> 	dev_info(dev, "bcrm version: %llu.%llu\n", min, maj);
-> 
-> 	return 0;
-> }
-> 
-> static int alvium_get_fw_version(struct alvium_dev *alvium)
-> {
-> 	struct device *dev = &alvium->i2c_client->dev;
-> 	u64 spec, maj, min, pat;
-> 	int ret = 0;
-> 
-> 	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_SPEC_VERSION_R, &spec, &ret);
-> 	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MAJOR_VERSION_R, &maj, &ret);
-> 	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_MINOR_VERSION_R, &min, &ret);
-> 	ret = alvium_read(alvium, REG_BCRM_DEVICE_FW_PATCH_VERSION_R, &pat, &ret);
-> 	if (ret)
-> 		return ret;
-> 
-> 	dev_info(dev, "fw version: %llu.%llu.%llu.%llu\n", spec, maj, min, pat);
-> 
-> 	return 0;
-> }
-> 
-> Then I'm going to remove alvium_bcrm_vers and alvium_fw_vers.
-> And alvium_is_alive became: 
-> 
-> static int alvium_is_alive(struct alvium_dev *alvium)
-> {
-> 	u64 bcrm, hbeat;
-> 	int ret = 0;
-> 
-> 	alvium_read(alvium, REG_BCRM_MINOR_VERSION_R, &bcrm, &ret);
-> 	alvium_read(alvium, REG_BCRM_HEARTBEAT_RW, &hbeat, &ret);
-> 	if (ret)
-> 		return ret;
-> 
-> 	return hbeat;
-> }
-> 
-> What do you think? Let me know.
-> (Maybe is this that you are trying to explain me but I haven't catch,
-> sorry) :)
+On 12/1/2023 10:31 PM, Jeffrey Hugo wrote:
+> On 11/27/2023 4:09 AM, Krishna chaitanya chundru wrote:
+>> This change adds ftrace support for following functions which
+>> helps in debugging the issues when there is Channel state & MHI
+>> state change and also when we receive data and control events:
+>> 1. mhi_intvec_mhi_states
+>> 2. mhi_process_data_event_ring
+>> 3. mhi_process_ctrl_ev_ring
+>> 4. mhi_gen_tre
+>> 5. mhi_update_channel_state
+>> 6. mhi_tryset_pm_state
+>> 7. mhi_pm_st_worker
+>>
+>> Where ever the trace events are added, debug messages are removed.
+>>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>> Changes in v5:
+>> - Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
+>> - Instead of converting to u64 to print address, use %px to print the 
+>> address to avoid
+>> - warnings in some platforms.
+>> - Link to v4: 
+>> https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
+>>
+>> Changes in v4:
+>> - Fix compilation issues in previous patch which happended due to 
+>> rebasing.
+>> - In the defconfig FTRACE config is not enabled due to that the 
+>> compilation issue is not
+>> - seen in my workspace.
+>> - Link to v3: 
+>> https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
+>>
+>> Changes in v3:
+>> - move trace header file from include/trace/events to 
+>> drivers/bus/mhi/host/ so that
+>> - we can include driver header files.
+>> - Use macros directly in the trace events as suggested Jeffrey Hugo.
+>> - Reorder the structure in the events as suggested by steve to avoid 
+>> holes in the buffer.
+>> - removed the mhi_to_physical function as this can give security issues.
+>> - removed macros to define strings as we can get those from driver 
+>> headers.
+>> - Link to v2: 
+>> https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
+>>
+>> Changes in v2:
+>> - Passing the raw state into the trace event and using 
+>> __print_symbolic() as suggested by bjorn.
+>> - Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
+>> - Fixed the kernel test rebot issues.
+>> - Link to v1: 
+>> https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
+>> ---
+>>   drivers/bus/mhi/host/init.c     |   3 +
+>>   drivers/bus/mhi/host/internal.h |   1 +
+>>   drivers/bus/mhi/host/main.c     |  23 +++--
+>>   drivers/bus/mhi/host/pm.c       |   6 +-
+>>   drivers/bus/mhi/host/trace.h    | 208 
+>> ++++++++++++++++++++++++++++++++++++++++
+>>   5 files changed, 228 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+>> index f78aefd2d7a3..6acb85f4c5f8 100644
+>> --- a/drivers/bus/mhi/host/init.c
+>> +++ b/drivers/bus/mhi/host/init.c
+>> @@ -20,6 +20,9 @@
+>>   #include <linux/wait.h>
+>>   #include "internal.h"
+>>   +#define CREATE_TRACE_POINTS
+>> +#include "trace.h"
+>> +
+>>   static DEFINE_IDA(mhi_controller_ida);
+>>     const char * const mhi_ee_str[MHI_EE_MAX] = {
+>> diff --git a/drivers/bus/mhi/host/internal.h 
+>> b/drivers/bus/mhi/host/internal.h
+>> index 2e139e76de4c..a02a71605907 100644
+>> --- a/drivers/bus/mhi/host/internal.h
+>> +++ b/drivers/bus/mhi/host/internal.h
+>> @@ -7,6 +7,7 @@
+>>   #ifndef _MHI_INT_H
+>>   #define _MHI_INT_H
+>>   +#include "trace.h"
+>>   #include "../common.h"
+>>     extern struct bus_type mhi_bus_type;
+>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>> index dcf627b36e82..0d7e068e713a 100644
+>> --- a/drivers/bus/mhi/host/main.c
+>> +++ b/drivers/bus/mhi/host/main.c
+>> @@ -491,11 +491,9 @@ irqreturn_t mhi_intvec_threaded_handler(int 
+>> irq_number, void *priv)
+>>         state = mhi_get_mhi_state(mhi_cntrl);
+>>       ee = mhi_get_exec_env(mhi_cntrl);
+>> -    dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
+>> -        TO_MHI_EXEC_STR(mhi_cntrl->ee),
+>> -        mhi_state_str(mhi_cntrl->dev_state),
+>> -        TO_MHI_EXEC_STR(ee), mhi_state_str(state));
+>>   +    trace_mhi_intvec_states(mhi_cntrl->mhi_dev->name, mhi_cntrl->ee,
+>> +                mhi_cntrl->dev_state, ee, state);
+>>       if (state == MHI_STATE_SYS_ERR) {
+>>           dev_dbg(dev, "System error detected\n");
+>>           pm_state = mhi_tryset_pm_state(mhi_cntrl,
+>> @@ -832,6 +830,10 @@ int mhi_process_ctrl_ev_ring(struct 
+>> mhi_controller *mhi_cntrl,
+>>       while (dev_rp != local_rp) {
+>>           enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+>>   +        trace_mhi_ctrl_event(mhi_cntrl->mhi_dev->name, local_rp,
+>> +                     local_rp->ptr, local_rp->dword[0],
+>> +                     local_rp->dword[1]);
+>> +
+>>           switch (type) {
+>>           case MHI_PKT_TYPE_BW_REQ_EVENT:
+>>           {
+>> @@ -997,6 +999,9 @@ int mhi_process_data_event_ring(struct 
+>> mhi_controller *mhi_cntrl,
+>>       while (dev_rp != local_rp && event_quota > 0) {
+>>           enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+>>   +        trace_mhi_data_event(mhi_cntrl->mhi_dev->name, local_rp, 
+>> local_rp->ptr,
+>> +                     local_rp->dword[0], local_rp->dword[1]);
+>> +
+>>           chan = MHI_TRE_GET_EV_CHID(local_rp);
+>>             WARN_ON(chan >= mhi_cntrl->max_chan);
+>> @@ -1235,6 +1240,8 @@ int mhi_gen_tre(struct mhi_controller 
+>> *mhi_cntrl, struct mhi_chan *mhi_chan,
+>>       mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
+>>       mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
+>>   +    trace_mhi_gen_tre(mhi_cntrl->mhi_dev->name, mhi_chan->chan, 
+>> mhi_tre,
+>> +              mhi_tre->ptr, mhi_tre->dword[0], mhi_tre->dword[1]);
+>>       /* increment WP */
+>>       mhi_add_ring_element(mhi_cntrl, tre_ring);
+>>       mhi_add_ring_element(mhi_cntrl, buf_ring);
+>> @@ -1327,9 +1334,7 @@ static int mhi_update_channel_state(struct 
+>> mhi_controller *mhi_cntrl,
+>>       enum mhi_cmd_type cmd = MHI_CMD_NOP;
+>>       int ret;
+>>   -    dev_dbg(dev, "%d: Updating channel state to: %s\n", 
+>> mhi_chan->chan,
+>> -        TO_CH_STATE_TYPE_STR(to_state));
+>> -
+>> + trace_mhi_channel_command_start(mhi_cntrl->mhi_dev->name, 
+>> mhi_chan->chan, to_state);
+>>       switch (to_state) {
+>>       case MHI_CH_STATE_TYPE_RESET:
+>>           write_lock_irq(&mhi_chan->lock);
+>> @@ -1396,9 +1401,7 @@ static int mhi_update_channel_state(struct 
+>> mhi_controller *mhi_cntrl,
+>>           write_unlock_irq(&mhi_chan->lock);
+>>       }
+>>   -    dev_dbg(dev, "%d: Channel state change to %s successful\n",
+>> -        mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+>> -
+>> + trace_mhi_channel_command_end(mhi_cntrl->mhi_dev->name, 
+>> mhi_chan->chan, to_state);
+>>   exit_channel_update:
+>>       mhi_cntrl->runtime_put(mhi_cntrl);
+>>       mhi_device_put(mhi_cntrl->mhi_dev);
+>> diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
+>> index 8a4362d75fc4..e32afdc92fde 100644
+>> --- a/drivers/bus/mhi/host/pm.c
+>> +++ b/drivers/bus/mhi/host/pm.c
+>> @@ -123,6 +123,7 @@ enum mhi_pm_state __must_check 
+>> mhi_tryset_pm_state(struct mhi_controller *mhi_cn
+>>       if (unlikely(!(dev_state_transitions[index].to_states & state)))
+>>           return cur_state;
+>>   +    trace_mhi_tryset_pm_state(mhi_cntrl->mhi_dev->name, state);
+>>       mhi_cntrl->pm_state = state;
+>>       return mhi_cntrl->pm_state;
+>>   }
+>> @@ -753,7 +754,6 @@ void mhi_pm_st_worker(struct work_struct *work)
+>>       struct mhi_controller *mhi_cntrl = container_of(work,
+>>                               struct mhi_controller,
+>>                               st_worker);
+>> -    struct device *dev = &mhi_cntrl->mhi_dev->dev;
+>>         spin_lock_irq(&mhi_cntrl->transition_lock);
+>>       list_splice_tail_init(&mhi_cntrl->transition_list, &head);
+>> @@ -761,8 +761,8 @@ void mhi_pm_st_worker(struct work_struct *work)
+>>         list_for_each_entry_safe(itr, tmp, &head, node) {
+>>           list_del(&itr->node);
+>> -        dev_dbg(dev, "Handling state transition: %s\n",
+>> -            TO_DEV_STATE_TRANS_STR(itr->state));
+>> +
+>> + trace_mhi_pm_st_transition(mhi_cntrl->mhi_dev->name, itr->state);
+>>             switch (itr->state) {
+>>           case DEV_ST_TRANSITION_PBL:
+>> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
+>> new file mode 100644
+>> index 000000000000..3bfac529c6b7
+>> --- /dev/null
+>> +++ b/drivers/bus/mhi/host/trace.h
+>> @@ -0,0 +1,208 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights 
+>> reserved.
+>> + */
+>> +
+>> +#undef TRACE_SYSTEM
+>> +#define TRACE_SYSTEM mhi_host
+>> +
+>> +#if !defined(_TRACE_EVENT_MHI_HOST_H) || 
+>> defined(TRACE_HEADER_MULTI_READ)
+>> +#define _TRACE_EVENT_MHI_HOST_H
+>> +
+>> +#include <linux/tracepoint.h>
+>> +#include <linux/trace_seq.h>
+>> +#include "../common.h"
+>> +#include "internal.h"
+>> +
+>> +TRACE_EVENT(mhi_gen_tre,
+>> +
+>> +    TP_PROTO(const char *name, int ch_num, void *wp, __le64 tre_ptr,
+>> +         __le32 dword0, __le32 dword1),
+>> +
+>> +    TP_ARGS(name, ch_num, wp, tre_ptr, dword0, dword1),
+>> +
+>> +    TP_STRUCT__entry(
+>> +        __string(name, name)
+>> +        __field(int, ch_num)
+>> +        __field(void *, wp)
+>> +        __field(__le64, tre_ptr)
+>> +        __field(__le32, dword0)
+>> +        __field(__le32, dword1)
+>> +    ),
+>> +
+>> +    TP_fast_assign(
+>> +        __assign_str(name, name);
+>> +        __entry->ch_num = ch_num;
+>> +        __entry->wp = wp;
+>> +        __entry->tre_ptr = tre_ptr;
+>> +        __entry->dword0 = dword0;
+>> +        __entry->dword1 = dword1;
+>> +    ),
+>> +
+>> +    TP_printk("%s: Chan: %d WP: 0x%p TRE: 0x%llx 0x%08x 0x%08x\n",
+>> +          __get_str(name), __entry->ch_num, __entry->wp, 
+>> __entry->tre_ptr,
+>> +          __entry->dword0, __entry->dword1)
+>> +);
+>> +
+>> +TRACE_EVENT(mhi_intvec_states,
+>> +
+>> +    TP_PROTO(const char *name, int local_ee, int state, int dev_ee, 
+>> int dev_state),
+>> +
+>> +    TP_ARGS(name, local_ee, state, dev_ee, dev_state),
+>> +
+>> +    TP_STRUCT__entry(
+>> +        __string(name, name)
+>> +        __field(int, local_ee)
+>> +        __field(int, state)
+>> +        __field(int, dev_ee)
+>> +        __field(int, dev_state)
+>> +    ),
+>> +
+>> +    TP_fast_assign(
+>> +        __assign_str(name, name);
+>> +        __entry->local_ee = local_ee;
+>> +        __entry->state = state;
+>> +        __entry->dev_ee = dev_ee;
+>> +        __entry->dev_state = dev_state;
+>> +    ),
+>> +
+>> +    TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
+>> +          __get_str(name),
+>> +          TO_MHI_EXEC_STR(__entry->local_ee),
+>> +          mhi_state_str(__entry->state),
+>> +          TO_MHI_EXEC_STR(__entry->dev_ee),
+>> +          mhi_state_str(__entry->dev_state))
+>> +);
+>> +
+>> +TRACE_EVENT(mhi_tryset_pm_state,
+>> +
+>> +    TP_PROTO(const char *name, int pm_state),
+>> +
+>> +    TP_ARGS(name, pm_state),
+>> +
+>> +    TP_STRUCT__entry(
+>> +        __string(name, name)
+>> +        __field(int, pm_state)
+>> +    ),
+>> +
+>> +    TP_fast_assign(
+>> +        __assign_str(name, name);
+>> +        if (pm_state)
+>> +            pm_state = __fls(pm_state);
+>> +        __entry->pm_state = pm_state;
+>> +    ),
+>> +
+>> +    TP_printk("%s: PM state: %s\n", __get_str(name),
+>> +          to_mhi_pm_state_str(__entry->pm_state))
+>> +);
+>> +
+>> +DECLARE_EVENT_CLASS(mhi_process_event_ring,
+>> +
+>> +    TP_PROTO(const char *name, void *rp, __le64 ptr,
+>> +         __le32 dword0, __le32 dword1),
+>> +
+>> +    TP_ARGS(name, rp, ptr, dword0, dword1),
+>> +
+>> +    TP_STRUCT__entry(
+>> +        __string(name, name)
+>> +        __field(__le32, dword0)
+>> +        __field(__le32, dword1)
+>> +        __field(int, state)
+>> +        __field(__le64, ptr)
+>> +        __field(void *, rp)
+>> +    ),
+>> +
+>> +    TP_fast_assign(
+>> +        __assign_str(name, name);
+>> +        __entry->rp = rp;
+>> +        __entry->ptr = ptr;
+>> +        __entry->dword0 = dword0;
+>> +        __entry->dword1 = dword1;
+>> +        __entry->state = MHI_TRE_GET_EV_STATE((struct 
+>> mhi_ring_element *)entry->rp);
+>
+> "entry"?
+> Also, you have the "rp" that was passed into the trace, why not just 
+> directly use that?
+>
+I will update as suggested in the next patch.
 
-Yes. The above code looks good to me.
+- Krishna Chaitanya.
 
-> 
-> 
-> > 
-> > > +
-> > > +	dev_info(dev, "bcrm version: %u.%u\n", v->minor, v->major);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int alvium_get_fw_version(struct alvium_dev *alvium)
-> > > +{
-> > > +	struct device *dev = &alvium->i2c_client->dev;
-> > > +	struct alvium_fw_vers *fw_v;
-> > > +	u64 val;
-> > > +	int ret;
-> > > +
-> > > +	ret = alvium_read(alvium, REG_BCRM_DEVICE_FIRMWARE_VERSION_R, &val, NULL);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	fw_v = (struct alvium_fw_vers *)&val;
-> > 
-> > Same here.
-> > 
-> > > +
-> > > +	dev_info(dev, "fw version: %u.%u.%u.%u\n", fw_v->special, fw_v->major,
-> > > +		 fw_v->minor, fw_v->patch);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int alvium_get_bcrm_addr(struct alvium_dev *alvium)
-> > > +{
-> > > +	u64 val;
-> > > +	int ret;
-> > > +
-> > > +	ret = alvium_read(alvium, REG_BCRM_REG_ADDR_R, &val, NULL);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	alvium->bcrm_addr = val;
-> > > +
-> > > +	return 0;
-> > > +}
-> > 
-> > ...
-> > 
-> > > +static int alvium_setup_mipi_fmt(struct alvium_dev *alvium)
-> > > +{
-> > > +	unsigned int avail_fmt_cnt = 0;
-> > > +	unsigned int fmt = 0;
-> > > +	size_t sz = 0;
-> > > +
-> > > +	alvium->alvium_csi2_fmt = NULL;
-> > 
-> > This seems to be unnnecessary: the field is assigned below without using it
-> > (obviously).
-> 
-> Ok, I will remove this in v15.
-> 
-> > 
-> > > +
-> > > +	/* calculate fmt array size */
-> > > +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
-> > > +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
-> > > +			continue;
-> > > +
-> > > +		if ((!alvium_csi2_fmts[fmt].is_raw) ||
-> > > +		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit]))
-> > > +			sz++;
-> > > +	}
-> > > +
-> > > +	/* init alvium_csi2_fmt array */
-> > > +	alvium->alvium_csi2_fmt_n = sz;
-> > > +	alvium->alvium_csi2_fmt =
-> > > +		kmalloc_array(sz, sizeof(struct alvium_pixfmt), GFP_KERNEL);
-> > > +	if (!alvium->alvium_csi2_fmt)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	/* Create the alvium_csi2 fmt array from formats available */
-> > > +	for (fmt = 0; fmt < ALVIUM_NUM_SUPP_MIPI_DATA_FMT; fmt++) {
-> > > +		if (!alvium->is_mipi_fmt_avail[alvium_csi2_fmts[fmt].fmt_av_bit])
-> > > +			continue;
-> > > +
-> > > +		if ((!alvium_csi2_fmts[fmt].is_raw) ||
-> > > +		    (alvium->is_bay_avail[alvium_csi2_fmts[fmt].bay_av_bit])) {
-> > > +			alvium->alvium_csi2_fmt[avail_fmt_cnt] = alvium_csi2_fmts[fmt];
-> > > +			avail_fmt_cnt++;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > 
-> > ...
-> > 
-> > > +static const struct alvium_pixfmt *
-> > > +alvium_code_to_pixfmt(struct alvium_dev *alvium, u32 code)
-> > > +{
-> > > +	const struct alvium_pixfmt *formats = alvium->alvium_csi2_fmt;
-> > 
-> > I'd use alvium->alvium_csi2_fmt and not add a local variable. Up to you.
-> 
-> Ok also for me.
-> 
-> > 
-> > > +	unsigned int i;
-> > > +
-> > > +	for (i = 0; formats[i].code; ++i)
-> > > +		if (formats[i].code == code)
-> > > +			return &formats[i];
-> > > +
-> > > +	return &formats[0];
-> > > +}
-> > > +
-> > > +static int alvium_set_mode(struct alvium_dev *alvium,
-> > > +			   struct v4l2_subdev_state *state)
-> > > +{
-> > > +	struct v4l2_mbus_framefmt *fmt;
-> > > +	struct v4l2_rect *crop;
-> > > +	int ret;
-> > > +
-> > > +	crop = v4l2_subdev_state_get_crop(state, 0);
-> > > +	fmt = v4l2_subdev_state_get_format(state, 0);
-> > > +
-> > > +	v4l_bound_align_image(&fmt->width, alvium->img_min_width,
-> > > +			      alvium->img_max_width, 0,
-> > > +			      &fmt->height, alvium->img_min_height,
-> > > +			      alvium->img_max_height, 0, 0);
-> > > +
-> > > +	/* alvium don't accept negative crop left/top */
-> > > +	crop->left = clamp((u32)max(0, crop->left), alvium->min_offx,
-> > > +			   (u32)(alvium->img_max_width - fmt->width));
-> > > +	crop->top = clamp((u32)max(0, crop->top), alvium->min_offy,
-> > > +			  (u32)(alvium->img_max_height - fmt->height));
-> > > +
-> > > +	ret = alvium_set_img_width(alvium, fmt->width);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = alvium_set_img_height(alvium, fmt->height);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = alvium_set_img_offx(alvium, crop->left);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = alvium_set_img_offy(alvium, crop->top);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	return 0;
-> > > +}
-> 
-> I'm going to rebase v15 on top of your master branch.
-> My plan is moving alvium_init_cfg now alvium_init_state into
-> v4l2_subdev_internal_ops.
-
-Ack, thanks!
-
--- 
-Regards,
-
-Sakari Ailus
