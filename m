@@ -2,160 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3007802FFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052C8802FFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbjLDKUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:20:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42810 "EHLO
+        id S235286AbjLDKU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:20:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLDKUD (ORCPT
+        with ESMTP id S1343834AbjLDKUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:20:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A8C85;
-        Mon,  4 Dec 2023 02:20:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701685209; x=1733221209;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=gKB5T9b0vzI/brXFkTTNPTdC3EvJjR8ByNrznFb2NfQ=;
-  b=Zm6/kVawNgtV6IDw1JZs+gWZ3TTON9qfnKidcHhR+0TdvOeGVt8npBoM
-   MXioGbjAmWThWVk7CwUy5nYiqJsD6d9G718g31JYM459o7etnkuTREeMZ
-   OiOynKvA1oGcrwlpGjfeCL5tPIyqoZyJFW3kOLslFnAM11QW/XrlqolX5
-   GqX2YTPjpMnE2VgGOFi4IZJ/n14ohUmIxxl6AA5ZhJBUJgBdc71vLOKAR
-   WrJEqDZbRvP1JhYrzN0dMC/lyRNy+Tx7oVo6bd0kiiNoONZqCV5H/4h/1
-   zd+SxtqJQNLZcpn7xoU1UaOn5I/4Md1mMOlrd6L1iR8AYvdFesussgsNL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="390871652"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="390871652"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 02:20:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="774211502"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="774211502"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 02:20:08 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 02:20:08 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 4 Dec 2023 02:20:07 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 02:20:07 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 02:20:07 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HLQtKWvREB/sYuM5RPEz4ptZhj3aGSK0Hw3ppyuRfS1jMVmoeNXhGkc7Qph6s3ihidMbb6VGl+Enk1t3BLuuhgDy7PS6aKdJHu7pjNe5916R3QkA2VUqEMzQnFpky7JkHltMHZnvPzn42rNq11DYUlpDp3+OA5xrcS5H2PdAv0HgAbD91Et2Gl6RiWB9kWEY7UAYhyjYZb5s5I44B1N5V+LjgYO2qPxvP8kOtHTI7hb8AqZdeJDxSFKlAGDF2l5ihKYJChTwwV0mdc1C5C4Xb/8lHiSIKBBlLLPyyA3E6EgY10/wxeZM+Ujs0yX+25tcWp+R9zf34JUrUwR6gtcWtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cYi893dj0YDa0EHLnoF74UN+h7gFoT7V4VOB77yivWk=;
- b=OY//DXwNMLGEm58FET66ijQ5hJgoeg879G85n5MZZF1HKZGfRtd+R9VKca5/38v05STdwrJl+YGH9d86P6hXI/cWxAj6ZtDFATf3pW+sK6oNbl9xnLDhvc2TAqvVuKHYbN/6v3b36wa32MIYvsReW5eQEwo4GXTEauzDcep0Q3S1ZM2CLWj8XpgM0wiI7Om1lUTKd8m6GmOCKRNS2sIjYy3wWDS41Ynjj3ATUVhhVLy3sb4opf83bbI+PdnndlPss++qxHLipJSq7QX272HcyWPSBTb7xnoleGQGBi+GVm7i9MO1Tbi2aCCVbGm8fs3o/8ZisUbbxbEAvsb471WCQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com (2603:10b6:303:183::9)
- by DS7PR11MB6222.namprd11.prod.outlook.com (2603:10b6:8:99::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 10:20:05 +0000
-Received: from MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::49fc:ba56:787e:1fb3]) by MW4PR11MB5776.namprd11.prod.outlook.com
- ([fe80::49fc:ba56:787e:1fb3%7]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 10:20:04 +0000
-Message-ID: <c382dc51-3a3c-4c79-90c0-13e2e716d0a9@intel.com>
-Date:   Mon, 4 Dec 2023 11:19:59 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 net 2/2] net: hns: fix fake link up on xge port
-Content-Language: en-US
-To:     Jijie Shao <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
-        <salil.mehta@huawei.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-        <liuyonglong@huawei.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231204011051.4055031-1-shaojijie@huawei.com>
- <20231204011051.4055031-3-shaojijie@huawei.com>
-From:   Wojciech Drewek <wojciech.drewek@intel.com>
-In-Reply-To: <20231204011051.4055031-3-shaojijie@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: WA2P291CA0012.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1e::27) To MW4PR11MB5776.namprd11.prod.outlook.com
- (2603:10b6:303:183::9)
+        Mon, 4 Dec 2023 05:20:49 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C715985
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:20:51 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BD1B5FEC;
+        Mon,  4 Dec 2023 02:21:38 -0800 (PST)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 886F63F6C4;
+        Mon,  4 Dec 2023 02:20:48 -0800 (PST)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v8 00/10] Multi-size THP for anonymous memory
+Date:   Mon,  4 Dec 2023 10:20:17 +0000
+Message-Id: <20231204102027.57185-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR11MB5776:EE_|DS7PR11MB6222:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4c8e81f-09a5-4598-36eb-08dbf4b2951c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ASieUdXiYC9Ffz6nZkhM1Kyhyaw4uK4EjY/qeyA6WQJH757u0mk81T4MgXyHMKy4XRMdo+ss6kTHCNc2yZScqyL4fIwQWrPYcIgIjWPzSLVExvCI6bcYAe6OMz59DqrE2ib5YEDEweaCu+u1Te3Uvq/MgulUeKf7QDBCQer3KGjrHfTZih/mIGWG2AhkKNC7py43SGcc3Jx3YrC8mkmH3IkFtb3QGafM0VHLTtFLNlnHC3pFr3z+IY1wJRq0nelgJLNurhtAcTWFRFuf48LH2vv+G4TSWELqXfZBl4a4eXvEhlOJAEX0rIPz7l0DZx2XIINAhU0TSrRf21foeo7J9D6rvIIuXXXKpwQgeZLH/XHx8ybaSPDe9R3+E+xwbeoELiDLw01ONyt3qV2TU+Cjy0db0HOkOKGXoxVza1ctoqENxfdD/zUTQub1vMtqiR+IJ+LwOzkPhmTid83Sf2G3BAZ0gyGS4aQdocEikxvzHwepQ20XTd3sfgS1d7fFjMhE6pQbVxzi5Q9hZUFvCk+WQBMOqxe8SHZNIZfTpITJBidgFqjmbYFg8b0CD2ah/iZJu2ieQ+Ini4n7+2QdxuCxSmHE2v80pwpRqQEz0MTr9KLPwGXgCD06kxCi5mMkOgXIg7hV2bvLuMj2SQWz3xOtTg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR11MB5776.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(346002)(376002)(39860400002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(316002)(66556008)(31696002)(86362001)(4326008)(8936002)(8676002)(66946007)(66476007)(44832011)(478600001)(6486002)(41300700001)(36756003)(7416002)(5660300002)(2906002)(38100700002)(2616005)(26005)(6506007)(6666004)(53546011)(82960400001)(6512007)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Umo2QklGeHVDK0dDalE5OE1TTkJPMG5NbHBLL0wxd2JzL1EzVG5aNWtnTyty?=
- =?utf-8?B?TXRsWnZMbHdPaUFoTGw0U3FXUXVsakJCb2hXQTdUU3FUZ1Y0ZGFvVndiZ2Vx?=
- =?utf-8?B?L0pQUnRlV0FWcUdQejg0eXZLQVFJZWdHbzNucVpQR0txZGFyTEEvRHpFMWpx?=
- =?utf-8?B?TVVUYm9JYmlNQUtjWE5OK05xRVFEUENtRGRGeVdXcVcxRVg3YkxiUkNLNkEy?=
- =?utf-8?B?cE43dHhvcjlTVzRWMkkyQWhjRGk2RWhhL0R1MU9oRlpwOG5mYjNJRWFFQlI0?=
- =?utf-8?B?NGwwZmpvRVErL05CeUNSMyszbDc5ZGk2eTR6Z29OTUEyN0VhNENuYWNJVUtZ?=
- =?utf-8?B?eThrQ0ZPNzZwNEx3UUM3blUzbDlyZHUrY1JKaER6NFZzekRuMG5zdGtPTmow?=
- =?utf-8?B?SWY2dEhYUi9MRThncmhTTHpnRVIyUjZTZG9WenIwc0N6eHlhcjZQWFN6ZWIr?=
- =?utf-8?B?bE9yTU9mRkRQWXZkRmt1a0RNd1llZWRBdThoSU5kTHkyWGozdW5DY2t6Zytm?=
- =?utf-8?B?bXBoMURQSHVsQTQwd1lpeVhlUVpTOTU0YUd2N3ltQk9oRVRBUHJVb2dPSW9l?=
- =?utf-8?B?ZEVkZVlZdTN0N1pONVFuMmgvOTArNC9HUEU0Q3hEMVNzUTlsdVF0NmlHUGNH?=
- =?utf-8?B?eWRoNnpyemcvc3N0emxZZkpyeVZwbDJxK04vVURCMWVxY3NMa09jU01ZYWdk?=
- =?utf-8?B?TlA2NUZackdLYjZBT2VyOENvdVJMZzUxYXhFTnc1T0xXcG1uaUtnR3RhOEdh?=
- =?utf-8?B?emd6U3djM3VFbXVjR0RPVm5qVHdPcVJsZHVpQkxTOG5UMG9zQm5LZVNBSmU4?=
- =?utf-8?B?MnNhUVFkTkZsQWNjSXJndlZhRkNneldTQUJwMXNzWXRXdE1COW5FbEVPUnpQ?=
- =?utf-8?B?YzdJWCtYTlVxUUQ1K3hRUDNlQmxTMVBWTk5xYlQyWDJOMURFOGRmK0ljeVNW?=
- =?utf-8?B?RHpCekR3L1pQNWJzdVVIV1V2V1JSbXlSaTNHZHlTaklYaDZmWmxLNkF5SG9C?=
- =?utf-8?B?YWM5YVFTc01ZbGcyZUU2NWQvaThpTWdGWGVrRkFIZVFINmJFejZ0MnM1QTZw?=
- =?utf-8?B?bW96djZXNFRiVWQzRGhkWlNWYld4MGFIeVpKZjBab0kyMXdQMlRoZzBpL2p6?=
- =?utf-8?B?ZUJnQUV0ZGdnZnR3RGFWK2wvQ2hrY3V2U3M4OUV4b2xSaHo1cTZVNi81MVVq?=
- =?utf-8?B?Mnl5OWoxT1VVNjZRYkFqbjZSNWF3MG5ReU44aURNeFdtb3ZEUDUycm43RUcv?=
- =?utf-8?B?ajNQSC9LWkhuaEY0VnpYRFM5L2psK2JXaTE2cm1zOFJRUHhnSUdzVmt1MFZF?=
- =?utf-8?B?N001enoxSnhzOTdMWXRwZDdTbG1jelJzcnNFZ3ZrVTlGVzNpbDZldGJIRlA2?=
- =?utf-8?B?RFoySE1VK0hQWmZNWkt5ZXgvSHRzbnlFR2ZRMThHV3d3QU5VVkc4bmJjYnpE?=
- =?utf-8?B?ejJlN3BmbVlTN3JqazFZYmV3a0R2ckI5cFN4RWg1cnhMU2I0QjU0dFdyMGcx?=
- =?utf-8?B?cWhOUFhXbjdpMk9yRHJzem9OeFlhbmMyc3R6bnJCeFBreEpwUWNXNGNrNUZU?=
- =?utf-8?B?WjVtWFRaVkpjSUJTM05SNTNMcDJLbWlFZktySGl5elJzbngyWWpZMWdZamNY?=
- =?utf-8?B?QjhQZ3hQTzVwVnd3UjdSZFQ5NFowVzUzVEg1aXgvZXJPOUxDQnQ1N0ZQSmtF?=
- =?utf-8?B?Uk5UMXhJV0VBdjQ0bUFHTGpBSVl2NmwvR0krM1A3ZTVvTFJFMG5kN0ZJR05p?=
- =?utf-8?B?MnlWQm04K1FPay93RUdYSGVTRWZuY1JnN1Y2ZWhMVUt1QVBVYTJ4SjBIZ210?=
- =?utf-8?B?Yzl3OEZKQ2JKdVV1ZVY0Yjk4YXZHMmQyTUFKVEl2c0FnYUpRVjAyYXY0a2Zv?=
- =?utf-8?B?OTZneHFtNTBWeGdwUVZ4NFN3QlZKekptNEIvSzk0aWZMbnAvVXJoTWhnRlJG?=
- =?utf-8?B?aGlUK0llbVovSEhoUGFoZlpiaUtOZ0YyMTFaL0lZNWdMaG52MEJvNm1IMTV1?=
- =?utf-8?B?R1Q2K1hqTnBmTU4vZnduRzRLSndYK0h1YzQxcmxON2c3cHljR2NkR2twRXhK?=
- =?utf-8?B?Mk5YYWhtNWxUcFh4RUFWZXlnckhhVGZUaWFFL1FZN2ppZGlOcXFCUmM1RjI0?=
- =?utf-8?B?bmZyOGRZcDBINXp3V295N3MycXRtcDhOY0tQMFhKcDlsSDlPeG92bEJmZlVs?=
- =?utf-8?B?N1E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4c8e81f-09a5-4598-36eb-08dbf4b2951c
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR11MB5776.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 10:20:04.8721
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 65sScq61ZGdgLefgjCsGGS8FcUyXk6GuWLj0wZzW76bo6SJzqbFDwPw/fVWtktHBvMvZW3h8TMmVIY279YtkLtGknqTh+l8DUngCKL+FwLA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6222
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -164,70 +58,267 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi All,
+
+A new week, a new version, a new name... This is v8 of a series to implement
+multi-size THP (mTHP) for anonymous memory (previously called "small-sized THP"
+and "large anonymous folios"). Matthew objected to "small huge" so hopefully
+this fares better.
+
+The objective of this is to improve performance by allocating larger chunks of
+memory during anonymous page faults:
+
+1) Since SW (the kernel) is dealing with larger chunks of memory than base
+   pages, there are efficiency savings to be had; fewer page faults, batched PTE
+   and RMAP manipulation, reduced lru list, etc. In short, we reduce kernel
+   overhead. This should benefit all architectures.
+2) Since we are now mapping physically contiguous chunks of memory, we can take
+   advantage of HW TLB compression techniques. A reduction in TLB pressure
+   speeds up kernel and user space. arm64 systems have 2 mechanisms to coalesce
+   TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
+
+This version changes the name and tidies up some of the kernel code and test
+code, based on feedback against v7 (see change log for details).
+
+By default, the existing behaviour (and performance) is maintained. The user
+must explicitly enable multi-size THP to see the performance benefit. This is
+done via a new sysfs interface (as recommended by David Hildenbrand - thanks to
+David for the suggestion)! This interface is inspired by the existing
+per-hugepage-size sysfs interface used by hugetlb, provides full backwards
+compatibility with the existing PMD-size THP interface, and provides a base for
+future extensibility. See [8] for detailed discussion of the interface.
+
+This series is based on mm-unstable (715b67adf4c8).
 
 
-On 04.12.2023 02:10, Jijie Shao wrote:
-> From: Yonglong Liu <liuyonglong@huawei.com>
-> 
-> If a xge port just connect with an optical module and no fiber,
-> it may have a fake link up because there may be interference on
-> the hardware. This patch adds an anti-shake to avoid the problem.
-> And the time of anti-shake is base on tests.
-> 
-> Fixes: b917078c1c10 ("net: hns: Add ACPI support to check SFP present")
-> Signed-off-by: Yonglong Liu <liuyonglong@huawei.com>
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
->  .../net/ethernet/hisilicon/hns/hns_dsaf_mac.c | 29 +++++++++++++++++++
->  1 file changed, 29 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
-> index 928d934cb21a..c3abb14edd51 100644
-> --- a/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
-> +++ b/drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
-> @@ -66,6 +66,27 @@ static enum mac_mode hns_get_enet_interface(const struct hns_mac_cb *mac_cb)
->  	}
->  }
->  
-> +static void hns_mac_link_anti_shake(struct mac_driver *mac_ctrl_drv,
-> +				    u32 *link_status)
-> +{
+Prerequisites
+=============
 
-It would be cleaner to return the link status than using output arg IMO
+Some work items identified as being prerequisites are listed on page 3 at [9].
+The summary is:
 
-> +#define HNS_MAC_LINK_WAIT_TIME 5
-> +#define HNS_MAC_LINK_WAIT_CNT 40
-> +
-> +	int i;
-> +
-> +	if (!mac_ctrl_drv->get_link_status) {
-> +		*link_status = 0;
-> +		return;
-> +	}
-> +
-> +	for (i = 0; i < HNS_MAC_LINK_WAIT_CNT; i++) {
-> +		msleep(HNS_MAC_LINK_WAIT_TIME);
-> +		mac_ctrl_drv->get_link_status(mac_ctrl_drv, link_status);
-> +		if (!*link_status)
-> +			break;
-> +	}
-> +}
-> +
->  void hns_mac_get_link_status(struct hns_mac_cb *mac_cb, u32 *link_status)
->  {
->  	struct mac_driver *mac_ctrl_drv;
-> @@ -83,6 +104,14 @@ void hns_mac_get_link_status(struct hns_mac_cb *mac_cb, u32 *link_status)
->  							       &sfp_prsnt);
->  		if (!ret)
->  			*link_status = *link_status && sfp_prsnt;
-> +
-> +		/* for FIBER port, it may have a fake link up.
-> +		 * when the link status changes from down to up, we need to do
-> +		 * anti-shake. the anti-shake time is base on tests.
-> +		 * only FIBER port need to do this.
-> +		 */
-> +		if (*link_status && !mac_cb->link)
-> +			hns_mac_link_anti_shake(mac_ctrl_drv, link_status);
->  	}
->  
->  	mac_cb->link = *link_status;
+| item                          | status                  |
+|:------------------------------|:------------------------|
+| mlock                         | In mainline (v6.7)      |
+| madvise                       | In mainline (v6.6)      |
+| compaction                    | v1 posted [10]          |
+| numa balancing                | Investigated: see below |
+| user-triggered page migration | In mainline (v6.7)      |
+| khugepaged collapse           | In mainline (NOP)       |
+
+On NUMA balancing, which currently ignores any PTE-mapped THPs it encounters,
+John Hubbard has investigated this and concluded that it is A) not clear at the
+moment what a better policy might be for PTE-mapped THP and B) questions whether
+this should really be considered a prerequisite given no regression is caused
+for the default "multi-size THP disabled" case, and there is no correctness
+issue when it is enabled - its just a potential for non-optimal performance.
+
+If there are no disagreements about removing numa balancing from the list (none
+were raised when I first posted this comment against v7), then that just leaves
+compaction which is in review on list at the moment.
+
+I really would like to get this series (and its remaining comapction
+prerequisite) in for v6.8. I accept that it may be a bit optimistic at this
+point, but lets see where we get to with review?
+
+
+Testing
+=======
+
+The series includes patches for mm selftests to enlighten the cow and khugepaged
+tests to explicitly test with multi-size THP, in the same way that PMD-sized
+THP is tested. The new tests all pass, and no regressions are observed in the mm
+selftest suite. I've also run my usual kernel compilation and java script
+benchmarks without any issues.
+
+Refer to my performance numbers posted with v6 [6]. (These are for multi-size
+THP only - they do not include the arm64 contpte follow-on series).
+
+John Hubbard at Nvidia has indicated dramatic 10x performance improvements for
+some workloads at [11]. (Observed using v6 of this series as well as the arm64
+contpte series).
+
+Kefeng Wang at Huawei has also indicated he sees improvements at [12] although
+there are some latency regressions also.
+
+
+Changes since v7 [7]
+====================
+
+  - Renamed "small-sized THP" -> "multi-size THP" in commit logs
+  - Added various Reviewed-by/Tested-by tags (Barry, David, Alistair)
+  - Patch 3:
+      - Fine-tuned transhuge documentation multi-size THP (JohnH)
+      - Converted hugepage_global_enabled() and hugepage_global_always() macros
+        to static inline functions (JohnH)
+      - Renamed hugepage_vma_check() to thp_vma_allowable_orders() (JohnH)
+      - Renamed transhuge_vma_suitable() to thp_vma_suitable_orders() (JohnH)
+      - Renamed "global" enabled sysfs file option to "inherit" (JohnH)
+  - Patch 9:
+      - cow selftest: Renamed param size -> thpsize (David)
+      - cow selftest: Changed test fail to assert() (David)
+      - cow selftest: Log PMD size separately from all the supported THP sizes
+        (David)
+  - Patch 10:
+      - cow selftest: No longer special case pmdsize; keep all THP sizes in
+        thpsizes[]
+
+
+Changes since v6 [6]
+====================
+
+  - Refactored vmf_pte_range_changed() to remove uffd special-case (suggested by
+    JohnH)
+  - Dropped accounting patch (#3 in v6) (suggested by DavidH)
+      - Continue to account *PMD-sized* THP only for now
+      - Can add more counters in future if needed
+      - Page cache large folios haven't needed any new counters yet
+  - Pivot to sysfs ABI proposed by DavidH
+      - per-size directories in a similar shape to that used by hugetlb
+  - Dropped "recommend" keyword patch (#6 in v6) (suggested by DavidH, Yu Zhou)
+      - For now, users need to understand implicitly which sizes are beneficial
+        to their HW/SW
+  - Dropped arch_wants_pte_order() patch (#7 in v6)
+      - No longer needed due to dropping patch "recommend" keyword patch
+  - Enlightened khugepaged mm selftest to explicitly test with small-size THP
+  - Scrubbed commit logs to use "small-sized THP" consistently (suggested by
+    DavidH)
+
+
+Changes since v5 [5]
+====================
+
+  - Added accounting for PTE-mapped THPs (patch 3)
+  - Added runtime control mechanism via sysfs as extension to THP (patch 4)
+  - Minor refactoring of alloc_anon_folio() to integrate with runtime controls
+  - Stripped out hardcoded policy for allocation order; its now all user space
+    controlled (although user space can request "recommend" which will configure
+    the HW-preferred order)
+
+
+Changes since v4 [4]
+====================
+
+  - Removed "arm64: mm: Override arch_wants_pte_order()" patch; arm64
+    now uses the default order-3 size. I have moved this patch over to
+    the contpte series.
+  - Added "mm: Allow deferred splitting of arbitrary large anon folios" back
+    into series. I originally removed this at v2 to add to a separate series,
+    but that series has transformed significantly and it no longer fits, so
+    bringing it back here.
+  - Reintroduced dependency on set_ptes(); Originally dropped this at v2, but
+    set_ptes() is in mm-unstable now.
+  - Updated policy for when to allocate LAF; only fallback to order-0 if
+    MADV_NOHUGEPAGE is present or if THP disabled via prctl; no longer rely on
+    sysfs's never/madvise/always knob.
+  - Fallback to order-0 whenever uffd is armed for the vma, not just when
+    uffd-wp is set on the pte.
+  - alloc_anon_folio() now returns `struct folio *`, where errors are encoded
+    with ERR_PTR().
+
+  The last 3 changes were proposed by Yu Zhao - thanks!
+
+
+Changes since v3 [3]
+====================
+
+  - Renamed feature from FLEXIBLE_THP to LARGE_ANON_FOLIO.
+  - Removed `flexthp_unhinted_max` boot parameter. Discussion concluded that a
+    sysctl is preferable but we will wait until real workload needs it.
+  - Fixed uninitialized `addr` on read fault path in do_anonymous_page().
+  - Added mm selftests for large anon folios in cow test suite.
+
+
+Changes since v2 [2]
+====================
+
+  - Dropped commit "Allow deferred splitting of arbitrary large anon folios"
+      - Huang, Ying suggested the "batch zap" work (which I dropped from this
+        series after v1) is a prerequisite for merging FLXEIBLE_THP, so I've
+        moved the deferred split patch to a separate series along with the batch
+        zap changes. I plan to submit this series early next week.
+  - Changed folio order fallback policy
+      - We no longer iterate from preferred to 0 looking for acceptable policy
+      - Instead we iterate through preferred, PAGE_ALLOC_COSTLY_ORDER and 0 only
+  - Removed vma parameter from arch_wants_pte_order()
+  - Added command line parameter `flexthp_unhinted_max`
+      - clamps preferred order when vma hasn't explicitly opted-in to THP
+  - Never allocate large folio for MADV_NOHUGEPAGE vma (or when THP is disabled
+    for process or system).
+  - Simplified implementation and integration with do_anonymous_page()
+  - Removed dependency on set_ptes()
+
+
+Changes since v1 [1]
+====================
+
+  - removed changes to arch-dependent vma_alloc_zeroed_movable_folio()
+  - replaced with arch-independent alloc_anon_folio()
+      - follows THP allocation approach
+  - no longer retry with intermediate orders if allocation fails
+      - fallback directly to order-0
+  - remove folio_add_new_anon_rmap_range() patch
+      - instead add its new functionality to folio_add_new_anon_rmap()
+  - remove batch-zap pte mappings optimization patch
+      - remove enabler folio_remove_rmap_range() patch too
+      - These offer real perf improvement so will submit separately
+  - simplify Kconfig
+      - single FLEXIBLE_THP option, which is independent of arch
+      - depends on TRANSPARENT_HUGEPAGE
+      - when enabled default to max anon folio size of 64K unless arch
+        explicitly overrides
+  - simplify changes to do_anonymous_page():
+      - no more retry loop
+
+
+[1] https://lore.kernel.org/linux-mm/20230626171430.3167004-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/20230703135330.1865927-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-mm/20230714160407.4142030-1-ryan.roberts@arm.com/
+[4] https://lore.kernel.org/linux-mm/20230726095146.2826796-1-ryan.roberts@arm.com/
+[5] https://lore.kernel.org/linux-mm/20230810142942.3169679-1-ryan.roberts@arm.com/
+[6] https://lore.kernel.org/linux-mm/20230929114421.3761121-1-ryan.roberts@arm.com/
+[7] https://lore.kernel.org/linux-mm/20231122162950.3854897-1-ryan.roberts@arm.com/
+[8] https://lore.kernel.org/linux-mm/6d89fdc9-ef55-d44e-bf12-fafff318aef8@redhat.com/
+[9] https://drive.google.com/file/d/1GnfYFpr7_c1kA41liRUW5YtCb8Cj18Ud/view?usp=sharing&resourcekey=0-U1Mj3-RhLD1JV6EThpyPyA
+[10] https://lore.kernel.org/linux-mm/20231113170157.280181-1-zi.yan@sent.com/
+[11] https://lore.kernel.org/linux-mm/c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com/
+[12] https://lore.kernel.org/linux-mm/479b3e2b-456d-46c1-9677-38f6c95a0be8@huawei.com/
+
+
+Thanks,
+Ryan
+
+Ryan Roberts (10):
+  mm: Allow deferred splitting of arbitrary anon large folios
+  mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
+  mm: thp: Introduce multi-size THP sysfs interface
+  mm: thp: Support allocation of anonymous multi-size THP
+  selftests/mm/kugepaged: Restore thp settings at exit
+  selftests/mm: Factor out thp settings management
+  selftests/mm: Support multi-size THP interface in thp_settings
+  selftests/mm/khugepaged: Enlighten for multi-size THP
+  selftests/mm/cow: Generalize do_run_with_thp() helper
+  selftests/mm/cow: Add tests for anonymous multi-size THP
+
+ Documentation/admin-guide/mm/transhuge.rst |  97 ++++-
+ Documentation/filesystems/proc.rst         |   6 +-
+ fs/proc/task_mmu.c                         |   3 +-
+ include/linux/huge_mm.h                    | 116 ++++--
+ mm/huge_memory.c                           | 268 ++++++++++++--
+ mm/khugepaged.c                            |  20 +-
+ mm/memory.c                                | 114 +++++-
+ mm/page_vma_mapped.c                       |   3 +-
+ mm/rmap.c                                  |  32 +-
+ tools/testing/selftests/mm/Makefile        |   4 +-
+ tools/testing/selftests/mm/cow.c           | 185 +++++++---
+ tools/testing/selftests/mm/khugepaged.c    | 410 ++++-----------------
+ tools/testing/selftests/mm/run_vmtests.sh  |   2 +
+ tools/testing/selftests/mm/thp_settings.c  | 349 ++++++++++++++++++
+ tools/testing/selftests/mm/thp_settings.h  |  80 ++++
+ 15 files changed, 1177 insertions(+), 512 deletions(-)
+ create mode 100644 tools/testing/selftests/mm/thp_settings.c
+ create mode 100644 tools/testing/selftests/mm/thp_settings.h
+
+--
+2.25.1
+
