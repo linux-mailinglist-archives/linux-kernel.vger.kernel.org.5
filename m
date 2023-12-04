@@ -2,163 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1758029E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 02:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CD38029F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 02:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjLDBai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 20:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S234214AbjLDBhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 20:37:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbjLDBag (ORCPT
+        with ESMTP id S229510AbjLDBhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Dec 2023 20:30:36 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED226E4;
-        Sun,  3 Dec 2023 17:30:42 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CDED31FE37;
-        Mon,  4 Dec 2023 01:30:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1701653440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QpF3yPijHir05CtVXuq0rn9FMGQjG6Rj2eqgcCq5e1k=;
-        b=u7lZnruMqQEyagHnHsja0hsdP9sawBcfQHMom2Sb94gjM/eNa/wbVQ6GzSzjB8apYUbqcl
-        9MGI2UTCxhgZTLQ93My5a+dvvPXbPJuP0liX0cG4b91ho0rwprQwYgB2RfVUcd1OGUJrEe
-        19Z283BZeM6J9RQq1HB2YewOzvxy/L0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1701653440;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QpF3yPijHir05CtVXuq0rn9FMGQjG6Rj2eqgcCq5e1k=;
-        b=RmajFuPosmkaO2e4Fq4zjp+shAec8iz+KZ5mCnbmdkky6or6nDZ1rZXTZD3+r+AIKtS97u
-        57NzovxsVpSHyPDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7450F1368D;
-        Mon,  4 Dec 2023 01:30:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id 81aKCL4rbWVYNgAAD6G6ig
-        (envelope-from <neilb@suse.de>); Mon, 04 Dec 2023 01:30:38 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Sun, 3 Dec 2023 20:37:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8E5E4;
+        Sun,  3 Dec 2023 17:37:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701653834; x=1733189834;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=RdAwYv1tCW3Sr0N3YOoYWWOcHVLJnlNtS3tq6G2IyzQ=;
+  b=Sm16VVSjvq3ODjQDSDhKyOLR7eSL2ejpKK4es6jMgZC4sjOJ4wOd7dIM
+   um9D7Ez/MtXFTPyHiDA49k80d8/yjDplyxQOj3OIqDNu3OnuTzqUydNap
+   iU49pBJSv64qhzDBjC4D11QwP0nNpDqfNhqqoy7jiNXAlS959IoxycuBe
+   mn/Av/DsOZ9r6Cus8qphwRmnEMCJGGKj9LVQo6d+/bABhcs+srUd+rKse
+   0ku+USbC5svJ2zT3P4fIyZO1OPhwL61llyODgKeBwuoNCi0W89gXQUVhC
+   2x1qlmWeWc5VvfFGH2TcFTQ5XmyfsMwxwpE9qJenTbIYq3jeudtesbCLa
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="730460"
+X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
+   d="scan'208";a="730460"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2023 17:37:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="943727892"
+X-IronPort-AV: E=Sophos;i="6.04,248,1695711600"; 
+   d="scan'208";a="943727892"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga005.jf.intel.com with ESMTP; 03 Dec 2023 17:37:09 -0800
+Message-ID: <2354dd69-0179-4689-bc35-f4bf4ea5a886@linux.intel.com>
+Date:   Mon, 4 Dec 2023 09:32:37 +0800
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Christian Brauner" <brauner@kernel.org>
-Cc:     "Al Viro" <viro@zeniv.linux.org.uk>,
-        "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
-In-reply-to: <20231129-querschnitt-urfassung-3ebd703c345a@brauner>
-References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>,
- <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>,
- <170113056683.7109.13851405274459689039@noble.neil.brown.name>,
- <20231128-blumig-anreichern-b9d8d1dc49b3@brauner>,
- <170121362397.7109.17858114692838122621@noble.neil.brown.name>,
- <20231129-querschnitt-urfassung-3ebd703c345a@brauner>
-Date:   Mon, 04 Dec 2023 12:30:34 +1100
-Message-id: <170165343439.7109.3106838865273118254@noble.neil.brown.name>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.29 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.19)[-0.950];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.29
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 12/12] iommu: Improve iopf_queue_flush_dev()
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
+ <20231115030226.16700-13-baolu.lu@linux.intel.com>
+ <20231201203536.GG1489931@ziepe.ca>
+ <a0ef3a4f-88fc-40fe-9891-495d1b6b365b@linux.intel.com>
+ <20231203141414.GJ1489931@ziepe.ca>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20231203141414.GJ1489931@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023, Christian Brauner wrote:
-> > If an nfsd thread only completes the close that it initiated the close
-> > on (which is what I am currently proposing) then there would be at most
-> > one, or maybe 2, fds to close after handling each request.  While that
-> > is certainly a non-zero burden, I can't see how it can realistically be
-> > called a DOS.
+On 12/3/23 10:14 PM, Jason Gunthorpe wrote:
+> On Sun, Dec 03, 2023 at 04:53:08PM +0800, Baolu Lu wrote:
+>> On 12/2/23 4:35 AM, Jason Gunthorpe wrote:
+>>> On Wed, Nov 15, 2023 at 11:02:26AM +0800, Lu Baolu wrote:
+>>>> The iopf_queue_flush_dev() is called by the iommu driver before releasing
+>>>> a PASID. It ensures that all pending faults for this PASID have been
+>>>> handled or cancelled, and won't hit the address space that reuses this
+>>>> PASID. The driver must make sure that no new fault is added to the queue.
+>>> This needs more explanation, why should anyone care?
+>>>
+>>> More importantly, why is*discarding*  the right thing to do?
+>>> Especially why would we discard a partial page request group?
+>>>
+>>> After we change a translation we may have PRI requests in a
+>>> queue. They need to be acknowledged, not discarded. The DMA in the
+>>> device should be restarted and the device should observe the new
+>>> translation - if it is blocking then it should take a DMA error.
+>>>
+>>> More broadly, we should just let things run their normal course. The
+>>> domain to deliver the fault to should be determined very early. If we
+>>> get a fault and there is no fault domain currently assigned then just
+>>> restart it.
+>>>
+>>> The main reason to fence would be to allow the domain to become freed
+>>> as the faults should be holding pointers to it. But I feel there are
+>>> simpler options for that then this..
+>>
+>> In the iommu_detach_device_pasid() path, the domain is about to be
+>> removed from the pasid of device. The IOMMU driver performs the
+>> following steps sequentially:
 > 
-> The 10s of millions of files is what makes me curious. Because that's
-> the workload that'd be interesting.
+> I know that is why it does, but it doesn't explain at all why.
 > 
+>> 1. Clears the pasid translation entry. Thus, all subsequent DMA
+>>     transactions (translation requests, translated requests or page
+>>     requests) targeting the iommu domain will be blocked.
+>>
+>> 2. Waits until all pending page requests for the device's PASID have
+>>     been reported to upper layers via the iommu_report_device_fault().
+>>     However, this does not guarantee that all page requests have been
+>>     responded.
+>>
+>> 3. Free all partial page requests for this pasid since the page request
+>>     response is only needed for a complete request group. There's no
+>>     action required for the page requests which are not last of a request
+>>     group.
+> 
+> But we expect the last to come eventually since everything should be
+> grouped properly, so why bother doing this?
+> 
+> Indeed if 2 worked, how is this even possible to have partials?
 
-I think the main effect of the 10s of millions of files is to bloat the
-icache which causes it to be cleaned and this results is synchronous
-reads from storage is situations that you wouldn't usually expect them.
+Step 1 clears the pasid table entry, hence all subsequent page requests
+are blocked (hardware auto-respond the request but not put it in the
+queue).
 
-It appears from examining a memory-snapshot that some files being closed
-have already been unlinked.  This is quite unusual with NFS but can
-happen if they are unlinked from one client while open on another
-client.  (The directory containing the file in one case is called
-"Cache".  Maybe cleaning of that cache by the applications often gets
-files that are in use).
+It is possible that a portion of a page fault group may have been queued
+for processing, but the last request is being blocked by hardware due
+to the pasid entry being in the blocking state.
 
-This pattern means that the final __dput calls __dentry_kill and
-eventually xfs_fs_destroy_inode.  This sometimes needs to read
-synchronously from storage - if the required info isn't cached.  This
-causes the delays.
+In reality, this may be a no-op as I haven't seen any real-world
+implementations of multiple-requests fault groups on Intel platforms.
 
-I've modelled the delay with 
+>   
+>> 5. Follow the IOMMU hardware requirements (for example, VT-d sepc,
+>>     section 7.10, Software Steps to Drain Page Requests & Responses) to
+>>     drain in-flight page requests and page group responses between the
+>>     remapping hardware queues and the endpoint device.
+>>
+>> With above steps done in iommu_detach_device_pasid(), the pasid could be
+>> re-used for any other address space.
+> 
+> As I said, that isn't even required. There is no issue with leaking
+> PRI's across attachments.
+> 
+> 
+>>> I suppose the driver is expected to stop calling
+>>> iommu_report_device_fault() before calling this function, but that
+>>> doesn't seem like it is going to be possible. Drivers should be
+>>> implementing atomic replace for the PASID updates and in that case
+>>> there is no momement when it can say the HW will stop generating PRI.
+>>
+>> Atomic domain replacement for a PASID is not currently implemented in
+>> the core or driver.
+> 
+> It is, the driver should implement set_dev_pasid in such a way that
+> repeated calls do replacements, ideally atomically. This is what ARM
+> SMMUv3 does after my changes.
+> 
+>> Even if atomic replacement were to be implemented,
+>> it would be necessary to ensure that all translation requests,
+>> translated requests, page requests and responses for the old domain are
+>> drained before switching to the new domain.
+> 
+> Again, no it isn't required.
+> 
+> Requests simply have to continue to be acked, it doesn't matter if
+> they are acked against the wrong domain because the device will simply
+> re-issue them..
 
-diff --git a/fs/file_table.c b/fs/file_table.c
-index d36cade6e366..51563f79385a 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -29,6 +29,7 @@
- #include <linux/ima.h>
- #include <linux/swap.h>
- #include <linux/kmemleak.h>
-+#include <linux/delay.h>
- 
- #include <linux/atomic.h>
- 
-@@ -375,6 +376,9 @@ static void __fput(struct file *file)
- 	eventpoll_release(file);
- 	locks_remove_file(file);
- 
-+	if ((file->f_mode & FMODE_WRITE) &&
-+	    (current->flags & PF_KTHREAD))
-+		msleep(25);
- 	ima_file_free(file);
- 	if (unlikely(file->f_flags & FASYNC)) {
- 		if (file->f_op->fasync)
+Ah! I start to get your point now.
 
+Even a page fault response is postponed to a new address space, which
+possibly be another address space or hardware blocking state, the
+hardware just retries.
 
-I loop-back mount a filesystem with NFS on the test machine.
-The PF_KTHREAD test ensures that when "cp -r" writes to the NFS
-filesystem there is no delay, but when nfsd writes to the local
-filesystem there is a delay.
+As long as we flushes all caches (IOTLB and device TLB) during 
+switching, the mappings of the old domain won't leak. So it's safe to 
+keep page requests there.
 
-With this patch I can easily demonstrate the number of open files
-growing without bound.  With my patch as well (I'll send new version
-shortly) the growth is bounded.
+Do I get you correctly?
 
-Thanks,
-NeilBrown
+Best regards,
+baolu
