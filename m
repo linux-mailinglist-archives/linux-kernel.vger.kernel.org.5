@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD34803E01
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F010803E03
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbjLDTDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:03:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        id S231364AbjLDTDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbjLDTDE (ORCPT
+        with ESMTP id S231266AbjLDTDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:03:04 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAA4AF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:03:10 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-4649299d0a0so394762137.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:03:10 -0800 (PST)
+        Mon, 4 Dec 2023 14:03:13 -0500
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5AAB2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:03:19 -0800 (PST)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-495d687b138so1157927e0c.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:03:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701716589; x=1702321389; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701716598; x=1702321398; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0yaO/BTFuN+hdaZ3dr+nTdBWWXl4w8z8dbFIh9uyCDo=;
-        b=HVT1ki/kjA/4juD3BVgoIAF1cV99rD2Z5PPysMldRbBX2ol7iK2RzDVBrGIN1eCeO+
-         hjBF90sfWU96h1MHkSV1nvm99BwcN+rB+PkTNpKtxK3ejEWi0ZjH/zyE2w4pMi1DarQ9
-         T1Z4CtAS7dMqpv/FqAb3SHfg8MZlac6VKI2vrAPN4+BWThEhsP6azo1HZpmgZEA2nVXe
-         Zge7DRbLN/fBc8T7oZ2rUl/oUeZaFww5JWsm8PcKietdEl2V4QjgFD0CP1WX2mrWS5jt
-         N1kVhfYTOsqpqW2uoGZNoUKWqvK3w2fmDz4f1HniAMsEGjOuiZctiDGD1cof8Hcn/x7y
-         mBWA==
+        bh=r8OsxNuHP/Mk0jzn3oUdmiDmSoUgRFcHUL7SKw08Lik=;
+        b=T6I1TcbOttluAnwwZfPB0MHmBYk2fZZtv8IH9x76lUCfVl86sZ8QntmsVl9Wwh2d+i
+         3CZ0yPOROooSbBOAaCl19R/NeSYdyhlJc8MdeRn61Ld2QiD7KSgYiSMQwWQtDD8IHqUM
+         Ngvri/ITieowMJlQkw9Vl7HhxatH6IT/cWe2AEqvUCuKdHuTEZ35qq+c2xErY8MB1Jw1
+         Jvur6ZrjWKsdfxcikuu1LwNe0FgtEbYd6dZk6hffWUXhw52nNQeoeR0uB6pRivi+mczi
+         giZLW6o2X5pIj1ilKOuk7APX0sg0QBB0J7tBpZDMOVyov02OfgCGbbC3E0sLU0lEvNYj
+         YACg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701716589; x=1702321389;
+        d=1e100.net; s=20230601; t=1701716598; x=1702321398;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0yaO/BTFuN+hdaZ3dr+nTdBWWXl4w8z8dbFIh9uyCDo=;
-        b=atAnvkYcq63pWOJTUOi8RJDVb+I4B8F5Qg+It8g0NfEGS7MzjsKrPxnitckdnqjziN
-         yjqZKl/NzZTmz8jmgmtZfDpTPpUWzsLTZ3A25NdT1u9SLgTGob29qvE5HmMQa5dvtq9j
-         h42HYFPxqc1pitwmNVL1fNKiJJtmEeOzKt7kvoV/mfHOy/1a7USEiSn6sfhtHR31RIyh
-         06aFdoIpPdp3qtia27nNDTP+WYzP5eQ5TxJq5hhjyfUw1VecmjP57mwehCJnDIhRgWlb
-         Qpg++DCLkv8eOrWVjWbPOAEw8ecI44RgvasR17+TpEINpcY+ZHgiCbefIMJ56GS35dBc
-         CVZA==
-X-Gm-Message-State: AOJu0YwjOirJAwvIx9h6bCLX4FG4PaLLxs2c1YjSzTR8xy3z7uHX95NL
-        emZWagth97//Kaw9HWndPdvBdIeEfq3ymEOOhcQ=
-X-Google-Smtp-Source: AGHT+IHx2fJpWDvTw2VKMw7ZWa7AZ6Rjp2hXyHx6dU/sGjxgbNBWELhAzuwxM3yL2y0OEcXGx6baE8F20seioBN2j/Q=
-X-Received: by 2002:a05:6122:1797:b0:4b2:c554:fbb1 with SMTP id
- o23-20020a056122179700b004b2c554fbb1mr2666171vkf.19.1701716589352; Mon, 04
- Dec 2023 11:03:09 -0800 (PST)
+        bh=r8OsxNuHP/Mk0jzn3oUdmiDmSoUgRFcHUL7SKw08Lik=;
+        b=izuXe48CWSNWSv0jLHW45arDh8+zhCCzvTLS+t7DHResOXQMjQpYlzE6U33vSlka2v
+         7waRPy6JNdIcNNINuJVek412imgC0FZNmBb5TDGJ4GhsclxOvM1fls7OJz6lkzbjWCjz
+         577Lb6puA7dIFBq5KZKQJ2T1bsZNgDlMD/HJBZKTy6RWx0eJbRywnEcpw3yHQQwVISYr
+         5bzXXOh1DAe8waytMQNYxZ13hizXZNHIOVcC/UmgBrCxAFLPvgnb9lsrzI1DDJfUdux1
+         6I0NcM06/RV9M/0ueLBE8Z1kEYe5ZhCjQmKqrsUK7jkZJqmg+BduXHAXlBUEAa2LjOoz
+         atmg==
+X-Gm-Message-State: AOJu0Yyqa4RDeCBDlqRHhOvDakYQEMqjumqDHESCM3S6L3PSf/4a9BXL
+        FC+PBtcbTFd1K+5qvqPMz8wTGpfnW3m5ZsLB6+k=
+X-Google-Smtp-Source: AGHT+IGP/1uzSO8EfURseQLuaM0LLow2VMvh1hhECiFS7K5uBiO+q456UysWI4/cbldZAQYS2uIEU+ulphXknhBVooA=
+X-Received: by 2002:a05:6122:993:b0:4b2:e534:b5d1 with SMTP id
+ g19-20020a056122099300b004b2e534b5d1mr1412281vkd.33.1701716597485; Mon, 04
+ Dec 2023 11:03:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20231204180428.925779-1-jaegeuk@kernel.org> <20231204180428.925779-2-jaegeuk@kernel.org>
-In-Reply-To: <20231204180428.925779-2-jaegeuk@kernel.org>
+References: <20231204180428.925779-1-jaegeuk@kernel.org> <20231204180428.925779-3-jaegeuk@kernel.org>
+In-Reply-To: <20231204180428.925779-3-jaegeuk@kernel.org>
 From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Mon, 4 Dec 2023 11:02:58 -0800
-Message-ID: <CACOAw_xbm4MinoOeimooCEketA=5oKWr46e-gU-ZtAG_rpWDAg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH 2/4] f2fs: fix write pointers on zoned device
- after roll forward
+Date:   Mon, 4 Dec 2023 11:03:06 -0800
+Message-ID: <CACOAw_xo_73xxqUty_2e6mvPA8A45MXEefOe8gr7f7owU1XuXQ@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH 3/4] f2fs: check write pointers when checkpoint=disable
 To:     Jaegeuk Kim <jaegeuk@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net
@@ -75,31 +74,38 @@ LGTM
 On Mon, Dec 4, 2023 at 10:06=E2=80=AFAM Jaegeuk Kim <jaegeuk@kernel.org> wr=
 ote:
 >
-> 1. do roll forward recovery
-> 2. update current segments pointers
-> 3. fix the entire zones' write pointers
-> 4. do checkpoint
+> Even if f2fs was rebooted as staying checkpoint=3Ddisable, let's match th=
+e write
+> pointers all the time.
 >
 > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 > ---
->  fs/f2fs/recovery.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  fs/f2fs/super.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 >
-> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
-> index 16415c770b45..d0f24ccbd1ac 100644
-> --- a/fs/f2fs/recovery.c
-> +++ b/fs/f2fs/recovery.c
-> @@ -917,6 +917,8 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi,=
- bool check_only)
->         if (!err && fix_curseg_write_pointer && !f2fs_readonly(sbi->sb) &=
-&
->                         f2fs_sb_has_blkzoned(sbi)) {
->                 err =3D f2fs_fix_curseg_write_pointer(sbi);
-> +               if (!err)
-> +                       err =3D f2fs_check_write_pointer(sbi);
->                 ret =3D err;
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index 617340e9ea7f..9a874b4d1501 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -4741,7 +4741,7 @@ static int f2fs_fill_super(struct super_block *sb, =
+void *data, int silent)
+>  #ifdef CONFIG_QUOTA
+>         f2fs_recover_quota_end(sbi, quota_enabled);
+>  #endif
+> -
+> +reset_checkpoint:
+>         /*
+>          * If the f2fs is not readonly and fsync data recovery succeeds,
+>          * check zoned block devices' write pointer consistency.
+> @@ -4752,7 +4752,6 @@ static int f2fs_fill_super(struct super_block *sb, =
+void *data, int silent)
+>                         goto free_meta;
 >         }
 >
+> -reset_checkpoint:
+>         f2fs_init_inmem_curseg(sbi);
+>
+>         /* f2fs_recover_fsync_data() cleared this already */
 > --
 > 2.43.0.rc2.451.g8631bc7472-goog
 >
