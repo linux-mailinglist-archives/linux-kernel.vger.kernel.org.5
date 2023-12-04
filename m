@@ -2,185 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1318042E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A678042E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343507AbjLDXvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 18:51:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38356 "EHLO
+        id S234754AbjLDXxI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 18:53:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234781AbjLDXvk (ORCPT
+        with ESMTP id S229703AbjLDXxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 18:51:40 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F52218F;
-        Mon,  4 Dec 2023 15:51:26 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4NcRiG020830;
-        Mon, 4 Dec 2023 23:51:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=rmUVCeXIectaoX8MbaXlnvAauz1h+STGG4XYQSDxSe4=;
- b=dve4FYNKyL7/0Fev322UdoGoR0DEnUqIyAwYnUjxgjt6S5fUhlaj5Z59iZlMjV3MgVzU
- zDx1OTYqblyjUmbKjCOHo1vW3erOWRpte4QBT2QUupsD4nDgblIYadU8l/ck5D1nJbfl
- l8Gk7mnRGg0rzjeXYknXTPNDMWLhfhR6Wi5k2BdbMOd/J+uV7hq0er/wGkaEJARkeCaa
- wxbrHTz75mgEnlY5Eaf9Us3FKkoTmZqoGNER4qeel6McwUBYP0X2LVCcqIaKv2JcVSXU
- 0vOZHXniKWS5XSsNeM0a2iQeqjjy1Dmij3us/dpY17e+DRI5WhBCTbaHLp7hRw7X5T34 Wg== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usfu79ady-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 23:51:13 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4NpCb2018847
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Dec 2023 23:51:12 GMT
-Received: from [10.110.122.69] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
- 2023 15:51:09 -0800
-Message-ID: <fdd1caf6-66dc-485d-bd03-72e7ac99f571@quicinc.com>
-Date:   Mon, 4 Dec 2023 15:50:31 -0800
+        Mon, 4 Dec 2023 18:53:06 -0500
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BFBF0;
+        Mon,  4 Dec 2023 15:53:13 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2864f8131d0so3017401a91.0;
+        Mon, 04 Dec 2023 15:53:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701733993; x=1702338793;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/+TtyliQf0EH2X32bYncLIjV/Lziv4VdH2jyUgvKbtA=;
+        b=muN0S+46MxlE8oZaQaF2mNns8pFFSx0quCu7r7B3u59oy6x6fw3HDUGyM9RNvB7ts9
+         Mjt0eTdPyytU7dG8mfW24g/SkJZTFs0Qdmf2gQoY2+zphdbOUTVjuNae+3rOfTW0OMIY
+         oMzU1mWFdGYGQ5KdsVPtKi/AZemotWrQSloQmJo7ml8fbD4+KMOl3ZqEmcKaYHaEH1Oo
+         JmwemVqOKUb93cSfxOVCZfYNbsSySHDtYqLilZAREGMIZd2cD3Iz1TqLROjUhhvOmvru
+         P5lUPVPt8SRCSnhjtJC+r4gI5Ru1+tKRFQNkHXFCtM/BQBy9uV3PueP76GbrzPYq+ab6
+         XtiQ==
+X-Gm-Message-State: AOJu0YyFgfVLJzFzeK1yhLfn89ieMtaLoVUfCWjTe0BC5HRUTkyVFeUS
+        /DM/AqHUq3Wp3SW13qlUJVf7mbsdULMzRVuwHpA=
+X-Google-Smtp-Source: AGHT+IFi0d9fVZLScA4+LDMHAo3ms30akmo3jA/YNGuZSOvjWnJjVAusWjRuqCy0lSNvEzDCdOiMfnb8IPHp3bvubjA=
+X-Received: by 2002:a17:90b:4a8c:b0:286:4579:a67c with SMTP id
+ lp12-20020a17090b4a8c00b002864579a67cmr346504pjb.15.1701733992858; Mon, 04
+ Dec 2023 15:53:12 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 00/13] arm64: qcom: add and enable SHM Bridge support
-Content-Language: en-US
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Gross <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Elliot Berman <quic_eberman@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        "Maximilian Luz" <luzmaximilian@gmail.com>,
-        Alex Elder <elder@linaro.org>,
-        "Srini Kandagatla" <srinivas.kandagatla@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kernel@quicinc.com>,
-        "Bartosz Golaszewski" <bartosz.golaszewski@linaro.org>
-References: <20231127141600.20929-1-brgl@bgdev.pl>
-From:   Deepti Jaggi <quic_djaggi@quicinc.com>
-In-Reply-To: <20231127141600.20929-1-brgl@bgdev.pl>
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-18-irogers@google.com>
+In-Reply-To: <20231127220902.1315692-18-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 4 Dec 2023 15:53:01 -0800
+Message-ID: <CAM9d7chtB-ULP2jA1KG2MiXL2FcT+ZVeO103LCkW-oTxcafWNQ@mail.gmail.com>
+Subject: Re: [PATCH v5 17/50] perf debug: Expose debug file
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: tCZanKmebhxkYp4Z_Fa2x37x6nHBr_is
-X-Proofpoint-ORIG-GUID: tCZanKmebhxkYp4Z_Fa2x37x6nHBr_is
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_21,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- adultscore=0 clxscore=1011 malwarescore=0 bulkscore=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 mlxscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040187
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 27, 2023 at 2:10 PM Ian Rogers <irogers@google.com> wrote:
+>
+> Some dumping call backs need to be passed a FILE*. Expose debug file
+> via an accessor API for a consistent way to do this. Catch the
+> unlikely failure of it not being set. Switch two cases where stderr
+> was being used instead of debug_file.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-On 11/27/2023 6:15 AM, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> This is pretty much another full rewrite of the SHM Bridge support
-> series. After more on- and off-list discussions I think this time it
-> will be close to the final thing though.
-> 
-> We've established the need for using separate pools for SCM and QSEECOM
-> as well as the upcoming scminvoke driver.
-> 
-> It's also become clear that in order to be future-proof, the new
-> allocator must be an abstraction layer of a higher level as the SHM
-> Bridge will not be the only memory protection mechanism that we'll see
-> upstream. Hence the rename to TrustZone Memory rather than SCM Memory
-> allocator.
-> 
-> Also to that end: the new allocator is its own module now and provides a
-> Kconfig choice menu for selecting the mode of operation (currently
-> default and SHM Bridge).
-> 
-> Due to a high divergence from v2, I dropped all tags except for
-> patch 1/15 which didn't change.
-> 
-> Tested on sm8550 and sa8775p with the Inline Crypto Engine and
-> remoteproc.
-> 
-> v5 -> v6:
-> Fixed two issues reported by autobuilders:
-> - add a fix for memory leaks in the qseecom driver as the first patch for
->   easier backporting to the v6.6.y branch
-> - explicitly cast the bus address stored in a variable of type dma_addr_t
->   to phys_addr_t expected by the genpool API
-> 
-> v4 -> v5:
-> - fix the return value from qcom_tzmem_init() if SHM Bridge is not supported
-> - remove a comment that's no longer useful
-> - collect tags
-> 
-> v3 -> v4:
-> - include linux/sizes.h for SZ_X macros
-> - use dedicated RCU APIs to dereference radix tree slots
-> - fix kerneldocs
-> - fix the comment in patch 14/15: it's the hypervisor, not the TrustZone
->   that creates the SHM bridge
-> 
-> v2 -> v3:
-> - restore pool management and use separate pools for different users
-> - don't use the new allocator in qcom_scm_pas_init_image() as the
->   TrustZone will create an SHM bridge for us here
-> - rewrite the entire series again for most part
-> 
-> v1 -> v2:
-> - too many changes to list, it's a complete rewrite as explained above
-> 
-> Bartosz Golaszewski (13):
->   firmware: qcom: qseecom: fix memory leaks in error paths
->   firmware: qcom: add a dedicated TrustZone buffer allocator
->   firmware: qcom: scm: enable the TZ mem allocator
->   firmware: qcom: scm: smc: switch to using the SCM allocator
->   firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_lmh_dcvsh() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_qseecom_app_get_id() use the TZ
->     allocator
->   firmware: qcom: qseecom: convert to using the TZ allocator
->   firmware: qcom: scm: add support for SHM bridge operations
->   firmware: qcom: tzmem: enable SHM Bridge support
->   firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
->   arm64: defconfig: enable SHM Bridge support for the TZ memory
->     allocator
-> 
->  arch/arm64/configs/defconfig                  |   1 +
->  drivers/firmware/qcom/Kconfig                 |  30 ++
->  drivers/firmware/qcom/Makefile                |   1 +
->  .../firmware/qcom/qcom_qseecom_uefisecapp.c   | 261 +++++--------
->  drivers/firmware/qcom/qcom_scm-smc.c          |  30 +-
->  drivers/firmware/qcom/qcom_scm.c              | 179 +++++----
->  drivers/firmware/qcom/qcom_scm.h              |   6 +
->  drivers/firmware/qcom/qcom_tzmem.c            | 365 ++++++++++++++++++
->  drivers/firmware/qcom/qcom_tzmem.h            |  13 +
->  include/linux/firmware/qcom/qcom_qseecom.h    |   4 +-
->  include/linux/firmware/qcom/qcom_scm.h        |   6 +
->  include/linux/firmware/qcom/qcom_tzmem.h      |  28 ++
->  12 files changed, 669 insertions(+), 255 deletions(-)
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
->  create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
-> 
-Verified the following :
-Shm Bridge creation
-Successful qcom_scm_assign_mem calls using tz allocator 
-
-Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
+Thanks,
+Namhyung
