@@ -2,208 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 725318040EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D058040F1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbjLDVUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 16:20:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48632 "EHLO
+        id S234100AbjLDVUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 16:20:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjLDVUT (ORCPT
+        with ESMTP id S229556AbjLDVUe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 16:20:19 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2042.outbound.protection.outlook.com [40.107.94.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33E9AA;
-        Mon,  4 Dec 2023 13:20:24 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O8M96AwWxQBAw89pOqsiw/IG0pblAkEZxikMWvWP7gs6/J5hBmnI/I4/4x4Fpy9t9ql97IXQck9sZjci0lhp4xX3BnubFudgcYrmRlm6bVpfL15UvrgzYEeoS75O5jntf+K55ruVh10uEecdZPSRGiHfMm1iY7aQX5Syfu4Uk+jBRV5ecCbSi9bOtLiavRAXRK/U7xAcltp/7VLjmwmJuE6FsSwSC6yFrAxNlysPzEqY177iJfj4e4cb9WRhcv5afusyWjIWEuYFhYc3wl3OtAc6PtUAtsW6cBwXzE4+PaQuSarij/IXhitZGH8RUKwfZtcDY3YXuh1RMYiNKORZvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SBfA1Mu22uJrbeLqYj9mLw4htZ3hI+7unYHUWhNXvK8=;
- b=Kf6VqdFQcGI4h5P9ZVhuuXrfgQ5HihLJDEDR1+mb0zqkMxg/Nadeq8z6DLPIhIgKRi3cXAUuaKWdfawt7bvtQuPvYuFCZkLKF3QcZZTVhh/cJ6DDQGpHFgU0l73XGbjrLbDjBX0eufz9gJ9MMivEHJ8KDCooItvqd8AihQVqm+Z76PH/6G1ENdczVT8NIeJZK1+K693DOhscqWK5ebHUQKg3RxxsCV14WJ/VMLZBfJ7m1TpNtTjSw66qxGbwyBmBrmP3b5Bg1mZBJ6SSt7EkEXpWWdC1fQgJfv2d+embGObtf/tDc8AVnyfGRCUQUqMYUZvp6GJiqJ9OyVQ7WUtXOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SBfA1Mu22uJrbeLqYj9mLw4htZ3hI+7unYHUWhNXvK8=;
- b=Ao4Yc+olis4doO6Fk+zRZKq9AOvgDSoldNUDi4UV1AyPgAO3Ei8FySqa+nmaRqo99hgIJxC0JpLDl6EsWr1rj1KRNtzCmr+BPgI+kCSmsp4UCxqzognE42r+j2XGY4+wEyRiDezyE+rqZiFPEJGO/3MsjOM9EJvTAS90Th48CAc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
- by DM6PR12MB4218.namprd12.prod.outlook.com (2603:10b6:5:21b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 21:20:21 +0000
-Received: from MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
- ([fe80::1549:8c93:8585:ca1b%5]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 21:20:21 +0000
-Message-ID: <8c762203-db0f-d5f4-fc81-9cc548ee92af@amd.com>
-Date:   Mon, 4 Dec 2023 15:20:18 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Reply-To: babu.moger@amd.com
-Subject: Re: [PATCH v13 0/8] Add support for Sub-NUMA cluster (SNC) systems
-Content-Language: en-US
-To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org
-Cc:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-References: <20231130003418.89964-1-tony.luck@intel.com>
- <20231204185357.120501-1-tony.luck@intel.com>
-From:   "Moger, Babu" <bmoger@amd.com>
-In-Reply-To: <20231204185357.120501-1-tony.luck@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Mon, 4 Dec 2023 16:20:34 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF62990;
+        Mon,  4 Dec 2023 13:20:40 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 496631FE75;
+        Mon,  4 Dec 2023 21:20:39 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BBC7F1398A;
+        Mon,  4 Dec 2023 21:20:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id GGOwGqJCbmUoWAAAD6G6ig
+        (envelope-from <neilb@suse.de>); Mon, 04 Dec 2023 21:20:34 +0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0180.namprd03.prod.outlook.com
- (2603:10b6:a03:338::35) To MW3PR12MB4553.namprd12.prod.outlook.com
- (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|DM6PR12MB4218:EE_
-X-MS-Office365-Filtering-Correlation-Id: 88e991c4-5ef8-47b9-149f-08dbf50ed2aa
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mHKAqhRCElIdsky1rv/i6WnjHtlOh3X1lYQ5DVtjpPK34BBx/7X9Ya7k2ovJ86l579agV6LbMDT81sw9UpOMFSEqMd4E0h916KuOn8jrDgA0ux7wtv26Jv6blqbLXDdAOB93zb90lA63CRHxxkRzJg4L3pqaqrPsru9Zv2K9NUfLyNIO96IEnfwvZuNzlHJz/Yi1uNjT7HchsCHi6omZ8HhyugkYRx8Fe+iQCV3LGVvF4OEZtlqhyEwatS7jPSbmeV8cqKeigVk+bqniNb5grSA7HFGPD9nqyYQPeoNthX/9ivsODJ5HZ1vo8Nt43+BzURKE6vB1VMI7zZs189mSIsGsJVIHpdqpVVQI2bFjdry91lSeH+TXxQ865AG4eeBkohclJnmJ1yKVpA1gGPaSV1+ZMlnjomIrOv8SrivHxn4qjeMpNQ03W6UURPvM4I4mDhLZ25Ez71MlSUgQsI0h4s3Ks8K0GTrj8S4pLEqz849Xkfs1/lrQSGn8HQD4wxi05/iiiz7ZLZX1R0DQiUAsAVUlPFoKK/InUJsgktDyDBg23f8YXJuc631sil4l+F83vsz9iSYU9xdM+JTUwNkytUswlyff0dCuneSrG0w53gzXPyUbyorsTtPABG5kmel2ZBQCsce8STOam1HReMr918qdGKDP4mRj4Eg0MccoF3xGPX54E/5zPFPguJHYprjaLPkfAeUWZgVVhwd/XMnMzn4HJeLwQE6rXKmsDm709qQVFCNe0Uflrvgc5jjNwlba
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(376002)(366004)(230922051799003)(230273577357003)(230173577357003)(451199024)(64100799003)(186009)(1800799012)(31696002)(5660300002)(7416002)(4326008)(8676002)(8936002)(2906002)(41300700001)(6512007)(36756003)(2616005)(6506007)(53546011)(83380400001)(6486002)(478600001)(26005)(6666004)(38100700002)(31686004)(110136005)(316002)(54906003)(66476007)(66556008)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MG5hZTRobHY1UTRqbUE5cGJlWlJ5cmR5SHVYRmtETTRnNWdWZlUveEFjdFlD?=
- =?utf-8?B?Q0pqbWpVMnFkRjdlSTRodHhDQlRDLys0OWNCOHhRMjBSOWZ6c0lZVmkxZ0py?=
- =?utf-8?B?WUFGSncxaUI2WVF3ZHJJV1hnS3huelJBNzFyODlmRVI1ekVaZUdscVN4VWR1?=
- =?utf-8?B?RGxNVS92M0VqcUdCQm9yMnNncmwxenVkM0R5aVMvdEJEL0hVVmc3QWIydGF5?=
- =?utf-8?B?bmNPKzA4Z3l5Z2VVa2c0Nm5YNmpvVlRBZ2hGcDd1ZllaejdFRHNZYWdSWmcw?=
- =?utf-8?B?QWsyZW8zV2RqeHcxL1hMdS81T3VlNDBIOGhUZkU3cnphUThSOTh1ZCtGeGxm?=
- =?utf-8?B?bGZHR3ZjczFRbk1LdGExY2pGa0F4azRkOW9hdndjdlA3bHdxVzZ3QmdQZHBw?=
- =?utf-8?B?RkdwRTFXTVd4YlFmVWpHMlhueitlZ2hjeHNNNGhNWE52d0R1ekVIYmJjWE11?=
- =?utf-8?B?Z2dXZUxMRWs2Mml6WXNjYjBpaXpSTTJmYWdxOW1uNUtqVythU1VqUlN4YlVP?=
- =?utf-8?B?MlZndUxnZkkxTzRjM2ZzMmFvY1RnTlR5OStPZVYyWE1uT1NRbzlFaEkzQXRW?=
- =?utf-8?B?cXluZEp6M0hjTnhHM3BYdm1seGs2d2dLNlNkcktRZnB3Vjd3VmtVY0o2ZTEx?=
- =?utf-8?B?cGE5cmVjcDJpVThLak5VakNiUkp6K2VXdDNtZjk2RjYxY3VBNlR4OEdBRy9y?=
- =?utf-8?B?QnA0QWZNUVYwL1V2amgyVlhXaTZMa1lHOU8vZW9lQzY2TTcrUDlseEgvNHBo?=
- =?utf-8?B?dTM4SGdsbjN0bHhMM0RJRndJL1FMTHRDU0xObXNTVGRMY1pqSkdqS2JqUXVZ?=
- =?utf-8?B?Mm9pcVJDYzRNbU5XWW1UaTg3b2pVWGZlc01sN0ZwYUFzaUlmbWFnRUh5UFJy?=
- =?utf-8?B?RnhrTmZHMlJKZ2VndTRXSjdLaC85S3lPRjFnOHhOTFAzSVNvQUJIajdaSC9z?=
- =?utf-8?B?TWVONktrWlpNUFArQkMwYU1ZN1NBZmdtdzYrWXkzdnA3RnpxMm5ROTNVTVlY?=
- =?utf-8?B?MUdLS3Z5eXRaVFpUNjc3NU1tdFhIV0JPbHlqaTBqSkxjUmdSV2diT054TWVx?=
- =?utf-8?B?eDRVVnI4L0JuSkdwWVMrekMzSkxjRGxFWHdkV2pXR3hDYk4wMGc4ZUF5R2E4?=
- =?utf-8?B?YlFTeHErWnJFMGZzN2hRLy9IbFhXbitSZm9wMGk4eHdmUDRrSHBlU1QvSnlI?=
- =?utf-8?B?TEVOV0V4LzdQRno4M0VyS0Q1REZ4WTY2aW5LRXlOSjMvUEJydHcxNjk2Q3l4?=
- =?utf-8?B?SWx4WERNRW85dVlHT2NBZ3Z4U2cxcGxDbzFQYzV4VDZyZnVHMzEvK1Q3Z1N3?=
- =?utf-8?B?ajduZ2FyYmhjbW9TdDJuQ01wZy9qU2NVUC9RbzJ6RWd6ZW5yMG14QVpaM3Qv?=
- =?utf-8?B?dnZBYWtnb29XN1dCT21QMzBZOElYNHlwWXBrS1UxeXJhdTZzb3l4WlE1dm5B?=
- =?utf-8?B?aFJPYXBKcHdnUDQrOUZRZCtDMWVNV0lrRlhDTE02RFFvRHJvQ2R5bkR4Nk43?=
- =?utf-8?B?eUtJV1VIckNvUVZKZ1hEem9XRmU4ZFhHY0paRVQxZHJkekFKRE1MZ24vUU9L?=
- =?utf-8?B?RmtzVnJJL1VkVFo2NllYZkVlQVI5Y09mdUpiNmt6cFJVZXlGNFlFKzJvZDNk?=
- =?utf-8?B?TlVONVBtRHpiRDEwYmNWYkszeENhVnpOaHR0dnNnS0hvUGtsd0V4bzRsRm1G?=
- =?utf-8?B?Y3Z4d0ZRa1hpSG9lanNIb1pBTHE5bWFJT1VZZS9halJQWHFkWUJYY2xrZTBQ?=
- =?utf-8?B?STBERFB3ejI0K0lxdGNTSzFwczdTWDBwaEZjdUFQd3FjcG5qKzNEaWNlK2dW?=
- =?utf-8?B?eHZaRi9XQUcyYW5iUURUeFlEQ0FPT0VDc2RLaUpXZTJ6ZzZyRTBsbHBITXdx?=
- =?utf-8?B?VHhNV0hGd2NIUDJLNzVvRVRyMEN0ZWJRRW5iMHFiU1BpejNhc3FKNG9qOUtD?=
- =?utf-8?B?SHFJZXpwc3A4UE5KNVJCQlAyTXh0NERUMjQ1OERFZ093bWNMcDZqbitHeStP?=
- =?utf-8?B?T2EveUZkSElidUZBTEVGcEoyQmUwUWh2MjRjVWxQSlZ5K2ZSdWZUUkw5VW50?=
- =?utf-8?B?K3ZJZHdzLzZpS2pXRmNyRS9ZdE4xV3RHQTE4NzcwYTRFd3J1QUtHOC95Y3hD?=
- =?utf-8?Q?leL6Nox2ird2h4m1mz2v3HgQO?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88e991c4-5ef8-47b9-149f-08dbf50ed2aa
-X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 21:20:21.7077
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +VkRxNxOun652P/4tuF/g6f12j/tWVP7zAKrJEQ3BVCT2zZ+/et2g802yqXjey97
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4218
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Al Viro" <viro@zeniv.linux.org.uk>
+Cc:     "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
+        "Chuck Lever" <chuck.lever@oracle.com>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Juri Lelli" <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] Allow a kthread to declare that it calls task_work_run()
+In-reply-to: <20231204024031.GV38156@ZenIV>
+References: <20231204014042.6754-1-neilb@suse.de>,
+ <20231204014042.6754-2-neilb@suse.de>, <20231204024031.GV38156@ZenIV>
+Date:   Tue, 05 Dec 2023 08:20:31 +1100
+Message-id: <170172483155.7109.15983228851050210918@noble.neil.brown.name>
+X-Spamd-Bar: +++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [3.59 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-0.20)[-0.198];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 3.59
+X-Rspamd-Queue-Id: 496631FE75
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+On Mon, 04 Dec 2023, Al Viro wrote:
+> On Mon, Dec 04, 2023 at 12:36:41PM +1100, NeilBrown wrote:
+> 
+> > This means that any cost for doing the work is not imposed on the kernel
+> > thread, and importantly excessive amounts of work cannot apply
+> > back-pressure to reduce the amount of new work queued.
+> 
+> It also means that a stuck ->release() won't end up with stuck
+> kernel thread...
 
-Tested the series on AMD system. Just ran few basic tests. Everything 
-looking good.
+Is a stuck kernel thread any worse than a stuck user-space thread?
 
-Thanks
+> 
+> > earlier than would be ideal.  When __dput (from the workqueue) calls
+> 
+> WTF is that __dput thing?  __fput, perhaps?
 
-Babu
+Either __fput or dput :-)
+->release isn't the problem that I am seeing.
+The call trace that I see causing problems is
+__fput -> dput -> dentry_kill -> destroy_inode -> xfs_fs_destroy_inode
 
-On 12/4/2023 12:53 PM, Tony Luck wrote:
-> The Sub-NUMA cluster feature on some Intel processors partitions the CPUs
-> that share an L3 cache into two or more sets. This plays havoc with the
-> Resource Director Technology (RDT) monitoring features.  Prior to this
-> patch Intel has advised that SNC and RDT are incompatible.
->
-> Some of these CPU support an MSR that can partition the RMID counters in
-> the same way. This allows monitoring features to be used. With the caveat
-> that users must be aware that Linux may migrate tasks more frequently
-> between SNC nodes than between "regular" NUMA nodes, so reading counters
-> from all SNC nodes may be needed to get a complete picture of activity
-> for tasks.
->
-> Cache and memory bandwidth allocation features continue to operate at
-> the scope of the L3 cache.
->
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
->
-> Changes since v12:
->
-> All:
-> 	Reinette - put commit tags in right order for TIP (Tested-by before
-> 	Reviewed-by)
->
-> Patch 7:
-> 	Fam Zheng - Check for -1 return from get_cpu_cacheinfo_id() and
-> 	increase size of bitmap tracking # of L3 instances.
-> 	Reinette - Add extra sanity checks. Note that this patch has
-> 	some additional tweaks beyond the e-mail discussion.
-> 		1) "3" is a valid return in addition to 1, 2, 4
-> 		2) Added a warning if the sanity checks fail that
-> 		prints number of CPU nodes and number of L3 cache
-> 		instances that were found.
->
-> Patch 8:
-> 	Babu - Fix grammar with an additional comma.
->
->
-> Tony Luck (8):
->    x86/resctrl: Prepare for new domain scope
->    x86/resctrl: Prepare to split rdt_domain structure
->    x86/resctrl: Prepare for different scope for control/monitor
->      operations
->    x86/resctrl: Split the rdt_domain and rdt_hw_domain structures
->    x86/resctrl: Add node-scope to the options for feature scope
->    x86/resctrl: Introduce snc_nodes_per_l3_cache
->    x86/resctrl: Sub NUMA Cluster detection and enable
->    x86/resctrl: Update documentation with Sub-NUMA cluster changes
->
->   Documentation/arch/x86/resctrl.rst        |  25 +-
->   include/linux/resctrl.h                   |  85 +++--
->   arch/x86/include/asm/msr-index.h          |   1 +
->   arch/x86/kernel/cpu/resctrl/internal.h    |  66 ++--
->   arch/x86/kernel/cpu/resctrl/core.c        | 433 +++++++++++++++++-----
->   arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  58 +--
->   arch/x86/kernel/cpu/resctrl/monitor.c     |  68 ++--
->   arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  26 +-
->   arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 149 ++++----
->   9 files changed, 629 insertions(+), 282 deletions(-)
->
->
-> base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+so both __fput and dput are there, but most of the code is dput related.
+So both "put"s were swimming in by brain and the wrong combination came
+out.
+I changed it to __fput - thanks.
+
+> 
+> > This patch adds a new process flag PF_RUNS_TASK_WORK which is now used
+> > instead of PF_KTHREAD to determine whether it is sensible to queue
+> > something to task_works.  This flag is always set for non-kernel threads.
+> 
+> *ugh*
+> 
+> What's that flag for?  task_work_add() always can fail; any caller must
+> have a fallback to cope with that possibility; fput() certainly does.
+
+As Oleg pointed out, all threads including kernel threads call
+task_work_run() at exit, and some kernel threads depend on this.  So
+disabling task_work_add() early for all kernel threads would break
+things.
+
+Currently task_work_add() fails only once the process has started
+exiting.  Only code that might run during the exit handling need check.
+
+> 
+> Just have the kernel threads born with ->task_works set to &work_exited
+> and provide a primitive that would flip it from that to NULL.
+> 
+> > @@ -1328,7 +1328,7 @@ static void mntput_no_expire(struct mount *mnt)
+> >  
+> >  	if (likely(!(mnt->mnt.mnt_flags & MNT_INTERNAL))) {
+> >  		struct task_struct *task = current;
+> > -		if (likely(!(task->flags & PF_KTHREAD))) {
+> > +		if (likely((task->flags & PF_RUNS_TASK_WORK))) {
+> >  			init_task_work(&mnt->mnt_rcu, __cleanup_mnt);
+> >  			if (!task_work_add(task, &mnt->mnt_rcu, TWA_RESUME))
+> >  				return;
+> 
+> Now, *that* is something I have much stronger objections to.
+> Stuck filesystem shutdown is far more likely than stuck
+> ->release().  You are seriously asking for trouble here.
+> 
+> Why would you want to have nfsd block on that?
+> 
+
+I don't *want* nfsd block on that, but I don't care if it does.  nfsd
+will only call task_work_run() at a safe time.  This is no different to
+user-space processes only calling task_work_run() at a safe time.
+
+The new flag isn't "I_AM_NFSD" or "QUEUE_FPUT_WORK_TO_TASK".  It is
+"RUNS_TASK_WORK".  So any code that would prefer to call task_work_add()
+but has a fall-back for tasks that don't call run_task_work() should
+test the new flag.  Doing otherwise would be inconsistent and
+potentially confusing.
+
+I don't think that nfsd getting stuck would be any worse than systemd
+getting stuck, or automount getting stuck, or udiskd getting stuck.
+
+Thanks,
+NeilBrown
