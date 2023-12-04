@@ -2,65 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F25802E36
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D094802E29
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbjLDIyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:54:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60186 "EHLO
+        id S229464AbjLDIwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:52:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjLDIyX (ORCPT
+        with ESMTP id S229666AbjLDIww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:54:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB4185;
-        Mon,  4 Dec 2023 00:54:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701680069; x=1733216069;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=ygCWSDYQlw1yVJhilY1MLD5z9RQ3sF3/7eRfaVIIdao=;
-  b=Se5bFtNzb4IOP4peI7Q+FZnoBX+xAULFCoC91BH4QQlJKjYsJ9r8nUMM
-   7Np0kNXTzVMbZc0v9oqIbcuOWxmCB8IWiu/m6sRPI9mc2Usx/ScMW+7Pf
-   Q80ffc8rwEAlom3kl3oe0cN8+1H1WdJ3jO7Tu8A2DhATDuRaxay3wlPfx
-   BT/QSnokL9VLymLgxDFRJrXzPhWewvYqEeu+eEV4p9JG7i7j2E6vKsxz7
-   fdxdRg0k/n/OIrOWn1O9uhNMEfmOgtBhSfdziPk/ZSTlRzRCtUG4hGHtn
-   j9tcnx/5w7wSdz53ByIPl5ynmlL4q5mNcnKkUy87Aw9o3WosatJ5oX+uj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="458025238"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="458025238"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 00:54:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="11894003"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 00:54:14 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     <sthanneeru.opensrc@micron.com>
-Cc:     <aneesh.kumar@linux.ibm.com>, <hannes@cmpxchg.org>,
-        <hasanalmaruf@fb.com>, <haowang3@fb.com>,
-        <gregory.price@memverge.com>, <dan.j.williams@intel.com>,
-        <mhocko@suse.com>, <tj@kernel.org>, <hezhongkun.hzk@bytedance.com>,
-        <fvdl@google.com>, <john@jagalactic.com>, <mirakhur@micron.com>,
-        <vtavarespetr@micron.com>, <Ravis.OpenSrc@micron.com>,
-        <Jonathan.Cameron@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-api@vger.kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [RFC PATCH 0/2] Node migration between memory tiers
-In-Reply-To: <20231130214858.1887-1-sthanneeru.opensrc@micron.com> (sthanneeru
-        opensrc's message of "Fri, 1 Dec 2023 03:18:56 +0530")
-References: <20231130214858.1887-1-sthanneeru.opensrc@micron.com>
-Date:   Mon, 04 Dec 2023 16:52:12 +0800
-Message-ID: <87o7f62vur.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Mon, 4 Dec 2023 03:52:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2221B103
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:52:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0B5C433C8;
+        Mon,  4 Dec 2023 08:52:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701679977;
+        bh=/WKznH8f95HbNlhZ0nk6+S4zAvOWVNlX0Xsl7lAIJLo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WEGIGsLuFWcmUjZIVUWlDB4nJT4dLAt0tCHCx4JCrBNYvbDayjzodqZWW73nP3mC1
+         7LzfatUgQhC5gTuq5uDAEcXU0IeCq1GlvOhaat+1Mu82e+E/1F7YIv00lUaZTjKKxQ
+         HRQ4E+04GdB8s8Y/Qk8xtolHBWRkj9vZE5Fq752wHlQ5vE05xWqJnQxkElPSlSKVeD
+         7tsBACW/B+CtGv2nscTMph5MyMyU2LlER6KDElZK4wbhXgQWwpPP2ImVC/01eQyDlB
+         G/wwYL6dR8tVzC3J7zik6sGhCqxjj5S18Lb75jyNSDRgHRvEeOtRi11u2AS6ethBrF
+         AZziOGY8XGBWw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rA4hC-0019ND-Mt;
+        Mon, 04 Dec 2023 08:52:55 +0000
+Date:   Mon, 04 Dec 2023 08:52:53 +0000
+Message-ID: <86sf4ibb8a.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Kunkun Jiang <jiangkunkun@huawei.com>, dongli.zhang@oracle.com,
+        cohuck@redhat.com, stefanha@redhat.com, mst@redhat.com,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        wanghaibin.wang@huawei.com
+Subject: Re: [RFC PATCH] KVM: arm/arm64: GICv4: Support shared VLPI
+In-Reply-To: <CACGkMEt5sapZjpyBSM5oX_=k1AcefEe5D4wtX=HqtHy4AD3j_g@mail.gmail.com>
+References: <20231102143507.840-1-jiangkunkun@huawei.com>
+        <87msvt6cc7.wl-maz@kernel.org>
+        <1fb8353e-e9c4-2570-c2ca-ec537c18ac4d@huawei.com>
+        <86edh228xx.wl-maz@kernel.org>
+        <952bd5dc-dd20-acc3-d77e-c9b14e5728d3@huawei.com>
+        <87fs0k94og.wl-maz@kernel.org>
+        <CACGkMEt5sapZjpyBSM5oX_=k1AcefEe5D4wtX=HqtHy4AD3j_g@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jasowang@redhat.com, jiangkunkun@huawei.com, dongli.zhang@oracle.com, cohuck@redhat.com, stefanha@redhat.com, mst@redhat.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, gshan@redhat.com, jean-philippe@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, wanghaibin.wang@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,80 +77,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-<sthanneeru.opensrc@micron.com> writes:
+On Mon, 04 Dec 2023 08:39:00 +0000,
+Jason Wang <jasowang@redhat.com> wrote:
+> 
+> > Honestly, the virtio driver is broken (irrespective of the
+> > architecture), and incompatible with the GIC architecture.
+> 
+> No matter how the driver is written, the host/KVM should be able to
+> survive from that.
 
-> From: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
->
-> The memory tiers feature allows nodes with similar memory types
-> or performance characteristics to be grouped together in a
-> memory tier. However, there is currently no provision for
-> moving a node from one tier to another on demand.
->
-> This patch series aims to support node migration between tiers
-> on demand by sysadmin/root user using the provided sysfs for
-> node migration. Each tier has a start abstract distance(adistance)
-> and range.
+The host is perfectly fine, thanks for asking. The guest, however, is
+in a bad shape.
 
-We have discussed migrating nodes (in fact nodes of a memory type)
-between tiers by sysadmin/root before.  The basic idea comes from
-Johannes.  It is summarized in page 11 of [1],
+	M.
 
-[1] https://lpc.events/event/16/contributions/1209/attachments/1042/1995/Li=
-ve%20In%20a%20World%20With%20Multiple%20Memory%20Types.pdf
-
-The abstract distance of a memory type (e.g., GPU HBM) can be adjusted
-via a sysfs knob (<memory_type>/abstract_distance_offset).
-
-I still think that the memory type is better to be used to change
-the abstract distance of nodes.  Do you agree?
-
---
-Best Regards,
-Huang, Ying
-
-> To migrate a node to a tier, the corresponding node=E2=80=99s sysfs
-> adistance_offset is written with a value corresponding to
-> the tier=E2=80=99s adistance.
->
-> Example: Move node2 to memory tier5 from its default tier(i.e 4)
->
-> 1. Check default values:
-> $cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
-> 0-2
->
-> $cat /sys/devices/system/node/node0/adistance_offset
-> 0
-> $cat /sys/devices/system/node/node1/adistance_offset
-> 0
-> $cat /sys/devices/system/node/node2/adistance_offset
-> 0
->
-> 2. Move node2 to  tier5:
->
-> To move node2 from emory_tier4 (adistance=3D512) to
-> emory_tier5 (abstract=3D640), set the `adistance_offset` of
-> node 2 to 128 (i.e., 512 + 128 =3D 640).
->
-> Tier4 adistance start can be derved from tier-id
-> (i.e for tier4, 4 << 7 =3D 512).
->
-> $echo 128 > /sys/devices/system/node/node2/adistance_offset
-> $cat /sys/devices/system/node/node2/adistance_offset
-> 128
->
-> 3. Verify node2's tier id:
->
-> $cat /sys/devices/virtual/memory_tiering/memory_tier5/nodelist
-> 2
-> $cat /sys/devices/virtual/memory_tiering/memory_tier4/nodelist
-> 0-1
->
-> Srinivasulu Thanneeru (2):
->   base/node: Add sysfs for adistance_offset
->   memory tier: Support node migration between tiers
->
->  drivers/base/node.c          | 51 +++++++++++++++++++++++
->  include/linux/memory-tiers.h | 11 +++++
->  include/linux/node.h         |  6 +++
->  mm/memory-tiers.c            | 79 ++++++++++++++++++++----------------
->  4 files changed, 113 insertions(+), 34 deletions(-)
+-- 
+Without deviation from the norm, progress is not possible.
