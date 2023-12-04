@@ -2,91 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F02A080379C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8598D80379D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345986AbjLDOxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:53:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
+        id S1346010AbjLDOyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:54:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234218AbjLDOxh (ORCPT
+        with ESMTP id S234155AbjLDOyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:53:37 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDAAA1
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:53:43 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1d06819a9cbso12857095ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:53:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701701623; x=1702306423; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QQOlfQnSbB5TCtBCKGGFhs8uxHpVYXRs+V4cIcLSkWk=;
-        b=ewLdFtB2dXQMa9DnwhQ7dQfLrdDm+CWW7KrCgzsSTGFLz92JQCAvK8yY9l83CPL7oZ
-         BKUDBE7kewwTcdDZXO6e8UhBegXOxtu03jlxgQ2CJjyxMOEFObdq4aWNCcXKQHLxqPck
-         9ZJrkNwAks9cP8JgZhe6ccyGkdfzlgmXyXrcDKRHNb65yE0dJK1uyc09xXax2ZvqolMR
-         esHNtoryNvPvQnS9yxmRUXw2de0NO6MnIVlP4Q85MrM6/2PlnxtQgmtQeQp7ZsHYcgOa
-         vHG0j76TUd9h0GG3LNoNJHsIaEz85t+51X4Eqh7ccnax0JYj/cjex5Jqpi0HdmIfp8Nj
-         /cLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701701623; x=1702306423;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QQOlfQnSbB5TCtBCKGGFhs8uxHpVYXRs+V4cIcLSkWk=;
-        b=SI8LwbeiutvB+4V73Ydg39s1NPRNtdz8up5BywvRadTT4p0xFNK+rUpdKWLsVK422z
-         T3CPMqr7y2s177VTDTOj1lePySgXKB31ipLY/T+MpPCp07xd1kXrvHGFUP7EAJA/Mkis
-         IS5PiOYupD5cJ6lelVgoKUnNW424eweKAB2Y/n4Exa8XMWudHmVUK67swfQnxi8/9nNG
-         8/+UGBeLKIDnGnWNZigQoNbCHR7SmB37NxEto8yj4XWe0DLO9O5GF/hBQJbO7KnSKwfT
-         kBZIy4gQU4GnG0uzZSLHxwVjltBQD6QPMo5I7H3Yfk1itzydtmgBD8nmH6V1A6vZq/FB
-         PLmg==
-X-Gm-Message-State: AOJu0YxOEaNAwgkcunBQiRvDEE/ldOowL4qjow11mOOpDLdc5fAfbiZz
-        1YSDpRQb0eqeIJ7OvpMz5yPbsA==
-X-Google-Smtp-Source: AGHT+IHox/9kF8l9FG96W0KL+7akkXC0lZgYWpweHuKYWOPas9Cc+WmJIBJfYvUMHV5j/1FVKIILMw==
-X-Received: by 2002:a17:902:ceca:b0:1d0:76f4:e41b with SMTP id d10-20020a170902ceca00b001d076f4e41bmr1544783plg.45.1701701623269;
-        Mon, 04 Dec 2023 06:53:43 -0800 (PST)
-Received: from google.com (170.102.105.34.bc.googleusercontent.com. [34.105.102.170])
-        by smtp.gmail.com with ESMTPSA id x12-20020a170902ea8c00b001c736b0037fsm6727717plb.231.2023.12.04.06.53.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 06:53:42 -0800 (PST)
-Date:   Mon, 4 Dec 2023 14:53:39 +0000
-From:   Carlos Llamas <cmllamas@google.com>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     arve@android.com, brauner@kernel.org, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, maco@android.com, surenb@google.com,
-        tkjos@android.com
-Subject: Re: [PATCH v2 23/28] binder: document the final page calculation
-Message-ID: <ZW3n8w7L5ZJ_mlFK@google.com>
-References: <20231201172212.1813387-24-cmllamas@google.com>
- <20231204115727.42370-1-aliceryhl@google.com>
- <ZW3kjj6KC73zpnw4@google.com>
- <CAH5fLgjmN4xYHZc=ZVdwOMMTEk4PwXwnqvXWSJrE1J-2xaKL7g@mail.gmail.com>
+        Mon, 4 Dec 2023 09:54:15 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EFFA1;
+        Mon,  4 Dec 2023 06:54:21 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4Eq96E020640;
+        Mon, 4 Dec 2023 14:54:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0H1CuKAYogqCZsn/ksRFsa0G5IRLpU8w0lcNqSiLkgI=;
+ b=J5nDe2bJY8810A2POgau07YJ+6BBhLAgOgcvI2Ci205uilYsK9d+daXaH84IKWe5itOG
+ C1AR894X1yKWRJ+YVYFUH6SyrQlFUuRoToPOerVgjfLQvyHuw+X7J4Cu1K+7TzN46a/a
+ AExr1ZZhPzYlfxdNxp/+c2YJxq/X9ycZQNiXgIcIONv3kIChUNDWX7Io8QZelrjqEFBm
+ BWHwFCDvEcuzzc/1948Y8fvO7EBS6e7GZtGFUu7X2NPLbBSPzJ2jnU+ZPOSO/c6PBL7T
+ reBo+H4mJ8+jMAP/h+53DWgoXiL/UbeyTMGW0MitQ6PfEv6dQhiTtiqPvoj+peEXBgqB 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usekcdq5c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 14:54:18 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4ERj1B026528;
+        Mon, 4 Dec 2023 14:54:06 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usekcdpwg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 14:54:06 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4EJSev020522;
+        Mon, 4 Dec 2023 14:53:52 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8dnjc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 14:53:52 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4Erp3R24707688
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Dec 2023 14:53:51 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 888815805A;
+        Mon,  4 Dec 2023 14:53:51 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE24C5803F;
+        Mon,  4 Dec 2023 14:53:50 +0000 (GMT)
+Received: from [9.61.175.228] (unknown [9.61.175.228])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Dec 2023 14:53:50 +0000 (GMT)
+Message-ID: <1f4720d7-93f1-4e38-a3ad-abaf99596e7c@linux.ibm.com>
+Date:   Mon, 4 Dec 2023 09:53:50 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAH5fLgjmN4xYHZc=ZVdwOMMTEk4PwXwnqvXWSJrE1J-2xaKL7g@mail.gmail.com>
-X-Spam-Status: No, score=-13.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
+Content-Language: en-US
+To:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com
+References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+ <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Organization: IBM
+In-Reply-To: <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LiPqEQEffht9-OMuMmPGu4mqf9N3NKXc
+X-Proofpoint-ORIG-GUID: FusNM78Gsy9mHp2FC5kLwwcm7lUPOau7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_13,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 mlxscore=0 clxscore=1015 malwarescore=0
+ bulkscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312040112
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 03:43:54PM +0100, Alice Ryhl wrote:
-> You could also just remove the `next_used_page` part entirely. This
-> means that you will sometimes call `binder_lru_freelist_del` on a page
-> that's in use, but that's just a no-op.
 
-Yes, that is right and I did look into this. The WARN_ON(!on_lru) checks
-are a bit confusing when it's a no-op as you mention. The purpose though
-is to assert the "algorithm" of add/del pages from the lru is somewhat
-correct (particularly the page range).
 
---
-Carlos Llamas
+On 11/29/23 12:12, Christian Borntraeger wrote:
+> Am 29.11.23 um 15:35 schrieb Tony Krowiak:
+>> In the current implementation, response code 01 (AP queue number not 
+>> valid)
+>> is handled as a default case along with other response codes returned 
+>> from
+>> a queue reset operation that are not handled specifically. Barring a bug,
+>> response code 01 will occur only when a queue has been externally removed
+>> from the host's AP configuration; nn this case, the queue must
+>> be reset by the machine in order to avoid leaking crypto data if/when the
+>> queue is returned to the host's configuration. The response code 01 case
+>> will be handled specifically by logging a WARN message followed by 
+>> cleaning
+>> up the IRQ resources.
+>>
+> 
+> To me it looks like this can be triggered by the LPAR admin, correct? So it
+> is not desireable but possible.
+> In that case I prefer to not use WARN, maybe use dev_warn or dev_err 
+> instead.
+> WARN can be a disruptive event if panic_on_warn is set.
+
+Yes, it can be triggered by the LPAR admin. I can't use dev_warn here 
+because we don't have a reference to any device, but I can use pr_warn 
+if that suffices.
+
+> 
+> 
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> ---
+>>   drivers/s390/crypto/vfio_ap_ops.c | 31 +++++++++++++++++++++++++++++++
+>>   1 file changed, 31 insertions(+)
+>>
+>> diff --git a/drivers/s390/crypto/vfio_ap_ops.c 
+>> b/drivers/s390/crypto/vfio_ap_ops.c
+>> index 4db538a55192..91d6334574d8 100644
+>> --- a/drivers/s390/crypto/vfio_ap_ops.c
+>> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+>> @@ -1652,6 +1652,21 @@ static int apq_status_check(int apqn, struct 
+>> ap_queue_status *status)
+>>            * a value indicating a reset needs to be performed again.
+>>            */
+>>           return -EAGAIN;
+>> +    case AP_RESPONSE_Q_NOT_AVAIL:
+>> +        /*
+>> +         * This response code indicates the queue is not available.
+>> +         * Barring a bug, response code 01 will occur only when a queue
+>> +         * has been externally removed from the host's AP configuration;
+>> +         * in which case, the queue must be reset by the machine in
+>> +         * order to avoid leaking crypto data if/when the queue is
+>> +         * returned to the host's configuration. In this case, let's go
+>> +         * ahead and log a warning message and return 0 so the AQIC
+>> +         * resources get cleaned up by the caller.
+>> +         */
+>> +        WARN(true,
+>> +             "Unable to reset queue %02x.%04x: not in host AP 
+>> configuration\n",
+>> +             AP_QID_CARD(apqn), AP_QID_QUEUE(apqn));
+>> +            return 0;
+>>       default:
+>>           WARN(true,
+>>                "failed to verify reset of queue %02x.%04x: TAPQ rc=%u\n",
+>> @@ -1736,6 +1751,22 @@ static void vfio_ap_mdev_reset_queue(struct 
+>> vfio_ap_queue *q)
+>>           q->reset_status.response_code = 0;
+>>           vfio_ap_free_aqic_resources(q);
+>>           break;
+>> +    case AP_RESPONSE_Q_NOT_AVAIL:
+>> +        /*
+>> +         * This response code indicates the queue is not available.
+>> +         * Barring a bug, response code 01 will occur only when a queue
+>> +         * has been externally removed from the host's AP configuration;
+>> +         * in which case, the queue must be reset by the machine in
+>> +         * order to avoid leaking crypto data if/when the queue is
+>> +         * returned to the host's configuration. In this case, let's go
+>> +         * ahead and log a warning message then clean up the AQIC
+>> +         * resources.
+>> +         */
+>> +        WARN(true,
+>> +             "Unable to reset queue %02x.%04x: not in host AP 
+>> configuration\n",
+>> +             AP_QID_CARD(q->apqn), AP_QID_QUEUE(q->apqn));
+>> +        vfio_ap_free_aqic_resources(q);
+>> +        break;
+>>       default:
+>>           WARN(true,
+>>                "PQAP/ZAPQ for %02x.%04x failed with invalid rc=%u\n",
