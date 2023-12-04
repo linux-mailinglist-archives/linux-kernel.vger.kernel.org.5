@@ -2,166 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD27803771
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAD6803775
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345821AbjLDOtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
+        id S1345920AbjLDOtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233871AbjLDOta (ORCPT
+        with ESMTP id S233871AbjLDOte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:49:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0CFB3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:49:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DD35C433C7;
-        Mon,  4 Dec 2023 14:49:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701701376;
-        bh=+rfhQvthjBio9vKPuOuZeZLKHbgV1eAS2Q4KP5aiGdw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mP1NKR8WcwA+hcZQ6uKxxCQEnsh3wuXEAjUr52iqagkAxstbdi8MnYIviiDX0Y+tN
-         FAPnWwLPDVJE6/0x0dRz9DUEl35GqLq3/BvMWTQVFeh5qzzKYvLbxBF1R3JMlUe3PU
-         2nsB5bDfcVu21DcHS+eV/VKlsW8o0uV1iBc/aGRlav7o8NTlluBw0MSsCZ74fa77KM
-         jKEZtDLPH05I7H0Ftn58M5hS95djYVZyJDt2jHdD9ys8e/JZKNf9iruGYWzWGKItg2
-         UwGjVHVbq8TkFWccMc1HBnxtFvIjF8+yWhL4VHfjn7w2d/XNpAv+2Uq6QSFtYlBOZZ
-         AQ5/hYhWUpxiQ==
-Date:   Mon, 4 Dec 2023 14:49:25 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>, nuno.sa@analog.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH 00/12] iio: add new backend framework
-Message-ID: <20231204144925.4fe9922f@jic23-huawei>
-In-Reply-To: <CAMknhBEg+cFrm9kQh1G+8nxGPCFsBaca3rnLEnXZ1h=XDS1aeQ@mail.gmail.com>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-        <CAMknhBH0pF_+z_JqWGscELBmAEDyxLAtgQ-j3=6P2MeFXnzhWQ@mail.gmail.com>
-        <CAMknhBEcEJ01nO0p5_vy4jVBVTL_rhEk+pvBpXdMtaDurc-05A@mail.gmail.com>
-        <369a72dd34c0bc457620b88594a975d96aa85a22.camel@gmail.com>
-        <CAMknhBEg+cFrm9kQh1G+8nxGPCFsBaca3rnLEnXZ1h=XDS1aeQ@mail.gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 4 Dec 2023 09:49:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCC2C1;
+        Mon,  4 Dec 2023 06:49:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701701381; x=1733237381;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OyK5xaD2gXFqzuWV1aJ86M25ufVghrDbW/job7rkqCU=;
+  b=Q4IcTeDjeXpM0Ct2d8lWqp13TfLfbNE5dkv0JJx2N6M4r+WAIogE+gYi
+   SGub6xk+nijfHK4Xh/rRBZgWHB8GtEr3blBSunOgn4Bp6vxgRpCcIOdWV
+   adS5/Q8l2Vg1hIVNshlRzohricjXChG++qmN8MMc0RthtGUl65/ASliKn
+   sUGVmlSNUzFX0W7A6SZHmG0FfGZk0WaBhw+7ES7Ew6qZcZYfoHo3DHYP4
+   E+ft2/rxVHfYv//rKl7G33vPeOSsEJ0/HogVqTCk6efF4TvjZ1l4f+6Om
+   j6VqtHZ9rGQZaPGKao1EbxWoYsE6zx4zXpN2E2t0A/uaqKGWtbwTFNroT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="591897"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="591897"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 06:49:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="841075936"
+X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
+   d="scan'208";a="841075936"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 06:49:33 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1rAAGG-00000001mUw-3BG5;
+        Mon, 04 Dec 2023 16:49:28 +0200
+Date:   Mon, 4 Dec 2023 16:49:28 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: Re: [PATCH v4 00/23] pinctrl: Convert struct group_desc to use
+ struct pingroup
+Message-ID: <ZW3m-KDhs39i0E5n@smile.fi.intel.com>
+References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
+ <CACRpkdZhpXcx2FZYKM69j3x4dP5Nu-=3sXW+BQAw3k6c5aRrWw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdZhpXcx2FZYKM69j3x4dP5Nu-=3sXW+BQAw3k6c5aRrWw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Dec 2023 10:16:52 -0600
-David Lechner <dlechner@baylibre.com> wrote:
+On Mon, Dec 04, 2023 at 03:38:43PM +0100, Linus Walleij wrote:
+> Hi Andy,
+> 
+> due to compile errors on arm32 and arm64 I had to drop most of the
+> patches again but I kept the preparatory patches so your
+> patch stack don't need to be so deep.
 
-> On Sat, Dec 2, 2023 at 3:37=E2=80=AFAM Nuno S=C3=A1 <noname.nuno@gmail.co=
-m> wrote:
-> >
-> > On Fri, 2023-12-01 at 21:53 -0600, David Lechner wrote: =20
-> > > On Thu, Nov 30, 2023 at 5:54=E2=80=AFPM David Lechner <dlechner@bayli=
-bre.com> wrote: =20
-> > > >
-> > > > On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
-> > > > <devnull+nuno.sa.analog.com@kernel.org> wrote: =20
-> > > > >
-> > > > > Hi all,
-> > > > >
-> > > > > This is a Framework to handle complex IIO aggregate devices.
-> > > > >
-> > > > > The typical architecture is to have one device as the frontend de=
-vice which
-> > > > > can be "linked" against one or multiple backend devices. All the =
-IIO and
-> > > > > userspace interface is expected to be registers/managed by the fr=
-ontend
-> > > > > device which will callback into the backends when needed (to get/=
-set
-> > > > > some configuration that it does not directly control).
-> > > > >
-> > > > > The basic framework interface is pretty simple:
-> > > > >  - Backends should register themselves with @devm_iio_backend_reg=
-ister()
-> > > > >  - Frontend devices should get backends with @devm_iio_backend_ge=
-t()
-> > > > >
-> > > > > (typical provider - consumer stuff)
-> > > > > =20
-> > > >
-> > > > The "typical provider - consumer stuff" seems pretty straight forwa=
-rd
-> > > > for finding and connecting two different devices, but the definition
-> > > > of what is a frontend and what is a backend seems a bit nebulous. It
-> > > > would be nice to seem some example devicetree to be able to get a
-> > > > better picture of how this will be used in practices (links to the =
-the
-> > > > hardware docs for those examples would be nice too).
-> > > > =20
-> > >
-> > > Fulfilling my own request here...
-> > >
-> > > Since AD9467 is being use as the example first user of the IIO offloa=
-d framework
-> > > I did a deep dive into how it is actually being used. It looks like t=
-his:
-> > > =20
-> >
-> > This is not an offload framework... I think somehow you're connecting t=
-his to the
-> > spi_engine offload and these are two completely different things. Maybe=
- they can
-> > intersect at some point but as of now, I don't see any benefit in doing=
- it. The goal
-> > of this patchseries is to have a simple and generic framework so we can=
- connect IIO
-> > devices (frontends) to a backend device having kind of an IIO aggregate=
- device so to
-> > say. Moreover, we just want to have the ad9467 driver in the same state=
- it was before
-> > to keep things simple. I'm already fixing some things but I don't want =
-extend that
-> > too much as the primary goal is to have the framework in. Cleanups can =
-come
-> > afterwards.
-> >
-> > That said, is fine to have this kind of discussion but I honestly think=
- you're over
-> > engineering the whole thing. Maybe you're already too ahead of me :), b=
-ut where we
-> > stand right now, I don't see any reason for anything so complicated as =
-the below.
-> > Also note this should be simple and generic. As I already said, this is=
- not supposed
-> > to be an ADI only thing and STM also wants to make use of this infrastr=
-ucture. But
-> > see below some of my comments on why I think it's too much... =20
->=20
-> This is a very fair point. I do have a tendency to overthink things. :-)
->=20
-> At the very least, being able to see the schematic of how it all fits
-> together filled in the holes of my understanding and now everything
-> you are doing in this series makes sense to me. And I totally agree
-> with keeping it simpler is better.
+Thank you!
 
-Interesting discussion. One key thing it has highlighted for me is that
-even the simpler proposal that Nuno has put forward deserves some
-more documentation!  Preferably with some asci art - though maybe not as co=
-mplex
-as David's pretty picture.  I keep forgetting which is the backend and which
-is the front end for this discussion which isn't helping me get my head
-around it.
+...
 
-Jonathan
+> >   pinctrl: core: Make pins const unsigned int pointer in struct
+> >     group_desc
+> >   pinctrl: equilibrium: Convert to use struct pingroup
+> >   pinctrl: keembay: Convert to use struct pingroup
+> >   pinctrl: nuvoton: Convert to use struct pingroup and
+> >     PINCTRL_PINGROUP()
 
+Hmm... Why these to be dropped?
+
+> >   pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
+> >   pinctrl: ingenic: Make use of PINCTRL_GROUP_DESC()
+> >   pinctrl: mediatek: Make use of PINCTRL_GROUP_DESC()
+> >   pinctrl: core: Embed struct pingroup into struct group_desc
+> >   pinctrl: bcm: Convert to use grp member
+> >   pinctrl: equilibrium: Convert to use grp member
+> >   pinctrl: imx: Convert to use grp member
+> >   pinctrl: ingenic: Convert to use grp member
+> >   pinctrl: keembay: Convert to use grp member
+> >   pinctrl: mediatek: Convert to use grp member
+> >   pinctrl: renesas: Convert to use grp member
+> >   pinctrl: starfive: Convert to use grp member
+> >   pinctrl: core: Remove unused members from struct group_desc
+> 
+> I dropped these (because they all cross-depend...)
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
