@@ -2,247 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C02803B20
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B5E803B23
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbjLDRHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:07:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53960 "EHLO
+        id S230345AbjLDRIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:08:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjLDRHQ (ORCPT
+        with ESMTP id S229561AbjLDRIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:07:16 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C62ABB;
-        Mon,  4 Dec 2023 09:07:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701709642; x=1733245642;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qOapASXW9sV5EN1o2BAcOJimFv0X/vGsorTUtaMTOWw=;
-  b=cqjQZDeTeQMaVdp9c0M7CgAWVQ51Hahx0Bd9zJtgbSUVOVBJ48LaRrRW
-   5Aw7fe0d1R7bR6oHQDsPGhh+B6XsAER4RQwwxLMOV4lf5uaCyQa2rypKb
-   49D8C1l264/WmACUubnYV7f8bE0v0+LUymUX/6m/a3KMah/NdsAULWIb7
-   D2decWzanCkH7l1hIe6T/GME3FQRhCLDVdxa5Md+9/zNpr9pAjLG4N1tL
-   vkOaGTMQbahsVRsK2XiBRNT3Co8ExU8rocYYSP93HuGhVvmeSLBCXlyqz
-   ZcdCLQyE5Txfc6j6w9cl0tjM3MP6DYRI86WexmV/eSu47UJrFefTsSGwE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="12480099"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="12480099"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 09:07:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="774316847"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="774316847"
-Received: from gauravs1-mobl.amr.corp.intel.com (HELO [10.209.53.199]) ([10.209.53.199])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 09:07:18 -0800
-Message-ID: <bcff605a-3b8d-4dcc-a5cb-63dab1a74ed4@intel.com>
-Date:   Mon, 4 Dec 2023 09:07:17 -0800
+        Mon, 4 Dec 2023 12:08:17 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F1DCD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:08:23 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b595bf5d2so49443305e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:08:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1701709702; x=1702314502; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eM2Bf2WoC1yvqXGfr4khi6TDVXFpyxPzOUHleHrubpg=;
+        b=W1Hp4fyVhOpqZS8p3cF5mIFuDz6mEbLDXeLzHaub3VV6UMDKtTVKyro0BgOH0+NuRe
+         uadbFzvxY5hDvwX13GifbmGiqGSSk9D/vQ6DWpzoNdY3MqUXdkwjYoAQUt8Mh/V1G5TX
+         3x2aj10HT1RUfMoPYnBrtgh6gfbPG4rV0M+29molgPq5GwezjOm710S8WWvLgfj/eC/8
+         gxLUenkjAlSn3q1I3thxZ7YoFuS7XVgBXkszOAG4j3dGizbd+fXTHR5cMpaMFDIlWf5X
+         t8FzN0DgtERGHyjrmvmkU1aZSmptLB5pYRT8UZxAFky8hR7Ythf8U/5/BrrQQ7dpIccK
+         BiNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701709702; x=1702314502;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eM2Bf2WoC1yvqXGfr4khi6TDVXFpyxPzOUHleHrubpg=;
+        b=ZENW3NbOsUh7LuGLoi+Fu4U7OTt/OtYrM2ZvW5pgO5pIURsftjsnC5TMC6Xq9lLjuK
+         Kfp9EU1lWzH3IzmFY25VnHMRYUj/2QPVqiQnDAHUjfqIzvpdY3H29eNOTDFUOTQMhrA0
+         BwScvpQ6LktLnd4bY1deb323cHNXuChlm/22xvsxJ9O5+BLHxitUZ9AQ5hr3oHPL0orj
+         3g/xsgjxbbMkFlInSHKTLA54O0jd+x/NExrZ4gHc3aacmykjxj3PNjZiyub8ZHRebMqe
+         G+lX3962bz1dXjRHt+6aTwIgJaJ82HQ5Uf/J4wNoqt9zZwuwU/Tiq4s8QP1KHOv6OFbr
+         WlCw==
+X-Gm-Message-State: AOJu0Yw7JZ1PAUODGK61YXGobG241LQLQUG6c4/X16yuQk6uyNZayeag
+        AEYQx+BpCalfs8v9sH+95BPynA==
+X-Google-Smtp-Source: AGHT+IHsbfqa9QPkIow4yLzsiSHbNp9DKxut6KL9bOx2g6HB59PsiIezFgw/f5llkoaX6xiR1Zr9/A==
+X-Received: by 2002:a05:600c:5247:b0:40b:5e59:99a8 with SMTP id fc7-20020a05600c524700b0040b5e5999a8mr1862808wmb.200.1701709701454;
+        Mon, 04 Dec 2023 09:08:21 -0800 (PST)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id p6-20020a05600c468600b0040c0902dc22sm6127004wmo.31.2023.12.04.09.08.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 09:08:20 -0800 (PST)
+Message-ID: <45d63402-bd0f-4593-8e57-042c0753f3e3@arista.com>
+Date:   Mon, 4 Dec 2023 17:08:20 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
- #MC due to erratum
+Subject: Re: [PATCH v4 6/7] net/tcp: Store SNEs + SEQs on ao_info
 Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "sagis@google.com" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "Gao, Chao" <chao.gao@intel.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
- <b3b265f9-48fa-4574-a925-cbdaaa44a689@intel.com>
- <afc875ace6f9f955557f5c7e811b3046278e4c51.camel@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <afc875ace6f9f955557f5c7e811b3046278e4c51.camel@intel.com>
+To:     Simon Horman <horms@kernel.org>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        netdev@vger.kernel.org
+References: <20231129165721.337302-1-dima@arista.com>
+ <20231129165721.337302-7-dima@arista.com> <20231202171612.GC50400@kernel.org>
+From:   Dmitry Safonov <dima@arista.com>
+In-Reply-To: <20231202171612.GC50400@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/23 03:44, Huang, Kai wrote:
-...
->> It doesn't need perfect accuracy.  But how do we know it's not going to
->> go, for instance, chase a bad pointer?
+Hi Simon,
+
+On 12/2/23 17:16, Simon Horman wrote:
+> On Wed, Nov 29, 2023 at 04:57:20PM +0000, Dmitry Safonov wrote:
+>> RFC 5925 (6.2):
+>>> TCP-AO emulates a 64-bit sequence number space by inferring when to
+>>> increment the high-order 32-bit portion (the SNE) based on
+>>> transitions in the low-order portion (the TCP sequence number).
 >>
->>> +   if (tdx_module_status != TDX_MODULE_INITIALIZED)
->>> +           return false;
+>> snd_sne and rcv_sne are the upper 4 bytes of extended SEQ number.
+>> Unfortunately, reading two 4-bytes pointers can't be performed
+>> atomically (without synchronization).
 >>
->> As an example, what prevents this CPU from observing
->> tdx_module_status==TDX_MODULE_INITIALIZED while the PAMT structure is
->> being assembled?
-> 
-> There are two types of memory order serializing operations between assembling
-> the TDMR/PAMT structure and setting the tdx_module_status to
-> TDX_MODULE_INITIALIZED: 1) wbvind_on_all_cpus(); 2) bunch of SEAMCALLs;
-> 
-> WBINVD is a serializing instruction.  SEAMCALL is a VMEXIT to the TDX module,
-> which involves GDT/LDT/control registers/MSRs switch so it is also a serializing
-> operation.
-> 
-> But perhaps we can explicitly add a smp_wmb() between assembling TDMR/PAMT
-> structure and setting tdx_module_status if that's better.
-
-... and there's zero documentation of this dependency because ... ?
-
-I suspect it's because it was never looked at until Tony made a comment
-about it and we started looking at it.  In other words, it worked by
-coincidence.
-
->>> +   for (i = 0; i < tdmr_list->nr_consumed_tdmrs; i++) {
->>> +           unsigned long base, size;
->>> +
->>> +           tdmr_get_pamt(tdmr_entry(tdmr_list, i), &base, &size);
->>> +
->>> +           if (phys >= base && phys < (base + size))
->>> +                   return true;
->>> +   }
->>> +
->>> +   return false;
->>> +}
->>> +
->>> +/*
->>> + * Return whether the memory page at the given physical address is TDX
->>> + * private memory or not.  Called from #MC handler do_machine_check().
->>> + *
->>> + * Note this function may not return an accurate result in rare cases.
->>> + * This is fine as the #MC handler doesn't need a 100% accurate result,
->>> + * because it cannot distinguish #MC between software bug and real
->>> + * hardware error anyway.
->>> + */
->>> +bool tdx_is_private_mem(unsigned long phys)
->>> +{
->>> +   struct tdx_module_args args = {
->>> +           .rcx = phys & PAGE_MASK,
->>> +   };
->>> +   u64 sret;
->>> +
->>> +   if (!platform_tdx_enabled())
->>> +           return false;
->>> +
->>> +   /* Get page type from the TDX module */
->>> +   sret = __seamcall_ret(TDH_PHYMEM_PAGE_RDMD, &args);
->>> +   /*
->>> +    * Handle the case that CPU isn't in VMX operation.
->>> +    *
->>> +    * KVM guarantees no VM is running (thus no TDX guest)
->>> +    * when there's any online CPU isn't in VMX operation.
->>> +    * This means there will be no TDX guest private memory
->>> +    * and Secure-EPT pages.  However the TDX module may have
->>> +    * been initialized and the memory page could be PAMT.
->>> +    */
->>> +   if (sret == TDX_SEAMCALL_UD)
->>> +           return is_pamt_page(phys);
+>> In order to avoid locks on TCP fastpath, let's just double-account for
+>> SEQ changes: snd_una/rcv_nxt will be lower 4 bytes of snd_sne/rcv_sne.
 >>
->> Either this is comment is wonky or the module initialization is buggy.
->>
->> config_global_keyid() goes and does SEAMCALLs on all CPUs.  There are
->> zero checks or special handling in there for whether the CPU has done
->> VMXON.  So, by the time we've started initializing the TDX module
->> (including the PAMT), all online CPUs must be able to do SEAMCALLs.  Right?
->>
->> So how can we have a working PAMT here when this CPU can't do SEAMCALLs?
+>> Fixes: 64382c71a557 ("net/tcp: Add TCP-AO SNE support")
+>> Signed-off-by: Dmitry Safonov <dima@arista.com>
 > 
-> The corner case is KVM can enable VMX on all cpus, initialize the TDX module,
-> and then disable VMX on all cpus.  One example is KVM can be unloaded after it
-> initializes the TDX module.
+> ...
 > 
-> In this case CPU cannot do SEAMCALL but PAMTs are already working :-)
+>> diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
+>> index 647781080613..b8ef25d4b632 100644
+>> --- a/include/net/tcp_ao.h
+>> +++ b/include/net/tcp_ao.h
+>> @@ -121,8 +121,8 @@ struct tcp_ao_info {
+>>  	 * - for time-wait sockets the basis is tw_rcv_nxt/tw_snd_nxt.
+>>  	 *   tw_snd_nxt is not expected to change, while tw_rcv_nxt may.
+>>  	 */
+>> -	u32			snd_sne;
+>> -	u32			rcv_sne;
+>> +	u64			snd_sne;
+>> +	u64			rcv_sne;
+>>  	refcount_t		refcnt;		/* Protects twsk destruction */
+>>  	struct rcu_head		rcu;
+>>  };
 > 
-> However if SEAMCALL cannot be made (due to out of VMX), then the module can only
-> be initialized or the initialization hasn't been tried, so both
-> tdx_module_status and the tdx_tdmr_list are stable to access.
+> Hi Dmitry,
+> 
+> In tcp_ao.c:tcp_ao_connect_init() there is a local
+> variable:
+> 
+>         struct tcp_ao_info *ao_info;
+> 
+> And the following assignment occurs:
+> 
+>                 ao_info->snd_sne = htonl(tp->write_seq);
+> 
+> Is this still correct in light of the change of the type of snd_sne?
 
-None of this even matters.  Let's remind ourselves how unbelievably
-unlikely this is:
+Thanks for the report.
+Yes, it's correct as lower 4-bytes are initialized as initial SEQ.
+I'll add a cast for it if I'll go with v5 for this patch.
 
-1. You're on an affected system that has the erratum
-2. The KVM module gets unloaded, runs vmxoff
-3. A kernel bug using a very rare partial write corrupts the PAMT
-4. A second bug reads the PAMT consuming poison, #MC is generated
-5. Enter #MC handler, SEAMCALL fails
-6. #MC handler just reports a plain hardware error
+> 
+> Flagged by Sparse.
+> 
 
-The only thing even remotely wrong with this situation is that the
-report won't pin the #MC on TDX.  Play stupid games (removing modules),
-win stupid prizes (worse error message).
+Thanks,
+             Dmitry
 
-Can we dynamically mark a module as unsafe to remove?  If so, I'd
-happily just say that we should make kvm_intel.ko unsafe to remove when
-TDX is supported and move on with life.
-
-tl;dr: I think even looking a #MC on the PAMT after the kvm module is
-removed is a fool's errand.
