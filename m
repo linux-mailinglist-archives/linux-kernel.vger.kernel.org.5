@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B03AD803C10
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A06803C0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbjLDRv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:51:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53770 "EHLO
+        id S230478AbjLDRvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:51:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbjLDRv5 (ORCPT
+        with ESMTP id S229586AbjLDRvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:51:57 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBBE116;
-        Mon,  4 Dec 2023 09:52:01 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4EAeJo013526;
-        Mon, 4 Dec 2023 17:51:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+        Mon, 4 Dec 2023 12:51:49 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2E9101;
+        Mon,  4 Dec 2023 09:51:55 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4HMPgE012658;
+        Mon, 4 Dec 2023 17:51:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
  mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=rrC/JHJHrbAxQwJiT2+uK2DxsUMd+VQmbv8KvsLwxIM=;
- b=LXD1xi5OODT9HzciMWyV8YWcM3kHtXlsAiw7VYyiEPzXYUx98wnTZ/Xl+HZ6+dJyi/1F
- 9sBtLQdWvGXdpMQIVv0pM0li8T6/RoNpAzdYbAZfN168GUVBWp/Wh6jFGvDKJgSF4Is/
- xwHURhhsH8bkD267qaXX98+vHuug8CaODGVdR3yXQyHIyw8iTujbRFZ+ikCmkfZ6DXYy
- Uc3RRp7aHSuzF52OCtz5pKRzDU2jTDgG0mFosuHqGMgd6r0jUvp5gh3rQHCpVJHZw5mv
- swpIjsSFihRbUtCB6qFpxj+Mre3jBqM5IBH/dm6wgMsM/N7E6THgyd+cZoR4AzneXJsR NA== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usektrxua-1
+ content-type : content-transfer-encoding; s=pp1;
+ bh=zJQivNQzwYAPrjvrnOhA8LkNaDPkJCVbeU257TYsUHI=;
+ b=YjTiAXFMT9x/PGgJaNKGrPJG2/2snhvz4LiQCiBVI/hsV6Lpa/+e9kIShI9W2BQujKOF
+ BXJ5L1WEU1Xxob7jieVTW4g+Zz60o2rMO6HFUA4xfJpueIASIL6j+8AqbC9GZ7lkBHqr
+ sJHXr1h4xzNET94Sj7VnB3ko6UUH98VLFRfs8BRIBCdjRZ2mjyOgA3TSmkYSakuvPqbJ
+ DxcX1Fm8zJMp4nJO34/r094hoTGod/QqeFgJAgH/kf967VetL7mlrcwwhSWp/YGpaMT+
+ tTU3m41zAmUS+BNN4pm6Ajk1+lMU1+wbVorn/mKLvFPPNkTaTG8Nh9uJrS2vRLXvMu8v Ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usk3yh02a-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 17:51:26 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4HpPMT008291
+        Mon, 04 Dec 2023 17:51:53 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4HgY7B006769;
+        Mon, 4 Dec 2023 17:51:53 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usk3yh01u-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Dec 2023 17:51:25 GMT
-Received: from [10.110.73.134] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
- 2023 09:51:24 -0800
-Message-ID: <44a3fbd4-44fb-0a39-65be-e680e03b1b6e@quicinc.com>
-Date:   Mon, 4 Dec 2023 09:51:23 -0800
+        Mon, 04 Dec 2023 17:51:53 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4GvbiX017881;
+        Mon, 4 Dec 2023 17:51:51 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8axh36-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 17:51:51 +0000
+Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4Hpo7l21037614
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Dec 2023 17:51:50 GMT
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C554E58059;
+        Mon,  4 Dec 2023 17:51:50 +0000 (GMT)
+Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9ED0258053;
+        Mon,  4 Dec 2023 17:51:49 +0000 (GMT)
+Received: from [9.61.175.104] (unknown [9.61.175.104])
+        by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Dec 2023 17:51:49 +0000 (GMT)
+Message-ID: <7c0d0ad2-b814-47b1-80e9-28ad62af6476@linux.ibm.com>
+Date:   Mon, 4 Dec 2023 12:51:49 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: (subset) [PATCH RFC v7 00/10] Support for Solid Fill Planes
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
 Content-Language: en-US
-To:     Simon Ser <contact@emersion.fr>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        <ppaalanen@gmail.com>, <laurent.pinchart@ideasonboard.com>,
-        <sebastian.wick@redhat.com>, <ville.syrjala@linux.intel.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <freedreno@lists.freedesktop.org>,
-        <wayland-devel@lists.freedesktop.org>,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sebastian Wick <sebastian@sebastianwick.net>
-References: <20231027-solid-fill-v7-0-780188bfa7b2@quicinc.com>
- <170155324921.2215646.4829699354481827834.b4-ty@linaro.org>
- <OiX1EToyQ0JBECS-Vs6IOw1vqLTt42PYkTlTCBhsPUi-VXC2UoLjkRfEW-OFucxsTqz93Q3IIXZZ3Lw_Lqs1dFt4YbuFSUGrKfDPnnKDCbw=@emersion.fr>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <OiX1EToyQ0JBECS-Vs6IOw1vqLTt42PYkTlTCBhsPUi-VXC2UoLjkRfEW-OFucxsTqz93Q3IIXZZ3Lw_Lqs1dFt4YbuFSUGrKfDPnnKDCbw=@emersion.fr>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
+        kwankhede@nvidia.com, frankja@linux.ibm.com,
+        imbrenda@linux.ibm.com, david@redhat.com
+References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+ <20231204131045.217586a3.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Organization: IBM
+In-Reply-To: <20231204131045.217586a3.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Z6vgWQwTVtpt83bTDVFYrfNANLbkn73Z
-X-Proofpoint-ORIG-GUID: Z6vgWQwTVtpt83bTDVFYrfNANLbkn73Z
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Cy6EtFrHIgsctPWmYdNoQTZ9VmSUgmuV
+X-Proofpoint-GUID: S_Dh2bv_Z21y3ZzWOZif0m9h88i58wRM
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-04_17,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 adultscore=0 spamscore=0
- phishscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0 clxscore=1011
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 impostorscore=0 spamscore=0 suspectscore=0 mlxscore=0
+ adultscore=0 phishscore=0 mlxlogscore=990 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311060000 definitions=main-2312040137
-X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,36 +98,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon
 
-On 12/3/2023 4:15 AM, Simon Ser wrote:
-> On Saturday, December 2nd, 2023 at 22:41, Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+
+On 12/4/23 07:10, Halil Pasic wrote:
+> On Wed, 29 Nov 2023 09:35:24 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 > 
->> On Fri, 27 Oct 2023 15:32:50 -0700, Jessica Zhang wrote:
->>
->>> Some drivers support hardware that have optimizations for solid fill
->>> planes. This series aims to expose these capabilities to userspace as
->>> some compositors have a solid fill flag (ex. SOLID_COLOR in the Android
->>> hardware composer HAL) that can be set by apps like the Android Gears
->>> test app.
->>>
->>> In order to expose this capability to userspace, this series will:
->>>
->>> [...]
->>
->>
->> Applied to drm-misc-next, thanks!
+>> In the current implementation, response code 01 (AP queue number not valid)
+>> is handled as a default case along with other response codes returned from
+>> a queue reset operation that are not handled specifically. Barring a bug,
+>> response code 01 will occur only when a queue has been externally removed
+>> from the host's AP configuration; nn this case, the queue must
+>> be reset by the machine in order to avoid leaking crypto data if/when the
+>> queue is returned to the host's configuration.
 > 
-> Where are the IGT and userspace for this uAPI addition?
+> s/if\/when/at latest before/
+> 
+> I would argue that some of the cleanups need to happen before even 01 is
+> reflected...
 
-Yes, we made IGT changes to test and validate this. We will post them on 
-the IGT dev list shortly and CC you.
+To what cleanups are you referring?
 
-We do not have a compositor change yet for this as we primarily used IGT 
-to validate this.
-
-Can we re-try to land this once IGT changes are accepted?
-
-Thanks
-
-Abhinav
+> 
+> The code comments may also require a similar rewording. With that fixed:
+> Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+> 
+> Regards,
+> Halil
+> 
+>> The response code 01 case
+>> will be handled specifically by logging a WARN message followed by cleaning
+>> up the IRQ resources.
+>>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
