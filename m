@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57020803326
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E7D80332B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:40:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344068AbjLDMjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:39:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
+        id S1343946AbjLDMj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344100AbjLDMjT (ORCPT
+        with ESMTP id S233435AbjLDMjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:39:19 -0500
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6B8114
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:39:25 -0800 (PST)
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1fae4875e0eso3525198fac.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:39:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701693564; x=1702298364;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lSnnQNh5WsqK5z5WWJftrXTfG+C0jshNuJ+tMybyKVg=;
-        b=nrdQpABjCcAKjiSR8Eluu5NCkI2fkYuz28xAMbE8IrTaOEnQww2GXy6yI5GrO9m+ct
-         v1IO8ukbhgdS3h+YqpWnp65I3K9vnTHl74pVK1mduHQn365uqNUhD3zMk0Mei5caR20b
-         WyVu6u8ENLQ1zFDWdWEQp/5Kn5MAnjOftbtI3KX53h2TM8xH0nXdIOxL2QvPHw8+PbhS
-         yXMaduSLkGm/KCy2VoeXS7BY3Udb7vv1StNspCF+NZkdjwIO2R39kX2TyvPeB7TawVjn
-         N1hpYlbi4YoULN8Cfi6WuQSOAtW4va11cqxlM9doZ1Fxae1GSbd4x8eIab4gA+xrXmJN
-         4fEw==
-X-Gm-Message-State: AOJu0YzKcudmH/mcM40AOVgtH+JBmAsChT1X5+pXqPI8p1S2SWj8Rcvf
-        bgVP67HjufSBpkoGZ8t00CjqEXIl8WpDgIAOCcNCZ3DX1EHI
-X-Google-Smtp-Source: AGHT+IHzUw5cIBVtAPz0Qy7spUe6NDHHqOfmbJm4fHrshgLhYydewJpCA6OzMMUGSSzrDLI/o5fEo1+swXo8bd5wYJGhvwsL8pv5
+        Mon, 4 Dec 2023 07:39:40 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B233D106
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:39:45 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A917C1424;
+        Mon,  4 Dec 2023 04:40:32 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA8AC3F5A1;
+        Mon,  4 Dec 2023 04:39:42 -0800 (PST)
+Message-ID: <52b042b9-ec95-4db0-b38a-f7f1cea0b90c@arm.com>
+Date:   Mon, 4 Dec 2023 12:39:41 +0000
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:910f:b0:1fa:e851:720b with SMTP id
- o15-20020a056870910f00b001fae851720bmr2720878oae.8.1701693564794; Mon, 04 Dec
- 2023 04:39:24 -0800 (PST)
-Date:   Mon, 04 Dec 2023 04:39:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000724223060bae6880@google.com>
-Subject: [syzbot] Monthly reiserfs report (Dec 2023)
-From:   syzbot <syzbot+list6d707ca0e4ce5e990ff3@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 4/4] mm/mmu_gather: Store and process pages in contig
+ ranges
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>, Zi Yan <ziy@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230810103332.3062143-1-ryan.roberts@arm.com>
+ <20230810103332.3062143-5-ryan.roberts@arm.com>
+ <800937DA-BAD0-4C60-B155-AECCA21E955E@nvidia.com>
+ <1a0f5cb8-421c-4f28-a986-f3c381406e81@arm.com>
+ <90EC4C0D-0254-4B93-AFD5-3C09580A77DE@nvidia.com>
+ <6dd6164a-1dd5-46e7-bcf7-b62ff5c6e8ec@arm.com>
+ <890f4455-bf1b-437b-a355-7895e4dd3085@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <890f4455-bf1b-437b-a355-7895e4dd3085@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello reiserfs maintainers/developers,
+On 04/12/2023 12:28, David Hildenbrand wrote:
+> On 04.12.23 13:26, Ryan Roberts wrote:
+>>>>>
+>>>>> Also, struct page (memmap) might not be always contiguous, using struct page
+>>>>> points to represent folio range might not give the result you want.
+>>>>> See nth_page() and folio_page_idx() in include/linux/mm.h.
+>>>>
+>>>> Is that true for pages within the same folio too? Or are all pages in a folio
+>>>> guarranteed contiguous? Perhaps I'm better off using pfn?
+>>>
+>>> folio_page_idx() says not all pages in a folio is guaranteed to be contiguous.
+>>> PFN might be a better choice.
+>>
+>> Hi Zi, Matthew,
+>>
+>> Zi made this comment a couple of months back that it is incorrect to assume that
+>> `struct page`s within a folio are (virtually) contiguous. I'm not sure if that's
+>> really the case though? I see other sites in the source that do page++ when
+>> iterating over a folio. e.g. smaps_account(), splice_folio_into_pipe(),
+>> __collapse_huge_page_copy(), etc.
+>>
+>> Any chance someone could explain the rules?
+> 
+> With the vmemmap, they are contiguous. Without a vmemmap, but with sparsemem, we
+> might end up allocating one memmap chunk per memory section (e.g., 128 MiB).
+> 
+> So, for example, a 1 GiB hugetlb page could cross multiple 128 MiB sections, and
+> therefore, the memmap might not be virtually consecutive.
 
-This is a 31-day syzbot report for the reiserfs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/reiserfs
+OK, is a "memory section" always 128M or is it variable? If fixed, does that
+mean that it's impossible for a THP to cross section boundaries? (because a THP
+is always smaller than a section?)
 
-During the period, 5 new issues were detected and 0 were fixed.
-In total, 88 issues are still open and 17 have been fixed so far.
+Trying to figure out why my original usage in this series was wrong, but
+presumably the other places that I mentioned are safe.
 
-Some of the still happening issues:
+> 
+> 
 
-Ref  Crashes Repro Title
-<1>  40685   Yes   KASAN: null-ptr-deref Read in do_journal_end (2)
-                   https://syzkaller.appspot.com/bug?extid=845cd8e5c47f2a125683
-<2>  6321    Yes   possible deadlock in open_xa_dir
-                   https://syzkaller.appspot.com/bug?extid=8fb64a61fdd96b50f3b8
-<3>  2995    No    KASAN: slab-out-of-bounds Read in search_by_key (2)
-                   https://syzkaller.appspot.com/bug?extid=b3b14fb9f8a14c5d0267
-<4>  1621    Yes   kernel BUG at fs/reiserfs/journal.c:LINE!
-                   https://syzkaller.appspot.com/bug?extid=6820505ae5978f4f8f2f
-<5>  1388    Yes   possible deadlock in mnt_want_write_file
-                   https://syzkaller.appspot.com/bug?extid=1047e42179f502f2b0a2
-<6>  1246    Yes   WARNING in reiserfs_lookup
-                   https://syzkaller.appspot.com/bug?extid=392ac209604cc18792e5
-<7>  967     No    KMSAN: uninit-value in reiserfs_new_inode (2)
-                   https://syzkaller.appspot.com/bug?extid=6450929faa7a97cd42d1
-<8>  402     Yes   possible deadlock in reiserfs_ioctl
-                   https://syzkaller.appspot.com/bug?extid=79c303ad05f4041e0dad
-<9>  380     Yes   WARNING in journal_end
-                   https://syzkaller.appspot.com/bug?extid=d43f346675e449548021
-<10> 349     Yes   possible deadlock in reiserfs_dirty_inode
-                   https://syzkaller.appspot.com/bug?extid=c319bb5b1014113a92cf
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
