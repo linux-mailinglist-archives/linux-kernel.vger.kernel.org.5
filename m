@@ -2,69 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C97E803355
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBC25803356
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 13:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343925AbjLDMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 07:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
+        id S1344069AbjLDMrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 07:47:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233215AbjLDMrh (ORCPT
+        with ESMTP id S1343931AbjLDMri (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 07:47:37 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AA7A9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:47:43 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54ca43031d1so1245447a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:47:43 -0800 (PST)
+        Mon, 4 Dec 2023 07:47:38 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD0AAA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 04:47:44 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54bfd4546fbso5393828a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 04:47:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701694062; x=1702298862; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701694063; x=1702298863; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+ziVbN5ZTP69p6FxRTQ/DrNWjlcr9menHHHhzgnVhU0=;
-        b=oaxeCEdai59i2UFpX60wj06AWKEDDInfc+sS6P/buF+nKMxpHtCcGsOvMzr3t1DVUi
-         mx/PEgtgzSoMLJ+jeVRDBWCtDE9+tDmstiWpi2EfTb9j4miy5OSmpBx6X2AWbjKqNpWG
-         ZbM8OODMkuvE5yNutRRs9NvBm8q9OKyrcVDVDeOGYfxyT5y1UIjFPz4ZNackzTc7qXW8
-         adS4yOJMxN8BcmpoaPlrdEDnMWN+aVy2QZdTDccTFWI+PSGXm5mehX3NqXrNLn/QJxZ2
-         lwUsAZcuZ7W4YjdVuIkaA7/BtDoO6sOFa0VrjKuDZRauepryWj86Hqn/BailDq+8A154
-         0Avw==
+        bh=KY0JnJRKpd3/EUynN0UwcoxBlBhaBotyx7RxLf0wHWk=;
+        b=WxFUILUg9AlH39Y2EB9mtJahq3vrhq/0j2+JHA2WeUFVB/LtnhfAJJ6nRyCnFjGPpq
+         BhXtUVYhlZ5Sctx4Jf5xJG9kNB1uhew7yHFhboABHNdA9G6ritHPu+7MyG2S0hMh7rA9
+         AwroFr7K940CJq4OKdWBdtYC0AjjyENd5/IHGtq6Yjsan9cNv+IjayLquw1iPCpv/aee
+         dtzIN8IBwrImDDCb8s4iKTKA2JT20iNBuC2qDj6lbMWjZbhizaAhvauTUotVGSe86eHD
+         giq6/GlbCED9cuEJY21EL25GlMokfTByfuXlceuYWtHd2261n6fkp7+BaSOk1Q+y+Tzv
+         oV3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701694062; x=1702298862;
+        d=1e100.net; s=20230601; t=1701694063; x=1702298863;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+ziVbN5ZTP69p6FxRTQ/DrNWjlcr9menHHHhzgnVhU0=;
-        b=hPuDDLRpn4hsvQu4EsKLidgOXo+qIR01m4BGA/jWvBIrJqvnpWFJ4uNCmbjbvUPRy+
-         rh+ZhbYn81GevZtQkk9A8S1Oc7nfJJf4kfMTVNgfL0CYGvN4r1HFX+/Uj3unvbN5Hl/t
-         OUdZ5Uu9/wAAKkyQnXh8FwCD3CG2uoJnf4mbyz4Wd1CP8vMdeWDeYLJNa4/EHFyFXv6V
-         CrWaxvknNpAyTGLNKuBerb/BaGyZ8zacIpm3Tvg7KtBlVKAuwVzDjoO6/as0sH7Gj5tR
-         q9Hqc42aucO78wo9NN3swteSuGW34YHBZrft3IaMabo22CC7HfwkYpUpI8hTFc/X4ooU
-         3xJg==
-X-Gm-Message-State: AOJu0Yy0lRbzbS8iWC1KGMX6JtRCGghICeRHdxnDWSEDvf38VH4SZt+Z
-        4VDhxJoNubBHKNvJ/u1MoTCOkw==
-X-Google-Smtp-Source: AGHT+IHApXDdpr226FRyb9j61M1tzyPuEc1Ds/nq5f9VgF00NIL9sLCBQAy4dDG6sIZWA3NbhrjkNA==
-X-Received: by 2002:a50:d59a:0:b0:54c:4837:903c with SMTP id v26-20020a50d59a000000b0054c4837903cmr3836618edi.52.1701694062023;
-        Mon, 04 Dec 2023 04:47:42 -0800 (PST)
+        bh=KY0JnJRKpd3/EUynN0UwcoxBlBhaBotyx7RxLf0wHWk=;
+        b=oh13hUHnfAtrSK2989pMFroXDl+Br6pk2Rt1YMrW0C3WrzVHMNLLMG2GwIQs4kjFVL
+         rrlK0Wtyke8XQNVz7D0+yBB4NQq9ATl6AsStl4yxgXsnSwN9Icb+4I31wuQLrzVV2Nn8
+         e/tdV7TqXq3R8VmDaYQoPaK2mlH1AAreJmcJTilmNACCm7vwKHhDhwp6paomE6pRU/ND
+         wHkGpUrjdOgOsKbWFJBqoHIZVjEu3dx1PWkljYf6agQPLZ+SG2GSX14uABsvA4bEHipB
+         5/uhupbM63Cnk2QPQ+uFtc+8s5h4xKGsHOUqRTZnxn63l0IlhGqAePLr8I96WKdUOnMZ
+         RQNA==
+X-Gm-Message-State: AOJu0YzFPXqvlEJl22IOX7BSYf96sL2VffWssiGPOYsuzaUL/Z9is3+i
+        htEcYee0p3VS8iArMePdjRPYDw==
+X-Google-Smtp-Source: AGHT+IFhu/InStD612XpzFwPv9bBK0nLIg+7JO9nMW2ZvtutTmDe1Q3IXR3v2X7PDbYWSph/4G/iGg==
+X-Received: by 2002:a05:6402:17dc:b0:54c:a21b:8088 with SMTP id s28-20020a05640217dc00b0054ca21b8088mr1192577edy.63.1701694063127;
+        Mon, 04 Dec 2023 04:47:43 -0800 (PST)
 Received: from localhost.localdomain ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id dc15-20020a056402310f00b0054ced65bd26sm457017edb.41.2023.12.04.04.47.40
+        by smtp.gmail.com with ESMTPSA id dc15-20020a056402310f00b0054ced65bd26sm457017edb.41.2023.12.04.04.47.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 04:47:41 -0800 (PST)
+        Mon, 04 Dec 2023 04:47:42 -0800 (PST)
 From:   srinivas.kandagatla@linaro.org
 To:     broonie@kernel.org, alsa-devel@alsa-project.org
 Cc:     perex@perex.cz, tiwai@suse.com, linux-sound@vger.kernel.org,
         linux-kernel@vger.kernel.org, johan+linaro@kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/2] ASoC: ops: add correct range check for limiting volume
-Date:   Mon,  4 Dec 2023 12:47:35 +0000
-Message-Id: <20231204124736.132185-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/2] ASoC: qcom: sc8280xp: Limit speaker digital volumes
+Date:   Mon,  4 Dec 2023 12:47:36 +0000
+Message-Id: <20231204124736.132185-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231204124736.132185-1-srinivas.kandagatla@linaro.org>
 References: <20231204124736.132185-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,29 +75,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Volume can have ranges that start with negative values, ex: -84dB to
-+40dB. Apply correct range check in snd_soc_limit_volume before setting
-the platform_max. Without this patch, for example setting a 0dB limit on
-a volume range of -84dB to +40dB would fail.
+Limit the speaker digital gains to 0dB so that the users will not damage them.
+Currently there is a limit in UCM, but this does not stop the user form
+changing the digital gains from command line. So limit this in driver
+which makes the speakers more safer without active speaker protection in
+place.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/soc-ops.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/sc8280xp.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
-index 55b009d3c681..2d25748ca706 100644
---- a/sound/soc/soc-ops.c
-+++ b/sound/soc/soc-ops.c
-@@ -661,7 +661,7 @@ int snd_soc_limit_volume(struct snd_soc_card *card,
- 	kctl = snd_soc_card_get_kcontrol(card, name);
- 	if (kctl) {
- 		struct soc_mixer_control *mc = (struct soc_mixer_control *)kctl->private_value;
--		if (max <= mc->max) {
-+		if (max <= mc->max - mc->min) {
- 			mc->platform_max = max;
- 			ret = 0;
- 		}
+diff --git a/sound/soc/qcom/sc8280xp.c b/sound/soc/qcom/sc8280xp.c
+index 249a43e1dee3..1e8f9452cd28 100644
+--- a/sound/soc/qcom/sc8280xp.c
++++ b/sound/soc/qcom/sc8280xp.c
+@@ -25,6 +25,23 @@ struct sc8280xp_snd_data {
+ static int sc8280xp_snd_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct sc8280xp_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_card *card = rtd->card;
++
++	switch (cpu_dai->id) {
++	case WSA_CODEC_DMA_RX_0:
++	case WSA_CODEC_DMA_RX_1:
++		/*
++		 * set limit of 0dB on Digital Volume for Speakers,
++		 * this can prevent damage of speakers to some extent without
++		 * active speaker protection
++		 */
++		snd_soc_limit_volume(card, "WSA_RX0 Digital Volume", 84);
++		snd_soc_limit_volume(card, "WSA_RX1 Digital Volume", 84);
++		break;
++	default:
++		break;
++	}
+ 
+ 	return qcom_snd_wcd_jack_setup(rtd, &data->jack, &data->jack_setup);
+ }
 -- 
 2.25.1
 
