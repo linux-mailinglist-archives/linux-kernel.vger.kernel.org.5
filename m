@@ -2,133 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA06803BEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 986A9803BF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbjLDRrL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 12:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60984 "EHLO
+        id S230433AbjLDRs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:48:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjLDRrK (ORCPT
+        with ESMTP id S229498AbjLDRs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:47:10 -0500
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702D4F3;
-        Mon,  4 Dec 2023 09:47:16 -0800 (PST)
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1fb1620a00eso575917fac.1;
-        Mon, 04 Dec 2023 09:47:16 -0800 (PST)
+        Mon, 4 Dec 2023 12:48:27 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2121AE6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:48:33 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-67a9a51663fso6300116d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 09:48:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1701712112; x=1702316912; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TNBeey8ABhZnSuK97F6c8ME4rtRyAoISrux9SFRA0Dw=;
+        b=nbVVNQshSnR8CJZDufoX+mL5eaPGGoNxt9f2zr4TD9Yg9Bd4qbw9CqO0iCsd/qDW0P
+         6DE/XAK/q0L22S/P4ChjPVsUkFWK1BL1n2RecqB3EDrHEtss4gkk936Oazt/RV1awhb2
+         SrSbK8V8FEKJz3BtpN/J5VN7yyAB9XdcE+WvYI6+7AVHvXM3asD8+ooB6Pfuaj5I8i8p
+         JdhmZnyvAIzHvstNgg/NYDaOv23/ETQ3iUq00DHWDOGUCZ685BSfCF3+viWRgJ5PvJyX
+         WgezQ5SGAbVXkO+WXj/S9Bky3NIGXkNRo+AeDa9w70yGVszIpIGqSd2MgF9vKwAzLsid
+         l25A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701712035; x=1702316835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YLxhbHxHs0yyW58U+USrAp9QZYXyCCBbOT0f2qo1Lmw=;
-        b=Scj0c0/PQKWNuW9DfEoB5V+mrGtkuR4dZzpmVETXHLKLjFJF1PPr8XqdzpVqMgY5Aa
-         06kStxIrvvqdhBjyRmwS4AAFj36+wvlIbkC+5k1LqD2pnaWSNlPkbV9xKweLqeQIaFCz
-         cq8lptJ1/cbwzOyrgg+Msl2vCqTA61MOOkoNik0cW7+Kb+39y/oVPFKCJ5f1YmrmcHPB
-         zSwuFEI46FaypSqsGkn85hsuuBmMA/s5/EofjX0plNbCfhw0NX54UwP3AwEHTfjzgHp/
-         jAgUtOOTvePyhFkwOeXmEYU3wnpjfr3iB0gFOGikx+mKpwhLluhpZgd/fgCXKkqz69u+
-         hF+A==
-X-Gm-Message-State: AOJu0YzK0oFP9HK8vvp+/IJ6GcfUU+TkgX4Ra/qv3kw2hk7vjoNDi5CM
-        Zfj0aRoW55ME1tjzWvGYeNym4Sf3e7KNs3MigzA=
-X-Google-Smtp-Source: AGHT+IG9XswzgrLgYJtdTDaf8gWSyrFBQ4WCE+EubF3UY9rkdQ4XYJYZxIhR3tHSoqMCUpWcXa3k1oTkJ3kzQk8MkcY=
-X-Received: by 2002:a05:6870:e38a:b0:1fb:25fb:fabc with SMTP id
- x10-20020a056870e38a00b001fb25fbfabcmr6338860oad.5.1701712035690; Mon, 04 Dec
- 2023 09:47:15 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701712112; x=1702316912;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TNBeey8ABhZnSuK97F6c8ME4rtRyAoISrux9SFRA0Dw=;
+        b=wEOP3khIWSQDanLpcTsfDmt0Z+vBvQh3NsImOuz8S7v2rAJ4OvRDdc+aN98frXxlhv
+         O/pw7dqxg/qca7k8o6EyWZZwHWGufdEy54Sg4GDTqUaca+QQhE7lQLxUWBUR121AzqwN
+         gRrPLV1SgIwfd7iQQjnborP9BOrAW9hLky0Uo85uCR4am5i63YzzGu+7Cg2r0DNXjiBY
+         DTHp9B8EbtUfZNnpmpCfqu5Pv6EhpCACyvS/QkXqBDrAg2sC/FbcgsD+XdZbMB84XRPN
+         uTbGuKWX1pYtG3TPNMxGXIWOfCdiUpEiKss3mF7JnWSOhvJrPw6YOZk6EAag3LTjjjdD
+         Nf+w==
+X-Gm-Message-State: AOJu0YzEiIVRphD+NsJJ5KiLwDglY/u9Glp0fcRq0fv9En+PeY7WRgg4
+        M2s/8o/8mEn8V8MmmvIxrQsSTnvSoGe5Xk9JHPCm0w==
+X-Google-Smtp-Source: AGHT+IGN5RzKQwy4qLpJGVHeE/8kcLv5fHJJCvhuNty5xTZSpSC85BbVZTEshnXKJEMT6JM4Ahk9dA==
+X-Received: by 2002:a05:622a:1a1e:b0:423:dbbc:aab7 with SMTP id f30-20020a05622a1a1e00b00423dbbcaab7mr23312621qtb.1.1701712111828;
+        Mon, 04 Dec 2023 09:48:31 -0800 (PST)
+Received: from m2max.tfbnw.net ([2620:10d:c091:400::5:2355])
+        by smtp.gmail.com with ESMTPSA id hg15-20020a05622a610f00b00424059fe96esm3670981qtb.89.2023.12.04.09.48.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 09:48:31 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     linux-kernel@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org
+Subject: [PATCHSET 0/2] Get rid of import_single_range()
+Date:   Mon,  4 Dec 2023 10:47:48 -0700
+Message-ID: <20231204174827.1258875-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-References: <12338384.O9o76ZdvQC@kreacher> <4883151.31r3eYUQgx@kreacher> <b3c86caf-635d-416b-af98-9e26f2a68948@linaro.org>
-In-Reply-To: <b3c86caf-635d-416b-af98-9e26f2a68948@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 4 Dec 2023 18:47:04 +0100
-Message-ID: <CAJZ5v0hEo_HPMR=wVsHDTjPrEBLXgBHwom491rEiLJfapg6Rhg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] thermal: sysfs: Rework the handling of trip point updates
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+Hi,
 
-On Mon, Dec 4, 2023 at 5:55 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Rafael,
->
-> On 04/12/2023 15:50, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Both trip_point_temp_store() and trip_point_hyst_store() use
-> > thermal_zone_set_trip() to update a given trip point, but none of them
-> > actually needs to change more than one field in struct thermal_trip
-> > representing it.  However, each of them effectively calls
-> > __thermal_zone_get_trip() twice in a row for the same trip index value,
-> > once directly and once via thermal_zone_set_trip(), which is not
-> > particularly efficient, and the way in which thermal_zone_set_trip()
-> > carries out the update is not particularly straightforward.
-> >
-> > Moreover, input processing need not be done under the thermal zone lock
-> > in any of these functions.
-> >
-> > Rework trip_point_temp_store() and trip_point_hyst_store() to address
-> > the above, move the part of thermal_zone_set_trip() that is still
-> > useful to a new function called thermal_zone_trip_updated() and drop
-> > the rest of it.
-> >
-> > While at it, make trip_point_hyst_store() reject negative hysteresis
-> > values.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > v2 -> v3: No changes
-> >
-> > v1 -> v2: Still check device_is_registered() under the zone lock
-> >
-> > ---
-> >   drivers/thermal/thermal_core.h  |    2 +
-> >   drivers/thermal/thermal_sysfs.c |   75 ++++++++++++++++++++++++++++------------
-> >   drivers/thermal/thermal_trip.c  |   45 ++++--------------------
-> >   include/linux/thermal.h         |    4 --
-> >   4 files changed, 64 insertions(+), 62 deletions(-)
-> >
-> > Index: linux-pm/drivers/thermal/thermal_sysfs.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-> > +++ linux-pm/drivers/thermal/thermal_sysfs.c
-> > @@ -78,6 +78,19 @@ mode_store(struct device *dev, struct de
-> >       return count;
-> >   }
-> >
-> > +static int check_thermal_zone_and_trip_id(struct device *dev,
-> > +                                       struct thermal_zone_device *tz,
-> > +                                       int trip_id)
-> > +{
-> > +     if (!device_is_registered(dev))
-> > +             return -ENODEV;
-> > +
-> > +     if (trip_id < 0 || trip_id >= tz->num_trips)
-> > +             return -EINVAL;
->
-> I'm not sure if this check is useful. The function is called from
-> trip_point_*_store() which is providing the trip id from the file name
-> parsing which is in turn built from an existing trip id. There is no
-> reason the trip id is going to be wrong.
+While looking at this today, I noticed that the 'iov' argument to this
+function is totally dead code. Patch 1 gets rid of it, and with this
+function and import_ubuf() now being identical, converts the callers
+to just use import_ubuf().
 
-I can drop the check just fine.
+No functional changes here, just a cleanup removing some dead code.
 
-Do you have any other comments on this patch?
+ drivers/block/ublk_drv.c         |  9 ++-------
+ drivers/char/random.c            |  6 ++----
+ fs/aio.c                         |  2 +-
+ include/linux/uio.h              |  2 --
+ kernel/trace/trace_events_user.c |  4 +---
+ lib/iov_iter.c                   | 13 -------------
+ net/ipv4/tcp.c                   | 10 ++++------
+ net/socket.c                     |  6 ++----
+ security/keys/keyctl.c           |  5 ++---
+ 9 files changed, 14 insertions(+), 43 deletions(-)
+
+-- 
+Jens Axboe
+
+
