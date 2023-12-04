@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9031B8040C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDE28040CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 22:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233728AbjLDVJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 16:09:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
+        id S229741AbjLDVKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 16:10:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjLDVJQ (ORCPT
+        with ESMTP id S234040AbjLDVKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 16:09:16 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C196090;
-        Mon,  4 Dec 2023 13:09:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701724163; x=1733260163;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=g6e51FNxp+1EJ+cdgD2Lf4wIB+ZA4EpMDcO10MdBrfg=;
-  b=GPRHEWTHFN4sV7h4PFc9DPWRKennUQO3dBUJDgcprfIvsaM1J3oKqH3i
-   BBAZSul3jaqFUtEwDdp9ipoLlt89RUz/dLzEjNs/Llv3tVwtPDiL8/kMU
-   4oqis3HUonyNJTrgtHGzbiwYNyEFnwT0dxigJMHB+KJPAjneBlAff0IlD
-   +Z2Vedtj71YKbT60Jjb0a7tMwpqkWC3b40kQqAMDCThF8csvuMSQ51e9F
-   ZU12hlNM34FD0C5TxNHndozEhkhOzYgXvncVTWQ3gskPq86CB8ZC6lfwR
-   jF0dt/brdiGlrUJ7xT5K9MX9EWGfkEJ6Wtn5T0SvZwuC9FBGb2sa2t+KM
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="7125771"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="7125771"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 13:09:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764097433"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="764097433"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 13:09:19 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rAGBo-00000001swh-2DtU;
-        Mon, 04 Dec 2023 23:09:16 +0200
-Date:   Mon, 4 Dec 2023 23:09:16 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petre Rodan <petre.rodan@subdimension.ro>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v7 2/2] iio: pressure: driver for Honeywell HSC/SSC series
-Message-ID: <ZW4__HBfiJtwNF_p@smile.fi.intel.com>
-References: <20231204194401.20891-1-petre.rodan@subdimension.ro>
- <20231204194401.20891-2-petre.rodan@subdimension.ro>
- <ZW4_OoyKSZ3EBL2x@smile.fi.intel.com>
+        Mon, 4 Dec 2023 16:10:50 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A957590
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 13:10:55 -0800 (PST)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B4LAkju099910;
+        Mon, 4 Dec 2023 15:10:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701724246;
+        bh=gptkQWvn7/K27KPO9Ej/tr7AICInWSQ1R0hCyIl7cH4=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=mwgcRkoumyGNghpw8gnuWSmlK+OTL9XAJccYz0l/HWL1snPLKm2pyW02+z1E97897
+         sta+5a3JOydx7OteNhCfEz9szBn4Us2AjdZO2w71ob/vqlub7PkhzHDX435A6wopL5
+         QwZnAA/g4NckH6EpPbZShOcOe3bh9Ja+5H/TRjsc=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B4LAkQB020035
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 4 Dec 2023 15:10:46 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 4
+ Dec 2023 15:10:46 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 4 Dec 2023 15:10:46 -0600
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B4LAkwl061095;
+        Mon, 4 Dec 2023 15:10:46 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Aradhya Bhatia <a-bhatia1@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
+        Devarsh Thakkar <devarsht@ti.com>, Jai Luthra <j-luthra@ti.com>
+Subject: Re: [PATCH] arm64: defconfig: Enable Toshiba TC358767 bridge
+Date:   Mon, 4 Dec 2023 15:10:44 -0600
+Message-ID: <170172423509.2630369.1879913027485559706.b4-ty@ti.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231030152834.18450-1-a-bhatia1@ti.com>
+References: <20231030152834.18450-1-a-bhatia1@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW4_OoyKSZ3EBL2x@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 11:06:03PM +0200, Andy Shevchenko wrote:
-> On Mon, Dec 04, 2023 at 09:43:59PM +0200, Petre Rodan wrote:
+Hi Aradhya Bhatia,
 
-...
-
-> > +		ret = match_string(hsc_triplet_variants, HSC_VARIANTS_MAX,
-> > +						triplet);
-> > +		if (ret < 0)
-> > +			return dev_err_probe(dev, -EINVAL,
-> > +				"honeywell,pressure-triplet is invalid\n");
+On Mon, 30 Oct 2023 20:58:34 +0530, Aradhya Bhatia wrote:
+> Siemens' SIMATIC IOT2050 platform[0], based on Texas Instruments' AM65x
+> SoC[1], uses Toshiba TC358767[2] to convert DPI video to DisplayPort
+> (DP) video ouput. The original DPI signals are generated by AM65x's
+> Display SubSystem (DSS).
 > 
-> Still you can use mentioned device property API.
+> Toshiba TC358767 is also capable of other video format conversions, viz,
+> DPI to (e)DP, DSI to (e)DP, and DSI to DPI.
+> 
+> [...]
 
-Repeating here from v7 thread: I think that deduplicating code, esp. when APIs
-are available, is a good to have before merging.
+I have applied the following to branch ti-k3-config-next on [1].
+Thank you!
 
+[1/1] arm64: defconfig: Enable Toshiba TC358767 bridge
+      commit: 21a1989963b4c2d8530af9be41c4cc2f7d3b2ee8
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
