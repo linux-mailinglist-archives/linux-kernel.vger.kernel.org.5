@@ -2,146 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C9F8042D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2EF8042D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 00:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343577AbjLDXuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 18:50:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S1343493AbjLDXug convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 18:50:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbjLDXtn (ORCPT
+        with ESMTP id S234924AbjLDXuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 18:49:43 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2063.outbound.protection.outlook.com [40.107.237.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617FC1735;
-        Mon,  4 Dec 2023 15:49:42 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IjDfkdeoXkC22txmPdgg4bL02OeKiuROtaSg/1PF6xb4Qml4K1YgmAsC814kLqcRJ0ji4SNc5YdXOYFn96WmwgM8sJa3eLzDyhlvqMcokhAaaL8yLXrYG1tndA3jyMmC/kjhuoG/rCLyLKLHyvE/Wvu1PV+okd9HjysUHwSVHLfMHO8qnCuAjg+TQoUx+x9QHRlB64+uVLb4TuMMywX1mA1CtUnaa/vSvw/ZHXD1ifcYUaOb5duV7EDZv6Hlb3nETcl/bPfVl/ggY/kNcX9XrslL9LKbpPvSL9gOgzD5IQB3/vCABZ1D9xtIM1PyU/Voqpq9ae7gGjYx14zNeTo+SQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hNRf+fJhwxBxEOKoSL6qsV47dYsFXFlBGph7NcBpngI=;
- b=Dt6se8zLeeoGFuivliFyhR0hq9negwM37JQVCGUsG2WaJ2FqLfaVRUqutQiE7yTpTqIky56Ev5KG160PBmtMluBnyCpIrYded/qC/98qPDlYYI6IzRalVDzHEtD1SqK7esqnt+zYiSRC2p73i6cJmmMQfh/Plczs96a2+GxRt8Cz3y8v9QsCneM4XAJkpQ3z/eq53hMeiP/h0RbXduka07CZu0b7yOMqNcwsXLwu2Yh3Mr/hGecck/Azsssde1IeS4mdmZrtpbmGtKq3xC+J+2oJecZ8/qXiU1oev7bJiRjydiD+qIdM9AiH6CzPBlT2C0dFWtClyg5aahEyOy9FtQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hNRf+fJhwxBxEOKoSL6qsV47dYsFXFlBGph7NcBpngI=;
- b=hExalkHUuWAKgGX3T8jIHnwwoZ1altrNE/8joqDn0AZADKZr2NaUh0rTpSam7xtQqFsYLbbLwwg9ty7lXdh71MTOHG9Q4116gsAqUhLjFfrP3BX/rV31tIRdKrCu/axPSYQ9b+S/Si6jhcHFReLP/j/3fTMQBQ0s0Lty5wTRsUTTNGjvCui+n5RYcCh/06GY8/b4DCkyxwoxdmmg8m3lWkpnlpa5utMfCYztuk2ngEVeTV8lMazIznqEFPT1FOULDR1ZDV5JXE8tv8P7zs8cmTkgYCuecmqQP1+7EcNEz7drkr54YYErQn1pXlFFFoAsUQZFWjGG7vEVW2HG1pMTTA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by DM4PR12MB5230.namprd12.prod.outlook.com (2603:10b6:5:399::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 23:49:37 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 23:49:37 +0000
-Date:   Mon, 4 Dec 2023 19:49:36 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, pbonzini@redhat.com, joro@8bytes.org,
-        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
-        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
-Subject: Re: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
-Message-ID: <20231204234936.GB2692119@nvidia.com>
-References: <20231202091211.13376-1-yan.y.zhao@intel.com>
- <ZW4Fx2U80L1PJKlh@google.com>
- <20231204173028.GJ1493156@nvidia.com>
- <ZW4nCUS9VDk0DycG@google.com>
- <20231204195055.GA2692119@nvidia.com>
- <ZW4ygoqOq2JpXml3@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW4ygoqOq2JpXml3@google.com>
-X-ClientProxiedBy: MN2PR02CA0005.namprd02.prod.outlook.com
- (2603:10b6:208:fc::18) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Mon, 4 Dec 2023 18:50:08 -0500
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B39710E7;
+        Mon,  4 Dec 2023 15:49:57 -0800 (PST)
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6ce5a0c384fso1068730b3a.1;
+        Mon, 04 Dec 2023 15:49:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701733796; x=1702338596;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sRrhfsrD/bMKdqj5ETo8Mo1h2Igm/9o0AxAk0uXBBOw=;
+        b=GiGriiPSW0/GA6JpJa/Fl/NDAw7y9mru03e3XBqGjBrr4sj0jsmQYSwl4ghfsz2U/+
+         osXuTB6z5NWReOcexEIBi0Gz8MnWrS09P9Dw4YMEOJg1EhCWR7AORkyFW/XBm5AYIo5C
+         zyFa4gdVYvrJnHSEzGcFnuyuwFHGsHG8O7JCVedx+ZJ5CzvXl8mgNyhhF/476eY8MW39
+         z4Kiop4sQ5aIVrMMbdZYnw9quSCVrhglCL0hVahXPeSVAupztLjpjrizNa67LO1+qxSc
+         6Rnoykr8HnwbEu2SKUa5Le7KQGaLAXmcYE2RireYmmnBqVTxc9Sr4hOGtImq5Ox7kloO
+         j4Gw==
+X-Gm-Message-State: AOJu0Ywx6Mhow/uy3srg74PSDAMEdAdaHmt33aXNPkC4fkgPDWvPRm71
+        +wcoai9IuaMXetnya+fuiZRdnw7v2Duh5qzYgCc=
+X-Google-Smtp-Source: AGHT+IEn+dfabIrnbTnJQVVa1L8bpZTxTRbjx3WnEZV/Fy81qMQfbYPEQZtuojPuqD7kr0pSbFISByzI8zgsDKkhptg=
+X-Received: by 2002:a05:6a20:9f96:b0:18f:97c:ba1a with SMTP id
+ mm22-20020a056a209f9600b0018f097cba1amr4697963pzb.116.1701733796435; Mon, 04
+ Dec 2023 15:49:56 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB5230:EE_
-X-MS-Office365-Filtering-Correlation-Id: 12aecfbb-d6bd-4e8b-babe-08dbf523ac9c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aoifjXeKK36hPHhycjwcE6ySXFknsPitf5IJI/Ms4X3SnsNkGDmC+3cIqqKJIlt01oyKba9t4rI2Ob2hyqZiN3uaypRyO7DdS7fTFyFHsblC/x4241wLnH83VIicOkIEhBl9FbulwElDLJgFbNBskpjRl1ijVTdLW9kx4Q3q1ykGhvl8PlZeuRsj/OdwpRJ0/3zQYXIkAM7+kLb/KRyJ+Bz7Rj2c1IVOcCB/3glaSSbIlFLDOXSfBvcQTGkS9DG3WkFrJsx0D9ypYVbcV3jhfYpl1LBk3fzOpuVa8V67+KIFvP5QvK9gcEPO/R9fiRmi38d+YWjSwwiXwLWWFgi2FMAWsju1QMN8f18IhNRneJqGWGH8RdIM/J8YN9jtP9kSh/k3x2oOpENTNzjrpFN+FRl5SpsCLzJHp2cnrwP4RladCTcBQcd5Ju0Iig+AXZ1F7Tosc9grOrRkR+a08cMmj6l19vh/+E358jqewTnYJtoJT16uFURD6min/OPGxhR4rOYfacg22qeTpvK8LOKw2gU0nl7oNnXbdi7PnRBQd2yFyTj+J0UGuWpIVKPBdH1J
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(136003)(376002)(346002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(6916009)(316002)(66556008)(4326008)(86362001)(8936002)(8676002)(66946007)(66476007)(478600001)(6486002)(41300700001)(36756003)(7416002)(2906002)(5660300002)(33656002)(38100700002)(1076003)(2616005)(26005)(6506007)(83380400001)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?BDmqVpHH1bMExtwlv5xUYWhEYRvSfCsC5WBeAUpuwTtUCwPrunW9yI1BBQFV?=
- =?us-ascii?Q?JZWouz1nivri7Ytmy/MD1j0u6iIQTWfFAY7vYBXA8DXFmapxJ8uECnNgQSc4?=
- =?us-ascii?Q?104EAgsTlxo5vuxyBZtNZ1oBwroVr2aSKdCLQq+6jCDNMD/94orpNWAyu9Zv?=
- =?us-ascii?Q?UMkCkYlF9jZlsViy6WAZxsHACHH3pohv/QmM4GeXtO7EzR3KyXKKkKp/FVg9?=
- =?us-ascii?Q?6hGwyH3RBy6GcM6cBe/8Mqr2JlKpRZoWMBuKZ6l25PLKa1VA7euI732mbZNn?=
- =?us-ascii?Q?LJkJ2D7wp18l4nmKUbVwYJwhRUmIWujHnHbHU7M3x/CqXhHT1ymwLaedzuIh?=
- =?us-ascii?Q?33WpB1L88hciZMlB90oERuCUCY/BcKp4bUDN4OtBI4pafZ0qDJ/yIO4bhRGE?=
- =?us-ascii?Q?/OKlBbbjis5kKCuJHZUwW1Y3XP8XTpjB69UxZa6TFlFwTLc9pwVTvtejaSpb?=
- =?us-ascii?Q?4o4NqnMr54fScNGzqSH/mAqDJa71fDOqnIC91eX6ZKeeB8qEX70Ler+WoaAQ?=
- =?us-ascii?Q?Ns9Hdovf4iYBztvLq0Q1jFkv7YxDMyD5d6Dph/AVgpYufmV7buuhq4eORpT8?=
- =?us-ascii?Q?vIyNGaJSNq1TE59EnHup7tQRRjzYwUpjIBRL76y09iAsx3T7agrGYDVEsc4O?=
- =?us-ascii?Q?v5yA67ktXZB6U2O/QhidUU6l31stZa4yFgc1lAjImQNskORdCwBl5tv8aBPq?=
- =?us-ascii?Q?9d/eM7ugPpnd8ug/z8lZR1SrvdJIoOvYJLdR/2D3rYXKjAN1GtESrHAo2s7v?=
- =?us-ascii?Q?T+1U4IV3zJlUItthaaDKNWBEGvf/7NgNzOk3zvnLW9vJYX8bSpprf7wViKyf?=
- =?us-ascii?Q?xjCgf0uvMlmC9Gsk1DTEg0+U8Qjb+ItazYIpZBwesFDnpeLjx+LNnYr+wItE?=
- =?us-ascii?Q?e9ATaRwrX5aLk+kzZ51fUqd7PZKOjsK6MNu6JN5NybK4QjYd7TiPZsf0E2bA?=
- =?us-ascii?Q?RgfKPo+Mr99UDN3e+T+5vpgjeJxtFq0HCtT5ZVGoV7Sok4xjMyldSrwppKqU?=
- =?us-ascii?Q?ZCqwGrbOqyCYiTqDWlQvQG4pqLtO5xvKcbDpm7Gs8pnfhcJTF3f4vRTZvBBk?=
- =?us-ascii?Q?6gXOwrr0HgzCqUoRoo3D1f0gPQn12w4kLEBZm8Vq4TINNp4zBXX6IwjvbqCl?=
- =?us-ascii?Q?fua1U+MQTX+URyhHhjuN2d8gpe0roGV+Z3O9vTLDQK7MJaJESIpvfyXH3A1I?=
- =?us-ascii?Q?138Bxjp7NdD3i3py1ay/edK0fvElFLxbmNQHCvz6Wp+CIpC2IPjzpbbJF5vK?=
- =?us-ascii?Q?FmR3H2xBgFygJmYa1GHovsUOytpsvUJ4FcyObZzybaJ6WEyaXm1+k0m1rn94?=
- =?us-ascii?Q?sJYPaJtClDL5FjizLR+r17sUswhtJrr3urnEgm8N0j3dmqIrECXSHF7rCS7J?=
- =?us-ascii?Q?DtXZcGikA46rmFFyrvl5E66RR4Jbyv1mvf4T0UpYT1dwM6rDsewfe/4Es1AO?=
- =?us-ascii?Q?SpOShkyeW+ohIgrRmuDCCkbGma1xH8F5EZtUGa7zQ25emQF8jDYpSinBXnu7?=
- =?us-ascii?Q?lvuYLQ/RG1sWyUoRz0Nuw6cOjOxlg9fy1AaMhrhoKcrZSNuQOl2VaJ5x+07V?=
- =?us-ascii?Q?u1d6eMDivsdBaDLIi3Sdru8pb7dtNsihFsHTgUsT?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12aecfbb-d6bd-4e8b-babe-08dbf523ac9c
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 23:49:37.2941
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iQRwPB7IcBnduIhMaHRjpsJra91YIa8vUU5tFEMo07am9+rINzlTefsc66XPt7vm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5230
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-17-irogers@google.com>
+In-Reply-To: <20231127220902.1315692-17-irogers@google.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 4 Dec 2023 15:49:45 -0800
+Message-ID: <CAM9d7cgj4Wj+0ZFQ3XfG12kkp4ThE4RT1+g=A1aSOinCXM9w+Q@mail.gmail.com>
+Subject: Re: [PATCH v5 16/50] perf maps: Add remove maps function to remove a
+ map based on callback
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Guilherme Amadio <amadio@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 12:11:46PM -0800, Sean Christopherson wrote:
+On Mon, Nov 27, 2023 at 2:10 PM Ian Rogers <irogers@google.com> wrote:
+>
+> Removing maps wasn't being done under the write lock. Similar to
+> maps__for_each_map, iterate the entries but in this case remove the
+> entry based on the result of the callback. If an entry was removed
+> then maps_by_name also needs updating, so add missed flush.
+>
+> In dso__load_kcore, the test of map to save would always be false with
+> REFCNT_CHECKING because of a missing RC_CHK_ACCESS.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-> > could we design the memfd stuff to not have the same challenges with
-> > mirroring as normal VMAs? 
-> 
-> What challenges in particular are you concerned about?  And maybe also define
-> "mirroring"?  E.g. ensuring that the CPU and IOMMU page tables are synchronized
-> is very different than ensuring that the IOMMU page tables can only map memory
-> that is mappable by the guest, i.e. that KVM can map into the CPU page tables.
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-IIRC, it has been awhile, it is difficult to get a new populated PTE
-out of the MM side and into an hmm user and get all the invalidation
-locking to work as well. Especially when the devices want to do
-sleeping invalidations.
+A nitpick below,
 
-kvm doesn't solve this problem either, but pushing populated TDP PTEs
-to another observer may be simpler, as perhaps would pushing populated
-memfd pages or something like that?
+> ---
+[SNIP]
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index 72f03b875478..30da8a405d11 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -1239,13 +1239,23 @@ static int kcore_mapfn(u64 start, u64 len, u64 pgoff, void *data)
+>         return 0;
+>  }
+>
+> +static bool remove_old_maps(struct map *map, void *data)
+> +{
+> +       const struct map *map_to_save = data;
+> +
+> +       /*
+> +        * We need to preserve eBPF maps even if they are covered by kcore,
+> +        * because we need to access eBPF dso for source data.
+> +        */
+> +       return RC_CHK_ACCESS(map) != RC_CHK_ACCESS(map_to_save) && !__map__is_bpf_prog(map);
 
-"mirroring" here would simply mean that if the CPU side has a
-popoulated page then the hmm side copying it would also have a
-populated page. Instead of a fault on use model.
+RC_CHK_EQUAL(map, map_to_save) ?
 
-Jason
+Thanks,
+Namhyung
+
+
+> +}
+> +
+>  static int dso__load_kcore(struct dso *dso, struct map *map,
+>                            const char *kallsyms_filename)
+>  {
+>         struct maps *kmaps = map__kmaps(map);
+>         struct kcore_mapfn_data md;
+>         struct map *replacement_map = NULL;
+> -       struct map_rb_node *old_node, *next;
+>         struct machine *machine;
+>         bool is_64_bit;
+>         int err, fd;
+> @@ -1292,17 +1302,7 @@ static int dso__load_kcore(struct dso *dso, struct map *map,
+>         }
+>
+>         /* Remove old maps */
+> -       maps__for_each_entry_safe(kmaps, old_node, next) {
+> -               struct map *old_map = old_node->map;
+> -
+> -               /*
+> -                * We need to preserve eBPF maps even if they are
+> -                * covered by kcore, because we need to access
+> -                * eBPF dso for source data.
+> -                */
+> -               if (old_map != map && !__map__is_bpf_prog(old_map))
+> -                       maps__remove(kmaps, old_map);
+> -       }
+> +       maps__remove_maps(kmaps, remove_old_maps, map);
+>         machine->trampolines_mapped = false;
+>
+>         /* Find the kernel map using the '_stext' symbol */
+> --
+> 2.43.0.rc1.413.gea7ed67945-goog
+>
