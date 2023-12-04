@@ -2,132 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C3F803EDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF95D803EE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:59:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbjLDT5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
+        id S233541AbjLDT7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:59:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjLDT5g (ORCPT
+        with ESMTP id S229983AbjLDT7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:57:36 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F296E6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:57:41 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50bc22c836bso6513216e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:57:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701719860; x=1702324660; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pZ44r75rrDxswMMFcuYJD1VEZzZvx6HDPBPK48SLeVI=;
-        b=D3zb+FiMJnw/lcYwsbb3N/WFq1QCwJEN9L8Q2uk38gGdqGt6xRcM4FlDqhBfpag48e
-         nOz/yJEKQEMaUdaVSDVRarv9Xxq9Jszx6OBY64abGg/qAzHqqeGCJYrGA0+mRI98/RTY
-         YrlwWNbRUomLGkzVJSv4IxvL/dn0wj3lM/Kvo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701719860; x=1702324660;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pZ44r75rrDxswMMFcuYJD1VEZzZvx6HDPBPK48SLeVI=;
-        b=Jz9qizsshWO0LsPWEzIyvUkUwtPfOE2JFxHOypu/XDiSAGhYbd7p+f7P6eLcInH9iJ
-         CrHJwecjBKnLSmfikLNH2l9s9pZokC9LqnwNqNAAGx+BbJ0jdU4hQ/1V2kMEy4MekU+3
-         pPiz0pSSo2SYxtqKPCFDwBPaz4DNC9MhChR5a2sS8ixmAPhwXfXvc/zWQhuyhti+gBZK
-         Jw4DKjppViSXuzfZgyZHcB5if4enL+UUkbf4pzccfpESXhu6GCHZ5YsL1Blo70idicMs
-         aFp25IJ3HUAMEXrm7xpMmazBJJoyMThQZ7zAYmd5XclpTt5mkFeAaIuGOCcaQI4yowzX
-         1n9Q==
-X-Gm-Message-State: AOJu0YwScOmg+gcWSicYeeOvStm8q9iNgEXF6/gNmPU7+h/ceEds8myM
-        mPNRPdU+i08zNQHi1wWiCHjrDg==
-X-Google-Smtp-Source: AGHT+IHo8S0v6m+GUWnNhfVJKEHmbKDBTJO7+pWESmv9h/be7AoxM/Z+PfZRyiKquvmWzcbE88JwKw==
-X-Received: by 2002:a05:6512:1593:b0:50b:fc77:2d51 with SMTP id bp19-20020a056512159300b0050bfc772d51mr903215lfb.45.1701719859776;
-        Mon, 04 Dec 2023 11:57:39 -0800 (PST)
-Received: from google.com ([83.142.187.84])
-        by smtp.gmail.com with ESMTPSA id r12-20020ac25a4c000000b0050bf8ddb1c3sm347930lfn.272.2023.12.04.11.57.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 11:57:39 -0800 (PST)
-Date:   Mon, 4 Dec 2023 20:57:33 +0100
-From:   Dmytro Maluka <dmaluka@chromium.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/thp: add CONFIG_TRANSPARENT_HUGEPAGE_NEVER option
-Message-ID: <ZW4vLV_LDFLf1cJQ@google.com>
-References: <20231204163254.2636289-1-dmaluka@chromium.org>
- <20231204111301.7e087b2f851b30121561e8fc@linux-foundation.org>
+        Mon, 4 Dec 2023 14:59:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F268CD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:59:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DAF1C433C7;
+        Mon,  4 Dec 2023 19:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701719949;
+        bh=MXwhypHm/2XEVlJLFiCiCiYnn0Tjqj3lKlj+8mfTxUs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mpfSE74YGQlBzvvMt4KY8SUzEJP3DhJpui6G7u6rqCeg765mjU1ONJHXxHWDuJsp5
+         fZX9acdqO8SEPmqSFWw1yq27R/JNHi1Zro7BADiK5WL66PulgsHKreFeY77PNrJKLP
+         Mr+YajXnDxCmN9N3n6C4zsJJc9Cqx3n5xNxHhZ+ueAQy8+VGcy5AQukV9HHE+KnuZT
+         1Vpn4Xb1MGzNur7Zh4M7O3o8MYBZIAuSFf9CWlgvwSeXc/5IFh9RooicFq0wWzU54u
+         7urAI+8n5q5DNDE75EcU7bJKKWjJFZfac95ajrj1Dc110oUCrKCMZZ+I0R5iptbRbz
+         H7tK/bectefgw==
+Date:   Mon, 4 Dec 2023 12:59:06 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        lkft-triage@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: clang-nightly: vdso/compat_gettimeofday.h:152:15: error:
+ instruction variant requires ARMv6 or later
+Message-ID: <20231204195906.GA2045328@dev-arch.thelio-3990X>
+References: <CA+G9fYvD72Vpfs2g8R+OJ6L8w9p_uaWbXpWMvnGAx_AOLabatw@mail.gmail.com>
+ <20231204181304.GA2043538@dev-arch.thelio-3990X>
+ <ZW4Zx4olPp0Owz0a@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231204111301.7e087b2f851b30121561e8fc@linux-foundation.org>
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZW4Zx4olPp0Owz0a@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 11:13:01AM -0800, Andrew Morton wrote:
-> On Mon,  4 Dec 2023 17:32:54 +0100 Dmytro Maluka <dmaluka@chromium.org> wrote:
+On Mon, Dec 04, 2023 at 06:26:15PM +0000, Russell King (Oracle) wrote:
+> On Mon, Dec 04, 2023 at 11:13:04AM -0700, Nathan Chancellor wrote:
+> > Hi Naresh,
+> > 
+> > On Mon, Dec 04, 2023 at 05:33:26PM +0530, Naresh Kamboju wrote:
+> > > Following build errors noticed on Linux next-20231204 tag with clang-nightly
+> > > for arm and arm64.
+> > > 
+> > > ## Test Regressions (compared to next-20231201)
+> > > * arm64, build
+> > >   - clang-nightly-defconfig
+> > >   - clang-nightly-defconfig-40bc7ee5
+> > >   - clang-nightly-lkftconfig
+> > >   - clang-nightly-lkftconfig-kselftest
+> > > 
+> > > * arm, build
+> > >   - clang-nightly-allnoconfig
+> > >   - clang-nightly-axm55xx_defconfig
+> > >   - clang-nightly-bcm2835_defconfig
+> > >   - clang-nightly-clps711x_defconfig
+> > >   - clang-nightly-defconfig
+> > >   - clang-nightly-exynos_defconfig
+> > >   - clang-nightly-imx_v6_v7_defconfig
+> > >   - clang-nightly-keystone_defconfig
+> > >   - clang-nightly-lkftconfig
+> > >   - clang-nightly-lkftconfig-kselftest
+> > >   - clang-nightly-omap2plus_defconfig
+> > >   - clang-nightly-pxa910_defconfig
+> > >   - clang-nightly-s3c6400_defconfig
+> > >   - clang-nightly-s5pv210_defconfig
+> > >   - clang-nightly-sama5_defconfig
+> > >   - clang-nightly-shmobile_defconfig
+> > >   - clang-nightly-tinyconfig
+> > >   - clang-nightly-u8500_defconfig
+> > >   - clang-nightly-vexpress_defconfig
+> > > 
+> > > 
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > 
+> > > 
+> > > Build log on arm64:
+> > > ---------
+> > > In file included from lib/vdso/gettimeofday.c:5:
+> > > In file included from include/vdso/datapage.h:135:
+> > > arch/arm64/include/asm/vdso/compat_gettimeofday.h:152:15: error:
+> > > instruction variant requires ARMv6 or later
+> > >   152 |         asm volatile("mov %0, %1" : "=r"(ret) : "r"(_vdso_data));
+> > >       |                      ^
+> > > <inline asm>:1:2: note: instantiated into assembly here
+> > >     1 |         mov r4, r1
+> > >       |         ^
 > 
-> > Add an option to disable transparent hugepages by default, in line with
-> > the existing transparent_hugepage=never command line setting.
-> > 
-> > Rationale: khugepaged has its own non-negligible memory cost even if it
-> > is not used by any applications, since it bumps up vm.min_free_kbytes to
-> > its own required minimum in set_recommended_min_free_kbytes(). For
-> > example, on a machine with 4GB RAM, with 3 mm zones and pageblock_order
-> > == MAX_ORDER, starting khugepaged causes vm.min_free_kbytes increase
-> > from 8MB to 132MB.
-> > 
-> > So if we use THP on machines with e.g. >=8GB of memory for better
-> > performance, but avoid using it on lower-memory machines to avoid its
-> > memory overhead, then for the same reason we also want to avoid even
-> > starting khugepaged on those <8GB machines. So with
-> > CONFIG_TRANSPARENT_HUGEPAGE_NEVER we can use the same kernel image on
-> > both >=8GB and <8GB machines, with THP support enabled but khugepaged
-> > not started by default. The userspace can then decide to enable THP
-> > (i.e. start khugepaged) via sysfs if needed, based on the total amount
-> > of memory.
-> > 
-> > This could also be achieved with the existing transparent_hugepage=never
-> > setting in the kernel command line instead. But it seems cleaner to
-> > avoid tweaking the command line for such a basic setting.
-> > 
-> > P.S. I see that CONFIG_TRANSPARENT_HUGEPAGE_NEVER was already proposed
-> > in the past [1] but without an explanation of the purpose.
-> > 
-> > ...
-> >
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -859,6 +859,12 @@ choice
-> >  	  madvise(MADV_HUGEPAGE) but it won't risk to increase the
-> >  	  memory footprint of applications without a guaranteed
-> >  	  benefit.
-> > +
-> > +	config TRANSPARENT_HUGEPAGE_NEVER
-> > +		bool "never"
-> > +	help
-> > +	  Disabling Transparent Hugepage by default. It can still be
-> 
-> s/Disabling/Disable/
+> I have to wonder why Clang is complaining about "mov r4, r1" because
+> that certainly should not require "ARMv6 or later". On the face of it,
+> this to me looks like a bug in Clang.
 
-It is in line with the descriptions of TRANSPARENT_HUGEPAGE_ALWAYS and
-TRANSPARENT_HUGEPAGE_MADVISE: "Enabling Transparent Hugepage ..."
+This is because the compat vDSO is compiled with '-mthumb' by default
+and Nick helpfully pointed out on IRC that prior to ARMv6, one of the
+operands to the mov had to be a HI register, which I do see in the ARM:
 
-> > +	  enabled at runtime via sysfs.
-> >  endchoice
-> 
-> The patch adds the config option but doesn't use it?
+  Encoding T1     ARMv6*, ARMv7 if <Rd> and <Rm> both from R0-R7
+                  ARMv4T, ARMv5T*, ARMv6*, ARMv7 otherwise
+  MOV<c> <Rd>, <Rm>
 
-I should have been more precise: it is not a new option but a new choice
-for CONFIG_TRANSPARENT_HUGEPAGE, in addition to the existing ALWAYS and
-MADVISE choices. In mm/huge_memory.c in the declaration of the
-transparent_hugepage_flags variable, if either ALWAYS or MADVISE is
-chosen, transparent_hugepage_flags is initialized with such a value
-that makes khugepaged being started by default during bootup. This patch
-allows enabling CONFIG_TRANSPARENT_HUGEPAGE without setting either
-ALWAYS or MADVISE, so that transparent_hugepage_flags is initialized
-with such a value that khugepaged is not started by default.
+Cheers,
+Nathan
