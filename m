@@ -2,180 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787F780389C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807A680389E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbjLDPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45586 "EHLO
+        id S234291AbjLDPWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:22:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233714AbjLDPVW (ORCPT
+        with ESMTP id S233714AbjLDPWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:21:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5BACA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:21:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 403E4C433C8;
-        Mon,  4 Dec 2023 15:21:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701703288;
-        bh=73pAaB3mi7c07UkmN0pF09RndH2hCE1ns/C5OrUjhHE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lDy1RVFrrYKs9mpINAj6ruU5nicvceF9qfesxbreDv5Ot6A8bB6AK6xSR5dYq2e4V
-         ryMyekOp1QWlMK+tgSDcGtOzFjHky1bvbW1VptgSzUvhGji5mWOxi1S8YAPoNnFaGr
-         21Xv8Qp1rjs/XzgGDfw9BlE5GxAOwjogqRyZ+wHya6eF6X5M84pkRmQoSyfX1i65nP
-         7QwKx89Vty9oTA4m9+pi/UBmUQ6dOWgASAwVaxLPpBPBZJ3th+8vTY5q3B3oPkU+yk
-         KzBx5WKDx2m1dy5FfO8xIlqkP1XW+XM5uMQDKTkg6hA8RNADLExl7fnrqwTPxXFCri
-         boSYoVFptp4cA==
-Date:   Mon, 4 Dec 2023 15:21:20 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc:     David Lechner <dlechner@baylibre.com>, nuno.sa@analog.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org,
-        Olivier MOYSAN <olivier.moysan@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>
-Subject: Re: [PATCH 06/12] iio: adc: ad9467: add mutex to struct
- ad9467_state
-Message-ID: <20231204152120.71455f40@jic23-huawei>
-In-Reply-To: <2343dacb0ec0a4878c8e41748ed6e586ff53ccd4.camel@gmail.com>
-References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
-        <20231121-dev-iio-backend-v1-6-6a3d542eba35@analog.com>
-        <CAMknhBHsFS5p-_250WRmkH2za+QPV6WyKNfgD-E1W8=HV3W3fg@mail.gmail.com>
-        <2343dacb0ec0a4878c8e41748ed6e586ff53ccd4.camel@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 4 Dec 2023 10:22:41 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C238A5;
+        Mon,  4 Dec 2023 07:22:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=13w0UX6/ajtrdaqmEFNIabzFsVbBD6wanM5B8RKR1F0=; b=h1tbJjRb4K4gChXaRyFghuzqJb
+        Du/pN7Oea7Gs8TteTsFgO69cDI8aYxt1f3zHcINP0HpGUPToGNseGl/zTVJWhBue0QLpIj2UQRxkq
+        pYSIWUc8rdQiFIc9EEYxywmsaQdg4Y1SEpgFb6y0w/nMcJ8RA5JguD0Q5tdkYwdMmRYWc0ziUfxFq
+        LKZzNewfGjMg/14JmTCm8AkNtJV5CLMHfWTr5TlkOBYMp4ZyRFTPRECwhtvf3ZdH4CL1kMnBVEW7z
+        aMxNJjtkx5B8Xt8/1cfy7KG/sDBYtQxipsBOf+UDWz+ZpXgl64+QXXSnTHTKY5BxRrCWtQeItRf7L
+        lt5nZFDg==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1rAAmE-00019H-P7; Mon, 04 Dec 2023 16:22:30 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1rAAmE-000WgM-1S; Mon, 04 Dec 2023 16:22:30 +0100
+Subject: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
+ information to user
+To:     Feng Zhou <zhoufeng.zf@bytedance.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
+        wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
+References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
+ <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
+ <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
+ <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
+ <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2a829a9c-69a6-695d-d3df-59190b161787@iogearbox.net>
+Date:   Mon, 4 Dec 2023 16:22:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27113/Mon Dec  4 09:40:35 2023)
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 01 Dec 2023 09:49:38 +0100
-Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+On 12/1/23 9:42 AM, Feng Zhou wrote:
+> 在 2023/11/30 18:56, Daniel Borkmann 写道:
+>> On 11/30/23 10:24 AM, Feng Zhou wrote:
+>>> 在 2023/11/30 17:06, Nikolay Aleksandrov 写道:
+>>>> On 11/30/23 09:58, Feng zhou wrote:
+>>>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>>>>
+>>>>> Add get_strings, get_sset_count, get_ethtool_stats to get peer
+>>>>> ifindex.
+>>>>> ethtool -S nk1
+>>>>> NIC statistics:
+>>>>>       peer_ifindex: 36
+>>>>>
+>>>>> Add get_link, get_link_ksettings to get link stat.
+>>>>> ethtool nk1
+>>>>> Settings for nk1:
+>>>>>     ...
+>>>>>     Link detected: yes
+>>>>>
+>>>>> Add get_ts_info.
+>>>>> ethtool -T nk1
+>>>>> Time stamping parameters for nk1:
+>>>>> ...
+>>>>>
+>>>>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>>>> ---
+>>>>>   drivers/net/netkit.c | 53 ++++++++++++++++++++++++++++++++++++++++++++
+>>>>>   1 file changed, 53 insertions(+)
+>>>>
+>>>> I don't see any point in sending peer_ifindex through ethtool, even
+>>>> worse through ethtool stats. That is definitely the wrong place for it.
+>>>> You can already retrieve that through netlink. About the speed/duplex
+>>>> this one makes more sense, but this is the wrong way to do it.
+>>>> See how we did it for virtio_net (you are free to set speed/duplex
+>>>> to anything to please bonding for example). Although I doubt anyone will use netkit with bonding, so even that is questionable. :)
+>>>>
+>>>> Nacked-by: Nikolay Aleksandrov <razor@blackwall.org>
+>>>
+>>> We use netkit to replace veth to improve performance, veth can be used ethtool -S veth to get peer_ifindex, so this part is added, as long as it is to keep the netkit part and veth unified, to ensure the same usage habits, and to replace it without perception.
+>>
+>> Could you elaborate some more on the use case why you need to retrieve it
+>> via ethtool, what alternatives were tried and don't work?
+>>
+>> Please also elaborate on the case for netkit_get_link_ksettings() and which
+>> concrete problem you are trying to address with this extension?
+>>
+>> The commit message only explains what is done but does not go into the detail
+>> of _why_ you need it.
+> 
+> In general, this information can be obtained through ip commands or netlink, and netkit_get_link_ksettings really not necessary. The reason why ethtool supports this is that when we use veth, our business colleagues are used to using ethtool to obtain peer_ifindex, and then replace netkit, found that it could not be used, resulting in their script failure, so they asked us for a request.
 
-> On Thu, 2023-11-30 at 15:50 -0600, David Lechner wrote:
-> > On Tue, Nov 21, 2023 at 4:17=E2=80=AFAM Nuno Sa via B4 Relay
-> > <devnull+nuno.sa.analog.com@kernel.org> wrote: =20
-> > >=20
-> > > From: Nuno Sa <nuno.sa@analog.com>
-> > >=20
-> > > When calling ad9467_set_scale(), multiple calls to ad9467_spi_write()
-> > > are done which means we need to properly protect the whole operation =
-so
-> > > we are sure we will be in a sane state if two concurrent calls occur.
-> > >=20
-> > > Fixes: ad6797120238 ("iio: adc: ad9467: add support AD9467 ADC")
-> > > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
-> > > ---
-> > > =C2=A0drivers/iio/adc/ad9467.c | 6 +++++-
-> > > =C2=A01 file changed, 5 insertions(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
-> > > index 04474dbfa631..91821dee03b7 100644
-> > > --- a/drivers/iio/adc/ad9467.c
-> > > +++ b/drivers/iio/adc/ad9467.c
-> > > @@ -4,7 +4,7 @@
-> > > =C2=A0 *
-> > > =C2=A0 * Copyright 2012-2020 Analog Devices Inc.
-> > > =C2=A0 */
-> > > -
-> > > +#include <linux/cleanup.h>
-> > > =C2=A0#include <linux/module.h>
-> > > =C2=A0#include <linux/mutex.h> =20
-> >=20
-> > Ah, the case of the misplaced header from the previous patch is solved.=
- :-)
-> >  =20
->=20
-> Yeps, it needs to be in this patch :)
->=20
-> > > =C2=A0#include <linux/device.h>
-> > > @@ -122,6 +122,8 @@ struct ad9467_state {
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unsigned int=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 output_mode;
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct gpio_desc=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 *pwrdown_gpio;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* protect against concurrent a=
-ccesses to the device */
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct mutex=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 lock;
-> > > =C2=A0};
-> > >=20
-> > > =C2=A0static int ad9467_spi_read(struct spi_device *spi, unsigned int=
- reg)
-> > > @@ -162,6 +164,7 @@ static int ad9467_reg_access(struct adi_axi_adc_c=
-onv *conv,
-> > > unsigned int reg,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
-> > >=20
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!readval) {
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 guard(mutex)(&st->lock);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ret =3D ad9467_spi_write(spi, reg, writeval);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 if (ret)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retur=
-n ret;
-> > > @@ -310,6 +313,7 @@ static int ad9467_set_scale(struct adi_axi_adc_co=
-nv *conv,
-> > > int val, int val2)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 if (scale_val[0] !=3D val || scale_val[1] !=3D val2)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 conti=
-nue;
-> > >=20
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 guard(mutex)(&st->lock);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ret =3D ad9467_spi_write(st->spi, AN877_ADC_REG_VREF,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 info->scale_table[i][1]);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
-> > >=20
-> > > --
-> > > 2.42.1
-> > >=20
-> > >  =20
-> >=20
-> > Alternately, this could probably be solved with spi_bus_lock/unlock
-> > and spi_sync_locked rather than introducing a new mutex. =20
->=20
-> Hmm, typically you just have your own lock. No reason to lock the spi bus=
-. And I also
-> have some plans to eventually change this to regmap :)
+Thanks, so the netkit_get_link_ksettings is optional. I don't quite follow what you
+mean with regards to your business logic in veth to obtain peer ifindex. What does
+the script do exactly with the peer ifindex (aka /why/ is it needed), could you
+elaborate some more - it's still somewhat too vague? :) E.g. why it does not suffice
+to look at the device type or other kind of attributes?
 
-Bus lock typically implies that we can't let other users grab the bus in be=
-tween
-for reasons like the chip select needing to be held. I'm not keen on it bei=
-ng
-used if the locking is just needed for a specific driver to deal with its
-associated device and driver state.
-
-Jonathan
-
->=20
-> - Nuno S=C3=A1
->=20
-
+Thanks,
+Daniel
