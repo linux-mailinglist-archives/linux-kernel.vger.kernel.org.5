@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78752803DA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A36E803D9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:55:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbjLDS4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:56:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58894 "EHLO
+        id S235451AbjLDSy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbjLDS4i (ORCPT
+        with ESMTP id S234809AbjLDSyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:56:38 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD1ACB;
-        Mon,  4 Dec 2023 10:56:42 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4CrX4t030965;
-        Mon, 4 Dec 2023 18:54:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=w2Yu1aSNbKM1bL03R+vVvqY0inOjKskU3INa/KEM2Nc=;
- b=fXDeGUG6ZWX+6isB8oklzt+YY7uk0/dH+DmcAiZTpDpkFbqwR3bllCl5uFZz7Va8oe3Y
- X3Ls24KqT4XcYdqD46+xRloFYzPdpbE+n/SiXvDP9ZFYl3FCNJnMj5KIofJmzBLan4qS
- iUeCVKwC+Okv6ZX27DhP5dVBqwnNYfWQ+5PBx+MPE1PHgJimJDLayKkZQeO5Nyewf0Kk
- FQ3C3R/4t0WvYujnkbzTNIiphXh9k3Mo8PGtQgGTtMLmuEh7sHfyDBqTMPI9EtOJjPb0
- 3UOTT9HhIuNUjPncpNEkN1hdDxavOMxI7oTcB9WfjuXowq+c6Jj5KtnwBKZxTMdWjfAt eg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uqv6750ps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 18:54:51 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4Iso3x026202
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Dec 2023 18:54:50 GMT
-Received: from hu-obabatun-lv.qualcomm.com (10.49.16.6) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 4 Dec 2023 10:54:46 -0800
-From:   Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-To:     <catalin.marinas@arm.com>, <will@kernel.org>, <robh+dt@kernel.org>,
-        <frowand.list@gmail.com>, <dinguyen@kernel.org>,
-        <chenhuacai@kernel.org>, <tsbogend@alpha.franken.de>,
-        <jonas@southpole.se>, <stefan.kristiansson@saunalahti.fi>,
-        <shorne@gmail.com>, <mpe@ellerman.id.au>,
-        <ysato@users.sourceforge.jp>, <dalias@libc.org>,
-        <glaubitz@physik.fu-berlin.de>, <richard@nod.at>,
-        <anton.ivanov@cambridgegreys.com>, <johannes@sipsolutions.net>,
-        <chris@zankel.net>, <jcmvbkbc@gmail.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <kernel@quicinc.com>,
-        Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-Subject: [RFC PATCH v2 6/6] of: reserved_mem: Make MAX_RESERVED_REGIONS a config option
-Date:   Mon, 4 Dec 2023 10:54:09 -0800
-Message-ID: <20231204185409.19615-7-quic_obabatun@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231204185409.19615-1-quic_obabatun@quicinc.com>
-References: <20231204185409.19615-1-quic_obabatun@quicinc.com>
+        Mon, 4 Dec 2023 13:54:40 -0500
+Received: from smtp.smtpout.orange.fr (smtp-72.smtpout.orange.fr [80.12.242.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A18718E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:54:27 -0800 (PST)
+Received: from [192.168.1.18] ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id AE5FrwDQ5Moj4AE5Frxl1d; Mon, 04 Dec 2023 19:54:25 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1701716065;
+        bh=bA4kX9rxibdxURNPiiRaVXTSF7jjxSA+0KGcHMkxAZI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=B5selm5VlHoKf3GqZnp0ROHcZkYFo/nfYqc6FE3VSbB8dLja2HdePtpnSyUawFxEq
+         N8RlfWQj4TNrL1ob16+vh9b2jFuqOM90ro9Mce7Q5gzzgWZ31T68bzHmZ2iBsHLAFc
+         b5e66ZS5QQML+aMN+ZuHfLd7zdkvYJzeivETaGHhpEe5JANuiqJYM1VmGdL8Aw7DOY
+         qEJGfeeuQQwL6kfhnfwyqdwFTKCT28r0tH9vA7jTbkaw0Rq9su4lg35c3DyLLYnGe6
+         GBOyrCRHfZIbZEHje5zQ7/YbOx/BIvNd/juKvGJhIZgrCf3DSzYYvnkF/ZMOvHXkjH
+         Uk9rae5k0Wmiw==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 04 Dec 2023 19:54:25 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <8f5f9a4b-f809-44cb-8f26-05e39b29dfb6@wanadoo.fr>
+Date:   Mon, 4 Dec 2023 19:54:20 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: MYU01A4VatwslHHXknCHGnrM5dBroguV
-X-Proofpoint-GUID: MYU01A4VatwslHHXknCHGnrM5dBroguV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_18,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
- clxscore=1015 mlxscore=0 spamscore=0 suspectscore=0 adultscore=0
- mlxlogscore=957 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2312040146
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [v2] net: hns3: reduce stack usage in
+ hclge_dbg_dump_tm_pri()
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jijie Shao <shaojijie@huawei.com>,
+        Hao Chen <chenhao418@huawei.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231204085735.4112882-1-arnd@kernel.org>
+Content-Language: fr
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20231204085735.4112882-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,62 +64,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the value of MAX_RESERVED_REGIONS a config option which can be
-modified based on user requirements.
-The reserved_mem_array is required during device bootup to store the
-information of the dynamically-placed reserved memory regions.
-After paging_init(), this information is transferred to another
-array which is dynamically allocated and used to store all the reserved
-memory regions.
+Le 04/12/2023 à 09:57, Arnd Bergmann a écrit :
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> This function exceeds the stack frame warning limit:
+> 
+> drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c: In function 'hclge_dbg_dump_tm_pri':
+> drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c:1039:1: error: the frame size of 1408 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+> 
+> Use dynamic allocation for the largest stack object instead. It
+> would be nice to rewrite this file to completely avoid the extra
+> buffer and just use the one that was already allocated by debugfs,
+> but that is a much larger change.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v2: fix error handling leak
+> ---
+>   .../hisilicon/hns3/hns3pf/hclge_debugfs.c     | 21 ++++++++++++-------
+>   1 file changed, 14 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+> index ff3f8f424ad9..8f94e13c1edf 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+> @@ -981,7 +981,7 @@ static const struct hclge_dbg_item tm_pri_items[] = {
+>   
+>   static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+>   {
+> -	char data_str[ARRAY_SIZE(tm_pri_items)][HCLGE_DBG_DATA_STR_LEN];
+> +	char *data_str;
+>   	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
+>   	char *result[ARRAY_SIZE(tm_pri_items)], *sch_mode_str;
+>   	char content[HCLGE_DBG_TM_INFO_LEN];
+> @@ -992,8 +992,13 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+>   	if (ret)
+>   		return ret;
+>   
+> +	data_str = kcalloc(ARRAY_SIZE(tm_pri_items), HCLGE_DBG_DATA_STR_LEN,
+> +			   GFP_KERNEL);
+> +	if (!data_str)
+> +		return -ENOMEM;
+> +
+>   	for (i = 0; i < ARRAY_SIZE(tm_pri_items); i++)
+> -		result[i] = &data_str[i][0];
+> +		result[i] = &data_str[i * HCLGE_DBG_DATA_STR_LEN];
+>   
+>   	hclge_dbg_fill_content(content, sizeof(content), tm_pri_items,
+>   			       NULL, ARRAY_SIZE(tm_pri_items));
+> @@ -1002,23 +1007,23 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+>   	for (i = 0; i < pri_num; i++) {
+>   		ret = hclge_tm_get_pri_sch_mode(hdev, i, &sch_mode);
+>   		if (ret)
+> -			return ret;
+> +			goto out;
+>   
+>   		ret = hclge_tm_get_pri_weight(hdev, i, &weight);
+>   		if (ret)
+> -			return ret;
+> +			goto out;
+>   
+>   		ret = hclge_tm_get_pri_shaper(hdev, i,
+>   					      HCLGE_OPC_TM_PRI_C_SHAPPING,
+>   					      &c_shaper_para);
+>   		if (ret)
+> -			return ret;
+> +			goto out;
+>   
+>   		ret = hclge_tm_get_pri_shaper(hdev, i,
+>   					      HCLGE_OPC_TM_PRI_P_SHAPPING,
+>   					      &p_shaper_para);
+>   		if (ret)
+> -			return ret;
+> +			goto out;
+>   
+>   		sch_mode_str = sch_mode & HCLGE_TM_TX_SCHD_DWRR_MSK ? "dwrr" :
+>   			       "sp";
+> @@ -1035,7 +1040,9 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+>   		pos += scnprintf(buf + pos, len - pos, "%s", content);
+>   	}
+>   
+> -	return 0;
+> +out:
+> +	kfree(data_str);
+> +	return ret;
+>   }
+>   
+>   static const struct hclge_dbg_item tm_qset_items[] = {
 
-There is currently no obvious way to free the memory for the static
-array after its contents are copied over to the dynamically allocated
-array, but since the size required for the reserved_mem_array can vary
-from device to device depending on the number of dynamically-placed
-reserved memory regions, make the size of the array configurable in an
-attempt to save some memory.
+Hi,
+could :
+    pos += scnprintf(buf + pos, len - pos, "%s", <something>);
+be more widely used to avoid the alloc()/free() + copy of strings?
 
-Signed-off-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
----
- drivers/of/Kconfig      | 13 +++++++++++++
- drivers/of/of_private.h |  2 +-
- 2 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-index da9826accb1b..409ce2527461 100644
---- a/drivers/of/Kconfig
-+++ b/drivers/of/Kconfig
-@@ -102,4 +102,17 @@ config OF_OVERLAY
- config OF_NUMA
- 	bool
- 
-+config OF_MAX_RESERVED_REGIONS
-+	int "OF resvered_mem array size"
-+	default "64"
-+	range 1 64
-+	help
-+	   The reserved_mem_array is used to store information about the dynamically
-+	   placed reserved memory regions before we are able to allocate the memory
-+	   needed to store all the reserved memory regions defined in the DT.
-+	   Because the amount of memory needed initially for this array could vary,
-+	   make the size of the reserved_mem_array configurable in an attempt to
-+	   save some memory when possible.
-+	   if unsure, leave as default value.
-+
- endif # OF
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index ef56b2ea185c..278038bce0c0 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -36,7 +36,7 @@ struct alias_prop {
- #endif
- 
- #define OF_ROOT_NODE_SIZE_CELLS_DEFAULT 1
--#define MAX_RESERVED_REGIONS    64
-+#define MAX_RESERVED_REGIONS    CONFIG_OF_MAX_RESERVED_REGIONS
- 
- extern struct mutex of_mutex;
- extern raw_spinlock_t devtree_lock;
--- 
-2.17.1
+CJ
 
