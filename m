@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9BE8031C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6431C8031C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbjLDLvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:51:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52132 "EHLO
+        id S230163AbjLDLzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:55:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDLvk (ORCPT
+        with ESMTP id S229670AbjLDLy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:51:40 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA55BB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:51:46 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rA7U4-00006n-T9; Mon, 04 Dec 2023 12:51:32 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rA7U3-00DVRR-5i; Mon, 04 Dec 2023 12:51:31 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1rA7U2-00E1OU-Sj; Mon, 04 Dec 2023 12:51:30 +0100
-Date:   Mon, 4 Dec 2023 12:51:30 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Hari.PrasathGE@microchip.com
-Cc:     christophe.jaillet@wanadoo.fr, thierry.reding@gmail.com,
-        Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
-        claudiu.beznea@tuxon.dev, linux-pwm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] pwm: atmel: add missing clk_disable_unprepare()
-Message-ID: <20231204115130.d46fuficobdfs4yn@pengutronix.de>
-References: <20230902063232.22620-1-Hari.PrasathGE@microchip.com>
- <f15da804-206b-be53-b59e-06a3edfa0e96@wanadoo.fr>
- <f08d820b-cef3-bc9d-69ce-fc6d3f65a550@microchip.com>
+        Mon, 4 Dec 2023 06:54:58 -0500
+Received: from mta-64-225.siemens.flowmailer.net (mta-64-225.siemens.flowmailer.net [185.136.64.225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8087E5
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:55:02 -0800 (PST)
+Received: by mta-64-225.siemens.flowmailer.net with ESMTPSA id 202312041154593b3f8186a089fb738a
+        for <linux-kernel@vger.kernel.org>;
+        Mon, 04 Dec 2023 12:55:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
+ d=siemens.com; i=florian.bezdeka@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
+ bh=DeAVJVh1/dmfA7n8KCr9e65gohS5SL4YYZz1yRamMmo=;
+ b=ph2h0h5jvGxuWKVsNS0TMd+fNjmiTxwfMkny+Ro6YD2+HKnOLi/CClvCRs5tLNpmSk0jh2
+ b2Xas1pUz9iB6dBJVNhJnkJ3JLnWbdX0OqFTVBA38AMksw93F1/n2DVd92g1cldYwMwE1iYt
+ KYrV+sFm2RBFyevOjoDdSCwH2EABY=;
+Message-ID: <8602c88c98fd722db8e164a1520c56aebfa64db7.camel@siemens.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
+ Time support to XDP ZC
+From:   Florian Bezdeka <florian.bezdeka@siemens.com>
+To:     Jesper Dangaard Brouer <hawk@kernel.org>,
+        Song Yoong Siang <yoong.siang.song@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, bpf@vger.kernel.org,
+        xdp-hints@xdp-project.net,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org
+Date:   Mon, 04 Dec 2023 12:54:56 +0100
+In-Reply-To: <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
+References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
+         <20231203165129.1740512-3-yoong.siang.song@intel.com>
+         <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="suyx3ysyth33jpxh"
-Content-Disposition: inline
-In-Reply-To: <f08d820b-cef3-bc9d-69ce-fc6d3f65a550@microchip.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-68982:519-21489:flowmailer
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---suyx3ysyth33jpxh
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Hari,
-
-On Wed, Sep 06, 2023 at 06:15:36AM +0000, Hari.PrasathGE@microchip.com wrot=
-e:
-> Thank you, I admit that I have messes up this part. Its been quite a=20
-> while sending patches upstream and I seem to have forgotten the basics.=
+On Mon, 2023-12-04 at 11:36 +0100, Jesper Dangaard Brouer wrote:
+> On 12/3/23 17:51, Song Yoong Siang wrote:
+> > This patch enables Launch Time (Time-Based Scheduling) support to XDP z=
+ero
+> > copy via XDP Tx metadata framework.
+> >=20
+> > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
+> > ---
+> >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
+>=20
+> As requested before, I think we need to see another driver implementing=
 =20
-> I will take time to send the v3 paying more attention to these small=20
-> details.
+> this.
+>=20
+> I propose driver igc and chip i225.
 
-You never followed up with the promised v3. Is this still on your radar?
-Would be great to get this addressed as it fixes a clk imbalance, right?
+igc support would be really nice and highly appreciated. There are a
+lot of tests running here with that chip (i225/i226) / driver (igc)
+combination. Let me know if we can support somehow, testing included.
 
-Best regards
-Uwe
+>=20
+> The interesting thing for me is to see how the LaunchTime max 1 second
+> into the future[1] is handled code wise. One suggestion is to add a=20
+> section to Documentation/networking/xsk-tx-metadata.rst per driver that=
+=20
+> mentions/documents these different hardware limitations.  It is natural=
+=20
+> that different types of hardware have limitations.  This is a close-to=
+=20
+> hardware-level abstraction/API, and IMHO as long as we document the=20
+> limitations we can expose this API without too many limitations for more=
+=20
+> capable hardware.
+>=20
+>   [1]=20
+> https://github.com/xdp-project/xdp-project/blob/master/areas/tsn/code01_f=
+ollow_qdisc_TSN_offload.org#setup-code-driver-igb
+>=20
+> This stmmac driver and Intel Tiger Lake CPU must also have some limit on=
+=20
+> how long into the future it will/can schedule packets?
+>=20
+>=20
+> People from xdp-hints list must make their voice hear if they want i210=
+=20
+> and igb driver support, because it have even-more hardware limitations,=
+=20
+> see [1] (E.g. only TX queue 0 and 1 supports LaunchTime). BUT I know=20
+> some have this hardware in production and might be motivated to get a=20
+> functioning driver with this feature?
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+i210 support would be nice, that would allow us to compare some test
+setups with different NICs. In addition it would simplify some test
+setups. For now, IMHO igc is more important.
 
---suyx3ysyth33jpxh
-Content-Type: application/pgp-signature; name="signature.asc"
+>=20
+> --Jesper
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVtvUEACgkQj4D7WH0S
-/k4vRggAi5Qzd8FssadJ8Y3jXMkQYtbvpv1lmMyDCpcOdYTFPL109e3XxjLZE5Q3
-yksr6XCQlnUEleNkjUwo7q30JtiPkTeU2fRkTlhRuu8h/oiUKs1q1ehiMUXC2AWJ
-5nDcCRn8ZDc9e2qljrSsGnSjulFDZFDIZB8pZCF6EMVhetIExnQDHvJVtheJkYJ1
-YPsBpG6wIXeqDL8kOkt/dexQYkDq3VCC1/siIh12azFf3iAqEOE+FeSEOQIviji4
-aGwIakzlXJYFdVQzGchsObOnqGxzj0NsdCFP0wAqWsaUc+C4Jss3aJqg9qZJ4bAd
-gUsHOsk2YcZrvT5LHGGzmriOeuwYNw==
-=SssV
------END PGP SIGNATURE-----
-
---suyx3ysyth33jpxh--
