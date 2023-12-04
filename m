@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC00B803A37
+	by mail.lfdr.de (Postfix) with ESMTP id 87064803A36
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344761AbjLDQ1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:27:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        id S1344705AbjLDQ1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234798AbjLDQ1P (ORCPT
+        with ESMTP id S234647AbjLDQ1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:27:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A86AC
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:27:21 -0800 (PST)
+        Mon, 4 Dec 2023 11:27:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEF8A4
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:27:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1701707240; x=1733243240;
   h=date:from:to:cc:subject:message-id:mime-version;
-  bh=FnGdzpQHLo4mRfw78YYp6U/+SI3aHq2SX2XoZ0Za6pg=;
-  b=NQ7Y04MPMCdQCGBf4GDWg/OtCdQqxRoTkJxeZTYyatfYNqrZXPKmLBGT
-   c76LlSshVoIXMsdMidoWwcPENB4Szfx2fRFeXbRFjAQzO5RRx/mXnNxx7
-   kI8VAp5sWU2mmdhD5XXw2W3t12DVTtu4+3BWtLHRxnoM88MP8bbLWzJ0T
-   ZYbqb6QoY8mjYX+YVHbpiRRJ7mf2VJ5y07eBFau3seU2r3diVeIsbudSJ
-   tLqev5hol/ARm/TRyCuWUJDo7HyfM9ojkK+B77fhXnSP0LxAZ+KCfBy++
-   tjWs/xBBH0+2YEKBOwpslIaRTDWxoT0XUOMiYSO2eXKm1U6rm61zKZttU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="12473896"
+  bh=uB0L/5LJuHJ93tulqUYqLgLYZHWNT+tV4PPB0VSjUiY=;
+  b=ISXne+TwEg8Y9aiGwN8yAnmyFeh9NrL6TRT6jGjRjsXcc3agAVh2Djj4
+   e9ZPvGoFcFqxo1Az+N1uZWrnJphse1f5/dCbU59+qZ5s0XWXRJV4xrc+v
+   oVbWbdbfrJuydSVnbKh05rEOz80e7j/0BlsscUM8whwFnJGleNCXEHkIE
+   sbgaPgBmII0GVIDIS/dq+Wvx5rwfo+QndxES/iIuZZ94I0eEuo+WlJ4Qf
+   3dczrzsrlqFelJCthwvveFtrnAvfa98OH6vovAbFR+ScIXgWowB009+7/
+   kPtzLpF1ID2ta6E7UrSTNGZtOk330sHI19HJE/prMfs6jCZQYY5nHyBhT
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="373197354"
 X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="12473896"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 08:27:18 -0800
+   d="scan'208";a="373197354"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 08:27:20 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="836637121"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764004903"
 X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="836637121"
+   d="scan'208";a="764004903"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 04 Dec 2023 08:27:18 -0800
+  by orsmga007.jf.intel.com with ESMTP; 04 Dec 2023 08:27:18 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rABmu-0007uJ-0f;
-        Mon, 04 Dec 2023 16:27:16 +0000
-Date:   Tue, 5 Dec 2023 00:26:59 +0800
+        id 1rABmt-0007u1-2q;
+        Mon, 04 Dec 2023 16:27:15 +0000
+Date:   Tue, 5 Dec 2023 00:27:01 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/snapshot.c:974:17: sparse: sparse: cast from restricted
- __le32
-Message-ID: <202312050023.G2CGeL05-lkp@intel.com>
+To:     Vineet Gupta <vgupta@synopsys.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org
+Subject: arch/arc/kernel/signal.c:77:31: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202312050038.JnRYRU9j-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -64,105 +65,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-commit: 8e877caaad818595ecb6754355cea2058fd9848e bcachefs: Split out snapshot.c
-date:   6 weeks ago
-config: mips-randconfig-r132-20231115 (https://download.01.org/0day-ci/archive/20231205/202312050023.G2CGeL05-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231205/202312050023.G2CGeL05-lkp@intel.com/reproduce)
+commit: 96f1b00138cb8f04c742c82d0a7c460b2202e887 ARCv2: save ABI registers across signal handling
+date:   2 years, 6 months ago
+config: arc-randconfig-r111-20231107 (https://download.01.org/0day-ci/archive/20231205/202312050038.JnRYRU9j-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231205/202312050038.JnRYRU9j-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312050023.G2CGeL05-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312050038.JnRYRU9j-lkp@intel.com/
 
 sparse warnings: (new ones prefixed by >>)
->> fs/bcachefs/snapshot.c:974:17: sparse: sparse: cast from restricted __le32
+>> arch/arc/kernel/signal.c:77:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __user *to @@     got struct user_regs_arcv2 * @@
+   arch/arc/kernel/signal.c:77:31: sparse:     expected void [noderef] __user *to
+   arch/arc/kernel/signal.c:77:31: sparse:     got struct user_regs_arcv2 *
+>> arch/arc/kernel/signal.c:88:41: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const [noderef] __user *from @@     got struct user_regs_arcv2 * @@
+   arch/arc/kernel/signal.c:88:41: sparse:     expected void const [noderef] __user *from
+   arch/arc/kernel/signal.c:88:41: sparse:     got struct user_regs_arcv2 *
+>> arch/arc/kernel/signal.c:134:42: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sigcontext *mctx @@     got struct sigcontext [noderef] __user * @@
+   arch/arc/kernel/signal.c:134:42: sparse:     expected struct sigcontext *mctx
+   arch/arc/kernel/signal.c:134:42: sparse:     got struct sigcontext [noderef] __user *
+   arch/arc/kernel/signal.c:153:45: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sigcontext *mctx @@     got struct sigcontext [noderef] __user * @@
+   arch/arc/kernel/signal.c:153:45: sparse:     expected struct sigcontext *mctx
+   arch/arc/kernel/signal.c:153:45: sparse:     got struct sigcontext [noderef] __user *
 
-vim +974 fs/bcachefs/snapshot.c
+vim +77 arch/arc/kernel/signal.c
 
-   916	
-   917	static int bch2_snapshot_node_delete(struct btree_trans *trans, u32 id)
-   918	{
-   919		struct bch_fs *c = trans->c;
-   920		struct btree_iter iter, p_iter = (struct btree_iter) { NULL };
-   921		struct btree_iter tree_iter = (struct btree_iter) { NULL };
-   922		struct bkey_s_c_snapshot s;
-   923		u32 parent_id;
-   924		unsigned i;
-   925		int ret = 0;
-   926	
-   927		s = bch2_bkey_get_iter_typed(trans, &iter, BTREE_ID_snapshots, POS(0, id),
-   928					     BTREE_ITER_INTENT, snapshot);
-   929		ret = bkey_err(s);
-   930		bch2_fs_inconsistent_on(bch2_err_matches(ret, ENOENT), c,
-   931					"missing snapshot %u", id);
-   932	
-   933		if (ret)
-   934			goto err;
-   935	
-   936		BUG_ON(!BCH_SNAPSHOT_DELETED(s.v));
-   937		parent_id = le32_to_cpu(s.v->parent);
-   938	
-   939		if (parent_id) {
-   940			struct bkey_i_snapshot *parent;
-   941	
-   942			parent = bch2_bkey_get_mut_typed(trans, &p_iter,
-   943					     BTREE_ID_snapshots, POS(0, parent_id),
-   944					     0, snapshot);
-   945			ret = PTR_ERR_OR_ZERO(parent);
-   946			if (unlikely(ret)) {
-   947				bch2_fs_inconsistent_on(bch2_err_matches(ret, ENOENT), c,
-   948							"missing snapshot %u", parent_id);
-   949				goto err;
-   950			}
-   951	
-   952			for (i = 0; i < 2; i++)
-   953				if (le32_to_cpu(parent->v.children[i]) == id)
-   954					break;
-   955	
-   956			if (i == 2)
-   957				bch_err(c, "snapshot %u missing child pointer to %u",
-   958					parent_id, id);
-   959			else
-   960				parent->v.children[i] = 0;
-   961	
-   962			if (le32_to_cpu(parent->v.children[0]) <
-   963			    le32_to_cpu(parent->v.children[1]))
-   964				swap(parent->v.children[0],
-   965				     parent->v.children[1]);
-   966		} else {
-   967			/*
-   968			 * We're deleting the root of a snapshot tree: update the
-   969			 * snapshot_tree entry to point to the new root, or delete it if
-   970			 * this is the last snapshot ID in this tree:
-   971			 */
-   972			struct bkey_i_snapshot_tree *s_t;
-   973	
- > 974			BUG_ON(s.v->children[1]);
-   975	
-   976			s_t = bch2_bkey_get_mut_typed(trans, &tree_iter,
-   977					BTREE_ID_snapshot_trees, POS(0, le32_to_cpu(s.v->tree)),
-   978					0, snapshot_tree);
-   979			ret = PTR_ERR_OR_ZERO(s_t);
-   980			if (ret)
-   981				goto err;
-   982	
-   983			if (s.v->children[0]) {
-   984				s_t->v.root_snapshot = s.v->children[0];
-   985			} else {
-   986				s_t->k.type = KEY_TYPE_deleted;
-   987				set_bkey_val_u64s(&s_t->k, 0);
-   988			}
-   989		}
-   990	
-   991		ret = bch2_btree_delete_at(trans, &iter, 0);
-   992	err:
-   993		bch2_trans_iter_exit(trans, &tree_iter);
-   994		bch2_trans_iter_exit(trans, &p_iter);
-   995		bch2_trans_iter_exit(trans, &iter);
-   996		return ret;
-   997	}
-   998	
+    63	
+    64	static int save_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
+    65	{
+    66		int err = 0;
+    67	#ifndef CONFIG_ISA_ARCOMPACT
+    68		struct user_regs_arcv2 v2abi;
+    69	
+    70		v2abi.r30 = regs->r30;
+    71	#ifdef CONFIG_ARC_HAS_ACCL_REGS
+    72		v2abi.r58 = regs->r58;
+    73		v2abi.r59 = regs->r59;
+    74	#else
+    75		v2abi.r58 = v2abi.r59 = 0;
+    76	#endif
+  > 77		err = __copy_to_user(&mctx->v2abi, &v2abi, sizeof(v2abi));
+    78	#endif
+    79		return err;
+    80	}
+    81	
+    82	static int restore_arcv2_regs(struct sigcontext *mctx, struct pt_regs *regs)
+    83	{
+    84		int err = 0;
+    85	#ifndef CONFIG_ISA_ARCOMPACT
+    86		struct user_regs_arcv2 v2abi;
+    87	
+  > 88		err = __copy_from_user(&v2abi, &mctx->v2abi, sizeof(v2abi));
+    89	
+    90		regs->r30 = v2abi.r30;
+    91	#ifdef CONFIG_ARC_HAS_ACCL_REGS
+    92		regs->r58 = v2abi.r58;
+    93		regs->r59 = v2abi.r59;
+    94	#endif
+    95	#endif
+    96		return err;
+    97	}
+    98	
+    99	static int
+   100	stash_usr_regs(struct rt_sigframe __user *sf, struct pt_regs *regs,
+   101		       sigset_t *set)
+   102	{
+   103		int err;
+   104		struct user_regs_struct uregs;
+   105	
+   106		uregs.scratch.bta	= regs->bta;
+   107		uregs.scratch.lp_start	= regs->lp_start;
+   108		uregs.scratch.lp_end	= regs->lp_end;
+   109		uregs.scratch.lp_count	= regs->lp_count;
+   110		uregs.scratch.status32	= regs->status32;
+   111		uregs.scratch.ret	= regs->ret;
+   112		uregs.scratch.blink	= regs->blink;
+   113		uregs.scratch.fp	= regs->fp;
+   114		uregs.scratch.gp	= regs->r26;
+   115		uregs.scratch.r12	= regs->r12;
+   116		uregs.scratch.r11	= regs->r11;
+   117		uregs.scratch.r10	= regs->r10;
+   118		uregs.scratch.r9	= regs->r9;
+   119		uregs.scratch.r8	= regs->r8;
+   120		uregs.scratch.r7	= regs->r7;
+   121		uregs.scratch.r6	= regs->r6;
+   122		uregs.scratch.r5	= regs->r5;
+   123		uregs.scratch.r4	= regs->r4;
+   124		uregs.scratch.r3	= regs->r3;
+   125		uregs.scratch.r2	= regs->r2;
+   126		uregs.scratch.r1	= regs->r1;
+   127		uregs.scratch.r0	= regs->r0;
+   128		uregs.scratch.sp	= regs->sp;
+   129	
+   130		err = __copy_to_user(&(sf->uc.uc_mcontext.regs.scratch), &uregs.scratch,
+   131				     sizeof(sf->uc.uc_mcontext.regs.scratch));
+   132	
+   133		if (is_isa_arcv2())
+ > 134			err |= save_arcv2_regs(&(sf->uc.uc_mcontext), regs);
+   135	
+   136		err |= __copy_to_user(&sf->uc.uc_sigmask, set, sizeof(sigset_t));
+   137	
+   138		return err ? -EFAULT : 0;
+   139	}
+   140	
 
 -- 
 0-DAY CI Kernel Test Service
