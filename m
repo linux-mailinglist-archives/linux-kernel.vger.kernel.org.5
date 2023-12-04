@@ -2,85 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB66803A9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5C2803AA5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbjLDQoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:44:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52442 "EHLO
+        id S230481AbjLDQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:45:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjLDQoE (ORCPT
+        with ESMTP id S229477AbjLDQpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:44:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB3AAC;
-        Mon,  4 Dec 2023 08:44:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701708250; x=1733244250;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=8gQdgndpZFQZb2gJqlOJ/xwgQA+emZiGmAjbrIpj5Xs=;
-  b=J9Bep8zsjFMdehpyfTpx1Jy9YHC+B8Th5yFVqqxod2mm+1RSIgHVRQEG
-   +nOxHCdb7GWvDMlqTLBO9+GlYdaWm1R6fNU9PWz3xnpYiifnTjZJ9Mr9S
-   i5Ul7NCM8Hde7Tc6ecCcCzW/CqDVqSNDF8QymqGwOWcGq8i/RcqLBbZua
-   eUmck8VKivrRNsckGujhOBqaulPml5Ns6cwew6zSAZ1uK+5886QMAx5Cj
-   W9P71dqyeNIhYiJrzc1RvMNoVSbsuR5B11JNCil/dQmbNZ5Zrbx9ntSrR
-   QSSgs2zS3UYys3tqAeC8501eCAtWqe1RQQVT+Fsy3aBtuGswz74LGdZuk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="12476131"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="12476131"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 08:44:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="836641461"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="836641461"
-Received: from sdneilso-mobl1.amr.corp.intel.com (HELO [10.212.147.197]) ([10.212.147.197])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 08:44:09 -0800
-Message-ID: <041f60ab-a90a-4654-afd2-c2a296a25c46@linux.intel.com>
-Date:   Mon, 4 Dec 2023 10:44:08 -0600
+        Mon, 4 Dec 2023 11:45:02 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 301939B;
+        Mon,  4 Dec 2023 08:45:08 -0800 (PST)
+Received: from [172.20.10.13] (unknown [83.232.59.81])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 0511820B74C0;
+        Mon,  4 Dec 2023 08:44:51 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0511820B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1701708307;
+        bh=WmfHCN3jVeLCujfeKdxoJP9+xwCwqUAHJemHoreeygQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=KFlFC6V35RPeaHC9w0beCchXcugku32yKVEsntKZ3fKxjfVgUqS68wvMhqXHdbBbE
+         frmWEegr00kCD9RMUNe6mjL52CJ2jwKyND8zZ9wRe7sMGxSgqsnpQUDI2HGBVnZi7k
+         M82u7dWOIncYGS28B/PcXwmhxyVDQCkk1nOwdxog=
+Message-ID: <450a50ba-4c87-4137-9feb-de8f17e3dfa6@linux.microsoft.com>
+Date:   Mon, 4 Dec 2023 17:44:48 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] ASoC: Intel: soc-acpi-intel-tgl-match: add cs42l43 and
- cs35l56 support
+Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
+ TDX init
 Content-Language: en-US
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
-        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com
-Cc:     kai.vehmanen@linux.intel.com, cezary.rojewski@intel.com,
-        ranjani.sridharan@linux.intel.com, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-References: <20231204135614.2169624-1-rf@opensource.cirrus.com>
- <8510b464-9352-480d-88cf-857597e16cbc@linux.intel.com>
- <f2dec209-6bc7-49ab-9dff-57a2ca4efb03@opensource.cirrus.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <f2dec209-6bc7-49ab-9dff-57a2ca4efb03@opensource.cirrus.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
+        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
+        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
+        "cascardo@canonical.com" <cascardo@canonical.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michael Kelley <mhkelley58@gmail.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Cui, Dexuan" <decui@microsoft.com>
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+ <0799b692-4b26-4e00-9cec-fdc4c929ea58@linux.microsoft.com>
+ <20231129164049.GVZWdpkVlc8nUvl/jx@fat_crate.local>
+ <DM8PR11MB575085570AF48AF4690986EDE782A@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20231130075559.GAZWhAD5ScHoxbbTxL@fat_crate.local>
+ <DM8PR11MB575049E0C9F36001F0F374CEE782A@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <20231130092119.GBZWhUD6LscxYOpxNl@fat_crate.local>
+From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+In-Reply-To: <20231130092119.GBZWhUD6LscxYOpxNl@fat_crate.local>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30/11/2023 10:21, Borislav Petkov wrote:
+> On Thu, Nov 30, 2023 at 08:31:03AM +0000, Reshetova, Elena wrote:
+>> No threats whatsoever,
+> 
+> I don't mean you - others. :-)
+> 
+>> I just truly don’t know details of SEV architecture on this and how it
+>> envisioned to operate under this nesting scenario.  I raised this
+>> point to see if we can build the common understanding on this. My
+>> personal understanding (please correct me) was that SEV would also
+>> allow different types of L2 guests, so I think we should be aligning
+>> on this.
+> 
+> Yes, makes sense. The only L2 thing I've heard of is some Azure setup.
 
->> Don't we need the same change of name_prefix for
->> soc-acpi-intel-mtl-match.c? I see this in the existing code:
->>
-> 
-> The chain that Peter sent only has CS35L56 added to tgl-match.
-> 
-> I've checked the history of mtl-match and the patch that added CS35L56
-> there was not cc'd to any cirrus.com email address so we didn't notice
-> it. Otherwise we would have picked this up earlier. alsa-devel is noisy.
-> 
-> I haven't got a MTL platform to test on but I can send a separate patch
-> to change mtl-match if you are happy with this prefix change.
+"L2" is the Intel terminology in TD-partitioning (see figure 11.2 in [1]),
+but Azure uses it for the exact same thing as VMPLs in SEV-SNP. On the AMD
+side the community is working on Coconut SVSM[2] and there was an AMD SVSM[3]
+project before that, both of them have the same idea as the Azure paravisor.
+SUSE, Red Hat, IBM and others are active in SVSM development, we've also started
+contributing. I think this kind of usage will also appear on TDX soon.
 
-That would be nice, best to align on all platforms and use the same the
-same prefix.
+[1]: https://cdrdv2.intel.com/v1/dl/getContent/773039
+[2]: https://github.com/coconut-svsm/svsm
+[3]: https://github.com/AMDESE/linux-svsm
+
+> 
+>> Yes, agree, so what are our options and overall strategy on this?  We
+>> can try to push as much as possible complexity into L1 VMM in this
+>> scenario to keep the guest kernel almost free from these sprinkling
+>> differences.
+> 
+> I like that angle. :)
+> 
+>> Afterall the L1 VMM can emulate whatever it wants for the guest.
+>> We can also see if there is a true need to add another virtualization
+>> abstraction here, i.e. "nested encrypted guest".
+> 
+> Yes, that too. I'm sceptical but there are use cases with that paravisor
+> thing and being able to run an unmodified guest, i.e., something like
+> a very old OS which no one develops anymore but customers simply can't
+> part ways with it for raisins
+
+I don't think we'll be seeing Windows XP TDX/SNP guests :)
+
+The primary use case for the paravisor (/SVSM) is pretty common across the
+the industry and projects that I shared: TPM emulation. Then comes the
+other stuff: live migration, "trustlets", further device emulation. All this
+inside the confidential boundary.
+
+> 
+>> Any other options we should be considering as overall strategy?
+> 
+> The less the kernel knows about guests, the better, I'd say.
+> 
+
+The challenge lies in navigating the Venn diagram of: standard guest,
+TDX guest and SNP guest. Is a "guest" more "TDX" or more "Hyper-V" (or KVM/Vmware)?
+Should the TDX (and SNP) code be extended with more knowledge of hypervisor
+interfaces or should the hypervisor interfaces know more about TDX/SNP.
+
+I'd love it if we all had some agreement on this. I posted these patches
+based on suggestions that TDX guest-ness takes precedence.
+
+> The other thing I'm missing most of the time is, people come with those
+> patches enabling this and that but nowhere does it say: "we would love
+> to have this because of this great idea we had" or "brings so much more
+> performance" or "amazing code quality imrpovement" or, or other great
+> reason.
+> 
+> Rather, it is "yeah, we do this and you should support it". Well, nope.
+> 
+I hear you, that's we've been making an effort to be more open about use cases
+and capabilities along with patches. We also care about simplifying the code
+to make it easier to follow the flows. I think the whole kernel has come
+a long way since the first confidential guest patches were posted.
+
+Jeremi
+
+> Thx.
+> 
+
