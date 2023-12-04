@@ -2,59 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6368031B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A038031B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbjLDLq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:46:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
+        id S232415AbjLDLqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:46:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDLq1 (ORCPT
+        with ESMTP id S232868AbjLDLql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:46:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6F2B0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:46:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99456C433C8;
-        Mon,  4 Dec 2023 11:46:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701690391;
-        bh=i1+VKeSNTBMfL+Jw9GhDsIITBUtuYP9Ee/ts7oDwFgg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LYZOekNSEYjZHt0q1vMfNanrbaTZwFa3bfc1jqH/fiIipmhRFHY14gN7d2UaeUqYR
-         kFmE4PSCKESYlxK6Ze6RMrI+/P8eaVT0khlLEZkpqzVBn6lL58zjooUFS/uIj++YGJ
-         sfFo884yHwHHXfkZDfNcdrcNgoB7Y1nkyB0NcsxM9rztyQHw/ylE4SM6CmK9+QVI7W
-         Kwqgs8iKN6wGgJMqa+1YUa/g2dXrPqBJa+McF/UNmMDY8+3OABYdYctiN0A2DEaVce
-         LJpLJB1f8JHUBDKKqtImQ+k1vnFcqt7aehSxnSl/FYyFQQI/BfvYBYB+ls9WaiDz6d
-         OA5xATpMcvLGQ==
-Date:   Mon, 4 Dec 2023 11:46:23 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Petre Rodan <petre.rodan@subdimension.ro>
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v3 2/2] iio: pressure: driver for Honeywell HSC/SSC
- series pressure sensors
-Message-ID: <20231204114623.3aaa98d2@jic23-huawei>
-In-Reply-To: <ZWtU836_yYWgMYZp@sunspire>
-References: <20231126102721.15322-1-petre.rodan@subdimension.ro>
-        <20231126183334.625d2d8b@jic23-huawei>
-        <ZWX55o_-WT5BQlo-@sunspire>
-        <20231201182453.00005673@Huawei.com>
-        <ZWtU836_yYWgMYZp@sunspire>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 4 Dec 2023 06:46:41 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 02C8BFF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:46:46 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A186F152B;
+        Mon,  4 Dec 2023 03:47:33 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 517F83F6C4;
+        Mon,  4 Dec 2023 03:46:43 -0800 (PST)
+Message-ID: <0c446883-7f01-406f-bddd-8e78b989d644@arm.com>
+Date:   Mon, 4 Dec 2023 11:46:41 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in hugepd
+ processing
+Content-Language: en-GB
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Peter Xu <peterx@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Rik van Riel <riel@surriel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+References: <20231116012908.392077-7-peterx@redhat.com>
+ <ZVsYMMJpmFV2T/Zc@infradead.org> <ZVzT5_3Zn-Y-6xth@x1n>
+ <ZV21GCbG48nTLDzn@infradead.org> <ZV90JcnQ1RGud/0R@casper.infradead.org>
+ <ZV-KQ0e0y9BTsHGv@x1n> <d2313c1d-1e50-49b7-bed7-840431af799a@arm.com>
+ <ZV-sJsdFfXiCkylv@x1n> <510adc26-9aed-4745-8807-dba071fadbbe@arm.com>
+ <ZWDKV0XNjplc_vUP@x1n> <ZWj_EgljG3NwS5r1@x1n>
+ <283da12c-14f1-4255-b3c4-ab933f3373c4@csgroup.eu>
+ <01aad92f-b1e0-4f31-b905-8b1c2012ebab@arm.com>
+ <97c21205-f3e6-4634-82e6-c7bbd81d1835@csgroup.eu>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <97c21205-f3e6-4634-82e6-c7bbd81d1835@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,68 +72,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Dec 2023 18:01:55 +0200
-Petre Rodan <petre.rodan@subdimension.ro> wrote:
-
-> Hello!
+On 04/12/2023 11:25, Christophe Leroy wrote:
 > 
-> On Fri, Dec 01, 2023 at 06:24:53PM +0000, Jonathan Cameron wrote:
-> > > > > +static int hsc_spi_probe(struct spi_device *spi)
-> > > > > +{
-> > > > > +	struct iio_dev *indio_dev;
-> > > > > +	struct hsc_data *hsc;
-> > > > > +	struct device *dev = &spi->dev;
-> > > > > +
-> > > > > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*hsc));
-> > > > > +	if (!indio_dev)
-> > > > > +		return -ENOMEM;
-> > > > > +
-> > > > > +	hsc = iio_priv(indio_dev);
-> > > > > +	hsc->xfer = hsc_spi_xfer;  
-> > > > 
-> > > > Also, pass the callback and spi->dev into hsc probe. Easy to use
-> > > > a container_of() to get back to the struct spi_device *spi    
-> > > 
-> > > I'd rather simply pass along the client struct.
-> > >   
-> > 
-> > I don't like the fact it has to be a void *
-> > 
-> > The core code has no idea what is in there.  At least we constraint it
-> > somewhat with a struct device.  
 > 
-> but ...
-> that is the nice part. the core code never needs to know what exactly is behind
-> that pointer, since it only gets used by the i2c/spi module that provided that
-> pointer in the first place. I've never seen a better use of void * :)
+> Le 04/12/2023 à 12:11, Ryan Roberts a écrit :
+>> On 03/12/2023 13:33, Christophe Leroy wrote:
+>>>
+>>>
+>>> Le 30/11/2023 à 22:30, Peter Xu a écrit :
+>>>> On Fri, Nov 24, 2023 at 11:07:51AM -0500, Peter Xu wrote:
+>>>>> On Fri, Nov 24, 2023 at 09:06:01AM +0000, Ryan Roberts wrote:
+>>>>>> I don't have any micro-benchmarks for GUP though, if that's your question. Is
+>>>>>> there an easy-to-use test I can run to get some numbers? I'd be happy to try it out.
+>>>>>
+>>>>> Thanks Ryan.  Then nothing is needed to be tested if gup is not yet touched
+>>>>> from your side, afaict.  I'll see whether I can provide some rough numbers
+>>>>> instead in the next post (I'll probably only be able to test it in a VM,
+>>>>> though, but hopefully that should still reflect mostly the truth).
+>>>>
+>>>> An update: I finished a round of 64K cont_pte test, in the slow gup micro
+>>>> benchmark I see ~15% perf degrade with this patchset applied on a VM on top
+>>>> of Apple M1.
+>>>>
+>>>> Frankly that's even less than I expected, considering not only how slow gup
+>>>> THP used to be, but also on the fact that that's a tight loop over slow
+>>>> gup, which in normal cases shouldn't happen: "present" ptes normally goes
+>>>> to fast-gup, while !present goes into a fault following it.  I assume
+>>>> that's why nobody cared slow gup for THP before.  I think adding cont_pte
+>>>> support shouldn't be very hard, but that will include making cont_pte idea
+>>>> global just for arm64 and riscv Svnapot.
+>>>
+>>> Is there any documentation on what cont_pte is ? I have always wondered
+>>> if it could also fit powerpc 8xx need ?
+>>
+>> pte_cont() (and pte_mkcont() and pte_mknoncont()) test and manipulte the
+>> "contiguous bit" in the arm64 PTE entries. Those helpers are arm64-specific
+>> (AFAIK). The contiguous bit is a hint to the HW to tell it that a block of PTEs
+>> are mapping a physically contiguous and naturally aligned piece of memory. The
+>> HW can use this to coalesce entries in the TLB. When using 4K base pages, the
+>> contpte size is 64K (16 PTEs). For 16K base pages, its 2M (128 PTEs) and for 64K
+>> base pages, its 2M (32 PTEs).
+>>
+>>>
+>>> On powerpc, for 16k pages, we have to define 4 consecutive PTEs. All 4
+>>> PTE are flagged with the SPS bit telling it's a 16k pages, but for TLB
+>>> misses the HW needs one entrie for each 4k fragment.
+>>
+>>  From that description, it sounds like the SPS bit might be similar to arm64
+>> contiguous bit? Although sounds like you are currently using it in a slightly
+>> different way - telling kernel that the base page is 16K but mapping each 16K
+>> page with 4x 4K entries (plus the SPS bit set)?
 > 
-> I could define a
+> Yes it's both.
 > 
-> struct client_handle;
+> When the base page is 16k, there are 4x 4k entries (with SPS bit set) in 
+> the page table, and pte_t is a table of 4 'unsigned long'
 > 
-> in the .h, use a pointer to that that as function argument, do a lot of
-> castings, but I feel like it's still a void * with extra steps.
+> When the base page is 4k, there is a 16k hugepage size, which is the 
+> same 4x 4k entries with SPS bit set.
+> 
+> So it looks similar to the contiguous bit.
+> 
+> 
+> And by extension, the same principle is used for 512k hugepages, the bit 
+> _PAGE_HUGE is copied by the TLB miss handler into the lower bit of PS, 
+> PS being as follows:
+> - 00 Small (4 Kbyte or 16 Kbyte)
+> - 01 512 Kbyte
+> - 10 Reserved
+> - 11 8 Mbyte
+> 
+> So as PMD size is 4M, 512k pages are 128 identical consecutive entries 
+> in the page table.
+> 
+> I which I could have THP with 16k or 512k pages.
 
-Usual trick for this is either use struct device and container_of or
-an anonymous union wrapped up in a struct.
+Then you have come to the right place! :)
 
-struct hsc_client_handle {
-	union {
-		struct i2c_client *i2c_client;
-		struct spithingy *spi_client;
-	};
-};
-
-Then assign appropriate element and pass the containing struct around.
-No casting needed.
-Aim is to define it as a constrained type that can only take one or the other of
-the types in the union. 
-
-Jonathan
+https://lore.kernel.org/linux-mm/20231204102027.57185-1-ryan.roberts@arm.com/
 
 
 > 
-> cheers,
-> peter
-> 
+> Christophe
 
