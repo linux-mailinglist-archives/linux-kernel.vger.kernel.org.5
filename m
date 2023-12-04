@@ -2,281 +2,448 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AE4803105
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D00803119
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235530AbjLDK4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
+        id S1344048AbjLDK7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:59:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235691AbjLDK4P (ORCPT
+        with ESMTP id S232846AbjLDK7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:56:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA0719F;
-        Mon,  4 Dec 2023 02:56:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701687371; x=1733223371;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=UhTMWJTu1RDQsw/rTnMr9ZY1ZM9bat7u3V63izIqan0=;
-  b=e3pSmOJxcd0m/UPNx1N5QkritT2dRvaNKCAbmqF27kFKqcWViqnHXo8Q
-   GtSxP0UgDFf6kqc+7QllJOwE9F7Z2YNAZkX6MI7sHJ3FHIfGhRfA+ywO3
-   3kPgdN7rw+DXDhqXk+wqrSAJ6Y4A+dKaPl9TqoY8HbvJH69GLaSYfl1VW
-   a+dLyVYXq1wtknrU+90mi0NtMF07YxizkrrbhRRu+a95LeCg1UynQsFIW
-   CVXP/8sA381eUAnwO9EL3dmh+h9E2EM1gMBv9y/cyIjqIWcQbQzLGf6Co
-   jb38kRIsuPWFp5E7N+baxC+uwsw8oBOC4R8oVvvRRbyt5VRx0P9AzGNLn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="566652"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="566652"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 02:56:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10913"; a="774216334"
-X-IronPort-AV: E=Sophos;i="6.04,249,1695711600"; 
-   d="scan'208";a="774216334"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 02:56:09 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 02:56:08 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 02:56:08 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 02:56:08 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WbcDHeG7pIPii+AWigg3kl7bfXDsYh79Re9JYl6EW/J0N1WJnOwtKQZk9UCzamM+zUe9X3xaI1JPVYL6Wv6gWZsWm4yxF83P8p7DYBM6RFcSUQAuu26yky7ne0iaEFTPQKaFOqzdFrdsMnKQDXarZwssXNwhgvZVhVMoqFcgraSP/vtfb4PVFj1DrrP8rtBQty0+pOiaeplj/aPIVvqpU9ANZ1od5RdfOay7tvHPs3baB8TaCZFgglNqQN2wrQ8iaSQJnf7vjkY8p4BRyR4uiPIJX4xKOie/evyxMDt6ZnIePST4BMXXPuPAj0fhBxWDSEHVfC3bO81Y6gErPyYJdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7ws14NEzp1AjVeufDRTUcpAXPSftzQEMFbbL508O4Fw=;
- b=BUV1q5PQW/QabXvjvNm2dnAdrrEoyhzPYRKtH4BmJYDISx2SZjgUowctY2V4u0LV8+QL5MvA4RsBDvcqqqepogzJTxQpYpTWtqE9ghszs07UCqkR4Tqra4YfITVR0rNxkb+3zF+EEeWRI3H8nwzVPIGONE7EefWsSr1vz+L2wOKBNGiKQmEe5cSDHlwFhP4jWFrTcG5jTZQMxH+dsCaahgwLGtdqf8POMoEyfIs4zzDR8efDljdrRiMnJNxdjH7VZhnPXKH96qC5Be3JRUfwFfdUgfjpGMp95iRnGEoQma0kgE9OFw9L957EE3/uwvEfLVIV6YSq3QrRm7UYGNYgIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by CO6PR11MB5635.namprd11.prod.outlook.com (2603:10b6:5:35f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
- 2023 10:56:06 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 10:56:06 +0000
-Message-ID: <50b9684c-e018-4e1c-9aac-67e0ffd9bc27@intel.com>
-Date:   Mon, 4 Dec 2023 18:58:40 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 03/12] iommu: Remove unrecoverable fault data
-Content-Language: en-US
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-CC:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yan Zhao <yan.y.zhao@intel.com>, <iommu@lists.linux.dev>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
- <20231115030226.16700-4-baolu.lu@linux.intel.com>
-From:   Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <20231115030226.16700-4-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0051.apcprd02.prod.outlook.com
- (2603:1096:4:54::15) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+        Mon, 4 Dec 2023 05:59:48 -0500
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A36100
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:59:51 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d74186170fso15712197b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 02:59:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701687591; x=1702292391; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y8dkNJZmgkudX4QZPlv1ILHsvPj3tnDoTM3txLJEL3E=;
+        b=SU7IpRlbhdN8Wgc4Ys8AcHegI+wyxhO1ibtTVNwpfiGgdHsjasiqd8kMMDyHGcAnk7
+         U/4bsF78TofFKBTN4z3sNygVG52rjSHGq8n42aONh85EMb3ZU+1O7tdjtqA+gai75svC
+         lHCjTTxdRkZe1Jyp/KcLS9ajhr2tuMphq+eGDnKPQFAP0XiCcvzBbkR7JCGYCrb1BSue
+         lOjImL3Da+pPM5NKV172FVKh4Ta3AZmr2Ok4dKKj+bhpxyEkIIj75kDCl7AjYgGd1xB5
+         TNIy/q3B2aed7h83CbSaVJ0G+CxAzZOeuXyP0B9LmnEdjZ0A8QsjBgy7T6v93MGiuXb5
+         9dLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701687591; x=1702292391;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y8dkNJZmgkudX4QZPlv1ILHsvPj3tnDoTM3txLJEL3E=;
+        b=MT+FsG9IDOZFVTtwXjHUpaNRKZEz3o0prbR+Q0oMz2YMuUddqQvv84lJkVUcKcD66c
+         /kSKIfDzJLq2XwwiE6YWLNKHB/aRBY/0NVCOFDeBQ4UQry5hG3DRO1yVJ6sSEV1OCysE
+         39UyABsyyvO3P9KVBUFVJOxi/6Xc2tCZ+OUkeA2FtOAqD45cI2jxlXcDhP/q1iMhHjOd
+         7hoFhFlqEI9CQbUyfeTCHWKAe19Tmc+gGu5jBc5BqZHtDaw9zenLrK6WG3t6EQSqrAS7
+         hshqhfRUdl8Tdcr845o/rn7sWY0oNbXYLcu7/m/rEpNahEaGMd03HH+jfJbgAqrfdd+7
+         4D6A==
+X-Gm-Message-State: AOJu0YwT4RdPDBEAtlRQQSzBBvT0CGLgQqGkOVh9607PQlCkwkxCgHwu
+        MZx5Zhqm+YjLB4irPcaHbss/pMqeJbTSLLgoZKz+oA==
+X-Google-Smtp-Source: AGHT+IFgOWlc6uLr3ABma0Ztx6ruoa8pJKHw5PH4Q3fPtSjH4+YzgEy91ioUAfZzGo3eslogg8aJ09lISiVh3tDeShk=
+X-Received: by 2002:a81:bd4a:0:b0:5d7:545e:3bd3 with SMTP id
+ n10-20020a81bd4a000000b005d7545e3bd3mr2365817ywk.25.1701687590977; Mon, 04
+ Dec 2023 02:59:50 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|CO6PR11MB5635:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9f5a8f7e-58fb-4765-37a3-08dbf4b79d99
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uB3Ehz357cdsBrxA4djae/xmjVAHIjIy9PYIdUcoJobJxYE9OVZvD1ZKVOg6ct6PDI9ntfBPw5hTlwV6x0LACmLw+56eIpdGXRftWIawgzET4eJnrakXoMH6zr4EtA3gsCe7en7elIxAyvtlJlx7ORyzG6J0Dz9ZJ7FDqW2Ac0O0ewexrj/m6vPTNKHZ6YcEZ2RkaWxsgGIjbSr+RnrMbfrAk0lEGguCZzr1dIrs+a75cYkatYNCNcuAEq3fBV0F4OlugfEvC7lHQUBCg7onRDbNf5OArTri/7kcRbhjH6oC9e2VFjg3odfpTkUKYePJo13EKUKxsgcv7gYHdyb1abK2LXIpj2AFO416MxGff4YoZ5UhJ+0SdO1Odqa21OY5RFhxh0ndmfUQ25iZ2ZoCQ/WDUgZsS17Gebc5cbsW6WPuLzEWK41uH+1MrW6ZHZFKnqpHAjvk82+l70wXVazdgHacoV7Y20yeeYW3H9jNsrkMByr52f0MqpbSJf2CJ19yLo3bLHyLI2SgfcDajZCTr23vi8ZtfUQ/0j/JkT85JoXWtsJdKOPkmUEKeZLYJXvg9xCSSEMRMKepokDdvHznVUSgOdMCaZPQaGoxdyHsgZp7yGWu1pwfI7jIclLT71csHWq2iXQeW/B5ZcL/XPyImbyGtEV1Vwuph+pO7HaLXAjBtAD5PiH+wK5iTuEL4lrS
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(366004)(346002)(230922051799003)(230273577357003)(230173577357003)(186009)(64100799003)(451199024)(1800799012)(31696002)(5660300002)(7416002)(86362001)(4326008)(8676002)(8936002)(2906002)(41300700001)(36756003)(2616005)(6512007)(6506007)(82960400001)(53546011)(83380400001)(6486002)(478600001)(26005)(6666004)(38100700002)(31686004)(110136005)(316002)(54906003)(66476007)(66556008)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T2JteGlQbUJnTFdZTWJYb21MNk1WckFwbk9Wd1lUWHNqQzVZbGJVcmVvWW1x?=
- =?utf-8?B?c0pwZ0V3ZmZNR2VBMlJkZDRTV2h2ZFo0RHJPK2RPT0wyMmV1VncvbUYrTVZB?=
- =?utf-8?B?WFhKUlFCZSsrOUlwMkZNNE5jaWVNaXNjbm5wU0NLWlFmUHArcCsyNWlGTkli?=
- =?utf-8?B?UWt4NUJ4eEE2MGpyaFh0dU9TRjQrZXF4Ri8reGovVWtld1A0dzFPckNMejRM?=
- =?utf-8?B?NVpSWWFXZllLaG1ySkZ6ZWFXSUZTK1dYbTZRU3hPdzJIQlJHRnQzWjRybElW?=
- =?utf-8?B?TkdMVnFMN0pETStPazZvYm9ZM2E3WnFaU1FkdS9hWTNZZ2liVU1rQzBmanBv?=
- =?utf-8?B?L041eHlTU1V0bHlTejNYdGJUeTYyRzRkUUZpWGIyT0NyYnp0QTg2RlBlSnRw?=
- =?utf-8?B?TEY2b1NwMnh1MkhVbnNrZnBibWRRUFZIV0V0RXRKUGllYUhIMzlvT1hOQXdJ?=
- =?utf-8?B?eTloODFPazN6by8rUmhnQVlnRllTbWhlUEp3MXZ0QUpvN0VYQjVoUWQvSkJ4?=
- =?utf-8?B?dTJaVHpGRWVZYWVzdUZON1UvcUM2ODNKbksxTUVzWUliUDI5T2JFTU9ZT2dy?=
- =?utf-8?B?UzlqSzF1TGVsSXBLY3VSem5aUncrSFpkYnpzdUYrRWNsTVhOZmVsK3dnTWRk?=
- =?utf-8?B?MkdUUWJidU5xcW5pRjNwdmhCejREcFR6SWpRd0g2cVZCVXZadzFFbFdqS3gz?=
- =?utf-8?B?VThDVEVnUUlFK3d5eEVuYWh3Wk81a0tjWlNPbTh0ZjFYeTJJVENFemhlU21n?=
- =?utf-8?B?ZjBoSjBZRU9DNzNUNzRBZ0NkOUNwQm1Sc3U0dHF1Si9mazdsdjdoZHRCcGlY?=
- =?utf-8?B?c1pySUgzclgyVlNUdHFYb2oxdmlwVjV3S2llUFBoS0dXV3hNZkk1S2VjYnJo?=
- =?utf-8?B?YVNrL0piRDh1Zk8wSHBhZFBaMS95NXRUUUtKMThaeFZLUmhta1VHdi9mZVVj?=
- =?utf-8?B?SVVxc0dnckdJbVdJQkJuUDBPSGRYa1hMTmNPeUZPZXR6ODNXTDZ5NXpKNGJ3?=
- =?utf-8?B?UDJWWWF5L3VzUDNqT1hCLzZaaXhDN2h2amtzMVFKeWJWRzRIakhxU0NLYlV6?=
- =?utf-8?B?TllDekNoVnFwMHlGdWNTanpPRWlSVzdLNjN5WDlDQ0tya29lM0NCQWJtRG1p?=
- =?utf-8?B?aWNuSGFzcFAwNDhBZHNiVHltRTh1VWZyTWcyL0JocEZxOGZveVBDNysrSm5K?=
- =?utf-8?B?SkJTTmlBR2xmV3RJV2g2Q2JyeU5mOWhhNWpaWkRUcWNLc24xNGZ0UXdIVzdL?=
- =?utf-8?B?K2dDVE94RmF3NmZ4WVBzTmtIcTBWYjd1S1NOakp0ME9GWTNWOGJFam5iemFX?=
- =?utf-8?B?M3k4YWhkSm1RdkJCVUE3TE9pS1N1WHRjUDV2ZC9yeHdieUI5MDZ5Q1VvOSt0?=
- =?utf-8?B?T2hiRlF1R2ZuZEZ2UVU0YzZSc1Z5TVJyc0cwaERKVVZ3cEd1N2VHc0lTMkJB?=
- =?utf-8?B?emNMZGprbE5teG5zNUQ3RVc4Y1F1ZVdUY3EzWGFETmlaNjN1cW8rcVpSSlo0?=
- =?utf-8?B?MGROV3YxeHVmOFpFSHcwdjNhWWVMWUFRSVVXWVBGQVJWUkJGby9TaGhqdUlI?=
- =?utf-8?B?Y01zdERvdm9KZGF5Rk04SnFIb20wQmR2WVo1WG5yZXdCQWFLTnVFblhDNXNq?=
- =?utf-8?B?MlJaVnFhWHBGdkkrMHNCdWNEc0EwblR5bVhhVjZwU080dzFSTFhNUXNYekV0?=
- =?utf-8?B?TStkY0FwTlNOVzBVemJzK2ZxR003eSsxcVphZDcrU3VVVTYvL3Fjc2l5WnRV?=
- =?utf-8?B?LzhGUjM0RFFBQTNhdGRYVzhESlF5ZndmQnlkd1RjOGovTU5yYm84SEpCMis1?=
- =?utf-8?B?YUk2cTZBdlJKM3Btd01mYktzcG5KSTZaVFowZGp5Y3k3YjBCOU9GME1yYVhK?=
- =?utf-8?B?dm9KSWxURUxBVnlYTG5nMWZMK2xaYzF3TG5WNURmMisvbU8xcUJna3RkU1Jo?=
- =?utf-8?B?bXdoRUdBMEhSUmd5NkhVN0loMjdRS3lpRTlwci9OZnpTWExoZU5xY3luMGo4?=
- =?utf-8?B?bkdxWW5KUGVvWG0ySGszc0pYMmFPcUIyNnJTSjlFTG5GbmlaL0YxREFXa09S?=
- =?utf-8?B?akZlL1lrOUdQMytJSlBuaTdHcGFMemgyMnpxWHBCT3J6dCtGakd2WWNjYVNh?=
- =?utf-8?Q?j5H4ZCA0RWpy27yfipc0O5ZA4?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f5a8f7e-58fb-4765-37a3-08dbf4b79d99
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 10:56:06.6311
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 54klkG4HIa9UQJhYcU+7pa7NrQ9XfBoR+L7L8NWPyS9uO0txVuZPvlAYUgVLxvQ75NLBNaIytjxzJbCComBhvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR11MB5635
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230912-msm8909-cpufreq-v1-0-767ce66b544b@kernkonzept.com>
+ <20230912-msm8909-cpufreq-v1-1-767ce66b544b@kernkonzept.com>
+ <CAPDyKFq6U-MR4Bd+GmixYseRECDh142RhydtKbiPd3NHV2g6aw@mail.gmail.com>
+ <ZQGqfMigCFZP_HLA@gerhold.net> <CAPDyKFppdXe1AZo1jm2Bc_ZR18hw5Bmh1x+2P7Obhb_rJ2gc4Q@mail.gmail.com>
+ <ZRcC2IRRv6dtKY65@gerhold.net> <CAPDyKFoiup8KNv=1LFGKDdDLA1pHsdJUgTTWMdgxnikEmReXzg@mail.gmail.com>
+ <ZSg-XtwMxg3_fWxc@gerhold.net> <CAPDyKFoH5EOvRRKy-Bgp_B9B3rf=PUKK5N45s5PNgfBi55PaOQ@mail.gmail.com>
+ <ZWXgFNKgm9QaFuzx@gerhold.net>
+In-Reply-To: <ZWXgFNKgm9QaFuzx@gerhold.net>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 4 Dec 2023 11:59:15 +0100
+Message-ID: <CAPDyKFr3WMZQxFgzn7E7mOtecu-mnfoZ-D051pgGhPV5Eeb5BQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] cpufreq: qcom-nvmem: Handling multiple power domains
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/15 11:02, Lu Baolu wrote:
-> The unrecoverable fault data is not used anywhere. Remove it to avoid
-> dead code.
-> 
-> Suggested-by: Kevin Tian <kevin.tian@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> ---
->   include/linux/iommu.h | 70 +------------------------------------------
->   1 file changed, 1 insertion(+), 69 deletions(-)
-> 
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index c2e2225184cf..81eee1afec72 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -50,69 +50,9 @@ struct iommu_dma_cookie;
->   
->   /* Generic fault types, can be expanded IRQ remapping fault */
->   enum iommu_fault_type {
-> -	IOMMU_FAULT_DMA_UNRECOV = 1,	/* unrecoverable fault */
->   	IOMMU_FAULT_PAGE_REQ,		/* page request fault */
+On Tue, 28 Nov 2023 at 13:42, Stephan Gerhold <stephan@gerhold.net> wrote:
+>
+> Hi Uffe,
+>
+> On Mon, Oct 16, 2023 at 04:47:52PM +0200, Ulf Hansson wrote:
+> > [...]
+> > > > >   - MSM8916 (CPR+RPMPD):
+> > > > >     https://github.com/msm8916-mainline/linux/commit/8880f39108206d7a60a0a8351c0373bddf58657c
+> > > >
+> > > > This looks a bit odd to me. Does a CPU really have four different
+> > > > power-domains, where three of them are performance-domains?
+> > > >
+> > >
+> > > Good question. I think we're largely entering "uncharted territory" with
+> > > these questions, I can just try to answer it the best I can from the
+> > > limited documentation and knowledge I have. :)
+> > >
+> > > The CPU does indeed use four different power domains. There also seem to
+> > > be additional power switches that gate power for some components without
+> > > having to turn off the entire supply.
+> > >
+> > > I'll list them twice from two points of view: Once mapping component ->
+> > > power domain, then again showing each power domain separately to make it
+> > > more clear. At the end I also want to make clear that MSM8909 (with the
+> > > "single" power domain) is actually exactly the same SoC design, just
+> > > with different regulators supplying the power domains.
+> > >
+> > > It's totally fine if you just skim over it. I'm listing it in detail
+> > > also as reference for myself. :D
+> > >
+> > > # Components
+> > >  - SoC
+> > >    - CPU subsystem ("APPS")
+> > >      - CPU cluster
+> > >        - 4x CPU core (logic and L1 cache) -> VDD_APC
+> > >        - Shared L2 cache
+> > >          - Logic -> VDD_APC
+> > >          - Memory -> VDD_MX
+> > >      - CPU clock controller (logic) -> VDD_CX
+> > >        - Provides CPU frequency from different clock sources
+> > >        - L2 cache runs at 1/2 of CPU frequency
+> > >        => Both VDD_APC and VDD_MX must be scaled based on frequency
+> > >      - CPU PLL clock source
+> > >        - Generates the higher (GHz) CPU frequencies
+> > >        - Logic (?, unsure) -> VDD_CX
+> > >        - ??? -> VDD_SR2_APPS_PLL
+> > >        => VDD_CX must be scaled based on PLL frequency
+> > >
+> > > # Power Domains
+> > > ## VDD_APC
+> > >  - dedicated for CPU
+> > >  - powered off completely in deepest cluster cpuidle state
+> > >
+> > >  - per-core power switch (per-core cpuidle)
+> > >    - CPU logic
+> > >    - L1 cache controller/logic and maybe memory(?, unsure)
+> > >  - shared L2 cache controller/logic
+> > >
+> > >  => must be scaled based on CPU frequency
+> > >
+> > > ## VDD_MX
+> > >  - global SoC power domain for "on-chip memories"
+> > >  - always on, reduced to minimal voltage when entire SoC is idle
+> > >
+> > >  - power switch (controlled by deepest cluster cpuidle state?, unsure)
+> > >    - L2 cache memory
+> > >
+> > >  => must be scaled based on L2 frequency (=> 1/2 CPU frequency)
+> > >
+> > > ## VDD_CX
+> > >  - global SoC power domain for "digital logic"
+> > >  - always on, reduced to minimal voltage when entire SoC is idle
+> > >  - voting for VDD_CX in the RPM firmware also affects VDD_MX performance
+> > >    state (firmware implicitly sets VDD_MX >= VDD_CX)
+> > >
+> > >  - CPU clock controller logic, CPU PLL logic(?, unsure)
+> > >
+> > >  => must be scaled based on CPU PLL frequency
+> > >
+> > > ## VDD_SR2_APPS_PLL
+> > >  - global SoC power domain for CPU clock PLLs
+> > >  - on MSM8916: always on with constant voltage
+> > >
+> > >  => ignored in Linux at the moment
+> > >
+> > > # Power Domain Regulators
+> > > These power domains are literally input pins on the SoC chip. In theory
+> > > one could connect any suitable regulator to each of those. In practice
+> > > there are just a couple of standard reference designs that everyone
+> > > uses:
+> > >
+> > > ## MSM8916 (SoC) + PM8916 (PMIC)
+> > > We need to scale 3 power domains together with cpufreq:
+> > >
+> > >  - VDD_APC (CPU logic) = &pm8916_spmi_s2 (via CPR)
+> > >  - VDD_MX  (L2 memory) = &pm8916_l3 (via RPMPD: MSM8916_VDDMX)
+> > >  - VDD_CX  (CPU PLL)   = &pm8916_s1 (via RPMPD: MSM8916_VDDCX)
+> > >
+> > > ## MSM8909 (SoC) + PM8909 (PMIC)
+> > > We need to scale 1 power domain together with cpufreq:
+> > >
+> > >  - VDD_APC = VDD_CX    = &pm8909_s1 (via RPMPD: MSM8909_VDDCX)
+> > >    (CPU logic, L2 logic and CPU PLL)
+> > > (- VDD_MX  (L2 memory) = &pm8909_l3 (RPM firmware enforces VDD_MX >= VDD_CX))
+> > >
+> > > There is implicit magic in the RPM firmware here that saves us from
+> > > scaling VDD_MX. VDD_CX/APC are the same power rail.
+> > >
+> > > ## MSM8909 (SoC) + PM8916 (PMIC)
+> > > When MSM8909 is paired with PM8916 instead of PM8909, the setup is
+> > > identical to MSM8916+PM8916. We need to scale 3 power domains.
+> > >
+> > > > In a way it sounds like an option could be to hook up the cpr to the
+> > > > rpmpd:s instead (possibly even set it as a child-domains to the
+> > > > rpmpd:s), assuming that is a better description of the HW, which it
+> > > > may not be, of course.
+> > >
+> > > Hm. It's definitely an option. I must admit I haven't really looked
+> > > much at child-domains so far, so spontaneously I'm not sure about
+> > > the implications, for both the abstract hardware description and
+> > > the implementation.
+> > >
+> > > There seems to be indeed some kind of relation between MX <=> CX/APC:
+> > >
+> > >  - When voting for CX in the RPM firmware, it will always implicitly
+> > >    adjust the MX performance state to be MX >= CX.
+> > >
+> > >  - When scaling APC up, we must increase MX before APC.
+> > >  - When scaling APC down, we must decrease MX after APC.
+> > >  => Clearly MX >= APC. Not in terms of raw voltage, but at least for the
+> > >     abstract performance state.
+> > >
+> > > Is this some kind of parent-child relationship between MX <=> CX and
+> > > MX <=> APC?
+> >
+> > Thanks for sharing the above. Yes, to me, it looks like there is a
+> > parent/child-domain relationship that could be worth describing/using.
+> >
+> > >
+> > > If yes, maybe we could indeed bind MX to the CPR genpd somehow. They use
+> > > different performance state numbering, so we need some kind of
+> > > translation. I'm not entirely sure how that would be described.
+> >
+> > Both the power-domain and the required-opps DT bindings
+> > (Documentation/devicetree/bindings/opp/opp-v2-base.yaml) are already
+> > allowing us to describe these kinds of hierarchical
+> > dependencies/layouts.
+> >
+> > In other words, to scale performance for a child domain, the child may
+> > rely on that we scale performance for the parent domain too. This is
+> > already supported by genpd and through the opp library - so it should
+> > just work. :-)
+> >
+>
+> I'm getting back to the "multiple power domains" case of MSM8916 now, as
+> discussed above. I've tried modelling MX as parent genpd of CPR, to
+> avoid having to scale multiple power domains as part of cpufreq.
+>
+> Basically, it looks like the following:
+>
+>         cpr: power-controller@b018000 {
+>                 compatible = "qcom,msm8916-cpr", "qcom,cpr";
+>                 reg = <0x0b018000 0x1000>;
+>                 /* ... */
+>                 #power-domain-cells = <0>;
+>                 operating-points-v2 = <&cpr_opp_table>;
+>                 /* Supposed to be parent domain, not consumer */
+>                 power-domains = <&rpmpd MSM8916_VDDMX_AO>;
+>
+>                 cpr_opp_table: opp-table {
+>                         compatible = "operating-points-v2-qcom-level";
+>
+>                         cpr_opp1: opp1 {
+>                                 opp-level = <1>;
+>                                 qcom,opp-fuse-level = <1>;
+>                                 required-opps = <&rpmpd_opp_svs_soc>;
+>                         };
+>                         cpr_opp2: opp2 {
+>                                 opp-level = <2>;
+>                                 qcom,opp-fuse-level = <2>;
+>                                 required-opps = <&rpmpd_opp_nom>;
+>                         };
+>                         cpr_opp3: opp3 {
+>                                 opp-level = <3>;
+>                                 qcom,opp-fuse-level = <3>;
+>                                 required-opps = <&rpmpd_opp_super_turbo>;
+>                         };
+>                 };
+>         };
+>
+> As already discussed [1] it's a bit annoying that the genpd core
+> attaches the power domain as consumer by default, but I work around this
+> by calling of_genpd_add_subdomain() followed by dev_pm_domain_detach()
+> in the CPR driver.
 
-a nit, do you kno why this enum was starting from 1? Should it still
-start from 1 after deleting UNRECOV?
+Yep, that seems reasonable to me.
 
->   };
->   
-> -enum iommu_fault_reason {
-> -	IOMMU_FAULT_REASON_UNKNOWN = 0,
-> -
-> -	/* Could not access the PASID table (fetch caused external abort) */
-> -	IOMMU_FAULT_REASON_PASID_FETCH,
-> -
-> -	/* PASID entry is invalid or has configuration errors */
-> -	IOMMU_FAULT_REASON_BAD_PASID_ENTRY,
-> -
-> -	/*
-> -	 * PASID is out of range (e.g. exceeds the maximum PASID
-> -	 * supported by the IOMMU) or disabled.
-> -	 */
-> -	IOMMU_FAULT_REASON_PASID_INVALID,
-> -
-> -	/*
-> -	 * An external abort occurred fetching (or updating) a translation
-> -	 * table descriptor
-> -	 */
-> -	IOMMU_FAULT_REASON_WALK_EABT,
-> -
-> -	/*
-> -	 * Could not access the page table entry (Bad address),
-> -	 * actual translation fault
-> -	 */
-> -	IOMMU_FAULT_REASON_PTE_FETCH,
-> -
-> -	/* Protection flag check failed */
-> -	IOMMU_FAULT_REASON_PERMISSION,
-> -
-> -	/* access flag check failed */
-> -	IOMMU_FAULT_REASON_ACCESS,
-> -
-> -	/* Output address of a translation stage caused Address Size fault */
-> -	IOMMU_FAULT_REASON_OOR_ADDRESS,
-> -};
-> -
-> -/**
-> - * struct iommu_fault_unrecoverable - Unrecoverable fault data
-> - * @reason: reason of the fault, from &enum iommu_fault_reason
-> - * @flags: parameters of this fault (IOMMU_FAULT_UNRECOV_* values)
-> - * @pasid: Process Address Space ID
-> - * @perm: requested permission access using by the incoming transaction
-> - *        (IOMMU_FAULT_PERM_* values)
-> - * @addr: offending page address
-> - * @fetch_addr: address that caused a fetch abort, if any
-> - */
-> -struct iommu_fault_unrecoverable {
-> -	__u32	reason;
-> -#define IOMMU_FAULT_UNRECOV_PASID_VALID		(1 << 0)
-> -#define IOMMU_FAULT_UNRECOV_ADDR_VALID		(1 << 1)
-> -#define IOMMU_FAULT_UNRECOV_FETCH_ADDR_VALID	(1 << 2)
-> -	__u32	flags;
-> -	__u32	pasid;
-> -	__u32	perm;
-> -	__u64	addr;
-> -	__u64	fetch_addr;
-> -};
-> -
->   /**
->    * struct iommu_fault_page_request - Page Request data
->    * @flags: encodes whether the corresponding fields are valid and whether this
-> @@ -142,19 +82,11 @@ struct iommu_fault_page_request {
->   /**
->    * struct iommu_fault - Generic fault data
->    * @type: fault type from &enum iommu_fault_type
-> - * @padding: reserved for future use (should be zero)
-> - * @event: fault event, when @type is %IOMMU_FAULT_DMA_UNRECOV
->    * @prm: Page Request message, when @type is %IOMMU_FAULT_PAGE_REQ
-> - * @padding2: sets the fault size to allow for future extensions
->    */
->   struct iommu_fault {
->   	__u32	type;
-> -	__u32	padding;
-> -	union {
-> -		struct iommu_fault_unrecoverable event;
-> -		struct iommu_fault_page_request prm;
-> -		__u8 padding2[56];
-> -	};
-> +	struct iommu_fault_page_request prm;
->   };
->   
->   /**
+>
+> The actual scaling works fine, performance states of the MX power domain
+> are updated when CPR performance state. I added some debug prints and it
+> looks e.g. as follows (CPR is the power-controller@):
+>
+>     [   24.498218] PM: mx_ao set performance state 6
+>     [   24.498788] PM: power-controller@b018000 set performance state 3
+>     [   24.511025] PM: mx_ao set performance state 3
+>     [   24.511526] PM: power-controller@b018000 set performance state 1
+>     [   24.521189] PM: mx_ao set performance state 4
+>     [   24.521660] PM: power-controller@b018000 set performance state 2
+>     [   24.533183] PM: mx_ao set performance state 6
+>     [   24.533535] PM: power-controller@b018000 set performance state 3
+>
+> There is one remaining problem here: Consider e.g. the switch from CPR
+> performance state 3 -> 1. In both cases the parent genpd state is set
+> *before* the child genpd. When scaling down, the parent genpd state must
+> be reduced *after* the child genpd. Otherwise, we can't guarantee that
+> the parent genpd state is always >= of the child state.
 
--- 
-Regards,
-Yi Liu
+Good point!
+
+>
+> In the OPP core, the order of such operations is always chosen based on
+> whether we are scaling up or down. When scaling up, power domain states
+> are set before the frequency is changed, and the other way around for
+> scaling down.
+>
+> Is this something you could imagine changing in the GENPD core, either
+> unconditionally for everyone, or as an option?
+
+This sounds like a generic problem that we need to fix for genpd. So
+for everyone.
+
+>
+> I tried to hack this in for a quick test and came up with the following
+> (the diff is unreadable so I'll just post the entire changed
+> (_genpd_set_performance_state() function). Admittedly it's a bit ugly.
+>
+> With these changes the sequence from above looks more like:
+>
+>     [   22.374555] PM: mx_ao set performance state 6
+>     [   22.375175] PM: power-controller@b018000 set performance state 3
+>     [   22.424661] PM: power-controller@b018000 set performance state 1
+>     [   22.425169] PM: mx_ao set performance state 3
+>     [   22.434932] PM: mx_ao set performance state 4
+>     [   22.435331] PM: power-controller@b018000 set performance state 2
+>     [   22.461197] PM: mx_ao set performance state 6
+>     [   22.461968] PM: power-controller@b018000 set performance state 3
+>
+> Which is correct now.
+>
+> Let me know if you have any thoughts about this. :-)
+
+Makes sense! Please post the below as a formal patch so I can review
+and test it!
+
+Kind regards
+Uffe
+
+>
+> Thanks for taking the time to discuss this!
+> Stephan
+>
+> [1]: https://lore.kernel.org/linux-pm/CAPDyKFq+zsoeF-4h5TfT4Z+S46a501_pUq8y2c1x==Tt6EKBGA@mail.gmail.com/
+>
+> static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+>                                         unsigned int state, int depth);
+>
+> static void _genpd_rollback_parent_state(struct gpd_link *link, int depth)
+> {
+>         struct generic_pm_domain *parent = link->parent;
+>         int parent_state;
+>
+>         genpd_lock_nested(parent, depth + 1);
+>
+>         parent_state = link->prev_performance_state;
+>         link->performance_state = parent_state;
+>
+>         parent_state = _genpd_reeval_performance_state(parent, parent_state);
+>         if (_genpd_set_performance_state(parent, parent_state, depth + 1)) {
+>                 pr_err("%s: Failed to roll back to %d performance state\n",
+>                        parent->name, parent_state);
+>         }
+>
+>         genpd_unlock(parent);
+> }
+>
+> static int _genpd_set_parent_state(struct generic_pm_domain *genpd,
+>                                    struct gpd_link *link,
+>                                    unsigned int state, int depth)
+> {
+>         struct generic_pm_domain *parent = link->parent;
+>         int parent_state, ret;
+>
+>         /* Find parent's performance state */
+>         ret = genpd_xlate_performance_state(genpd, parent, state);
+>         if (unlikely(ret < 0))
+>                 return ret;
+>
+>         parent_state = ret;
+>
+>         genpd_lock_nested(parent, depth + 1);
+>
+>         link->prev_performance_state = link->performance_state;
+>         link->performance_state = parent_state;
+>         parent_state = _genpd_reeval_performance_state(parent,
+>                                                 parent_state);
+>         ret = _genpd_set_performance_state(parent, parent_state, depth + 1);
+>         if (ret)
+>                 link->performance_state = link->prev_performance_state;
+>
+>         genpd_unlock(parent);
+>
+>         return ret;
+> }
+>
+> static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+>                                         unsigned int state, int depth)
+> {
+>         struct gpd_link *link = NULL;
+>         int ret;
+>
+>         if (state == genpd->performance_state)
+>                 return 0;
+>
+>         /* When scaling up, propagate to parents first in normal order */
+>         if (state > genpd->performance_state) {
+>                 list_for_each_entry(link, &genpd->child_links, child_node) {
+>                         ret = _genpd_set_parent_state(genpd, link, state, depth);
+>                         if (ret)
+>                                 goto rollback_parents_up;
+>                 }
+>         }
+>
+>         if (genpd->set_performance_state) {
+>                 pr_err("%s set performance state %d\n", genpd->name, state);
+>                 ret = genpd->set_performance_state(genpd, state);
+>                 if (ret) {
+>                         if (link)
+>                                 goto rollback_parents_up;
+>                         return ret;
+>                 }
+>         }
+>
+>         /* When scaling down, propagate to parents after in reverse order */
+>         if (state < genpd->performance_state) {
+>                 list_for_each_entry_reverse(link, &genpd->child_links, child_node) {
+>                         ret = _genpd_set_parent_state(genpd, link, state, depth);
+>                         if (ret)
+>                                 goto rollback_parents_down;
+>                 }
+>         }
+>
+>         genpd->performance_state = state;
+>         return 0;
+>
+> rollback_parents_up:
+>         list_for_each_entry_continue_reverse(link, &genpd->child_links, child_node)
+>                 _genpd_rollback_parent_state(link, depth);
+>         return ret;
+> rollback_parents_down:
+>         list_for_each_entry_continue(link, &genpd->child_links, child_node)
+>                 _genpd_rollback_parent_state(link, depth);
+>         return ret;
+> }
+>
