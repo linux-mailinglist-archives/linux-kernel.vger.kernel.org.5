@@ -2,52 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8E18035B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAEB98035B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 14:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344843AbjLDN6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 08:58:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
+        id S1344780AbjLDN6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 08:58:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbjLDN6a (ORCPT
+        with ESMTP id S233871AbjLDN6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 08:58:30 -0500
 Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7A290;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA8AD8;
         Mon,  4 Dec 2023 05:58:36 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SkQHW2JSrz4f3jXf;
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SkQHW5799z4f3jYX;
         Mon,  4 Dec 2023 21:58:31 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 78A831A0195;
+        by mail.maildlp.com (Postfix) with ESMTP id D952A1A0509;
         Mon,  4 Dec 2023 21:58:33 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgDn6xEH221loLjkCg--.26902S4;
+        by APP1 (Coremail) with SMTP id cCh0CgDn6xEH221loLjkCg--.26902S5;
         Mon, 04 Dec 2023 21:58:33 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     song@kernel.org, xni@redhat.com, yukuai3@huawei.com, neilb@suse.com
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH v4 md-fixes 0/3] md: fix stopping sync thread
-Date:   Mon,  4 Dec 2023 21:57:29 +0800
-Message-Id: <20231204135732.3647886-1-yukuai1@huaweicloud.com>
+Subject: [PATCH v4 md-fixes 1/3] md: fix missing flush of sync_work
+Date:   Mon,  4 Dec 2023 21:57:30 +0800
+Message-Id: <20231204135732.3647886-2-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231204135732.3647886-1-yukuai1@huaweicloud.com>
+References: <20231204135732.3647886-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDn6xEH221loLjkCg--.26902S4
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5_7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2js
-        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
-        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
-        CFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-TRANSID: cCh0CgDn6xEH221loLjkCg--.26902S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr18WF13Cr18Cr4kJw13Jwb_yoW8XF4rpa
+        yfAa45ArW8Aay5tryUGa4qvFyrWw18t3yDtrW3W345JF1Yqr45G3WY93WjqFyDJF93Xwnx
+        Za10ya9xZa40vr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9v14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
+        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
+        vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
+        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxC20s
+        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+        JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
+        j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbec_DUUUUU==
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
@@ -60,28 +65,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Changes in v4:
- - add fix tag in patch 2;
- - rework patch 3, as suggested by Song Liu;
+Commit ac619781967b ("md: use separate work_struct for md_start_sync()")
+use a new sync_work to replace del_work, however, stop_sync_thread() and
+__md_stop_writes() was trying to wait for sync_thread to be done, hence
+they should switch to use sync_work as well.
 
-Changes in v3:
-- split bugfix patches for md-fixes
+Noted that md_start_sync() from sync_work will grab 'reconfig_mutex',
+hence other contex can't held the same lock to flush work, and this will
+be fixed in later patches.
 
-Changes in v2:
- - add patch 2;
- - split some patches from v1 that will be sent separately;
- - rework some commit message;
- - rework patch 5;
+Fixes: ac619781967b ("md: use separate work_struct for md_start_sync()")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Acked-by: Xiao Ni <xni@redhat.com>
+---
+ drivers/md/md.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yu Kuai (3):
-  md: fix missing flush of sync_work
-  md: don't leave 'MD_RECOVERY_FROZEN' in error path of
-    md_set_readonly()
-  md: fix stopping sync thread
-
- drivers/md/md.c | 112 +++++++++++++++++++++---------------------------
- 1 file changed, 50 insertions(+), 62 deletions(-)
-
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index c94373d64f2c..5640a948086b 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -4857,7 +4857,7 @@ static void stop_sync_thread(struct mddev *mddev)
+ 		return;
+ 	}
+ 
+-	if (work_pending(&mddev->del_work))
++	if (work_pending(&mddev->sync_work))
+ 		flush_workqueue(md_misc_wq);
+ 
+ 	set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+@@ -6265,7 +6265,7 @@ static void md_clean(struct mddev *mddev)
+ static void __md_stop_writes(struct mddev *mddev)
+ {
+ 	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+-	if (work_pending(&mddev->del_work))
++	if (work_pending(&mddev->sync_work))
+ 		flush_workqueue(md_misc_wq);
+ 	if (mddev->sync_thread) {
+ 		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
 -- 
 2.39.2
 
