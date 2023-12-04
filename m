@@ -2,45 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AA2803E78
+	by mail.lfdr.de (Postfix) with ESMTP id 30EAC803E77
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjLDTev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
+        id S232766AbjLDTet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:34:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjLDTes (ORCPT
+        with ESMTP id S229509AbjLDTes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 14:34:48 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9FBCE
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:34:54 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD56C1
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:34:53 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7748F1FE6D;
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8DF80220FD;
         Mon,  4 Dec 2023 19:34:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701718492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EqcJTAjZFB8lQHDKYDjIZchVKot1dBAP9whijzHZRBs=;
+        b=3aoiT3paks0mcXiEeezN/xPw9jv7Di3tra3+7n/QDct0IcBebFNeztkLnzZNR1eA+r+5P7
+        5HTYlXZjd6w/d/4hPiYwAl8U4a6RDNwPAenVha70NBnhh7hjIhw5Mnrb5mEfP6x/vm7DcI
+        RvtCEN+PAXA5BPRclQuH0Zu5ugFOvzQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701718492;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EqcJTAjZFB8lQHDKYDjIZchVKot1dBAP9whijzHZRBs=;
+        b=LJvwh73CRk0ogt5DyHZYk9KKPNPbooLArhcWhOV7Z8vEi3KnNjT7llf/nkqXmRF2A2S/E1
+        I9N7BuX+zof3jCDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 53667139AA;
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 70C1D13AC1;
         Mon,  4 Dec 2023 19:34:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
         by imap1.dmz-prg2.suse.org with ESMTPSA
-        id x9KfE9wpbmUPMwAAD6G6ig
+        id KHI2G9wpbmUPMwAAD6G6ig
         (envelope-from <vbabka@suse.cz>); Mon, 04 Dec 2023 19:34:52 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH 0/4] SLUB: cleanup hook processing
-Date:   Mon, 04 Dec 2023 20:34:39 +0100
-Message-Id: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
+Date:   Mon, 04 Dec 2023 20:34:40 +0100
+Subject: [PATCH 1/4] mm/slub: fix bulk alloc and free stats
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAM8pbmUC/x3MQQqAIBBA0avErBtIyxZdJVqYjTkUGg5FEN09a
- fkW/z8glJkEhuqBTBcLp1ig6gpcsHEl5KUYdKNbpZsOZT9ndDvZeB4YUtoEvfGmU622vXJQwiO
- T5/ufjtP7fnAR5D9kAAAA
+Message-Id: <20231204-slub-cleanup-hooks-v1-1-88b65f7cd9d5@suse.cz>
+References: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
+In-Reply-To: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
 To:     Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
@@ -54,73 +71,94 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.12.4
-X-Spamd-Bar: ++++++++
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=none;
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [8.39 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spamd-Result: default: False [0.20 / 50.00];
          ARC_NA(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
          FROM_HAS_DN(0.00)[];
          TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
          FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
          TAGGED_RCPT(0.00)[];
          MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(1.20)[suse.cz];
-         R_SPF_SOFTFAIL(4.60)[~all];
-         BAYES_HAM(-0.00)[38.82%];
          NEURAL_HAM_LONG(-1.00)[-1.000];
+         BAYES_HAM(-0.00)[15.64%];
          RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
          RCPT_COUNT_TWELVE(0.00)[14];
          DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
          FUZZY_BLOCKED(0.00)[rspamd.com];
          FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
          MIME_TRACE(0.00)[0:+];
          FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,gmail.com,google.com,kvack.org,vger.kernel.org,googlegroups.com,suse.cz];
          RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
          SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 8.39
-X-Rspamd-Queue-Id: 7748F1FE6D
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Score: 0.20
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a spin-off of preparatory patches from the percpu array series
-[1] as they are IMHO useful on their own and simple enough to target
-6.8, while the percpu array is still a RFC.
+The SLUB sysfs stats enabled CONFIG_SLUB_STATS have two deficiencies
+identified wrt bulk alloc/free operations:
 
-To avoid non-trivial conflict, the series is also rebased on top of the
-SLAB removal branch. [2]
+- Bulk allocations from cpu freelist are not counted. Add the
+  ALLOC_FASTPATH counter there.
 
-[1] https://lore.kernel.org/all/20231129-slub-percpu-caches-v3-0-6bcf536772bc@suse.cz/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/slab.git/log/?h=slab/for-6.8/slab-removal
+- Bulk fastpath freeing will count a list of multiple objects with a
+  single FREE_FASTPATH inc. Add a stat_add() variant to count them all.
 
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
-Vlastimil Babka (4):
-      mm/slub: fix bulk alloc and free stats
-      mm/slub: introduce __kmem_cache_free_bulk() without free hooks
-      mm/slub: handle bulk and single object freeing separately
-      mm/slub: free KFENCE objects in slab_free_hook()
+ mm/slub.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
- mm/slub.c | 109 +++++++++++++++++++++++++++++++++++++++++---------------------
- 1 file changed, 73 insertions(+), 36 deletions(-)
----
-base-commit: 4a38e93b3a7e6669c44929fed918b1494e902dd7
-change-id: 20231204-slub-cleanup-hooks-f5f54132a61c
+diff --git a/mm/slub.c b/mm/slub.c
+index 3f8b95757106..d7b0ca6012e0 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -396,6 +396,14 @@ static inline void stat(const struct kmem_cache *s, enum stat_item si)
+ #endif
+ }
+ 
++static inline
++void stat_add(const struct kmem_cache *s, enum stat_item si, int v)
++{
++#ifdef CONFIG_SLUB_STATS
++	raw_cpu_add(s->cpu_slab->stat[si], v);
++#endif
++}
++
+ /*
+  * The slab lists for all objects.
+  */
+@@ -4268,7 +4276,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+ 
+ 		local_unlock(&s->cpu_slab->lock);
+ 	}
+-	stat(s, FREE_FASTPATH);
++	stat_add(s, FREE_FASTPATH, cnt);
+ }
+ #else /* CONFIG_SLUB_TINY */
+ static void do_slab_free(struct kmem_cache *s,
+@@ -4545,6 +4553,7 @@ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+ 		c->freelist = get_freepointer(s, object);
+ 		p[i] = object;
+ 		maybe_wipe_obj_freeptr(s, p[i]);
++		stat(s, ALLOC_FASTPATH);
+ 	}
+ 	c->tid = next_tid(c->tid);
+ 	local_unlock_irqrestore(&s->cpu_slab->lock, irqflags);
 
-Best regards,
 -- 
-Vlastimil Babka <vbabka@suse.cz>
+2.43.0
 
