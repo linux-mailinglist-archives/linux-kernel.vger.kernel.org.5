@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67538802A1F
+	by mail.lfdr.de (Postfix) with ESMTP id BE49B802A20
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 03:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229793AbjLDCDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Dec 2023 21:03:03 -0500
+        id S234327AbjLDCDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Dec 2023 21:03:05 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234282AbjLDCDC (ORCPT
+        with ESMTP id S234281AbjLDCDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 3 Dec 2023 21:03:02 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B32811A
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 18:03:07 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bdec453c8so2486932e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 18:03:07 -0800 (PST)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E07F4FD
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 18:03:08 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50be10acaf9so1913120e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 18:03:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701655385; x=1702260185; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701655387; x=1702260187; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ObBx9TWLrIBpB0H9q8V9qBSHqmx+qoGHKzq0yJDmTtU=;
-        b=Wj/bQjc03wNcfC2zoBnv5PekO8ZphTPcnUhI9qlWfGsO9wnUdpuiMy9zk7OyeGMf2+
-         2iwd8h05WEoM4UxRAC5IMpjVkE5WhnQ9CQkLP67MdFhDH5GUZes8rE5BawILvODUEpUr
-         +ICV0JifG41DKT/2tJoP1n6c9PwCv0OVhDogMT+H9vi4yV7ndPw7cLCzMMMXOwGKxU25
-         WT0+KPf3GyvCYNDhsNU78SV0IfCOUrSroSP6s+m43JzKZn26UfWuRhTVsZ21f2OS4eTR
-         HyuQ6H/8M7WX/UTLDDbpVeH4X4V/LHpky/n3+HJ+h/X7W8Hx+MFWoAEyEcK+HPrZDUNS
-         Mgng==
+        bh=nU+isl/cmvOumBeEJVaIP24Ow/f7bjobvPWRPynQaf8=;
+        b=M56yn2aTw7h/zSNqrgKdfY7GEi7xsJoYZnVw79rEcs2p292xNgDpx7WosbEGZdbJVL
+         eFi0fk+5kHsFcOhoOvqnYrD3gJ+oHuEUoU1JgUQRRdSxtskBPpsGQS3j/ojeMulZgbiw
+         zhI6A829rMUYxAdTfuaPZEvyOIIkF24i4JVYTmMgjJlKtwxmUgquVBsYUJmeTL/Ei+E8
+         DlSoQbxQHxuw6Q5BHztsPVjLSVAe0wIDCLFcmunTV8dd6yGQd4fI4n0XLIJ9zaoJ5J2x
+         3WC29yS2N/DSbAeaZSdddKA1/+fn3ywdooUW06SnjJGpUelZKY62X60OKTzXFiiXpvO3
+         X3aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701655385; x=1702260185;
+        d=1e100.net; s=20230601; t=1701655387; x=1702260187;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ObBx9TWLrIBpB0H9q8V9qBSHqmx+qoGHKzq0yJDmTtU=;
-        b=HEUVBODUxISugcH4gI2KuReJSpF1UpSIhgGMds63U5t6YPYdTXDNnPU1YHD3KKShis
-         UgL+CUDDGup5UzZK2xxKOYzTwKWtcZHlWzwO/y5kYH0NeF3shqO4t3o2rMNn2J9cgr3m
-         /wGkQEb/ePrK+KGuFAMU/Xm//oxyuyvtxgubazgsLUXXN5Qgh/fkC2GBG7bNiJZzH9vr
-         gPXZvFRsW2+l+Rk6czXAq3F+5O0E3Fpip7Y0iG1BPvvGXUKoq0Z6Gbv0asJoy6/hDaTW
-         VV8trQkzd9IcYScETxOnqvXnV0g0B3fTI9bIgwdi47/C0Jnxk35G5qtM/OIkHtJFUIik
-         584A==
-X-Gm-Message-State: AOJu0YzlJhxh4R/hPYTkqDPlR5LvHz8gg/OV+WslSVk9ZO2mvL96z8ct
-        cHjwVlaZ0mA9gLjYVFeAhmVetA==
-X-Google-Smtp-Source: AGHT+IGQ0l3lZw9Y9VLkl78eTQoCX7i8NWPwi3Mb9gkL2b9k9s3lIiyNJDsNIkxsTjgfigkS3zcfGA==
-X-Received: by 2002:ac2:5ec2:0:b0:50b:f776:1d57 with SMTP id d2-20020ac25ec2000000b0050bf7761d57mr400656lfq.28.1701655385280;
-        Sun, 03 Dec 2023 18:03:05 -0800 (PST)
+        bh=nU+isl/cmvOumBeEJVaIP24Ow/f7bjobvPWRPynQaf8=;
+        b=n3qowaQW2980088ev8o+8BDQozO1MtQ4g3HPTYV0n5VypWRJB3xgSjm0zTAyQJXKL8
+         wpaMndgxPfOK8vs92AK/Q8QlqsXBb+17APQMIQmo72TBhhqeBw1E0tmmSUgJCDAvmCAm
+         sNuOFTY8LuiRh8SjoYnaPmt0NUPFo9dwOBlCD8ellCquGNkDlxf/MPDyLpLSzKgP8mhe
+         PL1h4w4+k90CWTyw/XCQM1jVwg9+a2Qv5rHQLgkB2dklgQqhNimffTSYHSWAnkCWTkVT
+         7GjJQv/MdwCoj71TCrtnpouveeR0WZ3V9ieRYuzSu8TZwhOrvU6Ccn/ic/CuQT6go0X+
+         vI+g==
+X-Gm-Message-State: AOJu0YwWToFTFu/RTrK0UqJaGcD2k7SrOVRJAjxr8zK7BmAoKbxGODME
+        K9PUibvMGExZdkYq2WPaYysLjg==
+X-Google-Smtp-Source: AGHT+IF2BaKSfbGgOJcuur4nyNBw+zmrxBa85rY71yvqdk6sw/yYSlw4/eaFyeU/Nq5IFQWNX3P35w==
+X-Received: by 2002:a05:6512:3d1d:b0:50b:c36e:a70e with SMTP id d29-20020a0565123d1d00b0050bc36ea70emr2917074lfv.34.1701655386300;
+        Sun, 03 Dec 2023 18:03:06 -0800 (PST)
 Received: from eriador.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id v12-20020a056512348c00b0050bea5c2850sm525381lfr.39.2023.12.03.18.03.04
+        by smtp.gmail.com with ESMTPSA id v12-20020a056512348c00b0050bea5c2850sm525381lfr.39.2023.12.03.18.03.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 18:03:04 -0800 (PST)
+        Sun, 03 Dec 2023 18:03:05 -0800 (PST)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     "Rob Herring" <robh+dt@kernel.org>,
         "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
@@ -64,10 +64,10 @@ To:     "Rob Herring" <robh+dt@kernel.org>,
         "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-usb@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: [PATCH v4 1/3] dt-bindings: connector: usb: add altmodes description
-Date:   Mon,  4 Dec 2023 04:03:00 +0200
-Message-ID: <20231204020303.2287338-2-dmitry.baryshkov@linaro.org>
+        linux-usb@vger.kernel.org
+Subject: [PATCH v4 2/3] usb: typec: change altmode SVID to u16 entry
+Date:   Mon,  4 Dec 2023 04:03:01 +0200
+Message-ID: <20231204020303.2287338-3-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204020303.2287338-1-dmitry.baryshkov@linaro.org>
 References: <20231204020303.2287338-1-dmitry.baryshkov@linaro.org>
@@ -83,68 +83,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description of the USB-C AltModes supported on the particular USB-C
-connector. This is required for devices like Qualcomm Robotics RB5,
-which have no other way to express alternative modes supported by the
-hardware platform.
+As stated in the changelog for the commit 7b458a4c5d73 ("usb: typec: Add
+typec_port_register_altmodes()"), the code should be adjusted according
+to the AltMode bindings. As the SVID is 16 bits wide (according to the
+USB PD Spec), use fwnode_property_read_u16() to read it.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- .../bindings/connector/usb-connector.yaml     | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ drivers/platform/x86/intel/chtwc_int33fe.c | 2 +-
+ drivers/usb/typec/class.c                  | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-index 7c8a3e8430d3..28660b931d0c 100644
---- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-+++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-@@ -171,6 +171,32 @@ properties:
-       offer the power, Capability Mismatch is set. Required for power sink and
-       power dual role.
+diff --git a/drivers/platform/x86/intel/chtwc_int33fe.c b/drivers/platform/x86/intel/chtwc_int33fe.c
+index 848baecc1bb0..93f75ba1dafd 100644
+--- a/drivers/platform/x86/intel/chtwc_int33fe.c
++++ b/drivers/platform/x86/intel/chtwc_int33fe.c
+@@ -136,7 +136,7 @@ static const struct software_node altmodes_node = {
+ };
  
-+  altmodes:
-+    type: object
-+    description: List of Alternative Modes supported by the schematics on the
-+      particular device. This is only necessary if there are no other means to
-+      discover supported alternative modes (e.g. through the UCSI firmware
-+      interface).
-+
-+    additionalProperties: false
-+
-+    patternProperties:
-+      "^(displayport)$":
-+        type: object
-+        description:
-+          A single USB-C Alternative Mode as supported by the USB-C connector logic.
-+
-+        additionalProperties: false
-+
-+        properties:
-+          svid:
-+            $ref: /schemas/types.yaml#/definitions/uint16
-+            description: Unique value assigned by USB-IF to the Vendor / AltMode.
-+            enum: [ 0xff01 ]
-+          vdo:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description: VDO returned by Discover Modes USB PD command.
-+
-   port:
-     $ref: /schemas/graph.yaml#/properties/port
-     description: OF graph bindings modeling a data bus to the connector, e.g.
-@@ -289,6 +315,13 @@ examples:
-             compatible = "usb-c-connector";
-             label = "USB-C";
+ static const struct property_entry dp_altmode_properties[] = {
+-	PROPERTY_ENTRY_U32("svid", 0xff01),
++	PROPERTY_ENTRY_U16("svid", 0xff01),
+ 	PROPERTY_ENTRY_U32("vdo", 0x0c0086),
+ 	{ }
+ };
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index 2e0451bd336e..a959dcc3374a 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -2230,7 +2230,8 @@ void typec_port_register_altmodes(struct typec_port *port,
+ 	struct typec_altmode_desc desc;
+ 	struct typec_altmode *alt;
+ 	size_t index = 0;
+-	u32 svid, vdo;
++	u16 svid;
++	u32 vdo;
+ 	int ret;
  
-+            altmodes {
-+                displayport {
-+                    svid = /bits/ 16 <0xff01>;
-+                    vdo = <0x00001c46>;
-+                };
-+            };
-+
-             ports {
-                 #address-cells = <1>;
-                 #size-cells = <0>;
+ 	altmodes_node = device_get_named_child_node(&port->dev, "altmodes");
+@@ -2238,7 +2239,7 @@ void typec_port_register_altmodes(struct typec_port *port,
+ 		return; /* No altmodes specified */
+ 
+ 	fwnode_for_each_child_node(altmodes_node, child) {
+-		ret = fwnode_property_read_u32(child, "svid", &svid);
++		ret = fwnode_property_read_u16(child, "svid", &svid);
+ 		if (ret) {
+ 			dev_err(&port->dev, "Error reading svid for altmode %s\n",
+ 				fwnode_get_name(child));
 -- 
 2.42.0
 
