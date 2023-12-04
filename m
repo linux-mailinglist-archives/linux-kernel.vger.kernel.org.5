@@ -2,46 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D61A803B27
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F26E803B28
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 18:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjLDRJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 12:09:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
+        id S231197AbjLDRKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 12:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbjLDRJX (ORCPT
+        with ESMTP id S229561AbjLDRKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 12:09:23 -0500
-Received: from kozue.soulik.info (kozue.soulik.info [IPv6:2001:19f0:7000:8404:5400:ff:fe00:d7d6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544D7F0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:09:29 -0800 (PST)
-Received: from [192.168.10.7] (unknown [10.0.12.132])
-        by kozue.soulik.info (Postfix) with ESMTPSA id BB0652FEC41;
-        Tue,  5 Dec 2023 02:09:22 +0900 (JST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 kozue.soulik.info BB0652FEC41
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=soulik.info; s=mail;
-        t=1701709763; bh=leU52NKS+4j0SOtSDOYOhhz0uxpcfS2T59lZis83zKw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=O7ErB/CxKhYKG4nlGKr3vsziESDbTDQTjRWFfYVZyrBf+FCitbkZmVsu61itW5BZC
-         BkuhKzQiNSAx5PnL17tMdzbzYPgQ/GBUDRqn9TqyJCCrM6lOdEtd96b7Sl/Toh1ckQ
-         LbywmuN0R9VIAgtnYioVywWwsOj7UpZDT/mMv5eM=
-Message-ID: <1f282d44-7593-47f2-9572-131323f846a1@soulik.info>
-Date:   Tue, 5 Dec 2023 01:09:26 +0800
+        Mon, 4 Dec 2023 12:10:17 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E223C1
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 09:10:22 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rACSZ-0007ft-H1; Mon, 04 Dec 2023 18:10:19 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rACSY-00DZD4-75; Mon, 04 Dec 2023 18:10:18 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rACSX-00EBFd-UI; Mon, 04 Dec 2023 18:10:17 +0100
+Date:   Mon, 4 Dec 2023 18:10:17 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Stuart Yoder <stuyoder@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 1/2] bus: fsl-mc:  Drop if block with always false
+ condition
+Message-ID: <20231204171017.j5zznavijoqfvfhz@pengutronix.de>
+References: <20231103230001.3652259-3-u.kleine-koenig@pengutronix.de>
+ <20231105143146.j5t7viojjtsnydwi@pengutronix.de>
+ <20231128170310.s3qdydr6zde5dapa@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Could secure monitor let op-tee handle secure interrupter?
-Content-Language: en-US
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
-References: <de1c35aa-1cbf-450a-9953-eee557c8e8ce@soulik.info>
- <CAFA6WYOUbix72jQ=UW8r_UspngBwVetnn89OdkN3skuzBqMhgg@mail.gmail.com>
-From:   Randy Li <ayaka@soulik.info>
-In-Reply-To: <CAFA6WYOUbix72jQ=UW8r_UspngBwVetnn89OdkN3skuzBqMhgg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="k3vbssqcajetu73k"
+Content-Disposition: inline
+In-Reply-To: <20231128170310.s3qdydr6zde5dapa@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -49,64 +59,47 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2023/12/4 21:54, Sumit Garg wrote:
-> Hi Randy,
->
-> On Mon, 27 Nov 2023 at 13:03, Randy Li via OP-TEE
-> <op-tee@lists.trustedfirmware.org> wrote:
->> Hello
->>
->> I was wondering whether the current op-tee os support this that secure
->> monitor would trigger the op-tee to handle the native interrupter
->> without forwarding it to the REE?
-> I would suggest you to go through this doc [1] to see if it answers
-> all your questions. If not then let us know, we will help to clarify
-> further.
->
-> [1] https://optee.readthedocs.io/en/latest/architecture/core.html#interrupt-handling
->
-> -Sumit
+--k3vbssqcajetu73k
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-"When a secure interrupt is signaled by the Arm GIC, it shall reach the 
-OP-TEE OS interrupt exception vector. If the secure world is executing, 
-OP-TEE OS will handle interrupt straight from its exception vector."
+Hello,
 
-And Section "Deliver secure interrupt to secure world when SCR_NS is set"
+On Tue, Nov 28, 2023 at 06:03:10PM +0100, Uwe Kleine-K=F6nig wrote:
+> On Sun, Nov 05, 2023 at 03:31:46PM +0100, Uwe Kleine-K=F6nig wrote:
+> > I just noticed a double space in the Subject line. Feel free to replace
+> > it by a single one when applying. (I assume I shouldn't resend just for
+> > that, tell me if you prefer that though.)
+>=20
+> Gentle ping. Is this patch set still waiting for review in someone's
+> mailbox, or did it fell through the cracks already?
 
-I think those are the answer to my initial question.
+For the record: These two patches are included in a pull request to Arnd
+(https://lore.kernel.org/all/20231128174927.m46dgp4juig2omci@pengutronix.de=
+/)
+for all of drivers/bus.
 
-But I didn't see such practice. In the recent changes to Linux kernel, 
-likes OP-TEE notifications, I think the most of platforms would like not 
-let the Secure OS handle the devices' interrupters? I didn't know such a 
-driver in Linux kernel either.
+Best regards
+Uwe
 
-When a CPU core, which is holding a spinlock, have been restored to 
-Secure context by monitor, would it halt the other cores which are 
-waiting for the release of that spinlock?
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-Besides, when we use a spinlock in the kernel, in the most of time, we 
-except all IRQs are masked(spin_lock_irqsave), could this masked the 
-secure interrupter?
+--k3vbssqcajetu73k
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Also, I didn't see there is a guideline about how OP-TEE os should 
-handle native interrupt in this case. If it took too much time, it may 
-lead an innocent process be regarded as hardlockup (or softlockup if it 
-turns to REE after all) in the linux kernel.
+-----BEGIN PGP SIGNATURE-----
 
->> If the answer is yes, could it lead to a dead lock when the linux kernel
->> is holding a spinlock(usually irq is disabled in that CPU core) ?
->>
->> I didn't find much about how should we handle the secure interrupter
->> from document, the general way seems to either forward it to REE or just
->> don't use the secure interrupter at all.
->>
->> Let the REE handle the interrupter may not be a good idea, since the
->> device could we should ack the interrupter in it, is protected by the
->> trustzone, we need to switch CPU to secure mode to handle this tiny task.
->>
->> I wish I could know more solution about the interrupter here.
->>
->> Sincerely
->>
->> Randy
->>
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVuB/kACgkQj4D7WH0S
+/k7U3Qf/WiGjAFCPQAc9eP4Uc+lB8HFZXNI+u3XOmvSzvj564vvNFDfXUfVYakP0
+KXUPfSNk+1nTr1EWF5uBBOrQBOyOja7DMgLDIW35UmR8ZTGcmwyAtke9iTI7BpmM
+A2hfcogKeUV/Yls+gd4oBWb7/kq1jrHoniK9d89mDQUt4GSbjueH307sTi3H+XS7
+liLy58+qZPKaClp+7BLyPmDlVF4WYjYSRKpOj7eNbZc6uaNJitCWANDJt7+p5qTK
+GjHxwajSbSeX1Bla33RrjRxX2maW16aYvoG6FY+205dpd61ZzFDeQfSfGCvdCwR5
+xi+jUqPH1XuibJyenrU3VIWi4X5Gjw==
+=PyxJ
+-----END PGP SIGNATURE-----
+
+--k3vbssqcajetu73k--
