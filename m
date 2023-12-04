@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E5F803632
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EACA80362D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345036AbjLDOQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        id S1344957AbjLDOQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:16:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbjLDOQf (ORCPT
+        with ESMTP id S231801AbjLDOQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:16:35 -0500
+        Mon, 4 Dec 2023 09:16:33 -0500
 Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5518AA
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABF4B9
         for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:16:39 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c9f413d6b2so20016551fa.1
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c9fe0ef02aso11414241fa.0
         for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:16:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701699397; x=1702304197; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701699398; x=1702304198; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=v3j2KS0gi+TQKxkDP6iL7961UxDW9BTF2XTenr3SsKs=;
-        b=EJ25Xt0zy3/QQgVyOTWmxxWXlUOPh04x9AOdCvcxSrT1PZP60E7S2bVHzGcCqApQke
-         c5J1pLM8ce2jOuAhg0s9giS99J0i5hxyyQjZYEoComMVNs77DjnGizzECv+8K5l7jsbF
-         X/8jxgkkDXH51m/tyk5HAJWZqHvAAqgC22NG36exXg+Q7DlvOWqTaS4xXt1WMEoCwSXA
-         MyXCuA7S6x13sKz330V/+/c8bim+ww2oHK1v+nwPe2B0ecq5DXAvU2tGYKuIdF1Wmxur
-         iAZewF2Bh0vhciVMFy7dWXzZbK+B/h5AFUiaPyZ3eYHogL59PBLRmIt+qumA42jNgkTc
-         C2Eg==
+        bh=ZaBZHQpZqDG2XfMQ4dp5yLxoXxp+aROTaKcGQwWYDB8=;
+        b=R9Ub2suE9lMkXsUOdv5LBcHkYonNl3y+neL3Ms79kIfirlOHwiTT4JoJqE7ajKxRBV
+         QM+vXVv05PefXrECMNS8+5+ojlJRbHRNlVUahzzyjiSbPVqJuEFXyHYb6j0BRPBHeDW3
+         wP+1wT4+X044/gjtJhW3uU4RbrQuyL6Jz0mdBrpfRZwGx2zRj2Icc+O5cfQLsiIcOehE
+         06xWr5ZKdMgq1JKYCawVMmhG7ztnzdUfXF2qPRwyZ4KT3cyoBGsukmhsAU5/XFzRrvQv
+         zjhZmHdFOQGoZ6V/VuGytYpxYEs0Km64qDcxYwDxNpzwFWjN9nmJuWKbTZHsW86qDdXN
+         PdDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701699397; x=1702304197;
+        d=1e100.net; s=20230601; t=1701699398; x=1702304198;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=v3j2KS0gi+TQKxkDP6iL7961UxDW9BTF2XTenr3SsKs=;
-        b=u4+A0uDcFXSTSbOdbPRejZbWnzZtxBWlNIWsbuDNXHjLRdPICgI2ryP6jNg2MXPk0v
-         18S9xjQjFL5kzQ8JH5D87kfv/zheZ9QBpQ4ohifmdVMFdRPiJheSUWWqV4ylLBs7BRV9
-         6zCkPUQWsGp6XSkfoEECwoOeoN2aq0/A7QoUj0QDIq+/e00xlviRG9VyCRhr/kb6STXx
-         GOXgH8j4mBI74LWc0ffwO0GMc3BlHkMargkkoT9o9sQy11sUB/GNXs67UG8koqxWWRuX
-         erEuAirdTM2jZ8oKlWsCVAYljdFclehrk4MahY+EX4wWh+DUPSiJGhJYM6308PQ8wt73
-         mOhQ==
-X-Gm-Message-State: AOJu0YxtF9FdFqL9BXMSffW2i+tO3el09YxBmYZvUA88lrvqBNBsboKX
-        bGrQkmIXRmfn04mXIbPynGekBw==
-X-Google-Smtp-Source: AGHT+IHaX1+G4i2MHGUFU1uKjK7P9+tYQt3ynolw+mKE5HNt183VLmBxt8CMyqeuATitU4WX+RO4SA==
-X-Received: by 2002:a2e:b009:0:b0:2ca:4b7:a933 with SMTP id y9-20020a2eb009000000b002ca04b7a933mr468155ljk.51.1701699397424;
-        Mon, 04 Dec 2023 06:16:37 -0800 (PST)
+        bh=ZaBZHQpZqDG2XfMQ4dp5yLxoXxp+aROTaKcGQwWYDB8=;
+        b=fNNE3bnafnq+U2XByqudRLSufxe4oTBJJW+HPcuQWymxuLrflVh17HrNkSThM9ItL5
+         VQVNPpeq6Chlt6+75QCF4PN0Q83sEq/mEqedLCNzcnwWn9SwqaC+bQ6kY9Fw4B5xXkwF
+         hjjursey+s/Xz8eBI+gTSGpG2gHqx27ICVCLNrTRBS11sMbZ5dMIWoex1zOoMGRfwJvi
+         GSL5ChkqgkmAPE8kh673OH5tdjlbvNv9gWE89Ooi6knlJefnJ1ivYegZSp4U775JnkKZ
+         JT6kVcpK4O1euS0aTrMx/0s8dXk4Slyvay70eUQNGy6DS+vMMqCaXChOmXYC3jYYbZu2
+         tXhQ==
+X-Gm-Message-State: AOJu0YzxrhVtifPv0sLzDg6V1vIxrX+ODgpzeGRsDt2jOkxoLecmjoB1
+        rtGcuEmYTFPQN2rZ/O0/Sd3RkQ==
+X-Google-Smtp-Source: AGHT+IFhbnCuBV0JCw7uGD7qCiHyX7TJPwxSzrjLdzNKuV7GNJId7BTvK6QFl+pUyF8nsnegDyQuUQ==
+X-Received: by 2002:a2e:7a14:0:b0:2ca:135:2204 with SMTP id v20-20020a2e7a14000000b002ca01352204mr1307465ljc.16.1701699398333;
+        Mon, 04 Dec 2023 06:16:38 -0800 (PST)
 Received: from eriador.lan (dzdqv0yyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::227])
-        by smtp.gmail.com with ESMTPSA id v3-20020a2e9243000000b002c9fda71acesm487033ljg.127.2023.12.04.06.16.36
+        by smtp.gmail.com with ESMTPSA id v3-20020a2e9243000000b002c9fda71acesm487033ljg.127.2023.12.04.06.16.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 06:16:36 -0800 (PST)
+        Mon, 04 Dec 2023 06:16:37 -0800 (PST)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     dri-devel@lists.freedesktop.org,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -62,12 +62,12 @@ Cc:     freedreno@lists.freedesktop.org, quic_jesszhan@quicinc.com,
         quic_parellan@quicinc.com, laurent.pinchart@ideasonboard.com,
         andersson@kernel.org, jani.nikula@linux.intel.com,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm: improve the documentation of connector hpd ops
-Date:   Mon,  4 Dec 2023 16:16:32 +0200
-Message-ID: <170169936702.76859.18234919578150833329.b4-ty@linaro.org>
+Subject: Re: [PATCH] drm: remove drm_bridge_hpd_disable() from drm_bridge_connector_destroy()
+Date:   Mon,  4 Dec 2023 16:16:33 +0200
+Message-ID: <170169936702.76859.2850036545937110756.b4-ty@linaro.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230920201358.27597-1-quic_abhinavk@quicinc.com>
-References: <20230920201358.27597-1-quic_abhinavk@quicinc.com>
+In-Reply-To: <20230919174813.26958-1-quic_abhinavk@quicinc.com>
+References: <20230919174813.26958-1-quic_abhinavk@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -81,22 +81,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 20 Sep 2023 13:13:58 -0700, Abhinav Kumar wrote:
-> While making the changes in [1], it was noted that the documentation
-> of the enable_hpd() and disable_hpd() does not make it clear that
-> these ops should not try to do hpd state maintenance and should only
-> attempt to enable/disable hpd related hardware for the connector.
+On Tue, 19 Sep 2023 10:48:12 -0700, Abhinav Kumar wrote:
+> drm_bridge_hpd_enable()/drm_bridge_hpd_disable() callbacks call into
+> the respective driver's hpd_enable()/hpd_disable() ops. These ops control
+> the HPD enable/disable logic which in some cases like MSM can be a
+> dedicate hardware block to control the HPD.
 > 
-> The state management of these calls to make sure these calls are
-> balanced is handled by the DRM core and we should keep it that way
-> to minimize the overhead in the drivers which implement these ops.
+> During probe_defer cases, a connector can be initialized and then later
+> destroyed till the probe is retried. During connector destroy in these
+> cases, the hpd_disable() callback gets called without a corresponding
+> hpd_enable() leading to an unbalanced state potentially causing even
+> a crash.
 > 
 > [...]
 
 Applied to drm-misc-next, thanks!
 
-[1/1] drm: improve the documentation of connector hpd ops
-      commit: a5b2dcb96d6acb286459612a142371b0d74543bf
+[1/1] drm: remove drm_bridge_hpd_disable() from drm_bridge_connector_destroy()
+      commit: f730e7adfd69d7ac859d8fe4d67e980cbad1e445
 
 Best regards,
 -- 
