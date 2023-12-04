@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 526218038CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:29:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004518038DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbjLDP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:29:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        id S234631AbjLDPaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:30:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233961AbjLDP3G (ORCPT
+        with ESMTP id S234432AbjLDPaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:29:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16900A5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 07:29:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65518C433C9;
-        Mon,  4 Dec 2023 15:29:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701703752;
-        bh=sZ8MdlBZTLad6pw+Ks72AVR2ViiyQ2nnjmMSI977zUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ftRxE0nh9TE0pSPkAFobzBYEG4nP5Ik6qoKGAzu9e0I/OEXvx7NheDySUmBiXz/cu
-         3XbtJCirUYHOew+jYP6D1OvqGc81hY6A+tWDSFLcJkR5TdNM2kwIu6mWdBX3AaDaYj
-         UfI4KZWNTXdPQ567GUsMh5vpxA2UbgHyR7CYuGZonQUKoEAxSlId9y1ALNr27FNeSB
-         hRy8tJFRFakAWQnyZ+Xfan4yFCOlvvGGg+Y19SIKEKjPp7+T5Aa5SENH7mORb0tt9I
-         ZPZhg45YSrpKZ/76YhJ68vW4za6J/JH+/pLB+2DN6kMuuGezK7x396eqIgu3TEONXH
-         FdaZvkbnehPCA==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1rAAtN-0003yx-1I;
-        Mon, 04 Dec 2023 16:29:54 +0100
-Date:   Mon, 4 Dec 2023 16:29:53 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Abel Vesa <abel.vesa@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] phy: qcom: edp: Add X1E80100 eDP and DP PHYs
-Message-ID: <ZW3wcX2T0pJLoDSt@hovoldconsulting.com>
-References: <20231122-phy-qualcomm-edp-x1e80100-v2-0-114e789f0195@linaro.org>
- <20231122-phy-qualcomm-edp-x1e80100-v2-2-114e789f0195@linaro.org>
+        Mon, 4 Dec 2023 10:30:13 -0500
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625F0B0;
+        Mon,  4 Dec 2023 07:30:19 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A7344C0002;
+        Mon,  4 Dec 2023 15:30:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701703818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lC9iyWjs9SLEvLAN2a3GzP/PTmAJHX40lkoy38ZLB0k=;
+        b=bfXoqu1SHr+oH1qgM13BQ42PmdEr/OrtXWgYNyd4mi0IvjPKxdaXM34KEWtWo2ZPDDOaNN
+        2aVnMnk3QAOsLzzljcSKG1BwvrSt8QFxEFnvdpGstNTny56/CtegMepgR6P5DbgsDkTxE3
+        U3hIxUH+Na9u6pEOwjEZ7Iapj6uZ7fi9fpDVcHvTd1PkHItobDD4/Z94fhF8qYF4YivGEW
+        8W6UEkCcCdLnW/88B1GPkQMNac7/XPvL11hI+nGeWh3Kof7ZjAegaV9lHL0u/DJ9Cb9qwL
+        26suZIke97jSjH1eMR2uy7yugCsBW2JIkP6o9CbX713c9oVGJYR3Rd8CzYg6rw==
+Date:   Mon, 4 Dec 2023 16:30:14 +0100
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+        Sonal Santan <sonal.santan@amd.com>,
+        Stefano Stabellini <stefano.stabellini@xilinx.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
+Message-ID: <20231204163014.4da383f2@bootlin.com>
+In-Reply-To: <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
+References: <20231130165700.685764-1-herve.codina@bootlin.com>
+        <CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
+        <20231204134335.3ded3d46@bootlin.com>
+        <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122-phy-qualcomm-edp-x1e80100-v2-2-114e789f0195@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,217 +68,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 05:01:37PM +0200, Abel Vesa wrote:
-> The Qualcomm X1E80100 platform has a number of eDP and DP PHY instances,
-> add support for these.
+Hi Rob,
+
+On Mon, 4 Dec 2023 07:59:09 -0600
+Rob Herring <robh@kernel.org> wrote:
+
+[...]
+
+> > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+> > > index 9c2137dae429..46b252bbe500 100644
+> > > --- a/drivers/pci/bus.c
+> > > +++ b/drivers/pci/bus.c
+> > > @@ -342,8 +342,6 @@ void pci_bus_add_device(struct pci_dev *dev)
+> > >          */
+> > >         pcibios_bus_add_device(dev);
+> > >         pci_fixup_device(pci_fixup_final, dev);
+> > > -       if (pci_is_bridge(dev))
+> > > -               of_pci_make_dev_node(dev);
+> > >         pci_create_sysfs_dev_files(dev);
+> > >         pci_proc_attach_device(dev);
+> > >         pci_bridge_d3_update(dev);
+> > > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> > > index 51e3dd0ea5ab..e15eaf0127fc 100644
+> > > --- a/drivers/pci/of.c
+> > > +++ b/drivers/pci/of.c
+> > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
+> > >                 return 0;
+> > >
+> > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
+> > > +       if (!node && pci_is_bridge(dev))
+> > > +               of_pci_make_dev_node(dev);
+> > >         if (!node)
+> > >                 return 0;  
+> >
+> > Maybe it is too early.
+> > of_pci_make_dev_node() creates a node and fills some properties based on
+> > some already set values available in the PCI device such as its struct resource
+> > values.
+> > We need to have some values set by the PCI infra in order to create our DT node
+> > with correct values.  
 > 
-> Co-developed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
-  
->  	/* Turn on BIAS current for PHY/PLL */
-> -	writel(0x17, edp->pll + QSERDES_V4_COM_BIAS_EN_CLKBUFLR_EN);
-> +	if (cfg->qserdes_version == QSERDES_V6)
-> +		writel(0x1f, edp->pll + QSERDES_V6_COM_PLL_BIAS_EN_CLK_BUFLR_EN);
-> +	else
-> +		writel(0x17, edp->pll + QSERDES_V4_COM_BIAS_EN_CLKBUFLR_EN);
+> Indeed, that's probably the issue I'm having. In that case,
+> DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
+> device_add().
+> 
+> I think modifying sysfs after device_add() is going to race with
+> userspace. Userspace is notified of a new device, and then the of_node
+> link may or may not be there when it reads sysfs. Also, not sure if
+> we'll need DT modaliases with PCI devices, but they won't work if the
+> DT node is not set before device_add().
 
-Sprinkling version conditionals like this throughout the driver look a
-bit sloppy and makes the code harder to read (and maintain long term).
+Ok, we can try using DECLARE_PCI_FIXUP_HEADER.
+On your side, is moving from DECLARE_PCI_FIXUP_EARLY to DECLARE_PCI_FIXUP_HEADER
+fix your QEMU unittest ?
 
-Not as easy to clean up when you're using magic numbers instead of
-proper value defines, but perhaps you can just fix that up as well as
-you should access to the documentation.
-  
->  	writel(DP_PHY_PD_CTL_PSR_PWRDN, edp->edp + DP_PHY_PD_CTL);
->  	msleep(20);
-> @@ -261,7 +290,10 @@ static int qcom_edp_set_voltages(struct qcom_edp *edp, const struct phy_configur
->  	if (swing == 0xff || emph == 0xff)
->  		return -EINVAL;
->  
-> -	ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-> +	if (cfg->qserdes_version == QSERDES_V6)
-> +		ldo_config = 0x91;
-> +	else
-> +		ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
+We have to note that between the pci_fixup_device(pci_fixup_header, dev) call
+and the device_add() call, the call to pci_set_msi_domain() is present.
+MSIs are not supported currently but in the future ...
 
-Similar here.
+Related to DT modaliases, I don't think they are needed.
+All drivers related to PCI device should be declared as pci_driver.
+Correct me if I am wrong but I think that the core PCI will load the correct
+module without any DT modalias.
 
->  	writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
->  	writel(swing, edp->tx0 + TXn_TX_DRV_LVL);
-> @@ -288,7 +320,7 @@ static int qcom_edp_phy_configure(struct phy *phy, union phy_configure_opts *opt
->  	return ret;
->  }
->  
-> -static int qcom_edp_configure_ssc(const struct qcom_edp *edp)
-> +static int qcom_edp_configure_ssc_v4(const struct qcom_edp *edp)
->  {
->  	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
->  	u32 step1;
+Best regards,
+Hervé
 
-> @@ -349,6 +415,7 @@ static int qcom_edp_configure_pll(const struct qcom_edp *edp)
->  		div_frac_start3_mode0 = 0x07;
->  		lock_cmp1_mode0 = 0x0f;
->  		lock_cmp2_mode0 = 0x0e;
-> +
->  		break;
->  
->  	case 5400:
-> @@ -358,6 +425,7 @@ static int qcom_edp_configure_pll(const struct qcom_edp *edp)
->  		div_frac_start3_mode0 = 0x0a;
->  		lock_cmp1_mode0 = 0x1f;
->  		lock_cmp2_mode0 = 0x1c;
-> +
->  		break;
->  
->  	case 8100:
-> @@ -367,6 +435,7 @@ static int qcom_edp_configure_pll(const struct qcom_edp *edp)
->  		div_frac_start3_mode0 = 0x07;
->  		lock_cmp1_mode0 = 0x2f;
->  		lock_cmp2_mode0 = 0x2a;
-> +
->  		break;
->  
->  	default:
-
-This looks like unrelated changes that do not belong in this patch.
-
-> @@ -408,6 +477,103 @@ static int qcom_edp_configure_pll(const struct qcom_edp *edp)
->  	return 0;
->  }
->  
-> +static int qcom_edp_configure_pll_v6(const struct qcom_edp *edp)
-> +{
-> +	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-> +	u32 div_frac_start2_mode0;
-> +	u32 div_frac_start3_mode0;
-> +	u32 dec_start_mode0;
-> +	u32 lock_cmp1_mode0;
-> +	u32 lock_cmp2_mode0;
-> +	u32 code1_mode0;
-> +	u32 code2_mode0;
-> +	u32 hsclk_sel;
-> +
-> +	switch (dp_opts->link_rate) {
-> +	case 1620:
-> +		hsclk_sel = 0x5;
-> +		dec_start_mode0 = 0x34;
-> +		div_frac_start2_mode0 = 0xc0;
-> +		div_frac_start3_mode0 = 0x0b;
-> +		lock_cmp1_mode0 = 0x37;
-> +		lock_cmp2_mode0 = 0x04;
-> +		code1_mode0 = 0x71;
-> +		code2_mode0 = 0x0C;
-> +		break;
-> +
-
-Drop newline before case throughout? Doesn't seem to help with
-readability. But I see now that some other functions do this already.
-
-> +	case 2700:
-> +		hsclk_sel = 0x3;
-> +		dec_start_mode0 = 0x34;
-> +		div_frac_start2_mode0 = 0xc0;
-> +		div_frac_start3_mode0 = 0x0b;
-> +		lock_cmp1_mode0 = 0x07;
-> +		lock_cmp2_mode0 = 0x07;
-> +		code1_mode0 = 0x71;
-> +		code2_mode0 = 0x0C;
-> +		break;
-> +
-> +	case 5400:
-
->  static int qcom_edp_set_vco_div(const struct qcom_edp *edp, unsigned long *pixel_freq)
->  {
->  	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-> @@ -462,13 +628,22 @@ static int qcom_edp_phy_power_on(struct phy *phy)
->  	       edp->edp + DP_PHY_PD_CTL);
->  	writel(0xfc, edp->edp + DP_PHY_MODE);
->  
-> -	timeout = readl_poll_timeout(edp->pll + QSERDES_V4_COM_CMN_STATUS,
-> -				     val, val & BIT(7), 5, 200);
-> +	if (cfg->qserdes_version == QSERDES_V6) {
-> +		timeout = readl_poll_timeout(edp->pll + QSERDES_V6_COM_CMN_STATUS,
-> +					     val, val & BIT(7), 5, 200);
-> +	} else {
-> +		timeout = readl_poll_timeout(edp->pll + QSERDES_V4_COM_CMN_STATUS,
-> +					     val, val & BIT(7), 5, 200);
-> +	}
-
-This too looks a bit sloppy. Should you not just abstract the status
-register offset?
-
-> +
->  	if (timeout)
->  		return timeout;
->  
->  
-> -	ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-> +	if (cfg->qserdes_version == QSERDES_V6)
-> +		ldo_config = 0x91;
-> +	else
-> +		ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
-
-Same construct and comment as above.
-
->  
->  	writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
->  	writel(ldo_config, edp->tx1 + TXn_LDO_CONFIG);
-  
-> @@ -512,10 +695,18 @@ static int qcom_edp_phy_power_on(struct phy *phy)
->  	writel(0x01, edp->edp + DP_PHY_CFG);
->  	writel(0x09, edp->edp + DP_PHY_CFG);
->  
-> -	writel(0x20, edp->pll + QSERDES_V4_COM_RESETSM_CNTRL);
-> +	if (cfg->qserdes_version == QSERDES_V6) {
-> +		writel(0x20, edp->pll + QSERDES_V6_COM_RESETSM_CNTRL);
-> +
-> +		timeout = readl_poll_timeout(edp->pll + QSERDES_V6_COM_C_READY_STATUS,
-> +					     val, val & BIT(0), 500, 10000);
-> +	} else {
-> +		writel(0x20, edp->pll + QSERDES_V4_COM_RESETSM_CNTRL);
-> +
-> +		timeout = readl_poll_timeout(edp->pll + QSERDES_V4_COM_C_READY_STATUS,
-> +					     val, val & BIT(0), 500, 10000);
-> +	}
-
-Similar here.
-  
-> -	timeout = readl_poll_timeout(edp->pll + QSERDES_V4_COM_C_READY_STATUS,
-> -				     val, val & BIT(0), 500, 10000);
->  	if (timeout)
->  		return timeout;
->  
-> @@ -744,7 +935,6 @@ static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
->  	data = devm_kzalloc(edp->dev, struct_size(data, hws, 2), GFP_KERNEL);
->  	if (!data)
->  		return -ENOMEM;
-> -	data->num = 2;
->  
->  	snprintf(name, sizeof(name), "%s::link_clk", dev_name(edp->dev));
->  	init.ops = &qcom_edp_dp_link_clk_ops;
-> @@ -764,6 +954,7 @@ static int qcom_edp_clks_register(struct qcom_edp *edp, struct device_node *np)
->  
->  	data->hws[0] = &edp->dp_link_hw;
->  	data->hws[1] = &edp->dp_pixel_hw;
-> +	data->num = 2;
-
-Another seemingly unrelated change.
-
->  	return devm_of_clk_add_hw_provider(edp->dev, of_clk_hw_onecell_get, data);
->  }
-> @@ -806,6 +997,7 @@ static int qcom_edp_phy_probe(struct platform_device *pdev)
->  
->  	edp->supplies[0].supply = "vdda-phy";
->  	edp->supplies[1].supply = "vdda-pll";
-> +	edp->clks[2].id = "tcsr";
-
-The *clocks* will already have been requested above so this is at best a
-noop.
-
->  	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(edp->supplies), edp->supplies);
->  	if (ret)
->  		return ret;
-
-Johan
+-- 
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
