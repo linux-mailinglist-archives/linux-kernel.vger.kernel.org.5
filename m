@@ -2,69 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A038031B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAE28031BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbjLDLqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:46:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41666 "EHLO
+        id S232738AbjLDLtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:49:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbjLDLql (ORCPT
+        with ESMTP id S229711AbjLDLtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 06:46:41 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 02C8BFF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 03:46:46 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A186F152B;
-        Mon,  4 Dec 2023 03:47:33 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 517F83F6C4;
-        Mon,  4 Dec 2023 03:46:43 -0800 (PST)
-Message-ID: <0c446883-7f01-406f-bddd-8e78b989d644@arm.com>
-Date:   Mon, 4 Dec 2023 11:46:41 +0000
+        Mon, 4 Dec 2023 06:49:03 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2355AAC;
+        Mon,  4 Dec 2023 03:49:09 -0800 (PST)
+Received: from dggpemd100001.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SkMPC4NG4zWjG1;
+        Mon,  4 Dec 2023 19:48:15 +0800 (CST)
+Received: from [10.67.120.108] (10.67.120.108) by
+ dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Mon, 4 Dec 2023 19:49:07 +0800
+Message-ID: <635ad8e8-c123-5cd9-9b80-7f0bce46ee8e@huawei.com>
+Date:   Mon, 4 Dec 2023 19:49:06 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 06/12] mm/gup: Drop folio_fast_pin_allowed() in hugepd
- processing
-Content-Language: en-GB
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Peter Xu <peterx@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        James Houghton <jthoughton@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-References: <20231116012908.392077-7-peterx@redhat.com>
- <ZVsYMMJpmFV2T/Zc@infradead.org> <ZVzT5_3Zn-Y-6xth@x1n>
- <ZV21GCbG48nTLDzn@infradead.org> <ZV90JcnQ1RGud/0R@casper.infradead.org>
- <ZV-KQ0e0y9BTsHGv@x1n> <d2313c1d-1e50-49b7-bed7-840431af799a@arm.com>
- <ZV-sJsdFfXiCkylv@x1n> <510adc26-9aed-4745-8807-dba071fadbbe@arm.com>
- <ZWDKV0XNjplc_vUP@x1n> <ZWj_EgljG3NwS5r1@x1n>
- <283da12c-14f1-4255-b3c4-ab933f3373c4@csgroup.eu>
- <01aad92f-b1e0-4f31-b905-8b1c2012ebab@arm.com>
- <97c21205-f3e6-4634-82e6-c7bbd81d1835@csgroup.eu>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <97c21205-f3e6-4634-82e6-c7bbd81d1835@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v4] scsi: libsas: Fix the failure of adding phy with
+ zero-address to port
+Content-Language: en-CA
+To:     John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <damien.lemoal@opensource.wdc.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+        <kangfenglong@huawei.com>, <chenxiang66@hisilicon.com>
+References: <20231117090001.35840-1-yangxingui@huawei.com>
+ <32c42e1e-0399-4af4-a5ed-6a257e300fe8@oracle.com>
+ <307d251f-ff49-5d8f-1f8e-aed314256732@huawei.com>
+ <a13f0419-c4ef-4b8b-9757-7cf7cea32458@oracle.com>
+ <baacad33-f568-6151-75a2-dfc09caf2a81@huawei.com>
+ <cf98eb9f-ac42-4d9b-9cf3-3085f6fc0cda@oracle.com>
+ <d6b20d8f-7653-6806-d7c8-0adc54f1333b@huawei.com>
+ <25b6b575-3108-41cc-96d4-70279ce61a48@oracle.com>
+From:   yangxingui <yangxingui@huawei.com>
+In-Reply-To: <25b6b575-3108-41cc-96d4-70279ce61a48@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Originating-IP: [10.67.120.108]
+X-ClientProxiedBy: dggpemm500022.china.huawei.com (7.185.36.162) To
+ dggpemd100001.china.huawei.com (7.185.36.94)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,86 +62,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 11:25, Christophe Leroy wrote:
-> 
-> 
-> Le 04/12/2023 à 12:11, Ryan Roberts a écrit :
->> On 03/12/2023 13:33, Christophe Leroy wrote:
->>>
->>>
->>> Le 30/11/2023 à 22:30, Peter Xu a écrit :
->>>> On Fri, Nov 24, 2023 at 11:07:51AM -0500, Peter Xu wrote:
->>>>> On Fri, Nov 24, 2023 at 09:06:01AM +0000, Ryan Roberts wrote:
->>>>>> I don't have any micro-benchmarks for GUP though, if that's your question. Is
->>>>>> there an easy-to-use test I can run to get some numbers? I'd be happy to try it out.
->>>>>
->>>>> Thanks Ryan.  Then nothing is needed to be tested if gup is not yet touched
->>>>> from your side, afaict.  I'll see whether I can provide some rough numbers
->>>>> instead in the next post (I'll probably only be able to test it in a VM,
->>>>> though, but hopefully that should still reflect mostly the truth).
+Hi, John
+
+On 2023/12/1 17:22, John Garry wrote:
+> On 30/11/2023 03:53, yangxingui wrote:
 >>>>
->>>> An update: I finished a round of 64K cont_pte test, in the slow gup micro
->>>> benchmark I see ~15% perf degrade with this patchset applied on a VM on top
->>>> of Apple M1.
+>>>> For phy19, when the phy is attached and added to the parent wide 
+>>>> port, the path is:
+>>>> sas_rediscover()
+>>>>      ->sas_discover_new()
+>>>>          ->sas_ex_discover_devices()
+>>>>              ->sas_ex_discover_dev()
+>>>>                  -> sas_add_parent_port().
+>>>
+>>> ok, so then the change to set ex_phy->port = ex->parent_port looks 
+>>> ok. Maybe we can put this in a helper with the sas_port_add_phy() 
+>>> call, as it is duplicated in sas_ex_join_wide_port()
+>>>
+>>> Do we also need to set ex_phy->phy_state (like sas_ex_join_wide_port())?
+>>
+>> Well, okay, as follows?
+>> +++ b/drivers/scsi/libsas/sas_expander.c
+>> @@ -856,9 +856,7 @@ static bool sas_ex_join_wide_port(struct 
+>> domain_device *parent, int phy_id)
+>>
+>>                  if (!memcmp(phy->attached_sas_addr, 
+>> ephy->attached_sas_addr,
+>>                              SAS_ADDR_SIZE) && ephy->port) {
+>> -                       sas_port_add_phy(ephy->port, phy->phy);
+>> -                       phy->port = ephy->port;
+>> -                       phy->phy_state = PHY_DEVICE_DISCOVERED;
+>> +                       sas_port_add_ex_phy(ephy->port, phy);
+>>                          return true;
+> 
+> this looks ok. How about adding this helper and using it in a separate 
+> change?
+Okay, then I will update the version.
+> 
+>>                  }
+>>          }
+>> diff --git a/drivers/scsi/libsas/sas_internal.h 
+>> b/drivers/scsi/libsas/sas_internal.h
+>> index e860d5b19880..39ffa60a9a01 100644
+>> --- a/drivers/scsi/libsas/sas_internal.h
+>> +++ b/drivers/scsi/libsas/sas_internal.h
+>> @@ -189,6 +189,13 @@ static inline void sas_phy_set_target(struct 
+>> asd_sas_phy *p, struct domain_devic
+>>          }
+>>   }
+>>
+>> +static inline void sas_port_add_ex_phy(struct sas_port *port, struct 
+>> ex_phy *ex_phy)
+>> +{
+>> +       sas_port_add_phy(port, ex_phy->phy);
+>> +       ex_phy->port = port;
+>> +       ex_phy->phy_state = PHY_DEVICE_DISCOVERED;
+>> +}
+> 
+> I'd prefer sas_expander.c, but sas_add_parent_port() is here... having 
+> said that, sas_add_parent_port() is only used in sas_expander.c
+Okay, then I will update the version and move it to sas_expander.c .
+
+> 
+>> +
+>>   static inline void sas_add_parent_port(struct domain_device *dev, 
+>> int phy_id)
+>>   {
+>>          struct expander_device *ex = &dev->ex_dev;
+>> @@ -201,8 +208,7 @@ static inline void sas_add_parent_port(struct 
+>> domain_device *dev, int phy_id)
+>>                  BUG_ON(sas_port_add(ex->parent_port));
+>>                  sas_port_mark_backlink(ex->parent_port);
+>>          }
+>> -       sas_port_add_phy(ex->parent_port, ex_phy->phy);
+>> +       sas_port_add_ex_phy(ex->parent_port, ex_phy);
+>>   }
+>>
+>>>
+>>>> And the path called when it is removed from parent wide port is:
+>>>> sas_rediscover()
+>>>>      ->sas_unregister_devs_sas_addr() // The sas address of phy19 
+>>>> becomes 0. Since ex_phy->port is NULL, phy19 is not removed from the 
+>>>> parent wide port's phy_list.
 >>>>
->>>> Frankly that's even less than I expected, considering not only how slow gup
->>>> THP used to be, but also on the fact that that's a tight loop over slow
->>>> gup, which in normal cases shouldn't happen: "present" ptes normally goes
->>>> to fast-gup, while !present goes into a fault following it.  I assume
->>>> that's why nobody cared slow gup for THP before.  I think adding cont_pte
->>>> support shouldn't be very hard, but that will include making cont_pte idea
->>>> global just for arm64 and riscv Svnapot.
+>>>> For phy0, it is connected to a new sata device.
+>>>> sas_rediscover()
+>>>>      ->sas_discover_new()->sas_ex_phy_discover()
+>>>>                              ->sas_ex_phy_discover_helper()
+>>>>                                  ->sas_set_ex_phy() // The device 
+>>>> type is stp. Since the linkrate is 5 and less than 1.5G, sas_address 
+>>>> is set to 0.
 >>>
->>> Is there any documentation on what cont_pte is ? I have always wondered
->>> if it could also fit powerpc 8xx need ?
->>
->> pte_cont() (and pte_mkcont() and pte_mknoncont()) test and manipulte the
->> "contiguous bit" in the arm64 PTE entries. Those helpers are arm64-specific
->> (AFAIK). The contiguous bit is a hint to the HW to tell it that a block of PTEs
->> are mapping a physically contiguous and naturally aligned piece of memory. The
->> HW can use this to coalesce entries in the TLB. When using 4K base pages, the
->> contpte size is 64K (16 PTEs). For 16K base pages, its 2M (128 PTEs) and for 64K
->> base pages, its 2M (32 PTEs).
+>>> Then when we get the proper linkrate later, will we then rediscover 
+>>> and set the proper SAS address? I am just wondering if this change is 
+>>> really required?
+>> Yes, but in fact it has not reached that stage yet. After setting the 
+>> address to 0, it will continue to create a new port and try to add 
+>> other phys with the same address as it to this new port.
+> 
+> creating a port for SAS address == 0 and adding phys seems incorrect, 
+> right?
+Yes. There are three possible ways to solve the problem of creating a 
+port with a zero address:
+1. Use the sas address obtained by querying the expander instead of the 
+zero address.
+2. Forbid the phy with an address of 0 to create a port.
+3. When the rate is less than 1.5G, do not let it enter 
+sas_ex_discover_end_dev().
+
+Because when the device type is not empty, its SAS address is legal, and 
+we are currently using the first one.
+> 
 >>
 >>>
->>> On powerpc, for 16k pages, we have to define 4 consecutive PTEs. All 4
->>> PTE are flagged with the SPS bit telling it's a 16k pages, but for TLB
->>> misses the HW needs one entrie for each 4k fragment.
->>
->>  From that description, it sounds like the SPS bit might be similar to arm64
->> contiguous bit? Although sounds like you are currently using it in a slightly
->> different way - telling kernel that the base page is 16K but mapping each 16K
->> page with 4x 4K entries (plus the SPS bit set)?
+>>> BTW, Even with the change to set ex_phy->port = ex->parent_port, are 
+>>> we still joining the host-attached expander phy (19) to a port with 
+>>> SAS address == 0?
+>> Yes, in order to avoid this situation, in the current patch, we will 
+>> not force the SAS address to be set to 0 when the device type is not 
+>> NULL, but will still use the address obtained after requesting the 
+>> expander.
 > 
-> Yes it's both.
-> 
-> When the base page is 16k, there are 4x 4k entries (with SPS bit set) in 
-> the page table, and pte_t is a table of 4 'unsigned long'
-> 
-> When the base page is 4k, there is a 16k hugepage size, which is the 
-> same 4x 4k entries with SPS bit set.
-> 
-> So it looks similar to the contiguous bit.
-> 
-> 
-> And by extension, the same principle is used for 512k hugepages, the bit 
-> _PAGE_HUGE is copied by the TLB miss handler into the lower bit of PS, 
-> PS being as follows:
-> - 00 Small (4 Kbyte or 16 Kbyte)
-> - 01 512 Kbyte
-> - 10 Reserved
-> - 11 8 Mbyte
-> 
-> So as PMD size is 4M, 512k pages are 128 identical consecutive entries 
-> in the page table.
-> 
-> I which I could have THP with 16k or 512k pages.
+> ok, let me check that again later today.
+OK.
 
-Then you have come to the right place! :)
-
-https://lore.kernel.org/linux-mm/20231204102027.57185-1-ryan.roberts@arm.com/
-
-
-> 
-> Christophe
+Thanks
+Xingui
 
