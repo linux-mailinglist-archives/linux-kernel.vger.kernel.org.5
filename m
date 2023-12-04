@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF8C804016
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:38:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A627B804002
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346300AbjLDUhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:37:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
+        id S1345652AbjLDUhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235536AbjLDUhY (ORCPT
+        with ESMTP id S235496AbjLDUgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:37:24 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD9A1BFB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:39 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-58d9a4e9464so2021190eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 12:35:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1701722138; x=1702326938; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FWagGRv/i1MW5G1zwpH94jc78fOBc/tv6/pgOnwcx6k=;
-        b=b+vDXRMze/C1r4e24CUeK2VhFvtLtGE/yojAiTPjpqNP0zOjoF5EGSYgkfebMM87Ok
-         41+lNvkLHVfg5wYqgC1KSv/uAwiPfJSyj4j7Wd1KK50zRp8lCKOJ1j47MMBI5scT3KD/
-         WAQ+MtoH1Wjx5c0IqOD9lgVW3pCnmt35I8R4Rs4bsn7a2x0XWEBGWQ8tfy/5XhRoIA2h
-         Hgw2AlUxovbI+3Wt1XQKjrH6EjX5lLQfObCXV0uUrlyzWLCZB4o7LlxBuhU/hwYBVx9f
-         g7qKnCxGz68O4qb8h1t+Nz5dGEw3Bn8nkXAHX0vsYyFMLcVKhpQ7D+EgH3/bOuJMjNoC
-         YdDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701722138; x=1702326938;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FWagGRv/i1MW5G1zwpH94jc78fOBc/tv6/pgOnwcx6k=;
-        b=kBLLVQ/0+VJscP7aT3TRBfNtpHBCI2UCcZVzfnN+0Z/rpwNmVsnGGGnLgXR5YB/Zm7
-         Mbki3n6GPL5tqsQW/uQlys2zyaFunk/uyC2xNNNUAZe1PN3nwMfI9nanksUzOn8RALKe
-         qWpuw1Za3n/dOCoXw6d/dOHHdv6aJfFCEvjPqD+0I4eMR9m3etXLroEUtNRMZ6/goum5
-         b5DV/GndkQ4WqGawZYTfdeM4GoED9ymc0FwclZM1IEWS3Rb543A2qgTLe05dl/8BQH2H
-         +QlFjApURHP21Mjsa+A6FD7++IZoBWHUd9yruvt231IgWU+F1+jBDBAVgKx+1AFtZuF0
-         6Fnw==
-X-Gm-Message-State: AOJu0YzPMTC3xM1QaTQtl/ASM95Z//SVuqkEY03newOf2VlHC+QOttwt
-        Boz5feoK03dLuc+hzjDRvcAEMSFcCY32PQI3/Tk=
-X-Google-Smtp-Source: AGHT+IGpvpasx/jsnz18GATaaZSXxidSk27F4tka23is5+bIfanisW7osRFJz0pud48XSUhXK+w7lw==
-X-Received: by 2002:a05:6358:640b:b0:16d:f932:b5f with SMTP id f11-20020a056358640b00b0016df9320b5fmr1254764rwh.30.1701722138274;
-        Mon, 04 Dec 2023 12:35:38 -0800 (PST)
-Received: from localhost.localdomain ([50.212.55.89])
-        by smtp.gmail.com with ESMTPSA id jo23-20020a056214501700b0067ac930d17asm1123469qvb.141.2023.12.04.12.35.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 12:35:37 -0800 (PST)
-From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Mon, 4 Dec 2023 15:36:53 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252713268
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4044C433CA;
+        Mon,  4 Dec 2023 20:35:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701722118;
+        bh=C2U2qrCynZxI56Zkj6LUzA8sFR5k/ZUF1IMLPjunjXM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=kfpePyU1kYjofn5AW34bsIYfYkR8+w4QT+ZdqrS09kaa5KHDUco4Zw7IAeI8kYsAS
+         WJ2FY+80dCTzhLhhutYMldZtDJfEijElp9KvIt6jE9/I1oQvWC6ZCl+q/4r0UXDtD4
+         0HNEleormdZzCI/ZGJIy5oao3sEbLk3pnaygypbABo/4YrQbQKCTiXa95RYgToa0U8
+         NZOFUehFsdYQupxW/SkI7zMrdPF2Fq4OWVx307G+0fcvYeATnsfPuSXqieAuYT9lp0
+         a9kCFTz5K4o8bdLMWrYsTOHgitSItmNVr1VIMUmp0vQebxrScvfOSc7q8Ni2uvNTdp
+         bLB9fSBdYafhg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
+        kernel test robot <lkp@intel.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Subject: [PATCH 2/2] pinctrl: stm32: fix GPIO level interrupts
-Date:   Mon,  4 Dec 2023 15:33:57 -0500
-Message-ID: <20231204203357.2897008-3-ben.wolsieffer@hefring.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231204203357.2897008-1-ben.wolsieffer@hefring.com>
-References: <20231204203357.2897008-1-ben.wolsieffer@hefring.com>
+        Sasha Levin <sashal@kernel.org>, rf@opensource.cirrus.com,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-gpio@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 01/17] pinctrl: lochnagar: Don't build on MIPS
+Date:   Mon,  4 Dec 2023 15:34:46 -0500
+Message-ID: <20231204203514.2093855-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.1.65
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The STM32 doesn't support GPIO level interrupts in hardware, so the
-driver tries to emulate them using edge interrupts, by retriggering the
-interrupt if necessary based on the pin state after the handler
-finishes.
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Currently, this functionality does not work because the irqchip uses
-handle_edge_irq(), which doesn't run the irq_eoi() or irq_unmask()
-callbacks after handling the interrupt. This patch fixes this by using
-handle_level_irq() for level interrupts, which causes irq_unmask() to be
-called to retrigger the interrupt.
+[ Upstream commit 6588732445ff19f6183f0fa72ddedf67e5a5be32 ]
 
-Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+MIPS appears to define a RST symbol at a high level, which clashes
+with some register naming in the driver. Since there is currently
+no case for running this driver on MIPS devices simply cut off the
+build of this driver on MIPS.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311071303.JJMAOjy4-lkp@intel.com/
+Suggested-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20231115162853.1891940-1-ckeepax@opensource.cirrus.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/stm32/pinctrl-stm32.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/pinctrl/cirrus/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
-index 603f900e88c1..fb9532601cbb 100644
---- a/drivers/pinctrl/stm32/pinctrl-stm32.c
-+++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
-@@ -348,12 +348,15 @@ static int stm32_gpio_set_type(struct irq_data *d, unsigned int type)
- 	case IRQ_TYPE_EDGE_RISING:
- 	case IRQ_TYPE_EDGE_FALLING:
- 	case IRQ_TYPE_EDGE_BOTH:
-+		irq_set_handler_locked(d, handle_edge_irq);
- 		parent_type = type;
- 		break;
- 	case IRQ_TYPE_LEVEL_HIGH:
-+		irq_set_handler_locked(d, handle_level_irq);
- 		parent_type = IRQ_TYPE_EDGE_RISING;
- 		break;
- 	case IRQ_TYPE_LEVEL_LOW:
-+		irq_set_handler_locked(d, handle_level_irq);
- 		parent_type = IRQ_TYPE_EDGE_FALLING;
- 		break;
- 	default:
+diff --git a/drivers/pinctrl/cirrus/Kconfig b/drivers/pinctrl/cirrus/Kconfig
+index 530426a74f751..b3cea8d56c4f6 100644
+--- a/drivers/pinctrl/cirrus/Kconfig
++++ b/drivers/pinctrl/cirrus/Kconfig
+@@ -1,7 +1,8 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config PINCTRL_LOCHNAGAR
+ 	tristate "Cirrus Logic Lochnagar pinctrl driver"
+-	depends on MFD_LOCHNAGAR
++	# Avoid clash caused by MIPS defining RST, which is used in the driver
++	depends on MFD_LOCHNAGAR && !MIPS
+ 	select GPIOLIB
+ 	select PINMUX
+ 	select PINCONF
 -- 
-2.42.1
+2.42.0
 
