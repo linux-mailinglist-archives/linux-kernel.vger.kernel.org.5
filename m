@@ -2,149 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89194802E38
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD10802E2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjLDInx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 03:43:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        id S1343668AbjLDIoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:44:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234961AbjLDIn2 (ORCPT
+        with ESMTP id S235286AbjLDInt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 03:43:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39FE1BCE
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:43:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADE95C433C9;
-        Mon,  4 Dec 2023 08:43:01 +0000 (UTC)
-Message-ID: <89469115-445b-4875-b1d7-3ab0ce942572@xs4all.nl>
-Date:   Mon, 4 Dec 2023 09:43:00 +0100
+        Mon, 4 Dec 2023 03:43:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D813E10C2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 00:43:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701679400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WNLdrMB2tgHHf0igk8Wyh8lratwDZ12KyFRCSXbkkjQ=;
+        b=WcUUcWZkkNzDcZyrI7GpI1+xVwKma5y0D8uyECEMThgQQ4tCE41nv17t5DYmgm+5d0fChg
+        MjZcnyP0gQCmIDMQIolAZLHAro06pFMsrfODYhWULJe4SSzcHw9KzMo+p2uidjI1fbpDW/
+        4WqjuKRIx58ZUr16wmZC817OU9d42rQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-25-S3KQUAwxNAKg8YP9LTNJfQ-1; Mon, 04 Dec 2023 03:43:18 -0500
+X-MC-Unique: S3KQUAwxNAKg8YP9LTNJfQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AC51685A5B5;
+        Mon,  4 Dec 2023 08:43:17 +0000 (UTC)
+Received: from localhost (unknown [10.72.113.121])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DF09C36E2;
+        Mon,  4 Dec 2023 08:43:08 +0000 (UTC)
+Date:   Mon, 4 Dec 2023 16:43:05 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org, akpm@linux-foundation.org,
+        nathan@kernel.org
+Subject: Re: [PATCH v3 2/7] kexec_file: print out debugging message if
+ required
+Message-ID: <ZW2RGdFFsO1yIaZm@MiWiFi-R3L-srv>
+References: <20231130023955.5257-1-bhe@redhat.com>
+ <20231130023955.5257-3-bhe@redhat.com>
+ <81c62af671ebbfad61dd46aa056050a56bf535a2.camel@perches.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 20/35] media: radio-shark: use atomic find_bit() API
- where appropriate
-Content-Language: en-US, nl
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-References: <20231203192422.539300-1-yury.norov@gmail.com>
- <20231203193307.542794-1-yury.norov@gmail.com>
- <20231203193307.542794-19-yury.norov@gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231203193307.542794-19-yury.norov@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81c62af671ebbfad61dd46aa056050a56bf535a2.camel@perches.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2023 20:32, Yury Norov wrote:
-> Despite that it's only 2- or 3-bit maps, convert for-loop followed by
-> test_bit() to for_each_test_and_clear_bit() as it makes the code cleaner.
+On 11/29/23 at 06:52pm, Joe Perches wrote:
+> On Thu, 2023-11-30 at 10:39 +0800, Baoquan He wrote:
+> > Replace pr_debug() with the newly added kexec_dprintk() in kexec_file
+> > loading related codes.
 > 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-
-Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-
-You can take this patch yourself as well.
-
-Regards,
-
-	Hans
-
-> ---
->  drivers/media/radio/radio-shark.c  | 5 +----
->  drivers/media/radio/radio-shark2.c | 5 +----
->  2 files changed, 2 insertions(+), 8 deletions(-)
+> trivia:
 > 
-> diff --git a/drivers/media/radio/radio-shark.c b/drivers/media/radio/radio-shark.c
-> index 127a3be0e0f0..0c50b3a9623e 100644
-> --- a/drivers/media/radio/radio-shark.c
-> +++ b/drivers/media/radio/radio-shark.c
-> @@ -158,10 +158,7 @@ static void shark_led_work(struct work_struct *work)
->  		container_of(work, struct shark_device, led_work);
->  	int i, res, brightness, actual_len;
->  
-> -	for (i = 0; i < 3; i++) {
-> -		if (!test_and_clear_bit(i, &shark->brightness_new))
-> -			continue;
-> -
-> +	for_each_test_and_clear_bit(i, &shark->brightness_new, 3) {
->  		brightness = atomic_read(&shark->brightness[i]);
->  		memset(shark->transfer_buffer, 0, TB_LEN);
->  		if (i != RED_LED) {
-> diff --git a/drivers/media/radio/radio-shark2.c b/drivers/media/radio/radio-shark2.c
-> index f1c5c0a6a335..d9ef241e1778 100644
-> --- a/drivers/media/radio/radio-shark2.c
-> +++ b/drivers/media/radio/radio-shark2.c
-> @@ -145,10 +145,7 @@ static void shark_led_work(struct work_struct *work)
->  		container_of(work, struct shark_device, led_work);
->  	int i, res, brightness, actual_len;
->  
-> -	for (i = 0; i < 2; i++) {
-> -		if (!test_and_clear_bit(i, &shark->brightness_new))
-> -			continue;
-> -
-> +	for_each_test_and_clear_bit(i, &shark->brightness_new, 2) {
->  		brightness = atomic_read(&shark->brightness[i]);
->  		memset(shark->transfer_buffer, 0, TB_LEN);
->  		shark->transfer_buffer[0] = 0x83 + i;
+> > diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> []
+> > @@ -551,9 +551,12 @@ int crash_prepare_elf64_headers(struct crash_mem *mem, int need_kernel_map,
+> >  		phdr->p_filesz = phdr->p_memsz = mend - mstart + 1;
+> >  		phdr->p_align = 0;
+> >  		ehdr->e_phnum++;
+> > -		pr_debug("Crash PT_LOAD ELF header. phdr=%p vaddr=0x%llx, paddr=0x%llx, sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
+> > -			phdr, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz,
+> > -			ehdr->e_phnum, phdr->p_offset);
+> > +#ifdef CONFIG_KEXEC_FILE
+> > +		kexec_dprintk("Crash PT_LOAD ELF header. phdr=%p vaddr=0x%llx, paddr=0x%llx, "
+> > +			      "sz=0x%llx e_phnum=%d p_offset=0x%llx\n",
+> > +			      phdr, phdr->p_vaddr, phdr->p_paddr, phdr->p_filesz,
+> > +			      ehdr->e_phnum, phdr->p_offset);
+> > +#endif
+> 
+> Perhaps run checkpatch and coalesce the format string.
+
+Sorry for being late to reply, this comment was missed.
+
+I broke it into two because it's a too long line and not friendly for
+reading. I did notice there's such line breaking code. I can change it
+if it's not suggested. Thanks for careful checking.
 
