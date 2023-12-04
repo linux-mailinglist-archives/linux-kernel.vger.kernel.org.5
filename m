@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3125C803A49
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA301803A4B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344762AbjLDQ3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:29:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
+        id S1344868AbjLDQ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:29:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234798AbjLDQ3N (ORCPT
+        with ESMTP id S1344779AbjLDQ3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:29:13 -0500
+        Mon, 4 Dec 2023 11:29:14 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A634999
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:29:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC935C433C9;
-        Mon,  4 Dec 2023 16:29:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CDC99
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:29:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5E64C433C8;
+        Mon,  4 Dec 2023 16:29:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701707359;
-        bh=kXALvUUA7C60RTiEvlmbNaLVBTs8Swam2ASKbF/SNa8=;
+        s=k20201202; t=1701707361;
+        bh=l03PGOdUpXAjQJxyhn2jCXzYkIewX87iY4tJWHWgmbs=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=aE9JBFdKF0xPlg3i222eHc8zIytY35eCO0X4W70DEc7oWgBixullGaC8zJU5lSEDS
-         TQZces5L21wq1mYm3b6HatKYGl95A5naY8e3Unq3A8op4DbfpCqzI2wjFfIiotLjtU
-         s6kakKRXyOI1azUCmEAJ+vq6ILYHhWzMVkrxS+gBoIN1l4VskcAfbttWB9i0ERGNVJ
-         xNDBdjLz1GrFwybIVXsK2yOR0yRYz16sw+cuvO+jRvDz/gVNaNNVGRl1TBjHPdT+tq
-         RN93Zh/W2GUQCZJt8IMoDQmG2IvsJI1/NsfI6XlBwQ7m2STP3eMjsk8wxJHv4SsAu7
-         efygr/RUpdH6w==
+        b=ElLbXAldfKAr1QHhgOyNO7vKUquxj2w/umm0r0AAKpwnRsqbsPw3RgXUFi5Y+zc8h
+         suMe0+B2kAiUofDF32HCEPrZVMHLL67XdH5C3WhzY3MR9QB0FscTWyFZu/O58NYyOz
+         K0CzmmBM/H3xwmDjtwf5QHCgKQRlq2VBnHzWj0owcVTfsvyRTgzaYuQLJ9TVh5IjGe
+         grY5mJV1AEsxE/UiL7LqDyab/5hOQjB0gDlU3OYC+br+d2wxq0TaYbw8bhNeaKm4tl
+         ImwdOL5kDQpQZ3ZYVk21NQsr3g6PoyuXtbydLGAdV9huQ9U3nP+4KJ9t/aslw9c3ya
+         UO8APZnBELu0A==
 From:   Mark Brown <broonie@kernel.org>
-To:     David Rau <David.Rau.opensource@dm.renesas.com>
-Cc:     support.opensource@diasemi.com, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231201042933.26392-1-David.Rau.opensource@dm.renesas.com>
-References: <20231201042933.26392-1-David.Rau.opensource@dm.renesas.com>
-Subject: Re: [PATCH] ASoC: da7219: Support low DC impedance headset
-Message-Id: <170170735755.96782.4583489004118751914.b4-ty@kernel.org>
-Date:   Mon, 04 Dec 2023 16:29:17 +0000
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marian Postevca <posteuca@mutex.one>
+Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231202223001.8025-1-posteuca@mutex.one>
+References: <20231202223001.8025-1-posteuca@mutex.one>
+Subject: Re: [PATCH] ASoC: amd: acp: Add support for a new Huawei Matebook
+ laptop
+Message-Id: <170170735951.96782.6842317047782976918.b4-ty@kernel.org>
+Date:   Mon, 04 Dec 2023 16:29:19 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -51,9 +53,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 01 Dec 2023 12:29:33 +0800, David Rau wrote:
-> Change the default MIC detection impedance threshold to 200ohm
-> to support low mic DC impedance headset.
+On Sun, 03 Dec 2023 00:29:51 +0200, Marian Postevca wrote:
+> This commit adds support for Huawei MateBook D16 2021
+> with Ryzen 4600H in driver acp3x-es83xx.
 > 
 > 
 
@@ -63,8 +65,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: da7219: Support low DC impedance headset
-      commit: 5f44de697383fcc9a9a1a78f99e09d1838704b90
+[1/1] ASoC: amd: acp: Add support for a new Huawei Matebook laptop
+      commit: b5338b1b901e41bd7cead66a0b3a796e9fa95684
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
