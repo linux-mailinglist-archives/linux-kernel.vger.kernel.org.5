@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4399080316F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A52E7803173
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229797AbjLDLZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:25:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
+        id S230462AbjLDLZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 06:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344022AbjLDKzX (ORCPT
+        with ESMTP id S235377AbjLDKzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:55:23 -0500
+        Mon, 4 Dec 2023 05:55:37 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 611AD129
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:55:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5E1BD48
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:55:29 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E54BA169C;
-        Mon,  4 Dec 2023 02:56:12 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C236169E;
+        Mon,  4 Dec 2023 02:56:16 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D9193F6C4;
-        Mon,  4 Dec 2023 02:55:22 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D844F3F6C4;
+        Mon,  4 Dec 2023 02:55:25 -0800 (PST)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -49,9 +49,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
 Cc:     Ryan Roberts <ryan.roberts@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 08/15] arm64/mm: ptep_clear_flush_young(): New layer to manage contig bit
-Date:   Mon,  4 Dec 2023 10:54:33 +0000
-Message-Id: <20231204105440.61448-9-ryan.roberts@arm.com>
+Subject: [PATCH v3 09/15] arm64/mm: ptep_set_wrprotect(): New layer to manage contig bit
+Date:   Mon,  4 Dec 2023 10:54:34 +0000
+Message-Id: <20231204105440.61448-10-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231204105440.61448-1-ryan.roberts@arm.com>
 References: <20231204105440.61448-1-ryan.roberts@arm.com>
@@ -80,40 +80,59 @@ existing uses.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/arm64/include/asm/pgtable.h | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 10 ++++++----
+ arch/arm64/mm/hugetlbpage.c      |  2 +-
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 9b4a9909fd5b..fc1005222ee4 100644
+index fc1005222ee4..423cc32b2777 100644
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -138,7 +138,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
-  * so that we don't erroneously return false for pages that have been
-  * remapped as PROT_NONE but are yet to be flushed from the TLB.
-  * Note that we can't make any assumptions based on the state of the access
-- * flag, since ptep_clear_flush_young() elides a DSB when invalidating the
-+ * flag, since __ptep_clear_flush_young() elides a DSB when invalidating the
-  * TLB.
+@@ -958,11 +958,11 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+ 
+ /*
+- * ptep_set_wrprotect - mark read-only while trasferring potential hardware
++ * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
+  * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
   */
- #define pte_accessible(mm, pte)	\
-@@ -904,8 +904,7 @@ static inline int __ptep_test_and_clear_young(struct vm_area_struct *vma,
- 	return pte_young(pte);
+-#define __HAVE_ARCH_PTEP_SET_WRPROTECT
+-static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long address, pte_t *ptep)
++static inline void __ptep_set_wrprotect(struct mm_struct *mm,
++					unsigned long address, pte_t *ptep)
+ {
+ 	pte_t old_pte, pte;
+ 
+@@ -980,7 +980,7 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
+ static inline void pmdp_set_wrprotect(struct mm_struct *mm,
+ 				      unsigned long address, pmd_t *pmdp)
+ {
+-	ptep_set_wrprotect(mm, address, (pte_t *)pmdp);
++	__ptep_set_wrprotect(mm, address, (pte_t *)pmdp);
  }
  
--#define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
--static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
-+static inline int __ptep_clear_flush_young(struct vm_area_struct *vma,
- 					 unsigned long address, pte_t *ptep)
- {
- 	int young = __ptep_test_and_clear_young(vma, address, ptep);
-@@ -1119,6 +1118,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
- #define ptep_get_and_clear			__ptep_get_and_clear
- #define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+ #define pmdp_establish pmdp_establish
+@@ -1120,6 +1120,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
  #define ptep_test_and_clear_young		__ptep_test_and_clear_young
-+#define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
-+#define ptep_clear_flush_young			__ptep_clear_flush_young
+ #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
+ #define ptep_clear_flush_young			__ptep_clear_flush_young
++#define __HAVE_ARCH_PTEP_SET_WRPROTECT
++#define ptep_set_wrprotect			__ptep_set_wrprotect
  
  #endif /* !__ASSEMBLY__ */
+ 
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index c2a753541d13..952462820d9d 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -493,7 +493,7 @@ void huge_ptep_set_wrprotect(struct mm_struct *mm,
+ 	pte_t pte;
+ 
+ 	if (!pte_cont(READ_ONCE(*ptep))) {
+-		ptep_set_wrprotect(mm, addr, ptep);
++		__ptep_set_wrprotect(mm, addr, ptep);
+ 		return;
+ 	}
  
 -- 
 2.25.1
