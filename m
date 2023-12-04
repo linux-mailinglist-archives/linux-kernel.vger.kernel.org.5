@@ -2,108 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D0A803939
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B719480393D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbjLDPwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        id S234755AbjLDPym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:54:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230496AbjLDPws (ORCPT
+        with ESMTP id S230496AbjLDPyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:52:48 -0500
-Received: from ar2.dbzero.it (unknown [IPv6:2a00:6d41:10:195b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C016BB0;
-        Mon,  4 Dec 2023 07:52:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=dividebyzero.it; s=20160415; h=Message-ID:References:In-Reply-To:Cc:To:
-        Subject:From:Content-Transfer-Encoding:Content-Type:Date:MIME-Version:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=tjPTAXiVGnrEMpxM75gAFv9NoZuFL91goO+rxxj9KDI=; b=Q0v1Anjz091GstyiSuyBG4yIyc
-        JOR0xAIWuoNiT8MAUkuOjUh6vmFRRdT0MWqFaKhTzw9nDcOD8xGbN/OFN77heG70w5gG6Kc2sHqdR
-        rU5t+0JAcd/ODtQiFaVfZxAuIV3/moFlrWIjuLJys/YwUOoHQDMa5X5ko+Bioeo9LaF8=;
-Received:  by ar2.dbzero.it with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (Authenticated user: juri@dividebyzero.it)
-        (envelope-from <juri@dividebyzero.it>)
-        id 1rABFF-0004le-0S; Mon, 04 Dec 2023 16:52:29 +0100
+        Mon, 4 Dec 2023 10:54:41 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD051A4;
+        Mon,  4 Dec 2023 07:54:47 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B4FgDvs016348;
+        Mon, 4 Dec 2023 09:54:37 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=IZUWin5EelBcVCwXF9m42SDzkrRDDfJE27u7Pqz+/Ak=; b=
+        JHp6evJFr0W8eDl30hvb+oD3WVFRr9YfK2s+c48A9lp3rwO91aV2chXN1sbuZMOg
+        bEmR/fTRfmHp7Zca6RTUNvct+kqjQwvdkmDzXehsbv++n3JsaRQB1YOkfFjDl4am
+        jq3tMULEc8zr+6Z/gfaqU24YbPGDAHwGR9lEPbFl2kPDgLP74RzUl/GMUTacquQr
+        S5+HSNBYqT5rPSZos6QUVl20nJA9VqiuXQIFzTdexHyhSj169fBiXtEExLKuQHAU
+        W6OJFNsc0NWLjCkdoYr3PLN1t5/zIfDNGKQpedUJo67mlCU4COmiER8KPFc4gMBv
+        9bD2FzMLXATT62fYmFhoXg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ur1vnj3v7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Dec 2023 09:54:37 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
+ 2023 15:54:35 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Mon, 4 Dec 2023 15:54:35 +0000
+Received: from [198.90.251.82] (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.82])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B9D94468;
+        Mon,  4 Dec 2023 15:54:35 +0000 (UTC)
+Message-ID: <f2dec209-6bc7-49ab-9dff-57a2ca4efb03@opensource.cirrus.com>
+Date:   Mon, 4 Dec 2023 15:54:35 +0000
 MIME-Version: 1.0
-Date:   Mon, 04 Dec 2023 15:52:26 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-From:   juri@dividebyzero.it
-TLS-Required: No
-Subject: Re: PROBLEM: asus_nb_wmi sends KEY_BRIGHTNESSDOWN on pressing CAPS 
- Lock and PrntScrn on Zenbook S 13 UX5304VA
-To:     "Hans de Goede" <hdegoede@redhat.com>,
-        "James John" <me@donjajo.com>,
-        "Corentin Chary" <corentin.chary@gmail.com>,
-        "=?utf-8?B?SWxwbyBKw6RydmluZW4=?=" <ilpo.jarvinen@linux.intel.com>,
-        "Mark Gross" <markgross@kernel.org>
-Cc:     platform-driver-x86@vger.kernel.org,
-        acpi4asus-user@lists.sourceforge.net, linux-kernel@vger.kernel.org
-In-Reply-To: <93b172c0-79ad-47d0-9948-e286917c18bb@redhat.com>
-References: <a2c441fe-457e-44cf-a146-0ecd86b037cf@donjajo.com>
- <39b5f902-3a7e-fc04-254e-776bf61f57e2@redhat.com>
- <024c4ad4-1a73-8c24-5e6f-f8c9f2f7b98f@redhat.com>
- <1884918.tdWV9SEqCh@dividebyzero.it>
- <77b3eed7-825d-41c5-a802-ea891a16f992@redhat.com>
- <07b057618b72f301142585844ccdcaab75a716fe@dividebyzero.it>
- <f656f81bb288e69878ca001ec3e27c3ad647e7ea@dividebyzero.it>
- <93b172c0-79ad-47d0-9948-e286917c18bb@redhat.com>
-Message-ID: <fc826113b0fdb26e99e9e1f3faa84db327a19035@dividebyzero.it>
-X-Original-Message-ID: <fc826113b0fdb26e99e9e1f3faa84db327a19035@dividebyzero.it>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] ASoC: Intel: soc-acpi-intel-tgl-match: add cs42l43 and
+ cs35l56 support
+Content-Language: en-US
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <broonie@kernel.org>, <peter.ujfalusi@linux.intel.com>,
+        <yung-chuan.liao@linux.intel.com>
+CC:     <kai.vehmanen@linux.intel.com>, <cezary.rojewski@intel.com>,
+        <ranjani.sridharan@linux.intel.com>, <alsa-devel@alsa-project.org>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+References: <20231204135614.2169624-1-rf@opensource.cirrus.com>
+ <8510b464-9352-480d-88cf-857597e16cbc@linux.intel.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+In-Reply-To: <8510b464-9352-480d-88cf-857597e16cbc@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-GUID: JC-uyXW0VORSYtc4g51NQ7HKt1O_BmeG
+X-Proofpoint-ORIG-GUID: JC-uyXW0VORSYtc4g51NQ7HKt1O_BmeG
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you for the reply.
+On 04/12/2023 14:55, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 12/4/23 07:56, Richard Fitzgerald wrote:
+>> From: Bard Liao <yung-chuan.liao@linux.intel.com>
+>>
+>> This is a test configuration for UpExtreme with Cirrus Logic
+>> CS35L56-EIGHT-C board.
+>>
+>> The codec layout is configured as:
+>>      - Link3: CS42L43 Jack
+>>      - Link0: 2x CS35L56 Speaker (amps 1 and 2)
+>>      - Link1: 2x CS35L56 Speaker (amps 7 and 8)
+>>
+>> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+>> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>> ---
+>> Changes since V1:
+>> - Changed ALSA prefixes for CS35L56 to 'AMPn'
+>> - Renumbered the CS35L56 prefixes to match the numbering of the
+>>    OUTn speaker sockets on the EIGHT-C board
+>> ---
+>>   .../intel/common/soc-acpi-intel-tgl-match.c   | 78 +++++++++++++++++++
+>>   1 file changed, 78 insertions(+)
+>>
+>> diff --git a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+>> index 5804926c8b56..e5f721ba5ed4 100644
+>> --- a/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+>> +++ b/sound/soc/intel/common/soc-acpi-intel-tgl-match.c
+> 
+>> +static const struct snd_soc_acpi_adr_device cs35l56_0_adr[] = {
+>> +	{
+>> +		.adr = 0x00003301FA355601ull,
+>> +		.num_endpoints = 1,
+>> +		.endpoints = &spk_r_endpoint,
+>> +		.name_prefix = "AMP1"
+>> +	},
+>> +	{
+>> +		.adr = 0x00003201FA355601ull,
+>> +		.num_endpoints = 1,
+>> +		.endpoints = &spk_3_endpoint,
+>> +		.name_prefix = "AMP2"
+>> +	}
+>> +};
+>> +
+>> +static const struct snd_soc_acpi_adr_device cs35l56_1_adr[] = {
+>> +	{
+>> +		.adr = 0x00013701FA355601ull,
+>> +		.num_endpoints = 1,
+>> +		.endpoints = &spk_l_endpoint,
+>> +		.name_prefix = "AMP8"
+>> +	},
+>> +	{
+>> +		.adr = 0x00013601FA355601ull,
+>> +		.num_endpoints = 1,
+>> +		.endpoints = &spk_2_endpoint,
+>> +		.name_prefix = "AMP7"
+>> +	}
+>> +};
+> 
+> Don't we need the same change of name_prefix for
+> soc-acpi-intel-mtl-match.c? I see this in the existing code:
+> 
 
-December 4, 2023 at 14:54, "Hans de Goede" <hdegoede@redhat.com> wrote:
+The chain that Peter sent only has CS35L56 added to tgl-match.
 
->=20
->=20Ok, that is good to know. Is there any specific reason why you are pa=
-ssing
->  "acpi_osi=3D!Windows 2012" on the kernel commandline?
->=20=20
->=20 Generally speaking passing any other kernel arguments then those use=
-d
->  to specify the root filesystem and things like "quiet" is not advisabl=
-e.
->=20=20
->=20 Everything should just work without passing any special options and =
-if things
->  do not work without special options then that is a bug which needs to =
-be fixed.
->=20=20
->=20 Regards,
->=20=20
->=20 hans
->=20
+I've checked the history of mtl-match and the patch that added CS35L56
+there was not cc'd to any cirrus.com email address so we didn't notice
+it. Otherwise we would have picked this up earlier. alsa-devel is noisy.
 
-Honestly=20I don't remember the exact reason, but I had it since the begi=
-nning, possibly due to not working hotkeys.
-I removed it now, and everything seems to be working without any issue, o=
-ther that now the brightness is no longer being controlled by the EC and =
-cannot be adjusted outside of a graphical interface.
-I'm going to keep it like this, I'll let you know if any issue should ari=
-se.
+I haven't got a MTL platform to test on but I can send a separate patch
+to change mtl-match if you are happy with this prefix change.
 
-As for the other cmdline arguments (which I had quite too many) I realize=
-d that the only non-standard one I really need is `nouveau.modeset=3D0`, =
-without which the driver - and sometimes the whole system - hangs (as thi=
-s laptop has an old NVidia GPU I don't use but keep always disabled).
-Do you suggest opening another thread regarding that on this mailing list=
-, or should it be better somewhere else?
+FWIW I was going to switch to using "cs35l56-n" prefix but while editing
+all our unit test cases to the new prefix I realized that's a problem if
+we make similar devices with the same controls. We often make a family
+of devices that have the same (or very similar) software interface - for
+example CS35L41/L51 and the CS47L15/35/85/90/92/93/48L92 family. If we
+use the chip ID as the prefix it would create a bogus change in the ALSA
+control names even though they are the same controls. OTOH if we used
+"cs35l56-n" for all cs35l56-like devices (to avoid the name change) it's
+strange that there's a control named for a chip you don't have...
 
-Regards,
-
-Juri
+If it quacks like a duck it would be nice if it looks like a duck :)
