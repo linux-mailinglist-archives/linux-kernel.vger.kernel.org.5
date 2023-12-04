@@ -2,167 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 731C3803E7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAFF803E7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232466AbjLDTfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:35:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45374 "EHLO
+        id S232712AbjLDTfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:35:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235383AbjLDTff (ORCPT
+        with ESMTP id S234205AbjLDTfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:35:35 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5948710E9;
-        Mon,  4 Dec 2023 11:35:31 -0800 (PST)
-Received: from i53875b61.versanet.de ([83.135.91.97] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1rAEiq-0007pC-B2; Mon, 04 Dec 2023 20:35:16 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jay.xu@rock-chips.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] ARM: dts: rockchip: add gpio alias for gpio dt nodes
-Date:   Mon, 04 Dec 2023 20:35:15 +0100
-Message-ID: <62868103.matp6XCIr4@diego>
-In-Reply-To: <89f2a229-9f14-d43f-c53d-5d4688e70456@gmail.com>
-References: <89f2a229-9f14-d43f-c53d-5d4688e70456@gmail.com>
+        Mon, 4 Dec 2023 14:35:34 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2071.outbound.protection.outlook.com [40.107.220.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B18E6;
+        Mon,  4 Dec 2023 11:35:40 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ktiSeEu+SVWuZDN4xa5+i7XGBcHqWwrJKH/KXusmZXZmkl4BqPGUF0pym1Ia/K0S0X5Gd4An+hzIZyX9iewh/sHdFo0cFyLxJuFaXEVX3tQtNNOtAuh5Lk6G7O8fyuXHc9WC1mFnOmlWGdUrQtjnJ/f0MeoJuxfaGVP+64ljBP+8u170YiA7EzYa9xixxCPbPxNeOrburM5sz5FxrGhxD7167q20P+vu6iHx6ZYdHaRFZtPPsD4Y5rbseERSIpJqnNYZeyD7b3NX6BxrLpWOkJWD0shYHEi/1WK0TBdwf+U0QekIukZeem/oB6/q6d1QpX8cq4/fFxGPw2ue8rZsOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=faSNB9Eimry/M1EVNLy6jhmEtmnsx4cmm2a9Ro7T1m8=;
+ b=PBzkn3vgOXapv1XHHLFZTPYH8jFwQpuoRQJ8ztROtjaPmQIQfqOXHIqfKc67V42reWAQT0J/2Vp1MzWPcpuymPjdPHYPQU5OznAtPWJt03uQobHv12Y+sYdzjfdpWJCpV2bZQriGAHTxAeAtamYHUzatLB7ayqimF4YJrW8VmUdA4TIqabKa64bjV8DMqhQTgxUNS4ex8USCJF58WLDCXLKGuiqQhJB45OyCCdDQSAkqhc6cjJqSdG4UHMF9iivC29SXjqjzQh4fc5qmJzoNTt0Mzf3UEI4UULuCcUieI3uGUaKYNqtrGecLcbOq6UDWQB8V1BYySTLi9Ue8rDyxcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=faSNB9Eimry/M1EVNLy6jhmEtmnsx4cmm2a9Ro7T1m8=;
+ b=S8ohafIAM40da5hJl3f/LlV8tzuH0A8ggP/ZkTfaAbep3+f/zsYHTPhekf7fgAsE4HvY1AJHObHbN379Ep3GOTMR8ZjaC/++Et+dEKUQDHbri5Sp/bM0ghJ+07itveDG8wlHbMB/zHSz8dTXWfmcb5VpESE7MzndTNH1rIHIVAqRBDNPtfPe4OyfeR1Qux71GN84wNIlVxAtP2RnEJz/ZXUq4f4S9ZCiE/no1yIhyglfNeaTJA+JdTNEBNJpYhEhxgNfa4EER7bWtiXpdCjCfj7F65y/xVAMcJbmLq/DSHA9RpSHbQtzEvUxmW3ochbuTtXp8wEPwnjtMXdTnti4nw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DS0PR12MB9424.namprd12.prod.outlook.com (2603:10b6:8:1b4::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
+ 2023 19:35:35 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 19:35:35 +0000
+Date:   Mon, 4 Dec 2023 15:35:34 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>
+Subject: [GIT PULL] Please pull IOMMUFD subsystem changes
+Message-ID: <20231204193534.GA2755851@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vuknMnMpAQTya69l"
+Content-Disposition: inline
+X-ClientProxiedBy: BL1PR13CA0248.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::13) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DS0PR12MB9424:EE_
+X-MS-Office365-Filtering-Correlation-Id: 98903aa5-3260-4471-b2de-08dbf5002fc1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 33AuZRBKi/eSONkkCB79NL0ygKwlDM5TBgupyNRHyPIRCEfpxKFg+Iin74W8dJwYgt2jTfmqMYmVjkHr8hOMKCLl4mhBUgZCMm/rgad6h5U4m10lSJ66G/G5JBFsGzE5nPs7bP1pD0YkQvBEoXDbR2QZbpOkvAptlECFJYf5hs9tKYbRhQaKgRFWzB0GNQy5nbPTN80Pf6prLwBAoRtHS6hbTdT5Ces6zZBfB60Ax34CflOHi3eCg0802iy8C70J3kZ7EJzTvS9Nr7x/yHbNQ5FZwUP6UBddvM3wz/oAigR1EayQDAdjmTq8e8DXC9hObJuplK+q4hLlgN1hs3TKGdk1TwDu/RVUnnPTROXZ5qtToU1Ub6a2o6b61RGFHyIiG6gb6mBUOT82lzHgYk5Gup48rUsEZIyp7rqbDW2SFYMaeFODNaOD4Au/N0qWglP4N5OC+ofZ/LbzYSF+L6M16vlEfa4kW9g9HBtysgxFRyufYXQB21028YnQxivhc7xRT5kZLFAwAidRyAuv75oNafQMYg9GyfeB3v/WymAVShdy2L3LRCNG+bVRrJ1UxYSE90MMl8OVIrc3GHa/X1K0J4NlxWftjGAb1uukWw0WcnA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(39860400002)(346002)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(6916009)(66556008)(66476007)(66946007)(8676002)(8936002)(4326008)(316002)(6486002)(478600001)(5660300002)(36756003)(41300700001)(33656002)(2906002)(4001150100001)(86362001)(83380400001)(21480400003)(2616005)(26005)(1076003)(38100700002)(6506007)(44144004)(6512007)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?E9Qda5GXjhxl04dRbjufEXMGRA5M57NCI5L1GSicNXrRWoUzLpk7bsWZ2Dhc?=
+ =?us-ascii?Q?jgThzETOY8lsjdW4jVPISWxAG1I5UVmLEOoCQXV2RmEvUQC2zChb3PsLZEF4?=
+ =?us-ascii?Q?9gt+Z0DKTlJLFCOwJwq3lILAVTiI2WOG1jFTpMJVhTM3s4u2MUlLJidHdusb?=
+ =?us-ascii?Q?13v3wUE4sQpHDl3WN9wDv6A36C/TOT8e2nN7Ct8r/E2YQIWHMWtdLW2yV2M2?=
+ =?us-ascii?Q?wilvcZso+8I7th17piN5ESzvpI9J5tlnPrSvhOiKCQn9S+jzrSKagsIQMmzj?=
+ =?us-ascii?Q?uUAs1nmUIL98moaFosjAe2xGiyflRwPfXDVm9Ks/IaXT8FLFRdjFDxEsO4q2?=
+ =?us-ascii?Q?JuqEW2meDcJbEcUZNEDQ+P7OKj2bSaomqomSG47JPSdTDsG5+uLS8BH6smGl?=
+ =?us-ascii?Q?+Ze7R0L40+Y9IitzzmrkVKQMm+UmEj+A/3A/v/AkXELhimSFvicDSvkwqvea?=
+ =?us-ascii?Q?SKbuvv/wQGnUsOJZ9RSthCbKXiE8e+ygazG+r5bWkMstCmAZuxJG8jVwJ3EU?=
+ =?us-ascii?Q?dMsc8FSOXQFHkU6T84DjUCeTZbBBHhMV3K3qQb8qEI62uo7FqYdhJ9HEFjQw?=
+ =?us-ascii?Q?rpIWeZl7/oFJlwR2rWCgMXACtISvl36A8gD9ArEnMNVoT9UrJv8wSzwWGOYd?=
+ =?us-ascii?Q?vwNkCvdOYLGh9u3ER/YMUU4OPDOUK7Zw3pH2IBJ068fBw4pXZT9fBm9irdT6?=
+ =?us-ascii?Q?yysEzKBOpfMRL9ShGAnveAEDdn+MZsybij7IDbRvxbzTu9gRLWNC85g/w0BB?=
+ =?us-ascii?Q?1kPf78qCwX4zznRQIsLle6eVRmYBfn5/CuYOr9E0Vte0k8WXPGBUhb61r2VZ?=
+ =?us-ascii?Q?mivfDEC2I0G1PpJKGhbWbEYcwD79k/g4EVIQlkwiT1zV/Zqk06oUxQ0XGZzL?=
+ =?us-ascii?Q?Lzx0NccZEiTJ5tWdk6h0GAHezC61GnMVcWBZ7+2JQudQu1QecK1UetFJYvAI?=
+ =?us-ascii?Q?tYgCAPGONopTnELvtVbM+zoY9WoG+0JLw2zLTR4kmq0UmtHpV153ZwAJAE3t?=
+ =?us-ascii?Q?nnGXEUaegE2Tjnq7IrOgnSIxlJTKTqYC6fYzIdgRvHTPKuyHeaE8St2vxGgs?=
+ =?us-ascii?Q?Wyczqpl4uB92h2ce0gBWLeRzukIJu6m5QindblNbhwNn73WSN0PGHHpcT6qU?=
+ =?us-ascii?Q?1TTAoAvROLeogA4T6WlGdjgwi6G69OSIBYYHNx8pVobflfplDPUWX/N3qPUx?=
+ =?us-ascii?Q?XTnU7vThIbvti8cOmG9m5ckV/AwgajxX5VWew/ceWlCuk6v+M83kME9WORBP?=
+ =?us-ascii?Q?zCXz6w8ekqjQ1JxMQSG2a/qv++pKAONFhbnv1DJZqOOhUidsLSKwLHsNEWrI?=
+ =?us-ascii?Q?Qma9cRm6D5QCZRpTrwWqmPGhU8v5gMovYNk5D0Tu/hvrRUpJl9vIt+crr/hZ?=
+ =?us-ascii?Q?ORedy1vyF6N0l+2CqlDtK2wLcOVPvMgJd6qpDVfMpUN9DanFCFinltgw4/ro?=
+ =?us-ascii?Q?Oe20jRLUUQDmYS3ch7h0V46ji7yhjPxy60AH1wj54cljUYXkRuZQmOhphHIt?=
+ =?us-ascii?Q?IE8vgMsKTO0Ghcl1TDHydmSc6ruieNNMra6//d2rIklXKZaEARrnsn2Cz6ve?=
+ =?us-ascii?Q?0QgxzV+Av7Q77ZWTphTLrjjNpdyoyd8sKZtLvlk5?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 98903aa5-3260-4471-b2de-08dbf5002fc1
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 19:35:35.4433
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y3oafJ3nhClVMGaGkFkRLty5sCItEPbRtis8bRWW44VrUEBPDpsTZV8G7P9bMtkO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9424
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+--vuknMnMpAQTya69l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Am Samstag, 2. Dezember 2023, 19:22:01 CET schrieb Johan Jonker:
-> Rockchip SoC TRM, SoC datasheet and board schematics always refer to
-> the same gpio numbers - even if not all are used for a specific board.
-> In order to not have to re-define them for every board add the
-> aliases to SoC dtsi files.
-> 
-> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Hi Linus,
 
-patch itself looks good, but I don't understand the authorship situation.
-As these two signed-off-bys are now it would suggest that you picked up
-Jianqun Xu's patch, but then the author would need to be different.
+Two bug fixes for the rc cycle.
 
-Or do you want to declare this via a
-Co-Developed-by: Jianqun Xu <jay.xu@rock-chips.com>
+Thanks,
+Jason
 
+The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
 
-Thanks
-Heiko
+  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
 
-> ---
-> 
-> Changed V1:
->   rebase
->   remove rk3066 gpio5 alias
-> ---
->  arch/arm/boot/dts/rockchip/rk3036.dtsi  | 3 +++
->  arch/arm/boot/dts/rockchip/rk3066a.dtsi | 5 +++++
->  arch/arm/boot/dts/rockchip/rk322x.dtsi  | 4 ++++
->  arch/arm/boot/dts/rockchip/rk3288.dtsi  | 9 +++++++++
->  arch/arm/boot/dts/rockchip/rk3xxx.dtsi  | 4 ++++
->  5 files changed, 25 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/rockchip/rk3036.dtsi b/arch/arm/boot/dts/rockchip/rk3036.dtsi
-> index 78686fc72ce6..8aa2e0864fed 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3036.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3036.dtsi
-> @@ -17,6 +17,9 @@ / {
->  	interrupt-parent = <&gic>;
-> 
->  	aliases {
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
->  		i2c0 = &i2c0;
->  		i2c1 = &i2c1;
->  		i2c2 = &i2c2;
-> diff --git a/arch/arm/boot/dts/rockchip/rk3066a.dtsi b/arch/arm/boot/dts/rockchip/rk3066a.dtsi
-> index de9915d946f7..30139f21de64 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3066a.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3066a.dtsi
-> @@ -13,6 +13,11 @@
->  / {
->  	compatible = "rockchip,rk3066a";
-> 
-> +	aliases {
-> +		gpio4 = &gpio4;
-> +		gpio6 = &gpio6;
-> +	};
-> +
->  	cpus {
->  		#address-cells = <1>;
->  		#size-cells = <0>;
-> diff --git a/arch/arm/boot/dts/rockchip/rk322x.dtsi b/arch/arm/boot/dts/rockchip/rk322x.dtsi
-> index a721744cbfd1..831561fc1814 100644
-> --- a/arch/arm/boot/dts/rockchip/rk322x.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk322x.dtsi
-> @@ -15,6 +15,10 @@ / {
->  	interrupt-parent = <&gic>;
-> 
->  	aliases {
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
-> +		gpio3 = &gpio3;
->  		serial0 = &uart0;
->  		serial1 = &uart1;
->  		serial2 = &uart2;
-> diff --git a/arch/arm/boot/dts/rockchip/rk3288.dtsi b/arch/arm/boot/dts/rockchip/rk3288.dtsi
-> index cb9cdaddffd4..ead343dc3df1 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3288.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3288.dtsi
-> @@ -19,6 +19,15 @@ / {
-> 
->  	aliases {
->  		ethernet0 = &gmac;
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
-> +		gpio3 = &gpio3;
-> +		gpio4 = &gpio4;
-> +		gpio5 = &gpio5;
-> +		gpio6 = &gpio6;
-> +		gpio7 = &gpio7;
-> +		gpio8 = &gpio8;
->  		i2c0 = &i2c0;
->  		i2c1 = &i2c1;
->  		i2c2 = &i2c2;
-> diff --git a/arch/arm/boot/dts/rockchip/rk3xxx.dtsi b/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-> index cb4e42ede56a..f37137f298d5 100644
-> --- a/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-> +++ b/arch/arm/boot/dts/rockchip/rk3xxx.dtsi
-> @@ -16,6 +16,10 @@ / {
-> 
->  	aliases {
->  		ethernet0 = &emac;
-> +		gpio0 = &gpio0;
-> +		gpio1 = &gpio1;
-> +		gpio2 = &gpio2;
-> +		gpio3 = &gpio3;
->  		i2c0 = &i2c0;
->  		i2c1 = &i2c1;
->  		i2c2 = &i2c2;
-> --
-> 2.39.2
-> 
-> 
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/jgg/iommufd.git tags/for-linus-iommufd
 
+for you to fetch changes up to 6f9c4d8c468c189d6dc470324bd52955f8aa0a10:
 
+  iommufd: Do not UAF during iommufd_put_object() (2023-11-29 20:30:03 -0400)
 
+----------------------------------------------------------------
+iommufd 6.7 first rc pull request
+
+A small fix for the dirty tracking self test to fail correctly if the code
+is buggy.
+
+Fix a tricky syzkaller race UAF with object reference counting.
+
+----------------------------------------------------------------
+Jason Gunthorpe (2):
+      iommufd: Add iommufd_ctx to iommufd_put_object()
+      iommufd: Do not UAF during iommufd_put_object()
+
+Robin Murphy (1):
+      iommufd/selftest: Fix _test_mock_dirty_bitmaps()
+
+ drivers/iommu/iommufd/device.c                |  14 +--
+ drivers/iommu/iommufd/hw_pagetable.c          |   8 +-
+ drivers/iommu/iommufd/ioas.c                  |  14 +--
+ drivers/iommu/iommufd/iommufd_private.h       |  70 +++++++++---
+ drivers/iommu/iommufd/main.c                  | 146 ++++++++++++++------------
+ drivers/iommu/iommufd/selftest.c              |  14 +--
+ drivers/iommu/iommufd/vfio_compat.c           |  18 ++--
+ tools/testing/selftests/iommu/iommufd_utils.h |  13 ++-
+ 8 files changed, 177 insertions(+), 120 deletions(-)
+
+--vuknMnMpAQTya69l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZW4qAwAKCRCFwuHvBreF
+YYlSAP0dpavdQPVzswi60L1z82l6kwxCFijbfWgArmDGjkJL7QEAgFW4KoiRhcB3
+PjPmnke+sVL+k7fzE9xzJrNkuTLDBgk=
+=gJmS
+-----END PGP SIGNATURE-----
+
+--vuknMnMpAQTya69l--
