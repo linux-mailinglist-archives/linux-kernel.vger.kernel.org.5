@@ -2,146 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0FC8037AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97998037B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 15:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346019AbjLDOzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 09:55:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
+        id S234481AbjLDO4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 09:56:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234218AbjLDOze (ORCPT
+        with ESMTP id S232627AbjLDO4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 09:55:34 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B129B9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 06:55:39 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ce46470647so615064b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 06:55:39 -0800 (PST)
+        Mon, 4 Dec 2023 09:56:23 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA23BA1;
+        Mon,  4 Dec 2023 06:56:29 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5d6b9143782so28028837b3.0;
+        Mon, 04 Dec 2023 06:56:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701701738; x=1702306538; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ECEVktnNpUXpGoY7MofBhZHrCIiW0FRv5VOwOFl73MQ=;
-        b=b2Sxz9bWEEJY8zCgUxbEdvh6UDpN1bV1PqSADF2TRYkt6Mh0A14p3vMtYH2XgsTsKO
-         pwYG2LarKkBWh82C1EUxL6cNS9yik6J0pEE66UCmK6rU3rG8B2VN+XZKZ4S3lr5eK6y4
-         E8nqX4gch4GwDRmF3KCvl8XHR9/GTwtv0cN6N+9xcLIwDBeZ5lukt4AEHCdbLqDqiYml
-         g+ZZTNbEqojb7K7bBKB6t+tyoK4e7miTsM3NOrkURQOs3T9Qg6MP/hRYSUhlKyKeNlk7
-         p5wvzxqOIdmMTXli4SuZIpfdhkGKtxU0q2Fe1KIsObUbkbnhvllfNT410rtIzms/U70M
-         jXYA==
+        d=gmail.com; s=20230601; t=1701701789; x=1702306589; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Utp+O7GRH/D7eVJWmR5yRRgItcVJjKaGlGf4GPfFyM8=;
+        b=Wpaj7DMM/lv40OJeJqZ9AcJAZBeNI+HYz10khwH+8E9YGFrioYjcNRclQvtjnTg2jh
+         nFmUvzslpnzuQhPY3vm9z7PxbUIsPZ091yzdl2aRuIBQv+5DHNboB2S40/3roKx30bup
+         Efp2LNPe7ozj7uWtkYAdmVe4DsSEQmKg3wOGHiJeinJoTeojnoC+V5VqE/vsJv3MCkn2
+         ZM9ZLg9VZOYeMyfueTibA2eeUurfQxbjHs50D+UnNibDP7IkuXbWL7XNTVa6wrHwO+sZ
+         QWi0/qzqoXoe2QIQCdvAQEuyxPCf/UChKPKTL4DpToFWWG/EXjq7ywcp0GhSGSsOE8af
+         II/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701701738; x=1702306538;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ECEVktnNpUXpGoY7MofBhZHrCIiW0FRv5VOwOFl73MQ=;
-        b=hEWKNTeAXBZsKFd272TZWmkbLJTFH+DYZ1FyBPF5zQAuu2A2i9XJzV8WKmlMsk+sZi
-         XsemwduLTt8eAlUHciX/uwOfurIzv4nZUww0rEYqfgyTv0NAJrP7ueP+4ocPHG4XlLiq
-         ZCgx3j0R9jtCa6fOv3nIVOjAF47ez29uulAeUbPvgFDvQ8OrPRPJOnT/ETeTZyBogOsF
-         4/cGOS+eTo4f0l6Z2h2bnPQ6N8m7GowGGg/DfizlYDjsTwaJnEZzG8B6nn0aF8vzG9+X
-         fCCoDndZ5VbZnJqUT+hmFnQQw+7Pt5q0MrW4U1Bons6LON2nhQPGtqPyxV9+8yQQSKCT
-         cqvA==
-X-Gm-Message-State: AOJu0YwCTf88Fx4okm4Drv8Ojk5hCdLdidOckrVBdmHvF13ua810uPr2
-        3gBayETRxvoqb9FEcDZiI2hmQtSALmXTvqfPLNwP+g==
-X-Google-Smtp-Source: AGHT+IE61hyEtN0sXTa9zACdyfMXQB5XPSbT1eqxKDZKJptlwkTbAzQaMLBoHLqfOCG77V6pdVueQ5n8yk1VPt4SbZE=
-X-Received: by 2002:a05:6a00:2e21:b0:6cb:d24b:878d with SMTP id
- fc33-20020a056a002e2100b006cbd24b878dmr2212551pfb.2.1701701738519; Mon, 04
- Dec 2023 06:55:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701701789; x=1702306589;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Utp+O7GRH/D7eVJWmR5yRRgItcVJjKaGlGf4GPfFyM8=;
+        b=smeM8qA9XVYlU7fbdifkVPqIxqfiFnNk25rS2DctMTDJZ3S7PAF+t7tUhglu+yaASZ
+         Wp+rqcF87l4d6ZxxNiewfrFk5CMYL2CvhB/o7f7NKkLE4BxnSI8tg5/aEdg0Ji93XkHN
+         F87QUIY2xplpURyNRuCcoS8n1isHx9I+VYt22O46b+j4OqUlpmXwg//kIiXTUxvKaP19
+         UIHTHVKwjXq5ipyhvIHUTolW2a/3WrVLZOVBYs6TuCGPkcfqqUyZtLZwevvAcZdaYc6F
+         HTZOt+e29vXR2jbtNbXSdqFmGlNQeInQL5zJwvzQBqLRNysLkiOHxPT09TQgRoGh9tF7
+         O/qQ==
+X-Gm-Message-State: AOJu0Yx+4YdAfBk1aX0WigIzvrt4BTGPYN7K3hvb/ezty4PyUsM5RehB
+        zEF7ApizlNq8x9myJdbMD0E=
+X-Google-Smtp-Source: AGHT+IF+bQywTgvuHQE83tWnJVM0Plx7zMuSqkbDT1L6Wa0s0IjIzrNA3VhWCDFOGkjjPW8UPNyqvw==
+X-Received: by 2002:a81:ae4a:0:b0:5d7:1940:7d62 with SMTP id g10-20020a81ae4a000000b005d719407d62mr2854310ywk.57.1701701788662;
+        Mon, 04 Dec 2023 06:56:28 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:3c76:612b:b76f:61a6])
+        by smtp.gmail.com with ESMTPSA id b1-20020a0dd901000000b005d855644914sm1001428ywe.58.2023.12.04.06.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 06:56:28 -0800 (PST)
+Date:   Mon, 4 Dec 2023 06:56:27 -0800
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, sch^Crabarti@microsoft.com,
+        paulros@microsoft.com
+Subject: Re: [PATCH V4 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <ZW3om2dfA4U0lhVY@yury-ThinkPad>
+References: <1701679841-9359-1-git-send-email-schakrabarti@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20231130162133.035359406@linuxfoundation.org> <CAEUSe78tYPTFuauB7cxZzvAeMhzB_25Q8DqLUfF7Nro9WsUhNw@mail.gmail.com>
- <2023120134-sabotage-handset-0b0d@gregkh> <4879383.31r3eYUQgx@pwmachine>
- <2023120155-mascot-scope-7bc6@gregkh> <4cf40ef6-058f-4472-88c9-3dc735175c85@linaro.org>
- <2023120223-diagnosis-niece-3932@gregkh>
-In-Reply-To: <2023120223-diagnosis-niece-3932@gregkh>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Mon, 4 Dec 2023 08:55:27 -0600
-Message-ID: <CAEUSe78X7_bwDiHwxS1u0TNTyuqDifoa36yjh=BgcByPp1i86w@mail.gmail.com>
-Subject: Re: [PATCH 5.15 00/69] 5.15.141-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Francis Laniel <flaniel@linux.microsoft.com>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com, Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1701679841-9359-1-git-send-email-schakrabarti@linux.microsoft.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Mon, Dec 04, 2023 at 12:50:41AM -0800, Souradeep Chakrabarti wrote:
+> Existing MANA design assigns IRQ to every CPU, including sibling
+> hyper-threads. This may cause multiple IRQs to be active simultaneously
+> in the same core and may reduce the network performance with RSS.
+> 
+> Improve the performance by assigning IRQ to non sibling CPUs in local
+> NUMA node.
+> 
+> Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> ---
+> V3 -> V4:
+> * Used for_each_numa_hop_mask() macro and simplified the code.
+> Thanks to Yury Norov for the suggestion.
 
-On Fri, 1 Dec 2023 at 17:05, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Fri, Dec 01, 2023 at 08:34:26AM -0600, Daniel D=C3=ADaz wrote:
-[...]
-> > It failed in more architectures than we initially reported. FWIW, this =
-error can be easily reproduced this way:
-> >
-> >   tuxmake --runtime podman --target-arch arm     --toolchain gcc-8  --k=
-config imx_v4_v5_defconfig
->
-> Fails for me:
->
-> $ ~/.local/bin/tuxmake  --runtime podman --target-arch arm     --toolchai=
-n gcc-8  --kconfig imx_v4_v5_defconfig
-> Traceback (most recent call last):
->   File "/home/gregkh/.local/bin/tuxmake", line 8, in <module>
->     sys.exit(main())
->              ^^^^^^
->   File "/home/gregkh/.local/pipx/venvs/tuxmake/lib/python3.11/site-packag=
-es/tuxmake/cli.py", line 170, in main
->     build.run()
->   File "/home/gregkh/.local/pipx/venvs/tuxmake/lib/python3.11/site-packag=
-es/tuxmake/build.py", line 652, in run
->     self.prepare()
->   File "/home/gregkh/.local/pipx/venvs/tuxmake/lib/python3.11/site-packag=
-es/tuxmake/build.py", line 318, in prepare
->     self.runtime.prepare()
->   File "/home/gregkh/.local/pipx/venvs/tuxmake/lib/python3.11/site-packag=
-es/tuxmake/runtime.py", line 423, in prepare
->     self.prepare_image()
->   File "/home/gregkh/.local/pipx/venvs/tuxmake/lib/python3.11/site-packag=
-es/tuxmake/runtime.py", line 443, in prepare_image
->     do_pull()
->   File "/home/gregkh/.local/pipx/venvs/tuxmake/lib/python3.11/site-packag=
-es/tuxmake/utils.py", line 36, in retry_wrapper
->     ret =3D func(*args, **kwargs)
->           ^^^^^^^^^^^^^^^^^^^^^
->   File "/home/gregkh/.local/pipx/venvs/tuxmake/lib/python3.11/site-packag=
-es/tuxmake/runtime.py", line 441, in do_pull
->     subprocess.check_call(pull)
->   File "/usr/lib/python3.11/subprocess.py", line 408, in check_call
->     retcode =3D call(*popenargs, **kwargs)
->               ^^^^^^^^^^^^^^^^^^^^^^^^^^
->   File "/usr/lib/python3.11/subprocess.py", line 389, in call
->     with Popen(*popenargs, **kwargs) as p:
->          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
->   File "/usr/lib/python3.11/subprocess.py", line 1026, in __init__
->     self._execute_child(args, executable, preexec_fn, close_fds,
->   File "/usr/lib/python3.11/subprocess.py", line 1950, in _execute_child
->     raise child_exception_type(errno_num, err_msg, err_filename)
-> FileNotFoundError: [Errno 2] No such file or directory: 'podman'
->
-> Are you sure that's the right command line to use?  :)
+We've got a special tag for this:
 
-Yes, it just needs `podman' to be installed. The Tuxmake team will
-change that cryptic message into something easier to parse.
+Suggested-by: Yury Norov <yury.norov@gmali.com>
 
-FWIW, `--runtime docker` also works (if Docker is installed), and
-`--runtime null` simply makes Tuxmake rely on the cross-compilers you
-have installed.
+> * Added code to assign hwc irq separately in mana_gd_setup_irqs.
+> 
+> V2 -> V3:
+> * Created a helper function to get the next NUMA with CPU.
+> * Added some error checks for unsuccessful memory allocation.
+> * Fixed some comments on the code.
+> 
+> V1 -> V2:
+> * Simplified the code by removing filter_mask_list and using avail_cpus.
+> * Addressed infinite loop issue when there are numa nodes with no CPUs.
+> * Addressed uses of local numa node instead of 0 to start.
+> * Removed uses of BUG_ON.
+> * Placed cpus_read_lock in parent function to avoid num_online_cpus
+>   to get changed before function finishes the affinity assignment.
+> ---
+>  .../net/ethernet/microsoft/mana/gdma_main.c   | 70 +++++++++++++++++--
+>  1 file changed, 63 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> index 6367de0c2c2e..2194a53cce10 100644
+> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> @@ -1243,15 +1243,57 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+>  	r->size = 0;
+>  }
+>  
+> +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+> +{
+> +	int i = 0, cpu, err = 0;
+> +	const struct cpumask *node_cpumask;
+> +	unsigned int  next_node = start_numa_node;
+> +	cpumask_var_t visited_cpus, node_cpumask_temp;
+> +
+> +	if (!zalloc_cpumask_var(&visited_cpus, GFP_KERNEL)) {
+> +		err = ENOMEM;
+> +		return err;
+> +	}
+> +	if (!zalloc_cpumask_var(&node_cpumask_temp, GFP_KERNEL)) {
+> +		err = -ENOMEM;
+> +		return err;
+> +	}
 
-Greetings!
+Can you add a bit more of vertical spacing?
 
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
+> +	rcu_read_lock();
+> +	for_each_numa_hop_mask(node_cpumask, next_node) {
+> +		cpumask_copy(node_cpumask_temp, node_cpumask);
+> +		for_each_cpu(cpu, node_cpumask_temp) {
+> +			cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
+> +				       topology_sibling_cpumask(cpu));
+> +			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
+> +			if (++i == nvec)
+> +				goto free_mask;
+> +			cpumask_set_cpu(cpu, visited_cpus);
+> +			if (cpumask_empty(node_cpumask_temp)) {
+> +				cpumask_copy(node_cpumask_temp, node_cpumask);
+> +				cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
+> +					       visited_cpus);
+> +				cpu = 0;
+> +			}
+
+It feels like you can calculate number of sibling groups in a hop in
+advance, so that you'll know how many IRQs you want to assign per each
+hop, and avoid resetting the node_cpumask_temp and spinning in inner
+loop for more than once...
+
+Can you print your topology, and describe how you want to spread IRQs
+on it, and how your existing code does spread them?
+
+Please add performance results in the commit message.
+
+I feel like this may be a useful code for other kernel folks, and if
+so, we'd invest in it for more and make it a generic API, similar to
+cpumaks_local_spread()...
+
+> +		}
+> +	}
+> +free_mask:
+> +	rcu_read_unlock();
+> +	free_cpumask_var(visited_cpus);
+> +	free_cpumask_var(node_cpumask_temp);
+> +	return err;
+> +}
+> +
+>  static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  {
+> -	unsigned int max_queues_per_port = num_online_cpus();
+>  	struct gdma_context *gc = pci_get_drvdata(pdev);
+> +	unsigned int max_queues_per_port;
+>  	struct gdma_irq_context *gic;
+>  	unsigned int max_irqs, cpu;
+> -	int nvec, irq;
+> +	int nvec, *irqs, irq;
+>  	int err, i = 0, j;
+>  
+> +	cpus_read_lock();
+> +	max_queues_per_port = num_online_cpus();
+>  	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
+>  		max_queues_per_port = MANA_MAX_NUM_QUEUES;
+>  
+> @@ -1261,6 +1303,11 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+>  	if (nvec < 0)
+>  		return nvec;
+> +	irqs = kmalloc_array(max_queues_per_port, sizeof(int), GFP_KERNEL);
+> +	if (!irqs) {
+> +		err = -ENOMEM;
+> +		goto free_irq_vector;
+> +	}
+>  
+>  	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
+>  				   GFP_KERNEL);
+> @@ -1287,21 +1334,28 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  			goto free_irq;
+>  		}
+>  
+> -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> +		if (!i) {
+> +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> +			cpu = cpumask_local_spread(i, gc->numa_node);
+
+If i == 0, you can simplify it because you just need the 1st CPU from
+a given node.
+
+> +			irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> +		} else {
+> +			irqs[i - 1] = irq;
+> +			err = request_irq(irqs[i - 1], mana_gd_intr, 0, gic->name, gic);
+> +		}
+>  		if (err)
+>  			goto free_irq;
+> -
+> -		cpu = cpumask_local_spread(i, gc->numa_node);
+> -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+>  	}
+>  
+> +	err = irq_setup(irqs, max_queues_per_port, gc->numa_node);
+> +	if (err)
+> +		goto free_irq;
+>  	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
+>  	if (err)
+>  		goto free_irq;
+>  
+>  	gc->max_num_msix = nvec;
+>  	gc->num_msix_usable = nvec;
+> -
+> +	cpus_read_unlock();
+>  	return 0;
+>  
+>  free_irq:
+> @@ -1314,8 +1368,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+>  	}
+>  
+>  	kfree(gc->irq_contexts);
+> +	kfree(irqs);
+>  	gc->irq_contexts = NULL;
+>  free_irq_vector:
+> +	cpus_read_unlock();
+>  	pci_free_irq_vectors(pdev);
+>  	return err;
+>  }
+> -- 
+> 2.34.1
