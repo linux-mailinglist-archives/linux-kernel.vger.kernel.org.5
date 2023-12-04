@@ -2,47 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A0D8030BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06ACA8030BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235376AbjLDKmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:42:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60372 "EHLO
+        id S232905AbjLDKmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:42:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235338AbjLDKmW (ORCPT
+        with ESMTP id S231165AbjLDKmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:42:22 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AE4D5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:42:28 -0800 (PST)
-X-QQ-mid: bizesmtp90t1701686533t9w18dy6
-Received: from localhost.localdomain ( [112.6.196.165])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 04 Dec 2023 18:42:10 +0800 (CST)
-X-QQ-SSF: 01200000000000B0J000000A0000000
-X-QQ-FEAT: ZdHcY4j9T+I4a9YN8Gv8XPmWt4O1cvJndJZZex7Xb7xsJrCqjKY4egbNCxmRi
-        D96ArEymkCRQjw6F64Nbn5aVHKh4RDRQYSo68gXBQow0mmylNPEGaFP0ngOh5JbocUGQBzS
-        5RjS4vS66FL7R9Qa7l9O/U5Ad1YI23Nzp6Wrq+wupOg5Lg6uFyO0JCq7SshpgwILAXdxmj2
-        GsNDkCpQRnTr0V4l/pjeMVCOKyA3NoesngcY7+oebuOaVC+p/kpVzKKB640LD6BSf3ZGWXt
-        eJQv9Zelnt554Ope6Ynn81h2AQ/KzctOJorfg6gZXmTPGmyHm9s+ejA8JTpXziUBmAsdw28
-        OQ+B2ngRHObnR14Md0=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 72683575249682803
-From:   Jialu Xu <xujialu@vimux.org>
-To:     nathan@kernel.org, ndesaulniers@google.com, morbo@google.com,
-        justinstitt@google.com
-Cc:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jialu Xu <xujialu@vimux.org>
-Subject: [PATCH] gen_compile_commands.py: fix path resolve with symlinks in it
-Date:   Mon,  4 Dec 2023 18:41:42 +0800
-Message-Id: <20231204104141.3618547-1-xujialu@vimux.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 4 Dec 2023 05:42:07 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9FA3CF0;
+        Mon,  4 Dec 2023 02:42:12 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 44B581684;
+        Mon,  4 Dec 2023 02:42:59 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B7A03F6C4;
+        Mon,  4 Dec 2023 02:42:10 -0800 (PST)
+Message-ID: <12a9c5da-4b96-78de-4007-211989bdcfa3@arm.com>
+Date:   Mon, 4 Dec 2023 10:42:10 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:vimux.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V2 5/7] coresight: tmc: Move ACPI support from AMBA driver
+ to platform driver
+Content-Language: en-US
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
+ <20231201062053.1268492-6-anshuman.khandual@arm.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231201062053.1268492-6-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,40 +54,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When symbolic links are involved in the path, os.path.abspath might not
-resolve the symlinks and instead return the absolute path with the
-symlinks intact.
 
-use pathlib.Path resolve() instead of os.path.abspath()
 
-Signed-off-by: Jialu Xu <xujialu@vimux.org>
----
- scripts/clang-tools/gen_compile_commands.py | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+On 01/12/2023 06:20, Anshuman Khandual wrote:
+> Add support for the tmc devices in the platform driver, which can then be
+> used on ACPI based platforms. This change would now allow runtime power
+> management for ACPI based systems. The driver would try to enable the APB
+> clock if available.
+> 
+> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: James Clark <james.clark@arm.com>
+> Cc: linux-acpi@vger.kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: coresight@lists.linaro.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  drivers/acpi/arm64/amba.c                     |   2 -
+>  .../hwtracing/coresight/coresight-tmc-core.c  | 130 +++++++++++++++---
+>  drivers/hwtracing/coresight/coresight-tmc.h   |   1 +
+>  3 files changed, 115 insertions(+), 18 deletions(-)
+> 
+[...]
+> -static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+> +static int __tmc_probe(struct device *dev, struct resource *res, void *dev_caps)
+>  {
+>  	int ret = 0;
+>  	u32 devid;
+>  	void __iomem *base;
+> -	struct device *dev = &adev->dev;
+>  	struct coresight_platform_data *pdata = NULL;
+> -	struct tmc_drvdata *drvdata;
+> -	struct resource *res = &adev->res;
+> +	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
+>  	struct coresight_desc desc = { 0 };
+>  	struct coresight_dev_list *dev_list = NULL;
+>  
+>  	ret = -ENOMEM;
+> -	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
+> -	if (!drvdata)
+> -		goto out;
+> -
+> -	dev_set_drvdata(dev, drvdata);
+>  
+>  	/* Validity for the resource is already checked by the AMBA core */
+>  	base = devm_ioremap_resource(dev, res);
+> @@ -487,8 +482,7 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+>  		desc.type = CORESIGHT_DEV_TYPE_SINK;
+>  		desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_SYSMEM;
+>  		desc.ops = &tmc_etr_cs_ops;
+> -		ret = tmc_etr_setup_caps(dev, devid,
+> -					 coresight_get_uci_data(id));
+> +		ret = tmc_etr_setup_caps(dev, devid, dev_caps);
+>  		if (ret)
+>  			goto out;
+[...]
+> -module_amba_driver(tmc_driver);
+> +static int tmc_platform_probe(struct platform_device *pdev)
+> +{
+> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	struct tmc_drvdata *drvdata;
+> +	int ret = 0;
+> +
+> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+> +	if (!drvdata)
+> +		return -ENOMEM;
+> +
+> +	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
+> +	if (IS_ERR(drvdata->pclk))
+> +		return -ENODEV;
+> +
+> +	dev_set_drvdata(&pdev->dev, drvdata);
+> +	pm_runtime_get_noresume(&pdev->dev);
+> +	pm_runtime_set_active(&pdev->dev);
+> +	pm_runtime_enable(&pdev->dev);
+> +
+> +	ret = __tmc_probe(&pdev->dev, res, NULL);
 
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index 180952fb91c1b..0a6c0996b4a8f 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -11,6 +11,7 @@ import argparse
- import json
- import logging
- import os
-+from pathlib import Path
- import re
- import subprocess
- import sys
-@@ -172,8 +173,8 @@ def process_line(root_directory, command_prefix, file_path):
-     # by Make, so this code replaces the escaped version with '#'.
-     prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
- 
--    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
--    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
-+    # Make the path absolute, resolving all symlinks on the way and also normalizing it.
-+    abs_path = str(Path(os.path.join(root_directory, file_path)).resolve())
-     if not os.path.exists(abs_path):
-         raise ValueError('File %s not found' % abs_path)
-     return {
--- 
-2.39.2
-
+What effect does passing NULL here have? It seems like the dev_caps did
+something useful when it's set to CORESIGHT_SOC_600_ETR_CAPS. Maybe
+Suzuki knows as he added it?
