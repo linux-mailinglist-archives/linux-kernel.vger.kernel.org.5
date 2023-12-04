@@ -2,254 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD4A803EDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C3F803EDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233699AbjLDT5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
+        id S233543AbjLDT5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:57:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbjLDT5R (ORCPT
+        with ESMTP id S229983AbjLDT5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:57:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A9E109;
-        Mon,  4 Dec 2023 11:57:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701719844; x=1733255844;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=3CLNd2G2DCVMLRKln5jkEWTRHdR30ylbSU2rEr66LTI=;
-  b=ilT6xb0HMiAV90cMPPHPuD8aLPWspauV8lA5C/qahNhipE9F30x0FLw/
-   Gi3OtC5ouHHPDVn5Kj8tJIa/mzO/QzrFw0ZXES7tGrl6d0Ztg8bCqAo/T
-   DnvnE+gtnlw4pRFisMc8NMC5tK12B50TN9Y6Ucc1Ble/N845H2FyVLpxV
-   FA+BlfCBAABqQFPYmBlIS/13Rl6Qf/jNax0XZiKvzjVSnHE+BwyQ66TGq
-   1gipHz7kbnbJx30fUZH6Sllf01tT5HzbnXWBdJYsG4BPgMYyU+gN5Pgiw
-   d6jnkZD/JLWYqAXNlMOkZSnQEGnpVxToVp80zyOtyq4HOQwGKf8aBagVu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="634472"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="634472"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 11:57:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="943998609"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="943998609"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 11:57:22 -0800
-Received: from vbchikar-mobl1.amr.corp.intel.com (unknown [10.209.80.154])
-        by linux.intel.com (Postfix) with ESMTP id C5123580DA0;
-        Mon,  4 Dec 2023 11:57:22 -0800 (PST)
-Message-ID: <198aadd7a91152393ec56d421fa042d30378af40.camel@linux.intel.com>
-Subject: Re: [PATCH V6 01/20] platform/x86/intel/vsec: Fix xa_alloc memory
- leak
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com
-Date:   Mon, 04 Dec 2023 11:57:22 -0800
-In-Reply-To: <f2a3bab9-296c-43a1-9b7e-944c5044feaf@redhat.com>
-References: <20231129222132.2331261-1-david.e.box@linux.intel.com>
-         <20231129222132.2331261-2-david.e.box@linux.intel.com>
-         <5c21230-1176-4168-f31f-a0c1f1713ca8@linux.intel.com>
-         <f2a3bab9-296c-43a1-9b7e-944c5044feaf@redhat.com>
-Organization: David E. Box
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 4 Dec 2023 14:57:36 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F296E6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:57:41 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50bc22c836bso6513216e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:57:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701719860; x=1702324660; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pZ44r75rrDxswMMFcuYJD1VEZzZvx6HDPBPK48SLeVI=;
+        b=D3zb+FiMJnw/lcYwsbb3N/WFq1QCwJEN9L8Q2uk38gGdqGt6xRcM4FlDqhBfpag48e
+         nOz/yJEKQEMaUdaVSDVRarv9Xxq9Jszx6OBY64abGg/qAzHqqeGCJYrGA0+mRI98/RTY
+         YrlwWNbRUomLGkzVJSv4IxvL/dn0wj3lM/Kvo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701719860; x=1702324660;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pZ44r75rrDxswMMFcuYJD1VEZzZvx6HDPBPK48SLeVI=;
+        b=Jz9qizsshWO0LsPWEzIyvUkUwtPfOE2JFxHOypu/XDiSAGhYbd7p+f7P6eLcInH9iJ
+         CrHJwecjBKnLSmfikLNH2l9s9pZokC9LqnwNqNAAGx+BbJ0jdU4hQ/1V2kMEy4MekU+3
+         pPiz0pSSo2SYxtqKPCFDwBPaz4DNC9MhChR5a2sS8ixmAPhwXfXvc/zWQhuyhti+gBZK
+         Jw4DKjppViSXuzfZgyZHcB5if4enL+UUkbf4pzccfpESXhu6GCHZ5YsL1Blo70idicMs
+         aFp25IJ3HUAMEXrm7xpMmazBJJoyMThQZ7zAYmd5XclpTt5mkFeAaIuGOCcaQI4yowzX
+         1n9Q==
+X-Gm-Message-State: AOJu0YwScOmg+gcWSicYeeOvStm8q9iNgEXF6/gNmPU7+h/ceEds8myM
+        mPNRPdU+i08zNQHi1wWiCHjrDg==
+X-Google-Smtp-Source: AGHT+IHo8S0v6m+GUWnNhfVJKEHmbKDBTJO7+pWESmv9h/be7AoxM/Z+PfZRyiKquvmWzcbE88JwKw==
+X-Received: by 2002:a05:6512:1593:b0:50b:fc77:2d51 with SMTP id bp19-20020a056512159300b0050bfc772d51mr903215lfb.45.1701719859776;
+        Mon, 04 Dec 2023 11:57:39 -0800 (PST)
+Received: from google.com ([83.142.187.84])
+        by smtp.gmail.com with ESMTPSA id r12-20020ac25a4c000000b0050bf8ddb1c3sm347930lfn.272.2023.12.04.11.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 11:57:39 -0800 (PST)
+Date:   Mon, 4 Dec 2023 20:57:33 +0100
+From:   Dmytro Maluka <dmaluka@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/thp: add CONFIG_TRANSPARENT_HUGEPAGE_NEVER option
+Message-ID: <ZW4vLV_LDFLf1cJQ@google.com>
+References: <20231204163254.2636289-1-dmaluka@chromium.org>
+ <20231204111301.7e087b2f851b30121561e8fc@linux-foundation.org>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204111301.7e087b2f851b30121561e8fc@linux-foundation.org>
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On Mon, Dec 04, 2023 at 11:13:01AM -0800, Andrew Morton wrote:
+> On Mon,  4 Dec 2023 17:32:54 +0100 Dmytro Maluka <dmaluka@chromium.org> wrote:
+> 
+> > Add an option to disable transparent hugepages by default, in line with
+> > the existing transparent_hugepage=never command line setting.
+> > 
+> > Rationale: khugepaged has its own non-negligible memory cost even if it
+> > is not used by any applications, since it bumps up vm.min_free_kbytes to
+> > its own required minimum in set_recommended_min_free_kbytes(). For
+> > example, on a machine with 4GB RAM, with 3 mm zones and pageblock_order
+> > == MAX_ORDER, starting khugepaged causes vm.min_free_kbytes increase
+> > from 8MB to 132MB.
+> > 
+> > So if we use THP on machines with e.g. >=8GB of memory for better
+> > performance, but avoid using it on lower-memory machines to avoid its
+> > memory overhead, then for the same reason we also want to avoid even
+> > starting khugepaged on those <8GB machines. So with
+> > CONFIG_TRANSPARENT_HUGEPAGE_NEVER we can use the same kernel image on
+> > both >=8GB and <8GB machines, with THP support enabled but khugepaged
+> > not started by default. The userspace can then decide to enable THP
+> > (i.e. start khugepaged) via sysfs if needed, based on the total amount
+> > of memory.
+> > 
+> > This could also be achieved with the existing transparent_hugepage=never
+> > setting in the kernel command line instead. But it seems cleaner to
+> > avoid tweaking the command line for such a basic setting.
+> > 
+> > P.S. I see that CONFIG_TRANSPARENT_HUGEPAGE_NEVER was already proposed
+> > in the past [1] but without an explanation of the purpose.
+> > 
+> > ...
+> >
+> > --- a/mm/Kconfig
+> > +++ b/mm/Kconfig
+> > @@ -859,6 +859,12 @@ choice
+> >  	  madvise(MADV_HUGEPAGE) but it won't risk to increase the
+> >  	  memory footprint of applications without a guaranteed
+> >  	  benefit.
+> > +
+> > +	config TRANSPARENT_HUGEPAGE_NEVER
+> > +		bool "never"
+> > +	help
+> > +	  Disabling Transparent Hugepage by default. It can still be
+> 
+> s/Disabling/Disable/
 
-On Mon, 2023-12-04 at 14:51 +0100, Hans de Goede wrote:
-> Hi,
->=20
-> On 11/30/23 12:02, Ilpo J=C3=A4rvinen wrote:
-> > On Wed, 29 Nov 2023, David E. Box wrote:
-> >=20
-> > > Commit 936874b77dd0 ("platform/x86/intel/vsec: Add PCI error recovery
-> > > support to Intel PMT") added an xarray to track the list of vsec devi=
-ces
-> > > to
-> > > be recovered after a PCI error. But it did not provide cleanup for th=
-e
-> > > list
-> > > leading to a memory leak that was caught by kmemleak.=C2=A0 Do xa_all=
-oc()
-> > > before
-> > > devm_add_action_or_reset() so that the list may be cleaned up with
-> > > xa_erase() in the release function.
-> > >=20
-> > > Fixes: 936874b77dd0 ("platform/x86/intel/vsec: Add PCI error recovery
-> > > support to Intel PMT")
-> > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > ---
-> > >=20
-> > > V6 - Move xa_alloc() before ida_alloc() to reduce mutex use during er=
-ror
-> > > =C2=A0=C2=A0=C2=A0=C2=A0 recovery.
-> > > =C2=A0=C2=A0 - Fix return value after id_alloc() fail
-> > > =C2=A0=C2=A0 - Add Fixes tag
-> > > =C2=A0=C2=A0 - Add more detail to changelog
-> > >=20
-> > > V5 - New patch
-> > >=20
-> > > =C2=A0drivers/platform/x86/intel/vsec.c | 24 ++++++++++++++----------
-> > > =C2=A0drivers/platform/x86/intel/vsec.h |=C2=A0 1 +
-> > > =C2=A02 files changed, 15 insertions(+), 10 deletions(-)
-> > >=20
-> > > diff --git a/drivers/platform/x86/intel/vsec.c
-> > > b/drivers/platform/x86/intel/vsec.c
-> > > index c1f9e4471b28..2d568466b4e2 100644
-> > > --- a/drivers/platform/x86/intel/vsec.c
-> > > +++ b/drivers/platform/x86/intel/vsec.c
-> > > @@ -120,6 +120,8 @@ static void intel_vsec_dev_release(struct device =
-*dev)
-> > > =C2=A0{
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct intel_vsec_dev=
-ice *intel_vsec_dev =3D dev_to_ivdev(dev);
-> > > =C2=A0
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0xa_erase(&auxdev_array, in=
-tel_vsec_dev->id);
-> > > +
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_lock(&vsec_ida_=
-lock);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ida_free(intel_vsec_d=
-ev->ida, intel_vsec_dev->auxdev.id);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_unlock(&vsec_id=
-a_lock);
-> > > @@ -135,19 +137,27 @@ int intel_vsec_add_aux(struct pci_dev *pdev, st=
-ruct
-> > > device *parent,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct auxiliary_devi=
-ce *auxdev =3D &intel_vsec_dev->auxdev;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int ret, id;
-> > > =C2=A0
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_lock(&vsec_ida_lock)=
-;
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D ida_alloc(intel_vs=
-ec_dev->ida, GFP_KERNEL);
-> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_unlock(&vsec_ida_loc=
-k);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0ret =3D xa_alloc(&auxdev_a=
-rray, &intel_vsec_dev->id, intel_vsec_dev,
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PMT_XA_LIMIT, =
-GFP_KERNEL);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (ret < 0) {
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0kfree(intel_vsec_dev->resource);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0kfree(intel_vsec_dev);
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0return ret;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > > =C2=A0
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_lock(&vsec_ida_lock)=
-;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0id =3D ida_alloc(intel_vse=
-c_dev->ida, GFP_KERNEL);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_unlock(&vsec_ida_loc=
-k);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (id < 0) {
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0kfree(intel_vsec_dev->resource);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0kfree(intel_vsec_dev);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return id;
-> >=20
-> > Thanks, this looks much better this way around but it is missing=20
-> > xa_alloc() rollback now that the order is reversed.
-> >=20
-> > Once that is fixed,
-> >=20
-> > Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
->=20
-> I have fixed this up, adding the missing:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0xa_erase(&auxdev_array, i=
-ntel_vsec_dev->id);
->=20
-> to this error-exit path while merging this.
+It is in line with the descriptions of TRANSPARENT_HUGEPAGE_ALWAYS and
+TRANSPARENT_HUGEPAGE_MADVISE: "Enabling Transparent Hugepage ..."
 
-Thanks. Does that include the rest of the series which was all reviewed by =
-Ilpo?
+> > +	  enabled at runtime via sysfs.
+> >  endchoice
+> 
+> The patch adds the config option but doesn't use it?
 
->=20
-> While looking into this I did find one other thing which
-> worries me (different issue, needs a separate fix):
->=20
-> intel_vsec_pci_slot_reset() uses
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 devm_release_action(&pdev->dev, intel_vsec_remove_aux,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &intel_vsec=
-_dev->auxdev);
->=20
-> and seems to assume that after this intel_vsec_remove_aux()
-> has run for the auxdev-s. *But this is not the case*
->=20
-> devm_release_action() only removes the action from the list
-> of devres resources tied to the parent PCI device.
->=20
-> It does *NOT* call the registered action function,
-> so intel_vsec_remove_aux() is NOT called here.
->=20
-> And then on re-probing the device as is done in
-> intel_vsec_pci_slot_reset() a second set of aux
-> devices with the same parent will be created AFAICT.
->=20
-> So it seems that this also needs an explicit
-> intel_vsec_remove_aux() call for each auxdev!
->=20
-> ###
->=20
-> This makes me wonder if the PCI error handling here
-> and specifically the reset code was ever tested ?
-
-I recall the code was tested using error injection to cause the slot reset =
-to
-occur and reprobe was confirmed. I'll have to find out the specific test so=
- that
-we can check it again with the proposed fix and ensure no leaks.
-
->=20
-> ###
->=20
-> Note that simply forcing a reprobe using device_reprobe()
-> will cause all the aux-devices to also get removed through
-> the action on driver-unbind without ever needing
-> the auxdev_array at all!
-
-Okay. That would be a lot simpler.
-
->=20
-> I guess that you want the removal to happen before
-> the pci_restore_state(pdev) state though, so that
-> simply relying on the removal on driver unbind
-> is not an option ?
-
-I'm not sure this is needed given the simplicity of the device. The array w=
-as
-added only to track the list of devices and reprobe the one that was reset.
-We'll look at changing this to do driver_reprobe() instead. Thanks.
-
-David
-
-
+I should have been more precise: it is not a new option but a new choice
+for CONFIG_TRANSPARENT_HUGEPAGE, in addition to the existing ALWAYS and
+MADVISE choices. In mm/huge_memory.c in the declaration of the
+transparent_hugepage_flags variable, if either ALWAYS or MADVISE is
+chosen, transparent_hugepage_flags is initialized with such a value
+that makes khugepaged being started by default during bootup. This patch
+allows enabling CONFIG_TRANSPARENT_HUGEPAGE without setting either
+ALWAYS or MADVISE, so that transparent_hugepage_flags is initialized
+with such a value that khugepaged is not started by default.
