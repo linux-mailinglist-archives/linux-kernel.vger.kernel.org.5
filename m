@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A10B802C09
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E5FD802C0A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 08:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbjLDH3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 02:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
+        id S232618AbjLDH3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 02:29:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbjLDH26 (ORCPT
+        with ESMTP id S229693AbjLDH3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 02:28:58 -0500
+        Mon, 4 Dec 2023 02:29:32 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60186D7
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 23:29:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22559C433C8;
-        Mon,  4 Dec 2023 07:29:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2428BD7
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 23:29:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A4FBC433C7;
+        Mon,  4 Dec 2023 07:29:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701674944;
-        bh=ag47fZQN67ZIIBjPxPbl0fUu/BkVyp7AgqE71oADyVA=;
+        s=k20201202; t=1701674978;
+        bh=lx62nJVG4/6em/8jt1aqDoujqgICoMUEYiBiTLEn73Y=;
         h=From:To:Cc:Subject:Date:From;
-        b=Cw53yCj0nyzlnWnbte5Lwrqcep7sQ1vNA/H/kA1jFpbkHZOKhfjn8Qj8RC6vXV0hj
-         dhqJl1orOc2HwTgI7jTsQakj6rb7vDmEu4+ro5uD5rMIejGmoTDV6sF/uel4qK/lVn
-         Cg4WhA2u9chkMf7njxL5GsVYB3w1ItBWrgL5tDs+Mh/kX7M2GKPcUTwWvPYnS0PcNm
-         BNYaaMPEjV9iIOaUB67vzKsLwaYORmmG85864Qlh8mRFefPnLJ/G8GanlBWFg7B4Rb
-         pilAA3MJ1N1eyVclZay+OkSO5b2rlXwVLOJjA2mpyDQ6l+PrzzYtkHiBx7Ba3NqgLH
-         +FYvPa5pAjgIQ==
+        b=nog7iae6jWPOzuuLLHIjTtIIR1wUlPeXTtYx6JU36WNc+KBRZQgguWN1dbv5+T5lg
+         Fjzn1RrFvEy7EE7bzcRCdl9yA+A2Mwb0649qdILXy/q5ukZNEZvO2esnJk4EP/S2OB
+         nSWitwqna1qDusCKomMCS0OMAJM4TJq56buV0RbnzZ3hnMDlni73NNqP7xUSGHTXq8
+         mxE5yVi8INWw6LEC1w4/1kTE/SmR0c+f+dTzj0hMPtKcusfc7oGngdziM8El5jV8jH
+         uzLOtNVVO1umCVcp+pzj/ZIju5PdRuD2HERFscymZylWn22jeuPHpieIlDbwQUFOTf
+         TyE5aygJE8Dww==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Uros Bizjak <ubizjak@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
+To:     Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jijie Shao <shaojijie@huawei.com>,
+        Hao Chen <chenhao418@huawei.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/alternative: move apply_relocation() out of init section
-Date:   Mon,  4 Dec 2023 08:28:41 +0100
-Message-Id: <20231204072856.1033621-1-arnd@kernel.org>
+Subject: [PATCH] net: hns3: reduce stack usage in hclge_dbg_dump_tm_pri()
+Date:   Mon,  4 Dec 2023 08:29:26 +0100
+Message-Id: <20231204072932.1077878-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -56,53 +55,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-This function is now called from a few places that are no __init_or_module,
-resulting a link time warning:
+This function exceeds the stack frame warning limit:
 
-WARNING: modpost: vmlinux: section mismatch in reference: patch_dest+0x8a (section: .text) -> apply_relocation (section: .init.text)
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c: In function 'hclge_dbg_dump_tm_pri':
+drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c:1039:1: error: the frame size of 1408 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
 
-Remove the annotation here.
+Use dynamic allocation for the largest stack object instead. It
+would be nice to rewrite this file to completely avoid the extra
+buffer and just use the one that was already allocated by debugfs,
+but that is a much larger change.
 
-Fixes: 17bce3b2ae2d ("x86/callthunks: Handle %rip-relative relocations in call thunk template")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-Not entire sure about this one, it does address the warning, but it
-might be possible to find and change all the callers instead if they
-fit the __init_or_module pattern.
----
- arch/x86/kernel/alternative.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c   | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index d973bcf7db78..4a25642ab714 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -44,7 +44,7 @@ EXPORT_SYMBOL_GPL(alternatives_patched);
- #define DA_ENDBR	0x08
- #define DA_SMP		0x10
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+index ff3f8f424ad9..9b5d46fdfd6c 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+@@ -981,7 +981,7 @@ static const struct hclge_dbg_item tm_pri_items[] = {
  
--static unsigned int __initdata_or_module debug_alternative;
-+static unsigned int debug_alternative;
+ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+ {
+-	char data_str[ARRAY_SIZE(tm_pri_items)][HCLGE_DBG_DATA_STR_LEN];
++	char *data_str;
+ 	struct hclge_tm_shaper_para c_shaper_para, p_shaper_para;
+ 	char *result[ARRAY_SIZE(tm_pri_items)], *sch_mode_str;
+ 	char content[HCLGE_DBG_TM_INFO_LEN];
+@@ -991,9 +991,13 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+ 	ret = hclge_tm_get_pri_num(hdev, &pri_num);
+ 	if (ret)
+ 		return ret;
++	data_str = kcalloc(ARRAY_SIZE(tm_pri_items), HCLGE_DBG_DATA_STR_LEN,
++			   GFP_KERNEL);
++	if (!data_str)
++		return -ENOMEM;
  
- static int __init debug_alt(char *str)
- {
-@@ -206,7 +206,7 @@ static int skip_nops(u8 *instr, int offset, int len)
-  * Optimize a sequence of NOPs, possibly preceded by an unconditional jump
-  * to the end of the NOP sequence into a single NOP.
-  */
--static bool __init_or_module
-+static bool
- __optimize_nops(u8 *instr, size_t len, struct insn *insn, int *next, int *prev, int *target)
- {
- 	int i = *next - insn->length;
-@@ -325,7 +325,7 @@ bool need_reloc(unsigned long offset, u8 *src, size_t src_len)
- 	return (target < src || target > src + src_len);
+ 	for (i = 0; i < ARRAY_SIZE(tm_pri_items); i++)
+-		result[i] = &data_str[i][0];
++		result[i] = &data_str[i * HCLGE_DBG_DATA_STR_LEN];
+ 
+ 	hclge_dbg_fill_content(content, sizeof(content), tm_pri_items,
+ 			       NULL, ARRAY_SIZE(tm_pri_items));
+@@ -1035,6 +1039,7 @@ static int hclge_dbg_dump_tm_pri(struct hclge_dev *hdev, char *buf, int len)
+ 		pos += scnprintf(buf + pos, len - pos, "%s", content);
+ 	}
+ 
++	kfree(data_str);
+ 	return 0;
  }
- 
--void __init_or_module apply_relocation(u8 *buf, size_t len, u8 *dest, u8 *src, size_t src_len)
-+void apply_relocation(u8 *buf, size_t len, u8 *dest, u8 *src, size_t src_len)
- {
- 	int prev, target = 0;
  
 -- 
 2.39.2
