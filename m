@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C97803E7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:35:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B4D803E7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbjLDTey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
+        id S233580AbjLDTfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjLDTes (ORCPT
+        with ESMTP id S232466AbjLDTet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:34:48 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDE1E6
+        Mon, 4 Dec 2023 14:34:49 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA2CF0
         for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:34:54 -0800 (PST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A51611FE6E;
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BDC741FE6F;
         Mon,  4 Dec 2023 19:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1701718492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4fSahCwhPLa3fIglvL1TRmtTOqYm3xhkbDoawZHdw9A=;
-        b=cYuegURdK6TarNJSSo68uWkNBOrhbmxZDmoXF/uS7znw/iEtrWLpnV32Dfv5L/PQtD6jMV
-        QULfAq7/mAGtPm9Cbv6R2L7cGyXMaX4ps56QutuI/yGpFkZL7SUzA/8QS4L54o79rRjq4f
-        NWPBKnLkVzZDYQTjYHbbwLf2ZFVPFKY=
+        bh=oMJ38qh2PsFVzYJdgL9aE/PQtVEO5BW0t1lp5LOzGhE=;
+        b=heFvZSEqKXFYYnE56gLumyjwnovfMoThgCUklAnz/7rCIit0pSFbwcimdNm5j3c/yxeUWW
+        gkrHrXu27VHKyotHjOARtOBi8vu9/U7UBOCZ6dklVeHUlRia8ZCmSyeJ+Yffki83sZt/QD
+        oVMt4iNE5pnET1BPfPzYzcZjH7a7qF0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1701718492;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4fSahCwhPLa3fIglvL1TRmtTOqYm3xhkbDoawZHdw9A=;
-        b=z8JNsCGQ0Xr3e3YcoHYBA6JiZnYEPfBf9mIKjtgLx1BoQFMrFN0F1iTKMetguIwoGikLxp
-        evtQCq2pw+erbpCw==
+        bh=oMJ38qh2PsFVzYJdgL9aE/PQtVEO5BW0t1lp5LOzGhE=;
+        b=AYjmL9saWR49xKlagqu2kHY52YN3HlACqJSDOaY4oQSGsQj6skj3DVaT9RDS9UPQoco+TP
+        i62y5/OcDjMfblCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8875313AC2;
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A101E13AC1;
         Mon,  4 Dec 2023 19:34:52 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
         by imap1.dmz-prg2.suse.org with ESMTPSA
-        id OCn7INwpbmUPMwAAD6G6ig
+        id 6Gn/JtwpbmUPMwAAD6G6ig
         (envelope-from <vbabka@suse.cz>); Mon, 04 Dec 2023 19:34:52 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
-Date:   Mon, 04 Dec 2023 20:34:41 +0100
-Subject: [PATCH 2/4] mm/slub: introduce __kmem_cache_free_bulk() without
- free hooks
+Date:   Mon, 04 Dec 2023 20:34:42 +0100
+Subject: [PATCH 3/4] mm/slub: handle bulk and single object freeing
+ separately
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231204-slub-cleanup-hooks-v1-2-88b65f7cd9d5@suse.cz>
+Message-Id: <20231204-slub-cleanup-hooks-v1-3-88b65f7cd9d5@suse.cz>
 References: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
 In-Reply-To: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
 To:     Christoph Lameter <cl@linux.com>,
@@ -74,11 +74,12 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
 X-Mailer: b4 0.12.4
 Authentication-Results: smtp-out2.suse.de;
         none
-X-Spam-Score: 3.33
-X-Spamd-Result: default: False [3.33 / 50.00];
+X-Spam-Level: 
+X-Spam-Score: -2.60
+X-Spamd-Result: default: False [-2.60 / 50.00];
          ARC_NA(0.00)[];
          RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(2.93)[93.30%];
+         BAYES_HAM(-3.00)[100.00%];
          FROM_HAS_DN(0.00)[];
          TO_DN_SOME(0.00)[];
          TO_MATCH_ENVRCPT_ALL(0.00)[];
@@ -108,104 +109,213 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, when __kmem_cache_alloc_bulk() fails, it frees back the
-objects that were allocated before the failure, using
-kmem_cache_free_bulk(). Because kmem_cache_free_bulk() calls the free
-hooks (KASAN etc.) and those expect objects that were processed by the
-post alloc hooks, slab_post_alloc_hook() is called before
-kmem_cache_free_bulk().
+Currently we have a single function slab_free() handling both single
+object freeing and bulk freeing with necessary hooks, the latter case
+requiring slab_free_freelist_hook(). It should be however better to
+distinguish the two use cases for the following reasons:
 
-This is wasteful, although not a big concern in practice for the rare
-error path. But in order to efficiently handle percpu array batch refill
-and free in the near future, we will also need a variant of
-kmem_cache_free_bulk() that avoids the free hooks. So introduce it now
-and use it for the failure path.
+- code simpler to follow for the single object case
 
-As a consequence, __kmem_cache_alloc_bulk() no longer needs the objcg
-parameter, remove it.
+- better code generation - although inlining should eliminate the
+  slab_free_freelist_hook() for single object freeing in case no
+  debugging options are enabled, it seems it's not perfect. When e.g.
+  KASAN is enabled, we're imposing additional unnecessary overhead for
+  single object freeing.
+
+- preparation to add percpu array caches in near future
+
+Therefore, simplify slab_free() for the single object case by dropping
+unnecessary parameters and calling only slab_free_hook() instead of
+slab_free_freelist_hook(). Rename the bulk variant to slab_free_bulk()
+and adjust callers accordingly.
+
+While at it, flip (and document) slab_free_hook() return value so that
+it returns true when the freeing can proceed, which matches the logic of
+slab_free_freelist_hook() and is not confusingly the opposite.
+
+Additionally we can simplify a bit by changing the tail parameter of
+do_slab_free() when freeing a single object - instead of NULL we can set
+it equal to head.
+
+bloat-o-meter shows small code reduction with a .config that has KASAN
+etc disabled:
+
+add/remove: 0/0 grow/shrink: 0/4 up/down: 0/-118 (-118)
+Function                                     old     new   delta
+kmem_cache_alloc_bulk                       1203    1196      -7
+kmem_cache_free                              861     835     -26
+__kmem_cache_free                            741     704     -37
+kmem_cache_free_bulk                         911     863     -48
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 33 ++++++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
+ mm/slub.c | 59 +++++++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 35 insertions(+), 24 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index d7b0ca6012e0..0742564c4538 100644
+index 0742564c4538..ed2fa92e914c 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -4478,6 +4478,27 @@ int build_detached_freelist(struct kmem_cache *s, size_t size,
- 	return same;
+@@ -2037,9 +2037,12 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+ /*
+  * Hooks for other subsystems that check memory allocations. In a typical
+  * production configuration these hooks all should produce no code at all.
++ *
++ * Returns true if freeing of the object can proceed, false if its reuse
++ * was delayed by KASAN quarantine.
+  */
+-static __always_inline bool slab_free_hook(struct kmem_cache *s,
+-						void *x, bool init)
++static __always_inline
++bool slab_free_hook(struct kmem_cache *s, void *x, bool init)
+ {
+ 	kmemleak_free_recursive(x, s->flags);
+ 	kmsan_slab_free(s, x);
+@@ -2072,7 +2075,7 @@ static __always_inline bool slab_free_hook(struct kmem_cache *s,
+ 		       s->size - s->inuse - rsize);
+ 	}
+ 	/* KASAN might put x into memory quarantine, delaying its reuse. */
+-	return kasan_slab_free(s, x, init);
++	return !kasan_slab_free(s, x, init);
  }
  
-+/*
-+ * Internal bulk free of objects that were not initialised by the post alloc
-+ * hooks and thus should not be processed by the free hooks
-+ */
-+static void __kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
-+{
-+	if (!size)
-+		return;
-+
-+	do {
-+		struct detached_freelist df;
-+
-+		size = build_detached_freelist(s, size, p, &df);
-+		if (!df.slab)
-+			continue;
-+
-+		do_slab_free(df.s, df.slab, df.freelist, df.tail, df.cnt,
-+			     _RET_IP_);
-+	} while (likely(size));
-+}
-+
- /* Note that interrupts must be enabled when calling this function. */
- void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
- {
-@@ -4499,7 +4520,7 @@ EXPORT_SYMBOL(kmem_cache_free_bulk);
+ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+@@ -2082,7 +2085,7 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
  
- #ifndef CONFIG_SLUB_TINY
- static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
--			size_t size, void **p, struct obj_cgroup *objcg)
-+					  size_t size, void **p)
+ 	void *object;
+ 	void *next = *head;
+-	void *old_tail = *tail ? *tail : *head;
++	void *old_tail = *tail;
+ 
+ 	if (is_kfence_address(next)) {
+ 		slab_free_hook(s, next, false);
+@@ -2098,8 +2101,8 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+ 		next = get_freepointer(s, object);
+ 
+ 		/* If object's reuse doesn't have to be delayed */
+-		if (likely(!slab_free_hook(s, object,
+-					   slab_want_init_on_free(s)))) {
++		if (likely(slab_free_hook(s, object,
++					  slab_want_init_on_free(s)))) {
+ 			/* Move object to the new freelist */
+ 			set_freepointer(s, object, *head);
+ 			*head = object;
+@@ -2114,9 +2117,6 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+ 		}
+ 	} while (object != old_tail);
+ 
+-	if (*head == *tail)
+-		*tail = NULL;
+-
+ 	return *head != NULL;
+ }
+ 
+@@ -4227,7 +4227,6 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+ 				struct slab *slab, void *head, void *tail,
+ 				int cnt, unsigned long addr)
  {
+-	void *tail_obj = tail ? : head;
  	struct kmem_cache_cpu *c;
- 	unsigned long irqflags;
-@@ -4563,14 +4584,13 @@ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+ 	unsigned long tid;
+ 	void **freelist;
+@@ -4246,14 +4245,14 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+ 	barrier();
  
- error:
- 	slub_put_cpu_ptr(s->cpu_slab);
--	slab_post_alloc_hook(s, objcg, flags, i, p, false, s->object_size);
--	kmem_cache_free_bulk(s, i, p);
-+	__kmem_cache_free_bulk(s, i, p);
- 	return 0;
+ 	if (unlikely(slab != c->slab)) {
+-		__slab_free(s, slab, head, tail_obj, cnt, addr);
++		__slab_free(s, slab, head, tail, cnt, addr);
+ 		return;
+ 	}
  
- }
- #else /* CONFIG_SLUB_TINY */
- static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
--			size_t size, void **p, struct obj_cgroup *objcg)
-+				   size_t size, void **p)
+ 	if (USE_LOCKLESS_FAST_PATH()) {
+ 		freelist = READ_ONCE(c->freelist);
+ 
+-		set_freepointer(s, tail_obj, freelist);
++		set_freepointer(s, tail, freelist);
+ 
+ 		if (unlikely(!__update_cpu_freelist_fast(s, freelist, head, tid))) {
+ 			note_cmpxchg_failure("slab_free", s, tid);
+@@ -4270,7 +4269,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+ 		tid = c->tid;
+ 		freelist = c->freelist;
+ 
+-		set_freepointer(s, tail_obj, freelist);
++		set_freepointer(s, tail, freelist);
+ 		c->freelist = head;
+ 		c->tid = next_tid(tid);
+ 
+@@ -4283,15 +4282,27 @@ static void do_slab_free(struct kmem_cache *s,
+ 				struct slab *slab, void *head, void *tail,
+ 				int cnt, unsigned long addr)
  {
- 	int i;
- 
-@@ -4593,8 +4613,7 @@ static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
- 	return i;
- 
- error:
--	slab_post_alloc_hook(s, objcg, flags, i, p, false, s->object_size);
--	kmem_cache_free_bulk(s, i, p);
-+	__kmem_cache_free_bulk(s, i, p);
- 	return 0;
+-	void *tail_obj = tail ? : head;
+-
+-	__slab_free(s, slab, head, tail_obj, cnt, addr);
++	__slab_free(s, slab, head, tail, cnt, addr);
  }
  #endif /* CONFIG_SLUB_TINY */
-@@ -4614,7 +4633,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
- 	if (unlikely(!s))
- 		return 0;
  
--	i = __kmem_cache_alloc_bulk(s, flags, size, p, objcg);
-+	i = __kmem_cache_alloc_bulk(s, flags, size, p);
- 
+-static __fastpath_inline void slab_free(struct kmem_cache *s, struct slab *slab,
+-				      void *head, void *tail, void **p, int cnt,
+-				      unsigned long addr)
++static __fastpath_inline
++void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
++	       unsigned long addr)
++{
++	bool init;
++
++	memcg_slab_free_hook(s, slab, &object, 1);
++
++	init = !is_kfence_address(object) && slab_want_init_on_free(s);
++
++	if (likely(slab_free_hook(s, object, init)))
++		do_slab_free(s, slab, object, object, 1, addr);
++}
++
++static __fastpath_inline
++void slab_free_bulk(struct kmem_cache *s, struct slab *slab, void *head,
++		    void *tail, void **p, int cnt, unsigned long addr)
+ {
+ 	memcg_slab_free_hook(s, slab, p, cnt);
  	/*
- 	 * memcg and kmem_cache debug support and memory initialization.
+@@ -4305,7 +4316,7 @@ static __fastpath_inline void slab_free(struct kmem_cache *s, struct slab *slab,
+ #ifdef CONFIG_KASAN_GENERIC
+ void ___cache_free(struct kmem_cache *cache, void *x, unsigned long addr)
+ {
+-	do_slab_free(cache, virt_to_slab(x), x, NULL, 1, addr);
++	do_slab_free(cache, virt_to_slab(x), x, x, 1, addr);
+ }
+ #endif
+ 
+@@ -4349,7 +4360,7 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
+ 	if (!s)
+ 		return;
+ 	trace_kmem_cache_free(_RET_IP_, x, s);
+-	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, _RET_IP_);
++	slab_free(s, virt_to_slab(x), x, _RET_IP_);
+ }
+ EXPORT_SYMBOL(kmem_cache_free);
+ 
+@@ -4395,7 +4406,7 @@ void kfree(const void *object)
+ 
+ 	slab = folio_slab(folio);
+ 	s = slab->slab_cache;
+-	slab_free(s, slab, x, NULL, &x, 1, _RET_IP_);
++	slab_free(s, slab, x, _RET_IP_);
+ }
+ EXPORT_SYMBOL(kfree);
+ 
+@@ -4512,8 +4523,8 @@ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
+ 		if (!df.slab)
+ 			continue;
+ 
+-		slab_free(df.s, df.slab, df.freelist, df.tail, &p[size], df.cnt,
+-			  _RET_IP_);
++		slab_free_bulk(df.s, df.slab, df.freelist, df.tail, &p[size],
++			       df.cnt, _RET_IP_);
+ 	} while (likely(size));
+ }
+ EXPORT_SYMBOL(kmem_cache_free_bulk);
 
 -- 
 2.43.0
