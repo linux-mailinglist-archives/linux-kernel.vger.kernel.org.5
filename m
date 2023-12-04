@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7CB804020
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0769804013
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 21:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346146AbjLDUiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 15:38:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        id S235389AbjLDUhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 15:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345987AbjLDUht (ORCPT
+        with ESMTP id S1346335AbjLDUhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 15:37:49 -0500
+        Mon, 4 Dec 2023 15:37:14 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB07035AC
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E5CC433C9;
-        Mon,  4 Dec 2023 20:35:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55710189
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 12:35:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1B87C433BC;
+        Mon,  4 Dec 2023 20:35:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701722131;
-        bh=LU4+1EHq4WENMk/lHIrrrZCo/Q9lqbk3KKLoRBbHvM0=;
+        s=k20201202; t=1701722134;
+        bh=i49s+DcY45DOcgp3WZwxJD37Nuiyf9nVIer8Ct53ez0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f8yC/i+6dP2Z713RUQPZutcX1cGM3zSR4+wtkjpZ2CMOYrF8ozGYAJNg5aw+6qC/2
-         aWz5DRTkjk3ZPpaKXnZvprUZ6xfXut1a4ITmuO0+O4TY8uXEaVHKnxBDQIEbN6123E
-         WTAeoBO59P9+Er4Rj+p6fGThIIFJoxygf5urK0yHElEjmEa4nqkEH0/Hd9GDKdfqPI
-         z8Zwk6IxprHPNsfXSgnXD64uzX1Yxsw2xb8zPzZ9Z4wB41cDikwuCl0wJbopkGtiFV
-         KH3KKL/p4TiD3wjMgT5w36wJK+o7X8ycSsQQTyk0+xVNQrMX6nFz3z9dSph6Nz16bR
-         +BYRMU8XW074A==
+        b=crkR8a/anvbWyM1ILL6d2LQFwgvPJkGLuAr3r4vDVcxcXoDQYIBdI2Uqc1L0kTA/h
+         ETxvX+zSepRO6pD4hm8AL4xEB3K2722ZcPkeW79Tufmx66bi0d0hq8G3poJIue/I/k
+         Hrl7/HRTMrqPYUdVuZZ/ylEhDYCl6UVk2y7deCZ/y3qiH8ii4JtZDcgyP1/L4EX4yN
+         QL89PqTK7/3RkhioLHhXlH5hl10sjcM1t5N8h5menRjBZAX2eDIL7sGDLfjVQEteQW
+         slkeCTU5e5UY32mIkb/8603+bRc9arXibLm7+vProgvJKkfW8AYCZEiOxbBs2sBPk1
+         L4q/xUN3IBN8w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        syzbot+7e59a5bfc7a897247e18@syzkaller.appspotmail.com,
+Cc:     Michael-CY Lee <michael-cy.lee@mediatek.com>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>, johannes@sipsolutions.net,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 05/17] wifi: cfg80211: lock wiphy mutex for rfkill poll
-Date:   Mon,  4 Dec 2023 15:34:50 -0500
-Message-ID: <20231204203514.2093855-5-sashal@kernel.org>
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        linux-wireless@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH AUTOSEL 6.1 06/17] wifi: avoid offset calculation on NULL pointer
+Date:   Mon,  4 Dec 2023 15:34:51 -0500
+Message-ID: <20231204203514.2093855-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231204203514.2093855-1-sashal@kernel.org>
 References: <20231204203514.2093855-1-sashal@kernel.org>
@@ -56,34 +57,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Michael-CY Lee <michael-cy.lee@mediatek.com>
 
-[ Upstream commit 8e2f6f2366219b3304b227bdd2f04b64c92e3e12 ]
+[ Upstream commit ef5828805842204dd0259ecfc132b5916c8a77ae ]
 
-We want to guarantee the mutex is held for pretty much
-all operations, so ensure that here as well.
+ieee80211_he_6ghz_oper() can be passed a NULL pointer
+and checks for that, but already did the calculation
+to inside of it before. Move it after the check.
 
-Reported-by: syzbot+7e59a5bfc7a897247e18@syzkaller.appspotmail.com
+Signed-off-by: Michael-CY Lee <michael-cy.lee@mediatek.com>
+Link: https://lore.kernel.org/r/20231122030237.31276-1-michael-cy.lee@mediatek.com
+[rewrite commit message]
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/ieee80211.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/net/wireless/core.c b/net/wireless/core.c
-index 63d75fecc2c53..8809e668ed912 100644
---- a/net/wireless/core.c
-+++ b/net/wireless/core.c
-@@ -216,7 +216,9 @@ static void cfg80211_rfkill_poll(struct rfkill *rfkill, void *data)
+diff --git a/include/linux/ieee80211.h b/include/linux/ieee80211.h
+index 870ae4cd82029..dce105f67b4d8 100644
+--- a/include/linux/ieee80211.h
++++ b/include/linux/ieee80211.h
+@@ -2658,12 +2658,14 @@ ieee80211_he_oper_size(const u8 *he_oper_ie)
+ static inline const struct ieee80211_he_6ghz_oper *
+ ieee80211_he_6ghz_oper(const struct ieee80211_he_operation *he_oper)
  {
- 	struct cfg80211_registered_device *rdev = data;
+-	const u8 *ret = (const void *)&he_oper->optional;
++	const u8 *ret;
+ 	u32 he_oper_params;
  
-+	wiphy_lock(&rdev->wiphy);
- 	rdev_rfkill_poll(rdev);
-+	wiphy_unlock(&rdev->wiphy);
- }
+ 	if (!he_oper)
+ 		return NULL;
  
- void cfg80211_stop_p2p_device(struct cfg80211_registered_device *rdev,
++	ret = (const void *)&he_oper->optional;
++
+ 	he_oper_params = le32_to_cpu(he_oper->he_oper_params);
+ 
+ 	if (!(he_oper_params & IEEE80211_HE_OPERATION_6GHZ_OP_INFO))
 -- 
 2.42.0
 
