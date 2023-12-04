@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B9B8039A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FA28039A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:07:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344488AbjLDQHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:07:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
+        id S1344475AbjLDQHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:07:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234949AbjLDQHe (ORCPT
+        with ESMTP id S232582AbjLDQHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:07:34 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CAACA;
-        Mon,  4 Dec 2023 08:07:39 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4CxuPc022087;
-        Mon, 4 Dec 2023 08:06:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0220;
- bh=UxGwEKMqb77hSj2gwUSJa6e+ATYUziz0FtksrLEqbDc=;
- b=aL+XXb5QHCpAsH44dhOEFE9kyihBRMnyEqQTS4uv+EVfGFJ5Pl55D0OMMantvZrk4aij
- MZLeQ8FZUuKO6IFisV+MG2QPPxgEnU6OXmPFvvtf1m403X85LT4KRcrRhz9DLus8PANI
- /s6il0mqas8CXq49KYf11D8E5WvamZr6lCF+jmzrMcCpsAAaQF2hhYWjK7vstV8fwQOM
- x1Map7hQpR0RiItiUz3vwHRfX4qcqyYudtDc/dVRLSh7J2MI6dF6mwLGBnr5dayFkz0Z
- ArUZ0FY96KIzXZ9rW9sfaKRe8V6DmAskD8O31FlAOLcxdE1JXUtDgxiRTz3uUIw2rx0p GQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3ur2tvdxt3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 08:06:51 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 4 Dec
- 2023 08:06:50 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 4 Dec 2023 08:06:50 -0800
-Received: from [10.9.8.90] (OBi302.marvell.com [10.9.8.90])
-        by maili.marvell.com (Postfix) with ESMTP id DA6AA3F7057;
-        Mon,  4 Dec 2023 08:06:46 -0800 (PST)
-Message-ID: <08ae0a18-669e-b479-94d4-450a7a12efe9@marvell.com>
-Date:   Mon, 4 Dec 2023 17:06:46 +0100
+        Mon, 4 Dec 2023 11:07:12 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6702095
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:07:18 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6cddc148285so4923465b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 08:07:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701706038; x=1702310838; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0eXTJmt29eCW3Ou83aYWQmui7jnQpgwQ9joAhuqNSb4=;
+        b=wY6vF7PYnaR5ji2YF7ZLkm6IXLAtHYeIwumqNKgzOcWmnjha9sLaTPdpWEFb9EjbeH
+         7ORnHUKPQYbM6yxNsE4Yu3Gge5XI0TvkLIcvZyfY0pAX5Jh2qE/0xdijFeaZS/e/VBxo
+         uam3W7/ReHt8kC4z3OGbx4sJQyuBfJnzT8VD29A2/458HNu+Ob0XXb+1rkTNWPMIIvuK
+         eyNOsQtbSrkciKE7Sk6uGwyQlZ2yIa4iImVhCS5z4phsRhNQ20k3nfS8LcZHDsGVydKE
+         CqP9kJqMebXfSY8EeqHxEvj8fyj1b2IWZrmB6rVDLn1Rcj8z1Swt1nFQdcsRBkYqQ3ua
+         HfaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701706038; x=1702310838;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0eXTJmt29eCW3Ou83aYWQmui7jnQpgwQ9joAhuqNSb4=;
+        b=jzaLOYhKRZvHNRNhukr2XwcCaF8u8yGW2ZvU64YnT+J9xTonfOhp8bmHmwE1SxUWTG
+         ymrL6RZdvd+l+PeFV8lQt0P5P/UxK6+vDQNOiglP1FiV+3EMNtur8cUZBrJTxbLnKwqA
+         w6whtkIjYHaPKeyPZPpYuyplrKTywwbgLJQV19LFPx2p/u/kCWR+CcjJD5r+IBjEaUJO
+         Pqo1cHnRJKp+X2upsIyqJTeEYoaShLPD/bGlGZOiM3CmiX01tYQnHYa3wpOnb93ufH4M
+         J+B1a4F9BWxPvbOsrW7qjumV4HdfZbeihQbVnELmIe5+u+/ZBorydtDVwbnPhZDYIEN3
+         bJuw==
+X-Gm-Message-State: AOJu0Yx79PZGCYoKn8ZZnCF4zW1vQl4iYtI7pq26VCJKydJiWUApOcI0
+        Ti64Gh42I/sjxwF0JB7hsSMVvmKQSRNYTiAVVTkkFw==
+X-Google-Smtp-Source: AGHT+IF/L2jWCsd95A3qxEX1r2vYPRphEt/ADMTEWKAJrylNhm6IoZ7k8WpgzKgTWEstqn9uDYIIoQDXRyvgELqqq04=
+X-Received: by 2002:a05:6a20:54a3:b0:18b:8158:86ea with SMTP id
+ i35-20020a056a2054a300b0018b815886eamr5085101pzk.10.1701706037767; Mon, 04
+ Dec 2023 08:07:17 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXT] [PATCH] net: atlantic: Fix NULL dereference of skb pointer
- in
-To:     Daniil Maximov <daniil31415it@gmail.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <lvc-project@linuxtesting.org>
-References: <20231204085810.1681386-1-daniil31415it@gmail.com>
-Content-Language: en-US
-From:   Igor Russkikh <irusskikh@marvell.com>
-In-Reply-To: <20231204085810.1681386-1-daniil31415it@gmail.com>
+References: <cover.1696345700.git.Hongyan.Xia2@arm.com> <d73fc3e9a02f047902fdd5e4c07402452d6e0590.1696345700.git.Hongyan.Xia2@arm.com>
+In-Reply-To: <d73fc3e9a02f047902fdd5e4c07402452d6e0590.1696345700.git.Hongyan.Xia2@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 4 Dec 2023 17:07:06 +0100
+Message-ID: <CAKfTPtAoTB_1RM+COXFYTc7_YUUQ12we_2bqsy_ygpiT1RSViA@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/6] sched/uclamp: Simulate PELT decay in util_avg_uclamp
+To:     Hongyan Xia <Hongyan.Xia2@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Qais Yousef <qyousef@layalina.io>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Christian Loehle <christian.loehle@arm.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 4kUdbOM2gkTdP-w4txwaAiQJ8EVdSGKm
-X-Proofpoint-GUID: 4kUdbOM2gkTdP-w4txwaAiQJ8EVdSGKm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_15,2023-12-04_01,2023-05-22_02
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -81,32 +74,279 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 4 Oct 2023 at 11:05, Hongyan Xia <Hongyan.Xia2@arm.com> wrote:
+>
+> From: Hongyan Xia <hongyan.xia2@arm.com>
+>
+> Because util_avg_uclamp is not directly managed by PELT, it lacks the
+> nice property of slowly decaying to a lower value, resulting in
+> performance degredation due to premature frequency drops.
 
-Hi Daniil,
+That a very good reason for not doing this
 
-> If is_ptp_ring == true in the loop of __aq_ring_xdp_clean function,
-> then a timestamp is stored from a packet in a field of skb object,
-> which is not allocated at the moment of the call (skb == NULL).
-> 
-> Generalize aq_ptp_extract_ts and other affected functions so they don't
-> work with struct sk_buff*, but with struct skb_shared_hwtstamps*.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE
+>
+> Add functions to decay root cfs utilization and tasks that are not on
+> the rq. This way, we get the benefits of PELT while still maintaining
+> uclamp. The rules are simple:
 
-Thanks for finding this and working on this.
+Nack. This just highlights that you are mixing different things and
+then trying to make it work.
 
-Have you reproduced it in wild, or this just comes out of static analysis?
+Please keep PELT out of uclamp_min/max
 
-I'm asking because looking into the flow you described - it looks like XDP
-mode should immediately fail with null pointer access on any rx traffic.
-But that was never reported.
-
-I will try to debug and validate the fix, but this may take some time.
-
-So for now 
-
-Reviewed-by: Igor Russkikh <irusskikh@marvell.com>
-
-
-Thanks
-  Igor
+>
+> 1. When task is se->on_rq, enforce its util_avg_uclamp within uclamp
+>    range.
+> 2. When task is !se->on_rq, PELT decay its util_avg_uclamp.
+> 3. When the root CFS util drops, PELT decay to the target frequency
+>    instead of immediately dropping to a lower target frequency.
+>
+> TODO: Can we somehow integrate this uclamp sum aggregation directly into
+> util_avg, so that we don't need to introduce a new util_avg_uclamp
+> signal and don't need to simulate PELT decay?
+>
+> Signed-off-by: Hongyan Xia <hongyan.xia2@arm.com>
+> ---
+>  kernel/sched/fair.c  |  20 +++++++++
+>  kernel/sched/pelt.c  | 103 ++++++++++++++++++++++++++++++++++++++++---
+>  kernel/sched/sched.h |   2 +
+>  3 files changed, 119 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 33e5a6e751c0..420af57d01ee 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4311,17 +4311,22 @@ static inline int
+>  update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+>  {
+>         unsigned long removed_load = 0, removed_util = 0, removed_runnable = 0;
+> +       unsigned int removed_root_util = 0;
+>         struct sched_avg *sa = &cfs_rq->avg;
+>         int decayed = 0;
+>
+>         if (cfs_rq->removed.nr) {
+>                 unsigned long r;
+> +               struct rq *rq = rq_of(cfs_rq);
+>                 u32 divider = get_pelt_divider(&cfs_rq->avg);
+>
+>                 raw_spin_lock(&cfs_rq->removed.lock);
+>                 swap(cfs_rq->removed.util_avg, removed_util);
+>                 swap(cfs_rq->removed.load_avg, removed_load);
+>                 swap(cfs_rq->removed.runnable_avg, removed_runnable);
+> +#ifdef CONFIG_UCLAMP_TASK
+> +               swap(rq->root_cfs_util_uclamp_removed, removed_root_util);
+> +#endif
+>                 cfs_rq->removed.nr = 0;
+>                 raw_spin_unlock(&cfs_rq->removed.lock);
+>
+> @@ -4346,6 +4351,12 @@ update_cfs_rq_load_avg(u64 now, struct cfs_rq *cfs_rq)
+>                  *    util_avg * minimum possible divider
+>                  */
+>                 sa->util_sum = max_t(u32, sa->util_sum, sa->util_avg * PELT_MIN_DIVIDER);
+> +#ifdef CONFIG_UCLAMP_TASK
+> +               r = removed_root_util;
+> +               sub_positive(&rq->root_cfs_util_uclamp, r);
+> +               rq->root_cfs_util_uclamp =
+> +                       max(rq->root_cfs_util_uclamp, rq->cfs.avg.util_avg_uclamp);
+> +#endif
+>
+>                 r = removed_runnable;
+>                 sub_positive(&sa->runnable_avg, r);
+> @@ -4527,6 +4538,7 @@ static void sync_entity_load_avg(struct sched_entity *se)
+>  static void remove_entity_load_avg(struct sched_entity *se)
+>  {
+>         struct cfs_rq *cfs_rq = cfs_rq_of(se);
+> +       struct rq *rq = rq_of(cfs_rq);
+>         unsigned long flags;
+>
+>         /*
+> @@ -4542,6 +4554,9 @@ static void remove_entity_load_avg(struct sched_entity *se)
+>         cfs_rq->removed.util_avg        += se->avg.util_avg;
+>         cfs_rq->removed.load_avg        += se->avg.load_avg;
+>         cfs_rq->removed.runnable_avg    += se->avg.runnable_avg;
+> +#ifdef CONFIG_UCLAMP_TASK
+> +       rq->root_cfs_util_uclamp_removed += se->avg.util_avg_uclamp;
+> +#endif
+>         raw_spin_unlock_irqrestore(&cfs_rq->removed.lock, flags);
+>  }
+>
+> @@ -6462,6 +6477,11 @@ static void update_se_chain(struct task_struct *p)
+>                 struct cfs_rq *cfs_rq = cfs_rq_of(se);
+>
+>                 ___update_util_avg_uclamp(&cfs_rq->avg, se);
+> +               if (&rq->cfs == cfs_rq) {
+> +                       rq->root_cfs_util_uclamp = max(rq->root_cfs_util_uclamp,
+> +                                                      cfs_rq->avg.util_avg_uclamp);
+> +                       cfs_rq_util_change(cfs_rq, 0);
+> +               }
+>         }
+>  #endif
+>  }
+> diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+> index c656e4dcb1d1..83d5ac7e7ddb 100644
+> --- a/kernel/sched/pelt.c
+> +++ b/kernel/sched/pelt.c
+> @@ -267,6 +267,57 @@ ___update_load_avg(struct sched_avg *sa, unsigned long load)
+>  }
+>
+>  #ifdef CONFIG_UCLAMP_TASK
+> +static void ___decay_util_avg_uclamp_towards(u64 now,
+> +                                            u64 last_update_time,
+> +                                            u32 period_contrib,
+> +                                            unsigned int *old,
+> +                                            unsigned int new_val)
+> +{
+> +       unsigned int old_val = READ_ONCE(*old);
+> +       u64 delta, periods;
+> +
+> +       if (old_val <= new_val) {
+> +               WRITE_ONCE(*old, new_val);
+> +               return;
+> +       }
+> +
+> +       if (!last_update_time)
+> +               return;
+> +       delta = now - last_update_time;
+> +       if ((s64)delta < 0)
+> +               return;
+> +       delta >>= 10;
+> +       if (!delta)
+> +               return;
+> +
+> +       delta += period_contrib;
+> +       periods = delta / 1024;
+> +       if (periods) {
+> +               u64 diff = old_val - new_val;
+> +
+> +               /*
+> +                * Let's assume 3 tasks, A, B and C. A is still on rq but B and
+> +                * C have just been dequeued. The cfs.avg.util_avg_uclamp has
+> +                * become A but root_cfs_util_uclamp just starts to decay and is
+> +                * now still A + B + C.
+> +                *
+> +                * After p periods with y being the decay factor, the new
+> +                * root_cfs_util_uclamp should become
+> +                *
+> +                * A + B * y^p + C * y^p == A + (A + B + C - A) * y^p
+> +                *     == cfs.avg.util_avg_uclamp +
+> +                *        (root_cfs_util_uclamp_at_the_start - cfs.avg.util_avg_uclamp) * y^p
+> +                *     == cfs.avg.util_avg_uclamp + diff * y^p
+> +                *
+> +                * So, instead of summing up each individual decayed values, we
+> +                * could just decay the diff and not bother with the summation
+> +                * at all. This is why we decay the diff here.
+> +                */
+> +               diff = decay_load(diff, periods);
+> +               WRITE_ONCE(*old, new_val + diff);
+> +       }
+> +}
+> +
+>  /* avg must belong to the queue this se is on. */
+>  void ___update_util_avg_uclamp(struct sched_avg *avg, struct sched_entity *se)
+>  {
+> @@ -336,17 +387,33 @@ ___update_util_avg_uclamp(struct sched_avg *avg, struct sched_entity *se)
+>
+>  int __update_load_avg_blocked_se(u64 now, struct sched_entity *se)
+>  {
+> +       u64 last_update_time = se->avg.last_update_time;
+> +       u32 period_contrib = se->avg.period_contrib;
+> +       int ret = 0;
+> +
+>         if (___update_load_sum(now, &se->avg, 0, 0, 0)) {
+>                 ___update_load_avg(&se->avg, se_weight(se));
+>                 trace_pelt_se_tp(se);
+> -               return 1;
+> +               ret = 1;
+>         }
+>
+> -       return 0;
+> +#ifdef CONFIG_UCLAMP_TASK
+> +       if (entity_is_task(se))
+> +               ___decay_util_avg_uclamp_towards(now,
+> +                                                last_update_time,
+> +                                                period_contrib,
+> +                                                &se->avg.util_avg_uclamp,
+> +                                                0);
+> +#endif
+> +       return ret;
+>  }
+>
+>  int __update_load_avg_se(u64 now, struct cfs_rq *cfs_rq, struct sched_entity *se)
+>  {
+> +       u64 last_update_time = se->avg.last_update_time;
+> +       u32 period_contrib = se->avg.period_contrib;
+> +       int ret = 0;
+> +
+>         if (___update_load_sum(now, &se->avg, !!se->on_rq, se_runnable(se),
+>                                 cfs_rq->curr == se)) {
+>
+> @@ -354,14 +421,26 @@ int __update_load_avg_se(u64 now, struct cfs_rq *cfs_rq, struct sched_entity *se
+>                 ___update_util_avg_uclamp(&cfs_rq->avg, se);
+>                 cfs_se_util_change(&se->avg);
+>                 trace_pelt_se_tp(se);
+> -               return 1;
+> +               ret = 1;
+>         }
+>
+> -       return 0;
+> +#ifdef CONFIG_UCLAMP_TASK
+> +       if (!se->on_rq && entity_is_task(se))
+> +               ___decay_util_avg_uclamp_towards(now,
+> +                                                last_update_time,
+> +                                                period_contrib,
+> +                                                &se->avg.util_avg_uclamp,
+> +                                                0);
+> +#endif
+> +       return ret;
+>  }
+>
+>  int __update_load_avg_cfs_rq(u64 now, struct cfs_rq *cfs_rq)
+>  {
+> +       u64 last_update_time = cfs_rq->avg.last_update_time;
+> +       u32 period_contrib = cfs_rq->avg.period_contrib;
+> +       int ret = 0;
+> +
+>         if (___update_load_sum(now, &cfs_rq->avg,
+>                                 scale_load_down(cfs_rq->load.weight),
+>                                 cfs_rq->h_nr_running,
+> @@ -369,10 +448,22 @@ int __update_load_avg_cfs_rq(u64 now, struct cfs_rq *cfs_rq)
+>
+>                 ___update_load_avg(&cfs_rq->avg, 1);
+>                 trace_pelt_cfs_tp(cfs_rq);
+> -               return 1;
+> +               ret = 1;
+>         }
+>
+> -       return 0;
+> +#ifdef CONFIG_UCLAMP_TASK
+> +       if (&rq_of(cfs_rq)->cfs == cfs_rq) {
+> +               unsigned int target = READ_ONCE(cfs_rq->avg.util_avg_uclamp);
+> +
+> +               ___decay_util_avg_uclamp_towards(now,
+> +                               last_update_time,
+> +                               period_contrib,
+> +                               &rq_of(cfs_rq)->root_cfs_util_uclamp,
+> +                               target);
+> +       }
+> +#endif
+> +
+> +       return ret;
+>  }
+>
+>  /*
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 2eefcdb0c3b0..98fa5e79f4e9 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -992,6 +992,8 @@ struct rq {
+>         /* Utilization clamp values based on CPU's RUNNABLE tasks */
+>         struct uclamp_rq        uclamp[UCLAMP_CNT] ____cacheline_aligned;
+>         unsigned int            uclamp_flags;
+> +       unsigned int            root_cfs_util_uclamp;
+> +       unsigned int            root_cfs_util_uclamp_removed;
+>  #define UCLAMP_FLAG_IDLE 0x01
+>  #endif
+>
+> --
+> 2.34.1
+>
