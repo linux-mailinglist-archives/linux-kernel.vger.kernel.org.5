@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE8B802E1B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82751802E3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 10:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbjLDJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 04:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50834 "EHLO
+        id S231552AbjLDJOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 04:14:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDJHE (ORCPT
+        with ESMTP id S229446AbjLDJO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 04:07:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C3ECD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 01:07:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701680830;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AOT92qB4CMJ9QUbkuwnTO771HPULUzewrnuOIhnYnrA=;
-        b=V6fUcEMFkmJKX2j9SO2AVmOibMrQoaIH6zS6e2B+lveZqXiA30QQs+dSdPM6gisVqMvku9
-        9DROCT4E5kvyewyUiV0cIrHcoQuLLCLW2W5b9GLCoeX1vKzURH5GGfOttVSxzfDu65j8+g
-        8c4wfub5U4EopCY2b/fjCYTa1Dbazbc=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-626-idleBifQMLaQpkRyw0PE0A-1; Mon, 04 Dec 2023 04:07:09 -0500
-X-MC-Unique: idleBifQMLaQpkRyw0PE0A-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-50bf44ff4a5so618949e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 01:07:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701680827; x=1702285627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AOT92qB4CMJ9QUbkuwnTO771HPULUzewrnuOIhnYnrA=;
-        b=m/t4rwOakQpdl8J+WhY76vq/4BEgTPOkVuTY0I1Y2J5Qunof8CINEMZNzo48f2N+LB
-         LuyagRQyhG9Fb9XO0ltoRt/+oszv37EE+x89AvPzpJl3ywZwJCPGggWrDkS336oFnjv4
-         o3Camlxjw8R4HecuFonjAtpq1oqjPpA5L2WdDCSbPZtLOlI8V9RFxGIXG74gxDLHmokR
-         UCjH16P1FzqBtdYLc8FbwSoCxH4mU6B5cMXQDSR4lLEqqIiliXIEhxD06LDzHfS2/3yj
-         1D4Gw7ngACnFrL7q3H4VpIIAQnLI5GFlToGwvDUHc/kqJU6o0Ztk4dXni15QKJ+XvJPF
-         PgAQ==
-X-Gm-Message-State: AOJu0Yx/LAXwc2KhDhCMAyKcd78FdMazgOB7wmx6ct9/ODKLgznJ2fs7
-        LFUVFh3QHr77kgo9KG7zIuznL2m3ABXpjFWSEzO8PO7jhCvza5ScrPxTSiTXC6FV4dXpsu04SOE
-        0XyZiqN1ChVKmWsTYvZJOCl8cEe1wjiXqTocifN7Z
-X-Received: by 2002:ac2:5ddc:0:b0:50b:ed75:e41e with SMTP id x28-20020ac25ddc000000b0050bed75e41emr1071690lfq.137.1701680827486;
-        Mon, 04 Dec 2023 01:07:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFloYnZJhKiWXJvfZn9O+NlEFY8BvoUovFJHb+vkj50ZLTND8ieQqQqM7hWWze49I6e4qF+4+KMyiuUX3+Z9lo=
-X-Received: by 2002:ac2:5ddc:0:b0:50b:ed75:e41e with SMTP id
- x28-20020ac25ddc000000b0050bed75e41emr1071685lfq.137.1701680827120; Mon, 04
- Dec 2023 01:07:07 -0800 (PST)
+        Mon, 4 Dec 2023 04:14:28 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E3CCD;
+        Mon,  4 Dec 2023 01:14:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=17YJ1z3ogS9ZFtbiaMgUZd7PQ1LHRkBWBWcBGoc/CJ8=; b=Oq2r/tZ4GMYvXmULCX+LD6Qfz7
+        HO9OVNz8XCXQMgxz/LWfORxgl/H3LTq81ngFJsgHC93qrKcMcjpBQX8v5qQhdci74NGvXZAJ/yVju
+        sK9gFvSFKKjG+KTta5qWhde5JaQQriDgSlX54kLf3MXV6oHLk1PYPA8HeGphIfHdNTawm8bbTLJrU
+        NgcMlwn6/lrZmRXbfPHQFRxpn4ftLCB5eM9fnRnJvlMZpH3BmDJrGqa4dnsA7VRIdxnJbQVajyNOi
+        Bn006jXGBXzTqb9dfS3GtKtm0DDTPpLydkfwONe+R1/uAJi3EvwQfUiJ18EbM5lGDJHCoVpl5xoSe
+        3fM7hPwA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rA51D-004JwZ-2M;
+        Mon, 04 Dec 2023 09:13:35 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4D01F300472; Mon,  4 Dec 2023 10:13:34 +0100 (CET)
+Date:   Mon, 4 Dec 2023 10:13:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231204091334.GM3818@noisy.programming.kicks-ass.net>
+References: <20231130133630.192490507@infradead.org>
+ <20231130134204.136058029@infradead.org>
+ <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20231102143507.840-1-jiangkunkun@huawei.com> <87msvt6cc7.wl-maz@kernel.org>
- <1fb8353e-e9c4-2570-c2ca-ec537c18ac4d@huawei.com> <86edh228xx.wl-maz@kernel.org>
- <952bd5dc-dd20-acc3-d77e-c9b14e5728d3@huawei.com> <87fs0k94og.wl-maz@kernel.org>
- <CACGkMEt5sapZjpyBSM5oX_=k1AcefEe5D4wtX=HqtHy4AD3j_g@mail.gmail.com>
- <CACGkMEub4f0FWsrJzSK4e+9cC6LUNFm3vAcfSkpsp6pD=WM5qA@mail.gmail.com> <86r0k2bavu.wl-maz@kernel.org>
-In-Reply-To: <86r0k2bavu.wl-maz@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 4 Dec 2023 17:06:56 +0800
-Message-ID: <CACGkMEvLpHm+vEB80mc0QdzJkFK5bAt-gH72ypV-oOb7oJvB+A@mail.gmail.com>
-Subject: Re: [RFC PATCH] KVM: arm/arm64: GICv4: Support shared VLPI
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Kunkun Jiang <jiangkunkun@huawei.com>, dongli.zhang@oracle.com,
-        cohuck@redhat.com, stefanha@redhat.com, mst@redhat.com,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Gavin Shan <gshan@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "open list:IRQCHIP DRIVERS" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        wanghaibin.wang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,59 +87,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 5:00=E2=80=AFPM Marc Zyngier <maz@kernel.org> wrote:
->
-> On Mon, 04 Dec 2023 08:47:49 +0000,
-> Jason Wang <jasowang@redhat.com> wrote:
+On Sun, Dec 03, 2023 at 02:56:34PM -0800, Alexei Starovoitov wrote:
+> On Thu, Nov 30, 2023 at 5:43 AM Peter Zijlstra <peterz@infradead.org> wrote:
 > >
-> > On Mon, Dec 4, 2023 at 4:39=E2=80=AFPM Jason Wang <jasowang@redhat.com>=
- wrote:
-> > >
-> > > On Sat, Dec 2, 2023 at 8:20=E2=80=AFPM Marc Zyngier <maz@kernel.org> =
-wrote:
-> > > >
-> > > > Hi Kunkun,
-> > > >
-> > > > On Wed, 08 Nov 2023 09:45:51 +0000,
-> > > > Kunkun Jiang <jiangkunkun@huawei.com> wrote:
-> > > > >
-> > > > > Hi Marc,
-> > > > >
-> > > > > On 2023/11/6 23:33, Marc Zyngier wrote:
-> > > > > > On Mon, 06 Nov 2023 14:59:01 +0000,
-> > > > > > Kunkun Jiang <jiangkunkun@huawei.com> wrote:
-> > > > > >> The virtio-pci driver write entry1-6
-> > > > > >> massage.data in the msix-table and trap to QEMU for processing=
-. The
-> > > > > >> massage.data is as follow:
-> > > > > >>> entry-0 0
-> > > > > >>> entry-1 1
-> > > > > >>> entry-2 1
-> > > > > >>> entry-3 1
-> > > > > >>> entry-4 1
-> > > > > >>> entry-5 1
-> > > > > >>> entry-6 1
-> > >
-> > > It looks like a bug from the driver. It should only use vector 0 and =
-1
-> > > in this case.
-> > >
-> > > Could you please check the queue_msix_vector for each queue in this c=
-ase?
 > >
-> > Or did you actually mean queue_msix_vector here? I'm not familiar with
-> > ARM but 0 doesn't seem to be a good message.data anyhow.
->
-> Why? What's special about 0? 0 is a perfectly fine value.
+> >  void bpf_prog_kallsyms_del(struct bpf_prog *fp)
+> > @@ -691,6 +708,9 @@ void bpf_prog_kallsyms_del(struct bpf_pr
+> >                 return;
+> >
+> >         bpf_ksym_del(&fp->aux->ksym);
+> > +#ifdef CONFIG_FINEIBT
+> > +       bpf_ksym_del(&fp->aux->ksym_prefix);
+> > +#endif
+> >  }
+> 
+> Thank you for addressing all comments, but it panics during boot with:
+> 
+> [    3.109474] RIP: 0010:bpf_prog_kallsyms_del+0x10f/0x140
+> [    3.109867] Code: 26 e0 00 ff 05 32 dd dd 01 48 8d bb 80 03 00 00
+> 48 c7 c6 b8 b3 00 83 e8 ef 25 e0 00 48 8b 83 58 03 00 00 48 8b 8b 60
+> 03 00 00 <48> 89 48 08 48 89 01 4c 89 b3 60 03 00 00 48 c7 c7 10 0b 7b
+> 83 5b
+> [    3.111282] RSP: 0000:ffffc90000013e08 EFLAGS: 00010246
+> [    3.116968] Call Trace:
+> [    3.117163]  <TASK>
+> [    3.117328]  ? __die_body+0x68/0xb0
+> [    3.117599]  ? page_fault_oops+0x317/0x390
+> [    3.117909]  ? debug_objects_fill_pool+0x19/0x440
+> [    3.118283]  ? debug_objects_fill_pool+0x19/0x440
+> [    3.118715]  ? do_user_addr_fault+0x4cd/0x560
+> [    3.119045]  ? exc_page_fault+0x62/0x1c0
+> [    3.119350]  ? asm_exc_page_fault+0x26/0x30
+> [    3.119675]  ? bpf_prog_kallsyms_del+0x10f/0x140
+> [    3.120023]  ? bpf_prog_kallsyms_del+0x101/0x140
+> [    3.120381]  __bpf_prog_put_noref+0x12/0xf0
+> [    3.120704]  bpf_prog_put_deferred+0xe9/0x110
+> [    3.121035]  bpf_prog_put+0xbb/0xd0
+> [    3.121307]  bpf_prog_release+0x15/0x20
+> 
+> Adding the following:
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 5c84a935ba63..5013fd53adfd 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -709,6 +709,8 @@ void bpf_prog_kallsyms_del(struct bpf_prog *fp)
+> 
+>         bpf_ksym_del(&fp->aux->ksym);
+>  #ifdef CONFIG_FINEIBT
+> +       if (cfi_mode != CFI_FINEIBT)
+> +               return;
+>         bpf_ksym_del(&fp->aux->ksym_prefix);
+>  #endif
+>  }
+> 
+> fixes the boot issue, but test_progs is not happy.
 
-Ok, looks like I mis-read it as a message.addr. So it's fine.
+Damn, I'm an idiot :-), I knew I should've boot tested all
+configurations again :/
 
-Thanks
+> Just running test_progs it splats right away:
+> 
+> [   74.047757] kmemleak: Found object by alias at 0xffffffffa0001d80
+> [   74.048272] CPU: 14 PID: 104 Comm: kworker/14:0 Tainted: G        W
+>  O       6.7.0-rc3-00702-g41c30fec304d-dirty #5241
+> [   74.049118] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [   74.050042] Workqueue: events bpf_prog_free_deferred
+> [   74.050448] Call Trace:
+> [   74.050663]  <TASK>
+> [   74.050841]  dump_stack_lvl+0x55/0x80
+> [   74.051141]  __find_and_remove_object+0xdb/0x110
+> [   74.051521]  kmemleak_free+0x41/0x70
+> [   74.051828]  vfree+0x36/0x130
 
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
->
-
+Durr, I'll see if I can get that stuff running locally, and otherwise
+play with the robot as you suggested. Thanks!
