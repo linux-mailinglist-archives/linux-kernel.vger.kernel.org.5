@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A52E7803173
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:25:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E225F80316E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 12:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbjLDLZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 06:25:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58976 "EHLO
+        id S230388AbjLDK4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:56:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235377AbjLDKzh (ORCPT
+        with ESMTP id S1344084AbjLDKzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:55:37 -0500
+        Mon, 4 Dec 2023 05:55:40 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A5E1BD48
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:55:29 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BF33B10E9
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:55:33 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C236169E;
-        Mon,  4 Dec 2023 02:56:16 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3482816A3;
+        Mon,  4 Dec 2023 02:56:20 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D844F3F6C4;
-        Mon,  4 Dec 2023 02:55:25 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7FF083F6C4;
+        Mon,  4 Dec 2023 02:55:29 -0800 (PST)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -49,9 +49,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
 Cc:     Ryan Roberts <ryan.roberts@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 09/15] arm64/mm: ptep_set_wrprotect(): New layer to manage contig bit
-Date:   Mon,  4 Dec 2023 10:54:34 +0000
-Message-Id: <20231204105440.61448-10-ryan.roberts@arm.com>
+Subject: [PATCH v3 10/15] arm64/mm: ptep_set_access_flags(): New layer to manage contig bit
+Date:   Mon,  4 Dec 2023 10:54:35 +0000
+Message-Id: <20231204105440.61448-11-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231204105440.61448-1-ryan.roberts@arm.com>
 References: <20231204105440.61448-1-ryan.roberts@arm.com>
@@ -81,59 +81,82 @@ existing uses.
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
  arch/arm64/include/asm/pgtable.h | 10 ++++++----
+ arch/arm64/mm/fault.c            |  6 +++---
  arch/arm64/mm/hugetlbpage.c      |  2 +-
- 2 files changed, 7 insertions(+), 5 deletions(-)
+ 3 files changed, 10 insertions(+), 8 deletions(-)
 
 diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index fc1005222ee4..423cc32b2777 100644
+index 423cc32b2777..85010c2d4dfa 100644
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -958,11 +958,11 @@ static inline pmd_t pmdp_huge_get_and_clear(struct mm_struct *mm,
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+@@ -312,7 +312,7 @@ static inline void __check_safe_pte_update(struct mm_struct *mm, pte_t *ptep,
  
- /*
-- * ptep_set_wrprotect - mark read-only while trasferring potential hardware
-+ * __ptep_set_wrprotect - mark read-only while trasferring potential hardware
-  * dirty status (PTE_DBM && !PTE_RDONLY) to the software PTE_DIRTY bit.
-  */
--#define __HAVE_ARCH_PTEP_SET_WRPROTECT
--static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long address, pte_t *ptep)
-+static inline void __ptep_set_wrprotect(struct mm_struct *mm,
-+					unsigned long address, pte_t *ptep)
- {
- 	pte_t old_pte, pte;
- 
-@@ -980,7 +980,7 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
- static inline void pmdp_set_wrprotect(struct mm_struct *mm,
- 				      unsigned long address, pmd_t *pmdp)
- {
--	ptep_set_wrprotect(mm, address, (pte_t *)pmdp);
-+	__ptep_set_wrprotect(mm, address, (pte_t *)pmdp);
+ 	/*
+ 	 * Check for potential race with hardware updates of the pte
+-	 * (ptep_set_access_flags safely changes valid ptes without going
++	 * (__ptep_set_access_flags safely changes valid ptes without going
+ 	 * through an invalid entry).
+ 	 */
+ 	VM_WARN_ONCE(!pte_young(pte),
+@@ -842,8 +842,7 @@ static inline pmd_t pmd_modify(pmd_t pmd, pgprot_t newprot)
+ 	return pte_pmd(pte_modify(pmd_pte(pmd), newprot));
  }
  
- #define pmdp_establish pmdp_establish
-@@ -1120,6 +1120,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
- #define ptep_test_and_clear_young		__ptep_test_and_clear_young
- #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
+-#define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+-extern int ptep_set_access_flags(struct vm_area_struct *vma,
++extern int __ptep_set_access_flags(struct vm_area_struct *vma,
+ 				 unsigned long address, pte_t *ptep,
+ 				 pte_t entry, int dirty);
+ 
+@@ -853,7 +852,8 @@ static inline int pmdp_set_access_flags(struct vm_area_struct *vma,
+ 					unsigned long address, pmd_t *pmdp,
+ 					pmd_t entry, int dirty)
+ {
+-	return ptep_set_access_flags(vma, address, (pte_t *)pmdp, pmd_pte(entry), dirty);
++	return __ptep_set_access_flags(vma, address, (pte_t *)pmdp,
++							pmd_pte(entry), dirty);
+ }
+ 
+ static inline int pud_devmap(pud_t pud)
+@@ -1122,6 +1122,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
  #define ptep_clear_flush_young			__ptep_clear_flush_young
-+#define __HAVE_ARCH_PTEP_SET_WRPROTECT
-+#define ptep_set_wrprotect			__ptep_set_wrprotect
+ #define __HAVE_ARCH_PTEP_SET_WRPROTECT
+ #define ptep_set_wrprotect			__ptep_set_wrprotect
++#define __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
++#define ptep_set_access_flags			__ptep_set_access_flags
  
  #endif /* !__ASSEMBLY__ */
  
+diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+index a287c1dea871..7cebd9847aae 100644
+--- a/arch/arm64/mm/fault.c
++++ b/arch/arm64/mm/fault.c
+@@ -209,9 +209,9 @@ static void show_pte(unsigned long addr)
+  *
+  * Returns whether or not the PTE actually changed.
+  */
+-int ptep_set_access_flags(struct vm_area_struct *vma,
+-			  unsigned long address, pte_t *ptep,
+-			  pte_t entry, int dirty)
++int __ptep_set_access_flags(struct vm_area_struct *vma,
++			    unsigned long address, pte_t *ptep,
++			    pte_t entry, int dirty)
+ {
+ 	pteval_t old_pteval, pteval;
+ 	pte_t pte = READ_ONCE(*ptep);
 diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index c2a753541d13..952462820d9d 100644
+index 952462820d9d..627a9717e98c 100644
 --- a/arch/arm64/mm/hugetlbpage.c
 +++ b/arch/arm64/mm/hugetlbpage.c
-@@ -493,7 +493,7 @@ void huge_ptep_set_wrprotect(struct mm_struct *mm,
- 	pte_t pte;
+@@ -459,7 +459,7 @@ int huge_ptep_set_access_flags(struct vm_area_struct *vma,
+ 	pte_t orig_pte;
  
- 	if (!pte_cont(READ_ONCE(*ptep))) {
--		ptep_set_wrprotect(mm, addr, ptep);
-+		__ptep_set_wrprotect(mm, addr, ptep);
- 		return;
- 	}
+ 	if (!pte_cont(pte))
+-		return ptep_set_access_flags(vma, addr, ptep, pte, dirty);
++		return __ptep_set_access_flags(vma, addr, ptep, pte, dirty);
  
+ 	ncontig = find_num_contig(mm, addr, ptep, &pgsize);
+ 	dpfn = pgsize >> PAGE_SHIFT;
 -- 
 2.25.1
 
