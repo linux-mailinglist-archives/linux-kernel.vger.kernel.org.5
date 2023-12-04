@@ -2,273 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E10CC804166
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BAD804164
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234466AbjLDWO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:14:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60706 "EHLO
+        id S231253AbjLDWOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjLDWOy (ORCPT
+        with ESMTP id S229556AbjLDWOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:14:54 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D560FF;
-        Mon,  4 Dec 2023 14:15:00 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a1a5772b8a5so363454966b.1;
-        Mon, 04 Dec 2023 14:14:59 -0800 (PST)
+        Mon, 4 Dec 2023 17:14:47 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAE3FA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:14:54 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5c69ecda229so618002a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 14:14:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701728098; x=1702332898; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cT5ING78Aw6QvaBr7RPKXeEm1alnh4pQOnp24KNcG6U=;
-        b=LBcrlt+MKjEO3c31uU2GKLPLSDABi1fW5KFcLhihgKg3/4NIz0K0I0sn0nT/sIiwe9
-         7KhY/zMJWyRWpoCxmZF6Sm84vz6Ie0tWoHIOSR1NVoWHB+8pTnhM+P4f1fkU0lt3qW6v
-         B/nMBm3PptrsYM3tlMp+JoK3BBC6d3VH9AP8visDYkeyFtFc0dUoaFpSQmGnOwYpgNmi
-         zm05yPVl2uyF1VcRUrUOj3u+Z7zXEO/0N4ZS/XzjfmO8yBIobBKlPV+3DDQs/EhxxqmF
-         c+aN7EkQarbEYUkvYqzRnjhlLi0K5I3JMlX720yy4wrh+R7/FrXzj7lFI5Yeeaqhcv5D
-         BULg==
+        d=chromium.org; s=google; t=1701728094; x=1702332894; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=o7NAHp/MgTm9SnzSWNXfFwt/FdMVpyaPo3ZgisLjz/I=;
+        b=WRb+46fTXqd5sRdJUueaTb020qZkOMghj3gRWtOIcX5OORMR1f759TGn9hNrPjV1fa
+         jOF6uUinAkleHsKcOr7UPmTJsnAat8VVbMua8PRWX9RjEaOIHU3OEvjP2NQBBdR/NKDy
+         Y3tF22aS/ES5WNGUohCppwFUSxUXyz7R2FD2A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701728098; x=1702332898;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cT5ING78Aw6QvaBr7RPKXeEm1alnh4pQOnp24KNcG6U=;
-        b=w/NrVxx3J3XPJaWwZmCON9oTi9CWh/jeaUiHtQmZY1T1GnvJ891gTD8IcY+ciCgLNh
-         cf+9srdRa5Rh5SVc1Bqrz8/SqTNaXL7Cql51jhT1BNUEiV6CtgwEW+P9efkOiirPXwbw
-         45klZb6z+H6IaAsWcsOO/0tOdEj8ehE65kDyCz+J7KvXDCi079LGueQ3VRDat5GoZjEO
-         6ElP++dhI8XBlBkrYhsvB5ThN5X3508SqREFs7hh0WN10VGlQHqaekjphT+LyxpURGET
-         jiwEPk1JOMyY9mGUxc642be2Dn3HYSZYhePap/4YONMwJKuFiDGxJTL0ICV5deHetAaW
-         dsZg==
-X-Gm-Message-State: AOJu0YyQXHWH+sBdOahJXXt2bYEgIkXH+n2Bj9zqG4kEidFejvjOUk22
-        F9eJvKylFq5m6FJDajGQTay3kDjf9mfmpi8EkGJWZ8YWyzk=
-X-Google-Smtp-Source: AGHT+IFoeGilC7KQ6Unb3jfilMiyCDHGb3JBCgBI+bgOUtA4U8OnYlGMdCUBhy2PrVAbC60n5Rk0rZxYScsgRykKnXE=
-X-Received: by 2002:a17:906:74c2:b0:a19:a19b:78ac with SMTP id
- z2-20020a17090674c200b00a19a19b78acmr2117622ejl.111.1701728098257; Mon, 04
- Dec 2023 14:14:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701728094; x=1702332894;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7NAHp/MgTm9SnzSWNXfFwt/FdMVpyaPo3ZgisLjz/I=;
+        b=tXRgjU5kcuKaibQS+7MZAC/5wos/5AcQecs6rmOsco/9jdu1ArdaHlJSZoSyA6lbSr
+         M+dJ6miG3dy1iuwh3eSL0yJ+25wXB+v2/+HRPGMtAH1ucBfAzXJg9FNH9sLw5pyhmuRn
+         21U3Ca/V4iPOVNM4aVGBB2T4VuNFqjHFZ86IO1JUobmLn5TFaz5Vtp8tmDgkquhqO2Zd
+         drBRJEBN/2vp9ZWRY9It//0WW1oE8oMciOWPh5KNtDMHT+Ss1Zcyn5quyrvbbMq1C676
+         uKnST2op+kmy3NbO8e3s61OQt+LFNpJ6Z+mf1GrxyTD4W4OAVNz5AfrAaM2fTsl4NpC8
+         kR2g==
+X-Gm-Message-State: AOJu0YzAETYe2VEtc4QPC9esToGLXApcs13jdDlrbJEu4JfOuvP/Q2hG
+        o1ANUzuI7xzVLtlhrinmHDcXwQ==
+X-Google-Smtp-Source: AGHT+IEkvdihAqbNhlhSGxMupjG8dnFLuD0j5JoZv99BA2GbgcxonJ/mSfL3Y7TTC0ZNcKA4UdPv0g==
+X-Received: by 2002:a05:6a21:1cb0:b0:18f:97c:9276 with SMTP id sf48-20020a056a211cb000b0018f097c9276mr1608801pzb.91.1701728093815;
+        Mon, 04 Dec 2023 14:14:53 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d5-20020a17090a8d8500b002867adefbd4sm4108188pjo.48.2023.12.04.14.14.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 14:14:52 -0800 (PST)
+Date:   Mon, 4 Dec 2023 14:14:51 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Granados <j.granados@samsung.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 08/18] stackleak: don't modify ctl_table argument
+Message-ID: <202312041414.441475830B@keescook>
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+ <20231204-const-sysctl-v2-8-7a5060b11447@weissschuh.net>
 MIME-Version: 1.0
-References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-3-khuey@kylehuey.com>
-In-Reply-To: <20231204201406.341074-3-khuey@kylehuey.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 4 Dec 2023 14:14:46 -0800
-Message-ID: <CAEf4BzbDKiP7femK5DZ8jeyK0u63KrV+FogEDVPaYS7mc4if7g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
- program suppresses SIGIO.
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
-        "Robert O'Callahan" <robert@ocallahan.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231204-const-sysctl-v2-8-7a5060b11447@weissschuh.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 12:14=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
->
-> The test sets a hardware breakpoint and uses a bpf program to suppress th=
-e
-> I/O availability signal if the ip matches the expected value.
->
-> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> ---
->  .../selftests/bpf/prog_tests/perf_skip.c      | 95 +++++++++++++++++++
->  .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
->  2 files changed, 118 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/t=
-esting/selftests/bpf/prog_tests/perf_skip.c
-> new file mode 100644
-> index 000000000000..b269a31669b7
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-> @@ -0,0 +1,95 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define _GNU_SOURCE
-> +#include <test_progs.h>
-> +#include "test_perf_skip.skel.h"
-> +#include <linux/hw_breakpoint.h>
-> +#include <sys/mman.h>
-> +
-> +#define BPF_OBJECT            "test_perf_skip.bpf.o"
+On Mon, Dec 04, 2023 at 08:52:21AM +0100, Thomas Weiﬂschuh wrote:
+> In a future commit the proc_handlers will change to
+> "const struct ctl_table".
+> As a preparation for that adapt the logic to work with a temporary
+> variable, similar to how it is done in other parts of the kernel.
+> 
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
 
-leftover?
+Looks good -- thanks for catching the table-modification cases.
 
-> +
-> +static void handle_sig(int)
-> +{
-> +       ASSERT_OK(1, "perf event not skipped");
-> +}
-> +
-> +static noinline int test_function(void)
-> +{
+Acked-by: Kees Cook <keescook@chromium.org>
 
-please add
-
-asm volatile ("");
-
-here to prevent compiler from actually inlining at the call site
-
-> +       return 0;
-> +}
-> +
-> +void serial_test_perf_skip(void)
-> +{
-> +       sighandler_t previous;
-> +       int duration =3D 0;
-> +       struct test_perf_skip *skel =3D NULL;
-> +       int map_fd =3D -1;
-> +       long page_size =3D sysconf(_SC_PAGE_SIZE);
-> +       uintptr_t *ip =3D NULL;
-> +       int prog_fd =3D -1;
-> +       struct perf_event_attr attr =3D {0};
-> +       int perf_fd =3D -1;
-> +       struct f_owner_ex owner;
-> +       int err;
-> +
-> +       previous =3D signal(SIGIO, handle_sig);
-> +
-> +       skel =3D test_perf_skip__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "skel_load"))
-> +               goto cleanup;
-> +
-> +       prog_fd =3D bpf_program__fd(skel->progs.handler);
-> +       if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
-> +               goto cleanup;
-> +
-> +       map_fd =3D bpf_map__fd(skel->maps.ip);
-> +       if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
-> +               goto cleanup;
-> +
-> +       ip =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, =
-map_fd, 0);
-> +       if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
-> +               goto cleanup;
-> +
-> +       *ip =3D (uintptr_t)test_function;
-> +
-> +       attr.type =3D PERF_TYPE_BREAKPOINT;
-> +       attr.size =3D sizeof(attr);
-> +       attr.bp_type =3D HW_BREAKPOINT_X;
-> +       attr.bp_addr =3D (uintptr_t)test_function;
-> +       attr.bp_len =3D sizeof(long);
-> +       attr.sample_period =3D 1;
-> +       attr.sample_type =3D PERF_SAMPLE_IP;
-> +       attr.pinned =3D 1;
-> +       attr.exclude_kernel =3D 1;
-> +       attr.exclude_hv =3D 1;
-> +       attr.precise_ip =3D 3;
-> +
-> +       perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-> +       if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
-
-please don't use CHECK() macro, stick to ASSERT_xxx()
-
-also, we are going to run all this on different hardware and VMs, see
-how we skip tests if hardware support is not there. See test__skip
-usage in prog_tests/perf_branches.c, as one example
-
-> +               goto cleanup;
-> +
-> +       err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
-
-I assume this is what will send SIGIO, right? Can you add a small
-comment explicitly saying this?
-
-> +       if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
-> +               goto cleanup;
-> +
-> +       owner.type =3D F_OWNER_TID;
-> +       owner.pid =3D gettid();
-> +       err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
-> +       if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
-> +               goto cleanup;
-> +
-> +       err =3D ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-> +       if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
-> +               goto cleanup;
-
-we have a better way to do this, please use
-bpf_program__attach_perf_event() instead
-
-> +
-> +       test_function();
-> +
-> +cleanup:
-> +       if (perf_fd >=3D 0)
-> +               close(perf_fd);
-> +       if (ip)
-> +               munmap(ip, page_size);
-> +       if (skel)
-> +               test_perf_skip__destroy(skel);
-> +
-> +       signal(SIGIO, previous);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/t=
-esting/selftests/bpf/progs/test_perf_skip.c
-> new file mode 100644
-> index 000000000000..ef01a9161afe
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-> @@ -0,0 +1,23 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> +       __uint(max_entries, 1);
-> +       __uint(map_flags, BPF_F_MMAPABLE);
-> +       __type(key, uint32_t);
-> +       __type(value, uintptr_t);
-> +} ip SEC(".maps");
-
-please use global variable:
-
-__u64 ip;
-
-and then access it from user-space side through skeleton
-
-skel->bss.ip =3D &test_function;
-
-> +
-> +SEC("perf_event")
-> +int handler(struct bpf_perf_event_data *data)
-> +{
-> +       const uint32_t index =3D 0;
-> +       uintptr_t *v =3D bpf_map_lookup_elem(&ip, &index);
-> +
-> +       return !(v && *v =3D=3D PT_REGS_IP(&data->regs));
-
-and so we the above global var suggestion this will be just:
-
-return ip =3D=3D PT_REGS_IP(&data->regs);
-
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> --
-> 2.34.1
->
+-- 
+Kees Cook
