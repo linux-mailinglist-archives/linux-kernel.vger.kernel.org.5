@@ -2,216 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CB5802C91
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 09:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3D9802C97
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 09:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343524AbjLDH7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 02:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57910 "EHLO
+        id S1343543AbjLDICY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 03:02:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjLDH7v (ORCPT
+        with ESMTP id S229446AbjLDICX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 02:59:51 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF9DC3
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Dec 2023 23:59:55 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-33318b866a0so3922819f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Dec 2023 23:59:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701676794; x=1702281594; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=R0RPnEYT7sgQyZXufKqZxANCuXpnFprPd1aDWn6OEAw=;
-        b=OuyPfVStUAwc3xRkhJjJeEuz4QphNJYynDCIylJ14bUOK1wKVlewuiPUq3VBbHl+9C
-         1NLR80vSJcmWBEVEHh/zy/XIRpvGtFR9ZEaxQ8jLaLf0KPCzYqHy0L8yMDr0Sf66JL+3
-         M+pcoB9K43QeYWNcey7+e/gJ9cOyhdl5URXjJpU9j0VcnrERrQz9WMJMWlEFDmKaN42r
-         pWikhZiHY1CYtNwtb1/u3LET8bK4yy17OlSUTL3nd8KVuaK2z9AKHCefVbnmMVUZg4GK
-         0pPX6/MoeSxRO9wnX9p/qqjsxj562TSBo9Sr9G33CIrq4XbUT+iODaFnYGYJZZVCABgz
-         DdYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701676794; x=1702281594;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R0RPnEYT7sgQyZXufKqZxANCuXpnFprPd1aDWn6OEAw=;
-        b=E0hCUNAj1ZFw3GQJmJeBLYM8fnbygPlNvrRKtobrwccxh0pfL4ptqOP3CdlaWw1iHd
-         IIdbg/MQJfwOT0RhnNJh6NAHn6VJdjZTi3vLcH3TLivX2Uzn9ZkqP743By2MS/44lJnG
-         oWJEwOFSJGA7dFr3eEv8xaY6CgjCg3F/jsDcEVNpfUU8CeloxYZIg6j5TDamY9bf2qk+
-         nKOMY2Y1SzzmfL96LX2X4Ot0oz2FFDk3D57PUUnbjyHKGsq4HtAlFtQfl/WfVfbYSxRr
-         oLl07esOYRtgNvgh/8+f+T1DZFwgVZLtPhO6SqWJAwMoW1zfx7upcGnbKP8WXWQYCoRN
-         shgw==
-X-Gm-Message-State: AOJu0YwEN7iziYsVyiHF+WjK/ka5WA7iYM0ht/wXgsUEwqSFNbKJPDyd
-        xf5JRy2r52vp5/wdz7/XAEXnlQ==
-X-Google-Smtp-Source: AGHT+IHOSsBtx9VsYNxRQ4vt2GcqsP2qm2lrLEuKHoDbpseLNE09DHWbhONeq9E5KfRl4lJXDisTLA==
-X-Received: by 2002:a5d:5285:0:b0:333:4cfb:5d5d with SMTP id c5-20020a5d5285000000b003334cfb5d5dmr292269wrv.133.1701676794353;
-        Sun, 03 Dec 2023 23:59:54 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id m4-20020adff384000000b003333281764bsm8119485wro.17.2023.12.03.23.59.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Dec 2023 23:59:53 -0800 (PST)
-Message-ID: <229547b6-3bec-4de2-a478-2f6640583b7d@linaro.org>
-Date:   Mon, 4 Dec 2023 08:59:51 +0100
+        Mon, 4 Dec 2023 03:02:23 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2080.outbound.protection.outlook.com [40.92.52.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79585AC;
+        Mon,  4 Dec 2023 00:02:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NDeQaZU9jlmg6RTKIGYLdxxGLSpF/gHRX6sn/jOvd0VR518Z24i32zMGfMX1ffCc8GQGJmFs221NFo6CV6h6cgnVKGwEp+ltEcQZvNZisFc5mjUjcOLezvWc13gUdFqXERpwC9a78yf1loOVMgy8oNxLq1XJvVoWEWkFQqAAHq+yhUHWtBYvJmsnQ2KIILT56m85xfrcDgngrlRYFFgGil7nSoUfhN5g+budiiSGduqODsPbkLlWd2LcYkm1oGh0CLjkwtWAUb3tLUI8pxDcAyC62XfA9fgoIfTmxHrk1JyBVkAz/Ww+UxNfMX7jGBhwBvFc4TpY7woPZucwwSdWQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R16B4foL4La4oRinSIw0VyaexNtQkw39QD16LQwMmrI=;
+ b=jrm/bRBxD/hWdCpkON0/x4tf1YVkKEkzTyOKAwywQ0URDt05bgInMbo/lNUp0FBHM42yNleEWMQVuqrzKMHmpYaB78PaCFHxHe+s8Cx7348ShocYjNv1KeHtvxsSD4Zun6MB26jQy2pMIkQ44qZL44mokRgfr5ZsJ32lHGeU+LO8qGiPOZ4dSA5d8efvmB73ejzmLXqRVbd1MPlIVLdhInSGBbxEFS4RLpAqdIA476VzeKl3immC29hceEWfaBS1LfiEj4tvRbfCxzN8obT2lVeENSH8qeee+GJ6LhRPEtqFoXRh1PJ3psNhLGwCSNZG9HlSFmKTy8dKsmJ4PiYY9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R16B4foL4La4oRinSIw0VyaexNtQkw39QD16LQwMmrI=;
+ b=nLK6DBs9z8OrdN6ga64ttmxPUg98Rj1TEV1wBbg0bv6biNZlp6aSyr2SUSfZuYgQ3rgehjDoJwvKHdCgXB1pcBgz802Ikp4FKUqs1Omjs3Wdm9g5EtC30HW6GEv+BPgAGw2/NPVXhhY1F5WnJ70hMHhFHUDo5nwyCuFhlgGcB7iNJ0xuvGm7dRTEh8Ij74UuR8yFrWR5A4GbOwyfBv8AWp1LjMQ46PCM4HKgHG6iQmklon6CklMKyfkM/VsffkkYB+bDN9yGXZnvOrVWsdLsfsT+wN4eeoqa8zxt0amams8M4GwKmOLL9VQdYM+qQk4KBIrmIhDM9Wx4oEKjKLufcg==
+Received: from TYZPR01MB4784.apcprd01.prod.exchangelabs.com
+ (2603:1096:400:28d::9) by SEYPR01MB5484.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:142::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
+ 2023 08:02:24 +0000
+Received: from TYZPR01MB4784.apcprd01.prod.exchangelabs.com
+ ([fe80::5074:605e:7b60:3ad4]) by TYZPR01MB4784.apcprd01.prod.exchangelabs.com
+ ([fe80::5074:605e:7b60:3ad4%5]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 08:02:24 +0000
+From:   Yaxiong Tian <iambestgod@outlook.com>
+To:     mathias.nyman@intel.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tianyaxiong@kylinos.cn
+Subject: [PATCH] usb:xhci: Avoid hub_event() stuck when xHC restore state timeout
+Date:   Mon,  4 Dec 2023 16:02:11 +0800
+Message-ID: <TYZPR01MB4784CB3058AC1B5787DB6601D586A@TYZPR01MB4784.apcprd01.prod.exchangelabs.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [6kwSLCW32Oq8QARCfydWDi/9ocrN/Tt+dXP3zw5mKHA=]
+X-ClientProxiedBy: TYAPR01CA0053.jpnprd01.prod.outlook.com
+ (2603:1096:404:2b::17) To TYZPR01MB4784.apcprd01.prod.exchangelabs.com
+ (2603:1096:400:28d::9)
+X-Microsoft-Original-Message-ID: <20231204080211.159632-1-iambestgod@outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: clock: ti: Convert interface.txt to
- json-schema
-Content-Language: en-US
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        kristo@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-References: <20231127202359.145778-1-andreas@kemnade.info>
- <7a62ed8a-b0e3-4881-90d7-b8f5d38e482e@linaro.org>
- <20231128093241.707a4fa0@aktux>
- <7361082a-f271-4ef4-9dad-06ee7445c749@linaro.org>
- <20231128214116.22dfff1e@akair>
- <221ba6a3-c4c2-40cd-b1d8-8170af78c784@linaro.org>
- <20231201150937.3631ee99@akair>
- <7aaea1e4-b7bd-47e4-a6e6-32b8195ea1bf@linaro.org>
- <20231201154112.2ecfdab2@aktux>
- <48cf2111-46a0-4907-8d55-5ce80b585111@linaro.org>
- <20231203234645.331d6efc@aktux>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231203234645.331d6efc@aktux>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYZPR01MB4784:EE_|SEYPR01MB5484:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5f631a92-bbf1-4435-33bc-08dbf49f58f4
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GC+pPbXrhoFBMlETlL7YgT7fXW4AszOtOkYLh34g02xm5TbH9XleZmWQYjDe521muvma/9z744q3IAsdUuCRpZIjBolIysD2EZMQdbcq9v2x/wLhNzDzeR/o24Lp1ohFpC9q765fJ6A07GsH8YiPJzbqHr9qErEH+6XZD+3ojzK8DDfxNmfz+bh9HrwGnhSyvAHDvThES/jmPzcI+SMGHZszncgs3/gHM0vHYfjGqI81N0oapU8sQpTaEluuY+ycvGRyYw+C1fG5TSZPgzeEZkmylh/6eMA0CMmMLCeyJ9uxZcI/yDG90T6k7mHj7yduAJKiQ3A94Jvlsaqe/VlG9pFBWy3OBnOjDiHcs5TX1ynkkEF24oeJ3ALLejaU95ExFSgwxCOmLKQYiFKIcQCEW/vlok0evEwX8vZ6i3Kylsa3XhXrH4FiR0l4FCRriCQrLR2t7Ar2f0+wrpKi10QQelqcN0VEv33ZznJ+5LcY67SHugJtI67qrV227GQKPjhjFe/g6cdIuax0sGRLLZujm/Ot9RQ2h9VmUelNgaYiWvDGfL/IMMeYyMzrFVo6MUhp
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?riIuNHvwCWh8eExQAy/K0yZo5KNlC/ovNZYlSxljJ4G34tIiwua4893wosuz?=
+ =?us-ascii?Q?rHp61qfBYRa6GXAVsTiDTF+gqol6T0DiS3mVnfvM0BL1vw/nDxROAtxdZc84?=
+ =?us-ascii?Q?ZtlaoVTvMOlOujg+r8ox13pjYhb8qcUFrkn+oIIPq71eGemVeaYWL+ukSpDN?=
+ =?us-ascii?Q?Z/+3PyjjJTtIJ9bZiTa+vU9Ye53KvJBJEqvhH9AErek+KQPkfVu0Y1nON0ri?=
+ =?us-ascii?Q?n4r8hIQEaah0YruEAI9V4ZxlBZAVfz8LRv9G+dEZjAJJ8SDLBposSSRvo6Zi?=
+ =?us-ascii?Q?vtg8iHObdNTUYuPiisrRwSSDPPokWRJkfZQiQmrvfwasmoF72mtndoCZAcql?=
+ =?us-ascii?Q?8PvABlkhQuShPLNRQPOr1u9V+A2eC7b6p5DoFkUsdKYHw45uxwURS1oAjgpB?=
+ =?us-ascii?Q?49CTIhEiVHDTBK6gSCRgpsjD5bF460hgWs/egFhkaI56WRPXbGb/DvpF0F/W?=
+ =?us-ascii?Q?O8QPLjHsKuOCKpsjN8epCva1ImEs0gphtsRzz5z1xrdcxSmROvEWFweRH8OG?=
+ =?us-ascii?Q?sTgIOTR4jFpTmwMtmWF3DYcWaGdiU2ZVMqf/noju5Cd9OuMnCkgQAQFiGj8c?=
+ =?us-ascii?Q?ZgWRjxMZB+3fNYvBLMjiPJFHG8seRt3NGPluYZvsMd9ooCYx74F7XEE6G4nu?=
+ =?us-ascii?Q?mZUcGee1PIHfLwtLBEDXIMbQNrVji61+tI4UTs7DF5REdQFZ62rnKhKGPS5a?=
+ =?us-ascii?Q?6gtdgOmLryNxj4DrxDm2FWNFfumPD3VIj/z9IV9ta6N9By7hcMHQ3qzWkHen?=
+ =?us-ascii?Q?wEFnYtScbPgdKhkZljfYS6fdBzU6UtwTGrSc5WTH0YvUHDPRgSb1tQr6xhu+?=
+ =?us-ascii?Q?2Tp1Aw5UGuvyouacrkd7XFf7yrRgDTRUenJNHQ4jxUS9qwggeQkB+PXNsiBR?=
+ =?us-ascii?Q?M/wm2uuzbnWtBPLWdMoqtmGmNPXVKrfglMy2UO/A2kG/gVSnT3e7HtBYzaPF?=
+ =?us-ascii?Q?6k/BqHkkqJMOWVXS/kQHmBPiiH8bSdCmyd8MTAD5p8qgXP+R6aJmCpAObR/5?=
+ =?us-ascii?Q?Ti52GRoUwulcPfsMxnxu8/zQWjhFR4ASGXV+UknE0shYNIbXEkpy5Kjq9ITE?=
+ =?us-ascii?Q?gQEctfSaUFiNDeD392hIzek5a/htpzE2diKY7Z0UMYRBHt1WSiXq/ONQAlvN?=
+ =?us-ascii?Q?L7YYMzbvU8GbB4VYWeMC+oJBq7TviobJwx29yaHuItxkybpv3AkEaK/tHmMi?=
+ =?us-ascii?Q?+t1gOtxiX/ZIPov4T0JWmo7wJYhvOoSMLfcIEHgfnhvWXCZh8yhpa6zOq0E?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5f631a92-bbf1-4435-33bc-08dbf49f58f4
+X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB4784.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 08:02:24.0962
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR01MB5484
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/12/2023 23:46, Andreas Kemnade wrote:
-> On Fri, 1 Dec 2023 15:45:06 +0100
-> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
-> 
->> On 01/12/2023 15:41, Andreas Kemnade wrote:
->>> On Fri, 1 Dec 2023 15:17:46 +0100
->>> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
->>>   
->>>> On 01/12/2023 15:09, Andreas Kemnade wrote:  
->>>>> Am Wed, 29 Nov 2023 09:15:57 +0100
->>>>> schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:
->>>>>     
->>>>>> On 28/11/2023 21:41, Andreas Kemnade wrote:    
->>>>>>> Am Tue, 28 Nov 2023 09:41:23 +0100
->>>>>>> schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:      
->>>>>>>>> If the interface clock is not below a ti,clksel then we have reg.
->>>>>>>>>        
->>>>>>>>
->>>>>>>> This should be expressed in the bindings. It's fine to make the reg
->>>>>>>> optional (skip the description, it's confusing), but the ti,clksel
->>>>>>>> should reference this schema and enforce it on the children.
->>>>>>>>      
->>>>>>> Well there are other compatibles below ti,clksel, too, so should we
->>>>>>> rather add them when the other .txt files are converted?      
->>>>>>
->>>>>> This binding should already be referenced by ti,clksel. When the other
->>>>>> are ready, you will change additionalProperties from object to false.
->>>>>>    
->>>>> I played around with it:
->>>>>
->>>>> --- a/Documentation/devicetree/bindings/clock/ti/ti,clksel.yaml
->>>>> +++ b/Documentation/devicetree/bindings/clock/ti/ti,clksel.yaml
->>>>> @@ -33,6 +33,11 @@ properties:
->>>>>      const: 2
->>>>>      description: The CLKSEL register and bit offset
->>>>>  
->>>>> +patternProperties:
->>>>> +  "-ick$":
->>>>> +    $ref: /schemas/clock/ti/ti,interface-clock.yaml#
->>>>> +    type: object
->>>>> +
->>>>>  required:
->>>>>    - compatible
->>>>>    - reg
->>>>>
->>>>>  
->>>>> That generates warnings, which look more serious than just a
->>>>> non-converted compatible, so lowering the overall "signal-noise-ratio".
->>>>>
->>>>> e.g.
->>>>> from schema $id:
->>>>> http://devicetree.org/schemas/clock/ti/ti,clksel.yaml#
->>>>> /home/andi/linux-dtbs/arch/arm/boot/dts/ti/omap/omap3-overo-tobiduo.dtb:
->>>>> clock@c40: clock-rm-ick: 'ti,index-starts-at-one', 'ti,max-div' do not
->>>>> match any of the regexes: 'pinctrl-[0-9]+'
->>>>>
->>>>> I think we should rather postpone such referencing.    
->>>>
->>>> Are you sure in such case that your binding is correct? The warnings
->>>> suggest that not, therefore please do not postpone.
->>>>  
->>> well, there is not only stuff from clock/ti/ti,interface.yaml but also from
->>> clock/ti/divider.txt below ti,clksel. So I have one warning about the missing
->>> compatible there and also about the properties belonging to that compatible.  
->>
->> Ah, you have other bindings for the "-ick" nodes? Then you cannot match
->> by pattern now, indeed. Maybe skipping ref but adding "compatible" into
->> node, like we do for Qualcomm mdss bindings, would work. But in general
->> all these should be converted at the same time.
->>
-> Yes, there are other bindings for the "-ick" nodes. But these bindings
-> are not exclusive to the "-ick" nodes. I personally would prefer not
-> having to do the whole clock/ti/*.txt directory at once.
+From: Yaxiong Tian <tianyaxiong@kylinos.cn>
 
-This is what usually is expected for multiple schemas used together
-(common for MFD). Don't convert part of device but everything needed for
-the main node. It's not different here.
+when xHc restore state timeout,the xhci_reusme() return -ETIMEDOUT
+instantly. After usb_hc_died() called ,they kick hub_wq to running
+hub_event() but the wq is freezd. When suspend ends,hub_evnet realy
+running and sticking.
+Such as:
+[  968.794016][ 2] [   T37] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+disables this message.
+[  968.802969][ 2] [   T37] kworker/2:3     D    0   999      2 0x00000028
+[  968.809579][ 2] [   T37] Workqueue: usb_hub_wq hub_event
+[  968.814885][ 2] [   T37] Call trace:
+[  968.818455][ 2] [   T37]  __switch_to+0xd4/0x138
+[  968.823067][ 2] [   T37]  __schedule+0x2dc/0x6a0
+[  968.827680][ 2] [   T37]  schedule+0x34/0xb0
+[  968.831947][ 2] [   T37]  schedule_timeout+0x1e0/0x298
+[  968.837079][ 2] [   T37]  __wait_for_common+0xf0/0x208
+[  968.842212][ 2] [   T37]  wait_for_completion+0x1c/0x28
+[  968.847432][ 2] [   T37]  xhci_configure_endpoint+0x104/0x640
+[  968.853173][ 2] [   T37]  xhci_check_bandwidth+0x140/0x2e0
+[  968.858652][ 2] [   T37]  usb_hcd_alloc_bandwidth+0x1c8/0x348
+[  968.864393][ 2] [   T37]  usb_disable_device+0x198/0x260
+[  968.869698][ 2] [   T37]  usb_disconnect+0xdc/0x3a0
+[  968.874571][ 2] [   T37]  usb_disconnect+0xbc/0x3a0
+[  968.879441][ 2] [   T37]  hub_quiesce+0xa0/0x108
+[  968.884053][ 2] [   T37]  hub_event+0x4d4/0x1558
+[  968.888664][ 2] [   T37]  kretprobe_trampoline+0x0/0xc4
+[  968.893884][ 2] [   T37]  worker_thread+0x4c/0x488
+[  968.898668][ 2] [   T37]  kthread+0xf8/0x128
+[  968.902933][ 2] [   T37]  ret_from_fork+0x10/0x18
 
-But sure, you can go with mdss approach.
+The result is that you cannot suspend again.because the wq can't
+be freezed.Also hard to reboot,when some application visited this
+piece.
 
-Best regards,
-Krzysztof
+The reason of stuck is that some access related to xhci hardware
+is being called.But xhci has problem,at least not running.(
+when xhci_restore_registers(),the xhci will load op_regs.The
+CMD_RUN will clear in xhci_suspend().)
+
+So using XHCI_STATE_DYING flag,to avoid any code to touching
+hardware immediately.hub_event() will complete.The usb_hc_died
+tasks will be completed and some sys interfaces will be removed.
+
+Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+---
+ drivers/usb/host/xhci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index cb885ddc2032..f0ddd7421e1f 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -1044,7 +1044,8 @@ int xhci_resume(struct xhci_hcd *xhci, pm_message_t msg)
+ 		 */
+ 		if (xhci_handshake(&xhci->op_regs->status,
+ 			      STS_RESTORE, 0, 100 * 1000)) {
+-			xhci_warn(xhci, "WARN: xHC restore state timeout\n");
++			xhci_err(xhci, "xHC restore state timeout, assume dead\n");
++			xhci->xhc_state |= XHCI_STATE_DYING;
+ 			spin_unlock_irq(&xhci->lock);
+ 			return -ETIMEDOUT;
+ 		}
+-- 
+2.25.1
 
