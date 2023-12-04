@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528E9803E10
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 099C2803E13
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbjLDTHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:07:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57766 "EHLO
+        id S232408AbjLDTHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:07:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbjLDTHN (ORCPT
+        with ESMTP id S231266AbjLDTHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:07:13 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72F6D7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:07:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701716839; x=1733252839;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=+ksUC7k7dsrCMckhfycqnTyhivxgCIkSpxqzHRlpIh0=;
-  b=DtW7nCrdMTfjs4vPiL3G4Mu2cXxN38j8GFWGEe3t467BRZ5mOMtrHI3O
-   T6XXkod5tiePSSsc82LD2aKJfe/kfsz7bHj62qGleg3m+9iPI4QMGwKA7
-   kvxFeEIrbgWlIcN6S6bppFMgKz+X+T51SIsf0O3Fjwphr+L0bwcLhCeqQ
-   URvyQRVRVRz6uOcXUZz0QN4ViKwdsa6c33Ys3CANkHoA3q8HPQL2zE+Tc
-   FDWMUq8VSFpbSiAFApLb725tASaYy+JuiO0x+uLbAyx68CgIBus3T/eeA
-   POZk7GEVoZ5JGR4NlS0E3lFwLKT9lAkWYeeqW9frC0mDgd85gSO1FfBUd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="678865"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="678865"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 11:07:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="841164643"
-X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
-   d="scan'208";a="841164643"
-Received: from nstrutt-mobl1.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.209.45.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 11:07:17 -0800
-From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
-To:     x86@kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org
-Cc:     rick.p.edgecombe@intel.com, christina.schimpe@intel.com
-Subject: [PATCH] x86: Check if shadow stack is active for ssp_get()
-Date:   Mon,  4 Dec 2023 11:07:09 -0800
-Message-Id: <20231204190709.3907254-1-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 4 Dec 2023 14:07:40 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9BBD5
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:07:46 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50bed6c1716so363e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:07:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701716865; x=1702321665; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L5vT+APsCg/FSnZpn7O3Zjrf90SobvyinAQOiMG7ovE=;
+        b=BEK5wg55zv/26SDQVThLidaR3OyBNLeewBTEyZRSvwL6nGdtFeKH1R4X1HAXhBU7y7
+         KMV1FmUcLPPygZlFgHcOHdFwH/i86PvQlFIc0q4cXv57pC+5eJmbv3RmYPgvsHvPDMj0
+         rRBFf4yOKIuUCB8L6ym44bnYuv8D3hMpekRSd1Y8lQRICQyqk1CTwoqL+ZIRrqWZ5FiT
+         qDsNdFkBts+7pHbm+AjYMSdcIX2ER2nGe+Mom32/I03hJCe02LteZ0/4mh7l7nX9r5tI
+         M5PWxKhjf6z3TGtpfe9ymtfeRhmdUecEETeKcw5u4SQM65llCCzHRtxH1qtc7rbRYEAv
+         pEFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701716865; x=1702321665;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=L5vT+APsCg/FSnZpn7O3Zjrf90SobvyinAQOiMG7ovE=;
+        b=l8M7/Ugbzrtx+kZL5i6jyunnLQsiKBxQP+QNEGeSEYdPOzMTOk1ziXDiThibKdTUNC
+         2Wp7lxqIdTjEl4KzM2VWz9f40u6bGABqKSZa9XxplhdT4i5sAAwCv74RIaBeo1d4UKW4
+         SyHxvcUNcQIJkRzf8TDNq1kVrZ1faBrSOewyo1Z7lIBUc2HQUTHfaLGS8PQsQ2n/YTDR
+         7O/iQKHAcmnyXixhFtzvCkCnELwhnjUtT9IXDEHL377tojxS9GRmWAFb2B83XOlY0pVd
+         U4fSmQnMgVzABy25xkOVPSyfMM1MYjCcnzimu82FfUGtSzRA5MGj2MeTN5DTYbZw+VGP
+         YjPQ==
+X-Gm-Message-State: AOJu0Yx3R7ltdB+MC2NMpR5q28IQZm5puJiNkg8pm5Z3EBqqQQGIGgrO
+        Qvt3DEU2MamG81h4Hp9TywDuhR6+b6djEdEg9qrsTA==
+X-Google-Smtp-Source: AGHT+IHA5w0Z03xioU+ynWPCd+l8I8tcc2/QWPNYlKSj00tvSmrlzBmx02FNAGzxpNIvbZ4Sr/LO/nzLLiUbp3mEG1A=
+X-Received: by 2002:a05:6512:1153:b0:504:7b50:ec9a with SMTP id
+ m19-20020a056512115300b005047b50ec9amr324664lfg.1.1701716864963; Mon, 04 Dec
+ 2023 11:07:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231201021550.1109196-1-ilkka@os.amperecomputing.com> <20231201021550.1109196-4-ilkka@os.amperecomputing.com>
+In-Reply-To: <20231201021550.1109196-4-ilkka@os.amperecomputing.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 4 Dec 2023 11:07:33 -0800
+Message-ID: <CAP-5=fUEsLQ+kqh4eo_5mcrEe_tHJ=t4CAxd7Um7aD8T+t4yTw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf vendor events arm64: AmpereOneX: Add core PMU
+ events and metrics
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The shadow stack regset ->set() handler (ssp_set()) checks the regset
-->active() handler (ssp_active()) to verify that shadow stack is active.
-When shadow stack is active, the XFEATURE_CET_USER xfeature will not be in
-the init state because there is at least one bit set (SHSTK_EN). So
-ssp_set() should be able to safely operate on the xfeature in the xsave
-buffer after checking ssp_active(). If it finds it is in the init state
-anyway, it warns because an unexpected situation has been encountered.
+On Thu, Nov 30, 2023 at 6:16=E2=80=AFPM Ilkka Koskinen
+<ilkka@os.amperecomputing.com> wrote:
+>
+> Add JSON files for AmpereOneX core PMU events and metrics.
+>
+> Signed-off-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
 
-But ssp_get(), the regset_get() handler, doesn't check ssp_active(). This
-was under the assumption that all the callers check the ->active()
-handler. It is indeed normally the case, but Christina Schimpe reports
-that and a warning like the following can be generated:
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-WARNING: CPU: 5 PID: 1773 at arch/x86/kernel/fpu/regset.c:198 ssp_get+0x89/0xa0
-[...]
-Call Trace:
-<TASK>
-? show_regs+0x6e/0x80
-? ssp_get+0x89/0xa0
-? __warn+0x91/0x150
-? ssp_get+0x89/0xa0
-? report_bug+0x19d/0x1b0
-? handle_bug+0x46/0x80
-? exc_invalid_op+0x1d/0x80
-? asm_exc_invalid_op+0x1f/0x30
-? __pfx_ssp_get+0x10/0x10
-? ssp_get+0x89/0xa0
-? ssp_get+0x52/0xa0
-__regset_get+0xad/0xf0
-copy_regset_to_user+0x52/0xc0
-ptrace_regset+0x119/0x140
-ptrace_request+0x13c/0x850
-? wait_task_inactive+0x142/0x1d0
-? do_syscall_64+0x6d/0x90
-arch_ptrace+0x102/0x300
-[...]
-
-It turns out the PTRACE_GETREGSET path does not check ssp_active(). The
-issue could be fixed by just removing the warning, but it would be nicer
-to rely a check of ssp_active() which is much easier to reason about than
-xsave init state logic. So add a ssp_active() check in ssp_get() like
-there already is in ssp_set().
-
-Fixes: 2fab02b25ae7 ("x86: Add PTRACE interface for shadow stack")
-Reported-by: Christina Schimpe <christina.schimpe@intel.com>
-Tested-by: Christina Schimpe <christina.schimpe@intel.com>
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
----
- arch/x86/kernel/fpu/regset.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index 6bc1eb2a21bd..887b0b8e21e3 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -190,7 +190,8 @@ int ssp_get(struct task_struct *target, const struct user_regset *regset,
- 	struct fpu *fpu = &target->thread.fpu;
- 	struct cet_user_state *cetregs;
- 
--	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
-+	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) ||
-+	    !ssp_active(target, regset))
- 		return -ENODEV;
- 
- 	sync_fpstate(fpu);
--- 
-2.34.1
-
+Thanks,
+Ian
