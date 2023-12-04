@@ -2,118 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD5680414F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FE380414C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:06:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbjLDWGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
+        id S234427AbjLDWF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:05:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbjLDWF5 (ORCPT
+        with ESMTP id S234252AbjLDWFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:05:57 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9061D1B1;
-        Mon,  4 Dec 2023 14:06:02 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4M3GBw012810;
-        Mon, 4 Dec 2023 22:06:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=b8zszDt2p6JE51wc2mk2G0Ctwu6+vbxgVY4sza9DnWw=;
- b=MkbZCp3TAN5kwdnTxEL7Abxs85UzTgQXYn1mFqbRX+ajhJRXN7UnXbtxNhbgj2VPfJ+j
- 4mB74zJ3+ECHXtgJz1dMgphoWAqjjYzXLMDGl1uuUBQk6oR8eHsoSjKLX7f9gZHpJnLW
- /HV8/aEcJz3ECuUFMgHjOoRMFD0WLr5YSEm6GG6cOm2LGcb1q5gfMFXjvcvxbP5MHlkg
- MZ4U4cCMyJKHBvEq4x9TR6KxfhVXRY8ZZGrsuSZJ8mmhJzb3gCcQRKCS81nFTIanycBX
- Kh8Trkf3sj/k1YCMa4gh7Euz5Y6A4YIKZQi8OX3Iji7EEH51ut3cFbFNHXXjnksqOpaT GQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usq7m839b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 22:06:00 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4M3Dpk012633;
-        Mon, 4 Dec 2023 22:05:59 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usq7m838t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 22:05:59 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4KYKcp030504;
-        Mon, 4 Dec 2023 22:05:58 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8ayptr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 22:05:58 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4M5tAl44761370
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Dec 2023 22:05:55 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 63E5D2004F;
-        Mon,  4 Dec 2023 22:05:55 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8D4372004E;
-        Mon,  4 Dec 2023 22:05:54 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.42.250])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Mon,  4 Dec 2023 22:05:54 +0000 (GMT)
-Date:   Mon, 4 Dec 2023 23:05:29 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
-        kwankhede@nvidia.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
-Message-ID: <20231204230529.07bf7b79.pasic@linux.ibm.com>
-In-Reply-To: <7c0d0ad2-b814-47b1-80e9-28ad62af6476@linux.ibm.com>
-References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
-        <20231204131045.217586a3.pasic@linux.ibm.com>
-        <7c0d0ad2-b814-47b1-80e9-28ad62af6476@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 4 Dec 2023 17:05:49 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2933A130;
+        Mon,  4 Dec 2023 14:05:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1701727549;
+        bh=u8QKEqgw1lWdKU3HMKBvExEXQRW3gD1GYo/TOI2dnVQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=rYNVpU5gDOwPj9MLTqFCXrSxqDVlrr9QhKy+BhH5e/DSmjhlxnItTHuaSoeyW+BHb
+         VidrYmogBlsIB6T+n7kunyclCOJEzHs49cWfQ1QDCQcbMJGg4X3Ijf1vZ6PDC/DTmq
+         KDyDQ2DQlu/ZlT9omhmV1r8XIyWIk8equsFbajr+/jkFDQeYWJrOPmAFXEoBJjj0Sn
+         gVXWo/th/EmdNJgN02axPWySgLa+eAVgdFNdFzp+qXNclR3BNhvX4U/g5VRqxp1c+7
+         1WF94bCMmwIjmvmHqZqLhkfC+vWkR4b4NxsvcCN/fB5Njkjg1fPTHCBAaYtcGILNDu
+         t0EVpllixZ08Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Skd5m74Vlz4x5M;
+        Tue,  5 Dec 2023 09:05:48 +1100 (AEDT)
+Date:   Tue, 5 Dec 2023 09:05:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the asm-generic tree with the mm tree
+Message-ID: <20231205090546.7dffe3aa@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: biHgFghmGhXfZq86iu98AAh8z6ahVtRl
-X-Proofpoint-GUID: dXhf9GkvCvgY8IQBR-H2Bh_l_oX4VzgF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_20,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=910
- impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015 priorityscore=1501
- bulkscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040173
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/VBYqBJXGz5xwbMxQnhHuZk9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Dec 2023 12:51:49 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+--Sig_/VBYqBJXGz5xwbMxQnhHuZk9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> > s/if\/when/at latest before/
-> > 
-> > I would argue that some of the cleanups need to happen before even 01 is
-> > reflected...  
-> 
-> To what cleanups are you referring?
+Hi all,
 
-Event notification and interruption disablement for starters. Otherwise
-OS has no way to figure out when is GISA and NIB safe to deallocate.
-Those actions are part of the reset process. I.e. some of the reset stuff
-can be deferred at most until the queue is made accessible again, some
-not so much. 
+Today's linux-next merge of the asm-generic tree got a conflict in:
 
-Regards,
-Halil
+  arch/mips/include/asm/traps.h
+
+between commit:
+
+  6b281b05cbcc ("mips: add missing declarations for trap handlers")
+
+from the mm tree and commit:
+
+  23f8c1823bd4 ("arch: add do_page_fault prototypes")
+
+from the asm-generic tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/mips/include/asm/traps.h
+index 2c2b26f1e464,d4d9f8a8fdea..000000000000
+--- a/arch/mips/include/asm/traps.h
++++ b/arch/mips/include/asm/traps.h
+@@@ -39,28 -39,7 +39,30 @@@ extern char except_vec_nmi[]
+  	register_nmi_notifier(&fn##_nb);				\
+  })
+ =20
+ +asmlinkage void do_ade(struct pt_regs *regs);
+ +asmlinkage void do_be(struct pt_regs *regs);
+ +asmlinkage void do_ov(struct pt_regs *regs);
+ +asmlinkage void do_fpe(struct pt_regs *regs, unsigned long fcr31);
+ +asmlinkage void do_bp(struct pt_regs *regs);
+ +asmlinkage void do_tr(struct pt_regs *regs);
+ +asmlinkage void do_ri(struct pt_regs *regs);
+ +asmlinkage void do_cpu(struct pt_regs *regs);
+ +asmlinkage void do_msa_fpe(struct pt_regs *regs, unsigned int msacsr);
+ +asmlinkage void do_msa(struct pt_regs *regs);
+ +asmlinkage void do_mdmx(struct pt_regs *regs);
+ +asmlinkage void do_watch(struct pt_regs *regs);
+ +asmlinkage void do_mcheck(struct pt_regs *regs);
+ +asmlinkage void do_mt(struct pt_regs *regs);
+ +asmlinkage void do_dsp(struct pt_regs *regs);
+ +asmlinkage void do_reserved(struct pt_regs *regs);
+ +asmlinkage void do_ftlb(void);
+ +asmlinkage void do_gsexc(struct pt_regs *regs, u32 diag1);
+ +asmlinkage void do_daddi_ov(struct pt_regs *regs);
+ +
+ +asmlinkage void cache_parity_error(void);
+ +asmlinkage void ejtag_exception_handler(struct pt_regs *regs);
+ +asmlinkage void __noreturn nmi_exception_handler(struct pt_regs *regs);
++ asmlinkage void do_page_fault(struct pt_regs *regs,
++ 	unsigned long write, unsigned long address);
+ =20
+  #endif /* _ASM_TRAPS_H */
+
+--Sig_/VBYqBJXGz5xwbMxQnhHuZk9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVuTToACgkQAVBC80lX
+0GxyXAf/Z9tKTD17hXu4lNOF7mgeQmQ87sTn6cPQMIbZ0CfAGBbNVpWC3mirSzEB
+gOOUxEvgiSLEv36vioe0StTQ73olGDc0by2m7GhXGb0g9pTG9xAxUUFW6AHnhMLU
+MoDEORA+Ns1IkXmkB6ECsu4dm2dj1lAYU6eq7KxjFgUOdgWV8uGvMhqONxCOMHCr
+phb19Tny/PZXnDiDM1ADXx2+Csz+P6K0posY7v96dM15VbL4UyloKWxwbCA4o+2i
++VR6lDQ+Mdf2qZPU3z0kg9cekp9Y26tns58mnLwE91gIzCoRwfJYdDyIr/+5iY5z
+WRpT6zggimGtMevFmdQ5IOwrrZt0GQ==
+=W7Pp
+-----END PGP SIGNATURE-----
+
+--Sig_/VBYqBJXGz5xwbMxQnhHuZk9--
