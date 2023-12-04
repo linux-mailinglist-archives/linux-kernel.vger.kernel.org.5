@@ -2,98 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E058039DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2B78039E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344581AbjLDQPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:15:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34884 "EHLO
+        id S1344621AbjLDQPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234807AbjLDQPN (ORCPT
+        with ESMTP id S1344660AbjLDQPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:15:13 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EAFFD;
-        Mon,  4 Dec 2023 08:15:18 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4G8IYW002645;
-        Mon, 4 Dec 2023 16:15:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=gIhamb+YTQS7+bRTda0XXQ3oydAJZG5OiZDJQU0Lp7k=;
- b=E+xcD4+HetHsxNPubUZE0D5xL7YsCnYF8fqqpl7ihyo+du5H0p4nG9JPYRuAB2C+FQZf
- H95Pc4JfAE6+PNwccpBnTY9OCGl/QmuG8JI1ERPdlm429S/lf9z2MSzuaRXOqwkeXtQZ
- f6c7Madj8hlj/Bk5R35KrgBUJZI82NbxGodBFxQyl9MmEPC0eFUiTvptR2s3TdioFGr2
- MMVBYn8r0UnyOCzxEqE1iM7lEbqFF54gYoLFHgpIRsLPSUBDafRsP/owx9dD0VE3hrHJ
- wIqSaAAxU0EUKK4/Pry1K6nnoExf26/tWq+QIHfRKpwSQ05wzfCWA3je0ah1yLIJmJyu 5g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usj19ga9h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 16:15:16 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B4G8iDi003783;
-        Mon, 4 Dec 2023 16:15:15 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usj19ga85-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 16:15:15 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4EJYUb031969;
-        Mon, 4 Dec 2023 16:15:14 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3urh4k8tb2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 16:15:14 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B4GF97218350808
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Dec 2023 16:15:09 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E63E20040;
-        Mon,  4 Dec 2023 16:15:09 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 93DE520043;
-        Mon,  4 Dec 2023 16:15:08 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.171.42.250])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with SMTP;
-        Mon,  4 Dec 2023 16:15:08 +0000 (GMT)
-Date:   Mon, 4 Dec 2023 17:15:06 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@linux.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        jjherne@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Reinhard Buendgen <BUENDGEN@de.ibm.com>
-Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
-Message-ID: <20231204171506.42aa687f.pasic@linux.ibm.com>
-In-Reply-To: <05cfc382-d01d-4370-b8bb-d3805e957f2e@linux.ibm.com>
-References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
-        <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
-        <1f4720d7-93f1-4e38-a3ad-abaf99596e7c@linux.ibm.com>
-        <05cfc382-d01d-4370-b8bb-d3805e957f2e@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 4 Dec 2023 11:15:44 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D71AB9;
+        Mon,  4 Dec 2023 08:15:50 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40c0a0d068bso12968245e9.3;
+        Mon, 04 Dec 2023 08:15:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701706548; x=1702311348; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=FSQGhYW0bY66ZvocdwYpg6HVOl8T1zzGGaHQNQEHYQw=;
+        b=gep/beJZh8/0CpGTZq9VIqTzFtZtdpkUgirDdFVhoUnxXQCG4oQgbOtAiYbXprzKbD
+         ctEPyNMk5yXRa7HCfmsqwhARLpesQpQE3UvxqNPgL5ArmgYiO9NE/6sjGImbKX6s4ngY
+         uXaBV4GEqEjldgO7bM81avLeqZIifxexrPfp9ffaD9uTJpW3bOMd9I6phpO/Zdau/Kbs
+         y/Ehp7FSK6GkFN+8bmpNfmUvMjxPsPYR97O1lGdWsjvor0PT780UAf9TonXDrz9p5ppy
+         o8MVAj5PvNHg4J4oPpbFY5Aeq5WUhrLc79Ln3dts7pRsZcOIErMywmwFOA4LM/rwiy5s
+         Vc+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701706548; x=1702311348;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FSQGhYW0bY66ZvocdwYpg6HVOl8T1zzGGaHQNQEHYQw=;
+        b=IcbANF4L5OY3Vzi/7gnHZEFJMNNitRuvmliPQ5PGKmacf1gyVcoGQENnzpodFj+q/m
+         UMMl4cg7PjVVZh6B1I1QlFK0pLb1O3HoYuMA3U3alDq19LJ6QjOREfND4S7FmT18m30a
+         2cO74YGICwz4NXZ9cDla3t8qY9CM5/FWURVcTkNsEYnC2oeFY07daLGzyCBXfPbc0jxJ
+         Ee5llnUjduNjwFdHXopN/o6fCQ8S/c8WbfdpVGsnJ6+tH1asCNtPzI4ly/eqLUVTaQap
+         y1xl5GB57CNiyg2omPfEzuoJestUAIBTvNZB7Ns1pMjLeaMRBvSkBoqIwF5uM0BK1YS2
+         +wtw==
+X-Gm-Message-State: AOJu0YzGxFC083GoVky+MsriLrZ+ximD0RI+Z42Mrd7glZ6l2qmrMqYm
+        r7Gn2fJOxShwcvIKIJBVY6mzW3/Hq7njtpL8oDs=
+X-Google-Smtp-Source: AGHT+IFCLef+MGGwqb5ZAEG7DSBNXfIILNOv0fP9FLHKiqMc3ojxTjqD/l+uXV57yX0c9CNb6Aj8fA==
+X-Received: by 2002:a05:600c:470a:b0:3f5:fff8:d4f3 with SMTP id v10-20020a05600c470a00b003f5fff8d4f3mr3613370wmo.7.1701706547930;
+        Mon, 04 Dec 2023 08:15:47 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id x16-20020adfec10000000b003333beb564asm6615666wrn.5.2023.12.04.08.15.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 08:15:47 -0800 (PST)
+Message-ID: <3d03874e6426fa0bc94929262acc4d40e2d93d46.camel@gmail.com>
+Subject: Re: [PATCH 11/12] iio: adc: adi-axi-adc: convert to regmap
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Nuno Sa via B4 Relay 
+        <devnull+nuno.sa.analog.com@kernel.org>
+Cc:     nuno.sa@analog.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Date:   Mon, 04 Dec 2023 17:15:47 +0100
+In-Reply-To: <20231204155158.411b4bbd@jic23-huawei>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+         <20231121-dev-iio-backend-v1-11-6a3d542eba35@analog.com>
+         <20231204155158.411b4bbd@jic23-huawei>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: xAz2SV2zrP2AZsKkNEJOoTfdsI4OnB3d
-X-Proofpoint-ORIG-GUID: rqJwcRd2Q9_vHLqIb00RNjAe9i4GewGO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_15,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999
- phishscore=0 mlxscore=0 clxscore=1015 adultscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040123
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,41 +84,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Dec 2023 16:16:31 +0100
-Christian Borntraeger <borntraeger@linux.ibm.com> wrote:
+On Mon, 2023-12-04 at 15:51 +0000, Jonathan Cameron wrote:
+> On Tue, 21 Nov 2023 11:20:24 +0100
+> Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
+>=20
+> > From: Nuno Sa <nuno.sa@analog.com>
+> >=20
+> > Use MMIO regmap interface. It makes things easier for manipulating bits=
+.
+> >=20
+> > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> Perhaps put this in the precursor set as well. Looks fine to me and will =
+just
+> be noise in the main discussion.
+>=20
 
-> Am 04.12.23 um 15:53 schrieb Tony Krowiak:
-> > 
-> > 
-> > On 11/29/23 12:12, Christian Borntraeger wrote:  
-> >> Am 29.11.23 um 15:35 schrieb Tony Krowiak:  
-> >>> In the current implementation, response code 01 (AP queue number not valid)
-> >>> is handled as a default case along with other response codes returned from
-> >>> a queue reset operation that are not handled specifically. Barring a bug,
-> >>> response code 01 will occur only when a queue has been externally removed
-> >>> from the host's AP configuration; nn this case, the queue must
-> >>> be reset by the machine in order to avoid leaking crypto data if/when the
-> >>> queue is returned to the host's configuration. The response code 01 case
-> >>> will be handled specifically by logging a WARN message followed by cleaning
-> >>> up the IRQ resources.
-> >>>  
-> >>
-> >> To me it looks like this can be triggered by the LPAR admin, correct? So it
-> >> is not desireable but possible.
-> >> In that case I prefer to not use WARN, maybe use dev_warn or dev_err instead.
-> >> WARN can be a disruptive event if panic_on_warn is set.  
-> > 
-> > Yes, it can be triggered by the LPAR admin. I can't use dev_warn here because we don't have a reference to any device, but I can use pr_warn if that suffices.  
-> 
-> Ok, please use pr_warn then.
+will do...
 
-Shouldn't we rather make this an 'info'. I mean we probably do not want
-people complaining about this condition. Yes it should be a best practice
-to coordinate such things with the guest, and ideally remove the resource
-from the guest first. But AFAIU our stack is supposed to be able to
-handle something like this. IMHO issuing a warning is excessive measure.
-I know Reinhard and Tony probably disagree with the last sentence
-though. 
 
-Regards,
-Halil
+- Nuno S=C3=A1
