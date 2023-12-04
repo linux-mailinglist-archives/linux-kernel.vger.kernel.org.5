@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F21F80304A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C2B80304F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 11:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbjLDKc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 05:32:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
+        id S231495AbjLDKco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 05:32:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjLDKc1 (ORCPT
+        with ESMTP id S229789AbjLDKcm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 05:32:27 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E310A85;
-        Mon,  4 Dec 2023 02:32:33 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5D5D340E024E;
-        Mon,  4 Dec 2023 10:32:32 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id RRUUekAD-ipx; Mon,  4 Dec 2023 10:32:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701685950; bh=nWocH48nXEMQ/OP6xMY43JWJh9FkgJtDNpCaPQAMRJ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MqK9/XnG59Dx693ynS3g9Lj2a7V8bQ/B074NKGBFeNeBHJLZvLzUhPKO6qsOdVbsX
-         01Jgo11UDmS1lqE/jbWRH/syLhoaTQK9bLHes/38rqTxQLsacOXBX8y6+9JNAr9RM7
-         jtTPKawONkgv8qMFjcaojLAB43OfDOwHJ5eG7Fntnif59GOE9wGZUrCHim9Xtgq1l5
-         S2oYKGEAqLamuW5BAhhZgz5QLzZMeRtz56l6XBGrixmPCnrfVVSSHTMGpXzcaP4Ns0
-         vDKEQhfraxMIRRfhOT9C51WcCPOSQU0kbTZ9pjSrpxseLFfGzwEGQM/8wBqYslSArl
-         EDcvgmOo+u8ZRg7K+sJTGnMEFWv7SpzyLvxHldCPYyb6SzgD31JsLLDyxEFaqc2MO4
-         8IcGk+815PW2gRLWRBJbtKbd4l6AnYMkzSTrNIASKCFG+iUyaHRfediSLdthhsq4Kw
-         pZ6/8gpm96FFtrYh9SjOlw8CtGzsVKd6nLqiLCLT1ehUbTc++06XWJjy5XiNXo/ZAh
-         cKs89UEN0/0pNuwNdbd1BZO+WL4jKLqYhdRJ8j6BFGWjdfNKr1v02QgMfnL5KWFwi/
-         MEEbfpsK5TYaGzWpx67/zBnHnWrZARgOmpliA7ch8iKRuTEGZwTkMWUonIhaWq9vae
-         5XwfJ7mNWI12voU+sV8spAgw=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6E1FD40E0277;
-        Mon,  4 Dec 2023 10:32:03 +0000 (UTC)
-Date:   Mon, 4 Dec 2023 11:32:02 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Alexey Makhalov <amakhalov@vmware.com>
-Cc:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-        hpa@zytor.com, dave.hansen@linux.intel.co, bp@alien8.d,
-        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
-        netdev@vger.kernel.org, richardcochran@gmail.com,
-        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
-        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
-        akaher@vmware.com, jsipek@vmware.com,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
-        maarten.lankhorst@linux.intel.com, horms@kernel.org
-Subject: Re: [PATCH v2 1/6] x86/vmware: Move common macros to vmware.h
-Message-ID: <20231204103202.GZZW2qovY98FCgKNax@fat_crate.local>
-References: <20231122233058.185601-8-amakhalov@vmware.com>
- <20231201232452.220355-1-amakhalov@vmware.com>
- <20231201232452.220355-2-amakhalov@vmware.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231201232452.220355-2-amakhalov@vmware.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        Mon, 4 Dec 2023 05:32:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6885285
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 02:32:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2CBCC433C7;
+        Mon,  4 Dec 2023 10:32:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701685968;
+        bh=qQRqlLYA9dPMt/BbzGDjPG6Jt5NxZKiMKNZTytCaDjI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pR4UKGGbgY6QYeHdtzuVcE6pM8uG9tLbw/y5knT7890/i9249Vz1PEnEYvTCGZKxp
+         rvye4Id0n1x3vgFiDJ/TnCEM8SFfN7aE0yCkUR7Xti16TdBqbXAw7kxznUCQa4POrF
+         l2udMvYnyXhfWnNZQgK99IwiwHCz9MWJTgd9fzvd9ldQlIXmBtLvNfdRkdMOozvyAl
+         A9zOqEEao18T1k54IEaVDdNaDhr3GgijEX8IuWSLpbVneGOrF6GNyk9Bvifd/+W9/L
+         7MGBJiSOv/kNDXZ9X7fjV0GF1gUFT2rSNt6wA7kFamLEiSRpRZ0+qSnuVDsvjrN6y4
+         XdTo/msmuMlsA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rA6Fp-001BUY-Gk;
+        Mon, 04 Dec 2023 10:32:45 +0000
+Date:   Mon, 04 Dec 2023 10:32:45 +0000
+Message-ID: <86leaab6lu.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     oe-kbuild@lists.linux.dev, Hector Martin <marcan@marcan.st>,
+        lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: drivers/irqchip/irq-apple-aic.c:941 aic_of_ic_init() error: uninitialized symbol 'off'.
+In-Reply-To: <ec3c78c4-6d16-4e42-b9b3-a1ba709dc991@suswa.mountain>
+References: <ec3c78c4-6d16-4e42-b9b3-a1ba709dc991@suswa.mountain>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dan.carpenter@linaro.org, oe-kbuild@lists.linux.dev, marcan@marcan.st, lkp@intel.com, oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,14 +62,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023 at 03:24:47PM -0800, Alexey Makhalov wrote:
-> Move VMware hypercall macros to vmware.h as a preparation step
-> for the next commit. No functional changes besides exporting
+On Mon, 04 Dec 2023 06:41:46 +0000,
+Dan Carpenter <dan.carpenter@linaro.org> wrote:
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
+> commit: dc97fd6fec009957e81026055fc99a03877ff3b8 irqchip/apple-aic: Dynamically compute register offsets
+> config: arm64-randconfig-r081-20231127 (https://download.01.org/0day-ci/archive/20231203/202312032327.J915WcaL-lkp@intel.com/config)
+> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+> reproduce: (https://download.01.org/0day-ci/archive/20231203/202312032327.J915WcaL-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes: https://lore.kernel.org/r/202312032327.J915WcaL-lkp@intel.com/
+> 
+> New smatch warnings:
+> drivers/irqchip/irq-apple-aic.c:941 aic_of_ic_init() error: uninitialized symbol 'off'.
+> 
+> Old smatch warnings:
+> drivers/irqchip/irq-apple-aic.c:920 aic_of_ic_init() warn: possible memory leak of 'irqc'
+> drivers/irqchip/irq-apple-aic.c:998 aic_of_ic_init() warn: 'regs' from of_iomap() not released on lines: 914,920.
+> 
+> vim +/off +941 drivers/irqchip/irq-apple-aic.c
+> 
+> 76cde26394114f Hector Martin 2021-01-21   900  static int __init aic_of_ic_init(struct device_node *node, struct device_node *parent)
+> 76cde26394114f Hector Martin 2021-01-21   901  {
+> 76cde26394114f Hector Martin 2021-01-21   902  	int i;
+> dc97fd6fec0099 Hector Martin 2022-03-10   903  	u32 off;
+> 76cde26394114f Hector Martin 2021-01-21   904  	void __iomem *regs;
+> 76cde26394114f Hector Martin 2021-01-21   905  	struct aic_irq_chip *irqc;
+> 2cf68211664acd Hector Martin 2022-03-10   906  	const struct of_device_id *match;
+> 76cde26394114f Hector Martin 2021-01-21   907  
+> 76cde26394114f Hector Martin 2021-01-21   908  	regs = of_iomap(node, 0);
+> 76cde26394114f Hector Martin 2021-01-21   909  	if (WARN_ON(!regs))
+> 76cde26394114f Hector Martin 2021-01-21   910  		return -EIO;
+> 76cde26394114f Hector Martin 2021-01-21   911  
+> 76cde26394114f Hector Martin 2021-01-21   912  	irqc = kzalloc(sizeof(*irqc), GFP_KERNEL);
+> 76cde26394114f Hector Martin 2021-01-21   913  	if (!irqc)
+> 76cde26394114f Hector Martin 2021-01-21   914  		return -ENOMEM;
+> 76cde26394114f Hector Martin 2021-01-21   915  
+> 76cde26394114f Hector Martin 2021-01-21   916  	irqc->base = regs;
+> 76cde26394114f Hector Martin 2021-01-21   917  
+> 2cf68211664acd Hector Martin 2022-03-10   918  	match = of_match_node(aic_info_match, node);
+> 2cf68211664acd Hector Martin 2022-03-10   919  	if (!match)
+> 2cf68211664acd Hector Martin 2022-03-10   920  		return -ENODEV;
+> 2cf68211664acd Hector Martin 2022-03-10   921  
+> 2cf68211664acd Hector Martin 2022-03-10   922  	irqc->info = *(struct aic_info *)match->data;
+> 2cf68211664acd Hector Martin 2022-03-10   923  
+> 2cf68211664acd Hector Martin 2022-03-10   924  	aic_irqc = irqc;
+> 2cf68211664acd Hector Martin 2022-03-10   925  
+> dc97fd6fec0099 Hector Martin 2022-03-10   926  	switch (irqc->info.version) {
+> dc97fd6fec0099 Hector Martin 2022-03-10   927  	case 1: {
+> dc97fd6fec0099 Hector Martin 2022-03-10   928  		u32 info;
+> dc97fd6fec0099 Hector Martin 2022-03-10   929  
+> 76cde26394114f Hector Martin 2021-01-21   930  		info = aic_ic_read(irqc, AIC_INFO);
+> 7c841f5f6fa3f9 Hector Martin 2022-03-10   931  		irqc->nr_irq = FIELD_GET(AIC_INFO_NR_IRQ, info);
+> dc97fd6fec0099 Hector Martin 2022-03-10   932  		irqc->max_irq = AIC_MAX_IRQ;
+> dc97fd6fec0099 Hector Martin 2022-03-10   933  
+> dc97fd6fec0099 Hector Martin 2022-03-10   934  		off = irqc->info.target_cpu;
+> dc97fd6fec0099 Hector Martin 2022-03-10   935  		off += sizeof(u32) * irqc->max_irq; /* TARGET_CPU */
+> dc97fd6fec0099 Hector Martin 2022-03-10   936  
+> dc97fd6fec0099 Hector Martin 2022-03-10   937  		break;
+> dc97fd6fec0099 Hector Martin 2022-03-10   938  	}
+> 
+> not default statement.
 
-"next commit" in git is ambiguous. Get rid of such formulations.
+This is yet another case of data-driven dependency that smatch cannot
+infer easily. info.version is statically set in aic_info_match[]. 1
+and 2 are the only values provided by this array, so off is never left
+uninitialised.
+
+Thanks,
+
+	M.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Without deviation from the norm, progress is not possible.
