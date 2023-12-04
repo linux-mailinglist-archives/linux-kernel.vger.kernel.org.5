@@ -2,255 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 618068041CD
+	by mail.lfdr.de (Postfix) with ESMTP id B69CB8041CE
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 23:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjLDWmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 17:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
+        id S231450AbjLDWny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 17:43:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjLDWmR (ORCPT
+        with ESMTP id S229847AbjLDWnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 17:42:17 -0500
-Received: from stravinsky.debian.org (stravinsky.debian.org [IPv6:2001:41b8:202:deb::311:108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF10BE
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:42:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-        s=smtpauto.stravinsky; h=X-Debian-User:Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-        Reply-To:Content-ID:Content-Description;
-        bh=o70d//JYoJ1Tfh+yCl49djcfA839SZwkOqOLtsmt7qs=; b=OBkk7NQVbnOYMkTOg8lRFAkxCU
-        p4og0L3qTkgghCk2mGFGY0cUh/vB+LNep/ZeR3GxuE8S0liQeYoIyMZYn3PrjTEGOqbHLlgZIrqUR
-        fQM0oC3ePpMIpZ4Z2Uv7ZtkmmVYmCzyxGBfkF3ztKeXY8aFt4ptq/qHw261/5BXcFjOBxxO1NsDro
-        5vshnATL/sUK8kMisBsvn9+a8u0i/2MqUDTR08RmCrlhQGpmZzTsSorKwsX5Qrd/LhMzzZ8d7JWJ3
-        IGW5IGGWLU4rxjSUDzILevGI2sdyS1j/yeyfOFlYt5PgZokoDtzq+B5J86nxgh3zl9sGC1knCtoiW
-        HC1lFWgw==;
-Received: from authenticated user
-        by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128)
-        (Exim 4.94.2)
-        (envelope-from <sylvestre@debian.org>)
-        id 1rAHdc-00Gmsc-OQ; Mon, 04 Dec 2023 22:42:04 +0000
-Message-ID: <c61f61c9-3bfb-4ffd-adaf-1313965b3037@debian.org>
-Date:   Mon, 4 Dec 2023 23:42:02 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: clang-nightly: vdso/compat_gettimeofday.h:152:15: error:
- instruction variant requires ARMv6 or later
+        Mon, 4 Dec 2023 17:43:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EEFBE
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 14:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701729838; x=1733265838;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=x7wd6x65mV5DJQQbZ6JunbUaHvgWfLr8cH+8GuKaS94=;
+  b=UxcGrJZ6kT8Tfj1X4/3fzQB5COfTgCfQZIG3J9TJ+Z94hxZtF5iLoKT6
+   hNHvqHdicMxGcYhii7FoDw3cl+iz5uQaiUqKA4GMjpvCihaYwfmUJDI6J
+   wgLG5SjckUHzMrgLQruOEShp+ghIafEHlY0HiRfDU1LAC9A8wepHaICNK
+   I9kUjObQ0f8j3ZPIMgrr1N5w6IcEFHCsNMx1fJGHj7GrpTTWXWR1P3NSz
+   B/s2/ElKTPGHz5xtj04PCoZjHkTqr6F2LvMnqvKNRNLlgyOTDrGLLZhIw
+   F8cstpkYuayI7mCAoFcPa/VUlw1YcKaysBN8f9pDqW19Nxa/bnw+SR38I
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="460301377"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="460301377"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 14:43:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="944036711"
+X-IronPort-AV: E=Sophos;i="6.04,250,1695711600"; 
+   d="scan'208";a="944036711"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 14:43:55 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Dec 2023 14:43:54 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 4 Dec 2023 14:43:53 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 14:43:53 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 4 Dec 2023 14:43:47 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cn1/DY94Zc1YLP8k/L0nyr7GEQKSt5iKK5eoX4Di4rx6B+TNQ0TqdDST85MTPL6cL0zxszl2groI8Oe+qCNM3X2b54n1f1GLvGUwK6g2PIy/jXU56qSY2PAdj30PQVXBdCbWuHOKA42AdWFWpTiPohGi1HUSeTFGydZB1YxFIx6ZaIrLNNlD06rmBb0iBBntudu9uYF68GhrOkVZ22TKZDb17X8ybFshLSthlEh+kNuyRj0Qfvta83UTjX9r7Dtbi8lwH1sNmkrhtVTmrG85ekpuvuftpmcbX2T5/in8c2pAoApgIJJ2CUU0AmDDYaFhW3JOa9tEpne1sLRg3HRJvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=x7wd6x65mV5DJQQbZ6JunbUaHvgWfLr8cH+8GuKaS94=;
+ b=JCG3Ui0Z4GUe8wKYeucWtB1Ui8jm4K7vUwrhC5TeIRvkO0HI64uMg6PNKqBxJxhTn9FO3rudgfU30YndmeUc5FwYbvz8Hz31S/ZmjGO3d17oVs/hedW7euGOAne+6akRGmOxKHbwh+Ac0d9V7HpeQWm/058Su39aKgBN4VDDoTiUyIJMH8QhUO6p6nT2gdOJmgPbUzIyocxQyIKIfCLEPLk6gvyTlCk4i/OmjEm5oXN2sw82Q8rqMWmJpf0mRLjaddR7FpfKz0yE5/H27jO+8uS1g4V49mu8Et6+T6kKwFSxlSKSPGx47jCh23sVSWtZAeCeuZutEK7VF0YKHS+MkQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by CY8PR11MB7010.namprd11.prod.outlook.com (2603:10b6:930:56::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
+ 2023 22:43:45 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::5d1:aa22:7c98:f3c6]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::5d1:aa22:7c98:f3c6%7]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 22:43:45 +0000
+From:   "Huang, Kai" <kai.huang@intel.com>
+To:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+CC:     "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "ashish.kalra@amd.com" <ashish.kalra@amd.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "Hunter, Adrian" <adrian.hunter@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "Nakajima, Jun" <jun.nakajima@intel.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCHv3 14/14] x86/acpi: Add support for CPU offlining for ACPI
+ MADT wakeup method
+Thread-Topic: [PATCHv3 14/14] x86/acpi: Add support for CPU offlining for ACPI
+ MADT wakeup method
+Thread-Index: AQHaF7uAoLPWjNmQzEmSsNIC3961FrCHshEAgAz8r4CABShugA==
+Date:   Mon, 4 Dec 2023 22:43:45 +0000
+Message-ID: <5642b6cb66d4a1ecad87155d7635ab6b1fab60d2.camel@intel.com>
+References: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
+         <20231115120044.8034-15-kirill.shutemov@linux.intel.com>
+         <7012ba92206efaa6f0a0a2e1a28355d67d55265a.camel@intel.com>
+         <20231201155739.rxo6l5om6mdw54rs@box.shutemov.name>
+In-Reply-To: <20231201155739.rxo6l5om6mdw54rs@box.shutemov.name>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     clang-built-linux <llvm@lists.linux.dev>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        lkft-triage@lists.linaro.org,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <CA+G9fYvD72Vpfs2g8R+OJ6L8w9p_uaWbXpWMvnGAx_AOLabatw@mail.gmail.com>
- <20231204181304.GA2043538@dev-arch.thelio-3990X>
- <20231204223317.GA2053629@dev-arch.thelio-3990X>
-From:   Sylvestre Ledru <sylvestre@debian.org>
-Autocrypt: addr=sylvestre@debian.org; keydata=
- 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
-In-Reply-To: <20231204223317.GA2053629@dev-arch.thelio-3990X>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Debian-User: sylvestre
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CY8PR11MB7010:EE_
+x-ms-office365-filtering-correlation-id: 60e1c2e8-a60f-418a-d9ae-08dbf51a78f7
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pEA6+CFUvQdKhTS9IvVcjLAk2jZqEMuRL2OdgPc0WJfAMNepSTI2cn90U4+lPaA+P4gM3X1I+5i2WiQsRa/TM/1DCVOVgKgU3Jc0r10eu2KxRU+SkmxYTRuV52ke6rqSAUEcCMBwgZ1uL/z4xf22mCF1a16fkl7lPmywvQS8owbAmtVssstogKkW3+0+ym9SxN3y4i/cfT09b0c0+vglm2nvQ+b8VbaqmmkDSOUCjqF78zX8YszxyM96sBF2oi0Vs3X0jFZO7HpVp9gHaNg7+QjS2EkPew33KF7oHG29oCA76nLdalhLl1FX2YE1Qha0OlYcY6C+51Z5neXoM2QC9cSo9x6sbTSvwueVGKtgGxWltcecwx1pJhv+v357nRQ7P4mcwq1OhdLO++6F/ubF2/RNE56KXbSszELoeDsSCAP2h15ZanbFrb1AnHoDKCds/LlFFyRRuIxMDbJoI/lVrqii/bR0eon8xdNnREJgR3O+Wb06oAuUlS198kcACU7/e+Evkk515FXeKQp5T2Ma/VyJXyjna82sK8EKcBvPtzMepuaKH6oGRnUhv+Kjc3kb3Je9i5V0Oyn9/D+mZY0bE8ORg9r3UmIzNrLgmD/KzZGznr1afUZZwn5JGeCvXigC
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(396003)(366004)(376002)(136003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(82960400001)(26005)(2616005)(38100700002)(6506007)(6512007)(122000001)(71200400001)(478600001)(6486002)(66946007)(76116006)(66556008)(64756008)(66446008)(66476007)(54906003)(6916009)(91956017)(316002)(8936002)(8676002)(4326008)(2906002)(38070700009)(41300700001)(36756003)(86362001)(5660300002)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aVE5UjkxQXgveTRMeEtON3plT2dZMHhteW9KQzMwdGs2cXhLNUVyaFlBMExF?=
+ =?utf-8?B?K3NzOENYemsvTFpoVlpkMGRZWXZxVHJ3QnM2V3FjdlFBdzhJRTd3RlBJc1M1?=
+ =?utf-8?B?NTRrR05zUXhsbUNUaGZNYnpIa1BKaWczQ2NlYzBvMkRWMm9VakpmSzhwRWkw?=
+ =?utf-8?B?K1FrMjNwMmlrRXp5R2JHTElDSW9zdTJKSG10ZkMzN2J5UmEzOS9GNmhlM3d4?=
+ =?utf-8?B?Y2NkbDhQLzVkK1oyTHRnK1REM2RMWVovS1NyZVgxTmF6dHNPVDVZNitpMnBD?=
+ =?utf-8?B?SHorbjJzNWxPT1drdzJHd05qRW1RRzhxRFFwYy9VeDdOS21aM2E2a1B1R015?=
+ =?utf-8?B?V2xJaGNHMzR4TmhOaGw2MkZYR3haeVdxaTEzRDNsY1FZa2wvblhhQ0VaV3ZU?=
+ =?utf-8?B?Y1dta0RFYU1pelVjanNLQ204cklMTVRGVGZWZWxQNVJucXltcjdFM282K3RR?=
+ =?utf-8?B?d3cxYmdjRmVjb0pPV3FJMWJScXJkaHROSVNQNzE2ajE4eitYRzFBV2tZb1VE?=
+ =?utf-8?B?dWdqRFg0NkxWR3hYclF1MUNKVHpnL1R6ZndIRnlrUW1MNDQ2WmdoNU5Sa1dQ?=
+ =?utf-8?B?aDZmbDZJaWJKM0NxTElXY1IwdVVvT1RKRTFkL1YvK0lHdGNmazFTSEJIcVNw?=
+ =?utf-8?B?MkFJeTlTelNhVW9vMHVXenZ0ZFlsRXNFWk1XUkt2TGpxWVhtaEsrYXNNS2hO?=
+ =?utf-8?B?c2k0azFCclZob05MY1RmY0JTdmpLT1Ziam1UNUFyeDhOSjhUdE9qbElJcnVN?=
+ =?utf-8?B?ZGxvTU1ONm9KRFlhZHFscWFSTS9mSEVZdDlKb2lWdmRZRVBrSTV1SUt6c3R0?=
+ =?utf-8?B?aHFHTFE3ZXN3QTB5VVFnNm5OZ0ZtbzM3bW5pclFuUzZ6S2Z0b21paXVXV0Yr?=
+ =?utf-8?B?LzRIRStYOG1IeUEzTS81cHFEZmtnZkRwS0JBdTlUK2ZEc2c0OWF3WWZXbFFM?=
+ =?utf-8?B?Q0xnR3dlZ21oejUrY3ROVlhPU09sa0hVVGxzbGZYYWg1bTdTdnhPOWIzS3dW?=
+ =?utf-8?B?N2h6ZHJKMFRzTEVINHdtWFFUTERMakcvV2FxRG8vZlpKVEFLOVY5QXg4SXdK?=
+ =?utf-8?B?US9ya1lpclVIemtxZ0gwM3FMZ3NEcG90ekF6SllJVE5uUVR3OGF2dDFmRm94?=
+ =?utf-8?B?OWw1OFpOSTd0SGh4WlArMy9OSit0MXIzaWFxNm9zeUhFTTVRbTdjRjVORXZE?=
+ =?utf-8?B?dVdKSGsvNnZFV2FHVkl3OHcvYkoybS85b2l2aTVxQXA0Vko3bXRIa3BiSWNn?=
+ =?utf-8?B?cWtuRzlBT0ljVHJmemxvMXk5WjhNWmExV1YxbHVaYTgzUUcrWndTeWlheWVT?=
+ =?utf-8?B?cXB1V3hkU0lIbGNXOUhYWVNtWFdqTVVtV2RJVndKaDNVYUlxQ1huSDNwekdr?=
+ =?utf-8?B?eTFGS0ltUE1LTTNKaGp3dldPT2NTeEI4Ny9qR2VWb041WWFiaFlVL2FBRkdl?=
+ =?utf-8?B?dUdPM1JTZWQxTDcyTWRyaTFNSnZ0NDcxK3k3ZTVRaVVUYmh3bUlkWHFEem1a?=
+ =?utf-8?B?NHVlTXdRUU10SjFxWDJyaG1UNjJIYUlVellPZ1djZDNtNUltQ2ZTM2FQTmtX?=
+ =?utf-8?B?ZytrNjlmY0RqMWFaeEJSSjdKTGt4ZVlCLzUzekN6YVhjcnZQZWQwWDdudmFz?=
+ =?utf-8?B?TFVFZndtcEptbWRFV3FENVlXNHVHVVpoQjluaFVGajBZcUlWNkYvMExRM01q?=
+ =?utf-8?B?OUgzVEVveDExbHFKazVmM0lOaDFOY3FDWmJtYkI4alRxY1RFV2hnRUhYbFdR?=
+ =?utf-8?B?YnY3dmNBQ1djMzVSZklKbmNmQnAzaEZBSnZRbW53SExzUWROY0twU3dFNXVm?=
+ =?utf-8?B?SXJnOGNlYUwrdUxaYjlLRHQyaXgrZHNudkl2NVNVNmpUaUFMc0U5SGZnWkoz?=
+ =?utf-8?B?VE1uK0ZxdnFnTEUydlMwZmwrUk9VbFJ5b1hWdE9uanZVR3hVa3BldXNZVFly?=
+ =?utf-8?B?NWt1dUtQUHJLQ1VwTlBRaXFNWVFuTTM2R2JXYlo3RERTaWw2aDZNT1ZnY3ZM?=
+ =?utf-8?B?UkJncUlUYXprQnlsVDEwMlRRVzZHRzJjb3g0Z1E4cDVXcGdva1dzdlBBSi9y?=
+ =?utf-8?B?bnc4UnV0VWlNMDRuc2pYc1VPYTNwRWtXOERGeStDVnN5YXZ5MURMdHVrTVFD?=
+ =?utf-8?B?TmFFekM1eXowV1RrUEU0MFdVVGNoRDBqLy9FN3R4cy9qbmZEUUhXdk9ZaWNY?=
+ =?utf-8?B?N2c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <77C0F8492DC6D04DB24842D08C96735D@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 60e1c2e8-a60f-418a-d9ae-08dbf51a78f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Dec 2023 22:43:45.0317
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HZLdW+T7ZliMjD+L+5OoJ/a4ai4DTwev30yFykgvl7YdsHcqCiqjUD+QVZ4XNWYxVAmErJAK8//MILSzjMlVcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7010
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-
-Le 04/12/2023 à 23:33, Nathan Chancellor a écrit :
-> On Mon, Dec 04, 2023 at 11:13:04AM -0700, Nathan Chancellor wrote:
->> Hi Naresh,
->>
->> On Mon, Dec 04, 2023 at 05:33:26PM +0530, Naresh Kamboju wrote:
->>> Following build errors noticed on Linux next-20231204 tag with clang-nightly
->>> for arm and arm64.
->>>
->>> ## Test Regressions (compared to next-20231201)
->>> * arm64, build
->>>    - clang-nightly-defconfig
->>>    - clang-nightly-defconfig-40bc7ee5
->>>    - clang-nightly-lkftconfig
->>>    - clang-nightly-lkftconfig-kselftest
->>>
->>> * arm, build
->>>    - clang-nightly-allnoconfig
->>>    - clang-nightly-axm55xx_defconfig
->>>    - clang-nightly-bcm2835_defconfig
->>>    - clang-nightly-clps711x_defconfig
->>>    - clang-nightly-defconfig
->>>    - clang-nightly-exynos_defconfig
->>>    - clang-nightly-imx_v6_v7_defconfig
->>>    - clang-nightly-keystone_defconfig
->>>    - clang-nightly-lkftconfig
->>>    - clang-nightly-lkftconfig-kselftest
->>>    - clang-nightly-omap2plus_defconfig
->>>    - clang-nightly-pxa910_defconfig
->>>    - clang-nightly-s3c6400_defconfig
->>>    - clang-nightly-s5pv210_defconfig
->>>    - clang-nightly-sama5_defconfig
->>>    - clang-nightly-shmobile_defconfig
->>>    - clang-nightly-tinyconfig
->>>    - clang-nightly-u8500_defconfig
->>>    - clang-nightly-vexpress_defconfig
->>>
->>>
->>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>>
->>>
->>> Build log on arm64:
->>> ---------
->>> In file included from lib/vdso/gettimeofday.c:5:
->>> In file included from include/vdso/datapage.h:135:
->>> arch/arm64/include/asm/vdso/compat_gettimeofday.h:152:15: error:
->>> instruction variant requires ARMv6 or later
->>>    152 |         asm volatile("mov %0, %1" : "=r"(ret) : "r"(_vdso_data));
->>>        |                      ^
->>> <inline asm>:1:2: note: instantiated into assembly here
->>>      1 |         mov r4, r1
->>>        |         ^
->>> In file included from <built-in>:3:
->>> lib/vdso/gettimeofday.c:139:3: error: invalid instruction
->>>    139 |                 smp_rmb();
->>>        |                 ^
->>>
->>> Build log on arm:
->>> ---------
->>> In file included from arch/arm/vfp/vfpmodule.c:23:
->>> arch/arm/include/asm/cp15.h:101:2: error: instruction requires: data-barriers
->>>    101 |         isb();
->>>        |         ^
->> This is caused by a change to Debian's LLVM that changes the internal
->> defaults of the arm-linux-gnueabi and arm-linux-gnueabihf tuples:
->>
->> https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/-/commit/907baf024b9a5a1626893d9e731b6c79ccf45c87
->>
->> We use arm-linux-gnueabi for the kernel (see scripts/Makefile.clang) so
->> now we have a hardcoded armv5te CPU, even if we are building for armv7
->> or such.
->>
->> I am still investigating into what (if anything) can be done to resolve
->> this on the kernel side. We could potentially revert commit
->> ddc72c9659b5 ("kbuild: clang: do not use CROSS_COMPILE for target
->> triple") but I am not sure that will save us from that change, as
->> tuxmake's CROSS_COMPILE=arm-linux-gnueabihf will cause us to have an
->> armv7 CPU even though we may not be building for armv7.
-> Okay, this is a pretty awful situation the more I look into it :(
->
-> The arm64 compat vDSO build is easy enough to fix because we require use
-> of the integrated assembler, which means we can add '-mcpu=generic' (the
-> default in LLVM for those files based on my debugging) to those files
-> and be done with it:
->
-> diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
-> index 1f911a76c5af..5f5cb722cfc2 100644
-> --- a/arch/arm64/kernel/vdso32/Makefile
-> +++ b/arch/arm64/kernel/vdso32/Makefile
-> @@ -9,6 +9,10 @@ include $(srctree)/lib/vdso/Makefile
->   ifeq ($(CONFIG_CC_IS_CLANG), y)
->   CC_COMPAT ?= $(CC)
->   CC_COMPAT += --target=arm-linux-gnueabi
-> +# Some distributions (such as Debian) change the default CPU for the
-> +# arm-linux-gnueabi target triple, which can break the build. Explicitly set
-> +# the CPU to generic, which is the default for Linux in LLVM.
-> +CC_COMPAT += -mcpu=generic
->   else
->   CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
->   endif
->
-> The failures for all the ARCH=arm configurations appear to be much more
-> difficult to fix because the default CPU value changes based on the
-> '-march' value, which basically means that we would have to hardcode
-> LLVM's default CPU logic into the kernel's Makefile, which is just not
-> maintainable in my opinion. Just doing a multi_v7_defconfig build of
-> arch/arm/ shows the value returned from ARM::getARMCPUForArch() in
-> llvm/lib/TargetParser/ARMTargetParser.cpp can vary between "arm7tdmi" or
-> "generic". Supplying '-mcpu=generic' explicitly won't work with
-> LLVM_IAS=0 because GNU as does not support it and clang just happily
-> passes it along, even though it does not do that in the implicit default
-> case.
->
-> Sylvestre, I strongly believe you should consider reverting that change
-> or give us some compiler flag that allows us to fallback to upstream
-> LLVM's default CPU selection logic. I think that hardcoding Debian's
-> architecture defintions based on the target triple into the compiler
-> could cause issues for other projects as well. For example,
-> '--target=arm-linux-gnueabi -march=armv7-a' won't actually target ARMv7:
->
->    $ echo 'int main(void) { asm("dsb"); return 0; }' | \
->          clang --target=arm-linux-gnueabi -march=armv7-a \
->          -x c -c -o /dev/null -v -
->    ...
->     "/usr/bin/clang-17" -cc1 -triple armv7-unknown-linux-gnueabi ...
->    ...
->
-> vs.
->
->    $ echo 'int main(void) { asm("dsb"); return 0; }' | \
->          clang --target=arm-linux-gnueabi -march=armv7-a \
->          -x c -c -o /dev/null -v -
->    ...
->    "<prefix>/bin/clang-18" -cc1 -triple armv5e-unknown-linux-gnueabi ...
->    ...
->
-I guess it is this patch, right?
-
-https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/-/commit/97633b6d51ebc8579c5dbecd12a02fb933620620
-
-if so, do you want me to revert it?
-
-Thanks
-S
-
+PiANCj4gPiA+ICsNCj4gPiA+ICBpbnQgX19pbml0IGFjcGlfcGFyc2VfbXBfd2FrZSh1bmlvbiBh
+Y3BpX3N1YnRhYmxlX2hlYWRlcnMgKmhlYWRlciwNCj4gPiA+ICAJCQkgICAgICBjb25zdCB1bnNp
+Z25lZCBsb25nIGVuZCkNCj4gPiA+ICB7DQo+ID4gPiAgCXN0cnVjdCBhY3BpX21hZHRfbXVsdGlw
+cm9jX3dha2V1cCAqbXBfd2FrZTsNCj4gPiA+ICANCj4gPiA+ICAJbXBfd2FrZSA9IChzdHJ1Y3Qg
+YWNwaV9tYWR0X211bHRpcHJvY193YWtldXAgKiloZWFkZXI7DQo+ID4gPiAtCWlmIChCQURfTUFE
+VF9FTlRSWShtcF93YWtlLCBlbmQpKQ0KPiA+ID4gKwlpZiAoIW1wX3dha2UpDQo+ID4gPiArCQly
+ZXR1cm4gLUVJTlZBTDsNCj4gPiANCj4gPiBJIHRoaW5rIHlvdSBjYW4ga2VlcCB0aGUgQkFEX01B
+RFRfRU5UUlkoKSBjaGVjayBhcyBhIHN0YW5kYXJkIGNoZWNrLCBhbmQgLi4uDQo+IA0KPiBOby4g
+QkFEX01BRFRfRU5UUlkoKSB3aWxsIGZhaWwgaWYgdGhlIHN0cnVjdCB2ZXJzaW9uIGlzIFYwIGJl
+Y2F1c2UgdGhlDQo+IHNpemUgd2lsbCBiZSBzbWFsbGVyIHRoYW4gc2l6ZW9mKHN0cnVjdCBhY3Bp
+X21hZHRfbXVsdGlwcm9jX3dha2V1cCkuDQoNCkFoIE9LLiAgTWF5YmUgd29ydGggYSBjb21tZW50
+IGxpa2UgYmVsb3c/DQoNCg0KCS8qDQoJICogQ2Fubm90IHVzZSB0aGUgc3RhbmRhcmQgQkFEX01B
+RFRfRU5UUlkoKSB0byBzYW5pdHkgY2hlY2sgdGhlDQpAbXBfd2FrZQ0KCSAqIGVudHJ5LiAgJ3Np
+emVvZiAoc3RydWN0IGFjcGlfbWFkdF9tdWx0aXByb2Nfd2FrZXVwKScgY2FuIGJlIGxhcmdlcg0K
+CSAqIHRoYW4gdGhlIGFjdHVhbCBzaXplIG9mIHRoZSBNUCB3YWtldXAgZW50cnkgaW4gQUNQSSB0
+YWJsZSBiZWNhdXNlDQp0aGUNCgkgKiAncmVzZXRfdmVjdG9yJyBpcyBvbmx5IGF2YWlsYWJsZSBp
+biB0aGUgVjIgTVAgd2FrZXVwIHN0cnVjdHVyZS4NCgkgKi8NCg0KDQpbLi4uXQ0KDQo+IC0tLSBh
+L2FyY2gveDg2L2tlcm5lbC9yZWJvb3QuYw0KPiArKysgYi9hcmNoL3g4Ni9rZXJuZWwvcmVib290
+LmMNCj4gQEAgLTg3OCwxMCArODc4LDE0IEBAIHN0YXRpYyBpbnQgY3Jhc2hfbm1pX2NhbGxiYWNr
+KHVuc2lnbmVkIGludCB2YWwsIHN0cnVjdCBwdF9yZWdzICpyZWdzKQ0KPiAgCWNwdV9lbWVyZ2Vu
+Y3lfZGlzYWJsZV92aXJ0dWFsaXphdGlvbigpOw0KPiAgDQo+ICAJYXRvbWljX2RlYygmd2FpdGlu
+Z19mb3JfY3Jhc2hfaXBpKTsNCj4gLQkvKiBBc3N1bWUgaGx0IHdvcmtzICovDQo+IC0JaGFsdCgp
+Ow0KPiAtCWZvciAoOzspDQo+IC0JCWNwdV9yZWxheCgpOw0KPiArDQo+ICsJaWYgKHNtcF9vcHMu
+Y3Jhc2hfcGxheV9kZWFkKSB7DQo+ICsJICAgIHNtcF9vcHMuY3Jhc2hfcGxheV9kZWFkKCk7DQo+
+ICsJfSBlbHNlIHsNCj4gKwkJaGFsdCgpOw0KPiArCQlmb3IgKDs7KQ0KPiArCQkJY3B1X3JlbGF4
+KCk7DQo+ICsJfQ0KPiAgDQoNCkFncmVlIHRoaXMgaXMgYmV0dGVyIHRoYW4gZXhwbGljaXRseSBj
+aGVja2luZyBURFggZ3Vlc3QuIDotKQ0K
