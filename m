@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 453E9803CBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58408803CBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 19:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232895AbjLDSXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 13:23:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
+        id S232983AbjLDSXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 13:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbjLDSXa (ORCPT
+        with ESMTP id S231299AbjLDSXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 13:23:30 -0500
+        Mon, 4 Dec 2023 13:23:32 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45414107
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:23:36 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db3ef4c7094so4420408276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 10:23:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83816FA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 10:23:38 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db548f8dae4so3114866276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 10:23:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701714215; x=1702319015; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SZ0pxQHPPtXifBYnQK2oqRhP2CZVwJXTHj6rC9GaE3c=;
-        b=P9S4QcPW5Eh/3vBzx4A6vHvsIbdvrm7Hvr0V0y80HGL8IYg62FJv6KsMWsMFdUaWMO
-         N9qhefubyi1bAbmDVqjYEFrorVqM6RHQCOZNgOG+9i7ZZD4rMWtt+EAikFY7TcK97jNy
-         epM4/byRmFSZyv8abKGyFOSyomlXjYA9AasUlktW06JTychjoMLxbnhTJWLFkxR3HEiI
-         RCxo5XyDefB4n24h4kbjhVVwmuebJhCQl/80WvulztIoHDjVA6P5nvQJLHWzkCJPtHsa
-         tbACaKlXYz6/cCHdQupSqlt0662wrsF7IV0nNneTIdROvdgH2Mf8EglzBeXAAtpiivyO
-         AiWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701714215; x=1702319015;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1701714217; x=1702319017; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SZ0pxQHPPtXifBYnQK2oqRhP2CZVwJXTHj6rC9GaE3c=;
-        b=SGm2OLiprvWbTXkT7DOjqlVeMcnLaRsX8q07EuSSGNgXwLtiT89f1sD5etHnXhhP2b
-         tOPJKqOTWiRIFuLvqMnwOykH5RnuIxBiVhbYPt54xhTenwUo96lz2rtI1chAjjVglNJG
-         LtJHBToPYRFlxuSY2sMAM88BpJuMtYrAE4qUg5H/PPfdNyr67a/Ktc9MOqnwkigNDC1H
-         F41Wd5Rub8U3xJBohdt5btW/n1yWfrIGS6AE0QV8RxFQAzWg/0OHxqOaD9DmnsDCt1pr
-         XXvo66EW4q7X8AMDCHuN1F/lQwoMeOb0isC2epTnQGuTiUZO96r0A0af9gZAPKB32Nb7
-         /yUA==
-X-Gm-Message-State: AOJu0YwYeKD6icmluLJ2Vb7FHdqRparwX+Q4X56vjhg4tfLyUNgvP9I0
-        9LR+LG5RbtWYMBZ2mNVjWR6cVUNyAXdj
-X-Google-Smtp-Source: AGHT+IEi0XJiqlbzPFe4i2AZZ6mCBKtqb89HyDPZeG0sLxj598uJOhxVo9IAsT589yyTX39eoBGSOL+OWZ5d
+        bh=X7oIwN0gwgnh0JH2uoSPjyFXY7LBES97cup/kWuAMDc=;
+        b=q92XS/kE26MVTRpPzE2bIiAyjv9qbVKDQsWy1X7HPBmXk5UD1My1tKNPadBkxZX291
+         j5CRjW4DGyTjtALsasg6vgp+lUaRbhiYArI4+d9G5zJcBCiz2RPfVsUSW7sjfxpNZQkc
+         iYMBWAewjLxEVkZb8UmH6SWJE0KXOurqWE9oac+BB5KlwQcuLKIllzO+CByr7kWyh2j/
+         ZZoWLB0wwnGOAmgGEhud/yW+H/QXNlm1TTXnUcpOZ4H9NUQhpeyFMcXrZdmym6Ck8XIm
+         syVam1m3pwm9Wdxlqd2hKY/kfpNH2H7R4HIi2Ik7jjlPgrGzG24BXJfMIjWUpRgnpKWa
+         HxWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701714217; x=1702319017;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X7oIwN0gwgnh0JH2uoSPjyFXY7LBES97cup/kWuAMDc=;
+        b=VuRi3YvUxacBK2fioTgsNMym/upgDfB8qDxGi/Hd2Z7o6J9ShGvruLKVWVVqqmrTFS
+         1K5AG6iQiq0UBg6oRAq7h7i1cA+W+d0mX4zgqGDOvdcHnub8a9jOJb7/JPzkF+5OHheC
+         nUV/oc2847WCwi0PJS1v4NRzHS84qOBws2aOUKqcKnQ03dDexDGMf4jJvzMCjGzvLKFD
+         FPBg4V0KbsLxWFnowQtYvU9lK1QXL2lxB4hNx0IWCLO2zEgN0vUvVgNvBr9yZeboaqwv
+         qPyDnNq43Gd9u5mu2WqZGDPZo4X3ZLSj8noD47VZvgFhW61ODBr1Y/xTrn0bpZFON6fj
+         2sfQ==
+X-Gm-Message-State: AOJu0YxbAwwDKssHTWxsZ0PD5oLaQId79We/QLNY0bl5GYebEEr2G0ss
+        PJIXi5wLN8HXF9j/eDOjb7xowXWWzNMi
+X-Google-Smtp-Source: AGHT+IHOBK+GAxccPQiMkDdDXauTrztmqup3Xwe1oIP3fGM+SQUEpNnshkLn78GxvBotlA0CjlE9r9x7oN0t
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:b241:d804:967e:c827])
- (user=irogers job=sendgmr) by 2002:a25:cace:0:b0:db5:4692:3aae with SMTP id
- a197-20020a25cace000000b00db546923aaemr331621ybg.4.1701714215509; Mon, 04 Dec
- 2023 10:23:35 -0800 (PST)
-Date:   Mon,  4 Dec 2023 10:23:29 -0800
-Message-Id: <20231204182330.654255-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:d4cc:0:b0:db9:772b:1020 with SMTP id
+ m195-20020a25d4cc000000b00db9772b1020mr44975ybf.5.1701714217695; Mon, 04 Dec
+ 2023 10:23:37 -0800 (PST)
+Date:   Mon,  4 Dec 2023 10:23:30 -0800
+In-Reply-To: <20231204182330.654255-1-irogers@google.com>
+Message-Id: <20231204182330.654255-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20231204182330.654255-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v1 1/2] perf metrics: Avoid segv if default metricgroup isn't set
+Subject: [PATCH v1 2/2] perf vendor events arm64: Fix default AmpereOne metrics
 From:   Ian Rogers <irogers@google.com>
 To:     John Garry <john.g.garry@oracle.com>,
         Will Deacon <will@kernel.org>,
@@ -83,31 +85,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A metric is default by having "Default" within its groups. The default
-metricgroup name needn't be set and this can result in segv in
-default_metricgroup_cmp and perf_stat__print_shadow_stats_metricgroup
-that assume it has a value when there is a Default metric group. To
-avoid the segv initialize the value to "".
+Add default metric group name for TopdownL1 metrics.
 
-Fixes: 1c0e47956a8e ("perf metrics: Sort the Default metricgroup")
+Fixes: 59faeaf80d02 ("perf vendor events arm64: Fix for AmpereOne metrics")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/metricgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 0484736d9fe4..ca3e0404f187 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -225,7 +225,7 @@ static struct metric *metric__new(const struct pmu_metric *pm,
- 
- 	m->pmu = pm->pmu ?: "cpu";
- 	m->metric_name = pm->metric_name;
--	m->default_metricgroup_name = pm->default_metricgroup_name;
-+	m->default_metricgroup_name = pm->default_metricgroup_name ?: "";
- 	m->modifier = NULL;
- 	if (modifier) {
- 		m->modifier = strdup(modifier);
+diff --git a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
+index e2848a9d4848..afcdad58ef89 100644
+--- a/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
++++ b/tools/perf/pmu-events/arch/arm64/ampere/ampereone/metrics.json
+@@ -231,6 +231,7 @@
+         "MetricName": "slots_lost_misspeculation_fraction",
+         "MetricExpr": "100 * ((OP_SPEC - OP_RETIRED) / (CPU_CYCLES * #slots))",
+         "BriefDescription": "Fraction of slots lost due to misspeculation",
++        "DefaultMetricgroupName": "TopdownL1",
+         "MetricGroup": "Default;TopdownL1",
+         "ScaleUnit": "1percent of slots"
+     },
+@@ -238,6 +239,7 @@
+         "MetricName": "retired_fraction",
+         "MetricExpr": "100 * (OP_RETIRED / (CPU_CYCLES * #slots))",
+         "BriefDescription": "Fraction of slots retiring, useful work",
++        "DefaultMetricgroupName": "TopdownL1",
+         "MetricGroup": "Default;TopdownL1",
+ 	"ScaleUnit": "1percent of slots"
+     },
 -- 
 2.43.0.rc2.451.g8631bc7472-goog
 
