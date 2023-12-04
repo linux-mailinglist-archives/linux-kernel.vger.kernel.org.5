@@ -2,43 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0476803E23
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2D9803E24
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbjLDTM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
+        id S232997AbjLDTOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:14:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbjLDTM4 (ORCPT
+        with ESMTP id S231462AbjLDTOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 14:12:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982B2FA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:13:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2424CC433C8;
-        Mon,  4 Dec 2023 19:13:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1701717182;
-        bh=DF4i7VfdHFjU05wcCcPJaPR5JV0IOaDMnlYWyt6aCV4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Kxlpz/LKZoseZnQyZK0lBJrY0nGrMHNQAoj7u2HrMnoTEpfY67bSvSZxV6m5ZFvwY
-         yZoC0pUuPgaWFZn94kG1Wr8E0atdjh2RrTTkB3nLGSbsD2U5kuzfl+tEo+BX8Kxc1Y
-         LXcq5lfE4qDSZJ16h+IIxFKjyf+29xOILzUG6918=
-Date:   Mon, 4 Dec 2023 11:13:01 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Dmytro Maluka <dmaluka@chromium.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/thp: add CONFIG_TRANSPARENT_HUGEPAGE_NEVER option
-Message-Id: <20231204111301.7e087b2f851b30121561e8fc@linux-foundation.org>
-In-Reply-To: <20231204163254.2636289-1-dmaluka@chromium.org>
-References: <20231204163254.2636289-1-dmaluka@chromium.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Mon, 4 Dec 2023 14:14:01 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EE2E6;
+        Mon,  4 Dec 2023 11:14:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=KckcuocL2z013G2jrCsZXwyF7IERThcABs04nHeio4Q=; b=uLGPocLJryyVBdclvJmHRrEnpC
+        YndbkH1IgbGIOzzYzSwEKth5SwUHdzaHgzpTN9eMopfPocO6/lTlWXIYz+D0bfuZq8dJQpUBKZzPX
+        6wQYf6WjajFJ/LCT01aQ+9ieH2dJMcVNqee+608ZySrxSiUcrdjXtVpRl+pKDvy+qtgrJpGTmVNNp
+        wCiqHi9roalMj7f1uoNq82hjk3rFGoa2fUeV8SYMYZXVK4Z+dH6ilGlAGSPRQPAmb65llmza0tRVo
+        Si7PliuCEBT29WN0umlmDS9EVfCkY6xv5yYuQHKyrsTCYP0kQAZlfY8uzJEdyMecnP05yrFtBN4gR
+        SZyMXzWg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAEOJ-005QO4-3B;
+        Mon, 04 Dec 2023 19:14:04 +0000
+Message-ID: <694baf13-65d0-4877-b6c7-56e3006f83be@infradead.org>
+Date:   Mon, 4 Dec 2023 11:14:03 -0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] riscv, crash: don't export some symbols when
+ CONFIG_MMU=n
+Content-Language: en-US
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, akpm@linux-foundation.org,
+        ignat@cloudflare.com, linux-next@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kexec@lists.infradead.org, eric_devolder@yahoo.com
+References: <ZW00/Cfk47Cc3kGo@MiWiFi-R3L-srv>
+ <ZW03ODUKGGhP1ZGU@MiWiFi-R3L-srv>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZW03ODUKGGhP1ZGU@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -46,52 +57,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  4 Dec 2023 17:32:54 +0100 Dmytro Maluka <dmaluka@chromium.org> wrote:
 
-> Add an option to disable transparent hugepages by default, in line with
-> the existing transparent_hugepage=never command line setting.
-> 
-> Rationale: khugepaged has its own non-negligible memory cost even if it
-> is not used by any applications, since it bumps up vm.min_free_kbytes to
-> its own required minimum in set_recommended_min_free_kbytes(). For
-> example, on a machine with 4GB RAM, with 3 mm zones and pageblock_order
-> == MAX_ORDER, starting khugepaged causes vm.min_free_kbytes increase
-> from 8MB to 132MB.
-> 
-> So if we use THP on machines with e.g. >=8GB of memory for better
-> performance, but avoid using it on lower-memory machines to avoid its
-> memory overhead, then for the same reason we also want to avoid even
-> starting khugepaged on those <8GB machines. So with
-> CONFIG_TRANSPARENT_HUGEPAGE_NEVER we can use the same kernel image on
-> both >=8GB and <8GB machines, with THP support enabled but khugepaged
-> not started by default. The userspace can then decide to enable THP
-> (i.e. start khugepaged) via sysfs if needed, based on the total amount
-> of memory.
-> 
-> This could also be achieved with the existing transparent_hugepage=never
-> setting in the kernel command line instead. But it seems cleaner to
-> avoid tweaking the command line for such a basic setting.
-> 
-> P.S. I see that CONFIG_TRANSPARENT_HUGEPAGE_NEVER was already proposed
-> in the past [1] but without an explanation of the purpose.
-> 
-> ...
->
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -859,6 +859,12 @@ choice
->  	  madvise(MADV_HUGEPAGE) but it won't risk to increase the
->  	  memory footprint of applications without a guaranteed
->  	  benefit.
-> +
-> +	config TRANSPARENT_HUGEPAGE_NEVER
-> +		bool "never"
-> +	help
-> +	  Disabling Transparent Hugepage by default. It can still be
 
-s/Disabling/Disable/
+On 12/3/23 18:19, Baoquan He wrote:
+> When dropping select of KEXEC and dependency on ARCH_SUPPORTS_KEXEC
+> from CRASH_DUMP, compiling error is reported when below config items are
+> set:
+> -----------------------
+> CONFIG_CRASH_CORE=y
+> CONFIG_KEXEC_CORE=y
+> CONFIG_CRASH_DUMP=y
+> ......
+> -----------------------
+> 
 
-> +	  enabled at runtime via sysfs.
->  endchoice
+[]
 
-The patch adds the config option but doesn't use it?
+> 
+> Currently, riscv's ARCH_SUPPORTS_KEXEC has dependency on MMU. Before
+> dropping ARCH_SUPPORTS_KEXEC, disabling CONFIG_MMU will unset
+> CONFIG_CRASH_DUMP, CONFIG_KEXEC_CORE, CONFIG_CRASH_CORE. Hence
+> crash_core related codes won't be compiled.
+> 
+> ---------------------
+> arch/riscv/Kconfig:
+> config ARCH_SUPPORTS_KEXEC
+>         def_bool MMU
+> ---------------------
+> 
+> After dropping ARCH_SUPPORTS_KEXEC, CONFIG_CRASH_DUMP, CONFIG_KEXEC_CORE,
+> CONFIG_CRASH_CORE can be set independently of CONFIG_MMU. However, there
+> are several macro definitions, such as VA_BITS, VMEMMAP_START, VMEMMAP_END,
+> MODULES_VADDR, MODULES_END are only available when CONFIG_MMU=y. Then
+> compiling errors are triggered.
+> 
+> Here, add CONFIG_MMU ifdeffery in arch_crash_save_vmcoreinfo() to export
+> those symbols when CONFIG_MMU is enabled.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/riscv/kernel/crash_core.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/kernel/crash_core.c b/arch/riscv/kernel/crash_core.c
+> index 55f1d7856b54..8706736fd4e2 100644
+> --- a/arch/riscv/kernel/crash_core.c
+> +++ b/arch/riscv/kernel/crash_core.c
+> @@ -5,17 +5,19 @@
+>  
+>  void arch_crash_save_vmcoreinfo(void)
+>  {
+> -	VMCOREINFO_NUMBER(VA_BITS);
+>  	VMCOREINFO_NUMBER(phys_ram_base);
+>  
+>  	vmcoreinfo_append_str("NUMBER(PAGE_OFFSET)=0x%lx\n", PAGE_OFFSET);
+>  	vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
+>  	vmcoreinfo_append_str("NUMBER(VMALLOC_END)=0x%lx\n", VMALLOC_END);
+> +#ifdef CONFIG_MMU
+> +	VMCOREINFO_NUMBER(VA_BITS);
+>  	vmcoreinfo_append_str("NUMBER(VMEMMAP_START)=0x%lx\n", VMEMMAP_START);
+>  	vmcoreinfo_append_str("NUMBER(VMEMMAP_END)=0x%lx\n", VMEMMAP_END);
+>  #ifdef CONFIG_64BIT
+>  	vmcoreinfo_append_str("NUMBER(MODULES_VADDR)=0x%lx\n", MODULES_VADDR);
+>  	vmcoreinfo_append_str("NUMBER(MODULES_END)=0x%lx\n", MODULES_END);
+> +#endif
+>  #endif
+>  	vmcoreinfo_append_str("NUMBER(KERNEL_LINK_ADDR)=0x%lx\n", KERNEL_LINK_ADDR);
+>  	vmcoreinfo_append_str("NUMBER(va_kernel_pa_offset)=0x%lx\n",
+
+Both riscv 32-bit and 64-bit complain:
+
+../arch/riscv/kernel/crash_core.c: In function 'arch_crash_save_vmcoreinfo':
+../arch/riscv/kernel/crash_core.c:11:58: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'int' [-Wformat=]
+   11 |         vmcoreinfo_append_str("NUMBER(VMALLOC_START)=0x%lx\n", VMALLOC_START);
+      |                                                        ~~^
+      |                                                          |
+      |                                                          long unsigned int
+      |                                                        %x
+
+
+Otherwise this builds without failure.
+
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
+-- 
+~Randy
