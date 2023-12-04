@@ -2,114 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 753968039B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A9A8039C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344596AbjLDQJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:09:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53640 "EHLO
+        id S1344509AbjLDQKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:10:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234968AbjLDQJD (ORCPT
+        with ESMTP id S234930AbjLDQJ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:09:03 -0500
-Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2080.outbound.protection.outlook.com [40.107.247.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E614106;
-        Mon,  4 Dec 2023 08:09:06 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K1LswuWNSbw0GnM4DGZ9h+gKTzFA2398BAcR0njB6i6MSl0jmKC7CJDa3EspBEZzoY8YMVUvCp7vYh9njaM34M0RagwgtRlaJfz2446yQiax+Q/W8F0/7KdPPk3dXGvcscOOGN4r39kM9SxasAfP3xvvw6JA1x9WZMqD2xH+tysrGOW5aQezzNjMsGiqu3NR3L8/wURcyQoSu8B+H0KbivLkgvMgx1vO1dI/xxkhwxCwVXBhU140iZAtPhY8h4ttdZW8aWR5bHHUdPc+2Gu1KSM98Ga9DRKrHZ5ARcOZRJ5fYTNv+sJdwSwFPaTczEKBQs2pa5w3RfRY3w5hQWZxKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=twXB3m7Tim7njEZaZz/z5gMshLBBUVg2EBfjuL0WGag=;
- b=GBJ/dg1j9VEKVnaS8AfgNC97EpIKy6uhJV9pC9HKpU5FRjFRkGutFlULnbH2c0Dz/5dpgrCQ08MhcBX2LHlA9/heQ6+0xRcWm7qXMOOAOiaCfEneWxb2Q+lebdWuzi37rkdUPa0mrXG3vYdUPwKeh2EbM/Byw/3szQ3vOaYo3HuNdJ5Unomhr+9C6xIdwkBlyP3OiV5HVPR3VLqYAnZJAcOXGo+iJGbTtcEo8TQJ5Uu0w1Zzq4O5PccorokJHngWt1+uxv8qTQl2XTN0gVXsHgjkXgktYflU1HXpGZ3LOW0XL4xFhlf/QCnD7soMDXuChFeI2kaYXp+2RohXqtxB8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=twXB3m7Tim7njEZaZz/z5gMshLBBUVg2EBfjuL0WGag=;
- b=PAkSx8ecZHqqW4FxWgl5rlKhc8w5y/q9nmvtHtApt3bP67frT3i9n1kgsp+Fcr2IH1DyJFxeC3kFnxxXE2JT4O3TVIx7s7kwGYCMky5mE/tBQBuTNJ+0zWIN2CWODWWvSbMXIejnn1OmJYwX4/y/sgd+/2JAymVrnqHZma6d+Jk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by DBBPR04MB8057.eurprd04.prod.outlook.com (2603:10a6:10:1f1::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.22; Mon, 4 Dec
- 2023 16:09:03 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40%6]) with mapi id 15.20.7068.022; Mon, 4 Dec 2023
- 16:09:03 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     Frank.Li@nxp.com, bhelgaas@google.com, imx@lists.linux.dev,
-        kw@linux.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, lpieralisi@kernel.org,
-        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, robh@kernel.org,
-        roy.zang@nxp.com
-Subject: [PATCH v6 4/4] PCI: layerscape: Add suspend/resume for ls1043a
-Date:   Mon,  4 Dec 2023 11:08:29 -0500
-Message-Id: <20231204160829.2498703-5-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231204160829.2498703-1-Frank.Li@nxp.com>
-References: <20231204160829.2498703-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR21CA0027.namprd21.prod.outlook.com
- (2603:10b6:a03:114::37) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Mon, 4 Dec 2023 11:09:58 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D6E95;
+        Mon,  4 Dec 2023 08:10:04 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50bf3efe2cbso1503881e87.2;
+        Mon, 04 Dec 2023 08:10:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701706203; x=1702311003; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sXEOTOPt4KaksZ2Jf2sfO5Vl3iy+KKQQtD8/P41+pGw=;
+        b=Kh5LUkE8YqnjGFJxe89IBCMf7pJZOhCxfkTX43GoIhry2vghgxm1PgqJLl6QplI4Ro
+         KGmeLot6ItieAYeOVzU+a72iDdEqpOJI/E2MZCiHAALDBYwny/taOTl11m7kiGIOdVFU
+         39wFJCo57B7lrUrFfHzRzAgAtM5ITLkDAyov+kfK1thyA/oQhH68J9oirr1nH9jVJVqk
+         jz0L1QnUcJ/SFcC5xgP3SPiQIDlR9e3fERSdTL0615qzbqftFGFtp4mHk5BuXfTzAhB4
+         dfKEvkIFlAOibpYo0qUn2trKIRuWMdvcOq6L1SJSdUz0e5ZGgVUAYslF/kWR2AFiVOHk
+         UWUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701706203; x=1702311003;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sXEOTOPt4KaksZ2Jf2sfO5Vl3iy+KKQQtD8/P41+pGw=;
+        b=pDWwGdu2M/XgZbPk/jVGpG7SOHNi1oJwtKgIifOTgLuVUZtWAuHmjzFub+EINeYjiI
+         gq7aylMV7fChkTiJr9IaIFOf+NH9RBKarVBSRh0vOojDawpkj7c0YMHDzHUoiIwnxYt6
+         GyygEUnmD3tp927zy5rKpnn3TV3OXJMzyn5gRMKcBfcZawdS9tQsC5UfokLbR8nVmpH2
+         mfx5ipIaGsDX2Bz4R3k0TvAKbZ6b5W8w7bw+nEwDy6qYdLxEPhDWjruef23KdKeL3Kj1
+         9Fj1LPi2O+64o0Lmy4CT779LIKgjM+KPA9O5sqCUyaIjtV+WwHv52aQqVYjosaCU9Mo2
+         wR6g==
+X-Gm-Message-State: AOJu0YyS/D1pXtwI2TekagGFsJ7jRoJSbxf0iSCOihe4hUkjYih6v5qC
+        MLHeaCWXY1yyK6eN4e7+ndw=
+X-Google-Smtp-Source: AGHT+IGrgSTLeQgZNtNCnwebWfodvyf80a3JECT6ZZpgKiAz9YVmobqovZ1KD/dkW1dsBBl3lfBa/Q==
+X-Received: by 2002:a19:380d:0:b0:50b:f110:20c with SMTP id f13-20020a19380d000000b0050bf110020cmr558107lfa.217.1701706202672;
+        Mon, 04 Dec 2023 08:10:02 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id p8-20020a5d59a8000000b003333ed23356sm6067577wrr.4.2023.12.04.08.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 08:10:02 -0800 (PST)
+Message-ID: <69a7ca77055fc57cff6d6be95fb5796723171230.camel@gmail.com>
+Subject: Re: [PATCH 06/12] iio: adc: ad9467: add mutex to struct ad9467_state
+From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Nuno Sa via B4 Relay 
+        <devnull+nuno.sa.analog.com@kernel.org>
+Cc:     nuno.sa@analog.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
+        Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>
+Date:   Mon, 04 Dec 2023 17:10:01 +0100
+In-Reply-To: <20231204152301.6c212539@jic23-huawei>
+References: <20231121-dev-iio-backend-v1-0-6a3d542eba35@analog.com>
+         <20231121-dev-iio-backend-v1-6-6a3d542eba35@analog.com>
+         <20231204152301.6c212539@jic23-huawei>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DBBPR04MB8057:EE_
-X-MS-Office365-Filtering-Correlation-Id: c9d7ed75-10f3-475c-c2a7-08dbf4e35593
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nXHqNjqZ+lxKeeeAWX2IPrPJinPpjVLIm1bDqSrI4ITLYoI3XAK+Mv/oXHZfdYrlFc3cAFyO33EMxL7dgsEKgIr6UsqyHiBaYCciluJkwyCOV/QIeL5Sx5Cj16+X1vqzAgGTvPCxHG/KH+5Fl4t+JWTEpBq4fmrU67KSZIRawBt8+vgV46QnRHQS/c40mQf/29m/HNM+sXVNuuzo23ixVDUvik2LBZuLv1kSnX2Z9lpyXgrb5/3p1di9q3x8Zib2ByhVVkt+nnyHbpcZ7awHtNo54i+SGmT6VV87FwLIaWC8d3MNiJPEG7kXAvnZgN5XddXq+Tbc5iVF86bJM0kq3OvaaumOljDM99PtpDML5AEa93BuvQ7QCwrpU/gRkVy5NaQCCHZVRZlm2mBQcSXUO4bSAdwogP3uvm+AyX69JFyJehJ8dwottFz4GkOZuo4Utyb9bEgB8X++adIgnrbFsc1muJG25k6o2uxfbX1CmWY1ivDdTyeu4uUHbcPRo+PizZLQYGLvzUCKkkfAkhfT+lx5u7+x1UDXG31BXSw3Sx7ZS1hwYR++Q5UhdMA8T/todfG5rfQd5a76FIKpFcXK4Kyoiz7IPqTrlJuvabLT2T+qmJqwdYjydsb0Ha5/iEhN
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(366004)(376002)(346002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(6916009)(66556008)(66476007)(8936002)(316002)(86362001)(8676002)(4326008)(6486002)(478600001)(66946007)(36756003)(41300700001)(38350700005)(15650500001)(2906002)(7416002)(5660300002)(26005)(2616005)(1076003)(6506007)(6512007)(52116002)(83380400001)(6666004)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wazukdBV3FKFMAbcBiDbf33+ZJ/ToHfcd5dBck4iULRsBYSFUVAaWo5ehD0+?=
- =?us-ascii?Q?lhwLD09mZSLQwIQUL8kpPxG9yfs1wy+6Q3izdI+M7Ed681uWMYX3Csso9+zP?=
- =?us-ascii?Q?o056DY/sxkz68bH5t7W07XVwzAPJWZHtjQ1Ivw6e9oLZOlCiSVZZtpUPGFVJ?=
- =?us-ascii?Q?JcrkzwhZGwtQiMWVLiZJQji7IaDrNVxvjaRoaY844sm2jHB+22xY4pzBmNDU?=
- =?us-ascii?Q?m69WeUokuSJnxM4d7Ac/11LP/7K8rZqMQwm7+OaOxOHuSEMTAfyY/tvJQNdM?=
- =?us-ascii?Q?YFZHL+g5GIV2UNyo9M+UYpQXfXl9/okLJzY5lF3ImbBThdTX8u9oFWx4A//V?=
- =?us-ascii?Q?GP0xZiBdR+OQfW4lY22QbfYLP8cbh3e8sqmUNouLHPsSMzm+dFwHD1d3CZKr?=
- =?us-ascii?Q?VnoYXyVOnH9UaiPBTeYfyBtQLXD9sMLBA/Uc7wtMA/n8qiZ7pycTM9GuDCn/?=
- =?us-ascii?Q?l6Q2Um1yRu8+gFn+GwBukx54c137fB9TNmt9FJSVieUPPlvg3/8L63OOXNh0?=
- =?us-ascii?Q?TCzuOL10m98MrTp+4iQOQmRy6H3nuWtDkfzx9AzF65YdFCLNhmFrVDyvpxR8?=
- =?us-ascii?Q?n46HNx9w9wIKEeI4aDjjj5JVzbsuun9f76k1EpL1SaxIksRmL/jg9yttWvo9?=
- =?us-ascii?Q?5P2AvXfqbUoQ502bxh5Dh8TQbmKrpXPy+lO5gumhh3cwxyf8OkdpEooikfNc?=
- =?us-ascii?Q?OKTi2vFD57Rfu2LGqPiVi8MDo51nV44/7YMgIB8FvSD/Wk7tSmKATilp+mXa?=
- =?us-ascii?Q?sZOGQJXiu8E4zoVzTOLaVqeWKpgdqDb138jE0EIU9Fj8O6pvpT3+qDLBt2fR?=
- =?us-ascii?Q?G94TA3RVllZHOC9BtWZGDqU/lUOpqpufvVPmBO6cosqZcGYhWrdmAjhpF9o5?=
- =?us-ascii?Q?WkpRtYGjzVRI0p/SfiVeFMh2whpcjec615b7jEce273CMWy3hKlqgWkEIsyd?=
- =?us-ascii?Q?lY2JBtCM0lj0Dg5FYfH5YijZhbkM3VJffl2MQtk3x9JT2OTCEYq0TTd2YX8u?=
- =?us-ascii?Q?rKOnkBG5Yvcl/O2IutzNCtZf3r/K7sNdYAGTmPFNlhIVbNuKxJRAyW/HT9h7?=
- =?us-ascii?Q?JDI/LnAs9/ey9fF/8H2ZqKdEYZOlUEuly3106SgGxfBndEAqvena05H/z3XK?=
- =?us-ascii?Q?EAnmVMMfDmldcjJpsDUY/1UZuL/mnDAdtrlNb8TwdsDccHY2pOrX/B5Ons9o?=
- =?us-ascii?Q?yGkaS952+yfu57uEXz+bchMNE6RhyVkjV0ElVgRtJkd3WinGz5tFvBfDXt7O?=
- =?us-ascii?Q?OZBUXKFqpW2Ve6Vvdh6bUdgELtgZ18/QiZQCIz6tLwKVSGitu9iAP4iABE8R?=
- =?us-ascii?Q?xTHi04G5I+bTaqYQIW2JiLiZHkszc+rpZ7YeJI6AlfChF3fi5D81bXqrDlzJ?=
- =?us-ascii?Q?I6OTJGpaPzfUJ5WE3V1ExBOJ+9SvBRSS0hSjgdWOFQSwuEm2EMaZoyHsfkKF?=
- =?us-ascii?Q?meS+kl/opOq1qBYHSJ/W6hI3yjqtldJbhat8cyy6pBvtMREWnHn3cJYfC1vD?=
- =?us-ascii?Q?ACUoMUdDWvR/EamoefD5/KfkLACdQwkA2yg4ZfhFHqWifs072eXUlI/n5dVV?=
- =?us-ascii?Q?B0Uc14g5H/2F9kuEjDUJ6SSAGNw3/66K7M1xWayb?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9d7ed75-10f3-475c-c2a7-08dbf4e35593
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 16:09:03.5363
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: warSZXDLyiFS6+GMyL6cXJVfI9dplmdgqUFKMCbgiXF0kVDPGOJE21Jwusp0hS1UNGWcweShiAl3HuXgciEz9g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB8057
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,140 +84,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add suspend/resume support for Layerscape LS1043a.
+On Mon, 2023-12-04 at 15:23 +0000, Jonathan Cameron wrote:
+> On Tue, 21 Nov 2023 11:20:19 +0100
+> Nuno Sa via B4 Relay <devnull+nuno.sa.analog.com@kernel.org> wrote:
+>=20
+> > From: Nuno Sa <nuno.sa@analog.com>
+> >=20
+> > When calling ad9467_set_scale(), multiple calls to ad9467_spi_write()
+> > are done which means we need to properly protect the whole operation so
+> > we are sure we will be in a sane state if two concurrent calls occur.
+> >=20
+> > Fixes: ad6797120238 ("iio: adc: ad9467: add support AD9467 ADC")
+> > Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+> > ---
+> > =C2=A0drivers/iio/adc/ad9467.c | 6 +++++-
+> > =C2=A01 file changed, 5 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/iio/adc/ad9467.c b/drivers/iio/adc/ad9467.c
+> > index 04474dbfa631..91821dee03b7 100644
+> > --- a/drivers/iio/adc/ad9467.c
+> > +++ b/drivers/iio/adc/ad9467.c
+> > @@ -4,7 +4,7 @@
+> > =C2=A0 *
+> > =C2=A0 * Copyright 2012-2020 Analog Devices Inc.
+> > =C2=A0 */
+> > -
+> > +#include <linux/cleanup.h>
+> > =C2=A0#include <linux/module.h>
+> > =C2=A0#include <linux/mutex.h>
+> > =C2=A0#include <linux/device.h>
+> > @@ -122,6 +122,8 @@ struct ad9467_state {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned int=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0output_mode;
+> > =C2=A0
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct gpio_desc=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0*pwrdown_gpio;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* protect against concurren=
+t accesses to the device */
+> Not very specific.=C2=A0 Concurrent access usually fine at granularity of
+> individual read/write as the bus locks protect it.=C2=A0 What state
+> is actually being protected?=C2=A0 A shared buffer or some state that we
+> need to ensure remains consistent between driver and device?
 
-In the suspend path, PME_Turn_Off message is sent to the endpoint to
-transition the link to L2/L3_Ready state. In this SoC, there is no way to
-check if the controller has received the PME_To_Ack from the endpoint or
-not. So to be on the safer side, the driver just waits for
-PCIE_PME_TO_L2_TIMEOUT_US before asserting the SoC specific PMXMTTURNOFF
-bit to complete the PME_Turn_Off handshake. Then the link would enter L2/L3
-state depending on the VAUX supply.
+At this point not any buffer/data... Just making sure things remain consist=
+ent
+(typical case when you have multiple reads/writes to the device). That's wh=
+y a tried
+to emphasize "accesses to the device". Maybe I should make it explicit I'm =
+speaking
+about multiple reads/writes.
 
-In the resume path, the link is brought back from L2 to L0 by doing a
-software reset.
-
-Acked-by: Roy Zang <Roy.Zang@nxp.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
-
-Notes:
-    Chagne from v5 to v6
-    - none
-    Change from v4 to v5
-    - update commit message
-    - use comments
-    /* Reset the PEX wrapper to bring the link out of L2 */
-    
-    Change from v3 to v4
-    - Call scfg_pcie_send_turnoff_msg() shared with ls1021a
-    - update commit message
-    
-    Change from v2 to v3
-    - Remove ls_pcie_lut_readl(writel) function
-    
-    Change from v1 to v2
-    - Update subject 'a' to 'A'
-
- drivers/pci/controller/dwc/pci-layerscape.c | 63 ++++++++++++++++++++-
- 1 file changed, 62 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
-index f3dfb70066fb7..7cdada200de7e 100644
---- a/drivers/pci/controller/dwc/pci-layerscape.c
-+++ b/drivers/pci/controller/dwc/pci-layerscape.c
-@@ -41,6 +41,15 @@
- #define SCFG_PEXSFTRSTCR	0x190
- #define PEXSR(idx)		BIT(idx)
- 
-+/* LS1043A PEX PME control register */
-+#define SCFG_PEXPMECR		0x144
-+#define PEXPME(idx)		BIT(31 - (idx) * 4)
-+
-+/* LS1043A PEX LUT debug register */
-+#define LS_PCIE_LDBG	0x7fc
-+#define LDBG_SR		BIT(30)
-+#define LDBG_WE		BIT(31)
-+
- #define PCIE_IATU_NUM		6
- 
- struct ls_pcie_drvdata {
-@@ -224,6 +233,45 @@ static int ls1021a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
- 	return scfg_pcie_exit_from_l2(pcie->scfg, SCFG_PEXSFTRSTCR, PEXSR(pcie->index));
- }
- 
-+static void ls1043a_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct ls_pcie *pcie = to_ls_pcie(pci);
-+
-+	scfg_pcie_send_turnoff_msg(pcie->scfg, SCFG_PEXPMECR, PEXPME(pcie->index));
-+}
-+
-+static int ls1043a_pcie_exit_from_l2(struct dw_pcie_rp *pp)
-+{
-+	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-+	struct ls_pcie *pcie = to_ls_pcie(pci);
-+	u32 val;
-+
-+	/*
-+	 * Reset the PEX wrapper to bring the link out of L2.
-+	 * LDBG_WE: allows the user to have write access to the PEXDBG[SR] for both setting and
-+	 *	    clearing the soft reset on the PEX module.
-+	 * LDBG_SR: When SR is set to 1, the PEX module enters soft reset.
-+	 */
-+	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
-+	val |= LDBG_WE;
-+	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
-+
-+	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
-+	val |= LDBG_SR;
-+	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
-+
-+	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
-+	val &= ~LDBG_SR;
-+	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
-+
-+	val = ls_pcie_pf_lut_readl(pcie, LS_PCIE_LDBG);
-+	val &= ~LDBG_WE;
-+	ls_pcie_pf_lut_writel(pcie, LS_PCIE_LDBG, val);
-+
-+	return 0;
-+}
-+
- static const struct dw_pcie_host_ops ls_pcie_host_ops = {
- 	.host_init = ls_pcie_host_init,
- 	.pme_turn_off = ls_pcie_send_turnoff_msg,
-@@ -241,6 +289,19 @@ static const struct ls_pcie_drvdata ls1021a_drvdata = {
- 	.exit_from_l2 = ls1021a_pcie_exit_from_l2,
- };
- 
-+static const struct dw_pcie_host_ops ls1043a_pcie_host_ops = {
-+	.host_init = ls_pcie_host_init,
-+	.pme_turn_off = ls1043a_pcie_send_turnoff_msg,
-+};
-+
-+static const struct ls_pcie_drvdata ls1043a_drvdata = {
-+	.pf_lut_off = 0x10000,
-+	.pm_support = true,
-+	.scfg_support = true,
-+	.ops = &ls1043a_pcie_host_ops,
-+	.exit_from_l2 = ls1043a_pcie_exit_from_l2,
-+};
-+
- static const struct ls_pcie_drvdata layerscape_drvdata = {
- 	.pf_lut_off = 0xc0000,
- 	.pm_support = true,
-@@ -252,7 +313,7 @@ static const struct of_device_id ls_pcie_of_match[] = {
- 	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
- 	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
- 	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
--	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1021a_drvdata },
-+	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1043a_drvdata },
- 	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
- 	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
- 	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
--- 
-2.34.1
-
+- Nuno S=C3=A1
+>=20
