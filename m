@@ -2,200 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 420E3803E29
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C124803E2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 20:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbjLDTOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 14:14:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46514 "EHLO
+        id S234857AbjLDTOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 14:14:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbjLDTOX (ORCPT
+        with ESMTP id S231577AbjLDTOX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 14:14:23 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33510E6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:14:29 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54c77e0835bso3109835a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 11:14:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1701717267; x=1702322067; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PdbU2vyPJlv3tFKUhYJVnxlH5Ywp57PHqJwbRUHewjQ=;
-        b=QOrJiCzFLIS/tkgW7Ip9H0QK8sziK8EXkkmHr/ET07VnIO2uUEW5eU+vd/KzLxmEOl
-         ot1s8Bw3xrzuHXjSkgqr/C3LT1pVi29eGJfj4daSWNT3PA2Orh6GSFfEpOURJpNIp+N6
-         ET9kd0ajBsE360CktV0KRjcVHPq0C5TM+mqDw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701717267; x=1702322067;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PdbU2vyPJlv3tFKUhYJVnxlH5Ywp57PHqJwbRUHewjQ=;
-        b=j6ZW1reEVgJyYTEgVNipraOiq0spJdn7RjaQkoftmarz9rL8xKw+0rGurOCIH9eMQz
-         2TMWaXJvdghbdrxf2ybK0Xt0po5WfVkKtNAXVzNl2S1A1HCL4lblRT3GDzjJqFi/LkoT
-         /YS76M9SI5xh9RbO9oY0itWGkWAwKc76Lo81lhKlVvy5DaHrz1P7RB3E9cUECC/phd7+
-         cSRN+BTL+MOUzO3jgWy1sJQCHt5EVuGcw38Sguu+HzfVq0Vj+HHDcad9720tAPGJBGZ9
-         oSiVYdmEnIy4O4uAJl6Sh8T5SIJL0i+jsMo0XBZBRRMtICUcg7s0fEpqbU8WfIWXJZ0p
-         WoAg==
-X-Gm-Message-State: AOJu0YyvCVWTiATgm9JuuuU2RVaV/KraYxrdPaleVdUGjW4rKIn2KJDR
-        pjfV1jLMMFJy8KOa0HqwwGpICQj30iz0VE7AxKbj5A==
-X-Google-Smtp-Source: AGHT+IGZD9UmggrPHLfHvDinlSC3L7uITJEwCpdlkN1/oFNYkLKUi94zpX+9SnfgNpSzRWYNciQHWxx46aMtPFE+H30=
-X-Received: by 2002:a50:d645:0:b0:54c:1fc:7574 with SMTP id
- c5-20020a50d645000000b0054c01fc7574mr4270308edj.29.1701717267229; Mon, 04 Dec
- 2023 11:14:27 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3437CF0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 11:14:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8608FC433C9;
+        Mon,  4 Dec 2023 19:14:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701717269;
+        bh=kfWReJzoKyST0mYqrsmPO5P8wLRuTmZubW3mAnPQP1g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=cgoZfdq9gW9Pr9xKC3b01h9h3v8ELo9+WYL+fDpUCEbba0Kz1rfxZrAVrfOiZ5ruo
+         YYDDg+vGo/pozOJAZgQK+y7PQcUAxfjLp6o0Ooy6UQWcHYTSXGnDvlAmy/gGlqd5KB
+         b240NbfpFBWcCsgduQYsKm1O4Dtc0KWopgQSlnpsbNvjKfcpCNbqOnvKX17fn73iuM
+         GyuyUC9MRhbkFtHIt5uMPCk+mnhGG8PoLRI0F+Z2WcSpw3wtlgyziIknClpvQkUn21
+         KheiX6gnBS2zjZ/rNqJwvtF8Mfp/WUhOkqSZIAqDOi1apTQrjxAyT85f3u8xQOv3Zu
+         yD8PBrrw69Wqg==
+Date:   Mon, 4 Dec 2023 13:14:27 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-hyperv@vger.kernel.org, linux-pci@vger.kernel.org,
+        Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Michael Kelley <mhklinux@outlook.com>
+Subject: Re: [PATCH v2 14/35] PCI: hv: switch hv_get_dom_num() to use atomic
+ find_bit()
+Message-ID: <20231204191427.GA623236@bhelgaas>
 MIME-Version: 1.0
-References: <20231204024004.8245-1-dinghao.liu@zju.edu.cn> <CALs4sv1cB6a5jKOgh7JWFLYz8pxfxOuszk3MAYc5xWY9HqYX0g@mail.gmail.com>
-In-Reply-To: <CALs4sv1cB6a5jKOgh7JWFLYz8pxfxOuszk3MAYc5xWY9HqYX0g@mail.gmail.com>
-From:   Michael Chan <michael.chan@broadcom.com>
-Date:   Mon, 4 Dec 2023 11:14:15 -0800
-Message-ID: <CACKFLimhHCAqs1APuhX9CWd5c9OQTV=RnA-Aague4SgQufE+_A@mail.gmail.com>
-Subject: Re: [PATCH] net: bnxt: fix a potential use-after-free in bnxt_init_tc
-To:     Pavan Chebbi <pavan.chebbi@broadcom.com>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000440011060bb3ed59"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231203193307.542794-13-yury.norov@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000440011060bb3ed59
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Sun, Dec 03, 2023 at 11:32:46AM -0800, Yury Norov wrote:
+> The function traverses bitmap with for_each_clear_bit() just to allocate
+> a bit atomically. We can do it better with a dedicated find_and_set_bit().
 
-On Mon, Dec 4, 2023 at 12:56=E2=80=AFAM Pavan Chebbi <pavan.chebbi@broadcom=
-.com> wrote:
->
-> On Mon, Dec 4, 2023 at 8:11=E2=80=AFAM Dinghao Liu <dinghao.liu@zju.edu.c=
-n> wrote:
-> >
-> > When flow_indr_dev_register() fails, bnxt_init_tc will free
-> > bp->tc_info through kfree(). However, the caller function
-> > bnxt_init_one() will ignore this failure and call
-> > bnxt_shutdown_tc() on failure of bnxt_dl_register(), where
-> > a use-after-free happens. Fix this issue by setting
-> > bp->tc_info to NULL after kfree().
-> >
-> > Fixes: 627c89d00fb9 ("bnxt_en: flow_offload: offload tunnel decap rules=
- via indirect callbacks")
-> > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> > ---
-> >  drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c b/drivers/net=
-/ethernet/broadcom/bnxt/bnxt_tc.c
-> > index 38d89d80b4a9..273c9ba48f09 100644
-> > --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-> > +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c
-> > @@ -2075,6 +2075,7 @@ int bnxt_init_tc(struct bnxt *bp)
-> >         rhashtable_destroy(&tc_info->flow_table);
-> >  free_tc_info:
-> >         kfree(tc_info);
-> > +       bp->tc_info =3D NULL;
-> >         return rc;
-> >  }
->
-> The other way could have been to assign bp->tc_info only after
-> flow_indr_dev_register succeeds.
-> But this one works too. Thanks.
-> Reviewed-by: Pavan Chebbi <pavan.chebbi@broadcom.com>
+No objection from me, but please tweak the subject line to match
+previous hv history, i.e., capitalize the first word after the prefix:
 
-I think this is the correct fix.  flow_indr_dev_register(), if
-successful, may call the driver's call back function and so
-bp->tc_info must be set up before the call.  Thanks.
+  PCI: hv: Use atomic find_and_set_bit()
 
-Reviewed-by: Michael Chan <michael.chan@broadcom.com>
+I think there's value in using similar phrasing across the whole
+series.  Some subjects say "optimize xyz()", some say "rework xyz()",
+some "rework xyz()", etc.  I think it's more informative to include
+the "atomic" and "find_bit()" ideas in the subject than the specific
+functions that *use* it.
 
---000000000000440011060bb3ed59
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+I also like how some of the other commit logs clearly say what the
+patch does, e.g., "Simplify by using dedicated find_and_set_bit()", as
+opposed to just "We can do it better ..." which technically doesn't
+say what the patch does.
 
-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
-OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
-/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
-AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
-c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
-AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
-TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
-bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
-L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
-BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
-HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
-L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
-kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
-5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
-hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
-E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
-aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
-EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
-DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILzul8P1C0v4hBV+kH5pDXFQ53AAUoGc
-oouk3UEEi38rMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIw
-NDE5MTQyN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
-SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
-ATANBgkqhkiG9w0BAQEFAASCAQCBZ3pFJr6LrvcKLj7740HA/5ZQAtNARAoFFiM3q+Vcp5RzPQgE
-Uxf5c+B41ZhbfX/KeHYyxHd0Xgpeeq1FC1G2zJRa8hfAdkoB7++vyH4mRvwefjECp/BXfxxKdH7Z
-GxdTh64zie21kE75EIn800L7YEBN81RsxEathi57mbP4H1ORC2l2avG6LIaDf7TKpr9FVdzjJfhB
-ESile42eu/eXhE7RQTQYQKKActzz2SL/uPr0/T3sGoYmk6+OR5plTJLC2MqmIbkI+6Tfg/Y511gl
-4pBYZMQg9QMWgZgBg65NPkUlMpenPBAciHBWDjkP5rFQ4/pmGISaHmDxpLwJZMce
---000000000000440011060bb3ed59--
+Very nice simplification in all these users, thanks for doing it!
+
+I assume you'll merge these all together since they depend on [01/35],
+so:
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+> ---
+>  drivers/pci/controller/pci-hyperv.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
+> index 30c7dfeccb16..033b1fb7f4eb 100644
+> --- a/drivers/pci/controller/pci-hyperv.c
+> +++ b/drivers/pci/controller/pci-hyperv.c
+> @@ -3605,12 +3605,9 @@ static u16 hv_get_dom_num(u16 dom)
+>  	if (test_and_set_bit(dom, hvpci_dom_map) == 0)
+>  		return dom;
+>  
+> -	for_each_clear_bit(i, hvpci_dom_map, HVPCI_DOM_MAP_SIZE) {
+> -		if (test_and_set_bit(i, hvpci_dom_map) == 0)
+> -			return i;
+> -	}
+> +	i = find_and_set_bit(hvpci_dom_map, HVPCI_DOM_MAP_SIZE);
+>  
+> -	return HVPCI_DOM_INVALID;
+> +	return i < HVPCI_DOM_MAP_SIZE ? i : HVPCI_DOM_INVALID;
+>  }
+>  
+>  /**
+> -- 
+> 2.40.1
+> 
