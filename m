@@ -2,136 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB37B803990
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335D2803996
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbjLDQEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:04:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
+        id S1344063AbjLDQFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231328AbjLDQEk (ORCPT
+        with ESMTP id S234807AbjLDQFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:04:40 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99D7AC;
-        Mon,  4 Dec 2023 08:04:46 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4FEVvg005446;
-        Mon, 4 Dec 2023 16:04:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=7SyjEZYix8RBtB52xZQgB2+0lCKxgrfJUq97NfAQsHg=;
- b=g42ijmI7q87bYocyUZZz6GyVLgBjDsSTVl/xah26NDsRXq03zXLU3DqZViuo1cS0gzYP
- 900uS1MlfbvTHLmGMdSuwZQHUcvWXo1bOyu1Lgdxaw0qjUNV+KqZPxVjdQ/VXV2ZKMUV
- 9T5gOWST7Zc0lKinvjs60T6qjZa30FejhcmjsUF5SFpP1DJE/yCzP6AUmK1VaIAXvRs2
- gjdjg2LcQEveES+nhcBZE3/hXj85xujlfbei6n3uAPLhQkeVJ5H5u4Ultf0jtJEzq4C1
- vix+T16wDtjSFlWUVi8zCI++8ItvIYKDMSw0Y54bZhh+oFZh/JHsjNjablmKkPzsLQx9 cg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uqwbqmec6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Dec 2023 16:04:43 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B4G4goT021466
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Dec 2023 16:04:42 GMT
-Received: from [10.110.89.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
- 2023 08:04:39 -0800
-Message-ID: <e3817ea6-3cdc-418f-bbeb-ed93e7f537e3@quicinc.com>
-Date:   Mon, 4 Dec 2023 08:04:38 -0800
+        Mon, 4 Dec 2023 11:05:14 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353FFFD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:05:19 -0800 (PST)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231204160517euoutp0238db12ce756c22fde73c37ad493a5b04~drIQSf3le2110621106euoutp02w
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:05:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231204160517euoutp0238db12ce756c22fde73c37ad493a5b04~drIQSf3le2110621106euoutp02w
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701705917;
+        bh=97jkE2BSkOLjo+/AOP4tEvoIrEIXJxvo3ugmZeP7zCQ=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=OE5dUCnf3OJzPLTQwrl370jaqztOST5UrGtobVX1paNTDW626iP3CDX02zT2ML6ky
+         8fmvu7/4xm7XqhUMfgy3vMkHuc8hNH6iUEzs8YTz19h9qkfShVtjkHnW2EquDw72Do
+         1v09JW/dc9tw1Oi4JWwJyX7m1afnNyHCjttLqKns=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231204160517eucas1p1be82e51726b37de39d04fba3b58194de~drIQCHmDZ0078200782eucas1p1M;
+        Mon,  4 Dec 2023 16:05:17 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 8E.D2.09814.DB8FD656; Mon,  4
+        Dec 2023 16:05:17 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231204160516eucas1p1741400688b44c438f3b373c374fb1446~drIPq3yUV0070300703eucas1p1q;
+        Mon,  4 Dec 2023 16:05:16 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231204160516eusmtrp158ee4898803b254f488ccb9043c25df5~drIPqVRNQ2505425054eusmtrp1d;
+        Mon,  4 Dec 2023 16:05:16 +0000 (GMT)
+X-AuditID: cbfec7f4-711ff70000002656-16-656df8bdd23a
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id B4.71.09274.CB8FD656; Mon,  4
+        Dec 2023 16:05:16 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231204160516eusmtip1fe8df228195bb5196eea965470161b7f~drIO-DW9j1335113351eusmtip1i;
+        Mon,  4 Dec 2023 16:05:16 +0000 (GMT)
+Message-ID: <4c70768c-c127-4577-9170-51857e657d19@samsung.com>
+Date:   Mon, 4 Dec 2023 17:05:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/4] pinctrl: qcom: Add SM4450 pinctrl driver
+Subject: Re: [PATCH v4 1/3] drm/panfrost: Ignore core_mask for poweroff and
+ disable PWRTRANS irq
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Tengfei Fan <quic_tengfan@quicinc.com>, <andersson@kernel.org>,
-        <agross@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linus.walleij@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
-References: <20231130024046.25938-1-quic_tengfan@quicinc.com>
- <20231130024046.25938-3-quic_tengfan@quicinc.com>
- <1d2fbb36-9476-4f32-8bcd-33fd5dcbd6e4@kernel.org>
- <d192f32a-130f-4568-9622-d3465c709853@quicinc.com>
- <1b65f67a-8142-4690-af6e-4a0bf641b7be@kernel.org>
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <1b65f67a-8142-4690-af6e-4a0bf641b7be@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: QTtMnbm3_qEodrRL0BT35rbhPm5kbEM6
-X-Proofpoint-GUID: QTtMnbm3_qEodrRL0BT35rbhPm5kbEM6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_15,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1011
- lowpriorityscore=0 priorityscore=1501 malwarescore=0 spamscore=0
- suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0 phishscore=0
- mlxlogscore=801 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040122
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        boris.brezillon@collabora.com
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, krzysztof.kozlowski@linaro.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20231204114215.54575-2-angelogioacchino.delregno@collabora.com>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPKsWRmVeSWpSXmKPExsWy7djP87p7f+SmGlzfwW5x4voiJotLKyUs
+        Tp85xWTxf9tEZosrX9+zWWw+18Nqsff1VnaLy7vmsFks/LiVxaKtcxmrxf89QF2NR4BKtryZ
+        yOrA67Fm3hpGjx13lzB67P22gMVj56y77B6bVnWyedy5tofNY97JQI/73ceZPDafrvb4vEku
+        gCuKyyYlNSezLLVI3y6BK2PT/IKC3bwVzfP3Mzcw/uHqYuTkkBAwkVj9ejt7FyMXh5DACkaJ
+        07vPQzlfGCXePpjIClIlJPCZUWLjDVeYjsvTvzNCxJczSpw/rQTR8JFR4s6MfewgCV4BO4k9
+        h68wgdgsAioSM7aeYIKIC0qcnPmEBcQWFZCXuH9rBli9sECSxOM1nWBxZgFxiVtP5oPViwhk
+        Sjya8RLsImaBaUwSew89BtvMJmAo0fW2i62LkYODU8BX4v1vRYheeYntb+cwQxy6nFPi8m5b
+        CNtFYn73dxYIW1ji1fEt7BC2jMTpyT0sIPMlBNoZJRb8vs8E4UxglGh4fosRospa4s65X2DL
+        mAU0Jdbv0ocIO0o8fPsVLCwhwCdx460gxA18EpO2TWeGCPNKdLQJQVSrScw6vg5u7cELl5gn
+        MCrNQgqVWUi+n4Xkm1kIexcwsqxiFE8tLc5NTy02ykst1ytOzC0uzUvXS87P3cQITHOn/x3/
+        soNx+auPeocYmTgYDzFKcDArifDOu5WdKsSbklhZlVqUH19UmpNafIhRmoNFSZxXNUU+VUgg
+        PbEkNTs1tSC1CCbLxMEp1cAkyGBusDl8bYn1jfVFh7vWGbJIzWlVSAl5L+JSc8ZLru7UTwcf
+        6ZlOndUztpaeDOjbcuygmqAl69+DCTFLjr5vXDn1X0/3pLP/lW+n8Yg3GQnv5V9e9WZJ5mrO
+        otKWA6bnT/7Mr2b8uGD5pKVnbjHxrv0hv0K4R4iXUUpQNL10GfPHa09e/vBOuPpq3Y/qFE4T
+        56lbn8x992qpSMPnXwyLWv4Zn1ZxWLpYy2qDo9nJfD6LAw5phXvXZk57out/5CdT8tQv38Vi
+        NNuknecUXVvB/K3v1rZj+hENBovVg+9+NVPvXJew1jRd4F7n5PsKc0VeHj66uOeyE2+/n2eX
+        xovqWv9ZMjULd2d65s5f48OhxFKckWioxVxUnAgA6Pvyc+IDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCIsWRmVeSWpSXmKPExsVy+t/xu7p7fuSmGsz/pmlx4voiJotLKyUs
+        Tp85xWTxf9tEZosrX9+zWWw+18Nqsff1VnaLy7vmsFks/LiVxaKtcxmrxf89O9gtGo8AlWx5
+        M5HVgddjzbw1jB477i5h9Nj7bQGLx85Zd9k9Nq3qZPO4c20Pm8e8k4Ee97uPM3lsPl3t8XmT
+        XABXlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl7G
+        pvkFBbt5K5rn72duYPzD1cXIySEhYCJxefp3xi5GLg4hgaWMEode/2KCSMhInJzWwAphC0v8
+        udbFBlH0nlFi+q9uZpAEr4CdxJ7DV8AaWARUJGZsPcEEEReUODnzCQuILSogL3H/1gx2EFtY
+        IEni8ZpOsDizgLjErSfzwepFBDIlXk6/xg6ygFlgCpPEox1vmSG2PQbaduA2WDebgKFE11uQ
+        Mzg4OAV8Jd7/VoQYZCbRtbWLEcKWl9j+dg7zBEahWUjumIVk3ywkLbOQtCxgZFnFKJJaWpyb
+        nltspFecmFtcmpeul5yfu4kRGN3bjv3csoNx5auPeocYmTgYDzFKcDArifDOu5WdKsSbklhZ
+        lVqUH19UmpNafIjRFBgYE5mlRJPzgeklryTe0MzA1NDEzNLA1NLMWEmc17OgI1FIID2xJDU7
+        NbUgtQimj4mDU6qByepb2Z2UHetj3dyNbjgVa/S0h+jf/H/1J7PN2dB5HzXuJbdvfCygn5no
+        eOkov2r8opUNLZ1671kYVrz4VWL4e21/z7mXP348zm9LOuIUGbBDbvYx51g2vxu2t+2/eDVu
+        /Paq5bLqjDJnr+y18e1593wzMqWWTu16e3HDv2yPiO+sTVEVXQKbHb1XvbnDk77jYc/nz99+
+        vhOs5UnRFzfQrmja/SP9dO0d5ZJGRu1M78l1EzavnJU/e45FpLCdvbKnhvaDsPe7eh81KO8V
+        /bZQqyiPz19H13qjUXGgz/XyD+s6tl2bytG5sfvV2TV8+bN3/dRnFmxKvsL2Ve9M0vecVbr9
+        GYsZvzev5Xlh/jZJiaU4I9FQi7moOBEA6e2unncDAAA=
+X-CMS-MailID: 20231204160516eucas1p1741400688b44c438f3b373c374fb1446
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231204114225eucas1p2f7981755a8d6f21825e32373f142ff48
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231204114225eucas1p2f7981755a8d6f21825e32373f142ff48
+References: <20231204114215.54575-1-angelogioacchino.delregno@collabora.com>
+        <CGME20231204114225eucas1p2f7981755a8d6f21825e32373f142ff48@eucas1p2.samsung.com>
+        <20231204114215.54575-2-angelogioacchino.delregno@collabora.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/3/2023 11:56 PM, Krzysztof Kozlowski wrote:
-> On 04/12/2023 02:57, Tengfei Fan wrote:
->>
->>
->> 在 11/30/2023 7:57 PM, Krzysztof Kozlowski 写道:
->>> On 30/11/2023 03:40, Tengfei Fan wrote:
->>>> Add pinctrl driver for TLMM block found in SM4450 SoC.
->>>>
->>>> Reviewed-by: Bjorn Andersson <andersson@kernel.org>
->>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
->>>> ---
->>>>   drivers/pinctrl/qcom/Kconfig.msm      |    8 +
->>>>   drivers/pinctrl/qcom/Makefile         |    1 +
->>>>   drivers/pinctrl/qcom/pinctrl-sm4450.c | 1013 +++++++++++++++++++++++++
->>>>   3 files changed, 1022 insertions(+)
->>>>   create mode 100644 drivers/pinctrl/qcom/pinctrl-sm4450.c
->>>>
->>>
->>> Hm, was this patch ever built?
->>>
->>> Best regards,
->>> Krzysztof
->>>
->> This patch has been built before, I will check and compare if there are 
->> any errors and changes when I submitted this patch series.
->>
-> 
-> No, it wasn't built. I just tried - applied it and:
-> 
-> pinctrl-sm4450.c:996:19: error: initialization of ‘int (*)(struct
-> platform_device *)’ from incompatible pointer type ‘void (*)(struct
-> platform_device *)’ [-Werror=incompatible-pointer-types]
->   996 |         .remove = msm_pinctrl_remove,
->       |                   ^~~~~~~~~~~~~~~~~~
-> ../drivers/pinctrl/qcom/pinctrl-sm4450.c:996:19: note: (near
-> initialization for ‘sm4450_tlmm_driver.remove’)
-> 
-> So you just sent a patch which was not even compiled.
-> 
-> NAK.
-> 
-> Best regards,
-> Krzysztof
-> 
+On 04.12.2023 12:42, AngeloGioacchino Del Regno wrote:
+> Some SoCs may be equipped with a GPU containing two core groups
+> and this is exactly the case of Samsung's Exynos 5422 featuring
+> an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
+> is partial, as this driver currently supports using only one
+> core group and that's reflected on all parts of it, including
+> the power on (and power off, previously to this patch) function.
+>
+> The issue with this is that even though executing the soft reset
+> operation should power off all cores unconditionally, on at least
+> one platform we're seeing a crash that seems to be happening due
+> to an interrupt firing which may be because we are calling power
+> transition only on the first core group, leaving the second one
+> unchanged, or because ISR execution was pending before entering
+> the panfrost_gpu_power_off() function and executed after powering
+> off the GPU cores, or all of the above.
+>
+> Finally, solve this by:
+>   - Avoid to enable the power transition interrupt on reset; and
+>   - Ignoring the core_mask and ask the GPU to poweroff both core groups
+>
+> Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Reviewed-by: Steven Price <steven.price@arm.com>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-The problem here is patch 2/4 incorrectly initializes .remove and patch
-3/4 changes it to correctly use .remove_new. Bisection at patch 2
-doesn't build.
 
-Those two patches should be squashed
+Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+
+
+> ---
+>   drivers/gpu/drm/panfrost/panfrost_gpu.c | 12 ++++++++----
+>   1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> ...
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
