@@ -2,48 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A4E803A4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F924803A4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 17:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345654AbjLDQ32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 11:29:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42690 "EHLO
+        id S235391AbjLDQ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 11:29:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344930AbjLDQ3W (ORCPT
+        with ESMTP id S1344961AbjLDQ3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 11:29:22 -0500
+        Mon, 4 Dec 2023 11:29:25 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A8399
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:29:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97740C433C7;
-        Mon,  4 Dec 2023 16:29:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D617192
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 08:29:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FEC3C433C9;
+        Mon,  4 Dec 2023 16:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701707364;
-        bh=vhrxUvsCwsaGYvyyei5h55J9yp+nmIcuFyO/lJGVsJM=;
+        s=k20201202; t=1701707367;
+        bh=4WtvMQO7czlVbQnYRym4oVON7CjNUVWJaUmSd21Ll3g=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=nlfqs1xKZp32xjV/6EKDBJ2qWN4k1GrusvYA6y+pDG1Nj3WAKnOLkUcGrPOZ0OGXz
-         G3GpcOBo/LbTOymRzzN87kHGm/k9MEmu2KVNhy+o0ANyGkKUPya2AQF1H4vW3ZOJqJ
-         hWr/bdZvrddYY7MeY6IAo/X9/v7xnSTZ9vj6VfispDV3rz3aQUHdFTYPjwuXB6KzoZ
-         RMslHsfXUZZL/2rLamNH2sudBW3P7VJyae7PSnKlRrawgvr6wNMZRFf9tRu3rjxX6S
-         ygYFPc/AcGJOf5wewz6kWRLZs4+R39dje2xLi6wgmnMF/f+XA68ImNDZmAOIdINyn5
-         shTvUc2qSCt+A==
+        b=ARR8FPHhkE1qf6v2Jb2pGvUjj1qFJeDnZ++GXacPgsa3ewkg7MilOmwEIa57ervtr
+         0jzuHiJnLqo72OiVNwTMWNysTV/4VQuwMQKjAitCS7UgYMn5GdkQX0uZlOTfu1Bh1j
+         Jn+FMzxVk7gtBu0gicHiZOakbrZjF4MmElu+CsrLFYfH64bb+CPLtnM1k9On3/ocUH
+         9RD8vkXfJWnFuaEL5K75+FoCkJPAZNXQuTyCrl+Q/kvUS7f4hrOh4UXyHc7Q7Nim58
+         KFVnKxW/WEewXVbVt50BLfoomwd5t0UugEPAD3T6YDwtFsaRx1k8fS0cHXXm5n3dAj
+         PjpXKLWX+zlhA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        patches@opensource.cirrus.com, linux-sound@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231204074158.12026-1-dinghao.liu@zju.edu.cn>
-References: <20231204074158.12026-1-dinghao.liu@zju.edu.cn>
-Subject: Re: [PATCH] ASoC: wm_adsp: fix memleak in wm_adsp_buffer_populate
-Message-Id: <170170736133.96782.15219793902912289690.b4-ty@kernel.org>
-Date:   Mon, 04 Dec 2023 16:29:21 +0000
+To:     Matthias Reichl <hias@horus.com>
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20231203222216.96547-1-hias@horus.com>
+References: <20231203222216.96547-1-hias@horus.com>
+Subject: Re: [PATCH] regmap: fix bogus error on regcache_sync success
+Message-Id: <170170736703.96972.10213325187917313129.b4-ty@kernel.org>
+Date:   Mon, 04 Dec 2023 16:29:27 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -58,22 +49,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Dec 2023 15:41:56 +0800, Dinghao Liu wrote:
-> When wm_adsp_buffer_read() fails, we should free buf->regions.
-> Otherwise, the callers of wm_adsp_buffer_populate() will
-> directly free buf on failure, which makes buf->regions a leaked
-> memory.
+On Sun, 03 Dec 2023 23:22:16 +0100, Matthias Reichl wrote:
+> Since commit 0ec7731655de ("regmap: Ensure range selector registers
+> are updated after cache sync") opening pcm512x based soundcards fail
+> with EINVAL and dmesg shows sync cache and pm_runtime_get errors:
 > 
+> [  228.794676] pcm512x 1-004c: Failed to sync cache: -22
+> [  228.794740] pcm512x 1-004c: ASoC: error at snd_soc_pcm_component_pm_runtime_get on pcm512x.1-004c: -22
 > 
+> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
 Thanks!
 
-[1/1] ASoC: wm_adsp: fix memleak in wm_adsp_buffer_populate
-      commit: 29046a78a3c0a1f8fa0427f164caa222f003cf5b
+[1/1] regmap: fix bogus error on regcache_sync success
+      commit: fea88064445a59584460f7f67d102b6e5fc1ca1d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
