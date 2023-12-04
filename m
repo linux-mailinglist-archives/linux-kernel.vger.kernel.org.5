@@ -2,248 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E60F803848
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB4E80384A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 16:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbjLDPHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 10:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38216 "EHLO
+        id S233696AbjLDPID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 10:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbjLDPHr (ORCPT
+        with ESMTP id S233772AbjLDPH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 10:07:47 -0500
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D6BC4;
-        Mon,  4 Dec 2023 07:07:51 -0800 (PST)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231204150748euoutp02612dc70d95eb7aa494fda7f09bc801a2~dqWECJvV02140321403euoutp02I;
-        Mon,  4 Dec 2023 15:07:48 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231204150748euoutp02612dc70d95eb7aa494fda7f09bc801a2~dqWECJvV02140321403euoutp02I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701702468;
-        bh=UduKPnQm68cXoxlHdEmWZOKtyfnkbxFsmJeY5avud44=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=MM+RUq0UtMW7ws7H0S0Ou7vD5Bb+wBju4aAGFv4Kt7/pWjTu95F68zZDBmZ1ugg/U
-         k/jFoeaGx2CjCIHbRFzDpe1BpW2vZ0XAkLZVShqt9wHehoNAoLx600dSQhE52i/PiN
-         M8QwqPB9bqLZas0CYERPA4zKDRM0HZy4dTBNIhRA=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231204150747eucas1p26333e09142452af0e86679cdc4da337d~dqWDs4D2V2804828048eucas1p2u;
-        Mon,  4 Dec 2023 15:07:47 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 8D.C6.09814.34BED656; Mon,  4
-        Dec 2023 15:07:47 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a~dqWDIvRbe0222702227eucas1p23;
-        Mon,  4 Dec 2023 15:07:47 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231204150747eusmtrp15777265caed2d957daeb1957804eccf0~dqWDIBHpR2293022930eusmtrp1Q;
-        Mon,  4 Dec 2023 15:07:47 +0000 (GMT)
-X-AuditID: cbfec7f4-711ff70000002656-8f-656deb4362d0
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id B0.F6.09274.34BED656; Mon,  4
-        Dec 2023 15:07:47 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231204150747eusmtip12a603491717507856a186d16753c948c~dqWC6ygJe0939309393eusmtip1X;
-        Mon,  4 Dec 2023 15:07:47 +0000 (GMT)
-Received: from localhost (106.110.32.133) by CAMSVWEXC02.scsc.local
-        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Mon, 4 Dec 2023 15:07:46 +0000
-Date:   Mon, 4 Dec 2023 16:07:44 +0100
-From:   Joel Granados <j.granados@samsung.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        <iommu@lists.linux.dev>, <linux-kselftest@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
-Message-ID: <20231204150744.db3hfpq4v55cuavn@localhost>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-        protocol="application/pgp-signature"; boundary="g7qzvqsc57itqwgz"
+        Mon, 4 Dec 2023 10:07:59 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2084.outbound.protection.outlook.com [40.107.94.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B556BDF;
+        Mon,  4 Dec 2023 07:08:04 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W2b3cGLN7VhWERzUOZenqeqx6J3WU+c/HMmsxUB/E/OeON65fzi9vuduJP774md/pimPCLWtKO9rL76rxK0IeUlsfCiz24jj0Wbv3fZPeDPh7m1bB97JsW44GeoxA7BUEWBOWP+HGymEDKUho7JCkvbm8+Vs3K9KbrvLsyN/zwdKOF00Wb7x7PzHbDRzh6kvoEHjaiG6cyqTuEWt0U3KVs+qUuIjw6qZ+GSrVJPOOg69WbHf8J6xlBwtSHYmYqGt+OKO1GD8SsZFyLqNeaxANAZZMmTaBlsE8njS8p7jj0mbBqeVnNYWrMtFIQn7SkSG0D2IH/lEBuzW/oKs0uAy7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GO9MSlUAfTfUr+qtjpEKWDJR2otQ+zmEx5p6H1iQCiw=;
+ b=PNGSxUCvGkvHlPltEC1N+lpsEIvinHJ6Mdma4UTjLT/Q2SFf6ThH4Smg7Ls4ORO5s9k1Wpba4SmELCq8WMRIA63eYhI9PioLoaFSknRqB1WA3Moz4fUdwGofat+dzf4l6TfMDwihXX/c6gIXmXX2pwe/bfh0lsfrWY4HH9jzRno94ax5RqJd3s9KfNFW5ji6t2BxntGVJ2xhVSTVPRJMBb5oe59plEJGzeOrHrzay0CnZD29Et+9+qls2HSzvNvBp0bbxC16lBQz2dz23B5bZ95Whfllvsus2UkKBytpQGFyNuS5rP8AjZ7WSYNHE6PKRtbWhPm2FVoWXctisMTN4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GO9MSlUAfTfUr+qtjpEKWDJR2otQ+zmEx5p6H1iQCiw=;
+ b=LEj59YeXdrD4FWkPEgi2IvAsPSE6bUZ43GL8g/7Ns/QHWB465IzDmmz8rVEve+ZmsrE6TNxbsdymoHb1BXmE3QZeux694a4/6ao+d1khxB1hrGVOtUF1pcun2u9om18EnqY4+jDvHmkor2upPsSEuNQYsduxotby+v3Y8eqNIGOC9/u0L7CrlhA4BGWjzpmm4EIDscbNjGA5M7+oeHPtaqf9KL6D9GxjRAZsJ4fU7/ndCJdKoRfLnAYyYnvFa816CsmdL7F/kSNjtVrWNdpLcz2S5e+HaLet4szE93mDhY8qaKHPJgs9cr5+DkbdlJUi0N70hOfUQM7nBnfRCBJmOQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by MN2PR12MB4517.namprd12.prod.outlook.com (2603:10b6:208:267::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Mon, 4 Dec
+ 2023 15:08:01 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
+ 15:08:01 +0000
+Date:   Mon, 4 Dec 2023 11:08:00 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
+        pbonzini@redhat.com, seanjc@google.com, joro@8bytes.org,
+        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
+        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
+Message-ID: <20231204150800.GD1493156@nvidia.com>
+References: <20231202091211.13376-1-yan.y.zhao@intel.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231026024930.382898-1-baolu.lu@linux.intel.com>
-X-Originating-IP: [106.110.32.133]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkk+LIzCtJLcpLzFFi42LZduzneV3n17mpBvf+mVhsnriVzeLXFwuL
-        pQfXs1g0rL7AajFzxglGi87ZG9gtlr7dym5xedccNovpd96zWex9+pjN4uCHJ6wWy8/OY7No
-        uWNqMffnNRYHPo8nB+cxeayZt4bRY/Gel0wem1Z1snncubaHzWPeyUCPyTeWM3q82DyT0aO3
-        +R2bx+dNch5bP99mCeCO4rJJSc3JLEst0rdL4MpYtvgGS8F0jYofLQ9ZGhibFLsYOTkkBEwk
-        9p6bzN7FyMUhJLCCUeLSkn1sEM4XRonGk0uYQKqEBD4zShx97gDT0bP6BhNE0XJGiVOTlkJ1
-        ABX92XEFytnMKLFk8TQWkBYWARWJ2e2rGEFsNgEdifNv7jB3MXJwiAioSzz7EgBSzyxwh1ni
-        1It7rCA1wgKeEu/XH2MDsXkFzCU6rz5nh7AFJU7OfMIC0sssUCGx72IkhCktsfwfB0gFp4C9
-        xPEzT1khDlWS+PqmF8qulTi15RbY0RIC3zgl/rxsZ4JIuEhsfbyUHcIWlnh1fAuULSNxenIP
-        C0TDZEaJ/f8+sEM4qxklljV+heq2lmi58oQd5AoJAUeJnVdZIEw+iRtvBUEqmIHMSdumM0OE
-        eSU62oQgGtUkVt97wzKBUXkWksdmITw2C+GxWWBzdCQW7P7EhiGsLbFs4WtmCNtWYt269ywL
-        GNlXMYqnlhbnpqcWG+WllusVJ+YWl+al6yXn525iBKbQ0/+Of9nBuPzVR71DjEwcjIcYVYCa
-        H21YfYFRiiUvPy9VSYR33q3sVCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8qinyqUIC6Yklqdmp
-        qQWpRTBZJg5OqQam2JwKBifhK68PO+dEnDTi0FKXfP0ktf39R86q6oMTRE8/Sd8d6V60dsvP
-        wyeY3swo4Nf9wsW44Ooe6xcNrwoaSj0tHhhWWIUbij7SYvFb5DFrRZaWtqbjR0vxO4/XJfh9
-        n2eotpTBiW3Dv32W/7sfW3PmfnhwpJPzUWr7m0nyagkGC2b/5FEOWmS1sP3Q71y/xje1liH2
-        ywr9ezf4T5OtmtBbxblquqiRZLv2wojrz56K5186Pf1N8Df3b64Hud4obJ/5js9MbdrEN/43
-        s7/dKUsomffzecn81q5Ky6tzn7zhusK95/j3lILWvu/SXO+el7mvsj+lMI/Pt/0I35XkhiID
-        v6LrNbr7dr8vb29XYinOSDTUYi4qTgQAyRVWRBwEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGKsWRmVeSWpSXmKPExsVy+t/xu7rOr3NTDU5+4rPYPHErm8WvLxYW
-        Sw+uZ7FoWH2B1WLmjBOMFp2zN7BbLH27ld3i8q45bBbT77xns9j79DGbxcEPT1gtlp+dx2bR
-        csfUYu7PaywOfB5PDs5j8lgzbw2jx+I9L5k8Nq3qZPO4c20Pm8e8k4Eek28sZ/R4sXkmo0dv
-        8zs2j8+b5Dy2fr7NEsAdpWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eT
-        kpqTWZZapG+XoJdx4cMP1oKpGhWTl2xgbGBsUOxi5OSQEDCR6Fl9g6mLkYtDSGApo0Tfz0es
-        EAkZiY1frkLZwhJ/rnWxQRR9ZJR48rWDBcLZzChxeP1uZpAqFgEVidntqxhBbDYBHYnzb+4A
-        xTk4RATUJZ59CQCpZxa4wyxx8MduFpAaYQFPiffrj7GB2LwC5hKdV5+zg9hCAnYSzz5uZIeI
-        C0qcnPmEBWQOs0CZROe/fAhTWmL5Pw6QCk4Be4njZ55C3akk8fVNL5RdK/H57zPGCYzCs5AM
-        moUwaBbCIJAKZgEtiRv/XjJhCGtLLFv4mhnCtpVYt+49ywJG9lWMIqmlxbnpucVGesWJucWl
-        eel6yfm5mxiBiWTbsZ9bdjCufPVR7xAjEwfjIUYVoM5HG1ZfYJRiycvPS1US4Z13KztViDcl
-        sbIqtSg/vqg0J7X4EKMpMAgnMkuJJucDU1xeSbyhmYGpoYmZpYGppZmxkjivZ0FHopBAemJJ
-        anZqakFqEUwfEwenVAPTCrfSs7NnXSxIdCgx+NG18kLPBK28pQmLBDg858YE/ZFjKmt/0J2j
-        Wf9Rje9E2hmliT42M3Q1Ut65G3ex75+1QCtX/rzPlYP/oh4e368f61jPriUnzvnterehi+Tc
-        74fXKj5/frScj3vq3bxqBRtFltaJpyx9WkWrrzX26H2cIX+hjdn8gorbyq3X2c3KDuxKj605
-        eLbEtX7uLIcSxaqoS67X8jbaPtorvcRUYMIUmfLbWdESnMWPb1+885Tr0gsWnjfrVs713cLc
-        d1z+0qEnOsuSwu3yH21mifNxkrnwteb+h0OXXqVc/Rbxz/Xi/nnM3x4Zr7l2PE2hZ5IPx5yz
-        UaV8iberChceZfexXF2vxFKckWioxVxUnAgAWaTaSbkDAAA=
-X-CMS-MailID: 20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a
-X-Msg-Generator: CA
-X-RootMTR: 20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
-        <CGME20231204150747eucas1p2365e92a7ac33ba99b801d7c800acaf6a@eucas1p2.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231202091211.13376-1-yan.y.zhao@intel.com>
+X-ClientProxiedBy: BL1PR13CA0306.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::11) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN2PR12MB4517:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8f40d9c6-b43f-4399-fd22-08dbf4dacec7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GcFgmNSZqeZ+NN6TSgqd+s2Rr1DKwMlWFgTzCABV1l8s2UdfYYc4odCpE1AcoGeYb1ea12n0Za5fkBUpLLw9YMrNUKEfTYTasGs5xqq3TGdd9Fmg+UmceCMV2x3crgjPukMRRUxdjJqeUkRGl2tm/fTIqV1ZswFok4Iq7xMy1x9XGIkKthz7xKL1lTH144CUpYJPaGiJaQDPyMu0GSmqLwJGvxD7tctW4UFu1MVekIPeaQIJT9tJFiQWf9hIJksKPOKQi15dIQvlUyDRsKW1OQmR4p9B8yTGRtwwIRQH7j7nmI/EFoBFWd1R8sqEirk4tYHnF3NWsUB/9T/mT9aUUE5fNr8Kf7h+pHol+oKUwX11LVq/krU5jMEgoplc2Bbh1Nbg/Mv5WfsWH5Og+qxtxK+MzB+4pJvAsRIM5FfbvaXshfyCRfSRfMlZTsuY0wp6waFOBvvIClbCg4jgjjKUeV+5f8OlFUUYYMJHKHn54oE5tOuOnA5/+JR5Nydnsz+UsuHELxGs1w/9RlFadRQUI4JwUaZjoZi6EqDo5CDIwrrsFy0pHiAtEsDZ3MmBXqiJzpwbP3qSxThr1+iAo6M+oDfwznKYgw+E6ARumN33tLk0uxvpKuiqFa9zix5OmcvP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(376002)(396003)(136003)(230922051799003)(230273577357003)(230173577357003)(64100799003)(1800799012)(186009)(451199024)(1076003)(2616005)(4326008)(8936002)(8676002)(6512007)(6506007)(83380400001)(26005)(6486002)(478600001)(66476007)(66946007)(66556008)(316002)(6916009)(33656002)(2906002)(41300700001)(36756003)(38100700002)(86362001)(7416002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YhDo7g9kPL2EPN9p30ot7jr5gvhjuYsrKogU7ux26Yx92M5iqT8PlPpeX5qJ?=
+ =?us-ascii?Q?OMQAyPSTCk2yNVV4MSxJlB1Cy1CksLnnfquHYW61Rko3SVclbuoztKeuSN3i?=
+ =?us-ascii?Q?YCB7Ejc+rS++Fudg4mgAR+YZyUCoRSIgusuRKNKVlazdP+QrMXqJ5r+IjWsx?=
+ =?us-ascii?Q?p5GvzonyQXVQ7molnKnQbJhs014LMT0AACxpM+yVK97krbM8SMopxz3O1o3E?=
+ =?us-ascii?Q?fmHA8cuyvp8d1/IK2HJpdb82JUtz2iKw7jXQMFoReu60wos33rgxYBTBIGBl?=
+ =?us-ascii?Q?SHPjm9ZpujokDNwNtSd0JDA+40aWNtgkHqvWr+AMuwkOEbk+0DcFIc9DpCcJ?=
+ =?us-ascii?Q?R+DqCD/Bi97tEFMQFPxTFfT6mKMgbz338Goq0xaEiOvHZEw0AvKo9MhxJt3a?=
+ =?us-ascii?Q?XyX0fNdMLFA8IPSJZw040TViH9yCxglNv6OkO4Kz8mapJvV7YAehwZYG8pYr?=
+ =?us-ascii?Q?AHQmTkbMbR4y9SkHbwjKQUCYfChrTucUju+6i3ceNaXNb0fyfNuZvWeR8oCT?=
+ =?us-ascii?Q?2UxMb4vwgglKCceKYRmbc6Z0XHPhQRhqmLs+R+3m+gfzxHrh2OrpUdpOiqhk?=
+ =?us-ascii?Q?/T2kYSsUz56hoZTP3sdQqEaLHS9E2wH03a/ne78EbYDuFNhk0t4OgKIsUZnj?=
+ =?us-ascii?Q?DSVK6dJ+yF8xzo9mmgwfV5QkzB44R8TG+NJvXGeM0oV0xWc4WdyxEtQ3/Y3a?=
+ =?us-ascii?Q?0Zh/ZRcJOWCngR7H0hCJ4w7IMDSuk+BuSPr4cxx0eSU9bpCis8BIaSoLHUcP?=
+ =?us-ascii?Q?rcZN3WaqxzlJBzEYP85TmW4G2DPrs7uhd+2dB3NijDkCUTwDtuAgqBX0Rpeq?=
+ =?us-ascii?Q?91veIDnr7oGTePixjia7crwLo+OndlOISQH01kpkP8KjfgfevPdKk5EMx9FL?=
+ =?us-ascii?Q?p/2L5OFdqbouLEXo6C4k2VT0EE1EWQHu/TZAPe98J0AsTDJvDHK798IL4GdB?=
+ =?us-ascii?Q?egFD5WgL6rFKncuhvaECzg/nXLLM8VTWKMRJVbawUjQaxbLCQydlMJnYUUR6?=
+ =?us-ascii?Q?Hs8WWTXQ4rTEzD3vIQRBJj03UsaaNu7wxBLHSbTPi12lBXWx1XPjHKdHXsX8?=
+ =?us-ascii?Q?orh+QeYwoH7JpNWnBqiw0bBcZIyjKVpzg/1GNm8YECEdsD02FWWcCwV+JzDO?=
+ =?us-ascii?Q?+wp0x8nwIbgMUI3JlVEKC9/tWRwj3RMInKeS21os9/sDEKZAJDXnW5g7EsZY?=
+ =?us-ascii?Q?v7YZhQCtT53Z7syl3S9j9wgerXPdYYl0cRR7cazW1xkm41dlmdTFiAruLbo1?=
+ =?us-ascii?Q?hHEJAZg7Qg6YAak+FKgnBqLXyLvDvHzdUpqyJbScbEh+l8p6vsM2T8JHSKBH?=
+ =?us-ascii?Q?Th6RIMgriZaPa/XICU/qMRnW0omnR1MMQOwJMsuFprJq9aKr78GfI9mX4Xpg?=
+ =?us-ascii?Q?usX/C+GtBd9ofIF5f/NwVkxuWel4e34rYewW8k6hjbmTEhhcrNP+JPqsumOk?=
+ =?us-ascii?Q?W6s2fuIa4w1h7kNsao82E2AXlxnA6jZ1FxRcpQrrNLn1533crxh92W17MH2L?=
+ =?us-ascii?Q?ofFv/O+Z2lOZWUG9axmXFE1UNEfDVk8ckD+AzEq5oO8V+COlm+DWy5jj9hj9?=
+ =?us-ascii?Q?XQ9/BfnM5+YayZr3/wJDtzy1Wz+7VjX8WO2t6EVe?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f40d9c6-b43f-4399-fd22-08dbf4dacec7
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 15:08:01.3351
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: q0cN8zLQQeAX0OLfS9CbfEjtp09fOqXO6RV/0LyX3JeZEmMBPoo9YrxvP5BENLo3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4517
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---g7qzvqsc57itqwgz
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sat, Dec 02, 2023 at 05:12:11PM +0800, Yan Zhao wrote:
+> In this series, term "exported" is used in place of "shared" to avoid
+> confusion with terminology "shared EPT" in TDX.
+> 
+> The framework contains 3 main objects:
+> 
+> "KVM TDP FD" object - The interface of KVM to export TDP page tables.
+>                       With this object, KVM allows external components to
+>                       access a TDP page table exported by KVM.
 
-On Thu, Oct 26, 2023 at 10:49:24AM +0800, Lu Baolu wrote:
-> Hi folks,
->=20
-> This series implements the functionality of delivering IO page faults to
-> user space through the IOMMUFD framework for nested translation. Nested
-Does this mean the IOPF_CAPABLE HWPT needs to be parented by a HWPT
-created with IOMMU_HWPT_ALLOC_NEST_PARENT set?
+I don't know much about the internals of kvm, but why have this extra
+user visible piece? Isn't there only one "TDP" per kvm fd? Why not
+just use the KVM FD as a handle for the TDP?
 
-> translation is a hardware feature that supports two-stage translation
-> tables for IOMMU. The second-stage translation table is managed by the
-> host VMM, while the first-stage translation table is owned by user
-> space. This allows user space to control the IOMMU mappings for its
-> devices.
->=20
-> When an IO page fault occurs on the first-stage translation table, the
-> IOMMU hardware can deliver the page fault to user space through the
-> IOMMUFD framework. User space can then handle the page fault and respond
-> to the device top-down through the IOMMUFD. This allows user space to
-> implement its own IO page fault handling policies.
->=20
-> User space indicates its capability of handling IO page faults by
-> setting the IOMMU_HWPT_ALLOC_IOPF_CAPABLE flag when allocating a
-> hardware page table (HWPT). IOMMUFD will then set up its infrastructure
-> for page fault delivery. On a successful return of HWPT allocation, the
-> user can retrieve and respond to page faults by reading and writing to
-> the file descriptor (FD) returned in out_fault_fd.
->=20
-> The iommu selftest framework has been updated to test the IO page fault
-> delivery and response functionality.
->=20
-> This series is based on the latest implementation of nested translation
-> under discussion [1] and the page fault handling framework refactoring in
-> the IOMMU core [2].
->=20
-> The series and related patches are available on GitHub: [3]
->=20
-> [1] https://lore.kernel.org/linux-iommu/20230921075138.124099-1-yi.l.liu@=
-intel.com/
-> [2] https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@l=
-inux.intel.com/
-> [3] https://github.com/LuBaolu/intel-iommu/commits/iommufd-io-pgfault-del=
-ivery-v2
->=20
-> Best regards,
-> baolu
->=20
-> Change log:
-> v2:
->  - Move all iommu refactoring patches into a sparated series and discuss
->    it in a different thread. The latest patch series [v6] is available at
->    https://lore.kernel.org/linux-iommu/20230928042734.16134-1-baolu.lu@li=
-nux.intel.com/
->  - We discussed the timeout of the pending page fault messages. We
->    agreed that we shouldn't apply any timeout policy for the page fault
->    handling in user space.
->    https://lore.kernel.org/linux-iommu/20230616113232.GA84678@myrica/
->  - Jason suggested that we adopt a simple file descriptor interface for
->    reading and responding to I/O page requests, so that user space
->    applications can improve performance using io_uring.
->    https://lore.kernel.org/linux-iommu/ZJWjD1ajeem6pK3I@ziepe.ca/
->=20
-> v1: https://lore.kernel.org/linux-iommu/20230530053724.232765-1-baolu.lu@=
-linux.intel.com/
->=20
-> Lu Baolu (6):
->   iommu: Add iommu page fault cookie helpers
->   iommufd: Add iommu page fault uapi data
->   iommufd: Initializing and releasing IO page fault data
->   iommufd: Deliver fault messages to user space
->   iommufd/selftest: Add IOMMU_TEST_OP_TRIGGER_IOPF test support
->   iommufd/selftest: Add coverage for IOMMU_TEST_OP_TRIGGER_IOPF
->=20
->  include/linux/iommu.h                         |   9 +
->  drivers/iommu/iommu-priv.h                    |  15 +
->  drivers/iommu/iommufd/iommufd_private.h       |  12 +
->  drivers/iommu/iommufd/iommufd_test.h          |   8 +
->  include/uapi/linux/iommufd.h                  |  65 +++++
->  tools/testing/selftests/iommu/iommufd_utils.h |  66 ++++-
->  drivers/iommu/io-pgfault.c                    |  50 ++++
->  drivers/iommu/iommufd/device.c                |  69 ++++-
->  drivers/iommu/iommufd/hw_pagetable.c          | 260 +++++++++++++++++-
->  drivers/iommu/iommufd/selftest.c              |  56 ++++
->  tools/testing/selftests/iommu/iommufd.c       |  24 +-
->  .../selftests/iommu/iommufd_fail_nth.c        |   2 +-
->  12 files changed, 620 insertions(+), 16 deletions(-)
->=20
-> --=20
-> 2.34.1
->=20
+> "IOMMUFD KVM HWPT" object - A proxy connecting KVM TDP FD to IOMMU driver.
+>                             This HWPT has no IOAS associated.
+> 
+> "KVM domain" in IOMMU driver - Stage 2 domain in IOMMU driver whose paging
+>                                structures are managed by KVM.
+>                                Its hardware TLB invalidation requests are
+>                                notified from KVM via IOMMUFD KVM HWPT
+>                                object.
 
---=20
+This seems broadly the right direction
 
-Joel Granados
+> - About device which partially supports IOPF
+> 
+>   Many devices claiming PCIe PRS capability actually only tolerate IOPF in
+>   certain paths (e.g. DMA paths for SVM applications, but not for non-SVM
+>   applications or driver data such as ring descriptors). But the PRS
+>   capability doesn't include a bit to tell whether a device 100% tolerates
+>   IOPF in all DMA paths.
 
---g7qzvqsc57itqwgz
-Content-Type: application/pgp-signature; name="signature.asc"
+The lack of tolerance for truely DMA pinned guest memory is a
+significant problem for any real deployment, IMHO. I am aware of no
+device that can handle PRI on every single DMA path. :(
 
------BEGIN PGP SIGNATURE-----
+>   A simple way is to track an allowed list of devices which are known 100%
+>   IOPF-friendly in VFIO. Another option is to extend PCIe spec to allow
+>   device reporting whether it fully or partially supports IOPF in the PRS
+>   capability.
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmVt6zgACgkQupfNUreW
-QU/YxAv/amK6Yf/ek3gmC/YYj6UNyrZPgjipdI6JkSodKr8gwAAS/1zf9pAmXTwT
-3REQr0utcNlpQ8kpoAEuuufpScq9cG3QiVMZfH3XggOywuWLv3nhPsiynQnkBauq
-90r7lEUWUZd+fRZdM3IjaC96IqYDxQ1yKeIZ15ZJ3G5cf313NmTOP2nCUJoIb953
-MMY8L9R0fCkYpFo8R1rIh0sDJKc9V4jD6nQfhfGWG4Ip1jKSoI4ZrGlSVX+Apnqd
-bv/4+n0pypUK6h6jfVTDH5WTN+gpHGK3JxMuYVOh27rnkzZc/W5t5gEdcYK12ZzV
-T60qTF2kGs6rCNveylvvV62fN7LofVfxsYcHiak9+He/W0C1PhHwfgp399315kKo
-cNtIK+bk1EKyQJqct9h89mWcYIXsXl2jBeXY8O57u+Q7IRxST5KXiWNkc5XJowJq
-hSnK4E6QPJ4gFF6Vq1MYhjdYZyDD2n+UHY4cfjO9HXEmZ8zUya61u18uPRdy0Ils
-VPflK8/n
-=5JsO
------END PGP SIGNATURE-----
+I think we need something like this.
 
---g7qzvqsc57itqwgz--
+> - How to map MSI page on arm platform demands discussions.
+
+Yes, the recurring problem :(
+
+Probably the same approach as nesting would work for a hack - map the
+ITS page into the fixed reserved slot and tell the guest not to touch
+it and to identity map it.
+
+Jason
