@@ -2,160 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB99802B85
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 07:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C040802B9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Dec 2023 07:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234504AbjLDGDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 01:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56748 "EHLO
+        id S230255AbjLDGXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 01:23:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjLDGDf (ORCPT
+        with ESMTP id S229446AbjLDGXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 01:03:35 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F21B9D;
-        Sun,  3 Dec 2023 22:03:39 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 8A28D24E22E;
-        Mon,  4 Dec 2023 14:03:37 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 4 Dec
- 2023 14:03:37 +0800
-Received: from [192.168.125.85] (183.27.97.199) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 4 Dec
- 2023 14:03:36 +0800
-Message-ID: <d060a66e-33a5-482d-a4c2-609a00d8b89d@starfivetech.com>
-Date:   Mon, 4 Dec 2023 14:03:35 +0800
+        Mon, 4 Dec 2023 01:23:09 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0139DF;
+        Sun,  3 Dec 2023 22:23:13 -0800 (PST)
+X-UUID: dc1967f88d7547b9bb334034848caa36-20231204
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:f20d8732-0eeb-4bee-8f43-b9fd4762c27a,IP:5,U
+        RL:0,TC:0,Content:0,EDM:-30,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+        ION:release,TS:-40
+X-CID-INFO: VERSION:1.1.33,REQID:f20d8732-0eeb-4bee-8f43-b9fd4762c27a,IP:5,URL
+        :0,TC:0,Content:0,EDM:-30,RT:0,SF:-15,FILE:0,BULK:0,RULE:EDM_GN8D19FE,ACTI
+        ON:release,TS:-40
+X-CID-META: VersionHash:364b77b,CLOUDID:75ba5f73-1bd3-4f48-b671-ada88705968c,B
+        ulkID:231204142249O93CDZ8U,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+        02,TC:nil,Content:0,EDM:2,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
+        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: dc1967f88d7547b9bb334034848caa36-20231204
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 559205209; Mon, 04 Dec 2023 14:22:48 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     bhelgaas@google.com, lizhi.hou@amd.com, robh@kernel.org
+Cc:     kunwu.chan@hotmail.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] PCI: Fix null pointer dereference in of_pci_prop_compatible
+Date:   Mon,  4 Dec 2023 14:22:45 +0800
+Message-Id: <20231204062245.2453512-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 19/20] PCI: starfive: Add JH7110 PCIe controller
-Content-Language: en-US
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Conor Dooley <conor@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231115114912.71448-1-minda.chen@starfivetech.com>
- <20231115114912.71448-20-minda.chen@starfivetech.com>
- <CAJM55Z8hb3vBgwOHoHuJpEPFVMNirhcs8AfZWRn4EgxbOGsq2Q@mail.gmail.com>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <CAJM55Z8hb3vBgwOHoHuJpEPFVMNirhcs8AfZWRn4EgxbOGsq2Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.97.199]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure.
 
+Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/pci/of_property.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-On 2023/12/2 22:44, Emil Renner Berthing wrote:
-> Minda Chen wrote:
->> Add StarFive JH7110 SoC PCIe controller platform driver codes, JH7110
->> with PLDA host PCIe core.
->>
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
->> Co-developed-by: Kevin Xie <kevin.xie@starfivetech.com>
->> Reviewed-by: Mason Huo <mason.huo@starfivetech.com>
->> ---
->>  MAINTAINERS                                 |   7 +
->>  drivers/pci/controller/plda/Kconfig         |  11 +
->>  drivers/pci/controller/plda/Makefile        |   1 +
->>  drivers/pci/controller/plda/pcie-plda.h     |  71 ++-
->>  drivers/pci/controller/plda/pcie-starfive.c | 460 ++++++++++++++++++++
->>  drivers/pci/pci.h                           |   7 +
->>  6 files changed, 556 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
->>
-> 
-> ...
-> 
->> +
->> +static int starfive_pcie_parse_dt(struct starfive_jh7110_pcie *pcie,
->> +				  struct device *dev)
->> +{
->> +	int domain_nr;
->> +
->> +	pcie->num_clks = devm_clk_bulk_get_all(dev, &pcie->clks);
->> +	if (pcie->num_clks < 0)
->> +		return dev_err_probe(dev, -ENODEV,
->> +				     "failed to get pcie clocks\n");
-> 
-> Hi Minda,
-> 
-> From Damian's mail I noticed that this should propagate the error from
-> devm_clk_bulk_get_all() properly, so -EPROBE is converted to an -ENODEV error.
-> Eg.
-> 
-> 	if (pcie->num_clks < 0)
-> 		return dev_err_probe(dev, pcie->num_clks,
-> 				     "failed to get pcie clocks\n");
-> 
-Thanks. I will change it in next version.
+diff --git a/drivers/pci/of_property.c b/drivers/pci/of_property.c
+index c2c7334152bc..5e16bbff3ba4 100644
+--- a/drivers/pci/of_property.c
++++ b/drivers/pci/of_property.c
+@@ -304,6 +304,11 @@ static int of_pci_prop_compatible(struct pci_dev *pdev,
+ 	compat_strs[PROP_COMPAT_PCICLASS_CCSS] =
+ 		kasprintf(GFP_KERNEL, "pciclass,%04x", pdev->class >> 8);
+ 
++	if (!compat_strs[PROP_COMPAT_PCI_VVVV_DDDD] ||
++	    !compat_strs[PROP_COMPAT_PCICLASS_CCSSPP] ||
++	    !compat_strs[PROP_COMPAT_PCICLASS_CCSS])
++		return -ENOMEM;
++
+ 	ret = of_changeset_add_prop_string_array(ocs, np, "compatible",
+ 						 compat_strs, PROP_COMPAT_NUM);
+ 	for (i = 0; i < PROP_COMPAT_NUM; i++)
+-- 
+2.34.1
 
->> +
->> +	pcie->resets = devm_reset_control_array_get_exclusive(dev);
->> +	if (IS_ERR(pcie->resets))
->> +		return dev_err_probe(dev, PTR_ERR(pcie->resets),
->> +				     "failed to get pcie resets");
->> +
->> +	pcie->reg_syscon =
->> +		syscon_regmap_lookup_by_phandle(dev->of_node,
->> +						"starfive,stg-syscon");
->> +
->> +	if (IS_ERR(pcie->reg_syscon))
->> +		return dev_err_probe(dev, PTR_ERR(pcie->reg_syscon),
->> +				     "failed to parse starfive,stg-syscon\n");
->> +
->> +	pcie->phy = devm_phy_optional_get(dev, NULL);
->> +	if (IS_ERR(pcie->phy))
->> +		return dev_err_probe(dev, PTR_ERR(pcie->phy),
->> +				     "failed to get pcie phy\n");
->> +
->> +	domain_nr = of_get_pci_domain_nr(dev->of_node);
->> +
->> +	if (domain_nr < 0 || domain_nr > 1)
->> +		return dev_err_probe(dev, -ENODEV,
->> +				     "failed to get valid pcie domain\n");
->> +
->> +	if (domain_nr == 0)
->> +		pcie->stg_pcie_base = STG_SYSCON_PCIE0_BASE;
->> +	else
->> +		pcie->stg_pcie_base = STG_SYSCON_PCIE1_BASE;
->> +
->> +	pcie->reset_gpio = devm_gpiod_get_optional(dev, "perst",
->> +						   GPIOD_OUT_HIGH);
->> +	if (IS_ERR(pcie->reset_gpio))
->> +		return dev_err_probe(dev, PTR_ERR(pcie->reset_gpio),
->> +				     "failed to get perst-gpio\n");
->> +
->> +	pcie->power_gpio = devm_gpiod_get_optional(dev, "enable",
->> +						   GPIOD_OUT_LOW);
->> +	if (IS_ERR(pcie->power_gpio))
->> +		return dev_err_probe(dev, PTR_ERR(pcie->power_gpio),
->> +				     "failed to get power-gpio\n");
->> +
->> +	return 0;
->> +}
