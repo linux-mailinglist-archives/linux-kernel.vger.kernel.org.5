@@ -2,202 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F826805E79
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:18:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B39805E7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345220AbjLETSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:18:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
+        id S1345271AbjLETTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:19:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLETSh (ORCPT
+        with ESMTP id S229483AbjLETTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:18:37 -0500
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304EA135;
-        Tue,  5 Dec 2023 11:18:41 -0800 (PST)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id d4c9c53a51f2fd46; Tue, 5 Dec 2023 20:18:39 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 71BA06687D9;
-        Tue,  5 Dec 2023 20:18:39 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: [PATCH v1] thermal: trip: Send trip change notifications on all trip updates
-Date:   Tue, 05 Dec 2023 20:18:39 +0100
-Message-ID: <5737811.DvuYhMxLoT@kreacher>
+        Tue, 5 Dec 2023 14:19:36 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255B5135
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:19:42 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b5155e154so65128215e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 11:19:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google; t=1701803980; x=1702408780; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VUiWMelRtaSuKf34GWZl1zdeJXOb8CJdDd8iB0u/KdQ=;
+        b=NzKiYhUG3/30cqMl1wP20PgByu3nBeV1ZrmmYJH0LxIlE5ZGZn7aldYh11jnL4+xRb
+         vwAxDHBRKgxub3444p7u+UZ70ADJUamd1NiL2RB9eg5Sv+TH56WUrIYOcu9DfdWmKyia
+         XrUdeWOaw8B5N5lIgiirr7BKbplC5QC4m80lYnRP6JKWTPRky7n65JGrrfStH2B0FrLe
+         zs9hXAY1YJ1HQotkUr/mcSCm/+6ZJSUdidT9NExDOLPJZu9Ngi4TTTaOMa/QdyfxBfNE
+         qFKf9F6mPt04eETuCOtWYEMehu8ocT6yux/S9zrq6OiXijPlXtoRCdl2DVcNozcMF7XV
+         vdgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701803980; x=1702408780;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VUiWMelRtaSuKf34GWZl1zdeJXOb8CJdDd8iB0u/KdQ=;
+        b=vGs4Qh6dRv7TPAux619y+Tw1rClHfwPoPMsZ+FRSqbFZQdCsChds24g4/35AdA6C9o
+         P6tPjT1OuU2kLFbmdCqPwCmQY/3921a5NtD3k2YO2dWIAtPJjgkBxeNNU4WGe0HkSiF9
+         ZSJiM62tYe9Q+VwsN3kVw447Ib/HTIMtmgsKiWWtd1WSkjJ5S+27mQISvfI8l7j9jb4k
+         K4iao2QlpIVAyh9CPkkllMHRdhPdfHBhVjMztKrpJFaU1wS6H1y9QGNbD9QB1wlHugwG
+         VNXvtLS4cZfH4ejm7vix2/fh4fE6XSDey987giss9dIzXF3Sq8q0qQd0PNxQ6GJnllW6
+         dkbw==
+X-Gm-Message-State: AOJu0YzoW5w49odHjo05O4NPHRqEHmr4YJ3UAR3Syr/SQ1FlAQNk+Kbq
+        fwdJLtserxeZUr0+ayxs4wJ8jeYwF5Ln6lBuD7OxDQ==
+X-Google-Smtp-Source: AGHT+IH+Hos519sOnl3NFDQt1BOFxg9pV0N8ECT+kj4/IauNLCyqB8YB4Jeyfnu7/ed6Lvxgf776B+v7gWN3J0pqAd0=
+X-Received: by 2002:a05:600c:2d8c:b0:40b:5e4a:4086 with SMTP id
+ i12-20020a05600c2d8c00b0040b5e4a4086mr790606wmg.166.1701803980483; Tue, 05
+ Dec 2023 11:19:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-2-khuey@kylehuey.com>
+ <CAEf4BzYtSXtgdO9C2w9OOKni68H-7UOExFJRBEij3HG2Qwn1Rg@mail.gmail.com>
+ <ZW8Gi2QI5ceAJfab@krava> <CAM9d7chztaCfDsxfyJ2q_UmD=y20BFikCUQhs=LR8wsNV6pMjg@mail.gmail.com>
+In-Reply-To: <CAM9d7chztaCfDsxfyJ2q_UmD=y20BFikCUQhs=LR8wsNV6pMjg@mail.gmail.com>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Tue, 5 Dec 2023 11:19:28 -0800
+Message-ID: <CAP045AooA7mpk+uac-+JxP-PJX2fguVSKK+8o=qSB4p5LDtz6w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf/bpf: Allow a bpf program to suppress I/O signals.
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+        "Robert O'Callahan" <robert@ocallahan.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
+        Marco Elver <elver@google.com>
 Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudejkedguddvvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphhtthhopehruhhirdii
- hhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Dec 5, 2023 at 10:07=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Hello,
+>
+> Add Marco Elver to CC.
+>
+> On Tue, Dec 5, 2023 at 3:16=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
+te:
+> >
+> > On Mon, Dec 04, 2023 at 02:18:49PM -0800, Andrii Nakryiko wrote:
+> > > On Mon, Dec 4, 2023 at 12:14=E2=80=AFPM Kyle Huey <me@kylehuey.com> w=
+rote:
+> > > >
+> > > > Returning zero from a bpf program attached to a perf event already
+> > > > suppresses any data output. This allows it to suppress I/O availabi=
+lity
+> > > > signals too.
+> > >
+> > > make sense, just one question below
+> > >
+> > > >
+> > > > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> >
+> > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> >
+> > > > ---
+> > > >  kernel/events/core.c | 4 +++-
+> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > > > index b704d83a28b2..34d7b19d45eb 100644
+> > > > --- a/kernel/events/core.c
+> > > > +++ b/kernel/events/core.c
+> > > > @@ -10417,8 +10417,10 @@ static void bpf_overflow_handler(struct pe=
+rf_event *event,
+> > > >         rcu_read_unlock();
+> > > >  out:
+> > > >         __this_cpu_dec(bpf_prog_active);
+> > > > -       if (!ret)
+> > > > +       if (!ret) {
+> > > > +               event->pending_kill =3D 0;
+> > > >                 return;
+> > > > +       }
+> > >
+> > > What's the distinction between event->pending_kill and
+> > > event->pending_wakeup? Should we do something about pending_wakeup?
+> > > Asking out of complete ignorance of all these perf specifics.
+> > >
+> >
+> > I think zeroing pending_kill is enough.. when it's set the perf code
+> > sets pending_wakeup to call perf_event_wakeup in irq code that wakes
+> > up event's ring buffer readers and sends sigio if pending_kill is set
+>
+> Right, IIUC pending_wakeup is set by the ring buffer code when
+> a task is waiting for events and it gets enough events (watermark).
+> So I think it's good for ring buffer to manage the pending_wakeup.
+>
+> And pending_kill is set when a task wants a signal delivery even
+> without getting enough events.  Clearing pending_kill looks ok
+> to suppress normal signals but I'm not sure if it's ok for SIGTRAP.
+>
+> If we want to handle returning 0 from bpf as if the event didn't
+> happen, I think SIGTRAP and event_limit logic should be done
+> after the overflow handler depending on pending_kill or something.
 
-The _store callbacks of the trip point temperature and hysteresis sysfs
-attributes invoke thermal_notify_tz_trip_change() to send a notification
-regarding the trip point change, but when trip points are updated by the
-platform firmware, trip point change notifications are not sent.
+Hmm, yes, perhaps. The SIGTRAP thing (which I was previously unaware
+of) would actually be more useful to us than an I/O signal.
 
-To make the behavior after a trip point change more consistent,
-modify all of the 3 places where trip point temperature is updated
-to use a new function called thermal_zone_set_trip_temp() for this
-purpose and make that function call thermal_notify_tz_trip_change().
+I am slightly wary that event_limit appears to have no tests in the kernel =
+tree.
 
-Note that trip point hysteresis can only be updated via sysfs and
-trip_point_hyst_store() calls thermal_notify_tz_trip_change() already,
-so this code path need not be changed.
+- Kyle
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-Depends on https://lore.kernel.org/linux-pm/12337662.O9o76ZdvQC@kreacher/
-
----
- drivers/acpi/thermal.c                                       |    7 +++--
- drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c |    8 +++---
- drivers/thermal/thermal_sysfs.c                              |    4 +--
- drivers/thermal/thermal_trip.c                               |   14 ++++++++++-
- include/linux/thermal.h                                      |    2 +
- 5 files changed, 27 insertions(+), 8 deletions(-)
-
-Index: linux-pm/drivers/thermal/thermal_sysfs.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-+++ linux-pm/drivers/thermal/thermal_sysfs.c
-@@ -146,9 +146,9 @@ trip_point_temp_store(struct device *dev
- 				goto unlock;
- 		}
- 
--		trip->temperature = temp;
-+		thermal_zone_set_trip_temp(tz, trip, temp);
- 
--		thermal_zone_trip_updated(tz, trip);
-+		__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
- 	}
- 
- unlock:
-Index: linux-pm/drivers/thermal/thermal_trip.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_trip.c
-+++ linux-pm/drivers/thermal/thermal_trip.c
-@@ -152,7 +152,6 @@ int thermal_zone_trip_id(struct thermal_
- 	 */
- 	return trip - tz->trips;
- }
--
- void thermal_zone_trip_updated(struct thermal_zone_device *tz,
- 			       const struct thermal_trip *trip)
- {
-@@ -161,3 +160,16 @@ void thermal_zone_trip_updated(struct th
- 				      trip->hysteresis);
- 	__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
- }
-+
-+void thermal_zone_set_trip_temp(struct thermal_zone_device *tz,
-+				struct thermal_trip *trip, int temp)
-+{
-+	if (trip->temperature == temp)
-+		return;
-+
-+	trip->temperature = temp;
-+	thermal_notify_tz_trip_change(tz->id, thermal_zone_trip_id(tz, trip),
-+				      trip->type, trip->temperature,
-+				      trip->hysteresis);
-+}
-+EXPORT_SYMBOL_GPL(thermal_zone_set_trip_temp);
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -289,6 +289,8 @@ int thermal_zone_for_each_trip(struct th
- 			       int (*cb)(struct thermal_trip *, void *),
- 			       void *data);
- int thermal_zone_get_num_trips(struct thermal_zone_device *tz);
-+void thermal_zone_set_trip_temp(struct thermal_zone_device *tz,
-+				struct thermal_trip *trip, int temp);
- 
- int thermal_zone_get_crit_temp(struct thermal_zone_device *tz, int *temp);
- 
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -294,6 +294,7 @@ static int acpi_thermal_adjust_trip(stru
- 	struct acpi_thermal_trip *acpi_trip = trip->priv;
- 	struct adjust_trip_data *atd = data;
- 	struct acpi_thermal *tz = atd->tz;
-+	int temp;
- 
- 	if (!acpi_trip || !acpi_thermal_trip_valid(acpi_trip))
- 		return 0;
-@@ -304,9 +305,11 @@ static int acpi_thermal_adjust_trip(stru
- 		acpi_thermal_update_trip_devices(tz, trip);
- 
- 	if (acpi_thermal_trip_valid(acpi_trip))
--		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
-+		temp = acpi_thermal_temp(tz, acpi_trip->temp_dk);
- 	else
--		trip->temperature = THERMAL_TEMP_INVALID;
-+		temp = THERMAL_TEMP_INVALID;
-+
-+	thermal_zone_set_trip_temp(tz->thermal_zone, trip, temp);
- 
- 	return 0;
- }
-Index: linux-pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-+++ linux-pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-@@ -225,7 +225,8 @@ EXPORT_SYMBOL_GPL(int340x_thermal_zone_r
- 
- static int int340x_update_one_trip(struct thermal_trip *trip, void *arg)
- {
--	struct acpi_device *zone_adev = arg;
-+	struct int34x_thermal_zone *int34x_zone = arg;
-+	struct acpi_device *zone_adev = int34x_zone->adev;
- 	int temp, err;
- 
- 	switch (trip->type) {
-@@ -249,14 +250,15 @@ static int int340x_update_one_trip(struc
- 	if (err)
- 		temp = THERMAL_TEMP_INVALID;
- 
--	trip->temperature = temp;
-+	thermal_zone_set_trip_temp(int34x_zone->zone, trip, temp);
-+
- 	return 0;
- }
- 
- void int340x_thermal_update_trips(struct int34x_thermal_zone *int34x_zone)
- {
- 	thermal_zone_for_each_trip(int34x_zone->zone, int340x_update_one_trip,
--				   int34x_zone->adev);
-+				   int34x_zone);
- }
- EXPORT_SYMBOL_GPL(int340x_thermal_update_trips);
- 
-
-
-
+> Thanks,
+> Namhyung
