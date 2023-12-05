@@ -2,163 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D229805C7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2591A805C59
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345136AbjLEQT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:19:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        id S1345390AbjLEQUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbjLEQT0 (ORCPT
+        with ESMTP id S231888AbjLEQUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:19:26 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BC8122
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:19:31 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3b8b782e142so2159527b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 08:19:31 -0800 (PST)
+        Tue, 5 Dec 2023 11:20:39 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814589E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:20:45 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7b35d846f36so217515339f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 08:20:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701793171; x=1702397971; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1701793245; x=1702398045; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cOwZEVf0hmkZ/l+HRKkvqqzx2g2Yp/f9J4vlDNBGiHU=;
-        b=utiDAg7xObmhKeJNFLxhPVkKOXPkEFFaUepZycJdP1svHuaMqVIwOTY9mGfxZmYeO/
-         JDAvLK6/Ujy+pTOpB6/MYctsUzMyob0eUA44LVGPYeop+prJYILQdjCE7p12GbtD0g7J
-         Lqf1+ZGk3Ah0VaSp3swrBI5X7k6Jg1XrLBJzkEzIBN6cQ1FseClHN/xfkXeORasR0gT/
-         MyUdCCmf7N2AsACYRZ9VXtB4SSQzUi2GR1iqcScbryTvajoLABBoeSrp6BYtMbuMdQnp
-         vXlU5/FAL4gHJXShCyh35zOOX1NGtR011+9+XegHQLdnyEI00+rzXg9aTMBJANu+1kzG
-         d7Gg==
+        bh=bBuGaAJFY5OZVJUfBILHZ16GmnApBjz6XJR5WiDcpZ0=;
+        b=B/J8ZK/ipQfLDtmvCgNG+uFb06KRkHGbFrrK55SOyTadhJYfa6exsUCu2b+EZXOVAz
+         z9hcABLd2m044HZLyl6ZWDYjIM+bFoAGnYiGL0j/Z+PggcJZ/dPZdTDx9d750xtcxzXC
+         27BEjAUAQAfhvHfydVSjFGKDY71ZY7GMoJVK0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701793171; x=1702397971;
+        d=1e100.net; s=20230601; t=1701793245; x=1702398045;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cOwZEVf0hmkZ/l+HRKkvqqzx2g2Yp/f9J4vlDNBGiHU=;
-        b=Jbz+AGVyYMx+QJXP7rc1l2xRIbSbCv6lhOKF2tYdAs5/te4cbHCl5FkJQYcKt6ijCa
-         wSvjox9E/ZszcI7Vf9aVoFFUbh5wOXhiplva9aWKTaV8jMwq/xBwbwEjsq9iWO10yxIO
-         t93QDNo5pYb9w5IsH1kaFophfNgs6QXQrEe+Owm48FAsEUIWMYlYJiipeOuZsRxs94GD
-         kD1Z/pdXUnvdzzrdJ+b2WQdgsw3WnI/VhfiZYlqLnG1vhgTWV2Q0BPKHQ+whMVsamqDb
-         PI8qrRfAowwN5OOlQyGU5hypQ2uINZYONxzo9bQqZHxSqe9n7DxWXsYGOVwYYhiJmeBG
-         YWJQ==
-X-Gm-Message-State: AOJu0YyovPQSOPzbcivDScMrGcMwoMLGeBsJCxxeqlbu0j0cgU53f9nJ
-        capR/JbyMGuH+iZW77NFl73z/Q==
-X-Google-Smtp-Source: AGHT+IF0szzPb51TMNvPFceb886yewCVCDgejwmhkzQ/VpGpcexkajnRa+SXBlHruOBwpSWcysfvHA==
-X-Received: by 2002:a05:6808:b0f:b0:3b8:b063:ae0f with SMTP id s15-20020a0568080b0f00b003b8b063ae0fmr6846455oij.108.1701793171128;
-        Tue, 05 Dec 2023 08:19:31 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id c8-20020a05620a164800b0077d78c5b575sm5197904qko.111.2023.12.05.08.19.30
+        bh=bBuGaAJFY5OZVJUfBILHZ16GmnApBjz6XJR5WiDcpZ0=;
+        b=ExPXbY8wq2VuGKNQmMhvj8DQxa9qm19B5IfPQ93K5DT4SF0Az5XjBSN9XFSpLZmrsL
+         azqkXe87AfB+VfVkDaHDWH4KMwAJkxmRHE3NTrEq+On9MDyxIMNxPNCe/QT2crVv+HYw
+         +R17QxU3D/Pp2w82XNQino2f7qIFY7PWB64XPA3BGbmZDLW6XDv9nrO0SFNz0oYhupIb
+         0A+gd2u6CCK2v0qVIgR0n/6RGXu3YbB5iI0ecJuFqa4mikDgpfOugdxw58W/M/jQn4+L
+         0A1qalvThZvuPjrJHt8f06dOZ1WOv3oIYkBcD1OotXGMhvmrOnC6gU7mu4+KhP/yZlTN
+         /21g==
+X-Gm-Message-State: AOJu0Yx5fPbM/Lt9iYMeuJk6letqidtGe9zxXkQDlog9kWmwURlo+OZA
+        A8tNEZos76JpIJx8glTVtd51CQ==
+X-Google-Smtp-Source: AGHT+IFdV22JKkn3AU9h/iHTCNkbcqwNKQTPYh1GkLjeDd3z34IRh0OyVnd1/QkDWWGCVOh+aWEGPQ==
+X-Received: by 2002:a05:6e02:4ac:b0:35d:59a2:92a3 with SMTP id e12-20020a056e0204ac00b0035d59a292a3mr5613938ils.55.1701793244786;
+        Tue, 05 Dec 2023 08:20:44 -0800 (PST)
+Received: from localhost (74.120.171.34.bc.googleusercontent.com. [34.171.120.74])
+        by smtp.gmail.com with ESMTPSA id bs11-20020a056e02240b00b0035d55788523sm680856ilb.82.2023.12.05.08.20.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 08:19:30 -0800 (PST)
-Date:   Tue, 5 Dec 2023 11:19:29 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH 0/1] Add swappiness argument to memory.reclaim
-Message-ID: <20231205161929.GA99931@cmpxchg.org>
-References: <20231130153658.527556-1-schatzberg.dan@gmail.com>
- <ZWiw9cEsDap1Qm5h@tiehlicka>
- <20231130165642.GA386439@cmpxchg.org>
- <ZWmoTa7MlD7h9FYm@tiehlicka>
- <20231201170955.GA694615@cmpxchg.org>
- <ZW3vAz9KF5wM3HgE@tiehlicka>
+        Tue, 05 Dec 2023 08:20:44 -0800 (PST)
+Date:   Tue, 5 Dec 2023 16:20:43 +0000
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Qais Yousef <qyousef@layalina.io>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        John Stultz <jstultz@google.com>, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+Subject: Re: [PATCH v2] rcu: Provide a boot time parameter to control lazy RCU
+Message-ID: <20231205162043.GA2558193@google.com>
+References: <20231203011252.233748-1-qyousef@layalina.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZW3vAz9KF5wM3HgE@tiehlicka>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231203011252.233748-1-qyousef@layalina.io>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 04:23:47PM +0100, Michal Hocko wrote:
-> On Fri 01-12-23 12:09:55, Johannes Weiner wrote:
-> > On Fri, Dec 01, 2023 at 10:33:01AM +0100, Michal Hocko wrote:
-> > > On Thu 30-11-23 11:56:42, Johannes Weiner wrote:
-> > > [...]
-> > > > So I wouldn't say it's merely a reclaim hint. It controls a very
-> > > > concrete and influential factor in VM decision making. And since the
-> > > > global swappiness is long-established ABI, I don't expect its meaning
-> > > > to change significantly any time soon.
-> > > 
-> > > As I've said I am more worried about potential future changes which
-> > > would modify existing, reduce or add more corner cases which would be
-> > > seen as a change of behavior from the user space POV. That means that we
-> > > would have to be really explicit about the fact that the reclaim is free
-> > > to override the swappiness provided by user. So essentially a best
-> > > effort interface without any actual guarantees. That surely makes it
-> > > harder to use. Is it still useable?
-> > 
-> > But it's not free to override the setting as it pleases. I wrote a
-> > detailed list of the current exceptions, and why the user wouldn't
-> > have strong expectations of swappiness being respected in those
-> > cases. Having reasonable limitations is not the same as everything
-> > being up for grabs.
+On Sun, Dec 03, 2023 at 01:12:52AM +0000, Qais Yousef wrote:
+> To allow more flexible arrangements while still provide a single kernel
+> for distros, provide a boot time parameter to enable/disable lazy RCU.
 > 
-> Well, I was not suggesting that future changes would be intentionally
-> breaking swappiness. But look at the history, we've had times when
-> swappiness was ignored most of the time due to heavy page cache bias.
-> Now it is really hard to assume future reclaim changes but I can easily
-> imagine that IO refault cost to balance file vs. anon lrus would be in
-> future reclaim improvements and extensions.
-
-That's a possibility, but it would be an explicit *replacement* of the
-swappiness setting. Since swappiness is already exposed in more than
-one way (global, cgroup1), truly overriding it would need to be opt-in.
-
-We could only remove the heavy page cache bias without a switch
-because it didn't actually break user expectations. In fact it
-followed them more closely, since previously with a swappiness=60 the
-kernel might not swap at all even with a heavily thrashing cache.
-
-The thing Linus keeps stressing is not that we cannot change behavior,
-but that we cannot break (reasonable) existing setups. So we can make
-improvements as long as we don't violate general user expectations or
-generate IO patterns that are completely contradictory to the setting.
-
-> > Again, the swappiness setting is ABI, and people would definitely
-> > complain if we ignored their request in an unexpected situation and
-> > regressed their workloads.
-> > 
-> > I'm not against documenting the exceptions and limitations. Not just
-> > for proactive reclaim, but for swappiness in general. But I don't
-> > think it's fair to say that there are NO rules and NO userspace
-> > contract around this parameter (and I'm the one who wrote most of the
-> > balancing code that implements the swappiness control).
+> Specify:
 > 
-> Right, but the behavior might change considerably between different
-> kernel versions and that is something to be really careful about. One
-> think I would really like to avoid is to provide any guarantee that
-> swappiness X and nr_to_reclaim has an exact anon/file pages reclaimed
-> or this is a regression because $VER-1 behaved that way. There might be
-> very ligitimate reasons to use different heuristics in the memory
-> reclaim.
+> 	rcutree.enable_rcu_lazy=[y|1|n|0]
+> 
+> Which also requires
+> 
+> 	rcu_nocbs=all
+> 
+> at boot time to enable/disable lazy RCU.
+> 
+> To disable it by default at build time when CONFIG_RCU_LAZY=y, the new
+> CONFIG_RCU_LAZY_DEFAULT_OFF can be used.
+> 
+> Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 
-Yes, it shouldn't mean any more than the global swappiness means.
+Thanks Qais, I have a comment below:
 
-> Another option would be drop any heuristics when swappiness is provided
-> for the memory.reclaim interface which would be much more predictable
-> but it would also diverge from the normal reclaim and that is quite bad
-> IMHO.
+> ---
+> 
+> Changes since v1:
+> 
+> 	* Use module_param() instead of module_param_cb()
+> 	* Add new CONFIG_RCU_LAZY_DEFAULT_OFF to force default off.
+> 	* Remove unnecessary READ_ONCE()
+> 
+> Tested on qemu only this time with various config/boot configuration to ensure
+> expected values are in sysfs.
+> 
+> Did a bunch of build tests against various configs/archs.
+> 
+>  Documentation/admin-guide/kernel-parameters.txt |  5 +++++
+>  kernel/rcu/Kconfig                              | 13 +++++++++++++
+>  kernel/rcu/tree.c                               |  7 ++++++-
+>  3 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..2f0386a12aa7 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5021,6 +5021,11 @@
+>  			this kernel boot parameter, forcibly setting it
+>  			to zero.
+>  
+> +	rcutree.enable_rcu_lazy= [KNL]
+> +			To save power, batch RCU callbacks and flush after
+> +			delay, memory pressure or callback list growing too
+> +			big.
+> +
+>  	rcuscale.gp_async= [KNL]
+>  			Measure performance of asynchronous
+>  			grace-period primitives such as call_rcu().
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index bdd7eadb33d8..e7d2dd267593 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -314,6 +314,19 @@ config RCU_LAZY
+>  	  To save power, batch RCU callbacks and flush after delay, memory
+>  	  pressure, or callback list growing too big.
+>  
+> +	  Requires rcu_nocbs=all to be set.
+> +
+> +	  Use rcutree.enable_rcu_lazy=0 to turn it off at boot time.
+> +
+> +config RCU_LAZY_DEFAULT_OFF
+> +	bool "Turn RCU lazy invocation off by default"
+> +	depends on RCU_LAZY
+> +	default n
+> +	help
+> +	  Allows building the kernel with CONFIG_RCU_LAZY=y yet keep it default
+> +	  off. Boot time param rcutree.enable_rcu_lazy=1 can be used to switch
+> +	  it back on.
+> +
 
-I would prefer to keep the semantics for global/reactive and proactive
-reclaim the same. Making an existing tunable available in cgroup2 is
-much lower risk than providing something new and different under the
-same name.
+I think a better approach is not do an anti-CONFIG option and instead do
+a shorter parameter "rcutree.lazy=0". If CONFIG_RCU_LAZY is set, then we can
+just default to keeping lazy on. I'd like to avoid proliferation of already
+large number of RCU config options and more chances of errors.
+
+I also want lazy to be ON for everybody configuring it into the kernel by
+default (those who don't want it just set CONFIG_RCU_LAZY=n), this is what
+tglx also suggested that's why we made changed of our initial prototypes of
+call_rcu_lazy() and instead we made call_rcu() to put everyone on the lazy
+train and not add more APIs (thus causing more confusion to kernel
+developers). This was a bit painful, but it was worth it.
+
+>  config RCU_DOUBLE_CHECK_CB_TIME
+>  	bool "RCU callback-batch backup time check"
+>  	depends on RCU_EXPERT
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 3ac3c846105f..8b7675624815 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2719,6 +2719,9 @@ __call_rcu_common(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
+>  }
+>  
+>  #ifdef CONFIG_RCU_LAZY
+> +static bool enable_rcu_lazy __read_mostly = !IS_ENABLED(CONFIG_RCU_LAZY_DEFAULT_OFF);
+
+And then this can just be                    = true;
+
+thanks,
+
+ - Joel
+
+
+> +module_param(enable_rcu_lazy, bool, 0444);
+> +
+>  /**
+>   * call_rcu_hurry() - Queue RCU callback for invocation after grace period, and
+>   * flush all lazy callbacks (including the new one) to the main ->cblist while
+> @@ -2744,6 +2747,8 @@ void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+>  	__call_rcu_common(head, func, false);
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu_hurry);
+> +#else
+> +#define enable_rcu_lazy		false
+>  #endif
+>  
+>  /**
+> @@ -2792,7 +2797,7 @@ EXPORT_SYMBOL_GPL(call_rcu_hurry);
+>   */
+>  void call_rcu(struct rcu_head *head, rcu_callback_t func)
+>  {
+> -	__call_rcu_common(head, func, IS_ENABLED(CONFIG_RCU_LAZY));
+> +	__call_rcu_common(head, func, enable_rcu_lazy);
+
+
+
+>  }
+>  EXPORT_SYMBOL_GPL(call_rcu);
+>  
+> -- 
+> 2.34.1
+> 
