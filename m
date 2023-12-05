@@ -2,272 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05015805BCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7B8805C8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346178AbjLEPRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:17:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45768 "EHLO
+        id S1346054AbjLEPRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:17:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346795AbjLEPQ6 (ORCPT
+        with ESMTP id S1346065AbjLEPQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:16:58 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07795D5E;
-        Tue,  5 Dec 2023 07:17:00 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B5FGmiM111363;
-        Tue, 5 Dec 2023 09:16:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701789408;
-        bh=BKzh+kOh02ASiRlhIrGNOM+NRUg1YSYQZynqZVbiX4Q=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ohq3db3YyM5Cr3/S2RrNv1rrtm3nuBaRdpoOHRVx7eElLzcfYCwz11ZxMr6u2egs5
-         75jm7zF1ZmArHJ6HZ1AnIS6YfkO6hyLTumhXYtls+Q2uR9hZMwd8CePKfXHXh7HMR7
-         cgfsLPeywtmQVTXLXqPxhjjT8lSyHS8PUpwY/Mxw=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B5FGmII105736
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 5 Dec 2023 09:16:48 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
- Dec 2023 09:16:48 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 5 Dec 2023 09:16:47 -0600
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B5FGltD080358;
-        Tue, 5 Dec 2023 09:16:47 -0600
-Date:   Tue, 5 Dec 2023 09:16:47 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Neha Malcom Francis <n-francis@ti.com>
-CC:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <a-nandan@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <eblanc@baylibre.com>, <jneanne@baylibre.com>,
-        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>,
-        <j-luthra@ti.com>, <vaishnav.a@ti.com>, <hnagalla@ti.com>,
-        <devarsht@ti.com>
-Subject: Re: [PATCH v9 6/7] arm64: dts: ti: k3-j721e-sk: Add TPS6594 family
- PMICs
-Message-ID: <20231205151647.vh6rlhro7qlwoerc@knelt>
-References: <20231205093439.2298296-1-n-francis@ti.com>
- <20231205093439.2298296-7-n-francis@ti.com>
+        Tue, 5 Dec 2023 10:16:55 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8D1BA;
+        Tue,  5 Dec 2023 07:16:55 -0800 (PST)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6d8d28e4bbeso1878116a34.3;
+        Tue, 05 Dec 2023 07:16:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701789414; x=1702394214;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PIL2R5QWcyrDJIIlZYpvgWP7i5DDM3sfGQ6GQVJmqyE=;
+        b=wnuY7JIcN4LZuwOOMM1JkiZcNOVPGx8rBhnLmI0Z54jC3VH9FB+n7wtEJE+T7qHc3c
+         lC3nxo3m7db0tp/eZsxDDPc7zPTfBMqlxDNz5aFdIZfz7lPMKEupbIwodkciC52w6AMX
+         xM5dqdPmNUQgz5oSR9sDLhrx836KDhXSimGiOFmuUM+kUS6hsePt8JQZ/IyGdMg0JD4k
+         uQOPNqTvsQrEe6mcJdM5cQl1GXZJXnehE8Z4VIcp6fyELdAXy7mZR6SftP6eRQVHRYRt
+         C4Jz2uWjZ+1tv2YnZMLPKMo6PEhJLPakqwMbchpE/ULOkrOYwoMwRXDyvnGSEnlMybFJ
+         Eq/A==
+X-Gm-Message-State: AOJu0Yxnu5I3izaBe1G4IYU4/wNtHd8UGaY99AdDW8N+LEdkB3yr87uT
+        PyQ5SlcDyuIf6uu4j5jmWg==
+X-Google-Smtp-Source: AGHT+IEhOsKceKiNrJehVdlZj58kZKlSDVOmPMSaw8HpLasVjTg3PdH3MbioSc00+OCdV1KBAtZBvA==
+X-Received: by 2002:a05:6830:43a8:b0:6bd:152f:9918 with SMTP id s40-20020a05683043a800b006bd152f9918mr6197492otv.14.1701789412544;
+        Tue, 05 Dec 2023 07:16:52 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id o11-20020a0568301c4b00b006d87c7497e7sm1454992otg.1.2023.12.05.07.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 07:16:51 -0800 (PST)
+Received: (nullmailer pid 3083183 invoked by uid 1000);
+        Tue, 05 Dec 2023 15:16:50 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231205093439.2298296-7-n-francis@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
+Cc:     devicetree@vger.kernel.org, ChiaEn Wu <chiaen_wu@richtek.com>,
+        linux-kernel@vger.kernel.org,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>, andy@kernel.org,
+        linux-iio@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        linus.walleij@linaro.org, Niklas Schnelle <schnelle@linux.ibm.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>, brgl@bgdev.pl,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        =?utf-8?q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, Haibo Chen <haibo.chen@nxp.com>,
+        Michael Walle <michael@walle.cc>
+In-Reply-To: <20231205134223.17335-1-mitrutzceclan@gmail.com>
+References: <20231205134223.17335-1-mitrutzceclan@gmail.com>
+Message-Id: <170178941047.3083151.15161174214123068689.robh@kernel.org>
+Subject: Re: [PATCH v7 1/2] dt-bindings: adc: add AD7173
+Date:   Tue, 05 Dec 2023 09:16:50 -0600
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15:04-20231205, Neha Malcom Francis wrote:
-> This patch adds support for TPS6594 PMIC family on wakeup I2C0 bus.
-> These devices provide regulators (bucks and LDOs), but also GPIOs, a
-> RTC, a watchdog, an ESM (Error Signal Monitor) which monitors the SoC
-> error output signal, and a PFSM (Pre-configurable Finite State Machine)
-> which manages the operational modes of the PMIC.
+
+On Tue, 05 Dec 2023 15:42:20 +0200, Dumitru Ceclan wrote:
+> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+> which can be used in high precision, low noise single channel applications
+> or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+> primarily for measurement of signals close to DC but also delivers
+> outstanding performance with input bandwidths out to ~10kHz.
 > 
-> Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
+> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 > ---
->  arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 158 +++++++++++++++++++++++++
->  1 file changed, 158 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> index 42fe8eee9ec8..e600825f7e78 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
-> @@ -459,6 +459,13 @@ J721E_IOPAD(0x234, PIN_INPUT, 7) /* (U3) EXT_REFCLK1.GPIO1_12 */
->  };
->  
->  &wkup_pmx0 {
-> +	pmic_irq_pins_default: pmic-irq-default-pins {
-> +		bootph-pre-ram;
-> +		pinctrl-single,pins = <
-> +			J721E_WKUP_IOPAD(0x0cc, PIN_INPUT, 7) /* (G28) WKUP_GPIO0_7 */
-> +		>;
-> +	};
-> +
->  	mcu_cpsw_pins_default: mcu-cpsw-default-pins {
->  		pinctrl-single,pins = <
->  			J721E_WKUP_IOPAD(0x84, PIN_INPUT, 0) /* (B24) MCU_RGMII1_RD0 */
-> @@ -560,6 +567,157 @@ eeprom@51 {
->  		compatible = "atmel,24c512";
->  		reg = <0x51>;
->  	};
-> +
-> +	tps659413: pmic@48 {
-> +		bootph-pre-ram;
-
-only for the leaf nodes. See
-https://libera.irclog.whitequark.org/armlinux/2023-10-19
-
-> +		compatible = "ti,tps6594-q1";
-> +		reg = <0x48>;
-> +		system-power-controller;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pmic_irq_pins_default>;
-> +		interrupt-parent = <&wkup_gpio0>;
-> +		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-> +		ti,primary-pmic;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		buck123-supply = <&vsys_3v3>;
-> +		buck4-supply = <&vsys_3v3>;
-> +		buck5-supply = <&vsys_3v3>;
-> +		ldo1-supply = <&vsys_3v3>;
-> +		ldo2-supply = <&vsys_3v3>;
-> +		ldo3-supply = <&vsys_3v3>;
-> +		ldo4-supply = <&vsys_3v3>;
-> +
-> +		regulators {
-> +			bootph-pre-ram;
-> +			bucka123: buck123 {
-> +				bootph-pre-ram;
-> +				regulator-name = "vdd_cpu_avs";
-> +				regulator-min-microvolt = <600000>;
-> +				regulator-max-microvolt = <900000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			bucka4: buck4 {
-> +				regulator-name = "vdd_mcu_0v85";
-> +				regulator-min-microvolt = <850000>;
-> +				regulator-max-microvolt = <850000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			bucka5: buck5 {
-> +				regulator-name = "vdd_phyio_1v8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldoa1: ldo1 {
-> +				regulator-name = "vdd1_lpddr4_1v8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldoa2: ldo2 {
-> +				regulator-name = "vdd_mcuio_1v8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldoa3: ldo3 {
-> +				regulator-name = "vdda_dll_0v8";
-> +				regulator-min-microvolt = <800000>;
-> +				regulator-max-microvolt = <800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldoa4: ldo4 {
-> +				regulator-name = "vda_mcu_1v8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +		};
-> +	};
-> +
-> +	tps659411: pmic@4c {
-> +		compatible = "ti,tps6594-q1";
-> +		reg = <0x4c>;
-> +		system-power-controller;
-> +		interrupt-parent = <&wkup_gpio0>;
-> +		interrupts = <9 IRQ_TYPE_EDGE_FALLING>;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		buck1234-supply = <&vsys_3v3>;
-> +		buck5-supply = <&vsys_3v3>;
-> +		ldo1-supply = <&vsys_3v3>;
-> +		ldo2-supply = <&vsys_3v3>;
-> +		ldo3-supply = <&vsys_3v3>;
-> +		ldo4-supply = <&vsys_3v3>;
-> +
-> +		regulators {
-> +			buckb1234: buck1234 {
-> +				regulator-name = "vdd_core_0v8";
-> +				regulator-min-microvolt = <800000>;
-> +				regulator-max-microvolt = <800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			buckb5: buck5 {
-> +				regulator-name = "vdd_ram_0v85";
-> +				regulator-min-microvolt = <850000>;
-> +				regulator-max-microvolt = <850000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldob1: ldo1 {
-> +				regulator-name = "vdd_sd_dv";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldob2: ldo2 {
-> +				regulator-name = "vdd_usb_3v3";
-> +				regulator-min-microvolt = <3300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldob3: ldo3 {
-> +				regulator-name = "vdd_io_1v8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +
-> +			ldob4: ldo4 {
-> +				regulator-name = "vda_pll_1v8";
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-boot-on;
-> +				regulator-always-on;
-> +			};
-> +		};
-> +	};
->  };
->  
->  &mcu_uart0 {
-> -- 
-> 2.34.1
+>  .../bindings/iio/adc/adi,ad7173.yaml          | 170 ++++++++++++++++++
+>  1 file changed, 170 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
 > 
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml: properties:required: ['compatible', 'reg', 'interrupts'] is not of type 'object', 'boolean'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml: properties: 'required' should not be valid under {'$ref': '#/definitions/json-schema-prop-names'}
+	hint: A json-schema keyword was found instead of a DT property name.
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml: properties:required: ['compatible', 'reg', 'interrupts'] is not of type 'object', 'boolean'
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231205134223.17335-1-mitrutzceclan@gmail.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
