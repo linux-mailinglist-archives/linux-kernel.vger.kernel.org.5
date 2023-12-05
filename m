@@ -2,97 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B58B68057C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5DF8057CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345698AbjLEOqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:46:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
+        id S1345723AbjLEOsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:48:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345682AbjLEOqm (ORCPT
+        with ESMTP id S232155AbjLEOsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:46:42 -0500
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6559129
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:46:47 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8FEDF1C0010;
-        Tue,  5 Dec 2023 14:46:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701787606;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3oW58aA+EmNdSZ3vq5hven3qPTQb+RFRYHU5Pcj6TJ0=;
-        b=BWJyV0aww7ayIVS3QtH5a2VYjsG5piTWINPR8X1d8fTYfNee7xEXXp/4zP+poiblGvdBvD
-        SWoka1XdwL8zZ6Pz//WWZ4GDlY6Tz+SPYTuuyJB4TokILP69EGHDuLRNUXolQqDMmwQtxA
-        YUcd6PpXW1ND79/nr8h0SeN6iklwC42lan4G64O3BIxjgFheT1WBlRKyCzPkdjPgSufHMN
-        LGbZvQYHadABIo1FsUeWAvebmRdKNkjRdZ3PV59vaSNlhtI4S16FnYiaPObLIBjBocLlUx
-        bvHFxpDDtCikGMTptqOiw65qsMR88Bhmx8Iu80D6Q+Ir0DC/S2wtJn2XJxJGQg==
-Date:   Tue, 5 Dec 2023 15:46:43 +0100
-From:   Luca Ceresoli <luca.ceresoli@bootlin.com>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Michael Walle <michael@walle.cc>,
-        =?UTF-8?Q?Ra?= =?UTF-8?Q?fa=C5=82_Mi=C5=82ecki?= 
-        <rafal@milecki.pl>, Marco Felsch <m.felsch@pengutronix.de>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v14 0/8] NVMEM cells in sysfs
-Message-ID: <20231205154643.76eb4a32@booty>
-In-Reply-To: <20231129163737.698317-1-miquel.raynal@bootlin.com>
-References: <20231129163737.698317-1-miquel.raynal@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 5 Dec 2023 09:48:02 -0500
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2052.outbound.protection.outlook.com [40.107.102.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D783CA;
+        Tue,  5 Dec 2023 06:48:07 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xh4s+N7XtBu9s2fLd/uEkFhOF7LAxGqjDkLtaHu037PMe+pqWWqUIi4rkRcS0EeUertRMATjG7P/nDb7oFvjFONcaYWL2fn/LyhUdHIAqZ+b9G8rVjIyhjDfWk11/YX4lsh1wYKFB+hpdLez07k+9gfVzqLidgnH7jhVCTrJEfE5XzARhgwK71BeMtnYYTVfd1OLS5Q/H5FRMiqqxcb6QtOYjDDzdwvluKL5tfiV4uY9DftoGMsbTfEczgR1K6y2fcYCxSIYwI/kNeaW9CPENBFFXk0tAqmeokza4LRPHz1RlgkRmfhvglHPSnQ0e6mSOxyCPSVSfokShZSUcfqSOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1CGWv/WudBoNeUlGM0tsKTwHDmH/kQnUGxqZapCt5WQ=;
+ b=V3m4gElxznZdyGs1O4RjFWA7zkvccnwo39xDvB2SXrcIqC2jVW5JRMxGkteP8X2Bj7e2LNRk9TIqvbxhnoLT1ZioU7HCEJuYJBrCJLFh35SdPFjcXYPBH/3OgKhXLQvrk7DWHD/ibFoCyEJOZvXd3yv0zcg48Iy5ZHX9sXB90iaj2DnA1aLzqfPYO+amYOoCciCCx5ynPIA4+KtSbzw+ucsimXufm0cePv2JpEV1HAkmQBPmeaL8tXGmyAMTAKRgkyhP/FyJJ9jsZLvjq+IX904T5/4qiLWTszgt+zKb2rdvWawoG4HGdmVlSKgwcYwd1l1rI7OYYGjomceTk/cLQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1CGWv/WudBoNeUlGM0tsKTwHDmH/kQnUGxqZapCt5WQ=;
+ b=xwAyo+S3GduO3VE6dYyio0FOVl48hL0yQwpDTGbdlxQYuVhXaWvDdLKJnjbx5cd/ilNSzhFiKD6HfvbS+6m2h13iEKg5J89xfsu3loCXH13gAFwWvhzoa1uNngHEMZMZ+iPxyRsfuno5EWMyXvT3azLKDOaz/0Mjc77tmBYZwyI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by DM4PR17MB5873.namprd17.prod.outlook.com (2603:10b6:8:41::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.24; Tue, 5 Dec 2023 14:48:01 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7068.022; Tue, 5 Dec 2023
+ 14:48:01 +0000
+Date:   Tue, 5 Dec 2023 09:47:51 -0500
+From:   Gregory Price <gregory.price@memverge.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Michal Hocko <mhocko@suse.com>, "tj@kernel.org" <tj@kernel.org>,
+        John Groves <john@jagalactic.com>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "muchun.song@linux.dev" <muchun.song@linux.dev>,
+        "jgroves@micron.com" <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+Message-ID: <ZW84F5PUB/0yPW9d@memverge.com>
+References: <ZU74L9oxWOoTTfpM@memverge.com>
+ <ZVNBMW8iJIGDyp0y@tiehlicka>
+ <ZVOXWx8XNJJNC23A@memverge.com>
+ <ZVOn2T_Qg_NTKlB2@tiehlicka>
+ <ZVOzMEtDYB4l8qFy@memverge.com>
+ <87o7fveeze.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZW1IdPI11nhKcdZl@memverge.com>
+ <87sf4i2xe1.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZW3ZFDeTs7xotImL@memverge.com>
+ <87fs0h2fb4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fs0h2fb4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-ClientProxiedBy: SJ0PR03CA0171.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::26) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: luca.ceresoli@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|DM4PR17MB5873:EE_
+X-MS-Office365-Filtering-Correlation-Id: b129dae2-e394-424d-650c-08dbf5a12dc0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R3RcwVnuzLfPGKMve0jsEyis6E+94HvsNBUa+hCm+jGv3JeLKX48fn4keN65whD2snslszvtOZ+8Fr8XZAXTGjVrmpzLWnjxmSRoNo3LY9yndK7At71ldluLArj5EOf/JyeuHRn4Q2aE8bm2wUZlgUQ+4F5uIJKe908ml/ZBG8AGR5GvUMgjnHnU4HsViSR3tRjzOTDvgqtZuBbzJJ4SeE2C0CqaSwoO9oVEo6bNGBKz9xxz2qmOLSA4ddmjXTzUBCSAYztXgC/jp/mqHTOj+/kcJYdzBnXJ7F4GR+Lpcgt7PzQtLT+EnmWxbfvKtPW/y+exrI49jPTZbIahJXKJpkeLj6QCerd0S0gKIbP9UiGOvdeomK8w96ka+wjw1OzGR3WNJ0dBJCig5DWA5KEpPrndgIv+M1uQk9ySSty7U13lqKkDJzHw1cA1zeEqAcn4uk8tIY5FilFpt1kT0I0p4AMCAvGvjfGyZ3BzVmOmUTN3xjqyc+IwF/ED7EyLd2pYoLBgKA8D9OhbRYNaw+zv1zLqQetzcnZ9jjSIhw9GL9TDiERMihDZNmE/cKeUCrwoE3SunazEpqF1kKuGosxrGlnqcAVx/Qm58xKfrAkJG9l512L9NqzxO20sNH+Q1Z5/G/H8d8HbBHSZ3RakYK8xacnM2e1J1uGSYi9afViAZkg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(396003)(366004)(39850400004)(230922051799003)(230173577357003)(230273577357003)(64100799003)(1800799012)(451199024)(186009)(38100700002)(7416002)(2906002)(5660300002)(83380400001)(6512007)(2616005)(6506007)(6666004)(26005)(478600001)(6486002)(41300700001)(36756003)(44832011)(6916009)(54906003)(66476007)(66556008)(66946007)(316002)(8676002)(8936002)(4326008)(86362001)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mrOHwdJqJtOaczQklQ9wozP9Rxcjvl6gANjtkuH/X0r67fxD9PomQWy8EnvK?=
+ =?us-ascii?Q?n72TjxZXuSiTdNtAiavYD4R8y4yK4BgccI+UxSDn0tPC4Gqd+wm442sxykyP?=
+ =?us-ascii?Q?aQeoD3Cin8pehTgtFf+BzcNhSdjMH8hrjOEoWA3o28/fd54yJDo/UZxEzxW5?=
+ =?us-ascii?Q?3/z/IBxtqhc0nwQUK6Bh+DeQdr9azzz3/zhldk/qLTwwwGKgsM8hdH7c0RGD?=
+ =?us-ascii?Q?dQvhopB0a83cTQGGFumO1AyVzUOShKvusJlxuGoAsOWUMp/FsSY51KpyiH0E?=
+ =?us-ascii?Q?EAoGUZUtfyJ1cKaKe/9FhKkhjQBb4IP+2UnH00dZ7ilsjC34ToL39CgEuWjT?=
+ =?us-ascii?Q?B5fFgn5DoT54K8/IO5ax1XlmpjgT+kFCOg0+UyJ3hEMFjLoEgvh/wXpteOXv?=
+ =?us-ascii?Q?TOHNtS3Rik2p4QMCumWvJxoAdLO4t8zm2ugEzwEh4hU/07/cxgur4w8sVVr0?=
+ =?us-ascii?Q?/AP1X7iecEQGq7I+JvNtCsxYcdfbTdnIMNvU0ud5OV5WTftb1gLLJ+bbJqjY?=
+ =?us-ascii?Q?N4VorwlgxCfnjvML94RM57BtuEqI+RkALpHc0UtlPhXDuJQ3+soXO+jdAPgV?=
+ =?us-ascii?Q?QlDLfkDuYRvwK6SK/Il/9kqYkv5muZM5DDR11983Pwc4Em+eKo7ENJZ2iJz6?=
+ =?us-ascii?Q?yiBvHq1tbSK8Mloxhj4zpt7n0TccEvfwYvmb4Lfqnr+lle8K2Hbfw9SeXmfX?=
+ =?us-ascii?Q?9gFLwGqyzZpzRMjLu7xHZgON6VZKgHFslBhFMxuD8MAHYb8viVp6dVzANBdO?=
+ =?us-ascii?Q?PBEtYmXNVdqXzAGlleT8nmhIupCmdmq34kuqOPzgEChj6BqD9TJLj6sLhVv4?=
+ =?us-ascii?Q?0V8cFl4EOlmMekq2HVOgjTwrOsA6oQdE8Gm7MV38EnvFj+3f2WB65kNClMSW?=
+ =?us-ascii?Q?QOQpqMgBI7ofKBKGpnq5TWGOb9Rj3dR23zYeZEW6qAcldGp06qA6mW8dCNH0?=
+ =?us-ascii?Q?/sNSlVqrwBfbeI5t+9PTYLpSF25AI1OPdLnb0kB5P4MhiED5Fy4CZwkS+8U2?=
+ =?us-ascii?Q?6aIb/j0WnnDYoGAPgmlHspsRF8glOKoOg6KoC4Qtiyo5BVc4tjXNSVLZcX12?=
+ =?us-ascii?Q?eDOxpCe5DRKVWhq4YfIzmX0ZhsDDBYZfTAjrbuAekfYWmWhGlge9zN26cCc2?=
+ =?us-ascii?Q?gbHR/UVa6vYcASli3fJiAyfIcd2PmLcdI23PkIE9GPmib6CQpkSSqPuPGKe/?=
+ =?us-ascii?Q?gcy4/+OeAtocKsjmE2X7sKZ7uMFLbmt4KWqIMyHsypSkiIbgxc/Nq21aZfe8?=
+ =?us-ascii?Q?P37ql+CCRNRxn1AYVjBXCQwNbTCIFNkE0RTBqISV7n/XraIejPqoYMKqKaez?=
+ =?us-ascii?Q?7AhbcfsSFqq4NDzzParA+GOZYqiIMa9WhFnQCKhmOFQySRy/s6KoU8oE9zcA?=
+ =?us-ascii?Q?MRGRK0w5Hi+whSAqmpk7u5rS6irWGfKkOpHV2skPvxfYhmOE8qv60O8O9y0Q?=
+ =?us-ascii?Q?m/zJcPca3DkWHowur1jEOMapmQMzcHQdKyGEv3ORsRGYFnN4HLNnEbbrcLGP?=
+ =?us-ascii?Q?ukqnZeTpwzof8MFkwx8oYGfkt68x9uThPXtaj6570tFpgufIUhXoGKCJWOZv?=
+ =?us-ascii?Q?12zGtwp0FGbMzZ6+KMgNS2dFzYZCE0DqWO2ZXBr8d2T6iOBHS9DDHbyUzaOB?=
+ =?us-ascii?Q?lA=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b129dae2-e394-424d-650c-08dbf5a12dc0
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 14:48:01.1462
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TH1K+qmAD0Hr/W1uUa15Z6E9IqmE9j6KT+ca0TYuNPGYVS6wG1VyRMl1hjD9eJmW7EkjcIvQP/Bg4mWyK9OAVQ5LoQTohj9jx0tc6s/wCQw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR17MB5873
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miqu=C3=A8l,
+On Tue, Dec 05, 2023 at 05:01:51PM +0800, Huang, Ying wrote:
+> Gregory Price <gregory.price@memverge.com> writes:
+> 
+> > On Mon, Dec 04, 2023 at 04:19:02PM +0800, Huang, Ying wrote:
+> >> Gregory Price <gregory.price@memverge.com> writes:
+> >> 
+> >> > If the structure is built as a matrix of (cpu_node,mem_nodes),
+> >> > the you can also optimize based on the node the task is running on.
+> >> 
+> >> The matrix stuff makes the situation complex.  If people do need
+> >> something like that, they can just use set_memorypolicy2() with user
+> >> specified weights.  I still believe that "make simple stuff simple, and
+> >> complex stuff possible".
+> >> 
+> >
+> > I don't think it's particularly complex, since we already have a
+> > distance matrix for numa nodes:
+> >
+> > available: 2 nodes (0-1)
+> > ... snip ...
+> > node distances:
+> > node   0   1
+> >   0:  10  21
+> >   1:  21  10
+> >
+> > This would follow the same thing, just adjustable for bandwidth.
+> 
+> We add complexity for requirement. Not there's something similar
+> already.
+> 
+> > I personally find the (src,dst) matrix very important for flexibility.
+> 
+> With set_memorypolicy2(), I think we have the needed flexibility for
+> users needs the complexity.
+> 
+> > But if there is particular pushback against it, having a one dimensional
+> > array is better than not having it, so I will take what I can get.
+> 
+> TBH, I don't think that we really need that.  Especially given we will
+> have set_memorypolicy2().
+>
 
-On Wed, 29 Nov 2023 17:37:29 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+From a complexity standpoint, it is exactly as complex as the hardware
+configuration itself:  each socket has a different view of the memory
+topology. If you have a non-homogeneous memory configuration (e.g. a 
+different number of CXL expanders on one socket thant he other), a flat
+array of weights has no way of capturing this hardware configuration.
 
-> Hello,
->=20
-> As part of a previous effort, support for dynamic NVMEM layouts was
-> brought into mainline, helping a lot in getting information from NVMEM
-> devices at non-static locations. One common example of NVMEM cell is the
-> MAC address that must be used. Sometimes the cell content is mainly (or
-> only) useful to the kernel, and sometimes it is not. Users might also
-> want to know the content of cells such as: the manufacturing place and
-> date, the hardware version, the unique ID, etc. Two possibilities in
-> this case: either the users re-implement their own parser to go through
-> the whole device and search for the information they want, or the kernel
-> can expose the content of the cells if deemed relevant. This second
-> approach sounds way more relevant than the first one to avoid useless
-> code duplication, so here is a series bringing NVMEM cells content to
-> the user through sysfs.
+That makes the feature significantly less useful. In fact, it makes the
+feature equivalent to set_mempolicy2 - except that weights could be
+changed at runtime from outside a process.
 
-I successfully tested the whole series, independently from Miqu=C3=A8l's
-tests and on different hardware:
 
-[tested on ARM64 + an I2C EEPROM with overlay loading/unloading]
-Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+A matrix resolves one very specific use case: task migration
 
-Luca
 
---=20
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+set_mempolicy2 is not sufficient to solve this.  There is presently no
+way for an external task to change the mempolicy of an existing task.
+That means a task must become "migration aware" to use weighting in the
+context of containers where migrations are likely.
+
+Two things to consider: A task...
+   a) has no way of knowing a migration occured
+   b) may not have visibility of numa nodes outside its cpusets prior to
+      a migration - making it unlikely/not possible for them to set
+      weights correctly in the event a migration occurs.
+
+If a server with 2 sockets is set up non-homogeneously (different amount
+of CXL memory expanders on each socket), then the effective bandwidth
+distribution between sockets will be different.
+
+If a container is migrated between sockets in this situation, then tasks
+with manually set weights, or if global weights are a single array, will
+have poor memory distributions in relation to the new view of the system.
+
+Requiring the global settings to be an array basically requires global
+weights to be sub-optimal for any use cases that is not explicitly a
+single workload that consumes all the cores on the system.
+
+If the system provides a matrix, then the global settings can be optimal
+and re-weighting in response to migration happens cleanly and transparently.
+
+~Gregory
