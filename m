@@ -2,56 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44978056F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629258056F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345660AbjLEOP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:15:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        id S1345789AbjLEOPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:15:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345797AbjLEOPX (ORCPT
+        with ESMTP id S1345617AbjLEOPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:15:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC747A1
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:15:28 -0800 (PST)
+        Tue, 5 Dec 2023 09:15:19 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C5CA1;
+        Tue,  5 Dec 2023 06:15:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701785730; x=1733321730;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=ptF6uPC3RXNrXfApt1E2BWI5duqusn2VDCReRCQ1Psw=;
-  b=F4vnXt/aY4q1fy/v0pKhETx444OvchYqVddSxK0mUcF4Zd0CD5ZlU7Wa
-   IUSax4bErSUb0NXTyE2w5hmGHZ0ZK/PXNIXzWCQy2NVVoC6QXav0epPuB
-   dUXD2Rp+r2y0R0olTJ+E6rC+tNpXreztncOXsuyVx0Md0QvS4TXLnjvAH
-   rBTXF9iY8rd+KVjI8F/Co9nz8il9G5InaRa0naMgN9j8k7/nUvZV4Uoz7
-   9vLuufKoSV4sS+WOYTBZIQl0awyjXmp6p1rs10ZKYVZHGpjYNxnknfTWf
-   /Y1a7z77pPPq1fHcR31ForjZQ1jinQlvGwG5zAXEO/bZe3ANLVD3Gi6+P
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="982131"
+  t=1701785725; x=1733321725;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GLanbkuh8qYU9HYqhRDh1oPSCT3uK7CWxgBK1a3Qrho=;
+  b=VmmzY5C5tgTTxWKPECR/f7I5nkB2xZ9QgiOhWilLIMCSaeb6XF/D2F5K
+   RSYEmHP7q2SLxVzAfoNVA+yqa3H8tGlq73JuOK0t+uPE2uFhPh09nomGB
+   QxI0JUxjuy7Kp84QhJDdGtgpgs2wokH0E29mKvb2MgutQcb84cgV06bKh
+   1ZoDNxNNdFTGkXdaEUWNNsjUYoa8ALAeUzoTQnZF/PaBM2PsFsFwXR6Ip
+   RrF3eCZwkxLrEw7tifyK2luGjdCLpK5aVtf87mapQhJN+SZQEWc9pJ8VN
+   MjMVaLG+vPyVt/elJzXnXRDl7Bf0vgRRjKKg2uP3V1OzJXs3e8SVDWJRn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="378924932"
 X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="982131"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 06:15:23 -0800
+   d="scan'208";a="378924932"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 06:15:24 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="799984123"
 X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="18975338"
+   d="scan'208";a="799984123"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 05 Dec 2023 06:15:19 -0800
+  by orsmga008.jf.intel.com with ESMTP; 05 Dec 2023 06:15:19 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rAWCi-00098y-2o;
+        id 1rAWCi-000996-3B;
         Tue, 05 Dec 2023 14:15:16 +0000
-Date:   Tue, 5 Dec 2023 22:14:53 +0800
+Date:   Tue, 5 Dec 2023 22:14:55 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Matt Ranostay <matt.ranostay@konsulko.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jiri Kosina <jkosina@suse.cz>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: drivers/hid/hid-mcp2221.c:1019:3-4: Unneeded semicolon
-Message-ID: <202312052224.8IO8gNm0-lkp@intel.com>
+To:     baneric926@gmail.com, jdelvare@suse.com, linux@roeck-us.net,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, corbet@lwn.net
+Cc:     oe-kbuild-all@lists.linux.dev, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, openbmc@lists.ozlabs.org,
+        kwliu@nuvoton.com, kcfeng0@nuvoton.com, DELPHINE_CHIU@wiwynn.com,
+        Bonnie_Lo@wiwynn.com
+Subject: Re: [PATCH v1 2/2] hwmon: Driver for Nuvoton NCT736X
+Message-ID: <202312052243.AbRqbNyT-lkp@intel.com>
+References: <20231204055650.788388-3-kcfeng0@nuvoton.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231204055650.788388-3-kcfeng0@nuvoton.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -62,62 +70,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: 960f9df7c620ecb6030aff1d9a6c3d67598b8290 HID: mcp2221: add ADC/DAC support via iio subsystem
-date:   1 year, 2 months ago
-config: i386-randconfig-053-20231204 (https://download.01.org/0day-ci/archive/20231205/202312052224.8IO8gNm0-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20231205/202312052224.8IO8gNm0-lkp@intel.com/reproduce)
+Hi,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on linus/master]
+[also build test WARNING on v6.7-rc4 next-20231205]
+[cannot apply to groeck-staging/hwmon-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/baneric926-gmail-com/dt-bindings-hwmon-Add-nct736x-bindings/20231204-135942
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231204055650.788388-3-kcfeng0%40nuvoton.com
+patch subject: [PATCH v1 2/2] hwmon: Driver for Nuvoton NCT736X
+config: um-randconfig-001-20231205 (https://download.01.org/0day-ci/archive/20231205/202312052243.AbRqbNyT-lkp@intel.com/config)
+compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312052243.AbRqbNyT-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312052224.8IO8gNm0-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312052243.AbRqbNyT-lkp@intel.com/
 
-cocci warnings: (new ones prefixed by >>)
->> drivers/hid/hid-mcp2221.c:1019:3-4: Unneeded semicolon
+All warnings (new ones prefixed by >>):
 
-vim +1019 drivers/hid/hid-mcp2221.c
+   drivers/hwmon/nct736x.c: In function 'nct736x_init_chip.constprop':
+>> drivers/hwmon/nct736x.c:367:15: warning: 'gpio0_3' is used uninitialized [-Wuninitialized]
+     367 |         ret = nct736x_write_reg(client, NCT736X_REG_GPIO_0_3, gpio0_3);
+         |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   993	
-   994	static int mcp_iio_channels(struct mcp2221 *mcp)
-   995	{
-   996		int idx, cnt = 0;
-   997		bool dac_created = false;
-   998	
-   999		/* GP0 doesn't have ADC/DAC alternative function */
-  1000		for (idx = 1; idx < MCP_NGPIO; idx++) {
-  1001			struct iio_chan_spec *chan = &mcp->iio_channels[cnt];
-  1002	
-  1003			switch (mcp->mode[idx]) {
-  1004			case 2:
-  1005				chan->address = idx - 1;
-  1006				chan->channel = cnt++;
-  1007				break;
-  1008			case 3:
-  1009				/* GP1 doesn't have DAC alternative function */
-  1010				if (idx == 1 || dac_created)
-  1011					continue;
-  1012				/* DAC1 and DAC2 outputs are connected to the same DAC */
-  1013				dac_created = true;
-  1014				chan->output = 1;
-  1015				cnt++;
-  1016				break;
-  1017			default:
-  1018				continue;
-> 1019			};
-  1020	
-  1021			chan->type = IIO_VOLTAGE;
-  1022			chan->indexed = 1;
-  1023			chan->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
-  1024			chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE);
-  1025			chan->scan_index = -1;
-  1026		}
-  1027	
-  1028		return cnt;
-  1029	}
-  1030	
+
+vim +/gpio0_3 +367 drivers/hwmon/nct736x.c
+
+   334	
+   335	static int nct736x_init_chip(struct i2c_client *client,
+   336				     u32 pwm_mask, u32 fanin_mask, u32 wdt_cfg)
+   337	{
+   338		const struct i2c_device_id *id = i2c_match_id(nct736x_id, client);
+   339		u8 i, gpio0_3, gpio4_7, gpio10_13, gpio14_17;
+   340		int ret;
+   341	
+   342		for (i = 0; i < NCT736X_PWM_COUNT; i++) {
+   343			if (i < 4) {
+   344				if (pwm_mask & BIT_CHECK(i))
+   345					gpio0_3 |= PWM_SEL(i);
+   346				if (fanin_mask & BIT_CHECK(i))
+   347					gpio10_13 |= FANIN_SEL(i);
+   348			} else if (i < 8) {
+   349				if (pwm_mask & BIT_CHECK(i))
+   350					gpio4_7 |= PWM_SEL(i);
+   351				if (fanin_mask & BIT_CHECK(i))
+   352					gpio14_17 |= FANIN_SEL(i);
+   353			} else if (i < 12) {
+   354				if (pwm_mask & BIT_CHECK(i))
+   355					gpio10_13 |= PWM_SEL(i);
+   356				if (fanin_mask & BIT_CHECK(i))
+   357					gpio0_3 |= FANIN_SEL(i);
+   358			} else {
+   359				if (pwm_mask & BIT_CHECK(i))
+   360					gpio14_17 |= PWM_SEL(i);
+   361				if (fanin_mask & BIT_CHECK(i))
+   362					gpio4_7 |= FANIN_SEL(i);
+   363			}
+   364		}
+   365	
+   366		/* Pin Function Configuration */
+ > 367		ret = nct736x_write_reg(client, NCT736X_REG_GPIO_0_3, gpio0_3);
+   368		if (ret < 0)
+   369			return ret;
+   370		ret = nct736x_write_reg(client, NCT736X_REG_GPIO_4_7, gpio4_7);
+   371		if (ret < 0)
+   372			return ret;
+   373		ret = nct736x_write_reg(client, NCT736X_REG_GPIO_10_13, gpio10_13);
+   374		if (ret < 0)
+   375			return ret;
+   376		ret = nct736x_write_reg(client, NCT736X_REG_GPIO_14_17, gpio14_17);
+   377		if (ret < 0)
+   378			return ret;
+   379	
+   380		/* PWM and FANIN Monitoring Enable */
+   381		ret = nct736x_write_reg(client, NCT736X_REG_PWMEN_0_7,
+   382					pwm_mask & 0xff);
+   383		if (ret < 0)
+   384			return ret;
+   385		ret = nct736x_write_reg(client,
+   386					NCT736X_REG_PWMEN_8_15, (pwm_mask >> 8) & 0xff);
+   387		if (ret < 0)
+   388			return ret;
+   389		ret = nct736x_write_reg(client, NCT736X_REG_FANINEN_0_7,
+   390					fanin_mask & 0xff);
+   391		if (ret < 0)
+   392			return ret;
+   393		ret = nct736x_write_reg(client, NCT736X_REG_FANINEN_8_15,
+   394					(fanin_mask >> 8) & 0xff);
+   395		if (ret < 0)
+   396			return ret;
+   397	
+   398		/* Watchdog Timer Configuration */
+   399		if (wdt_cfg != 0xff && id->driver_data == nct7363) {
+   400			ret = nct736x_write_reg(client, NCT7363_REG_WDT, wdt_cfg);
+   401			if (ret < 0)
+   402				return ret;
+   403		}
+   404	
+   405		return 0;
+   406	}
+   407	
 
 -- 
 0-DAY CI Kernel Test Service
