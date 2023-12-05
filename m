@@ -2,102 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 485F28056BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841EC805697
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345618AbjLEOGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        id S1442292AbjLENyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:54:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345587AbjLEOGP (ORCPT
+        with ESMTP id S1442281AbjLENyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:06:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9D318D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:06:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E145DC433C8;
-        Tue,  5 Dec 2023 14:06:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701785181;
-        bh=ztrbzYTZQKsvH33tkgl+qwxlT0HfVPRGVJ2xrk1JJVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SmHmUefIXAFabqnUAvfcofVrTfm2RcsTluAm+Xmw61SuLNhe5yjfdiqa+lU2oaxIc
-         icituGymcVYow/PXPTqTAU2Sqo89b3S0A+JRMA1Jx7l4b/n2Aeww8e2Usc35lDCyac
-         OWDjd7AeeoAgpmfCtRU0yqekStpY1do1ZGxNlPaU+a9+NwwXcVwL61m9/VRLRVGiJs
-         5XwNg2VDcZMo/+TY+qF2EjH5JAr46unQvCEebQkUgR9i1bq1ISFCza+QbUzPRk6XU1
-         I82U8TSJlERrTvk7LvGS2LvCt5AeEgbrPjWuEJRXMaAMlcKvJe80r7OUtmJ9Tg7RZr
-         M86gdse7FdLhA==
-Date:   Tue, 5 Dec 2023 21:53:50 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Charlie Jenkins <charlie@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
-Message-ID: <ZW8rbgsTqmuLTvoK@xhacker>
-References: <20231203135753.1575-1-jszhang@kernel.org>
- <20231203135753.1575-2-jszhang@kernel.org>
- <ZW4lUDpl0eZVNjrp@ghost>
- <20231205021406.GD1168@sol.localdomain>
+        Tue, 5 Dec 2023 08:54:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0FE122;
+        Tue,  5 Dec 2023 05:54:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701784460; x=1733320460;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=AMNx/fjJGfvaJNGvGiW3daQJM+aiJW9ZD+58Y4J119c=;
+  b=U9fCmrbtg24jDdxfaQ9xeZzKgQlSEvNM21T7pGztQcTR/CBGlihnU/yi
+   xOnrAZbTZgkQXDfx6E+ZbP/K0e9uqIGAoH7/pwvM0Rwuo1HOAAXUJVfLs
+   KwNcWmELueuBfM5ma17v3mGwAENL7YbvfnzfQlX4vIPoOBsaX4Msw3RA4
+   Jxb2Y9tYNWt+oDBtT6w5yWAs0U1+6+GhVSX1yWTwRpZtRkXNASDjBBeF4
+   yDkeaNUwDKX6uTB/es8xFk4rlWcMZfVUoZzhvIMMRZutkgjk4uIGpKnhW
+   oFEWO07G37+2Z8VXGMSSoDRuEsIgB1Jgj6cXEytNhRzFRP09RNKrGRBFu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="7240125"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="7240125"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 05:54:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="805278184"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="805278184"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 05 Dec 2023 05:54:14 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAVsJ-00096M-26;
+        Tue, 05 Dec 2023 13:54:11 +0000
+Date:   Tue, 5 Dec 2023 21:53:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     davidgow@google.com, Rae Moar <rmoar@google.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-sound@vger.kernel.org, David Gow <davidgow@google.com>
+Subject: Re: [PATCH 1/4] kunit: Add APIs for managing devices
+Message-ID: <202312052114.VQD1viY5-lkp@intel.com>
+References: <20231205-kunit_bus-v1-1-635036d3bc13@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231205021406.GD1168@sol.localdomain>
+In-Reply-To: <20231205-kunit_bus-v1-1-635036d3bc13@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 06:14:06PM -0800, Eric Biggers wrote:
-> On Mon, Dec 04, 2023 at 11:15:28AM -0800, Charlie Jenkins wrote:
-> > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > > index 7f8aa25457ba..0a76209e9b02 100644
-> > > --- a/arch/riscv/Kconfig
-> > > +++ b/arch/riscv/Kconfig
-> > > @@ -654,6 +654,18 @@ config RISCV_MISALIGNED
-> > >  	  load/store for both kernel and userspace. When disable, misaligned
-> > >  	  accesses will generate SIGBUS in userspace and panic in kernel.
-> > >  
-> > > +config RISCV_EFFICIENT_UNALIGNED_ACCESS
-> > 
-> > There already exists hwprobe for this purpose. If kernel code wants to
-> > leverage the efficient unaligned accesses of hardware, it can use static
-> > keys. I have a patch that will set this static key if the hardware was
-> > detected to have fast unaligned accesses:
-> > 
-> > https://lore.kernel.org/linux-riscv/20231117-optimize_checksum-v11-2-7d9d954fe361@rivosinc.com/
-> 
-> Is the plan to make the get_unaligned* and put_unaligned* macros expand to code
-> for both cases, and select between them using a static key?  Note that there are
-> a very large number of callers of these macros in the kernel.  And what about
-> kernel code that checks CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS directly?
-> 
-> AFAIK, no other Linux architecture supports kernel images where the unaligned
-> access support is unknown at compile time.  It's not clear to me that such an
-> approach is feasible.  A static key can easily be provided, but it's unclear
-> what code would use it, given that currently lots of kernel code assumes that
-> unaligned access support is known at compile time.
-> 
-> Meanwhile, there are people building kernels they know will only be deployed on
-> systems where unaligned accesses are supported.  To me, it seems useful to
-> provide a kconfig option for them to build a more efficient kernel.
+Hi,
 
-Generally, I agree with Eric's above points. Various subsystem such as net, mm,
-lib and so on have different code path for CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS,
-while Charlie's patch only touch partial code of arch/riscv, and even if those
-subsystem maintainers agree with dynamic code patching(I still believe
-persuading those subsystem maintainers is not easy), that's still a
-huge task which needs to be done step by step. So before that, we'd
-better let this series merged and benefit all efficient unaligned access
-riscv systems. When the huge task is completed, we can remove the config
-option.
+kernel test robot noticed the following build warnings:
 
-Thanks
+[auto build test WARNING on c8613be119892ccceffbc550b9b9d7d68b995c9e]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/davidgow-google-com/kunit-Add-APIs-for-managing-devices/20231205-153349
+base:   c8613be119892ccceffbc550b9b9d7d68b995c9e
+patch link:    https://lore.kernel.org/r/20231205-kunit_bus-v1-1-635036d3bc13%40google.com
+patch subject: [PATCH 1/4] kunit: Add APIs for managing devices
+config: powerpc-randconfig-r081-20231205 (https://download.01.org/0day-ci/archive/20231205/202312052114.VQD1viY5-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312052114.VQD1viY5-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312052114.VQD1viY5-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> lib/kunit/device.c:100:22: warning: no previous prototype for function '__kunit_device_register_internal' [-Wmissing-prototypes]
+     100 | struct kunit_device *__kunit_device_register_internal(struct kunit *test,
+         |                      ^
+   lib/kunit/device.c:100:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     100 | struct kunit_device *__kunit_device_register_internal(struct kunit *test,
+         | ^
+         | static 
+   1 warning generated.
+
+
+vim +/__kunit_device_register_internal +100 lib/kunit/device.c
+
+    99	
+ > 100	struct kunit_device *__kunit_device_register_internal(struct kunit *test,
+   101							      const char *name,
+   102							      struct device_driver *drv)
+   103	{
+   104		struct kunit_device *kunit_dev;
+   105		int err = -ENOMEM;
+   106	
+   107		kunit_dev = kzalloc(sizeof(struct kunit_device), GFP_KERNEL);
+   108		if (!kunit_dev)
+   109			return ERR_PTR(err);
+   110	
+   111		kunit_dev->owner = test;
+   112	
+   113		err = dev_set_name(&kunit_dev->dev, "%s.%s", test->name, name);
+   114		if (err) {
+   115			kfree(kunit_dev);
+   116			return ERR_PTR(err);
+   117		}
+   118	
+   119		/* Set the expected driver pointer, so we match. */
+   120		kunit_dev->driver = drv;
+   121	
+   122		kunit_dev->dev.release = kunit_device_release;
+   123		kunit_dev->dev.bus = &kunit_bus_type;
+   124		kunit_dev->dev.parent = &kunit_bus;
+   125	
+   126		err = device_register(&kunit_dev->dev);
+   127		if (err) {
+   128			put_device(&kunit_dev->dev);
+   129			return ERR_PTR(err);
+   130		}
+   131	
+   132		kunit_add_action(test, device_unregister_wrapper, &kunit_dev->dev);
+   133	
+   134		return kunit_dev;
+   135	}
+   136	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
