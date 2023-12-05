@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31827805ED6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F05805EDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbjLETxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
+        id S232062AbjLETyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:54:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLETxK (ORCPT
+        with ESMTP id S229483AbjLETyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:53:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE23A5
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:53:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7299FC433C7;
-        Tue,  5 Dec 2023 19:53:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701805996;
-        bh=5bILRm/voPLjGTGQ/2zk5RoYBOPSzOEdtIPbiV7rR0M=;
-        h=From:Date:Subject:To:Cc:From;
-        b=rZl2VeTYSyv0nFgj+9bbl3iP7V9JuPOrOv3FngmiP8rmM/cmIPfZO4ZVt5HMqze2a
-         wpPLxbChLvQZeb8H/r8AKrB/henHwRHiuygWU90/qwrPmQ/3SEOzwQlcaUblDCcdhA
-         DroFvHKIO20pJloDs+TkUx5xi/I6Rs83ja3ECGJBSKzWmnkiPTAhaDGcuJpVNE4QFH
-         NkxGjxBe/ganelNIOLJST+/RadhGxN2eQbFPd2qzbZ8/igHqdJZThmV3O1JysdfHbH
-         5Q+Ut/CzvDRcy3NJfe32z7PGITCI22ZjzD7qCAZ14duhfswBUDdx/AyzAG+NFojt0P
-         NOpDjKnvax1/w==
-From:   Nathan Chancellor <nathan@kernel.org>
-Date:   Tue, 05 Dec 2023 12:53:08 -0700
-Subject: [PATCH] x86/tools: objdump_reformat.awk: Skip bad instructions
- from llvm-objdump
+        Tue, 5 Dec 2023 14:54:14 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE1AA5;
+        Tue,  5 Dec 2023 11:54:21 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1cfc9c4acb6so29817065ad.0;
+        Tue, 05 Dec 2023 11:54:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701806061; x=1702410861; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jBZzT0/QbcprxNQTsHpzd6ven1aj0800Yb9/CoMbKBA=;
+        b=JaHEW5NG9N4g2WwCC2nClWqC+0cKqCSR4aHci057CaRZZEu0/TmwvpaqSZTQa+2pdg
+         rv63l77PYXQe5v5iGy9xgjYCNU7yMR+NWQRnJErQMiGZgI5V7uRhRvWqbXcnJr5D1Izz
+         o+pOYe+RXiURTSjyflpWThGIr0RKc5HWAfSaWq0NoX//FiIanchdKev5ZGmHgWW0xRJC
+         6Yuz4Kf1X3I3Y6/YXafRI8QCKQ5VMGKG/kNH5upcm7s/v4HtDqBGz3+BjpJLXPE+6Hna
+         8UkUqwpmjOUqmaaLmhRUalxSKzYJXxc3GhzIxCTuNV5YI/sdL82hxkiQua3oJy3TGGqR
+         iOsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701806061; x=1702410861;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jBZzT0/QbcprxNQTsHpzd6ven1aj0800Yb9/CoMbKBA=;
+        b=OH5TkFL5UBqlulU+oQgHtBEdTckLhXssKmdPyI+/tTuZjdbZhspoOT221kr+nh8ycS
+         avoqsa9YWqHqlazetQTaCtM1tJDVaQnc/gRjBxcWIlL08SUjvVrUh8OgzYb47KlvvqgE
+         XVWLrz0ea6QfvTBXQM5PVKb6bP3IeEKI4JtpV9Tr+wHIAe0wauYQWFSRVNBuz2d+msKC
+         oxdAwv/VWSqG6mXH+iInoY4wq9tgjc/L4TOoLQtz00BBW4VjzLH1cj1keNYRhP4niWm2
+         V8DcCvn/tMp/n5vvZQLurfAQaP7j5CLejOe+4eQe9lNv56jTZ3GItb9FavrrnqB0Cmu+
+         DtXA==
+X-Gm-Message-State: AOJu0Yxqyw98huwX1T0opIUi8mGPL3wHgxiNdM/X7KKYPvA61pI+ZLKp
+        lnTQK2r4c5jtcJbogAqrBRM=
+X-Google-Smtp-Source: AGHT+IHiN3u4lyG7cLPBE6NoEoYHDNHgelzGc9AxrA8KJTfHwHiCxIp8MO1xA3yLPhPxAMw1q8En6w==
+X-Received: by 2002:a17:902:8696:b0:1d0:6ffd:6e8e with SMTP id g22-20020a170902869600b001d06ffd6e8emr3152372plo.134.1701806060641;
+        Tue, 05 Dec 2023 11:54:20 -0800 (PST)
+Received: from localhost (fwdproxy-prn-024.fbsv.net. [2a03:2880:ff:18::face:b00c])
+        by smtp.gmail.com with ESMTPSA id c15-20020a170902d48f00b001d0cd9e4248sm876201plg.196.2023.12.05.11.54.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 11:54:19 -0800 (PST)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: [PATCH v8 3/6] zswap: make shrinking memcg-aware (fix)
+Date:   Tue,  5 Dec 2023 11:54:19 -0800
+Message-Id: <20231205195419.2563217-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231130194023.4102148-4-nphamcs@gmail.com>
+References: <20231130194023.4102148-4-nphamcs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231205-objdump_reformat-awk-handle-llvm-objdump-bad_expr-v1-1-b4a74f39396f@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAKN/b2UC/zWN2wrCMBAFf6XsswtptHj5FZGyaVaNJk3YaC2U/
- ruL4OPAnDkLVJbAFU7NAsJTqCGPCu2mgeFO440xeGWwxm5bazrM7uHfqfTC1yyJXkifJ6rpI2O
- MU/oL6Mj3PBfBI+93g7dkDq4D7Radhvn3eb6s6xengL9GgwAAAA==
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev,
-        Nathan Chancellor <nathan@kernel.org>
-X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1989; i=nathan@kernel.org;
- h=from:subject:message-id; bh=5bILRm/voPLjGTGQ/2zk5RoYBOPSzOEdtIPbiV7rR0M=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDKn59avvh/y0Yp8yseFB/C75KbV3D9tXvBTYeTTDb7/fp
- zXbeDniO0pZGMS4GGTFFFmqH6seNzScc5bxxqlJMHNYmUCGMHBxCsBEck8z/M9zP1Yfdo//ucHt
- O2ej3JYve8fS/WF/v3/gralT9/3hjjvCyPDadKqcXrDFjZd85To3Dwjf2RUm8XyT7/wDKrPmnDm
- zaD0/AA==
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running the instruction decoder selftest with LLVM=1 +
-CONFIG_PVH=y, there is a series of warnings:
+Use the correct function for the onlineness check for the memcg
+selection, and use mem_cgroup_iter_break() to break the iteration.
 
-  arch/x86/tools/insn_decoder_test: warning: Found an x86 instruction decoder bug, please report this.
-  arch/x86/tools/insn_decoder_test: warning: ffffffff81000050     ea                      <unknown>
-  arch/x86/tools/insn_decoder_test: warning: objdump says 1 bytes, but insn_get_length() says 7
-  arch/x86/tools/insn_decoder_test: warning: Decoded and checked 7214721 instructions with 1 failures
-
-GNU objdump outputs "(bad)" instead of "<unknown>", which is already
-handled in the bad_expr regex, so there is no warning.
-
-  $ objdump -d arch/x86/platform/pvh/head.o | grep -E '50:\s+ea'
-  50:   ea                      (bad)
-
-  $ llvm-objdump -d arch/x86/platform/pvh/head.o | grep -E '50:\s+ea'
-        50: ea                            <unknown>
-
-Add "<unknown>" to the bad_expr regex to clear up the warning, allowing
-the instruction decoder selftest to fully pass with llvm-objdump.
-
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- arch/x86/tools/objdump_reformat.awk | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/zswap.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/tools/objdump_reformat.awk b/arch/x86/tools/objdump_reformat.awk
-index a4120d907277..20b08a6c4d33 100644
---- a/arch/x86/tools/objdump_reformat.awk
-+++ b/arch/x86/tools/objdump_reformat.awk
-@@ -11,7 +11,7 @@ BEGIN {
- 	prev_addr = ""
- 	prev_hex = ""
- 	prev_mnemonic = ""
--	bad_expr = "(\\(bad\\)|^rex|^.byte|^rep(z|nz)$|^lock$|^es$|^cs$|^ss$|^ds$|^fs$|^gs$|^data(16|32)$|^addr(16|32|64))"
-+	bad_expr = "(\\(bad\\)|<unknown>|^rex|^.byte|^rep(z|nz)$|^lock$|^es$|^cs$|^ss$|^ds$|^fs$|^gs$|^data(16|32)$|^addr(16|32|64))"
- 	fwait_expr = "^9b[ \t]*fwait"
- 	fwait_str="9b\tfwait"
- }
-
----
-base-commit: 5225952d74d43e4c054731c74b8afd700b23a94a
-change-id: 20231205-objdump_reformat-awk-handle-llvm-objdump-bad_expr-9e74cd2a08b5
-
-Best regards,
+diff --git a/mm/zswap.c b/mm/zswap.c
+index f323e45cbdc7..7a84c1454988 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -834,9 +834,9 @@ static void shrink_worker(struct work_struct *w)
+ 			goto resched;
+ 		}
+ 
+-		if (!mem_cgroup_online(memcg)) {
++		if (!mem_cgroup_tryget_online(memcg)) {
+ 			/* drop the reference from mem_cgroup_iter() */
+-			mem_cgroup_put(memcg);
++			mem_cgroup_iter_break(NULL, memcg);
+ 			pool->next_shrink = NULL;
+ 			spin_unlock(&zswap_pools_lock);
+ 
+@@ -985,7 +985,7 @@ static void zswap_pool_destroy(struct zswap_pool *pool)
+ 	list_lru_destroy(&pool->list_lru);
+ 
+ 	spin_lock(&zswap_pools_lock);
+-	mem_cgroup_put(pool->next_shrink);
++	mem_cgroup_iter_break(NULL, pool->next_shrink);
+ 	pool->next_shrink = NULL;
+ 	spin_unlock(&zswap_pools_lock);
+ 
 -- 
-Nathan Chancellor <nathan@kernel.org>
-
+2.34.1
