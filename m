@@ -2,292 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1096804BCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BA9804BD2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376420AbjLEIFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:05:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39310 "EHLO
+        id S234918AbjLEIG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:06:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344755AbjLEIEv (ORCPT
+        with ESMTP id S1346395AbjLEIGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:04:51 -0500
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11394A7;
-        Tue,  5 Dec 2023 00:04:55 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 38AC06000A;
-        Tue,  5 Dec 2023 08:04:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701763494;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yOxyM1VVAEYmoQR0JhTaqTr0LD8ymtcagmKNqWRYF40=;
-        b=KNLdX44jJ1CvnYYoEkUGCmh4rjw+Z0Y7cSixIcTW60z6Wjl1UpmBi2qfN9CI3LHubL6hXG
-        5eH1vvgCrKDt8GIXRhanKbRHIKx+wgSrHVAlXg7zjXL/qpEOaOaYy+a6kTTs4yIP8K2Bwo
-        00RqG+UdmvyRYGHsG63zHZenLSTp7V59NrAk3xon9F4MXGEMBneKaa2LJmj0lECKw8kOdv
-        sim7w9oTpjhAaM7K4WwQkiBpIPS2JOialvtljLjj5NzuK3AnlsBFv+XGwi3I40glF9zYac
-        ECaGH3JhFIkyv12xZgInUNj4csEzfWTzQTR7kUr7rC0IWW7nxWKsL01cyDaRog==
-Date:   Tue, 5 Dec 2023 09:04:52 +0100
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
-        Sonal Santan <sonal.santan@amd.com>,
-        Stefano Stabellini <stefano.stabellini@xilinx.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
-Message-ID: <20231205090452.7c601eb5@bootlin.com>
-In-Reply-To: <CAL_JsqJJ64513pyQggU71agTzawNWPpm6ZpWMB6e0zu-tWL8yw@mail.gmail.com>
-References: <20231130165700.685764-1-herve.codina@bootlin.com>
-        <CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
-        <20231204134335.3ded3d46@bootlin.com>
-        <CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
-        <20231204163014.4da383f2@bootlin.com>
-        <CAL_JsqJJ64513pyQggU71agTzawNWPpm6ZpWMB6e0zu-tWL8yw@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 5 Dec 2023 03:06:06 -0500
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72AA6D41;
+        Tue,  5 Dec 2023 00:05:48 -0800 (PST)
+Received: from localhost.ispras.ru (unknown [10.10.165.7])
+        by mail.ispras.ru (Postfix) with ESMTPSA id BF7DB40F1DE9;
+        Tue,  5 Dec 2023 08:05:40 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru BF7DB40F1DE9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+        s=default; t=1701763546;
+        bh=JTEXi8TgIL4mRes1RKwLHstGL+1Ht9ZpBqt+VDl25fI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZeGt7KNDwgTR4NzwLFREB5RIzRFIzKzj8J8UY8T9MJ56stiHkXx6ciQse+PccqsEC
+         GysZq/0K7yIzDBSDAsN/QgKIspYqMjWRgsZ1mIa33nFG0HiaJX+g+waEXIPT7atVY5
+         HmTZUSaAsMxczUfMalOl3hYFHECIm4diML+dyO8k=
+From:   Fedor Pchelkin <pchelkin@ispras.ru>
+To:     Eric Van Hensbergen <ericvh@kernel.org>
+Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org
+Subject: [PATCH] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
+Date:   Tue,  5 Dec 2023 11:05:22 +0300
+Message-ID: <20231205080524.6635-1-pchelkin@ispras.ru>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Dec 2023 17:03:21 -0600
-Rob Herring <robh@kernel.org> wrote:
+If an error occurs while processing an array of strings in p9pdu_vreadf
+then uninitialized members of *wnames array are freed.
 
-> On Mon, Dec 4, 2023 at 9:30 AM Herve Codina <herve.codina@bootlin.com> wrote:
-> >
-> > Hi Rob,
-> >
-> > On Mon, 4 Dec 2023 07:59:09 -0600
-> > Rob Herring <robh@kernel.org> wrote:
-> >
-> > [...]
-> >  
-> > > > > diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
-> > > > > index 9c2137dae429..46b252bbe500 100644
-> > > > > --- a/drivers/pci/bus.c
-> > > > > +++ b/drivers/pci/bus.c
-> > > > > @@ -342,8 +342,6 @@ void pci_bus_add_device(struct pci_dev *dev)
-> > > > >          */
-> > > > >         pcibios_bus_add_device(dev);
-> > > > >         pci_fixup_device(pci_fixup_final, dev);
-> > > > > -       if (pci_is_bridge(dev))
-> > > > > -               of_pci_make_dev_node(dev);
-> > > > >         pci_create_sysfs_dev_files(dev);
-> > > > >         pci_proc_attach_device(dev);
-> > > > >         pci_bridge_d3_update(dev);
-> > > > > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> > > > > index 51e3dd0ea5ab..e15eaf0127fc 100644
-> > > > > --- a/drivers/pci/of.c
-> > > > > +++ b/drivers/pci/of.c
-> > > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
-> > > > >                 return 0;
-> > > > >
-> > > > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
-> > > > > +       if (!node && pci_is_bridge(dev))
-> > > > > +               of_pci_make_dev_node(dev);
-> > > > >         if (!node)
-> > > > >                 return 0;  
-> > > >
-> > > > Maybe it is too early.
-> > > > of_pci_make_dev_node() creates a node and fills some properties based on
-> > > > some already set values available in the PCI device such as its struct resource
-> > > > values.
-> > > > We need to have some values set by the PCI infra in order to create our DT node
-> > > > with correct values.  
-> > >
-> > > Indeed, that's probably the issue I'm having. In that case,
-> > > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
-> > > device_add().
-> > >
-> > > I think modifying sysfs after device_add() is going to race with
-> > > userspace. Userspace is notified of a new device, and then the of_node
-> > > link may or may not be there when it reads sysfs. Also, not sure if
-> > > we'll need DT modaliases with PCI devices, but they won't work if the
-> > > DT node is not set before device_add().  
-> >
-> > Ok, we can try using DECLARE_PCI_FIXUP_HEADER.
-> > On your side, is moving from DECLARE_PCI_FIXUP_EARLY to DECLARE_PCI_FIXUP_HEADER
-> > fix your QEMU unittest ?  
-> 
-> No...
-> 
-> And testing the bridge part crashes. That's because there's a
-> dependency on the bridge->subordinate to write out bus-range and
-> interrupt-map. I think the fix there is we should just not write those
-> properties. The bus range isn't needed because the kernel does its own
-> assignments. For interrupt-map, it is only needed if "interrupts" is
-> present in the child devices. If not present, then the standard PCI
-> swizzling is used. Alternatively, I think the interrupt mapping could
-> be simplified to just implement the standard swizzling at each level
-> which isn't dependent on any of the devices on the bus. I gave that a
-> go where each interrupt-map just points to the parent bridge, but ran
-> into an issue that the bridge nodes don't have a phandle. That should
-> be fixable, but I'd rather go with the first option. I suppose that
-> depends on how the interrupts downstream of the PCI device need to get
-> resolved. It could be that the PCI device serves as the interrupt
-> controller and can resolve the parent interrupt on its own (which may
-> be needed for ACPI host anyways).
+Fix this by iterating over only lower indices of the array.
 
-About interrupt, I am a bit stuck on my side.
-My dtso (applied at PCI device level) contains the following:
-	fragment@0 {
-		target-path="";
-		__overlay__ {
-			pci-ep-bus@0 {
-				compatible = "simple-bus";
-				#address-cells = <1>;
-				#size-cells = <1>;
+Found by Linux Verification Center (linuxtesting.org).
 
-				/*
-				 * map @0xe2000000 (32MB) to BAR0 (CPU)
-				 * map @0xe0000000 (16MB) to BAR1 (AMBA)
-				 */
-				ranges = <0xe2000000 0x00 0x00 0x00 0x2000000
-				          0xe0000000 0x01 0x00 0x00 0x1000000>;
+Fixes: ace51c4dd2f9 ("9p: add new protocol support code")
+Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+---
+ net/9p/protocol.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-				itc: itc {
-					compatible = "microchip,lan966x-itc";
-					#interrupt-cells = <1>;
-					interrupt-controller;
-					reg = <0xe00c0120 0x190>;
-				};
-				
-				...
-			 };
-		};
-	};
-
-I have a 'simple-bus' with a 'ranges' property to translate the BAR addresses
-then several devices. Among them a interrupt controller (itc). Its parent
-interrupt is the one used by the PCI device (INTA).
-I cannot describe this parent interrupt in the dtso because to that I need the
-parent interrupt phandle which will be know only at runtime.
-Of course, I can modified the overlay applied to tweak the 'interrupt' and
-'interrupt-parent' in the itc node from my PCI device driver at runtime but I
-would like to avoid this kind of tweak in the PCI device driver.
-This kind of tweak is overlay dependent and needs to be done by each PCI
-device driver that need to work with interrupts.
-
-For BAR addresses translation, we use the 'ranges' property at the PCI device
-node to translate 0 0 0 to BAR0, 1 0 0 to BAR1, ...
-What do you think about a new 'irq-ranges' property to translate the irq number
-and get the irq parent controller base.
-
-irq-ranges = <child_irq_spec parent_irq_spec length>;
-
-The idea would be to translate the child irq specifier (irq number +
-possible flags) parent DT node.
-if 'irq-ranges' present in parent translate irq spec then:
-1) 'interrupt' present in parent.
-   In that case, if the translation match, we use the translated irq spec
-   and resolve the parent interrupt controller using existing ways from this
-   node. If it does not match: error.
-2) 'interrupt-map' present in parent.
-   We use existing ways from this node with the translated irq spec to get the
-   parent interrupt controller.
-3) 'interrupt-controller' present in parent.
-   We use this node as parent interrupt controller and the translated irq spec
-4) no specific property present, update parent taking the parent's parent and
-   go again.
-
-With this the overlay becomes:
-	pci-ep-bus@0 {
-		compatible = "simple-bus";
-		#address-cells = <1>;
-		#size-cells = <1>;
-		#interrupt-cells = <1>;
-
-		/*
-		 * map @0xe2000000 (32MB) to BAR0 (CPU)
-		 * map @0xe0000000 (16MB) to BAR1 (AMBA)
-		 */
-		ranges = <0xe2000000 0x00 0x00 0x00 0x2000000
-		          0xe0000000 0x01 0x00 0x00 0x1000000>;
-
-		/* Translate PCI IRQ*/
-		irq-ranges = <1 1 1>;
-
-		itc: itc {
-			compatible = "microchip,lan966x-itc";
-			#interrupt-cells = <1>;
-			interrupts = <1>;
-			interrupt-controller;
-			reg = <0xe00c0120 0x190>;
-		};
-		
-		...
-	 };
-
-And the PCI device node built at runtime:
-	dev@0,0 {
-		#address-cells = <0x03>;
-		interrupts = <0x01>;  <-- use parent interrupt-map
-		#size-cells = <0x02>;
-		compatible = "pci1055,9660\0pciclass,020000\0pciclass,0200";
-		ranges = ...;
-		irq-ranges = <1 0x01 1>
-		reg = <0x10000 0x00 0x00 0x00 0x00>;
-	};
-or
-	dev@0,0 {
-		#address-cells = <0x03>;
-		interrupts = <NN>;
-		interrupts-parent = <phandle'
-		#size-cells = <0x02>;
-		compatible = "pci1055,9660\0pciclass,020000\0pciclass,0200";
-		ranges = ...;
-		irq-ranges = <1 NN 1>
-		reg = <0x10000 0x00 0x00 0x00 0x00>;
-	};
-
-In the second case, interrup-map in bridges nodes is still needed to build the
-'interrupts' / 'interrupts-parent' in devices nodes.
-and irq-ranges (if it makes sense on your side) allow to get and interrupt from
-the overlay without the need to know the irq parent phandle.
-
-Regards,
-Hervé
-
-> 
-> > We have to note that between the pci_fixup_device(pci_fixup_header, dev) call
-> > and the device_add() call, the call to pci_set_msi_domain() is present.
-> > MSIs are not supported currently but in the future ...  
-> 
-> MSI's aren't ever described in PCI nodes. Only the host bridge. So I
-> don't think we should have problems there.
-> 
-> > Related to DT modaliases, I don't think they are needed.
-> > All drivers related to PCI device should be declared as pci_driver.
-> > Correct me if I am wrong but I think that the core PCI will load the correct
-> > module without any DT modalias.  
-> 
-> Yes, you are probably right.
-> 
-> Rob
-
-
-
+diff --git a/net/9p/protocol.c b/net/9p/protocol.c
+index 4e3a2a1ffcb3..d33387e74a66 100644
+--- a/net/9p/protocol.c
++++ b/net/9p/protocol.c
+@@ -393,6 +393,7 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
+ 		case 'T':{
+ 				uint16_t *nwname = va_arg(ap, uint16_t *);
+ 				char ***wnames = va_arg(ap, char ***);
++				int i;
+ 
+ 				errcode = p9pdu_readf(pdu, proto_version,
+ 								"w", nwname);
+@@ -406,8 +407,6 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
+ 				}
+ 
+ 				if (!errcode) {
+-					int i;
+-
+ 					for (i = 0; i < *nwname; i++) {
+ 						errcode =
+ 						    p9pdu_readf(pdu,
+@@ -421,9 +420,7 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
+ 
+ 				if (errcode) {
+ 					if (*wnames) {
+-						int i;
+-
+-						for (i = 0; i < *nwname; i++)
++						while (--i >= 0)
+ 							kfree((*wnames)[i]);
+ 					}
+ 					kfree(*wnames);
 -- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.43.0
+
