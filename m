@@ -2,261 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF24D805408
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E590780540C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345088AbjLEMZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:25:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
+        id S1345287AbjLEMZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:25:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345080AbjLEMZX (ORCPT
+        with ESMTP id S1345248AbjLEMZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:25:23 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6340AFA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:25:28 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c09b021daso27692575e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:25:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1701779127; x=1702383927; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QNCLk+56fWI2chNhpjUr6+slGM9CjcICEgag2GdvCoc=;
-        b=ss4SiFkdwZY/2AZvfoVCmfCCATG7HPwTjCRg8Om2IoMjSg8oK7Uq1usj1oquxVbxK7
-         fSq3eg3Tv2GqVhMnJua29rIOEx8Ed4N1oc47narYzn6CFXObcQxMOeiMVhRF1gZ+KeEn
-         pOzUIv/1l2cRiAy3BUm8qk+L0R8DNnv20l6q8=
+        Tue, 5 Dec 2023 07:25:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DBBC6
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:25:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701779158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=ETXmoryrBgHKIsSSGX8IoKw3azWp+g8uDvWiDYs9lkk=;
+        b=GhOjQ98kB7hBHNzwO+mgue1v9IjBNyVVovIuxXJgQ8HIxSl20b3E1wdfCWV0heNnlhLQt3
+        YbAvCYDtGo8u2oPOjHjA85P1wl9uKr9YtGbw0Iv4iQfzRxF8MHHe4R1J0oh5H22uA8rcFr
+        Uv0RSxhOZqsSX3Zoo8egcaiLjc4PLGQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-653-Ld6zYdQoNrKt3hPb_nG2tg-1; Tue, 05 Dec 2023 07:25:56 -0500
+X-MC-Unique: Ld6zYdQoNrKt3hPb_nG2tg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40b349b9711so48327925e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:25:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701779127; x=1702383927;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QNCLk+56fWI2chNhpjUr6+slGM9CjcICEgag2GdvCoc=;
-        b=AyzPCjxwFJtKbIJrV2jnjwy8embu62/whX9EDiRESfeOaKnsZBzj4yR8Cz6/ImcquL
-         cBTxoOZ+KU7QeyTdeJHN/4rWjOld4RvURSjW/Wa1zF+HcRJ6p1lzilxBQVVG47xjicI6
-         H6ljqybs/Dh7rFra1RNTET3GU9P07LE4j2xWJ+rWLcD0E2xgNB2xBJMZsL/6srDHZtsG
-         bG0KDHRJHQGbNZRX++04lVERbHc2oP4IFtdsQ5R0Q1ndWifCpdkXP/AnnrYKSWyYwZ8E
-         TcQnOVNvICVW62zfCd8zx2br6nD1nIavIasDD3YjOfqE/VunX9e1zoMFK9oeFO6/x98J
-         tPGA==
-X-Gm-Message-State: AOJu0YwhF6zYukXjC0aqVVDcJw+TK1i+QrfEDteHpMhREeweSnwn307i
-        LbDgfWuBVmyKPDaMlDrt7MYZwg==
-X-Google-Smtp-Source: AGHT+IFxBxp6EQ7qVgNSuhOPqdIy0eT6mG75SBCSajakYFILb/bhoaJag+l06/bE/PKNsb6QbMajOg==
-X-Received: by 2002:a05:600c:600b:b0:40b:4e4e:2b22 with SMTP id az11-20020a05600c600b00b0040b4e4e2b22mr365566wmb.38.1701779126718;
-        Tue, 05 Dec 2023 04:25:26 -0800 (PST)
-Received: from [10.80.67.30] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id hg10-20020a05600c538a00b0040b398f0585sm18773310wmb.9.2023.12.05.04.25.26
+        d=1e100.net; s=20230601; t=1701779155; x=1702383955;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ETXmoryrBgHKIsSSGX8IoKw3azWp+g8uDvWiDYs9lkk=;
+        b=lU0csZRux2c5C1bnPIld34NAeISHQWLDiou1AhLgMI/0GxkMo0td+zFgS91RgVQ+dJ
+         6+xHW7AmwolOe2XmdagqqCaZRXONxSzQfdhLiosU0sX4ViLHli7h5Ps/gKl9ky1E7r1+
+         5UU7VWZajcgMncYYPDq0Fu7WK1yfUlX+1+Tf0naL4rfMRQjEJTvatWnO8EXvIfn4K8iC
+         JGlsapzlq6ynEfzCYFhBUCQtu6rbyHiQLEr3xKrd5MZHhvM77NciFow+CCx1tqcj7kmK
+         BMikNWFVU/cbRfpCyBmshBbZX0pgcHurvCD9kzeEcgbGSjPbHjGVD4iILG+LVYQnwWNd
+         CGhA==
+X-Gm-Message-State: AOJu0Yzf6Fp6toNfzWhBQBoYiVGjtgBkHEOcJn9YXtCW3Y5dOvGzRNvJ
+        F/vuEYHtG0xndoi59uVEmHtpbRqO4Zc13te4muZXWSAxjT6rhN7NlXcml3+FgVF9enJZlnEXFCo
+        W8i69wVuYVwOFjLYlNdxb+fzf
+X-Received: by 2002:a05:600c:1508:b0:40b:5e59:cc9d with SMTP id b8-20020a05600c150800b0040b5e59cc9dmr473865wmg.126.1701779155530;
+        Tue, 05 Dec 2023 04:25:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEpBBmzrQ2OLh+b6PaLOLKXclFjQkPBqzBmCdPKmDXrgPQNI6bI9uP1/eNijm3QbDMZq07qQg==
+X-Received: by 2002:a05:600c:1508:b0:40b:5e59:cc9d with SMTP id b8-20020a05600c150800b0040b5e59cc9dmr473856wmg.126.1701779155106;
+        Tue, 05 Dec 2023 04:25:55 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72f:300:1ec7:2962:8889:ef6? (p200300cbc72f03001ec7296288890ef6.dip0.t-ipconnect.de. [2003:cb:c72f:300:1ec7:2962:8889:ef6])
+        by smtp.gmail.com with ESMTPSA id a10-20020a5d53ca000000b0033330ace23asm12044230wrw.73.2023.12.05.04.25.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 04:25:26 -0800 (PST)
-Message-ID: <f260ddf9-be67-48e0-8121-6f58d46f7978@citrix.com>
-Date:   Tue, 5 Dec 2023 12:25:25 +0000
+        Tue, 05 Dec 2023 04:25:54 -0800 (PST)
+Message-ID: <c87a8988-b8e1-40bd-94f0-903a06ab6232@redhat.com>
+Date:   Tue, 5 Dec 2023 13:25:53 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 26/35] x86/fred: FRED entry/exit and dispatch code
-Content-Language: en-GB
-To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, jiangshanlai@gmail.com, nik.borisov@suse.com,
-        shan.kang@intel.com
-References: <20231205105030.8698-1-xin3.li@intel.com>
- <20231205105030.8698-27-xin3.li@intel.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <20231205105030.8698-27-xin3.li@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH RFC 07/39] mm/rmap: convert folio_add_file_rmap_range()
+ into folio_add_file_rmap_[pte|ptes|pmd]()
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Xu <peterx@redhat.com>
+References: <20231204142146.91437-1-david@redhat.com>
+ <20231204142146.91437-8-david@redhat.com>
+ <3e748c18-f489-4ec4-ae71-5a5b18a4b161@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <3e748c18-f489-4ec4-ae71-5a5b18a4b161@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 10:50 am, Xin Li wrote:
-> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
-> new file mode 100644
-> index 000000000000..215883e90f94
-> --- /dev/null
-> +++ b/arch/x86/entry/entry_fred.c
-> @@ -0,0 +1,230 @@
-> ...
-> +static noinstr void fred_intx(struct pt_regs *regs)
-> +{
-> +	switch (regs->fred_ss.vector) {
-> +	/* INT0 */
+On 05.12.23 13:04, Ryan Roberts wrote:
+> On 04/12/2023 14:21, David Hildenbrand wrote:
+>> Let's get rid of the compound parameter and instead define implicitly
+>> which mappings we're adding. That is more future proof, easier to read
+>> and harder to mess up.
+>>
+>> Use an enum to express the granularity internally. Make the compiler
+>> always special-case on the granularity by using __always_inline.
+>>
+>> Add plenty of sanity checks with CONFIG_DEBUG_VM. Replace the
+>> folio_test_pmd_mappable() check by a config check in the caller and
+>> sanity checks. Convert the single user of folio_add_file_rmap_range().
+>>
+>> This function design can later easily be extended to PUDs and to batch
+>> PMDs. Note that for now we don't support anything bigger than
+>> PMD-sized folios (as we cleanly separated hugetlb handling). Sanity checks
+> 
+> Is that definitely true? Don't we support PUD-mapping file-backed DAX memory?
 
-INTO (for overflow), not INT-zero.  However...
+They are not handled via the rmap. Otherwise, all the PMD accounting 
+(e.g., FilePmdMapped) in RMAP code would already be wrong for them.
 
-> +	case X86_TRAP_OF:
-> +		exc_overflow(regs);
-> +		return;
-> +
-> +	/* INT3 */
-> +	case X86_TRAP_BP:
-> +		exc_int3(regs);
-> +		return;
+And it's easy to verify by looking at zap_huge_pud() that doesn't call 
+any rmap code.
 
-... neither OF nor BP will ever enter fred_intx() because they're type
-SWEXC not SWINT.
+[...]
 
-SWINT is strictly the INT $imm8 instruction.
+>> +
+>> +static inline void __folio_rmap_sanity_checks(struct folio *folio,
+>> +		struct page *page, unsigned int nr_pages, enum rmap_mode mode)
+>> +{
+>> +	/* hugetlb folios are handled separately. */
+>> +	VM_WARN_ON_FOLIO(folio_test_hugetlb(folio), folio);
+>> +	VM_WARN_ON_FOLIO(folio_test_large(folio) &&
+>> +			 !folio_test_large_rmappable(folio), folio);
+>> +
+>> +	VM_WARN_ON_ONCE(!nr_pages || nr_pages > folio_nr_pages(folio));
+> 
+> nit: I don't think you technically need the second half of this - its covered by
+> the test below...
 
-> ...
-> +static noinstr void fred_extint(struct pt_regs *regs)
-> +{
-> +	unsigned int vector = regs->fred_ss.vector;
-> +
-> +	if (WARN_ON_ONCE(vector < FIRST_EXTERNAL_VECTOR))
-> +		return;
-> +
-> +	if (likely(vector >= FIRST_SYSTEM_VECTOR)) {
-> +		irqentry_state_t state = irqentry_enter(regs);
-> +
-> +		instrumentation_begin();
-> +		sysvec_table[vector - FIRST_SYSTEM_VECTOR](regs);
+My thinking was that if nr_pages would be "-1", one could end up with 
+weird wraparounds.
 
-array_index_mask_nospec()
+But yeah, I thought about this as well and might just remove it.
 
-This is easy for an attacker to abuse, to install non-function-pointer
-targets into the indirect predictor.
+> 
+>> +	VM_WARN_ON_FOLIO(page_folio(page) != folio, folio);
+>> +	VM_WARN_ON_FOLIO(page_folio(page + nr_pages - 1) != folio, folio);
+> 
+> ...this one.
+> 
 
-> +		instrumentation_end();
-> +		irqentry_exit(regs, state);
-> +	} else {
-> +		common_interrupt(regs, vector);
-> +	}
-> +}
-> +
-> +static noinstr void fred_exception(struct pt_regs *regs, unsigned long error_code)
-> +{
-> +	/* Optimize for #PF. That's the only exception which matters performance wise */
-> +	if (likely(regs->fred_ss.vector == X86_TRAP_PF)) {
-> +		exc_page_fault(regs, error_code);
-> +		return;
-> +	}
-> +
-> +	switch (regs->fred_ss.vector) {
-> +	case X86_TRAP_DE: return exc_divide_error(regs);
-> +	case X86_TRAP_DB: return fred_exc_debug(regs);
-> +	case X86_TRAP_BP: return exc_int3(regs);
-> +	case X86_TRAP_OF: return exc_overflow(regs);
+Thanks!
 
-Depending on what you want to do with BP/OF vs fred_intx(), this may
-need adjusting.
+-- 
+Cheers,
 
-If you are cross-checking type and vector, then these should be rejected
-for not being of type HWEXC.
+David / dhildenb
 
-> +	case X86_TRAP_BR: return exc_bounds(regs);
-> +	case X86_TRAP_UD: return exc_invalid_op(regs);
-> +	case X86_TRAP_NM: return exc_device_not_available(regs);
-> +	case X86_TRAP_DF: return exc_double_fault(regs, error_code);
-> +	case X86_TRAP_TS: return exc_invalid_tss(regs, error_code);
-> +	case X86_TRAP_NP: return exc_segment_not_present(regs, error_code);
-> +	case X86_TRAP_SS: return exc_stack_segment(regs, error_code);
-> +	case X86_TRAP_GP: return exc_general_protection(regs, error_code);
-> +	case X86_TRAP_MF: return exc_coprocessor_error(regs);
-> +	case X86_TRAP_AC: return exc_alignment_check(regs, error_code);
-> +	case X86_TRAP_XF: return exc_simd_coprocessor_error(regs);
-> +
-> +#ifdef CONFIG_X86_MCE
-> +	case X86_TRAP_MC: return fred_exc_machine_check(regs);
-> +#endif
-> +#ifdef CONFIG_INTEL_TDX_GUEST
-> +	case X86_TRAP_VE: return exc_virtualization_exception(regs);
-> +#endif
-> +#ifdef CONFIG_X86_KERNEL_IBT
-
-CONFIG_X86_CET
-
-Userspace can use CET even if the kernel isn't compiled with IBT, so
-this exception needs handling.
-
-> +	case X86_TRAP_CP: return exc_control_protection(regs, error_code);
-> +#endif
-> +	default: return fred_bad_type(regs, error_code);
-> +	}
-> +}
-> +
-> +__visible noinstr void fred_entry_from_user(struct pt_regs *regs)
-> +{
-> +	unsigned long error_code = regs->orig_ax;
-> +
-> +	/* Invalidate orig_ax so that syscall_get_nr() works correctly */
-> +	regs->orig_ax = -1;
-> +
-> +	switch (regs->fred_ss.type) {
-> +	case EVENT_TYPE_EXTINT:
-> +		return fred_extint(regs);
-> +	case EVENT_TYPE_NMI:
-> +		return fred_exc_nmi(regs);
-> +	case EVENT_TYPE_SWINT:
-> +		return fred_intx(regs);
-> +	case EVENT_TYPE_HWEXC:
-> +	case EVENT_TYPE_SWEXC:
-> +	case EVENT_TYPE_PRIV_SWEXC:
-> +		return fred_exception(regs, error_code);
-
-PRIV_SWEXC should have it's own function and not fall into fred_exception().
-
-It is strictly only the ICEBP (INT1) instruction at the moment, so
-should fall into bad_type() for any vector other than X86_TRAP_DB.
-
-> +	case EVENT_TYPE_OTHER:
-> +		return fred_other(regs);
-> +	default:
-> +		return fred_bad_type(regs, error_code);
-> +	}
-> +}
-
-~Andrew
