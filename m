@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF56804FC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:06:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B177804FC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:06:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344951AbjLEKGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
+        id S1346380AbjLEKGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:06:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231889AbjLEKGF (ORCPT
+        with ESMTP id S231994AbjLEKGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Dec 2023 05:06:05 -0500
 Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2073.outbound.protection.outlook.com [40.92.52.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9DFA7;
-        Tue,  5 Dec 2023 02:06:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381DAAA;
+        Tue,  5 Dec 2023 02:06:12 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lyMWO1qdyJymCT2uXkJ3xQPdcJ6j/CWOZNVt9xPVwJCU4vSX3Tkl+lBse4ma8l2D5dqPVG0lJx/NV2eB637CHFhpwhuZfGMD12DtYnqI3hzUQOwbYKlKP3j7S1lTcKfBgRR4PTMJUb3W/AyZdtR9+rKrfcMOgdKfVFb+XoHf8nK45Q2oLtM2O8IQ/XAiMOsyETe+rhiNsW3iYskum2bEBswLEfI+nfNDl4JoCXMOH1jN89OyebK9MbnfR8BlZJi0h78z/D1e7kPgpvpqT3flQoJ8IHmMx403VR6TwtBfMGg/+fMlUZ+d5J354oUJp0wbDguKfxvjPphD6Jj89JhKqw==
+ b=h3SgM+tuqfTHbFrlGjOh/ZLaZIpW70bB7tspBjEAu0XLj/O4IEJFdPFmeKW6eztaUsbvsUuxJzwA0OfZZiDyTNEDV2oJKCQqaU4msuIq6QXHQRrQyDGwesGQT3mAofrgcw+ZZNn+zDAEPNHsfI7zIB7zFSAFTJ/2a6fVQGK97CYxE1LhNtbnPG4AbFVDKxKJBjbXsjLXdBGXnbWZ9rx6n8PrcjFClLTYXUAABIm2epftyCaks1KF5ond4IeIijIbXHZIhqZHwzsV9DZGmAKf6D8qIB8iVeKHakGEnu6UYv8Cahwz1MMcT9Il/oAuf0TlZrSby2FrQUxEMe1BnBMnOQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DKhxWmIdDiIMAzWAiSNLLBuHVP89Xp1LGNtfBX0yFSg=;
- b=f7FlHbFKavL2MwcCMN4tr/bCQL4zUxhSaFBVGusnn79gOHmgT+QiNhf+2tvOhlIuOukfBacKs550y6RKJ3YP32Hq+tfpNI6okXhuBOEgi7V1jKHxNkfogcCQkdXXKiP4gd7wbe5eFApNyiNZYRYGERsM0M5L+qgYuJ3Lql240dpEs70Yl3BzK2pKKMyTFqWiABVP3EHanzzHtU1I8YE1JF5vNsYpaGEh/5gehcuc6qvWG7wlXIhUOy8vRbgCpUnq9ncldeyi+pHF3K5OUg18BEFoiy4qoG3t3BRxox4PBUOc9yDRJKJxRCfxoVIyiVZfklP516DLPOZHIQZmX0Uqcg==
+ bh=riIxlArENCoaMNr3b1AfCgrNHkczW4liCzMBXP1+Qe0=;
+ b=ZsasmH3jxvQ1/WkJxGPh3yk6ubx6OFfvXZ0ilcN7nVzL3wpjAp6S/yoa6wcRIqnGOCkuf0Mi/UEK12JRyVpRHvKEuzqVl73TrcxjRDtwnfz7OSlDVq56g7JcNR3X7QluGAF1nXKD1gxX7LBWRDXGUZc15sR3xjYPthr7NviypAS4Pg8g9FwoswBCGQbn58ed1ZsIkxKqKAOBbyTXm4KFRkEEnp8PqOl4y9jj+qrY+zOqCxdEk9BvlJAzb9Ua7QJmeMpQbizoMMqoiVqLzMkI7u5W4/tZQMwc9niBl68wFLqpQ5qx8acEYkv98Fa9y9NcBnM6KhrHdfFh53TFxaWpDA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DKhxWmIdDiIMAzWAiSNLLBuHVP89Xp1LGNtfBX0yFSg=;
- b=iSxC6LKa2VaQ0iyO54UGL8dAA/yvLXZYzIeenR7pLsKlUujDdaK/TMWsWxd+sTddaChPE5EXcR/zpFUCqBbVgV/1mCrNGrXjSCWMutEdyt8ZL0iDtsajnafCnlpMpP2zz5PnnVn7K77VvuxLDJE8BNArjCfN9CsXMrEtJtUkaUZ3DQahjTv4AOQPYDNZ3++6+8FvKIEPD8xVNKfd9MQ+O/V05IaeFm3G/zg5R1eQsMSBpepbs+PUmbmYK5iNEnlYQTJjhU+JlHpjFubcQsCpwV9y7GeeH50BwRsk6NoZaqDNUrfDSbb+ZzzuIlgbeEu6ug1DUx9LzwZKCeOhsxSrSw==
+ bh=riIxlArENCoaMNr3b1AfCgrNHkczW4liCzMBXP1+Qe0=;
+ b=retMgNtLGDuaf8ijGGGdc9QMttktRW0rUBTpn6IkccHHJP2SPdiPpFRXbpxGkQOdoImSnNiqALHzQyNX9larPDTKXJojpw5iVg/3a53mgBP1bWSngJzHLK3sSuf/OTKfJ02DG1xtlqEkX/oocrZ9qM/7U2gF2N8DdCYzFfjjvRqvbtzX/R4BTYORSDl/8j/wK/nzIZ+5GL6xqqJd/JdDgUKNHlTxZ9+WPAG7Lbz9DRTH9bsuccrjCVwHNrvHeXSVtqgaslLXOmlIgPAF8I66slMHKx32AJeFP7tcUHYHAhrHjKlkbOi1FY6GG1Z48zS95kPPhyfKmIRf8dxcdDAAaQ==
 Received: from TY0PR06MB5611.apcprd06.prod.outlook.com (2603:1096:400:31e::8)
  by SEYPR06MB6587.apcprd06.prod.outlook.com (2603:1096:101:169::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 10:06:04 +0000
+ 2023 10:06:08 +0000
 Received: from TY0PR06MB5611.apcprd06.prod.outlook.com
  ([fe80::f2fd:d852:e4b9:6166]) by TY0PR06MB5611.apcprd06.prod.outlook.com
  ([fe80::f2fd:d852:e4b9:6166%5]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 10:06:04 +0000
+ 10:06:08 +0000
 From:   Allen_Lin <allencl_lin@hotmail.com>
 To:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -45,53 +45,55 @@ To:     dmitry.torokhov@gmail.com, robh+dt@kernel.org,
         linux-input@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Allen_Lin <allencl_lin@hotmail.com>
-Subject: [PATCH v1 0/2] Add HX83102j driver for HIMAX HID touchscreen 
-Date:   Tue,  5 Dec 2023 18:05:50 +0800
-Message-ID: <TY0PR06MB56110AE059FC985028EF2E409E85A@TY0PR06MB5611.apcprd06.prod.outlook.com>
+Subject: [PATCH v1 1/2] dt-bindings: input: Add Himax HX83102J touchscreen
+Date:   Tue,  5 Dec 2023 18:05:51 +0800
+Message-ID: <TY0PR06MB56116A355D2A5BF665FA0D899E85A@TY0PR06MB5611.apcprd06.prod.outlook.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231205100552.723620-1-allencl_lin@hotmail.com>
+References: <20231205100552.723620-1-allencl_lin@hotmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-TMN:  [+WOS5bSWrvBkBI4dqqj2IVU+lU9np3Jb/jhll2J/ogwDTI+X4d0Ck+SHXxJkvr5fESK7BJyQwr8=]
+X-TMN:  [g6r3mvwCZOA4Zd3NPDxmno0UK5FMhAkbeiqq0jOMPfXLCEGlYFSqRTBKjnF5fjU77hr973at+00=]
 X-ClientProxiedBy: TYCPR01CA0102.jpnprd01.prod.outlook.com
  (2603:1096:405:4::18) To TY0PR06MB5611.apcprd06.prod.outlook.com
  (2603:1096:400:31e::8)
-X-Microsoft-Original-Message-ID: <20231205100552.723620-1-allencl_lin@hotmail.com>
+X-Microsoft-Original-Message-ID: <20231205100552.723620-2-allencl_lin@hotmail.com>
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: TY0PR06MB5611:EE_|SEYPR06MB6587:EE_
-X-MS-Office365-Filtering-Correlation-Id: 366aecbe-1b6b-4bf6-169d-08dbf579cabe
+X-MS-Office365-Filtering-Correlation-Id: 36ddeb01-8180-4c94-6499-08dbf579ccb0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: trbyneZUi9OL4fy8bSK9LOQtuIw4+saQT85XMS2rORWLyu6hYvp+raVluRi1N84S9KzdSH0FfH7bYp50pUOxR//xe9IG9a1zHmfpXjy2JYjEOD9csMeF9SQ6ILCqgPsmhtO6eEAyaKWZX2fI/f2TbYOr6J6m5qEj+xAOoglXlP5yoJ2jiLk9rgTHuvIht7zo2Vt8JuMEDq2HJSeUyGvKCZ5tyqInnWYabLbS8yM0g7k/JSQzlrYVt/IDoH5kK4WxVyaVFpKEmK+swJFfQAWqIpKx2JKrH+N2Fvst5NnjV/ffBuSaravG0nDpou1A6WBoBExCwEsnpJ+fk77KjCtLJ0NAbs5gfqSxXLZGQ90qSrIrUK4pMBPJequ83A/7g+mC3kWo0BO851IGQMeUUwIT/mI3lzzysViP+RcMaCWGZYxE5rwR9i++IYhrPhNMpsmkopFgyjv/J4BPHBq5sQpTkqO2+iFWBUPU+40XVwbZuGg97DL0duE+plfr07MzXJP7mcUFNUzKRDQCiUzgKAAenUaD3eZnaVSseKQWQ/ssYI4jGbuCFU9rzmDwRxu0inxr2oNsvwj7imLKIEkGeoYGFo+ZJSWGbBhtssiZe8oac2ldpu7RF6DAQ4es9EKkP3jW
+X-Microsoft-Antispam-Message-Info: IAnPH1QQUgAtK/akQ9/AFV2ibUFqIt0xHIopRi6aKZB9JIUtKRzR0LZkme8k3KGglyujU2TquPAqvImbokwSehcLZm8oaDP/7cupMq3kIzE1YmGwRzjp01SrCKTDKRcwqtQQpbma7JeQNs7DUoo8ZlLEBRyjGcs9vMJrO3e7xTTEishazGcA1LSh1ENjmYDkmzwGCDqVPp2o4Lj8QgFRTA4fVF74Sjcrj8IymRBWV+VEBPR0y7bvL5mFgv/96CVeHRf9UOmsFHVzKRmdKbZjb0xT5gqCbiP2iqMESo1Xy+eybGu07jrNixbw0Ckei2GFAaLxB6qQlyOgi4tLrN6eGqnULmWpi7J4FXUJJEG6xcqt7FsO6EDSrWzHt8huX7lmMR6nYAtmEYO+mCqrET6vcUXYqujgEgX6MZ40WfKK+7F8U+P93y4kbWjXOTw85bs1/1d2S90aZbtiRNQMf2mDEQYLwVW1ThGBTzLzXt6tolka3/Zdesyc2tHV6ncTOB5o4Pc0pSg5RGod5gFZOaXDoRRJ2HC7qw8eNZDOoWpfPzRZXLT2rR0BmWGE6URPhgwbGe+6YzKNC+ZB4+woX6/s3Bpk0uQhWRKvmoj5AgkBIXEYkmiueCJ5U6OMlD+Gg3jm
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WC+Gta5GSvMHJG0NbMlcX4fWBJQx6Nwa+H8bFnvuyAqE1QQx8HLgrIQgGI3P?=
- =?us-ascii?Q?JcLRWyhu5PRfnSWhU6EqnGvDR7hlWZpEGyBC1sIeW8B+hkNDhyVEK8TmmL4I?=
- =?us-ascii?Q?nI2EX3lcEqlstCrdWD0lt9WMpo5ZoBUJb94X5dUSW7s4jbfWtIlDcJqS25Mx?=
- =?us-ascii?Q?4edGhxnf2+pVzjT4fQJn7h+uSUeu8CmPQJZsbpwEmhhelc7eAgr1KKmhrjXO?=
- =?us-ascii?Q?YCfQhgng8GA+M6310/ykO/moLst8Xmg8Oa4syUGn2xRb3tkCeUE26kyjLLHw?=
- =?us-ascii?Q?5fYbyUE7kzH+VhojXJJfyX9GUrQ50xqIyOwelbDyDQ7CCXcrBKCuXjCsxCdP?=
- =?us-ascii?Q?uL88Gfrw2Tqi4RHfZsk7weH0PcIIjBRs6JPyJ0CTr54X1z3iVvaKUAvIhEP9?=
- =?us-ascii?Q?041Un3eceOJ7b01Rnac0neWgCQfupLp2i4Q542oG9UA5T2waOBuqJVOu/ijq?=
- =?us-ascii?Q?KP2fhYNW3fUpSDFJ1QAzP9ZdYqe22P6Qfllf/fX91yPKg+P39ZOxj4kdWabL?=
- =?us-ascii?Q?yfHQamI7+qut3ZfKL/E1voNeW6ew9Y8pMMn3Wvk4i0CaBI066/JtSmo0YzbW?=
- =?us-ascii?Q?kyotma5kiLTrU5unaRrDtwTxDE6TZB/57sLr9AQoNjip7wT2C/k6y8MqHl8b?=
- =?us-ascii?Q?K2iue7dTxvz3ItmLJjkgJxdsdDcjiwHtHHXc1ttxi3hFLEPVLPM7HfqCM3Id?=
- =?us-ascii?Q?LrHfwjDV0NIar5rxpGByF00FTWDO1j4VUHr1V0ahKedxGQ/P2k8/IFDIk8Wl?=
- =?us-ascii?Q?2yDQ6CliCkr4LseX0XEsOmluJidZAeo+s4fgvVs9M/RfH/d7ryp2F/b8dLh3?=
- =?us-ascii?Q?RzqIsjxSt7mJHTL8eqayluq4EV9vr+wgKCZp1qGs+LzfCsK2/OowOPe5NEdB?=
- =?us-ascii?Q?3MM61Dna1VrKUeOzlRIrefitD2G04fyuOlf5mDb1h9Yy9gj4QbBiwZhUiPHQ?=
- =?us-ascii?Q?01Q4dXCx8UWlnKL1ZU8Sk5x/hWKL1yLm9mJfICa+J8rx73+Sky527pNFaw/Y?=
- =?us-ascii?Q?0FfeDIJVENf4B8HlowruF3XTpblnwjb/hKfXsiArr1vB37r86GzzqsDE0UQz?=
- =?us-ascii?Q?jYDt29hHvECssDcRolF9R/eVR9KO6ikhqrH0NpsEJKXhoo5zPnd1TW2Jrs36?=
- =?us-ascii?Q?bAwQukdCMAeEwzrz7tUgXLKnntAjXlSkTKEIVsSAGSqowKPNgy2Y7RF6aqLM?=
- =?us-ascii?Q?z4fxlDMdzi83j6iWduCeSsFFsKsM0LAApSg2xQ/pvnUBHovaGD9RC6755d/G?=
- =?us-ascii?Q?YsFRkF4kFdzxbZ3oR1WIFHSCDQAzqFJQhbt20QZtykv6zeBCPSGSTUWYGAZD?=
- =?us-ascii?Q?ejo=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8a95NfBTAm4Acmj5uKOHnN/+jEOKS031Ly/WOsrC9bsGE+z7IXmvFNbVc5vD?=
+ =?us-ascii?Q?NIZFC1nBo7uxK8/tAszBKwajyTQs0lm+VmK3tu7R+HQQtsrP72Cx3tV2Kno3?=
+ =?us-ascii?Q?P7xLJypPGZQfv9flRP1VsZUcRj3wDE7IYbhLTIa9n3r2hEV6H0dRHQtvXS5U?=
+ =?us-ascii?Q?9WsjNxKe6+S0OSOwcQTvPnHJVEcvszUW6MTEHMYTSNU+IMZNUtuNekLfSjU/?=
+ =?us-ascii?Q?JleXN0AQp1UY4Tk+2Jh7xDeva/gRrN00b54kBVvvrY5rgOMV51Dwk9tm/om6?=
+ =?us-ascii?Q?FyXiI2fWpXwXjvuyt+QApoKNAClr6nn5lCFWpVrO3txBA2DEod8UwJuD9qpw?=
+ =?us-ascii?Q?5Zn0kZFm9ea0GB77EqSx2cFROcztuKxAQ684oXsAIcVeKE8tlycUc/zZ6T7P?=
+ =?us-ascii?Q?eiivozVjkUlmN3uHIEgFhB2KTTQXFeqZCCjyUTqDGF33om8SMR1FXaYS0JKy?=
+ =?us-ascii?Q?U3umier6fpu10N4Sx4K7bwGg9ahlbWd00BW46qhn6H5fhk6qMkXJdfrDdBfX?=
+ =?us-ascii?Q?9RmjuHMf7FSdWHvnLsqQHi3OpzLGHV6Mb9Sv/ByHwQOge3JLXfRGOi82GtGL?=
+ =?us-ascii?Q?bjiJ1YC8UFF0hDGs3TfRYjwWvsC2fohtq3QSdZWsXfa5L7/1OFQQkT5fKGen?=
+ =?us-ascii?Q?L4AHCnZcXzGTB8fXkXrlET8aVoPR6BHOWMlHQ6j/6gcg9bnL/5Kz/XQywQyZ?=
+ =?us-ascii?Q?/tCHpkodz67XKNTPBs7n0o8Fk48OsMFXO3g63Yk/M00X3LKA7o0vmdmeJiaS?=
+ =?us-ascii?Q?CIpEgWkQWMEQcNVW9qs4d16xIkt3lCJmFFuJiXEizq7pn3ulTUaqqtFVr9IJ?=
+ =?us-ascii?Q?EQ+RLXtLLt8aAehSzH2PjxxvwXjsSf7Pt8Nin+ak1ehz+7+a5VJJyPigYfeJ?=
+ =?us-ascii?Q?kJUs5l9371LOex67T4/AdFh48o1UrTPwpGGA4NDdwOAfzrehACuONGlL9GX4?=
+ =?us-ascii?Q?6g2vaeI7B8C1rZ++MCNMnscYhI/2jwllyf66BJxk7PUBm++5D6qbPr2c0XSU?=
+ =?us-ascii?Q?LlDsNSaajbJOULn11P6IijZ9fLA9BbXSQRNueDrcJhG1hbl6yVxGTmMOACs5?=
+ =?us-ascii?Q?oKacm8miJudkFaz1IjGnafsnwWZyChbl0nrW8KsjWtVpoLC0Hzhul2X12o/E?=
+ =?us-ascii?Q?ISetX29qwPX/BC9kq67qI0sItp/6GkMAbS6pCI4YdVWEVCvwQx7mrHTE+I9F?=
+ =?us-ascii?Q?fT4JO7dWdzmxciA4sgvTMjnN9g5Aq94w6J7MrVt7Xbsf2bRbfNkOvafib3l1?=
+ =?us-ascii?Q?doJGzYgOvubYzz4Ao0Z03p8gUYGtTSDcVDfRcOM3JVLdJ4Rf+LlD/NzxELQB?=
+ =?us-ascii?Q?F4w=3D?=
 X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-3208f.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 366aecbe-1b6b-4bf6-169d-08dbf579cabe
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36ddeb01-8180-4c94-6499-08dbf579ccb0
 X-MS-Exchange-CrossTenant-AuthSource: TY0PR06MB5611.apcprd06.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 10:06:04.7061
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 10:06:07.9858
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
@@ -107,33 +109,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Add the HX83102j touchscreen device tree bindings documents.
 
-This driver implements for HIMAX HID touchscreen HX8310XX series. 
-
-Using SPI interface to acquire HID packets from driver. 
-
-Patchs notes as below 
-1. Add the Maintainer and devicetree bindings document for driver
-2. Add the driver code and modify Kconfig/Makefiles to support the driver
-
-Thanks,
-
-Allen_Lin (2):
-  dt-bindings: input: Add Himax HX83102J touchscreen
-  Input: Add Himax HX83102J touchscreen driver
-
- .../bindings/input/himax,hx8310xx.yaml        |   70 +
- MAINTAINERS                                   |    8 +
- drivers/hid/Kconfig                           |    9 +-
- drivers/hid/Makefile                          |    2 +-
- drivers/hid/hid-himax-83102j.c                | 3176 +++++++++++++++++
- drivers/hid/hid-himax-83102j.h                |  927 +++++
- 6 files changed, 4190 insertions(+), 2 deletions(-)
+Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
+---
+ .../bindings/input/himax,hx8310xx.yaml        | 70 +++++++++++++++++++
+ MAINTAINERS                                   |  6 ++
+ 2 files changed, 76 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/input/himax,hx8310xx.yaml
- create mode 100644 drivers/hid/hid-himax-83102j.c
- create mode 100644 drivers/hid/hid-himax-83102j.h
 
+diff --git a/Documentation/devicetree/bindings/input/himax,hx8310xx.yaml b/Documentation/devicetree/bindings/input/himax,hx8310xx.yaml
+new file mode 100644
+index 000000000000..1cc65e9bd267
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/himax,hx8310xx.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/himax,hx8310xx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: himax hx8310xx touchscreen
++
++maintainers:
++  - Allen Lin <allencl_lin@hotmail.com>
++
++description:
++  Supports the himax hx8310xx touchscreen.
++  This touchscreen uses the spi-hid protocol but has some non-standard
++  power sequencing required.
++
++allOf:
++  - $ref: /schemas/input/touchscreen/touchscreen.yaml#
++
++properties:
++  compatible:
++    enum:
++      - himax,hx83102j
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  spi-cpha: true
++
++  spi-cpol: true
++
++  spi-max-frequency: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,rpmh.h>
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      hid_himax_spi@0 {
++        pinctrl-names = "default";
++        pinctrl-0 = <&touch_int0 &touch_reset>;
++        reg = <0>;
++        spi-max-frequency = <12500000>;
++        status = "okay";
++        compatible = "himax,hx83102j";
++        reset-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
++        spi-cpha;
++        spi-cpol;
++        interrupt-parent = <&gpio1>;
++        interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++      };
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 012df8ccf34e..cadcbf7294a6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9502,6 +9502,12 @@ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	drivers/misc/hisi_hikey_usb.c
+ 
++HIMAX HID HX83102J TOUCHSCREEN
++M:	Allen Lin <allencl_lin@hotmail.com>
++L:	linux-input@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/input/himax,hx8310xx.yaml
++
+ HIMAX HX83112B TOUCHSCREEN SUPPORT
+ M:	Job Noorman <job@noorman.info>
+ L:	linux-input@vger.kernel.org
 -- 
 2.34.1
 
