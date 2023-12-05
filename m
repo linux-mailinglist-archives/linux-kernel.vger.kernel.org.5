@@ -2,163 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABAC805DC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93259805DD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345926AbjLESXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S1345907AbjLESZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:25:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235647AbjLESXi (ORCPT
+        with ESMTP id S231136AbjLESZ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:23:38 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D580D1BE
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:23:43 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a1a0bc1e415so563028466b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:23:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1701800622; x=1702405422; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v+0YlV3bBjMI57c/U4EB7oIqdJ8ldlbudM2aWbhqhfU=;
-        b=OwGcd7y/rv/7lEe1ubMO6IEKyPg7ia2YgVEA50a9URa6nktRIzuMWBTslrYMTj0IPS
-         1Ur1dbbODFAhoyF9OYZKYFP9707UxeEnxuE/ciLDebn31FlkscteI2flGj/QTYH/fDya
-         cglI6gszPsw2Cv88t6yTcI+vr8bwBKrAI2x76562sGnte1+jxeBx4+0RwyneXrDY3s0d
-         1bM9bGNVKz8q2MVjuoaLbGi9cUsxxb6Crs8iwz/XEJOvaniMAEAJK+nWqTLgVwjFh1ea
-         lr6KVtHNflooM0mdmqkIveAXTdotK/74xkjIGpwHwm6A8mnsW9d32pg8Y437ATeraKgr
-         dlEA==
+        Tue, 5 Dec 2023 13:25:27 -0500
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E2E122
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:25:33 -0800 (PST)
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1fb1c742f0bso4110727fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:25:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701800622; x=1702405422;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v+0YlV3bBjMI57c/U4EB7oIqdJ8ldlbudM2aWbhqhfU=;
-        b=RZDPw1/DN4FBdjOfnql49pT7wx6v40G7gHKeEyiQ6LZ6lVItyPs1U2Ntti/rxXPxiU
-         aU1lK57JcwZGgid1wkJtHr0g9ArAOFil5QtZdBc/bcHboiMDPDp/w7M6SGmRvFj+1Nz4
-         zcapGb3X0O+CVMg4AT41gtR6dTXqkOuxwLAFMZAHBZYIvuJ4W3aT5rzpB67JoHq1kaji
-         i3Q8H6w9158K/MT4gT0VHbcgkzfu2xJsaYoHM1038UoKj7J8c5EzOVdUOdVCju0h+ejL
-         waxphmvIk2DNsJIuY69tZ3tCdz9Bp44b9TrRhyxgU0vOIfJe/qJdPwyVmwAm9bUHiWRL
-         uZzQ==
-X-Gm-Message-State: AOJu0YzLx8yxSTRJV4jpy9be7tNpGVpYp82E7kw1c5CW5tBdCsAt6qDf
-        sMmoZfPCwPabhKETwzDg9ANe5LtRd38if1f7Uq4s4g==
-X-Google-Smtp-Source: AGHT+IGRGeCn9pEqVAY8iz3lyzXrueW4v8n436DdU9IWtnh+NqFaWgvKvAL5wFhMr6ZBk6uovrD180nlBRzfvUfE5rQ=
-X-Received: by 2002:a17:906:1003:b0:a1b:81c6:3900 with SMTP id
- 3-20020a170906100300b00a1b81c63900mr1503399ejm.80.1701800621992; Tue, 05 Dec
- 2023 10:23:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701800732; x=1702405532;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qt2IPYpVqJcBLk2RvD4/pXQbbdMV2lIC4jrljwh1tcQ=;
+        b=K3j8oGKuh76flHU2kmUmapJOcE5RoNiElnXS3l/hlUSWdwpqVFW95itqn/NChc+f4k
+         F0AQAqRJln2d7MQcgaG+7MIOhO0KqD8bELbfamT7Jv6lbieanf3Bxynn+62i5k8wiLuR
+         zstTyQt4AaqOvveFGDNY7uhgmt1ZgChd3L7s8lN8/Z6Ciw7FZsU63ifEcuhKnYvLBFvq
+         IzUfAxNysjdMKv8NNEk3A6Bn43qg2IBpZm+jmkFUThsUmluS0FVTrLHY8Bt/9Rv3cgFi
+         XzMpa6kFeIdjwtaiaHrAZewJp2+aPGVyHNxzUrRkHsKpiKpUiC491sQmYtR2NERf8IZj
+         9TOQ==
+X-Gm-Message-State: AOJu0YwF7pvj1otw1NGkRLQznKgjD3Dt1gPwOQ0vGWDrT/Lg2eVKXs9H
+        dcChI7oVO7H4q98oxnFLlaz5oi9vi1Ci0PEp25feq95OwvV3
+X-Google-Smtp-Source: AGHT+IFZHDzqNlD/0jbez0iFB7jDTZLKQWBYaRkHCavKQDFJMy29oEdnZomvbogAb4l3Gwi/W180SmdAfMKy1SJ39SDJXY+G2tS8
 MIME-Version: 1.0
-References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-2-khuey@kylehuey.com>
- <CAEf4BzYtSXtgdO9C2w9OOKni68H-7UOExFJRBEij3HG2Qwn1Rg@mail.gmail.com>
- <ZW8Gi2QI5ceAJfab@krava> <CAM9d7chztaCfDsxfyJ2q_UmD=y20BFikCUQhs=LR8wsNV6pMjg@mail.gmail.com>
- <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
-In-Reply-To: <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Tue, 5 Dec 2023 10:23:30 -0800
-Message-ID: <CAP045ApMPuB=cngLj4cmOoKbjwkX3oi66oixbsSeEbLP-yOcng@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf/bpf: Allow a bpf program to suppress I/O signals.
-To:     Marco Elver <elver@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
-        "Robert O'Callahan" <robert@ocallahan.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+X-Received: by 2002:a05:6870:160a:b0:1fa:4e4:c49 with SMTP id
+ b10-20020a056870160a00b001fa04e40c49mr5853088oae.0.1701800731972; Tue, 05 Dec
+ 2023 10:25:31 -0800 (PST)
+Date:   Tue, 05 Dec 2023 10:25:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001b9bed060bc75cbc@google.com>
+Subject: [syzbot] [net?] KMSAN: uninit-value in __llc_lookup_established
+From:   syzbot <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 10:17=E2=80=AFAM Marco Elver <elver@google.com> wrot=
-e:
->
-> On Tue, 5 Dec 2023 at 19:07, Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hello,
-> >
-> > Add Marco Elver to CC.
-> >
-> > On Tue, Dec 5, 2023 at 3:16=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> w=
-rote:
-> > >
-> > > On Mon, Dec 04, 2023 at 02:18:49PM -0800, Andrii Nakryiko wrote:
-> > > > On Mon, Dec 4, 2023 at 12:14=E2=80=AFPM Kyle Huey <me@kylehuey.com>=
- wrote:
-> > > > >
-> > > > > Returning zero from a bpf program attached to a perf event alread=
-y
-> > > > > suppresses any data output. This allows it to suppress I/O availa=
-bility
-> > > > > signals too.
-> > > >
-> > > > make sense, just one question below
-> > > >
-> > > > >
-> > > > > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> > >
-> > > Acked-by: Jiri Olsa <jolsa@kernel.org>
-> > >
-> > > > > ---
-> > > > >  kernel/events/core.c | 4 +++-
-> > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > > > index b704d83a28b2..34d7b19d45eb 100644
-> > > > > --- a/kernel/events/core.c
-> > > > > +++ b/kernel/events/core.c
-> > > > > @@ -10417,8 +10417,10 @@ static void bpf_overflow_handler(struct =
-perf_event *event,
-> > > > >         rcu_read_unlock();
-> > > > >  out:
-> > > > >         __this_cpu_dec(bpf_prog_active);
-> > > > > -       if (!ret)
-> > > > > +       if (!ret) {
-> > > > > +               event->pending_kill =3D 0;
-> > > > >                 return;
-> > > > > +       }
-> > > >
-> > > > What's the distinction between event->pending_kill and
-> > > > event->pending_wakeup? Should we do something about pending_wakeup?
-> > > > Asking out of complete ignorance of all these perf specifics.
-> > > >
-> > >
-> > > I think zeroing pending_kill is enough.. when it's set the perf code
-> > > sets pending_wakeup to call perf_event_wakeup in irq code that wakes
-> > > up event's ring buffer readers and sends sigio if pending_kill is set
-> >
-> > Right, IIUC pending_wakeup is set by the ring buffer code when
-> > a task is waiting for events and it gets enough events (watermark).
-> > So I think it's good for ring buffer to manage the pending_wakeup.
-> >
-> > And pending_kill is set when a task wants a signal delivery even
-> > without getting enough events.  Clearing pending_kill looks ok
-> > to suppress normal signals but I'm not sure if it's ok for SIGTRAP.
-> >
-> > If we want to handle returning 0 from bpf as if the event didn't
-> > happen, I think SIGTRAP and event_limit logic should be done
-> > after the overflow handler depending on pending_kill or something.
->
-> I'm not sure which kernel version this is for, but in recent kernels,
-> the SIGTRAP logic was changed to no longer "abuse" event_limit, and
-> uses its own "pending_sigtrap" + "pending_work" (on reschedule
-> transitions).
->
-> Thanks,
-> -- Marco
+Hello,
 
-The patch was prepared against a 6.7 release candidate.
+syzbot found the following issue on:
 
-- Kyle
+HEAD commit:    1c41041124bd Merge tag 'i3c/for-6.7' of git://git.kernel.o..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=10429eeb680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=956549bd1d1e9efd
+dashboard link: https://syzkaller.appspot.com/bug?extid=b5ad66046b913bc04c6f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b6a00f680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=121471ef680000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/20fd86e677f1/disk-1c410411.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ccd39cb0b7b6/vmlinux-1c410411.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/156fc60f97bc/bzImage-1c410411.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com
+
+syz-executor994 uses obsolete (PF_INET,SOCK_PACKET)
+=====================================================
+BUG: KMSAN: uninit-value in __llc_lookup_established+0xe9d/0xf90
+ __llc_lookup_established+0xe9d/0xf90
+ __llc_lookup net/llc/llc_conn.c:611 [inline]
+ llc_conn_handler+0x4bd/0x1360 net/llc/llc_conn.c:791
+ llc_rcv+0xfbb/0x14a0 net/llc/llc_input.c:206
+ __netif_receive_skb_one_core net/core/dev.c:5527 [inline]
+ __netif_receive_skb+0x1a6/0x5a0 net/core/dev.c:5641
+ netif_receive_skb_internal net/core/dev.c:5727 [inline]
+ netif_receive_skb+0x58/0x660 net/core/dev.c:5786
+ tun_rx_batched+0x3ee/0x980 drivers/net/tun.c:1555
+ tun_get_user+0x53af/0x66d0 drivers/net/tun.c:2002
+ tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
+ call_write_iter include/linux/fs.h:2020 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x8ef/0x1490 fs/read_write.c:584
+ ksys_write+0x20f/0x4c0 fs/read_write.c:637
+ __do_sys_write fs/read_write.c:649 [inline]
+ __se_sys_write fs/read_write.c:646 [inline]
+ __x64_sys_write+0x93/0xd0 fs/read_write.c:646
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+Local variable daddr created at:
+ llc_conn_handler+0x53/0x1360 net/llc/llc_conn.c:783
+ llc_rcv+0xfbb/0x14a0 net/llc/llc_input.c:206
+
+CPU: 1 PID: 5004 Comm: syz-executor994 Not tainted 6.6.0-syzkaller-14500-g1c41041124bd #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
