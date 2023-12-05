@@ -2,158 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9018805B78
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FAB805C39
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346303AbjLEPeD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 10:34:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
+        id S1346154AbjLEP1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:27:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346053AbjLEPeB (ORCPT
+        with ESMTP id S1346053AbjLEP1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:34:01 -0500
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15F6183;
-        Tue,  5 Dec 2023 07:34:08 -0800 (PST)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-58cf894544cso3805165eaf.3;
-        Tue, 05 Dec 2023 07:34:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701790447; x=1702395247;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jmso+Pyj6M965irEbY4qayX9k2jAUb4uqdD1fkCcZ8k=;
-        b=M/RKZM5r/HuKXnlC1AwALHy5A+1lNsS+ak67KBIDWzWW+e7oHEV4wYIjG0ktIvAWy4
-         o9Ms/FFY8HQaR9r7wE1/rpI9mJrYtszZgS5jYBdYf4n83Xcfd2BZWcJKTnyJ2U83rg01
-         9ea2Z3gl5ClaEU3zl0EHZtuVZfEe/Vg6sE9ggU2KHkH+BjlmEUDiKxFlZQ6oZK3leDFz
-         GoEbykehqL9BhilkUCuvfeKW29oBuJhF1dQye6mHjCNX7nHOGCnWi7fWbAWrdR/fXa03
-         hUMHXiBpFrl1oE1WoZOz3uGdIVrUmju9avN50gbykN8houelAidusLZqtEh7UFXY9oWA
-         EQOQ==
-X-Gm-Message-State: AOJu0YxnUAk7x2svdmMZiOnEuWFZ68xEB0XD86vs/y323StpSZmB2OFx
-        3JPG85CBZO9yOSHGA3VfT+eyowbThClxrA==
-X-Google-Smtp-Source: AGHT+IHN27ceI6iE1qZK+w6GzBy7WUpyNrFEpcC/23a2CRIYnX4f35zGNmGu2LTRothRE/zTzLr3Qg==
-X-Received: by 2002:a05:6820:2221:b0:58d:9942:b49 with SMTP id cj33-20020a056820222100b0058d99420b49mr6327142oob.9.1701790447130;
-        Tue, 05 Dec 2023 07:34:07 -0800 (PST)
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com. [209.85.167.173])
-        by smtp.gmail.com with ESMTPSA id 187-20020a4a14c4000000b0058a2872d1d6sm2412397ood.42.2023.12.05.07.34.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 07:34:06 -0800 (PST)
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3b8b556aadbso2132370b6e.3;
-        Tue, 05 Dec 2023 07:34:06 -0800 (PST)
-X-Received: by 2002:a0d:df11:0:b0:5d5:c6c1:3522 with SMTP id
- i17-20020a0ddf11000000b005d5c6c13522mr2801851ywe.26.1701790046878; Tue, 05
- Dec 2023 07:27:26 -0800 (PST)
+        Tue, 5 Dec 2023 10:27:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB4883
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:28:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701790080; x=1733326080;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=rTfVhiB/Wucl4AYrWvoyxfH96NNifPoEqugBzo/9khk=;
+  b=CQVALUa1jxgVSac3f4SLRjF4sdan9dxNelFFZ4jXaZ8Q7HiGPRYS/kBw
+   b2rZMUgsKS6GmiTI83fznRtovo6r0tVj20awWrSLaS0znFfhd1Bw2vWM1
+   N9tlYDWNLtCxXfF5wAAvUQRPiZq20XEd3V2qybPekaNUWU6nrL85dVaoD
+   KruasLsTOOo7dsOmWnqMNuk2ZTCQHYSpgn7ZVi7J0iJzqFSpUfy3xI+Ej
+   9FYJAZa5C5/HGjVd/5+++pQ6n7MAmimgju5FwRvAhKChYKEAVAciUP8aJ
+   8lCjQKJGHWtq+9eIaWkcLHL9ma0YksTQAweJpcWmTTu7qm0pCyl0oDIVK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="393642760"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="393642760"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:28:00 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="836996761"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="836996761"
+Received: from nhickam-mobl.amr.corp.intel.com (HELO [10.255.230.231]) ([10.255.230.231])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:27:58 -0800
+Message-ID: <977d3c0e-0fa6-440c-9ade-dac8ad93b898@intel.com>
+Date:   Tue, 5 Dec 2023 07:27:59 -0800
 MIME-Version: 1.0
-References: <cover.1701768028.git.ysato@users.sourceforge.jp> <e147fd6dd7aba44a6f408c3a42076b207be862fb.1701768028.git.ysato@users.sourceforge.jp>
-In-Reply-To: <e147fd6dd7aba44a6f408c3a42076b207be862fb.1701768028.git.ysato@users.sourceforge.jp>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 5 Dec 2023 16:27:15 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWZo5EwZZmgDC-nEwwKz5oLvjpz9iY022kv5KwbV7b_gA@mail.gmail.com>
-Message-ID: <CAMuHMdWZo5EwZZmgDC-nEwwKz5oLvjpz9iY022kv5KwbV7b_gA@mail.gmail.com>
-Subject: Re: [DO NOT MERGE v5 20/37] serial: sh-sci: fix SH4 OF support.
-To:     Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc:     linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rich Felker <dalias@libc.org>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Guo Ren <guoren@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Bin Meng <bmeng@tinylab.org>,
-        Max Filippov <jcmvbkbc@gmail.com>, Tom Rix <trix@redhat.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Jacky Huang <ychuang3@nuvoton.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Sam Ravnborg <sam@ravnborg.org>,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at
+ performance
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     pdurrant@amazon.co.uk, bp@alien8.de, dave.hansen@linux.intel.com,
+        hdegoede@redhat.com, hpa@zytor.com, jalliste@amazon.co.uk,
+        juew@amazon.com, len.brown@intel.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, rafael.j.wysocki@intel.com,
+        tglx@linutronix.de, usama.arif@bytedance.com, x86@kernel.org
+References: <53bce76c5c60463eba1372df426a64b9@amazon.co.uk>
+ <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org>
+ <CAJZ5v0iVvMLK_VcPRJ4sW1eOh0EtfcFvKjH5j1y1GbA0Y6q--Q@mail.gmail.com>
+ <7070d14f-d35b-4b6a-9038-20dcbb984776@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <7070d14f-d35b-4b6a-9038-20dcbb984776@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sato-san,
+On 12/5/23 07:19, Dave Hansen wrote:
+> We could, for instance just support this pair:
+> 
+> 	intel_epb=auto		(default, will hack performance=>normal)
+> 	intel_epb=preserve	(leave it alone)
+> 
+> for now. 
 
-Thanks for your patch!
+Oh, and in code, this is literally as simple as:
 
-On Tue, Dec 5, 2023 at 10:46 AM Yoshinori Sato
-<ysato@users.sourceforge.jp> wrote:
-> - fix earlycon name.
-> - fix earlyprintk hung (NULL pointer reference).
+-early_param("intel_epb_no_override", intel_epb_no_override_setup);
++early_param("intel_epb=preserve", intel_epb_no_override_setup);
 
-- fix SERIAL_SH_SCI_EARLYCON enablement
-
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
-
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -658,7 +658,7 @@ config SERIAL_SH_SCI_EARLYCON
->         depends on SERIAL_SH_SCI=y
->         select SERIAL_CORE_CONSOLE
->         select SERIAL_EARLYCON
-> -       default ARCH_RENESAS
-> +       default ARCH_RENESAS || SUPERH
->
->  config SERIAL_SH_SCI_DMA
->         bool "DMA support" if EXPERT
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+You don't even need to go looking for "=auto" if you only have one other
+option.
