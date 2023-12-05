@@ -2,339 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD707805DFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28707805DF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345249AbjLESqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:46:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
+        id S232194AbjLESqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:46:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232095AbjLESqN (ORCPT
+        with ESMTP id S230460AbjLESqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:46:13 -0500
-Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3522E1A2;
+        Tue, 5 Dec 2023 13:46:12 -0500
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AB91A5;
         Tue,  5 Dec 2023 10:46:17 -0800 (PST)
-Received: from francesco-nb.corp.toradex.com (31-10-206-125.static.upc.ch [31.10.206.125])
-        by mail11.truemail.it (Postfix) with ESMTPA id 3D637201F1;
-        Tue,  5 Dec 2023 19:46:14 +0100 (CET)
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Joao Paulo Goncalves <joao.goncalves@toradex.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v3 3/3] arm64: dts: ti: add verdin am62 mallow board
-Date:   Tue,  5 Dec 2023 19:46:05 +0100
-Message-Id: <20231205184605.35225-4-francesco@dolcini.it>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231205184605.35225-1-francesco@dolcini.it>
-References: <20231205184605.35225-1-francesco@dolcini.it>
+Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-58d956c8c38so3979941eaf.2;
+        Tue, 05 Dec 2023 10:46:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701801977; x=1702406777; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/ztbwKI6Jcpyra/1f/euXfg6neSljT4kiu1G9pFbPYo=;
+        b=ixMoVRaN61B1qypD1GeBsZ8NoG1ayC6z7Wl+/DSNBzmyqGcN9inalgImzSHxfvnPTf
+         5nEF48DpmnBluBw8cp7rHQHV3l3TN3IRs7xAqQdq43A478zmknL4PK3m2dbqprioHNVP
+         mjL4jpsDLNlCdmPxAgRdLvmjqUm6XmDcPNq3FXpm6Pgm684Jp8W++9/hf84aIbUaafsY
+         W3veVtnXXpSgNgSY23YvehMYu8JRONkMCcQqzD4oBCnUS5UBe3IU7A3OcsPBcRIxCuse
+         KV9vE0EEswATcR+LcOjHrti7tb/mGmX5iUiuWXSWv2+UTJPP8R8TdNc63BtI55IWaTFt
+         GgRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701801977; x=1702406777;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/ztbwKI6Jcpyra/1f/euXfg6neSljT4kiu1G9pFbPYo=;
+        b=c4lmpWwll7T6diP7vWD2w9S3hDodw0+wJ1ujt40EfvbooGIuKwJnnhbBwfqUbNnrHN
+         DZjMVW2FuRUO/89BTJU7RW+2IbvJGFF0257PiFHW6OzqxSjkiopRJjpGCCp1lxHooDb3
+         bHAftW9k1lW0X7MXZO+DMVdgJm4XPs2FWlIf4vOsxN/SDnxkYpDk+P0M/dgyklE43gKR
+         jRGn0RRDcU65LVqI0yxieTegY6mp3GzoT+rYI73HIxuoIufj3hSJXYGXzLypegf+8YPi
+         c/YOHm7G/RDeJnwe57GMuvOVsOX5KcCttZ9kl6KowEUJsFMSlAQupNVEk7dl1xsLEsp2
+         RNHw==
+X-Gm-Message-State: AOJu0YybyaEq7K5LxR01ndQbMErWVK+lRv0/Gdb5AxRwDPlZf5wm2qb7
+        zq8K6ykZgV3A4fn5LzY/RXo=
+X-Google-Smtp-Source: AGHT+IHNhTyeeUJawENhom0wRXWg11kt1GxkarCQx5XbN515tXLjDYVFoZ+lqxKQAtUfU1aMbrGlig==
+X-Received: by 2002:a05:6358:611e:b0:170:17ea:f4e4 with SMTP id 30-20020a056358611e00b0017017eaf4e4mr4940086rws.49.1701801976786;
+        Tue, 05 Dec 2023 10:46:16 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id z20-20020a637e14000000b005c68da96d7dsm2520922pgc.38.2023.12.05.10.46.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 10:46:16 -0800 (PST)
+Message-ID: <a0218181-6234-44d4-a8b4-fa2dea073943@gmail.com>
+Date:   Tue, 5 Dec 2023 10:46:14 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 000/134] 6.6.5-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+References: <20231205031535.163661217@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231205031535.163661217@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joao Paulo Goncalves <joao.goncalves@toradex.com>
+On 12/4/23 19:14, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.5 release.
+> There are 134 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.5-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Add Toradex Verdin AM62 Mallow carrier board support. Mallow is a
-low-cost carrier board in the Verdin family with a small form factor and
-build for volume production making it ideal for industrial and embedded
-applications.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-https://www.toradex.com/products/carrier-board/mallow-carrier-board
-
-Signed-off-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
-v2: fixed temperature sensor compatible (s/tmp75c/tmp1075)
-v3: removed TPM node
----
- arch/arm64/boot/dts/ti/Makefile               |   2 +
- .../boot/dts/ti/k3-am62-verdin-mallow.dtsi    | 188 ++++++++++++++++++
- .../dts/ti/k3-am625-verdin-nonwifi-mallow.dts |  22 ++
- .../dts/ti/k3-am625-verdin-wifi-mallow.dts    |  22 ++
- 4 files changed, 234 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
- create mode 100644 arch/arm64/boot/dts/ti/k3-am625-verdin-nonwifi-mallow.dts
- create mode 100644 arch/arm64/boot/dts/ti/k3-am625-verdin-wifi-mallow.dts
-
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 77a347f9f47d..92ebf001a217 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -16,9 +16,11 @@ dtb-$(CONFIG_ARCH_K3) += k3-am625-phyboard-lyra-rdk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-dahlia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-dev.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-mallow.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-yavia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dahlia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dev.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-mallow.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-yavia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-sk-hdmi-audio.dtb
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
-new file mode 100644
-index 000000000000..17b93534f658
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-mallow.dtsi
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ *
-+ * Common dtsi for Verdin AM62 SoM on Mallow carrier board
-+ *
-+ * https://www.toradex.com/computer-on-modules/verdin-arm-family/ti-am62
-+ * https://www.toradex.com/products/carrier-board/mallow-carrier-board
-+ */
-+
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_qspi1_clk_gpio>,
-+			    <&pinctrl_qspi1_cs_gpio>,
-+			    <&pinctrl_qspi1_io0_gpio>,
-+			    <&pinctrl_qspi1_io1_gpio>;
-+
-+		/* SODIMM 52 - USER_LED_1_RED */
-+		led-0 {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <1>;
-+			gpios = <&main_gpio0 0 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 54 - USER_LED_1_GREEN */
-+		led-1 {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <1>;
-+			gpios = <&main_gpio0 11 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 56 - USER_LED_2_RED */
-+		led-2 {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <2>;
-+			gpios = <&main_gpio0 3 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 58 - USER_LED_2_GREEN */
-+		led-3 {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <2>;
-+			gpios = <&main_gpio0 4 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+};
-+
-+/* Verdin ETH */
-+&cpsw3g {
-+	status = "okay";
-+};
-+
-+/* Verdin MDIO */
-+&cpsw3g_mdio {
-+	status = "okay";
-+};
-+
-+/* Verdin ETH_1*/
-+&cpsw_port1 {
-+	status = "okay";
-+};
-+
-+/* Verdin PWM_1 and PWM_2*/
-+&epwm0 {
-+	status = "okay";
-+};
-+
-+/* Verdin PWM_3 DSI */
-+&epwm1 {
-+	status = "okay";
-+};
-+
-+&main_gpio0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ctrl_sleep_moci>,
-+		    <&pinctrl_gpio_1>,
-+		    <&pinctrl_gpio_2>,
-+		    <&pinctrl_gpio_3>,
-+		    <&pinctrl_gpio_4>;
-+};
-+
-+/* Verdin I2C_1 */
-+&main_i2c1 {
-+	status = "okay";
-+
-+	/* Temperature sensor */
-+	sensor@4f {
-+		compatible = "ti,tmp1075";
-+		reg = <0x4f>;
-+	};
-+
-+	/* EEPROM */
-+	eeprom@57 {
-+		compatible = "st,24c02", "atmel,24c02";
-+		reg = <0x57>;
-+		pagesize = <16>;
-+	};
-+};
-+
-+/* Verdin I2C_2 DSI */
-+&main_i2c2 {
-+	status = "okay";
-+};
-+
-+/* Verdin I2C_4 CSI */
-+&main_i2c3 {
-+	status = "okay";
-+};
-+
-+/* Verdin CAN_1 */
-+&main_mcan0 {
-+	status = "okay";
-+};
-+
-+/* Verdin SPI_1 */
-+&main_spi1 {
-+	pinctrl-0 = <&pinctrl_spi1>,
-+		    <&pinctrl_spi1_cs0>,
-+		    <&pinctrl_qspi1_cs2_gpio>;
-+	cs-gpios = <0>, <&main_gpio0 12 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+};
-+
-+/* Verdin UART_3 */
-+&main_uart0 {
-+	status = "okay";
-+};
-+
-+/* Verdin UART_1 */
-+&main_uart1 {
-+	status = "okay";
-+};
-+
-+/* Verdin I2C_3_HDMI */
-+&mcu_i2c0 {
-+	status = "okay";
-+};
-+
-+/* Verdin CAN_2 */
-+&mcu_mcan0 {
-+	status = "okay";
-+};
-+
-+/* Verdin UART_4 */
-+&mcu_uart0 {
-+	status = "okay";
-+};
-+
-+/* Verdin SD_1 */
-+&sdhci1 {
-+	status = "okay";
-+};
-+
-+/* Verdin USB_1 */
-+&usbss0 {
-+	status = "okay";
-+};
-+
-+&usb0 {
-+	status = "okay";
-+};
-+
-+/* Verdin USB_2 */
-+&usbss1 {
-+	status = "okay";
-+};
-+
-+&usb1 {
-+	status = "okay";
-+};
-+
-+/* Verdin CTRL_WAKE1_MICO# */
-+&verdin_gpio_keys {
-+	status = "okay";
-+};
-+
-+/* Verdin UART_2 */
-+&wkup_uart0 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-verdin-nonwifi-mallow.dts b/arch/arm64/boot/dts/ti/k3-am625-verdin-nonwifi-mallow.dts
-new file mode 100644
-index 000000000000..9cae12106e0e
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am625-verdin-nonwifi-mallow.dts
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ *
-+ * https://www.toradex.com/computer-on-modules/verdin-arm-family/ti-am62
-+ * https://www.toradex.com/products/carrier-board/mallow-carrier-board
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am625.dtsi"
-+#include "k3-am62-verdin.dtsi"
-+#include "k3-am62-verdin-nonwifi.dtsi"
-+#include "k3-am62-verdin-mallow.dtsi"
-+
-+/ {
-+	model = "Toradex Verdin AM62 on Mallow Board";
-+	compatible = "toradex,verdin-am62-nonwifi-mallow",
-+		     "toradex,verdin-am62-nonwifi",
-+		     "toradex,verdin-am62",
-+		     "ti,am625";
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-verdin-wifi-mallow.dts b/arch/arm64/boot/dts/ti/k3-am625-verdin-wifi-mallow.dts
-new file mode 100644
-index 000000000000..81d834b22649
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am625-verdin-wifi-mallow.dts
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ *
-+ * https://www.toradex.com/computer-on-modules/verdin-arm-family/ti-am62
-+ * https://www.toradex.com/products/carrier-board/mallow-carrier-board
-+ */
-+
-+/dts-v1/;
-+
-+#include "k3-am625.dtsi"
-+#include "k3-am62-verdin.dtsi"
-+#include "k3-am62-verdin-wifi.dtsi"
-+#include "k3-am62-verdin-mallow.dtsi"
-+
-+/ {
-+	model = "Toradex Verdin AM62 WB on Mallow Board";
-+	compatible = "toradex,verdin-am62-wifi-mallow",
-+		     "toradex,verdin-am62-wifi",
-+		     "toradex,verdin-am62",
-+		     "ti,am625";
-+};
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.25.1
+Florian
 
