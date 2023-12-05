@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E10AB8044C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7BB80449E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346138AbjLECYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:24:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
+        id S1344004AbjLECYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:24:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344038AbjLECYU (ORCPT
+        with ESMTP id S1343871AbjLECYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:24:20 -0500
+        Mon, 4 Dec 2023 21:24:15 -0500
 Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEEA3CE;
-        Mon,  4 Dec 2023 18:24:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC28A107;
+        Mon,  4 Dec 2023 18:24:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=yKvqmq+5jHD+XGPNm1nT/5MD5KNh5HIfxm0EQcxHIB4=; b=TG/QAcsiFAjEPFAhuK6dCGmPHP
-        zrLw07/EQnEIW1+BZTHAIV2eDcgXxm7gUSr+lyX3abH3VfELwVV5+ftXhRjf7UrtltA2UExVj25tE
-        IYAXVVSHUHa3/Oi9En5rcLaObFF7mIkttR4jw9JjsQVfPce4z11svXT0c/e8Wx7OW0ugdm8cxrrBK
-        4zLz3d90+BAtwmR906FL8EML9YJKchG01EnEQFKs0Sbkme6nbxU/GSmHxyMTfSdCkZx2q8CIEUn4F
-        CtzTxsGSeAESEIeKYEJKwD+dIrJFG5XrGzgPbvSQX9CGtBUMVogdGuuv1ILZIUXf6uimRnDqjG9F5
-        IArjDOzg==;
+        bh=YsjVgw8ngtuO/NgOh1rsmIhgLaPmuciBhn09an+KSXg=; b=Sbe3oqPuf3NXvXU7c/K0RkrVxY
+        mJsgO8MAIDkxAwdPR2Ze1iEdyjhggx04upwo5JRFImJZBVeIwK+IIgKr7NduE4ELxiBPr+s69ymxT
+        rkfibdwYm3nAoz/0E3jE5sxHFiWaopqxMylZ1tFEEm6fualcJ0+NiZ+YzZ0Yva2yhRZ8y5yKh+R1X
+        RdMz1ZzMhXYgs2UMt98ra1o9+ML75FA8gumrP3JDAwRnvCxDm5YrJMmemM4kAOk8Bed6Zv/lACO5A
+        sU5UQLJDegve6ovqMoxQ/y58g9atOBnemazofpG91Alj+xP7DbBBtZ191gYI8Jgbudhh/xWtrRvLx
+        kzevOZ6A==;
 Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAL6i-00792E-0C;
+        id 1rAL6i-00792R-0x;
         Tue, 05 Dec 2023 02:24:20 +0000
 From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     linux-arch@vger.kernel.org
@@ -42,9 +42,9 @@ Cc:     gus Gusenleitner Klaus <gus@keba.com>,
         "kuba@kernel.org" <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
         Eric Dumazet <edumazet@google.com>
-Subject: [PATCH v2 05/18] bits missing from csum_and_copy_{from,to}_user() unexporting.
-Date:   Tue,  5 Dec 2023 02:24:00 +0000
-Message-Id: <20231205022418.1703007-9-viro@zeniv.linux.org.uk>
+Subject: [PATCH v2 5/9] ext4: don't access the source subdirectory content on same-directory rename
+Date:   Tue,  5 Dec 2023 02:24:01 +0000
+Message-Id: <20231205022418.1703007-10-viro@zeniv.linux.org.uk>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231205022418.1703007-1-viro@zeniv.linux.org.uk>
 References: <20231205022100.GB1674809@ZenIV>
@@ -61,59 +61,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We can't really afford locking the source on same-directory rename;
+currently vfs_rename() tries to do that, but it will have to be changed.
+The logics in ext4 is lazy and goes looking for ".." in source even in
+same-directory case.  It's not hard to get rid of that, leaving that
+behaviour only for cross-directory case; that VFS can get locks safely
+(and will keep doing that after the coming changes).
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 ---
- arch/arm/kernel/armksyms.c   | 1 -
- arch/mips/lib/csum_partial.S | 2 --
- arch/sparc/lib/csum_copy.S   | 2 +-
- 3 files changed, 1 insertion(+), 4 deletions(-)
+ fs/ext4/namei.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/kernel/armksyms.c b/arch/arm/kernel/armksyms.c
-index d076a5c8556f..5c2a5cf2e550 100644
---- a/arch/arm/kernel/armksyms.c
-+++ b/arch/arm/kernel/armksyms.c
-@@ -55,7 +55,6 @@ EXPORT_SYMBOL(arm_delay_ops);
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index d252935f9c8a..467ba47a691c 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3591,10 +3591,14 @@ struct ext4_renament {
+ 	int dir_inlined;
+ };
  
- 	/* networking */
- EXPORT_SYMBOL(csum_partial);
--EXPORT_SYMBOL(csum_partial_copy_from_user);
- EXPORT_SYMBOL(csum_partial_copy_nocheck);
- EXPORT_SYMBOL(__csum_ipv6_magic);
+-static int ext4_rename_dir_prepare(handle_t *handle, struct ext4_renament *ent)
++static int ext4_rename_dir_prepare(handle_t *handle, struct ext4_renament *ent, bool is_cross)
+ {
+ 	int retval;
  
-diff --git a/arch/mips/lib/csum_partial.S b/arch/mips/lib/csum_partial.S
-index b0cda2950f4e..d27a25b653bf 100644
---- a/arch/mips/lib/csum_partial.S
-+++ b/arch/mips/lib/csum_partial.S
-@@ -743,9 +743,7 @@ FEXPORT(__csum_partial_copy_nocheck)
- EXPORT_SYMBOL(__csum_partial_copy_nocheck)
- #ifndef CONFIG_EVA
- FEXPORT(__csum_partial_copy_to_user)
--EXPORT_SYMBOL(__csum_partial_copy_to_user)
- FEXPORT(__csum_partial_copy_from_user)
--EXPORT_SYMBOL(__csum_partial_copy_from_user)
- #endif
- __BUILD_CSUM_PARTIAL_COPY_USER LEGACY_MODE USEROP USEROP
++	ent->is_dir = true;
++	if (!is_cross)
++		return 0;
++
+ 	ent->dir_bh = ext4_get_first_dir_block(handle, ent->inode,
+ 					      &retval, &ent->parent_de,
+ 					      &ent->dir_inlined);
+@@ -3612,6 +3616,9 @@ static int ext4_rename_dir_finish(handle_t *handle, struct ext4_renament *ent,
+ {
+ 	int retval;
  
-diff --git a/arch/sparc/lib/csum_copy.S b/arch/sparc/lib/csum_copy.S
-index 9312d51367d3..13b7e01af133 100644
---- a/arch/sparc/lib/csum_copy.S
-+++ b/arch/sparc/lib/csum_copy.S
-@@ -34,6 +34,7 @@
++	if (!ent->dir_bh)
++		return 0;
++
+ 	ent->parent_de->inode = cpu_to_le32(dir_ino);
+ 	BUFFER_TRACE(ent->dir_bh, "call ext4_handle_dirty_metadata");
+ 	if (!ent->dir_inlined) {
+@@ -3900,7 +3907,7 @@ static int ext4_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+ 			if (new.dir != old.dir && EXT4_DIR_LINK_MAX(new.dir))
+ 				goto end_rename;
+ 		}
+-		retval = ext4_rename_dir_prepare(handle, &old);
++		retval = ext4_rename_dir_prepare(handle, &old, new.dir != old.dir);
+ 		if (retval)
+ 			goto end_rename;
+ 	}
+@@ -3964,7 +3971,7 @@ static int ext4_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+ 	}
+ 	inode_set_mtime_to_ts(old.dir, inode_set_ctime_current(old.dir));
+ 	ext4_update_dx_flag(old.dir);
+-	if (old.dir_bh) {
++	if (old.is_dir) {
+ 		retval = ext4_rename_dir_finish(handle, &old, new.dir->i_ino);
+ 		if (retval)
+ 			goto end_rename;
+@@ -3987,7 +3994,7 @@ static int ext4_rename(struct mnt_idmap *idmap, struct inode *old_dir,
+ 	if (unlikely(retval))
+ 		goto end_rename;
  
- #ifndef FUNC_NAME
- #define FUNC_NAME	csum_partial_copy_nocheck
-+EXPORT_SYMBOL(csum_partial_copy_nocheck)
- #endif
+-	if (S_ISDIR(old.inode->i_mode)) {
++	if (old.is_dir) {
+ 		/*
+ 		 * We disable fast commits here that's because the
+ 		 * replay code is not yet capable of changing dot dot
+@@ -4114,14 +4121,12 @@ static int ext4_cross_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		ext4_handle_sync(handle);
  
- 	.register	%g2, #scratch
-@@ -67,7 +68,6 @@
- 
- 	.globl		FUNC_NAME
- 	.type		FUNC_NAME,#function
--	EXPORT_SYMBOL(FUNC_NAME)
- FUNC_NAME:		/* %o0=src, %o1=dst, %o2=len */
- 	LOAD(prefetch, %o0 + 0x000, #n_reads)
- 	xor		%o0, %o1, %g1
+ 	if (S_ISDIR(old.inode->i_mode)) {
+-		old.is_dir = true;
+-		retval = ext4_rename_dir_prepare(handle, &old);
++		retval = ext4_rename_dir_prepare(handle, &old, new.dir != old.dir);
+ 		if (retval)
+ 			goto end_rename;
+ 	}
+ 	if (S_ISDIR(new.inode->i_mode)) {
+-		new.is_dir = true;
+-		retval = ext4_rename_dir_prepare(handle, &new);
++		retval = ext4_rename_dir_prepare(handle, &new, new.dir != old.dir);
+ 		if (retval)
+ 			goto end_rename;
+ 	}
 -- 
 2.39.2
 
