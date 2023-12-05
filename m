@@ -2,83 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A0F80514E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0209B805161
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:58:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346838AbjLEKye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:54:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
+        id S1345018AbjLEK6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:58:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346811AbjLEKyQ (ORCPT
+        with ESMTP id S1346880AbjLEKz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:54:16 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EF0D45;
-        Tue,  5 Dec 2023 02:54:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701773657; x=1733309657;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=yCuIHOeWcfGOCJR+76s/7IFgjxS9TLWZvOKlnLpi+0Y=;
-  b=nK+cWFsURHii2wQDnYgJ9zWuhkpPPOzhEDkrw0fBvFM/OFD09PFw7d6i
-   r9IFrHN4GzyibibcpoW7z8N2JgZ9AcvcFdKk3NHpntkDjOTjPN5XQGTau
-   SbImAVICD2BC356DgbLQvXQW1LMcfdFFEc2C9UmKI70I1aKAwqAtDWR9l
-   +buBa0/cLIf9xOgx1xwCuMBUnx2SuHctEcG4u2adoH71PsevIdmgcKWCT
-   ddpJjN5llaHfF9NsIWDi/JFwTGsj5ETzh8YjfgKr4ZooFTAJQBol1HN33
-   hruTD7ka6hW8B/uyF6g5aOa8fzoY15qm4O8o7LQWY6hNVUeO8/EHxkmMz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="396672855"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="396672855"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 02:54:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="747184419"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="747184419"
-Received: from abijaz-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.61.240])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 02:54:10 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 89EC610A437; Tue,  5 Dec 2023 13:54:07 +0300 (+03)
-Date:   Tue, 5 Dec 2023 13:54:07 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Cc:     "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Message-ID: <20231205105407.vp2rejqb5avoj7mx@box.shutemov.name>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <DM8PR11MB575090573031AD9888D4738AE786A@DM8PR11MB5750.namprd11.prod.outlook.com>
- <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
+        Tue, 5 Dec 2023 05:55:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244B7D44
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 02:54:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701773686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KllSGKKQDmwXLtuWN3ZHoV9RXfPGuqYv1YKTnXjA8w8=;
+        b=hBze05PlafW54rqtJi7Nad57gxtaEIPLp2T2QJdXODpB2HDNxvy+lahyECwXpAp/RjZdzl
+        29NwiBgda3t4KGXeBz5gS9A8c/3+m4Lth1KPcm8Qhlu27ljd99+Rzate3amW8AR2NCaR04
+        nETXurkjTyfxX8nNyb2bRc+weRK4NkY=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-78-bIJIU9iMN6iwH-9yCzdWaw-1; Tue, 05 Dec 2023 05:54:45 -0500
+X-MC-Unique: bIJIU9iMN6iwH-9yCzdWaw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2ca0fb015d4so8774121fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 02:54:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701773684; x=1702378484;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KllSGKKQDmwXLtuWN3ZHoV9RXfPGuqYv1YKTnXjA8w8=;
+        b=nWH93Fcw+xuzxlL0oaYjjL2EDcalqJCyYDizvC3868CatnVpFj760LJmswFYl1wLAB
+         IoSjnjvK/7avMiTac2XBsL0/gFnpjlvd7axAQ5+niWZ7c97OAbDtYvkbfANb7vMADrjH
+         uC2npsNFqS4ppMRD0AIA8NxEz6G/9woR/Vngkc2XyWVRdk7Dqz9awUI4b4vyvdHtmu+8
+         NthgzSs04M8dX5GTRA8DOan4hyxaffY4jb3j+kPd5pEIpQc5nQ+vmBSwXV2n2BalqYhN
+         8KMh1UqFI0OBQsqhLEJCxN7AcwO3Gxtni/njGLRHeqg9EvgSCwpy3Bm80cQE5+ryf54O
+         xdNw==
+X-Gm-Message-State: AOJu0YzOgwWJq11q0K5qra4e1CInewuq9N4sXq2rhP6TUEPGMfSFTXq8
+        A6m8knSvpXZ7UZueDKCOn6JFHDdvmT9gFQMYrbGkHJ5wHrU+kNAWU8fgJ5BkOwFIuk4MD3VVqo6
+        wZ7HuJc1EGE2r/Yi1Skq7usrC
+X-Received: by 2002:a2e:8488:0:b0:2ca:b91:6e0f with SMTP id b8-20020a2e8488000000b002ca0b916e0fmr1176639ljh.100.1701773683916;
+        Tue, 05 Dec 2023 02:54:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG1uczRGKwr7AEuhaoO8GRb1dLh2uTnNgWHFUpQaDfB0N2+1jhIW7CG1zbJ7bYnPIhI2iFz2w==
+X-Received: by 2002:a2e:8488:0:b0:2ca:b91:6e0f with SMTP id b8-20020a2e8488000000b002ca0b916e0fmr1176626ljh.100.1701773683580;
+        Tue, 05 Dec 2023 02:54:43 -0800 (PST)
+Received: from sgarzare-redhat (host-79-46-200-125.retail.telecomitalia.it. [79.46.200.125])
+        by smtp.gmail.com with ESMTPSA id uz14-20020a170907118e00b00a0a2cb33ee0sm6450734ejb.203.2023.12.05.02.54.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 02:54:42 -0800 (PST)
+Date:   Tue, 5 Dec 2023 11:54:37 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v6 3/4] virtio/vsock: fix logic which reduces
+ credit update messages
+Message-ID: <v335g4fjrn5f6tsw4nysztaklze2obnjwpezps3jgb2xickpge@ea5woxob52nc>
+References: <20231205064806.2851305-1-avkrasnov@salutedevices.com>
+ <20231205064806.2851305-4-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <20231205064806.2851305-4-avkrasnov@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,82 +88,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 08:07:38PM +0100, Jeremi Piotrowski wrote:
-> On 04/12/2023 10:17, Reshetova, Elena wrote:
-> >> Check for additional CPUID bits to identify TDX guests running with Trust
-> >> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
-> >> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
-> >>
-> >> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is
-> >> visible
-> >> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
-> >> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
-> >> aware mechanisms for what's left. So currently such guests do not have
-> >> X86_FEATURE_TDX_GUEST set.
-> > 
-> > Back to this concrete patch. Why cannot L1 VMM emulate the correct value of
-> > the TDX_CPUID_LEAF_ID to L2 VM? It can do this per TDX partitioning arch.
-> > How do you handle this and other CPUID calls call currently in L1? Per spec,
-> > all CPUIDs calls from L2 will cause L2 --> L1 exit, so what do you do in L1?
-> The disclaimer here is that I don't have access to the paravisor (L1) code. But
-> to the best of my knowledge the L1 handles CPUID calls by calling into the TDX
-> module, or synthesizing a response itself. TDX_CPUID_LEAF_ID is not provided to
-> the L2 guest in order to discriminate a guest that is solely responsible for every
-> TDX mechanism (running at L1) from one running at L2 that has to cooperate with L1.
-> More below.
-> 
-> > 
-> > Given that you do that simple emulation, you already end up with TDX guest
-> > code being activated. Next you can check what features you wont be able to
-> > provide in L1 and create simple emulation calls for the TDG calls that must be
-> > supported and cannot return error. The biggest TDG call (TDVMCALL) is already
-> > direct call into L0 VMM, so this part doesn’t require L1 VMM support. 
-> 
-> I don't see anything in the TD-partitioning spec that gives the TDX guest a way
-> to detect if it's running at L2 or L1, or check whether TDVMCALLs go to L0/L1.
-> So in any case this requires an extra cpuid call to establish the environment.
-> Given that, exposing TDX_CPUID_LEAF_ID to the guest doesn't help.
-> 
-> I'll give some examples of where the idea of emulating a TDX environment
-> without attempting L1-L2 cooperation breaks down.
-> 
-> hlt: if the guest issues a hlt TDVMCALL it goes to L0, but if it issues a classic hlt
-> it traps to L1. The hlt should definitely go to L1 so that L1 has a chance to do
-> housekeeping.
+On Tue, Dec 05, 2023 at 09:48:05AM +0300, Arseniy Krasnov wrote:
+>Add one more condition for sending credit update during dequeue from
+>stream socket: when number of bytes in the rx queue is smaller than
+>SO_RCVLOWAT value of the socket. This is actual for non-default value
+>of SO_RCVLOWAT (e.g. not 1) - idea is to "kick" peer to continue data
+>transmission, because we need at least SO_RCVLOWAT bytes in our rx
+>queue to wake up user for reading data (in corner case it is also
+>possible to stuck both tx and rx sides, this is why 'Fixes' is used).
+>
+>Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>---
+> net/vmw_vsock/virtio_transport_common.c | 9 +++++++--
+> 1 file changed, 7 insertions(+), 2 deletions(-)
+>
+>diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>index e137d740804e..461c89882142 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -558,6 +558,7 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+> 	struct virtio_vsock_sock *vvs = vsk->trans;
+> 	size_t bytes, total = 0;
+> 	struct sk_buff *skb;
+>+	bool low_rx_bytes;
+> 	int err = -EFAULT;
+> 	u32 free_space;
+>
+>@@ -602,6 +603,8 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+> 	}
+>
+> 	free_space = vvs->buf_alloc - (vvs->fwd_cnt - vvs->last_fwd_cnt);
+>+	low_rx_bytes = (vvs->rx_bytes <
+>+			sock_rcvlowat(sk_vsock(vsk), 0, INT_MAX));
 
-Why would L2 issue HLT TDVMCALL? It only happens in response to #VE, but
-if partitioning enabled #VEs are routed to L1 anyway.
+As in the previous patch, should we avoid the update it if `fwd_cnt` and 
+`last_fwd_cnt` are the same?
 
-> map gpa: say the guest uses MAP_GPA TDVMCALL. This goes to L0, not L1 which is the actual
-> entity that needs to have a say in performing the conversion. L1 can't act on the request
-> if L0 would forward it because of the CoCo threat model. So L1 and L2 get out of sync.
-> The only safe approach is for L2 to use a different mechanism to trap to L1 explicitly.
+Now I'm thinking if it is better to add that check directly in 
+virtio_transport_send_credit_update().
 
-Hm? L1 is always in loop on share<->private conversion. I don't know why
-you need MAP_GPA for that.
+Stefano
 
-You can't rely on MAP_GPA anyway. It is optional (unfortunately). Conversion
-doesn't require MAP_GPA call.
+>
+> 	spin_unlock_bh(&vvs->rx_lock);
+>
+>@@ -611,9 +614,11 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+> 	 * too high causes extra messages. Too low causes transmitter
+> 	 * stalls. As stalls are in theory more expensive than extra
+> 	 * messages, we set the limit to a high value. TODO: experiment
+>-	 * with different values.
+>+	 * with different values. Also send credit update message when
+>+	 * number of bytes in rx queue is not enough to wake up reader.
+> 	 */
+>-	if (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
+>+	if (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE ||
+>+	    low_rx_bytes)
+> 		virtio_transport_send_credit_update(vsk);
+>
+> 	return total;
+>-- 
+>2.25.1
+>
 
-> Having a paravisor is required to support a TPM and having TDVMCALLs go to L0 is
-> required to make performance viable for real workloads.
-> 
-> > 
-> > Until we really see what breaks with this approach, I don’t think it is worth to
-> > take in the complexity to support different L1 hypervisors view on partitioning.
-> > 
-> 
-> I'm not asking to support different L1 hypervisors view on partitioning, I want to
-> clean up the code (by fixing assumptions that no longer hold) for the model that I'm
-> describing that: the kernel already supports, has an implementation that works and
-> has actual users. This is also a model that Intel intentionally created the TD-partitioning
-> spec to support.
-> 
-> So lets work together to make X86_FEATURE_TDX_GUEST match reality.
-
-I think the right direction is to make TDX architecture good enough
-without that. If we need more hooks in TDX module that give required
-control to L1, let's do that. (I don't see it so far)
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
