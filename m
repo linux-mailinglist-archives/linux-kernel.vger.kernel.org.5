@@ -2,151 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2980D804EAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3407804EB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346459AbjLEJuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:50:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33504 "EHLO
+        id S235055AbjLEJv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:51:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbjLEJue (ORCPT
+        with ESMTP id S235029AbjLEJvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:50:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96841A7;
-        Tue,  5 Dec 2023 01:50:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701769840; x=1733305840;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ynZxpIG44aYelXlmnhFzoUsvhHg41bdZ9yKRk1kUO+c=;
-  b=Yocccp6lPdOKIhR76ZldZMtEpw5vpgT/zet3HSG1/uVgQvJz40kwRBmL
-   /amdP+yXa3RnuhRPW7ZCLoglIkgs72CV2vCsG34dq2ervy0Eal4p+3M8j
-   jk1IhHEQSK9lBj4o5QcgAkQ0m57tKB10Fgr86rol/UFbowDa+SDfVEtfF
-   JATvQDFu7TlJLrAy779U8Tgc53YNXVS+MPnAmgbVg+y9oh0Tm+NPtnH6m
-   58NS/XmMuzmNkqFINwjZrBTZD1gHRTKnU8Qf6Wl254thoTq13OU8YGtC3
-   qpH8RUFwsLFomoOd50hxV18bT/xRb+IyWqBRkNP9CqXs5oGjJIVpIjdzM
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="15419161"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="15419161"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:50:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="836922250"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="836922250"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 05 Dec 2023 01:50:35 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAS4Y-0008hl-0w;
-        Tue, 05 Dec 2023 09:50:34 +0000
-Date:   Tue, 5 Dec 2023 17:50:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Granados <j.granados@samsung.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Subject: Re: [PATCH v2 12/18] sysctl: treewide: constify the ctl_table
- argument of handlers
-Message-ID: <202312051727.wW4EJo6e-lkp@intel.com>
-References: <20231204-const-sysctl-v2-12-7a5060b11447@weissschuh.net>
+        Tue, 5 Dec 2023 04:51:53 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6B2127;
+        Tue,  5 Dec 2023 01:51:59 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B59mKrM026723;
+        Tue, 5 Dec 2023 09:51:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=K2INagPhm0bbOH+kwrPAF2/wkzUBLPFqq8LrsNbIESs=;
+ b=QGed3lmIyH630QqeJ2GgHhwulUAl89oSD0o7j4QjBPxYNkdmZ4DwnMqYqZAIAkjokcN/
+ uqc2s71LSDMZC2k4vrUalT6VFx5tgtTogPNxu7ZKNPqQgxxgwCA06fnHHy+opgXczloV
+ n2/KN7TLFehbLmTqqcO6VN0hX1EUOYaWbMzGTTFUmBAq0qoST5Ni8/0ofTemjGdTsGY3
+ cm0i1d+1Wh+NZkETgPkOauvvR5LcmojEUJhwhIoRb9aR6h2IUWLbC0hzU+6yghw6OjFs
+ u3KoO/r/WTx012q/dSiUufgdYyQH3CFKwh8sqMCD5D+R1B/aiHKAEMBNwzU5mUJR4PxJ 3A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ut1j182ju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 09:51:54 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B59nr8B030135;
+        Tue, 5 Dec 2023 09:51:53 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ut1j182cd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 09:51:53 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B57YLVt022637;
+        Tue, 5 Dec 2023 09:51:32 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3urhm258sp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 09:51:32 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B59pTHI18940560
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Dec 2023 09:51:29 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A2322004B;
+        Tue,  5 Dec 2023 09:51:29 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 08CC620043;
+        Tue,  5 Dec 2023 09:51:29 +0000 (GMT)
+Received: from [9.152.224.24] (unknown [9.152.224.24])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Dec 2023 09:51:28 +0000 (GMT)
+Message-ID: <edb7dc54-a7f9-4356-a2a4-905b5f48b1f0@linux.ibm.com>
+Date:   Tue, 5 Dec 2023 10:51:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204-const-sysctl-v2-12-7a5060b11447@weissschuh.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 5/7] net/smc: compatible with 128-bits extend
+ GID of virtual ISM device
+Content-Language: en-US
+To:     Wen Gu <guwen@linux.alibaba.com>, wenjia@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, kgraul@linux.ibm.com, jaka@linux.ibm.com
+Cc:     borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        raspl@linux.ibm.com, schnelle@linux.ibm.com,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1701343695-122657-1-git-send-email-guwen@linux.alibaba.com>
+ <1701343695-122657-6-git-send-email-guwen@linux.alibaba.com>
+ <19b288d3-5434-40b1-93fa-7db47e417f60@linux.ibm.com>
+ <3f8dfc86-c27a-f1df-0a58-35fb4948e526@linux.alibaba.com>
+From:   Alexandra Winter <wintera@linux.ibm.com>
+In-Reply-To: <3f8dfc86-c27a-f1df-0a58-35fb4948e526@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PdGQx-BgP_YwVmrJsDRplK-pFvZB-WNK
+X-Proofpoint-GUID: 3DIC8H6iwyLrtbQK9147eyq813_uomKt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_04,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 lowpriorityscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 phishscore=0 clxscore=1015 mlxscore=0 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312050080
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on netfilter-nf/main]
-[also build test ERROR on akpm-mm/mm-everything linus/master v6.7-rc4]
-[cannot apply to nf-next/master next-20231205]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Wei-schuh/sysctl-delete-unused-define-SYSCTL_PERM_EMPTY_DIR/20231204-165306
-base:   git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git main
-patch link:    https://lore.kernel.org/r/20231204-const-sysctl-v2-12-7a5060b11447%40weissschuh.net
-patch subject: [PATCH v2 12/18] sysctl: treewide: constify the ctl_table argument of handlers
-config: s390-allyesconfig (https://download.01.org/0day-ci/archive/20231205/202312051727.wW4EJo6e-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051727.wW4EJo6e-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051727.wW4EJo6e-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/s390/appldata/appldata_base.c: In function 'appldata_register_ops':
->> arch/s390/appldata/appldata_base.c:363:40: error: assignment to 'int (*)(const struct ctl_table *, int,  void *, size_t *, loff_t *)' {aka 'int (*)(const struct ctl_table *, int,  void *, long unsigned int *, long long int *)'} from incompatible pointer type 'int (*)(struct ctl_table *, int,  void *, size_t *, loff_t *)' {aka 'int (*)(struct ctl_table *, int,  void *, long unsigned int *, long long int *)'} [-Werror=incompatible-pointer-types]
-     363 |         ops->ctl_table[0].proc_handler = appldata_generic_handler;
-         |                                        ^
-   cc1: some warnings being treated as errors
 
 
-vim +363 arch/s390/appldata/appldata_base.c
+On 04.12.23 13:24, Wen Gu wrote:
+> Thank you very much for review. See below.
+> 
+> On 2023/12/2 00:30, Alexandra Winter wrote:
+>>
+>>
+>> On 30.11.23 12:28, Wen Gu wrote:
+>> [...]
+>>> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+>>> index 766a1f1..d1e18bf 100644
+>>> --- a/net/smc/af_smc.c
+>>> +++ b/net/smc/af_smc.c
+>> [...]
+>>> @@ -1048,7 +1048,8 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
+>>>   {
+>>>       int rc = SMC_CLC_DECL_NOSMCDDEV;
+>>>       struct smcd_dev *smcd;
+>>> -    int i = 1;
+>>> +    int i = 1, entry = 1;
+>>> +    bool is_virtual;
+>>>       u16 chid;
+>>>         if (smcd_indicated(ini->smc_type_v1))
+>>> @@ -1060,14 +1061,23 @@ static int smc_find_ism_v2_device_clnt(struct smc_sock *smc,
+>>>           chid = smc_ism_get_chid(smcd);
+>>>           if (!smc_find_ism_v2_is_unique_chid(chid, ini, i))
+>>>               continue;
+>>> +        is_virtual = __smc_ism_is_virtual(chid);
+>>>           if (!smc_pnet_is_pnetid_set(smcd->pnetid) ||
+>>>               smc_pnet_is_ndev_pnetid(sock_net(&smc->sk), smcd->pnetid)) {
+>>> +            if (is_virtual && entry == SMC_MAX_ISM_DEVS)
+>>> +                /* only one GID-CHID entry left in CLC Proposal SMC-Dv2
+>>> +                 * extension. but a virtual ISM device's GID takes two
+>>> +                 * entries. So give up it and try the next potential ISM
+>>> +                 * device.
+>>> +                 */
+>>
+>> It is really importatnt to note that virtual ISMs take 2 entries.
+>> But it is still hard to understand this piece of code. e.g. I was wondering for a while,
+>> why you mention CLC here...
+>> Maybe it would be easier to understand this, if you rename SMC_MAX_ISM_DEVS to something else?
+>> Something like SMCD_MAX_V2_GID_ENTRIES?
+>>
+> 
+> I agree.
+> 
+> But I perfer to define a new macro to represent the max ISMv2 entries in CLC proposal message,
+> e.g. SMCD_CLC_MAX_V2_GID_ENTRIES, and keep using SMC_MAX_ISM_DEVS to represent the max devices
+> that can be proposed. Both semantics are required in the code, such as:
+> 
+> ini->ism_dev[SMC_MAX_ISM_DEVS]        | smcd_v2_ext->gidchid[SMCD_CLC_MAX_V2_GID_ENTRIES]
+> -------------------------------------------------------------------------------------------
+> [1:virtual_ISM_1]                     | [1:virtual_ISM_1 GID]
+>                                       | [2:virtual_ISM_1 extension GID]
+> [2:ISM_2]                             | [3:ISM_2 GID/CHID]
+> [3:ISM_3]                             | [4:ISM_3 GID/CHID]
+> 
+> And SMC_MAX_ISM_DEVS is required no more than SMCD_CLC_MAX_V2_GID_ENTRIES.
 
-^1da177e4c3f41 Linus Torvalds   2005-04-16  340  
-^1da177e4c3f41 Linus Torvalds   2005-04-16  341  
-^1da177e4c3f41 Linus Torvalds   2005-04-16  342  /************************* module-ops management *****************************/
-^1da177e4c3f41 Linus Torvalds   2005-04-16  343  /*
-^1da177e4c3f41 Linus Torvalds   2005-04-16  344   * appldata_register_ops()
-^1da177e4c3f41 Linus Torvalds   2005-04-16  345   *
-^1da177e4c3f41 Linus Torvalds   2005-04-16  346   * update ops list, register /proc/sys entries
-^1da177e4c3f41 Linus Torvalds   2005-04-16  347   */
-^1da177e4c3f41 Linus Torvalds   2005-04-16  348  int appldata_register_ops(struct appldata_ops *ops)
-^1da177e4c3f41 Linus Torvalds   2005-04-16  349  {
-13f8b7c5e6fa13 Roel Kluin       2008-10-28  350  	if (ops->size > APPLDATA_MAX_REC_SIZE)
-37e3a6ac5a3046 Heiko Carstens   2007-11-20  351  		return -EINVAL;
-^1da177e4c3f41 Linus Torvalds   2005-04-16  352  
-fdd9da76e2dec0 Joel Granados    2023-10-02  353  	ops->ctl_table = kcalloc(1, sizeof(struct ctl_table), GFP_KERNEL);
-37e3a6ac5a3046 Heiko Carstens   2007-11-20  354  	if (!ops->ctl_table)
-^1da177e4c3f41 Linus Torvalds   2005-04-16  355  		return -ENOMEM;
-^1da177e4c3f41 Linus Torvalds   2005-04-16  356  
-b1ad171efa089a Gerald Schaefer  2009-04-23  357  	mutex_lock(&appldata_ops_mutex);
-^1da177e4c3f41 Linus Torvalds   2005-04-16  358  	list_add(&ops->list, &appldata_ops_list);
-b1ad171efa089a Gerald Schaefer  2009-04-23  359  	mutex_unlock(&appldata_ops_mutex);
-^1da177e4c3f41 Linus Torvalds   2005-04-16  360  
-7db12246306ea6 Luis Chamberlain 2023-03-10  361  	ops->ctl_table[0].procname = ops->name;
-7db12246306ea6 Luis Chamberlain 2023-03-10  362  	ops->ctl_table[0].mode = S_IRUGO | S_IWUSR;
-7db12246306ea6 Luis Chamberlain 2023-03-10 @363  	ops->ctl_table[0].proc_handler = appldata_generic_handler;
-7db12246306ea6 Luis Chamberlain 2023-03-10  364  	ops->ctl_table[0].data = ops;
-^1da177e4c3f41 Linus Torvalds   2005-04-16  365  
-9edbfe92a0a135 Joel Granados    2023-08-09  366  	ops->sysctl_header = register_sysctl_sz(appldata_proc_name, ops->ctl_table, 1);
-37e3a6ac5a3046 Heiko Carstens   2007-11-20  367  	if (!ops->sysctl_header)
-37e3a6ac5a3046 Heiko Carstens   2007-11-20  368  		goto out;
-^1da177e4c3f41 Linus Torvalds   2005-04-16  369  	return 0;
-37e3a6ac5a3046 Heiko Carstens   2007-11-20  370  out:
-b1ad171efa089a Gerald Schaefer  2009-04-23  371  	mutex_lock(&appldata_ops_mutex);
-37e3a6ac5a3046 Heiko Carstens   2007-11-20  372  	list_del(&ops->list);
-b1ad171efa089a Gerald Schaefer  2009-04-23  373  	mutex_unlock(&appldata_ops_mutex);
-37e3a6ac5a3046 Heiko Carstens   2007-11-20  374  	kfree(ops->ctl_table);
-37e3a6ac5a3046 Heiko Carstens   2007-11-20  375  	return -ENOMEM;
-^1da177e4c3f41 Linus Torvalds   2005-04-16  376  }
-^1da177e4c3f41 Linus Torvalds   2005-04-16  377  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I agree, this is even better.
