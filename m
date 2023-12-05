@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3943A804CBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF64B804CC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344826AbjLEIjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
+        id S1344822AbjLEIkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:40:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjLEIjT (ORCPT
+        with ESMTP id S229712AbjLEIkO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:39:19 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EEBFA;
-        Tue,  5 Dec 2023 00:39:24 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50be4f03b06so3085644e87.0;
-        Tue, 05 Dec 2023 00:39:23 -0800 (PST)
+        Tue, 5 Dec 2023 03:40:14 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C99519C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:40:20 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d05199f34dso23335205ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 00:40:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701765562; x=1702370362; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ciq8GU7iUi7LUUJHQ/Yglkc7R5BvBXgn5EFW6zsVjow=;
-        b=DnuSQie5JcTnWPAfRBzmKWhltOs11rdUAIVFPZsujbN/WzvjesduNffixxgQY70Aci
-         6JZHlapKrYTkWuOGeE9TGIc02xTOairl31UYQ49NecCvEYaNadKXiUXA23G5qw70GC+E
-         oLYHPGPwx845eGH0B/GGKcoqGHNcg5cwF8KVA8SKnYs+6sn4H9gumJme5wbSYKN34Mga
-         l/K+U/Rqqreb89/qRqiea/JWQR4H4iZv7KJ0lt9CRoAsdWxZQAxj9OvDk5icbK88FnPh
-         fBUiiLaK23UOFgQRhfHneHLJekFD5TnPguupIuRWP2/BrIdwxU8ZtXipBMDI1JQweb3U
-         RlUw==
+        d=gmail.com; s=20230601; t=1701765620; x=1702370420; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NcOt9kZ7JwOzYfmxC1M3J+r83lE9sNFYqBWrLheYTEI=;
+        b=jwF+DbD/Ephd//3womWRnnglgslTXg9EV1kA/dzvVrofRK595jZhBGK6pNn0ygtRw8
+         JrNX5JiTIygh9k2WEElLWBs30cpyX/kQPibKqIz+TH4GL12s7A7XFfENW5w/ajac8ojA
+         WF9m0DkV33c77Q5/EANrL7ohXnbrOKeYDu0+nk0IzMAK5kJNhf4kqroe1BnjNdfPhHoM
+         B9dWRZxd+fKUCkmgq1iICtGI84VpihDGtKM9Ai2fq/9apYBMpr2iX9738rSmcvY8j/8U
+         RzIB3i85yCuPvndWJ16D5CpyqTNml0G4Iqdk5qJD5zZLSQRcBt9cLHrsDbXkBUayj4GC
+         N3Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701765562; x=1702370362;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ciq8GU7iUi7LUUJHQ/Yglkc7R5BvBXgn5EFW6zsVjow=;
-        b=mBRdrSNWz6k1r2DTRmH28hHylTb30T48pRYBG5tR85Qqr9YzAOQKvoOzmni/4qs4y0
-         X1rJE5OBblRWFVv32RwgCWkUjUYbNOvN7g7wHcfGOaFpqcEt/8M1PggDpI+jtppBlnsY
-         o5Mllg/zWUFkjupflv/V1eOvV1dEgOlUVQAjGFE9lbr2M22eOGxUzeaEw7vlkhH54dtd
-         SAAsq051n9Z7rcaAziUKWUndCBY+wqxbI1o+OosnvWYr1DMsLFmY7MnMSMDI0wqrpPjC
-         JXxVsL3Fg7QFJXidTWYaBF/Itip81Lzew/ChF2/4h00k1EBWyd4klBkdZkpj4P/HcA84
-         QRng==
-X-Gm-Message-State: AOJu0YwHtcRbHREl3y/ElyAe5DleJDeuK+HqY7fs5NABMhZTCt4/dGaT
-        HPJqM2xS7M3KbWawKP51xFo=
-X-Google-Smtp-Source: AGHT+IEZw3Z3caEX16AO5z2q/9E+FKbTyaJHEQIiD2K1bGuD3XvtPbOJRGPBJ3jhXsTZvLLep2Yw5Q==
-X-Received: by 2002:a05:6512:1056:b0:50b:fc06:7a2b with SMTP id c22-20020a056512105600b0050bfc067a2bmr970356lfb.110.1701765562074;
-        Tue, 05 Dec 2023 00:39:22 -0800 (PST)
-Received: from ?IPV6:2001:14ba:16f8:1500::2? (dc78bmyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::2])
-        by smtp.gmail.com with ESMTPSA id p15-20020a05651238cf00b0050bf40dcb8bsm634947lft.114.2023.12.05.00.39.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 00:39:21 -0800 (PST)
-Message-ID: <644e095d-4c01-4e8d-8036-3c04ada405f2@gmail.com>
-Date:   Tue, 5 Dec 2023 10:39:20 +0200
+        d=1e100.net; s=20230601; t=1701765620; x=1702370420;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NcOt9kZ7JwOzYfmxC1M3J+r83lE9sNFYqBWrLheYTEI=;
+        b=flD9c2PCFT6ra0tEA15ovRRcnfE0QnmLBd/0NCPPaTU7Rd+GLxFFtHb5vOMQ8Std5f
+         MbrjmQBnH7oCulQ9Yddjoq+jiPCwSNXCVz76JjeqaK+kGxZtnfcf7gJOUjkTQttqvplX
+         vw0wjpBTV5NGd4THKlk3tkMVC4+gLWv+bOcAFtr+aEEdY+r8QMdEz/nvhgM+8FhsoWwD
+         gb4qIvOuLh9B2NhEj/XorOqhHxiHCyoggMh+wyB8bAuOAcOic2vNFtremb63wZJG4vlz
+         yO1BLOemdhzscmuRzZ67As6FZqU5+uXcSb03QcPi7iKilQmJuxQjIM9s5wHOq1nyFtjM
+         Yq0Q==
+X-Gm-Message-State: AOJu0YzvoRRXYdIzXHbzS2a9v2VL4ZtxPPBXXdKA0GEAlH8TW4HnjTUv
+        NdqsmuP6BtgtR7aEJlOIjvk=
+X-Google-Smtp-Source: AGHT+IHmnuPSA5vDhvTN2q7m76YrUL9IBN13qxkP8NbJPkMPDB5t7fk1kexsJFn//w1XFxKTXX4Idw==
+X-Received: by 2002:a17:902:ec8f:b0:1d0:6ffd:6e55 with SMTP id x15-20020a170902ec8f00b001d06ffd6e55mr2466177plg.77.1701765620061;
+        Tue, 05 Dec 2023 00:40:20 -0800 (PST)
+Received: from DESKTOP-4R0U3NR.siflower.com ([2a09:bac5:6249:183c::26a:82])
+        by smtp.gmail.com with ESMTPSA id h14-20020a170902f54e00b001cfd2cb1907sm2998238plf.206.2023.12.05.00.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 00:40:19 -0800 (PST)
+From:   Qingfang DENG <dqfext@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
+Date:   Tue,  5 Dec 2023 16:39:24 +0800
+Message-Id: <20231205083924.48933-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231203135753.1575-2-jszhang@kernel.org>
+References: <20231203135753.1575-2-jszhang@kernel.org> <20231203135753.1575-1-jszhang@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] fortify: test: Use kunit_device
-Content-Language: en-US, en-GB
-To:     davidgow@google.com, Rae Moar <rmoar@google.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-sound@vger.kernel.org
-References: <20231205-kunit_bus-v1-0-635036d3bc13@google.com>
- <20231205-kunit_bus-v1-2-635036d3bc13@google.com>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20231205-kunit_bus-v1-2-635036d3bc13@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/23 09:31, davidgow@google.com wrote:
-> Using struct root_device to create fake devices for tests is something
-> of a hack. The new struct kunit_device is meant for this purpose, so use
-> it instead.
-> 
-> Signed-off-by: David Gow <davidgow@google.com>
+Hi,
 
-Reviewed-by: Matti Vaittinen <mazziesaccount@gmail.com>
+You may as well remove the -mstrict-align CFLAGS in the Makefile, if
+this option is enabled:
 
-
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -108,7 +108,9 @@ KBUILD_AFLAGS_MODULE += $(call as-option,-Wa$(comma)-mno-relax)
+ # unaligned accesses.  While unaligned accesses are explicitly allowed in the
+ # RISC-V ISA, they're emulated by machine mode traps on all extant
+ # architectures.  It's faster to have GCC emit only aligned accesses.
++ifneq ($(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS),y)
+ KBUILD_CFLAGS += $(call cc-option,-mstrict-align)
++endif
+ 
+ ifeq ($(CONFIG_STACKPROTECTOR_PER_TASK),y)
+ prepare: stack_protector_prepare
 -- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
 
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+- Qingfang
