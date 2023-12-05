@@ -2,145 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A73804C04
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8957804C01
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:13:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231739AbjLEINa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:13:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
+        id S234948AbjLEINh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:13:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231707AbjLEIN1 (ORCPT
+        with ESMTP id S231775AbjLEINb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:13:27 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A7F19B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:13:32 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b595bf5d2so57110855e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 00:13:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701764011; x=1702368811; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XWja+/NJZfgKI5wDXKrgIcWo2x8Q6ApX0pGmb/ZtNHI=;
-        b=Sg1XvEzIWptzf7zecZRBvsRbm+j8ZNjBlWukLj18pjvG+aypbP2k1rfhcImu6OICuD
-         FegNYGY3819rWkoL43PmZtVeSRflUug+QX2/omgL8AWM773NsX834AiPQwq7f5zucIhB
-         WI84ZID3Qd0jfjyiPQrCtGcwhvh6y9fSJLGFg/MCbmTCpApJXYzJ8sYGCLK4VRqzSfr4
-         V0Y6KZT3ds/TH6SLeJ4qxM9GWhCV8elU01uF0PdUWTPQ2bO1Xa4allZ4KAl4Onc9Xxls
-         Y5eE0Bht05NJUKPs1AE5S0CpmzCCM3jh2KLHi2dBQx9Wz6zMNis6ncCWaDt28A6Hf8yd
-         lFnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701764011; x=1702368811;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XWja+/NJZfgKI5wDXKrgIcWo2x8Q6ApX0pGmb/ZtNHI=;
-        b=C3U+zrLnRLc5JCjKqSrCJ3f7URDdBx/J2LnHLUdoFSKDw5rjE6zkjXst1JycrDrDt9
-         D2IrMn/PPTZ0J9DkWjXYmbMvDuuYVo6ee40eC8j37aEB0fJAUujoO4XMMnLdIvyRhU9F
-         wRxTMMkRNFJ3gvEVzSRtbhpLDldOVGMTggbgQqYHr/fUrpzgkAEKq8+iAmT4CB5dJ5aJ
-         9di8uqJAxKCloF763TJ6RGjj0niWBoexNwzU4arinldGWighpsyQEpbQt/ayveneP443
-         nuY4YBVzBBSyNwMpTa2x6KR4fwj9heAJXG31DjAsCrDuowpalMgn/048CQf14GpyPo6p
-         6NMA==
-X-Gm-Message-State: AOJu0Yzhw41IYaoD+r/VsPDjATtwBMkgV31eCdLhU8mMrfpTVrjchMoL
-        cqyuj1LI00r96JBalZHEkW51rw==
-X-Google-Smtp-Source: AGHT+IHywBwwMICzmpSikqbB/Gw1BnE1K6zCV6jpsXcXKgRPnuPD0n/hV+xrys8lX74iOpylMILcKw==
-X-Received: by 2002:a05:600c:4445:b0:40c:9df:3e30 with SMTP id v5-20020a05600c444500b0040c09df3e30mr144326wmn.103.1701764011132;
-        Tue, 05 Dec 2023 00:13:31 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:4518:5e57:ff13:b4bb? ([2a01:e0a:982:cbb0:4518:5e57:ff13:b4bb])
-        by smtp.gmail.com with ESMTPSA id v9-20020a05600c470900b004063cd8105csm21461190wmo.22.2023.12.05.00.13.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 00:13:30 -0800 (PST)
-Message-ID: <b1fe97f3-4236-4efe-b156-762d5668eda4@linaro.org>
-Date:   Tue, 5 Dec 2023 09:13:30 +0100
+        Tue, 5 Dec 2023 03:13:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500BB183
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:13:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 234CCC433C9;
+        Tue,  5 Dec 2023 08:13:34 +0000 (UTC)
+Message-ID: <598a7ae4-03be-432b-aacb-a708df74b48d@xs4all.nl>
+Date:   Tue, 5 Dec 2023 09:13:33 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 1/3] drm/panel: ilitek-ili9881c: make use of
- prepare_prev_first
-Content-Language: en-US, fr
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        kernel@pengutronix.de
-References: <20231123-drm-panel-ili9881c-am8001280g-v1-0-fdf4d624c211@pengutronix.de>
- <20231123-drm-panel-ili9881c-am8001280g-v1-1-fdf4d624c211@pengutronix.de>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231123-drm-panel-ili9881c-am8001280g-v1-1-fdf4d624c211@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v2 08/10] media: netup_unidvb: Don't let i2c adapters
+ declare I2C_CLASS_SPD support if they support I2C_CLASS_HWMON
+Content-Language: en-US, nl
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Sergey Kozlov <serjk@netup.ru>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-i2c@vger.kernel.org, Abylay Ospan <aospan@netup.ru>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231124101619.6470-1-hkallweit1@gmail.com>
+ <20231124101619.6470-9-hkallweit1@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20231124101619.6470-9-hkallweit1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 18:08, Philipp Zabel wrote:
-> From: Marco Felsch <m.felsch@pengutronix.de>
+On 24/11/2023 11:16, Heiner Kallweit wrote:
+> After removal of the legacy eeprom driver the only remaining I2C
+> client device driver supporting I2C_CLASS_SPD is jc42. Because this
+> driver also supports I2C_CLASS_HWMON, adapters don't have to
+> declare support for I2C_CLASS_SPD if they support I2C_CLASS_HWMON.
+> It's one step towards getting rid of I2C_CLASS_SPD mid-term.
 > 
-> The panel.prepare() call requires an initialized MIPI-DSI host, so set
-> the prepare_prev_first flag to indicate that the host must be
-> initialized first.
+> Series was created supported by Coccinelle and its splitpatch.
 > 
-> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+
+Acked-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+
+Do you want me to take this, or will this go through the i2c subsystem?
+
+Regards,
+
+	Hans
+
+> 
 > ---
->   drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 2 ++
->   1 file changed, 2 insertions(+)
+>  drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-> index 7838947a1bf3..0c911ed9141b 100644
-> --- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-> +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
-> @@ -1094,6 +1094,8 @@ static int ili9881c_dsi_probe(struct mipi_dsi_device *dsi)
->   		return ret;
->   	}
->   
-> +	ctx->panel.prepare_prev_first = true;
-> +
->   	ret = drm_panel_of_backlight(&ctx->panel);
->   	if (ret)
->   		return ret;
+> diff --git a/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c b/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c
+> index bd38ce444..46676f2c8 100644
+> --- a/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c
+> +++ b/drivers/media/pci/netup_unidvb/netup_unidvb_i2c.c
+> @@ -289,7 +289,7 @@ static const struct i2c_algorithm netup_i2c_algorithm = {
+>  static const struct i2c_adapter netup_i2c_adapter = {
+>  	.owner		= THIS_MODULE,
+>  	.name		= NETUP_UNIDVB_NAME,
+> -	.class		= I2C_CLASS_HWMON | I2C_CLASS_SPD,
+> +	.class		= I2C_CLASS_HWMON,
+>  	.algo		= &netup_i2c_algorithm,
+>  };
+>  
+> 
 > 
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
