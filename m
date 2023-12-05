@@ -2,77 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D49B805DFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F417805E0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbjLESrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        id S1345349AbjLESsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjLESrv (ORCPT
+        with ESMTP id S1345371AbjLESsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:47:51 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D9D1A5
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:47:57 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c09f5a7cfso30817745e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:47:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701802075; x=1702406875; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=U+lqwBZMK+wVpbDWjP0vhE+/JjYpGK4V388xl9U7d9A=;
-        b=fwBywtYHW8DBEj635ZfuDErGYxS+MYe367T14owW8/ZE36kyvyzTxD0pcRfmS9BmAq
-         m2wHHqhVvkMzXj6bUSZUzal0Y5aONCec5JhxJ20gu+C7PXmrJ7fYrLOaZp8UMxgbWb9f
-         bC2o1GVRstF9bfrcCwavsRm7YvyYF7NWyGLEboNTksjT5YbVwzuPJrJQL9zKgsncEH8z
-         9m/uAj6AXRzD2xglRteMtqitOUZTpq9c7RJbNKVH1z2v4OCs1arvUjrmP5mca2DZU8Zt
-         v0ZMOrH3nI8mbFQqj0MQG2qzBmxrAk3cBRaZ7cNdiJStduMDX1Y39Zs6/Eh1Yzk4f0sG
-         ukzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701802075; x=1702406875;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U+lqwBZMK+wVpbDWjP0vhE+/JjYpGK4V388xl9U7d9A=;
-        b=rRl+Bn/COXGrfS11yQNIePAnqpq1K+/VhKPzGHqzGLCjiZApilT6S1oRPB13EDDpF4
-         B1Gf9ZA6Ff55j31yiPRpnQw3rGEyL6XH9pwZUHc/VNkfAS/h11z4RZoEeAqkWHnWflMJ
-         eJK9ICSVNSPRuZFEZjG2yAb/w6UcvK5wf+/U+2m5QK+4imHYq6/sSwo6ysyeBq0Oekzt
-         Md1BCdq63Bh93KJeZCkUNvucfKeskPpek5fsYnJ1cZJ2aScUV8eQeirZ1yJs8tDsbo+T
-         iIRWEutR6jUzJUXODnrjhKvOEvcj0d+lteoJQparXGThVzdZysYVmYJL8SSFcS3rB0/I
-         J8oQ==
-X-Gm-Message-State: AOJu0YxycZmP97isdpW/0zm7sKngfER+5/jaEw6tzSFnikHSvA0Oy94W
-        m5mVF7FvitNqKcHKBxhvXDRbzQ==
-X-Google-Smtp-Source: AGHT+IFdkcF/6xYrN815EzdSDUEvs1R+De9+lAaI/y2qPSCw5Af7b2zOxzh1ghUeVmRTaf8scsG7lQ==
-X-Received: by 2002:a05:600c:4706:b0:406:54e4:359c with SMTP id v6-20020a05600c470600b0040654e4359cmr853291wmo.19.1701802075403;
-        Tue, 05 Dec 2023 10:47:55 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id w3-20020a5d6803000000b003333eadd206sm8944995wru.27.2023.12.05.10.47.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 10:47:55 -0800 (PST)
-Message-ID: <3428b2af-5522-4090-995a-10eaee90c28e@linaro.org>
-Date:   Tue, 5 Dec 2023 19:47:54 +0100
+        Tue, 5 Dec 2023 13:48:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02911A1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:48:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16059C433C8;
+        Tue,  5 Dec 2023 18:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701802121;
+        bh=5KqBzScuuu0YI5DInZYG3ftxv+0rWvUyxh+PzEZeATI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QZKjDzvkJSQBXK8TntRGXYf2rczkwCY4sVeQFHovoP2DyA2ysnAM4Gy/c055Iz9I0
+         FsrwMI1YY4txcLFV93Eiowat8OUq62y0GCxEQjR6EFbysWa518vbGByXwdFioCbLE5
+         PpelimSqY+EyUYZkFOccUDaoWdL4IkSqH3UDdxeHoulCpUo9JrMHkejsGm2lxCkdgN
+         xwVVh+Q7iZDMt+bv/dBfM0Np37JNAC/vQ2e1mYpqPCvnVzkZejyUfrXHRN1elk5ECw
+         ewPxsQtXXWkyBK9dUjeBClATbpE/VLUSM5/IzywmpSrJJDbRrBP5KK/YvsYqWMIWOh
+         nhDV9V8ve4/9w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 3CE7F40094; Tue,  5 Dec 2023 15:48:38 -0300 (-03)
+Date:   Tue, 5 Dec 2023 15:48:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] perf metrics: Avoid segv if default metricgroup
+ isn't set
+Message-ID: <ZW9whqUEILWMdcmi@kernel.org>
+References: <20231204182330.654255-1-irogers@google.com>
+ <bea4ad79-297e-9737-8af1-2286192d26f4@os.amperecomputing.com>
+ <CAM9d7ci=Tk845H3x3KMDu-hTdP-u0O6a8D3iAa8EnFLLjOO6OQ@mail.gmail.com>
+ <ZW9G8Clxwl6bd0H6@kernel.org>
+ <CAM9d7ciOp_O5N1TDX0HyKavykirByAYrqzcmM-_6ZWjMv-47WQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] thermal: Add support for device tree thermal zones
- consumers
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, rafael@kernel.org
-Cc:     rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        wenst@chromium.org
-References: <20231115144857.424005-1-angelogioacchino.delregno@collabora.com>
- <09de3b1b-b725-46b8-97a6-55776fd5ca45@linaro.org>
- <99c1fd8f-4b17-4d4a-87a5-6a65745632fe@collabora.com>
- <ce110f25-5431-4c80-b037-add7fd7461bd@linaro.org>
- <03e950a1-0334-40ab-aa77-ac8175877172@collabora.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <03e950a1-0334-40ab-aa77-ac8175877172@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <CAM9d7ciOp_O5N1TDX0HyKavykirByAYrqzcmM-_6ZWjMv-47WQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,165 +73,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Angelo,
-
-On 05/12/2023 14:48, AngeloGioacchino Del Regno wrote:
-> Il 01/12/23 15:18, Daniel Lezcano ha scritto:
-
-[ ... ]
-
->> Putting apart the fact the change you propose is not relevant as there 
->> is already everything in. My comment is about the current state of the 
->> thermal framework.
->>
+Em Tue, Dec 05, 2023 at 09:24:42AM -0800, Namhyung Kim escreveu:
+> Hi Arnaldo,
 > 
-> I don't really understand this assertion, and I'm afraid that I'm 
-> underestimating
-> something so, in case, please help me to understand what am I missing here.
-
-Sure. Let me clarify my understanding of you proposal and my assertion.
-
-  - A driver needs a thermal zone device structure pointer in order to 
-read its temperature. But as it is not the creator, it does not have 
-this pointer.
-
-  - As a solution, several drivers are using a specific DT bindings to 
-map a thermal zone "name/type' with a string to refer from the driver a 
-specific thermal zone node name. Then the function 
-thermal_zone_device_get_by_name() is used to retrieve the pointer.
-
-  - Your proposal is to provide that mechanism in the thermal_of code 
-directly, so the code can be factored out for all these drivers.
-
-Is my understanding correct?
-
-My point is:
-
-  - The driver are mapping a thermal zone with a name but a node name is 
-supposed to be unique on DT (but that is implicit)
-
-  - A phandle is enough to get the node name, no need to add a thermal 
-zone name to get the node and then get the thermal zone. It is duplicate 
-information as the DT uses the node name as a thermal zone name.
-
-We could have:
-
-         thermal-zones {
-                 display {
-                         polling-delay-passive = <0>;
-                         polling-delay = <0>;
-                         thermal-sensors = <&display_temp>;
-                 };
-         };
-
-         papirus27@0{
-
-		[ ... ]
-
----             pervasive,thermal-zone = "display";
-+++             pervasive,thermal-zone = <&display>;
-         };
-
-The ux500 is directly calling thermal_zone_device_get_by_name() with the 
-thermal zone node name.
-
-> For how I see it, in the thermal framewoek I don't see any "somewhat 
-> standardized"
-> helper like the one(s) that I'm introducing with this patch 
-> (thermal_of_get_zone(),
-> thermal_of_get_zone_by_index()), and this is the exact reason why I'm 
-> proposing
-> this patch.
+> On Tue, Dec 5, 2023 at 7:51 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >
+> > Em Mon, Dec 04, 2023 at 07:33:18PM -0800, Namhyung Kim escreveu:
+> > > On Mon, Dec 4, 2023 at 2:45 PM Ilkka Koskinen <ilkka@os.amperecomputing.com> wrote:
+> > > > On Mon, 4 Dec 2023, Ian Rogers wrote:
+> > > > > A metric is default by having "Default" within its groups. The default
+> > > > > metricgroup name needn't be set and this can result in segv in
+> > > > > default_metricgroup_cmp and perf_stat__print_shadow_stats_metricgroup
+> > > > > that assume it has a value when there is a Default metric group. To
+> > > > > avoid the segv initialize the value to "".
+> >
+> > > > > Fixes: 1c0e47956a8e ("perf metrics: Sort the Default metricgroup")
+> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> >
+> > > > Thanks! I was going to look for the bug but got pulled to other
+> > > > tasks. The patch looks good to me and I tested it successfully on
+> > > > AmpereOne.
+> >
+> > > >    Reviewed-and-tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> >
+> > > Looks like it needs to go through perf-tools for v6.7.
+> > > Ian, do you think this one is enough?
+> >
+> > So I had this on my local perf-tools-next, removed now, I also have some
+> > other fixes by Ian on the tmp.perf-tools-next, please let me know what
+> > you guys decide to have in perf-tools for v6.7 so that I can remove it
+> > from there.
 > 
-> Then again - I mean no disrespect - it's just that I don't understand 
-> (yet) why you
-> are saying that "everything is already available", because I really 
-> don't see it.
-
-Ok said differently, thermal zone name and type are messy.
-
-Let's clarify that and then let's see with the result if adding this 
-thermal zone node/name mapping still makes sense.
-
->>   - A thermal zone does not have a name but a type
->>
->>   - We use the thermal zone DT node name to register as a name but it 
->> is a type from the thermal framework point of view
+> I think we need this one and the Ampere default-metric-group fix.
 > 
-> This is something that I didn't realize before. Thanks for that.
+> https://lore.kernel.org/r/20231201021550.1109196-2-ilkka@os.amperecomputing.com/
 > 
-> ...and yes, we're registering a "name" from DT as a "type" in the 
-> framework, this
-> is highly confusing and needs to be cleaned up.
+> Also perf list JSON fix can go to v6.7.
 > 
->>
->>   - We can register several thermal zones with the same type (so we 
->> can have duplicate names if we use type as name)
->>
-> 
-> ...which makes sense, after realizing that we're registering a TYPE and 
-> not a NAME,
-> and I agree about the logic for which that multiple zones can be of the 
-> same type.
-> 
->>   - We use thermal_zone_device_get_by_name() but actually it checks 
->> against the type and as we can have multiple identical types, the 
->> function returns the first one found
->>
-> 
-> The first thing that comes to mind is to rename 
-> thermal_zone_device_get_by_name()
-> to thermal_zone_device_get_by_type(), but then I'd be reintroducing the 
-> former and
-> this gives me concerns about OOT drivers using that and developers 
-> getting highly
-> confused (name->type, but name exists again, so they might erroneously 
-> just fix the
-> call to xxx_by_name() instead of changing it to xxx_by_type()).
+> https://lore.kernel.org/r/20231129213428.2227448-2-irogers@google.com/
 
+Ok, removed both, please augment the later description to:
 
-> Should I *not* be concerned about that?
+"perf list: Fix JSON segfault by setting the used skip_fuplicate_pmus callback"
 
-Not really :)
+The original description was vague, improving it a bit like that helps
+when just looking at the output of "git log --oneline".
 
-TBH, OOT drivers do not exist from upstream POV.
+Thanks,
 
- > Any suggestion?
-
-Yes, let's introduce a thermal zone name in the tzd.
-
-  - There are now too many parameters to the function 
-thermal_zone_device_register*(), so we can't add a new 'name' parameter. 
-Introduce a thermal_zone_device_parameters structure. This structure 
-will contain all thermal_zone_device_register_* parameter function. 
-There won't be any functional changes, just how the parameters are 
-passed. Perhaps, you should use an intermediate function to not have the 
-change impacting everywhere.
-
-  - then add a const char *name field in this structure and in the 
-thermal_zone_device structure. So we can assign the name to the thermal 
-zone. The name must be checked against duplicate. If no name is 
-specified when creating a thermal zone, then name = type.
-
-  - In thermal_of, use the node name for the type and the name, that 
-will be duplicate but we will sort it out later.
-
-  - Add the name in sysfs
-
-Second step, track down users of thermal_zone_device_get_by_name() and 
-check if they can use the name instead of the type. I'm pretty sure it 
-is the case for most of the callers.
-
-With that, there will be a nice clarification IMHO.
-
-Then we will be able to restate the 'type' with something different 
-without breaking the existing ABI.
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+- Arnaldo
 
