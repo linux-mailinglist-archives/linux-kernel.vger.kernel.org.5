@@ -2,138 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A31D1805E82
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B19805E87
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345465AbjLETVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51158 "EHLO
+        id S230030AbjLETWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjLETVt (ORCPT
+        with ESMTP id S229483AbjLETWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:21:49 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6091A4
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:21:53 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db54e86b2d1so106931276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 11:21:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701804113; x=1702408913; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+PHueKnu6twn/8T3xEnp+ZFlbZ1HcVdnlRPtBHugQhw=;
-        b=Ev8Hh1P0Lkn6rpwHqo6XRBJORC5pIsg8zENzrjNDjrI56SN7yuJz1Rr68Pqz7l7lMx
-         k4WwCo2Tj7AurXyzwDuPABQKnj+HotokvhE+iZcsEaH0FqEVPtb8sm1k6FBkjiEEBeWV
-         BwwvoWxBDymDs1cTorQpvI7Drb04zj/BLheY9skbS05hzIuVUiesuLgv6IPO9wo7WwUz
-         BUJB/dnP/ln0HCkbQsh+xbBzASDLJc4XFAAis88NOyLWNZrAfl/ZGixx5n5kYLvTp3bw
-         RvuS6tSavP181mlYlLba8Upo+d2S2tzTyla9rR1tQopXZFG2fb15oy6QgDE82cAhBSym
-         xXkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701804113; x=1702408913;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+PHueKnu6twn/8T3xEnp+ZFlbZ1HcVdnlRPtBHugQhw=;
-        b=NFxEw85U0WWdAGK6PYXJDpyIC5493pKODXQEJ8//b+Pd2LfySjQJ0Z0ika0avvge26
-         884pzcg8MIa1bJLvonOjNYhxr02O516llrn00D0nN3fbapWZdBp9ApaK8skBDN5u5UTv
-         b6xXPFGA19mHEue+ZfxxCrvJSkY2At7evEoqCIci8A8s/xfKXlAUiBtJt3dMwqo0E9Wo
-         MAY6/+XVFnuD99GYdorbjr0YoBxTz5shV92DDNkvOOQxdYLRbv7bdFR52v5/eSjG0UKB
-         48zWIERsBdfcQ3dahlY0e5EPj7kohFfIamKGkzN2uNCbNhO7GLlbk3rUgD/s2FepFqYT
-         xpSA==
-X-Gm-Message-State: AOJu0Yxdys83Se4FWVyZo4MCz8V4G1Lu2acpTyjkvPvQZPvOz56cfEj9
-        3kOLkNAOvvIcP2kj8/vFo5D3vyfPoV8=
-X-Google-Smtp-Source: AGHT+IEDojI9r2jUP7SnFhGrIGalU4Ij3ADFSMH3T+bKNraCDRbJqd/r79BOcS/tAV9dHezzcWCAi9z33D0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:bccd:0:b0:d9a:ca20:1911 with SMTP id
- l13-20020a25bccd000000b00d9aca201911mr63207ybm.4.1701804113124; Tue, 05 Dec
- 2023 11:21:53 -0800 (PST)
-Date:   Tue, 5 Dec 2023 11:21:51 -0800
-In-Reply-To: <CXD7AW5T9R7G.2REFR2IRSVRVZ@amazon.com>
-Mime-Version: 1.0
-References: <20231108111806.92604-1-nsaenz@amazon.com> <20231108111806.92604-6-nsaenz@amazon.com>
- <f4495d1f697cf9a7ddfb786eaeeac90f554fc6db.camel@redhat.com>
- <CXD4TVV5QWUK.3SH495QSBTTUF@amazon.com> <ZWoKlJUKJGGhRRgM@google.com>
- <CXD5HJ5LQMTE.11XP9UB9IL8LY@amazon.com> <ZWocI-2ajwudA-S5@google.com> <CXD7AW5T9R7G.2REFR2IRSVRVZ@amazon.com>
-Message-ID: <ZW94T8Fx2eJpwKQS@google.com>
-Subject: Re: [RFC 05/33] KVM: x86: hyper-v: Introduce VTL call/return
- prologues in hypercall page
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, anelkz@amazon.com,
-        graf@amazon.com, dwmw@amazon.co.uk, jgowans@amazon.com,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        x86@kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Tue, 5 Dec 2023 14:22:07 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F264135
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:22:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6947AC433C7;
+        Tue,  5 Dec 2023 19:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701804132;
+        bh=m4JCb/yKb6n09zVh4sYV4pbNNQapkuetbcSA63bkdnE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fAx4dtHlfCdb+iocn79zd0zzswbrqX9Sl9vX296xqN9nnW6p+bytEbGj5hVMAoPMP
+         6rcfivrcQ+aPv+r9WNrC/CD4PqeaaW7LJ9Ij2Uey2N18/f76R8aXWw3P3eKcNTQ8IZ
+         scFFk+Spwwioj8ingJ64zsOAnIG1Jhy9w1ovJFeQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+Subject: [PATCH 4.19 00/63] 4.19.301-rc2 review
+Date:   Wed,  6 Dec 2023 04:22:09 +0900
+Message-ID: <20231205183236.587197010@linuxfoundation.org>
+X-Mailer: git-send-email 2.43.0
+MIME-Version: 1.0
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.301-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.301-rc2
+X-KernelTest-Deadline: 2023-12-07T18:32+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 01, 2023, Nicolas Saenz Julienne wrote:
-> On Fri Dec 1, 2023 at 5:47 PM UTC, Sean Christopherson wrote:
-> > On Fri, Dec 01, 2023, Nicolas Saenz Julienne wrote:
-> > > On Fri Dec 1, 2023 at 4:32 PM UTC, Sean Christopherson wrote:
-> > > > On Fri, Dec 01, 2023, Nicolas Saenz Julienne wrote:
-> > > > > > To support this I think that we can add a userspace msr filter on the HV_X64_MSR_HYPERCALL,
-> > > > > > although I am not 100% sure if a userspace msr filter overrides the in-kernel msr handling.
-> > > > >
-> > > > > I thought about it at the time. It's not that simple though, we should
-> > > > > still let KVM set the hypercall bytecode, and other quirks like the Xen
-> > > > > one.
-> > > >
-> > > > Yeah, that Xen quirk is quite the killer.
-> > > >
-> > > > Can you provide pseudo-assembly for what the final page is supposed to look like?
-> > > > I'm struggling mightily to understand what this is actually trying to do.
-> > >
-> > > I'll make it as simple as possible (diregard 32bit support and that xen
-> > > exists):
-> > >
-> > > vmcall             <-  Offset 0, regular Hyper-V hypercalls enter here
-> > > ret
-> > > mov rax,rcx  <-  VTL call hypercall enters here
-> >
-> > I'm missing who/what defines "here" though.  What generates the CALL that points
-> > at this exact offset?  If the exact offset is dictated in the TLFS, then aren't
-> > we screwed with the whole Xen quirk, which inserts 5 bytes before that first VMCALL?
-> 
-> Yes, sorry, I should've included some more context.
-> 
-> Here's a rundown (from memory) of how the first VTL call happens:
->  - CPU0 start running at VTL0.
->  - Hyper-V enables VTL1 on the partition.
->  - Hyper-V enabled VTL1 on CPU0, but doesn't yet switch to it. It passes
->    the initial VTL1 CPU state alongside the enablement hypercall
->    arguments.
->  - Hyper-V sets the Hypercall page overlay address through
->    HV_X64_MSR_HYPERCALL. KVM fills it.
->  - Hyper-V gets the VTL-call and VTL-return offset into the hypercall
->    page using the VP Register HvRegisterVsmCodePageOffsets (VP register
->    handling is in user-space).
+This is the start of the stable review cycle for the 4.19.301 release.
+There are 63 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Ah, so the guest sets the offsets by "writing" HvRegisterVsmCodePageOffsets via
-a HvSetVpRegisters() hypercall.
+Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+Anything received after that time might be too late.
 
-I don't see a sane way to handle this in KVM if userspace handles HvSetVpRegisters().
-E.g. if the guest requests offsets that don't leave enough room for KVM to shove
-in its data, then presumably userspace needs to reject HvSetVpRegisters().  But
-that requires userspace to know exactly how many bytes KVM is going to write at
-each offsets.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.301-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-My vote is to have userspace do all the patching.  IIUC, all of this is going to
-be mutually exclusive with kvm_xen_hypercall_enabled(), i.e. userspace doesn't
-need to worry about setting RAX[31].  At that point, it's just VMCALL versus
-VMMCALL, and userspace is more than capable of identifying whether its running
-on Intel or AMD.
+thanks,
 
->  - Hyper-V performs the first VTL-call, and has all it needs to move
->    between VTL0/1.
-> 
-> Nicolas
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.301-rc2
+
+Adrian Hunter <adrian.hunter@intel.com>
+    mmc: block: Retry commands in CQE error recovery
+
+Zheng Yongjun <zhengyongjun3@huawei.com>
+    mmc: core: convert comma to semicolon
+
+Adrian Hunter <adrian.hunter@intel.com>
+    mmc: cqhci: Fix task clearing in CQE error recovery
+
+Adrian Hunter <adrian.hunter@intel.com>
+    mmc: cqhci: Warn of halt or task clear failure
+
+Adrian Hunter <adrian.hunter@intel.com>
+    mmc: cqhci: Increase recovery halt timeout
+
+Christoph Niedermaier <cniedermaier@dh-electronics.com>
+    cpufreq: imx6q: Don't disable 792 Mhz OPP unnecessarily
+
+Christoph Niedermaier <cniedermaier@dh-electronics.com>
+    cpufreq: imx6q: don't warn for disabling a non-existing frequency
+
+Mimi Zohar <zohar@linux.ibm.com>
+    ima: detect changes to the backing overlay file
+
+Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+    ovl: skip overlayfs superblocks at global sync
+
+Amir Goldstein <amir73il@gmail.com>
+    ima: annotate iint mutex to avoid lockdep false positive warnings
+
+Helge Deller <deller@gmx.de>
+    fbdev: stifb: Make the STI next font pointer a 32-bit signed offset
+
+Linus Walleij <linus.walleij@linaro.org>
+    mtd: cfi_cmdset_0001: Byte swap OTP info
+
+Jean-Philippe Brucker <jean-philippe@linaro.org>
+    mtd: cfi_cmdset_0001: Support the absence of protection registers
+
+Heiko Carstens <hca@linux.ibm.com>
+    s390/cmma: fix detection of DAT pages
+
+Alexander Gordeev <agordeev@linux.ibm.com>
+    s390/mm: fix phys vs virt confusion in mark_kernel_pXd() functions family
+
+Steve French <stfrench@microsoft.com>
+    smb3: fix touch -h of symlink
+
+Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+    net: ravb: Start TX queues after HW initialization succeeded
+
+Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+    ravb: Fix races between ravb_tx_timeout_work() and net related ops
+
+Zhengchao Shao <shaozhengchao@huawei.com>
+    ipv4: igmp: fix refcnt uaf issue when receiving igmp query packet
+
+Max Nguyen <maxwell.nguyen@hp.com>
+    Input: xpad - add HyperX Clutch Gladiate Support
+
+Jann Horn <jannh@google.com>
+    btrfs: send: ensure send_fd is writable
+
+Filipe Manana <fdmanana@suse.com>
+    btrfs: fix off-by-one when checking chunk map includes logical address
+
+Timothy Pearson <tpearson@raptorengineering.com>
+    powerpc: Don't clobber f0/vs0 during fp|altivec register save
+
+Markus Weippert <markus@gekmihesg.de>
+    bcache: revert replacing IS_ERR_OR_NULL with IS_ERR
+
+Wu Bo <bo.wu@vivo.com>
+    dm verity: don't perform FEC for failed readahead IO
+
+Mikulas Patocka <mpatocka@redhat.com>
+    dm-verity: align struct dm_verity_fec_io properly
+
+Kailang Yang <kailang@realtek.com>
+    ALSA: hda/realtek: Headset Mic VREF to 100%
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: hda: Disable power-save on KONTRON SinglePC
+
+Adrian Hunter <adrian.hunter@intel.com>
+    mmc: block: Do not lose cache flush during CQE error recovery
+
+Yang Yingliang <yangyingliang@huawei.com>
+    firewire: core: fix possible memory leak in create_units()
+
+Maria Yu <quic_aiquny@quicinc.com>
+    pinctrl: avoid reload of p state in list iteration
+
+Johan Hovold <johan+linaro@kernel.org>
+    USB: dwc3: qcom: fix wakeup after probe deferral
+
+Ricardo Ribalda <ribalda@chromium.org>
+    usb: dwc3: set the dma max_seg_size
+
+Oliver Neukum <oneukum@suse.com>
+    USB: dwc2: write HCINT with INTMASK applied
+
+Lech Perczak <lech.perczak@gmail.com>
+    USB: serial: option: don't claim interface 4 for ZTE MF290
+
+Puliang Lu <puliang.lu@fibocom.com>
+    USB: serial: option: fix FM101R-GL defines
+
+Victor Fragoso <victorffs@hotmail.com>
+    USB: serial: option: add Fibocom L7xx modules
+
+Rand Deeb <rand.sec96@gmail.com>
+    bcache: prevent potential division by zero error
+
+Coly Li <colyli@suse.de>
+    bcache: check return value from btree_node_alloc_replacement()
+
+Mikulas Patocka <mpatocka@redhat.com>
+    dm-delay: fix a race between delay_presuspend and delay_bio
+
+Long Li <longli@microsoft.com>
+    hv_netvsc: Mark VF as slave before exposing it to user-mode
+
+Haiyang Zhang <haiyangz@microsoft.com>
+    hv_netvsc: Fix race of register_netdevice_notifier and VF register
+
+Asuna Yang <spriteovo@gmail.com>
+    USB: serial: option: add Luat Air72*U series products
+
+Jan Höppner <hoeppner@linux.ibm.com>
+    s390/dasd: protect device queue against concurrent access
+
+Coly Li <colyli@suse.de>
+    bcache: replace a mistaken IS_ERR() by IS_ERR_OR_NULL() in btree_gc_coalesce()
+
+Claire Lin <claire.lin@broadcom.com>
+    mtd: rawnand: brcmnand: Fix ecc chunk calculation for erased page bitfips
+
+Andrew Murray <andrew.murray@arm.com>
+    KVM: arm64: limit PMU version to PMUv3 for ARMv8.1
+
+Andrew Murray <andrew.murray@arm.com>
+    arm64: cpufeature: Extract capped perfmon fields
+
+Huacai Chen <chenhuacai@loongson.cn>
+    MIPS: KVM: Fix a build warning about variable set but not used
+
+Samuel Holland <samuel.holland@sifive.com>
+    net: axienet: Fix check for partial TX checksum
+
+Raju Rangoju <Raju.Rangoju@amd.com>
+    amd-xgbe: propagate the correct speed and duplex status
+
+Raju Rangoju <Raju.Rangoju@amd.com>
+    amd-xgbe: handle the corner-case during tx completion
+
+Raju Rangoju <Raju.Rangoju@amd.com>
+    amd-xgbe: handle corner-case during sfp hotplug
+
+Stefano Stabellini <sstabellini@kernel.org>
+    arm/xen: fix xen_vcpu_info allocation alignment
+
+Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+    net: usb: ax88179_178a: fix failed operations during ax88179_reset
+
+Kunwu Chan <chentao@kylinos.cn>
+    ipv4: Correct/silence an endian warning in __ip_do_redirect
+
+Charles Yi <be286@163.com>
+    HID: fix HID device resource race between HID core and debugging support
+
+Benjamin Tissoires <benjamin.tissoires@redhat.com>
+    HID: core: store the unique system identifier in hid_device
+
+Jonas Karlman <jonas@kwiboo.se>
+    drm/rockchip: vop: Fix color for RGB888/BGR888 format on VOP full
+
+Chen Ni <nichen@iscas.ac.cn>
+    ata: pata_isapnp: Add missing error check for devm_ioport_map()
+
+Marek Vasut <marex@denx.de>
+    drm/panel: simple: Fix Innolux G101ICE-L01 timings
+
+Christopher Bednarz <christopher.n.bednarz@intel.com>
+    RDMA/irdma: Prevent zero-length STAG registration
+
+Saravana Kannan <saravanak@google.com>
+    driver core: Release all resources during unbind before updating device links
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                          |  4 +-
+ arch/arm/xen/enlighten.c                          |  3 +-
+ arch/arm64/include/asm/cpufeature.h               | 23 +++++++++++
+ arch/arm64/include/asm/sysreg.h                   |  6 +++
+ arch/arm64/kvm/sys_regs.c                         | 10 +++++
+ arch/mips/kvm/mmu.c                               |  3 +-
+ arch/powerpc/kernel/fpu.S                         | 13 ++++++
+ arch/powerpc/kernel/vector.S                      |  2 +
+ arch/s390/mm/page-states.c                        | 14 +++----
+ drivers/ata/pata_isapnp.c                         |  3 ++
+ drivers/base/dd.c                                 |  4 +-
+ drivers/cpufreq/imx6q-cpufreq.c                   | 32 ++++++++-------
+ drivers/firewire/core-device.c                    | 11 ++----
+ drivers/gpu/drm/panel/panel-simple.c              | 12 +++---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c       | 14 +++++--
+ drivers/hid/hid-core.c                            | 16 ++++++--
+ drivers/hid/hid-debug.c                           |  3 ++
+ drivers/infiniband/hw/i40iw/i40iw_ctrl.c          |  6 +++
+ drivers/infiniband/hw/i40iw/i40iw_type.h          |  2 +
+ drivers/infiniband/hw/i40iw/i40iw_verbs.c         | 10 ++++-
+ drivers/input/joystick/xpad.c                     |  2 +
+ drivers/md/bcache/btree.c                         |  6 ++-
+ drivers/md/bcache/sysfs.c                         |  2 +-
+ drivers/md/dm-delay.c                             | 17 +++++---
+ drivers/md/dm-verity-fec.c                        |  3 +-
+ drivers/md/dm-verity-target.c                     |  4 +-
+ drivers/md/dm-verity.h                            |  6 ---
+ drivers/mmc/core/block.c                          |  2 +
+ drivers/mmc/core/core.c                           | 15 ++++---
+ drivers/mmc/host/cqhci.c                          | 44 ++++++++++-----------
+ drivers/mtd/chips/cfi_cmdset_0001.c               | 29 +++++++++++---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c          |  5 ++-
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c          | 14 +++++++
+ drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c      | 11 ++++--
+ drivers/net/ethernet/amd/xgbe/xgbe-mdio.c         | 14 ++++++-
+ drivers/net/ethernet/renesas/ravb_main.c          | 15 +++++--
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c |  2 +-
+ drivers/net/hyperv/netvsc_drv.c                   | 41 +++++++++++++------
+ drivers/net/usb/ax88179_178a.c                    |  4 +-
+ drivers/pinctrl/core.c                            |  6 +--
+ drivers/s390/block/dasd.c                         | 24 ++++++------
+ drivers/usb/dwc2/hcd_intr.c                       | 15 ++++---
+ drivers/usb/dwc3/core.c                           |  2 +
+ drivers/usb/dwc3/dwc3-qcom.c                      |  8 ++--
+ drivers/usb/serial/option.c                       | 11 ++++--
+ drivers/video/fbdev/sticore.h                     |  2 +-
+ fs/btrfs/send.c                                   |  2 +-
+ fs/btrfs/volumes.c                                |  2 +-
+ fs/cifs/cifsfs.c                                  |  1 +
+ fs/overlayfs/super.c                              |  5 ++-
+ fs/sync.c                                         |  3 +-
+ include/linux/fs.h                                |  2 +
+ include/linux/hid.h                               |  5 +++
+ net/ipv4/igmp.c                                   |  6 ++-
+ net/ipv4/route.c                                  |  2 +-
+ security/integrity/iint.c                         | 48 +++++++++++++++++------
+ security/integrity/ima/ima_api.c                  |  5 +++
+ security/integrity/ima/ima_main.c                 | 16 +++++++-
+ security/integrity/integrity.h                    |  2 +
+ sound/pci/hda/hda_intel.c                         |  2 +
+ sound/pci/hda/patch_realtek.c                     |  9 +++++
+ 61 files changed, 434 insertions(+), 171 deletions(-)
+
+
