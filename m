@@ -2,80 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7E08057C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBF68057C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbjLEOm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:42:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42938 "EHLO
+        id S1345615AbjLEOnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232141AbjLEOmz (ORCPT
+        with ESMTP id S232141AbjLEOm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:42:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571E0183
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:43:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701787381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VYD0X3rZjwpNcX0tntI2wIO2stB+eIozlFrReCKadJ0=;
-        b=B4cX3LgGd8FZA6W5Z7u/JO19cQJIJQZIlomXMpgToA4eD3M7EFMGemZIg8K3nraF/PcJVP
-        2Xsjmib2iVN7EgmskYpTcVDC+t8Byrp0axcl8uz4SM4akGdU/L+X+S2SgR+NDyyf2szMnF
-        X2D8Jdy8oIerolbjrC3uig4VRskIqvA=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-398-tlusCb-VONuv5OpnNCP1XQ-1; Tue, 05 Dec 2023 09:42:58 -0500
-X-MC-Unique: tlusCb-VONuv5OpnNCP1XQ-1
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-58794776af4so7993169eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 06:42:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701787378; x=1702392178;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VYD0X3rZjwpNcX0tntI2wIO2stB+eIozlFrReCKadJ0=;
-        b=c+S/vjmJ74xQJ9T8c9dMbGK7lRoVhJ7eq8tOa//TF7BmT/pX0jhIgD8eZdBQwGO374
-         I0Qk6eIwuUuYunhxQE5rSZtXyvBM9Mbbq2G0hMs1hBVmgl2XrfQzJ7tnOrIHaYBoyWO9
-         4Brcul+RNIHDBchqoFlzxLUvdeEeTnL/jvRK9emK9JCO27iwVBTdw5DGHCecKP8huU1G
-         96Ck3sOpLFDLTyuIjQCUqigx/cUVvUUO14Bh5pEBg56tgw1zTe9dRgYAKXb4YkSERqxa
-         x4cdma2Ezc/B070fKRnOuhMehOorgWCj2XfkNMfGwoQE4s/yVO0BZdOIM21A4XvwdHld
-         65rQ==
-X-Gm-Message-State: AOJu0YzCtL4Pj48Q32LrSqqXIPZe6Gn+yGiBWZr40b0Y0CgzTu6BHmlt
-        cg2UGTZiow5Zr77A3IVTQIcwT38aQ5A8LWqE0L/UXeWopiPCQmL1GWRVslqumGKOWsB99/P/nC3
-        RBKwwbaJUk0huzFyqBcJPBaHH
-X-Received: by 2002:a05:6820:1623:b0:58d:9e35:aa01 with SMTP id bb35-20020a056820162300b0058d9e35aa01mr5371110oob.3.1701787377922;
-        Tue, 05 Dec 2023 06:42:57 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHBHHg6NoZv9mMdXT1Vy8JkTAhVr4Tf9B3BabZKgCRGd05NVkUVu36IPh2i2Hf6nWLHeTXNSw==
-X-Received: by 2002:a05:6820:1623:b0:58d:9e35:aa01 with SMTP id bb35-20020a056820162300b0058d9e35aa01mr5371101oob.3.1701787377598;
-        Tue, 05 Dec 2023 06:42:57 -0800 (PST)
-Received: from [10.16.200.42] (nat-pool-bos-t.redhat.com. [66.187.233.206])
-        by smtp.gmail.com with ESMTPSA id r66-20020a4a4e45000000b0058d8325fc60sm2377796ooa.0.2023.12.05.06.42.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 06:42:57 -0800 (PST)
-Message-ID: <7dd6f44c-0f4b-4127-83fc-a8cf7e6314c1@redhat.com>
-Date:   Tue, 5 Dec 2023 09:42:55 -0500
+        Tue, 5 Dec 2023 09:42:58 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7010CA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:43:04 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 21EC2139F;
+        Tue,  5 Dec 2023 06:43:51 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3962C3F6C4;
+        Tue,  5 Dec 2023 06:43:03 -0800 (PST)
+Message-ID: <70dcdad7-5952-48ce-a9b9-042cfea59a5d@arm.com>
+Date:   Tue, 5 Dec 2023 14:43:01 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] watchdog: Provide a better stop error message
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>, linux-kernel@vger.kernel.org
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        David Arcari <darcari@redhat.com>,
-        linux-watchdog@vger.kernel.org
-References: <20231205140926.397956-1-prarit@redhat.com>
- <856c571a-41be-4e5e-9bde-72a192b14801@roeck-us.net>
-From:   Prarit Bhargava <prarit@redhat.com>
-In-Reply-To: <856c571a-41be-4e5e-9bde-72a192b14801@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH 0/2] arm64: hugetlb: Fix page fault loop for
+ sw-dirty/hw-clean contiguous PTEs
+Content-Language: en-GB
+To:     James Houghton <jthoughton@google.com>,
+        Steve Capper <steve.capper@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231204172646.2541916-1-jthoughton@google.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231204172646.2541916-1-jthoughton@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,22 +51,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/23 09:32, Guenter Roeck wrote:
-> On 12/5/23 06:09, Prarit Bhargava wrote:
->> Provide a better stop error message for the case where the watchdog does
->> not stop.
->>
-> 
-> Please, no such patches. We are busy enough as is, and we don't need
-> people to change log messages they don't like.
-> 
+On 04/12/2023 17:26, James Houghton wrote:
+> It is currently possible for a userspace application to enter a page
+> fault loop when using HugeTLB pages implemented with contiguous PTEs
+> when HAFDBS is not available. This happens because:
+> 1. The kernel may sometimes write PTEs that are sw-dirty but hw-clean
+>    (PTE_DIRTY | PTE_RDONLY | PTE_WRITE).
 
-It is impossible to tell what actually happened without the additional 
-information (specifically the current thread).  That's not a "don't 
-like" as much as it is a "provide better debug output".
+Hi James,
 
-P.
+Do you know how this happens?
 
-> Guenter
+AFAIK, this is the set of valid bit combinations, and
+PTE_RDONLY|PTE_WRITE|PTE_DIRTY is not one of them. Perhaps the real solution is
+to understand how this is happening and prevent it?
+
+/*
+ * PTE bits configuration in the presence of hardware Dirty Bit Management
+ * (PTE_WRITE == PTE_DBM):
+ *
+ * Dirty  Writable | PTE_RDONLY  PTE_WRITE  PTE_DIRTY (sw)
+ *   0      0      |   1           0          0
+ *   0      1      |   1           1          0
+ *   1      0      |   1           0          1
+ *   1      1      |   0           1          x
+ *
+ * When hardware DBM is not present, the sofware PTE_DIRTY bit is updated via
+ * the page fault mechanism. Checking the dirty status of a pte becomes:
+ *
+ *   PTE_DIRTY || (PTE_WRITE && !PTE_RDONLY)
+ */
+
+
+Thanks,
+Ryan
+
+
+> 2. If, during a write, the CPU uses a sw-dirty, hw-clean PTE in handling
+>    the memory access on a system without HAFDBS, we will get a page
+>    fault.
+> 3. HugeTLB will check if it needs to update the dirty bits on the PTE.
+>    For contiguous PTEs, it will check to see if the pgprot bits need
+>    updating. In this case, HugeTLB wants to write a sequence of
+>    sw-dirty, hw-dirty PTEs, but it finds that all the PTEs it is about
+>    to overwrite are all pte_dirty() (pte_sw_dirty() => pte_dirty()),
+>    so it thinks no update is necessary.
 > 
+> Please see this[1] reproducer.
+> 
+> I think (though I may be wrong) that both step (1) and step (3) are
+> buggy.
+> 
+> The first patch in this series fixes step (3); instead of checking if
+> pte_dirty is matching in __cont_access_flags_changed, check pte_hw_dirty
+> and pte_sw_dirty separately.
+> 
+> The second patch in this series makes step (1) less likely to occur.
+> Without this patch, we can get the kernel to write a sw-dirty, hw-clean
+> PTE with the following steps (showing the relevant VMA flags and pgprot
+> bits):
+> i.   Create a valid, writable contiguous PTE.
+>        VMA vmflags:     VM_SHARED | VM_READ | VM_WRITE
+>        VMA pgprot bits: PTE_RDONLY | PTE_WRITE
+>        PTE pgprot bits: PTE_DIRTY | PTE_WRITE
+> ii.  mprotect the VMA to PROT_NONE.
+>        VMA vmflags:     VM_SHARED
+>        VMA pgprot bits: PTE_RDONLY
+>        PTE pgprot bits: PTE_DIRTY | PTE_RDONLY
+> iii. mprotect the VMA back to PROT_READ | PROT_WRITE.
+>        VMA vmflags:     VM_SHARED | VM_READ | VM_WRITE
+>        VMA pgprot bits: PTE_RDONLY | PTE_WRITE
+>        PTE pgprot bits: PTE_DIRTY | PTE_WRITE | PTE_RDONLY
+> 
+> Applying either one of the two patches in this patchset will fix the
+> particular issue with HugeTLB pages implemented with contiguous PTEs.
+> It's possible that only one of these patches should be taken, or that
+> the right fix is something else entirely.
+> 
+> [1]: https://gist.github.com/48ca/11d1e466deee032cb35aa8c2280f93b0
+> 
+> James Houghton (2):
+>   arm64: hugetlb: Distinguish between hw and sw dirtiness in
+>     __cont_access_flags_changed
+>   arm64: mm: Always make sw-dirty PTEs hw-dirty in pte_modify
+> 
+>  arch/arm64/include/asm/pgtable.h | 6 ++++++
+>  arch/arm64/mm/hugetlbpage.c      | 5 ++++-
+>  2 files changed, 10 insertions(+), 1 deletion(-)
+> 
+> 
+> base-commit: 645a9a454fdb7e698a63a275edca6a17ef97afc4
 
