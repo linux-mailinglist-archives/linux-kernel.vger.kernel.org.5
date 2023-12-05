@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F417805E0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 135F3805E11
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345349AbjLESsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:48:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
+        id S232184AbjLEStU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:49:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345371AbjLESsf (ORCPT
+        with ESMTP id S235143AbjLEStQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:48:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02911A1
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:48:41 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16059C433C8;
-        Tue,  5 Dec 2023 18:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701802121;
-        bh=5KqBzScuuu0YI5DInZYG3ftxv+0rWvUyxh+PzEZeATI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QZKjDzvkJSQBXK8TntRGXYf2rczkwCY4sVeQFHovoP2DyA2ysnAM4Gy/c055Iz9I0
-         FsrwMI1YY4txcLFV93Eiowat8OUq62y0GCxEQjR6EFbysWa518vbGByXwdFioCbLE5
-         PpelimSqY+EyUYZkFOccUDaoWdL4IkSqH3UDdxeHoulCpUo9JrMHkejsGm2lxCkdgN
-         xwVVh+Q7iZDMt+bv/dBfM0Np37JNAC/vQ2e1mYpqPCvnVzkZejyUfrXHRN1elk5ECw
-         ewPxsQtXXWkyBK9dUjeBClATbpE/VLUSM5/IzywmpSrJJDbRrBP5KK/YvsYqWMIWOh
-         nhDV9V8ve4/9w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3CE7F40094; Tue,  5 Dec 2023 15:48:38 -0300 (-03)
-Date:   Tue, 5 Dec 2023 15:48:38 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf metrics: Avoid segv if default metricgroup
- isn't set
-Message-ID: <ZW9whqUEILWMdcmi@kernel.org>
-References: <20231204182330.654255-1-irogers@google.com>
- <bea4ad79-297e-9737-8af1-2286192d26f4@os.amperecomputing.com>
- <CAM9d7ci=Tk845H3x3KMDu-hTdP-u0O6a8D3iAa8EnFLLjOO6OQ@mail.gmail.com>
- <ZW9G8Clxwl6bd0H6@kernel.org>
- <CAM9d7ciOp_O5N1TDX0HyKavykirByAYrqzcmM-_6ZWjMv-47WQ@mail.gmail.com>
+        Tue, 5 Dec 2023 13:49:16 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6408CD41;
+        Tue,  5 Dec 2023 10:49:22 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5IjYYL016762;
+        Tue, 5 Dec 2023 18:49:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=iDfqMsGgHo6OPb8fjdSSMrZs5hCYCoC6wwlPMgirfs8=;
+ b=ZP++RQKOvnjYIOzDi4YafAJmH1o2eW+iIVpHjznMrHA3svvUZQ3eW4ghwRZxW50q83EM
+ i7rsixrh0fAYsJsa8nxh9TjmEkN8FL8ssY+oKAruB8yyl2AeH+HQ0jsitlqU4Z2evHgM
+ 5egpbpR55ZFMYgaI4mdq4PPfgAC572WKnHLZ4t48uDALcLUa9H6bqB5EuplNXpQtvcEX
+ uOA2r6/xE2tzepPaWRJ+HJ7IndtkHfy7JDKEEMEtYzCtDWR786hN7LEHAGspr/EClHiK
+ xz1yG/WqkqfKN7Ofb24yMPlBeYCWJevcwqveO0sggPJcRLsSLQW2/7FdKDlnm1SSC9XU /Q== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ut9dwr3p3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 18:49:21 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5GjLip022637;
+        Tue, 5 Dec 2023 18:49:20 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3urhm283h3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 18:49:20 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B5InD4E23855626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Dec 2023 18:49:14 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E300E2004B;
+        Tue,  5 Dec 2023 18:49:13 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B6ED20040;
+        Tue,  5 Dec 2023 18:49:13 +0000 (GMT)
+Received: from osiris (unknown [9.179.8.210])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Dec 2023 18:49:13 +0000 (GMT)
+Date:   Tue, 5 Dec 2023 19:49:11 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux390-list@tuxmaker.boeblingen.de.ibm.com,
+        kvm390-list@tuxmaker.boeblingen.de.ibm.com, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, nrb@linux.ibm.com, nsg@linux.ibm.com,
+        svens@linux.ibm.com, gor@linux.ibm.com,
+        gerald.schaefer@linux.ibm.com, agordeev@linux.ibm.com
+Subject: Re: [PATCH v1 1/1] s390: mm: convert pgste locking functions to C
+Message-ID: <20231205184911.5381-A-hca@linux.ibm.com>
+References: <20231205173252.62305-1-imbrenda@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7ciOp_O5N1TDX0HyKavykirByAYrqzcmM-_6ZWjMv-47WQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231205173252.62305-1-imbrenda@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iPEPHnYiVzznPu8EI935PF8pJYs_6i2R
+X-Proofpoint-GUID: iPEPHnYiVzznPu8EI935PF8pJYs_6i2R
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_14,2023-12-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 phishscore=0 bulkscore=0 mlxlogscore=550
+ spamscore=0 impostorscore=0 suspectscore=0 priorityscore=1501 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2312050148
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Dec 05, 2023 at 09:24:42AM -0800, Namhyung Kim escreveu:
-> Hi Arnaldo,
+On Tue, Dec 05, 2023 at 06:32:52PM +0100, Claudio Imbrenda wrote:
+> Convert pgste_get_lock() and pgste_set_unlock() to C.
 > 
-> On Tue, Dec 5, 2023 at 7:51 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> >
-> > Em Mon, Dec 04, 2023 at 07:33:18PM -0800, Namhyung Kim escreveu:
-> > > On Mon, Dec 4, 2023 at 2:45 PM Ilkka Koskinen <ilkka@os.amperecomputing.com> wrote:
-> > > > On Mon, 4 Dec 2023, Ian Rogers wrote:
-> > > > > A metric is default by having "Default" within its groups. The default
-> > > > > metricgroup name needn't be set and this can result in segv in
-> > > > > default_metricgroup_cmp and perf_stat__print_shadow_stats_metricgroup
-> > > > > that assume it has a value when there is a Default metric group. To
-> > > > > avoid the segv initialize the value to "".
-> >
-> > > > > Fixes: 1c0e47956a8e ("perf metrics: Sort the Default metricgroup")
-> > > > > Signed-off-by: Ian Rogers <irogers@google.com>
-> >
-> > > > Thanks! I was going to look for the bug but got pulled to other
-> > > > tasks. The patch looks good to me and I tested it successfully on
-> > > > AmpereOne.
-> >
-> > > >    Reviewed-and-tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
-> >
-> > > Looks like it needs to go through perf-tools for v6.7.
-> > > Ian, do you think this one is enough?
-> >
-> > So I had this on my local perf-tools-next, removed now, I also have some
-> > other fixes by Ian on the tmp.perf-tools-next, please let me know what
-> > you guys decide to have in perf-tools for v6.7 so that I can remove it
-> > from there.
+> There is no real reasons to keep them in assembler. Having them in C
+> makes them more readable and maintainable, and better instructions are
+> used automatically when available.
 > 
-> I think we need this one and the Ampere default-metric-group fix.
-> 
-> https://lore.kernel.org/r/20231201021550.1109196-2-ilkka@os.amperecomputing.com/
-> 
-> Also perf list JSON fix can go to v6.7.
-> 
-> https://lore.kernel.org/r/20231129213428.2227448-2-irogers@google.com/
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> ---
+>  arch/s390/mm/pgtable.c | 29 ++++++++++-------------------
+>  1 file changed, 10 insertions(+), 19 deletions(-)
 
-Ok, removed both, please augment the later description to:
-
-"perf list: Fix JSON segfault by setting the used skip_fuplicate_pmus callback"
-
-The original description was vague, improving it a bit like that helps
-when just looking at the output of "git log --oneline".
-
-Thanks,
-
-- Arnaldo
-
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
