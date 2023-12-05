@@ -2,242 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4070A8048BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2879A8048BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbjLEEqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 23:46:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S1344103AbjLEEsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 23:48:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjLEEqU (ORCPT
+        with ESMTP id S229611AbjLEEsN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 23:46:20 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B46C0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 20:46:25 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d7b1a8ec90so15994407b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 20:46:25 -0800 (PST)
+        Mon, 4 Dec 2023 23:48:13 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EDA6C3;
+        Mon,  4 Dec 2023 20:48:19 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7c59ac49f12so1640355241.1;
+        Mon, 04 Dec 2023 20:48:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701751585; x=1702356385; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701751698; x=1702356498; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PTwiqtihyMWEpX2uUmOeVlr01B75EdpPvzVSzPHU6u0=;
-        b=EsROK7t2fvj77E3v8lpYat9bTzWtHVYaJcPb52a5KrlqsVq3JW81QWSCBdLY/dl0/D
-         C/7art0rHcG5IuKUkPCCGUCe1haQxMMNOwgLPnnFb3PtRK0gEujjXCd3AE7pnkT9UjeM
-         5poCjjwhoZGHum1E/4XJwFoD0Aeu5Wqx7p2NGF75Qom0a7y+t74kkxBZ7b3549VUBv8P
-         sGevK4G7nvSRxShty3Z3I104eT/Qu/mczt/+EZElP7LIb7Dk/bBuFK8TD7C9KnU7Bn4w
-         Rc6JUUS07y4PV5EzB+XpzCB4CeH7qB2shrpMoNoipHm3y0oUXBxmHGRyyKPP20EySsxr
-         WjvA==
+        bh=l6U7HYB+MMDXs4im/MnwOh3wT6+xRnbqGtkbQLiIJbE=;
+        b=NkCp/7ns32k2qkHc2tAWEEGEk4EYBXlUlVXG5Y5LTzzGG8dgXuy0LxjAhhyhPkuynO
+         A8/M1EA4NP+VACv5tTXUM2pUJ6DL9fzkEExHhnaOHJnLFgJHjc8Yz8QbtTrfr7xlqLS7
+         7xmzYNvqyk4li1rmX5agcGXzVdW1Af/YcsuFX0tEypuXFl85RCLAd0YO0Xhmmuneb6g0
+         MP6tmGXMn9QIv1HbZXx4wojrks20qnxkSMMUGJTr7VpCHY3pChzJ9ALltQ2/BfQkIU6h
+         BelxxYy06rNx3rl9Ec6Cpdrcj3EzZEtpvB/b6Xg/vwhlYuW8F8NICE8Gn/+imwagksRz
+         w6Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701751585; x=1702356385;
+        d=1e100.net; s=20230601; t=1701751698; x=1702356498;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PTwiqtihyMWEpX2uUmOeVlr01B75EdpPvzVSzPHU6u0=;
-        b=sHUmfcDeFb66dwU7q2ryh5HPk3u63+0tTFdsIw5VKNSWiB1D+7un2KkYU/vx/idWSl
-         fKnTT54MvL8Rzpi/1guMiKKMe2B49PNCtp0k1HmS61dd4mjBcY80s2U/Tfy+8yHFICjo
-         Th4lkzr4Wps0F2itl0fNWN6lVhl3ugrsEz5Hhkrd4cWykrLwctQ2NWmebfIKzlsGgETi
-         Ervbxa02vAtOBcyM/OBgomJPZ9+4kpr6vtJQydM1CpTP/XFzmEbj0iwpgUrhCGeim3zp
-         whEtor5SERfVO0BtQD4jpfTsfJUqZqCEkWZ4GTOvxiSvX9KX7gAxAIc5zNfa6NNGud6/
-         nYow==
-X-Gm-Message-State: AOJu0YyTw5t6wCDxihF9VNgKZO3TLkHKyeOMsBzt/q81MX7SSPreUEgy
-        RsX4u3zBl17+wUIfIBlFjbT+xKZD1iIXdi56RyV7LQ==
-X-Google-Smtp-Source: AGHT+IHB79SbOHLU+JRoXQHpNdBkCdmYdjIJ60fLZnJBIH3FURvlK43Sy3u4VAUNLryAKQaKl4/7/lDz2Im56Eiua14=
-X-Received: by 2002:a05:690c:8:b0:5d8:2f65:cf71 with SMTP id
- bc8-20020a05690c000800b005d82f65cf71mr2583688ywb.86.1701751584910; Mon, 04
- Dec 2023 20:46:24 -0800 (PST)
+        bh=l6U7HYB+MMDXs4im/MnwOh3wT6+xRnbqGtkbQLiIJbE=;
+        b=hpMN6rK0O2R2/vtGGQrqVWYOpy9yYlJHARslctbWR3zdwkUWbrdFsnE2C+2foizLm3
+         IB/vehAzh+uTv6B0kAeQIMVAJvda35ibtO6G3OS1jLyOtDzp+kQh2oY+acQPRiFjo1a5
+         FgMiJ9XCdE2TuKA8N4p5jS9liOCSkDMMGd/hvNVppvOUYtoOQa+XjXNu73/mshfYE0al
+         Nf1ux0lQkA1lz+rQk7M5gpPBUB7oVXL+zB0QyTXondaRIKdIBqzu1oB+9XfGM/rnHfCt
+         4T+PY/AMosJ8KfaWerlTSJSmuvkTslnnrpd72vaXsPJfwjw06N7PpUh6jcG8C6AU3e4I
+         RCQA==
+X-Gm-Message-State: AOJu0YzSoeRYidf27rgOeYMNUplsgSChFdz10dLWBQdmTKmiHKzQ5TTg
+        ReEIuQ+98y86RddGDyJnj0lUEHHAft+/SbUboHM=
+X-Google-Smtp-Source: AGHT+IHhiPX7qYso93UYGFEAvtKnVFmjurUEPV8H0b76lJVRAkF5m5mLg9HHSDTrpxGGrM2rareCQf4N1EafMBxIQN0=
+X-Received: by 2002:a05:6102:2dc:b0:464:77f1:f34e with SMTP id
+ h28-20020a05610202dc00b0046477f1f34emr651042vsh.28.1701751698506; Mon, 04 Dec
+ 2023 20:48:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20231121171643.3719880-1-surenb@google.com> <20231121171643.3719880-6-surenb@google.com>
- <b3c882d2-0135-430c-8179-784f78be0902@arm.com> <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
- <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com> <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
- <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
- <744be4e0-48e0-4c77-825c-711386dd205f@arm.com> <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
- <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com> <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
-In-Reply-To: <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 4 Dec 2023 20:46:11 -0800
-Message-ID: <CAJuCfpG=seLkKbMRjwuWNQozGSQmP-JqKVUuCGRqMqxND2u18A@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-3-9c9c70177183@suse.cz> <ZW6mjFlmm0ME18OQ@localhost.localdomain>
+In-Reply-To: <ZW6mjFlmm0ME18OQ@localhost.localdomain>
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Tue, 5 Dec 2023 13:48:07 +0900
+Message-ID: <CAB=+i9R+zZo-AGuEAYDzEZV7f=YSC9fdczARQijk-WPZUr0iDA@mail.gmail.com>
+Subject: Re: [PATCH v2 03/21] KASAN: remove code paths guarded by CONFIG_SLAB
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 10:44=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+On Tue, Dec 5, 2023 at 1:27=E2=80=AFPM Hyeonggon Yoo <42.hyeyoo@gmail.com> =
+wrote:
 >
-> On Mon, Dec 4, 2023 at 10:27=E2=80=AFAM David Hildenbrand <david@redhat.c=
-om> wrote:
+> On Mon, Nov 20, 2023 at 07:34:14PM +0100, Vlastimil Babka wrote:
+> > With SLAB removed and SLUB the only remaining allocator, we can clean u=
+p
+> > some code that was depending on the choice.
 > >
-> > On 04.12.23 17:35, Suren Baghdasaryan wrote:
-> > > On Mon, Dec 4, 2023 at 1:27=E2=80=AFAM Ryan Roberts <ryan.roberts@arm=
-.com> wrote:
-> > >>
-> > >> On 04/12/2023 04:09, Suren Baghdasaryan wrote:
-> > >>> On Sat, Dec 2, 2023 at 2:11=E2=80=AFAM David Hildenbrand <david@red=
-hat.com> wrote:
-> > >>>>
-> > >>>> On 02.12.23 09:04, Ryan Roberts wrote:
-> > >>>>> On 01/12/2023 20:47, David Hildenbrand wrote:
-> > >>>>>> On 01.12.23 10:29, Ryan Roberts wrote:
-> > >>>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
-> > >>>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move so=
-urce
-> > >>>>>>>> into destination buffer while checking the contents of both af=
-ter
-> > >>>>>>>> the move. After the operation the content of the destination b=
-uffer
-> > >>>>>>>> should match the original source buffer's content while the so=
-urce
-> > >>>>>>>> buffer should be zeroed. Separate tests are designed for PMD a=
-ligned and
-> > >>>>>>>> unaligned cases because they utilize different code paths in t=
-he kernel.
-> > >>>>>>>>
-> > >>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > >>>>>>>> ---
-> > >>>>>>>>     tools/testing/selftests/mm/uffd-common.c     |  24 +++
-> > >>>>>>>>     tools/testing/selftests/mm/uffd-common.h     |   1 +
-> > >>>>>>>>     tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++=
-++++++++++++
-> > >>>>>>>>     3 files changed, 214 insertions(+)
-> > >>>>>>>>
-> > >>>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
-> > >>>>>>>> b/tools/testing/selftests/mm/uffd-common.c
-> > >>>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
-> > >>>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
-> > >>>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
-> > >>>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offs=
-et, bool wp)
-> > >>>>>>>>         return __copy_page(ufd, offset, false, wp);
-> > >>>>>>>>     }
-> > >>>>>>>>     +int move_page(int ufd, unsigned long offset, unsigned lon=
-g len)
-> > >>>>>>>> +{
-> > >>>>>>>> +    struct uffdio_move uffdio_move;
-> > >>>>>>>> +
-> > >>>>>>>> +    if (offset + len > nr_pages * page_size)
-> > >>>>>>>> +        err("unexpected offset %lu and length %lu\n", offset,=
- len);
-> > >>>>>>>> +    uffdio_move.dst =3D (unsigned long) area_dst + offset;
-> > >>>>>>>> +    uffdio_move.src =3D (unsigned long) area_src + offset;
-> > >>>>>>>> +    uffdio_move.len =3D len;
-> > >>>>>>>> +    uffdio_move.mode =3D UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
-> > >>>>>>>> +    uffdio_move.move =3D 0;
-> > >>>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
-> > >>>>>>>> +        /* real retval in uffdio_move.move */
-> > >>>>>>>> +        if (uffdio_move.move !=3D -EEXIST)
-> > >>>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
-> > >>>>>>>> +                (int64_t)uffdio_move.move);
-> > >>>>>>>
-> > >>>>>>> Hi Suren,
-> > >>>>>>>
-> > >>>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
-> > >>>>>>>
-> > >>>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errn=
-o=3D16,
-> > >>>>>>> @uffd-common.c:648)
-> > >>>>>>>
-> > >>>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged any=
- further, but
-> > >>>>>>> happy to go deeper if you can direct.
-> > >>>>>>
-> > >>>>>> Does it trigger reliably? Which pagesize is that kernel using?
-> > >>>>>
-> > >>>>> Yep, although very occasionally it fails with EAGAIN. 4K kernel; =
-see other email
-> > >>>>> for full config.
-> > >>>>>
-> > >>>>>>
-> > >>>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault(=
-) uses
-> > >>>>>> default_huge_page_size(), which reads the default hugetlb size.
-> > >>>>>
-> > >>>>> My kernel command line is explicitly seting the default huge page=
- size to 2M.
-> > >>>>>
-> > >>>>
-> > >>>> Okay, so that likely won't affect it.
-> > >>>>
-> > >>>> I can only guess that it has to do with the alignment of the virtu=
-al
-> > >>>> area we are testing with, and that we do seem to get more odd patt=
-erns
-> > >>>> on arm64.
-> > >>>>
-> > >>>> uffd_move_test_common() is a bit more elaborate, but if we aligned=
- the
-> > >>>> src+start area up, surely "step_count" cannot be left unmodified?
-> > >>>>
-> > >>>> So assuming we get either an unaligned source or an unaligned dst =
-from
-> > >>>> mmap(), I am not convinced that we won't be moving areas that are =
-not
-> > >>>> necessarily fully backed by PMDs and maybe don't even fall into th=
-e VMA
-> > >>>> of interest?
-> > >>>>
-> > >>>> Not sure if that could trigger the THP splitting issue, though.
-> > >>>>
-> > >>>> But I just quickly scanned that test setup, could be I am missing
-> > >>>> something. It might make sense to just print the mmap'ed range and=
- the
-> > >>>> actual ranges we are trying to move. Maybe something "obvious" can=
- be
-> > >>>> observed.
-> > >>>
-> > >>> I was able to reproduce the issue on an Android device and after
-> > >>> implementing David's suggestions to split the large folio and after
-> > >>> replacing default_huge_page_size() with read_pmd_pagesize(), the
-> > >>> move-pmd test started working for me. Ryan, could you please apply
-> > >>> attached patches (over mm-unstable) and try the test again?
-> > >>
-> > >> Yep, all fixed with those patches!
-> > >
-> > > Great! Thanks for testing and confirming. I'll post an updated
-> > > patchset later today and will ask Andrew to replace the current one
-> > > with it.
-> > > I'll also look into the reasons we need to split PMD on ARM64 in this
-> > > test. It's good that this happened and we were able to test the PMD
-> > > split path but I'm curious about the reason. It's possible my address
-> > > alignment calculations are  somehow incorrect.
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Reviewed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > ---
+> >  mm/kasan/common.c     | 13 ++-----------
+> >  mm/kasan/kasan.h      |  3 +--
+> >  mm/kasan/quarantine.c |  7 -------
+> >  3 files changed, 3 insertions(+), 20 deletions(-)
 > >
-> > I only skimmed the diff briefly, but likely you also want to try
-> > splitting in move_pages_pte(), if you encounter an already-pte-mapped T=
-HP.
+> > diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> > index 256930da578a..5d95219e69d7 100644
+> > --- a/mm/kasan/common.c
+> > +++ b/mm/kasan/common.c
+> > @@ -153,10 +153,6 @@ void __kasan_poison_object_data(struct kmem_cache =
+*cache, void *object)
+> >   * 2. A cache might be SLAB_TYPESAFE_BY_RCU, which means objects can b=
+e
+> >   *    accessed after being freed. We preassign tags for objects in the=
+se
+> >   *    caches as well.
+> > - * 3. For SLAB allocator we can't preassign tags randomly since the fr=
+eelist
+> > - *    is stored as an array of indexes instead of a linked list. Assig=
+n tags
+> > - *    based on objects indexes, so that objects that are next to each =
+other
+> > - *    get different tags.
+> >   */
+> >  static inline u8 assign_tag(struct kmem_cache *cache,
+> >                                       const void *object, bool init)
+> > @@ -171,17 +167,12 @@ static inline u8 assign_tag(struct kmem_cache *ca=
+che,
+> >       if (!cache->ctor && !(cache->flags & SLAB_TYPESAFE_BY_RCU))
+> >               return init ? KASAN_TAG_KERNEL : kasan_random_tag();
+> >
+> > -     /* For caches that either have a constructor or SLAB_TYPESAFE_BY_=
+RCU: */
+> > -#ifdef CONFIG_SLAB
+> > -     /* For SLAB assign tags based on the object index in the freelist=
+. */
+> > -     return (u8)obj_to_index(cache, virt_to_slab(object), (void *)obje=
+ct);
+> > -#else
+> >       /*
+> > -      * For SLUB assign a random tag during slab creation, otherwise r=
+euse
+> > +      * For caches that either have a constructor or SLAB_TYPESAFE_BY_=
+RCU,
+> > +      * assign a random tag during slab creation, otherwise reuse
+> >        * the already assigned tag.
+> >        */
+> >       return init ? kasan_random_tag() : get_tag(object);
+> > -#endif
+> >  }
+> >
+> >  void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
+> > diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> > index 8b06bab5c406..eef50233640a 100644
+> > --- a/mm/kasan/kasan.h
+> > +++ b/mm/kasan/kasan.h
+> > @@ -373,8 +373,7 @@ void kasan_set_track(struct kasan_track *track, gfp=
+_t flags);
+> >  void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp=
+_t flags);
+> >  void kasan_save_free_info(struct kmem_cache *cache, void *object);
+> >
+> > -#if defined(CONFIG_KASAN_GENERIC) && \
+> > -     (defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
+> > +#ifdef CONFIG_KASAN_GENERIC
+> >  bool kasan_quarantine_put(struct kmem_cache *cache, void *object);
+> >  void kasan_quarantine_reduce(void);
+> >  void kasan_quarantine_remove_cache(struct kmem_cache *cache);
+> > diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
+> > index ca4529156735..138c57b836f2 100644
+> > --- a/mm/kasan/quarantine.c
+> > +++ b/mm/kasan/quarantine.c
+> > @@ -144,10 +144,6 @@ static void qlink_free(struct qlist_node *qlink, s=
+truct kmem_cache *cache)
+> >  {
+> >       void *object =3D qlink_to_object(qlink, cache);
+> >       struct kasan_free_meta *meta =3D kasan_get_free_meta(cache, objec=
+t);
+> > -     unsigned long flags;
+> > -
+> > -     if (IS_ENABLED(CONFIG_SLAB))
+> > -             local_irq_save(flags);
+> >
+> >       /*
+> >        * If init_on_free is enabled and KASAN's free metadata is stored=
+ in
+> > @@ -166,9 +162,6 @@ static void qlink_free(struct qlist_node *qlink, st=
+ruct kmem_cache *cache)
+> >       *(u8 *)kasan_mem_to_shadow(object) =3D KASAN_SLAB_FREE;
+> >
+> >       ___cache_free(cache, object, _THIS_IP_);
+> > -
+> > -     if (IS_ENABLED(CONFIG_SLAB))
+> > -             local_irq_restore(flags);
+> >  }
+> >
+> >  static void qlist_free_all(struct qlist_head *q, struct kmem_cache *ca=
+che)
 >
-> Huh, good point. I might be able to move the folio splitting code into
-> pte-mapped case and do a retry after splitting. That should minimize
-> the additional code required. Will do and post a new set shortly.
-> Thanks!
+> Looks good to me,
+> Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-Was planning to post an update today but need some more time. Will try
-to send it tomorrow.
+nit: Some KASAN tests depends on SLUB, but as now it's the only allocator
+      KASAN_TEST_NEEDS_CONFIG_ON(test, CONFIG_SLUB); in
+      mm/kasan/kasan_test.c can be removed
 
 >
 > >
 > > --
-> > Cheers,
+> > 2.42.1
 > >
-> > David / dhildenb
 > >
