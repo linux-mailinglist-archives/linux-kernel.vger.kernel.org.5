@@ -2,226 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A3ED805C2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F180805B57
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345995AbjLEO7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
+        id S1346013AbjLEO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:59:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345773AbjLEO7H (ORCPT
+        with ESMTP id S1346007AbjLEO7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:59:07 -0500
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB02DBF
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:59:13 -0800 (PST)
-Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7c5a2b5e77bso867567241.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 06:59:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701788353; x=1702393153; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O8ly4PRrtbFhpvmMcAd/IAQqDN3hBgIZ/cSCffSAAOY=;
-        b=Z21uFAYjL+KwqZAuLXvVpOHNQzTa0t8vqVVPApwNND7HOT2NIg1mReB/keeWBgM4o7
-         dDrntGKFs9Tq3kd9aEwX5wmhuxrg1cXLmD0drMXwWzaFAM9LTMi0ZhbRHa3juFbxM+/C
-         bL6t73/Ut13kCWdROzOY0ukApLWgk15Vyrca2YIBzXySwgMi+Cl79mV3/M4yFVYP0DvP
-         T3sP47bJ/VKwqB+/mi/ZLYozSXWLXB0AL8MWU2flW2iZvU9tO3qKZRiSTO0W4HNZabqe
-         HytE9+hxMguHm0cdgXpaEcJPH+/4Gowwv+6SvkthQCpM/C6BcmyQkIWgVwmRjbPn+IKq
-         LvEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701788353; x=1702393153;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O8ly4PRrtbFhpvmMcAd/IAQqDN3hBgIZ/cSCffSAAOY=;
-        b=if1d4ey8KwDHCZwLixl3U6ZID1eQOQTw10afc3wBnEeKOvs3w2Dk+3c7X6sen6LpLn
-         cBcj4aHenG4EFPhp2ZL378MOn299I4q2Z1TGlGNOWXpAXr1c2hTX97bhiRmsM7hJboBu
-         4gA+bF24ITm0zR7p5kkntu3T01c1+jRoUzJ+nRwMP/ap9kto4EHo7CQnrPO32SZEoygk
-         KDR917vxm5kKbi1x3NGFa7zYuDf0pSm7YLYbGirBx8TMeGyO8AuvmTajGxuY9xte+ZbD
-         LCgdHV4N7eNh7Gcq7a8AfiPim62A9HMW4euHcN1qgK7aaukksXhR9DeP+iwBdwhFyk2k
-         hphA==
-X-Gm-Message-State: AOJu0Yxy/izpuJYYvcq8s736jpPMqyr466pfExCwaepQ5vz3N4yuN6VS
-        I5rBUwuQhsePvjpOjYRaR8/OTz9WcWZlq9yLfwTkEtrIq+bHInUuznk=
-X-Google-Smtp-Source: AGHT+IFFmj78JXPJcEQrLiGMwcKHkteXoPlhwfKxlDXUl0UR6JNMJeAsSWdEyzJb9Pm+DqpCXBVKKSuv9pY1Kfvwxjs=
-X-Received: by 2002:a67:af0b:0:b0:464:7b6d:2efc with SMTP id
- v11-20020a67af0b000000b004647b6d2efcmr3614145vsl.34.1701788352287; Tue, 05
- Dec 2023 06:59:12 -0800 (PST)
+        Tue, 5 Dec 2023 09:59:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1192D188;
+        Tue,  5 Dec 2023 06:59:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701788372; x=1733324372;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VZDh21/Ig8AXYrMCD18ioZIyJdzTpoel4Yv9mfI1z6Q=;
+  b=e9dEpWsWa7GANAIdFYw2tFvEvlrhgQ1pm3fxzyZMeSsm+r/XGRDHdaSW
+   DA+hVb3syqfpXDS6J8W6tVkhBowJaEJjRBh8IkTW0/e/LVRPww3WyzCJL
+   sEUwOTbwcz0a/m/cEBIzOaNrB83XprKQtnNa8ILHow/7Qdxf8+l8rbKym
+   qu/ZMsa71hIVGRSvnMVdrpXYX9GCxMzntpnJj7/ICoDUtiwTUU/TlHYDA
+   Rdths1sfOl0HNKe46LBHTbbie43bHsLTUx/bD4VhbRpo8Cs2P8wAiABnL
+   OryYuCsqeiQvox5UUnFX11Q9uTLgrDcHqvzMHxUjHUFYhyAmDCeqBUKQM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="7250408"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="7250408"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 06:59:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="944283594"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="944283594"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 05 Dec 2023 06:59:24 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAWtO-0009DG-02;
+        Tue, 05 Dec 2023 14:59:22 +0000
+Date:   Tue, 5 Dec 2023 22:59:20 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     davidgow@google.com, Rae Moar <rmoar@google.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-sound@vger.kernel.org, David Gow <davidgow@google.com>
+Subject: Re: [PATCH 1/4] kunit: Add APIs for managing devices
+Message-ID: <202312052230.ic1pg0uo-lkp@intel.com>
+References: <20231205-kunit_bus-v1-1-635036d3bc13@google.com>
 MIME-Version: 1.0
-References: <20231205031517.859409664@linuxfoundation.org>
-In-Reply-To: <20231205031517.859409664@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 5 Dec 2023 20:29:00 +0530
-Message-ID: <CA+G9fYvZH1HhsznP1KxiBRoP7SbN-veMWKavdSoT4mGQ2_-2Kw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/71] 4.19.301-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205-kunit_bus-v1-1-635036d3bc13@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Dec 2023 at 08:56, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.301 release.
-> There are 71 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.301-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+kernel test robot noticed the following build warnings:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+[auto build test WARNING on c8613be119892ccceffbc550b9b9d7d68b995c9e]
 
-## Build
-* kernel: 4.19.301-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: 82300ecbea435bee3c53b97f701e530cac79b81e
-* git describe: v4.19.300-72-g82300ecbea43
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.300-72-g82300ecbea43
+url:    https://github.com/intel-lab-lkp/linux/commits/davidgow-google-com/kunit-Add-APIs-for-managing-devices/20231205-153349
+base:   c8613be119892ccceffbc550b9b9d7d68b995c9e
+patch link:    https://lore.kernel.org/r/20231205-kunit_bus-v1-1-635036d3bc13%40google.com
+patch subject: [PATCH 1/4] kunit: Add APIs for managing devices
+config: i386-randconfig-141-20231205 (https://download.01.org/0day-ci/archive/20231205/202312052230.ic1pg0uo-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312052230.ic1pg0uo-lkp@intel.com/reproduce)
 
-## Test Regressions (compared to v4.19.300)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312052230.ic1pg0uo-lkp@intel.com/
 
-## Metric Regressions (compared to v4.19.300)
+All warnings (new ones prefixed by >>):
 
-## Test Fixes (compared to v4.19.300)
+>> lib/kunit/device.c:100:22: warning: no previous prototype for '__kunit_device_register_internal' [-Wmissing-prototypes]
+     100 | struct kunit_device *__kunit_device_register_internal(struct kunit *test,
+         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Metric Fixes (compared to v4.19.300)
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for DRM_I915_DEBUG_GEM
+   Depends on [n]: HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && DRM_I915_WERROR [=n]
+   Selected by [m]:
+   - DRM_I915_DEBUG [=y] && HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && !COMPILE_TEST [=n]
 
-## Test result summary
-total: 54948, pass: 46304, fail: 1597, skip: 7016, xfail: 31
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 111 total, 105 passed, 6 failed
-* arm64: 37 total, 32 passed, 5 failed
-* i386: 21 total, 18 passed, 3 failed
-* mips: 20 total, 20 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 24 total, 24 passed, 0 failed
-* s390: 6 total, 6 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 31 total, 26 passed, 5 failed
+vim +/__kunit_device_register_internal +100 lib/kunit/device.c
 
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-user
-* kselftest-vm
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-crypto
-* ltp-cve
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* rcutorture
+    99	
+ > 100	struct kunit_device *__kunit_device_register_internal(struct kunit *test,
+   101							      const char *name,
+   102							      struct device_driver *drv)
+   103	{
+   104		struct kunit_device *kunit_dev;
+   105		int err = -ENOMEM;
+   106	
+   107		kunit_dev = kzalloc(sizeof(struct kunit_device), GFP_KERNEL);
+   108		if (!kunit_dev)
+   109			return ERR_PTR(err);
+   110	
+   111		kunit_dev->owner = test;
+   112	
+   113		err = dev_set_name(&kunit_dev->dev, "%s.%s", test->name, name);
+   114		if (err) {
+   115			kfree(kunit_dev);
+   116			return ERR_PTR(err);
+   117		}
+   118	
+   119		/* Set the expected driver pointer, so we match. */
+   120		kunit_dev->driver = drv;
+   121	
+   122		kunit_dev->dev.release = kunit_device_release;
+   123		kunit_dev->dev.bus = &kunit_bus_type;
+   124		kunit_dev->dev.parent = &kunit_bus;
+   125	
+   126		err = device_register(&kunit_dev->dev);
+   127		if (err) {
+   128			put_device(&kunit_dev->dev);
+   129			return ERR_PTR(err);
+   130		}
+   131	
+   132		kunit_add_action(test, device_unregister_wrapper, &kunit_dev->dev);
+   133	
+   134		return kunit_dev;
+   135	}
+   136	
 
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
