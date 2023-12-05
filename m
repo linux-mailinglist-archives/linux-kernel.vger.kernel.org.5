@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AAC8804F1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA52804FE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376854AbjLEJz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
+        id S1346696AbjLEJ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:56:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344907AbjLEJz2 (ORCPT
+        with ESMTP id S229710AbjLEJz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:55:28 -0500
+        Tue, 5 Dec 2023 04:55:29 -0500
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88CB1C9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97CC2D3;
         Tue,  5 Dec 2023 01:55:34 -0800 (PST)
 Received: from SIOS1075.ysato.name (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-        by sakura.ysato.name (Postfix) with ESMTPSA id 66F381C05DE;
-        Tue,  5 Dec 2023 18:46:52 +0900 (JST)
+        by sakura.ysato.name (Postfix) with ESMTPSA id 605131C069C;
+        Tue,  5 Dec 2023 18:46:54 +0900 (JST)
 From:   Yoshinori Sato <ysato@users.sourceforge.jp>
 To:     linux-sh@vger.kernel.org
 Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -77,9 +77,9 @@ Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
         linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-fbdev@vger.kernel.org
-Subject: [DO NOT MERGE v5 25/37] dt-bindings: vendor-prefixes: Add iodata
-Date:   Tue,  5 Dec 2023 18:45:44 +0900
-Message-Id: <3e216003a768e06981cfda842d8fcf185f4ea9b7.1701768028.git.ysato@users.sourceforge.jp>
+Subject: [DO NOT MERGE v5 26/37] dt-bindings: vendor-prefixes:  Add smi
+Date:   Tue,  5 Dec 2023 18:45:45 +0900
+Message-Id: <2dc1fcd6596f78de4197aea04a26252f5f365595.1701768028.git.ysato@users.sourceforge.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1701768028.git.ysato@users.sourceforge.jp>
 References: <cover.1701768028.git.ysato@users.sourceforge.jp>
@@ -94,8 +94,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add IO DATA DEVICE INC.
-https://www.iodata.com/
+Add Silicon Mortion Technology Corporation
+https://www.siliconmotion.com/
 
 Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
@@ -103,18 +103,18 @@ Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
  1 file changed, 2 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 309b94c328c8..94ed63d9f7de 100644
+index 94ed63d9f7de..a338bdd743ab 100644
 --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
 +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -671,6 +671,8 @@ patternProperties:
-     description: Inventec
-   "^inversepath,.*":
-     description: Inverse Path
-+  "^iodata,.*":
-+    description: IO DATA DEVICE Inc.
-   "^iom,.*":
-     description: Iomega Corporation
-   "^irondevice,.*":
+@@ -1283,6 +1283,8 @@ patternProperties:
+     description: Skyworks Solutions, Inc.
+   "^smartlabs,.*":
+     description: SmartLabs LLC
++  "^smi,.*":
++    description: Silicon Motion Technology Corporation
+   "^smsc,.*":
+     description: Standard Microsystems Corporation
+   "^snps,.*":
 -- 
 2.39.2
 
