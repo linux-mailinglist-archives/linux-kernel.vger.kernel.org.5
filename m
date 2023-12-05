@@ -2,215 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FFB805118
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:47:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11C280511D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:48:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376644AbjLEKrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S1346669AbjLEKrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:47:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376526AbjLEKrF (ORCPT
+        with ESMTP id S235072AbjLEKrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:47:05 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2052.outbound.protection.outlook.com [40.107.94.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F833B9;
-        Tue,  5 Dec 2023 02:47:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VWJfSXBxhHLPtpCWsZ35T4cNkw4LDqTxrPSpzIk5SmM70V88Vn8+Qq7INVoN/gxUBjKoO8W9VkWEzbl8jVIXM5mPlsdv/4qKiXZsGzVXXWbxWHhY3z443Y1xXmEpW5XiPQ4VBINjiyAxXlLZTDQ7jWzbZzyyvbS+4lbU06F/yIxwqP3+prONYMo0EoEWjMXXviFa452z5MnK8tLdhHBtBTab0nX3ZT1DE2i2cToitBLSvGaW7Zbo+M2rcKYWwSLlI3mojw+uUxcxEZL/0N7IT3ya+wsQXe469fuOzMavFVI08jx86M3C7SJYoBK3eBGbqIFvAXEhQs/kvV2klxw4Lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cW138V3/fZ5TxTAkYoTkM9wdibA2aaBfTJwyExACtWI=;
- b=DZxZoSRzu6zaWpoWKZq2kcnsGestbSpCD5qO7x9dY59ev3GaHc/KxQW1/5Lqp5dP9zO+3yyZxUwl3f1G28oz1bXK86nr0hhP//QpD+JlfzvBAOIQz1PQgAiwBzsTqq1RnIEF232yQ5EpR8n+qjq9kIz0vjubg++Nm5OPo+SWfbNGT+mqUgvzswGRzwedMMouzmj0+mHsPkI7ic2cx6dsW7Thji8XkZiVd6eptnKnfKky8O//O6MMYFf2eD9rk4AUKoQwSrGwdnFhiKXxt8bink9vkg+LgNCCpXRlOPYPM5YI6kHwk/i05MRE6RzKN9IUtvjnT5F2Tcm06HKi+HuUUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cW138V3/fZ5TxTAkYoTkM9wdibA2aaBfTJwyExACtWI=;
- b=XZYo0Dl1io6DNWXp3MQtJJgRKd1jSpg79+XMJ18iHHOwN40sucVu4Y6SRphC+LG3leOoyRSGW/gdANLPbz0rPXy1NFTS3BR1HVNX8jADM9G2IvNCw5hitbfD/r/IPjgFq6FMxoMNheVd3VWlGmnQ6UWGya00SciB10ZqKmM93P5tpnAum7kr7qQ2mUtE+rooSYR5YGubpZB3ZJI9rVkP0vlgSXPpXLbyq7cK0dPr+O3Dskx481UYW697pM+8/5F9DTuZ9ua15heQpjz8AxRJn6TNI36zQnh604A94uLNm5w4pwj+MdSI1sdJICL1iVO4Gy2VEMnfzCEZVio8agkQ9g==
-Received: from PH0P220CA0013.NAMP220.PROD.OUTLOOK.COM (2603:10b6:510:d3::11)
- by SJ2PR12MB8184.namprd12.prod.outlook.com (2603:10b6:a03:4f2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 10:47:06 +0000
-Received: from SA2PEPF000015C8.namprd03.prod.outlook.com
- (2603:10b6:510:d3:cafe::a6) by PH0P220CA0013.outlook.office365.com
- (2603:10b6:510:d3::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34 via Frontend
- Transport; Tue, 5 Dec 2023 10:47:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SA2PEPF000015C8.mail.protection.outlook.com (10.167.241.198) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.20 via Frontend Transport; Tue, 5 Dec 2023 10:47:06 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 5 Dec 2023
- 02:46:49 -0800
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 5 Dec 2023
- 02:46:49 -0800
-Received: from c-237-113-220-225.mtl.labs.mlnx (10.127.8.12) by
- mail.nvidia.com (10.129.68.8) with Microsoft SMTP Server id 15.2.986.41 via
- Frontend Transport; Tue, 5 Dec 2023 02:46:46 -0800
-From:   Dragos Tatulea <dtatulea@nvidia.com>
-To:     "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Eugenio Perez Martin <eperezma@redhat.com>,
-        Si-Wei Liu <si-wei.liu@oracle.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        Gal Pressman <gal@nvidia.com>
-CC:     Dragos Tatulea <dtatulea@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Parav Pandit <parav@nvidia.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH vhost v2 8/8] vdpa/mlx5: Add mkey leak detection
-Date:   Tue, 5 Dec 2023 12:46:09 +0200
-Message-ID: <20231205104609.876194-9-dtatulea@nvidia.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231205104609.876194-1-dtatulea@nvidia.com>
-References: <20231205104609.876194-1-dtatulea@nvidia.com>
+        Tue, 5 Dec 2023 05:47:53 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A608CE;
+        Tue,  5 Dec 2023 02:47:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1701773279; x=1733309279;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6EKUKmr83ChMD0Oh4BcIpqtIiujZ994PDO1wujmu8yA=;
+  b=HQEm+H6V8wJqBIlv+CItzQjCzUUY7Zjd2BLCpBCZcJP2coT01+MfaBdZ
+   2zyRL2UfifLbWUHOL69s1aKYQV3zN4mG8MHk/VFamCejeOcY/RUuKRh/p
+   NHCX5/eHpOnv4Qv6nn93Z4d77kWwU7pLbDkK/TYDvUUKX4xie14ROscRb
+   /QzDQafjlgvXdh0GLFjBi9avUv/b/B9vkKViQQNBl4SLXonNGjtt8cdKZ
+   PVLpEEW4gR21uf6NYG4LYXXpMEXh+OnceFlt3qDj29e3N2i1r5CCQ70lc
+   cGgwTSus4jbcLiOeD5rFThbbfzkzLvh4GTSUbcZ5LMZBmhAWj666QcbW/
+   w==;
+X-CSE-ConnectionGUID: hxs/bVEHRTK3IpCKYIjljQ==
+X-CSE-MsgGUID: +OeQPf4aSmCL+lYaCxhuyQ==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="asc'?scan'208";a="12720840"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2023 03:47:58 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 03:47:58 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 5 Dec 2023 03:47:54 -0700
+Date:   Tue, 5 Dec 2023 10:47:25 +0000
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <stable@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <torvalds@linux-foundation.org>,
+        <akpm@linux-foundation.org>, <linux@roeck-us.net>,
+        <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
+        <rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>
+Subject: Re: [PATCH 6.1 000/107] 6.1.66-rc1 review
+Message-ID: <20231205-parting-molecule-8ea45639321d@wendy>
+References: <20231205031531.426872356@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015C8:EE_|SJ2PR12MB8184:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed47a027-13f1-4325-7edf-08dbf57f8620
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8YP7t7SmWJdgN2feMpXljMTk2SBdWvrHKb0gu+BK0HWrxbX6LN+hwoM08zSlqOxg0vMPwPcjyfNPAvaTHxU1j4Bj9ZYPu8jJwG/JDlAar51TWkySrtIY8mfSIdniF296vl33W0oJGaxIiDYbPc844n7Z/PmTXQ3vL5ernW/gyUiHRMrZJk/bYa//equayAgsLb9+wWJEPUtN+g3MjOz7+xZ5RF0hqbAJ8lCpoyEr++i8fxxh3UaIAT/jp/JbuU7dyjFFzRA+vAILa/TyijExmcRI1iy+/n99gysXtWKHfqoz/JKK/ftelE7f1xgBys6S7G+CoRwYPDaflW47v5DnabRxlt8XtPrejRfqsSinML3girpFdWd6d4Fe36JzfyGOn8+oP2+BJLeSvoo7Ppa2ViufLYtpIT3y7k/ciG9CRWw5qTohyQQWuuvhWd/dSplEsh/BvO8rEBe4hhHi8euKs/T3QMVXDkxYIQLokOICOdhXJJx+1SG0+9/UIa64OdMzUBtIQmFysYq4iNudKJLXWZDsPRNgIyVqxpI1YFoDJG3XUsiBs/Ad0Gh9UxhP4nIc3ilwXk+I2G1RDGkpHCCuvb8+1fQDgOZA9I+IeC5UVeTxIyjt8oDKtTzr27XtNcR2g5sI7nm8M3uOedAMmo5bvUs1eJE4DWzCEFOQYVMJeAbVAJN0KIFAnlL1wi8U/SeCaEtpVV8Ql26WSCcrVu9j5qVm5XMkX0Vw0xOwBWwsexiEyqKgTcJJDyWwmPRHuh2i3k5pvUGY29noT+sGQpFtas5J6mLd4nwmwQrZ1Ib7dRw=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(396003)(136003)(376002)(230922051799003)(230173577357003)(230273577357003)(451199024)(186009)(64100799003)(82310400011)(1800799012)(46966006)(40470700004)(36840700001)(1076003)(2616005)(41300700001)(36756003)(86362001)(426003)(40460700003)(83380400001)(26005)(336012)(316002)(70586007)(110136005)(6636002)(70206006)(54906003)(6666004)(4326008)(8676002)(8936002)(478600001)(82740400003)(356005)(36860700001)(2906002)(7636003)(40480700001)(47076005)(5660300002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 10:47:06.1579
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed47a027-13f1-4325-7edf-08dbf57f8620
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015C8.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8184
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="SZCJSgyL//So0XBB"
+Content-Disposition: inline
+In-Reply-To: <20231205031531.426872356@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Track allocated mrs in a list and show warning when leaks are detected
-on device free or reset.
+--SZCJSgyL//So0XBB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
-Reviewed-by: Gal Pressman <gal@nvidia.com>
----
- drivers/vdpa/mlx5/core/mlx5_vdpa.h |  2 ++
- drivers/vdpa/mlx5/core/mr.c        | 23 +++++++++++++++++++++++
- drivers/vdpa/mlx5/net/mlx5_vnet.c  |  2 ++
- 3 files changed, 27 insertions(+)
+On Tue, Dec 05, 2023 at 12:15:35PM +0900, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.66 release.
+> There are 107 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-index 1a0d27b6e09a..50aac8fe57ef 100644
---- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-+++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-@@ -37,6 +37,7 @@ struct mlx5_vdpa_mr {
- 	bool user_mr;
- 
- 	refcount_t refcount;
-+	struct list_head mr_list;
- };
- 
- struct mlx5_vdpa_resources {
-@@ -95,6 +96,7 @@ struct mlx5_vdpa_dev {
- 	u32 generation;
- 
- 	struct mlx5_vdpa_mr *mr[MLX5_VDPA_NUM_AS];
-+	struct list_head mr_list_head;
- 	/* serialize mr access */
- 	struct mutex mr_mtx;
- 	struct mlx5_control_vq cvq;
-diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-index c7dc8914354a..4758914ccf86 100644
---- a/drivers/vdpa/mlx5/core/mr.c
-+++ b/drivers/vdpa/mlx5/core/mr.c
-@@ -508,6 +508,8 @@ static void _mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_
- 
- 	vhost_iotlb_free(mr->iotlb);
- 
-+	list_del(&mr->mr_list);
-+
- 	kfree(mr);
- }
- 
-@@ -560,12 +562,31 @@ void mlx5_vdpa_update_mr(struct mlx5_vdpa_dev *mvdev,
- 	mutex_unlock(&mvdev->mr_mtx);
- }
- 
-+static void mlx5_vdpa_show_mr_leaks(struct mlx5_vdpa_dev *mvdev)
-+{
-+	struct mlx5_vdpa_mr *mr;
-+
-+	mutex_lock(&mvdev->mr_mtx);
-+
-+	list_for_each_entry(mr, &mvdev->mr_list_head, mr_list) {
-+
-+		mlx5_vdpa_warn(mvdev, "mkey still alive after resource delete: "
-+				      "mr: %p, mkey: 0x%x, refcount: %u\n",
-+				       mr, mr->mkey, refcount_read(&mr->refcount));
-+	}
-+
-+	mutex_unlock(&mvdev->mr_mtx);
-+
-+}
-+
- void mlx5_vdpa_destroy_mr_resources(struct mlx5_vdpa_dev *mvdev)
- {
- 	for (int i = 0; i < MLX5_VDPA_NUM_AS; i++)
- 		mlx5_vdpa_update_mr(mvdev, NULL, i);
- 
- 	prune_iotlb(mvdev->cvq.iotlb);
-+
-+	mlx5_vdpa_show_mr_leaks(mvdev);
- }
- 
- static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
-@@ -592,6 +613,8 @@ static int _mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev,
- 	if (err)
- 		goto err_iotlb;
- 
-+	list_add_tail(&mr->mr_list, &mvdev->mr_list_head);
-+
- 	return 0;
- 
- err_iotlb:
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 133cbb66dcfe..778821bab7d9 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -3722,6 +3722,8 @@ static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name,
- 	if (err)
- 		goto err_mpfs;
- 
-+	INIT_LIST_HEAD(&mvdev->mr_list_head);
-+
- 	if (MLX5_CAP_GEN(mvdev->mdev, umem_uid_0)) {
- 		err = mlx5_vdpa_create_dma_mr(mvdev);
- 		if (err)
--- 
-2.42.0
+The perf patch I pointed out breaks the build in all my configs on
+riscv.
 
+--SZCJSgyL//So0XBB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZW7/vQAKCRB4tDGHoIJi
+0jafAQDzGHXfjwwZGGKQcFr6zIaPDvQPF4IfDQarNJSh35vqUQEA1v7jKDvrH5Jf
+tntF7B9KKvwSKxSKjZWKQMi7p++fIw0=
+=X0MD
+-----END PGP SIGNATURE-----
+
+--SZCJSgyL//So0XBB--
