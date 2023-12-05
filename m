@@ -2,50 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB0E805B75
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0B8805C86
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbjLEQqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:46:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
+        id S1345081AbjLEQvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:51:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjLEQqm (ORCPT
+        with ESMTP id S231799AbjLEQvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:46:42 -0500
+        Tue, 5 Dec 2023 11:51:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD9D12C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:46:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7C7FC433C8;
-        Tue,  5 Dec 2023 16:46:44 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48789197
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:51:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 910E0C433C8;
+        Tue,  5 Dec 2023 16:51:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701794808;
-        bh=VJiAFW0zow+mP/2B0hwLEDVsWXtN6IoHY8ReLDL8JlY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P282iOEz8K2Ju0LZdIBBOG/m9d18TvElZa5agixz1ifQg9xJbhJfQXuz1q+NkPTHO
-         M87RZX+nvRGOluo/SHnrQTy7bLc3HCDIywdaHyDi8N+zFZTcNBwMhulWU0W4CArCzO
-         5d47c9BmzcWhXQ5Oaaeil2yShrx40ubgUkqTxyBBdk6jsZHYEzC2Hp8eg8NcFkhSOT
-         A03fSQw75jWkwGAZnhY+dNX3okf+ubJ/ncofOq+Hi+aLrauwG5zyXDt7HQm0mvG87V
-         SYUu5lwDMAZOq7T3XIhcOpRbdW3/eruFzy4bz2JAh8ETrmWXpEYELjwhAyg/q+1rMf
-         SKW2H/k5z8I1A==
-Date:   Tue, 5 Dec 2023 16:46:42 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Cosmo Chou <chou.cosmo@gmail.com>
-Cc:     jdelvare@suse.com, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        corbet@lwn.net, heiko@sntech.de, jernej.skrabec@gmail.com,
-        macromorgan@hotmail.com, linus.walleij@linaro.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        cosmo.chou@quantatw.com
-Subject: Re: [PATCH 2/3] dt-bindings: hwmon: pt516xx: add bindings
-Message-ID: <20231205-moneyless-hash-202129b0c636@spud>
-References: <20231205074723.3546295-1-chou.cosmo@gmail.com>
- <20231205074723.3546295-3-chou.cosmo@gmail.com>
+        s=k20201202; t=1701795069;
+        bh=ld1xDDBIxU0aMjeZJcBk8TzmodfOXcQzxXPrqLOm3Wc=;
+        h=From:Subject:Date:To:Cc:From;
+        b=cA2ltJ3Ciu6iOJdi4d9B/ltq2K0G8sHqPxOAvifGX4gGCgc8VemqNpQJTyQayOS0p
+         N1/5z6HA7O21Gy0CuqHBd7MD93z1Fo+yFkhRXrmCNC/lvKfoODEHIqVUwvhFE69Dgb
+         tG9vV1X8YnX4m0mmtEQxHMKnxLhUJsE+pcjSsDohcOakIGGAVKM6QJS7Z2SILPGR3G
+         JvlcRZgctPb3u0CJQhcSm65XFRDhZt8TMfDdTZLN/7ldJR6xQDH14qO/uP70rXh9w9
+         4dE9Tc0pcvrI2L1UYABYYQPEEaRPYxENcSXqlL1aapvQI9x0D19LRIXkWNdhIy7gnM
+         VqgDaVl/NnV0Q==
+From:   Mark Brown <broonie@kernel.org>
+Subject: [PATCH v3 00/21] arm64: Support for 2023 DPISA extensions
+Date:   Tue, 05 Dec 2023 16:47:58 +0000
+Message-Id: <20231205-arm64-2023-dpisa-v3-0-dbcbcd867a7f@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="koWKZqbMUuzMweLA"
-Content-Disposition: inline
-In-Reply-To: <20231205074723.3546295-3-chou.cosmo@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAD9Ub2UC/23N0QrCIBTG8VcZXmfo8UzdrnqP6MKl26TahoYUY
+ ++eG0FEXf4/OL8zk+iCd5HUxUyCSz76ccghdgU592boHPU2NwEGgjMmqAk3iXRNaicfDYVWWCg
+ VSlRI8tkUXOsfG3k85e59vI/huX1IfF3fGMhfLHHKqEbFrK101TRwuLgwuOt+DB1ZtQQfgXP8I
+ 0AWUEHJdYWtNPpLWJblBSYrTd/zAAAA
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-5c066
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4657; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=ld1xDDBIxU0aMjeZJcBk8TzmodfOXcQzxXPrqLOm3Wc=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlb1ToWY21TL2lSFiNFFmpncXHZ+8uv3xdv0x92cWg
+ Iu7GAfWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZW9U6AAKCRAk1otyXVSH0CTCB/
+ 9LsWRTj/wZmAWjeHxaGBiu4BElH0V6M0Tohiptgba/9qZblZAxTt7uVj1YC/BTGqiGuGajmHYUQhJ8
+ X2Bnb/Ttzt20+XlZnVYvaQ547tIUGHQ09wyXuPMfjoacAl/SfDZeP/NQzOBs+mNY2li70oPfvmhTO0
+ 2AmNK9Cq2jKWi/V8mqRw+tyKLV2lmvFGUrpahC8WEV7FgmGWsuH4q8ZeW2jLYA9DGW1WOk0W9W/TtF
+ X05gevBgezfm+zlyxAS6q98+WbF+vcdXfWuKOkWuk0cKnUaViQZDE3EmuVQNJmJ8BiejhePxk5mCxX
+ oXk5q8/Wx4ITOnEhKnMGqweRvTAHc0
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -56,84 +69,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series enables support for the data processing extensions in the
+newly released 2023 architecture, this is mainly support for 8 bit
+floating point formats.  Most of the extensions only introduce new
+instructions and therefore only require hwcaps but there is a new EL0
+visible control register FPMR used to control the 8 bit floating point
+formats, we need to manage traps for this and context switch it.
 
---koWKZqbMUuzMweLA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The sharing of floating point save code between the host and guest
+kernels slightly complicates the introduction of KVM support, we first
+introduce host support with some placeholders for KVM then replace those
+with the actual KVM support.
 
-On Tue, Dec 05, 2023 at 03:47:22PM +0800, Cosmo Chou wrote:
-> Add dt-bindings for pt516xx temperature monitor.
->=20
-> Signed-off-by: Cosmo Chou <chou.cosmo@gmail.com>
+I've not added test coverage for ptrace, I've got a not quite finished
+test program which exercises all the FP ptrace interfaces and their
+interactions together, my plan is to cover it there rather than add
+another tiny test program that duplicates the boilerplace for tracing a
+target and doesn't actually run the traced program.
 
-This can just go into trivial-devices.yaml, no?
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Changes in v3:
+- Rebase onto v6.7-rc3.
+- Hook up traps for FPMR in emulate-nested.c.
+- Link to v2: https://lore.kernel.org/r/20231114-arm64-2023-dpisa-v2-0-47251894f6a8@kernel.org
 
-Thanks,
-Conor.
+Changes in v2:
+- Rebase onto v6.7-rc1.
+- Link to v1: https://lore.kernel.org/r/20231026-arm64-2023-dpisa-v1-0-8470dd989bb2@kernel.org
 
-> ---
->  .../bindings/hwmon/asteralabs,pt516xx.yaml    | 36 +++++++++++++++++++
->  1 file changed, 36 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/asteralabs,pt=
-516xx.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/asteralabs,pt516xx.y=
-aml b/Documentation/devicetree/bindings/hwmon/asteralabs,pt516xx.yaml
-> new file mode 100644
-> index 000000000000..5700d4c91a0d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/asteralabs,pt516xx.yaml
-> @@ -0,0 +1,36 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/hwmon/asteralabs,pt516xx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: PT5161L hwmon sensor
-> +
-> +maintainers:
-> +  - Cosmo Chou <cosmo.chou@quantatw.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - asteralabs,pt5161l
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +      #address-cells =3D <1>;
-> +      #size-cells =3D <0>;
-> +
-> +      sensor@24 {
-> +        compatible =3D "asteralabs,pt5161l";
-> +        reg =3D <0x24>;
-> +      };
-> +    };
-> --=20
-> 2.34.1
->=20
+---
+Mark Brown (21):
+      arm64/sysreg: Add definition for ID_AA64PFR2_EL1
+      arm64/sysreg: Update ID_AA64ISAR2_EL1 defintion for DDI0601 2023-09
+      arm64/sysreg: Add definition for ID_AA64ISAR3_EL1
+      arm64/sysreg: Add definition for ID_AA64FPFR0_EL1
+      arm64/sysreg: Update ID_AA64SMFR0_EL1 definition for DDI0601 2023-09
+      arm64/sysreg: Update SCTLR_EL1 for DDI0601 2023-09
+      arm64/sysreg: Update HCRX_EL2 definition for DDI0601 2023-09
+      arm64/sysreg: Add definition for FPMR
+      arm64/cpufeature: Hook new identification registers up to cpufeature
+      arm64/fpsimd: Enable host kernel access to FPMR
+      arm64/fpsimd: Support FEAT_FPMR
+      arm64/signal: Add FPMR signal handling
+      arm64/ptrace: Expose FPMR via ptrace
+      KVM: arm64: Add newly allocated ID registers to register descriptions
+      KVM: arm64: Support FEAT_FPMR for guests
+      arm64/hwcap: Define hwcaps for 2023 DPISA features
+      kselftest/arm64: Handle FPMR context in generic signal frame parser
+      kselftest/arm64: Add basic FPMR test
+      kselftest/arm64: Add 2023 DPISA hwcap test coverage
+      KVM: arm64: selftests: Document feature registers added in 2023 extensions
+      KVM: arm64: selftests: Teach get-reg-list about FPMR
 
---koWKZqbMUuzMweLA
-Content-Type: application/pgp-signature; name="signature.asc"
+ Documentation/arch/arm64/elf_hwcaps.rst            |  49 +++++
+ arch/arm64/include/asm/cpu.h                       |   3 +
+ arch/arm64/include/asm/cpufeature.h                |   5 +
+ arch/arm64/include/asm/fpsimd.h                    |   2 +
+ arch/arm64/include/asm/hwcap.h                     |  15 ++
+ arch/arm64/include/asm/kvm_arm.h                   |   4 +-
+ arch/arm64/include/asm/kvm_host.h                  |   3 +
+ arch/arm64/include/asm/processor.h                 |   2 +
+ arch/arm64/include/uapi/asm/hwcap.h                |  15 ++
+ arch/arm64/include/uapi/asm/sigcontext.h           |   8 +
+ arch/arm64/kernel/cpufeature.c                     |  72 +++++++
+ arch/arm64/kernel/cpuinfo.c                        |  18 ++
+ arch/arm64/kernel/fpsimd.c                         |  13 ++
+ arch/arm64/kernel/ptrace.c                         |  42 ++++
+ arch/arm64/kernel/signal.c                         |  59 ++++++
+ arch/arm64/kvm/emulate-nested.c                    |   9 +
+ arch/arm64/kvm/fpsimd.c                            |  19 +-
+ arch/arm64/kvm/hyp/include/hyp/switch.h            |   7 +-
+ arch/arm64/kvm/sys_regs.c                          |  17 +-
+ arch/arm64/tools/cpucaps                           |   1 +
+ arch/arm64/tools/sysreg                            | 153 ++++++++++++++-
+ include/uapi/linux/elf.h                           |   1 +
+ tools/testing/selftests/arm64/abi/hwcap.c          | 217 +++++++++++++++++++++
+ tools/testing/selftests/arm64/signal/.gitignore    |   1 +
+ .../arm64/signal/testcases/fpmr_siginfo.c          |  82 ++++++++
+ .../selftests/arm64/signal/testcases/testcases.c   |   8 +
+ .../selftests/arm64/signal/testcases/testcases.h   |   1 +
+ tools/testing/selftests/kvm/aarch64/get-reg-list.c |  11 +-
+ 28 files changed, 819 insertions(+), 18 deletions(-)
+---
+base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+change-id: 20231003-arm64-2023-dpisa-2f3d25746474
 
------BEGIN PGP SIGNATURE-----
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZW9T8gAKCRB4tDGHoIJi
-0rbeAP9UZFP4fQrMBKa9ZCWjhzEI9pPr4ESGnjJ4dXDulv1E8gD+NqAY1GCkH/3P
-I4auC8gk0eePMBrRCQc6YDaQHAvdDAc=
-=KY0u
------END PGP SIGNATURE-----
-
---koWKZqbMUuzMweLA--
