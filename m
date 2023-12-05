@@ -2,275 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEAB805422
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF24D805408
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345265AbjLEM1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
+        id S1345088AbjLEMZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:25:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345274AbjLEM13 (ORCPT
+        with ESMTP id S1345080AbjLEMZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:27:29 -0500
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF1B11F;
-        Tue,  5 Dec 2023 04:27:16 -0800 (PST)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 18e4870ed7d4aca5; Tue, 5 Dec 2023 13:27:14 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 746B96687D0;
-        Tue,  5 Dec 2023 13:27:14 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH v4 1/2] thermal: sysfs: Rework the handling of trip point updates
-Date:   Tue, 05 Dec 2023 13:24:08 +0100
-Message-ID: <4882089.31r3eYUQgx@kreacher>
-In-Reply-To: <12337662.O9o76ZdvQC@kreacher>
-References: <12337662.O9o76ZdvQC@kreacher>
+        Tue, 5 Dec 2023 07:25:23 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6340AFA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:25:28 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c09b021daso27692575e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:25:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1701779127; x=1702383927; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QNCLk+56fWI2chNhpjUr6+slGM9CjcICEgag2GdvCoc=;
+        b=ss4SiFkdwZY/2AZvfoVCmfCCATG7HPwTjCRg8Om2IoMjSg8oK7Uq1usj1oquxVbxK7
+         fSq3eg3Tv2GqVhMnJua29rIOEx8Ed4N1oc47narYzn6CFXObcQxMOeiMVhRF1gZ+KeEn
+         pOzUIv/1l2cRiAy3BUm8qk+L0R8DNnv20l6q8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701779127; x=1702383927;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QNCLk+56fWI2chNhpjUr6+slGM9CjcICEgag2GdvCoc=;
+        b=AyzPCjxwFJtKbIJrV2jnjwy8embu62/whX9EDiRESfeOaKnsZBzj4yR8Cz6/ImcquL
+         cBTxoOZ+KU7QeyTdeJHN/4rWjOld4RvURSjW/Wa1zF+HcRJ6p1lzilxBQVVG47xjicI6
+         H6ljqybs/Dh7rFra1RNTET3GU9P07LE4j2xWJ+rWLcD0E2xgNB2xBJMZsL/6srDHZtsG
+         bG0KDHRJHQGbNZRX++04lVERbHc2oP4IFtdsQ5R0Q1ndWifCpdkXP/AnnrYKSWyYwZ8E
+         TcQnOVNvICVW62zfCd8zx2br6nD1nIavIasDD3YjOfqE/VunX9e1zoMFK9oeFO6/x98J
+         tPGA==
+X-Gm-Message-State: AOJu0YwhF6zYukXjC0aqVVDcJw+TK1i+QrfEDteHpMhREeweSnwn307i
+        LbDgfWuBVmyKPDaMlDrt7MYZwg==
+X-Google-Smtp-Source: AGHT+IFxBxp6EQ7qVgNSuhOPqdIy0eT6mG75SBCSajakYFILb/bhoaJag+l06/bE/PKNsb6QbMajOg==
+X-Received: by 2002:a05:600c:600b:b0:40b:4e4e:2b22 with SMTP id az11-20020a05600c600b00b0040b4e4e2b22mr365566wmb.38.1701779126718;
+        Tue, 05 Dec 2023 04:25:26 -0800 (PST)
+Received: from [10.80.67.30] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
+        by smtp.gmail.com with ESMTPSA id hg10-20020a05600c538a00b0040b398f0585sm18773310wmb.9.2023.12.05.04.25.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 04:25:26 -0800 (PST)
+Message-ID: <f260ddf9-be67-48e0-8121-6f58d46f7978@citrix.com>
+Date:   Tue, 5 Dec 2023 12:25:25 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudejkedgfeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhi
- nhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 26/35] x86/fred: FRED entry/exit and dispatch code
+Content-Language: en-GB
+To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
+        mhiramat@kernel.org, jiangshanlai@gmail.com, nik.borisov@suse.com,
+        shan.kang@intel.com
+References: <20231205105030.8698-1-xin3.li@intel.com>
+ <20231205105030.8698-27-xin3.li@intel.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
+ 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
+ 6+ahAA==
+In-Reply-To: <20231205105030.8698-27-xin3.li@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 05/12/2023 10:50 am, Xin Li wrote:
+> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
+> new file mode 100644
+> index 000000000000..215883e90f94
+> --- /dev/null
+> +++ b/arch/x86/entry/entry_fred.c
+> @@ -0,0 +1,230 @@
+> ...
+> +static noinstr void fred_intx(struct pt_regs *regs)
+> +{
+> +	switch (regs->fred_ss.vector) {
+> +	/* INT0 */
 
-Both trip_point_temp_store() and trip_point_hyst_store() use
-thermal_zone_set_trip() to update a given trip point, but none of them
-actually needs to change more than one field in struct thermal_trip
-representing it.  However, each of them effectively calls
-__thermal_zone_get_trip() twice in a row for the same trip index value,
-once directly and once via thermal_zone_set_trip(), which is not
-particularly efficient, and the way in which thermal_zone_set_trip()
-carries out the update is not particularly straightforward.
+INTO (for overflow), not INT-zero.  However...
 
-Moreover, input processing need not be done under the thermal zone lock
-in any of these functions.
+> +	case X86_TRAP_OF:
+> +		exc_overflow(regs);
+> +		return;
+> +
+> +	/* INT3 */
+> +	case X86_TRAP_BP:
+> +		exc_int3(regs);
+> +		return;
 
-Rework trip_point_temp_store() and trip_point_hyst_store() to address
-the above, move the part of thermal_zone_set_trip() that is still
-useful to a new function called thermal_zone_trip_updated() and drop
-the rest of it.
+... neither OF nor BP will ever enter fred_intx() because they're type
+SWEXC not SWINT.
 
-While at it, make trip_point_hyst_store() reject negative hysteresis
-values.
+SWINT is strictly the INT $imm8 instruction.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+> ...
+> +static noinstr void fred_extint(struct pt_regs *regs)
+> +{
+> +	unsigned int vector = regs->fred_ss.vector;
+> +
+> +	if (WARN_ON_ONCE(vector < FIRST_EXTERNAL_VECTOR))
+> +		return;
+> +
+> +	if (likely(vector >= FIRST_SYSTEM_VECTOR)) {
+> +		irqentry_state_t state = irqentry_enter(regs);
+> +
+> +		instrumentation_begin();
+> +		sysvec_table[vector - FIRST_SYSTEM_VECTOR](regs);
 
-v3 -> v4: Don't check trip_id against boundaries in trip_point_temp_store() and
-          trip_point_hyst_store() (Daniel).
+array_index_mask_nospec()
 
-v2 -> v3: No changes
+This is easy for an attacker to abuse, to install non-function-pointer
+targets into the indirect predictor.
 
-v1 -> v2: Still check device_is_registered() under the zone lock
+> +		instrumentation_end();
+> +		irqentry_exit(regs, state);
+> +	} else {
+> +		common_interrupt(regs, vector);
+> +	}
+> +}
+> +
+> +static noinstr void fred_exception(struct pt_regs *regs, unsigned long error_code)
+> +{
+> +	/* Optimize for #PF. That's the only exception which matters performance wise */
+> +	if (likely(regs->fred_ss.vector == X86_TRAP_PF)) {
+> +		exc_page_fault(regs, error_code);
+> +		return;
+> +	}
+> +
+> +	switch (regs->fred_ss.vector) {
+> +	case X86_TRAP_DE: return exc_divide_error(regs);
+> +	case X86_TRAP_DB: return fred_exc_debug(regs);
+> +	case X86_TRAP_BP: return exc_int3(regs);
+> +	case X86_TRAP_OF: return exc_overflow(regs);
 
----
- drivers/thermal/thermal_core.h  |    2 +
- drivers/thermal/thermal_sysfs.c |   52 +++++++++++++++++++++++++++-------------
- drivers/thermal/thermal_trip.c  |   45 ++++++----------------------------
- include/linux/thermal.h         |    4 ---
- 4 files changed, 47 insertions(+), 56 deletions(-)
+Depending on what you want to do with BP/OF vs fred_intx(), this may
+need adjusting.
 
-Index: linux-pm/drivers/thermal/thermal_sysfs.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-+++ linux-pm/drivers/thermal/thermal_sysfs.c
-@@ -120,8 +120,13 @@ trip_point_temp_store(struct device *dev
- 		      const char *buf, size_t count)
- {
- 	struct thermal_zone_device *tz = to_thermal_zone(dev);
--	struct thermal_trip trip;
-+	struct thermal_trip *trip;
- 	int trip_id, ret;
-+	int temp;
-+
-+	ret = kstrtoint(buf, 10, &temp);
-+	if (ret)
-+		return -EINVAL;
- 
- 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
- 		return -EINVAL;
-@@ -133,15 +138,20 @@ trip_point_temp_store(struct device *dev
- 		goto unlock;
- 	}
- 
--	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
--	if (ret)
--		goto unlock;
-+	trip = &tz->trips[trip_id];
- 
--	ret = kstrtoint(buf, 10, &trip.temperature);
--	if (ret)
--		goto unlock;
-+	if (temp != trip->temperature) {
-+		if (tz->ops->set_trip_temp) {
-+			ret = tz->ops->set_trip_temp(tz, trip_id, temp);
-+			if (ret)
-+				goto unlock;
-+		}
-+
-+		trip->temperature = temp;
-+
-+		thermal_zone_trip_updated(tz, trip);
-+	}
- 
--	ret = thermal_zone_set_trip(tz, trip_id, &trip);
- unlock:
- 	mutex_unlock(&tz->lock);
- 	
-@@ -179,8 +189,13 @@ trip_point_hyst_store(struct device *dev
- 		      const char *buf, size_t count)
- {
- 	struct thermal_zone_device *tz = to_thermal_zone(dev);
--	struct thermal_trip trip;
-+	struct thermal_trip *trip;
- 	int trip_id, ret;
-+	int hyst;
-+
-+	ret = kstrtoint(buf, 10, &hyst);
-+	if (ret || hyst < 0)
-+		return -EINVAL;
- 
- 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) != 1)
- 		return -EINVAL;
-@@ -192,15 +207,20 @@ trip_point_hyst_store(struct device *dev
- 		goto unlock;
- 	}
- 
--	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
--	if (ret)
--		goto unlock;
-+	trip = &tz->trips[trip_id];
- 
--	ret = kstrtoint(buf, 10, &trip.hysteresis);
--	if (ret)
--		goto unlock;
-+	if (hyst != trip->hysteresis) {
-+		if (tz->ops->set_trip_hyst) {
-+			ret = tz->ops->set_trip_hyst(tz, trip_id, hyst);
-+			if (ret)
-+				goto unlock;
-+		}
-+
-+		trip->hysteresis = hyst;
-+
-+		thermal_zone_trip_updated(tz, trip);
-+	}
- 
--	ret = thermal_zone_set_trip(tz, trip_id, &trip);
- unlock:
- 	mutex_unlock(&tz->lock);
- 
-Index: linux-pm/drivers/thermal/thermal_core.h
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_core.h
-+++ linux-pm/drivers/thermal/thermal_core.h
-@@ -124,6 +124,8 @@ int __thermal_zone_get_trip(struct therm
- 			    struct thermal_trip *trip);
- int thermal_zone_trip_id(struct thermal_zone_device *tz,
- 			 const struct thermal_trip *trip);
-+void thermal_zone_trip_updated(struct thermal_zone_device *tz,
-+			       const struct thermal_trip *trip);
- int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
- 
- /* sysfs I/F */
-Index: linux-pm/drivers/thermal/thermal_trip.c
-===================================================================
---- linux-pm.orig/drivers/thermal/thermal_trip.c
-+++ linux-pm/drivers/thermal/thermal_trip.c
-@@ -147,42 +147,6 @@ int thermal_zone_get_trip(struct thermal
- }
- EXPORT_SYMBOL_GPL(thermal_zone_get_trip);
- 
--int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
--			  const struct thermal_trip *trip)
--{
--	struct thermal_trip t;
--	int ret;
--
--	ret = __thermal_zone_get_trip(tz, trip_id, &t);
--	if (ret)
--		return ret;
--
--	if (t.type != trip->type)
--		return -EINVAL;
--
--	if (t.temperature != trip->temperature && tz->ops->set_trip_temp) {
--		ret = tz->ops->set_trip_temp(tz, trip_id, trip->temperature);
--		if (ret)
--			return ret;
--	}
--
--	if (t.hysteresis != trip->hysteresis && tz->ops->set_trip_hyst) {
--		ret = tz->ops->set_trip_hyst(tz, trip_id, trip->hysteresis);
--		if (ret)
--			return ret;
--	}
--
--	if (tz->trips && (t.temperature != trip->temperature || t.hysteresis != trip->hysteresis))
--		tz->trips[trip_id] = *trip;
--
--	thermal_notify_tz_trip_change(tz->id, trip_id, trip->type,
--				      trip->temperature, trip->hysteresis);
--
--	__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
--
--	return 0;
--}
--
- int thermal_zone_trip_id(struct thermal_zone_device *tz,
- 			 const struct thermal_trip *trip)
- {
-@@ -192,3 +156,12 @@ int thermal_zone_trip_id(struct thermal_
- 	 */
- 	return trip - tz->trips;
- }
-+
-+void thermal_zone_trip_updated(struct thermal_zone_device *tz,
-+			       const struct thermal_trip *trip)
-+{
-+	thermal_notify_tz_trip_change(tz->id, thermal_zone_trip_id(tz, trip),
-+				      trip->type, trip->temperature,
-+				      trip->hysteresis);
-+	__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
-+}
-Index: linux-pm/include/linux/thermal.h
-===================================================================
---- linux-pm.orig/include/linux/thermal.h
-+++ linux-pm/include/linux/thermal.h
-@@ -282,10 +282,6 @@ int __thermal_zone_get_trip(struct therm
- 			    struct thermal_trip *trip);
- int thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
- 			  struct thermal_trip *trip);
--
--int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
--			  const struct thermal_trip *trip);
--
- int for_each_thermal_trip(struct thermal_zone_device *tz,
- 			  int (*cb)(struct thermal_trip *, void *),
- 			  void *data);
+If you are cross-checking type and vector, then these should be rejected
+for not being of type HWEXC.
 
+> +	case X86_TRAP_BR: return exc_bounds(regs);
+> +	case X86_TRAP_UD: return exc_invalid_op(regs);
+> +	case X86_TRAP_NM: return exc_device_not_available(regs);
+> +	case X86_TRAP_DF: return exc_double_fault(regs, error_code);
+> +	case X86_TRAP_TS: return exc_invalid_tss(regs, error_code);
+> +	case X86_TRAP_NP: return exc_segment_not_present(regs, error_code);
+> +	case X86_TRAP_SS: return exc_stack_segment(regs, error_code);
+> +	case X86_TRAP_GP: return exc_general_protection(regs, error_code);
+> +	case X86_TRAP_MF: return exc_coprocessor_error(regs);
+> +	case X86_TRAP_AC: return exc_alignment_check(regs, error_code);
+> +	case X86_TRAP_XF: return exc_simd_coprocessor_error(regs);
+> +
+> +#ifdef CONFIG_X86_MCE
+> +	case X86_TRAP_MC: return fred_exc_machine_check(regs);
+> +#endif
+> +#ifdef CONFIG_INTEL_TDX_GUEST
+> +	case X86_TRAP_VE: return exc_virtualization_exception(regs);
+> +#endif
+> +#ifdef CONFIG_X86_KERNEL_IBT
 
+CONFIG_X86_CET
 
+Userspace can use CET even if the kernel isn't compiled with IBT, so
+this exception needs handling.
+
+> +	case X86_TRAP_CP: return exc_control_protection(regs, error_code);
+> +#endif
+> +	default: return fred_bad_type(regs, error_code);
+> +	}
+> +}
+> +
+> +__visible noinstr void fred_entry_from_user(struct pt_regs *regs)
+> +{
+> +	unsigned long error_code = regs->orig_ax;
+> +
+> +	/* Invalidate orig_ax so that syscall_get_nr() works correctly */
+> +	regs->orig_ax = -1;
+> +
+> +	switch (regs->fred_ss.type) {
+> +	case EVENT_TYPE_EXTINT:
+> +		return fred_extint(regs);
+> +	case EVENT_TYPE_NMI:
+> +		return fred_exc_nmi(regs);
+> +	case EVENT_TYPE_SWINT:
+> +		return fred_intx(regs);
+> +	case EVENT_TYPE_HWEXC:
+> +	case EVENT_TYPE_SWEXC:
+> +	case EVENT_TYPE_PRIV_SWEXC:
+> +		return fred_exception(regs, error_code);
+
+PRIV_SWEXC should have it's own function and not fall into fred_exception().
+
+It is strictly only the ICEBP (INT1) instruction at the moment, so
+should fall into bad_type() for any vector other than X86_TRAP_DB.
+
+> +	case EVENT_TYPE_OTHER:
+> +		return fred_other(regs);
+> +	default:
+> +		return fred_bad_type(regs, error_code);
+> +	}
+> +}
+
+~Andrew
