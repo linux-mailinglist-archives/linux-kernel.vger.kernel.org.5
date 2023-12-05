@@ -2,100 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DB380500F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5DC805014
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235021AbjLEKRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39048 "EHLO
+        id S235075AbjLEKSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:18:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbjLEKRh (ORCPT
+        with ESMTP id S235028AbjLEKSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:17:37 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49A4BA;
-        Tue,  5 Dec 2023 02:17:43 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40b397793aaso33637935e9.0;
-        Tue, 05 Dec 2023 02:17:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701771462; x=1702376262; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uJBKssIQGKxkPqlelIJU0W9JViZCvTkkSVAhWadYU4Q=;
-        b=Uh+6E++G1cwdLDwGF4YbQ9Ta36Q2rVlA+Q5ZGdC7kqYXebfg5O68PHZu19qeYp/sOY
-         d1fv5T/GjjIWVlFaUEhw/ofwF5nf76SX1ykBZb+srfdQwuWsYcVeGVM3VAhzvMrd2OT/
-         P9Lbu/g6ArxClW8uUqoGtdKDWlxgUpREUxgve2m2UkUwbf391uvE3tlayhquI9tG5Syb
-         snccDwow9xOFVNSacp8NPs8LZSDtHMwY/0LberHd/kH7jg6mdD+SV6uPln8xExaLvg0T
-         +8xCyBThSoUXxZI11o/f0ojdsxNiWr8e7ep0CQNKvgMguyYfet840pKJQLuPQOoykA7C
-         hX+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701771462; x=1702376262;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uJBKssIQGKxkPqlelIJU0W9JViZCvTkkSVAhWadYU4Q=;
-        b=unY1hMzZhfnYeEfvc/G7lDFduBFlBWqG0V4904miXPt7f0sp4DV82jwbebO6/uFudB
-         sVtjb1yf/rDi6/ix17YCGZdtiruUEgUUa9gyYQg02vjGBpDD+XZWWvbntuAC9r65Byhm
-         9mvEPOUO4dB7vVJllTXpQcCwm6XqcK3ETfvUsawCHesXk3Yt+ef1us1lxkDMRpzvDaO4
-         2Izp9T6DqJ1aFtY+VmpEVAGsatckRICauhzms1rDsShfSuFELy4j2cLZKP2aM3UoBwDU
-         /onpTTcOQujF20QT6FJksmU9Lx33jZkpJVpx+y5ZQIf83mhgq+0t6aXR0G0QfqcU4dVI
-         LwqQ==
-X-Gm-Message-State: AOJu0YxZJKGnJK2oE2RRqH5LKjoY30IkqkqppmeXErw6bBk9+TRAXz07
-        HmDbGU9vfroQs87u9+GRhTQxiTNMX+Ah5A==
-X-Google-Smtp-Source: AGHT+IGcYkj9vHpGOjdhpw/Nc/NNNK79W6EablJZAbbv5BwQsKA+3A9C2gHnonbbWzWmSFvF7mnhYQ==
-X-Received: by 2002:a05:600c:a45:b0:40b:5e26:237b with SMTP id c5-20020a05600c0a4500b0040b5e26237bmr375938wmq.44.1701771462047;
-        Tue, 05 Dec 2023 02:17:42 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id w12-20020a5d680c000000b003333e09990dsm8139840wru.8.2023.12.05.02.17.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 02:17:41 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, linux-sound@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ASoC: cs4271: Fix spelling mistake "retrieveing" -> "retrieving"
-Date:   Tue,  5 Dec 2023 10:17:40 +0000
-Message-Id: <20231205101740.2820813-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 5 Dec 2023 05:18:22 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1011490;
+        Tue,  5 Dec 2023 02:18:28 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 105DE1007;
+        Tue,  5 Dec 2023 02:19:14 -0800 (PST)
+Received: from [10.1.197.1] (ewhatever.cambridge.arm.com [10.1.197.1])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A0A893F5A1;
+        Tue,  5 Dec 2023 02:18:25 -0800 (PST)
+Message-ID: <5cbe90e1-e140-455a-8cc7-c5ebece64170@arm.com>
+Date:   Tue, 5 Dec 2023 10:18:24 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 6/7] coresight: stm: Move ACPI support from AMBA driver
+ to platform driver
+Content-Language: en-US
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Sudeep Holla <Sudeep.Holla@arm.com>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
+ <20231201062053.1268492-7-anshuman.khandual@arm.com>
+ <0adc3a16-0fc4-2a25-cd48-4667881b9490@arm.com>
+ <e53cec31-9452-4c2a-a3a1-b6ef33be8e22@arm.com>
+ <7825dcd4-94e1-7a5f-b388-90e748dfc47f@arm.com>
+ <81cad3a6-a080-424c-ad0b-0f08c4fe51a2@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <81cad3a6-a080-424c-ad0b-0f08c4fe51a2@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a spelling mistake in a dev_err_probe error message. Fix it.
+On 05/12/2023 05:20, Anshuman Khandual wrote:
+> 
+> 
+> On 12/4/23 18:47, James Clark wrote:
+>>
+>>
+>> On 04/12/2023 11:50, Anshuman Khandual wrote:
+>>>
+>>>
+>>> On 12/4/23 15:53, James Clark wrote:
+>>>>
+>>>>
+>>>> On 01/12/2023 06:20, Anshuman Khandual wrote:
+>>>>> Add support for the stm devices in the platform driver, which can then be
+>>>>> used on ACPI based platforms. This change would now allow runtime power
+>>>>> management for ACPI based systems. The driver would try to enable the APB
+>>>>> clock if available.
+>>>>>
+>>>>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>>>>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>>>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>>>> Cc: James Clark <james.clark@arm.com>
+>>>>> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+>>>>> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+>>>>> Cc: linux-acpi@vger.kernel.org
+>>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>>> Cc: linux-kernel@vger.kernel.org
+>>>>> Cc: coresight@lists.linaro.org
+>>>>> Cc: linux-stm32@st-md-mailman.stormreply.com
+>>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>>> ---
+>>>> [...]
+>>>>>   
+>>>>> -module_amba_driver(stm_driver);
+>>>>> +static int stm_platform_probe(struct platform_device *pdev)
+>>>>> +{
+>>>>> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>>>>> +	int ret = 0;
+>>>>> +
+>>>>> +	pm_runtime_get_noresume(&pdev->dev);
+>>>>> +	pm_runtime_set_active(&pdev->dev);
+>>>>> +	pm_runtime_enable(&pdev->dev);
+>>>>> +
+>>>>> +	ret = __stm_probe(&pdev->dev, res, NULL);
+>>>>
+>>>> Very minor nit, but this used to print this:
+>>>>
+>>>>    coresight stm0: STM500 initialized
+>>>>
+>>>> And now it prints this:
+>>>>
+>>>>    coresight stm0: (null) initialized
+>>>>
+>>>> (null) kind of makes it look a little bit like something has gone wrong.
+>>>> Maybe we could just put "initialised" if you don't have a string from ACPI?
+>>>
+>>> __stm_probe() gets called from both AMBA and platform driver paths. Even though
+>>> a NULL check inside dev_info(..."%s initialized\n",...) could be added, but how
+>>> to differentiate it from a scenario when coresight_get_uci_data() returns NULL ?
+>>
+>> Sudeep's suggestion seems ok, just add a hard coded string instead of
+>> the NULL. And keep the coresight_get_uci_data() the same.
+> 
+> Something like this works ?
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
+> index 3387ebc9d8ab..2b6834c4cac6 100644
+> --- a/drivers/hwtracing/coresight/coresight-stm.c
+> +++ b/drivers/hwtracing/coresight/coresight-stm.c
+> @@ -906,7 +906,7 @@ static int __stm_probe(struct device *dev, struct resource *res, void *dev_caps)
+>          pm_runtime_put(dev);
+>   
+>          dev_info(&drvdata->csdev->dev, "%s initialized\n",
+> -                (char *)dev_caps);
+> +                dev_caps ? (char *)dev_caps: "STM");
+>          return 0;
+>   
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- sound/soc/codecs/cs4271.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Please could stop abusing the private data for storing the name ? 
+Instead, we could read the PID of the device and use a table to map
+it to the name and use that instead ?
 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index 74a84832d958..e864188ae5eb 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -643,7 +643,7 @@ static int cs4271_common_probe(struct device *dev,
- 	cs4271->reset = devm_gpiod_get_optional(dev, "reset", GPIOD_ASIS);
- 	if (IS_ERR(cs4271->reset))
- 		return dev_err_probe(dev, PTR_ERR(cs4271->reset),
--				     "error retrieveing RESET GPIO\n");
-+				     "error retrieving RESET GPIO\n");
- 	gpiod_set_consumer_name(cs4271->reset, "CS4271 Reset");
- 
- 	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
--- 
-2.39.2
+Suzuki
+
+
+>   cs_unregister:
+> 
 
