@@ -2,165 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F97D805BF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733FE805B84
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346015AbjLEPOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        id S1345813AbjLEPOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:14:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345813AbjLEPOG (ORCPT
+        with ESMTP id S1346031AbjLEPOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:14:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718D0BA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:14:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701789252; x=1733325252;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=tovTr3nZu2yPar+cuVmn5Z3qlEpx4S23A3o+HytAUPk=;
-  b=X0e18YOdwvbMecF1Q4BE9WypyFvWSkRU6P0ybipam5jW55qQhwDrz1kY
-   go6xcLRIYkiYTDopFy4HuQqkmGD+QNSEZxzX9sXvVS0VaLT3Fsc88XRqQ
-   wxiFb6nVpRu72cF0fFTk2nGvobPPzt3yg+P0OwR8nhNnA/6ip6Dldmz9J
-   pYZvJIlZnNkk76z9g1zSLp1Xb93xmyvMYqGSNpZgS6b7RmScEVTpWAqsu
-   X2Ol2DMJCAm0E7s5OtiCVAn66EEwV6J3dhAJq3rhMoyUYMhDVpA1NYwSM
-   EjZpi5zkCe82zwr0hRm6NUbFLelBC64zuTUzi2k0Q8sauxHzcZJeB3CBF
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="373356410"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="373356410"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:13:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="18989754"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Dec 2023 07:13:53 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Dec 2023 07:13:53 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Dec 2023 07:13:52 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 5 Dec 2023 07:13:52 -0800
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+        Tue, 5 Dec 2023 10:14:16 -0500
+Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50881BD
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:14:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701789263; x=1733325263;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=aA527ZbGG+qdghRfvAISgVaPT3L9rhCKjqZ+UJ1RvlM=;
+  b=bWB+R4URSNlvHjqPqDYN9HQnObQV9QibUhnGAQQ54KyM+Zvw4lOHrUOG
+   NeULO/KJvLG8L4K2PGRnYHsILLo7l3dfW4c3k55wIFHeFODZDOeY3rffo
+   hdba1Yev+/H1OXd7q0MKSyjQ54sz8lr9qa8+Zlb6/uVYnm6/AJo2P9Mbt
+   c=;
+X-IronPort-AV: E=Sophos;i="6.04,252,1695686400"; 
+   d="scan'208";a="688422232"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-25ac6bd5.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 15:14:16 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+        by email-inbound-relay-iad-1d-m6i4x-25ac6bd5.us-east-1.amazon.com (Postfix) with ESMTPS id D8A5B48B2A;
+        Tue,  5 Dec 2023 15:14:12 +0000 (UTC)
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.43.254:35674]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.2.196:2525] with esmtp (Farcaster)
+ id fbf23383-9723-40f1-b63a-a4abaefb30c5; Tue, 5 Dec 2023 15:14:11 +0000 (UTC)
+X-Farcaster-Flow-ID: fbf23383-9723-40f1-b63a-a4abaefb30c5
+Received: from EX19D033EUB003.ant.amazon.com (10.252.61.76) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.26) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 5 Dec 2023 07:13:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CIoZBHb7gc6mi/IWEDA4kzUKlEcv56lFWVMOWsY6GH2kWBoso/PKR+YyNtzHq+aernXBHVc3CNJC5WWjfDiGOOXQlF3RASwii9nGZGvAz1m9K2jqtmR2PJU1h0jlBdLe6DzYEVd+ngQLZ8tD9UGCO5R5cYy3d+FpSLIDhoXC1cM/hHfgPpxY3nhjNGjCo7GhsH00HdJE/4H8oFwU2YHVVSKpLWm7ajzF2tMeFxMSNJCyNXWL+3QuySQHOJFXAYgPmWqBjQ5/NHF5K8AJNoeFzeIUGzvftbEEH3JQYyNcHsyr/Fae2FBbHZp5876RIW76PCfcxF+ETVKYvvZIs3dL/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QMclrL7Mtbebavq13QsiET9CqxDgtn6wpnuTbsFCzXc=;
- b=XAY8M2yRSkXk23GKlZ7NzCYwM1EhiNMm9K6rn1PM6M2xZNt/b8HsyUKenB9HXi5PiOdWQxSVC3kSNlS3bWsm0yfojWRGgQ7iQMDQdv3U3FvVdt2/ciTqQC4rdoePYW55v1oV125YX2dYu20O5QIAdrY+ID037AxH8scA9Oe/4mV3TZ/V0dNCTNsSKXgUVMSyBcAHqslHC6jDT9fGKJacUiO/2uNDTTb9ESBwDh03O8Wt2r/BnQ51ozE3UMF1HPGET17ew1pnuBwZRAYn2aHJTGulLNZnB/AQrrJc/C85HRfGKJdAAiyJpcL0m0j8sMd14r6+9EUqRrlaQPfpCFgsmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
- DS0PR11MB7381.namprd11.prod.outlook.com (2603:10b6:8:134::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.34; Tue, 5 Dec 2023 15:13:50 +0000
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::f105:47dd:6794:6821]) by DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::f105:47dd:6794:6821%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 15:13:50 +0000
-Date:   Tue, 5 Dec 2023 16:13:47 +0100
-From:   =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
-To:     Maxime Ripard <mripard@kernel.org>
-CC:     <intel-xe@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Michal Wajdeczko <michal.wajdeczko@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        =?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Subject: Re: [PATCH v2 3/3] drm/tests: managed: Add a simple test for
- drmm_managed_release
-Message-ID: <oejxznxyvki6jg5rbrqcnwzmmygstypp24nbf3pn4nqgifmjpc@m3qqcgmuch6u>
-References: <20231205012210.1491532-1-michal.winiarski@intel.com>
- <20231205012210.1491532-4-michal.winiarski@intel.com>
- <okubt4juvgbya5ybtfhozaczqvjhzqrtz3ltw4vylbmme5dzff@27tazbke5j25>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <okubt4juvgbya5ybtfhozaczqvjhzqrtz3ltw4vylbmme5dzff@27tazbke5j25>
-X-ClientProxiedBy: FR2P281CA0177.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9f::13) To DM4PR11MB5373.namprd11.prod.outlook.com
- (2603:10b6:5:394::7)
+ 15.2.1118.40; Tue, 5 Dec 2023 15:14:11 +0000
+Received: from EX19MTAUEC001.ant.amazon.com (10.252.135.222) by
+ EX19D033EUB003.ant.amazon.com (10.252.61.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 5 Dec 2023 15:14:10 +0000
+Received: from dev-dsk-jalliste-1c-e3349c3e.eu-west-1.amazon.com
+ (10.13.244.142) by mail-relay.amazon.com (10.252.135.200) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40 via Frontend Transport; Tue, 5 Dec 2023 15:14:09 +0000
+From:   Jack Allister <jalliste@amazon.com>
+To:     <rafael@kernel.org>
+CC:     Jack Allister <jalliste@amazon.com>,
+        Paul Durrant <pdurrant@amazon.com>, Jue Wang <juew@amazon.com>,
+        Usama Arif <usama.arif@bytedance.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4] x86: intel_epb: Add earlyparam option to keep bias at performance
+Date:   Tue, 5 Dec 2023 15:14:02 +0000
+Message-ID: <20231205151403.76015-1-jalliste@amazon.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <CAJZ5v0jYqQc4UztGzMDP5m5xKejrEQkMyyt12nsHdQ=qiULpTQ@mail.gmail.com>
+References: <CAJZ5v0jYqQc4UztGzMDP5m5xKejrEQkMyyt12nsHdQ=qiULpTQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|DS0PR11MB7381:EE_
-X-MS-Office365-Filtering-Correlation-Id: 21949f6f-c6ab-4b0b-17f4-08dbf5a4c8e5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Haa89zV0phnvcvsP3YoEQOOVG+TqT4Jb2cDUpKOqC7mJy/MITHpOhu3EjzNYgkWJuSsaopMP/npiClnqz+wvBCUHAEPa/FeCOnEF+6ucU9jRP6tSUm+/UtxvI835DEUOn3vh8jcaYaBpKtCIQxRKpJvQDo978ZdAyfFQtlwS56oABJA3ucqYWU+ChPx7FLRcyiwUksxkP/3LZNUeo9+/eZmlE/MSV7Hgm5yKtosXLApRwF6cSyoSlbNt1HK1eahBhjZRglmyxVqiwFGoyTT3Ms7pmoqnbC7gBv7y+BoSls1XQ5KnK+NfMrY3KqjLEea7mAgedUBvQ6kUEsJFxR+7DvNQth8eBiDkY/2/RxruyOhOb82PXTDmdNcEgSsjRg7Bj1OBuyH99k9UylbyK/2oopHGUuK0Dyw5sDRS2aGu4dTvCErfzXVHEV7rh1aaEgn95+4S+WYEUXxRJOLaL2Pu6kgLPUfNA59Bwjt3z7QBe99K1mtuhFGc4r6/yYXZ/7vc5fzZLZKw5KXfPPhK6I7oSBH3/4VXuOG44tcke+khBiTzASgEfrGd0aLJ3KwL5iqL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(366004)(396003)(376002)(136003)(39860400002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(38100700002)(9686003)(6512007)(6506007)(6486002)(6666004)(478600001)(54906003)(66946007)(66476007)(66556008)(316002)(26005)(83380400001)(4326008)(8676002)(6916009)(8936002)(82960400001)(5660300002)(7416002)(2906002)(41300700001)(86362001)(33716001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TGhCdWdSbGpqTjBEd3FQYnd0ZFlsV0R2djZuZ2VYS0ZRQngzdGt4bVBtUXVE?=
- =?utf-8?B?WXNud0w0NldHZWg0NmtaUFZtdm51UXpMMTZqY0g5UlRHci83Y1NSMHZQVEw0?=
- =?utf-8?B?cnJZZ0hwMnlKMEx4OHRFYmI0K2RFRnZRQjJ6bUs2cDlZZ3psbzRLL1J3MFJO?=
- =?utf-8?B?bVhEMGVyeGl5cGszbExWWHRGaUNmQlc0YkY5QmlVNU5QdG9ZQ1Irc1FSRG1j?=
- =?utf-8?B?bWlzQjRWY09uVzFNVjVzMTdqNEYyQ1B4RDlKL2NXOG9IMGN5N1Q5Uk1mcmFn?=
- =?utf-8?B?VGE2TnJnekVTOEhQTStvKzI1N1JzNkkvdjExT1lOcWZsWWJaQkhKMkNHM05J?=
- =?utf-8?B?VzVRT3g5WGE2ZXNsRjY1U21mOUtCN3BzSUNhOUJjSzgzcHVSVzBLSTVkOTUv?=
- =?utf-8?B?RWVUODRuandsOFBMcERLUmxIWnU5L2ErbDVEby94bzZaN1RZcVZ2WUkyUzhw?=
- =?utf-8?B?QnFOWmsrUS81OHZMQUJMVGNGNkllS1NVY094SE15bENqRStNSTM5bUdSbThr?=
- =?utf-8?B?czBTVkxlbGZEWlRldm1NZFU0ZElUMXBNa3FBdnI4WnViZzNUWnR2QzVNT0lr?=
- =?utf-8?B?bitRQytET2VSZDJsdjZXRkJRbGdmejhZYmZUc1ZmbEtndnRaQlIvNFZWNldH?=
- =?utf-8?B?TVliY3lzSy9IUy9RdW5sM1hPYzZhbVN6S2hxeUxHN1JpYk03V3h1anZjNlpr?=
- =?utf-8?B?WHMyOHp3VGFFUjgweVp1dUhHNzlMN2NOQy96SW4rMkk2RVBmZW5HdlgyU2lh?=
- =?utf-8?B?T3QxOGRrY1BrSW1za1BMazMwS0lWWUNrTll5Y2JjQXpCMi9LRTMzOUdQNkRL?=
- =?utf-8?B?U0NDelUwMUFtVnR1N1RpdDVNRUZ2YVYzd1V0M1BuUVNyWkNtKzE1eTF2UVdL?=
- =?utf-8?B?cHlsa0dUdVVaSU11K2tnNmQrTmVRS09UZmw5RzZYM3ZUSk9VWlYyZWF5cHMw?=
- =?utf-8?B?NktUWGVUaSs2TFpBNnJqSkQyQ2VaM3pYT095NldzbHRPK2phNVdzVVEvQXpw?=
- =?utf-8?B?S2VMcFMyNGVpUkV5a2JIcmxFMmhMOFg3ZkN6aStUSmNXSG9CRXZhbmEzdHAv?=
- =?utf-8?B?SXgvVEN6aG9aZGYvTVdYQ1VUYWMrbWo2dXU0VTg2RXJZcC9XTmxVMWFISS9O?=
- =?utf-8?B?UWRUMkJYT3AycVFPazcvM1hyczU1OXpBR1pCVWdQeW9lSFVPS0FqVWRUbkxR?=
- =?utf-8?B?QlowN1BNSjN0STU4d04xVm5CV1NYSTkvMnExM2h4cjloeXBWdzJsQmdLaUlK?=
- =?utf-8?B?L2Rnd1JSOXR3blNTVmh5ZytlRVA2SWc4OHVXV2h4QU5RRVlSUGNSeHBoTzhV?=
- =?utf-8?B?MjJuQTFXa0F2RDEzdjdneHYyT3FyeGhTeUtJWk9Kd0NGbDkvbXhIbGYzZkFa?=
- =?utf-8?B?WWZtSitKTXhHOGJINm5ZeEVaZE5KVzVpakt5Ykw2ZGFHcTNpYjArUFVpbjhj?=
- =?utf-8?B?TUx2NXZqRlpONTM5K3BSUjNsUkJGd3hPOUQvaU5YUjI4Y0JmdTVPRklyWjl3?=
- =?utf-8?B?S0F0TmhIZ1JEU082VEFLYTYvT3l3YTF2eTRENzhDbHVTaW5iaEx3WjdMTWdB?=
- =?utf-8?B?NktBNFFrSWtrdWN6OHVIazQ4S0JhQnVUUE1XeE0rdGxMNmpVbHIzNXhCK1Np?=
- =?utf-8?B?N3BoZ0l4bkNaRThSVFVwdDVYS3VMcGVIeWpBYnRsRUJQYVNOQXp3VXN1TUJT?=
- =?utf-8?B?UC9YSkFHMHo1N042SXNSZTBUSTNzZ2RnZ0ZxRXhNKzI4TitPay8yRU9SQ2Vn?=
- =?utf-8?B?MVBKb1ZVdm5Kdis1eEZtWVFGazZ6eVJQQ29rSUFWYVo3YTRDSUQvdGUyKzBh?=
- =?utf-8?B?SEZ4MFUzQkVueVc0bnZ2U3FydWpHaVYzeFhMb0d6WWUzTFJKVVhQSmpwQ0FM?=
- =?utf-8?B?V2tHTnFnYzBtdmRaT3VTSXNkQ1d6V2xmbkFycjJ5dExiZGFHR1c2YVlUdEFk?=
- =?utf-8?B?YU5JSFVLKzNhTllEL3RYc3I5U2doTWI3Szg0WHg4OGlKRGo5L0o0TXpza3ky?=
- =?utf-8?B?aGZwSEpsMXdIQ0FYNEdGYTNETkVJRnd6WGRKRWI4djNKbnR2SDI5UXVST09w?=
- =?utf-8?B?cHBsanRSUmhNTVBRckx2ak9UbERhelpEV2k3cUY1L2NkS05SeVY1V1JsU2ZY?=
- =?utf-8?B?cWx2VkhRclJZOUpKcEtPbUdNeUlpRG5FbllaUkt4N2tXa2Y5alV6N0NVa1N6?=
- =?utf-8?B?bWc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21949f6f-c6ab-4b0b-17f4-08dbf5a4c8e5
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 15:13:50.4424
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NZuaPObxykfHwLf5HEasOOxX/Nd51C466nQJA05BqPumJn/nwnGWBR9+jrCJOQyoLjQVfvA8odplplG/ANZbAqgWSe3MzDmabj7BPB18bYI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7381
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -168,146 +81,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 02:50:22PM +0100, Maxime Ripard wrote:
-> Hi,
-> 
-> Thanks for the rework
-> 
-> On Tue, Dec 05, 2023 at 02:22:10AM +0100, Michał Winiarski wrote:
-> > Add a simple test that checks whether the action is indeed called right
-> > away and that it is not called on the final drm_dev_put().
-> > 
-> > Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
-> > ---
-> >  drivers/gpu/drm/tests/drm_managed_test.c | 24 ++++++++++++++++++++++++
-> >  1 file changed, 24 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/tests/drm_managed_test.c
-> > index cabe6360aef71..8dfbea21c35c5 100644
-> > --- a/drivers/gpu/drm/tests/drm_managed_test.c
-> > +++ b/drivers/gpu/drm/tests/drm_managed_test.c
-> > @@ -44,6 +44,29 @@ static void drm_test_managed_run_action(struct kunit *test)
-> >  	KUNIT_EXPECT_GT(test, ret, 0);
-> >  }
-> >  
-> 
-> We should have a description of the intent of the test here.
+There are certain scenarios where it may be intentional that the EPB was
+set at to 0/ENERGY_PERF_BIAS_PERFORMANCE on kernel boot. For example, in
+data centers a kexec/live-update of the kernel may be performed regularly.
 
-The test checks that the release action is called immediately after
-calling drmm_release_action, and that it is successfully removed from
-the list of resources managed by DRMM (by verifying that release action
-is not called upon device cleanup).
-Would it be enough to expand the messages in KUNIT_EXPECT?
+Usually this live-update is time critical and defaulting of the bias back
+to ENERGY_PERF_BIAS_NORMAL may actually be detrimental to the overall
+update time if processors' time to ramp up/boost are affected.
 
-> 
-> > +static void drm_test_managed_release_action(struct kunit *test)
-> > +{
-> > +	struct managed_test_priv *priv = test->priv;
-> > +	int ret;
-> > +
-> > +	ret = drmm_add_action_or_reset(&priv->drm, drm_action, priv);
-> > +	KUNIT_EXPECT_EQ(test, ret, 0);
-> > +
-> > +	ret = drm_dev_register(&priv->drm, 0);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	drmm_release_action(&priv->drm, drm_action, priv);
-> > +	KUNIT_EXPECT_TRUE(test, priv->action_done);
+This patch introduces a kernel command line "intel_epb_no_override"
+which will leave the EPB at performance if during the restoration code path
+it is detected as such.
 
-KUNIT_EXPECT_TRUE_MSG(test, priv->action, "Release action was not called");
+Signed-off-by: Jack Allister <jalliste@amazon.com>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+Cc: Paul Durrant <pdurrant@amazon.com>
+Cc: Jue Wang <juew@amazon.com>
+Cc: Usama Arif <usama.arif@bytedance.com>
+---
+ arch/x86/kernel/cpu/intel_epb.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-> > +	priv->action_done = false;
-> > +
-> > +	drm_dev_unregister(&priv->drm);
-> > +	drm_kunit_helper_free_device(test, priv->drm.dev);
-> > +
-> > +	ret = wait_event_interruptible_timeout(priv->action_wq, priv->action_done,
-> > +					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-> > +	KUNIT_EXPECT_EQ(test, ret, 0);
-
-KUNIT_EXPECT_EQ_MSG(test, ret, 0, "Unexpected release action call during cleanup");
-
-Or a comment on top? Kerneldoc? Not sure what the recommendation is, as
-most (all?) tests in DRM don't have a description.
-
-> 
-> This tests that we have reached the timeout, thus the action never ran.
-
-That's the intent, yes.
-
-> It's not clear to me what your intent is here.
-> 
-> This test is:
-> 
->   - Registering an action
->   - Registering the DRM device
->   - Calling drmm_release_action on the previously registered action
->   - Checking that the action has been run
->   - Clearing the flag saying the action has been run
->   - Unregistering the DRM device
->   - Freeing the DRM device
->   - Waiting for the action to run, but expecting it to never do?
-> 
-> I guess something like
-> 
-> static void drm_test_managed_release_action(struct kunit *test)
-> {
-> 	struct managed_test_priv *priv = test->priv;
-> 	int ret;
-> 
-> 	ret = drmm_add_action_or_reset(&priv->drm, drm_action, priv);
-> 	KUNIT_ASSERT_EQ(test, ret, 0);
-> 
-> 	KUNIT_ASSERT_FALSE(test, priv->action_done);
-> 
-> 	drmm_release_action(&priv->drm, drm_action, priv);
-> 	ret = wait_event_interruptible_timeout(priv->action_wq, priv->action_done,
-> 					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-> 	KUNIT_EXPECT_GT(test, ret, 0);
-> 	KUNIT_EXPECT_TRUE(test, priv->action_done);
-> }
-> 
-> would be enough?
-
-It would only check that the action is called immediately, but not that
-it was removed from the managed resources list. And we don't need to
-wait for that - it should be called immediately.
-
-We do need to wait when we expect it to be called (or not to be called -
-in which case we expect a timeout) as part of device cleanup, otherwise
-we would get a false positive when delayed release
-(CONFIG_DEBUG_KOBJECT_RELEASE) is used.
-I assumed that this was the intention behind introducing waitqueue in
-drm_test_managed_run_action, is my understanding correct?
-
-And BTW, now that I'm thinking about resource lifetimes. We can't really
-tie priv lifetime with the device. It introduces use-after-free in both
-tests, when checking if the action was called after
-drm_kunit_helper_free_device() has a chance to invoke device cleanup.
-Priv should be gone at that point, so I think we should go back to test
-init from v1. Do you agree?
-
-> 
-> > +}
-> > +
-> >  static int drm_managed_test_init(struct kunit *test)
-> >  {
-> >  	struct managed_test_priv *priv;
-> > @@ -65,6 +88,7 @@ static int drm_managed_test_init(struct kunit *test)
-> >  
-> >  static struct kunit_case drm_managed_tests[] = {
-> >  	KUNIT_CASE(drm_test_managed_run_action),
-> > +	KUNIT_CASE(drm_test_managed_release_action),
-> 
-> Also, tests should be organized by alphabetical order
-
-Sure, I'll reorder it. I wasn't aware of that recommendation, as most of
-the tests in DRM don't follow it.
-
-Thanks,
--Michał
-
-> 
-> Maxime
-
+diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
+index e4c3ba91321c..4a3523225572 100644
+--- a/arch/x86/kernel/cpu/intel_epb.c
++++ b/arch/x86/kernel/cpu/intel_epb.c
+@@ -50,7 +50,8 @@
+  * the OS will do that anyway.  That sometimes is problematic, as it may cause
+  * the system battery to drain too fast, for example, so it is better to adjust
+  * it on CPU bring-up and if the initial EPB value for a given CPU is 0, the
+- * kernel changes it to 6 ('normal').
++ * kernel changes it to 6 ('normal'). However, if it is desirable to retain the
++ * original initial EPB value, intel_epb_no_override can be set to enforce it.
+  */
+ 
+ static DEFINE_PER_CPU(u8, saved_epb);
+@@ -75,6 +76,8 @@ static u8 energ_perf_values[] = {
+ 	[EPB_INDEX_POWERSAVE] = ENERGY_PERF_BIAS_POWERSAVE,
+ };
+ 
++static bool intel_epb_no_override __read_mostly;
++
+ static int intel_epb_save(void)
+ {
+ 	u64 epb;
+@@ -106,7 +109,7 @@ static void intel_epb_restore(void)
+ 		 * ('normal').
+ 		 */
+ 		val = epb & EPB_MASK;
+-		if (val == ENERGY_PERF_BIAS_PERFORMANCE) {
++		if (!intel_epb_no_override && val == ENERGY_PERF_BIAS_PERFORMANCE) {
+ 			val = energ_perf_values[EPB_INDEX_NORMAL];
+ 			pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
+ 		}
+@@ -213,6 +216,12 @@ static const struct x86_cpu_id intel_epb_normal[] = {
+ 	{}
+ };
+ 
++static __init int intel_epb_no_override_setup(char *str)
++{
++	return kstrtobool(str, &intel_epb_no_override);
++}
++early_param("intel_epb_no_override", intel_epb_no_override_setup);
++
+ static __init int intel_epb_init(void)
+ {
+ 	const struct x86_cpu_id *id = x86_match_cpu(intel_epb_normal);
+-- 
+2.40.1
 
