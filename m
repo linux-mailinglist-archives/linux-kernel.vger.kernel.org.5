@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8A8805576
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DE9805578
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376991AbjLENGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:06:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
+        id S1345363AbjLENIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:08:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376771AbjLENGr (ORCPT
+        with ESMTP id S232027AbjLENIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:06:47 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA814135
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:06:52 -0800 (PST)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B58YeSN011559;
-        Tue, 5 Dec 2023 07:06:44 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=
-        PODMain02222019; bh=2i4YUU/ZJt98xqHv4kH5pDhDeRu77FQXVGduzv5GYEo=; b=
-        OiyMIkqelbAj/ldBIpajli2JPEoK+SDErlP7VfqHU1q5ofmKSdrAn5+D8gjR2kOo
-        4H8nmgo/52btxL0D6gVcZKeqnjzjfJS1rbxu/ldCeVrokYgOlCpXytYZIoF5DMJg
-        NHawC5Ykq7M7RaYahxAc5s34Kg+Tiwk5UJvx2AKeqRAw8GF4jNbGSZTn3EVAg+DZ
-        e6+s0C4PZAD6iaPPVsWNX96obJJyVGXRXCn468uaxcQNZmxezkcwJBixRVXZqI1H
-        QuAUEdGYGHwjY+meU8o/+iFo+1JW3sOVCGfO60sqD2ErwgrEGwrqM2GQqTgR4pb6
-        ZAIu3/OO74YXUn9jCxotLg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ur1vnk8gv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 07:06:43 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
- 2023 13:06:41 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Tue, 5 Dec 2023 13:06:41 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D356F474;
-        Tue,  5 Dec 2023 13:06:41 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 13:06:41 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <kernel@pengutronix.de>
-Subject: Re: [PATCH 8/8] regulator: wm8350: Convert to platform remove
- callback returning void
-Message-ID: <20231205130641.GF14858@ediswmail.ad.cirrus.com>
-References: <cover.1701778038.git.u.kleine-koenig@pengutronix.de>
- <1f7bbc545829a1cc3df40be0424fe46d7449fb72.1701778038.git.u.kleine-koenig@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1f7bbc545829a1cc3df40be0424fe46d7449fb72.1701778038.git.u.kleine-koenig@pengutronix.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: ciRXB-mdxhaP7GAPO-EEbEoE7UvNsSMM
-X-Proofpoint-ORIG-GUID: ciRXB-mdxhaP7GAPO-EEbEoE7UvNsSMM
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 08:08:00 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025EE189
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:08:07 -0800 (PST)
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id ADA5A3F1C7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:08:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1701781685;
+        bh=ipAJlSSYX/mAZm4xcMYzeaea4jWciG9PaIDcpgo9ae8=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=j41Z+6MsayA4SuWADLsm6SDFjxagvqVWmPvXhzwpd+Cx58ZFb/JFEInbWsna5OOF8
+         mI/0NiYoCI0W5yAKdwLvDYJ0Ron/euvmdWnUzUdfaR4G8xtFq6/jE/l38nPjhckaZO
+         hawZoRp/kMRZb0h73YJtWSFOozpTZ/KkvAKr8sNkL5rTcRvEBppqBkLOgmkermXDdH
+         6PnuB1UZXV+YoBS1m8nCOmQu+MH81ni5b4VFE3I02ILtWbnuxLwP/QJdrkfoXygeic
+         zZJg2cTAmyucgsxfM3NIBD1e86PaastxxJWC5ZJi70zP+EQwpUj5vcCORtZt4NP7eJ
+         CgAOMpYGRoAFg==
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-423e480037cso75879701cf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:08:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701781684; x=1702386484;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ipAJlSSYX/mAZm4xcMYzeaea4jWciG9PaIDcpgo9ae8=;
+        b=Tz3OfsTFZ6fIq+XsovFb+LzV0QTAv7Ko1tvDPYcaer2uVH4ISH6efpRv+S21KbzHH0
+         TRPut4WCF7Zb1uWXLd9gnly2ylUtkIh6eH9yiBCmopO3h8ASRxPf0OyM+G8mYQHIKdJa
+         ekIseyOr5IiB8V7vhD67N8sBXAbehEwPsUvpY6vUsVKDzxw2StfSzSxl6NkYPSZgSnTJ
+         v6KkQ8JG+tCuJIl9g5oJeHCZs9Tem5Yvuky82oLrTWHu97+OwcrPoiUh2dQSlBSfDX0V
+         BgiOjTvdpUQ1v/Pq4xQ81wFbsfeMN+KAW/bA3rLWhwsD/cn24RaDePjUQaadFLW8YPeb
+         rH1Q==
+X-Gm-Message-State: AOJu0Yx3vwDcjt7cNl61xZt03XpsASE32l5HWkeV6A8ItH6SEROUUTCv
+        Cysk2VHGzxDE7776mu7HYSMJcoZuqWaVThI+kR4ISeKZLhgARqnpbIh1b7+vfRPUNpvrCAv9Jzx
+        Orxm4SSvjE5BUvY2S9bRWz6z9HlbLVg1d8+tMd6V9h5BUkrXpgH83DBYxUw==
+X-Received: by 2002:a05:622a:11d6:b0:425:4043:18ac with SMTP id n22-20020a05622a11d600b00425404318acmr1492009qtk.95.1701781684730;
+        Tue, 05 Dec 2023 05:08:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGlXRys+uhq05wTQp5gTIQeRVXtcocRfoOG2IGdr/XS7LnceeqhmOJyi1TFF74GFlFi520WeeSjrG5WeOdwcd4=
+X-Received: by 2002:a05:622a:11d6:b0:425:4043:18ac with SMTP id
+ n22-20020a05622a11d600b00425404318acmr1491997qtk.95.1701781684479; Tue, 05
+ Dec 2023 05:08:04 -0800 (PST)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 5 Dec 2023 05:08:03 -0800
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <IA1PR20MB49532E1A3D8BA71FDBB444BCBB85A@IA1PR20MB4953.namprd20.prod.outlook.com>
+References: <IA1PR20MB49532E1A3D8BA71FDBB444BCBB85A@IA1PR20MB4953.namprd20.prod.outlook.com>
+Mime-Version: 1.0
+Date:   Tue, 5 Dec 2023 05:08:03 -0800
+Message-ID: <CAJM55Z9WO+0Yb-at6CAR6=UP9j60iQz=s7MK-3qiT=w-8N6+Zw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] riscv: sophgo: add clock support for Sophgo CV1800 SoCs
+To:     Inochi Amaoto <inochiama@outlook.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Jisheng Zhang <jszhang@kernel.org>, qiujingbao.dlmu@gmail.com,
+        dlan@gentoo.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 01:26:23PM +0100, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> ---
+Inochi Amaoto wrote:
+> Add clock controller support for the Sophgo CV1800B and CV1812H.
+>
+> This patch follow this patch series:
+> https://lore.kernel.org/all/IA1PR20MB495399CAF2EEECC206ADA7ABBBD5A@IA1PR20MB4953.namprd20.prod.outlook.com/
+>
+> Changed from v1:
+> 1. fix license issues.
+>
+> Inochi Amaoto (4):
+>   dt-bindings: clock: sophgo: Add clock controller of CV1800 series SoC
+>   clk: sophgo: Add CV1800 series clock controller driver
+>   riscv: dts: sophgo: add clock generator for Sophgo CV1800 series SoC
+>   riscv: dts: sophgo: add uart clock for Sophgo CV1800 series SoC
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Hi Inochi,
 
-Thanks,
-Charles
+This series seems to be missing patch 1 and 2. If you did send them, but just
+omitted linux-riscv from those patches, please don't do that. Having the whole
+series makes it a lot easier to review without having to hunt down all the
+missing parts on lore.kernel.org.
+
+scripts/get_maintainer.pl does support muliple patches as input
+
+/Emil
