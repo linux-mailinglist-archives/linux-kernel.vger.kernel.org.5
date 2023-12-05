@@ -2,159 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5A5805C82
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8316D805B8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346179AbjLERdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
+        id S1346112AbjLEReD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:34:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjLERds (ORCPT
+        with ESMTP id S1346213AbjLERd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:33:48 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2081.outbound.protection.outlook.com [40.107.92.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E70ACA;
-        Tue,  5 Dec 2023 09:33:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cCQ8ZES3xUVa9UQJbJkFSfbMMu9o+wPNddZ8aKCb/bTMlT0Gxj7ul4jcp4/+ZRuAokFN6mlZD8QMbwHJi+JEFe8ZZPJMh6ALosswca+eV/WmI3i0nI9Pt0OGzCcE6BJf9Ak9MZ+Z+AJ3R0UNG1kQTJw09SeqZpYGoSX9FX3HKLgkaklLOAEKngFeCrDVnn8twIy+7XUu7HhFwGutlwRzGPq9NL7y+TfIpG1QAuUBsBLaJIkzfO1xJOHQx7AMfnIKCO0CugD3BDVhtKq4nv4m/bHq7lNXzRuolFZuHu7yeKIT9K7yTd6u5ArXx8P7BzfWQNlIiKaVFKif8oO5uOp8pA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hSSFQkGjCxebzXrGirArb1ftLbCoMCoHa2QKVy1RPC8=;
- b=E2l5bYYW9d7lqL+7nmehtfEUiEtiImTbb9LEzg3vIFnauS1JhQV2ZvyJB+e1dc+uqgb2Xs2pQ5xnqOZ4CAGWAVZhhTlcMDs2LiF8q9uxrQrqrZ2yNLStWzw/+c0Zs+Ekg3e8sz6ppVPcc7dBVEY8GrfHnE2sNiW49n4oAIAcuQgEYukcOftpK5qtTsdx3wcJONdiXHd3OtDLNc8fLbDWUz0DZ+f4s0Pb/DNJ4fNnqAvvgB10Ufvi/hXL6vSP6RzmOMl37tu3Uhpzfrvf9pXLqGraXihp5aXuFlzyaMpnmFgMf7d8JKaJ7IcMAK6/3ck+NBPokzKP9VN93hKnSJZAoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hSSFQkGjCxebzXrGirArb1ftLbCoMCoHa2QKVy1RPC8=;
- b=HOXYHOvJDmh6+naASUZ4hyQHFZDjD6kryOxiwGZ47Yc00yJYr7GiKEb5d8YZwBecE2mvsLrOwMah4vUGOmSxkGwwk+CaXFjwY/aCAsib7uvNNn04GCZeE1FQ40b8vOSnMCMeaw/3h78x3Gr8jYgzTYwdLOOqc8de1YW4BRJ6CJBI2HTJinhPhgJ+x/vHAftcB/8GXkNYeWojmvCbKuYL9dacgbtRTIlEC1Gazwat67Sm+iBZDTpbcBH5EBynr5F/nSH9bK5F5n5ZcK0/jYFcwVm2bNwynExMmPPyuIxiu702kXL0zsR14TO6MBIlBZWSCY48PK+zvVrZtr25riSQsA==
-Received: from PH0PR07CA0036.namprd07.prod.outlook.com (2603:10b6:510:e::11)
- by CH0PR12MB5297.namprd12.prod.outlook.com (2603:10b6:610:d4::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 17:33:51 +0000
-Received: from SA2PEPF000015C9.namprd03.prod.outlook.com
- (2603:10b6:510:e:cafe::f7) by PH0PR07CA0036.outlook.office365.com
- (2603:10b6:510:e::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34 via Frontend
- Transport; Tue, 5 Dec 2023 17:33:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SA2PEPF000015C9.mail.protection.outlook.com (10.167.241.199) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.20 via Frontend Transport; Tue, 5 Dec 2023 17:33:50 +0000
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 5 Dec 2023
- 09:33:34 -0800
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 5 Dec 2023
- 09:33:33 -0800
-Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.7)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Tue, 5 Dec 2023 09:33:32 -0800
-Date:   Tue, 5 Dec 2023 09:33:30 -0800
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Message-ID: <ZW9e6hxyDmkK8bfe@Asurada-Nvidia>
-References: <ZWe2PvatTkkyNCY5@Asurada-Nvidia>
- <20231130000816.GB1389974@nvidia.com>
- <ZWjzcEAAg8ptVH4A@Asurada-Nvidia>
- <20231201004523.GJ1389974@nvidia.com>
- <ZWlhLk3JVwX0hRt/@Asurada-Nvidia>
- <20231201125538.GK1389974@nvidia.com>
- <ZWo6z59tnmS8F2V7@Asurada-Nvidia>
- <20231201204340.GA1493156@nvidia.com>
- <ZWpaTD9dVge+suyv@Asurada-Nvidia>
- <20231204144850.GC1493156@nvidia.com>
+        Tue, 5 Dec 2023 12:33:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1388D50
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:34:05 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F253C433A9;
+        Tue,  5 Dec 2023 17:34:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701797645;
+        bh=jgbfGbZsBewA51hOqnV3bW8oStFg/dIzf/WIRR7nJ1U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ed+fczkAv4EknCnLYlOvj2wiiJNrkWIgDfUzHEIAZG7ya5RsdMc0xMe9jBzcbl3du
+         oJPL8B8kemEQcMD2/WjDoIsiepE51ryxa7bVvouNiqx9q/k1uH+Vg0OpYQaSSDC3mF
+         buifRcZXf4IqzZszVKuUicz6PTYPipl34IyydYzM=
+Date:   Wed, 6 Dec 2023 02:33:58 +0900
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Konstantin Aladyshev <aladyshev22@gmail.com>
+Cc:     benjamin.tissoires@redhat.com, ivan.orlov0322@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        john@keeping.me.uk, lee@kernel.org
+Subject: Re: [PATCH 1/1] usb: gadget: f_hid: fix report descriptor allocation
+Message-ID: <2023120650-scroll-studio-1083@gregkh>
+References: <20231205085404.175-1-aladyshev22@gmail.com>
+ <20231205085404.175-2-aladyshev22@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231204144850.GC1493156@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015C9:EE_|CH0PR12MB5297:EE_
-X-MS-Office365-Filtering-Correlation-Id: cb559ea3-8dac-4ae7-3f91-08dbf5b85885
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l385PzBUkGY2EcdrsgCSlrWHQ04Nl6SaeOGfAONtzRD2FtY3YvJ93Q6L2U+K9pKk+BMVyPV51tTexwr/Ox10orHcZRxbXWuFSEwVaWS9Vpp1EbiwnAfEIRZRrNlcBKAVzCYkLnUEPbbtfPOA5aIjkOkiDB+rIJc77abpXJWjHJgRib/IEnAs0ko00f48uaA7mdVdc9E/zZHXnWXjZ2H6v45sJXsrd0FQogRXZ5yRWYhRxFZOukbjQz/tXvBcJRbIwa7seUF7hrLItqj7pTZOA3AU1BnvnruKFPn2UfyH5XEdcI8ty8kKtfKl2egY7W7bkpaTbv4Q8s05V0gV/dv1FBq3OcB/0lvNyQG/54WjlFzTezLYTemTxAAgKFHtvJlN+7K2F71L/YB5aFZZiODSlelLA0qfDhcCX+fCRtU92GYbNb3StKhspJlRKx0FzWmJZU+ZlEyA8/t3DJcZj4PiO8eCnrJSty3AEpY+/3p6BMIDtpckQHgrf0TkVuAP4kC3Kc4nXJxxC/28deqGFVw3QJ34gDTgNm/wzy7MHYbLe/Fs+cKO/Amvmiq0wYZA4CxKZuoobFd/Qn6FmDKQdTk7uo7KXOlPRDNe0oaLMZ8p4QGNjxiNwSWCyi5oNoSMvvSimeWefDg88korSTWaet4GSPxCV6qaVaJ1zUCv24dek2xP1JAN1HvXgQXLnP7rby1bp/Y/j1mpGGalP1bhx7Gw142N4wrs8Td1REp1N1leCTc=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(82310400011)(46966006)(36840700001)(40470700004)(8936002)(8676002)(6862004)(4326008)(26005)(9686003)(40460700003)(316002)(54906003)(6636002)(70586007)(70206006)(478600001)(41300700001)(4744005)(7416002)(5660300002)(33716001)(2906002)(86362001)(36860700001)(40480700001)(47076005)(82740400003)(356005)(55016003)(7636003)(426003)(83380400001)(336012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 17:33:50.9409
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb559ea3-8dac-4ae7-3f91-08dbf5b85885
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015C9.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5297
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231205085404.175-2-aladyshev22@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 10:48:50AM -0400, Jason Gunthorpe wrote:
- 
-> > Or am I missing some point here?
+On Tue, Dec 05, 2023 at 11:54:03AM +0300, Konstantin Aladyshev wrote:
+> The commit "usb: gadget: f_hid: fix f_hidg lifetime vs cdev"
+> (89ff3dfac604614287ad5aad9370c3f984ea3f4b) has introduced a bug
+> that leads to hid device corruption after the replug operation.
+
+Nit, this should be written as
+	89ff3dfac604 ("usb: gadget: f_hid: fix f_hidg lifetime vs cdev")
+right?
+
+> Reverse device managed memory allocation for the report descriptor
+> to fix the issue.
 > 
-> It sounds Ok, we just have to understand what userspace should be
-> doing and how much of this the kernel should implement.
+> Tested:
+> This change was tested on the AMD EthanolX CRB server with the BMC
+> based on the OpenBMC distribution. The BMC provides KVM functionality
+> via the USB gadget device:
+> - before: KVM page refresh results in a broken USB device,
+> - after: KVM page refresh works without any issues.
 > 
-> It seems to me that the error code should return the gerror and the
-> req_num should indicate the halted cons. The vmm should relay both
-> into the virtual registers.
+> Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
 
-I see your concern. I will take a closer look and see if we can
-add to the initial version of arm_smmu_cache_invalidate_user().
-Otherwise, we can add later.
+We need a Fixes: tag here and also a cc: stable so that this gets
+properly backported.
 
-Btw, VT-d seems to want the error_code and reports in the VT-d
-specific invalidate entry structure, as Kevin and Yi had that
-discussion in the other side of the thread.
+> ---
+>  drivers/usb/gadget/function/f_hid.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
+> index ea85e2c701a1..3c8a9dd585c0 100644
+> --- a/drivers/usb/gadget/function/f_hid.c
+> +++ b/drivers/usb/gadget/function/f_hid.c
+> @@ -92,6 +92,7 @@ static void hidg_release(struct device *dev)
+>  {
+>  	struct f_hidg *hidg = container_of(dev, struct f_hidg, dev);
+>  
+> +	kfree(hidg->report_desc);
+>  	kfree(hidg->set_report_buf);
+>  	kfree(hidg);
+>  }
+> @@ -1287,9 +1288,9 @@ static struct usb_function *hidg_alloc(struct usb_function_instance *fi)
+>  	hidg->report_length = opts->report_length;
+>  	hidg->report_desc_length = opts->report_desc_length;
+>  	if (opts->report_desc) {
+> -		hidg->report_desc = devm_kmemdup(&hidg->dev, opts->report_desc,
+> -						 opts->report_desc_length,
+> -						 GFP_KERNEL);
+> +		hidg->report_desc = kmemdup(opts->report_desc,
+> +					    opts->report_desc_length,
+> +					    GFP_KERNEL);
 
-Thanks
-Nicolin
+Yet one more reason why devm_*() functions are dangerous to use :(
+
+Nice fix.
+
+thanks,
+
+greg k-h
