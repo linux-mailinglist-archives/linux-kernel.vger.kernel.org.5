@@ -2,122 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C55580542F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB2B805432
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:33:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345107AbjLEMcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:32:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
+        id S1345218AbjLEMcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:32:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbjLEMcH (ORCPT
+        with ESMTP id S231888AbjLEMcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:32:07 -0500
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D310C6;
-        Tue,  5 Dec 2023 04:32:09 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5B801FF811;
-        Tue,  5 Dec 2023 12:32:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701779528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DgcnHD3vyBMyp03Zy3XMz8GUwdycjO24GHf/1xFuXTY=;
-        b=LBVKtPQmrUQ6Vu0G6IcPAIa8eJoxjxXJkgPJpFKcHVeuiAv6/8G9VGnHA5N8JqYmKhT4TB
-        rbS6qBwhmw9YFtJb1d2+jAIzzEgLmCsKG7EwK8FsFnP13KTeVJfi/62NqzRtmHgES/9XHx
-        b8Q6znSSChPfEGHvAy3iISOdVQl43UBChfES/DAms5SmpIPq6x9C5AckHcNjiJQ8EtgUz6
-        tfH3YL9GyBR3qqMLENJEj1B5/EGrU0T8wOXU34b50N4WTrNYh4OwbP/LrzjiT2YMlGVXZz
-        dd3ktMSEwO96aaAwPW709BuHUke59iTw9AoljYR7k17TTOQWvbkwk3J3KbLBmw==
-Date:   Tue, 5 Dec 2023 13:32:05 +0100
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 09/16] net: mdio: Add Synopsys DW XPCS
- management interface support
-Message-ID: <20231205133205.3309ab91@device.home>
-In-Reply-To: <20231205103559.9605-10-fancer.lancer@gmail.com>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
-        <20231205103559.9605-10-fancer.lancer@gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 5 Dec 2023 07:32:53 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC809C9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:32:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ogO+B5CVWB2JdnKIKTxq0tYZWbAi4tBGoLWra+512TA=; b=AmP7tK6+5ERGFcOfx9SJkJ4B4c
+        UeUR+PFZXOKeuXNn9HUAMaiulecKMNEz+mV5Od96kQFRlMxryN4fkFs5A3+wZOFM3IFD3xUen4QLI
+        nDm5IwKhOyM1Kr0Y3D1p381zeR3CmW28iyAzS4LYYjfHx77E7R7qJFO2vwA5vnapPQdM7TXlEoWAc
+        KI9IHtlT3SoyAHHdHIjSaJ6fkrJugC/aPZOtEPjpqxgO416MAqSFY9GpCpvmVhwjIO7Bo0ukSkS6B
+        xijLdKVTDRGT3iYCD2WLvdQ9Kyu5p1dIojl5jHoxu1a06DNUUoA3HTS/tS8ve5jqvHtgeaQ5kzzv7
+        L27SGjNw==;
+Received: from [46.18.216.58] (helo=[127.0.0.1])
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1rAUbM-001rpD-6Y; Tue, 05 Dec 2023 12:32:36 +0000
+Date:   Tue, 05 Dec 2023 12:32:36 +0000
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+CC:     pdurrant@amazon.co.uk, bp@alien8.de, dave.hansen@intel.com,
+        dave.hansen@linux.intel.com, hdegoede@redhat.com, hpa@zytor.com,
+        jalliste@amazon.co.uk, juew@amazon.com, len.brown@intel.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, rafael.j.wysocki@intel.com,
+        tglx@linutronix.de, usama.arif@bytedance.com, x86@kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_x86=3A_intel=5Fepb=3A_Add_earlyp?= =?US-ASCII?Q?aram_option_to_keep_bias_at_performance?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAJZ5v0i-+9VwccRLGDcQdhz_UyBbw8k0LR9GbdvaRxs8PxP=0g@mail.gmail.com>
+References: <53bce76c5c60463eba1372df426a64b9@amazon.co.uk> <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org> <CAJZ5v0iVvMLK_VcPRJ4sW1eOh0EtfcFvKjH5j1y1GbA0Y6q--Q@mail.gmail.com> <5322CF05-344D-4ADE-B38C-7DCE7F076E0C@infradead.org> <CAJZ5v0i-+9VwccRLGDcQdhz_UyBbw8k0LR9GbdvaRxs8PxP=0g@mail.gmail.com>
+Message-ID: <35268BBA-E97F-4ACB-A1C1-04C94AFDEA65@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Serge,
+On 5 December 2023 12:31:19 GMT, "Rafael J=2E Wysocki" <rafael@kernel=2Eorg=
+> wrote:
+>On Tue, Dec 5, 2023 at 1:15=E2=80=AFPM David Woodhouse <dwmw2@infradead=
+=2Eorg> wrote:
+>>
+>> On 5 December 2023 12:12:09 GMT, "Rafael J=2E Wysocki" <rafael@kernel=
+=2Eorg> wrote:
+>> >On Tue, Dec 5, 2023 at 1:00=E2=80=AFPM David Woodhouse <dwmw2@infradea=
+d=2Eorg> wrote:
+>> >>
+>> >>
+>> >> Paul writes:
+>> >> > The problem is that this will take effect even on a kexec and henc=
+e it is throttling
+>> >> > a system that set ENERGY_PERF_BIAS_PERFORMANCE prior to the kexec=
+=2E  We use kexec to
+>> >> > live update the host kernel of our systems whilst leaving virtual =
+machines running=2E
+>> >> > This resetting of the perf bias is having a very detrimental effec=
+t on the downtime
+>> >> > of our systems across the live update - about a 7 fold increase=2E
+>> >>
+>> >> It isn't just about kexec, is it? Even in a clean boot why wouldn't =
+we want to stay in performance mode until the kernel has *finished* booting=
+?
+>> >
+>> >Because it may overheat during that period=2E
+>> >
+>> >> It's literally adding seconds to the startup time in some cases=2E
+>> >>
+>> >> And yes, we *particularly* care in the kexec case because guests exp=
+erience it as excessive steal time=2E But it ain't great in the general cas=
+e either, surely?
+>> >
+>> >So IMV it would be perfectly fine to add a command line arg to provide
+>> >the initial value of energy_perf_bias for the ones who know what they
+>> >are doing=2E
+>>
+>> We don't even care about setting it to an "initial value" during boot=
+=2E We just want to leave it how it was already set up=2E
+>
+>Which does not work on some systems=2E
+>
+>The problem here is that the BIOS cannot be trusted to set the initial
+>value that makes sense for the given platform and that's why the code
+>is the way it is=2E
 
-On Tue,  5 Dec 2023 13:35:30 +0300
-Serge Semin <fancer.lancer@gmail.com> wrote:
+Yeah, I understand why we have the existing hack=2E We just need a way to =
+disable it when it's doing the wrong thing=2E
 
-> Synopsys DesignWare XPCS IP-core can be synthesized with the device CSRs
-> being accessible over MCI or APB3 interface instead of the MDIO bus (see
-> the CSR_INTERFACE HDL parameter). Thus all the PCS registers can be just
-> memory mapped and be a subject of standard MMIO operations of course
-> taking into account the way the Clause C45 CSRs mapping is defined. This
-> commit is about adding a device driver for the DW XPCS Management
-> Interface platform device and registering it in the framework of the
-> kernel MDIO subsystem.
-> 
-> DW XPCS platform device is supposed to be described by the respective
-> compatible string "snps,dw-xpcs-mi", CSRs memory space and optional
-> peripheral bus clock source. Note depending on the INDIRECT_ACCESS DW XPCS
-> IP-core synthesize parameter the memory-mapped reg-space can be
-> represented as either directly or indirectly mapped Clause 45 space. In
-> the former case the particular address is determined based on the MMD
-> device and the registers offset (5 + 16 bits all together) within the
-> device reg-space. In the later case there is only 256 lower address bits
-> are utilized for the registers mapping. The upper bits are supposed to be
-> written into the respective viewport CSR in order to reach the entire C45
-> space.
-
-Too bad the mdio-regmap driver can't be re-used here, it would deal
-with reg width for you, for example. I guess the main reason would be
-the direct vs indirect accesses ?
-
-I do have a comment tough :
-
-[...]
-
-> +static inline ptrdiff_t dw_xpcs_mmio_addr_format(int dev, int reg)
-> +{
-> +	return FIELD_PREP(0x1f0000, dev) | FIELD_PREP(0xffff, reg);
-> +}
-> +
-> +static inline u16 dw_xpcs_mmio_addr_page(ptrdiff_t csr)
-> +{
-> +	return FIELD_GET(0x1fff00, csr);
-> +}
-> +
-> +static inline ptrdiff_t dw_xpcs_mmio_addr_offset(ptrdiff_t csr)
-> +{
-> +	return FIELD_GET(0xff, csr);
-> +}
-
-You shouldn't use inline in C files, only in headers.
-
-Maxime
