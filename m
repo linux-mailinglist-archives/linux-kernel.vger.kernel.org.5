@@ -2,133 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5123F8055B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F308055B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376899AbjLENSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
+        id S1376935AbjLENSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbjLENSk (ORCPT
+        with ESMTP id S1376931AbjLENSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:18:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB5098
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:18:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701782325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=8NUMTUl9yeWX0GPc6GjN3qZkiMfNaq70XojanT9O9rU=;
-        b=TKw2+ieSHl+6HPMBY3frXDPAktrlxF6PRKRSJ/DUKZe/POCJaeEAV8DfzuqdxPckUrmOmK
-        1eLJfhqt1ZYkUX7QocXhr5fan9Uv63NJ+laNGrwApLpIkpYnszQahZphp2vzpAXm3IY5W5
-        6jp5Zt7kI5AHQl7ey/wbf1HS7s0Qj8w=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-259-g3s_YvvMNKmpOPlk65AXTA-1; Tue, 05 Dec 2023 08:18:42 -0500
-X-MC-Unique: g3s_YvvMNKmpOPlk65AXTA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33353f98b7bso927325f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:18:42 -0800 (PST)
+        Tue, 5 Dec 2023 08:18:49 -0500
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDE5199
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:18:54 -0800 (PST)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5d8a772157fso20623607b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:18:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701782334; x=1702387134; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WLIE+L1HrrW8f5o/256gAyjbq/G3Tuj/r83oc4Ixemk=;
+        b=njk4YZe/QvzXlYssZJsbqJC7H51amI0+1z8JCK+u6+V7kJxdKWpVUQtLNmgQpneVOQ
+         HkwygQGNuvcYR+661Rz8WTavU081eQwPIhWRxJSrt4lAnfaB4CzTgO5d0IjKlt0h/AIV
+         eMEJMoC9qT67uUpZIcaKKhsbhk318phO4ZLHpU0fLfctboBblbaIGezSeJS/4SN617jK
+         kmLG18vPJQ/9Yiq6qh4zFYHppNZ+EKnWsmtNSK+Rm9/AmoYDw4RDGWSG41k2EKOcE7uT
+         OKj1Ok1E18osZs37iu30a4A0rXrKi4QSIQh8cAaxt/MkAuAoGAL0tlceFNJ9ZIL3CpMi
+         BSag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701782321; x=1702387121;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:from:content-language:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=8NUMTUl9yeWX0GPc6GjN3qZkiMfNaq70XojanT9O9rU=;
-        b=WkOqe+7cl+v9GcdB/giIBM0fUcU2Bv2caFmeMi1b97NeeuhxoB2qNcPzDfUvLcqTys
-         Eb3RTU1pc0VMgzl7S2dgRHYDopZdRbF2fGfov/3vWpq8esRLKpAiYNb/DVokpov2jDIc
-         TMwQNSsWtZUc6uEJch5XkEEohR93Pl0lvqkjGfV2m44kt6tYTqMjZFpX5mc6yZIlKm64
-         24t0RSoiXd8OSg82zKQ+9uF0AqnZmrc/XqfQsDPd4Z1Z9x7EcDpEBZ6cutuIiQKM81XZ
-         C0jWpeX743WoLOT0WqDpGSTSACaYTye8KqmyJMJ+NKouzJHKYYHKJ971ivgTQpQkons2
-         CPwg==
-X-Gm-Message-State: AOJu0YzIcGowEv3yQgkogw45xAX1THbpInwc6ZwulR2POzruHs+5Dmcy
-        S07iOYMoXSrXsTur9Hd0q4EKXoBuKObvuJGbIbrNPLijIjYayq2Rm0xxciY4hfYvNtGsNeDWPAU
-        UNRpbL6yJRueLeTChstm3QPmH
-X-Received: by 2002:a05:600c:4213:b0:40b:5e1e:b3b8 with SMTP id x19-20020a05600c421300b0040b5e1eb3b8mr500223wmh.54.1701782321141;
-        Tue, 05 Dec 2023 05:18:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEk2JsYazf/vbBatfHr5LSoOIBxvq+HzfQfi3vdnurE1ELPUpERx2BDE0PX7m42bEGXXFeftw==
-X-Received: by 2002:a05:600c:4213:b0:40b:5e1e:b3b8 with SMTP id x19-20020a05600c421300b0040b5e1eb3b8mr500215wmh.54.1701782320670;
-        Tue, 05 Dec 2023 05:18:40 -0800 (PST)
-Received: from ?IPV6:2003:cb:c72f:300:1ec7:2962:8889:ef6? (p200300cbc72f03001ec7296288890ef6.dip0.t-ipconnect.de. [2003:cb:c72f:300:1ec7:2962:8889:ef6])
-        by smtp.gmail.com with ESMTPSA id jg23-20020a05600ca01700b0040b30be6244sm18663406wmb.24.2023.12.05.05.18.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 05:18:39 -0800 (PST)
-Message-ID: <bb8e060f-74f0-4b1f-9003-40b2757295ca@redhat.com>
-Date:   Tue, 5 Dec 2023 14:18:39 +0100
+        d=1e100.net; s=20230601; t=1701782334; x=1702387134;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WLIE+L1HrrW8f5o/256gAyjbq/G3Tuj/r83oc4Ixemk=;
+        b=sONbXQt9zwQz4o0kdKa7W5sGxHphksPkJ9o29WHPKM4TrYjL4iWVUz5TouekZlbCqL
+         +JmU858Yj+j7sZkO9OL3ponRKRKNMUao1ASHTsEFsFm4hhlrVyxurE1v8sVnrNmZQipL
+         xuLMRkN9ujxTtNDPw4HoaXtPf6PkzDE2PFcElmrN4wVxV5YYZtWKSAG03dHhuS554xcs
+         YC26h7BjP3ygN5v4Q5RnfPUX/c/wIdNNF6r1xDGv2Wn2oMTBsU5Itq4Ga9vzl/9MhwRx
+         2qM2aoTVHSXcyOk7jxJlx7h8ThHEbihJboPEDDTAYT5xBQqaHt2psyVWBCXNs/cQzXEI
+         YXsQ==
+X-Gm-Message-State: AOJu0YzgSaA39sB8Jgt1R4BgkgRMuwhWr+SrvM6jC3wR3Ehr+HL4WrM9
+        bc8aLpMn60+SfsKcJUPpR8W/CpP07lKGz4Co1uuvvQ==
+X-Google-Smtp-Source: AGHT+IHIgOa51JsTwoE7+i0xtGrGoFi1i7DeQmmxXZ62BnXNcJb8RvDGC0B6gdekdDcsiKjLOqU3cN9r/zwBgusU6oU=
+X-Received: by 2002:a81:c90c:0:b0:5d9:6ecb:483e with SMTP id
+ o12-20020a81c90c000000b005d96ecb483emr1699897ywi.39.1701782333978; Tue, 05
+ Dec 2023 05:18:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 34/39] mm/rmap: introduce
- folio_try_dup_anon_rmap_[pte|ptes|pmd]()
-Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>
-References: <20231204142146.91437-1-david@redhat.com>
- <20231204142146.91437-35-david@redhat.com>
- <b7ef017b-f651-40f3-a2bd-70ebe9411dc1@arm.com>
- <88a341bf-0b6a-454a-aeb1-0699233eb37c@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <88a341bf-0b6a-454a-aeb1-0699233eb37c@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
+ <20231204123315.28456-7-keith.zhao@starfivetech.com> <CAA8EJpqbQKjTeEdOpwNy7P+dJK-nnZzZYefyzoG+JWKVgsS=rw@mail.gmail.com>
+In-Reply-To: <CAA8EJpqbQKjTeEdOpwNy7P+dJK-nnZzZYefyzoG+JWKVgsS=rw@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 5 Dec 2023 15:18:43 +0200
+Message-ID: <CAA8EJpqrYpL8N4_nXW4BbJRuUR=zqmP88Ze6_xkoZRStso6ugA@mail.gmail.com>
+Subject: Re: [v3 6/6] drm/vs: simple encoder
+To:     Keith Zhao <keith.zhao@starfivetech.com>
+Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        aou@eecs.berkeley.edu, suijingfeng@loongson.cn,
+        tzimmermann@suse.de, paul.walmsley@sifive.com, mripard@kernel.org,
+        xingyu.wu@starfivetech.com, jack.zhu@starfivetech.com,
+        palmer@dabbelt.com, krzysztof.kozlowski+dt@linaro.org,
+        william.qiu@starfivetech.com, shengyang.chen@starfivetech.com,
+        changhuang.liang@starfivetech.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -136,58 +74,314 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.12.23 14:17, David Hildenbrand wrote:
-> On 05.12.23 14:12, Ryan Roberts wrote:
->> On 04/12/2023 14:21, David Hildenbrand wrote:
->>> The last user of page_needs_cow_for_dma() and __page_dup_rmap() are gone,
->>> remove them.
->>>
->>> Add folio_try_dup_anon_rmap_ptes() right away, we want to perform rmap
->>> baching during fork() soon.
->>>
->>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>> ---
->>>    include/linux/mm.h   |   6 --
->>>    include/linux/rmap.h | 145 +++++++++++++++++++++++++++++--------------
->>>    2 files changed, 100 insertions(+), 51 deletions(-)
->>>
->>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>> index 24c1c7c5a99c0..f7565b35ae931 100644
->>> --- a/include/linux/mm.h
->>> +++ b/include/linux/mm.h
->>> @@ -1964,12 +1964,6 @@ static inline bool folio_needs_cow_for_dma(struct vm_area_struct *vma,
->>>    	return folio_maybe_dma_pinned(folio);
->>>    }
->>>    
->>> -static inline bool page_needs_cow_for_dma(struct vm_area_struct *vma,
->>> -					  struct page *page)
->>> -{
->>> -	return folio_needs_cow_for_dma(vma, page_folio(page));
->>> -}
->>> -
->>>    /**
->>>     * is_zero_page - Query if a page is a zero page
->>>     * @page: The page to query
->>> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
->>> index 21d72cc602adc..84439f7720c62 100644
->>> --- a/include/linux/rmap.h
->>> +++ b/include/linux/rmap.h
->>> @@ -354,68 +354,123 @@ static inline void folio_dup_file_rmap_pmd(struct folio *folio,
->>>    #endif
->>>    }
->>>    
->>> -static inline void __page_dup_rmap(struct page *page, bool compound)
->>> +static inline int __folio_try_dup_anon_rmap(struct folio *folio,
->>
->> __always_inline?
-> 
-> Yes.
+On Tue, 5 Dec 2023 at 15:14, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Mon, 4 Dec 2023 at 14:33, Keith Zhao <keith.zhao@starfivetech.com> wrote:
+> >
+> > add simple encoder for dsi bridge
+>
+> This doesn't look like a proper commit message.
+>
+> >
+> > Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
+> > ---
+> >  drivers/gpu/drm/verisilicon/Makefile        |   4 +-
+> >  drivers/gpu/drm/verisilicon/vs_drv.c        |   2 +
+> >  drivers/gpu/drm/verisilicon/vs_simple_enc.c | 195 ++++++++++++++++++++
+> >  drivers/gpu/drm/verisilicon/vs_simple_enc.h |  23 +++
+> >  4 files changed, 223 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/gpu/drm/verisilicon/vs_simple_enc.c
+> >  create mode 100644 drivers/gpu/drm/verisilicon/vs_simple_enc.h
+> >
+> > diff --git a/drivers/gpu/drm/verisilicon/Makefile b/drivers/gpu/drm/verisilicon/Makefile
+> > index 71fadafcee13..cd5d0a90bcfe 100644
+> > --- a/drivers/gpu/drm/verisilicon/Makefile
+> > +++ b/drivers/gpu/drm/verisilicon/Makefile
+> > @@ -5,6 +5,8 @@ vs_drm-objs := vs_dc_hw.o \
+> >                 vs_crtc.o \
+> >                 vs_drv.o \
+> >                 vs_modeset.o \
+> > -               vs_plane.o
+> > +               vs_plane.o \
+> > +               vs_simple_enc.o
+> > +
+> >  vs_drm-$(CONFIG_DRM_VERISILICON_STARFIVE_HDMI) += starfive_hdmi.o
+> >  obj-$(CONFIG_DRM_VERISILICON) += vs_drm.o
+> > diff --git a/drivers/gpu/drm/verisilicon/vs_drv.c b/drivers/gpu/drm/verisilicon/vs_drv.c
+> > index d7e5199fe293..946f137ab124 100644
+> > --- a/drivers/gpu/drm/verisilicon/vs_drv.c
+> > +++ b/drivers/gpu/drm/verisilicon/vs_drv.c
+> > @@ -23,6 +23,7 @@
+> >  #include "vs_drv.h"
+> >  #include "vs_modeset.h"
+> >  #include "vs_dc.h"
+> > +#include "vs_simple_enc.h"
+> >
+> >  #define DRV_NAME       "verisilicon"
+> >  #define DRV_DESC       "Verisilicon DRM driver"
+> > @@ -217,6 +218,7 @@ static struct platform_driver *drm_sub_drivers[] = {
+> >  #ifdef CONFIG_DRM_VERISILICON_STARFIVE_HDMI
+> >         &starfive_hdmi_driver,
+> >  #endif
+> > +       &simple_encoder_driver,
+> >  };
+> >
+> >  static struct component_match *vs_drm_match_add(struct device *dev)
+> > diff --git a/drivers/gpu/drm/verisilicon/vs_simple_enc.c b/drivers/gpu/drm/verisilicon/vs_simple_enc.c
+> > new file mode 100644
+> > index 000000000000..c5a8d82bc469
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/verisilicon/vs_simple_enc.c
+> > @@ -0,0 +1,195 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (C) 2020 VeriSilicon Holdings Co., Ltd.
+> > + */
+> > +#include <linux/component.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/module.h>
+> > +
+> > +#include <drm/drm_atomic_helper.h>
+> > +#include <drm/drm_bridge.h>
+> > +#include <drm/drm_crtc_helper.h>
+> > +#include <drm/drm_of.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/media-bus-format.h>
+> > +#include <linux/mfd/syscon.h>
+> > +
+> > +#include "vs_crtc.h"
+> > +#include "vs_simple_enc.h"
+> > +
+> > +static const struct simple_encoder_priv dsi_priv = {
+>
+> Please use proper prefix for all the struct and function names.
+> vs_simple_encoder sounds better. Or vs_dsi_encoder.
+>
+> > +       .encoder_type = DRM_MODE_ENCODER_DSI
+> > +};
+> > +
+> > +static inline struct simple_encoder *to_simple_encoder(struct drm_encoder *enc)
+> > +{
+> > +       return container_of(enc, struct simple_encoder, encoder);
+> > +}
+> > +
+> > +static int encoder_parse_dt(struct device *dev)
+> > +{
+> > +       struct simple_encoder *simple = dev_get_drvdata(dev);
+> > +       unsigned int args[2];
+> > +
+> > +       simple->dss_regmap = syscon_regmap_lookup_by_phandle_args(dev->of_node,
+> > +                                                                 "starfive,syscon",
+> > +                                                                 2, args);
+> > +
+> > +       if (IS_ERR(simple->dss_regmap)) {
+> > +               return dev_err_probe(dev, PTR_ERR(simple->dss_regmap),
+> > +                                    "getting the regmap failed\n");
+> > +       }
+> > +
+> > +       simple->offset = args[0];
+> > +       simple->mask = args[1];
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +void encoder_atomic_enable(struct drm_encoder *encoder,
+> > +                          struct drm_atomic_state *state)
+> > +{
+> > +       struct simple_encoder *simple = to_simple_encoder(encoder);
+> > +
+> > +       regmap_update_bits(simple->dss_regmap, simple->offset, simple->mask,
+> > +                          simple->mask);
+> > +}
+> > +
+> > +int encoder_atomic_check(struct drm_encoder *encoder,
+> > +                        struct drm_crtc_state *crtc_state,
+> > +                        struct drm_connector_state *conn_state)
+> > +{
+> > +       struct vs_crtc_state *vs_crtc_state = to_vs_crtc_state(crtc_state);
+> > +       struct drm_connector *connector = conn_state->connector;
+> > +       int ret = 0;
+> > +
+> > +       struct drm_bridge *first_bridge = drm_bridge_chain_get_first_bridge(encoder);
+> > +       struct drm_bridge_state *bridge_state = ERR_PTR(-EINVAL);
+> > +
+> > +       vs_crtc_state->encoder_type = encoder->encoder_type;
+> > +
+> > +       if (first_bridge && first_bridge->funcs->atomic_duplicate_state)
+> > +               bridge_state = drm_atomic_get_bridge_state(crtc_state->state, first_bridge);
+>
+> Please don't poke into others' playground. This should go into your
+> DSI bridge's atomic_check() instead.
 
-Ah, no, I did this for a reason. This function lives in a header, so it 
-will always be inlined.
+Hmm. And you can not use vs_crtc_state from your bridge. Actually this
+design makes me wonder, how does your hardware work? Is it possible to
+send the DSI commands to the panel?
+
+>
+> > +
+> > +       if (IS_ERR(bridge_state)) {
+> > +               if (connector->display_info.num_bus_formats)
+> > +                       vs_crtc_state->output_fmt = connector->display_info.bus_formats[0];
+> > +               else
+> > +                       vs_crtc_state->output_fmt = MEDIA_BUS_FMT_FIXED;
+> > +       } else {
+> > +               vs_crtc_state->output_fmt = bridge_state->input_bus_cfg.format;
+> > +       }
+> > +
+> > +       switch (vs_crtc_state->output_fmt) {
+> > +       case MEDIA_BUS_FMT_FIXED:
+> > +       case MEDIA_BUS_FMT_RGB565_1X16:
+> > +       case MEDIA_BUS_FMT_RGB666_1X18:
+> > +       case MEDIA_BUS_FMT_RGB888_1X24:
+> > +       case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
+> > +       case MEDIA_BUS_FMT_RGB101010_1X30:
+> > +       case MEDIA_BUS_FMT_UYYVYY8_0_5X24:
+> > +       case MEDIA_BUS_FMT_UYVY8_1X16:
+> > +       case MEDIA_BUS_FMT_YUV8_1X24:
+> > +       case MEDIA_BUS_FMT_UYYVYY10_0_5X30:
+> > +       case MEDIA_BUS_FMT_UYVY10_1X20:
+> > +       case MEDIA_BUS_FMT_YUV10_1X30:
+> > +               ret = 0;
+> > +               break;
+> > +       default:
+> > +               ret = -EINVAL;
+> > +               break;
+> > +       }
+> > +
+> > +       /* If MEDIA_BUS_FMT_FIXED, set it to default value */
+> > +       if (vs_crtc_state->output_fmt == MEDIA_BUS_FMT_FIXED)
+> > +               vs_crtc_state->output_fmt = MEDIA_BUS_FMT_RGB888_1X24;
+> > +
+> > +       return ret;
+> > +}
+> > +
+> > +static const struct drm_encoder_helper_funcs encoder_helper_funcs = {
+> > +       .atomic_check = encoder_atomic_check,
+> > +       .atomic_enable = encoder_atomic_enable,
+> > +};
+> > +
+> > +static int encoder_bind(struct device *dev, struct device *master, void *data)
+> > +{
+> > +       struct drm_device *drm_dev = data;
+> > +       struct simple_encoder *simple = dev_get_drvdata(dev);
+> > +       struct drm_encoder *encoder;
+> > +       struct drm_bridge *bridge;
+> > +       int ret;
+> > +
+> > +       encoder = &simple->encoder;
+> > +
+> > +       ret = drmm_encoder_init(drm_dev, encoder, NULL, simple->priv->encoder_type, NULL);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       drm_encoder_helper_add(encoder, &encoder_helper_funcs);
+> > +
+> > +       encoder->possible_crtcs =
+> > +                       drm_of_find_possible_crtcs(drm_dev, dev->of_node);
+> > +
+> > +       /* output port is port1*/
+> > +       bridge = devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
+> > +       if (IS_ERR(bridge))
+> > +               return 0;
+> > +
+> > +       return drm_bridge_attach(encoder, bridge, NULL, 0);
+> > +}
+> > +
+> > +static const struct component_ops encoder_component_ops = {
+> > +       .bind = encoder_bind,
+> > +};
+> > +
+> > +static const struct of_device_id simple_encoder_dt_match[] = {
+> > +       { .compatible = "starfive,dsi-encoder", .data = &dsi_priv},
+> > +       {},
+> > +};
+> > +MODULE_DEVICE_TABLE(of, simple_encoder_dt_match);
+> > +
+> > +static int encoder_probe(struct platform_device *pdev)
+> > +{
+> > +       struct device *dev = &pdev->dev;
+> > +       struct simple_encoder *simple;
+> > +       int ret;
+> > +
+> > +       simple = devm_kzalloc(dev, sizeof(*simple), GFP_KERNEL);
+> > +       if (!simple)
+> > +               return -ENOMEM;
+> > +
+> > +       simple->priv = of_device_get_match_data(dev);
+> > +
+> > +       simple->dev = dev;
+> > +
+> > +       dev_set_drvdata(dev, simple);
+> > +
+> > +       ret = encoder_parse_dt(dev);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       return component_add(dev, &encoder_component_ops);
+> > +}
+> > +
+> > +static int encoder_remove(struct platform_device *pdev)
+> > +{
+> > +       struct device *dev = &pdev->dev;
+> > +
+> > +       component_del(dev, &encoder_component_ops);
+> > +       dev_set_drvdata(dev, NULL);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +struct platform_driver simple_encoder_driver = {
+> > +       .probe = encoder_probe,
+> > +       .remove = encoder_remove,
+> > +       .driver = {
+> > +               .name = "vs-simple-encoder",
+> > +               .of_match_table = of_match_ptr(simple_encoder_dt_match),
+> > +       },
+> > +};
+> > +
+> > +MODULE_DESCRIPTION("Simple Encoder Driver");
+> > +MODULE_LICENSE("GPL");
+> > diff --git a/drivers/gpu/drm/verisilicon/vs_simple_enc.h b/drivers/gpu/drm/verisilicon/vs_simple_enc.h
+> > new file mode 100644
+> > index 000000000000..fb33ca9e18d6
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/verisilicon/vs_simple_enc.h
+> > @@ -0,0 +1,23 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright (C) 2022 VeriSilicon Holdings Co., Ltd.
+> > + */
+> > +
+> > +#ifndef __VS_SIMPLE_ENC_H_
+> > +#define __VS_SIMPLE_ENC_H_
+> > +
+> > +struct simple_encoder_priv {
+> > +       unsigned char encoder_type;
+> > +};
+> > +
+> > +struct simple_encoder {
+> > +       struct drm_encoder encoder;
+> > +       struct device *dev;
+> > +       const struct simple_encoder_priv *priv;
+> > +       struct regmap *dss_regmap;
+> > +       unsigned int offset;
+> > +       unsigned int mask;
+> > +};
+> > +
+> > +extern struct platform_driver simple_encoder_driver;
+> > +#endif /* __VS_SIMPLE_ENC_H_ */
+> > --
+> > 2.34.1
+> >
+>
+>
+> --
+> With best wishes
+> Dmitry
+
+
 
 -- 
-Cheers,
-
-David / dhildenb
-
+With best wishes
+Dmitry
