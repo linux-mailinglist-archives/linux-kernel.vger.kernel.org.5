@@ -2,190 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC7E805C06
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AA5805C14
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442316AbjLEPBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:01:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56824 "EHLO
+        id S1442303AbjLEPAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:00:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346009AbjLEPBK (ORCPT
+        with ESMTP id S1346014AbjLEPAs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:01:10 -0500
+        Tue, 5 Dec 2023 10:00:48 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57290C9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:01:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73FEEC433C7;
-        Tue,  5 Dec 2023 15:01:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701788477;
-        bh=kYRwODFbLu0AAQRqnx93sSXNYsrdMTvxC35fEtnlADI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bu7k/46zMNkwk9yLv5gCLuP2gbZ1VDWR/jKO8pjqj2ofoMUg7WHpPW8NJG3hIYjMS
-         UVKx47KoiAdKzX1PvRK1IfLnS0vXpS0IwzKtvADJjcnIP/2wquEyaZ72DL8Gdm2E6J
-         N1iDYq5i8BwFTk4G1SjJirzk49ku6ccbHuOKJohmKUZMXdiuOidWsMaI++2Xhxn080
-         RNxBmWf/b/JfP2nG9g69+HFA+a1tcsHUvcL5GTeq7IENNmqMY9/3Bt6athRgjPVoiB
-         f8jo8ucsEuY87yrvbq+ATLzfjos+qZD4Ly2ygaNH4ATshdnpU2lU1US5mcWE359xa9
-         08Vl9Vfd/Bggg==
-Date:   Tue, 5 Dec 2023 20:31:01 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Luca Weiss <luca.weiss@fairphone.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nitin Rawat <quic_nitirawa@quicinc.com>
-Subject: Re: [PATCH v6 2/3] arm64: dts: qcom: sc7280: Add UFS nodes for
- sc7280 soc
-Message-ID: <20231205150101.GB3208@thinkpad>
-References: <20231205-sc7280-ufs-v6-0-ad6ca7796de7@fairphone.com>
- <20231205-sc7280-ufs-v6-2-ad6ca7796de7@fairphone.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AFEA9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:00:53 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F56CC433C8;
+        Tue,  5 Dec 2023 15:00:49 +0000 (UTC)
+Date:   Tue, 5 Dec 2023 10:01:14 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@aculab.com,
+        richard@nod.at, mjguzik@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
+Message-ID: <20231205100114.0bd3c4a2@gandalf.local.home>
+In-Reply-To: <fa1249f7-9a5d-4696-9246-4913365b6715@paulmck-laptop>
+References: <e939c924-1dfa-4a6a-9309-2430f19467f5@paulmck-laptop>
+        <87wmu2ywrk.ffs@tglx>
+        <fa1249f7-9a5d-4696-9246-4913365b6715@paulmck-laptop>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231205-sc7280-ufs-v6-2-ad6ca7796de7@fairphone.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 03:38:55PM +0100, Luca Weiss wrote:
-> From: Nitin Rawat <quic_nitirawa@quicinc.com>
-> 
-> Add UFS host controller and PHY nodes for sc7280 soc.
-> 
-> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org> # QCM6490 FP5
-> [luca: various cleanups and additions as written in the cover letter]
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+On Mon, 4 Dec 2023 17:01:21 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 74 +++++++++++++++++++++++++++++++++++-
->  1 file changed, 73 insertions(+), 1 deletion(-)
+> On Tue, Nov 28, 2023 at 11:53:19AM +0100, Thomas Gleixner wrote:
+> > Paul!
+> > 
+> > On Tue, Nov 21 2023 at 07:19, Paul E. McKenney wrote:  
+> > > On Tue, Nov 21, 2023 at 10:00:59AM -0500, Steven Rostedt wrote:  
+> > >> Right now, the use of cond_resched() is basically a whack-a-mole game where
+> > >> we need to whack all the mole loops with the cond_resched() hammer. As
+> > >> Thomas said, this is backwards. It makes more sense to just not preempt in
+> > >> areas that can cause pain (like holding a mutex or in an RCU critical
+> > >> section), but still have the general kernel be fully preemptable.  
+> > >
+> > > Which is quite true, but that whack-a-mole game can be ended without
+> > > getting rid of build-time selection of the preemption model.  Also,
+> > > that whack-a-mole game can be ended without eliminating all calls to
+> > > cond_resched().  
+> > 
+> > Which calls to cond_resched() should not be eliminated?  
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 04bf85b0399a..dcb6c2004f87 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -15,6 +15,7 @@
->  #include <dt-bindings/dma/qcom-gpi.h>
->  #include <dt-bindings/firmware/qcom,scm.h>
->  #include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/interconnect/qcom,icc.h>
->  #include <dt-bindings/interconnect/qcom,osm-l3.h>
->  #include <dt-bindings/interconnect/qcom,sc7280.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> @@ -906,7 +907,7 @@ gcc: clock-controller@100000 {
->  			clocks = <&rpmhcc RPMH_CXO_CLK>,
->  				 <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
->  				 <0>, <&pcie1_phy>,
-> -				 <0>, <0>, <0>,
-> +				 <&ufs_mem_phy 0>, <&ufs_mem_phy 1>, <&ufs_mem_phy 2>,
->  				 <&usb_1_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
->  			clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
->  				      "pcie_0_pipe_clk", "pcie_1_pipe_clk",
-> @@ -2238,6 +2239,77 @@ pcie1_phy: phy@1c0e000 {
->  			status = "disabled";
->  		};
->  
-> +		ufs_mem_hc: ufs@1d84000 {
-> +			compatible = "qcom,sc7280-ufshc", "qcom,ufshc",
-> +				     "jedec,ufs-2.0";
-> +			reg = <0x0 0x01d84000 0x0 0x3000>;
-> +			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
-> +			phys = <&ufs_mem_phy>;
-> +			phy-names = "ufsphy";
-> +			lanes-per-direction = <2>;
-> +			#reset-cells = <1>;
-> +			resets = <&gcc GCC_UFS_PHY_BCR>;
-> +			reset-names = "rst";
-> +
-> +			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
-> +			required-opps = <&rpmhpd_opp_nom>;
-> +
-> +			iommus = <&apps_smmu 0x80 0x0>;
-> +			dma-coherent;
-> +
-> +			interconnects = <&aggre1_noc MASTER_UFS_MEM QCOM_ICC_TAG_ALWAYS
-> +					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
-> +					<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
-> +					 &cnoc2 SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ALWAYS>;
-> +			interconnect-names = "ufs-ddr", "cpu-ufs";
-> +
-> +			clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
-> +				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
-> +				 <&gcc GCC_UFS_PHY_AHB_CLK>,
-> +				 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
-> +				 <&rpmhcc RPMH_CXO_CLK>,
-> +				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
-> +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
-> +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
-> +			clock-names = "core_clk",
-> +				      "bus_aggr_clk",
-> +				      "iface_clk",
-> +				      "core_clk_unipro",
-> +				      "ref_clk",
-> +				      "tx_lane0_sync_clk",
-> +				      "rx_lane0_sync_clk",
-> +				      "rx_lane1_sync_clk";
-> +			freq-table-hz =
-> +				<75000000 300000000>,
-> +				<0 0>,
-> +				<0 0>,
-> +				<75000000 300000000>,
-> +				<0 0>,
-> +				<0 0>,
-> +				<0 0>,
-> +				<0 0>;
-> +			status = "disabled";
-> +		};
-> +
-> +		ufs_mem_phy: phy@1d87000 {
-> +			compatible = "qcom,sc7280-qmp-ufs-phy";
-> +			reg = <0x0 0x01d87000 0x0 0xe00>;
-> +			clocks = <&rpmhcc RPMH_CXO_CLK>,
-> +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
-> +				 <&gcc GCC_UFS_1_CLKREF_EN>;
-> +			clock-names = "ref", "ref_aux", "qref";
-> +
-> +			power-domains = <&rpmhpd SC7280_MX>;
-> +
-> +			resets = <&ufs_mem_hc 0>;
-> +			reset-names = "ufsphy";
-> +
-> +			#clock-cells = <1>;
-> +			#phy-cells = <0>;
-> +
-> +			status = "disabled";
-> +		};
-> +
->  		ipa: ipa@1e40000 {
->  			compatible = "qcom,sc7280-ipa";
->  
+> The ones which, if eliminated, will result in excessive latencies.
 > 
-> -- 
-> 2.43.0
-> 
+> This question is going to take some time to answer.  One type of potential
+> issue is where the cond_resched() precedes something like mutex_lock(),
+> where that mutex_lock() takes the fast path and preemption follows
+> shortly thereafter.  It would clearly have been better to have preempted
+> before acquisition.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Note that the new preemption model is a new paradigm and we need to start
+thinking a bit differently if we go to it.
+
+One thing I would like to look into with the new work is to have holding a
+mutex ignore the NEED_RESCHED_LAZY (similar to what is done with spinlock
+converted to mutex in the RT kernel). That way you are less likely to be
+preempted while holding a mutex.
+
+> 
+> Another is the aforementioned situations where removing the cond_resched()
+> increases latency.  Yes, capping the preemption latency is a wonderful
+> thing, and the people I chatted with are all for that, but it is only
+> natural that there would be a corresponding level of concern about the
+> cases where removing the cond_resched() calls increases latency.
+
+With the "capped preemption" I'm not sure that would still be the case.
+cond_resched() currently only preempts if NEED_RESCHED is set. That means
+the system had to already be in a situation that a schedule needs to
+happen. There's lots of places in the kernel that run for over a tick
+without any cond_resched(). The cond_resched() is usually added for
+locations that show tremendous latency (where either a watchdog triggered,
+or showed up in some analysis that had a latency that was much greater than
+a tick).
+
+The point is, if/when we switch to the new preemption model, we would need
+to re-evaluate if any cond_resched() is needed. Yes, testing needs to be
+done to prevent regressions. But the reasons I see cond_resched() being
+added today, should no longer exist with this new model.
+
+> 
+> There might be others as well.  These are the possibilities that have
+> come up thus far.
+> 
+> > They all suck and keeping some of them is just counterproductive as
+> > again people will sprinkle them all over the place for the very wrong
+> > reasons.  
+> 
+> Yes, but do they suck enough and are they counterproductive enough to
+> be useful and necessary?  ;-)
+
+They are only useful and necessary because of the way we handle preemption
+today. With the new preemption model, they are all likely to be useless and
+unnecessary ;-)
+
+> 
+> > > Additionally, if the end goal is to be fully preemptible as in
+> > > eventually eliminating lazy preemption, you have a lot more
+> > > convincing to do.  
+> > 
+> > That's absolutely not the case. Even RT uses the lazy mode to prevent
+> > overeager preemption for non RT tasks.  
+> 
+> OK, that is very good to hear.
+
+But the paradigm is changing. The kernel will be fully preemptible, it just
+won't be preempting often. That is, if the CPU is running kernel code for
+too long, and the scheduler tick wants a reschedule, the kernel has one
+more tick to get back to user space before it will become fully
+preemptible. That is, we force a "cond_resched()".
+
+> 
+> > The whole point of the exercise is to keep the kernel always fully
+> > preemptible, but only enforce the immediate preemption at the next
+> > possible preemption point when necessary.
+> > 
+> > The decision when it is necessary is made by the scheduler and not
+> > delegated to the whim of cond/might_resched() placement.  
+> 
+> I am not arguing that the developer placing a given cond_resched()
+> always knows best, but you have some work to do to convince me that the
+> scheduler always knows best.
+
+The cond_resched() already expects the scheduler to know best. It doesn't
+resched unless NEED_RESCHED is set and that's determined by the scheduler.
+If the code knows best, then it should just call schedule() and be done
+with it.
+
+> 
+> > That is serving both worlds best IMO:
+> > 
+> >   1) LAZY preemption prevents the negative side effects of overeager
+> >      preemption, aka. lock contention and pointless context switching.
+> > 
+> >      The whole thing behaves like a NONE kernel unless there are
+> >      real-time tasks or a task did not comply to the lazy request within
+> >      a given time.  
+> 
+> Almost, give or take the potential issues called out above for the
+> possible downsides of removing all of the cond_resched() invocations.
+
+I still don't believe there are any issues "called out above", as I called
+out those called outs.
+
+> 
+> >   2) It does not prevent the scheduler from making decisions to preempt
+> >      at the next possible preemption point in order to get some
+> >      important computation on the CPU.
+> > 
+> >      A NONE kernel sucks vs. any sporadic [real-time] task. Just run
+> >      NONE and watch the latencies. The latencies are determined by the
+> >      interrupted context, the placement of the cond_resched() call and
+> >      the length of the loop which is running.
+> > 
+> >      People have complained about that and the only way out for them is
+> >      to switch to VOLUNTARY or FULL preemption and thereby paying the
+> >      price for overeager preemption.
+> > 
+> >      A price which you don't want to pay for good reasons but at the
+> >      same time you care about latencies in some aspects and the only
+> >      answer you have for that is cond_resched() or similar which is not
+> >      an answer at all.  
+> 
+> All good points, but none of them are in conflict with the possibility
+> of leaving some cond_resched() calls behind if they ar needed.
+
+The conflict is with the new paradigm (I love that word! It's so "buzzy").
+As I mentioned above, cond_resched() is usually added when a problem was
+seen. I really believe that those problems would never had been seen if
+the new paradigm had already been in place.
+
+> 
+> >   3) Looking at the initial problem Ankur was trying to solve there is
+> >      absolutely no acceptable solution to solve that unless you think
+> >      that the semantically invers 'allow_preempt()/disallow_preempt()'
+> >      is anywhere near acceptable.  
+> 
+> I am not arguing for allow_preempt()/disallow_preempt(), so for that
+> argument, you need to find someone else to argue with.  ;-)
+
+Anyway, there's still a long path before cond_resched() can be removed. It
+was a mistake by Ankur to add those removals this early (and he has
+acknowledged that mistake).
+
+First we need to get the new preemption modeled implemented. When it is, it
+can be just a config option at first. Then when that config option is set,
+you can enable the NONE, VOLUNTARY or FULL preemption modes, even switch
+between them at run time as they are just a way to tell the scheduler when
+to set NEED_RESCHED_LAZY vs NEED_RSECHED.
+
+At that moment, when that config is set, the cond_resched() can turn into a
+nop. This will allow for testing to make sure there are no regressions in
+latency, even with the NONE mode enabled.
+
+The real test is implementing the code and seeing how it affects things in
+the real world. Us arguing about it isn't going to get anywhere. I just
+don't want blind NACK. A NACK to a removal of a cond_resched() needs to
+show that there was a real regression with that removal.
+
+-- Steve
