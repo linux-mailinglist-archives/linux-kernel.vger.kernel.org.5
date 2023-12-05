@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC72805465
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C091280545F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345148AbjLEMig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48446 "EHLO
+        id S1345102AbjLEMh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345106AbjLEMid (ORCPT
+        with ESMTP id S235137AbjLEMhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:38:33 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA311122;
-        Tue,  5 Dec 2023 04:38:38 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0Sq0PHfz4f3k6m;
-        Tue,  5 Dec 2023 20:38:35 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 0F7721A080C;
-        Tue,  5 Dec 2023 20:38:36 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S6;
-        Tue, 05 Dec 2023 20:38:35 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
-        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-        willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-        p.raghav@samsung.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
-        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next RFC 02/14] xen/blkback: use bdev api in xen_update_blkif_status()
-Date:   Tue,  5 Dec 2023 20:37:16 +0800
-Message-Id: <20231205123728.1866699-3-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+        Tue, 5 Dec 2023 07:37:19 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74761D5F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:37:22 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40838915cecso57654655e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:37:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701779841; x=1702384641; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xEQ0nPJK2l6MEItIcOUo+Cj1aUU6b9K1G/w+FexHPQM=;
+        b=BA/GDjsTIHpykQtRNDowRNmaQIXe2g0tGNJL54hfknz0eL9S2PfnNQTruDPPjnBO70
+         kEd3d7lgJh6Al8YKhCdoF0Cb8Ah2Ue+7QzO5nzlBy8P1ly91C9ApOnLwt6vVIEPBDUG9
+         6O+OD5Qf0hnRwKMVdVt3HmJpY66TUonkjFYJ9koHk5R7LUgEquR79GDZ5AWyWYt6whzm
+         1wGHhpsbs9CcrgSHKPmiSbVobu5cU0qflq1sKmkhmpkgpRhcuo0oKEw9sPstV9FU9ety
+         0wKNtu9JpcGcaeoFBWlhcjv+9mcVBGMHXIIXvpvWUkqxO1VSGgkzfAGYIFYiT1SN5rFQ
+         M5rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701779841; x=1702384641;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xEQ0nPJK2l6MEItIcOUo+Cj1aUU6b9K1G/w+FexHPQM=;
+        b=XUIYlBaIAg7lxWwbXaUkjtiuQZ/jeRUHQ3SP4U13X12qGUWaXuMIVA+Edqdax55C6Y
+         GM+4s1M2h75qUbCMvJDWKm35w3AqEDyfN+aVjh1UvPX8A10ogdJlk48h5VdNI7houb6e
+         rJo0iDqJL4Nv+92/sxxw8ityY9FKGGy/xNbpqCgPtJte6M9wukIh5T8dgrZcEtkP/TG6
+         NGO0brCUdlV/So2hI7QI73yGIuZDiIRCm689/qmIELeAovw0/lEz5mBEkOlE4nIRqYZz
+         o2LlR+SCqgWlCuYJbyvoG5l1S8xf2YxgxZ+meCPzLYzyNYa7bAWPgofDT0Wnwhk9VRpL
+         x7dg==
+X-Gm-Message-State: AOJu0Yz9MS8qYnFap+9RVcg+W064ikR8NAjE0NBBZAhynxfIUC/8jRlH
+        10J64LOzNvxctK0agghVWyxUTw==
+X-Google-Smtp-Source: AGHT+IHGwMratcq3hVnhryBa3837VxHeTKKs/Jd/i8LMX25Dk+Chk0tB18TP0Xcjd5ROraLCl/4gNQ==
+X-Received: by 2002:a05:600c:2199:b0:40b:5e21:e281 with SMTP id e25-20020a05600c219900b0040b5e21e281mr375751wme.110.1701779840967;
+        Tue, 05 Dec 2023 04:37:20 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id h6-20020a05600c350600b0040b43da0bbasm18511650wmq.30.2023.12.05.04.37.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 04:37:20 -0800 (PST)
+Date:   Tue, 5 Dec 2023 15:37:17 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] io_uring/kbuf: Fix an NULL vs IS_ERR() bug in
+ io_alloc_pbuf_ring()
+Message-ID: <5ed268d3-a997-4f64-bd71-47faa92101ab@moroto.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDnNw7GGW9lr8E8Cw--.35507S6
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFW7tFW3Wr4xCFyrtrWfAFb_yoWfWFb_ZF
-        18urWxXrn7Crs0kayUuFs3Z3yv93WrurWF9ay2qFySqw1UXFWSq39FvFn5Gr47ZayUGws0
-        yF17uFW7tr4xXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY02
-        0Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM2
-        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-        v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2
-        Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
-        Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr
-        1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUlZXOU
-        UUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+The io_mem_alloc() function returns error pointers, not NULL.  Update
+the check accordingly.
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
-
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Fixes: b10b73c102a2 ("io_uring/kbuf: recycle freed mapped buffer ring entries")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/block/xen-blkback/xenbus.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ io_uring/kbuf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
-index e34219ea2b05..e645afa4af57 100644
---- a/drivers/block/xen-blkback/xenbus.c
-+++ b/drivers/block/xen-blkback/xenbus.c
-@@ -104,8 +104,7 @@ static void xen_update_blkif_status(struct xen_blkif *blkif)
- 		xenbus_dev_error(blkif->be->dev, err, "block flush");
- 		return;
- 	}
--	invalidate_inode_pages2(
--			blkif->vbd.bdev_handle->bdev->bd_inode->i_mapping);
-+	invalidate_bdev(blkif->vbd.bdev_handle->bdev);
+diff --git a/io_uring/kbuf.c b/io_uring/kbuf.c
+index 268788305b61..bd25bc2deeaf 100644
+--- a/io_uring/kbuf.c
++++ b/io_uring/kbuf.c
+@@ -636,8 +636,8 @@ static int io_alloc_pbuf_ring(struct io_ring_ctx *ctx,
+ 	ibf = io_lookup_buf_free_entry(ctx, ring_size);
+ 	if (!ibf) {
+ 		ptr = io_mem_alloc(ring_size);
+-		if (!ptr)
+-			return -ENOMEM;
++		if (IS_ERR(ptr))
++			return PTR_ERR(ptr);
  
- 	for (i = 0; i < blkif->nr_rings; i++) {
- 		ring = &blkif->rings[i];
+ 		/* Allocate and store deferred free entry */
+ 		ibf = kmalloc(sizeof(*ibf), GFP_KERNEL_ACCOUNT);
 -- 
-2.39.2
+2.42.0
 
