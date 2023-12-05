@@ -2,131 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C06804F99
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F6A804FA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbjLEJ6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
+        id S232213AbjLEKAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:00:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjLEJ6s (ORCPT
+        with ESMTP id S231772AbjLEKAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:58:48 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA544A0;
-        Tue,  5 Dec 2023 01:58:53 -0800 (PST)
-X-UUID: 9e0e00b194d04b3db395bf7e6e040e34-20231205
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:aef0a0c6-7cde-48a6-ad98-77de04a783a8,IP:5,U
-        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:-35
-X-CID-INFO: VERSION:1.1.33,REQID:aef0a0c6-7cde-48a6-ad98-77de04a783a8,IP:5,URL
-        :0,TC:0,Content:-25,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-35
-X-CID-META: VersionHash:364b77b,CLOUDID:d75dd660-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:231205175850BNX1BCP2,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
-        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 9e0e00b194d04b3db395bf7e6e040e34-20231205
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1910631065; Tue, 05 Dec 2023 17:58:47 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jeffrey.t.kirsher@intel.com,
-        shannon.nelson@amd.com
-Cc:     kunwu.chan@hotmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>,
-        Simon Horman <horms@kernel.org>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-Subject: [PATCH v4 iwl-next] i40e: Use correct buffer size in i40e_dbg_command_read
-Date:   Tue,  5 Dec 2023 17:58:44 +0800
-Message-Id: <20231205095844.2532859-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Tue, 5 Dec 2023 05:00:02 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DFBB2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 02:00:08 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5d7692542beso28752037b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 02:00:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701770407; x=1702375207; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i93Z/CqJ+EBecddDOnAmVzRbIcIUtO0ehOz5S54CfrQ=;
+        b=YDRJRetfQA80jrjZYAlfT90vA6kpOsfF70/ktTGJ25Lk4nxospYByarCuZVETKVEX+
+         T04DRfvWpjz7YsT/JikHiUPmjRMxckzN8B9eEohxgMhuq7QUvCZndWlRA1q+zTiXqVk8
+         raIS3RFBgbsMdp/iYKWaZ6ehoAazJ2aYoUu+BtQviPhvZxEdC8ELMogHqNsWrplpuegX
+         K/cI+VioTMwDX2wVOK7t+zmNadxVEtG6WgHcaC2menF1zD2agwrSdmG6LpvYGQH7xrhb
+         l6V0g+FLpDsl8+R0qUAVUTFj57n7Ilf6hVnNXQfX7hiOzM/b6Ti9kN1yK9VZvctCVCrZ
+         KiUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701770407; x=1702375207;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i93Z/CqJ+EBecddDOnAmVzRbIcIUtO0ehOz5S54CfrQ=;
+        b=AbXFMTU14VJYlsMOek9FleNLSl3qTogmbFo8rJMntLvqJYrYTsXg0N5AHhL5gF+5gm
+         QOvlidivkhDVzXheWUVUxZiKOcXJ+1eRrlrjTLqQnjAqCklLSwaRqEQnEgfm82SVargc
+         Vr27t8tUmgri4nXu1DgXNh6NFrrwt4VCOd+IDperXFgMe/obo2ywvR++7TLliCvrMdRM
+         HnS/D6GhWl0+ZKIxorAnk8ybQtGUXcQG4RGPbzl4gR5/f/hslnN7EIyEydVeBfyOEMZl
+         9G6NPUxeeVZUIhlg8N/cTk45iKJWboOjFxteBm24lrr4f6ECAEVnMP5JEV7qXMFcFF5G
+         JlCA==
+X-Gm-Message-State: AOJu0YzZe7M2Kn72cG+QHQ7hFatS8K51AA01o+SK68DO/JZYJzwPssmU
+        QD6OMn6n6maxyeOqhaZpGndrnbbE0fj3d1yk4+zg4A==
+X-Google-Smtp-Source: AGHT+IH5eTb2gwdS22rkWHvbJD/nbpWagDnymfw80erU7E8T3kEYsszdXZXrJ4vDy/yEfDwBBs/YnsUIOf3GGpmbFhk=
+X-Received: by 2002:a0d:ccd6:0:b0:5d7:1940:53d6 with SMTP id
+ o205-20020a0dccd6000000b005d7194053d6mr4529462ywd.78.1701770407103; Tue, 05
+ Dec 2023 02:00:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1701768028.git.ysato@users.sourceforge.jp> <1fafcf1c70ee4e38847bac1379bcb4555a237505.1701768028.git.ysato@users.sourceforge.jp>
+In-Reply-To: <1fafcf1c70ee4e38847bac1379bcb4555a237505.1701768028.git.ysato@users.sourceforge.jp>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 5 Dec 2023 10:59:54 +0100
+Message-ID: <CACRpkdbFNyEn_ub3moh9f6zbBKzTBt-CPRykUfexd5fXjpKE3Q@mail.gmail.com>
+Subject: Re: [DO NOT MERGE v5 17/37] dt-bindings: interrupt-controller:
+ renesas,sh7751-intc: Add json-schema
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc:     linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Guo Ren <guoren@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Bin Meng <bmeng@tinylab.org>,
+        Max Filippov <jcmvbkbc@gmail.com>, Tom Rix <trix@redhat.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Jacky Huang <ychuang3@nuvoton.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The size of "i40e_dbg_command_buf" is 256, the size of "name"
-depends on "IFNAMSIZ", plus a null character and format size,
-the total size is more than 256.
+Hi Yoshinori,
 
-Improve readability and maintainability by replacing a hardcoded string
-allocation and formatting by the use of the kasprintf() helper.
+thanks for your patch!
 
-Fixes: 02e9c290814c ("i40e: debugfs interface")
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Suggested-by: Simon Horman <horms@kernel.org>
-Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
-v2
-   - Update the size calculation with IFNAMSIZ and sizeof(i40e_dbg_command_buf)
-v3
-   - Use kasprintf to improve readability and maintainability
-v4
-   - Fix memory leak in error path
----
- .../net/ethernet/intel/i40e/i40e_debugfs.c    | 20 ++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+On Tue, Dec 5, 2023 at 10:46=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-index 88240571721a..78a7200211b2 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-@@ -72,29 +72,31 @@ static ssize_t i40e_dbg_command_read(struct file *filp, char __user *buffer,
- {
- 	struct i40e_pf *pf = filp->private_data;
- 	int bytes_not_copied;
--	int buf_size = 256;
- 	char *buf;
- 	int len;
- 
- 	/* don't allow partial reads */
- 	if (*ppos != 0)
- 		return 0;
--	if (count < buf_size)
--		return -ENOSPC;
- 
--	buf = kzalloc(buf_size, GFP_KERNEL);
-+	buf = kasprintf(GFP_KERNEL, "%s: %s\n",
-+			pf->vsi[pf->lan_vsi]->netdev->name,
-+			i40e_dbg_command_buf);
- 	if (!buf)
- 		return -ENOSPC;
- 
--	len = snprintf(buf, buf_size, "%s: %s\n",
--		       pf->vsi[pf->lan_vsi]->netdev->name,
--		       i40e_dbg_command_buf);
-+	len = strlen(buf) + 1;
-+	if (count < len)
-+		bytes_not_copied = -ENOSPC;
-+	else if (copy_to_user(buffer, buf, len))
-+		bytes_not_copied = -EFAULT;
-+	else
-+		bytes_not_copied = 0;
- 
--	bytes_not_copied = copy_to_user(buffer, buf, len);
- 	kfree(buf);
- 
- 	if (bytes_not_copied)
--		return -EFAULT;
-+		return bytes_not_copied;
- 
- 	*ppos = len;
- 	return len;
--- 
-2.34.1
+> +  renesas,icr-irlm:
+> +    type: boolean
+> +    description: If true ICR.IRLM=3D1
 
+That's a bit hard to understand. I suppose it's something that need to some=
+times
+be changed for a system so would be good to document it properly.
+
+> +  renesas,ipr-map:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    description: |
+> +      IRQ to IPR mapping definition.
+> +      1st - INTEVT
+> +      2nd - Register
+> +      3rd - bit index
+
+Isn't this table always the same for a certain SoC, e.g. compatible
+"renesas,sh7751-intc"?
+
+Then don't keep it in the device tree, just look it up per-soc from a
+table in the driver.
+
+Other than that it looks good to me.
+
+Yours,
+Linus Walleij
