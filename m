@@ -2,152 +2,561 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524A5804BEC
+	by mail.lfdr.de (Postfix) with ESMTP id A77F4804BED
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376571AbjLEIKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39014 "EHLO
+        id S235038AbjLEIKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376413AbjLEIKD (ORCPT
+        with ESMTP id S234971AbjLEIKT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:10:03 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26CC11F;
-        Tue,  5 Dec 2023 00:10:09 -0800 (PST)
-Received: from [127.0.1.1] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 21D0B158D;
-        Tue,  5 Dec 2023 09:09:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701763766;
-        bh=rVmPtwm1uGmDrIWKXT2svm/MUUgksqxTNOdoxtoMjGU=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=MuUU0XQXq6ZXG66dOeIgSjJveT/+bR/YLt/ymW2upTL3owTAskGnfjTO/vYsO7QPL
-         16zakRN2AQ+QS8PFU6CSOLnFEmmY/pfkHl9LXGZICRZ4V37I0T/3WAsE3RTucbTC3t
-         9487GO8l/Jh18OrjAFpZx08TGj6KD5NSBdOvJvk8=
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date:   Tue, 05 Dec 2023 10:09:35 +0200
-Subject: [PATCH 4/4] media: rkisp1: Fix IRQ disable race issue
+        Tue, 5 Dec 2023 03:10:19 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2B3D43
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:10:19 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40bd5ea84d6so16910425e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 00:10:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701763817; x=1702368617; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DjTZyxYze8ZZ+0xkOYrUSZ2n3D4WOpELM1j22Ty1k7U=;
+        b=f4Ql2By5CYIwao98Esi9NebS6tqG04lnpbEJdN21gKlDI0ZmsoeCbvB1arMkFzfnP2
+         dmdbuYkKTEGZHx9WRed+vkPwtksxnLgHIB15Fm2OOVVAEygFTLj/ckKw2uM20NWX1cZ+
+         MoYzepZEoJcB/T8ScB1ewoXXeHUImyzaxVxHYiI1GJBVTc+O9lFzQYcUQqMwruiT64Ey
+         AoA2XfVzJ7wWgy7y8EN0vdTqF8Ya4N0bDrO28RGHxb8CSjkPddia6mMLD0lzPxSbdL2N
+         bkHHne0uTrvqHhSj3krPIp2ajbqoFj0yU+32wFW+PFh2fI9LtGyl3f4MgsK7154semd8
+         8Mlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701763817; x=1702368617;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DjTZyxYze8ZZ+0xkOYrUSZ2n3D4WOpELM1j22Ty1k7U=;
+        b=cc93ZuGTDcA7vlMyz+ki45ecyFwbZd0zh2oTTeEwuM6Be+oVoHiAfinl95ba5Mni0e
+         kKkqMXf+Gz5niEP4rWd3NdKiuNZlxL45UNRlwbp6k5MnjBow0TIPRwpQPt0EmOrsFWyD
+         8xUxwdlJ2fN0icn/CjgUgG5j02D32jbpp47ezGNG0vSTK7xjR0bYJKM4CUWpBdrULoD/
+         eDBMae7mRLqCUL/Fe99zdehMWfAszk7zEQyCbsQI9jyE/vadEQ9m4ZbFhCb0WjvUVobO
+         t3MRihQ8kCjZJ0OdNNNAsgHipF3xN8xt/JXqFb3b3FCyTMoKm7wA/7MIipMVMkY7Fl30
+         r4eg==
+X-Gm-Message-State: AOJu0YyozLC3mPVpzalewHb9UYJ9yZE/pvdX6anSFaxuJHGQkWCMW9ew
+        62ZhCnEGw9o/z1rmTsVTDGgGVA==
+X-Google-Smtp-Source: AGHT+IHdo+TN1EO1XGCQzs50zsnb86qVC9CCfNKP4sirYvWT8waIEfcxIwteWSNjWAynM4uC33a/XQ==
+X-Received: by 2002:a05:600c:3b8c:b0:40b:5e1f:c381 with SMTP id n12-20020a05600c3b8c00b0040b5e1fc381mr281651wms.23.1701763817456;
+        Tue, 05 Dec 2023 00:10:17 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:4518:5e57:ff13:b4bb? ([2a01:e0a:982:cbb0:4518:5e57:ff13:b4bb])
+        by smtp.gmail.com with ESMTPSA id b7-20020a056000054700b003334460e256sm5976126wrf.92.2023.12.05.00.10.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 00:10:16 -0800 (PST)
+Message-ID: <f94f3fcc-9a18-440e-8afb-95d56c1dc30f@linaro.org>
+Date:   Tue, 5 Dec 2023 09:10:15 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v3 08/10] drm/panel: Add Ilitek ILI9805 panel driver
+Content-Language: en-US, fr
+To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
+        michael@amarulasolutions.com, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+References: <20231130141705.1796672-1-dario.binacchi@amarulasolutions.com>
+ <20231130141705.1796672-9-dario.binacchi@amarulasolutions.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231130141705.1796672-9-dario.binacchi@amarulasolutions.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231205-rkisp-irq-fix-v1-4-f4045c74ba45@ideasonboard.com>
-References: <20231205-rkisp-irq-fix-v1-0-f4045c74ba45@ideasonboard.com>
-In-Reply-To: <20231205-rkisp-irq-fix-v1-0-f4045c74ba45@ideasonboard.com>
-To:     Dafna Hirschfeld <dafna@fastmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Paul Elder <paul.elder@ideasonboard.com>
-Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
-        aford173@gmail.com, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3150;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=rVmPtwm1uGmDrIWKXT2svm/MUUgksqxTNOdoxtoMjGU=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBlbtrZU6iFL2/Y58GR7rOJhBlQDCvuGEErOgG0X
- XlZATZxLJKJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZW7a2QAKCRD6PaqMvJYe
- 9Tm4D/9Sq2B3VjwaBr6L8KhLLf2C7zg40sLxpalB/S4jSwZguMCWNTiEuqknm/LXBBOh5HG8GEp
- VLyFyIn0NvXtVvxyOLYf3hlux+YjGoZABwQps827/TlJs9Egyf1D+X7EYwfdgguuePOeDp3H2z2
- YhBzLAdIaJ2le4cmk89cow16VtWuoKgjo8fcM5edz72sV/8/NM7pqQJ+5PZMZD1wWs0fsH0+GHE
- wROiwZB8Kj9QLf9P6GLlOymwP1rqmVhTf8BOIHeYaxxlbQrS8AdHNw7pZ0aDkx+7kVS4BnOxemi
- BdJekPp9Xj+k8AEHQmouZ77wMZxBUuYg1vKSoKJwMFC4TR+TM97Q5gPcb6gCE3BkqRUBlZ/3Mv8
- kGEZhc2cQRU3BXeoUsnPbI/Qlu31jlz9LGE9Ws15h/mTdP+uNiPDgHwYCNPQpL+zshEbeIqOTTR
- FZ9P572LCytqw/V2qlI2r5EnDyJ37Hi1X5nzzL88/Js1tCL/OIQf9/XMpjtKsCYxFZqu97PmIRE
- TTYyugTXYCWiFCrYC380+wIgU37svswllDUwCv6y2bLxisA7BXPSWLP3d2RUd7vlisv5jlGQ+l/
- XnRzAgi2gBVOk2u5qvZ8LXR+t6sqGzO6p6EuZjheclWTre0ek9cM/Irob4PCWpbaxIi8opGjYfu
- usRe3ZoUttSytSQ==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In rkisp1_isp_stop() and rkisp1_csi_disable() the driver masks the
-interrupts and then apparently assumes that the interrupt handler won't
-be running, and proceeds in the stop procedure. This is not the case, as
-the interrupt handler can already be running, which would lead to the
-ISP being disabled while the interrupt handler handling a captured
-frame.
+Hi Dario,
 
-It is not clear to me if this problem causes a real issue, but shutting
-down the ISP while an interrupt handler is running sounds rather bad.
+On 30/11/2023 15:16, Dario Binacchi wrote:
+> From: Michael Trimarchi <michael@amarulasolutions.com>
+> 
+> The GPM1790A0 panel is based on the Ilitek ILI9805 Controller.
+> Add a driver for it.
+> 
+> Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> ---
+> 
+> (no changes since v1)
+> 
+>   MAINTAINERS                                  |   6 +
+>   drivers/gpu/drm/panel/Kconfig                |   9 +
+>   drivers/gpu/drm/panel/Makefile               |   1 +
+>   drivers/gpu/drm/panel/panel-ilitek-ili9805.c | 365 +++++++++++++++++++
+>   4 files changed, 381 insertions(+)
+>   create mode 100644 drivers/gpu/drm/panel/panel-ilitek-ili9805.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c373764b6e64..a89fbc811dc5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6647,6 +6647,12 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+>   F:	Documentation/devicetree/bindings/display/ilitek,ili9486.yaml
+>   F:	drivers/gpu/drm/tiny/ili9486.c
+>   
+> +DRM DRIVER FOR ILITEK ILI9805 PANELS
+> +M:	Michael Trimarchi <michael@amarulasolutions.com>
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/display/panel/ilitek,ili9805.yaml
+> +F:	drivers/gpu/drm/panel/panel-ilitek-ili9805.c
+> +
+>   DRM DRIVER FOR JADARD JD9365DA-H3 MIPI-DSI LCD PANELS
+>   M:	Jagan Teki <jagan@edgeble.ai>
+>   S:	Maintained
+> diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> index d018702be3dc..dad938cf6dec 100644
+> --- a/drivers/gpu/drm/panel/Kconfig
+> +++ b/drivers/gpu/drm/panel/Kconfig
+> @@ -194,6 +194,15 @@ config DRM_PANEL_ILITEK_ILI9341
+>   	  QVGA (240x320) RGB panels. support serial & parallel rgb
+>   	  interface.
+>   
+> +config DRM_PANEL_ILITEK_ILI9805
+> +	tristate "Ilitek ILI9805-based panels"
+> +	depends on OF
+> +	depends on DRM_MIPI_DSI
+> +	depends on BACKLIGHT_CLASS_DEVICE
+> +	help
+> +	  Say Y if you want to enable support for panels based on the
+> +	  Ilitek ILI9805 controller.
+> +
+>   config DRM_PANEL_ILITEK_ILI9881C
+>   	tristate "Ilitek ILI9881C-based panels"
+>   	depends on OF
+> diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> index f267d932c2b5..d94a644d0a6c 100644
+> --- a/drivers/gpu/drm/panel/Makefile
+> +++ b/drivers/gpu/drm/panel/Makefile
+> @@ -17,6 +17,7 @@ obj-$(CONFIG_DRM_PANEL_FEIYANG_FY07024DI26A30D) += panel-feiyang-fy07024di26a30d
+>   obj-$(CONFIG_DRM_PANEL_HIMAX_HX8394) += panel-himax-hx8394.o
+>   obj-$(CONFIG_DRM_PANEL_ILITEK_IL9322) += panel-ilitek-ili9322.o
+>   obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9341) += panel-ilitek-ili9341.o
+> +obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9805) += panel-ilitek-ili9805.o
+>   obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9881C) += panel-ilitek-ili9881c.o
+>   obj-$(CONFIG_DRM_PANEL_ILITEK_ILI9882T) += panel-ilitek-ili9882t.o
+>   obj-$(CONFIG_DRM_PANEL_INNOLUX_EJ030NA) += panel-innolux-ej030na.o
+> diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9805.c b/drivers/gpu/drm/panel/panel-ilitek-ili9805.c
+> new file mode 100644
+> index 000000000000..749959e10d92
+> --- /dev/null
+> +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9805.c
+> @@ -0,0 +1,365 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 BSH Hausgerate GmbH
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/errno.h>
+> +#include <linux/fb.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/regulator/consumer.h>
+> +
+> +#include <drm/drm_mipi_dsi.h>
+> +#include <drm/drm_modes.h>
+> +#include <drm/drm_panel.h>
+> +
+> +#include <video/mipi_display.h>
+> +
+> +#define ILI9805_EXTCMD_CMD_SET_ENABLE_REG	(0xff)
+> +#define ILI9805_SETEXTC_PARAMETER1		(0xff)
+> +#define ILI9805_SETEXTC_PARAMETER2		(0x98)
+> +#define ILI9805_SETEXTC_PARAMETER3		(0x05)
+> +
+> +#define ILI9805_INSTR(_delay, ...) { \
+> +		.delay = (_delay), \
+> +		.len = sizeof((u8[]) {__VA_ARGS__}), \
+> +		.data = (u8[]){__VA_ARGS__} \
+> +	}
+> +
+> +struct ili9805_instr {
+> +	size_t len;
+> +	const u8 *data;
+> +	u32 delay;
+> +};
+> +
+> +struct ili9805_desc {
+> +	const char *name;
+> +	const struct ili9805_instr *init;
+> +	const size_t init_length;
+> +	const struct drm_display_mode *mode;
+> +	u32 width_mm;
+> +	u32 height_mm;
+> +};
+> +
+> +struct ili9805 {
+> +	struct drm_panel	panel;
+> +	struct mipi_dsi_device	*dsi;
+> +	const struct ili9805_desc	*desc;
+> +
+> +	struct regulator	*dvdd;
+> +	struct regulator	*avdd;
+> +	struct gpio_desc	*reset_gpio;
+> +
+> +	bool			prepared;
 
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c | 14 +++++++++++++-
- drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c | 20 +++++++++++++++++---
- 2 files changed, 30 insertions(+), 4 deletions(-)
+Like patch 6, please from this, it's not more needed.
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-index f6b54654b435..f0cef766fc0c 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
-@@ -125,8 +125,20 @@ static void rkisp1_csi_disable(struct rkisp1_csi *csi)
- 	struct rkisp1_device *rkisp1 = csi->rkisp1;
- 	u32 val;
- 
--	/* Mask and clear interrupts. */
-+	/* Mask MIPI interrupts. */
- 	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_IMSC, 0);
-+
-+	/* Flush posted writes */
-+	rkisp1_read(rkisp1, RKISP1_CIF_MIPI_IMSC);
-+
-+	/*
-+	 * Wait until the IRQ handler has ended. The IRQ handler may get called
-+	 * even after this, but it will return immediately as the MIPI
-+	 * interrupts have been masked.
-+	 */
-+	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MIPI]);
-+
-+	/* Clear MIPI interrupt status */
- 	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_ICR, ~0);
- 
- 	val = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_CTRL);
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-index d6b8786661ad..a6dd497c884c 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-@@ -364,11 +364,25 @@ static void rkisp1_isp_stop(struct rkisp1_isp *isp)
- 	 * ISP(mi) stop in mi frame end -> Stop ISP(mipi) ->
- 	 * Stop ISP(isp) ->wait for ISP isp off
- 	 */
--	/* stop and clear MI and ISP interrupts */
--	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
--	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
- 
-+	/* Mask MI and ISP interrupts */
-+	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
- 	rkisp1_write(rkisp1, RKISP1_CIF_MI_IMSC, 0);
-+
-+	/* Flush posted writes */
-+	rkisp1_read(rkisp1, RKISP1_CIF_MI_IMSC);
-+
-+	/*
-+	 * Wait until the IRQ handler has ended. The IRQ handler may get called
-+	 * even after this, but it will return immediately as the MI and ISP
-+	 * interrupts have been masked.
-+	 */
-+	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_ISP]);
-+	if (rkisp1->irqs[RKISP1_IRQ_ISP] != rkisp1->irqs[RKISP1_IRQ_MI])
-+		synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MI]);
-+
-+	/* Clear MI and ISP interrupt status */
-+	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
- 	rkisp1_write(rkisp1, RKISP1_CIF_MI_ICR, ~0);
- 
- 	/* stop ISP */
+> +};
+> +
+> +static const struct ili9805_instr gpm1780a0_init[] = {
+> +	ILI9805_INSTR(100, ILI9805_EXTCMD_CMD_SET_ENABLE_REG, ILI9805_SETEXTC_PARAMETER1,
+> +		      ILI9805_SETEXTC_PARAMETER2, ILI9805_SETEXTC_PARAMETER3),
+> +	ILI9805_INSTR(100, 0xFD, 0x0F, 0x10, 0x44, 0x00),
+> +	ILI9805_INSTR(0, 0xf8, 0x18, 0x02, 0x02, 0x18, 0x02, 0x02, 0x30, 0x00,
+> +		      0x00, 0x30, 0x00, 0x00, 0x30, 0x00, 0x00),
+> +	ILI9805_INSTR(0, 0xB8, 0x62),
+> +	ILI9805_INSTR(0, 0xF1, 0x00),
+> +	ILI9805_INSTR(0, 0xF2, 0x00, 0x58, 0x40),
+> +	ILI9805_INSTR(0, 0xF3, 0x60, 0x83, 0x04),
+> +	ILI9805_INSTR(0, 0xFC, 0x04, 0x0F, 0x01),
+> +	ILI9805_INSTR(0, 0xEB, 0x08, 0x0F),
+> +	ILI9805_INSTR(0, 0xe0, 0x00, 0x08, 0x0d, 0x0e, 0x0e, 0x0d, 0x0a, 0x08, 0x04,
+> +		      0x08, 0x0d, 0x0f, 0x0b, 0x1c, 0x14, 0x0a),
+> +	ILI9805_INSTR(0, 0xe1, 0x00, 0x08, 0x0d, 0x0e, 0x0e, 0x0d, 0x0a, 0x08, 0x04,
+> +		      0x08, 0x0d, 0x0f, 0x0b, 0x1c, 0x14, 0x0a),
+> +	ILI9805_INSTR(10, 0xc1, 0x13, 0x39, 0x19, 0x06),
+> +	ILI9805_INSTR(10, 0xc7, 0xe5),
+> +	ILI9805_INSTR(10, 0xB1, 0x00, 0x12, 0x14),
+> +	ILI9805_INSTR(10, 0xB4, 0x02),
+> +	ILI9805_INSTR(0, 0xBB, 0x14, 0x55),
+> +	ILI9805_INSTR(0, MIPI_DCS_SET_ADDRESS_MODE, 0x08),
+> +	ILI9805_INSTR(0, MIPI_DCS_SET_PIXEL_FORMAT, 0x77),
+> +	ILI9805_INSTR(0, 0x20),
+> +	ILI9805_INSTR(0, 0xB0, 0x01),
+> +	ILI9805_INSTR(0, 0xB6, 0x31, 0x00, 0xef),
+> +	ILI9805_INSTR(0, 0xDF, 0x23),
+> +	ILI9805_INSTR(0, 0xB9, 0x02, 0x00),
+> +};
+> +
+> +static inline struct ili9805 *panel_to_ili9805(struct drm_panel *panel)
+> +{
+> +	return container_of(panel, struct ili9805, panel);
+> +}
+> +
+> +static int ili9805_power_on(struct ili9805 *ctx)
+> +{
+> +	struct mipi_dsi_device *dsi = ctx->dsi;
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	ret = regulator_enable(ctx->avdd);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to enable avdd regulator (%d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = regulator_enable(ctx->dvdd);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to enable dvdd regulator (%d)\n", ret);
+> +		regulator_disable(ctx->avdd);
+> +		return ret;
+> +	}
+> +
+> +	gpiod_set_value(ctx->reset_gpio, 0);
+> +	usleep_range(5000, 10000);
+> +	gpiod_set_value(ctx->reset_gpio, 1);
+> +	msleep(120);
+> +
+> +	return 0;
+> +}
+> +
+> +static int ili9805_power_off(struct ili9805 *ctx)
+> +{
+> +	gpiod_set_value(ctx->reset_gpio, 0);
+> +	regulator_disable(ctx->dvdd);
+> +	regulator_disable(ctx->avdd);
+> +
+> +	return 0;
+> +}
+> +
+> +static int ili9805_activate(struct ili9805 *ctx)
+> +{
+> +	struct mipi_dsi_device *dsi = ctx->dsi;
+> +	struct device *dev = &dsi->dev;
+> +	int i, ret;
+> +
+> +	for (i = 0; i < ctx->desc->init_length; i++) {
+> +		const struct ili9805_instr *instr = &ctx->desc->init[i];
+> +
+> +		ret = mipi_dsi_dcs_write_buffer(ctx->dsi, instr->data, instr->len);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		if (instr->delay > 0)
+> +			msleep(instr->delay);
+> +	}
+> +
+> +	ret = mipi_dsi_dcs_exit_sleep_mode(ctx->dsi);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to exit sleep mode (%d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	usleep_range(5000, 6000);
+> +
+> +	ret = mipi_dsi_dcs_set_display_on(ctx->dsi);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to set display ON (%d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int ili9805_prepare(struct drm_panel *panel)
+> +{
+> +	struct ili9805 *ctx = panel_to_ili9805(panel);
+> +	int ret;
+> +
+> +	if (ctx->prepared)
+> +		return 0;
+> +
+> +	ret = ili9805_power_on(ctx);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ili9805_activate(ctx);
+> +	if (ret) {
+> +		ili9805_power_off(ctx);
+> +		return ret;
+> +	}
+> +
+> +	ctx->prepared = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ili9805_deactivate(struct ili9805 *ctx)
+> +{
+> +	struct mipi_dsi_device *dsi = ctx->dsi;
+> +	struct device *dev = &dsi->dev;
+> +	int ret;
+> +
+> +	ret = mipi_dsi_dcs_set_display_off(ctx->dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to set display OFF (%d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	usleep_range(5000, 10000);
+> +
+> +	ret = mipi_dsi_dcs_enter_sleep_mode(ctx->dsi);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to enter sleep mode (%d)\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int ili9805_unprepare(struct drm_panel *panel)
+> +{
+> +	struct ili9805 *ctx = panel_to_ili9805(panel);
+> +
+> +	if (!ctx->prepared)
+> +		return 0;
+> +
+> +	ili9805_deactivate(ctx);
+> +	ili9805_power_off(ctx);
+> +
+> +	ctx->prepared = false;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct drm_display_mode gpm1780a0_timing = {
+> +	.clock = 26227,
+> +
+> +	.hdisplay = 480,
+> +	.hsync_start = 480 + 10,
+> +	.hsync_end = 480 + 10 + 2,
+> +	.htotal = 480 + 10 + 2 + 36,
+> +
+> +	.vdisplay = 480,
+> +	.vsync_start = 480 + 2,
+> +	.vsync_end = 480 + 10 + 4,
+> +	.vtotal = 480 + 2 + 4 + 10,
+> +};
+> +
+> +static int ili9805_get_modes(struct drm_panel *panel,
+> +			      struct drm_connector *connector)
+> +{
+> +	struct ili9805 *ctx = panel_to_ili9805(panel);
+> +	struct drm_display_mode *mode;
+> +
+> +	mode = drm_mode_duplicate(connector->dev, ctx->desc->mode);
+> +	if (!mode) {
+> +		dev_err(&ctx->dsi->dev, "failed to add mode %ux%ux@%u\n",
+> +			ctx->desc->mode->hdisplay,
+> +			ctx->desc->mode->vdisplay,
+> +			drm_mode_vrefresh(ctx->desc->mode));
+> +		return -ENOMEM;
+> +	}
+> +
+> +	drm_mode_set_name(mode);
+> +
+> +	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
+> +	drm_mode_probed_add(connector, mode);
+> +
+> +	connector->display_info.width_mm = mode->width_mm;
+> +	connector->display_info.height_mm = mode->height_mm;
+> +
+> +	return 1;
+> +}
+> +
+> +static const struct drm_panel_funcs ili9805_funcs = {
+> +	.prepare	= ili9805_prepare,
+> +	.unprepare	= ili9805_unprepare,
+> +	.get_modes	= ili9805_get_modes,
+> +};
+> +
+> +static int ili9805_dsi_probe(struct mipi_dsi_device *dsi)
+> +{
+> +	struct ili9805 *ctx;
+> +	int ret;
+> +
+> +	ctx = devm_kzalloc(&dsi->dev, sizeof(*ctx), GFP_KERNEL);
+> +	if (!ctx)
+> +		return -ENOMEM;
+> +	mipi_dsi_set_drvdata(dsi, ctx);
+> +	ctx->dsi = dsi;
+> +	ctx->desc = of_device_get_match_data(&dsi->dev);
+> +
+> +	dsi->format = MIPI_DSI_FMT_RGB888;
+> +	dsi->mode_flags = MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_VIDEO |
+> +		MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_LPM |
+> +		MIPI_DSI_MODE_VIDEO_SYNC_PULSE | MIPI_DSI_MODE_NO_EOT_PACKET;
+> +	dsi->lanes = 2;
+> +
+> +	drm_panel_init(&ctx->panel, &dsi->dev, &ili9805_funcs,
+> +		       DRM_MODE_CONNECTOR_DSI);
+> +
+> +	ctx->dvdd = devm_regulator_get(&dsi->dev, "dvdd");
+> +	if (IS_ERR(ctx->dvdd))
+> +		return PTR_ERR(ctx->dvdd);
+> +	ctx->avdd = devm_regulator_get(&dsi->dev, "avdd");
+> +	if (IS_ERR(ctx->avdd))
+> +		return PTR_ERR(ctx->avdd);
+> +
+> +	ctx->reset_gpio = devm_gpiod_get(&dsi->dev, "reset", GPIOD_OUT_LOW);
+> +	if (IS_ERR(ctx->reset_gpio)) {
+> +		dev_err(&dsi->dev, "Couldn't get our reset GPIO\n");
+> +		return PTR_ERR(ctx->reset_gpio);
+> +	}
+> +
+> +	ctx->panel.prepare_prev_first = true;
+> +	ret = drm_panel_of_backlight(&ctx->panel);
+> +	if (ret)
+> +		return ret;
+> +
+> +	drm_panel_add(&ctx->panel);
+> +
+> +	ret = mipi_dsi_attach(dsi);
+> +	if (ret < 0) {
+> +		dev_err(&dsi->dev, "mipi_dsi_attach failed: %d\n", ret);
+> +		drm_panel_remove(&ctx->panel);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void ili9805_dsi_remove(struct mipi_dsi_device *dsi)
+> +{
+> +	struct ili9805 *ctx = mipi_dsi_get_drvdata(dsi);
+> +	int ret;
+> +
+> +	ret = mipi_dsi_detach(dsi);
+> +	if (ret < 0)
+> +		dev_err(&dsi->dev, "failed to detach from DSI host: %d\n",
+> +			ret);
+> +
+> +	drm_panel_remove(&ctx->panel);
+> +}
+> +
+> +static const struct ili9805_desc gpm1780a0_desc = {
+> +	.init = gpm1780a0_init,
+> +	.init_length = ARRAY_SIZE(gpm1780a0_init),
+> +	.mode = &gpm1780a0_timing,
+> +	.width_mm = 65,
+> +	.height_mm = 65,
+> +};
+> +
+> +static const struct of_device_id ili9805_of_match[] = {
+> +	{ .compatible = "giantplus,gpm1790a0", .data = &gpm1780a0_desc },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, ili9805_of_match);
+> +
+> +static struct mipi_dsi_driver ili9805_dsi_driver = {
+> +	.probe		= ili9805_dsi_probe,
+> +	.remove		= ili9805_dsi_remove,
+> +	.driver = {
+> +		.name		= "ili9805-dsi",
+> +		.of_match_table	= ili9805_of_match,
+> +	},
+> +};
+> +module_mipi_dsi_driver(ili9805_dsi_driver);
+> +
+> +MODULE_AUTHOR("Matthias Proske <Matthias.Proske@bshg.com>");
+> +MODULE_AUTHOR("Michael Trimarchi <michael@amarulasolutions.com>");
+> +MODULE_DESCRIPTION("Ilitek ILI9805 Controller Driver");
+> +MODULE_LICENSE("GPL");
 
--- 
-2.34.1
+Apart that, looks good.
 
+Thanks,
+Neil
