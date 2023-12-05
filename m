@@ -2,60 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C24804E30
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:43:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58ADC804E29
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235042AbjLEJnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:43:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
+        id S231879AbjLEJmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234860AbjLEJnR (ORCPT
+        with ESMTP id S229596AbjLEJmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:43:17 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6299A;
-        Tue,  5 Dec 2023 01:43:22 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SkwZZ45QGz4f3jqS;
-        Tue,  5 Dec 2023 17:43:18 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 982911A0D04;
-        Tue,  5 Dec 2023 17:43:19 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgBHShC18G5lWm4xCw--.9041S7;
-        Tue, 05 Dec 2023 17:43:19 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     song@kernel.org, yukuai3@huawei.com, xni@redhat.com, neilb@suse.com
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH v5 md-fixes 3/3] md: fix stopping sync thread
-Date:   Tue,  5 Dec 2023 17:42:15 +0800
-Message-Id: <20231205094215.1824240-4-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231205094215.1824240-1-yukuai1@huaweicloud.com>
-References: <20231205094215.1824240-1-yukuai1@huaweicloud.com>
-MIME-Version: 1.0
+        Tue, 5 Dec 2023 04:42:37 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2058.outbound.protection.outlook.com [40.92.42.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D11A0;
+        Tue,  5 Dec 2023 01:42:43 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dPBWltaPx3T60jZYLcO2c0vi/eohD2BjlW0wAjslBhubhTxoh29tg2OGOQj0xQoD6LHhpqoeU2W8aWnG4O+NPNN4svoR1FSnrLnvRpuyLf5e7jTe409WMCaYVgWmY7xXs/EhwibEhyRo/s9DHLgOU0W8jCDhOcMG8/mIHtJGZpDN4XHNHujxmik5IavMKlfGUBkMrODtpzC7oUst5au6XedCzEDGV2dJ1vYY6Qn8Wg2ogKqvAi5vPx11p1LJ3W63kS6pumr1pwxhkBEM16UPqvlMyeUaeLcXLakJeqWpr6X8rb0IeK7HDwyMoWgdMtp5rD6PxCRSkEcN3Y3HIylyAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yyKTXoLRFa+pgkBFMuX0U/DX5U1Pvdkd0Moda5c8ve4=;
+ b=YRiAWsRGHHYasz0ligew9nFeMpldsLO5DbomIk6f/Hv3t9+XuYZIyDS1vEqqAYK0feyYD9hqiR/TfOnBag98lAL+Q3HnrsaGybYKFqqCDNVLv7n3ZehdZ4j/nQuWhT2m9t+zfNqs5FSu3q3N4U0Z6c31RRy3fMeMaaKZregTuzo2ijxTZxchta3nJyNkGjXRhO0ptDhCyk9tY5dLxEhCmtdyWXybRl1Rp8kianTigr11yTmG8L4LAg3OS8ZNsoSxenwaCdqY21UUYkSLG51fEx2KBGCK09A82Mj6cvJrFwdXCKiLdOoB+drzkU/q1f0uQ+ca5qQk4x3FS1BW7cx8PQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yyKTXoLRFa+pgkBFMuX0U/DX5U1Pvdkd0Moda5c8ve4=;
+ b=JusN/DczOgOEJ4nUjfzL/e0FupwseuYELus7SUzsOdQhfz/ppVlWJKgkN3UyIDoLVORJmFpMXz2LCw2VHfveGfKowoWmMs/OwhLxUM1QQbX8gz+1pt8OaEMd3Xp83pv5LLASpzHM4os0Npy1JUjpllLgtekWwkhP5h3UJIPMLwH6L9/Cxyz+yNLBQyjKgFOLlKBf65jc2PpctOlVQRTWth8L5F0dzR6YM0NnXw+6n0MNg5bvnb0sZ1b7Z1YtnQeOmf5FQsOzHXtTE06Dw2Bw58ctfrEF9YnhXaKSHr99Xlt5/YTYPYG9QVAJxGgYT5tpRkwMNDKUpyl0hYQ/rohadQ==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by SA1PR20MB5247.namprd20.prod.outlook.com (2603:10b6:806:25e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 09:42:41 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7046.024; Tue, 5 Dec 2023
+ 09:42:41 +0000
+From:   Inochi Amaoto <inochiama@outlook.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Inochi Amaoto <inochiama@outlook.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>, qiujingbao.dlmu@gmail.com,
+        dlan@gentoo.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH 0/4] riscv: sophgo: add clock support for Sophgo CV1800 SoCs
+Date:   Tue,  5 Dec 2023 17:42:30 +0800
+Message-ID: <IA1PR20MB495382B725AFF6FC2C336BA6BB85A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.43.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgBHShC18G5lWm4xCw--.9041S7
-X-Coremail-Antispam: 1UD129KBjvJXoW3JF43Xr13GF48ZFy5tw1DKFg_yoWxJFWfp3
-        yftF98Jr48ArWfZrW7Ka4DZayrZw1jqa9rtry3Wa4fJw1ftr43KFyY9FyUAFykJa4Fyr45
-        ZayrJFWfZFyqgr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9m14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUCXdbUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain
+X-TMN:  [g7mMLR4qKkk/op8//Y8z28e1pmKbnJxMfJoI9g8aZ1k=]
+X-ClientProxiedBy: TYAPR01CA0042.jpnprd01.prod.outlook.com
+ (2603:1096:404:28::30) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID: <20231205094231.943544-1-inochiama@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SA1PR20MB5247:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7a254ba0-b03f-4d6c-91d3-08dbf576862d
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a78+eworjdu5xTkdasuOljIqp1BnPOpBbxF9LYxPMB+ZmvgANdW5cnV56h1hPle/PAXaQwcV0Q40oXvQ/wBZ2qZTSoVZsZsWehoTMFGv8Nnj68xcEqfHNYsynRdd0XDbQB2yvy6exX5hnrIk6AQwEmDXie47aQSW+RPbVCKejapR4OWAMys1EI4YGaUKX9NU1z+8NyaNllP82svdJAfr26VEZU7eq/EtVP0OtD8+nMPGVfY+LICsO9PW3Eos3iElwHcFVIphWe2QKsY6GfkWx0yZRywTrtn+YjYCX97mVviLCm384POsogV0w0XOXMXJpXYZR8Fxb7i6XyBsQgpuqX4jXf6HAAEzEs0HJd1dSY+I1SJciIp32ddJYfG3U0zC6EHq8sO3yelupq89nrQLxBz+pzOMPcybjBge5KNCtTronG+raNugN5ftF5+nGsJCkzQm5yPuHzoR0mc7piyUZHeFG0xCDcVe42sIKs11cp2+qFFxp/poYMiTNiLTXK8IuEFX7rjCIAVsphqOc0HWPqTKDplZ1dkXkWspXstwnbTI7UpqASdPAS6LDyt4e7Vv9bvKEc8Z7BZX+WoTYTw0SBvrtgWIOU+2UH/u+DgOd9IMPJ9tNf7EHv57AQpyhfqP
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TYSUAgliUxHamQhudkwWGjlaD2qB3WoXS7DZZ6xnDlfUqoXZ7nEtKI0lMRkX?=
+ =?us-ascii?Q?LglhB6pVxIfGd2JkXsbrJdOMcxjS5UcPKk7NRZ1TVoTYtXs2vrB88WoN55ss?=
+ =?us-ascii?Q?zjrpAL8mlVoc5+o81+JkHzAw9Gp0WEqrGBaIEXw3bqUKuBKguxmcr8bsD7yM?=
+ =?us-ascii?Q?GzJdsn6heZnGDG8S1F4JksnMCOhbhxsiBGCbfc7DAa2+G2j12M/ozjTRqIoG?=
+ =?us-ascii?Q?2+g3lvhSwrYBP0jqQYweVwG4SzOoXziW7DwC6Q3o8joCasfvKzOxprv/WTpo?=
+ =?us-ascii?Q?Inen286JqIhwE61hE2V3ANUQEK7mPhoErx44CATgG+2CauLLIwZ6WxKVuGwK?=
+ =?us-ascii?Q?FLXtHH8Cd7dDUnAfSDPk0bPTM3EXfWksRMBGjXeIGLoRg6/ElVpfrKNhWRmp?=
+ =?us-ascii?Q?4WkzLjGbvFmZLEyZNF0quY0Wqrrj2jDCogESL2uT9R3pO3ddRpIGaxgKeqzI?=
+ =?us-ascii?Q?OtG+Qv1A2vlZBHwAgBhNITZ19I/9pQtmEhBbEl2QY8gwin4vzTQIDbVji79C?=
+ =?us-ascii?Q?5rzSTI3JnNcuCQav0VM8135A87L4A34Nelk+EsrMGDiOOzpqnXPCjSszjdvL?=
+ =?us-ascii?Q?IU4XMeYSmZvLyCcmw178DokLRXcVfCjoaROCWIhwfzlZSFph+A8DuXy0MH95?=
+ =?us-ascii?Q?yU37NmamdlLiLmUHVIzT/q9pkrZdZxy/NK+Y5QJQU8KThtu/qsKo1Gn7Yep/?=
+ =?us-ascii?Q?43IciCwVz6Tj/SFGFY/KHW2/8nwnshJ++FrA6j21Oao5PVmat+f51/ayKsIc?=
+ =?us-ascii?Q?xChKo5Va3CcnQijV7r7Xjcy3bN+pC6ztBNF6pz4S2HGeDVOe6Mho5xt0RNzw?=
+ =?us-ascii?Q?SGgblqC7viuvaQt6aDtfCKzwrsqQCl1jTg6liHY6FDSAazDo266VoSFpmMrb?=
+ =?us-ascii?Q?EYy68Bu2LhtSEo1SeTOFhrjItnIee1n7FQsIrWbFxnUkdxwTdCLTCcRyDPM7?=
+ =?us-ascii?Q?OpeM0f39yUOv8TJI6bF8VXs8exjbjeBgRp9fpnGsH+zgzsVnywBo8Hj6eoDo?=
+ =?us-ascii?Q?bFEcTWelwT/Ebo44ChiWZdSbKWfHzk0iSPAv22Fk/Q3ryDi+4sgy4ZgJIapy?=
+ =?us-ascii?Q?/j/QdmPzDguSijXct6CrYOfwc+xw/6Gp3V3ig9WbJdclrc0bX+AjkYD0R1eV?=
+ =?us-ascii?Q?TdPGFfdaOXx4atBJSWusNX10/oYOZojUaBOyIhG++ivGpaegwYXzdQzU5IP3?=
+ =?us-ascii?Q?jEA6pEGseAFsEWOcabdwJbrNSBc/lsmo4vtpgPsZGULFyai2nTsEFMPuoko?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7a254ba0-b03f-4d6c-91d3-08dbf576862d
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 09:42:41.3016
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR20MB5247
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,192 +115,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+Add clock controller support for the Sophgo CV1800B and CV1812H.
 
-Currently sync thread is stopped from multiple contex:
- - idle_sync_thread
- - frozen_sync_thread
- - __md_stop_writes
- - md_set_readonly
- - do_md_stop
+Inochi Amaoto (4):
+  dt-bindings: clock: sophgo: Add CV1800 bindings
+  clk: sophgo: Add CV1800 series clock controller driver
+  riscv: dts: sophgo: add clock generator for Sophgo CV1800 series SoC
+  riscv: dts: sophgo: add uart clock for Sophgo CV1800 series SoC
 
-And there are some problems:
-1) sync_work is flushed while reconfig_mutex is grabbed, this can
-   deadlock because the work function will grab reconfig_mutex as well.
-2) md_reap_sync_thread() can't be called directly while md_do_sync() is
-   not finished yet, for example, commit 130443d60b1b ("md: refactor
-   idle/frozen_sync_thread() to fix deadlock").
-3) If MD_RECOVERY_RUNNING is not set, there is no need to stop
-   sync_thread at all because sync_thread must not be registered.
+ .../bindings/clock/sophgo,cv1800-clk.yaml     |   53 +
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi       |    4 +
+ arch/riscv/boot/dts/sophgo/cv1812h.dtsi       |    4 +
+ arch/riscv/boot/dts/sophgo/cv18xx.dtsi        |   28 +-
+ drivers/clk/Kconfig                           |    1 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/sophgo/Kconfig                    |    7 +
+ drivers/clk/sophgo/Makefile                   |    7 +
+ drivers/clk/sophgo/clk-cv1800.c               | 1548 +++++++++++++++++
+ drivers/clk/sophgo/clk-cv1800.h               |  123 ++
+ drivers/clk/sophgo/clk-cv18xx-common.c        |   76 +
+ drivers/clk/sophgo/clk-cv18xx-common.h        |   85 +
+ drivers/clk/sophgo/clk-cv18xx-ip.c            |  898 ++++++++++
+ drivers/clk/sophgo/clk-cv18xx-ip.h            |  266 +++
+ drivers/clk/sophgo/clk-cv18xx-pll.c           |  465 +++++
+ drivers/clk/sophgo/clk-cv18xx-pll.h           |   79 +
+ include/dt-bindings/clock/sophgo,cv1800.h     |  174 ++
+ 17 files changed, 3814 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
+ create mode 100644 drivers/clk/sophgo/Kconfig
+ create mode 100644 drivers/clk/sophgo/Makefile
+ create mode 100644 drivers/clk/sophgo/clk-cv1800.c
+ create mode 100644 drivers/clk/sophgo/clk-cv1800.h
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-common.c
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-common.h
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-ip.c
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-ip.h
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-pll.c
+ create mode 100644 drivers/clk/sophgo/clk-cv18xx-pll.h
+ create mode 100644 include/dt-bindings/clock/sophgo,cv1800.h
 
-Factor out a helper stop_sync_thread(), so that above contex will behave
-the same. Fix 1) by flushing sync_work after reconfig_mutex is released,
-before waiting for sync_thread to be done; Fix 2) bt letting daemon thread
-to unregister sync_thread; Fix 3) by always checking MD_RECOVERY_RUNNING
-first.
-
-Fixes: db5e653d7c9f ("md: delay choosing sync action to md_start_sync()")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/md/md.c | 90 ++++++++++++++++++++-----------------------------
- 1 file changed, 37 insertions(+), 53 deletions(-)
-
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 2d8e45a1af23..bc9d67af1961 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -4840,25 +4840,29 @@ action_show(struct mddev *mddev, char *page)
- 	return sprintf(page, "%s\n", type);
- }
- 
--static void stop_sync_thread(struct mddev *mddev)
-+/**
-+ * stop_sync_thread() - wait for sync_thread to stop if it's running.
-+ * @mddev:	the array.
-+ * @locked:	if set, reconfig_mutex will still be held after this function
-+ *		return; if not set, reconfig_mutex will be released after this
-+ *		function return.
-+ * @check_seq:	if set, only wait for curent running sync_thread to stop, noted
-+ *		that new sync_thread can still start.
-+ */
-+static void stop_sync_thread(struct mddev *mddev, bool locked, bool check_seq)
- {
--	if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--		return;
-+	int sync_seq;
- 
--	if (mddev_lock(mddev))
--		return;
-+	if (check_seq)
-+		sync_seq = atomic_read(&mddev->sync_seq);
- 
--	/*
--	 * Check again in case MD_RECOVERY_RUNNING is cleared before lock is
--	 * held.
--	 */
- 	if (!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery)) {
--		mddev_unlock(mddev);
-+		if (!locked)
-+			mddev_unlock(mddev);
- 		return;
- 	}
- 
--	if (work_pending(&mddev->sync_work))
--		flush_workqueue(md_misc_wq);
-+	mddev_unlock(mddev);
- 
- 	set_bit(MD_RECOVERY_INTR, &mddev->recovery);
- 	/*
-@@ -4866,21 +4870,28 @@ static void stop_sync_thread(struct mddev *mddev)
- 	 * never happen
- 	 */
- 	md_wakeup_thread_directly(mddev->sync_thread);
-+	if (work_pending(&mddev->sync_work))
-+		flush_work(&mddev->sync_work);
- 
--	mddev_unlock(mddev);
-+	wait_event(resync_wait,
-+		   !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery) ||
-+		   (check_seq && sync_seq != atomic_read(&mddev->sync_seq)));
-+
-+	if (locked)
-+		mddev_lock_nointr(mddev);
- }
- 
- static void idle_sync_thread(struct mddev *mddev)
- {
--	int sync_seq = atomic_read(&mddev->sync_seq);
--
- 	mutex_lock(&mddev->sync_mutex);
- 	clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--	stop_sync_thread(mddev);
- 
--	wait_event(resync_wait, sync_seq != atomic_read(&mddev->sync_seq) ||
--			!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
-+	if (mddev_lock(mddev)) {
-+		mutex_unlock(&mddev->sync_mutex);
-+		return;
-+	}
- 
-+	stop_sync_thread(mddev, false, true);
- 	mutex_unlock(&mddev->sync_mutex);
- }
- 
-@@ -4888,11 +4899,13 @@ static void frozen_sync_thread(struct mddev *mddev)
- {
- 	mutex_lock(&mddev->sync_mutex);
- 	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--	stop_sync_thread(mddev);
- 
--	wait_event(resync_wait, mddev->sync_thread == NULL &&
--			!test_bit(MD_RECOVERY_RUNNING, &mddev->recovery));
-+	if (mddev_lock(mddev)) {
-+		mutex_unlock(&mddev->sync_mutex);
-+		return;
-+	}
- 
-+	stop_sync_thread(mddev, false, false);
- 	mutex_unlock(&mddev->sync_mutex);
- }
- 
-@@ -6264,14 +6277,7 @@ static void md_clean(struct mddev *mddev)
- 
- static void __md_stop_writes(struct mddev *mddev)
- {
--	set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
--	if (work_pending(&mddev->sync_work))
--		flush_workqueue(md_misc_wq);
--	if (mddev->sync_thread) {
--		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
--		md_reap_sync_thread(mddev);
--	}
--
-+	stop_sync_thread(mddev, true, false);
- 	del_timer_sync(&mddev->safemode_timer);
- 
- 	if (mddev->pers && mddev->pers->quiesce) {
-@@ -6363,18 +6369,8 @@ static int md_set_readonly(struct mddev *mddev, struct block_device *bdev)
- 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		md_wakeup_thread(mddev->thread);
- 	}
--	if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
--
--	/*
--	 * Thread might be blocked waiting for metadata update which will now
--	 * never happen
--	 */
--	md_wakeup_thread_directly(mddev->sync_thread);
- 
--	mddev_unlock(mddev);
--	wait_event(resync_wait, !test_bit(MD_RECOVERY_RUNNING,
--					  &mddev->recovery));
-+	stop_sync_thread(mddev, false, false);
- 	wait_event(mddev->sb_wait,
- 		   !test_bit(MD_SB_CHANGE_PENDING, &mddev->sb_flags));
- 	mddev_lock_nointr(mddev);
-@@ -6428,20 +6424,8 @@ static int do_md_stop(struct mddev *mddev, int mode,
- 		set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		md_wakeup_thread(mddev->thread);
- 	}
--	if (test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
--		set_bit(MD_RECOVERY_INTR, &mddev->recovery);
- 
--	/*
--	 * Thread might be blocked waiting for metadata update which will now
--	 * never happen
--	 */
--	md_wakeup_thread_directly(mddev->sync_thread);
--
--	mddev_unlock(mddev);
--	wait_event(resync_wait, (mddev->sync_thread == NULL &&
--				 !test_bit(MD_RECOVERY_RUNNING,
--					   &mddev->recovery)));
--	mddev_lock_nointr(mddev);
-+	stop_sync_thread(mddev, true, false);
- 
- 	mutex_lock(&mddev->open_mutex);
- 	if ((mddev->pers && atomic_read(&mddev->openers) > !!bdev) ||
--- 
-2.39.2
+--
+2.43.0
 
