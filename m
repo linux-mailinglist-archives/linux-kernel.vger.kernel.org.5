@@ -2,74 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0B8804DD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818DB804DC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:28:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbjLEJ24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
+        id S229980AbjLEJ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235617AbjLEJ2k (ORCPT
+        with ESMTP id S229584AbjLEJ1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:28:40 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B4D10C1
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:37 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-5be30d543c4so2022980a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:37 -0800 (PST)
+        Tue, 5 Dec 2023 04:27:55 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20488A7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:01 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40bd5eaa66cso41521205e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701768516; x=1702373316; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TqgLdIh7ZFE1gYel11FicvzVIx+QwNFkbGHDaWfBExY=;
-        b=Ey9WceovH49bjHFMTOwUGvcCuVxYE8f+h17eKA2scnzxW7X0XredgNdBalfvjO0ldD
-         xTYAXs46DwIgoFX5I0x+qTnUbG9XHKXiCuzygZALwC4qIo9Rh0m/iwRXzbujPyC5HVQD
-         NmJM58uW44pmSm3pjrs2hUibDVqJ1hYb3/OPtIQxEAWHsftJy+mAtyjhppOWKKHPicDX
-         SkpD8c9dsN+JieRShsRhlRO7DoA81sfgywO2oyTdllvPEWds29fcEO/IXfDPN+y54W5S
-         7iZdFQnCsfv2iCX2gVRyqzsIjg3bv8Prmzrmshmd5mGVJIw1i87nN6+94hYJcEz/Z1sh
-         oGag==
+        d=linaro.org; s=google; t=1701768479; x=1702373279; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CS8J4q12YedWzT2gH/0LjzjeAMQwNUR2jyKyMPxxBZo=;
+        b=JxbHmGjj4Sb3PUx637x9D9ZtjtOblWVs7w4ZLATyWWZFBNjcVdjSpcoWHEk14L7kay
+         IiU3qUbVz/JeTdvAAndlg06wAi1IA40HcK//WnGt/6a8kAsDcQlv8JYExR0ezKpFfdWV
+         j/pg8eaAk0u1IKjBcCovohs87FpMjSxufls/88xerpuPpPlWmmX2uSKaYnDb7sX6kxbU
+         Gy+SXhSxsqpQrWKSam5dvWSjhtTZBK6OhWmhmdQFs+zM28ERQx6sxWmX2EPdhGz7o1aI
+         VBPkRpNAeyYOt6aAdJoRwujTa/qG04DjLE5eP/eajcxaUCrJDyLBC1PI3HOjvJDtVBWB
+         C3zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701768516; x=1702373316;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TqgLdIh7ZFE1gYel11FicvzVIx+QwNFkbGHDaWfBExY=;
-        b=SDbM1P9XWyNDtdL5iMvPPjYBukjgFU0eImw82VhYBUgyY6pinIA8PlJlLXVPVSTprd
-         2tqq1my8CbKb7pVpZf9EDMUgxRaFiyEE8/6lQmj8tek7U7epsQ9v2aYo3NqyE5rZA0is
-         E7apA9fz/uldNVMAWaUUgHH5KfC+NmVbogn1vCxsLA0qPvasixItUSK+FxgJ0d59ejL4
-         JNZ+C9BftfpQduXnJOUt7Y2pLOV72PR64bwwnFWQWjc1yds8O+GSrxmT17DlM+jwVF94
-         8hsPaOhpcEh14LOX7XBuLSrhQIsmtvWlf+vSZbltr5OOcP8azm6YAygJDGiIXf3nmT7E
-         w4tg==
-X-Gm-Message-State: AOJu0Yxrp1wPq49+N05cntOKzao5BwmF/KMduFZav4R2Ys29tleTdW0Q
-        +/iRfBlUXOiMJwXSj68gHzub9Q==
-X-Google-Smtp-Source: AGHT+IFq0drciTkZXIld809/gA8+vG+lQq4S7/UbBc5Z5Plazz8vtmMWy6JN/F/D8ld5FPtdHnAdww==
-X-Received: by 2002:a05:6a20:c906:b0:187:a4df:4e57 with SMTP id gx6-20020a056a20c90600b00187a4df4e57mr4180155pzb.20.1701768516597;
-        Tue, 05 Dec 2023 01:28:36 -0800 (PST)
-Received: from localhost.localdomain ([101.10.93.135])
-        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006cdd723bb6fsm8858788pfu.115.2023.12.05.01.28.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Dec 2023 01:28:36 -0800 (PST)
-From:   Jerry Shih <jerry.shih@sifive.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
-        davem@davemloft.net, conor.dooley@microchip.com,
-        ebiggers@kernel.org, ardb@kernel.org, conor@kernel.org
-Cc:     heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH v3 07/12] RISC-V: crypto: add Zvkg accelerated GCM GHASH implementation
-Date:   Tue,  5 Dec 2023 17:27:56 +0800
-Message-Id: <20231205092801.1335-8-jerry.shih@sifive.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20231205092801.1335-1-jerry.shih@sifive.com>
-References: <20231205092801.1335-1-jerry.shih@sifive.com>
+        d=1e100.net; s=20230601; t=1701768479; x=1702373279;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CS8J4q12YedWzT2gH/0LjzjeAMQwNUR2jyKyMPxxBZo=;
+        b=IFrXeia9SeQel4XjXLGb+/CW/6x7bfoMxCfKXXVJ8npV3BOxKwI5qcbYHbHf7IQZL4
+         Jl/9ud4R2Mpx8weKB/DvABTLLszN2mc/egaKHIhhAKSiF30rBoDscTKexOYULL7QIlqG
+         RQ1lI5INTAHUHa6qa5rqhDSyGhgwaMIP3RrVqJhwtyv93+6pR01HwJ5gxIfaos3LRpzn
+         W6jBH0B1tUC7HUQBCSoj6RfpQKSa7mZJexB/zqs27eKslYnvbNy97Q4puXMzYH773y0d
+         VcuCzc3LApSAzVUUEIU5JaeM3hVo4ETjHwNvHRPEpTcJW4/0xJUYvXwGjgtEMgGrcJEF
+         obMA==
+X-Gm-Message-State: AOJu0YxLJR7r8LLMzizqxqxw4IbR7rhEuVtM/CA+ng2Tl4hz/bpru6fW
+        y1S4bEgwlG7JDWa+i6j5Es+yYw==
+X-Google-Smtp-Source: AGHT+IHp0w+gdLsV8lTWGvMje0TOphY3F9ZkUPGE9sTLVZ3z6dH8XGaCGDduDsC7FdZ9FSafLrmTzw==
+X-Received: by 2002:a05:600c:4ecf:b0:40b:4b93:a369 with SMTP id g15-20020a05600c4ecf00b0040b4b93a369mr304894wmq.14.1701768479600;
+        Tue, 05 Dec 2023 01:27:59 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b0040b34720206sm18034665wmb.12.2023.12.05.01.27.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 01:27:59 -0800 (PST)
+Message-ID: <78a81d54-f12c-401e-9a26-5125eb0b1c65@linaro.org>
+Date:   Tue, 5 Dec 2023 10:27:56 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+Content-Language: en-US
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Tony Lindgren <tony@atomide.com>, Andrew Davis <afd@ti.com>,
+        Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Adam Ford <aford173@gmail.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
+        linux-mips@vger.kernel.org
+References: <20231204182245.33683-1-afd@ti.com>
+ <20231204182245.33683-2-afd@ti.com>
+ <b97f04f6-cda2-4e9b-b729-a5149e36f978@linaro.org>
+ <20231205075657.GN5169@atomide.com>
+ <df7dd7b0-f315-4033-985a-175f75568a8c@linaro.org>
+ <20231205081031.GO5169@atomide.com>
+ <efcd64f4-00d2-4671-af3a-e27764f70e8d@linaro.org>
+ <20231205083001.GP5169@atomide.com>
+ <27f2e3a3-0791-4278-adb2-55ed76820a3a@linaro.org>
+ <20231205100246.5db0d6a1@aktux>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231205100246.5db0d6a1@aktux>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,371 +150,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a gcm hash implementation using the Zvkg extension from OpenSSL
-(openssl/openssl#21923).
+On 05/12/2023 10:02, Andreas Kemnade wrote:
+> On Tue, 5 Dec 2023 09:45:44 +0100
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+> 
+>>> Sure the clock nodes can be there for the child IP, but they won't do
+>>> anything. And still need to be managed separately by the device driver if
+>>> added.  
+>>
+>> So if OS does not have runtime PM, the bindings are wrong? Bindings
+>> should not depend on some particular feature of some particular OS.
+> 
+> Any user of the devicetree sees that there is a parent and the parent needs
+> to be enabled by some mechanism.
+> E.g. I2c devices do not specify the clocks of the parent (the i2c master)
 
-The perlasm here is different from the original implementation in OpenSSL.
-The OpenSSL assumes that the H is stored in little-endian. Thus, it needs
-to convert the H to big-endian for Zvkg instructions. In kernel, we have
-the big-endian H directly. There is no need for endian conversion.
+If you use this analogy, then compare it with an I2C device which has
+these clock inputs. Such device must have clocks in the bindings.
 
-Co-developed-by: Christoph Müllner <christoph.muellner@vrull.eu>
-Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
-Co-developed-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
-Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
----
-Changelog v3:
- - Use asm mnemonics for the instructions in RVV 1.0 extension.
+> 
+> Maybe it is just more fine-grained on omap.
+> 
+> look e.g. at ti/omap/omap4-l4.dtsi
+> there are target-module@xxxx
+> with the devices as a child and a clock in the parent.
 
-Changelog v2:
- - Do not turn on kconfig `GHASH_RISCV64` option by default.
- - Add `asmlinkage` qualifier for crypto asm function.
- - Update the ghash fallback path in ghash_blocks().
- - Rename structure riscv64_ghash_context to riscv64_ghash_tfm_ctx.
- - Fold ghash_update_zvkg() and ghash_final_zvkg().
- - Reorder structure riscv64_ghash_alg_zvkg members initialization in the
-   order declared.
----
- arch/riscv/crypto/Kconfig               |  10 ++
- arch/riscv/crypto/Makefile              |   7 +
- arch/riscv/crypto/ghash-riscv64-glue.c  | 175 ++++++++++++++++++++++++
- arch/riscv/crypto/ghash-riscv64-zvkg.pl | 100 ++++++++++++++
- 4 files changed, 292 insertions(+)
- create mode 100644 arch/riscv/crypto/ghash-riscv64-glue.c
- create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.pl
+Not related to runtime PM...
 
-diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
-index 9d991ddda289..6863f01a2ab0 100644
---- a/arch/riscv/crypto/Kconfig
-+++ b/arch/riscv/crypto/Kconfig
-@@ -34,4 +34,14 @@ config CRYPTO_AES_BLOCK_RISCV64
- 	  - Zvkb vector crypto extension (CTR/XTS)
- 	  - Zvkg vector crypto extension (XTS)
- 
-+config CRYPTO_GHASH_RISCV64
-+	tristate "Hash functions: GHASH"
-+	depends on 64BIT && RISCV_ISA_V
-+	select CRYPTO_GCM
-+	help
-+	  GCM GHASH function (NIST SP 800-38D)
-+
-+	  Architecture: riscv64 using:
-+	  - Zvkg vector crypto extension
-+
- endmenu
-diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
-index 9574b009762f..94a7f8eaa8a7 100644
---- a/arch/riscv/crypto/Makefile
-+++ b/arch/riscv/crypto/Makefile
-@@ -9,6 +9,9 @@ aes-riscv64-y := aes-riscv64-glue.o aes-riscv64-zvkned.o
- obj-$(CONFIG_CRYPTO_AES_BLOCK_RISCV64) += aes-block-riscv64.o
- aes-block-riscv64-y := aes-riscv64-block-mode-glue.o aes-riscv64-zvkned-zvbb-zvkg.o aes-riscv64-zvkned-zvkb.o
- 
-+obj-$(CONFIG_CRYPTO_GHASH_RISCV64) += ghash-riscv64.o
-+ghash-riscv64-y := ghash-riscv64-glue.o ghash-riscv64-zvkg.o
-+
- quiet_cmd_perlasm = PERLASM $@
-       cmd_perlasm = $(PERL) $(<) void $(@)
- 
-@@ -21,6 +24,10 @@ $(obj)/aes-riscv64-zvkned-zvbb-zvkg.S: $(src)/aes-riscv64-zvkned-zvbb-zvkg.pl
- $(obj)/aes-riscv64-zvkned-zvkb.S: $(src)/aes-riscv64-zvkned-zvkb.pl
- 	$(call cmd,perlasm)
- 
-+$(obj)/ghash-riscv64-zvkg.S: $(src)/ghash-riscv64-zvkg.pl
-+	$(call cmd,perlasm)
-+
- clean-files += aes-riscv64-zvkned.S
- clean-files += aes-riscv64-zvkned-zvbb-zvkg.S
- clean-files += aes-riscv64-zvkned-zvkb.S
-+clean-files += ghash-riscv64-zvkg.S
-diff --git a/arch/riscv/crypto/ghash-riscv64-glue.c b/arch/riscv/crypto/ghash-riscv64-glue.c
-new file mode 100644
-index 000000000000..b01ab5714677
---- /dev/null
-+++ b/arch/riscv/crypto/ghash-riscv64-glue.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * RISC-V optimized GHASH routines
-+ *
-+ * Copyright (C) 2023 VRULL GmbH
-+ * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
-+ *
-+ * Copyright (C) 2023 SiFive, Inc.
-+ * Author: Jerry Shih <jerry.shih@sifive.com>
-+ */
-+
-+#include <asm/simd.h>
-+#include <asm/vector.h>
-+#include <crypto/ghash.h>
-+#include <crypto/internal/hash.h>
-+#include <crypto/internal/simd.h>
-+#include <linux/crypto.h>
-+#include <linux/linkage.h>
-+#include <linux/module.h>
-+#include <linux/types.h>
-+
-+/* ghash using zvkg vector crypto extension */
-+asmlinkage void gcm_ghash_rv64i_zvkg(be128 *Xi, const be128 *H, const u8 *inp,
-+				     size_t len);
-+
-+struct riscv64_ghash_tfm_ctx {
-+	be128 key;
-+};
-+
-+struct riscv64_ghash_desc_ctx {
-+	be128 shash;
-+	u8 buffer[GHASH_BLOCK_SIZE];
-+	u32 bytes;
-+};
-+
-+static inline void ghash_blocks(const struct riscv64_ghash_tfm_ctx *tctx,
-+				struct riscv64_ghash_desc_ctx *dctx,
-+				const u8 *src, size_t srclen)
-+{
-+	/* The srclen is nonzero and a multiple of 16. */
-+	if (crypto_simd_usable()) {
-+		kernel_vector_begin();
-+		gcm_ghash_rv64i_zvkg(&dctx->shash, &tctx->key, src, srclen);
-+		kernel_vector_end();
-+	} else {
-+		do {
-+			crypto_xor((u8 *)&dctx->shash, src, GHASH_BLOCK_SIZE);
-+			gf128mul_lle(&dctx->shash, &tctx->key);
-+			srclen -= GHASH_BLOCK_SIZE;
-+			src += GHASH_BLOCK_SIZE;
-+		} while (srclen);
-+	}
-+}
-+
-+static int ghash_init(struct shash_desc *desc)
-+{
-+	struct riscv64_ghash_desc_ctx *dctx = shash_desc_ctx(desc);
-+
-+	*dctx = (struct riscv64_ghash_desc_ctx){};
-+
-+	return 0;
-+}
-+
-+static int ghash_update_zvkg(struct shash_desc *desc, const u8 *src,
-+			     unsigned int srclen)
-+{
-+	size_t len;
-+	const struct riscv64_ghash_tfm_ctx *tctx = crypto_shash_ctx(desc->tfm);
-+	struct riscv64_ghash_desc_ctx *dctx = shash_desc_ctx(desc);
-+
-+	if (dctx->bytes) {
-+		if (dctx->bytes + srclen < GHASH_BLOCK_SIZE) {
-+			memcpy(dctx->buffer + dctx->bytes, src, srclen);
-+			dctx->bytes += srclen;
-+			return 0;
-+		}
-+		memcpy(dctx->buffer + dctx->bytes, src,
-+		       GHASH_BLOCK_SIZE - dctx->bytes);
-+
-+		ghash_blocks(tctx, dctx, dctx->buffer, GHASH_BLOCK_SIZE);
-+
-+		src += GHASH_BLOCK_SIZE - dctx->bytes;
-+		srclen -= GHASH_BLOCK_SIZE - dctx->bytes;
-+		dctx->bytes = 0;
-+	}
-+	len = srclen & ~(GHASH_BLOCK_SIZE - 1);
-+
-+	if (len) {
-+		ghash_blocks(tctx, dctx, src, len);
-+		src += len;
-+		srclen -= len;
-+	}
-+
-+	if (srclen) {
-+		memcpy(dctx->buffer, src, srclen);
-+		dctx->bytes = srclen;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ghash_final_zvkg(struct shash_desc *desc, u8 *out)
-+{
-+	const struct riscv64_ghash_tfm_ctx *tctx = crypto_shash_ctx(desc->tfm);
-+	struct riscv64_ghash_desc_ctx *dctx = shash_desc_ctx(desc);
-+	int i;
-+
-+	if (dctx->bytes) {
-+		for (i = dctx->bytes; i < GHASH_BLOCK_SIZE; i++)
-+			dctx->buffer[i] = 0;
-+
-+		ghash_blocks(tctx, dctx, dctx->buffer, GHASH_BLOCK_SIZE);
-+	}
-+
-+	memcpy(out, &dctx->shash, GHASH_DIGEST_SIZE);
-+
-+	return 0;
-+}
-+
-+static int ghash_setkey(struct crypto_shash *tfm, const u8 *key,
-+			unsigned int keylen)
-+{
-+	struct riscv64_ghash_tfm_ctx *tctx = crypto_shash_ctx(tfm);
-+
-+	if (keylen != GHASH_BLOCK_SIZE)
-+		return -EINVAL;
-+
-+	memcpy(&tctx->key, key, GHASH_BLOCK_SIZE);
-+
-+	return 0;
-+}
-+
-+static struct shash_alg riscv64_ghash_alg_zvkg = {
-+	.init = ghash_init,
-+	.update = ghash_update_zvkg,
-+	.final = ghash_final_zvkg,
-+	.setkey = ghash_setkey,
-+	.descsize = sizeof(struct riscv64_ghash_desc_ctx),
-+	.digestsize = GHASH_DIGEST_SIZE,
-+	.base = {
-+		.cra_blocksize = GHASH_BLOCK_SIZE,
-+		.cra_ctxsize = sizeof(struct riscv64_ghash_tfm_ctx),
-+		.cra_priority = 303,
-+		.cra_name = "ghash",
-+		.cra_driver_name = "ghash-riscv64-zvkg",
-+		.cra_module = THIS_MODULE,
-+	},
-+};
-+
-+static inline bool check_ghash_ext(void)
-+{
-+	return riscv_isa_extension_available(NULL, ZVKG) &&
-+	       riscv_vector_vlen() >= 128;
-+}
-+
-+static int __init riscv64_ghash_mod_init(void)
-+{
-+	if (check_ghash_ext())
-+		return crypto_register_shash(&riscv64_ghash_alg_zvkg);
-+
-+	return -ENODEV;
-+}
-+
-+static void __exit riscv64_ghash_mod_fini(void)
-+{
-+	crypto_unregister_shash(&riscv64_ghash_alg_zvkg);
-+}
-+
-+module_init(riscv64_ghash_mod_init);
-+module_exit(riscv64_ghash_mod_fini);
-+
-+MODULE_DESCRIPTION("GCM GHASH (RISC-V accelerated)");
-+MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@vrull.eu>");
-+MODULE_LICENSE("GPL");
-+MODULE_ALIAS_CRYPTO("ghash");
-diff --git a/arch/riscv/crypto/ghash-riscv64-zvkg.pl b/arch/riscv/crypto/ghash-riscv64-zvkg.pl
-new file mode 100644
-index 000000000000..a414d77554d2
---- /dev/null
-+++ b/arch/riscv/crypto/ghash-riscv64-zvkg.pl
-@@ -0,0 +1,100 @@
-+#! /usr/bin/env perl
-+# SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause
-+#
-+# This file is dual-licensed, meaning that you can use it under your
-+# choice of either of the following two licenses:
-+#
-+# Copyright 2023 The OpenSSL Project Authors. All Rights Reserved.
-+#
-+# Licensed under the Apache License 2.0 (the "License"). You can obtain
-+# a copy in the file LICENSE in the source distribution or at
-+# https://www.openssl.org/source/license.html
-+#
-+# or
-+#
-+# Copyright (c) 2023, Christoph Müllner <christoph.muellner@vrull.eu>
-+# Copyright (c) 2023, Jerry Shih <jerry.shih@sifive.com>
-+# All rights reserved.
-+#
-+# Redistribution and use in source and binary forms, with or without
-+# modification, are permitted provided that the following conditions
-+# are met:
-+# 1. Redistributions of source code must retain the above copyright
-+#    notice, this list of conditions and the following disclaimer.
-+# 2. Redistributions in binary form must reproduce the above copyright
-+#    notice, this list of conditions and the following disclaimer in the
-+#    documentation and/or other materials provided with the distribution.
-+#
-+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-+
-+# - RV64I
-+# - RISC-V Vector ('V') with VLEN >= 128
-+# - RISC-V Vector GCM/GMAC extension ('Zvkg')
-+
-+use strict;
-+use warnings;
-+
-+use FindBin qw($Bin);
-+use lib "$Bin";
-+use lib "$Bin/../../perlasm";
-+use riscv;
-+
-+# $output is the last argument if it looks like a file (it has an extension)
-+# $flavour is the first argument if it doesn't look like a file
-+my $output = $#ARGV >= 0 && $ARGV[$#ARGV] =~ m|\.\w+$| ? pop : undef;
-+my $flavour = $#ARGV >= 0 && $ARGV[0] !~ m|\.| ? shift : undef;
-+
-+$output and open STDOUT,">$output";
-+
-+my $code=<<___;
-+.text
-+___
-+
-+###############################################################################
-+# void gcm_ghash_rv64i_zvkg(be128 *Xi, const be128 *H, const u8 *inp, size_t len)
-+#
-+# input: Xi: current hash value
-+#        H: hash key
-+#        inp: pointer to input data
-+#        len: length of input data in bytes (multiple of block size)
-+# output: Xi: Xi+1 (next hash value Xi)
-+{
-+my ($Xi,$H,$inp,$len) = ("a0","a1","a2","a3");
-+my ($vXi,$vH,$vinp,$Vzero) = ("v1","v2","v3","v4");
-+
-+$code .= <<___;
-+.p2align 3
-+.globl gcm_ghash_rv64i_zvkg
-+.type gcm_ghash_rv64i_zvkg,\@function
-+gcm_ghash_rv64i_zvkg:
-+    vsetivli zero, 4, e32, m1, ta, ma
-+    vle32.v $vH, ($H)
-+    vle32.v $vXi, ($Xi)
-+
-+Lstep:
-+    vle32.v $vinp, ($inp)
-+    add $inp, $inp, 16
-+    add $len, $len, -16
-+    @{[vghsh_vv $vXi, $vH, $vinp]}
-+    bnez $len, Lstep
-+
-+    vse32.v $vXi, ($Xi)
-+    ret
-+
-+.size gcm_ghash_rv64i_zvkg,.-gcm_ghash_rv64i_zvkg
-+___
-+}
-+
-+print $code;
-+
-+close STDOUT or die "error closing STDOUT: $!";
--- 
-2.28.0
+Best regards,
+Krzysztof
 
