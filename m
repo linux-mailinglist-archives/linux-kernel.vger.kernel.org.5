@@ -2,57 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1098804A3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46662804A43
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344424AbjLEGhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 01:37:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
+        id S1344485AbjLEGhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 01:37:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344429AbjLEGhA (ORCPT
+        with ESMTP id S1344429AbjLEGhD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 01:37:00 -0500
+        Tue, 5 Dec 2023 01:37:03 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF810136
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 22:37:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29301135;
+        Mon,  4 Dec 2023 22:37:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701758225; x=1733294225;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Z7mcQP5twc2Q1+h2RBQFr9z+2yBUEmf4+3Gz4Au0aKs=;
-  b=geqWMWmWknfguFyr6Oi7jYoEO/PqHbMBGc4xiSzBiULrI4w7YKL1MQWB
-   Pzrc3blgV6mnQKOOvlozofnvOwZTkBWEbhiFACe7miBYOw4l/qjBYFPO3
-   yYtS2dKrc/Dm6K1/8tPiVhFYBqe2MaOnlq44CoEt8CgBHJf3Np0bH9hYU
-   cKOHYsb5z5qStFaYoOy76mewiy2xlPWV3sh5wf8zAkRAdhDDmh1RXT/ZI
-   E/J+8WXpv+CT1i6WOJRTTNR+vehghjmpZnuPF7Tv5iTJD1WpE/bZ9YaCW
-   yeDnZ3UKND5HXCpkPOjcU4c9V9xK0b8whEJ2Chkm3X5cAtKWDnqdYuai1
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="374035360"
+  t=1701758229; x=1733294229;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F4InaQp/5As/bJn0SZDnulbk5E33HqfsSfpQ2I/hFac=;
+  b=DhAb3hbEPLTTAx2xP2MmhfGLOilAwt1ib18HigOKWjonVvujSec7mNX/
+   UFWiYrWvO4kzehZFf5CIkF1+LPBdfkzxrrUXOfTysMuY+E/03QkdHy2RA
+   q4sWZHUTWHgmi3v7MJY+iaEqvqS9B3thprmxrkUiSaHrjX1YtUJmjOt9+
+   dsk3YMzd+727RvF2EIUUkfEZtt0tIyEzBd3lBU9SECjNWYUu17LuF4XL5
+   j1/nb5RK/ncwv5aGC1iMbjr4EA/QtfD8bfcX6Qesjn3L+TKX/FuSJcBGL
+   vZVFgqxk+G1mSg/IDW8zh3D7O+Bh6fyCx1IaLZm4GPfs74dkX6zfWm2iD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="374035389"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="374035360"
+   d="scan'208";a="374035389"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 22:37:05 -0800
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 22:37:08 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764224098"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764224101"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="764224098"
+   d="scan'208";a="764224101"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orsmga007.jf.intel.com with ESMTP; 04 Dec 2023 22:37:03 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rAP3F-0008RS-1M;
+        id 1rAP3F-0008RU-1R;
         Tue, 05 Dec 2023 06:37:01 +0000
-Date:   Tue, 5 Dec 2023 14:36:15 +0800
+Date:   Tue, 5 Dec 2023 14:36:23 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c:135:42:
- warning: '%d' directive output may be truncated writing between 1 and 10
- bytes into a region of size 7
-Message-ID: <202312051441.oET2UCAw-lkp@intel.com>
+To:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
+        Jeff LaBundy <jeff@labundy.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        catalin.popescu@leica-geosystems.com,
+        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
+        hannah.rossiter@touchnetix.com,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        bsp-development.geo@leica-geosystems.com,
+        Kamel Bouhara <kamel.bouhara@bootlin.com>
+Subject: Re: [PATCH v4 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
+Message-ID: <202312051457.y3N1q3sZ-lkp@intel.com>
+References: <20231204140505.2838916-4-kamel.bouhara@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231204140505.2838916-4-kamel.bouhara@bootlin.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
@@ -63,79 +79,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: b1dd9bf6ead81bfb910de1df3be74e9d176cae47 net: dpaa2-eth: export buffer pool info into a new debugfs file
-date:   1 year, 1 month ago
-config: x86_64-buildonly-randconfig-002-20231205 (https://download.01.org/0day-ci/archive/20231205/202312051441.oET2UCAw-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051441.oET2UCAw-lkp@intel.com/reproduce)
+Hi Kamel,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on dtor-input/next]
+[also build test WARNING on dtor-input/for-linus robh/for-next linus/master krzk-dt/for-next v6.7-rc4 next-20231204]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Kamel-Bouhara/dt-bindings-vendor-prefixes-Add-TouchNetix-AS/20231204-222017
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
+patch link:    https://lore.kernel.org/r/20231204140505.2838916-4-kamel.bouhara%40bootlin.com
+patch subject: [PATCH v4 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
+config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231205/202312051457.y3N1q3sZ-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051457.y3N1q3sZ-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051441.oET2UCAw-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312051457.y3N1q3sZ-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
-   drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c: In function 'dpaa2_dbg_bp_show':
->> drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c:135:42: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 7 [-Wformat-truncation=]
-     135 |   snprintf(ch_name, sizeof(ch_name), "CH#%d", i);
-         |                                          ^~
-   drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c:135:38: note: directive argument in the range [0, 2147483646]
-     135 |   snprintf(ch_name, sizeof(ch_name), "CH#%d", i);
-         |                                      ^~~~~~~
-   drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c:135:3: note: 'snprintf' output between 5 and 14 bytes into a destination of size 10
-     135 |   snprintf(ch_name, sizeof(ch_name), "CH#%d", i);
-         |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/input/touchscreen/touchnetix_axiom.c: In function 'axiom_usage_to_target_address':
+>> drivers/input/touchscreen/touchnetix_axiom.c:142:31: warning: variable 'device_info' set but not used [-Wunused-but-set-variable]
+     142 |         struct axiom_devinfo *device_info;
+         |                               ^~~~~~~~~~~
 
 
-vim +135 drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
+vim +/device_info +142 drivers/input/touchscreen/touchnetix_axiom.c
 
-   121	
-   122	static int dpaa2_dbg_bp_show(struct seq_file *file, void *offset)
-   123	{
-   124		struct dpaa2_eth_priv *priv = (struct dpaa2_eth_priv *)file->private;
-   125		int i, j, num_queues, buf_cnt;
-   126		struct dpaa2_eth_bp *bp;
-   127		char ch_name[10];
-   128		int err;
-   129	
-   130		/* Print out the header */
-   131		seq_printf(file, "Buffer pool info for %s:\n", priv->net_dev->name);
-   132		seq_printf(file, "%s  %10s%15s", "IDX", "BPID", "Buf count");
-   133		num_queues = dpaa2_eth_queue_count(priv);
-   134		for (i = 0; i < num_queues; i++) {
- > 135			snprintf(ch_name, sizeof(ch_name), "CH#%d", i);
-   136			seq_printf(file, "%10s", ch_name);
-   137		}
-   138		seq_printf(file, "\n");
-   139	
-   140		/* For each buffer pool, print out its BPID, the number of buffers in
-   141		 * that buffer pool and the channels which are using it.
-   142		 */
-   143		for (i = 0; i < priv->num_bps; i++) {
-   144			bp = priv->bp[i];
-   145	
-   146			err = dpaa2_io_query_bp_count(NULL, bp->bpid, &buf_cnt);
-   147			if (err) {
-   148				netdev_warn(priv->net_dev, "Buffer count query error %d\n", err);
-   149				return err;
-   150			}
-   151	
-   152			seq_printf(file, "%3s%d%10d%15d", "BP#", i, bp->bpid, buf_cnt);
-   153			for (j = 0; j < num_queues; j++) {
-   154				if (priv->channel[j]->bp == bp)
-   155					seq_printf(file, "%10s", "x");
-   156				else
-   157					seq_printf(file, "%10s", "");
-   158			}
-   159			seq_printf(file, "\n");
-   160		}
-   161	
-   162		return 0;
-   163	}
-   164	
+   136	
+   137	/* Translate usage/page/offset triplet into physical address. */
+   138	static u16 axiom_usage_to_target_address(struct axiom_data *ts, char usage, char page,
+   139						 char offset)
+   140	{
+   141		struct axiom_usage_entry *usage_table;
+ > 142		struct axiom_devinfo *device_info;
+   143		u32 i;
+   144	
+   145		device_info = &ts->devinfo;
+   146		usage_table = ts->usage_table;
+   147	
+   148		/* At the moment the convention is that u31 is always at physical address 0x0 */
+   149		if (!ts->usage_table_populated) {
+   150			if (usage == AXIOM_DEVINFO_USAGE_ID)
+   151				return ((page << 8) + offset);
+   152			else
+   153				return 0xffff;
+   154		}
+   155	
+   156		for (i = 0; i < ts->devinfo.num_usages; i++) {
+   157			if (usage_table[i].id != usage)
+   158				continue;
+   159	
+   160			if (page >= usage_table[i].num_pages) {
+   161				dev_err(ts->dev, "Invalid usage table! usage: %u, page: %u, offset: %u\n",
+   162					usage, page, offset);
+   163				return 0xffff;
+   164			}
+   165			break;
+   166		}
+   167	
+   168		return ((usage_table[i].start_page + page) << 8) + offset;
+   169	}
+   170	
 
 -- 
 0-DAY CI Kernel Test Service
