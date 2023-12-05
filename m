@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 585D1804477
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEB580447D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376277AbjLECIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:08:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        id S1376291AbjLECKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:10:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjLECIN (ORCPT
+        with ESMTP id S229575AbjLECKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:08:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13BC107
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:08:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7BAFFC433CD;
-        Tue,  5 Dec 2023 02:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701742099;
-        bh=HMwG43d889XcMV+jjmbOif7Ze0ji3fZ14zwvIe/4VZw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=INdjCd2uqwoBJoP57dg01wXamoAswVMWdjch7XahOTlF2Ng616xMqthVCUwUEmfgn
-         8NxE1OUTFzmjfhq6PNPX3SU05AsIOyrn2I9JSljbPWZxXLd6D+CxkjuzN6T7BX7oP+
-         DCGA5af9Xjm2SCdmGU6ZVU1E3cktU2c5CKA6LUf3QgixV80vz4UUAp7nftNXsaWqK4
-         /5+BHkPsJmYo/YJbGHY+CKkJEZQ0iogoK62j+eC1TXq7XGHJ2cVhXW3NAZj7QVGygz
-         +qn/4ekBM65mrDvqfwbj3vQi9T8RQrl0+DGQdNFr//hc5xjoGgnOgmE6JpxaqaH1l0
-         FSzegPvHSaQng==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6657DDD4EEF;
-        Tue,  5 Dec 2023 02:08:19 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 4 Dec 2023 21:10:06 -0500
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746FD10F
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:10:12 -0800 (PST)
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b8b5221627so4115814b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:10:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701742212; x=1702347012;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FgfZZfyJWSdHuyV8ubdtxl0EppomZgVAi2DJM2XdXok=;
+        b=p66OPi7qMpztYCEC5p/Yk4xT4qMN+BtHr3+Uj7TrZHaHzEVRQYTQb4A3mD3Tf9UZhE
+         wBOQkqTzbux33WH3fTr/RrZ0kbRddkDWP/nunpKAoP4/vFiK4U+iH8on89rYtzaBvIfk
+         apkR7YSvjkdaGYReiHKEJVKX68c3yqVk5BIDzPeq9his4LVhvbq7jbKpubEdsgnaC6e/
+         OzOvxOxs3jWJJZBTh/3wzmtSvgeyLuQXZq6uzcDtWcddbUmglJ5MwcI6p3m3+Gh4dwJm
+         apM1rFkp32UbiyVmc+WnVNG7vdtcvLNogu5YkHRbGinJqykM2MKrknmHlvrj1dngNIL8
+         OWHg==
+X-Gm-Message-State: AOJu0YxaVMxp/YOfVdPZhdqX0Oq6zhqUmN0Dfpijl6RXKcFi9pSssTEZ
+        Zky1BtTIzGKp3WRzhwwJFWBZ24eoylmdXtui8j0uooFVo0+UbhQ=
+X-Google-Smtp-Source: AGHT+IFD4CJ6gTupwO+FpOS005LHtbPxayj/yX5KKnejFxx0cicx+ANIfuql7kEFS4rB1cjUu80QmkRruG32XQuHlflo90hcB/Oy
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] arcnet: restoring support for multiple Sohard Arcnet cards
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170174209941.18867.5676326878830949662.git-patchwork-notify@kernel.org>
-Date:   Tue, 05 Dec 2023 02:08:19 +0000
-References: <20231130113503.6812-1-thomas.reichinger@sohard.de>
-In-Reply-To: <20231130113503.6812-1-thomas.reichinger@sohard.de>
-To:     Thomas Reichinger <thomas.reichinger@sohard.de>
-Cc:     m.grzeschik@pengutronix.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2090:b0:3a7:5f99:9fe1 with SMTP id
+ s16-20020a056808209000b003a75f999fe1mr3221758oiw.2.1701742211858; Mon, 04 Dec
+ 2023 18:10:11 -0800 (PST)
+Date:   Mon, 04 Dec 2023 18:10:11 -0800
+In-Reply-To: <00000000000077c77f060b603f2d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000986fc060bb9bc3b@google.com>
+Subject: Re: [syzbot] [net?] INFO: rcu detected stall in sys_socket
+From:   syzbot <syzbot+de8e83db70e8beedd556@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+***
 
-On Thu, 30 Nov 2023 12:35:03 +0100 you wrote:
-> Probe of Sohard Arcnet cards fails,
-> if 2 or more cards are installed in a system.
-> See kernel log:
-> [    2.759203] arcnet: arcnet loaded
-> [    2.763648] arcnet:com20020: COM20020 chipset support (by David Woodhouse et al.)
-> [    2.770585] arcnet:com20020_pci: COM20020 PCI support
-> [    2.772295] com20020 0000:02:00.0: enabling device (0000 -> 0003)
-> [    2.772354] (unnamed net_device) (uninitialized): PLX-PCI Controls
-> ...
-> [    3.071301] com20020 0000:02:00.0 arc0-0 (uninitialized): PCI COM20020: station FFh found at F080h, IRQ 101.
-> [    3.071305] com20020 0000:02:00.0 arc0-0 (uninitialized): Using CKP 64 - data rate 2.5 Mb/s
-> [    3.071534] com20020 0000:07:00.0: enabling device (0000 -> 0003)
-> [    3.071581] (unnamed net_device) (uninitialized): PLX-PCI Controls
-> ...
-> [    3.369501] com20020 0000:07:00.0: Led pci:green:tx:0-0 renamed to pci:green:tx:0-0_1 due to name collision
-> [    3.369535] com20020 0000:07:00.0: Led pci:red:recon:0-0 renamed to pci:red:recon:0-0_1 due to name collision
-> [    3.370586] com20020 0000:07:00.0 arc0-0 (uninitialized): PCI COM20020: station E1h found at C000h, IRQ 35.
-> [    3.370589] com20020 0000:07:00.0 arc0-0 (uninitialized): Using CKP 64 - data rate 2.5 Mb/s
-> [    3.370608] com20020: probe of 0000:07:00.0 failed with error -5
-> 
-> [...]
+Subject: [net?] INFO: rcu detected stall in sys_socket
+Author: eadavis@qq.com
 
-Here is the summary with links:
-  - arcnet: restoring support for multiple Sohard Arcnet cards
-    https://git.kernel.org/netdev/net/c/6b17a597fc2f
+please test rcu detected stall in sys_socket
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 18d46e76d7c2
 
+diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+index 31a8252bd09c..4bc377120ea0 100644
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -843,6 +843,7 @@ static struct sk_buff *taprio_dequeue(struct Qdisc *sch)
+ 
+ 	rcu_read_lock();
+ 	entry = rcu_dereference(q->current_entry);
++	rcu_read_unlock();
+ 	/* if there's no entry, it means that the schedule didn't
+ 	 * start yet, so force all gates to be open, this is in
+ 	 * accordance to IEEE 802.1Qbv-2015 Section 8.6.9.4.5
+@@ -869,8 +870,6 @@ static struct sk_buff *taprio_dequeue(struct Qdisc *sch)
+ 	}
+ 
+ done:
+-	rcu_read_unlock();
+-
+ 	return skb;
+ }
+ 
 
