@@ -2,183 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BD3804D80
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7BF804D84
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235001AbjLEJVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:21:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59396 "EHLO
+        id S234997AbjLEJWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:22:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234993AbjLEJVl (ORCPT
+        with ESMTP id S229980AbjLEJWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:21:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACF2183;
-        Tue,  5 Dec 2023 01:21:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701768108; x=1733304108;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=59iQKEDl6X80Ax03Nq5CpaD02G8tfcF3NvfxIuhVihs=;
-  b=cclanZ6L24/3h6MGwFC2QoqnvinXwRPYsHlidEv0SzMFhlDr8Tl/WcAt
-   BjbojHGC6wxRljnQ++2jPywL37T3VQCzkZwxCcj3aDdkQRq/lSu0wY89k
-   vefXnJ1k5+vSr+ImiznprO9To2cIoKpkX69yPzciFA6Zy1ft48omW8DJR
-   pgNReXxpD9aYZwYcRnGpMmabNtTgQ5Of2fBJyT3BE5Ml5AbdRsfL9Pvh+
-   X9+g2zBAOBDuq7L/UsY9kg9JgPYPEy9/+k10ffYVLebtAUcfq9YDgec2Z
-   zRDW5+nCGkqwWuNJ5wrAo1GlzBLxoDBDVn1TLaKCTilV1Rc+zOJOlvHTI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="378893727"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="378893727"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:21:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="841387858"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="841387858"
-Received: from rex-z390-aorus-pro.sh.intel.com ([10.239.161.21])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Dec 2023 01:21:42 -0800
-From:   Rex Zhang <rex.zhang@intel.com>
-To:     tom.zanussi@linux.intel.com
-Cc:     dave.jiang@intel.com, davem@davemloft.net,
-        dmaengine@vger.kernel.org, fenghua.yu@intel.com,
-        giovanni.cabiddu@intel.com, herbert@gondor.apana.org.au,
-        james.guilford@intel.com, kanchana.p.sridhar@intel.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pavel@ucw.cz, tony.luck@intel.com, vinodh.gopal@intel.com,
-        vkoul@kernel.org, wajdi.k.feghali@intel.com
-Subject: Re: [PATCH v11 14/14] dmaengine: idxd: Add support for device/wq defaults
-Date:   Tue,  5 Dec 2023 17:21:39 +0800
-Message-Id: <20231205092139.3682047-1-rex.zhang@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231201201035.172465-15-tom.zanussi@linux.intel.com>
-References: <20231201201035.172465-15-tom.zanussi@linux.intel.com>
+        Tue, 5 Dec 2023 04:22:32 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB71C9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:22:38 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40c039e9719so34045185e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:22:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701768156; x=1702372956; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3C3srF3D8XYNvvxDZciqMxRHu1Pp1JgH8p2QBUBIXkw=;
+        b=LbYbJvKCyoR0fX5rvZXjbtu4Ybw/+a5FWhP1PP6BbHfKYbo5BNkewJ+hgygNuMbbfb
+         /qMnER1RBlOQZrXr+KCsjIxu5BJOdE6ohdZDTv84hM1FRbKSPCf0sB/cDoB4gae9pBow
+         P05/prW4TiUa6aQci9KMzvPu+MxruHziMYlf7TLGh/oFUGnRgaEDSHpQfwDvBSlee2/X
+         SG7jSv7QkvV14QuPqcEC+sufy2rkeeb52uBzur/jTGQVDJiEPB4OT6fEJJqtApV2QPMd
+         cupxxeuzX2AnkuogDC6qeh8KNyvRHVfpKLagAxtExy//vrFEowHSEaWJ6zzG2qt82ege
+         pvvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701768156; x=1702372956;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3C3srF3D8XYNvvxDZciqMxRHu1Pp1JgH8p2QBUBIXkw=;
+        b=knHtO0KEPEvifPUWX7PgM0LDo9K0cin4S3uTpZ6AYmCokkNXkZaO/IYqOrOdcla9St
+         36xIS0T7ku8sREi2XT4DADN68VrgrOGyDJC/v9u6uwgnP4U/S8v9soM+7kbXt52shQCP
+         gZIpCjd8INiG9cTaTsY63pm0EkHtDSNkxh5IumiqwUNm/KarYC/FjpiPM276zGtc65ZO
+         FYG0DRa8aM7+ENNEkU5HIO4dEbxVaJcdn9GfgwX6NsVemeaIvR3np0gVO2mD4JdmOpMM
+         kvLL2/N6h0FfAof8T4syvqwSUYuJK7g04xpAPTiyJr83DEc4dj7c++VNBXyplvAonFhg
+         3b2g==
+X-Gm-Message-State: AOJu0YzpumNnUfOtRTjbsD2B0iL0PfO1/dQaMkV5o4L4mXKu8ZUtBFNq
+        a+S8wcsWVRATyBNNRWKtEtNjng==
+X-Google-Smtp-Source: AGHT+IHl1sh2a9wDuPh2SdUnHcBKEzFK7tAktSyin1IN1vDeUa5puQnLRQ3RBX1u+xjKvk6Sg4pviQ==
+X-Received: by 2002:a05:600c:1d83:b0:40b:5e21:ec3e with SMTP id p3-20020a05600c1d8300b0040b5e21ec3emr277886wms.112.1701768156506;
+        Tue, 05 Dec 2023 01:22:36 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id g10-20020a05600c4eca00b0040596352951sm21692287wmq.5.2023.12.05.01.22.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 01:22:36 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, linux-fsd@tesla.com,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-watchdog@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 0/6] dt-bindings: samsung: continued - add specific compatibles for Tesla FSD Hi,
+Date:   Tue,  5 Dec 2023 10:22:23 +0100
+Message-Id: <20231205092229.19135-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+Merging
+=======
+I propose to take entire patchset through my tree (Samsung SoC), because:
+1. I already took similar work this cycle:
+   https://lore.kernel.org/all/169997520487.6747.17671551558724027958.b4-ty@linaro.org/
+2. Two new SoCs are coming (Google GS101 and ExynosAutov920) and they might
+   touch the same lines.  It is reasonable for me to take the bindings for the new
+   SoCs, to have clean `make dtbs_check` on the new DTS.
+3. Having it together helps me to have clean `make dtbs_check` within my tree
+   on the existing DTS.
+4. No drivers are affected by this change.
 
-On 2023-12-01 at 14:10:35 -0600, Tom Zanussi wrote:
+If folks agree, please kindly Ack the patches.
 
-[snip]
+Description
+===========
+See:
+https://lore.kernel.org/all/20231108104343.24192-1-krzysztof.kozlowski@linaro.org/
 
-> +int idxd_load_iaa_device_defaults(struct idxd_device *idxd)
-> +{
-> +	struct idxd_engine *engine;
-> +	struct idxd_group *group;
-> +	struct idxd_wq *wq;
-> +
-> +	if (!test_bit(IDXD_FLAG_CONFIGURABLE, &idxd->flags))
-> +		return 0;
-In the virtualization case, it is not configurable in guest OS,
-then the default work queue will not be enabled. Is it expected?
-> +
-> +	wq = idxd->wqs[0];
-> +
-> +	if (wq->state != IDXD_WQ_DISABLED)
-> +		return -EPERM;
-> +
-> +	/* set mode to "dedicated" */
-> +	set_bit(WQ_FLAG_DEDICATED, &wq->flags);
-> +	wq->threshold = 0;
-> +
-> +	/* only setting up 1 wq, so give it all the wq space */
-> +	wq->size = idxd->max_wq_size;
-> +
-> +	/* set priority to 10 */
-> +	wq->priority = 10;
-> +
-> +	/* set type to "kernel" */
-> +	wq->type = IDXD_WQT_KERNEL;
-> +
-> +	/* set wq group to 0 */
-> +	group = idxd->groups[0];
-> +	wq->group = group;
-> +	group->num_wqs++;
-> +
-> +	/* set name to "iaa_crypto" */
-> +	memset(wq->name, 0, WQ_NAME_SIZE + 1);
-> +	strscpy(wq->name, "iaa_crypto", WQ_NAME_SIZE + 1);
-> +
-> +	/* set driver_name to "crypto" */
-> +	memset(wq->driver_name, 0, DRIVER_NAME_SIZE + 1);
-> +	strscpy(wq->driver_name, "crypto", DRIVER_NAME_SIZE + 1);
-> +
-> +	engine = idxd->engines[0];
-> +
-> +	/* set engine group to 0 */
-> +	engine->group = idxd->groups[0];
-> +	engine->group->num_engines++;
-> +
-> +	return 0;
-> +}
-> diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-> index 62ea21b25906..47de3f93ff1e 100644
-> --- a/drivers/dma/idxd/idxd.h
-> +++ b/drivers/dma/idxd/idxd.h
-> @@ -277,6 +277,8 @@ struct idxd_dma_dev {
->  	struct dma_device dma;
->  };
->  
-> +typedef int (*load_device_defaults_fn_t) (struct idxd_device *idxd);
-> +
->  struct idxd_driver_data {
->  	const char *name_prefix;
->  	enum idxd_type type;
-> @@ -286,6 +288,7 @@ struct idxd_driver_data {
->  	int evl_cr_off;
->  	int cr_status_off;
->  	int cr_result_off;
-> +	load_device_defaults_fn_t load_device_defaults;
->  };
->  
->  struct idxd_evl {
-> @@ -730,6 +733,7 @@ void idxd_unregister_devices(struct idxd_device *idxd);
->  void idxd_wqs_quiesce(struct idxd_device *idxd);
->  bool idxd_queue_int_handle_resubmit(struct idxd_desc *desc);
->  void multi_u64_to_bmap(unsigned long *bmap, u64 *val, int count);
-> +int idxd_load_iaa_device_defaults(struct idxd_device *idxd);
->  
->  /* device interrupt control */
->  irqreturn_t idxd_misc_thread(int vec, void *data);
-> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-> index 0eb1c827a215..14df1f1347a8 100644
-> --- a/drivers/dma/idxd/init.c
-> +++ b/drivers/dma/idxd/init.c
-> @@ -59,6 +59,7 @@ static struct idxd_driver_data idxd_driver_data[] = {
->  		.evl_cr_off = offsetof(struct iax_evl_entry, cr),
->  		.cr_status_off = offsetof(struct iax_completion_record, status),
->  		.cr_result_off = offsetof(struct iax_completion_record, error_code),
-> +		.load_device_defaults = idxd_load_iaa_device_defaults,
->  	},
->  };
->  
-> @@ -745,6 +746,12 @@ static int idxd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  		goto err;
->  	}
->  
-> +	if (data->load_device_defaults) {
-> +		rc = data->load_device_defaults(idxd);
-> +		if (rc)
-> +			dev_warn(dev, "IDXD loading device defaults failed\n");
-> +	}
-> +
->  	rc = idxd_register_devices(idxd);
->  	if (rc) {
->  		dev_err(dev, "IDXD sysfs setup failed\n");
+Best regards,
+Krzysztof
 
-Thanks,
-Rex Zhang
-> -- 
-> 2.34.1
-> 
+Krzysztof Kozlowski (6):
+  dt-bindings: i2c: exynos5: add specific compatible for Tesla FSD
+  dt-bindings: pwm: samsung: add specific compatible for Tesla FSD
+  dt-bindings: serial: samsung: add specific compatible for Tesla FSD
+  dt-bindings: samsung: exynos-pmu: add specific compatible for Tesla
+    FSD
+  dt-bindings: watchdog: samsung: add specific compatible for Tesla FSD
+  arm64: dts: fsd: add specific compatibles for Tesla FSD
+
+ .../devicetree/bindings/i2c/i2c-exynos5.yaml  |  1 +
+ .../devicetree/bindings/pwm/pwm-samsung.yaml  |  1 +
+ .../bindings/serial/samsung_uart.yaml         |  1 +
+ .../bindings/soc/samsung/exynos-pmu.yaml      |  1 +
+ .../bindings/watchdog/samsung-wdt.yaml        | 21 +++++++-----
+ arch/arm64/boot/dts/tesla/fsd.dtsi            | 32 +++++++++----------
+ 6 files changed, 33 insertions(+), 24 deletions(-)
+
+-- 
+2.34.1
+
