@@ -2,109 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CB88055C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A95D8055C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376952AbjLENXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:23:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
+        id S1442104AbjLENXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345407AbjLENXC (ORCPT
+        with ESMTP id S1376864AbjLENXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:23:02 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3188898
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:23:08 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1rAVOE-0003ki-M3; Tue, 05 Dec 2023 14:23:06 +0100
-Message-ID: <d6849d4b-5b47-46e6-8cb3-a4a01f99f95c@leemhuis.info>
-Date:   Tue, 5 Dec 2023 14:23:05 +0100
+        Tue, 5 Dec 2023 08:23:43 -0500
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365FDB9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:23:49 -0800 (PST)
+Message-ID: <93adcdc0-6f32-45fa-b311-34a27ff94290@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701782627;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Y3aGufX1vl5A2ALGYiBVD+TybG4OsFZRCv9diM79A8=;
+        b=mDZ6ph0oD6GN4VIyjlxG+xz5R+xV+/uKAA5//QVwR59UjvRThXVEbE3/QvAFOfUgypbOZA
+        vkjBJxn1O6J1qOCwVw8BB4AVmDNXEdLfNgJWq1aN+0yguJxd7UP182RiYrh1Lgp0Bi918z
+        G9pDHo0IQHxFoPXFTcxbQm2XEqmMN/Q=
+Date:   Tue, 5 Dec 2023 21:23:38 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: regression/bisected/6.7rc1: Instead of desktop I see a horizontal
- flashing bar with a picture of the desktop background on white screen
-Content-Language: en-US, de-DE
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        "Lee, Alvin" <Alvin.Lee2@amd.com>
-Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Wheeler, Daniel" <Daniel.Wheeler@amd.com>,
-        "Wu, Hersen" <hersenxs.wu@amd.com>,
-        "Mahfooz, Hamza" <Hamza.Mahfooz@amd.com>,
-        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-References: <CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com>
- <CABXGCsOqbLRHSkiz79NkVQ-wUtR7y-ZFHvhMw0+JJ_cY2AZmSw@mail.gmail.com>
- <CABXGCsPE9=Qp3Jg5hkRsTQoNgODnS_cXFU1d+hg3Baob40AaAA@mail.gmail.com>
- <edc5b75b-c08d-4c62-ae5e-089ffac27772@amd.com>
- <CABXGCsO=pdxorK9pO7qBPJM-xvgPPtpZqxLvQO4t2AK5qW3vcA@mail.gmail.com>
- <DM8PR12MB5400EAB81E5FA10F4309A732D1B1A@DM8PR12MB5400.namprd12.prod.outlook.com>
- <CADnq5_P8aRkj340FtBJKsZDnV8iOCmdmCHDWKHGca+4UtfNy1A@mail.gmail.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-In-Reply-To: <CADnq5_P8aRkj340FtBJKsZDnV8iOCmdmCHDWKHGca+4UtfNy1A@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mm/slub: handle bulk and single object freeing
+ separately
+Content-Language: en-US
+To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
+ <20231204-slub-cleanup-hooks-v1-3-88b65f7cd9d5@suse.cz>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20231204-slub-cleanup-hooks-v1-3-88b65f7cd9d5@suse.cz>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701782588;1c2f113c;
-X-HE-SMSGID: 1rAVOE-0003ki-M3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.11.23 19:11, Alex Deucher wrote:
-> On Wed, Nov 15, 2023 at 1:52 PM Lee, Alvin <Alvin.Lee2@amd.com> wrote:
->>
->> [AMD Official Use Only - General]
->>
->> This change has a DMCUB dependency - are you able to update your DMCUB version as well?
->>
->> This version mismatch issue is something I'll need to fix in driver for Linux.
+On 2023/12/5 03:34, Vlastimil Babka wrote:
+> Currently we have a single function slab_free() handling both single
+> object freeing and bulk freeing with necessary hooks, the latter case
+> requiring slab_free_freelist_hook(). It should be however better to
+> distinguish the two use cases for the following reasons:
 > 
-> @Mahfooz, Hamza @Alvin Lee any update on a fix for this?
+> - code simpler to follow for the single object case
+> 
+> - better code generation - although inlining should eliminate the
+>   slab_free_freelist_hook() for single object freeing in case no
+>   debugging options are enabled, it seems it's not perfect. When e.g.
+>   KASAN is enabled, we're imposing additional unnecessary overhead for
+>   single object freeing.
+> 
+> - preparation to add percpu array caches in near future
+> 
+> Therefore, simplify slab_free() for the single object case by dropping
+> unnecessary parameters and calling only slab_free_hook() instead of
+> slab_free_freelist_hook(). Rename the bulk variant to slab_free_bulk()
+> and adjust callers accordingly.
+> 
+> While at it, flip (and document) slab_free_hook() return value so that
+> it returns true when the freeing can proceed, which matches the logic of
+> slab_free_freelist_hook() and is not confusingly the opposite.
+> 
+> Additionally we can simplify a bit by changing the tail parameter of
+> do_slab_free() when freeing a single object - instead of NULL we can set
+> it equal to head.
+> 
+> bloat-o-meter shows small code reduction with a .config that has KASAN
+> etc disabled:
+> 
+> add/remove: 0/0 grow/shrink: 0/4 up/down: 0/-118 (-118)
+> Function                                     old     new   delta
+> kmem_cache_alloc_bulk                       1203    1196      -7
+> kmem_cache_free                              861     835     -26
+> __kmem_cache_free                            741     704     -37
+> kmem_cache_free_bulk                         911     863     -48
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-Still no news afaics. Or was there any progress I missed?
+Looks good to me.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-#regzbot poke
+Thanks!
 
->> -----Original Message-----
->> From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
->> Sent: Wednesday, November 15, 2023 1:22 PM
->> To: Mahfooz, Hamza <Hamza.Mahfooz@amd.com>
->> Cc: Lee, Alvin <Alvin.Lee2@amd.com>; Wu, Hersen <hersenxs.wu@amd.com>; Wheeler, Daniel <Daniel.Wheeler@amd.com>; Deucher, Alexander <Alexander.Deucher@amd.com>; Linux List Kernel Mailing <linux-kernel@vger.kernel.org>; amd-gfx list <amd-gfx@lists.freedesktop.org>
->> Subject: Re: regression/bisected/6.7rc1: Instead of desktop I see a horizontal flashing bar with a picture of the desktop background on white screen
->>
->> On Wed, Nov 15, 2023 at 11:14 PM Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
->>>
->>> What version of DMUB firmware are you on?
->>> The easiest way to find out would be using the following:
->>>
->>> # dmesg | grep DMUB
->>>
->>
->> Sapphire AMD Radeon RX 7900 XTX PULSE OC:
->> ❯ dmesg | grep DMUB
->> [   14.341362] [drm] Loading DMUB firmware via PSP: version=0x07002100
->> [   14.725547] [drm] DMUB hardware initialized: version=0x07002100
->>
->> Reference GIGABYTE Radeon RX 7900 XTX 24G:
->> ❯ dmesg | grep DMUB
->> [   11.405115] [drm] Loading DMUB firmware via PSP: version=0x07002100
->> [   11.773395] [drm] DMUB hardware initialized: version=0x07002100
->>
->>
->> --
->> Best Regards,
->> Mike Gavrilov.
+> ---
+>  mm/slub.c | 59 +++++++++++++++++++++++++++++++++++------------------------
+>  1 file changed, 35 insertions(+), 24 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 0742564c4538..ed2fa92e914c 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2037,9 +2037,12 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+>  /*
+>   * Hooks for other subsystems that check memory allocations. In a typical
+>   * production configuration these hooks all should produce no code at all.
+> + *
+> + * Returns true if freeing of the object can proceed, false if its reuse
+> + * was delayed by KASAN quarantine.
+>   */
+> -static __always_inline bool slab_free_hook(struct kmem_cache *s,
+> -						void *x, bool init)
+> +static __always_inline
+> +bool slab_free_hook(struct kmem_cache *s, void *x, bool init)
+>  {
+>  	kmemleak_free_recursive(x, s->flags);
+>  	kmsan_slab_free(s, x);
+> @@ -2072,7 +2075,7 @@ static __always_inline bool slab_free_hook(struct kmem_cache *s,
+>  		       s->size - s->inuse - rsize);
+>  	}
+>  	/* KASAN might put x into memory quarantine, delaying its reuse. */
+> -	return kasan_slab_free(s, x, init);
+> +	return !kasan_slab_free(s, x, init);
+>  }
+>  
+>  static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+> @@ -2082,7 +2085,7 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+>  
+>  	void *object;
+>  	void *next = *head;
+> -	void *old_tail = *tail ? *tail : *head;
+> +	void *old_tail = *tail;
+>  
+>  	if (is_kfence_address(next)) {
+>  		slab_free_hook(s, next, false);
+> @@ -2098,8 +2101,8 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+>  		next = get_freepointer(s, object);
+>  
+>  		/* If object's reuse doesn't have to be delayed */
+> -		if (likely(!slab_free_hook(s, object,
+> -					   slab_want_init_on_free(s)))) {
+> +		if (likely(slab_free_hook(s, object,
+> +					  slab_want_init_on_free(s)))) {
+>  			/* Move object to the new freelist */
+>  			set_freepointer(s, object, *head);
+>  			*head = object;
+> @@ -2114,9 +2117,6 @@ static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+>  		}
+>  	} while (object != old_tail);
+>  
+> -	if (*head == *tail)
+> -		*tail = NULL;
+> -
+>  	return *head != NULL;
+>  }
+>  
+> @@ -4227,7 +4227,6 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+>  				struct slab *slab, void *head, void *tail,
+>  				int cnt, unsigned long addr)
+>  {
+> -	void *tail_obj = tail ? : head;
+>  	struct kmem_cache_cpu *c;
+>  	unsigned long tid;
+>  	void **freelist;
+> @@ -4246,14 +4245,14 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+>  	barrier();
+>  
+>  	if (unlikely(slab != c->slab)) {
+> -		__slab_free(s, slab, head, tail_obj, cnt, addr);
+> +		__slab_free(s, slab, head, tail, cnt, addr);
+>  		return;
+>  	}
+>  
+>  	if (USE_LOCKLESS_FAST_PATH()) {
+>  		freelist = READ_ONCE(c->freelist);
+>  
+> -		set_freepointer(s, tail_obj, freelist);
+> +		set_freepointer(s, tail, freelist);
+>  
+>  		if (unlikely(!__update_cpu_freelist_fast(s, freelist, head, tid))) {
+>  			note_cmpxchg_failure("slab_free", s, tid);
+> @@ -4270,7 +4269,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+>  		tid = c->tid;
+>  		freelist = c->freelist;
+>  
+> -		set_freepointer(s, tail_obj, freelist);
+> +		set_freepointer(s, tail, freelist);
+>  		c->freelist = head;
+>  		c->tid = next_tid(tid);
+>  
+> @@ -4283,15 +4282,27 @@ static void do_slab_free(struct kmem_cache *s,
+>  				struct slab *slab, void *head, void *tail,
+>  				int cnt, unsigned long addr)
+>  {
+> -	void *tail_obj = tail ? : head;
+> -
+> -	__slab_free(s, slab, head, tail_obj, cnt, addr);
+> +	__slab_free(s, slab, head, tail, cnt, addr);
+>  }
+>  #endif /* CONFIG_SLUB_TINY */
+>  
+> -static __fastpath_inline void slab_free(struct kmem_cache *s, struct slab *slab,
+> -				      void *head, void *tail, void **p, int cnt,
+> -				      unsigned long addr)
+> +static __fastpath_inline
+> +void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
+> +	       unsigned long addr)
+> +{
+> +	bool init;
+> +
+> +	memcg_slab_free_hook(s, slab, &object, 1);
+> +
+> +	init = !is_kfence_address(object) && slab_want_init_on_free(s);
+> +
+> +	if (likely(slab_free_hook(s, object, init)))
+> +		do_slab_free(s, slab, object, object, 1, addr);
+> +}
+> +
+> +static __fastpath_inline
+> +void slab_free_bulk(struct kmem_cache *s, struct slab *slab, void *head,
+> +		    void *tail, void **p, int cnt, unsigned long addr)
+>  {
+>  	memcg_slab_free_hook(s, slab, p, cnt);
+>  	/*
+> @@ -4305,7 +4316,7 @@ static __fastpath_inline void slab_free(struct kmem_cache *s, struct slab *slab,
+>  #ifdef CONFIG_KASAN_GENERIC
+>  void ___cache_free(struct kmem_cache *cache, void *x, unsigned long addr)
+>  {
+> -	do_slab_free(cache, virt_to_slab(x), x, NULL, 1, addr);
+> +	do_slab_free(cache, virt_to_slab(x), x, x, 1, addr);
+>  }
+>  #endif
+>  
+> @@ -4349,7 +4360,7 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
+>  	if (!s)
+>  		return;
+>  	trace_kmem_cache_free(_RET_IP_, x, s);
+> -	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, _RET_IP_);
+> +	slab_free(s, virt_to_slab(x), x, _RET_IP_);
+>  }
+>  EXPORT_SYMBOL(kmem_cache_free);
+>  
+> @@ -4395,7 +4406,7 @@ void kfree(const void *object)
+>  
+>  	slab = folio_slab(folio);
+>  	s = slab->slab_cache;
+> -	slab_free(s, slab, x, NULL, &x, 1, _RET_IP_);
+> +	slab_free(s, slab, x, _RET_IP_);
+>  }
+>  EXPORT_SYMBOL(kfree);
+>  
+> @@ -4512,8 +4523,8 @@ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
+>  		if (!df.slab)
+>  			continue;
+>  
+> -		slab_free(df.s, df.slab, df.freelist, df.tail, &p[size], df.cnt,
+> -			  _RET_IP_);
+> +		slab_free_bulk(df.s, df.slab, df.freelist, df.tail, &p[size],
+> +			       df.cnt, _RET_IP_);
+>  	} while (likely(size));
+>  }
+>  EXPORT_SYMBOL(kmem_cache_free_bulk);
+> 
