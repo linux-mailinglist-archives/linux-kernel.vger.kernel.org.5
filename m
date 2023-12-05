@@ -2,151 +2,784 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 759B2805D8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB1F805D89
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345915AbjLESSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:18:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34448 "EHLO
+        id S231910AbjLESVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345907AbjLESSg (ORCPT
+        with ESMTP id S1346428AbjLESVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:18:36 -0500
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC43C3;
-        Tue,  5 Dec 2023 10:18:42 -0800 (PST)
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 322B15202F5;
-        Tue,  5 Dec 2023 19:18:41 +0100 (CET)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 5 Dec
- 2023 19:18:40 +0100
-From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
-To:     <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
-        <corbet@lwn.net>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <hgajjar@de.adit-jv.com>, <tj@kernel.org>,
-        <paulmck@kernel.org>, <Martin.Mueller5@de.bosch.com>
-Subject: [PATCH v5 2/2] usb: hub: Add quirk to decrease IN-ep poll interval for Microchip USB491x hub
-Date:   Tue, 5 Dec 2023 19:18:29 +0100
-Message-ID: <20231205181829.127353-2-hgajjar@de.adit-jv.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231205181829.127353-1-hgajjar@de.adit-jv.com>
-References: <20231205181829.127353-1-hgajjar@de.adit-jv.com>
+        Tue, 5 Dec 2023 13:21:10 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3566C18C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:21:13 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a195e0145acso703828666b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:21:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701800471; x=1702405271; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6WN4u2moZSshqPu3Y/V5gB+4V90bfYqpJZl++tq0u6Q=;
+        b=eMkm+PAHsnJbn50QPNmXTSlfLZEW5Nr4lGipuSZ8p2uXzXqY+Bmyt4+Kk98Q6asrHO
+         D66f1gqGdoyUxw4xF1aX3k378Un+3eQoHoqTWN0Re2GaaKR4GBD/m580HCObY8O3ENkx
+         eyvjrLln0m1M2eb259uGpXC2zyTH0o1xEYXCMGuItJf3ZdXRoLGKn83cu3+c8dwVx8Jd
+         i7V0vcmRjDUEw6ozpVxBRQSLV22YU5Z6ONw2Qe1jAyIYPA5Dr+FTOn57QCAdmCOt/LQf
+         mIOn7WSSJpvCkKqQeLyK8WL2FroY0Q/Y74zuIRedtbybigYc7lTriBfvWs7qIm5ONh+T
+         a4yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701800471; x=1702405271;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6WN4u2moZSshqPu3Y/V5gB+4V90bfYqpJZl++tq0u6Q=;
+        b=SqgSitsZ5/8eF+FPPPpwrpsiK7jZSjcnRjUZ/V/Isww3CMu3IPZDbdKWeo37NibmLC
+         VQ9B741HwjiLglKpXuDjQJhx1m3WxdRWakTvDaBYnn2aMTfypZ47SKOeMmVOxpK5dHdf
+         vbKeiRB3HzAvdGnrvimj2OiXTLZ1eoWKbow4fsfgcCAUqwrGFD4X4GaLKAOlHiOUViXN
+         mbtlNMWxBSvjTsbyXDHx7DzxMsbRcOIeCq7NJFNu1r+dJk0l8C1hEda5mlNQdp0aJKV9
+         IXo4O9eoUCQW0ACwchCm0QOHxQSSrPyGf8LAEspHVPb9G0x4rcgtYUOnw/88/dmzMjQ5
+         0yAg==
+X-Gm-Message-State: AOJu0YyJ2C8HiYEWwPIGeMcIfLr2gXeDnPV6G5TAfgV3qceY1YYvLGLS
+        CmsrVGQpWZywEhWTuWkq7UZA9t357oTDA1lwL+UVHw==
+X-Google-Smtp-Source: AGHT+IGd1yg6PQF7ayoTAJjFfhVuGb0UGlI5hkzGDUocfT7xoFuP7JHAGnIA07SDpR1nyiOYEVf8Yw/JuOkWcUUZlLY=
+X-Received: by 2002:a17:906:7f85:b0:a19:a19b:421d with SMTP id
+ f5-20020a1709067f8500b00a19a19b421dmr581665ejr.136.1701800471333; Tue, 05 Dec
+ 2023 10:21:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.72.93.77]
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-4-nphamcs@gmail.com>
+In-Reply-To: <20231130194023.4102148-4-nphamcs@gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 5 Dec 2023 10:20:35 -0800
+Message-ID: <CAJD7tkbSKDZBEWxeau_orTRtarm0fCjcWJHVSZGDRp+ZJ1uLzw@mail.gmail.com>
+Subject: Re: [PATCH v8 3/6] zswap: make shrinking memcg-aware
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a potential delay in notifying Linux USB drivers of downstream
-USB bus activity when connecting a high-speed or superSpeed device via the
-Microchip USB491x hub. This delay is due to the fixed bInterval value of
-12 in the silicon of the Microchip USB491x hub.
+On Thu, Nov 30, 2023 at 11:40=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+>
+> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+>
+> Currently, we only have a single global LRU for zswap. This makes it
+> impossible to perform worload-specific shrinking - an memcg cannot
+> determine which pages in the pool it owns, and often ends up writing
+> pages from other memcgs. This issue has been previously observed in
+> practice and mitigated by simply disabling memcg-initiated shrinking:
+>
+> https://lore.kernel.org/all/20230530232435.3097106-1-nphamcs@gmail.com/T/=
+#u
+>
+> This patch fully resolves the issue by replacing the global zswap LRU
+> with memcg- and NUMA-specific LRUs, and modify the reclaim logic:
+>
+> a) When a store attempt hits an memcg limit, it now triggers a
+>    synchronous reclaim attempt that, if successful, allows the new
+>    hotter page to be accepted by zswap.
+> b) If the store attempt instead hits the global zswap limit, it will
+>    trigger an asynchronous reclaim attempt, in which an memcg is
+>    selected for reclaim in a round-robin-like fashion.
+>
+> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> Co-developed-by: Nhat Pham <nphamcs@gmail.com>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  include/linux/memcontrol.h |   5 +
+>  include/linux/zswap.h      |   2 +
+>  mm/memcontrol.c            |   2 +
+>  mm/swap.h                  |   3 +-
+>  mm/swap_state.c            |  24 +++-
+>  mm/zswap.c                 | 269 +++++++++++++++++++++++++++++--------
+>  6 files changed, 245 insertions(+), 60 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 2bd7d14ace78..a308c8eacf20 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1192,6 +1192,11 @@ static inline struct mem_cgroup *page_memcg_check(=
+struct page *page)
+>         return NULL;
+>  }
+>
+> +static inline struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cg=
+roup *objcg)
+> +{
+> +       return NULL;
+> +}
+> +
+>  static inline bool folio_memcg_kmem(struct folio *folio)
+>  {
+>         return false;
+> diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+> index 2a60ce39cfde..e571e393669b 100644
+> --- a/include/linux/zswap.h
+> +++ b/include/linux/zswap.h
+> @@ -15,6 +15,7 @@ bool zswap_load(struct folio *folio);
+>  void zswap_invalidate(int type, pgoff_t offset);
+>  void zswap_swapon(int type);
+>  void zswap_swapoff(int type);
+> +void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
+>
+>  #else
+>
+> @@ -31,6 +32,7 @@ static inline bool zswap_load(struct folio *folio)
+>  static inline void zswap_invalidate(int type, pgoff_t offset) {}
+>  static inline void zswap_swapon(int type) {}
+>  static inline void zswap_swapoff(int type) {}
+> +static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)=
+ {}
+>
+>  #endif
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 470821d1ba1a..792ca21c5815 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5614,6 +5614,8 @@ static void mem_cgroup_css_offline(struct cgroup_su=
+bsys_state *css)
+>         page_counter_set_min(&memcg->memory, 0);
+>         page_counter_set_low(&memcg->memory, 0);
+>
+> +       zswap_memcg_offline_cleanup(memcg);
+> +
+>         memcg_offline_kmem(memcg);
+>         reparent_shrinker_deferred(memcg);
+>         wb_memcg_offline(memcg);
+> diff --git a/mm/swap.h b/mm/swap.h
+> index 73c332ee4d91..c0dc73e10e91 100644
+> --- a/mm/swap.h
+> +++ b/mm/swap.h
+> @@ -51,7 +51,8 @@ struct page *read_swap_cache_async(swp_entry_t entry, g=
+fp_t gfp_mask,
+>                                    struct swap_iocb **plug);
+>  struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+>                                      struct mempolicy *mpol, pgoff_t ilx,
+> -                                    bool *new_page_allocated);
+> +                                    bool *new_page_allocated,
+> +                                    bool skip_if_exists);
+>  struct page *swap_cluster_readahead(swp_entry_t entry, gfp_t flag,
+>                                     struct mempolicy *mpol, pgoff_t ilx);
+>  struct page *swapin_readahead(swp_entry_t entry, gfp_t flag,
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index 85d9e5806a6a..6c84236382f3 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -412,7 +412,8 @@ struct folio *filemap_get_incore_folio(struct address=
+_space *mapping,
+>
+>  struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+>                                      struct mempolicy *mpol, pgoff_t ilx,
+> -                                    bool *new_page_allocated)
+> +                                    bool *new_page_allocated,
+> +                                    bool skip_if_exists)
+>  {
+>         struct swap_info_struct *si;
+>         struct folio *folio;
+> @@ -470,6 +471,17 @@ struct page *__read_swap_cache_async(swp_entry_t ent=
+ry, gfp_t gfp_mask,
+>                 if (err !=3D -EEXIST)
+>                         goto fail_put_swap;
+>
+> +               /*
+> +                * Protect against a recursive call to __read_swap_cache_=
+async()
+> +                * on the same entry waiting forever here because SWAP_HA=
+S_CACHE
+> +                * is set but the folio is not the swap cache yet. This c=
+an
+> +                * happen today if mem_cgroup_swapin_charge_folio() below
+> +                * triggers reclaim through zswap, which may call
+> +                * __read_swap_cache_async() in the writeback path.
+> +                */
+> +               if (skip_if_exists)
+> +                       goto fail_put_swap;
+> +
+>                 /*
+>                  * We might race against __delete_from_swap_cache(), and
+>                  * stumble across a swap_map entry whose SWAP_HAS_CACHE
+> @@ -537,7 +549,7 @@ struct page *read_swap_cache_async(swp_entry_t entry,=
+ gfp_t gfp_mask,
+>
+>         mpol =3D get_vma_policy(vma, addr, 0, &ilx);
+>         page =3D __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
+> -                                       &page_allocated);
+> +                                       &page_allocated, false);
+>         mpol_cond_put(mpol);
+>
+>         if (page_allocated)
+> @@ -654,7 +666,7 @@ struct page *swap_cluster_readahead(swp_entry_t entry=
+, gfp_t gfp_mask,
+>                 /* Ok, do the async read-ahead now */
+>                 page =3D __read_swap_cache_async(
+>                                 swp_entry(swp_type(entry), offset),
+> -                               gfp_mask, mpol, ilx, &page_allocated);
+> +                               gfp_mask, mpol, ilx, &page_allocated, fal=
+se);
+>                 if (!page)
+>                         continue;
+>                 if (page_allocated) {
+> @@ -672,7 +684,7 @@ struct page *swap_cluster_readahead(swp_entry_t entry=
+, gfp_t gfp_mask,
+>  skip:
+>         /* The page was likely read above, so no need for plugging here *=
+/
+>         page =3D __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
+> -                                       &page_allocated);
+> +                                       &page_allocated, false);
+>         if (unlikely(page_allocated))
+>                 swap_readpage(page, false, NULL);
+>         return page;
+> @@ -827,7 +839,7 @@ static struct page *swap_vma_readahead(swp_entry_t ta=
+rg_entry, gfp_t gfp_mask,
+>                 pte_unmap(pte);
+>                 pte =3D NULL;
+>                 page =3D __read_swap_cache_async(entry, gfp_mask, mpol, i=
+lx,
+> -                                               &page_allocated);
+> +                                               &page_allocated, false);
+>                 if (!page)
+>                         continue;
+>                 if (page_allocated) {
+> @@ -847,7 +859,7 @@ static struct page *swap_vma_readahead(swp_entry_t ta=
+rg_entry, gfp_t gfp_mask,
+>  skip:
+>         /* The page was likely read above, so no need for plugging here *=
+/
+>         page =3D __read_swap_cache_async(targ_entry, gfp_mask, mpol, targ=
+_ilx,
+> -                                       &page_allocated);
+> +                                       &page_allocated, false);
+>         if (unlikely(page_allocated))
+>                 swap_readpage(page, false, NULL);
+>         return page;
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 4bdb2d83bb0d..f323e45cbdc7 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -35,6 +35,7 @@
+>  #include <linux/writeback.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/workqueue.h>
+> +#include <linux/list_lru.h>
+>
+>  #include "swap.h"
+>  #include "internal.h"
+> @@ -174,8 +175,8 @@ struct zswap_pool {
+>         struct work_struct shrink_work;
+>         struct hlist_node node;
+>         char tfm_name[CRYPTO_MAX_ALG_NAME];
+> -       struct list_head lru;
+> -       spinlock_t lru_lock;
+> +       struct list_lru list_lru;
+> +       struct mem_cgroup *next_shrink;
+>  };
+>
+>  /*
+> @@ -291,15 +292,46 @@ static void zswap_update_total_size(void)
+>         zswap_pool_total_size =3D total;
+>  }
+>
+> +/* should be called under RCU */
 
-Microchip requested to ignore the device descriptor and decrease that
-value to 9 as it was too late to modify that in silicon.
+nit: probably WARN_ON_ONCE(!rcu_read_lock_held()) or
+RCU_LOCKDEP_WARN(!rcu_read_lock_held()) in the function body is
+better?
 
-This patch speeds up the USB enummeration process that helps to pass
-Apple Carplay certifications and improve the User experience when utilizing
-the USB device via Microchip Multihost USB491x Hub.
+> +#ifdef CONFIG_MEMCG
+> +static inline struct mem_cgroup *mem_cgroup_from_entry(struct zswap_entr=
+y *entry)
+> +{
+> +       return entry->objcg ? obj_cgroup_memcg(entry->objcg) : NULL;
+> +}
+> +#else
+> +static inline struct mem_cgroup *mem_cgroup_from_entry(struct zswap_entr=
+y *entry)
+> +{
+> +       return NULL;
+> +}
+> +#endif
+> +
+> +static inline int entry_to_nid(struct zswap_entry *entry)
+> +{
+> +       return page_to_nid(virt_to_page(entry));
+> +}
+> +
+> +void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
+> +{
+> +       struct zswap_pool *pool;
+> +
+> +       /* lock out zswap pools list modification */
+> +       spin_lock(&zswap_pools_lock);
+> +       list_for_each_entry(pool, &zswap_pools, list) {
+> +               if (pool->next_shrink =3D=3D memcg)
+> +                       pool->next_shrink =3D mem_cgroup_iter(NULL, pool-=
+>next_shrink, NULL);
+> +       }
+> +       spin_unlock(&zswap_pools_lock);
+> +}
+> +
+>  /*********************************
+>  * zswap entry functions
+>  **********************************/
+>  static struct kmem_cache *zswap_entry_cache;
+>
+> -static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp)
+> +static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
+>  {
+>         struct zswap_entry *entry;
+> -       entry =3D kmem_cache_alloc(zswap_entry_cache, gfp);
+> +       entry =3D kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
+>         if (!entry)
+>                 return NULL;
+>         entry->refcount =3D 1;
+> @@ -312,6 +344,61 @@ static void zswap_entry_cache_free(struct zswap_entr=
+y *entry)
+>         kmem_cache_free(zswap_entry_cache, entry);
+>  }
+>
+> +/*********************************
+> +* lru functions
+> +**********************************/
+> +static void zswap_lru_add(struct list_lru *list_lru, struct zswap_entry =
+*entry)
+> +{
+> +       int nid =3D entry_to_nid(entry);
+> +       struct mem_cgroup *memcg;
+> +
+> +       /*
+> +        * Note that it is safe to use rcu_read_lock() here, even in the =
+face of
+> +        * concurrent memcg offlining. Thanks to the memcg->kmemcg_id ind=
+irection
+> +        * used in list_lru lookup, only two scenarios are possible:
+> +        *
+> +        * 1. list_lru_add() is called before memcg->kmemcg_id is updated=
+. The
+> +        *    new entry will be reparented to memcg's parent's list_lru.
+> +        * 2. list_lru_add() is called after memcg->kmemcg_id is updated.=
+ The
+> +        *    new entry will be added directly to memcg's parent's list_l=
+ru.
+> +        *
+> +        * Similar reasoning holds for list_lru_del() and list_lru_putbac=
+k().
+> +        */
+> +       rcu_read_lock();
+> +       memcg =3D mem_cgroup_from_entry(entry);
+> +       /* will always succeed */
+> +       list_lru_add(list_lru, &entry->lru, nid, memcg);
+> +       rcu_read_unlock();
+> +}
+> +
+> +static void zswap_lru_del(struct list_lru *list_lru, struct zswap_entry =
+*entry)
+> +{
+> +       int nid =3D entry_to_nid(entry);
+> +       struct mem_cgroup *memcg;
+> +
+> +       rcu_read_lock();
+> +       memcg =3D mem_cgroup_from_entry(entry);
+> +       /* will always succeed */
+> +       list_lru_del(list_lru, &entry->lru, nid, memcg);
+> +       rcu_read_unlock();
+> +}
+> +
+> +static void zswap_lru_putback(struct list_lru *list_lru,
+> +               struct zswap_entry *entry)
+> +{
+> +       int nid =3D entry_to_nid(entry);
+> +       spinlock_t *lock =3D &list_lru->node[nid].lock;
+> +       struct mem_cgroup *memcg;
+> +
+> +       rcu_read_lock();
+> +       memcg =3D mem_cgroup_from_entry(entry);
+> +       spin_lock(lock);
+> +       /* we cannot use list_lru_add here, because it increments node's =
+lru count */
+> +       list_lru_putback(list_lru, &entry->lru, nid, memcg);
+> +       spin_unlock(lock);
+> +       rcu_read_unlock();
+> +}
+> +
+>  /*********************************
+>  * rbtree functions
+>  **********************************/
+> @@ -396,9 +483,7 @@ static void zswap_free_entry(struct zswap_entry *entr=
+y)
+>         if (!entry->length)
+>                 atomic_dec(&zswap_same_filled_pages);
+>         else {
+> -               spin_lock(&entry->pool->lru_lock);
+> -               list_del(&entry->lru);
+> -               spin_unlock(&entry->pool->lru_lock);
+> +               zswap_lru_del(&entry->pool->list_lru, entry);
+>                 zpool_free(zswap_find_zpool(entry), entry->handle);
+>                 zswap_pool_put(entry->pool);
+>         }
+> @@ -632,21 +717,15 @@ static void zswap_invalidate_entry(struct zswap_tre=
+e *tree,
+>                 zswap_entry_put(tree, entry);
+>  }
+>
+> -static int zswap_reclaim_entry(struct zswap_pool *pool)
+> +static enum lru_status shrink_memcg_cb(struct list_head *item, struct li=
+st_lru_one *l,
+> +                                      spinlock_t *lock, void *arg)
+>  {
+> -       struct zswap_entry *entry;
+> +       struct zswap_entry *entry =3D container_of(item, struct zswap_ent=
+ry, lru);
+>         struct zswap_tree *tree;
+>         pgoff_t swpoffset;
+> -       int ret;
+> +       enum lru_status ret =3D LRU_REMOVED_RETRY;
+> +       int writeback_result;
+>
+> -       /* Get an entry off the LRU */
+> -       spin_lock(&pool->lru_lock);
+> -       if (list_empty(&pool->lru)) {
+> -               spin_unlock(&pool->lru_lock);
+> -               return -EINVAL;
+> -       }
+> -       entry =3D list_last_entry(&pool->lru, struct zswap_entry, lru);
+> -       list_del_init(&entry->lru);
+>         /*
+>          * Once the lru lock is dropped, the entry might get freed. The
+>          * swpoffset is copied to the stack, and entry isn't deref'd agai=
+n
+> @@ -654,28 +733,32 @@ static int zswap_reclaim_entry(struct zswap_pool *p=
+ool)
+>          */
+>         swpoffset =3D swp_offset(entry->swpentry);
+>         tree =3D zswap_trees[swp_type(entry->swpentry)];
+> -       spin_unlock(&pool->lru_lock);
+> +       list_lru_isolate(l, item);
+> +       /*
+> +        * It's safe to drop the lock here because we return either
+> +        * LRU_REMOVED_RETRY or LRU_RETRY.
+> +        */
+> +       spin_unlock(lock);
+>
+>         /* Check for invalidate() race */
+>         spin_lock(&tree->lock);
+> -       if (entry !=3D zswap_rb_search(&tree->rbroot, swpoffset)) {
+> -               ret =3D -EAGAIN;
+> +       if (entry !=3D zswap_rb_search(&tree->rbroot, swpoffset))
+>                 goto unlock;
+> -       }
+> +
+>         /* Hold a reference to prevent a free during writeback */
+>         zswap_entry_get(entry);
+>         spin_unlock(&tree->lock);
+>
+> -       ret =3D zswap_writeback_entry(entry, tree);
+> +       writeback_result =3D zswap_writeback_entry(entry, tree);
+>
+>         spin_lock(&tree->lock);
+> -       if (ret) {
+> -               /* Writeback failed, put entry back on LRU */
+> -               spin_lock(&pool->lru_lock);
+> -               list_move(&entry->lru, &pool->lru);
+> -               spin_unlock(&pool->lru_lock);
+> +       if (writeback_result) {
+> +               zswap_reject_reclaim_fail++;
+> +               zswap_lru_putback(&entry->pool->list_lru, entry);
+> +               ret =3D LRU_RETRY;
+>                 goto put_unlock;
+>         }
+> +       zswap_written_back_pages++;
+>
+>         /*
+>          * Writeback started successfully, the page now belongs to the
+> @@ -689,27 +772,93 @@ static int zswap_reclaim_entry(struct zswap_pool *p=
+ool)
+>         zswap_entry_put(tree, entry);
+>  unlock:
+>         spin_unlock(&tree->lock);
+> -       return ret ? -EAGAIN : 0;
+> +       spin_lock(lock);
+> +       return ret;
+> +}
+> +
+> +static int shrink_memcg(struct mem_cgroup *memcg)
+> +{
+> +       struct zswap_pool *pool;
+> +       int nid, shrunk =3D 0;
+> +
+> +       /*
+> +        * Skip zombies because their LRUs are reparented and we would be
+> +        * reclaiming from the parent instead of the dead memcg.
+> +        */
+> +       if (memcg && !mem_cgroup_online(memcg))
+> +               return -ENOENT;
+> +
+> +       pool =3D zswap_pool_current_get();
+> +       if (!pool)
+> +               return -EINVAL;
+> +
+> +       for_each_node_state(nid, N_NORMAL_MEMORY) {
+> +               unsigned long nr_to_walk =3D 1;
+> +
+> +               shrunk +=3D list_lru_walk_one(&pool->list_lru, nid, memcg=
+,
+> +                                           &shrink_memcg_cb, NULL, &nr_t=
+o_walk);
+> +       }
+> +       zswap_pool_put(pool);
+> +       return shrunk ? 0 : -EAGAIN;
+>  }
+>
+>  static void shrink_worker(struct work_struct *w)
+>  {
+>         struct zswap_pool *pool =3D container_of(w, typeof(*pool),
+>                                                 shrink_work);
+> +       struct mem_cgroup *memcg;
+>         int ret, failures =3D 0;
+>
+> +       /* global reclaim will select cgroup in a round-robin fashion. */
+>         do {
+> -               ret =3D zswap_reclaim_entry(pool);
+> -               if (ret) {
+> -                       zswap_reject_reclaim_fail++;
+> -                       if (ret !=3D -EAGAIN)
+> +               spin_lock(&zswap_pools_lock);
+> +               pool->next_shrink =3D mem_cgroup_iter(NULL, pool->next_sh=
+rink, NULL);
+> +               memcg =3D pool->next_shrink;
+> +
+> +               /*
+> +                * We need to retry if we have gone through a full round =
+trip, or if we
+> +                * got an offline memcg (or else we risk undoing the effe=
+ct of the
+> +                * zswap memcg offlining cleanup callback). This is not c=
+atastrophic
+> +                * per se, but it will keep the now offlined memcg hostag=
+e for a while.
+> +                *
+> +                * Note that if we got an online memcg, we will keep the =
+extra
+> +                * reference in case the original reference obtained by m=
+em_cgroup_iter
+> +                * is dropped by the zswap memcg offlining callback, ensu=
+ring that the
+> +                * memcg is not killed when we are reclaiming.
+> +                */
+> +               if (!memcg) {
+> +                       spin_unlock(&zswap_pools_lock);
+> +                       if (++failures =3D=3D MAX_RECLAIM_RETRIES)
+>                                 break;
+> +
+> +                       goto resched;
+> +               }
+> +
+> +               if (!mem_cgroup_online(memcg)) {
+> +                       /* drop the reference from mem_cgroup_iter() */
+> +                       mem_cgroup_put(memcg);
 
-A new hub quirk HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL speeds up
-the notification process for Microchip USB491x hub by limiting
-the maximum bInterval value to 9.
+Probably better to use mem_cgroup_iter_break() here?
 
-Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
----
-changes since version 1:
-	- Move implementation from config.c and quirk.c to hub.c as this is hub
-	  specific changes.
-	- Improve commit message.
-	- Link to v1 - https://lore.kernel.org/all/20231123081948.58776-1-hgajjar@de.adit-jv.com/
+Also, I don't see mem_cgroup_tryget_online() being used here (where I
+expected it to be used), did I miss it?
 
-changes since version 2:
-    - Call usb_set_interface after updating the bInterval to Tell the HCD about modification
-	- Link to v2 - https://lore.kernel.org/all/20231130084855.119937-1-hgajjar@de.adit-jv.com/
+> +                       pool->next_shrink =3D NULL;
+> +                       spin_unlock(&zswap_pools_lock);
+> +
+>                         if (++failures =3D=3D MAX_RECLAIM_RETRIES)
+>                                 break;
+> +
+> +                       goto resched;
+>                 }
+> +               spin_unlock(&zswap_pools_lock);
+> +
+> +               ret =3D shrink_memcg(memcg);
 
-changes since version 3:
-    - Change HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL value from 0x08 to 0x04
-	- Link to v3 - https://lore.kernel.org/all/20231201144705.97385-1-hgajjar@de.adit-jv.com/
+We just checked for online-ness above, and then shrink_memcg() checks
+it again. Is this intentional?
 
-changes since version 4:
-	- change quirk hardcoded value to BIT() Macro
-	- Link to v4 - https://lore.kernel.org/all/20231204073834.112509-1-hgajjar@de.adit-jv.com/
----
- drivers/usb/core/hub.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+> +               /* drop the extra reference */
 
-diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 286d203e6952..3c8d42552642 100644
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -47,12 +47,18 @@
- #define USB_VENDOR_TEXAS_INSTRUMENTS		0x0451
- #define USB_PRODUCT_TUSB8041_USB3		0x8140
- #define USB_PRODUCT_TUSB8041_USB2		0x8142
-+#define USB_VENDOR_MICROCHIP			0x0424
-+#define USB_PRODUCT_USB4913			0x4913
-+#define USB_PRODUCT_USB4914			0x4914
-+#define USB_PRODUCT_USB4915			0x4915
- #define HUB_QUIRK_CHECK_PORT_AUTOSUSPEND	BIT(0)
- #define HUB_QUIRK_DISABLE_AUTOSUSPEND		BIT(1)
-+#define HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL	BIT(2)
- 
- #define USB_TP_TRANSMISSION_DELAY	40	/* ns */
- #define USB_TP_TRANSMISSION_DELAY_MAX	65535	/* ns */
- #define USB_PING_RESPONSE_TIME		400	/* ns */
-+#define USB_REDUCE_FRAME_INTR_BINTERVAL	9
- 
- /* Protect struct usb_device->state and ->children members
-  * Note: Both are also protected by ->dev.sem, except that ->state can
-@@ -1927,6 +1933,14 @@ static int hub_probe(struct usb_interface *intf, const struct usb_device_id *id)
- 		usb_autopm_get_interface_no_resume(intf);
- 	}
- 
-+	if ((id->driver_info & HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL) &&
-+	    desc->endpoint[0].desc.bInterval > USB_REDUCE_FRAME_INTR_BINTERVAL) {
-+		desc->endpoint[0].desc.bInterval =
-+			USB_REDUCE_FRAME_INTR_BINTERVAL;
-+		/* Tell the HCD about the interrupt ep's new bInterval */
-+		usb_set_interface(hdev, 0, 0);
-+	}
-+
- 	if (hub_configure(hub, &desc->endpoint[0].desc) >= 0) {
- 		onboard_hub_create_pdevs(hdev, &hub->onboard_hub_devs);
- 
-@@ -5918,6 +5932,21 @@ static const struct usb_device_id hub_id_table[] = {
-       .idVendor = USB_VENDOR_TEXAS_INSTRUMENTS,
-       .idProduct = USB_PRODUCT_TUSB8041_USB3,
-       .driver_info = HUB_QUIRK_DISABLE_AUTOSUSPEND},
-+	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
-+			| USB_DEVICE_ID_MATCH_PRODUCT,
-+	  .idVendor = USB_VENDOR_MICROCHIP,
-+	  .idProduct = USB_PRODUCT_USB4913,
-+	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
-+	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
-+			| USB_DEVICE_ID_MATCH_PRODUCT,
-+	  .idVendor = USB_VENDOR_MICROCHIP,
-+	  .idProduct = USB_PRODUCT_USB4914,
-+	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
-+	{ .match_flags = USB_DEVICE_ID_MATCH_VENDOR
-+			| USB_DEVICE_ID_MATCH_PRODUCT,
-+	  .idVendor = USB_VENDOR_MICROCHIP,
-+	  .idProduct = USB_PRODUCT_USB4915,
-+	  .driver_info = HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL},
-     { .match_flags = USB_DEVICE_ID_MATCH_DEV_CLASS,
-       .bDeviceClass = USB_CLASS_HUB},
-     { .match_flags = USB_DEVICE_ID_MATCH_INT_CLASS,
--- 
-2.17.1
+Where does the extra reference come from?
 
+> +               mem_cgroup_put(memcg);
+> +
+> +               if (ret =3D=3D -EINVAL)
+> +                       break;
+> +               if (ret && ++failures =3D=3D MAX_RECLAIM_RETRIES)
+> +                       break;
+> +
+> +resched:
+>                 cond_resched();
+>         } while (!zswap_can_accept());
+> -       zswap_pool_put(pool);
+>  }
+>
+>  static struct zswap_pool *zswap_pool_create(char *type, char *compressor=
+)
+> @@ -767,8 +916,7 @@ static struct zswap_pool *zswap_pool_create(char *typ=
+e, char *compressor)
+>          */
+>         kref_init(&pool->kref);
+>         INIT_LIST_HEAD(&pool->list);
+> -       INIT_LIST_HEAD(&pool->lru);
+> -       spin_lock_init(&pool->lru_lock);
+> +       list_lru_init_memcg(&pool->list_lru, NULL);
+>         INIT_WORK(&pool->shrink_work, shrink_worker);
+>
+>         zswap_pool_debug("created", pool);
+> @@ -834,6 +982,13 @@ static void zswap_pool_destroy(struct zswap_pool *po=
+ol)
+>
+>         cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->no=
+de);
+>         free_percpu(pool->acomp_ctx);
+> +       list_lru_destroy(&pool->list_lru);
+> +
+> +       spin_lock(&zswap_pools_lock);
+> +       mem_cgroup_put(pool->next_shrink);
+> +       pool->next_shrink =3D NULL;
+> +       spin_unlock(&zswap_pools_lock);
+> +
+>         for (i =3D 0; i < ZSWAP_NR_ZPOOLS; i++)
+>                 zpool_destroy_pool(pool->zpools[i]);
+>         kfree(pool);
+> @@ -1081,7 +1236,7 @@ static int zswap_writeback_entry(struct zswap_entry=
+ *entry,
+>         /* try to allocate swap cache page */
+>         mpol =3D get_task_policy(current);
+>         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
+> -                               NO_INTERLEAVE_INDEX, &page_was_allocated)=
+;
+> +                               NO_INTERLEAVE_INDEX, &page_was_allocated,=
+ true);
+>         if (!page) {
+>                 ret =3D -ENOMEM;
+>                 goto fail;
+> @@ -1152,7 +1307,6 @@ static int zswap_writeback_entry(struct zswap_entry=
+ *entry,
+>         /* start writeback */
+>         __swap_writepage(page, &wbc);
+>         put_page(page);
+> -       zswap_written_back_pages++;
+>
+>         return ret;
+>
+> @@ -1209,6 +1363,7 @@ bool zswap_store(struct folio *folio)
+>         struct scatterlist input, output;
+>         struct crypto_acomp_ctx *acomp_ctx;
+>         struct obj_cgroup *objcg =3D NULL;
+> +       struct mem_cgroup *memcg =3D NULL;
+>         struct zswap_pool *pool;
+>         struct zpool *zpool;
+>         unsigned int dlen =3D PAGE_SIZE;
+> @@ -1240,15 +1395,15 @@ bool zswap_store(struct folio *folio)
+>                 zswap_invalidate_entry(tree, dupentry);
+>         }
+>         spin_unlock(&tree->lock);
+> -
+> -       /*
+> -        * XXX: zswap reclaim does not work with cgroups yet. Without a
+> -        * cgroup-aware entry LRU, we will push out entries system-wide b=
+ased on
+> -        * local cgroup limits.
+> -        */
+>         objcg =3D get_obj_cgroup_from_folio(folio);
+> -       if (objcg && !obj_cgroup_may_zswap(objcg))
+> -               goto reject;
+> +       if (objcg && !obj_cgroup_may_zswap(objcg)) {
+> +               memcg =3D get_mem_cgroup_from_objcg(objcg);
+
+Do we need a reference here? IIUC, this is folio_memcg() and the folio
+is locked, so folio_memcg() should remain stable, no?
+
+Same for the call below.
+
+> +               if (shrink_memcg(memcg)) {
+> +                       mem_cgroup_put(memcg);
+> +                       goto reject;
+> +               }
+> +               mem_cgroup_put(memcg);
+> +       }
+>
+>         /* reclaim space if needed */
+>         if (zswap_is_full()) {
+> @@ -1265,7 +1420,7 @@ bool zswap_store(struct folio *folio)
+>         }
+>
+>         /* allocate entry */
+> -       entry =3D zswap_entry_cache_alloc(GFP_KERNEL);
+> +       entry =3D zswap_entry_cache_alloc(GFP_KERNEL, page_to_nid(page));
+>         if (!entry) {
+>                 zswap_reject_kmemcache_fail++;
+>                 goto reject;
+> @@ -1292,6 +1447,15 @@ bool zswap_store(struct folio *folio)
+>         if (!entry->pool)
+>                 goto freepage;
+>
+> +       if (objcg) {
+> +               memcg =3D get_mem_cgroup_from_objcg(objcg);
+> +               if (memcg_list_lru_alloc(memcg, &entry->pool->list_lru, G=
+FP_KERNEL)) {
+> +                       mem_cgroup_put(memcg);
+> +                       goto put_pool;
+> +               }
+> +               mem_cgroup_put(memcg);
+> +       }
+> +
+>         /* compress */
+>         acomp_ctx =3D raw_cpu_ptr(entry->pool->acomp_ctx);
+>
+> @@ -1370,9 +1534,8 @@ bool zswap_store(struct folio *folio)
+>                 zswap_invalidate_entry(tree, dupentry);
+>         }
+>         if (entry->length) {
+> -               spin_lock(&entry->pool->lru_lock);
+> -               list_add(&entry->lru, &entry->pool->lru);
+> -               spin_unlock(&entry->pool->lru_lock);
+> +               INIT_LIST_HEAD(&entry->lru);
+> +               zswap_lru_add(&entry->pool->list_lru, entry);
+>         }
+>         spin_unlock(&tree->lock);
+>
+> @@ -1385,6 +1548,7 @@ bool zswap_store(struct folio *folio)
+>
+>  put_dstmem:
+>         mutex_unlock(acomp_ctx->mutex);
+> +put_pool:
+>         zswap_pool_put(entry->pool);
+>  freepage:
+>         zswap_entry_cache_free(entry);
+> @@ -1479,9 +1643,8 @@ bool zswap_load(struct folio *folio)
+>                 zswap_invalidate_entry(tree, entry);
+>                 folio_mark_dirty(folio);
+>         } else if (entry->length) {
+> -               spin_lock(&entry->pool->lru_lock);
+> -               list_move(&entry->lru, &entry->pool->lru);
+> -               spin_unlock(&entry->pool->lru_lock);
+> +               zswap_lru_del(&entry->pool->list_lru, entry);
+> +               zswap_lru_add(&entry->pool->list_lru, entry);
+>         }
+>         zswap_entry_put(tree, entry);
+>         spin_unlock(&tree->lock);
+> --
+> 2.34.1
