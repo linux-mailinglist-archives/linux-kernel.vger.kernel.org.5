@@ -2,181 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D50C8805D94
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A90AC805DC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346164AbjLESaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:30:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
+        id S235690AbjLES3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:29:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjLESaL (ORCPT
+        with ESMTP id S235681AbjLES3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:30:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E5FAC;
-        Tue,  5 Dec 2023 10:30:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701801018; x=1733337018;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Zz7EFTXIoG/cqIxk5/CEZFwnhwoZiqUADJITyhN0vUE=;
-  b=lxij1JtBRLni95lEXPYixEk91lm6RS+/jwZAkrwQHwqU3F2rrOvBv3p3
-   HpEe4NlMq3+zh62y1ET8O2CpYK6KUwcQoX+tbCBIurz9pAzwD5MmEosYr
-   2uL27GS1x7lpe6dkFpaGCt7Ef5fu32D8X/YVTaY5IAQLU0cfbXP/MP6pC
-   XxQW6MLrzY5UhflMbRjjxKHG9PqVbBQkXLLJBaKiN27Zgna1ymj21P34S
-   GjxT1cW7y3uxLaniybYPDAzvwosirxz1L+JhIypZbfxOccjhbTPfsaAfP
-   MMkp3U5IICoycUVZylZfg2MqhRFq0HuH0xJ+eN13J0DegbSZisfj5108R
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="396730845"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="396730845"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 10:30:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="894462843"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="894462843"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 05 Dec 2023 10:30:13 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAaBO-0009Xo-2s;
-        Tue, 05 Dec 2023 18:30:10 +0000
-Date:   Wed, 6 Dec 2023 02:29:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
+        Tue, 5 Dec 2023 13:29:31 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9951B9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:29:37 -0800 (PST)
+Date:   Tue, 5 Dec 2023 19:29:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701800976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ySmI1BlCATAwtUlHx5ZUGUPowYOnS+FxgNwcQP+uqBM=;
+        b=ji+cR+dTTqrxcSIyfB6S2TBPOt/yFP3/3IeyCaR53TP/eN+k2XaOS9uvGSGoWbA2FuRPqY
+        Vg1yRHlxsw+FER8tp0fO3/fVdyo6PaYNizqWBE+KbHPZcx2DwzBcASE4o9xPVAq9Oql6Vf
+        YjbDICgVrzwjEkWCl9g6DQuMSoJc+BPq9lJmEnfX7f61suSV1fmHqxnzvOWUmuncDGwAGA
+        2vDeh55ByWzYz24JZ67khXQOmXbv64eV0ZwO9sz6MrTub6PIKcyrwy6xkbDtaUraL2AyKK
+        Ua1yh/ZiRtMPJwNwV6SSBwEDZliRVUnjaSas5Ac5SJPI2kFZTGaC1/f+mzvYyQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701800976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ySmI1BlCATAwtUlHx5ZUGUPowYOnS+FxgNwcQP+uqBM=;
+        b=gK3tU4iystBXbfW6gOoD/93G93dtIkOcfwfAu6YHE63d9as46fusVR/mAV9JQwrr9IEcVw
+        lWNR5esVyrVgAqDg==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        "David S . Miller" <davem@davemloft.net>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] serial: 8250: Add preferred console in
- serial8250_isa_init_ports()
-Message-ID: <202312060232.s0uWr7z9-lkp@intel.com>
-References: <20231205073255.20562-5-tony@atomide.com>
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 21/32] timers: Split next timer interrupt logic
+Message-ID: <20231205182934.Qhc0WRGy@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-22-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231205073255.20562-5-tony@atomide.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231201092654.34614-22-anna-maria@linutronix.de>
+X-TUID: FnWDwtAIYOql
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+On 2023-12-01 10:26:43 [+0100], Anna-Maria Behnsen wrote:
+> Logic for getting next timer interrupt (no matter of recalculated or
+> already stored in base->next_expiry) is split into a separate function
+> "next_timer_interrupt()" to make it available for new call sites.
 
-kernel test robot noticed the following build errors:
+Be authoritative.
 
-[auto build test ERROR on tty/tty-testing]
-[also build test ERROR on tty/tty-next tty/tty-linus usb/usb-testing usb/usb-next usb/usb-linus linus/master v6.7-rc4 next-20231205]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+| Split the logic for getting next timer interrupt (no matter of recalculated or
+| already stored in base->next_expiry) into a separate function named
+| next_timer_interrupt(). Make it available to local call sites only.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tony-Lindgren/printk-Save-console-options-for-add_preferred_console_match/20231205-153731
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
-patch link:    https://lore.kernel.org/r/20231205073255.20562-5-tony%40atomide.com
-patch subject: [PATCH v4 4/4] serial: 8250: Add preferred console in serial8250_isa_init_ports()
-config: m68k-randconfig-r071-20231205 (https://download.01.org/0day-ci/archive/20231206/202312060232.s0uWr7z9-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060232.s0uWr7z9-lkp@intel.com/reproduce)
+> No functional change.
+> 
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312060232.s0uWr7z9-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   drivers/tty/serial/8250/8250_core.c: In function 'serial8250_isa_init_ports':
->> drivers/tty/serial/8250/8250_core.c:597:55: warning: passing argument 1 of 'serial8250_isa_init_preferred_console' makes pointer from integer without a cast [-Wint-conversion]
-     597 |                 serial8250_isa_init_preferred_console(i);
-         |                                                       ^
-         |                                                       |
-         |                                                       int
-   drivers/tty/serial/8250/8250_core.c:543:76: note: expected 'struct uart_port *' but argument is of type 'int'
-     543 | static inline void serial8250_isa_init_preferred_console(struct uart_port *port,
-         |                                                          ~~~~~~~~~~~~~~~~~~^~~~
->> drivers/tty/serial/8250/8250_core.c:597:17: error: too few arguments to function 'serial8250_isa_init_preferred_console'
-     597 |                 serial8250_isa_init_preferred_console(i);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/tty/serial/8250/8250_core.c:543:20: note: declared here
-     543 | static inline void serial8250_isa_init_preferred_console(struct uart_port *port,
-         |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/serial8250_isa_init_preferred_console +597 drivers/tty/serial/8250/8250_core.c
-
-   549	
-   550	static void __init serial8250_isa_init_ports(void)
-   551	{
-   552		struct uart_8250_port *up;
-   553		static int first = 1;
-   554		int i, irqflag = 0;
-   555	
-   556		if (!first)
-   557			return;
-   558		first = 0;
-   559	
-   560		if (nr_uarts > UART_NR)
-   561			nr_uarts = UART_NR;
-   562	
-   563		/*
-   564		 * Set up initial isa ports based on nr_uart module param, or else
-   565		 * default to CONFIG_SERIAL_8250_RUNTIME_UARTS. Note that we do not
-   566		 * need to increase nr_uarts when setting up the initial isa ports.
-   567		 */
-   568		for (i = 0; i < nr_uarts; i++)
-   569			serial8250_setup_port(i);
-   570	
-   571		/* chain base port ops to support Remote Supervisor Adapter */
-   572		univ8250_port_ops = *base_ops;
-   573		univ8250_rsa_support(&univ8250_port_ops);
-   574	
-   575		if (share_irqs)
-   576			irqflag = IRQF_SHARED;
-   577	
-   578		for (i = 0, up = serial8250_ports;
-   579		     i < ARRAY_SIZE(old_serial_port) && i < nr_uarts;
-   580		     i++, up++) {
-   581			struct uart_port *port = &up->port;
-   582	
-   583			port->iobase   = old_serial_port[i].port;
-   584			port->irq      = irq_canonicalize(old_serial_port[i].irq);
-   585			port->irqflags = 0;
-   586			port->uartclk  = old_serial_port[i].baud_base * 16;
-   587			port->flags    = old_serial_port[i].flags;
-   588			port->hub6     = 0;
-   589			port->membase  = old_serial_port[i].iomem_base;
-   590			port->iotype   = old_serial_port[i].io_type;
-   591			port->regshift = old_serial_port[i].iomem_reg_shift;
-   592	
-   593			port->irqflags |= irqflag;
-   594			if (serial8250_isa_config != NULL)
-   595				serial8250_isa_config(i, &up->port, &up->capabilities);
-   596	
- > 597			serial8250_isa_init_preferred_console(i);
-   598		}
-   599	}
-   600	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sebastian
