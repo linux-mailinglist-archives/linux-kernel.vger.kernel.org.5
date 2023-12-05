@@ -2,100 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6682806307
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9D080635B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346627AbjLEXiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 18:38:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
+        id S1346650AbjLFAV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:21:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbjLEXiU (ORCPT
+        with ESMTP id S1346609AbjLFAVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 18:38:20 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0161122
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 15:38:25 -0800 (PST)
-Received: from [100.75.103.134] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: padovan)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 5DADD660715D;
-        Tue,  5 Dec 2023 23:38:22 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701819504;
-        bh=2CZFIUejLgdcAX8+486gEwTLlC8kPQFmxUo3clcFhOU=;
-        h=Date:To:Cc:From:Subject:From;
-        b=QL73S9sPuUGuwn8rgNhwsp5GOmkxycaNKPeOkMyQidqpwQbiE/JNzCs3NSW+Ij7GC
-         +yQOFy7FX0TbxHGTknKAifrhee+GfAwm3gmHQkXf+3wbX5N4XJNho1Bn5LhXygwcZv
-         I7K+/f3M6CWNUkkhZJ7jzHgA6gnMCEc3K9eyjdc9mEDlfwOWNnall6ZRCmUzgROtRp
-         MWK/nuMZ2P3AwKkDSa8Qp1HhF+oK2sQISDFP9aMZmDMweL50JMvfCBUYafhGHYlFi7
-         OPncCX+T2iUqldZE8Lwi7dJwtPpYBtRPc0svFsd0Bmr/k5pxEmxrX/Ns1NE0slG4RE
-         x5FLyfqQeeEkQ==
-Message-ID: <5d48c1fa-d577-6f4c-5d3c-37884053e1a9@collabora.com>
-Date:   Tue, 5 Dec 2023 20:38:17 -0300
+        Tue, 5 Dec 2023 19:21:25 -0500
+X-Greylist: delayed 2250 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 16:21:31 PST
+Received: from baldur.buserror.net (baldur.buserror.net [165.227.176.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8DC1A4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=buserror.net; s=rsa_sel; h=Subject:MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Message-ID:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=DZwB2POqwrd8X6LbQpzFj2/aL40ImBLV+vaLjDHtH1M=; b=M0POUctnsUN+d+fmAwVUWHXBZI
+        5cVOFDODT4LsXnFWH4p8fm7f9RTqfvx7c/ndxpBWs2ZFEmItFqCE7nCLVoN09h58QrrBwrG3T/aVg
+        OtEG1VtOWltsPlZjxZvZj7aKCwDjifGwxZrJl2iSaHFQR9AydQJE3g9e1yzPU24yPYkDIYbV7Gy9Q
+        DaYUw7hr01kGbbb8sjkq3qNXAhDrkhWild/BIzcLpJBMm81Fp51M+ZutxsMM5ehvctK5BPzuCbuxL
+        3nV0+J0flMFjbLvVajQW165IB34K2cd8Vyg3IN1GNykHmfr0+14F0yDB3aFrQpCupO6ZPYYwhwnns
+        sHtUcyDQ==;
+Received: from [2601:447:c601:5610::fed3]
+        by baldur.buserror.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <oss@buserror.net>)
+        id 1rAf0o-004kJT-0C;
+        Tue, 05 Dec 2023 17:39:34 -0600
+Message-ID: <ab212d9a4f35450e6575a0fe3aae01fb8e4709c4.camel@buserror.net>
+From:   Crystal Wood <oss@buserror.net>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, christophe.leroy@csgroup.eu
+Date:   Tue, 05 Dec 2023 17:39:32 -0600
+In-Reply-To: <20231205051239.737384-1-mpe@ellerman.id.au>
+References: <20231205051239.737384-1-mpe@ellerman.id.au>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernelci@lists.linux.dev" <kernelci@lists.linux.dev>,
-        "automated-testing@lists.yoctoproject.org" 
-        <automated-testing@lists.yoctoproject.org>,
-        "kernelci-webdashboard@groups.io" <kernelci-webdashboard@groups.io>
-Cc:     =?UTF-8?Q?Jo=c3=a3o_Bertacchi?= <joaobertacchi@profusion.mobi>,
-        Ricardo Dourado <ricardo.dourado@profusion.mobi>
-From:   Gustavo Padovan <gustavo.padovan@collabora.com>
-Subject: KernelCI is designing a new Web Dashboard: we want your feedback!
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2601:447:c601:5610::fed3
+X-SA-Exim-Rcpt-To: mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, christophe.leroy@csgroup.eu
+X-SA-Exim-Mail-From: oss@buserror.net
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
+X-Spam-Level: 
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+Subject: Re: [PATCH] MAINTAINERS: powerpc: Transfer PPC83XX to Christophe
+X-SA-Exim-Version: 4.2.1 (built Wed, 06 Jul 2022 17:57:39 +0000)
+X-SA-Exim-Scanned: Yes (on baldur.buserror.net)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 2023-12-05 at 16:12 +1100, Michael Ellerman wrote:
+> Christophe volunteered[1] to maintain PPC83XX.
+>=20
+> 1:
+> https://lore.kernel.org/all/7b1bf4dc-d09d-35b8-f4df-16bf00429b6d@csgroup.=
+eu/
+>=20
+> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> ---
+> =C2=A0MAINTAINERS | 6 +++---
+> =C2=A01 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 562d048863ee..d4efe48cc36a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12287,21 +12287,21 @@ S:=C2=A0=C2=A0=C2=A0=C2=A0Orphan
+> =C2=A0F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0arch/powerpc/platforms/40x/
+> =C2=A0F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0arch/powerpc/platforms/44x/
+> =C2=A0
+> -LINUX FOR POWERPC EMBEDDED PPC83XX AND PPC85XX
+> +LINUX FOR POWERPC EMBEDDED PPC85XX
+> =C2=A0M:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Scott Wood <oss@buserror.net>
+> =C2=A0L:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0linuxppc-dev@lists.ozlabs.org
+> =C2=A0S:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Odd fixes
+> =C2=A0T:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0git
+> git://git.kernel.org/pub/scm/linux/kernel/git/scottwood/linux.git
+> =C2=A0F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Documentation/devicetree/bindings/c=
+ache/freescale-l2cache.txt
+> =C2=A0F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Documentation/devicetree/bindings/p=
+owerpc/fsl/
+> -F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0arch/powerpc/platforms/83xx/
+> =C2=A0F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0arch/powerpc/platforms/85xx/
+> =C2=A0
+> -LINUX FOR POWERPC EMBEDDED PPC8XX
+> +LINUX FOR POWERPC EMBEDDED PPC8XX AND PPC83XX
+> =C2=A0M:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Christophe Leroy <christophe.leroy@=
+csgroup.eu>
+> =C2=A0L:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0linuxppc-dev@lists.ozlabs.org
+> =C2=A0S:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Maintained
+> =C2=A0F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0arch/powerpc/platforms/8xx/
+> +F:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0arch/powerpc/platforms/83xx/
 
-TL;DR: KernelCI engaged with an UX speacialist vendor to design a new 
-web dashboard to show our test results data. If you want to give your 
-feedback, let us know. We still have a few spots for UX interviews!
+Acked-by: Crystal Wood <oss@buserror.net>
 
-
-As we shared previously, we are in the process of designing a new Web 
-Dashboard for KernelCI. As you may know, at same time, we are putting 
-together a new core infra to replace our legacy and limited system.
-
-Ultimately, we will have a CI pipeline that allows tests to be run not 
-only in KernelCI labs but outside of it too, but with test results 
-contributed back to the already available common database. Then on top 
-that, we want to have a powerful dashboard to help the community 
-evaluate the test results in the best manner possible.
-
-You can read our blog post for a quick summary of the UX redesign 
-project: https://kernelci.org/blog/posts/2023/ux-analysis/
-
-We have just started the first phase with the UX team interviewing 
-kernel maintainers and other users of KernelCI.
-
-If you are interested in providing your feedback just reply to this 
-email or reach out to me directly. We will try to accommodate everyone 
-that is interested.
-
-Regards,
-
-- Gus (as Project Manager for the KernelCI project)
-
--- 
-Gustavo Padovan
-Kernel Lead
-
-Collabora Ltd.
-Platinum Building, St John's Innovation Park
-Cambridge CB4 0DS, UK
-Registered in England & Wales, no. 5513718
+-Crystal
 
