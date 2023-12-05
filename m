@@ -2,77 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C77804EAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5529804EAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344971AbjLEJuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
+        id S1346540AbjLEJum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:50:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjLEJud (ORCPT
+        with ESMTP id S231778AbjLEJue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:50:33 -0500
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379E6AA;
-        Tue,  5 Dec 2023 01:50:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-        t=1701769821; x=1702374621; i=spasswolf@web.de;
-        bh=PMUhOSPrIqO2nFBmzfdsWI9k8eQHrXY07i+nV1Od4lY=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:
-         References;
-        b=I43bvoYvg0jQ2LjQbNPWfiBB/2lsdQYfrTAtuiIe4YWldsiRu1XtYQqAFVK1BSSH
-         ObzIy3uyegplEjem76S6OzWbho/tyMB2VlQKcRDCccM9yAGmFTEfaXOu0hWebJ83t
-         VUOiMeI6H5mvNpDf6ajGZCuRVMZvFeZ+WgM7cZa4zyASELdVtsPC5I3L2skJ64jPC
-         +IAooHVg+l3A78atP0KTL8GJoR1SG6LDs5vnfQLf0qclBJKXUMTvxS125oUrLnZYW
-         AScmQPLtwK4+koFZ4dKqtGzUQx3Th1GxrcEKyNA8cUbcRcC4MbSRsD2kH0xjuxvKF
-         RNclPacGRS3kcL/Wjw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.0.101] ([84.119.92.193]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MA4fI-1qysI32fyE-00Bb8H; Tue, 05
- Dec 2023 10:50:21 +0100
-Message-ID: <b0803db66dfd4816b21d78bcbccefdb75318444d.camel@web.de>
-Subject: Re: [PATCH] fs: read_write: make default in vfs_copy_file_range()
- reachable
-From:   Bert Karwatzki <spasswolf@web.de>
-To:     Amir Goldstein <amir73il@gmail.com>,
-        Christian Brauner <brauner@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, axboe@kernel.dk, dhowells@redhat.com,
-        hch@lst.de, jlayton@kernel.org, josef@toxicpanda.com,
-        linux-fsdevel@vger.kernel.org, miklos@szeredi.hu,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org
-Date:   Tue, 05 Dec 2023 10:50:20 +0100
-In-Reply-To: <CAOQ4uxg-4NSysxmviKxDhnrA5P455T074ku=F24Wa5KJnCgspQ@mail.gmail.com>
-References: <20231130141624.3338942-4-amir73il@gmail.com>
-         <20231205001620.4566-1-spasswolf@web.de>
-         <CAOQ4uxiw8a+zh-x2a+A+EEZOFj1KYrBQucCvDv6s9w0XeDW-ZA@mail.gmail.com>
-         <CAOQ4uxg-4NSysxmviKxDhnrA5P455T074ku=F24Wa5KJnCgspQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.46.4-2 
+        Tue, 5 Dec 2023 04:50:34 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3197BAF
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:50:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701769839; x=1733305839;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Wb+nP3uWGNr4eVKcgKvIUTwvDqfMqPZGWYZ+1de9evM=;
+  b=ALy9eFVTsHdf00taBP3O4xMk9HMzlvjiJ1BObKXQAHhSWL5qBUuUQTDe
+   TlQwFN4WxY96BxJ/8crddoHtIiEVCx/fW/WCRlkcaVpJzepaQLRRKzdmk
+   q6oxH0VfiTQ4f/d59VyunpfKfkruH7Vkhm2RmMO13gkoH/TcTXLOpx6Yp
+   Aa74pxNjlOXjezpB3kId0VWQlaVHXd4xyVJeDnBkTF43LwM5JLAvFzwqo
+   idJAIuZqpNlEbrzT36tLNPLT2Z9vIbyO6lpbsbjKCadHOWAffR1IrmupO
+   h42J7ELKQq0L8atAqhRJbN6IdjDio2IFewCNeudy3KBSvj3bW1+p0O/rS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="384269382"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="384269382"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:50:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="805229069"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="805229069"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 05 Dec 2023 01:50:36 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAS4Y-0008hi-0l;
+        Tue, 05 Dec 2023 09:50:34 +0000
+Date:   Tue, 5 Dec 2023 17:50:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dan Carpenter <error27@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Luca Abeni <luca.abeni@santannapisa.it>
+Subject: drivers/video/fbdev/amifb.c:3375:32: sparse: sparse: incorrect type
+ in argument 1 (different address spaces)
+Message-ID: <202312051741.BVXr9CRP-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zcmUqHktaTmrIK0UZTIsj1d2FWv0DtFAZvrawz/zY3G2GPfRlI/
- Ky8mjWLA39i07FmJTe7M9vRZKXM3Uj616p0UOYMtj0J3a2qtkeUZyM4Awq0s0JPkrR6I3kN
- rPihH0JJlIyBro3BZy4zdmIbUNHlNJn8T09UjtPDRZpd8KsRKRA0RoUVHkbqiioBpBT0r7m
- 5f47GHuu+jqy1HuFFoUyw==
-UI-OutboundReport: notjunk:1;M01:P0:RkCAm3fSDdY=;hYdum0k1djuM+QTsKNO7PfPrU/x
- vWLkAeuQoNxBbu4v4BVhh0TDJShHjmI03mjg6dSyJGs/EAlKkCNRS6nveSj7IsMXoRmhomGgb
- JZigMkqeIWTV9rApm7czJXE1Rg3CxFwI6gMr6ldAMTtlVWXzaAaPrs7JzHojqBsajpiz9G9NO
- oJhpHQLeYIX43Q2GF8PtKc30Q2UJnU20CTyqVgk0OXmOHLyhi99DLSJxgwLGghQNFqGjyKtJf
- zrFMGiyOyKD10GqiQN5Z2TfxtVbGR1mdbSItoDuGjBRbcBlfaG7v1BZN09wKwtrBbhgkNjch0
- x1lHNBef+EeUyt38l3ovd9uJR1ptOSM8srvw97/GYnMmJKhuxSiICBu35MCssGN4WIlfeOS/C
- LgEK+h1m1q43J2SpW/wuEZwWZoI2fy996B67FKTHE0iLfs3VmYaNS5OzTbDShdtbD2YezbG1k
- ekgEqGv8SodH017gvK0DJZxTTCVGOz+aWhG9NT6G344kYjH4SY2fVR5cfJFheKoQrIW+xOLpq
- XnSK2SiRuSredJ57T1fcJTVbAO+X8DQmK2odH23UfkyE2VFSquZ7iFmMZKWY80jSIkQOkD20h
- IOAmAyCj2BiFADnj4X8QlWAb6m93JVYTDgyVA+8iJKDPlqEvB0CtJSuFofR7l+xWnZH66j+cc
- xIabsReCyr+FRpnb8+zLhWj7TA9PbDsZ0uWOs/xVTx18ZRm9cMogCaN/hqbYE0t7X7b3TisYw
- C6+7WBKnEYqH2IM+Q50stN6Y89uJ4v9K1+d2YelxJpXoR1LObiO3DVQm2a41B45ExY1x1JkD/
- KQNMdkbTaHFlBv8PAqncI3ycJ+6SxPpMVuIb0kefi0uozjIZ5jPE3G9LQhQPa1z7fgnDs10jo
- 90OMX6XaSg/gby1yrqxRNGRztvllmRZ3W0aOFWCrUugx5Y6LKWiYgMN5Bpq+IEWZXqZXavIzL
- t+iYuQ==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,112 +65,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, dem 05.12.2023 um 07:01 +0200 schrieb Amir Goldstein:
-> On Tue, Dec 5, 2023 at 5:45=E2=80=AFAM Amir Goldstein <amir73il@gmail.co=
-m> wrote:
-> >
-> > On Tue, Dec 5, 2023 at 2:16=E2=80=AFAM Bert Karwatzki <spasswolf@web.d=
-e> wrote:
-> > >
-> > > If vfs_copy_file_range() is called with (flags & COPY_FILE_SPLICE =
-=3D=3D 0)
-> > > and both file_out->f_op->copy_file_range and file_in->f_op-
-> > > >remap_file_range
-> > > are NULL, too, the default call to do_splice_direct() cannot be reac=
-hed.
-> > > This patch adds an else clause to make the default reachable in all
-> > > cases.
-> > >
-> > > Signed-off-by: Bert Karwatzki <spasswolf@web.de>
-> >
-> > Hi Bert,
-> >
-> > Thank you for testing and reporting this so early!!
-> >
-> > I would edit the commit message differently, but anyway, I think that
-> > the fix should be folded into commit 05ee2d85cd4a ("fs: use
-> > do_splice_direct() for nfsd/ksmbd server-side-copy").
-> >
-> > Since I end up making a mistake every time I touch this code,
-> > I also added a small edit to your patch below, that should make the lo=
-gic
-> > more clear to readers. Hopefully, that will help me avoid making a mis=
-take
-> > the next time I touch this code...
-> >
-> > Would you mind testing my revised fix, so we can add:
-> > =C2=A0 Tested-by: Bert Karwatzki <spasswolf@web.de>
-> > when folding it into the original patch?
-> >
->
-> Attached an even cleaner version of the fix patch for you to test.
-> I tested fstests check -g copy_range on ext4.
-> My fault was that I had tested earlier only on xfs and overlayfs
-> (the two other cases in the if/else if statement).
->
-> Thanks,
-> Amir.
->
-> > > ---
-> > > =C2=A0fs/read_write.c | 2 ++
-> > > =C2=A01 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/fs/read_write.c b/fs/read_write.c
-> > > index e0c2c1b5962b..3599c54bd26d 100644
-> > > --- a/fs/read_write.c
-> > > +++ b/fs/read_write.c
-> > > @@ -1554,6 +1554,8 @@ ssize_t vfs_copy_file_range(struct file *file_=
-in,
-> > > loff_t pos_in,
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 /* fallback to splice */
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 if (ret <=3D 0)
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s=
-plice =3D true;
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
-> >
-> > This is logically correct because of the earlier "same sb" check in
-> > generic_copy_file_checks(), but we better spell out the logic here as =
-well:
-> >
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } =
-else if (file_inode(file_in)->i_sb =3D=3D
-> > file_inode(file_out)->i_sb) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Fallback to splice for sa=
-me sb copy for
-> > backward compat */
-> >
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 splice =3D true;
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > >
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 file_end_write(file_out);
-> > > --
-> > > 2.39.2
-> > >
-> > > Since linux-next-20231204 I noticed that it was impossible to start =
-the
-> > > game Path of Exile (using the steam client). I bisected the error to
-> > > commit 05ee2d85cd4ace5cd37dc24132e3fd7f5142ebef. Reverting this comm=
-it
-> > > in linux-next-20231204 made the game start again and after inserting
-> > > printks into vfs_copy_file_range() I found that steam (via python3)
-> > > calls this function with (flags & COPY_FILE_SPLICE =3D=3D 0),
-> > > file_out->f_op->copy_file_range =3D=3D NULL and
-> > > file_in->f_op->remap_file_range =3D=3D NULL so the default is never =
-reached.
-> > > This patch adds a catch all else clause so the default is reached in
-> > > all cases. This patch fixes the describe issue with steam and Path o=
-f
-> > > Exile.
-> > >
-> > > Bert Karwatzki
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: aa5222e92f8000ed3c1c38dddf11c83222aadfb3 sched/deadline: Don't use dubious signed bitfields
+date:   6 years ago
+config: m68k-randconfig-r131-20231129 (https://download.01.org/0day-ci/archive/20231205/202312051741.BVXr9CRP-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231205/202312051741.BVXr9CRP-lkp@intel.com/reproduce)
 
-Your new patch works fine (I applied it to linux-next-20231204), again tes=
-ted by
-starting Path of Exile via steam from an ext4 filesystem.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312051741.BVXr9CRP-lkp@intel.com/
 
-Bert Karwatzki
+sparse warnings: (new ones prefixed by >>)
+>> drivers/video/fbdev/amifb.c:3375:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *dst @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/amifb.c:3375:32: sparse:     expected void *dst
+   drivers/video/fbdev/amifb.c:3375:32: sparse:     got char [noderef] __iomem *screen_base
+>> drivers/video/fbdev/amifb.c:3713:35: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected char [noderef] __iomem *screen_base @@     got char * @@
+   drivers/video/fbdev/amifb.c:3713:35: sparse:     expected char [noderef] __iomem *screen_base
+   drivers/video/fbdev/amifb.c:3713:35: sparse:     got char *
+>> drivers/video/fbdev/amifb.c:3755:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void * @@
+   drivers/video/fbdev/amifb.c:3755:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/video/fbdev/amifb.c:3755:26: sparse:     got void *
+   drivers/video/fbdev/amifb.c:3772:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void * @@
+   drivers/video/fbdev/amifb.c:3772:26: sparse:     expected void [noderef] __iomem *addr
+   drivers/video/fbdev/amifb.c:3772:26: sparse:     got void *
+   In file included from include/linux/workqueue.h:9,
+                    from include/linux/srcu.h:34,
+                    from include/linux/notifier.h:16,
+                    from include/linux/memory_hotplug.h:7,
+                    from include/linux/mmzone.h:780,
+                    from include/linux/gfp.h:6,
+                    from include/linux/umh.h:4,
+                    from include/linux/kmod.h:22,
+                    from include/linux/module.h:13,
+                    from drivers/video/fbdev/amifb.c:43:
+   include/linux/timer.h: In function 'timer_setup':
+   include/linux/timer.h:159:30: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
+     159 |         __setup_timer(timer, (TIMER_FUNC_TYPE)callback,
+         |                              ^
+   include/linux/timer.h:126:39: note: in definition of macro '__setup_timer'
+     126 |                 (_timer)->function = (_fn);                             29-      |                                       ^~~
+   include/linux/timer.h: In function 'timer_setup_on_stack':
+   include/linux/timer.h:167:39: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
+     167 |         __setup_timer_on_stack(timer, (TIMER_FUNC_TYPE)callback,
+         |                                       ^
+   include/linux/timer.h:133:39: note: in definition of macro '__setup_timer_on_stack'
+     133 |                 (_timer)->function = (_fn);                             36-      |                                       ^~~
+   drivers/video/fbdev/amifb.c: In function 'ami_decode_var':
+   drivers/video/fbdev/amifb.c:1127:23: warning: variable 'vtotal' set but not used [-Wunused-but-set-variable]
+    1127 |         u_int htotal, vtotal;
+         |                       ^~~~~~
+   drivers/video/fbdev/amifb.c:1127:15: warning: variable 'htotal' set but not used [-Wunused-but-set-variable]
+    1127 |         u_int htotal, vtotal;
+         |               ^~~~~~
+   drivers/video/fbdev/amifb.c: In function 'ami_get_var_cursorinfo':
+   drivers/video/fbdev/amifb.c:1848:19: warning: variable 'alloc' set but not used [-Wunused-but-set-variable]
+    1848 |         int size, alloc;
+         |                   ^~~~~
+   drivers/video/fbdev/amifb.c: In function 'amifb_pan_display':
+   drivers/video/fbdev/amifb.c:2540:34: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
+    2540 |                 if (var->yoffset < 0 ||
+         |                                  ^
+   drivers/video/fbdev/amifb.c: At top level:
+   include/linux/module.h:131:13: warning: 'init_module' specifies less restrictive attribute than its target 'amifb_driver_init': 'cold' [-Wmissing-attributes]
+     131 |         int init_module(void) __attribute__((alias(#initfn)));
+         |             ^~~~~~~~~~~
+   include/linux/platform_device.h:251:1: note: in expansion of macro 'module_init'
+     251 | module_init(__platform_driver##_init); 58-      | ^~~~~~~~~~~
+   drivers/video/fbdev/amifb.c:3786:1: note: in expansion of macro 'module_platform_driver_probe'
+    3786 | module_platform_driver_probe(amifb_driver, amifb_probe);
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from drivers/video/fbdev/amifb.c:53:
+   drivers/video/fbdev/amifb.c:3786:30: note: 'init_module' target declared here
+    3786 | module_platform_driver_probe(amifb_driver, amifb_probe);
+         |                              ^~~~~~~~~~~~
+   include/linux/platform_device.h:246:19: note: in definition of macro 'module_platform_driver_probe'
+     246 | static int __init __platform_driver##_init(void) 68-      |                   ^~~~~~~~~~~~~~~~~
+   include/linux/module.h:137:14: warning: 'cleanup_module' specifies less restrictive attribute than its target 'amifb_driver_exit': 'cold' [-Wmissing-attributes]
+     137 |         void cleanup_module(void) __attribute__((alias(#exitfn)));
+         |              ^~~~~~~~~~~~~~
+   include/linux/platform_device.h:256:1: note: in expansion of macro 'module_exit'
+     256 | module_exit(__platform_driver##_exit);
+         | ^~~~~~~~~~~
+   drivers/video/fbdev/amifb.c:3786:1: note: in expansion of macro 'module_platform_driver_probe'
+    3786 | module_platform_driver_probe(amifb_driver, amifb_probe);
+         | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/video/fbdev/amifb.c:3786:30: note: 'cleanup_module' target declared here
+    3786 | module_platform_driver_probe(amifb_driver, amifb_probe);
+         |                              ^~~~~~~~~~~~
+   include/linux/platform_device.h:252:20: note: in definition of macro 'module_platform_driver_probe'
+     252 | static void __exit __platform_driver##_exit(void) 83-      |                    ^~~~~~~~~~~~~~~~~
+   drivers/video/fbdev/amifb.c:2344:19: warning: 'amifb_setup' defined but not used [-Wunused-function]
+    2344 | static int __init amifb_setup(char *options)
+         |                   ^~~~~~~~~~~
+
+vim +3375 drivers/video/fbdev/amifb.c
+
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3334  
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3335  
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3336  static void amifb_imageblit(struct fb_info *info, const struct fb_image *image)
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3337  {
+423a53086ce409 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3338  	struct amifb_par *par = info->par;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3339  	int x2, y2;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3340  	unsigned long *dst;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3341  	int dst_idx;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3342  	const char *src;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3343  	u32 dx, dy, width, height, pitch;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3344  
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3345  	/*
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3346  	 * We could use hardware clipping but on many cards you get around
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3347  	 * hardware clipping by writing to framebuffer directly like we are
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3348  	 * doing here.
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3349  	 */
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3350  	x2 = image->dx + image->width;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3351  	y2 = image->dy + image->height;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3352  	dx = image->dx;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3353  	dy = image->dy;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3354  	x2 = x2 < info->var.xres_virtual ? x2 : info->var.xres_virtual;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3355  	y2 = y2 < info->var.yres_virtual ? y2 : info->var.yres_virtual;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3356  	width  = x2 - dx;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3357  	height = y2 - dy;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3358  
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3359  	if (image->depth == 1) {
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3360  		dst = (unsigned long *)
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3361  			((unsigned long)info->screen_base & ~(BYTES_PER_LONG - 1));
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3362  		dst_idx = ((unsigned long)info->screen_base & (BYTES_PER_LONG - 1)) * 8;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3363  		dst_idx += dy * par->next_line * 8 + dx;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3364  		src = image->data;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3365  		pitch = (image->width + 7) / 8;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3366  		while (height--) {
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3367  			expand_one_line(info->var.bits_per_pixel,
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3368  					par->next_plane, dst, dst_idx, width,
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3369  					src, image->bg_color,
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3370  					image->fg_color);
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3371  			dst_idx += par->next_line * 8;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3372  			src += pitch;
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3373  		}
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3374  	} else {
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21 @3375  		c2p_planar(info->screen_base, image->data, dx, dy, width,
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3376  			   height, par->next_line, par->next_plane,
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3377  			   image->width, info->var.bits_per_pixel);
+^1da177e4c3f41 drivers/video/amifb.c Linus Torvalds     2005-04-16  3378  	}
+^1da177e4c3f41 drivers/video/amifb.c Linus Torvalds     2005-04-16  3379  }
+f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3380  
+
+:::::: The code at line 3375 was first introduced by commit
+:::::: f1cbb17ac73993225402d7e40a0694c502570876 fbdev/amifb: Reorder functions to remove forward declarations
+
+:::::: TO: Geert Uytterhoeven <geert@linux-m68k.org>
+:::::: CC: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
