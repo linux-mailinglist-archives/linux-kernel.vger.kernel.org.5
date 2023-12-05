@@ -2,117 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9214C805F71
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A335805F77
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235123AbjLEU3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 15:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
+        id S232305AbjLEUcO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 15:32:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbjLEU3v (ORCPT
+        with ESMTP id S229569AbjLEUcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 15:29:51 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EEC181;
-        Tue,  5 Dec 2023 12:29:58 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 18AFD40E014B;
-        Tue,  5 Dec 2023 20:29:56 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 4YEoh4W8wn-3; Tue,  5 Dec 2023 20:29:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701808194; bh=yB72VxK/0IQl3pur+X+/eX4EI1aY2v5x0vLEBbpCd0E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bIthWYpTbMK0CmeXE3hZeqs8Zowj8EzqAaqEzRtGvMWJEY9OicO1L4rgb5NGO/cFh
-         KbUzib78+xQk/ODh5jPhwPi6M+uPK4HyG9iAF6fK8XAkQvqPxUXX1vLmGAgBNaDc8P
-         QJ8R+AH4zVMD/OT9aZcKE+cNdWx8LdSCevu1iVheOIwg4ln9MqWaO+NP4zjFh2dDuB
-         3W5XSvi3I0K/M/ZUuoiE5oHvtiyhRcqP/jB40a5CFcTw68JQ1HN+SoCpAUPjgXILzC
-         0OrG+FfxawWJNaRBhhFGij21/IsthdN9DBzO6+0lWxAt1XQTbIDeGn5IptAVUKP8iR
-         ood6UQKjaYPsDFwTt6Im0LXGKY9dQtdzRFnJDOmm5o0XazvH/Aj8ZNEas6QvJREuEm
-         U7/lo8Y5QsKowYoGL8Xd9f+uKDOimkfD57IFugVuESJk2gr6QE7I9xQ2BzEvK0sagP
-         +eXDgyaGU6httlGOTnyiKRCJWxecWIzXy2Qj5wGkpF4NTfWtzarVAmfHOYwLDyTivX
-         Fuh9rGE74pkyFvt3hNZrrrWjD9CUg/6pXNnQ9eZPJ9/WlrzCkgGwJLbbR6zCWvtlFW
-         sJ0l2GZlX85PBitwagY0/XBNviHTudAzZIKfsdslgFpW0P3/e7HdPr0FJsWACGi4gB
-         MNTCED08c+B70gZyElT2OcOY=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DE2D240E0195;
-        Tue,  5 Dec 2023 20:29:27 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 21:29:27 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "sagis@google.com" <sagis@google.com>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
- #MC due to erratum
-Message-ID: <20231205202927.GJZW+IJ0NelvVmEum/@fat_crate.local>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
- <20231205142517.GBZW8yzVDEKIVTthSx@fat_crate.local>
- <0db3de96d324710cef469040d88002db429c47e6.camel@intel.com>
- <20231205195637.GHZW+Add3H/gSefAVM@fat_crate.local>
- <2394202d237b4a74440fba1a267652335b53b71d.camel@intel.com>
+        Tue, 5 Dec 2023 15:32:13 -0500
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037A1129;
+        Tue,  5 Dec 2023 12:32:20 -0800 (PST)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3b9b5b254e2so395882b6e.1;
+        Tue, 05 Dec 2023 12:32:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701808339; x=1702413139;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rrrURgKTtD+/aJbAAUAqOTwAaLDrzLDH8ZvaiOXDJfo=;
+        b=iHGIIwRLgoj+n6VPUunhEHYW7TH8+5lQgEpGGBoeE+CL85yMf+sym7/Ri6cVFEPIaC
+         pSgC1nLChtV2m3SU/OVsSChQdYYOgO2AutJFNk9xllzioeDNMnpGtGHSp1Y4JNlDIC60
+         rsTFfJs2Z3jGH8WGjNUe+E3dveT5aKlRyGIA5rvXbCCBZDaiQHAtiA7E2pxYzMzDZfH3
+         zvbOx8pZWF4+Sy7m2R1hMwj3oI/kHMo+jsBJlfiblBAWOq5ykYB/nDOvgmqlWXtNiUBr
+         Tixq4+ynQYai5YMio8D6/Ae43NBNfslqX0pkOnheyIE1a01vsZS1tt3xO0FBdxEEQK1t
+         5fWA==
+X-Gm-Message-State: AOJu0YzB1T/+KI9kq60G5hG23bE/PWc34Kq15br0PbBaIlm2sb939sp2
+        hEzijJH8hlGEiGkx7cFmBBAopQuBH5GUngehQTQ=
+X-Google-Smtp-Source: AGHT+IGXU4XJWbJY2fCwe+yPX2kwu5P84xfw4o3ss15ZSGJpQCn0mpk9LtkheiRtcKEQN7sRSuHC3LmzYWMjcp+gd3c=
+X-Received: by 2002:a05:6870:961f:b0:1fb:5e42:5096 with SMTP id
+ d31-20020a056870961f00b001fb5e425096mr3848589oaq.5.1701808339245; Tue, 05 Dec
+ 2023 12:32:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2394202d237b4a74440fba1a267652335b53b71d.camel@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231120185942.2320424-1-srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <20231120185942.2320424-1-srinivas.pandruvada@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 5 Dec 2023 21:32:08 +0100
+Message-ID: <CAJZ5v0iitqskhEU7jQGJpj_=panoLTkcnVMuY3ST_UN30J2aCA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Allow firmware balance performance
+ EPP without code change
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     rafael@kernel.org, viresh.kumar@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 08:08:34PM +0000, Huang, Kai wrote:
-> The difference is for TDX host the kernel needs to initialize the TDX module
-> first before TDX can be used.  The module initialization is done at runtime, and
-> the platform_tdx_enabled() here only returns whether the BIOS has enabled TDX.
-> 
-> IIUC the X86_FEATURE_ flag doesn't suit this purpose because based on my
-> understanding the flag being present means the kernel has done some enabling
-> work and the feature is ready to use.
+On Mon, Nov 20, 2023 at 7:59 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> Firmware can specify balance performance EPP value by enabling HWP and
+> set EPP to a desired value. The current implementation requires code
+> change for every generation to add an entry to intel_epp_balance_perf
+> table.
+>
+> Some distributions like Chrome, which uses old kernels should be able
+> to update balance performance EPP, without code change.
+>
+> There is a check to avoid updating EPP when the balance performance
+> EPP is not changed and is power up default of 0x80. Move this check
+> after checking if the HWP is enabled by the firmware and there is
+> a valid EPP value set by the firmware.
+>
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> ---
+>  drivers/cpufreq/intel_pstate.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index a534a1f7f1ee..dd6d23e389f1 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -1691,13 +1691,6 @@ static void intel_pstate_update_epp_defaults(struct cpudata *cpudata)
+>  {
+>         cpudata->epp_default = intel_pstate_get_epp(cpudata, 0);
+>
+> -       /*
+> -        * If this CPU gen doesn't call for change in balance_perf
+> -        * EPP return.
+> -        */
+> -       if (epp_values[EPP_INDEX_BALANCE_PERFORMANCE] == HWP_EPP_BALANCE_PERFORMANCE)
+> -               return;
+> -
+>         /*
+>          * If the EPP is set by firmware, which means that firmware enabled HWP
+>          * - Is equal or less than 0x80 (default balance_perf EPP)
+> @@ -1710,6 +1703,13 @@ static void intel_pstate_update_epp_defaults(struct cpudata *cpudata)
+>                 return;
+>         }
+>
+> +       /*
+> +        * If this CPU gen doesn't call for change in balance_perf
+> +        * EPP return.
+> +        */
+> +       if (epp_values[EPP_INDEX_BALANCE_PERFORMANCE] == HWP_EPP_BALANCE_PERFORMANCE)
+> +               return;
+> +
+>         /*
+>          * Use hard coded value per gen to update the balance_perf
+>          * and default EPP.
+> --
 
-Which flag do you mean? X86_FEATURE_TDX_GUEST?
-
-I mean, you would set a separate X86_FEATURE_TDX or so flag to denote
-that the BIOS has enabled it, at the end of that tdx_init() in the first
-patch.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Applied as 6.8 material with modified subject and changelog, thanks!
