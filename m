@@ -2,184 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E47805D9E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B435805D99
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345621AbjLESHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54272 "EHLO
+        id S235606AbjLESII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:08:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbjLESHi (ORCPT
+        with ESMTP id S229569AbjLESIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:07:38 -0500
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id AAD1CB2
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:07:42 -0800 (PST)
-Received: (qmail 425300 invoked by uid 1000); 5 Dec 2023 13:07:41 -0500
-Date:   Tue, 5 Dec 2023 13:07:41 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-Cc:     oneukum@suse.com, davem@davemloft.net, edumazet@google.com,
-        greg@kroah.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, stable@vger.kernel.org
-Subject: Re: [PATCH v4] net: usb: ax88179_178a: avoid failed operations when
- device is disconnected
-Message-ID: <624ad05b-0b90-4d1c-b06b-7a75473401c3@rowland.harvard.edu>
-References: <4ce32363-378c-4ea3-9a4e-d7274d4f7787@suse.com>
- <20231205135154.516342-1-jtornosm@redhat.com>
+        Tue, 5 Dec 2023 13:08:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7DC18B
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701799692; x=1733335692;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=EfMWOnuH6ZT9MW+eCxL/VjTx2nkZlroQzSJphdr/0O4=;
+  b=ZGNW1/Q7/wzkecRoQo6PisoTPWGAai+dZvrEw74X6tDrQj2IPIYrZWrc
+   k/9LFPjiT8rbvt2yAgj8j1EWmV+g0Z0BdLjUuYwaKdMZsgNsUUkd2fhLL
+   Oj3ar0kbbXFEAz5JU40OBD8tiA/xxyWKFCf3LLru6dJgJ2UM3/qB2b+G5
+   hnFpjFqTO5psFNo7SDti3JlBvT+CYVdiJKvF7DXkaF4l4Fp07JZI9FnK8
+   YFYxH40P27DDNx17StFMId0rtzh9mFwrNBuFnWXdfagbcHusvIs3qvIe7
+   pntVy5ohETVg9QBAE4kIyCbsggROqa61p69VAGm2TVJKBiz8h4bwdYCGw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="391100975"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="391100975"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 10:08:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="889024030"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="889024030"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 05 Dec 2023 10:08:10 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAZq3-0009VR-1i;
+        Tue, 05 Dec 2023 18:08:07 +0000
+Date:   Wed, 6 Dec 2023 02:07:42 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>
+Subject: drivers/edac/versal_edac.c:745:21: sparse: sparse: incorrect type in
+ argument 1 (different address spaces)
+Message-ID: <202312060244.Y1Aw12Kr-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231205135154.516342-1-jtornosm@redhat.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 02:51:54PM +0100, Jose Ignacio Tornos Martinez wrote:
-> When the device is disconnected we get the following messages showing
-> failed operations:
-> Nov 28 20:22:11 localhost kernel: usb 2-3: USB disconnect, device number 2
-> Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: unregister 'ax88179_178a' usb-0000:02:00.0-3, ASIX AX88179 USB 3.0 Gigabit Ethernet
-> Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: Failed to read reg index 0x0002: -19
-> Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: Failed to write reg index 0x0002: -19
-> Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0002: -19
-> Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0001: -19
-> Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0002: -19
-> 
-> The reason is that although the device is detached, normal stop and
-> unbind operations are commanded from the driver. These operations are
-> not necessary in this situation, so avoid these logs when the device is
-> detached if the result of the operation is -ENODEV and if the new flag
-> informing about the disconnecting status is enabled.
-> 
-> cc: stable@vger.kernel.org
-> Fixes: e2ca90c276e1f ("ax88179_178a: ASIX AX88179_178A USB 3.0/2.0 to gigabit ethernet adapter driver")
-> Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-> ---
-> V1 -> V2:
-> - Follow the suggestions from Alan Stern and Oliver Neukum to check the
-> result of the operations (-ENODEV) and not the internal state of the USB 
-> layer (USB_STATE_NOTATTACHED).
-> V2 -> V3
-> - Add cc: stable line in the signed-off-by area.
-> V3 -> V4
-> - Follow the suggestions from Oliver Neukum to use only one flag when
-> disconnecting and include barriers to avoid memory ordering issues.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 6f15b178cd6315c997981f76c6ebed7ad39144c5 EDAC/versal: Add a Xilinx Versal memory controller driver
+date:   6 weeks ago
+config: riscv-randconfig-r131-20231203 (https://download.01.org/0day-ci/archive/20231206/202312060244.Y1Aw12Kr-lkp@intel.com/config)
+compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
+reproduce: (https://download.01.org/0day-ci/archive/20231206/202312060244.Y1Aw12Kr-lkp@intel.com/reproduce)
 
-The __ax88179_read_cmd() and __ax88179_write_cmd() routines are 
-asynchronous with respect to ax88179_disconnect(), right?  Or at least, 
-they are if they run as a result of the user closing the network 
-interface.  Otherwise there wouldn't be any memory ordering issues.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312060244.Y1Aw12Kr-lkp@intel.com/
 
-But the memory barriers you added are not the proper solution.  What you 
-need here is _synchronization_, not _ordering_.  As it is, the memory 
-barriers you have added don't do anything; they shouldn't be in the 
-patch.
+sparse warnings: (new ones prefixed by >>)
+   WARNING: invalid argument to '-march': '_zihintpause'
+>> drivers/edac/versal_edac.c:745:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected char const *cs @@     got char const [noderef] __user *data @@
+   drivers/edac/versal_edac.c:745:21: sparse:     expected char const *cs
+   drivers/edac/versal_edac.c:745:21: sparse:     got char const [noderef] __user *data
 
-If you would like a more in-depth explanation, let me know.
+vim +745 drivers/edac/versal_edac.c
 
-Alan Stern
+   736	
+   737	static ssize_t xddr_inject_data_poison_store(struct mem_ctl_info *mci,
+   738						     const char __user *data)
+   739	{
+   740		struct edac_priv *priv = mci->pvt_info;
+   741	
+   742		writel(0, priv->ddrmc_baseaddr + ECCW0_FLIP0_OFFSET);
+   743		writel(0, priv->ddrmc_baseaddr + ECCW1_FLIP0_OFFSET);
+   744	
+ > 745		if (strncmp(data, "CE", 2) == 0) {
+   746			writel(ECC_CEPOISON_MASK, priv->ddrmc_baseaddr +
+   747			       ECCW0_FLIP0_OFFSET);
+   748			writel(ECC_CEPOISON_MASK, priv->ddrmc_baseaddr +
+   749			       ECCW1_FLIP0_OFFSET);
+   750		} else {
+   751			writel(ECC_UEPOISON_MASK, priv->ddrmc_baseaddr +
+   752			       ECCW0_FLIP0_OFFSET);
+   753			writel(ECC_UEPOISON_MASK, priv->ddrmc_baseaddr +
+   754			       ECCW1_FLIP0_OFFSET);
+   755		}
+   756	
+   757		/* Lock the PCSR registers */
+   758		writel(1, priv->ddrmc_baseaddr + XDDR_PCSR_OFFSET);
+   759	
+   760		return 0;
+   761	}
+   762	
 
->  drivers/net/usb/ax88179_178a.c | 38 +++++++++++++++++++++++++++-------
->  1 file changed, 31 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-> index 4ea0e155bb0d..1c671f2a43ee 100644
-> --- a/drivers/net/usb/ax88179_178a.c
-> +++ b/drivers/net/usb/ax88179_178a.c
-> @@ -173,6 +173,7 @@ struct ax88179_data {
->  	u8 in_pm;
->  	u32 wol_supported;
->  	u32 wolopts;
-> +	u8 disconnecting;
->  };
->  
->  struct ax88179_int_data {
-> @@ -208,6 +209,7 @@ static int __ax88179_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
->  {
->  	int ret;
->  	int (*fn)(struct usbnet *, u8, u8, u16, u16, void *, u16);
-> +	struct ax88179_data *ax179_data = dev->driver_priv;
->  
->  	BUG_ON(!dev);
->  
-> @@ -219,9 +221,12 @@ static int __ax88179_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
->  	ret = fn(dev, cmd, USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
->  		 value, index, data, size);
->  
-> -	if (unlikely(ret < 0))
-> -		netdev_warn(dev->net, "Failed to read reg index 0x%04x: %d\n",
-> -			    index, ret);
-> +	if (unlikely(ret < 0)) {
-> +		smp_rmb();
-> +		if (!(ret == -ENODEV && ax179_data->disconnecting))
-> +			netdev_warn(dev->net, "Failed to read reg index 0x%04x: %d\n",
-> +				    index, ret);
-> +	}
->  
->  	return ret;
->  }
-> @@ -231,6 +236,7 @@ static int __ax88179_write_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
->  {
->  	int ret;
->  	int (*fn)(struct usbnet *, u8, u8, u16, u16, const void *, u16);
-> +	struct ax88179_data *ax179_data = dev->driver_priv;
->  
->  	BUG_ON(!dev);
->  
-> @@ -242,9 +248,12 @@ static int __ax88179_write_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
->  	ret = fn(dev, cmd, USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
->  		 value, index, data, size);
->  
-> -	if (unlikely(ret < 0))
-> -		netdev_warn(dev->net, "Failed to write reg index 0x%04x: %d\n",
-> -			    index, ret);
-> +	if (unlikely(ret < 0)) {
-> +		smp_rmb();
-> +		if (!(ret == -ENODEV && ax179_data->disconnecting))
-> +			netdev_warn(dev->net, "Failed to write reg index 0x%04x: %d\n",
-> +				    index, ret);
-> +	}
->  
->  	return ret;
->  }
-> @@ -492,6 +501,21 @@ static int ax88179_resume(struct usb_interface *intf)
->  	return usbnet_resume(intf);
->  }
->  
-> +static void ax88179_disconnect(struct usb_interface *intf)
-> +{
-> +	struct usbnet *dev = usb_get_intfdata(intf);
-> +	struct ax88179_data *ax179_data;
-> +
-> +	if (!dev)
-> +		return;
-> +
-> +	ax179_data = dev->driver_priv;
-> +	ax179_data->disconnecting = 1;
-> +	smp_wmb();
-> +
-> +	usbnet_disconnect(intf);
-> +}
-> +
->  static void
->  ax88179_get_wol(struct net_device *net, struct ethtool_wolinfo *wolinfo)
->  {
-> @@ -1906,7 +1930,7 @@ static struct usb_driver ax88179_178a_driver = {
->  	.suspend =	ax88179_suspend,
->  	.resume =	ax88179_resume,
->  	.reset_resume =	ax88179_resume,
-> -	.disconnect =	usbnet_disconnect,
-> +	.disconnect =	ax88179_disconnect,
->  	.supports_autosuspend = 1,
->  	.disable_hub_initiated_lpm = 1,
->  };
-> -- 
-> 2.43.0
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
