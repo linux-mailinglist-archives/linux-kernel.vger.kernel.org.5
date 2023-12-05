@@ -2,156 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A37B7804DD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E249804DE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235672AbjLEJ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
+        id S235499AbjLEJ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:29:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235627AbjLEJ2v (ORCPT
+        with ESMTP id S235595AbjLEJ3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:28:51 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76FB188
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:44 -0800 (PST)
-X-UUID: 2aa5a5f3ecf24832a2cd6db6e3ab7ebb-20231205
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:550d1e5a-49cd-4e19-8ab4-4c8269f71884,IP:5,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:-15
-X-CID-INFO: VERSION:1.1.33,REQID:550d1e5a-49cd-4e19-8ab4-4c8269f71884,IP:5,URL
-        :0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-15
-X-CID-META: VersionHash:364b77b,CLOUDID:871a2b96-10ce-4e4b-85c2-c9b5229ff92b,B
-        ulkID:2312041843482P8UAYLL,BulkQuantity:3,Recheck:0,SF:19|44|64|66|38|24|1
-        7|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,
-        COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 2aa5a5f3ecf24832a2cd6db6e3ab7ebb-20231205
-X-User: chentao@kylinos.cn
-Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1414185240; Tue, 05 Dec 2023 17:28:31 +0800
-Message-ID: <7be4a5ac-d0b8-4f5d-848a-b54ab3c67228@kylinos.cn>
-Date:   Tue, 5 Dec 2023 17:28:30 +0800
+        Tue, 5 Dec 2023 04:29:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C66410C0
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:29:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701768540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HWSbeQkndxR8pOH1jrEtRfCn62USiBxMT3pXbunoD3Q=;
+        b=B8XqXBQ+c0pJHMG8Z5IevmGWYnAcAyhn+/CtfAZeu5FnF60y86dUekuoQS3iWwQ8DoMEYV
+        ZGPdOj4FBOVVw3o7CpPAVBozPgULs6Z+1jWcdmZdN5fqnhBp9SbypezcOTsHwaL+irE+FS
+        s37vdAYE2tLhzKMFkEDc+XB34b+mjts=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-654-aixiTFyWOoCC-pJRViDbQg-1; Tue, 05 Dec 2023 04:28:59 -0500
+X-MC-Unique: aixiTFyWOoCC-pJRViDbQg-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5450c83aa5dso667826a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701768538; x=1702373338;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HWSbeQkndxR8pOH1jrEtRfCn62USiBxMT3pXbunoD3Q=;
+        b=PvtCAlMw1rngXg3Gwq1WD6bcw1Ofouwxd+iIK++yXqjXdOKMTR+UdxVSIeD+dbptnr
+         Cvqj12jst4oDPxR3CRtTfSmOwl7Nc1fuRj/IS1p2gZ86VBegpoo1MM7Kdg4GkYjepTWS
+         331VAat9tEED1C/p64mlGC5B9qUyyLGGN1MmanJXw2at+YGGHdPHXq7kFWDSI/F9JOk4
+         erxw+5JNMtvv9XSEOeXeUEUtkXIA/jpSYJ7FEZjJpIh/V3NI2Q5pjlk75VtpAlqm1nGP
+         vDdhaBOyuyIhiUvanIrNEDRxxv0jJPHkh4t1mMXYNBNUdyZVT7E+E98Gm892kCBrZlzc
+         0svw==
+X-Gm-Message-State: AOJu0YwXqJTkNdrruj8lBGqH2+wj4CxG3sl6CLkEeB4ktJEOp8/f2P1o
+        nc+pFCwfi0iT7f2/G4aFrCelr7ZsJKyuozQhh2egJz7of5p4OBjMpVdARdB+LzGwP/CH9fuUcgJ
+        GCOpV2ey1h0JnG1UI3Cq2YAC9
+X-Received: by 2002:a17:906:3b96:b0:a1c:87a2:c183 with SMTP id u22-20020a1709063b9600b00a1c87a2c183mr484065ejf.5.1701768538138;
+        Tue, 05 Dec 2023 01:28:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGAbf9T1cl753dwNJrA4r4f5Cd5wzRLvS/Q1MW1BiOQwtPcGxLNeQjBeV3vMyTRD3tSBQzs7w==
+X-Received: by 2002:a17:906:3b96:b0:a1c:87a2:c183 with SMTP id u22-20020a1709063b9600b00a1c87a2c183mr484053ejf.5.1701768537730;
+        Tue, 05 Dec 2023 01:28:57 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-241-54.dyn.eolo.it. [146.241.241.54])
+        by smtp.gmail.com with ESMTPSA id b20-20020a17090636d400b009dd98089a48sm6382410ejc.43.2023.12.05.01.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 01:28:57 -0800 (PST)
+Message-ID: <d657f059d384419fe4df02580a4af9cf69e0e9c2.camel@redhat.com>
+Subject: Re: [PATCH net-next v6 1/6] ptp: clockmatrix: support 32-bit
+ address space
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Simon Horman <horms@kernel.org>, Min Li <lnimi@hotmail.com>
+Cc:     richardcochran@gmail.com, lee@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Min Li <min.li.xe@renesas.com>
+Date:   Tue, 05 Dec 2023 10:28:56 +0100
+In-Reply-To: <20231205092429.GS50400@kernel.org>
+References: <PH7PR03MB70644CE21E835B48799F3EB3A082A@PH7PR03MB7064.namprd03.prod.outlook.com>
+         <20231205092429.GS50400@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cxl: Fix null pointer dereference in cxl_get_fd
-To:     Frederic Barrat <fbarrat@linux.ibm.com>, ajd@linux.ibm.com,
-        arnd@arndb.de, gregkh@linuxfoundation.org, mpe@ellerman.id.au,
-        mrochs@linux.vnet.ibm.com
-Cc:     kunwu.chan@hotmail.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20231204020745.2445944-1-chentao@kylinos.cn>
- <c914f4ba-253d-4b57-bdd2-4c95d40bbf91@linux.ibm.com>
-From:   Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <c914f4ba-253d-4b57-bdd2-4c95d40bbf91@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fred,
-Thanks for your reply.
+On Tue, 2023-12-05 at 09:24 +0000, Simon Horman wrote:
+> On Thu, Nov 30, 2023 at 01:46:29PM -0500, Min Li wrote:
+> > From: Min Li <min.li.xe@renesas.com>
+> >=20
+> > We used to assume 0x2010xxxx address. Now that
+> > we need to access 0x2011xxxx address, we need
+> > to support read/write the whole 32-bit address space.
+> >=20
+> > Signed-off-by: Min Li <min.li.xe@renesas.com>
+>=20
+> ...
+>=20
+> > diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatri=
+x.c
+> > index f6f9d4adce04..f8556627befa 100644
+> > --- a/drivers/ptp/ptp_clockmatrix.c
+> > +++ b/drivers/ptp/ptp_clockmatrix.c
+> > @@ -41,8 +41,8 @@ module_param(firmware, charp, 0);
+> >  static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_p=
+pm);
+> > =20
+> >  static inline int idtcm_read(struct idtcm *idtcm,
+> > -			     u16 module,
+> > -			     u16 regaddr,
+> > +			     u32 module,
+> > +			     u32 regaddr,
+> >  			     u8 *buf,
+> >  			     u16 count)
+> >  {
+> > @@ -50,8 +50,8 @@ static inline int idtcm_read(struct idtcm *idtcm,
+> >  }
+> > =20
+> >  static inline int idtcm_write(struct idtcm *idtcm,
+> > -			      u16 module,
+> > -			      u16 regaddr,
+> > +			      u32 module,
+> > +			      u32 regaddr,
+> >  			      u8 *buf,
+> >  			      u16 count)
+> >  {
+>=20
+> Hi Min Li,
+>=20
+> My understanding of Paolo's review of v5 was that it would be cleaner to:
+>=20
+> 1. Leave the type of the module parameter as u16
+> 2. Update the type of the regaddr parameter to u32
 
+[almost over the air conflict here ;) ]
 
-But there is a question, whether we should return an error code in error 
-path so that the caller of the 'cxl_get_fd' can know the specific 
-reason. rather than just return NULL.
-Such as:
--       int rc, flags, fdtmp;
-+       int rc = 0, flags, fdtmp;
-         char *name = NULL;
+I think the module parameter as u32 is needed, as later macro
+definitions will leverage that.
 
-         /* only allow one per context */
--       if (ctx->mapping)
--               return ERR_PTR(-EEXIST);
-+       if (ctx->mapping) {
-+               rc = -EEXIST;
-+               goto err;
-+       }
+>=20
+> And...
+>=20
+> ...
+>=20
+> > @@ -553,11 +554,11 @@ static int _sync_pll_output(struct idtcm *idtcm,
+> >  	val =3D SYNCTRL1_MASTER_SYNC_RST;
+> > =20
+> >  	/* Place master sync in reset */
+> > -	err =3D idtcm_write(idtcm, 0, sync_ctrl1, &val, sizeof(val));
+> > +	err =3D idtcm_write(idtcm, sync_ctrl1, 0, &val, sizeof(val));
+> >  	if (err)
+> >  		return err;
+> > =20
+> > -	err =3D idtcm_write(idtcm, 0, sync_ctrl0, &sync_src, sizeof(sync_src)=
+);
+> > +	err =3D idtcm_write(idtcm, sync_ctrl0, 0, &sync_src, sizeof(sync_src)=
+);
+> >  	if (err)
+> >  		return err;
+> > =20
+>=20
+> ... avoid the need for changes like the two above.
 
-         flags = O_RDWR | O_CLOEXEC;
+This part is correct/what I meant ;)
 
-         /* This code is similar to anon_inode_getfd() */
-         rc = get_unused_fd_flags(flags);
--       if (rc < 0)
--               return ERR_PTR(rc);
-+       if (rc < 0) {
-+               goto err;
-+       }
-         fdtmp = rc;
+Cheers,
 
+Paolo
 
-
-         name = kasprintf(GFP_KERNEL, "cxl:%d", ctx->pe);
-+        if (!name) {
-+               rc = -ENOMEM;
-+               goto err_fd;
-+        }
-         file = cxl_getfile(name, fops, ctx, flags);
-         kfree(name);
-@@ -434,6 +437,9 @@ struct file *cxl_get_fd(struct cxl_context *ctx, 
-struct file_operations *fops,
-
-  err_fd:
-         put_unused_fd(fdtmp);
-+err:
-+       if (rc)
-+               return ERR_PTR(rc);
-         return NULL;
-
-
-Thanks again,
-Kunwu
-
-On 2023/12/4 18:43, Frederic Barrat wrote:
-> 
-> 
-> On 04/12/2023 03:07, Kunwu Chan wrote:
->> kasprintf() returns a pointer to dynamically allocated memory
->> which can be NULL upon failure.
->>
->> Fixes: bdecf76e319a ("cxl: Fix coredump generation when cxl_get_fd() 
->> is used")
->> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
->> ---
->>   drivers/misc/cxl/api.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/misc/cxl/api.c b/drivers/misc/cxl/api.c
->> index d85c56530863..bfd7ccd4d7e1 100644
->> --- a/drivers/misc/cxl/api.c
->> +++ b/drivers/misc/cxl/api.c
->> @@ -419,6 +419,10 @@ struct file *cxl_get_fd(struct cxl_context *ctx, 
->> struct file_operations *fops,
->>           fops = (struct file_operations *)&afu_fops;
->>       name = kasprintf(GFP_KERNEL, "cxl:%d", ctx->pe);
->> +    if (!name) {
->> +        put_unused_fd(fdtmp);
->> +        return ERR_PTR(-ENOMEM);
->> +    }
-> 
-> 
-> That works, but you might as well follow the existing error path:
-> 
->      name = kasprintf(GFP_KERNEL, "cxl:%d", ctx->pe);
->      if (!name)
->          goto err_fd;
-> 
->    Fred
-> 
-> 
->>       file = cxl_getfile(name, fops, ctx, flags);
->>       kfree(name);
->>       if (IS_ERR(file))
