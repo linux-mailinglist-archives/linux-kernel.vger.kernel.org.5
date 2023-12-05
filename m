@@ -2,230 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D54E58055FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBAB18055F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442252AbjLENbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:31:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        id S1442210AbjLENb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345468AbjLENbV (ORCPT
+        with ESMTP id S1345403AbjLENbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:31:21 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3901FD59;
-        Tue,  5 Dec 2023 05:31:26 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 540FF1BF20E;
-        Tue,  5 Dec 2023 13:31:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701783085;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3gqjxkB/PoR9PK0/p2tRHlQoqY/I8JtjcwQCZSlgLSY=;
-        b=oYT6o8rMXhMghdveIAj1Q5IC9/kN5OG8xDhayJh/RNtaph3N5hfRP9yzhfOUoJuSuW/56+
-        2xpsmPvwSd1rZ3W9xYbxKync7rMT9nIEgol+RggTmB4d3jrjIEsIjkq4p7puFlMtdQll++
-        NbvHWGHvhqWCyylpwOEXP7rSbPBQ8LON7meXloweBMsBMKWaz0/30pxQGfqA73JfNZFDXH
-        /V7z0br8NY66kSHNcJHH26zi8jTMb4s6in6HJCxrggxY/3E6Bz2MZ2G+URYPo8Uz431aBW
-        PYbuaui1Z0mxfZeZuVt+osyRdQwVns5elOkU4JYbNhIler2SFNufAqXEwNo/uQ==
-Date:   Tue, 5 Dec 2023 14:31:23 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        Dent Project <dentproject@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH net-next v2 7/8] dt-bindings: net: pse-pd: Add bindings
- for PD692x0 PSE controller
-Message-ID: <20231205143123.703589c8@kmaincent-XPS-13-7390>
-In-Reply-To: <20231205111501.43f80846@kmaincent-XPS-13-7390>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
- <20231201-feature_poe-v2-7-56d8cac607fa@bootlin.com>
- <20231204230845.GH981228@pengutronix.de>
- <20231205063606.GI981228@pengutronix.de>
- <20231205111501.43f80846@kmaincent-XPS-13-7390>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 5 Dec 2023 08:31:23 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 48F611B5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:31:29 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71E99139F;
+        Tue,  5 Dec 2023 05:32:15 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72AC43F5A1;
+        Tue,  5 Dec 2023 05:31:27 -0800 (PST)
+Message-ID: <1ba5dd86-a201-4243-bab0-349395468236@arm.com>
+Date:   Tue, 5 Dec 2023 13:31:25 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 00/39] mm/rmap: interface overhaul
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Xu <peterx@redhat.com>
+References: <20231204142146.91437-1-david@redhat.com>
+ <993ea322-8cdb-4ab1-84d3-0a1cb40049c9@arm.com>
+ <067753e4-faf0-4bc0-9703-ec97b7de705e@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <067753e4-faf0-4bc0-9703-ec97b7de705e@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Dec 2023 11:15:01 +0100
-K=C3=B6ry Maincent <kory.maincent@bootlin.com> wrote:
+On 05/12/2023 09:56, David Hildenbrand wrote:
+>>>
+>>> Ryan has series where we would make use of folio_remove_rmap_ptes() [1]
+>>> -- he carries his own batching variant right now -- and
+>>> folio_try_dup_anon_rmap_ptes()/folio_dup_file_rmap_ptes() [2].
+>>
+>> Note that the contpte series at [2] has a new patch in v3 (patch 2), which could
+>> benefit from folio_remove_rmap_ptes() or equivalent. My plan was to revive [1]
+>> on top of [2] once it is merged.
+>>
+>>>
+>>> There is some overlap with both series (and some other work, like
+>>> multi-size THP [3]), so that will need some coordination, and likely a
+>>> stepwise inclusion.
+>>
+>> Selfishly, I'd really like to get my stuff merged as soon as there is no
+>> technical reason not to. I'd prefer not to add this as a dependency if we can
+>> help it.
+> 
+> It's easy to rework either series on top of each other. The mTHP series has
+> highest priority,
+> no question, that will go in first.
 
-> On Tue, 5 Dec 2023 07:36:06 +0100
-> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
-=20
-> > I would expect a devicetree like this:
-> >=20
-> >         ethernet-pse@3c {
-> > 	  // controller compatible should be precise
-> >           compatible =3D "microchip,pd69210";
-> >           reg =3D <0x3c>;
-> >           #pse-cells =3D <1>;
-> >          =20
-> > 	  managers {
-> > 	    manager@0 {
-> > 	      // manager compatible should be included, since we are
-> > 	      // able to campare it with communication results
-> > 	      compatible =3D "microchip,pd69208t4"
-> > 	      // addressing corresponding to the chip select addressing
-> > 	      reg =3D <0>;
-> >=20
-> > 	      physical-ports {
-> > 	        phys0: port@0 {
-> > 		  // each of physical ports is actually a regulator
+Music to my ears! It would be great to either get a reviewed-by or feedback on
+why not, for the key 2 patches in that series (3 & 4) and also your opinion on
+whether we need to wait for compaction to land (see cover letter). It would be
+great to get this into linux-next ASAP IMHO.
 
-If this phys0 is a regulator, which device will be the consumer of this
-regulator? log_port0 as the phys0 regulator consumer seems a bit odd!
-A 8P8C node should be the consumer.
+> 
+> Regarding the contpte, I think it needs more work. Especially, as raised, to not
+> degrade
+> order-0 performance. Maybe we won't make the next merge window (and you already
+> predicated
+> that in some cover letter :P ). Let's see.
 
-> > 		  reg =3D <0>;
-> > 		};
-> > 	        phys1: port@1 {
-> > 		  reg =3D <1>;
-> > 		};
-> > 	        phys2: port@2 {
-> > 		  reg =3D <2>;
-> > 		};
-> >=20
-> >                ...
-> > 	      }
-> >=20
-> >           // port matrix can be calculated by using this information
-> >           logical-ports {
-> > 	    log_port0: port@0 {
-> > 	      // PoE4 port
-> > 	      physical-ports =3D <&phys0, &phys1>;
-> > 	    };
-> > 	    log_port1: port@1 {
-> > 	      // PoE2 port
-> > 	      physical-ports =3D <&phys2>;
-> > 	    };
-> > 	  };
-> >=20
-> > ....
-> >    ethernet-phy@1 {
-> >      reg =3D <1>;
-> >      pses =3D <&log_port0>;
-> >    }
-> >    ethernet-phy@2 {
-> >      reg =3D <2>;
-> >      pses =3D <&log_port1>;
-> >    } =20
+Yeah that's ok. I'll do the work to fix the order-0 perf. And also do the same
+for patch 2 in that series - would also be really helpful if you had a chance to
+look at patch 2 - its new for v3.
 
-In fact if we want to really fit the PoE architecture topology we should wa=
-it
-for the support of 8P8C connector from Maxime. Then it will look like that:
-SoC  --- i2c/uart --> controller -- spi --> manager0 -- phys_port0 --> 8P8C=
-_connector0 (PoE4)
-                                         |           \- phys_port1 --> 8P8C=
-_connector0 (PoE4)
-					 |	     \- phys_port2 --> 8P8C_connector1 (PoE2)
-					 |	     \- phys_port3 --> 8P8C_connector2 (PoE2)
-                                         \- manager1 -- phys_port0 ..
+> 
+> But again, the conflicts are all trivial, so I'll happily rebase on top of
+> whatever is
+> in mm-unstable. Or move the relevant rework to the front so you can just carry
+> them/base on them. (the batched variants for dup do make the contpte code much
+> easier)
 
-With this type of devicetree:
-        ethernet-pse@3c {
-	  // controller compatible should be precise
-          compatible =3D "microchip,pd69210";
-          reg =3D <0x3c>;
-          #pse-cells =3D <1>;
-         =20
-	  managers {
-	    manager@0 {
-	      // manager compatible should be included, since we are
-	      // able to compare it with communication results
-	      compatible =3D "microchip,pd69208t4"
-	      // addressing corresponding to the chip select addressing
-	      reg =3D <0>;
+So perhaps we should aim for mTHP, then this, then contpte last, benefiting from
+the batching.
 
-	      physical-ports {
-	        phys_port0: port@0 {
-		  // each of physical ports is actually a regulator
-		  reg =3D <0>;
-		};
-	        phy_port1: port@1 {
-		  reg =3D <1>;
-		};
-	        phy_port2: port@2 {
-		  reg =3D <2>;
-		};
+> 
+> [...]
+> 
+>>>
+>>>
+>>> New (extended) hugetlb interface that operate on entire folio:
+>>>   * hugetlb_add_new_anon_rmap() -> Already existed
+>>>   * hugetlb_add_anon_rmap() -> Already existed
+>>>   * hugetlb_try_dup_anon_rmap()
+>>>   * hugetlb_try_share_anon_rmap()
+>>>   * hugetlb_add_file_rmap()
+>>>   * hugetlb_remove_rmap()
+>>>
+>>> New "ordinary" interface for small folios / THP::
+>>>   * folio_add_new_anon_rmap() -> Already existed
+>>>   * folio_add_anon_rmap_[pte|ptes|pmd]()
+>>>   * folio_try_dup_anon_rmap_[pte|ptes|pmd]()
+>>>   * folio_try_share_anon_rmap_[pte|pmd]()
+>>>   * folio_add_file_rmap_[pte|ptes|pmd]()
+>>>   * folio_dup_file_rmap_[pte|ptes|pmd]()
+>>>   * folio_remove_rmap_[pte|ptes|pmd]()
+>>
+>> I'm not sure if there are official guidelines, but personally if we are
+>> reworking the API, I'd take the opportunity to move "rmap" to the front of the
+>> name, rather than having it burried in the middle as it is for some of these:
+>>
+>> rmap_hugetlb_*()
+>>
+>> rmap_folio_*()
+> 
+> No strong opinion. But we might want slightly different names then. For example,
+> it's "bio_add_folio" and not "bio_folio_add":
+> 
+> 
+> rmap_add_new_anon_hugetlb()
+> rmap_add_anon_hugetlb()
+> ...
+> rmap_remove_hugetlb()
+> 
+> 
+> rmap_add_new_anon_folio()
+> rmap_add_anon_folio_[pte|ptes|pmd]()
+> ...
+> rmap_dup_file_folio_[pte|ptes|pmd]()
+> rmap_remove_folio_[pte|ptes|pmd]()
+> 
+> Thoughts?
 
-               ...
-	      }
-	    manager@1 {
-            ...
-            };
-          };
-	};
-
-....
-  rj45_0:8p8c@0 {
-    pses =3D <&phy_port0, &phy_port1>;
-  };
-  rj45_1:8p8c@1 {
-    pses =3D <&phy_port2>;
-  };
-  ethernet-phy@1 {
-    reg =3D <1>;
-    connector =3D <&rj45_0>;
-  };
-  ethernet-phy@2 {
-    reg =3D <2>;
-    connector =3D <&rj45_1>;
-  }
+Having now reviewed your series, I have a less strong opinion, perhaps it's
+actually best with your original names; "folio" is actually the subject after
+all; it's the thing being operated on.
 
 
-The drawback is that I don't really know for now, how port matrix can be
-calculated with this. Maybe by adding a "conf_pse_cell()" callback, call
-in the of_pse_control_get() for each ports.
+> 
+>>
+>> I guess reading the patches will tell me, but what's the point of "ptes"? Surely
+>> you're either mapping at pte or pmd level, and the number of pages is determined
+>> by the folio size? (or presumably nr param passed in)
+> 
+> It's really (currently) one function to handle 1 vs. multiple PTEs. For example:
+> 
+> void folio_remove_rmap_ptes(struct folio *, struct page *, unsigned int nr,
+>         struct vm_area_struct *);
+> #define folio_remove_rmap_pte(folio, page, vma) \
+>     folio_remove_rmap_ptes(folio, page, 1, vma)
+> void folio_remove_rmap_pmd(struct folio *, struct page *,
+>         struct vm_area_struct *);
 
-For now 8p8c connector are not supported, we could keep using pse phandle
-in the phy node like you described but for physical port:
-   ethernet-phy@1 {
-     reg =3D <1>;
-     pses =3D <&phy_port0, &phy_port1>;
-   }
-   ethernet-phy@2 {
-     reg =3D <2>;
-     pses =3D <&phy_port2>;
-   }
+Yeah now that I've looked at the series, this makes sense. "ptes" was originally
+making me think of contpte, but I suspect I'll be the only one with that
+association :)
+> 
+> 
+> Once could let the compiler generate specialized variants for the single-pte
+> versions to make the order-0 case faster. For now it's just a helper macro.
+> 
 
-
-
-Finally, the devicetree would not know the matrix between logical port and
-physical port, this would be cleaner.
-
-Did I miss something?
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
