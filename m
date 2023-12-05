@@ -2,135 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D95A0804D7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:20:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076A7804D7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbjLEJUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
+        id S234988AbjLEJV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:21:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235000AbjLEJUn (ORCPT
+        with ESMTP id S231852AbjLEJV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:20:43 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8308EC6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:20:49 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:f143:dd2b:2cfe:eb7c])
-        by xavier.telenet-ops.be with bizsmtp
-        id JZLk2B00X5Tnyl201ZLk4P; Tue, 05 Dec 2023 10:20:46 +0100
-Received: from geert (helo=localhost)
-        by ramsan.of.borg with local-esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1rARbg-00B2oN-N4;
-        Tue, 05 Dec 2023 10:20:44 +0100
-Date:   Tue, 5 Dec 2023 10:20:44 +0100 (CET)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        Xinhui Pan <Xinhui.Pan@amd.com>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        amd-gfx@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: amdgpu header files (was: Re: [git pull] drm for 6.7-rc1)
-In-Reply-To: <CAPM=9txd+1FtqU-R_8Zr_UePUzu7QUWsDBV1syKBo16v_gx2XQ@mail.gmail.com>
-Message-ID: <45db1e4b-afbe-8bf5-6c4-945bdacb11f3@linux-m68k.org>
-References: <CAPM=9txd+1FtqU-R_8Zr_UePUzu7QUWsDBV1syKBo16v_gx2XQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 04:21:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6457A7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:21:32 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FDDDC433C7;
+        Tue,  5 Dec 2023 09:21:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701768092;
+        bh=CwTZMcUe712h6POb79Nr8ctnkPireFaHA042OQUBRjY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bX7MXlnrqiX+N/s9lIiTB5y2zP1dsnXKx7M5C9BPJzUpzX7pUMlRlaqLRMyXsZZEJ
+         Ce66GVp8qzcmR1xKdC5UbuusvCU2hTXcaFXpCSY8PWjmDDqJ9IJlIUvFnEnnvE+mlY
+         /lQLO7EsAC7QBQMVqA0k/H3itcsy2ip/OHM+hPKLFn5N1l3CQAniWgkmBgsc8bpXJL
+         jyBDGr3PUW+XK/8e/e7dmR3U6DsqCPAt+qGQWxphRa8NkSyMeegGZdH5+Eo8o1lwXO
+         WSX2Bvr9R+jPc0SfwC3KY963lnIW5iFVNN3HKfTAL+S5avMUSDgHna+odSwtyNNnc0
+         6P5NOvkJbiUMg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rARcP-001UKy-HZ;
+        Tue, 05 Dec 2023 09:21:29 +0000
+Date:   Tue, 05 Dec 2023 09:21:28 +0000
+Message-ID: <86fs0hatt3.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     <ankita@nvidia.com>
+Cc:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        <jgg@nvidia.com>, <oliver.upton@linux.dev>,
+        <suzuki.poulose@arm.com>, <yuzenghui@huawei.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>, <ardb@kernel.org>,
+        <akpm@linux-foundation.org>, <gshan@redhat.com>,
+        <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
+        <targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
+        <apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
+        <mochs@nvidia.com>, <kvmarm@lists.linux.dev>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and NORMAL_NC for IO memory
+In-Reply-To: <20231205033015.10044-1-ankita@nvidia.com>
+References: <20231205033015.10044-1-ankita@nvidia.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: ankita@nvidia.com, shameerali.kolothum.thodi@huawei.com, jgg@nvidia.com, oliver.upton@linux.dev, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com, aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com, mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Oct 2023, Dave Airlie wrote:
-> This is the main drm pull request for 6.7.
++ Shameer
 
-> Highlights:
-> - AMD adds some more upcoming HW platforms
+On Tue, 05 Dec 2023 03:30:15 +0000,
+<ankita@nvidia.com> wrote:
+> 
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> Currently, KVM for ARM64 maps at stage 2 memory that is considered device
+> (i.e. it is not RAM) with DEVICE_nGnRE memory attributes; this setting
+> overrides (as per the ARM architecture [1]) any device MMIO mapping
+> present at stage 1, resulting in a set-up whereby a guest operating
+> system cannot determine device MMIO mapping memory attributes on its
+> own but it is always overridden by the KVM stage 2 default.
+> 
+> This set-up does not allow guest operating systems to select device
+> memory attributes independently from KVM stage-2 mappings
+> (refer to [1], "Combining stage 1 and stage 2 memory type attributes"),
+> which turns out to be an issue in that guest operating systems
+> (e.g. Linux) may request to map devices MMIO regions with memory
+> attributes that guarantee better performance (e.g. gathering
+> attribute - that for some devices can generate larger PCIe memory
+> writes TLPs) and specific operations (e.g. unaligned transactions)
+> such as the NormalNC memory type.
+> 
+> The default device stage 2 mapping was chosen in KVM for ARM64 since
+> it was considered safer (i.e. it would not allow guests to trigger
+> uncontained failures ultimately crashing the machine) but this
+> turned out to be asynchronous (SError) defeating the purpose.
+> 
+> Failures containability is a property of the platform and is independent
+> from the memory type used for MMIO device memory mappings.
+> 
+> Actually, DEVICE_nGnRE memory type is even more problematic than
+> Normal-NC memory type in terms of faults containability in that e.g.
+> aborts triggered on DEVICE_nGnRE loads cannot be made, architecturally,
+> synchronous (i.e. that would imply that the processor should issue at
+> most 1 load transaction at a time - it cannot pipeline them - otherwise
+> the synchronous abort semantics would break the no-speculation attribute
+> attached to DEVICE_XXX memory).
+> 
+> This means that regardless of the combined stage1+stage2 mappings a
+> platform is safe if and only if device transactions cannot trigger
+> uncontained failures and that in turn relies on platform capabilities
+> and the device type being assigned (i.e. PCIe AER/DPC error containment
+> and RAS architecture[3]); therefore the default KVM device stage 2
+> memory attributes play no role in making device assignment safer
+> for a given platform (if the platform design adheres to design
+> guidelines outlined in [3]) and therefore can be relaxed.
+> 
+> For all these reasons, relax the KVM stage 2 device memory attributes
+> from DEVICE_nGnRE to Normal-NC. Add a new kvm_pgtable_prot flag for
+> Normal-NC.
+> 
+> The Normal-NC was chosen over a different Normal memory type default
+> at stage-2 (e.g. Normal Write-through) to avoid cache allocation/snooping.
+> 
+> Relaxing S2 KVM device MMIO mappings to Normal-NC is not expected to
+> trigger any issue on guest device reclaim use cases either (i.e. device
+> MMIO unmap followed by a device reset) at least for PCIe devices, in that
+> in PCIe a device reset is architected and carried out through PCI config
+> space transactions that are naturally ordered with respect to MMIO
+> transactions according to the PCI ordering rules.
+> 
+> Having Normal-NC S2 default puts guests in control (thanks to
+> stage1+stage2 combined memory attributes rules [1]) of device MMIO
+> regions memory mappings, according to the rules described in [1]
+> and summarized here ([(S1) - stage1], [(S2) - stage 2]):
+> 
+> S1           |  S2           | Result
+> NORMAL-WB    |  NORMAL-NC    | NORMAL-NC
+> NORMAL-WT    |  NORMAL-NC    | NORMAL-NC
+> NORMAL-NC    |  NORMAL-NC    | NORMAL-NC
+> DEVICE<attr> |  NORMAL-NC    | DEVICE<attr>
+> 
+> It is worth noting that currently, to map devices MMIO space to user
+> space in a device pass-through use case the VFIO framework applies memory
+> attributes derived from pgprot_noncached() settings applied to VMAs, which
+> result in device-nGnRnE memory attributes for the stage-1 VMM mappings.
+> 
+> This means that a userspace mapping for device MMIO space carried
+> out with the current VFIO framework and a guest OS mapping for the same
+> MMIO space may result in a mismatched alias as described in [2].
+> 
+> Defaulting KVM device stage-2 mappings to Normal-NC attributes does not
+> change anything in this respect, in that the mismatched aliases would
+> only affect (refer to [2] for a detailed explanation) ordering between
+> the userspace and GuestOS mappings resulting stream of transactions
+> (i.e. it does not cause loss of property for either stream of
+> transactions on its own), which is harmless given that the userspace
+> and GuestOS access to the device is carried out through independent
+> transactions streams.
+> 
+> [1] section D8.5 - DDI0487_I_a_a-profile_architecture_reference_manual.pdf
+> [2] section B2.8 - DDI0487_I_a_a-profile_architecture_reference_manual.pdf
 
-> Alex Deucher (24):
->      drm/amdgpu: update to the latest GC 11.5 headers
+Can you please quote the latest specs?
 
-> Candice Li (8):
->      drm/amd: Add umc v12_0_0 ip headers
+> [3] sections 1.7.7.3/1.8.5.2/appendix C - DEN0029H_SBSA_7.1.pdf
+> 
+> Applied over next-20231201
+> 
+> History
+> =======
+> v1 -> v2
+> - Updated commit log to the one posted by
+>   Lorenzo Pieralisi <lpieralisi@kernel.org> (Thanks!)
+> - Added new flag to represent the NORMAL_NC setting. Updated
+>   stage2_set_prot_attr() to handle new flag.
+> 
+> v1 Link:
+> https://lore.kernel.org/all/20230907181459.18145-3-ankita@nvidia.com/
+> 
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Tested-by: Ankit Agrawal <ankita@nvidia.com>
 
-> Lang Yu (57):
->      drm/amdgpu: add gc headers for gc 11.5.0
->      drm/amdgpu: add mmhub 3.3.0 headers
->      drm/amdgpu: add VPE 6.1.0 header files
->      drm/amdgpu: add UMSCH 4.0 register headers
+Despite the considerable increase in the commit message length, a
+number of questions are left unanswered:
 
-> Li Ma (11):
->      drm/amdgpu: add header files for MP 14.0.0
->      drm/amdgpu: fix missing stuff in NBIO v7.11
+- Shameer reported a regression on non-FWB systems, breaking device
+  assignment:
 
-> Qingqing Zhuo (38):
->      drm/amd/display: Add dcn35 register header files
+  https://lore.kernel.org/all/af13ed63dc9a4f26a6c958ebfa77d78a@huawei.com/
 
-> Saleemkhan Jamadar (9):
->      drm/amdgpu: add vcn 4_0_5 header files
+  How has this been addressed?
 
-> Yang Wang (16):
->      drm/amd/pm: add smu_13_0_6 mca dump support
+- Will had unanswered questions in another part of the thread:
 
-> benl (3):
->      drm/amdgpu: add nbio 7.11 registers
+  https://lore.kernel.org/all/20231013092954.GB13524@willie-the-truck/
 
-> .../amd/include/asic_reg/dcn/dcn_3_5_0_offset.h    | 15255 +++++
-> .../amd/include/asic_reg/dcn/dcn_3_5_0_sh_mask.h   | 53412 +++++++++++++++++
-> .../drm/amd/include/asic_reg/gc/gc_11_5_0_offset.h | 10000 ++++
-> .../amd/include/asic_reg/gc/gc_11_5_0_sh_mask.h    | 36579 ++++++++++++
-> .../include/asic_reg/mmhub/mmhub_3_3_0_offset.h    |  1395 +
-> .../include/asic_reg/mmhub/mmhub_3_3_0_sh_mask.h   |  6722 +++
-> .../amd/include/asic_reg/mp/mp_13_0_6_sh_mask.h    |    28 +
-> .../drm/amd/include/asic_reg/mp/mp_14_0_0_offset.h |   359 +
-> .../amd/include/asic_reg/mp/mp_14_0_0_sh_mask.h    |   534 +
-> .../amd/include/asic_reg/nbio/nbio_7_11_0_offset.h |  9400 +++
-> .../include/asic_reg/nbio/nbio_7_11_0_sh_mask.h    | 57857 +++++++++++++++++++
-> .../amd/include/asic_reg/umc/umc_12_0_0_offset.h   |    33 +
-> .../amd/include/asic_reg/umc/umc_12_0_0_sh_mask.h  |    95 +
-> .../amd/include/asic_reg/vcn/vcn_4_0_0_offset.h    |   422 +
-> .../amd/include/asic_reg/vcn/vcn_4_0_0_sh_mask.h   |   882 +
-> .../amd/include/asic_reg/vcn/vcn_4_0_5_offset.h    |  1797 +
-> .../amd/include/asic_reg/vcn/vcn_4_0_5_sh_mask.h   |  8614 +++
-> .../amd/include/asic_reg/vpe/vpe_6_1_0_offset.h    |  1553 +
-> .../amd/include/asic_reg/vpe/vpe_6_1_0_sh_mask.h   |  4393 ++
+  Can someone please help concluding it?
 
-These huge files can be reduced by 50%: all the *_SHIFT definitions are
-redundant, as they can be derived from the corresponding *_MASK
-definitions at compile-time, cfr. <linux/bitfield.h>.
+> 
+> ---
+>  arch/arm64/include/asm/kvm_pgtable.h |  2 ++
+>  arch/arm64/include/asm/memory.h      |  2 ++
+>  arch/arm64/kvm/hyp/pgtable.c         | 11 +++++++++--
+>  arch/arm64/kvm/mmu.c                 |  4 ++--
+>  4 files changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index cfdf40f734b1..19278dfe7978 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -197,6 +197,7 @@ enum kvm_pgtable_stage2_flags {
+>   * @KVM_PGTABLE_PROT_W:		Write permission.
+>   * @KVM_PGTABLE_PROT_R:		Read permission.
+>   * @KVM_PGTABLE_PROT_DEVICE:	Device attributes.
+> + * @KVM_PGTABLE_PROT_NORMAL_NC:	Normal noncacheable attributes.
+>   * @KVM_PGTABLE_PROT_SW0:	Software bit 0.
+>   * @KVM_PGTABLE_PROT_SW1:	Software bit 1.
+>   * @KVM_PGTABLE_PROT_SW2:	Software bit 2.
+> @@ -208,6 +209,7 @@ enum kvm_pgtable_prot {
+>  	KVM_PGTABLE_PROT_R			= BIT(2),
+>  
+>  	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
+> +	KVM_PGTABLE_PROT_NORMAL_NC		= BIT(4),
+>  
+>  	KVM_PGTABLE_PROT_SW0			= BIT(55),
+>  	KVM_PGTABLE_PROT_SW1			= BIT(56),
+> diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+> index fde4186cc387..c247e5f29d5a 100644
+> --- a/arch/arm64/include/asm/memory.h
+> +++ b/arch/arm64/include/asm/memory.h
+> @@ -147,6 +147,7 @@
+>   * Memory types for Stage-2 translation
+>   */
+>  #define MT_S2_NORMAL		0xf
+> +#define MT_S2_NORMAL_NC		0x5
+>  #define MT_S2_DEVICE_nGnRE	0x1
+>  
+>  /*
+> @@ -154,6 +155,7 @@
+>   * Stage-2 enforces Normal-WB and Device-nGnRE
+>   */
+>  #define MT_S2_FWB_NORMAL	6
+> +#define MT_S2_FWB_NORMAL_NC	5
+>  #define MT_S2_FWB_DEVICE_nGnRE	1
+>  
+>  #ifdef CONFIG_ARM64_4K_PAGES
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index c651df904fe3..d4835d553c61 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -718,10 +718,17 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
+>  				kvm_pte_t *ptep)
+>  {
+>  	bool device = prot & KVM_PGTABLE_PROT_DEVICE;
+> -	kvm_pte_t attr = device ? KVM_S2_MEMATTR(pgt, DEVICE_nGnRE) :
+> -			    KVM_S2_MEMATTR(pgt, NORMAL);
+> +	bool normal_nc = prot & KVM_PGTABLE_PROT_NORMAL_NC;
+> +	kvm_pte_t attr;
+>  	u32 sh = KVM_PTE_LEAF_ATTR_LO_S2_SH_IS;
+>  
+> +	if (device)
+> +		attr = KVM_S2_MEMATTR(pgt, DEVICE_nGnRE);
+> +	else if (normal_nc)
+> +		attr = KVM_S2_MEMATTR(pgt, NORMAL_NC);
+> +	else
+> +		attr = KVM_S2_MEMATTR(pgt, NORMAL);
+> +
+>  	if (!(prot & KVM_PGTABLE_PROT_X))
+>  		attr |= KVM_PTE_LEAF_ATTR_HI_S2_XN;
+>  	else if (device)
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index d14504821b79..1cb302457d3f 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1071,7 +1071,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
+>  	struct kvm_mmu_memory_cache cache = { .gfp_zero = __GFP_ZERO };
+>  	struct kvm_s2_mmu *mmu = &kvm->arch.mmu;
+>  	struct kvm_pgtable *pgt = mmu->pgt;
+> -	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_DEVICE |
+> +	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_NORMAL_NC |
+>  				     KVM_PGTABLE_PROT_R |
+>  				     (writable ? KVM_PGTABLE_PROT_W : 0);
 
-E.g.:
+Doesn't this affect the GICv2 VCPU interface, which is effectively a
+shared peripheral, now allowing a guest to affect another guest's
+interrupt distribution? If that is the case, this needs to be fixed.
 
-#define AZCONTROLLER0_CORB_READ_POINTER__CORB_READ_POINTER__SHIFT        0x0
-#define AZCONTROLLER0_CORB_READ_POINTER__CORB_READ_POINTER_RESET__SHIFT  0xf
-#define AZCONTROLLER0_CORB_READ_POINTER__CORB_READ_POINTER_MASK          0x00FFL
-#define AZCONTROLLER0_CORB_READ_POINTER__CORB_READ_POINTER_RESET_MASK    0x8000L
+In general, I don't think this should be a blanket statement, but be
+limited to devices that we presume can deal with this (i.e. PCIe, and
+not much else).
 
-AZCONTROLLER0_CORB_READ_POINTER__CORB_READ_POINTER__SHIFT =
- 	__bf_shf(AZCONTROLLER0_CORB_READ_POINTER__CORB_READ_POINTER_MASK)
-AZCONTROLLER0_CORB_READ_POINTER__CORB_READ_POINTER_RESET__SHIFT =
- 	__bf_shf(AZCONTROLLER0_CORB_READ_POINTER__CORB_READ_POINTER_RESET_MASK)
+>
+> @@ -1558,7 +1558,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  		prot |= KVM_PGTABLE_PROT_X;
+>  
+>  	if (device)
+> -		prot |= KVM_PGTABLE_PROT_DEVICE;
+> +		prot |= KVM_PGTABLE_PROT_NORMAL_NC;
+>  	else if (cpus_have_final_cap(ARM64_HAS_CACHE_DIC))
+>  		prot |= KVM_PGTABLE_PROT_X;
+>  
 
-set_reg_field_value_masks() takes a shift and a mask, while it
-could calculate the shift at run-time.
-set_reg_field_values() takes pairs of shifts and masks, but the shifts
-are not needed; lots of tables can be halved, etc...
+Thanks,
 
-Gr{oetje,eeting}s,
+	M.
 
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+-- 
+Without deviation from the norm, progress is not possible.
