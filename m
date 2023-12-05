@@ -2,182 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED767804493
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACF6804496
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:21:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343908AbjLECU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:20:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44286 "EHLO
+        id S1343941AbjLECVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:21:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbjLECUY (ORCPT
+        with ESMTP id S1343867AbjLECVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:20:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D112B4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:20:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC5FAC433CA;
-        Tue,  5 Dec 2023 02:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701742831;
-        bh=yGVYTaY5WjmVroBLRmh/zaOtHpLdW1ToCiNR1/hpasM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TLKHfmQbCfpFnLjP1wbNoTuPQpWJKEO+Rv/acUOB1lJ0/tZ75jS9wif7367i41Bg/
-         odG9uQvrD8UIw+QJFe6SnxEDv2Y+bHaZ+8hJWp6xo9XAPaBU2HTXBSpGA9AQrd783i
-         KmcFzNtT/YBvFYWAdVKa9oOd7XMBeOtaKhkCspMmS6a8i/0wJ4hZJYRJcaqpmX+gqu
-         jl/UssF04+26mnA8UgIzB/B7P3YvBhn6Tu7Lek8Wq85Yy9Eaqd8SoPrQ2IbSFFPSRQ
-         7vxbffTpwkbtNCJ8slxlyGkAQ4Mc9Nvg0d0RIkFrvyYP/4GNpRBZVZwayM+BoW7SJC
-         mPvIA9fY8eLxA==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so6400866a12.2;
-        Mon, 04 Dec 2023 18:20:30 -0800 (PST)
-X-Gm-Message-State: AOJu0YzvZYO/Cm4r8Q1ZooGiYo/w92pfTbbficQK8rt7YcyjgB9ieh2Q
-        x3oH1FfgWEX684rr8rTOdsHZzrcAI9Obd+Q3erM=
-X-Google-Smtp-Source: AGHT+IFZlQzjG1R+WCnQ0APvSI1FWHVxxlzrjPGayh4LKHdoF0kRjHnoDZhwhp2SZCjcparsiyJYD0pU2Ui4NlFVo3w=
-X-Received: by 2002:a50:d787:0:b0:54c:4837:7d3b with SMTP id
- w7-20020a50d787000000b0054c48377d3bmr2455887edi.122.1701742829397; Mon, 04
- Dec 2023 18:20:29 -0800 (PST)
+        Mon, 4 Dec 2023 21:21:02 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1340BB4;
+        Mon,  4 Dec 2023 18:21:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=EEu1JQzPR+aQ2DPOZEiFw30XYWpIDeqUkY6qQHrbRV4=; b=fzAz3umhgaI9QVoUzvSuygd0cx
+        YhEQCqm7nmiIGD2HNouUK23uCJ2QG8Uvf7LIcAVwJEjHAvch41V6UoGb4+2exQIpWg6yd8y1fYPqJ
+        coU4LqngyafNl30XzwKk2Mm4m8UTqBMmDYynYP+mfJuCa34QS08Ftg5GCZCVV2LKSutlgvS8ALE27
+        vOAFMtj/JDE07ZcqKtYmB2RSkTMFSdSn8ecw1SWWX4Hu7RZ4ECXF2BM+XjCZqebUYFfVkM4kPlSgB
+        bA/8LNGUiqH8LfbC+FI63ktuFETe9CYY0yrY+pdhWMDn8IGvzVv9KSmB0sI/iuTydJoxePfwm8Ifw
+        kzwsphvw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAL3U-0078xn-30;
+        Tue, 05 Dec 2023 02:21:01 +0000
+Date:   Tue, 5 Dec 2023 02:21:00 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     linux-arch@vger.kernel.org
+Cc:     gus Gusenleitner Klaus <gus@keba.com>,
+        Al Viro <viro@ftp.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "dsahern@kernel.org" <dsahern@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: [RFC][PATCHES v2] checksum stuff
+Message-ID: <20231205022100.GB1674809@ZenIV>
+References: <20231018154205.GT800259@ZenIV>
+ <VI1PR0702MB3840F2D594B9681BF2E0CD81D9D4A@VI1PR0702MB3840.eurprd07.prod.outlook.com>
+ <20231019050250.GV800259@ZenIV>
+ <20231019061427.GW800259@ZenIV>
+ <20231019063925.GX800259@ZenIV>
+ <CANn89iJre=VQ6J=UuD0d2J5t=kXr2b9Dk9b=SwzPX1CM+ph60A@mail.gmail.com>
+ <20231019080615.GY800259@ZenIV>
+ <20231021071525.GA789610@ZenIV>
+ <20231021222203.GA800259@ZenIV>
+ <20231022194020.GA972254@ZenIV>
 MIME-Version: 1.0
-References: <20231116023036.2324371-1-maobibo@loongson.cn> <20231116023036.2324371-2-maobibo@loongson.cn>
- <564a2fd3-ffba-3bc5-70b9-8a9fa9a0f1c6@loongson.cn>
-In-Reply-To: <564a2fd3-ffba-3bc5-70b9-8a9fa9a0f1c6@loongson.cn>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 5 Dec 2023 10:20:17 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4P_JUewDM7R1ByNR4PZa97=xM_rAJ239J-wFSd6_+0GA@mail.gmail.com>
-Message-ID: <CAAhV-H4P_JUewDM7R1ByNR4PZa97=xM_rAJ239J-wFSd6_+0GA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/3] LoongArch: KVM: Remove SW timer switch when vcpu
- is halt polling
-To:     zhaotianrui <zhaotianrui@loongson.cn>
-Cc:     Bibo Mao <maobibo@loongson.cn>, WANG Xuerui <kernel@xen0n.name>,
-        kvm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231022194020.GA972254@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series looks good to me, If Paolo agrees, I will apply to
-loongarch-next after [1] is taken into the kvm tree (otherwise there
-will be build errors).
+We need a way for csum_and_copy_{from,to}_user() to report faults.
+The approach taken back in 2020 (avoid 0 as return value by starting
+summing from ~0U, use 0 to report faults) had been broken; it does
+yield the right value modulo 2^16-1, but the case when data is
+entirely zero-filled is not handled right.  It almost works, since
+for most of the codepaths we have a non-zero value added in
+and there 0 is not different from anything divisible by 0xffff.
+However, there are cases (ICMPv4 replies, for example) where we
+are not guaranteed that.
 
-[1] https://lore.kernel.org/loongarch/CAAhV-H63QkfSw+Esn8oW2PDEsCnTRPFqkj8X=
--x8i9cH3AS0k9w@mail.gmail.com/T/#t
+In other words, we really need to have those primitives return 0
+on filled-with-zeroes input.  So let's make them return a 64bit
+value instead; we can do that cheaply (all supported architectures
+do that via a couple of registers) and we can use that to report
+faults without disturbing the 32bit csum.
 
-On Mon, Dec 4, 2023 at 4:45=E2=80=AFPM zhaotianrui <zhaotianrui@loongson.cn=
-> wrote:
->
-> Reviewed-by: Tianrui Zhao <zhaotianrui@loongson.cn>
->
-> =E5=9C=A8 2023/11/16 =E4=B8=8A=E5=8D=8810:30, Bibo Mao =E5=86=99=E9=81=93=
-:
-> > With halt-polling supported, there is checking for pending events
-> > or interrupts when vcpu executes idle instruction. Pending interrupts
-> > include injected SW interrupts and passthrough HW interrupts, such as
-> > HW timer interrupts, since HW timer works still even if vcpu exists
-> > from VM mode.
-> >
-> > Since HW timer pending interrupt can be set directly with CSR status
-> > register, and pending HW timer interrupt checking is used in vcpu block
-> > checking function, it is not necessary to switch to sw timer during
-> > halt-polling. This patch adds preemption disabling in function
-> > kvm_cpu_has_pending_timer, and removes SW timer switching in idle
-> > instruction emulation function.
-> >
-> > Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-> > ---
-> >   arch/loongarch/kvm/exit.c  | 13 ++-----------
-> >   arch/loongarch/kvm/timer.c | 13 ++++++++++---
-> >   arch/loongarch/kvm/vcpu.c  |  9 ++++++++-
-> >   3 files changed, 20 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-> > index ce8de3fa472c..e708a1786d6b 100644
-> > --- a/arch/loongarch/kvm/exit.c
-> > +++ b/arch/loongarch/kvm/exit.c
-> > @@ -200,17 +200,8 @@ int kvm_emu_idle(struct kvm_vcpu *vcpu)
-> >       ++vcpu->stat.idle_exits;
-> >       trace_kvm_exit_idle(vcpu, KVM_TRACE_EXIT_IDLE);
-> >
-> > -     if (!kvm_arch_vcpu_runnable(vcpu)) {
-> > -             /*
-> > -              * Switch to the software timer before halt-polling/block=
-ing as
-> > -              * the guest's timer may be a break event for the vCPU, a=
-nd the
-> > -              * hypervisor timer runs only when the CPU is in guest mo=
-de.
-> > -              * Switch before halt-polling so that KVM recognizes an e=
-xpired
-> > -              * timer before blocking.
-> > -              */
-> > -             kvm_save_timer(vcpu);
-> > -             kvm_vcpu_block(vcpu);
-> > -     }
-> > +     if (!kvm_arch_vcpu_runnable(vcpu))
-> > +             kvm_vcpu_halt(vcpu);
-> >
-> >       return EMULATE_DONE;
-> >   }
-> > diff --git a/arch/loongarch/kvm/timer.c b/arch/loongarch/kvm/timer.c
-> > index 284bf553fefe..437e960d8fdb 100644
-> > --- a/arch/loongarch/kvm/timer.c
-> > +++ b/arch/loongarch/kvm/timer.c
-> > @@ -155,11 +155,18 @@ static void _kvm_save_timer(struct kvm_vcpu *vcpu=
-)
-> >                */
-> >               hrtimer_cancel(&vcpu->arch.swtimer);
-> >               hrtimer_start(&vcpu->arch.swtimer, expire, HRTIMER_MODE_A=
-BS_PINNED);
-> > -     } else
-> > +     } else if (vcpu->stat.generic.blocking) {
-> >               /*
-> > -              * Inject timer interrupt so that hall polling can dectec=
-t and exit
-> > +              * Inject timer interrupt so that hall polling can dectec=
-t and
-> > +              * exit.
-> > +              * VCPU is scheduled out already and sleeps in rcuwait qu=
-eue and
-> > +              * will not poll pending events again. kvm_queue_irq is n=
-ot
-> > +              * enough, hrtimer swtimer should be used here.
-> >                */
-> > -             kvm_queue_irq(vcpu, INT_TI);
-> > +             expire =3D ktime_add_ns(ktime_get(), 10);  // 10ns is eno=
-ugh here?
-> > +             vcpu->arch.expire =3D expire;
-> > +             hrtimer_start(&vcpu->arch.swtimer, expire, HRTIMER_MODE_A=
-BS_PINNED);
-> > +     }
-> >   }
-> >
-> >   /*
-> > diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-> > index 73d0c2b9c1a5..42663a345bd1 100644
-> > --- a/arch/loongarch/kvm/vcpu.c
-> > +++ b/arch/loongarch/kvm/vcpu.c
-> > @@ -187,8 +187,15 @@ int kvm_arch_vcpu_ioctl_translate(struct kvm_vcpu =
-*vcpu,
-> >
-> >   int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
-> >   {
-> > -     return kvm_pending_timer(vcpu) ||
-> > +     int ret;
-> > +
-> > +     /* protect from TOD sync and vcpu_load/put */
-> > +     preempt_disable();
-> > +     ret =3D kvm_pending_timer(vcpu) ||
-> >               kvm_read_hw_gcsr(LOONGARCH_CSR_ESTAT) & (1 << INT_TI);
-> > +     preempt_enable();
-> > +
-> > +     return ret;
-> >   }
-> >
-> >   int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu)
->
->
+New type: __wsum_fault.  64bit, returned by csum_and_copy_..._user().
+Primitives:
+        * CSUM_FAULT representing the fault
+        * to_wsum_fault() folding __wsum value into that
+        * from_wsum_fault() extracting __wsum value
+        * wsum_is_fault() checking if it's a fault value
+
+Representation depends upon the target.
+        CSUM_FAULT: ~0ULL
+        to_wsum_fault(v32): (u64)v32 for 64bit and 32bit l-e,
+(u64)v32 << 32 for 32bit b-e.
+
+Rationale: relationship between the calling conventions for returning 64bit
+and those for returning 32bit values.  On 64bit architectures the same
+register is used; on 32bit l-e the lower half of the value goes in the
+same register that is used for returning 32bit values and the upper half
+goes into additional register.  On 32bit b-e the opposite happens -
+upper 32 bits go into the register used for returning 32bit values and
+the lower 32 bits get stuffed into additional register.
+
+So with this choice of representation we need minimal changes on the
+asm side (zero an extra register in 32bit case, nothing in 64bit case),
+and from_wsum_fault() is as cheap as it gets.
+
+Sum calculation is back to "start from 0".
+
+The rest of the series consists of cleaning up assorted asm/checksum.h.
+
+Branch lives in
+git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #work.csum
+Individual patches in followups.  Help with review and testing would
+be very welcome.
+
+Al Viro (18):
+      make net/checksum.h self-contained
+      get rid of asm/checksum.h includes outside of include/net/checksum.h and arch
+      make net/checksum.h the sole user of asm/checksum.h
+      Fix the csum_and_copy_..._user() idiocy
+      bits missing from csum_and_copy_{from,to}_user() unexporting.
+      consolidate csum_tcpudp_magic(), take default variant into net/checksum.h
+      consolidate default ip_compute_csum()
+      alpha: pull asm-generic/checksum.h
+      mips: pull include of asm-generic/checksum.h out of #if
+      nios2: pull asm-generic/checksum.h
+      x86: merge csum_fold() for 32bit and 64bit
+      x86: merge ip_fast_csum() for 32bit and 64bit
+      x86: merge csum_tcpudp_nofold() for 32bit and 64bit
+      amd64: saner handling of odd address in csum_partial()
+      x86: optimized csum_add() is the same for 32bit and 64bit
+      x86: lift the extern for csum_partial() into checksum.h
+      x86_64: move csum_ipv6_magic() from csum-wrappers_64.c to csum-partial_64.c
+      uml/x86: use normal x86 checksum.h
+
+ arch/alpha/include/asm/asm-prototypes.h   |   2 +-
+ arch/alpha/include/asm/checksum.h         |  68 ++----------
+ arch/alpha/lib/csum_partial_copy.c        |  74 ++++++-------
+ arch/arm/include/asm/checksum.h           |  27 +----
+ arch/arm/kernel/armksyms.c                |   3 +-
+ arch/arm/lib/csumpartialcopygeneric.S     |   3 +-
+ arch/arm/lib/csumpartialcopyuser.S        |   8 +-
+ arch/hexagon/include/asm/checksum.h       |   4 +-
+ arch/hexagon/kernel/hexagon_ksyms.c       |   1 -
+ arch/hexagon/lib/checksum.c               |   1 +
+ arch/m68k/include/asm/checksum.h          |  24 +---
+ arch/m68k/lib/checksum.c                  |   8 +-
+ arch/microblaze/kernel/microblaze_ksyms.c |   2 +-
+ arch/mips/include/asm/asm-prototypes.h    |   2 +-
+ arch/mips/include/asm/checksum.h          |  32 ++----
+ arch/mips/lib/csum_partial.S              |  12 +-
+ arch/nios2/include/asm/checksum.h         |  13 +--
+ arch/openrisc/kernel/or32_ksyms.c         |   2 +-
+ arch/parisc/include/asm/checksum.h        |  21 ----
+ arch/powerpc/include/asm/asm-prototypes.h |   2 +-
+ arch/powerpc/include/asm/checksum.h       |  27 +----
+ arch/powerpc/lib/checksum_32.S            |   6 +-
+ arch/powerpc/lib/checksum_64.S            |   4 +-
+ arch/powerpc/lib/checksum_wrappers.c      |  14 +--
+ arch/s390/include/asm/checksum.h          |  18 ---
+ arch/s390/kernel/ipl.c                    |   2 +-
+ arch/s390/kernel/os_info.c                |   2 +-
+ arch/sh/include/asm/checksum_32.h         |  32 +-----
+ arch/sh/kernel/sh_ksyms_32.c              |   2 +-
+ arch/sh/lib/checksum.S                    |   6 +-
+ arch/sparc/include/asm/asm-prototypes.h   |   2 +-
+ arch/sparc/include/asm/checksum_32.h      |  63 ++++++-----
+ arch/sparc/include/asm/checksum_64.h      |  21 +---
+ arch/sparc/lib/checksum_32.S              |   2 +-
+ arch/sparc/lib/csum_copy.S                |   4 +-
+ arch/sparc/lib/csum_copy_from_user.S      |   2 +-
+ arch/sparc/lib/csum_copy_to_user.S        |   2 +-
+ arch/x86/include/asm/asm-prototypes.h     |   2 +-
+ arch/x86/include/asm/checksum.h           | 177 ++++++++++++++++++++++++++++++
+ arch/x86/include/asm/checksum_32.h        | 141 ++----------------------
+ arch/x86/include/asm/checksum_64.h        | 172 +----------------------------
+ arch/x86/lib/checksum_32.S                |  20 +++-
+ arch/x86/lib/csum-copy_64.S               |   6 +-
+ arch/x86/lib/csum-partial_64.c            |  41 ++++---
+ arch/x86/lib/csum-wrappers_64.c           |  43 ++------
+ arch/x86/um/asm/checksum.h                | 119 --------------------
+ arch/x86/um/asm/checksum_32.h             |  38 -------
+ arch/x86/um/asm/checksum_64.h             |  19 ----
+ arch/xtensa/include/asm/asm-prototypes.h  |   2 +-
+ arch/xtensa/include/asm/checksum.h        |  33 +-----
+ arch/xtensa/lib/checksum.S                |   6 +-
+ drivers/net/ethernet/brocade/bna/bnad.h   |   2 -
+ drivers/net/ethernet/lantiq_etop.c        |   2 -
+ drivers/net/vmxnet3/vmxnet3_int.h         |   1 -
+ drivers/s390/char/zcore.c                 |   2 +-
+ include/asm-generic/checksum.h            |  15 +--
+ include/net/checksum.h                    |  81 ++++++++++++--
+ include/net/ip6_checksum.h                |   1 -
+ lib/checksum_kunit.c                      |   2 +-
+ net/core/datagram.c                       |   8 +-
+ net/core/skbuff.c                         |   8 +-
+ net/ipv6/ip6_checksum.c                   |   1 -
+ 62 files changed, 501 insertions(+), 959 deletions(-)
+
+Part 1: sorting out the includes.
+	We have asm/checksum.h and net/checksum.h; the latter pulls
+the former.  A lot of things would become easier if we could move
+the things from asm/checksum.h to net/checksum.h; for that we need to
+make net/checksum.h the only file that pulls asm/checksum.h.
+
+1/18) make net/checksum.h self-contained
+right now it has an implicit dependency upon linux/bitops.h (for the
+sake of ror32()).
+
+2/18) get rid of asm/checksum.h includes outside of include/net/checksum.h and arch
+In almost all cases include is redundant; zcore.c and checksum_kunit.c
+are the sole exceptions and those got switched to net/checksum.h
+
+3/18) make net/checksum.h the sole user of asm/checksum.h
+All other users (all in arch/* by now) can pull net/checksum.h.
+
+Part 2: fix the fault reporting.
+
+4/18) Fix the csum_and_copy_..._user() idiocy
+
+Fix the breakage introduced back in 2020 - see above for details.
+
+Part 3: trimming related crap
+
+5/18) bits missing from csum_and_copy_{from,to}_user() unexporting.
+6/18) consolidate csum_tcpudp_magic(), take default variant into net/checksum.h
+7/18) consolidate default ip_compute_csum()
+... and take it into include/net/checksum.h
+8/18) alpha: pull asm-generic/checksum.h
+9/18) mips: pull include of asm-generic/checksum.h out of #if
+10/18) nios2: pull asm-generic/checksum.h
+
+Part 4: trimming x86 crap
+11/18) x86: merge csum_fold() for 32bit and 64bit
+identical...
+12/18) x86: merge ip_fast_csum() for 32bit and 64bit
+Identical, except that 32bit version uses asm volatile where 64bit
+one uses plain asm.  The former had become pointless when memory
+clobber got added to both versions...
+13/18) x86: merge csum_tcpudp_nofold() for 32bit and 64bit
+identical...
+14/18) amd64: saner handling of odd address in csum_partial()
+all we want there is to have return value congruent to result * 256
+modulo 0xffff; no need to convert from 32bit to 16bit (i.e. take it
+modulo 0xffff) first - cyclic shift of 32bit value by 8 bits (in either
+direction) will work.
+Kills the from32to16() helper and yields better code...
+15/18) x86: optimized csum_add() is the same for 32bit and 64bit
+16/18) x86: lift the extern for csum_partial() into checksum.h
+17/18) x86_64: move csum_ipv6_magic() from csum-wrappers_64.c to csum-partial_64.c
+... and make uml/amd64 use it.
+18/18) uml/x86: use normal x86 checksum.h
+The only difference left is that UML really does *NOT* want the
+csum-and-uaccess combinations; leave those in 
+arch/x86/include/asm/checksum_{32,64}, move the rest into
+arch/x86/include/asm/checksum.h (under ifdefs) and that's 
+pretty much it.
+
