@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 420D4804B84
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7EC804B95
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344655AbjLEHzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 02:55:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49280 "EHLO
+        id S230033AbjLEH5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 02:57:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjLEHzO (ORCPT
+        with ESMTP id S229615AbjLEH5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 02:55:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6782CB;
-        Mon,  4 Dec 2023 23:55:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701762920; x=1733298920;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=fCgwQbmvhTGp/cZ+rEbeyXUndSz9BBuhWGQGGVR/rvY=;
-  b=BcVbEOKW0YAV8/qjhhIMDja5FD0UK6yiCqBWitK/3uWM+AcYS3yxW99y
-   wI8Pq1DZF0DWIpi8CDF60asDI6piTnX1ELD3BpUCNAD4GIx5ezTUPVdDX
-   I+LW0zEqilkbb1eyG3t6o5dizXl/ZShxydBYJ9NyOkpT/Gpy0S5sCNjAC
-   YPWGt/uJlyUbmd7H0EX1FJwbUlTHFiaijS02pSc/fXLhRDyO1Jwbi8wEh
-   jVXvIkZDkFVd70mZ9m/TjpBOI4Hp5vj0uG4lN01McTjmKVmkghEsd0hnE
-   ZUUWRUjyFv9IMB0qGleZYzGuNqufPTLYF7tKtdNlb7jH0MtiK+aFg20/h
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="384256515"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="384256515"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 23:55:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="747131975"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="747131975"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 23:55:16 -0800
-Message-ID: <66b4cb9d-f26f-4ddd-b6c8-8ef4fc3744fd@linux.intel.com>
-Date:   Tue, 5 Dec 2023 15:55:14 +0800
+        Tue, 5 Dec 2023 02:57:53 -0500
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29C8109;
+        Mon,  4 Dec 2023 23:57:59 -0800 (PST)
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+        by mail5.25mail.st (Postfix) with ESMTPSA id 9065F60354;
+        Tue,  5 Dec 2023 07:56:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+        s=25mailst; t=1701763079;
+        bh=h3c0XIZu8HbtvK19lq1dOZHqca7qeD59maL/gJhxeU4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OvctUa8QMANcluWAdRPNxxmD+MVnpSnWC7upoG4UBmVkldsPZDF5bG4K2pjCO2el1
+         k7PF1jodRp1xIPKpY9F/Sqd++pafBjiWkEUQ93eB4XUu5cBd+RWhmo94eBTBZeIcaf
+         yy6jzlahvKwGQYE/lZ+B0Jk1nAc5YcbFbC7mFp7lYigIiUf9iPyWjV4KXnIgf8oAKP
+         2RfpM3jym7Z1TlujzL9SLs34YjoJm6iXY5wnan1T7/oVqW5nLCnBrE0dt8jw0mjJBY
+         WzQI/kVtk+kMg0wLCQXW/2/tfZJaYH13Z3Ny/NY+o/tE3lOHdj9mEXGAhv57TgpRo7
+         bwBLsWKH9hgaQ==
+Date:   Tue, 5 Dec 2023 09:56:57 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Adam Ford <aford173@gmail.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+Message-ID: <20231205075657.GN5169@atomide.com>
+References: <20231204182245.33683-1-afd@ti.com>
+ <20231204182245.33683-2-afd@ti.com>
+ <b97f04f6-cda2-4e9b-b729-a5149e36f978@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v17 004/116] KVM: VMX: Reorder vmx initialization with kvm
- vendor initialization
-To:     Chao Gao <chao.gao@intel.com>, isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1699368322.git.isaku.yamahata@intel.com>
- <2ae2d7d2bdf795fe0e5ef648714d56bd1029755e.1699368322.git.isaku.yamahata@intel.com>
- <ZW2M55f/+m8dEQKE@chao-email>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZW2M55f/+m8dEQKE@chao-email>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b97f04f6-cda2-4e9b-b729-a5149e36f978@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> [231205 07:10]:
+> On 04/12/2023 19:22, Andrew Davis wrote:
+> > @@ -56,6 +76,43 @@ allOf:
+> >        properties:
+> >          clocks:
+> >            maxItems: 1
+> > +      required:
+> > +        - clocks
+> > +        - clock-names
+> 
+> You need to define the clocks for your variants or disallow them. The
+> original code should be fixed as well and make the clocks fixed for all
+> img-axe cases.
 
+To clarify, the clocks may be optional as they can be hardwired and coming
+from the interconnect target wrapper module and enabled with runtime PM.
 
-On 12/4/2023 4:25 PM, Chao Gao wrote:
-> On Tue, Nov 07, 2023 at 06:55:30AM -0800, isaku.yamahata@intel.com wrote:
->> From: Isaku Yamahata <isaku.yamahata@intel.com>
->>
->> To match vmx_exit cleanup.
->>
->> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
->> ---
->> arch/x86/kvm/vmx/main.c | 10 +++++-----
->> 1 file changed, 5 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
->> index 266760865ed8..e07bec005eda 100644
->> --- a/arch/x86/kvm/vmx/main.c
->> +++ b/arch/x86/kvm/vmx/main.c
->> @@ -180,11 +180,11 @@ static int __init vt_init(void)
->> 	 */
->> 	hv_init_evmcs();
->>
->> -	r = kvm_x86_vendor_init(&vt_init_ops);
->> +	r = vmx_init();
->> 	if (r)
->> -		return r;
->> +		goto err_vmx_init;
-> this is incorrect. vmx_exit() shouldn't be called if
-> vmx_init() failed.
->
->> -	r = vmx_init();
->> +	r = kvm_x86_vendor_init(&vt_init_ops);
->> 	if (r)
->> 		goto err_vmx_init;
-And also, maybe better to rename the lable, e.g, err_vendor_init?
+Regards,
 
->>
->> @@ -201,9 +201,9 @@ static int __init vt_init(void)
->> 	return 0;
->>
->> err_kvm_init:
->> -	vmx_exit();
->> -err_vmx_init:
->> 	kvm_x86_vendor_exit();
->> +err_vmx_init:
->> +	vmx_exit();
->> 	return r;
->> }
->> module_init(vt_init);
->> -- 
->> 2.25.1
->>
->>
-
+Tony
