@@ -2,145 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2363C8057D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CA08057D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345690AbjLEOnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:43:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        id S1345679AbjLEOoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235549AbjLEOnp (ORCPT
+        with ESMTP id S232141AbjLEOoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:43:45 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843F9196
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:43:49 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5ce16bc121aso93447867b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 06:43:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701787428; x=1702392228; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WZD0EM5cGaPHhEVDs6IeTDsFoonDp5ja1VtjJCTjqYs=;
-        b=A4CqEikT/b+9up74hPMLiEHnErlVVcPtYgrGhXNPnMZ2iUId46d7tz8w6LQSCCReq5
-         Nu2fqUNmLkcomVmQ2KjHG9cLgB/0Wi+C/8vMuU1KAunQbCFeTLjiu7PPuRwbrXXyHkla
-         G3ZwCeUXnYvDazt1xUGPVmQNzsBH1QMwkB8/4FeIpYVVj18IYzsTKF4p45xTtqYzkZ66
-         i9d6qnsU8t7CqxE/1yr+dJqy3+zEeFW9aUZE1GQZRDHkbcqmWDDse9zQC1uGsNAZ6uRx
-         UyCPN3K6g4NChrw89SubSjviNqVhmXOB7BMZLZK4hnDeY+xuu/fobOKa8zL6vwFrOAE5
-         kqZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701787428; x=1702392228;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WZD0EM5cGaPHhEVDs6IeTDsFoonDp5ja1VtjJCTjqYs=;
-        b=EW7xJlemFI4NT77i+GS2UCUctaA7kvzXhY27ti8SVPrNdaElVfUBpQp99FhJQqAvQ5
-         Gj04HFZd6SNGnKfy/LgbPRPZ+flCBk/OlT38rdw4Z4y5M5ZJiE3qvMpxHZLk/Z6wAVDt
-         ky/VGSZzs5TSLWCGRM+hV1vDMLa9hZlkr8DpsKvVDY5VW+HP4o5W/5YpiWJQEWwsF2et
-         aaUK+23u47A6DCW17p4DjzAYTO5n/MIsAopL7oLNkyjIJR0wGNzaKJr4LY9a66EHMS82
-         IsCynJmwN8ehPz4Je4sas/GsWV69MdoEfxtU7WD0IPZJMXIcUC0CHNV+G4sX17YDcFiY
-         88mA==
-X-Gm-Message-State: AOJu0YyvTQ9RW+iWWCBmXl6fMK93ln3tqYsJugYUriCW7XJzXUC6UGv/
-        6iyWRWPTIPRC84k3CXi0YChy6mW3m70p8LA=
-X-Google-Smtp-Source: AGHT+IFLoW8f1NTm+nyunXiLErD3gXbKIZlauqfO65/Y2nGSfW6R7tv3Sf+99fVBBvGIC3H+1wip5JAcV5jcBag=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:690c:2d06:b0:5d4:1e95:1e8a with SMTP
- id eq6-20020a05690c2d0600b005d41e951e8amr288127ywb.4.1701787428477; Tue, 05
- Dec 2023 06:43:48 -0800 (PST)
-Date:   Tue,  5 Dec 2023 14:43:45 +0000
-In-Reply-To: <bUU6jGtJ7KdkuVp8UPORb0cmDoU6sRjc1iVRMfgO34u5ySo44Z5MXrnYgE6pfQDFu4-V5CBAuhS8uZDoEA6CsIiLUiWJedNZ2CTf9cRATfQ=@proton.me>
-Mime-Version: 1.0
-References: <bUU6jGtJ7KdkuVp8UPORb0cmDoU6sRjc1iVRMfgO34u5ySo44Z5MXrnYgE6pfQDFu4-V5CBAuhS8uZDoEA6CsIiLUiWJedNZ2CTf9cRATfQ=@proton.me>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231205144345.308820-1-aliceryhl@google.com>
-Subject: Re: [PATCH 6/7] rust: file: add `DeferredFdCloser`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     benno.lossin@proton.me, brauner@kernel.org
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, arve@android.com, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, cmllamas@google.com,
-        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
-        gregkh@linuxfoundation.org, joel@joelfernandes.org,
-        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
-        peterz@infradead.org, rust-for-linux@vger.kernel.org,
-        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
-        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 09:44:15 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2064.outbound.protection.outlook.com [40.107.93.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14301B2;
+        Tue,  5 Dec 2023 06:44:20 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Lf2uDl7v2+25jqKE1tBsuRh033d8BzI6jZlg356ugIJl5T6bFLG6fYf5GgY08BYVBLykOJ1lHaJ2QREptKy10RauInzrg2GoxJlyt4Im3ZowqxbllWmo7/qL/TzXoNECArOwjpe5gjBSIV1qog63dw5C/xm2roaxkRTpfOAv1oJri+zAwRKd+gXKgyVvOhJI/25mvwldm88K5qrzwy3A5l0qjNUXnLzxujHu1/R3oO8Q1injg9Zg8Uct38KKNqk2/ONkiQAhEnacm3BTcJn4mALxaS77Fe9UmWlqtDCYpIKYemyA+7dZXVQdMfVMAwOHhrMu+8cgJ5kNMT2BFWL8DQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TDwymX1Q+fEM1Ur8sMOKKWwjot83SnVgw2FjVWCeUxw=;
+ b=NicMw5oDXOvJwTc5ShWRiwcbTOAjPvfDpSZU0u2acjPbKfEc1PQN4ntSEDxDAePRYLhjNcJKFdLhTdeaQg5SIFSDiYIobUPVRn0QOZxqlcmzFbtZY5WgMQNJ55uQSjmXRkk4Dv+29t4VZXW9ytHpYEuiC2RYpFWqEIKuKHDcYE0np/PG/mOfDPiWrzzONFbi9HxoJ3TDRQtdgdjZ3lkUqesHn0r9i01EZk3DxYiZVcEYy8YLU4Rh5gYedfB+hJO0KcU9ovwIlcu4740RT8RJCjCVBnVVg+3HBnG+L9R82nGCqUFqSaNmtDH5Isakz382D7Xa33PvVW9KjKdr4QcK0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TDwymX1Q+fEM1Ur8sMOKKWwjot83SnVgw2FjVWCeUxw=;
+ b=YafkTAn45/NB4q3GSkvNCWYvDYREmI1+0u8F3CBdU8gAcVhk8vsq5Ft9BMl+3nYD8rSI0R/NFqDZm3gq857tRhvmty81R2ES2E4/rTRnM82yabxZtM/6rLCEd1SqEImB52Ti6VT6HM6XPZY8bGq9MVVS+Fmx5BcXyTT0ywglfPzsYLu0AOqk4EaRaD4MNibTw6WY90nyvhs/wr/zKuObIZ0BzexFhycDmroHejagav6GqDJD97cCRNKQr1ENcL56ZgR4+aHaYXM/3IaCyWI8gNAcg6OJZ6Zw6r0EPsFdTjr1ROWsZbCINrLWwUtJP/RN2kQ13BqycX01Qto0n0xwDg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH0PR12MB5315.namprd12.prod.outlook.com (2603:10b6:610:d6::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 14:44:18 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
+ 14:44:17 +0000
+Date:   Tue, 5 Dec 2023 10:44:17 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <20231205144417.GE2692119@nvidia.com>
+References: <20231205033015.10044-1-ankita@nvidia.com>
+ <86fs0hatt3.wl-maz@kernel.org>
+ <ZW8MP2tDt4_9ROBz@arm.com>
+ <20231205130517.GD2692119@nvidia.com>
+ <ZW81mT4WqKqtLnid@lpieralisi>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZW81mT4WqKqtLnid@lpieralisi>
+X-ClientProxiedBy: BL1PR13CA0075.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::20) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH0PR12MB5315:EE_
+X-MS-Office365-Filtering-Correlation-Id: b1652f45-1790-4e76-cd37-08dbf5a0a8b2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sh4w/mwACMcL9zWNVzSAZicE+sSRDDlnzfOIJWvJl2fdfBVpGfD8Vr9b3cg3zO+8ZhWQtXfGCuBeh0TrdBGlVVrlrk+BepHK1XIQIneU60oNPe0C/HCYxnj2Ix6sxpJM7rApVDLD5U3+02wUsgavo8tMKmY6U8r8Waw71vePn2MLEMMRrwiW0zpKCaSdu4kDr9D1cHbLOfPG1Jzp6lGG9n7VZl9QNhPc6L3H9VehfMY/lWgN0JI01hzxZ0N9ylAnLlk5JYOp781mrmzFND1ItLxL+GldQvdKEE9S2F66jjvAhxv09Y+umRJhFUIIljr3KdPDfBcARh2tiU/UdzzEhuNEsNx6bZngRSoF1zNKxux4Y7hCaB0kA7MlB0aXq9nZrfoujsAFwT0HFasQ/o2g3Hx2dLLPOObAxlf/I+Bq7wLKfIVAIsoSw1oSN4p37BQ0rloa9Zvei/iZyQ+ET0YjWU7LO1YZ72tqI/VheOEUIrBX7JulZh4nN6+Z1jed/XSYbLCLCUBHwlWHQ9WT8E3kWcsCUWAyK27RN3sAiteUsHBIB1B9xGla4BVLr0QraeTlwMEsrjAhCLuxGBE9mZITPhx6IsZHWqy5vtb7uHiehmw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(39860400002)(396003)(366004)(136003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(966005)(26005)(478600001)(83380400001)(6486002)(6512007)(6506007)(1076003)(36756003)(2616005)(316002)(66556008)(66476007)(66946007)(6916009)(54906003)(38100700002)(5660300002)(86362001)(4326008)(8936002)(8676002)(2906002)(7416002)(41300700001)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3Z07Sj/2JVbzSBNWdjB9O9Ifcf5KKOQBFQhZI2OjQBCcD/ypH4PaU3kZW/ER?=
+ =?us-ascii?Q?z1gIgtvt084g4lni8UjSJVEYNs7MNBaS36Y7fI5nYJy7W5Zm54fN+K7ITo8T?=
+ =?us-ascii?Q?qZ+I79tySF71U+Oh3AWCJlshP4bcO4juoGxrbEU5exWPG31mMz4SnetFISjD?=
+ =?us-ascii?Q?utzAiWGXqy46geZJcdVnAA2XUDm7P2JNWWDPUxSnz2A0PNVFIyWM99n8+Rzh?=
+ =?us-ascii?Q?St8sO+BoU7k8iq6kB9Nm/KnAn0DYoW2BpflqQT/3jfMkoAyNcKGOEoB+ySfC?=
+ =?us-ascii?Q?oxJfKPqEZlw0TvuTWw2HcZ1UD3LXjUtxmKqGWuj//wuck0jqWERBpBL+enoC?=
+ =?us-ascii?Q?nc6sfMlQE2y6XeLNUGlb4HsPqLfGnjmTih+vel3XJj+Nca+q6yRoI3CMTBw2?=
+ =?us-ascii?Q?L+OsWWaoC5zg50A3lYs+lyDPtRAnoAoe0viJjZ0iQdjubKeYz99SCpCzLAhP?=
+ =?us-ascii?Q?6ScGmnLJtkvrrkSbPNNlRrHW1LzxXV1sN91fbzwaVUO2zkGYX6CfzF3vYlCx?=
+ =?us-ascii?Q?QvTUj+ATHNQc7gCWVllaibu8PMGP2ASt2AuSiHcTsEFCXoIbzJdpGz1PT1X4?=
+ =?us-ascii?Q?xjIedcJGC0fWSOnZjTTm6+XRWsqxk/fwqXkJqvNJNxb+9dS38QKlZqsunutq?=
+ =?us-ascii?Q?1dY2pqfSjU34vuQzpqpCNlA/ds1QNGIbyF8SA+n0EFbw7IdLhP6ormtdk4xr?=
+ =?us-ascii?Q?kf8GFILu+m3tLEyG5pKym6Qif3tDmBYDwmY7MrD6oJw/rmY4ntudvpf6sHU0?=
+ =?us-ascii?Q?DdcHljDdj8mvpK4OC0zEXf9s0ZSiPFch32dbYsTf0wu59r8DNAoV3DFlqdXo?=
+ =?us-ascii?Q?edp0JSBytTH5x2Y4xxqbU2dRWpcpPxrMsgfzzlV3VsWHLCslHyw2t2kImzWK?=
+ =?us-ascii?Q?CIZiV/AUnvLfu7dNEbl55UH7C1JarvzOnOVt/Ps97KserTkG9zldFfhvfCj1?=
+ =?us-ascii?Q?0+h5Rajn78t84m3eMV+9Zcsf8PB8XSOnI8/elrTeKK78dI/OHjKbvnCqe6A/?=
+ =?us-ascii?Q?ghLmRkboff1OMW6KWF2lZc6XPo4Fj1H8gYhomyxkytOLst5LFF7AiY0YnXnB?=
+ =?us-ascii?Q?PktdJ5b+ghXRtSjZgfScwGMOrxqIbH+PxauB7q2GovHfUf58Wzgmo5xU/KvK?=
+ =?us-ascii?Q?sT+v3FxcLlfJY+wBuK/a1CTLTWFHU8rm+RvrkABiz2xZYcdI1YEsVrOEK3SV?=
+ =?us-ascii?Q?UCDhjaJBaQvEUupWHj0lft5cAg/tYtzWxWkvxsdSisOEn+diAXs7/EnbLZ0r?=
+ =?us-ascii?Q?dZ4oV5WVVsggCGaFwKIWKbJcfnk/v/VDTQUMsDb6z+M+BXcOB9ps8vkrytqY?=
+ =?us-ascii?Q?cxHIw3bjQQY+H7NLlJzxCVsp1Zu+02ZXl2xPhOeftuv+6q9sqaQWncAqtAN4?=
+ =?us-ascii?Q?aJEN7L1KVrikuxgIw3zPyCiZwjGl+Tw90Iu1xXSC3m+Dk7rTzzcb0uVmpipo?=
+ =?us-ascii?Q?FBF8D8TnERcDFtzDPU8Ml6LGC4GZOaiz9YVYLPz/GQktUUNalPSsxtPHDZmD?=
+ =?us-ascii?Q?2Ebu6C34NlAdp3D405naaA9gM8UeWYcbINVy40PwuxCNyRdFqRuxySWJ3mWU?=
+ =?us-ascii?Q?Xvz4uuFq5Jiy7NpqMUCwbffA0r1ZJF2FVYnOTMKH?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1652f45-1790-4e76-cd37-08dbf5a0a8b2
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 14:44:17.8555
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: miXPyv6u1aKOhgkCs50XmdXqkhvqWdU8/Zwt9TcgrYqIaS8zZSY8sIZ9MLHOk9mX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5315
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benno Lossin <benno.lossin@proton.me> writes:
-> On 12/1/23 12:35, Alice Ryhl wrote:
->> Benno Lossin <benno.lossin@proton.me> writes:
->>>> +        // SAFETY: The `inner` pointer points at a valid and fully initialized task work that is
->>>> +        // ready to be scheduled.
->>>> +        unsafe { bindings::task_work_add(current, inner, TWA_RESUME) };
->>>
->>> I am a bit confused, when does `do_close_fd` actually run? Does
->>> `TWA_RESUME` mean that `inner` is scheduled to run after the current
->>> task has been completed?
->> 
->> When the current syscall returns to userspace.
+On Tue, Dec 05, 2023 at 03:37:13PM +0100, Lorenzo Pieralisi wrote:
+> On Tue, Dec 05, 2023 at 09:05:17AM -0400, Jason Gunthorpe wrote:
+> > On Tue, Dec 05, 2023 at 11:40:47AM +0000, Catalin Marinas wrote:
+> > > > - Will had unanswered questions in another part of the thread:
+> > > > 
+> > > >   https://lore.kernel.org/all/20231013092954.GB13524@willie-the-truck/
+> > > > 
+> > > >   Can someone please help concluding it?
+> > > 
+> > > Is this about reclaiming the device? I think we concluded that we can't
+> > > generalise this beyond PCIe, though not sure there was any formal
+> > > statement to that thread. The other point Will had was around stating
+> > > in the commit message why we only relax this to Normal NC. I haven't
+> > > checked the commit message yet, it needs careful reading ;).
+> > 
+> > Not quite, we said reclaiming is VFIO's problem and if VFIO can't
+> > reliably reclaim a device it shouldn't create it in the first place.
 > 
-> What happens when I use `DeferredFdCloser` outside of a syscall? Will
-> it never run? Maybe add some documentation about that?
+> I think that as far as device reclaiming was concerned the question
+> posed was related to memory attributes of transactions for guest
+> mappings and the related grouping/ordering with device reset MMIO
+> transactions - it was not (or wasn't only) about error containment.
 
-Christian Brauner, I think I need your help here.
+Yes. It is VFIO that issues the reset, it is VFIO that must provide
+the ordering under the assumption that NORMAL_NC was used.
 
-I spent a bunch of time today trying to understand the correct way of
-closing an fd held with fdget, and I'm unsure what the best way is.
-
-So, first, `task_work_add` only really works when we're called from a
-syscall. For one, it's fallible, and for another, you shouldn't even
-attempt to use it from a kthread. (See e.g., the implementation of
-`fput` in `fs/file_table.c`.)
-
-To handle the above, we could fall back to the workqueue and schedule
-the `fput` there when we are on a kthread or `task_work_add` fails. And
-since I don't really care about the performance of this utility, let's
-say we just unconditionally use the workqueue to simplify the
-implementation.
-
-However, it's not clear to me that this is okay. Consider this
-execution: (please compare to `binder_deferred_fd_close`)
-
-    Thread A                Thread B (workqueue)
-    fdget()
-    close_fd_get_file()
-    get_file()
-    filp_close()
-    schedule_work(do_close_fd)
-    // we are preempted
-                            fput()
-    fdput()
-
-And now, since the workqueue can run before thread A returns to
-userspace, we are in trouble again, right? Unless I missed an upgrade
-to shared file descriptor somewhere that somehow makes this okay? I
-looked around the C code and couldn't find one and I guess such an
-upgrade has to happen before the call to `fdget` anyway?
-
-In Binder, the above is perfectly fine since it closes the fd from a
-context where `task_work_add` will always work, and a task work
-definitely runs after the `fdput`. But I added this as a utility in the
-shared kernel crate, and I want to avoid the situation where someone
-comes along later and uses it from a kthread, gets the fallback to
-workqueue, and then has an UAF due to the previously mentioned
-execution...
-
-What do you advise that I do?
-
-Maybe the answer is just that, if you're in a context where it makes
-sense to talk about an fd of the current task, then task_work_add will
-also definitely work? So if `task_work_add` won't work, then
-`close_fd_get_file` will return a null pointer and we never reach the
-`task_work_add`. This seems fragile though.
-
-Alice
+Jason
