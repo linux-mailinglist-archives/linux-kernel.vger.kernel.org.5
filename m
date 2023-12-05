@@ -2,87 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA7F804323
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 591D7804324
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343615AbjLEAKb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 19:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
+        id S1343576AbjLEALi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:11:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234842AbjLEAK3 (ORCPT
+        with ESMTP id S229907AbjLEALg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:10:29 -0500
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5AFFF0;
-        Mon,  4 Dec 2023 16:10:35 -0800 (PST)
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so2916208a12.1;
-        Mon, 04 Dec 2023 16:10:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701735035; x=1702339835;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qNrtMZXRyIGyhkjT4JI1KSJerGhWTgoNl7m2Gv0tWQ8=;
-        b=d95sEYLXlzwo5ZENkQxq/8Q5V6ecULN8XUf8zbv9VBWwIgpSg0rH77Q2SM9eCAA6Ws
-         fAUorDaYeJeMWDrpcbEDra928bX8YDQhODcNE+A0o3s06FQzZhtfQIvoidnqGN6Fszkk
-         XDEVErqNWw95pIlnEfq/3W3C3m32po/hV/jV9gB1D3sKAZKaOfFsWDt/6jBOW33bUbeI
-         molWnZT29nOLv4i/EYz7WQ+5yAfBGgZQzFkCwq3YbizXEaYeywKwLczB925bnAxPfG98
-         hJ+uzguBNBIE54Ddi57yXxQQrMF3lK37K/37TSEveNHPycDx8u8pG8igR1GkMzq4gwwm
-         GmIQ==
-X-Gm-Message-State: AOJu0YweMnoMJ0IQHu1inSJU6OxbS+Ea3PmYbpSrqHqU0CVWA6M9XWI8
-        fRWBxcD2iksmZX/KllDD+yVhn6IRM+2Gt3TQBFVyP2QKqNs=
-X-Google-Smtp-Source: AGHT+IHpJOO1gjA+QD4Y2Vv8sBMHvrZDvCNXRG2CGvSQAxz+GqJV4mQxzYN3cA8/d3COk14Ub3zwaYtqJBJGsTAuVqQ=
-X-Received: by 2002:a17:90a:8005:b0:286:6cc1:3f1f with SMTP id
- b5-20020a17090a800500b002866cc13f1fmr476637pjn.86.1701735035239; Mon, 04 Dec
- 2023 16:10:35 -0800 (PST)
+        Mon, 4 Dec 2023 19:11:36 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2053.outbound.protection.outlook.com [40.107.94.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B118EBB;
+        Mon,  4 Dec 2023 16:11:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wa86Y5m3s+3NixHWDb+Gs0gGHQj+maiCM1OyPQ2AonSK4UqikyGjHhpdP2ZZjc5WkMRntSm4tEnjzSGUexWMQO+GeX/WUcbbWGfBDF9MZ16H6EmgiBHUM/aVbnK6NP3TZjfas428EG7kNCO3AC/m6hM/SSOqTCikLJz81B60xgudKaUqnLCqNSg3Ndx6DqiL4GFK2nT6ltUbOV4PURVF+mOsxJ4R0jFsIc9ifanTJWIfMzruf3auMPpr3CqZIikJ80uSywtOkjqiWmwyWISJk2mmk7+23QIdS+BLaMt4PtqWyxFTYGQyvu/fDW3oIxprNsKpG5BkcFSbflkqw6Tkcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9oV94k0pZmAP3xIgYQRY57eF6WY8IcId802Mt3QgQxo=;
+ b=M8PaixAucrsWsDigemsPfZD1DEFQeHHcEg6yWaykF+GHtOgMErYwnteSuGVpsoZinW3dP8RKae3W+UbL4Dbj4Orgn7Ri76xvVEkZEDgePZgQmZI2txegr1ZDrzY4x8Mb3gFUJb4CeAH/Zhp63QOftLtC3IOcVgLfbWHTemunhrJBdMtSFLhMM/xwJp2uecbRKNyohQruKdZQtcaTNdQKWlfINkY2QVqlKiVTiDSzpOhJQ40ze8i0UGgg8WVi4vWRFh6po0O91LsbgCohvo2a5OGOudo/bCGz8L+Y3+OPW8D4awSyfy0PjOd0gUqLXJy1B9ZyyPHUsQfvzqpXidE4/w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9oV94k0pZmAP3xIgYQRY57eF6WY8IcId802Mt3QgQxo=;
+ b=QjOYN/oMylfIBRitdiqoynZDcRH/tZIVrYFbXWNVwtvDQh1ijcRGvcAG2Nksax06ZHvr7CyQk9U7Mk5q/y5Pt3w/3tW6uGw7Zn+d1VtHwgsjZUAxJK2xp6M9/48+/4edjs/bD++kUJQ9XMZOaOWOSw+noouOqq69Wsyypl9CNAhPTAJed8JEz1W0RgthOSBt3O2TBknUwSNID0CF+dgrItouuwGRZeDIig1OaooVwH6/xQm31ok8EVmV7lcBwokSYd9SGHfEgVRSWr4Wqd+DRXEwiqpVDq5R9eIOww85QsNwtp12kEw2pMXyXJJjhjV9BdF/sfBGyXaDvdzyT8Bong==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by BN9PR12MB5162.namprd12.prod.outlook.com (2603:10b6:408:11b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
+ 2023 00:11:40 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.033; Tue, 5 Dec 2023
+ 00:11:40 +0000
+Date:   Mon, 4 Dec 2023 20:11:39 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Daisuke Matsuda <matsuda-daisuke@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, leon@kernel.org, zyjzyj2000@gmail.com,
+        linux-kernel@vger.kernel.org, rpearsonhpe@gmail.com,
+        yangx.jy@fujitsu.com, lizhijian@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH for-next v7 0/7] On-Demand Paging on SoftRoCE
+Message-ID: <20231205001139.GA2772824@nvidia.com>
+References: <cover.1699503619.git.matsuda-daisuke@fujitsu.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1699503619.git.matsuda-daisuke@fujitsu.com>
+X-ClientProxiedBy: BL0PR03CA0036.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::49) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20231012035111.676789-1-namhyung@kernel.org> <20231012035111.676789-37-namhyung@kernel.org>
- <852644CC-CF12-475A-A7D2-84EFDCE9D248@linux.vnet.ibm.com>
-In-Reply-To: <852644CC-CF12-475A-A7D2-84EFDCE9D248@linux.vnet.ibm.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 4 Dec 2023 16:10:24 -0800
-Message-ID: <CAM9d7cgdUfdMnhmMpqnkpJyV5hJE9dgGuwPetSNM0KfDuYfs6A@mail.gmail.com>
-Subject: Re: [PATCH 36/48] perf annotate-data: Introduce struct data_loc_info
-To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BN9PR12MB5162:EE_
+X-MS-Office365-Filtering-Correlation-Id: caaca912-5016-4e92-fd36-08dbf526c110
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u32flMN+olTIdDJKZKAZrto/Pvdfkiopd45FrmZHiOeWq+lsXJ4SPkG+66Xr7fXJ0edpGjAIqaikcmYHK/PUSJOCMJBCPy9r6cyhOMNIqca0yVYIQVckBoGiHhk5OssflN2hoKkHJhbNydbmXG7xchw2QfyAoUIoeS89ApA7tPIyEZ1il7fAKuirPVyu8HGEnYi3uw1ldv3HZ+ha42Vn8CEq93TSFczMik6f4s+5Aqna3fWfelJdXL2XMI8THs7K1csutbW+6gvSRGeKJdQee1WdNt3Q5xY8LPKLTffCdfLvxSK9/mP1aHILTE0oYWNOt1AIhsvR6vs+JjzyyoqfodNMzlUE0Z3g8KlcQ8GV+2Qi9qp2EvXrXZE5QrL8LyKJRKWvaQIOLKLEpfQ1t+5ejsXB7gZslTv+x4nTNb30kQJ8Zu+7IzcTNfz5wKVFLrkuxV7NkMV2XS0TfT+75mSCO51KpqlPTErwXcRHO9MlOFvFYcqeN3ZNY1opcJfeeTlXovC7BvxblXRNQB6NQ68AwKw/NUGPsJ2TsHbcHUv70gJdsDTny43T0FXlYRAc6jdq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(6029001)(346002)(136003)(376002)(39860400002)(366004)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(478600001)(6486002)(86362001)(6506007)(6512007)(6916009)(316002)(66556008)(66946007)(8936002)(66476007)(8676002)(4326008)(83380400001)(2906002)(41300700001)(38100700002)(36756003)(33656002)(2616005)(1076003)(5660300002)(4744005)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JMy7R2g1uub3zdnBgSzGWDSrH3BcnLibp7GXfhEksHtGZGtbsNe5YN8BVHyX?=
+ =?us-ascii?Q?HMvHAPSjrIhQiWLdTP7pzk5k6CqpldqajkJhqIMOirBeRTO15mwut8d4R09d?=
+ =?us-ascii?Q?OBrc/WjenBOTfkuKk6nPwFfC/2P3SwPaxIxQQ/xOy8Vw8XJgYoQU+yxImBjE?=
+ =?us-ascii?Q?+7ukEqWvVcbX01fVIcVvqZDH/PsC0jSWOBRL1lVz56vM1LtU6Y6it7qbrrET?=
+ =?us-ascii?Q?Vx9Ig8zGNma4RnBHykup/jA3lMJztDwpB5WajpHdTdolX7F3i5H23Rph2lB7?=
+ =?us-ascii?Q?j1dlLOX2sFl6KXVtov3VPPLPwO5YuAoSheGG5+eo//fGBU3rMqjFythTK/kY?=
+ =?us-ascii?Q?SQo+E+DYFQPhc3EFtl0rJXUztkZTVfjuYOvVm/uyA8135YGIDpdB8TP80n8S?=
+ =?us-ascii?Q?k7a8swpn3J9j8dixf1y7XTPlopuW0BH6uuWyQfcIWwROczeqGEZNeU1+44d4?=
+ =?us-ascii?Q?k0JNdktELApPLn6wUdo9+2KE8ILdgR1DAH9zfi9/oGgxsaG9nC1fy6AfsTDl?=
+ =?us-ascii?Q?HFgflwxzkEbfM8CDkTndor9jjCt03DlGjJjsNKcMDFf7GTGp89Uey9dq4VdO?=
+ =?us-ascii?Q?SfpdTEUugzsAvSkhGWsZn2hWr/csFIS6xD7GzCEr89Hl0T6PmwXU4doZa7Vj?=
+ =?us-ascii?Q?csJrqqUZfgjlYr9BKsHXw/c4uz6lqGUrrhOBwVfyRdadatpGgK7CjmjUtZFt?=
+ =?us-ascii?Q?KPlCY32vRftBA1WrNGdMBF0YejMpPCW8jWKl8nU/EyqGu/TbX2I0if5TojV4?=
+ =?us-ascii?Q?Ju74pEk1CcRBXtIbLJHgRk7h71BhddajAq0R4WgGKepCh9eANJxC+X/M81Wp?=
+ =?us-ascii?Q?ro3XTQ9HRoTxceAyI+EVeIzVZsA5VTjVWWH/oIysBj4mhSYuygld6wxXoCOr?=
+ =?us-ascii?Q?mpvuJZVgOUmE3VGilKjAB8wIoCBmwwnOr1qYV7r99AjWR5Sn8PH4Qmtcruuq?=
+ =?us-ascii?Q?CRGd/M5hvgbGLB4cqHOqxSfS93zkroV6TlUO2PgYwHOM/rsSZk9D8BdgdCKH?=
+ =?us-ascii?Q?djnHc/kdyMBlvCblmg005/cE6bimL5hi6Hfk40kFhR6BW4DW0BlWp6gTmnsW?=
+ =?us-ascii?Q?pA1gvCF8juh5Ix6RmC7hqwQDM5mp7lGkb8rqGtzHFzIRfF95bnsvx6o0INMn?=
+ =?us-ascii?Q?D0/MX5r45/FsNFZe9KAGc+xAtvuBaxpHif84ywOr89QFXab0iURF8OTFXiLC?=
+ =?us-ascii?Q?g/8Ui4/mG2/AgHkygog75PY8w933sNd1067vh0JEK8gEvrGApMSjFHdQGhJ8?=
+ =?us-ascii?Q?4QRyUTdh6y27U5+VV/tIJPG70KntlvuHkMcv8XaNgbSp1fqGQ69dg7fYkopw?=
+ =?us-ascii?Q?nFgUDIh20OGm4ayqAKKPomx/aI52cBgyI0CgUJ/8eJAtVCQvvK1zyKMnTx6J?=
+ =?us-ascii?Q?GpQBffhzZ6YTsvkDcrUekhK4zySzic5uYQlSqh8aGTizSoOtf8mtZssE88RA?=
+ =?us-ascii?Q?I0E0288mIOjFMn34ZXdtTfN/FMGr3FgB1RCoJAnFpriFWxgZI9kNwY5wlEAa?=
+ =?us-ascii?Q?oA+aMLBMO4XkhSE8PWDM54dQnRHAnPuXImc/cGowK4HNj1uQtHSpnxSOndWx?=
+ =?us-ascii?Q?qxVIlqxn8QTamfexN7j1L5O0byLOzHhQKJB1lsal?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: caaca912-5016-4e92-fd36-08dbf526c110
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 00:11:40.0959
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uX2MXHoJBo5hUZxmUEN9pBHx3KXBE13MJdVXS/0chGXP5KdRdG3bT1r7NkxhIBF4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5162
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Nov 09, 2023 at 02:44:45PM +0900, Daisuke Matsuda wrote:
+> 
+> Daisuke Matsuda (7):
+>   RDMA/rxe: Always defer tasks on responder and completer to workqueue
+>   RDMA/rxe: Make MR functions accessible from other rxe source code
+>   RDMA/rxe: Move resp_states definition to rxe_verbs.h
+>   RDMA/rxe: Add page invalidation support
+>   RDMA/rxe: Allow registering MRs for On-Demand Paging
+>   RDMA/rxe: Add support for Send/Recv/Write/Read with ODP
+>   RDMA/rxe: Add support for the traditional Atomic operations with ODP
 
-On Sun, Dec 3, 2023 at 8:22 AM Athira Rajeev
-<atrajeev@linux.vnet.ibm.com> wrote:
-> Hi Namhyung,
->
-> I have a thought there. For the type and typeoff sort keys to work, we depend on Dwarf support in perf, right ?
-> If the perf is built without dwarf support ( either due to older elfutils or missing libdw.h ) , find_data_type will return NULL and we will get “unknown” for Data Type and Data Type Offset in the result.
+What is the current situation with rxe? I don't recall seeing the bugs
+that were reported get fixed?
 
-Yes, right.
+I'm reluctant to dig a deeper hold until it is done?
 
->
-> Can we add a pr_debug line in find_data_type (which is in else part for HAVE_DWARF_SUPPORT) so that user can understand if “unknown” is due to missing devel during the build ? Or may be restrict -s type,typeoff if dwarf support is missing ?
-
-I think it's better to add a warning if DWARF is not supported.
-Thanks for your review!
-
-Namhyung
+Thanks,
+Jason
