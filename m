@@ -2,292 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73DB9804DFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:35:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB08F804DF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:34:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344880AbjLEJfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:35:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46242 "EHLO
+        id S231862AbjLEJeX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 04:34:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234889AbjLEJfE (ORCPT
+        with ESMTP id S229710AbjLEJeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:35:04 -0500
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDC0188
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:35:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701768874; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=BoiPah8NRxCrAdiYri1nVhyc+cpVw40uHdjwyg+ciZUazBmRPls3Gw0g70xf8omYcy
-    jqSY/2ejnHsQilqIEEuHfOnsZ5OHCMR09WCLy3fRFQTMI4vncZkNMnDofZokDhn25V3F
-    k4Pq9lhMi6smT6Ixqc6x9eSu/GhwDBkCOwVbSOgE6tVzIJfatlqdE53jbwjh53kz6rd7
-    yCFtcxDey7jOKYTfoiy2X3HjY8YkPJIlw9R5HRKSCeahxyPvmGHm8CdDN60ikoxkRXtG
-    BodqNcu5hbWy7lBKyRM+puQv1GxOcoPLEewsR3v5bUdQIEJ4CnVIGXRV2AbZWF/LkXMh
-    idlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701768874;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=nAhG3zzPZDlzgwt6owfONL2uwCo4WkjbvcQVuDCcSS4=;
-    b=Vctx6kH3WWiZ7OgDOXvlxFCxvNA5t1k88acmo5aFUnc1izBdor+UrlnqWHgYwyZNy/
-    7opvocHyOUCBhhkvHZOy2oGSdNt90xE6/bCtw8O57bsHBxJkWnEct8fD7puF7crQ1Xra
-    GqRhbyxxa09teoQ8Z8l88ypXNdoB5bFfs2/7QhC4CFvW8p6XrILGTkKEqer7MZR8PuQi
-    tJqfTVVvhuS10FwecKyA8MiOjY+IQbdxzseuy3QtdWFhlcz891Pr+eGUiUsYH7HKDdY4
-    /lIk7DrNx/2DRo5nyp4HKd/OLe3uZ1ZaLCc4SEV1rl44yyGSx8Ri2Z18hgcpAYgTVmYI
-    HYSQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701768874;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=nAhG3zzPZDlzgwt6owfONL2uwCo4WkjbvcQVuDCcSS4=;
-    b=Bgv8N5oFugrcHMo1TfrxKRZlFKsnYAMUr+fDSjI2fADtJOo8EYjIxxijjARzW+WDPQ
-    hF2o7IYyKVoOPrHwn37u+WGfjovWteZ03+MKeQcmQdXLnAEniNn3MjSmcLRjNnjSS/ey
-    T0zRiAjj2VG3PNjaml5YPBACHrbHpiP87H9+P4RC+iEjIS0nyeqb0mFfJ64D5B5susZl
-    hvqIevyPVb7RR3epVs3juAfGNGKpwMnopNwMEWXsWTxN7gvEnEb7mzQOc2KMIWkEvI7P
-    qMAdxEUgqBOezcq44eHNWXD7K61wjlqlaW1EqPXhYUWsVhU29sM7fj+5i2Cov83Lbnx2
-    4QVw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701768874;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=Cc:To:Message-Id:Subject:Date:From:Cc:Date:From:Subject:Sender;
-    bh=nAhG3zzPZDlzgwt6owfONL2uwCo4WkjbvcQVuDCcSS4=;
-    b=4Ez/HqE+l3KjR6jZsBMlI+u/GbaJH6d0EQeLI60oYCtlyW5KSfg/GZrbcwmZE9vTEi
-    r+EGTzhdl4mJb0aoM1Dg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQjVd4CteZ/7jYgS+mLFY+H0JAn8u4l+/zY="
-Received: from [192.168.244.3]
-    by smtp.strato.de (RZmta 49.10.0 DYNA|AUTH)
-    with ESMTPSA id 58bb61zB59YX0GG
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 5 Dec 2023 10:34:33 +0100 (CET)
-From:   Stephan Gerhold <stephan@gerhold.net>
-Date:   Tue, 05 Dec 2023 10:34:05 +0100
-Subject: [PATCH] PM: domains: Scale down parent performance states in
- reverse order
+        Tue, 5 Dec 2023 04:34:22 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E34679A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:34:27 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 381B8139F;
+        Tue,  5 Dec 2023 01:35:14 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8863E3F6C4;
+        Tue,  5 Dec 2023 01:34:24 -0800 (PST)
+Message-ID: <2de0617e-d1d7-49ec-9cb8-206eaf37caed@arm.com>
+Date:   Tue, 5 Dec 2023 09:34:23 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231205-genpd-perf-order-v1-1-6597cc69a729@gerhold.net>
-X-B4-Tracking: v=1; b=H4sIAIzubmUC/x3MMQqAMAxA0atIZgM1pYNeRRy0TWuWtqQggnh3i
- +Mb/n+gsQo3WIYHlC9pUnLHNA7gzz0nRgndQIbsRMZh4lwDVtaIRQMrHtFaQ7Mnt3voWVWOcv/
- LdXvfD/SyGxViAAAA
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 00/10] Multi-size THP for anonymous memory
+Content-Language: en-GB
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231204102027.57185-1-ryan.roberts@arm.com>
+ <20231204113039.42510c23455026e40c5e2a56@linux-foundation.org>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231204113039.42510c23455026e40c5e2a56@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Power domains might have parent domains assigned that are automatically
-managed by the PM domain core. In particular, parent domains are
-automatically powered on/off and setting performance states on child
-domains is translated to parent domains (e.g. using an OPP table from
-the device tree).
+On 04/12/2023 19:30, Andrew Morton wrote:
+> On Mon,  4 Dec 2023 10:20:17 +0000 Ryan Roberts <ryan.roberts@arm.com> wrote:
+> 
+>> Hi All,
+>>
+>>
+>> Prerequisites
+>> =============
+>>
+>> Some work items identified as being prerequisites are listed on page 3 at [9].
+>> The summary is:
+>>
+>> | item                          | status                  |
+>> |:------------------------------|:------------------------|
+>> | mlock                         | In mainline (v6.7)      |
+>> | madvise                       | In mainline (v6.6)      |
+>> | compaction                    | v1 posted [10]          |
+>> | numa balancing                | Investigated: see below |
+>> | user-triggered page migration | In mainline (v6.7)      |
+>> | khugepaged collapse           | In mainline (NOP)       |
+> 
+> What does "prerequisites" mean here?  Won't compile without?  Kernel
+> crashes without?  Nice-to-have-after?  Please expand on this.
 
-Currently parent performance states are always adjusted before the
-performance state of the child domain is changed.
+Short answer: It's supposed to mean things that either need to be done to prevent the mm from regressing (both correctness and performance) when multi-size THP is present but disabled, or things that need to be done to make the mm robust (but not neccessarily optimially performant) when multi-size THP is enabled. But in reality, all of the things on the list could really be reclassified as "nice-to-have-after", IMHO; their absence will neither cause compilation nor runtime errors.
 
-However, typically a parent/child relationship between two power
-domains with performance states models the requirement to keep the
-parent domain at a performance state equal or higher to the child
-domain. When scaling down there is a brief moment where the parent
-domain will end up having a lower performance state than required by
-the child domain.
+Longer answer: When I first started looking at this, I was advised that there were likely a number of corners which made assumptions about large folios always being PMD-sized, and if not found and fixed, could lead to stability issues. At the time I was also pursuing a strategy of multi-size THP being a compile-time feature with no runtime control, so I decided it was important for multi-size THP to not effectively disable other features (e.g. various madvise ops used to ignore PTE-mapped large folios). This list represents all the things that I could find based on code review, as well as things suggested by others, and in the end, they all fall into that last category of "PTE-mapped large folios efectively disable existing features". But given we now have runtime controls to opt-in to multi-size THP, I'm not sure we need to classify these as prerequisites. But I didn't want to unilaterally make that decision, given this list has previously been discussed and agreed by others.
 
-To avoid this, we need to differentiate between scaling up/down and
-adjust the order of operations:
+It's also worth noting that in the case of compaction, that's already a problem for large folios in the page cache; large folios will be skipped.
 
- - When scaling up, parent domains should be adjusted before the child
-   domain. In case of an error, the rollback happens in reverse order.
+> 
+> I looked at [9], but access is denied.
 
- - When scaling down, parent domains should be adjusted after the child
-   domain, in reverse order, just as if we would rollback scaling up.
-   In case of an error, the rollback happens in normal order (just as
-   if we would normally scale up).
+Sorry about that; its owned by David Rientjes so I can't fix that for you. It's a PDF of a slide with the following table:
 
-Implement this by moving the existing functionality of
-_genpd_set_performance_state() to two separate functions that are
-called in the proper iteration order.
++-------------------------------+------------------------------------------------------------------------+--------------+--------------------+
+| Item                          | Description                                                            | Assignee     | Status             |
++-------------------------------+------------------------------------------------------------------------+--------------+--------------------+
+| mlock                         | Large, pte-mapped folios are ignored when mlock is requested.          | Yin, Fengwei | In mainline (v6.7) |
+|                               | Code comment for mlock_vma_folio() says "...filter out pte mappings    |              |                    |
+|                               | of THPs which cannot be consistently counted: a pte mapping of the     |              |                    |
+|                               | THP head cannot be distinguished by the page alone."                   |              |                    |
+| madvise                       | MADV_COLD, MADV_PAGEOUT, MADV_FREE: For large folios, code assumes     | Yin, Fengwei | In mainline (v6.6) |
+|                               | exclusive only if mapcount==1, else skips remainder of operation.      |              |                    |
+|                               | For large, pte-mapped folios, exclusive folios can have mapcount       |              |                    |
+|                               | upto nr_pages and still be exclusive. Even better; don't split         |              |                    |
+|                               | the folio if it fits entirely within the range.                        |              |                    |
+| compaction                    | Raised at LSFMM: Compaction skips non-order-0 pages.                   | Zi Yan       | v1 posted          |
+|                               | Already problem for page-cache pages today.                            |              |                    |
+| numa balancing                | Large, pte-mapped folios are ignored by numa-balancing code. Commit    | John Hubbard | Investigated:      |
+|                               | comment (e81c480): "We're going to have THP mapped with PTEs. It       |              | Not prerequisite   |
+|                               | will confuse numabalancing. Let's skip them for now."                  |              |                    |
+| user-triggered page migration | mm/migrate.c (migrate_pages syscall) We don't want to migrate folio    | Kefeng Wang  | In mainline (v6.7) |
+|                               | that is shared.                                                        |              |                    |
+| khugepaged collapse           | collapse small-sized THP to PMD-sized THP in khugepaged/MADV_COLLAPSE. | Ryan Roberts | In mainline (NOP)  |
+|                               | Kirill thinks khugepage should already be able to collapse             |              |                    |
+|                               | small large folios to PMD-sized THP; verification required.            |              |                    |
++-------------------------------+------------------------------------------------------------------------+--------------+--------------------+
 
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
----
-Related discussion: https://lore.kernel.org/linux-pm/ZWXgFNKgm9QaFuzx@gerhold.net/
----
- drivers/base/power/domain.c | 124 +++++++++++++++++++++++++++-----------------
- 1 file changed, 77 insertions(+), 47 deletions(-)
+Thanks,
+Ryan
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index da1777e39eaa..830dfef2c880 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -313,72 +313,102 @@ static int genpd_xlate_performance_state(struct generic_pm_domain *genpd,
- }
- 
- static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
--					unsigned int state, int depth)
-+					unsigned int state, int depth);
-+
-+static void _genpd_rollback_parent_state(struct gpd_link *link, int depth)
- {
--	struct generic_pm_domain *parent;
--	struct gpd_link *link;
--	int parent_state, ret;
-+	struct generic_pm_domain *parent = link->parent;
-+	int parent_state;
- 
--	if (state == genpd->performance_state)
--		return 0;
-+	genpd_lock_nested(parent, depth + 1);
- 
--	/* Propagate to parents of genpd */
--	list_for_each_entry(link, &genpd->child_links, child_node) {
--		parent = link->parent;
-+	parent_state = link->prev_performance_state;
-+	link->performance_state = parent_state;
- 
--		/* Find parent's performance state */
--		ret = genpd_xlate_performance_state(genpd, parent, state);
--		if (unlikely(ret < 0))
--			goto err;
-+	parent_state = _genpd_reeval_performance_state(parent, parent_state);
-+	if (_genpd_set_performance_state(parent, parent_state, depth + 1)) {
-+		pr_err("%s: Failed to roll back to %d performance state\n",
-+		       parent->name, parent_state);
-+	}
- 
--		parent_state = ret;
-+	genpd_unlock(parent);
-+}
- 
--		genpd_lock_nested(parent, depth + 1);
-+static int _genpd_set_parent_state(struct generic_pm_domain *genpd,
-+				   struct gpd_link *link,
-+				   unsigned int state, int depth)
-+{
-+	struct generic_pm_domain *parent = link->parent;
-+	int parent_state, ret;
- 
--		link->prev_performance_state = link->performance_state;
--		link->performance_state = parent_state;
--		parent_state = _genpd_reeval_performance_state(parent,
--						parent_state);
--		ret = _genpd_set_performance_state(parent, parent_state, depth + 1);
--		if (ret)
--			link->performance_state = link->prev_performance_state;
-+	/* Find parent's performance state */
-+	ret = genpd_xlate_performance_state(genpd, parent, state);
-+	if (unlikely(ret < 0))
-+		return ret;
- 
--		genpd_unlock(parent);
-+	parent_state = ret;
- 
--		if (ret)
--			goto err;
--	}
-+	genpd_lock_nested(parent, depth + 1);
- 
--	if (genpd->set_performance_state) {
--		ret = genpd->set_performance_state(genpd, state);
--		if (ret)
--			goto err;
--	}
-+	link->prev_performance_state = link->performance_state;
-+	link->performance_state = parent_state;
- 
--	genpd->performance_state = state;
--	return 0;
-+	parent_state = _genpd_reeval_performance_state(parent, parent_state);
-+	ret = _genpd_set_performance_state(parent, parent_state, depth + 1);
-+	if (ret)
-+		link->performance_state = link->prev_performance_state;
- 
--err:
--	/* Encountered an error, lets rollback */
--	list_for_each_entry_continue_reverse(link, &genpd->child_links,
--					     child_node) {
--		parent = link->parent;
-+	genpd_unlock(parent);
- 
--		genpd_lock_nested(parent, depth + 1);
-+	return ret;
-+}
-+
-+static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
-+					unsigned int state, int depth)
-+{
-+	struct gpd_link *link = NULL;
-+	int ret;
-+
-+	if (state == genpd->performance_state)
-+		return 0;
- 
--		parent_state = link->prev_performance_state;
--		link->performance_state = parent_state;
-+	/* When scaling up, propagate to parents first in normal order */
-+	if (state > genpd->performance_state) {
-+		list_for_each_entry(link, &genpd->child_links, child_node) {
-+			ret = _genpd_set_parent_state(genpd, link, state, depth);
-+			if (ret)
-+				goto rollback_parents_up;
-+		}
-+	}
- 
--		parent_state = _genpd_reeval_performance_state(parent,
--						parent_state);
--		if (_genpd_set_performance_state(parent, parent_state, depth + 1)) {
--			pr_err("%s: Failed to roll back to %d performance state\n",
--			       parent->name, parent_state);
-+	if (genpd->set_performance_state) {
-+		ret = genpd->set_performance_state(genpd, state);
-+		if (ret) {
-+			if (link)
-+				goto rollback_parents_up;
-+			return ret;
- 		}
-+	}
- 
--		genpd_unlock(parent);
-+	/* When scaling down, propagate to parents last in reverse order */
-+	if (state < genpd->performance_state) {
-+		list_for_each_entry_reverse(link, &genpd->child_links, child_node) {
-+			ret = _genpd_set_parent_state(genpd, link, state, depth);
-+			if (ret)
-+				goto rollback_parents_down;
-+		}
- 	}
- 
-+	genpd->performance_state = state;
-+	return 0;
-+
-+rollback_parents_up:
-+	list_for_each_entry_continue_reverse(link, &genpd->child_links, child_node)
-+		_genpd_rollback_parent_state(link, depth);
-+	return ret;
-+rollback_parents_down:
-+	list_for_each_entry_continue(link, &genpd->child_links, child_node)
-+		_genpd_rollback_parent_state(link, depth);
- 	return ret;
- }
- 
-
----
-base-commit: 0f5f12ac05f36f117e793656c3f560625e927f1b
-change-id: 20231205-genpd-perf-order-bf33029c25ac
-
-Best regards,
--- 
-Stephan Gerhold <stephan@gerhold.net>
+> 
+>> [9] https://drive.google.com/file/d/1GnfYFpr7_c1kA41liRUW5YtCb8Cj18Ud/view?usp=sharing&resourcekey=0-U1Mj3-RhLD1JV6EThpyPyA
+> 
+> 
 
