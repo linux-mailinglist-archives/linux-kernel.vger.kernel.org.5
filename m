@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4961804D2D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:05:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656D3804D34
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbjLEJFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:05:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
+        id S231765AbjLEJGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbjLEJFC (ORCPT
+        with ESMTP id S229980AbjLEJGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:05:02 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF40AC9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:05:08 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c08af319cso26576615e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:05:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701767107; x=1702371907; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EB/Y92v0I9IkLUdwFZ6UBLMNAao4UX9xJXV50Zdq6Ao=;
-        b=CQjDVn/VzVRX+tbqF+PIeK7GWYEjABOXW7DI1vh4vkTNb8oYETQa4JgXWlbWewhpae
-         IX3MnJkZY5igUN7OWdz3P3gYIdIdlZrIujmx7R4tfuGgX+tXa6nvtrlSO0/Z2AOL6WlR
-         Q6xkEkTupAEl+Jr3iVzpSfO9TQ917itnBHxt4SjX5rMYJ312Kpm9M3TCzFUHK2vxe1ht
-         pZK6vFTN2dwEZK3G4Zllg7Dr/OhwiC+q9aH/fpZfYL6TZ4Gz+mBqvk+V6ixvCiXEvXNZ
-         07t893V+EQ4zrR/FZPhK6q9ggP7Tv3mslClz80DssXJ7ucySFyNVhLKbx63H+SrYXC4Z
-         U1jA==
+        Tue, 5 Dec 2023 04:06:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84FCDFA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:06:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701767210;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0/5hbavG9FxtP2fqgbrUZXKsls1QEJHwMBm7cnQddac=;
+        b=NNVUQvzoSQQ0tIEW+atLuD3QTxTsAkTnPoDmNbK8F0Ag50D0VmE68S7xQ0YUW6AMUoQxKu
+        GoMmB/bsBO++hahDlqCHXQPmfUUcKeIEvFEfwcCbW/bUvz75GyjA9uAb49rOoaTPnbN4Kc
+        pwyW9VNCgV//71wv6b0CIk/C46SJTQo=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-91-BgkAH3AkOayh0Kysjbg3YA-1; Tue, 05 Dec 2023 04:06:49 -0500
+X-MC-Unique: BgkAH3AkOayh0Kysjbg3YA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a1a3f8b80e1so57282266b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:06:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701767107; x=1702371907;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EB/Y92v0I9IkLUdwFZ6UBLMNAao4UX9xJXV50Zdq6Ao=;
-        b=D4miY8vfGnQoLYp2GLDRrWk/8mti3cDhygv6gsoq8Ze/llmqHg4EW6+xuzdIJfIzWX
-         ie/D5tw/twOb+LE2b+3LkYDCDiZTs7Ra2Kng/I6h5G550lg4fGAWnUbqQ0nzxv/NAC1c
-         KMmE40M306gtxw+6JbhWFlbQFmahuYzX5No2dMAbEZs9Rg7LP1nFqFfSnbW45Zy1b7oU
-         dsfOaiXZnldFrqMwzwykUcx9r8fq5Izr0/ejqVnZwKCikn4MdPPxGZesQr/vetvxQyns
-         Fjgzqsv6xvd5wT9gyqehpbQjuU+jxO6wZAuOiOO3zYIB6XW9yMoG/g/bqjZF2RIH26Wj
-         65iw==
-X-Gm-Message-State: AOJu0Yz64HPt0sYo9tob72q0bP9aJKRhaKwqVC0Fe5Wg2JfJV0yqxn+O
-        DDeRpGkHhEVby2iuK82pk9qP+g==
-X-Google-Smtp-Source: AGHT+IHzbXwr5ME5OwjDJBGKBmy57k08KuhAPRUBnAvT+jiYCDRow0jaZ3wtgDJkcfuVRBvshGgQlA==
-X-Received: by 2002:a05:600c:25cc:b0:40b:5e59:e9f3 with SMTP id 12-20020a05600c25cc00b0040b5e59e9f3mr253482wml.146.1701767107112;
-        Tue, 05 Dec 2023 01:05:07 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id m8-20020a05600c4f4800b0040b37f107c4sm17991122wmq.16.2023.12.05.01.05.05
+        d=1e100.net; s=20230601; t=1701767208; x=1702372008;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0/5hbavG9FxtP2fqgbrUZXKsls1QEJHwMBm7cnQddac=;
+        b=H9DiBsToBnrG+m7SAFZygYxzUqe/LCi5wiGRen/3veYHT9C6gpOvfKmUaUg5NItipn
+         GSi7052CHLjMACiudmfZYtN7c2QYBNnfNNJOWpqFy/2ME2JrKGmmjnqeLKfFPaSMdYq/
+         MozJ1G+myTWoPAdHQ6A73RQXllrOcUdMH1wW2JFlBZzZ2NY9KOS61JLK1k4IRo8pLhg0
+         AqIbVtK4ELsGZp3+6LRTMyvNFKPq0zTFKlYxvVs5Tnh5H/zD0xmH1zJ5R+0PIvD+l07C
+         kCc+V/BLffDbY1oilVPzZlu74y3og3zGu8tQa+U4B+cVIBptmwEep1Fn2TNxqLisLc8U
+         biXQ==
+X-Gm-Message-State: AOJu0YymCPc+4CjParNC36aT0a1gp97b0hz6i825n8sW6+pAFuaVSKTQ
+        2dnuzujnvuQl8o1qHMajYI34BmSDo4ZJXWleYTVttcUcH0UOV3xEmWaAFUwR2Z9itV9asOJ4/n4
+        sR26DJhlTLHkfywWHG5N99xHd
+X-Received: by 2002:a17:907:7b94:b0:a1c:5944:29bb with SMTP id ne20-20020a1709077b9400b00a1c594429bbmr1029473ejc.7.1701767208263;
+        Tue, 05 Dec 2023 01:06:48 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF2xEfzHGLjR6dkG5vPelsChBHYBSZ8pQ6/tWoEjwLbIwKq9MOsnOkGAMl0nAtEF2pfqgyfKQ==
+X-Received: by 2002:a17:907:7b94:b0:a1c:5944:29bb with SMTP id ne20-20020a1709077b9400b00a1c594429bbmr1029447ejc.7.1701767207884;
+        Tue, 05 Dec 2023 01:06:47 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-241-54.dyn.eolo.it. [146.241.241.54])
+        by smtp.gmail.com with ESMTPSA id ay19-20020a170906d29300b00a0c3b122a1esm6361708ejb.63.2023.12.05.01.06.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 01:05:06 -0800 (PST)
-Date:   Tue, 5 Dec 2023 12:05:02 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lkft-triage@lists.linaro.org,
-        regressions@lists.linux.dev, davidgow@google.com,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        airlied@gmail.com, daniel@ffwll.ch,
-        Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: Re: Kunit drm_test_check_plane_state: EXPECTATION FAILED at
- drivers/gpu/drm/tests/drm_plane_helper_test.c:123
-Message-ID: <42d85b15-9ffd-4a08-b51e-a3367e57d128@suswa.mountain>
-References: <20231204173536.51003-1-naresh.kamboju@linaro.org>
- <rxv7jlfuwjib443pzdepbtgu454gdzemd3ojmmhbnhr4syneve@6me3bduyx2ee>
+        Tue, 05 Dec 2023 01:06:47 -0800 (PST)
+Message-ID: <1f0cd6c635d1f570ff36c4b5a94e8d5a9f596aee.camel@redhat.com>
+Subject: Re: [PATCH net-next v6 1/6] ptp: clockmatrix: support 32-bit
+ address space
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Min Li <lnimi@hotmail.com>, richardcochran@gmail.com,
+        lee@kernel.org
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Min Li <min.li.xe@renesas.com>
+Date:   Tue, 05 Dec 2023 10:06:46 +0100
+In-Reply-To: <PH7PR03MB70644CE21E835B48799F3EB3A082A@PH7PR03MB7064.namprd03.prod.outlook.com>
+References: <PH7PR03MB70644CE21E835B48799F3EB3A082A@PH7PR03MB7064.namprd03.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <rxv7jlfuwjib443pzdepbtgu454gdzemd3ojmmhbnhr4syneve@6me3bduyx2ee>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 09:37:05AM +0100, Maxime Ripard wrote:
-> Hi Naresh,
-> 
-> Thanks for the report
-> 
-> On Mon, Dec 04, 2023 at 11:05:36PM +0530, Naresh Kamboju wrote:
-> > The Kunit drm_plane_helper failed on all devices running Linux next-20231204
-> > 
-> > ## Test Regressions (compared to next-20231201)
-> > * qemu-armv7, kunit and
-> > * x86, kunit
-> >   - drm_test_check_invalid_plane_state_downscaling_invalid
-> >   - drm_test_check_invalid_plane_state_drm_plane_helper
-> >   - drm_test_check_invalid_plane_state_drm_test_check_invalid_plane_state
-> >   - drm_test_check_invalid_plane_state_positioning_invalid
-> >   - drm_test_check_invalid_plane_state_upscaling_invalid
-> >   - drm_test_check_plane_state_clipping_rotate_reflect
-> >   - drm_test_check_plane_state_clipping_simple
-> >   - drm_test_check_plane_state_downscaling
-> >   - drm_test_check_plane_state_drm_test_check_plane_state
-> >   - drm_test_check_plane_state_positioning_simple
-> >   - drm_test_check_plane_state_rounding1
-> >   - drm_test_check_plane_state_rounding2
-> >   - drm_test_check_plane_state_rounding3
-> >   - drm_test_check_plane_state_rounding4
-> >   - drm_test_check_plane_state_upscaling
-> 
-> I found the source of failure to be f1e75da5364e ("drm/atomic: Loosen FB
-> atomic checks").
-> 
-> Fortunately for us, it's already been reverted yesterday for some
-> unrelated reason, so it should be fixed in next-20231205 onward.
+Hi,
 
-Sorry, that's a bummer that these patches were reverted.  :(  The whole
-episode was a bit unfortunate...
+On Thu, 2023-11-30 at 13:46 -0500, Min Li wrote:
+> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.=
+c
+> index f6f9d4adce04..f8556627befa 100644
+> --- a/drivers/ptp/ptp_clockmatrix.c
+> +++ b/drivers/ptp/ptp_clockmatrix.c
+> @@ -41,8 +41,8 @@ module_param(firmware, charp, 0);
+>  static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm=
+);
+> =20
+>  static inline int idtcm_read(struct idtcm *idtcm,
+> -			     u16 module,
+> -			     u16 regaddr,
+> +			     u32 module,
+> +			     u32 regaddr,
+>  			     u8 *buf,
+>  			     u16 count)
+>  {
 
-Qualcom has been working on those patches for a year.  They must not be
-using kunit testing as part of their QC...  It's some kind of
-communication failure on our part.
+[...]
+> @@ -553,11 +554,11 @@ static int _sync_pll_output(struct idtcm *idtcm,
+>  	val =3D SYNCTRL1_MASTER_SYNC_RST;
+> =20
+>  	/* Place master sync in reset */
+> -	err =3D idtcm_write(idtcm, 0, sync_ctrl1, &val, sizeof(val));
+> +	err =3D idtcm_write(idtcm, sync_ctrl1, 0, &val, sizeof(val));
+>  	if (err)
+>  		return err;
 
-Hopefully we can get this all sorted out and re-apply the patches soon.
+I'm sorry, but it looks like my previous feedback was not clear enough:
+now that the 'regaddr' argument in idtcm_write() has 'u32' type, you
+don't need anymore to swap the 'module' and 'regaddr' arguments in the
+call site.
 
-regards,
-dan carpenter
+Specifically, you can drop the above chunk, many later similar ones=20
+and additionally even chunks calling to idtcm_write(), for the same
+reason.
+
+That would make the patch smaller, and IMHO more clear: it would be=20
+strange that something that was known as a register address suddenly
+become a 'module'.
+
+Thanks!
+
+Paolo
+
