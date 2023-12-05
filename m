@@ -2,172 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF888804B98
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2992804B9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbjLEH6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 02:58:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
+        id S1344684AbjLEH6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 02:58:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231687AbjLEH6K (ORCPT
+        with ESMTP id S229688AbjLEH6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 02:58:10 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3244911F;
-        Mon,  4 Dec 2023 23:58:16 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50bee606265so2841880e87.2;
-        Mon, 04 Dec 2023 23:58:16 -0800 (PST)
+        Tue, 5 Dec 2023 02:58:42 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D38DC6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 23:58:48 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3332ad5b3e3so3739890f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 23:58:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701763094; x=1702367894; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mDaBQlGZ8UjeyvNNGC2XDs5wlZCfXV5wgyIn7Cj35I0=;
-        b=BUyMscos3p1dIHj8yoZ2M+4nlgLPQnWZXbDD1JPkl3uZBcGbVKfQmUej0vU5u4oHgL
-         rNbrtu9p6VamKz1EXMNagc2IwFvq2gGtFKtDrN6bknPXwH7yUWSTeklN5iqZKHETfq0Y
-         JpTWD+Y8wu5OZjoiHhyI4NbhiVXJGvhbCMXlu/MuhQjqyDqKkbkTxNlKR4ASO5ylYsph
-         X4uFhWE8Cwkm4iPXwx3wDdlOMTecARML++N6As+6a4UYLt4HH/T3llABCipXXTApspyv
-         bYZDj4jzeTJNRLDODFbjCnb5CkTn2mTMG+tAoi864EsQEwSlAqUAGXoQgf3n+HSA54NB
-         nCEg==
+        d=6wind.com; s=google; t=1701763126; x=1702367926; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:reply-to:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=g7FpkghBvKrwkpwGugGld407jjY5p4c/xbnuRbVmo3M=;
+        b=hLPLGfwW6c2v6Kho23LseK8L2lF+eua2pXpLm83bwYrKsK4RVhFP/Va2QnHmsV4jde
+         +FpbfflTFjlH3Ws5eGxdNYrM4rGM2HfeI9xcwgS+3qLb4ZrA+CLsnOMgRB1/GBCEzdrO
+         nQcwF7qe6HElv0wyVChb7/lKqEMy7xbGEYrwvlRxoeKA1N5mPC+JuoZZaXyEsm6qo78v
+         0QGRpbCukyQYkZvb9GCT+zb8Y45Sqx1kQ6Pxck42kptVX+2Nm1HCBaSFOGylD+5L7CC1
+         HX8Dgwhtn6uR1SjI8nYU3kYLkIgj0/duZ1ymtFCrWs2EjwQH5LPpA2fWiYCfXMCe/RBL
+         cakw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701763094; x=1702367894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mDaBQlGZ8UjeyvNNGC2XDs5wlZCfXV5wgyIn7Cj35I0=;
-        b=Y47UCR6qCuA45sS15cEm3ZXTMtjvLZzD+F0T+q/XH3rKaaFlt4aKhXvJfpVYZX+Lfl
-         tFhpAiEzQkU7H2LWffCEX9NTc/dLBDKJJW/eXW6oTbvru42YEqX5G+S/DEn51oCHVZzz
-         0aEUFhcMberb2qzsk7UgiUpjIJoUIvPBFVDBUieQKAn70iaRnbNX3rxSWVVZxd++R02q
-         xHHGSDFyMSlLC3sUSO1jDn0X4DDmV3XmzGf7QefQcCHnhpKwYz5c2S4EdpoyWYLhCtIW
-         jSC3Nr58ULYchyDjXRcrzvbkxnfNAQ1MAvTJPYwFtxYQD+j7hWfkInFLDoRnVdhW/XHG
-         vFhA==
-X-Gm-Message-State: AOJu0YxgloMmyFvCl4m8PGCpCkBGdak/0CU8wTxFqPyrfzPpU/ddhEKv
-        AQiy7vJ+pTbbxdzIEbJcyilOE9V3k3T1ncbRHAI=
-X-Google-Smtp-Source: AGHT+IFB7AXgBvjJC6KXRzmHN5fiSmN/CqaafqDV8LUeWsssBRPFI6TrMLt6kXoA/HN17H0Nd9dUlNSsNYRV4on7U8I=
-X-Received: by 2002:a05:6512:3b8f:b0:50b:f019:366a with SMTP id
- g15-20020a0565123b8f00b0050bf019366amr2333164lfv.109.1701763094196; Mon, 04
- Dec 2023 23:58:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701763126; x=1702367926;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:reply-to:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g7FpkghBvKrwkpwGugGld407jjY5p4c/xbnuRbVmo3M=;
+        b=FnOYIX3u36+YYudA+SdZYiV7Ehd5TYLh2kp7CB++egXRGGB69Si58Y77sVYS8beHSq
+         Yx4X1LP6S/LNtcwjroGblPnmH0rYNRL/HfIHShbY7J6VM+vYqZr7YI2eaP4l7yUgZKIN
+         KPJhhPiOu2jUEc1lVFCOq3443otMWXdB+8htA7ZywzBo4vHn2+lJldDRa90dCpOvph2d
+         rf3vh5yShuOujx+0JeMq9ox31DTBHi56vspcvVNkfiXmrWkk3e4hyRNgAj/p12Axf3is
+         hyd42oZJjbI7G/P4dtEulQf7InFt9cKIfYoXP+XzjPyHtepQ5llhto0pUPr5k1MG8FCB
+         +1KQ==
+X-Gm-Message-State: AOJu0YzenXqlOlZ0kJ8RtTBk3Q78W3Zz7FE5S1af32hsszY/BW340pRO
+        QQ/Ehpvh3pXqoXPun6EAY5BnIw==
+X-Google-Smtp-Source: AGHT+IF0WcZBXfMmBhWKPfp1EXfUTOotIxbbEXjRjIn3xrmPFKEbABwnOm4z9SZDfBvjEsjFHau4YA==
+X-Received: by 2002:a05:600c:1907:b0:40b:4c39:b4e with SMTP id j7-20020a05600c190700b0040b4c390b4emr204745wmq.1.1701763126671;
+        Mon, 04 Dec 2023 23:58:46 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:b41:c160:3e2e:5141:80dd:488f? ([2a01:e0a:b41:c160:3e2e:5141:80dd:488f])
+        by smtp.gmail.com with ESMTPSA id h9-20020a05600c314900b0040b3d8907fesm17817224wmo.29.2023.12.04.23.58.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 23:58:46 -0800 (PST)
+Message-ID: <10737d34-0070-41f5-8903-dcae30ee7ba5@6wind.com>
+Date:   Tue, 5 Dec 2023 08:58:45 +0100
 MIME-Version: 1.0
-References: <cover.1694421911.git.haibo1.xu@intel.com> <64e0637cd6f22dd7557ed44bd2242001e7830d1c.1694421911.git.haibo1.xu@intel.com>
- <20230914-d2e594e7d84503ad14036e2d@orel> <CAJve8onhY534T=Hyncjfi4GfdZ+0D2xM+jRSaYCAWCdaKxPUcQ@mail.gmail.com>
- <CAJve8omitHDpijJaLV_wHk+5LXpsBUWF8_eTD4MeWKM-807Siw@mail.gmail.com> <20231204-980c95cca344f718ac6a48b6@orel>
-In-Reply-To: <20231204-980c95cca344f718ac6a48b6@orel>
-From:   Haibo Xu <xiaobo55x@gmail.com>
-Date:   Tue, 5 Dec 2023 15:58:02 +0800
-Message-ID: <CAJve8okwyPwY3AZcA31=aoc1tyZN7hx_5AmF0KMmn-bZ1VnyHA@mail.gmail.com>
-Subject: Re: [PATCH v3 9/9] KVM: riscv: selftests: Add sstc timer test
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Haibo Xu <haibo1.xu@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Reply-To: nicolas.dichtel@6wind.com
+Subject: Re: [PATCH v2] netlink: Return unsigned value for nla_len()
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Michael Walle <mwalle@kernel.org>,
+        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20231202202539.it.704-kees@kernel.org>
+ <95924d9e-b373-40fd-993c-25b0bae55e61@6wind.com>
+ <202312041420.886C9F3@keescook>
+From:   Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Organization: 6WIND
+In-Reply-To: <202312041420.886C9F3@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 7:32=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
-m> wrote:
->
-> On Mon, Dec 04, 2023 at 10:42:24AM +0800, Haibo Xu wrote:
-> > On Fri, Sep 15, 2023 at 2:21=E2=80=AFPM Haibo Xu <xiaobo55x@gmail.com> =
-wrote:
-> > >
-> > > On Thu, Sep 14, 2023 at 5:52=E2=80=AFPM Andrew Jones <ajones@ventanam=
-icro.com> wrote:
-> > > >
-> > > > On Thu, Sep 14, 2023 at 09:37:03AM +0800, Haibo Xu wrote:
-> > > > > Add a KVM selftests to validate the Sstc timer functionality.
-> > > > > The test was ported from arm64 arch timer test.
-> > > >
-> > > > I just tried this test out. Running it over and over again on QEMU =
-I see
-> > > > it works sometimes, but it frequently fails with the
-> > > > GUEST_ASSERT_EQ(config_iter + 1, irq_iter) assert and at least once=
- I
-> > > > also saw the __GUEST_ASSERT(xcnt >=3D cmp) assert.
-> > > >
-> > >
-> > > Good catch!
-> > >
-> > > I can also reproduce this issue and it is a common problem for both
-> > > arm64 and riscv because it also happens in a arm64 Qemu VM.
-> > >
-> > > It seems like a synchronization issue between host and guest shared
-> > > variables. Will double check the test code.
-> > >
-> > > > Thanks,
-> > > > drew
-> >
-> > Hi Andrew,
-> >
-> > After several rounds of regression testing, some findings:
-> > 1. The intermittent failure also happened on ARM64 Qemu VM, and even
-> > in the initial arch_timer commit(4959d8650e9f4).
-> > 2. it didn't happen on a ARM64 HW(but a different failure occured
-> > during stress test)
-> > 3. The failure have a close relationship with
-> > TIMER_TEST_ERR_MARGIN_US(default 100), and after increasing
-> >      the macro to 300, the failure couldn't reproduced in 1000 loops
-> > stress test in RISC-V Qemu VM
-> >
-> > So my suggestion is we can expose the TIMER_TEST_ERR_MARGIN_US
-> > parameter as an arch_timer test arg parameter
-> > and tune it based on a specific test environment.
-> >
-> > What's your opinion?
->
-> The concept of "timeout for an interrupt to arrive" is always going to
-> leave us exposed to random failures. Your suggestion of making the
-> timeout user configurable is probably the best we can do. I would
-> suggest also adding more descriptive failure text and a hint about
-> trying to adjust the timeout.
->
-> Or, one thing we do in kvm-unit-tests, is to reduce typical delays while
-> allowing expected delays to be longer by looping over a shorter delay and
-> a non-fatal check, i.e.
->
->  pass =3D false;
->  for (i =3D 0; i < 10; i++) {
->    udelay(100);
->    if (check(...)) {
->       pass =3D true;
->       break;
->    }
->  }
->  assert(pass);
->
-> We could try that approach here too.
->
-> Thanks,
-> drew
+Le 04/12/2023 à 23:21, Kees Cook a écrit :
+[snip]
+>>> diff --git a/include/uapi/linux/netlink.h b/include/uapi/linux/netlink.h
+>>> index f87aaf28a649..270feed9fd63 100644
+>>> --- a/include/uapi/linux/netlink.h
+>>> +++ b/include/uapi/linux/netlink.h
+>>> @@ -247,7 +247,7 @@ struct nlattr {
+>>>  
+>>>  #define NLA_ALIGNTO		4
+>>>  #define NLA_ALIGN(len)		(((len) + NLA_ALIGNTO - 1) & ~(NLA_ALIGNTO - 1))
+>>> -#define NLA_HDRLEN		((int) NLA_ALIGN(sizeof(struct nlattr)))
+>>> +#define NLA_HDRLEN		((__u16) NLA_ALIGN(sizeof(struct nlattr)))
+>> I wonder if this may break the compilation of some userspace tools with errors
+>> like comparing signed and unsigned values.
+> 
+> Should I drop this part, then?
+> 
+Yes please.
 
-Thanks for the feedback, I will send out patch set v4 soon!
+
+Thank you,
+Nicolas
