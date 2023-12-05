@@ -2,51 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31DAD805325
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0382805328
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:39:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442125AbjLELig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
+        id S1442117AbjLELjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:39:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345109AbjLELie (ORCPT
+        with ESMTP id S1345137AbjLELjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:38:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB16885
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:38:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64A4AC433C8;
-        Tue,  5 Dec 2023 11:38:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701776320;
-        bh=HpQfzKH9PkcgbFsZNKCTx0ikve2nD8WgZ8kDoy0hkBA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CWF7d+KkggDuCYM2ZU8EJIKTxe7uCccNTV72qrVHVEt6Q9Uuc/a6adZQAXfD9uQQR
-         mrajWEOGXEhUvJssq7ok9NsIqToNwgakLRba7uZJ83ee2M1NxubiYugKhck/WOeVUd
-         i3cD/49HSP56/Iqhx048G0eA3fX1z0WC80CDeqYTU8WrLbajgyLEG9ZVfokcGO90pq
-         a/05lO9I274mHG7GxzwCX2xReZI4E5QKDm88rskarGW+U2KLvySzitr6m6e5aoPhX0
-         XAqVcx6W+IP7Usyp9EOdajaLItYeRdvsxLzsHOpMXDpdKz2lDfxNGxytfdmiWqMHSL
-         J5CS2r67Mm8Aw==
-Date:   Tue, 5 Dec 2023 12:38:35 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-fsdevel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 3/5] fs: Add DEFINE_FREE for struct inode
-Message-ID: <20231205-horchen-gemieden-8013e0f30883@brauner>
-References: <20231202211535.work.571-kees@kernel.org>
- <20231202212217.243710-3-keescook@chromium.org>
- <20231202212846.GQ38156@ZenIV>
- <202312021331.D2DFBF153@keescook>
+        Tue, 5 Dec 2023 06:39:20 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31B985;
+        Tue,  5 Dec 2023 03:39:26 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50bdec453c8so4459750e87.3;
+        Tue, 05 Dec 2023 03:39:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701776365; x=1702381165; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y6buYNz993iCGb+jfBAh+xTF839hKLJuyBWYlwBk8YQ=;
+        b=JXdQ3aPCGvspU+SqH42lcZn2eQBtXdMIyhQeN2pO6+1F0unGhjiYYgqhKhvmOi7ZCV
+         pTxvAX2k/mhUWsMj1nAUSTwY6Ys0N1rPiF3K1rMMvjInTwhml5Fz7mJH+hiUir/Lkl0D
+         5rjzOr4zTItQoN0AIIvfb/EKOcVXu8LpMDKk6K6BpHrPHGUJYjtyiI8ImLmQ1cAsndg+
+         eU50tr8tznujQeM5vlL7qvRaKjzSjW7yLA/yAHLtvbV3JFn9Alud2Hyo8WrImaadS7y/
+         MoN/kRQqdglgHzAFgdQt3tJBvPX7pd2IPn7SVZepmlCLGPJQG4Mqg9pm4rga4DlPW4XF
+         Ky3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701776365; x=1702381165;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y6buYNz993iCGb+jfBAh+xTF839hKLJuyBWYlwBk8YQ=;
+        b=GHyA0+uqUhFhi1kBpI1Zc3otudqZekvSSO+LfTgYC3iY6d7ctZWnBfQKbaFxT6xOX/
+         tgEkaFOc4LjTRvrLkKz3Zft/h9SBumBArZ87s8v0Pv8Q0SgERvyrh+cmJDrWtB3aeRrk
+         U+i8AiIzxv8Ds1lORKydTYguXZLFAAlP536Co5gQoiB8KlkCXP43Uz0yQXGT5QD29qKK
+         KvPgM4O/EJ7WY4cOPo11algxPD4wIx3U3P6MTIXt0aU/kFQrBmH16RfCEcPAl/QyRLUX
+         Oa/zL4iq28vJ0r1Rlz0my3atCgraohTog+tP2tewgutxnkP2ntVclH7f4CR56v78Zws8
+         PtlQ==
+X-Gm-Message-State: AOJu0Yz9J1epxldZ0ZXj0E9eEUr0WBMj0HHTntKo+xyQMSrAK56EuYMd
+        Glka0cywJ6LtDnSxeiiFzCg=
+X-Google-Smtp-Source: AGHT+IHdLSTpHvIGV+soo8O6/Z+FCsJYVpGnEa7erjBtlciJpMf8bljF17p1tFZGlBWyR34QMQeAZQ==
+X-Received: by 2002:a05:6512:3d8e:b0:50b:e637:b319 with SMTP id k14-20020a0565123d8e00b0050be637b319mr2982528lfv.14.1701776364975;
+        Tue, 05 Dec 2023 03:39:24 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id o5-20020ac24bc5000000b0050c017fffe4sm210928lfq.122.2023.12.05.03.39.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 03:39:24 -0800 (PST)
+Date:   Tue, 5 Dec 2023 14:39:22 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 01/16] net: pcs: xpcs: Drop sentinel entry from
+ 2500basex ifaces list
+Message-ID: <xuwdtvep7iiqhptiraldr56us5zmgoripzo3kzy3ntrtlf2rxe@5a5qyqfrt2t3>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-2-fancer.lancer@gmail.com>
+ <20231205112429.bp6lpvj4klrfrrim@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202312021331.D2DFBF153@keescook>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20231205112429.bp6lpvj4klrfrrim@skbuf>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,26 +89,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 02, 2023 at 01:34:32PM -0800, Kees Cook wrote:
-> On Sat, Dec 02, 2023 at 09:28:46PM +0000, Al Viro wrote:
-> > On Sat, Dec 02, 2023 at 01:22:13PM -0800, Kees Cook wrote:
-> > > Allow __free(iput) markings for easier cleanup on inode allocations.
-> > 
-> > NAK.  That's a bloody awful idea for that particular data type, since
-> > 	1) ERR_PTR(...) is not uncommon and passing it to iput() is a bug.
+On Tue, Dec 05, 2023 at 01:24:29PM +0200, Vladimir Oltean wrote:
+> On Tue, Dec 05, 2023 at 01:35:22PM +0300, Serge Semin wrote:
+> > There are currently two methods (xpcs_find_compat() and
+> > xpcs_get_interfaces()) defined in the driver which loop over the available
+> > interfaces. All of them rely on the xpcs_compat.num_interfaces field value
+> > to get the number of interfaces. That field is initialized with the
+> > ARRAY_SIZE(xpcs_*_interfaces) macro function call. Thus the interface
+> > arrays are supposed to be filled with actual interface IDs and there is no
+> > need in the dummy terminating ID placed at the end of the arrays. Let's
+> > drop the redundant PHY_INTERFACE_MODE_MAX entry from the
+> > xpcs_2500basex_interfaces list and the redundant
+> > PHY_INTERFACE_MODE_MAX-based conditional statement from the
+> > xpcs_get_interfaces() method then.
 > 
-> Ah, sounds like instead of "if (_T)", you'd rather see
-> "if (!IS_ERR_OR_NULL(_T))" ?
-> 
-> > 	2) the common pattern is to have reference-consuming primitives,
-> > with failure exits normally *not* having to do iput() at all.
-> 
-> This I'm not following. If I make a call to "new_inode(sb)" that I end
-> up not using, I need to call "iput()" in it...
+> It would help the readability of the commit message if you would split
+> it into multiple paragraphs.
 
-If we wanted to do this properly then we would need to emulate consume
-or move semantics like Rust has. So a cleanup function for inodes based
-on scope for example and then another primitive that transfers/moves
-ownership of that refcount to the consumer. Usually this is emulate by
-stuff like TAKE_POINTER() and similar stuff in userspace. But I'm not
-sure how pleasant it would be to do this cleanly.
+Yeah, creating sometimes overcomplicated log messages is my eternal
+problem.) Ok. I'll split it up.
+
+> 
+> > 
+> > Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> > ---
+> 
+> Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+
+Thanks.
+
+-Serge(y)
