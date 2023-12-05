@@ -2,110 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0358E805F82
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D9D4805F97
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346197AbjLEUdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 15:33:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S1346294AbjLEUjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 15:39:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjLEUdo (ORCPT
+        with ESMTP id S229569AbjLEUjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 15:33:44 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8EF181
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:33:50 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BCC7C40E0173;
-        Tue,  5 Dec 2023 20:33:48 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id fIA2bYMxYBIT; Tue,  5 Dec 2023 20:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701808427; bh=SQIjUtKUjx1k/ihWQekdjEpX0BxntYQsedoVYhd9nZQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZlCPdpsuLl9kG7HvXjCt5VaKGA7jC+zQ00BRct+Hp1iZuM77uc0nOjeAE82ioUs8U
-         XdRSgtBOwsUzp1YEoIMAwxJhGJi/RHMONfJm1UJuI99sZorl0dsePFalqJYMv1af9l
-         YzMJzGU2f92zWlhIwpUXNZl6Myex5k/nXA7ZutC7SGE3dbH94O26cZahpoJqyeGGb7
-         6b+XoHA2qrnt1kwSfJphlqBQodquS81mZwsMSoDWiPM3GfYcR7e2dZM4WBQoQR7pR2
-         Lzeu7CW9fTAGitX9xHMGIF4Z7bbBvXLbrNNrVkhpZ8H1JBK5/4pVLcOJLJJ0RgBxtn
-         uzPoSFfCW2DwmO4OgSuavsN2aKO0GD6718k6tcNTnop4u9YxBQA1STzVaBzVwFP9tC
-         d060DM8d39onwdmiV9BV738ADpJ3T21M5qa97CKyi5YPqM9zphZaM+1xzEahLc1aeQ
-         ncCPDnU1j1KI8QyvzA/Jt0TTBu3brNuZuxW48nNW6NjYgNDdmSlHavm4eRCEs5LmGT
-         Efm8pvxcbgmkQs18VLb0nbAKiKUii/cH1UAFqWwHUhHFogH5pmcFmW+8mXjG9qLmQJ
-         dXaQ1gDqaF6bxDoYLQptVyHik9HyJQODBtoZRY5xm2NAr7CPPzfO2dub+H60c/lkXN
-         zoweAcG3NVcrT9YmieELLMFQ=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F1D5640E01AD;
-        Tue,  5 Dec 2023 20:33:37 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 21:33:37 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/coco, x86/sev: Use cpu_feature_enabled() to detect
- SEV guest flavor
-Message-ID: <20231205203337.GKZW+JIe9m2/QVi7Xl@fat_crate.local>
-References: <20231205143738.2875-1-kirill.shutemov@linux.intel.com>
- <20231205144619.GCZW83uzAomKmupn7j@fat_crate.local>
- <20231205150012.6lma2wzcellr7pz7@box.shutemov.name>
- <20231205150648.GDZW88iAjBzYoIJ0+o@fat_crate.local>
- <20231205151437.aqmuydosfmnq3zr4@box.shutemov.name>
- <20231205160035.GEZW9JI8eKENXBo6EO@fat_crate.local>
- <20231205171643.zg7fwxjyccab53kf@box.shutemov.name>
- <20231205172436.GFZW9c1EaCaguGhglb@fat_crate.local>
- <20231205180813.phbxg5jdumfovshz@box.shutemov.name>
- <20231205185241.GGZW9xeTtiG6sORMTr@fat_crate.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231205185241.GGZW9xeTtiG6sORMTr@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 15:39:04 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C35129
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:39:10 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id af79cd13be357-77dca1d6a08so828375085a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 12:39:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701808749; x=1702413549; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Yd7GThBDMFg3IYSnPer/AdnP24vZnl3M/lgBnBxitXE=;
+        b=r9xutZFF5fAQE8GZbP00Aa2g/hGs8YDy8RDC+0MP/GTJhNkm71qzYoBeeYuFKwYkU7
+         126P+1KeWKfCCB7RHj1Jbt1EZb6USNBV11bGzMGWuGxTIrf7WKABbqhoFuIp2U8mJvx8
+         x24HADTXHxgKvqst/tjVcdiXD7Dl5rHoPhT5ozSENxdjChhK6Gw+yNfB4wykobQpZK4w
+         rb7LrTfSEKoBCeml5/uAmAD7o6bKAcDi2BBYnS4ajB8u+KPoBi7jvi7AANyVAw/MglpA
+         imstNrGyRN4SFL4LTLcXPQqw/FVp3qk+JUbgOjPfVZ0pPfIQMMOsJdNb6Cq7RRXO2EZT
+         f6yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701808749; x=1702413549;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Yd7GThBDMFg3IYSnPer/AdnP24vZnl3M/lgBnBxitXE=;
+        b=PlsbGyT+MT5RyhKpWtUukdjW5s6gSvrdJAMRoDBvPT6HQoEIWDGRNaq4+CXuYVev0J
+         KlIWN35tpjpf4ZTyIx6+y8usi3cHXuv91yqwR37rpC1kosu4Vrf9QlsM20ykZD5ZtFta
+         QNSvo+E7FVu+ubzoySHP53Gj8ZEBQK5Lj0yVXIBlw0xyKjLBhOlbeS+aa6mbIV0WFqWw
+         WWjOfMEZeQ9wf1RO1+yN6ef7Q0Y8pm2b8RwiGIQLK+P8Edv5qEFDlfBVzRpbEppGmSpU
+         mYqWF4aLoxRHLKKXXrpWQyfbxtvFtKVs4f6MeunQqc1t8aTvyvt1Lg066vSRQ+sTHP/K
+         ioeA==
+X-Gm-Message-State: AOJu0YyHO9mZllIgxaoY/xLy2kWPo8FZVvxf2UOV8dcF96xOQkSIk0BG
+        yIZRjYAN/v6MDNvuadtJuQP6mn1KaQ==
+X-Google-Smtp-Source: AGHT+IH0cd2HLFsC8CxaZuQ7ewPF5xTgOB6kCd9NRSSMtX79MgZW4qJ/dust0PqxwCuD94P1XVpaYtIuBw==
+X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
+ (user=rmoar job=sendgmr) by 2002:a05:622a:4413:b0:423:6f2b:5a04 with SMTP id
+ ka19-20020a05622a441300b004236f2b5a04mr26155qtb.10.1701808749501; Tue, 05 Dec
+ 2023 12:39:09 -0800 (PST)
+Date:   Tue,  5 Dec 2023 20:38:52 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231205203852.1700497-1-rmoar@google.com>
+Subject: [PATCH] kunit: tool: fix parsing of test attributes
+From:   Rae Moar <rmoar@google.com>
+To:     shuah@kernel.org, davidgow@google.com, dlatypov@google.com,
+        brendan.higgins@linux.dev
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 07:52:41PM +0100, Borislav Petkov wrote:
-> So yes, we will fix your issue, no worries. I'm figuring out the
-> details as we speak.
+Add parsing of attributes as diagnostic data. Fixes issue with test plan
+being parsed incorrectly as diagnostic data when located after
+suite-level attributes.
 
-So you can do for the short term:
+Note that if there does not exist a test plan line, the diagnostic lines
+between the suite header and the first result will be saved in the suite
+log rather than the first test case log.
 
----
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index c461c1a4b6af..f8999f6d1b00 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -434,7 +434,7 @@ static void __init sev_map_percpu_data(void)
- {
- 	int cpu;
- 
--	if (!cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-+	if (cc_vendor != CC_VENDOR_AMD || !cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
- 		return;
- 
- 	for_each_possible_cpu(cpu) {
+Signed-off-by: Rae Moar <rmoar@google.com>
 ---
 
-until we've sorted out the bigger picture.
+Note this patch is a resend but I removed the second patch in the series
+so now it is a standalone patch.
 
+ tools/testing/kunit/kunit_parser.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 79d8832c862a..ce34be15c929 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -450,7 +450,7 @@ def parse_diagnostic(lines: LineStream) -> List[str]:
+ 	Log of diagnostic lines
+ 	"""
+ 	log = []  # type: List[str]
+-	non_diagnostic_lines = [TEST_RESULT, TEST_HEADER, KTAP_START, TAP_START]
++	non_diagnostic_lines = [TEST_RESULT, TEST_HEADER, KTAP_START, TAP_START, TEST_PLAN]
+ 	while lines and not any(re.match(lines.peek())
+ 			for re in non_diagnostic_lines):
+ 		log.append(lines.pop())
+@@ -726,6 +726,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
+ 		# test plan
+ 		test.name = "main"
+ 		ktap_line = parse_ktap_header(lines, test)
++		test.log.extend(parse_diagnostic(lines))
+ 		parse_test_plan(lines, test)
+ 		parent_test = True
+ 	else:
+@@ -737,6 +738,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str], is_subtest:
+ 		if parent_test:
+ 			# If KTAP version line and/or subtest header is found, attempt
+ 			# to parse test plan and print test header
++			test.log.extend(parse_diagnostic(lines))
+ 			parse_test_plan(lines, test)
+ 			print_test_header(test)
+ 	expected_count = test.expected_count
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
 -- 
-Regards/Gruss,
-    Boris.
+2.43.0.rc2.451.g8631bc7472-goog
 
-https://people.kernel.org/tglx/notes-about-netiquette
