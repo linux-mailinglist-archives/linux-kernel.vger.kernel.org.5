@@ -2,87 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF6A805F0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BE1805F13
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:06:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345662AbjLEUFk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 15:05:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38894 "EHLO
+        id S1345661AbjLEUGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 15:06:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjLEUFi (ORCPT
+        with ESMTP id S230162AbjLEUGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 15:05:38 -0500
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40559196
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:05:44 -0800 (PST)
-Received: from omf08.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay04.hostedemail.com (Postfix) with ESMTP id 096BE1A024F;
-        Tue,  5 Dec 2023 20:05:41 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf08.hostedemail.com (Postfix) with ESMTPA id E0B1520027;
-        Tue,  5 Dec 2023 20:05:38 +0000 (UTC)
-Message-ID: <7c353e1ba4025dfce4c4789033f5779c4371f048.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Also accept commit ids with 13-40 chars of
- sha1
-From:   Joe Perches <joe@perches.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Niklas =?ISO-8859-1?Q?S=F6derlund?= 
-        <niklas.soderlund@ragnatech.se>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Simon Horman <horms@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Junio C Hamano <gitster@pobox.com>, linux-kernel@vger.kernel.org
-Date:   Tue, 05 Dec 2023 12:05:37 -0800
-In-Reply-To: <62f82b0308de05f5aab913392049af15d53c777d.1701804489.git.geert+renesas@glider.be>
-References: <62f82b0308de05f5aab913392049af15d53c777d.1701804489.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 5 Dec 2023 15:06:22 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38134183
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:06:28 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1d2f89ddabso7148166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 12:06:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701806786; x=1702411586; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wlqC0mLlbsamWeTdymhvWwnQu+epiSDRN+zbg2hBOUA=;
+        b=dqLoN7LeBAJ+6P2G8vDtqHEV5R6PfL2dtERshtR/hpGsyL7NvcO0Rjzq2RdvkD4m49
+         7m3EdJU1nxur9N3INcj9qSvuUQ/GiDTDTrdStnjw5cGwmW6GhMd6lQIoorvbDhZ1y9op
+         ASBCkSNCc/a+h1mCu4E2Ha3OyJQRmYDd3OrsZvamERV2JXeTEEU72PMYw+o/HszqTkwU
+         4ec6YOG40uG3661ZnxoI+hW08D2uAbvTEVxjfoKfIs+UQ6nuPg2Q7PE90cdt8MAX6d75
+         NsAFLAAi8dKoUX5irKmmn97Aqqs7eV2cO5nGmq81a4WO+NRJCuvqPjtnvYNatdL8rTf/
+         Xxlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701806786; x=1702411586;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wlqC0mLlbsamWeTdymhvWwnQu+epiSDRN+zbg2hBOUA=;
+        b=BJ+56PirtuFcDAYL7gaLZ8tv7vfcZHKhifC6mqXnz342MTzQyd8jm+jkasjAUqHSoU
+         +UfofFnRBKfAFJUXV0dRvi5kcNrjQbXJZTohJcvUdUwnLmI9NUUJl95P9s+shMhVHtwS
+         nLU7ykT/9hP3pOjRyk0CRiV9KaVITiNj2Phmj+EE7K640yHB3FOFRlxeOt0oAkLnpEIj
+         tQJPQcScVXifIkxGHB0CjTya+j6vGdCPOy25ed6gGMxxn5dntrElQz3WpXLRSBpb0hXf
+         ghqPmwzzw1rfH9d0qUcOvH7TxbPofrlPm5UDwnzTVO29BlxmpbgRnQW2lNanb7w4XgTe
+         gwSQ==
+X-Gm-Message-State: AOJu0YwT3xytKrC1KPj3gOwgsbOfJ/jJHj9Pv8BBzKuiNrGuQJJI1JQN
+        x0m42pQMBXD42pzL+M/qIvXlUmxBcN5IoXrp9lzxSQ==
+X-Google-Smtp-Source: AGHT+IGOdUeVb0c9zBSJgx9rodC7t4Ia+OxD3ogESh9JYVWU23yxaj5p6I3M/sO6DE0hSoEHtwbw4cUyG+qyicjsc1E=
+X-Received: by 2002:a17:906:1c8c:b0:a18:ad93:460d with SMTP id
+ g12-20020a1709061c8c00b00a18ad93460dmr818197ejh.69.1701806786537; Tue, 05 Dec
+ 2023 12:06:26 -0800 (PST)
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: E0B1520027
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Rspamd-Server: rspamout02
-X-Stat-Signature: e6d87maxwpxabitsw7e46awgdw54fx9b
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19FuZwpzAmxTGY9e0DrTuJ5SeKve/kl90Y=
-X-HE-Tag: 1701806738-979379
-X-HE-Meta: U2FsdGVkX182IRRhXQpBruauMyC0eCZ3uyo6lPDSXQwdOiW+pyLH5CSUdnS+Dt5RjztYbuGZZltvZOw4NSzRhM/a8Cy5Ud8g48dFZIu1zgMqXIwG4MIaRz2hiNoCEXjVVJJtScqYnft1LQdgH1kgtB+c+8RBiY3XfB4E3Chv6ANt9T56pfcjIpnWei0cxDKGuTH+l/ZlARDWAYUaGLWLsRi7sLmv4F6NxMqXpurJ+ODC16sXUMc4zyw33DjojycMYjGzJ9HzW61M6jgF0gWjZWaTq12A81/LqbHbhKzSQALWERI10ipK8YHJ4cGQpN/m
+References: <20231130194023.4102148-5-nphamcs@gmail.com> <20231205193307.2432803-1-nphamcs@gmail.com>
+In-Reply-To: <20231205193307.2432803-1-nphamcs@gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 5 Dec 2023 12:05:48 -0800
+Message-ID: <CAJD7tkarJydo0eYwRv+0cNHOBzBSEy-_xKMtcKBh4Kh3nXBFQQ@mail.gmail.com>
+Subject: Re: [PATCH v8 4/6] mm: memcg: add per-memcg zswap writeback stat (fix)
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-12-05 at 20:34 +0100, Geert Uytterhoeven wrote:
-> Documentation/dev-tools/checkpatch.rst says:
-> 
->   **GIT_COMMIT_ID**
->     The proper way to reference a commit id is:
->     commit <12+ chars of sha1> ("<title line>")
+On Tue, Dec 5, 2023 at 11:33=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+>
+> Rename ZSWP_WB to ZSWPWB to better match the existing counters naming
+> scheme.
+>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 
-It's not just checkpatch.
+For the original patch + this fix:
 
-Documentation/process/submitting-patches.rst:``git bisect``, please use the 'Fixes:' tag with the first 12 characters of
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
-
-So that would need to be updated as well.
-
-And 12 still has quite some headroom.
-
-$ git rev-list --all --abbrev=0 --abbrev-commit | \
-  awk '{ a[length] += 1 } END { for (len in a) print len, a[len] }'
-5 107
-6 684276
-7 505734
-8 41769
-9 2665
-10 174
-11 8
-
-
+> ---
+>  include/linux/vm_event_item.h | 2 +-
+>  mm/memcontrol.c               | 2 +-
+>  mm/vmstat.c                   | 2 +-
+>  mm/zswap.c                    | 4 ++--
+>  4 files changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.=
+h
+> index f4569ad98edf..747943bc8cc2 100644
+> --- a/include/linux/vm_event_item.h
+> +++ b/include/linux/vm_event_item.h
+> @@ -142,7 +142,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT=
+,
+>  #ifdef CONFIG_ZSWAP
+>                 ZSWPIN,
+>                 ZSWPOUT,
+> -               ZSWP_WB,
+> +               ZSWPWB,
+>  #endif
+>  #ifdef CONFIG_X86
+>                 DIRECT_MAP_LEVEL2_SPLIT,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 21d79249c8b4..0286b7d38832 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -703,7 +703,7 @@ static const unsigned int memcg_vm_event_stat[] =3D {
+>  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+>         ZSWPIN,
+>         ZSWPOUT,
+> -       ZSWP_WB,
+> +       ZSWPWB,
+>  #endif
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>         THP_FAULT_ALLOC,
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 2249f85e4a87..cfd8d8256f8e 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1401,7 +1401,7 @@ const char * const vmstat_text[] =3D {
+>  #ifdef CONFIG_ZSWAP
+>         "zswpin",
+>         "zswpout",
+> -       "zswp_wb",
+> +       "zswpwb",
+>  #endif
+>  #ifdef CONFIG_X86
+>         "direct_map_level2_splits",
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index c65b8ccc6b72..0fb0945c0031 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -761,9 +761,9 @@ static enum lru_status shrink_memcg_cb(struct list_he=
+ad *item, struct list_lru_o
+>         zswap_written_back_pages++;
+>
+>         if (entry->objcg)
+> -               count_objcg_event(entry->objcg, ZSWP_WB);
+> +               count_objcg_event(entry->objcg, ZSWPWB);
+>
+> -       count_vm_event(ZSWP_WB);
+> +       count_vm_event(ZSWPWB);
+>         /*
+>          * Writeback started successfully, the page now belongs to the
+>          * swapcache. Drop the entry from zswap - unless invalidate alrea=
+dy
+> --
+> 2.34.1
