@@ -2,169 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36368804859
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AE2804856
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbjLED4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 22:56:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        id S231617AbjLED4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 22:56:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjLED4f (ORCPT
+        with ESMTP id S229611AbjLED42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 22:56:35 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83D5D120;
-        Mon,  4 Dec 2023 19:56:41 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C30B31474;
-        Mon,  4 Dec 2023 19:57:27 -0800 (PST)
-Received: from [10.163.35.139] (unknown [10.163.35.139])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 890513F5A1;
-        Mon,  4 Dec 2023 19:56:35 -0800 (PST)
-Message-ID: <604b5b56-9f48-434e-b328-0b9616b47ec8@arm.com>
-Date:   Tue, 5 Dec 2023 09:26:30 +0530
+        Mon, 4 Dec 2023 22:56:28 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F76C6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 19:56:34 -0800 (PST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Skmp70yRHz1Q65W;
+        Tue,  5 Dec 2023 11:52:47 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 11:56:32 +0800
+CC:     <yangyicong@hisilicon.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>
+Subject: Re: [PATCH] drivers/perf: hisi: Fix some event id for HiSilicon UC
+ pmu
+To:     Junhao He <hejunhao3@huawei.com>, <will@kernel.org>,
+        <jonathan.cameron@huawei.com>, <linux-kernel@vger.kernel.org>
+References: <20231204110425.20354-1-hejunhao3@huawei.com>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <ead56142-e0a5-d061-b8f9-02add7a3b211@huawei.com>
+Date:   Tue, 5 Dec 2023 11:56:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Subject: Re: [PATCH V2 5/7] coresight: tmc: Move ACPI support from AMBA driver
- to platform driver
-To:     James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
- <20231201062053.1268492-6-anshuman.khandual@arm.com>
- <fe5c82d1-8b7d-6701-4e19-9019f23d9c7b@arm.com>
-Content-Language: en-US
-In-Reply-To: <fe5c82d1-8b7d-6701-4e19-9019f23d9c7b@arm.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20231204110425.20354-1-hejunhao3@huawei.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.121.177]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/23 16:24, James Clark wrote:
+On 2023/12/4 19:04, Junhao He wrote:
+> Some event id of HiSilicon uncore UC PMU driver is incorrect, fix them.
 > 
+> Fixes: 312eca95e28d ("drivers/perf: hisi: Add support for HiSilicon UC PMU driver")
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+
+Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+
+> ---
+>  drivers/perf/hisilicon/hisi_uncore_uc_pmu.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> On 01/12/2023 06:20, Anshuman Khandual wrote:
->> Add support for the tmc devices in the platform driver, which can then be
->> used on ACPI based platforms. This change would now allow runtime power
->> management for ACPI based systems. The driver would try to enable the APB
->> clock if available.
->>
-> [...]
->> -module_amba_driver(tmc_driver);
->> +static int tmc_platform_probe(struct platform_device *pdev)
->> +{
->> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	struct tmc_drvdata *drvdata;
->> +	int ret = 0;
->> +
->> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
->> +	if (!drvdata)
->> +		return -ENOMEM;
->> +
->> +	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
->> +	if (IS_ERR(drvdata->pclk))
->> +		return -ENODEV;
->> +
->> +	dev_set_drvdata(&pdev->dev, drvdata);
->> +	pm_runtime_get_noresume(&pdev->dev);
->> +	pm_runtime_set_active(&pdev->dev);
->> +	pm_runtime_enable(&pdev->dev);
->> +
->> +	ret = __tmc_probe(&pdev->dev, res, NULL);
->> +	if (ret) {
->> +		pm_runtime_put_noidle(&pdev->dev);
->> +		pm_runtime_disable(&pdev->dev);
->> +	}
+> diff --git a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
+> index 63da05e5831c..636fb79647c8 100644
+> --- a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
+> +++ b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
+> @@ -383,8 +383,8 @@ static struct attribute *hisi_uc_pmu_events_attr[] = {
+>  	HISI_PMU_EVENT_ATTR(cpu_rd,		0x10),
+>  	HISI_PMU_EVENT_ATTR(cpu_rd64,		0x17),
+>  	HISI_PMU_EVENT_ATTR(cpu_rs64,		0x19),
+> -	HISI_PMU_EVENT_ATTR(cpu_mru,		0x1a),
+> -	HISI_PMU_EVENT_ATTR(cycles,		0x9c),
+> +	HISI_PMU_EVENT_ATTR(cpu_mru,		0x1c),
+> +	HISI_PMU_EVENT_ATTR(cycles,		0x95),
+>  	HISI_PMU_EVENT_ATTR(spipe_hit,		0xb3),
+>  	HISI_PMU_EVENT_ATTR(hpipe_hit,		0xdb),
+>  	HISI_PMU_EVENT_ATTR(cring_rxdat_cnt,	0xfa),
 > 
-> I'm not sure if these pm_runtime()s are right because there is already a
-> put inside of __tmc_probe() if it fails. If you unload and then reload
-
-Actually there is a pm_runtime_put() on the success path, not when it
-fails. So pm_runtime_put() gets called when __tmc_probe() returns 0.
-
-__tmc_probe()
-{
-	....
-        ret = misc_register(&drvdata->miscdev);
-        if (ret)
-                coresight_unregister(drvdata->csdev);
-        else
-                pm_runtime_put(dev);
-out:
-        return ret;
-}
-
-tmc_platform_probe()
-{
-	....
-        pm_runtime_get_noresume(&pdev->dev);
-        pm_runtime_set_active(&pdev->dev);
-        pm_runtime_enable(&pdev->dev);
-
-        ret = __tmc_probe(&pdev->dev, res, NULL);
-        if (ret) {
-                pm_runtime_put_noidle(&pdev->dev);
-                pm_runtime_disable(&pdev->dev);
-        }
-        return ret;
-}
-
-tmc_probe()
-{
-	....
-	return __tmc_probe(&adev->dev, &adev->res, coresight_get_uci_data(id));
-}
-
-Currently pm_runtime_put() gets called
-
-- In success path both for AMBA and platform drivers
-- In error path only for platform driver
-
-Although the problem might be with pm_runtime_disable() instead
-
-- pm_runtime_disable() is not required in the platform driver probe() path
-- But might be required in tmc_platform_remove() along with a clk_put()
-
-> all the coresight modules with these patches you get these errors which
-> are new:
-> 
->   coresight-tpiu-platform ARMHC979:00: Unbalanced pm_runtime_enable!
-
-The code is similar in TPIU platform driver as well.
-
->   CSCFG registered etm0
->   coresight etm0: CPU0: etm v4.2 initialized
->   CSCFG registered etm1
->   coresight etm1: CPU1: etm v4.2 initialized
->   CSCFG registered etm2
->   coresight etm2: CPU2: etm v4.2 initialized
->   CSCFG registered etm3
->   coresight etm3: CPU3: etm v4.2 initialized
->   coresight-tmc-platform ARMHC97C:00: Unbalanced pm_runtime_enable!
->   coresight-tmc-platform ARMHC97C:01: Unbalanced pm_runtime_enable!
->   coresight-tmc-platform ARMHC97C:02: Unbalanced pm_runtime_enable!
->   coresight-tmc-platform ARMHC97C:03: Unbalanced pm_runtime_enable!
-> 
-> It might be worth testing all of these pm_runtime()s, including the
-> error case ones, because loading and unloading the modules doesn't even
-> include the error scenarios, so there are probably more bad ones in
-> there too.
-The code is very similar in CATU, STM as well but debug_platform_remove()
-seems to be doing this right.
-
-I am not very familiar with all the power management aspects in coresight,
-please do let me know if I missing something here.
