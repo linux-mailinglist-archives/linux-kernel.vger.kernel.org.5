@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE438804DB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DD1804DBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234980AbjLEJY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:24:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
+        id S234901AbjLEJZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:25:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjLEJY1 (ORCPT
+        with ESMTP id S229584AbjLEJZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:24:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163E99B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:24:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B04DC433C7;
-        Tue,  5 Dec 2023 09:24:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701768273;
-        bh=LE4v9iNcz3QGxhQv8zqdcmJBFGyHYI45ixnNodZ4Tnc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R+ur2qqE4tEKBVcwnd+4nPXAEG3oHW3XTb9zLUw0xjJPl4Hml+yoh1l+izgkexVxb
-         kiv4xnO0z60QIpEPVuq9P7poxaNliwATjcG+fw6ZgbHBsUkd8O1nPR+6PgnfpseNGy
-         5aUAgXICvXLpf2/0hhqdE0u167ZQkU/THjJMf7QC6QJHnBSAsvYn29I7O8thX1l7qG
-         c4jhFVuYoSWnF6GVkNeybZZhBVFe7ED9AnkU2KOb+2T3o5OKv4aBMWcSyBSKhuBaSC
-         R3cshUcCLL4GhH4/xLRaUttjxHVPypjVnILfX6ZKMtZbPsw42tCwVxP2IASWxroSaD
-         dAMUV6wp4g72A==
-Date:   Tue, 5 Dec 2023 09:24:29 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Min Li <lnimi@hotmail.com>
-Cc:     richardcochran@gmail.com, lee@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Min Li <min.li.xe@renesas.com>
-Subject: Re: [PATCH net-next v6 1/6] ptp: clockmatrix: support 32-bit address
- space
-Message-ID: <20231205092429.GS50400@kernel.org>
-References: <PH7PR03MB70644CE21E835B48799F3EB3A082A@PH7PR03MB7064.namprd03.prod.outlook.com>
+        Tue, 5 Dec 2023 04:25:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC87883
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:25:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701768333; x=1733304333;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Rqj48t5w1VGiq5BK7k81IIa/VTeU6/qOrABCdvCZt4U=;
+  b=fjJrPqQYNohpd3xxli22PnN5ScLfdT533+6tlf1sUqQnrjcsyNIu8eY+
+   KozQiMDJXAFoOHBTG6pB/TJZBD7qL7sg9Jfw84kuIkAgmpY9ev7u2qDLk
+   yJHO6dPxTXOV+OCxl2K5qOgejWiEQ/fSeKawDaHOyYnVoej24DZHIHCQc
+   kHJQwE7uuf2B1ztgAXIv3LcdSX+A/H9WgRYs3h64tUADjYukIITkpUQok
+   TN3fhFYuy+XbWfX5lHR485S653s9Jgep/cAmfH6IImxGN053ZAI+RrAca
+   KWCVFUXoA/vGy6kF1V3bEnbeLh77WIkoMSjZOTK56Y4/03eNVjX56NUqV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="946505"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="946505"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:25:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="18899221"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 05 Dec 2023 01:25:31 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rARgH-0008fB-05;
+        Tue, 05 Dec 2023 09:25:29 +0000
+Date:   Tue, 5 Dec 2023 17:25:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: arch/arm64/kernel/proton-pack.c:353:1: sparse: sparse: symbol
+ '__pcpu_scope_arm64_ssbd_callback_required' was not declared. Should it be
+ static?
+Message-ID: <202312051719.zrXcL7ej-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH7PR03MB70644CE21E835B48799F3EB3A082A@PH7PR03MB7064.namprd03.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 01:46:29PM -0500, Min Li wrote:
-> From: Min Li <min.li.xe@renesas.com>
-> 
-> We used to assume 0x2010xxxx address. Now that
-> we need to access 0x2011xxxx address, we need
-> to support read/write the whole 32-bit address space.
-> 
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 5c8b0cbd9d6bac5f40943b5a7d8eac8cb86cbe7f arm64: Pull in task_stack_page() to Spectre-v4 mitigation code
+date:   3 years, 2 months ago
+config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231205/202312051719.zrXcL7ej-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231205/202312051719.zrXcL7ej-lkp@intel.com/reproduce)
 
-...
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312051719.zrXcL7ej-lkp@intel.com/
 
-> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
-> index f6f9d4adce04..f8556627befa 100644
-> --- a/drivers/ptp/ptp_clockmatrix.c
-> +++ b/drivers/ptp/ptp_clockmatrix.c
-> @@ -41,8 +41,8 @@ module_param(firmware, charp, 0);
->  static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm);
->  
->  static inline int idtcm_read(struct idtcm *idtcm,
-> -			     u16 module,
-> -			     u16 regaddr,
-> +			     u32 module,
-> +			     u32 regaddr,
->  			     u8 *buf,
->  			     u16 count)
->  {
-> @@ -50,8 +50,8 @@ static inline int idtcm_read(struct idtcm *idtcm,
->  }
->  
->  static inline int idtcm_write(struct idtcm *idtcm,
-> -			      u16 module,
-> -			      u16 regaddr,
-> +			      u32 module,
-> +			      u32 regaddr,
->  			      u8 *buf,
->  			      u16 count)
->  {
+sparse warnings: (new ones prefixed by >>)
+>> arch/arm64/kernel/proton-pack.c:353:1: sparse: sparse: symbol '__pcpu_scope_arm64_ssbd_callback_required' was not declared. Should it be static?
 
-Hi Min Li,
+vim +/__pcpu_scope_arm64_ssbd_callback_required +353 arch/arm64/kernel/proton-pack.c
 
-My understanding of Paolo's review of v5 was that it would be cleaner to:
+c28762070ca651 Will Deacon 2020-09-18  351  
+c28762070ca651 Will Deacon 2020-09-18  352  /* This is the per-cpu state tracking whether we need to talk to firmware */
+c28762070ca651 Will Deacon 2020-09-18 @353  DEFINE_PER_CPU_READ_MOSTLY(u64, arm64_ssbd_callback_required);
+c28762070ca651 Will Deacon 2020-09-18  354  
 
-1. Leave the type of the module parameter as u16
-2. Update the type of the regaddr parameter to u32
+:::::: The code at line 353 was first introduced by commit
+:::::: c28762070ca651fe7a981b8f31d972c9b7d2c386 arm64: Rewrite Spectre-v4 mitigation code
 
-And...
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
 
-...
-
-> @@ -553,11 +554,11 @@ static int _sync_pll_output(struct idtcm *idtcm,
->  	val = SYNCTRL1_MASTER_SYNC_RST;
->  
->  	/* Place master sync in reset */
-> -	err = idtcm_write(idtcm, 0, sync_ctrl1, &val, sizeof(val));
-> +	err = idtcm_write(idtcm, sync_ctrl1, 0, &val, sizeof(val));
->  	if (err)
->  		return err;
->  
-> -	err = idtcm_write(idtcm, 0, sync_ctrl0, &sync_src, sizeof(sync_src));
-> +	err = idtcm_write(idtcm, sync_ctrl0, 0, &sync_src, sizeof(sync_src));
->  	if (err)
->  		return err;
->  
-
-... avoid the need for changes like the two above.
-
-As it is the meaning of module and regaddr are subtly reversed.
-If that is intentional then it really ought to be at least stated
-in the patch. And, IMHO, ideally a separate patch.
-
-As it is, reversing the meaning of these parameters seems
-to add extra churn to this patch.
-
-
-
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
