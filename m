@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE28C804EAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C77804EAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:50:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344965AbjLEJuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
+        id S1344971AbjLEJuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:50:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjLEJuN (ORCPT
+        with ESMTP id S229596AbjLEJud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:50:13 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6936C9E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:50:19 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B209EC15;
-        Tue,  5 Dec 2023 01:51:05 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D1FE3F5A1;
-        Tue,  5 Dec 2023 01:50:15 -0800 (PST)
-Message-ID: <8adbde1c-970b-4a26-81b0-91b913c4850b@arm.com>
-Date:   Tue, 5 Dec 2023 09:50:14 +0000
+        Tue, 5 Dec 2023 04:50:33 -0500
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379E6AA;
+        Tue,  5 Dec 2023 01:50:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+        t=1701769821; x=1702374621; i=spasswolf@web.de;
+        bh=PMUhOSPrIqO2nFBmzfdsWI9k8eQHrXY07i+nV1Od4lY=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:
+         References;
+        b=I43bvoYvg0jQ2LjQbNPWfiBB/2lsdQYfrTAtuiIe4YWldsiRu1XtYQqAFVK1BSSH
+         ObzIy3uyegplEjem76S6OzWbho/tyMB2VlQKcRDCccM9yAGmFTEfaXOu0hWebJ83t
+         VUOiMeI6H5mvNpDf6ajGZCuRVMZvFeZ+WgM7cZa4zyASELdVtsPC5I3L2skJ64jPC
+         +IAooHVg+l3A78atP0KTL8GJoR1SG6LDs5vnfQLf0qclBJKXUMTvxS125oUrLnZYW
+         AScmQPLtwK4+koFZ4dKqtGzUQx3Th1GxrcEKyNA8cUbcRcC4MbSRsD2kH0xjuxvKF
+         RNclPacGRS3kcL/Wjw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.0.101] ([84.119.92.193]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MA4fI-1qysI32fyE-00Bb8H; Tue, 05
+ Dec 2023 10:50:21 +0100
+Message-ID: <b0803db66dfd4816b21d78bcbccefdb75318444d.camel@web.de>
+Subject: Re: [PATCH] fs: read_write: make default in vfs_copy_file_range()
+ reachable
+From:   Bert Karwatzki <spasswolf@web.de>
+To:     Amir Goldstein <amir73il@gmail.com>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, axboe@kernel.dk, dhowells@redhat.com,
+        hch@lst.de, jlayton@kernel.org, josef@toxicpanda.com,
+        linux-fsdevel@vger.kernel.org, miklos@szeredi.hu,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org
+Date:   Tue, 05 Dec 2023 10:50:20 +0100
+In-Reply-To: <CAOQ4uxg-4NSysxmviKxDhnrA5P455T074ku=F24Wa5KJnCgspQ@mail.gmail.com>
+References: <20231130141624.3338942-4-amir73il@gmail.com>
+         <20231205001620.4566-1-spasswolf@web.de>
+         <CAOQ4uxiw8a+zh-x2a+A+EEZOFj1KYrBQucCvDv6s9w0XeDW-ZA@mail.gmail.com>
+         <CAOQ4uxg-4NSysxmviKxDhnrA5P455T074ku=F24Wa5KJnCgspQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 03/10] mm: thp: Introduce multi-size THP sysfs
- interface
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-4-ryan.roberts@arm.com>
- <CAGsJ_4zU6pHOwEzCQxo9UWUFmHZp0pvfgF4pKbkFfDPCRyFwyw@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4zU6pHOwEzCQxo9UWUFmHZp0pvfgF4pKbkFfDPCRyFwyw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zcmUqHktaTmrIK0UZTIsj1d2FWv0DtFAZvrawz/zY3G2GPfRlI/
+ Ky8mjWLA39i07FmJTe7M9vRZKXM3Uj616p0UOYMtj0J3a2qtkeUZyM4Awq0s0JPkrR6I3kN
+ rPihH0JJlIyBro3BZy4zdmIbUNHlNJn8T09UjtPDRZpd8KsRKRA0RoUVHkbqiioBpBT0r7m
+ 5f47GHuu+jqy1HuFFoUyw==
+UI-OutboundReport: notjunk:1;M01:P0:RkCAm3fSDdY=;hYdum0k1djuM+QTsKNO7PfPrU/x
+ vWLkAeuQoNxBbu4v4BVhh0TDJShHjmI03mjg6dSyJGs/EAlKkCNRS6nveSj7IsMXoRmhomGgb
+ JZigMkqeIWTV9rApm7czJXE1Rg3CxFwI6gMr6ldAMTtlVWXzaAaPrs7JzHojqBsajpiz9G9NO
+ oJhpHQLeYIX43Q2GF8PtKc30Q2UJnU20CTyqVgk0OXmOHLyhi99DLSJxgwLGghQNFqGjyKtJf
+ zrFMGiyOyKD10GqiQN5Z2TfxtVbGR1mdbSItoDuGjBRbcBlfaG7v1BZN09wKwtrBbhgkNjch0
+ x1lHNBef+EeUyt38l3ovd9uJR1ptOSM8srvw97/GYnMmJKhuxSiICBu35MCssGN4WIlfeOS/C
+ LgEK+h1m1q43J2SpW/wuEZwWZoI2fy996B67FKTHE0iLfs3VmYaNS5OzTbDShdtbD2YezbG1k
+ ekgEqGv8SodH017gvK0DJZxTTCVGOz+aWhG9NT6G344kYjH4SY2fVR5cfJFheKoQrIW+xOLpq
+ XnSK2SiRuSredJ57T1fcJTVbAO+X8DQmK2odH23UfkyE2VFSquZ7iFmMZKWY80jSIkQOkD20h
+ IOAmAyCj2BiFADnj4X8QlWAb6m93JVYTDgyVA+8iJKDPlqEvB0CtJSuFofR7l+xWnZH66j+cc
+ xIabsReCyr+FRpnb8+zLhWj7TA9PbDsZ0uWOs/xVTx18ZRm9cMogCaN/hqbYE0t7X7b3TisYw
+ C6+7WBKnEYqH2IM+Q50stN6Y89uJ4v9K1+d2YelxJpXoR1LObiO3DVQm2a41B45ExY1x1JkD/
+ KQNMdkbTaHFlBv8PAqncI3ycJ+6SxPpMVuIb0kefi0uozjIZ5jPE3G9LQhQPa1z7fgnDs10jo
+ 90OMX6XaSg/gby1yrqxRNGRztvllmRZ3W0aOFWCrUugx5Y6LKWiYgMN5Bpq+IEWZXqZXavIzL
+ t+iYuQ==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,82 +80,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 04:21, Barry Song wrote:
-> On Mon, Dec 4, 2023 at 11:21 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> In preparation for adding support for anonymous multi-size THP,
->> introduce new sysfs structure that will be used to control the new
->> behaviours. A new directory is added under transparent_hugepage for each
->> supported THP size, and contains an `enabled` file, which can be set to
->> "inherit" (to inherit the global setting), "always", "madvise" or
->> "never". For now, the kernel still only supports PMD-sized anonymous
->> THP, so only 1 directory is populated.
->>
->> The first half of the change converts transhuge_vma_suitable() and
->> hugepage_vma_check() so that they take a bitfield of orders for which
->> the user wants to determine support, and the functions filter out all
->> the orders that can't be supported, given the current sysfs
->> configuration and the VMA dimensions. If there is only 1 order set in
->> the input then the output can continue to be treated like a boolean;
->> this is the case for most call sites. The resulting functions are
->> renamed to thp_vma_suitable_orders() and thp_vma_allowable_orders()
->> respectively.
->>
->> The second half of the change implements the new sysfs interface. It has
->> been done so that each supported THP size has a `struct thpsize`, which
->> describes the relevant metadata and is itself a kobject. This is pretty
->> minimal for now, but should make it easy to add new per-thpsize files to
->> the interface if needed in future (e.g. per-size defrag). Rather than
->> keep the `enabled` state directly in the struct thpsize, I've elected to
->> directly encode it into huge_anon_orders_[always|madvise|inherit]
->> bitfields since this reduces the amount of work required in
->> thp_vma_allowable_orders() which is called for every page fault.
->>
->> See Documentation/admin-guide/mm/transhuge.rst, as modified by this
->> commit, for details of how the new sysfs interface works.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> 
-> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+Am Dienstag, dem 05.12.2023 um 07:01 +0200 schrieb Amir Goldstein:
+> On Tue, Dec 5, 2023 at 5:45=E2=80=AFAM Amir Goldstein <amir73il@gmail.co=
+m> wrote:
+> >
+> > On Tue, Dec 5, 2023 at 2:16=E2=80=AFAM Bert Karwatzki <spasswolf@web.d=
+e> wrote:
+> > >
+> > > If vfs_copy_file_range() is called with (flags & COPY_FILE_SPLICE =
+=3D=3D 0)
+> > > and both file_out->f_op->copy_file_range and file_in->f_op-
+> > > >remap_file_range
+> > > are NULL, too, the default call to do_splice_direct() cannot be reac=
+hed.
+> > > This patch adds an else clause to make the default reachable in all
+> > > cases.
+> > >
+> > > Signed-off-by: Bert Karwatzki <spasswolf@web.de>
+> >
+> > Hi Bert,
+> >
+> > Thank you for testing and reporting this so early!!
+> >
+> > I would edit the commit message differently, but anyway, I think that
+> > the fix should be folded into commit 05ee2d85cd4a ("fs: use
+> > do_splice_direct() for nfsd/ksmbd server-side-copy").
+> >
+> > Since I end up making a mistake every time I touch this code,
+> > I also added a small edit to your patch below, that should make the lo=
+gic
+> > more clear to readers. Hopefully, that will help me avoid making a mis=
+take
+> > the next time I touch this code...
+> >
+> > Would you mind testing my revised fix, so we can add:
+> > =C2=A0 Tested-by: Bert Karwatzki <spasswolf@web.de>
+> > when folding it into the original patch?
+> >
+>
+> Attached an even cleaner version of the fix patch for you to test.
+> I tested fstests check -g copy_range on ext4.
+> My fault was that I had tested earlier only on xfs and overlayfs
+> (the two other cases in the if/else if statement).
+>
+> Thanks,
+> Amir.
+>
+> > > ---
+> > > =C2=A0fs/read_write.c | 2 ++
+> > > =C2=A01 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/fs/read_write.c b/fs/read_write.c
+> > > index e0c2c1b5962b..3599c54bd26d 100644
+> > > --- a/fs/read_write.c
+> > > +++ b/fs/read_write.c
+> > > @@ -1554,6 +1554,8 @@ ssize_t vfs_copy_file_range(struct file *file_=
+in,
+> > > loff_t pos_in,
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 /* fallback to splice */
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 if (ret <=3D 0)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 s=
+plice =3D true;
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
+> >
+> > This is logically correct because of the earlier "same sb" check in
+> > generic_copy_file_checks(), but we better spell out the logic here as =
+well:
+> >
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } =
+else if (file_inode(file_in)->i_sb =3D=3D
+> > file_inode(file_out)->i_sb) {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Fallback to splice for sa=
+me sb copy for
+> > backward compat */
+> >
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 splice =3D true;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > >
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 file_end_write(file_out);
+> > > --
+> > > 2.39.2
+> > >
+> > > Since linux-next-20231204 I noticed that it was impossible to start =
+the
+> > > game Path of Exile (using the steam client). I bisected the error to
+> > > commit 05ee2d85cd4ace5cd37dc24132e3fd7f5142ebef. Reverting this comm=
+it
+> > > in linux-next-20231204 made the game start again and after inserting
+> > > printks into vfs_copy_file_range() I found that steam (via python3)
+> > > calls this function with (flags & COPY_FILE_SPLICE =3D=3D 0),
+> > > file_out->f_op->copy_file_range =3D=3D NULL and
+> > > file_in->f_op->remap_file_range =3D=3D NULL so the default is never =
+reached.
+> > > This patch adds a catch all else clause so the default is reached in
+> > > all cases. This patch fixes the describe issue with steam and Path o=
+f
+> > > Exile.
+> > >
+> > > Bert Karwatzki
 
-Thanks!
+Your new patch works fine (I applied it to linux-next-20231204), again tes=
+ted by
+starting Path of Exile via steam from an ext4 filesystem.
 
-> 
->> -khugepaged will be automatically started when
->> -transparent_hugepage/enabled is set to "always" or "madvise, and it'll
->> -be automatically shutdown if it's set to "never".
->> +khugepaged will be automatically started when one or more hugepage
->> +sizes are enabled (either by directly setting "always" or "madvise",
->> +or by setting "inherit" while the top-level enabled is set to "always"
->> +or "madvise"), and it'll be automatically shutdown when the last
->> +hugepage size is disabled (either by directly setting "never", or by
->> +setting "inherit" while the top-level enabled is set to "never").
->>
->>  Khugepaged controls
->>  -------------------
->>
->> +.. note::
->> +   khugepaged currently only searches for opportunities to collapse to
->> +   PMD-sized THP and no attempt is made to collapse to other THP
->> +   sizes.
-> 
-> For small-size THP, collapse is probably a bad idea. we like a one-shot
-> try in Android especially we are using a 64KB and less large folio size. if
-> PF succeeds in getting large folios, we map large folios, otherwise we
-> give up as those memories can be quite unstably swapped-out, swapped-in
-> and madvised to be DONTNEED.
-> 
-> too many compactions will increase power consumption and decrease UI
-> response.
-
-Understood; that's very useful information for the Android context. Multiple
-people have made comments about eventually needing khugepaged (or something
-similar) support in the server context though to async collapse to contpte size.
-Actually one suggestion was a user space daemon that scans and collapses with
-MADV_COLLAPSE. I suspect the key will be to ensure whatever solution we go for
-is flexible and can be enabled/disabled/configured for the different environments.
-
-> 
-> Thanks
-> Barry
-
+Bert Karwatzki
