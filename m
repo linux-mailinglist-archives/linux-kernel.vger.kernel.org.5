@@ -2,139 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A016F806313
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4566806319
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346636AbjLEXrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 18:47:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35860 "EHLO
+        id S232291AbjLEXuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 18:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEXq6 (ORCPT
+        with ESMTP id S229591AbjLEXuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 18:46:58 -0500
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D8C122;
-        Tue,  5 Dec 2023 15:47:03 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id C06CD5C0099;
-        Tue,  5 Dec 2023 18:47:00 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 05 Dec 2023 18:47:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1701820020; x=1701906420; bh=v1AF7u8uyhL5eTCK0aLokAy6KSNNe4qNX9h
-        wmxep6io=; b=nKkQEoBFCEngX8kMNRRFmVuttVFB1DLZ7o+9DXrTBtsmwB5Iz1Y
-        tPVAjWSj8NXpHiGfap+IjroN2uT3B8fVXJhLk/+M1Unb5B3+uLETyQuax1Wv+q+t
-        /okMrQbBvy1qcu2PAztdw/nsNi5I41FLPQ5zrFpcyjWgxVrbwjkRqGMJX/Pw6EIu
-        TkBwpaXcIuFILIaU9V/pVg7Jr17YxI9XlOThRj6Qv5dfOtyK8ngvw1sZs41VOfFp
-        DCWmcHHNY7S2AakMHTYZqfpS3YwoKf9hxlwiCuH8kSgM+rK56BBAztTVyA5jpO71
-        PpDNkso7KhZ+evVGEF/vvy/id2yVqDySOew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1701820020; x=1701906420; bh=v1AF7u8uyhL5eTCK0aLokAy6KSNNe4qNX9h
-        wmxep6io=; b=bBb4xJ6D+VfjxbfscIlwlcKLH6erIAl59Jjl51+g4B825FQh4aQ
-        EjBIbZbofeuM+xeVMmZXmVCHgR9G7aLzPXpbIUDyrprcK9X/LeBz1OVsfT9GMk32
-        xh0UsSWuOcIH9v8SGhX6IYcL6DjFA/25sEBYJelozqvx9BG0eLORsJhXBBapSFlS
-        i1y+tZMu1HdcwR10apfb/VJ2ZzAesAH7B+OXGXHSiQnaVW5QdZuR+CV+XnW5evHb
-        WyIOr/T+hPCctGPXHp3aensKohAjJg1NqHuNkEbIvSlN+Bnw42Jfl9zN2cfnarTl
-        LpShoSKvmi9M6bVU32GrVdvyJIb0d6SYV9A==
-X-ME-Sender: <xms:c7ZvZR-R9UKBl1cE9WQB5g6BarDXhmu1oRztT8F8Auv9fRL9fMFq8w>
-    <xme:c7ZvZVvAehVMvLAhoPKOIh6u6QWEBPGJiReVIrBsQ4sDO9EslynX_x219teVXxGaQ
-    ih5eL6gi0nYuQ>
-X-ME-Received: <xmr:c7ZvZfAAWqMQNzJ1_SrwgxAhcRqTvNCrVm1ZEKrRAJZ4_VYvDzbSwBMBlrIdvO04xO2rab2EEkvgD-rOYj6xSOi6>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejledgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefirhgv
-    ghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpefgke
-    ffieefieevkeelteejvdetvddtledugfdvhfetjeejieduledtfefffedvieenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhroh
-    grhhdrtghomh
-X-ME-Proxy: <xmx:c7ZvZVdyTaw2ffvejqSWsTPFp-EkcFftMvxVtcWO-Vg4V8UT0ZCuTw>
-    <xmx:c7ZvZWOdKwhdb5gT2HQ1A4DsHppU6-TEID5G2mGszykyhbUzm7v3SQ>
-    <xmx:c7ZvZXmRIxymqCPSQusJmHn-I2ZdMj2ulJmyhEVoM1eJm2qFbvCWqQ>
-    <xmx:dLZvZRE9bGSuMrEkB-gqL-RqrzetrqNEwrjRFPdBn0R2F4oywpp34g>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 5 Dec 2023 18:46:58 -0500 (EST)
-Date:   Wed, 6 Dec 2023 08:46:50 +0900
-From:   Greg KH <greg@kroah.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, tanzirh@google.com,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nick DeSaulniers <nnn@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
-Message-ID: <2023120657-henna-spongy-9ef6@gregkh>
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205213807.GE1674809@ZenIV>
- <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
- <2023120608-ivy-snowdrop-890d@gregkh>
- <CAKwvOdmFJ=ZGN8ZScS5oQpXnAL0wwtTDCeNNGpBKZXzQ4kRAVA@mail.gmail.com>
+        Tue, 5 Dec 2023 18:50:19 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2073.outbound.protection.outlook.com [40.107.93.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408F618C;
+        Tue,  5 Dec 2023 15:50:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j538p6M9GejfRI64TfQBZPEaPkDtYn5aRxBDjZsg8iLkcLwb/IR5BvC6WFP7TztpHBuTmMw4gUY+BCLyk3wwxszPnqBXJjkp79cRf7XxiTq5LbaGMlBIOBo0g0e70VE09vOaFMkOxwivIm+0VQNmlXHTSQw4mt7dr1FJGjlvf+46deMxZHSJPQP5Nthx2g3x1xh8XsHqoemRr8lmtYm8FzKbuwqSYJBvVRWAuiLiAGRn/M8sioed682ugKK9OR0izHbozbFpnL24dBfShMvDFytlC/L/8OeGY6qFqWI1WV9XjYBddB8gxzJz2WOE4ptTvTXVgv9TXjOTvgC+gvEAtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PMdYy3O1Cpgbmo1vLEbA3kKWDu536YFAQ55nLgD2apg=;
+ b=aPjAEWq0bgvtYZVMvir/vDqOUCUWAEyBBHA+4HrZ/x8d4anYH3TXRZSCh+0+OEYi5pZphTNI71hS/NrpnF4mI2CmU0I6caiK58wr4NSUlzty27cdp9mtufBGrXRpZps+1sYWOGDXN05HI568oAwPzmTiQm9pTBzD0DYzohAKa5+Kes/Ie8lw+W995fOlThoUT3D2yGuPPyBMBhptes9WTJ7xa8qrTvXvY1Um3QVMCza/Imj0aGkgJ32fdB6Dd2pABjL6i0kbrSRdoi8jmo+TY3Vz9pAJ+RqGUrMKrX3To2JQL9Smyi3bfQmJ4mE/Yr/Lw5DuvHANCkk2HbMWDrYBxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PMdYy3O1Cpgbmo1vLEbA3kKWDu536YFAQ55nLgD2apg=;
+ b=lQh7+nYvgJyyQPx2zUV/fVyx7PKED6eQ72UMfwgWhUBD+pTs9yquNUqL/NZmsh7MlKn7RH01vOOuKhhpXtP6yyoPQEkg021t1rmUIYXTt4qX1oDr2FXb4rh+wZtB1aQwLaWg9c+kSCS1Wq3E9LIw90PNHob6jaL/Bs+O/nToGFI=
+Received: from SA1P222CA0111.NAMP222.PROD.OUTLOOK.COM (2603:10b6:806:3c5::8)
+ by PH0PR12MB8007.namprd12.prod.outlook.com (2603:10b6:510:28e::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 23:50:22 +0000
+Received: from SN1PEPF0002BA4E.namprd03.prod.outlook.com
+ (2603:10b6:806:3c5:cafe::25) by SA1P222CA0111.outlook.office365.com
+ (2603:10b6:806:3c5::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.26 via Frontend
+ Transport; Tue, 5 Dec 2023 23:50:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SN1PEPF0002BA4E.mail.protection.outlook.com (10.167.242.71) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7068.20 via Frontend Transport; Tue, 5 Dec 2023 23:50:22 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 5 Dec
+ 2023 17:50:21 -0600
+From:   Michael Roth <michael.roth@amd.com>
+To:     <kvm@vger.kernel.org>
+CC:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] KVM: SEV: Fix handling of EFER_LMA bit when SEV-ES is enabled
+Date:   Tue, 5 Dec 2023 17:49:56 -0600
+Message-ID: <20231205234956.1156210-1-michael.roth@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOdmFJ=ZGN8ZScS5oQpXnAL0wwtTDCeNNGpBKZXzQ4kRAVA@mail.gmail.com>
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4E:EE_|PH0PR12MB8007:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7b1e1d2b-b18c-44d4-5f21-08dbf5ecf1fc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GuaMXyFiH5KwMkUhcxdZanD/tai+Dkxcjt2PRouHZgw05cMsWOXs7aPcdqVwoEMCnj8WnhdxiGeHip7RklcSlgbsPUoQVe6aND6uqnE9Ib7UEKgYLVGpdVEibJDTDeUYAX2OtAsLtoXtalQu2xu0nx4YFI1OujaNvwLvnGxfs6L3QnSAk0wSXccpuIzykCiebU65k1XeRFaQx6y33Y4pTQ6TNraKzfOH8r5KEUJSOMz255CLGW+HAK4d3s/krsXBvw7IKRaUaLPn6r6uBrHl+DcmPKp+0OlSePnqyY+DnoZ6XxLWMJsEvAp7TaekUfe6hWLAfE97IzXi6bQLxTfx0b0L+0txhw6Vk92VYb7lyhYhD+/Im9J+o6gaBZ8tdyeZBFjuPUgPsPA12h2s4OT8p94ojJaCWjH2mcX9LH0y8nswsdb6HP5q/wGC3Xw2FXjaTuJRQ3PrBAtC5911uaX115D1AAjdn8roOqkB/O0CVTBDSPnV8OyR0GT5wRB20FVX3XHqvgrFJ7v2R8ryeJ0gsRllg5Q1jauGvhmLlkcYOO1Hv/qn/oCdH/ctBWPuX9YCH4JVKp9AOLBWpKU0atmS6c7aMZ5+0HoC9bIdaray+vUFXC3JFgki0bd+NnTPcCHX15sr2sYkb7VBWfSg1BG4ctwoniST7YS6IA4dHAeDf9n494mxysX+rSlU55A5uIU5lSYVlRuKivY7oLTGkdL3Y/ZxiebCbYMRSUmzU79peSe3dFvxFRpy58kIbAToIULWX0xmtOrN2p9DnCUAsBgeYg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(346002)(396003)(376002)(230922051799003)(1800799012)(82310400011)(64100799003)(451199024)(186009)(46966006)(40470700004)(36840700001)(7416002)(2906002)(40460700003)(478600001)(8936002)(8676002)(4326008)(6666004)(44832011)(86362001)(70586007)(54906003)(6916009)(70206006)(5660300002)(36860700001)(47076005)(356005)(81166007)(82740400003)(26005)(16526019)(40480700001)(83380400001)(36756003)(336012)(426003)(41300700001)(2616005)(316002)(1076003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 23:50:22.3367
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b1e1d2b-b18c-44d4-5f21-08dbf5ecf1fc
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002BA4E.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8007
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 02:14:55PM -0800, Nick Desaulniers wrote:
-> On Tue, Dec 5, 2023 at 1:59 PM Greg KH <greg@kroah.com> wrote:
-> >
-> > On Tue, Dec 05, 2023 at 01:51:10PM -0800, Nick Desaulniers wrote:
-> > > On Tue, Dec 5, 2023 at 1:38 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> > > >
-> > > > It also breeds includes of asm/*.h, by the look of the output, which is
-> > > > not a good thing in general ;-/  E.g. #include <asm/uaccess.h> *anywhere*
-> > > > outside of linux/uaccess.h is a bad idea.
-> > >
-> > > It's not clear to me when it's ok to #include <asm/*.h>.  Is there a
-> > > convention here that I'm missing?
-> >
-> > General rule, NEVER include asm/*.h, there should be a include/*.h
-> > instead that works.  So much so that checkpatch.pl should catch this,
-> > right?
-> 
-> ah, shoot, I was showing Tanzir how to use `b4` for patch development,
-> and forgot to check this.  Indeed it does.
-> 
-> I can see how the check works (scripts/checkpatch.pl L5881).  Decoding
-> that will probably help us improve the tooling.
-> 
-> >
-> > But of course, it doesn't always hold true, there are a few minor
-> > exceptions, but they are rare.
-> 
-> $ grep -r \\#include lib | grep asm
-> 
-> shows quite a few exceptions, and just in lib/.
-> 
-> For example, lib/math/int_log.c includes asm/bug.h.  Is that a case
-> where lib/math/int_log.c should be #include 'ing linux/bug.h rather
-> than asm/bug.h?
+In general, activating long mode involves setting the EFER_LME bit in
+the EFER register and then enabling the X86_CR0_PG bit in the CR0
+register. At this point, the EFER_LMA bit will be set automatically by
+hardware.
 
-Probably yes, but we don't normally go back and take coding style fixes
-for old files like this as it doesn't make much sense to do so.
+In the case of SVM/SEV guests where writes to CR0 are intercepted, it's
+necessary for the host to set EFER_LMA on behalf of the guest since
+hardware does not see the actual CR0 write.
 
-But, if you are cleaning up the headers for large portions with the goal
-of faster builds, that's a good reason.
+In the case of SEV-ES guests where writes to CR0 are trapped instead of
+intercepted, the hardware *does* see/record the write to CR0 before
+exiting and passing the value on to the host, so as part of enabling
+SEV-ES support commit f1c6366e3043 ("KVM: SVM: Add required changes to
+support intercepts under SEV-ES") dropped special handling of the
+EFER_LMA bit with the understanding that it would be set automatically.
 
-Good luck!
+However, since the guest never explicitly sets the EFER_LMA bit, the
+host never becomes aware that it has been set. This becomes problematic
+when userspace tries to get/set the EFER values via
+KVM_GET_SREGS/KVM_SET_SREGS, since the EFER contents tracked by the host
+will be missing the EFER_LMA bit, and when userspace attempts to pass
+the EFER value back via KVM_SET_SREGS it will fail a sanity check that
+asserts that EFER_LMA should always be set when X86_CR0_PG and EFER_LME
+are set.
 
-greg k-h
+Fix this by always inferring the value of EFER_LMA based on X86_CR0_PG
+and EFER_LME, regardless of whether or not SEV-ES is enabled.
+
+Fixes: f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under SEV-ES")
+Suggested-by: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: x86@kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Michael Roth <michael.roth@amd.com>
+---
+ arch/x86/kvm/svm/svm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 5d75a1732da4..b31d4f2deb66 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1869,7 +1869,7 @@ void svm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+ 	bool old_paging = is_paging(vcpu);
+ 
+ #ifdef CONFIG_X86_64
+-	if (vcpu->arch.efer & EFER_LME && !vcpu->arch.guest_state_protected) {
++	if (vcpu->arch.efer & EFER_LME) {
+ 		if (!is_paging(vcpu) && (cr0 & X86_CR0_PG)) {
+ 			vcpu->arch.efer |= EFER_LMA;
+ 			svm->vmcb->save.efer |= EFER_LMA | EFER_LME;
+-- 
+2.25.1
+
