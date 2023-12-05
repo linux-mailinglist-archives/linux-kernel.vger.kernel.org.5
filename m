@@ -2,48 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F1F805BBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FB2805C4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345032AbjLEQRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:17:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        id S231814AbjLEQRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:17:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjLEQRJ (ORCPT
+        with ESMTP id S232018AbjLEQRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:17:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A089E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:17:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECC70C43397;
-        Tue,  5 Dec 2023 16:17:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701793035;
-        bh=z37uNL6IIU4NauPVaUDXZWwyCByspD3QAo4UgtuVbOI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=mcuDl8jI+PwKHmlQ9yZ/pc0f4DAqmj5xvmsYiC6++IzGyRxVSHRQzH4xa0CPA+8Iy
-         1jvmwXwkKKQAjz0R9Nmha+2/D+c4QzcmOJ7yRQRt4Mqlrq4tMmAw62TFU2xt0xuB75
-         CNPZfZMhcE8injQ3wiR+ZniXn81CY+G3ldXqJffuBW+u3iMK8x9xdn+4bgUdapCpyz
-         U4UxrIpjiLgNatf2fRO0R97oJE+jVqj/hCJik0N96zr7F0ZdczlUtrgmVzUFmo+d5a
-         BbBM+QLHbp5KGMGC4WWaobp8wWC2YvdRtvAiZaKDyhJbX/DzXdNO/iknl9slYlFoJk
-         WAIdNKyVhJhvg==
-Date:   Tue, 5 Dec 2023 10:17:13 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/pci: Stop requiring MMCONFIG to be declared in E820,
- ACPI or EFI for newer systems
-Message-ID: <20231205161713.GA674824@bhelgaas>
+        Tue, 5 Dec 2023 11:17:50 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE93129;
+        Tue,  5 Dec 2023 08:17:55 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E3E6621AA8;
+        Tue,  5 Dec 2023 16:17:53 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9FEEF136CF;
+        Tue,  5 Dec 2023 16:17:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id +1NJJTFNb2WtdwAAD6G6ig
+        (envelope-from <petr.pavlu@suse.com>); Tue, 05 Dec 2023 16:17:53 +0000
+From:   Petr Pavlu <petr.pavlu@suse.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org,
+        mathieu.desnoyers@efficios.com
+Cc:     zhengyejian1@huawei.com, linux-trace-kernel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Petr Pavlu <petr.pavlu@suse.com>
+Subject: [PATCH v2 0/3] tracing: Simplify and fix "buffered event" synchronization
+Date:   Tue,  5 Dec 2023 17:17:33 +0100
+Message-Id: <20231205161736.19663-1-petr.pavlu@suse.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231205154845.44463-1-mario.limonciello@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Score: 15.00
+X-Spamd-Result: default: False [15.00 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.18)[-0.910];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[]
+X-Spamd-Bar: +++++++++++++++
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out1.suse.de: domain of petr.pavlu@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=petr.pavlu@suse.com
+X-Rspamd-Queue-Id: E3E6621AA8
+X-Spam: Yes
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -52,100 +81,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 09:48:45AM -0600, Mario Limonciello wrote:
-> commit 7752d5cfe3d1 ("x86: validate against acpi motherboard resources")
-> introduced checks for ensuring that MCFG table also has memory region
-> reservations to ensure no conflicts were introduced from a buggy BIOS.
-> 
-> This has proceeded over time to add other types of reservation checks
-> for ACPI PNP resources and EFI MMIO memory type.  The PCI firmware spec
-> however says that these checks are only required when the operating system
-> doesn't comprehend the firmware region:
-> 
-> ```
-> If the operating system does not natively comprehend reserving the MMCFG
-> region, the MMCFG region must be reserved by firmware. The address range
-> reported in the MCFG table or by _CBA method (see Section 4.1.3) must be
-> reserved by declaring a motherboard resource. For most systems, the
-> motherboard resource would appear at the root of the ACPI namespace
-> (under \_SB) in a node with a _HID of EISAID (PNP0C02), and the resources
-> in this case should not be claimed in the root PCI bus’s _CRS. The
-> resources can optionally be returned in Int15 E820h or EFIGetMemoryMap
-> as reserved memory but must always be reported through ACPI as a
-> motherboard resource.
-> ```
+Fix a few problems related to the maintenance of buffered events.
 
-My understanding is that native comprehension would mean Linux knows
-how to discover and/or configure the MMCFG base address and size in
-the hardware and that Linux would then reserve that region so it's not
-used for anything else.
+Changes since v1 [1]:
+* Address found problems individually. The approach in v1 tried to
+  simplify the buffered event synchronization but had performance
+  issues.
 
-Linux doesn't have that, at least for x86.  It relies on the MCFG
-table to discover the MMCFG region, and it relies on PNP0C02 _CRS to
-reserve it.
+[1] https://lore.kernel.org/linux-trace-kernel/20231127151248.7232-1-petr.pavlu@suse.com/
 
-> Running this check causes problems with accessing extended PCI
-> configuration space on OEM laptops that don't specify the region in PNP
-> resources or in the EFI memory map. That later manifests as problems with
-> dGPU and accessing resizable BAR.
+Petr Pavlu (3):
+  tracing: Fix incomplete locking when disabling buffered events
+  tracing: Fix a warning when allocating buffered events fails
+  tracing: Fix a possible race when disabling buffered events
 
-Is there a problem report we can reference here?
+ kernel/trace/trace.c | 35 +++++++++++++++++------------------
+ 1 file changed, 17 insertions(+), 18 deletions(-)
 
-Does the problem still occur with this series?
-https://lore.kernel.org/r/20231121183643.249006-1-helgaas@kernel.org
 
-This appeared in linux-next 20231130.
+base-commit: bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+-- 
+2.35.3
 
-> Similar problems don't exist in Windows 11 with exact same
-> laptop/firmware stack, and in discussion with AMD's BIOS team
-> Windows doesn't have similar checks.
-
-I would love to know AMD BIOS team's take on this.  Does the BIOS
-reserve the MMCFG space in any way?
-
-> As this series of checks was first introduced as a mitigation for buggy
-> BIOS before EFI was introduced add a BIOS date range to only enforce the
-> checks on hardware that predates the release of Windows 11.
-
-Many of the MMCFG checks in Linux are historical artifacts that are
-likely related to Linux defects, not BIOS defects, so I wouldn't
-expect to see them in Windows.  But it's hard to remove them now.
-
-> Link: https://members.pcisig.com/wg/PCI-SIG/document/15350
->       PCI Firmware Specification 3.3
->       Section 4.1.2 MCFG Table Description Note 2
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  arch/x86/pci/mmconfig-shared.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-> index 4b3efaa82ab7..e4594b181ebf 100644
-> --- a/arch/x86/pci/mmconfig-shared.c
-> +++ b/arch/x86/pci/mmconfig-shared.c
-> @@ -570,9 +570,13 @@ static void __init pci_mmcfg_reject_broken(int early)
->  
->  	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
->  		if (pci_mmcfg_check_reserved(NULL, cfg, early) == 0) {
-> -			pr_info(PREFIX "not using MMCONFIG\n");
-> -			free_all_mmcfg();
-> -			return;
-> +			if (dmi_get_bios_year() >= 2021) {
-> +				pr_info(PREFIX "MMCONFIG wasn't reserved by ACPI or EFI\n");
-
-I think this leads to using the MMCONFIG area without reserving it
-anywhere, so we may end up assigning that space to something else,
-which won't work, i.e., the problem described here:
-https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/commit/?id=5cef3014e02d
-
-> +			} else {
-> +				pr_info(PREFIX "not using MMCONFIG\n");
-> +				free_all_mmcfg();
-> +				return;
-> +			}
->  		}
->  	}
->  }
-> -- 
-> 2.34.1
-> 
