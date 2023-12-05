@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F708056D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 887EF8056DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345627AbjLEOI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:08:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
+        id S1345637AbjLEOKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:10:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345587AbjLEOI4 (ORCPT
+        with ESMTP id S1345587AbjLEOKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:08:56 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA0790;
-        Tue,  5 Dec 2023 06:09:03 -0800 (PST)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B56gxTg026627;
-        Tue, 5 Dec 2023 08:08:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=Y84RVH3VhN8tDOj
-        vYdyt02UT9ZJhyn7aTdxCf/Az8cs=; b=YxWsdDBhl7aBk9adBDLA8QMKQ0q1QDO
-        Qk0If8WrYTB6+wF84QLExCUrmzWOJPnv0qVMZs2KdbjiPJgPL/dzsOy27Jz0aW5o
-        u2s7IYOCLxoAgsqDmQlkN1X+4rNr4mvLe7OiOd4KVtwcDsXiL2gbuXLDufiTxpkP
-        uLgIoTG9hb3cJ9aEzQkX+abBe03wZ1j0DpcEdJjHlBz91Y7ASiN1BZQ7uHq3AF4g
-        VAJNhkItD8sdLYRzeEJb6gBVhoJ+MW1jEPG16gn+80ESXIsGYjOZfuFKsErRgD/u
-        GitxT5Urn/OZz5FTFB684Lw/l69Yo9i1rZDtE/rAHkiZv6Lp9gXJ5Vg==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ur1vnkat2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 08:08:43 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
- 2023 14:08:41 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Tue, 5 Dec 2023 14:08:41 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id C97E2474;
-        Tue,  5 Dec 2023 14:08:41 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 14:08:41 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-CC:     <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
-        <peter.ujfalusi@linux.intel.com>,
-        <yung-chuan.liao@linux.intel.com>, <kai.vehmanen@linux.intel.com>,
-        <cezary.rojewski@intel.com>, <ranjani.sridharan@linux.intel.com>,
-        <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a
- speaker widget
-Message-ID: <20231205140841.GG14858@ediswmail.ad.cirrus.com>
-References: <20231205135001.2506070-1-rf@opensource.cirrus.com>
+        Tue, 5 Dec 2023 09:10:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BDFDB9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:10:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701785421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zjpDU1pO5fL8Z2EU79m8w3lIjmII9ANV1M3MyIbt0ME=;
+        b=AXzplE61wm0wc8yNrlCbxbSpHbVLySxPi78iZKby+0WCo0ihllR/JlQ/2jqtZHDqgv2ys8
+        heOvMEWC9tuTuaLKP5p6HK235MeLrAn/MX144leLPJjSb+F0KcVLIvWDhqCPxSKtztfo23
+        Lgyn3x78pvHOseVM2mqEMw4y4fLdMkE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-246-hAEfsowROliopZ5AVRFZjQ-1; Tue,
+ 05 Dec 2023 09:09:30 -0500
+X-MC-Unique: hAEfsowROliopZ5AVRFZjQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6A21B1C06915;
+        Tue,  5 Dec 2023 14:09:30 +0000 (UTC)
+Received: from prarit.bos.redhat.com (prarit2023-praritguest.khw1.lab.eng.bos.redhat.com [10.16.200.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ED5A22026F95;
+        Tue,  5 Dec 2023 14:09:29 +0000 (UTC)
+From:   Prarit Bhargava <prarit@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Prarit Bhargava <prarit@redhat.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        David Arcari <darcari@redhat.com>,
+        linux-watchdog@vger.kernel.org
+Subject: [PATCH] watchdog: Provide a better stop error message
+Date:   Tue,  5 Dec 2023 09:09:16 -0500
+Message-ID: <20231205140926.397956-1-prarit@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231205135001.2506070-1-rf@opensource.cirrus.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: AsMvK67Ferp6_peSXzZpkcOf209E6xTk
-X-Proofpoint-ORIG-GUID: AsMvK67Ferp6_peSXzZpkcOf209E6xTk
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 01:50:01PM +0000, Richard Fitzgerald wrote:
-> Hookup the CS35L56 DAPM_OUTPUT widgets to a DAPM_SPK widget so
-> that there is a complete logical path to a speaker.
-> 
-> There is no particular reason to use multiple speaker widgets.
-> The CS35L56 are designed to work together as a set so they have
-> all been connected to a single speaker widget.
-> 
-> Instead of a hardcoded list of codec widget names, the code walks
-> through all the codecs on the dailink and for every cs35l56 it uses
-> its name prefix to construct the source end of the route. This adds
-> a small amount of overhead during probe but has the benefit that it
-> isn't dependent on every system using the same prefixes.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-> ---
+Provide a better stop error message for the case where the watchdog does
+not stop.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+CC: Wim Van Sebroeck <wim@linux-watchdog.org>
+CC: Guenter Roeck <linux@roeck-us.net>
+CC: David Arcari <darcari@redhat.com>
+CC: linux-watchdog@vger.kernel.org
+Signed-off-by: Prarit Bhargava <prarit@redhat.com>
+---
+ drivers/watchdog/watchdog_dev.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thanks,
-Charles
+diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+index 15df74e11a59..f0084bf7c750 100644
+--- a/drivers/watchdog/watchdog_dev.c
++++ b/drivers/watchdog/watchdog_dev.c
+@@ -965,7 +965,8 @@ static int watchdog_release(struct inode *inode, struct file *file)
+ 
+ 	/* If the watchdog was not stopped, send a keepalive ping */
+ 	if (err < 0) {
+-		pr_crit("watchdog%d: watchdog did not stop!\n", wdd->id);
++		pr_crit("watchdog%d is still active. Stop by [%s:%d] failed.\n",
++			wdd->id, current->comm, current->pid);
+ 		watchdog_ping(wdd);
+ 	}
+ 
+-- 
+2.43.0
+
