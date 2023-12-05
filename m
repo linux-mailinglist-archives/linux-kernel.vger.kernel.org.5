@@ -2,160 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D89328052E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 340378052E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:31:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232035AbjLELbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:31:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
+        id S1345094AbjLELbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:31:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442218AbjLELa4 (ORCPT
+        with ESMTP id S235128AbjLELbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:30:56 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2D2D116
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:31:02 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8988139F;
-        Tue,  5 Dec 2023 03:31:48 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 000CE3F766;
-        Tue,  5 Dec 2023 03:30:57 -0800 (PST)
-Message-ID: <a81dc390-8b10-4ce9-b72f-57f253e77af3@arm.com>
-Date:   Tue, 5 Dec 2023 11:30:56 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 01/15] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Yang Shi <shy828301@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        Tue, 5 Dec 2023 06:31:41 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591781AB;
+        Tue,  5 Dec 2023 03:31:46 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50bfa7f7093so2354334e87.0;
+        Tue, 05 Dec 2023 03:31:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701775904; x=1702380704; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iWABwC93ZRSAHZ+Njf9xIdiKvJp/CP14/ZzB27UiO+I=;
+        b=dkOdnC2jVcPaiBlOkIvqbrTfzUQ3I7jxR0Kwld7MjSIUuPzjIhXwdTkw1F6sqRfO4k
+         Sj91baZc4COMmXwLhS8a8Yp5CVC1rmrK609Z/i/U056UjJ8VpGQAvx4a2+p54cL6eqjM
+         M6iVbUIBo+BTlJ+7Ah6Ac2fbe4ENTLQm8hTy6uCFtG8vrOPz5kk6JrLPtbvzyCSg17qY
+         B9aDNaZC6jpTSdmuL2BzlqZsEhP6ktmLaGQqTAsjaZ8NACo0f0ntjqqRT21COJ4c9pt1
+         U5wA+DQn9RBsTzucjQioQPJmQM95C4+r5QV/9D13823kHWgPRWOsamk5hWp5RHdj73BO
+         j42A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701775904; x=1702380704;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iWABwC93ZRSAHZ+Njf9xIdiKvJp/CP14/ZzB27UiO+I=;
+        b=hGxGdsJaL7UoCmrD9UVX0DZt3SFivLr6bRvKNYt+Gq2B/ffTN3oRKttPidxrJ4x3X5
+         WSqRibG/RVB8AlIiVH7+Pl4jbx6MAvqR386hFoUCWdJvoF1aD4t4T+b9X28kgEbpg76B
+         sOKw3h7jYGsJHtB124oiVEJUQnqJTEvpRk+/f9T8KQGdIcLl7Ca8XkdhjI7GvnN2CphV
+         GdKqBJGxSd35BjJfV/3trdNngs1f7ihBJKCdFO+gF6y1sRHR6WPRIek6LnZvs6ho237U
+         IprrjfqNNsQvRFC9V+Xxt/ztnPY99zeMmg7tT2TU71nMs0G1P9dZGt80xW0rNkWHrf6H
+         MUvg==
+X-Gm-Message-State: AOJu0YwU8gpUnTzZEpZkf4N1IU/TM44xJpbHvPw2dcJFEtr0bY8API90
+        XHuF0M/9CxJlIVEpAbo48PY=
+X-Google-Smtp-Source: AGHT+IFOyPrsnNLbi6atUEGuAJC2I0o2XaEEchq0I+1cdYruq2/3i2EBhY8YCpuSc2tnpJmsGAzuyg==
+X-Received: by 2002:ac2:5490:0:b0:50b:f2e0:4997 with SMTP id t16-20020ac25490000000b0050bf2e04997mr1735238lfk.103.1701775904378;
+        Tue, 05 Dec 2023 03:31:44 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id bi38-20020a0565120ea600b0050bfd88075asm395757lfb.287.2023.12.05.03.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 03:31:43 -0800 (PST)
+Date:   Tue, 5 Dec 2023 14:31:41 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231204105440.61448-1-ryan.roberts@arm.com>
- <20231204105440.61448-2-ryan.roberts@arm.com>
- <a12ce4f8-feb0-4e35-8f55-9270fe5a808b@redhat.com>
- <104de2d6-ecf9-4b0c-a982-5bd8e1aea758@redhat.com>
- <5b8b9f8c-8e9b-42a5-b8b2-9b96903f3ada@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <5b8b9f8c-8e9b-42a5-b8b2-9b96903f3ada@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net-next 06/16] net: pcs: xpcs: Avoid creating dummy XPCS
+ MDIO device
+Message-ID: <rgp33mm4spbpm5tmgxurkhy4is3lz3z62rz64rni2pygteyrit@zwflw2ejdkn7>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-7-fancer.lancer@gmail.com>
+ <ZW8ASzkC9IFFlxkV@shell.armlinux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZW8ASzkC9IFFlxkV@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 17:27, David Hildenbrand wrote:
->>
->> With rmap batching from [1] -- rebased+changed on top of that -- we could turn
->> that into an effective (untested):
->>
->>           if (page && folio_test_anon(folio)) {
->> +               nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
->> +                                               pte, enforce_uffd_wp, &nr_dirty,
->> +                                               &nr_writable);
->>                   /*
->>                    * If this page may have been pinned by the parent process,
->>                    * copy the page immediately for the child so that we'll always
->>                    * guarantee the pinned page won't be randomly replaced in the
->>                    * future.
->>                    */
->> -               folio_get(folio);
->> -               if (unlikely(folio_try_dup_anon_rmap_pte(folio, page,
->> src_vma))) {
->> +               folio_ref_add(folio, nr);
->> +               if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page, nr,
->> src_vma))) {
->>                           /* Page may be pinned, we have to copy. */
->> -                       folio_put(folio);
->> -                       return copy_present_page(dst_vma, src_vma, dst_pte,
->> src_pte,
->> -                                                addr, rss, prealloc, page);
->> +                       folio_ref_sub(folio, nr);
->> +                       ret = copy_present_page(dst_vma, src_vma, dst_pte,
->> +                                               src_pte, addr, rss, prealloc,
->> +                                               page);
->> +                       return ret == 0 ? 1 : ret;
->>                   }
->> -               rss[MM_ANONPAGES]++;
->> +               rss[MM_ANONPAGES] += nr;
->>           } else if (page) {
->> -               folio_get(folio);
->> -               folio_dup_file_rmap_pte(folio, page);
->> -               rss[mm_counter_file(page)]++;
->> +               nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
->> +                                               pte, enforce_uffd_wp, &nr_dirty,
->> +                                               &nr_writable);
->> +               folio_ref_add(folio, nr);
->> +               folio_dup_file_rmap_ptes(folio, page, nr);
->> +               rss[mm_counter_file(page)] += nr;
->>           }
->>
->>
->> We'll have to test performance, but it could be that we want to specialize
->> more on !folio_test_large(). That code is very performance-sensitive.
->>
->>
->> [1] https://lkml.kernel.org/r/20231204142146.91437-1-david@redhat.com
-> 
-> So, on top of [1] without rmap batching but with a slightly modified version of
-
-Can you clarify what you mean by "without rmap batching"? I thought [1]
-implicitly adds rmap batching? (e.g. folio_dup_file_rmap_ptes(), which you've
-added in the code snippet above).
-
-> yours (that keeps the existing code structure as pointed out and e.g., updates
-> counter updates), running my fork() microbenchmark with a 1 GiB of memory:
-> 
-> Compared to [1], with all order-0 pages it gets 13--14% _slower_ and with all
-> PTE-mapped THP (order-9) it gets ~29--30% _faster_.
-
-What test are you running - I'd like to reproduce if possible, since it sounds
-like I've got some work to do to remove the order-0 regression.
-
-> 
-> So looks like we really want to have a completely seprate code path for
-> "!folio_test_large()" to keep that case as fast as possible. And "Likely" we
-> want to use "likely(!folio_test_large()". ;)
-
-Yuk, but fair enough. If I can repro the perf numbers, I'll have a go a
-reworking this.
-
-I think you're also implicitly suggesting that this change needs to depend on
-[1]? Which is a shame...
-
-I guess I should also go through a similar exercise for patch 2 in this series.
-
-> 
-> Performing rmap batching on top of that code only slightly (another 1% or so)
-> improves performance in the PTE-mapped THP (order-9) case right now, in contrast
-> to other rmap batching. Reason is as all rmap code gets inlined here and we're
-> only doing subpage mapcount updates + PAE handling.
+On Tue, Dec 05, 2023 at 10:49:47AM +0000, Russell King (Oracle) wrote:
+> On Tue, Dec 05, 2023 at 01:35:27PM +0300, Serge Semin wrote:
+> > If the DW XPCS MDIO devices are either left unmasked for being auto-probed
+> > or explicitly registered in the MDIO subsystem by means of the
+> > mdiobus_register_board_info() method there is no point in creating the
+> > dummy MDIO device instance in order to get the DW XPCS handler since the
+> > MDIO core subsystem will create the device during the MDIO bus
+> > registration procedure.
 > 
 
+> Please reword this overly long sentence.
+
+Ok.
+
+> 
+> If they're left unmasked, what prevents them being created as PHY
+> devices?
+
+Not sure I fully get what you meant. If they are left unmasked the
+MDIO-device descriptor will be created by the MDIO subsystem anyway.
+What the point in creating another one?
+
+> 
+> > @@ -1437,19 +1435,21 @@ struct dw_xpcs *xpcs_create_mdiodev(struct mii_bus *bus, int addr,
+> >  	struct mdio_device *mdiodev;
+> >  	struct dw_xpcs *xpcs;
+> >  
+> > -	mdiodev = mdio_device_create(bus, addr);
+> > -	if (IS_ERR(mdiodev))
+> > -		return ERR_CAST(mdiodev);
+> > +	if (addr >= PHY_MAX_ADDR)
+> > +		return ERR_PTR(-EINVAL);
+> >  
+> > -	xpcs = xpcs_create(mdiodev, interface);
+> > +	if (mdiobus_is_registered_device(bus, addr)) {
+> > +		mdiodev = bus->mdio_map[addr];
+> > +		mdio_device_get(mdiodev);
+> 
+
+> No, this makes no sense now. This function is called
+> xpcs_create_mdiodev() - note the "create_mdiodev" part. If it's getting
+> the mdiodev from what is already there then it isn't creating it, so
+> it's no longer doing what it says in its function name. If you want to
+> add this functionality, create a new function to do it.
+
+AFAICS the method semantics is a bit different. It's responsibility is to
+create the DW XPCS descriptor. MDIO-device is utilized internally by
+the DW XPCS driver. The function callers don't access the created MDIO
+device directly (at least since some recent commit). So AFAIU "create"
+means creating the XPCS descriptor irrespective from the internal
+communication layer. So IMO the suffix is a bit misleading. I'll
+change it in one of the next commit anyway. Should I just merge that
+patch back in this one?
+
+-Serge(y)
+
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
