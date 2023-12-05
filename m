@@ -2,73 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F88804BB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4352804BBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344701AbjLEIEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
+        id S1344715AbjLEIE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:04:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjLEIEG (ORCPT
+        with ESMTP id S229712AbjLEIE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:04:06 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DDD83;
-        Tue,  5 Dec 2023 00:04:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1701763449;
-        bh=uVveZGVaZUbRnOAutlrO+8dx/i4swMQhmAWYmf7MjJc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=toBtk2dg3zME3NTivyV0eIcnfHFayW+Sj63QXxP2KybGsXPcb/EP9BYJDDBdYy+C2
-         qJqStQ03416apxhNdj0VmgT1esI/H0K4OO4HGu0Ks+pTM9G5ih/ZzDAgRvZD9VtB4j
-         7r1MiRQPUt/QOE1kSP3fmQgtpoV4QvN9atqH1MpU=
-Date:   Tue, 5 Dec 2023 09:04:08 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Granados <j.granados@samsung.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
-Message-ID: <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
-References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
- <ZW66FhWx7W67Y9rP@bombadil.infradead.org>
+        Tue, 5 Dec 2023 03:04:27 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF526127;
+        Tue,  5 Dec 2023 00:04:32 -0800 (PST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B582q8c024915;
+        Tue, 5 Dec 2023 08:04:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=mime-version : date :
+ from : to : cc : subject : reply-to : in-reply-to : references :
+ message-id : content-type : content-transfer-encoding; s=pp1;
+ bh=/aAESai4uDl4/7s45na8z6I4tJIt9dFN0EddPTE9jS8=;
+ b=lRfNWdXG3nedK6jjI5linSKB/HEK9fYxuy2HsogQNs0GTQ0J0S23QhP3cp9aUxsI8POi
+ RIFZQLp3UrnfuZcK237mb9qecDhPR3gyAmnRd2d+k+/IY9QnapZHsPUOoZsOmfIsHm2T
+ BVgcDKw5YLJALD6zeJ44CI3aLv1fzOtPY/85Z23v4XLTZfSmE7jf2p3AYCow6b7eIX3/
+ Kns+okcSwjlg54BK5xsIWIwyzoR/ywtb4+Dq2doVGG4fUfiIK55R6v0IOpZ2nMxFoLwL
+ +n7iX4y9hzwXGQkYw45SAwxuA0+j2KLyrw19T+XphalpceID3v0U9Hq0yTG9keo1yvu2 MQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ut00m01fe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 08:04:29 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B584TrX030361;
+        Tue, 5 Dec 2023 08:04:29 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ut00m01ey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 08:04:29 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B57YE5c009137;
+        Tue, 5 Dec 2023 08:04:28 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urgdkw8nn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 08:04:28 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B584OCh3932848
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Dec 2023 08:04:25 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 94E105803F;
+        Tue,  5 Dec 2023 08:04:24 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2864B58061;
+        Tue,  5 Dec 2023 08:04:24 +0000 (GMT)
+Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Dec 2023 08:04:24 +0000 (GMT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZW66FhWx7W67Y9rP@bombadil.infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Date:   Tue, 05 Dec 2023 09:04:23 +0100
+From:   Harald Freudenberger <freude@linux.ibm.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com,
+        Reinhard Buendgen <BUENDGEN@de.ibm.com>
+Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
+Reply-To: freude@linux.ibm.com
+Mail-Reply-To: freude@linux.ibm.com
+In-Reply-To: <20231204171506.42aa687f.pasic@linux.ibm.com>
+References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+ <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
+ <1f4720d7-93f1-4e38-a3ad-abaf99596e7c@linux.ibm.com>
+ <05cfc382-d01d-4370-b8bb-d3805e957f2e@linux.ibm.com>
+ <20231204171506.42aa687f.pasic@linux.ibm.com>
+Message-ID: <d780a15a7c073e7d437f8120a72e8d29@linux.ibm.com>
+X-Sender: freude@linux.ibm.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: M3DHbSEQEfuZvzieLvJTu5EieaUC3_58
+X-Proofpoint-ORIG-GUID: ZEg1yn10AEgYly7F7nAwdI3-FSYkzfvN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_03,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 clxscore=1011 mlxlogscore=999 spamscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312050064
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-04 21:50:14-0800, Luis Chamberlain wrote:
-> On Mon, Dec 04, 2023 at 08:52:13AM +0100, Thomas Weißschuh wrote:
-> > Tested by booting and with the sysctl selftests on x86.
+On 2023-12-04 17:15, Halil Pasic wrote:
+> On Mon, 4 Dec 2023 16:16:31 +0100
+> Christian Borntraeger <borntraeger@linux.ibm.com> wrote:
 > 
-> Can I trouble you to rebase on sysctl-next?
+>> Am 04.12.23 um 15:53 schrieb Tony Krowiak:
+>> >
+>> >
+>> > On 11/29/23 12:12, Christian Borntraeger wrote:
+>> >> Am 29.11.23 um 15:35 schrieb Tony Krowiak:
+>> >>> In the current implementation, response code 01 (AP queue number not valid)
+>> >>> is handled as a default case along with other response codes returned from
+>> >>> a queue reset operation that are not handled specifically. Barring a bug,
+>> >>> response code 01 will occur only when a queue has been externally removed
+>> >>> from the host's AP configuration; nn this case, the queue must
+>> >>> be reset by the machine in order to avoid leaking crypto data if/when the
+>> >>> queue is returned to the host's configuration. The response code 01 case
+>> >>> will be handled specifically by logging a WARN message followed by cleaning
+>> >>> up the IRQ resources.
+>> >>>
+>> >>
+>> >> To me it looks like this can be triggered by the LPAR admin, correct? So it
+>> >> is not desireable but possible.
+>> >> In that case I prefer to not use WARN, maybe use dev_warn or dev_err instead.
+>> >> WARN can be a disruptive event if panic_on_warn is set.
+>> >
+>> > Yes, it can be triggered by the LPAR admin. I can't use dev_warn here because we don't have a reference to any device, but I can use pr_warn if that suffices.
+>> 
+>> Ok, please use pr_warn then.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=sysctl-next
+> Shouldn't we rather make this an 'info'. I mean we probably do not want
+> people complaining about this condition. Yes it should be a best 
+> practice
+> to coordinate such things with the guest, and ideally remove the 
+> resource
+> from the guest first. But AFAIU our stack is supposed to be able to
+> handle something like this. IMHO issuing a warning is excessive 
+> measure.
+> I know Reinhard and Tony probably disagree with the last sentence
+> though.
 
-Will do.
+Halil, Tony, the thing about about info versus warning versus error is 
+our
+own stuff. Keep in mind that these messages end up in the "debug 
+feature"
+as FFDC data. So it comes to the point which FFDC data do you/Tony want 
+to
+see there ? It should be enough to explain to a customer what happened
+without the need to "recreate with higher debug level" if something 
+serious
+happened. So my private decision table is:
+1) is it something serious, something exceptional, something which may 
+not
+    come up again if tried to recreate ? Yes -> make it visible on the 
+first
+    occurrence as error msg.
+2) is it something you want to read when a customer hits it and you tell 
+him
+    to extract and examine the debug feature data ? Yes -> make it a 
+warning
+    and make sure your debug feature by default records warnings.
+3) still serious, but may flood the debug feature. Good enough and high
+    probability to reappear on a recreate ? Yes -> make it an info 
+message
+    and live with the risk that you may not be able to explain to a 
+customer
+    what happened without a recreate and higher debug level.
+4) not 1-3, -> maybe a debug msg but still think about what happens when 
+a
+    customer enables "debug feature" with highest level. Does it squeeze 
+out
+    more important stuff ? Maybe make it dynamic debug with pr_debug() 
+(see
+    kernel docu admin-guide/dynamic-debug-howto.rst).
 
-Note:
-
-I noticed that patch "sysctl: move sysctl type to ctl_table_header" from
-this series seems to be the better alternative to
-commit fd696ee2395755a ("sysctl: Fix out of bounds access for empty sysctl registers")
-which is currently on sysctl-next.
-
-The patch from the series should only depend on
-"sysctl: drop sysctl_is_perm_empty_ctl_table" from my series.
-
-Thomas
+> 
+> Regards,
+> Halil
