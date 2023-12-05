@@ -2,82 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F90805BA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB67805C5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbjLEQmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:42:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S231997AbjLEQnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:43:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjLEQmu (ORCPT
+        with ESMTP id S229643AbjLEQnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:42:50 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F31D129;
-        Tue,  5 Dec 2023 08:42:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1701794573; x=1702399373; i=rwarsow@gmx.de;
-        bh=coHe5WCJY39d1Uv3/qMYCpaKNWEwv8yrks7juxiis4c=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-        b=c3tovBj4JirzrbA0nNptsWE9+kSMc1pa8g54p1XKRoWylp04W8VqSnS9RkEz681S
-         gIH9GGaLcqPA10CawCE8Ds2kxLB1KvmB7ZjUfoKVtbXGU+uYQDWCQKftF8vowGK8T
-         MCQCQmpcLhx3CTMbfalIBSZc3lyrkOCUlTTU2HmLyVP63wcEIt7DUFdzbsLygMPiX
-         Ww6Cdwy9xfvGINlVW+FDBcAuMBU90e8pZTajYqKJP//+UVewp0LIom6CyIO5NOYyo
-         C0ryTfgUSz+YEyN5D1r2hPkW9af5g3StsEpSnryi9zOT7HVhjK34HFTT2YQBlEz5g
-         mvM/vFTIrqj1/i3CKg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([46.142.34.247]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M9FjR-1rD0x93LaZ-006QOx; Tue, 05
- Dec 2023 17:42:52 +0100
-Message-ID: <f0a463a7-6b84-4700-b8d5-87005c7e5297@gmx.de>
-Date:   Tue, 5 Dec 2023 17:42:52 +0100
+        Tue, 5 Dec 2023 11:43:16 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2082.outbound.protection.outlook.com [40.107.237.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CD7135;
+        Tue,  5 Dec 2023 08:43:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b90PWXvvjjy8972AC8GRECffrwcPtEei04JESS7EhSXuFZ+TNdVOhaVsPszrTc/jCHQBHUT7HvSrs7swStO6DyFCDfmLqGSopv43etyP2V9sGDUnIvyu/mAymx1auq1kzAH4DA//b3MTgFn2ayHlYBy6CCBR0lmhkmhnlO+DVmxZEYOt/l2Spd0G6CeJE0a21EfXy5NHv94PGybVgfTabYkMd+VVNhZCCvrQrzGVHDDrwQABLjWO8B2xpW+XzUowCI2+MZzDvzzT2z4vzIxReci8tM60jX6sRbsuaqNDOUux4dRkxUuJR/WQSMoEJCuWmImaSe1m42iXtsdCBcxGfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sQmwIwVYkauMGtvx1jGrLwI/4G4nT7X0iDtOCpiEUN8=;
+ b=fSBMgCrnzd9O6H71ySZtHBh3WXjzd4Xla/X+9CBcoEu+UqLA1qAT4obI/0cOkSAgK+BJQrpzxZib6nsMetkq+2Y8jbqJzk1zSZbnKv6RlDP1W7Dpe/gb/hXXyocfJLvoce0tF50vW+JNh0PIvNiZrY5oc60rG/Qx9oa7JQp5eqo9D4Kg2LR1zciYYasSXk01/QxbmDVBIiDSiRtgmf1qiqQNDnnquRxsSXVS5pMMn0ELjAgDgVn8oXhaKf9TWV38pOpHnUSGlmHDbsfx4R9ZWktPcl6lUYCrxwzX9aPX8uqM7LWwix7ykGZ7dHr8eXVKjzYRM/is0436gjbr1vNr/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sQmwIwVYkauMGtvx1jGrLwI/4G4nT7X0iDtOCpiEUN8=;
+ b=JmAtBPbpCBRDizDdY8uxV1z17TgyXogGUvuv37VmA0TI6/Om4huTborvfanHo5sLRr3DixUznDIHJr56oyKRI5iENN5MH/I0bjqW50bIAht57i3DWTx3KDSGSopIS7MH3vEUMeQcP6MJa44UP08cQd6Qr1/sebBtXLvgN84BcbCvqQ4s/YUTxs5MqL9pi5Lz82T8H3G3N8y/SMVG5zlYFnIps3ZxlJI/aAP29rv72u3J1qWvsFnsOzFglCLCGdHFpLHAyGKSeO7mKY+8RBCh6ZK53VBWpjscKWGmH/0kV1YV11WhvuQQmL1uEe8yMX0m201ULyys67MtywLpjRwf4w==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CH3PR12MB7764.namprd12.prod.outlook.com (2603:10b6:610:14e::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 16:43:19 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
+ 16:43:19 +0000
+Date:   Tue, 5 Dec 2023 12:43:18 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        lpieralisi@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <20231205164318.GG2692119@nvidia.com>
+References: <20231205033015.10044-1-ankita@nvidia.com>
+ <86fs0hatt3.wl-maz@kernel.org>
+ <ZW8MP2tDt4_9ROBz@arm.com>
+ <20231205130517.GD2692119@nvidia.com>
+ <ZW9OSe8Z9gAmM7My@arm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZW9OSe8Z9gAmM7My@arm.com>
+X-ClientProxiedBy: BL0PR03CA0017.namprd03.prod.outlook.com
+ (2603:10b6:208:2d::30) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Ronald Warsow <rwarsow@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.6 000/134] 6.6.5-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:otCVhkPgV5F2NLGqYIRvMZHleOHoHTaWafCNe3V9Ga9pPKEK2tA
- KmVVeX6ee10RORtiJHD7TO6/uWVZj+aPaLJFMVNPmmu79FjBCTZTIftophll1cJ1ELJhcJC
- eGzgOvhMy3G51LRy/E0GVrQ0s+xuXbbtcLSaN9HNwwsLz5sFlGKpSSDSS6rY7Gtecc/Gkb/
- FLtyd6EBW3qXQDo55mwuw==
-UI-OutboundReport: notjunk:1;M01:P0:sAwalaS4Oag=;+LUaXsf64OEgBrGqVwgRNytxVa2
- jXeaP6YrLwceSG6+PH72MYJgbbtve7xzjijMd4qdgncPuO3xfeJ+g40VyB+/R+2Whc2uiCjRi
- +Y2tP0auHBAUOAeGlKHR1MalAoQY0DzQ9W3cWan9cq462eHWGFw9tS3+j5GX1hNQU15+l56mE
- BVJFmMSad9aN0JsZfkwbxhG6W7T1vdyg3QWJcTuoUEZeTCOw2bdHYMKrKyaT4TJJZRjPlWYR+
- gSqHCx1hUqJKoZRSHo2gJLw9eL2Moy3LOtgOKwLX3kIIbSfHRiCuxakQJ0ch3XGaiqtxrwY1i
- oCTrMLRyI/grFmgm+2mdFCPbX7czQwjL9ioe1JoHyibafDBFm3OnlHXXgiW7SmxZ1EDXYM/V8
- Q5WE6d3jV85fHjbSd8gEfVqqnnyNKG8KBPz5MvWXMBsqrbBzsvU+atWVlMKcVRtStSUeNsjTg
- M4+QS+f2NTMoOQ0+/8ce74Cd0Z++wiWN/bhZv7ZG9417Odtt4NbF5DlVvdkc3IcQs7ImQ5wz1
- c2oic1jGX+hLH39rQ/j1V+lq+QrEnczmrIjpE1u9rfKBV+rv2RWDFz4MY9mVl7UWq3p0zKx44
- +QCl5cx6Dm45biBD2Kihzui/pPDA9SbydtF7KM+cv+JxHoNN7BH9QLUkD5r+zKe7uNUGJQwy6
- UWPjixnlZ+7F34ui1C0ma+/w9RVvZtmJPiClFPipd8NCxPZKLgH2F85mB+1nBCVNp7a1VSIn5
- lCBwdytxfMMCQEWzyoS7/GnVocI4bqdYTkV0xId1ll4k6qC6c3iTuXl1tkyxnXr7CCrq0xLqO
- 8Mmz7zjZ2ED54P5cbg8vZiIpbZNZ9BgCl5y7RAqUGXYHKxRUZcaUn4jYYHaTkCVlxHWTjufXZ
- QyIvjpKYY8adAZE8pN5cKGkNddAMNEPOZWY8VCzaZq6Jzzr/wfvHTlKeZJ9M254RgYhQej6IQ
- wlwni6kWusD+2Wo+2xatqFaH1Sc=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB7764:EE_
+X-MS-Office365-Filtering-Correlation-Id: b858a273-057a-4eb0-9869-08dbf5b1493c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AFSbd5BvOwEA5LJLP7M0qa6FsN4m+jFsXh66gDbpnRsNY6c27/kM16Ix61Iwp+ShCcagycsz3eT63jRQ8ZDJ2XpgqTGyDPVAiH5FfVBukmCWR3yxbR0HCR1bXK7ojrOcTvb2L1jLJ7x9Gewf/Y04cn1OmjpYb1JRP6l74IKIS9WAvbtYVg79ljSs7PT84V9FFW3b0IfFpGv1xaWUflHJfaAW3G7NcgPyQcKIB8ewt/++txClIM465+IiLX6Fe3BtUVI2JUHYmU2lIjWC2yAaOaLavOGSvN1+HQMUotawj+XDvfcPTYPrhT6A05irpHUmFB5aieQ1BP77GMFPc/cSrgADxpyj9V32Pso/jGprDrt4KKYXjvlYA+WM04akpodxR3J7+N84jneDBI8PJpXND4diGS2+u9cBLS2WYcJecEecI20QLtt7hwtXyOyu2A1tqHUrcKwljEELUVkKWs8datvg+Uom6RhFGTexiVsDwDFw2s701RdUmjpFsbmhUkTU8Hiu9PblZs+8hqBxUmUf+scIMUvMNwG86zfOq7iVGFXRK69uQ/Jc8QPm5uRc8eF1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(54906003)(6916009)(66946007)(66556008)(316002)(66476007)(6486002)(478600001)(7416002)(5660300002)(41300700001)(36756003)(33656002)(2906002)(4326008)(8676002)(8936002)(83380400001)(86362001)(2616005)(26005)(1076003)(6506007)(38100700002)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3VtKCITSQ1dFSVI/uuxAWlKZsmibVzIWRM4D8ml7r9UL1BIxGUotHUNV7eFh?=
+ =?us-ascii?Q?LuhkUoFBSU1s+lrbsIt6PHsbl8nmhQEMZefl4rFQx4RH1jnyjW9Rp2JbWfrN?=
+ =?us-ascii?Q?HFoo4/L8wxnmU/etfKahwcwbKvdCVZwvzyvROwPLSsLjYdrsTZSu1ppL5bxt?=
+ =?us-ascii?Q?XJll5E0WmJAgm0yRLp1BqrsllztnPgzYxhm9cg6lKOP1+kEaAXE9Zp77I79m?=
+ =?us-ascii?Q?VOTjs1pb5Tn/1iGR6Xb23wdS1PVOa0oxSZGy9AeMgPA0bG1vyBVBLHQpnnkU?=
+ =?us-ascii?Q?IwyMtVWRNhMm2qb5DAPtubRKuV6KFcvvEJlWpDikeSWInxOVA8eN77vk5wi0?=
+ =?us-ascii?Q?aPP55/fCd7mFkrMT/T3FrXlxMyCs/nR456CACEdyJ5aBPuf0V6CrQfpJgBlQ?=
+ =?us-ascii?Q?zhYgLAVWVfI8P7z3aevVefmmDbNu1Wgltcq1fVztDlPV8kBXRTgtdWsKy+6l?=
+ =?us-ascii?Q?ZIt7+evopfFh7rPWjRYEdyOy1Y1xewNEaV3cfoIGhdV5US8TMAhDC51sLDlK?=
+ =?us-ascii?Q?TAiOKzEXvFZrJuAn9YIkHJ4UWHngEHq60sJOXXGH3iIybOyJxCxgRVKMPo+v?=
+ =?us-ascii?Q?kJU0Ja/5lx7ouc82ozEetls9djsfrdD8aZJinHaCijithYEqKcst0OvosiO8?=
+ =?us-ascii?Q?BO7T/YjpwrEQ32BLRnIAssjyPdWQZ/41oyaWsoa78WXVmNVyP5QxJKo5dwsV?=
+ =?us-ascii?Q?8yddmyiri7QcETtySxH4jSW6hEio9pBPG5MkKSZgkXc/INpLkSqqwJkcyGIl?=
+ =?us-ascii?Q?2hN47gbSjaxvktxiOK3cRhDckGZY6Uc5sxypk3U+A5luH6uNZEL/9Fxx2X/b?=
+ =?us-ascii?Q?HdnWDXhxqWyHlyTIHsJOk2z5bOeQsGn523qQGJeoqF52X05EIE4oZVmEgeu8?=
+ =?us-ascii?Q?8fbDkZ/Kdq2zWKxPpXc4nfpP4RbcNuuLHExH0ISkcfSIglc+tFEezfiRRSxn?=
+ =?us-ascii?Q?HHpzLaGPdZmGUjyDp22I+anV9eS3eE6hl/Xlr2juVqhXb1gDNCiULN7z0wzE?=
+ =?us-ascii?Q?3tob7IiBinAlcdVGuBpYVXFIhdJFHNZkD9m+Pp2WVZ6i+AoDCoGi3u18Edqr?=
+ =?us-ascii?Q?q1q7e63NHrI8wg+Cg/obmp0ykmNKSAl0+qQP1ADJFvKyfwSqoJKIyYhWKGes?=
+ =?us-ascii?Q?nqYJs+Zb1r5Mw9M8vgXfcpHPIXBSjYtxTsM+kNVX4Qzh8aFvXymr/+ZXE9p/?=
+ =?us-ascii?Q?4ulGZ5RltW+RA3m2trgM9dS6PHM9pm7N+QPap5pzmxbO5jtBi54930BM88dV?=
+ =?us-ascii?Q?Q8XeboSAMLl0JiRvT4/pyPJ3sA6paIQMub6QmljEnf7sT/iymbe0UIIYGlFt?=
+ =?us-ascii?Q?NwHU3pkoLtKFyFi1U/9ln02/2+h7Fyic0dsVSdVGHVTtgsebrnsnXDBQkWhK?=
+ =?us-ascii?Q?Z8EOFmNGFD+k9kMTlIBh5cvHvBG0gxWpxf6a/oKg+/KzHsD8QcRg1Vbaq355?=
+ =?us-ascii?Q?NI1ZEMoUno1sBz7RTvWV1gccm3NWmEx0Z83MtR0BfXXZj+Q0CWGoLPvTrLmI?=
+ =?us-ascii?Q?An6mQGQdbgeqXA7EI/+kBQoZnS4EqzdtemxobxbOKnvT1PYwttNK3AJNcoCV?=
+ =?us-ascii?Q?gLFOakAp3pupuLZy2EPVYhTozdT5V3mLNoCYVKd/?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b858a273-057a-4eb0-9869-08dbf5b1493c
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 16:43:19.2296
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DBkwKONxfo+tkoiwvyosd2V48YfjvPEGw933wLah4ia70uyuZJ9hLQWF2KapwYr4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7764
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+On Tue, Dec 05, 2023 at 04:22:33PM +0000, Catalin Marinas wrote:
+> Yeah, I made this argument in the past. But it's a fair question to ask
+> since the Arm world is different from x86. Just reusing an existing
+> driver in a different context may break its expectations. Does Normal NC
+> access complete by the time a TLBI (for Stage 2) and DSB (DVMsync) is
+> completed? It does reach some point of serialisation with subsequent
+> accesses to the same address but not sure how it is ordered with an
+> access to a different location like the config space used for reset.
+> Maybe it's not a problem at all or it is safe only for PCIe but it would
+> be good to get to the bottom of this.
 
-6.6.5-rc1
+IMHO, the answer is you can't know architecturally. The specific
+vfio-platform driver must do an analysis of it's specific SOC and
+determine what exactly is required to order the reset. The primary
+purpose of the vfio-platform drivers is to provide this reset!
 
-compiles, boots and runs here on x86_64
-(Intel Rocket Lake: i5-11400)
+In most cases I would expect some reads from the device to be required
+before the reset.
 
-Thanks
+> > Remember, the feedback we got from the CPU architects was that even
+> > DEVICE_* will experience an uncontained failure if the device tiggers
+> > an error response in shipping ARM IP.
+> > 
+> > The reason PCIe is safe is because the PCI bridge does not generate
+> > errors in the first place!
+> 
+> That's an argument to restrict this feature to PCIe. It's really about
+> fewer arguments on the behaviour of other devices. Marc did raise
+> another issue with the GIC VCPU interface (does this even have a vma in
+> the host VMM?). That's a class of devices where the mapping is
+> context-switched, so the TLBI+DSB rules don't help.
 
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
+I don't know anything about the GIC VCPU interface, to give any
+comment unfortunately. Since it seems there is something to fix here I
+would appreciate some background..
+ 
+When you say it is context switched do you mean kvm does a register
+write on every vm entry to set the proper HW context for the vCPU?
 
+We are worrying that register write will possibly not order after
+NORMAL_NC?
+
+> > Thus, the way a platform device can actually be safe is if it too
+> > never generates errors in the first place! Obviously this approach
+> > works just as well with NORMAL_NC.
+> > 
+> > If a platform device does generate errors then we shouldn't expect
+> > containment at all, and the memory type has no bearing on the
+> > safety. The correct answer is to block these platform devices from
+> > VFIO/KVM/etc because they can trigger uncontained failures.
+> 
+> Assuming the error containment is sorted, there are two other issues
+> with other types of devices:
+> 
+> 1. Ordering guarantees on reclaim or context switch
+
+Solved in VFIO
+ 
+> 2. Unaligned accesses
+> 
+> On (2), I think PCIe is fairly clear on how the TLPs are generated, so I
+> wouldn't expect additional errors here. But I have no idea what AMBA/AXI
+> does here in general. Perhaps it's fine, I don't think we looked into it
+> as the focus was mostly on PCIe.
+
+I would expect AXI devices to throw errors in all sorts of odd
+cases. eg I would not be surprised at all to see carelessly built AXI
+devices error if ST64B is pointed at them. At least when I was
+building AXI logic years ago I was so lazy :P
+
+This is mostly my point - if the devices under vfio-platform were not
+designed to have contained errors then, IMHO, it is hard to believe
+that DEVICE_X/NORMAL_NC is the only issue in that HW.
+
+> So, I think it would be easier to get this patch upstream if we limit
+> the change to PCIe devices for now. We may relax this further in the
+> future. Do you actually have a need for non-PCIe devices to support WC
+> in the guest or it's more about the complexity of the logic to detect
+> whether it's actually a PCIe BAR we are mapping into the guest? (I can
+> see some Arm GPU folk asking for this but those devices are not easily
+> virtualisable).
+
+The complexity is my concern, and the disruption to the ecosystem with
+some of the ideas given.
+
+If there was a trivial way to convey in the VMA that it is safe then
+sure, no objection from me.
+
+My worry is this has turned from fixing a real problem we have today
+into a debate about theoretical issues that nobody may care about that
+are very disruptive to solve.
+
+I would turn it around and ask we find a way to restrict platform
+devices when someone comes with a platform device that wants to use
+secure kvm and has a single well defined HW problem that is solved by
+this work.
+
+What if we change vfio-pci to use pgprot_device() like it already
+really should and say the pgprot_noncached() is enforced as
+DEVICE_nGnRnE and pgprot_device() may be DEVICE_nGnRE or NORMAL_NC?
+Would that be acceptable?
+
+Jason
