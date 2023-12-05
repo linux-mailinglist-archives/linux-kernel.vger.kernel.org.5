@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A11D9804408
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1DC804409
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343890AbjLEB0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 20:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        id S1346217AbjLEB0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 20:26:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbjLEB0k (ORCPT
+        with ESMTP id S1343956AbjLEB0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 20:26:40 -0500
+        Mon, 4 Dec 2023 20:26:43 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D756CCD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:26:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F339135
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:26:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701739606; x=1733275606;
+  t=1701739609; x=1733275609;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nBO6r/Mialf5vBFGAoopzywwKjVALm8cMNFioZBcghU=;
-  b=Ju2X6AqR8Zi+GFlMSvFwKe7OIMmVrecAd89TaM2lWf+ZqlYS8KpxoVeD
-   0lGfjVxs/LuTy6mPCit3gi+DLSi9SJOBg7C5x4fkpqGCfQg2BqVe6ZpWi
-   r9ICNy4QmbynhROdxAUXWRf+lcS44Wb+yPaSuDMZ7X1epYlOMz9L+zB6A
-   FAe1VRxdXC6ajgU4nBX9cuLINIyVEv058/FpIhlkFj2XW80a2IPFOv1Ae
-   KYDx0Lql5ZXslcHtlglSvwzeQOUGmHzm/u6I7nW8aSvU7I+rE7KfOForg
-   9sq9hJgvg14RyQt9/1oum7qeL4JGycwyx7U+ea3aTerHUlxmp/I3nWBGE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="460313342"
+  bh=Hu+gkVWZE83d4KZHeWPMt+YqjiEu98XZ0PIi+Ei4+Wc=;
+  b=kGbXTOfw7rmc2yHYFRp2bYzEnow3iLpmg9BXkjkBADc6nVk/PPgsdyaz
+   zfHOaFcYUGu830o36kiLSUmDgcu1coITXIPmXjAMJsy3oTON3aLFtDA2N
+   TnOLai1IXQNaxpkNSdUeRK/BccY4ircQ4zxiYE1mmhmMCBKYkIw+0jfju
+   dfbskFqk2tqcL0wMJ9AvVFkeECBNW4t4LKRK9OoUAz6Sn6JHZvvSG9GjS
+   /zhnWP5meGjgv9YOTCRS6EaZNaRYtXagNKt/KwcOk1e5sLGxBvkEanu1t
+   0ppzIiPhC0nsU+68avY0BloCf9qqvqXiDAC8NsL2lcM14uXV1iQCmtK7n
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="460313349"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="460313342"
+   d="scan'208";a="460313349"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:26:46 -0800
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:26:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1102276212"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1102276239"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="1102276212"
+   d="scan'208";a="1102276239"
 Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmsmga005.fm.intel.com with ESMTP; 04 Dec 2023 17:26:44 -0800
+  by fmsmga005.fm.intel.com with ESMTP; 04 Dec 2023 17:26:46 -0800
 From:   Lu Baolu <baolu.lu@linux.intel.com>
 To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Robin Murphy <robin.murphy@arm.com>,
@@ -46,9 +46,9 @@ To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Kevin Tian <kevin.tian@intel.com>
 Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
         Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 2/6] iommu/vt-d: Remove scalable mode context entry setup from attach_dev
-Date:   Tue,  5 Dec 2023 09:21:59 +0800
-Message-Id: <20231205012203.244584-3-baolu.lu@linux.intel.com>
+Subject: [PATCH v2 3/6] iommu/vt-d: Refactor domain_context_mapping_one() to be reusable
+Date:   Tue,  5 Dec 2023 09:22:00 +0800
+Message-Id: <20231205012203.244584-4-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231205012203.244584-1-baolu.lu@linux.intel.com>
 References: <20231205012203.244584-1-baolu.lu@linux.intel.com>
@@ -64,237 +64,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scalable mode context entry is now setup in the probe_device path,
-eliminating the need to configure it in the attach_dev path. Removes the
-redundant code from the attach_dev path to avoid dead code.
+Extract common code from domain_context_mapping_one() into new functions,
+making it reusable by other functions such as the upcoming identity domain
+implementation. No intentional functional changes.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/iommu/intel/iommu.c | 156 ++++++++++--------------------------
- 1 file changed, 44 insertions(+), 112 deletions(-)
+ drivers/iommu/intel/iommu.c | 99 ++++++++++++++++++++++---------------
+ 1 file changed, 58 insertions(+), 41 deletions(-)
 
 diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 9dc005031dd2..a324b3a3a005 100644
+index a324b3a3a005..605cd1c52e95 100644
 --- a/drivers/iommu/intel/iommu.c
 +++ b/drivers/iommu/intel/iommu.c
-@@ -1727,34 +1727,17 @@ static void domain_exit(struct dmar_domain *domain)
+@@ -1727,6 +1727,61 @@ static void domain_exit(struct dmar_domain *domain)
  	kfree(domain);
  }
  
--/*
-- * Get the PASID directory size for scalable mode context entry.
-- * Value of X in the PDTS field of a scalable mode context entry
-- * indicates PASID directory with 2^(X + 7) entries.
-- */
--static unsigned long context_get_sm_pds(struct pasid_table *table)
--{
--	unsigned long pds, max_pde;
--
--	max_pde = table->max_pasid >> PASID_PDE_SHIFT;
--	pds = find_first_bit(&max_pde, MAX_NR_PASID_BITS);
--	if (pds < 7)
--		return 0;
--
--	return pds - 7;
--}
--
++/*
++ * For kdump cases, old valid entries may be cached due to the
++ * in-flight DMA and copied pgtable, but there is no unmapping
++ * behaviour for them, thus we need an explicit cache flush for
++ * the newly-mapped device. For kdump, at this point, the device
++ * is supposed to finish reset at its driver probe stage, so no
++ * in-flight DMA will exist, and we don't need to worry anymore
++ * hereafter.
++ */
++static void copied_context_tear_down(struct intel_iommu *iommu,
++				     struct context_entry *context,
++				     u8 bus, u8 devfn)
++{
++	u16 did_old;
++
++	if (!context_copied(iommu, bus, devfn))
++		return;
++
++	assert_spin_locked(&iommu->lock);
++
++	did_old = context_domain_id(context);
++	context_clear_entry(context);
++
++	if (did_old < cap_ndoms(iommu->cap)) {
++		iommu->flush.flush_context(iommu, did_old,
++					   (((u16)bus) << 8) | devfn,
++					   DMA_CCMD_MASK_NOBIT,
++					   DMA_CCMD_DEVICE_INVL);
++		iommu->flush.flush_iotlb(iommu, did_old, 0, 0,
++					 DMA_TLB_DSI_FLUSH);
++	}
++
++	clear_context_copied(iommu, bus, devfn);
++}
++
++/*
++ * It's a non-present to present mapping. If hardware doesn't cache
++ * non-present entry we only need to flush the write-buffer. If the
++ * _does_ cache non-present entries, then it does so in the special
++ * domain #0, which we have to flush:
++ */
++static void context_present_cache_flush(struct intel_iommu *iommu, u16 did,
++					u8 bus, u8 devfn)
++{
++	if (cap_caching_mode(iommu->cap)) {
++		iommu->flush.flush_context(iommu, 0,
++					   (((u16)bus) << 8) | devfn,
++					   DMA_CCMD_MASK_NOBIT,
++					   DMA_CCMD_DEVICE_INVL);
++		iommu->flush.flush_iotlb(iommu, did, 0, 0, DMA_TLB_DSI_FLUSH);
++	} else {
++		iommu_flush_write_buffer(iommu);
++	}
++}
++
  static int domain_context_mapping_one(struct dmar_domain *domain,
  				      struct intel_iommu *iommu,
--				      struct pasid_table *table,
  				      u8 bus, u8 devfn)
- {
- 	struct device_domain_info *info =
- 			domain_lookup_dev_info(domain, iommu, bus, devfn);
- 	u16 did = domain_id_iommu(domain, iommu);
- 	int translation = CONTEXT_TT_MULTI_LEVEL;
-+	struct dma_pte *pgd = domain->pgd;
- 	struct context_entry *context;
--	int ret;
-+	int agaw, ret;
+@@ -1755,31 +1810,9 @@ static int domain_context_mapping_one(struct dmar_domain *domain,
+ 	if (context_present(context) && !context_copied(iommu, bus, devfn))
+ 		goto out_unlock;
  
- 	if (hw_pass_through && domain_type_is_si(domain))
- 		translation = CONTEXT_TT_PASS_THROUGH;
-@@ -1797,65 +1780,37 @@ static int domain_context_mapping_one(struct dmar_domain *domain,
- 	}
- 
- 	context_clear_entry(context);
-+	context_set_domain_id(context, did);
- 
--	if (sm_supported(iommu)) {
--		unsigned long pds;
+-	/*
+-	 * For kdump cases, old valid entries may be cached due to the
+-	 * in-flight DMA and copied pgtable, but there is no unmapping
+-	 * behaviour for them, thus we need an explicit cache flush for
+-	 * the newly-mapped device. For kdump, at this point, the device
+-	 * is supposed to finish reset at its driver probe stage, so no
+-	 * in-flight DMA will exist, and we don't need to worry anymore
+-	 * hereafter.
+-	 */
+-	if (context_copied(iommu, bus, devfn)) {
+-		u16 did_old = context_domain_id(context);
 -
--		/* Setup the PASID DIR pointer: */
--		pds = context_get_sm_pds(table);
--		context->lo = (u64)virt_to_phys(table->table) |
--				context_pdts(pds);
--
--		/* Setup the RID_PASID field: */
--		context_set_sm_rid2pasid(context, IOMMU_NO_PASID);
--
-+	if (translation != CONTEXT_TT_PASS_THROUGH) {
- 		/*
--		 * Setup the Device-TLB enable bit and Page request
--		 * Enable bit:
-+		 * Skip top levels of page tables for iommu which has
-+		 * less agaw than default. Unnecessary for PT mode.
- 		 */
-+		for (agaw = domain->agaw; agaw > iommu->agaw; agaw--) {
-+			ret = -ENOMEM;
-+			pgd = phys_to_virt(dma_pte_addr(pgd));
-+			if (!dma_pte_present(pgd))
-+				goto out_unlock;
-+		}
-+
- 		if (info && info->ats_supported)
--			context_set_sm_dte(context);
--		if (info && info->pri_supported)
--			context_set_sm_pre(context);
--		if (info && info->pasid_supported)
--			context_set_pasid(context);
-+			translation = CONTEXT_TT_DEV_IOTLB;
-+		else
-+			translation = CONTEXT_TT_MULTI_LEVEL;
-+
-+		context_set_address_root(context, virt_to_phys(pgd));
-+		context_set_address_width(context, agaw);
- 	} else {
--		struct dma_pte *pgd = domain->pgd;
--		int agaw;
--
--		context_set_domain_id(context, did);
--
--		if (translation != CONTEXT_TT_PASS_THROUGH) {
--			/*
--			 * Skip top levels of page tables for iommu which has
--			 * less agaw than default. Unnecessary for PT mode.
--			 */
--			for (agaw = domain->agaw; agaw > iommu->agaw; agaw--) {
--				ret = -ENOMEM;
--				pgd = phys_to_virt(dma_pte_addr(pgd));
--				if (!dma_pte_present(pgd))
--					goto out_unlock;
--			}
--
--			if (info && info->ats_supported)
--				translation = CONTEXT_TT_DEV_IOTLB;
--			else
--				translation = CONTEXT_TT_MULTI_LEVEL;
--
--			context_set_address_root(context, virt_to_phys(pgd));
--			context_set_address_width(context, agaw);
--		} else {
--			/*
--			 * In pass through mode, AW must be programmed to
--			 * indicate the largest AGAW value supported by
--			 * hardware. And ASR is ignored by hardware.
--			 */
--			context_set_address_width(context, iommu->msagaw);
+-		if (did_old < cap_ndoms(iommu->cap)) {
+-			iommu->flush.flush_context(iommu, did_old,
+-						   (((u16)bus) << 8) | devfn,
+-						   DMA_CCMD_MASK_NOBIT,
+-						   DMA_CCMD_DEVICE_INVL);
+-			iommu->flush.flush_iotlb(iommu, did_old, 0, 0,
+-						 DMA_TLB_DSI_FLUSH);
 -		}
 -
--		context_set_translation_type(context, translation);
-+		/*
-+		 * In pass through mode, AW must be programmed to
-+		 * indicate the largest AGAW value supported by
-+		 * hardware. And ASR is ignored by hardware.
-+		 */
-+		context_set_address_width(context, iommu->msagaw);
- 	}
+-		clear_context_copied(iommu, bus, devfn);
+-	}
+-
++	copied_context_tear_down(iommu, context, bus, devfn);
+ 	context_clear_entry(context);
++
+ 	context_set_domain_id(context, did);
  
-+	context_set_translation_type(context, translation);
- 	context_set_fault_enable(context);
+ 	if (translation != CONTEXT_TT_PASS_THROUGH) {
+@@ -1815,23 +1848,7 @@ static int domain_context_mapping_one(struct dmar_domain *domain,
  	context_set_present(context);
  	if (!ecap_coherent(iommu->ecap))
-@@ -1885,43 +1840,29 @@ static int domain_context_mapping_one(struct dmar_domain *domain,
- 	return ret;
- }
- 
--struct domain_context_mapping_data {
--	struct dmar_domain *domain;
--	struct intel_iommu *iommu;
--	struct pasid_table *table;
--};
+ 		clflush_cache_range(context, sizeof(*context));
 -
- static int domain_context_mapping_cb(struct pci_dev *pdev,
- 				     u16 alias, void *opaque)
- {
--	struct domain_context_mapping_data *data = opaque;
-+	struct device_domain_info *info = dev_iommu_priv_get(&pdev->dev);
-+	struct intel_iommu *iommu = info->iommu;
-+	struct dmar_domain *domain = opaque;
- 
--	return domain_context_mapping_one(data->domain, data->iommu,
--					  data->table, PCI_BUS_NUM(alias),
--					  alias & 0xff);
-+	return domain_context_mapping_one(domain, iommu,
-+					  PCI_BUS_NUM(alias), alias & 0xff);
- }
- 
- static int
- domain_context_mapping(struct dmar_domain *domain, struct device *dev)
- {
- 	struct device_domain_info *info = dev_iommu_priv_get(dev);
--	struct domain_context_mapping_data data;
- 	struct intel_iommu *iommu = info->iommu;
- 	u8 bus = info->bus, devfn = info->devfn;
--	struct pasid_table *table;
--
--	table = intel_pasid_get_table(dev);
- 
- 	if (!dev_is_pci(dev))
--		return domain_context_mapping_one(domain, iommu, table,
--						  bus, devfn);
--
--	data.domain = domain;
--	data.iommu = iommu;
--	data.table = table;
-+		return domain_context_mapping_one(domain, iommu, bus, devfn);
- 
- 	return pci_for_each_dma_alias(to_pci_dev(dev),
--				      &domain_context_mapping_cb, &data);
-+				      domain_context_mapping_cb, domain);
- }
- 
- /* Returns a number of VTD pages, but aligned to MM page size */
-@@ -2278,28 +2219,19 @@ static int dmar_domain_attach_device(struct dmar_domain *domain,
- 	list_add(&info->link, &domain->devices);
- 	spin_unlock_irqrestore(&domain->lock, flags);
- 
--	/* PASID table is mandatory for a PCI device in scalable mode. */
--	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev)) {
--		/* Setup the PASID entry for requests without PASID: */
--		if (hw_pass_through && domain_type_is_si(domain))
--			ret = intel_pasid_setup_pass_through(iommu,
--					dev, IOMMU_NO_PASID);
--		else if (domain->use_first_level)
--			ret = domain_setup_first_level(iommu, domain, dev,
--					IOMMU_NO_PASID);
--		else
--			ret = intel_pasid_setup_second_level(iommu, domain,
--					dev, IOMMU_NO_PASID);
--		if (ret) {
--			dev_err(dev, "Setup RID2PASID failed\n");
--			device_block_translation(dev);
--			return ret;
--		}
+-	/*
+-	 * It's a non-present to present mapping. If hardware doesn't cache
+-	 * non-present entry we only need to flush the write-buffer. If the
+-	 * _does_ cache non-present entries, then it does so in the special
+-	 * domain #0, which we have to flush:
+-	 */
+-	if (cap_caching_mode(iommu->cap)) {
+-		iommu->flush.flush_context(iommu, 0,
+-					   (((u16)bus) << 8) | devfn,
+-					   DMA_CCMD_MASK_NOBIT,
+-					   DMA_CCMD_DEVICE_INVL);
+-		iommu->flush.flush_iotlb(iommu, did, 0, 0, DMA_TLB_DSI_FLUSH);
+-	} else {
+-		iommu_flush_write_buffer(iommu);
 -	}
-+	if (dev_is_real_dma_subdevice(dev))
-+		return 0;
-+
-+	if (!sm_supported(iommu))
-+		ret = domain_context_mapping(domain, dev);
-+	else if (hw_pass_through && domain_type_is_si(domain))
-+		ret = intel_pasid_setup_pass_through(iommu, dev, IOMMU_NO_PASID);
-+	else if (domain->use_first_level)
-+		ret = domain_setup_first_level(iommu, domain, dev, IOMMU_NO_PASID);
-+	else
-+		ret = intel_pasid_setup_second_level(iommu, domain, dev, IOMMU_NO_PASID);
+-
++	context_present_cache_flush(iommu, did, bus, devfn);
+ 	ret = 0;
  
--	ret = domain_context_mapping(domain, dev);
- 	if (ret) {
--		dev_err(dev, "Domain context map failed\n");
- 		device_block_translation(dev);
- 		return ret;
- 	}
+ out_unlock:
 -- 
 2.34.1
 
