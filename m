@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E2B804B33
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:34:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB19804B45
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbjLEHdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 02:33:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
+        id S1344639AbjLEHkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 02:40:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjLEHdf (ORCPT
+        with ESMTP id S229615AbjLEHkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 02:33:35 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6046CB;
-        Mon,  4 Dec 2023 23:33:41 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B57Jwba025175;
-        Tue, 5 Dec 2023 07:33:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=88QIzSmoE77AlK3/7os4EVND1aLypF6I6TOzuGTEaL4=;
- b=dnmFgDZZLCv2rxJy7y3kH9DD1dvbonl2XzQA4A3/o1Cb8HRNUqAWEAqEMnPdDNI8Wb9Q
- KhHCynceumu7WtGkLL6XIGitv+7nyhtnKsV4XjZnF/mPW/hi6h7Jl51oJW6irlpNfH+s
- InXGfaCNpAB/VXkjWdRdzKQrnwvC6sTk3DQZTlkC55AWRyMwFuwoAiJczefpRZ+hyf8G
- jZHiorBroMnT2FCTiGWa7rCcMvEEp9oLnL3Wo0jq/1H3xx3NhDGoI3wUTP8n0o7QYwAi
- 3Md31vOtseXhNYMYIzPmdhQdFkzF7IyH8ONLa02dHmj2Lh8PULtzu1Sp22LBGtQujIYW CA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usycegcvt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 07:33:22 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B57K2AL025418;
-        Tue, 5 Dec 2023 07:33:22 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usycegcuf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 07:33:22 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B57IllY011345;
-        Tue, 5 Dec 2023 07:33:20 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8b208d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 07:33:20 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B57XIm912190418
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Dec 2023 07:33:18 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C23F320040;
-        Tue,  5 Dec 2023 07:33:18 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B9C8220043;
-        Tue,  5 Dec 2023 07:33:16 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.109.215.218])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue,  5 Dec 2023 07:33:16 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: [PATCH v2 1/4] perf build: Shellcheck support for OUTPUT
- directory
-From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
-In-Reply-To: <ZW4sRL0vPofcoS43@kernel.org>
-Date:   Tue, 5 Dec 2023 13:03:05 +0530
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9C33887F-8A88-4973-8593-7936E36AFCE1@linux.vnet.ibm.com>
-References: <20231129213428.2227448-1-irogers@google.com>
- <CE3EBC99-B6B0-4DD5-A88E-26B28B1A4A46@linux.vnet.ibm.com>
- <ZW4sRL0vPofcoS43@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: aGMfh_fzvvUVcN1N3kJzHcwFydMzWulY
-X-Proofpoint-GUID: FV6jQcUfDmHHQgY13Rcu_O6VJQUTbMhH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-05_03,2023-12-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- impostorscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- spamscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312050060
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 02:40:07 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE5ECB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 23:40:13 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a18f732dc83so930321866b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 23:40:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701762011; x=1702366811; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8Iwyea8aUEDEQH5QmcooZYGbCE7CHUUSFaCk91EVoU0=;
+        b=lZ7OPt4lv6xavDbloR6WBq5wSK5VT5/1a0tOkvyQ/VQu2Fgg+q/q0eEcZDul5wbskQ
+         lXNQoncJ4LjgSw98K2fFLeP3mj4RXcZl/8K07WGmKCesmhZ+F3Enw/65i5SC9Cfe8fnd
+         tvoWFVaK0x1g8JZA3eMvIztZvbcJZSiDjIwpmGQ2OFBZfMk5bCRivU1d4ajbY7V02v7W
+         fP6Ehz0apeQHJzEZhwY5VSVtTDf7bxO9GN28uuDgRszXB51C3BJcyun5lsFazSHfweIZ
+         lZEHLRI8enzOiwBMuctmdMRuuxSq5LEeHVUo2c8UB5yB6WY1aF7a6PxA2kOXo1qljxUK
+         Nm7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701762011; x=1702366811;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Iwyea8aUEDEQH5QmcooZYGbCE7CHUUSFaCk91EVoU0=;
+        b=Ozt6po5GRyzqQ8i9YMXy1AubsQt0Xtzr+SMHEpRVqBGzcdjgyM+iry4AHDiqkcAroC
+         +Jrgu2wiK2vkFwjkX7hLXV13fCw3eUpYrgrhrr5emOZ9TLftaJN/RY554CNue+5684/4
+         wj3MG3dc5UzGQfi83gqlAWLBUfyPCYgvylHKOgnsBqwncPlwuYW9RQ7MNToQPj04LNKp
+         zHPzZAYu4MxBb6xq5DzMUfOT3eO2xYnaqWEWzQEktM3KQFZMLZi09i+2aEIt/aYDOrA4
+         Oa0TehpqpN5rGSwG4Sm2w8mu3jR76Uy82Q7iV9T+k/f2DNZutDjU6FDp+GrP6Z1I/FGN
+         EJuA==
+X-Gm-Message-State: AOJu0YzGFJNEPWdfWOC0ge6uw6+H2BrChE9MZarz9Toort2svEjHO63g
+        O7URp3hVOAv2As/Q85NWZRlx8w==
+X-Google-Smtp-Source: AGHT+IHUF7t5srLXEzU8HP5qZYHTfGV6V8zqdzDEo5EHilI1WeVqYFfNRg9FMdl/gfoCsaVgPu2RRQ==
+X-Received: by 2002:a17:906:20d8:b0:a16:1b4a:a6fa with SMTP id c24-20020a17090620d800b00a161b4aa6famr671879ejc.8.1701762011447;
+        Mon, 04 Dec 2023 23:40:11 -0800 (PST)
+Received: from [192.168.0.174] ([79.115.63.75])
+        by smtp.gmail.com with ESMTPSA id h27-20020a1709062ddb00b00a1c522990ccsm453558eji.85.2023.12.04.23.40.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 23:40:11 -0800 (PST)
+Message-ID: <d1b975e2-ba0f-43b9-af0a-f372fe42e5d5@linaro.org>
+Date:   Tue, 5 Dec 2023 09:40:07 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/5] mtd: spi-nor: introduce die erase
+Content-Language: en-US
+To:     Fabio Estevam <festevam@denx.de>, michael@walle.cc
+Cc:     pratyush@kernel.org, linux-mtd@lists.infradead.org,
+        takahiro.kuwano@infineon.com, bacem.daassi@infineon.com,
+        linux-kernel@vger.kernel.org
+References: <20231125123529.55686-1-tudor.ambarus@linaro.org>
+ <d7ce98eb-c920-413f-bbe9-059077a9dda7@linaro.org>
+ <6156a51f7eadc9594404bb0eacabe1a6@denx.de>
+ <f9dc82f3-070a-42cd-a92d-83d031647867@linaro.org>
+ <8de7595d8f4839187fdbbe7e139016bc@denx.de>
+From:   Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <8de7595d8f4839187fdbbe7e139016bc@denx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -108,59 +81,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On 05-Dec-2023, at 1:15=E2=80=AFAM, Arnaldo Carvalho de Melo =
-<acme@kernel.org> wrote:
->=20
-> Em Fri, Dec 01, 2023 at 11:49:59AM +0530, Athira Rajeev escreveu:
->>=20
->>=20
->>> On 30-Nov-2023, at 3:04=E2=80=AFAM, Ian Rogers <irogers@google.com> =
-wrote:
->>>=20
->>> Migrate Makefile.tests to Build so that variables like rule_mkdir =
-are
->>> defined via Makefile.build (needed so the output directory can be
->>> created). This requires SHELLCHECK being exported and the clean rule
->>> tweaking to remove the files in find.
->>>=20
->>> Change find "-perm -o=3Dx" as it was failing on my Debian based =
-Linux
->>> kernel tree, switch to using "-executable".
->>>=20
->>> Adding a filename prefix of "." to the shellcheck log files is a =
-pain
->>> and error prone in make, remove this prefix and just add the
->>> shellcheck log files to .gitignore.
->>>=20
->>> Fix the command echo so that running the test is displayed.
->>>=20
->>> Fixes: 1638b11ef815 ("perf tools: Add perf binary dependent rule for =
-shellcheck log in Makefile.perf")
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->>=20
->> Hi Ian,
->>=20
->> Changes looks good to me.
->> Tested with make, make clean, make with shellcheck error, make with =
-NO_SHELLCHECK
->>=20
->> Reviewed-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
->=20
-> Next time please reply with your Reviewed-by to the cover letter, so
-> that b4 stamps your reviewed-by to all the patches and not just to the
-> patch that you replied to.
-Hi Arnaldo,
+On 04.12.2023 22:59, Fabio Estevam wrote:
+> 
+>> Thanks, will do. Would you please replicate the tests that I did in
+>> patch 3/5 for mt25qu01q? You'll have to modify a bit the offsets for the
+>> die and cross die tests.
+> 
+> 
+> Here it goes.
 
-Ok Sure.
->=20
-> This time I'll take the plural in "Changes look good to me" to signify
-> that you reviewed the whole series, ok?
+Wonderful, thanks!
 
-Yes, please add my Reviewed-by for the whole series.
+> 
+> Can this series be applied now?
 
-Thanks
-Athira
->=20
-> - Arnaldo
+Yes. Michael, any objections?
 
-
+Thanks,
+ta
