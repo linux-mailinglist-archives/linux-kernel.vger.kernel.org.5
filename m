@@ -2,162 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C304E805C17
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CA6805BB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbjLEQnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:43:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
+        id S232132AbjLEQoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:44:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbjLEQno (ORCPT
+        with ESMTP id S232123AbjLEQoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:43:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03729B2
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:43:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8AB2C433C7;
-        Tue,  5 Dec 2023 16:43:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701794630;
-        bh=bW3OrJbYp0bj7igkmuhy/a8fB4L68pG99Ed2bPNX7D8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OKtrLOuuzsIJEvtJbodeJDDqyNZhcMw2XYqVbA/dlzeiW5j6c1Oori5+rCJHBJL0N
-         AoMjz0uYXkSw2g7Egm3G9+/18GWtQxbc5E9k/FJvCclJjMJxPOapumx21dhLn15+jH
-         GWKCpCOWpqj/eG7+5kiUNq2kUFogM9pw5dVkgl19S5rs7qQ984N/WKvF4P1LskuSEz
-         TA7ajMQ+y39xuyXxZW5CAFMMjeCK7YJOS1UEsVf5RlJa1NOj/fnrXqqmWKqXj6Kwex
-         QNtVj+NDLGGaoFjVZqyp3Wx+VWsE13mUb/5lzRAqy1E4zl2EHVnyweDanvIC98LVtw
-         9TrRETeQSanYQ==
-Date:   Tue, 5 Dec 2023 16:43:41 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>
-Subject: Re: [PATCH RFT v4 5/5] kselftest/clone3: Test shadow stack support
-Message-ID: <098f5d43-e093-4316-9b86-80833c2b94ec@sirena.org.uk>
-References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
- <20231128-clone3-shadow-stack-v4-5-8b28ffe4f676@kernel.org>
- <4898975452179af46f38daa6979b32ba94001419.camel@intel.com>
- <345cf31a-3663-4974-9b2a-54d2433e64a7@sirena.org.uk>
- <a6bf192a1568620826dd79124511ea61472873c8.camel@intel.com>
+        Tue, 5 Dec 2023 11:44:12 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795A319B;
+        Tue,  5 Dec 2023 08:44:18 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d99c3bcf7cso1726275a34.2;
+        Tue, 05 Dec 2023 08:44:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701794658; x=1702399458; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3zC0jkdkYRUNrXPSR+3nJSIkrw8CIUlw8B0SSsidNcI=;
+        b=CsPJBMyfL2WBCcEWdmsruEltNT5uSA3OV98gjvgbGxMEkJcXZgTdXXrFsHs+Go6uoe
+         Jn3oceKCKi95SorzEWczXtUxawyhPrRRSscMDT/L216MxDRxKkw87mepisQ1hEKbvz5V
+         o12DH4oO9Ma7Otg1VLGfqPzo3t6EtvapG8aqJ7o3ucGX8llXydMMgTxHLSOyQVZkYuaa
+         TBF41z/wuK41lxHV4nVjI+KPAs+IFhzZSZdkjwdMWW9WM8aqBsN09mSLP9AZtF7PRzhq
+         P/2bjNVzj3Cd8BwjbTYUX52FgVJUXaKpYjaY7cdloA3+GWk8/WRSE8v13kqDpKAtyXXJ
+         Vt/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701794658; x=1702399458;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3zC0jkdkYRUNrXPSR+3nJSIkrw8CIUlw8B0SSsidNcI=;
+        b=YXKA04pNt+0bupiqihAdZ1THAOnUbUrBHBPBajN9t/E0eB+a9FYNI3VJQH2kNyGO5V
+         vXu5V1CscWEQFI/7XdlLq5YwazT5NH/gctZa+FsYlsScHAqvUQTiaqhzKCpkUHlUiBk7
+         F4gJTROfDbbGxgRVrDeC7Kuy6J2PcZXM1PHfu0QgHkfKHrP12N7jmFtbxMiav2A7sfZM
+         fp76AAkiZ+4WnciqJJExfIKTUwSinD6Bzzq8S28214GhROFEdmvU2b2s+VAJx8NFRtTU
+         Z9lc8cMt4155AaWCQEYBvwpAP3aBXjgWXWPiK6XDOkZQyzIVJsSLf5zaikuYbiMvRD2V
+         u+DA==
+X-Gm-Message-State: AOJu0Yzkx3V1BwSJsVdjLcgM4kfZ/4H8jAzo2EonVLF9wLUxNEmbSZwx
+        8978OMLISO+ONqvuE7C+6GWs02L/AQU=
+X-Google-Smtp-Source: AGHT+IFXwhJ60+DmuGGe2hCYSg/v4QQ4X6790ptuWg/gW1gI08VvtwzdXK5WZLNvwqFxMJbYsBcRNg==
+X-Received: by 2002:a05:6871:4417:b0:1fb:100b:a25d with SMTP id nd23-20020a056871441700b001fb100ba25dmr8042737oab.74.1701794657735;
+        Tue, 05 Dec 2023 08:44:17 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id wc12-20020a056871a50c00b001fa3c734bc5sm3389122oab.46.2023.12.05.08.44.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 08:44:16 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 5 Dec 2023 08:44:15 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+Subject: Re: [PATCH 4.14 00/30] 4.14.332-rc1 review
+Message-ID: <fc6da6a6-2867-4399-ae6c-e22e7a57648d@roeck-us.net>
+References: <20231205031511.476698159@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="geVM8gTWdCwKEGG9"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a6bf192a1568620826dd79124511ea61472873c8.camel@intel.com>
-X-Cookie: I've Been Moved!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231205031511.476698159@linuxfoundation.org>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 05, 2023 at 12:16:07PM +0900, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.14.332 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
+> Anything received after that time might be too late.
+> 
 
---geVM8gTWdCwKEGG9
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Build results:
+	total: 139 pass: 139 fail: 0
+Qemu test results:
+	total: 438 pass: 438 fail: 0
 
-On Tue, Dec 05, 2023 at 04:01:50PM +0000, Edgecombe, Rick P wrote:
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-> Hmm, I didn't realize you were planning to have the kernel support
-> upstream before the libc support was in testable shape.
-
-It's not a "could someone run it" thing - it's about trying ensure that
-we get coverage from people who are just running the selftests as part
-of general testing coverage rather than with the specific goal of
-testing this one feature.  Even when things start to land there will be
-a considerable delay before they filter out so that all the enablement
-is in CI systems off the shelf and it'd be good to have coverage in that
-interval.
-
-> > What's the issue with working around the missing support?=A0 My
-> > understanding was that there should be no ill effects from repeated
-> > attempts to enable.=A0 We could add a check for things already being
-> > enabled
-
-> Normally the loader enables shadow stack and glibc then knows to do
-> things in special ways when it is successful. If it instead manually
-> enables in the app:
->  - The app can't return from main() without disabling shadow stack=A0
->    beforehand. Luckily this test directly calls exit()
->  - The app can't do longjmp()
->  - The app can't do ucontext stuff
->  - The enabling code needs to be carefully crafted (the inline problem=A0
->    you hit)
-
-> I guess it's not a huge list, and mostly tests will run ok. But it
-> doesn't seem right to add somewhat hacky shadow stack crud into generic
-> tests.
-
-Right, it's a small and fairly easily auditable list - it's more about
-the app than the double enable which was what I thought your concern
-was.  It's a bit annoying definitely and not something we want to do in
-general but for something like this where we're adding specific coverage
-for API extensions for the feature it seems like a reasonable tradeoff.
-
-If the x86 toolchain/libc support is widely enough deployed (or you just
-don't mind any missing coverage) we could use the toolchain support
-there and only have the manual enable for arm64, it'd be inconsistent
-but not wildly so.
-
-> So you were planning to enable GCS in this test manually as well? How
-> many tests were you planning to add it like this?
-
-Yes, the current version of the arm64 series has the equivalent support
-for GCS.  I was only planning to do this along with adding specific
-coverage for shadow stacks/GCS, general stuff that doesn't have any
-specific support can get covered as part of system testing with the
-toolchain and libc support.
-
-The only case beyond that I've done is some arm64 specific stress tests
-which are written as standalone assembler programs, those wouldn't get
-enabled by the toolchain anyway and have some chance of catching context
-switch or signal handling issues should they occur.  It seemed worth it
-for the few lines of assembly it takes.
-
---geVM8gTWdCwKEGG9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVvUzwACgkQJNaLcl1U
-h9C+jAf+Md2bTNdvJs2oIqh+pACXbkAHBDvJZ/N1O5qY7yBLok1tIPJANG0jKFYX
-6PxRyrDBuvQ47eZfaV2+7ea/+13vVBkVuPTI1503ktL8/gHGkBAfjTbpvj2Y9AOU
-8SpeWDdlYSmo1F+o34hhroFMh5i1OY+l+vJ+FQaZIvcl9T/Duhe+9fe1xY5t49A5
-gnCQXEDUxaLWeVb7WpcKlClGEX90GJyI94OrQ4wuIylpc98x9YQuGAiEdJcPLm+g
-IK7nqgioxopCgNhdhXy8nnR8r7WQUlxW7g/MMc+3DIOhLRoegISD6zpls62PDJbQ
-VF3UWrKSNa1UlF+p6OgWRKeODawTZg==
-=2dm/
------END PGP SIGNATURE-----
-
---geVM8gTWdCwKEGG9--
+Guenter
