@@ -2,152 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 008188051CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D05EC8051C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442029AbjLELPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48298 "EHLO
+        id S1376910AbjLELPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:15:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345052AbjLELPW (ORCPT
+        with ESMTP id S1345052AbjLELPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:15:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93871124
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:15:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701774928; x=1733310928;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ztw1slu3TaA4rUwHsafEEGA9mY1oz7LTl5MSrHnmkBM=;
-  b=ee/ImYFuKhADZ7IpLfqrZ7b2sdvUEhi8BLXBNIafvA+9U4bRC0tBO6RR
-   b4mOlgq39JXG3gjBVI82GU93T3fCftxu4NAMEi62A8MA3fePZIqZZsD/V
-   YHjI0HiA9Tn32a14dLIgYSYe4Sfzf/2IjCcs+gyyxKXu3YLqz+IXDllj6
-   m/bcloPloVYrFZ6cOQze+VFNYL3WtKQH6ED+dQYPaGcs4FL4zzERffXUM
-   p/CsSmWv+GSmWjrHsSx7fJu4STLs8AzOmZK08NbeULPJ/U87i0ltKXrqZ
-   4v2XaEZ45hSA7v2RwWx22/pzVGupdcVjsIvsGg/6pImaqsxnFVsnWrNo3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="15427261"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="15427261"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 03:15:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="799943800"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="799943800"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 05 Dec 2023 03:15:26 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rATOe-0008qY-0G;
-        Tue, 05 Dec 2023 11:15:24 +0000
-Date:   Tue, 5 Dec 2023 19:15:07 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Haoran Liu <liuhaoran14@163.com>, support.opensource@diasemi.com
-Cc:     oe-kbuild-all@lists.linux.dev, lee@kernel.org,
-        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
-Subject: Re: [PATCH] [mfd] da9052: Add error handling for spi_setup in
- da9052_spi_probe
-Message-ID: <202312051908.qxoHjGkx-lkp@intel.com>
-References: <20231203052125.37334-1-liuhaoran14@163.com>
+        Tue, 5 Dec 2023 06:15:12 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 571289A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:15:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FBD6C433C7;
+        Tue,  5 Dec 2023 11:15:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701774919;
+        bh=Tbzzrz0GhjjdIHOAsVLhTZq78N+oP5wAxgm97zPGVsc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=NFYFnmuKS0WzyxOfAAasCNC/vmQ9bdu3V3dv4Q9p5PyEi9wTW/ulnWoPWDk+VBS7p
+         Id/S65IC4aLXQTpVDMX6mmlCw17Pkus2m5j7xtWZAulSLby+akXoZWV+kzmzjse+L5
+         NKu9v78OqIreSTKzBSf3vKlrHqQ8v0seet4qRcZRNnRGuhn60RZexC0I8UnjgjTrLH
+         K+bsprx8/Bd4b0b+l3PI4sXQsf0J/c/YJmfdW/zq+QRkT7Ns388ZwCJcnX8Ue/SzAM
+         aB1XZnmuz5R641+bVSevJ+hb4EDMLUCXZSNktWPU7ZOt5mMOW64jxNIf/OHyoUQZip
+         X3UEPoJhshlLQ==
+From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To:     kvalo@kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Felix Fietkau <nbd@openwrt.org>,
+        Nick Kossifidis <mickflemm@gmail.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: [PATCH] ath5k: remove unused ath5k_eeprom_info::ee_antenna
+Date:   Tue,  5 Dec 2023 12:15:15 +0100
+Message-ID: <20231205111515.21470-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231203052125.37334-1-liuhaoran14@163.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_FUZZY_SPRM,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Haoran,
+clang-struct [1] found that ee_antenna in struct ath5k_eeprom_info is
+unused. The commit 1048643ea94d ("ath5k: Clean up eeprom
+parsing and add missing calibration data") added it, but did not use it
+in any way. Neither, there is a later user.
 
-kernel test robot noticed the following build errors:
+So remove that unused member.
 
-[auto build test ERROR on lee-mfd/for-mfd-next]
-[also build test ERROR on lee-leds/for-leds-next lee-mfd/for-mfd-fixes linus/master v6.7-rc4 next-20231205]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+[1] https://github.com/jirislaby/clang-struct
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Haoran-Liu/da9052-Add-error-handling-for-spi_setup-in-da9052_spi_probe/20231203-132410
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git for-mfd-next
-patch link:    https://lore.kernel.org/r/20231203052125.37334-1-liuhaoran14%40163.com
-patch subject: [PATCH] [mfd] da9052: Add error handling for spi_setup in da9052_spi_probe
-config: i386-buildonly-randconfig-004-20231203 (https://download.01.org/0day-ci/archive/20231205/202312051908.qxoHjGkx-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051908.qxoHjGkx-lkp@intel.com/reproduce)
+Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Cc: Felix Fietkau <nbd@openwrt.org>
+Cc: Nick Kossifidis <mickflemm@gmail.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kalle Valo <kvalo@kernel.org>
+Cc: linux-wireless@vger.kernel.org
+---
+ drivers/net/wireless/ath/ath5k/eeprom.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051908.qxoHjGkx-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/mfd/da9052-spi.c: In function 'da9052_spi_probe':
->> drivers/mfd/da9052-spi.c:25:6: error: redeclaration of 'ret' with no linkage
-     int ret;
-         ^~~
-   drivers/mfd/da9052-spi.c:22:6: note: previous declaration of 'ret' was here
-     int ret;
-         ^~~
-
-
-vim +/ret +25 drivers/mfd/da9052-spi.c
-
-    18	
-    19	static int da9052_spi_probe(struct spi_device *spi)
-    20	{
-    21		struct regmap_config config;
-    22		int ret;
-    23		const struct spi_device_id *id = spi_get_device_id(spi);
-    24		struct da9052 *da9052;
-  > 25		int ret;
-    26	
-    27		da9052 = devm_kzalloc(&spi->dev, sizeof(struct da9052), GFP_KERNEL);
-    28		if (!da9052)
-    29			return -ENOMEM;
-    30	
-    31		spi->mode = SPI_MODE_0;
-    32		spi->bits_per_word = 8;
-    33		ret = spi_setup(spi);
-    34		if (ret) {
-    35			dev_err(&spi->dev, "spi_setup failed: %d\n", ret);
-    36			return ret;
-    37		}
-    38	
-    39		da9052->dev = &spi->dev;
-    40		da9052->chip_irq = spi->irq;
-    41	
-    42		spi_set_drvdata(spi, da9052);
-    43	
-    44		config = da9052_regmap_config;
-    45		config.read_flag_mask = 1;
-    46		config.reg_bits = 7;
-    47		config.pad_bits = 1;
-    48		config.val_bits = 8;
-    49		config.use_single_read = true;
-    50		config.use_single_write = true;
-    51	
-    52		da9052->regmap = devm_regmap_init_spi(spi, &config);
-    53		if (IS_ERR(da9052->regmap)) {
-    54			ret = PTR_ERR(da9052->regmap);
-    55			dev_err(&spi->dev, "Failed to allocate register map: %d\n",
-    56				ret);
-    57			return ret;
-    58		}
-    59	
-    60		return da9052_device_init(da9052, id->driver_data);
-    61	}
-    62	
-
+diff --git a/drivers/net/wireless/ath/ath5k/eeprom.h b/drivers/net/wireless/ath/ath5k/eeprom.h
+index 693296ee9693..e85b713950b1 100644
+--- a/drivers/net/wireless/ath/ath5k/eeprom.h
++++ b/drivers/net/wireless/ath/ath5k/eeprom.h
+@@ -489,7 +489,4 @@ struct ath5k_eeprom_info {
+ 
+ 	/* Spur mitigation data (fbin values for spur channels) */
+ 	u16	ee_spur_chans[AR5K_EEPROM_N_SPUR_CHANS][AR5K_EEPROM_N_FREQ_BANDS];
+-
+-	/* Antenna raw switch tables */
+-	u32	ee_antenna[AR5K_EEPROM_N_MODES][AR5K_ANT_MAX];
+ };
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
