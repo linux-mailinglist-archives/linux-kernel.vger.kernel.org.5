@@ -2,106 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C78380567B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:50:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA97A805685
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345597AbjLENuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42800 "EHLO
+        id S1442251AbjLENvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345556AbjLENue (ORCPT
+        with ESMTP id S1345523AbjLENvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:50:34 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B490A8;
-        Tue,  5 Dec 2023 05:50:39 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54c7744a93fso4240277a12.2;
-        Tue, 05 Dec 2023 05:50:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701784238; x=1702389038; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3CnnPrYJbZn+ydGuLss8Ol0k4CEJ0cAzskXkdkO+me0=;
-        b=jCbI+sOYMcqvCfkaSvqiPRMEDIE9RYid9bXyurZiLwNWzp/eH+butlRkZkX+ixtzF/
-         aaBeaumkWlcBie4ltwG1Uh9wcsLo/wQwU+e+yD587pgcSzSJDwLd2JSy+YyJ/lzupI4a
-         JpS2CeX0OkwQP9JX4P+fRHRA4yMpoOklXCCksVsJKErjQFwCo547HPv/GxOCSF0uuyZQ
-         oGdNF+iRkmyctcllSWbnkqDwDGjICekoDAf2Hcmw4CskmXazJsk2FmD8XbM+CPckNZiB
-         sedONh/OB9NtDkRWCxPRYbBJyhEw6UTfahAYF1CoyeS7UtC8Xb3oQfb9gY2fBstypPak
-         /giA==
+        Tue, 5 Dec 2023 08:51:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9852BB2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:51:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701784308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YqwroJrGTHefUhDWiBCdA2J4vAuymH0bz+Axm1qiXbE=;
+        b=Ks2ogx33pVMFv1Mq8ARU5VZDCrPgMulgEejFQYZ3cUj1O10xuc8UsumHYbWIrANiG+uaiv
+        XFEKHpHvzQXKlhAuf0rx//JUj/gsWlnvq0GbcQ/a7Or87bCSDmIOnp9dW+M18HOlR5qhdB
+        pr9qpXxbWytrGcF5CmxCTvps/5yXQCo=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-280-E63hAdDVMCKPL0bEHUlvjQ-1; Tue, 05 Dec 2023 08:51:47 -0500
+X-MC-Unique: E63hAdDVMCKPL0bEHUlvjQ-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1d0544c07c3so25642785ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:51:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701784238; x=1702389038;
-        h=content-transfer-encoding:in-reply-to:from:references:cc
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3CnnPrYJbZn+ydGuLss8Ol0k4CEJ0cAzskXkdkO+me0=;
-        b=sVgV+Ux6+0rZtsYJNWfAGifWpJQwGREqp9cY5DdzKDGXuAww6sl5fkvxaa4vXcixkY
-         qqRjJjZHaKvw0qHUcPZRRI6PRg0rg9O0NlwWYkgBS8Kg35+hH4y8Er6Q4BPSXgN8Vkmi
-         UND3Rf1eo7i0qeheadHxYWhgPBKsLmM0nOM56YtEKTmGoQz5LntZnrGjFXoMEVkMbBXO
-         Jlttf9L9h7d/F9jcD+JmjoF2fTyQmEpSPHAWnW32xnKPhnjjV9hRc6OP4tiwr7DHsUzG
-         KU3S7Bj/JoWu5PAFIpzULDcSoMJ75k79QPZ0vD3JlTxsqlJb/2ubI7rbw6O4uCjXVP7U
-         DYmA==
-X-Gm-Message-State: AOJu0YxGfyrB8tO/k4cCy/MeuCYQyELjR4v764bQ5cXWvVR7qBn6xGOh
-        ko12yYsa0hqXyfVeSzfgk/UeUqE47rTTNUYi8ug=
-X-Google-Smtp-Source: AGHT+IFRaJTQe39dBZzAkMfzbK51eiz+syrbne0p2I0XfRFqE6HVR4Nw6vvZ01b7wOMFjjnYC/bSOw==
-X-Received: by 2002:a17:906:10ce:b0:a1c:aa9e:17e4 with SMTP id v14-20020a17090610ce00b00a1caa9e17e4mr468382ejv.49.1701784238338;
-        Tue, 05 Dec 2023 05:50:38 -0800 (PST)
-Received: from [172.25.98.130] ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id o9-20020a17090637c900b00a1cdf29af64sm424678ejc.45.2023.12.05.05.50.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 05:50:37 -0800 (PST)
-Message-ID: <9717981d-2f41-4664-afd4-bf9a1544bb95@gmail.com>
-Date:   Tue, 5 Dec 2023 15:50:36 +0200
+        d=1e100.net; s=20230601; t=1701784306; x=1702389106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YqwroJrGTHefUhDWiBCdA2J4vAuymH0bz+Axm1qiXbE=;
+        b=w+O4uqnQu5VF0j+EULjwxuBRg0BPYDRMvxf/Pd64xk5/wS6/otAP5UGWwlCPRjJ8TH
+         trlx37ANynh/PFLJFu3iPMvV66f6TvHNFRIMExhw2edQy3wbyPnfS+V8Ovn1LO0K+70P
+         0eRLLk35bTRenOkqP5ILmPcXYlUbKZeHkUXTBskRQLk8wULLizNsRJz/snAVQGYGtdbb
+         8IRcx35Hc9gEZjxyrA8iz3lzdwsLHHDMcWDjQdMRMVtdwOKjrY5H9PMUVHaFQK3D1L7R
+         9cCMwuPvl5ficiNfKb+q9r+XDf4oZ04EsP1JYUj2DdY+lpTmr29Ms9MgTPqBik0CbdYF
+         7Log==
+X-Gm-Message-State: AOJu0YwIrc/Gch/8k0PWXaTyHIExOSpoIZW5RshMdEj0rqamW3NBo2g1
+        XzFB/va7FVzmO1y7I1Nr/7YSGwUp0sGjp6Uqy7FB6gswnGxIzE6s2jCYSUoXE4yn3d7fg3PgJqB
+        CXboHxCprOA1y9ArFfbpbWWqRnR1nvXcVXYDrfKPi
+X-Received: by 2002:a17:902:e741:b0:1d0:8555:a1bc with SMTP id p1-20020a170902e74100b001d08555a1bcmr3325800plf.13.1701784306640;
+        Tue, 05 Dec 2023 05:51:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGz6qoVMl9eTDZiTRuQ7GXnKYIuL8zYPdZOJYvdGQGzFFqt7PvtFFUulBhuNSWU8a3LTp27fh5Kz0Th3mHZFuQ=
+X-Received: by 2002:a17:902:e741:b0:1d0:8555:a1bc with SMTP id
+ p1-20020a170902e74100b001d08555a1bcmr3325793plf.13.1701784306367; Tue, 05 Dec
+ 2023 05:51:46 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 1/2] dt-bindings: adc: add AD7173
-Content-Language: en-US
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231205134223.17335-1-mitrutzceclan@gmail.com>
-From:   Ceclan Dumitru <mitrutzceclan@gmail.com>
-In-Reply-To: <20231205134223.17335-1-mitrutzceclan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        MALFORMED_FREEMAIL,MISSING_HEADERS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+References: <000000000000737829060b7b8775@google.com> <tencent_FCCCB879B66D7C2C2D6E4C97F4E972EE3A0A@qq.com>
+In-Reply-To: <tencent_FCCCB879B66D7C2C2D6E4C97F4E972EE3A0A@qq.com>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Tue, 5 Dec 2023 14:51:34 +0100
+Message-ID: <CAHc6FU4XREidNxwtW8m2YnsBGfANdH4W8b56KOeMNLjEEU_WGQ@mail.gmail.com>
+Subject: Re: [PATCH] gfs2: fix kernel BUG in gfs2_quota_cleanup
+To:     Edward Adam Davis <eadavis@qq.com>
+Cc:     syzbot+3b6e67ac2b646da57862@syzkaller.appspotmail.com,
+        gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Dec 2, 2023 at 10:34=E2=80=AFAM Edward Adam Davis <eadavis@qq.com> =
+wrote:
+> [Analysis]
+> When the task exits, it will execute cleanup_mnt() to recycle the mounted=
+ gfs2
+> file system, but it performs a system call fsconfig(4, FSCONFIG_CMD_RECON=
+FIGURE,
+> NULL, NULL, 0) before executing the task exit operation.
+>
+> This will execute the following kernel path to complete the setting of
+> SDF_JOURNAL_LIVE for sd_flags:
+>
+> SYSCALL_DEFINE5(fsconfig, ..)->
+>         vfs_fsconfig_locked()->
+>                 vfs_cmd_reconfigure()->
+>                         gfs2_reconfigure()->
+>                                 gfs2_make_fs_rw()->
+>                                         set_bit(SDF_JOURNAL_LIVE, &sdp->s=
+d_flags);
+>
+> [Fix]
+> Add SDF_NORECOVERY check in gfs2_quota_cleanup() to avoid checking
+> SDF_JOURNAL_LIVE on the path where gfs2 is being unmounted.
 
+Thanks for this fix, I've applied it and added the following tag:
 
-On 12/5/23 15:42, Dumitru Ceclan wrote:
-> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel applications
-> or higher speed multiplexed applications. The Sigma-Delta ADC is intended
-> primarily for measurement of signals close to DC but also delivers
-> outstanding performance with input bandwidths out to ~10kHz.
-> 
+Fixes: f66af88e3321 ("gfs2: Stop using gfs2_make_fs_ro for withdraw")
 
-Bindings V6 -> V7
- - remove redundant bipolar attribute
- - add reference-select example
+>
+> Reported-and-tested-by: syzbot+3b6e67ac2b646da57862@syzkaller.appspotmail=
+.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  fs/gfs2/quota.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
+> index 95dae7838b4e..af32dd8a72fa 100644
+> --- a/fs/gfs2/quota.c
+> +++ b/fs/gfs2/quota.c
+> @@ -1505,7 +1505,8 @@ void gfs2_quota_cleanup(struct gfs2_sbd *sdp)
+>         LIST_HEAD(dispose);
+>         int count;
+>
+> -       BUG_ON(test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags));
+> +       BUG_ON(!test_bit(SDF_NORECOVERY, &sdp->sd_flags) &&
+> +               test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags));
+>
+>         spin_lock(&qd_lock);
+>         list_for_each_entry(qd, &sdp->sd_quota_list, qd_list) {
+> --
+> 2.43.0
+
+Thanks,
+Andreas
+
