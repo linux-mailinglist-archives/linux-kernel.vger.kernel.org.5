@@ -2,273 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3C1805BC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F13BB805B94
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbjLEQXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:23:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40688 "EHLO
+        id S1345188AbjLEQYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:24:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjLEQXo (ORCPT
+        with ESMTP id S231881AbjLEQYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:23:44 -0500
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E3A9E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:23:49 -0800 (PST)
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3B5FGZsO028858;
-        Tue, 5 Dec 2023 17:23:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=selector1; bh=M19hA/E
-        ynixEn29OmKPkrr4LxfnFFf6WNti3ae0HVHY=; b=ADeufvs/eC4eWoSexVH//Fz
-        cYw6i01/Jcnv0eNBnrJFqWSQXEMxzv6hV4W/YuKRh0t5C8zzPQscHb9ZWj8urTzc
-        IvO+ULN7VitGR/CTXXXcXWEPZXgbcFyMnfIeQuBKcijg8gOuaooDC5rWP5rRAZzT
-        3OM8I8JtUP+qamI5uf3r/NuE80LGik3FjrGJMG4KQXELdlrqnydT/vTQV9Kk0oyr
-        zkYyeCyUTUtS21y7dHTlBsh2mM/ai1wJUfsm1B/Tqwp8kQ1/rFQBeg7eN46pQ05N
-        qRJgagMcb2jfLfoLfej4C6cO+snibGa3vHdO1xSwxnc4jHHNl0W/ck1/XP3NYLg=
-        =
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3urgdp2keu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 17:23:39 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EAC0910004D;
-        Tue,  5 Dec 2023 17:23:38 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E050F2C38BE;
-        Tue,  5 Dec 2023 17:23:38 +0100 (CET)
-Received: from localhost (10.201.20.163) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 5 Dec
- 2023 17:23:38 +0100
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>
-CC:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        <op-tee@lists.trustedfirmware.org>, <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH v5] tee: Use iov_iter to better support shared buffer registration
-Date:   Tue, 5 Dec 2023 17:23:30 +0100
-Message-ID: <20231205162330.196259-1-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Dec 2023 11:24:05 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AC51AA;
+        Tue,  5 Dec 2023 08:24:11 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B5GO0Ep002469;
+        Tue, 5 Dec 2023 10:24:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701793440;
+        bh=WRpAXXk9cF26IADEfdegk6SZVUw+VjPNz9fKUwXfzj8=;
+        h=From:To:CC:Subject:Date;
+        b=FmLaXSo7uM78EP5zCb8UILPPcpEwr/LTZ3M+DsGYtXrWdPURnkrWcAEMFZYcFaMj+
+         X/F0p5eWLLm+iqSpfFo1kvNkvq6H/OiIgutdmlcBBN53R+R8YfMctyiJSkiKmRWuS5
+         rO9++avsYs5IjHr+LFwigHDb5yWjZ/w/6p9OpHMU=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B5GO0AG023434
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 5 Dec 2023 10:24:00 -0600
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
+ Dec 2023 10:23:59 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 5 Dec 2023 10:23:59 -0600
+Received: from lelv0326.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B5GNxR3038454;
+        Tue, 5 Dec 2023 10:23:59 -0600
+From:   Andrew Davis <afd@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>, Bryan Brattlof <bb@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>
+Subject: [PATCH v2] arm64: dts: ti: k3-am65: Add AM652 DTSI file
+Date:   Tue, 5 Dec 2023 10:23:58 -0600
+Message-ID: <20231205162358.23904-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.201.20.163]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-05_12,2023-12-05_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently it's not possible to register kernel buffers with TEE
-which are allocated via vmalloc.
+The AM652 is basically a AM654 but with 2 cores instead of 4. Add
+a DTSI file for AM652 matching AM654 except this core difference.
 
-Use iov_iter and associated helper functions to manage the page
-registration for all type of memories.
+This removes the need to remove the extra cores from AM654 manually
+in DT files for boards that use the AM652 variant. Do that for
+the IOT2050 boards here.
 
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Signed-off-by: Andrew Davis <afd@ti.com>
+Reviewed-by: Bryan Brattlof <bb@ti.com>
 ---
-Update from V4 to V5:
-- replace import_ubuf() by iov_iter_ubuf(),
-- fix comment in register_shm_helper() function.
 
-Update from V3 to V4:
-- improve commit message,
-- use import_ubuf() instead of iov_iter_init(),
-- move shm_get_kernel_pages in register_shm_helper,
-- put back untagged_addr in register_shm_helper(),
-- move the comment related to pin pages from shm_get_kernel_pages()
-  to register_shm_helper().
+Changes for v2:
+ - Add r-b
+ - Rebase on next-20231204
 
-Update from V2 to V3:
-- break lines longer than 80 columns.
+ .../boot/dts/ti/k3-am65-iot2050-common.dtsi   |  1 -
+ arch/arm64/boot/dts/ti/k3-am652.dtsi          | 74 +++++++++++++++++++
+ .../ti/k3-am6528-iot2050-basic-common.dtsi    | 11 +--
+ .../ti/k3-am6548-iot2050-advanced-common.dtsi |  1 +
+ 4 files changed, 76 insertions(+), 11 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/ti/k3-am652.dtsi
 
-Update from V1 to V2:
-- replace ITER_SOURCE by ITER_DEST flag in tee_shm_register_user_buf(),
-- replace IS_ERR_OR NULL(shm) by IS_ERR(shm) in tee_shm_register_user_buf().
-
-V1:
-The support of buffer registration allocated with vmalloc is no more
-available since c83900393aa1 ("tee: Remove vmalloc page support").
-
-This patch is an alternative to a revert and resulted from a discussion
-with Christopher Hellwig [1].
-
-This patch has been tested using xtest tool in optee qemu environment [2]
-and using the series related to the remoteproc tee that should be
-proposed soon [3].
-
-References:
-[1] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#m8ec683c44fcd9b69c2aee42eaed0793afac9dd18in
-[2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#build-instructions
-[3] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#maca0a1fc897aadd54c7deac432e11473fe970d1d
----
- drivers/tee/tee_shm.c | 78 +++++++++++++++++++++++--------------------
- 1 file changed, 42 insertions(+), 36 deletions(-)
-
-diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-index 673cf0359494..731d9028b67f 100644
---- a/drivers/tee/tee_shm.c
-+++ b/drivers/tee/tee_shm.c
-@@ -22,23 +22,12 @@ static void shm_put_kernel_pages(struct page **pages, size_t page_count)
- 		put_page(pages[n]);
- }
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+index ab1dffa5c1c6f..73ff119d85cdc 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common.dtsi
+@@ -9,7 +9,6 @@
+  * Common bits of the IOT2050 Basic and Advanced variants, PG1 and PG2
+  */
  
--static int shm_get_kernel_pages(unsigned long start, size_t page_count,
--				struct page **pages)
-+static void shm_get_kernel_pages(struct page **pages, size_t page_count)
- {
--	struct page *page;
- 	size_t n;
+-#include "k3-am654.dtsi"
+ #include <dt-bindings/phy/phy.h>
+ #include <dt-bindings/net/ti-dp83867.h>
  
--	if (WARN_ON_ONCE(is_vmalloc_addr((void *)start) ||
--			 is_kmap_addr((void *)start)))
--		return -EINVAL;
+diff --git a/arch/arm64/boot/dts/ti/k3-am652.dtsi b/arch/arm64/boot/dts/ti/k3-am652.dtsi
+new file mode 100644
+index 0000000000000..0f22e00faa903
+--- /dev/null
++++ b/arch/arm64/boot/dts/ti/k3-am652.dtsi
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for AM65 SoC family in Dual core configuration
++ *
++ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
++ */
++
++#include "k3-am65.dtsi"
++
++/ {
++	cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		cpu-map {
++			cluster0: cluster0 {
++				core0 {
++					cpu = <&cpu0>;
++				};
++
++				core1 {
++					cpu = <&cpu1>;
++				};
++			};
++		};
++
++		cpu0: cpu@0 {
++			compatible = "arm,cortex-a53";
++			reg = <0x000>;
++			device_type = "cpu";
++			enable-method = "psci";
++			i-cache-size = <0x8000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			next-level-cache = <&L2_0>;
++		};
++
++		cpu1: cpu@1 {
++			compatible = "arm,cortex-a53";
++			reg = <0x001>;
++			device_type = "cpu";
++			enable-method = "psci";
++			i-cache-size = <0x8000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			next-level-cache = <&L2_0>;
++		};
++	};
++
++	L2_0: l2-cache0 {
++		compatible = "cache";
++		cache-level = <2>;
++		cache-unified;
++		cache-size = <0x80000>;
++		cache-line-size = <64>;
++		cache-sets = <512>;
++		next-level-cache = <&msmc_l3>;
++	};
++
++	msmc_l3: l3-cache0 {
++		compatible = "cache";
++		cache-level = <3>;
++		cache-unified;
++	};
++
++	thermal_zones: thermal-zones {
++		#include "k3-am654-industrial-thermal.dtsi"
++	};
++};
+diff --git a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
+index 5ab434c02ab6b..feb0eae4e6df4 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am6528-iot2050-basic-common.dtsi
+@@ -9,6 +9,7 @@
+  * Common bits of the IOT2050 Basic variant, PG1 and PG2
+  */
+ 
++#include "k3-am652.dtsi"
+ #include "k3-am65-iot2050-common.dtsi"
+ 
+ / {
+@@ -17,16 +18,6 @@ memory@80000000 {
+ 		/* 1G RAM */
+ 		reg = <0x00000000 0x80000000 0x00000000 0x40000000>;
+ 	};
 -
--	page = virt_to_page((void *)start);
--	for (n = 0; n < page_count; n++) {
--		pages[n] = page + n;
-+	for (n = 0; n < page_count; n++)
- 		get_page(pages[n]);
--	}
+-	cpus {
+-		cpu-map {
+-			/delete-node/ cluster1;
+-		};
+-		/delete-node/ cpu@100;
+-		/delete-node/ cpu@101;
+-	};
 -
--	return page_count;
- }
+-	/delete-node/ l2-cache1;
+ };
  
- static void release_registered_pages(struct tee_shm *shm)
-@@ -214,13 +203,14 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_t size)
- EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
+ /* eMMC */
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
+index be55494b1f3fc..ff2fdc2e12e3c 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-common.dtsi
+@@ -11,6 +11,7 @@
  
- static struct tee_shm *
--register_shm_helper(struct tee_context *ctx, unsigned long addr,
--		    size_t length, u32 flags, int id)
-+register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u32 flags,
-+		    int id)
- {
- 	struct tee_device *teedev = ctx->teedev;
- 	struct tee_shm *shm;
--	unsigned long start;
--	size_t num_pages;
-+	unsigned long start, addr;
-+	size_t num_pages, off;
-+	ssize_t len;
- 	void *ret;
- 	int rc;
+ /dts-v1/;
  
-@@ -245,31 +235,38 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
- 	shm->flags = flags;
- 	shm->ctx = ctx;
- 	shm->id = id;
--	addr = untagged_addr(addr);
-+	addr = untagged_addr((unsigned long)iter_iov_addr(iter));
- 	start = rounddown(addr, PAGE_SIZE);
--	shm->offset = addr - start;
--	shm->size = length;
--	num_pages = (roundup(addr + length, PAGE_SIZE) - start) / PAGE_SIZE;
-+	num_pages = iov_iter_npages(iter, INT_MAX);
-+	if (!num_pages) {
-+		ret = ERR_PTR(-ENOMEM);
-+		goto err_ctx_put;
-+	}
-+
- 	shm->pages = kcalloc(num_pages, sizeof(*shm->pages), GFP_KERNEL);
- 	if (!shm->pages) {
- 		ret = ERR_PTR(-ENOMEM);
- 		goto err_free_shm;
- 	}
++#include "k3-am654.dtsi"
+ #include "k3-am65-iot2050-common.dtsi"
  
--	if (flags & TEE_SHM_USER_MAPPED)
--		rc = pin_user_pages_fast(start, num_pages, FOLL_WRITE,
--					 shm->pages);
--	else
--		rc = shm_get_kernel_pages(start, num_pages, shm->pages);
--	if (rc > 0)
--		shm->num_pages = rc;
--	if (rc != num_pages) {
--		if (rc >= 0)
--			rc = -ENOMEM;
--		ret = ERR_PTR(rc);
--		goto err_put_shm_pages;
-+	len = iov_iter_extract_pages(iter, &shm->pages, LONG_MAX, num_pages, 0,
-+				     &off);
-+	if (unlikely(len <= 0)) {
-+		ret = len ? ERR_PTR(len) : ERR_PTR(-ENOMEM);
-+		goto err_free_shm_pages;
- 	}
- 
-+	/*
-+	 * iov_iter_extract_kvec_pages does not get reference on the pages,
-+	 * get a reference on them.
-+	 */
-+	if (iov_iter_is_kvec(iter))
-+		shm_get_kernel_pages(shm->pages, num_pages);
-+
-+	shm->offset = off;
-+	shm->size = len;
-+	shm->num_pages = num_pages;
-+
- 	rc = teedev->desc->ops->shm_register(ctx, shm, shm->pages,
- 					     shm->num_pages, start);
- 	if (rc) {
-@@ -279,10 +276,11 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
- 
- 	return shm;
- err_put_shm_pages:
--	if (flags & TEE_SHM_USER_MAPPED)
-+	if (!iov_iter_is_kvec(iter))
- 		unpin_user_pages(shm->pages, shm->num_pages);
- 	else
- 		shm_put_kernel_pages(shm->pages, shm->num_pages);
-+err_free_shm_pages:
- 	kfree(shm->pages);
- err_free_shm:
- 	kfree(shm);
-@@ -307,6 +305,7 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
- 	u32 flags = TEE_SHM_USER_MAPPED | TEE_SHM_DYNAMIC;
- 	struct tee_device *teedev = ctx->teedev;
- 	struct tee_shm *shm;
-+	struct iov_iter iter;
- 	void *ret;
- 	int id;
- 
-@@ -319,7 +318,8 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
- 	if (id < 0)
- 		return ERR_PTR(id);
- 
--	shm = register_shm_helper(ctx, addr, length, flags, id);
-+	iov_iter_ubuf(&iter, ITER_DEST,  (void __user *)addr, length);
-+	shm = register_shm_helper(ctx, &iter, flags, id);
- 	if (IS_ERR(shm)) {
- 		mutex_lock(&teedev->mutex);
- 		idr_remove(&teedev->idr, id);
-@@ -352,8 +352,14 @@ struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
- 					    void *addr, size_t length)
- {
- 	u32 flags = TEE_SHM_DYNAMIC;
-+	struct kvec kvec;
-+	struct iov_iter iter;
-+
-+	kvec.iov_base = addr;
-+	kvec.iov_len = length;
-+	iov_iter_kvec(&iter, ITER_DEST, &kvec, 1, length);
- 
--	return register_shm_helper(ctx, (unsigned long)addr, length, flags, -1);
-+	return register_shm_helper(ctx, &iter, flags, -1);
- }
- EXPORT_SYMBOL_GPL(tee_shm_register_kernel_buf);
- 
+ / {
 -- 
-2.25.1
+2.39.2
 
