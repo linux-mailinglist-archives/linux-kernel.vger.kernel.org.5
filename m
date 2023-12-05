@@ -2,143 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 999F1805646
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF1480564A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345471AbjLENoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        id S1345478AbjLENqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345584AbjLENks (ORCPT
+        with ESMTP id S235188AbjLENqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:40:48 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E627199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:40:53 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB08A139F;
-        Tue,  5 Dec 2023 05:41:39 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA65A3F5A1;
-        Tue,  5 Dec 2023 05:40:51 -0800 (PST)
-Message-ID: <183cf38c-476e-44c4-a8c7-22ed43122b41@arm.com>
-Date:   Tue, 5 Dec 2023 13:40:51 +0000
+        Tue, 5 Dec 2023 08:46:20 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E05218B;
+        Tue,  5 Dec 2023 05:46:26 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54cff638658so1589184a12.1;
+        Tue, 05 Dec 2023 05:46:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701783984; x=1702388784; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TTeJ0EDjbcdiYqEviIIm+5LsxySuiePtzDtzi3eR2Yk=;
+        b=OSyp3xubmVf3/SGcYs4CKgXLGwycCsS8MWahSbkOaPyGUMa45i2mQNsc9t51oOhcgE
+         rBMkdiOCTjBC5wjqsWv+oKCkRLWlRe5XaTPCkJH7aglwZIRfgMQCwp5cCMvGocVuHAgT
+         5KZRdep0T1afkyc+mf0PCLqtTvlWaf1if1ji8RbxcjjcvMsVG5qfYA+LIJH0/9BynOy+
+         iSuDAdncqkJDwAT80h5LucxqQBslJVJVgh9lfhr1wK8SRGo2vzci8rw2YXYvBLOFFnlG
+         svfBTahx3NkxAGNbtMTligud259B/8KkEXRY+Zmn2y5Y8JxOyqkPLcaU2os/rFG3C+Nn
+         KpoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701783984; x=1702388784;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TTeJ0EDjbcdiYqEviIIm+5LsxySuiePtzDtzi3eR2Yk=;
+        b=fY+lKuxC1xeqvv3OUR8YpN0Oh9BQLeYa7z0FLc5r+ZamNfcNN3HIsyolS3RtuCRPd9
+         B9f/wPHwVZ9kysiJlCUAGZzjx6GqzR5IJD7v5Dm3X+6QiKW3e2YoGBKcVkFqn+VsDAF6
+         9GtvSIIlOt0J3swut/cwO1mwBaUXA3gTKCCLzQuYJ0KKQnbtiFqvYg/l1EBMJTJYMl8U
+         HV0QiSawIl128B564hoXMfJ5KeuuRdT30NQFhfxpP0JW2KaHODdIGLezUsZgr4evJTw3
+         zjpAgl7tIWUOhLDDzKtP6fz+tDao32UxlIeYrtP+JLSCfemquQhztSSZz0gfFT0MGmV+
+         oWog==
+X-Gm-Message-State: AOJu0YyYttdQ0y6sFxojNsdbPTGZt5Mv2hQlMpiAnX0+ZznfmoKkXAkZ
+        cHVsi2rNeOQ/WMZYDM1E/Xzw0T9NuLtoBuC8wDE=
+X-Google-Smtp-Source: AGHT+IHIGvB6u0O1iOh8G8NwKm8XBsB8DRTT0Cab/+S3uj7y2caskUdc4TFT7kN0IGVA7SpWD4NzKQ==
+X-Received: by 2002:a50:8d4e:0:b0:548:5605:4682 with SMTP id t14-20020a508d4e000000b0054856054682mr3942458edt.21.1701783984336;
+        Tue, 05 Dec 2023 05:46:24 -0800 (PST)
+Received: from HYB-hhAwRlzzMZb.ad.analog.com ([5.2.194.157])
+        by smtp.gmail.com with ESMTPSA id by6-20020a0564021b0600b0054cacb41abasm1102233edb.60.2023.12.05.05.46.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 05:46:23 -0800 (PST)
+From:   Dumitru Ceclan <mitrutzceclan@gmail.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        =?UTF-8?q?Leonard=20G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dumitru Ceclan <mitrutzceclan@gmail.com>
+Subject: [PATCH v7 1/2] dt-bindings: adc: add AD7173
+Date:   Tue,  5 Dec 2023 15:42:20 +0200
+Message-ID: <20231205134223.17335-1-mitrutzceclan@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 34/39] mm/rmap: introduce
- folio_try_dup_anon_rmap_[pte|ptes|pmd]()
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Peter Xu <peterx@redhat.com>
-References: <20231204142146.91437-1-david@redhat.com>
- <20231204142146.91437-35-david@redhat.com>
- <b7ef017b-f651-40f3-a2bd-70ebe9411dc1@arm.com>
- <88a341bf-0b6a-454a-aeb1-0699233eb37c@redhat.com>
- <e2db9119-0f8f-42d2-af13-529edb043bc6@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <e2db9119-0f8f-42d2-af13-529edb043bc6@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 13:32, David Hildenbrand wrote:
-> On 05.12.23 14:17, David Hildenbrand wrote:
->> On 05.12.23 14:12, Ryan Roberts wrote:
->>> On 04/12/2023 14:21, David Hildenbrand wrote:
->>>> The last user of page_needs_cow_for_dma() and __page_dup_rmap() are gone,
->>>> remove them.
->>>>
->>>> Add folio_try_dup_anon_rmap_ptes() right away, we want to perform rmap
->>>> baching during fork() soon.
->>>>
->>>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>>> ---
->>>>    include/linux/mm.h   |   6 --
->>>>    include/linux/rmap.h | 145 +++++++++++++++++++++++++++++--------------
->>>>    2 files changed, 100 insertions(+), 51 deletions(-)
->>>>
->>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>>> index 24c1c7c5a99c0..f7565b35ae931 100644
->>>> --- a/include/linux/mm.h
->>>> +++ b/include/linux/mm.h
->>>> @@ -1964,12 +1964,6 @@ static inline bool folio_needs_cow_for_dma(struct
->>>> vm_area_struct *vma,
->>>>        return folio_maybe_dma_pinned(folio);
->>>>    }
->>>>    -static inline bool page_needs_cow_for_dma(struct vm_area_struct *vma,
->>>> -                      struct page *page)
->>>> -{
->>>> -    return folio_needs_cow_for_dma(vma, page_folio(page));
->>>> -}
->>>> -
->>>>    /**
->>>>     * is_zero_page - Query if a page is a zero page
->>>>     * @page: The page to query
->>>> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
->>>> index 21d72cc602adc..84439f7720c62 100644
->>>> --- a/include/linux/rmap.h
->>>> +++ b/include/linux/rmap.h
->>>> @@ -354,68 +354,123 @@ static inline void folio_dup_file_rmap_pmd(struct
->>>> folio *folio,
->>>>    #endif
->>>>    }
->>>>    -static inline void __page_dup_rmap(struct page *page, bool compound)
->>>> +static inline int __folio_try_dup_anon_rmap(struct folio *folio,
->>>
->>> __always_inline?
->>
->> Yes.
->>
->>>
->>>> +        struct page *page, unsigned int nr_pages,
->>>> +        struct vm_area_struct *src_vma, enum rmap_mode mode)
->>>>    {
->>>> -    VM_WARN_ON(folio_test_hugetlb(page_folio(page)));
->>>> +    int i;
->>>>    -    if (compound) {
->>>> -        struct folio *folio = (struct folio *)page;
->>>> +    VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
->>>>    -        VM_BUG_ON_PAGE(compound && !PageHead(page), page);
->>>> -        atomic_inc(&folio->_entire_mapcount);
->>>> -    } else {
->>>> -        atomic_inc(&page->_mapcount);
->>>> +    /*
->>>> +     * No need to check+clear for already shared PTEs/PMDs of the folio.
->>>> +     * This includes PTE mappings of (order-0) KSM folios.
->>>> +     */
->>>> +    if (likely(mode == RMAP_MODE_PTE)) {
->>>
->>> Presumbly if __always_inline then the compiler will remove this if/else and just
->>> keep the part indicated by mode? In which case "likely" is pretty useless? Same
->>> for all similar sites in the other patches.
->>
->> Yes, also had this in mind. As long as we use __always_inline it
->> shouldn't ever matter.
-> 
-> It seems to be cleanest to just do:
-> 
-> switch (mode) {
-> case RMAP_MODE_PTE:
->     ...
->     break;
-> case RMAP_MODE_PMD:
->     ...
->     break;
-> }
-> 
+The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+which can be used in high precision, low noise single channel applications
+or higher speed multiplexed applications. The Sigma-Delta ADC is intended
+primarily for measurement of signals close to DC but also delivers
+outstanding performance with input bandwidths out to ~10kHz.
 
-Agreed.
+Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+---
+ .../bindings/iio/adc/adi,ad7173.yaml          | 170 ++++++++++++++++++
+ 1 file changed, 170 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+
+diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+new file mode 100644
+index 000000000000..087820a0cf48
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
+@@ -0,0 +1,170 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices AD7173 ADC
++
++maintainers:
++  - Ceclan Dumitru <dumitru.ceclan@analog.com>
++
++description: |
++  Bindings for the Analog Devices AD717X ADC's. Datasheets for supported chips:
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7172-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7173-8.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7175-2.pdf
++    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7176-2.pdf
++
++properties:
++  compatible:
++    enum:
++      - adi,ad7172-2
++      - adi,ad7173-8
++      - adi,ad7175-2
++      - adi,ad7176-2
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  spi-max-frequency:
++    maximum: 20000000
++
++  refin-supply:
++    description: external reference supply, can be used as reference for conversion.
++
++  refin2-supply:
++    description: external reference supply, can be used as reference for conversion.
++
++  avdd-supply:
++    description: avdd supply, can be used as reference for conversion.
++
++  required:
++    - compatible
++    - reg
++    - interrupts
++
++patternProperties:
++  "^channel@[0-9a-f]$":
++    type: object
++    $ref: adc.yaml
++    unevaluatedProperties: false
++
++    properties:
++      reg:
++        minimum: 0
++        maximum: 15
++
++      diff-channels:
++        items:
++          minimum: 0
++          maximum: 31
++
++      adi,reference-select:
++        description: |
++          Select the reference source to use when converting on
++          the specific channel. Valid values are:
++          refin      : REFIN(+)/REFIN(−).
++          refin2     : REFIN2(+)/REFIN2(−)
++          refout-avss: REFOUT/AVSS (Internal reference)
++          avdd       : AVDD
++
++          External reference refin2 only available on ad7173-8.
++          If not specified, internal reference used.
++        enum:
++          - refin
++          - refin2
++          - refout-avss
++          - avdd
++        default: refout-avss
++
++    required:
++      - reg
++      - diff-channels
++
++allOf:
++  - $ref: /schemas/spi/spi-peripheral-props.yaml#
++
++  - if:
++      properties:
++        compatible:
++          not:
++            contains:
++              const: adi,ad7173-8
++    then:
++      properties:
++        refin2-supply: false
++      patternProperties:
++        "^channel@[0-9a-f]$":
++          properties:
++            adi,reference-select:
++              enum:
++                - refin
++                - refout-avss
++                - avdd
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    spi {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      adc@0 {
++        compatible = "adi,ad7173-8";
++        reg = <0>;
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
++        interrupt-parent = <&gpio>;
++        spi-max-frequency = <5000000>;
++
++        refin-supply = <&dummy_regulator>;
++
++        channel@0 {
++          reg = <0>;
++          bipolar;
++          diff-channels = <0 1>;
++          adi,reference-select = "refin";
++        };
++
++        channel@1 {
++          reg = <1>;
++          diff-channels = <2 3>;
++        };
++
++        channel@2 {
++          reg = <2>;
++          bipolar;
++          diff-channels = <4 5>;
++        };
++
++        channel@3 {
++          reg = <3>;
++          bipolar;
++          diff-channels = <6 7>;
++        };
++
++        channel@4 {
++          reg = <4>;
++          diff-channels = <8 9>;
++          adi,reference-select = "avdd";
++        };
++      };
++    };
+-- 
+2.42.0
 
