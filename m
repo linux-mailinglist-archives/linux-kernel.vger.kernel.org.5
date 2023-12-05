@@ -2,45 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 404238043C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E098043CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343746AbjLEBLB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 20:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
+        id S1343759AbjLEBMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 20:12:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjLEBLA (ORCPT
+        with ESMTP id S231618AbjLEBMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 20:11:00 -0500
-Received: from irl.hu (irl.hu [95.85.9.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDC69B
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:11:05 -0800 (PST)
-Received: from [192.168.2.4] (51b68398.dsl.pool.telekom.hu [::ffff:81.182.131.152])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 0000000000071433.00000000656E78A6.00115099; Tue, 05 Dec 2023 02:11:02 +0100
-Message-ID: <ba7ed44fdcfe0a3a80024f0ecdfa4e5255cc48c6.camel@irl.hu>
-Subject: Re: [PATCH 1/2] ASoc: tas2563: DSP Firmware loading support
-From:   Gergo Koteles <soyer@irl.hu>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Date:   Tue, 05 Dec 2023 02:11:01 +0100
-In-Reply-To: <7a919eef-d9b4-4bcb-bc19-9a6868d1cc54@linux.intel.com>
-References: <cover.1701733441.git.soyer@irl.hu>
-         <c7d0fc477393550cc29624f33361d94ad987259f.1701733441.git.soyer@irl.hu>
-         <7a919eef-d9b4-4bcb-bc19-9a6868d1cc54@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
+        Mon, 4 Dec 2023 20:12:42 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D9EDC3
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:12:48 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-35d4e557c4bso17749135ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 17:12:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701738768; x=1702343568; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=L33oYQvZ1X9QshoXk8uWXk0doNVm+LX5qzUYAgX80+o=;
+        b=VU7SuEsn4+VkVio2vG2VdHWoUeezNXSnAtmjZ+DhEFzBhQoa1J4yjkJzeqnrq8d3CL
+         vytzg8aY41oWxrE0CJHwYdl0ycxun/khxo6pzrn1Z6XdynjHeunN2AiVjVyzkWxJN/7o
+         /YxKCiAZfk5z1FgxlX5iBwGTpY2tZvI38VqnV8+xLmIFY5TKkpTExukfG7r/NABA/2d9
+         P84TekeOarKeDlotlxRY7DHBpDh7zP+dF9aW0rbrgQEZlAwk8yBR5CATYT9fxRXCikug
+         FVW/DhDVCrRKd1nu1EFUAz03S2p3waZWaBZtPAWbXmplre0vgQZMy6oholY8mUfLOkDq
+         0APA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701738768; x=1702343568;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L33oYQvZ1X9QshoXk8uWXk0doNVm+LX5qzUYAgX80+o=;
+        b=CfrAQt6zKh0OC8WRt8SZ2MgTobr8SvkgzMbFyyaeRKddr/LGcw3idCbIGrOOGz+UFr
+         Dqjdmkf4B3MfaZ9UVLtovThJgWP8WjrVeyATj39Bq1hX6I6rBCgNFtMZB0NpF586IeN7
+         W/hkKOSF2f7BjdwKEf9DlxKighvdDyrv6c9NnyJ3mjjYe5Z19jun7jmXOK179D2EYuk6
+         OAjZgi5iaKzlNm7NePU84toc8lZOglWWZiMartWYlS2Zz+emSlGQWF25bt3WV7C8tJ0m
+         nvIPPrlBJvetRQOXtonyV6ip7zOyp+sHBKlGrgrheyEbRLv4Dl8jkAr8HNzOTcQpbmjK
+         0b9g==
+X-Gm-Message-State: AOJu0YxAs3tzqS9uJhwtvs7CGsJXgXC6RabTXpu8EysYtPVi9xbB16Mw
+        ak+GRKSv16Z074j1joNxBVHMSw==
+X-Google-Smtp-Source: AGHT+IEWJJxT8tQmCfczDL0XVMjNGvUCiSkuiaKlY/6nj9Yxw3SO/DeWl9qMxiysLZAVGyLd9Kv5Gw==
+X-Received: by 2002:a92:4a0d:0:b0:35d:63b2:48c4 with SMTP id m13-20020a924a0d000000b0035d63b248c4mr4733150ilf.65.1701738767991;
+        Mon, 04 Dec 2023 17:12:47 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id s7-20020a634507000000b005bcebc93d7asm8199060pga.47.2023.12.04.17.12.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 17:12:47 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1rAJzR-003y4I-03;
+        Tue, 05 Dec 2023 12:12:45 +1100
+Date:   Tue, 5 Dec 2023 12:12:45 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Kunhai Dai <daikunhai@didiglobal.com>
+Cc:     chandan.babu@oracle.com, djwong@kernel.org,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] xfs: adjust the offset of the log statistics line
+Message-ID: <ZW55DaL4mF9vO91L@dread.disaster.area>
+References: <20231204072644.1012309-1-daikunhai@didiglobal.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204072644.1012309-1-daikunhai@didiglobal.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,76 +75,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre-Louis,
+On Mon, Dec 04, 2023 at 02:26:44AM -0500, Kunhai Dai wrote:
+> It would be more preferable to present xs_try_logspace and
+> xs_sleep_logspace on the log line.
 
-Thank you for your review.
+xs_try_logspace and xs_sleep_logspace are AIL tail pushing
+statistics. They are related to reservation space exhaustion, not
+journal operations, so they really are located in the correct stats
+namespace. 
 
-On Mon, 2023-12-04 at 18:05 -0600, Pierre-Louis Bossart wrote:
+Regardless of whether they are correctly located, we can't change
+the layout of this file like this - it forms part of the user kABI.
+The file format was defined back in June 2000 (early stages of the
+XFS port to Linux) and so any change to the layout of the file will
+break every application and script every written that parses it.
 
-> > 
-> >  sound/soc/codecs/tas2562.c                    |   2 +-
-> 
-> are tas2562 and tas2563 (from commit subject) the same?
-> 
-No, tas2563 is register compatible with tas2562.
+So while it might be "preferable" to change the order of stats in
+the file to group them better, we simply cannot do that because it
+will break userspace.
 
-> > 
-> > +#include <linux/slab.h>
-> > +#include <linux/delay.h>
-> 
-> nit-pick: alphabetical order?
-> 
-Good idea, I'll fix it and the others in the next version.
+Cheers,
 
-> > +
-> > +#include <sound/tas2562.h>
-> > +#include <sound/tas25xx-dsp.h>
-> > +
-> > +
-> > +static void tas25xx_process_fw_delay(struct tas25xx_cmd *cmd)
-> > +{
-> > +	mdelay(cpu_to_be16(cmd->hdr.length));
-> 
-> is this the length of the header, or the duration of the delay?
-> 
-> Someone will get it wrong with this naming...
-> 
-I think this is because of the format.
-If cmd_type is TAS25XX_CMD_DELAY, then hdr.length is the length of the
-delay.
-At least I think so, based on
-https://lore.kernel.org/lkml/6d6aaed3-dac8-e1ec-436c-9b04273df2b3@ti.com/T/
-https://github.com/torvalds/linux/blob/bee0e7762ad2c6025b9f5245c040fcc36ef2bde8/sound/soc/codecs/tas2781-fmwlib.c#L769
-
-But I don't see any TAS25XX_CMD_DELAY command in the firmware I'm
-using.
-
-> > 
-> > +	prog_num = cpu_to_be32(fw_data->hdr->num_programs);
-> > +	config_num = cpu_to_be32(fw_data->hdr->num_configs);
-> > +	dev_info(dev, "Firmware loaded: programs %d, configs %d\n",
-> > +		prog_num, config_num);
-> > +
-
-For me:
-release_firmware(fw) is missing from here
-
-> > +	return fw_data;
-> > +
-> > +err_prog:
-> > +	devm_kfree(dev, fw_data->prog_data);
-> > +err_hdr:
-> > +	devm_kfree(dev, fw_data->hdr);
-> > +err_data:
-> > +	devm_kfree(dev, fw_data);
-> > +err_fw:
-> > +	release_firmware(fw);
-> > +
-> > +	return NULL;
-> > +}
-> > 
-
-Regards,
-
-Gergo
-
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
