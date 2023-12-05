@@ -2,138 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBAF80629C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EFD80629F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346511AbjLEXCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 18:02:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        id S1346500AbjLEXC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 18:02:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEXCa (ORCPT
+        with ESMTP id S229591AbjLEXC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 18:02:30 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506AAB5;
-        Tue,  5 Dec 2023 15:02:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701817352;
-        bh=SAZIxx8PjWSXY2K57gjC/c7SrQkY4BdKjxWUOgYR2FI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=m7caZPss2xozCilvgnc5J5opdhynNGKXqNrb4gSa6qcA4uNSzTT7yVspiMo46t5bE
-         qLbKguI7yq9vYQrlkIdQLbjGi750ihjJ97+gySad53eCzRDptu1FZMpJqmxO3UelSi
-         WwvBAto0r+gt0q6sXJ1yY/AtsQX7aCD9zn1r0sTW+uGDzLjkqlSzSspvXHQypVi/+x
-         rNldfX81lvpq1YRE5nodLrml3cx+MIeaxtY9bKGphNDp9wViJqxS1qSOTJ9ivTt4l3
-         EVmhIpz6fe0IQWkqvL8ktt066YSV/xMkIQSIijgtwl5+jpgkY1IjdOiX2dTR2VT6gU
-         aj0m5+js2FuCw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SlGJl31hDz4wcK;
-        Wed,  6 Dec 2023 10:02:31 +1100 (AEDT)
-Date:   Wed, 6 Dec 2023 10:02:30 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the security tree with the
- perf-current tree
-Message-ID: <20231206100230.7d29859d@canb.auug.org.au>
-In-Reply-To: <20231123111005.432dfc56@canb.auug.org.au>
-References: <20231123111005.432dfc56@canb.auug.org.au>
+        Tue, 5 Dec 2023 18:02:56 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80C2CB5;
+        Tue,  5 Dec 2023 15:03:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701817383; x=1733353383;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=La16urWPHLJe+yO9+sWDrXlwfa5KDYVtz2GCW/G8UMI=;
+  b=NIQhGgTRsl+6D1y57WxVvn0Bfku6vB5jVFKaa9u6l/TFiqbuVUNVQ32L
+   r5iNNUXeWVADP+4H2YNo2TW4vP4bhN3AB49K0oofNeCYmR1KDR7LQOrKF
+   hWPjpGHhB7RB1lnt3Z6jc+QumIqjeeUd2AkZ7J/SfWmgSoMvbAOYc0OeS
+   DusHgHfRxCx4HUok2L8+WZHO1fmyV+iS6OoQsh/YARwt1JJlOPBdpY6MF
+   aAmNmf/Ow6qy+IHZVcEPHl5T7kp/d1QI0m83seZ+mRMsd+dYT/f8c7a0+
+   dWQipUWOQuG41D1BQeBm3Dc/b7Sy8N3gi58gfBw5hawmil3wy1kZJFgw0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="460462621"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="460462621"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 15:03:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="944434271"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="944434271"
+Received: from mtvento-mobl1.amr.corp.intel.com (HELO [10.209.56.14]) ([10.209.56.14])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 15:03:01 -0800
+Message-ID: <bbb6225f-3610-4fcf-86e6-f7468f743d76@intel.com>
+Date:   Tue, 5 Dec 2023 15:03:01 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/y1vQADSf+/RAWWk.iKLskuq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/6] x86/vmware: Add TDX hypercall support
+Content-Language: en-US
+To:     Alexey Makhalov <alexey.makhalov@broadcom.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Alexey Makhalov <amakhalov@vmware.com>
+Cc:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+        hpa@zytor.com, dave.hansen@linux.intel.co, bp@alien8.d,
+        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
+        netdev@vger.kernel.org, richardcochran@gmail.com,
+        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
+        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
+        akaher@vmware.com, jsipek@vmware.com,
+        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com, horms@kernel.org
+References: <20231122233058.185601-8-amakhalov@vmware.com>
+ <20231201232452.220355-1-amakhalov@vmware.com>
+ <20231201232452.220355-7-amakhalov@vmware.com>
+ <20231204103100.GYZW2qZE9tbGMtuVgY@fat_crate.local>
+ <c2519c9a-8518-403a-9bca-cb79a5f2a6e9@intel.com>
+ <204f743d-2901-4ad2-bbcc-a7857a8644e7@broadcom.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <204f743d-2901-4ad2-bbcc-a7857a8644e7@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/y1vQADSf+/RAWWk.iKLskuq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 12/5/23 13:41, Alexey Makhalov wrote:
+>> I don't really like it much.  This does a generic thing (make a TDX
+>> hypercall) with a specific name ("vmware_").  If you want to make an
+>> argument that a certain chunk of the __tdx_hypercall() space is just for
+>> VMWare and you also add a VMWare-specific check and then export *that*,
+>> it might be acceptable.
+>>
+>> But I don't want random modules able to make random, unrestricted TDX
+>> hypercalls.  That's asking for trouble.
+> 
+> Considering exporting of __tdx_hypercall for random modules is not an
+> option, what VMware specific checks you are suggesting?
 
-Hi all,
+Make sure it can only be called running on VMWare guests.  A check for
+X86_HYPER_VMWARE seems simple enough.
 
-On Thu, 23 Nov 2023 11:10:05 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the security tree got a conflict in:
->=20
->   tools/perf/arch/s390/entry/syscalls/syscall.tbl
->=20
-> between commit:
->=20
->   d3968c974a24 ("tools/perf: Update tools's copy of s390 syscall table")
->=20
-> from the perf-current tree and commit:
->=20
->   5f42375904b0 ("LSM: wireup Linux Security Module syscalls")
->=20
-> from the security tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> --=20
-> Cheers,
-> Stephen Rothwell
->=20
-> diff --cc tools/perf/arch/s390/entry/syscalls/syscall.tbl
-> index 86fec9b080f6,5a422443cb16..000000000000
-> --- a/tools/perf/arch/s390/entry/syscalls/syscall.tbl
-> +++ b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
-> @@@ -455,7 -455,6 +455,10 @@@
->   450  common	set_mempolicy_home_node	sys_set_mempolicy_home_node	sys_set=
-_mempolicy_home_node
->   451  common	cachestat		sys_cachestat			sys_cachestat
->   452  common	fchmodat2		sys_fchmodat2			sys_fchmodat2
->  -453  common	lsm_get_self_attr	sys_lsm_get_self_attr	sys_lsm_get_self_at=
-tr
->  -454  common	lsm_set_self_attr	sys_lsm_set_self_attr	sys_lsm_set_self_at=
-tr
->  -455  common	lsm_list_modules	sys_lsm_list_modules	sys_lsm_list_modules
->  +453  common	map_shadow_stack	sys_map_shadow_stack		sys_map_shadow_stack
->  +454  common	futex_wake		sys_futex_wake			sys_futex_wake
->  +455  common	futex_wait		sys_futex_wait			sys_futex_wait
->  +456  common	futex_requeue		sys_futex_requeue		sys_futex_requeue
-> ++459  common	lsm_get_self_attr	sys_lsm_get_self_attr	sys_lsm_get_self_at=
-tr
-> ++460  common	lsm_set_self_attr	sys_lsm_set_self_attr	sys_lsm_set_self_at=
-tr
-> ++461  common	lsm_list_modules	sys_lsm_list_modules	sys_lsm_list_modules
+Second, unless the space is *HUGE*, you want to be exporting things like
+__vmware_platform() or vmware_legacy_x2apic_available(), *NOT* the
+underlying hypercall functions.
 
-This is now a conflict between the security tree and Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/y1vQADSf+/RAWWk.iKLskuq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVvrAYACgkQAVBC80lX
-0GzySwf9EBEfVAkDkcg9O0O1pd941Jefyxite3OjSVFaENBzYp49o/YpwViP37mu
-xr4MOxB3BPI+bdplXI+ckZknfCsyysXJIzjSDrdtER1mN3cgFWS0owXCcSDsBgpU
-mbQdWC9n6kPMl4WNGWqHE8QPMlA/TXJz0gwMvJ9R3/xSTF8+KDc0D+WX79T2p1lS
-ak1fQElXzTE55f00vF0LKCoPUV9WLDqHrT5GS7nogojM+bYi6iFISNy1ank2TBdm
-XxFtDqc/el2Nph8EWbI/0lCCHWQm2JaoutGbbaMZ+9f0WOYn5a0p75FYTX96jjTi
-oBnnXdpz1WOF+82YosDNdhaALNsbZw==
-=6+1Z
------END PGP SIGNATURE-----
-
---Sig_/y1vQADSf+/RAWWk.iKLskuq--
+We want to make sure that the interfaces are well defined and bounded.
