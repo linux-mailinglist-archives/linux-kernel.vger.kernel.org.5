@@ -2,313 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C12C9805F3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4203D805F56
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345622AbjLEUQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 15:16:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58372 "EHLO
+        id S1345872AbjLEUUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 15:20:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjLEUQc (ORCPT
+        with ESMTP id S230162AbjLEUUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 15:16:32 -0500
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C28D3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:16:38 -0800 (PST)
-Received: by mail-vk1-xa29.google.com with SMTP id 71dfb90a1353d-4b2e1e2e7cdso819334e0c.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 12:16:38 -0800 (PST)
+        Tue, 5 Dec 2023 15:20:49 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E0A1A5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:20:53 -0800 (PST)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5K9MhO016221;
+        Tue, 5 Dec 2023 20:18:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
+ to : cc : subject : in-reply-to : date : message-id : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=o3YjZ3sRcd2LjShLvwl44UhfEJYV49wz/mSFGoQQgvU=;
+ b=VFokdfhl0fXhnlOal69aLpYGm0iGkW2gwCaFVKtbW8JJqjtiF4AcAUy1cRI2JY8FK7KB
+ as0g4F+hKuzWR2j5rKnLXdwgVaoPh4Qpbkq3wU/AEo/KgiPdu+zVevhTHFIVhi5msFAP
+ 0t2RfulGU0wi6uSNY0lHu7xcO2DrnSPr7g0h3IppqMW0jt/bOr5FQNkca6lDQKWUnkKw
+ e2YX+CLhwci+1cysXEA8+BeICJntiN4m6bRLdh2gsH5lHkPHEFspXcKtb3BFoSz6vKIM
+ xiMgCN/jgXiyVdLAL+4IBhfAsAdh76YSkt0c+r1WM6OdZ6zgeDJZ8EVpGMHuVVQQRTQN PQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3utan9g0j0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Dec 2023 20:18:33 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5K9VOA038489;
+        Tue, 5 Dec 2023 20:18:32 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3utanarbax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Dec 2023 20:18:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OWEVdaYIwLdET2oDHro2Obv3pSSlOiJ/RXuQQd+C6OHUzpfKKGCx5S2caXuswi6gWZ2FUyMPxZqXXnLKUWdvmooxFKEoJ8fb1bNphsLoy0f5B9AIfkg13EFBAAuyy4Gjjn5JlLF+hfyNUmUB/hMcLbd9cYo61FLeNb9+Xr5aOOAoYyCtUGyTbwS5d8Gz1lU655hWSK3WHECkzSyVGTs4XuFIIodtfA6gNcztVWOygjjc3lXxR77PqSMvwNp6jOBMBpnPA4GUS5ymYE/PsJUhBcpjkhFHizpvcIdlLyKv/B8cFQ93uhh02HJhpgs6Yf4QyofZnhAT6XGInY/hJS+KRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o3YjZ3sRcd2LjShLvwl44UhfEJYV49wz/mSFGoQQgvU=;
+ b=i32tmK8ITNE1TGSMw/4jro1irThn5JZtYieyDujZzM34dujsjafc3B9E431k0z3cDzN+sqneevdNwrfdjzsZZUOo6tbhEDi1iXz5ki+unQk1W7dO8UQxXwAPqOwNmGr3WTpAl8RAocHa6LubdvvfKWN1pzQutMf39lpuucEjiADH75LSY0cwcWv1wdHk3795HrjW9Seu3waANm0KXhfvNOTfteklPLWw4dk/soXkrDr1bZZxQIMi13ajPvxuBw/prilIgNUD1oKLZPQ8i+7DcvLmwkmstxFYW38+JFYpIoosxG08OWWFvPTpQO0lRLlC4KUJcp11Z2xMhN3FDMaixg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701807397; x=1702412197; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l9+Wq42pLVrA2d2mGEg2raSlh8pC5hY5dBJM43fq2Fc=;
-        b=h0m4WUH5oqSjSkpCRnBqSMUWC9KltfgxgJNJ0SoFY2BM1SE/rpegJErlqxJptdPdf9
-         TIpAH7o4ChFf1xGrj6VdAv3h3AftzbNYoSpDQ4w0S8Qfh3fDP5ZyVoxAQxqS4DU8ZFa3
-         McCzWJI7qn0TH0UTBhObY179Nz4LfD2xAPAgG0HFbCsERbQ7kRq7Jj1fdY8xr9DwQgbR
-         6mHH7XnAGA9AjtebSWEsWy8kOG5QS4s6WkcTVxnhU+gnqvCxKHGvqlpSg6stobmtooK6
-         hqoqpHjSR22ie5dJcNF5S/beu82lUfjyoAMn1T0TpIv+zxNx+4lbPuMmYwNrNn6nx6tX
-         IwTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701807397; x=1702412197;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l9+Wq42pLVrA2d2mGEg2raSlh8pC5hY5dBJM43fq2Fc=;
-        b=Hbu+cAmmFgKtPLuBqDW3iAXuDVvzHrRqh18/LdTguITa1qexkM5lYGu7YaH/Qi25fB
-         Ja1NKqhl45aPl4p7tFSNa58GTsHXodTzXONJrpFCge3WIMW08gVPfLf0MNx1p+Hunckr
-         bVjX+Lc9DL/ck8Oz1/GwGC2cJZOSxmnM9JugTATh4cNsF4qUZadCK6mdvnql4ddS7F6Y
-         XbbZ9+3laXiEwR0d+cA5VY6IP9MkDsuKB30sLrFnTp1RuoqcpQEeiGmRKpdQ+mhM9ldq
-         4/6HTvpwzAtFzhvtEcRwEyYFHK9FM2Ev5AhquLYPw6f+c0vtEh3AadLxFwyNwVBACn8v
-         57zw==
-X-Gm-Message-State: AOJu0Yyj2wmGJwHOqpI8LEXUsWiLiyEILvYOIQmBJDIyoNoZ67BYnUZz
-        4cq5RJ4XBxD+TbMk0aHwEE+ProaYaYKJjtNPPjM=
-X-Google-Smtp-Source: AGHT+IFsG1wrOHB4MUR7FM6YXg7XOf4tAZGac+r8z69FHrn5twCXmzStWUF4eY6A2G/3TIl1XlHkjQOQEk5gmtMnfbc=
-X-Received: by 2002:a1f:e301:0:b0:4b2:7749:aa96 with SMTP id
- a1-20020a1fe301000000b004b27749aa96mr3434041vkh.11.1701807397152; Tue, 05 Dec
- 2023 12:16:37 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o3YjZ3sRcd2LjShLvwl44UhfEJYV49wz/mSFGoQQgvU=;
+ b=YfJCk0Jeoa2Ow0KtOwQaUBWjbT3OizswBay2VNPELws4UI/YzpP+FB7Cl+o9+ZAYsay3u+kxFbLGkfRuX7yAYxaRACK0mYRqxRFq4Pgi6c3GS0aJ+B7DA7z5VAlZatKQ740MPj6h0zrP+bMv7XMnVBT6x4095YCUWGhdAoX3H7o=
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com (2603:10b6:5:357::14)
+ by BN0PR10MB5350.namprd10.prod.outlook.com (2603:10b6:408:124::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 20:18:29 +0000
+Received: from CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::10fc:975b:65bf:1d76]) by CO6PR10MB5409.namprd10.prod.outlook.com
+ ([fe80::10fc:975b:65bf:1d76%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
+ 20:18:28 +0000
+References: <e939c924-1dfa-4a6a-9309-2430f19467f5@paulmck-laptop>
+ <87wmu2ywrk.ffs@tglx>
+ <fa1249f7-9a5d-4696-9246-4913365b6715@paulmck-laptop>
+ <20231205100114.0bd3c4a2@gandalf.local.home>
+ <1375e409-2593-45e1-b27e-3699c17c47dd@paulmck-laptop>
+User-agent: mu4e 1.4.10; emacs 27.2
+From:   Ankur Arora <ankur.a.arora@oracle.com>
+To:     paulmck@kernel.org
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@aculab.com,
+        richard@nod.at, mjguzik@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
+In-reply-to: <1375e409-2593-45e1-b27e-3699c17c47dd@paulmck-laptop>
+Date:   Tue, 05 Dec 2023 12:18:26 -0800
+Message-ID: <87il5cpfn1.fsf@oracle.com>
+Content-Type: text/plain
+X-ClientProxiedBy: MW4PR02CA0020.namprd02.prod.outlook.com
+ (2603:10b6:303:16d::26) To CO6PR10MB5409.namprd10.prod.outlook.com
+ (2603:10b6:5:357::14)
 MIME-Version: 1.0
-References: <20231204102027.57185-1-ryan.roberts@arm.com> <20231204102027.57185-5-ryan.roberts@arm.com>
- <CAGsJ_4zG6W_Z-u+3QcRDn4ByoeqUXjMusNS0RotfRMSqo8RCHg@mail.gmail.com>
- <CAGsJ_4zYhJWGx1DnHTiDnP3h1m8_rr6ZT6fXt8pO=jzs9QZS-A@mail.gmail.com> <5216caaf-1fcf-4715-99c3-521e2a1cc756@arm.com>
-In-Reply-To: <5216caaf-1fcf-4715-99c3-521e2a1cc756@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Wed, 6 Dec 2023 09:16:26 +1300
-Message-ID: <CAGsJ_4xHib66MP3-o9jpHGzKecmgb-omBXinazBbrCiwHkonEQ@mail.gmail.com>
-Subject: Re: [PATCH v8 04/10] mm: thp: Support allocation of anonymous
- multi-size THP
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR10MB5409:EE_|BN0PR10MB5350:EE_
+X-MS-Office365-Filtering-Correlation-Id: e70e1664-058d-45fc-e3d2-08dbf5cf57e0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RNMX7367QyVgwvL59lUGZAYGDP308xPvTZdFRxQKfnDyCZ9IxUPCA6hhRA7KPH7Gbz8+1PpbxJGvP3VTs2ONUvYBu7i04O9wtNYnHOrtvLaPbacFI15LYdV5+cgf1v6CRYmErbdgshsR0GpfL1vufPQjyGi3WSEL1ANL/CD0KG+zTNc8pCunq2lSd2Bgm0Hzcx99GGdvJRU/XTDKrZo1//7E1Y/IIIG3MdiWIRFEqzS0gTtCu8WCw67h0JIgy6hdqxIZDnWlW5Svh92OpBwQp8dbe2w7pw5e1MlN/qm4xAGja09dGFyqM60DWVWarMpTZQ8/d7QrXM024cFksFnYQ3h1Jg0PUCH4rYN3mYrlE4UOmkRzysToEtasSEOsCaC7/0ptlk7P3Bi6917o9HRdNo8Xi6kapRw5TyB4G+LcADmsXZwxnX2TA2/amU89BzDYrBp+rfg7T34KfAZAPJOapFU3BZLCVigCNFp4sK1FL9W5xTqGh6SLExxUd4wuTCpg7kJNCzWqfT0sD1iNPg9xWw6PxN/YVa7PGI2xa0/DhjK6XnkNnm/sAOM5tVcmGglT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR10MB5409.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(396003)(346002)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(6916009)(54906003)(66556008)(66476007)(66946007)(8676002)(4326008)(8936002)(316002)(478600001)(6486002)(7416002)(7406005)(41300700001)(2906002)(36756003)(86362001)(5660300002)(2616005)(26005)(38100700002)(6506007)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1UFSjQRvc6dIAca9PiJkEyOFb+qQ1oMryNYiktuNFDqJK0qP4Y5ArZqt98xd?=
+ =?us-ascii?Q?T8Q1iAKkOCwxAnp3oyTBCvRl9qY8vaBNr2Uh7YfKy6gxa9ApgBUZ6ecldM2C?=
+ =?us-ascii?Q?0c753HvQvJ7WwEpa2m8yLhKfIRIj9O49m0XiFus+IlpTjwq1E36Oyza3KIXG?=
+ =?us-ascii?Q?eTABf0S+IKHe8QfXeFeCJXHFQA1iBLTCc/3oYkx4/axoFJtDhyqHzDSlnWkY?=
+ =?us-ascii?Q?OzoPmsVwO/YtirZJAzA1xpx+rViwW+ej2Uk2omIKvXO62PE49dnfKT0kud8M?=
+ =?us-ascii?Q?HMDPmzpP0H5ViPFV2iNeNoxt6vBcV+jdRdIZZ9GCONtUbrtix29U36nfsFyl?=
+ =?us-ascii?Q?gZPGc7lVkPalVzsWUzgGsL8i4XcsR+ee5wc2pz+Q0BiyF1XhHTIHYWHiBItG?=
+ =?us-ascii?Q?pBb50ho10tDtZ/Ha0/Qz2JTb2LD7PqWumInG/j0s23zmaPPyidZWXoaEzthH?=
+ =?us-ascii?Q?OfpMt8X0zmMcLbhobTnx0kB1VpCvzeM4KBD/Fc/PutQ1/mffdts1JWFLjGqx?=
+ =?us-ascii?Q?T2GKqpwfnaSDqt0CsSzlcMHuvd4+OawRgpsQTR377HJw9/xv716ipkQmc4SC?=
+ =?us-ascii?Q?om4zEPbxRZ0zhEv/MIthdbOlVOiMbdOu4SgdGfR39B7s88mY1X332H3fN2vz?=
+ =?us-ascii?Q?n42xcvnW0Lo4ezt4pwzaI5rBF2n7E1xWUOfODJpx5qdqhVDhfCA587OEytol?=
+ =?us-ascii?Q?kE2UZJeBBtw/iybhqMQ5JpFtxzmb7lg/70YBc/1CVJSsA6kBCfvaH/fVi1qa?=
+ =?us-ascii?Q?pZtZKQlhvGaomEW8y1k4H0Reii9BrW3w6jkaTvupKXoAsLOSg1TExAf2GCTq?=
+ =?us-ascii?Q?SQpH0GVpFscGbtvpg/5sAPxiXhz1sAZ1U7vrxo8le/Q4GRHlvxv7lBOR5wXZ?=
+ =?us-ascii?Q?Br6gI7f8fl8SdM/SpEJHCwGh8pFIjljqlW80tSKcrQFkNpzTjKCl+1n2cLGa?=
+ =?us-ascii?Q?qH3BZwCXYFS+3UwFmLTOLiB+PRZ1rk/QzsZ+/SvaOdH15YfH+pZS+srASD9R?=
+ =?us-ascii?Q?tDtwvwHTX8vxuncmdKlozXrYi3NlQiKYjEO1n9T8B1UQiWXIMSnloS2P9Qhb?=
+ =?us-ascii?Q?DReunWxpq64RiKFRWrzzIlEPh/ufT1Kwou/VmU0e1kjXULHSxVAQvx8Ox1gQ?=
+ =?us-ascii?Q?78QU5rJHiTVKgpmrqxVqjMBy2l1B8IThni/6S1erABClkn1lSC/oVSiuiqpG?=
+ =?us-ascii?Q?SbmBNZ3X69U/TsOy/Arvj49JlQgJikzT1erYN+R7YYkwxZD/uVIwyKAsoaxS?=
+ =?us-ascii?Q?wwNvety7CO2PLQt0sv4BbbpaJZrL8z6JdQS6hWBOSjnHWpHBdkkNlBiF3z7d?=
+ =?us-ascii?Q?xPqz6L+0K80o5Mw+741FwlS8V9sKL3tXiIKh2zY/z1zB9/iLPHrBAoW+iJnE?=
+ =?us-ascii?Q?LlJp6sSk5PuzvM5GKySA/7HNYVAIU8Pnrtczt9O0IFFzTHcB/IPaHr6dXVVX?=
+ =?us-ascii?Q?yHQkTSGlDvrIpc20zrPrNZjbAXPdnreh3meaeHH2SApwjGtR/+YDyErKQ31H?=
+ =?us-ascii?Q?X7S4OexfP7HzYZzkkgutI2NWcwjks6FlqAnzQjFeorTf9EH9/TqoCXpss9UC?=
+ =?us-ascii?Q?lrtlAk84wU8i+MM2oTnbp9zkzy6j6Z8olMDgMKuX?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?JgziLLqp7+rY518d25oI7L8IZGbIms9rX7CAUw4FMTMB2FwBBgtFqL1N9rRw?=
+ =?us-ascii?Q?hkECMslmcyp7pCnvpBs2sxlxNI0voyg/fpAJFfZeRQIuh2ePWC3hj8nONBBk?=
+ =?us-ascii?Q?l0Ej6DdGFmRaLgSJxhrhXkm5QMrPaM9BlKugNEbKslcvxYHgwPlvBSqvZqRt?=
+ =?us-ascii?Q?ZiAXraJQ/DwE1jiSMnz9hNb6ZDlQiQ5yQrjg06+DVCz5J2IEwzpzRqZJ3H31?=
+ =?us-ascii?Q?zZ4NYhnoWGJ6h50Q8eEGBnD9K1IW+w62oHdWUxQDxyu/bzH/jHAtq4iO4ZPX?=
+ =?us-ascii?Q?OAWzG6eWzp3pKytAjnXn2i0xc0ZB1BvZumyseQqEeYgtbJ0QChbexCjHA9BZ?=
+ =?us-ascii?Q?TYWn99cH2NCMo4UK6kwcS4FpyXKzn7eKJByfA96gDAmamGc0gZCque3W1/XE?=
+ =?us-ascii?Q?M50Zc3aDTo2UvME/df0ZUq7Ape+SBOBorlRfP+4z4RRdTWd/V3Lduzl40uCi?=
+ =?us-ascii?Q?slIZZlzQJg2wcY6bEQd3LLCsQElynD/bWrRuoeq27XroOBh598Ja9PqjS5JJ?=
+ =?us-ascii?Q?KK6JXcvzi6ePum3uJzMM93ziHVHtjubIK5Fr6Yzr0YjMSkzPXmAA9+Jxqwm9?=
+ =?us-ascii?Q?IyJuGWM2nfS6iUMv0+RykEkIDjjIVzlr8rve1QALqbBxWcTCge7vZqfAS3LT?=
+ =?us-ascii?Q?RjqZaSHtMVfAkaEusGASSVWQULZWhL4PPHyP7SDmkjqMloQqF2sKNnl+bbCW?=
+ =?us-ascii?Q?8QV9BVbMOs/rAgz67yKz/0tFt6xQWBTQ1r1E+aVCnnms78JyZH8etP+BehzJ?=
+ =?us-ascii?Q?YdlWLtnPJJSVg2FE72jzBk6ySWddaFjzhuis9sRZiTOA5mjx0UlTuNGvNrEo?=
+ =?us-ascii?Q?KPln83SHvNY4todkBkxka3AluIDXHa48f5IGO3X1zgeDS/ENQ17Tlwz29lNv?=
+ =?us-ascii?Q?tmwGM9HvZ37TlMWZtDzLUybOhvPP4BD50w3MwU++MIhp5TZCYu5lzpoNx4M+?=
+ =?us-ascii?Q?SYBQYkP5a/mjE3gJeOFbht+Rfj2coEJpaZptFxifH43M3pi/+yPibd69oNP+?=
+ =?us-ascii?Q?Dum0Qh4DyjBEFi3U+JEzFJtjMgofMOuZAcP0qJWm8xWjkjupll4MDSGgo7Np?=
+ =?us-ascii?Q?Ylyc89qsW5LFXBXubJ5l6ELNsj+ofXyVAWHrzlDJCsaQNxLPosIJdOTVOBm7?=
+ =?us-ascii?Q?uNIagwNualYlFialYN2YetXkQDSUSG4KJm7gqqai/ioyq2W4OVdZeseinm9i?=
+ =?us-ascii?Q?D5OZrbOlcEY0lOBD5JWU/icfssn/LIQOIeuWvACHW1XU3tGE948MQwrRc2Mo?=
+ =?us-ascii?Q?2n0KNDK7Q4MT2eppQx2w0np6GECMPe4Z2SqQtltI7raLBc4TsjgtbOGn7q8F?=
+ =?us-ascii?Q?CekppL+6emjh7BH117XN3c4g/aOv9PE5Tr8p/m5E8zrCMVSVHk1xhjjEoSXu?=
+ =?us-ascii?Q?W1jCZBbNWIl9mKwgSRQMEVjdriRirA9eFmcrKct0e8mzeAWRI1UxZaZc96GO?=
+ =?us-ascii?Q?T5odgyhU+g2IPyZkgQ5Fefv+D6vksWbVqGrknRhaZ/BQSaT0kWuvgvlr/JOT?=
+ =?us-ascii?Q?BUPbShMFzG+ATp/aR0XKPtajPLRSLx5zMizX0Yg7ru3wIb1uxVoDHp2SC5OM?=
+ =?us-ascii?Q?Xip5tq+VBf6Xflo/LKrnlyAWVmDOICzz0Elx2zDey2hu9+pTC14IJcXp8w8o?=
+ =?us-ascii?Q?x6aVHbnKHK0az+4df+dyJWk=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e70e1664-058d-45fc-e3d2-08dbf5cf57e0
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR10MB5409.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 20:18:28.6161
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ti2ewL1RrM3NHIHwpg+x/XG4M6aKUH/djSZPPww9ueph3shFyQlLDZVP40/+cBYqOPBS4sgojtP0DPJ6N2Z0YgCsMx9g4k+6BvswecraaOM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5350
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_15,2023-12-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 mlxlogscore=705 phishscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312050161
+X-Proofpoint-ORIG-GUID: WcVFVNnn3mljgDBOniekBcUbkSrR7JGX
+X-Proofpoint-GUID: WcVFVNnn3mljgDBOniekBcUbkSrR7JGX
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 11:48=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> On 05/12/2023 01:24, Barry Song wrote:
-> > On Tue, Dec 5, 2023 at 9:15=E2=80=AFAM Barry Song <21cnbao@gmail.com> w=
-rote:
-> >>
-> >> On Mon, Dec 4, 2023 at 6:21=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.=
-com> wrote:
-> >>>
-> >>> Introduce the logic to allow THP to be configured (through the new sy=
-sfs
-> >>> interface we just added) to allocate large folios to back anonymous
-> >>> memory, which are larger than the base page size but smaller than
-> >>> PMD-size. We call this new THP extension "multi-size THP" (mTHP).
-> >>>
-> >>> mTHP continues to be PTE-mapped, but in many cases can still provide
-> >>> similar benefits to traditional PMD-sized THP: Page faults are
-> >>> significantly reduced (by a factor of e.g. 4, 8, 16, etc. depending o=
-n
-> >>> the configured order), but latency spikes are much less prominent
-> >>> because the size of each page isn't as huge as the PMD-sized variant =
-and
-> >>> there is less memory to clear in each page fault. The number of per-p=
-age
-> >>> operations (e.g. ref counting, rmap management, lru list management) =
-are
-> >>> also significantly reduced since those ops now become per-folio.
-> >>>
-> >>> Some architectures also employ TLB compression mechanisms to squeeze
-> >>> more entries in when a set of PTEs are virtually and physically
-> >>> contiguous and approporiately aligned. In this case, TLB misses will
-> >>> occur less often.
-> >>>
-> >>> The new behaviour is disabled by default, but can be enabled at runti=
-me
-> >>> by writing to /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabl=
-ed
-> >>> (see documentation in previous commit). The long term aim is to chang=
-e
-> >>> the default to include suitable lower orders, but there are some risk=
-s
-> >>> around internal fragmentation that need to be better understood first=
-.
-> >>>
-> >>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> >>> ---
-> >>>  include/linux/huge_mm.h |   6 ++-
-> >>>  mm/memory.c             | 106 ++++++++++++++++++++++++++++++++++++--=
---
-> >>>  2 files changed, 101 insertions(+), 11 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> >>> index bd0eadd3befb..91a53b9835a4 100644
-> >>> --- a/include/linux/huge_mm.h
-> >>> +++ b/include/linux/huge_mm.h
-> >>> @@ -68,9 +68,11 @@ extern struct kobj_attribute shmem_enabled_attr;
-> >>>  #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
-> >>>
-> >>>  /*
-> >>> - * Mask of all large folio orders supported for anonymous THP.
-> >>> + * Mask of all large folio orders supported for anonymous THP; all o=
-rders up to
-> >>> + * and including PMD_ORDER, except order-0 (which is not "huge") and=
- order-1
-> >>> + * (which is a limitation of the THP implementation).
-> >>>   */
-> >>> -#define THP_ORDERS_ALL_ANON    BIT(PMD_ORDER)
-> >>> +#define THP_ORDERS_ALL_ANON    ((BIT(PMD_ORDER + 1) - 1) & ~(BIT(0) =
-| BIT(1)))
-> >>>
-> >>>  /*
-> >>>   * Mask of all large folio orders supported for file THP.
-> >>> diff --git a/mm/memory.c b/mm/memory.c
-> >>> index 3ceeb0f45bf5..bf7e93813018 100644
-> >>> --- a/mm/memory.c
-> >>> +++ b/mm/memory.c
-> >>> @@ -4125,6 +4125,84 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
-> >>>         return ret;
-> >>>  }
-> >>>
-> >>> +static bool pte_range_none(pte_t *pte, int nr_pages)
-> >>> +{
-> >>> +       int i;
-> >>> +
-> >>> +       for (i =3D 0; i < nr_pages; i++) {
-> >>> +               if (!pte_none(ptep_get_lockless(pte + i)))
-> >>> +                       return false;
-> >>> +       }
-> >>> +
-> >>> +       return true;
-> >>> +}
-> >>> +
-> >>> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> >>> +static struct folio *alloc_anon_folio(struct vm_fault *vmf)
-> >>> +{
-> >>> +       gfp_t gfp;
-> >>> +       pte_t *pte;
-> >>> +       unsigned long addr;
-> >>> +       struct folio *folio;
-> >>> +       struct vm_area_struct *vma =3D vmf->vma;
-> >>> +       unsigned long orders;
-> >>> +       int order;
-> >>> +
-> >>> +       /*
-> >>> +        * If uffd is active for the vma we need per-page fault fidel=
-ity to
-> >>> +        * maintain the uffd semantics.
-> >>> +        */
-> >>> +       if (userfaultfd_armed(vma))
-> >>> +               goto fallback;
-> >>> +
-> >>> +       /*
-> >>> +        * Get a list of all the (large) orders below PMD_ORDER that =
-are enabled
-> >>> +        * for this vma. Then filter out the orders that can't be all=
-ocated over
-> >>> +        * the faulting address and still be fully contained in the v=
-ma.
-> >>> +        */
-> >>> +       orders =3D thp_vma_allowable_orders(vma, vma->vm_flags, false=
-, true, true,
-> >>> +                                         BIT(PMD_ORDER) - 1);
-> >>> +       orders =3D thp_vma_suitable_orders(vma, vmf->address, orders)=
-;
-> >>> +
-> >>> +       if (!orders)
-> >>> +               goto fallback;
-> >>> +
-> >>> +       pte =3D pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
-> >>> +       if (!pte)
-> >>> +               return ERR_PTR(-EAGAIN);
-> >>> +
-> >>> +       order =3D first_order(orders);
-> >>> +       while (orders) {
-> >>> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << order)=
-;
-> >>> +               vmf->pte =3D pte + pte_index(addr);
-> >>> +               if (pte_range_none(vmf->pte, 1 << order))
-> >>> +                       break;
-> >>> +               order =3D next_order(&orders, order);
-> >>> +       }
-> >>> +
-> >>> +       vmf->pte =3D NULL;
-> >>> +       pte_unmap(pte);
-> >>> +
-> >>> +       gfp =3D vma_thp_gfp_mask(vma);
-> >>> +
-> >>> +       while (orders) {
-> >>> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << order)=
-;
-> >>> +               folio =3D vma_alloc_folio(gfp, order, vma, addr, true=
-);
-> >>> +               if (folio) {
-> >>> +                       clear_huge_page(&folio->page, addr, 1 << orde=
-r);
-> >>
-> >> Minor.
-> >>
-> >> Do we have to constantly clear a huge page? Is it possible to let
-> >> post_alloc_hook()
-> >> finish this job by using __GFP_ZERO/__GFP_ZEROTAGS as
-> >> vma_alloc_zeroed_movable_folio() is doing?
->
-> I'm currently following the same allocation pattern as is done for PMD-si=
-zed
-> THP. In earlier versions of this patch I was trying to be smarter and use=
- the
-> __GFP_ZERO/__GFP_ZEROTAGS as you suggest, but I was advised to keep it si=
-mple
-> and follow the existing pattern.
->
-> I have a vague recollection __GFP_ZERO is not preferred for large folios =
-because
-> of some issue with virtually indexed caches? (Matthew: did I see you ment=
-ion
-> that in some other context?)
->
-> That said, I wasn't aware that Android ships with
-> CONFIG_INIT_ON_ALLOC_DEFAULT_ON (I thought it was only used as a debug op=
-tion),
-> so I can see the potential for some overhead reduction here.
->
-> Options:
->
->  1) leave it as is and accept the duplicated clearing
->  2) Pass __GFP_ZERO and remove clear_huge_page()
->  3) define __GFP_SKIP_ZERO even when kasan is not enabled and pass it dow=
-n so
->     clear_huge_page() is the only clear
->  4) make clear_huge_page() conditional on !want_init_on_alloc()
->
-> I prefer option 4. What do you think?
 
-either 1 and 4 is ok to me if we will finally remove this duplicated
-clear_huge_page on top.
-4 is even better as it can at least temporarily resolve the problem.
+Paul E. McKenney <paulmck@kernel.org> writes:
 
-in Android gki_defconfig,
-https://android.googlesource.com/kernel/common/+/refs/heads/android14-6.1-l=
-ts/arch/arm64/configs/gki_defconfig
-
-Android always has the below,
-CONFIG_INIT_ON_ALLOC_DEFAULT_ON=3Dy
-
-here is some explanation for the reason,
-https://source.android.com/docs/security/test/memory-safety/zero-initialize=
-d-memory
-
+> On Tue, Dec 05, 2023 at 10:01:14AM -0500, Steven Rostedt wrote:
+>> On Mon, 4 Dec 2023 17:01:21 -0800
+>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+>>
+>> > On Tue, Nov 28, 2023 at 11:53:19AM +0100, Thomas Gleixner wrote:
+>> > > Paul!
+>> > >
+>> > > On Tue, Nov 21 2023 at 07:19, Paul E. McKenney wrote:
+>> > > > On Tue, Nov 21, 2023 at 10:00:59AM -0500, Steven Rostedt wrote:
+...
+>> > >   3) Looking at the initial problem Ankur was trying to solve there is
+>> > >      absolutely no acceptable solution to solve that unless you think
+>> > >      that the semantically invers 'allow_preempt()/disallow_preempt()'
+>> > >      is anywhere near acceptable.
+>> >
+>> > I am not arguing for allow_preempt()/disallow_preempt(), so for that
+>> > argument, you need to find someone else to argue with.  ;-)
+>>
+>> Anyway, there's still a long path before cond_resched() can be removed. It
+>> was a mistake by Ankur to add those removals this early (and he has
+>> acknowledged that mistake).
 >
-> As an aside, I've also noticed that clear_huge_page() should take vmf->ad=
-dress
-> so that it clears the faulting page last to keep the cache hot. If we dec=
-ide on
-> an option that keeps clear_huge_page(), I'll also make that change.
->
-> Thanks,
-> Ryan
->
-> >>
+> OK, that I can live with.  But that seems to be a bit different of a
+> take than that of some earlier emails in this thread.  ;-)
 
-Thanks
-Barry
+Heh I think it's just that this thread goes to (far) too many places :).
+
+As Steven says, the initial series touching everything all together
+was a mistake. V1 adds the new preemption model alongside the existing
+ones locally defines cond_resched() as nop.
+
+That'll allow us to experiment and figure out where there are latency
+gaps.
+
+Ankur
