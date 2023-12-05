@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 140F5805C15
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59341805BCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346844AbjLEPRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:17:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
+        id S1442401AbjLEPRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346137AbjLEPQ4 (ORCPT
+        with ESMTP id S1346834AbjLEPQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:16:56 -0500
+        Tue, 5 Dec 2023 10:16:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4544D4D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:16:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE85EC433CC;
-        Tue,  5 Dec 2023 15:16:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F5210C4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:17:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93DB9C433CA;
+        Tue,  5 Dec 2023 15:17:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701789417;
-        bh=t45Tf9pjrslOXyjLYWNBBfAXjGoL3cs7kS8UutsygGg=;
+        s=k20201202; t=1701789424;
+        bh=6fKZC+eA9tWy5T/DHWsGKDkWMqxND8c+CfabRDLbb5c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lq56/nWVtKkYaXFlPjBcw+zNufTw2Tr99CRWVhjBYsn95yup/Dbe2mGqO+lqNFbpG
-         QDiAlrRXl26lsvX4KKn/XsHchYLH7cu49Kmwxy0WvGVKr008tnCAcYPNyeu1Nv8C+V
-         8AT9ih4lBy1IO4xZF9zMq1EKqNKB/vUJmW9IudSTOsUAwBbWJvB/GJhZ1d5CowgXYf
-         PauOnysXwOO7X3G10FTXRJlG272mPDeuagkObickfzTrFqiNJ+I25bSmo9E9eCjUY9
-         tnjmhHs3HUVWCy6wX7i2eDDX1yJ/YqZGTASxRXUq1rSv35z0lPxmLB8PA/SwUR0nr8
-         KW9rsZ594krNQ==
+        b=KJXG7JlaszHe4KzEfdrfKHQ93hUeexWhqtkR8rtMORW3at6ibHnZKhHpW+YOuuTgz
+         tFeqQIBE7amRX0PG0FdHwpMdLxKDZsKx23XFsu87XNvgigkxV48g7NteWZCvudtsSR
+         SFzjMNCgeGQLMLrh3mt633zV78qzlatV9CUm5iKIqLU2m+dBeAu04biM/9uMNR8Ffs
+         6F3AKoT63IQnzBBrGJWmzvS4knRFho18pqt1JfZrtdXRhbQ1Lw92u4AiIVBWVqXNmN
+         gDwJ45I1cvBFHw4pi8LivuYL2TlDqtBNV/VWxTlDf3S8csyCZDyfCHfWNktvvHgcG9
+         h2V+f1VHjucYw==
 From:   Will Deacon <will@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: vdso32: rename 32-bit debug vdso to vdso32.so.dbg
-Date:   Tue,  5 Dec 2023 15:16:32 +0000
-Message-Id: <170177699377.3454535.14962966962244524648.b4-ty@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Jing Zhang <renyu.zj@linux.alibaba.com>
+Subject: Re: [PATCH] perf/arm-cmn: Fix HN-F class_occup_id events
+Date:   Tue,  5 Dec 2023 15:16:35 +0000
+Message-Id: <170177862294.1058818.4996860407789168968.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231117125620.1058300-1-masahiroy@kernel.org>
-References: <20231117125620.1058300-1-masahiroy@kernel.org>
+In-Reply-To: <5a22439de84ff188ef76674798052448eb03a3e1.1700740693.git.robin.murphy@arm.com>
+References: <5a22439de84ff188ef76674798052448eb03a3e1.1700740693.git.robin.murphy@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,22 +52,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 21:56:19 +0900, Masahiro Yamada wrote:
-> 'make vdso_install' renames arch/arm64/kernel/vdso32/vdso.so.dbg to
-> vdso32.so during installation, which allows 64-bit and 32-bit vdso
-> files to be installed in the same directory.
+On Thu, 23 Nov 2023 11:58:13 +0000, Robin Murphy wrote:
+> A subtle copy-paste error managed to slip through the reorganisation
+> of these patches in development, and not only give some HN-F events
+> the wrong type, but use that wrong type before the subsequent patch
+> defined it. Too late to fix history, but we can at least fix the bug.
 > 
-> However, arm64 is the only architecture that requires this renaming.
 > 
-> To simplify the vdso_install logic, rename the in-tree vdso file so
-> its base name matches the installed file name.
-> 
-> [...]
 
-Applied to arm64 (for-next/kbuild), thanks!
+Applied to will (for-next/perf), thanks!
 
-[1/1] arm64: vdso32: rename 32-bit debug vdso to vdso32.so.dbg
-      https://git.kernel.org/arm64/c/a099bec7a810
+[1/1] perf/arm-cmn: Fix HN-F class_occup_id events
+      https://git.kernel.org/will/c/590f23b09240
 
 Cheers,
 -- 
