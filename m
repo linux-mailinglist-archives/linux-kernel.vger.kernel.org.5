@@ -2,115 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F05805EDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6450E805EE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232062AbjLETyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:54:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40392 "EHLO
+        id S232228AbjLETyp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 14:54:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLETyO (ORCPT
+        with ESMTP id S229483AbjLETyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:54:14 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE1AA5;
-        Tue,  5 Dec 2023 11:54:21 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1cfc9c4acb6so29817065ad.0;
-        Tue, 05 Dec 2023 11:54:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701806061; x=1702410861; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jBZzT0/QbcprxNQTsHpzd6ven1aj0800Yb9/CoMbKBA=;
-        b=JaHEW5NG9N4g2WwCC2nClWqC+0cKqCSR4aHci057CaRZZEu0/TmwvpaqSZTQa+2pdg
-         rv63l77PYXQe5v5iGy9xgjYCNU7yMR+NWQRnJErQMiGZgI5V7uRhRvWqbXcnJr5D1Izz
-         o+pOYe+RXiURTSjyflpWThGIr0RKc5HWAfSaWq0NoX//FiIanchdKev5ZGmHgWW0xRJC
-         6Yuz4Kf1X3I3Y6/YXafRI8QCKQ5VMGKG/kNH5upcm7s/v4HtDqBGz3+BjpJLXPE+6Hna
-         8UkUqwpmjOUqmaaLmhRUalxSKzYJXxc3GhzIxCTuNV5YI/sdL82hxkiQua3oJy3TGGqR
-         iOsQ==
+        Tue, 5 Dec 2023 14:54:43 -0500
+Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD7FA5;
+        Tue,  5 Dec 2023 11:54:49 -0800 (PST)
+Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1fb155ca04bso581560fac.0;
+        Tue, 05 Dec 2023 11:54:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701806061; x=1702410861;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701806089; x=1702410889;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jBZzT0/QbcprxNQTsHpzd6ven1aj0800Yb9/CoMbKBA=;
-        b=OH5TkFL5UBqlulU+oQgHtBEdTckLhXssKmdPyI+/tTuZjdbZhspoOT221kr+nh8ycS
-         avoqsa9YWqHqlazetQTaCtM1tJDVaQnc/gRjBxcWIlL08SUjvVrUh8OgzYb47KlvvqgE
-         XVWLrz0ea6QfvTBXQM5PVKb6bP3IeEKI4JtpV9Tr+wHIAe0wauYQWFSRVNBuz2d+msKC
-         oxdAwv/VWSqG6mXH+iInoY4wq9tgjc/L4TOoLQtz00BBW4VjzLH1cj1keNYRhP4niWm2
-         V8DcCvn/tMp/n5vvZQLurfAQaP7j5CLejOe+4eQe9lNv56jTZ3GItb9FavrrnqB0Cmu+
-         DtXA==
-X-Gm-Message-State: AOJu0Yxqyw98huwX1T0opIUi8mGPL3wHgxiNdM/X7KKYPvA61pI+ZLKp
-        lnTQK2r4c5jtcJbogAqrBRM=
-X-Google-Smtp-Source: AGHT+IHiN3u4lyG7cLPBE6NoEoYHDNHgelzGc9AxrA8KJTfHwHiCxIp8MO1xA3yLPhPxAMw1q8En6w==
-X-Received: by 2002:a17:902:8696:b0:1d0:6ffd:6e8e with SMTP id g22-20020a170902869600b001d06ffd6e8emr3152372plo.134.1701806060641;
-        Tue, 05 Dec 2023 11:54:20 -0800 (PST)
-Received: from localhost (fwdproxy-prn-024.fbsv.net. [2a03:2880:ff:18::face:b00c])
-        by smtp.gmail.com with ESMTPSA id c15-20020a170902d48f00b001d0cd9e4248sm876201plg.196.2023.12.05.11.54.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 11:54:19 -0800 (PST)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: [PATCH v8 3/6] zswap: make shrinking memcg-aware (fix)
-Date:   Tue,  5 Dec 2023 11:54:19 -0800
-Message-Id: <20231205195419.2563217-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130194023.4102148-4-nphamcs@gmail.com>
-References: <20231130194023.4102148-4-nphamcs@gmail.com>
+        bh=MPGxsQoxPpHlL6Ppz0lS+ug6RWxWQAf1JLFDoILOKxk=;
+        b=lv+OiBl5zo7w3ILusbHF0+pFabQAoBIz+oIC4vI4lR3hfRiD5QV9fBr1Ka5VYlRnNv
+         cQIYZdV59OeMXaUSaZawvGN8qWlTLk3nMpca4XGDj1I3Sgi9jHlTS++76lIc6A4idwcJ
+         iWKrCUrCdOFf7Srek8tc8Hsni1b950FcifPKCasDDs2tZZPGPguj4lbgmTjoXApDb1Yh
+         q4l/uwguMBUK7dG9ZEDvYaHQZ1ZnjwPPE0xqhHFMVnB5rEl8g4kewPEqGIvZGjlp9T1z
+         cOBUmJL5GkEMZ3fhcpgGDzLj9kFaBSAD41jNundsQU6NguUHTN5mzOEVy1XBFLRFRqdg
+         EVdA==
+X-Gm-Message-State: AOJu0YyuxJS9BJ8oq2r3+bPKmDI373ykWk27iog9SW24mfyoYeOix6tD
+        jd+m7GG5oFI4dODi4dd+DCYWEX5pwQPAnSvsFFg=
+X-Google-Smtp-Source: AGHT+IEhx6WPaNGbt7d2ljM1iILKgZIiYOO/438XhxCPllpYfT29IloMq+viVAgZzWlXPNQOIxlPEfgR0ONDceOMJoA=
+X-Received: by 2002:a05:6870:75cd:b0:1fb:136e:fa93 with SMTP id
+ de13-20020a05687075cd00b001fb136efa93mr12559032oab.0.1701806089143; Tue, 05
+ Dec 2023 11:54:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231201123205.1996790-1-lukasz.luba@arm.com>
+In-Reply-To: <20231201123205.1996790-1-lukasz.luba@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 5 Dec 2023 20:54:38 +0100
+Message-ID: <CAJZ5v0gYfvJCQ6Tk2Jh8ZYtaJM=sq3Qb6dq28rjYjMNPfJBT_Q@mail.gmail.com>
+Subject: Re: [PATCH] powercap: DTPM: Fix the missing cpufreq_cpu_put() calls
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        daniel.lezcano@linaro.org, rafael@kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the correct function for the onlineness check for the memcg
-selection, and use mem_cgroup_iter_break() to break the iteration.
+On Fri, Dec 1, 2023 at 1:31 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> The policy returned by cpufreq_cpu_get() has to be released with
+> the help of cpufreq_cpu_put() to balance its kobject reference counter
+> properly.
+>
+> Add the missing calls to cpufreq_cpu_put() in the code.
+>
+> Fixes: 0aea2e4ec2a2 ("powercap/dtpm_cpu: Reset per_cpu variable in the release function")
+> Fixes: 0e8f68d7f048 ("powercap/drivers/dtpm: Add CPU energy model based support")
+> Cc: <stable@vger.kernel.org> # v5.10+
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/powercap/dtpm_cpu.c | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+> index 45bb7e2849d7..aac278e162d9 100644
+> --- a/drivers/powercap/dtpm_cpu.c
+> +++ b/drivers/powercap/dtpm_cpu.c
+> @@ -152,6 +152,8 @@ static void pd_release(struct dtpm *dtpm)
+>         if (policy) {
+>                 for_each_cpu(dtpm_cpu->cpu, policy->related_cpus)
+>                         per_cpu(dtpm_per_cpu, dtpm_cpu->cpu) = NULL;
+> +
+> +               cpufreq_cpu_put(policy);
+>         }
+>
+>         kfree(dtpm_cpu);
+> @@ -204,12 +206,16 @@ static int __dtpm_cpu_setup(int cpu, struct dtpm *parent)
+>                 return 0;
+>
+>         pd = em_cpu_get(cpu);
+> -       if (!pd || em_is_artificial(pd))
+> -               return -EINVAL;
+> +       if (!pd || em_is_artificial(pd)) {
+> +               ret = -EINVAL;
+> +               goto release_policy;
+> +       }
+>
+>         dtpm_cpu = kzalloc(sizeof(*dtpm_cpu), GFP_KERNEL);
+> -       if (!dtpm_cpu)
+> -               return -ENOMEM;
+> +       if (!dtpm_cpu) {
+> +               ret = -ENOMEM;
+> +               goto release_policy;
+> +       }
+>
+>         dtpm_init(&dtpm_cpu->dtpm, &dtpm_ops);
+>         dtpm_cpu->cpu = cpu;
+> @@ -231,6 +237,7 @@ static int __dtpm_cpu_setup(int cpu, struct dtpm *parent)
+>         if (ret)
+>                 goto out_dtpm_unregister;
+>
+> +       cpufreq_cpu_put(policy);
+>         return 0;
+>
+>  out_dtpm_unregister:
+> @@ -242,6 +249,8 @@ static int __dtpm_cpu_setup(int cpu, struct dtpm *parent)
+>                 per_cpu(dtpm_per_cpu, cpu) = NULL;
+>         kfree(dtpm_cpu);
+>
+> +release_policy:
+> +       cpufreq_cpu_put(policy);
+>         return ret;
+>  }
+>
+> --
 
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- mm/zswap.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Applied as 6.7-rc material with the Cc: stable tag fixed.
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index f323e45cbdc7..7a84c1454988 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -834,9 +834,9 @@ static void shrink_worker(struct work_struct *w)
- 			goto resched;
- 		}
- 
--		if (!mem_cgroup_online(memcg)) {
-+		if (!mem_cgroup_tryget_online(memcg)) {
- 			/* drop the reference from mem_cgroup_iter() */
--			mem_cgroup_put(memcg);
-+			mem_cgroup_iter_break(NULL, memcg);
- 			pool->next_shrink = NULL;
- 			spin_unlock(&zswap_pools_lock);
- 
-@@ -985,7 +985,7 @@ static void zswap_pool_destroy(struct zswap_pool *pool)
- 	list_lru_destroy(&pool->list_lru);
- 
- 	spin_lock(&zswap_pools_lock);
--	mem_cgroup_put(pool->next_shrink);
-+	mem_cgroup_iter_break(NULL, pool->next_shrink);
- 	pool->next_shrink = NULL;
- 	spin_unlock(&zswap_pools_lock);
- 
--- 
-2.34.1
+Thanks!
