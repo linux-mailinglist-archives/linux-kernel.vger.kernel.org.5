@@ -2,125 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5198049B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD488049D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344268AbjLEGG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 01:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38966 "EHLO
+        id S1344300AbjLEGLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 01:11:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjLEGGY (ORCPT
+        with ESMTP id S1344329AbjLEGKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 01:06:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A94C3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 22:06:31 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6C4EC433C7;
-        Tue,  5 Dec 2023 06:06:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701756390;
-        bh=pgk+LcO16lwfPC6epmxnRSxNNqpxxK6n9Q7o/uqBGE4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b9Fu2P3q53xHt5fIT68x7B1MqRX1RKH2MXRPW8i3Zsx2t6ZmjzMDBnNX/k/p+PvMj
-         /EtP4f7mSKV1Gw4bl6oBLZHiEgAJdKLaI29KfkxYNUBAZRWqpcn2r/Msq17EL95hvD
-         FUZegoEO/vVC7hMZmVgJ8s85K8JaKzbllIH4IH4sjt27xI0cpzSMKWP/UVFvG2pbST
-         d6HktftRluHHpmoL4Qmxfk7+vvNprkaLkkifk2fDmnSNjNbhVqYHPYD7K04Ixl77Kd
-         a53W1zV2Q3EgY9rihSH/uNz/bScXxsDlJY6gJazHwfBQYz0CyT4slLaga9ChZyvW3+
-         dSYejn49fiUaQ==
-Date:   Mon, 4 Dec 2023 22:06:30 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Cc:     Chandan Babu R <chandan.babu@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com, me@jcix.top,
-        Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH v4 2/3] xfs: update dir3 leaf block metadata after swap
-Message-ID: <20231205060630.GM361584@frogsfrogsfrogs>
-References: <20231205055900.62855-1-zhangjiachen.jaycee@bytedance.com>
- <20231205055900.62855-3-zhangjiachen.jaycee@bytedance.com>
+        Tue, 5 Dec 2023 01:10:51 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492D1C3;
+        Mon,  4 Dec 2023 22:10:57 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B55JgeP027966;
+        Tue, 5 Dec 2023 06:10:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=at1+xe4phxK+MdHVJ5zcS+DBk1A3GkNxsprxbjDuf0w=;
+ b=HvwOIf8q37itqwnh8nW56z0SvNS2yTd0cAT0AjakVOSQ6j9+MplP5jw0ujBdmGPq3Xnc
+ wdI1+atd6KG5DurxptofJHCTjJmo2tL/ViPSs7mWYOuaH8Du+UZ59GfwoVA2mYSlJ3sS
+ j/65q0PCDrscH1a6riP67UqFqD7+AKdp8YksG3LXWSodLsNgkiVRmbaBozDOviRtEbEv
+ YZYo31Z8fYK0sVYVUWFkKa9D+UtCgH267GTHV8Gihv51sF3BYZRz0eCNLVwgOyAjsI31
+ jC+p7x0zpvdVsonf9RkQZ/uLqFSCDXCD7ciiTHEoJykh7Unh+TEkCHNp8/FzGWzq/a6f Rg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usghcsv0q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 06:10:53 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B56ASVs002993
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Dec 2023 06:10:28 GMT
+Received: from blr-ubuntu-253.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 4 Dec 2023 22:10:22 -0800
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <quic_tdas@quicinc.com>, <quic_rjendra@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <neil.armstrong@linaro.org>, <abel.vesa@linaro.org>,
+        <quic_tsoni@quicinc.com>, Sibi Sankar <quic_sibis@quicinc.com>
+Subject: [PATCH V3 0/4] clk: qcom: Introduce clocks drivers for X1E80100
+Date:   Tue, 5 Dec 2023 11:39:58 +0530
+Message-ID: <20231205061002.30759-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205055900.62855-3-zhangjiachen.jaycee@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: QtXztzxuLG0ZsbxQ1kZ3us6brGjAHNtT
+X-Proofpoint-GUID: QtXztzxuLG0ZsbxQ1kZ3us6brGjAHNtT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_03,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=694 phishscore=0
+ adultscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2312050050
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 01:58:59PM +0800, Jiachen Zhang wrote:
-> From: Zhang Tianci <zhangtianci.1997@bytedance.com>
-> 
-> xfs_da3_swap_lastblock() copy the last block content to the dead block,
-> but do not update the metadata in it. We need update some metadata
-> for some kinds of type block, such as dir3 leafn block records its
-> blkno, we shall update it to the dead block blkno. Otherwise,
-> before write the xfs_buf to disk, the verify_write() will fail in
-> blk_hdr->blkno != xfs_buf->b_bn, then xfs will be shutdown.
-> 
-> We will get this warning:
-> 
->   XFS (dm-0): Metadata corruption detected at xfs_dir3_leaf_verify+0xa8/0xe0 [xfs], xfs_dir3_leafn block 0x178
->   XFS (dm-0): Unmount and run xfs_repair
->   XFS (dm-0): First 128 bytes of corrupted metadata buffer:
->   00000000e80f1917: 00 80 00 0b 00 80 00 07 3d ff 00 00 00 00 00 00  ........=.......
->   000000009604c005: 00 00 00 00 00 00 01 a0 00 00 00 00 00 00 00 00  ................
->   000000006b6fb2bf: e4 44 e3 97 b5 64 44 41 8b 84 60 0e 50 43 d9 bf  .D...dDA..`.PC..
->   00000000678978a2: 00 00 00 00 00 00 00 83 01 73 00 93 00 00 00 00  .........s......
->   00000000b28b247c: 99 29 1d 38 00 00 00 00 99 29 1d 40 00 00 00 00  .).8.....).@....
->   000000002b2a662c: 99 29 1d 48 00 00 00 00 99 49 11 00 00 00 00 00  .).H.....I......
->   00000000ea2ffbb8: 99 49 11 08 00 00 45 25 99 49 11 10 00 00 48 fe  .I....E%.I....H.
->   0000000069e86440: 99 49 11 18 00 00 4c 6b 99 49 11 20 00 00 4d 97  .I....Lk.I. ..M.
->   XFS (dm-0): xfs_do_force_shutdown(0x8) called from line 1423 of file fs/xfs/xfs_buf.c.  Return address = 00000000c0ff63c1
->   XFS (dm-0): Corruption of in-memory data detected.  Shutting down filesystem
->   XFS (dm-0): Please umount the filesystem and rectify the problem(s)
-> 
-> From the log above, we know xfs_buf->b_no is 0x178, but the block's hdr record
-> its blkno is 0x1a0.
-> 
-> Fixes: 24df33b45ecf ("xfs: add CRC checking to dir2 leaf blocks")
-> Signed-off-by: Zhang Tianci <zhangtianci.1997@bytedance.com>
-> Suggested-by: Dave Chinner <david@fromorbit.com>
+This series adds initial clock support for the Qualcomm X1E80100 platform,
+aka Snapdragon X Elite.
 
-still looks fine to me
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+Our v1 post of the patchsets adding support for Snapdragon X Elite SoC had
+the part number sc8380xp which is now updated to the new part number x1e80100
+based on the new branding scheme and refers to the exact same SoC.
 
---D
+V3:
+* Rename gcc config to CLK_X1E80100_GCC [Krzysztof/Abel/Bryan].
+* Pickup Rbs.
 
-> ---
->  fs/xfs/libxfs/xfs_da_btree.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-> index e576560b46e9..282c7cf032f4 100644
-> --- a/fs/xfs/libxfs/xfs_da_btree.c
-> +++ b/fs/xfs/libxfs/xfs_da_btree.c
-> @@ -2316,10 +2316,17 @@ xfs_da3_swap_lastblock(
->  		return error;
->  	/*
->  	 * Copy the last block into the dead buffer and log it.
-> +	 * On CRC-enabled file systems, also update the stamped in blkno.
->  	 */
->  	memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
-> +	if (xfs_has_crc(mp)) {
-> +		struct xfs_da3_blkinfo *da3 = dead_buf->b_addr;
-> +
-> +		da3->blkno = cpu_to_be64(xfs_buf_daddr(dead_buf));
-> +	}
->  	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
->  	dead_info = dead_buf->b_addr;
-> +
->  	/*
->  	 * Get values from the moved block.
->  	 */
-> -- 
-> 2.20.1
-> 
-> 
+v2:
+* Update the part number from sc8380xp to x1e80100.
+* Use shared ops in the x1e80100 gcc driver [Bryan].
+* Inline clock names [Konrad]
+* Fix Kconfig [Krzysztof]
+* Pick-up Rbs from the list.
+
+Dependencies: None
+Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+
+Rajendra Nayak (4):
+  dt-bindings: clock: qcom: Add X1E80100 GCC clocks
+  clk: qcom: Add Global Clock controller (GCC) driver for X1E80100
+  dt-bindings: clock: qcom-rpmhcc: Add RPMHCC bindings for X1E80100
+  clk: qcom: rpmh: Add support for X1E80100 rpmh clocks
+
+ .../bindings/clock/qcom,rpmhcc.yaml           |    1 +
+ .../bindings/clock/qcom,x1e80100-gcc.yaml     |   72 +
+ drivers/clk/qcom/Kconfig                      |   10 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-rpmh.c                   |   26 +
+ drivers/clk/qcom/gcc-x1e80100.c               | 6807 +++++++++++++++++
+ include/dt-bindings/clock/qcom,x1e80100-gcc.h |  485 ++
+ 7 files changed, 7402 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,x1e80100-gcc.yaml
+ create mode 100644 drivers/clk/qcom/gcc-x1e80100.c
+ create mode 100644 include/dt-bindings/clock/qcom,x1e80100-gcc.h
+
+-- 
+2.17.1
+
