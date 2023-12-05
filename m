@@ -2,68 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AA2804A42
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1098804A3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344452AbjLEGhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 01:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344397AbjLEGhB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344424AbjLEGhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 5 Dec 2023 01:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344429AbjLEGhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Dec 2023 01:37:00 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFA811F;
-        Mon,  4 Dec 2023 22:37:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF810136
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 22:37:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701758228; x=1733294228;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZqvAkwNMScC8HI8XbCdEX2rgOR/mZYQHPqzhl7WBsng=;
-  b=ZtrvTdzJLxWBcxg6ziAodYS8pVU3xI4Nb4Z0kHChk5EzfgzW8A+ci1Iu
-   agIYcJSz3lGExf/O9b31TfKQKjjTkxm0EDTO6o0DcarAaS+Y0RNQ2OFav
-   ORz5RbBgH5PZv1lj3rCHxvUONBy/o6/ofNG976/Hp1sUmrNiJZue/D3oH
-   t4hFiaaCmwDO0pUcWHPUxWiglZmpJUPPc83GFyPJcjxx7b9Qc+OA1styZ
-   EmPEyxnvC75jtEz/WvYrjmpjKXSB2ffHpqlxzoUwQwKA/BHkm1IKEYLQu
-   7Qokbuj67YZ55MQk9Fm4YP2gSPJu76zKjMfLO9t0hrq0ul0BdSWie3t8y
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="374035375"
+  t=1701758225; x=1733294225;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=Z7mcQP5twc2Q1+h2RBQFr9z+2yBUEmf4+3Gz4Au0aKs=;
+  b=geqWMWmWknfguFyr6Oi7jYoEO/PqHbMBGc4xiSzBiULrI4w7YKL1MQWB
+   Pzrc3blgV6mnQKOOvlozofnvOwZTkBWEbhiFACe7miBYOw4l/qjBYFPO3
+   yYtS2dKrc/Dm6K1/8tPiVhFYBqe2MaOnlq44CoEt8CgBHJf3Np0bH9hYU
+   cKOHYsb5z5qStFaYoOy76mewiy2xlPWV3sh5wf8zAkRAdhDDmh1RXT/ZI
+   E/J+8WXpv+CT1i6WOJRTTNR+vehghjmpZnuPF7Tv5iTJD1WpE/bZ9YaCW
+   yeDnZ3UKND5HXCpkPOjcU4c9V9xK0b8whEJ2Chkm3X5cAtKWDnqdYuai1
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="374035360"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="374035375"
+   d="scan'208";a="374035360"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 22:37:07 -0800
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 22:37:05 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764224102"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764224098"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="764224102"
+   d="scan'208";a="764224098"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by orsmga007.jf.intel.com with ESMTP; 04 Dec 2023 22:37:03 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rAP3F-0008Rc-1f;
+        id 1rAP3F-0008RS-1M;
         Tue, 05 Dec 2023 06:37:01 +0000
-Date:   Tue, 5 Dec 2023 14:36:14 +0800
+Date:   Tue, 5 Dec 2023 14:36:15 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     NeilBrown <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] nfsd: Don't leave work of closing files to a work
- queue.
-Message-ID: <202312051443.02Ddb5pd-lkp@intel.com>
-References: <20231204014042.6754-3-neilb@suse.de>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c:135:42:
+ warning: '%d' directive output may be truncated writing between 1 and 10
+ bytes into a region of size 7
+Message-ID: <202312051441.oET2UCAw-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231204014042.6754-3-neilb@suse.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
@@ -74,59 +63,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi NeilBrown,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on linus/master v6.7-rc4]
-[cannot apply to brauner-vfs/vfs.all next-20231205]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/NeilBrown/Allow-a-kthread-to-declare-that-it-calls-task_work_run/20231204-094248
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20231204014042.6754-3-neilb%40suse.de
-patch subject: [PATCH 2/2] nfsd: Don't leave work of closing files to a work queue.
-config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20231205/202312051443.02Ddb5pd-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051443.02Ddb5pd-lkp@intel.com/reproduce)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: b1dd9bf6ead81bfb910de1df3be74e9d176cae47 net: dpaa2-eth: export buffer pool info into a new debugfs file
+date:   1 year, 1 month ago
+config: x86_64-buildonly-randconfig-002-20231205 (https://download.01.org/0day-ci/archive/20231205/202312051441.oET2UCAw-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051441.oET2UCAw-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051443.02Ddb5pd-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312051441.oET2UCAw-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
->> fs/nfsd/filecache.c:431: warning: Function parameter or member 'nn' not described in 'nfsd_file_dispose_some'
+   drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c: In function 'dpaa2_dbg_bp_show':
+>> drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c:135:42: warning: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 7 [-Wformat-truncation=]
+     135 |   snprintf(ch_name, sizeof(ch_name), "CH#%d", i);
+         |                                          ^~
+   drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c:135:38: note: directive argument in the range [0, 2147483646]
+     135 |   snprintf(ch_name, sizeof(ch_name), "CH#%d", i);
+         |                                      ^~~~~~~
+   drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c:135:3: note: 'snprintf' output between 5 and 14 bytes into a destination of size 10
+     135 |   snprintf(ch_name, sizeof(ch_name), "CH#%d", i);
+         |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-vim +431 fs/nfsd/filecache.c
+vim +135 drivers/net/ethernet/freescale/dpaa2/dpaa2-eth-debugfs.c
 
-   425	
-   426	/**
-   427	 * nfsd_file_dispose_some
-   428	 *
-   429	 */
-   430	void nfsd_file_dispose_some(struct nfsd_net *nn)
- > 431	{
-   432		struct nfsd_fcache_disposal *l = nn->fcache_disposal;
-   433		LIST_HEAD(dispose);
-   434		int i;
-   435	
-   436		if (list_empty(&l->freeme))
-   437			return;
-   438		spin_lock(&l->lock);
-   439		for (i = 0; i < 8 && !list_empty(&l->freeme); i++)
-   440			list_move(l->freeme.next, &dispose);
-   441		spin_unlock(&l->lock);
-   442		if (!list_empty(&l->freeme))
-   443			svc_wake_up(nn->nfsd_serv);
-   444		nfsd_file_dispose_list(&dispose);
-   445	}
-   446	
+   121	
+   122	static int dpaa2_dbg_bp_show(struct seq_file *file, void *offset)
+   123	{
+   124		struct dpaa2_eth_priv *priv = (struct dpaa2_eth_priv *)file->private;
+   125		int i, j, num_queues, buf_cnt;
+   126		struct dpaa2_eth_bp *bp;
+   127		char ch_name[10];
+   128		int err;
+   129	
+   130		/* Print out the header */
+   131		seq_printf(file, "Buffer pool info for %s:\n", priv->net_dev->name);
+   132		seq_printf(file, "%s  %10s%15s", "IDX", "BPID", "Buf count");
+   133		num_queues = dpaa2_eth_queue_count(priv);
+   134		for (i = 0; i < num_queues; i++) {
+ > 135			snprintf(ch_name, sizeof(ch_name), "CH#%d", i);
+   136			seq_printf(file, "%10s", ch_name);
+   137		}
+   138		seq_printf(file, "\n");
+   139	
+   140		/* For each buffer pool, print out its BPID, the number of buffers in
+   141		 * that buffer pool and the channels which are using it.
+   142		 */
+   143		for (i = 0; i < priv->num_bps; i++) {
+   144			bp = priv->bp[i];
+   145	
+   146			err = dpaa2_io_query_bp_count(NULL, bp->bpid, &buf_cnt);
+   147			if (err) {
+   148				netdev_warn(priv->net_dev, "Buffer count query error %d\n", err);
+   149				return err;
+   150			}
+   151	
+   152			seq_printf(file, "%3s%d%10d%15d", "BP#", i, bp->bpid, buf_cnt);
+   153			for (j = 0; j < num_queues; j++) {
+   154				if (priv->channel[j]->bp == bp)
+   155					seq_printf(file, "%10s", "x");
+   156				else
+   157					seq_printf(file, "%10s", "");
+   158			}
+   159			seq_printf(file, "\n");
+   160		}
+   161	
+   162		return 0;
+   163	}
+   164	
 
 -- 
 0-DAY CI Kernel Test Service
