@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1EE8054C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0234C8054D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346971AbjLEMlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:41:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56134 "EHLO
+        id S1345223AbjLEMlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:41:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346868AbjLEMkb (ORCPT
+        with ESMTP id S231969AbjLEMlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:40:31 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47A719A4;
-        Tue,  5 Dec 2023 04:40:12 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0VY4y3vz4f3lCq;
-        Tue,  5 Dec 2023 20:40:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 5822A1A0B3A;
-        Tue,  5 Dec 2023 20:40:10 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgA3iA4nGm9ljNo8Cw--.18416S4;
-        Tue, 05 Dec 2023 20:40:09 +0800 (CST)
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-To:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
-        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-        willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-        p.raghav@samsung.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
-        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next RFC 14/14] nilfs2: use bdev api in nilfs_attach_log_writer()
-Date:   Tue,  5 Dec 2023 20:39:05 +0800
-Message-Id: <20231205123905.1866894-1-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+        Tue, 5 Dec 2023 07:41:22 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607E4181
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:41:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701780088; x=1733316088;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=RtBu+QxQtHW+TcgROX0mBY2zSgQvg6znf9uGKvyl8Ag=;
+  b=Io6JuLZYaztcscUNAxIjtzBqorkLbIiJ7wlmYuwYlG/i8FLahBSEkEBR
+   z0X/dnBDlOAwgdz8VTbchR/T+Mhj5kXLmQ7CZHFqjSU8TNgElb72N8rUh
+   bHiWtPWMrUXq38X6BBJlSx9kl5LffjmBDF1P1WHPzhPO3BoSRCAQN6QJq
+   b0baOI6IOkiTitaSZ+IkmHk2gQok/5u937KElD1VfG/xRLNorrHjPnz81
+   hAoLx2Twj6Jis+kTEKqUll3goBX/YRGVI0AE9N8W/8UjK2U0ae/2tyo3H
+   mWVaiF+rXvXSrBEzHS5M2PwDzoVztLOtiJuK9tbBNtfQcMXwKmOCUOP1e
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="942085"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="942085"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 04:41:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1018210030"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="1018210030"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Dec 2023 04:41:26 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAUjm-0008yf-0P;
+        Tue, 05 Dec 2023 12:41:19 +0000
+Date:   Tue, 5 Dec 2023 20:40:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Leif Lindholm <leif@nuviainc.com>
+Subject: drivers/firmware/efi/libstub/arm32-stub.c:12:28: sparse: sparse:
+ symbol 'efi_entry_state' was not declared. Should it be static?
+Message-ID: <202312052029.uKL2SfSM-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgA3iA4nGm9ljNo8Cw--.18416S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFWxAFW7ZFyrGFW3ZFyDGFg_yoW3Gwc_Zr
-        n8GryvgryFqFZ3Zw4DCrZ0yryrJ3WrKa18XryrGFyrGF40yrs5Cr1qvr4jqayUWwnrXws3
-        JwnrWr98tw15XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxxFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
-        6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-        n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8
-        JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfU59
-        NVDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 2a55280a3675203496d302463b941834228b9875 efi/libstub: arm: Print CPU boot mode and MMU state at boot
+date:   3 years, 6 months ago
+config: arm-randconfig-r113-20231116 (https://download.01.org/0day-ci/archive/20231205/202312052029.uKL2SfSM-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231205/202312052029.uKL2SfSM-lkp@intel.com/reproduce)
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312052029.uKL2SfSM-lkp@intel.com/
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- fs/nilfs2/segment.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+sparse warnings: (new ones prefixed by >>)
+>> drivers/firmware/efi/libstub/arm32-stub.c:12:28: sparse: sparse: symbol 'efi_entry_state' was not declared. Should it be static?
 
-diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
-index 52995838f2de..be47a1d21889 100644
---- a/fs/nilfs2/segment.c
-+++ b/fs/nilfs2/segment.c
-@@ -2824,7 +2824,7 @@ int nilfs_attach_log_writer(struct super_block *sb, struct nilfs_root *root)
- 	if (!nilfs->ns_writer)
- 		return -ENOMEM;
- 
--	inode_attach_wb(nilfs->ns_bdev->bd_inode, NULL);
-+	bdev_attach_wb(nilfs->ns_bdev);
- 
- 	err = nilfs_segctor_start_thread(nilfs->ns_writer);
- 	if (unlikely(err))
+vim +/efi_entry_state +12 drivers/firmware/efi/libstub/arm32-stub.c
+
+    11	
+  > 12	struct efi_arm_entry_state *efi_entry_state;
+    13	
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
