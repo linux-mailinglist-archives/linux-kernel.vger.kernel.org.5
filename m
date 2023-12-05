@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA97A805685
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33C9805687
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442251AbjLENvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
+        id S1442264AbjLENvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:51:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345523AbjLENvo (ORCPT
+        with ESMTP id S1345523AbjLENvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:51:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9852BB2
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:51:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701784308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YqwroJrGTHefUhDWiBCdA2J4vAuymH0bz+Axm1qiXbE=;
-        b=Ks2ogx33pVMFv1Mq8ARU5VZDCrPgMulgEejFQYZ3cUj1O10xuc8UsumHYbWIrANiG+uaiv
-        XFEKHpHvzQXKlhAuf0rx//JUj/gsWlnvq0GbcQ/a7Or87bCSDmIOnp9dW+M18HOlR5qhdB
-        pr9qpXxbWytrGcF5CmxCTvps/5yXQCo=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-280-E63hAdDVMCKPL0bEHUlvjQ-1; Tue, 05 Dec 2023 08:51:47 -0500
-X-MC-Unique: E63hAdDVMCKPL0bEHUlvjQ-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1d0544c07c3so25642785ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:51:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701784306; x=1702389106;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YqwroJrGTHefUhDWiBCdA2J4vAuymH0bz+Axm1qiXbE=;
-        b=w+O4uqnQu5VF0j+EULjwxuBRg0BPYDRMvxf/Pd64xk5/wS6/otAP5UGWwlCPRjJ8TH
-         trlx37ANynh/PFLJFu3iPMvV66f6TvHNFRIMExhw2edQy3wbyPnfS+V8Ovn1LO0K+70P
-         0eRLLk35bTRenOkqP5ILmPcXYlUbKZeHkUXTBskRQLk8wULLizNsRJz/snAVQGYGtdbb
-         8IRcx35Hc9gEZjxyrA8iz3lzdwsLHHDMcWDjQdMRMVtdwOKjrY5H9PMUVHaFQK3D1L7R
-         9cCMwuPvl5ficiNfKb+q9r+XDf4oZ04EsP1JYUj2DdY+lpTmr29Ms9MgTPqBik0CbdYF
-         7Log==
-X-Gm-Message-State: AOJu0YwIrc/Gch/8k0PWXaTyHIExOSpoIZW5RshMdEj0rqamW3NBo2g1
-        XzFB/va7FVzmO1y7I1Nr/7YSGwUp0sGjp6Uqy7FB6gswnGxIzE6s2jCYSUoXE4yn3d7fg3PgJqB
-        CXboHxCprOA1y9ArFfbpbWWqRnR1nvXcVXYDrfKPi
-X-Received: by 2002:a17:902:e741:b0:1d0:8555:a1bc with SMTP id p1-20020a170902e74100b001d08555a1bcmr3325800plf.13.1701784306640;
-        Tue, 05 Dec 2023 05:51:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGz6qoVMl9eTDZiTRuQ7GXnKYIuL8zYPdZOJYvdGQGzFFqt7PvtFFUulBhuNSWU8a3LTp27fh5Kz0Th3mHZFuQ=
-X-Received: by 2002:a17:902:e741:b0:1d0:8555:a1bc with SMTP id
- p1-20020a170902e74100b001d08555a1bcmr3325793plf.13.1701784306367; Tue, 05 Dec
- 2023 05:51:46 -0800 (PST)
+        Tue, 5 Dec 2023 08:51:50 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FE71A1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:51:56 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-315-RudkEP8NNOKGvji7MwR1Vg-1; Tue, 05 Dec 2023 13:51:53 +0000
+X-MC-Unique: RudkEP8NNOKGvji7MwR1Vg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 5 Dec
+ 2023 13:51:39 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 5 Dec 2023 13:51:39 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Stefan Hajnoczi' <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
+        Jason Wang <jasowang@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Suwan Kim <suwan.kim027@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: RE: [PATCH] virtio_blk: fix snprintf truncation compiler warning
+Thread-Topic: [PATCH] virtio_blk: fix snprintf truncation compiler warning
+Thread-Index: AQHaJrs9NwtZ5IUyyEqvz6e+TUwc/LCatUxg
+Date:   Tue, 5 Dec 2023 13:51:39 +0000
+Message-ID: <1c1d57ba13c2497f99e5e0a9c5954667@AcuMS.aculab.com>
+References: <20231204140743.1487843-1-stefanha@redhat.com>
+In-Reply-To: <20231204140743.1487843-1-stefanha@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <000000000000737829060b7b8775@google.com> <tencent_FCCCB879B66D7C2C2D6E4C97F4E972EE3A0A@qq.com>
-In-Reply-To: <tencent_FCCCB879B66D7C2C2D6E4C97F4E972EE3A0A@qq.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Tue, 5 Dec 2023 14:51:34 +0100
-Message-ID: <CAHc6FU4XREidNxwtW8m2YnsBGfANdH4W8b56KOeMNLjEEU_WGQ@mail.gmail.com>
-Subject: Re: [PATCH] gfs2: fix kernel BUG in gfs2_quota_cleanup
-To:     Edward Adam Davis <eadavis@qq.com>
-Cc:     syzbot+3b6e67ac2b646da57862@syzkaller.appspotmail.com,
-        gfs2@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,59 +65,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 2, 2023 at 10:34=E2=80=AFAM Edward Adam Davis <eadavis@qq.com> =
-wrote:
-> [Analysis]
-> When the task exits, it will execute cleanup_mnt() to recycle the mounted=
- gfs2
-> file system, but it performs a system call fsconfig(4, FSCONFIG_CMD_RECON=
-FIGURE,
-> NULL, NULL, 0) before executing the task exit operation.
->
-> This will execute the following kernel path to complete the setting of
-> SDF_JOURNAL_LIVE for sd_flags:
->
-> SYSCALL_DEFINE5(fsconfig, ..)->
->         vfs_fsconfig_locked()->
->                 vfs_cmd_reconfigure()->
->                         gfs2_reconfigure()->
->                                 gfs2_make_fs_rw()->
->                                         set_bit(SDF_JOURNAL_LIVE, &sdp->s=
-d_flags);
->
-> [Fix]
-> Add SDF_NORECOVERY check in gfs2_quota_cleanup() to avoid checking
-> SDF_JOURNAL_LIVE on the path where gfs2 is being unmounted.
-
-Thanks for this fix, I've applied it and added the following tag:
-
-Fixes: f66af88e3321 ("gfs2: Stop using gfs2_make_fs_ro for withdraw")
-
->
-> Reported-and-tested-by: syzbot+3b6e67ac2b646da57862@syzkaller.appspotmail=
-.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
->  fs/gfs2/quota.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/gfs2/quota.c b/fs/gfs2/quota.c
-> index 95dae7838b4e..af32dd8a72fa 100644
-> --- a/fs/gfs2/quota.c
-> +++ b/fs/gfs2/quota.c
-> @@ -1505,7 +1505,8 @@ void gfs2_quota_cleanup(struct gfs2_sbd *sdp)
->         LIST_HEAD(dispose);
->         int count;
->
-> -       BUG_ON(test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags));
-> +       BUG_ON(!test_bit(SDF_NORECOVERY, &sdp->sd_flags) &&
-> +               test_bit(SDF_JOURNAL_LIVE, &sdp->sd_flags));
->
->         spin_lock(&qd_lock);
->         list_for_each_entry(qd, &sdp->sd_quota_list, qd_list) {
-> --
-> 2.43.0
-
-Thanks,
-Andreas
+RnJvbTogU3RlZmFuIEhham5vY3ppDQo+IFNlbnQ6IDA0IERlY2VtYmVyIDIwMjMgMTQ6MDgNCj4g
+DQo+IENvbW1pdCA0ZTA0MDA1MjU2OTEgKCJ2aXJ0aW8tYmxrOiBzdXBwb3J0IHBvbGxpbmcgSS9P
+IikgdHJpZ2dlcnMgdGhlDQo+IGZvbGxvd2luZyBnY2MgMTMgVz0xIHdhcm5pbmdzOg0KPiANCj4g
+ZHJpdmVycy9ibG9jay92aXJ0aW9fYmxrLmM6IEluIGZ1bmN0aW9uIOKAmGluaXRfdnHigJk6DQo+
+IGRyaXZlcnMvYmxvY2svdmlydGlvX2Jsay5jOjEwNzc6Njg6IHdhcm5pbmc6IOKAmCVk4oCZIGRp
+cmVjdGl2ZSBvdXRwdXQgbWF5IGJlIHRydW5jYXRlZCB3cml0aW5nIGJldHdlZW4gMQ0KPiBhbmQg
+MTEgYnl0ZXMgaW50byBhIHJlZ2lvbiBvZiBzaXplIDcgWy1XZm9ybWF0LXRydW5jYXRpb249XQ0K
+PiAgMTA3NyB8ICAgICAgICAgICAgICAgICBzbnByaW50Zih2YmxrLT52cXNbaV0ubmFtZSwgVlFf
+TkFNRV9MRU4sICJyZXFfcG9sbC4lZCIsIGkpOw0KPiAgICAgICB8ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBefg0KPiBk
+cml2ZXJzL2Jsb2NrL3ZpcnRpb19ibGsuYzoxMDc3OjU4OiBub3RlOiBkaXJlY3RpdmUgYXJndW1l
+bnQgaW4gdGhlIHJhbmdlIFstMjE0NzQ4MzY0OCwgNjU1MzRdDQo+ICAxMDc3IHwgICAgICAgICAg
+ICAgICAgIHNucHJpbnRmKHZibGstPnZxc1tpXS5uYW1lLCBWUV9OQU1FX0xFTiwgInJlcV9wb2xs
+LiVkIiwgaSk7DQo+ICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+fg0KPiBkcml2ZXJzL2Jsb2NrL3ZpcnRp
+b19ibGsuYzoxMDc3OjE3OiBub3RlOiDigJhzbnByaW50ZuKAmSBvdXRwdXQgYmV0d2VlbiAxMSBh
+bmQgMjEgYnl0ZXMgaW50byBhIGRlc3RpbmF0aW9uDQo+IG9mIHNpemUgMTYNCj4gIDEwNzcgfCAg
+ICAgICAgICAgICAgICAgc25wcmludGYodmJsay0+dnFzW2ldLm5hbWUsIFZRX05BTUVfTEVOLCAi
+cmVxX3BvbGwuJWQiLCBpKTsNCj4gICAgICAgfCAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiANCj4gVGhp
+cyBpcyBhIGZhbHNlIHBvc2l0aXZlIGJlY2F1c2UgdGhlIGxvd2VyIGJvdW5kIC0yMTQ3NDgzNjQ4
+IGlzDQo+IGluY29ycmVjdC4gVGhlIHRydWUgcmFuZ2Ugb2YgaSBpcyBbMCwgbnVtX3ZxcyAtIDFd
+IHdoZXJlIDAgPCBudW1fdnFzIDwNCj4gNjU1MzYuDQo+IA0KPiBUaGUgY29kZSBtaXhlcyBpbnQs
+IHVuc2lnbmVkIHNob3J0LCBhbmQgdW5zaWduZWQgaW50IHR5cGVzIGluIGFkZGl0aW9uDQo+IHRv
+IHVzaW5nICIlZCIgZm9yIGFuIHVuc2lnbmVkIHZhbHVlLiBVc2UgdW5zaWduZWQgc2hvcnQgYW5k
+ICIldSINCj4gY29uc2lzdGVudGx5IHRvIHNvbHZlIHRoZSBjb21waWxlciB3YXJuaW5nLg0KPiAN
+Cj4gQ2M6IFN1d2FuIEtpbSA8c3V3YW4ua2ltMDI3QGdtYWlsLmNvbT4NCj4gUmVwb3J0ZWQtYnk6
+IGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPg0KPiBDbG9zZXM6IGh0dHBzOi8vbG9y
+ZS5rZXJuZWwub3JnL29lLWtidWlsZC1hbGwvMjAyMzEyMDQxNTA5LkRJeXZFdDloLWxrcEBpbnRl
+bC5jb20vDQo+IFNpZ25lZC1vZmYtYnk6IFN0ZWZhbiBIYWpub2N6aSA8c3RlZmFuaGFAcmVkaGF0
+LmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL2Jsb2NrL3ZpcnRpb19ibGsuYyB8IDggKysrKy0tLS0N
+Cj4gIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+IA0K
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ibG9jay92aXJ0aW9fYmxrLmMgYi9kcml2ZXJzL2Jsb2Nr
+L3ZpcnRpb19ibGsuYw0KPiBpbmRleCBkNTNkNmFhOGVlNjkuLjQ3NTU2ZDhjY2MzMiAxMDA2NDQN
+Cj4gLS0tIGEvZHJpdmVycy9ibG9jay92aXJ0aW9fYmxrLmMNCj4gKysrIGIvZHJpdmVycy9ibG9j
+ay92aXJ0aW9fYmxrLmMNCj4gQEAgLTEwMTksMTIgKzEwMTksMTIgQEAgc3RhdGljIHZvaWQgdmly
+dGJsa19jb25maWdfY2hhbmdlZChzdHJ1Y3QgdmlydGlvX2RldmljZSAqdmRldikNCj4gIHN0YXRp
+YyBpbnQgaW5pdF92cShzdHJ1Y3QgdmlydGlvX2JsayAqdmJsaykNCj4gIHsNCj4gIAlpbnQgZXJy
+Ow0KPiAtCWludCBpOw0KPiArCXVuc2lnbmVkIHNob3J0IGk7DQo+ICAJdnFfY2FsbGJhY2tfdCAq
+KmNhbGxiYWNrczsNCj4gIAljb25zdCBjaGFyICoqbmFtZXM7DQo+ICAJc3RydWN0IHZpcnRxdWV1
+ZSAqKnZxczsNCj4gIAl1bnNpZ25lZCBzaG9ydCBudW1fdnFzOw0KPiAtCXVuc2lnbmVkIGludCBu
+dW1fcG9sbF92cXM7DQo+ICsJdW5zaWduZWQgc2hvcnQgbnVtX3BvbGxfdnFzOw0KPiAgCXN0cnVj
+dCB2aXJ0aW9fZGV2aWNlICp2ZGV2ID0gdmJsay0+dmRldjsNCj4gIAlzdHJ1Y3QgaXJxX2FmZmlu
+aXR5IGRlc2MgPSB7IDAsIH07DQo+IA0KPiBAQCAtMTA2OCwxMyArMTA2OCwxMyBAQCBzdGF0aWMg
+aW50IGluaXRfdnEoc3RydWN0IHZpcnRpb19ibGsgKnZibGspDQo+IA0KPiAgCWZvciAoaSA9IDA7
+IGkgPCBudW1fdnFzIC0gbnVtX3BvbGxfdnFzOyBpKyspIHsNCg0KVWdnIGRvaW5nIGFyaXRobWV0
+aWMgb24gY2hhci9zaG9ydCBpcyBsaWtlbHkgdG8gZ2VuZXJhdGUgaG9ycmlkDQpjb2RlIChlc3Bl
+Y2lhbGx5IG9uIG5vbi14ODYpLg0KSGludCwgdGhlcmUgd2lsbCBiZSBleHBsaWNpdCBtYXNraW5n
+IGFuZC9vciBzaWduL3plcm8gZXh0ZW5zaW9uLg0KDQpFdmVuIHRoZSBhcnJheSBpbmRleCBtaWdo
+dCBhZGQgZXh0cmEgY29kZSAoYWx0aG91Z2ggdGhlcmUnbGwgYmUNCmFuIGV4cGxpY2l0IHNpZ24g
+ZXh0ZW5kIHRvIDY0Yml0IHdpdGggdGhlIGN1cnJlbnQgY29kZSkuDQoNClRoZXJlIHJlYWxseSBv
+dWdodCB0byBiZSBhIGJldHRlciB3YXkgdG8gbWFrZSBnY2MgU1RGVS4NCg0KSW4gdGhpcyBjYXNl
+ICd1bnNpZ25lZCBpbnQgaScgbWlnaHQgYmUgZW5vdWdoIHNpbmNlIGdjYyBzZWVtcw0KdG8gaGF2
+ZSBhIHNtYWxsIGVub3VnaCB1cHBlciBib3VuZC4NCg0KCURhdmlkDQoNCg0KPiAgCQljYWxsYmFj
+a3NbaV0gPSB2aXJ0YmxrX2RvbmU7DQo+IC0JCXNucHJpbnRmKHZibGstPnZxc1tpXS5uYW1lLCBW
+UV9OQU1FX0xFTiwgInJlcS4lZCIsIGkpOw0KPiArCQlzbnByaW50Zih2YmxrLT52cXNbaV0ubmFt
+ZSwgVlFfTkFNRV9MRU4sICJyZXEuJXUiLCBpKTsNCj4gIAkJbmFtZXNbaV0gPSB2YmxrLT52cXNb
+aV0ubmFtZTsNCj4gIAl9DQo+IA0KPiAgCWZvciAoOyBpIDwgbnVtX3ZxczsgaSsrKSB7DQo+ICAJ
+CWNhbGxiYWNrc1tpXSA9IE5VTEw7DQo+IC0JCXNucHJpbnRmKHZibGstPnZxc1tpXS5uYW1lLCBW
+UV9OQU1FX0xFTiwgInJlcV9wb2xsLiVkIiwgaSk7DQo+ICsJCXNucHJpbnRmKHZibGstPnZxc1tp
+XS5uYW1lLCBWUV9OQU1FX0xFTiwgInJlcV9wb2xsLiV1IiwgaSk7DQo+ICAJCW5hbWVzW2ldID0g
+dmJsay0+dnFzW2ldLm5hbWU7DQo+ICAJfQ0KPiANCj4gLS0NCj4gMi40My4wDQoNCi0NClJlZ2lz
+dGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24g
+S2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
