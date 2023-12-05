@@ -2,61 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8EC804D05
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394BB804D07
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234938AbjLEJAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:00:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
+        id S234942AbjLEJAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234861AbjLEJAD (ORCPT
+        with ESMTP id S235506AbjLEJAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:00:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0D1C9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:00:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A567C433C8;
-        Tue,  5 Dec 2023 09:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701766807;
-        bh=8Zo030DW5StfuPpy+njP5VItWjRf8nBa5Yz4US41iQc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fN64jr1pg+CWazm5c3TXifGsIZdN/ygc6shGctLcCYLrMXTRaahakjnOU3OikcwXC
-         gn3VucgB3t2LK1l9JTPYMK4Es8pyO50US+oPAltzfmx8dsTNnDH2Dbwx1Att+SJXzu
-         +/9LKa7KHQqvItvVi0ZflbSvq8vc8IDK6A9T0CdY+AJtZD8wP0JE23LYDJEZwTJ3WX
-         WofyjHk/qWsRZW+zXLZr5CxvLoA4ijwguGB6N7Q/sBY3jH3BOibzuOchjPqNDDcTjH
-         rkXEaW4WNWmw3RuhGGiBW4Yo8E6Akd7antXw7xmMIGZ/klDRhbM7P8CBhSYijL85y5
-         po2/sFdtOImIA==
-Date:   Tue, 5 Dec 2023 10:00:04 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     davidgow@google.com
-Cc:     Rae Moar <rmoar@google.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-sound@vger.kernel.org
-Subject: Re: [PATCH 1/4] kunit: Add APIs for managing devices
-Message-ID: <ssrsr5lter2vbwvkghbtv4cwr4keckapbeyw24deobnwb22hc5@j65aqmf2wjsb>
-References: <20231205-kunit_bus-v1-0-635036d3bc13@google.com>
- <20231205-kunit_bus-v1-1-635036d3bc13@google.com>
+        Tue, 5 Dec 2023 04:00:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B161B1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:00:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701766838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2VZS95IaK4r6XsUz1E0q2PUldohLpiP4RGb9owLqvas=;
+        b=gv68xgT0KBR8X3nLKc4yx9/QOoQYJjCOQGia9+MD6uDvzcg0PyPSyoA43eW/3aBX95/1bU
+        Scnv37tE8D+p4jWX3XOor6Ec3Bc6m+xJGNlZelHhXeAEnteNu0AWTGz5YslzITG5+srY0B
+        chsISjqVbeAhPnFSmtLLYpuZ1URT+fM=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-222-7W_AL7F6OsiF8QynrB1dWg-1; Tue, 05 Dec 2023 04:00:37 -0500
+X-MC-Unique: 7W_AL7F6OsiF8QynrB1dWg-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5400c8c6392so3896489a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:00:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701766836; x=1702371636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2VZS95IaK4r6XsUz1E0q2PUldohLpiP4RGb9owLqvas=;
+        b=bPsTkblGLKGyTDPr6QU3J0u5Yvtl6l3WM0tHvllCB4lyLniv7oobhoyyd/NhiEHe7b
+         /KCnnN+NQcuY82Jru5ptI1BaCYv1ZN+OqfpdV1pnG4en8Xs6zpxB0zQy/HJYcLXhNcHi
+         chHRaxGQTE6WjSWc7+kjUaRX4OtENMqMzF4XZUdXHNecVd9JjvJve3chcvsgrP+k+/j2
+         HR5yQkD18yM+YY7P3ev2TT/di9a9amtgl0K7NRwRnRQu6v23pJVg2cUhYWZ+wGXW9V81
+         kgBwlXWHZCAfpW0AuXexMNwJCSQKrOXg2VODSIpAmoH/oSpPF5CjiawnJW4w1WQsnET7
+         zYCA==
+X-Gm-Message-State: AOJu0YybZYU2JjDBhGS1BbkN+/kUF9dzzoFpSNkGOof5/9JKorubBcp4
+        sX6nSHYBmFiQCTbzJfVdJqF9LM7+NXxs2FrfSkVHw3Wek15kEjC54h5ecp1PO3OLgXk1xsBaON8
+        7Slpg9j2oR7qQmMnbSCJz8wlrnaK17S7C71NledEb
+X-Received: by 2002:a50:cd4c:0:b0:54a:f1db:c290 with SMTP id d12-20020a50cd4c000000b0054af1dbc290mr4888957edj.9.1701766836041;
+        Tue, 05 Dec 2023 01:00:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFh2TKjelIK/xQGoRVMKwsH4kMIEu1VeGAyx5RhXDvxBars21w6KtujrtA6OrR9/wZyU8ce/FVMPTEFLjqsBv8=
+X-Received: by 2002:a50:cd4c:0:b0:54a:f1db:c290 with SMTP id
+ d12-20020a50cd4c000000b0054af1dbc290mr4888935edj.9.1701766835720; Tue, 05 Dec
+ 2023 01:00:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="e57g6kre6lemgyu3"
-Content-Disposition: inline
-In-Reply-To: <20231205-kunit_bus-v1-1-635036d3bc13@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231202150807.2571103-1-srasheed@marvell.com>
+ <CADEbmW12OWS6et2wp3skicUM=V81x8dS4_aySYP1Ok0kEc2M9Q@mail.gmail.com>
+ <CADEbmW3K7QkfniBtmMt=SZtwZWez30F+sM=656wqmZR8=ig1jQ@mail.gmail.com> <PH0PR18MB47342E45E84C86A274F78074C785A@PH0PR18MB4734.namprd18.prod.outlook.com>
+In-Reply-To: <PH0PR18MB47342E45E84C86A274F78074C785A@PH0PR18MB4734.namprd18.prod.outlook.com>
+From:   Michal Schmidt <mschmidt@redhat.com>
+Date:   Tue, 5 Dec 2023 10:00:24 +0100
+Message-ID: <CADEbmW3WjQFQk=g5ESAdMWjoQGHzr3ndL_0AQ8O7-QE2XRVS9w@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH net v1] octeon_ep: initialise control mbox tasks
+ before using APIs
+To:     Shinas Rasheed <srasheed@marvell.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Haseeb Gani <hgani@marvell.com>,
+        Vimlesh Kumar <vimleshk@marvell.com>,
+        "egallen@redhat.com" <egallen@redhat.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "horms@kernel.org" <horms@kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wizhao@redhat.com" <wizhao@redhat.com>,
+        "konguyen@redhat.com" <konguyen@redhat.com>,
+        Veerasenareddy Burru <vburru@marvell.com>,
+        Sathesh B Edara <sedara@marvell.com>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,505 +91,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 5, 2023 at 7:50=E2=80=AFAM Shinas Rasheed <srasheed@marvell.com=
+> wrote:
+> > -----Original Message-----
+> > > On Sat, Dec 2, 2023 at 4:08=E2=80=AFPM Shinas Rasheed <srasheed@marve=
+ll.com>
+> > wrote:
+> > > > Do INIT_WORK for the various workqueue tasks before the first
+> > > > invocation of any control net APIs. Since octep_ctrl_net_get_info
+> > > > was called before the control net receive work task was even
+> > > > initialised, the function call wasn't returning actual firmware
+> > > > info queried from Octeon.
+> > >
+> > > It might be more accurate to say that octep_ctrl_net_get_info depends
+> > > on the processing of OEI events. This happens in intr_poll_task.
+> > > That's why intr_poll_task needs to be queued earlier.
+>
+> Intr_poll_task is queued only when the interface is down and the PF canno=
+t catch IRQs as they have been torn down.
+> Elsewise, OEI events will trigger the OEI IRQ and consequently its handle=
+r.
 
---e57g6kre6lemgyu3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right. octep_ctrl_net_get_info is called from the probe function, and
+at this point the netdev is not even registered yet. Hence the need
+for intr_poll_task.
+The reason I started wondering about intr_poll_task is that the commit
+message talks about the INIT_WORK, but the patch also moves the
+queue_delayed_work call and the reasoning for that move was missing in
+the message.
+I think the move is correct, but please expand the description.
 
-Hi David,
+> Nevertheless, your point is correct in that it
+> needs to be queued earlier, but I think subsequently since it calls the c=
+ontrol mbox task, that is more relevant and necessary as if it
+> is not initialized, it cannot be scheduled even if OEI interrupts have be=
+en caught.
 
-Thanks a lot for working on this.
+OK.
 
-On Tue, Dec 05, 2023 at 03:31:33PM +0800, davidgow@google.com wrote:
-> Tests for drivers often require a struct device to pass to other
-> functions. While it's possible to create these with
-> root_device_register(), or to use something like a platform device, this
-> is both a misuse of those APIs, and can be difficult to clean up after,
-> for example, a failed assertion.
->=20
-> Add some KUnit-specific functions for registering and unregistering a
-> struct device:
-> - kunit_device_register()
-> - kunit_device_register_with_driver()
-> - kunit_device_unregister()
->=20
-> These helpers allocate a on a 'kunit' bus which will either probe the
-> driver passed in (kunit_device_register_with_driver), or will create a
-> stub driver (kunit_device_register) which is cleaned up on test shutdown.
->=20
-> Devices are automatically unregistered on test shutdown, but can be
-> manually unregistered earlier with kunit_device_unregister() in order
-> to, for example, test device release code.
->=20
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
->  Documentation/dev-tools/kunit/usage.rst |  49 +++++++++
->  include/kunit/device.h                  |  76 ++++++++++++++
->  lib/kunit/Makefile                      |   3 +-
->  lib/kunit/device.c                      | 176 ++++++++++++++++++++++++++=
-++++++
->  lib/kunit/kunit-test.c                  |  68 +++++++++++-
->  lib/kunit/test.c                        |   3 +
->  6 files changed, 373 insertions(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-=
-tools/kunit/usage.rst
-> index 9db12e91668e..a222a98edceb 100644
-> --- a/Documentation/dev-tools/kunit/usage.rst
-> +++ b/Documentation/dev-tools/kunit/usage.rst
-> @@ -797,3 +797,52 @@ structures as shown below:
->  KUnit is not enabled, or if no test is running in the current task, it w=
-ill do
->  nothing. This compiles down to either a no-op or a static key check, so =
-will
->  have a negligible performance impact when no test is running.
-> +
-> +Managing Fake Devcices and Drivers
+> > > Did octep_send_mbox_req previously always fail with EAGAIN after
+> >           ^^^^^^^^^^^^^^^^^^^^^
+> > I meant octep_ctrl_net_get_info here.
+> >
+> > > running into the 500 ms timeout in octep_send_mbox_req?
+>
+> Yes it did, but as it was silent (note that we're not checking any error =
+value), it didn't stop operation. I think I might have to update this patch
+> to catch the error values as well (This was a relic from the original cod=
+e which spawned an extra thread to setup device and hence couldn't give bac=
+k
+> an error value. That implementation was discouraged and we setup things a=
+t probe itself in the upstreamed code and can check error values)
 
-                 ^ Devices
+Yes, please, catch that error value.
 
-> +----------------------------------
-> +
-> +When testing drivers or code which interacts with drivers, many function=
-s will
-> +require a ``struct device`` or ``struct device_driver``. In many cases, =
-setting
-> +up a real device is not required to test any given function, so a fake d=
-evice
-> +can be used instead.
-> +
-> +KUnit provides helper functions to create and manage these fake devices,=
- which
-> +are internally of type ``struct kunit_device``, and are attached to a sp=
-ecial
-> +``kunit_bus``. These devices support managed device resources (devres), =
-as
-> +described in Documentation/driver-api/driver-model/devres.rst
-> +
-> +To create a KUnit-managed ``struct device_driver``, use ``kunit_driver_c=
-reate()``,
-> +which will create a driver with the given name, on the ``kunit_bus``. Th=
-is driver
-> +will automatically be destroyed when the corresponding test finishes, bu=
-t can also
-> +be manually destroyed with ``driver_unregister()``.
-> +
-> +To create a fake device, use the ``kunit_device_register()``, which will=
- create
-> +and register a device, using a new KUnit-managed driver created with ``k=
-unit_driver_create()``.
-> +To provide a specific, non-KUnit-managed driver, use ``kunit_device_regi=
-ster_with_driver()``
-> +instead. Like with managed drivers, KUnit-managed fake devices are autom=
-atically
-> +cleaned up when the test finishes, but can be manually cleaned up early =
-with
-> +``kunit_device_unregister()``.
+> > > Apropos octep_send_mbox_req... I think it has a race. "d" is put on
+> > > the ctrl_req_wait_list after sending the request to the hardware. If
+> > > the response arrives quickly, "d" might not yet be on the list when
+> > > process_mbox_resp looks for it.
+> > > Also, what protects ctrl_req_wait_list from concurrent access?
+>
+> Such a race condition is, I also think, valid, but is not currently occur=
+ring as response, after due processing from Octeon application,
+> wouldn't arrive that quickly. Regarding concurrent access, there is curre=
+ntly no protection for ctrl_req_wait_list. Concurrent access here,
+> can only happen if either two requests manage to get hold of the ctrl_req=
+_wait_list or a request and a response manages to get hold of the
+> ctrl_req_wait_list (the case you stated above).
+>
+> In the first case, since locks are implemented atop the control mbox itse=
+lf, requests would have to in effect wait for their chance to
+> queue their wait data "d" to ctrl_req_wait_list, avoiding concurrent acce=
+ss.
+>
+> The second case is valid, but as I stated, wouldn't happen practically. B=
+ut I suppose we do have to handle all theoretical cases and perhaps
+> locking can be done. I suppose a separate patch for it might be better.
 
-I think we should add a test for that, just like we did for root and
-platform devices. We've been bitten by that before :)
+Yes, fixing this should be a separate patch.
 
-> +The KUnit devices should be used in preference to ``root_device_register=
-()``, and
-> +instead of ``platform_device_register()`` in cases where the device is n=
-ot otherwise
-> +a platform device.
-> +
-> +For example:
-> +
-> +.. code-block:: c
-> +
-> +	#include <kunit/device.h>
-> +
-> +	static void test_my_device(struct kunit *test)
-> +	{
-> +		struct device *fake_device;
-> +		const char *dev_managed_string;
-> +
-> +		// Create a fake device.
-> +		fake_device =3D kunit_device_register(test, "my_device");
-> +
-> +		// Pass it to functions which need a device.
-> +		dev_managed_string =3D devm_kstrdup(fake_device, "Hello, World!");
-> +
-> +		// Everything is cleaned up automatically when the test ends.
-> +	}
-> \ No newline at end of file
-> diff --git a/include/kunit/device.h b/include/kunit/device.h
-> new file mode 100644
-> index 000000000000..fd2193bc55f1
-> --- /dev/null
-> +++ b/include/kunit/device.h
-> @@ -0,0 +1,76 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * KUnit basic device implementation
-> + *
-> + * Helpers for creating and managing fake devices for KUnit tests.
-> + *
-> + * Copyright (C) 2023, Google LLC.
-> + * Author: David Gow <davidgow@google.com>
-> + */
-> +
-> +#ifndef _KUNIT_DEVICE_H
-> +#define _KUNIT_DEVICE_H
-> +
-> +#if IS_ENABLED(CONFIG_KUNIT)
-> +
-> +#include <kunit/test.h>
-> +
-> +struct kunit_device;
-> +struct device;
-> +struct device_driver;
-> +
-> +// For internal use only -- registers the kunit_bus.
-> +int kunit_bus_init(void);
-> +
-> +/**
-> + * kunit_driver_create() - Create a struct device_driver attached to the=
- kunit_bus
-> + * @test: The test context object.
-> + * @name: The name to give the created driver.
-> + *
-> + * Creates a struct device_driver attached to the kunit_bus, with the na=
-me @name.
-> + * This driver will automatically be cleaned up on test exit.
-> + */
-> +struct device_driver *kunit_driver_create(struct kunit *test, const char=
- *name);
-> +
-> +/**
-> + * kunit_device_register() - Create a struct device for use in KUnit tes=
-ts
-> + * @test: The test context object.
-> + * @name: The name to give the created device.
-> + *
-> + * Creates a struct kunit_device (which is a struct device) with the giv=
-en name,
-> + * and a corresponding driver. The device and driver will be cleaned up =
-on test
-> + * exit, or when kunit_device_unregister is called. See also
-> + * kunit_device_register_with_driver, if you wish to provide your own
-> + * struct device_driver.
-> + */
-> +struct device *kunit_device_register(struct kunit *test, const char *nam=
-e);
-> +
-> +/**
-> + * kunit_device_register_with_driver() - Create a struct device for use =
-in KUnit tests
-> + * @test: The test context object.
-> + * @name: The name to give the created device.
-> + * @drv: The struct device_driver to associate with the device.
-> + *
-> + * Creates a struct kunit_device (which is a struct device) with the giv=
-en
-> + * name, and driver. The device will be cleaned up on test exit, or when
-> + * kunit_device_unregister is called. See also kunit_device_register, if=
- you
-> + * wish KUnit to create and manage a driver for you
-> + */
-> +struct device *kunit_device_register_with_driver(struct kunit *test,
-> +						 const char *name,
-> +						 struct device_driver *drv);
-> +
-> +/**
-> + * kunit_device_unregister() - Unregister a KUnit-managed device
-> + * @test: The test context object which created the device
-> + * @dev: The device.
-> + *
-> + * Unregisters and destroys a struct device which was created with
-> + * kunit_device_register or kunit_device_register_with_driver. If KUnit =
-created
-> + * a driver, cleans it up as well.
-> + */
-> +void kunit_device_unregister(struct kunit *test, struct device *dev);
-> +
-> +#endif
-> +
-> +#endif
-> diff --git a/lib/kunit/Makefile b/lib/kunit/Makefile
-> index 46f75f23dfe4..309659a32a78 100644
-> --- a/lib/kunit/Makefile
-> +++ b/lib/kunit/Makefile
-> @@ -7,7 +7,8 @@ kunit-objs +=3D				test.o \
->  					assert.o \
->  					try-catch.o \
->  					executor.o \
-> -					attributes.o
-> +					attributes.o \
-> +					device.o
-> =20
->  ifeq ($(CONFIG_KUNIT_DEBUGFS),y)
->  kunit-objs +=3D				debugfs.o
-> diff --git a/lib/kunit/device.c b/lib/kunit/device.c
-> new file mode 100644
-> index 000000000000..93ace1a2297d
-> --- /dev/null
-> +++ b/lib/kunit/device.c
-> @@ -0,0 +1,176 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KUnit basic device implementation
-> + *
-> + * Implementation of struct kunit_device helpers.
-> + *
-> + * Copyright (C) 2023, Google LLC.
-> + * Author: David Gow <davidgow@google.com>
-> + */
-> +
-> +#include <linux/device.h>
-> +
-> +#include <kunit/test.h>
-> +#include <kunit/device.h>
-> +#include <kunit/resource.h>
-> +
-> +
-> +/* Wrappers for use with kunit_add_action() */
-> +KUNIT_DEFINE_ACTION_WRAPPER(device_unregister_wrapper, device_unregister=
-, struct device *);
-> +KUNIT_DEFINE_ACTION_WRAPPER(driver_unregister_wrapper, driver_unregister=
-, struct device_driver *);
-> +
-> +static struct device kunit_bus =3D {
-> +	.init_name =3D "kunit"
-> +};
-> +
-> +/* A device owned by a KUnit test. */
-> +struct kunit_device {
-> +	struct device dev;
-> +	struct kunit *owner;
-> +	/* Force binding to a specific driver. */
-> +	struct device_driver *driver;
-> +	/* The driver is managed by KUnit and unique to this device. */
-> +	bool cleanup_driver;
-> +};
-> +
-> +static inline struct kunit_device *to_kunit_device(struct device *d)
-> +{
-> +	return container_of(d, struct kunit_device, dev);
-> +}
-> +
-> +static int kunit_bus_match(struct device *dev, struct device_driver *dri=
-ver)
-> +{
-> +	struct kunit_device *kunit_dev =3D to_kunit_device(dev);
-> +
-> +	if (kunit_dev->driver =3D=3D driver)
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static struct bus_type kunit_bus_type =3D {
-> +	.name		=3D "kunit",
-> +	.match		=3D kunit_bus_match
-> +};
-> +
-> +int kunit_bus_init(void)
-> +{
-> +	int error;
-> +
-> +	error =3D bus_register(&kunit_bus_type);
-> +	if (!error) {
-> +		error =3D device_register(&kunit_bus);
-> +		if (error)
-> +			bus_unregister(&kunit_bus_type);
-> +	}
-> +	return error;
-> +}
-> +late_initcall(kunit_bus_init);
-> +
-> +static void kunit_device_release(struct device *d)
-> +{
-> +	kfree(to_kunit_device(d));
-> +}
-> +
-> +struct device_driver *kunit_driver_create(struct kunit *test, const char=
- *name)
-> +{
-> +	struct device_driver *driver;
-> +	int err =3D -ENOMEM;
-> +
-> +	driver =3D kunit_kzalloc(test, sizeof(*driver), GFP_KERNEL);
-> +
-> +	if (!driver)
-> +		return ERR_PTR(err);
-> +
-> +	driver->name =3D name;
-> +	driver->bus =3D &kunit_bus_type;
-> +	driver->owner =3D THIS_MODULE;
-> +
-> +	err =3D driver_register(driver);
-> +	if (err) {
-> +		kunit_kfree(test, driver);
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	kunit_add_action(test, driver_unregister_wrapper, driver);
-> +	return driver;
-> +}
-> +EXPORT_SYMBOL_GPL(kunit_driver_create);
-> +
-> +struct kunit_device *__kunit_device_register_internal(struct kunit *test,
-> +						      const char *name,
-> +						      struct device_driver *drv)
-> +{
-> +	struct kunit_device *kunit_dev;
-> +	int err =3D -ENOMEM;
-> +
-> +	kunit_dev =3D kzalloc(sizeof(struct kunit_device), GFP_KERNEL);
+Thanks,
+Michal
 
-The preferred syntax is sizeof(*kunit_dev) here
-
-> +	if (!kunit_dev)
-> +		return ERR_PTR(err);
-> +
-> +	kunit_dev->owner =3D test;
-> +
-> +	err =3D dev_set_name(&kunit_dev->dev, "%s.%s", test->name, name);
-> +	if (err) {
-> +		kfree(kunit_dev);
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	/* Set the expected driver pointer, so we match. */
-> +	kunit_dev->driver =3D drv;
-> +
-> +	kunit_dev->dev.release =3D kunit_device_release;
-> +	kunit_dev->dev.bus =3D &kunit_bus_type;
-> +	kunit_dev->dev.parent =3D &kunit_bus;
-> +
-> +	err =3D device_register(&kunit_dev->dev);
-> +	if (err) {
-> +		put_device(&kunit_dev->dev);
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	kunit_add_action(test, device_unregister_wrapper, &kunit_dev->dev);
-> +
-> +	return kunit_dev;
-> +}
-> +
-> +struct device *kunit_device_register_with_driver(struct kunit *test,
-> +						 const char *name,
-> +						 struct device_driver *drv)
-> +{
-> +	struct kunit_device *kunit_dev =3D __kunit_device_register_internal(tes=
-t, name, drv);
-> +
-> +	if (IS_ERR_OR_NULL(kunit_dev))
-> +		return (struct device *)kunit_dev; /* This is an error or NULL, so is =
-compatible */
-> +
-> +	return &kunit_dev->dev;
-> +}
-> +EXPORT_SYMBOL_GPL(kunit_device_register_with_driver);
-> +
-> +struct device *kunit_device_register(struct kunit *test, const char *nam=
-e)
-> +{
-> +	struct device_driver *drv =3D kunit_driver_create(test, name);
-> +	struct kunit_device *dev;
-> +
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drv);
-> +
-> +	dev =3D __kunit_device_register_internal(test, name, drv);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
-> +
-> +	dev->cleanup_driver =3D true;
-> +
-> +	return (struct device *)dev;
-> +}
-> +EXPORT_SYMBOL_GPL(kunit_device_register);
-> +
-> +void kunit_device_unregister(struct kunit *test, struct device *dev)
-> +{
-> +	bool cleanup_driver =3D ((struct kunit_device *)dev)->cleanup_driver;
-> +	struct device_driver *driver =3D ((struct kunit_device *)dev)->driver;
-> +
-> +	kunit_release_action(test, device_unregister_wrapper, dev);
-> +	if (cleanup_driver)
-> +		kunit_release_action(test, driver_unregister_wrapper, driver);
-> +}
-> +EXPORT_SYMBOL_GPL(kunit_device_unregister);
-> +
-> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-> index 3e9c5192d095..a4007158bf36 100644
-> --- a/lib/kunit/kunit-test.c
-> +++ b/lib/kunit/kunit-test.c
-> @@ -8,6 +8,9 @@
->  #include <kunit/test.h>
->  #include <kunit/test-bug.h>
-> =20
-> +#include <linux/device.h>
-> +#include <kunit/device.h>
-> +
->  #include "string-stream.h"
->  #include "try-catch-impl.h"
-> =20
-> @@ -687,6 +690,69 @@ static struct kunit_case kunit_current_test_cases[] =
-=3D {
->  	{}
->  };
-> =20
-> +static void test_dev_action(void *priv)
-> +{
-> +	*(void **)priv =3D (void *)1;
-> +}
-> +
-> +static void kunit_device_test(struct kunit *test)
-> +{
-> +	struct device *test_device;
-> +
-> +	test_device =3D kunit_device_register(test, "my_device");
-> +
-> +	KUNIT_ASSERT_NOT_NULL(test, test_device);
-> +
-> +	// Add an action to verify cleanup.
-> +	devm_add_action(test_device, test_dev_action, &test->priv);
-> +
-> +	KUNIT_EXPECT_PTR_EQ(test, test->priv, (void *)0);
-> +
-> +	kunit_device_unregister(test, test_device);
-> +
-> +	KUNIT_EXPECT_PTR_EQ(test, test->priv, (void *)1);
-> +}
-
-Oh, it looks like you do check there, sorry.
-
-I guess I would have expected an explicit test for that, but that works
-:)
-
-> +
-> +static void kunit_device_driver_test(struct kunit *test)
-> +{
-> +	struct device_driver *test_driver;
-> +	struct device *test_device;
-> +
-> +	test_driver =3D kunit_driver_create(test, "my_driver");
-> +
-> +	KUNIT_ASSERT_NOT_NULL(test, test_driver);
-> +
-> +	test_device =3D kunit_device_register_with_driver(test, "my_device", te=
-st_driver);
-> +
-> +	KUNIT_ASSERT_NOT_NULL(test, test_device);
-
-Should we test that the probe (and remove) hooks has been called too?
-
-Maxime
-
---e57g6kre6lemgyu3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZW7mlAAKCRDj7w1vZxhR
-xU4PAQCjM9+Z6n9hbVCI8aLj8Ymg5hS+I+cvVeg0Z7R+FUIkkQD/VNYXM8lRvjLP
-Dyd8pxaT/Rn7N+WCbBGoQIOlRDdvmQs=
-=bV3k
------END PGP SIGNATURE-----
-
---e57g6kre6lemgyu3--
