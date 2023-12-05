@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E38E8052F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:33:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E4D8052F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235769AbjLELdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58194 "EHLO
+        id S1346857AbjLELdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:33:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235680AbjLELd2 (ORCPT
+        with ESMTP id S235598AbjLELdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:33:28 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F5D1739
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:23:52 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3333b46f26aso2763860f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 03:23:52 -0800 (PST)
+        Tue, 5 Dec 2023 06:33:08 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C9749E0
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:23:55 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3333224c7b9so3418061f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 03:23:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701775403; x=1702380203; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701775404; x=1702380204; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A6sGRXmJ2vFZwbq7OvwUrXyLM1kjgTEB3KpBaM2KT6U=;
-        b=WxO++xJACxUyyaG0e+BvdYboOSN7SLb2Rh7B+wNO6wB5Df1IrZx3xjSqt4urDdMA+L
-         l82/rdY93hVPkkXlGcoSy3gBXKy4mcwIjnxXafCcNRvnzFG4BEoCthPx2D7T0KCEBfYp
-         bUa+sQYR9YhBR903/uYKD3660fhZv7yZMdMdpnUp8QeZ8hzFcfJJ3AXtXZvbpO5g5W31
-         7fANJUSKvdMtUXA/g15lVGzbo55s6VX8K4w3qkeSgojfrlggxSj+XdGWnCoJD3IefdXS
-         VxOrKs0QBrNqMvBPXys6r3swA5f9Teaw6M78/xSeHPYD8wvYNp6w7B1xlxQ3VdKz2k9/
-         /IxA==
+        bh=ws3CIsjXWSfN6YwtDvaoTEO5x+PGXRNs+10Uc6B7SBs=;
+        b=F/jjh+2SbO/nDuRw1+DNL3qRyJRMZ3O5jVHjnl5qxYS5mmWW1cSBYQSuFSQpTE/JSG
+         5se6XGHYQKxxlv6LLCNYGie/UcbaY5LerxWvqP+2sI4Wp0dd0aw7q2F07Wo25L6O4VfJ
+         o5+BlHSW01mV5a21rLj2ksIY5so3Uuy6wVPYDleL9IjJqqnXrqhmZKksz3W5S84MxVsv
+         4+WrHEDTgiK2E0Jmz69woawQO4t16gW9M1fknalqFcXIOnHapKNsycda5MY659lBYCEb
+         +kdWQg0giqnFidPdHtZHPxA3cYHnAvRQl4wSa0D1xJb/Q1HADjg4RN48TfGnGJRe22s0
+         siOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701775403; x=1702380203;
+        d=1e100.net; s=20230601; t=1701775404; x=1702380204;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A6sGRXmJ2vFZwbq7OvwUrXyLM1kjgTEB3KpBaM2KT6U=;
-        b=jfAEqzKGDJe2vRpd+jTvQTxujvJVGcyFOqTaBT27k5IUa+xOtSyiU5b+BpLEeL3AdD
-         mk1BNjH5wMKAIs1nqLizyj+S/kFRz/Q0stRoSN89HpbmmNLUTB3tEJiZby0st5vgMjVa
-         sWaNA/G7lVmYJkgIfRtMPTbhokvwv+atPL3f7hzZM1eJeBGkASyVuyK5b0/MO6heXk92
-         Qq6bs83ovRvmFc6Pdl8VtSVQkilDPEf0KKH9BpRYRogDYw0e+FO/zEfIwVdAxwwXpvhF
-         HLggpTQjRUuK4WIb/4Z62aoyJ75ULmJJrOj2I2E0ZkAdn8xrzO86mqYNOk3jNO344xG1
-         XN0g==
-X-Gm-Message-State: AOJu0Yx+isf4O1halTDAkNyjYoivfMK2uz90jPebPjcoA7nOYLTuPvne
-        rt0tBv+kf/MEDY3V++Zv+nu+3g==
-X-Google-Smtp-Source: AGHT+IG8kRfC4Kuhw3jHxqdgrgNiTzCNx9TNRsyxtfxsUFLhZilZXEA06L5+jvWkFRz9ZcHxl/V9/g==
-X-Received: by 2002:a05:6000:71e:b0:333:4c89:f44a with SMTP id bs30-20020a056000071e00b003334c89f44amr1683678wrb.2.1701775403066;
-        Tue, 05 Dec 2023 03:23:23 -0800 (PST)
+        bh=ws3CIsjXWSfN6YwtDvaoTEO5x+PGXRNs+10Uc6B7SBs=;
+        b=YW5yO6Wcwu1/OgNq220VYq/ga67GyeBHmMs9kjQ5mRCAZo2n5ynJ5uglEAiSVMgl4Q
+         nvReATWCAbvaYdjYWQaOkQFAC1XWwNMyTNV6MOpO9mFnoiJZLL5gxVTGNeb2HpET2iyH
+         bGev2ViZ6jH8uP6HpnNjCB5IS5mZOI+XsDQ2Rk9y7SDARva00Jl2EGp96zkZepSco08b
+         E08G/R7T2KHpkwXs457SgthCQFFlvweYAk0AT5uai8p0kCR4litQh1YLt5U952Pbu+hy
+         MhSEarSt/kuVrRLRV91DCHDyZpA4fgfUMfTmAG4R4dT/XJN0vozRrCUhBp/0CcwDWHw8
+         xTyA==
+X-Gm-Message-State: AOJu0YyaQbU1NAMhzEMjTex64Uw+wajjVBFbvihx/MJroKjaGzdNchUb
+        xinpmZ3ugUVrNnY+QdfGjOhtCg==
+X-Google-Smtp-Source: AGHT+IGZrmoqP+nMIa/3cBLgBOq9hwyxZg/PZmzJay6finlPfcxRqwVG7R5axg0/t55/zRkDaEQxBw==
+X-Received: by 2002:a5d:66c1:0:b0:333:a27:2326 with SMTP id k1-20020a5d66c1000000b003330a272326mr3908774wrw.25.1701775404274;
+        Tue, 05 Dec 2023 03:23:24 -0800 (PST)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:2dd9:dce:96c5:9e9a])
-        by smtp.gmail.com with ESMTPSA id p8-20020a5d59a8000000b003333ed23356sm8127775wrr.4.2023.12.05.03.23.22
+        by smtp.gmail.com with ESMTPSA id p8-20020a5d59a8000000b003333ed23356sm8127775wrr.4.2023.12.05.03.23.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 03:23:22 -0800 (PST)
+        Tue, 05 Dec 2023 03:23:23 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -60,9 +60,9 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 2/3] arm64: dts: qcom: qrb5165-rb5: add a pin function for BT enable GPIO
-Date:   Tue,  5 Dec 2023 12:23:10 +0100
-Message-Id: <20231205112311.16391-2-brgl@bgdev.pl>
+Subject: [PATCH 3/3] arm64: dts: qcom: qrb5165-rb5: add the Bluetooth node
+Date:   Tue,  5 Dec 2023 12:23:11 +0100
+Message-Id: <20231205112311.16391-3-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231205112311.16391-1-brgl@bgdev.pl>
 References: <20231205112311.16391-1-brgl@bgdev.pl>
@@ -79,35 +79,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Set up the pin function for the Bluetooth enable GPIO.
+Add the Bluetooth node for RB5.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index ce6ae0771d34..ead0c45ba60c 100644
+index ead0c45ba60c..fbdf8fdb532c 100644
 --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
 +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -1264,6 +1264,17 @@ &tlmm {
- 		"HST_WLAN_UART_TX",
- 		"HST_WLAN_UART_RX";
+@@ -1308,6 +1308,26 @@ sdc2_card_det_n: sd-card-det-n-state {
+ 	};
+ };
  
-+	bt_en_state: bt-default-state {
-+		bt-en {
-+			pins = "gpio21";
-+			function = "gpio";
++&uart6 {
++	status = "okay";
 +
-+			drive-strength = <16>;
-+			output-low;
-+			bias-pull-up;
-+		};
++	bluetooth {
++		compatible = "qcom,qca6390-bt";
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&bt_en_state>;
++
++		enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
++
++		vddio-supply = <&vreg_s4a_1p8>;
++		vddpmu-supply = <&vreg_s2f_0p95>;
++		vddaon-supply = <&vreg_s6a_0p95>;
++		vddrfa1-supply = <&vreg_s2f_0p95>;
++		vddrfa2-supply = <&vreg_s8c_1p3>;
++		vddrfa3-supply = <&vreg_s5a_1p9>;
 +	};
++};
 +
- 	lt9611_irq_pin: lt9611-irq-state {
- 		pins = "gpio63";
- 		function = "gpio";
+ &uart12 {
+ 	status = "okay";
+ };
 -- 
 2.40.1
 
