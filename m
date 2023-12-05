@@ -2,86 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBAF805BAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC54C805BC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346137AbjLERdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        id S1346205AbjLERdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:33:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbjLERdr (ORCPT
+        with ESMTP id S1346112AbjLERds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:33:47 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E16188;
-        Tue,  5 Dec 2023 09:33:51 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B5HX9Xs016253;
-        Tue, 5 Dec 2023 11:33:09 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701797589;
-        bh=7Gnv2zcHaYktlo+k0zMSRDQ5ojNMnlpQU0FowjEG8HI=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=Ru+fkaZJgeMO4EYg4Xc2ba9h1SKCO5JbBpsRnzS9jaR3hCs98fQgRGkzWqvtk/qe7
-         X0A2LaHs58HFQ0O7se/V+UAwK4jXaLTxbqC82W//WT270VpzY+V6yV7KC7/CDJkIaG
-         z+rx6wKtzBVXC7bH10btOaG9Yy1edOpOdVqT01HU=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B5HX9fj003764
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 5 Dec 2023 11:33:09 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
- Dec 2023 11:33:08 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 5 Dec 2023 11:33:08 -0600
-Received: from [10.249.36.163] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B5HX78t022703;
-        Tue, 5 Dec 2023 11:33:07 -0600
-Message-ID: <cb590a13-e0ff-49d9-8583-be613ad50dc5@ti.com>
-Date:   Tue, 5 Dec 2023 11:33:06 -0600
+        Tue, 5 Dec 2023 12:33:48 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DF2196
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:33:54 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5Gj2N5002956;
+        Tue, 5 Dec 2023 17:33:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Lg9rk2bBS3KEXt7PHC7hgvUmJGgcsxPJ/w2bepRjO7o=;
+ b=osWCiv1KE1vnkovnGsKIylVtfwRdEppBifgnP5S38LPhvYAfBH7jGid3NpBvMA/NCWFm
+ LCEmnNCHJ4LVKLE5W5eSGuCpYWgWHkgsompiOQVTf7HF7NoKMmChLQdllHJRwF+/uSQX
+ LvNscZzjTIA17FgXJTIyT0hcIfTuOt9mC/kUffQ7RmR2PLtbIn+z8ySbBGCNCVF8NcjV
+ wNsYG0WF48pPvKogY9mkGswXfyVjjeAkTRdzP4g58PBy6ZV7PCB/LZz9qtUNDYqTnTtT
+ XvuKWW75cDq++0nJjr5xSTjcMd4P6ZkPtz8WGZ2YrG+Mc85apL/SDeV1HttsG+W2VuCZ vA== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usmw02faf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 17:33:33 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B5HXWLg003747
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Dec 2023 17:33:32 GMT
+Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
+ 2023 09:33:29 -0800
+Message-ID: <f59c5d45-a689-8a94-a2ae-d2ffa835eedf@quicinc.com>
+Date:   Tue, 5 Dec 2023 09:33:28 -0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: Kunit drm_test_check_plane_state: EXPECTATION FAILED at
+ drivers/gpu/drm/tests/drm_plane_helper_test.c:123
 Content-Language: en-US
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-CC:     Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Adam Ford <aford173@gmail.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <linux-omap@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>
-References: <20231204182245.33683-1-afd@ti.com>
- <20231204182245.33683-2-afd@ti.com>
- <CFF198DA-5C42-425E-86F4-759629489ECB@goldelico.com>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <CFF198DA-5C42-425E-86F4-759629489ECB@goldelico.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+CC:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        <kunit-dev@googlegroups.com>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>, <lkft-triage@lists.linaro.org>,
+        <regressions@lists.linux.dev>, <davidgow@google.com>,
+        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
+        <airlied@gmail.com>, <daniel@ffwll.ch>,
+        "Linux Kernel Functional Testing" <lkft@linaro.org>
+References: <20231204173536.51003-1-naresh.kamboju@linaro.org>
+ <rxv7jlfuwjib443pzdepbtgu454gdzemd3ojmmhbnhr4syneve@6me3bduyx2ee>
+ <42d85b15-9ffd-4a08-b51e-a3367e57d128@suswa.mountain>
+ <fgajgc7vp626nzeeqetkfbyadh53iti3mvoq4uck3zz3ysmvno@b3f7kxnwrwsd>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <fgajgc7vp626nzeeqetkfbyadh53iti3mvoq4uck3zz3ysmvno@b3f7kxnwrwsd>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: D3PiGiOvbJnrwgPVR-o3XXv7mkveCrFd
+X-Proofpoint-GUID: D3PiGiOvbJnrwgPVR-o3XXv7mkveCrFd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_12,2023-12-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ spamscore=0 malwarescore=0 clxscore=1011 suspectscore=0 priorityscore=1501
+ mlxscore=0 mlxlogscore=847 impostorscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2312050138
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,182 +90,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/23 2:17 AM, H. Nikolaus Schaller wrote:
-> Hi Andrew,
-> 
->> Am 04.12.2023 um 19:22 schrieb Andrew Davis <afd@ti.com>:
->>
->> The Imagination PowerVR Series5 "SGX" GPU is part of several SoCs from
->> multiple vendors.
-> 
-> Great and thanks for the new attempt to get at least the Device Tree side
-> upstream. Really appreciated!
-> 
 
-Thanks for helping us maintain these GPUs with the OpenPVRSGX project :)
 
->> Describe how the SGX GPU is integrated in these SoC,
->> including register space and interrupts.
-> 
->> Clocks, reset, and power domain
->> information is SoC specific.
-> 
-> Indeed. This makes it understandable why you did not directly
-> take our scheme from the openpvrsgx project.
-> 
+On 12/5/2023 3:46 AM, Maxime Ripard wrote:
+> On Tue, Dec 05, 2023 at 12:05:02PM +0300, Dan Carpenter wrote:
+>> On Tue, Dec 05, 2023 at 09:37:05AM +0100, Maxime Ripard wrote:
+>>> Hi Naresh,
+>>>
+>>> Thanks for the report
+>>>
+>>> On Mon, Dec 04, 2023 at 11:05:36PM +0530, Naresh Kamboju wrote:
+>>>> The Kunit drm_plane_helper failed on all devices running Linux next-20231204
+>>>>
+>>>> ## Test Regressions (compared to next-20231201)
+>>>> * qemu-armv7, kunit and
+>>>> * x86, kunit
+>>>>    - drm_test_check_invalid_plane_state_downscaling_invalid
+>>>>    - drm_test_check_invalid_plane_state_drm_plane_helper
+>>>>    - drm_test_check_invalid_plane_state_drm_test_check_invalid_plane_state
+>>>>    - drm_test_check_invalid_plane_state_positioning_invalid
+>>>>    - drm_test_check_invalid_plane_state_upscaling_invalid
+>>>>    - drm_test_check_plane_state_clipping_rotate_reflect
+>>>>    - drm_test_check_plane_state_clipping_simple
+>>>>    - drm_test_check_plane_state_downscaling
+>>>>    - drm_test_check_plane_state_drm_test_check_plane_state
+>>>>    - drm_test_check_plane_state_positioning_simple
+>>>>    - drm_test_check_plane_state_rounding1
+>>>>    - drm_test_check_plane_state_rounding2
+>>>>    - drm_test_check_plane_state_rounding3
+>>>>    - drm_test_check_plane_state_rounding4
+>>>>    - drm_test_check_plane_state_upscaling
+>>>
+>>> I found the source of failure to be f1e75da5364e ("drm/atomic: Loosen FB
+>>> atomic checks").
+>>>
+>>> Fortunately for us, it's already been reverted yesterday for some
+>>> unrelated reason, so it should be fixed in next-20231205 onward.
 >>
->> Signed-off-by: Andrew Davis <afd@ti.com>
->> ---
->> .../devicetree/bindings/gpu/img,powervr.yaml  | 69 +++++++++++++++++--
->> 1 file changed, 63 insertions(+), 6 deletions(-)
+>> Sorry, that's a bummer that these patches were reverted.  :(  The whole
+>> episode was a bit unfortunate...
 >>
->> diff --git a/Documentation/devicetree/bindings/gpu/img,powervr.yaml b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
->> index a13298f1a1827..9f036891dad0b 100644
->> --- a/Documentation/devicetree/bindings/gpu/img,powervr.yaml
->> +++ b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
->> @@ -11,11 +11,33 @@ maintainers:
->>    - Frank Binns <frank.binns@imgtec.com>
->>
->> properties:
->> +  $nodename:
->> +    pattern: '^gpu@[a-f0-9]+$'
->> +
->>    compatible:
->> -    items:
->> -      - enum:
->> -          - ti,am62-gpu
->> -      - const: img,img-axe # IMG AXE GPU model/revision is fully discoverable
->> +    oneOf:
->> +      - items:
->> +          - enum:
->> +              - ti,am62-gpu
->> +          - const: img,img-axe # IMG AXE GPU model/revision is fully discoverable
->> +      - items:
->> +          - enum:
->> +              - ti,omap3430-gpu # Rev 121
->> +              - ti,omap3630-gpu # Rev 125
+>> Qualcom has been working on those patches for a year.  They must not be
+>> using kunit testing as part of their QC...  It's some kind of
+>> communication failure on our part.
 > 
-> Is the "Rev 121" and "Rev 125" a property of the SoC integration (clock/reset/power
-> hookup etc.) or of the integrated SGX core?
+> That's definitely a communication failure, but that's mostly on us :)
 > 
+> The reason these patches were reverted was completely unrelated to the
+> kunit failures here: it failed the basic requirement we have on
+> intel-gpu-tools tests and open-source userspace examples for new uAPIs.
+> 
+> So whether or not kunit tests would have passed, these patches were
+> applied due to inattention and would have been reverted anyway
+> 
+> Maxime
 
-The Rev is a property of the SGX core, not the SoC integration. But it seems that
-compatible string is being used to define both (as we see being debated in the other
-thread on this series).
+The patches were reverted because the corresponding IGT/compositor 
+changes were not posted yet. We will re-try applying once those are 
+accepted.
 
-> In my understanding the Revs are different variants of the SGX core (errata
-> fixes, instruction set, pipeline size etc.). And therefore the current driver code
-> has to be configured by some macros to handle such cases.
-> 
-> So the Rev should IMHO be part of the next line:
-> 
->> +          - const: img,powervr-sgx530
-> 
-> +          - enum:
-> +              - img,powervr-sgx530-121
-> +              - img,powervr-sgx530-125
-> 
-> We have a similar definition in the openpvrsgx code.
-> Example: compatible = "ti,omap3-sgx530-121", "img,sgx530-121", "img,sgx530";
-> 
-> (I don't mind about the powervr- prefix).
-> 
-> This would allow a generic and universal sgx driver (loaded through just matching
-> "img,sgx530") to handle the errata and revision specifics at runtime based on the
-> compatible entry ("img,sgx530-121") and know about SoC integration ("ti,omap3-sgx530-121").
-> 
-> And user-space can be made to load the right firmware variant based on "img,sgx530-121"
-> 
-> I don't know if there is some register which allows to discover the revision long
-> before the SGX subsystem is initialized and the firmware is up and running.
-> 
-> What I know is that it is possible to read out the revision after starting the firmware
-> but it may just echo the version number of the firmware binary provided from user-space.
-> 
+Regarding KUnit tests, no we did not run this test and yes you are 
+right, we were not running KUnit testing as the DRM CI mainly validates IGT.
 
-We should be able to read out the revision (register EUR_CR_CORE_REVISION), the problem is
-today the driver is built for a given revision at compile time. That is a software issue,
-not something that we need to encode in DT. While the core ID (SGX5xx) can be also detected
-(EUR_CR_CORE_ID), the location of that register changes, and so it does need encoded in
-DT compatible.
+We will certainly help to fix this failure. Most likely the KUnit tests 
+need to be fixed to allow for a NULL FB.
 
-The string "ti,omap3430-gpu" tells us the revision if we cannot detect it (as in the current
-driver), and the SoC integration is generic anyway (just a reg and interrupt).
-
-Andrew
-
->> +      - items:
->> +          - enum:
->> +              - ingenic,jz4780-gpu # Rev 130
->> +              - ti,omap4430-gpu # Rev 120
->> +          - const: img,powervr-sgx540
->> +      - items:
->> +          - enum:
->> +              - allwinner,sun6i-a31-gpu # MP2 Rev 115
->> +              - ti,omap4470-gpu # MP1 Rev 112
->> +              - ti,omap5432-gpu # MP2 Rev 105
->> +              - ti,am5728-gpu # MP2 Rev 116
->> +              - ti,am6548-gpu # MP1 Rev 117
->> +          - const: img,powervr-sgx544
->>
->>    reg:
->>      maxItems: 1
->> @@ -40,8 +62,6 @@ properties:
->> required:
->>    - compatible
->>    - reg
->> -  - clocks
->> -  - clock-names
->>    - interrupts
->>
->> additionalProperties: false
->> @@ -56,6 +76,43 @@ allOf:
->>        properties:
->>          clocks:
->>            maxItems: 1
->> +      required:
->> +        - clocks
->> +        - clock-names
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: ti,am654-sgx544
->> +    then:
->> +      properties:
->> +        power-domains:
->> +          minItems: 1
->> +      required:
->> +        - power-domains
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: allwinner,sun6i-a31-gpu
->> +    then:
->> +      properties:
->> +        clocks:
->> +          minItems: 2
->> +        clock-names:
->> +          minItems: 2
->> +      required:
->> +        - clocks
->> +        - clock-names
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            const: ingenic,jz4780-gpu
->> +    then:
->> +      required:
->> +        - clocks
->> +        - clock-names
->>
->> examples:
->>    - |
->> -- 
->> 2.39.2
->>
-> 
-> BR and thanks,
-> Nikolaus
+If this is documented somewhere as a requirement, please share it and we 
+should add KUnit testing to our DRM CI as well so that atleast this kind 
+of failure will not repeat.
