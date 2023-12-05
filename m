@@ -2,180 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1118180566F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:50:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCA8805679
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442223AbjLENuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:50:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
+        id S1442283AbjLENul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:50:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345486AbjLENuU (ORCPT
+        with ESMTP id S1345523AbjLENuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:50:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E58219F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:50:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C4A7C433C7;
-        Tue,  5 Dec 2023 13:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701784224;
-        bh=qWUHln0TJp06ORs8walMJ6PunzC7TYXw6yHrQTcpoPc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ROm2MvhMPhWU+cwbMFCWKamRD4KzEaSmvrwFla9J1jbXz8suGGD/n5/D369Blq4nF
-         eRZi0n4IocZ9wQaBPBVnP9noDTMjH2bkyjwtalNotv9/AYeoJiog+sWBUrkKhgAs2/
-         iKi5uKqxbvi6lwgbTRBDE2BHnH0m3AGjwNZ+4kKIeYSy41FnJt7Yycz5L/4aeLxHBp
-         qtTtpT4tuHTfoH9HB+iLM+EQSjFOatfleCmDhRWZng04ylxi91Rq69prso5xx7rdjr
-         7mNHlJN9xfujWzXTTiXOXnwHMWgdztlu2KssVoSSGrbPymg39/VsM7llV3l+f49/nU
-         ToGsibgKYKh1Q==
-Date:   Tue, 5 Dec 2023 14:50:22 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
-Cc:     intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Michal Wajdeczko <michal.wajdeczko@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        =?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Subject: Re: [PATCH v2 3/3] drm/tests: managed: Add a simple test for
- drmm_managed_release
-Message-ID: <okubt4juvgbya5ybtfhozaczqvjhzqrtz3ltw4vylbmme5dzff@27tazbke5j25>
-References: <20231205012210.1491532-1-michal.winiarski@intel.com>
- <20231205012210.1491532-4-michal.winiarski@intel.com>
+        Tue, 5 Dec 2023 08:50:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2E31B2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:50:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701784240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=YPFpjwxE6Fr5rllyUjbNzWWpzt3IzVwkWp4aFfQre2o=;
+        b=gn8jAxn9ZasbPh8fAVxBw2zimVTNPLqESWqea1SIh07hv3PaTh7R2sJOtJZ5L+BLqTWxkL
+        27N7PtsyGzxt4TlMSaCHmWN9BfTYpoJ5+C+uoNZuhegv7PETf3oNsyrjAqG79xhCtdRZNl
+        mcqVSIbN4C0f7lZCr12VRiqV5w2t2uk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-685-W_qEmfBaOMWWgSlFGJ3Zag-1; Tue, 05 Dec 2023 08:50:37 -0500
+X-MC-Unique: W_qEmfBaOMWWgSlFGJ3Zag-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40c0329d868so29595805e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:50:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701784237; x=1702389037;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YPFpjwxE6Fr5rllyUjbNzWWpzt3IzVwkWp4aFfQre2o=;
+        b=cjma9Ge7PRBaJbiYbfs86keCJrZrqI0Whdn0Os/XxX58ZiYhXrXHKdE22wrIH/Kh/E
+         9ySGQQPJsLANY7iaxIGi6QX216vFyspYXcR8tdrAB1nbRUP9f5xuz06suqknb+80ghSI
+         RknMDlaSmaBMtHVghyeIJ/L1DAFc7gH6wrnYpM4tpKBSYzylXsUFARwXpwejU7r7fxVs
+         U59tLv/oFm4hQePV1+PEFjOLm3MpQacxWvNcl7P8H8EmdoInJig0zn+iNoAX1XuhpbTJ
+         wmCyRD4uQ408+c5MwD+ScX1acsV4VY4gAwB7L9wa7DReKh/4VS3k1fg9aZ89E91uopxl
+         lF9A==
+X-Gm-Message-State: AOJu0YxzvG+Sc59MrQvLxe09DyCjihyopnM6iv2aYfvy5aVs7WC+3Zw/
+        CeiDmqtQ7RpszLvc8jMX3glaPtgAZWngvX4T2M5UOMnYXZog56y+WLuGn6bwqhkK/VILvksVRkP
+        X42jB2pWInq+wEioUWsvo60+C
+X-Received: by 2002:a05:600c:1e11:b0:40c:a9d:fa1d with SMTP id ay17-20020a05600c1e1100b0040c0a9dfa1dmr486350wmb.142.1701784236844;
+        Tue, 05 Dec 2023 05:50:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG3LNjnxct4iS7BsMGbvMaYE8a+kbiMC1RFi4lJj+R1JLECN4bYlvB1UMB/jv5XzEJPiwwdCg==
+X-Received: by 2002:a05:600c:1e11:b0:40c:a9d:fa1d with SMTP id ay17-20020a05600c1e1100b0040c0a9dfa1dmr486336wmb.142.1701784236400;
+        Tue, 05 Dec 2023 05:50:36 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72f:300:1ec7:2962:8889:ef6? (p200300cbc72f03001ec7296288890ef6.dip0.t-ipconnect.de. [2003:cb:c72f:300:1ec7:2962:8889:ef6])
+        by smtp.gmail.com with ESMTPSA id k5-20020a5d6285000000b003333fbb68c7sm8047400wru.112.2023.12.05.05.50.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 05:50:35 -0800 (PST)
+Message-ID: <0f2bc27e-af1a-4590-985a-dc6bacdbcd57@redhat.com>
+Date:   Tue, 5 Dec 2023 14:50:34 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vhxtrj4cat76vpkc"
-Content-Disposition: inline
-In-Reply-To: <20231205012210.1491532-4-michal.winiarski@intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 34/39] mm/rmap: introduce
+ folio_try_dup_anon_rmap_[pte|ptes|pmd]()
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Xu <peterx@redhat.com>
+References: <20231204142146.91437-1-david@redhat.com>
+ <20231204142146.91437-35-david@redhat.com>
+ <b7ef017b-f651-40f3-a2bd-70ebe9411dc1@arm.com>
+ <88a341bf-0b6a-454a-aeb1-0699233eb37c@redhat.com>
+ <bb8e060f-74f0-4b1f-9003-40b2757295ca@redhat.com>
+ <181a1623-9285-415e-9ec6-6b6548ca7487@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <181a1623-9285-415e-9ec6-6b6548ca7487@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05.12.23 14:40, Ryan Roberts wrote:
+> On 05/12/2023 13:18, David Hildenbrand wrote:
+>> On 05.12.23 14:17, David Hildenbrand wrote:
+>>> On 05.12.23 14:12, Ryan Roberts wrote:
+>>>> On 04/12/2023 14:21, David Hildenbrand wrote:
+>>>>> The last user of page_needs_cow_for_dma() and __page_dup_rmap() are gone,
+>>>>> remove them.
+>>>>>
+>>>>> Add folio_try_dup_anon_rmap_ptes() right away, we want to perform rmap
+>>>>> baching during fork() soon.
+>>>>>
+>>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>>>> ---
+>>>>>     include/linux/mm.h   |   6 --
+>>>>>     include/linux/rmap.h | 145 +++++++++++++++++++++++++++++--------------
+>>>>>     2 files changed, 100 insertions(+), 51 deletions(-)
+>>>>>
+>>>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>>>>> index 24c1c7c5a99c0..f7565b35ae931 100644
+>>>>> --- a/include/linux/mm.h
+>>>>> +++ b/include/linux/mm.h
+>>>>> @@ -1964,12 +1964,6 @@ static inline bool folio_needs_cow_for_dma(struct
+>>>>> vm_area_struct *vma,
+>>>>>         return folio_maybe_dma_pinned(folio);
+>>>>>     }
+>>>>>     -static inline bool page_needs_cow_for_dma(struct vm_area_struct *vma,
+>>>>> -                      struct page *page)
+>>>>> -{
+>>>>> -    return folio_needs_cow_for_dma(vma, page_folio(page));
+>>>>> -}
+>>>>> -
+>>>>>     /**
+>>>>>      * is_zero_page - Query if a page is a zero page
+>>>>>      * @page: The page to query
+>>>>> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+>>>>> index 21d72cc602adc..84439f7720c62 100644
+>>>>> --- a/include/linux/rmap.h
+>>>>> +++ b/include/linux/rmap.h
+>>>>> @@ -354,68 +354,123 @@ static inline void folio_dup_file_rmap_pmd(struct
+>>>>> folio *folio,
+>>>>>     #endif
+>>>>>     }
+>>>>>     -static inline void __page_dup_rmap(struct page *page, bool compound)
+>>>>> +static inline int __folio_try_dup_anon_rmap(struct folio *folio,
+>>>>
+>>>> __always_inline?
+>>>
+>>> Yes.
+>>
+>> Ah, no, I did this for a reason. This function lives in a header, so it will
+>> always be inlined.
+>>
+> 
+> Really? It will certainly be duplicated across every compilation unit, but
+> that's separate from being inlined - if the optimizer is off, won't it just end
+> up as an out-of-line function in every compilation unit?
 
---vhxtrj4cat76vpkc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Good point, I didn't really consider that here, and thinking about it it 
+makes perfect sense.
 
-Hi,
+I think the compiler might even ignore "always_inline". I read that 
+especially with recursion the compiler might ignore that. But people can 
+then complain to the compiler writers about performance issues here, we 
+told the compiler what we think is best.
 
-Thanks for the rework
+-- 
+Cheers,
 
-On Tue, Dec 05, 2023 at 02:22:10AM +0100, Micha=C5=82 Winiarski wrote:
-> Add a simple test that checks whether the action is indeed called right
-> away and that it is not called on the final drm_dev_put().
->=20
-> Signed-off-by: Micha=C5=82 Winiarski <michal.winiarski@intel.com>
-> ---
->  drivers/gpu/drm/tests/drm_managed_test.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/t=
-ests/drm_managed_test.c
-> index cabe6360aef71..8dfbea21c35c5 100644
-> --- a/drivers/gpu/drm/tests/drm_managed_test.c
-> +++ b/drivers/gpu/drm/tests/drm_managed_test.c
-> @@ -44,6 +44,29 @@ static void drm_test_managed_run_action(struct kunit *=
-test)
->  	KUNIT_EXPECT_GT(test, ret, 0);
->  }
-> =20
+David / dhildenb
 
-We should have a description of the intent of the test here.
-
-> +static void drm_test_managed_release_action(struct kunit *test)
-> +{
-> +	struct managed_test_priv *priv =3D test->priv;
-> +	int ret;
-> +
-> +	ret =3D drmm_add_action_or_reset(&priv->drm, drm_action, priv);
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-> +
-> +	ret =3D drm_dev_register(&priv->drm, 0);
-> +	KUNIT_ASSERT_EQ(test, ret, 0);
-> +
-> +	drmm_release_action(&priv->drm, drm_action, priv);
-> +	KUNIT_EXPECT_TRUE(test, priv->action_done);
-> +	priv->action_done =3D false;
-> +
-> +	drm_dev_unregister(&priv->drm);
-> +	drm_kunit_helper_free_device(test, priv->drm.dev);
-> +
-> +	ret =3D wait_event_interruptible_timeout(priv->action_wq, priv->action_=
-done,
-> +					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-> +	KUNIT_EXPECT_EQ(test, ret, 0);
-
-This tests that we have reached the timeout, thus the action never ran.
-
-It's not clear to me what your intent is here.
-
-This test is:
-
-  - Registering an action
-  - Registering the DRM device
-  - Calling drmm_release_action on the previously registered action
-  - Checking that the action has been run
-  - Clearing the flag saying the action has been run
-  - Unregistering the DRM device
-  - Freeing the DRM device
-  - Waiting for the action to run, but expecting it to never do?
-
-I guess something like
-
-static void drm_test_managed_release_action(struct kunit *test)
-{
-	struct managed_test_priv *priv =3D test->priv;
-	int ret;
-
-	ret =3D drmm_add_action_or_reset(&priv->drm, drm_action, priv);
-	KUNIT_ASSERT_EQ(test, ret, 0);
-
-	KUNIT_ASSERT_FALSE(test, priv->action_done);
-
-	drmm_release_action(&priv->drm, drm_action, priv);
-	ret =3D wait_event_interruptible_timeout(priv->action_wq, priv->action_don=
-e,
-					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-	KUNIT_EXPECT_GT(test, ret, 0);
-	KUNIT_EXPECT_TRUE(test, priv->action_done);
-}
-
-would be enough?
-
-> +}
-> +
->  static int drm_managed_test_init(struct kunit *test)
->  {
->  	struct managed_test_priv *priv;
-> @@ -65,6 +88,7 @@ static int drm_managed_test_init(struct kunit *test)
-> =20
->  static struct kunit_case drm_managed_tests[] =3D {
->  	KUNIT_CASE(drm_test_managed_run_action),
-> +	KUNIT_CASE(drm_test_managed_release_action),
-
-Also, tests should be organized by alphabetical order
-
-Maxime
-
---vhxtrj4cat76vpkc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZW8qngAKCRDj7w1vZxhR
-xS3aAP9ea8p8iqVNYFgkQf5dD9oheX8j1hbq55d51fmbOZOmjAEA0YOMEP0s+w8O
-8tIyQHlWKkd0RJJJu4SBunN5Ox4VoAU=
-=jlmj
------END PGP SIGNATURE-----
-
---vhxtrj4cat76vpkc--
