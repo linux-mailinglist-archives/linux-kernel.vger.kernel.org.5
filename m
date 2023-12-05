@@ -2,311 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC15804AE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A35804AF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376371AbjLEHIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 02:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43134 "EHLO
+        id S1344615AbjLEHLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 02:11:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344545AbjLEHIC (ORCPT
+        with ESMTP id S1344600AbjLEHK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 02:08:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A04AA0;
-        Mon,  4 Dec 2023 23:08:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701760089; x=1733296089;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=OrXYveZbh+hx366VevZ2yf/njvBuMyhn4M0x23zImYU=;
-  b=YlNv+v97hwF8Dr4ylma++RyWklGXmMkFWxdSK052iWvP0poEQSnVwsfu
-   xT5FUhzKg9PIHDrAFPwYxeB0mBw4E2Xx+cnQhIFjunaHJYyQu9nw7LGC4
-   Cv8V+JtmQk24u8SyogDFI3qCN2Tc22UfbAhMlkZC/MGvfDTvx3+VDkJtz
-   MUj9Rqp/aBIICTyIAVqwqyZfudTmKG+YD/0xogsd9qmoZ0G5QWNnEiU48
-   gkHeVSsmrcq5bjJcLPCa4SSJS2mrkC0gINep3Wb14lI69tpEf0DXm99O6
-   UWB/rtmc+bm2G2QIqTB4vucHgmJlLV8niIwo8EhtmkZXQPtk6swAJN5+y
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="391014145"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="391014145"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 23:08:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="799858189"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="799858189"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 23:08:07 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 23:08:07 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 23:08:06 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 4 Dec 2023 23:08:06 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 23:08:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RS0zWOLxYSDDKeeHgHQtXYYd1JR7RgNNQ4MOkGR6gZyTyMzBVs3BI6z/jtr9dNxUY9G/RUn4ZKNPLpKFKCO3Ezx/KDVZWFVTGeC8YvhaqpLBIngzQuBS9QrkYLP2fOQOhFijfQIRtUKSuhW9IRFqqPcISVFUPZ9MvPdTbhFyomrE+hECX6N0ul7kk0fE7q6uPe5Ng3dGFUr3Y0dipExr8rVjOz08P7eMSlV7IIEAMEvmceJmysrhzfCJLCi/Uj2YWOorqKoi4FcBrKs4EtDoROHCDokqo+c5ANR/v935b09OuXUmCkwlGi1rtJ5PJElDe+WaNKqm0Mmhxqk/Nd6i+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J54NYfQFbgW3cxtvB8HDLK7qV2JqzPFi/dydCYpUMkw=;
- b=JcWxPv01kcmHwTibkDCzkj0Thh7vGRXepEZkM/Ig5o1mzv95r3phsMJuf59hw0a6I6FRkuo4QOxJmUaFLUIcrrQG4vc2WMOjPMZ6wwwEd9a3aDvdtErq9ABuxp0KB4gRgc6YVmLBJelKwwohJyLihzTKEx1xh+BURCMDb2RArAfMMCPnK4OtC/Ub65rMY5WMHxJHnLlvmc6riYfMXq7DzjySQYLS77+8OqhLJIC18YpS3H22mH6Rio0LGc/ctoRPtxyMD5L/AQrwM3zJ3jQ7eNY2GxJgbnvxsF0lMf4rVxoPDJEfT9RlYV2J1Q7n7nserrWIM01UEjBNEbHWNfsfkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by DS7PR11MB6101.namprd11.prod.outlook.com (2603:10b6:8:86::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 07:08:04 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 07:08:04 +0000
-Message-ID: <b0606a7c-3520-4a26-b113-40531f6d0fae@intel.com>
-Date:   Tue, 5 Dec 2023 15:10:37 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 08/12] iommu: Prepare for separating SVA and IOPF
-Content-Language: en-US
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-CC:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yan Zhao <yan.y.zhao@intel.com>, <iommu@lists.linux.dev>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
- <20231115030226.16700-9-baolu.lu@linux.intel.com>
-From:   Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <20231115030226.16700-9-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR03CA0119.apcprd03.prod.outlook.com
- (2603:1096:4:91::23) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+        Tue, 5 Dec 2023 02:10:57 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4CA120;
+        Mon,  4 Dec 2023 23:11:03 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c9fc0b84d0so27758081fa.0;
+        Mon, 04 Dec 2023 23:11:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701760262; x=1702365062; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J33kj97x2pqjNJ1vDzC7sdv8NjUfYByLnvuzd7wzUHI=;
+        b=HRhRdLdnkfXRzkMnrscgEHTqNLN16yiFkOr+awlsqupmmYmI/xy5dLVDIbVZvoKsqs
+         FyNPOMPQhtQcur/fHUMfjpOHwpLBTZkF2M+QB5tdCgYwkdZh9mKvWsE06ngQaT2sd7zE
+         9sNZJwBqQrMdnvmtXrVugJcrKQz0xktOUliPxCrspo3Xkf3AYMsqsDi30+EvuRWXWU4s
+         jv0c5v0x+GwezQ7hCip3GS5agBdoUhu7/652l7TrY4fW6q44CYaHnyIFbkzSlTvt9rVv
+         cdwDtOC7246zSDl64qj1tfRBilloILJ5RbeVpXCUFieq7nESx+GwdUQRDyDHa8PE5xUZ
+         MqVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701760262; x=1702365062;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J33kj97x2pqjNJ1vDzC7sdv8NjUfYByLnvuzd7wzUHI=;
+        b=fBR0/sMZNSeImqmRmMkdOkgvOrkYfwqSzqMHSgGdJMdUiIYP7Nbo5cQ6V7KU+WDKVX
+         zUM6f9ktIkvlAZRcjSa3xpEs19l8xi0UM/C7qHCBQhPiHsHM3gFw3dnwp5DgqS0EybwR
+         FIFGn3reNc3nOtuH/G38Oh+jfmibiN99Vt+6FfNaDqhQywCEqiYQZuC/GiUNuePGaRzU
+         wuErWKMklhGj31up+WiDia8731iTVsyCsqeuGZtq8xMhxA+AWa+sd9uo906fi106i5se
+         LM0oesHWC45KahojFlNDxlMULnqKcVOQlbNKVAL6y5kHIwUn+GlG3CKLR/hSwncU9Vjx
+         Bikg==
+X-Gm-Message-State: AOJu0YzO3gRkUB36Fa8tWS+c5rz8q9N03WiuKLX9xEGyu5CfZODbywln
+        0CCjO5GqkFXR3kwyNmIG77U=
+X-Google-Smtp-Source: AGHT+IGlt201D+jggBtsDfnYTMdcEZMbyhxFNQQ+jUqi1f6EzN7auu/+d/VjPnPr9Y4vQSRhadq/4w==
+X-Received: by 2002:a2e:9b14:0:b0:2ca:1ea:4b20 with SMTP id u20-20020a2e9b14000000b002ca01ea4b20mr1390091lji.8.1701760261279;
+        Mon, 04 Dec 2023 23:11:01 -0800 (PST)
+Received: from ?IPV6:2001:14ba:16f8:1500::2? (dc78bmyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::2])
+        by smtp.gmail.com with ESMTPSA id a5-20020a2eb545000000b002c9f90021ebsm791589ljn.29.2023.12.04.23.11.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 23:11:00 -0800 (PST)
+Message-ID: <c6088472-e68f-42a5-8c8b-1fd065e9f524@gmail.com>
+Date:   Tue, 5 Dec 2023 09:10:59 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|DS7PR11MB6101:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4f5b292d-5f08-4f31-f99c-08dbf560ec4c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ydEaUo5/7trv6jDJV+LSEHLjb3+Mk244ts5Zwz3sHcdbGoxlGrp4jb8UFHHNKZhk6Kox42jpHESlNdv6mJIKuiQ48eBGVl8BRHCducringj0Yfi9Oi6pTVEt4ePiYInq7Vm1nqgsqHcAFKLllIh+Pau7ja+B3rzu5r+refUy407JyjuPCAYqqvBNXcWcwsCvYt8jORYRDrAJCQVIZhjZ1vbRTyI6wkM4fvLNmhdgEEvoDFCq187VDiXr6wxxNnfAnsTyiy+gnxuSw8fuNzxaiYZVR9/fCytUdRkSKPoSXGbEq+CqkhL4zm4qSFW7+87iJJb198v09A/yeeMLH8O6LpYPR2vo6XUTXkvwYxtX2Una7czjTHOOYFXePt6f2DxHw1uStToWJpc/68kpOEj2IvEY3e9iTal90UFUxDovJzdt+dugtIdEcK+MURrPcDpyzzWS8Z1NRAyaNyWGG8wimp59MUcCTpGMS7xLGUGCFtZG1vFtAwihM0mqPprKK5tcYorYStLtFPztqg/zKhQVi9CpZJjx4W9tP4YpKB3LTokVZQwUGdOD9MzhRYJZ/2Q0Qrhx3Y5VpkUAN78vhJrxdes3tyXDm9RgyFG57/lzQV7YBe9MHldclQfExqCpITF9HhHT5H1RkeLxdEKapP4BuQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(376002)(396003)(366004)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(7416002)(2906002)(6666004)(6486002)(478600001)(8936002)(8676002)(4326008)(86362001)(31696002)(110136005)(54906003)(66476007)(66556008)(66946007)(316002)(5660300002)(26005)(82960400001)(83380400001)(36756003)(41300700001)(31686004)(38100700002)(2616005)(6512007)(53546011)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZjRBVGk0bUdwWDUwTjlObFA5TW13Q0dKamlocnJnNEdKdnVpYktUa1ZDTEhU?=
- =?utf-8?B?YTJFdFU0cTJqVStIaWlWUitEOHV3UlkrbE52eHF3V3JPNmk2NWJacGd0Y0hK?=
- =?utf-8?B?N2N5ajZVNFhjK0htc1NFK2xuMjZFeHZ1Z01lTzhyR1VTdDV6TjQwanByTUxw?=
- =?utf-8?B?bnBOVC84MEpPR3BzY2V6U2xFcWNlcytIY0xmb25oZ1dhUEw2TlE2ckN4N0di?=
- =?utf-8?B?TDFSdDVzbklUL2FEVmVtTklkcjc1dVpxZnJaWHptN2FXTytrK0Ywd1hUU2pU?=
- =?utf-8?B?TTNjM1FxTjdYT3J0aCtPL21lWUNNV3czSmh6a1ZaZnkxamRPYTYvT2owdVgv?=
- =?utf-8?B?T3o0djNsOVF5cWpwS1RpR2dZcUtRaG9ramQzbzNuVEtzb1g1RkZFSE5SeTRo?=
- =?utf-8?B?M1ZzbGc3RVpkaEZZMlhpME44b2lsZzB5L0h4SkZ2Q1F2YWZsQUpHdHNCdUpo?=
- =?utf-8?B?K0FuRGJDY0RFWVlRZmxmbUZ2Q0Vqb2p2am9XL25VNUQzQVo1dWg2R0hyOCs2?=
- =?utf-8?B?YThxRUdNQWlkU1hXYjdML1o2ZTJSZDhtaEg3Z0J5MFR1YTNGczNaTkdENEJ5?=
- =?utf-8?B?N0Y0K1hEVVM1Nm96emE4ZC94VXFnOHJqV0RnOGJYdGJjY3NONmg5R3BvSm8y?=
- =?utf-8?B?Y2VheE1ZUUtSVDlSdGsrc1VhcDQvcGxWMTFQNGxXd2JKUFlCZE51Nml3VjNl?=
- =?utf-8?B?U3ZoUmJWVm5GalQyQkY1WThnQ0ttZ0lLV1JuSGVTOW0yZ1ovdXBBeFpxOFYr?=
- =?utf-8?B?K1Y5bmVyRWxpS1NGdWkzTGhWelIzMHUwYVJ1bmlEVU5ZU1BQVlV3UHdXVXFV?=
- =?utf-8?B?cExuUjZpVUhBVEFKNjBuT3MwMTY1UHNXMVEwbjVJK0dTRzNUd21yQnE3dFZ2?=
- =?utf-8?B?VnJvaStTRlh4Nzd0SHk2SUl2dy9YVDhDZHFsTUN5T2YzSy8yZjlBT01VaGRZ?=
- =?utf-8?B?OU8zc3owd3dQeC9tTE9mNUtObGJHSnRWcExQUUZsVlVYMHR5Yk9kNVM3S1RU?=
- =?utf-8?B?RnZHVm55NlNRTXI0cWR0T2lHL1FjMHd3TDlHYTFsWjZza1VUWGlOaVc1YnFa?=
- =?utf-8?B?SDJXTXJubEZJWmtmN3oyTmhNdXA0VDJBUnJPKzB2c1ordEVUWklmU0dWNmto?=
- =?utf-8?B?Nk1XZDJmSCtUdUVHbzF1L3NjNWZqTXVwN0pxVWhUeWx2UEVMWXhoMWp1TkRT?=
- =?utf-8?B?Qk4yWDM0eE5Iem5vODNKZVYxZmVGVU1say96WEZ4OWxXOHNlblA4dlRMMENG?=
- =?utf-8?B?M3k5UjYxSXJDcm80bkpDVk9BUTZTem9BZHlta2tCN2V6Y1N3RUFvaCtjM3p2?=
- =?utf-8?B?UkpoSVV6WCs0bFlqN1l4QlFJbFJQTlJkaGpkT05LZDVzdnl4cTBRd2dKTFFz?=
- =?utf-8?B?eG9Eb2xVcjhaOEZaSEFYTGZDdmduZFdJTUIwcXdoUlN3YXBvZkFYaittWCta?=
- =?utf-8?B?b3lvTy9WbUpIV3BmRkI0Wi9pNU5ibnE4akJibTIrVDhrbGxvT1krR2Q4eThx?=
- =?utf-8?B?dEFBQ053UHFHZG1VTEM0YnZROC91cVQyczFMWnByWWw3T2V2UDcvSmdTSjFZ?=
- =?utf-8?B?WS9UVDJPSFpKcmhaR2tWNkpza244RWd1NUZyVURGSzlGMDVVSm1WeUZJUmdy?=
- =?utf-8?B?UkZyY0NlZEYvb1BjUnBVaEU5OG5ycFRmQlJnQ2MzWUxlNEMvUlFRWW5XKzQz?=
- =?utf-8?B?dVNYK3pZZTRlR0lhK1NrSW9sQ0ExOUR3ampHMkxNZXI4SmpRSG5uZVlKUlZW?=
- =?utf-8?B?N3pRcGtDZWhRWWNmdHpIUVhDcnc3VFR5bXlZbFd4UmNwMDBkL0VlbDlRZmJi?=
- =?utf-8?B?NjN1V25naWFCY1VvS1JmRmZpZlRuQUVaYkFaa1c5VUhtQWNvTzFzaFU5U2xH?=
- =?utf-8?B?RVVRcG5TMWRkUWZWS2pkdzhpTEpuM2ZWbXd0Y0xvMUJoZWxlS3pIRXVZamxj?=
- =?utf-8?B?TFpMUnN4Q2hEczZTRlRqT0Q2Y3RXQmNsZEtHTzBGTXBhZFB2MlFTOVhsbWow?=
- =?utf-8?B?OVV0bEZjZDBlWjZCMFFrSXJmc3hyelRHbWV5UVZKdU9USUViNWNpK0JJRlFB?=
- =?utf-8?B?U3JQWENud0dBK09PRkRKenlsaTVBN0IvMnhFRWlhbDBielFOMXJrMVJVaVMr?=
- =?utf-8?Q?VbxM4dh9Ez8ty8J9rj/KCQarK?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f5b292d-5f08-4f31-f99c-08dbf560ec4c
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 07:08:03.6782
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xCg4akLQQxg65hhvnPnImEOskNp9XgxwrO5KbHWrOtsdRady5s8GTqEFMnR28DJ6ZW4YHkkyKBAXCCcca/pFHw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6101
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] iio: gts-helpers: Round gains and scales
+Content-Language: en-US, en-GB
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ZUDN9n8iXoNwzifQ@dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi>
+ <20231126172607.379c9d79@jic23-huawei>
+ <8934d9ec-e969-4662-b220-9fb1cbeca7b2@gmail.com>
+ <20231204143005.7a564326@jic23-huawei>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <20231204143005.7a564326@jic23-huawei>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/15 11:02, Lu Baolu wrote:
-> Move iopf_group data structure to iommu.h to make it a minimal set of
-> faults that a domain's page fault handler should handle.
+On 12/4/23 16:30, Jonathan Cameron wrote:
+> On Mon, 27 Nov 2023 09:48:08 +0200
+> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 > 
-> Add a new function, iopf_free_group(), to free a fault group after all
-> faults in the group are handled. This function will be made global so
-> that it can be called from other files, such as iommu-sva.c.
+>> On 11/26/23 19:26, Jonathan Cameron wrote:
+>>> On Tue, 31 Oct 2023 11:50:46 +0200
+>>> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+>>>    
+>>>> The GTS helpers do flooring of scale when calculating available scales.
+>>>> This results available-scales to be reported smaller than they should
+>>>> when the division in scale computation resulted remainder greater than
+>>>> half of the divider. (decimal part of result > 0.5)
+>>>>
+>>>> Furthermore, when gains are computed based on scale, the gain resulting
+>>>> from the scale computation is also floored. As a consequence the
+>>>> floored scales reported by available scales may not match the gains that
+>>>> can be set.
+>>>>
+>>>> The related discussion can be found from:
+>>>> https://lore.kernel.org/all/84d7c283-e8e5-4c98-835c-fe3f6ff94f4b@gmail.com/
+>>>>
+>>>> Do rounding when computing scales and gains.
+>>>>
+>>>> Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
+>>>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+>>>
+>>> Hi Matti,
+>>>
+>>> A few questions inline about the maths.
+>>
+>> I appreciate the questions :) Thanks!
 > 
-> Move iopf_queue data structure to iommu.h to allow the workqueue to be
-> scheduled out of this file.
-> 
-> This will simplify the sequential patches.
-> 
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-> Tested-by: Yan Zhao <yan.y.zhao@intel.com>
-> ---
->   include/linux/iommu.h      | 20 +++++++++++++++++++-
->   drivers/iommu/io-pgfault.c | 37 +++++++++++++------------------------
->   2 files changed, 32 insertions(+), 25 deletions(-)
+> I found some emails hiding so late replies...
 
-Reviewed-by:Yi Liu <yi.l.liu@intel.com>
+Better late than never :)
 
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 42b62bc8737a..0d3c5a56b078 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -41,7 +41,6 @@ struct iommu_dirty_ops;
->   struct notifier_block;
->   struct iommu_sva;
->   struct iommu_dma_cookie;
-> -struct iopf_queue;
->   
->   #define IOMMU_FAULT_PERM_READ	(1 << 0) /* read */
->   #define IOMMU_FAULT_PERM_WRITE	(1 << 1) /* write */
-> @@ -126,6 +125,25 @@ struct iopf_fault {
->   	struct list_head list;
->   };
->   
-> +struct iopf_group {
-> +	struct iopf_fault last_fault;
-> +	struct list_head faults;
-> +	struct work_struct work;
-> +	struct device *dev;
-> +};
-> +
-> +/**
-> + * struct iopf_queue - IO Page Fault queue
-> + * @wq: the fault workqueue
-> + * @devices: devices attached to this queue
-> + * @lock: protects the device list
-> + */
-> +struct iopf_queue {
-> +	struct workqueue_struct *wq;
-> +	struct list_head devices;
-> +	struct mutex lock;
-> +};
-> +
->   /* iommu fault flags */
->   #define IOMMU_FAULT_READ	0x0
->   #define IOMMU_FAULT_WRITE	0x1
-> diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
-> index c45977bb7da3..09e05f483b4f 100644
-> --- a/drivers/iommu/io-pgfault.c
-> +++ b/drivers/iommu/io-pgfault.c
-> @@ -13,24 +13,17 @@
->   
->   #include "iommu-sva.h"
->   
-> -/**
-> - * struct iopf_queue - IO Page Fault queue
-> - * @wq: the fault workqueue
-> - * @devices: devices attached to this queue
-> - * @lock: protects the device list
-> - */
-> -struct iopf_queue {
-> -	struct workqueue_struct		*wq;
-> -	struct list_head		devices;
-> -	struct mutex			lock;
-> -};
-> +static void iopf_free_group(struct iopf_group *group)
-> +{
-> +	struct iopf_fault *iopf, *next;
->   
-> -struct iopf_group {
-> -	struct iopf_fault		last_fault;
-> -	struct list_head		faults;
-> -	struct work_struct		work;
-> -	struct device			*dev;
-> -};
-> +	list_for_each_entry_safe(iopf, next, &group->faults, list) {
-> +		if (!(iopf->fault.prm.flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE))
-> +			kfree(iopf);
-> +	}
-> +
-> +	kfree(group);
-> +}
->   
->   static int iopf_complete_group(struct device *dev, struct iopf_fault *iopf,
->   			       enum iommu_page_response_code status)
-> @@ -50,9 +43,9 @@ static int iopf_complete_group(struct device *dev, struct iopf_fault *iopf,
->   
->   static void iopf_handler(struct work_struct *work)
->   {
-> +	struct iopf_fault *iopf;
->   	struct iopf_group *group;
->   	struct iommu_domain *domain;
-> -	struct iopf_fault *iopf, *next;
->   	enum iommu_page_response_code status = IOMMU_PAGE_RESP_SUCCESS;
->   
->   	group = container_of(work, struct iopf_group, work);
-> @@ -61,7 +54,7 @@ static void iopf_handler(struct work_struct *work)
->   	if (!domain || !domain->iopf_handler)
->   		status = IOMMU_PAGE_RESP_INVALID;
->   
-> -	list_for_each_entry_safe(iopf, next, &group->faults, list) {
-> +	list_for_each_entry(iopf, &group->faults, list) {
->   		/*
->   		 * For the moment, errors are sticky: don't handle subsequent
->   		 * faults in the group if there is an error.
-> @@ -69,14 +62,10 @@ static void iopf_handler(struct work_struct *work)
->   		if (status == IOMMU_PAGE_RESP_SUCCESS)
->   			status = domain->iopf_handler(&iopf->fault,
->   						      domain->fault_data);
-> -
-> -		if (!(iopf->fault.prm.flags &
-> -		      IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE))
-> -			kfree(iopf);
->   	}
->   
->   	iopf_complete_group(group->dev, &group->last_fault, status);
-> -	kfree(group);
-> +	iopf_free_group(group);
->   }
->   
->   /**
+To tell the truth, delays have been Ok. I think Subhajit has not needed 
+this urgently and the darkness of the winter in Finland has hindered my 
+energy and activity to very low levels.
+
+>>>> ---
+>>>> Subjahit, is there any chance you test this patch with your driver? Can
+>>>> you drop the:
+>>>> 	if (val2 % 10)
+>>>> 		val2 += 1;
+>>>> from scale setting and do you see written and read scales matching?
+>>>>
+>>>> I did run a few Kunit tests on this change - but I'm still a bit jumpy
+>>>> on it... Reviewing/testing is highly appreciated!
+>>>>
+>>>> Just in case someone is interested in seeing the Kunit tests, they're
+>>>> somewhat unpolished & crude and can emit noisy debug prints - but can
+>>>> anyways be found from:
+>>>> https://github.com/M-Vaittinen/linux/commits/iio-gts-helpers-test-v6.6
+>>>>
+>>>> ---
+>>>>    drivers/iio/industrialio-gts-helper.c | 58 +++++++++++++++++++++++----
+>>>>    1 file changed, 50 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iio/industrialio-gts-helper.c b/drivers/iio/industrialio-gts-helper.c
+>>>> index 7653261d2dc2..7dc144ac10c8 100644
+>>>> --- a/drivers/iio/industrialio-gts-helper.c
+>>>> +++ b/drivers/iio/industrialio-gts-helper.c
+>>>> @@ -18,6 +18,32 @@
+>>>>    #include <linux/iio/iio-gts-helper.h>
+>>>>    #include <linux/iio/types.h>
+>>>>    
+>>>> +static int iio_gts_get_gain_32(u64 full, unsigned int scale)
+>>>> +{
+>>>> +	unsigned int full32 = (unsigned int) full;
+>>>> +	unsigned int rem;
+>>>> +	int result;
+>>>> +
+>>>> +	if (full == (u64)full32) {
+>>>> +		unsigned int rem;
+>>>> +
+>>>> +		result = full32 / scale;
+>>>> +		rem = full32 - scale * result;
+>>>> +		if (rem >= scale / 2)
+>>>> +			result++;
+>>>> +
+>>>> +		return result;
+>>>> +	}
+>>>> +
+>>>> +	rem = do_div(full, scale);
+>>>
+>>> As below, can we just add scale/2 to full in the do_div?
+>>
+>> The rationale for doing is it in this way is to prevent (theoretical?)
+>> overflow when adding scale/2 to full. Maybe this warrants adding a comment?
+> 
+> Hmm. Chances are very low of hitting that.  I'd just go with adding scale/2
+> before the div.  If you really want to worry about being right at the edge
+> of available precision, then add a check for that.
+
+I think the v2 will ditch this function.
+>>>> +	if ((u64)rem >= scale / 2)
+>>>> +		result = full + 1;
+>>>> +	else
+>>>> +		result = full;
+>>>> +
+>>>> +	return result;
+>>>> +}
+>>>> +
+>>>>    /**
+>>>>     * iio_gts_get_gain - Convert scale to total gain
+>>>>     *
+>>>> @@ -28,30 +54,42 @@
+>>>>     *		scale is 64 100 000 000.
+>>>>     * @scale:	Linearized scale to compute the gain for.
+>>>>     *
+>>>> - * Return:	(floored) gain corresponding to the scale. -EINVAL if scale
+>>>> + * Return:	(rounded) gain corresponding to the scale. -EINVAL if scale
+>>>>     *		is invalid.
+>>>>     */
+>>>>    static int iio_gts_get_gain(const u64 max, const u64 scale)
+>>>>    {
+>>>> -	u64 full = max;
+>>>> +	u64 full = max, half_div;
+>>>> +	unsigned int scale32 = (unsigned int) scale;
+>>>>    	int tmp = 1;
+>>>>    
+>>>> -	if (scale > full || !scale)
+>>>> +	if (scale / 2 > full || !scale)
+>>>
+>>> Seems odd. Why are we checking scale / 2 here?
+>>
+>> I am pretty sure I have been thinking of rounding 0.5 to 1.
+> 
+> Not sure I follow - but maybe it'll be clear in v2.
+
+Basically, when scale is greater than max, the division yields values 
+smaller than 1. So, when we do rounding, everything equal to or greater 
+than 0.5 and smaller than 1 should be rounded upwards. Eg, purely from 
+computational perspective, when the "full" is half of the scale, 
+division returns 0.5. Thus the check.
+
+But I think your question is very much a valid one. By design the driver 
+gives the max value - and I think that scale exceeding this maximum can 
+indeed be considered to be invalid. Not that I feel 100% certain on that 
+Today :)
+
+> 
+>>>    
+>>>> +
+>>>> +	while (full + half_div >= scale * (u64)tmp)
+>>>>    		tmp++;
+>>>>    
+>>>> -	return tmp;
+>>>> +	return tmp - 1;
+>>>>    }
+>>>>    
+>>>>    /**
+>>>> @@ -133,6 +171,7 @@ static int iio_gts_linearize(int scale_whole, int scale_nano,
+>>>>     * Convert the total gain value to scale. NOTE: This does not separate gain
+>>>>     * generated by HW-gain or integration time. It is up to caller to decide what
+>>>>     * part of the total gain is due to integration time and what due to HW-gain.
+>>>> + * Computed gain is rounded to nearest integer.
+>>>>     *
+>>>>     * Return: 0 on success. Negative errno on failure.
+>>>>     */
+>>>> @@ -140,10 +179,13 @@ int iio_gts_total_gain_to_scale(struct iio_gts *gts, int total_gain,
+>>>>    				int *scale_int, int *scale_nano)
+>>>>    {
+>>>>    	u64 tmp;
+>>>> +	int rem;
+>>>>    
+>>>>    	tmp = gts->max_scale;
+>>>>    
+>>>> -	do_div(tmp, total_gain);
+>>>> +	rem = do_div(tmp, total_gain);
+>>>
+>>> can we do usual trick of
+>>> do_div(tmp + total_gain/2, total_gain)
+>>> to get the same rounding effect?
+>>
+>> Only if we don't care about the case where tmp + total_gain/2 overflows.
+> 
+> As above. The cases where that happens are pretty narrow.  I'd not worry about it
+> or I'd check for that overflow.
+
+part of me says you're right while part of me screams that
+1) a _division_ causing overflow is against all that is well and good.
+2) if we can cope with the overflow, then we should cope with it.
+
+I am very much undecided what is the best approach here. I'll see how 
+much clarity there is in the v2 code, what comments can do and then I'll 
+throw it for you to judge :)
+
+>>
+>> All in all, I am still not 100% sure if rounding is the right ambition.
+>> Do we cause hidden accuracy issues by doing the rounding under the hood?
+>> I feel I need bigger brains :)
+> Don't we all!
+
+Well, luckily the software development can be seen as an iterative 
+process :)
+
+Yours,
+	-- Matti
+
 
 -- 
-Regards,
-Yi Liu
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
+
