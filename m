@@ -2,169 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DFF8060EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E5F8060F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjLEVlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 16:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
+        id S1346025AbjLEVmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 16:42:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEVlW (ORCPT
+        with ESMTP id S229591AbjLEVl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 16:41:22 -0500
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA61B9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:41:29 -0800 (PST)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-58d12b53293so4090269eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 13:41:29 -0800 (PST)
+        Tue, 5 Dec 2023 16:41:59 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020391B9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:42:05 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-423e7e0a619so912621cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 13:42:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1701812488; x=1702417288; darn=vger.kernel.org;
-        h=content-language:in-reply-to:autocrypt:from:references:cc:to
-         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5lTYwIubHQaV5E5T6aUEz+uUHrWFy5zBX2hYxAm8Zqs=;
-        b=SAy1PQ8+IKs/dEwz4eNGsZ2SGbcuM7UKtVq/GgvomtyBisqoqjFs8K2cldluUFRmbW
-         boxupqkWoT38xTuPnheMIUBs7ujAO3e31k5TiWHDXF0U8QjhV/IGCO74Canpw6d8mlEw
-         Ie99SNwBxvq+2g49OoYdsYM+Qmv+TbSz1RK4U=
+        d=chromium.org; s=google; t=1701812522; x=1702417322; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UUoV3c5EcqzGgFazFRODspx6X9OPb/ruYMRTuRufHkE=;
+        b=PXifndPc/q5xvTQ7UafJFTJDyAzHLCnshqcSL9SRzlfXh1xOtAkfB5HNYmsZTIW3qd
+         7KVblZLxLgL0uIeF9GEdDtJaFvrBUruHAA//91HslT58dRe64fAs0ASvtNC4IRuuV0T9
+         rYywPTAh19ukaBRk1T8dY3iH6BqOjhkAhvZ3o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701812488; x=1702417288;
-        h=content-language:in-reply-to:autocrypt:from:references:cc:to
-         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5lTYwIubHQaV5E5T6aUEz+uUHrWFy5zBX2hYxAm8Zqs=;
-        b=HuIiQYFFHzZBS1qrEIxLM6F6nh0Cv/49KzH6Na66DqgS88qMWojZI2US+x+45VlAZD
-         hheMO/GNxPYmgcL538u+RdGjhK4RR06PdwbkoSaKDPin/USrv8n+KCiCkz/T8H0caLtp
-         2v3HoNq1BlX3rMGnbTDk22m7pFy9HFeQ0gUPz8yVc6l6FQovqO7i8uZgxmdOjladH3n5
-         5gBIoWpUrDWwnmef4QvKdCazLkmgELFdNrWdykZ1uipk2mi8p/afyrM0utbJmyGFRHe5
-         2hAFtDliSM56zLRgp4BD7PApCXvyy5a/Q0aqW+FKHDyU6BPivtIdAHLE74m4YNPd7mVd
-         Wpgg==
-X-Gm-Message-State: AOJu0YwT8YmmRSC4+EFfLshYpCLcBul56Blx0XgnDLv3/Yp/gh94rE19
-        HhDGAlatEevdSOOnSe21ZAb7aDDqb1tjuAq31RN4qCdxZ6ZTBrXQXAPcHuLd5S8IROCNW0JsXyr
-        1a0FfuRc1M84D0A4=
-X-Google-Smtp-Source: AGHT+IGrSD1QCLOvXJeAIN3MVd3BGbcWv5kJwN+NTnHMdMsscIynvdKGgNKboyxYDtxzuaKfuCyLSQ==
-X-Received: by 2002:a05:6358:e4a8:b0:170:698:3fe with SMTP id by40-20020a056358e4a800b00170069803femr8180354rwb.9.1701812488549;
-        Tue, 05 Dec 2023 13:41:28 -0800 (PST)
-Received: from [10.62.14.168] ([128.177.82.146])
-        by smtp.gmail.com with ESMTPSA id g34-20020a635662000000b005c19c586cb7sm9738086pgm.33.2023.12.05.13.41.24
+        d=1e100.net; s=20230601; t=1701812522; x=1702417322;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UUoV3c5EcqzGgFazFRODspx6X9OPb/ruYMRTuRufHkE=;
+        b=NSxWUe5p+xkLB2OmrabuCvHEkthBzfRksbgmISQXS3dDx+eqMk3SMAFGv8d7SMYYQo
+         w3Ae4pEtTGuTlmTU+lN6Ihyc5zgSqk2eVhnMYncY91e2Q4AqPK3kUYiiPBbVa6A0XiP8
+         j9tkULydAkGoI4U7dM4kET7gz1vXzP39ShKQsiWF2FmsPzlRI86H5PtkKi18A9rWEHbB
+         3VBLpMbD9mmPfTAPlYDru01Gi5a8ZTRMF7Dug074Ox9clSEUz5ckkvW0Kqa/vf1dgX0j
+         QiqmYJM6Yq2R7MHI6ql52Wy7omJ62kLJSnAI4n2itFxHlKYO/7ymn18XbnuZ9YA2WYWb
+         y85A==
+X-Gm-Message-State: AOJu0Yw2thtfc85jjxVc5SX7odvUeDWzSswqFArFJlYU5lNchr7XuKpe
+        urtCG5JS8dCJIpRjCDQHxrJ/Ok0PuyCNHoURSrzGHOaz
+X-Google-Smtp-Source: AGHT+IHA3Dd+k9NR4tKbESevGeLQBoMbaDY8IlKREjK4M55nYBiVgqVZpr46ci9d2Jsbql8Qy9FnSA==
+X-Received: by 2002:ac8:5d8f:0:b0:425:4054:bc62 with SMTP id d15-20020ac85d8f000000b004254054bc62mr2930993qtx.62.1701812521784;
+        Tue, 05 Dec 2023 13:42:01 -0800 (PST)
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com. [209.85.160.180])
+        by smtp.gmail.com with ESMTPSA id ks24-20020ac86218000000b004238a0bca27sm5425480qtb.4.2023.12.05.13.42.00
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 13:41:26 -0800 (PST)
-Message-ID: <204f743d-2901-4ad2-bbcc-a7857a8644e7@broadcom.com>
-Date:   Tue, 5 Dec 2023 13:41:22 -0800
+        Tue, 05 Dec 2023 13:42:01 -0800 (PST)
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-423f28ae2d0so30141cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 13:42:00 -0800 (PST)
+X-Received: by 2002:a05:622a:247:b0:423:babe:75f1 with SMTP id
+ c7-20020a05622a024700b00423babe75f1mr7180qtx.17.1701812520401; Tue, 05 Dec
+ 2023 13:42:00 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/6] x86/vmware: Add TDX hypercall support
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Alexey Makhalov <amakhalov@vmware.com>
-Cc:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-        hpa@zytor.com, dave.hansen@linux.intel.co, bp@alien8.d,
-        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
-        netdev@vger.kernel.org, richardcochran@gmail.com,
-        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
-        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
-        akaher@vmware.com, jsipek@vmware.com,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
-        maarten.lankhorst@linux.intel.com, horms@kernel.org
-References: <20231122233058.185601-8-amakhalov@vmware.com>
- <20231201232452.220355-1-amakhalov@vmware.com>
- <20231201232452.220355-7-amakhalov@vmware.com>
- <20231204103100.GYZW2qZE9tbGMtuVgY@fat_crate.local>
- <c2519c9a-8518-403a-9bca-cb79a5f2a6e9@intel.com>
-From:   Alexey Makhalov <alexey.makhalov@broadcom.com>
-Autocrypt: addr=alexey.makhalov@broadcom.com; keydata=
- xsFNBGVo9lkBEACeouRIm6Q3QTvjcnPczfBqgLffURstVJz5nqjnrNR4T+8dwNrZB8PTgOWA
- QdGV4bIyqtNG7UHQuZ7sVKr2tx0gYJyQ5uZgncEHB5YIuhQ/CyAHrVmO+5/0/xWCLI0g44rF
- ZJqsYw2JQ2+vayTWbR65rkOiKL8GOVFNZanDg80BRh6qCmCEMXd/tymxvgnvWpHtxMgukexk
- 4vV9nV4XhxRVYdpLk8mBxsh+AEbHE+nbWgIuJDrmrZDGI2Dha7JFoB0Mi6hbbYd9BdkcHKQ7
- 6c+S1xOrZL3jX7OIFhb4NNnEOhh8/+BDlyby478p6YsimNa7TgAUbrygGyfVG8usrZy8SvO+
- vUbVQwqjcJaCK1xazK12dfuZm2kSMJUrJqa9ng6OMjkE2/WrtnK8ruFNSCdytzbuheT0nYUJ
- Uwy84cU4p2K/N2C4vYjcn+IT+l1BFr5FViKYruoRLVH6zK/WOoZjA+Fc6tdM5nC1pgSB9c7h
- XLQqDSzYPzk3nqeHWG1qJ0Hu7pscIrjxyNTIZ5le0TlpblJdoRcL5maDNw22yle8m4D18ERF
- VrqNoqwW8fObMCHbd6C3m75lzerq1HhrSvLyU4UfprEyAcjOI1C0319SXfYlXDjKXRQyaDZP
- wxln8uShSitSSnx0AsSAjcUa8Cc7km81+G2WSK3S2wVIAN11awARAQABzS5BbGV4ZXkgTWFr
- aGFsb3YgPGFsZXhleS5tYWtoYWxvdkBicm9hZGNvbS5jb20+wsGNBBMBCAA3FiEEjLzRtST/
- a5u42vOKbM7yHr5SJ3cFAmVo9lwFCQ0oaIACGwMECwkIBwUVCAkKCwUWAgMBAAAKCRBszvIe
- vlInd0jTD/9bZtjehewLRrW3dRDAbLG/+J5g1K4X5qQPfAo42NrhZQlOTibL7ixwq7NSXynZ
- V4Iu9jHAW++KXjxJzkg7zjBf9OOvvgCpqZGKYgWNvHHnX4eIVh8Ikp5JtvGPMBcRv7lJA5co
- kb+RHo9iRrB1dvRIOsP1SlGS85SiNA0yvmgqwbigLDmDRSWtvvt9XPwU1iqF+1OopT3UE10i
- /z+qE2ogcw2ADveBovq2W4JeQEBvlETwDKOdh8Q3UBHOqrZUrL7YjpUxgmb89FcjdDzUU95I
- fCB5YxF0hUctxFH5Uujh2F4qk0m2rp7+aOGtxWCJUqkHXjgpOoxyn0FPZiZlDkst84NO5OSI
- 5ZFPwaFqxUrFF+cFCY2O/UE2gpoK9Lt3gYNK6o2WIAtufuiYVdK6lANMkBgZ+t2fDLIN147a
- 172zu8XnyJMTo+tVfUjxwqynoR/NSWpVPs0Ck3K0LGjQE0tJ6HZrH0vudXk3YaiqW+D4CtGh
- I17Pk0h6x8LCdjmWmuDXoc99ezOEFSyWuTHjAYxx3cmgSUyIhdHtimuf0CVLTcFoBErb/5pJ
- zjb11Cj0HP87FMH57bnD3qyfkBMOB6tztfdt3vkCBaWkxaiTGXNhwr4IiLUoi90yIdXDMcTj
- /gvnjXgN+31iYgPWgTOdUEQud0DwDwuDwkzx/0x4sF1Dfc7BTQRlaPZcARAAuGkoYKWcrCh8
- 5RffedM6uBZ4p5Z4+RVj05uq7hlAwhHUpLP/XGbgNzhJP375Lonmnuyg2x7oHxfiwOohuuiA
- MnhSeEXn2qWZJuHosrYxs9y2zyiE/GTUAcqKiYBFa/96zOaZjHpNuQ5qSHYL64WhqvtmCQYg
- fL+jes2Z4IXl2R7MrN9OE+G3A3pOAo8TZKUEmlUV85fSmgopIX+hCiSQmRNRtp2jK6hd2+38
- YAXc+eRxYgXKaWX5zeBgNrfM7Oxeh/0iWRZPWstTvVH2xMlzywOB3e/fqg+Q3NlPGDrTyHoc
- L86ZELSLcMTFn+RXw8lX8oVjTcQA0M8sQHB5g0JEWtMsFjnQZkJGCfeh0Odbn/F8nZ6LQQtu
- +fjc/4n9vRun+PZjdhd3W9ZM9D87W9XJg9txIaYnoUXBLLpHK/OirFfr5cJTUf4svtE3EVXb
- x6P9vr7zqUbE0f76h1eDPmyMwFAuibIXhNoEoKQtEjLX9aKgKYny3hczRiuQpA+6U4oTNn4S
- /CEqphLPT53aMH0w4x0CebMPozf24ZE9YphdX8ECclLBlDL1/zx2xKrJNw8v6wdXMSfsybBW
- 98b5b1eVBk1uc1UMlpDl7AIHyCMTjL9Ha85eoya/Hk9l93aVHgK04hOBY2ED1/ZRpj0M5P5m
- tNX1JqZunpyvKooT1PrJr4UAEQEAAcLBfAQYAQgAJhYhBIy80bUk/2ubuNrzimzO8h6+Uid3
- BQJlaPZeBQkNKGiAAhsMAAoJEGzO8h6+Uid3SDoQAI3XXqsehWKvyAVeGXPxmkk+Suos/nJC
- xZWjp4U2xbbegBnNWladZoNdlVW/WV+FSFsN5IWztxQTWBMI12A0dx+Ooi9PSIANnlN+gQsA
- 9WeQ5iDNveEHZyK1GmuqZ3M3YZ1r3T2KyzTnPPZQ1B8gMQ442bOBWe077MqtLaC0J1jHyWHU
- j6BbUCAyR2/OCV/n1bH4wYIm2lgrOd2WuzoAGvju+j2g7hMRxw/xeHeu8S0czHuEZ0dC6fR1
- ZKUOw03+mM/xRzL1be6RVS9AF7R5oDd11RrTOb7k14z0inFqSRrRwzOPKcuMxrApcquar336
- 3FQuLcJLjBo/SAOh2JatOkkwkw5PZseqdwcAk5+wcCbdYy8J8ttR04iV1FzrdQp8HbVxGNo7
- AlDn1qtoHzvJHSQG51tbXWfLIi1ek3tpwJWj08+Zo+M47X6B65g7wdrwCiiFfclhXhI1eJNy
- fqqZgi3rxgu4sc5lmR846emZ/Tx85/nizqWCv7xUBxQwmhRPZRW+37vS2OLpyrTtBj3/tEM9
- m9GMmTZqaJFeK7WCpprJV4jNHpWZuNAsQrdK1MrceIxb0/6wYe0xK79lScxms+zs9pGTrO4U
- 5RoS4gXK65ECcBH8/mumV6oBmLrNxKUrzTczdo9PnkmRyZcAa6AndbjmQDznwxvTZu2LjMPC EuY0
-In-Reply-To: <c2519c9a-8518-403a-9bca-cb79a5f2a6e9@intel.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+References: <GV1PR10MB65635561FB160078C3744B5FE8B4A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <GV1PR10MB6563E0F8DB2D335BD9CFE4D3E8B4A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <GV1PR10MB6563E0F8DB2D335BD9CFE4D3E8B4A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 5 Dec 2023 13:41:44 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=VZ61XFb1Ks79BHr1jL1jwf_36wYXryy0ZXOz1xTQ9zOg@mail.gmail.com>
+Message-ID: <CAD=FV=VZ61XFb1Ks79BHr1jL1jwf_36wYXryy0ZXOz1xTQ9zOg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kdb: Replace the use of simple_strto with safer
+ kstrto in kdb_main
+To:     Yuran Pereira <yuran.pereira@hotmail.com>
+Cc:     kgdb-bugreport@lists.sourceforge.net,
+        linux-trace-kernel@vger.kernel.org, jason.wessel@windriver.com,
+        daniel.thompson@linaro.org, rostedt@goodmis.org,
+        mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On Sun, Nov 19, 2023 at 4:07=E2=80=AFPM Yuran Pereira <yuran.pereira@hotmai=
+l.com> wrote:
+>
+> The simple_str* family of functions perform no error checking in
+> scenarios where the input value overflows the intended output variable.
+> This results in these functions successfully returning even when the
+> output does not match the input string.
+>
+> Or as it was mentioned [1], "...simple_strtol(), simple_strtoll(),
+> simple_strtoul(), and simple_strtoull() functions explicitly ignore
+> overflows, which may lead to unexpected results in callers."
+> Hence, the use of those functions is discouraged.
+>
+> This patch replaces all uses of the simple_strto* series of functions
+> with their safer kstrto* alternatives.
+>
+> Side effects of this patch:
+> - Every string to long or long long conversion using kstrto* is now
+>   checked for failure.
+> - kstrto* errors are handled with appropriate `KDB_BADINT` wherever
+>   applicable.
+> - A good side effect is that we end up saving a few lines of code
+>   since unlike in simple_strto* functions, kstrto functions do not
+>   need an additional "end pointer" variable, and the return values
+>   of the latter can be directly checked in an "if" statement without
+>   the need to define additional `ret` or `err` variables.
+>   This, of course, results in cleaner, yet still easy to understand
+>   code.
+>
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#simple=
+-strtol-simple-strtoll-simple-strtoul-simple-strtoull
+>
+> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+> ---
+>  kernel/debug/kdb/kdb_main.c | 70 +++++++++++--------------------------
+>  1 file changed, 21 insertions(+), 49 deletions(-)
+
+Sorry for taking so long to review this--it arrived in my inbox at a
+bad time. A few minor nits below that I think should be fixed before
+landing but overall I think it's a nice cleanup. Thanks!
 
 
-On 12/5/23 1:24 PM, Dave Hansen wrote:
-> On 12/4/23 02:31, Borislav Petkov wrote:
->> On Fri, Dec 01, 2023 at 03:24:52PM -0800, Alexey Makhalov wrote:
->>> +#ifdef CONFIG_INTEL_TDX_GUEST
->>> +/* __tdx_hypercall() is not exported. So, export the wrapper */
->>> +void vmware_tdx_hypercall_args(struct tdx_module_args *args)
->>> +{
->>> +	__tdx_hypercall(args);
->>> +}
->>> +EXPORT_SYMBOL_GPL(vmware_tdx_hypercall_args);
->> Uuuh, lovely. I'd like to see what the TDX folks think about this
->> export first.
-> 
-> I don't really like it much.  This does a generic thing (make a TDX
-> hypercall) with a specific name ("vmware_").  If you want to make an
-> argument that a certain chunk of the __tdx_hypercall() space is just for
-> VMWare and you also add a VMWare-specific check and then export *that*,
-> it might be acceptable.
-> 
-> But I don't want random modules able to make random, unrestricted TDX
-> hypercalls.  That's asking for trouble.
+> @@ -412,42 +412,21 @@ static void kdb_printenv(void)
+>   */
+>  int kdbgetularg(const char *arg, unsigned long *value)
+>  {
+> -       char *endp;
+> -       unsigned long val;
+> -
+> -       val =3D simple_strtoul(arg, &endp, 0);
+> -
+> -       if (endp =3D=3D arg) {
+> -               /*
+> -                * Also try base 16, for us folks too lazy to type the
+> -                * leading 0x...
+> -                */
+> -               val =3D simple_strtoul(arg, &endp, 16);
+> -               if (endp =3D=3D arg)
+> +       /*
+> +        * If the first fails, also try base 16, for us
+> +        * folks too lazy to type the leading 0x...
+> +        */
+> +       if (kstrtoul(arg, 0, value))
+> +               if (kstrtoul(arg, 16, value))
 
-Considering exporting of __tdx_hypercall for random modules is not an 
-option, what VMware specific checks you are suggesting?
+Not new to your patch, but the above seems like a terrible idea to me.
+What that means is that:
 
--- 
-This electronic communication and the information and any files transmitted 
-with it, or attached to it, are confidential and are intended solely for 
-the use of the individual or entity to whom it is addressed and may contain 
-information that is confidential, legally privileged, protected by privacy 
-laws, or otherwise restricted from disclosure to anyone else. If you are 
-not the intended recipient or the person responsible for delivering the 
-e-mail to the intended recipient, you are hereby notified that any use, 
-copying, distributing, dissemination, forwarding, printing, or copying of 
-this e-mail is strictly prohibited. If you received this e-mail in error, 
-please return the e-mail to the sender, delete it from your computer, and 
-destroy any printed copy of it.
+kdbgetularg("18", &value) =3D> value is 18
+kdbgetularg("19", &value) =3D> value is 19
+kdbgetularg("1a", &value) =3D> value is 26
+
+Bleh! If someone wants hex then they should put the 0x first.
+
+I'd suggest a followup patch that removes the fallback for the lazy
+folks. Here and in the next function...
+
+
+> @@ -2095,15 +2074,11 @@ static int kdb_dmesg(int argc, const char **argv)
+>         if (argc > 2)
+>                 return KDB_ARGCOUNT;
+>         if (argc) {
+> -               char *cp;
+> -               lines =3D simple_strtol(argv[1], &cp, 0);
+> -               if (*cp)
+> +               if (kstrtoint(argv[1], 0, &lines))
+>                         lines =3D 0;
+> -               if (argc > 1) {
+> -                       adjust =3D simple_strtoul(argv[2], &cp, 0);
+> -                       if (*cp || adjust < 0)
+> +               if (argc > 1)
+> +                       if (kstrtouint(argv[2], 0, &adjust) || adjust < 0=
+)
+
+My gut reaction is that some sort of build bot is going to come and
+yell at you about the above line. Even if it doesn't, it's a bit
+confusing. You're passing a pointer to an int into a function that
+expects a pointer to an unsigned int. Most things don't really care
+about signed/unsigned, but I could swear that some compilers get mad
+when you start working with pointers to those types...
+
+In any case, I think everything would work fine if you just change it
+to kstrtoint(), right? I guess the other option would be to change the
+variable to unsigned, but I guess that doesn't make sense since it's a
+modifier to "lines" which is an int.
+
+Side note: I didn't even know about the "adjust" argument, since it's
+not in the help text in the command table below. I guess that could be
+fixed in a separate patch.
+
+nit: IMO if you have nested "if" statements then the outer one should
+have braces. AKA:
+
+if (a) {
+  if (b)
+    blah();
+}
+
+instead of:
+
+if (a)
+  if (b)
+    blah();
+
+...or you could do better and just change it to:
+
+if (a && b)
+  blah();
