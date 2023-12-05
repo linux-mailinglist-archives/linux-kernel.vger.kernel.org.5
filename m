@@ -2,77 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB0080618C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7C180618B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346585AbjLEWQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 17:16:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
+        id S1346598AbjLEWQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 17:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346478AbjLEWQT (ORCPT
+        with ESMTP id S1346596AbjLEWQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 17:16:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D65137
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 14:16:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701814584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 5 Dec 2023 17:16:25 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FD6D44;
+        Tue,  5 Dec 2023 14:16:31 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B341421FA3;
+        Tue,  5 Dec 2023 22:16:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1701814589; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=h2Vem31mI/E1rxmbZRCBYAPkrSR+YjFerajC0+h+2EI=;
-        b=dVat5q1A35wXT8Nf76O/hEt5AccD2IDRmLUFLYZ1qCJdVHhmdINS3DrF6alqiduTNoJCi1
-        AvV/iayvbS+ZVgHTDJlo9YDguBo/+15AXixy4M3mo+gDmODm9w/LC7HPjsRAyleTuglDnU
-        2oXkYH/hw1EULws8XcuNJ1U+ShZXaKU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-433-3LYAxG9aN0qe_CfFGknouw-1; Tue,
- 05 Dec 2023 17:16:16 -0500
-X-MC-Unique: 3LYAxG9aN0qe_CfFGknouw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        bh=hj83Co/HYDD+zS02ld4TNzceVFuoNtfLzegtBxuNlJE=;
+        b=lRD5uihfcRqY7pZLMUg+hjly+UrQKPhBhaSUOkphTdt+Zy+Lalm5S5N6vlGOFTySgKVdhj
+        AQfdUNEM/jY/PJJv6ApvMrJfItrMvEDZv126kqCkltwcDEU2eKlLQXHikJ4C0aQjdbzcQk
+        0vjI03ZrAN4FN83HefxW0H8K52ub9w4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1701814589;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hj83Co/HYDD+zS02ld4TNzceVFuoNtfLzegtBxuNlJE=;
+        b=jl87oN3IR23QJZYvKf9GmrnRaEg/krJjFgJEaCr+5VFHofq5B89ax3scRtD/4OOfSd9hWA
+        yi1QCOy5uDAhi2DA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F03511C0BB41;
-        Tue,  5 Dec 2023 22:16:15 +0000 (UTC)
-Received: from [10.22.8.88] (unknown [10.22.8.88])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DCC8C112131D;
-        Tue,  5 Dec 2023 22:16:14 +0000 (UTC)
-Message-ID: <7284ef19-ba26-46cd-9630-cad18c2e3ce7@redhat.com>
-Date:   Tue, 5 Dec 2023 17:16:14 -0500
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3389C1386E;
+        Tue,  5 Dec 2023 22:16:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id ni2uNDihb2WUcwAAD6G6ig
+        (envelope-from <neilb@suse.de>); Tue, 05 Dec 2023 22:16:24 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-cgroup 2/2] cgroup/cpuset: Include isolated cpuset CPUs in
- cpu_is_isolated() check
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mrunal Patel <mpatel@redhat.com>,
-        Ryan Phillips <rphillips@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>
-References: <20231127041956.266026-1-longman@redhat.com>
- <20231127041956.266026-3-longman@redhat.com>
- <ZWYbqNnnt6gQOssK@slm.duckdns.org>
- <8de482b5-1942-4312-8de4-6f54565ab517@redhat.com>
- <ZWZl0uvqeZ-fR1O9@slm.duckdns.org>
- <b6f88157-cf5e-4c7b-99f3-1944b4e7ebde@redhat.com>
- <ZWoSrfztmprcdkpO@slm.duckdns.org>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZWoSrfztmprcdkpO@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Jens Axboe" <axboe@kernel.dk>
+Cc:     "Christian Brauner" <brauner@kernel.org>,
+        "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Oleg Nesterov" <oleg@redhat.com>,
+        "Chuck Lever" <chuck.lever@oracle.com>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Juri Lelli" <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] Allow a kthread to declare that it calls task_work_run()
+In-reply-to: <3609267c-3fcd-43d6-9b43-9f84bef029a2@kernel.dk>
+References: <20231204014042.6754-1-neilb@suse.de>,
+ <20231204014042.6754-2-neilb@suse.de>,
+ <e9a1cfed-42e9-4174-bbb3-1a3680cf6a5c@kernel.dk>,
+ <170172377302.7109.11739406555273171485@noble.neil.brown.name>,
+ <a070b6bd-0092-405e-99d2-00002596c0bc@kernel.dk>,
+ <20231205-altbacken-umbesetzen-e5c0c021ab98@brauner>,
+ <170181169515.7109.11121482729257102758@noble.neil.brown.name>,
+ <fb713388-661a-46e0-8925-6d169b46ff9c@kernel.dk>,
+ <3609267c-3fcd-43d6-9b43-9f84bef029a2@kernel.dk>
+Date:   Wed, 06 Dec 2023 09:16:21 +1100
+Message-id: <170181458198.7109.790647899711986334@noble.neil.brown.name>
+X-Spamd-Result: default: False [-3.30 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -3.30
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,39 +108,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/1/23 12:06, Tejun Heo wrote:
-> Hello,
->
-> On Wed, Nov 29, 2023 at 11:01:04AM -0500, Waiman Long wrote:
-> ...
->>>> Depending on how the cpumask operators are implemented, we may not have a
->>>> guarantee that testing CPU 2, for instance, will always return true. That is
->>> Can you please elaborate this part a bit? I'm having a difficult time
->>> imagining the sequence of operations where this would matter but that could
->>> easily be me not being familiar with the details.
->> I may be a bit paranoid about incorrect result due to racing as I had been
->> burned before. Just testing a bit in the bitmask may probably be OK. I don't
-> Setting and clearing a bit is as atomic as it gets, right?
-Yes, I think so.
->
->> think it will be a problem for x86, but I am less certain about other more
->> exotic architectures like arm64 or PPC which I am less familiar about. I add
->> a seqcount for synchronization just for the peace of mind. I can take the
->> seqcount out if you don't it is necessary.
-> I just can't think of a case where this would be broken. The data being read
-> and written is atomic. There's no way to break a bit operation into multiple
-> pieces. It is possible to write a really bone-headed bitmask operations
-> (like, if you shift the bits into place or sth) to make the bits go through
-> unintended changes but that'd just be a flat-out broken implementation. Even
-> for a bitmask where write accesses are synchronized through a spinlock, we
-> should still be able to use test_bit() without holding the lock. This seems
-> like a pretty basic assumption.
->
-> Adding unnecessary synchronization confuses the readers. If we don't need
-> it, we shouldn't have it.
+On Wed, 06 Dec 2023, Jens Axboe wrote:
+> On 12/5/23 2:58 PM, Jens Axboe wrote:
+> > On 12/5/23 2:28 PM, NeilBrown wrote:
+> >> On Tue, 05 Dec 2023, Christian Brauner wrote:
+> >>> On Mon, Dec 04, 2023 at 03:09:44PM -0700, Jens Axboe wrote:
+> >>>> On 12/4/23 2:02 PM, NeilBrown wrote:
+> >>>>> It isn't clear to me what _GPL is appropriate, but maybe the rules
+> >>>>> changed since last I looked..... are there rules?
+> >>>>>
+> >>>>> My reasoning was that the call is effectively part of the user-space
+> >>>>> ABI.  A user-space process can call this trivially by invoking any
+> >>>>> system call.  The user-space ABI is explicitly a boundary which the G=
+PL
+> >>>>> does not cross.  So it doesn't seem appropriate to prevent non-GPL
+> >>>>> kernel code from doing something that non-GPL user-space code can
+> >>>>> trivially do.
+> >>>>
+> >>>> By that reasoning, basically everything in the kernel should be non-GPL
+> >>>> marked. And while task_work can get used by the application, it happens
+> >>>> only indirectly or implicitly. So I don't think this reasoning is sound
+> >>>> at all, it's not an exported ABI or API by itself.
+> >>>>
+> >>>> For me, the more core of an export it is, the stronger the reason it
+> >>>> should be GPL. FWIW, I don't think exporting task_work functionality is
+> >=20
+> >>>
+> >>> Yeah, I'm not too fond of that part as well. I don't think we want to
+> >>> give modules the ability to mess with task work. This is just asking for
+> >>> trouble.
+> >>>
+> >>
+> >> Ok, maybe we need to reframe the problem then.
+> >>
+> >> Currently fput(), and hence filp_close(), take control away from kernel
+> >> threads in that they cannot be sure that a "close" has actually
+> >> completed.
+> >>
+> >> This is already a problem for nfsd.  When renaming a file, nfsd needs to
+> >> ensure any cached "open" that it has on the file is closed (else when
+> >> re-exporting an NFS filesystem it can result in a silly-rename).
+> >>
+> >> nfsd currently handles this case by calling flush_delayed_fput().  I
+> >> suspect you are no more happy about exporting that than you are about
+> >> exporting task_work_run(), but this solution isn't actually 100%
+> >> reliable.  If some other thread calls flush_delayed_fput() between nfsd
+> >> calling filp_close() and that same nfsd calling flush_delayed_fput(),
+> >> then the second flush can return before the first flush (in the other
+> >> thread) completes all the work it took on.
+> >>
+> >> What we really need - both for handling renames and for avoiding
+> >> possible memory exhaustion - is for nfsd to be able to reliably wait for
+> >> any fput() that it initiated to complete.
+> >>
+> >> How would you like the VFS to provide that service?
+> >=20
+> > Since task_work happens in the context of your task already, why not
+> > just have a way to get it stashed into a list when final fput is done?
+> > This avoids all of this "let's expose task_work" and using the task list
+> > for that, which seems kind of pointless as you're just going to run it
+> > later on manually anyway.
+> >=20
+> > In semi pseudo code:
+> >=20
+> > bool fput_put_ref(struct file *file)
+> > {
+> > 	return atomic_dec_and_test(&file->f_count);
+> > }
+> >=20
+> > void fput(struct file *file)
+> > {
+> > 	if (fput_put_ref(file)) {
+> > 		...
+> > 	}
+> > }
+> >=20
+> > and then your nfsd_file_free() could do:
+> >=20
+> > ret =3D filp_flush(file, id);
+> > if (fput_put_ref(file))
+> > 	llist_add(&file->f_llist, &l->to_free_llist);
+> >=20
+> > or something like that, where l->to_free_llist is where ever you'd
+> > otherwise punt the actual freeing to.
+>=20
+> Should probably have the put_ref or whatever helper also init the
+> task_work, and then reuse the list in the callback_head there. Then
+> whoever flushes it has to call ->func() and avoid exposing ____fput() to
+> random users. But you get the idea.
 
-OK, I will send a simplified v2 patch.
+Interesting ideas - thanks.
 
-Cheers,
-Longman
+So maybe the new API would be
 
+ fput_queued(struct file *f, struct llist_head *q)
+and
+ flush_fput_queue(struct llist_head *q)
+
+with the meaning being that fput_queued() is just like fput() except
+that any file needing __fput() is added to the 'q'; and that
+flush_fput_queue() calls __fput() on any files in 'q'.
+
+So to close a file nfsd would:
+
+  fget(f);
+  flip_close(f);
+  fput_queued(f, &my_queue);
+
+though possibly we could have a
+  filp_close_queued(f, q)
+as well.
+
+I'll try that out - but am happy to hear alternate suggestions for names :-)
+
+Thanks,
+NeilBrown
