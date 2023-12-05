@@ -2,254 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3051680514F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A0F80514E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376825AbjLEKyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:54:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
+        id S1346838AbjLEKye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:54:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346840AbjLEKyR (ORCPT
+        with ESMTP id S1346811AbjLEKyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:54:17 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4953CD53
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 02:54:19 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a1c7b20f895so50520166b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 02:54:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1701773657; x=1702378457; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dDRPnKJoLc1GtAiBypAVTx3BYAZsoeFq7nosJJNba1U=;
-        b=IY34Fm8hDnkrZJqFwWzNctwqMC1ZJSCdS0VvXSLochQxNxYzfdVH1r19Tvv5MnAXqP
-         NgN1BYi+L2AkgF0qHZpU9FTkK0rOhVO5ozqwiVnxxQcuAg1RjIeVOpOPOhHmIGB+Rqx0
-         FGSHe2vgeQY33tg4LLDWUE47hvMLjCAZ9VVuM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701773657; x=1702378457;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dDRPnKJoLc1GtAiBypAVTx3BYAZsoeFq7nosJJNba1U=;
-        b=UF3qMdyLanrLaC9XcgT0QbKriykfIv1KvIfQNhTkK47RwxAqAnYorLIH6ssj1Z7jJ7
-         +4mKLxK+XTCLYO++AWzUpE1rGkY557PGzObk6JTZdZ8135FtyU0LP+7H7echjr8E3nVo
-         1D2WJKgHL3CyBdh7OiBHkO4FpiEQWqZ6wiPdad1JzMI5Og/PNuxFVwTEvkW4HtG6ShfT
-         oLKPd4CYEAbOuxZi8EAf9D3B1pAaJfrI0hpKuro1ADeKPmW5z1RMf2lF0VOnJR9GbZg+
-         TMOjQqa4ulKEkEhSLx/wYzUBGDAZHnN7vWMSKMCugGhUAWG06iW7XBtIYBX1rCdvhMvg
-         3TjQ==
-X-Gm-Message-State: AOJu0YyOGw2LaAJYOAy2tMsJ0X0KdCl/W3FY/ohqz0ZKbcIU+pGN3EJU
-        noNAsc2v2P/w1bDGQ4MVCPWEg+N/2n+pqtWAR9RFtQ==
-X-Google-Smtp-Source: AGHT+IFRjuZGNwFeSGwhMeTWZpSkUy998+h4f75p+JfklG9OV/B3MhojWMD+4GYlCXL5ZaUYyDp9ng==
-X-Received: by 2002:a17:906:2210:b0:a17:da84:a24d with SMTP id s16-20020a170906221000b00a17da84a24dmr3690375ejs.22.1701773657494;
-        Tue, 05 Dec 2023 02:54:17 -0800 (PST)
-Received: from dario-ThinkPad-T14s-Gen-2i.homenet.telecomitalia.it (host-82-54-95-129.retail.telecomitalia.it. [82.54.95.129])
-        by smtp.gmail.com with ESMTPSA id n23-20020a170906089700b0099297782aa9sm6413491eje.49.2023.12.05.02.54.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 02:54:17 -0800 (PST)
-From:   Dario Binacchi <dario.binacchi@amarulasolutions.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Amarula patchwork <linux-amarula@amarulasolutions.com>,
-        michael@amarulasolutions.com,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v4 10/10] arm64: dts: imx8mn-bsh-smm-s2/pro: add display setup
-Date:   Tue,  5 Dec 2023 11:52:57 +0100
-Message-ID: <20231205105341.4100896-11-dario.binacchi@amarulasolutions.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231205105341.4100896-1-dario.binacchi@amarulasolutions.com>
-References: <20231205105341.4100896-1-dario.binacchi@amarulasolutions.com>
+        Tue, 5 Dec 2023 05:54:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EF0D45;
+        Tue,  5 Dec 2023 02:54:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701773657; x=1733309657;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=yCuIHOeWcfGOCJR+76s/7IFgjxS9TLWZvOKlnLpi+0Y=;
+  b=nK+cWFsURHii2wQDnYgJ9zWuhkpPPOzhEDkrw0fBvFM/OFD09PFw7d6i
+   r9IFrHN4GzyibibcpoW7z8N2JgZ9AcvcFdKk3NHpntkDjOTjPN5XQGTau
+   SbImAVICD2BC356DgbLQvXQW1LMcfdFFEc2C9UmKI70I1aKAwqAtDWR9l
+   +buBa0/cLIf9xOgx1xwCuMBUnx2SuHctEcG4u2adoH71PsevIdmgcKWCT
+   ddpJjN5llaHfF9NsIWDi/JFwTGsj5ETzh8YjfgKr4ZooFTAJQBol1HN33
+   hruTD7ka6hW8B/uyF6g5aOa8fzoY15qm4O8o7LQWY6hNVUeO8/EHxkmMz
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="396672855"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="396672855"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 02:54:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="747184419"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="747184419"
+Received: from abijaz-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.61.240])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 02:54:10 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 89EC610A437; Tue,  5 Dec 2023 13:54:07 +0300 (+03)
+Date:   Tue, 5 Dec 2023 13:54:07 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc:     "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Michael Kelley <mhkelley58@gmail.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Cui, Dexuan" <decui@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
+        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
+        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
+        "cascardo@canonical.com" <cascardo@canonical.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
+ TDX init
+Message-ID: <20231205105407.vp2rejqb5avoj7mx@box.shutemov.name>
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+ <DM8PR11MB575090573031AD9888D4738AE786A@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Trimarchi <michael@amarulasolutions.com>
+On Mon, Dec 04, 2023 at 08:07:38PM +0100, Jeremi Piotrowski wrote:
+> On 04/12/2023 10:17, Reshetova, Elena wrote:
+> >> Check for additional CPUID bits to identify TDX guests running with Trust
+> >> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
+> >> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
+> >>
+> >> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is
+> >> visible
+> >> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
+> >> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
+> >> aware mechanisms for what's left. So currently such guests do not have
+> >> X86_FEATURE_TDX_GUEST set.
+> > 
+> > Back to this concrete patch. Why cannot L1 VMM emulate the correct value of
+> > the TDX_CPUID_LEAF_ID to L2 VM? It can do this per TDX partitioning arch.
+> > How do you handle this and other CPUID calls call currently in L1? Per spec,
+> > all CPUIDs calls from L2 will cause L2 --> L1 exit, so what do you do in L1?
+> The disclaimer here is that I don't have access to the paravisor (L1) code. But
+> to the best of my knowledge the L1 handles CPUID calls by calling into the TDX
+> module, or synthesizing a response itself. TDX_CPUID_LEAF_ID is not provided to
+> the L2 guest in order to discriminate a guest that is solely responsible for every
+> TDX mechanism (running at L1) from one running at L2 that has to cooperate with L1.
+> More below.
+> 
+> > 
+> > Given that you do that simple emulation, you already end up with TDX guest
+> > code being activated. Next you can check what features you wont be able to
+> > provide in L1 and create simple emulation calls for the TDG calls that must be
+> > supported and cannot return error. The biggest TDG call (TDVMCALL) is already
+> > direct call into L0 VMM, so this part doesn’t require L1 VMM support. 
+> 
+> I don't see anything in the TD-partitioning spec that gives the TDX guest a way
+> to detect if it's running at L2 or L1, or check whether TDVMCALLs go to L0/L1.
+> So in any case this requires an extra cpuid call to establish the environment.
+> Given that, exposing TDX_CPUID_LEAF_ID to the guest doesn't help.
+> 
+> I'll give some examples of where the idea of emulating a TDX environment
+> without attempting L1-L2 cooperation breaks down.
+> 
+> hlt: if the guest issues a hlt TDVMCALL it goes to L0, but if it issues a classic hlt
+> it traps to L1. The hlt should definitely go to L1 so that L1 has a chance to do
+> housekeeping.
 
-Add the display and nodes required for its operation.
+Why would L2 issue HLT TDVMCALL? It only happens in response to #VE, but
+if partitioning enabled #VEs are routed to L1 anyway.
 
-Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
+> map gpa: say the guest uses MAP_GPA TDVMCALL. This goes to L0, not L1 which is the actual
+> entity that needs to have a say in performing the conversion. L1 can't act on the request
+> if L0 would forward it because of the CoCo threat model. So L1 and L2 get out of sync.
+> The only safe approach is for L2 to use a different mechanism to trap to L1 explicitly.
 
----
+Hm? L1 is always in loop on share<->private conversion. I don't know why
+you need MAP_GPA for that.
 
-(no changes since v3)
+You can't rely on MAP_GPA anyway. It is optional (unfortunately). Conversion
+doesn't require MAP_GPA call.
 
-Changes in v3:
-- Replace "synaptics,r63353" compatible with "syna,r63353", as
-  required by vendor-prefixes.yaml.
-- Squash patch [09/11] dt-bindings: ili9805: add compatible string for Tianma TM041XDHG01
-  into [07/11] dt-bindings: display: panel: Add Ilitek ili9805 panel controller.
+> Having a paravisor is required to support a TPM and having TDVMCALLs go to L0 is
+> required to make performance viable for real workloads.
+> 
+> > 
+> > Until we really see what breaks with this approach, I don’t think it is worth to
+> > take in the complexity to support different L1 hypervisors view on partitioning.
+> > 
+> 
+> I'm not asking to support different L1 hypervisors view on partitioning, I want to
+> clean up the code (by fixing assumptions that no longer hold) for the model that I'm
+> describing that: the kernel already supports, has an implementation that works and
+> has actual users. This is also a model that Intel intentionally created the TD-partitioning
+> spec to support.
+> 
+> So lets work together to make X86_FEATURE_TDX_GUEST match reality.
 
-Changes in v2:
-- Adjust the mipi_dsi node based on the latest patches merged into
-  the mainline in the dtsi files it includes.
-- Added to the series the following patches:
-  - 0001 drm/bridge: Fix bridge disable logic
-  - 0002 drm/bridge: Fix a use case in the bridge disable logic
-  - 0003 samsung-dsim: enter display mode in the enable() callback
-  - 0004 drm: bridge: samsung-dsim: complete the CLKLANE_STOP setting
+I think the right direction is to make TDX architecture good enough
+without that. If we need more hooks in TDX module that give required
+control to L1, let's do that. (I don't see it so far)
 
- .../freescale/imx8mn-bsh-smm-s2-common.dtsi   |   1 +
- .../freescale/imx8mn-bsh-smm-s2-display.dtsi  | 121 ++++++++++++++++++
- 2 files changed, 122 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi
-index 22a754d438f1..bbb07c650da9 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-common.dtsi
-@@ -7,6 +7,7 @@
- /dts-v1/;
- 
- #include "imx8mn.dtsi"
-+#include "imx8mn-bsh-smm-s2-display.dtsi"
- 
- / {
- 	chosen {
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi
-new file mode 100644
-index 000000000000..f0a924cbe548
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-bsh-smm-s2-display.dtsi
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright 2021 BSH
-+ */
-+
-+/ {
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pwms = <&pwm1 0 700000 0>;	/* 700000 ns = 1337Hz */
-+		brightness-levels = <0 100>;
-+		num-interpolated-steps = <100>;
-+		default-brightness-level = <50>;
-+		status = "okay";
-+	};
-+
-+	reg_3v3_dvdd: regulator-3v3-O3 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_dvdd>;
-+		regulator-name = "3v3-dvdd-supply";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio1 7 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	reg_v3v3_avdd: regulator-3v3-O2 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_avdd>;
-+		regulator-name = "3v3-avdd-supply";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpio1 5 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&pwm1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_bl>;
-+};
-+
-+&lcdif {
-+	status = "okay";
-+	assigned-clocks = <&clk IMX8MN_VIDEO_PLL1>;
-+	assigned-clock-rates = <594000000>;
-+};
-+
-+&pgc_dispmix {
-+	assigned-clocks = <&clk IMX8MN_CLK_DISP_AXI>, <&clk IMX8MN_CLK_DISP_APB>;
-+	assigned-clock-parents = <&clk IMX8MN_SYS_PLL2_1000M>, <&clk IMX8MN_SYS_PLL1_800M>;
-+	assigned-clock-rates = <500000000>, <200000000>;
-+};
-+
-+&mipi_dsi {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	status = "okay";
-+	samsung,esc-clock-frequency = <20000000>;
-+	samsung,pll-clock-frequency = <12000000>;
-+
-+	panel@0 {
-+		compatible = "sharp,ls068b3sx02", "syna,r63353";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_panel>;
-+		reg = <0>;
-+
-+		backlight = <&backlight>;
-+		dvdd-supply = <&reg_3v3_dvdd>;
-+		avdd-supply = <&reg_v3v3_avdd>;
-+		reset-gpios = <&gpio4 29 GPIO_ACTIVE_HIGH>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&mipi_dsi_out>;
-+			};
-+		};
-+
-+	};
-+
-+	ports {
-+		port@1 {
-+			reg = <1>;
-+			mipi_dsi_out: endpoint {
-+				remote-endpoint = <&panel_in>;
-+			};
-+		};
-+	};
-+};
-+
-+&gpu {
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+
-+	/* This is for both PWM and voltage regulators for display */
-+	pinctrl_bl: pwm1grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO01_PWM1_OUT	0x16
-+		>;
-+	};
-+
-+	pinctrl_panel: panelgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SAI3_RXC_GPIO4_IO29	0x16	/* panel reset */
-+		>;
-+	};
-+
-+	pinctrl_dvdd: dvddgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7	0x16	/* VDD 3V3_VO3 */
-+		>;
-+	};
-+
-+	pinctrl_avdd: avddgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_GPIO1_IO05_GPIO1_IO5	0x16	/* VDD 3V3_VO2 */
-+		>;
-+	};
-+};
 -- 
-2.43.0
-
+  Kiryl Shutsemau / Kirill A. Shutemov
