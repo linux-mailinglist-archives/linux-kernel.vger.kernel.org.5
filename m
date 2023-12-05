@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B99798043A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:57:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D73C8043A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343738AbjLEA5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 19:57:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
+        id S1343727AbjLEA5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:57:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjLEA5p (ORCPT
+        with ESMTP id S229575AbjLEA5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Dec 2023 19:57:45 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6334B102
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:57:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218D3FF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:57:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701737872; x=1733273872;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=GPEs8Xaj54ZIAaocNHkV6u9vU45MD0NtNKuAgrFkgRM=;
-  b=hoAn35/4HGj/sRNvQ28E0g/q9mNnEacNuOxVnbmE2kOpatPTcGDRhf4W
-   snRFUwrgII2mpn7OfS/H4pwrHtvaCYMVXjf5za9OHGp1GozhGtOVb3YvB
-   aeUI0Q+QlUdK226AlIL04FYnjYVc+OrBhbSJwDKDbwmZBt3o/VIR/YOlL
-   LTzwzjW8ANwx1WkOrXbgcH0rzvi+36U3NPXdZMC0aW7aDwuf/T3BAHfIJ
-   jf0gJroiKofIJz8WzS01D+PA2p6F3JAtg0ayPohWTeKgqozysh6Q8xCAD
-   Jd/lgcYyXCOgwuUJmGrCUD7YT1NqttnIoItZGaOQyHXsvk2kq/9Ttn9DC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="373266641"
+  t=1701737871; x=1733273871;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=1NyS742JU7xEN/+M0yGPdldIAwdu5q4u0RdJbUAGUVE=;
+  b=AKAFLLka9/p/rS6ph0Xx+1HbNVMK4VDfwzPZRuPDspNC76OJ5duFU1cE
+   Cg/4dOearHeGCs5MAZkyhZNcKNrNEGduCWsU+c046tRt7VdTJZkFsEZp0
+   mOZywOucuLpdsnRT8++0OaaFxyIkdWYB23W7tEQTza7qpYiAdLJA2plHJ
+   sbpXS/vGzIvcesTnoUfYsCLuyasOTe9DNnS4KEpe6ltsRuON9I6coAfAU
+   120/p/bbcJdviQDxcb8pMY7bXkrdPvXn+vvy7ybo5wKdwwQRjUbqoEmhQ
+   ck8Ms7pWWdmGnMnyMQrBlNfM2kHHscAND/SWGyva0q3OLpZvLpIVKCZRG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="373266637"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="373266641"
+   d="scan'208";a="373266637"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:57:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="861570166"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="861570165"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="861570166"
+   d="scan'208";a="861570165"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by FMSMGA003.fm.intel.com with ESMTP; 04 Dec 2023 16:57:48 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rAJkw-0008F4-0w;
+        id 1rAJkw-0008F8-18;
         Tue, 05 Dec 2023 00:57:46 +0000
 Date:   Tue, 5 Dec 2023 08:56:57 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
 Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Luben Tuikov <luben.tuikov@amd.com>
-Subject: drivers/gpu/drm/scheduler/sched_main.c:266: warning: Function
- parameter or member 'result' not described in 'drm_sched_job_done'
-Message-ID: <202312050753.wO5Zucbg-lkp@intel.com>
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Subject: arch/sh/include/cpu-sh2/cpu/watchdog.h:44:16: sparse: sparse:
+ incorrect type in argument 1 (different base types)
+Message-ID: <202312050810.GJwZDVwY-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,59 +63,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
-
-FYI, the error/warning still remains.
-
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: 539f9ee4b52a8bec95ff064e22dd2fb1e258e818 drm/scheduler: properly forward fence errors
-date:   8 months ago
-config: x86_64-buildonly-randconfig-004-20230906 (https://download.01.org/0day-ci/archive/20231205/202312050753.wO5Zucbg-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312050753.wO5Zucbg-lkp@intel.com/reproduce)
+commit: e5fc436f06eef54ef512ea55a9db8eb9f2e76959 sparse: use static inline for __chk_{user,io}_ptr()
+date:   3 years, 3 months ago
+config: sh-randconfig-r111-20231117 (https://download.01.org/0day-ci/archive/20231205/202312050810.GJwZDVwY-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231205/202312050810.GJwZDVwY-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312050753.wO5Zucbg-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312050810.GJwZDVwY-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+sparse warnings: (new ones prefixed by >>)
+   drivers/watchdog/shwdt.c: note: in included file:
+   arch/sh/include/asm/watchdog.h:144:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:144:16: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:144:16: sparse:     got unsigned int
+   arch/sh/include/asm/watchdog.h:156:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:156:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:156:9: sparse:     got unsigned int
+   arch/sh/include/asm/watchdog.h:134:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:134:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:134:9: sparse:     got unsigned int
+   arch/sh/include/asm/watchdog.h:144:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:144:16: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:144:16: sparse:     got unsigned int
+   arch/sh/include/asm/watchdog.h:156:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:156:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:156:9: sparse:     got unsigned int
+   drivers/watchdog/shwdt.c: note: in included file (through arch/sh/include/asm/watchdog.h):
+>> arch/sh/include/cpu-sh2/cpu/watchdog.h:44:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/cpu-sh2/cpu/watchdog.h:44:16: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/cpu-sh2/cpu/watchdog.h:44:16: sparse:     got unsigned int
+   arch/sh/include/cpu-sh2/cpu/watchdog.h:62:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/cpu-sh2/cpu/watchdog.h:62:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/cpu-sh2/cpu/watchdog.h:62:9: sparse:     got unsigned int
+   drivers/watchdog/shwdt.c: note: in included file:
+   arch/sh/include/asm/watchdog.h:144:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:144:16: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:144:16: sparse:     got unsigned int
+   arch/sh/include/asm/watchdog.h:156:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:156:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:156:9: sparse:     got unsigned int
+   arch/sh/include/asm/watchdog.h:144:16: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:144:16: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:144:16: sparse:     got unsigned int
+   arch/sh/include/asm/watchdog.h:156:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:156:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:156:9: sparse:     got unsigned int
+   arch/sh/include/asm/watchdog.h:134:9: sparse: sparse: incorrect type in argument 1 (different base types) @@     expected void const volatile [noderef] __iomem *ptr @@     got unsigned int @@
+   arch/sh/include/asm/watchdog.h:134:9: sparse:     expected void const volatile [noderef] __iomem *ptr
+   arch/sh/include/asm/watchdog.h:134:9: sparse:     got unsigned int
 
->> drivers/gpu/drm/scheduler/sched_main.c:266: warning: Function parameter or member 'result' not described in 'drm_sched_job_done'
+vim +44 arch/sh/include/cpu-sh2/cpu/watchdog.h
 
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  33  
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  34  /**
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  35   * 	sh_wdt_read_rstcsr - Read from Reset Control/Status Register
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  36   *
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  37   *	Reads back the RSTCSR value.
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  38   */
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  39  static inline __u8 sh_wdt_read_rstcsr(void)
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  40  {
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  41  	/*
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  42  	 * Same read/write brain-damage as for WTCNT here..
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  43  	 */
+9d56dd3b083a3b arch/sh/include/cpu-sh2/cpu/watchdog.h Paul Mundt     2010-01-26 @44  	return __raw_readb(RSTCSR_R);
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  45  }
+^1da177e4c3f41 include/asm-sh/cpu-sh2/watchdog.h      Linus Torvalds 2005-04-16  46  
 
-vim +266 drivers/gpu/drm/scheduler/sched_main.c
+:::::: The code at line 44 was first introduced by commit
+:::::: 9d56dd3b083a3bec56e9da35ce07baca81030b03 sh: Mass ctrl_in/outX to __raw_read/writeX conversion.
 
-08fb97de03aa22 Andrey Grodzovsky 2022-09-30  258  
-71173e787cab9d Luben Tuikov      2020-12-03  259  /**
-71173e787cab9d Luben Tuikov      2020-12-03  260   * drm_sched_job_done - complete a job
-71173e787cab9d Luben Tuikov      2020-12-03  261   * @s_job: pointer to the job which is done
-71173e787cab9d Luben Tuikov      2020-12-03  262   *
-71173e787cab9d Luben Tuikov      2020-12-03  263   * Finish the job's fence and wake up the worker thread.
-71173e787cab9d Luben Tuikov      2020-12-03  264   */
-539f9ee4b52a8b Christian König   2023-04-17  265  static void drm_sched_job_done(struct drm_sched_job *s_job, int result)
-71173e787cab9d Luben Tuikov      2020-12-03 @266  {
-71173e787cab9d Luben Tuikov      2020-12-03  267  	struct drm_sched_fence *s_fence = s_job->s_fence;
-71173e787cab9d Luben Tuikov      2020-12-03  268  	struct drm_gpu_scheduler *sched = s_fence->sched;
-71173e787cab9d Luben Tuikov      2020-12-03  269  
-71173e787cab9d Luben Tuikov      2020-12-03  270  	atomic_dec(&sched->hw_rq_count);
-f2f12eb9c32bc7 Christian König   2021-02-02  271  	atomic_dec(sched->score);
-71173e787cab9d Luben Tuikov      2020-12-03  272  
-71173e787cab9d Luben Tuikov      2020-12-03  273  	trace_drm_sched_process_job(s_fence);
-71173e787cab9d Luben Tuikov      2020-12-03  274  
-71173e787cab9d Luben Tuikov      2020-12-03  275  	dma_fence_get(&s_fence->finished);
-539f9ee4b52a8b Christian König   2023-04-17  276  	drm_sched_fence_finished(s_fence, result);
-71173e787cab9d Luben Tuikov      2020-12-03  277  	dma_fence_put(&s_fence->finished);
-71173e787cab9d Luben Tuikov      2020-12-03  278  	wake_up_interruptible(&sched->wake_up_worker);
-71173e787cab9d Luben Tuikov      2020-12-03  279  }
-71173e787cab9d Luben Tuikov      2020-12-03  280  
-
-:::::: The code at line 266 was first introduced by commit
-:::::: 71173e787cab9db4ca1fa6229477cb3d254bc285 drm/scheduler: Essentialize the job done callback
-
-:::::: TO: Luben Tuikov <luben.tuikov@amd.com>
-:::::: CC: Christian König <christian.koenig@amd.com>
+:::::: TO: Paul Mundt <lethal@linux-sh.org>
+:::::: CC: Paul Mundt <lethal@linux-sh.org>
 
 -- 
 0-DAY CI Kernel Test Service
