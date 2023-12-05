@@ -2,235 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F04804368
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:30:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4242380436D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343702AbjLEAaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 19:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
+        id S231915AbjLEAaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:30:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjLEAaK (ORCPT
+        with ESMTP id S231550AbjLEAau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:30:10 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F26FB0;
-        Mon,  4 Dec 2023 16:30:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701736216; x=1733272216;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=cwldwLV9tnlaN1PBZG2sTEKF9j0+F0VNhngFQnxnJx8=;
-  b=lE8myy7Wwm60/yU2hWxGv4+m7Kq9xpsfPJOrV1uDPXmRoAZf3OA5nWQN
-   LFJiAANWeDO1z8ji8KLscvNsJYCzFxijJ0O3qNAuwGQAj8BDYYN6sTAqu
-   Yk8+OQTMMALorXL8oMyTVGRIe7gyY1DhGgdDblQaFGH3ekR5QloH3F4cM
-   x70jzGzhgCWzQU+xr7OKDD82H9p0ajtclHnM73Yw1jdjgSaI7xR6P3cOv
-   I6xFUPaS52HHPIsth+AWEVNFsFTp3JpOw6h84WL8BcEBy16wnUWjYoCR5
-   PwJGNyFfhR/tu27/wJcPLVK9pOY2ZDwY1g7xkjf15nD8Z34sx25m6k1XL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="692112"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="692112"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:30:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="18761962"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 16:30:15 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 16:30:14 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 4 Dec 2023 16:30:14 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 16:30:13 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HuU75kJy+uL1jaSzmksr/5ox+cAzq01PXcgEJ4uETTYcYRAWvclF4Rp8NgcJHAbiamYvfiDUFPnCAXtHhMvox4QIEVbLns7DwyB6mApTUXbFKqOw1pyRp8L4N5xswmeTvH9LM/BTdgkJF5ndqyYIMcOdNmjEdipzdXApC90cTFF9ZE5oa87zSpvbZTm67K4eAuIxvDnxx9kvAnABMkPpUzAZXqjCto/pbnXi6VtigJSMOOtRJfliu6Kmi+0DpHCxVRVV1tVmSx7gb17Wd9Y+DsphsG5eK602HJXlMjLq7s37020yFbyq+j3rhnC4kSiUTCjXAoq0Bt4Lbc3+sQKhRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+QGhxs2gOpvhXlYHiK8MAloXwnJymUIYW3lb3tlVLHk=;
- b=mA7FlLq7X8EG+w+JFOcQCsevOxiZpasXS2j3issZWlg2KLrFx+tDP0o722rLM8HRG+aS2tKPqD2GuK4dDgkU3ka+u7nIK8eeLf6KPRpCdp+rM1izGY6TwDzbTXjBw+l6cTn4LtZkzGnJIYYYFB3UTRHACStBZwR8HsE58lUsbz2CsVlSIdKTclCz+olQWIkfcXIkY2ayHJWDUM7YcRKRPjoKp+9dM1j4Dnc8TWezSCjX36pK/pBs0JNK6eHKAm5ucYEk89ogh2AUmmegcYPyStwO80ic01r/xJsA9E0N91xxmNO4UPTPleD1KRz9XaYPU1N1dZtXnynBXcRty42rtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SJ2PR11MB7502.namprd11.prod.outlook.com (2603:10b6:a03:4d3::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
- 2023 00:30:08 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7046.033; Tue, 5 Dec 2023
- 00:30:08 +0000
-Date:   Mon, 4 Dec 2023 16:30:02 -0800
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Dionna Amalie Glaze <dionnaglaze@google.com>,
-        Sean Christopherson <seanjc@google.com>
-CC:     Michael Roth <michael.roth@amd.com>,
-        Alexey Kardashevskiy <aik@amd.com>, <kvm@vger.kernel.org>,
-        <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
-        <linux-crypto@vger.kernel.org>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <jroedel@suse.de>, <thomas.lendacky@amd.com>,
-        <hpa@zytor.com>, <ardb@kernel.org>, <pbonzini@redhat.com>,
-        <vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
-        <dave.hansen@linux.intel.com>, <slp@redhat.com>,
-        <pgonda@google.com>, <peterz@infradead.org>,
-        <srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
-        <dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>,
-        <vbabka@suse.cz>, <kirill@shutemov.name>, <ak@linux.intel.com>,
-        <tony.luck@intel.com>,
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        <alpergun@google.com>, <jarkko@kernel.org>, <ashish.kalra@amd.com>,
-        <nikunj.dadhania@amd.com>, <pankaj.gupta@amd.com>,
-        <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        <dan.middleton@intel.com>
-Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for
- SNP_GUEST_REQUEST NAE event
-Message-ID: <656e6f0aa1c5_4568a29451@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-49-michael.roth@amd.com>
- <CAAH4kHb=hNH88poYw-fj+ewYgt8F-hseZcRuLDdvbgpSQ5FDZQ@mail.gmail.com>
- <ZS614OSoritrE1d2@google.com>
- <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
- <ZS_iS4UOgBbssp7Z@google.com>
- <20231110220756.7hhiy36jc6jiu7nm@amd.com>
- <ZU6zGgvfhga0Oiob@google.com>
- <CAAH4kHYPAiS+_KKhb1=8q=OkS+XBsES8J3K_acJ_5YcNZPi=kA@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAAH4kHYPAiS+_KKhb1=8q=OkS+XBsES8J3K_acJ_5YcNZPi=kA@mail.gmail.com>
-X-ClientProxiedBy: MW4P221CA0020.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:303:8b::25) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+        Mon, 4 Dec 2023 19:30:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3151F101
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:30:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69A5CC433C9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:30:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701736256;
+        bh=HFxQO9kBLtbTfZYFGSzvwFymTrp7jyUtmcbLo8s+6e0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WJ+IzGK1aNml2oVdUfq8bvf0Kf81D+fxssPMqFr10MZ9QKPzNtifcM9UVCIvIa1Ma
+         Uiv0HR57XrIqr4UTmrZZ/no94A8v8GK0tdyBOQ/dEDkqRQP8fvhsSsTp46U6glTV2X
+         25GMvujB3TykTjCaVmm18tF/16hAqzYYhOKrqo9jjhNemvloG5K3JMjzlX7Nq7DD22
+         D5aVlbiGmZ8Etc/7ryHsPdR+smmUtppbMsTeKpA9NdD3si4sKPWoib+jp4i8AxE3vq
+         tqEFSi08wQS/6XwaiPcIZsL4sYLYWTDU5V9wv2LSRzGMr8sDBgHSb2EFrkQu564TDQ
+         8g4kjsuMKO5hA==
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-286d6c95b8cso494604a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 16:30:56 -0800 (PST)
+X-Gm-Message-State: AOJu0YwhA36a85CZKEIuvgR3XGQMt/awg759P37pwBXO4EyCyIi9iTsf
+        n7Ac7Kr9L6e9GZe+mHUgtMgX9aktIb9T7gcC5I9quw==
+X-Google-Smtp-Source: AGHT+IEWYlE+eX9ld2dW3geKjHnQOFvx/IzPfMBaF/e3/gmHwWd6Fy0ErIhUizK7vzYb5rbo3Xc/P8UdfcnvsXFiO0Y=
+X-Received: by 2002:a17:90a:8597:b0:286:6f14:2870 with SMTP id
+ m23-20020a17090a859700b002866f142870mr512560pjn.31.1701736255833; Mon, 04 Dec
+ 2023 16:30:55 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SJ2PR11MB7502:EE_
-X-MS-Office365-Filtering-Correlation-Id: dd64637d-5662-493a-9b85-08dbf529552d
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XXjzxHmPhGQrqiAsKjxNMyadBBat9/qH89E/9RFFl9YSJG4Ej2VofhDvIm1Byrimw7VkK5fRJoTuuT2v20a7ltCZOs+UgWQgCwqn2elo2Xm+JGdF2qy0uOMUVSKT0hdp9v7g5Z5j0bBbeIglAKKydSQW4xPWTSzU2dRYE3cfepEyvHqTDdp4+/64Tt+7lNzp4yRS4Z5cviWKWqjA5JsWtzfcsZ/5uDP2dba/wfFr/h8e/3VHcx0ADjVmBzQHpgW3N9lcRE5M7dgVGce0Ga0VQI7xiTXB4vYOzxxayRUqRtjJYw1PVdvFrsn4sM8rPwzpYi+e5K8SqwIf4B0XtruYkvuiaKxDw1EbF1tVYQMOop9WlIqI6kw6YZkCGcWbFad75O99VwGxDurg73BSSIj22/hXHIlQmcD77LbqEEKAjfVrYr1WSck0SNMnFSZ7f24R3C2l7k0yk2/En923GcsPsQ0kJJpQODBdSF+FMcZzOULslA9XZwpzBhw00RlN70VLaUtso+R3P7hC5/9FCu2ypkzN0u9co6KsS8P1hSF9Qik=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(376002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(7406005)(5660300002)(86362001)(4326008)(8676002)(8936002)(2906002)(7416002)(41300700001)(6512007)(9686003)(6506007)(82960400001)(6666004)(83380400001)(6486002)(966005)(478600001)(26005)(38100700002)(110136005)(316002)(54906003)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?uRG7dOVFQRCLnoT4Fh/KQZnKz9yhNAOsurx3nDqSgvMwYk27aU0zwjZrRH+F?=
- =?us-ascii?Q?qiKOPpqM9g+YVWtquMdLOE500jivC3AoUtrGKVUNIk+sq2pzNWzweeEaTqKm?=
- =?us-ascii?Q?hEaudyafq9nBDUOEnIVvD728Ejnoq7Wuj1jlFJ56yt7RG3pmGMas6IcXpSIa?=
- =?us-ascii?Q?uM8KIIWN7LIk+bL1LmsWkSxLqQnSvgPaXByWyGX2UfqF2YhhnGZuG37zeVDY?=
- =?us-ascii?Q?HPt0d6j0DgkHHxF6prY4yqINj4J3SmsbwdNNczTcYsF0on50PR2Enmdl/ijG?=
- =?us-ascii?Q?Y0a5akBe9uNGgnISYUpMIHwZCaHPUPkofk0FPoKLAUO0+VgCytWt/mRGzNh0?=
- =?us-ascii?Q?/TWWP04RcgivWd+h/USNdYixn6+1Vj7kR4GYn3mAav47NLz7/ZjRpzVRGzYm?=
- =?us-ascii?Q?kGTQMJJCj64pYhkX1V5eHRoerwc8lc2biSM6hSTcWNmRo44wgTENJM5At4A0?=
- =?us-ascii?Q?mIl4uHgEhzyKIiccWOiqkDrmeIf9tDFvMnhyARIk8Qm06dRN58Ne0ymYT4Pa?=
- =?us-ascii?Q?gqOVYG/RWvT9+UauGkARNtkC2TnGCJ3BT9mab1Uu4lhMULZ5L9JzCcMcdro8?=
- =?us-ascii?Q?aFHisW4u691BeDGxZsmvRwyql0f7TBE3yLG+UP0w4TMsTGq0hsi/2V7mGSee?=
- =?us-ascii?Q?vwlYEuSQmcYgSHMzQgPsih05I8JhYOWHqUxSmlrSaBkq4Di0voF4IdDkYuFK?=
- =?us-ascii?Q?nB2Oc53MecDWOQG5aoF/xJy9J7G9wdvhuvGGinJ6iVXE0JvZha0+P/MoA8kS?=
- =?us-ascii?Q?kuGhmoFuKlH4hyiqc2fWnC+2IejqxTCDkbjRFSdcCE8Tn3P9Z0L1nNJZBHJ3?=
- =?us-ascii?Q?uOqi9+FSetjyKHJEZ1lQD7v6/eOU7PsAOhop7yxmq+2da49g7SRWukA7RdhU?=
- =?us-ascii?Q?Iu9qsDYFm6LinVEZX/8u0AX8EjEulz/50rlMbjFdMmnBcse0HFVxjccRxLu9?=
- =?us-ascii?Q?tw+eXB/P3KPMXRxRolS+u0C/jZY4E6U4JqCYEzRak5XLdCxF9GnE4zIyM5sx?=
- =?us-ascii?Q?RL7sq/CusSd8dD0eZEj++fuTUYTLkLmH5DjmfeT0Q0oQ4lXyU1LymVfW4jcd?=
- =?us-ascii?Q?YVchRvTItOZ+kLLovwNfoAkyyb98S5lnxoN0XcTTpJHK0NhP/XgapycZ1mix?=
- =?us-ascii?Q?a7B6wKjTi5YOKju9SmgvXkKoioYNUie6R/uR5tPDKrpdN32/jkj7fxWLgk8c?=
- =?us-ascii?Q?FgXP1qQgAZ1phD2XdquAYcSwKf4BRg1ALjSfdQnLvfgphnt1SVVyIim7z/xf?=
- =?us-ascii?Q?Mg7Oz0Xbb0Pr9IEh2mqq2/VLBQoqcBL7KGQTSMF0Zt/xNcXEgmNxXg3qoosw?=
- =?us-ascii?Q?ENn7uVcxdb1bRslW19ppX/9xM8bwWcnlKXTxRMdOuv3MLx/+w7h272HG6E42?=
- =?us-ascii?Q?7OqAx0VuFPDoScsXg8PmzLwrZowOCNIh0/qjsIQDuyhCtGmyXbIZ/8WG7cPo?=
- =?us-ascii?Q?sGI2jm0HfNTcHP1obpTG3HZzFIaSugMfGJpaFvSkOJFzByLIDxwhZFN37bfG?=
- =?us-ascii?Q?qlQN3QnCekO/E9g+GwWPP2YuJGM+/mHIZb0PwlcosNuFv94Cg7JzdmLBpOJy?=
- =?us-ascii?Q?RDgnm5clsQjJARWAisAAXM2SuQPGUagF0rx4NGCb5eMbR2H62TtZJZT3l9wc?=
- =?us-ascii?Q?wA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd64637d-5662-493a-9b85-08dbf529552d
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 00:30:08.0675
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WxOBSmNm5OfSCiz272W9kkmQoKF++l7Mzd4plTCap/ZZGhcyYL1j5Qhq9/MR2fc2/nW3K3vxC4BKPrDjHRQt9EB/VA3N+jA8GnVDwRwIQI8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7502
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-2-nphamcs@gmail.com>
+ <ZWjpNr3ZzvU4TDC8@casper.infradead.org> <CAKEwX=MV-F50i_=sZ0unfbgjrdxSTio00c4xTM19113BAN3-wA@mail.gmail.com>
+ <20231130203522.GC543908@cmpxchg.org>
+In-Reply-To: <20231130203522.GC543908@cmpxchg.org>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Mon, 4 Dec 2023 16:30:44 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuOvi6jrSPPKNeS1LFzEAPZwO77vEi5KQwW0c3eU13rcqQ@mail.gmail.com>
+Message-ID: <CAF8kJuOvi6jrSPPKNeS1LFzEAPZwO77vEi5KQwW0c3eU13rcqQ@mail.gmail.com>
+Subject: Re: [PATCH v8 1/6] list_lru: allows explicit memcg and NUMA node selection
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Nhat Pham <nphamcs@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ add Dan Middleton for his awareness ]
+On Thu, Nov 30, 2023 at 12:35=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.or=
+g> wrote:
+>
+> On Thu, Nov 30, 2023 at 12:07:41PM -0800, Nhat Pham wrote:
+> > On Thu, Nov 30, 2023 at 11:57=E2=80=AFAM Matthew Wilcox <willy@infradea=
+d.org> wrote:
+> > >
+> > > On Thu, Nov 30, 2023 at 11:40:18AM -0800, Nhat Pham wrote:
+> > > > This patch changes list_lru interface so that the caller must expli=
+citly
+> > > > specify numa node and memcg when adding and removing objects. The o=
+ld
+> > > > list_lru_add() and list_lru_del() are renamed to list_lru_add_obj()=
+ and
+> > > > list_lru_del_obj(), respectively.
+> > >
+> > > Wouldn't it be better to add list_lru_add_memcg() and
+> > > list_lru_del_memcg() and have:
 
-Dionna Amalie Glaze wrote:
-> > > So we're sort of complicating the more common case to support a more niche
-> > > one (as far as userspace is concerned anyway; as far as kernel goes, your
-> > > approach is certainly simplest :)).
+That is my first thought as well. If we are having two different
+flavors of LRU add, one has memcg and one without. The list_lru_add()
+vs list_lru_add_memcg() is the common way to do it.
 > > >
-> > > Instead, maybe a compromise is warranted so the requirements on userspace
-> > > side are less complicated for a more basic deployment:
+> > > +bool list_lru_del(struct list_lru *lru, struct list_head *item)
+> > > +{
+> > > +       int nid =3D page_to_nid(virt_to_page(item));
+> > > +       struct mem_cgroup *memcg =3D list_lru_memcg_aware(lru) ?
+> > > +               mem_cgroup_from_slab_obj(item) : NULL;
+> > > +
+> > > +       return list_lru_del_memcg(lru, item, nid, memcg);
+> > > +}
 > > >
-> > >   1) If /dev/sev is used to set a global certificate, then that will be
-> > >      used unconditionally by KVM, protected by simple dumb mutex during
-> > >      usage/update.
-> > >   2) If /dev/sev is not used to set the global certificate is the value
-> > >      is NULL, we assume userspace wants full responsibility for managing
-> > >      certificates and exit to userspace to request the certs in the manner
-> > >      you suggested.
+> > > Seems like _most_ callers will want the original versions and only
+> > > a few will want the explicit memcg/nid versions.  No?
 > > >
-> > > Sean, Dionna, would this cover your concerns and address the certificate
-> > > update use-case?
 > >
-> > Honestly, no.  I see zero reason for the kernel to be involved.  IIUC, there's no
-> > privileged operations that require kernel intervention, which means that shoving
-> > a global cert into /dev/sev is using the CCP driver as middleman.  Just use a
-> > userspace daemon.  I have a very hard time believing that passing around large-ish
-> > blobs of data in userspace isn't already a solved problem.
-> 
-> ping sathyanarayanan.kuppuswamy@linux.intel.com and +Dan Williams
+> > I actually did something along that line in earlier iterations of this
+> > patch series (albeit with poorer naming - __list_lru_add() instead of
+> > list_lru_add_memcg()). The consensus after some back and forth was
+> > that the original list_lru_add() was not a very good design (the
+> > better one was this new version that allows for explicit numa/memcg
+> > selection). So I agreed to fix it everywhere as a prep patch.
+> >
+> > I don't have strong opinions here to be completely honest, but I do
+> > think this new API makes more sense (at the cost of quite a bit of
+> > elbow grease to fix every callsites and extra reviewing).
+>
+> Maybe I can shed some light since I was pushing for doing it this way.
+>
+> The quiet assumption that 'struct list_head *item' is (embedded in) a
+> slab object that is also charged to a cgroup is a bit much, given that
+> nothing in the name or documentation of the function points to that.
 
-Apologies Dionna, I missed this earlier. 
+We can add it to the document if that is desirable.
 
-> 
-> I think for a uniform experience for all coco technologies, we need
-> someone from Intel to weigh in on supporting auxblob through a similar
-> vmexit. Whereas the quoting enclave gets its PCK cert installed by the
-> host, something like the firmware's SBOM [1] could be delivered in
-> auxblob. The proposal to embed the compressed SBOM binary in a coff
-> section of the UEFI doesn't get it communicated to user space, so this
-> is a good place to get that info about the expected TDMR in. The SBOM
-> proposal itself would need additional modeling in the coRIM profile to
-> have extra coco-specific measurements or we need to find some other
-> method of getting this info bundled with the attestation report.
+>
+> It bit us in the THP shrinker where that list head is embedded in a
+> tailpage (virt_to_page(page) is fun to debug). And it caused some
+> confusion in this case as well, where the zswap entry is a slab object
+> but not charged (the entry descriptor is not attractive for cgroup
+> accounting, only the backing memory it points to.)
+>
+> Yes, for most users - at least right now - the current assumption is
+> accurate. The thinking was just that if we do have to differentiate
+> callers now anyway, we might as well make the interface a bit more
+> self-documenting and harder to misuse going forward, even if it's a
+> bit more churn now.
 
-SBOM looks different than the SEV use case of @auxblob to convey a
-certificate chain.
+It comes down to whether we need to have the non memcg version of API
+going forward. If we don't then change the meaning of list_lru_add()
+to perform the deed of list_lru_add_memcg() makes sense. My assumption
+is that the non memcg version of the API does have legit usage. In
+that case, it seems having the original list_lru_add() and
+list_lur_add_memcg() as Mattew suggested feels more natural. What you
+really want is that every caller of list_lru_add() should seriously
+consider switching to list_lru_add_memcg() unless it has a very good
+reason to stay in the non memcg version. Renaming and changing the
+meaning of list_lru_add() is a bit confusing and has a negative impact
+on the outstanding patch that uses list_lru_add().  The end of the
+day, some developers still need to evaluate the call site one by one,
+renaming the function is not going to help that effort. Just make it
+more obvious.
 
-Are you asking for @auxblob to be SBOM on TDX and a certchain on SEV, or
-unifying the @auxblob format on SBOM?
+Just my 2 cents, others please chime in. Just to make it clear, that
+is my preference, it is not a NACK.
 
-> My own plan for SEV-SNP was to have a bespoke signed measurement of
-> the UEFI in the GUID table, but that doesn't extend to TDX. If we're
-> looking more at an industry alignment on coRIM for SBOM formats (yes
-> please), then it'd be great to start getting that kind of info plumbed
-> to the user in a uniform way that doesn't have to rely on servers
-> providing the endorsements.
-> 
-> [1] https://uefi.org/blog/firmware-sbom-proposal
-
-Honestly my first reaction for this ABI would be for a new file under
-/sys/firmware/efi/efivars or similar.
+Chris
