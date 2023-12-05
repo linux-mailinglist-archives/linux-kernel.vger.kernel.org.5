@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BDA804DCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A72C9804DCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:28:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbjLEJ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:28:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
+        id S235057AbjLEJ2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:28:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235028AbjLEJ2K (ORCPT
+        with ESMTP id S235054AbjLEJ2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:28:10 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637B99B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:15 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6ce49d9d874so2013655b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:15 -0800 (PST)
+        Tue, 5 Dec 2023 04:28:14 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BBF135
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:18 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce52ff23dfso1385279b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701768495; x=1702373295; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1701768498; x=1702373298; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2+Duv2eL4Rh6BmoQvomNjrPNP7WadF4MX+fx63CbvwQ=;
-        b=npuOWRMl7QM4Mt3i1dtM3vrIJQJeroBuwn1gjmvWDNQY6qx6lD0SyRMTuU/lLEq8/x
-         90lm00lWlHm89Yo4KOdOnePWBUSXN3JLLcNYRwScPja02eOnqzwpELIa7Um7TIPftpho
-         3LBCfrJ+uzgOGED/nWL0r7ORz/xms0o1//MPlIDMXv4khxkUJpN6kio4ShhknsO29KHJ
-         RYcl5sX9Yd7yXoAB0ryc7A0uJerxYBMCZs3vfMLDKINIU8n67rdkRj6f+ntdkl2kIzPF
-         3znjaQIIv0AOqzeaqOKc8PSAOFVa0pOViUsWNUsi6ByycoQ0jyNMmw57JRDVExxM8wpy
-         hRGg==
+        bh=5Ww+t+x4EF+o8Iz1q4xD0rNSq2UgrGpxhIva2EbXP3U=;
+        b=WQd4Rz90XOrJAD0wvBSaA0RZETBsG2VzReNSLplzy+/P//EiOtHblYd5upcyeQGq+w
+         J3RoD5OHQT8q+3IHewwRRnD5NsFhPnXAiWCYw4Hs5QGNUIgeFZV+YGAt/hbooNuds0mz
+         iF8+iJFXWbuAlWLgYTrG7qFTpy17EzpT5j5JHGfoUEhHAn/VIPFUCrjJrBE5jHMh6rX7
+         ikfq9/TQ3lXm/euJj2cHnIS8RHs0KssxBX8Cqzl20QRecoURA6MxVhI8K4UrrH+j2eja
+         mLN14jt+13Z5S93TIrAEjS8kgKhJBd+V1jI/PaI7odB+Hn0W3ZPU7OF378Y7zldLizw8
+         eW7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701768495; x=1702373295;
+        d=1e100.net; s=20230601; t=1701768498; x=1702373298;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2+Duv2eL4Rh6BmoQvomNjrPNP7WadF4MX+fx63CbvwQ=;
-        b=v92uJwzJ00WQ90C+O52khnzhEXf9Zw6tlPdRZREDq41xLEs66/NG4zyw03velOCb2Q
-         TdOBwWrVPlwSNjlkuyiPR5zN7vYmM92sKy8ZsI5Fz/G8EcBG9fco6YQsZGbIe3ailKUV
-         r2+CVpvJQWpetsU0hIXNTCog3xlv/aiCKZ1SoQw1/lcDP0q+046l1V1DACGkSnaXhc+D
-         94Ue1IIGh8jWBGM4KDaA4WL2aWvf+U36AnO62bVrGqlMyu/dw9wvHonfB+sh9btsw7K+
-         kN4yZtvM5wQSnA2ObyOCdVLo3Ew+/qdI1BcP3DhWnYusvD0CuI6UDtGn1UyuqtCt4n6L
-         z4yw==
-X-Gm-Message-State: AOJu0YwYwqbo59Xu7HRBAeKCvhhqqS9lwIZFWOqTDtn/kXHu3G6zTnIF
-        PdIR1gXFY0nlVYVBVwn63rzCsg==
-X-Google-Smtp-Source: AGHT+IHo8qyIK+a7xAlqBDFbhHitNbdyhcjGou5e7sEK1zHUFcXdJWS5bgBXVVX5Sw11ZixDo6r/6Q==
-X-Received: by 2002:a05:6a20:160a:b0:18f:97c:9778 with SMTP id l10-20020a056a20160a00b0018f097c9778mr7394313pzj.96.1701768494761;
-        Tue, 05 Dec 2023 01:28:14 -0800 (PST)
+        bh=5Ww+t+x4EF+o8Iz1q4xD0rNSq2UgrGpxhIva2EbXP3U=;
+        b=UhJ/EPgvD0bRQnexxYVzA0gFyhMu0wNXz53o9OutBPMaMAiTOj4LcjMmnYDA49MeEl
+         qkxvPAmHF0azBiCSeh5Og4pGmFdzAJAKS5l8pqhM4w2IHx/QN+vWxk16OiKRAMo7xQUH
+         rImVtM4/pGep8uJXrD4wxrj+QchbdRgb5BkUx+z8T8IJgqJaDH5nIP2wmaIzNqS6QE4z
+         Fkz+2aj2O4wp/7DKAv0s+9WkN5RkALXa6Bs4WH75fQ8JD1eXApMuthVTaxrWgUMz8Atk
+         xL37IX/8EAkyk4D7Ki+5QeiM83926yJ1AFVtiN4xfteCLycTWRTffqfWB6oqJL9L24QU
+         4Xww==
+X-Gm-Message-State: AOJu0YyoDh7nvLAKnnfKiBqZ47Hzh8NW5isiVlTjvWZt+Ts0yd/tV5W/
+        zWDVVKK14vPKK87YbsJDyp0VYw==
+X-Google-Smtp-Source: AGHT+IFaWRkKbZw7DstMCEBheFGlYTaPcp/3Zi4NlnL96zF+Y1cISDdKfBWTpwQP+FRgk8CWXY1DdQ==
+X-Received: by 2002:a05:6a00:893:b0:6ce:2757:7866 with SMTP id q19-20020a056a00089300b006ce27577866mr1216195pfj.33.1701768498058;
+        Tue, 05 Dec 2023 01:28:18 -0800 (PST)
 Received: from localhost.localdomain ([101.10.93.135])
-        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006cdd723bb6fsm8858788pfu.115.2023.12.05.01.28.11
+        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006cdd723bb6fsm8858788pfu.115.2023.12.05.01.28.15
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Dec 2023 01:28:14 -0800 (PST)
+        Tue, 05 Dec 2023 01:28:17 -0800 (PST)
 From:   Jerry Shih <jerry.shih@sifive.com>
 To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
@@ -58,9 +58,9 @@ To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
 Cc:     heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-crypto@vger.kernel.org
-Subject: [PATCH v3 01/12] RISC-V: add helper function to read the vector VLEN
-Date:   Tue,  5 Dec 2023 17:27:50 +0800
-Message-Id: <20231205092801.1335-2-jerry.shih@sifive.com>
+Subject: [PATCH v3 02/12] RISC-V: hook new crypto subdir into build-system
+Date:   Tue,  5 Dec 2023 17:27:51 +0800
+Message-Id: <20231205092801.1335-3-jerry.shih@sifive.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20231205092801.1335-1-jerry.shih@sifive.com>
 References: <20231205092801.1335-1-jerry.shih@sifive.com>
@@ -78,44 +78,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Heiko Stuebner <heiko.stuebner@vrull.eu>
 
-VLEN describes the length of each vector register and some instructions
-need specific minimal VLENs to work correctly.
-
-The vector code already includes a variable riscv_v_vsize that contains
-the value of "32 vector registers with vlenb length" that gets filled
-during boot. vlenb is the value contained in the CSR_VLENB register and
-the value represents "VLEN / 8".
-
-So add riscv_vector_vlen() to return the actual VLEN value for in-kernel
-users when they need to check the available VLEN.
+Create a crypto subdirectory for added accelerated cryptography routines
+and hook it into the riscv Kbuild and the main crypto Kconfig.
 
 Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
 Reviewed-by: Eric Biggers <ebiggers@google.com>
 Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 ---
- arch/riscv/include/asm/vector.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/riscv/Kbuild          | 1 +
+ arch/riscv/crypto/Kconfig  | 5 +++++
+ arch/riscv/crypto/Makefile | 4 ++++
+ crypto/Kconfig             | 3 +++
+ 4 files changed, 13 insertions(+)
+ create mode 100644 arch/riscv/crypto/Kconfig
+ create mode 100644 arch/riscv/crypto/Makefile
 
-diff --git a/arch/riscv/include/asm/vector.h b/arch/riscv/include/asm/vector.h
-index 9fb2dea66abd..1fd3e5510b64 100644
---- a/arch/riscv/include/asm/vector.h
-+++ b/arch/riscv/include/asm/vector.h
-@@ -244,4 +244,15 @@ void kernel_vector_allow_preemption(void);
- #define kernel_vector_allow_preemption()	do {} while (0)
- #endif
+diff --git a/arch/riscv/Kbuild b/arch/riscv/Kbuild
+index d25ad1c19f88..2c585f7a0b6e 100644
+--- a/arch/riscv/Kbuild
++++ b/arch/riscv/Kbuild
+@@ -2,6 +2,7 @@
  
-+/*
-+ * Return the implementation's vlen value.
-+ *
-+ * riscv_v_vsize contains the value of "32 vector registers with vlenb length"
-+ * so rebuild the vlen value in bits from it.
-+ */
-+static inline int riscv_vector_vlen(void)
-+{
-+	return riscv_v_vsize / 32 * 8;
-+}
+ obj-y += kernel/ mm/ net/
+ obj-$(CONFIG_BUILTIN_DTB) += boot/dts/
++obj-$(CONFIG_CRYPTO) += crypto/
+ obj-y += errata/
+ obj-$(CONFIG_KVM) += kvm/
+ 
+diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
+new file mode 100644
+index 000000000000..10d60edc0110
+--- /dev/null
++++ b/arch/riscv/crypto/Kconfig
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
 +
- #endif /* ! __ASM_RISCV_VECTOR_H */
++menu "Accelerated Cryptographic Algorithms for CPU (riscv)"
++
++endmenu
+diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
+new file mode 100644
+index 000000000000..b3b6332c9f6d
+--- /dev/null
++++ b/arch/riscv/crypto/Makefile
+@@ -0,0 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# linux/arch/riscv/crypto/Makefile
++#
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index 650b1b3620d8..c7b23d2c58e4 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -1436,6 +1436,9 @@ endif
+ if PPC
+ source "arch/powerpc/crypto/Kconfig"
+ endif
++if RISCV
++source "arch/riscv/crypto/Kconfig"
++endif
+ if S390
+ source "arch/s390/crypto/Kconfig"
+ endif
 -- 
 2.28.0
 
