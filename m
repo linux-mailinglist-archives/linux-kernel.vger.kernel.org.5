@@ -2,318 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9286804416
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59ABA804419
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbjLEBc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 20:32:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
+        id S1346193AbjLEBdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 20:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjLEBcZ (ORCPT
+        with ESMTP id S229575AbjLEBdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 20:32:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62569A4;
-        Mon,  4 Dec 2023 17:32:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701739951; x=1733275951;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=dH0muhTZKBEc+Tk6TICUqU+OBnl2RYYKjW/v7YtSnRw=;
-  b=X/Mkd9bHNZqYxeyDsEMp+OiPZl7EsPXSZIXZa8HnFklyVZa4ZuCWu8la
-   9349Vo1k6/YQZ3U+c1f9gOxYUgT6rWix2ECOJStg3vsfYhEFUoJTr++Rn
-   KYDVeMWy/ixzQ4CzGm82u0+PY2J6prhmoMw1jf3jbs9Zx1ZtLErdXxhHu
-   fir2UONFjiYUYMsgby9R5dEkbYnKPJbqwMvrzKho8oGtF+CyJeOKZeW9q
-   vHObEyrqtkFfscPiIokeJsqpOKVwxo2JmU+hB+LG0uhljQRiGabIzUEIy
-   FInqW2k3jSfMtivMtmHm7eoecs7iVAVob+I6mOGUpzOzs+TfpPNOQSTQt
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="458146850"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="458146850"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:32:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764155780"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="764155780"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 17:32:30 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 17:32:29 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 17:32:29 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 17:32:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Oqrscy18CsowVCAfR/uviGag8FeITOvZUGhoSdStTV+QrBQFFLlcWxGwtoY7KQZ1sawKS5eZmnTPxanWTSMmMhudD6s1qsMw6QKTomuSiJtKpDqlPimJvI5/aRpYGhEoaOc+QLU97yxo8+xaQt6Sup+qMV+wLOpQtuxSm1dz3fri4YnHo1TIdQNln9XUKf2DsX8X8I8BeUp3t2ejjY6UTF4La+cGrzc/5JzkrerBAOAzqSPV+AR40qQEJ+vf1v6BzwsWVI7VMXCT5vwtHfgjUOtJMLE+sXoaeNeQ2c2kT2ym/fytxTFYewQWCgbadieIXhfKB0J9YYUXrIF2jTlcTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dH0muhTZKBEc+Tk6TICUqU+OBnl2RYYKjW/v7YtSnRw=;
- b=TOd4CzOqFygyPiNSS3b3+lbZaeZDVYnIEeYjfyJnc1WfcJ5JDYnmCkjniXvnJgvcfrkhOI86gDlB6enq1eDcJuK542EnC2zt7hfHKFyEDgXt7VVAjiwApDa+kNGVuIkq7/YPENOAQcjhHceZNOzwAhWHszAkfC91tW8w1nykhzovTmcBNo6TEPabyK/sv0FYfvV4U/Wsfp829mrByxhylSBLRX1xbqcDOcWlVGVdSNo+wHJzV9f/r8305CKc8ZA69IdsciHEcnKU3ThzQeqJ2x2Y+xrYsoeVHfnOH0VdO+g2WK8VSA8D9Q9sd95TFfQ+01yuFzZZK17z6WQ8G63QNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by PH0PR11MB5013.namprd11.prod.outlook.com (2603:10b6:510:30::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
- 2023 01:32:27 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 01:32:27 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Baolu Lu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v7 12/12] iommu: Improve iopf_queue_flush_dev()
-Thread-Topic: [PATCH v7 12/12] iommu: Improve iopf_queue_flush_dev()
-Thread-Index: AQHaF3Dgz31tJTFbWk6dNEVbu0BBIbCU/P4AgAJgZgCAAFm2AIAAvYqAgAA+r0CAAIhegIAAwnlg
-Date:   Tue, 5 Dec 2023 01:32:26 +0000
-Message-ID: <BN9PR11MB5276908231BA164E4AF8806F8C85A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
- <20231115030226.16700-13-baolu.lu@linux.intel.com>
- <20231201203536.GG1489931@ziepe.ca>
- <a0ef3a4f-88fc-40fe-9891-495d1b6b365b@linux.intel.com>
- <20231203141414.GJ1489931@ziepe.ca>
- <2354dd69-0179-4689-bc35-f4bf4ea5a886@linux.intel.com>
- <BN9PR11MB5276999D29A133F33C3C4FEA8C86A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231204132503.GL1489931@ziepe.ca>
-In-Reply-To: <20231204132503.GL1489931@ziepe.ca>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|PH0PR11MB5013:EE_
-x-ms-office365-filtering-correlation-id: 73ce5c61-d75d-4449-5be5-08dbf5320a1c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +hTSNUfrPH5z34eSer/8r8Bl93K69FU/+sE052yKggYTJzSX5zVuW4QWuWBXmNX/JCxYGkxveX0z17dz8AXSohS/ypCF3TfFqZTfdyLoG54pj8MwWqM97D6iGi4Jadj4S+LJ0mP+vBUHOS5zDSTO7oq9/NuQsCxUy8qQeGMP/4xVGVwmp+WYmibNktkB0+xaM7QrV3eWJN7JfNJ91donEsL9UzGKmqQG7RFkXGYSfN002BdAzTrWKKd8X4OpT4o0LmXSRXUHOOLaC5r7F37hLccqomUW604X2fFToJcQZACxgzLeWd4yhi62bMo+0+YoQaqmTUVV1iuKvzFoWSh574FDCMtEjZrqYvb3Y+DK9wQefTmu+1j7nbN6z2i8hOJRZZS/tSXtavBO3sRSxVjfLMEiB2BhBfe49hF4U7ovOPx+wz48ON0PNMRE0f6nqdf0l9+TXXvliNe7Aqkc72iYWWQIXVHL3ROt0aiZPNGGYhyGIY7QDIn1g/BLFWuDwUhSekBcLSockZQHjbTO/Dfp1FWzcxitygjRNBaVMCEbuNru+poJBr1jMAg+vIncM3pRtZLXAK6s/0YuSj4YrFA2/c6R4T2PQcJ+nOOa0LCbDdaiWv4UH1789ZemnbvDudzjiKBrwF1WbdEcCLz/Gxhnj0JjIE+9BxXWGStep8D6fZ8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(346002)(376002)(136003)(230273577357003)(230173577357003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(7416002)(6506007)(9686003)(53546011)(26005)(33656002)(7696005)(38070700009)(41300700001)(82960400001)(38100700002)(86362001)(83380400001)(122000001)(71200400001)(2906002)(478600001)(55016003)(316002)(66946007)(54906003)(6916009)(66476007)(66556008)(64756008)(66446008)(76116006)(8676002)(52536014)(4326008)(8936002)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?i1X7X0/7Jbz8rTXddlyWioBBqUSh4QpT4KEcJrN6bw+DEnOOpyQloD3C8Y+H?=
- =?us-ascii?Q?ic8j+E4k2uWGNDSGbA49L8AtQItp2fw3eUVLs2zLgC+QhOmNSCUbIILqzrQH?=
- =?us-ascii?Q?O1VsGMtlRlM4DmJvndv6fcQtCUfgjO4J/BhPJDJNtb/QO0jODPE2K6roZU9Z?=
- =?us-ascii?Q?Qb9lVf995RHXruHmdHAJyzJXNTo2vrW58+VYIhh1i7p9qx1vmtxciNIp4Rdh?=
- =?us-ascii?Q?ICb6UTImuVR/Rt5Sj5Go3g7v6smzYS6B2lzYZjvuytv0hWC8a2E5HvMpvjfQ?=
- =?us-ascii?Q?OX/JJk82/S5ToCvsidZfogEKzyZbfipbaNB1j3t4CcoN7+nbLJ67T3bus9Bp?=
- =?us-ascii?Q?4YdYbatR18R82f4WEhHMQ7rnzHAwU9yonohALP42AcVplU4XEY9q5f0nx1mM?=
- =?us-ascii?Q?c5UPJEX9lkgrXDPtiZf5KCA3uKeTPveeMUSGOpVqNO1/QQwg2kuY1lUkt/7Y?=
- =?us-ascii?Q?SDLlRYVP8Iq/tbs96ZOFUTxBhpoauw4a18NTLf8lXjddLCDSM4nmOTgPVZTd?=
- =?us-ascii?Q?K1JEWd4wnrR5OtYie1giuARdlKjBWLvxtTtmg/kjbmDHm3GYe/NBmq5aKx4Q?=
- =?us-ascii?Q?B/71fIBYAUxOoQsb8VDC20bNNYpjUlEVsOGtdcMOlo4Wzp846fUC0oDPMx4a?=
- =?us-ascii?Q?NhH/77lcTeqOK4X89LC80WBwh+KwOQ1khr1Dzf4boUpCHCsyYP3ftNxKH5/Q?=
- =?us-ascii?Q?zovC2mPnAnDvTlfUscDl5jJjUYHlCWSxbObdMLWiQhY8Rx/ncc60/PaKRcEv?=
- =?us-ascii?Q?16IjQaSextmUIsAooKjCSznl5ODJfNlowKMYwW3k9r5gn9bNmTVsuaBhycMd?=
- =?us-ascii?Q?y77zHIZSO76jdW2HhjNllbn6mUuPDPlRfCKnFJwsDwbD5Fib/BnT9BWLxYJz?=
- =?us-ascii?Q?ulNavI9FtF81Goz8QSnmm06xKz1DDADPDTxnQj6MU1w0VPXepxQ+0v62bKyd?=
- =?us-ascii?Q?az7b5xV9Dx1tg3myiUqBIWukDMGnB0Drola8N+TWepm6oMHNeF1HE1jgQW6c?=
- =?us-ascii?Q?tf+6na0pDYpmstqD3HWlYzLYBQsJLgAYH31SCMORdAF5AgwpSY9/j+7G51kp?=
- =?us-ascii?Q?Si8f9X+Hcx3df1s0tZlh8W1fDOSpVt0wg3krMXi0LeSBX9o84kUPPbSN4GOd?=
- =?us-ascii?Q?vXmHgp6dAjJ2izpSvTG4sev0BxXytrMyWuyNo3SLAJz+6vA75b49bSAw0s9K?=
- =?us-ascii?Q?J5RSRE7S1RfHsnZcDTI8+PR2ojtf1VHiILTiQH+4MknucoS9XED52E2C0Epy?=
- =?us-ascii?Q?99DJRIdG9IrudXirpTb369KEkxoBKUaNJ/StYPYhkY78WMnSg0Fc9ENVErDx?=
- =?us-ascii?Q?u4+v8+QVIUru3sQuzBeyTCSTepxsmgOI9X6s56ZvrEGaEKUNwRZKt0ej6+S4?=
- =?us-ascii?Q?p65S6SNX8kLmAEytof9IpOyEFDpF45qAE7ihaudEB/vhwOUU0ZiYha/RxjtF?=
- =?us-ascii?Q?EcX4QvNiUVuGaZ7nIBY9OFCmradzp82BLriDhUBX6+9KQo4V61w6ttkdqySB?=
- =?us-ascii?Q?wTzNggcgWhCaJhFHDpYDYvsfQdEt36niENvIa1Ev1XiWrWeDRrM3Bell4Oo9?=
- =?us-ascii?Q?Sfqu8F+N1f+xGPa4id71bDH9wJifLN84cu1f1hmc?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 4 Dec 2023 20:33:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78B1F0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:33:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 403CFC433C7;
+        Tue,  5 Dec 2023 01:33:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701740029;
+        bh=vJDn2aLNSQniK14H9V73Wg+WOKYAHMcvLaKvUqrsnp4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=NvNqaV3Ypx9sMrksog6NIqyZ0jIAjcre6qJ/xwMZOa/neMJfwqou7aM0ZnHzcnj2e
+         igwDZfrrG9157YUVNDkTs0+Pn4oArI4V7Nhj6nx5EocZgvMdSH0hO7hDUJL7/lMSxd
+         o1zVkUmLvdmXcSdD1+GQ9MeHrRUuexiUY0giJhnH6hpskNNdxA0AzUr0CYPZ1lXC9X
+         LYMr70vxx6FipCC2TRP0UdBPefOx/i8RzK6bZdHxZqAMNgy+EyXbYOGBNDCM2rMEab
+         azoQAi4MXRlxJYgKhk43pRnf4AZnfRtRizQ3AJYFSx6Rq3eYOqIrk2EICo+/co2wK4
+         O4WPWeCo2IxXw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C2AECCE1147; Mon,  4 Dec 2023 17:33:48 -0800 (PST)
+Date:   Mon, 4 Dec 2023 17:33:48 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, rostedt@goodmis.org,
+        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
+Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
+Message-ID: <209f0e89-7ebd-4759-9883-21d842d0d26c@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
+ <20231107215742.363031-49-ankur.a.arora@oracle.com>
+ <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
+ <87v89lzu5a.ffs@tglx>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 73ce5c61-d75d-4449-5be5-08dbf5320a1c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2023 01:32:26.9674
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jRLHZ99cMsd2xVb07eodei0qIbbAUTxxiEFkiOaGgCzNAwICFfW1Ftof27uOw/DMAGLDsUGAR4yJgFc6gtdeng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5013
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v89lzu5a.ffs@tglx>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jason Gunthorpe <jgg@ziepe.ca>
-> Sent: Monday, December 4, 2023 9:25 PM
->=20
-> On Mon, Dec 04, 2023 at 05:37:13AM +0000, Tian, Kevin wrote:
-> > > From: Baolu Lu <baolu.lu@linux.intel.com>
-> > > Sent: Monday, December 4, 2023 9:33 AM
-> > >
-> > > On 12/3/23 10:14 PM, Jason Gunthorpe wrote:
-> > > > On Sun, Dec 03, 2023 at 04:53:08PM +0800, Baolu Lu wrote:
-> > > >> Even if atomic replacement were to be implemented,
-> > > >> it would be necessary to ensure that all translation requests,
-> > > >> translated requests, page requests and responses for the old domai=
-n
-> are
-> > > >> drained before switching to the new domain.
-> > > >
-> > > > Again, no it isn't required.
-> > > >
-> > > > Requests simply have to continue to be acked, it doesn't matter if
-> > > > they are acked against the wrong domain because the device will sim=
-ply
-> > > > re-issue them..
-> > >
-> > > Ah! I start to get your point now.
-> > >
-> > > Even a page fault response is postponed to a new address space, which
-> > > possibly be another address space or hardware blocking state, the
-> > > hardware just retries.
+On Tue, Nov 28, 2023 at 06:04:33PM +0100, Thomas Gleixner wrote:
+> Paul!
+> 
+> On Mon, Nov 20 2023 at 16:38, Paul E. McKenney wrote:
+> > But...
 > >
-> > if blocking then the device shouldn't retry.
->=20
-> It does retry.
->=20
-> The device is waiting on a PRI, it gets back an completion. It issues
-> a new ATS (this is the rety) and the new-domain responds back with a
-> failure indication.
+> > Suppose we have a long-running loop in the kernel that regularly
+> > enables preemption, but only momentarily.  Then the added
+> > rcu_flavor_sched_clock_irq() check would almost always fail, making
+> > for extremely long grace periods.  Or did I miss a change that causes
+> > preempt_enable() to help RCU out?
+> 
+> So first of all this is not any different from today and even with
+> RCU_PREEMPT=y a tight loop:
+> 
+>     do {
+>     	preempt_disable();
+>         do_stuff();
+>         preempt_enable();
+>     }
+> 
+> will not allow rcu_flavor_sched_clock_irq() to detect QS reliably. All
+> it can do is to force reschedule/preemption after some time, which in
+> turn ends up in a QS.
 
-I'm not sure that is the standard behavior defined by PCIe spec.
+True, but we don't run RCU_PREEMPT=y on the fleet.  So although this
+argument should offer comfort to those who would like to switch from
+forced preemption to lazy preemption, it doesn't help for those of us
+running NONE/VOLUNTARY.
 
-According to "10.4.2 Page Request Group Response Message", function's
-response to Page Request failure is implementation specific.
+I can of course compensate if need be by making RCU more aggressive with
+the resched_cpu() hammer, which includes an IPI.  For non-nohz_full CPUs,
+it currently waits halfway to the stall-warning timeout.
 
-so a new ATS is optional and likely the device will instead abort the DMA
-if PRI response already indicates a failure.
+> The current NONE/VOLUNTARY models, which imply RCU_PRREMPT=n cannot do
+> that at all because the preempt_enable() is a NOOP and there is no
+> preemption point at return from interrupt to kernel.
+> 
+>     do {
+>         do_stuff();
+>     }
+> 
+> So the only thing which makes that "work" is slapping a cond_resched()
+> into the loop:
+> 
+>     do {
+>         do_stuff();
+>         cond_resched();
+>     }
 
->=20
-> If the new domain had a present page it would respond with a
-> translation
->=20
-> If the new domain has a non-present page then we get a new PRI.
->=20
-> The point is from a device perspective it is always doing something
-> correct.
->=20
-> > btw if a stale request targets an virtual address which is outside of t=
-he
-> > valid VMA's of the new address space then visible side-effect will
-> > be incurred in handle_mm_fault() on the new space. Is it desired?
->=20
-> The whole thing is racy, if someone is radically changing the
-> underlying mappings while DMA is ongoing then there is no way to
-> synchronize 'before' and 'after' against a concurrent external device.
->=20
-> So who cares?
->=20
-> What we care about is that the ATC is coherent and never has stale
-> data. The invalidation after changing the translation ensures this
-> regardless of any outstanding un-acked PRI.
->=20
-> > Or if a pending response carries an error code (Invalid Request) from
-> > the old address space is received by the device when the new address
-> > space is already activated, the hardware will report an error even
-> > though there might be a valid mapping in the new space.
->=20
-> Again, all racy. If a DMA is ongoing at the same instant things are
-> changed there is no definitive way to say if it resolved before or
-> after.
->=20
-> The only thing we care about is that dmas that are completed before
-> see the before translation and dmas that are started after see the
-> after translation.
->=20
-> DMAs that cross choose one at random.
+Yes, exactly.
 
-Yes that makes sense for replacement.
+> But the whole concept behind LAZY is that the loop will always be:
+> 
+>     do {
+>     	preempt_disable();
+>         do_stuff();
+>         preempt_enable();
+>     }
+> 
+> and the preempt_enable() will always be a functional preemption point.
 
-But here we are talking about a draining requirement when disabling
-a pasid entry, which is certainly not involved in replacement.
+Understood.  And if preempt_enable() can interact with RCU when requested,
+I would expect that this could make quite a few calls to cond_resched()
+provably unnecessary.  There was some discussion of this:
 
->=20
-> > I don't think atomic replace is the main usage for this draining
-> > requirement. Instead I'm more interested in the basic popular usage:
-> > attach-detach-attach and not convinced that no draining is required
-> > between iommu/device to avoid interference between activities
-> > from old/new address space.
->=20
-> Something like IDXD needs to halt DMAs on the PASID and flush all
-> outstanding DMA to get to a state where the PASID is quiet from the
-> device perspective. This is the only way to stop interference.
+https://lore.kernel.org/all/0d6a8e80-c89b-4ded-8de1-8c946874f787@paulmck-laptop/
 
-why is it IDXD specific behavior? I suppose all devices need to quiesce
-the outstanding DMAs when tearing down the binding between the
-PASID and previous address space.
+There were objections to an earlier version.  Is this version OK?
 
-and here what you described is the normal behavior. In this case
-I agree that no draining is required in iommu side given the device
-should have quiesced all outstanding DMAs including page requests.
+> So let's look at the simple case where more than one task is runnable on
+> a given CPU:
+> 
+>     loop()
+> 
+>       preempt_disable();
+> 
+>       --> tick interrupt
+>           set LAZY_NEED_RESCHED
+> 
+>       preempt_enable() -> Does nothing because NEED_RESCHED is not set
+> 
+>       preempt_disable();
+> 
+>       --> tick interrupt
+>           set NEED_RESCHED
+> 
+>       preempt_enable()
+>         preempt_schedule()
+>           schedule()
+>             report_QS()
+> 
+> which means that on the second tick a quiesent state is
+> reported. Whether that's really going to be a full tick which is granted
+> that's a scheduler decision and implementation detail and not really
+> relevant for discussing the concept.
 
-but there are also terminal conditions e.g. when a workqueue is
-reset after hang hence additional draining is required from the=20
-iommu side to ensure all the outstanding page requests/responses
-are properly handled.
+In my experience, the implementation details make themselves relevant
+sooner or later, and often sooner...
 
-vt-d spec defines a draining process to cope with those terminal
-conditions (see 7.9 Pending Page Request Handling on Terminal
-Conditions). intel-iommu driver just implements it by default for
-simplicity (one may consider providing explicit API for drivers to
-call but not sure of the necessity if such terminal conditions
-apply to most devices). anyway this is not a fast path.
+> Now the problematic case is when there is only one task runnable on a
+> given CPU because then the tick interrupt will set neither of the
+> preemption bits. Which is fine from a scheduler perspective, but not so
+> much from a RCU perspective.
+> 
+> But the whole point of LAZY is to be able to enforce rescheduling at the
+> next possible preemption point. So RCU can utilize that too:
+> 
+> rcu_flavor_sched_clock_irq(bool user)
+> {
+> 	if (user || rcu_is_cpu_rrupt_from_idle() ||
+> 	    !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
+> 		rcu_qs();
+>                 return;
+> 	}
+> 
+>         if (this_cpu_read(rcu_data.rcu_urgent_qs))
+>         	set_need_resched();
+> }
 
-another example might be stop marker. A device using stop marker
-doesn't need to wait for outstanding page requests. According to PCIe
-spec (10.4.1.2 Managing PASID Usage on PRG Requests) the device
-simply marks outstanding page request as stale and sends a stop
-marker message to the IOMMU. Page responses for those stale
-requests are ignored. But presumably the iommu driver still needs
-to drain those requests until the stop marker message in unbind
-to avoid them incorrectly routed to a new address space in case the
-PASID is rebound to another process immediately.
+Yes, that is one of the changes that would be good to make, as discussed
+previously.
 
->=20
-> If the device is still issuing DMA after the domain changes then it is
-> never going to work right.
->=20
-> If *IDXD* needs some help to flush PRIs after it halts DMAs (because
-> it can't do it on its own for some reason) then IDXD should have an
-> explicit call to do that, after suspending new DMA.
+> So:
+> 
+>     loop()
+> 
+>       preempt_disable();
+> 
+>       --> tick interrupt
+>             rcu_flavor_sched_clock_irq()
+>                 sets NEED_RESCHED
+> 
+>       preempt_enable()
+>         preempt_schedule()
+>           schedule()
+>             report_QS()
+> 
+> See? No magic nonsense in preempt_enable(), no cond_resched(), nothing.
 
-as above I don't think IDXD itself has any special requirements. We
-are discussing general device terminal conditions which are considered
-by the iommu spec.
+Understood, but that does delay detection of that quiescent state by up
+to one tick.
 
->=20
-> We don't know what things devices will need to do here, devices that
-> are able to wait for PRIs to complete may want a cancelling flush to
-> speed that up, and that shouldn't be part of the translation change.
->=20
-> IOW the act of halting DMA and the act of changing the translation
-> really should be different things. Then we get into interesting
-> questions like what sequence is required for a successful FLR. :\
->=20
-> Jason
+> The above rcu_flavor_sched_clock_irq() check for rcu_data.rcu_urgent_qs
+> is not really fundamentaly different from the check in rcu_all_gs(). The
+> main difference is that it is bound to the tick, so the detection/action
+> might be delayed by a tick. If that turns out to be a problem, then this
+> stuff has far more serious issues underneath.
 
+Again, as I have stated before, one advantage of PREEMPT_COUNT=y is this
+ability, so yes, believe it or not, I really do understand this.  ;-)
+
+> So now you might argue that for a loop like this:
+> 
+>     do {
+>         mutex_lock();
+>         do_stuff();
+>         mutex_unlock();
+>     }
+> 
+> the ideal preemption point is post mutex_unlock(), which is where
+> someone would mindfully (*cough*) place a cond_resched(), right?
+> 
+> So if that turns out to matter in reality and not just by academic
+> inspection, then we are far better off to annotate such code with:
+> 
+>     do {
+>         preempt_lazy_disable();
+>         mutex_lock();
+>         do_stuff();
+>         mutex_unlock();
+>         preempt_lazy_enable();
+>     }
+> 
+> and let preempt_lazy_enable() evaluate the NEED_RESCHED_LAZY bit.
+
+I am not exactly sure what semantics you are proposing with this pairing
+as opposed to "this would be a good time to preempt in response to the
+pending lazy request".  But I do agree that something like this could
+replace at least a few more instance of cond_resched(), so that is good.
+Not necessarily all of them, though.
+
+> Then rcu_flavor_sched_clock_irq(bool user) can then use a two stage
+> approach like the scheduler:
+> 
+> rcu_flavor_sched_clock_irq(bool user)
+> {
+> 	if (user || rcu_is_cpu_rrupt_from_idle() ||
+> 	    !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
+> 		rcu_qs();
+>                 return;
+> 	}
+> 
+>         if (this_cpu_read(rcu_data.rcu_urgent_qs)) {
+>         	if (!need_resched_lazy()))
+>                 	set_need_resched_lazy();
+>                 else
+>                 	set_need_resched();
+> 	}
+> }
+> 
+> But for a start I would just use the trivial
+> 
+>         if (this_cpu_read(rcu_data.rcu_urgent_qs))
+>         	set_need_resched();
+> 
+> approach and see where this gets us.
+
+Agreed, I would start with the plain set_need_resched().  This shouldn't
+happen all that often, on default x86 builds nine milliseconds into the
+grace period.
+
+> With the approach I suggested to Ankur, i.e. having PREEMPT_AUTO(or
+> LAZY) as a config option we can work on the details of the AUTO and
+> RCU_PREEMPT=n flavour up to the point where we are happy to get rid
+> of the whole zoo of config options alltogether.
+
+I agree that some simplification should be possible and would be
+desireable.
+
+> Just insisting that RCU_PREEMPT=n requires cond_resched() and whatsoever
+> is not really getting us anywhere.
+
+Except that this is not what is happening, Thomas.  ;-)
+
+You are asserting that all of the cond_resched() calls can safely be
+eliminated.  That might well be, but more than assertion is required.
+You have come up with some good ways of getting rid of some classes of
+them, which is a very good and very welcome thing.  But that is not the
+same as having proved that all of them may be safely removed.
+
+							Thanx, Paul
