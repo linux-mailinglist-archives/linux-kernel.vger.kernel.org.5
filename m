@@ -2,131 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F2D8052E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89328052E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345093AbjLELbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S232035AbjLELbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:31:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345075AbjLELbL (ORCPT
+        with ESMTP id S1442218AbjLELa4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:31:11 -0500
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8112C1B9;
-        Tue,  5 Dec 2023 03:31:16 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701775857; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=j8ERvUoQFRjxzG3q+WoTBj1tiSAUaNNRRWQVzv3YChJpuqqjq5wIMapskHmrZ/dxQn
-    +nKRxGQOx6sQbb4VS2JbtwukY5kfaegoSRxR9hJUtpRj+EsdsI9kDlOUsS6DT/uNKZiV
-    E3oaZANWqdrl7ieUdYqoH8yNUOXdqqYpdyZf11MRpkAcPw6K5+Jn+wh1emKGR+Gy0d5V
-    COveT6qXTRG25t8X78MCMe59XUDiSHVGjGR7FEFFFWMaUr9V+YYfL6thiAScqmghyFL1
-    v7I4Ez06vPu+n4Y1+aEDP9PFo71j0K+ba4D7wdbaNG8d9EKc4H5Y9mf1I9oMN2JkhlWr
-    yp1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701775857;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=R8hAw3u8uqXybhgsoJbMwSKfmEEJh0/vArUEqpnDzW8=;
-    b=Xuo2z92jnhvalBzoA/FJv5RM/4iFyeugNtj6kUQdMnOLBCqg5rKX3+xbNHURiAADij
-    qpxe45n6q99RsaPrYpcoxZyI4UegrYWSgyXBh8CYzjPXiX3uVk2KhQ7cqjkLVBFewx5y
-    rFtVEdHS/oZLKqaxEUIBwJFwdAksVZilS7a0lKVib6QkFbmx32eXpacWS96hkPbyy281
-    7loYXdggQt2wVeYQuw0HYoEihJ//VDF0EWXTBkGpUjlfBCwXBgdDiXbNuwVmS3IF1rr5
-    PdSELmVfXHMTMGbJDLOhGu7IfsdlNit91/eFnupQgGvfgJVRxSbcy8K1POjlNLS1DZK1
-    rfNw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701775857;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=R8hAw3u8uqXybhgsoJbMwSKfmEEJh0/vArUEqpnDzW8=;
-    b=M7XiLvX73qoQax2FX0WCdtSotvrXrkdQu0DAmf1qcF9qH0wnlpwaNKMCuXVB17FC7r
-    c4nXgffq+mYxza2XOpLGCGV9chiVi8ngsOFUf2VOOSdhpzGQ9H3Fr8nt9uVo3gc5sKvi
-    2tSdbtMPm2zogOqbBHig8FQIMMflhs/uh6jZqLZf4t0wVbosyx/VG/fziMa2z3NV1FIf
-    mNQxj7JhcwGw3loI6xByyfVBqdBGKXLH0hqUeBnRgRoNf+KQlwqWmmoKMH0IiVrEPr7l
-    BARz5m3nXqWcC71+LbBtYsOleD/Lw1NsvnCnI/iBiYy2OjX/wo1e8ND7iXElkYuv4pg6
-    5nRg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701775857;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=R8hAw3u8uqXybhgsoJbMwSKfmEEJh0/vArUEqpnDzW8=;
-    b=wcXJG4s/z88ltIwTsAmmSfGUkunYw8ndfagKoH9cZ5jWXVCPV736ww7fHo65T71Bco
-    75BdiM0wjzv+sI5D1sDg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8paF1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.10.0 DYNA|AUTH)
-    with ESMTPSA id 58bb61zB5BUu12y
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 5 Dec 2023 12:30:56 +0100 (CET)
-Date:   Tue, 5 Dec 2023 12:30:50 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     Raymond Hackley <raymondhackley@protonmail.com>,
-        linux-kernel@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jakob Hauser <jahau@rocketmail.com>,
-        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH] arm64: dts: qcom: msm8916/39-samsung-a2015: Add PMIC and
- charger
-Message-ID: <ZW8J6vYKg82Q4JFV@gerhold.net>
-References: <20231205093841.24325-1-raymondhackley@protonmail.com>
- <1c62dd8b-72b2-4204-8284-a1dd90d4f909@linaro.org>
+        Tue, 5 Dec 2023 06:30:56 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2D2D116
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:31:02 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8988139F;
+        Tue,  5 Dec 2023 03:31:48 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 000CE3F766;
+        Tue,  5 Dec 2023 03:30:57 -0800 (PST)
+Message-ID: <a81dc390-8b10-4ce9-b72f-57f253e77af3@arm.com>
+Date:   Tue, 5 Dec 2023 11:30:56 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c62dd8b-72b2-4204-8284-a1dd90d4f909@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 01/15] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231204105440.61448-1-ryan.roberts@arm.com>
+ <20231204105440.61448-2-ryan.roberts@arm.com>
+ <a12ce4f8-feb0-4e35-8f55-9270fe5a808b@redhat.com>
+ <104de2d6-ecf9-4b0c-a982-5bd8e1aea758@redhat.com>
+ <5b8b9f8c-8e9b-42a5-b8b2-9b96903f3ada@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <5b8b9f8c-8e9b-42a5-b8b2-9b96903f3ada@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 12:17:15PM +0100, Bryan O'Donoghue wrote:
-> On 05/12/2023 10:38, Raymond Hackley wrote:
-> > The phones listed below have Richtek RT5033 PMIC and charger.
-> > Add them to the device trees.
-> > 
-> > - Samsung Galaxy A3/A5/A7 2015
-> > - Samsung Galaxy E5/E7
-> > - Samsung Galaxy Grand Max
-> > 
-> > Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
-> > [...]
-> > +			/*
-> > +			 * Needed for camera, but not used yet.
-> > +			 * Define empty nodes to allow disabling the unused
-> > +			 * regulators.
-> > +			 */
-> > +			LDO {};
-> > +			BUCK {};
-> > +		};
+On 04/12/2023 17:27, David Hildenbrand wrote:
+>>
+>> With rmap batching from [1] -- rebased+changed on top of that -- we could turn
+>> that into an effective (untested):
+>>
+>>           if (page && folio_test_anon(folio)) {
+>> +               nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
+>> +                                               pte, enforce_uffd_wp, &nr_dirty,
+>> +                                               &nr_writable);
+>>                   /*
+>>                    * If this page may have been pinned by the parent process,
+>>                    * copy the page immediately for the child so that we'll always
+>>                    * guarantee the pinned page won't be randomly replaced in the
+>>                    * future.
+>>                    */
+>> -               folio_get(folio);
+>> -               if (unlikely(folio_try_dup_anon_rmap_pte(folio, page,
+>> src_vma))) {
+>> +               folio_ref_add(folio, nr);
+>> +               if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page, nr,
+>> src_vma))) {
+>>                           /* Page may be pinned, we have to copy. */
+>> -                       folio_put(folio);
+>> -                       return copy_present_page(dst_vma, src_vma, dst_pte,
+>> src_pte,
+>> -                                                addr, rss, prealloc, page);
+>> +                       folio_ref_sub(folio, nr);
+>> +                       ret = copy_present_page(dst_vma, src_vma, dst_pte,
+>> +                                               src_pte, addr, rss, prealloc,
+>> +                                               page);
+>> +                       return ret == 0 ? 1 : ret;
+>>                   }
+>> -               rss[MM_ANONPAGES]++;
+>> +               rss[MM_ANONPAGES] += nr;
+>>           } else if (page) {
+>> -               folio_get(folio);
+>> -               folio_dup_file_rmap_pte(folio, page);
+>> -               rss[mm_counter_file(page)]++;
+>> +               nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
+>> +                                               pte, enforce_uffd_wp, &nr_dirty,
+>> +                                               &nr_writable);
+>> +               folio_ref_add(folio, nr);
+>> +               folio_dup_file_rmap_ptes(folio, page, nr);
+>> +               rss[mm_counter_file(page)] += nr;
+>>           }
+>>
+>>
+>> We'll have to test performance, but it could be that we want to specialize
+>> more on !folio_test_large(). That code is very performance-sensitive.
+>>
+>>
+>> [1] https://lkml.kernel.org/r/20231204142146.91437-1-david@redhat.com
 > 
-> Aren't the camera regulators off until enabled ?
+> So, on top of [1] without rmap batching but with a slightly modified version of
+
+Can you clarify what you mean by "without rmap batching"? I thought [1]
+implicitly adds rmap batching? (e.g. folio_dup_file_rmap_ptes(), which you've
+added in the code snippet above).
+
+> yours (that keeps the existing code structure as pointed out and e.g., updates
+> counter updates), running my fork() microbenchmark with a 1 GiB of memory:
+> 
+> Compared to [1], with all order-0 pages it gets 13--14% _slower_ and with all
+> PTE-mapped THP (order-9) it gets ~29--30% _faster_.
+
+What test are you running - I'd like to reproduce if possible, since it sounds
+like I've got some work to do to remove the order-0 regression.
+
+> 
+> So looks like we really want to have a completely seprate code path for
+> "!folio_test_large()" to keep that case as fast as possible. And "Likely" we
+> want to use "likely(!folio_test_large()". ;)
+
+Yuk, but fair enough. If I can repro the perf numbers, I'll have a go a
+reworking this.
+
+I think you're also implicitly suggesting that this change needs to depend on
+[1]? Which is a shame...
+
+I guess I should also go through a similar exercise for patch 2 in this series.
+
+> 
+> Performing rmap batching on top of that code only slightly (another 1% or so)
+> improves performance in the PTE-mapped THP (order-9) case right now, in contrast
+> to other rmap batching. Reason is as all rmap code gets inlined here and we're
+> only doing subpage mapcount updates + PAE handling.
 > 
 
-We don't know for sure what state they are in during boot. If we omit
-these nodes the regulator core will ignore these regulators completely
-and just leave them in whatever state they are.
-
-I would indeed expect them to be off after reset, but there are also
-other situations in which Linux might be booted, such as kexec. That's
-why it's usually better to be explicit and avoid relying on boot/reset
-states altogether.
-
-Thanks,
-Stephan
