@@ -2,447 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E616780468F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E48E8046B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:30:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344116AbjLED3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 22:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
+        id S1344194AbjLEDaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 22:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbjLED27 (ORCPT
+        with ESMTP id S231624AbjLEDah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 22:28:59 -0500
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5A6CE
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 19:29:04 -0800 (PST)
-Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-46487cb65f4so589169137.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 19:29:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701746944; x=1702351744; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GRYZs2ccf7Jea7Y1XO8nn0v+O1TPuptHdUG0scn04ls=;
-        b=cqTiiLnxCJrRegV1Or82nEDUrXy0qXiKsa0oeaJKtiIWqA337VtdsFhA6Dy8RmB8ss
-         fRDIoiCQ1J9CjJxGAWsV+zVsXxBXst/TuvJOvWs1GY9g89CDECdPNPpQbEZImIqvBUpA
-         XKGZ3DsHvaBIZKDSF4Y9vVlDM5NwKHfJUEmAVHxazp2U9DJAQq8UB8pRC3l3UmyJS6wM
-         qTMjOfLxU7+GA/kFJa7qL9bs0EtUeIXWYslbucxvxbbn9BDNhUVV0V7D7UXjm+MHZuno
-         F9eqCNZH4eHyuvekkZgoS1dV1gMSEoPakGgEN3zjHfT9xQX7LfKKbwuzcaW5otsc2mkL
-         EzZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701746944; x=1702351744;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GRYZs2ccf7Jea7Y1XO8nn0v+O1TPuptHdUG0scn04ls=;
-        b=eW8us1dXhOaWenlKajdmdff3A7BJKJR/7gjZIzbUlzqkbOxrrB9EpFTcgtAf0uX6uL
-         QqSMBm1Fd+zhdF3fIxHD7dqtpEMsyZFhuiJkk/T7mq6MoBgLnWwKr+8JwWYiHFn8gHdP
-         bt8WYFg3g7bTWkKrMgs/C2yAo9dro0Jekws/Zngjs7Sn9QG8r3Ln5HwhjPPYU7lGz/Jy
-         w2ZQHS1NtYETV0OyQ1EWQCs1/M2SBPVwznZ/5l5bmpg336Hv6KsLTCNn6uwOgi3Gu/xm
-         WDNWbhv5em0o/3Ozg+19o+by2voaoXdkCJL8S1l6JnTFV+V2j0J41KR2JgLm7azTUb8A
-         dU5g==
-X-Gm-Message-State: AOJu0YyUT+E9gqyDx5NG+o8xy+TVnrecCknhcpxijnPQGhduyvjaR/3y
-        qyq+DSV4M8fbIBP9JnOzc9UfYknLYzYylXOrG5I=
-X-Google-Smtp-Source: AGHT+IF7H0tlqgWsjIBN/XWGNrPpJBtzSvfTM8En23cVZGvoDfTL7JSJIwMueB4hcQousWvTkXyaOmBSOrr/SCOVRLk=
-X-Received: by 2002:a05:6102:34e2:b0:462:c2e9:6dda with SMTP id
- bi2-20020a05610234e200b00462c2e96ddamr2481290vsb.31.1701746943543; Mon, 04
- Dec 2023 19:29:03 -0800 (PST)
+        Mon, 4 Dec 2023 22:30:37 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B04FA;
+        Mon,  4 Dec 2023 19:30:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OOx5NOB1JreL6KpZJ3sdcihs5tDpzNFdQ8fPP6oDMAncn6KJql97lYfrxLfilt60MCiDnVuOt6slbs5jWJZavDCP90oWZxDob3BpkVLiNTO+GlEpV2+sFLu/nKGpWmpVqOUFLT7RF0EImLwBSRmJ6wu9aaz6dg3LM2H2ndOA//h46dq73lxjwtQGADIHykq8rRTwPyuXgk2vIfGsTZENHte9QfK5SItnj4ld5pOE+n9iUa8iV6DzRd0WUKzTPPpVBJ245C8GXV8qZ9dnrhKKpFGkQkgH55CrjPyoQ7nLL0f9p+rRARTbtGpAP1zoJs8pjPZrZPbUsDlZ7Haan+UiOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7cAuxF8Kn9+pvGSZ6X8netnO3Qu+fHNWvoXtngfV3Tw=;
+ b=amvdcvewLugT53a9rttI9u10/Fa2pgTp+2o4luUGTTTHYaE8gurKGcEFVR8Y75DWYjSU7y0Q+zg9ZfaqL0YMbXIRCQUaXusiPTDZjgorWiuU4jai+r4PWItR3KEpRAYJ3vD8mx9I6iw1VMc1DyR8+kaYF24lYraezjhib69Xhqec2pK5iREBwEBEKsPtgGmXevXBJkYknmva1ZO548t15iX59KmRl+X68TwaYlb44DppWrjxPqiGPSPVK+tX3BPYxvXdS1oDtUuI7da68k3mv41L/l6T+GOxl4dCCGbryvxxuJnpkYbp9zVqE+TqP/mHSGyZhliMNara8eiHIrsG8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7cAuxF8Kn9+pvGSZ6X8netnO3Qu+fHNWvoXtngfV3Tw=;
+ b=X384cqG8i2EK5XsUQ7ey/zhsJYxkskF0Gc7CuOOo+54Jd5IuzvWc9KxspMPV5ujMPLR1GD/4tEE+pitmGy53B3oNz8tyC0BBMdZJsIVOQU6//EEqBuaDhl3mC2z2Noe69LID7nFgxx9JD5vnB40mbmt0W7mREpDDDJmFlor6a/U+7C3o7sqOb5xxvTEz7kTvLMlT560TOStEDn0n+ezOlFBZ7P8MqOyhEyqhNmP2sBQqnb6Tnt4Y2rOtfdT0sgpaDRtOiwO/kp1d5v6SRGmTjE7fuo+TsHvZVW/3FpHgDPTR7LzkjOHJQLUgD6FwhIKVePFeLPHvEGdSm0xAWXpn/A==
+Received: from SN6PR2101CA0024.namprd21.prod.outlook.com
+ (2603:10b6:805:106::34) by CH0PR12MB5267.namprd12.prod.outlook.com
+ (2603:10b6:610:d2::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
+ 2023 03:30:39 +0000
+Received: from SN1PEPF0002BA4B.namprd03.prod.outlook.com
+ (2603:10b6:805:106:cafe::74) by SN6PR2101CA0024.outlook.office365.com
+ (2603:10b6:805:106::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.4 via Frontend
+ Transport; Tue, 5 Dec 2023 03:30:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ SN1PEPF0002BA4B.mail.protection.outlook.com (10.167.242.68) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.20 via Frontend Transport; Tue, 5 Dec 2023 03:30:39 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 4 Dec 2023
+ 19:30:24 -0800
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 4 Dec 2023
+ 19:30:24 -0800
+Received: from sgarnayak-dt.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Mon, 4 Dec 2023 19:30:17 -0800
+From:   <ankita@nvidia.com>
+To:     <ankita@nvidia.com>, <jgg@nvidia.com>, <maz@kernel.org>,
+        <oliver.upton@linux.dev>, <suzuki.poulose@arm.com>,
+        <yuzenghui@huawei.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <ardb@kernel.org>, <akpm@linux-foundation.org>,
+        <gshan@redhat.com>
+CC:     <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
+        <targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
+        <apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
+        <mochs@nvidia.com>, <kvmarm@lists.linux.dev>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and NORMAL_NC for IO memory
+Date:   Tue, 5 Dec 2023 09:00:15 +0530
+Message-ID: <20231205033015.10044-1-ankita@nvidia.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
-In-Reply-To: <20231204102027.57185-1-ryan.roberts@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Tue, 5 Dec 2023 16:28:51 +1300
-Message-ID: <CAGsJ_4yfq8Y4vaxiP95Mrn-Oa0=3aY8kAzS6Ojd+eL-ViRr+DA@mail.gmail.com>
-Subject: Re: [PATCH v8 00/10] Multi-size THP for anonymous memory
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4B:EE_|CH0PR12MB5267:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2ba8b90a-e5e6-40ea-cc06-08dbf5428d8e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4JXN16TdIvZ8Y8Rsfqilo28R1DG5hoy7MJZg9qaupDMgPf63BLliycvYizaetoKVmvDDdYU2Y29OmPOMFR2nI02umzgbgJC3ar+cAFrOarpLNEOI+jDgv79MDTskAiGLOymQOivqJnTkG80TkCYYJ4Y3cBMAHwoeKp0KUl3Kmd0E0SU0+ftrISBzKmgdua93JzXjGeQmDs0s68GWxN09n5AQfuDJ4KhY0X40oisJKkjYZO2CJdq0WjwvbhhooYQvamOi09nFqfvRfPN430eIKHy3Ln2UrmFuCqHBcaar6z5nGSOXCeAkvVhbZ4mVBl4nTEjQ9ydK580AhS3n32cZe14l82JL3ykzAhKYiQOerv3KzsWmOe3jfNirtldodQqWYCJCdfUnGALE2yQsk4o0UVn9y67E+A7YbWmHXB50zpJ7vysP+1CJOogHCsVcShdVyW0MBKa4/vaULOYZvSzwUhe4Q3NdSCQWqKvTyEhdIEevuAbHhhvdvYUoxOAHHtbVp+95HLKdNriffpTyB3fHo1S4eIalqXpKBjThHsXGTIg9jqgqGxCKVZUKHZc+H5kj4J733+Ku1HekFRpqH9trsEHPwdt0G7gaKxhe/s81BnLk44gZjoy5si51PLTgvb3SX4sOEIr3W0WLyqRq+W5MW61YIDqbInnyMPnU7CA9D/we0PD5C+VY2eegsT8KlHfBTnvYkVgI90WTaNU8WemcwENdJbCzSFJPIQQd2FT00CzxWI3/q8KHOCQOhoH4X+Yr84svNe2EQCjAO0T8/EHy0IjPM+7vGpvzrhzdmT2RTR3ofqprzk1ik4Hdm6w69ntL3GiKYfk2KaKvrrrxBLhNlJTxxao6o6A5x7pJmvxB5FdsRaAqzelU9NP4ma0+AUtz
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(346002)(376002)(230922051799003)(186009)(451199024)(64100799003)(82310400011)(1800799012)(36840700001)(40470700004)(46966006)(316002)(54906003)(110136005)(70206006)(70586007)(40460700003)(966005)(478600001)(5660300002)(7416002)(921008)(41300700001)(36756003)(19627235002)(2906002)(2876002)(4326008)(8676002)(8936002)(86362001)(83380400001)(2616005)(47076005)(36860700001)(356005)(7636003)(82740400003)(426003)(336012)(26005)(1076003)(40480700001)(7696005)(21314003)(83996005)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 03:30:39.3243
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2ba8b90a-e5e6-40ea-cc06-08dbf5428d8e
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002BA4B.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5267
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 11:20=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> Hi All,
->
-> A new week, a new version, a new name... This is v8 of a series to implem=
-ent
-> multi-size THP (mTHP) for anonymous memory (previously called "small-size=
-d THP"
-> and "large anonymous folios"). Matthew objected to "small huge" so hopefu=
-lly
-> this fares better.
->
-> The objective of this is to improve performance by allocating larger chun=
-ks of
-> memory during anonymous page faults:
->
-> 1) Since SW (the kernel) is dealing with larger chunks of memory than bas=
-e
->    pages, there are efficiency savings to be had; fewer page faults, batc=
-hed PTE
->    and RMAP manipulation, reduced lru list, etc. In short, we reduce kern=
-el
->    overhead. This should benefit all architectures.
-> 2) Since we are now mapping physically contiguous chunks of memory, we ca=
-n take
->    advantage of HW TLB compression techniques. A reduction in TLB pressur=
-e
->    speeds up kernel and user space. arm64 systems have 2 mechanisms to co=
-alesce
->    TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
->
-> This version changes the name and tidies up some of the kernel code and t=
-est
-> code, based on feedback against v7 (see change log for details).
->
-> By default, the existing behaviour (and performance) is maintained. The u=
-ser
-> must explicitly enable multi-size THP to see the performance benefit. Thi=
-s is
-> done via a new sysfs interface (as recommended by David Hildenbrand - tha=
-nks to
-> David for the suggestion)! This interface is inspired by the existing
-> per-hugepage-size sysfs interface used by hugetlb, provides full backward=
-s
-> compatibility with the existing PMD-size THP interface, and provides a ba=
-se for
-> future extensibility. See [8] for detailed discussion of the interface.
->
-> This series is based on mm-unstable (715b67adf4c8).
->
->
-> Prerequisites
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Some work items identified as being prerequisites are listed on page 3 at=
- [9].
-> The summary is:
->
-> | item                          | status                  |
-> |:------------------------------|:------------------------|
-> | mlock                         | In mainline (v6.7)      |
-> | madvise                       | In mainline (v6.6)      |
-> | compaction                    | v1 posted [10]          |
-> | numa balancing                | Investigated: see below |
-> | user-triggered page migration | In mainline (v6.7)      |
-> | khugepaged collapse           | In mainline (NOP)       |
->
-> On NUMA balancing, which currently ignores any PTE-mapped THPs it encount=
-ers,
-> John Hubbard has investigated this and concluded that it is A) not clear =
-at the
-> moment what a better policy might be for PTE-mapped THP and B) questions =
-whether
-> this should really be considered a prerequisite given no regression is ca=
-used
-> for the default "multi-size THP disabled" case, and there is no correctne=
-ss
-> issue when it is enabled - its just a potential for non-optimal performan=
-ce.
->
-> If there are no disagreements about removing numa balancing from the list=
- (none
-> were raised when I first posted this comment against v7), then that just =
-leaves
-> compaction which is in review on list at the moment.
->
-> I really would like to get this series (and its remaining comapction
-> prerequisite) in for v6.8. I accept that it may be a bit optimistic at th=
-is
-> point, but lets see where we get to with review?
->
+From: Ankit Agrawal <ankita@nvidia.com>
 
-Hi Ryan,
+Currently, KVM for ARM64 maps at stage 2 memory that is considered device
+(i.e. it is not RAM) with DEVICE_nGnRE memory attributes; this setting
+overrides (as per the ARM architecture [1]) any device MMIO mapping
+present at stage 1, resulting in a set-up whereby a guest operating
+system cannot determine device MMIO mapping memory attributes on its
+own but it is always overridden by the KVM stage 2 default.
 
-A question but i don't think it should block this series,  do we have any p=
-lan
-to extend /proc/meminfo, /proc/pid/smaps, /proc/vmstat to present some
-information regarding the new multi-size THP.
+This set-up does not allow guest operating systems to select device
+memory attributes independently from KVM stage-2 mappings
+(refer to [1], "Combining stage 1 and stage 2 memory type attributes"),
+which turns out to be an issue in that guest operating systems
+(e.g. Linux) may request to map devices MMIO regions with memory
+attributes that guarantee better performance (e.g. gathering
+attribute - that for some devices can generate larger PCIe memory
+writes TLPs) and specific operations (e.g. unaligned transactions)
+such as the NormalNC memory type.
 
-e.g how many folios in each-size for the system, how many multi-size folios=
- LRU,
-how many large folios in each VMA etc.
+The default device stage 2 mapping was chosen in KVM for ARM64 since
+it was considered safer (i.e. it would not allow guests to trigger
+uncontained failures ultimately crashing the machine) but this
+turned out to be asynchronous (SError) defeating the purpose.
 
-In products and labs, we need some health monitors to make sure the system
-status is visible and works as expected. right now, i feel i am like
-blindly exploring
-the system without those statistics.
+Failures containability is a property of the platform and is independent
+from the memory type used for MMIO device memory mappings.
 
->
-> Testing
-> =3D=3D=3D=3D=3D=3D=3D
->
-> The series includes patches for mm selftests to enlighten the cow and khu=
-gepaged
-> tests to explicitly test with multi-size THP, in the same way that PMD-si=
-zed
-> THP is tested. The new tests all pass, and no regressions are observed in=
- the mm
-> selftest suite. I've also run my usual kernel compilation and java script
-> benchmarks without any issues.
->
-> Refer to my performance numbers posted with v6 [6]. (These are for multi-=
-size
-> THP only - they do not include the arm64 contpte follow-on series).
->
-> John Hubbard at Nvidia has indicated dramatic 10x performance improvement=
-s for
-> some workloads at [11]. (Observed using v6 of this series as well as the =
-arm64
-> contpte series).
->
-> Kefeng Wang at Huawei has also indicated he sees improvements at [12] alt=
-hough
-> there are some latency regressions also.
->
->
-> Changes since v7 [7]
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->   - Renamed "small-sized THP" -> "multi-size THP" in commit logs
->   - Added various Reviewed-by/Tested-by tags (Barry, David, Alistair)
->   - Patch 3:
->       - Fine-tuned transhuge documentation multi-size THP (JohnH)
->       - Converted hugepage_global_enabled() and hugepage_global_always() =
-macros
->         to static inline functions (JohnH)
->       - Renamed hugepage_vma_check() to thp_vma_allowable_orders() (JohnH=
-)
->       - Renamed transhuge_vma_suitable() to thp_vma_suitable_orders() (Jo=
-hnH)
->       - Renamed "global" enabled sysfs file option to "inherit" (JohnH)
->   - Patch 9:
->       - cow selftest: Renamed param size -> thpsize (David)
->       - cow selftest: Changed test fail to assert() (David)
->       - cow selftest: Log PMD size separately from all the supported THP =
-sizes
->         (David)
->   - Patch 10:
->       - cow selftest: No longer special case pmdsize; keep all THP sizes =
-in
->         thpsizes[]
->
->
-> Changes since v6 [6]
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->   - Refactored vmf_pte_range_changed() to remove uffd special-case (sugge=
-sted by
->     JohnH)
->   - Dropped accounting patch (#3 in v6) (suggested by DavidH)
->       - Continue to account *PMD-sized* THP only for now
->       - Can add more counters in future if needed
->       - Page cache large folios haven't needed any new counters yet
->   - Pivot to sysfs ABI proposed by DavidH
->       - per-size directories in a similar shape to that used by hugetlb
->   - Dropped "recommend" keyword patch (#6 in v6) (suggested by DavidH, Yu=
- Zhou)
->       - For now, users need to understand implicitly which sizes are bene=
-ficial
->         to their HW/SW
->   - Dropped arch_wants_pte_order() patch (#7 in v6)
->       - No longer needed due to dropping patch "recommend" keyword patch
->   - Enlightened khugepaged mm selftest to explicitly test with small-size=
- THP
->   - Scrubbed commit logs to use "small-sized THP" consistently (suggested=
- by
->     DavidH)
->
->
-> Changes since v5 [5]
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->   - Added accounting for PTE-mapped THPs (patch 3)
->   - Added runtime control mechanism via sysfs as extension to THP (patch =
-4)
->   - Minor refactoring of alloc_anon_folio() to integrate with runtime con=
-trols
->   - Stripped out hardcoded policy for allocation order; its now all user =
-space
->     controlled (although user space can request "recommend" which will co=
-nfigure
->     the HW-preferred order)
->
->
-> Changes since v4 [4]
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->   - Removed "arm64: mm: Override arch_wants_pte_order()" patch; arm64
->     now uses the default order-3 size. I have moved this patch over to
->     the contpte series.
->   - Added "mm: Allow deferred splitting of arbitrary large anon folios" b=
-ack
->     into series. I originally removed this at v2 to add to a separate ser=
-ies,
->     but that series has transformed significantly and it no longer fits, =
-so
->     bringing it back here.
->   - Reintroduced dependency on set_ptes(); Originally dropped this at v2,=
- but
->     set_ptes() is in mm-unstable now.
->   - Updated policy for when to allocate LAF; only fallback to order-0 if
->     MADV_NOHUGEPAGE is present or if THP disabled via prctl; no longer re=
-ly on
->     sysfs's never/madvise/always knob.
->   - Fallback to order-0 whenever uffd is armed for the vma, not just when
->     uffd-wp is set on the pte.
->   - alloc_anon_folio() now returns `struct folio *`, where errors are enc=
-oded
->     with ERR_PTR().
->
->   The last 3 changes were proposed by Yu Zhao - thanks!
->
->
-> Changes since v3 [3]
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->   - Renamed feature from FLEXIBLE_THP to LARGE_ANON_FOLIO.
->   - Removed `flexthp_unhinted_max` boot parameter. Discussion concluded t=
-hat a
->     sysctl is preferable but we will wait until real workload needs it.
->   - Fixed uninitialized `addr` on read fault path in do_anonymous_page().
->   - Added mm selftests for large anon folios in cow test suite.
->
->
-> Changes since v2 [2]
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->   - Dropped commit "Allow deferred splitting of arbitrary large anon foli=
-os"
->       - Huang, Ying suggested the "batch zap" work (which I dropped from =
-this
->         series after v1) is a prerequisite for merging FLXEIBLE_THP, so I=
-'ve
->         moved the deferred split patch to a separate series along with th=
-e batch
->         zap changes. I plan to submit this series early next week.
->   - Changed folio order fallback policy
->       - We no longer iterate from preferred to 0 looking for acceptable p=
-olicy
->       - Instead we iterate through preferred, PAGE_ALLOC_COSTLY_ORDER and=
- 0 only
->   - Removed vma parameter from arch_wants_pte_order()
->   - Added command line parameter `flexthp_unhinted_max`
->       - clamps preferred order when vma hasn't explicitly opted-in to THP
->   - Never allocate large folio for MADV_NOHUGEPAGE vma (or when THP is di=
-sabled
->     for process or system).
->   - Simplified implementation and integration with do_anonymous_page()
->   - Removed dependency on set_ptes()
->
->
-> Changes since v1 [1]
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->   - removed changes to arch-dependent vma_alloc_zeroed_movable_folio()
->   - replaced with arch-independent alloc_anon_folio()
->       - follows THP allocation approach
->   - no longer retry with intermediate orders if allocation fails
->       - fallback directly to order-0
->   - remove folio_add_new_anon_rmap_range() patch
->       - instead add its new functionality to folio_add_new_anon_rmap()
->   - remove batch-zap pte mappings optimization patch
->       - remove enabler folio_remove_rmap_range() patch too
->       - These offer real perf improvement so will submit separately
->   - simplify Kconfig
->       - single FLEXIBLE_THP option, which is independent of arch
->       - depends on TRANSPARENT_HUGEPAGE
->       - when enabled default to max anon folio size of 64K unless arch
->         explicitly overrides
->   - simplify changes to do_anonymous_page():
->       - no more retry loop
->
->
-> [1] https://lore.kernel.org/linux-mm/20230626171430.3167004-1-ryan.robert=
-s@arm.com/
-> [2] https://lore.kernel.org/linux-mm/20230703135330.1865927-1-ryan.robert=
-s@arm.com/
-> [3] https://lore.kernel.org/linux-mm/20230714160407.4142030-1-ryan.robert=
-s@arm.com/
-> [4] https://lore.kernel.org/linux-mm/20230726095146.2826796-1-ryan.robert=
-s@arm.com/
-> [5] https://lore.kernel.org/linux-mm/20230810142942.3169679-1-ryan.robert=
-s@arm.com/
-> [6] https://lore.kernel.org/linux-mm/20230929114421.3761121-1-ryan.robert=
-s@arm.com/
-> [7] https://lore.kernel.org/linux-mm/20231122162950.3854897-1-ryan.robert=
-s@arm.com/
-> [8] https://lore.kernel.org/linux-mm/6d89fdc9-ef55-d44e-bf12-fafff318aef8=
-@redhat.com/
-> [9] https://drive.google.com/file/d/1GnfYFpr7_c1kA41liRUW5YtCb8Cj18Ud/vie=
-w?usp=3Dsharing&resourcekey=3D0-U1Mj3-RhLD1JV6EThpyPyA
-> [10] https://lore.kernel.org/linux-mm/20231113170157.280181-1-zi.yan@sent=
-.com/
-> [11] https://lore.kernel.org/linux-mm/c507308d-bdd4-5f9e-d4ff-e96e4520be8=
-5@nvidia.com/
-> [12] https://lore.kernel.org/linux-mm/479b3e2b-456d-46c1-9677-38f6c95a0be=
-8@huawei.com/
->
->
-> Thanks,
-> Ryan
->
-> Ryan Roberts (10):
->   mm: Allow deferred splitting of arbitrary anon large folios
->   mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
->   mm: thp: Introduce multi-size THP sysfs interface
->   mm: thp: Support allocation of anonymous multi-size THP
->   selftests/mm/kugepaged: Restore thp settings at exit
->   selftests/mm: Factor out thp settings management
->   selftests/mm: Support multi-size THP interface in thp_settings
->   selftests/mm/khugepaged: Enlighten for multi-size THP
->   selftests/mm/cow: Generalize do_run_with_thp() helper
->   selftests/mm/cow: Add tests for anonymous multi-size THP
->
->  Documentation/admin-guide/mm/transhuge.rst |  97 ++++-
->  Documentation/filesystems/proc.rst         |   6 +-
->  fs/proc/task_mmu.c                         |   3 +-
->  include/linux/huge_mm.h                    | 116 ++++--
->  mm/huge_memory.c                           | 268 ++++++++++++--
->  mm/khugepaged.c                            |  20 +-
->  mm/memory.c                                | 114 +++++-
->  mm/page_vma_mapped.c                       |   3 +-
->  mm/rmap.c                                  |  32 +-
->  tools/testing/selftests/mm/Makefile        |   4 +-
->  tools/testing/selftests/mm/cow.c           | 185 +++++++---
->  tools/testing/selftests/mm/khugepaged.c    | 410 ++++-----------------
->  tools/testing/selftests/mm/run_vmtests.sh  |   2 +
->  tools/testing/selftests/mm/thp_settings.c  | 349 ++++++++++++++++++
->  tools/testing/selftests/mm/thp_settings.h  |  80 ++++
->  15 files changed, 1177 insertions(+), 512 deletions(-)
->  create mode 100644 tools/testing/selftests/mm/thp_settings.c
->  create mode 100644 tools/testing/selftests/mm/thp_settings.h
->
-> --
-> 2.25.1
->
+Actually, DEVICE_nGnRE memory type is even more problematic than
+Normal-NC memory type in terms of faults containability in that e.g.
+aborts triggered on DEVICE_nGnRE loads cannot be made, architecturally,
+synchronous (i.e. that would imply that the processor should issue at
+most 1 load transaction at a time - it cannot pipeline them - otherwise
+the synchronous abort semantics would break the no-speculation attribute
+attached to DEVICE_XXX memory).
 
-Thanks
-Barry
+This means that regardless of the combined stage1+stage2 mappings a
+platform is safe if and only if device transactions cannot trigger
+uncontained failures and that in turn relies on platform capabilities
+and the device type being assigned (i.e. PCIe AER/DPC error containment
+and RAS architecture[3]); therefore the default KVM device stage 2
+memory attributes play no role in making device assignment safer
+for a given platform (if the platform design adheres to design
+guidelines outlined in [3]) and therefore can be relaxed.
+
+For all these reasons, relax the KVM stage 2 device memory attributes
+from DEVICE_nGnRE to Normal-NC. Add a new kvm_pgtable_prot flag for
+Normal-NC.
+
+The Normal-NC was chosen over a different Normal memory type default
+at stage-2 (e.g. Normal Write-through) to avoid cache allocation/snooping.
+
+Relaxing S2 KVM device MMIO mappings to Normal-NC is not expected to
+trigger any issue on guest device reclaim use cases either (i.e. device
+MMIO unmap followed by a device reset) at least for PCIe devices, in that
+in PCIe a device reset is architected and carried out through PCI config
+space transactions that are naturally ordered with respect to MMIO
+transactions according to the PCI ordering rules.
+
+Having Normal-NC S2 default puts guests in control (thanks to
+stage1+stage2 combined memory attributes rules [1]) of device MMIO
+regions memory mappings, according to the rules described in [1]
+and summarized here ([(S1) - stage1], [(S2) - stage 2]):
+
+S1           |  S2           | Result
+NORMAL-WB    |  NORMAL-NC    | NORMAL-NC
+NORMAL-WT    |  NORMAL-NC    | NORMAL-NC
+NORMAL-NC    |  NORMAL-NC    | NORMAL-NC
+DEVICE<attr> |  NORMAL-NC    | DEVICE<attr>
+
+It is worth noting that currently, to map devices MMIO space to user
+space in a device pass-through use case the VFIO framework applies memory
+attributes derived from pgprot_noncached() settings applied to VMAs, which
+result in device-nGnRnE memory attributes for the stage-1 VMM mappings.
+
+This means that a userspace mapping for device MMIO space carried
+out with the current VFIO framework and a guest OS mapping for the same
+MMIO space may result in a mismatched alias as described in [2].
+
+Defaulting KVM device stage-2 mappings to Normal-NC attributes does not
+change anything in this respect, in that the mismatched aliases would
+only affect (refer to [2] for a detailed explanation) ordering between
+the userspace and GuestOS mappings resulting stream of transactions
+(i.e. it does not cause loss of property for either stream of
+transactions on its own), which is harmless given that the userspace
+and GuestOS access to the device is carried out through independent
+transactions streams.
+
+[1] section D8.5 - DDI0487_I_a_a-profile_architecture_reference_manual.pdf
+[2] section B2.8 - DDI0487_I_a_a-profile_architecture_reference_manual.pdf
+[3] sections 1.7.7.3/1.8.5.2/appendix C - DEN0029H_SBSA_7.1.pdf
+
+Applied over next-20231201
+
+History
+=======
+v1 -> v2
+- Updated commit log to the one posted by
+  Lorenzo Pieralisi <lpieralisi@kernel.org> (Thanks!)
+- Added new flag to represent the NORMAL_NC setting. Updated
+  stage2_set_prot_attr() to handle new flag.
+
+v1 Link:
+https://lore.kernel.org/all/20230907181459.18145-3-ankita@nvidia.com/
+
+Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Tested-by: Ankit Agrawal <ankita@nvidia.com>
+
+---
+ arch/arm64/include/asm/kvm_pgtable.h |  2 ++
+ arch/arm64/include/asm/memory.h      |  2 ++
+ arch/arm64/kvm/hyp/pgtable.c         | 11 +++++++++--
+ arch/arm64/kvm/mmu.c                 |  4 ++--
+ 4 files changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index cfdf40f734b1..19278dfe7978 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -197,6 +197,7 @@ enum kvm_pgtable_stage2_flags {
+  * @KVM_PGTABLE_PROT_W:		Write permission.
+  * @KVM_PGTABLE_PROT_R:		Read permission.
+  * @KVM_PGTABLE_PROT_DEVICE:	Device attributes.
++ * @KVM_PGTABLE_PROT_NORMAL_NC:	Normal noncacheable attributes.
+  * @KVM_PGTABLE_PROT_SW0:	Software bit 0.
+  * @KVM_PGTABLE_PROT_SW1:	Software bit 1.
+  * @KVM_PGTABLE_PROT_SW2:	Software bit 2.
+@@ -208,6 +209,7 @@ enum kvm_pgtable_prot {
+ 	KVM_PGTABLE_PROT_R			= BIT(2),
+ 
+ 	KVM_PGTABLE_PROT_DEVICE			= BIT(3),
++	KVM_PGTABLE_PROT_NORMAL_NC		= BIT(4),
+ 
+ 	KVM_PGTABLE_PROT_SW0			= BIT(55),
+ 	KVM_PGTABLE_PROT_SW1			= BIT(56),
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index fde4186cc387..c247e5f29d5a 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -147,6 +147,7 @@
+  * Memory types for Stage-2 translation
+  */
+ #define MT_S2_NORMAL		0xf
++#define MT_S2_NORMAL_NC		0x5
+ #define MT_S2_DEVICE_nGnRE	0x1
+ 
+ /*
+@@ -154,6 +155,7 @@
+  * Stage-2 enforces Normal-WB and Device-nGnRE
+  */
+ #define MT_S2_FWB_NORMAL	6
++#define MT_S2_FWB_NORMAL_NC	5
+ #define MT_S2_FWB_DEVICE_nGnRE	1
+ 
+ #ifdef CONFIG_ARM64_4K_PAGES
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index c651df904fe3..d4835d553c61 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -718,10 +718,17 @@ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot p
+ 				kvm_pte_t *ptep)
+ {
+ 	bool device = prot & KVM_PGTABLE_PROT_DEVICE;
+-	kvm_pte_t attr = device ? KVM_S2_MEMATTR(pgt, DEVICE_nGnRE) :
+-			    KVM_S2_MEMATTR(pgt, NORMAL);
++	bool normal_nc = prot & KVM_PGTABLE_PROT_NORMAL_NC;
++	kvm_pte_t attr;
+ 	u32 sh = KVM_PTE_LEAF_ATTR_LO_S2_SH_IS;
+ 
++	if (device)
++		attr = KVM_S2_MEMATTR(pgt, DEVICE_nGnRE);
++	else if (normal_nc)
++		attr = KVM_S2_MEMATTR(pgt, NORMAL_NC);
++	else
++		attr = KVM_S2_MEMATTR(pgt, NORMAL);
++
+ 	if (!(prot & KVM_PGTABLE_PROT_X))
+ 		attr |= KVM_PTE_LEAF_ATTR_HI_S2_XN;
+ 	else if (device)
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index d14504821b79..1cb302457d3f 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -1071,7 +1071,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
+ 	struct kvm_mmu_memory_cache cache = { .gfp_zero = __GFP_ZERO };
+ 	struct kvm_s2_mmu *mmu = &kvm->arch.mmu;
+ 	struct kvm_pgtable *pgt = mmu->pgt;
+-	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_DEVICE |
++	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_NORMAL_NC |
+ 				     KVM_PGTABLE_PROT_R |
+ 				     (writable ? KVM_PGTABLE_PROT_W : 0);
+ 
+@@ -1558,7 +1558,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 		prot |= KVM_PGTABLE_PROT_X;
+ 
+ 	if (device)
+-		prot |= KVM_PGTABLE_PROT_DEVICE;
++		prot |= KVM_PGTABLE_PROT_NORMAL_NC;
+ 	else if (cpus_have_final_cap(ARM64_HAS_CACHE_DIC))
+ 		prot |= KVM_PGTABLE_PROT_X;
+ 
+-- 
+2.17.1
+
