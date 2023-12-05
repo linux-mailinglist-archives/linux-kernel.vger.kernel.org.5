@@ -2,114 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C28A8804EA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE28C804EAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344964AbjLEJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:48:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
+        id S1344965AbjLEJuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:50:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjLEJsj (ORCPT
+        with ESMTP id S229596AbjLEJuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:48:39 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A79A9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:48:45 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1rAS2g-0004Kk-Us; Tue, 05 Dec 2023 10:48:38 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1rAS2e-00DiEw-H2; Tue, 05 Dec 2023 10:48:36 +0100
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1rAS2e-005MaM-EC; Tue, 05 Dec 2023 10:48:36 +0100
-Date:   Tue, 5 Dec 2023 10:48:36 +0100
-From:   Sascha Hauer <sha@pengutronix.de>
-To:     Andy Yan <andy.yan@rock-chips.com>
-Cc:     Andy Yan <andyshrk@163.com>, heiko@sntech.de, hjc@rock-chips.com,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com
-Subject: Re: [PATCH v3 11/14] drm/rockchip: vop2: Add support for rk3588
-Message-ID: <20231205094836.GZ1057032@pengutronix.de>
-References: <20231130122001.12474-1-andyshrk@163.com>
- <20231130122439.13374-1-andyshrk@163.com>
- <20231205092936.GW1057032@pengutronix.de>
- <87831dc3-2554-4b53-a9f8-6b61cf67732e@rock-chips.com>
+        Tue, 5 Dec 2023 04:50:13 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6936C9E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:50:19 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B209EC15;
+        Tue,  5 Dec 2023 01:51:05 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D1FE3F5A1;
+        Tue,  5 Dec 2023 01:50:15 -0800 (PST)
+Message-ID: <8adbde1c-970b-4a26-81b0-91b913c4850b@arm.com>
+Date:   Tue, 5 Dec 2023 09:50:14 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87831dc3-2554-4b53-a9f8-6b61cf67732e@rock-chips.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 03/10] mm: thp: Introduce multi-size THP sysfs
+ interface
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231204102027.57185-1-ryan.roberts@arm.com>
+ <20231204102027.57185-4-ryan.roberts@arm.com>
+ <CAGsJ_4zU6pHOwEzCQxo9UWUFmHZp0pvfgF4pKbkFfDPCRyFwyw@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4zU6pHOwEzCQxo9UWUFmHZp0pvfgF4pKbkFfDPCRyFwyw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 05:44:03PM +0800, Andy Yan wrote:
-> Hi Sascha:
+On 05/12/2023 04:21, Barry Song wrote:
+> On Mon, Dec 4, 2023 at 11:21 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> In preparation for adding support for anonymous multi-size THP,
+>> introduce new sysfs structure that will be used to control the new
+>> behaviours. A new directory is added under transparent_hugepage for each
+>> supported THP size, and contains an `enabled` file, which can be set to
+>> "inherit" (to inherit the global setting), "always", "madvise" or
+>> "never". For now, the kernel still only supports PMD-sized anonymous
+>> THP, so only 1 directory is populated.
+>>
+>> The first half of the change converts transhuge_vma_suitable() and
+>> hugepage_vma_check() so that they take a bitfield of orders for which
+>> the user wants to determine support, and the functions filter out all
+>> the orders that can't be supported, given the current sysfs
+>> configuration and the VMA dimensions. If there is only 1 order set in
+>> the input then the output can continue to be treated like a boolean;
+>> this is the case for most call sites. The resulting functions are
+>> renamed to thp_vma_suitable_orders() and thp_vma_allowable_orders()
+>> respectively.
+>>
+>> The second half of the change implements the new sysfs interface. It has
+>> been done so that each supported THP size has a `struct thpsize`, which
+>> describes the relevant metadata and is itself a kobject. This is pretty
+>> minimal for now, but should make it easy to add new per-thpsize files to
+>> the interface if needed in future (e.g. per-size defrag). Rather than
+>> keep the `enabled` state directly in the struct thpsize, I've elected to
+>> directly encode it into huge_anon_orders_[always|madvise|inherit]
+>> bitfields since this reduces the amount of work required in
+>> thp_vma_allowable_orders() which is called for every page fault.
+>>
+>> See Documentation/admin-guide/mm/transhuge.rst, as modified by this
+>> commit, for details of how the new sysfs interface works.
+>>
+>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > 
-> On 12/5/23 17:29, Sascha Hauer wrote:
-> > On Thu, Nov 30, 2023 at 08:24:39PM +0800, Andy Yan wrote:
-> > > From: Andy Yan <andy.yan@rock-chips.com>
-> > > 
-> > > VOP2 on rk3588:
-> > > 
-> > > Four video ports:
-> > > VP0 Max 4096x2160
-> > > VP1 Max 4096x2160
-> > > VP2 Max 4096x2160
-> > > VP3 Max 2048x1080
-> > > 
-> > > 4 4K Cluster windows with AFBC/line RGB and AFBC-only YUV support
-> > > 4 4K Esmart windows with line RGB/YUV support
-> > > 
-> > > Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
-> > 
-> > With the two nits below feel free to add my:
-> > 
-> > Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > 
-> > Thanks for working on this.
-> > 
-> > > diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.h b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.h
-> > > index 8d7ff52523fb..8b16031eda52 100644
-> > > --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.h
-> > > +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.h
-> > > @@ -13,9 +13,16 @@
-> > >   #define VOP_FEATURE_OUTPUT_10BIT        BIT(0)
-> > 
-> > You could rename this to include "VP" for Video Port so it's not so
-> > easily mixed up with the defines below.
+> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+
+Thanks!
+
 > 
-> Yes, I have the same idea, maybe it's better to do the rename in a separate ?
+>> -khugepaged will be automatically started when
+>> -transparent_hugepage/enabled is set to "always" or "madvise, and it'll
+>> -be automatically shutdown if it's set to "never".
+>> +khugepaged will be automatically started when one or more hugepage
+>> +sizes are enabled (either by directly setting "always" or "madvise",
+>> +or by setting "inherit" while the top-level enabled is set to "always"
+>> +or "madvise"), and it'll be automatically shutdown when the last
+>> +hugepage size is disabled (either by directly setting "never", or by
+>> +setting "inherit" while the top-level enabled is set to "never").
+>>
+>>  Khugepaged controls
+>>  -------------------
+>>
+>> +.. note::
+>> +   khugepaged currently only searches for opportunities to collapse to
+>> +   PMD-sized THP and no attempt is made to collapse to other THP
+>> +   sizes.
+> 
+> For small-size THP, collapse is probably a bad idea. we like a one-shot
+> try in Android especially we are using a 64KB and less large folio size. if
+> PF succeeds in getting large folios, we map large folios, otherwise we
+> give up as those memories can be quite unstably swapped-out, swapped-in
+> and madvised to be DONTNEED.
+> 
+> too many compactions will increase power consumption and decrease UI
+> response.
 
-Ah Yes, I didn't realize this is just a context line. I thought you
-had added it.
+Understood; that's very useful information for the Android context. Multiple
+people have made comments about eventually needing khugepaged (or something
+similar) support in the server context though to async collapse to contpte size.
+Actually one suggestion was a user space daemon that scans and collapses with
+MADV_COLLAPSE. I suspect the key will be to ensure whatever solution we go for
+is flexible and can be enabled/disabled/configured for the different environments.
 
-Sascha
+> 
+> Thanks
+> Barry
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
