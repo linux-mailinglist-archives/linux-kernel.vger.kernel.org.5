@@ -2,102 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22352805BEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B74805BA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345418AbjLERQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:16:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
+        id S1345996AbjLERQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:16:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235223AbjLERQn (ORCPT
+        with ESMTP id S1345984AbjLERQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:16:43 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B48D41
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:16:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701796608; x=1733332608;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+3ZqesXVy8GB3x255vfft0g1wTDCIpWjiLA4RZ264PA=;
-  b=mtXNJbbxKreTXBsMeM8fJbFyGMORE/FQoNuKsJKtxTyeOpY7l1ijl5LD
-   b44KWFrVifsvZk6+OrMBbvIYh+err3AHbmnv0qq7jyLfcQ9d17Pl+kWXH
-   9MnFuVzBhiFRvsSnVlIjk2o3FBsOvSworH57s0OmLw/kgCgzeDleGT+lS
-   bru/2t/2BycpIHQgKyBL/HDAfNlShIo3NbDIWTsSNbdY2yRoo8hfr12r6
-   eW3dXEu+6lDZrZW5YkVxQJvKwiIG+2nWDr9pVZtOUXtyLYKCONDu6g5z7
-   mSAozckzViYvY7+9Xrpgvzey4hUkI66tNwiECpycHgXILNkGDGgf+ZKS9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="425084809"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="425084809"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 09:16:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="841544380"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="841544380"
-Received: from rjongalo-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.46.235])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 09:16:46 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 7402310A43A; Tue,  5 Dec 2023 20:16:43 +0300 (+03)
-Date:   Tue, 5 Dec 2023 20:16:43 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/coco, x86/sev: Use cpu_feature_enabled() to detect
- SEV guest flavor
-Message-ID: <20231205171643.zg7fwxjyccab53kf@box.shutemov.name>
-References: <20231205143738.2875-1-kirill.shutemov@linux.intel.com>
- <20231205144619.GCZW83uzAomKmupn7j@fat_crate.local>
- <20231205150012.6lma2wzcellr7pz7@box.shutemov.name>
- <20231205150648.GDZW88iAjBzYoIJ0+o@fat_crate.local>
- <20231205151437.aqmuydosfmnq3zr4@box.shutemov.name>
- <20231205160035.GEZW9JI8eKENXBo6EO@fat_crate.local>
+        Tue, 5 Dec 2023 12:16:50 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408491B6;
+        Tue,  5 Dec 2023 09:16:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1701796614;
+        bh=KWkP8n96GGXrhKo85Rj+ALey16KlZtODcw3/5xOWFUI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WC7mZ97GSAfwxIHjGKbWqUNzqRKjIzPKv4na8of1+OwLef5DrPCxhT+cUnDu6POxt
+         yJ67y2cWp9Z3RouyCc8hqX9EIgUPCF0RA41Sks/2Psj0iqfB1SACIzzM2rsPQ7EWnW
+         jWIiuWwR/Ud/4YsEqJUbAKEC3hNmnL1nhhqz4nac=
+Date:   Tue, 5 Dec 2023 18:16:53 +0100
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Luis Chamberlain <mcgrof@kernel.org>,
+        Joel Granados <j.granados@samsung.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Granados <j.granados@samsung.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 00/18] sysctl: constify sysctl ctl_tables
+Message-ID: <d50978d8-d4e7-4767-8ea7-5849f05d3be1@t-8ch.de>
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+ <ZW66FhWx7W67Y9rP@bombadil.infradead.org>
+ <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231205160035.GEZW9JI8eKENXBo6EO@fat_crate.local>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b4b0b7ea-d8b3-4538-a5b9-87a23bbdac5f@t-8ch.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 05:00:35PM +0100, Borislav Petkov wrote:
-> On Tue, Dec 05, 2023 at 06:14:37PM +0300, Kirill A. Shutemov wrote:
-> > My point is that if you need to check for SEV you need to check SEV, not
-> > CC_ATTR. CC_ATTRs only make sense in generic code that deals with multiple
-> > CoCo environments.
-> 
-> That makes more sense.
-> 
-> So that commit already says "If future support is added for other
-> memory encryption technologies, the use of CC_ATTR_GUEST_MEM_ENCRYPT
-> can be updated, as required."
-> 
-> And what this test needs to do is to check:
-> 
-> 	if (guest type >= SEV)
-> 
-> meaning SEV and -ES and -SNP.
-> 
-> I'm wondering if we should export amd_cc_platform_has() for such
-> cases...
+Hi Luis, Joel,
 
-What's wrong with using X86_FEATURE_* here?
+On 2023-12-05 09:04:08+0100, Thomas Weißschuh wrote:
+> On 2023-12-04 21:50:14-0800, Luis Chamberlain wrote:
+> > On Mon, Dec 04, 2023 at 08:52:13AM +0100, Thomas Weißschuh wrote:
+> > > Tested by booting and with the sysctl selftests on x86.
+> > 
+> > Can I trouble you to rebase on sysctl-next?
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=sysctl-next
+> 
+> Will do.
 
-X86_FEATURE_SEV_GUEST is set for all SEVs. X86_FEATURE_SEV_ES_GUEST and
-X86_FEATURE_SEV_SNP_GUEST can be used to test specific flavor.
+The rebased series is now available at
+https://git.sr.ht/~t-8ch/linux b4/const-sysctl
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Nothing much has changed in contrast to v2.
+The only functional change so far is the initialization of
+ctl_table_header::type in init_header().
+
+I'll wait for Joels and maybe some more reviews before resending it.
+
+> [..]
+
+For the future I think it would make sense to combine the tree-wide constification
+of the structs with the removal of the sentinel values.
+
+This would reduce the impacts of the maintainers.
+
+
+Thomas
