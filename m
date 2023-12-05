@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1183F804D37
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C07804D40
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbjLEJHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:07:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36702 "EHLO
+        id S234861AbjLEJJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:09:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbjLEJHp (ORCPT
+        with ESMTP id S231731AbjLEJJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:07:45 -0500
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A5B10F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:07:49 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 32467C01C; Tue,  5 Dec 2023 10:07:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1701767268; bh=Zcza2koUNlQSollLV/Bg+N9kW0zXA9vz++qJ4d4v5fY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PuHhqmIq4di8uyLbStLheCAmnT2OqjGGfT0vH774lVgOF817jT/ttbkkT0GQP+szo
-         4BVrLZyHEK0f2hlA3tKEzdGUhMO9bt01HFIJ2qHcjcAJf03hkZNwdA2ZgWYHojOhBU
-         DIwlIpxw/tyTXbNZ2DpRdgY52brbwMOiv8emPejdXzVayHrhglZq9xa/cY52mMLzCK
-         jHFk65ERMrDG7wGCYdEALG5fDdB1dkeb7SWfwIoYtot2JsApyejh937yVUDS6oE+xX
-         zGObTQweyErTA4hiXfiqxTJZHAN2yQr6b0oE0tqPzE4IEm+5L5lY8Be4gzujA34c1Z
-         tNhZuAWWHN+TA==
+        Tue, 5 Dec 2023 04:09:28 -0500
+X-Greylist: delayed 91587 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 01:09:31 PST
+Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [52.237.72.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0918D3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:09:31 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.190.70.5])
+        by mail-app3 (Coremail) with SMTP id cC_KCgDnXXGo6G5lrSx1AA--.843S4;
+        Tue, 05 Dec 2023 17:09:04 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] perf/x86/uncore: fix a potential double-free in uncore_type_init
+Date:   Tue,  5 Dec 2023 17:08:35 +0800
+Message-Id: <20231205090835.1652-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgDnXXGo6G5lrSx1AA--.843S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kry5XFyktw15CFWrCFWUCFg_yoW8JFyfpr
+        WUJr1fKF18uan2grZ8G3WfXr4Ykws7Gr95Wr4Uu34xKF13Xw13tF4Ikr4Y9w1kCrW0yFyr
+        JFyFvr4UJa4UXa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvv1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoTBmVsUQg4xgATsg
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
-Received: from gaia (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 586B3C009;
-        Tue,  5 Dec 2023 10:07:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1701767258; bh=Zcza2koUNlQSollLV/Bg+N9kW0zXA9vz++qJ4d4v5fY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PLtCjPBoN6k82Qh/P8T2TOhDgZvxpkF4U4kHR6pFz9b9ScBcRsgHpeLIzbA4YrCrS
-         ihetjFpGVvB0wwUEnrkRTotWZu8oWwiYfSGl1AtcsBOC+07aYbbaAsUyIEvfTVAUhQ
-         NQzWpdnEYr/f0V2iOmmagyCddECvEK7zofcknbkjksaBc/YwcVbZ5goUZCH4b7joia
-         hue6N17SNSCzzxEGyGEm58HBOXVoLYmp4eJVrOEjC4yt0vtQElwjV0Z2nJ6uBU+Uj+
-         AvJHZAyjctSbABrVdFp0KDUhFOeUlqs0GZbC3QQOaAmZqNIZUjPF2eUSaxibK0pWN8
-         hbv5Hp2nRmncQ==
-Received: from localhost (gaia [local])
-        by gaia (OpenSMTPD) with ESMTPA id 0564bc80;
-        Tue, 5 Dec 2023 09:07:30 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 18:07:15 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Fedor Pchelkin <pchelkin@ispras.ru>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: Re: [PATCH] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
-Message-ID: <ZW7oQ1KPWTbiGSzL@codewreck.org>
-References: <20231205080524.6635-1-pchelkin@ispras.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231205080524.6635-1-pchelkin@ispras.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fedor Pchelkin wrote on Tue, Dec 05, 2023 at 11:05:22AM +0300:
-> If an error occurs while processing an array of strings in p9pdu_vreadf
-> then uninitialized members of *wnames array are freed.
-> 
-> Fix this by iterating over only lower indices of the array.
-> 
-> Found by Linux Verification Center (linuxtesting.org).
+When kzalloc for pmus[i].boxes fails, we should clean up pmus
+to prevent memleak. However, when kzalloc for attr_group fails,
+pmus has been assigned to type->pmus, and freeing will be done
+later on by the callers. The chain is:
 
-You might want to mark that as Reported-by: somehow instead of a free
-form comment
+uncore_pci_init
+  |->uncore_types_init
+  |    |->uncore_type_init (first free)
+  |
+  |->uncore_types_exit
+       |->uncore_type_exit (second free)
 
-> 
-> Fixes: ace51c4dd2f9 ("9p: add new protocol support code")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Therefore, freeing pmus in uncore_type_init may cause a
+double-free. Fix this by setting type->pmus to NULL after kfree.
 
-That aside, it looks good to me -- good find!
-I'll push this to Linus with the other pending fix we have next week
+Fixes: 629eb703d3e4 ("perf/x86/intel/uncore: Fix memory leaks on allocation failures")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+---
 
-> ---
->  net/9p/protocol.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
-> diff --git a/net/9p/protocol.c b/net/9p/protocol.c
-> index 4e3a2a1ffcb3..d33387e74a66 100644
-> --- a/net/9p/protocol.c
-> +++ b/net/9p/protocol.c
-> @@ -393,6 +393,7 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  		case 'T':{
->  				uint16_t *nwname = va_arg(ap, uint16_t *);
->  				char ***wnames = va_arg(ap, char ***);
-> +				int i;
->  
->  				errcode = p9pdu_readf(pdu, proto_version,
->  								"w", nwname);
-> @@ -406,8 +407,6 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  				}
->  
->  				if (!errcode) {
-> -					int i;
-> -
->  					for (i = 0; i < *nwname; i++) {
->  						errcode =
->  						    p9pdu_readf(pdu,
-> @@ -421,9 +420,7 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  
->  				if (errcode) {
->  					if (*wnames) {
-> -						int i;
-> -
-> -						for (i = 0; i < *nwname; i++)
-> +						while (--i >= 0)
->  							kfree((*wnames)[i]);
->  					}
->  					kfree(*wnames);
+Changelog:
 
+v2: Improving the call trace description.
+---
+ arch/x86/events/intel/uncore.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 01023aa5125b..d80445a24011 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -1041,6 +1041,7 @@ static int __init uncore_type_init(struct intel_uncore_type *type, bool setid)
+ 	for (i = 0; i < type->num_boxes; i++)
+ 		kfree(pmus[i].boxes);
+ 	kfree(pmus);
++	type->pmus = NULL;
+ 
+ 	return -ENOMEM;
+ }
 -- 
-Dominique Martinet | Asmadeus
+2.17.1
+
