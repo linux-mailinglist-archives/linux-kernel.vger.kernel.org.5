@@ -2,228 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B30805C6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F205805B69
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346123AbjLERbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:31:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
+        id S1345538AbjLERcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:32:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjLERbt (ORCPT
+        with ESMTP id S231910AbjLERcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:31:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB872188
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:31:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36861C433CA;
-        Tue,  5 Dec 2023 17:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701797514;
-        bh=VVH9vaa3NIbXaZRQY1J4gbGa1FbI2OkXk/kP1bbSPl4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=iPMe9AXHPK+OymiBqb8LdnvNpeM+rILC8efHarDiy8eEUaQY0oxMXJBgIYoTxuvTF
-         VB3WHt6+MzR2BkgpxN/tZmBqQLfbNL+phpmip2vWXxNbUC0m4T7XS8y8yLI/VfMEvf
-         mtsvJaoTPK/4sESY9cXowzk+Wf4sSINDjxNOcYSQE75TB+eAfTK3TASCbboKWXls9q
-         lAeLXA5fhN30FgMtPJ7vbfDFdKkIuk8ZJk8iryAXUx9QOEETlKHO0WyKR9ivzJDEUb
-         eC5KyneboYKOpQSHUj995St4IlUey8z6G/4mpBEBZTYPTPrqTOSJ14rayjr0zhymNG
-         lT2xTxv/cpE6w==
-Date:   Tue, 5 Dec 2023 11:31:52 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/pci: Stop requiring MMCONFIG to be declared in E820,
- ACPI or EFI for newer systems
-Message-ID: <20231205173152.GA680118@bhelgaas>
+        Tue, 5 Dec 2023 12:32:17 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73614188
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:32:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=OrfTo/Owz4NrJFfbfU9QR1N7TorNMwrOqn5rTcm+KvY=; b=ardZfDHdXsZ8ibLlXJF8/V9Djg
+        3jt+g2oQseqBarq9O1OBc0vya59u9N0gSJf6sgwjjlVfbY0UdBW0ZfEph4W1R+7RJfpLZaXefIEKf
+        jxiiNQIv99KM42Ki2xXCEk2YNQXfvAQEYI5xMc8k0YXuoRn0a5Hvo2r1vlgJ1s7+g5ydkqfLv7jdJ
+        X0dSqSKl0HMNtDmLtSYDeSkHD8kUsdwqgdG4aWWaKR2FS2IUoWeyodP2hCXVOEB7hXb1knozzsqsi
+        SED+OP20BcV9JG4QbyeolxljsLYsRt/LdBR1AdmEAghuxzrt/Am5dk/edTj13d5+XarXFZS7q91lI
+        hXyIT/zQ==;
+Received: from [50.53.46.231] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAZHS-0082ez-1z;
+        Tue, 05 Dec 2023 17:32:22 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org
+Subject: [PATCH] jffs2: nodemgmt: fix kernel-doc comments
+Date:   Tue,  5 Dec 2023 09:32:22 -0800
+Message-ID: <20231205173222.12575-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <519ebaea-60ae-413f-8746-0f75574b8cb9@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 11:00:31AM -0600, Mario Limonciello wrote:
-> On 12/5/2023 10:17, Bjorn Helgaas wrote:
-> > On Tue, Dec 05, 2023 at 09:48:45AM -0600, Mario Limonciello wrote:
-> > > commit 7752d5cfe3d1 ("x86: validate against acpi motherboard resources")
-> > > introduced checks for ensuring that MCFG table also has memory region
-> > > reservations to ensure no conflicts were introduced from a buggy BIOS.
-> > > 
-> > > This has proceeded over time to add other types of reservation checks
-> > > for ACPI PNP resources and EFI MMIO memory type.  The PCI firmware spec
-> > > however says that these checks are only required when the operating system
-> > > doesn't comprehend the firmware region:
-> > > 
-> > > ```
-> > > If the operating system does not natively comprehend reserving the MMCFG
-> > > region, the MMCFG region must be reserved by firmware. The address range
-> > > reported in the MCFG table or by _CBA method (see Section 4.1.3) must be
-> > > reserved by declaring a motherboard resource. For most systems, the
-> > > motherboard resource would appear at the root of the ACPI namespace
-> > > (under \_SB) in a node with a _HID of EISAID (PNP0C02), and the resources
-> > > in this case should not be claimed in the root PCI bus’s _CRS. The
-> > > resources can optionally be returned in Int15 E820h or EFIGetMemoryMap
-> > > as reserved memory but must always be reported through ACPI as a
-> > > motherboard resource.
-> > > ```
-> > 
-> > My understanding is that native comprehension would mean Linux knows
-> > how to discover and/or configure the MMCFG base address and size in
-> > the hardware and that Linux would then reserve that region so it's not
-> > used for anything else.
-> > 
-> > Linux doesn't have that, at least for x86.  It relies on the MCFG
-> > table to discover the MMCFG region, and it relies on PNP0C02 _CRS to
-> > reserve it.
-> 
-> MCFG to discover it matches the PCI firmware spec, but as I point
-> out above the decision to reserve this region doesn't require
-> PNP0C01/PNP0C02 _CRS.
+Update the end of one sentence where a comment was truncated. (dwmw2)
 
-Can you explain this reasoning a little more?  I claim Linux does not
-natively comprehend reserving the MMCFG region, but it sounds like you
-don't agree?  I think "native" comprehension would mean Linux would
-not need the MCFG table.
+Fix a bunch of kernel-doc warnings:
 
-> This is a decision made by Linux historically.
->
-> > > Running this check causes problems with accessing extended PCI
-> > > configuration space on OEM laptops that don't specify the region in PNP
-> > > resources or in the EFI memory map. That later manifests as problems with
-> > > dGPU and accessing resizable BAR.
-> > 
-> > Is there a problem report we can reference here?
-> 
-> Nothing public to share. AMD BIOS team is in discussion with the OEM to add
-> the reservation in a BIOS upgrade so it works with things like the LTS
-> kernels.
+nodemgmt.c:72: warning: Function parameter or member 'sumsize' not described in 'jffs2_do_reserve_space'
+nodemgmt.c:72: warning: expecting prototype for jffs2_reserve_space(). Prototype was for jffs2_do_reserve_space() instead
+nodemgmt.c:76: warning: Function parameter or member 'sumsize' not described in 'jffs2_reserve_space'
+nodemgmt.c:76: warning: No description found for return value of 'jffs2_reserve_space'
+nodemgmt.c:503: warning: Function parameter or member 'ofs' not described in 'jffs2_add_physical_node_ref'
+nodemgmt.c:503: warning: Function parameter or member 'ic' not described in 'jffs2_add_physical_node_ref'
+nodemgmt.c:503: warning: Excess function parameter 'new' description in 'jffs2_add_physical_node_ref'
+nodemgmt.c:503: warning: No description found for return value of 'jffs2_add_physical_node_ref'
 
-Is there some reason this can't be made public (it's obviously fine to
-redact proprietary details)?  It's really hard to make this code work
-for all the cases even when we know all the details, and practically
-impossible if we don't.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/jffs2/nodemgmt.c |   24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-> Knowing Windows works without it I feel this is still something that we
-> should be looking at fixing from an upstream perspective though which is
-> what prompted my patch and discussion.
-
-We definitely need to change Linux so it works correctly with firmware
-in the field, whether that means fixing a Linux defect or working
-around a firmware defect.
-
-> > Does the problem still occur with this series?
-> > https://lore.kernel.org/r/20231121183643.249006-1-helgaas@kernel.org
-> > 
-> > This appeared in linux-next 20231130.
-> 
-> Thanks for sharing that.  If I do respin a variation of this patch I'll
-> rebase on top of that.
-> 
-> I had a try with that series on top of 6.7-rc4, but it doesn't fix the issue
-> (but obviously the patch I sent does).
-> 
-> # journalctl -k | grep ECAM
-> Dec 05 06:37:46 cl-fw-fedora kernel: PCI: ECAM [mem 0xe0000000-0xefffffff]
-> (base 0xe0000000) for domain 0000 [bus 00-ff]
-> Dec 05 06:37:46 cl-fw-fedora kernel: PCI: not using ECAM ([mem
-> 0xe0000000-0xefffffff] not reserved)
-> Dec 05 06:37:46 cl-fw-fedora kernel: PCI: ECAM [mem 0xe0000000-0xefffffff]
-> (base 0xe0000000) for domain 0000 [bus 00-ff]
-> Dec 05 06:37:46 cl-fw-fedora kernel: PCI: [Firmware Info]: ECAM [mem
-> 0xe0000000-0xefffffff] not reserved in ACPI motherboard resources
-> Dec 05 06:37:46 cl-fw-fedora kernel: PCI: not using ECAM ([mem
-> 0xe0000000-0xefffffff] not reserved)
-
-Can you boot with 'efi=debug dyndbg="file arch/x86/pci +p"' and share
-the complete dmesg log (redacted if necessary) somewhere?  It's
-important to know more about why and how this doesn't work.  I added
-more debug logging, but possibly it's still not enough.
-
-> > > Similar problems don't exist in Windows 11 with exact same
-> > > laptop/firmware stack, and in discussion with AMD's BIOS team
-> > > Windows doesn't have similar checks.
-> > 
-> > I would love to know AMD BIOS team's take on this.  Does the BIOS
-> > reserve the MMCFG space in any way?
-> 
-> On the AMD reference platform this OEM system is based on it is reserved in
-> the EFI memory map.  So on a 6.7 based kernel the reference system you can
-> see this emitted:
-> 
-> PCI: MMCONFIG at [mem 0xe0000000-0xefffffff] reserved as EfiMemoryMappedIO
-
-The EfiMemoryMappedIO entry is not a *reservation* (this was a poor
-choice of words in the logging, and my series changes it).  This entry
-only means the firmware requests that the OS map this region to a
-virtual address so it can be used by EFI runtime services (UEFI v2.9,
-sec 7.2).
-
-> But on the OEM system this is not reserved by EFI memory map or _CRS.
-> 
-> That's why my assumption after reading the firmware spec and seeing the
-> behavior is that Windows makes the reservation *based on* what's in MCFG.
-
-Is there some spec language that says MCFG reserves space?  I'm not
-aware of anything about ACPI static tables reserving MMIO space.
-Here's my reasoning around static tables vs _CRS for reservations:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/PCI/acpi-info.rst?id=v6.6#n32
-
-> > > As this series of checks was first introduced as a mitigation for buggy
-> > > BIOS before EFI was introduced add a BIOS date range to only enforce the
-> > > checks on hardware that predates the release of Windows 11.
-> > 
-> > Many of the MMCFG checks in Linux are historical artifacts that are
-> > likely related to Linux defects, not BIOS defects, so I wouldn't
-> > expect to see them in Windows.  But it's hard to remove them now.
-> 
-> I guess I was hoping that by cutting a line in the sand we could avoid
-> breaking anything that was relying upon the older behavior.
-> 
-> > > Link: https://members.pcisig.com/wg/PCI-SIG/document/15350
-> > >        PCI Firmware Specification 3.3
-> > >        Section 4.1.2 MCFG Table Description Note 2
-> > > Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> > > ---
-> > >   arch/x86/pci/mmconfig-shared.c | 10 +++++++---
-> > >   1 file changed, 7 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-> > > index 4b3efaa82ab7..e4594b181ebf 100644
-> > > --- a/arch/x86/pci/mmconfig-shared.c
-> > > +++ b/arch/x86/pci/mmconfig-shared.c
-> > > @@ -570,9 +570,13 @@ static void __init pci_mmcfg_reject_broken(int early)
-> > >   	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
-> > >   		if (pci_mmcfg_check_reserved(NULL, cfg, early) == 0) {
-> > > -			pr_info(PREFIX "not using MMCONFIG\n");
-> > > -			free_all_mmcfg();
-> > > -			return;
-> > > +			if (dmi_get_bios_year() >= 2021) {
-> > > +				pr_info(PREFIX "MMCONFIG wasn't reserved by ACPI or EFI\n");
-> > 
-> > I think this leads to using the MMCONFIG area without reserving it
-> > anywhere, so we may end up assigning that space to something else,
-> > which won't work, i.e., the problem described here:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/commit/?id=5cef3014e02d
-> > 
-> > > +			} else {
-> > > +				pr_info(PREFIX "not using MMCONFIG\n");
-> > > +				free_all_mmcfg();
-> > > +				return;
-> > > +			}
-> > >   		}
-> > >   	}
-> > >   }
-> > > -- 
-> > > 2.34.1
-> > > 
-> 
+diff -- a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -49,28 +49,31 @@ static int jffs2_rp_can_write(struct jff
+ 	return 0;
+ }
+ 
++static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
++				  uint32_t *len, uint32_t sumsize);
++
+ /**
+  *	jffs2_reserve_space - request physical space to write nodes to flash
+  *	@c: superblock info
+  *	@minsize: Minimum acceptable size of allocation
+  *	@len: Returned value of allocation length
+  *	@prio: Allocation type - ALLOC_{NORMAL,DELETION}
++ *	@sumsize: summary size requested or JFFS2_SUMMARY_NOSUM_SIZE for no summary
++ *
++ *	Requests a block of physical space on the flash.
+  *
+- *	Requests a block of physical space on the flash. Returns zero for success
+- *	and puts 'len' into the appropriate place, or returns -ENOSPC or other 
+- *	error if appropriate. Doesn't return len since that's 
++ *	Returns: %0 for success	and puts 'len' into the appropriate place,
++ *	or returns -ENOSPC or other error if appropriate.
++ *	Doesn't return len since that's already returned in @len.
+  *
+- *	If it returns zero, jffs2_reserve_space() also downs the per-filesystem
++ *	If it returns %0, jffs2_reserve_space() also downs the per-filesystem
+  *	allocation semaphore, to prevent more than one allocation from being
+- *	active at any time. The semaphore is later released by jffs2_commit_allocation()
++ *	active at any time. The semaphore is later released by jffs2_commit_allocation().
+  *
+  *	jffs2_reserve_space() may trigger garbage collection in order to make room
+  *	for the requested allocation.
+  */
+ 
+-static int jffs2_do_reserve_space(struct jffs2_sb_info *c,  uint32_t minsize,
+-				  uint32_t *len, uint32_t sumsize);
+-
+ int jffs2_reserve_space(struct jffs2_sb_info *c, uint32_t minsize,
+ 			uint32_t *len, int prio, uint32_t sumsize)
+ {
+@@ -488,13 +491,16 @@ static int jffs2_do_reserve_space(struct
+ /**
+  *	jffs2_add_physical_node_ref - add a physical node reference to the list
+  *	@c: superblock info
+- *	@new: new node reference to add
++ *	@ofs: offset in the block
+  *	@len: length of this physical node
++ *	@ic: inode cache pointer
+  *
+  *	Should only be used to report nodes for which space has been allocated
+  *	by jffs2_reserve_space.
+  *
+  *	Must be called with the alloc_sem held.
++ *
++ *	Returns: pointer to new node on success or -errno code on error
+  */
+ 
+ struct jffs2_raw_node_ref *jffs2_add_physical_node_ref(struct jffs2_sb_info *c,
