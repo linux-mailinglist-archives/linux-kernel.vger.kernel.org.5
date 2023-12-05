@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C09C2804F24
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F30804FE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376919AbjLEJ4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:56:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
+        id S1376958AbjLEJ4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:56:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344933AbjLEJz3 (ORCPT
+        with ESMTP id S1344936AbjLEJz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Dec 2023 04:55:29 -0500
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5527124;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 97E33FA;
         Tue,  5 Dec 2023 01:55:34 -0800 (PST)
 Received: from SIOS1075.ysato.name (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-        by sakura.ysato.name (Postfix) with ESMTPSA id 0C17A1C056D;
-        Tue,  5 Dec 2023 18:46:42 +0900 (JST)
+        by sakura.ysato.name (Postfix) with ESMTPSA id 0714B1C0527;
+        Tue,  5 Dec 2023 18:46:44 +0900 (JST)
 From:   Yoshinori Sato <ysato@users.sourceforge.jp>
 To:     linux-sh@vger.kernel.org
 Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -77,9 +77,9 @@ Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
         linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-fbdev@vger.kernel.org
-Subject: [DO NOT MERGE v5 20/37] serial: sh-sci: fix SH4 OF support.
-Date:   Tue,  5 Dec 2023 18:45:39 +0900
-Message-Id: <e147fd6dd7aba44a6f408c3a42076b207be862fb.1701768028.git.ysato@users.sourceforge.jp>
+Subject: [DO NOT MERGE v5 21/37] dt-bindings: serial: renesas,scif: Add scif-sh7751.
+Date:   Tue,  5 Dec 2023 18:45:40 +0900
+Message-Id: <9f1485220fbfaba9b30bf2d9352640f988f35b04.1701768028.git.ysato@users.sourceforge.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1701768028.git.ysato@users.sourceforge.jp>
 References: <cover.1701768028.git.ysato@users.sourceforge.jp>
@@ -94,52 +94,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- fix earlycon name.
-- fix earlyprintk hung (NULL pointer reference).
+Add Renesas SH7751 SCIF.
 
 Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
- drivers/tty/serial/Kconfig  | 2 +-
- drivers/tty/serial/sh-sci.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ Documentation/devicetree/bindings/serial/renesas,scif.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 732c893c8d16..56d635371fd3 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -658,7 +658,7 @@ config SERIAL_SH_SCI_EARLYCON
- 	depends on SERIAL_SH_SCI=y
- 	select SERIAL_CORE_CONSOLE
- 	select SERIAL_EARLYCON
--	default ARCH_RENESAS
-+	default ARCH_RENESAS || SUPERH
+diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+index 4610a5bd580c..a774f16400c2 100644
+--- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
++++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+@@ -17,6 +17,7 @@ properties:
+     oneOf:
+       - items:
+           - enum:
++              - renesas,scif-sh7751       # SH7751
+               - renesas,scif-r7s72100     # RZ/A1H
+           - const: renesas,scif           # generic SCIF compatible UART
  
- config SERIAL_SH_SCI_DMA
- 	bool "DMA support" if EXPERT
-diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
-index 84ab434c94ba..0a33581be08b 100644
---- a/drivers/tty/serial/sh-sci.c
-+++ b/drivers/tty/serial/sh-sci.c
-@@ -2720,7 +2720,7 @@ static int sci_remap_port(struct uart_port *port)
- 	if (port->membase)
- 		return 0;
- 
--	if (port->dev->of_node || (port->flags & UPF_IOREMAP)) {
-+	if ((port->dev && port->dev->of_node) || (port->flags & UPF_IOREMAP)) {
- 		port->membase = ioremap(port->mapbase, sport->reg_size);
- 		if (unlikely(!port->membase)) {
- 			dev_err(port->dev, "can't remap port#%d\n", port->line);
-@@ -3555,8 +3555,8 @@ static int __init hscif_early_console_setup(struct earlycon_device *device,
- 
- OF_EARLYCON_DECLARE(sci, "renesas,sci", sci_early_console_setup);
- OF_EARLYCON_DECLARE(scif, "renesas,scif", scif_early_console_setup);
--OF_EARLYCON_DECLARE(scif, "renesas,scif-r7s9210", rzscifa_early_console_setup);
--OF_EARLYCON_DECLARE(scif, "renesas,scif-r9a07g044", rzscifa_early_console_setup);
-+OF_EARLYCON_DECLARE(rzscifa, "renesas,scif-r7s9210", rzscifa_early_console_setup);
-+OF_EARLYCON_DECLARE(rzscifa, "renesas,scif-r9a07g044", rzscifa_early_console_setup);
- OF_EARLYCON_DECLARE(scifa, "renesas,scifa", scifa_early_console_setup);
- OF_EARLYCON_DECLARE(scifb, "renesas,scifb", scifb_early_console_setup);
- OF_EARLYCON_DECLARE(hscif, "renesas,hscif", hscif_early_console_setup);
 -- 
 2.39.2
 
