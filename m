@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBB4804E09
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D29804E00
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:35:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235475AbjLEJgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:36:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
+        id S235065AbjLEJfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344967AbjLEJfi (ORCPT
+        with ESMTP id S235042AbjLEJfH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:35:38 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E7F10E9;
-        Tue,  5 Dec 2023 01:35:31 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B59ZOgP036614;
-        Tue, 5 Dec 2023 03:35:24 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701768924;
-        bh=i1CJqPlkWwulo6tpKksz+1AbJFicgkH7QGxR5iIc7fo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=UgHHT1ksJPBtpP1YV2bfei3fjzkFIaBw0GOc8eJdSYE9FcB/DraVcl41NfAo+vU+2
-         PkjP5Qz6GgQuGfW5+1DcXD+JXOwsJNggUIBswMJt+yu0LR9bXG5JNUErifwzq8ZVut
-         90miE4SUFIx4gN8UzI7nQdU8VP3v1c8japmTpubs=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B59ZOPZ011959
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 5 Dec 2023 03:35:24 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
- Dec 2023 03:35:24 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 5 Dec 2023 03:35:24 -0600
-Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B59YeMs010566;
-        Tue, 5 Dec 2023 03:35:18 -0600
-From:   Neha Malcom Francis <n-francis@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <a-nandan@ti.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <eblanc@baylibre.com>, <jneanne@baylibre.com>,
-        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>,
-        <j-luthra@ti.com>, <vaishnav.a@ti.com>, <hnagalla@ti.com>,
-        <devarsht@ti.com>, <n-francis@ti.com>
-Subject: [PATCH v9 7/7] DONOTMERGE: arm64: defconfig: Enable TPS6594 PMIC for J7 devices
-Date:   Tue, 5 Dec 2023 15:04:39 +0530
-Message-ID: <20231205093439.2298296-8-n-francis@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231205093439.2298296-1-n-francis@ti.com>
-References: <20231205093439.2298296-1-n-francis@ti.com>
+        Tue, 5 Dec 2023 04:35:07 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AD52B186;
+        Tue,  5 Dec 2023 01:35:12 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 139CEC15;
+        Tue,  5 Dec 2023 01:35:59 -0800 (PST)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB5E33F6C4;
+        Tue,  5 Dec 2023 01:35:10 -0800 (PST)
+Date:   Tue, 5 Dec 2023 09:35:08 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Sudeep Holla <sudeep.holla@arm.com>, suzuki.poulose@arm.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH V2 6/7] coresight: stm: Move ACPI support from AMBA
+ driver to platform driver
+Message-ID: <ZW7uzBS2diyEKldn@bogus>
+References: <20231201062053.1268492-1-anshuman.khandual@arm.com>
+ <20231201062053.1268492-7-anshuman.khandual@arm.com>
+ <0adc3a16-0fc4-2a25-cd48-4667881b9490@arm.com>
+ <e53cec31-9452-4c2a-a3a1-b6ef33be8e22@arm.com>
+ <7825dcd4-94e1-7a5f-b388-90e748dfc47f@arm.com>
+ <81cad3a6-a080-424c-ad0b-0f08c4fe51a2@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <81cad3a6-a080-424c-ad0b-0f08c4fe51a2@arm.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J7 (J721E-EVM, J721E-SK, J721S2, AM68-SK, J784S4, AM69-SK) devices use
-TPS6594x PMIC (interfaced over I2C) to power the SoC and various other
-peripherals on the board [1].
+On Tue, Dec 05, 2023 at 10:50:19AM +0530, Anshuman Khandual wrote:
+> Something like this works ?
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
+> index 3387ebc9d8ab..2b6834c4cac6 100644
+> --- a/drivers/hwtracing/coresight/coresight-stm.c
+> +++ b/drivers/hwtracing/coresight/coresight-stm.c
+> @@ -906,7 +906,7 @@ static int __stm_probe(struct device *dev, struct resource *res, void *dev_caps)
+>         pm_runtime_put(dev);
+>  
+>         dev_info(&drvdata->csdev->dev, "%s initialized\n",
+> -                (char *)dev_caps);
+> +                dev_caps ? (char *)dev_caps: "STM");
+>         return 0;
+>  
+>  cs_unregister:
 
-Signed-off-by: Neha Malcom Francis <n-francis@ti.com>
----
- arch/arm64/configs/defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, looks good to me.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index b60aa1f89343..682251135267 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -727,7 +727,7 @@ CONFIG_MFD_SEC_CORE=y
- CONFIG_MFD_SL28CPLD=y
- CONFIG_RZ_MTU3=y
- CONFIG_MFD_TPS65219=y
--CONFIG_MFD_TPS6594_I2C=m
-+CONFIG_MFD_TPS6594_I2C=y
- CONFIG_MFD_TI_AM335X_TSCADC=m
- CONFIG_MFD_ROHM_BD718XX=y
- CONFIG_MFD_WCD934X=m
 -- 
-2.34.1
-
+Regards,
+Sudeep
