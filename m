@@ -2,89 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD4B805B8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB93805BB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345834AbjLEPHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53600 "EHLO
+        id S1345825AbjLEPIC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 10:08:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345813AbjLEPHA (ORCPT
+        with ESMTP id S232155AbjLEPIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:07:00 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C99A9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:07:06 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 27BD340E01AD;
-        Tue,  5 Dec 2023 15:07:04 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 0YSLOHYtqL_t; Tue,  5 Dec 2023 15:07:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701788822; bh=SxyqOCYtJ0Jgo4rmEhzoNB1yXpfANdgicu3F4wlIel8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L5gkoKXD7jmHN85/Z7vuHn8ouhDbVEbLES0u6GoHalQz33UxUm3kZCRd3gFmCvVAt
-         g7ESLaIq00QWcaknOs/1TPwXWSxWaRMhn252kRLUYYp6Zy8KuyMfH9VUwzT9i0xZTQ
-         4x22L1/Aar9dD+wZVJKgqw+FOMnBetwjRKgIRgWzL+RLxGh/tivYD8X/weGDxBrRHG
-         vPQm5xDdQ6XVj10X0II0ThiJrf2U5guOEcz0Yg9KCvEHivqASFMmOsOQvQnsXBJEaP
-         NERtsTqvo3DLZ8PKg/LFjLIR59MZMYKDfiLIeqKidDAx9B4BImONeqd/h3vq3RTyyX
-         Vj4EgWkarldHckRl9I3Bo2+pJNSREK3y/yJJIq5ZbNGRKP0iv6YcIp74Pb478opu0u
-         iGpDQaGxOmQ4iQb2OUZuQdTKbLEUXMm4xWERCQXBIvklHlm6yWfKoJ5ZB2/dk9gjI8
-         9a8OSXntqmVEbx92x2HLFlQ4crx58cl3ld+CDTu0Wfl6VowDDZhnFANhgWtWraosAH
-         irdNBshe49cnqeMVzJmJjm3vEes58VV+Oe8shhMQgEpXOpnzqrA45vjy4FCbp/j/LU
-         4KyN5IxR9hSBWxTQSqLW7SJhsapaB+Ey2l1zrgkCS5i+1e3hm7NprOiyOr3Gey5YAS
-         cUmCq5Z+JTplMXcoI8cv6TO0=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3C7C540E014B;
-        Tue,  5 Dec 2023 15:06:53 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 16:06:48 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/coco, x86/sev: Use cpu_feature_enabled() to detect
- SEV guest flavor
-Message-ID: <20231205150648.GDZW88iAjBzYoIJ0+o@fat_crate.local>
-References: <20231205143738.2875-1-kirill.shutemov@linux.intel.com>
- <20231205144619.GCZW83uzAomKmupn7j@fat_crate.local>
- <20231205150012.6lma2wzcellr7pz7@box.shutemov.name>
+        Tue, 5 Dec 2023 10:08:01 -0500
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BC4B2;
+        Tue,  5 Dec 2023 07:08:07 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-daf7ed42ea6so4004130276.0;
+        Tue, 05 Dec 2023 07:08:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701788886; x=1702393686;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MBiG9HxZoSdr8SoEZSK/a3wB0uDxAZ7A8FUVFW1eSbA=;
+        b=jmaSdfBLnfanc+fvhAc727DyclHbcR+HhYT0BXD3ovjghZiqqHi3UAHZhHnH3CQ+XV
+         CQ0MVThhZbCmV0H30kOUqmFElOVBeyOfzr900OpWkh9z5vtEO5W9/Z1Md7t9uOe2qoQv
+         y6g5j1uFgvUS2xC/7vvv15Fzz0BDL2xR4ScA+6gP7neBlBFbvJtqdfGJH8kFFhnBd8KI
+         khOmSCEH4MjBB3lSRmWQBrmQicdjcIpsdBZKOCxObLQ1CkEU7pqPgz/0JY6FR/H3ieN0
+         DnPuciBZjfSBf6+YZVQh0AzZ+mRHwj2HspJlgQ9YlExcBqtxso75/x4KwwbKTKsrosFf
+         7oXQ==
+X-Gm-Message-State: AOJu0Yx1d8HIuHkFyHDNlsL8Lc/+QXCYFsb7i3jh0cdVan5GiSZaS/X5
+        W+cr2pqL4oDreiUfrS9FWfetganM8vH6aA==
+X-Google-Smtp-Source: AGHT+IEpci/bJCZF6vWZg8QX/uhC7FNTI3x/3y2x+SHPMWiqo9h3XjYpfU8cdqKo+4eY90A/TKbIow==
+X-Received: by 2002:a5b:4c1:0:b0:db7:dacf:61f0 with SMTP id u1-20020a5b04c1000000b00db7dacf61f0mr4341088ybp.66.1701788886420;
+        Tue, 05 Dec 2023 07:08:06 -0800 (PST)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id 64-20020a250d43000000b00da041da21e7sm3123981ybn.65.2023.12.05.07.08.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 07:08:04 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5d4f71f7e9fso45021387b3.0;
+        Tue, 05 Dec 2023 07:08:04 -0800 (PST)
+X-Received: by 2002:a05:690c:b9a:b0:5d3:ec19:d067 with SMTP id
+ ck26-20020a05690c0b9a00b005d3ec19d067mr3373868ywb.35.1701788884398; Tue, 05
+ Dec 2023 07:08:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231205150012.6lma2wzcellr7pz7@box.shutemov.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <cover.1701768028.git.ysato@users.sourceforge.jp> <c796ca5adc21c55f92968070e7f13201fe5b3f4a.1701768028.git.ysato@users.sourceforge.jp>
+In-Reply-To: <c796ca5adc21c55f92968070e7f13201fe5b3f4a.1701768028.git.ysato@users.sourceforge.jp>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Dec 2023 16:07:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWZadFO6TF_X_H2aRdGvePLhREvwWfEP==Mm-Ah5BkC3Q@mail.gmail.com>
+Message-ID: <CAMuHMdWZadFO6TF_X_H2aRdGvePLhREvwWfEP==Mm-Ah5BkC3Q@mail.gmail.com>
+Subject: Re: [DO NOT MERGE v5 24/37] dt-binding: sh: cpus: Add SH CPUs json-schema
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc:     linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Guo Ren <guoren@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Bin Meng <bmeng@tinylab.org>,
+        Max Filippov <jcmvbkbc@gmail.com>, Tom Rix <trix@redhat.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Jacky Huang <ychuang3@nuvoton.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 06:00:12PM +0300, Kirill A. Shutemov wrote:
-> I don't think cc_platform_has() is the right check. On TDX side we use
-> X86_FEATURE_TDX_GUEST for this and it works better than stretching
-> CC_ATTRs beyond their meaning.
+Hi Sato-san,
 
-You don't think it is the right check because you do something else on
-Intel?
+On Tue, Dec 5, 2023 at 10:46 AM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
+> Renesas SH series and compatible ISA CPUs.
+>
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 
-I can't follow that argument.
+Thanks for your patch!
 
--- 
-Regards/Gruss,
-    Boris.
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sh/cpus.yaml
+> @@ -0,0 +1,73 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sh/cpus.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Renesas SuperH CPUs
+> +
+> +maintainers:
+> +  - Yoshinori Sato <ysato@users.sourceforge.jp>
+> +
+> +description: |+
+> +  The device tree allows to describe the layout of CPUs in a system through
+> +  the "cpus" node, which in turn contains a number of subnodes (ie "cpu")
+> +  defining properties for every cpu.
+> +
+> +  Bindings for CPU nodes follow the Devicetree Specification, available from:
+> +
+> +  https://www.devicetree.org/specifications/
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - renesas,sh2a
+> +          - renesas,sh3
+> +          - renesas,sh4
+> +          - renesas,sh4a
+> +          - jcore,j2
+> +      - const: renesas,sh2
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Plain "renesas,sh2" should be accepted, too.
+
+> +
+> +  clock-frequency:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: |
+> +      CPU core clock freqency.
+
+frequency
+
+Although clocks below is more flexible.
+
+> +
+> +  clocks: true
+
+maxItems: 1
+
+> +
+> +  clock-names: true
+> +
+> +  reg:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    const: 0
+
+Some SH systems are SMP, so non-zero values should be accepted.
+
+> +
+> +  device_type: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - device_type
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sh7750.h>
+
+fatal error: dt-bindings/clock/sh7750.h: No such file or directory
+
+sh7750-cpg.h
+
+
+> +    cpus {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        cpu: cpu@0 {
+> +            compatible = "renesas,sh4", "renesas,sh2";
+> +            device_type = "cpu";
+> +            reg = <0>;
+> +            clocks = <&cpg SH7750_CPG_ICK>;
+> +            clock-names = "ick";
+> +            icache-size = <16384>;
+> +            icache-line-size = <32>;
+> +            dcache-size = <32768>;
+> +            dcache-line-size = <32>;
+> +        };
+> +    };
+> +...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
