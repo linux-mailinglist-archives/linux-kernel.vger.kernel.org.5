@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EABCD805DA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E97C2805DD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235670AbjLES00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:26:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
+        id S235678AbjLES0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:26:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345943AbjLES0U (ORCPT
+        with ESMTP id S1346145AbjLES0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Dec 2023 13:26:20 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727031A1
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:26:26 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6cdde2aeb64so5788062b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:26:26 -0800 (PST)
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C7E137
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:26:27 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6ce403523e5so1749317b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:26:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google; t=1701800786; x=1702405586; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K2E08Wp0PAEeNbIbiRL8xBMi7hvEIIZj0Of8hDuuB3w=;
-        b=B/U60tt/8REQw9XhxcDwioJ3Fg+SGR2WrCeiqqRSocRsEryNO4pGoRDT+i4QvdiAC4
-         lAIYLhXtC1XUpY2Ivhj5/KvsQlfcKlw0uGQTbj2moXHIeHldzfpGw8RdzkYsPmQNR2nK
-         7fWC1lOHmICJbeFYC0k75lm2mR6PYVzj3QFLc=
+        bh=SNgNutvDkhDCEpZkCHrbvZX51uthcX9S/dgTvap+CHg=;
+        b=ccmrnqGefy2wA4FqGJld45wKa0jMfAiCyuWW7J+hf7Stk2fV9V9a9HMtxYo563I6cS
+         pava/cdOQB7qiYHw63yAQcv8FsjY8JPGV3IDo0joc+SoqZPHwSCNBeq2qFS+/bwteaGl
+         cPD7iO5KuQffZRaJVLz1+gPgkAe8/SPB0NQbM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1701800786; x=1702405586;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K2E08Wp0PAEeNbIbiRL8xBMi7hvEIIZj0Of8hDuuB3w=;
-        b=rtqB5djRZ0Vwury4WQeP8IpJYoW/5JZff0L7CXzj4dxhTsYori7XWAnqNDwL4EKXvc
-         L/dNq5Didq/0Rl8cOVT8Zs8HnsA86QwdmypErTvmDN1qZI5t1rAJnQN4x3h4RImut01M
-         0jDsx+2g8yCdmMchZdx9TA293Aq4W5cCJEcQK9ycaUcPrTRo4xgVBP3Neof9IaHko356
-         7J8LYJIl7UvUNjKsXpQCLbizyCD1r9bOtFmm3MiKzSVBui14VyXrl7JqhVUPTOVuJiLb
-         wDCwJnkdwPhXV61IJ4VKN7NJNvP00cMcl8WjbyTYnjb0OSqof1eIOA+XZ8oBgqBCg2oO
-         sLpQ==
-X-Gm-Message-State: AOJu0YzlCjxvizOsYeuo6Zx1e8cBJP1opvI1HqSHGapjdHaa+Y+xuKfc
-        z6b9EzRiZnRlT3ScDqgXosZoqA==
-X-Google-Smtp-Source: AGHT+IHwsBUiT0eRYB1uJVGZDpNAY4QIFF7fFgrQ+gfLSHfbU5MuEZ2MN3xlKq+NFD9Bs+d11RXqog==
-X-Received: by 2002:a05:6a20:728f:b0:181:fe7f:836b with SMTP id o15-20020a056a20728f00b00181fe7f836bmr7808665pzk.7.1701800785686;
-        Tue, 05 Dec 2023 10:26:25 -0800 (PST)
+        bh=SNgNutvDkhDCEpZkCHrbvZX51uthcX9S/dgTvap+CHg=;
+        b=AjCObaXwHn2vTodMa7UdvGxooa6tVCklHPwjuQxSF03EfZ0n8SUTq6K+0rtWFDbPB5
+         SpqiAUa8LZqKLmpXp4H7zzHhkG8+JwCenvODBKsMG/5n0Arg0iK/M02laN+AJqZc8qTi
+         MH0+LicFS5nuCSpjR1BdjmAgCgOlnhMD7BV2BGjcz2jfHvmGRSgsgqjUQG5voUxFFEiq
+         oQ1QcEYsLxGeut/gmCbgfwgOErInEg4aeRtTOlPUovWbftXLGhWeXwQDJP/TCYNH6Vhe
+         K+pAf1BQtS7/O9aKXhYX++2pkKVmq+nxhd1MLm5naW2WNwTOJiGC6HkClo1bIbu8SMjq
+         cTtg==
+X-Gm-Message-State: AOJu0YxXslX81ZX0zNQ+NizJGrz0/BLRVygsxxMxNh5RY/R8p5teoV6E
+        R9wsFL8+wXseARjtGDxD8nP4zQ==
+X-Google-Smtp-Source: AGHT+IF64v3HUro+IAdNmJfhP5zEfUQ8LFp8hTAQAP04jfRuB28nLOYmpuhI2SgaFhVm6Uz6d08KGQ==
+X-Received: by 2002:a05:6a00:4c8a:b0:6ce:5904:6e56 with SMTP id eb10-20020a056a004c8a00b006ce59046e56mr1845130pfb.57.1701800784800;
+        Tue, 05 Dec 2023 10:26:24 -0800 (PST)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id o8-20020a056a001b4800b006ce61c9495bsm2857794pfv.10.2023.12.05.10.26.23
+        by smtp.gmail.com with ESMTPSA id gx9-20020a056a001e0900b006cdc6b9f0ecsm9717290pfb.81.2023.12.05.10.26.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 05 Dec 2023 10:26:23 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
 To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
 Cc:     Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
         linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/4] pstore: inode: Convert mutex usage to guard(mutex)
-Date:   Tue,  5 Dec 2023 10:26:15 -0800
-Message-Id: <20231205182622.1329923-2-keescook@chromium.org>
+Subject: [PATCH v2 3/4] pstore: inode: Use __free(pstore_iput) for inode allocations
+Date:   Tue,  5 Dec 2023 10:26:16 -0800
+Message-Id: <20231205182622.1329923-3-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231205175449.work.110-kees@kernel.org>
 References: <20231205175449.work.110-kees@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4977; i=keescook@chromium.org;
- h=from:subject; bh=I6QANnpHLWcA4i3gT5wmHz8vdSJtJ/8W9NRntgr7o9Q=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlb2tIe1kl5grDFz02MlwEMZbNkkvJk+E/REGw8
- MmUW++dTRaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZW9rSAAKCRCJcvTf3G3A
- Jmx2D/9XIlu1kzssi07t3R/cbO8iB66RuThDH+nLtM6/s6fMGgOWGONfOGbTkqwrLphjr+32aNB
- otF24YUoS8xAA000Jnya2p8FwsV1eKg0bMoqQ5sn47H2it78TefQ8EbTd3gR4+Yhhw25J2Ix6ub
- I8h0h4Mfpb3B9P8TeCiQag9KMlV3tpqWGAOQBlwAEYkflyVWrFjnIuam/UqP+h+88OHtWUWVUny
- NORS6oduZg5xUxQgxvgZxMo4Aeo2plpQv5gBy1PQjSXO3W8Cap3X24HWCRz0m/BIhakgICpIj4p
- ltf6+OFM1mB4bTVbXbvRlERMha+Wu/AXJIkf0kgRoLRWaiw03eEo2iJZJQ0EMYG71/LjFSox04c
- A/xoV2HbfeyzdlqGqE+p/syA632cT8xUDhnEE0EwkKj/qSC3tn8T4bL1WW8WlwX6ypxz9TfiUhq
- +TuySHA6QE9o2tphXgm3dRwK46Ko+8089EBZ9Fd7v5wG0nXbmvtW5MEMApAxy04tdv2WzsO4pDv
- ukclQZChgMYdM/qi/wQReVSu4APZwi2cy93CJvD1UnCTdwch0f9lMyLVKS5lSbZsoudmhaldAB6
- SUgKhqJT2OElDDpwL3KKHmrRQO3wLpyzRLFz7uaTxmxjErQda2bLWUTZH1SAeI2vDsE9YyzTdek GdMZSGqYO0v+Krw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1862; i=keescook@chromium.org;
+ h=from:subject; bh=m7xJrXjdtPyXrzBu3Ps5CblAxgEi3qDUjX52ildQ9J4=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlb2tIyZn9161W1eERCcqbEe/5HMlwbKkyq8hlo
+ PIozsHu7tuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZW9rSAAKCRCJcvTf3G3A
+ JrGcEACiwwEJFv3oAhDndCSOgseaVPz8t0wmLNflw7I79+2O05ST07/bnukMu7wcDTs6ld4FbLO
+ 96grfA1IyYXAU9844SLcKwzhoP0ulK+dmxQgUwf1Q5vPFHe7IAJh1SPwHoEe6pjBkkXs/ACBISS
+ ep3FTHlt/AmiJ2L6Gy8ZfTO+paAqhGEboybqlfzW12gLQs/Zl9/bKotOHcyIghbdCKJ8/M0NoXP
+ 91yTm4PES+zC3pxgDS/wfPkKIZzmySj0z9vaLd0uTUNJPfj12LUrU4uxm/CuUlPzKJV36epH+vv
+ zyWOesh1ZbLoae9vCk74CQuICILefP7sUR3gf3ndlJF7vbPDDTXTTDNtXM8uNfgGHkLRMQ10oI0
+ IxjyzuWGjeVZdaVGclhrjAwQj0TzGBYdwQ9knwPNc70/1YEKggPNeXAERDIVQS+71h1HTU+r5H5
+ JZMdWhNMipiTLv94qsj1Uy+jwa2qnvzOVsIM0DiQc9n1feg0lCcpF0GR2BTShwVjGM2bkeMP/Xx
+ cAqkN+FocxUzl4UUBI8zt0N7Jx+f5cce+7ZxITiRAvtC/KjwehN0mU/e1X4ujblQm3BewlfjyeG
+ Bh5bfbY01i1lNnCgrcqqI4d8uV3CuikibWhrDgTimswe+0KOSoVTId99LjyyKx1NwF3xtUBslSt AUiwfzzG6TJHoag==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -83,184 +83,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace open-coded mutex handling with cleanup.h guard(mutex) and
-scoped_guard(mutex, ...).
+Simplify error path for failures where "inode" needs to be freed.
 
 Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
 Cc: Tony Luck <tony.luck@intel.com>
 Cc: linux-hardening@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/pstore/inode.c | 76 +++++++++++++++++++----------------------------
- 1 file changed, 31 insertions(+), 45 deletions(-)
+ fs/pstore/inode.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
-index 20f3452c8196..0d89e0014b6f 100644
+index 0d89e0014b6f..a27764341079 100644
 --- a/fs/pstore/inode.c
 +++ b/fs/pstore/inode.c
-@@ -180,25 +180,21 @@ static int pstore_unlink(struct inode *dir, struct dentry *dentry)
- {
- 	struct pstore_private *p = d_inode(dentry)->i_private;
- 	struct pstore_record *record = p->record;
--	int rc = 0;
+@@ -35,6 +35,8 @@ static LIST_HEAD(records_list);
+ static DEFINE_MUTEX(pstore_sb_lock);
+ static struct super_block *pstore_sb;
  
- 	if (!record->psi->erase)
- 		return -EPERM;
- 
- 	/* Make sure we can't race while removing this file. */
--	mutex_lock(&records_list_lock);
--	if (!list_empty(&p->list))
--		list_del_init(&p->list);
--	else
--		rc = -ENOENT;
--	p->dentry = NULL;
--	mutex_unlock(&records_list_lock);
--	if (rc)
--		return rc;
--
--	mutex_lock(&record->psi->read_mutex);
--	record->psi->erase(record);
--	mutex_unlock(&record->psi->read_mutex);
-+	scoped_guard(mutex, &records_list_lock) {
-+		if (!list_empty(&p->list))
-+			list_del_init(&p->list);
-+		else
-+			return -ENOENT;
-+		p->dentry = NULL;
-+	}
++DEFINE_FREE(pstore_iput, struct inode *, if (_T) iput(_T))
 +
-+	scoped_guard(mutex, &record->psi->read_mutex)
-+		record->psi->erase(record);
- 
- 	return simple_unlink(dir, dentry);
- }
-@@ -290,19 +286,16 @@ static struct dentry *psinfo_lock_root(void)
+ struct pstore_private {
+ 	struct list_head list;
+ 	struct dentry *dentry;
+@@ -337,7 +339,7 @@ int pstore_put_backend_records(struct pstore_info *psi)
+ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
  {
- 	struct dentry *root;
+ 	struct dentry		*dentry;
+-	struct inode		*inode;
++	struct inode		*inode __free(pstore_iput) = NULL;
+ 	int			rc = 0;
+ 	char			name[PSTORE_NAMELEN];
+ 	struct pstore_private	*private, *pos;
+@@ -369,7 +371,7 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
  
--	mutex_lock(&pstore_sb_lock);
-+	guard(mutex)(&pstore_sb_lock);
- 	/*
- 	 * Having no backend is fine -- no records appear.
- 	 * Not being mounted is fine -- nothing to do.
- 	 */
--	if (!psinfo || !pstore_sb) {
--		mutex_unlock(&pstore_sb_lock);
-+	if (!psinfo || !pstore_sb)
- 		return NULL;
--	}
- 
- 	root = pstore_sb->s_root;
- 	inode_lock(d_inode(root));
--	mutex_unlock(&pstore_sb_lock);
- 
- 	return root;
- }
-@@ -317,19 +310,19 @@ int pstore_put_backend_records(struct pstore_info *psi)
- 	if (!root)
- 		return 0;
- 
--	mutex_lock(&records_list_lock);
--	list_for_each_entry_safe(pos, tmp, &records_list, list) {
--		if (pos->record->psi == psi) {
--			list_del_init(&pos->list);
--			rc = simple_unlink(d_inode(root), pos->dentry);
--			if (WARN_ON(rc))
--				break;
--			d_drop(pos->dentry);
--			dput(pos->dentry);
--			pos->dentry = NULL;
-+	scoped_guard(mutex, &records_list_lock) {
-+		list_for_each_entry_safe(pos, tmp, &records_list, list) {
-+			if (pos->record->psi == psi) {
-+				list_del_init(&pos->list);
-+				rc = simple_unlink(d_inode(root), pos->dentry);
-+				if (WARN_ON(rc))
-+					break;
-+				d_drop(pos->dentry);
-+				dput(pos->dentry);
-+				pos->dentry = NULL;
-+			}
- 		}
- 	}
--	mutex_unlock(&records_list_lock);
- 
- 	inode_unlock(d_inode(root));
- 
-@@ -353,20 +346,20 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
- 	if (WARN_ON(!inode_is_locked(d_inode(root))))
- 		return -EINVAL;
- 
--	rc = -EEXIST;
-+	guard(mutex)(&records_list_lock);
-+
- 	/* Skip records that are already present in the filesystem. */
--	mutex_lock(&records_list_lock);
- 	list_for_each_entry(pos, &records_list, list) {
- 		if (pos->record->type == record->type &&
- 		    pos->record->id == record->id &&
- 		    pos->record->psi == record->psi)
--			goto fail;
-+			return -EEXIST;
- 	}
- 
- 	rc = -ENOMEM;
- 	inode = pstore_get_inode(root->d_sb);
- 	if (!inode)
--		goto fail;
+ 	private = kzalloc(sizeof(*private), GFP_KERNEL);
+ 	if (!private)
+-		goto fail_inode;
 +		return -ENOMEM;
- 	inode->i_mode = S_IFREG | 0444;
- 	inode->i_fop = &pstore_file_operations;
- 	scnprintf(name, sizeof(name), "%s-%s-%llu%s",
-@@ -394,7 +387,6 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
- 	d_add(dentry, inode);
+ 
+ 	dentry = d_alloc_name(root, name);
+ 	if (!dentry)
+@@ -384,7 +386,7 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+ 		inode_set_mtime_to_ts(inode,
+ 				      inode_set_ctime_to_ts(inode, record->time));
+ 
+-	d_add(dentry, inode);
++	d_add(dentry, no_free_ptr(inode));
  
  	list_add(&private->list, &records_list);
--	mutex_unlock(&records_list_lock);
  
- 	return 0;
+@@ -392,8 +394,6 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
  
-@@ -402,8 +394,6 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+ fail_private:
  	free_pstore_private(private);
- fail_inode:
- 	iput(inode);
--fail:
--	mutex_unlock(&records_list_lock);
+-fail_inode:
+-	iput(inode);
  	return rc;
  }
  
-@@ -449,9 +439,8 @@ static int pstore_fill_super(struct super_block *sb, void *data, int silent)
- 	if (!sb->s_root)
- 		return -ENOMEM;
- 
--	mutex_lock(&pstore_sb_lock);
--	pstore_sb = sb;
--	mutex_unlock(&pstore_sb_lock);
-+	scoped_guard(mutex, &pstore_sb_lock)
-+		pstore_sb = sb;
- 
- 	pstore_get_records(0);
- 
-@@ -466,17 +455,14 @@ static struct dentry *pstore_mount(struct file_system_type *fs_type,
- 
- static void pstore_kill_sb(struct super_block *sb)
- {
--	mutex_lock(&pstore_sb_lock);
-+	guard(mutex)(&pstore_sb_lock);
- 	WARN_ON(pstore_sb && pstore_sb != sb);
- 
- 	kill_litter_super(sb);
- 	pstore_sb = NULL;
- 
--	mutex_lock(&records_list_lock);
-+	guard(mutex)(&records_list_lock);
- 	INIT_LIST_HEAD(&records_list);
--	mutex_unlock(&records_list_lock);
--
--	mutex_unlock(&pstore_sb_lock);
- }
- 
- static struct file_system_type pstore_fs_type = {
 -- 
 2.34.1
 
