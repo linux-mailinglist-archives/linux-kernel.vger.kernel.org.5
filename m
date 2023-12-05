@@ -2,156 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B140805C34
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94426805B70
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442420AbjLEPp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:45:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40782 "EHLO
+        id S1442478AbjLEPs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346310AbjLEPp4 (ORCPT
+        with ESMTP id S1346860AbjLEPs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:45:56 -0500
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7857D85
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:46:02 -0800 (PST)
-Received: from eig-obgw-6002a.ext.cloudfilter.net ([10.0.30.222])
-        by cmsmtp with ESMTPS
-        id ASgnr21LzWcCIAXcXriopq; Tue, 05 Dec 2023 15:46:01 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id AXcWr0ml6M0U2AXcWr188B; Tue, 05 Dec 2023 15:46:00 +0000
-X-Authority-Analysis: v=2.4 cv=BuKOfKb5 c=1 sm=1 tr=0 ts=656f45b8
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=c601a17RXwP2wWhsnozrzA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=wYkD_t78qR0A:10 a=COk6AnOGAAAA:8
- a=VwQbUJbxAAAA:8 a=WzuJIX3iUC1USL5IvykA:9 a=QEXdDO2ut3YA:10
- a=TjNXssC_j7lpFel5tvFf:22 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=NHebt4j7s8OHV/xuSCmvZsKFeNjOFLQ9DgYPRv6+6O8=; b=agnQBn/dUEGSq49ZF5VM6/Hc5V
-        oNj2qa1gF12KYyLZcjOYvrvEAXdz1UHWYuUXA4oJin0nC6v4u/1qHh0/J8C20uocjWAJaUdZcqlzo
-        Gm8t1qk/21heW3MfKbeq2WcLwEfrJ+uDVZMJjYY++n3rm1uzrJttTuIo3HH9QwCsiPMDM0g2sezyQ
-        2X/DPIH+2da/DguJp2tjp5t8QckBJxTk7FCSLO5l1N3zZHKXaDwYBOq9Lg90v9iNOTjrN7n0b7Lvx
-        HQRS0xoN1uZzJkkS2PIX9kWPywG7ZNmG6eaG1zhI2xX8yRpzDKuh1CJGoUvm8vkNqFMKe/o0nYcWQ
-        fu9IL+8w==;
-Received: from 187.184.159.186.cable.dyn.cableonline.com.mx ([187.184.159.186]:42509 helo=[192.168.0.10])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1rAXcV-000tVE-31;
-        Tue, 05 Dec 2023 09:46:00 -0600
-Message-ID: <30ea9d68-e49e-4727-88aa-547b1b0feebf@embeddedor.com>
-Date:   Tue, 5 Dec 2023 09:45:57 -0600
+        Tue, 5 Dec 2023 10:48:57 -0500
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2079.outbound.protection.outlook.com [40.107.212.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0A0BA;
+        Tue,  5 Dec 2023 07:49:00 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iJF5XWnKPS9qusgEry5dttgFRiOC4Nb52wf1GtLz/t9ompvZ5x//rnDzMatYX0KHpEalqQgzxLU/EC+cxadTB/yfed4j0VY7n/E3bbkFskQV8kKBh6vi6y2bCdKqoFcXZNBvIeSy2MCORSQdpq/DBcIvJzmlMzKQ4vD/g9dTG3zqTGUZLJUVcxrDT0nulfGFDKo6Ez5NmCszeWpGZyf6y2azBUa/3UICbT0+mlWEyUyWbxEBVQbvpCcqcFpcbuuM8HnU0x6LFMqNn5oASf51g6hi5yfNS59asqQazWmm6s+wt2h0D3QNIz+lexF69+u/7jmRHpV5BEH4KE7pkqvy9A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eLuQYjjCa83wy5FxCm9aqnG3UyNRRCE2OjcDryFxIyQ=;
+ b=iaRLIqzBjm13w/T+svuj1rzt9Dx5oSBdlMU+31qWZ2DS1j9UQIqm0uAI5r2gX39C3Ej/z2uHTJIFCZVKUfEyJrf74kYzLpGTIc1Pci7iauEeUThkezcq30LEjLNiewA4OZ21Sy+sCtWr8YIEk46IuHe07mUfulDnjAINvA/TaTUTxw3dAzsfUbJ3WR20xadukdX5Af1WK5RjGDQbaaHvhLa8mxLBgf+plPV3LGgfKSxdpNAp7jAP5lHrE/x/S5BpiuhphmlyYVEI53CHUcvydiyZ+ia9UpZMSH4bm+cW2u5FrwnDlaeAeYiKW8Eb3Fpmju9vgJveieUy2j5tfWE7/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=google.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eLuQYjjCa83wy5FxCm9aqnG3UyNRRCE2OjcDryFxIyQ=;
+ b=dM5DBmVHsFSazC45RlTJg4xhzv6VqLpz/Vtf3IDnwbZ4nXakkZMDVdndegbS83sXFR8LCCR0vAxjH5aoOMl0K0EcgjGv9bDb4xre8BeIxXLDK0Ucid7Z569qbudP5i+WV5gATj2uMSkL4qU8s/zOkrHHvq2J9wSWmZvf9gHjtJg=
+Received: from BL1PR13CA0318.namprd13.prod.outlook.com (2603:10b6:208:2c1::23)
+ by MW4PR12MB7359.namprd12.prod.outlook.com (2603:10b6:303:222::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 5 Dec
+ 2023 15:48:57 +0000
+Received: from BL6PEPF0001AB72.namprd02.prod.outlook.com
+ (2603:10b6:208:2c1:cafe::31) by BL1PR13CA0318.outlook.office365.com
+ (2603:10b6:208:2c1::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.24 via Frontend
+ Transport; Tue, 5 Dec 2023 15:48:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL6PEPF0001AB72.mail.protection.outlook.com (10.167.242.165) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7068.24 via Frontend Transport; Tue, 5 Dec 2023 15:48:57 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 5 Dec
+ 2023 09:48:56 -0600
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+CC:     <linux-pci@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH] x86/pci: Stop requiring MMCONFIG to be declared in E820, ACPI or EFI for newer systems
+Date:   Tue, 5 Dec 2023 09:48:45 -0600
+Message-ID: <20231205154845.44463-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] wifi: ath11k: Use DECLARE_FLEX_ARRAY() for
- ath11k_htc_record
-Content-Language: en-US
-To:     Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Kees Cook <keescook@chromium.org>, ath10k@lists.infradead.org,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231127-flexarray-htc_record-v1-0-6be1f36126fd@quicinc.com>
- <20231127-flexarray-htc_record-v1-4-6be1f36126fd@quicinc.com>
- <4f2a486c-c6de-43e4-8bb6-bdd3f819b0a9@embeddedor.com>
- <c5555ad6-6991-4fca-864f-355d2fae9ae1@quicinc.com>
- <87edg0pt17.fsf@kernel.org>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <87edg0pt17.fsf@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.184.159.186
-X-Source-L: No
-X-Exim-ID: 1rAXcV-000tVE-31
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187.184.159.186.cable.dyn.cableonline.com.mx ([192.168.0.10]) [187.184.159.186]:42509
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 1
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfPzVhlvubBjxQHu1+cSrQVykQIkIGUUxZ1zGkQOWeFWI9XUGM7xGtliS3mFQ8XhCosDQt+yunIqDUeFl2/tm2Nnsf3eYzKvNJgazgvNED2VjziGQSJ83
- jl1pdKugZ4S3H+aZx+r/yNPA+lrYRi6zJ7ay1R+pcCackvpUKUmMoJrV8nrLYXyYOF5Pa/s1mGzpS1XHejnUoz6FbyO43oxXp0JlQxiIQ4GdZJiApQyTC91T
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB72:EE_|MW4PR12MB7359:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6786bc5a-dc38-4388-2e1c-08dbf5a9b141
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: T6VRhPSJE0AI/K6ZEXouq7+aebw9KJiwxsYNBM+zHxW6Ypnw0Kf5FnJ5ZCNN+S37TG7+kt1w1MjNX3GVC0n0bNPPXgwGy38eu0wepyjCPxvpWmhl7DJnM+ixtKj4J7lo3XbJ805XSd6c1sdFfJEIyZMFTWk8iCDx/7ymXlR3nFwqSrAT4ZIp+2pzYr4WJYi9kPuziUPMI678nQ4C4OXyaAujZDLJTnhqvILrEkUGeIzDLDGDejSad5BjwfvrlsM38xJMzAg1/6lTqUL4e74+nWfR+hIh4T9u6DBxsRyrTRzp48fS++556scNBXUnEkrwQN6XSfMIaivAkJ9vXWhk6yG2BnjVT7DuKzxlDDId249LwOjlW/rRKBdLwbSfdngdaMcomAoODpNfhvDL3s8VhmP7JTGZfmhQ0hYrrgiYSeeSeC8SbqzXdKgwm1+ZO9O/wnSK3unzmD0xa6kuNtHHfY4llBi/g4HWAK+OfogksHcL5Qs5LkrLnPnVSNVG6x7ImA48EZg50i61qtrKdEINBDg513RPNf0ARVfvz6pZflQ72D9QWi+TnzAE7qN2LpgaFrWwyWPWuxBUSG2oNFmjiXV7uWfwXbUTjZtesfRTqgDa8NBWJUMok4HPQ3E46MXIWHH71NNDXLFAEsEY+e1OW7ol1qcKh8znSsEWAhOFoZykpYYghomr8arhqM5CO8YMKgAdrZWSizV51VfXx58Mo4HmsRmDPxfNm8JRt/PCKGkeCElvl6MT1ovzF7K5XqYgJfNNpExj7HYg+T1KYtlB9GsbK+riWPRfn4r98obocKq12u28EZMwk4eBHswEpqMk
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(376002)(346002)(136003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(82310400011)(40470700004)(46966006)(36840700001)(8676002)(6666004)(8936002)(4326008)(7696005)(110136005)(316002)(54906003)(40460700003)(966005)(40480700001)(478600001)(81166007)(356005)(47076005)(2616005)(41300700001)(36756003)(1076003)(86362001)(2906002)(44832011)(36860700001)(70586007)(336012)(26005)(82740400003)(83380400001)(426003)(16526019)(70206006)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 15:48:57.4861
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6786bc5a-dc38-4388-2e1c-08dbf5a9b141
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB72.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7359
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+commit 7752d5cfe3d1 ("x86: validate against acpi motherboard resources")
+introduced checks for ensuring that MCFG table also has memory region
+reservations to ensure no conflicts were introduced from a buggy BIOS.
 
+This has proceeded over time to add other types of reservation checks
+for ACPI PNP resources and EFI MMIO memory type.  The PCI firmware spec
+however says that these checks are only required when the operating system
+doesn't comprehend the firmware region:
 
-On 12/5/23 09:29, Kalle Valo wrote:
-> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
-> 
->> On 11/27/2023 8:23 AM, Gustavo A. R. Silva wrote:
->>
->>>
->>>
->>> On 11/27/23 10:14, Jeff Johnson wrote:
->>>> Transform the zero-length array in ath11k_htc_record into a proper
->>>> flexible array via the DECLARE_FLEX_ARRAY() macro. This helps with
->>>> ongoing efforts to globally enable -Warray-bounds.
->>>>
->>>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
->>>> ---
->>>>    drivers/net/wireless/ath/ath11k/htc.h | 2 +-
->>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/net/wireless/ath/ath11k/htc.h b/drivers/net/wireless/ath/ath11k/htc.h
->>>> index 84971cc9251c..e0434b29df70 100644
->>>> --- a/drivers/net/wireless/ath/ath11k/htc.h
->>>> +++ b/drivers/net/wireless/ath/ath11k/htc.h
->>>> @@ -151,7 +151,7 @@ struct ath11k_htc_credit_report {
->>>>    struct ath11k_htc_record {
->>>>    	struct ath11k_htc_record_hdr hdr;
->>>>    	union {
->>>> -		struct ath11k_htc_credit_report credit_report[0];
->>>> +		DECLARE_FLEX_ARRAY(struct ath11k_htc_credit_report, credit_report);
->>>>    	};
->>>
->>> Why not removing the `union` and just do a direct transformation [0] -> [ ] ?
->>
->> No reason other than staying consistent with ath10k.
->> Will see if Kalle has an opinion on this.
-> 
-> Yeah, I don't see the need for the union and I removed it in the pending
-> branch:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=a2faeea1fe0635563187e7821a6d0baf7b40f2c6
-> 
-> Does it look ok?
-> 
+```
+If the operating system does not natively comprehend reserving the MMCFG
+region, the MMCFG region must be reserved by firmware. The address range
+reported in the MCFG table or by _CBA method (see Section 4.1.3) must be
+reserved by declaring a motherboard resource. For most systems, the
+motherboard resource would appear at the root of the ACPI namespace
+(under \_SB) in a node with a _HID of EISAID (PNP0C02), and the resources
+in this case should not be claimed in the root PCI bus’s _CRS. The
+resources can optionally be returned in Int15 E820h or EFIGetMemoryMap
+as reserved memory but must always be reported through ACPI as a
+motherboard resource.
+```
 
-Nope.
+Running this check causes problems with accessing extended PCI
+configuration space on OEM laptops that don't specify the region in PNP
+resources or in the EFI memory map. That later manifests as problems with
+dGPU and accessing resizable BAR. Similar problems don't exist in Windows
+11 with exact same laptop/firmware stack, and in discussion with AMD's BIOS
+team Windows doesn't have similar checks.
 
-A direct transformation is just fine:
+As this series of checks was first introduced as a mitigation for buggy
+BIOS before EFI was introduced add a BIOS date range to only enforce the
+checks on hardware that predates the release of Windows 11.
 
--	union {
--		struct ath11k_htc_credit_report credit_report[0];
--	};
-+	struct ath11k_htc_credit_report credit_report[];
+Link: https://members.pcisig.com/wg/PCI-SIG/document/15350
+      PCI Firmware Specification 3.3
+      Section 4.1.2 MCFG Table Description Note 2
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+---
+ arch/x86/pci/mmconfig-shared.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-There is no need for DFA in this situation.
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 4b3efaa82ab7..e4594b181ebf 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -570,9 +570,13 @@ static void __init pci_mmcfg_reject_broken(int early)
+ 
+ 	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+ 		if (pci_mmcfg_check_reserved(NULL, cfg, early) == 0) {
+-			pr_info(PREFIX "not using MMCONFIG\n");
+-			free_all_mmcfg();
+-			return;
++			if (dmi_get_bios_year() >= 2021) {
++				pr_info(PREFIX "MMCONFIG wasn't reserved by ACPI or EFI\n");
++			} else {
++				pr_info(PREFIX "not using MMCONFIG\n");
++				free_all_mmcfg();
++				return;
++			}
+ 		}
+ 	}
+ }
+-- 
+2.34.1
 
-Thanks
---
-Gustavo
