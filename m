@@ -2,249 +2,452 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9EE8055CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6238055D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442146AbjLENYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41476 "EHLO
+        id S1345407AbjLENZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:25:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376995AbjLENYt (ORCPT
+        with ESMTP id S1377030AbjLENZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:24:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8383194;
-        Tue,  5 Dec 2023 05:24:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701782696; x=1733318696;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=vMuIrQFPhcYydWBQNA7UjLpQ0f+D1Bub560HrackFkg=;
-  b=IxkuM9ZmpgOJGzz7LG/KHNn3Nv6jIsdokzgFOT6XXYy+5F0BUf0KANtQ
-   LEMKPRlv8jKlXtRD2fXz6gfsXDovKp8ggOM77+0husk9oHahjSqh8JZKy
-   zfcMl2PEReCQrtGfkUxWgfaU1q6c4KJhQZg5TLN8/QmYfKB6NNRjs5r7P
-   ufxUSmw42iNzrF1ExZwsHEf/wkVNRkKaM9PB46voQ9ZmUSJ6gl7iBg4FZ
-   5jDKMmkQZB2x9Wzz4YlhT6fKb4YYCR3mEfaQIt159Qu/7dm5KxGbxGtIt
-   O2zeWG+oRTNdHzlrArTfkNXONJR3z0KLA6cGVApXjtmPWhZdpHAAJwmVj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="12608556"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="12608556"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 05:24:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="861743096"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="861743096"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Dec 2023 05:24:54 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Dec 2023 05:24:52 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 5 Dec 2023 05:24:52 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 5 Dec 2023 05:24:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jPSZZ/b0hiOzD5ba7ZTYYQKJ7dgO/uWDlc8Ix/F5nS0EOc+XEyNvTgbEn1kZJdKvN5ziqH8g8HD9UoridYWemd7Ks+9P0JM7yfqf8qcvyCOJZNGDAWrMQGKRgbt+LH9Eco/h3mqPbJZmBZVGTTaI+tTjC99P1R14MkaBIfLeTsoLuYKi4lJjLbfuvPC46/kCMcE9ivSJNgSo7U9xbdmoEIy2vPU28tPa688pwTt3dBRZqKUOGqSGoKHPeZ16U3NPWAYsaL5n+fC/6yqTyolFSkl7SZuvdYTF4wkKmrJAr/HdFzblHoS1uk5g7grkEsrysOsXgOfnkRixl5gBMjQg/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vMuIrQFPhcYydWBQNA7UjLpQ0f+D1Bub560HrackFkg=;
- b=UZuM2yqnNim1MCcdC1MlrplSo0bnXwMmEMwmff/UgNtAD06cxL5tMtDtGRrJsgNcLcN8UgVEPVYytLyuOLpy2+o7FC+7b+9YnVFiagf0dRMzBxcWZKaMqyxlhGpzoyVeXQ8Wqafn0ASQX4MU5GT5G5Cyguqvh0UC6hJXPs3feX7kU6YRMmmq74D1l6dt7wfBN4854lp7V2YZscqjtnFayqSc/6HWFgowN16y0gFwL/xlXDefEI6f9ltkxw1i8wdITs99LLyTBfrnaKnyIeibhl2eiuAHeRw8nz4VPpm7N5Tazce+g+u48TuFYck6Kr5LzNhmp1A/CgmOMaBkTUiBZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DM8PR11MB5750.namprd11.prod.outlook.com (2603:10b6:8:11::17) by
- PH7PR11MB6746.namprd11.prod.outlook.com (2603:10b6:510:1b4::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 13:24:50 +0000
-Received: from DM8PR11MB5750.namprd11.prod.outlook.com
- ([fe80::f1b2:bfb1:b1b:66ed]) by DM8PR11MB5750.namprd11.prod.outlook.com
- ([fe80::f1b2:bfb1:b1b:66ed%3]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 13:24:49 +0000
-From:   "Reshetova, Elena" <elena.reshetova@intel.com>
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Borislav Petkov" <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Thread-Topic: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Thread-Index: AQHaHWWtJXruLfiu906BueKp3+5D87CY5kFggACpPgCAATCzMA==
-Date:   Tue, 5 Dec 2023 13:24:49 +0000
-Message-ID: <DM8PR11MB5750713BD093B1CDC209FB4CE785A@DM8PR11MB5750.namprd11.prod.outlook.com>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <DM8PR11MB575090573031AD9888D4738AE786A@DM8PR11MB5750.namprd11.prod.outlook.com>
- <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
-In-Reply-To: <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM8PR11MB5750:EE_|PH7PR11MB6746:EE_
-x-ms-office365-filtering-correlation-id: 43a683af-c29f-411b-8fad-08dbf5958e84
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cYkPtL9dL1WNaAs9IXiBgIeu4t4mvh1l/GslswjEcIBkD19gpIoAMdrA+Xb+/H+z6oEbmn+PilqMSC9nNXtLuBrU+pYlEzExloUMzTzQXZAz/BVqesip/a1gJUUT52WkIEa5lmqcSwbUiyQaAh7oOkyswDjpL2iTiW7G6Vp4CYLseWY6Ecgu0NRncpYs4eApmYn5gt475+oU/7+nRuf71tkCQGFOhm1wbTuxrdnguak6Z3E4C8RNNgoGn+WP9LIeRNYIWWHQpWICFYhng8HCVovu+PNg8IfwSeCIqLSYlpR06utaGnhCxBt4UCJ6RiVFFN9kkfA6WKLKntuvGDkNzuLDkiwPttEtJ4RQXH5rIhvdYmjfAmfLXqpLOxeEk3ILfpHnEVlOUIXedmHH4tBGk6xtnqBcgaBQXj12KsT9Tz0fMBowTXOP4+kyDwD5vQnjL8d0nbIeMN2WT7CxnWHS8rVAfklKKX53TwlgJbRy8h8OfmGYiKzJQZbuWIujvMaazyZmnadyVS9h0do7+hQwYz+xHixBSFlgDtn1ZhBFcZO0cxRmX31kje89lBFv71oLHwSHMYJ8h3t2eh9CxqVsXCOdSoPip3md6Fx/bPAPd4ZOtVcyKJ5zfiuleUzrcYoob013eH6vkMVxAe3WNercRbQBk/Idy9hIfXuI4MOlJP8q9iYXMDtaclYmwJdkiDVQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM8PR11MB5750.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(396003)(39860400002)(346002)(136003)(230473577357003)(230922051799003)(230373577357003)(64100799003)(1800799012)(186009)(451199024)(122000001)(110136005)(76116006)(83380400001)(53546011)(71200400001)(478600001)(6506007)(7696005)(82960400001)(8676002)(8936002)(4326008)(66446008)(64756008)(54906003)(66476007)(66556008)(316002)(9686003)(55016003)(26005)(66946007)(38100700002)(86362001)(52536014)(5660300002)(7416002)(2906002)(921008)(41300700001)(38070700009)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?R1lDVDhydFZDa3FzcVRmWXRLZDFQZ2VadVFUYU9jai9OVWxQMHRDR1oyNEIw?=
- =?utf-8?B?Vi9uUVhlcUFJUHBXWnhINmE1N0J1ajFUUENrNUdkTUZmekh5MTlsbHI3T1Zx?=
- =?utf-8?B?clhwSkM1ZFlYWDJhNzBGNVFNaVR1U3pGNmxXbWxCL21KZ3NMczg3TDV4UWhw?=
- =?utf-8?B?SUgzK0pxWWlXTlhGeTF0bkRnYkU4MGpxa2M1RCt2dVE2OFE3STV5enlJWllj?=
- =?utf-8?B?MUEzZkJCMENHUHpNQjlzU2tCWEFWdVlPd2pjSERWa0FENlMwT1VNaVJ2TTlU?=
- =?utf-8?B?bUZnaGQwK3Q0QUthODBSOUFsRDRhY1hvN1RicFVNMjNhNlk2Y2x3K2FQTWV6?=
- =?utf-8?B?dkRucnFRb0hEMy9YU3pvS0p3N0J0YzB2ZWtpeTNjeTlTQ1d5OXRTWFNpNTBh?=
- =?utf-8?B?TDMyM29KYTRxcGRkbXFiaWpWdStCVzdDMFR2bm10TWFST3grSEhDN0N0ZjRX?=
- =?utf-8?B?UCt1V1JEbWNNa0t3c1hVbTdrSjBxVVdKUHoxc0pOeVZERERNQm0yWXV3cVBs?=
- =?utf-8?B?bElyQVB6ZjhIRGJpZkdEbHkrZjBzMUhkQ1ZxMlFGb1FVSkp4U2pTZStleUU4?=
- =?utf-8?B?WG9xRU9sVy96cHFrZVFsb3BOWEFualBXT2hRZTVpT0xEbk41YXNyUWErVnZs?=
- =?utf-8?B?NXozNTJBQWFUbE1xQnFJUWdFbDJaeFNHbkplS1BkSU4ySG9pUDNVdHZKSU1z?=
- =?utf-8?B?clNBcDlvZmVRWDhYK1QxNnJlRjFUTW5OaGdINDN6TUtuZW9PN01ZcjRUaUxu?=
- =?utf-8?B?S2FUTkY0MXFoS0orUm4rbWlSQVdTKzFZRG80OGZDSDdDdVo2eW1DdDBNSS9w?=
- =?utf-8?B?QmF1SkdkOUs1ZjBLWTlvQWMwcEZmUXpxUmRlUk1UNStpUU8ySU1ISTFCOXlm?=
- =?utf-8?B?SmxMdWNFaDhnT3FUZjMxQ2x0bXhCcTRkZUxBOFRidkpvZnZNNUUvMFNpODB0?=
- =?utf-8?B?Lzh1RWIvSko3Tks2VVlCUGtwTVJWNmIzKytLZ1UwbGpEWnA4ZENYVUg5VE5L?=
- =?utf-8?B?UExqay9OeXdpZm1DZHZwdDVxQW1rYmZVMEcyT2kxSk4rR1paT0MwZUtKblph?=
- =?utf-8?B?N2kwamFWcm9KdnZObHBYUXJPU1NZYlFGSnorQlJ0RjlEWk5wL3JLeWNVS0hj?=
- =?utf-8?B?ZXRqRVJvQVNRTHg3ZWdFM0YwSUdrSHdWUlN1RzZIcHJhd2k3a2hmY0tPaG1O?=
- =?utf-8?B?VklGRG9VNmE4N0xMUExkeGF4RnRLMitrdDB6RDIvQ01DNU5SeXQxNHNWamx1?=
- =?utf-8?B?dkhnWGgrTFRZVG5ySjVmQXpiM1NweWZJeHFYeTFuRkdjSUxTc2g1K3FwcWpm?=
- =?utf-8?B?N3VBd3ZEUXlaWnI1cDFjMjRvS0lhT0RDUWtFbTFpQTE5WFhKeXYzRmpSbEVS?=
- =?utf-8?B?UGtHSFZZUGNPT0U2SGZod0hFY2FXckJXNGhaRnEzaXRDNDJ5VmZMamQzcjhN?=
- =?utf-8?B?WndkVXRnN0hmS3hpd0hBNWVPQXg2SFk1T214eTFFSzBWSUJuMFFSSVNQaElq?=
- =?utf-8?B?Mng4eFhvcFB4V2lMaUEvWVJ4d1d1TlRHT0I4OW50TXpKYmtyRHQxMkJ5Rmlt?=
- =?utf-8?B?V29FdkFhSGN3TTdDOUVSUERjbUw2YTNRQW5ON2hwdis0bng2SUM4VExJdVJJ?=
- =?utf-8?B?eStneEI2Sk9rditDeThMaitndDVwTkFPeXduakdNdE02bmpOWHVoMSs2K24y?=
- =?utf-8?B?VGFQbjc1WGV6VHQ1SmlxbmdtcHZkbHdiR2tQMCtDSS9vT1ZST0JGVkxXa1NT?=
- =?utf-8?B?ZUc1Y0FiWUNUMzlyL0VzNjNib3AzM0hBN1M3SllCNHg0VDNEMUoxdCtCT2Ey?=
- =?utf-8?B?T1phVGR0WVptYnRjekN4ZzFiYkg4NmNHc25BWGZjd0hsVDJnWlFFek9JMlFa?=
- =?utf-8?B?NkhkZ3BGVC9VTWswS01HTFQrQWp3Y3BkVktrNXI4WjdSQUFsVnhPK01BWUF1?=
- =?utf-8?B?L3RuUzhkZW5yOURDUXFmRWkyQUxnSVVaQVI4bVg1cklId1V0MVRDQ1YxV2ly?=
- =?utf-8?B?cmFrMmlrcmxZRldwTHp3K1FJaVlhOEZtRHlWMVZtL2Q5VXdNL2lYUDVBR2pF?=
- =?utf-8?B?N25nQ1Qyc2pvS0Z4WHp3Z3FIMC95RnRTeWtsUGtFSFUyMmNFd2ZKT1M1RDZG?=
- =?utf-8?Q?G/wNDE94NbdlKKJ2SBhw4iGAb?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 5 Dec 2023 08:25:38 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D3F0018C;
+        Tue,  5 Dec 2023 05:25:42 -0800 (PST)
+Received: from loongson.cn (unknown [10.20.42.173])
+        by gateway (Coremail) with SMTP id _____8AxjuvVJG9lKgs_AA--.57318S3;
+        Tue, 05 Dec 2023 21:25:41 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxeuTRJG9l6IZVAA--.59809S3;
+        Tue, 05 Dec 2023 21:25:39 +0800 (CST)
+Subject: Re: [PATCH v2 1/2] LoongArch: KVM: Add LSX support
+To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>
+References: <20231201084619.2255983-1-zhaotianrui@loongson.cn>
+ <20231201084619.2255983-2-zhaotianrui@loongson.cn>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <4757aae2-83f4-6e20-8fc2-d2ad39126008@loongson.cn>
+Date:   Tue, 5 Dec 2023 21:25:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM8PR11MB5750.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43a683af-c29f-411b-8fad-08dbf5958e84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2023 13:24:49.2979
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OMWsb0uGH9VSna0Sfcf9/VYRENgMznc1rt2TZWOhUMV/OjVT9KK3XlE3avGeFpkBfBdPktEx3FSBdHO7ZG/fpcUgsGGPrpgHjFI9rc9GA50=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6746
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231201084619.2255983-2-zhaotianrui@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxeuTRJG9l6IZVAA--.59809S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9fXoW3Cw18CF13AryrXFykKw47Jrc_yoW8Jw4UJo
+        WjyF10grW8Gw42kan8Kw17tayUZFy0ka1Yka9xCr95u3W7X34Ygry8Kw4SvFy3Xr1qgF43
+        ua47KF1DXas3trn5l-sFpf9Il3svdjkaLaAFLSUrUUUUnb8apTn2vfkv8UJUUUU8wcxFpf
+        9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
+        UjIYCTnIWjp_UUUOn7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
+        8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+        Y2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
+        wI0_Gr1j6F4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
+        xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
+        JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwI
+        xGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
+        c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267
+        AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_
+        Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8uc_3
+        UUUUU==
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAwNC8xMi8yMDIzIDEwOjE3LCBSZXNoZXRvdmEsIEVsZW5hIHdyb3RlOg0KPiA+PiBDaGVj
-ayBmb3IgYWRkaXRpb25hbCBDUFVJRCBiaXRzIHRvIGlkZW50aWZ5IFREWCBndWVzdHMgcnVubmlu
-ZyB3aXRoIFRydXN0DQo+ID4+IERvbWFpbiAoVEQpIHBhcnRpdGlvbmluZyBlbmFibGVkLiBURCBw
-YXJ0aXRpb25pbmcgaXMgbGlrZSBuZXN0ZWQgdmlydHVhbGl6YXRpb24NCj4gPj4gaW5zaWRlIHRo
-ZSBUcnVzdCBEb21haW4gc28gdGhlcmUgaXMgYSBMMSBURCBWTShNKSBhbmQgdGhlcmUgY2FuIGJl
-IEwyIFREDQo+IFZNKHMpLg0KPiA+Pg0KPiA+PiBJbiB0aGlzIGFycmFuZ2VtZW50IHdlIGFyZSBu
-b3QgZ3VhcmFudGVlZCB0aGF0IHRoZSBURFhfQ1BVSURfTEVBRl9JRCBpcw0KPiA+PiB2aXNpYmxl
-DQo+ID4+IHRvIExpbnV4IHJ1bm5pbmcgYXMgYW4gTDIgVEQgVk0uIFRoaXMgaXMgYmVjYXVzZSBh
-IG1ham9yaXR5IG9mIFREWCBmYWNpbGl0aWVzDQo+ID4+IGFyZSBjb250cm9sbGVkIGJ5IHRoZSBM
-MSBWTU0gYW5kIHRoZSBMMiBURFggZ3Vlc3QgbmVlZHMgdG8gdXNlIFREDQo+IHBhcnRpdGlvbmlu
-Zw0KPiA+PiBhd2FyZSBtZWNoYW5pc21zIGZvciB3aGF0J3MgbGVmdC4gU28gY3VycmVudGx5IHN1
-Y2ggZ3Vlc3RzIGRvIG5vdCBoYXZlDQo+ID4+IFg4Nl9GRUFUVVJFX1REWF9HVUVTVCBzZXQuDQo+
-ID4NCj4gPiBCYWNrIHRvIHRoaXMgY29uY3JldGUgcGF0Y2guIFdoeSBjYW5ub3QgTDEgVk1NIGVt
-dWxhdGUgdGhlIGNvcnJlY3QgdmFsdWUgb2YNCj4gPiB0aGUgVERYX0NQVUlEX0xFQUZfSUQgdG8g
-TDIgVk0/IEl0IGNhbiBkbyB0aGlzIHBlciBURFggcGFydGl0aW9uaW5nIGFyY2guDQo+ID4gSG93
-IGRvIHlvdSBoYW5kbGUgdGhpcyBhbmQgb3RoZXIgQ1BVSUQgY2FsbHMgY2FsbCBjdXJyZW50bHkg
-aW4gTDE/IFBlciBzcGVjLA0KPiA+IGFsbCBDUFVJRHMgY2FsbHMgZnJvbSBMMiB3aWxsIGNhdXNl
-IEwyIC0tPiBMMSBleGl0LCBzbyB3aGF0IGRvIHlvdSBkbyBpbiBMMT8NCj4gVGhlIGRpc2NsYWlt
-ZXIgaGVyZSBpcyB0aGF0IEkgZG9uJ3QgaGF2ZSBhY2Nlc3MgdG8gdGhlIHBhcmF2aXNvciAoTDEp
-IGNvZGUuIEJ1dA0KPiB0byB0aGUgYmVzdCBvZiBteSBrbm93bGVkZ2UgdGhlIEwxIGhhbmRsZXMg
-Q1BVSUQgY2FsbHMgYnkgY2FsbGluZyBpbnRvIHRoZSBURFgNCj4gbW9kdWxlLCBvciBzeW50aGVz
-aXppbmcgYSByZXNwb25zZSBpdHNlbGYuIFREWF9DUFVJRF9MRUFGX0lEIGlzIG5vdCBwcm92aWRl
-ZCB0bw0KPiB0aGUgTDIgZ3Vlc3QgaW4gb3JkZXIgdG8gZGlzY3JpbWluYXRlIGEgZ3Vlc3QgdGhh
-dCBpcyBzb2xlbHkgcmVzcG9uc2libGUgZm9yIGV2ZXJ5DQo+IFREWCBtZWNoYW5pc20gKHJ1bm5p
-bmcgYXQgTDEpIGZyb20gb25lIHJ1bm5pbmcgYXQgTDIgdGhhdCBoYXMgdG8gY29vcGVyYXRlDQo+
-IHdpdGggTDEuDQo+IE1vcmUgYmVsb3cuDQoNCk9LLCBzbyBpbiB5b3VyIGNhc2UgaXQgaXMgYSBk
-ZWNpc2lvbiBvZiBMMSBWTU0gbm90IHRvIHNldCB0aGUgVERYX0NQVUlEX0xFQUZfSUQNCnRvIHJl
-ZmxlY3QgdGhhdCBpdCBpcyBhIHRkeCBndWVzdCBhbmQgaXQgaXMgb24gcHVycG9zZSBiZWNhdXNl
-IHlvdSB3YW50IHRvIA0KZHJvcCBpbnRvIGEgc3BlY2lhbCB0ZHggZ3Vlc3QsIGkuZS4gcGFydGl0
-aW9uZWQgZ3Vlc3QuIA0KDQo+IA0KPiA+DQo+ID4gR2l2ZW4gdGhhdCB5b3UgZG8gdGhhdCBzaW1w
-bGUgZW11bGF0aW9uLCB5b3UgYWxyZWFkeSBlbmQgdXAgd2l0aCBURFggZ3Vlc3QNCj4gPiBjb2Rl
-IGJlaW5nIGFjdGl2YXRlZC4gTmV4dCB5b3UgY2FuIGNoZWNrIHdoYXQgZmVhdHVyZXMgeW91IHdv
-bnQgYmUgYWJsZSB0bw0KPiA+IHByb3ZpZGUgaW4gTDEgYW5kIGNyZWF0ZSBzaW1wbGUgZW11bGF0
-aW9uIGNhbGxzIGZvciB0aGUgVERHIGNhbGxzIHRoYXQgbXVzdCBiZQ0KPiA+IHN1cHBvcnRlZCBh
-bmQgY2Fubm90IHJldHVybiBlcnJvci4gVGhlIGJpZ2dlc3QgVERHIGNhbGwgKFREVk1DQUxMKSBp
-cyBhbHJlYWR5DQo+ID4gZGlyZWN0IGNhbGwgaW50byBMMCBWTU0sIHNvIHRoaXMgcGFydCBkb2Vz
-buKAmXQgcmVxdWlyZSBMMSBWTU0gc3VwcG9ydC4NCj4gDQo+IEkgZG9uJ3Qgc2VlIGFueXRoaW5n
-IGluIHRoZSBURC1wYXJ0aXRpb25pbmcgc3BlYyB0aGF0IGdpdmVzIHRoZSBURFggZ3Vlc3QgYSB3
-YXkNCj4gdG8gZGV0ZWN0IGlmIGl0J3MgcnVubmluZyBhdCBMMiBvciBMMSwgb3IgY2hlY2sgd2hl
-dGhlciBURFZNQ0FMTHMgZ28gdG8gTDAvTDEuDQo+IFNvIGluIGFueSBjYXNlIHRoaXMgcmVxdWly
-ZXMgYW4gZXh0cmEgY3B1aWQgY2FsbCB0byBlc3RhYmxpc2ggdGhlIGVudmlyb25tZW50Lg0KPiBH
-aXZlbiB0aGF0LCBleHBvc2luZyBURFhfQ1BVSURfTEVBRl9JRCB0byB0aGUgZ3Vlc3QgZG9lc24n
-dCBoZWxwLg0KDQpZZXMsIHRoZXJlIGlzIG5vdGhpbmcgbGlrZSB0aGlzIGluIHNwZWMgYW5kIGl0
-IGlzIG9uIHB1cnBvc2UsIGJlY2F1c2UgdGhlIGlkZWEgaXMgdGhhdA0KTDEgY2FuIGZ1bGx5IGNv
-bnRyb2wgdGhlIGVudmlyb25tZW50IGZvciBMMiBhbmQgdmlydHVhbGl6ZSBpdCBpbiB0aGUgd2F5
-IGl0IHdhbnRzLiANCg0KPiANCj4gSSdsbCBnaXZlIHNvbWUgZXhhbXBsZXMgb2Ygd2hlcmUgdGhl
-IGlkZWEgb2YgZW11bGF0aW5nIGEgVERYIGVudmlyb25tZW50DQo+IHdpdGhvdXQgYXR0ZW1wdGlu
-ZyBMMS1MMiBjb29wZXJhdGlvbiBicmVha3MgZG93bi4NCj4gDQo+IGhsdDogaWYgdGhlIGd1ZXN0
-IGlzc3VlcyBhIGhsdCBURFZNQ0FMTCBpdCBnb2VzIHRvIEwwLCBidXQgaWYgaXQgaXNzdWVzIGEg
-Y2xhc3NpYyBobHQNCj4gaXQgdHJhcHMgdG8gTDEuIFRoZSBobHQgc2hvdWxkIGRlZmluaXRlbHkg
-Z28gdG8gTDEgc28gdGhhdCBMMSBoYXMgYSBjaGFuY2UgdG8gZG8NCj4gaG91c2VrZWVwaW5nLg0K
-PiANCj4gbWFwIGdwYTogc2F5IHRoZSBndWVzdCB1c2VzIE1BUF9HUEEgVERWTUNBTEwuIFRoaXMg
-Z29lcyB0byBMMCwgbm90IEwxIHdoaWNoDQo+IGlzIHRoZSBhY3R1YWwNCj4gZW50aXR5IHRoYXQg
-bmVlZHMgdG8gaGF2ZSBhIHNheSBpbiBwZXJmb3JtaW5nIHRoZSBjb252ZXJzaW9uLiBMMSBjYW4n
-dCBhY3Qgb24gdGhlDQo+IHJlcXVlc3QNCj4gaWYgTDAgd291bGQgZm9yd2FyZCBpdCBiZWNhdXNl
-IG9mIHRoZSBDb0NvIHRocmVhdCBtb2RlbC4gU28gTDEgYW5kIEwyIGdldCBvdXQgb2YNCj4gc3lu
-Yy4NCj4gVGhlIG9ubHkgc2FmZSBhcHByb2FjaCBpcyBmb3IgTDIgdG8gdXNlIGEgZGlmZmVyZW50
-IG1lY2hhbmlzbSB0byB0cmFwIHRvIEwxDQo+IGV4cGxpY2l0bHkuDQoNCkludGVyZXN0aW5nLCB0
-aGFuayB5b3UgZm9yIHRoZSBleGFtcGxlcyEgV2hhdCBpdCBsb29rcyBsaWtlIHRvIG1lIHRoYXQg
-aWYgd2UgZ2l2ZQ0KYW4gYWJpbGl0eSB0byBMMSBWTU0gdG8gc3BlY2lmeSB3aGF0IFREVk1DQUxM
-IGxlYXZlcyBzaG91bGQgZ28gaW50byBMMCBhbmQNCndoaWNoIG9uZXMgc2hvdWxkIGVuZCB1cCBp
-biBMMSwgd2Ugd291bGQgYWN0dWFsbHkgYWRkcmVzcyB5b3VyIHVzZWNhc2UgbW9yZQ0KY2xlYW5s
-eSB3aXRob3V0IHRoZSBmcmFnbWVudGF0aW9uIG9mIHRoZSB0ZHggZ3Vlc3QgY29kZS4gDQpJcyBp
-dCBhIHZpYWJsZSBvcHRpb24gZm9yIHlvdT8NCkkgZG8gdW5kZXJzdGFuZCB0aGF0IHN1Y2ggb3B0
-aW9uIGRvZXNu4oCZdCBleGlzdCBhdCB0aGUgbW9tZW50LCBidXQgaWYgdGhlcmUgaXMNCmEgZ29v
-ZCB1c2VjYXNlLCB3ZSBjYW4gYXJndWUgdGhhdCBpdCBpcyBuZWVkZWQuIA0KDQpCZXN0IFJlZ2Fy
-ZHMsDQpFbGVuYS4NCg==
+
+
+On 2023/12/1 下午4:46, Tianrui Zhao wrote:
+> This patch adds LSX support for LoongArch KVM.
+> There will be LSX exception in KVM when guest use the LSX
+> instruction. KVM will enable LSX and restore the vector
+> registers for guest then return to guest to continue running.
+> 
+> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> ---
+>   arch/loongarch/include/asm/kvm_host.h |  12 ++-
+>   arch/loongarch/include/asm/kvm_vcpu.h |  12 +++
+>   arch/loongarch/include/uapi/asm/kvm.h |  19 +++--
+>   arch/loongarch/kvm/exit.c             |  18 +++++
+>   arch/loongarch/kvm/switch.S           |  21 +++++
+>   arch/loongarch/kvm/trace.h            |   4 +-
+>   arch/loongarch/kvm/vcpu.c             | 109 ++++++++++++++++++++++++--
+>   7 files changed, 179 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
+> index 11328700d4f..a53b47093f4 100644
+> --- a/arch/loongarch/include/asm/kvm_host.h
+> +++ b/arch/loongarch/include/asm/kvm_host.h
+> @@ -21,8 +21,10 @@
+>   #include <asm/loongarch.h>
+>   
+>   /* Loongarch KVM register ids */
+> -#define KVM_GET_IOC_CSR_IDX(id)		((id & KVM_CSR_IDX_MASK) >> LOONGARCH_REG_SHIFT)
+> -#define KVM_GET_IOC_CPUCFG_IDX(id)	((id & KVM_CPUCFG_IDX_MASK) >> LOONGARCH_REG_SHIFT)
+> +#define KVM_GET_IOC_CSR_IDX(id)			((id & KVM_CSR_IDX_MASK) >> LOONGARCH_REG_SHIFT)
+> +#define KVM_GET_IOC_CPUCFG_IDX(id)		((id & KVM_CPUCFG_IDX_MASK) >> LOONGARCH_REG_SHIFT)
+> +#define KVM_GET_IOC_CPUCFG_SUPPORTED_IDX(id)	((id & KVM_CPUCFG_SUPPORTED_IDX_MASK) >> \
+> +						 LOONGARCH_REG_SHIFT)
+>   
+>   #define KVM_MAX_VCPUS			256
+>   #define KVM_MAX_CPUCFG_REGS		21
+> @@ -94,6 +96,7 @@ enum emulation_result {
+>   #define KVM_LARCH_FPU		(0x1 << 0)
+>   #define KVM_LARCH_SWCSR_LATEST	(0x1 << 1)
+>   #define KVM_LARCH_HWCSR_USABLE	(0x1 << 2)
+> +#define KVM_LARCH_LSX		(0x1 << 3)
+>   
+>   struct kvm_vcpu_arch {
+>   	/*
+> @@ -175,6 +178,11 @@ static inline void writel_sw_gcsr(struct loongarch_csrs *csr, int reg, unsigned
+>   	csr->csrs[reg] = val;
+>   }
+>   
+> +static inline bool kvm_guest_has_lsx(struct kvm_vcpu_arch *arch)
+> +{
+> +	return arch->cpucfg[2] & CPUCFG2_LSX;
+> +}
+> +
+>   /* Debug: dump vcpu state */
+>   int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
+>   
+> diff --git a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
+> index 553cfa2b2b1..c629771e122 100644
+> --- a/arch/loongarch/include/asm/kvm_vcpu.h
+> +++ b/arch/loongarch/include/asm/kvm_vcpu.h
+> @@ -55,6 +55,18 @@ void kvm_save_fpu(struct loongarch_fpu *fpu);
+>   void kvm_restore_fpu(struct loongarch_fpu *fpu);
+>   void kvm_restore_fcsr(struct loongarch_fpu *fpu);
+>   
+> +#ifdef CONFIG_CPU_HAS_LSX
+> +void kvm_own_lsx(struct kvm_vcpu *vcpu);
+> +void kvm_save_lsx(struct loongarch_fpu *fpu);
+> +void kvm_restore_lsx(struct loongarch_fpu *fpu);
+> +void kvm_restore_lsx_upper(struct loongarch_fpu *fpu);
+> +#else
+> +static inline void kvm_own_lsx(struct kvm_vcpu *vcpu) { }
+> +static inline void kvm_save_lsx(struct loongarch_fpu *fpu) { }
+> +static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
+> +static inline void kvm_restore_lsx_upper(struct loongarch_fpu *fpu) { }
+> +#endif
+> +
+>   void kvm_acquire_timer(struct kvm_vcpu *vcpu);
+>   void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
+>   void kvm_reset_timer(struct kvm_vcpu *vcpu);
+> diff --git a/arch/loongarch/include/uapi/asm/kvm.h b/arch/loongarch/include/uapi/asm/kvm.h
+> index c6ad2ee6106..cfea150be8e 100644
+> --- a/arch/loongarch/include/uapi/asm/kvm.h
+> +++ b/arch/loongarch/include/uapi/asm/kvm.h
+> @@ -59,14 +59,16 @@ struct kvm_fpu {
+>    * have its own identifier in bits[31..16].
+>    */
+>   
+> -#define KVM_REG_LOONGARCH_GPR		(KVM_REG_LOONGARCH | 0x00000ULL)
+> -#define KVM_REG_LOONGARCH_CSR		(KVM_REG_LOONGARCH | 0x10000ULL)
+> -#define KVM_REG_LOONGARCH_KVM		(KVM_REG_LOONGARCH | 0x20000ULL)
+> -#define KVM_REG_LOONGARCH_FPSIMD	(KVM_REG_LOONGARCH | 0x30000ULL)
+> -#define KVM_REG_LOONGARCH_CPUCFG	(KVM_REG_LOONGARCH | 0x40000ULL)
+> -#define KVM_REG_LOONGARCH_MASK		(KVM_REG_LOONGARCH | 0x70000ULL)
+> -#define KVM_CSR_IDX_MASK		0x7fff
+> -#define KVM_CPUCFG_IDX_MASK		0x7fff
+> +#define KVM_REG_LOONGARCH_GPR			(KVM_REG_LOONGARCH | 0x00000ULL)
+> +#define KVM_REG_LOONGARCH_CSR			(KVM_REG_LOONGARCH | 0x10000ULL)
+> +#define KVM_REG_LOONGARCH_KVM			(KVM_REG_LOONGARCH | 0x20000ULL)
+> +#define KVM_REG_LOONGARCH_FPSIMD		(KVM_REG_LOONGARCH | 0x30000ULL)
+> +#define KVM_REG_LOONGARCH_CPUCFG		(KVM_REG_LOONGARCH | 0x40000ULL)
+> +#define KVM_REG_LOONGARCH_CPUCFG_SUPPORTED	(KVM_REG_LOONGARCH | 0x50000ULL)
+> +#define KVM_REG_LOONGARCH_MASK			(KVM_REG_LOONGARCH | 0x70000ULL)
+> +#define KVM_CSR_IDX_MASK			0x7fff
+> +#define KVM_CPUCFG_IDX_MASK			0x7fff
+> +#define KVM_CPUCFG_SUPPORTED_IDX_MASK		0x7fff
+>   
+>   /*
+>    * KVM_REG_LOONGARCH_KVM - KVM specific control registers.
+> @@ -79,6 +81,7 @@ struct kvm_fpu {
+>   #define LOONGARCH_REG_64(TYPE, REG)	(TYPE | KVM_REG_SIZE_U64 | (REG << LOONGARCH_REG_SHIFT))
+>   #define KVM_IOC_CSRID(REG)		LOONGARCH_REG_64(KVM_REG_LOONGARCH_CSR, REG)
+>   #define KVM_IOC_CPUCFG(REG)		LOONGARCH_REG_64(KVM_REG_LOONGARCH_CPUCFG, REG)
+> +#define KVM_IOC_CPUCFG_SUPPORTED(REG)	LOONGARCH_REG_64(KVM_REG_LOONGARCH_CPUCFG_SUPPORTED, REG)
+>   
+>   struct kvm_debug_exit_arch {
+>   };
+> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+> index ce8de3fa472..1b1c58ccc83 100644
+> --- a/arch/loongarch/kvm/exit.c
+> +++ b/arch/loongarch/kvm/exit.c
+> @@ -659,6 +659,23 @@ static int kvm_handle_fpu_disabled(struct kvm_vcpu *vcpu)
+>   	return RESUME_GUEST;
+>   }
+>   
+> +/*
+> + * kvm_handle_lsx_disabled() - Guest used LSX while disabled in root.
+> + * @vcpu:      Virtual CPU context.
+> + *
+> + * Handle when the guest attempts to use LSX when it is disabled in the root
+> + * context.
+> + */
+> +static int kvm_handle_lsx_disabled(struct kvm_vcpu *vcpu)
+> +{
+> +	if (!kvm_guest_has_lsx(&vcpu->arch))
+> +		kvm_queue_exception(vcpu, EXCCODE_INE, 0);
+> +	else
+> +		kvm_own_lsx(vcpu);
+> +
+> +	return RESUME_GUEST;
+> +}
+> +
+>   /*
+>    * LoongArch KVM callback handling for unimplemented guest exiting
+>    */
+> @@ -687,6 +704,7 @@ static exit_handle_fn kvm_fault_tables[EXCCODE_INT_START] = {
+>   	[EXCCODE_TLBS]			= kvm_handle_write_fault,
+>   	[EXCCODE_TLBM]			= kvm_handle_write_fault,
+>   	[EXCCODE_FPDIS]			= kvm_handle_fpu_disabled,
+> +	[EXCCODE_LSXDIS]                = kvm_handle_lsx_disabled,
+>   	[EXCCODE_GSPR]			= kvm_handle_gspr,
+>   };
+>   
+> diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
+> index 0ed9040307b..6c48f7d1ca5 100644
+> --- a/arch/loongarch/kvm/switch.S
+> +++ b/arch/loongarch/kvm/switch.S
+> @@ -245,6 +245,27 @@ SYM_FUNC_START(kvm_restore_fpu)
+>   	jr                 ra
+>   SYM_FUNC_END(kvm_restore_fpu)
+>   
+> +#ifdef CONFIG_CPU_HAS_LSX
+> +SYM_FUNC_START(kvm_save_lsx)
+> +	fpu_save_csr    a0 t1
+> +	fpu_save_cc     a0 t1 t2
+> +	lsx_save_data   a0 t1
+> +	jr              ra
+> +SYM_FUNC_END(kvm_save_lsx)
+> +
+> +SYM_FUNC_START(kvm_restore_lsx)
+> +	lsx_restore_data a0 t1
+> +	fpu_restore_cc   a0 t1 t2
+> +	fpu_restore_csr  a0 t1 t2
+> +	jr               ra
+> +SYM_FUNC_END(kvm_restore_lsx)
+> +
+> +SYM_FUNC_START(kvm_restore_lsx_upper)
+> +	lsx_restore_all_upper a0 t0 t1
+> +	jr                    ra
+> +SYM_FUNC_END(kvm_restore_lsx_upper)
+> +#endif
+> +
+>   	.section ".rodata"
+>   SYM_DATA(kvm_exception_size, .quad kvm_exc_entry_end - kvm_exc_entry)
+>   SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - kvm_enter_guest)
+> diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
+> index a1e35d65541..7da4e230e89 100644
+> --- a/arch/loongarch/kvm/trace.h
+> +++ b/arch/loongarch/kvm/trace.h
+> @@ -102,6 +102,7 @@ TRACE_EVENT(kvm_exit_gspr,
+>   #define KVM_TRACE_AUX_DISCARD		4
+>   
+>   #define KVM_TRACE_AUX_FPU		1
+> +#define KVM_TRACE_AUX_LSX		2
+>   
+>   #define kvm_trace_symbol_aux_op				\
+>   	{ KVM_TRACE_AUX_SAVE,		"save" },	\
+> @@ -111,7 +112,8 @@ TRACE_EVENT(kvm_exit_gspr,
+>   	{ KVM_TRACE_AUX_DISCARD,	"discard" }
+>   
+>   #define kvm_trace_symbol_aux_state			\
+> -	{ KVM_TRACE_AUX_FPU,     "FPU" }
+> +	{ KVM_TRACE_AUX_FPU,     "FPU" },		\
+> +	{ KVM_TRACE_AUX_LSX,     "LSX" }
+>   
+>   TRACE_EVENT(kvm_aux,
+>   	    TP_PROTO(struct kvm_vcpu *vcpu, unsigned int op,
+> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+> index 73d0c2b9c1a..4820c95091f 100644
+> --- a/arch/loongarch/kvm/vcpu.c
+> +++ b/arch/loongarch/kvm/vcpu.c
+> @@ -309,6 +309,34 @@ static int _kvm_setcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 val)
+>   	return ret;
+>   }
+>   
+> +static int kvm_get_cpucfg_supported(int id, u64 *v)
+> +{
+> +	int ret = 0;
+> +
+> +	if (id < 0 && id >= KVM_MAX_CPUCFG_REGS)
+> +		return -EINVAL;
+> +
+> +	switch (id) {
+> +	/* Only CPUCFG2 checking are supported, we will add all CPUCFGs checking later. */
+> +	case 2:
+> +		/* return CPUCFG2 features which have been supported by KVM */
+> +		*v = CPUCFG2_FP     | CPUCFG2_FPSP  | CPUCFG2_FPDP     |
+> +		     CPUCFG2_FPVERS | CPUCFG2_LLFTP | CPUCFG2_LLFTPREV |
+> +		     CPUCFG2_LAM;
+> +		/*
+> +		 * if LSX is supported by CPU, it is also supported by KVM,
+> +		 * as we implement it.
+> +		 */
+> +		if (cpu_has_lsx)
+> +			*v |= CPUCFG2_LSX;
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +	return ret;
+> +}
+> +
+>   static int kvm_get_one_reg(struct kvm_vcpu *vcpu,
+>   		const struct kvm_one_reg *reg, u64 *v)
+>   {
+> @@ -327,6 +355,10 @@ static int kvm_get_one_reg(struct kvm_vcpu *vcpu,
+>   		else
+>   			ret = -EINVAL;
+>   		break;
+> +	case KVM_REG_LOONGARCH_CPUCFG_SUPPORTED:
+> +		id = KVM_GET_IOC_CPUCFG_SUPPORTED_IDX(reg->id);
+> +		ret = kvm_get_cpucfg_supported(id, v);
+> +		break;
+To be frankly, KVM_REG_LOONGARCH_CPUCFG_SUPPORTED is a little strange, I 
+prefer to DEVICE_ATTR for vcpu such as KVM_GET_DEVICE_ATTR, since it 
+exists already and also pv stealtime can be used by this ioctl command.
+
+
+>   	case KVM_REG_LOONGARCH_KVM:
+>   		switch (reg->id) {
+>   		case KVM_REG_LOONGARCH_COUNTER:
+> @@ -365,6 +397,36 @@ static int kvm_get_reg(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg)
+>   	return ret;
+>   }
+>   
+> +static int kvm_check_cpucfg(int id, u64 val)
+> +{
+> +	u64 mask;
+> +	int ret = 0;
+> +
+> +	if (id < 0 && id >= KVM_MAX_CPUCFG_REGS)
+> +		return -EINVAL;
+> +
+> +	switch (id) {
+> +	case 2:
+> +		ret = kvm_get_cpucfg_supported(id, &mask);
+> +		/*
+> +		 * CPUCFG2 features checking, if features are not supported, return false.
+> +		 * Features version checking, if feature enabled but without version bits
+> +		 * or feature disabled but along with version bits, return false.
+> +		 */
+> +		if (!ret) {
+> +			if ((val & ~mask) ||
+> +			    (!!(val & CPUCFG2_FP)    != !!(val & CPUCFG2_FPVERS)) ||
+> +			    (!!(val & CPUCFG2_LLFTP) != !!(val & CPUCFG2_LLFTPREV)))
+> +				ret = -EINVAL;
+What is the logic for the above sentences? Is there special logic about 
+FPVERS?
+How about such lines like this?
+
+/*
+  * Reserved bit for future usage can not be set
+  * FP and LLFTP must be enabled
+  */
+if ((val & ~mask) || !(val & CPUCFG2_LLFTP) || !(val & CPUCFG2_FP))
+
+Regards
+Bibo Mao
+> +		} else
+> +			ret = -EINVAL;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +	return ret;
+> +}
+> +
+>   static int kvm_set_one_reg(struct kvm_vcpu *vcpu,
+>   			const struct kvm_one_reg *reg, u64 v)
+>   {
+> @@ -378,10 +440,10 @@ static int kvm_set_one_reg(struct kvm_vcpu *vcpu,
+>   		break;
+>   	case KVM_REG_LOONGARCH_CPUCFG:
+>   		id = KVM_GET_IOC_CPUCFG_IDX(reg->id);
+> -		if (id >= 0 && id < KVM_MAX_CPUCFG_REGS)
+> -			vcpu->arch.cpucfg[id] = (u32)v;
+> -		else
+> -			ret = -EINVAL;
+> +		ret = kvm_check_cpucfg(id, v);
+> +		if (ret)
+> +			break;
+> +		vcpu->arch.cpucfg[id] = (u32)v;
+>   		break;
+>   	case KVM_REG_LOONGARCH_KVM:
+>   		switch (reg->id) {
+> @@ -561,12 +623,49 @@ void kvm_own_fpu(struct kvm_vcpu *vcpu)
+>   	preempt_enable();
+>   }
+>   
+> +#ifdef CONFIG_CPU_HAS_LSX
+> +/* Enable LSX for guest and restore context */
+> +void kvm_own_lsx(struct kvm_vcpu *vcpu)
+> +{
+> +	preempt_disable();
+> +
+> +	/* Enable LSX for guest */
+> +	set_csr_euen(CSR_EUEN_LSXEN | CSR_EUEN_FPEN);
+> +	switch (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
+> +	case KVM_LARCH_FPU:
+> +		/*
+> +		 * Guest FPU state already loaded,
+> +		 * only restore upper LSX state
+> +		 */
+> +		kvm_restore_lsx_upper(&vcpu->arch.fpu);
+> +		break;
+> +	default:
+> +		/* Neither FP or LSX already active,
+> +		 * restore full LSX state
+> +		 */
+> +		kvm_restore_lsx(&vcpu->arch.fpu);
+> +	break;
+> +	}
+> +
+> +	trace_kvm_aux(vcpu, KVM_TRACE_AUX_RESTORE, KVM_TRACE_AUX_LSX);
+> +	vcpu->arch.aux_inuse |= KVM_LARCH_LSX | KVM_LARCH_FPU;
+> +	preempt_enable();
+> +}
+> +#endif
+> +
+>   /* Save context and disable FPU */
+>   void kvm_lose_fpu(struct kvm_vcpu *vcpu)
+>   {
+>   	preempt_disable();
+>   
+> -	if (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
+> +	if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
+> +		kvm_save_lsx(&vcpu->arch.fpu);
+> +		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU);
+> +		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LSX);
+> +
+> +		/* Disable LSX & FPU */
+> +		clear_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN);
+> +	} else if (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
+>   		kvm_save_fpu(&vcpu->arch.fpu);
+>   		vcpu->arch.aux_inuse &= ~KVM_LARCH_FPU;
+>   		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_FPU);
+> 
+
