@@ -2,139 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC4880565D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FB7805569
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345489AbjLENsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S1345364AbjLENFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235188AbjLENsA (ORCPT
+        with ESMTP id S1345191AbjLENF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:48:00 -0500
-X-Greylist: delayed 1792 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 05:48:06 PST
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05412A8;
-        Tue,  5 Dec 2023 05:48:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        Content-ID:Content-Description;
-        bh=MlRWkhJV0qSH5U01QGui4oeTrYqJubGpGLDBsWklraw=; b=piEwCZuXLbbZffbD9RGKdATv2V
-        lX7W3X2jTvFhBOMIx1Lzdjkem4jhtNxBBF9vhEi0jsinJi/xaTTSiiWZxCNl4SN99ZNY2E/Vd/dv2
-        XmMq34fW6blMK64yeTu1vzV5NqxUI5phRButXMNKebRmcLjeLjgC1edbxzdSxuvBI3BuLdXuTK6PZ
-        q7BLzVO7nKzn9aTw8RHoxw3mbFUGJ3i61lZUKK+4rkr+23lQV4J9bc9vG8dtYHAt76BDcCrZ+5Gep
-        v6KXGWhHrb/LP2M9VThSPFYFvXNHy1zzihNVOwIybbi9HBZKbFXFFciiQQm3U+Z2gigQHgSJaqU9O
-        Q4KZioqrhI9Lukv9a4nxCHZtrXqXhaJGL+atif60c0igPeAAErevIzaa8e29K1iVljWAMh+sb+gYq
-        LtsCDw8b9YFyldvL0yW8mGTSY3lbXlVIXP85jzXZlN2dOguEjnknzBm908I6tNIQ0GayTn5PCKYVg
-        E8giISdkklKHaU/xPpeb4tdzBND1+O11KoO9oxUfFhjNGxEAxIeBQmcz73LPgAV7QUSBI1DAVOe5L
-        uE+k6iLYnGqHAKeM/MaPVvk+dVIv3m9CHIhYOCZEWHCalsxDB6hkRZ1DIgK3HJK3WIwZcVXJ60bPh
-        2Zv/K88X8HOgsRQNivAvtkcv2Ru+Bez6Oq1t1WNDc=;
-From:   Christian Schoenebeck <linux_oss@crudebyte.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>,
-        Fedor Pchelkin <pchelkin@ispras.ru>
-Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: Re: [PATCH v2] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
-Date:   Tue, 05 Dec 2023 13:29:49 +0100
-Message-ID: <1741521.OAD31uVnNo@silver>
-In-Reply-To: <20231205091952.24754-1-pchelkin@ispras.ru>
-References: <20231205091952.24754-1-pchelkin@ispras.ru>
+        Tue, 5 Dec 2023 08:05:27 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B84134;
+        Tue,  5 Dec 2023 05:05:34 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 7C7245C01AF;
+        Tue,  5 Dec 2023 08:05:33 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 05 Dec 2023 08:05:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701781533; x=1701867933; bh=zv
+        8E1tGkz8JRoBtprl3IIFJf3pqYhFYTFABmpiAXWAw=; b=0qIVkSg7ams/DQOYLa
+        AnflRwv69frRRiDu8eF8KOOGrPD+ifn/wUrUqkDFSVze3mG2Bbo49iJXohb3RUIA
+        rdB6N0YhfvfHzRmIlPw22yVtn1fyVhyDdu76q/bE+I3IDUXNBfeVfy1/HbpK8Dbd
+        Iexh4+qFXwGpzu+MyKbhH1imzlSeYtKWXSQahQsRvuk3vEnynrXUm8FNu/IXeKFW
+        a63pD4Z9HAFXyd9H8mJJIfxI7NRXB8i7oByhkiAozdUzrnhb3ONmfSUgBLxT++TU
+        3bJV7mbTJ5rokIeB1guSHRgI8CXqu7+mGxDyFKNn888aA1MMDa6Kl00PKOBvfFjJ
+        6QwQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701781533; x=1701867933; bh=zv8E1tGkz8JRo
+        Btprl3IIFJf3pqYhFYTFABmpiAXWAw=; b=ZM3RnFwl9Of1m5cnmg+84caA6KjaD
+        k7zpbwa/FXBoK5ZMmtNvv1DDKveEPXNQ2HUUoZ1WENXWwz3l6/fQtQRjhM8Xgt+u
+        LXdCgo8wChxxa8voY3EZL8xgHa1H71+8OoVenr7bVpYW8e8SZsSos/8d4TOscRby
+        IC7ghZPQaZ3BvNnOnYg0CLKZGhvooqOmhI2FdcSdO+mM1pk2SeGYc4OvjrhZ2zzq
+        nXWEOVgQ7km9nYqzXTW9mOZ4/4BNg67kCKmCKoPaaTV1VK5WdZFw2EZsOYKlA6Hb
+        ECVlyj4QbHY/h0Q7XtpGpI3cPGz8iedwm50JaRVPodkc6ZSfypOuKHn/A==
+X-ME-Sender: <xms:HCBvZVQbdizuX9-8HF5u8pNBZwfoc9EH-gX7LJsdklqXNlB9Vk48aA>
+    <xme:HCBvZew2PVyuJbKSveX_A_kVqycjcbc8rETpJxtcZMGfGHuDIaRI4n_emMcP9YKrj
+    UmHm8Y37mpe96Sr6Qk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejkedggeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:HCBvZa3CWIYZ9HuzcgVb5CdAxvCR7qzBjv_DigmXDF9ccLq2mju6LQ>
+    <xmx:HCBvZdC9EbW8E8n1fLSB7-BIP9koo7d17b7QCACEivbM8BhWVCplnA>
+    <xmx:HCBvZeh1GqErcX8p7dzIhBJoQU54VuEpHb8s3aXwJd24K01_s65DYA>
+    <xmx:HSBvZVqNJ_yyscXm_ayvFk-5aLOMVuHa1wF13FoskAbO5-x3naFgbQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id B88B2B60089; Tue,  5 Dec 2023 08:05:32 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Message-Id: <3acae2ba-e91a-46d2-8748-b2cb1b369063@app.fastmail.com>
+In-Reply-To: <ec01fdf9a91d9d1da9da08be83d5821353ac5a9d.1701768028.git.ysato@users.sourceforge.jp>
+References: <cover.1701768028.git.ysato@users.sourceforge.jp>
+ <ec01fdf9a91d9d1da9da08be83d5821353ac5a9d.1701768028.git.ysato@users.sourceforge.jp>
+Date:   Tue, 05 Dec 2023 14:05:11 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org
+Cc:     "Damien Le Moal" <dlemoal@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Geert Uytterhoeven" <geert+renesas@glider.be>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        "Dave Airlie" <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        "Magnus Damm" <magnus.damm@gmail.com>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+        "Rich Felker" <dalias@libc.org>,
+        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+        "Lee Jones" <lee@kernel.org>, "Helge Deller" <deller@gmx.de>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        "Jernej Skrabec" <jernej.skrabec@gmail.com>,
+        "Chris Morgan" <macromorgan@hotmail.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Hyeonggon Yoo" <42.hyeyoo@gmail.com>,
+        "David Rientjes" <rientjes@google.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>, "Baoquan He" <bhe@redhat.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Guenter Roeck" <linux@roeck-us.net>,
+        "Stephen Rothwell" <sfr@canb.auug.org.au>,
+        guoren <guoren@kernel.org>,
+        "Javier Martinez Canillas" <javierm@redhat.com>,
+        "Azeem Shaikh" <azeemshaikh38@gmail.com>,
+        "Palmer Dabbelt" <palmer@rivosinc.com>,
+        "Bin Meng" <bmeng@tinylab.org>,
+        "Max Filippov" <jcmvbkbc@gmail.com>, "Tom Rix" <trix@redhat.com>,
+        "Herve Codina" <herve.codina@bootlin.com>,
+        "Jacky Huang" <ychuang3@nuvoton.com>,
+        "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Biju Das" <biju.das.jz@bp.renesas.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        "Sam Ravnborg" <sam@ravnborg.org>,
+        "Michael Karcher" <kernel@mkarcher.dialup.fu-berlin.de>,
+        "Sergey Shtylyov" <s.shtylyov@omp.ru>,
+        "Laurent Pinchart" <laurent.pinchart+renesas@ideasonboard.com>,
+        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [DO NOT MERGE v5 10/37] sh: Common PCI Framework driver support.
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, December 5, 2023 10:19:50 AM CET Fedor Pchelkin wrote:
-> If an error occurs while processing an array of strings in p9pdu_vreadf
-> then uninitialized members of *wnames array are freed.
-> 
-> Fix this by iterating over only lower indices of the array. Also handle
-> possible uninit *wnames usage if first p9pdu_readf() call inside 'T' case
-> fails.
-> 
-> Found by Linux Verification Center (linuxtesting.org).
-> 
-> Fixes: ace51c4dd2f9 ("9p: add new protocol support code")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> ---
-> v2: I've missed that *wnames can also be left uninitialized. Please
-> ignore the patch v1. As an answer to Dominique's comment: my
-> organization marks this statement in all commits.
-> 
->  net/9p/protocol.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
-> 
-> diff --git a/net/9p/protocol.c b/net/9p/protocol.c
-> index 4e3a2a1ffcb3..043b621f8b84 100644
-> --- a/net/9p/protocol.c
-> +++ b/net/9p/protocol.c
-> @@ -393,6 +393,8 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  		case 'T':{
->  				uint16_t *nwname = va_arg(ap, uint16_t *);
->  				char ***wnames = va_arg(ap, char ***);
-> +				int i;
-> +				*wnames = NULL;
+On Tue, Dec 5, 2023, at 10:45, Yoshinori Sato wrote:
+> +
+> +#if defined(CONFIG_PCI) && !defined(CONFIG_GENERIC_IOMAP)
+> +void pci_iounmap(struct pci_dev *dev, void __iomem *addr)
+> +{
+> +	iounmap(addr);
+> +}
+> +EXPORT_SYMBOL(pci_iounmap);
 
-Consider also initializing `int i = 0;` here. Because ...
+This definition does not work for addresses that are
+returned by ioport_map(), include pci_iomap() on
+IORESOURCE_IO.  However, the definition in lib/pci_iomap.c
+should work fine, you just need to #define ARCH_WANTS_GENERIC_PCI_IOUNMAP
+to get that.
 
->  
->  				errcode = p9pdu_readf(pdu, proto_version,
->  								"w", nwname);
-> @@ -406,8 +408,6 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  				}
->  
->  				if (!errcode) {
-> -					int i;
-> -
->  					for (i = 0; i < *nwname; i++) {
-
-... this block that initializes `i` is conditional. I mean it does work right
-now as-is, because ...
-
->  						errcode =
->  						    p9pdu_readf(pdu,
-> @@ -421,13 +421,11 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  
->  				if (errcode) {
->  					if (*wnames) {
-> -						int i;
-> -
-> -						for (i = 0; i < *nwname; i++)
-> +						while (--i >= 0)
->  							kfree((*wnames)[i]);
-> +						kfree(*wnames);
-> +						*wnames = NULL;
->  					}
-
-... this is wrapped into `if (*wnames) {` and you initialized *wnames with
-NULL, but it just feels like a potential future trap somehow.
-
-Anyway, at least it looks like correct behaviour (ATM), so:
-
-Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
-
-> -					kfree(*wnames);
-> -					*wnames = NULL;
->  				}
->  			}
->  			break;
-> 
-
-
+      Arnd
