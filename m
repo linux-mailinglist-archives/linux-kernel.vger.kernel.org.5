@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F0A804DDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F06804DDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235621AbjLEJ3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34158 "EHLO
+        id S235652AbjLEJ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:29:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235514AbjLEJ24 (ORCPT
+        with ESMTP id S235648AbjLEJ3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:28:56 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF06283
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:47 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b8b1a50889so897036b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:47 -0800 (PST)
+        Tue, 5 Dec 2023 04:29:05 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C88173C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:51 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-58d18c224c7so3305647eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701768527; x=1702373327; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1701768530; x=1702373330; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=jwTD3K4Kri8m1i9JXNKcf7GR1NP3fxv8EZuVIRyXFX8=;
-        b=bhdsu1LagEGVWzclMWB36+uwnnv27DdDJnLYlapjH4BCxHfN+zsKLiH3mNSlYeQFiy
-         o4xTihu2gMaKCz0ZJeAo0R3wmVik95qSJcw9raW5ATQXqXqfwunoXgmd4dfMyusZl/wq
-         d61XkCNwNdDOM4w2PwQIzDL/jCF9bOduIkeSyamwqp6cCwH4R5n/YuSVqFNLLuSBHqRK
-         up1B2rseD0Hoy5m1OTW6tRKcFgJwB42EK82oxXYWcabX4fv0xyTtM8x1mBP+0mZKd4ls
-         STrRm6dLmqb/f8G1iHWpLJ0HHhZ3s/CvuvaxEscmYNOOfoOJGoMhXg6fEEDY+YjWxCRT
-         MR3g==
+        bh=UrD2FGOwoOZDuE5NlOXPwH6yjK7drVhBh94o1xKypaI=;
+        b=bOXzYwyBELOoYAVRjQGwgE9CyCao25Sbz1BnHTwCjb5kHlveCYaDVmHgppZl/ejZu1
+         p9/a6ghaQeTFHyQKN67svefudVC8zg7XxmB33K8uGaEHBH/B4qvY7BOlVTqYivIOnw6q
+         0m8KIqsrVrOpg5PbUS+e0bThHxAWVMA68QzLfjAq1lu45k0j2gfU+KzjEAmy4C2bMzgE
+         KeBHPYIYI19K9KcNX+Te9SbRQ8ApqOUdIjEYh0BzC9OtKCUIhHtTLSuUKOS0DbqaG/n7
+         dr1IRoVT8tJgnV5dpnLuPIH/17Y6KO8p0iFLKNyJUKws7zB03iuS6dhIHpaMESbW2KDg
+         tnBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701768527; x=1702373327;
+        d=1e100.net; s=20230601; t=1701768530; x=1702373330;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jwTD3K4Kri8m1i9JXNKcf7GR1NP3fxv8EZuVIRyXFX8=;
-        b=cSzFxdXo13eHfAC16nEyy78eZ8uv82P2NxPAYBiXAf8osjedImgrzehr8n2BHS/bkv
-         IVsJitvJxI4kLYLTzpIsscsdyLq64FJBv5RymQb7LCfHKTfyDF/fh0gXX8DhayIRVWvi
-         YF4HmwFJsAXR58OLRrnxJd4ItqUhI9jWCacSYB+IHGtGxQ11Jf/96hDmfM9yPa7ESUPV
-         +07Z+eXOQI0sN72IjeYIIfjgLvZtzEyCbH4HwUKpKwIt5oTgialxv5zd8YhnguexylDN
-         8SQfHjCRjkEIAoWhAGRkhbNLCqbJcdg+kg8SMI4dPqWtS504LTO5Zwl9Bm2qj38d7SVz
-         6OjQ==
-X-Gm-Message-State: AOJu0Yy3JfWlDopDEsZfAmWekMWJUBmWGfsadT77BvaLfcl9R1QbrekM
-        hiHWkz2frmyz0Yag1mEVZEln4w==
-X-Google-Smtp-Source: AGHT+IHaxRimNT55Tc1y3Gj+N2olyd5vW1SYGP6ul/rhUm7Gt0MY9M6MMzSLbKlun+CgGu3jnR/8Pg==
-X-Received: by 2002:a05:6808:1990:b0:3b8:b063:8935 with SMTP id bj16-20020a056808199000b003b8b0638935mr3497663oib.67.1701768526882;
-        Tue, 05 Dec 2023 01:28:46 -0800 (PST)
+        bh=UrD2FGOwoOZDuE5NlOXPwH6yjK7drVhBh94o1xKypaI=;
+        b=qHIBhGarIa6xpk7Abs2kgRQpqSShwrRZ1mDc4qyLUEt5Zrgv2CLdXj1q2A2m77v9My
+         3i6x/IrbtlzkMD1HnvSi7iNdFBwEv0uqsmDSZlyXpfrr4upwVZ2eFbUTpcn5GKRA4+Um
+         w7rzyKLYbQL3FXOiwdN/GjGP21RIEh2rf2o3we8+R12r9SC0PmV8xcBbQ5/F4QBWayRU
+         o1AZvnj9UGqLAma9qYfDLRHDkXXqXoViOyicc7cIAgcn0tcQpTtaFwHxAuDRamLDx3yO
+         hMgaqwRBb2dQycjw2PcTj+2Wwmc0bLB6I7KKjXW94YaBCkwTva3SsjR0iddnV2Lc8XKb
+         kgRw==
+X-Gm-Message-State: AOJu0YyFeJk4Z+p1XCs3C4XQDHpSsq/Uvhhovkb+AkNOX4fZWqp9jgao
+        oXZDOCeboTHNK9WFa+XsYekcYA==
+X-Google-Smtp-Source: AGHT+IFlw/eNWQfj1E9SO5ziBC4YcAjeADQV1vJQPokw/77J0tn0kdtl0+xtImh1bzSOK9d8sTqAdg==
+X-Received: by 2002:a05:6358:9486:b0:170:17eb:1de with SMTP id i6-20020a056358948600b0017017eb01demr2962408rwb.33.1701768530373;
+        Tue, 05 Dec 2023 01:28:50 -0800 (PST)
 Received: from localhost.localdomain ([101.10.93.135])
-        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006cdd723bb6fsm8858788pfu.115.2023.12.05.01.28.43
+        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006cdd723bb6fsm8858788pfu.115.2023.12.05.01.28.47
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Dec 2023 01:28:46 -0800 (PST)
+        Tue, 05 Dec 2023 01:28:50 -0800 (PST)
 From:   Jerry Shih <jerry.shih@sifive.com>
 To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
@@ -58,9 +58,9 @@ To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
 Cc:     heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-crypto@vger.kernel.org
-Subject: [PATCH v3 10/12] RISC-V: crypto: add Zvksed accelerated SM4 implementation
-Date:   Tue,  5 Dec 2023 17:27:59 +0800
-Message-Id: <20231205092801.1335-11-jerry.shih@sifive.com>
+Subject: [PATCH v3 11/12] RISC-V: crypto: add Zvksh accelerated SM3 implementation
+Date:   Tue,  5 Dec 2023 17:28:00 +0800
+Message-Id: <20231205092801.1335-12-jerry.shih@sifive.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20231205092801.1335-1-jerry.shih@sifive.com>
 References: <20231205092801.1335-1-jerry.shih@sifive.com>
@@ -69,7 +69,7 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,13 +77,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SM4 implementation using Zvksed vector crypto extension from OpenSSL
+Add SM3 implementation using Zvksh vector crypto extension from OpenSSL
 (openssl/openssl#21923).
-
-The perlasm here is different from the original implementation in OpenSSL.
-In OpenSSL, SM4 has the separated set_encrypt_key and set_decrypt_key
-functions. In kernel, these set_key functions are merged into a single
-one in order to skip the redundant key expanding instructions.
 
 Co-developed-by: Christoph Müllner <christoph.muellner@vrull.eu>
 Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
@@ -92,87 +87,85 @@ Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
 Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 ---
 Changelog v3:
+ - Use `SYM_TYPED_FUNC_START` for sm3 indirect-call asm symbol.
  - Use asm mnemonics for the instructions in RVV 1.0 extension.
 
 Changelog v2:
- - Do not turn on kconfig `SM4_RISCV64` option by default.
- - Add the missed `static` declaration for riscv64_sm4_zvksed_alg.
+ - Do not turn on kconfig `SM3_RISCV64` option by default.
  - Add `asmlinkage` qualifier for crypto asm function.
- - Rename sm4-riscv64-zvkb-zvksed to sm4-riscv64-zvksed-zvkb.
- - Reorder structure riscv64_sm4_zvksed_zvkb_alg members initialization
-   in the order declared.
+ - Rename sm3-riscv64-zvkb-zvksh to sm3-riscv64-zvksh-zvkb.
+ - Reorder structure sm3_alg members initialization in the order declared.
 ---
- arch/riscv/crypto/Kconfig               |  17 ++
- arch/riscv/crypto/Makefile              |   7 +
- arch/riscv/crypto/sm4-riscv64-glue.c    | 121 +++++++++++
- arch/riscv/crypto/sm4-riscv64-zvksed.pl | 268 ++++++++++++++++++++++++
- 4 files changed, 413 insertions(+)
- create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
- create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed.pl
+ arch/riscv/crypto/Kconfig              |  12 ++
+ arch/riscv/crypto/Makefile             |   7 +
+ arch/riscv/crypto/sm3-riscv64-glue.c   | 124 ++++++++++++++
+ arch/riscv/crypto/sm3-riscv64-zvksh.pl | 227 +++++++++++++++++++++++++
+ 4 files changed, 370 insertions(+)
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh.pl
 
 diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
-index ad0b08a13c9a..b28cf1972250 100644
+index b28cf1972250..7415fb303785 100644
 --- a/arch/riscv/crypto/Kconfig
 +++ b/arch/riscv/crypto/Kconfig
-@@ -66,4 +66,21 @@ config CRYPTO_SHA512_RISCV64
+@@ -66,6 +66,18 @@ config CRYPTO_SHA512_RISCV64
  	  - Zvknhb vector crypto extension
  	  - Zvkb vector crypto extension
  
-+config CRYPTO_SM4_RISCV64
-+	tristate "Ciphers: SM4 (ShangMi 4)"
++config CRYPTO_SM3_RISCV64
++	tristate "Hash functions: SM3 (ShangMi 3)"
 +	depends on 64BIT && RISCV_ISA_V
-+	select CRYPTO_ALGAPI
-+	select CRYPTO_SM4
++	select CRYPTO_HASH
++	select CRYPTO_SM3
 +	help
-+	  SM4 cipher algorithms (OSCCA GB/T 32907-2016,
-+	  ISO/IEC 18033-3:2010/Amd 1:2021)
-+
-+	  SM4 (GBT.32907-2016) is a cryptographic standard issued by the
-+	  Organization of State Commercial Administration of China (OSCCA)
-+	  as an authorized cryptographic algorithms for the use within China.
++	  SM3 (ShangMi 3) secure hash function (OSCCA GM/T 0004-2012)
 +
 +	  Architecture: riscv64 using:
-+	  - Zvksed vector crypto extension
++	  - Zvksh vector crypto extension
 +	  - Zvkb vector crypto extension
 +
- endmenu
+ config CRYPTO_SM4_RISCV64
+ 	tristate "Ciphers: SM4 (ShangMi 4)"
+ 	depends on 64BIT && RISCV_ISA_V
 diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
-index 8aabef950ad3..8e34861bba34 100644
+index 8e34861bba34..b1f857695c1c 100644
 --- a/arch/riscv/crypto/Makefile
 +++ b/arch/riscv/crypto/Makefile
 @@ -18,6 +18,9 @@ sha256-riscv64-y := sha256-riscv64-glue.o sha256-riscv64-zvknha_or_zvknhb-zvkb.o
  obj-$(CONFIG_CRYPTO_SHA512_RISCV64) += sha512-riscv64.o
  sha512-riscv64-y := sha512-riscv64-glue.o sha512-riscv64-zvknhb-zvkb.o
  
-+obj-$(CONFIG_CRYPTO_SM4_RISCV64) += sm4-riscv64.o
-+sm4-riscv64-y := sm4-riscv64-glue.o sm4-riscv64-zvksed.o
++obj-$(CONFIG_CRYPTO_SM3_RISCV64) += sm3-riscv64.o
++sm3-riscv64-y := sm3-riscv64-glue.o sm3-riscv64-zvksh.o
 +
- quiet_cmd_perlasm = PERLASM $@
-       cmd_perlasm = $(PERL) $(<) void $(@)
+ obj-$(CONFIG_CRYPTO_SM4_RISCV64) += sm4-riscv64.o
+ sm4-riscv64-y := sm4-riscv64-glue.o sm4-riscv64-zvksed.o
  
-@@ -39,9 +42,13 @@ $(obj)/sha256-riscv64-zvknha_or_zvknhb-zvkb.S: $(src)/sha256-riscv64-zvknha_or_z
+@@ -42,6 +45,9 @@ $(obj)/sha256-riscv64-zvknha_or_zvknhb-zvkb.S: $(src)/sha256-riscv64-zvknha_or_z
  $(obj)/sha512-riscv64-zvknhb-zvkb.S: $(src)/sha512-riscv64-zvknhb-zvkb.pl
  	$(call cmd,perlasm)
  
-+$(obj)/sm4-riscv64-zvksed.S: $(src)/sm4-riscv64-zvksed.pl
++$(obj)/sm3-riscv64-zvksh.S: $(src)/sm3-riscv64-zvksh.pl
 +	$(call cmd,perlasm)
 +
- clean-files += aes-riscv64-zvkned.S
- clean-files += aes-riscv64-zvkned-zvbb-zvkg.S
- clean-files += aes-riscv64-zvkned-zvkb.S
+ $(obj)/sm4-riscv64-zvksed.S: $(src)/sm4-riscv64-zvksed.pl
+ 	$(call cmd,perlasm)
+ 
+@@ -51,4 +57,5 @@ clean-files += aes-riscv64-zvkned-zvkb.S
  clean-files += ghash-riscv64-zvkg.S
  clean-files += sha256-riscv64-zvknha_or_zvknhb-zvkb.S
  clean-files += sha512-riscv64-zvknhb-zvkb.S
-+clean-files += sm4-riscv64-zvksed.S
-diff --git a/arch/riscv/crypto/sm4-riscv64-glue.c b/arch/riscv/crypto/sm4-riscv64-glue.c
++clean-files += sm3-riscv64-zvksh.S
+ clean-files += sm4-riscv64-zvksed.S
+diff --git a/arch/riscv/crypto/sm3-riscv64-glue.c b/arch/riscv/crypto/sm3-riscv64-glue.c
 new file mode 100644
-index 000000000000..9d9d24b67ee3
+index 000000000000..0e5a2b84c930
 --- /dev/null
-+++ b/arch/riscv/crypto/sm4-riscv64-glue.c
-@@ -0,0 +1,121 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/arch/riscv/crypto/sm3-riscv64-glue.c
+@@ -0,0 +1,124 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
 +/*
-+ * Linux/riscv64 port of the OpenSSL SM4 implementation for RISC-V 64
++ * Linux/riscv64 port of the OpenSSL SM3 implementation for RISC-V 64
 + *
 + * Copyright (C) 2023 VRULL GmbH
 + * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
@@ -183,120 +176,123 @@ index 000000000000..9d9d24b67ee3
 +
 +#include <asm/simd.h>
 +#include <asm/vector.h>
-+#include <crypto/sm4.h>
-+#include <crypto/internal/cipher.h>
-+#include <crypto/internal/simd.h>
-+#include <linux/crypto.h>
-+#include <linux/delay.h>
-+#include <linux/err.h>
 +#include <linux/linkage.h>
 +#include <linux/module.h>
 +#include <linux/types.h>
++#include <crypto/internal/hash.h>
++#include <crypto/internal/simd.h>
++#include <crypto/sm3_base.h>
 +
-+/* sm4 using zvksed vector crypto extension */
-+asmlinkage void rv64i_zvksed_sm4_encrypt(const u8 *in, u8 *out, const u32 *key);
-+asmlinkage void rv64i_zvksed_sm4_decrypt(const u8 *in, u8 *out, const u32 *key);
-+asmlinkage int rv64i_zvksed_sm4_set_key(const u8 *user_key,
-+					unsigned int key_len, u32 *enc_key,
-+					u32 *dec_key);
++/*
++ * sm3 using zvksh vector crypto extension
++ *
++ * This asm function will just take the first 256-bit as the sm3 state from
++ * the pointer to `struct sm3_state`.
++ */
++asmlinkage void ossl_hwsm3_block_data_order_zvksh(struct sm3_state *digest,
++						  u8 const *o, int num);
 +
-+static int riscv64_sm4_setkey_zvksed(struct crypto_tfm *tfm, const u8 *key,
-+				     unsigned int key_len)
++static int riscv64_sm3_update(struct shash_desc *desc, const u8 *data,
++			      unsigned int len)
 +{
-+	struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
 +	int ret = 0;
++
++	/*
++	 * Make sure struct sm3_state begins directly with the SM3 256-bit internal
++	 * state, as this is what the asm function expect.
++	 */
++	BUILD_BUG_ON(offsetof(struct sm3_state, state) != 0);
 +
 +	if (crypto_simd_usable()) {
 +		kernel_vector_begin();
-+		if (rv64i_zvksed_sm4_set_key(key, key_len, ctx->rkey_enc,
-+					     ctx->rkey_dec))
-+			ret = -EINVAL;
++		ret = sm3_base_do_update(desc, data, len,
++					 ossl_hwsm3_block_data_order_zvksh);
 +		kernel_vector_end();
 +	} else {
-+		ret = sm4_expandkey(ctx, key, key_len);
++		sm3_update(shash_desc_ctx(desc), data, len);
 +	}
 +
 +	return ret;
 +}
 +
-+static void riscv64_sm4_encrypt_zvksed(struct crypto_tfm *tfm, u8 *dst,
-+				       const u8 *src)
++static int riscv64_sm3_finup(struct shash_desc *desc, const u8 *data,
++			     unsigned int len, u8 *out)
 +{
-+	const struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
++	struct sm3_state *ctx;
 +
 +	if (crypto_simd_usable()) {
 +		kernel_vector_begin();
-+		rv64i_zvksed_sm4_encrypt(src, dst, ctx->rkey_enc);
++		if (len)
++			sm3_base_do_update(desc, data, len,
++					   ossl_hwsm3_block_data_order_zvksh);
++		sm3_base_do_finalize(desc, ossl_hwsm3_block_data_order_zvksh);
 +		kernel_vector_end();
-+	} else {
-+		sm4_crypt_block(ctx->rkey_enc, dst, src);
++
++		return sm3_base_finish(desc, out);
 +	}
++
++	ctx = shash_desc_ctx(desc);
++	if (len)
++		sm3_update(ctx, data, len);
++	sm3_final(ctx, out);
++
++	return 0;
 +}
 +
-+static void riscv64_sm4_decrypt_zvksed(struct crypto_tfm *tfm, u8 *dst,
-+				       const u8 *src)
++static int riscv64_sm3_final(struct shash_desc *desc, u8 *out)
 +{
-+	const struct sm4_ctx *ctx = crypto_tfm_ctx(tfm);
-+
-+	if (crypto_simd_usable()) {
-+		kernel_vector_begin();
-+		rv64i_zvksed_sm4_decrypt(src, dst, ctx->rkey_dec);
-+		kernel_vector_end();
-+	} else {
-+		sm4_crypt_block(ctx->rkey_dec, dst, src);
-+	}
++	return riscv64_sm3_finup(desc, NULL, 0, out);
 +}
 +
-+static struct crypto_alg riscv64_sm4_zvksed_zvkb_alg = {
-+	.cra_flags = CRYPTO_ALG_TYPE_CIPHER,
-+	.cra_blocksize = SM4_BLOCK_SIZE,
-+	.cra_ctxsize = sizeof(struct sm4_ctx),
-+	.cra_priority = 300,
-+	.cra_name = "sm4",
-+	.cra_driver_name = "sm4-riscv64-zvksed-zvkb",
-+	.cra_cipher = {
-+		.cia_min_keysize = SM4_KEY_SIZE,
-+		.cia_max_keysize = SM4_KEY_SIZE,
-+		.cia_setkey = riscv64_sm4_setkey_zvksed,
-+		.cia_encrypt = riscv64_sm4_encrypt_zvksed,
-+		.cia_decrypt = riscv64_sm4_decrypt_zvksed,
++static struct shash_alg sm3_alg = {
++	.init = sm3_base_init,
++	.update = riscv64_sm3_update,
++	.final = riscv64_sm3_final,
++	.finup = riscv64_sm3_finup,
++	.descsize = sizeof(struct sm3_state),
++	.digestsize = SM3_DIGEST_SIZE,
++	.base = {
++		.cra_blocksize = SM3_BLOCK_SIZE,
++		.cra_priority = 150,
++		.cra_name = "sm3",
++		.cra_driver_name = "sm3-riscv64-zvksh-zvkb",
++		.cra_module = THIS_MODULE,
 +	},
-+	.cra_module = THIS_MODULE,
 +};
 +
-+static inline bool check_sm4_ext(void)
++static inline bool check_sm3_ext(void)
 +{
-+	return riscv_isa_extension_available(NULL, ZVKSED) &&
++	return riscv_isa_extension_available(NULL, ZVKSH) &&
 +	       riscv_isa_extension_available(NULL, ZVKB) &&
 +	       riscv_vector_vlen() >= 128;
 +}
 +
-+static int __init riscv64_sm4_mod_init(void)
++static int __init riscv64_sm3_mod_init(void)
 +{
-+	if (check_sm4_ext())
-+		return crypto_register_alg(&riscv64_sm4_zvksed_zvkb_alg);
++	if (check_sm3_ext())
++		return crypto_register_shash(&sm3_alg);
 +
 +	return -ENODEV;
 +}
 +
-+static void __exit riscv64_sm4_mod_fini(void)
++static void __exit riscv64_sm3_mod_fini(void)
 +{
-+	crypto_unregister_alg(&riscv64_sm4_zvksed_zvkb_alg);
++	crypto_unregister_shash(&sm3_alg);
 +}
 +
-+module_init(riscv64_sm4_mod_init);
-+module_exit(riscv64_sm4_mod_fini);
++module_init(riscv64_sm3_mod_init);
++module_exit(riscv64_sm3_mod_fini);
 +
-+MODULE_DESCRIPTION("SM4 (RISC-V accelerated)");
++MODULE_DESCRIPTION("SM3 (RISC-V accelerated)");
 +MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@vrull.eu>");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS_CRYPTO("sm4");
-diff --git a/arch/riscv/crypto/sm4-riscv64-zvksed.pl b/arch/riscv/crypto/sm4-riscv64-zvksed.pl
++MODULE_ALIAS_CRYPTO("sm3");
+diff --git a/arch/riscv/crypto/sm3-riscv64-zvksh.pl b/arch/riscv/crypto/sm3-riscv64-zvksh.pl
 new file mode 100644
-index 000000000000..5669a3b38944
+index 000000000000..6a2399d3a5cf
 --- /dev/null
-+++ b/arch/riscv/crypto/sm4-riscv64-zvksed.pl
-@@ -0,0 +1,268 @@
++++ b/arch/riscv/crypto/sm3-riscv64-zvksh.pl
+@@ -0,0 +1,227 @@
 +#! /usr/bin/env perl
 +# SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause
 +#
@@ -340,7 +336,7 @@ index 000000000000..5669a3b38944
 +# - RV64I
 +# - RISC-V Vector ('V') with VLEN >= 128
 +# - RISC-V Vector Cryptography Bit-manipulation extension ('Zvkb')
-+# - RISC-V Vector SM4 Block Cipher extension ('Zvksed')
++# - RISC-V Vector SM3 Secure Hash extension ('Zvksh')
 +
 +use strict;
 +use warnings;
@@ -358,209 +354,168 @@ index 000000000000..5669a3b38944
 +$output and open STDOUT,">$output";
 +
 +my $code=<<___;
++#include <linux/cfi_types.h>
++
 +.text
 +___
 +
-+####
-+# int rv64i_zvksed_sm4_set_key(const u8 *user_key, unsigned int key_len,
-+#			                         u32 *enc_key, u32 *dec_key);
-+#
++################################################################################
++# ossl_hwsm3_block_data_order_zvksh(SM3_CTX *c, const void *p, size_t num);
 +{
-+my ($ukey,$key_len,$enc_key,$dec_key)=("a0","a1","a2","a3");
-+my ($fk,$stride)=("a4","a5");
-+my ($t0,$t1)=("t0","t1");
-+my ($vukey,$vfk,$vk0,$vk1,$vk2,$vk3,$vk4,$vk5,$vk6,$vk7)=("v1","v2","v3","v4","v5","v6","v7","v8","v9","v10");
++my ($CTX, $INPUT, $NUM) = ("a0", "a1", "a2");
++my ($V0, $V1, $V2, $V3, $V4, $V5, $V6, $V7,
++    $V8, $V9, $V10, $V11, $V12, $V13, $V14, $V15,
++    $V16, $V17, $V18, $V19, $V20, $V21, $V22, $V23,
++    $V24, $V25, $V26, $V27, $V28, $V29, $V30, $V31,
++) = map("v$_",(0..31));
++
 +$code .= <<___;
-+.p2align 3
-+.globl rv64i_zvksed_sm4_set_key
-+.type rv64i_zvksed_sm4_set_key,\@function
-+rv64i_zvksed_sm4_set_key:
-+    li $t0, 16
-+    beq $t0, $key_len, 1f
-+    li a0, 1
++SYM_TYPED_FUNC_START(ossl_hwsm3_block_data_order_zvksh)
++    vsetivli zero, 8, e32, m2, ta, ma
++
++    # Load initial state of hash context (c->A-H).
++    vle32.v $V0, ($CTX)
++    @{[vrev8_v $V0, $V0]}
++
++L_sm3_loop:
++    # Copy the previous state to v2.
++    # It will be XOR'ed with the current state at the end of the round.
++    vmv.v.v $V2, $V0
++
++    # Load the 64B block in 2x32B chunks.
++    vle32.v $V6, ($INPUT) # v6 := {w7, ..., w0}
++    addi $INPUT, $INPUT, 32
++
++    vle32.v $V8, ($INPUT) # v8 := {w15, ..., w8}
++    addi $INPUT, $INPUT, 32
++
++    addi $NUM, $NUM, -1
++
++    # As vsm3c consumes only w0, w1, w4, w5 we need to slide the input
++    # 2 elements down so we process elements w2, w3, w6, w7
++    # This will be repeated for each odd round.
++    vslidedown.vi $V4, $V6, 2 # v4 := {X, X, w7, ..., w2}
++
++    @{[vsm3c_vi $V0, $V6, 0]}
++    @{[vsm3c_vi $V0, $V4, 1]}
++
++    # Prepare a vector with {w11, ..., w4}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w7, ..., w4}
++    vslideup.vi $V4, $V8, 4   # v4 := {w11, w10, w9, w8, w7, w6, w5, w4}
++
++    @{[vsm3c_vi $V0, $V4, 2]}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w11, w10, w9, w8, w7, w6}
++    @{[vsm3c_vi $V0, $V4, 3]}
++
++    @{[vsm3c_vi $V0, $V8, 4]}
++    vslidedown.vi $V4, $V8, 2 # v4 := {X, X, w15, w14, w13, w12, w11, w10}
++    @{[vsm3c_vi $V0, $V4, 5]}
++
++    @{[vsm3me_vv $V6, $V8, $V6]}   # v6 := {w23, w22, w21, w20, w19, w18, w17, w16}
++
++    # Prepare a register with {w19, w18, w17, w16, w15, w14, w13, w12}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w15, w14, w13, w12}
++    vslideup.vi $V4, $V6, 4   # v4 := {w19, w18, w17, w16, w15, w14, w13, w12}
++
++    @{[vsm3c_vi $V0, $V4, 6]}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w19, w18, w17, w16, w15, w14}
++    @{[vsm3c_vi $V0, $V4, 7]}
++
++    @{[vsm3c_vi $V0, $V6, 8]}
++    vslidedown.vi $V4, $V6, 2 # v4 := {X, X, w23, w22, w21, w20, w19, w18}
++    @{[vsm3c_vi $V0, $V4, 9]}
++
++    @{[vsm3me_vv $V8, $V6, $V8]}   # v8 := {w31, w30, w29, w28, w27, w26, w25, w24}
++
++    # Prepare a register with {w27, w26, w25, w24, w23, w22, w21, w20}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w23, w22, w21, w20}
++    vslideup.vi $V4, $V8, 4   # v4 := {w27, w26, w25, w24, w23, w22, w21, w20}
++
++    @{[vsm3c_vi $V0, $V4, 10]}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w27, w26, w25, w24, w23, w22}
++    @{[vsm3c_vi $V0, $V4, 11]}
++
++    @{[vsm3c_vi $V0, $V8, 12]}
++    vslidedown.vi $V4, $V8, 2 # v4 := {x, X, w31, w30, w29, w28, w27, w26}
++    @{[vsm3c_vi $V0, $V4, 13]}
++
++    @{[vsm3me_vv $V6, $V8, $V6]}   # v6 := {w32, w33, w34, w35, w36, w37, w38, w39}
++
++    # Prepare a register with {w35, w34, w33, w32, w31, w30, w29, w28}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w31, w30, w29, w28}
++    vslideup.vi $V4, $V6, 4   # v4 := {w35, w34, w33, w32, w31, w30, w29, w28}
++
++    @{[vsm3c_vi $V0, $V4, 14]}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w35, w34, w33, w32, w31, w30}
++    @{[vsm3c_vi $V0, $V4, 15]}
++
++    @{[vsm3c_vi $V0, $V6, 16]}
++    vslidedown.vi $V4, $V6, 2 # v4 := {X, X, w39, w38, w37, w36, w35, w34}
++    @{[vsm3c_vi $V0, $V4, 17]}
++
++    @{[vsm3me_vv $V8, $V6, $V8]}   # v8 := {w47, w46, w45, w44, w43, w42, w41, w40}
++
++    # Prepare a register with {w43, w42, w41, w40, w39, w38, w37, w36}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w39, w38, w37, w36}
++    vslideup.vi $V4, $V8, 4   # v4 := {w43, w42, w41, w40, w39, w38, w37, w36}
++
++    @{[vsm3c_vi $V0, $V4, 18]}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w43, w42, w41, w40, w39, w38}
++    @{[vsm3c_vi $V0, $V4, 19]}
++
++    @{[vsm3c_vi $V0, $V8, 20]}
++    vslidedown.vi $V4, $V8, 2 # v4 := {X, X, w47, w46, w45, w44, w43, w42}
++    @{[vsm3c_vi $V0, $V4, 21]}
++
++    @{[vsm3me_vv $V6, $V8, $V6]}   # v6 := {w55, w54, w53, w52, w51, w50, w49, w48}
++
++    # Prepare a register with {w51, w50, w49, w48, w47, w46, w45, w44}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w47, w46, w45, w44}
++    vslideup.vi $V4, $V6, 4   # v4 := {w51, w50, w49, w48, w47, w46, w45, w44}
++
++    @{[vsm3c_vi $V0, $V4, 22]}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w51, w50, w49, w48, w47, w46}
++    @{[vsm3c_vi $V0, $V4, 23]}
++
++    @{[vsm3c_vi $V0, $V6, 24]}
++    vslidedown.vi $V4, $V6, 2 # v4 := {X, X, w55, w54, w53, w52, w51, w50}
++    @{[vsm3c_vi $V0, $V4, 25]}
++
++    @{[vsm3me_vv $V8, $V6, $V8]}   # v8 := {w63, w62, w61, w60, w59, w58, w57, w56}
++
++    # Prepare a register with {w59, w58, w57, w56, w55, w54, w53, w52}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w55, w54, w53, w52}
++    vslideup.vi $V4, $V8, 4   # v4 := {w59, w58, w57, w56, w55, w54, w53, w52}
++
++    @{[vsm3c_vi $V0, $V4, 26]}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w59, w58, w57, w56, w55, w54}
++    @{[vsm3c_vi $V0, $V4, 27]}
++
++    @{[vsm3c_vi $V0, $V8, 28]}
++    vslidedown.vi $V4, $V8, 2 # v4 := {X, X, w63, w62, w61, w60, w59, w58}
++    @{[vsm3c_vi $V0, $V4, 29]}
++
++    @{[vsm3me_vv $V6, $V8, $V6]}   # v6 := {w71, w70, w69, w68, w67, w66, w65, w64}
++
++    # Prepare a register with {w67, w66, w65, w64, w63, w62, w61, w60}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w63, w62, w61, w60}
++    vslideup.vi $V4, $V6, 4   # v4 := {w67, w66, w65, w64, w63, w62, w61, w60}
++
++    @{[vsm3c_vi $V0, $V4, 30]}
++    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w67, w66, w65, w64, w63, w62}
++    @{[vsm3c_vi $V0, $V4, 31]}
++
++    # XOR in the previous state.
++    vxor.vv $V0, $V0, $V2
++
++    bnez $NUM, L_sm3_loop     # Check if there are any more block to process
++L_sm3_end:
++    @{[vrev8_v $V0, $V0]}
++    vse32.v $V0, ($CTX)
 +    ret
-+1:
-+
-+    vsetivli zero, 4, e32, m1, ta, ma
-+
-+    # Load the user key
-+    vle32.v $vukey, ($ukey)
-+    @{[vrev8_v $vukey, $vukey]}
-+
-+    # Load the FK.
-+    la $fk, FK
-+    vle32.v $vfk, ($fk)
-+
-+    # Generate round keys.
-+    vxor.vv $vukey, $vukey, $vfk
-+    @{[vsm4k_vi $vk0, $vukey, 0]} # rk[0:3]
-+    @{[vsm4k_vi $vk1, $vk0, 1]} # rk[4:7]
-+    @{[vsm4k_vi $vk2, $vk1, 2]} # rk[8:11]
-+    @{[vsm4k_vi $vk3, $vk2, 3]} # rk[12:15]
-+    @{[vsm4k_vi $vk4, $vk3, 4]} # rk[16:19]
-+    @{[vsm4k_vi $vk5, $vk4, 5]} # rk[20:23]
-+    @{[vsm4k_vi $vk6, $vk5, 6]} # rk[24:27]
-+    @{[vsm4k_vi $vk7, $vk6, 7]} # rk[28:31]
-+
-+    # Store enc round keys
-+    vse32.v $vk0, ($enc_key) # rk[0:3]
-+    addi $enc_key, $enc_key, 16
-+    vse32.v $vk1, ($enc_key) # rk[4:7]
-+    addi $enc_key, $enc_key, 16
-+    vse32.v $vk2, ($enc_key) # rk[8:11]
-+    addi $enc_key, $enc_key, 16
-+    vse32.v $vk3, ($enc_key) # rk[12:15]
-+    addi $enc_key, $enc_key, 16
-+    vse32.v $vk4, ($enc_key) # rk[16:19]
-+    addi $enc_key, $enc_key, 16
-+    vse32.v $vk5, ($enc_key) # rk[20:23]
-+    addi $enc_key, $enc_key, 16
-+    vse32.v $vk6, ($enc_key) # rk[24:27]
-+    addi $enc_key, $enc_key, 16
-+    vse32.v $vk7, ($enc_key) # rk[28:31]
-+
-+    # Store dec round keys in reverse order
-+    addi $dec_key, $dec_key, 12
-+    li $stride, -4
-+    vsse32.v $vk7, ($dec_key), $stride # rk[31:28]
-+    addi $dec_key, $dec_key, 16
-+    vsse32.v $vk6, ($dec_key), $stride # rk[27:24]
-+    addi $dec_key, $dec_key, 16
-+    vsse32.v $vk5, ($dec_key), $stride # rk[23:20]
-+    addi $dec_key, $dec_key, 16
-+    vsse32.v $vk4, ($dec_key), $stride # rk[19:16]
-+    addi $dec_key, $dec_key, 16
-+    vsse32.v $vk3, ($dec_key), $stride # rk[15:12]
-+    addi $dec_key, $dec_key, 16
-+    vsse32.v $vk2, ($dec_key), $stride # rk[11:8]
-+    addi $dec_key, $dec_key, 16
-+    vsse32.v $vk1, ($dec_key), $stride # rk[7:4]
-+    addi $dec_key, $dec_key, 16
-+    vsse32.v $vk0, ($dec_key), $stride # rk[3:0]
-+
-+    li a0, 0
-+    ret
-+.size rv64i_zvksed_sm4_set_key,.-rv64i_zvksed_sm4_set_key
++SYM_FUNC_END(ossl_hwsm3_block_data_order_zvksh)
 +___
 +}
-+
-+####
-+# void rv64i_zvksed_sm4_encrypt(const unsigned char *in, unsigned char *out,
-+#                               const SM4_KEY *key);
-+#
-+{
-+my ($in,$out,$keys,$stride)=("a0","a1","a2","t0");
-+my ($vdata,$vk0,$vk1,$vk2,$vk3,$vk4,$vk5,$vk6,$vk7,$vgen)=("v1","v2","v3","v4","v5","v6","v7","v8","v9","v10");
-+$code .= <<___;
-+.p2align 3
-+.globl rv64i_zvksed_sm4_encrypt
-+.type rv64i_zvksed_sm4_encrypt,\@function
-+rv64i_zvksed_sm4_encrypt:
-+    vsetivli zero, 4, e32, m1, ta, ma
-+
-+    # Load input data
-+    vle32.v $vdata, ($in)
-+    @{[vrev8_v $vdata, $vdata]}
-+
-+    # Order of elements was adjusted in sm4_set_key()
-+    # Encrypt with all keys
-+    vle32.v $vk0, ($keys) # rk[0:3]
-+    @{[vsm4r_vs $vdata, $vk0]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk1, ($keys) # rk[4:7]
-+    @{[vsm4r_vs $vdata, $vk1]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk2, ($keys) # rk[8:11]
-+    @{[vsm4r_vs $vdata, $vk2]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk3, ($keys) # rk[12:15]
-+    @{[vsm4r_vs $vdata, $vk3]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk4, ($keys) # rk[16:19]
-+    @{[vsm4r_vs $vdata, $vk4]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk5, ($keys) # rk[20:23]
-+    @{[vsm4r_vs $vdata, $vk5]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk6, ($keys) # rk[24:27]
-+    @{[vsm4r_vs $vdata, $vk6]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk7, ($keys) # rk[28:31]
-+    @{[vsm4r_vs $vdata, $vk7]}
-+
-+    # Save the ciphertext (in reverse element order)
-+    @{[vrev8_v $vdata, $vdata]}
-+    li $stride, -4
-+    addi $out, $out, 12
-+    vsse32.v $vdata, ($out), $stride
-+
-+    ret
-+.size rv64i_zvksed_sm4_encrypt,.-rv64i_zvksed_sm4_encrypt
-+___
-+}
-+
-+####
-+# void rv64i_zvksed_sm4_decrypt(const unsigned char *in, unsigned char *out,
-+#                               const SM4_KEY *key);
-+#
-+{
-+my ($in,$out,$keys,$stride)=("a0","a1","a2","t0");
-+my ($vdata,$vk0,$vk1,$vk2,$vk3,$vk4,$vk5,$vk6,$vk7,$vgen)=("v1","v2","v3","v4","v5","v6","v7","v8","v9","v10");
-+$code .= <<___;
-+.p2align 3
-+.globl rv64i_zvksed_sm4_decrypt
-+.type rv64i_zvksed_sm4_decrypt,\@function
-+rv64i_zvksed_sm4_decrypt:
-+    vsetivli zero, 4, e32, m1, ta, ma
-+
-+    # Load input data
-+    vle32.v $vdata, ($in)
-+    @{[vrev8_v $vdata, $vdata]}
-+
-+    # Order of key elements was adjusted in sm4_set_key()
-+    # Decrypt with all keys
-+    vle32.v $vk7, ($keys) # rk[31:28]
-+    @{[vsm4r_vs $vdata, $vk7]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk6, ($keys) # rk[27:24]
-+    @{[vsm4r_vs $vdata, $vk6]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk5, ($keys) # rk[23:20]
-+    @{[vsm4r_vs $vdata, $vk5]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk4, ($keys) # rk[19:16]
-+    @{[vsm4r_vs $vdata, $vk4]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk3, ($keys) # rk[15:11]
-+    @{[vsm4r_vs $vdata, $vk3]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk2, ($keys) # rk[11:8]
-+    @{[vsm4r_vs $vdata, $vk2]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk1, ($keys) # rk[7:4]
-+    @{[vsm4r_vs $vdata, $vk1]}
-+    addi $keys, $keys, 16
-+    vle32.v $vk0, ($keys) # rk[3:0]
-+    @{[vsm4r_vs $vdata, $vk0]}
-+
-+    # Save the ciphertext (in reverse element order)
-+    @{[vrev8_v $vdata, $vdata]}
-+    li $stride, -4
-+    addi $out, $out, 12
-+    vsse32.v $vdata, ($out), $stride
-+
-+    ret
-+.size rv64i_zvksed_sm4_decrypt,.-rv64i_zvksed_sm4_decrypt
-+___
-+}
-+
-+$code .= <<___;
-+# Family Key (little-endian 32-bit chunks)
-+.p2align 3
-+FK:
-+    .word 0xA3B1BAC6, 0x56AA3350, 0x677D9197, 0xB27022DC
-+.size FK,.-FK
-+___
 +
 +print $code;
 +
