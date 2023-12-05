@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04A57805DD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B437805DBF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345927AbjLESfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:35:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49578 "EHLO
+        id S231330AbjLESiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:38:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjLESfM (ORCPT
+        with ESMTP id S229483AbjLESiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:35:12 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA06918C;
-        Tue,  5 Dec 2023 10:35:18 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b8b556aadbso2277106b6e.3;
-        Tue, 05 Dec 2023 10:35:18 -0800 (PST)
+        Tue, 5 Dec 2023 13:38:19 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CBEBA;
+        Tue,  5 Dec 2023 10:38:26 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1d05e4a94c3so39958135ad.1;
+        Tue, 05 Dec 2023 10:38:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701801318; x=1702406118; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zp50cEMhA16nGXEsXh/65k5s1OUgtftGnHrdudTWHl0=;
-        b=jqBjJsa8r+qXUYgm61vVAiruKmIQuWM3RIoPRCiy8q3xSc6ZFBAx8GfqvJ2zWVBhar
-         K8MTJG28fs8pisowyx2OJN5yqmGy96igFfZpCAzznI9t8pK/uqgZaPvoPomsg7YroIgN
-         Jpg/z18gHKtRewiZzxPbZ1qmVXZALgjzIrZja2eau9XsI3yJkOq3i1Z6RHLnCHX0Rdnl
-         1rCqmsgDz413D/E+SGy9+aSfTOmIbeodsm63uGhItEg12Cc8YMzQEx25vOJkJZl6Ldp4
-         xNfPIthqgJrq4fzhMwutd69c/gOENFxWsb7Aw/8LOw4W5p7fgPP3DcDQtJ7/KS18SATg
-         FNAQ==
+        d=gmail.com; s=20230601; t=1701801506; x=1702406306; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P5TUAzi7j6XeiF4+c49iyLDkQjLI2ZKA3/LaFVYktmw=;
+        b=cgdEAZjKd60v1Jbult7PegT+/RxVrV94l8Ub9VfVQxzXZe4O/lcp45QuxcnYtpApDE
+         G+bhDNnI+Af6nI/pwL6g+lpOnPFbQa4NUjC+FbdVhztPyJ36ITxkFcaid70akm4UOHVl
+         A2wrdXf1Pbh+0tbwVX4t/M0V5AK67EiqKDM+tvnSPY4OQyI7BBvDqqEQlxi+unMwfrQ8
+         ODf0DLugx+uzEmxm3t3ztsRKAo3y836AQIK3HMHo2oDOkyPxjuMtTNPCID1w/cN00Gla
+         Tow0gUZfEMc7NfkiJtL/N68ECh+hZJdAKjX6eTYmGaaOeQXq+6x+N+s8GqivRq2q96Qz
+         snyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701801318; x=1702406118;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zp50cEMhA16nGXEsXh/65k5s1OUgtftGnHrdudTWHl0=;
-        b=fP1G65R9Vt5MM/CLuETqrBYNcJMD+BjpCrK3JL6B3zioUY+b8WO/s92Ty9L14L2dGW
-         OrhxmroofkQvU/pBFD3Ov+lwPQaXWdq1tWn9PFI+imM65kjMDjM3qNYIgch5jnCQeD82
-         nrwgoRdnsvUg4BVhHunZSRyAdg6YtXp71qYo18FYIdfnpZr1/Vd21U/v6JsH8OFsXxad
-         CbIAjmuatBu0mBSB2eOqWH9BsaN0XS7jC0Uy4CxDAHctW0xRFkjbUA+IhrR6KGx6/yF8
-         1lHieXY6kmRUBi9/aZ2o0OATd8/UBBix6KCD9pR3hKdftWjXi3v/4V/LSQXcYPA47Mea
-         zHDA==
-X-Gm-Message-State: AOJu0Yws22X1TK3dDURj9gcYR+efBZBvPvaFN0y5kgHjR9Nm9ED65h2x
-        xssB/th29uQ6sqtQ98vpsAw=
-X-Google-Smtp-Source: AGHT+IH1zZJz1AecXGZ7V2IG87FO1soRW88u6fqO+HLSk/N/EZWXVJW9vwfEn6HsuUyXB3KlUZ2OXQ==
-X-Received: by 2002:a05:6808:13c5:b0:3b9:96a1:1f40 with SMTP id d5-20020a05680813c500b003b996a11f40mr3934064oiw.44.1701801317850;
-        Tue, 05 Dec 2023 10:35:17 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id vy13-20020a05620a490d00b0077da601f06csm5289868qkn.10.2023.12.05.10.35.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 10:35:17 -0800 (PST)
-Message-ID: <0a676e7e-9b6a-476d-85e9-21fa6821e9f9@gmail.com>
-Date:   Tue, 5 Dec 2023 10:35:13 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/107] 6.1.66-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231205031531.426872356@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231205031531.426872356@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        d=1e100.net; s=20230601; t=1701801506; x=1702406306;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P5TUAzi7j6XeiF4+c49iyLDkQjLI2ZKA3/LaFVYktmw=;
+        b=soaqjCTfTDvi3VnPRmusKm7llH51TZHLBW/FUPhm11gNNzHyIxD3QtmnmT8QLAjxI4
+         qZCcqSG9OdMshf8peyD1rviHaq5BisR0PI4DG6MzJ/LH5Kn3peRXmunVwrMWIVGikCdu
+         vwTjDpaRBvDMHEDxRRkjwDl8FiNGruXt9uw9CDENTMqXcV/mcGBtvGOQ89KrXxSuZ8Ub
+         HuHjva3a2oPhU4O4TEnv28g5LUJQ06xquqm8zPBLFhl72pcIIcRreIJPtDHSMrIFXYhe
+         jyMoQJ61sQCwqcQhlZIxrwIMaNNQ0iD06i2U1pzPNOcZJO5P93XBk2nqB6XKVdsU+Z6T
+         sDUA==
+X-Gm-Message-State: AOJu0YyCyo5DbycXw2nTZKhrCtO3YqudVSgBcNwkNJk4mRpYK4aT7lHR
+        H+jQL4irDhQ/7sq4DUuhaxE=
+X-Google-Smtp-Source: AGHT+IHK2rlOIoxSOejGVPqn/6zmQ7Wz5TlFj7g3GnusOfOePMb5aG/wfh8ryyMjsb6DEOLUnGaiCg==
+X-Received: by 2002:a17:902:e804:b0:1d0:9e59:35e2 with SMTP id u4-20020a170902e80400b001d09e5935e2mr4843794plg.123.1701801505837;
+        Tue, 05 Dec 2023 10:38:25 -0800 (PST)
+Received: from localhost ([98.97.116.78])
+        by smtp.gmail.com with ESMTPSA id t9-20020a170902e84900b001cc131c65besm10574713plg.168.2023.12.05.10.38.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 10:38:25 -0800 (PST)
+Date:   Tue, 05 Dec 2023 10:38:24 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     syzbot <syzbot+06dbd397158ec0ea4983@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        cong.wang@bytedance.com, daniel@iogearbox.net, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        nathan@kernel.org, ndesaulniers@google.com, netdev@vger.kernel.org,
+        pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Message-ID: <656f6e2050d_2df272086c@john.notmuch>
+In-Reply-To: <0000000000004f438d060bc6e988@google.com>
+References: <0000000000004f438d060bc6e988@google.com>
+Subject: RE: [syzbot] [net?] WARNING in tcp_recvmsg_locked (2)
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/23 19:15, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.66 release.
-> There are 107 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+syzbot wrote:
+> Hello,
 > 
-> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
-> Anything received after that time might be too late.
+> syzbot found the following issue on:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.66-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+> HEAD commit:    8470e4368b0f Merge branch 'net-cacheline-optimizations'
+> git tree:       net-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=12094286e80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f8715b6ede5c4b90
+> dashboard link: https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1247bee2e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1285243ce80000
 > 
-> thanks,
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/90007d08e178/disk-8470e436.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/b55270de1cdc/vmlinux-8470e436.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/2237d34b6fec/bzImage-8470e436.xz
 > 
-> greg k-h
+> The issue was bisected to:
+> 
+> commit 965b57b469a589d64d81b1688b38dcb537011bb0
+> Author: Cong Wang <cong.wang@bytedance.com>
+> Date:   Wed Jun 15 16:20:12 2022 +0000
+> 
+>     net: Introduce a new proto_ops ->read_skb()
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1087c0d4e80000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1287c0d4e80000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1487c0d4e80000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+06dbd397158ec0ea4983@syzkaller.appspotmail.com
+> Fixes: 965b57b469a5 ("net: Introduce a new proto_ops ->read_skb()")
+> 
+> WARNING: CPU: 1 PID: 5130 at net/ipv4/tcp.c:2396 tcp_recvmsg_locked+0xa54/0x2490 net/ipv4/tcp.c:2396
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
-
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
-
+I'll take a look. Thanks.
