@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51090805B95
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4431D805C0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346051AbjLERYu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 12:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58760 "EHLO
+        id S1345994AbjLER0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:26:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjLERYs (ORCPT
+        with ESMTP id S235086AbjLER0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:24:48 -0500
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE9A196;
-        Tue,  5 Dec 2023 09:24:55 -0800 (PST)
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-286bba96e94so1786604a91.1;
-        Tue, 05 Dec 2023 09:24:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701797094; x=1702401894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IFVQTC1s169ecyWHJH7Eki7EkWCVJgaihSXzOtW52Qk=;
-        b=IQ6QW81W+btWJ4CuWapgToo8617vyESK+A3kffvwmtCme1Ib9gpGgpC7P/KHskyodr
-         fmDoAWlVoqROFvHr979T2n8eI0hK/+w+Yk4a7qi2NYbzJHOwk4t/A90wPFOCq0jAquTX
-         LDLt3QnR08oTzWpIpI5nN+biT58si5WjtIYNcDendnwBCvhzXzsxBmRAGabWy5Mo51rX
-         S3hijp098Q2nNqNYWgSiVmmCLwrBlYog4f+1J0c3mxyN0TdDEwkv0S27OUNM1GnWOu+v
-         aR4wsuPeN5y7/wG0SaBP1NxXPT5z1UKSXryO/D4SqzhllCzJE18V4qtaCow1WxxDTkTt
-         8JsA==
-X-Gm-Message-State: AOJu0Yyxbd4JQknhvqQkXtDM1Lq8Ly0xO/yqyRhd7bKQ07asgB+atz50
-        nyQvyetRZciegzu7yVIC/KTbN968zlZVQD2qv1g=
-X-Google-Smtp-Source: AGHT+IEZpTYw7fSgKbd9dYpxAUnuXkfHH2ctd+T9rSy9hSil2VcNkkGUakgj/GtS6xBfGjTynW4UXwkLl4UxUY1w2pY=
-X-Received: by 2002:a17:90a:f00a:b0:286:6cc1:8653 with SMTP id
- bt10-20020a17090af00a00b002866cc18653mr1371402pjb.56.1701797094150; Tue, 05
- Dec 2023 09:24:54 -0800 (PST)
+        Tue, 5 Dec 2023 12:26:02 -0500
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E54051A1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:26:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1701797162; x=1704389162;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LYYTLO6Sh4+IUIm2LAGszv/f3IENIM+6WU7U5kxRJ1o=;
+        b=IhW1N+WZf5uhyvT3FREO/MTFzVwXWdHc2HiY8Be74JJQABtSgIExF059RIj1jHMx
+        xoB+pdbgjHpBX8g2RQGlN3HS6DSMW+IrZr2XA29dqle/NsES6qAsSPSg3DeTV5H8
+        8m+Dl7TfVKeCL+WiMGCCb25PmhpB0rZ4Z9inKQq4x7g=;
+X-AuditID: ac14000a-fadff7000000290d-4a-656f5d2aca27
+Received: from florix.phytec.de (Unknown_Domain [172.25.0.13])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 87.41.10509.A2D5F656; Tue,  5 Dec 2023 18:26:02 +0100 (CET)
+Received: from [172.25.39.28] (172.25.0.11) by Florix.phytec.de (172.25.0.13)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.6; Tue, 5 Dec 2023
+ 18:26:01 +0100
+Message-ID: <136b3721-2ea7-488a-89cc-cc74f631f5fc@phytec.de>
+Date:   Tue, 5 Dec 2023 18:26:00 +0100
 MIME-Version: 1.0
-References: <20231204182330.654255-1-irogers@google.com> <bea4ad79-297e-9737-8af1-2286192d26f4@os.amperecomputing.com>
- <CAM9d7ci=Tk845H3x3KMDu-hTdP-u0O6a8D3iAa8EnFLLjOO6OQ@mail.gmail.com> <ZW9G8Clxwl6bd0H6@kernel.org>
-In-Reply-To: <ZW9G8Clxwl6bd0H6@kernel.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 5 Dec 2023 09:24:42 -0800
-Message-ID: <CAM9d7ciOp_O5N1TDX0HyKavykirByAYrqzcmM-_6ZWjMv-47WQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] perf metrics: Avoid segv if default metricgroup
- isn't set
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: ti: phycore-am64: Add R5F DMA Region and
+ Mailboxes
+Content-Language: en-US
+To:     Garrett Giordano <ggiordano@phytec.com>, <nm@ti.com>,
+        <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <r-gunasekaran@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <upstream@lists.phytec.de>
+References: <20231204212304.1736306-1-ggiordano@phytec.com>
+From:   Wadim Egorov <w.egorov@phytec.de>
+In-Reply-To: <20231204212304.1736306-1-ggiordano@phytec.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.25.0.11]
+X-ClientProxiedBy: Florix.phytec.de (172.25.0.13) To Florix.phytec.de
+ (172.25.0.13)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHIsWRmVeSWpSXmKPExsWyRpKBV1crNj/VYNlMM4s1e88xWcw/co7V
+        Yv2W32wWyz/PZrfoe/GQ2WLT42usFpd3zWGzePPjLJNF1+t2dovWvUfYLbrfqVv8P/uB3YHH
+        Y9OqTjaPO9f2sHlsXlLv0d/dwurx5+I7Vo/jN7YzeXzeJBfAHsVlk5Kak1mWWqRvl8CVce3G
+        DraCPuWKk2u3MzcwXpfuYuTkkBAwkbi1rYuxi5GLQ0hgMZPEiekz2SCcO4wStz6cZQWp4hWw
+        kTgzYz8jiM0ioCIx/fJ/doi4oMTJmU9YQGxRAXmJ+7dmgMWFBUIlDsxaARZnFhCXuPVkPhPI
+        UBGBC4wSdw/1g21gFmhjlHjy8AAzSJWQgLXE11d7wDawCahL3NnwDWwzJ9DmKTM3sUNMspBY
+        /OYglC0vsf3tHKheeYkXl5azQPwjLzHt3GtmCDtUYv6a7+wTGIVnITl2FpKjZiEZOwvJ2AWM
+        LKsYhXIzk7NTizKz9QoyKktSk/VSUjcxguJQhIFrB2PfHI9DjEwcjIcYJTiYlUR4593KThXi
+        TUmsrEotyo8vKs1JLT7EKM3BoiTOu7ojOFVIID2xJDU7NbUgtQgmy8TBKdXAGHT5+YcvVoHz
+        Z7Ce0HR487TT3N4h5OH3snVNezZ9zv91iDk/JHF/TeGpQvYDrrNUj7st5dihVbjx23y+PwJz
+        88o+dAm7RnJsZ4xvPvXVfvu8VKOOmByrvCvcu99VcZXzWbFOtD2/9DerBF/wU8vqM2faWR+9
+        L36997xl2+uPE849Wn2L50XAViWW4oxEQy3mouJEAEUTIPyxAgAA
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,43 +78,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
 
-On Tue, Dec 5, 2023 at 7:51 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+Am 04.12.23 um 22:23 schrieb Garrett Giordano:
+> Communication between the R5F subsystem and Linux takes place using DMA
+> memory regions and mailboxes. Here we add DT nodes for the memory
+> regions and mailboxes to facilitate communication between the R5
+> clusters and Linux as remoteproc will fail to start if no memory
+> regions or mailboxes are provided.
 >
-> Em Mon, Dec 04, 2023 at 07:33:18PM -0800, Namhyung Kim escreveu:
-> > On Mon, Dec 4, 2023 at 2:45 PM Ilkka Koskinen <ilkka@os.amperecomputing.com> wrote:
-> > > On Mon, 4 Dec 2023, Ian Rogers wrote:
-> > > > A metric is default by having "Default" within its groups. The default
-> > > > metricgroup name needn't be set and this can result in segv in
-> > > > default_metricgroup_cmp and perf_stat__print_shadow_stats_metricgroup
-> > > > that assume it has a value when there is a Default metric group. To
-> > > > avoid the segv initialize the value to "".
->
-> > > > Fixes: 1c0e47956a8e ("perf metrics: Sort the Default metricgroup")
-> > > > Signed-off-by: Ian Rogers <irogers@google.com>
->
-> > > Thanks! I was going to look for the bug but got pulled to other
-> > > tasks. The patch looks good to me and I tested it successfully on
-> > > AmpereOne.
->
-> > >    Reviewed-and-tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
->
-> > Looks like it needs to go through perf-tools for v6.7.
-> > Ian, do you think this one is enough?
->
-> So I had this on my local perf-tools-next, removed now, I also have some
-> other fixes by Ian on the tmp.perf-tools-next, please let me know what
-> you guys decide to have in perf-tools for v6.7 so that I can remove it
-> from there.
+> Fixes: c48ac0efe6d7 ("arm64: dts: ti: Add support for phyBOARD-Electra-AM642")
+> Signed-off-by: Garrett Giordano <ggiordano@phytec.com>
 
-I think we need this one and the Ampere default-metric-group fix.
+Reviewed-by: Wadim Egorov <w.egorov@phytec.de>
 
-https://lore.kernel.org/r/20231201021550.1109196-2-ilkka@os.amperecomputing.com/
 
-Also perf list JSON fix can go to v6.7.
-
-https://lore.kernel.org/r/20231129213428.2227448-2-irogers@google.com/
-
-Thanks,
-Namhyung
+> ---
+>   .../boot/dts/ti/k3-am64-phycore-som.dtsi      | 102 +++++++++++++++++-
+>   1 file changed, 101 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+> index 1c2c8f0daca9..37a33006c1fc 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
+> @@ -29,7 +29,7 @@ memory@80000000 {
+>   		reg = <0x00000000 0x80000000 0x00000000 0x80000000>;
+>   	};
+>   
+> -	reserved-memory {
+> +	reserved_memory: reserved-memory {
+>   		#address-cells = <2>;
+>   		#size-cells = <2>;
+>   		ranges;
+> @@ -39,6 +39,54 @@ secure_ddr: optee@9e800000 {
+>   			alignment = <0x1000>;
+>   			no-map;
+>   		};
+> +
+> +		main_r5fss0_core0_dma_memory_region: r5f-dma-memory@a0000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa0000000 0x00 0x100000>;
+> +			no-map;
+> +		};
+> +
+> +		main_r5fss0_core0_memory_region: r5f-memory@a0100000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa0100000 0x00 0xf00000>;
+> +			no-map;
+> +		};
+> +
+> +		main_r5fss0_core1_dma_memory_region: r5f-dma-memory@a1000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa1000000 0x00 0x100000>;
+> +			no-map;
+> +		};
+> +
+> +		main_r5fss0_core1_memory_region: r5f-memory@a1100000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa1100000 0x00 0xf00000>;
+> +			no-map;
+> +		};
+> +
+> +		main_r5fss1_core0_dma_memory_region: r5f-dma-memory@a2000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa2000000 0x00 0x100000>;
+> +			no-map;
+> +		};
+> +
+> +		main_r5fss1_core0_memory_region: r5f-memory@a2100000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa2100000 0x00 0xf00000>;
+> +			no-map;
+> +		};
+> +
+> +		main_r5fss1_core1_dma_memory_region: r5f-dma-memory@a3000000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa3000000 0x00 0x100000>;
+> +			no-map;
+> +		};
+> +
+> +		main_r5fss1_core1_memory_region: r5f-memory@a3100000 {
+> +			compatible = "shared-dma-pool";
+> +			reg = <0x00 0xa3100000 0x00 0xf00000>;
+> +			no-map;
+> +		};
+>   	};
+>   
+>   	leds {
+> @@ -160,6 +208,34 @@ &cpsw_port2 {
+>   	status = "disabled";
+>   };
+>   
+> +&mailbox0_cluster2 {
+> +	status = "okay";
+> +
+> +	mbox_main_r5fss0_core0: mbox-main-r5fss0-core0 {
+> +		ti,mbox-rx = <0 0 2>;
+> +		ti,mbox-tx = <1 0 2>;
+> +	};
+> +
+> +	mbox_main_r5fss0_core1: mbox-main-r5fss0-core1 {
+> +		ti,mbox-rx = <2 0 2>;
+> +		ti,mbox-tx = <3 0 2>;
+> +	};
+> +};
+> +
+> +&mailbox0_cluster4 {
+> +	status = "okay";
+> +
+> +	mbox_main_r5fss1_core0: mbox-main-r5fss1-core0 {
+> +		ti,mbox-rx = <0 0 2>;
+> +		ti,mbox-tx = <1 0 2>;
+> +	};
+> +
+> +	mbox_main_r5fss1_core1: mbox-main-r5fss1-core1 {
+> +		ti,mbox-rx = <2 0 2>;
+> +		ti,mbox-tx = <3 0 2>;
+> +	};
+> +};
+> +
+>   &main_i2c0 {
+>   	status = "okay";
+>   	pinctrl-names = "default";
+> @@ -180,6 +256,30 @@ i2c_som_rtc: rtc@52 {
+>   	};
+>   };
+>   
+> +&main_r5fss0_core0 {
+> +	mboxes = <&mailbox0_cluster2 &mbox_main_r5fss0_core0>;
+> +	memory-region = <&main_r5fss0_core0_dma_memory_region>,
+> +			<&main_r5fss0_core0_memory_region>;
+> +};
+> +
+> +&main_r5fss0_core1 {
+> +	mboxes = <&mailbox0_cluster2 &mbox_main_r5fss0_core1>;
+> +	memory-region = <&main_r5fss0_core1_dma_memory_region>,
+> +			<&main_r5fss0_core1_memory_region>;
+> +};
+> +
+> +&main_r5fss1_core0 {
+> +	mboxes = <&mailbox0_cluster4 &mbox_main_r5fss1_core0>;
+> +	memory-region = <&main_r5fss1_core0_dma_memory_region>,
+> +			<&main_r5fss1_core0_memory_region>;
+> +};
+> +
+> +&main_r5fss1_core1 {
+> +	mboxes = <&mailbox0_cluster4 &mbox_main_r5fss1_core1>;
+> +	memory-region = <&main_r5fss1_core1_dma_memory_region>,
+> +			<&main_r5fss1_core1_memory_region>;
+> +};
+> +
+>   &ospi0 {
+>   	status = "okay";
+>   	pinctrl-names = "default";
