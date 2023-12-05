@@ -2,280 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEED6806104
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C218806105
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346087AbjLEVqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 16:46:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52310 "EHLO
+        id S1346119AbjLEVsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 16:48:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEVqu (ORCPT
+        with ESMTP id S229591AbjLEVsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 16:46:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD82D3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:46:55 -0800 (PST)
+        Tue, 5 Dec 2023 16:48:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DC3B9;
+        Tue,  5 Dec 2023 13:48:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701812815; x=1733348815;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=l4fS1ep/aUg7IgejVHBEQlC5MrEsLXDDzOnoLk+Xz04=;
-  b=jSTvy2tRcu1+mh3rgOXs+0qn0kYWDFfEouO8BEDq97gAMuJeAP3ZsGt3
-   VlrMya/ZdUieKG+LpixH7DeePz0ocgeKDccg1HAizDijelccsLsCch95Y
-   PhN0P+rOAjE89SuEUC/5zyk0Gxd/pfm1+Qhef+v1bbT3yWDL+59ssP/Ns
-   BS/B7Jy2RdqFay3AbrHuS5ceIiKznrTs3MMVSE2/5O3x5E/XaqI7a3gTu
-   vxVi3zoJoh5e5dZDEcTJKQAntZ2HVEF0inArhpPaxw7fwao4dvhyDWow5
-   AckjGHDBbrYMtHtNCOKtmmQEi7CUDOOSCQyNnxyk2Ilbw1dRWa3VngzRB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="396754054"
+  t=1701812893; x=1733348893;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=jgJBYJeIFATkuDPVTN9p3WxQBg4tDRLqMgeuZifRs+s=;
+  b=l5JR0mXt96t4xM6GrP7/qkCNo9lkOgeHnwbQEgeMv/bLwnoAnS+W7rV3
+   PvaQH+4pLaF4Dy+rJ939jKJwznV8lhs1Og2lJ/LjeLQ+ED2UM/V+qXXn/
+   rBgNvUwtBnLsHRsxCTWGbwQibebdZtqNHBgvOpxbPQ4peO7jOHX0OIvoG
+   9LsX/vt4DoTN1fcmPbr7wwXnBynM4woEsN2bAvIlvBuee2Z5xSyb+8DSO
+   jbPalZqWPc89uh2auUoq/U+Qbi4/YV+XeZBllcJM0RkgXOCh7uKLy1uur
+   FmVjuBk64k+cgPHXoQfUQDxnEk4+mFVN+mNr9j5lEt0nFO1TmsmqfUPPn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="378984941"
 X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="396754054"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:46:55 -0800
+   d="scan'208";a="378984941"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:48:13 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="1018347500"
 X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="19110303"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 05 Dec 2023 13:46:54 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAdFj-0009lx-28;
-        Tue, 05 Dec 2023 21:46:51 +0000
-Date:   Wed, 6 Dec 2023 05:45:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1
- (different address spaces)
-Message-ID: <202312060556.19mMzKjL-lkp@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+   d="scan'208";a="1018347500"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Dec 2023 13:48:13 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 13:48:12 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 13:48:12 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 5 Dec 2023 13:48:12 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 5 Dec 2023 13:48:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FVvZfxBYXgUhhRZcGQAtdsO9OuT2RjgBppJB0t8OA5CY5LfwcaPR2KQ5Wmu2di3rIuCa6YS9AApxMSJw+GYGqL9WTlbOz+OtbaRTVKCYcuHqlpvNbWjedNizb/oxwREMr508u0a4aScBdQ4+cba3FowMcXbusjAY7hf3UgSlmGve0wJ7rUm3nmyDBpVpM1UfNxouhN9sqF8sfBmhJ9W4PmfAwbsEhoUPvBlePqbdA6svNsKp7aX0mj/jNbGUvEYB1yFKeuiL67JlUHb+K2tQBXBB9tnJ/AYGcgaD+g1Wmz6glSaPoc5XmM541hbEl8c6PzZFpsZnTmGf5GbR0IWeZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6P2eWWqk1VZ5rRU74+B4fWghz+tYSrZAGiAuWq7LPRY=;
+ b=Iid9n9ufPYNScPjVKYH6zAhsf1TKqMECJSqwrZYYNxEPnhS80bEHMrR7gp74W6qOQr+2UbHiVXZfeF3EpOB5A8RAlKXGtKuznVgIOYwOGmzaeUdjDepf/bSZLRZmTGrruiBdWwe/6DeIf1hT5hSGyz9G+k0DzPX2e8dL70jB80tRBkGoZ91eKQIM39hwAPf88SefCRjzuikrHr7mtqyI6cxeiNOhHba8rK53kAQ94DZLIngq1O5fIKd8xa4UWoDu7OvfCbpMKXAOg5SoI97jvNhZ5bAfcEVN8cnbMy0nQrXqfI5dYvLk8pBE2Ek67L60/8YtD+t+TeiUdiosl736kA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by SN7PR11MB6655.namprd11.prod.outlook.com (2603:10b6:806:26d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 21:48:08 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::da91:dbe5:857c:fa9c%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
+ 21:48:08 +0000
+Date:   Tue, 5 Dec 2023 13:48:04 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Huaisheng Ye <huaisheng.ye@intel.com>, <dan.j.williams@intel.com>,
+        <ira.weiny@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Huaisheng Ye <huaisheng.ye@intel.com>
+Subject: Re: [PATCH] cxl/core/mbox: get next_persistent_bytes by
+ next_persistent_cap
+Message-ID: <656f9a94d9b48_18297729452@iweiny-mobl.notmuch>
+References: <20231201164005.135912-1-huaisheng.ye@intel.com>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231201164005.135912-1-huaisheng.ye@intel.com>
+X-ClientProxiedBy: SJ0PR03CA0388.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a1::33) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SN7PR11MB6655:EE_
+X-MS-Office365-Filtering-Correlation-Id: dff2c351-215e-4bd3-4f7e-08dbf5dbde54
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qYC1i9MvnYhPkT5/kBEEjStKcZheTsa1R4Yhi4XyZPafRBrIO//y0p6MJo3JtmwIjcDFEW8Eu+c+voHARbBL8Dr8AT6d9wa1orPjjWysHUCcDgdiFJb8s3T8PCC474d6eDkxMKsjKH5bdAnQrzXXt7je88wITzq8ibXZXLvsp8DhJESjyXkMptXrMlW0hzE8NDBCP6ltSk7E5aSPNTGN3Saboj53cjXEg1UnXP0gIDq/yHJl9c4piQYQYXSEhzODVqjMc4dNYKiYz+oEMQyaG2iVhXdkjhMF4zbBBWpPp7fG/l7CQVlFaii+YHBDtpxV8sfatuVgKNGSWBPZ8PcL8/QnRzEtEUGe7gbltulTTv+GQ1T3vObVJErZSCw/nnXM+0jIjgEOvkb8+iWvV7KcgxinHXAQt0eXRGcvHl3IBfbIVvIMMlJ/vvm8TgPa2o4dt+rgJD0fxlrmHaeoaWR4WHz9mF/hWzsWHxAQaN0Uv8kDz1m/ajT1uriKtlUYiM0ajjPbNMeThfz90tWxZpuaINdH6zGO5SFIyNFl0OyAudmXPp71C4IjPxCBpQ3Xs7MX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(346002)(136003)(39860400002)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(44832011)(82960400001)(2906002)(5660300002)(4744005)(41300700001)(86362001)(6506007)(6666004)(6486002)(9686003)(6512007)(478600001)(38100700002)(83380400001)(107886003)(26005)(8676002)(4326008)(8936002)(66556008)(66476007)(66946007)(450100002)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Zt/XmRIDNk6FfHrmwCa1MAhoWSXDmQ5ejIThYl9vcvVaDjPNSPdIf3ADryin?=
+ =?us-ascii?Q?mmNga0QOBKGkJjf3VLQfmnShr4C7QGkSkSWnDJvlspuUanpYkQFIBjsRNIs5?=
+ =?us-ascii?Q?YhN4AGdfAOn97G/zyURuRZ8aRro67fvQfvsk9M7GV0VTt6Ozvt+r102YOaYU?=
+ =?us-ascii?Q?Clzc2elrsDbr3lWoKztTb8ki2TYnw75X8692Kt55da48PPkkXBfGf68uO8BE?=
+ =?us-ascii?Q?qmc/YtiWQFwLLB3ltMi9i31UkDq+vd19SWnu4/WHji+lcztppdp+ACeatIEe?=
+ =?us-ascii?Q?adyTobgYKDCknk4aZ+GPDBvUjxcOpdLltYnqcOaGpwXI4OACeJb1HGB1zrSK?=
+ =?us-ascii?Q?hRZVnZX+qQrW6dSclmV5xNk9K7B6mz3XkPZjLr5dPStw7TVgweyI2r1gLFcv?=
+ =?us-ascii?Q?rCSFsTT9aDus1nxSjpNw5R2l1UvqqZg3OmSMO7ibvkV8IlychRb7PeMlBPcG?=
+ =?us-ascii?Q?KHWGQs2YBryU2auaMrIrRYgUQSoyUm3mMguwnM5TQBHSZlwDpcA3XqWVOw95?=
+ =?us-ascii?Q?ujq6gldnmq8Y2ruSmDBAnZlP7dK+gjoC8HvD6gxlffgV7CljUzCJoioikthB?=
+ =?us-ascii?Q?D2RHjWLzQgrF4zFfsWxVICpPgDrNHoyOGWB1FPaxFbtEhyw5rCqrg6V3kxYD?=
+ =?us-ascii?Q?2djzLGKsq5NbpVTR81s69y+rKLHYMNC9U8N8+4xi3rVZNzngbT7+hEhXOpwD?=
+ =?us-ascii?Q?QP5wZpEUiOz+yPaXCukKFVx32Le3C7JxCj6scdbNGDK8NpcogSb9Wmqud2Tx?=
+ =?us-ascii?Q?ELzyPJSkChAvz4SqomnQFt9l3gh6k24IOkvwALg0X8QDiigGJjk+rydsoDNt?=
+ =?us-ascii?Q?qCi2bs+el1E8J/+hpz4iQAuDxbkhe8OihizNY6nfGQiJWvuJ3iofyOc5IQ+y?=
+ =?us-ascii?Q?3ZGxLnXyXEkAOy41iyFZz0P5F959nBbap82CpbCb/R84bVoR8QlqltteVE6p?=
+ =?us-ascii?Q?Tt4HliuraI4fPzC7LJ+DPMjOA24XDhnQpUKRY/Z96eoIJO7Rx+GAY4v85qMW?=
+ =?us-ascii?Q?VUCR9pYhup5Go6JzF/rg5RHyZ16MzFcjjs+TakNypRTAjFLUh1J3zQRTdQSW?=
+ =?us-ascii?Q?vMosg6r13QpPpQ5huafp1X8gD0h4W70oxq0FLsZvyIICYmljECPdHEiG7iRP?=
+ =?us-ascii?Q?jiG1hYeHN0s/Htg77Ma0JpftsRVtnttxKkTyVCi3GK2hiywkdx34hY/gKs8K?=
+ =?us-ascii?Q?Mos9RngVF8CqAbavjKCIn+Nn6x84iMOWmj2X6oaW2ycI+j5ZL7dOX++sNtXM?=
+ =?us-ascii?Q?dSKOFnWqZLpyZd8ph4re26lCgRQW7+i0tf9QUWWPd4p3ut5P5ho7MCgwd1m4?=
+ =?us-ascii?Q?Ne6vwzogchCNblO5m4wkt6CWkfRDvhN6vHJEdikF4zrBHl7kPAN6onGxb7HM?=
+ =?us-ascii?Q?lJkey99n2NIThl4YnBuPfk3a+ra6une14d4qvQr99N7GASoA898qPJQTxjKY?=
+ =?us-ascii?Q?fxzvc6uDMsmYDvkwV7TUXNOT7csTWpRjddqG0PrsJDFt7KqoyuD9+QZXIkss?=
+ =?us-ascii?Q?DGz5YEzHctiRjBz3RxF3C62DMgkCzFb+pqoEIU43+6Yg7WTxA2Zb4ruMmnXo?=
+ =?us-ascii?Q?WMo4Js8EE5VnIvhijFn+xLJsT9wt9+fN56v5oOg5?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: dff2c351-215e-4bd3-4f7e-08dbf5dbde54
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 21:48:08.1023
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /X+l4qbIf34xxHSSmTD4BpUyWYQvNdf6h2npEpqp8dA2EoMmEPQcMroIsIDDCo7B9JT948aq47lKvx2EPycLqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6655
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: e362359ace6f87c201531872486ff295df306d13 posix-cpu-timers: Cleanup CPU timers before freeing them during exec
-date:   1 year, 4 months ago
-config: x86_64-alldefconfig (https://download.01.org/0day-ci/archive/20231206/202312060556.19mMzKjL-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060556.19mMzKjL-lkp@intel.com/reproduce)
+Huaisheng Ye wrote:
+> According to CXL 2.0 8.2.9.5.2.1 table 176, the next Persistent
+> Bytes should be calculated by next Persistent Capacity.
+> 
+> Signed-off-by: Huaisheng Ye <huaisheng.ye@intel.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312060556.19mMzKjL-lkp@intel.com/
+Do we have a fixes tag for this?  Was there a bug associated with this
+find?
 
-sparse warnings: (new ones prefixed by >>)
-   fs/exec.c:422:31: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected char const [noderef] __user * @@     got void * @@
-   fs/exec.c:422:31: sparse:     expected char const [noderef] __user *
-   fs/exec.c:422:31: sparse:     got void *
-   fs/exec.c:1051:48: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
-   fs/exec.c:1051:48: sparse:     expected struct sighand_struct *oldsighand
-   fs/exec.c:1051:48: sparse:     got struct sighand_struct [noderef] __rcu *sighand
-   fs/exec.c:1158:56: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *parent @@     got struct task_struct [noderef] __rcu *parent @@
-   fs/exec.c:1158:56: sparse:     expected struct task_struct *parent
-   fs/exec.c:1158:56: sparse:     got struct task_struct [noderef] __rcu *parent
-   fs/exec.c:1193:47: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sighand_struct *oldsighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
-   fs/exec.c:1193:47: sparse:     expected struct sighand_struct *oldsighand
-   fs/exec.c:1193:47: sparse:     got struct sighand_struct [noderef] __rcu *sighand
->> fs/exec.c:1307:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   fs/exec.c:1307:26: sparse:     expected struct spinlock [usertype] *lock
-   fs/exec.c:1307:26: sparse:     got struct spinlock [noderef] __rcu *
-   fs/exec.c:1309:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   fs/exec.c:1309:28: sparse:     expected struct spinlock [usertype] *lock
-   fs/exec.c:1309:28: sparse:     got struct spinlock [noderef] __rcu *
-   fs/exec.c:1766:70: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct task_struct *tsk @@     got struct task_struct [noderef] __rcu *parent @@
-   fs/exec.c:1766:70: sparse:     expected struct task_struct *tsk
-   fs/exec.c:1766:70: sparse:     got struct task_struct [noderef] __rcu *parent
+Ira
 
-vim +1307 fs/exec.c
-
-  1243	
-  1244	/*
-  1245	 * Calling this is the point of no return. None of the failures will be
-  1246	 * seen by userspace since either the process is already taking a fatal
-  1247	 * signal (via de_thread() or coredump), or will have SEGV raised
-  1248	 * (after exec_mmap()) by search_binary_handler (see below).
-  1249	 */
-  1250	int begin_new_exec(struct linux_binprm * bprm)
-  1251	{
-  1252		struct task_struct *me = current;
-  1253		int retval;
-  1254	
-  1255		/* Once we are committed compute the creds */
-  1256		retval = bprm_creds_from_file(bprm);
-  1257		if (retval)
-  1258			return retval;
-  1259	
-  1260		/*
-  1261		 * Ensure all future errors are fatal.
-  1262		 */
-  1263		bprm->point_of_no_return = true;
-  1264	
-  1265		/*
-  1266		 * Make this the only thread in the thread group.
-  1267		 */
-  1268		retval = de_thread(me);
-  1269		if (retval)
-  1270			goto out;
-  1271	
-  1272		/*
-  1273		 * Cancel any io_uring activity across execve
-  1274		 */
-  1275		io_uring_task_cancel();
-  1276	
-  1277		/* Ensure the files table is not shared. */
-  1278		retval = unshare_files();
-  1279		if (retval)
-  1280			goto out;
-  1281	
-  1282		/*
-  1283		 * Must be called _before_ exec_mmap() as bprm->mm is
-  1284		 * not visible until then. This also enables the update
-  1285		 * to be lockless.
-  1286		 */
-  1287		retval = set_mm_exe_file(bprm->mm, bprm->file);
-  1288		if (retval)
-  1289			goto out;
-  1290	
-  1291		/* If the binary is not readable then enforce mm->dumpable=0 */
-  1292		would_dump(bprm, bprm->file);
-  1293		if (bprm->have_execfd)
-  1294			would_dump(bprm, bprm->executable);
-  1295	
-  1296		/*
-  1297		 * Release all of the old mmap stuff
-  1298		 */
-  1299		acct_arg_size(bprm, 0);
-  1300		retval = exec_mmap(bprm->mm);
-  1301		if (retval)
-  1302			goto out;
-  1303	
-  1304		bprm->mm = NULL;
-  1305	
-  1306	#ifdef CONFIG_POSIX_TIMERS
-> 1307		spin_lock_irq(&me->sighand->siglock);
-  1308		posix_cpu_timers_exit(me);
-  1309		spin_unlock_irq(&me->sighand->siglock);
-  1310		exit_itimers(me);
-  1311		flush_itimer_signals();
-  1312	#endif
-  1313	
-  1314		/*
-  1315		 * Make the signal table private.
-  1316		 */
-  1317		retval = unshare_sighand(me);
-  1318		if (retval)
-  1319			goto out_unlock;
-  1320	
-  1321		me->flags &= ~(PF_RANDOMIZE | PF_FORKNOEXEC |
-  1322						PF_NOFREEZE | PF_NO_SETAFFINITY);
-  1323		flush_thread();
-  1324		me->personality &= ~bprm->per_clear;
-  1325	
-  1326		clear_syscall_work_syscall_user_dispatch(me);
-  1327	
-  1328		/*
-  1329		 * We have to apply CLOEXEC before we change whether the process is
-  1330		 * dumpable (in setup_new_exec) to avoid a race with a process in userspace
-  1331		 * trying to access the should-be-closed file descriptors of a process
-  1332		 * undergoing exec(2).
-  1333		 */
-  1334		do_close_on_exec(me->files);
-  1335	
-  1336		if (bprm->secureexec) {
-  1337			/* Make sure parent cannot signal privileged process. */
-  1338			me->pdeath_signal = 0;
-  1339	
-  1340			/*
-  1341			 * For secureexec, reset the stack limit to sane default to
-  1342			 * avoid bad behavior from the prior rlimits. This has to
-  1343			 * happen before arch_pick_mmap_layout(), which examines
-  1344			 * RLIMIT_STACK, but after the point of no return to avoid
-  1345			 * needing to clean up the change on failure.
-  1346			 */
-  1347			if (bprm->rlim_stack.rlim_cur > _STK_LIM)
-  1348				bprm->rlim_stack.rlim_cur = _STK_LIM;
-  1349		}
-  1350	
-  1351		me->sas_ss_sp = me->sas_ss_size = 0;
-  1352	
-  1353		/*
-  1354		 * Figure out dumpability. Note that this checking only of current
-  1355		 * is wrong, but userspace depends on it. This should be testing
-  1356		 * bprm->secureexec instead.
-  1357		 */
-  1358		if (bprm->interp_flags & BINPRM_FLAGS_ENFORCE_NONDUMP ||
-  1359		    !(uid_eq(current_euid(), current_uid()) &&
-  1360		      gid_eq(current_egid(), current_gid())))
-  1361			set_dumpable(current->mm, suid_dumpable);
-  1362		else
-  1363			set_dumpable(current->mm, SUID_DUMP_USER);
-  1364	
-  1365		perf_event_exec();
-  1366		__set_task_comm(me, kbasename(bprm->filename), true);
-  1367	
-  1368		/* An exec changes our domain. We are no longer part of the thread
-  1369		   group */
-  1370		WRITE_ONCE(me->self_exec_id, me->self_exec_id + 1);
-  1371		flush_signal_handlers(me, 0);
-  1372	
-  1373		retval = set_cred_ucounts(bprm->cred);
-  1374		if (retval < 0)
-  1375			goto out_unlock;
-  1376	
-  1377		/*
-  1378		 * install the new credentials for this executable
-  1379		 */
-  1380		security_bprm_committing_creds(bprm);
-  1381	
-  1382		commit_creds(bprm->cred);
-  1383		bprm->cred = NULL;
-  1384	
-  1385		/*
-  1386		 * Disable monitoring for regular users
-  1387		 * when executing setuid binaries. Must
-  1388		 * wait until new credentials are committed
-  1389		 * by commit_creds() above
-  1390		 */
-  1391		if (get_dumpable(me->mm) != SUID_DUMP_USER)
-  1392			perf_event_exit_task(me);
-  1393		/*
-  1394		 * cred_guard_mutex must be held at least to this point to prevent
-  1395		 * ptrace_attach() from altering our determination of the task's
-  1396		 * credentials; any time after this it may be unlocked.
-  1397		 */
-  1398		security_bprm_committed_creds(bprm);
-  1399	
-  1400		/* Pass the opened binary to the interpreter. */
-  1401		if (bprm->have_execfd) {
-  1402			retval = get_unused_fd_flags(0);
-  1403			if (retval < 0)
-  1404				goto out_unlock;
-  1405			fd_install(retval, bprm->executable);
-  1406			bprm->executable = NULL;
-  1407			bprm->execfd = retval;
-  1408		}
-  1409		return 0;
-  1410	
-  1411	out_unlock:
-  1412		up_write(&me->signal->exec_update_lock);
-  1413	out:
-  1414		return retval;
-  1415	}
-  1416	EXPORT_SYMBOL(begin_new_exec);
-  1417	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  drivers/cxl/core/mbox.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index 36270dcfb42e..7b8ec73ca37f 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -1069,7 +1069,7 @@ static int cxl_mem_get_partition_info(struct cxl_memdev_state *mds)
+>  	mds->next_volatile_bytes =
+>  		le64_to_cpu(pi.next_volatile_cap) * CXL_CAPACITY_MULTIPLIER;
+>  	mds->next_persistent_bytes =
+> -		le64_to_cpu(pi.next_volatile_cap) * CXL_CAPACITY_MULTIPLIER;
+> +		le64_to_cpu(pi.next_persistent_cap) * CXL_CAPACITY_MULTIPLIER;
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.39.0
+> 
