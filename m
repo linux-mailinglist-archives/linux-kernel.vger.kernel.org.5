@@ -2,65 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E17805535
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:52:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCB9805539
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345323AbjLEMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:52:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
+        id S1345340AbjLEMwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345280AbjLEMw0 (ORCPT
+        with ESMTP id S1345320AbjLEMwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:52:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1ECEA0
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:52:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B31E0C433C8;
-        Tue,  5 Dec 2023 12:52:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701780752;
-        bh=6OBtOvpyrx0wR/KfCMCttoDVEX6P49xuNZ+3YdQODp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dslG6bDOrwrTyl6vp44aPHWUHLlJ/2JZtiQINypEYJ7wyuFWkCCmtiHLH1AgFPoJf
-         5PKDllxff8XfWof763DKBaWf50/QUTpxD0HO+Vc4LiFZTIX5BMlJ8MBAdIxfQSZXnZ
-         YrMUEg+VcD7BOujNZwCHN0Og2q+lddUC7mHiX56hoh/yxuPxTD33C/5JPdVrYjvrL4
-         /2zKIez1jDnH6aWIzkOWPiAj/w6xCgoBMon/+6lcHkvdRHoLZnuAn8BtTXLE4Ji2xf
-         sRegasgnca3c/1e38Awrn028ADeyKbMAKYQkTGmw7oa+Zruvse270rL7BgSH2dHEup
-         vT6aTXveaUrsw==
-Date:   Tue, 5 Dec 2023 18:22:16 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Luca Weiss <luca.weiss@fairphone.com>
-Cc:     Nitin Rawat <quic_nitirawa@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add UFS nodes for
- sc7280 soc
-Message-ID: <20231205125216.GA3208@thinkpad>
-References: <20231204-sc7280-ufs-v5-0-926ceed550da@fairphone.com>
- <20231204-sc7280-ufs-v5-2-926ceed550da@fairphone.com>
- <621388b9-dcee-4af2-9763-e5d623d722b7@quicinc.com>
- <CXFJNBNKTRHH.2CS6TO2MEGJWL@fairphone.com>
- <20231204172829.GA69580@thinkpad>
- <CXG8INYXCEXN.C6TF6FALDP6D@fairphone.com>
+        Tue, 5 Dec 2023 07:52:37 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93E34A1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:52:42 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24428139F;
+        Tue,  5 Dec 2023 04:53:28 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5BAA3F5A1;
+        Tue,  5 Dec 2023 04:52:39 -0800 (PST)
+Message-ID: <b113e197-d802-4972-b2df-a47d334629f6@arm.com>
+Date:   Tue, 5 Dec 2023 12:52:38 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CXG8INYXCEXN.C6TF6FALDP6D@fairphone.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 23/39] mm/rmap: introduce
+ folio_remove_rmap_[pte|ptes|pmd]()
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Xu <peterx@redhat.com>
+References: <20231204142146.91437-1-david@redhat.com>
+ <20231204142146.91437-24-david@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231204142146.91437-24-david@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,183 +51,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 08:51:05AM +0100, Luca Weiss wrote:
-> On Mon Dec 4, 2023 at 6:28 PM CET, Manivannan Sadhasivam wrote:
-> > On Mon, Dec 04, 2023 at 01:21:42PM +0100, Luca Weiss wrote:
-> > > On Mon Dec 4, 2023 at 1:15 PM CET, Nitin Rawat wrote:
-> > > >
-> > > >
-> > > > On 12/4/2023 3:54 PM, Luca Weiss wrote:
-> > > > > From: Nitin Rawat <quic_nitirawa@quicinc.com>
-> > > > > 
-> > > > > Add UFS host controller and PHY nodes for sc7280 soc.
-> > > > > 
-> > > > > Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
-> > > > > Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > > > > Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org> # QCM6490 FP5
-> > > > > [luca: various cleanups and additions as written in the cover letter]
-> > > > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> > > > > ---
-> > > > >   arch/arm64/boot/dts/qcom/sc7280.dtsi | 74 +++++++++++++++++++++++++++++++++++-
-> > > > >   1 file changed, 73 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > > > index 04bf85b0399a..8b08569f2191 100644
-> > > > > --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > > > +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> > > > > @@ -15,6 +15,7 @@
-> > > > >   #include <dt-bindings/dma/qcom-gpi.h>
-> > > > >   #include <dt-bindings/firmware/qcom,scm.h>
-> > > > >   #include <dt-bindings/gpio/gpio.h>
-> > > > > +#include <dt-bindings/interconnect/qcom,icc.h>
-> > > > >   #include <dt-bindings/interconnect/qcom,osm-l3.h>
-> > > > >   #include <dt-bindings/interconnect/qcom,sc7280.h>
-> > > > >   #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > > > @@ -906,7 +907,7 @@ gcc: clock-controller@100000 {
-> > > > >   			clocks = <&rpmhcc RPMH_CXO_CLK>,
-> > > > >   				 <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
-> > > > >   				 <0>, <&pcie1_phy>,
-> > > > > -				 <0>, <0>, <0>,
-> > > > > +				 <&ufs_mem_phy 0>, <&ufs_mem_phy 1>, <&ufs_mem_phy 2>,
-> > > > >   				 <&usb_1_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
-> > > > >   			clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
-> > > > >   				      "pcie_0_pipe_clk", "pcie_1_pipe_clk",
-> > > > > @@ -2238,6 +2239,77 @@ pcie1_phy: phy@1c0e000 {
-> > > > >   			status = "disabled";
-> > > > >   		};
-> > > > >   
-> > > > > +		ufs_mem_hc: ufs@1d84000 {
-> > > > > +			compatible = "qcom,sc7280-ufshc", "qcom,ufshc",
-> > > > > +				     "jedec,ufs-2.0";
-> > > > > +			reg = <0x0 0x01d84000 0x0 0x3000>;
-> > > > > +			interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
-> > > > > +			phys = <&ufs_mem_phy>;
-> > > > > +			phy-names = "ufsphy";
-> > > > > +			lanes-per-direction = <2>;
-> > > > > +			#reset-cells = <1>;
-> > > > > +			resets = <&gcc GCC_UFS_PHY_BCR>;
-> > > > > +			reset-names = "rst";
-> > > > > +
-> > > > > +			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
-> > > > > +			required-opps = <&rpmhpd_opp_nom>;
-> > > > > +
-> > > > > +			iommus = <&apps_smmu 0x80 0x0>;
-> > > > > +			dma-coherent;
-> > > > > +
-> > > > > +			interconnects = <&aggre1_noc MASTER_UFS_MEM QCOM_ICC_TAG_ALWAYS
-> > > > > +					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
-> > > > > +					<&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
-> > > > > +					 &cnoc2 SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ALWAYS>;
-> > > > > +			interconnect-names = "ufs-ddr", "cpu-ufs";
-> > > > > +
-> > > > > +			clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
-> > > > > +				 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
-> > > > > +				 <&gcc GCC_UFS_PHY_AHB_CLK>,
-> > > > > +				 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
-> > > > > +				 <&rpmhcc RPMH_CXO_CLK>,
-> > > > > +				 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
-> > > > > +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
-> > > > > +				 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
-> > > > > +			clock-names = "core_clk",
-> > > > > +				      "bus_aggr_clk",
-> > > > > +				      "iface_clk",
-> > > > > +				      "core_clk_unipro",
-> > > > > +				      "ref_clk",
-> > > > > +				      "tx_lane0_sync_clk",
-> > > > > +				      "rx_lane0_sync_clk",
-> > > > > +				      "rx_lane1_sync_clk";
-> > > > > +			freq-table-hz =
-> > > > > +				<75000000 300000000>,
-> > > > > +				<0 0>,
-> > > > > +				<0 0>,
-> > > > > +				<75000000 300000000>,
-> > > > > +				<0 0>,
-> > > > > +				<0 0>,
-> > > > > +				<0 0>,
-> > > > > +				<0 0>;
-> > > > > +			status = "disabled";
-> > > > > +		};
-> > > > > +
-> > > > > +		ufs_mem_phy: phy@1d87000 {
-> > > > > +			compatible = "qcom,sc7280-qmp-ufs-phy";
-> > > > > +			reg = <0x0 0x01d87000 0x0 0xe00>;
-> > > > > +			clocks = <&rpmhcc RPMH_CXO_CLK>,
-> > > > > +				 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
-> > > > > +				 <&gcc GCC_UFS_1_CLKREF_EN>;
-> > > > > +			clock-names = "ref", "ref_aux", "qref";
-> > > > > +
-> > > > > +			power-domains = <&gcc GCC_UFS_PHY_GDSC>;
-> > > 
-> > > Hi Nitin,
-> > > 
-> > > >
-> > > > GCC_UFS_PHY_GDSC is UFS controller GDSC. For sc7280 Phy we don't need this.
-> > > 
-> > > In the current dt-bindings the power-domains property is required.
-> > > 
-> > > Is there another power-domain for the PHY to use, or do we need to
-> > > adjust the bindings to not require power-domains property for ufs phy on
-> > > sc7280?
-> > > 
-> >
-> > PHYs are backed by MX power domain. So you should use that.
+On 04/12/2023 14:21, David Hildenbrand wrote:
+> Let's mimic what we did with folio_add_file_rmap_*() and
+> folio_add_anon_rmap_*() so we can similarly replace page_remove_rmap()
+> next.
 > 
-> Sounds reasonable (though I understand little how the SoC is wired up
-> internally).
+> Make the compiler always special-case on the granularity by using
+> __always_inline.
 > 
-
-I digged a bit more and found that the new SoCs (SM8550, etc,...) has
-separate GDSC for PHY and UFS HC. So for those SoCs, we should use the
-respective GDSC as the power domain.
-
-But for old SoCs like this one, we should use MX as the power domain.
-
-> >
-> > > Also, with "PHY" in the name, it's interesting that this is not for the
-> > > phy ;)
-> > > 
-> >
-> > Yes, confusing indeed. But the controllers (PCIe, UFS, USB etc...) are backed by
-> > GDSCs and all the analog components (PHYs) belong to MX domain since it is kind
-> > of always ON.
-> >
-> > I'll submit a series to fix this for the rest of the SoCs.
+> We're adding folio_remove_rmap_ptes() handling right away, as we want to
+> use that soon for batching rmap operations when unmapping PTE-mapped
+> large folios.
 > 
-> Great!
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  include/linux/rmap.h |  6 ++++
+>  mm/rmap.c            | 76 ++++++++++++++++++++++++++++++++++++--------
+>  2 files changed, 68 insertions(+), 14 deletions(-)
 > 
-> So I'll send v6 with power-domains = <&rpmhpd SC7280_MX>; for the phy.
-> 
+> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+> index 017b216915f19..dd4ffb1d8ae04 100644
+> --- a/include/linux/rmap.h
+> +++ b/include/linux/rmap.h
+> @@ -241,6 +241,12 @@ void folio_add_file_rmap_pmd(struct folio *, struct page *,
+>  		struct vm_area_struct *);
+>  void page_remove_rmap(struct page *, struct vm_area_struct *,
+>  		bool compound);
+> +void folio_remove_rmap_ptes(struct folio *, struct page *, unsigned int nr,
+> +		struct vm_area_struct *);
+> +#define folio_remove_rmap_pte(folio, page, vma) \
+> +	folio_remove_rmap_ptes(folio, page, 1, vma)
+> +void folio_remove_rmap_pmd(struct folio *, struct page *,
+> +		struct vm_area_struct *);
+>  
+>  void hugetlb_add_anon_rmap(struct folio *, struct vm_area_struct *,
+>  		unsigned long address, rmap_t flags);
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 3587225055c5e..50b6909157ac1 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1463,25 +1463,36 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+>  		bool compound)
+>  {
+>  	struct folio *folio = page_folio(page);
+> +
+> +	if (likely(!compound))
+> +		folio_remove_rmap_pte(folio, page, vma);
+> +	else
+> +		folio_remove_rmap_pmd(folio, page, vma);
+> +}
+> +
+> +static __always_inline void __folio_remove_rmap(struct folio *folio,
+> +		struct page *page, unsigned int nr_pages,
+> +		struct vm_area_struct *vma, enum rmap_mode mode)
+> +{
+>  	atomic_t *mapped = &folio->_nr_pages_mapped;
+> -	int nr = 0, nr_pmdmapped = 0;
+> -	bool last;
+> +	int last, nr = 0, nr_pmdmapped = 0;
 
-Sounds good.
+nit: you're being inconsistent across the functions with signed vs unsigned for
+page counts (e.g. nr, nr_pmdmapped) - see __folio_add_rmap(),
+__folio_add_file_rmap(), __folio_add_anon_rmap().
 
-- Mani
+I suggest pick one and stick to it. Personally I'd go with signed int (since
+that's what all the counters in struct folio that we are manipulating are,
+underneath the atomic_t) then check that nr_pages > 0 in
+__folio_rmap_sanity_checks().
 
-> Regards
-> Luca
-> 
-> >
-> > - Mani
-> >
-> > > Regards
-> > > Luca
-> > > 
-> > > >
-> > > > > +
-> > > > > +			resets = <&ufs_mem_hc 0>;
-> > > > > +			reset-names = "ufsphy";
-> > > > > +
-> > > > > +			#clock-cells = <1>;
-> > > > > +			#phy-cells = <0>;
-> > > > > +
-> > > > > +			status = "disabled";
-> > > > > +		};
-> > > > > +
-> > > > >   		ipa: ipa@1e40000 {
-> > > > >   			compatible = "qcom,sc7280-ipa";
-> > > > >   
-> > > > > 
-> > > 
-> 
+>  	enum node_stat_item idx;
+>  
+> -	VM_WARN_ON_FOLIO(folio_test_hugetlb(folio), folio);
+> -	VM_BUG_ON_PAGE(compound && !PageHead(page), page);
+> +	__folio_rmap_sanity_checks(folio, page, nr_pages, mode);
+>  
+>  	/* Is page being unmapped by PTE? Is this its last map to be removed? */
+> -	if (likely(!compound)) {
+> -		last = atomic_add_negative(-1, &page->_mapcount);
+> -		nr = last;
+> -		if (last && folio_test_large(folio)) {
+> -			nr = atomic_dec_return_relaxed(mapped);
+> -			nr = (nr < COMPOUND_MAPPED);
+> -		}
+> -	} else if (folio_test_pmd_mappable(folio)) {
+> -		/* That test is redundant: it's for safety or to optimize out */
+> +	if (likely(mode == RMAP_MODE_PTE)) {
+> +		do {
+> +			last = atomic_add_negative(-1, &page->_mapcount);
+> +			if (last && folio_test_large(folio)) {
+> +				last = atomic_dec_return_relaxed(mapped);
+> +				last = (last < COMPOUND_MAPPED);
+> +			}
+>  
+> +			if (last)
+> +				nr++;
+> +		} while (page++, --nr_pages > 0);
+> +	} else if (mode == RMAP_MODE_PMD) {
+>  		last = atomic_add_negative(-1, &folio->_entire_mapcount);
+>  		if (last) {
+>  			nr = atomic_sub_return_relaxed(COMPOUND_MAPPED, mapped);
+> @@ -1517,7 +1528,7 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+>  		 * is still mapped.
+>  		 */
+>  		if (folio_test_pmd_mappable(folio) && folio_test_anon(folio))
 
--- 
-மணிவண்ணன் சதாசிவம்
+folio_test_pmd_mappable() -> folio_test_large()
+
+Since you're converting this to support batch PTE removal, it might as well also
+support smaller-than-pmd too?
+
+I currently have a patch to do this same change in the multi-size THP series.
+
+
+> -			if (!compound || nr < nr_pmdmapped)
+> +			if (mode == RMAP_MODE_PTE || nr < nr_pmdmapped)
+>  				deferred_split_folio(folio);
+>  	}
+>  
+> @@ -1532,6 +1543,43 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
+>  	munlock_vma_folio(folio, vma);
+>  }
+>  
+> +/**
+> + * folio_remove_rmap_ptes - remove PTE mappings from a page range of a folio
+> + * @folio:	The folio to remove the mappings from
+> + * @page:	The first page to remove
+> + * @nr_pages:	The number of pages that will be removed from the mapping
+> + * @vma:	The vm area from which the mappings are removed
+> + *
+> + * The page range of the folio is defined by [page, page + nr_pages)
+> + *
+> + * The caller needs to hold the page table lock.
+> + */
+> +void folio_remove_rmap_ptes(struct folio *folio, struct page *page,
+> +		unsigned int nr_pages, struct vm_area_struct *vma)
+> +{
+> +	__folio_remove_rmap(folio, page, nr_pages, vma, RMAP_MODE_PTE);
+> +}
+> +
+> +/**
+> + * folio_remove_rmap_pmd - remove a PMD mapping from a page range of a folio
+> + * @folio:	The folio to remove the mapping from
+> + * @page:	The first page to remove
+> + * @vma:	The vm area from which the mapping is removed
+> + *
+> + * The page range of the folio is defined by [page, page + HPAGE_PMD_NR)
+> + *
+> + * The caller needs to hold the page table lock.
+> + */
+> +void folio_remove_rmap_pmd(struct folio *folio, struct page *page,
+> +		struct vm_area_struct *vma)
+> +{
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +	__folio_remove_rmap(folio, page, HPAGE_PMD_NR, vma, RMAP_MODE_PMD);
+> +#else
+> +	WARN_ON_ONCE(true);
+> +#endif
+> +}
+> +
+>  /*
+>   * @arg: enum ttu_flags will be passed to this argument
+>   */
+
