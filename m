@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 653F68053E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBB5805335
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235134AbjLEMMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:12:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36510 "EHLO
+        id S1345211AbjLELlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:41:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346969AbjLELkr (ORCPT
+        with ESMTP id S1345204AbjLELlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:40:47 -0500
+        Tue, 5 Dec 2023 06:41:17 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211779A
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:40:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96643C433C8;
-        Tue,  5 Dec 2023 11:40:49 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 11:40:47 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     ankita@nvidia.com,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>, jgg@nvidia.com,
-        oliver.upton@linux.dev, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, will@kernel.org, ardb@kernel.org,
-        akpm@linux-foundation.org, gshan@redhat.com, aniketa@nvidia.com,
-        cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
-        vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
-        jhubbard@nvidia.com, danw@nvidia.com, mochs@nvidia.com,
-        kvmarm@lists.linux.dev, kvm@vger.kernel.org, lpieralisi@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <ZW8MP2tDt4_9ROBz@arm.com>
-References: <20231205033015.10044-1-ankita@nvidia.com>
- <86fs0hatt3.wl-maz@kernel.org>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5787A9A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:41:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85D8C433C8;
+        Tue,  5 Dec 2023 11:41:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701776483;
+        bh=39hIynYLxtwl/O23npHEkHvKhoLwLy7fzyGPOOqty9g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FMJov2tcJS/7wL/pPXe3meTv6r3DI2KkeFBdH68DYYQ6tOUabE33M0QM7VH7HVNV7
+         p94elf+S/c5ZZTQ6sC4/qdAYFoJGrTmztWs/T2rak7Zi5FH2riyTetSCXQ8QTMIx12
+         BOWXOXEHXX6oJXKOKUMtTOt5d9hXGsTAL7rBfXBF/0qNEoRGiLtIM1qNQE0zBikHpX
+         zOSQY2ZM7dH24M+d+GMc5hb6VtdvRM9UU5yAgUfvyYvNcpzcwO7pHEkzQye9fAXDyd
+         0C0QHbw+lBZVRSsehi1ZgvBuBjZDx12acKI5T8BS+Fq5ugVe3WcPnjd2HRJHMcKtNi
+         MuP18QxZfnWCA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1rAToU-0008Ud-2D;
+        Tue, 05 Dec 2023 12:42:06 +0100
+Date:   Tue, 5 Dec 2023 12:42:06 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alex Elder <elder@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: qrb5165-rb5: add a pin function
+ for BT enable GPIO
+Message-ID: <ZW8Mjp9whA9rxam9@hovoldconsulting.com>
+References: <20231205112311.16391-1-brgl@bgdev.pl>
+ <20231205112311.16391-2-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <86fs0hatt3.wl-maz@kernel.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231205112311.16391-2-brgl@bgdev.pl>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Lorenzo, he really needs to be on this thread.
-
-On Tue, Dec 05, 2023 at 09:21:28AM +0000, Marc Zyngier wrote:
-> On Tue, 05 Dec 2023 03:30:15 +0000,
-> <ankita@nvidia.com> wrote:
-> > From: Ankit Agrawal <ankita@nvidia.com>
-> > 
-> > Currently, KVM for ARM64 maps at stage 2 memory that is considered device
-> > (i.e. it is not RAM) with DEVICE_nGnRE memory attributes; this setting
-> > overrides (as per the ARM architecture [1]) any device MMIO mapping
-> > present at stage 1, resulting in a set-up whereby a guest operating
-> > system cannot determine device MMIO mapping memory attributes on its
-> > own but it is always overridden by the KVM stage 2 default.
-[...]
-> Despite the considerable increase in the commit message length, a
-> number of questions are left unanswered:
+On Tue, Dec 05, 2023 at 12:23:10PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> - Shameer reported a regression on non-FWB systems, breaking device
->   assignment:
+> Set up the pin function for the Bluetooth enable GPIO.
 > 
->   https://lore.kernel.org/all/af13ed63dc9a4f26a6c958ebfa77d78a@huawei.com/
-
-This referred to the first patch in the old series which was trying to
-make the Stage 2 cacheable based on the vma attributes. That patch has
-been dropped for now. It would be good if Shameer confirms this was the
-problem.
-
-> - Will had unanswered questions in another part of the thread:
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
->   https://lore.kernel.org/all/20231013092954.GB13524@willie-the-truck/
-> 
->   Can someone please help concluding it?
+> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> index ce6ae0771d34..ead0c45ba60c 100644
+> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> @@ -1264,6 +1264,17 @@ &tlmm {
+>  		"HST_WLAN_UART_TX",
+>  		"HST_WLAN_UART_RX";
+>  
+> +	bt_en_state: bt-default-state {
+> +		bt-en {
+> +			pins = "gpio21";
+> +			function = "gpio";
+> +
+> +			drive-strength = <16>;
+> +			output-low;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+>  	lt9611_irq_pin: lt9611-irq-state {
+>  		pins = "gpio63";
+>  		function = "gpio";
 
-Is this about reclaiming the device? I think we concluded that we can't
-generalise this beyond PCIe, though not sure there was any formal
-statement to that thread. The other point Will had was around stating
-in the commit message why we only relax this to Normal NC. I haven't
-checked the commit message yet, it needs careful reading ;).
+This makes no sense as a separate patch and should be squashed with the
+final patch enabling bluetooth. Same for the first patch.
 
-> > diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> > index d14504821b79..1cb302457d3f 100644
-> > --- a/arch/arm64/kvm/mmu.c
-> > +++ b/arch/arm64/kvm/mmu.c
-> > @@ -1071,7 +1071,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
-> >  	struct kvm_mmu_memory_cache cache = { .gfp_zero = __GFP_ZERO };
-> >  	struct kvm_s2_mmu *mmu = &kvm->arch.mmu;
-> >  	struct kvm_pgtable *pgt = mmu->pgt;
-> > -	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_DEVICE |
-> > +	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_NORMAL_NC |
-> >  				     KVM_PGTABLE_PROT_R |
-> >  				     (writable ? KVM_PGTABLE_PROT_W : 0);
-> 
-> Doesn't this affect the GICv2 VCPU interface, which is effectively a
-> shared peripheral, now allowing a guest to affect another guest's
-> interrupt distribution? If that is the case, this needs to be fixed.
-> 
-> In general, I don't think this should be a blanket statement, but be
-> limited to devices that we presume can deal with this (i.e. PCIe, and
-> not much else).
-
-Based on other on-list and off-line discussions, I came to the same
-conclusion that we can't relax this beyond PCIe. How we do this, it's up
-for debate. Some ideas:
-
-- something in the vfio-pci driver like a new VM_* flag that KVM can
-  consume (hard sell for an arch-specific thing)
-
-- changing the vfio-pci driver to allow WC and NC mappings (x86
-  terminology) with additional knowledge about what it can safely map
-  as NC. KVM would mimic the vma attributes (it doesn't eliminate the
-  alias though, the guest can always go for Device while the VMM for
-  Normal)
-
-- some per-SoC pfn ranges that are permitted as Normal NC. Can the arch
-  code figure out where these PCIe BARs are or is it only the vfio-pci
-  driver? I guess we can sort something out around the PCIe but I'm not
-  familiar with this subsystem. The alternative is some "safe" ranges in
-  firmware tables, assuming the firmware configures the PCIe BARs
-  location
-
--- 
-Catalin
+Johan
