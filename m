@@ -2,90 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE99805DC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BAE805DAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346149AbjLES0V convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 13:26:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        id S231856AbjLES0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:26:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbjLES0T (ORCPT
+        with ESMTP id S1346164AbjLES0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:26:19 -0500
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B32AC;
-        Tue,  5 Dec 2023 10:26:25 -0800 (PST)
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2865742e256so3025338a91.0;
-        Tue, 05 Dec 2023 10:26:25 -0800 (PST)
+        Tue, 5 Dec 2023 13:26:22 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195B1AC
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:26:28 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1d04d286bc0so27672605ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:26:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701800787; x=1702405587; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Gj+Y/6VXeJ+r0pgecRkRsTt5zcHlqOxutguYUyMKTVU=;
+        b=D20vB1XU6llsWmRtYeRb+7tHyyu03VkhL4zTEBRbYPx3qnUQ6kXjgv1j5jPc4T0PK8
+         6HVDbi73p0GTLNlU79dknLYL8pZ3aeo31e2k7XyQowrU4MfkkHrJq0zJ4DPpkF6Gn/5j
+         GniI1EAPn4ZeArqCsLQUBpCelH8gXtnw0IGEk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701800785; x=1702405585;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701800787; x=1702405587;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BuC/v2sY9q+7BmsyoScER9HwtOgHqYFm9Mniu3xB+pE=;
-        b=fI9RD+FN0ICx4LcM11uwEZK1rGLh5sWcJ4vomNNsxa9ghppC2lbzmrPnmeC/kV+AJW
-         Y+uZ8sIsWJxt4CRpDwZ5N1AFvfg4AIZum1cyxYzpMMAroAhZYlCp3xHLqxEy8qEV40Zt
-         nQjIHfovTUPwyzrVv753QWstyEJCmdN5fX+f0KXC4AoLE8b+w3XxjvhajGVzZSNIJ2kE
-         6d9WjghYkXTtjjaCGVTgIFj4m680uNtUMrBWP556CXfXyM6TS5Oj7bVt8a1qNtM+JPS8
-         VdnxIxT89Gq9jpD8yeqMvNtecL0l5zwcXvUiwgSzVo0pwZ6Wn9AoGNoQkOjODbxR9SG4
-         cWtQ==
-X-Gm-Message-State: AOJu0YwqCVry7a1F52YE6KiZEVp1ye807te7osJD7/zsgO55GppzfDL+
-        rqhyhOzKPsepkOi4EAno4bSm27KTQqO7akRpUyI=
-X-Google-Smtp-Source: AGHT+IGrutZXRZv9L+agGBJqSnJOcf+zoLdBUHMRmb18uXLyloUI+FGetLkmF9lx07o0sotKkRTw69XbKGEnKo0y6Vo=
-X-Received: by 2002:a17:90b:17d2:b0:286:8672:51e4 with SMTP id
- me18-20020a17090b17d200b00286867251e4mr1264633pjb.16.1701800785123; Tue, 05
- Dec 2023 10:26:25 -0800 (PST)
+        bh=Gj+Y/6VXeJ+r0pgecRkRsTt5zcHlqOxutguYUyMKTVU=;
+        b=iRAXEinB+d+xSnjoeynMFXe9UONjjkyL/fLi/wYxUlEk+W/75Et2p3x5v+WhDCZaNl
+         gOQZlLtVrILgtzYRCRBsXqzv8ghnASWlOUNArV+ibbzBEYUsxfyedgMMyxHVdmX8j0Hw
+         XrqNPC7lhxl+YhDKFSGL/Vm8gUrLN67ZkdSHfx/ik1TBmSdt2cHc8yLLqRXD9CaeOh0t
+         SIsPxs5dyuckMFyZ/kubF5WXCT/Oh1vzPe++7ESqE3Ue6YcFc3o8S0aY5V8szmDyaAiW
+         qVns1kMJAuaws+buyl8rN6yYlhJ9KeIJr8ysCa8x1k92s6AgDFMg1tsmmMB4OnVKeDCz
+         Dm4g==
+X-Gm-Message-State: AOJu0Yw+eHV1u2LZzpV8PmWRIlYFfbUPRnyEjw8ubw09pR7RrcAnfAel
+        Wn7g/NCbcbBE4gnjca+V1UBh6Q==
+X-Google-Smtp-Source: AGHT+IH2Uowmzrvs0/hFAJeLe2bBRPGCrI+wFvyd3EPO+VDeMZnOhPy9LvBZ3OyihXLzXpiRCc2yuQ==
+X-Received: by 2002:a17:903:22d1:b0:1d0:83bc:5649 with SMTP id y17-20020a17090322d100b001d083bc5649mr3507541plg.33.1701800787406;
+        Tue, 05 Dec 2023 10:26:27 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q1-20020a17090311c100b001cfc9c926b7sm6932210plh.75.2023.12.05.10.26.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 10:26:23 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/4] pstore: inode: Convert kfree() usage to __free(kfree)
+Date:   Tue,  5 Dec 2023 10:26:14 -0800
+Message-Id: <20231205182622.1329923-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231205175449.work.110-kees@kernel.org>
+References: <20231205175449.work.110-kees@kernel.org>
 MIME-Version: 1.0
-References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-2-khuey@kylehuey.com>
- <CAEf4BzYtSXtgdO9C2w9OOKni68H-7UOExFJRBEij3HG2Qwn1Rg@mail.gmail.com>
- <ZW8Gi2QI5ceAJfab@krava> <CAM9d7chztaCfDsxfyJ2q_UmD=y20BFikCUQhs=LR8wsNV6pMjg@mail.gmail.com>
- <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
-In-Reply-To: <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 5 Dec 2023 10:26:14 -0800
-Message-ID: <CAM9d7cgDOUbSS1NLO8C13+hi0KBZwQxh7jvz9p=i0gNf0N0zrg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf/bpf: Allow a bpf program to suppress I/O signals.
-To:     Marco Elver <elver@google.com>
-Cc:     Jiri Olsa <olsajiri@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>,
-        linux-kernel@vger.kernel.org,
-        "Robert O'Callahan" <robert@ocallahan.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1508; i=keescook@chromium.org;
+ h=from:subject; bh=FqMfSJ9tnf+E4NKsMDABD4Hv9XWcLEDAeeuD1HVeW1g=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlb2tIUcAUjxMoJ6U4X0vLxi+fYt1AWVqAhC5g3
+ 8R9qQmTZrCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZW9rSAAKCRCJcvTf3G3A
+ JjghD/wIsxOIyOzMtLfhNlUVRahUTySDQm9IoANjLGPQpTM0t1M8cwKeOjqfoL6alstZ4SNMEtX
+ aJRZ28bbOztu6npnVmPlUtnUB4WVY2Bz7k4tpXjWx33VDzP5Z0HTcofBhJHGnv6441jMZIoBxdq
+ kJOTFjwX9aMXL04GktAdix5olQ9MlRXUPPfBVITMabidz3zl4uWgxPYLOJvTdVdHHX+6iFdvyAQ
+ u2csi5n6tzxerwZgHQDP7ETWPo61URuwGJcVZBxrCZ9VC+NrvOwx7aawthLBtWuF43TkpD2tguH
+ ZgLJp7jma2D7WzIsJLrYSWrTlABHt1mACNT/u4FPIYsY/VA/Xk9j36ks1rKr+SqGRA4cWfIEYbw
+ Ak40uD77bKYKRhdToOqk2W9Zt9cAR/QGCniYHsGveA958RkKZbkvm8zRmlrdnnhDeq2Pryyrcwe
+ ExJAhOk1Y3nGeKC82pXbWX7lBazYlywHADTscKEz5hedwrJp0URz8E9ZWnfvXzh+lOGzE4zGm3a
+ 4usnTUGodSc8P2ax00DqkMuGzVUfZScxELHGfdki5KoeeigEQNKF0DAE54BJTMEIYnq8Ul1EoJH
+ Ajo4h7C54I3kOS5qQ6clsgyIDejsoQQWoMRRW1JkkuTcDVRO2xHlIBrPN/bJIronulIZcSob3xZ ZlAj3lFpzoj3VkA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 10:17 AM Marco Elver <elver@google.com> wrote:
->
-> On Tue, 5 Dec 2023 at 19:07, Namhyung Kim <namhyung@kernel.org> wrote:
-> > If we want to handle returning 0 from bpf as if the event didn't
-> > happen, I think SIGTRAP and event_limit logic should be done
-> > after the overflow handler depending on pending_kill or something.
->
-> I'm not sure which kernel version this is for, but in recent kernels,
-> the SIGTRAP logic was changed to no longer "abuse" event_limit, and
-> uses its own "pending_sigtrap" + "pending_work" (on reschedule
-> transitions).
+Mostly as an example to myself, replace a simple allocation pattern with
+the automatic kfree cleanup features now exposed by cleanup.h.
 
-Oh, I didn't mean SIGTRAP and event_limit together.
-Maybe they have an issue separately.
+Cc: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/pstore/inode.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Thanks,
-Namhyung
+diff --git a/fs/pstore/inode.c b/fs/pstore/inode.c
+index d41c20d1b5e8..20f3452c8196 100644
+--- a/fs/pstore/inode.c
++++ b/fs/pstore/inode.c
+@@ -23,6 +23,7 @@
+ #include <linux/pstore.h>
+ #include <linux/slab.h>
+ #include <linux/uaccess.h>
++#include <linux/cleanup.h>
+ 
+ #include "internal.h"
+ 
+@@ -64,7 +65,7 @@ static void free_pstore_private(struct pstore_private *private)
+ static void *pstore_ftrace_seq_start(struct seq_file *s, loff_t *pos)
+ {
+ 	struct pstore_private *ps = s->private;
+-	struct pstore_ftrace_seq_data *data;
++	struct pstore_ftrace_seq_data *data __free(kfree) = NULL;
+ 
+ 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+ 	if (!data)
+@@ -72,13 +73,10 @@ static void *pstore_ftrace_seq_start(struct seq_file *s, loff_t *pos)
+ 
+ 	data->off = ps->total_size % REC_SIZE;
+ 	data->off += *pos * REC_SIZE;
+-	if (data->off + REC_SIZE > ps->total_size) {
+-		kfree(data);
++	if (data->off + REC_SIZE > ps->total_size)
+ 		return NULL;
+-	}
+-
+-	return data;
+ 
++	return_ptr(data);
+ }
+ 
+ static void pstore_ftrace_seq_stop(struct seq_file *s, void *v)
+-- 
+2.34.1
+
