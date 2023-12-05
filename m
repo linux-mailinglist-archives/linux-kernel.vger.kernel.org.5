@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7EB805BA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B049805C87
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442570AbjLEPvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:51:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54816 "EHLO
+        id S1442590AbjLEPv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:51:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442575AbjLEPvJ (ORCPT
+        with ESMTP id S1442609AbjLEPvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:51:09 -0500
+        Tue, 5 Dec 2023 10:51:22 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432BE196
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:51:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0A3DC433C8;
-        Tue,  5 Dec 2023 15:51:14 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8162B1AB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:51:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DF6DC433CA;
+        Tue,  5 Dec 2023 15:51:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701791474;
-        bh=Qg5ESRd5FBfKW+n1IMVwA9nXFoeDUKVN3mRCnzAwGNg=;
+        s=k20201202; t=1701791488;
+        bh=cRtFwqVwGM/L5ElETR7/boeZZkQBM/dk1tSxRXa+SjE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n6KocxkDs7zs6xJqEs1RwbNasZrkNYn/OOPqK2h6Zar0nQQ/ZiGIKcsRNdxFHOi/s
-         mMmf4IV0SNrfOEQ54GRoNeA5i1oS1sMqNRp3TcKHV6h2tD5A3Go4hqvdxmuKRqokXw
-         6GOtJWx/JqcrTepMgWkn4TmYYGs0Xs/VqACqr6j3zri8JcycBlrsu6XPd/1ZpZ1UVA
-         l8BKBp1zNmuNfRIqa/QUDNg0oFjLI96mWjuOYINVQ+PIdGi0ZgXl/k+4ufq5mc3V1s
-         hPli+d7MB8sVLC8RKvdyu/ah+9ps2K3yDZkX8Kyq5Q3V5rYa+emDnK10N/Z0V2XDv6
-         bFh5MNrkk2I2A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1882540094; Tue,  5 Dec 2023 12:51:12 -0300 (-03)
-Date:   Tue, 5 Dec 2023 12:51:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] perf metrics: Avoid segv if default metricgroup
- isn't set
-Message-ID: <ZW9G8Clxwl6bd0H6@kernel.org>
-References: <20231204182330.654255-1-irogers@google.com>
- <bea4ad79-297e-9737-8af1-2286192d26f4@os.amperecomputing.com>
- <CAM9d7ci=Tk845H3x3KMDu-hTdP-u0O6a8D3iAa8EnFLLjOO6OQ@mail.gmail.com>
+        b=RGyeU7QvMB9+MJb48ISbSvf4giVhpNA1dzt2x0ApFyux9D1hNyJs59V5235TZ2GG4
+         YmmscdTAvjHB2f/Dzabq6WldhzjojX/lu0bKk4lcksWKzdLuGoTrT7fvHU9LKRoqKD
+         S6fN3oMu6fGnXMPU4L/vZ6F9j9IuH35Qz5dhWGCkgVvbhBxiXlzpMFRGcGhkI0e2WY
+         ZE++rhJDKQDduO5iCBtpGGCA7cUvKwqeWnAIZbSrOqwWlHJRndZ6IL6Q7Lsq2ZPYiE
+         JTczBH9TsKFE66ZbfxdXRr6dqYK61eoQAS9hDwYl5X2RGRoSpJ3NNZMHrCdoArncrG
+         56cJ50OFSADtw==
+Date:   Tue, 5 Dec 2023 15:51:19 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "will@kernel.org" <will@kernel.org>
+Subject: Re: [PATCH RFT v4 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <ed665d6f-66b0-4eeb-8cf8-db852e017d6a@sirena.org.uk>
+References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
+ <20231128-clone3-shadow-stack-v4-2-8b28ffe4f676@kernel.org>
+ <61f80d032c6a630dd641c9b598b37c2eb40d51e8.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ofW00QD6kVu0wbQR"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7ci=Tk845H3x3KMDu-hTdP-u0O6a8D3iAa8EnFLLjOO6OQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <61f80d032c6a630dd641c9b598b37c2eb40d51e8.camel@intel.com>
+X-Cookie: I've Been Moved!
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -71,30 +79,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Dec 04, 2023 at 07:33:18PM -0800, Namhyung Kim escreveu:
-> On Mon, Dec 4, 2023 at 2:45 PM Ilkka Koskinen <ilkka@os.amperecomputing.com> wrote:
-> > On Mon, 4 Dec 2023, Ian Rogers wrote:
-> > > A metric is default by having "Default" within its groups. The default
-> > > metricgroup name needn't be set and this can result in segv in
-> > > default_metricgroup_cmp and perf_stat__print_shadow_stats_metricgroup
-> > > that assume it has a value when there is a Default metric group. To
-> > > avoid the segv initialize the value to "".
 
-> > > Fixes: 1c0e47956a8e ("perf metrics: Sort the Default metricgroup")
-> > > Signed-off-by: Ian Rogers <irogers@google.com>
+--ofW00QD6kVu0wbQR
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > Thanks! I was going to look for the bug but got pulled to other
-> > tasks. The patch looks good to me and I tested it successfully on
-> > AmpereOne.
+On Tue, Dec 05, 2023 at 12:26:57AM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2023-11-28 at 18:22 +0000, Mark Brown wrote:
 
-> >    Reviewed-and-tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
- 
-> Looks like it needs to go through perf-tools for v6.7.
-> Ian, do you think this one is enough?
+> > -=A0=A0=A0=A0=A0=A0=A0size =3D adjust_shstk_size(stack_size);
+> > +=A0=A0=A0=A0=A0=A0=A0size =3D adjust_shstk_size(size);
+> > =A0=A0=A0=A0=A0=A0=A0=A0addr =3D alloc_shstk(0, size, 0, false);
 
-So I had this on my local perf-tools-next, removed now, I also have some
-other fixes by Ian on the tmp.perf-tools-next, please let me know what
-you guys decide to have in perf-tools for v6.7 so that I can remove it
-from there.
+> Hmm. I didn't test this, but in the copy_process(), copy_mm() happens
+> before this point. So the shadow stack would get mapped in current's MM
+> (i.e. the parent). So in the !CLONE_VM case with shadow_stack_size!=3D0
+> the SSP in the child will be updated to an area that is not mapped in
+> the child. I think we need to pass tsk->mm into alloc_shstk(). But such
+> an exotic clone usage does give me pause, regarding whether all of this
+> is premature.
 
-- Arnaldo
+Hrm, right.  And we then can't use do_mmap() either.  I'd be somewhat
+tempted to disallow that specific case for now rather than deal with it
+though that's not really in the spirit of just always following what the
+user asked for.
+
+--ofW00QD6kVu0wbQR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVvRvYACgkQJNaLcl1U
+h9DXGQf6AvheyqUPcMw3T4JTt1lwn5bDs4oC7fZ63uO+BX16gGSEx73amHIyNaGv
+p+FtTHrVU1xQTu+Bh5L5QjW68t6061HLlHW0E+RoX9HlyW4v6GsBwzHxAYfp1eNw
+zce0c49OZQlgDA42/CH/PbejjX8H1a3jlwW+zIxwHNDqWs8pe+pEaZ/jEhLLUQ1W
+vJGRdn/PtZRKo7APLWn3uTOUGUbI9hXU/XQvJwKEo3DvNbYkezmTGe8ExIBkWQV3
+5oecmztnkjUiARHVRvyxW3vjbljlNxG4ECGlrpchrZgpeanmraDINzcWNnwYIBHE
+lP5fF9Y4DIiSj/DAO0BKEO0x5wgfCw==
+=1erK
+-----END PGP SIGNATURE-----
+
+--ofW00QD6kVu0wbQR--
