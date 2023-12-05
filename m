@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 905D68054FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9218054FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbjLEMnV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 07:43:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S235137AbjLEMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231873AbjLEMnU (ORCPT
+        with ESMTP id S231873AbjLEMnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:43:20 -0500
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91215C6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:43:27 -0800 (PST)
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1fae54afb66so508065fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:43:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701780207; x=1702385007;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JGsDskLbtr8yeU+Ls6PXtLcKmUVWMqdHJkv5ZXnV+Lo=;
-        b=j+u8yf3i/GNAvVgTJqeKsi99HosiZN/rKPaN5mkttIiL5usLT8/GP9jMghDWF5khJr
-         dD8zZ+Uz7ewoKow1oWiZk1Zt/ey9UNrh2k636Ei8dmeeSqDKkSMsvt3re4W1XjMdcZNn
-         vpHIpHIluXwwwHeLEwQMdYhg7uu5KHVcyrzTcg0Uky+YtsZFwUIqy72NssDsX/ozb52L
-         e3C73UDcU7UAPi85CcRgprxk4ozE+L9G0w/x2clDRI4Q7fZz+dPKVelEB/DosYu34gN6
-         2hXVj2oMmYn7uKl7IUW+CAaFRW0f9dkw4/H6E0tAaGMkl1IrLLH23ZDuqmqYclxc5cPV
-         Vi6Q==
-X-Gm-Message-State: AOJu0YxonsEThOkYRfB688esz5VqTksKLIHc4f2mC10t+HAtA11woMPp
-        AFTn3TtuFCOFKM+2A5yMD7eotipA9M+2qHlVyXQ=
-X-Google-Smtp-Source: AGHT+IETysh2vfN2RS7YALJ9g/zZ49bj0GcvlR2jBwTh9oi5kuNCB25hpo6fgNEWKnE5NcKPPf/nt6uRzeP8ZpWl0+g=
-X-Received: by 2002:a05:6870:6490:b0:1fa:f0ee:ba9c with SMTP id
- cz16-20020a056870649000b001faf0eeba9cmr13670250oab.2.1701780206786; Tue, 05
- Dec 2023 04:43:26 -0800 (PST)
-MIME-Version: 1.0
-References: <53bce76c5c60463eba1372df426a64b9@amazon.co.uk>
- <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org> <CAJZ5v0iVvMLK_VcPRJ4sW1eOh0EtfcFvKjH5j1y1GbA0Y6q--Q@mail.gmail.com>
- <5322CF05-344D-4ADE-B38C-7DCE7F076E0C@infradead.org> <CAJZ5v0i-+9VwccRLGDcQdhz_UyBbw8k0LR9GbdvaRxs8PxP=0g@mail.gmail.com>
- <35268BBA-E97F-4ACB-A1C1-04C94AFDEA65@infradead.org>
-In-Reply-To: <35268BBA-E97F-4ACB-A1C1-04C94AFDEA65@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Dec 2023 13:43:15 +0100
-Message-ID: <CAJZ5v0js3mA=9Rg4ki74Y1FNKzVo85OK9-oyVbOgukZ25wH3yw@mail.gmail.com>
-Subject: Re: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at performance
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, pdurrant@amazon.co.uk,
-        bp@alien8.de, dave.hansen@intel.com, dave.hansen@linux.intel.com,
-        hdegoede@redhat.com, hpa@zytor.com, jalliste@amazon.co.uk,
-        juew@amazon.com, len.brown@intel.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, rafael.j.wysocki@intel.com,
-        tglx@linutronix.de, usama.arif@bytedance.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 07:43:49 -0500
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D290D7;
+        Tue,  5 Dec 2023 04:43:55 -0800 (PST)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 0512EC021; Tue,  5 Dec 2023 13:43:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1701780234; bh=9k2hEUfWqSwjsOCNxJeHa/J+KeqtpWnpfnSOvtCRoqo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RgakGAYxKTHmfDsp3Xz4ToOiFec531bEiG1oi9xpE8L6ixaQmDIE2gEe/81AmGTsx
+         eRHIgxFTpoptfzdCWKjbWQk2QTwR+BE7qkNahj/nkWO0yDWFek+tn4VLimnd1J70ig
+         8ANst0jEIPDChSXLz78NnNS2OnIIuCtJG5ozAjrQejv7GqiBlf/ostfQGsn2/4pMIb
+         uXL10maFRsYdzr/npMZvI5/LT0cFtXCym+TKMh9uHo6w0O8q5QYx8xGm56uo1hiikc
+         TCfY9o5H4/3geFLUvnLE6+z96SQUa6eaxBbdYt5bwGz+Elje7NcBzuAiwIVVaCCMu+
+         4JMcN2RW9w02w==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from gaia (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id 79FDEC009;
+        Tue,  5 Dec 2023 13:43:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1701780233; bh=9k2hEUfWqSwjsOCNxJeHa/J+KeqtpWnpfnSOvtCRoqo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r5l5QQB/eieudp+PT4SYxj+jH20QiV6viRJce+pCsKIvdchAaSSo6NJrm8mbpX077
+         4FfxkWQ1sekeWcSekEviSIJyQz6pPS3ChXg/kZtOFoWvFUV214ioLcZ3ymvXOOEFLq
+         TFdGCULG3GMJQkCbiNgoSAqnxxJ3Ula5kL07YimK58QyKTqWpFU8zR+2JHu0jHIKqu
+         QA7P8uGIOdPCs/vNM+ym0SuZlWDPdbLE5D+Cqwyr+JYnE+ofu4z9wcAaV00YcwQJ1l
+         R31riyGsVI5wQdTKV90vNKG1rZwuhw8h67zc4qzlX7UPuI5eSg1AF0Nwwfc70vv8Pw
+         9eWMwT5UxDIsg==
+Received: from localhost (gaia [local])
+        by gaia (OpenSMTPD) with ESMTPA id 98847857;
+        Tue, 5 Dec 2023 12:43:47 +0000 (UTC)
+Date:   Tue, 5 Dec 2023 21:43:32 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Fedor Pchelkin <pchelkin@ispras.ru>
+Cc:     Latchesar Ionkov <lucho@ionkov.net>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        lvc-project@linuxtesting.org
+Subject: Re: [PATCH v2] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
+Message-ID: <ZW8a9BvNwO4yw_JX@codewreck.org>
+References: <ZW7oQ1KPWTbiGSzL@codewreck.org>
+ <20231205091952.24754-1-pchelkin@ispras.ru>
+ <ZW7t_rq_a2ag5eoU@codewreck.org>
+ <2974507b-57fa-4c9b-a036-055dbf55f6a4-pchelkin@ispras.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2974507b-57fa-4c9b-a036-055dbf55f6a4-pchelkin@ispras.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 1:32 PM David Woodhouse <dwmw2@infradead.org> wrote:
->
-> On 5 December 2023 12:31:19 GMT, "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> >On Tue, Dec 5, 2023 at 1:15 PM David Woodhouse <dwmw2@infradead.org> wrote:
-> >>
-> >> On 5 December 2023 12:12:09 GMT, "Rafael J. Wysocki" <rafael@kernel.org> wrote:
-> >> >On Tue, Dec 5, 2023 at 1:00 PM David Woodhouse <dwmw2@infradead.org> wrote:
-> >> >>
-> >> >>
-> >> >> Paul writes:
-> >> >> > The problem is that this will take effect even on a kexec and hence it is throttling
-> >> >> > a system that set ENERGY_PERF_BIAS_PERFORMANCE prior to the kexec.  We use kexec to
-> >> >> > live update the host kernel of our systems whilst leaving virtual machines running.
-> >> >> > This resetting of the perf bias is having a very detrimental effect on the downtime
-> >> >> > of our systems across the live update - about a 7 fold increase.
-> >> >>
-> >> >> It isn't just about kexec, is it? Even in a clean boot why wouldn't we want to stay in performance mode until the kernel has *finished* booting?
-> >> >
-> >> >Because it may overheat during that period.
-> >> >
-> >> >> It's literally adding seconds to the startup time in some cases.
-> >> >>
-> >> >> And yes, we *particularly* care in the kexec case because guests experience it as excessive steal time. But it ain't great in the general case either, surely?
-> >> >
-> >> >So IMV it would be perfectly fine to add a command line arg to provide
-> >> >the initial value of energy_perf_bias for the ones who know what they
-> >> >are doing.
-> >>
-> >> We don't even care about setting it to an "initial value" during boot. We just want to leave it how it was already set up.
-> >
-> >Which does not work on some systems.
-> >
-> >The problem here is that the BIOS cannot be trusted to set the initial
-> >value that makes sense for the given platform and that's why the code
-> >is the way it is.
->
-> Yeah, I understand why we have the existing hack. We just need a way to disable it when it's doing the wrong thing.
+Fedor Pchelkin wrote on Tue, Dec 05, 2023 at 03:15:43PM +0300:
+> As for the second initialization (the one located after kfree(*wnames) in
+> error handling path - it was there all the time), I think it's better not
+> to touch it. I've just moved kfree and null-assignment under
+> 'if (*wnames)' statement.
 
-Fair enough.
+Ah, I somehow missed this was just moved; that doesn't change anything
+but doesn't hurt either, sure.
 
-So the patch as is makes sense, but I would change the name of the
-command line switch to something like intel_epb_no_override.
+> The concern you mentioned is about any user that'd ignore the return code
+> and try to use *wnames (so that the second initialization makes some
+> sense). I can't see if there is any such user but, as said before, it's
+> better not to touch that code.
+
+Yes, it was here before, let's leave it in.
+
+> > I don't mind the change even if there isn't but let's add a word in the
+> > commit message.
+> 
+> OK, will do in v3.
+
+I've queued to -next as is (with the i initialized as Christian pointed
+out), will update if you send a new one later.
+
+Thanks,
+-- 
+Dominique Martinet | Asmadeus
