@@ -2,115 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A335805F77
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8391F805F79
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:33:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232305AbjLEUcO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 15:32:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        id S235189AbjLEUc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 15:32:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjLEUcN (ORCPT
+        with ESMTP id S229569AbjLEUc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 15:32:13 -0500
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037A1129;
-        Tue,  5 Dec 2023 12:32:20 -0800 (PST)
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3b9b5b254e2so395882b6e.1;
-        Tue, 05 Dec 2023 12:32:19 -0800 (PST)
+        Tue, 5 Dec 2023 15:32:57 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AA0181
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:33:04 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d048c171d6so42687655ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 12:33:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701808384; x=1702413184; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=N1umsCfy/akzFPftCbPrbjo0m+EjeRCmtccRMiAQbUc=;
+        b=EYg//kYirRrInFPcFkq/UkGtF/J6r6RyEe4Y+Q82XtOvGMzSKfM9CrjpXvjVEG/iY4
+         Gb/i+jbqD0WNrRCVNgHjvmIopTe1tt38Y+uHCGmhzJHtirSnXvH3sNhDfWrw8vDe2m63
+         +0HVRTLqK2H6pQ/BiXrLmUpDUDkw25Z8j8n4s3c/QtfFESLgAYpqecx1tIv4pQIeTY6B
+         ZuRYr7ol2pFCPjjRVM/x/6u5EhQ/rpSKVWZc5iQNPL1yOpTYBkbkOsR7aM5gp2tzBRgk
+         JbeJOI0O3XitE989Ufnf/dhqa27Mmut+5tR8Y6T909/GTzDxq5SDcnnYJ62qNSHWLsYz
+         Yc9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701808339; x=1702413139;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rrrURgKTtD+/aJbAAUAqOTwAaLDrzLDH8ZvaiOXDJfo=;
-        b=iHGIIwRLgoj+n6VPUunhEHYW7TH8+5lQgEpGGBoeE+CL85yMf+sym7/Ri6cVFEPIaC
-         pSgC1nLChtV2m3SU/OVsSChQdYYOgO2AutJFNk9xllzioeDNMnpGtGHSp1Y4JNlDIC60
-         rsTFfJs2Z3jGH8WGjNUe+E3dveT5aKlRyGIA5rvXbCCBZDaiQHAtiA7E2pxYzMzDZfH3
-         zvbOx8pZWF4+Sy7m2R1hMwj3oI/kHMo+jsBJlfiblBAWOq5ykYB/nDOvgmqlWXtNiUBr
-         Tixq4+ynQYai5YMio8D6/Ae43NBNfslqX0pkOnheyIE1a01vsZS1tt3xO0FBdxEEQK1t
-         5fWA==
-X-Gm-Message-State: AOJu0YzB1T/+KI9kq60G5hG23bE/PWc34Kq15br0PbBaIlm2sb939sp2
-        hEzijJH8hlGEiGkx7cFmBBAopQuBH5GUngehQTQ=
-X-Google-Smtp-Source: AGHT+IGXU4XJWbJY2fCwe+yPX2kwu5P84xfw4o3ss15ZSGJpQCn0mpk9LtkheiRtcKEQN7sRSuHC3LmzYWMjcp+gd3c=
-X-Received: by 2002:a05:6870:961f:b0:1fb:5e42:5096 with SMTP id
- d31-20020a056870961f00b001fb5e425096mr3848589oaq.5.1701808339245; Tue, 05 Dec
- 2023 12:32:19 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701808384; x=1702413184;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=N1umsCfy/akzFPftCbPrbjo0m+EjeRCmtccRMiAQbUc=;
+        b=pU57d1B+ZVz1LDevLdATIatZSxK6I+SV3+Sq9FuGn3W2A2zKZZK0FCR5ulBQoQ6ome
+         EBQ60zJUIp77NdvUt1e80PEpFmpfhLvFDx+M0+i8C1i60F5QFlaWgcOezlU7JpPS5R4k
+         yHF9Kw9Ju4zI4wB0KG5R6EnYwBF+zYOSMxVOMfiy9ILwPjD17BGPTA3URpLs8MZGbZwk
+         fssvAzyBdK8rm6YyhbMNjRDg5DyXIh1IttC8mzMHUNXPr3vBuUL+P1kEV7qeHn3qZELv
+         IusBIjmQMNitY/P/nkTD81gBjQ0xDtbNg9arffdUrTgkHgv1rzGxBHtr3Wm5z9rBwi3i
+         bO9g==
+X-Gm-Message-State: AOJu0YyJet/YgzgWp6keyAAM2pYWidj6L318Acrm5k0Qbl2DWabOUCHh
+        DS8nz6ac7wcaVXesuwebKLA=
+X-Google-Smtp-Source: AGHT+IFB1DcSVhkAgK4W14IJexGK19Q+ji8QfzeCUIKn0kJbfA8Hgns3wH9psDgw1bI+18FCDDRnJQ==
+X-Received: by 2002:a17:902:d2c7:b0:1d0:c445:8014 with SMTP id n7-20020a170902d2c700b001d0c4458014mr2088785plc.76.1701808383705;
+        Tue, 05 Dec 2023 12:33:03 -0800 (PST)
+Received: from ?IPV6:2401:4900:1f3e:53bf:50c7:2988:e019:4b97? ([2401:4900:1f3e:53bf:50c7:2988:e019:4b97])
+        by smtp.gmail.com with ESMTPSA id v11-20020a1709028d8b00b001cca8a01e68sm10607813plo.278.2023.12.05.12.32.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 12:33:03 -0800 (PST)
+Message-ID: <3cd7fc7d-075f-4945-b84d-7326e3c99553@gmail.com>
+Date:   Wed, 6 Dec 2023 02:02:57 +0530
 MIME-Version: 1.0
-References: <20231120185942.2320424-1-srinivas.pandruvada@linux.intel.com>
-In-Reply-To: <20231120185942.2320424-1-srinivas.pandruvada@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Dec 2023 21:32:08 +0100
-Message-ID: <CAJZ5v0iitqskhEU7jQGJpj_=panoLTkcnVMuY3ST_UN30J2aCA@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Allow firmware balance performance
- EPP without code change
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     rafael@kernel.org, viresh.kumar@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3] greybus: gb-beagleplay: Ensure le for values in
+ transport
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Johan Hovold <johan@kernel.org>, greybus-dev@lists.linaro.org,
+        elder@kernel.org, linux-kernel@vger.kernel.org,
+        jkridner@beagleboard.org, kernel test robot <yujie.liu@intel.com>
+References: <20231204131008.384583-1-ayushdevel1325@gmail.com>
+ <ZW3ePt-c4Mu43DOV@hovoldconsulting.com>
+ <7ead544b-9234-483f-aacb-55ed05b01fa3@gmail.com>
+ <2023120515-mongrel-undertook-6e5a@gregkh>
+ <4cafbb5a-8ecd-407e-81a0-76d6505d013b@gmail.com>
+ <2023120616-rely-naturist-01db@gregkh>
+From:   Ayush Singh <ayushdevel1325@gmail.com>
+In-Reply-To: <2023120616-rely-naturist-01db@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 7:59 PM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> Firmware can specify balance performance EPP value by enabling HWP and
-> set EPP to a desired value. The current implementation requires code
-> change for every generation to add an entry to intel_epp_balance_perf
-> table.
->
-> Some distributions like Chrome, which uses old kernels should be able
-> to update balance performance EPP, without code change.
->
-> There is a check to avoid updating EPP when the balance performance
-> EPP is not changed and is power up default of 0x80. Move this check
-> after checking if the HWP is enabled by the firmware and there is
-> a valid EPP value set by the firmware.
->
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
->  drivers/cpufreq/intel_pstate.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> index a534a1f7f1ee..dd6d23e389f1 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -1691,13 +1691,6 @@ static void intel_pstate_update_epp_defaults(struct cpudata *cpudata)
->  {
->         cpudata->epp_default = intel_pstate_get_epp(cpudata, 0);
->
-> -       /*
-> -        * If this CPU gen doesn't call for change in balance_perf
-> -        * EPP return.
-> -        */
-> -       if (epp_values[EPP_INDEX_BALANCE_PERFORMANCE] == HWP_EPP_BALANCE_PERFORMANCE)
-> -               return;
-> -
->         /*
->          * If the EPP is set by firmware, which means that firmware enabled HWP
->          * - Is equal or less than 0x80 (default balance_perf EPP)
-> @@ -1710,6 +1703,13 @@ static void intel_pstate_update_epp_defaults(struct cpudata *cpudata)
->                 return;
->         }
->
-> +       /*
-> +        * If this CPU gen doesn't call for change in balance_perf
-> +        * EPP return.
-> +        */
-> +       if (epp_values[EPP_INDEX_BALANCE_PERFORMANCE] == HWP_EPP_BALANCE_PERFORMANCE)
-> +               return;
-> +
->         /*
->          * Use hard coded value per gen to update the balance_perf
->          * and default EPP.
-> --
+On 12/6/23 01:15, Greg KH wrote:
 
-Applied as 6.8 material with modified subject and changelog, thanks!
+> I'm confused, what exactly is needed here to be sent that isn't in the
+> existing message definition.
+>
+> And as to your original statement, the protocol definition was not
+> designed for any specific use case that would make IoT "special" here
+> that I can see.  It was designed to provide a discoverable way to
+> describe and control hardware on an unknown transport layer for devices
+> that are not discoverable by definition (serial, i2c, etc.)
+>
+> The fact that we implemented this on both USB and unipro successfully
+> provided that the transport layer for the data should be working and
+> agnositic.
+>
+> thanks,
+>
+> greg k-h
+
+So, the missing information is the AP cport which is sending the 
+message/for which the message is intended. Each AP cport will be 
+connected to a cport in some greybus node. For a simple case like USB, 
+where AP can directly talk to the node, and we do not really need the 
+cport information outside of kernel driver.
+
+I think under normal circumstances, the kernel driver is supposed to 
+directly communicate with the node. However, in beagle play, the subghz 
+transport is only present in CC1352 coprocessor. This means CC1352 needs 
+to act as the middle man between AP and node (aka perform the APBridge 
+tasks). So it needs to maintain a way to keep track of all active 
+greybus connections, and route the messages between AP and Node cports.
+
+I am not quite sure where SVC is supposed to be in Linux kernel greybus 
+setup. Since SVC needs to be able to detect module insertion/removal, it 
+needs to be able to access the same transport as APBridge. Thus, CC1352 
+(and gbridge in old setup) are responsible for both SVC and APBridge roles.
+
+Simply put, if the kernel driver cannot directly connect to the node, 
+the processor / network entity handling APBridge tasks will need to 
+cport information. And it probably is good to make it possible to 
+separate APBridge from AP in complex networks.
+
+Feel free to ask questions if I was unclear regarding something. Also 
+feel free to correct me if I got something wrong since I only started 
+working on greybus this summer.
+
+Ayush Singh
+
