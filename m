@@ -2,166 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CD4804C94
+	by mail.lfdr.de (Postfix) with ESMTP id 2C009804C93
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344857AbjLEIgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41326 "EHLO
+        id S1346362AbjLEIgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:36:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235458AbjLEIf2 (ORCPT
+        with ESMTP id S235483AbjLEIfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:35:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1E2185
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:35:34 -0800 (PST)
+        Tue, 5 Dec 2023 03:35:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702BE191
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:35:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701765333;
+        s=mimecast20190719; t=1701765336;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1EF7vfXUKmZ7w1vqKhCPA032G3uF9wOvyUGxj1cxm00=;
-        b=KVWExMcplhPWc61Dx92bdtpNXGgOQcTWjHCMZtpOHIwJ+0JC7ffV0AlU70WT0Mf7mGgEQo
-        2lZD38dp6kdeDJHFNZhq9TR0ieg9bG8sbs0tdgUBGajtZLDSJPiuJMKghNoJN9yg8RD2S9
-        GCuJEeDK7mNlQnxxfSSBG12fmVJ3ajI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-645-l76KXkNdNkaAjlgEfj5TDw-1; Tue, 05 Dec 2023 03:35:32 -0500
-X-MC-Unique: l76KXkNdNkaAjlgEfj5TDw-1
+        bh=+OP1NgMKKCzWtLe7quAE0mrqWNiRYPYGvVhdKqorCyI=;
+        b=Ii06pIdtsAxZGf3JEaT1+koVOziYStQCAt8y3NeqqCevhAZjGV6cBJLbStb5lfVkO7oOoR
+        BBJYOFhIFEqBumHTzBWWDgBdmCMU/h8QZhixUfNv8n4Ol44Cu9Uho+22dQ5BclvtwOS7X/
+        kGTknM6cJ0k2edJUKQzrDMUAUEJNEJs=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-56-Ts2cfc3cOLGP9ypVf0uzsA-1; Tue,
+ 05 Dec 2023 03:35:35 -0500
+X-MC-Unique: Ts2cfc3cOLGP9ypVf0uzsA-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BCDB0879843;
-        Tue,  5 Dec 2023 08:35:31 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DDC833C0263D;
+        Tue,  5 Dec 2023 08:35:34 +0000 (UTC)
 Received: from server.redhat.com (unknown [10.72.112.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3C87F3C25;
-        Tue,  5 Dec 2023 08:35:28 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CBBB3C27;
+        Tue,  5 Dec 2023 08:35:32 +0000 (UTC)
 From:   Cindy Lu <lulu@redhat.com>
 To:     lulu@redhat.com, jasowang@redhat.com, mst@redhat.com,
         xieyongji@bytedance.com, linux-kernel@vger.kernel.org,
         maxime.coquelin@redhat.com
-Subject: [PATCH v3 5/7] vduse: Add file operation for mmap
-Date:   Tue,  5 Dec 2023 16:34:42 +0800
-Message-Id: <20231205083444.3029239-6-lulu@redhat.com>
+Subject: [PATCH v3 6/7] vduse: Update the vq_info in ioctl VDUSE_VQ_GET_INFO
+Date:   Tue,  5 Dec 2023 16:34:43 +0800
+Message-Id: <20231205083444.3029239-7-lulu@redhat.com>
 In-Reply-To: <20231205083444.3029239-1-lulu@redhat.com>
 References: <20231205083444.3029239-1-lulu@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the operation for mmap, This function  will be used by the user space
-application to map the pages to the user space.
+Once the reconnect memory pages are mapped to userspace, the userspace
+application will update the "reconnected" bit in the
+"struct vduse_dev_reconnect_data".
+The kernel will then check this bit. If it is not set to
+"VDUSE_NOT_RECONNECT", it means that the application has been
+reconnected, and the kernel will synchronize the vq information.
 
 Signed-off-by: Cindy Lu <lulu@redhat.com>
 ---
- drivers/vdpa/vdpa_user/vduse_dev.c | 75 ++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
+ drivers/vdpa/vdpa_user/vduse_dev.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-index 52ccde636406..f55f415629de 100644
+index f55f415629de..422f1aedebac 100644
 --- a/drivers/vdpa/vdpa_user/vduse_dev.c
 +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-@@ -1381,6 +1381,79 @@ static struct vduse_dev *vduse_dev_get_from_minor(int minor)
- 	return dev;
- }
+@@ -1193,6 +1193,9 @@ static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
+ 		struct vduse_vq_info vq_info;
+ 		struct vduse_virtqueue *vq;
+ 		u32 index;
++		unsigned long vaddr;
++		struct vduse_vq_state *vq_reconnect;
++		struct vduse_dev_reconnect_data *dev_reconnect;
  
-+static vm_fault_t vduse_vm_fault(struct vm_fault *vmf)
-+{
-+	struct vduse_dev *dev = vmf->vma->vm_file->private_data;
-+	struct vm_area_struct *vma = vmf->vma;
-+	u16 index = vma->vm_pgoff;
-+	struct vduse_virtqueue *vq;
-+	unsigned long vaddr;
-+
-+	/* index 0  page reserved for vduse status*/
-+	if (index == 0) {
-+		vaddr = dev->vdpa_reconnect_vaddr;
-+	} else {
-+		/* index 1+vq_number page reserved for vduse vqs*/
-+		vq = &dev->vqs[index - 1];
-+		vaddr = vq->vdpa_reconnect_vaddr;
-+	}
-+	if (remap_pfn_range(vma, vmf->address & PAGE_MASK,
-+			    PFN_DOWN(virt_to_phys((void *)vaddr)),
-+			    VDUSE_RECONNCT_MMAP_SIZE, vma->vm_page_prot))
-+		return VM_FAULT_SIGBUS;
-+	return VM_FAULT_NOPAGE;
-+}
-+
-+static const struct vm_operations_struct vduse_vm_ops = {
-+	.fault = vduse_vm_fault,
-+};
-+
-+static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
-+{
-+	struct vduse_dev *dev = file->private_data;
-+	unsigned long vaddr = 0;
-+	unsigned long index = vma->vm_pgoff;
-+	struct vduse_virtqueue *vq;
-+
-+	if (vma->vm_end - vma->vm_start != PAGE_SIZE)
-+		return -EINVAL;
-+	if ((vma->vm_flags & VM_SHARED) == 0)
-+		return -EINVAL;
-+
-+	/*check if Userspace App map the page number larger than kernel allocated*/
-+	if (index > dev->vq_num + 1)
-+		return -EINVAL;
-+
-+	/* index 0  page reserved for vduse status*/
-+	if (index == 0) {
-+		vaddr = dev->vdpa_reconnect_vaddr;
-+	} else {
-+		/* index 1+vq_number page reserved for vduse vqs*/
-+		vq = &dev->vqs[index - 1];
-+		vaddr = vq->vdpa_reconnect_vaddr;
-+	}
-+	/* Check whether the memory for the mmap was allocated by the kernel.
-+	 * If not, this device may not have been created/destroyed correctly.
-+	 */
-+	if (vaddr == 0)
-+		return -EOPNOTSUPP;
-+
-+	/* check if the address is page aligned, if not,
-+	 * this address maybe damaged
-+	 */
-+	if (virt_to_phys((void *)vaddr) & (PAGE_SIZE - 1))
-+		return -EINVAL;
-+
-+	/* Check if the Userspace App has mapped the correct size */
-+	if (vma->vm_end - vma->vm_start != VDUSE_RECONNCT_MMAP_SIZE)
-+		return -EOPNOTSUPP;
-+
-+	vm_flags_set(vma, VM_DONTEXPAND);
-+	vma->vm_ops = &vduse_vm_ops;
-+
-+	return 0;
-+}
-+
- static int vduse_dev_open(struct inode *inode, struct file *file)
- {
- 	int ret;
-@@ -1413,6 +1486,8 @@ static const struct file_operations vduse_dev_fops = {
- 	.unlocked_ioctl	= vduse_dev_ioctl,
- 	.compat_ioctl	= compat_ptr_ioctl,
- 	.llseek		= noop_llseek,
-+	.mmap		= vduse_dev_mmap,
-+
- };
+ 		ret = -EFAULT;
+ 		if (copy_from_user(&vq_info, argp, sizeof(vq_info)))
+@@ -1209,6 +1212,12 @@ static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
+ 		vq_info.device_addr = vq->device_addr;
+ 		vq_info.num = vq->num;
  
- static struct vduse_dev *vduse_dev_create(void)
++		vaddr = dev->vdpa_reconnect_vaddr;
++		dev_reconnect = (struct vduse_dev_reconnect_data *)vaddr;
++
++		vaddr = vq->vdpa_reconnect_vaddr;
++		vq_reconnect = (struct vduse_vq_state *)vaddr;
++
+ 		if (dev->driver_features & BIT_ULL(VIRTIO_F_RING_PACKED)) {
+ 			vq_info.packed.last_avail_counter =
+ 				vq->state.packed.last_avail_counter;
+@@ -1218,9 +1227,22 @@ static long vduse_dev_ioctl(struct file *file, unsigned int cmd,
+ 				vq->state.packed.last_used_counter;
+ 			vq_info.packed.last_used_idx =
+ 				vq->state.packed.last_used_idx;
+-		} else
++			/*check if the vq is reconnect, if yes then update the info*/
++			if (dev_reconnect->reconnected != VDUSE_NOT_RECONNECT) {
++				vq_info.packed.last_avail_idx =
++					vq_reconnect->packed.last_avail_idx;
++				vq_info.packed.last_avail_counter =
++					vq_reconnect->packed.last_avail_counter;
++			}
++		} else {
+ 			vq_info.split.avail_index =
+ 				vq->state.split.avail_index;
++			/*check if the vq is reconnect, if yes then update the info*/
++			if (dev_reconnect->reconnected != VDUSE_NOT_RECONNECT) {
++				vq_info.split.avail_index =
++					vq_reconnect->split.avail_index;
++			}
++		}
+ 
+ 		vq_info.ready = vq->ready;
+ 
 -- 
 2.34.3
 
