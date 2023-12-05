@@ -2,193 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71ACC80570B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:19:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70940805712
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345876AbjLEOTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
+        id S1345904AbjLEOT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345634AbjLEOTb (ORCPT
+        with ESMTP id S1345634AbjLEOTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:19:31 -0500
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD6F0B9;
-        Tue,  5 Dec 2023 06:19:37 -0800 (PST)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1fb40253680so1242506fac.0;
-        Tue, 05 Dec 2023 06:19:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701785977; x=1702390777; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kcdWCGeTNWPKv5Volp7VVK1y/yfIdhFJ0eCugNnIkp0=;
-        b=nrHxK9dgwblbkHtBfRLDZQVR0FfZmMlX90PCaBRVEqCrZG2898hTIILPuyKZyEKBxU
-         +tCFn1ZVnTNSsvSPq5r8733iPLecPvnzlYUcv4+7eBJJrHWrQZ3vrmBfbuCk/ZK8d9ie
-         j/JezZIna3xfNSmlDdtyRak7z5ygEY3AmgBAZCgugJPbd0DkYyyu3UAr7/2pbgrQNC/Z
-         yO9hugxqrX7Ao46ES/QEPaoApRKJQWHz6gnidfhSBvRyMeprMVH83QzdrU+bLj828fPQ
-         RDd3RcfCEIcLwTlab3Vu0YcpZDAesxcRyuHDVR6skM814WP3k5zkheHdEtruuiPCf/4d
-         VyAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701785977; x=1702390777;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kcdWCGeTNWPKv5Volp7VVK1y/yfIdhFJ0eCugNnIkp0=;
-        b=IYBdY/Vmu9Q8VzG+BzqPYY3meOE/Zh0g8WlsROEvoeFk+aqqg77CC7AUwhfAuHrbkZ
-         +nMhfOpwJm+0hGW4L+dB1Da16BAYtw7SY907SCDWjhcvqbIlE679lsi7nkM9UIUUpO3k
-         8rRYFOU2ylKu7Cj5sMWEF/CTqQSVWDibY2sjfi6MmjrlqcJGlPdmFyOELOfY1Sc9DEdl
-         FeZuNzctxUM9U4N3e8oxTtVR/mjc1DoIWvI9BYugRshhHKqyzZwsQ5w+LjP6miNvCbTt
-         QEKxZ+JyN26w27kGM2CUFXZXTKoSQItjxNO/JvnYr4hk7O/A5kBQrSyRYhKPcUAKyYI0
-         INqw==
-X-Gm-Message-State: AOJu0Yxx2nvqbh9rl1lPFSENmsEdy90qNYG9pCXvBoX0QEFH3Q+6e0Ju
-        R1hunfKH0xM6xUOHpbQOVY//v1kIKXbXZuA57/s=
-X-Google-Smtp-Source: AGHT+IGKHbTXlOimAxgVOe6WFunYwRxPJpYDvHgcXklUon6LpkHVYjQBVIWohh7Zlbzds0qqX49jUwUnfcnGWNC/Ufw=
-X-Received: by 2002:a05:6871:e40b:b0:1fb:75a:c441 with SMTP id
- py11-20020a056871e40b00b001fb075ac441mr5934960oac.106.1701785976925; Tue, 05
- Dec 2023 06:19:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20231204140743.1487843-1-stefanha@redhat.com> <1c1d57ba13c2497f99e5e0a9c5954667@AcuMS.aculab.com>
-In-Reply-To: <1c1d57ba13c2497f99e5e0a9c5954667@AcuMS.aculab.com>
-From:   Stefan Hajnoczi <stefanha@gmail.com>
-Date:   Tue, 5 Dec 2023 09:19:24 -0500
-Message-ID: <CAJSP0QUkb936K7kzW7-4bFSCbvcfFW0QJ9v=8yT6voAwkdBQRQ@mail.gmail.com>
-Subject: Re: [PATCH] virtio_blk: fix snprintf truncation compiler warning
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
-        Jason Wang <jasowang@redhat.com>,
+        Tue, 5 Dec 2023 09:19:55 -0500
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210BDB9;
+        Tue,  5 Dec 2023 06:20:01 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 57F78FF81B;
+        Tue,  5 Dec 2023 14:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701786000;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lwuiW0STsSMaPhGuAH3x8TpmoKmRnPd9Iuz61of3lF4=;
+        b=owdQ0/CE5DFSPIrWuyNxaLrHPOYLgnH9iV1zma4QRazr50vS+SSGKQnYHQe41EJCcj1CC1
+        ZWvBgoVH9Ex5P358tWGilWr5tp5+C2WPBWWfrpzx6kXl/e2yx8Qghk+TOJt4cH31PxAM7G
+        /n0QRlFUoUM1ziOlqgNfiSVQ/oqcSTZOrzgVUv+4BsNp7uva7AtOzg4QPXaGVzsYuyxpf/
+        +eQ2Cr/h7bqBolsTvC4tnMPJissHl8ZwgNU+xvw9pEtQzQIzCktPBiCVQV3h3HIge4zUCX
+        bHuAmMSb5EIfmKh1k/1e8VmVaYqvwMIg3WXW2lghdyrW5UvEHnXOInhlm5dhYA==
+Date:   Tue, 5 Dec 2023 15:19:59 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lu jicong <jiconglu58@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Suwan Kim <suwan.kim027@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH] usb: dwc3: don't reset device side if dwc3 was
+ configured as host-only
+Message-ID: <20231205151959.5236c231@kmaincent-XPS-13-7390>
+In-Reply-To: <20231202002625.ujvqghwm42aabc2f@synopsys.com>
+References: <20231116174206.1a823aa3@kmaincent-XPS-13-7390>
+        <20231116175959.71f5d060@kmaincent-XPS-13-7390>
+        <20231117014038.kbcfnpiefferqomk@synopsys.com>
+        <20231117015527.jqoh6i3n4ywg7qui@synopsys.com>
+        <20231121104917.0fd67952@kmaincent-XPS-13-7390>
+        <20231201100954.597bb6de@kmaincent-XPS-13-7390>
+        <20231202002625.ujvqghwm42aabc2f@synopsys.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Dec 2023 at 08:54, David Laight <David.Laight@aculab.com> wrote:
->
-> From: Stefan Hajnoczi
-> > Sent: 04 December 2023 14:08
-> >
-> > Commit 4e0400525691 ("virtio-blk: support polling I/O") triggers the
-> > following gcc 13 W=3D1 warnings:
-> >
-> > drivers/block/virtio_blk.c: In function =E2=80=98init_vq=E2=80=99:
-> > drivers/block/virtio_blk.c:1077:68: warning: =E2=80=98%d=E2=80=99 direc=
-tive output may be truncated writing between 1
-> > and 11 bytes into a region of size 7 [-Wformat-truncation=3D]
-> >  1077 |                 snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_p=
-oll.%d", i);
-> >       |                                                                =
-    ^~
-> > drivers/block/virtio_blk.c:1077:58: note: directive argument in the ran=
-ge [-2147483648, 65534]
-> >  1077 |                 snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_p=
-oll.%d", i);
-> >       |                                                          ^~~~~~=
-~~~~~~~
-> > drivers/block/virtio_blk.c:1077:17: note: =E2=80=98snprintf=E2=80=99 ou=
-tput between 11 and 21 bytes into a destination
-> > of size 16
-> >  1077 |                 snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_p=
-oll.%d", i);
-> >       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~
-> >
-> > This is a false positive because the lower bound -2147483648 is
-> > incorrect. The true range of i is [0, num_vqs - 1] where 0 < num_vqs <
-> > 65536.
-> >
-> > The code mixes int, unsigned short, and unsigned int types in addition
-> > to using "%d" for an unsigned value. Use unsigned short and "%u"
-> > consistently to solve the compiler warning.
-> >
-> > Cc: Suwan Kim <suwan.kim027@gmail.com>
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202312041509.DIyvEt9h-lkp=
-@intel.com/
-> > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> > ---
-> >  drivers/block/virtio_blk.c | 8 ++++----
-> >  1 file changed, 4 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> > index d53d6aa8ee69..47556d8ccc32 100644
-> > --- a/drivers/block/virtio_blk.c
-> > +++ b/drivers/block/virtio_blk.c
-> > @@ -1019,12 +1019,12 @@ static void virtblk_config_changed(struct virti=
-o_device *vdev)
-> >  static int init_vq(struct virtio_blk *vblk)
-> >  {
-> >       int err;
-> > -     int i;
-> > +     unsigned short i;
-> >       vq_callback_t **callbacks;
-> >       const char **names;
-> >       struct virtqueue **vqs;
-> >       unsigned short num_vqs;
-> > -     unsigned int num_poll_vqs;
-> > +     unsigned short num_poll_vqs;
-> >       struct virtio_device *vdev =3D vblk->vdev;
-> >       struct irq_affinity desc =3D { 0, };
-> >
-> > @@ -1068,13 +1068,13 @@ static int init_vq(struct virtio_blk *vblk)
-> >
-> >       for (i =3D 0; i < num_vqs - num_poll_vqs; i++) {
->
-> Ugg doing arithmetic on char/short is likely to generate horrid
-> code (especially on non-x86).
-> Hint, there will be explicit masking and/or sign/zero extension.
->
-> Even the array index might add extra code (although there'll be
-> an explicit sign extend to 64bit with the current code).
->
-> There really ought to be a better way to make gcc STFU.
->
-> In this case 'unsigned int i' might be enough since gcc seems
-> to have a small enough upper bound.
+On Sat, 2 Dec 2023 00:26:34 +0000
+Thinh Nguyen <Thinh.Nguyen@synopsys.com> wrote:
 
-Sounds good, I'll send a v2 that uses unsigned int. The core virtio
-code uses unsigned int for virtqueue indices too.
+> Hi,
+>=20
+> On Fri, Dec 01, 2023, K=C3=B6ry Maincent wrote:
+> > On Tue, 21 Nov 2023 10:49:17 +0100
+> > K=C3=B6ry Maincent <kory.maincent@bootlin.com> wrote:
+> >  =20
+> > > Hello Thinh,
+> > >=20
+> > > On Fri, 17 Nov 2023 01:55:30 +0000
+> > > Thinh Nguyen <Thinh.Nguyen@synopsys.com> wrote: =20
+> >  =20
+> > > Still not working on my side. =20
+> >=20
+> > Hello,
+> >=20
+> > Just wondering if you have received my email as you said having client =
+mail
+> > issue.
+> >  =20
+>=20
+> Sorry for the delay. Things got busy for me recently.
+>=20
+> So your platform has multiple ports. Do you use UTMI or ULPI phy?
 
-Stefan
+It uses USB3220 ULPI phy.
 
->
->         David
->
->
-> >               callbacks[i] =3D virtblk_done;
-> > -             snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req.%d", i);
-> > +             snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req.%u", i);
-> >               names[i] =3D vblk->vqs[i].name;
-> >       }
-> >
-> >       for (; i < num_vqs; i++) {
-> >               callbacks[i] =3D NULL;
-> > -             snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_poll.%d", i=
-);
-> > +             snprintf(vblk->vqs[i].name, VQ_NAME_LEN, "req_poll.%u", i=
-);
-> >               names[i] =3D vblk->vqs[i].name;
-> >       }
-> >
-> > --
-> > 2.43.0
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
- 1PT, UK
-> Registration No: 1397386 (Wales)
+> I forgot another thing, the phy reset we're doing now doesn't apply to
+> ULPI phys. We may need to teach HCRST to dwc3, this may not look clean.
+
+So that is the reason it does not apply for my case.
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
