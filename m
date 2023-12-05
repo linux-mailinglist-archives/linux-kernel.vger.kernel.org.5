@@ -2,152 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46662804A43
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:37:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57A9804A6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344485AbjLEGhJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 01:37:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51970 "EHLO
+        id S1344372AbjLEGlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 01:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344429AbjLEGhD (ORCPT
+        with ESMTP id S229611AbjLEGlT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 01:37:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29301135;
-        Mon,  4 Dec 2023 22:37:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701758229; x=1733294229;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F4InaQp/5As/bJn0SZDnulbk5E33HqfsSfpQ2I/hFac=;
-  b=DhAb3hbEPLTTAx2xP2MmhfGLOilAwt1ib18HigOKWjonVvujSec7mNX/
-   UFWiYrWvO4kzehZFf5CIkF1+LPBdfkzxrrUXOfTysMuY+E/03QkdHy2RA
-   q4sWZHUTWHgmi3v7MJY+iaEqvqS9B3thprmxrkUiSaHrjX1YtUJmjOt9+
-   dsk3YMzd+727RvF2EIUUkfEZtt0tIyEzBd3lBU9SECjNWYUu17LuF4XL5
-   j1/nb5RK/ncwv5aGC1iMbjr4EA/QtfD8bfcX6Qesjn3L+TKX/FuSJcBGL
-   vZVFgqxk+G1mSg/IDW8zh3D7O+Bh6fyCx1IaLZm4GPfs74dkX6zfWm2iD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="374035389"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="374035389"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 22:37:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764224101"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="764224101"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 04 Dec 2023 22:37:03 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAP3F-0008RU-1R;
-        Tue, 05 Dec 2023 06:37:01 +0000
-Date:   Tue, 5 Dec 2023 14:36:23 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        Jeff LaBundy <jeff@labundy.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        catalin.popescu@leica-geosystems.com,
-        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
-        hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com,
-        Kamel Bouhara <kamel.bouhara@bootlin.com>
-Subject: Re: [PATCH v4 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
-Message-ID: <202312051457.y3N1q3sZ-lkp@intel.com>
-References: <20231204140505.2838916-4-kamel.bouhara@bootlin.com>
+        Tue, 5 Dec 2023 01:41:19 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48682A4;
+        Mon,  4 Dec 2023 22:41:25 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B51uVN9027304;
+        Tue, 5 Dec 2023 06:41:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=huc3944qrFK6MGxccYFPxDHeN84EgsRy740zHLv+jlE=;
+ b=L4G8dPUMuI0HzHM7j8i2zlL7yciXNE2geDNH4QY0qOJh9JEFVVdC49t2ClqKwjKxTsgX
+ WBd8iR48Vzx47jf8lgJf8r9WXGgloiVaDWMoj0+wA6KeDgjGwQQesiELKxHX8HtCjWWb
+ m39Aq3LsdbRjPGO2pG4mO1L43i+7owCoYUZ6f4fmyxoajjBGZ9rM/qyoJdd4IFbut/Qh
+ tuWwXPuw35ShGiuobplMwCTFa481iQnW8fNCRgWUZEzIexVU5K20ZPkdFAXvDm+lC0QT
+ pvFGOtCTUK0rQhrlSJdEZkSCHdijXk2UcrBmiX4rC0UrLMg1bTzcscwWCxoPErUQ1RHj RQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usfu79ypv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 06:41:14 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B56fDK0011767
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Dec 2023 06:41:13 GMT
+Received: from jianbinz-gv.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 4 Dec 2023 22:41:11 -0800
+From:   jianbinz <quic_jianbinz@quicinc.com>
+To:     <alexandre.belloni@bootlin.com>, <a.zummo@towertech.it>
+CC:     jianbinz <quic_jianbinz@quicinc.com>, <linux-rtc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/1] rtc: rtc-pm8xxx: Retrigger RTC alarm if it's fired before the driver probed
+Date:   Tue, 5 Dec 2023 14:40:50 +0800
+Message-ID: <20231205064050.31827-1-quic_jianbinz@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204140505.2838916-4-kamel.bouhara@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 392r4c0mU2zyUR5Mc6a_2Sf2ijE9kHhQ
+X-Proofpoint-ORIG-GUID: 392r4c0mU2zyUR5Mc6a_2Sf2ijE9kHhQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_03,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ adultscore=0 clxscore=1011 malwarescore=0 bulkscore=0 impostorscore=0
+ mlxlogscore=937 priorityscore=1501 mlxscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312050053
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kamel,
+If the alarm is triggered before the driver gets probed, the alarm
+interrupt will be missed and it won't be detected, and the stale
+alarm settings will be still retained because of not being cleared.
+Check this condition during driver probe, retrigger the alarm and
+clear the settings manually if it's such case.
 
-kernel test robot noticed the following build warnings:
+Changes in v2:
+*Adapt the V1 patch according to the newest rtc-pm8xxx
 
-[auto build test WARNING on dtor-input/next]
-[also build test WARNING on dtor-input/for-linus robh/for-next linus/master krzk-dt/for-next v6.7-rc4 next-20231204]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Changes in v1:
+*During driver probe: read ALARM_EN, read ALARM_DATA, read RTC_RDATA,
+if (ALARM_DATA < RTC_DATA), Trigger the alarm event and clear the alarm settins
+Link to v1:https://lore.kernel.org/linux-rtc/20220321090514.4523-1-quic_jianbinz@quicinc.com/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kamel-Bouhara/dt-bindings-vendor-prefixes-Add-TouchNetix-AS/20231204-222017
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
-patch link:    https://lore.kernel.org/r/20231204140505.2838916-4-kamel.bouhara%40bootlin.com
-patch subject: [PATCH v4 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231205/202312051457.y3N1q3sZ-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051457.y3N1q3sZ-lkp@intel.com/reproduce)
+Signed-off-by: jianbinz <quic_jianbinz@quicinc.com>
+---
+ drivers/rtc/rtc-pm8xxx.c | 57 +++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 53 insertions(+), 4 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051457.y3N1q3sZ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/input/touchscreen/touchnetix_axiom.c: In function 'axiom_usage_to_target_address':
->> drivers/input/touchscreen/touchnetix_axiom.c:142:31: warning: variable 'device_info' set but not used [-Wunused-but-set-variable]
-     142 |         struct axiom_devinfo *device_info;
-         |                               ^~~~~~~~~~~
-
-
-vim +/device_info +142 drivers/input/touchscreen/touchnetix_axiom.c
-
-   136	
-   137	/* Translate usage/page/offset triplet into physical address. */
-   138	static u16 axiom_usage_to_target_address(struct axiom_data *ts, char usage, char page,
-   139						 char offset)
-   140	{
-   141		struct axiom_usage_entry *usage_table;
- > 142		struct axiom_devinfo *device_info;
-   143		u32 i;
-   144	
-   145		device_info = &ts->devinfo;
-   146		usage_table = ts->usage_table;
-   147	
-   148		/* At the moment the convention is that u31 is always at physical address 0x0 */
-   149		if (!ts->usage_table_populated) {
-   150			if (usage == AXIOM_DEVINFO_USAGE_ID)
-   151				return ((page << 8) + offset);
-   152			else
-   153				return 0xffff;
-   154		}
-   155	
-   156		for (i = 0; i < ts->devinfo.num_usages; i++) {
-   157			if (usage_table[i].id != usage)
-   158				continue;
-   159	
-   160			if (page >= usage_table[i].num_pages) {
-   161				dev_err(ts->dev, "Invalid usage table! usage: %u, page: %u, offset: %u\n",
-   162					usage, page, offset);
-   163				return 0xffff;
-   164			}
-   165			break;
-   166		}
-   167	
-   168		return ((usage_table[i].start_page + page) << 8) + offset;
-   169	}
-   170	
-
+diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+index f6b779c12ca7..eac4e7f23aaa 100644
+--- a/drivers/rtc/rtc-pm8xxx.c
++++ b/drivers/rtc/rtc-pm8xxx.c
+@@ -309,21 +309,33 @@ static int pm8xxx_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+ 	return 0;
+ }
+ 
++static int pm8xxx_rtc_read_alarm_raw(struct pm8xxx_rtc *rtc_dd, u32 *secs)
++{
++	const struct pm8xxx_rtc_regs *regs = rtc_dd->regs;
++	u8 value[NUM_8_BIT_RTC_REGS];
++	int rc;
++
++	rc = regmap_bulk_read(rtc_dd->regmap, regs->read, value, sizeof(value));
++	if (rc)
++		return rc;
++
++	*secs = get_unaligned_le32(value);
++
++	return 0;
++}
++
+ static int pm8xxx_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alarm)
+ {
+ 	struct pm8xxx_rtc *rtc_dd = dev_get_drvdata(dev);
+ 	const struct pm8xxx_rtc_regs *regs = rtc_dd->regs;
+-	u8 value[NUM_8_BIT_RTC_REGS];
+ 	unsigned int ctrl_reg;
+ 	u32 secs;
+ 	int rc;
+ 
+-	rc = regmap_bulk_read(rtc_dd->regmap, regs->alarm_rw, value,
+-			      sizeof(value));
++	rc = pm8xxx_rtc_read_alarm_raw(rtc_dd, &secs);
+ 	if (rc)
+ 		return rc;
+ 
+-	secs = get_unaligned_le32(value);
+ 	secs += rtc_dd->offset;
+ 	rtc_time64_to_tm(secs, &alarm->time);
+ 
+@@ -398,6 +410,39 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++/*
++ * Trigger the alarm event and clear the alarm settings
++ * if the alarm data has been behind the RTC data which
++ * means the alarm has been triggered before the driver
++ * is probed.
++ */
++static int pm8xxx_rtc_init_alarm(struct pm8xxx_rtc *rtc_dd)
++{
++	int rc;
++	u32 alarm_sec, rtc_sec;
++	unsigned int ctrl_reg, alarm_en;
++	const struct pm8xxx_rtc_regs *regs = rtc_dd->regs;
++
++	rc = pm8xxx_rtc_read_raw(rtc_dd, &rtc_sec);
++	if (rc)
++		return rc;
++
++	rc = pm8xxx_rtc_read_alarm_raw(rtc_dd, &alarm_sec);
++	if (rc)
++		return rc;
++
++	rc = regmap_read(rtc_dd->regmap, regs->alarm_ctrl, &ctrl_reg);
++	if (rc)
++		return rc;
++
++	alarm_en = !!(ctrl_reg & PM8xxx_RTC_ALARM_ENABLE);
++
++	if (alarm_en && rtc_sec >= alarm_sec)
++		pm8xxx_alarm_trigger(0, rtc_dd);
++
++	return 0;
++}
++
+ static int pm8xxx_rtc_enable(struct pm8xxx_rtc *rtc_dd)
+ {
+ 	const struct pm8xxx_rtc_regs *regs = rtc_dd->regs;
+@@ -527,6 +572,10 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
+ 	if (rc)
+ 		return rc;
+ 
++	rc = pm8xxx_rtc_init_alarm(rtc_dd);
++	if (rc)
++		return rc;
++
+ 	return 0;
+ }
+ 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
