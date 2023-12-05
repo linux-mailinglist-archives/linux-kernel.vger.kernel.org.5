@@ -2,70 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F308055B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 878288055B7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376935AbjLENSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:18:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38040 "EHLO
+        id S1345411AbjLENTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:19:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376931AbjLENSt (ORCPT
+        with ESMTP id S1345407AbjLENTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:18:49 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCDE5199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:18:54 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5d8a772157fso20623607b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:18:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701782334; x=1702387134; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=WLIE+L1HrrW8f5o/256gAyjbq/G3Tuj/r83oc4Ixemk=;
-        b=njk4YZe/QvzXlYssZJsbqJC7H51amI0+1z8JCK+u6+V7kJxdKWpVUQtLNmgQpneVOQ
-         HkwygQGNuvcYR+661Rz8WTavU081eQwPIhWRxJSrt4lAnfaB4CzTgO5d0IjKlt0h/AIV
-         eMEJMoC9qT67uUpZIcaKKhsbhk318phO4ZLHpU0fLfctboBblbaIGezSeJS/4SN617jK
-         kmLG18vPJQ/9Yiq6qh4zFYHppNZ+EKnWsmtNSK+Rm9/AmoYDw4RDGWSG41k2EKOcE7uT
-         OKj1Ok1E18osZs37iu30a4A0rXrKi4QSIQh8cAaxt/MkAuAoGAL0tlceFNJ9ZIL3CpMi
-         BSag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701782334; x=1702387134;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WLIE+L1HrrW8f5o/256gAyjbq/G3Tuj/r83oc4Ixemk=;
-        b=sONbXQt9zwQz4o0kdKa7W5sGxHphksPkJ9o29WHPKM4TrYjL4iWVUz5TouekZlbCqL
-         +JmU858Yj+j7sZkO9OL3ponRKRKNMUao1ASHTsEFsFm4hhlrVyxurE1v8sVnrNmZQipL
-         xuLMRkN9ujxTtNDPw4HoaXtPf6PkzDE2PFcElmrN4wVxV5YYZtWKSAG03dHhuS554xcs
-         YC26h7BjP3ygN5v4Q5RnfPUX/c/wIdNNF6r1xDGv2Wn2oMTBsU5Itq4Ga9vzl/9MhwRx
-         2qM2aoTVHSXcyOk7jxJlx7h8ThHEbihJboPEDDTAYT5xBQqaHt2psyVWBCXNs/cQzXEI
-         YXsQ==
-X-Gm-Message-State: AOJu0YzgSaA39sB8Jgt1R4BgkgRMuwhWr+SrvM6jC3wR3Ehr+HL4WrM9
-        bc8aLpMn60+SfsKcJUPpR8W/CpP07lKGz4Co1uuvvQ==
-X-Google-Smtp-Source: AGHT+IHIgOa51JsTwoE7+i0xtGrGoFi1i7DeQmmxXZ62BnXNcJb8RvDGC0B6gdekdDcsiKjLOqU3cN9r/zwBgusU6oU=
-X-Received: by 2002:a81:c90c:0:b0:5d9:6ecb:483e with SMTP id
- o12-20020a81c90c000000b005d96ecb483emr1699897ywi.39.1701782333978; Tue, 05
- Dec 2023 05:18:53 -0800 (PST)
+        Tue, 5 Dec 2023 08:19:01 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44138197;
+        Tue,  5 Dec 2023 05:19:06 -0800 (PST)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sl1Fp4YsBz14L97;
+        Tue,  5 Dec 2023 21:14:06 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 21:19:03 +0800
+Message-ID: <cda525e9-0dac-9629-9c8e-d69d22811777@huawei.com>
+Date:   Tue, 5 Dec 2023 21:19:03 +0800
 MIME-Version: 1.0
-References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
- <20231204123315.28456-7-keith.zhao@starfivetech.com> <CAA8EJpqbQKjTeEdOpwNy7P+dJK-nnZzZYefyzoG+JWKVgsS=rw@mail.gmail.com>
-In-Reply-To: <CAA8EJpqbQKjTeEdOpwNy7P+dJK-nnZzZYefyzoG+JWKVgsS=rw@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 5 Dec 2023 15:18:43 +0200
-Message-ID: <CAA8EJpqrYpL8N4_nXW4BbJRuUR=zqmP88Ze6_xkoZRStso6ugA@mail.gmail.com>
-Subject: Re: [v3 6/6] drm/vs: simple encoder
-To:     Keith Zhao <keith.zhao@starfivetech.com>
-Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        aou@eecs.berkeley.edu, suijingfeng@loongson.cn,
-        tzimmermann@suse.de, paul.walmsley@sifive.com, mripard@kernel.org,
-        xingyu.wu@starfivetech.com, jack.zhu@starfivetech.com,
-        palmer@dabbelt.com, krzysztof.kozlowski+dt@linaro.org,
-        william.qiu@starfivetech.com, shengyang.chen@starfivetech.com,
-        changhuang.liang@starfivetech.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
+ DIO write race with buffered read
+Content-Language: en-US
+To:     Theodore Ts'o <tytso@mit.edu>
+CC:     Jan Kara <jack@suse.cz>, <linux-mm@kvack.org>,
+        <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+        <willy@infradead.org>, <akpm@linux-foundation.org>,
+        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
+        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
+ <20231204121120.mpxntey47rluhcfi@quack3>
+ <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+ <20231205041755.GG509422@mit.edu>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20231205041755.GG509422@mit.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,314 +59,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Dec 2023 at 15:14, Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
+On 2023/12/5 12:17, Theodore Ts'o wrote:
+> On Mon, Dec 04, 2023 at 09:50:18PM +0800, Baokun Li wrote:
+>> The problem is with a one-master-twoslave MYSQL database with three
+>> physical machines, and using sysbench pressure testing on each of the
+>> three machines, the problem occurs about once every two to three hours.
+>>
+>> The problem is with the relay log file, and when the problem occurs,
+>> the middle dozens of bytes of the file are read as all zeros, while
+>> the data on disk is not. This is a journal-like file where a write
+>> process gets the data from the master node and writes it locally,
+>> and another replay process reads the file and performs the replay
+>> operation accordingly (some SQL statements).  The problem is that
+>> when replaying, it finds that the data read is corrupted, not valid
+>> SQL data, while the data on disk is normal.
+> You mentioned "scripts" --- are these locally developped scripts by
+> any chance?
+This refers to the sql commands to be replayed in the relay log file.
+  I don't know much about this file, but you can read the official
+documentation.
+https://dev.mysql.com/doc/refman/8.0/en/replica-logs-relaylog.html
+> The procedure suggested in a few places that I looked up
+> don't involve needing to read the replay log.   For example from[1]:
 >
-> On Mon, 4 Dec 2023 at 14:33, Keith Zhao <keith.zhao@starfivetech.com> wrote:
-> >
-> > add simple encoder for dsi bridge
+> On the master server:
 >
-> This doesn't look like a proper commit message.
+> root@repl-master:~# mysql -uroot -p;
+> mysql> CREATE USER ‘slave’@’12.34.56.789‘ IDENTIFIED BY ‘SLAVE_PASSWORD‘;
+> mysql> GRANT REPLICATION SLAVE ON . TO ‘slave’@’12.34.56.222 ‘;
+> mysql> FLUSH PRIVILEGES;
+> mysql> FLUSH TABLES WITH READ LOCK;
 >
-> >
-> > Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
-> > ---
-> >  drivers/gpu/drm/verisilicon/Makefile        |   4 +-
-> >  drivers/gpu/drm/verisilicon/vs_drv.c        |   2 +
-> >  drivers/gpu/drm/verisilicon/vs_simple_enc.c | 195 ++++++++++++++++++++
-> >  drivers/gpu/drm/verisilicon/vs_simple_enc.h |  23 +++
-> >  4 files changed, 223 insertions(+), 1 deletion(-)
-> >  create mode 100644 drivers/gpu/drm/verisilicon/vs_simple_enc.c
-> >  create mode 100644 drivers/gpu/drm/verisilicon/vs_simple_enc.h
-> >
-> > diff --git a/drivers/gpu/drm/verisilicon/Makefile b/drivers/gpu/drm/verisilicon/Makefile
-> > index 71fadafcee13..cd5d0a90bcfe 100644
-> > --- a/drivers/gpu/drm/verisilicon/Makefile
-> > +++ b/drivers/gpu/drm/verisilicon/Makefile
-> > @@ -5,6 +5,8 @@ vs_drm-objs := vs_dc_hw.o \
-> >                 vs_crtc.o \
-> >                 vs_drv.o \
-> >                 vs_modeset.o \
-> > -               vs_plane.o
-> > +               vs_plane.o \
-> > +               vs_simple_enc.o
-> > +
-> >  vs_drm-$(CONFIG_DRM_VERISILICON_STARFIVE_HDMI) += starfive_hdmi.o
-> >  obj-$(CONFIG_DRM_VERISILICON) += vs_drm.o
-> > diff --git a/drivers/gpu/drm/verisilicon/vs_drv.c b/drivers/gpu/drm/verisilicon/vs_drv.c
-> > index d7e5199fe293..946f137ab124 100644
-> > --- a/drivers/gpu/drm/verisilicon/vs_drv.c
-> > +++ b/drivers/gpu/drm/verisilicon/vs_drv.c
-> > @@ -23,6 +23,7 @@
-> >  #include "vs_drv.h"
-> >  #include "vs_modeset.h"
-> >  #include "vs_dc.h"
-> > +#include "vs_simple_enc.h"
-> >
-> >  #define DRV_NAME       "verisilicon"
-> >  #define DRV_DESC       "Verisilicon DRM driver"
-> > @@ -217,6 +218,7 @@ static struct platform_driver *drm_sub_drivers[] = {
-> >  #ifdef CONFIG_DRM_VERISILICON_STARFIVE_HDMI
-> >         &starfive_hdmi_driver,
-> >  #endif
-> > +       &simple_encoder_driver,
-> >  };
-> >
-> >  static struct component_match *vs_drm_match_add(struct device *dev)
-> > diff --git a/drivers/gpu/drm/verisilicon/vs_simple_enc.c b/drivers/gpu/drm/verisilicon/vs_simple_enc.c
-> > new file mode 100644
-> > index 000000000000..c5a8d82bc469
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/verisilicon/vs_simple_enc.c
-> > @@ -0,0 +1,195 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2020 VeriSilicon Holdings Co., Ltd.
-> > + */
-> > +#include <linux/component.h>
-> > +#include <linux/of_device.h>
-> > +#include <linux/module.h>
-> > +
-> > +#include <drm/drm_atomic_helper.h>
-> > +#include <drm/drm_bridge.h>
-> > +#include <drm/drm_crtc_helper.h>
-> > +#include <drm/drm_of.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/media-bus-format.h>
-> > +#include <linux/mfd/syscon.h>
-> > +
-> > +#include "vs_crtc.h"
-> > +#include "vs_simple_enc.h"
-> > +
-> > +static const struct simple_encoder_priv dsi_priv = {
+> This will make the master server read-only, with all pending writes
+> flushed out (so you don't need to worry about the replay log), and
+> then you move the data from the master to slave:
 >
-> Please use proper prefix for all the struct and function names.
-> vs_simple_encoder sounds better. Or vs_dsi_encoder.
+> root@repl-master:~# mysqldump -u root -p –all-databases –master-data > data.sql
+> root@repl-master:~# scp data.sql root@12.34.56.222
 >
-> > +       .encoder_type = DRM_MODE_ENCODER_DSI
-> > +};
-> > +
-> > +static inline struct simple_encoder *to_simple_encoder(struct drm_encoder *enc)
-> > +{
-> > +       return container_of(enc, struct simple_encoder, encoder);
-> > +}
-> > +
-> > +static int encoder_parse_dt(struct device *dev)
-> > +{
-> > +       struct simple_encoder *simple = dev_get_drvdata(dev);
-> > +       unsigned int args[2];
-> > +
-> > +       simple->dss_regmap = syscon_regmap_lookup_by_phandle_args(dev->of_node,
-> > +                                                                 "starfive,syscon",
-> > +                                                                 2, args);
-> > +
-> > +       if (IS_ERR(simple->dss_regmap)) {
-> > +               return dev_err_probe(dev, PTR_ERR(simple->dss_regmap),
-> > +                                    "getting the regmap failed\n");
-> > +       }
-> > +
-> > +       simple->offset = args[0];
-> > +       simple->mask = args[1];
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +void encoder_atomic_enable(struct drm_encoder *encoder,
-> > +                          struct drm_atomic_state *state)
-> > +{
-> > +       struct simple_encoder *simple = to_simple_encoder(encoder);
-> > +
-> > +       regmap_update_bits(simple->dss_regmap, simple->offset, simple->mask,
-> > +                          simple->mask);
-> > +}
-> > +
-> > +int encoder_atomic_check(struct drm_encoder *encoder,
-> > +                        struct drm_crtc_state *crtc_state,
-> > +                        struct drm_connector_state *conn_state)
-> > +{
-> > +       struct vs_crtc_state *vs_crtc_state = to_vs_crtc_state(crtc_state);
-> > +       struct drm_connector *connector = conn_state->connector;
-> > +       int ret = 0;
-> > +
-> > +       struct drm_bridge *first_bridge = drm_bridge_chain_get_first_bridge(encoder);
-> > +       struct drm_bridge_state *bridge_state = ERR_PTR(-EINVAL);
-> > +
-> > +       vs_crtc_state->encoder_type = encoder->encoder_type;
-> > +
-> > +       if (first_bridge && first_bridge->funcs->atomic_duplicate_state)
-> > +               bridge_state = drm_atomic_get_bridge_state(crtc_state->state, first_bridge);
+> Then on the slave:
 >
-> Please don't poke into others' playground. This should go into your
-> DSI bridge's atomic_check() instead.
+> root@repl-slave:~# mysql -uroot -p < data.sql
+> root@repl-slave:~# mysql -uroot -p;
+> mysql> STOP SLAVE;
+>
+> ... and then on the master:
+>
+> root@repl-master:~# mysql -uroot -p;
+> mysql> UNLOCK TABLES;
+>
+> ... and back on the slave:
+>
+> root@repl-slave:~# mysql -uroot -p;
+> mysql> START SLAVE;
+>
+> [1] https://hevodata.com/learn/mysql-master-slave-replication/
+>
+> ... or you could buy the product advertised at [1] which is easier for
+> the database administrators, but results in $$$ flowing to the Hevo
+> company.  :-)
+>
+> In any case, I'm pretty sure that the official documented way of
+> setting up a failover replication setup doesn't involve buffered reads
+> of the replay file.
+>
+> It is certainly the case that mysqldump uses buffered reads, but
+> that's why you have to temporary make the database read-only using
+> "FLUSH TABLES WITH READ LOCK" before taking a database snapshot, and
+> then re-enable database updates the "UNLOCK TABLES" SQL commands.
+>
+> Cheers,
+>
+> 					- Ted
+Thank you very much for your detailed explanation!
+But the downstream users do have buffered reads to read the relay log
+file, as I confirmed with bpftrace. Here's an introduction to turning on
+relay logging, but I'm not sure if you can access this link:
+https://blog.csdn.net/javaanddonet/article/details/112596148
 
-Hmm. And you can not use vs_crtc_state from your bridge. Actually this
-design makes me wonder, how does your hardware work? Is it possible to
-send the DSI commands to the panel?
-
->
-> > +
-> > +       if (IS_ERR(bridge_state)) {
-> > +               if (connector->display_info.num_bus_formats)
-> > +                       vs_crtc_state->output_fmt = connector->display_info.bus_formats[0];
-> > +               else
-> > +                       vs_crtc_state->output_fmt = MEDIA_BUS_FMT_FIXED;
-> > +       } else {
-> > +               vs_crtc_state->output_fmt = bridge_state->input_bus_cfg.format;
-> > +       }
-> > +
-> > +       switch (vs_crtc_state->output_fmt) {
-> > +       case MEDIA_BUS_FMT_FIXED:
-> > +       case MEDIA_BUS_FMT_RGB565_1X16:
-> > +       case MEDIA_BUS_FMT_RGB666_1X18:
-> > +       case MEDIA_BUS_FMT_RGB888_1X24:
-> > +       case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
-> > +       case MEDIA_BUS_FMT_RGB101010_1X30:
-> > +       case MEDIA_BUS_FMT_UYYVYY8_0_5X24:
-> > +       case MEDIA_BUS_FMT_UYVY8_1X16:
-> > +       case MEDIA_BUS_FMT_YUV8_1X24:
-> > +       case MEDIA_BUS_FMT_UYYVYY10_0_5X30:
-> > +       case MEDIA_BUS_FMT_UYVY10_1X20:
-> > +       case MEDIA_BUS_FMT_YUV10_1X30:
-> > +               ret = 0;
-> > +               break;
-> > +       default:
-> > +               ret = -EINVAL;
-> > +               break;
-> > +       }
-> > +
-> > +       /* If MEDIA_BUS_FMT_FIXED, set it to default value */
-> > +       if (vs_crtc_state->output_fmt == MEDIA_BUS_FMT_FIXED)
-> > +               vs_crtc_state->output_fmt = MEDIA_BUS_FMT_RGB888_1X24;
-> > +
-> > +       return ret;
-> > +}
-> > +
-> > +static const struct drm_encoder_helper_funcs encoder_helper_funcs = {
-> > +       .atomic_check = encoder_atomic_check,
-> > +       .atomic_enable = encoder_atomic_enable,
-> > +};
-> > +
-> > +static int encoder_bind(struct device *dev, struct device *master, void *data)
-> > +{
-> > +       struct drm_device *drm_dev = data;
-> > +       struct simple_encoder *simple = dev_get_drvdata(dev);
-> > +       struct drm_encoder *encoder;
-> > +       struct drm_bridge *bridge;
-> > +       int ret;
-> > +
-> > +       encoder = &simple->encoder;
-> > +
-> > +       ret = drmm_encoder_init(drm_dev, encoder, NULL, simple->priv->encoder_type, NULL);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       drm_encoder_helper_add(encoder, &encoder_helper_funcs);
-> > +
-> > +       encoder->possible_crtcs =
-> > +                       drm_of_find_possible_crtcs(drm_dev, dev->of_node);
-> > +
-> > +       /* output port is port1*/
-> > +       bridge = devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
-> > +       if (IS_ERR(bridge))
-> > +               return 0;
-> > +
-> > +       return drm_bridge_attach(encoder, bridge, NULL, 0);
-> > +}
-> > +
-> > +static const struct component_ops encoder_component_ops = {
-> > +       .bind = encoder_bind,
-> > +};
-> > +
-> > +static const struct of_device_id simple_encoder_dt_match[] = {
-> > +       { .compatible = "starfive,dsi-encoder", .data = &dsi_priv},
-> > +       {},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, simple_encoder_dt_match);
-> > +
-> > +static int encoder_probe(struct platform_device *pdev)
-> > +{
-> > +       struct device *dev = &pdev->dev;
-> > +       struct simple_encoder *simple;
-> > +       int ret;
-> > +
-> > +       simple = devm_kzalloc(dev, sizeof(*simple), GFP_KERNEL);
-> > +       if (!simple)
-> > +               return -ENOMEM;
-> > +
-> > +       simple->priv = of_device_get_match_data(dev);
-> > +
-> > +       simple->dev = dev;
-> > +
-> > +       dev_set_drvdata(dev, simple);
-> > +
-> > +       ret = encoder_parse_dt(dev);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       return component_add(dev, &encoder_component_ops);
-> > +}
-> > +
-> > +static int encoder_remove(struct platform_device *pdev)
-> > +{
-> > +       struct device *dev = &pdev->dev;
-> > +
-> > +       component_del(dev, &encoder_component_ops);
-> > +       dev_set_drvdata(dev, NULL);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +struct platform_driver simple_encoder_driver = {
-> > +       .probe = encoder_probe,
-> > +       .remove = encoder_remove,
-> > +       .driver = {
-> > +               .name = "vs-simple-encoder",
-> > +               .of_match_table = of_match_ptr(simple_encoder_dt_match),
-> > +       },
-> > +};
-> > +
-> > +MODULE_DESCRIPTION("Simple Encoder Driver");
-> > +MODULE_LICENSE("GPL");
-> > diff --git a/drivers/gpu/drm/verisilicon/vs_simple_enc.h b/drivers/gpu/drm/verisilicon/vs_simple_enc.h
-> > new file mode 100644
-> > index 000000000000..fb33ca9e18d6
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/verisilicon/vs_simple_enc.h
-> > @@ -0,0 +1,23 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (C) 2022 VeriSilicon Holdings Co., Ltd.
-> > + */
-> > +
-> > +#ifndef __VS_SIMPLE_ENC_H_
-> > +#define __VS_SIMPLE_ENC_H_
-> > +
-> > +struct simple_encoder_priv {
-> > +       unsigned char encoder_type;
-> > +};
-> > +
-> > +struct simple_encoder {
-> > +       struct drm_encoder encoder;
-> > +       struct device *dev;
-> > +       const struct simple_encoder_priv *priv;
-> > +       struct regmap *dss_regmap;
-> > +       unsigned int offset;
-> > +       unsigned int mask;
-> > +};
-> > +
-> > +extern struct platform_driver simple_encoder_driver;
-> > +#endif /* __VS_SIMPLE_ENC_H_ */
-> > --
-> > 2.34.1
-> >
->
->
-> --
-> With best wishes
-> Dmitry
-
-
-
+Thanks!
 -- 
-With best wishes
-Dmitry
+With Best Regards,
+Baokun Li
+.
