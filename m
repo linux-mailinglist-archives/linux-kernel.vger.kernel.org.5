@@ -2,121 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8DF805C67
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725E7805C28
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442485AbjLEPj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
+        id S1346898AbjLEPlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:41:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442528AbjLEPjV (ORCPT
+        with ESMTP id S1346262AbjLEPlP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:39:21 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294D61B3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:39:26 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35d7341be5cso2583475ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 07:39:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1701790765; x=1702395565; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aV5Z40IgGgSyP4gennpB4QDX5F9cf6j/NtRFHTtIS+E=;
-        b=PPdXiABoSCmPznzGiuGd2+AE4Rkjx+GyykgPV9ZyODUzUMGQkJGo62DwHmxPgJkmhW
-         PG8QuErsveafm1zOndTBKN5dnqyeGvku0CQZtLJZv75w+Lr2xzTOv0JW3LqmLY/Y6cuf
-         g5JFguds1QuhjhmbYmjdBBtc3xzb1sRg6a1Ps=
+        Tue, 5 Dec 2023 10:41:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8660118D
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:41:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701790880;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CvhR56av4gAhLVevaz2JSGCQQg2cTgXXoi36b5i8+VQ=;
+        b=MuGHoukipCyjibW4y8T/r9qPfFzRrkuVJK32AlQqKXBqQFIFXYHhexniQrFUF6faKxASXy
+        KF0Lx9WsGIvChx7G94RslfQh2k+mrXUSAZAa14JYYM1Bu/0zSNQX2CAplgHImtp/+gTic1
+        RvmrPDa+wyBOCldOzojxKuwaCs+zXpU=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-513-L6jkIKy3N1OPmaaEI3xI_g-1; Tue, 05 Dec 2023 10:40:57 -0500
+X-MC-Unique: L6jkIKy3N1OPmaaEI3xI_g-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1d0704bdd5bso16089025ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 07:40:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701790765; x=1702395565;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aV5Z40IgGgSyP4gennpB4QDX5F9cf6j/NtRFHTtIS+E=;
-        b=CdI7pQXLjsV2PTJyRbBikFFvHk56YVETR7gc9oGNKJX1DL1mnFIPIwYbH9+5j/aM0y
-         gi3Hf+RAFXk4gCtnkz6BsxGxV7XCnsBOARJZdNaJxXEvF4labotCdV6HdYVMA82MO+d5
-         TJxGvOYS9p9FaPCMCRoRPtsSdyHZoWVLZ85c7pHKqH3BvOOadScq99Ux/oQUz27DHGzx
-         aGtbd3EyYvLRhLdUhLhmwexhmhhSR1pSKV6quWERe0v4cdkhQAUhtmHAUihV4qpWXDff
-         dUaZkn5Yan34hgYVRc3v6BZG9q7yUnezb0Cq3bCuhGsO6kpHjfIJMoJ0Bowjuiqa0am7
-         RKSA==
-X-Gm-Message-State: AOJu0YySPTASnQKIQbcqpmYEjQeQXqTbScY48QNvQFum9RM6gBBCcWpS
-        AX0057XDA0vlOgHG4BEy0QCoAg==
-X-Google-Smtp-Source: AGHT+IGGIK7VmkmKbUZWPfpCs9Qu0YmShDMC4ewlN8DMCRGgedjCEC4PT7fS1c1otbxjLibq6uZaDg==
-X-Received: by 2002:a05:6e02:170f:b0:35d:6600:fceb with SMTP id u15-20020a056e02170f00b0035d6600fcebmr10728184ill.0.1701790765411;
-        Tue, 05 Dec 2023 07:39:25 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id t6-20020a92dc06000000b0035ae9f62692sm639954iln.88.2023.12.05.07.39.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 07:39:25 -0800 (PST)
-Message-ID: <76c4b967-1cb6-4f77-9402-f835b15adb10@linuxfoundation.org>
-Date:   Tue, 5 Dec 2023 08:39:23 -0700
+        d=1e100.net; s=20230601; t=1701790850; x=1702395650;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CvhR56av4gAhLVevaz2JSGCQQg2cTgXXoi36b5i8+VQ=;
+        b=ncAqhM95n/SJlOiS3DK5bRg9oXnuBNdkbifN9sVhMwLYZYP3+Gu6AELrT0l9fxCeCF
+         zaRwQVf3q68+/3xwHH8rfbf2jf0oBF9qcxX+bJdswxyMDGmS2WeB0GU/vI9ge614vNm/
+         C6oJQ7WVwxGYzmIMVi/uRywGppnLxr4v0jEc2vpeA1+EHnsP0Slwjjs0Eqzfl1g9uw7i
+         hHHnnkPM++/9OC2ZRSaPoozIh5+ZPInkFuLBD7e2v8LF+lnyY8pwEfqkTYXxBb3oTWke
+         bGii2d1tjulqzTeqMRgYOTw6mbYTZtn6gX1r1MYMyDYVillzLi2dT86Y7WSMwxoxDK4z
+         VbQg==
+X-Gm-Message-State: AOJu0YyHBw+bfsNyCJQOMSH5nmPBcNCUkqm4eMbjmkE8hkG0tp2VMuDc
+        cN+707WnRe7ts5kuZ5CKBqk6vUElYH/cDag5mnAqXeT2o9uwCd6EgctTmHu1ktTpQw37oRUeZ3y
+        MXnpMdTQWYA59o0ew/Jaq469c
+X-Received: by 2002:a17:902:8f8c:b0:1d0:6ffd:f1f8 with SMTP id z12-20020a1709028f8c00b001d06ffdf1f8mr3364665plo.78.1701790850154;
+        Tue, 05 Dec 2023 07:40:50 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IELbxy/B8D8Ivj8dQ1PJh4K071fTj0JsFrU+9jvYbDFFDHZQaJ5+JoV27NRmB6dO31mKVj6Mg==
+X-Received: by 2002:a17:902:8f8c:b0:1d0:6ffd:f1f8 with SMTP id z12-20020a1709028f8c00b001d06ffdf1f8mr3364647plo.78.1701790849803;
+        Tue, 05 Dec 2023 07:40:49 -0800 (PST)
+Received: from pollux ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id q5-20020a170902a3c500b001cffe1e7374sm1567672plb.214.2023.12.05.07.40.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 07:40:49 -0800 (PST)
+Date:   Tue, 5 Dec 2023 16:40:40 +0100
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     sarah.walker@imgtec.com, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, matt.coster@imgtec.com,
+        donald.robson@imgtec.com
+Subject: Re: [PATCH drm-misc-next v2 0/2] PowerVR VM fixes
+Message-ID: <ZW9EeFWWZ0BMWIPq@pollux>
+References: <20231129220835.297885-1-dakr@redhat.com>
+ <j6w6ccewlvoosop77ug56r3sqoi4hglj3ejkyfw4dj3s3pdsw5@b473njzq5u3d>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] selftests: livepatch: Test livepatching a heavily
- called syscall
-To:     mpdesouza@suse.com, Marcos Paulo de Souza <mpdesouza@suse.de>
-Cc:     Shuah Khan <shuah@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        live-patching@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231031-send-lp-kselftests-v3-0-2b1655c2605f@suse.com>
- <20231031-send-lp-kselftests-v3-3-2b1655c2605f@suse.com>
- <f9d82fa6-08d7-4ab6-badc-691987b37a82@linuxfoundation.org>
- <unpg4z7eig6qbudgulnr6sog65fq7s2dy4u2vp2dgkdrq5csdw@dltnxuw6kw5b>
- <8b95b96c-6aeb-4bf0-8ee9-2ba62330c672@linuxfoundation.org>
- <12a9ec1bc84dc6d4b461e5c780ba7d3c3aa91740.camel@suse.com>
-Content-Language: en-US
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <12a9ec1bc84dc6d4b461e5c780ba7d3c3aa91740.camel@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <j6w6ccewlvoosop77ug56r3sqoi4hglj3ejkyfw4dj3s3pdsw5@b473njzq5u3d>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/23 05:52, mpdesouza@suse.com wrote:
-> On Fri, 2023-12-01 at 16:38 +0000, Shuah Khan wrote:
-
-> 0003-selftests-livepatch-Test-livepatching-a-heavily-call.patch has
-> style problems, please review.
+On Tue, Dec 05, 2023 at 04:35:00PM +0100, Maxime Ripard wrote:
+> Hi,
 > 
-> NOTE: If any of the errors are false positives, please report
->        them to the maintainer, see CHECKPATCH in MAINTAINERS.
+> On Wed, Nov 29, 2023 at 11:07:59PM +0100, Danilo Krummrich wrote:
+> > Some major GPUVM changes landed just before v8 of the PowerVR series. Since v8
+> > went in rather quickly (review process was finished otherwise) I haven't had the
+> > chance to review the subsequent code changes.
+> > 
+> > Hence, this series with a few fixes in this context. Plus a minor GPUVM patch to
+> > make the drm_gpuvm_prepare_* helpers useful for PowerVR.
 > 
-> I couldn't find any mention about "missing module name". Is your script
-> showing more warnings than these ones? Can you please share your
-> output?
+> This doesn't apply on drm-misc-next anymore, could you rebase and
+> resend?
+
+I already applied the two patches to drm-misc-next.
+
+- Danilo
+
 > 
-> I'll fix MAINTAINERS file but I'll wait until I understand what's
-> missing in your checkpatch script to resend the patchset.
-> 
-
-Looks like it is coming a script - still my question stands on
-whether or not you would need a module name for this module?
-
-I am not too concerned about MAINTAINERS file warns.
-
-I am assuming you will be sending a new version to address
-Joe Lawrence's comments?
-
-thanks,
--- Shuah
-
+> Thanks!
+> Maxime
 
 
