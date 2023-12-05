@@ -2,130 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB08F804DF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:34:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 781C9804DF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbjLEJeX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 04:34:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50206 "EHLO
+        id S234873AbjLEJez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjLEJeW (ORCPT
+        with ESMTP id S231772AbjLEJex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:34:22 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E34679A
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:34:27 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 381B8139F;
-        Tue,  5 Dec 2023 01:35:14 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8863E3F6C4;
-        Tue,  5 Dec 2023 01:34:24 -0800 (PST)
-Message-ID: <2de0617e-d1d7-49ec-9cb8-206eaf37caed@arm.com>
-Date:   Tue, 5 Dec 2023 09:34:23 +0000
+        Tue, 5 Dec 2023 04:34:53 -0500
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8957FA7;
+        Tue,  5 Dec 2023 01:34:58 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B59Yk6X009267;
+        Tue, 5 Dec 2023 03:34:46 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701768886;
+        bh=42Uxhd/vo0d/cPj9rq2rsYuSN4TVQOfYppeWYBS8MLs=;
+        h=From:To:CC:Subject:Date;
+        b=Y+iL0iE6xWahlf1M5OcK9MZalnVGXd2DUgJBXCjGc+wK76TjPLqaI2FqJ7n+B0aNV
+         PdSFkAfXrfzWZoZ0r/uWuUHyYnLjNY6l/hRbpU1Q5ggtLLoCGHf7fxZjHNrmDmudxF
+         Qa1poXJDSA0XHCuyU1E7dTvBDHOk9BVnGp+FdOsE=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B59Yk4K082150
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 5 Dec 2023 03:34:46 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
+ Dec 2023 03:34:45 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 5 Dec 2023 03:34:45 -0600
+Received: from a0497641-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B59YeMl010566;
+        Tue, 5 Dec 2023 03:34:40 -0600
+From:   Neha Malcom Francis <n-francis@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <a-nandan@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <eblanc@baylibre.com>, <jneanne@baylibre.com>,
+        <aseketeli@baylibre.com>, <jpanis@baylibre.com>, <u-kumar1@ti.com>,
+        <j-luthra@ti.com>, <vaishnav.a@ti.com>, <hnagalla@ti.com>,
+        <devarsht@ti.com>, <n-francis@ti.com>
+Subject: [PATCH v9 0/7] Add TPS6594 PMIC support on several boards
+Date:   Tue, 5 Dec 2023 15:04:32 +0530
+Message-ID: <20231205093439.2298296-1-n-francis@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 00/10] Multi-size THP for anonymous memory
-Content-Language: en-GB
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204113039.42510c23455026e40c5e2a56@linux-foundation.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231204113039.42510c23455026e40c5e2a56@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 19:30, Andrew Morton wrote:
-> On Mon,  4 Dec 2023 10:20:17 +0000 Ryan Roberts <ryan.roberts@arm.com> wrote:
-> 
->> Hi All,
->>
->>
->> Prerequisites
->> =============
->>
->> Some work items identified as being prerequisites are listed on page 3 at [9].
->> The summary is:
->>
->> | item                          | status                  |
->> |:------------------------------|:------------------------|
->> | mlock                         | In mainline (v6.7)      |
->> | madvise                       | In mainline (v6.6)      |
->> | compaction                    | v1 posted [10]          |
->> | numa balancing                | Investigated: see below |
->> | user-triggered page migration | In mainline (v6.7)      |
->> | khugepaged collapse           | In mainline (NOP)       |
-> 
-> What does "prerequisites" mean here?  Won't compile without?  Kernel
-> crashes without?  Nice-to-have-after?  Please expand on this.
+TPS6594 is a Power Management IC which provides regulators and others
+features like GPIOs, RTC, watchdog, ESMs (Error Signal Monitor), and
+PFSM (Pre-configurable Finite State Machine). The SoC and the PMIC can
+communicate through the I2C or SPI interfaces.
+TPS6594 is the super-set device while TPS6593 and LP8764 are derivatives.
 
-Short answer: It's supposed to mean things that either need to be done to prevent the mm from regressing (both correctness and performance) when multi-size THP is present but disabled, or things that need to be done to make the mm robust (but not neccessarily optimially performant) when multi-size THP is enabled. But in reality, all of the things on the list could really be reclassified as "nice-to-have-after", IMHO; their absence will neither cause compilation nor runtime errors.
+This series adds device tree nodes for TI TPS6594 PMICs found in the
+following boards:
+- J721EXSOMXEVM:
+  Link: https://www.ti.com/tool/J721EXSOMXEVM
+- J721S2XSOMXEVM:
+  Link: https://www.ti.com/tool/J721S2XSOMXEVM
+- J7200XSOMXEVM:
+  Link: https://www.ti.com/tool/J7200XSOMXEVM
+- J784S4XEVM
+  Link: https://www.ti.com/tool/J784S4XEVM
+- SK-AM69
+  Link: https://www.ti.com/tool/SK-AM69
+- SK-TDA4VM (J721E-SK)
+  Link: https://www.ti.com/tool/SK-TDA4VM
 
-Longer answer: When I first started looking at this, I was advised that there were likely a number of corners which made assumptions about large folios always being PMD-sized, and if not found and fixed, could lead to stability issues. At the time I was also pursuing a strategy of multi-size THP being a compile-time feature with no runtime control, so I decided it was important for multi-size THP to not effectively disable other features (e.g. various madvise ops used to ignore PTE-mapped large folios). This list represents all the things that I could find based on code review, as well as things suggested by others, and in the end, they all fall into that last category of "PTE-mapped large folios efectively disable existing features". But given we now have runtime controls to opt-in to multi-size THP, I'm not sure we need to classify these as prerequisites. But I didn't want to unilaterally make that decision, given this list has previously been discussed and agreed by others.
+Boot Logs with required config (DONOTMERGE patch) enabled:
+https://gist.github.com/nehamalcom/f47fcd6183360ed8a146c9ba456202c3
+Boot Logs without config enabled:
+https://gist.github.com/nehamalcom/58217b100e614ae55726f314e02b5001
 
-It's also worth noting that in the case of compaction, that's already a problem for large folios in the page cache; large folios will be skipped.
+---
+Changes from v8:
+https://lore.kernel.org/all/20231128055230.342547-4-n-francis@ti.com/
+- added bootph-pre-ram to AVS regulator (Udit)
+- keeping boot logs and Tested-by tags the same (no effect to kernel)
 
-> 
-> I looked at [9], but access is denied.
+Changes from v7:
+https://lore.kernel.org/all/20231122104513.2335757-1-n-francis@ti.com/
+- (New Patches) Add support for SK boards that have TPS6594xx PMIC
+  present (J721E-SK and AM69-SK) (Nishanth)
+- Add DONOTMERGE defconfig patch to show test logs
 
-Sorry about that; its owned by David Rientjes so I can't fix that for you. It's a PDF of a slide with the following table:
+Changes from v6:
+https://lore.kernel.org/all/20230810-tps6594-v6-0-2b2e2399e2ef@ti.com/
+- Modify patch series to include only patches not merged (J7)
+- Add boot logs for all affected boards
 
-+-------------------------------+------------------------------------------------------------------------+--------------+--------------------+
-| Item                          | Description                                                            | Assignee     | Status             |
-+-------------------------------+------------------------------------------------------------------------+--------------+--------------------+
-| mlock                         | Large, pte-mapped folios are ignored when mlock is requested.          | Yin, Fengwei | In mainline (v6.7) |
-|                               | Code comment for mlock_vma_folio() says "...filter out pte mappings    |              |                    |
-|                               | of THPs which cannot be consistently counted: a pte mapping of the     |              |                    |
-|                               | THP head cannot be distinguished by the page alone."                   |              |                    |
-| madvise                       | MADV_COLD, MADV_PAGEOUT, MADV_FREE: For large folios, code assumes     | Yin, Fengwei | In mainline (v6.6) |
-|                               | exclusive only if mapcount==1, else skips remainder of operation.      |              |                    |
-|                               | For large, pte-mapped folios, exclusive folios can have mapcount       |              |                    |
-|                               | upto nr_pages and still be exclusive. Even better; don't split         |              |                    |
-|                               | the folio if it fits entirely within the range.                        |              |                    |
-| compaction                    | Raised at LSFMM: Compaction skips non-order-0 pages.                   | Zi Yan       | v1 posted          |
-|                               | Already problem for page-cache pages today.                            |              |                    |
-| numa balancing                | Large, pte-mapped folios are ignored by numa-balancing code. Commit    | John Hubbard | Investigated:      |
-|                               | comment (e81c480): "We're going to have THP mapped with PTEs. It       |              | Not prerequisite   |
-|                               | will confuse numabalancing. Let's skip them for now."                  |              |                    |
-| user-triggered page migration | mm/migrate.c (migrate_pages syscall) We don't want to migrate folio    | Kefeng Wang  | In mainline (v6.7) |
-|                               | that is shared.                                                        |              |                    |
-| khugepaged collapse           | collapse small-sized THP to PMD-sized THP in khugepaged/MADV_COLLAPSE. | Ryan Roberts | In mainline (NOP)  |
-|                               | Kirill thinks khugepage should already be able to collapse             |              |                    |
-|                               | small large folios to PMD-sized THP; verification required.            |              |                    |
-+-------------------------------+------------------------------------------------------------------------+--------------+--------------------+
+Changes from v5:
+https://lore.kernel.org/all/20230809-tps6594-v5-0-485fd3d63670@ti.com
+- Range-diff: http://0x0.st/H_fD.diff
+- Reword the patch fixing interrupt ranges for mcu domain gpio intr, and
+  add Fixes: tag
+- Also fix interrupt ranges for main domain gpio intr in the same patch
+- Change pinctrl node names to end in -pins to fix dtbs_check warnings
+- (New Patch) Enable TPS6594 in defconfig
 
-Thanks,
-Ryan
+Changes from v4:
+https://lore.kernel.org/all/20230727130908.10656-1-eblanc@baylibre.com/
+- Range-diff: https://0x0.st/H_L7.diff
+- Rebased on top of linux-next
+- Fix min voltage on vdd_usb_3v3 regulator (ldo2) on j721e-som
+- Use 3-hex-digit format for pinctrl values
 
-> 
->> [9] https://drive.google.com/file/d/1GnfYFpr7_c1kA41liRUW5YtCb8Cj18Ud/view?usp=sharing&resourcekey=0-U1Mj3-RhLD1JV6EThpyPyA
-> 
-> 
+Changes from v3:
+https://lore.kernel.org/all/20230417154832.216774-1-eblanc@baylibre.com/
+- Rebased on top of v6.5-rc1.
+- Change pinctrl number for irq pin as wkup_pmx0 was split on some boards.
+- Use already present wkup_i2c0 node instead of creating a new one.
+
+Changes from v2:
+https://lore.kernel.org/lkml/20230414112843.1358067-1-eblanc@baylibre.com/
+- Change node name as per Krzysztof review.
+- Add a fix for the interrupt range of wakeup gpio used by TPS6594 pmic
+  on J784S4.
+  The interruptions of the PMIC were not working before that.
+- Remove dependencies on other patch series as that was a mistake, see
+  https://lore.kernel.org/lkml/CRYY2V3HJ0CP.96JQ18PLZB3C@burritosblues/
+
+Changes from v1:
+https://lore.kernel.org/lkml/20230329142948.833800-1-eblanc@baylibre.com/
+- Harmonize regulators names across the different boards.
+- Adjust AVS voltage range.
+- Remove some outdated comments.
+- Add PMIC to J784S4 board.
+- Compatible string modified to match dt-bindings.
+- Add gpio-controller and gpio-cells properties.
+
+
+Esteban Blanc (2):
+  arm64: dts: ti: k3-j7200-som-p0: Add TP6594 family PMICs
+  arm64: dts: ti: k3-j721s2-som-p0: Add TP6594 family PMICs
+
+Jerome Neanne (2):
+  arm64: dts: ti: k3-j721e-som-p0: Add TP6594 family PMICs
+  arm64: dts: ti: k3-j784s4-evm: Add support for TPS6594 PMIC
+
+Neha Malcom Francis (3):
+  arm64: dts: ti: k3-am69-sk: Add support for TPS6594 PMIC
+  arm64: dts: ti: k3-j721e-sk: Add TPS6594 family PMICs
+  DONOTMERGE: arm64: defconfig: Enable TPS6594 PMIC for J7 devices
+
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts        | 100 +++++++++
+ arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi  | 161 +++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721e-sk.dts       | 158 +++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721e-som-p0.dtsi  | 167 +++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi | 203 +++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts     | 104 ++++++++++
+ arch/arm64/configs/defconfig                 |   2 +-
+ 7 files changed, 894 insertions(+), 1 deletion(-)
+
+-- 
+2.34.1
 
