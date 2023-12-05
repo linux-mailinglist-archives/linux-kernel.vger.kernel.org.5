@@ -2,127 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15707805F6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:29:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9214C805F71
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235142AbjLEU3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 15:29:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
+        id S235123AbjLEU3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 15:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjLEU3I (ORCPT
+        with ESMTP id S230106AbjLEU3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 15:29:08 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01749129;
-        Tue,  5 Dec 2023 12:29:14 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7b3bc70fca5so5146839f.1;
-        Tue, 05 Dec 2023 12:29:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701808154; x=1702412954; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LYftztaNvPp9AiycXxFsDD/pusJZO5VD4GKLxnNaenc=;
-        b=ROO6w6Gc3UGUgtB23hLKn7QZVd9c7gSwZG8luUTDCKVHuXrTucFu0H/xUd+SVDXDtv
-         PIiKySlgPjtEq69g6uJGTvjapgGQ8u5htSObTsyz4WCz4VsojD9SM/tJku8IwmL215HR
-         Yf/78KhP1IaHpV7xgCVSC0j9RVFXRDbdjDEhsj++qd4VNxzAVB1gHIDMAmD642vzxyB7
-         K0e6tSX7TebCzHuEl224QULL0BTit5RYAD/aO9o/wYhJCr9XMSrMaOaGxTiJrGrZJDcP
-         UJRc8mJ2NNaAwYxfTYDmCaMVpxtU/ujcCn6SZUkbdKVu02tbyYLNTkemkMKL6N3fMIFQ
-         tVuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701808154; x=1702412954;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LYftztaNvPp9AiycXxFsDD/pusJZO5VD4GKLxnNaenc=;
-        b=aIJ4yapcfsLYyd1Ws6jgmk+273J7Vl+d3kprdT57upwLD3RsG3nCJOp8ww+tTniEb5
-         IyJhnMgLvZr6A0XHxcUJ63bEOvqpIdmbuxsOkn6UEcW+RpqG0EZgAR85nN2nisY3rkH9
-         q1DtvpvKeOQNLegf2rN/QMyZwVAcSTqCUzsE7T1DKwmjfnH1OITTWCL3HRuohNjn0oYV
-         2fk/K5kOLI6u3q7zV4HUeaHb1oOWPziLc1ogCYqzAWO6Hpa+7azT1J9h692D51e83D8m
-         iUmFWqXMqE2ciGcxXb4DlzrUvLZx3rVycVCHdcqk38ykZDx567JtkCvIboqluv+g4x9G
-         iPLg==
-X-Gm-Message-State: AOJu0YwlJdQX1KRsbU8OK69s8kwgZd75hDbjb3pYoVUykGgJ9y6KOB5j
-        FdYFX0s48VpPxQnGQqJlp6tdAS5St9oi5fVY
-X-Google-Smtp-Source: AGHT+IEzCeN5Z1xrmFs3STXAJXiEKae3F1umsDm8OLaSSwygjahA5YJOSV+Flo2toG/hRrjDYvLSdg==
-X-Received: by 2002:a5d:8716:0:b0:7b3:9de6:695c with SMTP id u22-20020a5d8716000000b007b39de6695cmr1889441iom.7.1701808154136;
-        Tue, 05 Dec 2023 12:29:14 -0800 (PST)
-Received: from celestia.nettie.lan ([2001:470:42c4:101:3fb7:1e39:b284:286f])
-        by smtp.gmail.com with ESMTPSA id cw2-20020a05663849c200b004302370a169sm3296320jab.157.2023.12.05.12.29.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 12:29:13 -0800 (PST)
-From:   Sam Edwards <cfsworks@gmail.com>
-X-Google-Original-From: Sam Edwards <CFSworks@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?q?Daniel=20Kukie=C5=82a?= <daniel@kukiela.pl>,
-        Sven Rademakers <sven.rademakers@gmail.com>,
-        Joshua Riek <jjriek@verizon.net>,
-        Sam Edwards <CFSworks@gmail.com>
-Subject: [RESEND PATCH] arm64: dts: rockchip: Fix eMMC Data Strobe PD
-Date:   Tue,  5 Dec 2023 12:29:00 -0800
-Message-ID: <20231205202900.4617-2-CFSworks@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 5 Dec 2023 15:29:51 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38EEC181;
+        Tue,  5 Dec 2023 12:29:58 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 18AFD40E014B;
+        Tue,  5 Dec 2023 20:29:56 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4YEoh4W8wn-3; Tue,  5 Dec 2023 20:29:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701808194; bh=yB72VxK/0IQl3pur+X+/eX4EI1aY2v5x0vLEBbpCd0E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bIthWYpTbMK0CmeXE3hZeqs8Zowj8EzqAaqEzRtGvMWJEY9OicO1L4rgb5NGO/cFh
+         KbUzib78+xQk/ODh5jPhwPi6M+uPK4HyG9iAF6fK8XAkQvqPxUXX1vLmGAgBNaDc8P
+         QJ8R+AH4zVMD/OT9aZcKE+cNdWx8LdSCevu1iVheOIwg4ln9MqWaO+NP4zjFh2dDuB
+         3W5XSvi3I0K/M/ZUuoiE5oHvtiyhRcqP/jB40a5CFcTw68JQ1HN+SoCpAUPjgXILzC
+         0OrG+FfxawWJNaRBhhFGij21/IsthdN9DBzO6+0lWxAt1XQTbIDeGn5IptAVUKP8iR
+         ood6UQKjaYPsDFwTt6Im0LXGKY9dQtdzRFnJDOmm5o0XazvH/Aj8ZNEas6QvJREuEm
+         U7/lo8Y5QsKowYoGL8Xd9f+uKDOimkfD57IFugVuESJk2gr6QE7I9xQ2BzEvK0sagP
+         +eXDgyaGU6httlGOTnyiKRCJWxecWIzXy2Qj5wGkpF4NTfWtzarVAmfHOYwLDyTivX
+         Fuh9rGE74pkyFvt3hNZrrrWjD9CUg/6pXNnQ9eZPJ9/WlrzCkgGwJLbbR6zCWvtlFW
+         sJ0l2GZlX85PBitwagY0/XBNviHTudAzZIKfsdslgFpW0P3/e7HdPr0FJsWACGi4gB
+         MNTCED08c+B70gZyElT2OcOY=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DE2D240E0195;
+        Tue,  5 Dec 2023 20:29:27 +0000 (UTC)
+Date:   Tue, 5 Dec 2023 21:29:27 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "imammedo@redhat.com" <imammedo@redhat.com>,
+        "sagis@google.com" <sagis@google.com>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
+ #MC due to erratum
+Message-ID: <20231205202927.GJZW+IJ0NelvVmEum/@fat_crate.local>
+References: <cover.1699527082.git.kai.huang@intel.com>
+ <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
+ <20231205142517.GBZW8yzVDEKIVTthSx@fat_crate.local>
+ <0db3de96d324710cef469040d88002db429c47e6.camel@intel.com>
+ <20231205195637.GHZW+Add3H/gSefAVM@fat_crate.local>
+ <2394202d237b4a74440fba1a267652335b53b71d.camel@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2394202d237b4a74440fba1a267652335b53b71d.camel@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-JEDEC standard JESD84-B51 defines the eMMC Data Strobe line, which is
-currently used only in HS400 mode, as a device->host clock signal that
-"is used only in read operation. The Data Strobe is always High-Z (not
-driven by the device and pulled down by RDS) or Driven Low in write
-operation, except during CRC status response." RDS is a pull-down
-resistor specified in the 10K-100K ohm range. Thus per the standard, the
-Data Strobe is always pulled to ground (by the eMMC and/or RDS) during
-write operations.
+On Tue, Dec 05, 2023 at 08:08:34PM +0000, Huang, Kai wrote:
+> The difference is for TDX host the kernel needs to initialize the TDX module
+> first before TDX can be used.  The module initialization is done at runtime, and
+> the platform_tdx_enabled() here only returns whether the BIOS has enabled TDX.
+> 
+> IIUC the X86_FEATURE_ flag doesn't suit this purpose because based on my
+> understanding the flag being present means the kernel has done some enabling
+> work and the feature is ready to use.
 
-Evidently, the eMMC host controller in the RK3588 considers an active
-voltage on the eMMC-DS line during a write to be an error.
+Which flag do you mean? X86_FEATURE_TDX_GUEST?
 
-The default (i.e. hardware reset, and Rockchip BSP) behavior for the
-RK3588 is to activate the eMMC-DS pin's builtin pull-down. As a result,
-many RK3588 board designers do not bother adding a dedicated RDS
-resistor, instead relying on the RK3588's internal bias. The current
-devicetree, however, disables this bias (`pcfg_pull_none`), breaking
-HS400-mode writes for boards without a dedicated RDS, but with an eMMC
-chip that chooses to High-Z (instead of drive-low) the eMMC-DS line.
-(The Turing RK1 is one such board.)
+I mean, you would set a separate X86_FEATURE_TDX or so flag to denote
+that the BIOS has enabled it, at the end of that tdx_init() in the first
+patch.
 
-Fix this by changing the bias in the (common) emmc_data_strobe case to
-reflect the expected hardware/BSP behavior. This is unlikely to cause
-regressions elsewhere: the pull-down is only relevant for High-Z eMMCs,
-and if this is redundant with a (dedicated) RDS resistor, the effective
-result is only a lower resistance to ground -- where the range of
-tolerance is quite high. If it does, it's better fixed in the specific
-devicetrees.
-
-Fixes: d85f8a5c798d5 ("arm64: dts: rockchip: Add rk3588 pinctrl data")
-Signed-off-by: Sam Edwards <CFSworks@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-index 63151d9d2377..30db12c4fc82 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s-pinctrl.dtsi
-@@ -369,7 +369,7 @@ emmc_cmd: emmc-cmd {
- 		emmc_data_strobe: emmc-data-strobe {
- 			rockchip,pins =
- 				/* emmc_data_strobe */
--				<2 RK_PA2 1 &pcfg_pull_none>;
-+				<2 RK_PA2 1 &pcfg_pull_down>;
- 		};
- 	};
- 
 -- 
-2.41.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
