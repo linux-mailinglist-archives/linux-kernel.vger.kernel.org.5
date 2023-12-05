@@ -2,130 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 325C2804DBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5721804DCA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbjLEJ0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:26:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
+        id S231852AbjLEJ2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:28:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjLEJ0j (ORCPT
+        with ESMTP id S229584AbjLEJ2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:26:39 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3D2A7
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:26:45 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40bd5ea84d6so17383955e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:26:45 -0800 (PST)
+        Tue, 5 Dec 2023 04:28:06 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9AEB2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:12 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ce7632b032so122223b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701768404; x=1702373204; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mNHBZx5D35Gv0zasV+7VIgIkMHB/ghsR6r8y0f+6RxY=;
-        b=eTIPZSWvOJWBXHCr5FIJ8uoofp4jzGODOX+4+Hx9JU5liIBLnGXACz5vo/Tlk4n/NZ
-         MMRF6zXZufJ5CaZQDOvXjhC8pD1r5M8Gaz9yvhQspCw+BOwpsIx+R2BPwDDJ0bllRdJa
-         t0Oxgc9VrVs8PkEPsHV1M50Hi3/9V6wTwta0PvwCa48oRQTId0FaUAEYUEM+lxyIfTIe
-         oKfAFsY+gWEhxAVF2wUW7XeKkrjHO/Hf4eyFd80xwOghV/nBlA3dBvxmIalfQEx15qHp
-         sf/cWn53436hWmqJpfSqiBzXFvwE+XujSv8/h8RYp69j9Y4VkL5vfCxEhNc3FwHdDjch
-         DiIg==
+        d=sifive.com; s=google; t=1701768491; x=1702373291; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9rd23HIXPBgaDZXDkAseprGzRxEcVlS8PTF1LuBNK6w=;
+        b=O4v4g3/XFo9JrU9ThqqlkTMfiH3RoqPJRJFWwRbGAJVUCRqaGBkOcbFHOpCFtgJNkP
+         TCJd4PNOAjihsoeVXMzf0SRwOU+Z0NlcYepojqcNKw/hP6lWNp6XunJ89+PxQwq0Gwg8
+         /URm7TR5m+BI0otuDaNDtZ8Sha4gKUQOV0K/nWgijXMS7I4zrfzsDG3XhNZnry73aHlN
+         5M6lQar9XZj6hZMzEsce5XmdiES4wbvjRt0KDiqhw6QFJLsYlhoABFBmkiLItdJZdvfq
+         qtwEAeUpNSjCM8GEWtAjERAMVmmAykkbPwynZOdEUJF5OTAExsWJwvLeB9eUdP0PLTLj
+         sTgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701768404; x=1702373204;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mNHBZx5D35Gv0zasV+7VIgIkMHB/ghsR6r8y0f+6RxY=;
-        b=hTDTuShlZCJXJ8uanvhKEQfaAF3oVLnHdKECH0GdR835iKwmscpiIaA2s8RuB9vgqD
-         GESSKuYXLpl5hj6TfMzE1nklxey2WuHquKFLAl3h5UqZOKe1AJ+EuHS3y13oqodmlZtf
-         P39/BeQcoUqZ76QXcxLYMeZO1w+DM6UbogrMWkowKnWu5rVC1ROXNTIecDePjvu0C7OQ
-         9Lz4kRAyuxLXj0+ZobHVE28llv8/P25QCVqiRYZjaYmM0pEwI7MMLO968Vem/D16dgUu
-         BP3OJ+YMCcLXK46CaZTeBUd052Z1pAEYrTgZjZpMw9FnzT5ivK6lxprzqvxsSxKNNRE/
-         rQOw==
-X-Gm-Message-State: AOJu0YwbEaVhWt8lLj9N7BFjGL4+kIxVXlklLu27l7kXBsWsDYMD3sOp
-        lLR9S8xARGKnlNqlLwR8kpIm8w==
-X-Google-Smtp-Source: AGHT+IGnnDEYV3BttcrF3pmj3Fiyhe5p5UwmqCSZI+LpNdI44X/YQAWmCn739KEwjT6xgxP3UJfDNg==
-X-Received: by 2002:a05:600c:35c6:b0:40b:5e26:2371 with SMTP id r6-20020a05600c35c600b0040b5e262371mr331586wmq.34.1701768403830;
-        Tue, 05 Dec 2023 01:26:43 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b0040b34720206sm18034665wmb.12.2023.12.05.01.26.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 01:26:43 -0800 (PST)
-Message-ID: <1a3ce8a9-a9f0-48fe-ac1b-aabbe58967a8@linaro.org>
-Date:   Tue, 5 Dec 2023 10:26:41 +0100
+        d=1e100.net; s=20230601; t=1701768491; x=1702373291;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9rd23HIXPBgaDZXDkAseprGzRxEcVlS8PTF1LuBNK6w=;
+        b=VQ8RBHvsJAV0L74AyQNFBZxkVMI2c0t4oDAgnK8NGyENLhMe5KVto2NBxwHmzNRhYp
+         NoiJRgeOZ/Yj1qUZ4zIT7NiMr7+FI58/RAZ4MuZ9wX0GVHithZ8fvjh9P1pWPgVgZ64t
+         /Qz3jS0gxsp0Kmza7VjkA63nrWqp9wa73fGyITd++2pNqSy4aka49q84u1yiWmkvI2P0
+         bQRV1+9+xozaLrtZqKSAY7cNEV1CPBrMGuRdmAwE8jVBaCjms5khQNPMCp6pwy2dRnkJ
+         5NKiXU9Q/VN/OPS0V2XeIa9J55bRBd2p8CRR/NWgTJztwOlxAoL5gyA6tQvIuw5W7WgM
+         8djQ==
+X-Gm-Message-State: AOJu0Yz598+u6x6a4G5JCQsbgpbmGe6CsT7MIWqB0q9cGitX8Ohqrmoa
+        PwrBlEuyDEqmA5DfhISQg3xMLQ==
+X-Google-Smtp-Source: AGHT+IGX9BU16EUDKN3tl27q4H6gQY3VtfhkcX3BtLmMlpF+zcQOQIDBf/8sDBqQ20W/x6+iBuO48Q==
+X-Received: by 2002:a05:6a00:400a:b0:6ce:720d:8d3f with SMTP id by10-20020a056a00400a00b006ce720d8d3fmr230306pfb.32.1701768491585;
+        Tue, 05 Dec 2023 01:28:11 -0800 (PST)
+Received: from localhost.localdomain ([101.10.93.135])
+        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006cdd723bb6fsm8858788pfu.115.2023.12.05.01.28.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Dec 2023 01:28:11 -0800 (PST)
+From:   Jerry Shih <jerry.shih@sifive.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
+        davem@davemloft.net, conor.dooley@microchip.com,
+        ebiggers@kernel.org, ardb@kernel.org, conor@kernel.org
+Cc:     heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v3 00/12] RISC-V: provide some accelerated cryptography implementations using vector extensions
+Date:   Tue,  5 Dec 2023 17:27:49 +0800
+Message-Id: <20231205092801.1335-1-jerry.shih@sifive.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: input: Add TouchNetix axiom
- touchscreen
-Content-Language: en-US
-To:     Kamel BOUHARA <kamel.bouhara@bootlin.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        Jeff LaBundy <jeff@labundy.com>,
-        catalin.popescu@leica-geosystems.com,
-        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
-        hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com
-References: <20231204140505.2838916-1-kamel.bouhara@bootlin.com>
- <20231204140505.2838916-3-kamel.bouhara@bootlin.com>
- <3ce65c3a-e781-4ba3-8436-8379e8e94d6b@linaro.org>
- <8ac4a9924e1d3b98c9f74dcb07b044b2@bootlin.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8ac4a9924e1d3b98c9f74dcb07b044b2@bootlin.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -134,51 +74,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 10:17, Kamel BOUHARA wrote:
-> Le 2023-12-05 09:15, Krzysztof Kozlowski a écrit :
->> On 04/12/2023 15:05, Kamel Bouhara wrote:
->>> Add the TouchNetix axiom I2C touchscreen device tree bindings
->>> documentation.
->>>
->>> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
->>
->>> +$id: 
->>> http://devicetree.org/schemas/input/touchscreen/touchnetix,ax54a.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: TouchNetix Axiom series touchscreen controller
->>> +
->>> +maintainers:
->>> +  - Kamel Bouhara <kamel.bouhara@bootlin.com>
->>> +
->>
->> Why you do not have ref to touchscreen? Is it not a touchscreen?
-> 
-> The common properties are not used or applicable here, should I still 
-> ref touchscreen ?
+From: Jerry Shih <bignose1007@gmail.com>
 
-Why they are not applicable? Do you get the panel coordinates and sizes
-from device registers or are they fixed somehow in the controller?
+This series provides cryptographic implementations using the vector crypto
+extensions[1] including:
+1. AES cipher
+2. AES with CBC/CTR/ECB/XTS block modes
+3. ChaCha20 stream cipher
+4. GHASH for GCM
+5. SHA-224/256 and SHA-384/512 hash
+6. SM3 hash
+7. SM4 cipher
 
+This patch set is based on Heiko Stuebner's work at:
+Link: https://lore.kernel.org/all/20230711153743.1970625-1-heiko@sntech.de/
 
-...
+The implementations reuse the perl-asm scripts from OpenSSL[2] with some
+changes adapting for the kernel crypto framework.
+The perl-asm scripts generate the RISC-V RVV 1.0 instructions and the
+opcodes of the vector crypto instructions into `.S` files. We will replace
+the vector crypto opcodes with asm mnemonics in the future. It needs lots
+of extensions checking for toolchains.
 
-> 
->>> +    description: I/O power supply regulator on VDDI pin
->>> +
->>> +required:
->>> +  - compatible
->>> +  - reg
->>
->> Supplies are usually required. Devices rarely can operate without  
->> power.
-> 
-> Indeed, can I still have them optional in the driver ?
+All changes pass the kernel run-time crypto self tests and the extra tests
+with vector-crypto-enabled qemu.
+Link: https://lists.gnu.org/archive/html/qemu-devel/2023-11/msg00281.html
 
-Yes, I comment here only about the bindings. Bindings are not related to
-your driver, but to hardware.
+This series depend on:
+1. kernel 6.6-rc7
+Link: https://github.com/torvalds/linux/commit/05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
+2. support kernel-mode vector
+Link: https://lore.kernel.org/all/20230721112855.1006-1-andy.chiu@sifive.com/
+3. vector crypto extensions detection
+Link: https://lore.kernel.org/lkml/20231017131456.2053396-1-cleger@rivosinc.com/
+4. fix the error message:
+    alg: skcipher: skipping comparison tests for xts-aes-aesni because
+    xts(ecb(aes-generic)) is unavailable
+Link: https://lore.kernel.org/linux-crypto/20231009023116.266210-1-ebiggers@kernel.org/
 
+Here is a branch on github applying with all dependent patches:
+Link: https://github.com/JerryShih/linux/tree/dev/jerrys/vector-crypto-upstream-v3
 
-Best regards,
-Krzysztof
+[1]
+Link: https://github.com/riscv/riscv-crypto/blob/56ed7952d13eb5bdff92e2b522404668952f416d/doc/vector/riscv-crypto-spec-vector.adoc
+[2]
+Link: https://github.com/openssl/openssl/pull/21923
+
+Updated patches (on current order): 3, 4, 6, 7, 8, 9, 10, 11, 12
+New patch: -
+Unchanged patch: 1, 2, 5
+Deleted patch: 6 in v2
+
+Changelog v3:
+ - Use asm mnemonics for the instructions in RVV 1.0 extension.
+ - Use `SYM_TYPED_FUNC_START` for indirect-call asm symbols.
+ - Update aes xts_crypt() implementation.
+ - Update crypto function names with the prefix/suffix of `riscv64` or the
+   specific extensions to avoid the collision with functions in `crypto/`
+   or `lib/crypto/`.
+
+Changelog v2:
+ - Do not turn on the RISC-V accelerated crypto kconfig options by
+   default.
+ - Assume RISC-V vector extension could support unaligned access in
+   kernel.
+ - Turn to use simd skcipher interface for AES-CBC/CTR/ECB/XTS and
+   Chacha20.
+ - Rename crypto file and driver names to make the most important
+   extension at first place.
+
+Heiko Stuebner (2):
+  RISC-V: add helper function to read the vector VLEN
+  RISC-V: hook new crypto subdir into build-system
+
+Jerry Shih (10):
+  RISC-V: crypto: add OpenSSL perl module for vector instructions
+  RISC-V: crypto: add Zvkned accelerated AES implementation
+  crypto: simd - Update `walksize` in simd skcipher
+  RISC-V: crypto: add accelerated AES-CBC/CTR/ECB/XTS implementations
+  RISC-V: crypto: add Zvkg accelerated GCM GHASH implementation
+  RISC-V: crypto: add Zvknha/b accelerated SHA224/256 implementations
+  RISC-V: crypto: add Zvknhb accelerated SHA384/512 implementations
+  RISC-V: crypto: add Zvksed accelerated SM4 implementation
+  RISC-V: crypto: add Zvksh accelerated SM3 implementation
+  RISC-V: crypto: add Zvkb accelerated ChaCha20 implementation
+
+ arch/riscv/Kbuild                             |    1 +
+ arch/riscv/crypto/Kconfig                     |  110 ++
+ arch/riscv/crypto/Makefile                    |   68 +
+ .../crypto/aes-riscv64-block-mode-glue.c      |  494 +++++++
+ arch/riscv/crypto/aes-riscv64-glue.c          |  137 ++
+ arch/riscv/crypto/aes-riscv64-glue.h          |   18 +
+ .../crypto/aes-riscv64-zvkned-zvbb-zvkg.pl    |  949 +++++++++++++
+ arch/riscv/crypto/aes-riscv64-zvkned-zvkb.pl  |  415 ++++++
+ arch/riscv/crypto/aes-riscv64-zvkned.pl       | 1199 +++++++++++++++++
+ arch/riscv/crypto/chacha-riscv64-glue.c       |  122 ++
+ arch/riscv/crypto/chacha-riscv64-zvkb.pl      |  321 +++++
+ arch/riscv/crypto/ghash-riscv64-glue.c        |  175 +++
+ arch/riscv/crypto/ghash-riscv64-zvkg.pl       |  100 ++
+ arch/riscv/crypto/riscv.pm                    |  359 +++++
+ arch/riscv/crypto/sha256-riscv64-glue.c       |  145 ++
+ .../sha256-riscv64-zvknha_or_zvknhb-zvkb.pl   |  317 +++++
+ arch/riscv/crypto/sha512-riscv64-glue.c       |  139 ++
+ .../crypto/sha512-riscv64-zvknhb-zvkb.pl      |  265 ++++
+ arch/riscv/crypto/sm3-riscv64-glue.c          |  124 ++
+ arch/riscv/crypto/sm3-riscv64-zvksh.pl        |  227 ++++
+ arch/riscv/crypto/sm4-riscv64-glue.c          |  121 ++
+ arch/riscv/crypto/sm4-riscv64-zvksed.pl       |  268 ++++
+ arch/riscv/include/asm/vector.h               |   11 +
+ crypto/Kconfig                                |    3 +
+ crypto/cryptd.c                               |    1 +
+ crypto/simd.c                                 |    1 +
+ 26 files changed, 6090 insertions(+)
+ create mode 100644 arch/riscv/crypto/Kconfig
+ create mode 100644 arch/riscv/crypto/Makefile
+ create mode 100644 arch/riscv/crypto/aes-riscv64-block-mode-glue.c
+ create mode 100644 arch/riscv/crypto/aes-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/aes-riscv64-glue.h
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvbb-zvkg.pl
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned-zvkb.pl
+ create mode 100644 arch/riscv/crypto/aes-riscv64-zvkned.pl
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-zvkb.pl
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/ghash-riscv64-zvkg.pl
+ create mode 100644 arch/riscv/crypto/riscv.pm
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha256-riscv64-zvknha_or_zvknhb-zvkb.pl
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sha512-riscv64-zvknhb-zvkb.pl
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh.pl
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/sm4-riscv64-zvksed.pl
+
+--
+2.28.0
 
