@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EE0805059
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E442580505C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346594AbjLEKgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:36:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41840 "EHLO
+        id S1376423AbjLEKgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235127AbjLEKgN (ORCPT
+        with ESMTP id S235148AbjLEKgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:36:13 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F39198;
-        Tue,  5 Dec 2023 02:36:14 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c9f572c4c5so40624241fa.2;
-        Tue, 05 Dec 2023 02:36:14 -0800 (PST)
+        Tue, 5 Dec 2023 05:36:14 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD5B1B1;
+        Tue,  5 Dec 2023 02:36:16 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c9f413d6b2so33424691fa.1;
+        Tue, 05 Dec 2023 02:36:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701772572; x=1702377372; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701772574; x=1702377374; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HGpa0GtJpSi8L3mCQm30bghRnsn1XAa98foEtQJ/KWs=;
-        b=GYYXnentdvnu/1Y2K8ftCOd5KrjA2w3ScIenFuKM/DpQPhs7rY52J+BE4C4cH9cxgF
-         lUn4mFFGJ8TNtvNSayj9jhV+oLncNYmVjusfikmQgDoDMUwv+xGqFG9YpIKGnZUBWgqM
-         ngwp5n0bafZxZaAyYRkDgsZ4JrhDdVbMogRqB5uHjUBVEi1DqSehkVtA5w549P4dJG9f
-         omHekrxYVDq4AZKIzibf9xv+kMzn0IimPeSix2SImJp5wdzntTl0s3EGrCG6iHYIZiYG
-         N0zHCEDaFIpGvJRAUtyRp87VA5CBuEi6pT+WIc8PAwmBFtON/iSXRMTAa1BpVPG0WTyF
-         lg7A==
+        bh=fzWpHNK+8WZxV0Za4rmkABjOws2ounqa1/6k9XNQavs=;
+        b=Toqk7lDPeI62bqsG6S+Ts1Hj65j5e5wanw8cW3J/cfIbwX6GYyJj7OE7UyUhKyzP9i
+         GnL2oWYJU2pbTKA7LPrJK6fJo6zsrvvbOroTNwUgzxuhviU5jdCNU5EcditTiraFu2Ek
+         92330nX91CtfAGUWkSyfEwF7oEHxr9lunYFuVLdHtF3y5txHJb0Q4YWv8pwciYPp8YAO
+         VTShj5UZFfmW3Z0omFcL0+PK0FHBaN289CNa6sNYTy43Bb0aS80HKy86sYEW7TqAaquU
+         HC0HxnAjMFJsnq8NwXjSwKYjTxnGLXv7x1HMsocv2HsUQvtXQUzxpbmaJ1roq00A0q2z
+         YsWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701772572; x=1702377372;
+        d=1e100.net; s=20230601; t=1701772574; x=1702377374;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HGpa0GtJpSi8L3mCQm30bghRnsn1XAa98foEtQJ/KWs=;
-        b=a3PvXxmIBhNpaICB8YU9guw2IBaXA0EBqcGDyjmAz+KlmpeNbpHnfGwiWFrp5U/GdI
-         mj6VY7TmzsTnoYL5hgLWs3rxk27QXf2ip8K17mkVCFfWYbbpWrs1crvpLv7zvhUi9og+
-         n3vXlK08pCrPv492fxRyVkaihI6CIC8pL2Ci+jcYWQf9y2YpfwqsXtt0TD3MvszGjiez
-         OoH+slQXop3B9CBhbdRBUvvAIAb8FjUd5DaP8Z5cbWa3RdPK1hjoJV8y7tcjb66cGd14
-         YWIIB5fNWRkwB8hrr48ttnraWmXb/1sjdme6Y2GVcZzozBSkzpKenAjZm46blBhXwdAh
-         s9Qg==
-X-Gm-Message-State: AOJu0Yymdi1dEAAQ1ne1bxR/Vgus0v/5qIc7DML5UuSdV3TBf7fQLYoY
-        cyoiXYaPSsOYE5DupeHdjxQ=
-X-Google-Smtp-Source: AGHT+IFIhxBRZreE0ykFzf7E++LBQs6vRs4czi1iz3uLMDedC+tOqSVXU3dh9yp28YVSHIo1DRs6Rg==
-X-Received: by 2002:a05:6512:2343:b0:50b:fcd6:cb10 with SMTP id p3-20020a056512234300b0050bfcd6cb10mr1522544lfu.130.1701772572652;
-        Tue, 05 Dec 2023 02:36:12 -0800 (PST)
+        bh=fzWpHNK+8WZxV0Za4rmkABjOws2ounqa1/6k9XNQavs=;
+        b=jPELmRDnT0ek8rK3hNM/DcXrDbLNLrhCEK/Tl8OmZ6UUdXRX5UoXvW4wKJJdqaGRh/
+         X78aBWItPmjSa+YOINKJYcL2xwspS6A8OrIFyhExDE4wOHTr2BTXVvtSW9iWXcLsBCMM
+         r2ircErYC3yX8EZzU7y4PdO7XlxMT43trNs0vDcDOxnD84MBqLRMBZlHmfMF2ZtPx9MJ
+         5gReMsO1ejzQ9LCXfkTW2g2wynx4/VZjuXvaj20Y3AejBODmcRvfyR7okrF59HkRVR5f
+         fSmt+k+Hxu2TP+0WL6zvMa+nF1J4yh0UtPoKhqUr7MVKWTgJHFtyCY+k6kfs3nnjOb3z
+         yTqA==
+X-Gm-Message-State: AOJu0YxEKVv4FaxoXhngvnoAZm/j2QikEbRVvQ4/TQb42svQYHqyElEh
+        SfNVarEDLGyrDesWHERZmx4DiYApM2JV6g==
+X-Google-Smtp-Source: AGHT+IGUtfUmSCuTX2LjP6ZYjajVSxD8N2Lsw/qkhIm5j6xbwj8CD37zCqa+WxpE9jr2rYmSCkIo7Q==
+X-Received: by 2002:a05:6512:2803:b0:50b:f8e6:caa2 with SMTP id cf3-20020a056512280300b0050bf8e6caa2mr1274366lfb.31.1701772574341;
+        Tue, 05 Dec 2023 02:36:14 -0800 (PST)
 Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id t6-20020a199106000000b0050bfdb1392fsm377230lfd.221.2023.12.05.02.36.12
+        by smtp.gmail.com with ESMTPSA id y23-20020a197517000000b0050aaa716c15sm720366lfe.51.2023.12.05.02.36.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 02:36:12 -0800 (PST)
+        Tue, 05 Dec 2023 02:36:13 -0800 (PST)
 From:   Serge Semin <fancer.lancer@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
@@ -69,9 +69,9 @@ To:     Andrew Lunn <andrew@lunn.ch>,
 Cc:     Serge Semin <fancer.lancer@gmail.com>, openbmc@lists.ozlabs.org,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 06/16] net: pcs: xpcs: Avoid creating dummy XPCS MDIO device
-Date:   Tue,  5 Dec 2023 13:35:27 +0300
-Message-ID: <20231205103559.9605-7-fancer.lancer@gmail.com>
+Subject: [PATCH net-next 07/16] net: pcs: xpcs: Split up xpcs_create() content to sub-functions
+Date:   Tue,  5 Dec 2023 13:35:28 +0300
+Message-ID: <20231205103559.9605-8-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231205103559.9605-1-fancer.lancer@gmail.com>
 References: <20231205103559.9605-1-fancer.lancer@gmail.com>
@@ -87,80 +87,182 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the DW XPCS MDIO devices are either left unmasked for being auto-probed
-or explicitly registered in the MDIO subsystem by means of the
-mdiobus_register_board_info() method there is no point in creating the
-dummy MDIO device instance in order to get the DW XPCS handler since the
-MDIO core subsystem will create the device during the MDIO bus
-registration procedure. All what needs to be done is to just reuse the
-MDIO-device instance available in the mii_bus.mdio_map array (using some
-getter for it would look better though). It shall prevent the XPCS devices
-been accessed over several MDIO-device instances.
+As a final preparation before adding the DW XPCS MDIO-device driver
+support let's split the xpcs_create() function code up to a set of small
+sub-functions. Thus the method implementation will get to look simpler and
+turn to be more coherent. Further updates will just touch the new methods
+a bit: add platform-specific device info, add device reference clock
+getting and enabling.
 
-Note since the MDIO-device instance might be retrieved from the MDIO-bus
-map array its reference counter shall be increased. If the MDIO-device
-instance is created in the xpcs_create_mdiodev() method its reference
-counter will be already increased. So there is no point in toggling the
-reference counter in the xpcs_create() function. Just drop it from there.
+This update implies the xpcs_create() to call the next static methods:
+xpcs_create_data() - create the DW XPCS device descriptor,
+xpcs_init_id() - find XPCS ID instance and save it in the device
+descriptor,
+xpcs_init_iface() - find MAC/PCS interface descriptor and perform
+basice initialization specific to it: soft-reset, disable polling.
+
+The update doesn't cause any semantic change but merely makes the code
+better looking and ready for adding new features support.
+
+Note in addition to that the xpcs_destroy() is moved to be below the
+xpcs_create_mdiodev() function as the driver now implies having the
+protagonist-then-antagonist functions definition order.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- drivers/net/pcs/pcs-xpcs.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ drivers/net/pcs/pcs-xpcs.c | 102 +++++++++++++++++++++++++------------
+ 1 file changed, 70 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-index 2850122f354a..a53376472394 100644
+index a53376472394..ea6f56339595 100644
 --- a/drivers/net/pcs/pcs-xpcs.c
 +++ b/drivers/net/pcs/pcs-xpcs.c
-@@ -1376,7 +1376,6 @@ static struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
+@@ -1365,70 +1365,97 @@ static const struct phylink_pcs_ops xpcs_phylink_ops = {
+ 	.pcs_link_up = xpcs_link_up,
+ };
+ 
+-static struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
+-				   phy_interface_t interface)
++static struct dw_xpcs *xpcs_create_data(struct mdio_device *mdiodev)
+ {
+ 	struct dw_xpcs *xpcs;
+-	u32 xpcs_id;
+-	int i, ret;
+ 
+ 	xpcs = kzalloc(sizeof(*xpcs), GFP_KERNEL);
  	if (!xpcs)
  		return ERR_PTR(-ENOMEM);
  
--	mdio_device_get(mdiodev);
  	xpcs->mdiodev = mdiodev;
++	xpcs->pcs.ops = &xpcs_phylink_ops;
++	xpcs->pcs.neg_mode = true;
++	xpcs->pcs.poll = true;
++
++	return xpcs;
++}
++
++static void xpcs_free_data(struct dw_xpcs *xpcs)
++{
++	kfree(xpcs);
++}
++
++static int xpcs_init_id(struct dw_xpcs *xpcs)
++{
++	u32 xpcs_id;
++	int i, ret;
  
  	xpcs_id = xpcs_get_id(xpcs);
-@@ -1417,7 +1416,6 @@ static struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
- 	ret = -ENODEV;
  
- out:
--	mdio_device_put(mdiodev);
- 	kfree(xpcs);
+ 	for (i = 0; i < ARRAY_SIZE(xpcs_id_list); i++) {
+ 		const struct xpcs_id *entry = &xpcs_id_list[i];
+-		const struct xpcs_compat *compat;
  
- 	return ERR_PTR(ret);
-@@ -1437,19 +1435,21 @@ struct dw_xpcs *xpcs_create_mdiodev(struct mii_bus *bus, int addr,
- 	struct mdio_device *mdiodev;
- 	struct dw_xpcs *xpcs;
+ 		if ((xpcs_id & entry->mask) != entry->id)
+ 			continue;
  
--	mdiodev = mdio_device_create(bus, addr);
--	if (IS_ERR(mdiodev))
--		return ERR_CAST(mdiodev);
-+	if (addr >= PHY_MAX_ADDR)
-+		return ERR_PTR(-EINVAL);
+ 		xpcs->id = entry;
  
--	xpcs = xpcs_create(mdiodev, interface);
-+	if (mdiobus_is_registered_device(bus, addr)) {
-+		mdiodev = bus->mdio_map[addr];
-+		mdio_device_get(mdiodev);
-+	} else {
-+		mdiodev = mdio_device_create(bus, addr);
-+		if (IS_ERR(mdiodev))
-+			return ERR_CAST(mdiodev);
+-		compat = xpcs_find_compat(entry, interface);
+-		if (!compat) {
+-			ret = -ENODEV;
+-			goto out;
+-		}
++		break;
 +	}
  
--	/* xpcs_create() has taken a refcount on the mdiodev if it was
--	 * successful. If xpcs_create() fails, this will free the mdio
--	 * device here. In any case, we don't need to hold our reference
--	 * anymore, and putting it here will allow mdio_device_put() in
--	 * xpcs_destroy() to automatically free the mdio device.
--	 */
--	mdio_device_put(mdiodev);
-+	xpcs = xpcs_create(mdiodev, interface);
-+	if (IS_ERR(xpcs))
-+		mdio_device_put(mdiodev);
+-		ret = xpcs_dev_flag(xpcs);
+-		if (ret)
+-			goto out;
++	if (!xpcs->id)
++		return -ENODEV;
  
- 	return xpcs;
+-		xpcs->pcs.ops = &xpcs_phylink_ops;
+-		xpcs->pcs.neg_mode = true;
++	ret = xpcs_dev_flag(xpcs);
++	if (ret < 0)
++		return ret;
+ 
+-		if (xpcs->dev_flag != DW_DEV_TXGBE) {
+-			xpcs->pcs.poll = true;
++	return 0;
++}
+ 
+-			ret = xpcs_soft_reset(xpcs, compat);
+-			if (ret)
+-				goto out;
+-		}
++static int xpcs_init_iface(struct dw_xpcs *xpcs, phy_interface_t interface)
++{
++	const struct xpcs_compat *compat;
+ 
+-		return xpcs;
++	compat = xpcs_find_compat(xpcs->id, interface);
++	if (!compat)
++		return -EINVAL;
++
++	if (xpcs->dev_flag == DW_DEV_TXGBE) {
++		xpcs->pcs.poll = false;
++		return 0;
+ 	}
+ 
+-	ret = -ENODEV;
++	return xpcs_soft_reset(xpcs, compat);
++}
++
++static struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
++				   phy_interface_t interface)
++{
++	struct dw_xpcs *xpcs;
++	int ret;
++
++	xpcs = xpcs_create_data(mdiodev);
++	if (IS_ERR(xpcs))
++		return xpcs;
++
++	ret = xpcs_init_id(xpcs);
++	if (ret)
++		goto out;
++
++	ret = xpcs_init_iface(xpcs, interface);
++	if (ret)
++		goto out;
++
++	return xpcs;
+ 
+ out:
+-	kfree(xpcs);
++	xpcs_free_data(xpcs);
+ 
+ 	return ERR_PTR(ret);
  }
+ 
+-void xpcs_destroy(struct dw_xpcs *xpcs)
+-{
+-	if (xpcs)
+-		mdio_device_put(xpcs->mdiodev);
+-	kfree(xpcs);
+-}
+-EXPORT_SYMBOL_GPL(xpcs_destroy);
+-
+ struct dw_xpcs *xpcs_create_mdiodev(struct mii_bus *bus, int addr,
+ 				    phy_interface_t interface)
+ {
+@@ -1455,4 +1482,15 @@ struct dw_xpcs *xpcs_create_mdiodev(struct mii_bus *bus, int addr,
+ }
+ EXPORT_SYMBOL_GPL(xpcs_create_mdiodev);
+ 
++void xpcs_destroy(struct dw_xpcs *xpcs)
++{
++	if (!xpcs)
++		return;
++
++	mdio_device_put(xpcs->mdiodev);
++
++	xpcs_free_data(xpcs);
++}
++EXPORT_SYMBOL_GPL(xpcs_destroy);
++
+ MODULE_LICENSE("GPL v2");
 -- 
 2.42.1
 
