@@ -2,202 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E9B805016
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:22:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC3D80501D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:22:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235097AbjLEKVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:21:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
+        id S1344950AbjLEKWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:22:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235028AbjLEKVu (ORCPT
+        with ESMTP id S235028AbjLEKWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:21:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D0190;
-        Tue,  5 Dec 2023 02:21:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701771717; x=1733307717;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ZPly1fDdJeFUhMI/JCcMzF45VB6Ez+ThdnRYcJTIAnk=;
-  b=jhD0w/8B0eLqsVGJw1InuxY0Mw7HEOdDWhPcm0G2dgEr0tBmKg4DCpeB
-   6Gq/pSRVbMJupZAxxemEo+Nd3JrhG9pfyLGDvBp7RbQMJfWyVE8dpg/xO
-   qATMXx+FywVPNHuchpKdqbn4FjspxUtQtFYOjER5P5e1n7sXIH+Ez3imx
-   iDJDSAeO9J1sI/iD7+LPbXfmcEha8pgETX4nRjFA2YOtvD1oW+K3ZvcUS
-   2GsXFqy129dy6SGvUiuaruXHw7i/Utgqem0s+wtO2R+v4Fc2pMfnyiZZS
-   XC228+LCcSfUzmCIYmGHD0aJSHXm7Y6BpW4LOx3baf9+KaZDS9kTIINrE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="716139"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="716139"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 02:21:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1018174042"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="1018174042"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 05 Dec 2023 02:21:52 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rASYo-0008kI-0p;
-        Tue, 05 Dec 2023 10:21:50 +0000
-Date:   Tue, 5 Dec 2023 18:21:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Karel Balej <karelb@gimli.ms.mff.cuni.cz>,
-        Markuss Broks <markuss.broks@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Karel Balej <balejk@matfyz.cz>
-Subject: Re: [PATCH v3 3/5] input/touchscreen: imagis: Add support for Imagis
- IST3038B
-Message-ID: <202312051823.19Cxz3sZ-lkp@intel.com>
-References: <20231202125948.10345-4-karelb@gimli.ms.mff.cuni.cz>
+        Tue, 5 Dec 2023 05:22:47 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B54790;
+        Tue,  5 Dec 2023 02:22:53 -0800 (PST)
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C34556602F1E;
+        Tue,  5 Dec 2023 10:22:49 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701771771;
+        bh=3U+2S6yFT5IinHlDHOnGowPBFs7ClJzaLOhopmK8tJk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=OYuCQ8kwdLnWkv1MfHToaXZ587QswHOutjKlfKfVYjCnU/s92pr8c3o9SnFkhf9BG
+         Ji4lDYcYURVmRno7WIM+Ij42lFOpJD6ckjLuX6BZkwXXXUZ7cM5ErLHx/gOOJ3zwRR
+         lLAdVr5MwcRSd96WdScV8w+5+I8XbztbTAMbi9Qlgou0pRMfrT50bHtA66RFzozoSI
+         1TwY5RvAbJBq78cU+3pbZR+kXl2hc3VhM6d9tly282icyqWUOqGDNRUKOPZhQzer3u
+         gftavexdPt6RBGhr1ej4AKrch5TdmIjafkGQ2o6HvEUgPjXiD2JNSK5Ydr5172HmNn
+         7unW/WF969rzw==
+Message-ID: <3700f05f-2411-4422-972f-f3df690efb84@collabora.com>
+Date:   Tue, 5 Dec 2023 11:22:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231202125948.10345-4-karelb@gimli.ms.mff.cuni.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 4/5] arm64: dts: mediatek: mt8173-elm-hana: Mark
+ touchscreens and trackpads as fail
+To:     Doug Anderson <dianders@chromium.org>,
+        Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        chrome-platform@lists.linux.dev, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+References: <20231128084236.157152-1-wenst@chromium.org>
+ <20231128084236.157152-5-wenst@chromium.org>
+ <CAD=FV=W01gfxV6RN2o6CVS7jjf8qgKP-jUy9Bp94d2hWzVC48A@mail.gmail.com>
+ <CAGXv+5E+R292XsOFSL-j0KJMmVJjWtxMRgCK8besP7mo6NDOWA@mail.gmail.com>
+ <CAD=FV=UQkAjgMuR85cPikNtCxsODWPWs7cibOcOoNGdjSSvF8Q@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <CAD=FV=UQkAjgMuR85cPikNtCxsODWPWs7cibOcOoNGdjSSvF8Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Karel,
+Il 04/12/23 17:50, Doug Anderson ha scritto:
+> Hi,
+> 
+> On Sun, Dec 3, 2023 at 10:59 PM Chen-Yu Tsai <wenst@chromium.org> wrote:
+>>
+>> On Sat, Dec 2, 2023 at 8:58 AM Doug Anderson <dianders@chromium.org> wrote:
+>>>
+>>> Hi,
+>>>
+>>> On Tue, Nov 28, 2023 at 12:45 AM Chen-Yu Tsai <wenst@chromium.org> wrote:
+>>>>
+>>>> @@ -44,6 +46,7 @@ trackpad2: trackpad@2c {
+>>>>                  reg = <0x2c>;
+>>>>                  hid-descr-addr = <0x0020>;
+>>>>                  wakeup-source;
+>>>> +               status = "fail-needs-probe";
+>>>
+>>> While doing this, you could also remove the hack where the trackpad
+>>> IRQ pinctrl is listed under i2c4.
+>>
+>> Sure. I do think we can do away with it though. According to at least one
+>> schematic, the interrupt line has pull-ups on both sides of the voltage
+>> shifter.
+>>
+>> BTW, The touchscreen doesn't have pinctrl entries. This has pull-ups on
+>> both sides of the voltage shifter as well.
+> 
+> I dunno if the convention is different on Mediatek boards, but at
+> least on boards I've been involved with in the past we've always put
+> pinctrl entries just to make things explicit. This meant that we
+> didn't rely on the firmware/bootrom/defaults to leave pulls in any
+> particular state. ...otherwise those external pull-ups could be
+> fighting with internal pull-downs, right?
+> 
 
-kernel test robot noticed the following build warnings:
+MediaTek boards aren't special and there's no good reason for those to rely on
+firmware/bootrom/defaults - so there is no good reason to avoid declaring any
+relevant pinctrl entry.
 
-[auto build test WARNING on dtor-input/next]
-[also build test WARNING on dtor-input/for-linus robh/for-next linus/master v6.7-rc4 next-20231205]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Cheers,
+Angelo
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Karel-Balej/dt-bindings-input-touchscreen-Add-compatible-for-IST3038B/20231202-215030
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
-patch link:    https://lore.kernel.org/r/20231202125948.10345-4-karelb%40gimli.ms.mff.cuni.cz
-patch subject: [PATCH v3 3/5] input/touchscreen: imagis: Add support for Imagis IST3038B
-config: hexagon-randconfig-r111-20231204 (https://download.01.org/0day-ci/archive/20231205/202312051823.19Cxz3sZ-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20231205/202312051823.19Cxz3sZ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051823.19Cxz3sZ-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/input/touchscreen/imagis.c:5:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:37:51: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) ((__force __u16)(__le16)(x))
-         |                                                   ^
-   In file included from drivers/input/touchscreen/imagis.c:5:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/little_endian.h:35:51: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) ((__force __u32)(__le32)(x))
-         |                                                   ^
-   In file included from drivers/input/touchscreen/imagis.c:5:
-   In file included from include/linux/i2c.h:19:
-   In file included from include/linux/regulator/consumer.h:35:
-   In file included from include/linux/suspend.h:5:
-   In file included from include/linux/swap.h:9:
-   In file included from include/linux/memcontrol.h:13:
-   In file included from include/linux/cgroup.h:26:
-   In file included from include/linux/kernel_stat.h:9:
-   In file included from include/linux/interrupt.h:11:
-   In file included from include/linux/hardirq.h:11:
-   In file included from ./arch/hexagon/include/generated/asm/hardirq.h:1:
-   In file included from include/asm-generic/hardirq.h:17:
-   In file included from include/linux/irq.h:20:
-   In file included from include/linux/io.h:13:
-   In file included from arch/hexagon/include/asm/io.h:334:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
->> drivers/input/touchscreen/imagis.c:366:39: warning: unused variable 'imagis_3038b_data' [-Wunused-const-variable]
-     366 | static const struct imagis_properties imagis_3038b_data = {
-         |                                       ^
->> drivers/input/touchscreen/imagis.c:374:39: warning: unused variable 'imagis_3038c_data' [-Wunused-const-variable]
-     374 | static const struct imagis_properties imagis_3038c_data = {
-         |                                       ^
-   8 warnings generated.
-
-
-vim +/imagis_3038b_data +366 drivers/input/touchscreen/imagis.c
-
-   365	
- > 366	static const struct imagis_properties imagis_3038b_data = {
-   367		.interrupt_msg_cmd = IST3038B_REG_STATUS,
-   368		.touch_coord_cmd = IST3038B_REG_STATUS,
-   369		.whoami_cmd = IST3038B_REG_CHIPID,
-   370		.whoami_val = IST3038B_WHOAMI,
-   371		.protocol_b = true,
-   372	};
-   373	
- > 374	static const struct imagis_properties imagis_3038c_data = {
-   375		.interrupt_msg_cmd = IST3038C_REG_INTR_MESSAGE,
-   376		.touch_coord_cmd = IST3038C_REG_TOUCH_COORD,
-   377		.whoami_cmd = IST3038C_REG_CHIPID,
-   378		.whoami_val = IST3038C_WHOAMI,
-   379	};
-   380	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
