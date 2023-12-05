@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CD280438F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A541C80438A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376298AbjLEAqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 19:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60342 "EHLO
+        id S234907AbjLEAqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:46:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234796AbjLEApg (ORCPT
+        with ESMTP id S1343632AbjLEAp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:45:36 -0500
+        Mon, 4 Dec 2023 19:45:28 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60750111
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:45:37 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0D2A4
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:45:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701737137; x=1733273137;
+  t=1701737134; x=1733273134;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=baddqEIghmkFajP6rpIfXbNavqQAwsBb4c0/kd75gPA=;
-  b=S51Jwrbm9HBMJT898lMSXTTGizZg3+O0FHUa5tSvjLuefJYsIuTACJbp
-   Vjn0KH7yJ/TC5SLOn0KkUpBO8Xo+Azs2u4YohVt0kgw5jGF4ZfVQdNlJx
-   74kQLpaKYPykuErtNU1zVna6/7mbbbud5/PAU7oJon3/zZF/Uva1iU6D8
-   4mmDv2+zTUoYdpBweTcxhX1CcYhw5/4V6pQlDzYUEuBfs6H5H3drUyr2Y
-   OD7yRhhJdj00iEiL88xFRQV4GTk75Eemka+jNeU4+u/lYP6XYxVG6PLvC
-   CB5CHQrl/lyVUJB92t9hfnh2Pk7XaO6IpXNQbKW4FZy8ZZl8zmkzIicX9
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="392688725"
+  bh=wYs3fU4C0jZd+PnKZxc0e8e/KDE7b/5Kd3uwb7sJ62o=;
+  b=Qb2rTBYqT1YCgBPpUKZffe+VXslh7ruFlAP0N7wHYiza4djqc0gwNBa7
+   5rJV836ZOyxlgYWcqULyqj+61zpDSKDk4E8K2xWEHP1OyOZTH83Luu+iu
+   g5V2vJRDPyS7w3jqkCBmjVPwlI4Zp/xwyohmzWAfpZ+meYfqP6piTJrKc
+   7LKMt+3wZJGpqNvAOY/58/qshBeVEuLwCl+6UwhICz6zFN2cy/a/IKAvx
+   pYHaQoDcy3grocjYsfFN+J0DKVSxAvgdfNiA0t84rQm9u2A+DRHsi4Udu
+   v39zl6ZQ+Oq3Kskx+jaPI56/g3dCFp/nSOlTLnwxZ1v6MLe+AADFtvBiW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="392688656"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="392688725"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:45:36 -0800
+   d="scan'208";a="392688656"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:45:34 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="944067951"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="888704402"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="944067951"
+   d="scan'208";a="888704402"
 Received: from abijaz-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.61.240])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:45:30 -0800
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:45:29 -0800
 Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 5C3E410A445; Tue,  5 Dec 2023 03:45:20 +0300 (+03)
+        id 67CE110A446; Tue,  5 Dec 2023 03:45:20 +0300 (+03)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -59,13 +59,10 @@ Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
         "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
         kexec@lists.infradead.org, linux-coco@lists.linux.dev,
         linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCHv4 05/14] x86/kvm: Do not try to disable kvmclock if it was not enabled
-Date:   Tue,  5 Dec 2023 03:45:01 +0300
-Message-ID: <20231205004510.27164-6-kirill.shutemov@linux.intel.com>
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv4 06/14] x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+Date:   Tue,  5 Dec 2023 03:45:02 +0300
+Message-ID: <20231205004510.27164-7-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231205004510.27164-1-kirill.shutemov@linux.intel.com>
 References: <20231205004510.27164-1-kirill.shutemov@linux.intel.com>
@@ -81,65 +78,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_guest_cpu_offline() tries to disable kvmclock regardless if it is
-present in the VM. It leads to write to a MSR that doesn't exist on some
-configurations, namely in TDX guest:
+TDX guests are not allowed to clear CR4.MCE. Attempt to clear it leads
+to #VE.
 
-	unchecked MSR access error: WRMSR to 0x12 (tried to write 0x0000000000000000)
-	at rIP: 0xffffffff8110687c (kvmclock_disable+0x1c/0x30)
+Use alternatives to keep the flag during kexec for TDX guests.
 
-kvmclock enabling is gated by CLOCKSOURCE and CLOCKSOURCE2 KVM paravirt
-features.
-
-Do not disable kvmclock if it was not enabled.
+The change doesn't affect non-TDX-guest environments.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Fixes: c02027b5742b ("x86/kvm: Disable kvmclock on all CPUs on shutdown")
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Wanpeng Li <wanpengli@tencent.com>
+Reviewed-by: Kai Huang <kai.huang@intel.com>
 ---
- arch/x86/kernel/kvmclock.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/x86/kernel/relocate_kernel_64.S | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index fb8f52149be9..f2fff625576d 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -24,8 +24,8 @@
+diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+index 56cab1bb25f5..cd6a53667c6b 100644
+--- a/arch/x86/kernel/relocate_kernel_64.S
++++ b/arch/x86/kernel/relocate_kernel_64.S
+@@ -145,12 +145,15 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	 * Set cr4 to a known state:
+ 	 *  - physical address extension enabled
+ 	 *  - 5-level paging, if it was enabled before
++	 *  - Machine check exception on TDX guest. Clearing MCE is not allowed
++	 *    in TDX guests.
+ 	 */
+ 	movl	$X86_CR4_PAE, %eax
+ 	testq	$X86_CR4_LA57, %r13
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
+ 1:
++	ALTERNATIVE "", __stringify(orl $X86_CR4_MCE, %eax), X86_FEATURE_TDX_GUEST
+ 	movq	%rax, %cr4
  
- static int kvmclock __initdata = 1;
- static int kvmclock_vsyscall __initdata = 1;
--static int msr_kvm_system_time __ro_after_init = MSR_KVM_SYSTEM_TIME;
--static int msr_kvm_wall_clock __ro_after_init = MSR_KVM_WALL_CLOCK;
-+static int msr_kvm_system_time __ro_after_init;
-+static int msr_kvm_wall_clock __ro_after_init;
- static u64 kvm_sched_clock_offset __ro_after_init;
- 
- static int __init parse_no_kvmclock(char *arg)
-@@ -195,7 +195,8 @@ static void kvm_setup_secondary_clock(void)
- 
- void kvmclock_disable(void)
- {
--	native_write_msr(msr_kvm_system_time, 0, 0);
-+	if (msr_kvm_system_time)
-+		native_write_msr(msr_kvm_system_time, 0, 0);
- }
- 
- static void __init kvmclock_init_mem(void)
-@@ -294,7 +295,10 @@ void __init kvmclock_init(void)
- 	if (kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE2)) {
- 		msr_kvm_system_time = MSR_KVM_SYSTEM_TIME_NEW;
- 		msr_kvm_wall_clock = MSR_KVM_WALL_CLOCK_NEW;
--	} else if (!kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE)) {
-+	} else if (kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE)) {
-+		msr_kvm_system_time = MSR_KVM_SYSTEM_TIME;
-+		msr_kvm_wall_clock = MSR_KVM_WALL_CLOCK;
-+	} else {
- 		return;
- 	}
- 
+ 	jmp 1f
 -- 
 2.41.0
 
