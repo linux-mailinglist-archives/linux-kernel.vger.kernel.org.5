@@ -2,92 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B843F805C55
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6843B805C16
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442503AbjLEQAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:00:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        id S1345775AbjLEQGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:06:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235540AbjLEQAF (ORCPT
+        with ESMTP id S1345144AbjLEQFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:00:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3945E122
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:00:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69F83C433C7;
-        Tue,  5 Dec 2023 16:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701792011;
-        bh=kI1bEHAXdFXKf87FBcJ74Jf1vavpx37Cc9XIkiHEP9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ulVhU/9MchpQORyRiVvbLnQDmvxyfH56LbUL36dYvVxn5mIABX1YCg8mB17vDqs/l
-         oa5K7sqGfVwZjazeVMsvPudvDoRl3zzDLHk4dDClUfYHf7Nb3lQt2bDFogW5Iz00AA
-         uC7ph3H5opZzMzrYs/a+j4F10efqCCEA5A3EmpVlhLx13ilsu7+BaIsWmd93hkkF9K
-         2mM72WIW0HMkaCz1qUzR0oaGwGuaW9z8/+Z9efK85co2l1cvDu3Xs9s7ExECfN9Mbd
-         R8A1ra2ld7sZkHeMaxllBza+wIgR5kXp6RYiHJSkx6p9GAmR64ntnRUu0d4HRVrg69
-         YuE+E1uqZkmGQ==
-Date:   Tue, 5 Dec 2023 16:00:07 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Jan =?iso-8859-1?Q?Kundr=E1t?= <jan.kundrat@cesnet.cz>,
-        Cosmin Tanislav <cosmin.tanislav@analog.com>,
-        linux-serial@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tty: max310x: work around regmap->regcache data
- corruption
-Message-ID: <9d3bdd33-cc23-4c80-a120-68898ba0c572@sirena.org.uk>
-References: <bd91db46c50615bc1d1d62beb659fa7f62386446.1701446070.git.jan.kundrat@cesnet.cz>
- <20231201132736.65cb0e2bff88fba85121c44a@hugovil.com>
- <ce3eaa82-66e9-404b-9062-0f628dc6164f@sirena.org.uk>
- <20231205105246.a0864cd10ff0252dec9ffabc@hugovil.com>
+        Tue, 5 Dec 2023 11:05:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B805CD3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701792358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=9J86n2gl20izTqD+XPRngNZnRLrRk6Lf0UEyIhjyiL4=;
+        b=BJhcp/eTMyMeKxwUSXSKfB6ozlyV+INyHrDTIsywiPiEy4VlCt8i92k93Op28v6ZODA32V
+        khCQhADNjxg5NQlTk809mII3qU4AQqfFwI0YelZlYxvLmdp4Hn1xDjTRP06fzE9wWwTZS7
+        NCbOxVQdSCjSaKLwFjwIXHpJMNPS/ek=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-187-iRUiy65RNcKTrNqpGMmzMg-1; Tue, 05 Dec 2023 11:05:46 -0500
+X-MC-Unique: iRUiy65RNcKTrNqpGMmzMg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40b3d4d6417so41776525e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 08:05:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701792017; x=1702396817;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9J86n2gl20izTqD+XPRngNZnRLrRk6Lf0UEyIhjyiL4=;
+        b=A4D8+n7FkTnAghyAD7pMtGfItT+nkwQtCiwjxc+q+MZe56uJ1Xdfgrp3nqAXEKSXTz
+         Jq2GyJem+J2+8ruppyqPu4QrFqgZMc6VeFDWdI83IvpKxYNjrjRRbx6xyRdRsr5E59z9
+         Rbdh5CYJ26OIqfxgbwrbGJFlmYy9b1raumc5usJ/xVoUB3RZYnlZ2Y0ShzF91JwcQSLe
+         TtpPKtWfaaADAtd1RTG9vWgjBTDXhDQaD+pkXCKeepCXPO99tuaNw1jiyJChwgAPt9/P
+         AJB/MlITiTjR3ULZMhfSHfxg8J857FbxccfbSu7z9dhFj1Z1/9O16RyuSSc78Bjkxg+w
+         cC6w==
+X-Gm-Message-State: AOJu0YzZX4KA2jJkvv1GcAHRqNWWl6WuP1HNtbCZXwMmhNInPvkbr3zG
+        ctJyVSoy6r7OsNoYXqt585eGt2Bm8jRBc6tYTC/WMFazRRIlYDMM7QzowDQOhm1idKsYILQW6Yt
+        HbAo2fUzzWsszmcfrjC/uFwtt
+X-Received: by 2002:a05:600c:35cc:b0:40b:5f03:b3bd with SMTP id r12-20020a05600c35cc00b0040b5f03b3bdmr1502725wmq.223.1701792017514;
+        Tue, 05 Dec 2023 08:00:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG00A7rJTn/EgbIRe7pTf+rXnbrrfQNfOlgsj5vIj/byQEYPM5uZ7SfYdtjLybS4srOelL7Xg==
+X-Received: by 2002:a05:600c:35cc:b0:40b:5f03:b3bd with SMTP id r12-20020a05600c35cc00b0040b5f03b3bdmr1502706wmq.223.1701792017167;
+        Tue, 05 Dec 2023 08:00:17 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72f:300:1ec7:2962:8889:ef6? (p200300cbc72f03001ec7296288890ef6.dip0.t-ipconnect.de. [2003:cb:c72f:300:1ec7:2962:8889:ef6])
+        by smtp.gmail.com with ESMTPSA id r16-20020a05600c459000b00406408dc788sm22708237wmo.44.2023.12.05.08.00.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 08:00:16 -0800 (PST)
+Message-ID: <59d9f31d-bb7d-4046-ad85-da82c0e3eec8@redhat.com>
+Date:   Tue, 5 Dec 2023 17:00:14 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="JI9VIstDJQZBToA8"
-Content-Disposition: inline
-In-Reply-To: <20231205105246.a0864cd10ff0252dec9ffabc@hugovil.com>
-X-Cookie: I've Been Moved!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 10/10] selftests/mm/cow: Add tests for anonymous
+ multi-size THP
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231204102027.57185-1-ryan.roberts@arm.com>
+ <20231204102027.57185-11-ryan.roberts@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231204102027.57185-11-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04.12.23 11:20, Ryan Roberts wrote:
+> Add tests similar to the existing PMD-sized THP tests, but which operate
+> on memory backed by (PTE-mapped) multi-size THP. This reuses all the
+> existing infrastructure. If the test suite detects that multi-size THP
+> is not supported by the kernel, the new tests are skipped.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
 
---JI9VIstDJQZBToA8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-On Tue, Dec 05, 2023 at 10:52:46AM -0500, Hugo Villeneuve wrote:
+-- 
+Cheers,
 
-> after our discussion about regmap range, it seems that the
-> efr_lock will need to stay.
+David / dhildenb
 
-OK.
-
-> In fact, all of this helped me to uncover another case where an
-> additional lock would be needed.
-
-Some progress at least!
-
---JI9VIstDJQZBToA8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVvSQYACgkQJNaLcl1U
-h9DHvAgAhZlTxMcszRkCry0LDAA0dP9cZcvYJOumjy7Ptr6AQgWDy8IWNTFUffCC
-tiFwXlTcRu25amPCa2j2UKZrAXtrvrp9DLSNVaA5TiTlko9ANHJ3QGRqFmDREw7z
-4wKGIx3HCSgrwl5+7DckDHmc1ol61cJ3QfThvFT96F8C0pEVew4DWdMwjBS/mes9
-xuzly2qP048donet3BQ9fiO4rV45daoOERayGX2NPuimLFWNyhZ9pCWdlIZNpzK/
-cDFZkm9OmCNxr/f0c9fXuU//t7F7jmOxXjv2cL4HfgM0QQJ2S1IBjlZg4ZYP/CKJ
-5mQ091vJy0ak6GYvUZjagtEbU9knxQ==
-=tuud
------END PGP SIGNATURE-----
-
---JI9VIstDJQZBToA8--
