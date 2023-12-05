@@ -2,143 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E32804FA1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F05EC804FB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbjLEJ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:59:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
+        id S1344825AbjLEKCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:02:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229643AbjLEJ74 (ORCPT
+        with ESMTP id S229710AbjLEKCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:59:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2399A7
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 02:00:02 -0800 (PST)
+        Tue, 5 Dec 2023 05:02:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A7B9E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 02:02:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701770402;
+        s=mimecast20190719; t=1701770535;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=NgbDI20y6OvMOe78396LNTbNIh67mkkWwt18lwdUQ4Q=;
-        b=gMRmqhWsYBM8rGHNH754DqFCq0TDGEqCKJfaBq2ywIQmtvCy1/qi7US6BsOU+aVStSFpJQ
-        7q0zZZoOZJM9lxEwZM7zz4FwSHkp28cO2FjgCcdvN0aEOZEzgYKMKHqxNaqIqsygTuh04q
-        fz6nUogDUtsZ5ENbuX03NQoNevgIS7A=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+         in-reply-to:in-reply-to:references:references;
+        bh=YZXF7waANU5+mhguvuvh8JxjfsSebRKaX6sLaLZrogE=;
+        b=OFjp7/158UFsJDEZ6tbNf1oeev/zHl/lWrzFPWn+L8z6oNKB3PV6hJixeen0biIRJ708Hw
+        zupC818mRMMLLbcEi4mciLuGbj2zciDrWCLSU6BqZcZBRbNQzRDOo24RSj0PDsL+/M1px1
+        dUtpByDiQvoGMSADLxiRzn6HXLRfni8=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-133-YFMU6-BJPie5jda20vRY-g-1; Tue, 05 Dec 2023 04:59:58 -0500
-X-MC-Unique: YFMU6-BJPie5jda20vRY-g-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40b5482879cso33777135e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:59:58 -0800 (PST)
+ us-mta-604-_7ATZgbsOrOYnt1YWk58PA-1; Tue, 05 Dec 2023 05:02:14 -0500
+X-MC-Unique: _7ATZgbsOrOYnt1YWk58PA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33342e25313so2063700f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 02:02:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701770398; x=1702375198;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NgbDI20y6OvMOe78396LNTbNIh67mkkWwt18lwdUQ4Q=;
-        b=eInVT9wlwNYzcSgrZUp4o0i0pecxzlv94Y8r3OyTIL0LkFjNWLgp5lktBUqrt694KE
-         qpp7vK2UQNleW76dU+jrLuyFPF1wbdbzFd7quQlFiPV1yZZC6lT/BP3pLUyZybKXYRJY
-         STD6cP/7zqDn5SkneI+++Y6s1KZNobg2QdeQGdvXzoUFWUolMqkxzuboHMeDchs8l2D9
-         iVgE3AYuv72Ao1y3Ja9/CyGue2MpqRxlEML9SD44Y/s9FUQnbrvCo6IBYfGjGx1MparM
-         tnQPwAilm2ISls3lf2GaxLpOEfLMRf/bQOOBPmi4DkT1PKfS3lp+J1VmPRxV2/QT4hhB
-         bvgQ==
-X-Gm-Message-State: AOJu0YylwgBF7hBVMCw+UbHRnMX3BmIzyS5I1XcvaSd9qa8BrBtXjb0w
-        l9aZXiNYnj74wn126tVpDnPt8xfsbhTR6+xgwRjUHGueebzgj+kLu8vHTx75zESUxD46dQg/Dcp
-        IeaoEFcVMWOEXirOb8BkYPxil
-X-Received: by 2002:a1c:7c0f:0:b0:40b:5e4a:2359 with SMTP id x15-20020a1c7c0f000000b0040b5e4a2359mr386103wmc.91.1701770397732;
-        Tue, 05 Dec 2023 01:59:57 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE0KdCjK4DoFhR6J9li+ceYfsjss7KqeyuEj7fFnnmqaHJIKt30rmwYKQJvedcoI1OTUunjBA==
-X-Received: by 2002:a1c:7c0f:0:b0:40b:5e4a:2359 with SMTP id x15-20020a1c7c0f000000b0040b5e4a2359mr386092wmc.91.1701770397301;
-        Tue, 05 Dec 2023 01:59:57 -0800 (PST)
-Received: from ?IPV6:2003:cb:c72f:300:1ec7:2962:8889:ef6? (p200300cbc72f03001ec7296288890ef6.dip0.t-ipconnect.de. [2003:cb:c72f:300:1ec7:2962:8889:ef6])
-        by smtp.gmail.com with ESMTPSA id bi19-20020a05600c3d9300b0040b54d7ebb9sm17990430wmb.41.2023.12.05.01.59.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 01:59:56 -0800 (PST)
-Message-ID: <90b48085-9499-4449-8ee1-a1643ebc3016@redhat.com>
-Date:   Tue, 5 Dec 2023 10:59:55 +0100
+        d=1e100.net; s=20230601; t=1701770533; x=1702375333;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YZXF7waANU5+mhguvuvh8JxjfsSebRKaX6sLaLZrogE=;
+        b=atZvvL/4yNQf8GaHsxut/6ONAatT3NhRmdsh6BLH8uZysh+wjiO6skEnUOSns012v0
+         lphhO2nymgQkarCZBDQGXR0umc13J3RZ5QzYQEr6NyZv6FQrum85JyfDsGJyN4KUoJlK
+         xFM8YchBdPscyiBdpbybHinVZWRbw6WY9sh1xOuq+fqN3DXBWSsEGjoAeuGPDH+JmG+X
+         YQvTT2x/1Gecg7M3VcYvzuNfjg5LYEFLAt+eMCGa95pST1S4rZW5ARyqxC/A11XtUwAO
+         pJjtWgL4am3PNdsvEupwZd0IXRNyh3ThPFQ6jkdWtg4jeRCTnmQd26S8kKT1NQrQPsBp
+         sU9w==
+X-Gm-Message-State: AOJu0Yy0EBCKttiGrdsOMmKTdz4DHx++Es05gFc366MmH7XqMiH8sm2C
+        fHzNRgItCyWKOSC6ZkyYwhk6nq5cQT+3/sFEoYtU0Le4A5E3TgrXCpMWipMtA4xrlBHWAG+PRkn
+        XEdH5Eywl0E2ykl+Mwku+c96Q
+X-Received: by 2002:a05:600c:4593:b0:3fe:4cbc:c345 with SMTP id r19-20020a05600c459300b003fe4cbcc345mr297118wmo.41.1701770533525;
+        Tue, 05 Dec 2023 02:02:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHkyh6uz8tLTANh12Tdqz9NiKwahRoAQySUBBbY1KeDQe3kryYq6CKsi25SwLURKdLaHjSVWQ==
+X-Received: by 2002:a05:600c:4593:b0:3fe:4cbc:c345 with SMTP id r19-20020a05600c459300b003fe4cbcc345mr297101wmo.41.1701770533112;
+        Tue, 05 Dec 2023 02:02:13 -0800 (PST)
+Received: from starship ([89.237.98.20])
+        by smtp.gmail.com with ESMTPSA id f11-20020a1c6a0b000000b0040523bef620sm497429wmc.0.2023.12.05.02.02.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 02:02:12 -0800 (PST)
+Message-ID: <4f07482c7117b9d27b352621577d78e29ae951b7.camel@redhat.com>
+Subject: Re: [PATCH v7 21/26] KVM: x86: Save and reload SSP to/from SMRAM
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>,
+        Chao Gao <chao.gao@intel.com>
+Cc:     seanjc@google.com, pbonzini@redhat.com, dave.hansen@intel.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, rick.p.edgecombe@intel.com,
+        john.allen@amd.com
+Date:   Tue, 05 Dec 2023 12:02:11 +0200
+In-Reply-To: <7531921a-e7b2-4027-86c4-75fc91a45f26@intel.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+         <20231124055330.138870-22-weijiang.yang@intel.com>
+         <d2be8a787969b76f71194ce65bd6f35426b60dcc.camel@redhat.com>
+         <ZWlDhYBYGiX7ir4X@chao-email>
+         <7531921a-e7b2-4027-86c4-75fc91a45f26@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 09/10] selftests/mm/cow: Generalize do_run_with_thp()
- helper
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-10-ryan.roberts@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231204102027.57185-10-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -146,23 +86,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.12.23 11:20, Ryan Roberts wrote:
-> do_run_with_thp() prepares (PMD-sized) THP memory into different states
-> before running tests. With the introduction of multi-size THP, we would
-> like to reuse this logic to also test those smaller THP sizes. So let's
-> add a thpsize parameter which tells the function what size THP it should
-> operate on.
+On Mon, 2023-12-04 at 08:45 +0800, Yang, Weijiang wrote:
+> On 12/1/2023 10:23 AM, Chao Gao wrote:
+> > On Thu, Nov 30, 2023 at 07:42:44PM +0200, Maxim Levitsky wrote:
+> > > On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
+> > > > Save CET SSP to SMRAM on SMI and reload it on RSM. KVM emulates HW arch
+> > > > behavior when guest enters/leaves SMM mode,i.e., save registers to SMRAM
+> > > > at the entry of SMM and reload them at the exit to SMM. Per SDM, SSP is
+> > > > one of such registers on 64bit Arch, so add the support for SSP.
+> > > > 
+> > > > Suggested-by: Sean Christopherson <seanjc@google.com>
+> > > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > > > ---
+> > > >   arch/x86/kvm/smm.c | 8 ++++++++
+> > > >   arch/x86/kvm/smm.h | 2 +-
+> > > >   2 files changed, 9 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/arch/x86/kvm/smm.c b/arch/x86/kvm/smm.c
+> > > > index 45c855389ea7..7aac9c54c353 100644
+> > > > --- a/arch/x86/kvm/smm.c
+> > > > +++ b/arch/x86/kvm/smm.c
+> > > > @@ -275,6 +275,10 @@ static void enter_smm_save_state_64(struct kvm_vcpu *vcpu,
+> > > >   	enter_smm_save_seg_64(vcpu, &smram->gs, VCPU_SREG_GS);
+> > > >   
+> > > >   	smram->int_shadow = static_call(kvm_x86_get_interrupt_shadow)(vcpu);
+> > > > +
+> > > > +	if (guest_can_use(vcpu, X86_FEATURE_SHSTK))
+> > > > +		KVM_BUG_ON(kvm_msr_read(vcpu, MSR_KVM_SSP, &smram->ssp),
+> > > > +			   vcpu->kvm);
+> > > >   }
+> > > >   #endif
+> > > >   
+> > > > @@ -564,6 +568,10 @@ static int rsm_load_state_64(struct x86_emulate_ctxt *ctxt,
+> > > >   	static_call(kvm_x86_set_interrupt_shadow)(vcpu, 0);
+> > > >   	ctxt->interruptibility = (u8)smstate->int_shadow;
+> > > >   
+> > > > +	if (guest_can_use(vcpu, X86_FEATURE_SHSTK))
+> > > > +		KVM_BUG_ON(kvm_msr_write(vcpu, MSR_KVM_SSP, smstate->ssp),
+> > > > +			   vcpu->kvm);
+> > > > +
+> > > >   	return X86EMUL_CONTINUE;
+> > > >   }
+> > > >   #endif
+> > > > diff --git a/arch/x86/kvm/smm.h b/arch/x86/kvm/smm.h
+> > > > index a1cf2ac5bd78..1e2a3e18207f 100644
+> > > > --- a/arch/x86/kvm/smm.h
+> > > > +++ b/arch/x86/kvm/smm.h
+> > > > @@ -116,8 +116,8 @@ struct kvm_smram_state_64 {
+> > > >   	u32 smbase;
+> > > >   	u32 reserved4[5];
+> > > >   
+> > > > -	/* ssp and svm_* fields below are not implemented by KVM */
+> > > >   	u64 ssp;
+> > > > +	/* svm_* fields below are not implemented by KVM */
+> > > >   	u64 svm_guest_pat;
+> > > >   	u64 svm_host_efer;
+> > > >   	u64 svm_host_cr4;
+> > > 
+> > > My review feedback from the previous patch series still applies, and I don't
+> > > know why it was not addressed/replied to:
+> > > 
+> > > I still think that it is worth it to have a check that CET is not enabled in
+> > > enter_smm_save_state_32 which is called for pure 32 bit guests (guests that don't
+> > > have X86_FEATURE_LM enabled)
+> > can KVM just reject a KVM_SET_CPUID ioctl which attempts to expose shadow stack
+> > (or even any CET feature) to 32-bit guest in the first place? I think it is simpler.
 > 
-> A separate commit will utilize this change to add new tests for
-> multi-size THP, where available.
+> I favor adding an early defensive check for the issue under discussion if we want to handle the case.
+> Crashing the VM at runtime when guest SMI is kicked seems not user friendly.
 > 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+I don't mind. I remember that I was told that crashing a guest when #SMI arrives and a nested guest is running
+is ok for 32 bit guests, don't know what the justification was.
+Sean, Paolo, do you remember?
 
--- 
-Cheers,
+IMHO the chances of pure 32 bit guest (only qemu-system-386 creates these) running with CET are very low,
+but I just wanted to have a cheap check just to keep the 32 bit and 64 bit smm save/restore code similar,
+so that nobody in the future will ask 'why this code does this or that'.
 
-David / dhildenb
+Also it is trivial to add the ssp to 32 bit smmram image - the layout is not really compliant to x86 spec,
+and never consumed by the hardware, you can just put it somewhere in the image, instead of one of the reserved fields.
+
+From my point of view I want the code to be as orthogonal as possible.
+
+Best regards,
+	Maxim Levitsky
+
+
+
 
