@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 265BF805E5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4560805E66
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbjLETKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:10:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51690 "EHLO
+        id S231894AbjLETK7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 14:10:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjLETJ7 (ORCPT
+        with ESMTP id S229710AbjLETK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:09:59 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881B3194;
-        Tue,  5 Dec 2023 11:10:01 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6ce4d4c5ea2so2095548b3a.0;
-        Tue, 05 Dec 2023 11:10:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701803401; x=1702408201; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LPvsreD7SHt4olmNelnu/glf+fhgjLiYFThCak4nyVI=;
-        b=Hhn7edkoFmTEiS3+su/j/RRiFeVA9otf8tmzu6jhc75nIjt/f4/yDJtvIr1uDpjQmD
-         QDxDynTskK5OLmTTQqxKSj6HwUlZx8AK8mMvMgPXEBUKpcoGwTXKE9UfZDw7BWlNyR9H
-         qITgRwSJQKZlUpRaP567Wtq7pBrVO2ERNT+Lu3JUQb03+tU8+4qA10d4J6PdMUAEaAGJ
-         E+pRrJNTJKsapNyH+skD5fRK7l0nwdiF+bV9hh/rC6rY82eEWbCZF4I7uqz/HB2kUk9r
-         296unvcjwWGAhvpG5W2JnDWo0U46iPXcxOe8aZ7wB8SG7IulbGNAB49T52CVLnsx/uF6
-         zW9Q==
+        Tue, 5 Dec 2023 14:10:56 -0500
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9552CB0;
+        Tue,  5 Dec 2023 11:11:02 -0800 (PST)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ce32821a53so1895979b3a.0;
+        Tue, 05 Dec 2023 11:11:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701803401; x=1702408201;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LPvsreD7SHt4olmNelnu/glf+fhgjLiYFThCak4nyVI=;
-        b=xPA6i2dTsrVGOYPrUqZoin5K26HS2RzzqxgF4zspfzY2+q+sVdjmKP9b7iYbcD7Zsq
-         SNOUlclGkcUXhEJUMgs9zNDRP308euLwDHvSNnbZiwdfO7OpnmkXbSsHGKOWiLoGyJNZ
-         zXpmHOU6Z91bRfUxuIftV4osshC4OvDm2A0SKFsng0RRWqQBrv/BBy5Y21k2CIq3u7y3
-         83oBPYjEF+yHyETgkXgvgGnSu/U+PvBwd/tkHKhdkon4/1r35LvLrgRq6RJ14/IHmJT6
-         I7Hp0UifN6H3f8XRlW9AYQsCSEFdcSFAwqIlA6Y9sI7YpG4JVrQ9I6YzhnWoeqLCi5Rn
-         oRKQ==
-X-Gm-Message-State: AOJu0YzpTwxbqRcdZ5E4Fd8rxpKDTH0NUHwJj1NGMCqUvTDVSVn1p0nT
-        HbfeVL1QNZLwjaHUeM/Ena4=
-X-Google-Smtp-Source: AGHT+IEDq+Ez0h9sWD3yvp/dBLNWpF1VLCTMHXfh4bbVjAmC2l7HwMujCksKsd5K58RuIsXkbKQ4bQ==
-X-Received: by 2002:a05:6a21:19d:b0:18c:570d:c5b4 with SMTP id le29-20020a056a21019d00b0018c570dc5b4mr26991876pzb.35.1701803400827;
-        Tue, 05 Dec 2023 11:10:00 -0800 (PST)
-Received: from localhost.localdomain ([114.249.31.17])
-        by smtp.gmail.com with ESMTPSA id v18-20020a63f212000000b005ab281d0777sm9624568pgh.20.2023.12.05.11.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 11:10:00 -0800 (PST)
-From:   YangXin <yx.0xffff@gmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: remove ___neigh_lookup_noref().
-Date:   Wed,  6 Dec 2023 03:09:51 +0800
-Message-Id: <20231205190951.67-1-yx.0xffff@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        d=1e100.net; s=20230601; t=1701803462; x=1702408262;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uODkYjBD6L0Z6eIxrtu/7Xfvr3I8XjBfQSMhqHB6Qbw=;
+        b=ipe2IdNbsqbFBPAZEezWOtAtTDCKwS/xhqdqpGJlIfwOo35s/DUureXEgUUk6Mq+Q6
+         Bbb0rj0KiiY6KruDLlE2bGzEiaNqW9NafxRTrKAYsVBhgb6H5zZAECV18jKe9cpbfL8l
+         pyLSq6L9dbf5Ny6lgo6c7DsAfRbe0gNrIM5PJPs7pVkTIAo3Z9+skGSxFhz2hR+Jwo/7
+         1EDLjTf5QUioDXaA5q4pAWsmYOuLkiDUM992CzBcfC0Axr559M86QqEywCuu6YVutg4Q
+         fyCrRwD7VLQ43fVILXmQBKO4BbYYJWNKTt/5Hey0xUQw//27iE/Y0PJ3/FWX7bkVSe+9
+         rLNg==
+X-Gm-Message-State: AOJu0Yws2aaJir4fEp/I//hRgg+NMje1buhwOqoFg2ZCx6taHPQRQdKY
+        m2CbsUUqdo7GMSXC0nDc/XJE7s4ddDArDsemLsM=
+X-Google-Smtp-Source: AGHT+IFqj9cVd8zrZNQfWXXCe3xl8Op65upOReYUkBSiCVHHvew18D33Nj7SFdsH0mn6xxyPNznBBsC4GddYdRTqbbs=
+X-Received: by 2002:a05:6a21:998e:b0:18c:a9d3:4f96 with SMTP id
+ ve14-20020a056a21998e00b0018ca9d34f96mr3828901pzb.32.1701803461868; Tue, 05
+ Dec 2023 11:11:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+References: <20231204182330.654255-1-irogers@google.com> <bea4ad79-297e-9737-8af1-2286192d26f4@os.amperecomputing.com>
+ <CAM9d7ci=Tk845H3x3KMDu-hTdP-u0O6a8D3iAa8EnFLLjOO6OQ@mail.gmail.com>
+ <ZW9G8Clxwl6bd0H6@kernel.org> <CAM9d7ciOp_O5N1TDX0HyKavykirByAYrqzcmM-_6ZWjMv-47WQ@mail.gmail.com>
+ <ZW9whqUEILWMdcmi@kernel.org>
+In-Reply-To: <ZW9whqUEILWMdcmi@kernel.org>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 5 Dec 2023 11:10:50 -0800
+Message-ID: <CAM9d7ciqm2NLt5kxjVdOP2y-KV30_CRsSjHpcQgntvNGWukx9g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] perf metrics: Avoid segv if default metricgroup
+ isn't set
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,107 +76,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-key_eq() and hash() are functions of struct neigh_table, so we just need to call tbl->key_eq() and tbl->hash(), instead of passing them in as parameters. 
+On Tue, Dec 5, 2023 at 10:48 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Dec 05, 2023 at 09:24:42AM -0800, Namhyung Kim escreveu:
+> > Hi Arnaldo,
+> >
+> > On Tue, Dec 5, 2023 at 7:51 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > >
+> > > Em Mon, Dec 04, 2023 at 07:33:18PM -0800, Namhyung Kim escreveu:
+> > > > On Mon, Dec 4, 2023 at 2:45 PM Ilkka Koskinen <ilkka@os.amperecomputing.com> wrote:
+> > > > > On Mon, 4 Dec 2023, Ian Rogers wrote:
+> > > > > > A metric is default by having "Default" within its groups. The default
+> > > > > > metricgroup name needn't be set and this can result in segv in
+> > > > > > default_metricgroup_cmp and perf_stat__print_shadow_stats_metricgroup
+> > > > > > that assume it has a value when there is a Default metric group. To
+> > > > > > avoid the segv initialize the value to "".
+> > >
+> > > > > > Fixes: 1c0e47956a8e ("perf metrics: Sort the Default metricgroup")
+> > > > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > >
+> > > > > Thanks! I was going to look for the bug but got pulled to other
+> > > > > tasks. The patch looks good to me and I tested it successfully on
+> > > > > AmpereOne.
+> > >
+> > > > >    Reviewed-and-tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> > >
+> > > > Looks like it needs to go through perf-tools for v6.7.
+> > > > Ian, do you think this one is enough?
+> > >
+> > > So I had this on my local perf-tools-next, removed now, I also have some
+> > > other fixes by Ian on the tmp.perf-tools-next, please let me know what
+> > > you guys decide to have in perf-tools for v6.7 so that I can remove it
+> > > from there.
+> >
+> > I think we need this one and the Ampere default-metric-group fix.
+> >
+> > https://lore.kernel.org/r/20231201021550.1109196-2-ilkka@os.amperecomputing.com/
+> >
+> > Also perf list JSON fix can go to v6.7.
+> >
+> > https://lore.kernel.org/r/20231129213428.2227448-2-irogers@google.com/
+>
+> Ok, removed both, please augment the later description to:
+>
+> "perf list: Fix JSON segfault by setting the used skip_fuplicate_pmus callback"
+>
+> The original description was vague, improving it a bit like that helps
+> when just looking at the output of "git log --oneline".
 
-And if those two parameters were removed,  ___neigh_lookup_noref() would be pointless, so I replaced ___neigh_lookup_noref() with __neigh_lookup_noref().
+Done and pushed to tmp.perf-tools!
 
-Signed-off-by: YangXin <yx.0xffff@gmail.com>
----
-Last time I comitted this patch, Mr Dumazet said "this might defeat inlining.".
-So I compiled kernel on my computer with defconfig, made sure that this patch would not lead __neigh_lookup_noref() fail to inline.
-
-My enviroment:
-Debian12
-gcc version:
-gcc (Debian 12.2.0-14) 12.2.0
-
- include/net/arp.h       |  2 +-
- include/net/ndisc.h     |  5 ++---
- include/net/neighbour.h | 22 +++++-----------------
- 3 files changed, 8 insertions(+), 21 deletions(-)
-
-diff --git a/include/net/arp.h b/include/net/arp.h
-index e8747e0713c7..e274c7fc5020 100644
---- a/include/net/arp.h
-+++ b/include/net/arp.h
-@@ -24,7 +24,7 @@ static inline struct neighbour *__ipv4_neigh_lookup_noref(struct net_device *dev
- 	if (dev->flags & (IFF_LOOPBACK | IFF_POINTOPOINT))
- 		key = INADDR_ANY;
- 
--	return ___neigh_lookup_noref(&arp_tbl, neigh_key_eq32, arp_hashfn, &key, dev);
-+	return __neigh_lookup_noref(&arp_tbl, &key, dev);
- }
- #else
- static inline
-diff --git a/include/net/ndisc.h b/include/net/ndisc.h
-index 9bbdf6eaa942..8e0ba9a87e4d 100644
---- a/include/net/ndisc.h
-+++ b/include/net/ndisc.h
-@@ -380,15 +380,14 @@ static inline u32 ndisc_hashfn(const void *pkey, const struct net_device *dev, _
- 
- static inline struct neighbour *__ipv6_neigh_lookup_noref(struct net_device *dev, const void *pkey)
- {
--	return ___neigh_lookup_noref(&nd_tbl, neigh_key_eq128, ndisc_hashfn, pkey, dev);
-+	return __neigh_lookup_noref(&nd_tbl, pkey, dev);
- }
- 
- static inline
- struct neighbour *__ipv6_neigh_lookup_noref_stub(struct net_device *dev,
- 						 const void *pkey)
- {
--	return ___neigh_lookup_noref(ipv6_stub->nd_tbl, neigh_key_eq128,
--				     ndisc_hashfn, pkey, dev);
-+	return __neigh_lookup_noref(ipv6_stub->nd_tbl, pkey, dev);
- }
- 
- static inline struct neighbour *__ipv6_neigh_lookup(struct net_device *dev, const void *pkey)
-diff --git a/include/net/neighbour.h b/include/net/neighbour.h
-index 0d28172193fa..434c9e7c7ea7 100644
---- a/include/net/neighbour.h
-+++ b/include/net/neighbour.h
-@@ -290,37 +290,25 @@ static inline bool neigh_key_eq128(const struct neighbour *n, const void *pkey)
- 		(n32[2] ^ p32[2]) | (n32[3] ^ p32[3])) == 0;
- }
- 
--static inline struct neighbour *___neigh_lookup_noref(
--	struct neigh_table *tbl,
--	bool (*key_eq)(const struct neighbour *n, const void *pkey),
--	__u32 (*hash)(const void *pkey,
--		      const struct net_device *dev,
--		      __u32 *hash_rnd),
--	const void *pkey,
--	struct net_device *dev)
-+static inline struct neighbour *__neigh_lookup_noref(struct neigh_table *tbl,
-+						     const void *pkey,
-+						     struct net_device *dev)
- {
- 	struct neigh_hash_table *nht = rcu_dereference(tbl->nht);
- 	struct neighbour *n;
- 	u32 hash_val;
- 
--	hash_val = hash(pkey, dev, nht->hash_rnd) >> (32 - nht->hash_shift);
-+	hash_val = tbl->hash(pkey, dev, nht->hash_rnd) >> (32 - nht->hash_shift);
- 	for (n = rcu_dereference(nht->hash_buckets[hash_val]);
- 	     n != NULL;
- 	     n = rcu_dereference(n->next)) {
--		if (n->dev == dev && key_eq(n, pkey))
-+		if (n->dev == dev && tbl->key_eq(n, pkey))
- 			return n;
- 	}
- 
- 	return NULL;
- }
- 
--static inline struct neighbour *__neigh_lookup_noref(struct neigh_table *tbl,
--						     const void *pkey,
--						     struct net_device *dev)
--{
--	return ___neigh_lookup_noref(tbl, tbl->key_eq, tbl->hash, pkey, dev);
--}
--
- static inline void neigh_confirm(struct neighbour *n)
- {
- 	if (n) {
--- 
-2.33.0
-
+Thanks,
+Namhyung
