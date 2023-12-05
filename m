@@ -2,99 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 428F5805543
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DC380554B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345345AbjLEMzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:55:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51860 "EHLO
+        id S1345280AbjLEM5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:57:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345280AbjLEMzT (ORCPT
+        with ESMTP id S232019AbjLEM5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:55:19 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CFCA1
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:55:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF517C433C8;
-        Tue,  5 Dec 2023 12:55:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701780926;
-        bh=llK4VgfU9M7BUAIsGTV5IdpayF9LEJp4ETnPX0BuuzM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VCp1XxpVWCmqmJ19VGGl95DZFPb+kwewM3cLBzV0oEEb/VXdEfcisAi+UmR/wdNn2
-         cm7b1CkJlnbjlPn5ZnIMVEel9ZLe7G4OUj4wWi6ujSryAHq9Ck/M2aVL6RMjpsSNRl
-         r3X3WDPhMufICSgai/BLnFyt20K13unfbRks+bjBtM0qEMSwfoDjqxnbY0yeK/43X9
-         Z5feOjrFfI7EdCML7zfaLj9+0ZHuYP0EWe+78EI/imZdTcADtsHf3drQzkVQ+EOPNY
-         n5YjyMcTLQC07nqCr//PwlwPqwgX08JfJbodZGY1QOSChm/t5eYeNeVTmeRU4atiu5
-         luojtG+NcRXJg==
-Date:   Tue, 5 Dec 2023 12:55:18 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Kory Maincent <kory.maincent@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-        Dent Project <dentproject@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
- driver
-Message-ID: <4b96b8c8-7def-46e5-9c85-d9e925fb9251@sirena.org.uk>
-References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
- <20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
- <20231204225956.GG981228@pengutronix.de>
- <20231205064527.GJ981228@pengutronix.de>
+        Tue, 5 Dec 2023 07:57:42 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9A4A0;
+        Tue,  5 Dec 2023 04:57:48 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0tr1Plpz4f3lCn;
+        Tue,  5 Dec 2023 20:57:40 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id DCA8D1A0B90;
+        Tue,  5 Dec 2023 20:57:44 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgA3iA5HHm9l7uI9Cw--.19151S4;
+        Tue, 05 Dec 2023 20:57:44 +0800 (CST)
+From:   Li Lingfeng <lilingfeng@huaweicloud.com>
+To:     josef@toxicpanda.com
+Cc:     linux-kernel@vger.kernel.org, hch@lst.de,
+        linux-block@vger.kernel.org, nbd@other.debian.org, axboe@kernel.dk,
+        chaitanya.kulkarni@wdc.com, yukuai1@huaweicloud.com,
+        houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
+        lilingfeng@huaweicloud.com, lilingfeng3@huawei.com
+Subject: [PATCH -next v2] nbd: get config_lock before sock_shutdown
+Date:   Tue,  5 Dec 2023 20:56:41 +0800
+Message-Id: <20231205125641.1913393-1-lilingfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zoXV23kthTxZLA1X"
-Content-Disposition: inline
-In-Reply-To: <20231205064527.GJ981228@pengutronix.de>
-X-Cookie: I've Been Moved!
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgA3iA5HHm9l7uI9Cw--.19151S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxWry3XF15CrWDZF4rtr48Xrb_yoW5Xw4rpF
+        43CFs8Gr45X3WSga9xJ34xWry5G3saga17Gry7u3WSvrZ7CrWxurn5KFy3Cr1DJr9xXF45
+        XFyFgFnYya98JrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267
+        AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyU
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUkrcfUUUUU=
+X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhong Jinghua <zhongjinghua@huawei.com>
 
---zoXV23kthTxZLA1X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Config->socks in sock_shutdown may trigger a UAF problem.
+The reason is that sock_shutdown does not hold the config_lock,
+so that nbd_ioctl can release config->socks at this time.
 
-On Tue, Dec 05, 2023 at 07:45:27AM +0100, Oleksij Rempel wrote:
+T0: NBD_DO_IT
+T1: NBD_SET_SOCK
 
-> CC regulator devs here too.
+T0						T1
 
-Again, I'm not sure what if any question there is?
+nbd_ioctl
+  mutex_lock(&nbd->config_lock)
+  // get lock
+  __nbd_ioctl
+	nbd_start_device_ioctl
+	  nbd_start_device
+	  mutex_unlock(&nbd->config_lock)
+	  // relase lock
+	  wait_event_interruptible
+	  (kill, enter sock_shutdown)
+	  sock_shutdown
+					nbd_ioctl
+					  mutex_lock(&nbd->config_lock)
+					  // get lock
+					  __nbd_ioctl
+					    nbd_add_socket
+					      krealloc
+						kfree(p)
+					        //config->socks is NULL
+	    nbd_sock *nsock = config->socks // error
 
---zoXV23kthTxZLA1X
-Content-Type: application/pgp-signature; name="signature.asc"
+Fix it by moving config_lock up before sock_shutdown.
 
------BEGIN PGP SIGNATURE-----
+Link: https://lore.kernel.org/all/ab998dda-80ba-7d8b-0cae-36665826deb5@huaweicloud.com/
+Signed-off-by: Zhong Jinghua <zhongjinghua@huawei.com>
+Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
+---
+v1->v2:
+  Make comment more detailed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVvHbYACgkQJNaLcl1U
-h9BHrQf8C6nw/SboP4lAP9ogknacWdRLOmkOBm/zqJn3nEWLF+zm/vly+rGUUWnk
-CFA5bDZdBl96CHHQwJAW/O6tPl2hbNoKYh1H4TuZ8GSqZh0EXgwswEy1rGamnZBt
-DtKBokQP85r1ryASwAmyGs0s34PRimChsG5Jgo11mD02cysAMiwFUrpPzyUYsY7c
-Z4n40HTEOa8nat42h5rqCnVIdJPBmNYWzFsCUBzOELFl11PF3yIkZ/f72wPwkShv
-PFHRrki1bfSqpQs0WyPPAGXS+gVTpJY/qlAGB5VhZjAU3JyMlUFTGj1nZvM0H9hl
-Ipq4bh94622GiF4rrkbT3/Qndr2nCA==
-=CFvz
------END PGP SIGNATURE-----
+ drivers/block/nbd.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
 
---zoXV23kthTxZLA1X--
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 855fdf5c3b4e..7a044b4726b4 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -92,6 +92,11 @@ struct nbd_config {
+ 	unsigned long runtime_flags;
+ 	u64 dead_conn_timeout;
+ 
++	/*
++	 * Anyone who tries to get config->socks needs to be
++	 * protected by config_lock since it may be released
++	 * by krealloc in nbd_add_socket.
++	 */
+ 	struct nbd_sock **socks;
+ 	int num_connections;
+ 	atomic_t live_connections;
+@@ -876,6 +881,10 @@ static void recv_work(struct work_struct *work)
+ 	nbd_mark_nsock_dead(nbd, nsock, 1);
+ 	mutex_unlock(&nsock->tx_lock);
+ 
++	/*
++	 * recv_work will not get config_lock here if recv_workq is flushed
++	 * in ioctl since nbd_open is holding config_refs.
++	 */
+ 	nbd_config_put(nbd);
+ 	atomic_dec(&config->recv_threads);
+ 	wake_up(&config->recv_wq);
+@@ -1417,13 +1426,21 @@ static int nbd_start_device_ioctl(struct nbd_device *nbd)
+ 	mutex_unlock(&nbd->config_lock);
+ 	ret = wait_event_interruptible(config->recv_wq,
+ 					 atomic_read(&config->recv_threads) == 0);
++
++	/*
++	 * Get config_lock before sock_shutdown to prevent UAF since nbd_add_socket
++	 * may release config->socks concurrently.
++	 *
++	 * config_lock can be got before flush_workqueue since recv_work will not
++	 * get it in the current scenario.
++	 */
++	mutex_lock(&nbd->config_lock);
+ 	if (ret) {
+ 		sock_shutdown(nbd);
+ 		nbd_clear_que(nbd);
+ 	}
+ 
+ 	flush_workqueue(nbd->recv_workq);
+-	mutex_lock(&nbd->config_lock);
+ 	nbd_bdev_reset(nbd);
+ 	/* user requested, ignore socket errors */
+ 	if (test_bit(NBD_RT_DISCONNECT_REQUESTED, &config->runtime_flags))
+-- 
+2.39.2
+
