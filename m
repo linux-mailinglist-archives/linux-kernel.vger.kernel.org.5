@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7E4D8052F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00918052D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346857AbjLELdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58234 "EHLO
+        id S1344864AbjLEL2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:28:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235598AbjLELdI (ORCPT
+        with ESMTP id S1345061AbjLEL1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:33:08 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C9749E0
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:23:55 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3333224c7b9so3418061f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 03:23:55 -0800 (PST)
+        Tue, 5 Dec 2023 06:27:47 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEE230C2;
+        Tue,  5 Dec 2023 03:25:02 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c9fc0b84d0so30993871fa.0;
+        Tue, 05 Dec 2023 03:25:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701775404; x=1702380204; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ws3CIsjXWSfN6YwtDvaoTEO5x+PGXRNs+10Uc6B7SBs=;
-        b=F/jjh+2SbO/nDuRw1+DNL3qRyJRMZ3O5jVHjnl5qxYS5mmWW1cSBYQSuFSQpTE/JSG
-         5se6XGHYQKxxlv6LLCNYGie/UcbaY5LerxWvqP+2sI4Wp0dd0aw7q2F07Wo25L6O4VfJ
-         o5+BlHSW01mV5a21rLj2ksIY5so3Uuy6wVPYDleL9IjJqqnXrqhmZKksz3W5S84MxVsv
-         4+WrHEDTgiK2E0Jmz69woawQO4t16gW9M1fknalqFcXIOnHapKNsycda5MY659lBYCEb
-         +kdWQg0giqnFidPdHtZHPxA3cYHnAvRQl4wSa0D1xJb/Q1HADjg4RN48TfGnGJRe22s0
-         siOg==
+        d=gmail.com; s=20230601; t=1701775472; x=1702380272; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zQQyxGUKk4pbCHDpcs6JlELv+pOGJjJC9lYpip2lfKM=;
+        b=PBLZAOhrWtiXt3vkeGSG4M8uPM09Xxf2V+qgz2CdCpLOoFOHYtj8IcB24uEQEj6sVl
+         fTImgtnmvAz+vfe7d1X0w7LloS0fKtLzU047CFrmK5Gm++qRMprK34nosmxM30aoUC+G
+         KbeM5+BGvn8OTYOlU8weVjakCWenzUHanZRtNlsfPEgfq7dsDjPiMJiTwO6mRlMmsb28
+         w3H9aXsRamph5Z16gZ0jutNGcsbi1hmFPX0r2g63rM5vMN8e4OuS8+D00AevHSRKIXmh
+         WHlqNaYl34Ijb7Ko+SeuJ0rBy2QqwKFxFNgCjUXZATDPd+2qVwpfY3+vloAzePpOIyh1
+         Cgeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701775404; x=1702380204;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ws3CIsjXWSfN6YwtDvaoTEO5x+PGXRNs+10Uc6B7SBs=;
-        b=YW5yO6Wcwu1/OgNq220VYq/ga67GyeBHmMs9kjQ5mRCAZo2n5ynJ5uglEAiSVMgl4Q
-         nvReATWCAbvaYdjYWQaOkQFAC1XWwNMyTNV6MOpO9mFnoiJZLL5gxVTGNeb2HpET2iyH
-         bGev2ViZ6jH8uP6HpnNjCB5IS5mZOI+XsDQ2Rk9y7SDARva00Jl2EGp96zkZepSco08b
-         E08G/R7T2KHpkwXs457SgthCQFFlvweYAk0AT5uai8p0kCR4litQh1YLt5U952Pbu+hy
-         MhSEarSt/kuVrRLRV91DCHDyZpA4fgfUMfTmAG4R4dT/XJN0vozRrCUhBp/0CcwDWHw8
-         xTyA==
-X-Gm-Message-State: AOJu0YyaQbU1NAMhzEMjTex64Uw+wajjVBFbvihx/MJroKjaGzdNchUb
-        xinpmZ3ugUVrNnY+QdfGjOhtCg==
-X-Google-Smtp-Source: AGHT+IGZrmoqP+nMIa/3cBLgBOq9hwyxZg/PZmzJay6finlPfcxRqwVG7R5axg0/t55/zRkDaEQxBw==
-X-Received: by 2002:a5d:66c1:0:b0:333:a27:2326 with SMTP id k1-20020a5d66c1000000b003330a272326mr3908774wrw.25.1701775404274;
-        Tue, 05 Dec 2023 03:23:24 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:2dd9:dce:96c5:9e9a])
-        by smtp.gmail.com with ESMTPSA id p8-20020a5d59a8000000b003333ed23356sm8127775wrr.4.2023.12.05.03.23.23
+        d=1e100.net; s=20230601; t=1701775472; x=1702380272;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zQQyxGUKk4pbCHDpcs6JlELv+pOGJjJC9lYpip2lfKM=;
+        b=CHWo1PTqtQh9vIgfWvtOWjLB1+Rc6h48SqUrAi6UpRJb4CJ2KMVdrvMuYH+9Jj8J6d
+         pHMt8A24JrRoVfPjqiFOK79yARD5CrYbc1hmwsBTx3JXwYe1Dg3PFl2WCgZ+k8xC8qjG
+         iPtVlw3FZEB2KwIIQHhni6TLNTwsZMww3YT67EfKrWWej7e9icRIwYJOrLz/k5KoOkac
+         1SJBolQ2LE7XeNeqmtS8/qjxI2QiH2vpXTMOS2jQ3PIzgzoXxh1ntIAzIjr4Rkb7Q/Bk
+         3L0T3ptveQ6C3h2PoHhMKMiFC/W6pfnpoYF854GpsHuvwwSUNIYuDq4HIGjPoKkJoT3+
+         3f4Q==
+X-Gm-Message-State: AOJu0YyoWXV+Y9sBDmGbDf73vewcQdIkQQsDz6gD75zFdhofEayqmrRy
+        60NmWVg8Y2SUgE5zj+9fytE=
+X-Google-Smtp-Source: AGHT+IEMbJi9JfgwJmbW7rz+XhmNZMSh11Xumx4Y4u6mllkJx9Vg0PTHAe8th3MAn+PEuygze2apvA==
+X-Received: by 2002:a2e:9284:0:b0:2c9:cf94:94bc with SMTP id d4-20020a2e9284000000b002c9cf9494bcmr3021288ljh.33.1701775471899;
+        Tue, 05 Dec 2023 03:24:31 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id x12-20020a170906298c00b00a1cbb055575sm412662eje.180.2023.12.05.03.24.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 03:23:23 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 3/3] arm64: dts: qcom: qrb5165-rb5: add the Bluetooth node
-Date:   Tue,  5 Dec 2023 12:23:11 +0100
-Message-Id: <20231205112311.16391-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231205112311.16391-1-brgl@bgdev.pl>
-References: <20231205112311.16391-1-brgl@bgdev.pl>
+        Tue, 05 Dec 2023 03:24:31 -0800 (PST)
+Date:   Tue, 5 Dec 2023 13:24:29 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 01/16] net: pcs: xpcs: Drop sentinel entry from
+ 2500basex ifaces list
+Message-ID: <20231205112429.bp6lpvj4klrfrrim@skbuf>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-2-fancer.lancer@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205103559.9605-2-fancer.lancer@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Tue, Dec 05, 2023 at 01:35:22PM +0300, Serge Semin wrote:
+> There are currently two methods (xpcs_find_compat() and
+> xpcs_get_interfaces()) defined in the driver which loop over the available
+> interfaces. All of them rely on the xpcs_compat.num_interfaces field value
+> to get the number of interfaces. That field is initialized with the
+> ARRAY_SIZE(xpcs_*_interfaces) macro function call. Thus the interface
+> arrays are supposed to be filled with actual interface IDs and there is no
+> need in the dummy terminating ID placed at the end of the arrays. Let's
+> drop the redundant PHY_INTERFACE_MODE_MAX entry from the
+> xpcs_2500basex_interfaces list and the redundant
+> PHY_INTERFACE_MODE_MAX-based conditional statement from the
+> xpcs_get_interfaces() method then.
 
-Add the Bluetooth node for RB5.
+It would help the readability of the commit message if you would split
+it into multiple paragraphs.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+> 
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> ---
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index ead0c45ba60c..fbdf8fdb532c 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -1308,6 +1308,26 @@ sdc2_card_det_n: sd-card-det-n-state {
- 	};
- };
- 
-+&uart6 {
-+	status = "okay";
-+
-+	bluetooth {
-+		compatible = "qcom,qca6390-bt";
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&bt_en_state>;
-+
-+		enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
-+
-+		vddio-supply = <&vreg_s4a_1p8>;
-+		vddpmu-supply = <&vreg_s2f_0p95>;
-+		vddaon-supply = <&vreg_s6a_0p95>;
-+		vddrfa1-supply = <&vreg_s2f_0p95>;
-+		vddrfa2-supply = <&vreg_s8c_1p3>;
-+		vddrfa3-supply = <&vreg_s5a_1p9>;
-+	};
-+};
-+
- &uart12 {
- 	status = "okay";
- };
--- 
-2.40.1
-
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
