@@ -2,195 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E841A806175
+	by mail.lfdr.de (Postfix) with ESMTP id 91F65806174
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346454AbjLEWKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 17:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        id S1346428AbjLEWK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 17:10:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjLEWKe (ORCPT
+        with ESMTP id S1346604AbjLEWKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 17:10:34 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CEA183;
-        Tue,  5 Dec 2023 14:10:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=WFSiYAwur+U3RCrPnGEwUFixm4ostxp7ATn0GBN/ugg=; b=4CEtjMFyJF9oSIsasW5M/S7aaD
-        SEP7hNIHAD4ZHeCURIL6pYOfzEldrdUGFNQh0mt5B49AATe+Fj0V/Asfu2xXYIEkmmV9ExuL+9On5
-        RRc8dBZb4AsWmjlEirHbxYI6lhF0iWVsDkX+yEJ77X74vrfwqgdlu4BAGyZAXO+A0WuaZtQPU1WMb
-        s69FYs8nxT08zMqZhSWkK7w+gcSYJlZUNRkPhOFBQ4jtPwNv8+/RSOOsB+ntgYECMf40aFmvuiGmE
-        wLS4PPEggFvu7RV3hF112qXY7UV9a/u22uVvIJ0SF7ABxQT03k68OZv8+Vyr0fLdLRyUq/GFDLFut
-        nXPygM1Q==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAdce-008UYm-20;
-        Tue, 05 Dec 2023 22:10:32 +0000
-Message-ID: <34e27c57-fc18-4918-bf44-4f8a53825361@infradead.org>
-Date:   Tue, 5 Dec 2023 14:10:31 -0800
+        Tue, 5 Dec 2023 17:10:55 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CF31A5;
+        Tue,  5 Dec 2023 14:11:02 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id 6a1803df08f44-67ab41956f8so11195036d6.2;
+        Tue, 05 Dec 2023 14:11:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701814261; x=1702419061; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hiHYrWLVsQ4xi96qKilwHGdyOD8NQ+GmXlpe3R+oL10=;
+        b=nT9L9bJxuTmIJMhfXvrPipfexjRnhEQbFM3h13RuhdzJ+QdS2Y1P06sBrrrViM7+xT
+         ZrmezlSqmZPewvmfhF1cnLUcttTPMAd49sKU9iKMcMCME+SPk7E4cTtL6b4PdGI7hSx/
+         q2I++ay4VC14XapE6u7Qk7iZCb79JtiQv4/iTNbNFYk/HUp1QJSKV1syMnsODNL9RV99
+         oy3saqYtVNlzjfW6MvmdNawiyxg0UlRzuuwLnKdLolX2uAK4+hvJO9v2I1egSyuFmrwH
+         CDnZffA9mvHwzS7/gmqgMCCReruaZpAeGQDkaNgvyq0aUVxem6ScLCnp4W9SNvYnLPvN
+         1/ZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701814261; x=1702419061;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hiHYrWLVsQ4xi96qKilwHGdyOD8NQ+GmXlpe3R+oL10=;
+        b=eOEu3va0X8yruM2tQTkT4jnIt8+o7XWgFd3aBgUB+atTAgOy0IfcXMjBSQneKsx8+m
+         tdWwlCHdKkL07Up0RJs7a9AwIc5I9N/e9qkTSFMiK05IuyM+5/dLSzQwUfUor5otU68e
+         37/i5TOO+W0VILR72HEwVHRuv7MkLwXt9BUNS7SJoGLARSoZDffmjN4hQaXPxcQkl2TN
+         qvIXUHxfsGIH3omXfBIPZpfhPo4JrV5Z52rKTnS5xV3lci1sktu+7ufnigcq6C1V1yRq
+         njSujgHrhQrOzQxDtApMrae/rPD8HUNabg3Yj3d6T+1q4pJ+Y9BpSLDsvq6jVvHjqRXt
+         z/uA==
+X-Gm-Message-State: AOJu0YzZERPgWHtZEeTc1dr3u77WgwQO6DNrVzp/9tzRfoNEqDBqJvEs
+        EjIpVPZEfpOBQCPX9raHKFkH13noJe8=
+X-Google-Smtp-Source: AGHT+IF+mdfV+A5byHRDJyw7Fl1+njvyzE+4VwQsv0XG5ecPxbVjutByKhU53pJtzwDxC5jgIepBKQ==
+X-Received: by 2002:ad4:4090:0:b0:67a:a721:ec23 with SMTP id l16-20020ad44090000000b0067aa721ec23mr2012694qvp.103.1701814261044;
+        Tue, 05 Dec 2023 14:11:01 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id bv14-20020a05622a0a0e00b00425406b64a1sm3709864qtb.24.2023.12.05.14.10.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 14:11:00 -0800 (PST)
+Message-ID: <ee7deb44-a48d-4a91-a137-3c7d2ff95246@gmail.com>
+Date:   Tue, 5 Dec 2023 14:10:55 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
+Subject: Re: [PATCH 5.15 00/64] 5.15.142-rc2 review
 Content-Language: en-US
-To:     Andy Shevchenko <andy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, tanzirh@google.com,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nick DeSaulniers <nnn@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205213807.GE1674809@ZenIV>
- <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
- <ZW-d1NZRIvmJlfcW@smile.fi.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <ZW-d1NZRIvmJlfcW@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+References: <20231205183238.954685317@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231205183238.954685317@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/5/23 14:01, Andy Shevchenko wrote:
-> On Tue, Dec 05, 2023 at 01:51:10PM -0800, Nick Desaulniers wrote:
->> On Tue, Dec 5, 2023 at 1:38 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->>> On Tue, Dec 05, 2023 at 08:58:53PM +0000, tanzirh@google.com wrote:
+On 12/5/23 11:22, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.142 release.
+> There are 64 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> ...
+> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
+> Anything received after that time might be too late.
 > 
->>>> IWYU is implemented using the IWYUScripts github repository which is a tool that is
->>>> currently undergoing development. These changes seek to improve build times.
->>>>
->>>> This change to lib/string.c resulted in a preprocessed size of
->>>> lib/string.i from 26371 lines to 5232 lines (-80%).
->>>
->>> It also breeds includes of asm/*.h, by the look of the output, which is
->>> not a good thing in general ;-/  E.g. #include <asm/uaccess.h> *anywhere*
->>> outside of linux/uaccess.h is a bad idea.
->>
->> It's not clear to me when it's ok to #include <asm/*.h>.  Is there a
->> convention here that I'm missing?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.142-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
-> The mandatory ones can be used, but not all of them.
-> In some cases you even must include asm and not linux
-> (unaligned.h, byteorder.h, maybe others...).
+> thanks,
 > 
-> As I told, it comes with experience, we lack of the
-> respective documentation (or file which is good for
-> automation checks, like with IWYU).
+> greg k-h
 
-I have an unpublished Linux Best Known Practices txt file with
-this "rule" and some other info that I have collected over a few
-years. I wouldn't say that it's up to date. Anyway, it's copied below
-FWIW.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-~Randy
-
----
-
-=================================
-Linux Kernel Best Known Practices
-=================================
-
-N.B.: This is an evolving document.
-
-
-No need to init variables in bss to 0. bss is always cleared to 0.
-
-User interfaces should use explicit types (and hence type sizes)
-instead of generic types like "long" or "unsigned int".
-E.g.
-Also see Documentation/process/botching-up-ioctls.rst
-
-Unused fields of API structures or flags bits should be checked
-for value 0 on input and warn if they are not 0.
-
-submit-checklist Rule #1.
-
-use the kmalloc() helpers for variable-size array allocations.
-
-Generic drivers should not (do not) #include header files from
-<asm-generic>. Only arch code and arch-specific drivers do that.
-
-Don't use <asm/header.h> in generic driver code. Instead use
-some <linux/header.h> that then #includes <asm/header.h>.
-asm/ headers are implementation; linux/ headers are API.
-
-Use __maybe_unused to driver suspend/resume functions instead of
-surrounding them with #ifdef CONFIG_PM_SLEEP / #endif.
-
-Many API families provide full stub support for when their
-Kconfig option is disabled. This means that these APIs can still be used
-with COMPILE_TEST. Examples of these API families are:
-CONFIG_OF, <more>.
-
-CONFIG_namespace belongs to Kconfig files. A driver or filesystem or
-whatever should not have a local macro (or variable!) whose name
-begins with "CONFIG_".
-
-see Documentation/process/submit-checklist.rst
-
-run scripts/checkpatch.pl
-
-use Documentation/core-api/printk-formats.rst
-
-Don't introduce any new build errors or warnings
-Yes, that means that you need to check for warnings when you build.
-Yes, that includes Documentation or kernel-doc warnings or errors
-  (now that we have those down to zero).
-
-Do NOT use stack space for DMA.
-
-Don't use 'extern' on function prototypes. (deprecated)
-
-Don't depend on Makefile order to control builtin module/driver init
-calls. Use initcall levels instead.
-
-In a Kconfig dependency list,
-by convention, please keep "|| COMPILE_TEST" last in the list.
-
-Shell scripts should use /bin/sh instead of another shell
-as much as possible.
-
-When making a patch such as a coding-style patch that should have
-no effect on the produced code, do a before/after comparison of the
-binary files to show that they are the same. If they are not the same,
-explain why not.
-
-Most scripts in the kernel source tree try to avoid bashisms.
-There may be some exceptions to this, such as bpf-related scripts
-and perf-related scripts.
-
-Don't use BIT() macros in UAPI headers. Either open-code bit fields
-or use _BITUL().
-
-"sigcontext is accessible to user; do *NOT* assume that sigreturn will find what the kernel had written there" (Viro)
-
-Please just use whole numbers for patch versions, there's no need for .X
-for this type of thing as our tools do not know how to catch that, and
-it makes no sense.
-Just keep bumping the number please. (gkh)
-
-C99 style comments are OK in source code except in UAPI header files.
-They may be used with cstd=C90, which does not accept // comments.
-
-TODO:
-
-Should we say something about __delay() not being available in all
-arch-es so some other delay function is preferable.
-[maybe add something like this to checkpatch?]
-
-#####
+Florian
 
