@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9614B805053
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9681580503D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346471AbjLEKgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:36:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
+        id S235080AbjLEKf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:35:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344936AbjLEKgL (ORCPT
+        with ESMTP id S231854AbjLEKfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:36:11 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC34D184;
-        Tue,  5 Dec 2023 02:36:12 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c9f85eff28so38299201fa.3;
-        Tue, 05 Dec 2023 02:36:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701772571; x=1702377371; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dFMu8yHYAxfVLVvDj+B8IqaslSN1vZ5XWG3YsW0hTQA=;
-        b=Jyx5ED2YCd8AL6MXgUhxkf3x9ABAwoWOU1V8F5SFGpWp8xYQA51Ui5n4Cr7jYMBWw3
-         tGKg6hNUFjN4+Mi0EJwbyOc+k1UI3esOIOEsIY9GYe+zDl1vxRZl/KtXJCrvIpunNStw
-         Yi2f5DboGNblOlH75Zy/CF2pjfjD1i9Lzvtqp5aiLqIvUeFaZ+1mUmNYKw7VB37Htydy
-         eWjFRoxdO755hWM7Nqw/eF+lN10DdDe2iK+XO+LiTMaxALZnBDyd9O4VRN41MbD3anyP
-         1lpczkCuBC5Qosn9c5rAg8qMYrPxp5Xemp/yVPVMSGwb8WNwrFbnaNkUtEAaOxQ8zTnm
-         vyNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701772571; x=1702377371;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dFMu8yHYAxfVLVvDj+B8IqaslSN1vZ5XWG3YsW0hTQA=;
-        b=GGCcbRoVzqApJumzZEIPO/dfOdHyOAGYeVR5y7CqG6vtpPVnwZLbGVcFMl+wyCmziK
-         EyHo3kyHmjLf744Yq30DGKaBmXeNGybMnC+SLBUhERvNsQz2YqTYWwiYsKjs7Wvreepo
-         hnCR675yIM7DXCRmgdVpij6Uid4OdcmWgd82FoVVVLSz5DylwSGe51ROIoDZSVWu8XN5
-         VP1WoNh5bjQQbSpu0qh8MBz+RtKiWaEPgXU3qtpU8A0e5cu+Wj/7T2qtfuQBN21CYI7Q
-         Dge+SPu076lPLaF6K7n958Nv6QMMctq3vqctZM0OA0G1eZQrPADgrXsaTES0DDt049cI
-         +b4w==
-X-Gm-Message-State: AOJu0YwZ58E1W6uNfmBOYLu0Y+yCqIAB7bca/qfUH5TepL117jTwUkjI
-        5HRQezyp7PAYeQSy1z++ycU=
-X-Google-Smtp-Source: AGHT+IH0HyLEqm5MstBhJhll+ilWNbLcAbUlRzT66sgkeFhmYOZXWSY29xW02fWBkRMGmVcZxYa/xQ==
-X-Received: by 2002:a2e:994c:0:b0:2c9:f3b6:522 with SMTP id r12-20020a2e994c000000b002c9f3b60522mr2596361ljj.57.1701772571048;
-        Tue, 05 Dec 2023 02:36:11 -0800 (PST)
-Received: from localhost ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id l21-20020a2e3e15000000b002ca0689190fsm548139lja.31.2023.12.05.02.36.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 02:36:10 -0800 (PST)
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Serge Semin <fancer.lancer@gmail.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 05/16] net: pcs: xpcs: Move native device ID macro to linux/pcs/pcs-xpcs.h
-Date:   Tue,  5 Dec 2023 13:35:26 +0300
-Message-ID: <20231205103559.9605-6-fancer.lancer@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231205103559.9605-1-fancer.lancer@gmail.com>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+        Tue, 5 Dec 2023 05:35:24 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F63F109;
+        Tue,  5 Dec 2023 02:35:29 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 9C7FE1C007F; Tue,  5 Dec 2023 11:35:27 +0100 (CET)
+Date:   Tue, 5 Dec 2023 11:35:27 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Subject: Re: [PATCH 6.1 000/107] 6.1.66-rc1 review
+Message-ID: <ZW78708vOccgxX1P@duo.ucw.cz>
+References: <20231205031531.426872356@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="nNEJpFFVy8/6pjhj"
+Content-Disposition: inline
+In-Reply-To: <20231205031531.426872356@linuxfoundation.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Generic MDIO-device driver will support setting a custom device ID for the
-particular MDIO-device. Generic DW XPCS ID can be used for that as well
-just in case if the DW XPCS-device was erroneously synthesized with no or
-some undefined ID. In addition to that having all supported DW XPCS device
-IDs defined in a sinle place will improve the code maintainability and
-readability.
 
-Note while at it rename the macros to be shorter and looking alike to the
-already defined NXP XPCS ID macro.
+--nNEJpFFVy8/6pjhj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
----
- drivers/net/pcs/pcs-xpcs.c   | 8 ++++----
- drivers/net/pcs/pcs-xpcs.h   | 3 ---
- include/linux/pcs/pcs-xpcs.h | 2 ++
- 3 files changed, 6 insertions(+), 7 deletions(-)
+Hi!
 
-diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
-index 46afeb5510c0..2850122f354a 100644
---- a/drivers/net/pcs/pcs-xpcs.c
-+++ b/drivers/net/pcs/pcs-xpcs.c
-@@ -1343,16 +1343,16 @@ static const struct xpcs_compat nxp_sja1110_xpcs_compat[DW_XPCS_INTERFACE_MAX] =
- 
- static const struct xpcs_id xpcs_id_list[] = {
- 	{
--		.id = SYNOPSYS_XPCS_ID,
--		.mask = SYNOPSYS_XPCS_MASK,
-+		.id = DW_XPCS_ID,
-+		.mask = DW_XPCS_ID_MASK,
- 		.compat = synopsys_xpcs_compat,
- 	}, {
- 		.id = NXP_SJA1105_XPCS_ID,
--		.mask = SYNOPSYS_XPCS_MASK,
-+		.mask = DW_XPCS_ID_MASK,
- 		.compat = nxp_sja1105_xpcs_compat,
- 	}, {
- 		.id = NXP_SJA1110_XPCS_ID,
--		.mask = SYNOPSYS_XPCS_MASK,
-+		.mask = DW_XPCS_ID_MASK,
- 		.compat = nxp_sja1110_xpcs_compat,
- 	},
- };
-diff --git a/drivers/net/pcs/pcs-xpcs.h b/drivers/net/pcs/pcs-xpcs.h
-index 96c36b32ca99..369e9196f45a 100644
---- a/drivers/net/pcs/pcs-xpcs.h
-+++ b/drivers/net/pcs/pcs-xpcs.h
-@@ -6,9 +6,6 @@
-  * Author: Jose Abreu <Jose.Abreu@synopsys.com>
-  */
- 
--#define SYNOPSYS_XPCS_ID		0x7996ced0
--#define SYNOPSYS_XPCS_MASK		0xffffffff
--
- /* Vendor regs access */
- #define DW_VENDOR			BIT(15)
- 
-diff --git a/include/linux/pcs/pcs-xpcs.h b/include/linux/pcs/pcs-xpcs.h
-index da3a6c30f6d2..8dfe90295f12 100644
---- a/include/linux/pcs/pcs-xpcs.h
-+++ b/include/linux/pcs/pcs-xpcs.h
-@@ -12,6 +12,8 @@
- 
- #define NXP_SJA1105_XPCS_ID		0x00000010
- #define NXP_SJA1110_XPCS_ID		0x00000020
-+#define DW_XPCS_ID			0x7996ced0
-+#define DW_XPCS_ID_MASK			0xffffffff
- 
- /* AN mode */
- #define DW_AN_C73			1
--- 
-2.42.1
+> This is the start of the stable review cycle for the 6.1.66 release.
+> There are 107 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
+We see build failure on risc-v:
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/jobs/568005=
+0135
+
+  AR      drivers/nvmem/built-in.a
+2686In file included from ./arch/riscv/include/asm/ptrace.h:10,
+2687                 from ./arch/riscv/include/uapi/asm/bpf_perf_event.h:5,
+2688                 from ./include/uapi/linux/bpf_perf_event.h:11,
+2689                 from ./include/linux/perf_event.h:18,
+2690                 from ./include/linux/perf/riscv_pmu.h:12,
+2691                 from drivers/perf/riscv_pmu_sbi.c:14:
+2692drivers/perf/riscv_pmu_sbi.c: In function 'pmu_sbi_ovf_handler':
+2693drivers/perf/riscv_pmu_sbi.c:582:40: error: 'riscv_pmu_irq_num' undecla=
+red (first use in this function); did you mean 'riscv_pmu_irq'?
+2694  582 |                 csr_clear(CSR_SIP, BIT(riscv_pmu_irq_num));
+2695      |                                        ^~~~~~~~~~~~~~~~~
+2696./arch/riscv/include/asm/csr.h:400:45: note: in definition of macro 'cs=
+r_clear'
+2697  400 |         unsigned long __v =3D (unsigned long)(val);            =
+   \
+2698      |                                             ^~~
+2699drivers/perf/riscv_pmu_sbi.c:582:36: note: in expansion of macro 'BIT'
+2700  582 |                 csr_clear(CSR_SIP, BIT(riscv_pmu_irq_num));
+2701      |                                    ^~~
+2702drivers/perf/riscv_pmu_sbi.c:582:40: note: each undeclared identifier i=
+s reported only once for each function it appears in
+2703  582 |                 csr_clear(CSR_SIP, BIT(riscv_pmu_irq_num));
+2704      |                                        ^~~~~~~~~~~~~~~~~
+2705./arch/riscv/include/asm/csr.h:400:45: note: in definition of macro 'cs=
+r_clear'
+2706  400 |         unsigned long __v =3D (unsigned long)(val);            =
+   \
+2707      |                                             ^~~
+2708drivers/perf/riscv_pmu_sbi.c:582:36: note: in expansion of macro 'BIT'
+2709  582 |                 csr_clear(CSR_SIP, BIT(riscv_pmu_irq_num));
+2710      |                                    ^~~
+2711make[3]: *** [scripts/Makefile.build:250: drivers/perf/riscv_pmu_sbi.o]=
+ Error 1
+2712make[2]: *** [scripts/Makefile.build:500: drivers/perf] Error 2
+2713make[2]: *** Waiting for unfinished jobs....
+2714  CC      drivers/firmware/efi/earlycon.o
+2715
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--nNEJpFFVy8/6pjhj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZW787wAKCRAw5/Bqldv6
+8gOWAJwL8heLPlMLxzxCyYJUolIZ/NkangCeOu/Wu+mI7zBIwEFY6TIEWSj+LYk=
+=vpMf
+-----END PGP SIGNATURE-----
+
+--nNEJpFFVy8/6pjhj--
