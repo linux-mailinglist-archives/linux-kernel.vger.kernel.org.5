@@ -2,98 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9028062BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389598062C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346254AbjLEXLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 18:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
+        id S1346552AbjLEXLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 18:11:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEXLH (ORCPT
+        with ESMTP id S229591AbjLEXLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 18:11:07 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E581F120;
-        Tue,  5 Dec 2023 15:11:13 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b837d974ecso3938292b6e.2;
-        Tue, 05 Dec 2023 15:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701817873; x=1702422673; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YiM0zcsyKgxywZKVKK//YeSGcTecMKDV4q9GcI5jqSY=;
-        b=ZGiDBWQXFBfleKSqUL+o9GQ2KYNLUWJQ73vGjksmw7mN2sOAE34mTgkCKaz3VFQZP3
-         5x6AjA1Gn8g11lKv3tx7SNgN9C9lZeE7FfvTHxm5hZmXBRT16LczYdIAsLXZfvlxaCix
-         9yDpdJwV87q+2cZF5OQ0GjSMqGxSLd4H+JLiglN1xfZU73akUUm7aPc+FEMTDUAOR/Sx
-         KbpKIkVw1OcJUaVGsZuPoY6LpTEP+3DkO8FkSR4b69fr8SbK2W+/HOgPrKKE4kSh5sCN
-         7Lq0/c8P36u1QxHBoA4G6vRoKKEZlX4G5mNv3XEolODYQND7rDLavObrv1BhZjINDdG7
-         coVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701817873; x=1702422673;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YiM0zcsyKgxywZKVKK//YeSGcTecMKDV4q9GcI5jqSY=;
-        b=BPdFnlx7KT6sFSFd0Lr+1XILalZg19oiR1OYkoJ3OVYo6Pw39sNZXlMwEZ7JpQT7QU
-         jN+Arh61ZwKHO29jIHy7Y9+StlS0h2i0ux1uBWTW+34vBYlcHcR8FbkZe3sr/JGzE7Bt
-         dLGMko7zwbFf0uvSDEy88p4rp9aLSYCE1qAuX6jqiZt5sd/u5Y9gPk8ubBlIKhTmzdco
-         tWkwAyXFp0Idk5IdV5CGQGJS4Gf2xtTADYu0PsGPNJeuT5shMcJE+izcptk6NGZzYeND
-         p4RjVO5ib/36gG4qOVrgBoDn2yKQsyxzFvuVGhzmupCXbnD4DvZkPfJgDUG9QNRbf6t8
-         qz3g==
-X-Gm-Message-State: AOJu0YzIs7RhuuCjGiHZF1+ww3v7c1Gvmg53dSRqXgt4D5Ule++A/f2a
-        MK5FGQ82EFb75wW+YkZXjo6HxY+tEsTa9CiSWjE=
-X-Google-Smtp-Source: AGHT+IF7QP4s/HHKdsuycE0FCSgtY1QW4Ox6ohusNAZPotQ3vuUN/JIJv7KjFnCHt2I9zaSwkeBR2acaW3dHE2xDyp0=
-X-Received: by 2002:a05:6830:1d6e:b0:6d8:74e2:c08c with SMTP id
- l14-20020a0568301d6e00b006d874e2c08cmr45346oti.62.1701817873218; Tue, 05 Dec
- 2023 15:11:13 -0800 (PST)
+        Tue, 5 Dec 2023 18:11:35 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46030120;
+        Tue,  5 Dec 2023 15:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701817901; x=1733353901;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=FEiwVoMjtr/9HH+TNv5nMVsA9bg9zsnik0gar7NDCKI=;
+  b=gEvQ5dcCne0OsaiWkYuYRePjv5amyS6SJm3kPxdsM0ssoDD8aIdQVKNF
+   zJ8MSeZngqHEdX+DkqVDy31TMJgT2PXH3vgtveoLk4E5retLk4adEKsu3
+   YECWnRhRjsvKfOcFQAlGWPAMJUUu+Of1P5/feDPi6qmPnBnb6TxnoHbLP
+   JHMM3vmZaWwS8DWHeJ9tBWvfWxbPtFOyS8eyP5/TegLRtLbhireps0GpH
+   QakZXsGbnF9Zxgr0pZZMrXI6Ysv1dIboOmTK8zHG2rPh8WXchzN66gkJV
+   Am3mmFLw+vVbmOk/8VCtcyKjZsh3rUxvIbSaJP/8eWFB+gmeRIgVN9SUR
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="396766459"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="396766459"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 15:11:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="771091214"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="771091214"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Dec 2023 15:11:40 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 15:11:40 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 15:11:39 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 5 Dec 2023 15:11:39 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 5 Dec 2023 15:11:38 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gVEN94BNZEsqS+4H4pgnPe1ev8CXjuYX697jWnnDqDWrozQofYaHAimi6U1Azg9HZRgrk9MewPoVxc+qJrT4DFDNS4VnUKyRRpqgucG1ID282eg+RH+Fcp0EgYV59pebgmaPOy8KAvDZN84z1iBrJWrW0SrVGJ7avdCs/562zA8BiD2LGrOdEFuRBTYsY3AMgf7mDRgc5ZXifHFfDxJNTQXg9lPpf3nD+3pxaReslUvckFpxm49zsNYrgo1MEtKqyA2N2+6A2ATv+MC0JtwZAb4K5GfdJryLSDoJI4QRVMT2dgCG/TdmrqNd9VMtMum3m9zZWZejth8BRuv8aAW5bQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0lL9utMbn/uyp5GBaNk5//QndzjR07pxk/lf/iXpc4s=;
+ b=TOodwkTcPcQSKwmgmAUbT3xNWuU7BHnO55hVd617luakFIIsthGOTq00ec2X/GWZ/cpjpXGOf791P5jzvmWvSTwvARjHyj+/hwwy9fJPfPYuB4LGj5AHawGSOFXzme/OhASBlN1swE7Qm4ipxr9D31STmHo42S8ODk3sm+NrjE5G0ysq7DxHl65as5i5QdJN4EFZztG/gLrP0jOVT5b7iGnKmmfmjdoAdd3hG9SJtbhiRj+rQQSuZTHP8cAPnLggCl4qV8ubM8OCrR6BCS1/TPaIv/t7dW6cvjUTqJWP9f59x7QE7TtkW/o6wMMrq9bShZx4i+L4GQ6OnBAgL3oGfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by PH8PR11MB7142.namprd11.prod.outlook.com (2603:10b6:510:22e::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 5 Dec
+ 2023 23:11:36 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::6362:763e:f84b:4169%5]) with mapi id 15.20.7046.033; Tue, 5 Dec 2023
+ 23:11:35 +0000
+Date:   Tue, 5 Dec 2023 15:11:30 -0800
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Dionna Amalie Glaze <dionnaglaze@google.com>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     Sean Christopherson <seanjc@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Alexey Kardashevskiy <aik@amd.com>, <kvm@vger.kernel.org>,
+        <linux-coco@lists.linux.dev>, <linux-mm@kvack.org>,
+        <linux-crypto@vger.kernel.org>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <jroedel@suse.de>, <thomas.lendacky@amd.com>,
+        <hpa@zytor.com>, <ardb@kernel.org>, <pbonzini@redhat.com>,
+        <vkuznets@redhat.com>, <jmattson@google.com>, <luto@kernel.org>,
+        <dave.hansen@linux.intel.com>, <slp@redhat.com>,
+        <pgonda@google.com>, <peterz@infradead.org>,
+        <srinivas.pandruvada@linux.intel.com>, <rientjes@google.com>,
+        <dovmurik@linux.ibm.com>, <tobin@ibm.com>, <bp@alien8.de>,
+        <vbabka@suse.cz>, <kirill@shutemov.name>, <ak@linux.intel.com>,
+        <tony.luck@intel.com>,
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <alpergun@google.com>, <jarkko@kernel.org>, <ashish.kalra@amd.com>,
+        <nikunj.dadhania@amd.com>, <pankaj.gupta@amd.com>,
+        <liam.merwick@oracle.com>, <zhi.a.wang@intel.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        <dan.middleton@intel.com>
+Subject: Re: [PATCH v10 48/50] KVM: SEV: Provide support for
+ SNP_GUEST_REQUEST NAE event
+Message-ID: <656fae221bf90_45e01294d2@dwillia2-xfh.jf.intel.com.notmuch>
+References: <ZS614OSoritrE1d2@google.com>
+ <b9da2fed-b527-4242-a588-7fc3ee6c9070@amd.com>
+ <ZS_iS4UOgBbssp7Z@google.com>
+ <20231110220756.7hhiy36jc6jiu7nm@amd.com>
+ <ZU6zGgvfhga0Oiob@google.com>
+ <CAAH4kHYPAiS+_KKhb1=8q=OkS+XBsES8J3K_acJ_5YcNZPi=kA@mail.gmail.com>
+ <656e6f0aa1c5_4568a29451@dwillia2-xfh.jf.intel.com.notmuch>
+ <CAAH4kHb7cfMetpC=AYy=FjTTve6g0W8NZdeSwQ8uVxkqi2491Q@mail.gmail.com>
+ <656f82b4b1972_45e012944e@dwillia2-xfh.jf.intel.com.notmuch>
+ <CAAH4kHb9O9FeaTmNuNAkhrdrDLJPo8qgD5vNow3w-sY-DA4Ung@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAH4kHb9O9FeaTmNuNAkhrdrDLJPo8qgD5vNow3w-sY-DA4Ung@mail.gmail.com>
+X-ClientProxiedBy: MW2PR2101CA0002.namprd21.prod.outlook.com
+ (2603:10b6:302:1::15) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 MIME-Version: 1.0
-References: <20231205183248.388576393@linuxfoundation.org>
-In-Reply-To: <20231205183248.388576393@linuxfoundation.org>
-From:   Allen <allen.lkml@gmail.com>
-Date:   Tue, 5 Dec 2023 15:11:01 -0800
-Message-ID: <CAOMdWS+9VcHETK6qeYP2QKut-=KM_W4WPb-OcpdfWyaiTBUgRw@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/105] 6.1.66-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|PH8PR11MB7142:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1132f261-ff9a-4ae0-99af-08dbf5e786cd
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: foLDqGQtKwoF3bGTbLVvQ66dW+oecTefgBu1s5RTqa6KuzGCTGFb+BUa4d/ZD5NeHakgpaLPTyUmDDNVLWMBwpK4b1EaROJgO9dbm3K2l297L9GLk0JGOcgrDKdLGoKjKvhtAVvBLUTQvqw9CldUElyhSKfltrorFLmK7YKIia7Npqb76v5Hmt5h9SCfTBs5WA6r36Pc3at8sJXAE6mbAUuBQOzRKvolhBfgAI/1Vz987Xa3FacOp2/qh0CNczlETjjQHn/r4/yOyK8HuxNzhEZMFDWqfZzwWLFVE8tRNW2tK3Xq72pnjUIBhm7hxsl/I56IORg+aDsa0fyLJZUg4X9SvLpVjtq3M2Cp38OY4AznbuJUOHuCXVd7hcN6bnss0yXNQjCZuUsKntCb6Haix8STFD4t5REfm5MUivf2+D4gAeLb1vVh8A2aYpNEk4bK0U4C0fusfQLxNUdYkKmORNRrBtBnIqRgE0emBLtYZxF+baVmCe+sHV3xAGTVvueFEksg1CyK913W0nn6bT/bHwRh1hrU/HwJhHzHdoFOccg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(396003)(376002)(346002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(7406005)(7416002)(5660300002)(2906002)(6666004)(9686003)(6486002)(6512007)(38100700002)(966005)(316002)(110136005)(82960400001)(8936002)(478600001)(53546011)(4326008)(66946007)(54906003)(6506007)(83380400001)(26005)(86362001)(66476007)(41300700001)(8676002)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YTdNNU1Ea3VuYk1JK1VuWnB2b2tNd1ViZFA3cjhLSXRsdHVNM2F6YkFtcDBq?=
+ =?utf-8?B?YU8xb1pDWTI2QjY1T05yeFdRUlQveFAvMCtvRi9QYTdwNWhBdXJFSUFKdFcw?=
+ =?utf-8?B?VFZWUWR2ZHVyRms2TWV0REd3ZkhEeXJGaHZ4ckVJQ0Y5ekg2UC9OVkFrd0Zw?=
+ =?utf-8?B?YVZMNnQ2RnRSYWR0S3M1ZVJiOHYrL2lBZVAraVFURk4zei9raW9KSm8wWS9V?=
+ =?utf-8?B?VjlxMkRJRHZBWEV4M0JlWHd0eVJJanh3Q2M4eHdSTWFUY010SHBNOUlaQTk4?=
+ =?utf-8?B?cEtISTNEWnZ3ZStEUFpIYlk2NDhFVm1NTlRzSUdNNGFWK0Zlalh4VURFZmcy?=
+ =?utf-8?B?eFF0WlpuL3pxMzJHeTZhdVZsbXRRSEZETGFQSkFpV0NjMW1PTmcvc3MwOEFF?=
+ =?utf-8?B?VWV6dG1Ca0ZFZERjR3JUVXZZZndpM0dJTGhBQnRaNDh6Q1h6V3JWZ1Z4ZVB5?=
+ =?utf-8?B?MFlqdmtzUGF2VEM4Q01SVi9SaWZialZKbzRwS2YwTnhRcWx0SWFBK3N0aWl0?=
+ =?utf-8?B?MW45UXY0SU01UE54S3BYeEt2VTEzUGRNVzRvdWxSN2psUk51V1JQZTFmZGkz?=
+ =?utf-8?B?amJ3VjhNNDdKRFYzaG5JT1lUdnBESmxpREpYMEk3M2xzWlhIM09qaVJWS1cr?=
+ =?utf-8?B?S3NIdUk5d3RPdzhEczZVb0lLN3ovZUVLZlNPQW5LdzRwVS9jc0t3NkVSZ0Uw?=
+ =?utf-8?B?b0pxbzk5bDZuT3BMTDcwZnNWTXhqVVVxYkZ4b1k1MlJJZlhqYS9OVmNTbzRF?=
+ =?utf-8?B?aTBDS1BjZlUxajd1N3NKZHIyVGxhdnoyM3NDYnhIMUVlSEk3VDlqS2R6dFRv?=
+ =?utf-8?B?RmtUWFN4ZHRqRmxkT2s4MzFONGRUMXBqd2YvRnZ1bHJmOE1qK3Y1bXU3UjVB?=
+ =?utf-8?B?K3NXc2ZOcndScUxuMXVlSGJaVWtYTFdEOHV5ZXFlaC9iSDN2UG0wNzM3MHky?=
+ =?utf-8?B?R0Z6VDR1Y0I4YmVaazNEaExvME5nenEvQUNJeDRNSUp4NU1mcENiOUJBc3Uy?=
+ =?utf-8?B?aWpvVzBqTVlDMVlWUnFOY200WG8vdmpzSzhzejEzVmVVRU5ScFE2WFhERnJ0?=
+ =?utf-8?B?bS9VQWNseEppQUdSNlFpVUQ2V2M2cUxjZExGb05PdzM0eWNRRlBvRlVvTHdh?=
+ =?utf-8?B?c05zMUt3TEpZRVMrZlBXZWRrd29Ra3A2U010ZlZ5MldxUkpVczVQU2hxUWlD?=
+ =?utf-8?B?eHBEZzczZUlFaS8xQXNPVlAyWk15dGxlWHo4RjhxcGZDTUl4MXVIYzhuNnJG?=
+ =?utf-8?B?cXZvejNXRG44cDFLWGdGektZS0MvNXdwWkNoRUk5QzFCWGJlcDNSNGU0NEkr?=
+ =?utf-8?B?NzVRMWdna2E2eUdkVnhPZkVaS2NJQmh2cWhsTm5hbzY4QlZ4bzZ4YjVBZE9t?=
+ =?utf-8?B?N2dEY2xoTC9ob0pseWpRbm1nRVNKMytLMzlhOXppMWQ3eGVlZUZYa1VZWmdM?=
+ =?utf-8?B?cXBiRUVUWmdvMEV0ditjRmcxYmJORTFjbWhvRnk5cDVhaUJFQlhtd2Y0Sllt?=
+ =?utf-8?B?Vm5xdmtWMnpINnZiTWdIVjJXZkR6d2FkNCtFTm56ajVSc1NsSkxnaFVUaGFQ?=
+ =?utf-8?B?SjFLMVlnMStCNThEaExxM1VwelAvSXBtMlB1dng3Qk5ZVG9OdXIrWU5rS3d5?=
+ =?utf-8?B?MXJkb3AxaENTK0I5L3NrSEM1ZHdsRk5BekI5T3YrdWxRcThpNENGc3RpN2Iw?=
+ =?utf-8?B?STkwRVpDL0RjM0pYV3VrZFMzTTdXVlEwaVJNeEJNNFZXclhtRlVtTGZBWGpN?=
+ =?utf-8?B?WVNkSGVJV2tqRFQ0Q2xXRFdaUStzQW9Ka0pRTG5PUC8wc241Vm5Dek9NcW5q?=
+ =?utf-8?B?VGVjUFFFbzNWcWw5VzJ1U01PV0o5L1lJNjdIeEdLZUNDRlJ5N0pLUFJZWDA4?=
+ =?utf-8?B?R3Q0ZUE1aWt1R05BcnBWMy9tK1ExNHVHMm4wWlZUcm0yS0N4elZxV3RBV045?=
+ =?utf-8?B?OC9nSnBMMmxER2V5bUlNazBZSE5ML3NHeGw2SDNFS1dteFpWVHRCY2RtT0Ew?=
+ =?utf-8?B?RHNlbEFCNjdqYktwKzhOcFhxbjdyVVVNMDJwNlBNeHNzS01uMkF3Q2s3SGhq?=
+ =?utf-8?B?REhCdmFXMzNrTGNjeUNzN08wZDNPeGM4TCtHMzBPTFU0UUorSzUzZ1c4Ynpu?=
+ =?utf-8?B?V29GV1dyeEVaOW4wVE5Sck1Bb2MySTZaa2g3SzBiamw5MzA2SzVNWFk4Z0No?=
+ =?utf-8?B?d2c9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1132f261-ff9a-4ae0-99af-08dbf5e786cd
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 23:11:35.3690
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZvCJnY0XNFt17GRw7ikruh+CkOtYrgImIibjRX6E59c0D2S7khlKhYSaf1MYmnsE9wrUJRE4+0yOwulfdeKqiWg7cQc0dTk/VqG/7pPtJIc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7142
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This is the start of the stable review cycle for the 6.1.66 release.
-> There are 105 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.66-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Dionna Amalie Glaze wrote:
+> On Tue, Dec 5, 2023 at 12:06 PM Dan Williams <dan.j.williams@intel.com> wrote:
+> >
+> > [ add Ard for the SBOM sysfs ABI commentary ]
+> >
+> > Dionna Amalie Glaze wrote:
+> > [..]
+> > > > > My own plan for SEV-SNP was to have a bespoke signed measurement of
+> > > > > the UEFI in the GUID table, but that doesn't extend to TDX. If we're
+> > > > > looking more at an industry alignment on coRIM for SBOM formats (yes
+> > > > > please), then it'd be great to start getting that kind of info plumbed
+> > > > > to the user in a uniform way that doesn't have to rely on servers
+> > > > > providing the endorsements.
+> > > > >
+> > > > > [1] https://uefi.org/blog/firmware-sbom-proposal
+> > > >
+> > > > Honestly my first reaction for this ABI would be for a new file under
+> > > > /sys/firmware/efi/efivars or similar.
+> > >
+> > > For UEFI specifically that could make sense, yes. Not everyone has
+> > > been mounting efivars, so it's been a bit of an uphill battle for that
+> > > one.
+> >
+> > I wonder what the concern is with mounting efivarfs vs configfs? In any
+> > event this seems distinct enough to be its own /sys/firmware/efi/sbom
+> > file. I would defer to Ard, but I think SBOM is a generally useful
+> > concept that would be out of place as a blob returned from configfs-tsm.
+> >
+> > > Still there's the matter of cached TDI RIMs. NVIDIA would have
+> >
+> > I am not immediatly sure what a "TDI RIM" is?
+> >
+> 
+> I might just be making up terms. Any trusted hardware device that has
+> its own attestation will (hopefully) have signed reference
+> measurements, or a Reference Integrity Manifest as TCG calls them.
 
-Compiled and booted on my x86_64 and ARM64 test systems. No errors or
-regressions.
+Ah, ok.
 
-Tested-by: Allen Pais <apais@linux.microsoft.com>
+> 
+> > > everyone send attestation requests to their servers every quote
+> > > request in the NRAS architecture, but we're looking at other ways to
+> >
+> > "NRAS" does not parse for me either.
+> >
+> 
+> That would be this https://docs.attestation.nvidia.com/api-docs/nras.html
 
-Thanks.
+Thanks!
+
+> > > provide reliable attestation without a third party service, albeit
+> > > with slightly different security properties.
+> >
+> > Setting the above confusion aside, I would just say that in general yes,
+> > the kernel needs to understand its role in an end-to-end attestation
+> > architecture that is not beholden to a single vendor, but also allows
+> > the kernel to enforce ABI stability / mitigate regressions based on
+> > binary format changes.
+> >
+> 
+> I'm mainly holding on to hope that I don't have to introduce a new
+> runtime dependency on a service that gives a source of truth about the
+> software that's running in the VM.
+> If we can have a GUID table with a flexible size that the host can
+> request of the guest, then we can version ABI changes with new GUID
+> entries.
+> It's a big enough value space without vanity naming opportunities that
+> we can pretty easily make changes without incurring any guest kernel
+> changes.
+
+So it's not only SBOM that you are concerned about, but instead want to
+have a one stop shop for auxiliary evidence and get the vendors agree on
+following the same GUID+blob precedent that is already there for the AMD
+cert chain? That sounds reasonable, but I still feel it should be
+limited to things that do not fit into an existing ABI namespace.
+
+...unless its evidence / material that only a TVM would ever need.
