@@ -2,133 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A6E80603E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBEEA80607F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346421AbjLEVLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 16:11:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
+        id S1345683AbjLEVO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 16:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjLEVLF (ORCPT
+        with ESMTP id S229710AbjLEVO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 16:11:05 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E2B18B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:11:10 -0800 (PST)
-Date:   Tue, 5 Dec 2023 22:11:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701810668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lRnyi7RUD3uat7xocE2sCs3Fi4FAPkAA/cTsvLupByc=;
-        b=lrueSzkx6AaDlJdqyVKMhPq5+JiUPsN37iQM14iYQZqKZSCKh/3IC0uEfhwkstVITpy2Nm
-        zvlwLELgxdz7Fe9o4lYoulgmYQ2JTTGr25HAVJ+jH//FawuRjd3SIp+Uo2kthFu2W89Rba
-        EYdQ9bIT93EdIG9mW99KE99bykosVSY7mDgsoMQwFhjccJ8ZHM1OF11vNmz2Saa94ywFJl
-        oSatNy1yijPmbnNv33iz/xkSy+lw5wa/3OpqXcM5+5g1/2qqsmuimQaSlIHlCBtIDgSlQL
-        aGBmXdgM9n7oC/0rkgh7WJbjNqoH/HWdC9npHR++PpsPLwsHKaaNkhz1S5Qylw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701810668;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lRnyi7RUD3uat7xocE2sCs3Fi4FAPkAA/cTsvLupByc=;
-        b=3Wfu6fJf8M4C7yvH9N1d/YOEjMEVXDhiRM4HNXxza2/eeUzwJSc1etAIXybj5Sx2tK80YQ
-        6x38yeUWy6IdF1Dg==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v9 22/32] timers: Keep the pinned timers separate from
- the others
-Message-ID: <20231205211106.ykKsi921@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-23-anna-maria@linutronix.de>
+        Tue, 5 Dec 2023 16:14:26 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24957A5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:14:33 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c0873cf84so35295665e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 13:14:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701810871; x=1702415671; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xb9GJhgKgkRI3jsH9IhBCRgWeg/UhW5Tj812rINOCFM=;
+        b=zlEqBF2VeXS1olvBg3qECJrst42Yf6eVHN92M8T5L+9tyfvFA0RcEIuol/wPMzAZbM
+         t33JpTEiV5OIllwwc8iEuHeRqlsFsql3yIUgQtCbP6RWi9GiaGgiJ3foWnGfgIn/O1yK
+         R3DJiXbHlCF7y/01Mg4CA/QgWPBPFfai5Qs5+eK8nzsC2tPPzZqPruBlrkuoJCDo50gF
+         LuWbwm9ZKKP6zOpRiPKCC7TRSa3+E9D5xn8Gho68KlcqEVdyD+0TVDJpdDWXwchlf+2m
+         m8Ku5UUTZtA4Oe41F4873DTlbid2Tk569yA38bt9nK270FOHt6dGg7NfAyM58EdIj7+c
+         dm9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701810871; x=1702415671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xb9GJhgKgkRI3jsH9IhBCRgWeg/UhW5Tj812rINOCFM=;
+        b=QID3SrtFYXfoxFiDh/K1JnK1x5RifgDE+eOBbNlnLdVzjiejTlDkv9NGtRO3NPO1J2
+         hMkLDe9tSD/FSPVGCNmONmt0vOEKwrkUo8yRDcnIQw3UCgbAU+mT7x1zUAbby1Lcan9O
+         dnDaSHw5KL4XfiVPTokaYCahzareCZ9nyBNU1ql39+UGRyiruMLz2dFs5KpzBDe41uYA
+         wKKFQbRGMuK1Lmvc4XfgTz+pdzy1hw1xnDzYpoQT07OgUPcccu9iZAluO9wxDh3lW7+p
+         TgynhfsIAOE4A04Cl+1WunXCWtFBv6kiEOMey1c6Ur4kn3/koUAZSaw8UOdTCf6/7jpT
+         EjgA==
+X-Gm-Message-State: AOJu0YxNeqbw4ShWwsp+KyqJSSFB1uFuZX3/KPQ+Ekwd6hO3ZO4ZxtDW
+        F7HlkeWuGhLGuDPlfnRVkRWwAd1iti35kJOwGnRlIg==
+X-Google-Smtp-Source: AGHT+IFtwZSJqg8gvuxWPu2/HOAjM4Hs0ORK9NX8PQalweoM2W2+Tz3HLyv4QgDmB4awRlvW031nTSk916w+pJBzDzY=
+X-Received: by 2002:a5d:51c2:0:b0:333:2fd2:51f0 with SMTP id
+ n2-20020a5d51c2000000b003332fd251f0mr4397193wrv.105.1701810871355; Tue, 05
+ Dec 2023 13:14:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231201092654.34614-23-anna-maria@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com> <20231205130449.8e330a26ecbed1f7b5ad5d7a@linux-foundation.org>
+In-Reply-To: <20231205130449.8e330a26ecbed1f7b5ad5d7a@linux-foundation.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 5 Dec 2023 13:14:16 -0800
+Message-ID: <CAKwvOdn+VTM+LY6ALcgaZTL57JpiKt5rBPMSPNXsgS3MCENhDQ@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     tanzirh@google.com, Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick DeSaulniers <nnn@google.com>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-01 10:26:44 [+0100], Anna-Maria Behnsen wrote:
-> --- a/kernel/time/timer.c
-> +++ b/kernel/time/timer.c
-> @@ -1985,10 +1998,31 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
->  		return expires;
->  	}
->  
-> -	raw_spin_lock(&base->lock);
-> -	nextevt = next_timer_interrupt(base, basej);
-> +	base_local = this_cpu_ptr(&timer_bases[BASE_LOCAL]);
-> +	base_global = this_cpu_ptr(&timer_bases[BASE_GLOBAL]);
-> +
-> +	raw_spin_lock(&base_local->lock);
-> +	raw_spin_lock_nested(&base_global->lock, SINGLE_DEPTH_NESTING);
-> +
-> +	nextevt_local = next_timer_interrupt(base_local, basej);
-> +	nextevt_global = next_timer_interrupt(base_global, basej);
->  
-> -	if (base->timers_pending) {
-> +	/*
-> +	 * Check whether the local event is expiring before or at the same
-> +	 * time as the global event.
-> +	 *
-> +	 * Note, that nextevt_global and nextevt_local might be based on
-> +	 * different base->clk values. So it's not guaranteed that
-> +	 * comparing with empty bases results in a correct local_first.
+On Tue, Dec 5, 2023 at 1:04=E2=80=AFPM Andrew Morton <akpm@linux-foundation=
+.org> wrote:
+>
+> On Tue, 05 Dec 2023 20:58:53 +0000 tanzirh@google.com wrote:
+>
+> > This diff uses an open source tool include-what-you-use (IWYU) to modif=
+y
+> > the include list changing indirect includes to direct includes.
+> > IWYU is implemented using the IWYUScripts github repository which is a =
+tool that is
+> > currently undergoing development. These changes seek to improve build t=
+imes.
+> >
+> > This change to lib/string.c resulted in a preprocessed size of
+> > lib/string.i from 26371 lines to 5232 lines (-80%).
+> >
+> > If there are any problems with the output of the tool please raise an
+> > issue on the github.
+> >
+> > Link: https://github.com/ClangBuiltLinux/IWYUScripts
+>
+> Issue:
+>
+> > --- a/lib/string.c
+> > +++ b/lib/string.c
+> > @@ -16,16 +16,16 @@
+> >
+> >  #define __NO_FORTIFY
+> >  #include <linux/types.h>
+> > +#include <asm/bitsperlong.h>
 
-This ends like an unsolved mystery case. Could you add why one should
-not worry about an incorrect local_first?
+Thanks for the quick feedback.  For additional context, Tanzir is my
+intern working on getting IWYU working on the kernel.  Welcome Tanzir
+to LKML!
 
-But seriously, how far apart can they get and what difference does it
-make?  At timer enqueue time clk equals jiffies. At this point one clk
-base could be at jiffies and the other might be a few jiffies before
-that.
-The next event (as in next_expiry) should be valid for both compare
-wise. Both must be larger than jiffies. The delta between jiffies and
-next event has to be less than NEXT_TIMER_MAX_DELTA for each base.
+>
+> The preferred way to import bit-fiddling stuff is to include
+> <linux/bits.h>.  Under the hood this may include asm/bitsperlong.h.  Or
+> it may not, depending on Kconfig settings (particularly architecture).
+>
 
-> +	 */
-> +	if (base_local->timers_pending && base_global->timers_pending)
-> +		local_first = time_before_eq(nextevt_local, nextevt_global);
-> +	else
-> +		local_first = base_local->timers_pending;
-> +
-> +	nextevt = local_first ? nextevt_local : nextevt_global;
-> +
-> +	if (base_local->timers_pending || base_global->timers_pending) {
->  		/* If we missed a tick already, force 0 delta */
->  		if (time_before(nextevt, basej))
->  			nextevt = basej;
+Just triple checking my understanding; it looks like
+include/linux/bits.h unconditionally includes asm/bitsperlong.h (which
+is implemented per arch) most of which seem to include
+asm-generic/bitsperlong.h.
 
-So if nextevt_local missed a tick and nextevt_global is
-NEXT_TIMER_MAX_DELTA-1 (so we get the largest difference possible
-between those two) then the time_before_eq() should still come out
-right. We could still miss more than one tick.
-
-This looks good. I just don't understand the (above) comment.
-
-Sebastian
+include/linux/bits.h also defines a few macros (BIT_MASK, BIT_WORD,
+BITS_PER_BYTE, GENMASK, etc).  If lib/string.c is not using any of
+those, why can't we go straight to #including asm/bitsperlong.h?  That
+should resolve to the arch specific impl which may include
+asm-generic/bitsperlong.h?
+--=20
+Thanks,
+~Nick Desaulniers
