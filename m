@@ -2,153 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8A5804C2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA448804C1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344790AbjLEIWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:22:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        id S231743AbjLEITa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:19:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjLEIWQ (ORCPT
+        with ESMTP id S229615AbjLEIT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:22:16 -0500
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A388FA;
-        Tue,  5 Dec 2023 00:22:21 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701764350; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=p66+Ug7uzglePQCLWqkW9tjVBxj8AwDs5/Xq/8nxRvTbGIuamajNf3WB31lpw8WikC
-    NcCawP6jBGG3mOUj+PZc/n+9J1xiIx+l7/XLGUO+vyWJ76RR0SRZ5m1z7GIgrAH3UVqA
-    tZNyf9J/3GLkhTRzsMBA23rR+5SOx0gBDwLJfRacEWjCY3Icvn7/6ENuTxo/qDcHAzBV
-    vt1bzBI4kTDNvLriZUQQO/Y7h464R2+e6SaTFmhJSj08W5jj++OfBWmoligfws51iKGe
-    PySuxZgrkHQ87hFdS8RWEJ3e8fvVapxMimESJkEt8xFB6rQnWwwOqzlMnToEWJmxu9IQ
-    DmZg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701764350;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=odPhm436ISvT7VKLcfyOmfs3EuVOCsWY2FepwEECbUg=;
-    b=Q1XTTbOQdU+7qDOzWOTm0t3bsM4bYDNlX6TUoNVvZMDFRX4/h0ELH7ByQACD3D4W2l
-    6DJGTnQKy4ZuWaP4CMQI1jw9G2G8GbQiCwS4gxJ7ma2TbSIEiPvjtdq+jTf7LuIFH36Q
-    O6Ca7+9jYxv2Av+A7I7c0THRFWmpCTKDuiXimXju7m6hMJ5f4OQ7cXjT6sbZ8aqop9tT
-    pG1hg4R+zrfzHVKFTo4Ylu7CIm+TB2Ihrrt+BU3QOKEGTrTguA9j2P33MHm7VzQaGNS2
-    eiSAM1S2iKvHeQhrthpYQJ2ILJf1ibyfuUkW1+7pMhd8NmgMzv/LfEcbeqi4XLT9vJTB
-    RLwg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701764350;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=odPhm436ISvT7VKLcfyOmfs3EuVOCsWY2FepwEECbUg=;
-    b=drkzI+66B+Ck2SEKw+3acz3SAJ9dF2QJb/8/eCsUPQFJJ4pky3aQ2BzsATinNTUo6J
-    6MSPE5eDFv9X1+DtJ8YN5bgiTSccX3p9xuxstkH73oyTVpnKzuKsqPWw5tVpZ+fLQ9a2
-    hl/Spi7JJZ0VJE8JtM7idKwYLjqwuh6N1T7wo6WJ6k4IJl42+z/OXLnTwGrt6QABqYOO
-    RqD8TiDvnfme4Zht5zMRPSlD/4F1WdqoAbpH2sy+6prPRjvIWaxauRORGFbDy3sO9/oi
-    t0K07/KbXFizDqK476oaIYurhvPVKZFO3XzesBdHQhSR8duUplS1eSaU7AmewERJ71wZ
-    Am+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701764350;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=odPhm436ISvT7VKLcfyOmfs3EuVOCsWY2FepwEECbUg=;
-    b=RAxcCIr8Zu0MqZOWc7AnelHm7HKq92V7O0+HW0Wk5ZbQR1uWW1/fkxn5UB2gUv/Fm8
-    8L5tMRc1EsydkqPZ6qAg==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGeonQ="
-Received: from smtpclient.apple
-    by smtp.strato.de (RZmta 49.9.7 DYNA|AUTH)
-    with ESMTPSA id 6c76e8zB58J9Ovm
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 5 Dec 2023 09:19:09 +0100 (CET)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
-Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <23livt5mcc64bb6lkeec2uxp5cyn4wfekwaj6wzrjnrkndvwgj@6tveqglqpr4v>
-Date:   Tue, 5 Dec 2023 09:18:58 +0100
-Cc:     Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Adam Ford <aford173@gmail.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B3A1B8A7-0363-4ECB-AFBF-576FECA569FA@goldelico.com>
-References: <20231204182245.33683-1-afd@ti.com>
- <20231204182245.33683-2-afd@ti.com>
- <23livt5mcc64bb6lkeec2uxp5cyn4wfekwaj6wzrjnrkndvwgj@6tveqglqpr4v>
-To:     Maxime Ripard <mripard@kernel.org>
-X-Mailer: Apple Mail (2.3774.200.91.1.1)
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 03:19:29 -0500
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDB7BA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:19:35 -0800 (PST)
+Message-ID: <30f88452-740b-441f-bb4f-a2d946e35cf5@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701764373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1msEm8akAYRx9kjUOA91nsxPgIb6zvoJEQIqcVegQCI=;
+        b=AtV3fzAeFmZ4JdXWxE03Prk3MZ1wZv43S0/xlV9BSbUTbS4gpzfPNZcJ8hnkvLbnvyQ/uu
+        jdzhUwZUufJ0BcrKBBvLcMlMyveGsVUDjDk/FESYXgTpwridpsKWff7xPk+5s1zThdAMky
+        6MUHbCZDjgykCWbP9LXWTvdIX0CSgLM=
+Date:   Tue, 5 Dec 2023 16:19:27 +0800
+MIME-Version: 1.0
+Subject: Re: [PATCH 2/4] mm/slub: introduce __kmem_cache_free_bulk() without
+ free hooks
+Content-Language: en-US
+To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+References: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
+ <20231204-slub-cleanup-hooks-v1-2-88b65f7cd9d5@suse.cz>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20231204-slub-cleanup-hooks-v1-2-88b65f7cd9d5@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/12/5 03:34, Vlastimil Babka wrote:
+> Currently, when __kmem_cache_alloc_bulk() fails, it frees back the
+> objects that were allocated before the failure, using
+> kmem_cache_free_bulk(). Because kmem_cache_free_bulk() calls the free
+> hooks (KASAN etc.) and those expect objects that were processed by the
+> post alloc hooks, slab_post_alloc_hook() is called before
+> kmem_cache_free_bulk().
+> 
+> This is wasteful, although not a big concern in practice for the rare
+> error path. But in order to efficiently handle percpu array batch refill
+> and free in the near future, we will also need a variant of
+> kmem_cache_free_bulk() that avoids the free hooks. So introduce it now
+> and use it for the failure path.
+> 
+> As a consequence, __kmem_cache_alloc_bulk() no longer needs the objcg
+> parameter, remove it.
 
+The objects may have been charged before, but it seems __kmem_cache_alloc_bulk()
+forget to uncharge them? I can't find "uncharge" in do_slab_free(), or maybe
+the bulk interface won't be used on chargeable slab?
 
-> Am 05.12.2023 um 07:57 schrieb Maxime Ripard <mripard@kernel.org>:
->=20
-> On Mon, Dec 04, 2023 at 12:22:36PM -0600, Andrew Davis wrote:
->> The Imagination PowerVR Series5 "SGX" GPU is part of several SoCs =
-from
->> multiple vendors. Describe how the SGX GPU is integrated in these =
-SoC,
->> including register space and interrupts. Clocks, reset, and power =
-domain
->> information is SoC specific.
->>=20
->> Signed-off-by: Andrew Davis <afd@ti.com>
->> ---
->> .../devicetree/bindings/gpu/img,powervr.yaml  | 69 =
-+++++++++++++++++--
->> 1 file changed, 63 insertions(+), 6 deletions(-)
->=20
-> I think it would be best to have a separate file for this, =
-img,sgx.yaml
-> maybe?
+Thanks.
 
-Why?
-
-The whole family of IMG GPUs is PowerVR and SGX and Rogue are =
-generations 5 and 6++:
-
-https://en.wikipedia.org/wiki/PowerVR
-
-So I would suggest to keep either img,powervr.yaml for all of them or
-
-img,powervr-sgx.yaml
-img,powervr-rogue.yaml
-
-etc.
-
-But as far as I can see the hardware integration into SoC (and hence =
-description)
-is quite similar so a single file should suffice.
-
-BR,
-Nikolaus=
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  mm/slub.c | 33 ++++++++++++++++++++++++++-------
+>  1 file changed, 26 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index d7b0ca6012e0..0742564c4538 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4478,6 +4478,27 @@ int build_detached_freelist(struct kmem_cache *s, size_t size,
+>  	return same;
+>  }
+>  
+> +/*
+> + * Internal bulk free of objects that were not initialised by the post alloc
+> + * hooks and thus should not be processed by the free hooks
+> + */
+> +static void __kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
+> +{
+> +	if (!size)
+> +		return;
+> +
+> +	do {
+> +		struct detached_freelist df;
+> +
+> +		size = build_detached_freelist(s, size, p, &df);
+> +		if (!df.slab)
+> +			continue;
+> +
+> +		do_slab_free(df.s, df.slab, df.freelist, df.tail, df.cnt,
+> +			     _RET_IP_);
+> +	} while (likely(size));
+> +}
+> +
+>  /* Note that interrupts must be enabled when calling this function. */
+>  void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
+>  {
+> @@ -4499,7 +4520,7 @@ EXPORT_SYMBOL(kmem_cache_free_bulk);
+>  
+>  #ifndef CONFIG_SLUB_TINY
+>  static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+> -			size_t size, void **p, struct obj_cgroup *objcg)
+> +					  size_t size, void **p)
+>  {
+>  	struct kmem_cache_cpu *c;
+>  	unsigned long irqflags;
+> @@ -4563,14 +4584,13 @@ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+>  
+>  error:
+>  	slub_put_cpu_ptr(s->cpu_slab);
+> -	slab_post_alloc_hook(s, objcg, flags, i, p, false, s->object_size);
+> -	kmem_cache_free_bulk(s, i, p);
+> +	__kmem_cache_free_bulk(s, i, p);
+>  	return 0;
+>  
+>  }
+>  #else /* CONFIG_SLUB_TINY */
+>  static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+> -			size_t size, void **p, struct obj_cgroup *objcg)
+> +				   size_t size, void **p)
+>  {
+>  	int i;
+>  
+> @@ -4593,8 +4613,7 @@ static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+>  	return i;
+>  
+>  error:
+> -	slab_post_alloc_hook(s, objcg, flags, i, p, false, s->object_size);
+> -	kmem_cache_free_bulk(s, i, p);
+> +	__kmem_cache_free_bulk(s, i, p);
+>  	return 0;
+>  }
+>  #endif /* CONFIG_SLUB_TINY */
+> @@ -4614,7 +4633,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+>  	if (unlikely(!s))
+>  		return 0;
+>  
+> -	i = __kmem_cache_alloc_bulk(s, flags, size, p, objcg);
+> +	i = __kmem_cache_alloc_bulk(s, flags, size, p);
+>  
+>  	/*
+>  	 * memcg and kmem_cache debug support and memory initialization.
+> 
