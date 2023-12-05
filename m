@@ -2,106 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2731806111
+	by mail.lfdr.de (Postfix) with ESMTP id 4C337806110
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346125AbjLEVsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 16:48:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32950 "EHLO
+        id S1346234AbjLEVsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 16:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEVsk (ORCPT
+        with ESMTP id S231352AbjLEVss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 16:48:40 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3603D3;
-        Tue,  5 Dec 2023 13:48:46 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-423ec1b2982so868741cf.2;
-        Tue, 05 Dec 2023 13:48:46 -0800 (PST)
+        Tue, 5 Dec 2023 16:48:48 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328201BC
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:48:53 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5d2d0661a8dso70970717b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 13:48:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701812926; x=1702417726; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=K7362aGWQn9YaOD7TDTBsEv+KjpS1wXfDy+Pen8Y6TM=;
-        b=Jw2x+qDG1MSrV2arz/aXYLqECe9X7MPjDqeW2/VTYBAg8RRY1kVOLEA+dPFXj/2Tnn
-         xAhOlUdpmkFwRrFUkzwL9sf4bAIN90QOu+bA2kqSqL86s/j5sybStsbdlfMo0/nKjGor
-         GH7/5QQpJhngO+SCtRP3CX8azDFmUEJ+eDEU+kf0b2xL0i9duiKrT2GIjcwqnJiVRYuS
-         aqAnFdwQhHFjyVK7xWdzrmAi5EKv7ZRO5rFqEpZEb8tQ9Q3/iprDgEN10KnFs7WPoHR9
-         vn+E3GECptj+UkpBwtrdOfkXwCJa131YtHJvauItuHSiuEy7Nw0fvJ6142ei7nZvBN+H
-         9Dbw==
+        d=linaro.org; s=google; t=1701812932; x=1702417732; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5eP0uI2tmZM9ZtqjfsWxJwWzFVr6JH04FbBdTmyNv/w=;
+        b=vcx1QLG6WwxECp6bKqCg4qzU+3z0twyYAm/fKxldOfbA0WT56rifsYRjs4CMIYCITy
+         aCAuzONwK7DCLR79+Wq9XgzHQiJt5eyvZuKwUHgqqP2BVud0kuHKDyCUvYuAJ0zJmV7b
+         U47iSy0ilrmbYL+Ig3V7i06FYB4fsP0hA5kxYxGpOSHVmSo4Mxz9u0AdYe8mWtTIsVXJ
+         2e/UlpJMgTltzCcqk818OWNmMQPdEVbjojQQoSI8FmevbYke5EDsmrPD4AbgfVI8FEzG
+         6mzfV/A3hV5n40HIiA0Xf8gYZD8L9E1rdzo4m353KTeFLzqEp627WSWrPzsrT1mZPnvX
+         ns4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701812926; x=1702417726;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K7362aGWQn9YaOD7TDTBsEv+KjpS1wXfDy+Pen8Y6TM=;
-        b=ZOw28sHNyeoJggvZ7xPUMGw2xPeB/JBKNDtVyPME6+jWUPN707rAsnqVw0JM7duRt1
-         NslrKH5uznSVZDO3eNiEq8unSCF0GMCAcaP/Tk5kSFyykIkG4t/Sg6vIJXoEz/JW6N+Y
-         mD4qnd68i7hLKu1QWMu7/AxyacN3MobTjcBldvldiF718nffnpLoszOxmzHqHYS+Tuv1
-         aZfocZR5l1p/jvJiflZrZNDipc/YOhKkSO7FlHjWPGPvctyC2xXOVC+1XJ/YYxxjJvEW
-         FQb1lVyscMC8GXFuoB2ohkHkFVnnj8j+UBOfsT0g8eF9nTtMWZCZw63zITRl69NUIXAl
-         JgQQ==
-X-Gm-Message-State: AOJu0Yw6NFIF4kzn7QzCLPq9toNXc2WR/UYB3Hq6lzsIaptgQIQCAEdz
-        TqYmqvlZTYqvBWX9Io1NfAYpJebX8nc=
-X-Google-Smtp-Source: AGHT+IHgqtM436SM+/NJ+YT957+k+SdVt9/DktYuKz5Ig7PZNhFVMMRwYCWRVMDK17LdiR3jtfFaLA==
-X-Received: by 2002:a05:622a:287:b0:425:4043:7660 with SMTP id z7-20020a05622a028700b0042540437660mr2024910qtw.136.1701812925823;
-        Tue, 05 Dec 2023 13:48:45 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id w3-20020ac86b03000000b003f6ac526568sm5467981qts.39.2023.12.05.13.48.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 13:48:45 -0800 (PST)
-Message-ID: <12cf2948-fe16-477d-bae2-39b5cdac527f@gmail.com>
-Date:   Tue, 5 Dec 2023 13:48:40 -0800
+        d=1e100.net; s=20230601; t=1701812932; x=1702417732;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5eP0uI2tmZM9ZtqjfsWxJwWzFVr6JH04FbBdTmyNv/w=;
+        b=dg4O8SKHmfPEB2Tn3eBAWuzqQezDLbZ02uqeNOYwOKXyuYBzK2q+c1GR6JeUin88n0
+         qbF3iDwP+bmS1l3NjR8h/1HyVD3jubcOVo0/yNzuJPVNItiWLiAah8ce3J5mKib2vC5p
+         kXkLtURwrdoQzo+cHlqbZgfw6Z3Awl7EBFV3fI6Sy8Ox21Z9VowdnNYzqZmVxfn9LcgX
+         igoncNt/7nLTrJ6nB5vI9tIpGoG2+izkk1qFu5oUohvopuOzqa7lhLXf/29P2/FpUddN
+         jSXd7S2vG/00GqhGwvPO5qXc8T+muOtAqwqE7fMgHv3+gHp8H6oFT4tR2zoLSnHHa1db
+         4nKw==
+X-Gm-Message-State: AOJu0YzZsmnChG3qVosGdy2tOq70c2Y5u1TFu/iNrykKGcwHn/jUkw2S
+        uQ3QuOUws7bxvE7zqhzSpic6Ks9j01drKxze2lUCPQ==
+X-Google-Smtp-Source: AGHT+IEC7pNshX6Y57af6XTx4hp1z/Y9MEpMHk/hv4YF7sUJybFapw88Qbjz6GB2s4WrIdgZn+IiEoCY/A4u2lTVAiA=
+X-Received: by 2002:a25:aac2:0:b0:db7:dacf:59d1 with SMTP id
+ t60-20020a25aac2000000b00db7dacf59d1mr4535677ybi.69.1701812932200; Tue, 05
+ Dec 2023 13:48:52 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 00/90] 5.4.263-rc3 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-References: <20231205183241.636315882@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231205183241.636315882@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <cover.1701768028.git.ysato@users.sourceforge.jp>
+ <602e1ba4f02489fcbc47e8f9904f3c1db1c9f14a.1701768028.git.ysato@users.sourceforge.jp>
+ <2ef81211-9525-4f96-a6b2-3fcfbed0c6e5@app.fastmail.com>
+In-Reply-To: <2ef81211-9525-4f96-a6b2-3fcfbed0c6e5@app.fastmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 5 Dec 2023 22:48:41 +0100
+Message-ID: <CACRpkdZUAMXJ4YM9+xW2Snzt0Dx5mxWjcwHZifsXPJH9ozL5bg@mail.gmail.com>
+Subject: Re: [DO NOT MERGE v5 11/37] pci: pci-sh7751: Add SH7751 PCI driver
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        guoren <guoren@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Bin Meng <bmeng@tinylab.org>,
+        Max Filippov <jcmvbkbc@gmail.com>, Tom Rix <trix@redhat.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Jacky Huang <ychuang3@nuvoton.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/23 11:22, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.263 release.
-> There are 90 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.263-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Tue, Dec 5, 2023 at 2:26=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Tue, Dec 5, 2023, at 10:45, Yoshinori Sato wrote:
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+> > +     if (of_property_read_u32_array(pdev->dev.of_node,
+> > +                                    "renesas,memory", memory, 2) < 0) =
+{
+> > +             /*
+> > +              * If no memory range is specified,
+> > +              *  the entire main memory will be targeted for DMA.
+> > +              */
+> > +             memory[0] =3D memory_start;
+> > +             memory[1] =3D memory_end - memory_start;
+> > +     }
+>
+> There is a generic "dma-ranges" proerty for describing
+> which memory is visible by a bus.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+It's really a headache to use, so I put a bit of documentation here:
+https://elinux.org/Device_Tree_Usage#PCI_DMA_Address_Translation
 
+Yoshinoro, you can look at these bindings and drivers that use
+dma-ranges for help:
+Documentation/devicetree/bindings/pci/intel,ixp4xx-pci.yaml
+drivers/pci/controller/pci-ixp4xx.c
+Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
+drivers/pci/controller/pci-ftpci100.c
+
+Yours,
+Linus Walleij
