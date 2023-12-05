@@ -2,132 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A1B805E99
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D23805E95
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345549AbjLETYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:24:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37038 "EHLO
+        id S1345460AbjLETYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:24:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235019AbjLETYt (ORCPT
+        with ESMTP id S229483AbjLETYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:24:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1AB1AA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:24:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701804295; x=1733340295;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0QVKjEritWehiYGZr61Yup2IobSGJaXvEWGoW1hOZyU=;
-  b=JnpV2zqGoehhNhsDoa9+7vnOlIMd58kJOPoUv+Lq/1cTeBNXG6oCZB5i
-   EzpoIQdw+Zl3UkdfpizS9d3h+g/86yddb8yR+ZcVgKLu4g0Izw/+lZeTk
-   hc74BhcnUMW0UsWwwPRsV/fKiOXNjbuOprkCMywdpe+TN5i2Q5IUzLDgw
-   lpPtIGfCFMoWiBrSyYnvrb1/PApQI8oMBwvi4sBwHtKj8B3jWFhp2vHS2
-   Xtf9Ou3I3vjp8wgbmTgrVrmKETMlfpSc3UEcRHqID6Z/znvkthL92VM/3
-   6SXqbjTwLkzDcfBSuSTwd4n6NLyxWU1NSJIzWub/H4B+dQ9ZY2NgL6StK
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="15497080"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="15497080"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 11:24:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="720822557"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="720822557"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 05 Dec 2023 11:24:45 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAb2A-0009bh-2k;
-        Tue, 05 Dec 2023 19:24:42 +0000
-Date:   Wed, 6 Dec 2023 03:24:26 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH] x86/coco, x86/sev: Use cpu_feature_enabled() to detect
- SEV guest flavor
-Message-ID: <202312060344.u4FP0DKh-lkp@intel.com>
-References: <20231205143738.2875-1-kirill.shutemov@linux.intel.com>
+        Tue, 5 Dec 2023 14:24:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FFBA5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:24:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B199C433C7;
+        Tue,  5 Dec 2023 19:24:39 +0000 (UTC)
+Date:   Tue, 5 Dec 2023 19:24:37 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        lpieralisi@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <ZW949Tl3VmQfPk0L@arm.com>
+References: <20231205033015.10044-1-ankita@nvidia.com>
+ <86fs0hatt3.wl-maz@kernel.org>
+ <ZW8MP2tDt4_9ROBz@arm.com>
+ <20231205130517.GD2692119@nvidia.com>
+ <ZW9OSe8Z9gAmM7My@arm.com>
+ <20231205164318.GG2692119@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231205143738.2875-1-kirill.shutemov@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231205164318.GG2692119@nvidia.com>
+X-TUID: nsHFPCYE/dW9
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kirill,
+On Tue, Dec 05, 2023 at 12:43:18PM -0400, Jason Gunthorpe wrote:
+> On Tue, Dec 05, 2023 at 04:22:33PM +0000, Catalin Marinas wrote:
+> > Yeah, I made this argument in the past. But it's a fair question to ask
+> > since the Arm world is different from x86. Just reusing an existing
+> > driver in a different context may break its expectations. Does Normal NC
+> > access complete by the time a TLBI (for Stage 2) and DSB (DVMsync) is
+> > completed? It does reach some point of serialisation with subsequent
+> > accesses to the same address but not sure how it is ordered with an
+> > access to a different location like the config space used for reset.
+> > Maybe it's not a problem at all or it is safe only for PCIe but it would
+> > be good to get to the bottom of this.
+> 
+> IMHO, the answer is you can't know architecturally. The specific
+> vfio-platform driver must do an analysis of it's specific SOC and
+> determine what exactly is required to order the reset. The primary
+> purpose of the vfio-platform drivers is to provide this reset!
+> 
+> In most cases I would expect some reads from the device to be required
+> before the reset.
 
-kernel test robot noticed the following build errors:
+I can see in the vfio_platform_common.c code that the reset is either
+handled by an ACPI _RST method or some custom function in case of DT.
+Let's consider the ACPI method for now, I assume the AML code pokes some
+device registers but we can't say much about the ordering it expects
+without knowing the details. The AML may assume that the ioaddr mapped
+as Device-nRnRE (ioremap()) in the kernel has the same attributes
+wherever else is mapped in user or guests. Note that currently the
+vfio_platform and vfio_pci drivers only allow pgprot_noncached() in
+user, so they wouldn't worry about other mismatched aliases.
 
-[auto build test ERROR on next-20231205]
-[also build test ERROR on v6.7-rc4]
-[cannot apply to tip/x86/core tip/x86/mm kvm/queue linus/master kvm/linux-next v6.7-rc4 v6.7-rc3 v6.7-rc2]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I think PCIe is slightly better documented but even here we'll have to
+rely on the TLBI+DSB to clear any prior writes on different CPUs.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kirill-A-Shutemov/x86-coco-x86-sev-Use-cpu_feature_enabled-to-detect-SEV-guest-flavor/20231205-223950
-base:   next-20231205
-patch link:    https://lore.kernel.org/r/20231205143738.2875-1-kirill.shutemov%40linux.intel.com
-patch subject: [PATCH] x86/coco, x86/sev: Use cpu_feature_enabled() to detect SEV guest flavor
-config: i386-randconfig-011-20231205 (https://download.01.org/0day-ci/archive/20231206/202312060344.u4FP0DKh-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060344.u4FP0DKh-lkp@intel.com/reproduce)
+It can be argued that it's the responsibility of whoever grants device
+access to know the details. However, it would help if we give some
+guidance, any expectations broken if an alias is Normal-NC? It's easier
+to start with PCIe first until we get some concrete request for other
+types of devices.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312060344.u4FP0DKh-lkp@intel.com/
+> > So, I think it would be easier to get this patch upstream if we limit
+> > the change to PCIe devices for now. We may relax this further in the
+> > future. Do you actually have a need for non-PCIe devices to support WC
+> > in the guest or it's more about the complexity of the logic to detect
+> > whether it's actually a PCIe BAR we are mapping into the guest? (I can
+> > see some Arm GPU folk asking for this but those devices are not easily
+> > virtualisable).
+> 
+> The complexity is my concern, and the disruption to the ecosystem with
+> some of the ideas given.
+> 
+> If there was a trivial way to convey in the VMA that it is safe then
+> sure, no objection from me.
 
-All errors (new ones prefixed by >>):
+I suggested a new VM_* flag or some way to probe the iomem_resources for
+PCIe ranges (if they are described in there, not sure). We can invent
+other tree searching for ranges that get registers from the vfio driver,
+I don't think it's that difficult.
 
->> arch/x86/realmode/init.c:73:7: error: no member named 'flags' in 'struct trampoline_header'
-                   th->flags |= TH_FLAGS_SME_ACTIVE;
-                   ~~  ^
->> arch/x86/realmode/init.c:80:21: error: use of undeclared identifier 'secondary_startup_64_no_verify'
-                   th->start = (u64) secondary_startup_64_no_verify;
-                                     ^
-   2 errors generated.
+Question is, do we need to do this for other types of devices or it's
+mostly theoretical at this point (what's theoretical goes both ways
+really).
 
+A more complex way is to change vfio to allow Normal mappings and KVM
+would mimic them. You were actually planning to do this for Cacheable
+anyway.
 
-vim +73 arch/x86/realmode/init.c
+> I would turn it around and ask we find a way to restrict platform
+> devices when someone comes with a platform device that wants to use
+> secure kvm and has a single well defined HW problem that is solved by
+> this work.
 
-4f7b92263ad68c Yinghai Lu         2013-01-24  69  
-75d359ec4141b0 Michael Roth       2022-04-22  70  static void __init sme_sev_setup_real_mode(struct trampoline_header *th)
-8940ac9ced8bc1 Tom Lendacky       2020-09-07  71  {
-32cb4d02fb02ca Tom Lendacky       2021-09-08  72  	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
-8940ac9ced8bc1 Tom Lendacky       2020-09-07 @73  		th->flags |= TH_FLAGS_SME_ACTIVE;
-8940ac9ced8bc1 Tom Lendacky       2020-09-07  74  
-653ce82f92271f Kirill A. Shutemov 2023-12-05  75  	if (cpu_feature_enabled(X86_FEATURE_SEV_ES_GUEST)) {
-3ecacdbd23956a Joerg Roedel       2020-09-07  76  		/*
-3ecacdbd23956a Joerg Roedel       2020-09-07  77  		 * Skip the call to verify_cpu() in secondary_startup_64 as it
-3ecacdbd23956a Joerg Roedel       2020-09-07  78  		 * will cause #VC exceptions when the AP can't handle them yet.
-3ecacdbd23956a Joerg Roedel       2020-09-07  79  		 */
-3ecacdbd23956a Joerg Roedel       2020-09-07 @80  		th->start = (u64) secondary_startup_64_no_verify;
-3ecacdbd23956a Joerg Roedel       2020-09-07  81  
-8940ac9ced8bc1 Tom Lendacky       2020-09-07  82  		if (sev_es_setup_ap_jump_table(real_mode_header))
-8940ac9ced8bc1 Tom Lendacky       2020-09-07  83  			panic("Failed to get/update SEV-ES AP Jump Table");
-8940ac9ced8bc1 Tom Lendacky       2020-09-07  84  	}
-8940ac9ced8bc1 Tom Lendacky       2020-09-07  85  }
-8940ac9ced8bc1 Tom Lendacky       2020-09-07  86  
+We end up with similar search/validation mechanism, so not sure we gain
+much.
+
+> What if we change vfio-pci to use pgprot_device() like it already
+> really should and say the pgprot_noncached() is enforced as
+> DEVICE_nGnRnE and pgprot_device() may be DEVICE_nGnRE or NORMAL_NC?
+> Would that be acceptable?
+
+pgprot_device() needs to stay as Device, otherwise you'd get speculative
+reads with potential side-effects.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Catalin
