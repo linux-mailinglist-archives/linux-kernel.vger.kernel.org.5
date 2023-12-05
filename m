@@ -2,114 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FF6805622
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E55080562D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345503AbjLENgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:36:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
+        id S1345516AbjLENhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:37:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345471AbjLENga (ORCPT
+        with ESMTP id S1345466AbjLENhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:36:30 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C989BA;
-        Tue,  5 Dec 2023 05:36:37 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1rAVbG-0006du-4s; Tue, 05 Dec 2023 14:36:34 +0100
-Message-ID: <6c97a39b-4ba6-4d79-985e-a69f8e0c76a4@leemhuis.info>
-Date:   Tue, 5 Dec 2023 14:36:33 +0100
+        Tue, 5 Dec 2023 08:37:09 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4141AB;
+        Tue,  5 Dec 2023 05:37:15 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3B5CC5C0073;
+        Tue,  5 Dec 2023 08:37:15 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 05 Dec 2023 08:37:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701783435; x=1701869835; bh=MS
+        o40/DzILPmk4fVztq26tP1UcAt4IZ5edthROYfIeQ=; b=qJEun988LPpJTneK4B
+        iOm8MG4rNWEJ2M9ylmnOyL8l6IwefIw3g+/fCxBQAzyJ7hYdhL0/vWbPNpuzsUFh
+        3rJnLmNXViDWxshFEt8CsL6vb4PkVF+BORWHrbr3H58yGuLoV7d7VhDamFjpQhcT
+        U/u+M5I1drvoNI3dxxKiGfFRUhtB2Ve3C1g31EZOupjooD8zk4+Mo+IjzVNeit2A
+        xrIqpr9SYwC2iP4Gd4vV3r7M8WNNp6iK/T8nTedZd/kkRg34bxzcsBoYntKliqtf
+        rWt81QWBmEKAovmrUW9mB6GfVJnBfIPPZu0EVRiRyoy+3Hv5hrUNpSjlpotMCzoZ
+        Tfwg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701783435; x=1701869835; bh=MSo40/DzILPmk
+        4fVztq26tP1UcAt4IZ5edthROYfIeQ=; b=kzomfXtMU0QNVW1G9ASuu30rLAGos
+        brOM5jegxaM9w5e0E+Mx0NaBvK7yKRLW7QEFi70l9E13SQcdbmlVehN4FL8GG+v3
+        7RsF2zI2Nyv6dHAMGGHfT47Lx9dGZC/A9N679EkNRrcIR+iFfssYQHIRL1Npjkbk
+        eBYMVft4X3MdNIlB9Zj8bhY3LknHONoh7BVL83Nvp2HHAnfut73c+YWszU2OV3K/
+        6zMPitTGR7BZjpWbzVUNxULgkm1Gk00Wy3GqEXLYAsGzKmGbotT7+uN4YvG5UW9z
+        iuXVOurc69aA6dcmz84gY6uMYS+XnL6znE2Xy2uInouwlGoH3ug5OPSsw==
+X-ME-Sender: <xms:iidvZSzxzQt9c1fSV60YcizLeTJiBllKOkZaAoH87W9KXaB9-0jiKg>
+    <xme:iidvZeRT49Fh7djkd5qgQf2NCRjlrWgdztUMf8L5b0qdI-EFZGp5EXBPiTBQ73rXl
+    eg3yUbr-dA7ideEfis>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejkedgheegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:iidvZUXouaBsV59xnbNVHKF_uXZMwp2q_wCdiiHs5wsWMnd_ACMcKw>
+    <xmx:iidvZYhPVbBEyaGydQt8CbxNo52xULx8foRb9eVwP_9xGKxILkcQRA>
+    <xmx:iidvZUDRajflv2u1GEbjLptgtHm7CwStnkYNNuqBvb20vTp0-pEA4g>
+    <xmx:iydvZdKP1SM2yKZ3zCKMv0fokHE2VVWKyjYuf1Spzjczx5f7DTcEfA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 2D405B60089; Tue,  5 Dec 2023 08:37:13 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: spi: imx: Increase imx51 ecspi burst length fails on imx6dl and
- imx8mm
-Content-Language: en-US, de-DE
-To:     linux@bigler.io, Benjamin Bigler <benjamin@bigler.one>
-Cc:     broonie@kernel.org, francesco@dolcini.it,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        regressions@lists.linux.dev, stefan.moring@technolution.nl
-References: <c7a38307ac74a973e26ac820a0b98773262720bd.camel@bigler.one>
- <89209fbb46c4ce650141ecb6fdf06476@mail.infomaniak.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <89209fbb46c4ce650141ecb6fdf06476@mail.infomaniak.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701783397;20bb4ff0;
-X-HE-SMSGID: 1rAVbG-0006du-4s
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <2a5ce0d0-ad0a-49d7-84a6-055c4b729eec@app.fastmail.com>
+In-Reply-To: <f671beae8a8ebfd361f4c903bccce713135a169f.1701768028.git.ysato@users.sourceforge.jp>
+References: <cover.1701768028.git.ysato@users.sourceforge.jp>
+ <f671beae8a8ebfd361f4c903bccce713135a169f.1701768028.git.ysato@users.sourceforge.jp>
+Date:   Tue, 05 Dec 2023 14:36:53 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Yoshinori Sato" <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org
+Cc:     "Damien Le Moal" <dlemoal@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Geert Uytterhoeven" <geert+renesas@glider.be>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        "Dave Airlie" <airlied@gmail.com>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
+        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
+        "Maxime Ripard" <mripard@kernel.org>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Jiri Slaby" <jirislaby@kernel.org>,
+        "Magnus Damm" <magnus.damm@gmail.com>,
+        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
+        "Rich Felker" <dalias@libc.org>,
+        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
+        "Lee Jones" <lee@kernel.org>, "Helge Deller" <deller@gmx.de>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        "Jernej Skrabec" <jernej.skrabec@gmail.com>,
+        "Chris Morgan" <macromorgan@hotmail.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Hyeonggon Yoo" <42.hyeyoo@gmail.com>,
+        "David Rientjes" <rientjes@google.com>,
+        "Vlastimil Babka" <vbabka@suse.cz>, "Baoquan He" <bhe@redhat.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Guenter Roeck" <linux@roeck-us.net>,
+        "Stephen Rothwell" <sfr@canb.auug.org.au>,
+        guoren <guoren@kernel.org>,
+        "Javier Martinez Canillas" <javierm@redhat.com>,
+        "Azeem Shaikh" <azeemshaikh38@gmail.com>,
+        "Palmer Dabbelt" <palmer@rivosinc.com>,
+        "Bin Meng" <bmeng@tinylab.org>,
+        "Max Filippov" <jcmvbkbc@gmail.com>, "Tom Rix" <trix@redhat.com>,
+        "Herve Codina" <herve.codina@bootlin.com>,
+        "Jacky Huang" <ychuang3@nuvoton.com>,
+        "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Biju Das" <biju.das.jz@bp.renesas.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        "Sam Ravnborg" <sam@ravnborg.org>,
+        "Michael Karcher" <kernel@mkarcher.dialup.fu-berlin.de>,
+        "Sergey Shtylyov" <s.shtylyov@omp.ru>,
+        "Laurent Pinchart" <laurent.pinchart+renesas@ideasonboard.com>,
+        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [DO NOT MERGE v5 22/37] dt-bindings: display: smi,sm501: SMI SM501 binding
+ json-schema
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.11.23 10:09, linux@bigler.io wrote:
-> 
-> Thank you Benjamin for the patch.
-> I have tested the patch and is works fine.
+On Tue, Dec 5, 2023, at 10:45, Yoshinori Sato wrote:
+> Define SM501 functions and modes.
+>
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+> ---
+>  .../bindings/display/smi,sm501.yaml           | 134 ++++++++++++++++++
+>  include/dt-bindings/display/sm501.h           |  25 ++++
 
-That's great.
+It looks like we already have a binding at
+Documentation/devicetree/bindings/display/sm501fb.txt
 
-Benjamin, what's the status of the fix for this regression? I tried to
-find a proper submission for review, but didn't find one. Am I missing
-something or did that fall through the cracks?
+> +  little-endian:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: available on big endian systems, to set different 
+> foreign endian.
+> +  big-endian:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: available on little endian systems, to set different 
+> foreign endian.
+> +
+> +  swap-fb-endian:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: swap framebuffer byteorder.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Why do you need both the "swap" and the specific little/big
+properties?
 
-#regzbot poke
+> +  crt:
+> +    description: CRT output control
+> +
+> +  panel:
+> +    description: Panel output control
 
-> Am 2023-11-26T14:19:56.000+01:00 hat Benjamin Bigler <benjamin@bigler.one> geschrieben:
->>  Hi
->>
->> I did some debugging and I think the problem is that in this case bits_per_word is 8. So in
->> spi_imx_dma_configure the buswidth is set to DMA_SLAVE_BUSWIDTH_1_BYTE. But in
->> mx51_ecspi_prepare_transfer the BURST_LENGTH is now set to (spi_imx->count * spi_imx->bits_per_word
->> - 1)
->> before 15a6af94a2779d5dfb42ee4bfac858ea8e964a3f it was (spi_imx->bits_per_word - 1). Now the spi
->> transmits 4 byte per byte except for the first word. I added the following patch and it worked again
->>
->> diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
->> index 498e35c8db2c..f514966e2ada 100644
->> --- a/drivers/spi/spi-imx.c
->> +++ b/drivers/spi/spi-imx.c
->> @@ -659,11 +659,22 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
->>  		ctrl |= (spi_imx->target_burst * 8 - 1)
->>  			<< MX51_ECSPI_CTRL_BL_OFFSET;
->>  	else {
->> -		if (spi_imx->count &gt;= 512)
->> -			ctrl |= 0xFFF << MX51_ECSPI_CTRL_BL_OFFSET;
->> -		else
->> -			ctrl |= (spi_imx->count * spi_imx->bits_per_word - 1)
->> +		if (spi_imx->usedma)
->> +			ctrl |= (spi_imx->bits_per_word *
->> +					 spi_imx_bytes_per_word(
->> +						 spi_imx->bits_per_word) -
->> +				 1)
->>  				<< MX51_ECSPI_CTRL_BL_OFFSET;
->> +		else {
->> +			if (spi_imx->count &gt;= MX51_ECSPI_CTRL_MAX_BURST)
->> +				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST - 1)
->> +					<< MX51_ECSPI_CTRL_BL_OFFSET;
->> +			else
->> +				ctrl |= (spi_imx->count *
->> +						 spi_imx->bits_per_word -
->> +					 1)
->> +					<< MX51_ECSPI_CTRL_BL_OFFSET;
->> +		}
->>  	}
->>  
->>  	/* set clock speed */
->>
->> Best regards,
-> Benjamin Bigler
-> 
-> 
+What type are these?
+
+> +  smi,misc-timing:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Miscellaneous Timing reg value.
+> +
+> +  smi,misc-control:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Miscellaneous Control reg value.
+> +
+> +  smi,gpio-low:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: GPIO0 to 31 Control reg value.
+> +
+> +  smi,gpio-high:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: GPIO32 to 63 Control reg value.
+
+Register values should generally not go into DT
+
+
+> +
+> +  smi,gpio-i2c:
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +    minItems: 5
+> +    description: |
+> +      GPIO I2C bus number
+> +      1st field - I2C bus number
+> +      2nd Field - GPIO SDA
+> +      3rd Field - GPIO SCL
+> +      4th Field - Timeout
+> +      5th Field - udelay
+
+Instead of a bus number and other fields, I think
+this should reference an i2c device.
+
+      Arnd
