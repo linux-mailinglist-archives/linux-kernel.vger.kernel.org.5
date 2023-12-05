@@ -2,116 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F6E805C60
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98682805BC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbjLEQy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:54:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
+        id S235241AbjLEQzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:55:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235061AbjLEQyj (ORCPT
+        with ESMTP id S235216AbjLEQzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:54:39 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E631713
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:53:50 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1d03cf821e3so26704175ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 08:53:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701795230; x=1702400030; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XMQYF2quagt/GPGUodoc4MiIW5ZQeF7Y4GziD01rWxY=;
-        b=jKUL6Pb2ELt3dBIcP8SfhUzC2eRufsrPX+BPDTaA6tkwYPYCQJEAQHDG11BWQS9xME
-         KBaPHlUeak7SGC/WHLeCJ2WRLzgTDsKROnHd2r2O7UxR66/i2tAwB2CiwYo72gOuG0l0
-         8kSdblTIhXmsAjNdAXCejlwHNbozSfjUu6VO28TFyl1Oue3+fPMss2cNDsmHBUvSTATO
-         YK3T0G+qzrPlnrPIHfnkQtZC4GNHGy0Dzvq536Q9nPqUJC85/R/k0y0fpaib/tS3YlZr
-         MHIfI4y/FAFPWOA5CX/enymHMqpEdzur0J8JMl3nZipCYDwgt/Vu8MQaWZu2yuoWI5mZ
-         QmuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701795230; x=1702400030;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XMQYF2quagt/GPGUodoc4MiIW5ZQeF7Y4GziD01rWxY=;
-        b=iF28PZ9pRBvmgTRgDSHSHvs9C+M0FjqZgUyxzQe3JmIUmMhhG1B0tzM91uGUBjdnaK
-         1mv0/6rEQDufTp0kUQeM+K9b/sEC8Qn1hI7aSvQwBZYX2wkm49iDGnUlUh9QPijmTAC8
-         zvloATqFsXif1TW4gOYFZfPWHUkx6xbUypYUnP9dUpTzV8wO78J2cI9541ygFWTR7QK3
-         Lc2hbTrqbqFoNMRWU8PG7O3MUhXl1OOzGDLzsej/gIsSEMnUtehTTRVTyq7h6ahnbMw3
-         wO1OnGkdlXT3jlUbPy6ggCr4V3+DFy5q7Oeg2NvVQfqd33KS1eIK+O8LeRUJ346HMaOs
-         PmWg==
-X-Gm-Message-State: AOJu0YyhGMAR4/4cjzXkQZLYfUeg8fv7thCHZYoduJ7ndRmxJPFKuboE
-        ItCsiZrnHhAhIMYfbxeALeIFd7lM/fY=
-X-Google-Smtp-Source: AGHT+IEkDPF5kg0eFiaPieQqBbhN1nYVZJAxhuI3lfBP6e8BzlpfCIUB7mriD7s7nOD1m+hVQsJUWt4xndE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:8504:b0:1d0:96b7:7f4 with SMTP id
- bj4-20020a170902850400b001d096b707f4mr104464plb.12.1701795229655; Tue, 05 Dec
- 2023 08:53:49 -0800 (PST)
-Date:   Tue, 5 Dec 2023 08:53:48 -0800
-In-Reply-To: <ae972860-cc45-48b0-ba3e-bb2fbad5856a@intel.com>
-Mime-Version: 1.0
-References: <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
- <b3b265f9-48fa-4574-a925-cbdaaa44a689@intel.com> <afc875ace6f9f955557f5c7e811b3046278e4c51.camel@intel.com>
- <bcff605a-3b8d-4dcc-a5cb-63dab1a74ed4@intel.com> <dfbfe327704f65575219d8b895cf9f55985758da.camel@intel.com>
- <9b221937-42df-4381-b79f-05fb41155f7a@intel.com> <c12073937fcca2c2e72f9964675ef4ac5dddb6fb.camel@intel.com>
- <1a5b18b2-3072-46d9-9d44-38589cb54e40@intel.com> <ZW6FRBnOwYV-UCkY@google.com>
- <ae972860-cc45-48b0-ba3e-bb2fbad5856a@intel.com>
-Message-ID: <ZW9VnKLSMGh9PAJy@google.com>
-Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
- #MC due to erratum
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Kai Huang <kai.huang@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        Chao Gao <chao.gao@intel.com>, Tony Luck <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "sagis@google.com" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>, Len Brown <len.brown@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan J Williams <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 11:55:09 -0500
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [IPv6:2001:41d0:203:375::ba])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DF6198D
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:54:12 -0800 (PST)
+Message-ID: <fb4b856d-601d-4aa9-8526-14e5682f6402@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701795250;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZF3HKdpkUYHivvRpAHFn3rEF2x4jY5PYbwjx9JOVu3E=;
+        b=EhGU4wmCYyp07Ts+1DE5grTY3Sa7dC6p4b+M8EA50s/cqLKx/tNEewXo2w34DMYWAjXRiG
+        dC4LRQhfb7+SuHDbRr+yB8fzOzg6gRYClNgAsob/ctKQNZJbRn9c+Od1gtaJGP3SQEYgVr
+        WvgAQYh4Ky+LRbsixpHMKTFloYpDy7Q=
+Date:   Tue, 5 Dec 2023 08:54:02 -0800
+MIME-Version: 1.0
+Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
+ program suppresses SIGIO.
+Content-Language: en-GB
+To:     Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Robert O'Callahan <robert@ocallahan.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20231204201406.341074-1-khuey@kylehuey.com>
+ <20231204201406.341074-3-khuey@kylehuey.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231204201406.341074-3-khuey@kylehuey.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023, Dave Hansen wrote:
-> On 12/4/23 18:04, Sean Christopherson wrote:
-> > Joking aside, why shove TDX module ownership into KVM?  It honestly sounds like
-> > a terrible fit, even without the whole TDX-IO mess.  KVM state is largely ephemeral,
-> > in the sense that loading and unloading kvm.ko doesn't allocate/free much memory
-> > or do all that much initialization or teardown.
-> 
-> Yeah, you have a good point there.  We really do need some core code to
-> manage VMXON/OFF now that there is increased interest outside of
-> _purely_ running VMs.
-> 
-> For the purposes of _this_ patch, I think I'm happy to leave open the
-> possibility that SEAMCALL can simply fail due to VMXOFF.  For now, it
-> means that we can't attribute #MC's to the PAMT unless a VM is running
-> but that seems like a reasonable compromise for the moment.
 
-+1
+On 12/4/23 3:14 PM, Kyle Huey wrote:
+> The test sets a hardware breakpoint and uses a bpf program to suppress the
+> I/O availability signal if the ip matches the expected value.
+>
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> ---
+>   .../selftests/bpf/prog_tests/perf_skip.c      | 95 +++++++++++++++++++
+>   .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
+>   2 files changed, 118 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> new file mode 100644
+> index 000000000000..b269a31669b7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> @@ -0,0 +1,95 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define _GNU_SOURCE
+> +#include <test_progs.h>
+> +#include "test_perf_skip.skel.h"
+> +#include <linux/hw_breakpoint.h>
+> +#include <sys/mman.h>
+> +
+> +#define BPF_OBJECT            "test_perf_skip.bpf.o"
+> +
+> +static void handle_sig(int)
 
-> Once TDX gains the ability to "pin" VMXON, the added precision here will
-> be appreciated.
+I hit a warning here:
+home/yhs/work/bpf-next/tools/testing/selftests/bpf/prog_tests/perf_skip.c:10:27: error: omitting the parameter name in a function definition is a C23 extension [-Werror,-Wc23-extensions]
+    10 | static void handle_sig(int)
+       |
+
+Add a parameter and marked as unused can resolve the issue.
+
+#define __always_unused         __attribute__((__unused__))
+
+static void handle_sig(int unused __always_unused)
+{
+         ASSERT_OK(1, "perf event not skipped");
+}
+
+
+> +{
+> +	ASSERT_OK(1, "perf event not skipped");
+> +}
+> +
+> +static noinline int test_function(void)
+> +{
+> +	return 0;
+> +}
+> +
+> +void serial_test_perf_skip(void)
+> +{
+> +	sighandler_t previous;
+> +	int duration = 0;
+> +	struct test_perf_skip *skel = NULL;
+> +	int map_fd = -1;
+> +	long page_size = sysconf(_SC_PAGE_SIZE);
+> +	uintptr_t *ip = NULL;
+> +	int prog_fd = -1;
+> +	struct perf_event_attr attr = {0};
+> +	int perf_fd = -1;
+> +	struct f_owner_ex owner;
+> +	int err;
+> +
+> +	previous = signal(SIGIO, handle_sig);
+> +
+> +	skel = test_perf_skip__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_load"))
+> +		goto cleanup;
+> +
+> +	prog_fd = bpf_program__fd(skel->progs.handler);
+> +	if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
+> +		goto cleanup;
+> +
+> +	map_fd = bpf_map__fd(skel->maps.ip);
+> +	if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
+> +		goto cleanup;
+> +
+> +	ip = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, map_fd, 0);
+> +	if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
+> +		goto cleanup;
+> +
+> +	*ip = (uintptr_t)test_function;
+> +
+> +	attr.type = PERF_TYPE_BREAKPOINT;
+> +	attr.size = sizeof(attr);
+> +	attr.bp_type = HW_BREAKPOINT_X;
+> +	attr.bp_addr = (uintptr_t)test_function;
+> +	attr.bp_len = sizeof(long);
+> +	attr.sample_period = 1;
+> +	attr.sample_type = PERF_SAMPLE_IP;
+> +	attr.pinned = 1;
+> +	attr.exclude_kernel = 1;
+> +	attr.exclude_hv = 1;
+> +	attr.precise_ip = 3;
+> +
+> +	perf_fd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
+> +	if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
+> +		goto cleanup;
+> +
+> +	err = fcntl(perf_fd, F_SETFL, O_ASYNC);
+> +	if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
+> +		goto cleanup;
+> +
+> +	owner.type = F_OWNER_TID;
+> +	owner.pid = gettid();
+
+I hit a compilation failure here:
+
+/home/yhs/work/bpf-next/tools/testing/selftests/bpf/prog_tests/perf_skip.c:75:14: error: call to undeclared function 'gettid'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    75 |         owner.pid = gettid();
+       |                     ^
+
+If you looked at some other examples, the common usage is do 'syscall(SYS_gettid)'.
+So the following patch should fix the compilation error:
+
+#include <sys/syscall.h>
+...
+         owner.pid = syscall(SYS_gettid);
+...
+
+> +	err = fcntl(perf_fd, F_SETOWN_EX, &owner);
+> +	if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
+> +		goto cleanup;
+> +
+> +	err = ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
+> +	if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
+> +		goto cleanup;
+> +
+> +	test_function();
+
+As Andrii has mentioned in previous comments, we will have
+issue is RELEASE version of selftest is built
+   RELEASE=1 make ...
+
+See https://lore.kernel.org/bpf/20231127050342.1945270-1-yonghong.song@linux.dev
+
+> +
+> +cleanup:
+> +	if (perf_fd >= 0)
+> +		close(perf_fd);
+> +	if (ip)
+> +		munmap(ip, page_size);
+> +	if (skel)
+> +		test_perf_skip__destroy(skel);
+> +
+> +	signal(SIGIO, previous);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> new file mode 100644
+> index 000000000000..ef01a9161afe
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+> +	__uint(max_entries, 1);
+> +	__uint(map_flags, BPF_F_MMAPABLE);
+> +	__type(key, uint32_t);
+> +	__type(value, uintptr_t);
+> +} ip SEC(".maps");
+> +
+> +SEC("perf_event")
+> +int handler(struct bpf_perf_event_data *data)
+> +{
+> +	const uint32_t index = 0;
+> +	uintptr_t *v = bpf_map_lookup_elem(&ip, &index);
+> +
+> +	return !(v && *v == PT_REGS_IP(&data->regs));
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
