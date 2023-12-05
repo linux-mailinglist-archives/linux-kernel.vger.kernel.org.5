@@ -2,149 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6384D8055EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:30:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1713D8055EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442178AbjLENaM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 08:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
+        id S1442197AbjLENat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345403AbjLENaK (ORCPT
+        with ESMTP id S1442200AbjLENam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:30:10 -0500
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6F3B9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:30:16 -0800 (PST)
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1fb6cbacf9aso63968fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:30:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701783016; x=1702387816;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sQ46Zu5o/jlw4aoBQJBdzf1PrFCmVa4Ine74hNCNpr8=;
-        b=hmbPYYoJJoyI/1uybUb1dlZ/Ea7ufx24LvSDsm1tV9yU5YvRHgSMhF/LUucgYeAUxU
-         861srUCWCUCcvmTdlEhOYRYcl5nk7AwqPC+e8g7uupXUD9pjIjbXEVWSNxCn6hi7UfH5
-         G4eZCg0tSE0m5k294QGQbKFAwvcCLX7gFtOW8wN4EkAF1FWuXZgRM44xSg+g9/EP+xQ0
-         4ciRmL/9Pukd4SByEqY9wp5qt3BhSAwLAnig7Fo4XLVOFyWJlA/anWHq3s8zimzjAWvH
-         +s2LboXGd+MXDToqxB3R9WqflYhT86cKVq5dcvC2hpb1RUf0KmAusnMhpkFXT7yyiwi2
-         jNtA==
-X-Gm-Message-State: AOJu0YyWp3L0PM+Hmu55mn9EyRdW/pBTY+vDBqOJ9wRfNPUDl9vTtX5m
-        Usv4ImoKVMczR5urEE/TJ0odRFSAv7AwzUX3q60=
-X-Google-Smtp-Source: AGHT+IF5uZ+zLNbD7K9wBNBx1P+xrBk3kZElb7yLR3O2UlHFWipYFPMJWE0gHPqGPBHgpt2PZqjsMCD3NfT66T9/Ezo=
-X-Received: by 2002:a05:6870:971f:b0:1fa:f195:e3b4 with SMTP id
- n31-20020a056870971f00b001faf195e3b4mr12903829oaq.2.1701783016043; Tue, 05
- Dec 2023 05:30:16 -0800 (PST)
-MIME-Version: 1.0
-References: <CAJZ5v0izUiGa2rU_8Oiygj40434Bvr2tooUqOpyUBRrM4BekeA@mail.gmail.com>
- <20231205131359.66338-1-jalliste@amazon.com>
-In-Reply-To: <20231205131359.66338-1-jalliste@amazon.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Dec 2023 14:30:04 +0100
-Message-ID: <CAJZ5v0jYqQc4UztGzMDP5m5xKejrEQkMyyt12nsHdQ=qiULpTQ@mail.gmail.com>
-Subject: Re: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at performance
-To:     Jack Allister <jalliste@amazon.com>
-Cc:     rafael@kernel.org, Paul Durrant <pdurrant@amazon.com>,
-        Jue Wang <juew@amazon.com>,
-        Usama Arif <usama.arif@bytedance.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hans de Goede <hdegoede@redhat.com>,
+        Tue, 5 Dec 2023 08:30:42 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDBFE19B
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:30:47 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5DMxxL014011;
+        Tue, 5 Dec 2023 13:30:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=IxxfLKX8MzSwgz9dQIi2KYO51vLAAjIBTx7N6eaZqN0=;
+ b=gjYZk7dqkmvyTD1Ne1g0A1RtVertEoNUDNbb+OmI69mYV+nRG82vmZTRohZPVAo9uPoz
+ TI9FlB4AHnD2CqHjyQC+KucDFD/WNAPhAmOoF3tcQnQIdTlM/K4A3OfxosBNoctMUEzP
+ PRzvHeGfE3FDrWyP2WaRjPmjC+HUXfuYo1+Iq+aSocNpKc41TIpTAe3i3IPlm1Ze27Yd
+ kRM8efmmzjGJIOFDpLSC5cI1AxZkEHE95Srjd7MpSswT+dLScMpQteKZidgziYV1w9VX
+ y6lnYaf6QntVtfqMUQJtsThfjKcW4fdqH4h0hYunIDypKk18GvVhfXRvprVb5h+utYsR nw== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ut4pq8ayk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 13:30:26 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5AnuS1028493;
+        Tue, 5 Dec 2023 13:30:26 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urv8b3knd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 13:30:26 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B5DUOqw59965918
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Dec 2023 13:30:24 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EC18E2004B;
+        Tue,  5 Dec 2023 13:30:23 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD5A920043;
+        Tue,  5 Dec 2023 13:30:23 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Dec 2023 13:30:23 +0000 (GMT)
+Received: by tuxmaker.boeblingen.de.ibm.com (Postfix, from userid 55390)
+        id B17A2E08BE; Tue,  5 Dec 2023 14:30:23 +0100 (CET)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Andy Lutomirski <luto@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>
+Subject: [PATCH 0/3] entry: inline syscall enter/exit functions
+Date:   Tue,  5 Dec 2023 14:30:12 +0100
+Message-Id: <20231205133015.752543-1-svens@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Qp2KZ1wCvP--ewQ9wSU_vP71h_4m-_ku
+X-Proofpoint-GUID: Qp2KZ1wCvP--ewQ9wSU_vP71h_4m-_ku
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_08,2023-12-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ spamscore=0 malwarescore=0 adultscore=0 suspectscore=0 clxscore=1015
+ mlxscore=0 priorityscore=1501 mlxlogscore=499 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312050105
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 2:14 PM Jack Allister <jalliste@amazon.com> wrote:
->
-> There are certain scenarios where it may be intentional that the EPB was
-> set at to 0/ENERGY_PERF_BIAS_PERFORMANCE on kernel boot. For example, in
-> data centers a kexec/live-update of the kernel may be performed regularly.
->
-> Usually this live-update is time critical and defaulting of the bias back
-> to ENERGY_PERF_BIAS_NORMAL may actually be detrimental to the overall
-> update time if processors' time to ramp up/boost are affected.
->
-> This patch introduces a kernel command line "intel_epb_keep_performance"
-> which will leave the EPB at performance if during the restoration code path
-> it is detected as such.
->
-> Signed-off-by: Jack Allister <jalliste@amazon.com>
-> Cc: Paul Durrant <pdurrant@amazon.com>
-> Cc: Jue Wang <juew@amazon.com>
-> Cc: Usama Arif <usama.arif@bytedance.com>
-> ---
->  arch/x86/kernel/cpu/intel_epb.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
-> index e4c3ba91321c..cbe0e224b8d9 100644
-> --- a/arch/x86/kernel/cpu/intel_epb.c
-> +++ b/arch/x86/kernel/cpu/intel_epb.c
-> @@ -50,7 +50,8 @@
->   * the OS will do that anyway.  That sometimes is problematic, as it may cause
->   * the system battery to drain too fast, for example, so it is better to adjust
->   * it on CPU bring-up and if the initial EPB value for a given CPU is 0, the
-> - * kernel changes it to 6 ('normal').
-> + * kernel changes it to 6 ('normal'). This however is overridable via
-> + * intel_epb_no_override if required.
->   */
+Hi List,
 
-In the comment above I would say
+looking into the performance of syscall entry/exit after s390 switched
+to generic entry showed that there's quite some overhead calling some
+of the entry/exit work functions even when there's nothing to do.
+This patchset moves the entry and exit function to entry-common.h, so
+non inlined code gets only called when there is some work pending.
 
-"However, if it is desirable to retain the original initial EPB value,
-intel_epb_no_override can be set to enforce it."
+I wrote a small program that just issues invalid syscalls in a loop.
+On an s390 machine, this results in the following numbers:
 
-Otherwise
+without this series:
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+# ./syscall 1000000000
+runtime: 94.886581s / per-syscall 9.488658e-08s
 
->
->  static DEFINE_PER_CPU(u8, saved_epb);
-> @@ -75,6 +76,8 @@ static u8 energ_perf_values[] = {
->         [EPB_INDEX_POWERSAVE] = ENERGY_PERF_BIAS_POWERSAVE,
->  };
->
-> +static bool intel_epb_no_override __read_mostly;
-> +
->  static int intel_epb_save(void)
->  {
->         u64 epb;
-> @@ -106,7 +109,7 @@ static void intel_epb_restore(void)
->                  * ('normal').
->                  */
->                 val = epb & EPB_MASK;
-> -               if (val == ENERGY_PERF_BIAS_PERFORMANCE) {
-> +               if (!intel_epb_no_override && val == ENERGY_PERF_BIAS_PERFORMANCE) {
->                         val = energ_perf_values[EPB_INDEX_NORMAL];
->                         pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
->                 }
-> @@ -213,6 +216,12 @@ static const struct x86_cpu_id intel_epb_normal[] = {
->         {}
->  };
->
-> +static __init int intel_epb_no_override_setup(char *str)
-> +{
-> +       return kstrtobool(str, &intel_epb_no_override);
-> +}
-> +early_param("intel_epb_no_override", intel_epb_no_override_setup);
-> +
->  static __init int intel_epb_init(void)
->  {
->         const struct x86_cpu_id *id = x86_match_cpu(intel_epb_normal);
-> --
-> 2.40.1
->
+with this series:
+
+./syscall 1000000000
+runtime: 84.732391s / per-syscall 8.473239e-08s
+
+so the time required for one syscall dropped from 94.8ns to
+84.7ns, which is a drop of about 11%.
+
+Sven Schnelle (3):
+  entry: move exit to usermode functions to header file
+  move enter_from_user_mode() to header file
+  entry: move syscall_enter_from_user_mode() to header file
+
+ include/linux/entry-common.h | 137 ++++++++++++++++++++++++++++++++-
+ kernel/entry/common.c        | 145 ++---------------------------------
+ 2 files changed, 138 insertions(+), 144 deletions(-)
+
+-- 
+2.40.1
+
