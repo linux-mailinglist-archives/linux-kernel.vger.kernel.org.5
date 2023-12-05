@@ -2,137 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B3E805571
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70F1805573
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345352AbjLENGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
+        id S1376795AbjLENGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:06:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbjLENGe (ORCPT
+        with ESMTP id S235139AbjLENGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:06:34 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84BB120;
-        Tue,  5 Dec 2023 05:06:40 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5CngxR032564;
-        Tue, 5 Dec 2023 05:06:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=2rDup1rK28BIzol1uUQ+jfQcdpFyk9LG+2EZtkJphPs=;
- b=BaMQBimEQ6WSgGtR6ubmWd6KfTmYUjQtbsBslvG00pXH4qcbvULkQCUR7sjc8du3aj32
- 2UlXiiOsJG9AoBmwDZmCIJsW3suBaqEjjeagEa0U3E/c1yi87icW5TeQY6VEhQZnvB3K
- uWlYnNQlPbsIM3VTS4eiR+KOYhePtnEiJit5mA82HTwUlRXiT7X+Sjeq2JspiM0KYQ10
- ATj/Jx0MK+9+IEtyHtsSzdKUdgZR2khmNEB21xNXcsXuo1sQboKWvuoge64wgpXXHex5
- UH3hDoNqyl7B7nubN5yVzv0mupZAoWFfYTcLLSiZyFrfhn6MagZA8vwAh2qA+G4QcUmX 6A== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3ut0e68rb9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 05:06:29 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 5 Dec
- 2023 05:06:28 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 5 Dec 2023 05:06:27 -0800
-Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-        by maili.marvell.com (Postfix) with ESMTP id 951B03F70A6;
-        Tue,  5 Dec 2023 05:06:27 -0800 (PST)
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
-        <konguyen@redhat.com>, Shinas Rasheed <srasheed@marvell.com>,
-        "Veerasenareddy Burru" <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH net v2] octeon_ep: initialise control mbox tasks before using APIs
-Date:   Tue, 5 Dec 2023 05:06:24 -0800
-Message-ID: <20231205130625.2586755-1-srasheed@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Dec 2023 08:06:40 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D370E120
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:06:46 -0800 (PST)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B56mS2Q002076;
+        Tue, 5 Dec 2023 07:06:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=
+        PODMain02222019; bh=esZIg4k1vejK+Ovs7uaHd37lyuP5a7qtqkhY+WqTKN8=; b=
+        REsYKDffvO6WSkLUBPuJqg5zx/Xw+dOkgw7s4T+fDRZE3MNyC0YDoLuv3GXpdFcX
+        r6+ickhYpwQraDZa2+wUO3N7D9ou/774jDO+8rTLxUpS/l0bDYyOYtNJAIcNDdy/
+        Ui1atJr/lBCnV6jalZKSWbvJOLZB/BLYRoz+ts+KXu3ZT92x2LhLn66lhppu5dMI
+        pCjmOZZdiU7cqXTaUaEL95WtFvGflpoQMCJhIjmOMs3CUwKurunn88h2f520wIYk
+        74EM2cJvd4HYVGH86WQfGYhva7BOJgxLb76dTBInJR/vcuf9ogVk3auPO6D5w9Jc
+        L+Hj8y8CmPXY3xovrQ1fyw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ur2v236e4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 07:06:33 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
+ 2023 13:06:31 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Tue, 5 Dec 2023 13:06:31 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B6B1C474;
+        Tue,  5 Dec 2023 13:06:31 +0000 (UTC)
+Date:   Tue, 5 Dec 2023 13:06:31 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <kernel@pengutronix.de>
+Subject: Re: [PATCH 1/8] regulator: arizona-ldo1: Convert to platform remove
+ callback returning void
+Message-ID: <20231205130631.GE14858@ediswmail.ad.cirrus.com>
+References: <cover.1701778038.git.u.kleine-koenig@pengutronix.de>
+ <76c7af01e2c8b3ab6585a04bc3f0d163fbb7fdf7.1701778038.git.u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: NVyDbGDbPraZgKiXtghGi3WQdONDNsjJ
-X-Proofpoint-ORIG-GUID: NVyDbGDbPraZgKiXtghGi3WQdONDNsjJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-05_07,2023-12-05_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <76c7af01e2c8b3ab6585a04bc3f0d163fbb7fdf7.1701778038.git.u.kleine-koenig@pengutronix.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: SjEKKDuG7L3EtcdDoAJUFpHPalutlvn1
+X-Proofpoint-GUID: SjEKKDuG7L3EtcdDoAJUFpHPalutlvn1
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialise various workqueue tasks and queue interrupt poll task
-before the first invocation of any control net APIs. Since
-octep_ctrl_net_get_info was called before the control net receive
-work task was initialised or even the interrupt poll task was
-queued, the function call wasn't returning actual firmware
-info queried from Octeon.
+On Tue, Dec 05, 2023 at 01:26:16PM +0100, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> 
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
 
-Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
----
-V2:
-  - Updated changelog.
-  - Handled error return for octep_ctrl_net_get_info
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-V1: https://lore.kernel.org/all/20231202150807.2571103-1-srasheed@marvell.com/
-
- .../ethernet/marvell/octeon_ep/octep_main.c   | 20 +++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-index 552970c7dec0..d400a221d82c 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-@@ -1193,6 +1193,13 @@ int octep_device_setup(struct octep_device *oct)
- 	if (ret)
- 		return ret;
- 
-+	INIT_WORK(&oct->tx_timeout_task, octep_tx_timeout_task);
-+	INIT_WORK(&oct->ctrl_mbox_task, octep_ctrl_mbox_task);
-+	INIT_DELAYED_WORK(&oct->intr_poll_task, octep_intr_poll_task);
-+	oct->poll_non_ioq_intr = true;
-+	queue_delayed_work(octep_wq, &oct->intr_poll_task,
-+			   msecs_to_jiffies(OCTEP_INTR_POLL_TIME_MSECS));
-+
- 	atomic_set(&oct->hb_miss_cnt, 0);
- 	INIT_DELAYED_WORK(&oct->hb_task, octep_hb_timeout_task);
- 
-@@ -1325,21 +1332,18 @@ static int octep_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		goto err_octep_config;
- 	}
- 
--	octep_ctrl_net_get_info(octep_dev, OCTEP_CTRL_NET_INVALID_VFID,
-+	err = octep_ctrl_net_get_info(octep_dev, OCTEP_CTRL_NET_INVALID_VFID,
- 				&octep_dev->conf->fw_info);
-+	if (err) {
-+		dev_err(&pdev->dev, "Failed to get firware info\n");
-+		goto register_dev_err;
-+	}
- 	dev_info(&octep_dev->pdev->dev, "Heartbeat interval %u msecs Heartbeat miss count %u\n",
- 		 octep_dev->conf->fw_info.hb_interval,
- 		 octep_dev->conf->fw_info.hb_miss_count);
- 	queue_delayed_work(octep_wq, &octep_dev->hb_task,
- 			   msecs_to_jiffies(octep_dev->conf->fw_info.hb_interval));
- 
--	INIT_WORK(&octep_dev->tx_timeout_task, octep_tx_timeout_task);
--	INIT_WORK(&octep_dev->ctrl_mbox_task, octep_ctrl_mbox_task);
--	INIT_DELAYED_WORK(&octep_dev->intr_poll_task, octep_intr_poll_task);
--	octep_dev->poll_non_ioq_intr = true;
--	queue_delayed_work(octep_wq, &octep_dev->intr_poll_task,
--			   msecs_to_jiffies(OCTEP_INTR_POLL_TIME_MSECS));
--
- 	netdev->netdev_ops = &octep_netdev_ops;
- 	octep_set_ethtool_ops(netdev);
- 	netif_carrier_off(netdev);
--- 
-2.25.1
-
+Thanks,
+Charles
