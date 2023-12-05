@@ -2,86 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92019805403
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEAB805422
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345070AbjLEMXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:23:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52522 "EHLO
+        id S1345265AbjLEM1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:27:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344935AbjLEMXO (ORCPT
+        with ESMTP id S1345274AbjLEM13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:23:14 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAF9D7;
-        Tue,  5 Dec 2023 04:23:20 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1ceae92ab6so28042166b.0;
-        Tue, 05 Dec 2023 04:23:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701778999; x=1702383799; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AMhBj0PFcNsp7ddu4+x1EUxsSq8BTDuggzzUZ8nA8Vo=;
-        b=hWHuxdWf3f/v7yccbhzi0QVFphGHaxMpa3tU2F5P7baGvWpHw9GDrJMx20UpO8gK1o
-         a64u9sk8CEhVuGANDFfc8ufTQBjacGaVS0K+SlhoOXhhiSHxvtrYu8sWSls4NnGAeyxq
-         TTK+BnhvCMXNH4NfxzA9AYrj4vfH+9A5RbEt4o7aYbT1QUDImz+txYomn8xcasuHJcNz
-         1aR0LN7ug2Cy0uJkEvtmIB2kzkok2AwJ2Fzn636wiiHiiv1Kmq2yfn/35L9t36Zpq0j+
-         z5VFmvUgc1W/yZ1fAoQ6ALOPaMtpIG8MbPJVgb99zyA/ED30DVET/JkREJ+5kI1VhO/k
-         U4Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701778999; x=1702383799;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AMhBj0PFcNsp7ddu4+x1EUxsSq8BTDuggzzUZ8nA8Vo=;
-        b=bbI98sX8lnP+mvwNMihOoF3w9LfheH/30a+IJBKIyI2dh00bKHtel3iUS41szaH9Rv
-         66uMPAJ24lFY0znWNXXUBJ1WYxbVUb0qmLxDDyv23w+TyhT0dORgBvpg+pIQZlZLNEM7
-         vFBKcQlg8tGa+KQtN+okfA4gA6LRxDeljRbnjagq/TW2GUfaedrn683tcPcUWpTOSuOl
-         k5OLRxLLoIR8sSkKFd6JSMF064+xJ6NC/09wYhvsAtZdkeho3mJw4IMr+l/w2+Lga1+n
-         zsce8FQ8oztxImL0RYfszA6oHWaLDTnbYan4lczWbNVHQc5DDUx1P9xVAK+6M9R7K4du
-         fYvA==
-X-Gm-Message-State: AOJu0YwSVr/exAl47ph9hrSOkU6v3nknymBjG22IqsHz88hWuZjZP3LO
-        B8cRB3WOPNTLpwRnxhLaQ/A=
-X-Google-Smtp-Source: AGHT+IHXa16mYQRzXdXsaQ0F8tsGp0lBaqOkdzuQ8VVSVqrPVczhzIUkL1oJDasQLcddWAUvhLTuAA==
-X-Received: by 2002:a17:906:3f5c:b0:a19:a1ba:da6a with SMTP id f28-20020a1709063f5c00b00a19a1bada6amr3859595ejj.145.1701778998985;
-        Tue, 05 Dec 2023 04:23:18 -0800 (PST)
-Received: from skbuf ([188.27.185.68])
-        by smtp.gmail.com with ESMTPSA id k11-20020a170906128b00b009ff8f199f21sm6726467ejb.19.2023.12.05.04.23.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 04:23:18 -0800 (PST)
-Date:   Tue, 5 Dec 2023 14:23:16 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 10/16] net: pcs: xpcs: Add generic DW XPCS
- MDIO-device support
-Message-ID: <20231205122316.ihhpklv222f5giz3@skbuf>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-11-fancer.lancer@gmail.com>
- <20231205111351.xjjuwpbf7kwg3vuh@skbuf>
- <uivunnjv5vi3w3fkc5w2f4lem5bingrgajgjfsu2ih7fuhz6hd@3naeubr5spak>
+        Tue, 5 Dec 2023 07:27:29 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF1B11F;
+        Tue,  5 Dec 2023 04:27:16 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 18e4870ed7d4aca5; Tue, 5 Dec 2023 13:27:14 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 746B96687D0;
+        Tue,  5 Dec 2023 13:27:14 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: [PATCH v4 1/2] thermal: sysfs: Rework the handling of trip point updates
+Date:   Tue, 05 Dec 2023 13:24:08 +0100
+Message-ID: <4882089.31r3eYUQgx@kreacher>
+In-Reply-To: <12337662.O9o76ZdvQC@kreacher>
+References: <12337662.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <uivunnjv5vi3w3fkc5w2f4lem5bingrgajgjfsu2ih7fuhz6hd@3naeubr5spak>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudejkedgfeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomhdprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehsrhhi
+ nhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,31 +54,223 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 02:35:46PM +0300, Serge Semin wrote:
-> Omg, thank you very much for testing the series straight away and
-> sorry for the immediate trouble it caused. I'll need some more time
-> for investigation. I'll get back to this topic a bit later on this
-> week.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Don't worry, I got suspicious when I was CCed to review only a one-line
-change in patch 11/16. It's never about that one line, is it?)
+Both trip_point_temp_store() and trip_point_hyst_store() use
+thermal_zone_set_trip() to update a given trip point, but none of them
+actually needs to change more than one field in struct thermal_trip
+representing it.  However, each of them effectively calls
+__thermal_zone_get_trip() twice in a row for the same trip index value,
+once directly and once via thermal_zone_set_trip(), which is not
+particularly efficient, and the way in which thermal_zone_set_trip()
+carries out the update is not particularly straightforward.
 
-Anyway, the NULL dev->p is a symptom of device_add() not having been
-called, most likely from mdio_device_register().
+Moreover, input processing need not be done under the thermal zone lock
+in any of these functions.
 
-I'll be honest and say that I still don't quite understand what you're
-trying to achieve. You're trying to bind the hardcoded mdio_devices
-created by xpcs_create() to a driver? That was attempted a while ago by
-Sean Anderson with the Lynx PCS. Are you aware of the fact that even in
-the good case in which binding the driver actually works, the user can
-then come along and unbind it from the PCS device, and phylink isn't
-prepared to handle that, so it will crash the kernel upon the next
-phylink_pcs call?
+Rework trip_point_temp_store() and trip_point_hyst_store() to address
+the above, move the part of thermal_zone_set_trip() that is still
+useful to a new function called thermal_zone_trip_updated() and drop
+the rest of it.
 
-The pcs-rzn1-miic.c driver puts a device_link to the MAC to at least
-tear down the whole thing when the PCS is unbound, which is saner than
-crashing the kernel. I don't see the equivalent protection mechanism here?
+While at it, make trip_point_hyst_store() reject negative hysteresis
+values.
 
-Can't the xpcs continue to live without a bound driver? Having a
-compatible string in the OF description is perfectly fine though,
-and should absolutely not preclude that.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v3 -> v4: Don't check trip_id against boundaries in trip_point_temp_store() and
+          trip_point_hyst_store() (Daniel).
+
+v2 -> v3: No changes
+
+v1 -> v2: Still check device_is_registered() under the zone lock
+
+---
+ drivers/thermal/thermal_core.h  |    2 +
+ drivers/thermal/thermal_sysfs.c |   52 +++++++++++++++++++++++++++-------------
+ drivers/thermal/thermal_trip.c  |   45 ++++++----------------------------
+ include/linux/thermal.h         |    4 ---
+ 4 files changed, 47 insertions(+), 56 deletions(-)
+
+Index: linux-pm/drivers/thermal/thermal_sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_sysfs.c
++++ linux-pm/drivers/thermal/thermal_sysfs.c
+@@ -120,8 +120,13 @@ trip_point_temp_store(struct device *dev
+ 		      const char *buf, size_t count)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
++	struct thermal_trip *trip;
+ 	int trip_id, ret;
++	int temp;
++
++	ret = kstrtoint(buf, 10, &temp);
++	if (ret)
++		return -EINVAL;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
+ 		return -EINVAL;
+@@ -133,15 +138,20 @@ trip_point_temp_store(struct device *dev
+ 		goto unlock;
+ 	}
+ 
+-	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
+-	if (ret)
+-		goto unlock;
++	trip = &tz->trips[trip_id];
+ 
+-	ret = kstrtoint(buf, 10, &trip.temperature);
+-	if (ret)
+-		goto unlock;
++	if (temp != trip->temperature) {
++		if (tz->ops->set_trip_temp) {
++			ret = tz->ops->set_trip_temp(tz, trip_id, temp);
++			if (ret)
++				goto unlock;
++		}
++
++		trip->temperature = temp;
++
++		thermal_zone_trip_updated(tz, trip);
++	}
+ 
+-	ret = thermal_zone_set_trip(tz, trip_id, &trip);
+ unlock:
+ 	mutex_unlock(&tz->lock);
+ 	
+@@ -179,8 +189,13 @@ trip_point_hyst_store(struct device *dev
+ 		      const char *buf, size_t count)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
++	struct thermal_trip *trip;
+ 	int trip_id, ret;
++	int hyst;
++
++	ret = kstrtoint(buf, 10, &hyst);
++	if (ret || hyst < 0)
++		return -EINVAL;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) != 1)
+ 		return -EINVAL;
+@@ -192,15 +207,20 @@ trip_point_hyst_store(struct device *dev
+ 		goto unlock;
+ 	}
+ 
+-	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
+-	if (ret)
+-		goto unlock;
++	trip = &tz->trips[trip_id];
+ 
+-	ret = kstrtoint(buf, 10, &trip.hysteresis);
+-	if (ret)
+-		goto unlock;
++	if (hyst != trip->hysteresis) {
++		if (tz->ops->set_trip_hyst) {
++			ret = tz->ops->set_trip_hyst(tz, trip_id, hyst);
++			if (ret)
++				goto unlock;
++		}
++
++		trip->hysteresis = hyst;
++
++		thermal_zone_trip_updated(tz, trip);
++	}
+ 
+-	ret = thermal_zone_set_trip(tz, trip_id, &trip);
+ unlock:
+ 	mutex_unlock(&tz->lock);
+ 
+Index: linux-pm/drivers/thermal/thermal_core.h
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.h
++++ linux-pm/drivers/thermal/thermal_core.h
+@@ -124,6 +124,8 @@ int __thermal_zone_get_trip(struct therm
+ 			    struct thermal_trip *trip);
+ int thermal_zone_trip_id(struct thermal_zone_device *tz,
+ 			 const struct thermal_trip *trip);
++void thermal_zone_trip_updated(struct thermal_zone_device *tz,
++			       const struct thermal_trip *trip);
+ int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
+ 
+ /* sysfs I/F */
+Index: linux-pm/drivers/thermal/thermal_trip.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -147,42 +147,6 @@ int thermal_zone_get_trip(struct thermal
+ }
+ EXPORT_SYMBOL_GPL(thermal_zone_get_trip);
+ 
+-int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
+-			  const struct thermal_trip *trip)
+-{
+-	struct thermal_trip t;
+-	int ret;
+-
+-	ret = __thermal_zone_get_trip(tz, trip_id, &t);
+-	if (ret)
+-		return ret;
+-
+-	if (t.type != trip->type)
+-		return -EINVAL;
+-
+-	if (t.temperature != trip->temperature && tz->ops->set_trip_temp) {
+-		ret = tz->ops->set_trip_temp(tz, trip_id, trip->temperature);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	if (t.hysteresis != trip->hysteresis && tz->ops->set_trip_hyst) {
+-		ret = tz->ops->set_trip_hyst(tz, trip_id, trip->hysteresis);
+-		if (ret)
+-			return ret;
+-	}
+-
+-	if (tz->trips && (t.temperature != trip->temperature || t.hysteresis != trip->hysteresis))
+-		tz->trips[trip_id] = *trip;
+-
+-	thermal_notify_tz_trip_change(tz->id, trip_id, trip->type,
+-				      trip->temperature, trip->hysteresis);
+-
+-	__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
+-
+-	return 0;
+-}
+-
+ int thermal_zone_trip_id(struct thermal_zone_device *tz,
+ 			 const struct thermal_trip *trip)
+ {
+@@ -192,3 +156,12 @@ int thermal_zone_trip_id(struct thermal_
+ 	 */
+ 	return trip - tz->trips;
+ }
++
++void thermal_zone_trip_updated(struct thermal_zone_device *tz,
++			       const struct thermal_trip *trip)
++{
++	thermal_notify_tz_trip_change(tz->id, thermal_zone_trip_id(tz, trip),
++				      trip->type, trip->temperature,
++				      trip->hysteresis);
++	__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
++}
+Index: linux-pm/include/linux/thermal.h
+===================================================================
+--- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -282,10 +282,6 @@ int __thermal_zone_get_trip(struct therm
+ 			    struct thermal_trip *trip);
+ int thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
+ 			  struct thermal_trip *trip);
+-
+-int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
+-			  const struct thermal_trip *trip);
+-
+ int for_each_thermal_trip(struct thermal_zone_device *tz,
+ 			  int (*cb)(struct thermal_trip *, void *),
+ 			  void *data);
+
+
+
