@@ -2,155 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558AF805354
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C0780536F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:49:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347000AbjLELsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:48:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54800 "EHLO
+        id S1347044AbjLELtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:49:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345186AbjLELsY (ORCPT
+        with ESMTP id S1442177AbjLELtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:48:24 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E102C3;
-        Tue,  5 Dec 2023 03:48:30 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bf8843a6fso1921804e87.0;
-        Tue, 05 Dec 2023 03:48:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701776908; x=1702381708; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iMgwW6vx/jK9Cw7fgT+rzd5j+aMjeAnF9YT/yUvZ84M=;
-        b=XSBLIp2RSjF6XwEtydIhkQJXJBcqQSnxabC7VI7NgbKZ/4XuU9bIRLw6cIkGbaReBg
-         F8lSDS99M+EGGDNQoTlqSuNHo1yHmzKwcQZ21STiXbr6wDTxhri5BzVmgyrRxNrKQBG5
-         QsxjWVG0CH8i2I9o7kcgZ7VrQoD41lqccOjDwWj0M9e9adnoOBFmWzR6cUNFf0i44/Am
-         PzbBlFXU7C5GOJ3pfez+34+mSGjvIhimYSxfLKaTUbGpgDoIn4DGEdAjZTFWcpGaj2/+
-         vUbEn9/zlgBa64f/nvzkKLSYl71h8JaD7gyq7mEUYvwHmU/bbhCBfPN2V3NB6CkW8LYc
-         WGqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701776908; x=1702381708;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iMgwW6vx/jK9Cw7fgT+rzd5j+aMjeAnF9YT/yUvZ84M=;
-        b=qbxDmOecutAV4gpHWVSj5FehG9BI53Nx1rTOD4FP/ZLU8v/RDRo0uMCEz0l1lMEOnL
-         CgM0NK4Y0RAgrkRqQavA0bOfPXLRsk7WU/TxcJyjnPJAHHWqeDS2EaCKC5BeTishlFEv
-         D9AfHhpJxXZyJSy7k4edgKJBuNyPSrhP7OQogmRWJ5vLe0RFjZAx7M+GI319nsLqaT9d
-         3wbEgfpM1RWMLkGM9uLEgdHvSh70tZH0xc95MkK2pZFtF2BzDDhi9GRPVcGOtQlADJJ0
-         9fqnpuuYcylowmkuIEEjmSbF4oynX998iK9y+hdP9o1+yoB2UE5RJ/KLbkckrGNelLeD
-         feVQ==
-X-Gm-Message-State: AOJu0YyMujdJ2rv3S45+QZwPccR5YRbELB86fWHwIHUr5SuQqtt/4DZ2
-        a39d7l8L+kYtDDNavKKD5gw=
-X-Google-Smtp-Source: AGHT+IE4QS2OUuOuA8w6IIfWCOOlZexYeQ2PWBcGw2WPfl/X1e0YgNE9s7aTbsrFGohK/qiG1pBTFg==
-X-Received: by 2002:a05:6512:230a:b0:50b:e92c:de18 with SMTP id o10-20020a056512230a00b0050be92cde18mr925702lfu.22.1701776907951;
-        Tue, 05 Dec 2023 03:48:27 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id q13-20020a19430d000000b0050be813bf9dsm1000150lfa.183.2023.12.05.03.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 03:48:27 -0800 (PST)
-Date:   Tue, 5 Dec 2023 14:48:25 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 05/16] net: pcs: xpcs: Move native device ID
- macro to linux/pcs/pcs-xpcs.h
-Message-ID: <syr55e2c7izap6fc2yzmz6gyzcybmmxe3dyjoxencb2tylss2p@tpu2pfh33ked>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-6-fancer.lancer@gmail.com>
- <ZW7/TrtSols1igy/@shell.armlinux.org.uk>
- <bas6l42vk2zzrwo22ss7fuganf4ekvhtvkb32duydjise7ui3o@o4f3rbcpokur>
- <ZW8ICvzwIHJhoV9U@shell.armlinux.org.uk>
+        Tue, 5 Dec 2023 06:49:07 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB9D2CA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:49:13 -0800 (PST)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1rATuo-0007xC-VH; Tue, 05 Dec 2023 12:48:39 +0100
+Message-ID: <92a3e3b4-6f4d-4ca4-947f-db905f328d4c@pengutronix.de>
+Date:   Tue, 5 Dec 2023 12:48:35 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW8ICvzwIHJhoV9U@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
+Content-Language: en-US
+To:     Simon Glass <sjg@chromium.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Tom Rini <trini@konsulko.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, workflows@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20231202035511.487946-1-sjg@chromium.org>
+ <20231202035511.487946-3-sjg@chromium.org>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+In-Reply-To: <20231202035511.487946-3-sjg@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_OTHER_BAD_TLD,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 11:22:50AM +0000, Russell King (Oracle) wrote:
-> On Tue, Dec 05, 2023 at 02:14:34PM +0300, Serge Semin wrote:
-> > On Tue, Dec 05, 2023 at 10:45:34AM +0000, Russell King (Oracle) wrote:
-> > > On Tue, Dec 05, 2023 at 01:35:26PM +0300, Serge Semin wrote:
-> > > > Generic MDIO-device driver will support setting a custom device ID for the
-> > > > particular MDIO-device.
-> > > 
-> > > Why future tense? I don't see anything later in this patch set adding
-> > > this.
-> > 
-> > After the next patch is applied
-> > [PATCH net-next 10/16] net: pcs: xpcs: Add generic DW XPCS MDIO-device support
-> > the DW XPCS driver _will_ support setting custom IDs based on the
-> > platform data and the DT compatibles.
+Hello Simon,
+
+On 02.12.23 04:54, Simon Glass wrote:
+> Add a script which produces a Flat Image Tree (FIT), a single file
+> containing the built kernel and associated devicetree files.
+> Compression defaults to gzip which gives a good balance of size and
+> performance.
 > 
-
-> What is confusing is that the sentence makes it sound like it's some
-> generic driver that can be used for any PCS, whereas in reality it is
-> _this_ XPCS driver which is not generic.
+> The files compress from about 86MB to 24MB using this approach.
 > 
-> "This driver will support setting a custom device ID in a future patch."
-> or explicitly state the summary line of the patch concerned so one can
-> refer to it. Future references are difficult to find whether they're in
-> email and especially once they're merged into git.
-
-Ok. I'll convert the patch log to be less confusing. As I already said
-to Vladimir writing sometimes overcomplicated messages my eternal
-problem.
-
+> The FIT can be used by bootloaders which support it, such as U-Boot
+> and Linuxboot. It permits automatic selection of the correct
+> devicetree, matching the compatible string of the running board with
+> the closest compatible string in the FIT. There is no need for
+> filenames or other workarounds.
 > 
-> > It can be used for instance to
-> > fix the already available SJ1105 and SJ1110 MDIO bus implementations,
-> > so instead of substituting the XPCS IDs on the PHYSID CSR reads the
-> > driver could just pass the device ID and PMA ID via the device
-> > platform data.
-> > 
-> > If my patch log text looks unclear anyway, just say so. I'll change it
-> > accordingly. I guess it would be enough to say that moving is required
-> > just to collect all the IDs in a single place.
+> Add a 'make image.fit' build target for arm64, as well. Use
+> FIT_COMPRESSION to select a different algorithm.
 > 
-
-> You need to adjust your attitude - I did exactly that. There was
-> something which I didn't understand, so I raised the issue. Sorry
-> for spotting a problem, but do you always get arsey when a reviewer
-> picks up on something wrong? If that's your attitude, then for this
-> entire series: NAK.
-
-I'm sorry if what I wrote sounded like I was arsey. I didn't mean it
-at all, really. By this sentence:
-
-> I guess it would be enough to say that moving is required
-> just to collect all the IDs in a single place.
-
-I meant that _I_ should have just stated in the log message that
-moving was required to collect all the IDs in a single place. The
-rest of the text was redundant and caused confusion what you pointed
-out to.
-
--Serge(y)
-
+> The FIT can be examined using 'dumpimage -l'.
 > 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> This features requires pylibfdt (use 'pip install libfdt'). It also
+> requires compression utilities for the algorithm being used. Supported
+> compression options are the same as the Image.xxx files. For now there
+> is no way to change the compression other than by editing the rule for
+> $(obj)/image.fit
+> 
+> While FIT supports a ramdisk / initrd, no attempt is made to support
+> this here, since it must be built separately from the Linux build.
+> 
+> Signed-off-by: Simon Glass <sjg@chromium.org>
+
+kernel_noload support is now in barebox next branch and I tested this
+series against it:
+
+Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # barebox
+
+> +"""Build a FIT containing a lot of devicetree files
+> +
+> +Usage:
+> +    make_fit.py -A arm64 -n 'Linux-6.6' -O linux
+> +        -f arch/arm64/boot/image.fit -k /tmp/kern/arch/arm64/boot/image.itk
+> +        /tmp/kern/arch/arm64/boot/dts/ -E -c gzip
+> +
+> +Creates a FIT containing the supplied kernel and a directory containing the
+> +devicetree files.
+> +
+> +Use -E to generate an external FIT (where the data is placed after the
+> +FIT data structure). This allows parsing of the data without loading
+> +the entire FIT.
+> +
+> +Use -c to compress the data, using bzip2, gzip, lz4, lzma, lzo and
+> +zstd algorithms.
+> +
+> +The resulting FIT can be booted by bootloaders which support FIT, such
+> +as U-Boot, Linuxboot, Tianocore, etc.
+
+Feel free to add barebox to the list. Did you check whether Linuxboot and
+Tianocore support kernel_noload?
+
+> +        fsw.property_u32('load', 0)
+> +        fsw.property_u32('entry', 0)
+
+I still think load and entry dummy values are confusing and should be dropped.
+
+> +    with fsw.add_node(f'fdt-{seq}'):
+> +        # Get the compatible / model information
+> +        with open(fname, 'rb') as inf:
+> +            data = inf.read()
+> +        fdt = libfdt.FdtRo(data)
+> +        model = fdt.getprop(0, 'model').as_str()
+> +        compat = fdt.getprop(0, 'compatible')
+> +
+> +        fsw.property_string('description', model)
+> +        fsw.property_string('type', 'flat_dt')
+> +        fsw.property_string('arch', arch)
+> +        fsw.property_string('compression', compress)
+> +        fsw.property('compatible', bytes(compat))
+> +
+> +        with open(fname, 'rb') as inf:
+> +            compressed = compress_data(inf, compress)
+> +        fsw.property('data', compressed)
+> +    return model, compat
+
+After Doug's elaboration, extracting multiple compatibles is fine by me.
+
+Cheers,
+Ahmad
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
