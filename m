@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2AF805DD5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE99805DC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345900AbjLES0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:26:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        id S1346149AbjLES0V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 13:26:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbjLES0R (ORCPT
+        with ESMTP id S232014AbjLES0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:26:17 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF86137
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:26:24 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ce4d4c5ea2so2057350b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:26:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701800783; x=1702405583; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wDRhZuKBW48GNQpmqmsxTIXOsczpKCnXSPXQeVWHtu0=;
-        b=n0avSz/z224SxrSvzjKua1cEjnDTx652lT1Wd72I758HRmP8EMlL6mwqj7fl/7soED
-         HacBSedNon5QPWTt/HDAYPsxJyuCg96iV+k9LEXHGD9Q0bmPXVZVTEVBnuSCu/Ttbydh
-         ZsrqMQcM0ZYrE8WA96dzH37pJj0SSlyMDzidU=
+        Tue, 5 Dec 2023 13:26:19 -0500
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B32AC;
+        Tue,  5 Dec 2023 10:26:25 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2865742e256so3025338a91.0;
+        Tue, 05 Dec 2023 10:26:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701800783; x=1702405583;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wDRhZuKBW48GNQpmqmsxTIXOsczpKCnXSPXQeVWHtu0=;
-        b=DlxncKzRM6tYVrx63Ik3geeOkGRP/KIf7hRxbJncECVYWTS4cqth3qvXyd3G08gftK
-         O1DNq2UmOHI0w6mK965Y1AoZ7K088agyP669y/ugd6LGtAVEGxK3xvavGTMyqjDcFDZd
-         wSfrcPRn9IOHkOR6ytH1h1NJ2d/dsIYEuB5HmpyjjBg0oOCbPwsrGkk2E2LWKqOEAAEA
-         lZ8fXy29RXw8ZE1w+Y0KVtJJSATpx9JOSb4i6Vg/beN50GPZ9nX21P/V0P+ELych/2jZ
-         5f5UYmfzji1ni0uah5xjgxIlvZptHgenVuPrd4fCIYzZ7Snwf5sObViRK82FBn3GVOCB
-         8qiQ==
-X-Gm-Message-State: AOJu0YzZSYNOyTTo28z95JJl1PSHUSoR4IFa0Fo2OvzeK8MioZotSpoc
-        Wv5nZjIjPJH5UCnZ9Df/79NYFQ==
-X-Google-Smtp-Source: AGHT+IE9mqxJSNzT6TFZok8X88x8mUH3rdWZu33j0pIAsT9/mSpN34lnJveLP/vd6PmvljkIXSQKAw==
-X-Received: by 2002:a05:6a00:e0a:b0:6ce:412a:2a60 with SMTP id bq10-20020a056a000e0a00b006ce412a2a60mr1571653pfb.38.1701800783659;
-        Tue, 05 Dec 2023 10:26:23 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fa20-20020a056a002d1400b006a77343b0ccsm6378089pfb.89.2023.12.05.10.26.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 10:26:23 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v2 0/4] pstore: Initial use of cleanup.h
-Date:   Tue,  5 Dec 2023 10:26:13 -0800
-Message-Id: <20231205175449.work.110-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1701800785; x=1702405585;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BuC/v2sY9q+7BmsyoScER9HwtOgHqYFm9Mniu3xB+pE=;
+        b=fI9RD+FN0ICx4LcM11uwEZK1rGLh5sWcJ4vomNNsxa9ghppC2lbzmrPnmeC/kV+AJW
+         Y+uZ8sIsWJxt4CRpDwZ5N1AFvfg4AIZum1cyxYzpMMAroAhZYlCp3xHLqxEy8qEV40Zt
+         nQjIHfovTUPwyzrVv753QWstyEJCmdN5fX+f0KXC4AoLE8b+w3XxjvhajGVzZSNIJ2kE
+         6d9WjghYkXTtjjaCGVTgIFj4m680uNtUMrBWP556CXfXyM6TS5Oj7bVt8a1qNtM+JPS8
+         VdnxIxT89Gq9jpD8yeqMvNtecL0l5zwcXvUiwgSzVo0pwZ6Wn9AoGNoQkOjODbxR9SG4
+         cWtQ==
+X-Gm-Message-State: AOJu0YwqCVry7a1F52YE6KiZEVp1ye807te7osJD7/zsgO55GppzfDL+
+        rqhyhOzKPsepkOi4EAno4bSm27KTQqO7akRpUyI=
+X-Google-Smtp-Source: AGHT+IGrutZXRZv9L+agGBJqSnJOcf+zoLdBUHMRmb18uXLyloUI+FGetLkmF9lx07o0sotKkRTw69XbKGEnKo0y6Vo=
+X-Received: by 2002:a17:90b:17d2:b0:286:8672:51e4 with SMTP id
+ me18-20020a17090b17d200b00286867251e4mr1264633pjb.16.1701800785123; Tue, 05
+ Dec 2023 10:26:25 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=745; i=keescook@chromium.org;
- h=from:subject:message-id; bh=u5o9ZYed+uCk13yI3FyCPjzN9M5C8/cwuxOhPLAexWg=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlb2tIGWTs9ttimKCsudZhkbcLzZrHFzhiLJ9Ts
- HSrqeuud5+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZW9rSAAKCRCJcvTf3G3A
- JuYED/9C9IsZbrt7Zi8cQNhlHe59fqiWojAo+adAp3XPPVwluXxWNtJ1TpkoBoX56J5+8oiOgHN
- YEi5p65yPI30AMiMwzz9oJ/snalo9ql7BjqYOYSdDSPuzJqQJAao5ka3AnwEwidqSe4YnLhbJYX
- KqUOo+MTiQg9K9K3LBYkceKevz+JCHlQvkPQoEDGpMLXdrO15FCMYn56IAU6bhj3IfYT4pog/uZ
- c3DA1ToL7j32MiM7EPYyh92FMDURwensMoxlr6nhDTRPb6CkkW+I/SzJKIm6qbOEVDBqlLEcaGj
- Z67RiPnguQuQnHcBZZlWvF/nH9xjvrflCT+JSVL3LkGcsIwAnfpsXHQMjELaFvGof452MuWDWHO
- t6AwzHZoBEJiuooiEIyzURsI3bcw66y1nLVAjFdM6CFEJZfKFV1mO83u003E+huXyxfUYPS2/kA
- AgPtHeILCWymngXokDYX7HPF6aeEPkRpgTC8XijRXHnl23J3MPgJe2jjA4otstBpLkAyNuu28J2
- bgwfCZaKgHLiKNPNmR+6FatYts9yNLBboM9Se1G5MzF7cc5EPrjlhB6rekuaiF+Ox31+PGYRHri
- xMFHQEyjlxsilZo9l9gVm2rxEHCAjSFgi3bV1twFGCyHxs45MVtr8MIr5pp3nRKX5ih6Ccrzprv
- X0czXlQN FW2UCUA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-2-khuey@kylehuey.com>
+ <CAEf4BzYtSXtgdO9C2w9OOKni68H-7UOExFJRBEij3HG2Qwn1Rg@mail.gmail.com>
+ <ZW8Gi2QI5ceAJfab@krava> <CAM9d7chztaCfDsxfyJ2q_UmD=y20BFikCUQhs=LR8wsNV6pMjg@mail.gmail.com>
+ <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
+In-Reply-To: <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 5 Dec 2023 10:26:14 -0800
+Message-ID: <CAM9d7cgDOUbSS1NLO8C13+hi0KBZwQxh7jvz9p=i0gNf0N0zrg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] perf/bpf: Allow a bpf program to suppress I/O signals.
+To:     Marco Elver <elver@google.com>
+Cc:     Jiri Olsa <olsajiri@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>,
+        linux-kernel@vger.kernel.org,
+        "Robert O'Callahan" <robert@ocallahan.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Dec 5, 2023 at 10:17 AM Marco Elver <elver@google.com> wrote:
+>
+> On Tue, 5 Dec 2023 at 19:07, Namhyung Kim <namhyung@kernel.org> wrote:
+> > If we want to handle returning 0 from bpf as if the event didn't
+> > happen, I think SIGTRAP and event_limit logic should be done
+> > after the overflow handler depending on pending_kill or something.
+>
+> I'm not sure which kernel version this is for, but in recent kernels,
+> the SIGTRAP logic was changed to no longer "abuse" event_limit, and
+> uses its own "pending_sigtrap" + "pending_work" (on reschedule
+> transitions).
 
-Mostly as practice for myself, I rewrote a bunch of the error handling
-paths in pstore to use the new cleanup.h routines. I'm enjoying this part:
-"44 insertions(+), 65 deletions(-)"
+Oh, I didn't mean SIGTRAP and event_limit together.
+Maybe they have an issue separately.
 
-It also passes basic testing. :)
-
--Kees
-
- v2: do not add a global iput macro
- v1: https://lore.kernel.org/lkml/20231202211535.work.571-kees@kernel.org/
-
-Kees Cook (4):
-  pstore: inode: Convert kfree() usage to __free(kfree)
-  pstore: inode: Convert mutex usage to guard(mutex)
-  pstore: inode: Use __free(pstore_iput) for inode allocations
-  pstore: inode: Use cleanup.h for struct pstore_private
-
- fs/pstore/inode.c | 109 +++++++++++++++++++---------------------------
- 1 file changed, 44 insertions(+), 65 deletions(-)
-
--- 
-2.34.1
-
+Thanks,
+Namhyung
