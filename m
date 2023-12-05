@@ -2,126 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3952D805C40
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D219805B93
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232020AbjLEQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:11:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45436 "EHLO
+        id S232143AbjLEQNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:13:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbjLEQLa (ORCPT
+        with ESMTP id S229462AbjLEQNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:11:30 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0C7109;
-        Tue,  5 Dec 2023 08:11:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=THp6AM1jcLyHUTnm/h+Y/YUEnvKm98jy5/H5R+R154E=; b=Fb69uvI9/RnLxQ/D/W6f/XnmiI
-        jXhNhBtB8mD4Ra7sSeTMyjvPPN8MBfdbQ/aRZLBRkllP+i372I57c6mICaLB0hKZwyNETFlXt2huT
-        RWuzvwgYWTQ/tebIoOZ+2elOeOqRrRGGQRaPkn8s94fEFQuog3h4/eYAAbOB0GbN3dv0RmXjLMADt
-        3spKhwFeOPkIYxrUPMc5EDsfqJQ6wNkYZtAbz/iLMFb0PQ37fdGb/dQnJxu20+k/iAI9iuNzVw6kU
-        ygac7NilbggzEBKExscLqw4UQZ+41yT7EMwJXlbSqVof2XxzHk++lyoJGcG+UjSTZ69mZnQ+sRVH9
-        8+WmxaUQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56634)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rAY18-00072j-0O;
-        Tue, 05 Dec 2023 16:11:26 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rAY18-0001r9-G9; Tue, 05 Dec 2023 16:11:26 +0000
-Date:   Tue, 5 Dec 2023 16:11:26 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        workflows@vger.kernel.org
-Subject: Re: [net-next PATCH v3 3/3] net: phy: add support for PHY package
- MMD read/write
-Message-ID: <ZW9LroqqugXzqAY9@shell.armlinux.org.uk>
-References: <20231128133630.7829-1-ansuelsmth@gmail.com>
- <20231128133630.7829-3-ansuelsmth@gmail.com>
- <20231204181752.2be3fd68@kernel.org>
- <51aae9d0-5100-41af-ade0-ecebeccbc418@lunn.ch>
- <656f37a6.5d0a0220.96144.356f@mx.google.com>
- <adbe5299-de4a-4ac1-90d0-f7ae537287d0@lunn.ch>
- <ZW89errbJWUt33vz@shell.armlinux.org.uk>
- <20231205072912.2d79a1d5@kernel.org>
+        Tue, 5 Dec 2023 11:13:04 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5B1109
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:13:10 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rAY21-00048v-Nv; Tue, 05 Dec 2023 17:12:21 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rAY1z-00DmUU-DU; Tue, 05 Dec 2023 17:12:19 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1rAY1z-00EqaV-2n; Tue, 05 Dec 2023 17:12:19 +0100
+Date:   Tue, 5 Dec 2023 17:12:18 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Sam Protsenko <semen.protsenko@linaro.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        kernel@pengutronix.de
+Subject: Re: (subset) [PATCH 00/17] dt-bindings: samsung: add specific
+ compatibles for existing SoC
+Message-ID: <20231205161218.wymlzvhk4pnnkwze@pengutronix.de>
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+ <170119374454.445690.515311393756577368.b4-ty@gmail.com>
+ <20231128205841.al23ra5s34rn3muj@pengutronix.de>
+ <ZW8ZNZ_FJSV8fq-U@orome.fritz.box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dyjed4xxkou772mg"
 Content-Disposition: inline
-In-Reply-To: <20231205072912.2d79a1d5@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZW8ZNZ_FJSV8fq-U@orome.fritz.box>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 07:29:12AM -0800, Jakub Kicinski wrote:
-> On Tue, 5 Dec 2023 15:10:50 +0000 Russell King (Oracle) wrote:
-> > I've raised this before in other subsystems, and it's suggested that
-> > it's better to have it in the .c file. I guess the reason is that it's
-> > more obvious that the function is documented when modifying it, so
-> > there's a higher probability that the kdoc will get updated when the
-> > function is altered.
-> 
-> Plus I think people using IDEs (i.e. not me) may use the "jump to
-> definition" functionality, to find the doc? 
-> 
-> TBH I thought putting kdoc in the C source was documented in the coding
-> style, but I can't find any mention of it now.
 
-Well, in Documentation/doc-guide/kernel-doc.rst:
+--dyjed4xxkou772mg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  The function and type kernel-doc comments should be placed just before
-  the function or type being described in order to maximise the chance
-  that somebody changing the code will also change the documentation.
+Hello Thierry,
 
-That implies (but not explicitly) that it should be at the function
-definition site, since "changing the code" is used as an argument as
-I did in my previous email.
+On Tue, Dec 05, 2023 at 01:36:05PM +0100, Thierry Reding wrote:
+> On Tue, Nov 28, 2023 at 09:58:41PM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Tue, Nov 28, 2023 at 06:49:23PM +0100, Thierry Reding wrote:
+> > >=20
+> > > On Wed, 08 Nov 2023 11:43:26 +0100, Krzysztof Kozlowski wrote:
+> > > > Merging
+> > > > =3D=3D=3D=3D=3D=3D=3D
+> > > > I propose to take entire patchset through my tree (Samsung SoC), be=
+cause:
+> >     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> >=20
+> > > > 1. Next cycle two new SoCs will be coming (Google GS101 and ExynosA=
+utov920), so
+> > > >    they will touch the same lines in some of the DT bindings (not a=
+ll, though).
+> > > >    It is reasonable for me to take the bindings for the new SoCs, t=
+o have clean
+> > > >    `make dtbs_check` on the new DTS.
+> > > > 2. Having it together helps me to have clean `make dtbs_check` with=
+in my tree
+> > > >    on the existing DTS.
+> > > > 3. No drivers are affected by this change.
+> > > > 4. I plan to do the same for Tesla FSD and Exynos ARM32 SoCs, thus =
+expect
+> > > >    follow up patchsets.
+> > > >=20
+> > > > [...]
+> > >=20
+> > > Applied, thanks!
+> > >=20
+> > > [12/17] dt-bindings: pwm: samsung: add specific compatibles for exist=
+ing SoC
+> > >         commit: 5d67b8f81b9d598599366214e3b2eb5f84003c9f
+> >=20
+> > You didn't honor (or even comment) Krzysztof's proposal to take the
+> > whole patchset via his tree (marked above). Was there some off-list
+> > agreement?
+>=20
+> I had read all that and then looking at patchwork saw that you had
+> marked all other patches in the series as "handled-elsewhere" and only
+> this one was left as "new", so I assumed that, well, everything else was
+> handled elsewhere and I was supposed to pick this one up...
 
-Secondly, this document goes on to give an example of running
-scripts/kernel-doc on a .c file.
+I didn't mark it as handled-elsewhere, but my expectation was that you
+might want to send an Ack only.
 
-Thirdly, there are seven references in this document of kernel-doc
-in .c files, and only one for kernel-doc in a .h file. So this suggests
-that "it will be in a .c file" isn't a rule (it can't be because of
-documenting structures!)
+For today's series by Krzysztof I acked and marked the patch as
+handled-elsewhere (together with the rest of the series that isn't pwm
+related). So you have to consult your inbox if you still want to send an
+Ack for that one.
 
-So let's not get hung up on whether it should be in .c or .h because I
-think that isn't relevant. Instead, I think it's about "it should be at
-the definition site" - that being a structure definition or a function
-definition, and not at a function prototype.
+Best regards
+Uwe
 
-The only exception I can think of is the style I've used in
-linux/phylink.h for the _method_ definitions which look like function
-prototypes - that's just a work-around because one can't kernel-doc
-the structure-of-function-pointers and document the function parameters
-without jumping through that hoop, and it would be silly to document
-the methods in some random driver!
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+--dyjed4xxkou772mg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVvS+IACgkQj4D7WH0S
+/k4wwAf6AlMbQoIitSxoLyL8EPf/AFm1OReNOJVSWyeoYnXJ6AOvGwmxAqCesfcV
+8NCugoHjF1JiraIJPpyVgrmmas8T0uk5v4N32GPcL7ld1hBZGsH8B9GsuTioS5R7
++pMOUKwLPmf+vPiDCjkvAL9B3HOBCCSHjU6g9vf2b4O0dNvJK+vVFOuKPF5r+GQr
+fFPsuCRnPkkHNn8PWA6HWPUR+0V1rsyiabnsgxlnC6PPyu64tC9aD2Xto0+kM0D0
+WAdt4elH5P373tccyXATCZK4xaJWO4eHbzJTeVOCeEqcjB55BwuzMgVP8xQ85Mrx
+RHto9piBhu5zc5d4EcBjLTp4QpooUg==
+=k470
+-----END PGP SIGNATURE-----
+
+--dyjed4xxkou772mg--
