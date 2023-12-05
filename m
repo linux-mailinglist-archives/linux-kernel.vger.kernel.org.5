@@ -2,256 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFC980499E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 06:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6F58049A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344273AbjLEF7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 00:59:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
+        id S1344283AbjLEGBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 01:01:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbjLEF73 (ORCPT
+        with ESMTP id S229867AbjLEGBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 00:59:29 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E57AA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 21:59:35 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c1a75a4b6cso1762402a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 21:59:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701755975; x=1702360775; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XSezztPpzbnoN5Gm9WnigSfdiZPls8znLUzzdIBA48c=;
-        b=Wl2jk2W6B7HPT6M6mVcvffSkk0T4RcgcDfxY3YbOHs1nrAhEsNnO2GyTyd114+MPPJ
-         vq+dXaAescZgq+ikkfC+dBuhduJNcYVcKb/tF4X6vJKQm4n47i+ZyG3vN1TSC4iFiaZn
-         gjKHhow90OLn2SiFPUA9PYCmqCEXWG3mqKQsBX7D9Yz+FZsWZTkY3TDFErDDbP54eT4L
-         OdydVgdP+Yo2wgyp3i/J+lwEEUuLkYz4YAacMgenQnUOomddyfLFNtChqov2jRG5c9bX
-         IJZRbpydGHklaNCObbCwhptnryowAbnzi7zutGpifksjd/y0f2JzErPHbxhheQhYzE3r
-         LKxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701755975; x=1702360775;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XSezztPpzbnoN5Gm9WnigSfdiZPls8znLUzzdIBA48c=;
-        b=svjKiulTsQMu+QuIOuQ+eryvJqLHVPC2hf6b6618q/3sW6fXifR3wfoOANDWjTjKVg
-         h5yRGt4OGk+/6Zq2ZiBkOE/bACsErq+qVqXFfJ2Yw4DYP9Obpo2smKhyz8deq8nP2ss+
-         d950fHU68fiLCDlV5k9xjP5VuuwJnpnJXEHA2jYnYt1RlrB1Jkc+Luj6uLvIdBw6kjp4
-         jeUG7R9cVWzuq+VMaF4rNsEzCFo6+1KDTYbmbg5jJUnzMYx7dqlo1YSXzqSzBA+LRhd2
-         ct34kBXkbx9FauPq9FXg3grZCmXlZFbVBtESyElKtOKxnNpx/50jAr/iHPr0pNDJz5BH
-         OAiw==
-X-Gm-Message-State: AOJu0YyKC6HIGyt7iSHSzJQgJHLiu3MpOJkAqItaQuA5KTWbh7MMH07l
-        XKKt1XtDnCADNM8pzFeF8KQsL19Z3mjZn6+AD0jgc7D+
-X-Google-Smtp-Source: AGHT+IEiW1htDnrqBUR2CJ+H2GvnE37UjdNxvSFQjEJkVfXtex4MbpDKgKKk/LPhOcqJuCZ68bU30g==
-X-Received: by 2002:a17:902:8b85:b0:1d0:6ffd:ae0e with SMTP id ay5-20020a1709028b8500b001d06ffdae0emr2561663plb.117.1701755975368;
-        Mon, 04 Dec 2023 21:59:35 -0800 (PST)
-Received: from localhost.localdomain ([61.213.176.5])
-        by smtp.gmail.com with ESMTPSA id jb7-20020a170903258700b001d05bb77b43sm7111605plb.19.2023.12.04.21.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 21:59:35 -0800 (PST)
-From:   Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-To:     Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com, me@jcix.top,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH v4 3/3] xfs: extract xfs_da_buf_copy() helper function
-Date:   Tue,  5 Dec 2023 13:59:00 +0800
-Message-Id: <20231205055900.62855-4-zhangjiachen.jaycee@bytedance.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20231205055900.62855-1-zhangjiachen.jaycee@bytedance.com>
-References: <20231205055900.62855-1-zhangjiachen.jaycee@bytedance.com>
+        Tue, 5 Dec 2023 01:01:12 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2078.outbound.protection.outlook.com [40.107.94.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87C1C0;
+        Mon,  4 Dec 2023 22:01:18 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PUFfgkB3KhAo/JxtdZKmDv4N9AfLJptAAfh2lMDQv9Lv5xqvNx65IZmjMRQY2Qd8l61BkdgVuev2eW9IznJ+83zG4i0scD5qYZTKFC/0piX1LnNld3MyJXS6mqu8UtEPQiez5bdRGzSMRZd4glgkpTtafg1HgLzBUhP7SyZG+uPlncE+lPOg9c84Dj0BQ7pmbL4apJmPr8kxhMvogvMEDNdkkqVxpc0myF+a+xluiDYO6nY8OY15QMonFe5pidtjdHLJGib5Sude0qO5guKulEgl1Q+PYh6v+PJkJCxK6jjsEd2ATayn3ndqz87v+cT/gEnOSjZoacXxUnW2ZNZpgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sGDUnf3thIZTWApbl3Q/eLgKEzL53lbGx9rbLEskH/k=;
+ b=bNXToCwsOqTynqTlnmMrxlFxULLRSMuJr82c2wHeyDQT2NSguJCyH1W9NKrobAM2cb2jZzyHjyL/nBOujj0fATgR6E4O5dwaFEpjZn8cJFCM3FslR20En1XwGMpoAeGjbFI0Am4yJFP3C6wAdDS6OHACrHS5NIw2P1jR/RRBvpvQp45M5xiuFCSwL06n2b0fu3CB/yJhq8FSuqWhilQBNhXo2jRYozvffJjcpHw9m2ksmk9Bdu8fnfBcT3isX73XaWx9jjM+lXW0camoi6TIrEn5MeSUiLLNsBSLewfvoF7hBzcineDu1QbCDIsNApKDXS/rSsuGp9eblARHyQsfYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sGDUnf3thIZTWApbl3Q/eLgKEzL53lbGx9rbLEskH/k=;
+ b=PVEw7jCZi8+7VFOdfJseoyOzqKHsbZVihTfxtQJrTManjMNCwrqs6QC8GxyIm+LL06SPw7hNQ2ZJ7Bg7oCYtI2iEWqMa6vqDvYVbNzEohZWi6guhQsYrfZfh8lb0uidUYxFOhfK/yxJdtJGnk5X+54PYWV4uh43LF6UMxEMOR3nCSIvjsDMcu60UcqV8xUI2jO+mJ4w9GaUL9hc7Rb0D/7BmozM1Cf4BEQzYeKA06qNbm3JTtpUGCDK81pitlBqkjRWtsYa84UIjo0argL3N+26Zx0tlu+ZA6W7HVHHnprA83P4SWvG/Slyo+DXRNXFNnSVC5uXr0lr0jRTZNJHM2g==
+Received: from BL1PR13CA0142.namprd13.prod.outlook.com (2603:10b6:208:2bb::27)
+ by BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 06:01:16 +0000
+Received: from MN1PEPF0000ECD6.namprd02.prod.outlook.com
+ (2603:10b6:208:2bb:cafe::a3) by BL1PR13CA0142.outlook.office365.com
+ (2603:10b6:208:2bb::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.24 via Frontend
+ Transport; Tue, 5 Dec 2023 06:01:16 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ MN1PEPF0000ECD6.mail.protection.outlook.com (10.167.242.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.20 via Frontend Transport; Tue, 5 Dec 2023 06:01:15 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 4 Dec 2023
+ 22:01:00 -0800
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.41; Mon, 4 Dec 2023 22:00:59 -0800
+Received: from amhetre.nvidia.com (10.127.8.9) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.986.41 via Frontend
+ Transport; Mon, 4 Dec 2023 22:00:57 -0800
+From:   Ashish Mhetre <amhetre@nvidia.com>
+To:     <amhetre@nvidia.com>, <krzysztof.kozlowski@linaro.org>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <rdunlap@infradead.org>, <sfr@canb.auug.org.au>
+Subject: [PATCH] memory: tegra: Protect SID override call under CONFIG_IOMMU_API
+Date:   Tue, 5 Dec 2023 11:30:45 +0530
+Message-ID: <20231205060045.7985-1-amhetre@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD6:EE_|BY5PR12MB4322:EE_
+X-MS-Office365-Filtering-Correlation-Id: 479b2d5c-2f74-4d9e-214a-08dbf55797c0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0J70BUGTjrUGcWm60DOnDYjndqdudwlmYpL/b/kuDnr5A0ZAFjsPp16X7ISKou9/Sq/g0PM+E1VcR3868zsfMpaFaTy8bJcX4tTY5UO+G8c/qz5e6leUrOJZzR3LASplk+pYCUVA0ckcchv+scQVUQeNDRC2ZHdOnapG1QPehWM+0tY3pnLXsKxugQ4UgxYHnSo7H33x0Lo8FDgV7GTSgwdvqxMhHRTyAxYuKzmQw6bNRBK/8IeVBIaFHNHZcqZtP9gWvYX+Ylwam7dSRKbovVrtNdDD5J+YB35coP68OTBi6FXS2PFtfI4FhDFOp5JsfVPg9JTQwgqhFzTyeZkkBYankkwlj7AwDY23dGHt4ISwYYCKjZxzCA4MgboxtFqwv4upM41iHSXwforgXMPQJLDuHqvuVFM2YYXt80TUcq3xoYIRq4IZ5FZkdvG/wjjb4y5xs14XZJp0C/FBgtbgrMHfao5aUmU0tPqdy/21XUs4Td/kSFLY4B1l0fAY/1v2qd9HdhQzhs63e30Yb2+maOCkk6t4cRboEImFjIcu9QWJQYvZAA2JF1tEO6yblOryQXNbNq/ERVHEpDHN0LZDeDHa9AhyMB52brAWgPvJkTqpc9UCnTeV/ZrnqTrWc4QhvKvtUdgJENvjV567lF2D+lFEhxEcteQ7Dy8Al4rENhCOsjtPaAxpSV6Uvt5/f2MC0ulHV+DDgZpnIhoNkhcAbEIQIHQQbqMuofc3NBCqtgXXEd3P42ke0NnSvCznY3Fy
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(186009)(82310400011)(64100799003)(1800799012)(451199024)(36840700001)(40470700004)(46966006)(110136005)(54906003)(70586007)(70206006)(316002)(6636002)(478600001)(40460700003)(6666004)(5660300002)(41300700001)(36756003)(2906002)(86362001)(4326008)(8676002)(8936002)(1076003)(2616005)(36860700001)(83380400001)(40480700001)(47076005)(7636003)(356005)(26005)(336012)(82740400003)(426003)(7696005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 06:01:15.8093
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 479b2d5c-2f74-4d9e-214a-08dbf55797c0
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD6.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4322
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Tianci <zhangtianci.1997@bytedance.com>
+tegra186_mc_client_sid_override() is protected under CONFIG_IOMMU_API.
+Call to this function is being made from tegra186_mc_resume() without
+any protection which is leading to build failure when CONFIG_IOMMU_API
+is not set. Fix this by protecting SID override function call from
+tegra186_mc_resume() under CONFIG_IOMMU_API.
 
-This patch does not modify logic.
-
-xfs_da_buf_copy() will copy one block from src xfs_buf to
-dst xfs_buf, and update the block metadata in dst directly.
-
-Signed-off-by: Zhang Tianci <zhangtianci.1997@bytedance.com>
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Fixes: fe3b082a6eb8 ("memory: tegra: Add SID override programming for MC clients")
+Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
 ---
- fs/xfs/libxfs/xfs_attr_leaf.c | 12 ++----
- fs/xfs/libxfs/xfs_da_btree.c  | 74 ++++++++++++++---------------------
- fs/xfs/libxfs/xfs_da_btree.h  |  2 +
- 3 files changed, 36 insertions(+), 52 deletions(-)
+ drivers/memory/tegra/tegra186.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/xfs/libxfs/xfs_attr_leaf.c b/fs/xfs/libxfs/xfs_attr_leaf.c
-index 2580ae47209a..654e17e6610d 100644
---- a/fs/xfs/libxfs/xfs_attr_leaf.c
-+++ b/fs/xfs/libxfs/xfs_attr_leaf.c
-@@ -1244,14 +1244,10 @@ xfs_attr3_leaf_to_node(
- 	if (error)
- 		goto out;
+diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
+index d1f1dfb42716..0ff014a9d3cd 100644
+--- a/drivers/memory/tegra/tegra186.c
++++ b/drivers/memory/tegra/tegra186.c
+@@ -141,6 +141,7 @@ static int tegra186_mc_probe_device(struct tegra_mc *mc, struct device *dev)
  
--	/* copy leaf to new buffer, update identifiers */
--	xfs_trans_buf_set_type(args->trans, bp2, XFS_BLFT_ATTR_LEAF_BUF);
--	bp2->b_ops = bp1->b_ops;
--	memcpy(bp2->b_addr, bp1->b_addr, args->geo->blksize);
--	if (xfs_has_crc(mp)) {
--		struct xfs_da3_blkinfo *hdr3 = bp2->b_addr;
--		hdr3->blkno = cpu_to_be64(xfs_buf_daddr(bp2));
--	}
-+	/*
-+	 * Copy leaf to new buffer and log it.
-+	 */
-+	xfs_da_buf_copy(bp2, bp1, args->geo->blksize);
- 	xfs_trans_log_buf(args->trans, bp2, 0, args->geo->blksize - 1);
+ static int tegra186_mc_resume(struct tegra_mc *mc)
+ {
++#if IS_ENABLED(CONFIG_IOMMU_API)
+ 	unsigned int i;
  
- 	/*
-diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-index 282c7cf032f4..5457188bb4de 100644
---- a/fs/xfs/libxfs/xfs_da_btree.c
-+++ b/fs/xfs/libxfs/xfs_da_btree.c
-@@ -421,6 +421,25 @@ xfs_da3_node_read_mapped(
- 	return xfs_da3_node_set_type(tp, *bpp);
- }
+ 	for (i = 0; i < mc->soc->num_clients; i++) {
+@@ -148,6 +149,7 @@ static int tegra186_mc_resume(struct tegra_mc *mc)
  
-+/*
-+ * Copy src directory/attr leaf/node buffer to the dst.
-+ * For v5 file systems make sure the right blkno is stamped in.
-+ */
-+void
-+xfs_da_buf_copy(
-+	struct xfs_buf *dst,
-+	struct xfs_buf *src,
-+	size_t size)
-+{
-+	struct xfs_da3_blkinfo *da3 = dst->b_addr;
-+
-+	memcpy(dst->b_addr, src->b_addr, size);
-+	dst->b_ops = src->b_ops;
-+	xfs_trans_buf_copy_type(dst, src);
-+	if (xfs_has_crc(dst->b_mount))
-+		da3->blkno = cpu_to_be64(xfs_buf_daddr(dst));
-+}
-+
- /*========================================================================
-  * Routines used for growing the Btree.
-  *========================================================================*/
-@@ -690,12 +709,6 @@ xfs_da3_root_split(
- 		btree = icnodehdr.btree;
- 		size = (int)((char *)&btree[icnodehdr.count] - (char *)oldroot);
- 		level = icnodehdr.level;
--
--		/*
--		 * we are about to copy oldroot to bp, so set up the type
--		 * of bp while we know exactly what it will be.
--		 */
--		xfs_trans_buf_set_type(tp, bp, XFS_BLFT_DA_NODE_BUF);
- 	} else {
- 		struct xfs_dir3_icleaf_hdr leafhdr;
- 
-@@ -707,31 +720,17 @@ xfs_da3_root_split(
- 		size = (int)((char *)&leafhdr.ents[leafhdr.count] -
- 			(char *)leaf);
- 		level = 0;
--
--		/*
--		 * we are about to copy oldroot to bp, so set up the type
--		 * of bp while we know exactly what it will be.
--		 */
--		xfs_trans_buf_set_type(tp, bp, XFS_BLFT_DIR_LEAFN_BUF);
+ 		tegra186_mc_client_sid_override(mc, client, client->sid);
  	}
++#endif
  
- 	/*
--	 * we can copy most of the information in the node from one block to
--	 * another, but for CRC enabled headers we have to make sure that the
--	 * block specific identifiers are kept intact. We update the buffer
--	 * directly for this.
-+	 * Copy old root to new buffer and log it.
- 	 */
--	memcpy(node, oldroot, size);
--	if (oldroot->hdr.info.magic == cpu_to_be16(XFS_DA3_NODE_MAGIC) ||
--	    oldroot->hdr.info.magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC)) {
--		struct xfs_da3_intnode *node3 = (struct xfs_da3_intnode *)node;
--
--		node3->hdr.info.blkno = cpu_to_be64(xfs_buf_daddr(bp));
--	}
-+	xfs_da_buf_copy(bp, blk1->bp, size);
- 	xfs_trans_log_buf(tp, bp, 0, size - 1);
- 
--	bp->b_ops = blk1->bp->b_ops;
--	xfs_trans_buf_copy_type(bp, blk1->bp);
-+	/*
-+	 * Update blk1 to point to new buffer.
-+	 */
- 	blk1->bp = bp;
- 	blk1->blkno = blkno;
- 
-@@ -1220,21 +1219,14 @@ xfs_da3_root_join(
- 	xfs_da_blkinfo_onlychild_validate(bp->b_addr, oldroothdr.level);
- 
- 	/*
--	 * This could be copying a leaf back into the root block in the case of
--	 * there only being a single leaf block left in the tree. Hence we have
--	 * to update the b_ops pointer as well to match the buffer type change
--	 * that could occur. For dir3 blocks we also need to update the block
--	 * number in the buffer header.
-+	 * Copy child to root buffer and log it.
- 	 */
--	memcpy(root_blk->bp->b_addr, bp->b_addr, args->geo->blksize);
--	root_blk->bp->b_ops = bp->b_ops;
--	xfs_trans_buf_copy_type(root_blk->bp, bp);
--	if (oldroothdr.magic == XFS_DA3_NODE_MAGIC) {
--		struct xfs_da3_blkinfo *da3 = root_blk->bp->b_addr;
--		da3->blkno = cpu_to_be64(xfs_buf_daddr(root_blk->bp));
--	}
-+	xfs_da_buf_copy(root_blk->bp, bp, args->geo->blksize);
- 	xfs_trans_log_buf(args->trans, root_blk->bp, 0,
- 			  args->geo->blksize - 1);
-+	/*
-+	 * Now we can drop the child buffer.
-+	 */
- 	error = xfs_da_shrink_inode(args, child, bp);
- 	return error;
+ 	return 0;
  }
-@@ -2316,14 +2308,8 @@ xfs_da3_swap_lastblock(
- 		return error;
- 	/*
- 	 * Copy the last block into the dead buffer and log it.
--	 * On CRC-enabled file systems, also update the stamped in blkno.
- 	 */
--	memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
--	if (xfs_has_crc(mp)) {
--		struct xfs_da3_blkinfo *da3 = dead_buf->b_addr;
--
--		da3->blkno = cpu_to_be64(xfs_buf_daddr(dead_buf));
--	}
-+	xfs_da_buf_copy(dead_buf, last_buf, args->geo->blksize);
- 	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
- 	dead_info = dead_buf->b_addr;
- 
-diff --git a/fs/xfs/libxfs/xfs_da_btree.h b/fs/xfs/libxfs/xfs_da_btree.h
-index ffa3df5b2893..706baf36e175 100644
---- a/fs/xfs/libxfs/xfs_da_btree.h
-+++ b/fs/xfs/libxfs/xfs_da_btree.h
-@@ -219,6 +219,8 @@ int	xfs_da_reada_buf(struct xfs_inode *dp, xfs_dablk_t bno,
- 		const struct xfs_buf_ops *ops);
- int	xfs_da_shrink_inode(xfs_da_args_t *args, xfs_dablk_t dead_blkno,
- 					  struct xfs_buf *dead_buf);
-+void	xfs_da_buf_copy(struct xfs_buf *dst, struct xfs_buf *src,
-+			size_t size);
- 
- uint xfs_da_hashname(const uint8_t *name_string, int name_length);
- enum xfs_dacmp xfs_da_compname(struct xfs_da_args *args,
 -- 
-2.20.1
+2.17.1
 
