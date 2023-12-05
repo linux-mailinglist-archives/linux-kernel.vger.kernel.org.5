@@ -2,301 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59ABA804419
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:33:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0720E80441E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346193AbjLEBdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 20:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58596 "EHLO
+        id S1346222AbjLEBe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 20:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjLEBdn (ORCPT
+        with ESMTP id S1346249AbjLEBex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 20:33:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A78B1F0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:33:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 403CFC433C7;
-        Tue,  5 Dec 2023 01:33:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701740029;
-        bh=vJDn2aLNSQniK14H9V73Wg+WOKYAHMcvLaKvUqrsnp4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=NvNqaV3Ypx9sMrksog6NIqyZ0jIAjcre6qJ/xwMZOa/neMJfwqou7aM0ZnHzcnj2e
-         igwDZfrrG9157YUVNDkTs0+Pn4oArI4V7Nhj6nx5EocZgvMdSH0hO7hDUJL7/lMSxd
-         o1zVkUmLvdmXcSdD1+GQ9MeHrRUuexiUY0giJhnH6hpskNNdxA0AzUr0CYPZ1lXC9X
-         LYMr70vxx6FipCC2TRP0UdBPefOx/i8RzK6bZdHxZqAMNgy+EyXbYOGBNDCM2rMEab
-         azoQAi4MXRlxJYgKhk43pRnf4AZnfRtRizQ3AJYFSx6Rq3eYOqIrk2EICo+/co2wK4
-         O4WPWeCo2IxXw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C2AECCE1147; Mon,  4 Dec 2023 17:33:48 -0800 (PST)
-Date:   Mon, 4 Dec 2023 17:33:48 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com
-Subject: Re: [RFC PATCH 48/86] rcu: handle quiescent states for PREEMPT_RCU=n
-Message-ID: <209f0e89-7ebd-4759-9883-21d842d0d26c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107215742.363031-49-ankur.a.arora@oracle.com>
- <2027da00-273d-41cf-b9e7-460776181083@paulmck-laptop>
- <87v89lzu5a.ffs@tglx>
+        Mon, 4 Dec 2023 20:34:53 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DB4109
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:34:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701740099; x=1733276099;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=zJ48xvNV/rntOOOI8IeUqtJ7XUJw9kAvJGprZq0o640=;
+  b=Nx8Zs7j5SzcxTwTcW0VtEROpzF/PDDm1E6GwRXlMDLJY0B/56AKmo6F4
+   YnnEU7/yqWo6l9bMG5KdQs0Dbo9J5fwK/rTbEtSACwnjYh10HC3qQOnIL
+   EW7iNHsnkRpJphuYqfJ8YNsG1yGPvOLlzE7O5303/bUoa8+nP1bUbd3jX
+   P7nQYVD/2i79JAZ47b4KjKgXtrSNHBK0uqBjyFgOH1KTF4citzqh71dR2
+   1QioSYC78nTW7U5mgC4HcGQRffUi4tcHhUenxEOxco7vx5U8B5S0QOyan
+   WRP3qWrlcn5vbqt8xmT2PfZ8hS4F2FkImxdBmZJ/I0ewxd7aNe5J1zdsz
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="458147122"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="458147122"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:34:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="894190359"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="894190359"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 04 Dec 2023 17:34:56 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAKKp-0008Gp-1Y;
+        Tue, 05 Dec 2023 01:34:52 +0000
+Date:   Tue, 5 Dec 2023 09:34:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Marco Elver <elver@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse: sparse: incorrect
+ type in argument 1 (different address spaces)
+Message-ID: <202312050953.VqnvoTk8-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87v89lzu5a.ffs@tglx>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 06:04:33PM +0100, Thomas Gleixner wrote:
-> Paul!
-> 
-> On Mon, Nov 20 2023 at 16:38, Paul E. McKenney wrote:
-> > But...
-> >
-> > Suppose we have a long-running loop in the kernel that regularly
-> > enables preemption, but only momentarily.  Then the added
-> > rcu_flavor_sched_clock_irq() check would almost always fail, making
-> > for extremely long grace periods.  Or did I miss a change that causes
-> > preempt_enable() to help RCU out?
-> 
-> So first of all this is not any different from today and even with
-> RCU_PREEMPT=y a tight loop:
-> 
->     do {
->     	preempt_disable();
->         do_stuff();
->         preempt_enable();
->     }
-> 
-> will not allow rcu_flavor_sched_clock_irq() to detect QS reliably. All
-> it can do is to force reschedule/preemption after some time, which in
-> turn ends up in a QS.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 90db9dbedd26ce029f3a0f8d2cbd3a142f452408 kasan, powerpc: don't rename memintrinsics if compiler adds prefixes
+date:   9 months ago
+config: powerpc-randconfig-r132-20231117 (https://download.01.org/0day-ci/archive/20231205/202312050953.VqnvoTk8-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231205/202312050953.VqnvoTk8-lkp@intel.com/reproduce)
 
-True, but we don't run RCU_PREEMPT=y on the fleet.  So although this
-argument should offer comfort to those who would like to switch from
-forced preemption to lazy preemption, it doesn't help for those of us
-running NONE/VOLUNTARY.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312050953.VqnvoTk8-lkp@intel.com/
 
-I can of course compensate if need be by making RCU more aggressive with
-the resched_cpu() hammer, which includes an IPI.  For non-nohz_full CPUs,
-it currently waits halfway to the stall-warning timeout.
+sparse warnings: (new ones prefixed by >>)
+   drivers/video/fbdev/atmel_lcdfb.c:334:27: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected char [noderef] __iomem *screen_base @@     got void * @@
+   drivers/video/fbdev/atmel_lcdfb.c:334:27: sparse:     expected char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:334:27: sparse:     got void *
+   drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse:     expected void const *
+   drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse:     expected void const *
+   drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse:     got char [noderef] __iomem *screen_base
+>> drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse:     expected void *p
+   drivers/video/fbdev/atmel_lcdfb.c:342:9: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
+   include/linux/page-flags.h:246:46: sparse: sparse: self-comparison always evaluates to false
+   drivers/video/fbdev/atmel_lcdfb.c:313:59: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *cpu_addr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:313:59: sparse:     expected void *cpu_addr
+   drivers/video/fbdev/atmel_lcdfb.c:313:59: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:313:59: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *cpu_addr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:313:59: sparse:     expected void *cpu_addr
+   drivers/video/fbdev/atmel_lcdfb.c:313:59: sparse:     got char [noderef] __iomem *screen_base
+--
+   drivers/mtd/nand/raw/hisi504_nand.c:362:26: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/mtd/nand/raw/hisi504_nand.c:367:26: sparse: sparse: cast removes address space '__iomem' of expression
+   drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse:     expected void const *
+   drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse:     got void [noderef] __iomem *mmio
+   drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse:     expected void const *
+   drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse:     got void [noderef] __iomem *mmio
+>> drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse:     expected void *p
+   drivers/mtd/nand/raw/hisi504_nand.c:465:17: sparse:     got void [noderef] __iomem *mmio
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse:     expected void const *
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse:     got void [noderef] __iomem *mmio
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse:     expected void const *
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse:     got void [noderef] __iomem *mmio
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse:     expected void *p
+   drivers/mtd/nand/raw/hisi504_nand.c:477:17: sparse:     got void [noderef] __iomem *mmio
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse:     expected void const *
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse:     got void [noderef] __iomem *mmio
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse:     expected void const *
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse:     got void [noderef] __iomem *mmio
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *p @@     got void [noderef] __iomem *mmio @@
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse:     expected void *p
+   drivers/mtd/nand/raw/hisi504_nand.c:603:9: sparse:     got void [noderef] __iomem *mmio
+   drivers/mtd/nand/raw/hisi504_nand.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h, include/linux/xarray.h, ...):
+   include/linux/page-flags.h:246:46: sparse: sparse: self-comparison always evaluates to false
 
-> The current NONE/VOLUNTARY models, which imply RCU_PRREMPT=n cannot do
-> that at all because the preempt_enable() is a NOOP and there is no
-> preemption point at return from interrupt to kernel.
-> 
->     do {
->         do_stuff();
->     }
-> 
-> So the only thing which makes that "work" is slapping a cond_resched()
-> into the loop:
-> 
->     do {
->         do_stuff();
->         cond_resched();
->     }
+vim +342 drivers/video/fbdev/atmel_lcdfb.c
 
-Yes, exactly.
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  316  
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  317  /**
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  318   *	atmel_lcdfb_alloc_video_memory - Allocate framebuffer memory
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  319   *	@sinfo: the frame buffer to allocate memory for
+1d01e83557105e7 drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  320   * 	
+1d01e83557105e7 drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  321   * 	This function is called only from the atmel_lcdfb_probe()
+1d01e83557105e7 drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  322   * 	so no locking by fb_info->mm_lock around smem_len setting is needed.
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  323   */
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  324  static int atmel_lcdfb_alloc_video_memory(struct atmel_lcdfb_info *sinfo)
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  325  {
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  326  	struct fb_info *info = sinfo->info;
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  327  	struct fb_var_screeninfo *var = &info->var;
+ea757acad5a5183 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  328  	unsigned int smem_len;
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  329  
+ea757acad5a5183 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  330  	smem_len = (var->xres_virtual * var->yres_virtual
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  331  		    * ((var->bits_per_pixel + 7) / 8));
+ea757acad5a5183 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  332  	info->fix.smem_len = max(smem_len, sinfo->smem_len);
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  333  
+f6e45661f9be546 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  334  	info->screen_base = dma_alloc_wc(info->device, info->fix.smem_len,
+f6e45661f9be546 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  335  					 (dma_addr_t *)&info->fix.smem_start,
+f6e45661f9be546 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  336  					 GFP_KERNEL);
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  337  
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  338  	if (!info->screen_base) {
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  339  		return -ENOMEM;
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  340  	}
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  341  
+01d3a5e7fab7732 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-04-28 @342  	memset(info->screen_base, 0, info->fix.smem_len);
+01d3a5e7fab7732 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-04-28  343  
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  344  	return 0;
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  345  }
+14340586148e7c8 drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  346  
 
-> But the whole concept behind LAZY is that the loop will always be:
-> 
->     do {
->     	preempt_disable();
->         do_stuff();
->         preempt_enable();
->     }
-> 
-> and the preempt_enable() will always be a functional preemption point.
+:::::: The code at line 342 was first introduced by commit
+:::::: 01d3a5e7fab7732cfc5d5d4533e9378ea435295a atmel_lcdfb: don't initialize a pre-allocated framebuffer
 
-Understood.  And if preempt_enable() can interact with RCU when requested,
-I would expect that this could make quite a few calls to cond_resched()
-provably unnecessary.  There was some discussion of this:
+:::::: TO: Haavard Skinnemoen <hskinnemoen@atmel.com>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
 
-https://lore.kernel.org/all/0d6a8e80-c89b-4ded-8de1-8c946874f787@paulmck-laptop/
-
-There were objections to an earlier version.  Is this version OK?
-
-> So let's look at the simple case where more than one task is runnable on
-> a given CPU:
-> 
->     loop()
-> 
->       preempt_disable();
-> 
->       --> tick interrupt
->           set LAZY_NEED_RESCHED
-> 
->       preempt_enable() -> Does nothing because NEED_RESCHED is not set
-> 
->       preempt_disable();
-> 
->       --> tick interrupt
->           set NEED_RESCHED
-> 
->       preempt_enable()
->         preempt_schedule()
->           schedule()
->             report_QS()
-> 
-> which means that on the second tick a quiesent state is
-> reported. Whether that's really going to be a full tick which is granted
-> that's a scheduler decision and implementation detail and not really
-> relevant for discussing the concept.
-
-In my experience, the implementation details make themselves relevant
-sooner or later, and often sooner...
-
-> Now the problematic case is when there is only one task runnable on a
-> given CPU because then the tick interrupt will set neither of the
-> preemption bits. Which is fine from a scheduler perspective, but not so
-> much from a RCU perspective.
-> 
-> But the whole point of LAZY is to be able to enforce rescheduling at the
-> next possible preemption point. So RCU can utilize that too:
-> 
-> rcu_flavor_sched_clock_irq(bool user)
-> {
-> 	if (user || rcu_is_cpu_rrupt_from_idle() ||
-> 	    !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
-> 		rcu_qs();
->                 return;
-> 	}
-> 
->         if (this_cpu_read(rcu_data.rcu_urgent_qs))
->         	set_need_resched();
-> }
-
-Yes, that is one of the changes that would be good to make, as discussed
-previously.
-
-> So:
-> 
->     loop()
-> 
->       preempt_disable();
-> 
->       --> tick interrupt
->             rcu_flavor_sched_clock_irq()
->                 sets NEED_RESCHED
-> 
->       preempt_enable()
->         preempt_schedule()
->           schedule()
->             report_QS()
-> 
-> See? No magic nonsense in preempt_enable(), no cond_resched(), nothing.
-
-Understood, but that does delay detection of that quiescent state by up
-to one tick.
-
-> The above rcu_flavor_sched_clock_irq() check for rcu_data.rcu_urgent_qs
-> is not really fundamentaly different from the check in rcu_all_gs(). The
-> main difference is that it is bound to the tick, so the detection/action
-> might be delayed by a tick. If that turns out to be a problem, then this
-> stuff has far more serious issues underneath.
-
-Again, as I have stated before, one advantage of PREEMPT_COUNT=y is this
-ability, so yes, believe it or not, I really do understand this.  ;-)
-
-> So now you might argue that for a loop like this:
-> 
->     do {
->         mutex_lock();
->         do_stuff();
->         mutex_unlock();
->     }
-> 
-> the ideal preemption point is post mutex_unlock(), which is where
-> someone would mindfully (*cough*) place a cond_resched(), right?
-> 
-> So if that turns out to matter in reality and not just by academic
-> inspection, then we are far better off to annotate such code with:
-> 
->     do {
->         preempt_lazy_disable();
->         mutex_lock();
->         do_stuff();
->         mutex_unlock();
->         preempt_lazy_enable();
->     }
-> 
-> and let preempt_lazy_enable() evaluate the NEED_RESCHED_LAZY bit.
-
-I am not exactly sure what semantics you are proposing with this pairing
-as opposed to "this would be a good time to preempt in response to the
-pending lazy request".  But I do agree that something like this could
-replace at least a few more instance of cond_resched(), so that is good.
-Not necessarily all of them, though.
-
-> Then rcu_flavor_sched_clock_irq(bool user) can then use a two stage
-> approach like the scheduler:
-> 
-> rcu_flavor_sched_clock_irq(bool user)
-> {
-> 	if (user || rcu_is_cpu_rrupt_from_idle() ||
-> 	    !(preempt_count() & (PREEMPT_MASK | SOFTIRQ_MASK))) {
-> 		rcu_qs();
->                 return;
-> 	}
-> 
->         if (this_cpu_read(rcu_data.rcu_urgent_qs)) {
->         	if (!need_resched_lazy()))
->                 	set_need_resched_lazy();
->                 else
->                 	set_need_resched();
-> 	}
-> }
-> 
-> But for a start I would just use the trivial
-> 
->         if (this_cpu_read(rcu_data.rcu_urgent_qs))
->         	set_need_resched();
-> 
-> approach and see where this gets us.
-
-Agreed, I would start with the plain set_need_resched().  This shouldn't
-happen all that often, on default x86 builds nine milliseconds into the
-grace period.
-
-> With the approach I suggested to Ankur, i.e. having PREEMPT_AUTO(or
-> LAZY) as a config option we can work on the details of the AUTO and
-> RCU_PREEMPT=n flavour up to the point where we are happy to get rid
-> of the whole zoo of config options alltogether.
-
-I agree that some simplification should be possible and would be
-desireable.
-
-> Just insisting that RCU_PREEMPT=n requires cond_resched() and whatsoever
-> is not really getting us anywhere.
-
-Except that this is not what is happening, Thomas.  ;-)
-
-You are asserting that all of the cond_resched() calls can safely be
-eliminated.  That might well be, but more than assertion is required.
-You have come up with some good ways of getting rid of some classes of
-them, which is a very good and very welcome thing.  But that is not the
-same as having proved that all of them may be safely removed.
-
-							Thanx, Paul
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
