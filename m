@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 228BC8053C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E5A8053CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442375AbjLEMFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:05:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45770 "EHLO
+        id S1442366AbjLEMH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:07:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442328AbjLEMFO (ORCPT
+        with ESMTP id S1442328AbjLEMHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:05:14 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B69F6C6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:05:20 -0800 (PST)
-From:   Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701777919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N1r0rHwKvAq8UD1DxN9U58B4Dag1H1uArzbdH/NRW3o=;
-        b=VX7Voooxsq2R3voHwJVgNJMqJepRmQQ/9IDQt10OUEMABb1eLcGc2ytSi88IiEsuuETRQG
-        0YUCyPJIMZxcJdPutdDQQo8zBYT0eeNG0G4Gpyhd3ceENkSaIn736g9lHr9FitX9x5QB6Z
-        kd0Tw0dtY77rO7Aj2W2bqNQzNCW2nlLPvKsRk+Mmg2vOWnd16qTPiRq8Sfy1KJ0E4D7QtS
-        1AEObDzQq8BM0ypHt8XYMBznNVoXeU6S61NNukFASxKvSm5qQqMElkoWRi37EoF7R+p8j8
-        MgglAKOu/K5GMIjhvaYN4BoQBWSuHdnvNgSbw64T7RIZctLWa8+EOpok4gcuCg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701777919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=N1r0rHwKvAq8UD1DxN9U58B4Dag1H1uArzbdH/NRW3o=;
-        b=p4bzjKtaiteYaGdKgzzXauZkiPgP5DhYywNrVjssQ+YvHsRC6VJzoje5zPT2G8Cf5tCs9O
-        qrUkaFPc0IeabxBA==
-To:     Sebastian Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 16/32] timers: Optimization for
- timer_base_try_to_set_idle()
-In-Reply-To: <20231204175246.J_8wNRQp@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-17-anna-maria@linutronix.de>
- <20231204175246.J_8wNRQp@linutronix.de>
-Date:   Tue, 05 Dec 2023 13:05:18 +0100
-Message-ID: <87wmtsdfcx.fsf@somnus>
+        Tue, 5 Dec 2023 07:07:24 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB867B9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:07:30 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6d99bc65219so1545562a34.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:07:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701778050; x=1702382850; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zSrcY98acoKnfNLTxuI3CQ8pgAhrIS9wrKdFv+hFBgY=;
+        b=FoTrLTC8mpJrBd2rizRa7CqXiBbhAr6mrYSBxIpeIBRC2xykxMFil4tWV1Q0NNRZjB
+         rYJKRJDQUt0wHZfkH0lqmq0+bsPhbNEZDOQgIs1dQAnIpoF84n3DzGRKBOuzzLrvEy6v
+         3Erc/fN2+ZwdNDI59B7V9lPZVolElHQIXEd3dheYqXNKsGTzMDuqxNQjuT+tZ9UoFhZu
+         zd3h/o8fFlCIuWBhcv3fRdUaihLWeOEgWAUl7zofS1pcXP2bZ4pGUnnEBoKdfqXM4o/U
+         8b5Ai1E7IoLU7ilrl2af0GvjGzzjDiMd+zbNpghuKodzc+QOpLHz98EFd8RgQeOe/OmW
+         oAqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701778050; x=1702382850;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zSrcY98acoKnfNLTxuI3CQ8pgAhrIS9wrKdFv+hFBgY=;
+        b=jpwWuCacKnQzD30kR+4jD+oOjMto2TVAcMOXpac6StTwLsuqqPm4TmAp0lV1OZcsM+
+         y0qiEsACwYnPQJOu5fL0UYNc7kKB3JLoxQnNfyT+V9ALakaarrGKBJ43MGg4ywrCUT7T
+         4NVfEqu9i4XiaN5zdaGNOVuENwtQrPAZ8NsIAWY581tyz4XBMl1aud4ykxAaKdBcRzFg
+         pkLMwpSgQDPVhUV1xgl6YfMOcXrs5z8EdpZ/3ZL15knwX9Aqh95cgyAt7IF1GGXNbX3a
+         TlzrQwdy768ImGRtEkF5ghJBGBE1Cvq3rOpFy7PhpwO8Yy0QUiylEVb/uSyqe2RcCZg7
+         +o5g==
+X-Gm-Message-State: AOJu0YzP2XH/VQsdsyzhdPSH1jOE//jvvtIqte7OZpgJzXgwzQt9a5U/
+        lHTo3WlRNGEuwcdRxfXB0oh0QpofjJU/Ng/WXNah8Q==
+X-Google-Smtp-Source: AGHT+IF0UttUrgGr5cdMWJGSb7e7DEnicomjDDMfd87WaVglVNgQoKPiFU153JXWWx2Q6CbzNqmh/KBwm2YLz1s0JW8=
+X-Received: by 2002:a05:6870:65a8:b0:1fa:e8f0:f732 with SMTP id
+ fp40-20020a05687065a800b001fae8f0f732mr8074320oab.52.1701778049979; Tue, 05
+ Dec 2023 04:07:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20231129164439.1130903-1-arnaud.pouliquen@foss.st.com>
+ <CAFA6WYP=_BPt_x1FxeVdAdB_mMjdz8QzvkfFXx-5msy8PZG6nA@mail.gmail.com>
+ <60b67bd5-36c3-4318-9a2b-bcf172681d45@foss.st.com> <CAFA6WYN9eJ1vGTKfGXy7M709=aGkg1oF3odK7iGRUBokbKtqzw@mail.gmail.com>
+ <40902a86-3b88-45bc-bb6f-2de0eb48dc9d@foss.st.com> <CAFA6WYPGkpVN-XP7eAzLXMReRi7FBp3boKzhMfasasuE=XWBow@mail.gmail.com>
+ <438a8b44-ea5f-4e13-bd7e-e1c2e2a481c4@kernel.dk> <cf00a996-c262-4457-93de-ca7960ad6df6@kernel.dk>
+ <a1f4e290-34ad-4606-9a95-350d00727483@foss.st.com>
+In-Reply-To: <a1f4e290-34ad-4606-9a95-350d00727483@foss.st.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 5 Dec 2023 17:37:18 +0530
+Message-ID: <CAFA6WYMi52WTWho5y=967fm8utqtdq9fuCjVJFA9G0MaHtNYgg@mail.gmail.com>
+Subject: Re: [PATCH v4] tee: Use iov_iter to better support shared buffer registration
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -72,43 +74,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian Siewior <bigeasy@linutronix.de> writes:
+Hi Arnaud,
 
-> On 2023-12-01 10:26:38 [+0100], Anna-Maria Behnsen wrote:
->> When tick is stopped also the timer base is_idle flag is set. When
->> reentering the timer_base_try_to_set_idle() with the tick stopped, there is
->> no need to check whether the timer base needs to be set idle again. When a
->> timer was enqueued in the meantime, this is already handled by the
->> nohz_get_next_event() call which was executed before tick_nohz_stop_tick().
+On Mon, 4 Dec 2023 at 22:32, Arnaud POULIQUEN
+<arnaud.pouliquen@foss.st.com> wrote:
 >
-> as of #15 tick_stopped is set later in tick_nohz_stop_tick() and both
-> (tick_sched::tick_stopped and timer_base::is_idle) are cleared in
-> tick_nohz_restart_sched_tick().
+> Hi,
 >
-> Then we have tick_nohz_idle_retain_tick() with only one caller and is
-> only clearing timer_base::is_idle. Now, wouldn't it make sense to
-> preload timer_idle based on timer_base::is_idle?
-
-When revisting the code, this timer_clear_idle() is no longer required
-in tick_nohz_idle_retain_tick(). This is only called when the tick is
-not stopped - so timer base is not idle as well and this call is
-superfluous.
-
-As we keep both states in sync (tick_sched::tick_stopped and
-timer_base::is_idle) it doesn't matter which one is used. In
-tick_nohz_stop_tick() I don't have access to timer base. I could add it
-to timer_base_try_to_set_idle() but it will not make a difference.
-
-> I don't know if it there is a different outcome if timer_base::is_idle
-> gets cleared in the idle path vs tick_sched::tick_stopped.
-> I can't find nohz_get_next_event().
-
-s/nohz_get_next_event/tick_nohz_next_event/ ...
-
->> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> On 12/4/23 17:40, Jens Axboe wrote:
+> > On 12/4/23 9:36 AM, Jens Axboe wrote:
+> >> On 12/4/23 5:42 AM, Sumit Garg wrote:
+> >>> IMO, access_ok() should be the first thing that import_ubuf() or
+> >>> import_single_range() should do, something as follows:
+> >>>
+> >>> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+> >>> index 8ff6824a1005..4aee0371824c 100644
+> >>> --- a/lib/iov_iter.c
+> >>> +++ b/lib/iov_iter.c
+> >>> @@ -1384,10 +1384,10 @@ EXPORT_SYMBOL(import_single_range);
+> >>>
+> >>>  int import_ubuf(int rw, void __user *buf, size_t len, struct iov_iter *i)
+> >>>  {
+> >>> -       if (len > MAX_RW_COUNT)
+> >>> -               len = MAX_RW_COUNT;
+> >>>         if (unlikely(!access_ok(buf, len)))
+> >>>                 return -EFAULT;
+> >>> +       if (len > MAX_RW_COUNT)
+> >>> +               len = MAX_RW_COUNT;
+> >>>
+> >>>         iov_iter_ubuf(i, rw, buf, len);
+> >>>         return 0;
+> >>>
+> >>> Jens A., Al Viro,
+> >>>
+> >>> Was there any particular reason which I am unaware of to perform
+> >>> access_ok() check on modified input length?
+> >>
+> >> This change makes sense to me, and seems consistent with what is done
+> >> elsewhere too.
+> >
+> > For some reason I missed import_single_range(), which does it the same
+> > way as import_ubuf() currently does - cap the range before the
+> > access_ok() check. The vec variants sum as they go, but access_ok()
+> > before the range.
+> >
+> > I think part of the issue here is that the single range imports return 0
+> > for success and -ERROR otherwise. This means that the caller does not
+> > know if the full range was imported or not. OTOH, we always cap any data
+> > transfer at MAX_RW_COUNT, so may make more sense to fix up the caller
+> > here.
+> >
 >
-> Sebastian
+> Should we limit to MAX_RW_COUNT or return an error?
+> Seems to me that limiting could generate side effect later that could be not
+> simple to debug.
+>
+>
+> >>>  int import_ubuf(int rw, void __user *buf, size_t len, struct iov_iter *i)
+> >>>  {
+> >>> -       if (len > MAX_RW_COUNT)
+> >>> +               return -EFAULT;
+> >>>         if (unlikely(!access_ok(buf, len)))
+> >>>                 return -EFAULT;
+> >>>
+> >>>         iov_iter_ubuf(i, rw, buf, len);
+> >>>         return 0;
+>
+> or perhaps just remove the test as __access_ok() already tests that the
+> size < TASK_SIZE
+>
+> https://elixir.bootlin.com/linux/v6.7-rc4/source/include/asm-generic/access_ok.h#L31
+>
 
-Thanks,
+It looks like there are predefined constraints for using import_ubuf()
+which doesn't properly match our needs. So let's directly use:
+iov_iter_ubuf() instead.
 
-	Anna-Maria
+-Sumit
+
+>
+> Thanks,
+> Arnaud
+>
