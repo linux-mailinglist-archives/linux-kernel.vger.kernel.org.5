@@ -2,115 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 749DD805C7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FC3805C4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231934AbjLEQdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
+        id S232047AbjLEQen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbjLEQds (ORCPT
+        with ESMTP id S229971AbjLEQem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:33:48 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78EF4194;
-        Tue,  5 Dec 2023 08:33:52 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5Esvo1012355;
-        Tue, 5 Dec 2023 16:33:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=bektZohZZ1JiKi/f+qNYt+kGxWD44tNbUlJmqoXgg44=;
- b=NSBm1zuOWrM+tGTnAPsPZDi8Pr/mCGBFSXqXuAFtduOZC1oznGmOZUrxpcvb65jxi/LL
- CQIqatleRIOA20muRBKIZ5sDZpHgfo7bjwsV215divEczAb1DEA1lW7wgE+6YTEaetL6
- 84X17MOzV9lZaGNKY50dm+ouIYbDmeQC9+WMODKdrkOwGBBoXjxbjDeJfAtzsWuZIRYu
- Ai98Q0KHU01RE/uh3kunRCkj11GIfMum3YV7EyL/fERfXH4TsxB5YMpD7j6BM6wHVPUf
- Ky1HpwUSPfp3ngySZTBsfhhLYHv6K7wgYBkK8iSX/ng0zpa8nPXldgIRj9bdJ1PQxX+y AA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usmw02axs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 16:33:44 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B5GXhKD014137
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 5 Dec 2023 16:33:43 GMT
-Received: from [10.50.1.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
- 2023 08:33:35 -0800
-Message-ID: <ad241353-e6ad-d57f-6c71-888a484ba721@quicinc.com>
-Date:   Tue, 5 Dec 2023 22:03:29 +0530
+        Tue, 5 Dec 2023 11:34:42 -0500
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F8A129;
+        Tue,  5 Dec 2023 08:34:47 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CAC49FF805;
+        Tue,  5 Dec 2023 16:34:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701794086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Uwdqih8d4ChJEVJBX1tE0PIM7+9cgSue2Go+/HkBFxA=;
+        b=QnLp8DxBW+vkkFhgEGG5u30oDPIp1UJ1ZIgMiIHL6+ulgLjy0fhQKhNulokopgfNUdsCds
+        I2owO3Rqq562ImCeO6pWMbaCXyD9QSk+etF1ovgJDyJwt/zxrtoxsGJtHhEBaoylHnslR0
+        KR/bZcCkV92lwJ0RZ97+LcqYP8JMNoB/Wh8gpv1VHjYJqWZvYrDPcHSk4lC6pxQHgb4G9u
+        vk4HCxcd8MQq09dR2qupsSdF7vT1ZqWZRAiYPCneHu+snktyVXG3Yb6A826GJZS1KrvGbH
+        D+etNxgfJktOAsN1WeYsDX3R6bdnhJw2HB26Nx42jFhMRjOhe4Or6Df84QjKpQ==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 06/22] MIPS: Refactor mips_cps_core_entry implementation
+In-Reply-To: <20231201111512.803120-7-gregory.clement@bootlin.com>
+References: <20231201111512.803120-1-gregory.clement@bootlin.com>
+ <20231201111512.803120-7-gregory.clement@bootlin.com>
+Date:   Tue, 05 Dec 2023 17:34:45 +0100
+Message-ID: <87lea8ehga.fsf@BL-laptop>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH 13/13] scsi: ufs: qcom: Initialize cycles_in_1us variable
- in ufs_qcom_set_core_clk_ctrl()
-Content-Language: en-US
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        <martin.petersen@oracle.com>, <jejb@linux.ibm.com>
-CC:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>
-References: <20231201151417.65500-1-manivannan.sadhasivam@linaro.org>
- <20231201151417.65500-14-manivannan.sadhasivam@linaro.org>
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <20231201151417.65500-14-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 6yzes2jpIIah30QhFlUTiiJR9Z25wCxM
-X-Proofpoint-GUID: 6yzes2jpIIah30QhFlUTiiJR9Z25wCxM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-05_11,2023-12-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- spamscore=0 malwarescore=0 clxscore=1015 suspectscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=999 impostorscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2312050130
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: gregory.clement@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Jiaxun,
 
-
-On 12/1/2023 8:44 PM, Manivannan Sadhasivam wrote:
-> In case the "core_clk_unipro" clock is not provided, "cycles_in_1us"
-> variable will be used as uninitialized. So initialize it with 0.
-> 
-> Issue reported by Smatch tool:
-> 
-> drivers/ufs/host/ufs-qcom.c:1336 ufs_qcom_set_core_clk_ctrl() error: uninitialized symbol 'cycles_in_1us'.
-> drivers/ufs/host/ufs-qcom.c:1341 ufs_qcom_set_core_clk_ctrl() error: uninitialized symbol 'cycles_in_1us'.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>
+> Now the exception vector for CPS systems are allocated on-fly
+> with memblock as well.
+>
+> It will try to allocate from KSEG1 first, and then try to allocate
+> in low 4G if possible.
+>
+> The main reset vector is now generated by uasm, to avoid tons
+> of patches to the code. Other vectors are copied to the location
+> later.
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->   drivers/ufs/host/ufs-qcom.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 590a2c67cf7d..208543a62d43 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -1296,7 +1296,7 @@ static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba, bool is_scale_up)
->   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->   	struct list_head *head = &hba->clk_list_head;
->   	struct ufs_clk_info *clki;
-> -	u32 cycles_in_1us;
-> +	u32 cycles_in_1us = 0;
->   	u32 core_clk_ctrl_reg;
->   	int err;
->   
+[...]
 
-Reviewed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+
+> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+[...]
+
+> +static int __init setup_cps_vecs(void)
+> +{
+> +	extern void excep_tlbfill(void);
+> +	extern void excep_xtlbfill(void);
+> +	extern void excep_cache(void);
+> +	extern void excep_genex(void);
+> +	extern void excep_intex(void);
+> +	extern void excep_ejtag(void);
+> +	phys_addr_t cps_vec_pa;
+> +	void *cps_vec;
+> +
+> +	/* Try to allocate in KSEG1 first */
+> +	cps_vec_pa =3D memblock_phys_alloc_range(BEV_VEC_SIZE, BEV_VEC_ALIGN,
+> +						0x0, KSEGX_SIZE - 1);
+> +
+> +	if (cps_vec_pa)
+> +		core_entry_reg =3D CKSEG1ADDR(cps_vec_pa) &
+> +					CM_GCR_Cx_RESET_BASE_BEVEXCBASE;
+> +
+> +	if (!cps_vec_pa && mips_cm_is64) {
+> +		cps_vec_pa =3D memblock_phys_alloc_range(BEV_VEC_SIZE, BEV_VEC_ALIGN,
+> +							0x0, SZ_4G - 1);
+> +		if (cps_vec_pa)
+> +			core_entry_reg =3D (cps_vec_pa & CM_GCR_Cx_RESET_BASE_BEVEXCBASE) |
+> +					CM_GCR_Cx_RESET_BASE_MODE;
+> +	}
+> +
+> +	if (!cps_vec_pa)
+> +		return -ENOMEM;
+> +
+> +	/* We want to ensure cache is clean before writing uncached mem */
+> +	blast_dcache_range(TO_CAC(cps_vec_pa), TO_CAC(cps_vec_pa) + BEV_VEC_SIZ=
+E);
+> +	bc_wback_inv(TO_CAC(cps_vec_pa), BEV_VEC_SIZE);
+> +	__sync();
+> +
+> +	cps_vec =3D (void *)TO_UNCAC(cps_vec_pa);
+
+Following your remark about the configuration for generic mips32[1]. I made
+some changes and tried to build with the following command:
+make 32r6el_defconfig; make
+
+I got the follower error:
+arch/mips/kernel/smp-cps.c: In function =E2=80=98setup_cps_vecs=E2=80=99:
+arch/mips/kernel/smp-cps.c:162:19: error: cast to pointer from integer of d=
+ifferent size [-Werror=3Dint-to-pointer-cast]
+
+The issue comes from the TO_UNCAC macro that use the TO_PHYS_MASK macro
+which is 64 bits, so it turn the size of TO_UNCAC() to 8 bytes while the
+size of a pointer is 4 bytes.
+
+Actually it show that TO_UNCAC was created to be only used for 64 bits,
+and it was only your patch "MIPS: spaces: Define a couple of handy
+macros" that made possible to use in 32 bit case.
+
+Did you mange to build a kernel in 32 bits configuration ?
+Maybe you had a local patch that made it possible.
+
+I propose the following fix to squash into the patch "MIPS: spaces:
+Define a couple of handy macros" , what do you think of it?
+
+diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/includ=
+e/asm/mach-generic/spaces.h
+index 05db19521e817..4884199d8b8c4 100644
+--- a/arch/mips/include/asm/mach-generic/spaces.h
++++ b/arch/mips/include/asm/mach-generic/spaces.h
+@@ -49,6 +49,9 @@
+ #define HIGHMEM_START          _AC(0x20000000, UL)
+ #endif
+=20
++#define TO_UNCAC(x)            CKSEG1ADDR(x)
++#define TO_CAC(x)              CKSEG0ADDR(x)
++
+ #endif /* CONFIG_32BIT */
+=20
+ #ifdef CONFIG_64BIT
+@@ -78,12 +81,12 @@
+ #define HIGHMEM_START          (_AC(1, UL) << _AC(59, UL))
+ #endif
+=20
++#define TO_UNCAC(x)            (UNCAC_BASE | ((x) & TO_PHYS_MASK))
++#define TO_CAC(x)              (CAC_BASE   | ((x) & TO_PHYS_MASK))
+ #define TO_PHYS(x)             (             ((x) & TO_PHYS_MASK))
+=20
+ #endif /* CONFIG_64BIT */
+=20
+-#define TO_CAC(x)              (CAC_BASE   | ((x) & TO_PHYS_MASK))
+-#define TO_UNCAC(x)            (UNCAC_BASE | ((x) & TO_PHYS_MASK))
+=20
+ /*
+  * This handles the memory map.
+
+
+[1]:https://lore.kernel.org/linux-mips/4eb150cf-3fb7-41c8-accc-06b13e46f086=
+@app.fastmail.com/
+
+--=20
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
