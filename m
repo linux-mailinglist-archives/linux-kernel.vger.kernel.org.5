@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF74804871
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CF9804878
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbjLEELh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 23:11:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
+        id S1343998AbjLEEPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 23:15:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbjLEELe (ORCPT
+        with ESMTP id S230074AbjLEEPr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 23:11:34 -0500
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2089.outbound.protection.outlook.com [40.107.96.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B2CED3;
-        Mon,  4 Dec 2023 20:11:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MQpVkXD4YkoNkF0QFvb1o3d7b/LaZVrl33aVzn+gqNg8D9xPVd19E/Z6wrj+fhRTNqWmxNva2Y3LlwvH9KyEm9u4Gkspb/t8MfeRuU8miMQH1q6xj9VtseeGRugW5oMMzKLRAHTxL9FCQUAzhd5InybHGeyRhTPyCK0hZ5iTOgIS8kn5LSKf5JD9NzNwkoR/AmgY5eS737izcr5NQEDvzSekt+V4oMt8MLI/ilykBGeEFHoe6lhmQ2TcTkGDf8c6zhV2byS7DcBDAHGye613Rjstny75v9enTkP1hF6nyZ/po9QtwDptknuzrtAGK7c4bNtH+6OpdDXaeqEY5qMykw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2rlBLk+k/8bj3YhG1G5h0P27+DEjbBY64xJ9agDPVzg=;
- b=fgNZubl6VHyUeSOfyw9iVxy7rd5svvp+AvxbG4aMeJrfvuyW8Z0xM1WvX3q5iXDNwdtl3T9nm19o8pKJoAm2Y3yi8FeiIxssf9OOCvf1gdzENy+ZagRrZuYGJy1bipwZObeyNbLBxtQEg8mgzoYaJ6pKf7bw2tO9ZsO0zD7j5wYtJas/JVeBWYX9dt8wskgu6Ccn3pp+T7OTb5rtHo2qgHMsduOFVumMvYzMLBHjduZbqqlKDL0nPsUH2GlgDnOnImgxTbkNlhvHut7pHS8r+WXjrULOp9Loejiz4p0UmNWZxdbXZ8Lx+6ytRSEtTG0nQSUw6pLuksR63t+d0H2h2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2rlBLk+k/8bj3YhG1G5h0P27+DEjbBY64xJ9agDPVzg=;
- b=Q9ZmfithFEE+pORqD2RkeMw1xIW+7xzxh+FCYLsZkI9QV7GXVMHqEFjYN+X3UThLcR3mUPrK0c0UkKsgJxuSF26dWiMWdAWatFD8Blkw+xJzTvuh0tfbe8isxXngGa/2B6td1FHWbaBZ+z896gH8f498iCpxdKRWAkUZPV0J1EFmOh23lIzfevYVNA0rgYv8R50KhkNo6+LwX1T5szLSY57m7ydYSK/JklYt2IISFBEYDNmWwGGn1jYf5No+BXaF9FzEmY7zsxQ18F//Py2AyUOBzy2JV22wgeH91Ji/faiDsQz4dsvsd3Jb/EkGcRFaW3J3osI90nStnWTKaZPWFg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MW4PR12MB7432.namprd12.prod.outlook.com (2603:10b6:303:22d::9)
- by SA3PR12MB7973.namprd12.prod.outlook.com (2603:10b6:806:305::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 04:11:37 +0000
-Received: from MW4PR12MB7432.namprd12.prod.outlook.com
- ([fe80::396:4961:49ee:dc3d]) by MW4PR12MB7432.namprd12.prod.outlook.com
- ([fe80::396:4961:49ee:dc3d%5]) with mapi id 15.20.7046.033; Tue, 5 Dec 2023
- 04:11:37 +0000
-Message-ID: <c361dbe4-1ef3-4f92-8fb5-9de184b0bf38@nvidia.com>
-Date:   Tue, 5 Dec 2023 09:41:28 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Nov 27 (drivers/memory/tegra/tegra186.c)
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20231127150547.461d8bac@canb.auug.org.au>
- <8b44e417-e9dc-4d6f-b0ae-f9834d0624ac@infradead.org>
- <cdb7c02f-a314-4e64-b95c-66c91e83d4d5@linaro.org>
-Content-Language: en-US
-From:   Ashish Mhetre <amhetre@nvidia.com>
-In-Reply-To: <cdb7c02f-a314-4e64-b95c-66c91e83d4d5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BMXPR01CA0087.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:b00:54::27) To MW4PR12MB7432.namprd12.prod.outlook.com
- (2603:10b6:303:22d::9)
+        Mon, 4 Dec 2023 23:15:47 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285449C;
+        Mon,  4 Dec 2023 20:15:53 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso3067638a12.3;
+        Mon, 04 Dec 2023 20:15:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701749752; x=1702354552; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nezVQBT1yQ9zvp+x3Q4cJHMG0UzgLInrLLV8pipEpYA=;
+        b=PsD07beVGTEN9hL2IBRFVKkrexKX5WRtsJ7fmaZ6PaRoDt4YxSrHJlwcie1+XoEoBm
+         exCAB1cUBYrK/sGZ3zL08Bz5I7exS+VjA9DQ8DbaueDcNEnKo9g/KJIeqktCD1QsxHN5
+         38X/ZBe6x5wa6XhO4gT1LeSYJmonc4mAEOPC+ytf1EhBpjMF9AqQgUcEkqA/lPxGU9Wa
+         mtt1xNAr57/h3Uq4zF9Ip3xZwDnpfEBq7YO/C/Mp+51TU1Xqui1qZLfqRKC0DqMvqjYh
+         eph7Q0LzE8rktpUIhBEWacHEjjHO/Tv0RSGOUfIJzZMG0HLsVX47sgU8+2ZWa9agCTmL
+         Ndtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701749752; x=1702354552;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nezVQBT1yQ9zvp+x3Q4cJHMG0UzgLInrLLV8pipEpYA=;
+        b=PQLnKryXA4x+ptEh0/DqJ3QBmpufnUwWLgAfWUSG8O3deN7+yvJkbaLEl+qrHSVE2G
+         4fYR5/wwoCWWBBDI7ni5ccoac75Kvcu8FikznHT41v95dra5cAhWmlOGsWaCfgO3xmj1
+         T+tA5n0A0mN+BUXoJixivzcxGn8bsyeb4jCBrhyqXsayQY8wJaiUxdzThqOVAPBmuz4C
+         xd4CTtEzHHtt1eEl5905ydEnPbHnARE5Y3buxLbQM9B4qDoiG0xrfFXV1ZksrPrfnP5w
+         UzugIAvYf0clpicHTMum/aeU4GN673DVgvhXxRzKjU8dA7nhnmjQMBx4yWMXkftcOByK
+         ZEFQ==
+X-Gm-Message-State: AOJu0YzOm8JlkQuR5Hj7Q0QwMA3xn7m+/QLSDGbNmSm73x2/mHC7TaPW
+        3hJLtusnIOkp46jSm5IG8So=
+X-Google-Smtp-Source: AGHT+IFJOpeOn83oTxXlzMwkHi0p68pzFjJa/nGpuyM2t4kS5QVaffXaLUvEJSo6M2IZCE6soI2gVA==
+X-Received: by 2002:a17:90a:e654:b0:285:b78a:dbce with SMTP id ep20-20020a17090ae65400b00285b78adbcemr616157pjb.37.1701749752278;
+        Mon, 04 Dec 2023 20:15:52 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id i4-20020a17090332c400b001d071d58e85sm5371227plr.98.2023.12.04.20.15.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 20:15:51 -0800 (PST)
+Date:   Tue, 5 Dec 2023 13:15:37 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 02/21] mm/slab: remove CONFIG_SLAB from all Kconfig
+ and Makefile
+Message-ID: <ZW6j6aTpuJF0keS7@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-2-9c9c70177183@suse.cz>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR12MB7432:EE_|SA3PR12MB7973:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3e6b19a2-855b-4d36-8120-08dbf5484629
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DaNRvBW8gdRrxh1/urft7JPiGgHc9rB+30O6fJaTFANqFZxTXKHfeKI+S5k4WHi6lYyMAURKHJazkYe23/xKwVBZZJjGlK9grWyUMWeT3EQYKp10eaf/hD1chkRPyUgiV2UMTAfN0g6mRy84r1RkCRUp3I397OH5wMDcOjdF8LVgeFWkunbRgLv7/pZvYJiuqq01Cd5pC3sUeF7ffmpUP24UMele9D9ybZ5BCBQMrj3489Cd4AcEUHaLI0/jRm/l23+n0C5xPdA5yLIfHVrCsvYEvCmNCwsab9ahUAxkvtRkx3fsQa+BT5gQsFl6TQLBI+A8iyr/BHnL5UoN4kI6+PdIo1kRSULY4Gg+I8wE30b+ySuOVCRXk4zeHlsZ29TIGInTYAz589TC6klxut9poUMavxSYqPo83hOoyNCwXXbzAuknkCR9oW12d5GyRyQZ6IfXIevVhkrfTCJ8wqwmgR+f+04tQ8L6hhv0jFBAhprakWHfYACUNeeD18vL3OYQmie57b7puXlRrHRLYwKpjPQ9mYHsLM2O8wWsc++9IZXzPK359KlZLGKmXQDAVYs4nCyuADmQxK/JTMe3DtsQe84u5mXLFk3ZRK5WCi2Rol4Wxt/E7jgSnNFWmYhKyOiRI+bvYMoXY5RDh99/GdvfwitwbXlwRLcdifVbODrLaLv0PubfbXzaIAC7JQv49t0m
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB7432.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(376002)(366004)(230922051799003)(230273577357003)(230173577357003)(451199024)(64100799003)(186009)(1800799012)(31696002)(5660300002)(86362001)(4326008)(8676002)(8936002)(2906002)(41300700001)(6512007)(36756003)(2616005)(6506007)(53546011)(83380400001)(6486002)(478600001)(26005)(6666004)(38100700002)(31686004)(110136005)(316002)(66476007)(66556008)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L08yOWxQMDl4UDFVY3dWZC9OeUJpTnl2UnpoVVV3TnZ0cEVhbGxWRmVpbjd4?=
- =?utf-8?B?SS9tT2FVeVRLYXIvTVhraHIwSWk1Y1QxQ3pnTkJ6OEFTMFZHeU5YV3I0azBW?=
- =?utf-8?B?ZXJ6UzV3d2paU1RwYU9McGxlSTBMQkFoY05mQllFODI4K3dkcUtJVWZhWWlk?=
- =?utf-8?B?RnlmaGdYRnBwYTdHb25RY1p6QkdDbXlWNXI4MVlhWkdmaEhIbU51MDQwcVlj?=
- =?utf-8?B?cU5sYkFEMDlQRVMzcERBdWNXZkNXV1lVVVNGUjB3c2dXMXR3VnBLeUNmVExW?=
- =?utf-8?B?bXY5Z2N4dGJEQ2lXNXh0cmxZVUIzWEgzRVNTbWFUTkpEa1NDcHY4SS9BRm13?=
- =?utf-8?B?VXIwR0NWQWlWdVpFNnhPRW0rRE5lelkrQTZ1aGkrbnZ5STNmblZrQS9mSUlh?=
- =?utf-8?B?dWFmdVpQMVRKbzkwQ2ZYQVhZVEIzYWc2cWU2b3Z4Q3Nhdi9LZnl1UFp6K2ZN?=
- =?utf-8?B?NWl1VjZKNEJ0aEtlaEttWCt1MExFY2VENWttNDZZV3ZXOEUvWHRVaFp6cXIv?=
- =?utf-8?B?aW1VRXppTU9xbXJnWW1nWEkxTUtXZzRTc3VsVHBUYXBMK25iN2pja0pQaGwy?=
- =?utf-8?B?bHk0YWZaSzJLaVlPdHJUKzZ1MVhmakh0dkpUN3JBZzlUaVZEVFpXVDJCZXg4?=
- =?utf-8?B?bHIvYVM3WlN3VXJRcyszLzJobXhEVWpVWC9mU0pDdFkzdTA2d3dWSmdOOWU3?=
- =?utf-8?B?dnA1U0p5OXRoZjM0aDF4N1N2NzdZU0ZYMkJFeXlUT2VwKytYNUVqYy9oY3Ex?=
- =?utf-8?B?OTBCbmNsTm9MM0RRb3UvMUpOa0ZBOTM2bU50ZmhDcXNuK3RQamkvNHR3WVVR?=
- =?utf-8?B?ZWhvTDFzNlJtdHdpdFdRU1hFUGs4UWZJU2ZYanltTG9NL2FTWWVyYW1nQVpS?=
- =?utf-8?B?OEdreVdZTHpQRXlKRkJDNVJ6TlVialFGQ3BnbFJPMzFidVgxSzdkU1VnOXlh?=
- =?utf-8?B?T25sTFlmMm0vVXlaTG1jcGk5TTd4UDYyZzJZb3VQZDh3THJGbjJLN3M1NVRP?=
- =?utf-8?B?dEYyc0VqZHBJQit6dlNRalp2L1cvWDd4M2NlU2VtSTJZRTliOTlUV09ZVFNX?=
- =?utf-8?B?azRvVjZMS3lyNTMrRGhteWxtRDM4dSsza05Id3d5ZTUwN0U0ZzFNVWpyRU5k?=
- =?utf-8?B?RWtHS1NyNHA4MDlpbTArMU9wb3JQTjRKUEVTSFpKMThUYXNIN250dnp1UHEz?=
- =?utf-8?B?alE4VHBoRk84aE5OZExPd0E0eUR4OXdmVnIvM0o0VnJVdEwrb2loRnJodjUr?=
- =?utf-8?B?Wnh1NnBmZURmTE51M1ZSL1RMVnJOY2FLKzExWHNOeWFzYzRUZmJRQ2lMbjVi?=
- =?utf-8?B?UCtWMUlNTlVndFZBZTJCRmw1QW5UeWdnM0xMRm82THlJY29DcUhlZjlTT09p?=
- =?utf-8?B?aHJEY0ZHVndIMjRJN2s4eTdxSVV5TFhtQmRoK0dIckdnM2IyTlJkcXNTU2g2?=
- =?utf-8?B?aEVBcW9Ib1ZvR1A1Qkh0YUh0OXI0Rm1JQ1c3NnAxVW80NXRkMjJoN1htVFpq?=
- =?utf-8?B?UzhhYm1Fck5oSVJGNEcwWGJPN0U0WDU2VEd5V01HYW1LZlNEcE84R0tabk9t?=
- =?utf-8?B?NE5GUUQ4b0IvTHRkSlNUYlVualFLTDNXWWp0SVoxMkl3b0ZyWnpZd2E4ZnBa?=
- =?utf-8?B?ZGUxMmlPRnFxWkt6Qm4wYlE5SFNNeDdSRnk1Y1hlU1YvbkdOKzNzUEdFZVFr?=
- =?utf-8?B?cFhHK2loT3FCUzVVL1lhSEpSbzBVYkdlQ01MUHd0anRvSy94aFE0aUdpWVU5?=
- =?utf-8?B?eUVOMkp4ZFY0cGtqOGNGdytkcWltSEJKWkV2TEpsV0FjVjQxQWc1Y2U1U3BM?=
- =?utf-8?B?OFJUa0tLNjB5YWZBMldHVlIwR0IzVmQzdzJNQ05sWCtOOWFxaXZEUlhPMnpa?=
- =?utf-8?B?aGNmcExOeU5WM1lxNVVPVGRWdXRxZ2NvY1lpeFQxWnJrTTEwYzE2OWg1UHhq?=
- =?utf-8?B?ZzJud3djZWRsN1FhOEVUaUFWVTVpcTZKUFYybGFwS1lQTHVFa0NEMkpQakZL?=
- =?utf-8?B?NWxkMW1hNGpwd0tMWXlJNVZlNEE2ZHhQNnRnMDBCU2swcXNObGpDRDJHUFNi?=
- =?utf-8?B?Y3dsTElZRWVVZWRNZVdibytyYTdJczdTVGdTMnJQZWprWnlLYTFjblg1MnRS?=
- =?utf-8?Q?5SYZPtuNjUkQ01xeFtgAz2uGH?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e6b19a2-855b-4d36-8120-08dbf5484629
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB7432.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 04:11:37.0104
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 18pyBFb5PYtsDh1IdnXFwV6Qn0YdftasFxTTWqfyPiroXgbrbLVh2lMkArWAM6Z74kRLG2fGwv/kAxLjRjzEqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7973
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231120-slab-remove-slab-v2-2-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -128,50 +92,426 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 20, 2023 at 07:34:13PM +0100, Vlastimil Babka wrote:
+> Remove CONFIG_SLAB, CONFIG_DEBUG_SLAB, CONFIG_SLAB_DEPRECATED and
+> everything in Kconfig files and mm/Makefile that depends on those. Since
+> SLUB is the only remaining allocator, remove the allocator choice, make
+> CONFIG_SLUB a "def_bool y" for now and remove all explicit dependencies
+> on SLUB or SLAB as it's now always enabled. Make every option's verbose
+> name and description refer to "the slab allocator" without refering to
+> the specific implementation. Do not rename the CONFIG_ option names yet.
+> 
+> Everything under #ifdef CONFIG_SLAB, and mm/slab.c is now dead code, all
+> code under #ifdef CONFIG_SLUB is now always compiled.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Christoph Lameter <cl@linux.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  arch/arm64/Kconfig |  2 +-
+>  arch/s390/Kconfig  |  2 +-
+>  arch/x86/Kconfig   |  2 +-
+>  lib/Kconfig.debug  |  1 -
+>  lib/Kconfig.kasan  | 11 +++------
+>  lib/Kconfig.kfence |  2 +-
+>  lib/Kconfig.kmsan  |  2 +-
+>  mm/Kconfig         | 68 ++++++++++++------------------------------------------
+>  mm/Kconfig.debug   | 16 ++++---------
+>  mm/Makefile        |  6 +----
+>  10 files changed, 28 insertions(+), 84 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 7b071a00425d..325b7140b576 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -154,7 +154,7 @@ config ARM64
+>  	select HAVE_MOVE_PUD
+>  	select HAVE_PCI
+>  	select HAVE_ACPI_APEI if (ACPI && EFI)
+> -	select HAVE_ALIGNED_STRUCT_PAGE if SLUB
+> +	select HAVE_ALIGNED_STRUCT_PAGE
+>  	select HAVE_ARCH_AUDITSYSCALL
+>  	select HAVE_ARCH_BITREVERSE
+>  	select HAVE_ARCH_COMPILER_H
+> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+> index 3bec98d20283..afa42a6f2e09 100644
+> --- a/arch/s390/Kconfig
+> +++ b/arch/s390/Kconfig
+> @@ -146,7 +146,7 @@ config S390
+>  	select GENERIC_TIME_VSYSCALL
+>  	select GENERIC_VDSO_TIME_NS
+>  	select GENERIC_IOREMAP if PCI
+> -	select HAVE_ALIGNED_STRUCT_PAGE if SLUB
+> +	select HAVE_ALIGNED_STRUCT_PAGE
+>  	select HAVE_ARCH_AUDITSYSCALL
+>  	select HAVE_ARCH_JUMP_LABEL
+>  	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 3762f41bb092..3f460f334d4e 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -169,7 +169,7 @@ config X86
+>  	select HAS_IOPORT
+>  	select HAVE_ACPI_APEI			if ACPI
+>  	select HAVE_ACPI_APEI_NMI		if ACPI
+> -	select HAVE_ALIGNED_STRUCT_PAGE		if SLUB
+> +	select HAVE_ALIGNED_STRUCT_PAGE
+>  	select HAVE_ARCH_AUDITSYSCALL
+>  	select HAVE_ARCH_HUGE_VMAP		if X86_64 || X86_PAE
+>  	select HAVE_ARCH_HUGE_VMALLOC		if X86_64
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index cc7d53d9dc01..e1765face106 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1985,7 +1985,6 @@ config FAULT_INJECTION
+>  config FAILSLAB
+>  	bool "Fault-injection capability for kmalloc"
+>  	depends on FAULT_INJECTION
+> -	depends on SLAB || SLUB
+>  	help
+>  	  Provide fault-injection capability for kmalloc.
+>  
+> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> index fdca89c05745..97e1fdbb5910 100644
+> --- a/lib/Kconfig.kasan
+> +++ b/lib/Kconfig.kasan
+> @@ -37,7 +37,7 @@ menuconfig KASAN
+>  		     (HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS)) && \
+>  		    CC_HAS_WORKING_NOSANITIZE_ADDRESS) || \
+>  		   HAVE_ARCH_KASAN_HW_TAGS
+> -	depends on (SLUB && SYSFS && !SLUB_TINY) || (SLAB && !DEBUG_SLAB)
+> +	depends on SYSFS && !SLUB_TINY
+>  	select STACKDEPOT_ALWAYS_INIT
+>  	help
+>  	  Enables KASAN (Kernel Address Sanitizer) - a dynamic memory safety
+> @@ -78,7 +78,7 @@ config KASAN_GENERIC
+>  	bool "Generic KASAN"
+>  	depends on HAVE_ARCH_KASAN && CC_HAS_KASAN_GENERIC
+>  	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
+> -	select SLUB_DEBUG if SLUB
+> +	select SLUB_DEBUG
+>  	select CONSTRUCTORS
+>  	help
+>  	  Enables Generic KASAN.
+> @@ -89,13 +89,11 @@ config KASAN_GENERIC
+>  	  overhead of ~50% for dynamic allocations.
+>  	  The performance slowdown is ~x3.
+>  
+> -	  (Incompatible with CONFIG_DEBUG_SLAB: the kernel does not boot.)
+> -
+>  config KASAN_SW_TAGS
+>  	bool "Software Tag-Based KASAN"
+>  	depends on HAVE_ARCH_KASAN_SW_TAGS && CC_HAS_KASAN_SW_TAGS
+>  	depends on CC_HAS_WORKING_NOSANITIZE_ADDRESS
+> -	select SLUB_DEBUG if SLUB
+> +	select SLUB_DEBUG
+>  	select CONSTRUCTORS
+>  	help
+>  	  Enables Software Tag-Based KASAN.
+> @@ -110,12 +108,9 @@ config KASAN_SW_TAGS
+>  	  May potentially introduce problems related to pointer casting and
+>  	  comparison, as it embeds a tag into the top byte of each pointer.
+>  
+> -	  (Incompatible with CONFIG_DEBUG_SLAB: the kernel does not boot.)
+> -
+>  config KASAN_HW_TAGS
+>  	bool "Hardware Tag-Based KASAN"
+>  	depends on HAVE_ARCH_KASAN_HW_TAGS
+> -	depends on SLUB
+>  	help
+>  	  Enables Hardware Tag-Based KASAN.
+>  
+> diff --git a/lib/Kconfig.kfence b/lib/Kconfig.kfence
+> index 459dda9ef619..6fbbebec683a 100644
+> --- a/lib/Kconfig.kfence
+> +++ b/lib/Kconfig.kfence
+> @@ -5,7 +5,7 @@ config HAVE_ARCH_KFENCE
+>  
+>  menuconfig KFENCE
+>  	bool "KFENCE: low-overhead sampling-based memory safety error detector"
+> -	depends on HAVE_ARCH_KFENCE && (SLAB || SLUB)
+> +	depends on HAVE_ARCH_KFENCE
+>  	select STACKTRACE
+>  	select IRQ_WORK
+>  	help
+> diff --git a/lib/Kconfig.kmsan b/lib/Kconfig.kmsan
+> index ef2c8f256c57..0541d7b079cc 100644
+> --- a/lib/Kconfig.kmsan
+> +++ b/lib/Kconfig.kmsan
+> @@ -11,7 +11,7 @@ config HAVE_KMSAN_COMPILER
+>  config KMSAN
+>  	bool "KMSAN: detector of uninitialized values use"
+>  	depends on HAVE_ARCH_KMSAN && HAVE_KMSAN_COMPILER
+> -	depends on SLUB && DEBUG_KERNEL && !KASAN && !KCSAN
+> +	depends on DEBUG_KERNEL && !KASAN && !KCSAN
+>  	depends on !PREEMPT_RT
+>  	select STACKDEPOT
+>  	select STACKDEPOT_ALWAYS_INIT
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 89971a894b60..4636870499bb 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -226,52 +226,17 @@ config ZSMALLOC_CHAIN_SIZE
+>  
+>  	  For more information, see zsmalloc documentation.
+>  
+> -menu "SLAB allocator options"
+> -
+> -choice
+> -	prompt "Choose SLAB allocator"
+> -	default SLUB
+> -	help
+> -	   This option allows to select a slab allocator.
+> -
+> -config SLAB_DEPRECATED
+> -	bool "SLAB (DEPRECATED)"
+> -	depends on !PREEMPT_RT
+> -	help
+> -	  Deprecated and scheduled for removal in a few cycles. Replaced by
+> -	  SLUB.
+> -
+> -	  If you cannot migrate to SLUB, please contact linux-mm@kvack.org
+> -	  and the people listed in the SLAB ALLOCATOR section of MAINTAINERS
+> -	  file, explaining why.
+> -
+> -	  The regular slab allocator that is established and known to work
+> -	  well in all environments. It organizes cache hot objects in
+> -	  per cpu and per node queues.
+> +menu "Slab allocator options"
+>  
+>  config SLUB
+> -	bool "SLUB (Unqueued Allocator)"
+> -	help
+> -	   SLUB is a slab allocator that minimizes cache line usage
+> -	   instead of managing queues of cached objects (SLAB approach).
+> -	   Per cpu caching is realized using slabs of objects instead
+> -	   of queues of objects. SLUB can use memory efficiently
+> -	   and has enhanced diagnostics. SLUB is the default choice for
+> -	   a slab allocator.
+> -
+> -endchoice
+> -
+> -config SLAB
+> -	bool
+> -	default y
+> -	depends on SLAB_DEPRECATED
+> +	def_bool y
+>  
+>  config SLUB_TINY
+> -	bool "Configure SLUB for minimal memory footprint"
+> -	depends on SLUB && EXPERT
+> +	bool "Configure for minimal memory footprint"
+> +	depends on EXPERT
+>  	select SLAB_MERGE_DEFAULT
+>  	help
+> -	   Configures the SLUB allocator in a way to achieve minimal memory
+> +	   Configures the slab allocator in a way to achieve minimal memory
+>  	   footprint, sacrificing scalability, debugging and other features.
+>  	   This is intended only for the smallest system that had used the
+>  	   SLOB allocator and is not recommended for systems with more than
+> @@ -282,7 +247,6 @@ config SLUB_TINY
+>  config SLAB_MERGE_DEFAULT
+>  	bool "Allow slab caches to be merged"
+>  	default y
+> -	depends on SLAB || SLUB
+>  	help
+>  	  For reduced kernel memory fragmentation, slab caches can be
+>  	  merged when they share the same size and other characteristics.
+> @@ -296,7 +260,7 @@ config SLAB_MERGE_DEFAULT
+>  
+>  config SLAB_FREELIST_RANDOM
+>  	bool "Randomize slab freelist"
+> -	depends on SLAB || (SLUB && !SLUB_TINY)
+> +	depends on !SLUB_TINY
+>  	help
+>  	  Randomizes the freelist order used on creating new pages. This
+>  	  security feature reduces the predictability of the kernel slab
+> @@ -304,21 +268,19 @@ config SLAB_FREELIST_RANDOM
+>  
+>  config SLAB_FREELIST_HARDENED
+>  	bool "Harden slab freelist metadata"
+> -	depends on SLAB || (SLUB && !SLUB_TINY)
+> +	depends on !SLUB_TINY
+>  	help
+>  	  Many kernel heap attacks try to target slab cache metadata and
+>  	  other infrastructure. This options makes minor performance
+>  	  sacrifices to harden the kernel slab allocator against common
+> -	  freelist exploit methods. Some slab implementations have more
+> -	  sanity-checking than others. This option is most effective with
+> -	  CONFIG_SLUB.
+> +	  freelist exploit methods.
+>  
+>  config SLUB_STATS
+>  	default n
+> -	bool "Enable SLUB performance statistics"
+> -	depends on SLUB && SYSFS && !SLUB_TINY
+> +	bool "Enable performance statistics"
+> +	depends on SYSFS && !SLUB_TINY
+>  	help
+> -	  SLUB statistics are useful to debug SLUBs allocation behavior in
+> +	  The statistics are useful to debug slab allocation behavior in
+>  	  order find ways to optimize the allocator. This should never be
+>  	  enabled for production use since keeping statistics slows down
+>  	  the allocator by a few percentage points. The slabinfo command
+> @@ -328,8 +290,8 @@ config SLUB_STATS
+>  
+>  config SLUB_CPU_PARTIAL
+>  	default y
+> -	depends on SLUB && SMP && !SLUB_TINY
+> -	bool "SLUB per cpu partial cache"
+> +	depends on SMP && !SLUB_TINY
+> +	bool "Enable per cpu partial caches"
+>  	help
+>  	  Per cpu partial caches accelerate objects allocation and freeing
+>  	  that is local to a processor at the price of more indeterminism
+> @@ -339,7 +301,7 @@ config SLUB_CPU_PARTIAL
+>  
+>  config RANDOM_KMALLOC_CACHES
+>  	default n
+> -	depends on SLUB && !SLUB_TINY
+> +	depends on !SLUB_TINY
+>  	bool "Randomize slab caches for normal kmalloc"
+>  	help
+>  	  A hardening feature that creates multiple copies of slab caches for
+> @@ -354,7 +316,7 @@ config RANDOM_KMALLOC_CACHES
+>  	  limited degree of memory and CPU overhead that relates to hardware and
+>  	  system workload.
+>  
+> -endmenu # SLAB allocator options
+> +endmenu # Slab allocator options
+>  
+>  config SHUFFLE_PAGE_ALLOCATOR
+>  	bool "Page allocator randomization"
+> diff --git a/mm/Kconfig.debug b/mm/Kconfig.debug
+> index 018a5bd2f576..321ab379994f 100644
+> --- a/mm/Kconfig.debug
+> +++ b/mm/Kconfig.debug
+> @@ -45,18 +45,10 @@ config DEBUG_PAGEALLOC_ENABLE_DEFAULT
+>  	  Enable debug page memory allocations by default? This value
+>  	  can be overridden by debug_pagealloc=off|on.
+>  
+> -config DEBUG_SLAB
+> -	bool "Debug slab memory allocations"
+> -	depends on DEBUG_KERNEL && SLAB
+> -	help
+> -	  Say Y here to have the kernel do limited verification on memory
+> -	  allocation as well as poisoning memory on free to catch use of freed
+> -	  memory. This can make kmalloc/kfree-intensive workloads much slower.
+> -
+>  config SLUB_DEBUG
+>  	default y
+>  	bool "Enable SLUB debugging support" if EXPERT
+> -	depends on SLUB && SYSFS && !SLUB_TINY
+> +	depends on SYSFS && !SLUB_TINY
+>  	select STACKDEPOT if STACKTRACE_SUPPORT
+>  	help
+>  	  SLUB has extensive debug support features. Disabling these can
+> @@ -66,7 +58,7 @@ config SLUB_DEBUG
+>  
+>  config SLUB_DEBUG_ON
+>  	bool "SLUB debugging on by default"
+> -	depends on SLUB && SLUB_DEBUG
+> +	depends on SLUB_DEBUG
+>  	select STACKDEPOT_ALWAYS_INIT if STACKTRACE_SUPPORT
+>  	default n
+>  	help
+> @@ -231,8 +223,8 @@ config DEBUG_KMEMLEAK
+>  	  allocations. See Documentation/dev-tools/kmemleak.rst for more
+>  	  details.
+>  
+> -	  Enabling DEBUG_SLAB or SLUB_DEBUG may increase the chances
+> -	  of finding leaks due to the slab objects poisoning.
+> +	  Enabling SLUB_DEBUG may increase the chances of finding leaks
+> +	  due to the slab objects poisoning.
+>  
+>  	  In order to access the kmemleak file, debugfs needs to be
+>  	  mounted (usually at /sys/kernel/debug).
+> diff --git a/mm/Makefile b/mm/Makefile
+> index 33873c8aedb3..e4b5b75aaec9 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -4,7 +4,6 @@
+>  #
+>  
+>  KASAN_SANITIZE_slab_common.o := n
+> -KASAN_SANITIZE_slab.o := n
+>  KASAN_SANITIZE_slub.o := n
+>  KCSAN_SANITIZE_kmemleak.o := n
+>  
+> @@ -12,7 +11,6 @@ KCSAN_SANITIZE_kmemleak.o := n
+>  # the same word but accesses to different bits of that word. Re-enable KCSAN
+>  # for these when we have more consensus on what to do about them.
+>  KCSAN_SANITIZE_slab_common.o := n
+> -KCSAN_SANITIZE_slab.o := n
+>  KCSAN_SANITIZE_slub.o := n
+>  KCSAN_SANITIZE_page_alloc.o := n
+>  # But enable explicit instrumentation for memory barriers.
+> @@ -22,7 +20,6 @@ KCSAN_INSTRUMENT_BARRIERS := y
+>  # flaky coverage that is not a function of syscall inputs. E.g. slab is out of
+>  # free pages, or a task is migrated between nodes.
+>  KCOV_INSTRUMENT_slab_common.o := n
+> -KCOV_INSTRUMENT_slab.o := n
+>  KCOV_INSTRUMENT_slub.o := n
+>  KCOV_INSTRUMENT_page_alloc.o := n
+>  KCOV_INSTRUMENT_debug-pagealloc.o := n
+> @@ -66,6 +63,7 @@ obj-y += page-alloc.o
+>  obj-y += init-mm.o
+>  obj-y += memblock.o
+>  obj-y += $(memory-hotplug-y)
+> +obj-y += slub.o
+>  
+>  ifdef CONFIG_MMU
+>  	obj-$(CONFIG_ADVISE_SYSCALLS)	+= madvise.o
+> @@ -82,8 +80,6 @@ obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
+>  obj-$(CONFIG_MMU_NOTIFIER) += mmu_notifier.o
+>  obj-$(CONFIG_KSM) += ksm.o
+>  obj-$(CONFIG_PAGE_POISONING) += page_poison.o
+> -obj-$(CONFIG_SLAB) += slab.o
+> -obj-$(CONFIG_SLUB) += slub.o
+>  obj-$(CONFIG_KASAN)	+= kasan/
+>  obj-$(CONFIG_KFENCE) += kfence/
+>  obj-$(CONFIG_KMSAN)	+= kmsan/
 
-On 12/2/2023 5:40 PM, Krzysztof Kozlowski wrote:
-> External email: Use caution opening links or attachments
->
->
-> On 28/11/2023 01:31, Randy Dunlap wrote:
->>
->> On 11/26/23 20:05, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20231124:
->>>
->> on ARCH=arm64:
->> when CONFIG_IOMMU_API is not set:
->>
->> ../drivers/memory/tegra/tegra186.c: In function 'tegra186_mc_resume':
->> ../drivers/memory/tegra/tegra186.c:149:17: error: implicit declaration of function 'tegra186_mc_client_sid_override' [-Werror=implicit-function-declaration]
->>    149 |                 tegra186_mc_client_sid_override(mc, client, client->sid);
-> Ashish,
->
-> This was reported few days ago and still no fix or comment. So we are
-> repeating the same case happened weeks ago with other LKP reported issue
-> - I need to ping you, otherwise you will not address reports in your
-> code. We all expect that contributor addresses the reports related to
-> their code.
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-Hi Krzysztof,
+Nit:
 
-Sorry, I am not sure why but I have not received the original mail.
-I searched my entire inbox but couldn't find it. I'll check my mail
-settings. Same thing happened for that LKP report mail as well.
-I came to know about it only when you added me in 'To' and added
-'linux-tegra' mailing list.
-For the LKP report, I had replied to you and was waiting for your
-response.
+- Some arch configs enables DEBUG_SLAB
+- Some documentations refers to {DEBUG_,}SLAB config (i.e. "enable
+DEBUG_SLAB for debugging", or "use SLUB instead of SLAB for reducing OS
+jitter", ... etc)
+- fs/orangefs/orangefs-kernel.h uses #if (defined CONFIG_DEBUG_SLAB)
 
->
-> Knowing this I will double think before I take any code from you.
->
-> I am planning to drop this code next week, unless some fix comes.
+$ git grep DEBUG_SLAB arch/
+arch/arm/configs/ep93xx_defconfig:CONFIG_DEBUG_SLAB=y
+arch/arm/configs/tegra_defconfig:CONFIG_DEBUG_SLAB=y
+arch/microblaze/configs/mmu_defconfig:CONFIG_DEBUG_SLAB=y
 
-I'll send a fix for it today.
+$ git grep SLAB Documentation/
 
->
-> Best regards,
-> Krzysztof
->
+[... some unrelated lines removed ...]
+
+Documentation/admin-guide/cgroup-v1/cpusets.rst:PFA_SPREAD_SLAB, and appropriately marked slab caches will allocate
+Documentation/admin-guide/cgroup-v1/memory.rst:  pages allocated by the SLAB or SLUB allocator are tracked. A copy
+Documentation/admin-guide/kernel-per-CPU-kthreads.rst:          CONFIG_SLAB=y, thus avoiding the slab allocator's periodic
+Documentation/admin-guide/mm/pagemap.rst:   The page is managed by the SLAB/SLUB kernel memory allocator.
+Documentation/dev-tools/kasan.rst:For slab, both software KASAN modes support SLUB and SLAB allocators, while
+Documentation/dev-tools/kfence.rst:of the sample interval, the next allocation through the main allocator (SLAB or
+Documentation/mm/slub.rst:The basic philosophy of SLUB is very different from SLAB. SLAB
+Documentation/mm/slub.rst:                      Sorry SLAB legacy issues)
+Documentation/process/4.Coding.rst: - DEBUG_SLAB can find a variety of memory allocation and use errors; it
+Documentation/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+Documentation/scsi/ChangeLog.lpfc:        CONFIG_DEBUG_SLAB set).
+Documentation/translations/it_IT/process/4.Coding.rst: - DEBUG_SLAB può trovare svariati errori di uso e di allocazione di memoria;
+Documentation/translations/it_IT/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+Documentation/translations/ja_JP/SubmitChecklist:12: CONFIG_PREEMPT, CONFIG_DEBUG_PREEMPT, CONFIG_DEBUG_SLAB,
+Documentation/translations/zh_CN/dev-tools/kasan.rst:对于slab，两种软件KASAN模式都支持SLUB和SLAB分配器，而基于硬件标签的
+Documentation/translations/zh_CN/process/4.Coding.rst: - DEBUG_SLAB 可以发现各种内存分配和使用错误；它应该用于大多数开发内核。
+Documentation/translations/zh_CN/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+Documentation/translations/zh_TW/dev-tools/kasan.rst:對於slab，兩種軟件KASAN模式都支持SLUB和SLAB分配器，而基於硬件標籤的
+Documentation/translations/zh_TW/process/4.Coding.rst: - DEBUG_SLAB 可以發現各種內存分配和使用錯誤；它應該用於大多數開發內核。
+Documentation/translations/zh_TW/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+
+--
+Hyeonggon
