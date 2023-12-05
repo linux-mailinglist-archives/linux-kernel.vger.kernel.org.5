@@ -2,157 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F180805B57
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B46E805B66
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346013AbjLEO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:59:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42724 "EHLO
+        id S1442298AbjLEPAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:00:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346007AbjLEO7Z (ORCPT
+        with ESMTP id S1345810AbjLEPAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:59:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1192D188;
-        Tue,  5 Dec 2023 06:59:31 -0800 (PST)
+        Tue, 5 Dec 2023 10:00:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFDAA9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:00:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701788372; x=1733324372;
+  t=1701788418; x=1733324418;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=VZDh21/Ig8AXYrMCD18ioZIyJdzTpoel4Yv9mfI1z6Q=;
-  b=e9dEpWsWa7GANAIdFYw2tFvEvlrhgQ1pm3fxzyZMeSsm+r/XGRDHdaSW
-   DA+hVb3syqfpXDS6J8W6tVkhBowJaEJjRBh8IkTW0/e/LVRPww3WyzCJL
-   sEUwOTbwcz0a/m/cEBIzOaNrB83XprKQtnNa8ILHow/7Qdxf8+l8rbKym
-   qu/ZMsa71hIVGRSvnMVdrpXYX9GCxMzntpnJj7/ICoDUtiwTUU/TlHYDA
-   Rdths1sfOl0HNKe46LBHTbbie43bHsLTUx/bD4VhbRpo8Cs2P8wAiABnL
-   OryYuCsqeiQvox5UUnFX11Q9uTLgrDcHqvzMHxUjHUFYhyAmDCeqBUKQM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="7250408"
+  bh=MnPLBQgc9Jr4eHHjTeEgqwSFgYc46mDEnA2okGxhpj0=;
+  b=av5WQ51aDaGvlHviOFgzNviTxUMNRFEDwQliR1sOfCvcnIVBMlaN26gB
+   R0Y8yLRLcStU0sgLhlAA+J8jtMrrJEk7smOgR7a3L9gZ4ukUfGNif8f3s
+   mZHPk6x5cNWem28vOOz4vjq7QQ5+B+MXtlNGuRowRsYkHs7P4ALjkhMG2
+   chqIxpP2waV6iAvgaKSjde/hGLHVjxmjSmGXocY/93VIz+bfTUK2zLqnO
+   jdroV36NjeAh+YA1t0TNwMGmTmb81kpWj8Z+MvyLp6Lpmc4btmY60ZPo/
+   iPEbB4SqJGc3HJRUGXHMAdMw5g8Cq5wLh0HlsGyyBlk2ymk2y4ehRPepR
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="15452977"
 X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="7250408"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 06:59:31 -0800
+   d="scan'208";a="15452977"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:00:18 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="944283594"
 X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="944283594"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 05 Dec 2023 06:59:24 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAWtO-0009DG-02;
-        Tue, 05 Dec 2023 14:59:22 +0000
-Date:   Tue, 5 Dec 2023 22:59:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     davidgow@google.com, Rae Moar <rmoar@google.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-sound@vger.kernel.org, David Gow <davidgow@google.com>
-Subject: Re: [PATCH 1/4] kunit: Add APIs for managing devices
-Message-ID: <202312052230.ic1pg0uo-lkp@intel.com>
-References: <20231205-kunit_bus-v1-1-635036d3bc13@google.com>
+   d="scan'208";a="12354420"
+Received: from rjongalo-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.46.235])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:00:15 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 86EC110A43A; Tue,  5 Dec 2023 18:00:12 +0300 (+03)
+Date:   Tue, 5 Dec 2023 18:00:12 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/coco, x86/sev: Use cpu_feature_enabled() to detect
+ SEV guest flavor
+Message-ID: <20231205150012.6lma2wzcellr7pz7@box.shutemov.name>
+References: <20231205143738.2875-1-kirill.shutemov@linux.intel.com>
+ <20231205144619.GCZW83uzAomKmupn7j@fat_crate.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231205-kunit_bus-v1-1-635036d3bc13@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231205144619.GCZW83uzAomKmupn7j@fat_crate.local>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Dec 05, 2023 at 03:46:19PM +0100, Borislav Petkov wrote:
+> On Tue, Dec 05, 2023 at 05:37:38PM +0300, Kirill A. Shutemov wrote:
+> > The SEV code uses cc_platform_has() checks to detect the SEV flavor.
+> > However, these checks can sometimes produce false positives depending on
+> > the context.
+> > 
+> > For example, sev_map_percpu_data() uses CC_ATTR_GUEST_MEM_ENCRYPT to
+> > detect SEV guest, but this check will also pass for TDX guests.
+> 
+> Well, a function prefixed with "sev_" should check cc_vendor first...
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on c8613be119892ccceffbc550b9b9d7d68b995c9e]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/davidgow-google-com/kunit-Add-APIs-for-managing-devices/20231205-153349
-base:   c8613be119892ccceffbc550b9b9d7d68b995c9e
-patch link:    https://lore.kernel.org/r/20231205-kunit_bus-v1-1-635036d3bc13%40google.com
-patch subject: [PATCH 1/4] kunit: Add APIs for managing devices
-config: i386-randconfig-141-20231205 (https://download.01.org/0day-ci/archive/20231205/202312052230.ic1pg0uo-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312052230.ic1pg0uo-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312052230.ic1pg0uo-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> lib/kunit/device.c:100:22: warning: no previous prototype for '__kunit_device_register_internal' [-Wmissing-prototypes]
-     100 | struct kunit_device *__kunit_device_register_internal(struct kunit *test,
-         |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for DRM_I915_DEBUG_GEM
-   Depends on [n]: HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && DRM_I915_WERROR [=n]
-   Selected by [m]:
-   - DRM_I915_DEBUG [=y] && HAS_IOMEM [=y] && DRM_I915 [=m] && EXPERT [=y] && !COMPILE_TEST [=n]
-
-
-vim +/__kunit_device_register_internal +100 lib/kunit/device.c
-
-    99	
- > 100	struct kunit_device *__kunit_device_register_internal(struct kunit *test,
-   101							      const char *name,
-   102							      struct device_driver *drv)
-   103	{
-   104		struct kunit_device *kunit_dev;
-   105		int err = -ENOMEM;
-   106	
-   107		kunit_dev = kzalloc(sizeof(struct kunit_device), GFP_KERNEL);
-   108		if (!kunit_dev)
-   109			return ERR_PTR(err);
-   110	
-   111		kunit_dev->owner = test;
-   112	
-   113		err = dev_set_name(&kunit_dev->dev, "%s.%s", test->name, name);
-   114		if (err) {
-   115			kfree(kunit_dev);
-   116			return ERR_PTR(err);
-   117		}
-   118	
-   119		/* Set the expected driver pointer, so we match. */
-   120		kunit_dev->driver = drv;
-   121	
-   122		kunit_dev->dev.release = kunit_device_release;
-   123		kunit_dev->dev.bus = &kunit_bus_type;
-   124		kunit_dev->dev.parent = &kunit_bus;
-   125	
-   126		err = device_register(&kunit_dev->dev);
-   127		if (err) {
-   128			put_device(&kunit_dev->dev);
-   129			return ERR_PTR(err);
-   130		}
-   131	
-   132		kunit_add_action(test, device_unregister_wrapper, &kunit_dev->dev);
-   133	
-   134		return kunit_dev;
-   135	}
-   136	
+I don't think cc_platform_has() is the right check. On TDX side we use
+X86_FEATURE_TDX_GUEST for this and it works better than stretching
+CC_ATTRs beyond their meaning.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+  Kiryl Shutsemau / Kirill A. Shutemov
