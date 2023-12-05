@@ -2,90 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABEEE804517
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:39:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C506980451E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344134AbjLECjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:39:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
+        id S1376336AbjLECkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343967AbjLECje (ORCPT
+        with ESMTP id S1343967AbjLECkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:39:34 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB63ECA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:39:40 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b8958b32a2so3043736b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:39:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701743980; x=1702348780; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=H3tOJXY8IizW0u24gL21FfDp3aMmLoVYHrrK5m++rGY=;
-        b=EWTqBpeysG0Ffixnn6IDwVLVP7ZaTePIuc5EXLJvsOZRHSMM359zyD4v8jR1M7w3JY
-         Moi6RWYqRJJt1g+k6Tlz8ebdPZWpbdBFeqSIbo5oi/KgO0nuEDUprrwQqOSVdhpC8fql
-         EtrvCB+JUHTb3ilteiMCFEw5Rh5LWPnXSzAdFi4uQjLDDSyrVvHtIZe+tORknzn3ufPP
-         Vxvk3JgGjBQQw06h4fy/FzfdsvV7S28HrwizqtI8zZ2Ebd6kEm/AXnBsyhKkZpNCh95c
-         iP+AqfsmbPjTlsh039M8uITBQo5f1wf11Blivzl7iSqFrIENSIV8RDVPj1w9rBQ8Bhdg
-         T+eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701743980; x=1702348780;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=H3tOJXY8IizW0u24gL21FfDp3aMmLoVYHrrK5m++rGY=;
-        b=oAoO/Oa3XoyzbZnzIppYGH2pgu1SYotJlFW18zTSvePaBNbYyE2nkSWSFM5OAvCLQS
-         Qls6tkUyYe6uaUsZfovnKPJx3d3cODrS1RlpHlQ8/4ZRbzjmJKX49Dn9Dy9Ew1b1FNV/
-         fBh+WY+DTzQgyNdAFs6SHqaK9lxevJcGBCYm0hKuU2B67mDWzMbNyVg+dcDXv1u5X9ci
-         ev0wh0dSKOO97Q+UcM4Uo0u+aREsyHPxa49ruSnF2MT05xx5SgAz6OQO6Au2bjMm4o9I
-         3E+FibXpvBPwWDTjhPjIRxk4IlyggEReA0wDFXc0gRAiFLjdk573mnGiMmyxgkNzTkJQ
-         a+lw==
-X-Gm-Message-State: AOJu0YxzEcMpc5w9fbknE9QxIAgjOfUAIfrFQ1yCA9Hqw0YlTQZjnJEs
-        akIGlJ6dG6AQy1jojcpZE41Y/g==
-X-Google-Smtp-Source: AGHT+IF6wyUzi1d6qZQ9qidrICNEvSECadlo+kwhV9QQutoYLrx7Xql9+XRRN62a5erALuknzEMtBA==
-X-Received: by 2002:a05:6808:1204:b0:3b8:b063:505f with SMTP id a4-20020a056808120400b003b8b063505fmr6332590oil.96.1701743980087;
-        Mon, 04 Dec 2023 18:39:40 -0800 (PST)
-Received: from [10.255.170.18] ([139.177.225.246])
-        by smtp.gmail.com with ESMTPSA id bm10-20020a056a00320a00b006cbafd6996csm8319731pfb.123.2023.12.04.18.39.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 18:39:39 -0800 (PST)
-Message-ID: <ef07f915-e598-402e-bb2b-011bb0aebd7f@bytedance.com>
-Date:   Tue, 5 Dec 2023 10:39:29 +0800
+        Mon, 4 Dec 2023 21:40:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB2AFCA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:40:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 531B8C433CA;
+        Tue,  5 Dec 2023 02:40:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701744025;
+        bh=7qPKJ3S8i489bnlJf7/hjHyGn4ZzVXxeyHWMQ4xpB9c=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=oG7pXZNZFIrMvULwRVn7OecljZ6pHpBXbJVi8D3HPtCieQXObKyz7G1D4BtAlcVNl
+         JapKceXN0Nfyk7jz1QPw9H/WFmNAwOhDGGOWyPE+Bl6boUvOyTVJVw69WDbDJWYANE
+         oSG1pvF+Si2GOFb2pCVkCX/niRgDMXIBIErbis2orwx4QSCy6QkGi3B/QJ19IR9BSZ
+         dUOqRXdQZquGaRBOEAystgW+dzDVL2d1EsGFiZpJV58Jp3nVzwOs0GH0Fniu5i8pl5
+         Mfu8WfNCOuYj7A4ruEaOrVxbXzcGMO0F+ACzfa0xUvhV9eC/D7IWxx0NoGRi28Dw+S
+         bwjPdUzaizKCg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2E8DDDD4EF1;
+        Tue,  5 Dec 2023 02:40:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 24/35] block: null_blk: fix opencoded
- find_and_set_bit() in get_tag()
-Content-Language: en-US
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Nitesh Shetty <nj.shetty@samsung.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
-        linux-block@vger.kernel.org
-Cc:     Jan Kara <jack@suse.cz>,
-        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-        Matthew Wilcox <willy@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-        Alexey Klimov <klimov.linux@gmail.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>
-References: <20231203192422.539300-1-yury.norov@gmail.com>
- <20231203193307.542794-1-yury.norov@gmail.com>
- <20231203193307.542794-23-yury.norov@gmail.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <20231203193307.542794-23-yury.norov@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4] net: stmmac: fix FPE events losing
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170174402518.31470.16495979069997859149.git-patchwork-notify@kernel.org>
+Date:   Tue, 05 Dec 2023 02:40:25 +0000
+References: <CY5PR12MB637225A7CF529D5BE0FBE59CBF81A@CY5PR12MB6372.namprd12.prod.outlook.com>
+In-Reply-To: <CY5PR12MB637225A7CF529D5BE0FBE59CBF81A@CY5PR12MB6372.namprd12.prod.outlook.com>
+To:     Jianheng Zhang <Jianheng.Zhang@synopsys.com>
+Cc:     alexandre.torgue@foss.st.com, Jose.Abreu@synopsys.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, mcoquelin.stm32@gmail.com, horms@kernel.org,
+        ahalaney@redhat.com, bartosz.golaszewski@linaro.org,
+        shenwei.wang@nxp.com, j.zink@pengutronix.de,
+        rmk+kernel@armlinux.org.uk, jh@henneberg-systemdesign.com,
+        weifeng.voon@intel.com, mohammad.athari.ismail@intel.com,
+        boon.leong.ong@intel.com, tee.min.tan@intel.com,
+        James.Li1@synopsys.com, Martin.McKenny@synopsys.com,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,79 +61,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/4 03:32, Yury Norov wrote:
-> get_tag() opencodes find_and_set_bit(). Switch the code to use the
-> dedicated function, and get rid of get_tag entirely.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 1 Dec 2023 03:22:03 +0000 you wrote:
+> The status bits of register MAC_FPE_CTRL_STS are clear on read. Using
+> 32-bit read for MAC_FPE_CTRL_STS in dwmac5_fpe_configure() and
+> dwmac5_fpe_send_mpacket() clear the status bits. Then the stmmac interrupt
+> handler missing FPE event status and leads to FPE handshaking failure and
+> retries.
+> To avoid clear status bits of MAC_FPE_CTRL_STS in dwmac5_fpe_configure()
+> and dwmac5_fpe_send_mpacket(), add fpe_csr to stmmac_fpe_cfg structure to
+> cache the control bits of MAC_FPE_CTRL_STS and to avoid reading
+> MAC_FPE_CTRL_STS in those methods.
 > 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> [...]
 
-Looks good to me!
+Here is the summary with links:
+  - [v4] net: stmmac: fix FPE events losing
+    https://git.kernel.org/netdev/net/c/37e4b8df27bc
 
-Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-> ---
->  drivers/block/null_blk/main.c | 41 +++++++++++------------------------
->  1 file changed, 13 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
-> index 3021d58ca51c..671dbb9ab928 100644
-> --- a/drivers/block/null_blk/main.c
-> +++ b/drivers/block/null_blk/main.c
-> @@ -760,19 +760,6 @@ static void put_tag(struct nullb_queue *nq, unsigned int tag)
->  		wake_up(&nq->wait);
->  }
->  
-> -static unsigned int get_tag(struct nullb_queue *nq)
-> -{
-> -	unsigned int tag;
-> -
-> -	do {
-> -		tag = find_first_zero_bit(nq->tag_map, nq->queue_depth);
-> -		if (tag >= nq->queue_depth)
-> -			return -1U;
-> -	} while (test_and_set_bit_lock(tag, nq->tag_map));
-> -
-> -	return tag;
-> -}
-> -
->  static void free_cmd(struct nullb_cmd *cmd)
->  {
->  	put_tag(cmd->nq, cmd->tag);
-> @@ -782,24 +769,22 @@ static enum hrtimer_restart null_cmd_timer_expired(struct hrtimer *timer);
->  
->  static struct nullb_cmd *__alloc_cmd(struct nullb_queue *nq)
->  {
-> +	unsigned int tag = find_and_set_bit_lock(nq->tag_map, nq->queue_depth);
->  	struct nullb_cmd *cmd;
-> -	unsigned int tag;
-> -
-> -	tag = get_tag(nq);
-> -	if (tag != -1U) {
-> -		cmd = &nq->cmds[tag];
-> -		cmd->tag = tag;
-> -		cmd->error = BLK_STS_OK;
-> -		cmd->nq = nq;
-> -		if (nq->dev->irqmode == NULL_IRQ_TIMER) {
-> -			hrtimer_init(&cmd->timer, CLOCK_MONOTONIC,
-> -				     HRTIMER_MODE_REL);
-> -			cmd->timer.function = null_cmd_timer_expired;
-> -		}
-> -		return cmd;
-> +
-> +	if (tag >= nq->queue_depth)
-> +		return NULL;
-> +
-> +	cmd = &nq->cmds[tag];
-> +	cmd->tag = tag;
-> +	cmd->error = BLK_STS_OK;
-> +	cmd->nq = nq;
-> +	if (nq->dev->irqmode == NULL_IRQ_TIMER) {
-> +		hrtimer_init(&cmd->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-> +		cmd->timer.function = null_cmd_timer_expired;
->  	}
->  
-> -	return NULL;
-> +	return cmd;
->  }
->  
->  static struct nullb_cmd *alloc_cmd(struct nullb_queue *nq, struct bio *bio)
+
