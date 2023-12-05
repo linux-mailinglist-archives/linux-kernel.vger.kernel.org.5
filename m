@@ -2,94 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F212806184
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674D280618A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346480AbjLEWPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 17:15:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
+        id S1346575AbjLEWP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 17:15:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjLEWPT (ORCPT
+        with ESMTP id S1346458AbjLEWP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 17:15:19 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F016D181;
-        Tue,  5 Dec 2023 14:15:25 -0800 (PST)
+        Tue, 5 Dec 2023 17:15:56 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAE51B8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 14:16:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
-        bh=rZoIuLBpqfTTD+G5pnGLC4N3Ey8O5mo3kg+Q6utlpas=; b=jiyhtCeIWsiKOT/rohzO/I+nDh
-        AxEBv15Ye8BphlvJO+A+wMPPR/fAvFrUpGa0hCfwk91iGjGojhOa/ukdRiYT2jMYQAOi6pkgz5t0B
-        nvBO0F7sd6DrP6Kx+G/J2VHtEnjn2oJ6JIYkPWBn0DO2OsaoJUO2DrRQYwV5ClA/b1ngnNb4VhjLG
-        6QSimRhRuC2TZwPRh9k9x1Q6hTJrdF73bi+k2sHzqSc2o+AkzhWuylWi1R6INJYnkZBfyCUbZo3s4
-        qqwLnvZNdkivu7Fq8bZgazpXS9exwm0LLb+uMi6vntxf1+PMRQ2o7lQQXxGfH2KrvNtPRrlIfTdBR
-        WiW60Rvg==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAdhJ-007U2Q-2b;
-        Tue, 05 Dec 2023 22:15:21 +0000
-Date:   Tue, 5 Dec 2023 22:15:21 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>, tanzirh@google.com,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nick DeSaulniers <nnn@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
-Message-ID: <20231205221521.GH1674809@ZenIV>
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205213807.GE1674809@ZenIV>
- <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
- <ZW-d1NZRIvmJlfcW@smile.fi.intel.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=3bsHSMmQfyz+csHYq4RIEPn25hKRIp0mkKn6dPHakG8=; b=ika0qEa4YGJ9Qb92RacjZYCYtc
+        PYSuO1PCZCew1Bgsif3fcgyj1opbqeD3LFwo/6oLpd4wacj7PjeSVA/7HelzAC7Q3d5KtS9iyRt9J
+        W4iiXcoWgLDIsUCjiWmWNJBSlIHaJWkzNq2OZ4lX7CThiKIRj73J+hZQutzeAPx5ud37+lSNXQ4eg
+        BcVDoGme/Azu2Dd1jDqyKU/IvZShSjITUVHt5voSYIvOdRJ5JOHOVxnKme/SrKD6f+ml93MnKxoSf
+        PNge2S7+MqEzqMz9MtuVqo/h8KusR6QCCoAsGoi5pfReezH0lxJEe5r8mfnHQ3eMohxuT1RKPmRsf
+        LNKc402g==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAdhr-008Urg-0M;
+        Tue, 05 Dec 2023 22:15:55 +0000
+Message-ID: <fb36c8ea-02d7-408a-8354-f35712cdd510@infradead.org>
+Date:   Tue, 5 Dec 2023 14:15:54 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZW-d1NZRIvmJlfcW@smile.fi.intel.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: kernel/context_tracking.c:80: warning: Function parameter or
+ member 'state' not described in '__ct_user_enter'
+Content-Language: en-US
+To:     paulmck@kernel.org, kernel test robot <lkp@intel.com>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>
+References: <202312041922.YZCcEPYD-lkp@intel.com>
+ <8e26257d-2809-4965-9f7d-aadbbb3def6f@paulmck-laptop>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <8e26257d-2809-4965-9f7d-aadbbb3def6f@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 12:01:56AM +0200, Andy Shevchenko wrote:
-> On Tue, Dec 05, 2023 at 01:51:10PM -0800, Nick Desaulniers wrote:
-> > On Tue, Dec 5, 2023 at 1:38 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> > > On Tue, Dec 05, 2023 at 08:58:53PM +0000, tanzirh@google.com wrote:
-> 
-> ...
-> 
-> > > > IWYU is implemented using the IWYUScripts github repository which is a tool that is
-> > > > currently undergoing development. These changes seek to improve build times.
-> > > >
-> > > > This change to lib/string.c resulted in a preprocessed size of
-> > > > lib/string.i from 26371 lines to 5232 lines (-80%).
-> > >
-> > > It also breeds includes of asm/*.h, by the look of the output, which is
-> > > not a good thing in general ;-/  E.g. #include <asm/uaccess.h> *anywhere*
-> > > outside of linux/uaccess.h is a bad idea.
-> > 
-> > It's not clear to me when it's ok to #include <asm/*.h>.  Is there a
-> > convention here that I'm missing?
-> 
-> The mandatory ones can be used, but not all of them.
-> In some cases you even must include asm and not linux
-> (unaligned.h, byteorder.h, maybe others...).
-> 
-> As I told, it comes with experience, we lack of the
-> respective documentation (or file which is good for
-> automation checks, like with IWYU).
 
-It would certainly be nice to have such information in the tree;
-"where should I pick $SYMBOL from?" is something one needs to
-find out often enough.  To a large extent it's covered by "where
-in include/*.h do we have it defined?", but that's not all there
-is to it.  E.g. "get_user() => use linux/uaccess.h".
 
-There's also stuff like "$SYMBOL should not be used outside of arch/*
-and include/*, better use $OTHER_SYMBOL", etc.
+On 12/4/23 20:38, Paul E. McKenney wrote:
+> On Mon, Dec 04, 2023 at 08:02:33PM +0800, kernel test robot wrote:
+>> Hi Frederic,
+>>
+>> FYI, the error/warning still remains.
+>>
+>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>> head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
+>> commit: e67198cc05b8ecbb7b8e2d8ef9fb5c8d26821873 context_tracking: Take idle eqs entrypoints over RCU
+>> date:   1 year, 5 months ago
+>> config: x86_64-buildonly-randconfig-006-20230906 (https://download.01.org/0day-ci/archive/20231204/202312041922.YZCcEPYD-lkp@intel.com/config)
+>> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+>> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231204/202312041922.YZCcEPYD-lkp@intel.com/reproduce)
+>>
+>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+>> the same patch/commit), kindly add following tags
+>> | Reported-by: kernel test robot <lkp@intel.com>
+>> | Closes: https://lore.kernel.org/oe-kbuild-all/202312041922.YZCcEPYD-lkp@intel.com/
+>>
+>> All warnings (new ones prefixed by >>):
+>>
+>>>> kernel/context_tracking.c:80: warning: Function parameter or member 'state' not described in '__ct_user_enter'
+>>>> kernel/context_tracking.c:184: warning: Function parameter or member 'state' not described in '__ct_user_exit'
+> 
+> Does the patch below help?
+
+Yes. Thanks.
+
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 9d879548a8cc89e5fdb0d806fc20887d67991c10
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Mon Dec 4 20:34:58 2023 -0800
+> 
+>     context_tracking: Fix kerneldoc headers for __ct_user_{enter,exit}()
+>     
+>     Document the "state" parameter of both of these functions.
+>     
+>     Reported-by: kernel test robot <lkp@intel.com>
+>     Closes: https://lore.kernel.org/oe-kbuild-all/202312041922.YZCcEPYD-lkp@intel.com/
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>     Cc: Frederic Weisbecker <frederic@kernel.org>
+> 
+> diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
+> index 6ef0b35fc28c..70ae70d03823 100644
+> --- a/kernel/context_tracking.c
+> +++ b/kernel/context_tracking.c
+> @@ -458,6 +458,8 @@ static __always_inline void context_tracking_recursion_exit(void)
+>   * __ct_user_enter - Inform the context tracking that the CPU is going
+>   *		     to enter user or guest space mode.
+>   *
+> + * @state: userspace context-tracking state to enter.
+> + *
+>   * This function must be called right before we switch from the kernel
+>   * to user or guest space, when it's guaranteed the remaining kernel
+>   * instructions to execute won't use any RCU read side critical section
+> @@ -595,6 +597,8 @@ NOKPROBE_SYMBOL(user_enter_callable);
+>   * __ct_user_exit - Inform the context tracking that the CPU is
+>   *		    exiting user or guest mode and entering the kernel.
+>   *
+> + * @state: userspace context-tracking state being exited from.
+> + *
+>   * This function must be called after we entered the kernel from user or
+>   * guest space before any use of RCU read side critical section. This
+>   * potentially include any high level kernel code like syscalls, exceptions,
+
+-- 
+~Randy
