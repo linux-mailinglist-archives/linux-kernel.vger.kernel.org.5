@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 701BD804E77
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A00804E7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346295AbjLEJrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33284 "EHLO
+        id S1346397AbjLEJrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344907AbjLEJrE (ORCPT
+        with ESMTP id S1344971AbjLEJrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:47:04 -0500
+        Tue, 5 Dec 2023 04:47:07 -0500
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 549C7A7;
-        Tue,  5 Dec 2023 01:47:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 793F0AA;
+        Tue,  5 Dec 2023 01:47:13 -0800 (PST)
 Received: from SIOS1075.ysato.name (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-        by sakura.ysato.name (Postfix) with ESMTPSA id B25571C0936;
-        Tue,  5 Dec 2023 18:47:08 +0900 (JST)
+        by sakura.ysato.name (Postfix) with ESMTPSA id E790D1C0939;
+        Tue,  5 Dec 2023 18:47:10 +0900 (JST)
 From:   Yoshinori Sato <ysato@users.sourceforge.jp>
 To:     linux-sh@vger.kernel.org
 Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -77,9 +77,9 @@ Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
         linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-fbdev@vger.kernel.org
-Subject: [DO NOT MERGE v5 33/37] sh: j2_mimas_v2.dts update
-Date:   Tue,  5 Dec 2023 18:45:52 +0900
-Message-Id: <42f550adbba8e18b0fd5c4f62602a6eed8f0b777.1701768028.git.ysato@users.sourceforge.jp>
+Subject: [DO NOT MERGE v5 34/37] sh: Add dtbs target support.
+Date:   Tue,  5 Dec 2023 18:45:53 +0900
+Message-Id: <ca13e0f5ecdecb505a09abfea5d1b42d8886b336.1701768028.git.ysato@users.sourceforge.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1701768028.git.ysato@users.sourceforge.jp>
 References: <cover.1701768028.git.ysato@users.sourceforge.jp>
@@ -96,22 +96,21 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
- arch/sh/boot/dts/j2_mimas_v2.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sh/boot/dts/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/sh/boot/dts/j2_mimas_v2.dts b/arch/sh/boot/dts/j2_mimas_v2.dts
-index fa9562f78d53..5dfe20866a1c 100644
---- a/arch/sh/boot/dts/j2_mimas_v2.dts
-+++ b/arch/sh/boot/dts/j2_mimas_v2.dts
-@@ -16,7 +16,7 @@ cpus {
- 
- 		cpu@0 {
- 			device_type = "cpu";
--			compatible = "jcore,j2";
-+			compatible = "jcore,j2", "renesas,sh2";
- 			reg = <0>;
- 			clock-frequency = <50000000>;
- 			d-cache-size = <8192>;
+diff --git a/arch/sh/boot/dts/Makefile b/arch/sh/boot/dts/Makefile
+index 4a6dec9714a9..e6b93360c213 100644
+--- a/arch/sh/boot/dts/Makefile
++++ b/arch/sh/boot/dts/Makefile
+@@ -1,2 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ obj-$(CONFIG_USE_BUILTIN_DTB) += $(addsuffix .dtb.o, $(CONFIG_BUILTIN_DTB_SOURCE))
++
++dtb-$(CONFIG_CPU_J2) += j2_mimas_v2.dtb
++dtb-$(CONFIG_CPU_SUBTYPE_SH7751R) += landisk.dtb
++dtb-$(CONFIG_CPU_SUBTYPE_SH7751R) += rts7751r2dplus.dtb
++dtb-$(CONFIG_CPU_SUBTYPE_SH7751R) += usl-5p.dtb
 -- 
 2.39.2
 
