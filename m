@@ -2,305 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB1E805EB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:38:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0D9805EB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345594AbjLETik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
+        id S1345635AbjLETj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjLETii (ORCPT
+        with ESMTP id S229569AbjLETjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:38:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ED0188
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:38:43 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B06BC433C8;
-        Tue,  5 Dec 2023 19:38:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701805123;
-        bh=QYY2sRMsdgFy9y2bOASOpdSBw0ICd1FgHT9FMN+VX5E=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=STv+u8LuSFvHUxHuc6SmugrIq8eoDg5SMYHTcehtIrZhDVdFsaTV4OWviuHOVaRS1
-         x69bPn29h+vCQYEb53y22nSyv5WkLAp5PnrF2WWkwLu5TKF9MB0LNh654xSXGNndIJ
-         1Nsc1w5nsEkIpv0gnDM29604rHrtOCXSJs7HSpbYYWxODJOUJpKNIJ2GQPeFIgiyRS
-         RQZiWemr3+Iam3ePePZPTdNYxRp7kGQZrZqx6IfzFoqVM5ziHcSEZzgcnUwm9n6lEx
-         BE1bsHIVaAlC+zL4TyXvVEszBEHYDDhk4pjkb/FDkdze1+G6ddXgfO1HiyvszIfi6O
-         34kK3qiFoLGZw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 074FCCE0C53; Tue,  5 Dec 2023 11:38:43 -0800 (PST)
-Date:   Tue, 5 Dec 2023 11:38:42 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@aculab.com,
-        richard@nod.at, mjguzik@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
+        Tue, 5 Dec 2023 14:39:24 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B1B188
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:39:30 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c67bf38266so2938081a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 11:39:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701805170; x=1702409970; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xfq67iLmriDqfduTRY0M8dju8QhNwul2zcs5mKn+Qdk=;
+        b=qLk7Pqh4Pd9QsKsbP60577NqraCUiybzAGtjqVrmb3yTT0fZZDlCA6TsvS3vuT2iOB
+         hky+24GulvywVn0x1HL0oSBsjpNVQ04MJOgVctAytLuBKCC0A+y/Pt0g3bt4ATD3Vxaj
+         IcbSQMiQdvW4I+bTkBHWzxKZH+AsfGiDp0HuTB9q4TGD6VMcyVNzi/Goy5jxmvjqGVXx
+         kxC+Po70jB5erw0iT79pdQ4U6jxwvQ2TenwMOfhXivYl6F34MyiOQ7l76PMAKah8nfri
+         p66f0Nqqyb4v0l4v+r1q7uTuDTZij81VAvwIiwgqeG280+UTiohhLakX5684GNT0y4w1
+         Po8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701805170; x=1702409970;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xfq67iLmriDqfduTRY0M8dju8QhNwul2zcs5mKn+Qdk=;
+        b=B7LSolOD/g6kW+Lm4PswlbzVPhokfk5s1nMV135jRZv8tQFFCpXbyWMdeidsd0F6uk
+         87t4nhWNE4DuZlNfrkskzf9n329xLlBSbG/eM+oHYj5/UMrwmcq58cRUOY4qn5rIhULy
+         aQeEibrL9psez+WLICqcruFlioClAOHsvMecMIJqrVTuloY36gBPGHXiEBboTzDzuibz
+         U8YP2hnbG3WmwfPF8aFh0uLXMCnaQzzZyeps9a9rbSxnuXrG/mWOZyyAxuz3Hb6YlD+1
+         lzCSl3Er3R/uuhgk2gGkFJbdFllgiG7T3f6jXxRs/tTq4ECST1wFusYZ016OZMcKP1J8
+         XHMg==
+X-Gm-Message-State: AOJu0Ywe3n7eHhEO+zQcMPvnCXhhWuVJaDF9s4+Rz6UDzGV+0xdoQFx5
+        t8zMLstcxSKc21zrzo/On/fspNk=
+X-Google-Smtp-Source: AGHT+IFIztxj2eUKXZ2GS1Ca6Xtk1G+ZaZVM3GaQJJGqcaBfxYyvfWdWIYuJqHVvsmWQlJgRFVSGrCQ=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:1220:0:b0:5c2:2f9:c374 with SMTP id
+ h32-20020a631220000000b005c202f9c374mr4433763pgl.9.1701805169961; Tue, 05 Dec
+ 2023 11:39:29 -0800 (PST)
+Date:   Tue, 5 Dec 2023 11:39:28 -0800
+In-Reply-To: <656f66023f7bd_3dd6422942a@willemb.c.googlers.com.notmuch>
+Mime-Version: 1.0
+References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
+ <20231203165129.1740512-3-yoong.siang.song@intel.com> <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
+ <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
+ <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
+ <5a0faf8cc9ec3ab0d5082c66b909c582c8f1eae6.camel@siemens.com>
+ <CAKH8qBuXL8bOYtfKKPS8y=KJqouDptyciCjr0wNKVHtNj6BmqA@mail.gmail.com> <656f66023f7bd_3dd6422942a@willemb.c.googlers.com.notmuch>
+Message-ID: <ZW98UW033wCy9vI-@google.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
+ Time support to XDP ZC
+From:   Stanislav Fomichev <sdf@google.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Florian Bezdeka <florian.bezdeka@siemens.com>,
+        yoong.siang.song@intel.com,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        davem@davemloft.net, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Bjorn Topel <bjorn@kernel.org>, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
-Message-ID: <1375e409-2593-45e1-b27e-3699c17c47dd@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <e939c924-1dfa-4a6a-9309-2430f19467f5@paulmck-laptop>
- <87wmu2ywrk.ffs@tglx>
- <fa1249f7-9a5d-4696-9246-4913365b6715@paulmck-laptop>
- <20231205100114.0bd3c4a2@gandalf.local.home>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205100114.0bd3c4a2@gandalf.local.home>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 10:01:14AM -0500, Steven Rostedt wrote:
-> On Mon, 4 Dec 2023 17:01:21 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> 
-> > On Tue, Nov 28, 2023 at 11:53:19AM +0100, Thomas Gleixner wrote:
-> > > Paul!
-> > > 
-> > > On Tue, Nov 21 2023 at 07:19, Paul E. McKenney wrote:  
-> > > > On Tue, Nov 21, 2023 at 10:00:59AM -0500, Steven Rostedt wrote:  
-> > > >> Right now, the use of cond_resched() is basically a whack-a-mole game where
-> > > >> we need to whack all the mole loops with the cond_resched() hammer. As
-> > > >> Thomas said, this is backwards. It makes more sense to just not preempt in
-> > > >> areas that can cause pain (like holding a mutex or in an RCU critical
-> > > >> section), but still have the general kernel be fully preemptable.  
+On 12/05, Willem de Bruijn wrote:
+> Stanislav Fomichev wrote:
+> > On Tue, Dec 5, 2023 at 7:34=E2=80=AFAM Florian Bezdeka
+> > <florian.bezdeka@siemens.com> wrote:
+> > >
+> > > On Tue, 2023-12-05 at 15:25 +0000, Song, Yoong Siang wrote:
+> > > > On Monday, December 4, 2023 10:55 PM, Willem de Bruijn wrote:
+> > > > > Jesper Dangaard Brouer wrote:
+> > > > > >
+> > > > > >
+> > > > > > On 12/3/23 17:51, Song Yoong Siang wrote:
+> > > > > > > This patch enables Launch Time (Time-Based Scheduling) suppor=
+t to XDP zero
+> > > > > > > copy via XDP Tx metadata framework.
+> > > > > > >
+> > > > > > > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
+> > > > > > > ---
+> > > > > > >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
+> > > > > >
+> > > > > > As requested before, I think we need to see another driver impl=
+ementing
+> > > > > > this.
+> > > > > >
+> > > > > > I propose driver igc and chip i225.
 > > > >
-> > > > Which is quite true, but that whack-a-mole game can be ended without
-> > > > getting rid of build-time selection of the preemption model.  Also,
-> > > > that whack-a-mole game can be ended without eliminating all calls to
-> > > > cond_resched().  
-> > > 
-> > > Which calls to cond_resched() should not be eliminated?  
-> > 
-> > The ones which, if eliminated, will result in excessive latencies.
-> > 
-> > This question is going to take some time to answer.  One type of potential
-> > issue is where the cond_resched() precedes something like mutex_lock(),
-> > where that mutex_lock() takes the fast path and preemption follows
-> > shortly thereafter.  It would clearly have been better to have preempted
-> > before acquisition.
-> 
-> Note that the new preemption model is a new paradigm and we need to start
-> thinking a bit differently if we go to it.
+> > > > Sure. I will include igc patches in next version.
+> > > >
+> > > > > >
+> > > > > > The interesting thing for me is to see how the LaunchTime max 1=
+ second
+> > > > > > into the future[1] is handled code wise. One suggestion is to a=
+dd a
+> > > > > > section to Documentation/networking/xsk-tx-metadata.rst per dri=
+ver that
+> > > > > > mentions/documents these different hardware limitations.  It is=
+ natural
+> > > > > > that different types of hardware have limitations.  This is a c=
+lose-to
+> > > > > > hardware-level abstraction/API, and IMHO as long as we document=
+ the
+> > > > > > limitations we can expose this API without too many limitations=
+ for more
+> > > > > > capable hardware.
+> > > >
+> > > > Sure. I will try to add hardware limitations in documentation.
+> > > >
+> > > > >
+> > > > > I would assume that the kfunc will fail when a value is passed th=
+at
+> > > > > cannot be programmed.
+> > > > >
+> > > >
+> > > > In current design, the xsk_tx_metadata_request() dint got return va=
+lue.
+> > > > So user won't know if their request is fail.
+> > > > It is complex to inform user which request is failing.
+> > > > Therefore, IMHO, it is good that we let driver handle the error sil=
+ently.
+> > > >
+> > >
+> > > If the programmed value is invalid, the packet will be "dropped" / wi=
+ll
+> > > never make it to the wire, right?
+>=20
+> Programmable behavior is to either drop or cap to some boundary
+> value, such as the farthest programmable time in the future: the
+> horizon. In fq:
+>=20
+>                 /* Check if packet timestamp is too far in the future. */
+>                 if (fq_packet_beyond_horizon(skb, q, now)) {
+>                         if (q->horizon_drop) {
+>                                         q->stat_horizon_drops++;
+>                                         return qdisc_drop(skb, sch, to_fr=
+ee);
+>                         }
+>                         q->stat_horizon_caps++;
+>                         skb->tstamp =3D now + q->horizon;
+>                 }
+>                 fq_skb_cb(skb)->time_to_send =3D skb->tstamp;
+>=20
+> Drop is the more obviously correct mode.
+>=20
+> Programming with a clock source that the driver does not support will
+> then be a persistent failure.
+>=20
+> Preferably, this driver capability can be queried beforehand (rather
+> than only through reading error counters afterwards).
+>=20
+> Perhaps it should not be a driver task to convert from possibly
+> multiple clock sources to the device native clock. Right now, we do
+> use per-device timecounters for this, implemented in the driver.
+>=20
+> As for which clocks are relevant. For PTP, I suppose the device PHC,
+> converted to nsec. For pacing offload, TCP uses CLOCK_MONOTONIC.
 
-We can of course think differently, but existing hardware and software
-will probably be a bit more stubborn.
+Do we need to expose some generic netdev netlink apis to query/adjust
+nic clock sources (or maybe there is something existing already)?
+Then the userspace can be responsible for syncing/converting the
+timestamps to the internal nic clocks. +1 to trying to avoid doing
+this in the drivers.
 
-> One thing I would like to look into with the new work is to have holding a
-> mutex ignore the NEED_RESCHED_LAZY (similar to what is done with spinlock
-> converted to mutex in the RT kernel). That way you are less likely to be
-> preempted while holding a mutex.
+> > > That is clearly a situation that the user should be informed about. F=
+or
+> > > RT systems this normally means that something is really wrong regardi=
+ng
+> > > timing / cycle overflow. Such systems have to react on that situation=
+.
+> >=20
+> > In general, af_xdp is a bit lacking in this 'notify the user that they
+> > somehow messed up' area :-(
+> > For example, pushing a tx descriptor with a wrong addr/len in zc mode
+> > will not give any visible signal back (besides driver potentially
+> > spilling something into dmesg as it was in the mlx case).
+> > We can probably start with having some counters for these events?
+>=20
+> This is because the AF_XDP completion queue descriptor format is only
+> a u64 address?
 
-I like the concept, but those with mutex_lock() of rarely-held mutexes
-in their fastpaths might have workloads that have a contrary opinion.
+Yeah. XDP_COPY mode has the descriptor validation which is exported via
+recvmsg errno, but zerocopy path seems to be too deep in the stack
+to report something back. And there is no place, as you mention,
+in the completion ring to report the status.
 
-> > Another is the aforementioned situations where removing the cond_resched()
-> > increases latency.  Yes, capping the preemption latency is a wonderful
-> > thing, and the people I chatted with are all for that, but it is only
-> > natural that there would be a corresponding level of concern about the
-> > cases where removing the cond_resched() calls increases latency.
-> 
-> With the "capped preemption" I'm not sure that would still be the case.
-> cond_resched() currently only preempts if NEED_RESCHED is set. That means
-> the system had to already be in a situation that a schedule needs to
-> happen. There's lots of places in the kernel that run for over a tick
-> without any cond_resched(). The cond_resched() is usually added for
-> locations that show tremendous latency (where either a watchdog triggered,
-> or showed up in some analysis that had a latency that was much greater than
-> a tick).
+> Could error conditions be reported on tx completion in the metadata,
+> using xsk_tx_metadata_complete?
 
-For non-real-time workloads, the average case is important, not just the
-worst case.  In the new lazily preemptible mode of thought, a preemption
-by a non-real-time task will wait a tick.  Earlier, it would have waited
-for the next cond_resched().  Which, in the average case, might have
-arrived much sooner than one tick.
+That would be one way to do it, yes. But then the error reporting depends
+on the metadata opt-in. Having a separate ring to export the errors,
+or having a v2 tx-completions layout with extra 'status' field would also
+work.
 
-> The point is, if/when we switch to the new preemption model, we would need
-> to re-evaluate if any cond_resched() is needed. Yes, testing needs to be
-> done to prevent regressions. But the reasons I see cond_resched() being
-> added today, should no longer exist with this new model.
-
-This I agree with.  Also, with the new paradigm and new mode of thought
-in place, it should be safe to drop any cond_resched() that is in a loop
-that consumes more than a tick of CPU time per iteration.
-
-> > There might be others as well.  These are the possibilities that have
-> > come up thus far.
-> > 
-> > > They all suck and keeping some of them is just counterproductive as
-> > > again people will sprinkle them all over the place for the very wrong
-> > > reasons.  
-> > 
-> > Yes, but do they suck enough and are they counterproductive enough to
-> > be useful and necessary?  ;-)
-> 
-> They are only useful and necessary because of the way we handle preemption
-> today. With the new preemption model, they are all likely to be useless and
-> unnecessary ;-)
-
-The "all likely" needs some demonstration.  I agree that a great many
-of them would be useless and unnecessary.  Maybe even the vast majority.
-But that is different than "all".  ;-)
-
-> > > > Additionally, if the end goal is to be fully preemptible as in
-> > > > eventually eliminating lazy preemption, you have a lot more
-> > > > convincing to do.  
-> > > 
-> > > That's absolutely not the case. Even RT uses the lazy mode to prevent
-> > > overeager preemption for non RT tasks.  
-> > 
-> > OK, that is very good to hear.
-> 
-> But the paradigm is changing. The kernel will be fully preemptible, it just
-> won't be preempting often. That is, if the CPU is running kernel code for
-> too long, and the scheduler tick wants a reschedule, the kernel has one
-> more tick to get back to user space before it will become fully
-> preemptible. That is, we force a "cond_resched()".
-
-And as stated quite a few times previously in this and earlier threads,
-yes, removing the need to drop cond_resched() into longer-than-average
-loops is a very good thing.
-
-> > > The whole point of the exercise is to keep the kernel always fully
-> > > preemptible, but only enforce the immediate preemption at the next
-> > > possible preemption point when necessary.
-> > > 
-> > > The decision when it is necessary is made by the scheduler and not
-> > > delegated to the whim of cond/might_resched() placement.  
-> > 
-> > I am not arguing that the developer placing a given cond_resched()
-> > always knows best, but you have some work to do to convince me that the
-> > scheduler always knows best.
-> 
-> The cond_resched() already expects the scheduler to know best. It doesn't
-> resched unless NEED_RESCHED is set and that's determined by the scheduler.
-> If the code knows best, then it should just call schedule() and be done
-> with it.
-
-A distinction without a difference.  After all, if the scheduler really
-knew best, it would be able to intuit the cond_resched() without that
-cond_resched() actually being there.  Which is arguably the whole point
-of this patch series, aside from mutexes, the possibility of extending
-what are now short preemption times, and who knows what all else.
-
-> > > That is serving both worlds best IMO:
-> > > 
-> > >   1) LAZY preemption prevents the negative side effects of overeager
-> > >      preemption, aka. lock contention and pointless context switching.
-> > > 
-> > >      The whole thing behaves like a NONE kernel unless there are
-> > >      real-time tasks or a task did not comply to the lazy request within
-> > >      a given time.  
-> > 
-> > Almost, give or take the potential issues called out above for the
-> > possible downsides of removing all of the cond_resched() invocations.
-> 
-> I still don't believe there are any issues "called out above", as I called
-> out those called outs.
-
-Well, you did write some words, if that is what you meant.  ;-)
-
-> > >   2) It does not prevent the scheduler from making decisions to preempt
-> > >      at the next possible preemption point in order to get some
-> > >      important computation on the CPU.
-> > > 
-> > >      A NONE kernel sucks vs. any sporadic [real-time] task. Just run
-> > >      NONE and watch the latencies. The latencies are determined by the
-> > >      interrupted context, the placement of the cond_resched() call and
-> > >      the length of the loop which is running.
-> > > 
-> > >      People have complained about that and the only way out for them is
-> > >      to switch to VOLUNTARY or FULL preemption and thereby paying the
-> > >      price for overeager preemption.
-> > > 
-> > >      A price which you don't want to pay for good reasons but at the
-> > >      same time you care about latencies in some aspects and the only
-> > >      answer you have for that is cond_resched() or similar which is not
-> > >      an answer at all.  
-> > 
-> > All good points, but none of them are in conflict with the possibility
-> > of leaving some cond_resched() calls behind if they ar needed.
-> 
-> The conflict is with the new paradigm (I love that word! It's so "buzzy").
-> As I mentioned above, cond_resched() is usually added when a problem was
-> seen. I really believe that those problems would never had been seen if
-> the new paradigm had already been in place.
-
-Indeed, that sort of wording does quite the opposite of raising my
-confidence levels.  ;-)
-
-You know, the ancient Romans would have had no problem dealing with the
-dot-com boom, cryptocurrency, some of the shadier areas of artificial
-intelligence and machine learning, and who knows what all else.  As the
-Romans used to say, "Beware of geeks bearing grifts."
-
-> > >   3) Looking at the initial problem Ankur was trying to solve there is
-> > >      absolutely no acceptable solution to solve that unless you think
-> > >      that the semantically invers 'allow_preempt()/disallow_preempt()'
-> > >      is anywhere near acceptable.  
-> > 
-> > I am not arguing for allow_preempt()/disallow_preempt(), so for that
-> > argument, you need to find someone else to argue with.  ;-)
-> 
-> Anyway, there's still a long path before cond_resched() can be removed. It
-> was a mistake by Ankur to add those removals this early (and he has
-> acknowledged that mistake).
-
-OK, that I can live with.  But that seems to be a bit different of a
-take than that of some earlier emails in this thread.  ;-)
-
-> First we need to get the new preemption modeled implemented. When it is, it
-> can be just a config option at first. Then when that config option is set,
-> you can enable the NONE, VOLUNTARY or FULL preemption modes, even switch
-> between them at run time as they are just a way to tell the scheduler when
-> to set NEED_RESCHED_LAZY vs NEED_RSECHED.
-
-Assuming CONFIG_PREEMPT_RCU=y, agreed.  With CONFIG_PREEMPT_RCU=n,
-the runtime switching needs to be limited to NONE and VOLUNTARY.
-Which is fine.
-
-> At that moment, when that config is set, the cond_resched() can turn into a
-> nop. This will allow for testing to make sure there are no regressions in
-> latency, even with the NONE mode enabled.
-
-And once it appears to be reasonably stable (in concept as well as
-implementation), heavy testing should get underway.
-
-> The real test is implementing the code and seeing how it affects things in
-> the real world. Us arguing about it isn't going to get anywhere.
-
-Indeed, the opinion of the objective universe always wins.  It all too
-often takes longer than necessary for the people arguing with each other
-to realize this, but such is life.
-
->                                                                  I just
-> don't want blind NACK. A NACK to a removal of a cond_resched() needs to
-> show that there was a real regression with that removal.
-
-Fair enough, although a single commit bulk removing a large number of
-cond_resched() calls will likely get a bulk NAK.
-
-							Thanx, Paul
+But this seems like something that should be handled separately? Because
+we'd have to teach all existing zc drivers to report those errors back
+instead of dropping these descriptors..
