@@ -2,189 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0763E805575
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8A8805576
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376806AbjLENGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:06:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
+        id S1376991AbjLENGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:06:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345363AbjLENGn (ORCPT
+        with ESMTP id S1376771AbjLENGr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:06:43 -0500
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04AD187
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:06:47 -0800 (PST)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231205130644euoutp02e192f86d6548b6a732da2c190a5e95d0~d8Vpb53Lp2191821918euoutp02S
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:06:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231205130644euoutp02e192f86d6548b6a732da2c190a5e95d0~d8Vpb53Lp2191821918euoutp02S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701781604;
-        bh=3djYIPlIEHPAVOgGmtvfiiLsf3bNmhA0OAsSAQwtPUc=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=DdJ1A7OKT6HjpgRK2bVpGrwT74tnZe6zZxoQDYYlrQvw12JbPNsddQ8RqpAezkwUP
-         8aQHh9eGC/lQK386cFmR/ef3x+Bkr8hXApaO5slgAgj5m9Yr3Y3xVeyiuWDSKWyq1E
-         6mRPVm+55253B9bdONDWAIl/IX9fPi7PNj9siVOM=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231205130644eucas1p2718897683fbbb32a1d4315f22d49cb64~d8Vo_RZPd0099800998eucas1p2p;
-        Tue,  5 Dec 2023 13:06:44 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 5B.DF.09814.3602F656; Tue,  5
-        Dec 2023 13:06:43 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231205130643eucas1p283a5476b78a87997fa393d00f5172418~d8VomF8yy1993619936eucas1p2-;
-        Tue,  5 Dec 2023 13:06:43 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231205130643eusmtrp2bb6144d525e0afb546b1f00f5fcb4caa~d8VolQtwq1626416264eusmtrp2o;
-        Tue,  5 Dec 2023 13:06:43 +0000 (GMT)
-X-AuditID: cbfec7f4-727ff70000002656-4c-656f20633a5d
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 70.1F.09274.3602F656; Tue,  5
-        Dec 2023 13:06:43 +0000 (GMT)
-Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231205130643eusmtip11acdc942d2dc461a40ff7332e80436f5~d8Vn_VOa42835128351eusmtip1k;
-        Tue,  5 Dec 2023 13:06:42 +0000 (GMT)
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH] drm/debugfs: fix potential NULL pointer dereference
-Date:   Tue,  5 Dec 2023 14:06:31 +0100
-Message-Id: <20231205130631.3456986-1-m.szyprowski@samsung.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 5 Dec 2023 08:06:47 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA814135
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:06:52 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B58YeSN011559;
+        Tue, 5 Dec 2023 07:06:44 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=
+        PODMain02222019; bh=2i4YUU/ZJt98xqHv4kH5pDhDeRu77FQXVGduzv5GYEo=; b=
+        OiyMIkqelbAj/ldBIpajli2JPEoK+SDErlP7VfqHU1q5ofmKSdrAn5+D8gjR2kOo
+        4H8nmgo/52btxL0D6gVcZKeqnjzjfJS1rbxu/ldCeVrokYgOlCpXytYZIoF5DMJg
+        NHawC5Ykq7M7RaYahxAc5s34Kg+Tiwk5UJvx2AKeqRAw8GF4jNbGSZTn3EVAg+DZ
+        e6+s0C4PZAD6iaPPVsWNX96obJJyVGXRXCn468uaxcQNZmxezkcwJBixRVXZqI1H
+        QuAUEdGYGHwjY+meU8o/+iFo+1JW3sOVCGfO60sqD2ErwgrEGwrqM2GQqTgR4pb6
+        ZAIu3/OO74YXUn9jCxotLg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ur1vnk8gv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 07:06:43 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
+ 2023 13:06:41 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Tue, 5 Dec 2023 13:06:41 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D356F474;
+        Tue,  5 Dec 2023 13:06:41 +0000 (UTC)
+Date:   Tue, 5 Dec 2023 13:06:41 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        <kernel@pengutronix.de>
+Subject: Re: [PATCH 8/8] regulator: wm8350: Convert to platform remove
+ callback returning void
+Message-ID: <20231205130641.GF14858@ediswmail.ad.cirrus.com>
+References: <cover.1701778038.git.u.kleine-koenig@pengutronix.de>
+ <1f7bbc545829a1cc3df40be0424fe46d7449fb72.1701778038.git.u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIKsWRmVeSWpSXmKPExsWy7djP87rJCvmpBkt5LE5cX8Rk8X/bRGaL
-        ied/sllc+fqezeLyrjlsFmuP3GW3WPhxK4tFW+cyVov3O28xWmx5M5HVgctj77cFLB47Z91l
-        99i0qpPN4861PWwe804GetzvPs7k0bdlFaPH5tPVHp83yQVwRnHZpKTmZJalFunbJXBlXP5w
-        jLHgqFTFls8HWRsY54p3MXJySAiYSJy98I2ti5GLQ0hgBaPE748r2EASQgJfGCVuvc+FSHxm
-        lPjSMp+pi5EDrON2Tx1EfDmjxLxns6G6gRom79zDDtLNJmAo0fW2C2ySiICjxPxnbxhBipgF
-        bjFJzFi0mgUkISzgIrHgRTsTiM0ioCpx480vsAZeAXuJhR+fsUDcJy+x/+BZZoi4oMTJmU/A
-        4sxA8eats5lBhkoIXOCQWNG0lxmiwUVi+8xb7BC2sMSr41ugbBmJ/ztBXgBpaGeUWPD7PpQz
-        gVGi4fktRogqa4k750DO4ABaoSmxfpc+xM+OEovWa0OYfBI33gpC3MAnMWnbdGaIMK9ER5sQ
-        xAw1iVnH18FtPXjhEtRlHhLvTt1igoRurMTTzsesExgVZiH5bBaSz2YhnLCAkXkVo3hqaXFu
-        emqxUV5quV5xYm5xaV66XnJ+7iZGYKo6/e/4lx2My1991DvEyMTBeIhRgoNZSYR33q3sVCHe
-        lMTKqtSi/Pii0pzU4kOM0hwsSuK8qinyqUIC6YklqdmpqQWpRTBZJg5OqQamib3bLhjbrXyl
-        2/F4gvnHg1bZNboOAS689/+VHJ3srFYt6FCo8LVN2flnm+eTp5J6T21n1OYnWGyelDi3teAo
-        w9ETYVqL4h7vOl+77fA8/673lzdIiGTF3g+Ln3uJOTZVanXLyrxnD78w2209vMn2kuo7d/OP
-        qWVnu9WKeLsnuDi8u3rqpu3dUzkPDt9N61Z94nTuaxTPufwqrp+Xq20fLGHaZ6F28mmh2D/d
-        hDuSuQeYsvzLPphofJVbG+EtNu+JSVLKtcmegd9Mo8I3SFddT8q+M8k4/GR0ZsNNUZ39tb8X
-        zVxdqVx9dr47V5+4pdTV9vt75bxPdGss3cX/Y3PZwUlXNAp6NmSFL1Cu+NajxFKckWioxVxU
-        nAgAqXpvDsQDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgkeLIzCtJLcpLzFFi42I5/e/4Xd1khfxUgx13lS1OXF/EZPF/20Rm
-        i4nnf7JZXPn6ns3i8q45bBZrj9xlt1j4cSuLRVvnMlaL9ztvMVpseTOR1YHLY++3BSweO2fd
-        ZffYtKqTzePOtT1sHvNOBnrc7z7O5NG3ZRWjx+bT1R6fN8kFcEbp2RTll5akKmTkF5fYKkUb
-        WhjpGVpa6BmZWOoZGpvHWhmZKunb2aSk5mSWpRbp2yXoZVz+cIyx4KhUxZbPB1kbGOeKdzFy
-        cEgImEjc7qnrYuTiEBJYyihxd/5Ppi5GTqC4jMTJaQ2sELawxJ9rXWwQRZ8YJbZ+2MsGkmAT
-        MJToeguS4OAQEXCWWLY0BKSGWeABk8TmZTfAaoQFXCQWvGgHG8oioCpx480vsDivgL3Ewo/P
-        WCAWyEvsP3iWGSIuKHFy5hOwODNQvHnrbOYJjHyzkKRmIUktYGRaxSiSWlqcm55bbKRXnJhb
-        XJqXrpecn7uJERgl24793LKDceWrj3qHGJk4GA8xSnAwK4nwzruVnSrEm5JYWZValB9fVJqT
-        WnyI0RTovonMUqLJ+cA4zSuJNzQzMDU0MbM0MLU0M1YS5/Us6EgUEkhPLEnNTk0tSC2C6WPi
-        4JRqYNrDtfXw7hPHJZIn7LE0/6v3f2e8qkJjYVBAQE9HnU9vkIjTYeHsEguBPwdsZxivFGl/
-        sWpyjWbq/9nHVdWm37gV6Tw9nm3h5bau02bvGJ6k5UUWHji4fOIDD8ELnTOOPUw66P9I5esa
-        l99rL8k92mW9iSvOxT5ZmE1B3N7GetPBqz8iqgNEu7RsLhrMOPIsze2d3XfxgpDy73K3dsQL
-        PdxZfk3z5DHfEEfNHa/2nclo9NtouFvy1p7bfexNzqy7F+x1i3kgUycYELJvfsk2geaK5Z79
-        W9I/1Fs8V55jLvzTsNB/29/5uU11LRJvdU6G2xvL+Ok+fdC/h+0FQ/WMTVWHIjkl/j3zFrPp
-        +WR0QomlOCPRUIu5qDgRAHCdY20bAwAA
-X-CMS-MailID: 20231205130643eucas1p283a5476b78a87997fa393d00f5172418
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231205130643eucas1p283a5476b78a87997fa393d00f5172418
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231205130643eucas1p283a5476b78a87997fa393d00f5172418
-References: <CGME20231205130643eucas1p283a5476b78a87997fa393d00f5172418@eucas1p2.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1f7bbc545829a1cc3df40be0424fe46d7449fb72.1701778038.git.u.kleine-koenig@pengutronix.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: ciRXB-mdxhaP7GAPO-EEbEoE7UvNsSMM
+X-Proofpoint-ORIG-GUID: ciRXB-mdxhaP7GAPO-EEbEoE7UvNsSMM
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-encoder->funcs entry might be NULL, so check it first before calling its
-methods. This fixes NULL pointer dereference observed on Rasberry Pi
-3b/4b boards.
+On Tue, Dec 05, 2023 at 01:26:23PM +0100, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> 
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all drivers
+> are converted, .remove_new() will be renamed to .remove().
+> 
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> ---
 
-Fixes: caf525ed45b4 ("drm/encoder: register per-encoder debugfs dir")
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
----
-This fixes the following issue observed on Raspberry Pi 4b:
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-vc4-drm gpu: bound fe400000.hvs (ops vc4_hvs_ops [vc4])
-vc4-drm gpu: bound fef00700.hdmi (ops vc4_hdmi_ops [vc4])
-vc4-drm gpu: bound fef05700.hdmi (ops vc4_hdmi_ops [vc4])
-vc4-drm gpu: bound fe004000.txp (ops vc4_txp_ops [vc4])
-vc4-drm gpu: bound fe206000.pixelvalve (ops vc4_crtc_ops [vc4])
-vc4-drm gpu: bound fe207000.pixelvalve (ops vc4_crtc_ops [vc4])
-vc4-drm gpu: bound fe20a000.pixelvalve (ops vc4_crtc_ops [vc4])
-vc4-drm gpu: bound fe216000.pixelvalve (ops vc4_crtc_ops [vc4])
-8<--- cut here ---
-Unable to handle kernel NULL pointer dereference at virtual address 00000010 when read
-[00000010] *pgd=00000000
-Internal error: Oops: 5 [#1] SMP ARM
-Modules linked in: sha256_arm raspberrypi_hwmon cfg80211(+) hci_uart btbcm bluetooth vc4(+) ecdh_generic ecc libaes snd_soc_hdmi_codec snd_soc_core v3d drm_shmem_helper ac97_bus snd_pcm_dmaengine snd_pcm genet(+) gpu_sched snd_timer snd bcm2711_thermal soundcore drm_dma_helper
-CPU: 1 PID: 221 Comm: systemd-udevd Not tainted 6.7.0-rc4-next-20231205 #14267
-Hardware name: BCM2711
-PC is at drm_debugfs_encoder_add+0x6c/0x98
-LR is at 0x0
-...
- drm_debugfs_encoder_add from drm_encoder_register_all+0x20/0x60
- drm_encoder_register_all from drm_modeset_register_all+0x34/0x70
- drm_modeset_register_all from drm_dev_register+0x24c/0x28c
- drm_dev_register from vc4_drm_bind+0x21c/0x2d0 [vc4]
- vc4_drm_bind [vc4] from try_to_bring_up_aggregate_device+0x160/0x1bc
- try_to_bring_up_aggregate_device from component_master_add_with_match+0xc4/0xf8
- component_master_add_with_match from vc4_platform_drm_probe+0xa0/0xc0 [vc4]
- vc4_platform_drm_probe [vc4] from platform_probe+0x5c/0xb8
- platform_probe from really_probe+0xc8/0x2dc
- really_probe from __driver_probe_device+0x88/0x19c
- __driver_probe_device from driver_probe_device+0x30/0x104
- driver_probe_device from __driver_attach+0x90/0x174
- __driver_attach from bus_for_each_dev+0x6c/0xb4
- bus_for_each_dev from bus_add_driver+0xcc/0x1cc
- bus_add_driver from driver_register+0x7c/0x118
- driver_register from vc4_drm_register+0x44/0x1000 [vc4]
- vc4_drm_register [vc4] from do_one_initcall+0x40/0x1e0
- do_one_initcall from do_init_module+0x50/0x1e4
- do_init_module from init_module_from_file+0x90/0xbc
- init_module_from_file from sys_finit_module+0x144/0x258
- sys_finit_module from ret_fast_syscall+0x0/0x54
-Exception stack(0xf0cf1fa8 to 0xf0cf1ff0)
-...
----[ end trace 0000000000000000 ]---
-
----
- drivers/gpu/drm/drm_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-index 02e7481758c0..f4715a67e340 100644
---- a/drivers/gpu/drm/drm_debugfs.c
-+++ b/drivers/gpu/drm/drm_debugfs.c
-@@ -638,7 +638,7 @@ void drm_debugfs_encoder_add(struct drm_encoder *encoder)
- 	debugfs_create_file("bridges", 0444, root, encoder,
- 			    &bridges_fops);
- 
--	if (encoder->funcs->debugfs_init)
-+	if (encoder->funcs && encoder->funcs->debugfs_init)
- 		encoder->funcs->debugfs_init(encoder, root);
- }
- 
--- 
-2.34.1
-
+Thanks,
+Charles
