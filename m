@@ -2,138 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A14F804476
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585D1804477
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346258AbjLECHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:07:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48902 "EHLO
+        id S1376277AbjLECIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:08:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234860AbjLECHM (ORCPT
+        with ESMTP id S229575AbjLECIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:07:12 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC9C111
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:07:17 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6cda22140f2so5018171b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:07:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701742037; x=1702346837; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Duy7xrdmHS3/KWf76FzBalcsQcmviuMuAMAHHpJ5A24=;
-        b=HHf3MTV/gK7s/vJw0YV3nw06h7QudypkYjxlPqAhgKQs5ROgSdTlUs3lErNYEytHSc
-         atrkJAogfxAt63bbTEMlMXYv3K6vCeM1VtyOvPq5dgi09ekftQurhsdMXHh9Lym3NP3c
-         b2tG/D1qxPk5CZeicnt2T4/RhCzoLkJszmqwkYXd5lTWH1VSQvSp0kVnRqv2Q7FoH5Br
-         fWDt+bcOTOmnf8UL6i6CmY0AKmPTe2z0ADW4A2XJtk67ozmuRGxlAsBxkE3ChhjRiW2k
-         8kwMVXEd0+TUTNyp+Cw+0nX4hVnPvvCLD2MWaGu7ByRr38fFQxB9exxQh3kVci91x0ny
-         aDoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701742037; x=1702346837;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Duy7xrdmHS3/KWf76FzBalcsQcmviuMuAMAHHpJ5A24=;
-        b=uUJM4rIwdChj8Tm7knvRXP31Gy8YHWSgAobtrITRN7FjK1sEnZxilQgupaGsHXgUPN
-         cuZuO2ncS+jYp2nKEKKTnJw9bpl57FftL0VlwPZZeVDv/161h2koC7/cg+5QmTg4v6yY
-         0bsgoky/TKHOOIPKOPBOuRABOadtuoiMsn/Y/DtvREbGkFi7i/AzhBpvo7Zb22fk891/
-         NZPFbTfiP119BcP41XuQWGYUXjEREzvCPBo6Pk4y9gwKEIKTs2gcDdvAo6XHhsZtYO/z
-         zdBeLTcuH0D9qWfFlQKwDD+ltt2/mPjVifWYjffxL7Yh7oYkuxTX2CDb/07Ni9Bj/b85
-         iDYw==
-X-Gm-Message-State: AOJu0Yw39AoR8GGS/WmHNxn9nplsqHsnjAoEREny4Jqeo4cTOF1i7J2u
-        8Xk1Mox6H+J0e2GvqBDK4rgcj/ijBlEtQ5i+hZs=
-X-Google-Smtp-Source: AGHT+IEGhaWmtOugCndX26NH9dmHrEKZgLxXNqqqfKBL1ekJbFpLTxGwwb5tecWlyKGHdKVYmHSS9t5QafT+QrUiWfg=
-X-Received: by 2002:a05:6a20:1601:b0:18f:97c:615f with SMTP id
- l1-20020a056a20160100b0018f097c615fmr7104314pzj.92.1701742037278; Mon, 04 Dec
- 2023 18:07:17 -0800 (PST)
+        Mon, 4 Dec 2023 21:08:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E13BC107
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:08:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7BAFFC433CD;
+        Tue,  5 Dec 2023 02:08:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701742099;
+        bh=HMwG43d889XcMV+jjmbOif7Ze0ji3fZ14zwvIe/4VZw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=INdjCd2uqwoBJoP57dg01wXamoAswVMWdjch7XahOTlF2Ng616xMqthVCUwUEmfgn
+         8NxE1OUTFzmjfhq6PNPX3SU05AsIOyrn2I9JSljbPWZxXLd6D+CxkjuzN6T7BX7oP+
+         DCGA5af9Xjm2SCdmGU6ZVU1E3cktU2c5CKA6LUf3QgixV80vz4UUAp7nftNXsaWqK4
+         /5+BHkPsJmYo/YJbGHY+CKkJEZQ0iogoK62j+eC1TXq7XGHJ2cVhXW3NAZj7QVGygz
+         +qn/4ekBM65mrDvqfwbj3vQi9T8RQrl0+DGQdNFr//hc5xjoGgnOgmE6JpxaqaH1l0
+         FSzegPvHSaQng==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6657DDD4EEF;
+        Tue,  5 Dec 2023 02:08:19 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-From:   xingwei lee <xrivendell7@gmail.com>
-Date:   Tue, 5 Dec 2023 10:07:03 +0800
-Message-ID: <CABOYnLyHJjv7bZ3CcXo4zAxZ-o49FO9OsWpQrY4tTLNqCbA4Mw@mail.gmail.com>
-Subject: Re: [syzbot] [kernel?] possible deadlock in alarm_handle_timer
-To:     syzbot+f2c4e7bfcca6c6d6324c@syzkaller.appspotmail.com
-Cc:     jstultz@google.com, linux-kernel@vger.kernel.org, sboyd@kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] arcnet: restoring support for multiple Sohard Arcnet cards
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170174209941.18867.5676326878830949662.git-patchwork-notify@kernel.org>
+Date:   Tue, 05 Dec 2023 02:08:19 +0000
+References: <20231130113503.6812-1-thomas.reichinger@sohard.de>
+In-Reply-To: <20231130113503.6812-1-thomas.reichinger@sohard.de>
+To:     Thomas Reichinger <thomas.reichinger@sohard.de>
+Cc:     m.grzeschik@pengutronix.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
-I reproduced this bug with repro.c
+Hello:
 
-=* repro.txt =*
-r0 = syz_clone(0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
-ptrace(0x10, r0)
-timer_create(0x9, 0x0, &(0x7f0000000500))
-timer_settime(0x0, 0x0, &(0x7f000006b000)={{0x0, 0x8}, {0x0, 0x9}}, 0x0)
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-=* repro.c =*
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
+On Thu, 30 Nov 2023 12:35:03 +0100 you wrote:
+> Probe of Sohard Arcnet cards fails,
+> if 2 or more cards are installed in a system.
+> See kernel log:
+> [    2.759203] arcnet: arcnet loaded
+> [    2.763648] arcnet:com20020: COM20020 chipset support (by David Woodhouse et al.)
+> [    2.770585] arcnet:com20020_pci: COM20020 PCI support
+> [    2.772295] com20020 0000:02:00.0: enabling device (0000 -> 0003)
+> [    2.772354] (unnamed net_device) (uninitialized): PLX-PCI Controls
+> ...
+> [    3.071301] com20020 0000:02:00.0 arc0-0 (uninitialized): PCI COM20020: station FFh found at F080h, IRQ 101.
+> [    3.071305] com20020 0000:02:00.0 arc0-0 (uninitialized): Using CKP 64 - data rate 2.5 Mb/s
+> [    3.071534] com20020 0000:07:00.0: enabling device (0000 -> 0003)
+> [    3.071581] (unnamed net_device) (uninitialized): PLX-PCI Controls
+> ...
+> [    3.369501] com20020 0000:07:00.0: Led pci:green:tx:0-0 renamed to pci:green:tx:0-0_1 due to name collision
+> [    3.369535] com20020 0000:07:00.0: Led pci:red:recon:0-0 renamed to pci:red:recon:0-0_1 due to name collision
+> [    3.370586] com20020 0000:07:00.0 arc0-0 (uninitialized): PCI COM20020: station E1h found at C000h, IRQ 35.
+> [    3.370589] com20020 0000:07:00.0 arc0-0 (uninitialized): Using CKP 64 - data rate 2.5 Mb/s
+> [    3.370608] com20020: probe of 0000:07:00.0 failed with error -5
+> 
+> [...]
 
-#define _GNU_SOURCE
+Here is the summary with links:
+  - arcnet: restoring support for multiple Sohard Arcnet cards
+    https://git.kernel.org/netdev/net/c/6b17a597fc2f
 
-#include <endian.h>
-#include <sched.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-#define USLEEP_FORKED_CHILD (3 * 50 * 1000)
 
-static long handle_clone_ret(long ret) {
-  if (ret != 0) {
-    return ret;
-  }
-  usleep(USLEEP_FORKED_CHILD);
-  syscall(__NR_exit, 0);
-  while (1) {
-  }
-}
-
-static long syz_clone(volatile long flags, volatile long stack,
-                      volatile long stack_len, volatile long ptid,
-                      volatile long ctid, volatile long tls) {
-  long sp = (stack + stack_len) & ~15;
-  long ret = (long)syscall(__NR_clone, flags & ~CLONE_VM, sp, ptid, ctid, tls);
-  return handle_clone_ret(ret);
-}
-
-uint64_t r[1] = {0x0};
-
-int main(void) {
-  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  intptr_t res = 0;
-  res = -1;
-  res = syz_clone(/*flags=*/0, /*stack=*/0, /*stack_len=*/0, /*parentid=*/0,
-                  /*childtid=*/0, /*tls=*/0);
-  if (res != -1) r[0] = res;
-  syscall(__NR_ptrace, /*req=*/0x10ul, /*pid=*/r[0], 0, 0);
-  syscall(__NR_timer_create, /*id=*/9ul, /*ev=*/0ul, /*timerid=*/0x20000500ul);
-  *(uint64_t*)0x2006b000 = 0;
-  *(uint64_t*)0x2006b008 = 8;
-  *(uint64_t*)0x2006b010 = 0;
-  *(uint64_t*)0x2006b018 = 9;
-  syscall(__NR_timer_settime, /*timerid=*/0, /*flags=*/0ul,
-          /*new=*/0x2006b000ul, /*old=*/0ul);
-  return 0;
-}
-
-see also https://gist.github.com/dracary7/55a1fc1c839289a1abe01293fe82aa8e
-
-Thanks.
-xingwei lee
