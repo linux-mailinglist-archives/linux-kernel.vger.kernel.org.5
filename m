@@ -2,182 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A8B805DDA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06884805DCD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbjLESnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:43:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
+        id S1345901AbjLESXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLESnP (ORCPT
+        with ESMTP id S230271AbjLESXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:43:15 -0500
-X-Greylist: delayed 1222 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 10:43:22 PST
-Received: from finn.localdomain (finn.gateworks.com [108.161.129.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4636410D3;
-        Tue,  5 Dec 2023 10:43:22 -0800 (PST)
-Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
-        by finn.localdomain with esmtp (Exim 4.93)
-        (envelope-from <tharvey@gateworks.com>)
-        id 1rAa4A-00BDe6-Vq; Tue, 05 Dec 2023 18:22:43 +0000
-From:   Tim Harvey <tharvey@gateworks.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>
-Subject: [PATCH] arm64: dts: imx8mm-venice-gw7: Fix pci sub-nodes
-Date:   Tue,  5 Dec 2023 10:22:41 -0800
-Message-Id: <20231205182241.2550284-1-tharvey@gateworks.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Dec 2023 13:23:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE193122
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:23:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C20BC433C7;
+        Tue,  5 Dec 2023 18:23:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701800608;
+        bh=1u3S+qdTDDJpU1AH8fRxdM6v7mEapa2b3xh7jr42q/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lj3F+Ag5ozXNa3vw9pJkWyWpOZmMTl8+2HFnH4W/RwXkvCsduK0p1onlXVpCTJmp5
+         2/ugFcqip8aPFmSVrmEWjpBRHj21UKjTnF8MkrqJ7vpxdii/xEfiF0vq0KD1ffM4+U
+         vXh9snhqG0gpkuMFeJp3bGzqjhqHcGiGpTvTpOQ0=
+Date:   Wed, 6 Dec 2023 03:23:26 +0900
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com,
+        Gaurav Batra <gbatra@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 5.15 00/67] 5.15.142-rc1 review
+Message-ID: <2023120610-cause-chariot-961b@gregkh>
+References: <20231205031519.853779502@linuxfoundation.org>
+ <CA+G9fYs-XB29+aZ2kk9psA+MTo8PCh0owWgwGRiq8JK60CuUtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYs-XB29+aZ2kk9psA+MTo8PCh0owWgwGRiq8JK60CuUtg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several schema warnings were fixed in commit
-d61c5068729a ("arm64: dts: imx8mm-venice-gw7: Fix pci sub-nodes")
-however the node names and the ethernet NIC node were not quite correct.
+On Tue, Dec 05, 2023 at 10:18:49PM +0530, Naresh Kamboju wrote:
+> On Tue, 5 Dec 2023 at 09:10, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.15.142 release.
+> > There are 67 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.142-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> 
+> Following powerpc build failures noticed.
+> 
+> * powerpc, build
+>   - clang-17-defconfig - FAILED
+>   - gcc-12-defconfig - FAILED
+>   - gcc-8-defconfig - FAILED
+> 
+> build error:
+> ---
+> arch/powerpc/platforms/pseries/iommu.c: In function 'find_existing_ddw':
+> arch/powerpc/platforms/pseries/iommu.c:908:49: error: 'struct dma_win'
+> has no member named 'direct'
+>   908 |                         *direct_mapping = window->direct;
+>       |                                                 ^~
+> 
+> suspected commit:
+> powerpc/pseries/iommu: enable_ddw incorrectly returns direct mapping
+> for SR-IOV device
+>  [ Upstream commit 3bf983e4e93ce8e6d69e9d63f52a66ec0856672e ]
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Fix the node names as the ethernet device should have a node name of
-'ethernet' and remove the device_type, #address-cells, #size-cells, and
-ranges properties that should only be on busses/bridges.
-
-Fixes: d61c5068729a ("arm64: dts: imx8mm-venice-gw7: Fix pci sub-nodes")
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
----
- .../dts/freescale/imx8mm-venice-gw72xx.dtsi    | 18 +++++++-----------
- .../dts/freescale/imx8mm-venice-gw73xx.dtsi    | 18 +++++++-----------
- .../dts/freescale/imx8mm-venice-gw7902.dts     | 10 +++-------
- 3 files changed, 17 insertions(+), 29 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx.dtsi
-index a337e8f20441..31f16f7cf37c 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx.dtsi
-@@ -157,33 +157,29 @@ &pcie0 {
- 				 <&clk IMX8MM_SYS_PLL2_250M>;
- 	status = "okay";
- 
--	pcie@0,0 {
--		reg = <0x0000 0 0 0 0>;
-+	pcie@0 {
- 		device_type = "pci";
-+		reg = <0x0000 0 0 0 0>;
- 		#address-cells = <3>;
- 		#size-cells = <2>;
- 		ranges;
- 
--		pcie@0,0 {
--			reg = <0x0000 0 0 0 0>;
-+		pcie@0 {
- 			device_type = "pci";
-+			reg = <0x0000 0 0 0 0>;
- 			#address-cells = <3>;
- 			#size-cells = <2>;
- 			ranges;
- 
--			pcie@3,0 {
--				reg = <0x1800 0 0 0 0>;
-+			pcie@3 {
- 				device_type = "pci";
-+				reg = <0x1800 0 0 0 0>;
- 				#address-cells = <3>;
- 				#size-cells = <2>;
- 				ranges;
- 
--				eth1: pcie@0,0 {
-+				eth1: ethernet@0 {
- 					reg = <0x0000 0 0 0 0>;
--					device_type = "pci";
--					#address-cells = <3>;
--					#size-cells = <2>;
--					ranges;
- 
- 					local-mac-address = [00 00 00 00 00 00];
- 				};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
-index 2247d1c4e2af..6f5a6d91c95e 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
-@@ -177,33 +177,29 @@ &pcie0 {
- 				 <&clk IMX8MM_SYS_PLL2_250M>;
- 	status = "okay";
- 
--	pcie@0,0 {
--		reg = <0x0000 0 0 0 0>;
-+	pcie@0 {
- 		device_type = "pci";
-+		reg = <0x0000 0 0 0 0>;
- 		#address-cells = <3>;
- 		#size-cells = <2>;
- 		ranges;
- 
--		pcie@0,0 {
--			reg = <0x0000 0 0 0 0>;
-+		pcie@0 {
- 			device_type = "pci";
-+			reg = <0x0000 0 0 0 0>;
- 			#address-cells = <3>;
- 			#size-cells = <2>;
- 			ranges;
- 
--			pcie@4,0 {
--				reg = <0x2000 0 0 0 0>;
-+			pcie@4 {
- 				device_type = "pci";
-+				reg = <0x2000 0 0 0 0>;
- 				#address-cells = <3>;
- 				#size-cells = <2>;
- 				ranges;
- 
--				eth1: pcie@0,0 {
-+				eth1: ethernet@0 {
- 					reg = <0x0000 0 0 0 0>;
--					device_type = "pci";
--					#address-cells = <3>;
--					#size-cells = <2>;
--					ranges;
- 
- 					local-mac-address = [00 00 00 00 00 00];
- 				};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
-index 7ef17c2b0e9d..4bb22fdc5d2e 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
-@@ -633,19 +633,15 @@ &pcie0 {
- 				 <&clk IMX8MM_SYS_PLL2_250M>;
- 	status = "okay";
- 
--	pcie@0,0 {
--		reg = <0x0000 0 0 0 0>;
-+	pcie@0 {
- 		device_type = "pci";
-+		reg = <0x0000 0 0 0 0>;
- 		#address-cells = <3>;
- 		#size-cells = <2>;
- 		ranges;
- 
--		eth1: pcie@0,0 {
-+		eth1: ethernet@0 {
- 			reg = <0x0000 0 0 0 0>;
--			device_type = "pci";
--			#address-cells = <3>;
--			#size-cells = <2>;
--			ranges;
- 
- 			local-mac-address = [00 00 00 00 00 00];
- 		};
--- 
-2.25.1
-
+Thanks, now dropped from 5.15.y and 6.1.y
