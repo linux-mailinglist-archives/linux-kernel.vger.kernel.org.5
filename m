@@ -2,479 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7AA8060CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743DD8060C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345964AbjLEV0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 16:26:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36814 "EHLO
+        id S1345887AbjLEVZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 16:25:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346616AbjLEV0H (ORCPT
+        with ESMTP id S1345726AbjLEVZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 16:26:07 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB80B1A4;
-        Tue,  5 Dec 2023 13:26:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701811572; x=1733347572;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=kN1mPJ31JdskbTXQ3vihUcZ27nCl4jCXzdM0aEGJXPY=;
-  b=b5WxG2eZz2EeTT9uPTC7nuPzZAmTx08appS+aiIYCwIvRxbo1q3zVUtF
-   JuOeKDcoYbt3RwJ7VlLsuRX5msvn8RTXARRRV8fmib9o+slsup/iR2ess
-   bSIT80lH9ExCln873phj1UCQwKKTHroN/0ZnpLrPvljdgT7YALO8Pixuf
-   eobSgvrKg7ItUn4T8u5IzJCTYFmqo1bWZ4i/9tM43rDRTDH/Ga5kW9Y8O
-   cKw3c4lbU1d1GVR1MKa4/aKeBXkbvc8RIPNVYt3bfVpIbJuaNKIcpUegh
-   dVxCGlfCyDdCNuHr0Kj5kxJ2gvjyBPy1j46++ZNGDu1LF5gHBQk0lPGah
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="396751692"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="396751692"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:26:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="19102713"
-Received: from jsamonte-mobl.amr.corp.intel.com (HELO tzanussi-mobl1.amr.corp.intel.com) ([10.212.71.180])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:26:11 -0800
-From:   Tom Zanussi <tom.zanussi@linux.intel.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        fenghua.yu@intel.com, vkoul@kernel.org
-Cc:     dave.jiang@intel.com, tony.luck@intel.com,
-        wajdi.k.feghali@intel.com, james.guilford@intel.com,
-        kanchana.p.sridhar@intel.com, vinodh.gopal@intel.com,
-        giovanni.cabiddu@intel.com, pavel@ucw.cz,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: [PATCH v12 12/14] crypto: iaa - Add irq support for the crypto async interface
-Date:   Tue,  5 Dec 2023 15:25:28 -0600
-Message-Id: <20231205212530.285671-13-tom.zanussi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231205212530.285671-1-tom.zanussi@linux.intel.com>
-References: <20231205212530.285671-1-tom.zanussi@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 16:25:25 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7939FD41
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:25:30 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-67adc37b797so6975496d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 13:25:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1701811529; x=1702416329; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=JqyDFnCiC9C9iaP1KCSgmfjfaCqCGpifT7WUKn8rGrk=;
+        b=b0PBwmWRMGvYvkJoisONmNJ+3T+kkZQqj0m4xMPH8H4VUzuQuonEf/1qKMSlGcFODG
+         xJ+T43gtLkRJgKMc86OTz+SAPB3wbKOJ9/Bnygiz1YyRsO1HljWY7NUgPjPS6nKO/0bP
+         3UPjHn/vbK2xLjkYQZ4dctCMZCc1gaxE+MMH+xygPjyvPaIipzxqQ3QlLbGsMxlu9ELT
+         cNx57Om0Erb6BkOChBEGoOacngBYq9Zv3RzZJR2+cb7YCK1XEzbU2pOM7feYRz4srtJr
+         h59hSsZSVVl33yEDvFQi3BIIHFyrzJROvUYLH4T71aQVZlcadBtRPftckPnrtbDCkR7K
+         mrBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701811529; x=1702416329;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JqyDFnCiC9C9iaP1KCSgmfjfaCqCGpifT7WUKn8rGrk=;
+        b=tOb/oYZU7ACrsBq1HX4/4DjMwkn+RanrnmuMfn0VYZAYo0AFPJ1K2mfFiIswLbdMqB
+         9wfY/HrDAMLiTiVSOVU9AP6PchKhzGLZVD4YjOO33TZqHV7V+nUPW+HeaI9CEUOFOG/M
+         gU3B6X/dtu1xUSDPFPcsZxe6mK5hLGAPoN2+idcymBQgJDClc8QcVggMywYuZdMnfsQz
+         r+DyiZp9wEJxJWWv0V33NrLMLbbUStPt/idPGeTui+cYMb2qGU7IDOoN2PtnJt4SAg+p
+         J+JiiUm+dyNX123LUtrTONDbRtn9jd5vvMcPeWNinRIV/uioS+Bw9OeAjDqgOi5740ES
+         78NQ==
+X-Gm-Message-State: AOJu0Yx9vuQrrXnBGGERiXhpvTpsYE/KdLHhschROjI06gPSHWUSHrm5
+        JXmIQ9a+FyFzFus+cx237Z+e
+X-Google-Smtp-Source: AGHT+IHfsAskPVR7qfeDFP1DBUM6Fip1xoU/6JP7KZknQGN9TMVHFQ/nglQSG33mxgd0O6bDYwfI+Q==
+X-Received: by 2002:a0c:fccf:0:b0:679:f5c8:2462 with SMTP id i15-20020a0cfccf000000b00679f5c82462mr1507275qvq.14.1701811529555;
+        Tue, 05 Dec 2023 13:25:29 -0800 (PST)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id c7-20020a0ce147000000b0067ae01ab283sm315639qvl.36.2023.12.05.13.25.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 13:25:29 -0800 (PST)
+Date:   Tue, 05 Dec 2023 16:25:28 -0500
+Message-ID: <77e8575a68e862c5c0e64803bf2582b5@paul-moore.com>
+From:   Paul Moore <paul@paul-moore.com>
+To:     "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Eric Paris <eparis@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+        linux-unionfs@vger.kernel.org,
+        "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Subject: Re: [PATCH 14/16] commoncap: remove cap_inode_getsecurity()
+References: <20231129-idmap-fscap-refactor-v1-14-da5a26058a5b@kernel.org>
+In-Reply-To: <20231129-idmap-fscap-refactor-v1-14-da5a26058a5b@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing iaa crypto async support provides an implementation that
-satisfies the interface but does so in a synchronous manner - it fills
-and submits the IDXD descriptor and then waits for it to complete
-before returning.  This isn't a problem at the moment, since all
-existing callers (e.g. zswap) wrap any asynchronous callees in a
-synchronous wrapper anyway.
+On Nov 29, 2023 "Seth Forshee (DigitalOcean)" <sforshee@kernel.org> wrote:
+> 
+> Reading of fscaps xattrs is now done via vfs_get_fscaps(), so there is
+> no longer any need to do it from security_inode_getsecurity(). Remove
+> cap_inode_getsecurity() and its associated helpers which are now unused.
+> 
+> We don't allow reading capabilities xattrs this way anyomre, so remove
+> the handler and associated helpers.
+> 
+> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> ---
+>  include/linux/security.h |   5 +-
+>  security/commoncap.c     | 132 -----------------------------------------------
+>  2 files changed, 1 insertion(+), 136 deletions(-)
 
-This change makes the iaa crypto async implementation truly
-asynchronous: it fills and submits the IDXD descriptor, then returns
-immediately with -EINPROGRESS.  It also sets the descriptor's 'request
-completion irq' bit and sets up a callback with the IDXD driver which
-is called when the operation completes and the irq fires.  The
-existing callers such as zswap use synchronous wrappers to deal with
--EINPROGRESS and so work as expected without any changes.
+Once again, you should get Serge's ACK on the commoncap.c stuff, but
+no objections from a LSM perspective.
 
-This mode can be enabled by writing 'async_irq' to the sync_mode
-iaa_crypto driver attribute:
+Acked-by: Paul Moore <paul@paul-moore.com> (LSM)
 
-  echo async_irq > /sys/bus/dsa/drivers/crypto/sync_mode
-
-Async mode without interrupts (caller must poll) can be enabled by
-writing 'async' to it:
-
-  echo async > /sys/bus/dsa/drivers/crypto/sync_mode
-
-The default sync mode can be enabled by writing 'sync' to it:
-
-  echo sync > /sys/bus/dsa/drivers/crypto/sync_mode
-
-The sync_mode value setting at the time the IAA algorithms are
-registered is captured in each algorithm's crypto_ctx and used for all
-compresses and decompresses when using a given algorithm.
-
-Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
----
- drivers/crypto/intel/iaa/iaa_crypto.h      |   2 +
- drivers/crypto/intel/iaa/iaa_crypto_main.c | 266 ++++++++++++++++++++-
- 2 files changed, 266 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto.h b/drivers/crypto/intel/iaa/iaa_crypto.h
-index 4c6b0f5a6b50..de014ac53adb 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto.h
-+++ b/drivers/crypto/intel/iaa/iaa_crypto.h
-@@ -153,6 +153,8 @@ enum iaa_mode {
- struct iaa_compression_ctx {
- 	enum iaa_mode	mode;
- 	bool		verify_compress;
-+	bool		async_mode;
-+	bool		use_irq;
- };
- 
- #endif
-diff --git a/drivers/crypto/intel/iaa/iaa_crypto_main.c b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-index 94a3dcd4e73c..2f90a43500f0 100644
---- a/drivers/crypto/intel/iaa/iaa_crypto_main.c
-+++ b/drivers/crypto/intel/iaa/iaa_crypto_main.c
-@@ -122,6 +122,102 @@ static ssize_t verify_compress_store(struct device_driver *driver,
- }
- static DRIVER_ATTR_RW(verify_compress);
- 
-+/*
-+ * The iaa crypto driver supports three 'sync' methods determining how
-+ * compressions and decompressions are performed:
-+ *
-+ * - sync:      the compression or decompression completes before
-+ *              returning.  This is the mode used by the async crypto
-+ *              interface when the sync mode is set to 'sync' and by
-+ *              the sync crypto interface regardless of setting.
-+ *
-+ * - async:     the compression or decompression is submitted and returns
-+ *              immediately.  Completion interrupts are not used so
-+ *              the caller is responsible for polling the descriptor
-+ *              for completion.  This mode is applicable to only the
-+ *              async crypto interface and is ignored for anything
-+ *              else.
-+ *
-+ * - async_irq: the compression or decompression is submitted and
-+ *              returns immediately.  Completion interrupts are
-+ *              enabled so the caller can wait for the completion and
-+ *              yield to other threads.  When the compression or
-+ *              decompression completes, the completion is signaled
-+ *              and the caller awakened.  This mode is applicable to
-+ *              only the async crypto interface and is ignored for
-+ *              anything else.
-+ *
-+ * These modes can be set using the iaa_crypto sync_mode driver
-+ * attribute.
-+ */
-+
-+/* Use async mode */
-+static bool async_mode;
-+/* Use interrupts */
-+static bool use_irq;
-+
-+/**
-+ * set_iaa_sync_mode - Set IAA sync mode
-+ * @name: The name of the sync mode
-+ *
-+ * Make the IAA sync mode named @name the current sync mode used by
-+ * compression/decompression.
-+ */
-+
-+static int set_iaa_sync_mode(const char *name)
-+{
-+	int ret = 0;
-+
-+	if (sysfs_streq(name, "sync")) {
-+		async_mode = false;
-+		use_irq = false;
-+	} else if (sysfs_streq(name, "async")) {
-+		async_mode = true;
-+		use_irq = false;
-+	} else if (sysfs_streq(name, "async_irq")) {
-+		async_mode = true;
-+		use_irq = true;
-+	} else {
-+		ret = -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
-+static ssize_t sync_mode_show(struct device_driver *driver, char *buf)
-+{
-+	int ret = 0;
-+
-+	if (!async_mode && !use_irq)
-+		ret = sprintf(buf, "%s\n", "sync");
-+	else if (async_mode && !use_irq)
-+		ret = sprintf(buf, "%s\n", "async");
-+	else if (async_mode && use_irq)
-+		ret = sprintf(buf, "%s\n", "async_irq");
-+
-+	return ret;
-+}
-+
-+static ssize_t sync_mode_store(struct device_driver *driver,
-+			       const char *buf, size_t count)
-+{
-+	int ret = -EBUSY;
-+
-+	mutex_lock(&iaa_devices_lock);
-+
-+	if (iaa_crypto_enabled)
-+		goto out;
-+
-+	ret = set_iaa_sync_mode(buf);
-+	if (ret == 0)
-+		ret = count;
-+out:
-+	mutex_unlock(&iaa_devices_lock);
-+
-+	return ret;
-+}
-+static DRIVER_ATTR_RW(sync_mode);
-+
- static struct iaa_compression_mode *iaa_compression_modes[IAA_COMP_MODES_MAX];
- 
- static int find_empty_iaa_compression_mode(void)
-@@ -1001,6 +1097,111 @@ static int deflate_generic_decompress(struct acomp_req *req)
- 	return ret;
- }
- 
-+static int iaa_remap_for_verify(struct device *dev, struct iaa_wq *iaa_wq,
-+				struct acomp_req *req,
-+				dma_addr_t *src_addr, dma_addr_t *dst_addr);
-+
-+static int iaa_compress_verify(struct crypto_tfm *tfm, struct acomp_req *req,
-+			       struct idxd_wq *wq,
-+			       dma_addr_t src_addr, unsigned int slen,
-+			       dma_addr_t dst_addr, unsigned int *dlen,
-+			       u32 compression_crc);
-+
-+static void iaa_desc_complete(struct idxd_desc *idxd_desc,
-+			      enum idxd_complete_type comp_type,
-+			      bool free_desc, void *__ctx,
-+			      u32 *status)
-+{
-+	struct iaa_device_compression_mode *active_compression_mode;
-+	struct iaa_compression_ctx *compression_ctx;
-+	struct crypto_ctx *ctx = __ctx;
-+	struct iaa_device *iaa_device;
-+	struct idxd_device *idxd;
-+	struct iaa_wq *iaa_wq;
-+	struct pci_dev *pdev;
-+	struct device *dev;
-+	int ret, err = 0;
-+
-+	compression_ctx = crypto_tfm_ctx(ctx->tfm);
-+
-+	iaa_wq = idxd_wq_get_private(idxd_desc->wq);
-+	iaa_device = iaa_wq->iaa_device;
-+	idxd = iaa_device->idxd;
-+	pdev = idxd->pdev;
-+	dev = &pdev->dev;
-+
-+	active_compression_mode = get_iaa_device_compression_mode(iaa_device,
-+								  compression_ctx->mode);
-+	dev_dbg(dev, "%s: compression mode %s,"
-+		" ctx->src_addr %llx, ctx->dst_addr %llx\n", __func__,
-+		active_compression_mode->name,
-+		ctx->src_addr, ctx->dst_addr);
-+
-+	ret = check_completion(dev, idxd_desc->iax_completion,
-+			       ctx->compress, false);
-+	if (ret) {
-+		dev_dbg(dev, "%s: check_completion failed ret=%d\n", __func__, ret);
-+		if (!ctx->compress &&
-+		    idxd_desc->iax_completion->status == IAA_ANALYTICS_ERROR) {
-+			pr_warn("%s: falling back to deflate-generic decompress, "
-+				"analytics error code %x\n", __func__,
-+				idxd_desc->iax_completion->error_code);
-+			ret = deflate_generic_decompress(ctx->req);
-+			if (ret) {
-+				dev_dbg(dev, "%s: deflate-generic failed ret=%d\n",
-+					__func__, ret);
-+				err = -EIO;
-+				goto err;
-+			}
-+		} else {
-+			err = -EIO;
-+			goto err;
-+		}
-+	} else {
-+		ctx->req->dlen = idxd_desc->iax_completion->output_size;
-+	}
-+
-+	if (ctx->compress && compression_ctx->verify_compress) {
-+		dma_addr_t src_addr, dst_addr;
-+		u32 compression_crc;
-+
-+		compression_crc = idxd_desc->iax_completion->crc;
-+
-+		ret = iaa_remap_for_verify(dev, iaa_wq, ctx->req, &src_addr, &dst_addr);
-+		if (ret) {
-+			dev_dbg(dev, "%s: compress verify remap failed ret=%d\n", __func__, ret);
-+			err = -EIO;
-+			goto out;
-+		}
-+
-+		ret = iaa_compress_verify(ctx->tfm, ctx->req, iaa_wq->wq, src_addr,
-+					  ctx->req->slen, dst_addr, &ctx->req->dlen,
-+					  compression_crc);
-+		if (ret) {
-+			dev_dbg(dev, "%s: compress verify failed ret=%d\n", __func__, ret);
-+			err = -EIO;
-+		}
-+
-+		dma_unmap_sg(dev, ctx->req->dst, sg_nents(ctx->req->dst), DMA_TO_DEVICE);
-+		dma_unmap_sg(dev, ctx->req->src, sg_nents(ctx->req->src), DMA_FROM_DEVICE);
-+
-+		goto out;
-+	}
-+err:
-+	dma_unmap_sg(dev, ctx->req->dst, sg_nents(ctx->req->dst), DMA_FROM_DEVICE);
-+	dma_unmap_sg(dev, ctx->req->src, sg_nents(ctx->req->src), DMA_TO_DEVICE);
-+out:
-+	if (ret != 0)
-+		dev_dbg(dev, "asynchronous compress failed ret=%d\n", ret);
-+
-+	if (ctx->req->base.complete)
-+		acomp_request_complete(ctx->req, err);
-+
-+	if (free_desc)
-+		idxd_free_desc(idxd_desc->wq, idxd_desc);
-+	iaa_wq_put(idxd_desc->wq);
-+}
-+
- static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 			struct idxd_wq *wq,
- 			dma_addr_t src_addr, unsigned int slen,
-@@ -1049,6 +1250,22 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 	desc->src2_size = sizeof(struct aecs_comp_table_record);
- 	desc->completion_addr = idxd_desc->compl_dma;
- 
-+	if (ctx->use_irq && !disable_async) {
-+		desc->flags |= IDXD_OP_FLAG_RCI;
-+
-+		idxd_desc->crypto.req = req;
-+		idxd_desc->crypto.tfm = tfm;
-+		idxd_desc->crypto.src_addr = src_addr;
-+		idxd_desc->crypto.dst_addr = dst_addr;
-+		idxd_desc->crypto.compress = true;
-+
-+		dev_dbg(dev, "%s use_async_irq: compression mode %s,"
-+			" src_addr %llx, dst_addr %llx\n", __func__,
-+			active_compression_mode->name,
-+			src_addr, dst_addr);
-+	} else if (ctx->async_mode && !disable_async)
-+		req->base.data = idxd_desc;
-+
- 	dev_dbg(dev, "%s: compression mode %s,"
- 		" desc->src1_addr %llx, desc->src1_size %d,"
- 		" desc->dst_addr %llx, desc->max_dst_size %d,"
-@@ -1063,6 +1280,12 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 		goto err;
- 	}
- 
-+	if (ctx->async_mode && !disable_async) {
-+		ret = -EINPROGRESS;
-+		dev_dbg(dev, "%s: returning -EINPROGRESS\n", __func__);
-+		goto out;
-+	}
-+
- 	ret = check_completion(dev, idxd_desc->iax_completion, true, false);
- 	if (ret) {
- 		dev_dbg(dev, "check_completion failed ret=%d\n", ret);
-@@ -1073,7 +1296,8 @@ static int iaa_compress(struct crypto_tfm *tfm,	struct acomp_req *req,
- 
- 	*compression_crc = idxd_desc->iax_completion->crc;
- 
--	idxd_free_desc(wq, idxd_desc);
-+	if (!ctx->async_mode)
-+		idxd_free_desc(wq, idxd_desc);
- out:
- 	return ret;
- err:
-@@ -1256,6 +1480,22 @@ static int iaa_decompress(struct crypto_tfm *tfm, struct acomp_req *req,
- 	desc->src1_size = slen;
- 	desc->completion_addr = idxd_desc->compl_dma;
- 
-+	if (ctx->use_irq && !disable_async) {
-+		desc->flags |= IDXD_OP_FLAG_RCI;
-+
-+		idxd_desc->crypto.req = req;
-+		idxd_desc->crypto.tfm = tfm;
-+		idxd_desc->crypto.src_addr = src_addr;
-+		idxd_desc->crypto.dst_addr = dst_addr;
-+		idxd_desc->crypto.compress = false;
-+
-+		dev_dbg(dev, "%s: use_async_irq compression mode %s,"
-+			" src_addr %llx, dst_addr %llx\n", __func__,
-+			active_compression_mode->name,
-+			src_addr, dst_addr);
-+	} else if (ctx->async_mode && !disable_async)
-+		req->base.data = idxd_desc;
-+
- 	dev_dbg(dev, "%s: decompression mode %s,"
- 		" desc->src1_addr %llx, desc->src1_size %d,"
- 		" desc->dst_addr %llx, desc->max_dst_size %d,"
-@@ -1270,6 +1510,12 @@ static int iaa_decompress(struct crypto_tfm *tfm, struct acomp_req *req,
- 		goto err;
- 	}
- 
-+	if (ctx->async_mode && !disable_async) {
-+		ret = -EINPROGRESS;
-+		dev_dbg(dev, "%s: returning -EINPROGRESS\n", __func__);
-+		goto out;
-+	}
-+
- 	ret = check_completion(dev, idxd_desc->iax_completion, false, false);
- 	if (ret) {
- 		dev_dbg(dev, "%s: check_completion failed ret=%d\n", __func__, ret);
-@@ -1292,7 +1538,8 @@ static int iaa_decompress(struct crypto_tfm *tfm, struct acomp_req *req,
- 
- 	*dlen = req->dlen;
- 
--	idxd_free_desc(wq, idxd_desc);
-+	if (!ctx->async_mode)
-+		idxd_free_desc(wq, idxd_desc);
- out:
- 	return ret;
- err:
-@@ -1601,6 +1848,8 @@ static int iaa_comp_adecompress(struct acomp_req *req)
- static void compression_ctx_init(struct iaa_compression_ctx *ctx)
- {
- 	ctx->verify_compress = iaa_verify_compress;
-+	ctx->async_mode = async_mode;
-+	ctx->use_irq = use_irq;
- }
- 
- static int iaa_comp_init_fixed(struct crypto_acomp *acomp_tfm)
-@@ -1809,6 +2058,7 @@ static struct idxd_device_driver iaa_crypto_driver = {
- 	.remove = iaa_crypto_remove,
- 	.name = IDXD_SUBDRIVER_NAME,
- 	.type = dev_types,
-+	.desc_complete = iaa_desc_complete,
- };
- 
- static int __init iaa_crypto_init_module(void)
-@@ -1847,10 +2097,20 @@ static int __init iaa_crypto_init_module(void)
- 		goto err_verify_attr_create;
- 	}
- 
-+	ret = driver_create_file(&iaa_crypto_driver.drv,
-+				 &driver_attr_sync_mode);
-+	if (ret) {
-+		pr_debug("IAA sync mode attr creation failed\n");
-+		goto err_sync_attr_create;
-+	}
-+
- 	pr_debug("initialized\n");
- out:
- 	return ret;
- 
-+err_sync_attr_create:
-+	driver_remove_file(&iaa_crypto_driver.drv,
-+			   &driver_attr_verify_compress);
- err_verify_attr_create:
- 	idxd_driver_unregister(&iaa_crypto_driver);
- err_driver_reg:
-@@ -1866,6 +2126,8 @@ static void __exit iaa_crypto_cleanup_module(void)
- 	if (iaa_unregister_compression_device())
- 		pr_debug("IAA compression device unregister failed\n");
- 
-+	driver_remove_file(&iaa_crypto_driver.drv,
-+			   &driver_attr_sync_mode);
- 	driver_remove_file(&iaa_crypto_driver.drv,
- 			   &driver_attr_verify_compress);
- 	idxd_driver_unregister(&iaa_crypto_driver);
--- 
-2.34.1
-
+--
+paul-moore.com
