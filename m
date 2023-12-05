@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 461C68053B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7FE8053B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347071AbjLEL7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:59:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
+        id S1345175AbjLEMAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:00:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345120AbjLEL7u (ORCPT
+        with ESMTP id S1345161AbjLEMAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:59:50 -0500
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [IPv6:2001:41d0:203:375::bd])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DB2A8
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:59:53 -0800 (PST)
-Message-ID: <50e674a2-89f8-46d2-8efe-3cf65ca1b554@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701777590;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9FNNsCD4UdrxJOkb/IVwaih82zP1k+LML9/DNjLCExQ=;
-        b=IAVA675At4yZ/VrLScYNDbl/w7pWWgyAmRpL+D3r5bkICJmsonRbjwkAPoE5YDQ5PJf7d4
-        ejJy1DXjM77hAzel142fv9DyEYR+kvK6f2OLGTEiKxuxz7vAwGPnN26LMyG7Nbb0rHuWtp
-        +wCRBTsxbOQyI9Oogr51f/SrfOePv0s=
-Date:   Tue, 5 Dec 2023 19:59:40 +0800
+        Tue, 5 Dec 2023 07:00:32 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34AA98
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:00:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID:In-Reply-To:Subject:CC:To:From:Date:Sender:Reply-To:
+        Content-ID:Content-Description:References;
+        bh=/eKJhgPMTMMY5RfTR6X1AJ44Ndjq/J/8VLPyF0xruWU=; b=QfDoArJdhDbZztII3tMJ1ynhkK
+        1XX3+6r4Oh3Yi54ykyfQQShKvX5us7FdMniDsEg3taV/89OoASvWIonKDHGg/lrnK01unE/OWpQk0
+        YXGEtcB9jNYnhnRfZoCWYSIG2eZ7E651BZOT4C5ho16w9Fpk3JgYERmNqCCu4UUooevXV16xC3BYO
+        MU1ZTQH7xB2ZHPQvdt34iAo3U/+1E8ay9o/71IXKV07vw85D8BHsdjYRJdX1MjR9iWWMu4E4CX94m
+        wYKbWsioCa6AyM+N8hBDnIpWEslkqgekQbtZDtrxghZkgQVFWfq2FSQ5P+Ov1Em4pPGi2kRN01+wt
+        NTj6oz3w==;
+Received: from [46.18.216.58] (helo=[127.0.0.1])
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1rAU5s-001py0-VY; Tue, 05 Dec 2023 12:00:05 +0000
+Date:   Tue, 05 Dec 2023 12:00:04 +0000
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     pdurrant@amazon.co.uk
+CC:     bp@alien8.de, dave.hansen@intel.com, dave.hansen@linux.intel.com,
+        hdegoede@redhat.com, hpa@zytor.com, jalliste@amazon.co.uk,
+        juew@amazon.com, len.brown@intel.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, rafael.j.wysocki@intel.com,
+        rafael@kernel.org, tglx@linutronix.de, usama.arif@bytedance.com,
+        x86@kernel.org
+Subject: =?US-ASCII?Q?RE=3A_=5BPATCH=5D_x86=3A_intel=5Fepb=3A_Add_earlyp?= =?US-ASCII?Q?aram_option_to_keep_bias_at_performance?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <53bce76c5c60463eba1372df426a64b9@amazon.co.uk>
+Message-ID: <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org>
 MIME-Version: 1.0
-Subject: Re: [v3 0/6] DRM driver for verisilicon
-To:     Keith Zhao <keith.zhao@starfivetech.com>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc:     aou@eecs.berkeley.edu, tzimmermann@suse.de,
-        paul.walmsley@sifive.com, mripard@kernel.org,
-        xingyu.wu@starfivetech.com, jack.zhu@starfivetech.com,
-        palmer@dabbelt.com, krzysztof.kozlowski+dt@linaro.org,
-        william.qiu@starfivetech.com, shengyang.chen@starfivetech.com,
-        changhuang.liang@starfivetech.com
-References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <20231204123315.28456-1-keith.zhao@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,121 +56,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On 2023/12/4 20:33, Keith Zhao wrote:
-> This patch is a drm driver for Starfive Soc JH7110,
-> I am sending Drm driver part and HDMI driver part.
->
-> We used GEM framework for buffer management,
-> and for buffer allocation,we use DMA APIs.
->
-> the Starfive HDMI servers as interface between a LCD Controller
-> and a HDMI bus.
-> A HDMI TX consists of one HDMI transmitter controller
-> and one HDMI transmitter PHY.
-> (Sound support is not include in this patch)
->
-> This patchset should be applied on next branch.
+Paul writes:
+> The problem is that this will take effect even on a kexec and hence it i=
+s throttling
+> a system that set ENERGY_PERF_BIAS_PERFORMANCE prior to the kexec=2E  We=
+ use kexec to
+> live update the host kernel of our systems whilst leaving virtual machin=
+es running=2E
+> This resetting of the perf bias is having a very detrimental effect on t=
+he downtime
+> of our systems across the live update - about a 7 fold increase=2E
 
+It isn't just about kexec, is it? Even in a clean boot why wouldn't we wan=
+t to stay in performance mode until the kernel has *finished* booting? It's=
+ literally adding seconds to the startup time in some cases=2E
 
-Please study Thomas's patch[1][2] carefully and write a good cover letter.
-Introduce what each single patch does, demonstrate how the whole driver is
-divided and organized, and why. And probably keep contact with him if he
-would like to curve your driver to a good shape. :-)
-
-
-[1] https://lore.kernel.org/dri-devel/20200715145902.13122-1-tzimmermann@suse.de/
-[2] https://lore.kernel.org/dri-devel/20231113091439.17181-1-tzimmermann@suse.de/
-
-
-> V1:
-> Changes since v1:
-> - Further standardize the yaml file.
-> - Dts naming convention improved.
-> - Fix the problem of compiling and loading ko files.
-> - Use drm new api to automatically manage resources.
-> - Drop vs_crtc_funcs&vs_plane_funcs, subdivide the plane's help interface.
-> - Reduce the modifiers unused.
-> - Optimize the hdmi driver code
->
-> V2:
-> Changes since v2:
-> - fix the error about checking the yaml file.
-> - match drm driver GEM DMA API.
-> - Delete the custom crtc property .
-> - hdmi use drmm_ new api to automatically manage resources.
-> - update the modifiers comments.
-> - enabling KASAN, fix the error during removing module
->
-> V3:
-> Changes since v3:
-> - Delete the custom plane property.
-> - Delete the custom fourcc modifiers.
-> - Adjust the calculation mode of hdmi pixclock.
-> - Add match data for dc8200 driver.
-> - Adjust some magic values.
-> - Add a simple encoder for dsi output.
->
-> Keith Zhao (6):
->    dt-bindings: display: Add yamls for JH7110 display system
->    riscv: dts: starfive: jh7110: display subsystem
->    drm/vs: Register DRM device
->    drm/vs: Add KMS crtc&plane
->    drm/vs: Add hdmi driver
->    drm/vs: simple encoder
->
->   .../starfive/starfive,display-subsystem.yaml  |  104 ++
->   .../starfive/starfive,dsi-encoder.yaml        |   92 ++
->   .../starfive/starfive,jh7110-dc8200.yaml      |  113 ++
->   .../starfive/starfive,jh7110-inno-hdmi.yaml   |   82 ++
->   .../soc/starfive/starfive,jh7110-syscon.yaml  |    1 +
->   MAINTAINERS                                   |    8 +
->   .../jh7110-starfive-visionfive-2.dtsi         |  134 ++
->   arch/riscv/boot/dts/starfive/jh7110.dtsi      |   49 +
->   drivers/gpu/drm/Kconfig                       |    2 +
->   drivers/gpu/drm/Makefile                      |    1 +
->   drivers/gpu/drm/verisilicon/Kconfig           |   21 +
->   drivers/gpu/drm/verisilicon/Makefile          |   12 +
->   drivers/gpu/drm/verisilicon/starfive_hdmi.c   |  849 ++++++++++++
->   drivers/gpu/drm/verisilicon/starfive_hdmi.h   |  304 +++++
->   drivers/gpu/drm/verisilicon/vs_crtc.c         |  208 +++
->   drivers/gpu/drm/verisilicon/vs_crtc.h         |   42 +
->   drivers/gpu/drm/verisilicon/vs_dc.c           | 1192 +++++++++++++++++
->   drivers/gpu/drm/verisilicon/vs_dc.h           |   67 +
->   drivers/gpu/drm/verisilicon/vs_dc_hw.c        | 1022 ++++++++++++++
->   drivers/gpu/drm/verisilicon/vs_dc_hw.h        |  580 ++++++++
->   drivers/gpu/drm/verisilicon/vs_drv.c          |  323 +++++
->   drivers/gpu/drm/verisilicon/vs_drv.h          |   46 +
->   drivers/gpu/drm/verisilicon/vs_modeset.c      |   39 +
->   drivers/gpu/drm/verisilicon/vs_modeset.h      |   10 +
->   drivers/gpu/drm/verisilicon/vs_plane.c        |  301 +++++
->   drivers/gpu/drm/verisilicon/vs_plane.h        |   39 +
->   drivers/gpu/drm/verisilicon/vs_simple_enc.c   |  195 +++
->   drivers/gpu/drm/verisilicon/vs_simple_enc.h   |   23 +
->   drivers/gpu/drm/verisilicon/vs_type.h         |   69 +
->   29 files changed, 5928 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
->   create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,dsi-encoder.yaml
->   create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
->   create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
->   create mode 100644 drivers/gpu/drm/verisilicon/Kconfig
->   create mode 100644 drivers/gpu/drm/verisilicon/Makefile
->   create mode 100644 drivers/gpu/drm/verisilicon/starfive_hdmi.c
->   create mode 100644 drivers/gpu/drm/verisilicon/starfive_hdmi.h
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_crtc.c
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_crtc.h
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_dc.c
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_dc.h
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_dc_hw.c
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_dc_hw.h
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_drv.c
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_drv.h
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_modeset.c
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_modeset.h
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_plane.c
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_plane.h
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_simple_enc.c
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_simple_enc.h
->   create mode 100644 drivers/gpu/drm/verisilicon/vs_type.h
->
+And yes, we *particularly* care in the kexec case because guests experienc=
+e it as excessive steal time=2E But it ain't great in the general case eith=
+er, surely?
