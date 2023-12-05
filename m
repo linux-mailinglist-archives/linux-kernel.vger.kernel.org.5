@@ -2,81 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC7F805D9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A8B805DDA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345965AbjLESWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:22:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
+        id S231486AbjLESnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:43:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345907AbjLESWJ (ORCPT
+        with ESMTP id S229483AbjLESnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:22:09 -0500
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id DC5831702
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:22:09 -0800 (PST)
-Received: (qmail 425674 invoked by uid 1000); 5 Dec 2023 13:22:09 -0500
-Date:   Tue, 5 Dec 2023 13:22:09 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Hardik Gajjar <hgajjar@de.adit-jv.com>
-Cc:     gregkh@linuxfoundation.org, corbet@lwn.net,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com, tj@kernel.org, paulmck@kernel.org,
-        Martin.Mueller5@de.bosch.com
-Subject: Re: [PATCH v5 2/2] usb: hub: Add quirk to decrease IN-ep poll
- interval for Microchip USB491x hub
-Message-ID: <1773e17b-a94e-4101-8881-54e33fb700d6@rowland.harvard.edu>
-References: <20231205181829.127353-1-hgajjar@de.adit-jv.com>
- <20231205181829.127353-2-hgajjar@de.adit-jv.com>
+        Tue, 5 Dec 2023 13:43:15 -0500
+X-Greylist: delayed 1222 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 10:43:22 PST
+Received: from finn.localdomain (finn.gateworks.com [108.161.129.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4636410D3;
+        Tue,  5 Dec 2023 10:43:22 -0800 (PST)
+Received: from 068-189-091-139.biz.spectrum.com ([68.189.91.139] helo=tharvey.pdc.gateworks.com)
+        by finn.localdomain with esmtp (Exim 4.93)
+        (envelope-from <tharvey@gateworks.com>)
+        id 1rAa4A-00BDe6-Vq; Tue, 05 Dec 2023 18:22:43 +0000
+From:   Tim Harvey <tharvey@gateworks.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>
+Subject: [PATCH] arm64: dts: imx8mm-venice-gw7: Fix pci sub-nodes
+Date:   Tue,  5 Dec 2023 10:22:41 -0800
+Message-Id: <20231205182241.2550284-1-tharvey@gateworks.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205181829.127353-2-hgajjar@de.adit-jv.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 07:18:29PM +0100, Hardik Gajjar wrote:
-> There is a potential delay in notifying Linux USB drivers of downstream
-> USB bus activity when connecting a high-speed or superSpeed device via the
-> Microchip USB491x hub. This delay is due to the fixed bInterval value of
-> 12 in the silicon of the Microchip USB491x hub.
-> 
-> Microchip requested to ignore the device descriptor and decrease that
-> value to 9 as it was too late to modify that in silicon.
-> 
-> This patch speeds up the USB enummeration process that helps to pass
-> Apple Carplay certifications and improve the User experience when utilizing
-> the USB device via Microchip Multihost USB491x Hub.
-> 
-> A new hub quirk HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL speeds up
-> the notification process for Microchip USB491x hub by limiting
-> the maximum bInterval value to 9.
-> 
-> Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
-> ---
-> changes since version 1:
-> 	- Move implementation from config.c and quirk.c to hub.c as this is hub
-> 	  specific changes.
-> 	- Improve commit message.
-> 	- Link to v1 - https://lore.kernel.org/all/20231123081948.58776-1-hgajjar@de.adit-jv.com/
-> 
-> changes since version 2:
->     - Call usb_set_interface after updating the bInterval to Tell the HCD about modification
-> 	- Link to v2 - https://lore.kernel.org/all/20231130084855.119937-1-hgajjar@de.adit-jv.com/
-> 
-> changes since version 3:
->     - Change HUB_QUIRK_REDUCE_FRAME_INTR_BINTERVAL value from 0x08 to 0x04
-> 	- Link to v3 - https://lore.kernel.org/all/20231201144705.97385-1-hgajjar@de.adit-jv.com/
-> 
-> changes since version 4:
-> 	- change quirk hardcoded value to BIT() Macro
-> 	- Link to v4 - https://lore.kernel.org/all/20231204073834.112509-1-hgajjar@de.adit-jv.com/
-> ---
+Several schema warnings were fixed in commit
+d61c5068729a ("arm64: dts: imx8mm-venice-gw7: Fix pci sub-nodes")
+however the node names and the ethernet NIC node were not quite correct.
 
-Reviewed-by: Alan Stern <stern@rowland.harvard.edu>
+Fix the node names as the ethernet device should have a node name of
+'ethernet' and remove the device_type, #address-cells, #size-cells, and
+ranges properties that should only be on busses/bridges.
+
+Fixes: d61c5068729a ("arm64: dts: imx8mm-venice-gw7: Fix pci sub-nodes")
+Signed-off-by: Tim Harvey <tharvey@gateworks.com>
+---
+ .../dts/freescale/imx8mm-venice-gw72xx.dtsi    | 18 +++++++-----------
+ .../dts/freescale/imx8mm-venice-gw73xx.dtsi    | 18 +++++++-----------
+ .../dts/freescale/imx8mm-venice-gw7902.dts     | 10 +++-------
+ 3 files changed, 17 insertions(+), 29 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx.dtsi
+index a337e8f20441..31f16f7cf37c 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw72xx.dtsi
+@@ -157,33 +157,29 @@ &pcie0 {
+ 				 <&clk IMX8MM_SYS_PLL2_250M>;
+ 	status = "okay";
+ 
+-	pcie@0,0 {
+-		reg = <0x0000 0 0 0 0>;
++	pcie@0 {
+ 		device_type = "pci";
++		reg = <0x0000 0 0 0 0>;
+ 		#address-cells = <3>;
+ 		#size-cells = <2>;
+ 		ranges;
+ 
+-		pcie@0,0 {
+-			reg = <0x0000 0 0 0 0>;
++		pcie@0 {
+ 			device_type = "pci";
++			reg = <0x0000 0 0 0 0>;
+ 			#address-cells = <3>;
+ 			#size-cells = <2>;
+ 			ranges;
+ 
+-			pcie@3,0 {
+-				reg = <0x1800 0 0 0 0>;
++			pcie@3 {
+ 				device_type = "pci";
++				reg = <0x1800 0 0 0 0>;
+ 				#address-cells = <3>;
+ 				#size-cells = <2>;
+ 				ranges;
+ 
+-				eth1: pcie@0,0 {
++				eth1: ethernet@0 {
+ 					reg = <0x0000 0 0 0 0>;
+-					device_type = "pci";
+-					#address-cells = <3>;
+-					#size-cells = <2>;
+-					ranges;
+ 
+ 					local-mac-address = [00 00 00 00 00 00];
+ 				};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
+index 2247d1c4e2af..6f5a6d91c95e 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw73xx.dtsi
+@@ -177,33 +177,29 @@ &pcie0 {
+ 				 <&clk IMX8MM_SYS_PLL2_250M>;
+ 	status = "okay";
+ 
+-	pcie@0,0 {
+-		reg = <0x0000 0 0 0 0>;
++	pcie@0 {
+ 		device_type = "pci";
++		reg = <0x0000 0 0 0 0>;
+ 		#address-cells = <3>;
+ 		#size-cells = <2>;
+ 		ranges;
+ 
+-		pcie@0,0 {
+-			reg = <0x0000 0 0 0 0>;
++		pcie@0 {
+ 			device_type = "pci";
++			reg = <0x0000 0 0 0 0>;
+ 			#address-cells = <3>;
+ 			#size-cells = <2>;
+ 			ranges;
+ 
+-			pcie@4,0 {
+-				reg = <0x2000 0 0 0 0>;
++			pcie@4 {
+ 				device_type = "pci";
++				reg = <0x2000 0 0 0 0>;
+ 				#address-cells = <3>;
+ 				#size-cells = <2>;
+ 				ranges;
+ 
+-				eth1: pcie@0,0 {
++				eth1: ethernet@0 {
+ 					reg = <0x0000 0 0 0 0>;
+-					device_type = "pci";
+-					#address-cells = <3>;
+-					#size-cells = <2>;
+-					ranges;
+ 
+ 					local-mac-address = [00 00 00 00 00 00];
+ 				};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+index 7ef17c2b0e9d..4bb22fdc5d2e 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-venice-gw7902.dts
+@@ -633,19 +633,15 @@ &pcie0 {
+ 				 <&clk IMX8MM_SYS_PLL2_250M>;
+ 	status = "okay";
+ 
+-	pcie@0,0 {
+-		reg = <0x0000 0 0 0 0>;
++	pcie@0 {
+ 		device_type = "pci";
++		reg = <0x0000 0 0 0 0>;
+ 		#address-cells = <3>;
+ 		#size-cells = <2>;
+ 		ranges;
+ 
+-		eth1: pcie@0,0 {
++		eth1: ethernet@0 {
+ 			reg = <0x0000 0 0 0 0>;
+-			device_type = "pci";
+-			#address-cells = <3>;
+-			#size-cells = <2>;
+-			ranges;
+ 
+ 			local-mac-address = [00 00 00 00 00 00];
+ 		};
+-- 
+2.25.1
+
