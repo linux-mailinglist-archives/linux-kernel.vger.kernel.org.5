@@ -2,53 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 674D280618A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB0080618C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346575AbjLEWP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 17:15:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
+        id S1346585AbjLEWQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 17:16:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346458AbjLEWP4 (ORCPT
+        with ESMTP id S1346478AbjLEWQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 17:15:56 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAE51B8
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 14:16:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=3bsHSMmQfyz+csHYq4RIEPn25hKRIp0mkKn6dPHakG8=; b=ika0qEa4YGJ9Qb92RacjZYCYtc
-        PYSuO1PCZCew1Bgsif3fcgyj1opbqeD3LFwo/6oLpd4wacj7PjeSVA/7HelzAC7Q3d5KtS9iyRt9J
-        W4iiXcoWgLDIsUCjiWmWNJBSlIHaJWkzNq2OZ4lX7CThiKIRj73J+hZQutzeAPx5ud37+lSNXQ4eg
-        BcVDoGme/Azu2Dd1jDqyKU/IvZShSjITUVHt5voSYIvOdRJ5JOHOVxnKme/SrKD6f+ml93MnKxoSf
-        PNge2S7+MqEzqMz9MtuVqo/h8KusR6QCCoAsGoi5pfReezH0lxJEe5r8mfnHQ3eMohxuT1RKPmRsf
-        LNKc402g==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAdhr-008Urg-0M;
-        Tue, 05 Dec 2023 22:15:55 +0000
-Message-ID: <fb36c8ea-02d7-408a-8354-f35712cdd510@infradead.org>
-Date:   Tue, 5 Dec 2023 14:15:54 -0800
+        Tue, 5 Dec 2023 17:16:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D65137
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 14:16:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701814584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h2Vem31mI/E1rxmbZRCBYAPkrSR+YjFerajC0+h+2EI=;
+        b=dVat5q1A35wXT8Nf76O/hEt5AccD2IDRmLUFLYZ1qCJdVHhmdINS3DrF6alqiduTNoJCi1
+        AvV/iayvbS+ZVgHTDJlo9YDguBo/+15AXixy4M3mo+gDmODm9w/LC7HPjsRAyleTuglDnU
+        2oXkYH/hw1EULws8XcuNJ1U+ShZXaKU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-433-3LYAxG9aN0qe_CfFGknouw-1; Tue,
+ 05 Dec 2023 17:16:16 -0500
+X-MC-Unique: 3LYAxG9aN0qe_CfFGknouw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F03511C0BB41;
+        Tue,  5 Dec 2023 22:16:15 +0000 (UTC)
+Received: from [10.22.8.88] (unknown [10.22.8.88])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DCC8C112131D;
+        Tue,  5 Dec 2023 22:16:14 +0000 (UTC)
+Message-ID: <7284ef19-ba26-46cd-9630-cad18c2e3ce7@redhat.com>
+Date:   Tue, 5 Dec 2023 17:16:14 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: kernel/context_tracking.c:80: warning: Function parameter or
- member 'state' not described in '__ct_user_enter'
+Subject: Re: [PATCH-cgroup 2/2] cgroup/cpuset: Include isolated cpuset CPUs in
+ cpu_is_isolated() check
 Content-Language: en-US
-To:     paulmck@kernel.org, kernel test robot <lkp@intel.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>
-References: <202312041922.YZCcEPYD-lkp@intel.com>
- <8e26257d-2809-4965-9f7d-aadbbb3def6f@paulmck-laptop>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <8e26257d-2809-4965-9f7d-aadbbb3def6f@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mrunal Patel <mpatel@redhat.com>,
+        Ryan Phillips <rphillips@redhat.com>,
+        Brent Rowsell <browsell@redhat.com>,
+        Peter Hunt <pehunt@redhat.com>
+References: <20231127041956.266026-1-longman@redhat.com>
+ <20231127041956.266026-3-longman@redhat.com>
+ <ZWYbqNnnt6gQOssK@slm.duckdns.org>
+ <8de482b5-1942-4312-8de4-6f54565ab517@redhat.com>
+ <ZWZl0uvqeZ-fR1O9@slm.duckdns.org>
+ <b6f88157-cf5e-4c7b-99f3-1944b4e7ebde@redhat.com>
+ <ZWoSrfztmprcdkpO@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZWoSrfztmprcdkpO@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,80 +80,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/1/23 12:06, Tejun Heo wrote:
+> Hello,
+>
+> On Wed, Nov 29, 2023 at 11:01:04AM -0500, Waiman Long wrote:
+> ...
+>>>> Depending on how the cpumask operators are implemented, we may not have a
+>>>> guarantee that testing CPU 2, for instance, will always return true. That is
+>>> Can you please elaborate this part a bit? I'm having a difficult time
+>>> imagining the sequence of operations where this would matter but that could
+>>> easily be me not being familiar with the details.
+>> I may be a bit paranoid about incorrect result due to racing as I had been
+>> burned before. Just testing a bit in the bitmask may probably be OK. I don't
+> Setting and clearing a bit is as atomic as it gets, right?
+Yes, I think so.
+>
+>> think it will be a problem for x86, but I am less certain about other more
+>> exotic architectures like arm64 or PPC which I am less familiar about. I add
+>> a seqcount for synchronization just for the peace of mind. I can take the
+>> seqcount out if you don't it is necessary.
+> I just can't think of a case where this would be broken. The data being read
+> and written is atomic. There's no way to break a bit operation into multiple
+> pieces. It is possible to write a really bone-headed bitmask operations
+> (like, if you shift the bits into place or sth) to make the bits go through
+> unintended changes but that'd just be a flat-out broken implementation. Even
+> for a bitmask where write accesses are synchronized through a spinlock, we
+> should still be able to use test_bit() without holding the lock. This seems
+> like a pretty basic assumption.
+>
+> Adding unnecessary synchronization confuses the readers. If we don't need
+> it, we shouldn't have it.
 
+OK, I will send a simplified v2 patch.
 
-On 12/4/23 20:38, Paul E. McKenney wrote:
-> On Mon, Dec 04, 2023 at 08:02:33PM +0800, kernel test robot wrote:
->> Hi Frederic,
->>
->> FYI, the error/warning still remains.
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
->> commit: e67198cc05b8ecbb7b8e2d8ef9fb5c8d26821873 context_tracking: Take idle eqs entrypoints over RCU
->> date:   1 year, 5 months ago
->> config: x86_64-buildonly-randconfig-006-20230906 (https://download.01.org/0day-ci/archive/20231204/202312041922.YZCcEPYD-lkp@intel.com/config)
->> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
->> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231204/202312041922.YZCcEPYD-lkp@intel.com/reproduce)
->>
->> If you fix the issue in a separate patch/commit (i.e. not just a new version of
->> the same patch/commit), kindly add following tags
->> | Reported-by: kernel test robot <lkp@intel.com>
->> | Closes: https://lore.kernel.org/oe-kbuild-all/202312041922.YZCcEPYD-lkp@intel.com/
->>
->> All warnings (new ones prefixed by >>):
->>
->>>> kernel/context_tracking.c:80: warning: Function parameter or member 'state' not described in '__ct_user_enter'
->>>> kernel/context_tracking.c:184: warning: Function parameter or member 'state' not described in '__ct_user_exit'
-> 
-> Does the patch below help?
+Cheers,
+Longman
 
-Yes. Thanks.
-
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 9d879548a8cc89e5fdb0d806fc20887d67991c10
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Mon Dec 4 20:34:58 2023 -0800
-> 
->     context_tracking: Fix kerneldoc headers for __ct_user_{enter,exit}()
->     
->     Document the "state" parameter of both of these functions.
->     
->     Reported-by: kernel test robot <lkp@intel.com>
->     Closes: https://lore.kernel.org/oe-kbuild-all/202312041922.YZCcEPYD-lkp@intel.com/
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->     Cc: Frederic Weisbecker <frederic@kernel.org>
-> 
-> diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-> index 6ef0b35fc28c..70ae70d03823 100644
-> --- a/kernel/context_tracking.c
-> +++ b/kernel/context_tracking.c
-> @@ -458,6 +458,8 @@ static __always_inline void context_tracking_recursion_exit(void)
->   * __ct_user_enter - Inform the context tracking that the CPU is going
->   *		     to enter user or guest space mode.
->   *
-> + * @state: userspace context-tracking state to enter.
-> + *
->   * This function must be called right before we switch from the kernel
->   * to user or guest space, when it's guaranteed the remaining kernel
->   * instructions to execute won't use any RCU read side critical section
-> @@ -595,6 +597,8 @@ NOKPROBE_SYMBOL(user_enter_callable);
->   * __ct_user_exit - Inform the context tracking that the CPU is
->   *		    exiting user or guest mode and entering the kernel.
->   *
-> + * @state: userspace context-tracking state being exited from.
-> + *
->   * This function must be called after we entered the kernel from user or
->   * guest space before any use of RCU read side critical section. This
->   * potentially include any high level kernel code like syscalls, exceptions,
-
--- 
-~Randy
