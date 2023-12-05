@@ -2,81 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E5C9805649
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D19D9805655
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345488AbjLENpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:45:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51464 "EHLO
+        id S1345491AbjLENqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:46:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232147AbjLENpu (ORCPT
+        with ESMTP id S235213AbjLENqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:45:50 -0500
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7852BA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:45:55 -0800 (PST)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3B5Cfi4f023034;
-        Tue, 5 Dec 2023 14:45:39 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=FSRHGKoQ2y+P/hzJL2Gm/ynyDVH8OKOZpF8JV6g73hc=; b=xc
-        BM+SaQa1mWzMBcckkW63sW2OkZZFaplXw5gEzG46J8EBbPcfqxE/P3QqdPyzeIfj
-        mmPoHmoBQutnmxuRczMkb5J/frK3vgDkbCMsAo0bpb3JPUETW7Hha/TVPJOiqEFu
-        EaW/EvbSwptc5qXlGSKBHS1CO8iezNQnmMdINLrv0HVI3E5sM1JmNNTJsDNeO0vw
-        f/5qDIXgTxs8heBmmF+MVuorIyuof9fQBrD0HkRYHOzFcCOpXxKs1qMjUFPOWP0p
-        HKPeXBdA3Yyd6pYlztLFVt/CCOGsRQwV8LPy8nruylvEVkxWMj9OS7enBiXsAqiy
-        yhf3ouT9TT6u7iEl6qaA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uqtvm4k7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 14:45:38 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A7AE210008D;
-        Tue,  5 Dec 2023 14:45:36 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9EBDE24C438;
-        Tue,  5 Dec 2023 14:45:36 +0100 (CET)
-Received: from [10.201.20.163] (10.201.20.163) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 5 Dec
- 2023 14:45:36 +0100
-Message-ID: <f970d6a2-d6b1-4602-b476-f63cd086cea2@foss.st.com>
-Date:   Tue, 5 Dec 2023 14:45:35 +0100
+        Tue, 5 Dec 2023 08:46:54 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804C3A8;
+        Tue,  5 Dec 2023 05:47:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=sXLv+BQQhFyIj+OepEyZ/ix18aKE+IuVWy2i+TljFxM=; b=uRp6DB8os5K4RsEy/2tUwm8nTZ
+        KpC14YHGa6Zc3D4mUxpfsJ3voOPTih7Wgr854pnrSTaWgxWU6YVi4d5Drw43VHXLu/E6742PCh+Ra
+        FuWh9NO9KUrSK9WHyfAzriA5bQw1gaXSrh7/O7Lj3Q2Vos66sXrbVZCmQ/QssYHxSW01XNWNF3M3Q
+        O9BeC3qGJbLGnu1O7FdgDDpGwWEDYbnc/364SX/dYvg+3XdxymrG0UxnhIUp4fEnG3MzP+StRFNdk
+        89kIl+zuljDMmLDi5bAvd9i891rGvYkWGfPfWeU9TRipURrhKE5Kc4/GjMHGY8d5xkyK4BPcrOE+z
+        x6FdkqZg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36992)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rAVl6-0006qp-0Q;
+        Tue, 05 Dec 2023 13:46:44 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rAVl6-0001lK-Gv; Tue, 05 Dec 2023 13:46:44 +0000
+Date:   Tue, 5 Dec 2023 13:46:44 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 06/16] net: pcs: xpcs: Avoid creating dummy XPCS
+ MDIO device
+Message-ID: <ZW8pxM3RvyHJTwqH@shell.armlinux.org.uk>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-7-fancer.lancer@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] tee: Use iov_iter to better support shared buffer
- registration
-Content-Language: en-US
-To:     Sumit Garg <sumit.garg@linaro.org>
-CC:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        <op-tee@lists.trustedfirmware.org>, <linux-kernel@vger.kernel.org>
-References: <20231129164439.1130903-1-arnaud.pouliquen@foss.st.com>
- <CAFA6WYP=_BPt_x1FxeVdAdB_mMjdz8QzvkfFXx-5msy8PZG6nA@mail.gmail.com>
- <60b67bd5-36c3-4318-9a2b-bcf172681d45@foss.st.com>
- <CAFA6WYN9eJ1vGTKfGXy7M709=aGkg1oF3odK7iGRUBokbKtqzw@mail.gmail.com>
- <40902a86-3b88-45bc-bb6f-2de0eb48dc9d@foss.st.com>
- <CAFA6WYPGkpVN-XP7eAzLXMReRi7FBp3boKzhMfasasuE=XWBow@mail.gmail.com>
- <438a8b44-ea5f-4e13-bd7e-e1c2e2a481c4@kernel.dk>
- <cf00a996-c262-4457-93de-ca7960ad6df6@kernel.dk>
- <a1f4e290-34ad-4606-9a95-350d00727483@foss.st.com>
- <CAFA6WYMi52WTWho5y=967fm8utqtdq9fuCjVJFA9G0MaHtNYgg@mail.gmail.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Organization: STMicroelectronics
-In-Reply-To: <CAFA6WYMi52WTWho5y=967fm8utqtdq9fuCjVJFA9G0MaHtNYgg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.20.163]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-05_09,2023-12-05_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205103559.9605-7-fancer.lancer@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,94 +74,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sumit,
-
-On 12/5/23 13:07, Sumit Garg wrote:
-> Hi Arnaud,
+On Tue, Dec 05, 2023 at 01:35:27PM +0300, Serge Semin wrote:
+> If the DW XPCS MDIO devices are either left unmasked for being auto-probed
+> or explicitly registered in the MDIO subsystem by means of the
+> mdiobus_register_board_info() method there is no point in creating the
+> dummy MDIO device instance in order to get the DW XPCS handler since the
+> MDIO core subsystem will create the device during the MDIO bus
+> registration procedure. All what needs to be done is to just reuse the
+> MDIO-device instance available in the mii_bus.mdio_map array (using some
+> getter for it would look better though). It shall prevent the XPCS devices
+> been accessed over several MDIO-device instances.
 > 
-> On Mon, 4 Dec 2023 at 22:32, Arnaud POULIQUEN
-> <arnaud.pouliquen@foss.st.com> wrote:
->>
->> Hi,
->>
->> On 12/4/23 17:40, Jens Axboe wrote:
->>> On 12/4/23 9:36 AM, Jens Axboe wrote:
->>>> On 12/4/23 5:42 AM, Sumit Garg wrote:
->>>>> IMO, access_ok() should be the first thing that import_ubuf() or
->>>>> import_single_range() should do, something as follows:
->>>>>
->>>>> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
->>>>> index 8ff6824a1005..4aee0371824c 100644
->>>>> --- a/lib/iov_iter.c
->>>>> +++ b/lib/iov_iter.c
->>>>> @@ -1384,10 +1384,10 @@ EXPORT_SYMBOL(import_single_range);
->>>>>
->>>>>  int import_ubuf(int rw, void __user *buf, size_t len, struct iov_iter *i)
->>>>>  {
->>>>> -       if (len > MAX_RW_COUNT)
->>>>> -               len = MAX_RW_COUNT;
->>>>>         if (unlikely(!access_ok(buf, len)))
->>>>>                 return -EFAULT;
->>>>> +       if (len > MAX_RW_COUNT)
->>>>> +               len = MAX_RW_COUNT;
->>>>>
->>>>>         iov_iter_ubuf(i, rw, buf, len);
->>>>>         return 0;
->>>>>
->>>>> Jens A., Al Viro,
->>>>>
->>>>> Was there any particular reason which I am unaware of to perform
->>>>> access_ok() check on modified input length?
->>>>
->>>> This change makes sense to me, and seems consistent with what is done
->>>> elsewhere too.
->>>
->>> For some reason I missed import_single_range(), which does it the same
->>> way as import_ubuf() currently does - cap the range before the
->>> access_ok() check. The vec variants sum as they go, but access_ok()
->>> before the range.
->>>
->>> I think part of the issue here is that the single range imports return 0
->>> for success and -ERROR otherwise. This means that the caller does not
->>> know if the full range was imported or not. OTOH, we always cap any data
->>> transfer at MAX_RW_COUNT, so may make more sense to fix up the caller
->>> here.
->>>
->>
->> Should we limit to MAX_RW_COUNT or return an error?
->> Seems to me that limiting could generate side effect later that could be not
->> simple to debug.
->>
->>
->>>>>  int import_ubuf(int rw, void __user *buf, size_t len, struct iov_iter *i)
->>>>>  {
->>>>> -       if (len > MAX_RW_COUNT)
->>>>> +               return -EFAULT;
->>>>>         if (unlikely(!access_ok(buf, len)))
->>>>>                 return -EFAULT;
->>>>>
->>>>>         iov_iter_ubuf(i, rw, buf, len);
->>>>>         return 0;
->>
->> or perhaps just remove the test as __access_ok() already tests that the
->> size < TASK_SIZE
->>
->> https://elixir.bootlin.com/linux/v6.7-rc4/source/include/asm-generic/access_ok.h#L31
->>
+> Note since the MDIO-device instance might be retrieved from the MDIO-bus
+> map array its reference counter shall be increased. If the MDIO-device
+> instance is created in the xpcs_create_mdiodev() method its reference
+> counter will be already increased. So there is no point in toggling the
+> reference counter in the xpcs_create() function. Just drop it from there.
 > 
-> It looks like there are predefined constraints for using import_ubuf()
-> which doesn't properly match our needs. So let's directly use:
-> iov_iter_ubuf() instead.
-
-Yes, this seems a safer alternative. I will send a new version based on it.
-
-Thanks,
-Arnaud
-
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+> ---
+>  drivers/net/pcs/pcs-xpcs.c | 26 +++++++++++++-------------
+>  1 file changed, 13 insertions(+), 13 deletions(-)
 > 
-> -Sumit
-> 
->>
->> Thanks,
->> Arnaud
->>
+> diff --git a/drivers/net/pcs/pcs-xpcs.c b/drivers/net/pcs/pcs-xpcs.c
+> index 2850122f354a..a53376472394 100644
+> --- a/drivers/net/pcs/pcs-xpcs.c
+> +++ b/drivers/net/pcs/pcs-xpcs.c
+> @@ -1376,7 +1376,6 @@ static struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
+>  	if (!xpcs)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> -	mdio_device_get(mdiodev);
+>  	xpcs->mdiodev = mdiodev;
+>  
+>  	xpcs_id = xpcs_get_id(xpcs);
+> @@ -1417,7 +1416,6 @@ static struct dw_xpcs *xpcs_create(struct mdio_device *mdiodev,
+>  	ret = -ENODEV;
+>  
+>  out:
+> -	mdio_device_put(mdiodev);
+>  	kfree(xpcs);
+>  
+>  	return ERR_PTR(ret);
+
+The above two hunks are a completely Unnecessary change.
+
+> @@ -1437,19 +1435,21 @@ struct dw_xpcs *xpcs_create_mdiodev(struct mii_bus *bus, int addr,
+>  	struct mdio_device *mdiodev;
+>  	struct dw_xpcs *xpcs;
+>  
+> -	mdiodev = mdio_device_create(bus, addr);
+> -	if (IS_ERR(mdiodev))
+> -		return ERR_CAST(mdiodev);
+> +	if (addr >= PHY_MAX_ADDR)
+> +		return ERR_PTR(-EINVAL);
+>  
+> -	xpcs = xpcs_create(mdiodev, interface);
+> +	if (mdiobus_is_registered_device(bus, addr)) {
+> +		mdiodev = bus->mdio_map[addr];
+> +		mdio_device_get(mdiodev);
+
+This is fine - taking a reference on the mdiodev you've got from
+somewhere else is the right thing to do.
+
+> +	} else {
+> +		mdiodev = mdio_device_create(bus, addr);
+> +		if (IS_ERR(mdiodev))
+> +			return ERR_CAST(mdiodev);
+> +	}
+>  
+> -	/* xpcs_create() has taken a refcount on the mdiodev if it was
+> -	 * successful. If xpcs_create() fails, this will free the mdio
+> -	 * device here. In any case, we don't need to hold our reference
+> -	 * anymore, and putting it here will allow mdio_device_put() in
+> -	 * xpcs_destroy() to automatically free the mdio device.
+> -	 */
+> -	mdio_device_put(mdiodev);
+> +	xpcs = xpcs_create(mdiodev, interface);
+> +	if (IS_ERR(xpcs))
+> +		mdio_device_put(mdiodev);
+
+Without the change to xpcs_create() you don't need this change - and
+this is why I say you don't understand refcounting.
+
+The point here is that the refcounting management is in each function
+where references are gained or lost.
+
+xpcs_create() creates a new reference to the mdiodev by storing it in
+the dw_xpcs structure. Therefore, it takes a reference to the mdiodev.
+If something fails, it drops that reference to restore the refcount
+as it was on function entry.
+
+xpcs_create_mdiodev() as it originally stood creates the mdiodev from
+the bus/address, and then passes that to xpcs_create(). Once
+xpcs_create() has finished its work (irrespective of whether it was
+successful or not) we're done with the mdiodev in this function, so
+the reference is _always_ put.
+
+For your use case, it would be:
+
+	mdiodev = bus->mdio_map[addr];
+	mdio_device_get(mdiodev);
+
+	xpcs = xpcs_create(mdiodev, interface);
+
+	mdio_device_put(mdiodev);
+
+	return xpcs;
+
+which illustrates this point - we get a reference to the mdiodev by
+reading it from the array. We do something (calling xpcs_create)
+with it. If that something was successful, it takes its own refcount
+otherwise leaves it as-is. We're then done with the mdiodev so we
+drop the refcount we took.
+
+There is no need to make the code more complicated by changing this,
+so I regard the refcount changes in this patch to be wrong.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
