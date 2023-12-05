@@ -2,106 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD9158053E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424A48053E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbjLEMNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        id S232078AbjLEMNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:13:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231912AbjLEMNh (ORCPT
+        with ESMTP id S235123AbjLEMNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:13:37 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBF2C3;
-        Tue,  5 Dec 2023 04:13:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701778423; x=1733314423;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=MYqOhIpAjG+tcFzzzvBDM/zAZxf8GMMLxtt+rsWwboM=;
-  b=mDzI3Y7+SHNcFAaOAh9VsrFA3QixVH53hJ0F4PjAEktSYOCK8Y4dTM4c
-   yk8fv2NF3FRjGqa1qN0XgYfPWg4x5O3nTGl6t240YfTzLLkgX994VqZnH
-   kf8kWU6Vozc6AT2ihbggsuex5BJkeZUMimuh6w+zyEu4zii2M6o3XQmid
-   3OVWxBU0OmRg4k4n5zxdJf9Sk4AVvIh9Cwv7Eq+rsiEYhWjh9qtHintY7
-   lwHZr/pvVq1WMDh6u2rmyETjw29uJNQ0Qtl1NFuvx/9FlGM7OpcEJ57PV
-   XCnrLG1eZ4vG1C6ZSk9QlLIIYH9DPWnvlVAsXEL+naaP76buw7a/KE5u7
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="378910566"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="378910566"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 04:13:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="12315536"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.31.68]) ([10.255.31.68])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 04:13:40 -0800
-Message-ID: <dfb350c8-b3e3-48ad-86b3-201205521153@linux.intel.com>
-Date:   Tue, 5 Dec 2023 20:13:37 +0800
+        Tue, 5 Dec 2023 07:13:45 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718D4D7;
+        Tue,  5 Dec 2023 04:13:50 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 619B6844;
+        Tue,  5 Dec 2023 13:13:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701778388;
+        bh=0ZLr3kFQ/SRckdRD/WtVOMYCg8x0SdcGPUxWJlxbTSQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q6OEmb5m+LGJD4zSLWKgY92Ie7m6mdi0BK0wkagE6rqjc15tEFpTp2Alyi8NZdMc/
+         IVN84yY+f6rc2thMg75CK6Mh5IXgqRxFn6emZA2ubX4vWZgu70mWDQw38aBHKcntxp
+         mgTMuGzaeP9wD78HMIR1Zzmf8dhnZ2LhI6sYITNI=
+Date:   Tue, 5 Dec 2023 14:13:55 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
+        aford173@gmail.com, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] media: rkisp1: Fix IRQ disable race issue
+Message-ID: <20231205121355.GE17394@pendragon.ideasonboard.com>
+References: <20231205-rkisp-irq-fix-v1-0-f4045c74ba45@ideasonboard.com>
+ <20231205-rkisp-irq-fix-v1-4-f4045c74ba45@ideasonboard.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 09/12] iommu: Make iommu_queue_iopf() more generic
-Content-Language: en-US
-To:     Yi Liu <yi.l.liu@intel.com>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
- <20231115030226.16700-10-baolu.lu@linux.intel.com>
- <e18c7c93-7184-4bbc-97cd-61fc0bc0aa3d@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <e18c7c93-7184-4bbc-97cd-61fc0bc0aa3d@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231205-rkisp-irq-fix-v1-4-f4045c74ba45@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/5 15:13, Yi Liu wrote:
->> @@ -157,8 +173,8 @@ int iommu_queue_iopf(struct iommu_fault *fault, 
->> struct device *dev)
->>       group->dev = dev;
->>       group->last_fault.fault = *fault;
->>       INIT_LIST_HEAD(&group->faults);
->> +    group->domain = domain;
->>       list_add(&group->last_fault.list, &group->faults);
->> -    INIT_WORK(&group->work, iopf_handler);
->>       /* See if we have partial faults for this group */
->>       list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
->> @@ -167,9 +183,13 @@ int iommu_queue_iopf(struct iommu_fault *fault, 
->> struct device *dev)
->>               list_move(&iopf->list, &group->faults);
->>       }
->> -    queue_work(iopf_param->queue->wq, &group->work);
->> -    return 0;
->> +    mutex_unlock(&iopf_param->lock);
->> +    ret = domain->iopf_handler(group);
->> +    mutex_lock(&iopf_param->lock);
+Hi Tomi,
+
+Thank you for the patch.
+
+On Tue, Dec 05, 2023 at 10:09:35AM +0200, Tomi Valkeinen wrote:
+> In rkisp1_isp_stop() and rkisp1_csi_disable() the driver masks the
+> interrupts and then apparently assumes that the interrupt handler won't
+> be running, and proceeds in the stop procedure. This is not the case, as
+> the interrupt handler can already be running, which would lead to the
+> ISP being disabled while the interrupt handler handling a captured
+> frame.
 > 
-> After this change, this function (iommu_queue_iopf) does not queue
-> anything. Should this function be renamed? Except this, I didn't see
-> other problem.
+> It is not clear to me if this problem causes a real issue, but shutting
+> down the ISP while an interrupt handler is running sounds rather bad.
 
-It's renamed in the next patch.
+Agreed.
 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c | 14 +++++++++++++-
+>  drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c | 20 +++++++++++++++++---
+>  2 files changed, 30 insertions(+), 4 deletions(-)
 > 
-> Reviewed-by:Yi Liu <yi.l.liu@intel.com>
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+> index f6b54654b435..f0cef766fc0c 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+> @@ -125,8 +125,20 @@ static void rkisp1_csi_disable(struct rkisp1_csi *csi)
+>  	struct rkisp1_device *rkisp1 = csi->rkisp1;
+>  	u32 val;
+>  
+> -	/* Mask and clear interrupts. */
+> +	/* Mask MIPI interrupts. */
+>  	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_IMSC, 0);
+> +
+> +	/* Flush posted writes */
+> +	rkisp1_read(rkisp1, RKISP1_CIF_MIPI_IMSC);
+> +
+> +	/*
+> +	 * Wait until the IRQ handler has ended. The IRQ handler may get called
+> +	 * even after this, but it will return immediately as the MIPI
+> +	 * interrupts have been masked.
+> +	 */
 
-Thank you!
+This comment will need to be updated if patch 3/4 gets replaced by a
+patch that drops IRQF_SHARED.
 
-Best regards,
-baolu
+> +	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MIPI]);
+> +
+> +	/* Clear MIPI interrupt status */
+>  	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_ICR, ~0);
+>  
+>  	val = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_CTRL);
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+> index d6b8786661ad..a6dd497c884c 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+> @@ -364,11 +364,25 @@ static void rkisp1_isp_stop(struct rkisp1_isp *isp)
+>  	 * ISP(mi) stop in mi frame end -> Stop ISP(mipi) ->
+>  	 * Stop ISP(isp) ->wait for ISP isp off
+>  	 */
+> -	/* stop and clear MI and ISP interrupts */
+> -	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
+> -	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
+>  
+> +	/* Mask MI and ISP interrupts */
+> +	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
+>  	rkisp1_write(rkisp1, RKISP1_CIF_MI_IMSC, 0);
+> +
+> +	/* Flush posted writes */
+> +	rkisp1_read(rkisp1, RKISP1_CIF_MI_IMSC);
+> +
+> +	/*
+> +	 * Wait until the IRQ handler has ended. The IRQ handler may get called
+> +	 * even after this, but it will return immediately as the MI and ISP
+> +	 * interrupts have been masked.
+> +	 */
+
+Same here.
+
+> +	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_ISP]);
+> +	if (rkisp1->irqs[RKISP1_IRQ_ISP] != rkisp1->irqs[RKISP1_IRQ_MI])
+> +		synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MI]);
+
+It would be nice if we could avoid the double synchronize_irq() for
+platforms where RKISP1_IRQ_MIPI and RKISP1_IRQ_ISP are identical, but I
+understand that would be difficult.
+
+> +
+> +	/* Clear MI and ISP interrupt status */
+> +	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
+>  	rkisp1_write(rkisp1, RKISP1_CIF_MI_ICR, ~0);
+>  
+>  	/* stop ISP */
+
+-- 
+Regards,
+
+Laurent Pinchart
