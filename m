@@ -2,92 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C57805BDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2621805C0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345199AbjLERDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:03:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34034 "EHLO
+        id S1345312AbjLERFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:05:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbjLERDt (ORCPT
+        with ESMTP id S1345276AbjLERFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:03:49 -0500
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBD9A1;
-        Tue,  5 Dec 2023 09:03:55 -0800 (PST)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-58ceab7daddso2484286eaf.3;
-        Tue, 05 Dec 2023 09:03:55 -0800 (PST)
+        Tue, 5 Dec 2023 12:05:53 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58891AA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:05:57 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54917ef6c05so7367557a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 09:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701795956; x=1702400756; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=R1K+1G9jV9cMz0Q64D03lk7V9VhpTBUeMxZV0+5svsQ=;
+        b=eYAZgBe9AnTUIGjB8x2atLqkRwVED9EMyILEDhnTQvkqk5VZ8+SBCQMvoxHjcNNbrR
+         /B+7HpqYRkvyme7hlFPK95gEG+DfBmjnVMdTICfepesC51EOlAUR0bvVNwDOcK27JA76
+         nr41CYTqvcbxER4+Xneugu07UcnpbAVVuuKeY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701795835; x=1702400635;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Kxt6CKccKyM2aD5KqaYbJ+5NRAtsSu20TdTe87tfro=;
-        b=gC36X4NARMJFnoLUNZ6eIGcjEc1l5871SjthUiIspKmoaHf1kKjnlSO/V046uFgT2E
-         ANpe+rE5YEEqD2ycQzEEJ2mRgqdkimd665BviZzZGLt00siu1fKb6fMq6SofmFtGR9Px
-         /zZsUIDflXJhqBv7j8JhsaId5oPThrEeECQf5cm+TU/s04ZWVnfKzi3t9ivWG7FV5IV7
-         HAKl0s0DEmaS9cO/6BzT6PWwXhne8jh6A1fDwzLnkdgkZjOzP56x2wDgqZCl+pc1x+lZ
-         w4m5sa7rw0F01s7QLkdN9wIPpD6NKIHh+cJB34LW3DHrhW2juZF4rQu33NAJsvjscxVW
-         LC8Q==
-X-Gm-Message-State: AOJu0YyRYu6XQo6MkLfAFga6iBIY3nm9gjjsFU1upk6OFnZLq5EGsGF2
-        MNkzx2aSUSOJ7Mqx2nFdsWg=
-X-Google-Smtp-Source: AGHT+IHREsBDTR/fguPuUAOPGrQJFqdX7+L934/9nqEfo9v3T6jgbM8x1qOuTAd7fOfx1S8tYfwMzA==
-X-Received: by 2002:a05:6358:6f95:b0:16e:43a1:6881 with SMTP id s21-20020a0563586f9500b0016e43a16881mr2252180rwn.26.1701795834695;
-        Tue, 05 Dec 2023 09:03:54 -0800 (PST)
-Received: from [172.20.2.177] (rrcs-173-197-90-226.west.biz.rr.com. [173.197.90.226])
-        by smtp.gmail.com with ESMTPSA id s25-20020a639259000000b00578afd8e012sm5146562pgn.92.2023.12.05.09.03.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 09:03:54 -0800 (PST)
-Message-ID: <189fa9b2-bcc8-4839-ac04-33a29bba9aaa@acm.org>
-Date:   Tue, 5 Dec 2023 09:03:48 -0800
+        d=1e100.net; s=20230601; t=1701795956; x=1702400756;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R1K+1G9jV9cMz0Q64D03lk7V9VhpTBUeMxZV0+5svsQ=;
+        b=ecc4CvQA+0RNo7vEjZDwomlG0pLr9yr+AQmNk3tNzVkOVtM1TZKsfPD7XVR7lmAkPy
+         uQULaesuWw7p0TQ574HJppqWn52MnHGdgYT5q5bd6ZimfHb1B1aNalF3gdti0vtzfPjN
+         HtyFBYIbLbD7T717wYSEsia7vAkluX1Kzf/9y0qlGdwg+qlI4dmBgg5PiDDx1oDrtWxr
+         Y43fm20VwaWR6mld0/wDR/n5Y0yC5qZrbXpj6HuXhQWC8SQaazcgXRIUJiCnQS6st+mg
+         aQu+rwhx3BhNgIipDrEe40wwmT+0GU2UHIDv/h8dxZZhn6KGdZUlSEJL6nfBbjdf5SqK
+         temA==
+X-Gm-Message-State: AOJu0YyqjkJV/DELIjOwHry2UJVvLlo85JbQTTIWgL37MO6wL4tvY155
+        7s2VIBckgpPA/XkzwWLFNEw7/A==
+X-Google-Smtp-Source: AGHT+IEJjv6k4HHDmPuN/DOL3JgyIPQJ5mOx/E0GmdjiSXKSC5qRKQSfAzW1uPBtvrB536WJjRMELQ==
+X-Received: by 2002:a05:6402:520d:b0:54d:255a:4354 with SMTP id s13-20020a056402520d00b0054d255a4354mr608038edd.13.1701795955970;
+        Tue, 05 Dec 2023 09:05:55 -0800 (PST)
+Received: from google.com ([83.142.187.84])
+        by smtp.gmail.com with ESMTPSA id l4-20020a056402124400b0054c9635b24esm1334843edw.21.2023.12.05.09.05.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 09:05:55 -0800 (PST)
+Date:   Tue, 5 Dec 2023 18:05:53 +0100
+From:   Dmytro Maluka <dmaluka@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/thp: add CONFIG_TRANSPARENT_HUGEPAGE_NEVER option
+Message-ID: <ZW9YcT6jH3JjdJSy@google.com>
+References: <20231204163254.2636289-1-dmaluka@chromium.org>
+ <20231204111301.7e087b2f851b30121561e8fc@linux-foundation.org>
+ <ZW4vLV_LDFLf1cJQ@google.com>
+ <20231204121524.dfa9f98e809c91b353968d34@linux-foundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-Content-Language: en-US
-To:     Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
-        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
-        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, nico@fluxnic.net,
-        xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-        konishi.ryusuke@gmail.com, willy@infradead.org,
-        akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
-        yi.zhang@huawei.com, yangerkun@huawei.com
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20231205123728.1866699-2-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204121524.dfa9f98e809c91b353968d34@linux-foundation.org>
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/5/23 04:37, Yu Kuai wrote:
-> +static inline u8 block_bits(struct block_device *bdev)
-> +{
-> +	return bdev->bd_inode->i_blkbits;
-> +}
+On Mon, Dec 04, 2023 at 12:15:24PM -0800, Andrew Morton wrote:
+> On Mon, 4 Dec 2023 20:57:33 +0100 Dmytro Maluka <dmaluka@chromium.org> wrote:
+> 
+> > On Mon, Dec 04, 2023 at 11:13:01AM -0800, Andrew Morton wrote:
+> > > On Mon,  4 Dec 2023 17:32:54 +0100 Dmytro Maluka <dmaluka@chromium.org> wrote:
+> > > 
+> > > > Add an option to disable transparent hugepages by default, in line with
+> > > > the existing transparent_hugepage=never command line setting.
+> > > > 
+> > > > Rationale: khugepaged has its own non-negligible memory cost even if it
+> > > > is not used by any applications, since it bumps up vm.min_free_kbytes to
+> > > > its own required minimum in set_recommended_min_free_kbytes(). For
+> > > > example, on a machine with 4GB RAM, with 3 mm zones and pageblock_order
+> > > > == MAX_ORDER, starting khugepaged causes vm.min_free_kbytes increase
+> > > > from 8MB to 132MB.
+> > > > 
+> > > > So if we use THP on machines with e.g. >=8GB of memory for better
+> > > > performance, but avoid using it on lower-memory machines to avoid its
+> > > > memory overhead, then for the same reason we also want to avoid even
+> > > > starting khugepaged on those <8GB machines. So with
+> > > > CONFIG_TRANSPARENT_HUGEPAGE_NEVER we can use the same kernel image on
+> > > > both >=8GB and <8GB machines, with THP support enabled but khugepaged
+> > > > not started by default. The userspace can then decide to enable THP
+> > > > (i.e. start khugepaged) via sysfs if needed, based on the total amount
+> > > > of memory.
+> > > > 
+> > > > This could also be achieved with the existing transparent_hugepage=never
+> > > > setting in the kernel command line instead. But it seems cleaner to
+> > > > avoid tweaking the command line for such a basic setting.
+> > > > 
+> > > > P.S. I see that CONFIG_TRANSPARENT_HUGEPAGE_NEVER was already proposed
+> > > > in the past [1] but without an explanation of the purpose.
+> > > > 
+> > > > ...
+> > > >
+> > > > --- a/mm/Kconfig
+> > > > +++ b/mm/Kconfig
+> > > > @@ -859,6 +859,12 @@ choice
+> > > >  	  madvise(MADV_HUGEPAGE) but it won't risk to increase the
+> > > >  	  memory footprint of applications without a guaranteed
+> > > >  	  benefit.
+> > > > +
+> > > > +	config TRANSPARENT_HUGEPAGE_NEVER
+> > > > +		bool "never"
+> > > > +	help
+> > > > +	  Disabling Transparent Hugepage by default. It can still be
+> > > 
+> > > s/Disabling/Disable/
+> > 
+> > It is in line with the descriptions of TRANSPARENT_HUGEPAGE_ALWAYS and
+> > TRANSPARENT_HUGEPAGE_MADVISE: "Enabling Transparent Hugepage ..."
+> 
+> Those are incorrect also.
 
-This function needs a name that's more descriptive.
+Ok, corrected in v2. Also clarified the changelog wrt your 2nd question.
 
-Thanks,
-
-Bart.
+> > > > +	  enabled at runtime via sysfs.
+> > > >  endchoice
+> > > 
+> > > The patch adds the config option but doesn't use it?
+> > 
+> > I should have been more precise: it is not a new option but a new choice
+> > for CONFIG_TRANSPARENT_HUGEPAGE, in addition to the existing ALWAYS and
+> > MADVISE choices. In mm/huge_memory.c in the declaration of the
+> > transparent_hugepage_flags variable, if either ALWAYS or MADVISE is
+> > chosen, transparent_hugepage_flags is initialized with such a value
+> > that makes khugepaged being started by default during bootup. This patch
+> > allows enabling CONFIG_TRANSPARENT_HUGEPAGE without setting either
+> > ALWAYS or MADVISE, so that transparent_hugepage_flags is initialized
+> > with such a value that khugepaged is not started by default.
+> 
+> OK, thanks.
