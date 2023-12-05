@@ -2,169 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EEF8043A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6288043A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234801AbjLEA6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 19:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
+        id S1343632AbjLEA7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:59:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbjLEA6Q (ORCPT
+        with ESMTP id S229611AbjLEA7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:58:16 -0500
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA634109
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:58:20 -0800 (PST)
-Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7c513dc5815so1736252241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 16:58:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701737900; x=1702342700; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m97CsDjIvuM5Yw/O14me8+/R6uFBIRKDK86GXz6XBIc=;
-        b=aeLWivWZrYqochOUTKe9jYs67fBz5GrqXCZfQqp2y4gBfFvZP+F8vD2D8FtI66mw0a
-         E57KtV5nqNDgZ97E9l+Z4FA8nKP78StPE3g2bH2GG1kYeDPSLR7WpsooM++vEDkeHulZ
-         /eOcMdPHpL4e+F3DGr/GwIT9d2MxUn1aLFIZAv6C4Q++UP8+sbBxMjTke+sp1rS0u5Mg
-         Lrm9NpeOsgEJhsytcMEC+apvskTmgh0ihPmyiGNbYQVqBzKHPwubaq1cAXq8PqA8NPei
-         goFNx6J8VEHeCbvmIoO14qoTlnutPJC4AMRY8P7qPATFVYZ80DPFHLtm/rmHB7RTJLMD
-         rPIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701737900; x=1702342700;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m97CsDjIvuM5Yw/O14me8+/R6uFBIRKDK86GXz6XBIc=;
-        b=B/RFBqbCvC1GUocit2WQMJNrY/L1D88AkC/WEzptuoyzQcvz6IQFjlOOzTcMCKxc6B
-         vKUmbotHU/1W14AY5y6A+sLG1kQyJ+XMS15YkPg8qcvLm7rjJY8+wgaQmKW8BtZZt3tW
-         Bivoox7qOn7TEUYvqZcjFaD5bJn38huy4Wnec2IaYcCD2iszg8GzJ1ZKIPRo0hKUiQGL
-         R/9ZvWVq0PADmHvg0l9gpYxSW24hB3sK2JFG/+iJk9I0y1SNWiPXthyNI2Q9jaDUINoe
-         DXB/g5nluw81IrrAPOnhYS/sCWk0JpQEEQ8SIEzHkNFzadatAW0KdblFIZ01OLroZM+9
-         m3Yg==
-X-Gm-Message-State: AOJu0YwuJ1PqX4NwI0i08erWPnMFwupGjZXodX+PIAYM/olJGUabiFKq
-        2MPSQ+xpuzoxvq74JL3mk7o3DBsFAY61ktPDqhs=
-X-Google-Smtp-Source: AGHT+IF2q2TWOeMqSOd1vGhXRTy8XjsdY6/XzmUXxY7h4GGg4Ey5kD+gl45fWsULNkFj8TX/YlG/FDEoew2Vr7TxtGI=
-X-Received: by 2002:a67:e444:0:b0:464:a39f:c58b with SMTP id
- n4-20020a67e444000000b00464a39fc58bmr595462vsm.62.1701737899771; Mon, 04 Dec
- 2023 16:58:19 -0800 (PST)
+        Mon, 4 Dec 2023 19:59:21 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF32A4;
+        Mon,  4 Dec 2023 16:59:28 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B504MVZ025715;
+        Tue, 5 Dec 2023 00:59:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=T738itOozoPN5W91FwWVw0mvtukuJmpFNP5o/YIrwCY=;
+ b=J8fRcgT5WB1raj9YoQNOGMnMiYYM+ql64CsYGEx06oxfpxRC6+OLUBhAmsuyJkq63HeW
+ XJs+kXXozAJpJR7STup5souiCiSvcoYJnrBPPqhZiN5y8UJKr2Kr2C1YXCS0+NZIUyN3
+ AtZor7z98YhQgJSi1x9cb8JRM3KeVxWBsMjnBaBwg/ghxg/hjERKJtybegOq5dRPRRwN
+ cwj5aI3dzkVDDrvkkg58AoujSLybHOKG4P2vfxUKSsZ0bc9/3Ho5TudsnQ/Sts9zzQ8s
+ bmd1O00f9NTpPZxHm9VQciGAhK0m3FMWoeY8nFacMikAUvevRVw2JidTKWVLH7AJvltD qQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3us8wpjj4e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 00:59:24 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B50xNG1013296
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Dec 2023 00:59:23 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Dec
+ 2023 16:59:18 -0800
+Message-ID: <5d2c734c-8a33-4a57-be2e-7c80357089ea@quicinc.com>
+Date:   Tue, 5 Dec 2023 08:59:16 +0800
 MIME-Version: 1.0
-References: <20231204102027.57185-1-ryan.roberts@arm.com> <20231204102027.57185-3-ryan.roberts@arm.com>
-In-Reply-To: <20231204102027.57185-3-ryan.roberts@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Tue, 5 Dec 2023 08:58:07 +0800
-Message-ID: <CAGsJ_4yyx2+BZS1-bgbJnYJ+FByrMbOqV_Aa3A-nAm2kUtPk+A@mail.gmail.com>
-Subject: Re: [PATCH v8 02/10] mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/4] pinctrl: qcom: sm4450: correct incorrect address
+ offset
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>
+CC:     <agross@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231130024046.25938-1-quic_tengfan@quicinc.com>
+ <20231130024046.25938-5-quic_tengfan@quicinc.com>
+ <dx62durg3wmqviqdpecdqprd5wwkg4i7n5tgcab55axzssdeel@ftt35c6td2sh>
+ <CACRpkdZRNvUY0rEY__v9wPy4bjuDSgFhEkXFHxixdfyKSw56Bg@mail.gmail.com>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <CACRpkdZRNvUY0rEY__v9wPy4bjuDSgFhEkXFHxixdfyKSw56Bg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GsCL24S4eXQQVXi9z_E_7EBAyDQ91g3n
+X-Proofpoint-ORIG-GUID: GsCL24S4eXQQVXi9z_E_7EBAyDQ91g3n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_24,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0
+ mlxlogscore=990 impostorscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2312050005
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 6:20=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com> =
-wrote:
->
-> In preparation for supporting anonymous multi-size THP, improve
-> folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
-> passed to it. In this case, all contained pages are accounted using the
-> order-0 folio (or base page) scheme.
->
-> Reviewed-by: Yu Zhao <yuzhao@google.com>
-> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-Reviewed-by: Barry Song <v-songbaohua@oppo.com>
 
-> ---
->  mm/rmap.c | 28 ++++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 8 deletions(-)
->
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 2a1e45e6419f..846fc79f3ca9 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1335,32 +1335,44 @@ void page_add_anon_rmap(struct page *page, struct=
- vm_area_struct *vma,
->   * This means the inc-and-test can be bypassed.
->   * The folio does not have to be locked.
->   *
-> - * If the folio is large, it is accounted as a THP.  As the folio
-> + * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
->   * is new, it's assumed to be mapped exclusively by a single process.
->   */
->  void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct =
-*vma,
->                 unsigned long address)
->  {
-> -       int nr;
-> +       int nr =3D folio_nr_pages(folio);
->
-> -       VM_BUG_ON_VMA(address < vma->vm_start || address >=3D vma->vm_end=
-, vma);
-> +       VM_BUG_ON_VMA(address < vma->vm_start ||
-> +                       address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
->         __folio_set_swapbacked(folio);
-> +       __folio_set_anon(folio, vma, address, true);
->
-> -       if (likely(!folio_test_pmd_mappable(folio))) {
-> +       if (likely(!folio_test_large(folio))) {
->                 /* increment count (starts at -1) */
->                 atomic_set(&folio->_mapcount, 0);
-> -               nr =3D 1;
-> +               SetPageAnonExclusive(&folio->page);
-> +       } else if (!folio_test_pmd_mappable(folio)) {
-> +               int i;
-> +
-> +               for (i =3D 0; i < nr; i++) {
-> +                       struct page *page =3D folio_page(folio, i);
-> +
-> +                       /* increment count (starts at -1) */
-> +                       atomic_set(&page->_mapcount, 0);
-> +                       SetPageAnonExclusive(page);
-> +               }
-> +
-> +               atomic_set(&folio->_nr_pages_mapped, nr);
->         } else {
->                 /* increment count (starts at -1) */
->                 atomic_set(&folio->_entire_mapcount, 0);
->                 atomic_set(&folio->_nr_pages_mapped, COMPOUND_MAPPED);
-> -               nr =3D folio_nr_pages(folio);
-> +               SetPageAnonExclusive(&folio->page);
->                 __lruvec_stat_mod_folio(folio, NR_ANON_THPS, nr);
->         }
->
->         __lruvec_stat_mod_folio(folio, NR_ANON_MAPPED, nr);
-> -       __folio_set_anon(folio, vma, address, true);
-> -       SetPageAnonExclusive(&folio->page);
->  }
->
->  /**
-> --
-> 2.25.1
->
+在 12/4/2023 5:57 PM, Linus Walleij 写道:
+> On Fri, Dec 1, 2023 at 10:33 PM Bjorn Andersson <andersson@kernel.org> wrote:
+>> On Thu, Nov 30, 2023 at 10:40:46AM +0800, Tengfei Fan wrote:
+>>> The address offset of 0x100000 is already provided in SM4450 DTSI, so
+>>> subtract 0x100000 from the offset which used by ufs and sdc.
+>>>
+>>
+>> As Konrad points out, please fix the broken patch, don't add a separate
+>> fix in the same series.
+>>
+>>> Suggested-by: Can Guo <quic_cang@quicinc.com>
+>>
+>> We unfortunately don't have a way to give credit to those providing
+>> review feedback, so omit this when fixing patch #2.
+> 
+> Just write in the commit message that Can Guo helped out in reviewing
+> the driver (just some free text).
+> 
+> Yours,
+> Linus Walleij
+Thanks for your suggestions, The next version patch commit message will 
+contain some description information.
+
+-- 
+Thx and BRs,
+Tengfei Fan
