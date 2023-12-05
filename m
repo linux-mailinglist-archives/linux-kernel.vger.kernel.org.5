@@ -2,189 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A5E804B50
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A07804B05
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344654AbjLEHnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 02:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S1344583AbjLEHSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 02:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231646AbjLEHnM (ORCPT
+        with ESMTP id S229615AbjLEHSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 02:43:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0029109;
-        Mon,  4 Dec 2023 23:43:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701762199; x=1733298199;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=06sTuDxUOt8gSsTT+39yE/wddHGiL5RITLzT3xNVIJE=;
-  b=n7z2DytwEQH4pYActPFcIQE9/ttUlDcArdbjDoiy/aH4invyuM1ncmSo
-   nkyu4y6tE336CUgdIzhhZ4VDiIE2CG/8TLGvw1b8nTHW34LA7IvPpaIrP
-   eWYA4sQQWi1coS+SpLqsJeFeXUXdesBg5ZjaJxjK+y9cMAGLuWlIKv5hH
-   T8xC0l/o1uqIkwwo+AI5kqjtHSmFWVMqZWIoaNEOsQo7NU+MzUK1bu20s
-   a2XDnBeIYZ4sGTfIL3a4Ry8vvE9H31SKlDQK4XM9ZXmd5Ie0xIyVLWOc9
-   YcPxPcOytBwaIhHGEzlVUBgSLv83X2vXMISqcr5AQ9DQUaWlqQww6xPg0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="7148426"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="7148426"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 23:43:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="747129636"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="747129636"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 23:43:17 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 23:43:16 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 4 Dec 2023 23:43:16 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 23:43:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXN71fUFEghbFTq1GzZv5ATvGVKNtigzLQ/cAeyhaBdvsJX5wz8wssSJBIFpurmcSlr65tsW2BuHFbzUJUVkANa0b4xOAJ7QPz8ruU9zMmm+4uonCNyvjhj2YF9H9y4eDRsw8IpueC7RIFYOV3tdB8y4iXqMu3lBBz5MP5iz09dddKpMR/IyWj1mzN53wCRq4pxF2DlqSYieySCbamIKyJ9iIMrNFp189MNMZKx0murOcDNQEBmEUhl73ttswN/cpOm4UeCC0L+EpxSVO4o8HDZZGo2Vyf8UamN1A8DyuAKOjFlOlsIDBSLYNvFXly+d/yAXwOe/m5jgTStz5dv2VA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TSRRY+KHs7vS4sAFhB4P2VTauWDjdJSIVgXYzGeKxnE=;
- b=QVRFFwl9gUm3REP2Tma6XmI7KWoHgJKX+7oTcZSq0UFdzkMQoUfP7s1xg2dNn7CcxSPLZ3EM9S1qFhcoGXK+zFZYOHeTfkMrRbwSmxriC542OkOSHa8t1vV63AotF24FYrFYdWqqDlVxL9C/JPsmX8tiooJsEEb1+MyO92vGjT/kMBaV8NuKygZWwfgR5AEN1zTyQvou/bZfLjZPTbdVSxsZg+EeMsMWEkJbJq9FCPbGCk9OGP45lge0sS3ogEFZHk3An6RW65gAbg/nImyZAFmEB9eZTy3gj9NUug2lWpIMItlLnsqcmUZ/pQ4QsvzCR1LnWEH66PHawHzpBAMCog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- SJ1PR11MB6249.namprd11.prod.outlook.com (2603:10b6:a03:45a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
- 2023 07:43:13 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 07:43:11 +0000
-Date:   Tue, 5 Dec 2023 15:14:09 +0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
-        <pbonzini@redhat.com>, <seanjc@google.com>, <joro@8bytes.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <kevin.tian@intel.com>,
-        <baolu.lu@linux.intel.com>, <dwmw2@infradead.org>,
-        <yi.l.liu@intel.com>
-Subject: Re: [RFC PATCH 16/42] iommufd: Enable device feature IOPF during
- device attachment to KVM HWPT
-Message-ID: <ZW7NwSCzswweHZh6@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20231202091211.13376-1-yan.y.zhao@intel.com>
- <20231202092311.14392-1-yan.y.zhao@intel.com>
- <20231204183603.GN1493156@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231204183603.GN1493156@nvidia.com>
-X-ClientProxiedBy: SI1PR02CA0042.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::17) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|SJ1PR11MB6249:EE_
-X-MS-Office365-Filtering-Correlation-Id: d4337d9a-63fd-4bee-9b0e-08dbf565d4d5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PViN7GFMtO0fl/aN9ZyHkCgcVWvjs8+bjlk0TWEqvifKoPd0N9YKNkQC9dz2pO1OFAqu1uHOegbgVDEazrZ8yYEGl7/zB7ss2I+38IlTxBxAK4svTvUWp6R0eagfJxa+6CIaBPYz3Ky+I5r/ka2Y1FF7XGlE0OVsdH2V25uA9njOFodUk81Rpp2yrDYdtvYh4ob4vxcbCTELuhejmUtQhy0FoEuBBPjTZLSCniOQ8kQEAjxzDrDiIKs0GzWXCJ9EpgQ/2ai5J4aLJAG+Mp4mgwpcx/e2lEXfyZ1+ixTF7sSWqWHgYeJHyZfvTH1cLmp6QVkhvyYQ6soWwOMJswzIuEAfPDj51XS6qShsFXeVF92FkAj+dllRpU9gBCrxr6re81KXmmPxWnW8JTx895jspHIWFC04aRVxm0BBgnrnZEXVVl95CMz+PoAQnrDW1GD5vhaWdMxMY4Kcx88K1xnGjVzZRA7MQSgfnnVxQPDlsOPAyyLdq8YiKGTfosEz0BCqTjXk+lMubqcInAFoRjx49XzPeIDlH75+BDkdul/1iRZgX+85a26LbsyzeZiUDVrZ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(396003)(366004)(136003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(38100700002)(2906002)(5660300002)(3450700001)(7416002)(6512007)(82960400001)(26005)(6506007)(6916009)(478600001)(6486002)(41300700001)(66946007)(66476007)(54906003)(66556008)(8936002)(316002)(86362001)(8676002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5hHi28MY4mBD7vFLISClG2oam/lA9c6I3ksdj1mtc3urqJ6846E0cwLTvPQV?=
- =?us-ascii?Q?qHCYXe7VRqOs5il59IouFmTipCDePqlt7Y/IyV1Y5PJJZhCv7qZT8uDYk6el?=
- =?us-ascii?Q?UOl4mxbemWobYlGz4HHnINzabXAJ4Y8V3FSHJPRpDu/M9vud8Od5fJH22R3m?=
- =?us-ascii?Q?jE/lW2VmEXmTC9nuNjJtQSxly/H07ob88jDIw8Kr9VuOaKFrfnsR3Fuy/LVV?=
- =?us-ascii?Q?yLQID7gS6qufy2WbFlDSZTRJKkkWzaxMD6KtwBfKkqN66bt+wgm0mf71c/5i?=
- =?us-ascii?Q?EkbuHIANDgJueupZpvnm/EkSYkhfoZD7FTrJkpkv2lVaBgGaE2BeLBO8MRoF?=
- =?us-ascii?Q?OwIdzkTUobqfuptza0w8TbZmGLtcBRQtWK2qWRbp1vMiDna69rVB1WLYrXIj?=
- =?us-ascii?Q?t2ZWpHxFG6Wah1NK3t9ycDZ5z8LKOPPy3OIE8cOmF3ns4TPr0ZpdEb8Wimdr?=
- =?us-ascii?Q?BY0Gq4e3vEkrCXXBUk8mih/QNnSAaXJVehcLR8tPiqtshBuJu8JlWURtcdUJ?=
- =?us-ascii?Q?p/3MSDTbMoPC30ZY3Gl9zlbrkvW+w8W89WcdA2skgRF6u7sVv4p8glLkxrGx?=
- =?us-ascii?Q?ewb1bk9ULCprxysaMjQGJ5cA4qmIOOIKNUKhMlNE2Uo3a/yuW0oinTWma2yT?=
- =?us-ascii?Q?l6PqzG6E8MZ+Ww8vNRJFM3+qkEE+U2PDb8txa5LHmo8X0dk6szGjRifjZEtt?=
- =?us-ascii?Q?qAyIteFVzOLjafjcvL549l0iWRLryxes9v6NbaQiezjQrKNQmtuC+lNhvv6+?=
- =?us-ascii?Q?ow+23GcDVhN49jUWISu2JtKfHtUFTBW4VqC6q1zgUkUWrHAEFDX7qlAZACN6?=
- =?us-ascii?Q?EcMYNts25Ms663jz9Vz0wtoFIKsDPS2aoNaJ+GlGVWtlswXsBuTwn/KejLtx?=
- =?us-ascii?Q?FqpV17qOppZiAG+8hMbSYDagaqNB8A7pCasbIepYLUFPFVQpRwOIWCSz4YF3?=
- =?us-ascii?Q?0+jo1v/+lZX/xYm9jKh7s+PzYeCDvxsG6bUFjaRtJdKmw4nTxo6uaKL7Dc+o?=
- =?us-ascii?Q?FRjJM8JcXtvqa3cYzrXi/C9MVtuyGo26kwWGGxdud2nFAArxoaYrOQw1vIYX?=
- =?us-ascii?Q?tnq9F9oXcDFqFpg7Xda43J0ot8zbNemjMXikWBWUZaPP4jrphaBHXpwKwwsk?=
- =?us-ascii?Q?8Cte/TH80eaMkOiBKihT4Hr/K7sDrKU6dBTODc7YoP5gd+dod9O7QX5hqKLv?=
- =?us-ascii?Q?slMsthCXuVokzjjZxDcl4/+lOH9JprrHU82tkqplNX5Burf6rnjmSNVnE/Dw?=
- =?us-ascii?Q?8tnee0z2kdwDhl+1LLMv4NR0Iosk9/QaxS6NGgUpfG7x1nptBei6GP1KHekI?=
- =?us-ascii?Q?XqwGyjB+oW+6b+wtNutWY1GxSIWLzobajGBCtmOxyFlaqon2h9dA0Eeg9efh?=
- =?us-ascii?Q?QT94TNIpPZp8vyWmfyxH1GV3FD41dQBP8WDWKDZipL1l3yNzLWW4WetZ0RgH?=
- =?us-ascii?Q?bqNaAEnff+BkZykkU6MdzkEqrthQ+H4c3CiNSBxiqwELdaPZbujWzDavCRnu?=
- =?us-ascii?Q?y7U73XnKd/7gfkULPs9oRVqe2vMYSOyZrlZPw+Y7dczBVEXSco9axaICTUjj?=
- =?us-ascii?Q?Hm1SwVDJoXeoicA+szXZVZn6IzxhmrFg/F1eEOEM?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d4337d9a-63fd-4bee-9b0e-08dbf565d4d5
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 07:43:11.5776
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PSAiFO4tcKpLdFP65wxUnVpD3+o5yChm75SJm1JQDf3sR54/K2pxh/ArEnmMvztSJ9j3znAyn4Qm6PXC/dNlrg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR11MB6249
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 5 Dec 2023 02:18:42 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4995B111;
+        Mon,  4 Dec 2023 23:18:48 -0800 (PST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B57HfF9024737;
+        Tue, 5 Dec 2023 07:18:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=uJfydSpimLPBfWLvEpMAEZ2LK+bczT0B2jnWfOkW0aw=;
+ b=ZsE9meenO+XmW6+sQBqd5yjotPLx7CJYQP3By+N6NLp4799wkWB/OjQe4mOrAJSZX/mk
+ 16QrvinYmrTEiKGkk4rnjle3k4ZGWiNESKLpPsiQvQCtvPWHFmlcBHgnvJx4IvLSr68Y
+ WgFCsp03KlXF6cW582X/+vupm3eiR6/jPGh7Bb7choRLdRBsVta37Ek7w1m2KvFACSHs
+ 3VvDB6dfk5X0WSMEg3twUfFa1Ia7Dp6WoQnjCv6XsWedpFvMtSxLQrPiMxhzc2grUGxh
+ QmFfMFkLWvtioJhwLQ6VTSGUhIne/aIxDAPDruPYrVzfh7TDJaVAciIzKdcb5pOH+6lM Mw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usybjg15x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 07:18:38 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B57HtYE025413;
+        Tue, 5 Dec 2023 07:18:37 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3usybjg12j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 07:18:37 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B56Y93o008542;
+        Tue, 5 Dec 2023 07:16:34 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3urgdkw22x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 07:16:34 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B57GVo119923684
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Dec 2023 07:16:31 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 56EC120043;
+        Tue,  5 Dec 2023 07:16:31 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F5CE20040;
+        Tue,  5 Dec 2023 07:16:29 +0000 (GMT)
+Received: from smtpclient.apple (unknown [9.109.215.218])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Dec 2023 07:16:29 +0000 (GMT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: [PATCH] perf vendor events: Update datasource event name to fix
+ duplicate events
+From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+In-Reply-To: <CAP-5=fXWm_ZZjQ-36eTJTuWQsQwwCEXer22Oid7X-PSe8=WY1Q@mail.gmail.com>
+Date:   Tue, 5 Dec 2023 12:46:17 +0530
+Cc:     Kajol Jain <kjain@linux.ibm.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        James Clark <james.clark@arm.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Disha Goel <disgoel@linux.vnet.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2400D325-80A3-4BA0-9467-03F452A72911@linux.vnet.ibm.com>
+References: <20231123160110.94090-1-atrajeev@linux.vnet.ibm.com>
+ <CAP-5=fWtLHCyZh_6hBkCg16ekOXfwSGAVT9xvgKcUsMcu=Ou9w@mail.gmail.com>
+ <ZW40nstmGUeV9Fie@kernel.org> <ZW406O38z3DmVwOX@kernel.org>
+ <CAP-5=fXWm_ZZjQ-36eTJTuWQsQwwCEXer22Oid7X-PSe8=WY1Q@mail.gmail.com>
+To:     Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 2me79ftqEHaywPzjZDi9SuYBzSVY28md
+X-Proofpoint-ORIG-GUID: FufJ90xSFzSeB2cQ8H-2sKonx4UEFAYa
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_03,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 suspectscore=0
+ spamscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2312050058
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 02:36:03PM -0400, Jason Gunthorpe wrote:
-> On Sat, Dec 02, 2023 at 05:23:11PM +0800, Yan Zhao wrote:
-> > Enable device feature IOPF during device attachment to KVM HWPT and abort
-> > the attachment if feature enabling is failed.
-> > 
-> > "pin" is not done by KVM HWPT. If VMM wants to create KVM HWPT, it must
-> > know that all devices attached to this HWPT support IOPF so that pin-all
-> > is skipped.
-> > 
-> > Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
-> > ---
-> >  drivers/iommu/iommufd/device.c | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> > 
-> > diff --git a/drivers/iommu/iommufd/device.c b/drivers/iommu/iommufd/device.c
-> > index 83af6b7e2784b..4ea447e052ce1 100644
-> > --- a/drivers/iommu/iommufd/device.c
-> > +++ b/drivers/iommu/iommufd/device.c
-> > @@ -381,10 +381,26 @@ int iommufd_hw_pagetable_attach(struct iommufd_hw_pagetable *hwpt,
-> >  			goto err_unresv;
-> >  		idev->igroup->hwpt = hwpt;
-> >  	}
-> > +	if (hwpt_is_kvm(hwpt)) {
-> > +		/*
-> > +		 * Feature IOPF requires ats is enabled which is true only
-> > +		 * after device is attached to iommu domain.
-> > +		 * So enable dev feature IOPF after iommu_attach_group().
-> > +		 * -EBUSY will be returned if feature IOPF is already on.
-> > +		 */
-> > +		rc = iommu_dev_enable_feature(idev->dev, IOMMU_DEV_FEAT_IOPF);
-> > +		if (rc && rc != -EBUSY)
-> > +			goto err_detach;
-> 
-> I would like to remove IOMMU_DEV_FEAT_IOPF completely please
 
-So, turn on device PRI during device attachment in IOMMU vendor driver?
+
+> On 05-Dec-2023, at 2:43=E2=80=AFAM, Ian Rogers <irogers@google.com> =
+wrote:
+>=20
+> On Mon, Dec 4, 2023 at 12:22=E2=80=AFPM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+>>=20
+>> Em Mon, Dec 04, 2023 at 05:20:46PM -0300, Arnaldo Carvalho de Melo =
+escreveu:
+>>> Em Mon, Dec 04, 2023 at 12:12:54PM -0800, Ian Rogers escreveu:
+>>>> On Thu, Nov 23, 2023 at 8:01=E2=80=AFAM Athira Rajeev
+>>>> <atrajeev@linux.vnet.ibm.com> wrote:
+>>>>>=20
+>>>>> Running "perf list" on powerpc fails with segfault
+>>>>> as below:
+>>>>>=20
+>>>>>   ./perf list
+>>>>>   Segmentation fault (core dumped)
+>>>>>=20
+>>>>> This happens because of duplicate events in the json list.
+>>>>> The powerpc Json event list contains some event with same
+>>>>> event name, but different event code. They are:
+>>>>> - PM_INST_FROM_L3MISS (Present in datasource and frontend)
+>>>>> - PM_MRK_DATA_FROM_L2MISS (Present in datasource and marked)
+>>>>> - PM_MRK_INST_FROM_L3MISS (Present in datasource and marked)
+>>>>> - PM_MRK_DATA_FROM_L3MISS (Present in datasource and marked)
+>>>>>=20
+>>>>> pmu_events_table__num_events uses the value from
+>>>>> table_pmu->num_entries which includes duplicate events as
+>>>>> well. This causes issue during "perf list" and results in
+>>>>> segmentation fault.
+>>>>>=20
+>>>>> Since both event codes are valid, append _DSRC to the Data
+>>>>> Source events (datasource.json), so that they would have a
+>>>>> unique name. Also add PM_DATA_FROM_L2MISS_DSRC and
+>>>>> PM_DATA_FROM_L3MISS_DSRC events. With the fix, perf list
+>>>>> works as expected.
+>>>>>=20
+>>>>> Fixes: fc1435807533 ("perf vendor events power10: Update =
+JSON/events")
+>>>>> Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+>>>>=20
+>>>> Given duplicate events creates broken pmu-events.c we should =
+capture
+>>>> that as an exception in jevents.py. That way a JEVENTS_ARCH=3Dall =
+build
+>>>> will fail if any vendor/architecture would break in this way. We
+>>>> should also add JEVENTS_ARCH=3Dall to tools/perf/tests/make. =
+Athira, do
+>>>> you want to look at doing this?
+>>>=20
+>>> Should I go ahead and remove this patch till this is sorted out?
+>>=20
+>> I'll keep it, its already in tmp.perf-tools-next, we can go from =
+there
+>> and improve this with follow up patches,
+
+Thanks Arnaldo for pulling the fix patch.
+
+>=20
+> Agreed. I could look to do the follow up but likely won't have a
+> chance for a while. If others could help out it would be great. I'd
+> like to have the jevents and json be robust enough that we don't trip
+> over problems like this and the somewhat similar AmpereOne issue.
+
+Yes Ian.
+
+I will look at adding this with follow up patches and including this as =
+part of tools/perf/tests/make
+
+Thanks
+Athira
+>=20
+> Thanks,
+> Ian
+>=20
+>> - Arnaldo
+
+
