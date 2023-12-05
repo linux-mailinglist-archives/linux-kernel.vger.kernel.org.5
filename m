@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE96805C73
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C88C2805BD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442594AbjLEPWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:22:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
+        id S232060AbjLEQ2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442490AbjLEPWH (ORCPT
+        with ESMTP id S1346817AbjLEPZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:22:07 -0500
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D89810FD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:21:44 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPA id EFB6A40021;
-        Tue,  5 Dec 2023 15:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701789702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uOBWKYZj5UdDB35skSZSyrDTkyYGp1yN/Y6WoC8sAPc=;
-        b=PY2gAUaEK4upESCHDO+F9uMuJmh1B7rQ1kEYeSijJEUkapdzmEPWUNGoN4xxUHHadWWbTO
-        U2U1yCtHOYdCzC899WXZtUiCaVYz4/VyzASmINwsMH+MueuG2LRAUUCdbLeE9a/DVTGYdh
-        xnJcZyxY9oTEFXzEnkrgEFyQgWS9vcw82J66ZZiLTeXxE9v4Dem512pGYBNdg7gnhi7Syv
-        YMBk+q29jvxqzvjKeyNop6p+BFfZiH4Q9dR2JkvdHciP/fczFE4UA05avd9qPdle16f3Ut
-        pXXppn+TMlihFcYxx6OVkF+TDzpPe0f/n3gseqa0p12AFipuW6ILs0WOPzAivA==
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Herve Codina <herve.codina@bootlin.com>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2 17/17] soc: fsl: cpm1: qmc: Introduce functions to change timeslots at runtime
-Date:   Tue,  5 Dec 2023 16:21:14 +0100
-Message-ID: <20231205152116.122512-18-herve.codina@bootlin.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231205152116.122512-1-herve.codina@bootlin.com>
-References: <20231205152116.122512-1-herve.codina@bootlin.com>
+        Tue, 5 Dec 2023 10:25:33 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94DF9B;
+        Tue,  5 Dec 2023 07:25:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701789940; x=1733325940;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=xukjuGan3FvwHjC1u8CeuWNpwvGB/cEkfZb7z28+Ess=;
+  b=DaaLgCubx2mNY3Rcl2VEbsmXrmYNia9uXH/K1h7ik9UVjhhYUgJOuicI
+   gyN/irf5Z6w2Fie8jZvkftsV+ZEVAXNWf9uGUQmIsEllyKF2AY+KH42is
+   lDICrfKbp3AuWPZW7ycjpPmULFdJHLRhWmj9q0q5rtIBpvYjkUE+eez6D
+   Nrs2icG3w/bUphEiF8H0W+ScSOW/M6+pAdaONBI0S1tgShYR7W8Ld7xuK
+   XCOmy6jnVZqDIkVnbbusBOsYA5eWNv/b48d90ln+/o51yIjk73qGtfAiz
+   cReBKpc39gmUxZ45aXZTvien6qDI+fRdjEfKDCC8UfGyVC6vsSK13XcRx
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="12626114"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="12626114"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:25:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="888975313"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="888975313"
+Received: from mbapna-mobl1.amr.corp.intel.com (HELO [10.212.151.198]) ([10.212.151.198])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:25:37 -0800
+Message-ID: <72bb44a8-dbe6-4fdd-921a-b9fcf798fe3c@linux.intel.com>
+Date:   Tue, 5 Dec 2023 09:22:11 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a speaker
+ widget
+Content-Language: en-US
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
+        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        kai.vehmanen@linux.intel.com, cezary.rojewski@intel.com,
+        ranjani.sridharan@linux.intel.com
+Cc:     alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+References: <20231205135001.2506070-1-rf@opensource.cirrus.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20231205135001.2506070-1-rf@opensource.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce qmc_chan_{get,set}_ts_info() function to allow timeslots
-modification at runtime.
 
-The modification is provided using qmc_chan_set_ts_info() and will be
-applied on next qmc_chan_start().
-qmc_chan_set_ts_info() must be called with the channel rx and/or tx
-stopped.
 
-Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- drivers/soc/fsl/qe/qmc.c | 51 ++++++++++++++++++++++++++++++++++++++++
- include/soc/fsl/qe/qmc.h | 10 ++++++++
- 2 files changed, 61 insertions(+)
+On 12/5/23 07:50, Richard Fitzgerald wrote:
+> Hookup the CS35L56 DAPM_OUTPUT widgets to a DAPM_SPK widget so
+> that there is a complete logical path to a speaker.
+> 
+> There is no particular reason to use multiple speaker widgets.
+> The CS35L56 are designed to work together as a set so they have
+> all been connected to a single speaker widget.
+> 
+> Instead of a hardcoded list of codec widget names, the code walks
+> through all the codecs on the dailink and for every cs35l56 it uses
+> its name prefix to construct the source end of the route. This adds
+> a small amount of overhead during probe but has the benefit that it
+> isn't dependent on every system using the same prefixes.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-index 45d9cb40a118..f498db9abe35 100644
---- a/drivers/soc/fsl/qe/qmc.c
-+++ b/drivers/soc/fsl/qe/qmc.c
-@@ -290,6 +290,57 @@ int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info)
- }
- EXPORT_SYMBOL(qmc_chan_get_info);
- 
-+int qmc_chan_get_ts_info(struct qmc_chan *chan, struct qmc_chan_ts_info *ts_info)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&chan->ts_lock, flags);
-+
-+	ts_info->rx_ts_mask_avail = chan->rx_ts_mask_avail;
-+	ts_info->tx_ts_mask_avail = chan->tx_ts_mask_avail;
-+	ts_info->rx_ts_mask = chan->rx_ts_mask;
-+	ts_info->tx_ts_mask = chan->tx_ts_mask;
-+
-+	spin_unlock_irqrestore(&chan->ts_lock, flags);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(qmc_chan_get_ts_info);
-+
-+int qmc_chan_set_ts_info(struct qmc_chan *chan, const struct qmc_chan_ts_info *ts_info)
-+{
-+	unsigned long flags;
-+	int ret;
-+
-+	/* Only a subset of available timeslots is allowed */
-+	if ((ts_info->rx_ts_mask & chan->rx_ts_mask_avail) != ts_info->rx_ts_mask)
-+		return -EINVAL;
-+	if ((ts_info->tx_ts_mask & chan->tx_ts_mask_avail) != ts_info->tx_ts_mask)
-+		return -EINVAL;
-+
-+	/* In case of common rx/tx table, rx/tx masks must be identical */
-+	if (chan->qmc->is_tsa_64rxtx) {
-+		if (ts_info->rx_ts_mask != ts_info->tx_ts_mask)
-+			return -EINVAL;
-+	}
-+
-+	spin_lock_irqsave(&chan->ts_lock, flags);
-+
-+	if ((chan->tx_ts_mask != ts_info->tx_ts_mask && !chan->is_tx_stopped) ||
-+	    (chan->rx_ts_mask != ts_info->rx_ts_mask && !chan->is_rx_stopped)) {
-+		dev_err(chan->qmc->dev, "Channel rx and/or tx not stopped\n");
-+		ret = -EBUSY;
-+	} else {
-+		chan->tx_ts_mask = ts_info->tx_ts_mask;
-+		chan->rx_ts_mask = ts_info->rx_ts_mask;
-+		ret = 0;
-+	}
-+	spin_unlock_irqrestore(&chan->ts_lock, flags);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL(qmc_chan_set_ts_info);
-+
- int qmc_chan_set_param(struct qmc_chan *chan, const struct qmc_chan_param *param)
- {
- 	if (param->mode != chan->mode)
-diff --git a/include/soc/fsl/qe/qmc.h b/include/soc/fsl/qe/qmc.h
-index 166484bb4294..2a333fc1ea81 100644
---- a/include/soc/fsl/qe/qmc.h
-+++ b/include/soc/fsl/qe/qmc.h
-@@ -40,6 +40,16 @@ struct qmc_chan_info {
- 
- int qmc_chan_get_info(struct qmc_chan *chan, struct qmc_chan_info *info);
- 
-+struct qmc_chan_ts_info {
-+	u64 rx_ts_mask_avail;
-+	u64 tx_ts_mask_avail;
-+	u64 rx_ts_mask;
-+	u64 tx_ts_mask;
-+};
-+
-+int qmc_chan_get_ts_info(struct qmc_chan *chan, struct qmc_chan_ts_info *ts_info);
-+int qmc_chan_set_ts_info(struct qmc_chan *chan, const struct qmc_chan_ts_info *ts_info);
-+
- struct qmc_chan_param {
- 	enum qmc_mode mode;
- 	union {
--- 
-2.43.0
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
+We should probably do the same thing for sof_sdw_rt_map.c, there's no
+good reason to encode rt1316-2 SPOL and rt1318-2 SPOR
