@@ -2,195 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBBB806025
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A6E80603E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345870AbjLEVHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 16:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
+        id S1346421AbjLEVLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 16:11:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEVHC (ORCPT
+        with ESMTP id S229569AbjLEVLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 16:07:02 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C58188;
-        Tue,  5 Dec 2023 13:07:08 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54bfa9b3ffaso7890084a12.1;
-        Tue, 05 Dec 2023 13:07:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701810427; x=1702415227; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x74SPMcY0OIkNHNYKVP8zxIa11SKy/rAVbNbtzbNtj4=;
-        b=COPgiI9/aWIyacDSbgSGPgRq4wsvpYGF+lZQtluFjSitxG05E5J4uKRQUkAVFIgHCC
-         LS6rDJLgW81G31iT6qH/RDddjxboFGCmZDdrVTddRT6gvc5B7b8PcBSVIa7AhMmFaT43
-         Wm0NUiIV8+gsM3MRBLxC0cLEvhRNk9uX84yBo81jOwoZwECoFOrw4wsjeRVeLEwp6BQv
-         KVdQ7czXrdoFHcdi1rVCKhpVC5RHgKBYrf2pDHJJZGutkPBp8ieuQK98GWZ3vwzhCu1t
-         USKbPJR/rtA1L/eiKUxfjBnwlKzlM5xP6NhWX+WVb2QcHCCKxX/psuMNHdj+SaEQMO+c
-         pIBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701810427; x=1702415227;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x74SPMcY0OIkNHNYKVP8zxIa11SKy/rAVbNbtzbNtj4=;
-        b=IR4RTxxansXVbJKFyWOOZdYDRbvYBjNOgm34Fbl1r0n2sCnZcP+3YXREo+ym+H99DF
-         iBhUg/4vdvvHaZqfaUFQxRm7QhA8mL7l1xdXY1QNYcEJ5ThACb/+eKw2Df9MXZky0ohm
-         aunPMEZZuBeYpaRrlqcGr72qKddktTMxNH+uCj4wqn9gRGaWSneQP40ccUDPahGthqgg
-         5H45n2uStNf0g9AAfcg5ZoMmhB9sa+K/gjAie5fkVtoAKqyN/0C9v5sfxFURTmq0BXF7
-         5CHNj9tdY8lGaajRuKIQCORs+H5hJXN0P1ugUQ0Ov3+QpIngYIGPwWHTbFc9EchhEIAP
-         UYZQ==
-X-Gm-Message-State: AOJu0YzYYmNj7OApiAYpZeHg4aOGKCsfPz5LlleqeqzHJOPS3hWRaH9w
-        VoQt5190cv2FR7pdV2EOmA==
-X-Google-Smtp-Source: AGHT+IHkH5GZG8pFrRCk2/oY21EPtFifTXv8buO1kDY7Mx9lU/9yMV3qiqndEcQvV5LdEnXc9J3Y0w==
-X-Received: by 2002:a50:d75a:0:b0:54c:4837:9a85 with SMTP id i26-20020a50d75a000000b0054c48379a85mr4078032edj.44.1701810426428;
-        Tue, 05 Dec 2023 13:07:06 -0800 (PST)
-Received: from U4.lan ([2a02:810b:f40:4300:d9b0:71c0:990:192e])
-        by smtp.gmail.com with ESMTPSA id o24-20020aa7c518000000b005485282a520sm1549596edq.75.2023.12.05.13.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 13:07:06 -0800 (PST)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Amitkumar Karwar <amitkumar.karwar@nxp.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Kalle Valo <kvalo@kernel.org>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [RESEND PATCH] wifi: mwifiex: Restore USB8897 chipset support
-Date:   Tue,  5 Dec 2023 22:07:02 +0100
-Message-ID: <20231205210702.209444-1-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Tue, 5 Dec 2023 16:11:05 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E2B18B
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 13:11:10 -0800 (PST)
+Date:   Tue, 5 Dec 2023 22:11:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701810668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lRnyi7RUD3uat7xocE2sCs3Fi4FAPkAA/cTsvLupByc=;
+        b=lrueSzkx6AaDlJdqyVKMhPq5+JiUPsN37iQM14iYQZqKZSCKh/3IC0uEfhwkstVITpy2Nm
+        zvlwLELgxdz7Fe9o4lYoulgmYQ2JTTGr25HAVJ+jH//FawuRjd3SIp+Uo2kthFu2W89Rba
+        EYdQ9bIT93EdIG9mW99KE99bykosVSY7mDgsoMQwFhjccJ8ZHM1OF11vNmz2Saa94ywFJl
+        oSatNy1yijPmbnNv33iz/xkSy+lw5wa/3OpqXcM5+5g1/2qqsmuimQaSlIHlCBtIDgSlQL
+        aGBmXdgM9n7oC/0rkgh7WJbjNqoH/HWdC9npHR++PpsPLwsHKaaNkhz1S5Qylw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701810668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lRnyi7RUD3uat7xocE2sCs3Fi4FAPkAA/cTsvLupByc=;
+        b=3Wfu6fJf8M4C7yvH9N1d/YOEjMEVXDhiRM4HNXxza2/eeUzwJSc1etAIXybj5Sx2tK80YQ
+        6x38yeUWy6IdF1Dg==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH v9 22/32] timers: Keep the pinned timers separate from
+ the others
+Message-ID: <20231205211106.ykKsi921@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-23-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231201092654.34614-23-anna-maria@linutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch restores USB8897 support which was removed with
-Commit 60a188a2715f ("mwifiex: remove USB8897 chipset support")
+On 2023-12-01 10:26:44 [+0100], Anna-Maria Behnsen wrote:
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -1985,10 +1998,31 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
+>  		return expires;
+>  	}
+>  
+> -	raw_spin_lock(&base->lock);
+> -	nextevt = next_timer_interrupt(base, basej);
+> +	base_local = this_cpu_ptr(&timer_bases[BASE_LOCAL]);
+> +	base_global = this_cpu_ptr(&timer_bases[BASE_GLOBAL]);
+> +
+> +	raw_spin_lock(&base_local->lock);
+> +	raw_spin_lock_nested(&base_global->lock, SINGLE_DEPTH_NESTING);
+> +
+> +	nextevt_local = next_timer_interrupt(base_local, basej);
+> +	nextevt_global = next_timer_interrupt(base_global, basej);
+>  
+> -	if (base->timers_pending) {
+> +	/*
+> +	 * Check whether the local event is expiring before or at the same
+> +	 * time as the global event.
+> +	 *
+> +	 * Note, that nextevt_global and nextevt_local might be based on
+> +	 * different base->clk values. So it's not guaranteed that
+> +	 * comparing with empty bases results in a correct local_first.
 
-There are quite some devices which use this chipset with USB interface.
-The firmware still exits in linux upstream firmware repo and this simple
-patch is all what is required to support it in upstream linux (again).
+This ends like an unsolved mystery case. Could you add why one should
+not worry about an incorrect local_first?
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
-Recently I upstreamed support for Geniatec XPI-3128 SBC which actually
-has one any of those boards soldered to the onboard USB Host controller.
-Geniatech has some boards [0], [1], [2] (maybe more) which have this
-variant soldered the same way. (optional)
-I've also read that "Xbox Wireless adapter for Windows" uses this chipset
-(unverified).
-I've also CC'ed Ganapathi Bhat who last updated the firmware for SDIO and
-PCIe variant of this chipset: It would be great if the firmware
-for USB variant could get an update too, as the one which we currently
-have is quite old - version 15.68.4.p103, while other have some 16.*
-firmware. 
+But seriously, how far apart can they get and what difference does it
+make?  At timer enqueue time clk equals jiffies. At this point one clk
+base could be at jiffies and the other might be a few jiffies before
+that.
+The next event (as in next_expiry) should be valid for both compare
+wise. Both must be larger than jiffies. The delta between jiffies and
+next event has to be less than NEXT_TIMER_MAX_DELTA for each base.
 
-[0] https://www.geniatech.com/product/xpi-3288/
-[1] https://www.geniatech.com/product/xpi-imx8mm/
-[2] https://www.geniatech.com/product/xpi-s905x/
- 
- drivers/net/wireless/marvell/mwifiex/Kconfig |  4 ++--
- drivers/net/wireless/marvell/mwifiex/usb.c   | 14 ++++++++++++++
- drivers/net/wireless/marvell/mwifiex/usb.h   |  3 +++
- 3 files changed, 19 insertions(+), 2 deletions(-)
+> +	 */
+> +	if (base_local->timers_pending && base_global->timers_pending)
+> +		local_first = time_before_eq(nextevt_local, nextevt_global);
+> +	else
+> +		local_first = base_local->timers_pending;
+> +
+> +	nextevt = local_first ? nextevt_local : nextevt_global;
+> +
+> +	if (base_local->timers_pending || base_global->timers_pending) {
+>  		/* If we missed a tick already, force 0 delta */
+>  		if (time_before(nextevt, basej))
+>  			nextevt = basej;
 
-diff --git a/drivers/net/wireless/marvell/mwifiex/Kconfig b/drivers/net/wireless/marvell/mwifiex/Kconfig
-index b182f7155d66..277b75eaf91e 100644
---- a/drivers/net/wireless/marvell/mwifiex/Kconfig
-+++ b/drivers/net/wireless/marvell/mwifiex/Kconfig
-@@ -35,12 +35,12 @@ config MWIFIEX_PCIE
- 	  mwifiex_pcie.
- 
- config MWIFIEX_USB
--	tristate "Marvell WiFi-Ex Driver for USB8766/8797/8997"
-+	tristate "Marvell WiFi-Ex Driver for USB8766/8797/8897/8997"
- 	depends on MWIFIEX && USB
- 	select FW_LOADER
- 	help
- 	  This adds support for wireless adapters based on Marvell
--	  8797/8997 chipset with USB interface.
-+	  8797/8897/8997 chipset with USB interface.
- 
- 	  If you choose to build it as a module, it will be called
- 	  mwifiex_usb.
-diff --git a/drivers/net/wireless/marvell/mwifiex/usb.c b/drivers/net/wireless/marvell/mwifiex/usb.c
-index d3ab9572e711..061be9c2ed2f 100644
---- a/drivers/net/wireless/marvell/mwifiex/usb.c
-+++ b/drivers/net/wireless/marvell/mwifiex/usb.c
-@@ -28,6 +28,11 @@ static const struct usb_device_id mwifiex_usb_table[] = {
- 	{USB_DEVICE_AND_INTERFACE_INFO(USB8XXX_VID, USB8801_PID_2,
- 				       USB_CLASS_VENDOR_SPEC,
- 				       USB_SUBCLASS_VENDOR_SPEC, 0xff)},
-+	/* 8897 */
-+	{USB_DEVICE(USB8XXX_VID, USB8897_PID_1)},
-+	{USB_DEVICE_AND_INTERFACE_INFO(USB8XXX_VID, USB8897_PID_2,
-+				       USB_CLASS_VENDOR_SPEC,
-+				       USB_SUBCLASS_VENDOR_SPEC, 0xff)},
- 	/* 8997 */
- 	{USB_DEVICE(USB8XXX_VID, USB8997_PID_1)},
- 	{USB_DEVICE_AND_INTERFACE_INFO(USB8XXX_VID, USB8997_PID_2,
-@@ -409,12 +414,14 @@ static int mwifiex_usb_probe(struct usb_interface *intf,
- 	case USB8766_PID_1:
- 	case USB8797_PID_1:
- 	case USB8801_PID_1:
-+	case USB8897_PID_1:
- 	case USB8997_PID_1:
- 		card->usb_boot_state = USB8XXX_FW_DNLD;
- 		break;
- 	case USB8766_PID_2:
- 	case USB8797_PID_2:
- 	case USB8801_PID_2:
-+	case USB8897_PID_2:
- 	case USB8997_PID_2:
- 		card->usb_boot_state = USB8XXX_FW_READY;
- 		break;
-@@ -1318,6 +1325,12 @@ static int mwifiex_register_dev(struct mwifiex_adapter *adapter)
- 		strcpy(adapter->fw_name, USB8997_DEFAULT_FW_NAME);
- 		adapter->ext_scan = true;
- 		break;
-+	case USB8897_PID_1:
-+	case USB8897_PID_2:
-+		adapter->tx_buf_size = MWIFIEX_TX_DATA_BUF_SIZE_4K;
-+		strcpy(adapter->fw_name, USB8897_DEFAULT_FW_NAME);
-+		adapter->ext_scan = true;
-+		break;
- 	case USB8766_PID_1:
- 	case USB8766_PID_2:
- 		adapter->tx_buf_size = MWIFIEX_TX_DATA_BUF_SIZE_2K;
-@@ -1615,4 +1628,5 @@ MODULE_LICENSE("GPL v2");
- MODULE_FIRMWARE(USB8766_DEFAULT_FW_NAME);
- MODULE_FIRMWARE(USB8797_DEFAULT_FW_NAME);
- MODULE_FIRMWARE(USB8801_DEFAULT_FW_NAME);
-+MODULE_FIRMWARE(USB8897_DEFAULT_FW_NAME);
- MODULE_FIRMWARE(USB8997_DEFAULT_FW_NAME);
-diff --git a/drivers/net/wireless/marvell/mwifiex/usb.h b/drivers/net/wireless/marvell/mwifiex/usb.h
-index 7e920b51994c..b7dba256e9f8 100644
---- a/drivers/net/wireless/marvell/mwifiex/usb.h
-+++ b/drivers/net/wireless/marvell/mwifiex/usb.h
-@@ -19,6 +19,8 @@
- #define USB8797_PID_2		0x2044
- #define USB8801_PID_1		0x2049
- #define USB8801_PID_2		0x204a
-+#define USB8897_PID_1		0x2045
-+#define USB8897_PID_2		0x2046
- #define USB8997_PID_1		0x2052
- #define USB8997_PID_2		0x204e
- 
-@@ -35,6 +37,7 @@
- #define USB8766_DEFAULT_FW_NAME	"mrvl/usb8766_uapsta.bin"
- #define USB8797_DEFAULT_FW_NAME	"mrvl/usb8797_uapsta.bin"
- #define USB8801_DEFAULT_FW_NAME	"mrvl/usb8801_uapsta.bin"
-+#define USB8897_DEFAULT_FW_NAME	"mrvl/usb8897_uapsta.bin"
- #define USB8997_DEFAULT_FW_NAME	"mrvl/usbusb8997_combo_v4.bin"
- 
- #define FW_DNLD_TX_BUF_SIZE	620
--- 
-2.43.0
+So if nextevt_local missed a tick and nextevt_global is
+NEXT_TIMER_MAX_DELTA-1 (so we get the largest difference possible
+between those two) then the time_before_eq() should still come out
+right. We could still miss more than one tick.
 
+This looks good. I just don't understand the (above) comment.
+
+Sebastian
