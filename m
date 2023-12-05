@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9465F805639
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 999F1805646
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345520AbjLENkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:40:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
+        id S1345471AbjLENoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:44:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345471AbjLENkT (ORCPT
+        with ESMTP id S1345584AbjLENks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:40:19 -0500
+        Tue, 5 Dec 2023 08:40:48 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0D1C19B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:40:23 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E627199
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:40:53 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DCD42F4;
-        Tue,  5 Dec 2023 05:41:10 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EB08A139F;
+        Tue,  5 Dec 2023 05:41:39 -0800 (PST)
 Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DBA93F5A1;
-        Tue,  5 Dec 2023 05:40:22 -0800 (PST)
-Message-ID: <181a1623-9285-415e-9ec6-6b6548ca7487@arm.com>
-Date:   Tue, 5 Dec 2023 13:40:20 +0000
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AA65A3F5A1;
+        Tue,  5 Dec 2023 05:40:51 -0800 (PST)
+Message-ID: <183cf38c-476e-44c4-a8c7-22ed43122b41@arm.com>
+Date:   Tue, 5 Dec 2023 13:40:51 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH RFC 34/39] mm/rmap: introduce
@@ -40,9 +40,9 @@ References: <20231204142146.91437-1-david@redhat.com>
  <20231204142146.91437-35-david@redhat.com>
  <b7ef017b-f651-40f3-a2bd-70ebe9411dc1@arm.com>
  <88a341bf-0b6a-454a-aeb1-0699233eb37c@redhat.com>
- <bb8e060f-74f0-4b1f-9003-40b2757295ca@redhat.com>
+ <e2db9119-0f8f-42d2-af13-529edb043bc6@redhat.com>
 From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <bb8e060f-74f0-4b1f-9003-40b2757295ca@redhat.com>
+In-Reply-To: <e2db9119-0f8f-42d2-af13-529edb043bc6@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
@@ -54,7 +54,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 13:18, David Hildenbrand wrote:
+On 05/12/2023 13:32, David Hildenbrand wrote:
 > On 05.12.23 14:17, David Hildenbrand wrote:
 >> On 05.12.23 14:12, Ryan Roberts wrote:
 >>> On 04/12/2023 14:21, David Hildenbrand wrote:
@@ -101,12 +101,44 @@ On 05/12/2023 13:18, David Hildenbrand wrote:
 >>> __always_inline?
 >>
 >> Yes.
+>>
+>>>
+>>>> +        struct page *page, unsigned int nr_pages,
+>>>> +        struct vm_area_struct *src_vma, enum rmap_mode mode)
+>>>>    {
+>>>> -    VM_WARN_ON(folio_test_hugetlb(page_folio(page)));
+>>>> +    int i;
+>>>>    -    if (compound) {
+>>>> -        struct folio *folio = (struct folio *)page;
+>>>> +    VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
+>>>>    -        VM_BUG_ON_PAGE(compound && !PageHead(page), page);
+>>>> -        atomic_inc(&folio->_entire_mapcount);
+>>>> -    } else {
+>>>> -        atomic_inc(&page->_mapcount);
+>>>> +    /*
+>>>> +     * No need to check+clear for already shared PTEs/PMDs of the folio.
+>>>> +     * This includes PTE mappings of (order-0) KSM folios.
+>>>> +     */
+>>>> +    if (likely(mode == RMAP_MODE_PTE)) {
+>>>
+>>> Presumbly if __always_inline then the compiler will remove this if/else and just
+>>> keep the part indicated by mode? In which case "likely" is pretty useless? Same
+>>> for all similar sites in the other patches.
+>>
+>> Yes, also had this in mind. As long as we use __always_inline it
+>> shouldn't ever matter.
 > 
-> Ah, no, I did this for a reason. This function lives in a header, so it will
-> always be inlined.
+> It seems to be cleanest to just do:
+> 
+> switch (mode) {
+> case RMAP_MODE_PTE:
+>     ...
+>     break;
+> case RMAP_MODE_PMD:
+>     ...
+>     break;
+> }
 > 
 
-Really? It will certainly be duplicated across every compilation unit, but
-that's separate from being inlined - if the optimizer is off, won't it just end
-up as an out-of-line function in every compilation unit?
+Agreed.
 
