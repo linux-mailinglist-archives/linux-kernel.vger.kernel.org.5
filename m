@@ -2,208 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F826804ECD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E59804FF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234995AbjLEJy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:54:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
+        id S1346689AbjLEKNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:13:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231929AbjLEJy5 (ORCPT
+        with ESMTP id S1376795AbjLEJz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:54:57 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9A515196
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:55:01 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4077FEC;
-        Tue,  5 Dec 2023 01:55:47 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD9BA3F5A1;
-        Tue,  5 Dec 2023 01:54:58 -0800 (PST)
-Message-ID: <ce9caa4a-273f-4272-9c58-81b3e4d535de@arm.com>
-Date:   Tue, 5 Dec 2023 09:54:58 +0000
+        Tue, 5 Dec 2023 04:55:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D056A1A4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:56:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701770161;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=grTJ7yip744IhaQrVqj6sS9YQufy0rAAz+sVkwOzAuM=;
+        b=YEWCbMNP25xxxOSvu6/dI30+6A8pLlHMpyyy8SrRWRgXAjImqdVFK7KgjHy/KftOzKp8Wn
+        JmZzlV0TUa2MffnDPFMhbJMzCzpQp57GF++AnK3xs3OPFaHBkVJbGZ6c6Sj4dDFhK+Xw6p
+        m5OZVAPyNN3Lq/j1vrMtY9qY3+OCk3I=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-642-5AxjZjf1O_uMss01wNfd2g-1; Tue, 05 Dec 2023 04:55:59 -0500
+X-MC-Unique: 5AxjZjf1O_uMss01wNfd2g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40b32faeb7eso41618495e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:55:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701770159; x=1702374959;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=grTJ7yip744IhaQrVqj6sS9YQufy0rAAz+sVkwOzAuM=;
+        b=LvoZXu+RiJRub+wSjlPM1K0AZROjqm99k1ZFdgpFIOT9Pr7jMWmllEsiAZETQgR9wU
+         Q+W0c5JgH0hS6aiG6EYCFFBOMHO0vayErAvHyN6LSnzZ63muYEwcGMqO6DNVup2vzZMg
+         oJmixLI0ql5nfQFPgHRTfdt5OyoIRZBeoP0h+a3/+RuqiV/VLpBiBUDPd+BHDkmv8lgX
+         3y7kbpVOa8xVjOKzat+2j6k95vMKCSWTZKbSm/EgzYp4pLU2+v1aBXO2VAMkhjP4CvD0
+         ckjPw94iTNOEGFQs/98VnEhJOXOtBJjpL10aKWy7j+J3mYnx4QpxDtVCIySXWCCSqVCQ
+         9Nfw==
+X-Gm-Message-State: AOJu0Yz1Y+8Ec02PyVeUJiCqAfCDyDYVQs1P+iaYdcFvf/F2jIX3wIRw
+        ha0edYs4BEoOhNKm1I0gRsLbIukaOYpslJDKp3DXR13AJECE3IeOZWnXglcbJDznmDGaC2cYzFd
+        1uAno165C0wOy5F5OgFfIx0Wu
+X-Received: by 2002:a05:600c:190a:b0:40b:5e21:c5cc with SMTP id j10-20020a05600c190a00b0040b5e21c5ccmr219161wmq.154.1701770158746;
+        Tue, 05 Dec 2023 01:55:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFBmH3PIwabvFznw840nNF2cGI7f5mQAdKpdhuYFUSRcOVuCCbYycoWyZqBvpZBmhyg5/EPLg==
+X-Received: by 2002:a05:600c:190a:b0:40b:5e21:c5cc with SMTP id j10-20020a05600c190a00b0040b5e21c5ccmr219149wmq.154.1701770158440;
+        Tue, 05 Dec 2023 01:55:58 -0800 (PST)
+Received: from starship ([89.237.98.20])
+        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b0040b34720206sm18116954wmb.12.2023.12.05.01.55.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 01:55:58 -0800 (PST)
+Message-ID: <5a8c870875acc5c7e72eb3e885c12d6362f45243.camel@redhat.com>
+Subject: Re: [PATCH v7 04/26] x86/fpu/xstate: Introduce
+ XFEATURE_MASK_KERNEL_DYNAMIC xfeature set
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        dave.hansen@intel.com, pbonzini@redhat.com, seanjc@google.com,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Tue, 05 Dec 2023 11:55:56 +0200
+In-Reply-To: <9a7052ca-9c67-45b5-ba23-dbd23e69722c@intel.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+         <20231124055330.138870-5-weijiang.yang@intel.com>
+         <3c16bb90532fbd2ec95b5a3d42a93bbbf77c4d37.camel@redhat.com>
+         <9a7052ca-9c67-45b5-ba23-dbd23e69722c@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 4/6] arm64: KVM: Add interface to set guest value for
- TRFCR register
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, suzuki.poulose@arm.com, broonie@kernel.org,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-References: <20231019165510.1966367-1-james.clark@arm.com>
- <20231019165510.1966367-5-james.clark@arm.com> <86msuqb84g.wl-maz@kernel.org>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <86msuqb84g.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 04/12/2023 09:59, Marc Zyngier wrote:
-> On Thu, 19 Oct 2023 17:55:02 +0100,
-> James Clark <james.clark@arm.com> wrote:
->>
->> Add an interface for the Coresight driver to use to set the value of the
->> TRFCR register for the guest. This register controls the exclude
->> settings for trace at different exception levels, and is used to honor
->> the exclude_host and exclude_guest parameters from the Perf session.
->> This will be used to later write TRFCR_EL1 on nVHE at guest switch. For
->> VHE, the host trace is controlled by TRFCR_EL2 and thus we can write to
->> the TRFCR_EL1 immediately. Because guest writes to the register are
->> trapped, the value will persist and can't be modified.
->>
->> The settings must be copied to the vCPU before each run in the same
->> way that PMU events are, because the per-cpu struct isn't accessible in
->> protected mode.
+On Fri, 2023-12-01 at 15:49 +0800, Yang, Weijiang wrote:
+> On 12/1/2023 1:33 AM, Maxim Levitsky wrote:
+> > On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
+> > > Define new XFEATURE_MASK_KERNEL_DYNAMIC set including the features can be
+> > I am not sure though that this name is correct, but I don't know if I can
+> > suggest a better name.
 > 
-> Then maybe we should look at a better way of sharing global data
-> between EL1 and EL2 instead of copying stuff ad-nauseam?
+> It's a symmetry of XFEATURE_MASK_USER_DYNAMIC ;-)
+> > > optionally enabled by kernel components, i.e., the features are required by
+> > > specific kernel components. Currently it's used by KVM to configure guest
+> > > dedicated fpstate for calculating the xfeature and fpstate storage size etc.
+> > > 
+> > > The kernel dynamic xfeatures now only contain XFEATURE_CET_KERNEL, which is
+> > > supported by host as they're enabled in xsaves/xrstors operating xfeature set
+> > > (XCR0 | XSS), but the relevant CPU feature, i.e., supervisor shadow stack, is
+> > > not enabled in host kernel so it can be omitted for normal fpstate by default.
+> > > 
+> > > Remove the kernel dynamic feature from fpu_kernel_cfg.default_features so that
+> > > the bits in xstate_bv and xcomp_bv are cleared and xsaves/xrstors can be
+> > > optimized by HW for normal fpstate.
+> > > 
+> > > Suggested-by: Dave Hansen <dave.hansen@intel.com>
+> > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > > ---
+> > >   arch/x86/include/asm/fpu/xstate.h | 5 ++++-
+> > >   arch/x86/kernel/fpu/xstate.c      | 1 +
+> > >   2 files changed, 5 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
+> > > index 3b4a038d3c57..a212d3851429 100644
+> > > --- a/arch/x86/include/asm/fpu/xstate.h
+> > > +++ b/arch/x86/include/asm/fpu/xstate.h
+> > > @@ -46,9 +46,12 @@
+> > >   #define XFEATURE_MASK_USER_RESTORE	\
+> > >   	(XFEATURE_MASK_USER_SUPPORTED & ~XFEATURE_MASK_PKRU)
+> > >   
+> > > -/* Features which are dynamically enabled for a process on request */
+> > > +/* Features which are dynamically enabled per userspace request */
+> > >   #define XFEATURE_MASK_USER_DYNAMIC	XFEATURE_MASK_XTILE_DATA
+> > >   
+> > > +/* Features which are dynamically enabled per kernel side request */
+> > I suggest to explain this a bit better. How about something like that:
+> > 
+> > "Kernel features that are not enabled by default for all processes, but can
+> > be still used by some processes, for example to support guest virtualization"
 > 
-
-That probably makes sense, I can have a look into that.
-
->>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>  arch/arm64/include/asm/kvm_host.h |  3 +++
->>  arch/arm64/kvm/arm.c              |  1 +
->>  arch/arm64/kvm/debug.c            | 26 ++++++++++++++++++++++++++
->>  3 files changed, 30 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
->> index 0f0bf8e641bd..e1852102550d 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -1125,6 +1125,8 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu);
->>  void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
->>  void kvm_clr_pmu_events(u32 clr);
->>  bool kvm_set_pmuserenr(u64 val);
->> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest);
->> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu);
->>  #else
->>  static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
->>  static inline void kvm_clr_pmu_events(u32 clr) {}
->> @@ -1132,6 +1134,7 @@ static inline bool kvm_set_pmuserenr(u64 val)
->>  {
->>  	return false;
->>  }
->> +static inline void kvm_etm_set_guest_trfcr(u64 trfcr_guest) {}
->>  #endif
->>  
->>  void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
->> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->> index 0f717b6a9151..e4d846f2f665 100644
->> --- a/arch/arm64/kvm/arm.c
->> +++ b/arch/arm64/kvm/arm.c
->> @@ -1015,6 +1015,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
->>  		kvm_vgic_flush_hwstate(vcpu);
->>  
->>  		kvm_pmu_update_vcpu_events(vcpu);
->> +		kvm_etm_update_vcpu_events(vcpu);
->>  
->>  		/*
->>  		 * Ensure we set mode to IN_GUEST_MODE after we disable
->> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
->> index 20cdd40b3c42..2ab41b954512 100644
->> --- a/arch/arm64/kvm/debug.c
->> +++ b/arch/arm64/kvm/debug.c
->> @@ -23,6 +23,12 @@
->>  
->>  static DEFINE_PER_CPU(u64, mdcr_el2);
->>  
->> +/*
->> + * Per CPU value for TRFCR that should be applied to any guest vcpu that may
->> + * run on that core in the future.
->> + */
->> +static DEFINE_PER_CPU(u64, guest_trfcr);
->> +
->>  /**
->>   * save/restore_guest_debug_regs
->>   *
->> @@ -356,3 +362,23 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
->>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
->>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
->>  }
->> +
->> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
->> +{
->> +	if (has_vhe())
->> +		write_sysreg_s(trfcr_guest, SYS_TRFCR_EL12);
->> +	else
->> +		*this_cpu_ptr(&guest_trfcr) = trfcr_guest;
->> +}
->> +EXPORT_SYMBOL_GPL(kvm_etm_set_guest_trfcr);
+> It looks good to me, will apply it in next version, thanks!
 > 
-> How does the ETM code know what guests it impacts? Don't you have some
-> per-process context already?
+> > But feel free to keep it as is or propose something else. IMHO this will
+> > be confusing this way or another.
+> > 
+> > 
+> > Another question: kernel already has a notion of 'independent features'
+> > which are currently kernel features that are enabled in IA32_XSS but not present in 'fpu_kernel_cfg.max_features'
+> > 
+> > Currently only 'XFEATURE_LBR' is in this set. These features are saved/restored manually
+> > from independent buffer (in case of LBRs, perf code cares for this).
+> > 
+> > Does it make sense to add CET_S to there as well instead of having XFEATURE_MASK_KERNEL_DYNAMIC,
 > 
-
-It doesn't know what guests it impacts, it just does it blindly based on
-host CPU and whatever guest might run on the CPU in the future. PMU
-events are the same.
-
-We do have per-process context for per-process sessions, so if that was
-the VM process we might have been able to do something with that info.
-But we also have per-cpu sessions that would trace anything that runs on
-that CPU, so to be able to support that mode I think it has to be done
-without knowing about any guest.
-
->> +
->> +/*
->> + * Updates the vcpu's view of the etm events for this cpu. Must be
->> + * called before every vcpu run after disabling interrupts, to ensure
->> + * that an interrupt cannot fire and update the structure.
->> + */
->> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu)
->> +{
->> +	if (!has_vhe() && vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
->> +		ctxt_sys_reg(&vcpu->arch.ctxt, TRFCR_EL1) = *this_cpu_ptr(&guest_trfcr);
->> +}
+> CET_S here refers to PL{0,1,2}_SSP, right?
 > 
-> Why this requirement of updating it at all times? Why can't this be
-> done in a more lazy way, using the flags to instruct the hypervisor
-> what and when to load it?
+> IMHO, perf relies on dedicated code to switch LBR MSRs for various reason, e.g., overhead, the feature
+> owns dozens of MSRs, remove xfeature bit will offload the burden of common FPU/xsave framework.
+
+This is true, but the question that begs to be asked, is what is the true purpose of the 'independent features' is
+from the POV of the kernel FPU framework. IMHO these are features that the framework is not aware of, except
+that it enables it in IA32_XSS (and in XCR0 in the future).
+
+For the guest only features, like CET_S, it is also kind of the same thing (xsave but to guest state area only).
+I don't insist that we add CET_S to independent features, but I just gave an idea that maybe that is better
+from complexity point of view to add CET there. It's up to you to decide.
+
+Sean what do you think?
+
+Best regards,
+	Maxim Levitsky
+
+
 > 
-> 	M.
+> But CET only has 3 supervisor MSRs and they need to be managed together with user mode MSRs.
+> Enabling it in common FPU framework would make the switch/swap much easier without additional
+> support code.
 > 
+> >   and maybe rename the
+> > 'XFEATURE_MASK_INDEPENDENT' to something like 'XFEATURES_THE_KERNEL_DOESNT_CARE_ABOUT'
+> > (terrible name, but you might think of a better name)
+> > 
+> > 
+> > > +#define XFEATURE_MASK_KERNEL_DYNAMIC	XFEATURE_MASK_CET_KERNEL
+> > > +
+> > >   /* All currently supported supervisor features */
+> > >   #define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID | \
+> > >   					    XFEATURE_MASK_CET_USER | \
+> > > diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> > > index b57d909facca..ba4172172afd 100644
+> > > --- a/arch/x86/kernel/fpu/xstate.c
+> > > +++ b/arch/x86/kernel/fpu/xstate.c
+> > > @@ -824,6 +824,7 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+> > >   	/* Clean out dynamic features from default */
+> > >   	fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
+> > >   	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+> > > +	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_KERNEL_DYNAMIC;
+> > >   
+> > >   	fpu_user_cfg.default_features = fpu_user_cfg.max_features;
+> > >   	fpu_user_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+> > 
+> > Best regards,
+> > 	Maxim Levitsky
+> > 
+> > 
+> > 
+> > 
 
-I could probably add a flag that gets set if the guest value should be
-different to the host value. I was just trying to keep it simple and in
-terms of just what the registers should be.
 
-The PMU one has something similar where it doesn't write anything if
-kvm_pmu_switch_needed() is false, but that's only on the path where the
-host sets the events, it still always does the copy in
-kvm_pmu_update_vcpu_events() before the guest switch.
 
-I suppose if I make the change to have the shared global data then the
-copy isn't needed and this function and kvm_pmu_update_vcpu_events()
-will just get deleted.
 
-Thanks
-James
