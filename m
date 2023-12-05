@@ -2,88 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEA3805C08
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37614805B7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442417AbjLEPed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57068 "EHLO
+        id S1346275AbjLEPe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:34:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346242AbjLEPeb (ORCPT
+        with ESMTP id S1346254AbjLEPe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:34:31 -0500
-Received: from mta-65-227.siemens.flowmailer.net (mta-65-227.siemens.flowmailer.net [185.136.65.227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BB9197
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:34:35 -0800 (PST)
-Received: by mta-65-227.siemens.flowmailer.net with ESMTPSA id 20231205153432eb2591a6dbaf5b4b24
-        for <linux-kernel@vger.kernel.org>;
-        Tue, 05 Dec 2023 16:34:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=florian.bezdeka@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=QLrrt7aQd3uFEGTkO/x97Sh3we90ObbwSexb6iVGv7A=;
- b=J+8+bbFXw8iqevTZ/1LFxb77bPK9BAi2TmeskopxbHBkn5POqgmVNCOYGcqwEep7uOPJpl
- zj+FDvGwqPNeHsljWo0kiWzfDFu9PDhQN6eGhzaJB7XFPDStPDo9SmhEyvxSfz3Nw8ezFswW
- bfVo1XvFDjaGtWxsO3vjq4Ss0mo2w=;
-Message-ID: <5a0faf8cc9ec3ab0d5082c66b909c582c8f1eae6.camel@siemens.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
- Time support to XDP ZC
-From:   Florian Bezdeka <florian.bezdeka@siemens.com>
-To:     "Song, Yoong Siang" <yoong.siang.song@intel.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Topel <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Date:   Tue, 05 Dec 2023 16:34:29 +0100
-In-Reply-To: <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
-References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
-         <20231203165129.1740512-3-yoong.siang.song@intel.com>
-         <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
-         <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
-         <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 5 Dec 2023 10:34:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33CC19F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:35:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFA2AC433C7;
+        Tue,  5 Dec 2023 15:35:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701790503;
+        bh=jxxlSiaaRyezQ6LzFH+4I6UqsA5xw8pyUZ9Qn3g/Aik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ilL/AlxEv10rifhxB24AONRldMt8n7ncUkQmbUmqhJNG/5jBxUo+3xS4ZSQyhXD25
+         PYJFQNsd3Z3hNcIq2F87nxy8EV7OnqLJNgUjN51xS6qH02FLT7abEFGvPTsI7rbl6h
+         rDId+IZBN9Cd6P/nMU6jiEU8yTozxgYIhk1/6exgeNOtw21GfMgT7wMBuFeN9BvCcN
+         vycoGXDlrkKnzQB0HRUz2knn660/0jxDz9iSxS3Ss3ZELoN5pRW+bIGZ4yWh+mc+NW
+         h+qLCn4D7njLDo9MJ/aSCBHm93m6k2wc1v7X8TdhqwzQ3aBvxQjo3iFomIrEhavSwh
+         yYAb2pTZo+VKQ==
+Date:   Tue, 5 Dec 2023 16:35:00 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, frank.binns@imgtec.com,
+        donald.robson@imgtec.com, matt.coster@imgtec.com,
+        sarah.walker@imgtec.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH drm-misc-next v2 0/2] PowerVR VM fixes
+Message-ID: <j6w6ccewlvoosop77ug56r3sqoi4hglj3ejkyfw4dj3s3pdsw5@b473njzq5u3d>
+References: <20231129220835.297885-1-dakr@redhat.com>
 MIME-Version: 1.0
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-68982:519-21489:flowmailer
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="frqu6fpipq3ipztj"
+Content-Disposition: inline
+In-Reply-To: <20231129220835.297885-1-dakr@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,81 +52,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-12-05 at 15:25 +0000, Song, Yoong Siang wrote:
-> On Monday, December 4, 2023 10:55 PM, Willem de Bruijn wrote:
-> > Jesper Dangaard Brouer wrote:
-> > >=20
-> > >=20
-> > > On 12/3/23 17:51, Song Yoong Siang wrote:
-> > > > This patch enables Launch Time (Time-Based Scheduling) support to X=
-DP zero
-> > > > copy via XDP Tx metadata framework.
-> > > >=20
-> > > > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
-> > > > ---
-> > > >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
-> > >=20
-> > > As requested before, I think we need to see another driver implementi=
-ng
-> > > this.
-> > >=20
-> > > I propose driver igc and chip i225.
->=20
-> Sure. I will include igc patches in next version.
->=20
-> > >=20
-> > > The interesting thing for me is to see how the LaunchTime max 1 secon=
-d
-> > > into the future[1] is handled code wise. One suggestion is to add a
-> > > section to Documentation/networking/xsk-tx-metadata.rst per driver th=
-at
-> > > mentions/documents these different hardware limitations.  It is natur=
-al
-> > > that different types of hardware have limitations.  This is a close-t=
-o
-> > > hardware-level abstraction/API, and IMHO as long as we document the
-> > > limitations we can expose this API without too many limitations for m=
-ore
-> > > capable hardware.
->=20
-> Sure. I will try to add hardware limitations in documentation.=20
->=20
-> >=20
-> > I would assume that the kfunc will fail when a value is passed that
-> > cannot be programmed.
-> >=20
->=20
-> In current design, the xsk_tx_metadata_request() dint got return value.=
-=20
-> So user won't know if their request is fail.=20
-> It is complex to inform user which request is failing.=20
-> Therefore, IMHO, it is good that we let driver handle the error silently.
->=20
 
-If the programmed value is invalid, the packet will be "dropped" / will
-never make it to the wire, right?
+--frqu6fpipq3ipztj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That is clearly a situation that the user should be informed about. For
-RT systems this normally means that something is really wrong regarding
-timing / cycle overflow. Such systems have to react on that situation.
+Hi,
 
-> =20
+On Wed, Nov 29, 2023 at 11:07:59PM +0100, Danilo Krummrich wrote:
+> Some major GPUVM changes landed just before v8 of the PowerVR series. Sin=
+ce v8
+> went in rather quickly (review process was finished otherwise) I haven't =
+had the
+> chance to review the subsequent code changes.
 >=20
-> > What is being implemented here already exists for qdiscs. The FQ
-> > qdisc takes a horizon attribute and
-> >=20
-> >    "
-> >    when a packet is beyond the horizon
-> >        at enqueue() time:
-> >        - either drop the packet (default policy)
-> >        - or cap its delivery time to the horizon.
-> >    "
-> >    commit 39d010504e6b ("net_sched: sch_fq: add horizon attribute")
-> >=20
-> > Having the admin manually configure this on the qdisc based on
-> > off-line knowledge of the device is more fragile than if the device
-> > would somehow signal its limit to the stack.
-> >=20
-> > But I don't think we should add enforcement of that as a requirement
-> > for this xdp extension of pacing.
+> Hence, this series with a few fixes in this context. Plus a minor GPUVM p=
+atch to
+> make the drm_gpuvm_prepare_* helpers useful for PowerVR.
 
+This doesn't apply on drm-misc-next anymore, could you rebase and
+resend?
+
+Thanks!
+Maxime
+
+--frqu6fpipq3ipztj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZW9DJAAKCRDj7w1vZxhR
+xcnCAQC2Rnlt3ZS+eAeCOJ1rX+c3IzfC6+DAB7Ordkhc8HmZpAD/QcM1HDPb7Tzi
+26TfeH0Ck+dr4dJGZF6YLiYxleZuPgk=
+=poSS
+-----END PGP SIGNATURE-----
+
+--frqu6fpipq3ipztj--
