@@ -2,237 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695A6804FD0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39ADD804FD1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232032AbjLEKGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:06:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        id S1344986AbjLEKHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:07:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbjLEKGs (ORCPT
+        with ESMTP id S231994AbjLEKHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:06:48 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C1D6C9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 02:06:51 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40859dee28cso54037985e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 02:06:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701770809; x=1702375609; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O9sl689hzlJQYzBsgFB2WhOlBJ/fZZG2kg7Y3Bfk+Jk=;
-        b=V7BRyWDxUP1hG/Zo6RS6hmRrdauQ+z3OqZVh1sCZL1igS05Txk5+fU7MbWC/tInP0H
-         l7SlMsb4kUW/BEgX0AP1WMtosmJTxY/ue5xU9Ni0xq1odmx2n8IdxSZMad4842OwYSqh
-         c1UkM7Iu3a/13hpd5vqD10VcD7zY1rZaW+cAYArp75MKSA2TamIzJojrl8d5hc2wgoUL
-         qiEH2waU7uZ37EtE/PsY9clGK/lphCxznk+h1Log3jXcdK52rM6iEo6z94VqmibaA6/z
-         Oc1aeJy1wR/1UhnbyVYpzIDnLCYcpWLmt3zaYB+vKGGzpuH8gRM3eqRfyLaXyX0d6pSt
-         6MWw==
+        Tue, 5 Dec 2023 05:07:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640EEA0
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 02:07:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701770843;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x148bBHLIWoRdTIuSUDsms3L0/kz5tEEM1BzickcGxY=;
+        b=Cr5l7JasVxWlHMP0OC4+vqQI4kTa2t5ZBOTsUXOoGUOuxEKDpjqo9+NG2fnGX1xGLVP3nk
+        d5ufcAfZITO5wbZBiryYScFwk8xM0LKc0jb1aXy6Lu6h3Xu7JpHlZCLUvets+JHPDNAoUF
+        DyzCg/PeBzGsiBf5r+Ap8lWKLwmq3z0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-576-RysczGrbM1SnJpvdZMwjEA-1; Tue, 05 Dec 2023 05:07:22 -0500
+X-MC-Unique: RysczGrbM1SnJpvdZMwjEA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-333524816e1so972250f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 02:07:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701770809; x=1702375609;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O9sl689hzlJQYzBsgFB2WhOlBJ/fZZG2kg7Y3Bfk+Jk=;
-        b=d+8HrfgpiFD1yQafAPziJBXPXHffj9/VOomWbPMuCISQUOra2SBAIJ41/zBFW0GEEh
-         wA1FnXm0HSQ5etRA42Srqv+6EvQ9UT/wcYQRtK24TsvYJHTPjqjnuAFomMpe9YA4sFg8
-         3M1dwq0PuT/L6Mx4RfQvwU6cbB8q+8GArDisXvbdZ7oZFfSijDKAXl+ZTshnN/KPPYDR
-         /mXBq6VWISa2ThfxmFEqc/GLXxsKSXlB5Glh0KCSzpfI1KO6xUW1iVyNbOTgaf6rHYy2
-         z7tKpIz8EkkKTzk/eD4SCYBddokZ1ItpsCLtiW0QtRHYRfKObAr6ixSBtc3n6W9dy1BI
-         2Hsg==
-X-Gm-Message-State: AOJu0YwgtSN5N1QC5ayYoIRhnm3so36RPXbfnlyp7eVBgTT0a9OrPF74
-        aTmT0y2RQ3NiOTgUCAQz9yTULw==
-X-Google-Smtp-Source: AGHT+IGiqAcOWb6+LtZFfcXdEsKroCG+o1qA0L106wojDPkJpNUDy3QfsoSUNiXys+b/+Co1QkteCg==
-X-Received: by 2002:a05:600c:19ce:b0:40a:25f1:7a28 with SMTP id u14-20020a05600c19ce00b0040a25f17a28mr4156631wmq.40.1701770809237;
-        Tue, 05 Dec 2023 02:06:49 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id g14-20020a05600c310e00b0040b481222e3sm21976386wmo.41.2023.12.05.02.06.48
+        d=1e100.net; s=20230601; t=1701770841; x=1702375641;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x148bBHLIWoRdTIuSUDsms3L0/kz5tEEM1BzickcGxY=;
+        b=jp32dD/iuekG804LPXz0PCkg7YAcZCpeGHeey1x8LyZ+c5BR7iIt5WpW/YuVjuANOX
+         Fz50xNCnd6eBNabsI5eVUg+32b6/fThJH0GkFBpkQXyLHxgkAr6xmikq51tmbfuvICxu
+         ahb9XiGOD8ph+BuOLL0FoEtXYHuhbW+KyRTjwGmygmjFCF71zIeXrYVLtb1qT31dL1ul
+         +LbGTbk9hwHr+2ZPgz4McpZA90YteXDJ46LGYgRhpYu+TLlWa/dx5z7IWcgTUcH359zv
+         AcKzofCJeW8DZBuVEB1xaSFIW3Q0t37XOgbZx+gtLjn4sgHyO8/d81itI7knqAbb2TNh
+         Lylw==
+X-Gm-Message-State: AOJu0YyRDppFB8czIz+CM8C9QaU4OTLNUfDOWVcI13Nzz9fz7eAZ7wQl
+        hv5+s/sLG63R9JW6ZckvTFjFRifYzSj4VveBKz2TDEJpzxDdvFNBna42L+TrXd0TlCr90L6g1m2
+        Ub/o/fWJyQ2E7v/4aScbJOkdm
+X-Received: by 2002:a05:600c:46d3:b0:40b:377a:2ac1 with SMTP id q19-20020a05600c46d300b0040b377a2ac1mr3593108wmo.20.1701770841149;
+        Tue, 05 Dec 2023 02:07:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH0lSfh68UPYOAWd1S8YfHqq7SycLvmqL+oKUOwuh/VYpRm0gR7TN7zf/DTs9+twZs6uWVcXQ==
+X-Received: by 2002:a05:600c:46d3:b0:40b:377a:2ac1 with SMTP id q19-20020a05600c46d300b0040b377a2ac1mr3593096wmo.20.1701770840798;
+        Tue, 05 Dec 2023 02:07:20 -0800 (PST)
+Received: from starship ([89.237.98.20])
+        by smtp.gmail.com with ESMTPSA id n10-20020a05600c4f8a00b004053e9276easm21629722wmq.32.2023.12.05.02.07.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 02:06:48 -0800 (PST)
-Date:   Tue, 5 Dec 2023 13:06:45 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Dan Carpenter <error27@gmail.com>, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Luca Abeni <luca.abeni@santannapisa.it>
-Subject: Re: drivers/video/fbdev/amifb.c:3375:32: sparse: sparse: incorrect
- type in argument 1 (different address spaces)
-Message-ID: <b139b275-ee57-4026-83d3-7d49ae04ef49@suswa.mountain>
-References: <202312051741.BVXr9CRP-lkp@intel.com>
+        Tue, 05 Dec 2023 02:07:20 -0800 (PST)
+Message-ID: <be5cc36e1bb618aab666a2148e5a376b2d39a297.camel@redhat.com>
+Subject: Re: [PATCH v7 22/26] KVM: VMX: Set up interception for CET MSRs
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>
+Cc:     pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
+        chao.gao@intel.com, rick.p.edgecombe@intel.com, john.allen@amd.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        dave.hansen@intel.com
+Date:   Tue, 05 Dec 2023 12:07:18 +0200
+In-Reply-To: <e79d43ea-3ca0-44ca-9a55-b8e2c5094cf2@intel.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+         <20231124055330.138870-23-weijiang.yang@intel.com>
+         <393d82243b7f44731439717be82b20fbeda45c77.camel@redhat.com>
+         <e79d43ea-3ca0-44ca-9a55-b8e2c5094cf2@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202312051741.BVXr9CRP-lkp@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Something went wrong with this git bisect.  The Sparse warning predates
-git.  The file was renamed at some point so I would have thought the
-bisect would point to that.
+On Fri, 2023-12-01 at 17:45 +0800, Yang, Weijiang wrote:
+> On 12/1/2023 1:44 AM, Maxim Levitsky wrote:
+> > On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
+> > > Enable/disable CET MSRs interception per associated feature configuration.
+> > > Shadow Stack feature requires all CET MSRs passed through to guest to make
+> > > it supported in user and supervisor mode while IBT feature only depends on
+> > > MSR_IA32_{U,S}_CETS_CET to enable user and supervisor IBT.
+> > > 
+> > > Note, this MSR design introduced an architectural limitation of SHSTK and
+> > > IBT control for guest, i.e., when SHSTK is exposed, IBT is also available
+> > > to guest from architectual perspective since IBT relies on subset of SHSTK
+> > > relevant MSRs.
+> > > 
+> > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > > ---
+> > >   arch/x86/kvm/vmx/vmx.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+> > >   1 file changed, 42 insertions(+)
+> > > 
+> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > > index 554f665e59c3..e484333eddb0 100644
+> > > --- a/arch/x86/kvm/vmx/vmx.c
+> > > +++ b/arch/x86/kvm/vmx/vmx.c
+> > > @@ -699,6 +699,10 @@ static bool is_valid_passthrough_msr(u32 msr)
+> > >   	case MSR_LBR_CORE_TO ... MSR_LBR_CORE_TO + 8:
+> > >   		/* LBR MSRs. These are handled in vmx_update_intercept_for_lbr_msrs() */
+> > >   		return true;
+> > > +	case MSR_IA32_U_CET:
+> > > +	case MSR_IA32_S_CET:
+> > > +	case MSR_IA32_PL0_SSP ... MSR_IA32_INT_SSP_TAB:
+> > > +		return true;
+> > >   	}
+> > >   
+> > >   	r = possible_passthrough_msr_slot(msr) != -ENOENT;
+> > > @@ -7766,6 +7770,42 @@ static void update_intel_pt_cfg(struct kvm_vcpu *vcpu)
+> > >   		vmx->pt_desc.ctl_bitmask &= ~(0xfULL << (32 + i * 4));
+> > >   }
+> > >   
+> > > +static void vmx_update_intercept_for_cet_msr(struct kvm_vcpu *vcpu)
+> > > +{
+> > > +	bool incpt;
+> > > +
+> > > +	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK)) {
+> > > +		incpt = !guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
+> > > +
+> > > +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_U_CET,
+> > > +					  MSR_TYPE_RW, incpt);
+> > > +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_S_CET,
+> > > +					  MSR_TYPE_RW, incpt);
+> > > +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL0_SSP,
+> > > +					  MSR_TYPE_RW, incpt);
+> > > +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL1_SSP,
+> > > +					  MSR_TYPE_RW, incpt);
+> > > +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL2_SSP,
+> > > +					  MSR_TYPE_RW, incpt);
+> > > +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_PL3_SSP,
+> > > +					  MSR_TYPE_RW, incpt);
+> > > +		if (guest_cpuid_has(vcpu, X86_FEATURE_LM))
+> > > +			vmx_set_intercept_for_msr(vcpu, MSR_IA32_INT_SSP_TAB,
+> > > +						  MSR_TYPE_RW, incpt);
+> > > +		if (!incpt)
+> > > +			return;
+> > > +	}
+> > > +
+> > > +	if (kvm_cpu_cap_has(X86_FEATURE_IBT)) {
+> > > +		incpt = !guest_cpuid_has(vcpu, X86_FEATURE_IBT);
+> > > +
+> > > +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_U_CET,
+> > > +					  MSR_TYPE_RW, incpt);
+> > > +		vmx_set_intercept_for_msr(vcpu, MSR_IA32_S_CET,
+> > > +					  MSR_TYPE_RW, incpt);
+> > > +	}
+> > > +}
+> > > +
+> > >   static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> > >   {
+> > >   	struct vcpu_vmx *vmx = to_vmx(vcpu);
+> > > @@ -7843,6 +7883,8 @@ static void vmx_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> > >   
+> > >   	/* Refresh #PF interception to account for MAXPHYADDR changes. */
+> > >   	vmx_update_exception_bitmap(vcpu);
+> > > +
+> > > +	vmx_update_intercept_for_cet_msr(vcpu);
+> > >   }
+> > >   
+> > >   static u64 vmx_get_perf_capabilities(void)
+> > My review feedback from the previous patch still applies as well,
+> > 
+> > I still think that we should either try a best effort approach to plug
+> > this virtualization hole, or we at least should fail guest creation
+> > if the virtualization hole is present as I said:
+> > 
+> > "Another, much simpler option is to fail the guest creation if the shadow stack + indirect branch tracking
+> > state differs between host and the guest, unless both are disabled in the guest.
+> > (in essence don't let the guest be created if (2) or (3) happen)"
+> > 
+> > Please at least tell me what do you think about this.
+> 
+> Oh, I thought I had replied this patch in v6 but I failed to send it out!
+> Let me explain it a bit, at early stage of this series, I thought of checking relevant host
+> feature enabling status before exposing guest CET features, but it's proved
+> unnecessary and user unfriendly.
+> 
+> E.g., we frequently disable host CET features due to whatever reasons on host,  then
+> the features cannot be used/tested in guest at all.  Technically, guest should be allowed
+> to run the features so long as the dependencies(i.e., xsave related support) are enabled
+> on host and there're no risks brought up by using of the features in guest.
 
-regards,
-dan carpenter
+To be honest this is a dangerous POV in regard to guest migration: If the VMM were to be lax with features
+that it exposes to the guest, then the guests will start to make assumptions instead of checking CPUID
+and then the guest will mysteriously fail when migrated to a machine which actually lacks the features,
+in addition to not having them in the CPUID.
 
-On Tue, Dec 05, 2023 at 05:50:23PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-> commit: aa5222e92f8000ed3c1c38dddf11c83222aadfb3 sched/deadline: Don't use dubious signed bitfields
-> date:   6 years ago
-> config: m68k-randconfig-r131-20231129 (https://download.01.org/0day-ci/archive/20231205/202312051741.BVXr9CRP-lkp@intel.com/config)
-> compiler: m68k-linux-gcc (GCC) 13.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20231205/202312051741.BVXr9CRP-lkp@intel.com/reproduce)
+In other words, leaving "undocumented" features opens a slippery slope of later supporting this
+undocumented behavior.
+
+I understand though that CET is problematic, and I overall won't object much to leave things as is
+but a part of me thinks that we will regret it later.
+
+Best regards,
+	Maxim Levitsky
+
 > 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202312051741.BVXr9CRP-lkp@intel.com/
+> I think cloud-computing should share the similar pain point when deploy CET into virtualization
+> usages.
 > 
-> sparse warnings: (new ones prefixed by >>)
-> >> drivers/video/fbdev/amifb.c:3375:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *dst @@     got char [noderef] __iomem *screen_base @@
->    drivers/video/fbdev/amifb.c:3375:32: sparse:     expected void *dst
->    drivers/video/fbdev/amifb.c:3375:32: sparse:     got char [noderef] __iomem *screen_base
-> >> drivers/video/fbdev/amifb.c:3713:35: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected char [noderef] __iomem *screen_base @@     got char * @@
->    drivers/video/fbdev/amifb.c:3713:35: sparse:     expected char [noderef] __iomem *screen_base
->    drivers/video/fbdev/amifb.c:3713:35: sparse:     got char *
-> >> drivers/video/fbdev/amifb.c:3755:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void * @@
->    drivers/video/fbdev/amifb.c:3755:26: sparse:     expected void [noderef] __iomem *addr
->    drivers/video/fbdev/amifb.c:3755:26: sparse:     got void *
->    drivers/video/fbdev/amifb.c:3772:26: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void * @@
->    drivers/video/fbdev/amifb.c:3772:26: sparse:     expected void [noderef] __iomem *addr
->    drivers/video/fbdev/amifb.c:3772:26: sparse:     got void *
->    In file included from include/linux/workqueue.h:9,
->                     from include/linux/srcu.h:34,
->                     from include/linux/notifier.h:16,
->                     from include/linux/memory_hotplug.h:7,
->                     from include/linux/mmzone.h:780,
->                     from include/linux/gfp.h:6,
->                     from include/linux/umh.h:4,
->                     from include/linux/kmod.h:22,
->                     from include/linux/module.h:13,
->                     from drivers/video/fbdev/amifb.c:43:
->    include/linux/timer.h: In function 'timer_setup':
->    include/linux/timer.h:159:30: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
->      159 |         __setup_timer(timer, (TIMER_FUNC_TYPE)callback,
->          |                              ^
->    include/linux/timer.h:126:39: note: in definition of macro '__setup_timer'
->      126 |                 (_timer)->function = (_fn);                             29-      |                                       ^~~
->    include/linux/timer.h: In function 'timer_setup_on_stack':
->    include/linux/timer.h:167:39: warning: cast between incompatible function types from 'void (*)(struct timer_list *)' to 'void (*)(long unsigned int)' [-Wcast-function-type]
->      167 |         __setup_timer_on_stack(timer, (TIMER_FUNC_TYPE)callback,
->          |                                       ^
->    include/linux/timer.h:133:39: note: in definition of macro '__setup_timer_on_stack'
->      133 |                 (_timer)->function = (_fn);                             36-      |                                       ^~~
->    drivers/video/fbdev/amifb.c: In function 'ami_decode_var':
->    drivers/video/fbdev/amifb.c:1127:23: warning: variable 'vtotal' set but not used [-Wunused-but-set-variable]
->     1127 |         u_int htotal, vtotal;
->          |                       ^~~~~~
->    drivers/video/fbdev/amifb.c:1127:15: warning: variable 'htotal' set but not used [-Wunused-but-set-variable]
->     1127 |         u_int htotal, vtotal;
->          |               ^~~~~~
->    drivers/video/fbdev/amifb.c: In function 'ami_get_var_cursorinfo':
->    drivers/video/fbdev/amifb.c:1848:19: warning: variable 'alloc' set but not used [-Wunused-but-set-variable]
->     1848 |         int size, alloc;
->          |                   ^~~~~
->    drivers/video/fbdev/amifb.c: In function 'amifb_pan_display':
->    drivers/video/fbdev/amifb.c:2540:34: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
->     2540 |                 if (var->yoffset < 0 ||
->          |                                  ^
->    drivers/video/fbdev/amifb.c: At top level:
->    include/linux/module.h:131:13: warning: 'init_module' specifies less restrictive attribute than its target 'amifb_driver_init': 'cold' [-Wmissing-attributes]
->      131 |         int init_module(void) __attribute__((alias(#initfn)));
->          |             ^~~~~~~~~~~
->    include/linux/platform_device.h:251:1: note: in expansion of macro 'module_init'
->      251 | module_init(__platform_driver##_init); 58-      | ^~~~~~~~~~~
->    drivers/video/fbdev/amifb.c:3786:1: note: in expansion of macro 'module_platform_driver_probe'
->     3786 | module_platform_driver_probe(amifb_driver, amifb_probe);
->          | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    In file included from drivers/video/fbdev/amifb.c:53:
->    drivers/video/fbdev/amifb.c:3786:30: note: 'init_module' target declared here
->     3786 | module_platform_driver_probe(amifb_driver, amifb_probe);
->          |                              ^~~~~~~~~~~~
->    include/linux/platform_device.h:246:19: note: in definition of macro 'module_platform_driver_probe'
->      246 | static int __init __platform_driver##_init(void) 68-      |                   ^~~~~~~~~~~~~~~~~
->    include/linux/module.h:137:14: warning: 'cleanup_module' specifies less restrictive attribute than its target 'amifb_driver_exit': 'cold' [-Wmissing-attributes]
->      137 |         void cleanup_module(void) __attribute__((alias(#exitfn)));
->          |              ^~~~~~~~~~~~~~
->    include/linux/platform_device.h:256:1: note: in expansion of macro 'module_exit'
->      256 | module_exit(__platform_driver##_exit);
->          | ^~~~~~~~~~~
->    drivers/video/fbdev/amifb.c:3786:1: note: in expansion of macro 'module_platform_driver_probe'
->     3786 | module_platform_driver_probe(amifb_driver, amifb_probe);
->          | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/video/fbdev/amifb.c:3786:30: note: 'cleanup_module' target declared here
->     3786 | module_platform_driver_probe(amifb_driver, amifb_probe);
->          |                              ^~~~~~~~~~~~
->    include/linux/platform_device.h:252:20: note: in definition of macro 'module_platform_driver_probe'
->      252 | static void __exit __platform_driver##_exit(void) 83-      |                    ^~~~~~~~~~~~~~~~~
->    drivers/video/fbdev/amifb.c:2344:19: warning: 'amifb_setup' defined but not used [-Wunused-function]
->     2344 | static int __init amifb_setup(char *options)
->          |                   ^~~~~~~~~~~
 > 
-> vim +3375 drivers/video/fbdev/amifb.c
-> 
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3334  
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3335  
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3336  static void amifb_imageblit(struct fb_info *info, const struct fb_image *image)
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3337  {
-> 423a53086ce409 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3338  	struct amifb_par *par = info->par;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3339  	int x2, y2;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3340  	unsigned long *dst;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3341  	int dst_idx;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3342  	const char *src;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3343  	u32 dx, dy, width, height, pitch;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3344  
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3345  	/*
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3346  	 * We could use hardware clipping but on many cards you get around
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3347  	 * hardware clipping by writing to framebuffer directly like we are
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3348  	 * doing here.
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3349  	 */
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3350  	x2 = image->dx + image->width;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3351  	y2 = image->dy + image->height;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3352  	dx = image->dx;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3353  	dy = image->dy;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3354  	x2 = x2 < info->var.xres_virtual ? x2 : info->var.xres_virtual;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3355  	y2 = y2 < info->var.yres_virtual ? y2 : info->var.yres_virtual;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3356  	width  = x2 - dx;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3357  	height = y2 - dy;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3358  
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3359  	if (image->depth == 1) {
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3360  		dst = (unsigned long *)
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3361  			((unsigned long)info->screen_base & ~(BYTES_PER_LONG - 1));
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3362  		dst_idx = ((unsigned long)info->screen_base & (BYTES_PER_LONG - 1)) * 8;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3363  		dst_idx += dy * par->next_line * 8 + dx;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3364  		src = image->data;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3365  		pitch = (image->width + 7) / 8;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3366  		while (height--) {
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3367  			expand_one_line(info->var.bits_per_pixel,
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3368  					par->next_plane, dst, dst_idx, width,
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3369  					src, image->bg_color,
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3370  					image->fg_color);
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3371  			dst_idx += par->next_line * 8;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3372  			src += pitch;
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3373  		}
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3374  	} else {
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21 @3375  		c2p_planar(info->screen_base, image->data, dx, dy, width,
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3376  			   height, par->next_line, par->next_plane,
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3377  			   image->width, info->var.bits_per_pixel);
-> ^1da177e4c3f41 drivers/video/amifb.c Linus Torvalds     2005-04-16  3378  	}
-> ^1da177e4c3f41 drivers/video/amifb.c Linus Torvalds     2005-04-16  3379  }
-> f1cbb17ac73993 drivers/video/amifb.c Geert Uytterhoeven 2011-11-21  3380  
-> 
-> :::::: The code at line 3375 was first introduced by commit
-> :::::: f1cbb17ac73993225402d7e40a0694c502570876 fbdev/amifb: Reorder functions to remove forward declarations
-> 
-> :::::: TO: Geert Uytterhoeven <geert@linux-m68k.org>
-> :::::: CC: Florian Tobias Schandinat <FlorianSchandinat@gmx.de>
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+
+
+
+
