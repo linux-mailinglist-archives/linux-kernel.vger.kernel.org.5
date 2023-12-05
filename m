@@ -2,163 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 502018043DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 024158043E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343793AbjLEBQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 20:16:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
+        id S1343841AbjLEBSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 20:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbjLEBQv (ORCPT
+        with ESMTP id S234803AbjLEBSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 20:16:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C109ED7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:16:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701739016; x=1733275016;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=tUZHShn/KG6iKGAUA964vQfA/yq0nJLWpYHhbTjGRws=;
-  b=Z8gDM4uCX2gb6aMzBsIj4Q9pySxb6diZMExxx6pzvaik3kMIyniipXf7
-   iJTE5BDFhw2USHW8a6tKkMDCboTRa3pzs/vYeXr8wcSPCuw8zka7PaNRO
-   GGSjpHgWcBnrLYMKK5CbyEOoGMDL57oaMyTy4vDTVr6BEnhzBRYmapSZJ
-   BExJ6gQWh2qP/XS1mJEmtzq4KRAOWTwvkyRWgDDU0YncM6e6h6O0L/xLH
-   J+2tPKY8UevwRCQjaSqEnVp1zPT74ZB+KhM/0XNlmyzW6y0RxDc57jztS
-   NMLEzZlK4/6dvqfRPCEozGQgWOpGd+KfUlafRzZPCuHELotUZtYoWcb8L
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="458145355"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="458145355"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:16:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1018038872"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="1018038872"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 17:16:55 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 17:16:54 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 17:16:54 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 17:16:54 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L9ILORWcCo8YLlDBkIROGJry/ckjfpi2XAuMVKxIEaddaPEscRnfXR+MnL4P6H0QzHPjusQsWNhttQlzkHJ8krMOrJ1iKE+EZLtswLwVvv9m2O9QQ8ouwFQF17pKJUXSyh8s9P4RpYJZ1Gbr0DeM7TD947RgFVfCj59/jX1+ETH2+gii5Ipj8SV2gs95gCvmFyttLWI8FWvyBsrLu7iNvh0onqgri0GAEWNUbQmBV0pz+68hLo3WDI83JymulplxKqGMwW3rb7mvBiV8Tab4TM9kwIsxaMxg1W4AveFvUZLFzQng5wR7axTzYMX112VDAd8nKYI2wbJE+mhCFXh6dA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y6Q8PyAOy9mFlkEWdsw6cUzAtI/ksX+aiH2K/5n5IUw=;
- b=BD05AHiCxyGs6648ek/teJ8lik6DQCiVYmETEWucQ93fqkVgn2MFeG4ahhrlpw2ztRRUNLNcVkeCZuUXy64qOENSXQXyVF6GauWm7gEo1OMHpgDkwyQJdfGei8MJkDymXRnVsm5hMt1uu4fWvZpDd6uH2wb6XBRYg6JjmAkVVnKEO5VGECSENRRd9/JNcUlF88ySMMV4NWbx/bLnpu7BYaBiyHF/UBXoi8ha8yz8EcEF32672huUF9tEYb9HlevqgABib6E9ZQyEe//SNmdlzyuPdJSmrl8ps3iij13INOzyRBnzPVmt6JPKO+1TgIQptuuzY30C1AdyewSwiVnOhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
- SJ2PR11MB7618.namprd11.prod.outlook.com (2603:10b6:a03:4cc::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
- 2023 01:16:51 +0000
-Received: from DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::f105:47dd:6794:6821]) by DM4PR11MB5373.namprd11.prod.outlook.com
- ([fe80::f105:47dd:6794:6821%4]) with mapi id 15.20.7046.033; Tue, 5 Dec 2023
- 01:16:51 +0000
-Date:   Tue, 5 Dec 2023 02:16:48 +0100
-From:   =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
-To:     Maxime Ripard <mripard@kernel.org>
-CC:     <intel-xe@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        "Michal Wajdeczko" <michal.wajdeczko@intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Javier Martinez Canillas" <javierm@redhat.com>,
-        =?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Subject: Re: [PATCH 2/2] drm/tests: managed: Add a simple test for
- drmm_managed_release
-Message-ID: <5ec7lc2cyrfchpudujcbhlka6oqjmaxc24oebzccge3733tugp@iutnntppwzk4>
-References: <20231129221412.1180549-1-michal.winiarski@intel.com>
- <20231129221412.1180549-3-michal.winiarski@intel.com>
- <3sio7356dxi5nbld2eupih3rzazvef4ebusrpdrhabnpg7pns4@5zxfnd4az4li>
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3sio7356dxi5nbld2eupih3rzazvef4ebusrpdrhabnpg7pns4@5zxfnd4az4li>
-X-ClientProxiedBy: WA2P291CA0015.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1e::28) To DM4PR11MB5373.namprd11.prod.outlook.com
- (2603:10b6:5:394::7)
+        Mon, 4 Dec 2023 20:18:38 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB27CAF;
+        Mon,  4 Dec 2023 17:18:44 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3316bb1303bso3881382f8f.0;
+        Mon, 04 Dec 2023 17:18:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701739123; x=1702343923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7jf8j7x8KL5+FXfau2GI8WqRGtfi/ioqnUgDBbWrCwc=;
+        b=dRXiJkmMgX1yxKSrYMUOs+SPIgbQUY6dIghjFId5ulat6UOA4RkhMxc8WWqlPjT+Tu
+         PRtFxUUYvoKqwRsFygr2Xg2YyAuTyBrDvzDrtrdZLJTIk2w6QaIDzEZxbOVGu5pGNKl+
+         AaixBZtiyYkbRD1V5DzH+nR6VKQ6qtCnl5pCuwg8a6EdddLRnVbZ20CxeRmh1oMbwdhu
+         s0y4v4/U7vTUMjV/w7D67ZVAzH/Rue5SAHW92TNSDDk/vko1XpbMmv7JbllaVy6vkeR9
+         MMn7VoGYzNjjGLERnu08MGssvtMxqAFde4c/lRSEdkhj+43i/vzDiI6Vl+Gr+q/7r1q1
+         tCQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701739123; x=1702343923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7jf8j7x8KL5+FXfau2GI8WqRGtfi/ioqnUgDBbWrCwc=;
+        b=oK5F5Kkfiq9l7d6DVdTSyHV4+lpdKKr4YKsmgFE9C7xYruzzcdno7K2rKQDI/gSgFL
+         B7JwXjJDPsL5mUUvWrBFUBghsegjNMUKYYeWBTDkh5MHPQCZsk5KR9pGwcOzJ2VxUpt8
+         Ao9DmvLIlkIF0ETCdM14bDT+ymtMWVfWbzhZaVxghn6QAH6eEt8e+AJ7Bs1a4muOIvXs
+         Cs3Kn0EH58KaZ6rpGaBI9gPHMLucVNAQ9MnG6vBusp7cs/Z2/sKlTjvYpw6Lz/9NIZxS
+         Ov7XrX8vMymFr3PCVQn6/irSwsh5yttOSVmvsL5SaVxMLpzRKCJKhQetUkB/4AhFW/cA
+         aGxw==
+X-Gm-Message-State: AOJu0Yz0LvDNEWrDgNTG9v9IO3FRv4R/zjSyKvz7P/rRJFc2hc4q5ehT
+        HgdL1depcnAvbaurrJI7Ub3rDthw90DjSLtJRxI=
+X-Google-Smtp-Source: AGHT+IGEc+RU3aLyo6G6cXdlO/5FlaIRSUm657pq4pWBz4aI+C9RHW2IiSzyw85KCLQaAJWMQI8ODuDVbfqFALf2YSA=
+X-Received: by 2002:adf:e78a:0:b0:333:2fd2:812c with SMTP id
+ n10-20020adfe78a000000b003332fd2812cmr3734853wrm.73.1701739122768; Mon, 04
+ Dec 2023 17:18:42 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|SJ2PR11MB7618:EE_
-X-MS-Office365-Filtering-Correlation-Id: cc934d0d-e1b4-4fbd-c648-08dbf52fdc7f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KdHY8Q9lbYWRwt2c96WjLkwFMlHQWVTQQdBZelhXtD3+bbj9tiZUhiv+T4F3GngvRM4O5TGxhzT9cSmxgzuo6qdeW+SMxxqNE+OhwurGRIchJarMFzpXtt3NPWS44mZ/161sJNZ89RBCY4yxxoIMy5W7KGY8gn/JjA8bOmIEWj4EFQYspR4l+9B0ldUkTsqd39B+3VFIT2boSNhb77Tgs3Za84dxlbvAWcHWApFnCBr5icBeMxnnScKMCkgscIr6kJpb4GQ9JzvjRSjNIDXaiJbMS9vH/AMVR9fu62FkMub8PVmZbm/BC6VtSSL75sTR62iEhCO8xNndUAv+UWZtmQNyV4zuPW6K8YshwZxjfKBDnnocbi2Kof9mGXZPEyprApoinkeBgUJYOS0ctLjSU1jFts1aeAdeKIjDwgFNc0KQprxVYC49HsmWeojNy3BkS+5nwcR3L9ixqhGWhY3wJTerTqRFw9+VfCTx8qZM42AKz2hnxeHc5BhTpsa3Bhi7hJ9LWW85bI4x1ZCf8uV/saqLPfXdMu3M4UaW+lDEF5U=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(39860400002)(346002)(376002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(5660300002)(86362001)(4326008)(8676002)(8936002)(2906002)(7416002)(33716001)(41300700001)(6512007)(9686003)(6506007)(82960400001)(6666004)(83380400001)(6486002)(478600001)(26005)(38100700002)(316002)(54906003)(6916009)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkJyWDBKbTdRTm5TdE1pS2d3QTlYb2U1OXJmWC85eHR1cW55MDF1SEtQQkdY?=
- =?utf-8?B?VFdSVStzZDVNSU9TYThMNGVGaUowbU5QWUMwYnlTb2ttMjN4alBmdlZGZHJL?=
- =?utf-8?B?elFQL2pwSDZjb2xzanI5MGU3dWl1UXkxaU95UnN3M0dUWEx4ekovZjA1blBT?=
- =?utf-8?B?R2JUeWlmRXJhMnZodFQ5ZC9vOVJKR0gyU1dDSFovRHBxVTVSemtESk1BRVpL?=
- =?utf-8?B?VUtoTnB3SjhKekFlY3RMWkF4ZHFkdm0rVy9CSzNESkswcnVyMHJONzJjcmkz?=
- =?utf-8?B?NTV5L2Y0Y2lld1E3TkFnQmh5Q04zREFaS1NHWEhFOUtLSDJYN1EzN0YxTjgy?=
- =?utf-8?B?YVhxWGFsdGxyTDZheFBPV2UzZU5sa0RKUEZGMU5FOWZPSmxLYk41ZitwMnl5?=
- =?utf-8?B?Qi9aMituTWZwQktFZWFoMGRiYjdUVkJjclV6R0tjbkFwSE9tdjVWellTVDFQ?=
- =?utf-8?B?SkQ2T3NKU1dlZHFVWUZGYXQwVk9pTHVxZHZDUFM1ZVVsU0lvOFhyZEtGR0FW?=
- =?utf-8?B?LzJ1SzFadUVwUHR5a1lpUE11ZDNXVDF2a09UVWUwblZRek91cFB6Ym13MXc4?=
- =?utf-8?B?MXJxZ0srTmh2UjZKU2xtd0ZUeStiTzRRUEdWMkd4b1ZQU21zNnV6cVZCVFVJ?=
- =?utf-8?B?Q1VzaS84anlYSnZNSE5YNDFqYlJrL0EvZVNtYWlPUmliTGpNeTdCSTVlZ0lS?=
- =?utf-8?B?cTFNWC9RN0hoSy9sQk9aZGxOVU1GbmcwTDVBSUdJKzlRV3UxM29mNUpsaUpU?=
- =?utf-8?B?UGRyUXY1VjR4QWdSSEtHKzB0UmlmMmFHUlpkK0FWb3crUmJtTFY4RUJiYUs2?=
- =?utf-8?B?S29sYVMra3RBajZzcmhiZ3lsd3BISDhESmhidHd3NDBWRzZsVUh5b3dwVXg5?=
- =?utf-8?B?MGNVdzN1ZWI3MFpZRWZzN2Rna1hIQlg1VCtTVkt2ZmU4eHcvNTI2U0FHNUNX?=
- =?utf-8?B?cU13M0lyZnZLL2pYcXU2RVVjQW45bjNMTXpIVGR1Y1Zwc3Rja0ZRdjdwV1Bq?=
- =?utf-8?B?NHVJRGNsamNmc0ZwWEl0MFlpd0U0RmgxRko2NU1YZ2FLSWEyaUV1MXJudExT?=
- =?utf-8?B?ZGliNzFXMHYvV1V1dTNBNWZ6cTgrell6Nk1QZ1hrNDc1dmhuaDVYTk8zTTJK?=
- =?utf-8?B?MEl4dFloUHRLZ1c5MFQyQnZTS2FMblJ4Zk54cVBZTjFKZUhiNkhVcE01aFJ4?=
- =?utf-8?B?aVhKT25La2lNL3Z4S1ozL0hBaWFBdEVnTllTcUlwemdHdWJhcENueWMxcGpS?=
- =?utf-8?B?UVhiaUNpNUN1alJoOTFXSFN1VEJwQnVKNUY4UFBaVlFJMVBHeENVZ0dnLzRi?=
- =?utf-8?B?Z0FUbUp2SUI0cmFJOWsxWlZKdFV1ditiSnlpYTV5Q3ZFZ0wxWnNnZTVOTmRs?=
- =?utf-8?B?TThxRXNrSkFXK1hrSzJpb2VHUVNRUWdNZTgxcWdibGZEeURWNDkzZlZIMjd5?=
- =?utf-8?B?dlFQU0RtTHIwbElxZUx1cFhXN3EyQ0hiTHBFMzc0SVAzWGlOL3dYTlRqR1Vl?=
- =?utf-8?B?NzVhY2dxS3owVEo5eW5pcU5jR0FVMm1vR2plTFlPbDEzNmNOSllwQUx4Wldi?=
- =?utf-8?B?cG9ZTmxZUS9FcWx3YzJWN1o4aEw5Q2Nyb3hXZUY3cXNWNHgxQ2Y0Y3pwMVRo?=
- =?utf-8?B?VWgvYkoxRGVGRTVjZUdQcDlEM2ZmOStsOEIydGhzSzNaQUlULzhNUldrZTJl?=
- =?utf-8?B?WXZCRlpNNHZ4MWxEZ25zaDJHZ3pybUF1TEcvSTNWOWIvTU5CZElISEF0c1ZY?=
- =?utf-8?B?YlFLcEdGWjQ4eXduU2tYRnN0SzdvdHRqdWV4V0VhdENSRlNuZDdIR1JtM1U1?=
- =?utf-8?B?VDlGandWN2RLMWhIRVBiMklPUi9OS3M1VmRhQXk5ZXRFRmFFL2Y5c3ZCcFdx?=
- =?utf-8?B?akUwRW41VThhM2NNK010b1JtVVJWbnh0VTlyNEdua1p2eENhL214Zm1abWJ5?=
- =?utf-8?B?L1hHdEJqNmVWRTNrZ1ovVUhJRnhrNGRNSFpwTG1sT0dEUi83TExOR2wrc29k?=
- =?utf-8?B?YUhnU2R4WUZwOFdBWHNudldJL21yRjgwN3ZnN3NCZmdHa0tJN0JjZ0lMbXh6?=
- =?utf-8?B?MmppUk8vVTNNQVducTJpMjNVNkVQV3VqSHhmQVhaWUZrY0dBM0NrUHZWN3V3?=
- =?utf-8?B?R2xDcjJzYVpvSmxjTWZERjJtQzBqUjdTdkJKWmxoSGtLTEEwU3ROQ3l1U25M?=
- =?utf-8?B?dnc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc934d0d-e1b4-4fbd-c648-08dbf52fdc7f
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 01:16:51.6514
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D2aBqDb7AsVs7fEvbI63flpnLciXifWmIG8Op0ruZNNwjKn1Yl9tbJOeZ4QrLejPS4vsoXVDPn1/UyNy+/dXELfO6SEf2TO+tbAi9rarMbE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7618
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20231130133630.192490507@infradead.org> <20231130134204.136058029@infradead.org>
+ <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
+ <20231204091334.GM3818@noisy.programming.kicks-ass.net> <20231204111128.GV8262@noisy.programming.kicks-ass.net>
+ <20231204125239.GA1319@noisy.programming.kicks-ass.net> <ZW4LjmUKj1q6RWdL@krava>
+ <20231204181614.GA7299@noisy.programming.kicks-ass.net> <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 4 Dec 2023 17:18:31 -0800
+Message-ID: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+        Song Liu <songliubraving@meta.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Joao Moreira <joao@overdrivepizza.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -166,126 +104,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 09:38:35AM +0100, Maxime Ripard wrote:
-> Hi,
-> 
-> Thanks for creating a test for that, that's really appreciated :)
-> 
-> On Wed, Nov 29, 2023 at 11:14:12PM +0100, Michał Winiarski wrote:
-> > Add a simple test that checks whether the action is indeed called right
-> > away and that it is not called on the final drm_dev_put().
-> > 
-> > Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
-> > ---
-> >  drivers/gpu/drm/tests/drm_managed_test.c | 65 ++++++++++++++++++------
-> >  1 file changed, 50 insertions(+), 15 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/tests/drm_managed_test.c
-> > index 1652dca11d30c..a645ea42aee56 100644
-> > --- a/drivers/gpu/drm/tests/drm_managed_test.c
-> > +++ b/drivers/gpu/drm/tests/drm_managed_test.c
-> > @@ -12,6 +12,8 @@
-> >  #define TEST_TIMEOUT_MS	100
-> >  
-> >  struct managed_test_priv {
-> > +	struct drm_device *drm;
-> > +	struct device *dev;
-> >  	bool action_done;
-> >  	wait_queue_head_t action_wq;
-> >  };
-> > @@ -26,42 +28,75 @@ static void drm_action(struct drm_device *drm, void *ptr)
-> >  
-> >  static void drm_test_managed_run_action(struct kunit *test)
-> >  {
-> > -	struct managed_test_priv *priv;
-> > -	struct drm_device *drm;
-> > -	struct device *dev;
-> > +	struct managed_test_priv *priv = test->priv;
-> >  	int ret;
-> >  
-> > -	priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
-> > -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv);
-> > -	init_waitqueue_head(&priv->action_wq);
-> > +	ret = drmm_add_action_or_reset(priv->drm, drm_action, priv);
-> > +	KUNIT_EXPECT_EQ(test, ret, 0);
-> >  
-> > -	dev = drm_kunit_helper_alloc_device(test);
-> > -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
-> > +	ret = drm_dev_register(priv->drm, 0);
-> > +	KUNIT_ASSERT_EQ(test, ret, 0);
-> > +
-> > +	drm_dev_unregister(priv->drm);
-> > +	drm_kunit_helper_free_device(test, priv->dev);
-> 
-> I think we'll need two patches here, one to convert to having an init
-> function, and one to actually add the new test, it's pretty confusing as
-> it is.
-> 
-> >  
-> > -	drm = __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0, DRIVER_MODESET);
-> > -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
-> > +	ret = wait_event_interruptible_timeout(priv->action_wq, priv->action_done,
-> > +					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-> > +	KUNIT_EXPECT_GT(test, ret, 0);
-> > +}
-> >  
-> > -	ret = drmm_add_action_or_reset(drm, drm_action, priv);
-> > +static void drm_test_managed_release_action(struct kunit *test)
-> > +{
-> > +	struct managed_test_priv *priv = test->priv;
-> > +	int ret;
-> > +
-> > +	ret = drmm_add_action_or_reset(priv->drm, drm_action, priv);
-> >  	KUNIT_EXPECT_EQ(test, ret, 0);
-> >  
-> > -	ret = drm_dev_register(drm, 0);
-> > +	ret = drm_dev_register(priv->drm, 0);
-> >  	KUNIT_ASSERT_EQ(test, ret, 0);
-> >  
-> > -	drm_dev_unregister(drm);
-> > -	drm_kunit_helper_free_device(test, dev);
-> > +	drmm_release_action(priv->drm, drm_action, priv);
-> > +	KUNIT_EXPECT_TRUE(test, priv->action_done);
-> > +	priv->action_done = false;
-> > +
-> > +	drm_dev_unregister(priv->drm);
-> > +	drm_kunit_helper_free_device(test, priv->dev);
-> >  
-> >  	ret = wait_event_interruptible_timeout(priv->action_wq, priv->action_done,
-> >  					       msecs_to_jiffies(TEST_TIMEOUT_MS));
-> > -	KUNIT_EXPECT_GT(test, ret, 0);
-> > +	KUNIT_EXPECT_EQ(test, ret, 0);
-> > +}
-> > +
-> > +static int drm_managed_test_init(struct kunit *test)
-> > +{
-> > +	struct managed_test_priv *priv;
-> > +
-> > +	priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv);
-> > +	init_waitqueue_head(&priv->action_wq);
-> 
-> Also, I know that it was there before, but I'm not sure it's valid from
-> a lifetime point of view. Or at least, we have to think hard enough
-> about it to just remove that construct
-> 
-> > +	priv->dev = drm_kunit_helper_alloc_device(test);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
-> > +
-> > +	priv->drm = __drm_kunit_helper_alloc_drm_device(test, priv->dev, sizeof(*priv->drm),
-> > +							0, DRIVER_MODESET);
-> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->drm);
-> 
-> For example by storing the drm_device struct in the priv structure
-> directly, and thus everything will just work out.
+On Mon, Dec 4, 2023 at 10:34=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+>
+> TL;DR, I think this is a pre-existing problem with kCFI + eBPF and not
+> caused by my patches.
 
-Sure, makes sense, I'll include it in the patch that moves device alloc
-to .init().
+It's an old issue indeed.
 
-Thanks,
--Michał
+To workaround I just did:
++__nocfi
+ static long bpf_for_each_array_elem(struct bpf_map *map,
+bpf_callback_t callback_fn,
+                                    void *callback_ctx, u64 flags)
 
-> 
-> Maxime
+to proceed further.
+test_progs passed few more tests, but then it hit:
 
+[   13.965472] CFI failure at tcp_set_ca_state+0x51/0xd0 (target:
+0xffffffffa02050d6; expected type: 0x3a47ac32)
+[   13.966351] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+[   13.966752] CPU: 3 PID: 2142 Comm: test_progs Tainted: G
+O       6.7.0-rc3-00705-g421defd1bea0-dirty #5246
+[   13.967552] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[   13.968421] RIP: 0010:tcp_set_ca_state+0x51/0xd0
+[   13.968751] Code: 70 40 ff 84 c0 74 49 48 8b 83 60 07 00 00 4c 8b
+58 10 4d 85 db 74 1b 40 0f b6 f5 48 89 df 41 ba ce 53 b8 c5 45 03 53
+f1 74 02 <0f> 0b 2e e8 c7 ee 31 00 0f b6 83 90 07 00 00 40 80 e5 1f 24
+e0 40
+[   13.975460] Call Trace:
+[   13.975640]  <IRQ>
+[   13.975791]  ? __die_body+0x68/0xb0
+[   13.976062]  ? die+0xa4/0xd0
+[   13.976273]  ? do_trap+0xa5/0x180
+[   13.976513]  ? tcp_set_ca_state+0x51/0xd0
+[   13.976800]  ? do_error_trap+0xb6/0x100
+[   13.977076]  ? tcp_set_ca_state+0x51/0xd0
+[   13.977360]  ? tcp_set_ca_state+0x51/0xd0
+[   13.977644]  ? handle_invalid_op+0x2c/0x40
+[   13.977934]  ? tcp_set_ca_state+0x51/0xd0
+[   13.978222]  ? exc_invalid_op+0x38/0x60
+[   13.978497]  ? asm_exc_invalid_op+0x1a/0x20
+[   13.978798]  ? tcp_set_ca_state+0x51/0xd0
+[   13.979087]  tcp_v6_syn_recv_sock+0x45c/0x6c0
+[   13.979401]  tcp_check_req+0x497/0x590
+[   13.979671]  tcp_v6_rcv+0x728/0xce0
+[   13.979923]  ? raw6_local_deliver+0x63/0x350
+[   13.980257]  ip6_protocol_deliver_rcu+0x2f6/0x560
+[   13.980596]  ? ip6_input_finish+0x59/0x140
+[   13.980887]  ? NF_HOOK+0x29/0x1d0
+[   13.981136]  ip6_input_finish+0xcb/0x140
+[   13.981415]  ? __cfi_ip6_input_finish+0x10/0x10
+[   13.981738]  NF_HOOK+0x177/0x1d0
+[   13.981970]  ? rcu_is_watching+0x10/0x40
+[   13.982279]  ? lock_release+0x35/0x2e0
+[   13.982547]  ? lock_release+0x35/0x2e0
+[   13.982822]  ? NF_HOOK+0x29/0x1d0
+[   13.983064]  ? __cfi_ip6_rcv_finish+0x10/0x10
+[   13.983409]  NF_HOOK+0x177/0x1d0
+[   13.983664]  ? ip6_rcv_core+0x50/0x6c0
+[   13.983956]  ? process_backlog+0x132/0x290
+[   13.984264]  ? process_backlog+0x132/0x290
+[   13.984557]  __netif_receive_skb+0x5c/0x160
+[   13.984856]  process_backlog+0x19e/0x290
+[   13.985140]  __napi_poll+0x3f/0x1f0
+[   13.985402]  net_rx_action+0x193/0x330
+[   13.985672]  __do_softirq+0x14d/0x3ea
+[   13.985963]  ? do_softirq+0x7f/0xb0
+[   13.986243]  ? __dev_queue_xmit+0x5b/0xd50
+[   13.986563]  ? ip6_finish_output2+0x222/0x7a0
+[   13.986906]  do_softirq+0x7f/0xb0
 
+The stack trace doesn't have any bpf, but it's a bpf issue too.
+Here tcp_set_ca_state() calls
+icsk->icsk_ca_ops->set_state(sk, ca_state);
+which calls bpf prog via bpf trampoline.
+
+re: bpf_jit_binary_pack_hdr().
+
+since cfi_mode is __ro_after_init we don't need to waste
+cfi_offset variable in prog->aux and in jit_context.
+
+How about
++int get_cfi_offset(void)
++{
++       switch (cfi_mode) {
++       case CFI_FINEIBT:
++               return 16;
++       case CFI_KCFI:
++#ifdef CONFIG_CALL_PADDING
++               return 16;
++#else
++               return 5;
++#endif
++       default:
++               return 0;
++       }
++}
++
+ struct bpf_binary_header *
+ bpf_jit_binary_pack_hdr(const struct bpf_prog *fp)
+ {
+-       unsigned long real_start =3D (unsigned long)fp->bpf_func;
++       unsigned long real_start =3D (unsigned long)fp->bpf_func -
+get_cfi_offset();
+
+and have __weak version of get_cfi_offset() in bpf/core.c
+that returns 0 and non-weak in arch/x86 like above?
+
+Similarly remove prog_offset from jit_context and undo:
+
+ctx->prog_offset =3D emit_prologue(...)
+to keep it as 'static void emit_prologue'
+
+since cfi offset is fixed at early boot and the same for all progs.
+
+Separately we need to deal with bpf_for_each_array_elem()
+which doesn't look easy.
+And fix tcp_set_ca_state() as well (which is even harder).
+
+Just to see where places like these are I did:
++__nocfi
+ BPF_CALL_4(bpf_loop, u32, nr_loops, void *, callback_fn, void *, callback_=
+ctx,
++__nocfi
+ static long bpf_for_each_hash_elem(struct bpf_map *map,
+bpf_callback_t callback_fn,
++__nocfi
+ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
++__nocfi
+ static int __bpf_rbtree_add(struct bpf_rb_root *root,
++__nocfi
+ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
++__nocfi
+ void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
++__nocfi
+ void tcp_init_congestion_control(struct sock *sk)
++__nocfi
+ void tcp_enter_loss(struct sock *sk)
++__nocfi
+ static void tcp_cong_avoid(struct sock *sk, u32 ack, u32 acked)
++__nocfi
+ static inline void tcp_in_ack_event(struct sock *sk, u32 flags)
+
+and more... Which is clearly not a direction to go.
+
+Instead of annotating callers is there a way to say that
+all bpf_callback_t calls are nocfi?
+
+I feel the patches scratched the iceberg.
