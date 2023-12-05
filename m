@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADF7804CD1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E73E6804CE4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344867AbjLEIns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:43:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36530 "EHLO
+        id S1344875AbjLEIrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:47:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjLEInq (ORCPT
+        with ESMTP id S229980AbjLEIrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:43:46 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F68D3;
-        Tue,  5 Dec 2023 00:43:52 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B58hKGH12733923, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B58hKGH12733923
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Dec 2023 16:43:21 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Tue, 5 Dec 2023 16:43:21 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Tue, 5 Dec 2023 16:43:20 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Tue, 5 Dec 2023 16:43:20 +0800
-From:   =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support for Realtek DHC SoCs
-Thread-Topic: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support
- for Realtek DHC SoCs
-Thread-Index: AQHaGXMHJnbDooY4VkyEcMH4aisPjrCBFAaAgAG3OTCAE2RqMIABC34AgACK6PD//42bAIADJhOw
-Date:   Tue, 5 Dec 2023 08:43:20 +0000
-Message-ID: <f27cb5d8943e44b597a13d7655edf4d0@realtek.com>
-References: <20231117162709.1096585-1-james.tai@realtek.com>
- <20231117162709.1096585-2-james.tai@realtek.com>
- <c3a98e2c-ba62-4798-a0d0-a8bc1fe5bb6b@linaro.org>
- <7959920acf004f3cb8072de1e17439fa@realtek.com>
- <e1490203387d4c48a5f8c4040ece038a@realtek.com>
- <6250c57b-6d38-4085-9a79-58e4e5ed1e3d@linaro.org>
- <cf2f9fd124514cb9832e942e16b8fa6e@realtek.com>
- <5134d2c7-b499-400d-bec8-ae0de1eff7db@linaro.org>
-In-Reply-To: <5134d2c7-b499-400d-bec8-ae0de1eff7db@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [101.12.45.26]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
+        Tue, 5 Dec 2023 03:47:18 -0500
+X-Greylist: delayed 18583 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 00:47:22 PST
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 053E4C0;
+        Tue,  5 Dec 2023 00:47:21 -0800 (PST)
+Received: from dinghao.liu$zju.edu.cn ( [10.190.70.5] ) by
+ ajax-webmail-mail-app4 (Coremail) ; Tue, 5 Dec 2023 16:44:48 +0800
+ (GMT+08:00)
+X-Originating-IP: [10.190.70.5]
+Date:   Tue, 5 Dec 2023 16:44:48 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Zhenyu Wang" <zhenyuw@linux.intel.com>
+Cc:     "Peter Zijlstra" <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        "Jiri Olsa" <jolsa@kernel.org>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        "Ian Rogers" <irogers@google.com>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Colin Ian King" <colin.i.king@gmail.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf/x86/uncore: fix a potential double-free in
+ uncore_type_init
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
+ 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <ZW7bWGy+ZhcBUo73@debian-scheme>
+References: <20231205032709.9525-1-dinghao.liu@zju.edu.cn>
+ <ZW7bWGy+ZhcBUo73@debian-scheme>
 Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Message-ID: <4e1e710a.1d65f.18c3926bb7d.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cS_KCgDHhtQA425l1FJOAA--.15055W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoTBmVsUQg4xgASsh
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQo+Pj4+Pj4+ICsgIGludGVycnVwdHMtZXh0ZW5kZWQ6DQo+Pj4+Pj4N
-Cj4+Pj4+PiBpbnRlcnJ1cHRzIGluc3RlYWQuDQo+Pj4+Pj4NCj4+Pj4+PiBBbnl3YXksIHlvdSBt
-dXN0IGRlc2NyaWJlIHRoZSBpdGVtcy4gV2h5IHRoaXMgaXMgbm90IGZpeGVkIGJ1dCBmbGV4aWJs
-ZT8NCj4+Pj4+PiBIYXJkd2FyZSBoYXMgZGlmZmVyZW50IG51bWJlciBvZiBwaW5zPyBUaGF0J3Mg
-dW5saWtlbHkuDQo+Pj4+Pj4NCj4+Pj4+IEkgd2lsbCByZXBsYWNlIGl0IHdpdGggJ2ludGVycnVw
-dHMnLiBTaW5jZSBvdXIgSW50ZXJydXB0IGNvbnRyb2xsZXINCj4+Pj4+IGFyY2hpdGVjdHVyZSBk
-b2Vzbid0IGludm9sdmUgbXVsdGlwbGUgaW50ZXJydXB0IHNvdXJjZXMsIHVzaW5nICdpbnRlcnJ1
-cHRzJw0KPj4+IHNob3VsZCBzdWZmaWNlLg0KPj4+Pj4NCj4+Pj4NCj4+Pj4gRHVlIHRvIGNoYW5n
-ZXMgaW4gaGFyZHdhcmUgZGVzaWduLCBzb21lIHBlcmlwaGVyYWwgaW50ZXJydXB0cyBwaW4NCj4+
-Pj4gaW5pdGlhbGx5DQo+Pj4gY29ubmVjdGVkIHRvIHRoZSBSZWFsdGVrIGludGVycnVwdCBjb250
-cm9sbGVyIHdlcmUgcmVkaXJlY3RlZCB0byB0aGUgR0lDLg0KPj4+PiBIb3dldmVyLCB0aGUgYXNz
-b2NpYXRlZCBmaWVsZHMgYW5kIHN0YXR1c2VzIGluIHRoZSBSZWFsdGVrIGludGVycnVwdA0KPj4+
-PiBjb250cm9sbGVyDQo+Pj4gcmVnaXN0ZXJzIHdlcmUgbm90IHJlbW92ZWQuDQo+Pj4+IEFzIGEg
-cmVzdWx0LCB0aGVzZSBpbnRlcnJ1cHRzIGNhbm5vdCBiZSBjbGVhcmVkIGJ5IHBlcmlwaGVyYWwN
-Cj4+Pj4gcmVnaXN0ZXIsIGFuZCB0aGVpcg0KPj4+IHN0YXR1cyBjbGVhcmluZyBpcyBzdGlsbCBu
-ZWVkaW5nIHRoZSBSZWFsdGVrIGludGVycnVwdCBjb250cm9sbGVyIGRyaXZlciB0bw0KPm1hbmFn
-ZS4NCj4+Pj4NCj4+Pj4gVGhhdCdzIHdoeSBmbGV4aWJpbGl0eSBpcyBuZWNlc3NhcnkuDQo+Pj4N
-Cj4+PiBUaGlzIGRvZXMgbm90IGV4cGxhaW4gd2h5IHRoaXMgaXMgbm90IGZpeGVkIHBlciB2YXJp
-YW50Lg0KPj4+DQo+Pg0KPj4gRG9lcyB0aGUgZGVmaW5pdGlvbiBvZiAiZml4ZWQiIHlvdSBtZW50
-aW9uZWQgcmVmZXIgdG8gZml4ZWQgaW50ZXJydXB0IHBpbnM/IElmDQo+PiBub3QsIGNvdWxkIHlv
-dSBwbGVhc2UgZ2l2ZSBtZSBhbiBleGFtcGxlIGFuZCBsZXQgbWUga25vdyB3aGF0IHlvdSBtZWFu
-IGJ5DQo+PiAiZml4ZWQiPw0KPg0KPk51bWJlciBvZiB0aGUgaW50ZXJydXB0cyBwZXIgZWFjaCBk
-ZXZpY2Ugb3IgdmFyaWFudCBzaG91bGQgYmUgc3RyaWN0bHkgZGVmaW5lZCwNCj5ub3QgdmFyaWFi
-bGUuDQoNClRoYW5rIHlvdSBmb3IgeW91ciBleHBsYW5hdGlvbi4NCg0KVGhlIERIQyBwbGF0Zm9y
-bXMgY29udGFpbiB0d28gaW50ZXJydXB0IGNvbnRyb2xsZXJzLCBlYWNoIGhhbmRsaW5nIHBlcmlw
-aGVyYWwgZGV2aWNlIGludGVycnVwdHMgaW4gdGhlIHR3byBwb3dlciBkb21haW5zLiANCldoaWxl
-IGVhY2ggaGFzIGEgZml4ZWQgSVJRIG51bWJlcnMsIHRoZSBzcGVjaWZpYyBJUlEgdmFyaWVzIGRl
-cGVuZGluZyBvbiB0aGUgcGxhdGZvcm0uDQoNCj5QbGVhc2Ugd3JhcCB5b3VyIGVtYWlscyBhY2Nv
-cmRpbmcgdG8gbWFpbCBuZXRpcXVldHRlLg0KDQpJIGFwb2xvZ2l6ZSBmb3IgbXkgcnVkZSB3YXkg
-b2YgYXNraW5nIHRoZSBxdWVzdGlvbi4gSSB3aWxsIGltcHJvdmUgbXkgZXhwcmVzc2lvbi4NCg0K
-VGhhbmsgZm9yIHlvdXIgZmVlZGJhY2suDQoNClJlZ2FyZHMsDQpKYW1lcw0K
+PiBPbiAyMDIzLjEyLjA1IDExOjI3OjA5ICswODAwLCBEaW5naGFvIExpdSB3cm90ZToKPiA+IFdo
+ZW4ga3phbGxvYyBmb3IgcG11c1tpXS5ib3hlcyBmYWlscywgd2Ugc2hvdWxkIGNsZWFuIHVwIHBt
+dXMKPiA+IHRvIHByZXZlbnQgbWVtbGVhay4gSG93ZXZlciwgd2hlbiBremFsbG9jIGZvciBhdHRy
+X2dyb3VwIGZhaWxzLAo+ID4gcG11cyBoYXMgYmVlbiBhc3NpZ25lZCB0byB0eXBlLT5wbXVzLCBh
+bmQgZnJlZWluZyB3aWxsIGJlIGRvbmUKPiA+IGxhdGVyIG9uIGJ5IHRoZSBjYWxsZXJzLiBUaGUg
+Y2hhaW4gaXM6IHVuY29yZV90eXBlX2luaXQgLT4KPiA+IHVuY29yZV90eXBlc19pbml0IC0+IHVu
+Y29yZV9wY2lfaW5pdCAtPiB1bmNvcmVfdHlwZXNfZXhpdCAtPgo+ID4gdW5jb3JlX3R5cGVfZXhp
+dC4gVGhlcmVmb3JlLCBmcmVlaW5nIHBtdXMgaW4gdW5jb3JlX3R5cGVfaW5pdAo+ID4gbWF5IGNh
+dXNlIGEgZG91YmxlLWZyZWUuIEZpeCB0aGlzIGJ5IHNldHRpbmcgdHlwZS0+cG11cyB0bwo+ID4g
+TlVMTCBhZnRlciBrZnJlZS4KPiAKPiBDaGFuZ2UgaXMgb2sgYnV0IHRoZSBjYWxsIHRyYWNlIHlv
+dSB3cm90ZSBoZXJlIGlzIHJldmVyc2VkIG9yIG1hbGZvcm1lZD8/Cj4gV2l0aCB0aGF0IGZpeGVk
+IG9yIGNsZWFyZWQuCj4gCgpUaGFua3MgZm9yIHlvdXIgYWR2aWNlLiBJIHdpbGwgZml4IGl0IGFu
+ZCByZXNlbmQgYSBuZXcgcGF0Y2ggc29vbi4KClJlZ2FyZHMsCkRpbmdoYW8K
