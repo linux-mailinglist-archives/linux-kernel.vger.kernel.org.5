@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F06804DDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1505A804DDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235652AbjLEJ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S235597AbjLEJ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235648AbjLEJ3F (ORCPT
+        with ESMTP id S235586AbjLEJ3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:29:05 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C88173C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:51 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-58d18c224c7so3305647eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:51 -0800 (PST)
+        Tue, 5 Dec 2023 04:29:07 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B569C199C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:28:54 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce3efb78e2so2545080b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:28:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701768530; x=1702373330; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1701768534; x=1702373334; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UrD2FGOwoOZDuE5NlOXPwH6yjK7drVhBh94o1xKypaI=;
-        b=bOXzYwyBELOoYAVRjQGwgE9CyCao25Sbz1BnHTwCjb5kHlveCYaDVmHgppZl/ejZu1
-         p9/a6ghaQeTFHyQKN67svefudVC8zg7XxmB33K8uGaEHBH/B4qvY7BOlVTqYivIOnw6q
-         0m8KIqsrVrOpg5PbUS+e0bThHxAWVMA68QzLfjAq1lu45k0j2gfU+KzjEAmy4C2bMzgE
-         KeBHPYIYI19K9KcNX+Te9SbRQ8ApqOUdIjEYh0BzC9OtKCUIhHtTLSuUKOS0DbqaG/n7
-         dr1IRoVT8tJgnV5dpnLuPIH/17Y6KO8p0iFLKNyJUKws7zB03iuS6dhIHpaMESbW2KDg
-         tnBw==
+        bh=04bzMED+CUiu/sEgfXg1lK1LfSki9LT72NWorxu5xx8=;
+        b=GDndvPgNBfCmP7vFGX5cQhgBpRTRIGqyq+AG/Jq1g0/WWjmF2z8tOuZ0L3e564seNY
+         Q2Sbo0AYCy+/4lyyPv4GsFsS7uete4IxzOJd46Z9izxk0Le95juido3cbQSq+1shU0uT
+         fvy9fokURcrV0P3gvqxpyIhquqdaKHp7wyB55Vs/vbIxjdlbuSI5u8yO2kuR7WBSOMzJ
+         XQCmmPxcriY6bHDfQWFy4LFfmUlBqJDusTktUofNswoKE1X+TZtVw9D3Zmkbi83QUHxQ
+         v1GrChrGqCCK+TBV2zRl4fYNBq6Nn2uEfVU1g6zJpuAEwQfuF6LXM4/bORC+Ets5+b05
+         AMmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701768530; x=1702373330;
+        d=1e100.net; s=20230601; t=1701768534; x=1702373334;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UrD2FGOwoOZDuE5NlOXPwH6yjK7drVhBh94o1xKypaI=;
-        b=qHIBhGarIa6xpk7Abs2kgRQpqSShwrRZ1mDc4qyLUEt5Zrgv2CLdXj1q2A2m77v9My
-         3i6x/IrbtlzkMD1HnvSi7iNdFBwEv0uqsmDSZlyXpfrr4upwVZ2eFbUTpcn5GKRA4+Um
-         w7rzyKLYbQL3FXOiwdN/GjGP21RIEh2rf2o3we8+R12r9SC0PmV8xcBbQ5/F4QBWayRU
-         o1AZvnj9UGqLAma9qYfDLRHDkXXqXoViOyicc7cIAgcn0tcQpTtaFwHxAuDRamLDx3yO
-         hMgaqwRBb2dQycjw2PcTj+2Wwmc0bLB6I7KKjXW94YaBCkwTva3SsjR0iddnV2Lc8XKb
-         kgRw==
-X-Gm-Message-State: AOJu0YyFeJk4Z+p1XCs3C4XQDHpSsq/Uvhhovkb+AkNOX4fZWqp9jgao
-        oXZDOCeboTHNK9WFa+XsYekcYA==
-X-Google-Smtp-Source: AGHT+IFlw/eNWQfj1E9SO5ziBC4YcAjeADQV1vJQPokw/77J0tn0kdtl0+xtImh1bzSOK9d8sTqAdg==
-X-Received: by 2002:a05:6358:9486:b0:170:17eb:1de with SMTP id i6-20020a056358948600b0017017eb01demr2962408rwb.33.1701768530373;
-        Tue, 05 Dec 2023 01:28:50 -0800 (PST)
+        bh=04bzMED+CUiu/sEgfXg1lK1LfSki9LT72NWorxu5xx8=;
+        b=FS9zy0hf8dLmMkD/kc+4SUfwi9Y/JvJ8fSTLTEd8AVcdwqX74ud9MeFJ6ZEHYI9K/7
+         NslbbPgWwATNMXvg886LSCUbDd7kPuo/rJWjfWvur7bGUh0h8ZZGnJpDxGoi5cLKAd2E
+         sbcZrDkQ5kElHopcGKuoLTDVIGIaCQiHtu9Fn/uYHQeXZrm5elDVC01lC5z3/RqcHoAY
+         yFtaeY0myHqNkz6ME7KTs0cWgEte4Ri9tsbWL0c9/bA8PmRIKKwB6iguZyxzr+THNC0+
+         ZBuC5VscoteYOZ/tVZJJmMcuhCzYkmk+pyS5vCdF9yTJDOJhg46MnWS+6Dk4SmFyyIJW
+         zoBg==
+X-Gm-Message-State: AOJu0Yw1hdlJ9CfDonGuNaHCCXopMPshjGPnA/Db5QuGD0hU5UGAJJoL
+        yp4pZGbxl2mhCzswYn1E9VFE0A==
+X-Google-Smtp-Source: AGHT+IHhgHtsyl6FZXviL9LLuUs5JF4ynILYvLLrRDt4mFRgkJQBjCy/mj5gnpnH8ag5WILZWPTmow==
+X-Received: by 2002:a05:6a00:2d11:b0:6ce:4927:2811 with SMTP id fa17-20020a056a002d1100b006ce49272811mr1120349pfb.22.1701768533939;
+        Tue, 05 Dec 2023 01:28:53 -0800 (PST)
 Received: from localhost.localdomain ([101.10.93.135])
-        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006cdd723bb6fsm8858788pfu.115.2023.12.05.01.28.47
+        by smtp.gmail.com with ESMTPSA id l6-20020a056a00140600b006cdd723bb6fsm8858788pfu.115.2023.12.05.01.28.50
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Dec 2023 01:28:50 -0800 (PST)
+        Tue, 05 Dec 2023 01:28:53 -0800 (PST)
 From:   Jerry Shih <jerry.shih@sifive.com>
 To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
         aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
@@ -58,17 +58,16 @@ To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
 Cc:     heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-crypto@vger.kernel.org
-Subject: [PATCH v3 11/12] RISC-V: crypto: add Zvksh accelerated SM3 implementation
-Date:   Tue,  5 Dec 2023 17:28:00 +0800
-Message-Id: <20231205092801.1335-12-jerry.shih@sifive.com>
+Subject: [PATCH v3 12/12] RISC-V: crypto: add Zvkb accelerated ChaCha20 implementation
+Date:   Tue,  5 Dec 2023 17:28:01 +0800
+Message-Id: <20231205092801.1335-13-jerry.shih@sifive.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20231205092801.1335-1-jerry.shih@sifive.com>
 References: <20231205092801.1335-1-jerry.shih@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,98 +76,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SM3 implementation using Zvksh vector crypto extension from OpenSSL
-(openssl/openssl#21923).
+Add a ChaCha20 vector implementation from OpenSSL(openssl/openssl#21923).
 
-Co-developed-by: Christoph Müllner <christoph.muellner@vrull.eu>
-Signed-off-by: Christoph Müllner <christoph.muellner@vrull.eu>
-Co-developed-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@vrull.eu>
 Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
 ---
 Changelog v3:
- - Use `SYM_TYPED_FUNC_START` for sm3 indirect-call asm symbol.
+ - Rename kconfig CRYPTO_CHACHA20_RISCV64 to CRYPTO_CHACHA_RISCV64.
+ - Rename chacha20_encrypt() to riscv64_chacha20_encrypt().
  - Use asm mnemonics for the instructions in RVV 1.0 extension.
 
 Changelog v2:
- - Do not turn on kconfig `SM3_RISCV64` option by default.
+ - Do not turn on kconfig `CHACHA20_RISCV64` option by default.
+ - Use simd skcipher interface.
  - Add `asmlinkage` qualifier for crypto asm function.
- - Rename sm3-riscv64-zvkb-zvksh to sm3-riscv64-zvksh-zvkb.
- - Reorder structure sm3_alg members initialization in the order declared.
+ - Reorder structure riscv64_chacha_alg_zvkb members initialization in
+   the order declared.
+ - Use smaller iv buffer instead of whole state matrix as chacha20's
+   input.
 ---
- arch/riscv/crypto/Kconfig              |  12 ++
- arch/riscv/crypto/Makefile             |   7 +
- arch/riscv/crypto/sm3-riscv64-glue.c   | 124 ++++++++++++++
- arch/riscv/crypto/sm3-riscv64-zvksh.pl | 227 +++++++++++++++++++++++++
- 4 files changed, 370 insertions(+)
- create mode 100644 arch/riscv/crypto/sm3-riscv64-glue.c
- create mode 100644 arch/riscv/crypto/sm3-riscv64-zvksh.pl
+ arch/riscv/crypto/Kconfig                |  12 +
+ arch/riscv/crypto/Makefile               |   7 +
+ arch/riscv/crypto/chacha-riscv64-glue.c  | 122 +++++++++
+ arch/riscv/crypto/chacha-riscv64-zvkb.pl | 321 +++++++++++++++++++++++
+ 4 files changed, 462 insertions(+)
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-glue.c
+ create mode 100644 arch/riscv/crypto/chacha-riscv64-zvkb.pl
 
 diff --git a/arch/riscv/crypto/Kconfig b/arch/riscv/crypto/Kconfig
-index b28cf1972250..7415fb303785 100644
+index 7415fb303785..a5c19532400e 100644
 --- a/arch/riscv/crypto/Kconfig
 +++ b/arch/riscv/crypto/Kconfig
-@@ -66,6 +66,18 @@ config CRYPTO_SHA512_RISCV64
- 	  - Zvknhb vector crypto extension
- 	  - Zvkb vector crypto extension
+@@ -34,6 +34,18 @@ config CRYPTO_AES_BLOCK_RISCV64
+ 	  - Zvkb vector crypto extension (CTR/XTS)
+ 	  - Zvkg vector crypto extension (XTS)
  
-+config CRYPTO_SM3_RISCV64
-+	tristate "Hash functions: SM3 (ShangMi 3)"
++config CRYPTO_CHACHA_RISCV64
++	tristate "Ciphers: ChaCha"
 +	depends on 64BIT && RISCV_ISA_V
-+	select CRYPTO_HASH
-+	select CRYPTO_SM3
++	select CRYPTO_SIMD
++	select CRYPTO_SKCIPHER
++	select CRYPTO_LIB_CHACHA_GENERIC
 +	help
-+	  SM3 (ShangMi 3) secure hash function (OSCCA GM/T 0004-2012)
++	  Length-preserving ciphers: ChaCha20 stream cipher algorithm
 +
 +	  Architecture: riscv64 using:
-+	  - Zvksh vector crypto extension
 +	  - Zvkb vector crypto extension
 +
- config CRYPTO_SM4_RISCV64
- 	tristate "Ciphers: SM4 (ShangMi 4)"
+ config CRYPTO_GHASH_RISCV64
+ 	tristate "Hash functions: GHASH"
  	depends on 64BIT && RISCV_ISA_V
 diff --git a/arch/riscv/crypto/Makefile b/arch/riscv/crypto/Makefile
-index 8e34861bba34..b1f857695c1c 100644
+index b1f857695c1c..31021eb3929c 100644
 --- a/arch/riscv/crypto/Makefile
 +++ b/arch/riscv/crypto/Makefile
-@@ -18,6 +18,9 @@ sha256-riscv64-y := sha256-riscv64-glue.o sha256-riscv64-zvknha_or_zvknhb-zvkb.o
- obj-$(CONFIG_CRYPTO_SHA512_RISCV64) += sha512-riscv64.o
- sha512-riscv64-y := sha512-riscv64-glue.o sha512-riscv64-zvknhb-zvkb.o
+@@ -9,6 +9,9 @@ aes-riscv64-y := aes-riscv64-glue.o aes-riscv64-zvkned.o
+ obj-$(CONFIG_CRYPTO_AES_BLOCK_RISCV64) += aes-block-riscv64.o
+ aes-block-riscv64-y := aes-riscv64-block-mode-glue.o aes-riscv64-zvkned-zvbb-zvkg.o aes-riscv64-zvkned-zvkb.o
  
-+obj-$(CONFIG_CRYPTO_SM3_RISCV64) += sm3-riscv64.o
-+sm3-riscv64-y := sm3-riscv64-glue.o sm3-riscv64-zvksh.o
++obj-$(CONFIG_CRYPTO_CHACHA_RISCV64) += chacha-riscv64.o
++chacha-riscv64-y := chacha-riscv64-glue.o chacha-riscv64-zvkb.o
 +
- obj-$(CONFIG_CRYPTO_SM4_RISCV64) += sm4-riscv64.o
- sm4-riscv64-y := sm4-riscv64-glue.o sm4-riscv64-zvksed.o
+ obj-$(CONFIG_CRYPTO_GHASH_RISCV64) += ghash-riscv64.o
+ ghash-riscv64-y := ghash-riscv64-glue.o ghash-riscv64-zvkg.o
  
-@@ -42,6 +45,9 @@ $(obj)/sha256-riscv64-zvknha_or_zvknhb-zvkb.S: $(src)/sha256-riscv64-zvknha_or_z
- $(obj)/sha512-riscv64-zvknhb-zvkb.S: $(src)/sha512-riscv64-zvknhb-zvkb.pl
+@@ -36,6 +39,9 @@ $(obj)/aes-riscv64-zvkned-zvbb-zvkg.S: $(src)/aes-riscv64-zvkned-zvbb-zvkg.pl
+ $(obj)/aes-riscv64-zvkned-zvkb.S: $(src)/aes-riscv64-zvkned-zvkb.pl
  	$(call cmd,perlasm)
  
-+$(obj)/sm3-riscv64-zvksh.S: $(src)/sm3-riscv64-zvksh.pl
++$(obj)/chacha-riscv64-zvkb.S: $(src)/chacha-riscv64-zvkb.pl
 +	$(call cmd,perlasm)
 +
- $(obj)/sm4-riscv64-zvksed.S: $(src)/sm4-riscv64-zvksed.pl
+ $(obj)/ghash-riscv64-zvkg.S: $(src)/ghash-riscv64-zvkg.pl
  	$(call cmd,perlasm)
  
-@@ -51,4 +57,5 @@ clean-files += aes-riscv64-zvkned-zvkb.S
+@@ -54,6 +60,7 @@ $(obj)/sm4-riscv64-zvksed.S: $(src)/sm4-riscv64-zvksed.pl
+ clean-files += aes-riscv64-zvkned.S
+ clean-files += aes-riscv64-zvkned-zvbb-zvkg.S
+ clean-files += aes-riscv64-zvkned-zvkb.S
++clean-files += chacha-riscv64-zvkb.S
  clean-files += ghash-riscv64-zvkg.S
  clean-files += sha256-riscv64-zvknha_or_zvknhb-zvkb.S
  clean-files += sha512-riscv64-zvknhb-zvkb.S
-+clean-files += sm3-riscv64-zvksh.S
- clean-files += sm4-riscv64-zvksed.S
-diff --git a/arch/riscv/crypto/sm3-riscv64-glue.c b/arch/riscv/crypto/sm3-riscv64-glue.c
+diff --git a/arch/riscv/crypto/chacha-riscv64-glue.c b/arch/riscv/crypto/chacha-riscv64-glue.c
 new file mode 100644
-index 000000000000..0e5a2b84c930
+index 000000000000..3beaa23fcb64
 --- /dev/null
-+++ b/arch/riscv/crypto/sm3-riscv64-glue.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
++++ b/arch/riscv/crypto/chacha-riscv64-glue.c
+@@ -0,0 +1,122 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Linux/riscv64 port of the OpenSSL SM3 implementation for RISC-V 64
-+ *
-+ * Copyright (C) 2023 VRULL GmbH
-+ * Author: Heiko Stuebner <heiko.stuebner@vrull.eu>
++ * Port of the OpenSSL ChaCha20 implementation for RISC-V 64
 + *
 + * Copyright (C) 2023 SiFive, Inc.
 + * Author: Jerry Shih <jerry.shih@sifive.com>
@@ -176,138 +173,139 @@ index 000000000000..0e5a2b84c930
 +
 +#include <asm/simd.h>
 +#include <asm/vector.h>
++#include <crypto/internal/chacha.h>
++#include <crypto/internal/simd.h>
++#include <crypto/internal/skcipher.h>
++#include <linux/crypto.h>
 +#include <linux/linkage.h>
 +#include <linux/module.h>
 +#include <linux/types.h>
-+#include <crypto/internal/hash.h>
-+#include <crypto/internal/simd.h>
-+#include <crypto/sm3_base.h>
 +
-+/*
-+ * sm3 using zvksh vector crypto extension
-+ *
-+ * This asm function will just take the first 256-bit as the sm3 state from
-+ * the pointer to `struct sm3_state`.
-+ */
-+asmlinkage void ossl_hwsm3_block_data_order_zvksh(struct sm3_state *digest,
-+						  u8 const *o, int num);
++/* chacha20 using zvkb vector crypto extension */
++asmlinkage void ChaCha20_ctr32_zvkb(u8 *out, const u8 *input, size_t len,
++				    const u32 *key, const u32 *counter);
 +
-+static int riscv64_sm3_update(struct shash_desc *desc, const u8 *data,
-+			      unsigned int len)
++static int riscv64_chacha20_encrypt(struct skcipher_request *req)
 +{
-+	int ret = 0;
++	u32 iv[CHACHA_IV_SIZE / sizeof(u32)];
++	u8 block_buffer[CHACHA_BLOCK_SIZE];
++	struct crypto_skcipher *tfm = crypto_skcipher_reqtfm(req);
++	const struct chacha_ctx *ctx = crypto_skcipher_ctx(tfm);
++	struct skcipher_walk walk;
++	unsigned int nbytes;
++	unsigned int tail_bytes;
++	int err;
 +
-+	/*
-+	 * Make sure struct sm3_state begins directly with the SM3 256-bit internal
-+	 * state, as this is what the asm function expect.
-+	 */
-+	BUILD_BUG_ON(offsetof(struct sm3_state, state) != 0);
++	iv[0] = get_unaligned_le32(req->iv);
++	iv[1] = get_unaligned_le32(req->iv + 4);
++	iv[2] = get_unaligned_le32(req->iv + 8);
++	iv[3] = get_unaligned_le32(req->iv + 12);
 +
-+	if (crypto_simd_usable()) {
++	err = skcipher_walk_virt(&walk, req, false);
++	while (walk.nbytes) {
++		nbytes = walk.nbytes & (~(CHACHA_BLOCK_SIZE - 1));
++		tail_bytes = walk.nbytes & (CHACHA_BLOCK_SIZE - 1);
 +		kernel_vector_begin();
-+		ret = sm3_base_do_update(desc, data, len,
-+					 ossl_hwsm3_block_data_order_zvksh);
-+		kernel_vector_end();
-+	} else {
-+		sm3_update(shash_desc_ctx(desc), data, len);
-+	}
-+
-+	return ret;
-+}
-+
-+static int riscv64_sm3_finup(struct shash_desc *desc, const u8 *data,
-+			     unsigned int len, u8 *out)
-+{
-+	struct sm3_state *ctx;
-+
-+	if (crypto_simd_usable()) {
-+		kernel_vector_begin();
-+		if (len)
-+			sm3_base_do_update(desc, data, len,
-+					   ossl_hwsm3_block_data_order_zvksh);
-+		sm3_base_do_finalize(desc, ossl_hwsm3_block_data_order_zvksh);
++		if (nbytes) {
++			ChaCha20_ctr32_zvkb(walk.dst.virt.addr,
++					    walk.src.virt.addr, nbytes,
++					    ctx->key, iv);
++			iv[0] += nbytes / CHACHA_BLOCK_SIZE;
++		}
++		if (walk.nbytes == walk.total && tail_bytes > 0) {
++			memcpy(block_buffer, walk.src.virt.addr + nbytes,
++			       tail_bytes);
++			ChaCha20_ctr32_zvkb(block_buffer, block_buffer,
++					    CHACHA_BLOCK_SIZE, ctx->key, iv);
++			memcpy(walk.dst.virt.addr + nbytes, block_buffer,
++			       tail_bytes);
++			tail_bytes = 0;
++		}
 +		kernel_vector_end();
 +
-+		return sm3_base_finish(desc, out);
++		err = skcipher_walk_done(&walk, tail_bytes);
 +	}
 +
-+	ctx = shash_desc_ctx(desc);
-+	if (len)
-+		sm3_update(ctx, data, len);
-+	sm3_final(ctx, out);
-+
-+	return 0;
++	return err;
 +}
 +
-+static int riscv64_sm3_final(struct shash_desc *desc, u8 *out)
-+{
-+	return riscv64_sm3_finup(desc, NULL, 0, out);
-+}
-+
-+static struct shash_alg sm3_alg = {
-+	.init = sm3_base_init,
-+	.update = riscv64_sm3_update,
-+	.final = riscv64_sm3_final,
-+	.finup = riscv64_sm3_finup,
-+	.descsize = sizeof(struct sm3_state),
-+	.digestsize = SM3_DIGEST_SIZE,
-+	.base = {
-+		.cra_blocksize = SM3_BLOCK_SIZE,
-+		.cra_priority = 150,
-+		.cra_name = "sm3",
-+		.cra_driver_name = "sm3-riscv64-zvksh-zvkb",
-+		.cra_module = THIS_MODULE,
-+	},
++static struct skcipher_alg riscv64_chacha_alg_zvkb[] = {
++	{
++		.setkey = chacha20_setkey,
++		.encrypt = riscv64_chacha20_encrypt,
++		.decrypt = riscv64_chacha20_encrypt,
++		.min_keysize = CHACHA_KEY_SIZE,
++		.max_keysize = CHACHA_KEY_SIZE,
++		.ivsize = CHACHA_IV_SIZE,
++		.chunksize = CHACHA_BLOCK_SIZE,
++		.walksize = CHACHA_BLOCK_SIZE * 4,
++		.base = {
++			.cra_flags = CRYPTO_ALG_INTERNAL,
++			.cra_blocksize = 1,
++			.cra_ctxsize = sizeof(struct chacha_ctx),
++			.cra_priority = 300,
++			.cra_name = "__chacha20",
++			.cra_driver_name = "__chacha20-riscv64-zvkb",
++			.cra_module = THIS_MODULE,
++		},
++	}
 +};
 +
-+static inline bool check_sm3_ext(void)
++static struct simd_skcipher_alg
++	*riscv64_chacha_simd_alg_zvkb[ARRAY_SIZE(riscv64_chacha_alg_zvkb)];
++
++static inline bool check_chacha20_ext(void)
 +{
-+	return riscv_isa_extension_available(NULL, ZVKSH) &&
-+	       riscv_isa_extension_available(NULL, ZVKB) &&
++	return riscv_isa_extension_available(NULL, ZVKB) &&
 +	       riscv_vector_vlen() >= 128;
 +}
 +
-+static int __init riscv64_sm3_mod_init(void)
++static int __init riscv64_chacha_mod_init(void)
 +{
-+	if (check_sm3_ext())
-+		return crypto_register_shash(&sm3_alg);
++	if (check_chacha20_ext())
++		return simd_register_skciphers_compat(
++			riscv64_chacha_alg_zvkb,
++			ARRAY_SIZE(riscv64_chacha_alg_zvkb),
++			riscv64_chacha_simd_alg_zvkb);
 +
 +	return -ENODEV;
 +}
 +
-+static void __exit riscv64_sm3_mod_fini(void)
++static void __exit riscv64_chacha_mod_fini(void)
 +{
-+	crypto_unregister_shash(&sm3_alg);
++	simd_unregister_skciphers(riscv64_chacha_alg_zvkb,
++				  ARRAY_SIZE(riscv64_chacha_alg_zvkb),
++				  riscv64_chacha_simd_alg_zvkb);
 +}
 +
-+module_init(riscv64_sm3_mod_init);
-+module_exit(riscv64_sm3_mod_fini);
++module_init(riscv64_chacha_mod_init);
++module_exit(riscv64_chacha_mod_fini);
 +
-+MODULE_DESCRIPTION("SM3 (RISC-V accelerated)");
-+MODULE_AUTHOR("Heiko Stuebner <heiko.stuebner@vrull.eu>");
++MODULE_DESCRIPTION("ChaCha20 (RISC-V accelerated)");
++MODULE_AUTHOR("Jerry Shih <jerry.shih@sifive.com>");
 +MODULE_LICENSE("GPL");
-+MODULE_ALIAS_CRYPTO("sm3");
-diff --git a/arch/riscv/crypto/sm3-riscv64-zvksh.pl b/arch/riscv/crypto/sm3-riscv64-zvksh.pl
++MODULE_ALIAS_CRYPTO("chacha20");
+diff --git a/arch/riscv/crypto/chacha-riscv64-zvkb.pl b/arch/riscv/crypto/chacha-riscv64-zvkb.pl
 new file mode 100644
-index 000000000000..6a2399d3a5cf
+index 000000000000..a76069f62e11
 --- /dev/null
-+++ b/arch/riscv/crypto/sm3-riscv64-zvksh.pl
-@@ -0,0 +1,227 @@
++++ b/arch/riscv/crypto/chacha-riscv64-zvkb.pl
+@@ -0,0 +1,321 @@
 +#! /usr/bin/env perl
 +# SPDX-License-Identifier: Apache-2.0 OR BSD-2-Clause
 +#
 +# This file is dual-licensed, meaning that you can use it under your
 +# choice of either of the following two licenses:
 +#
-+# Copyright 2023 The OpenSSL Project Authors. All Rights Reserved.
++# Copyright 2023-2023 The OpenSSL Project Authors. All Rights Reserved.
 +#
-+# Licensed under the Apache License 2.0 (the "License"). You can obtain
-+# a copy in the file LICENSE in the source distribution or at
++# Licensed under the Apache License 2.0 (the "License").  You may not use
++# this file except in compliance with the License.  You can obtain a copy
++# in the file LICENSE in the source distribution or at
 +# https://www.openssl.org/source/license.html
 +#
 +# or
 +#
-+# Copyright (c) 2023, Christoph Müllner <christoph.muellner@vrull.eu>
 +# Copyright (c) 2023, Jerry Shih <jerry.shih@sifive.com>
 +# All rights reserved.
 +#
@@ -332,11 +330,9 @@ index 000000000000..6a2399d3a5cf
 +# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 +# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 +
-+# The generated code of this file depends on the following RISC-V extensions:
 +# - RV64I
 +# - RISC-V Vector ('V') with VLEN >= 128
 +# - RISC-V Vector Cryptography Bit-manipulation extension ('Zvkb')
-+# - RISC-V Vector SM3 Secure Hash extension ('Zvksh')
 +
 +use strict;
 +use warnings;
@@ -348,174 +344,270 @@ index 000000000000..6a2399d3a5cf
 +
 +# $output is the last argument if it looks like a file (it has an extension)
 +# $flavour is the first argument if it doesn't look like a file
-+my $output = $#ARGV >= 0 && $ARGV[$#ARGV] =~ m|\.\w+$| ? pop : undef;
-+my $flavour = $#ARGV >= 0 && $ARGV[0] !~ m|\.| ? shift : undef;
++my $output  = $#ARGV >= 0 && $ARGV[$#ARGV] =~ m|\.\w+$| ? pop   : undef;
++my $flavour = $#ARGV >= 0 && $ARGV[0] !~ m|\.|          ? shift : undef;
 +
-+$output and open STDOUT,">$output";
++$output and open STDOUT, ">$output";
 +
-+my $code=<<___;
-+#include <linux/cfi_types.h>
-+
++my $code = <<___;
 +.text
 +___
 +
++# void ChaCha20_ctr32_zvkb(unsigned char *out, const unsigned char *inp,
++#                          size_t len, const unsigned int key[8],
++#                          const unsigned int counter[4]);
 +################################################################################
-+# ossl_hwsm3_block_data_order_zvksh(SM3_CTX *c, const void *p, size_t num);
-+{
-+my ($CTX, $INPUT, $NUM) = ("a0", "a1", "a2");
-+my ($V0, $V1, $V2, $V3, $V4, $V5, $V6, $V7,
-+    $V8, $V9, $V10, $V11, $V12, $V13, $V14, $V15,
-+    $V16, $V17, $V18, $V19, $V20, $V21, $V22, $V23,
-+    $V24, $V25, $V26, $V27, $V28, $V29, $V30, $V31,
-+) = map("v$_",(0..31));
++my ( $OUTPUT, $INPUT, $LEN, $KEY, $COUNTER ) = ( "a0", "a1", "a2", "a3", "a4" );
++my ( $T0 ) = ( "t0" );
++my ( $CONST_DATA0, $CONST_DATA1, $CONST_DATA2, $CONST_DATA3 ) =
++  ( "a5", "a6", "a7", "t1" );
++my ( $KEY0, $KEY1, $KEY2,$KEY3, $KEY4, $KEY5, $KEY6, $KEY7,
++     $COUNTER0, $COUNTER1, $NONCE0, $NONCE1
++) = ( "s0", "s1", "s2", "s3", "s4", "s5", "s6",
++    "s7", "s8", "s9", "s10", "s11" );
++my ( $VL, $STRIDE, $CHACHA_LOOP_COUNT ) = ( "t2", "t3", "t4" );
++my (
++    $V0,  $V1,  $V2,  $V3,  $V4,  $V5,  $V6,  $V7,  $V8,  $V9,  $V10,
++    $V11, $V12, $V13, $V14, $V15, $V16, $V17, $V18, $V19, $V20, $V21,
++    $V22, $V23, $V24, $V25, $V26, $V27, $V28, $V29, $V30, $V31,
++) = map( "v$_", ( 0 .. 31 ) );
++
++sub chacha_quad_round_group {
++    my (
++        $A0, $B0, $C0, $D0, $A1, $B1, $C1, $D1,
++        $A2, $B2, $C2, $D2, $A3, $B3, $C3, $D3
++    ) = @_;
++
++    my $code = <<___;
++    # a += b; d ^= a; d <<<= 16;
++    vadd.vv $A0, $A0, $B0
++    vadd.vv $A1, $A1, $B1
++    vadd.vv $A2, $A2, $B2
++    vadd.vv $A3, $A3, $B3
++    vxor.vv $D0, $D0, $A0
++    vxor.vv $D1, $D1, $A1
++    vxor.vv $D2, $D2, $A2
++    vxor.vv $D3, $D3, $A3
++    @{[vror_vi $D0, $D0, 32 - 16]}
++    @{[vror_vi $D1, $D1, 32 - 16]}
++    @{[vror_vi $D2, $D2, 32 - 16]}
++    @{[vror_vi $D3, $D3, 32 - 16]}
++    # c += d; b ^= c; b <<<= 12;
++    vadd.vv $C0, $C0, $D0
++    vadd.vv $C1, $C1, $D1
++    vadd.vv $C2, $C2, $D2
++    vadd.vv $C3, $C3, $D3
++    vxor.vv $B0, $B0, $C0
++    vxor.vv $B1, $B1, $C1
++    vxor.vv $B2, $B2, $C2
++    vxor.vv $B3, $B3, $C3
++    @{[vror_vi $B0, $B0, 32 - 12]}
++    @{[vror_vi $B1, $B1, 32 - 12]}
++    @{[vror_vi $B2, $B2, 32 - 12]}
++    @{[vror_vi $B3, $B3, 32 - 12]}
++    # a += b; d ^= a; d <<<= 8;
++    vadd.vv $A0, $A0, $B0
++    vadd.vv $A1, $A1, $B1
++    vadd.vv $A2, $A2, $B2
++    vadd.vv $A3, $A3, $B3
++    vxor.vv $D0, $D0, $A0
++    vxor.vv $D1, $D1, $A1
++    vxor.vv $D2, $D2, $A2
++    vxor.vv $D3, $D3, $A3
++    @{[vror_vi $D0, $D0, 32 - 8]}
++    @{[vror_vi $D1, $D1, 32 - 8]}
++    @{[vror_vi $D2, $D2, 32 - 8]}
++    @{[vror_vi $D3, $D3, 32 - 8]}
++    # c += d; b ^= c; b <<<= 7;
++    vadd.vv $C0, $C0, $D0
++    vadd.vv $C1, $C1, $D1
++    vadd.vv $C2, $C2, $D2
++    vadd.vv $C3, $C3, $D3
++    vxor.vv $B0, $B0, $C0
++    vxor.vv $B1, $B1, $C1
++    vxor.vv $B2, $B2, $C2
++    vxor.vv $B3, $B3, $C3
++    @{[vror_vi $B0, $B0, 32 - 7]}
++    @{[vror_vi $B1, $B1, 32 - 7]}
++    @{[vror_vi $B2, $B2, 32 - 7]}
++    @{[vror_vi $B3, $B3, 32 - 7]}
++___
++
++    return $code;
++}
 +
 +$code .= <<___;
-+SYM_TYPED_FUNC_START(ossl_hwsm3_block_data_order_zvksh)
-+    vsetivli zero, 8, e32, m2, ta, ma
++.p2align 3
++.globl ChaCha20_ctr32_zvkb
++.type ChaCha20_ctr32_zvkb,\@function
++ChaCha20_ctr32_zvkb:
++    srli $LEN, $LEN, 6
++    beqz $LEN, .Lend
 +
-+    # Load initial state of hash context (c->A-H).
-+    vle32.v $V0, ($CTX)
-+    @{[vrev8_v $V0, $V0]}
++    addi sp, sp, -96
++    sd s0, 0(sp)
++    sd s1, 8(sp)
++    sd s2, 16(sp)
++    sd s3, 24(sp)
++    sd s4, 32(sp)
++    sd s5, 40(sp)
++    sd s6, 48(sp)
++    sd s7, 56(sp)
++    sd s8, 64(sp)
++    sd s9, 72(sp)
++    sd s10, 80(sp)
++    sd s11, 88(sp)
 +
-+L_sm3_loop:
-+    # Copy the previous state to v2.
-+    # It will be XOR'ed with the current state at the end of the round.
-+    vmv.v.v $V2, $V0
++    li $STRIDE, 64
 +
-+    # Load the 64B block in 2x32B chunks.
-+    vle32.v $V6, ($INPUT) # v6 := {w7, ..., w0}
-+    addi $INPUT, $INPUT, 32
++    #### chacha block data
++    # "expa" little endian
++    li $CONST_DATA0, 0x61707865
++    # "nd 3" little endian
++    li $CONST_DATA1, 0x3320646e
++    # "2-by" little endian
++    li $CONST_DATA2, 0x79622d32
++    # "te k" little endian
++    li $CONST_DATA3, 0x6b206574
 +
-+    vle32.v $V8, ($INPUT) # v8 := {w15, ..., w8}
-+    addi $INPUT, $INPUT, 32
++    lw $KEY0, 0($KEY)
++    lw $KEY1, 4($KEY)
++    lw $KEY2, 8($KEY)
++    lw $KEY3, 12($KEY)
++    lw $KEY4, 16($KEY)
++    lw $KEY5, 20($KEY)
++    lw $KEY6, 24($KEY)
++    lw $KEY7, 28($KEY)
 +
-+    addi $NUM, $NUM, -1
++    lw $COUNTER0, 0($COUNTER)
++    lw $COUNTER1, 4($COUNTER)
++    lw $NONCE0, 8($COUNTER)
++    lw $NONCE1, 12($COUNTER)
 +
-+    # As vsm3c consumes only w0, w1, w4, w5 we need to slide the input
-+    # 2 elements down so we process elements w2, w3, w6, w7
-+    # This will be repeated for each odd round.
-+    vslidedown.vi $V4, $V6, 2 # v4 := {X, X, w7, ..., w2}
++.Lblock_loop:
++    vsetvli $VL, $LEN, e32, m1, ta, ma
 +
-+    @{[vsm3c_vi $V0, $V6, 0]}
-+    @{[vsm3c_vi $V0, $V4, 1]}
++    # init chacha const states
++    vmv.v.x $V0, $CONST_DATA0
++    vmv.v.x $V1, $CONST_DATA1
++    vmv.v.x $V2, $CONST_DATA2
++    vmv.v.x $V3, $CONST_DATA3
 +
-+    # Prepare a vector with {w11, ..., w4}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w7, ..., w4}
-+    vslideup.vi $V4, $V8, 4   # v4 := {w11, w10, w9, w8, w7, w6, w5, w4}
++    # init chacha key states
++    vmv.v.x $V4, $KEY0
++    vmv.v.x $V5, $KEY1
++    vmv.v.x $V6, $KEY2
++    vmv.v.x $V7, $KEY3
++    vmv.v.x $V8, $KEY4
++    vmv.v.x $V9, $KEY5
++    vmv.v.x $V10, $KEY6
++    vmv.v.x $V11, $KEY7
 +
-+    @{[vsm3c_vi $V0, $V4, 2]}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w11, w10, w9, w8, w7, w6}
-+    @{[vsm3c_vi $V0, $V4, 3]}
++    # init chacha key states
++    vid.v $V12
++    vadd.vx $V12, $V12, $COUNTER0
++    vmv.v.x $V13, $COUNTER1
 +
-+    @{[vsm3c_vi $V0, $V8, 4]}
-+    vslidedown.vi $V4, $V8, 2 # v4 := {X, X, w15, w14, w13, w12, w11, w10}
-+    @{[vsm3c_vi $V0, $V4, 5]}
++    # init chacha nonce states
++    vmv.v.x $V14, $NONCE0
++    vmv.v.x $V15, $NONCE1
 +
-+    @{[vsm3me_vv $V6, $V8, $V6]}   # v6 := {w23, w22, w21, w20, w19, w18, w17, w16}
++    # load the top-half of input data
++    vlsseg8e32.v $V16, ($INPUT), $STRIDE
 +
-+    # Prepare a register with {w19, w18, w17, w16, w15, w14, w13, w12}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w15, w14, w13, w12}
-+    vslideup.vi $V4, $V6, 4   # v4 := {w19, w18, w17, w16, w15, w14, w13, w12}
++    li $CHACHA_LOOP_COUNT, 10
++.Lround_loop:
++    addi $CHACHA_LOOP_COUNT, $CHACHA_LOOP_COUNT, -1
++    @{[chacha_quad_round_group
++      $V0, $V4, $V8, $V12,
++      $V1, $V5, $V9, $V13,
++      $V2, $V6, $V10, $V14,
++      $V3, $V7, $V11, $V15]}
++    @{[chacha_quad_round_group
++      $V0, $V5, $V10, $V15,
++      $V1, $V6, $V11, $V12,
++      $V2, $V7, $V8, $V13,
++      $V3, $V4, $V9, $V14]}
++    bnez $CHACHA_LOOP_COUNT, .Lround_loop
 +
-+    @{[vsm3c_vi $V0, $V4, 6]}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w19, w18, w17, w16, w15, w14}
-+    @{[vsm3c_vi $V0, $V4, 7]}
++    # load the bottom-half of input data
++    addi $T0, $INPUT, 32
++    vlsseg8e32.v $V24, ($T0), $STRIDE
 +
-+    @{[vsm3c_vi $V0, $V6, 8]}
-+    vslidedown.vi $V4, $V6, 2 # v4 := {X, X, w23, w22, w21, w20, w19, w18}
-+    @{[vsm3c_vi $V0, $V4, 9]}
++    # add chacha top-half initial block states
++    vadd.vx $V0, $V0, $CONST_DATA0
++    vadd.vx $V1, $V1, $CONST_DATA1
++    vadd.vx $V2, $V2, $CONST_DATA2
++    vadd.vx $V3, $V3, $CONST_DATA3
++    vadd.vx $V4, $V4, $KEY0
++    vadd.vx $V5, $V5, $KEY1
++    vadd.vx $V6, $V6, $KEY2
++    vadd.vx $V7, $V7, $KEY3
++    # xor with the top-half input
++    vxor.vv $V16, $V16, $V0
++    vxor.vv $V17, $V17, $V1
++    vxor.vv $V18, $V18, $V2
++    vxor.vv $V19, $V19, $V3
++    vxor.vv $V20, $V20, $V4
++    vxor.vv $V21, $V21, $V5
++    vxor.vv $V22, $V22, $V6
++    vxor.vv $V23, $V23, $V7
 +
-+    @{[vsm3me_vv $V8, $V6, $V8]}   # v8 := {w31, w30, w29, w28, w27, w26, w25, w24}
++    # save the top-half of output
++    vssseg8e32.v $V16, ($OUTPUT), $STRIDE
 +
-+    # Prepare a register with {w27, w26, w25, w24, w23, w22, w21, w20}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w23, w22, w21, w20}
-+    vslideup.vi $V4, $V8, 4   # v4 := {w27, w26, w25, w24, w23, w22, w21, w20}
++    # add chacha bottom-half initial block states
++    vadd.vx $V8, $V8, $KEY4
++    vadd.vx $V9, $V9, $KEY5
++    vadd.vx $V10, $V10, $KEY6
++    vadd.vx $V11, $V11, $KEY7
++    vid.v $V0
++    vadd.vx $V12, $V12, $COUNTER0
++    vadd.vx $V13, $V13, $COUNTER1
++    vadd.vx $V14, $V14, $NONCE0
++    vadd.vx $V15, $V15, $NONCE1
++    vadd.vv $V12, $V12, $V0
++    # xor with the bottom-half input
++    vxor.vv $V24, $V24, $V8
++    vxor.vv $V25, $V25, $V9
++    vxor.vv $V26, $V26, $V10
++    vxor.vv $V27, $V27, $V11
++    vxor.vv $V29, $V29, $V13
++    vxor.vv $V28, $V28, $V12
++    vxor.vv $V30, $V30, $V14
++    vxor.vv $V31, $V31, $V15
 +
-+    @{[vsm3c_vi $V0, $V4, 10]}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w27, w26, w25, w24, w23, w22}
-+    @{[vsm3c_vi $V0, $V4, 11]}
++    # save the bottom-half of output
++    addi $T0, $OUTPUT, 32
++    vssseg8e32.v $V24, ($T0), $STRIDE
 +
-+    @{[vsm3c_vi $V0, $V8, 12]}
-+    vslidedown.vi $V4, $V8, 2 # v4 := {x, X, w31, w30, w29, w28, w27, w26}
-+    @{[vsm3c_vi $V0, $V4, 13]}
++    # update counter
++    add $COUNTER0, $COUNTER0, $VL
++    sub $LEN, $LEN, $VL
++    # increase offset for `4 * 16 * VL = 64 * VL`
++    slli $T0, $VL, 6
++    add $INPUT, $INPUT, $T0
++    add $OUTPUT, $OUTPUT, $T0
++    bnez $LEN, .Lblock_loop
 +
-+    @{[vsm3me_vv $V6, $V8, $V6]}   # v6 := {w32, w33, w34, w35, w36, w37, w38, w39}
++    ld s0, 0(sp)
++    ld s1, 8(sp)
++    ld s2, 16(sp)
++    ld s3, 24(sp)
++    ld s4, 32(sp)
++    ld s5, 40(sp)
++    ld s6, 48(sp)
++    ld s7, 56(sp)
++    ld s8, 64(sp)
++    ld s9, 72(sp)
++    ld s10, 80(sp)
++    ld s11, 88(sp)
++    addi sp, sp, 96
 +
-+    # Prepare a register with {w35, w34, w33, w32, w31, w30, w29, w28}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w31, w30, w29, w28}
-+    vslideup.vi $V4, $V6, 4   # v4 := {w35, w34, w33, w32, w31, w30, w29, w28}
-+
-+    @{[vsm3c_vi $V0, $V4, 14]}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w35, w34, w33, w32, w31, w30}
-+    @{[vsm3c_vi $V0, $V4, 15]}
-+
-+    @{[vsm3c_vi $V0, $V6, 16]}
-+    vslidedown.vi $V4, $V6, 2 # v4 := {X, X, w39, w38, w37, w36, w35, w34}
-+    @{[vsm3c_vi $V0, $V4, 17]}
-+
-+    @{[vsm3me_vv $V8, $V6, $V8]}   # v8 := {w47, w46, w45, w44, w43, w42, w41, w40}
-+
-+    # Prepare a register with {w43, w42, w41, w40, w39, w38, w37, w36}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w39, w38, w37, w36}
-+    vslideup.vi $V4, $V8, 4   # v4 := {w43, w42, w41, w40, w39, w38, w37, w36}
-+
-+    @{[vsm3c_vi $V0, $V4, 18]}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w43, w42, w41, w40, w39, w38}
-+    @{[vsm3c_vi $V0, $V4, 19]}
-+
-+    @{[vsm3c_vi $V0, $V8, 20]}
-+    vslidedown.vi $V4, $V8, 2 # v4 := {X, X, w47, w46, w45, w44, w43, w42}
-+    @{[vsm3c_vi $V0, $V4, 21]}
-+
-+    @{[vsm3me_vv $V6, $V8, $V6]}   # v6 := {w55, w54, w53, w52, w51, w50, w49, w48}
-+
-+    # Prepare a register with {w51, w50, w49, w48, w47, w46, w45, w44}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w47, w46, w45, w44}
-+    vslideup.vi $V4, $V6, 4   # v4 := {w51, w50, w49, w48, w47, w46, w45, w44}
-+
-+    @{[vsm3c_vi $V0, $V4, 22]}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w51, w50, w49, w48, w47, w46}
-+    @{[vsm3c_vi $V0, $V4, 23]}
-+
-+    @{[vsm3c_vi $V0, $V6, 24]}
-+    vslidedown.vi $V4, $V6, 2 # v4 := {X, X, w55, w54, w53, w52, w51, w50}
-+    @{[vsm3c_vi $V0, $V4, 25]}
-+
-+    @{[vsm3me_vv $V8, $V6, $V8]}   # v8 := {w63, w62, w61, w60, w59, w58, w57, w56}
-+
-+    # Prepare a register with {w59, w58, w57, w56, w55, w54, w53, w52}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w55, w54, w53, w52}
-+    vslideup.vi $V4, $V8, 4   # v4 := {w59, w58, w57, w56, w55, w54, w53, w52}
-+
-+    @{[vsm3c_vi $V0, $V4, 26]}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w59, w58, w57, w56, w55, w54}
-+    @{[vsm3c_vi $V0, $V4, 27]}
-+
-+    @{[vsm3c_vi $V0, $V8, 28]}
-+    vslidedown.vi $V4, $V8, 2 # v4 := {X, X, w63, w62, w61, w60, w59, w58}
-+    @{[vsm3c_vi $V0, $V4, 29]}
-+
-+    @{[vsm3me_vv $V6, $V8, $V6]}   # v6 := {w71, w70, w69, w68, w67, w66, w65, w64}
-+
-+    # Prepare a register with {w67, w66, w65, w64, w63, w62, w61, w60}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, X, X, w63, w62, w61, w60}
-+    vslideup.vi $V4, $V6, 4   # v4 := {w67, w66, w65, w64, w63, w62, w61, w60}
-+
-+    @{[vsm3c_vi $V0, $V4, 30]}
-+    vslidedown.vi $V4, $V4, 2 # v4 := {X, X, w67, w66, w65, w64, w63, w62}
-+    @{[vsm3c_vi $V0, $V4, 31]}
-+
-+    # XOR in the previous state.
-+    vxor.vv $V0, $V0, $V2
-+
-+    bnez $NUM, L_sm3_loop     # Check if there are any more block to process
-+L_sm3_end:
-+    @{[vrev8_v $V0, $V0]}
-+    vse32.v $V0, ($CTX)
++.Lend:
 +    ret
-+SYM_FUNC_END(ossl_hwsm3_block_data_order_zvksh)
++.size ChaCha20_ctr32_zvkb,.-ChaCha20_ctr32_zvkb
 +___
-+}
 +
 +print $code;
 +
