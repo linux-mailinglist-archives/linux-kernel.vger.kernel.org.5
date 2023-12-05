@@ -2,222 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF1A804881
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BC8804850
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbjLEEVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 23:21:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
+        id S231477AbjLEDxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 22:53:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjLEEVM (ORCPT
+        with ESMTP id S229611AbjLEDxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 23:21:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F64FA;
-        Mon,  4 Dec 2023 20:21:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701750078; x=1733286078;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=cLva71zwgi/M8KDtf0M821OdwuVBok5ShR2kEwMkmlA=;
-  b=dAyIqwc+foHobi7UZuLc5ymrYV5bbRcvXFFaLAqf7TYrw6RhsFJoA1GE
-   jYBSZI1e8lYDsFfwvfzTKE+t2B6hcJdH4xY1lnL2tq9OI3F6Is/c94Pdu
-   ttW5SboDWrQ4kNKt1mswx8d8SCVTm+s7zaD+EdNtcgWI9Qa4jLrCgxZ3R
-   +YA8S8F4fjYUIMkXyDUoiMaB1UwS2BWLn7wCvKV013UJJy7IFCvcq5MXU
-   9HGoE2hWIavW5HeKKFUBSH5jEPTzS43gyycU8IAS2/ENwnNBsLpmHPr5Q
-   rd0WJSQ5ESUZT5z0K6DSEbc9U9tqMAXJWZ+QnObdgq6q8K2o2m7TyDynd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="393574318"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="393574318"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 20:21:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="841309370"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="841309370"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 20:21:17 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 20:21:16 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 4 Dec 2023 20:21:02 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 20:21:02 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 4 Dec 2023 20:20:56 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VNwuWvQZxExuWx7Vk1OosfEs+FYE6pzTV0DncXC2lJbozIhYA08Rv008JCEZVbp2hv5GAnvCPRkXeYuEmi6UGrVU+JTl2mkf77ktFN3q4o0hKPP26U+52kG4HOWHX+xEHYIbqMYAJXHXcqh18S6IobsaSusZ/51uVqqu+gauTeo2i4aaE4E/NfuVYp03YJ4AolBUQx1GgNCY0CnrKrWl13zSWhB6GO/+BfHElvt4srboA2bBThfL3aCIa1g4EmEkLZN7ryv5KINQDzi9PdSaryKrrxk44beGgAhCuFTi5IYp+q+LKsGz7MG17VVWHXpHcXKo8PaXHQuZwHWWLJaRHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=T1gLnS9yGbXQKZknZoSGF394YC42Df7fZw65S4+VtbE=;
- b=Hhy5KKwFGdCBIdvnIqSpVUAtoZJqUM7/ojuavA76ytretM1l+wHlQaYRFZZ488RgOLj0IVwWKPbX1Z2w+14bpxk3QY/wgiu3XiS59Cn/raQASVq2YZDOQtjZaBi+2KPZnGbgOPLmskp8UUzTxIq4XPnhEGUmi+ANu9ymZY0rl1Tp+1+Or3D4i4jX0HhXdQxv8OZ3PdFTJuZdnNyFayjWfmDYAlSprXQhs2eGvBJm8MkQe9v5+rlGX6PLMiZK8SoGGIb6W5UgU5V6QWD1urb+MTosufTGUtC/CbeyhtnQ9LzZXCsj46fH6Nfv0Sy3EGBhSmV8b0xCrpN/pPsalMX/EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- MW4PR11MB6737.namprd11.prod.outlook.com (2603:10b6:303:20d::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
- 2023 04:20:54 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::32a9:54b8:4253:31d4%4]) with mapi id 15.20.7046.027; Tue, 5 Dec 2023
- 04:20:54 +0000
-Date:   Tue, 5 Dec 2023 11:51:49 +0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     <iommu@lists.linux.dev>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
-        <jgg@nvidia.com>, <pbonzini@redhat.com>, <joro@8bytes.org>,
-        <will@kernel.org>, <robin.murphy@arm.com>, <kevin.tian@intel.com>,
-        <baolu.lu@linux.intel.com>, <dwmw2@infradead.org>,
-        <yi.l.liu@intel.com>
-Subject: Re: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
-Message-ID: <ZW6eVexQNIqtwDaZ@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20231202091211.13376-1-yan.y.zhao@intel.com>
- <ZW4Fx2U80L1PJKlh@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZW4Fx2U80L1PJKlh@google.com>
-X-ClientProxiedBy: SI2PR02CA0024.apcprd02.prod.outlook.com
- (2603:1096:4:195::18) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+        Mon, 4 Dec 2023 22:53:22 -0500
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7466AC6;
+        Mon,  4 Dec 2023 19:53:29 -0800 (PST)
+Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-58e28e0461bso1723893eaf.1;
+        Mon, 04 Dec 2023 19:53:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701748409; x=1702353209; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=yMlipu20UYvgghTH7yK/DQyqHGpCso8cXNl7YDlvHV4=;
+        b=XuRrX+3qK4t3tsqm2W5a3uayy1o83YWRIhBqNqZkWFWFhxEBAFthbCVcvLKevCGBTh
+         Zh1TJaxYu0Ez4MQP3x+MowpSWTKtzVjRVHHxPMKsZKo+swd5aaZvZokVnT4yN3hS/11n
+         z1ysGAwhfIJdLp+0rpZivU2+DgDNAsHdVy1nswYcsWACtrWm30p5Vbf+/AFmD12DlvXp
+         XDCY6z1nrxTVw+o7sZ4ybgzAXEvnXa6LcGbsAyp8jB1ESM8j42KBuOL+ntKrrz3Mpc9q
+         32w8An1fXDXhwc1+nATwxU1e/DbRMVY6am8riFIyiG30gk4sRMarQ9EBSDAc0gwG1QDV
+         kdiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701748409; x=1702353209;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yMlipu20UYvgghTH7yK/DQyqHGpCso8cXNl7YDlvHV4=;
+        b=Rn6EMByPIb7pNn5sZYeuUjGnyKDNOlFCccN0MFhK9v1GtNvkKeujDLApEfLVUTHLtJ
+         DVXNZKP0xpXJFEnaD5zD+q9l7paFrSr8+iYzIO5vdHgGxO4ix0ws/lqTdX8pdo06t1Ak
+         vUPWyu+d7PH/Wl1gwFcqLuU1bv1hgoHZWqgmV8QuRiNG98cK5HE1aU2UhGsPL3G5u3j0
+         C8bwhT6XIMY0v5WarOnzUHxc+9MY/rX4J/ojW7zX/jjoMVHeJqAlPltx1eB+9ZX0aD7p
+         NZ/cWDCelAjoqC10/k6+44nSS/AtESAcT3NltQzliwQIpSzejC6gwKgiy2X3MRO7btcb
+         1QDA==
+X-Gm-Message-State: AOJu0YzyYj6dJDqNrea47TPh3MNobFlSATBUi/4oNbJlEMgeb+PtrQ0E
+        aWZL4+n1DxoQqVaCWm8f4AM=
+X-Google-Smtp-Source: AGHT+IHU6n/h4gPzeKgRihvC/XsoaUJ238XyaynjfYs3PCK4g+2uVE7ZX15hbO0e9OJ+hevG6s8Fxw==
+X-Received: by 2002:a05:6870:1d09:b0:1fb:75a:6d44 with SMTP id pa9-20020a0568701d0900b001fb075a6d44mr5995704oab.107.1701748408675;
+        Mon, 04 Dec 2023 19:53:28 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id hl19-20020a0568701b1300b001fb1e7ec1besm1935723oab.39.2023.12.04.19.53.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 19:53:28 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <7ac20588-3816-4e53-be31-8cc4c0de7caa@roeck-us.net>
+Date:   Mon, 4 Dec 2023 19:53:26 -0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|MW4PR11MB6737:EE_
-X-MS-Office365-Filtering-Correlation-Id: b5b01ee0-95d4-4670-50b0-08dbf549919d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gsvWeGJnBU5xh7an8oFYsbkbKB547+DJvG00kbBkehABFwP+QG7kUhjV5RuqaVw1z4sKKtx196++VHs8Lgb0w19IiqfDTtVH1zD+A1UCS8lR8+1mpM1QnnU72fU+odjx0fbU2mcGcmllDj30bFjcKyCjezF3cynMr1rCLbK+nuiUCgz3DVnjLpHiY0bEKbv5pbwdAQwMlGl6NHNUsLi6kZ5q5zt5mlP7/Ku5SZHEegw6wY6RA/5XZJmbF0vfTlVWDfJetsJCwPGhd3zCqtWf4lCt68efXGHXHjCFO+47Yt5ArfIrluHUpVd4LVOxlfftlbTzizJnalESkQrx1QpupCzZ1q9Rmnea1OT3GavwymDz3azIpynOIYM2VIwaYDg7+E6epWFGezxSP0widUW+LIWd/QX6/ErRSFeka3MsU3h3sijYc3f7Eke7XTERUQiTTkl7m5MfFDQnnMy6UePrgBa0krx/RSIt9RBAF9QE3Exu9HSlPC003pC6j1jd3uZ+XzykOCFZNaHOxJJyDPeAqsXrJEziJMrZBOhIavzar8BMbozqIxsQa96+URQJIuNf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(376002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(5660300002)(86362001)(7416002)(4326008)(8676002)(8936002)(2906002)(3450700001)(41300700001)(6512007)(6506007)(82960400001)(83380400001)(6486002)(478600001)(26005)(6666004)(38100700002)(316002)(6916009)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gLsNvpFMxqVmBzuJnp5bPRNqd287UJeFKTQhd6FHDNR6NqoMvb+yzg7b9DtF?=
- =?us-ascii?Q?Dr+7M7rDVVcgdGtY9KQ65X2dO5/UeM5tgfpIEgPtxP09pYrTcmpBBaW4ZRSn?=
- =?us-ascii?Q?HMSI3dWVyx96Oz0ZeJijZivR0zK7XvllMHl+mNGktNvLAeUuflRsdBlHCpmb?=
- =?us-ascii?Q?zDWu5gBgjCGdD+t977voYyqY/U1Ui1m93073mK81IlQHgljdyf0y36PvvbF1?=
- =?us-ascii?Q?sQseVEF9VN6UQElRyh5qERKl9g2yS5N04iy6gr+ELiAJuCa6PcPO96Q0GftT?=
- =?us-ascii?Q?TJKqdjlyjAdV9NlY1xzU7D9fgsEQEIP7yUqKhZSuG+r8xF176O3HMp6cZNIi?=
- =?us-ascii?Q?xg7KXmcINYu6OJY1F9qcqcp/5ShMimdbeb8dtThV5oYZ9a5jG3o2fK3uu1eW?=
- =?us-ascii?Q?hm3wICst557AURw87KLcUTU8SaHh8D6+V9uB6/Z9zQ12JILmDPOtK35r990L?=
- =?us-ascii?Q?+OmsDnqk//k4T87cdaupKiZGmWF8hCcvcA99Vlpp5eGCggZomvsQwmmvXndO?=
- =?us-ascii?Q?ICUXVShq3WBuptFYn/q2acmDIdEQKT/R7svU0LJrhDo2GQxwYkSsa3gwVzTP?=
- =?us-ascii?Q?KbKAfaogBdPeShNhIUngiK3LUHSzoO7I2G3OjH/F4quJB9ohxXhXeaOetglM?=
- =?us-ascii?Q?3C3NrMBZO0WlDIy9CYPIG37zSgh8+/8H+cvHdwy9AQk33bZgch1afgNafzFJ?=
- =?us-ascii?Q?1JCv6PKOFzEqEr0VgAE2QxjIqPtxHbN4I5/dQi+pefDmNYyThFj96HiuAQf/?=
- =?us-ascii?Q?Uk5mbfYMkw9Y2FLpFiwbtNMvJiNrilxHH7HwCDuFUJrWdAs56nFvbjDLAhja?=
- =?us-ascii?Q?oG9ZJcIMHzBbbBscxMbPYs1TeNvORKkVxR7c2ADQLWoyo6s5sjfbEUFOohrQ?=
- =?us-ascii?Q?pVOktW1yXoo7PrK/Nto9iQAQNk0Pzr8+03Y13GIMG9+8V8PoKNGdoT3YuGwf?=
- =?us-ascii?Q?mmggnlLduJyuxFK9GjHYKuQUXlL49yACMzQO79jyJUjVCCVxUK3yEIdVdTui?=
- =?us-ascii?Q?gYitxY7paFUEJjOoD3Ycx7Lyzdvq/RYxxZKcyw2VtwZME4ODyABgCbbi3UoS?=
- =?us-ascii?Q?R1/0UXecItF2/j/xBEgbHBoG/IcXGPBi6vuEG08o3PS+lYMQv2uQ2A0xy8Fg?=
- =?us-ascii?Q?FyMjYTp2uFG7Nxa3BTvd6IaTvtYAnU5wj82mBE1kEIRpk8M/Ar68GSu0YeUX?=
- =?us-ascii?Q?vLfIjL6ip6p5uJEwqTPl2xto3y+8BWIwa516ldefjJ//c/uX0rXx6qN6nmQo?=
- =?us-ascii?Q?KbC6HskU/cU1cnhyXAIBavyeMrp8+WwQAds1M+RHh1gDJctL6mk8ZczjnN5F?=
- =?us-ascii?Q?SeChg7OHIVYX5OvhMi2CW6MbucbrWoIEG4TwFWv3Z4OkK/eP8sGAolhob5pI?=
- =?us-ascii?Q?KkCzfdyTkCX23l2NghJnNU6LiQIuQ8W2EmmZgZxLeCrAY2rRDOF++s6YtyzD?=
- =?us-ascii?Q?gpYzJ+llc3x7KVp61s7MHaEZobauQGzfO25b1//FTZEd54+UtADcS9W9ukp3?=
- =?us-ascii?Q?c0foB8TMl+ntvBdl9AAwl1bkWHKMfcbBAAD5hABSkNpv2nwDbjzKS3S7uMKP?=
- =?us-ascii?Q?7r1/7yKOagATxJL7+Cn/eDVvpf4PFm7duKOyArrF?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5b01ee0-95d4-4670-50b0-08dbf549919d
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 04:20:53.1597
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rLDW5+NU5YEHYW88yEcocr7CNP/4d0EWhcqT06hHtswKpbrxQ1WlbboWqD+0HDeohVWs5c90OS5wz3AzHjddfQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6737
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.4 00/94] 5.4.263-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+References: <20231205031522.815119918@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20231205031522.815119918@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 09:00:55AM -0800, Sean Christopherson wrote:
-> On Sat, Dec 02, 2023, Yan Zhao wrote:
-> Please list out the pros and cons for each.  In the cons column for piggybacking
-> KVM's page tables:
+On 12/4/23 19:16, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.263 release.
+> There are 94 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
->  - *Significantly* increases the complexity in KVM
-The complexity to KVM (up to now) are
-a. fault in non-vCPU context
-b. keep exported root always "active"
-c. disallow non-coherent DMAs
-d. movement of SPTE_MMU_PRESENT
-
-for a, I think it's accepted, and we can see eager page split allocates
-       non-leaf pages in non-vCPU context already.
-for b, it requires exported TDP root to keep "active" in KVM's "fast zap" (which
-       invalidates all active TDP roots). And instead, the exported TDP's leaf
-       entries are all zapped.
-       Though it looks not "fast" enough, it avoids an unnecessary root page
-       zap, and it's actually not frequent --
-       - one for memslot removal (IO page fault is unlikey to happen during VM
-                                  boot-up)
-       - one for MMIO gen wraparound (which is rare)
-       - one for nx huge page mode change (which is rare too)
-for c, maybe we can work out a way to remove the MTRR stuffs.
-for d, I added a config to turn on/off this movement. But right, KVM side will
-       have to sacrifice a bit for software usage and take care of it when the
-       config is on.
-
->  - Puts constraints on what KVM can/can't do in the future (see the movement
->    of SPTE_MMU_PRESENT).
->  - Subjects IOMMUFD to all of KVM's historical baggage, e.g. the memslot deletion
->    mess, the truly nasty MTRR emulation (which I still hope to delete), the NX
->    hugepage mitigation, etc.
-NX hugepage mitigation only exists on certain CPUs. I don't see it in recent
-Intel platforms, e.g. SPR and GNR...
-We can disallow sharing approach if NX huge page mitigation is enabled.
-But if pinning or partial pinning are not involved, nx huge page will only cause
-unnecessary zap to reduce performance, but functionally it still works well.
-
-Besides, for the extra IO invalidation involved in TDP zap, I think SVM has the
-same issue. i.e. each zap in primary MMU is also accompanied by a IO invalidation.
-
+> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
+> Anything received after that time might be too late.
 > 
-> Please also explain the intended/expected/targeted use cases.  E.g. if the main
-> use case is for device passthrough to slice-of-hardware VMs that aren't memory
-> oversubscribed, 
->
-The main use case is for device passthrough with all devices supporting full
-IOPF.
-Opportunistically, we hope it can be used in trusted IO, where TDP are shared
-to IO side. So, there's only one page table audit required and out-of-sync
-window for mappings between CPU and IO side can also be eliminated.
 
-> > - Unified page table management
-> >   The complexity of allocating guest pages per GPAs, registering to MMU
-> >   notifier on host primary MMU, sub-page unmapping, atomic page merge/split
-> 
-> Please find different terminology than "sub-page".  With Sub-Page Protection, Intel
-> has more or less established "sub-page" to mean "less than 4KiB granularity".  But
-> that can't possibly what you mean here because KVM doesn't support (un)mapping
-> memory at <4KiB granularity.  Based on context above, I assume you mean "unmapping
-> arbitrary pages within a given range".
->
-Ok, sorry for this confusion.
-By "sub-page unmapping", I mean atomic huge page splitting and unmapping smaller
-range in the previous huge page.
+Building arm64:allmodconfig ... failed
+--------------
+Error log:
+drivers/mmc/host/sdhci-sprd.c: In function 'sdhci_sprd_set_power':
+drivers/mmc/host/sdhci-sprd.c:393:17: error: implicit declaration of function 'mmc_regulator_disable_vqmmc'; did you mean 'mmc_regulator_set_vqmmc'? [-Werror=implicit-function-declaration]
+   393 |                 mmc_regulator_disable_vqmmc(mmc);
+       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+       |                 mmc_regulator_set_vqmmc
+drivers/mmc/host/sdhci-sprd.c:396:17: error: implicit declaration of function 'mmc_regulator_enable_vqmmc'; did you mean 'mmc_regulator_set_vqmmc'? [-Werror=implicit-function-declaration]
+   396 |                 mmc_regulator_enable_vqmmc(mmc);
+       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
+       |                 mmc_regulator_set_vqmmc
+
+Commit 2b11e5bd4ac0 ("mmc: sdhci-sprd: Fix vqmmc not shutting down after
+the card was pulled") calls those functions without introducing them.
+
+Guenter
 
