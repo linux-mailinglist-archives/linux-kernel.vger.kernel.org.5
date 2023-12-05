@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F02805DC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0471F805DA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjLESGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:06:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
+        id S1345563AbjLESGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:06:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235098AbjLESGE (ORCPT
+        with ESMTP id S1345836AbjLESGV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:06:04 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B956FD59
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:06:10 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c9f166581dso44487801fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:06:10 -0800 (PST)
+        Tue, 5 Dec 2023 13:06:21 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7131BC
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:06:27 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54cd8f5bb5cso2684254a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:06:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701799567; x=1702404367; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1701799583; x=1702404383; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yIfHQzLRNk16QqkBZwMJZjQhju2kwUVGG/rCp3aPtx0=;
-        b=G+SarQvP6GHYdl44fJGIL2EgnFTvIV3eZCIyBGXIfs7A9o8K9tBho54/E4WTnLQcSX
-         SHuDqow3ZoRISYK1zoXtVEKYul9bZtUiRV3pan01avgNhWjQVuOpdx6++PpnTEnZ2y3X
-         dE+t77xpIc7o/oTofcnkFHXu/oQVcRYz1Dl2k=
+        bh=O8H1TVEfqWDVKjsBzidGMR3JoOaMrLGMGY6/yIdEsvY=;
+        b=S7t138HEDcVBI9M+qGbgNw1uoftVk9DRjlmWu2xjL9tG9Dl+YPXF70RvnN8A/rOCLe
+         iaKjOtB5gobicKbQ7bPJ5wluYXYYj89uQNeTJKsDhOMdekpv7m+May2A95DzFh+UysoH
+         w08TFMxicfF3dBo0vmxIhZxHlVz/o+cblJ4MM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701799567; x=1702404367;
+        d=1e100.net; s=20230601; t=1701799583; x=1702404383;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yIfHQzLRNk16QqkBZwMJZjQhju2kwUVGG/rCp3aPtx0=;
-        b=dnuISg+EQKzj1HBk9HcimOlhTTM7wCRp9XMpPxlwN0UOYlpHktdtG9Z4s5xo05H7Ux
-         5RRfZE6JRihe45axq03PNRV7Nhg0i3QbvsU4gjzqbXt3FtvKwQyFtxeXpn7QyumVI0jZ
-         wbBbR3i7bGM0mZ1IcCnX3Zpj8oMalqn0pT+BkmnXCvc65O6jAaUGVRV92kqxv+1xjwru
-         deW+zVnQlnaLGbAM0IHEuxM+HklFLgwZLMINxYA3OrWjh0UfiZlZ5A04V1MJkab78WrB
-         6u78IuPOF3/rUNYhi5bTE0bwlKbobt6th3vki+uYOyjLEkUaC1HRBW4R/3csTMeLaelh
-         KI/Q==
-X-Gm-Message-State: AOJu0YxH5JnuMElcmNjS9yu2d1FVr1rAXchiHlXgoZgsTZ+x6q84wRqD
-        wGB1LcbOH8hbxt9Zsmmkek4ax8G2a75UIEE3OJX9q2E2
-X-Google-Smtp-Source: AGHT+IH/C+eDcc6za8EWITj3mr1sc0F2pf5SK4KQyHfS4EG2V5OZO6uHcNRXbZRva63f/BzsvVL5OQ==
-X-Received: by 2002:a2e:6819:0:b0:2ca:67:d3f7 with SMTP id c25-20020a2e6819000000b002ca0067d3f7mr1919654lja.63.1701799567351;
-        Tue, 05 Dec 2023 10:06:07 -0800 (PST)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
-        by smtp.gmail.com with ESMTPSA id y10-20020a056402134a00b0054c86f882bcsm1399832edw.22.2023.12.05.10.06.06
+        bh=O8H1TVEfqWDVKjsBzidGMR3JoOaMrLGMGY6/yIdEsvY=;
+        b=cZ/P0530Z4ht2un0bxKt9rIID1GmhdL7vRdIxo98Xh4jvBMql9rPlKgN6uF9FCCJee
+         pO5bQjEYuumVDTeSiwgWzUF80BOyy2LYF6jmGzVw/SOwPdiu+Sws0De3GG8Q20DBo98B
+         8Uz+iPD8KxC4JuKzMIe1JR6+zImpG1QvIIVCBU2rsS6eV0Ul2VntsOEoMTTTDT1VNd2C
+         dVC46IzhE51Ncqrsq0nAqoilfGjSW2Rf09ptdBBbfUmva2cSy39R1pwIzcNH9/H7MDSK
+         QrGmm1nfb1GhJW/gxWw57B3gQkVPOy9gYvrYocOEPozIoKlkLDgEoDIqpbon50Ox9C9K
+         2ZJg==
+X-Gm-Message-State: AOJu0Yz23x6rq4jZ4zANcWZW2bea0/z013C7jA9+AJcbrdQJ+pji9pzD
+        DgEHJsjFYG5YbIRyxfkl3O2a5x5PZyFhH1J7znJcTAqn
+X-Google-Smtp-Source: AGHT+IEZAorUcxA/XAiqeqo/gFEF65Oh5t0I92pxRRyfPeKSVuqM6eRlAeIX3j8EQIesOXGjYYriZA==
+X-Received: by 2002:a17:906:b358:b0:a19:a37:ab80 with SMTP id cd24-20020a170906b35800b00a190a37ab80mr842410ejb.47.1701799583571;
+        Tue, 05 Dec 2023 10:06:23 -0800 (PST)
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
+        by smtp.gmail.com with ESMTPSA id d15-20020a170906344f00b00a10f3030e11sm7019889ejb.1.2023.12.05.10.06.22
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 10:06:07 -0800 (PST)
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so2045e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:06:06 -0800 (PST)
-X-Received: by 2002:a7b:cb59:0:b0:40b:4221:4085 with SMTP id
- v25-20020a7bcb59000000b0040b42214085mr551583wmj.1.1701799566754; Tue, 05 Dec
- 2023 10:06:06 -0800 (PST)
+        Tue, 05 Dec 2023 10:06:22 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40b51e26a7aso2015e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:06:22 -0800 (PST)
+X-Received: by 2002:a7b:c4c6:0:b0:40b:3d89:ba70 with SMTP id
+ g6-20020a7bc4c6000000b0040b3d89ba70mr550221wmk.7.1701799582662; Tue, 05 Dec
+ 2023 10:06:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20231205123630.988663-1-treapking@chromium.org> <20231205123630.988663-2-treapking@chromium.org>
-In-Reply-To: <20231205123630.988663-2-treapking@chromium.org>
+References: <20231205123630.988663-1-treapking@chromium.org> <20231205203536.3.I8fc55a1de13171aa738b14a167bab8df76c2ea2a@changeid>
+In-Reply-To: <20231205203536.3.I8fc55a1de13171aa738b14a167bab8df76c2ea2a@changeid>
 From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Dec 2023 10:05:54 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=U_PpD=tsyP7QuXU2p-R24U6JXAWQONPT_ioMr1P7E-aw@mail.gmail.com>
-Message-ID: <CAD=FV=U_PpD=tsyP7QuXU2p-R24U6JXAWQONPT_ioMr1P7E-aw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] drm/panel-edp: Add powered_on_to_enable delay
+Date:   Tue, 5 Dec 2023 10:06:04 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WcrW8pKmTq0fFK6OUoaXxUgAocO=eNd-oGxF7jtbyiGA@mail.gmail.com>
+Message-ID: <CAD=FV=WcrW8pKmTq0fFK6OUoaXxUgAocO=eNd-oGxF7jtbyiGA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] drm/edp-panel: Add panels delay entries
 To:     Pin-yen Lin <treapking@chromium.org>
 Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
         Jessica Zhang <quic_jesszhan@quicinc.com>,
@@ -75,9 +75,9 @@ Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -89,19 +89,30 @@ Hi,
 On Tue, Dec 5, 2023 at 4:36=E2=80=AFAM Pin-yen Lin <treapking@chromium.org>=
  wrote:
 >
-> Add the support of powered_on_to_enable delay as the minimum time that
-> needs to have passed between the panel powered on and enable may begin.
+> @@ -1999,10 +2031,17 @@ static const struct edp_panel_entry edp_panels[] =
+=3D {
+>         EDP_PANEL_ENTRY('I', 'V', 'O', 0x854b, &delay_200_500_p2e100, "R1=
+33NW4K-R0"),
+>         EDP_PANEL_ENTRY('I', 'V', 'O', 0x8c4d, &delay_200_150_e200, "R140=
+NWFM R1"),
 >
-> This delay is seen in BOE panels as the minimum delay of T3+T4+T5+T6+T8
-> in the eDP timing diagrams.
->
-> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
-> ---
->
->  drivers/gpu/drm/panel/panel-edp.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+> +       EDP_PANEL_ENTRY('K', 'D', 'C', 0x044f, &delay_200_500_e50, "KD116=
+N9-30NH-F3"),
+> +       EDP_PANEL_ENTRY('K', 'D', 'C', 0x05f1, &delay_200_500_e80_d50, "K=
+D116N5-30NV-G7"),
+>         EDP_PANEL_ENTRY('K', 'D', 'B', 0x0624, &kingdisplay_kd116n21_30nv=
+_a010.delay, "116N21-30NV-A010"),
+>         EDP_PANEL_ENTRY('K', 'D', 'C', 0x0809, &delay_200_500_e50, "KD116=
+N2930A15"),
+> +       EDP_PANEL_ENTRY('K', 'D', 'B', 0x1118, &delay_200_500_e50, "KD116=
+N29-30NK-A005"),
+>         EDP_PANEL_ENTRY('K', 'D', 'B', 0x1120, &delay_200_500_e80_d50, "1=
+16N29-30NK-C007"),
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Huh, I apparently missed it when reviewing an earlier patch, but the
+above table mixes 'KDB' and 'KDC'. Can you fix that and then base your
+patch atop it?
 
-This needs to bake a little while on the lists (1-2 weeks) before I
-apply it in case others have opinions.
+
+
+-Doug
