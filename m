@@ -2,59 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E74805662
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7DC805667
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345530AbjLENsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49576 "EHLO
+        id S1345528AbjLENt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:49:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345418AbjLENsl (ORCPT
+        with ESMTP id S1345418AbjLENtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:48:41 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F02901AA;
-        Tue,  5 Dec 2023 05:48:46 -0800 (PST)
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 96E9E6607295;
-        Tue,  5 Dec 2023 13:48:44 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701784125;
-        bh=QHpD8YOtXaDi52IC6086xEhq6SgOi9Ayt/A/doymTOM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=k9JSa9mQfWzzxuQqnphrYKt7/I5ycZAtjjkLEWWs2CnpBriiSCbPMf0+f6URj5HWQ
-         oMTY9YoPLqMr7/VO/C2TOOHlrIlVKvOTdZXY4YnpSCHhD32toLapIZe94rRAC+CCe/
-         1bRWwaltloNcAt/Jl6B4JY+iWqpAcPv8DZQH44MnpcDHOQaa1OmXgxdl3yPONgty/e
-         EQiZE3vdP9iyv00JZRELUbVLKOkJC64oLzKL8i/gUt67vNiq+kAAsZd9R9eJ5lAnXj
-         fxh0FX8v5QpX7sRsUTqiBIHQ1VL2dPGwD1wC7qjZjTyWmX/dOzqk03nJ3DtYNhcJtO
-         RZua2aA85eXhg==
-Message-ID: <03e950a1-0334-40ab-aa77-ac8175877172@collabora.com>
-Date:   Tue, 5 Dec 2023 14:48:42 +0100
+        Tue, 5 Dec 2023 08:49:25 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C583EB2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:49:30 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B45D139F;
+        Tue,  5 Dec 2023 05:50:17 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0837B3F6C4;
+        Tue,  5 Dec 2023 05:49:28 -0800 (PST)
+Message-ID: <f2955021-af48-4fb8-9159-b700e4ddc926@arm.com>
+Date:   Tue, 5 Dec 2023 13:49:27 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] thermal: Add support for device tree thermal zones
- consumers
-Content-Language: en-US
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>, rafael@kernel.org
-Cc:     rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        wenst@chromium.org
-References: <20231115144857.424005-1-angelogioacchino.delregno@collabora.com>
- <09de3b1b-b725-46b8-97a6-55776fd5ca45@linaro.org>
- <99c1fd8f-4b17-4d4a-87a5-6a65745632fe@collabora.com>
- <ce110f25-5431-4c80-b037-add7fd7461bd@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <ce110f25-5431-4c80-b037-add7fd7461bd@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH RFC 00/39] mm/rmap: interface overhaul
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Peter Xu <peterx@redhat.com>
+References: <20231204142146.91437-1-david@redhat.com>
+ <993ea322-8cdb-4ab1-84d3-0a1cb40049c9@arm.com>
+ <067753e4-faf0-4bc0-9703-ec97b7de705e@redhat.com>
+ <1ba5dd86-a201-4243-bab0-349395468236@arm.com>
+ <537ac106-e4f6-4845-aa09-29b775269562@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <537ac106-e4f6-4845-aa09-29b775269562@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,175 +53,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 01/12/23 15:18, Daniel Lezcano ha scritto:
-> 
-> Hi Angelo,
-> 
-> On 01/12/2023 10:52, AngeloGioacchino Del Regno wrote:
->> Il 30/11/23 14:22, Daniel Lezcano ha scritto:
+On 05/12/2023 13:39, David Hildenbrand wrote:
+> On 05.12.23 14:31, Ryan Roberts wrote:
+>> On 05/12/2023 09:56, David Hildenbrand wrote:
+>>>>>
+>>>>> Ryan has series where we would make use of folio_remove_rmap_ptes() [1]
+>>>>> -- he carries his own batching variant right now -- and
+>>>>> folio_try_dup_anon_rmap_ptes()/folio_dup_file_rmap_ptes() [2].
+>>>>
+>>>> Note that the contpte series at [2] has a new patch in v3 (patch 2), which
+>>>> could
+>>>> benefit from folio_remove_rmap_ptes() or equivalent. My plan was to revive [1]
+>>>> on top of [2] once it is merged.
+>>>>
+>>>>>
+>>>>> There is some overlap with both series (and some other work, like
+>>>>> multi-size THP [3]), so that will need some coordination, and likely a
+>>>>> stepwise inclusion.
+>>>>
+>>>> Selfishly, I'd really like to get my stuff merged as soon as there is no
+>>>> technical reason not to. I'd prefer not to add this as a dependency if we can
+>>>> help it.
 >>>
->>> Hi Angelo,
->>>
->>> thanks for your proposal
->>>
->>> On 15/11/2023 15:48, AngeloGioacchino Del Regno wrote:
->>>> Add helpers to support retrieving thermal zones from device tree nodes:
->>>> this will allow a device tree consumer to specify phandles to specific
->>>> thermal zone(s), including support for specifying thermal-zone-names.
->>>> This is useful, for example, for smart voltage scaling drivers that
->>>> need to adjust CPU/GPU/other voltages based on temperature, and for
->>>> battery charging drivers that need to scale current based on various
->>>> aggregated temperature sensor readings which are board-dependant.
->>>
->>> IMO these changes are trying to solve something from the DT perspective adding 
->>> more confusion between phandle, names, types etc ... and it does not really help 
->>> AFAICT.
->>>
+>>> It's easy to rework either series on top of each other. The mTHP series has
+>>> highest priority,
+>>> no question, that will go in first.
 >>
->> I honestly don't see how can assigning thermal zones (like we're doing for other
->> consumers like clocks, etc) to a node can be confusing?
->> To me, it looks like a pattern that is repeating over and over in device tree, for
->> multiple types of consumers.
+>> Music to my ears! It would be great to either get a reviewed-by or feedback on
+>> why not, for the key 2 patches in that series (3 & 4) and also your opinion on
+>> whether we need to wait for compaction to land (see cover letter). It would be
+>> great to get this into linux-next ASAP IMHO.
 > 
-> Because there is no need to add anything. Everything is already available.
+> On it :)
 > 
-> Add a phandle in the device node wanting to access the thermal zone, get the 
-> thermal zone device node pointer name and use thermal_zone_device_get_by_name(), 
-> but see below ...
-> 
-> 
->>> Overall I'm a bit reluctant to add more API in the thermal.h. From my POV, we 
->>> should try to remove as much as possible functions from there.
+>>
 >>>
+>>> Regarding the contpte, I think it needs more work. Especially, as raised, to not
+>>> degrade
+>>> order-0 performance. Maybe we won't make the next merge window (and you already
+>>> predicated
+>>> that in some cover letter :P ). Let's see.
 >>
->> Cleaning up the API is always something that makes sense, but I don't see why this
->> should prevent useful additions...
+>> Yeah that's ok. I'll do the work to fix the order-0 perf. And also do the same
+>> for patch 2 in that series - would also be really helpful if you had a chance to
+>> look at patch 2 - its new for v3.
+> 
+> I only skimmed over it, but it seems to go into the direction we'll need.
+> Keeping order-0 performance unharmed should have highest priority. Hopefully my
+> microbenchmarks are helpful.
+
+Yes absolutely - are you able to share them??
+
+> 
 >>
->>> That said, the name of a thermal zone does not really exists and there is 
->>> confusion in the code between a name and a type. (type being assumed to be a name).
->>
->> That depends on how you see it. What my brain ticks around is:
->> A thermal zone is a physical zone on the PCB, or a physical zone on a chip,
->> which has its own "real name", as in, it can be physically identified.
-> 
-> What I meant the thermal framework does not really have a thermal zone name, just a 
-> type. So it is possible to find several thermal zone with the same type like "acpitz"
-> 
->> Example: The "Skin area" of a laptop is something "reachable" from the user as an
->> externally exposed part. This area's temperature is read by thermistor EXTERNAL_1,
->> not by thermistor "SKIN0".
->>
->> Same goes for "big cluster area", "little cluster area", "cpu complex area", etc.
-> 
-> Today that is solved with a configuration file mapping a specific thermal zone to a 
-> name but still fragile as we can have duplicate thermal zone types.
-> 
->>> There could be several thermal zones with the same types for non-DT description. 
->>> However, the documentation says we should create an unique type in the DT and 
->>> that is what is happening when registering a thermal zone from the DT [1] as we 
->>> use the node name.
 >>>
->>>  From an external driver, it possible to get the np->name from the phandles and 
->>> call thermal_zone_get_by_name(np->name).
->>>
+>>> But again, the conflicts are all trivial, so I'll happily rebase on top of
+>>> whatever is
+>>> in mm-unstable. Or move the relevant rework to the front so you can just carry
+>>> them/base on them. (the batched variants for dup do make the contpte code much
+>>> easier)
 >>
->> That'd still require you to pass a thermal zone phandle to the node(driver) though?
+>> So perhaps we should aim for mTHP, then this, then contpte last, benefiting from
+>> the batching.
 > 
-> Yes
+> Yeah. And again, I don't care too much if I have to rebase on top of your work
+> if this here takes longer. It's all a fairly trivial conversion.
 > 
->>> The hardening change which may make sense is to check a thermal zone with the 
->>> same name is not already registered in thermal_of.c by checking 
->>> thermal_zone_get_by_name() fails before registering it.
 >>>
+>>> [...]
+>>>
+>>>>>
+>>>>>
+>>>>> New (extended) hugetlb interface that operate on entire folio:
+>>>>>    * hugetlb_add_new_anon_rmap() -> Already existed
+>>>>>    * hugetlb_add_anon_rmap() -> Already existed
+>>>>>    * hugetlb_try_dup_anon_rmap()
+>>>>>    * hugetlb_try_share_anon_rmap()
+>>>>>    * hugetlb_add_file_rmap()
+>>>>>    * hugetlb_remove_rmap()
+>>>>>
+>>>>> New "ordinary" interface for small folios / THP::
+>>>>>    * folio_add_new_anon_rmap() -> Already existed
+>>>>>    * folio_add_anon_rmap_[pte|ptes|pmd]()
+>>>>>    * folio_try_dup_anon_rmap_[pte|ptes|pmd]()
+>>>>>    * folio_try_share_anon_rmap_[pte|pmd]()
+>>>>>    * folio_add_file_rmap_[pte|ptes|pmd]()
+>>>>>    * folio_dup_file_rmap_[pte|ptes|pmd]()
+>>>>>    * folio_remove_rmap_[pte|ptes|pmd]()
+>>>>
+>>>> I'm not sure if there are official guidelines, but personally if we are
+>>>> reworking the API, I'd take the opportunity to move "rmap" to the front of the
+>>>> name, rather than having it burried in the middle as it is for some of these:
+>>>>
+>>>> rmap_hugetlb_*()
+>>>>
+>>>> rmap_folio_*()
+>>>
+>>> No strong opinion. But we might want slightly different names then. For example,
+>>> it's "bio_add_folio" and not "bio_folio_add":
+>>>
+>>>
+>>> rmap_add_new_anon_hugetlb()
+>>> rmap_add_anon_hugetlb()
+>>> ...
+>>> rmap_remove_hugetlb()
+>>>
+>>>
+>>> rmap_add_new_anon_folio()
+>>> rmap_add_anon_folio_[pte|ptes|pmd]()
+>>> ...
+>>> rmap_dup_file_folio_[pte|ptes|pmd]()
+>>> rmap_remove_folio_[pte|ptes|pmd]()
+>>>
+>>> Thoughts?
 >>
->> Yes we can harden that, but I don't see how is this relevant to thermal zones
->> device tree consumers (proposed in this patch)?
+>> Having now reviewed your series, I have a less strong opinion, perhaps it's
+>> actually best with your original names; "folio" is actually the subject after
+>> all; it's the thing being operated on.
+>>
 > 
-> Putting apart the fact the change you propose is not relevant as there is already 
-> everything in. My comment is about the current state of the thermal framework.
+> I think having "folio" in there looks cleaner and more consistent to other
+> functions.
 > 
-
-I don't really understand this assertion, and I'm afraid that I'm underestimating
-something so, in case, please help me to understand what am I missing here.
-
-For how I see it, in the thermal framewoek I don't see any "somewhat standardized"
-helper like the one(s) that I'm introducing with this patch (thermal_of_get_zone(),
-thermal_of_get_zone_by_index()), and this is the exact reason why I'm proposing
-this patch.
-
-Then again - I mean no disrespect - it's just that I don't understand (yet) why you
-are saying that "everything is already available", because I really don't see it.
-
->   - A thermal zone does not have a name but a type
+> I tend to like "rmap_dup_file_folio_[pte|ptes|pmd]()", because then we have
+> "file folio" and "anon folio" as one word.
 > 
->   - We use the thermal zone DT node name to register as a name but it is a type 
-> from the thermal framework point of view
+> But then I wonder about the hugetlb part. Maybe simply
+> "hugetlb_rmap_remove_folio()" etc.
+> 
+> Having the "hugetlb_" prefix at the beginning feels like the right thing to do,
+> looking at orher hugetlb special-handlings.
+> 
+> But I'll wait a bit until I go crazy on renaming :)
 
-This is something that I didn't realize before. Thanks for that.
+I suspect we could argue in multiple directions for hours :)
 
-...and yes, we're registering a "name" from DT as a "type" in the framework, this
-is highly confusing and needs to be cleaned up.
+Let's see if others have opinions.
+
+FWIW, I've looked through all the patches; I like what I see! This is a really
+nice clean up and will definitely help with the various patch sets I've been
+working on. Apart from the comments I've already raised, looks in pretty good
+shape to me.
 
 > 
->   - We can register several thermal zones with the same type (so we can have 
-> duplicate names if we use type as name)
+>>
+>>>
+>>>>
+>>>> I guess reading the patches will tell me, but what's the point of "ptes"?
+>>>> Surely
+>>>> you're either mapping at pte or pmd level, and the number of pages is
+>>>> determined
+>>>> by the folio size? (or presumably nr param passed in)
+>>>
+>>> It's really (currently) one function to handle 1 vs. multiple PTEs. For example:
+>>>
+>>> void folio_remove_rmap_ptes(struct folio *, struct page *, unsigned int nr,
+>>>          struct vm_area_struct *);
+>>> #define folio_remove_rmap_pte(folio, page, vma) \
+>>>      folio_remove_rmap_ptes(folio, page, 1, vma)
+>>> void folio_remove_rmap_pmd(struct folio *, struct page *,
+>>>          struct vm_area_struct *);
+>>
+>> Yeah now that I've looked at the series, this makes sense. "ptes" was originally
+>> making me think of contpte, but I suspect I'll be the only one with that
+>> association :)
 > 
-
-...which makes sense, after realizing that we're registering a TYPE and not a NAME,
-and I agree about the logic for which that multiple zones can be of the same type.
-
->   - We use thermal_zone_device_get_by_name() but actually it checks against the 
-> type and as we can have multiple identical types, the function returns the first 
-> one found
+> Ah, yes :)
 > 
-
-The first thing that comes to mind is to rename thermal_zone_device_get_by_name()
-to thermal_zone_device_get_by_type(), but then I'd be reintroducing the former and
-this gives me concerns about OOT drivers using that and developers getting highly
-confused (name->type, but name exists again, so they might erroneously just fix the
-call to xxx_by_name() instead of changing it to xxx_by_type()).
-
-Should I *not* be concerned about that? Any suggestion?
-
-
-I'd be glad to go on and "make it clear" that we're doing type comparison and not
-name comparison (with that rename, or similar), because (again) I see how confusing
-that is. I was confused by that as well, so... :-)
-
-> All this is a bit fuzzy and confusing. So if you add these mapping between thermal 
-> zone nodes and names, that will be even more confusing.
-> 
-
-IMO, not really. The thermal-zone-names are "local to a driver", not to the thermal
-framework itself... it's like for clocks, interrupts, etc.: you want to get a TZ
-that is declared with name "xyz", but it doesn't matter what the real name of the
-actual TZ actually is.
-
-Since I'm not sure I expressed myself in the best possible way, I'm referring to
-the following example:
-
-	clock-names = "main";
-
-...but the "real name" for the clock in the clk framework is "mfg_bg3d".
-
-That's the same with what I'm introducing here (forget for just one moment that
-there is this name<->type issue):
-
-	thermal-zone-names = "xyz";
-
-...but the "real name" for the TZ in the thermal framework is "gpu0-thermal".
-
-> Ideally, it would make more sense to cleanup this in order to have something like 
-> an enum type describing the thermal zone (battery, cpu, npu, gpu, dsp, ...) which 
-> would be used as a type of thermal zone and then an unique name (cpu0, cpu1, 
-> modem0, modem1, gpu-bottom, gpu-top, gpu-center, skin, ...).
-> 
-
-This might get more complicated than how it looks, but would actually make sense
-as well: the concern would be about how do we cleanly declare (example, in DT, but
-ACPI is the worst case, as ACPI tables are a "set and forget" type of thing,
-shipped  with BIOSes/EFI and almost never modified).
-
-Cheers,
-Angelo
 
