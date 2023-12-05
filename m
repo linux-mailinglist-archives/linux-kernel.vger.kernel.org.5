@@ -2,75 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA34D806280
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:01:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBAF80629C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 00:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346278AbjLEXBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 18:01:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59084 "EHLO
+        id S1346511AbjLEXCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 18:02:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEXBE (ORCPT
+        with ESMTP id S229591AbjLEXCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 18:01:04 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874EDB5;
-        Tue,  5 Dec 2023 15:01:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=veuA5jcJpJK6ZOBUYJpEl5tEQ5a6kyp2AU4+606vnO0=; b=Ixct9+YK621xO+NHLV3Bl7IpTW
-        RD2TXwUyTf9T5SoFN4RP5+r0GpMXDSzhPaiPhIaMQj/bPyZY8YgfAj1La7E6qd2VvqGY0S1ut3BY+
-        3o1iMIK9VRhWQqZUrMYqplKosgXALBP0NTTenE1BPFmFdyHsHZGbh/MXk1MOx12278cmx7N8ClhF4
-        bZY55cHSyq+XQXIF4l9R2k3DUe0eZLlPMk2ROb8SYuBtIdFl9vXufyEdK4sfSwx1MdpLvFxUxbYAn
-        DD6VqLrOYtaiaSw0uRZO9M4kXFcoDqWhoVUv8PmxJDdFpac5mPf0eznPqzMatOW9cDEM3hpXdGN0o
-        dQ14unRA==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAePZ-008ZJ8-0v;
-        Tue, 05 Dec 2023 23:01:11 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-integrity@vger.kernel.org
-Subject: [PATCH] tpm: cr50: fix a kernel-doc warning
-Date:   Tue,  5 Dec 2023 15:01:04 -0800
-Message-ID: <20231205230104.414-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+        Tue, 5 Dec 2023 18:02:30 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506AAB5;
+        Tue,  5 Dec 2023 15:02:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1701817352;
+        bh=SAZIxx8PjWSXY2K57gjC/c7SrQkY4BdKjxWUOgYR2FI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=m7caZPss2xozCilvgnc5J5opdhynNGKXqNrb4gSa6qcA4uNSzTT7yVspiMo46t5bE
+         qLbKguI7yq9vYQrlkIdQLbjGi750ihjJ97+gySad53eCzRDptu1FZMpJqmxO3UelSi
+         WwvBAto0r+gt0q6sXJ1yY/AtsQX7aCD9zn1r0sTW+uGDzLjkqlSzSspvXHQypVi/+x
+         rNldfX81lvpq1YRE5nodLrml3cx+MIeaxtY9bKGphNDp9wViJqxS1qSOTJ9ivTt4l3
+         EVmhIpz6fe0IQWkqvL8ktt066YSV/xMkIQSIijgtwl5+jpgkY1IjdOiX2dTR2VT6gU
+         aj0m5+js2FuCw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SlGJl31hDz4wcK;
+        Wed,  6 Dec 2023 10:02:31 +1100 (AEDT)
+Date:   Wed, 6 Dec 2023 10:02:30 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the security tree with the
+ perf-current tree
+Message-ID: <20231206100230.7d29859d@canb.auug.org.au>
+In-Reply-To: <20231123111005.432dfc56@canb.auug.org.au>
+References: <20231123111005.432dfc56@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/y1vQADSf+/RAWWk.iKLskuq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dropn one function parameter line to prevent kernel-doc warnings.
+--Sig_/y1vQADSf+/RAWWk.iKLskuq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-tpm_tis_i2c_cr50.c:681: warning: Excess function parameter 'id' description in 'tpm_cr50_i2c_probe'
+Hi all,
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Peter Huewe <peterhuewe@gmx.de>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: linux-integrity@vger.kernel.org
----
- drivers/char/tpm/tpm_tis_i2c_cr50.c |    1 -
- 1 file changed, 1 deletion(-)
+On Thu, 23 Nov 2023 11:10:05 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the security tree got a conflict in:
+>=20
+>   tools/perf/arch/s390/entry/syscalls/syscall.tbl
+>=20
+> between commit:
+>=20
+>   d3968c974a24 ("tools/perf: Update tools's copy of s390 syscall table")
+>=20
+> from the perf-current tree and commit:
+>=20
+>   5f42375904b0 ("LSM: wireup Linux Security Module syscalls")
+>=20
+> from the security tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc tools/perf/arch/s390/entry/syscalls/syscall.tbl
+> index 86fec9b080f6,5a422443cb16..000000000000
+> --- a/tools/perf/arch/s390/entry/syscalls/syscall.tbl
+> +++ b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
+> @@@ -455,7 -455,6 +455,10 @@@
+>   450  common	set_mempolicy_home_node	sys_set_mempolicy_home_node	sys_set=
+_mempolicy_home_node
+>   451  common	cachestat		sys_cachestat			sys_cachestat
+>   452  common	fchmodat2		sys_fchmodat2			sys_fchmodat2
+>  -453  common	lsm_get_self_attr	sys_lsm_get_self_attr	sys_lsm_get_self_at=
+tr
+>  -454  common	lsm_set_self_attr	sys_lsm_set_self_attr	sys_lsm_set_self_at=
+tr
+>  -455  common	lsm_list_modules	sys_lsm_list_modules	sys_lsm_list_modules
+>  +453  common	map_shadow_stack	sys_map_shadow_stack		sys_map_shadow_stack
+>  +454  common	futex_wake		sys_futex_wake			sys_futex_wake
+>  +455  common	futex_wait		sys_futex_wait			sys_futex_wait
+>  +456  common	futex_requeue		sys_futex_requeue		sys_futex_requeue
+> ++459  common	lsm_get_self_attr	sys_lsm_get_self_attr	sys_lsm_get_self_at=
+tr
+> ++460  common	lsm_set_self_attr	sys_lsm_set_self_attr	sys_lsm_set_self_at=
+tr
+> ++461  common	lsm_list_modules	sys_lsm_list_modules	sys_lsm_list_modules
 
-diff -- a/drivers/char/tpm/tpm_tis_i2c_cr50.c b/drivers/char/tpm/tpm_tis_i2c_cr50.c
---- a/drivers/char/tpm/tpm_tis_i2c_cr50.c
-+++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-@@ -671,7 +671,6 @@ MODULE_DEVICE_TABLE(of, of_cr50_i2c_matc
- /**
-  * tpm_cr50_i2c_probe() - Driver probe function.
-  * @client:	I2C client information.
-- * @id:		I2C device id.
-  *
-  * Return:
-  * - 0:		Success.
+This is now a conflict between the security tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/y1vQADSf+/RAWWk.iKLskuq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVvrAYACgkQAVBC80lX
+0GzySwf9EBEfVAkDkcg9O0O1pd941Jefyxite3OjSVFaENBzYp49o/YpwViP37mu
+xr4MOxB3BPI+bdplXI+ckZknfCsyysXJIzjSDrdtER1mN3cgFWS0owXCcSDsBgpU
+mbQdWC9n6kPMl4WNGWqHE8QPMlA/TXJz0gwMvJ9R3/xSTF8+KDc0D+WX79T2p1lS
+ak1fQElXzTE55f00vF0LKCoPUV9WLDqHrT5GS7nogojM+bYi6iFISNy1ank2TBdm
+XxFtDqc/el2Nph8EWbI/0lCCHWQm2JaoutGbbaMZ+9f0WOYn5a0p75FYTX96jjTi
+oBnnXdpz1WOF+82YosDNdhaALNsbZw==
+=6+1Z
+-----END PGP SIGNATURE-----
+
+--Sig_/y1vQADSf+/RAWWk.iKLskuq--
