@@ -2,286 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C634805167
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ECE80516B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345079AbjLELAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:00:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54456 "EHLO
+        id S1345057AbjLELBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:01:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235113AbjLELAb (ORCPT
+        with ESMTP id S235072AbjLELBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:00:31 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EB7189
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:00:36 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c9f166581dso37491761fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 03:00:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701774035; x=1702378835; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AP9Qop94IEBXngKyOrylUsXliVAP98wJ33rfRTNKdcA=;
-        b=EoY6ssu319TMcjn0cN+/TANrr6CLEIztMWWMI5OwKkZhXBUGiUC0E8rzrOrt/1Y2VJ
-         9E+UrneaQBeLAa7IDqBWL9PpjT0I4yPtZGrNY+qB8qEO+UIR/0jX+yp/rFDpRQ5sohJi
-         dajICf+kNrJmt2K1KxiGKA0m758CJeOxXMIg8/VSFxPZNfDnYQK0RysOZzS5F0lGFH4z
-         sWN5qREg5tK1GGcjkeX5I8KlWsqMbhd1T3MCaKWPaCOyQXfvTHb6hHii3WAd2xX5rrbd
-         WxN/vqg0Onm5o3HlmPBkU13XTUXq3J/Hf144Sidjna1geFOMOm+/j8wyYtHC4el7dddB
-         iFBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701774035; x=1702378835;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AP9Qop94IEBXngKyOrylUsXliVAP98wJ33rfRTNKdcA=;
-        b=co3cGUIug9zmOdEAf2eGEH8HL8i02qI4k54MvS8EmlUvDWCyASgyIIy0EQbEkqI1fB
-         l1/j1xl9Yc4MzZYMd72MCNeMaIY6cCdPnfIzVPjq8mf/DS/ZKRNaVolPpOUi/9Xz16s6
-         2EXeEJxlgJTF4LnfC8fm82Fo0my6iS40V8okzNt71RrFSj40/13vo462fIGljB3LRExq
-         mR7ElvQ+B215fy2C4glmKybFMyEoxNVEmHGDNt9jcw3W8m3E+Pr1aOT82HPX6r19y9Ks
-         lBIRLWFZsFL9DlsbGfj9587m7mwVewZlGWYjxN7pbmzl6a7l8HfUDmjY27JcmjjDBHM8
-         Q9Vw==
-X-Gm-Message-State: AOJu0Yx8MslrQdy0HIY/+/7cBYVNUAeasALPLYHE/tQw9bUzVpVSQqkT
-        /Leuf/QnZA4/YFCtD5lK9r4giw==
-X-Google-Smtp-Source: AGHT+IEoHbfIdcV3tOJvmf6eVve6ZGwhFttsf/R9u1u+bVnAJZENXKOtM3fDLCrUqp36RNptgIqSow==
-X-Received: by 2002:a2e:a26b:0:b0:2ca:19e5:cf2f with SMTP id k11-20020a2ea26b000000b002ca19e5cf2fmr248964ljm.0.1701774034909;
-        Tue, 05 Dec 2023 03:00:34 -0800 (PST)
-Received: from ?IPV6:2001:14ba:a0db:1f00::227? (dzdqv0yyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::227])
-        by smtp.gmail.com with ESMTPSA id h1-20020a2ebc81000000b002ca0f151917sm312010ljf.108.2023.12.05.03.00.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 03:00:34 -0800 (PST)
-Message-ID: <2d791b1c-283c-4f24-80e0-efaf3756955f@linaro.org>
-Date:   Tue, 5 Dec 2023 13:00:33 +0200
+        Tue, 5 Dec 2023 06:01:33 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7359F11F;
+        Tue,  5 Dec 2023 03:01:39 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id D05B820B74C0; Tue,  5 Dec 2023 03:01:38 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D05B820B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1701774098;
+        bh=GsHAagPrkVzK5MMXoA+rCitnNZnBfvTsUscahErxJ+0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OxTUsQE/l55VpHHuoETMIIiTQ9P3eXzRuFvbMIpJMFnvPXyRQZALjqshXPtlSwsrf
+         lmqw9kPm3C0+TGRLbAGMVJayOcG2eoSKJEM76jK8iTE7jm8/9v7gUbKtI2XwHskYUL
+         1voMo98zUfGMlmXN0U0M4y+KUx0j/TZt61LZVG4k=
+Date:   Tue, 5 Dec 2023 03:01:38 -0800
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
+        leon@kernel.org, cai.huoqing@linux.dev,
+        ssengar@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, sch^Crabarti@microsoft.com,
+        paulros@microsoft.com
+Subject: Re: [PATCH V4 net-next] net: mana: Assigning IRQ affinity on HT cores
+Message-ID: <20231205110138.GA31232@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1701679841-9359-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <ZW3om2dfA4U0lhVY@yury-ThinkPad>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/3] arm64: dts: qcom: sc7280: Add UFS nodes for sc7280
- soc
-Content-Language: en-GB
-To:     Nitin Rawat <quic_nitirawa@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Luca Weiss <luca.weiss@fairphone.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231204-sc7280-ufs-v5-0-926ceed550da@fairphone.com>
- <20231204-sc7280-ufs-v5-2-926ceed550da@fairphone.com>
- <621388b9-dcee-4af2-9763-e5d623d722b7@quicinc.com>
- <CXFJNBNKTRHH.2CS6TO2MEGJWL@fairphone.com> <20231204172829.GA69580@thinkpad>
- <2c996304-f82f-5311-3d88-d459c07ef741@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <2c996304-f82f-5311-3d88-d459c07ef741@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZW3om2dfA4U0lhVY@yury-ThinkPad>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 10:45, Nitin Rawat wrote:
+On Mon, Dec 04, 2023 at 06:56:27AM -0800, Yury Norov wrote:
+> On Mon, Dec 04, 2023 at 12:50:41AM -0800, Souradeep Chakrabarti wrote:
+> > Existing MANA design assigns IRQ to every CPU, including sibling
+> > hyper-threads. This may cause multiple IRQs to be active simultaneously
+> > in the same core and may reduce the network performance with RSS.
+> > 
+> > Improve the performance by assigning IRQ to non sibling CPUs in local
+> > NUMA node.
+> > 
+> > Signed-off-by: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> > ---
+> > V3 -> V4:
+> > * Used for_each_numa_hop_mask() macro and simplified the code.
+> > Thanks to Yury Norov for the suggestion.
 > 
+> We've got a special tag for this:
 > 
-> On 12/4/2023 10:58 PM, Manivannan Sadhasivam wrote:
->> On Mon, Dec 04, 2023 at 01:21:42PM +0100, Luca Weiss wrote:
->>> On Mon Dec 4, 2023 at 1:15 PM CET, Nitin Rawat wrote:
->>>>
->>>>
->>>> On 12/4/2023 3:54 PM, Luca Weiss wrote:
->>>>> From: Nitin Rawat <quic_nitirawa@quicinc.com>
->>>>>
->>>>> Add UFS host controller and PHY nodes for sc7280 soc.
->>>>>
->>>>> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
->>>>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>>>> Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org> # QCM6490 FP5
->>>>> [luca: various cleanups and additions as written in the cover letter]
->>>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
->>>>> ---
->>>>>    arch/arm64/boot/dts/qcom/sc7280.dtsi | 74 
->>>>> +++++++++++++++++++++++++++++++++++-
->>>>>    1 file changed, 73 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
->>>>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>>>> index 04bf85b0399a..8b08569f2191 100644
->>>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>>>> @@ -15,6 +15,7 @@
->>>>>    #include <dt-bindings/dma/qcom-gpi.h>
->>>>>    #include <dt-bindings/firmware/qcom,scm.h>
->>>>>    #include <dt-bindings/gpio/gpio.h>
->>>>> +#include <dt-bindings/interconnect/qcom,icc.h>
->>>>>    #include <dt-bindings/interconnect/qcom,osm-l3.h>
->>>>>    #include <dt-bindings/interconnect/qcom,sc7280.h>
->>>>>    #include <dt-bindings/interrupt-controller/arm-gic.h>
->>>>> @@ -906,7 +907,7 @@ gcc: clock-controller@100000 {
->>>>>                clocks = <&rpmhcc RPMH_CXO_CLK>,
->>>>>                     <&rpmhcc RPMH_CXO_CLK_A>, <&sleep_clk>,
->>>>>                     <0>, <&pcie1_phy>,
->>>>> -                 <0>, <0>, <0>,
->>>>> +                 <&ufs_mem_phy 0>, <&ufs_mem_phy 1>, <&ufs_mem_phy 
->>>>> 2>,
->>>>>                     <&usb_1_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
->>>>>                clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk",
->>>>>                          "pcie_0_pipe_clk", "pcie_1_pipe_clk",
->>>>> @@ -2238,6 +2239,77 @@ pcie1_phy: phy@1c0e000 {
->>>>>                status = "disabled";
->>>>>            };
->>>>> +        ufs_mem_hc: ufs@1d84000 {
->>>>> +            compatible = "qcom,sc7280-ufshc", "qcom,ufshc",
->>>>> +                     "jedec,ufs-2.0";
->>>>> +            reg = <0x0 0x01d84000 0x0 0x3000>;
->>>>> +            interrupts = <GIC_SPI 265 IRQ_TYPE_LEVEL_HIGH>;
->>>>> +            phys = <&ufs_mem_phy>;
->>>>> +            phy-names = "ufsphy";
->>>>> +            lanes-per-direction = <2>;
->>>>> +            #reset-cells = <1>;
->>>>> +            resets = <&gcc GCC_UFS_PHY_BCR>;
->>>>> +            reset-names = "rst";
->>>>> +
->>>>> +            power-domains = <&gcc GCC_UFS_PHY_GDSC>;
->>>>> +            required-opps = <&rpmhpd_opp_nom>;
->>>>> +
->>>>> +            iommus = <&apps_smmu 0x80 0x0>;
->>>>> +            dma-coherent;
->>>>> +
->>>>> +            interconnects = <&aggre1_noc MASTER_UFS_MEM 
->>>>> QCOM_ICC_TAG_ALWAYS
->>>>> +                     &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
->>>>> +                    <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
->>>>> +                     &cnoc2 SLAVE_UFS_MEM_CFG QCOM_ICC_TAG_ALWAYS>;
->>>>> +            interconnect-names = "ufs-ddr", "cpu-ufs";
->>>>> +
->>>>> +            clocks = <&gcc GCC_UFS_PHY_AXI_CLK>,
->>>>> +                 <&gcc GCC_AGGRE_UFS_PHY_AXI_CLK>,
->>>>> +                 <&gcc GCC_UFS_PHY_AHB_CLK>,
->>>>> +                 <&gcc GCC_UFS_PHY_UNIPRO_CORE_CLK>,
->>>>> +                 <&rpmhcc RPMH_CXO_CLK>,
->>>>> +                 <&gcc GCC_UFS_PHY_TX_SYMBOL_0_CLK>,
->>>>> +                 <&gcc GCC_UFS_PHY_RX_SYMBOL_0_CLK>,
->>>>> +                 <&gcc GCC_UFS_PHY_RX_SYMBOL_1_CLK>;
->>>>> +            clock-names = "core_clk",
->>>>> +                      "bus_aggr_clk",
->>>>> +                      "iface_clk",
->>>>> +                      "core_clk_unipro",
->>>>> +                      "ref_clk",
->>>>> +                      "tx_lane0_sync_clk",
->>>>> +                      "rx_lane0_sync_clk",
->>>>> +                      "rx_lane1_sync_clk";
->>>>> +            freq-table-hz =
->>>>> +                <75000000 300000000>,
->>>>> +                <0 0>,
->>>>> +                <0 0>,
->>>>> +                <75000000 300000000>,
->>>>> +                <0 0>,
->>>>> +                <0 0>,
->>>>> +                <0 0>,
->>>>> +                <0 0>;
->>>>> +            status = "disabled";
->>>>> +        };
->>>>> +
->>>>> +        ufs_mem_phy: phy@1d87000 {
->>>>> +            compatible = "qcom,sc7280-qmp-ufs-phy";
->>>>> +            reg = <0x0 0x01d87000 0x0 0xe00>;
->>>>> +            clocks = <&rpmhcc RPMH_CXO_CLK>,
->>>>> +                 <&gcc GCC_UFS_PHY_PHY_AUX_CLK>,
->>>>> +                 <&gcc GCC_UFS_1_CLKREF_EN>;
->>>>> +            clock-names = "ref", "ref_aux", "qref";
->>>>> +
->>>>> +            power-domains = <&gcc GCC_UFS_PHY_GDSC>;
->>>
->>> Hi Nitin,
->>>
->>>>
->>>> GCC_UFS_PHY_GDSC is UFS controller GDSC. For sc7280 Phy we don't 
->>>> need this.
->>>
->>> In the current dt-bindings the power-domains property is required.
->>>
->>> Is there another power-domain for the PHY to use, or do we need to
->>> adjust the bindings to not require power-domains property for ufs phy on
->>> sc7280?
->>>
->>
->> PHYs are backed by MX power domain. So you should use that.
->>
->>> Also, with "PHY" in the name, it's interesting that this is not for the
->>> phy ;)
->>>
->>
->> Yes, confusing indeed. But the controllers (PCIe, UFS, USB etc...) are 
->> backed by
->> GDSCs and all the analog components (PHYs) belong to MX domain since 
->> it is kind
->> of always ON.
->>
->> I'll submit a series to fix this for the rest of the SoCs.
->>
->> - Mani
->>
+> Suggested-by: Yury Norov <yury.norov@gmali.com>
 > 
-> Hi Mani,
+> > * Added code to assign hwc irq separately in mana_gd_setup_irqs.
+> > 
+> > V2 -> V3:
+> > * Created a helper function to get the next NUMA with CPU.
+> > * Added some error checks for unsuccessful memory allocation.
+> > * Fixed some comments on the code.
+> > 
+> > V1 -> V2:
+> > * Simplified the code by removing filter_mask_list and using avail_cpus.
+> > * Addressed infinite loop issue when there are numa nodes with no CPUs.
+> > * Addressed uses of local numa node instead of 0 to start.
+> > * Removed uses of BUG_ON.
+> > * Placed cpus_read_lock in parent function to avoid num_online_cpus
+> >   to get changed before function finishes the affinity assignment.
+> > ---
+> >  .../net/ethernet/microsoft/mana/gdma_main.c   | 70 +++++++++++++++++--
+> >  1 file changed, 63 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > index 6367de0c2c2e..2194a53cce10 100644
+> > --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+> > @@ -1243,15 +1243,57 @@ void mana_gd_free_res_map(struct gdma_resource *r)
+> >  	r->size = 0;
+> >  }
+> >  
+> > +static int irq_setup(int *irqs, int nvec, int start_numa_node)
+> > +{
+> > +	int i = 0, cpu, err = 0;
+> > +	const struct cpumask *node_cpumask;
+> > +	unsigned int  next_node = start_numa_node;
+> > +	cpumask_var_t visited_cpus, node_cpumask_temp;
+> > +
+> > +	if (!zalloc_cpumask_var(&visited_cpus, GFP_KERNEL)) {
+> > +		err = ENOMEM;
+> > +		return err;
+> > +	}
+> > +	if (!zalloc_cpumask_var(&node_cpumask_temp, GFP_KERNEL)) {
+> > +		err = -ENOMEM;
+> > +		return err;
+> > +	}
 > 
-> UFS Phy is a passive driver and its resource enable/disable is 
-> controlled by UFS controller driver.
+> Can you add a bit more of vertical spacing?
 > 
-> Since PHY belongs to MX domain which is always on. IMO, there is no need 
-> for explicitly voting for MX domain for sc7280 and older targets.
+> > +	rcu_read_lock();
+> > +	for_each_numa_hop_mask(node_cpumask, next_node) {
+> > +		cpumask_copy(node_cpumask_temp, node_cpumask);
+> > +		for_each_cpu(cpu, node_cpumask_temp) {
+> > +			cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
+> > +				       topology_sibling_cpumask(cpu));
+> > +			irq_set_affinity_and_hint(irqs[i], cpumask_of(cpu));
+> > +			if (++i == nvec)
+> > +				goto free_mask;
+> > +			cpumask_set_cpu(cpu, visited_cpus);
+> > +			if (cpumask_empty(node_cpumask_temp)) {
+> > +				cpumask_copy(node_cpumask_temp, node_cpumask);
+> > +				cpumask_andnot(node_cpumask_temp, node_cpumask_temp,
+> > +					       visited_cpus);
+> > +				cpu = 0;
+> > +			}
 > 
-> Only starting SM8550, we have a separate UFS PHY GDSC which needs to be 
-> voted for enabling or disabling and hence we need to have power-domain 
-> property for SM8550.
+> It feels like you can calculate number of sibling groups in a hop in
+> advance, so that you'll know how many IRQs you want to assign per each
+> hop, and avoid resetting the node_cpumask_temp and spinning in inner
+> loop for more than once...
 > 
-> Hence, I feel updating the binding to reflect that power-domains is not 
-> a required field would be more correct.
+> Can you print your topology, and describe how you want to spread IRQs
+> on it, and how your existing code does spread them?
+>
+The topology of one system is
+> numactl -H
+available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64
+65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95
+node 0 size: 459521 MB
+node 0 free: 456316 MB
+node 1 cpus: 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118
+119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134 135 136 137 138 139 140 141 142 143
+144 145 146 147 148 149 150 151 152 153 154 155 156 157 158 159 160 161 162 163 164 165 166 167 168
+169 170 171 172 173 174 175 176 177 178 179 180 181 182 183 184 185 186 187 188 189 190 191
+node 1 size: 459617 MB
+node 1 free: 456864 MB
+node distances:
+node   0   1
+  0:  10  21
+  1:  21  10
+and I want to spread the IRQs in numa0 node first with 
+CPU0 - IRQ0
+CPU2 - IRQ1
+CPU4 - IRQ2
+CPU6 - IRQ3
+---
+---
+---
+CPU94 - IRQ47
+then
+CPU1 - IRQ48
+CPU3 - IRQ49
+CPU32 - IRQ64
 
-The bindings should describe the hardware. We model the MX domain, so 
-the MX domain should be used in cases where the device is powered by 
-that domain.
+In a topology where NUMA0 has 20 cores and NUMA1 has 20 cores, with total 80 CPUS, there I want
+CPU0 - IRQ0
+CPU2 - IRQ1
+CPU4 - IRQ2
+---
+---
+---
+CPU38 - IRQ19
+Then
+CPU1 - IRQ20
+CPU3 - IRQ21
+---
+---
+CPU39 - IRQ39
+Node1
+CPU40 - IRQ40
+CPU42 - IRQ41
+CPU44 - IRQ42
+---
+CPU78 - IRQ58
+CPU41 - IRQ59
+CPU43 - IRQ60
+---
+---
+CPU49 - IRQ64
+ 
 
-> 
-> 
-> Regards,
-> Nitin
-> 
-> 
-> 
->>> Regards
->>> Luca
->>>
->>>>
->>>>> +
->>>>> +            resets = <&ufs_mem_hc 0>;
->>>>> +            reset-names = "ufsphy";
->>>>> +
->>>>> +            #clock-cells = <1>;
->>>>> +            #phy-cells = <0>;
->>>>> +
->>>>> +            status = "disabled";
->>>>> +        };
->>>>> +
->>>>>            ipa: ipa@1e40000 {
->>>>>                compatible = "qcom,sc7280-ipa";
->>>>>
->>>
->>
-> 
+Exisitng code : 
+https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/microsoft/mana/gdma_main.c#L1246
 
--- 
-With best wishes
-Dmitry
+This uses cpumask_local_spread, so in a system where node has 64 cores, it spreads all 64+1 IRQs on
+33 cores, rather than spreading it only on HT cores.
 
+> Please add performance results in the commit message.
+> 
+> I feel like this may be a useful code for other kernel folks, and if
+> so, we'd invest in it for more and make it a generic API, similar to
+> cpumaks_local_spread()...
+> 
+> > +		}
+> > +	}
+> > +free_mask:
+> > +	rcu_read_unlock();
+> > +	free_cpumask_var(visited_cpus);
+> > +	free_cpumask_var(node_cpumask_temp);
+> > +	return err;
+> > +}
+> > +
+> >  static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> >  {
+> > -	unsigned int max_queues_per_port = num_online_cpus();
+> >  	struct gdma_context *gc = pci_get_drvdata(pdev);
+> > +	unsigned int max_queues_per_port;
+> >  	struct gdma_irq_context *gic;
+> >  	unsigned int max_irqs, cpu;
+> > -	int nvec, irq;
+> > +	int nvec, *irqs, irq;
+> >  	int err, i = 0, j;
+> >  
+> > +	cpus_read_lock();
+> > +	max_queues_per_port = num_online_cpus();
+> >  	if (max_queues_per_port > MANA_MAX_NUM_QUEUES)
+> >  		max_queues_per_port = MANA_MAX_NUM_QUEUES;
+> >  
+> > @@ -1261,6 +1303,11 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> >  	nvec = pci_alloc_irq_vectors(pdev, 2, max_irqs, PCI_IRQ_MSIX);
+> >  	if (nvec < 0)
+> >  		return nvec;
+> > +	irqs = kmalloc_array(max_queues_per_port, sizeof(int), GFP_KERNEL);
+> > +	if (!irqs) {
+> > +		err = -ENOMEM;
+> > +		goto free_irq_vector;
+> > +	}
+> >  
+> >  	gc->irq_contexts = kcalloc(nvec, sizeof(struct gdma_irq_context),
+> >  				   GFP_KERNEL);
+> > @@ -1287,21 +1334,28 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> >  			goto free_irq;
+> >  		}
+> >  
+> > -		err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > +		if (!i) {
+> > +			err = request_irq(irq, mana_gd_intr, 0, gic->name, gic);
+> > +			cpu = cpumask_local_spread(i, gc->numa_node);
+> 
+> If i == 0, you can simplify it because you just need the 1st CPU from
+> a given node.
+> 
+> > +			irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> > +		} else {
+> > +			irqs[i - 1] = irq;
+> > +			err = request_irq(irqs[i - 1], mana_gd_intr, 0, gic->name, gic);
+> > +		}
+> >  		if (err)
+> >  			goto free_irq;
+> > -
+> > -		cpu = cpumask_local_spread(i, gc->numa_node);
+> > -		irq_set_affinity_and_hint(irq, cpumask_of(cpu));
+> >  	}
+> >  
+> > +	err = irq_setup(irqs, max_queues_per_port, gc->numa_node);
+> > +	if (err)
+> > +		goto free_irq;
+> >  	err = mana_gd_alloc_res_map(nvec, &gc->msix_resource);
+> >  	if (err)
+> >  		goto free_irq;
+> >  
+> >  	gc->max_num_msix = nvec;
+> >  	gc->num_msix_usable = nvec;
+> > -
+> > +	cpus_read_unlock();
+> >  	return 0;
+> >  
+> >  free_irq:
+> > @@ -1314,8 +1368,10 @@ static int mana_gd_setup_irqs(struct pci_dev *pdev)
+> >  	}
+> >  
+> >  	kfree(gc->irq_contexts);
+> > +	kfree(irqs);
+> >  	gc->irq_contexts = NULL;
+> >  free_irq_vector:
+> > +	cpus_read_unlock();
+> >  	pci_free_irq_vectors(pdev);
+> >  	return err;
+> >  }
+> > -- 
+> > 2.34.1
