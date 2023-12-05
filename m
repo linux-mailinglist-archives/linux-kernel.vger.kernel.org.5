@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DA28055F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D54E58055FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442184AbjLENb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
+        id S1442252AbjLENbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:31:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345492AbjLENbS (ORCPT
+        with ESMTP id S1345468AbjLENbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:31:18 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E98D43;
-        Tue,  5 Dec 2023 05:31:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=mFuSrbfurzuYvmLcQXdfkLqbLcdk8ZaR8luvYGQG6oo=; b=Hd617gTHXFpyvcsmWlduuhoxl9
-        +rBsDK528+ELw5A8Vyt0ty+t0wmdeqmtuAzfDXdTQcBmgi9lNiJ8nxsVEm6zo8ka8B5rwB1QUCKxL
-        M4csM47IUX0R0RcYt2yIZkI8fUytGP7Rl7BgXMHLGBm0kmzCtNw6uAHecqS2S+TffqqHvrEeCV6tI
-        jgM4zA96DNKIIWuWj7PwSvOeZ3HyseDUPXvrIFGWyYu3q+mv4V2rWTZ+b121zOvJbcRbp7ejoGINl
-        jphjMFCTQedfHaFhzrqWNdcjfP7TDL2GHMeRBeHsiKKI0lSL58ZREhC7ixf0Z3IYJmOoI9ck8PJUD
-        G1/Z1vtw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48700)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rAVVw-0006pq-2E;
-        Tue, 05 Dec 2023 13:31:04 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rAVVv-0001kI-DX; Tue, 05 Dec 2023 13:31:03 +0000
-Date:   Tue, 5 Dec 2023 13:31:03 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
+        Tue, 5 Dec 2023 08:31:21 -0500
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3901FD59;
+        Tue,  5 Dec 2023 05:31:26 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 540FF1BF20E;
+        Tue,  5 Dec 2023 13:31:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701783085;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3gqjxkB/PoR9PK0/p2tRHlQoqY/I8JtjcwQCZSlgLSY=;
+        b=oYT6o8rMXhMghdveIAj1Q5IC9/kN5OG8xDhayJh/RNtaph3N5hfRP9yzhfOUoJuSuW/56+
+        2xpsmPvwSd1rZ3W9xYbxKync7rMT9nIEgol+RggTmB4d3jrjIEsIjkq4p7puFlMtdQll++
+        NbvHWGHvhqWCyylpwOEXP7rSbPBQ8LON7meXloweBMsBMKWaz0/30pxQGfqA73JfNZFDXH
+        /V7z0br8NY66kSHNcJHH26zi8jTMb4s6in6HJCxrggxY/3E6Bz2MZ2G+URYPo8Uz431aBW
+        PYbuaui1Z0mxfZeZuVt+osyRdQwVns5elOkU4JYbNhIler2SFNufAqXEwNo/uQ==
+Date:   Tue, 5 Dec 2023 14:31:23 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 06/16] net: pcs: xpcs: Avoid creating dummy XPCS
- MDIO device
-Message-ID: <ZW8mF5TuAEiW5FOU@shell.armlinux.org.uk>
-References: <20231205103559.9605-1-fancer.lancer@gmail.com>
- <20231205103559.9605-7-fancer.lancer@gmail.com>
- <ZW8ASzkC9IFFlxkV@shell.armlinux.org.uk>
- <rgp33mm4spbpm5tmgxurkhy4is3lz3z62rz64rni2pygteyrit@zwflw2ejdkn7>
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        Dent Project <dentproject@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH net-next v2 7/8] dt-bindings: net: pse-pd: Add bindings
+ for PD692x0 PSE controller
+Message-ID: <20231205143123.703589c8@kmaincent-XPS-13-7390>
+In-Reply-To: <20231205111501.43f80846@kmaincent-XPS-13-7390>
+References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
+ <20231201-feature_poe-v2-7-56d8cac607fa@bootlin.com>
+ <20231204230845.GH981228@pengutronix.de>
+ <20231205063606.GI981228@pengutronix.de>
+ <20231205111501.43f80846@kmaincent-XPS-13-7390>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <rgp33mm4spbpm5tmgxurkhy4is3lz3z62rz64rni2pygteyrit@zwflw2ejdkn7>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,65 +75,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 02:31:41PM +0300, Serge Semin wrote:
-> On Tue, Dec 05, 2023 at 10:49:47AM +0000, Russell King (Oracle) wrote:
-> > On Tue, Dec 05, 2023 at 01:35:27PM +0300, Serge Semin wrote:
-> > > If the DW XPCS MDIO devices are either left unmasked for being auto-probed
-> > > or explicitly registered in the MDIO subsystem by means of the
-> > > mdiobus_register_board_info() method there is no point in creating the
-> > > dummy MDIO device instance in order to get the DW XPCS handler since the
-> > > MDIO core subsystem will create the device during the MDIO bus
-> > > registration procedure.
-> > 
-> 
-> > Please reword this overly long sentence.
-> 
-> Ok.
-> 
-> > 
-> > If they're left unmasked, what prevents them being created as PHY
-> > devices?
-> 
-> Not sure I fully get what you meant. If they are left unmasked the
-> MDIO-device descriptor will be created by the MDIO subsystem anyway.
-> What the point in creating another one?
+On Tue, 5 Dec 2023 11:15:01 +0100
+K=C3=B6ry Maincent <kory.maincent@bootlin.com> wrote:
 
-The MDIO bus scan looks for devices on the MDIO bus by probing each
-address. If it finds a response, it creates a PHY device (struct
-phy_device), and stores a pointer to the mdiodev embedded in this
-structure in the array.
+> On Tue, 5 Dec 2023 07:36:06 +0100
+> Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+=20
+> > I would expect a devicetree like this:
+> >=20
+> >         ethernet-pse@3c {
+> > 	  // controller compatible should be precise
+> >           compatible =3D "microchip,pd69210";
+> >           reg =3D <0x3c>;
+> >           #pse-cells =3D <1>;
+> >          =20
+> > 	  managers {
+> > 	    manager@0 {
+> > 	      // manager compatible should be included, since we are
+> > 	      // able to campare it with communication results
+> > 	      compatible =3D "microchip,pd69208t4"
+> > 	      // addressing corresponding to the chip select addressing
+> > 	      reg =3D <0>;
+> >=20
+> > 	      physical-ports {
+> > 	        phys0: port@0 {
+> > 		  // each of physical ports is actually a regulator
 
-This device then gets registered as a PHY device, and becomes available
-for use by phylib and PHY drivers.
+If this phys0 is a regulator, which device will be the consumer of this
+regulator? log_port0 as the phys0 regulator consumer seems a bit odd!
+A 8P8C node should be the consumer.
 
-This is something that needs to be avoided, but I don't see anything in
-your series that achieves that.
+> > 		  reg =3D <0>;
+> > 		};
+> > 	        phys1: port@1 {
+> > 		  reg =3D <1>;
+> > 		};
+> > 	        phys2: port@2 {
+> > 		  reg =3D <2>;
+> > 		};
+> >=20
+> >                ...
+> > 	      }
+> >=20
+> >           // port matrix can be calculated by using this information
+> >           logical-ports {
+> > 	    log_port0: port@0 {
+> > 	      // PoE4 port
+> > 	      physical-ports =3D <&phys0, &phys1>;
+> > 	    };
+> > 	    log_port1: port@1 {
+> > 	      // PoE2 port
+> > 	      physical-ports =3D <&phys2>;
+> > 	    };
+> > 	  };
+> >=20
+> > ....
+> >    ethernet-phy@1 {
+> >      reg =3D <1>;
+> >      pses =3D <&log_port0>;
+> >    }
+> >    ethernet-phy@2 {
+> >      reg =3D <2>;
+> >      pses =3D <&log_port1>;
+> >    } =20
 
-> > No, this makes no sense now. This function is called
-> > xpcs_create_mdiodev() - note the "create_mdiodev" part. If it's getting
-> > the mdiodev from what is already there then it isn't creating it, so
-> > it's no longer doing what it says in its function name. If you want to
-> > add this functionality, create a new function to do it.
-> 
-> AFAICS the method semantics is a bit different. It's responsibility is to
-> create the DW XPCS descriptor. MDIO-device is utilized internally by
-> the DW XPCS driver. The function callers don't access the created MDIO
-> device directly (at least since some recent commit). So AFAIU "create"
-> means creating the XPCS descriptor irrespective from the internal
-> communication layer. So IMO the suffix is a bit misleading. I'll
-> change it in one of the next commit anyway. Should I just merge that
-> patch back in this one?
+In fact if we want to really fit the PoE architecture topology we should wa=
+it
+for the support of 8P8C connector from Maxime. Then it will look like that:
+SoC  --- i2c/uart --> controller -- spi --> manager0 -- phys_port0 --> 8P8C=
+_connector0 (PoE4)
+                                         |           \- phys_port1 --> 8P8C=
+_connector0 (PoE4)
+					 |	     \- phys_port2 --> 8P8C_connector1 (PoE2)
+					 |	     \- phys_port3 --> 8P8C_connector2 (PoE2)
+                                         \- manager1 -- phys_port0 ..
 
-This function was created (by me) to also create the mdiodev. The
-function for use with a pre-existing mdiodev was xpcs_create().
-But what do I know, I was only the author of this function, and of
-course you're correct.
+With this type of devicetree:
+        ethernet-pse@3c {
+	  // controller compatible should be precise
+          compatible =3D "microchip,pd69210";
+          reg =3D <0x3c>;
+          #pse-cells =3D <1>;
+         =20
+	  managers {
+	    manager@0 {
+	      // manager compatible should be included, since we are
+	      // able to compare it with communication results
+	      compatible =3D "microchip,pd69208t4"
+	      // addressing corresponding to the chip select addressing
+	      reg =3D <0>;
 
-I don't like this patch anyway. Moving the mdio_device_get() etc out
-of xpcs_create() is wrong. Even if you get a mdiodev from some other
-place, then having xpcs_create() take a reference on it is still the
-correct thing to do. My conclusion is you don't understand refcounting.
+	      physical-ports {
+	        phys_port0: port@0 {
+		  // each of physical ports is actually a regulator
+		  reg =3D <0>;
+		};
+	        phy_port1: port@1 {
+		  reg =3D <1>;
+		};
+	        phy_port2: port@2 {
+		  reg =3D <2>;
+		};
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+               ...
+	      }
+	    manager@1 {
+            ...
+            };
+          };
+	};
+
+....
+  rj45_0:8p8c@0 {
+    pses =3D <&phy_port0, &phy_port1>;
+  };
+  rj45_1:8p8c@1 {
+    pses =3D <&phy_port2>;
+  };
+  ethernet-phy@1 {
+    reg =3D <1>;
+    connector =3D <&rj45_0>;
+  };
+  ethernet-phy@2 {
+    reg =3D <2>;
+    connector =3D <&rj45_1>;
+  }
+
+
+The drawback is that I don't really know for now, how port matrix can be
+calculated with this. Maybe by adding a "conf_pse_cell()" callback, call
+in the of_pse_control_get() for each ports.
+
+For now 8p8c connector are not supported, we could keep using pse phandle
+in the phy node like you described but for physical port:
+   ethernet-phy@1 {
+     reg =3D <1>;
+     pses =3D <&phy_port0, &phy_port1>;
+   }
+   ethernet-phy@2 {
+     reg =3D <2>;
+     pses =3D <&phy_port2>;
+   }
+
+
+
+Finally, the devicetree would not know the matrix between logical port and
+physical port, this would be cleaner.
+
+Did I miss something?
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
