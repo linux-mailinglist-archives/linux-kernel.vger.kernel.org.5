@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01405806183
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7449806185
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346424AbjLEWOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 17:14:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
+        id S1346469AbjLEWPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 17:15:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjLEWOe (ORCPT
+        with ESMTP id S229591AbjLEWPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 17:14:34 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F0C0181;
-        Tue,  5 Dec 2023 14:14:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701814476;
-        bh=uOaBs+kWO/sOLE9amZDuORxsp2qLOuH+HgrCM6jvykA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZXI4V/6FYLZ1QPRybqm0qBmm8wDQ+CGfpkFS07XtoenTVunoPDTKNQ3NC3jr/BUiK
-         +00SCZ7kr11uOwqKXqQYAwNxN5hw6syiwLwNzsRFxDQXlQkx/lkdUEyGjnRhsIRI9O
-         OJglRvWap9uTkBPTOobks047/TVXBVvIQquBA4rtRmKIClE4NFeVwfb/8tMzciA6wc
-         z7b9MP3spFRgJsxrOzZkNUv8mrWNS4C/XkiOiouWwe6jGEL7dMyW7envZhd+Uqv0mK
-         H6xFBTvK5hujhYedRURWgu56ftxgtXSkZHuI/W57C4l7Jcjbb6u/MBsp2rvLim+0uF
-         U+dBwjId3MkNA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SlFFR6yTGz4wc8;
-        Wed,  6 Dec 2023 09:14:35 +1100 (AEDT)
-Date:   Wed, 6 Dec 2023 09:14:33 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the perf tree
-Message-ID: <20231206091433.68f59ba1@canb.auug.org.au>
+        Tue, 5 Dec 2023 17:15:01 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F011BD
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 14:15:07 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3331752d2b9so104216f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 14:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701814506; x=1702419306; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DD0DNj25uBQ/C17oozD5v/SE0XLXNTxkbhUNY2hqqrE=;
+        b=ldrO/XOwjHG4NlObybD1T3211udZtIX/tDNFD/piT/AP0GDM1xWEGR0fa/dHGc8aM5
+         JVDo6gwVV08L8Lr7x3ZAogx3GCdZO9WKx+viltHtZeoC83twY1YdyuBXzJbsLYPPb3wi
+         ss4uAibjvdpjfj2WMCR7/ZfqIPoHSfyinM6Dej8SZ4daIfadWQ0oefYHDokFSiHylgRv
+         qHr/UgQYR+Zy7EcKlcf/TbmttJKHj0RVZZV/a3s7H0s69JFO6IbrTsx/ajZudQ0+EbNx
+         dkhBCD0ViB5JNduxBU+Hw8xjBliYME728gTgNdlma/6qiZEwMiuxTD3DeQbA8KxtZeAN
+         As3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701814506; x=1702419306;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DD0DNj25uBQ/C17oozD5v/SE0XLXNTxkbhUNY2hqqrE=;
+        b=ndxnrym1/UVzYbachTusvnIlLnO6R4Gdg/fthbHCeHf4nlMtJIBnGuq0BUSkxRQZv3
+         7k2IyBupvAW+VyVlKj9vR3wMgzwKO+RWCCLpXzBGUhtvI42+nyCElj/F36UyeWWYVFOe
+         BGB6Eo0owAfidfR7CKtGq4TrKiyb9mxCUlHwd8uss0BEoV8qF4Fd8MW1lTgVhXj44oeY
+         3O/hTVJYo/iTOht5oOz7/AwBQO6IDwp0mAr4LZttpf1h7c+evOr7+8TuaFThGZqoVR+G
+         kMoyj+IIQr3OMDT8woiXJ9jZ2ZGD9rbZZRiGwHxBU18RtKNIEKUB6oxYODZkJ3nhw9K+
+         1m/Q==
+X-Gm-Message-State: AOJu0YykwabmnamsCB1xdeob9ArXPDcyor8cPz2giYTVJTse4rrdpBi5
+        vatJSPeWvQM8vKPD8TYzilbD09KPf1GunSgFYStVsg==
+X-Google-Smtp-Source: AGHT+IEIuFKrkoFvYNzPlxheppKvhm+ftQtjTc7AwFMq9skdDpEb1ZX2PjA9ALQOqeclZUUHHQS+hx4qWH0scPlWAGg=
+X-Received: by 2002:adf:f18f:0:b0:32f:7c6c:aa14 with SMTP id
+ h15-20020adff18f000000b0032f7c6caa14mr6218857wro.37.1701814506175; Tue, 05
+ Dec 2023 14:15:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/J=HjMo4b4111kPLcIX.Ak._";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
+ <20231205213807.GE1674809@ZenIV> <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
+ <2023120608-ivy-snowdrop-890d@gregkh>
+In-Reply-To: <2023120608-ivy-snowdrop-890d@gregkh>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 5 Dec 2023 14:14:55 -0800
+Message-ID: <CAKwvOdmFJ=ZGN8ZScS5oQpXnAL0wwtTDCeNNGpBKZXzQ4kRAVA@mail.gmail.com>
+Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
+To:     Greg KH <greg@kroah.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, tanzirh@google.com,
+        Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick DeSaulniers <nnn@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/J=HjMo4b4111kPLcIX.Ak._
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 5, 2023 at 1:59=E2=80=AFPM Greg KH <greg@kroah.com> wrote:
+>
+> On Tue, Dec 05, 2023 at 01:51:10PM -0800, Nick Desaulniers wrote:
+> > On Tue, Dec 5, 2023 at 1:38=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk=
+> wrote:
+> > >
+> > > It also breeds includes of asm/*.h, by the look of the output, which =
+is
+> > > not a good thing in general ;-/  E.g. #include <asm/uaccess.h> *anywh=
+ere*
+> > > outside of linux/uaccess.h is a bad idea.
+> >
+> > It's not clear to me when it's ok to #include <asm/*.h>.  Is there a
+> > convention here that I'm missing?
+>
+> General rule, NEVER include asm/*.h, there should be a include/*.h
+> instead that works.  So much so that checkpatch.pl should catch this,
+> right?
 
-Hi all,
+ah, shoot, I was showing Tanzir how to use `b4` for patch development,
+and forgot to check this.  Indeed it does.
 
-Commit
+I can see how the check works (scripts/checkpatch.pl L5881).  Decoding
+that will probably help us improve the tooling.
 
-  08b953508560 ("perf evsel: Fallback to "task-clock" when not system wide")
+>
+> But of course, it doesn't always hold true, there are a few minor
+> exceptions, but they are rare.
 
-is missing a Signed-off-by from its author.
+$ grep -r \\#include lib | grep asm
 
+shows quite a few exceptions, and just in lib/.
+
+For example, lib/math/int_log.c includes asm/bug.h.  Is that a case
+where lib/math/int_log.c should be #include 'ing linux/bug.h rather
+than asm/bug.h?
 --=20
-Cheers,
-Stephen Rothwell
-
---Sig_/J=HjMo4b4111kPLcIX.Ak._
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVvoMkACgkQAVBC80lX
-0Gz0gwf5AZwiWwR7Xnldg3RPTJ61m3GLX4cLj7XZgW1LrVtSU4DcfmWGd3Jlv1GM
-mridS5ksdTKPFfnsYk05D1qviRiz2dUmH+ilsX7bo0MoWWWjO2qix0hSbQBHzhcT
-GABTnNwSAo0XNkIzBUu+5reYzEEKT3BexgFmyEy4oMCH6FTG5wBnnWZ49w/7pqd4
-CYunVMOszPbDxFUKyj+ZGdA8M2ZLb8PFHYTDVHrCFYeMwKhOvWfZUSrsQIUWlo3P
-l39Y/bqOiLMocK9Ndyhh4cRTL3W3McFLRpcm+g4HDrMk1ha9rPMTNCdri8mmr6O0
-jfGHE2yL3fSSKX77c5r1pTfYA5wGWw==
-=i0Q4
------END PGP SIGNATURE-----
-
---Sig_/J=HjMo4b4111kPLcIX.Ak._--
+Thanks,
+~Nick Desaulniers
