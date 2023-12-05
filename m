@@ -2,154 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A751804882
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B40B2804884
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:23:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343945AbjLEEVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 23:21:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
+        id S1343907AbjLEEW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 23:22:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343907AbjLEEVQ (ORCPT
+        with ESMTP id S230074AbjLEEWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 23:21:16 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0288D3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 20:21:21 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-db5e692d4e0so3576016276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 20:21:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701750081; x=1702354881; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UKPY7I/BsmvEHiTV9VZgArxhYwb6iAeMRALPYz2PTVE=;
-        b=JDoyVH0kv670bjfdUrN+dKVE5OpZklTqkcMwQnglkZVvAoVxAOToRZb1wjM3VmzEe7
-         l7VaM0XTiQ4qnbx4P5I8w9Ic2TCld2VLNvBJxcWqXzAxK0UBrv2W7kyQ1C81kgPK2yQZ
-         8lS8+i+9ucyyRVnNnBMz6M4feyTQ2Jv9In9SYvdXInASQPqcmfIrB+rqqSjdtaUjNrmb
-         bA5znVmyBHrfW5CGICNMl6Wm+c36kp5hj3CihPAMoyxEWH316t8JTmoiBJq8feDNG0Mc
-         XaICq5sxh38obWqq3A0On8lR2gdg1QxJp6/RP9ccKc590Hea28egyy4v9q+990WXnYbG
-         cTkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701750081; x=1702354881;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UKPY7I/BsmvEHiTV9VZgArxhYwb6iAeMRALPYz2PTVE=;
-        b=XT70wkmA3xL/Ts1igfnydoukbwmyawLtXWQNS3LvaRICDFn3YFE/FvxIcKt/0Qzi9f
-         V+b1UiVfhzTWZW1VricDSkUajUW40v66Ofdh0kdy9dcx8eJDpE9n1mAQtEhQugX3VOwx
-         Dw3+lp02k7mihUzLM7Z+f3bj57/cjtEttrk2+UmLgDhxGBMPOKujjUVRtu76xyAiBKw7
-         DG5RCWPnUjXEMqJUbLjCVQGTfQ4Q7JA046VwSJBHKhs6nt09cy2iO0oJtFQ5z3jPoWVi
-         UZi/4yqXrKkGAMGVB0Fh2ouxk1r3LspiYw//RTHPIH9JcqO+ZamhHEp49QYKohfX0DM3
-         H0xQ==
-X-Gm-Message-State: AOJu0YxKxgbjmzjVS7Tuq43IbdzeDQDApGbsgfVKbtSz8e+nbcz86pzk
-        vXsCYWTqz/x0FYc2AzC+IoEhTuxLFUhzIAuIDi4=
-X-Google-Smtp-Source: AGHT+IHFC+Zd+F9MUmTooN0Zh6iSGmcwziQ5UT44nFubCZ6yoFoNb4QNIwEmycBpE5EgCtpokXDQMsL6UlRH+2pRMPE=
-X-Received: by 2002:a25:cc82:0:b0:d9a:fd65:f97f with SMTP id
- l124-20020a25cc82000000b00d9afd65f97fmr4187738ybf.17.1701750081129; Mon, 04
- Dec 2023 20:21:21 -0800 (PST)
+        Mon, 4 Dec 2023 23:22:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9369C
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 20:23:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81833C433C8;
+        Tue,  5 Dec 2023 04:23:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701750181;
+        bh=w/Bk/WJxSr5QEyyq9W+SD+SihawEDWaEohg5h1i0Keo=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=QXlXmQpEo+Ca6kqEdj0E119zOei8gUzaGcyvM/woNAACeAgMFx1j8YPfzA88c+b8g
+         vq8ChUgWgOWJgC4k3fH+i6G9Mhsllxtmv2d9KV38726HJgsgm0SfIu4PjbgKOpltLR
+         cjlD+3/FD0oXuq/756f1M2DWWkm+uzUu1NGQaJjZYC13FURwHC8Lp6Ev/x6QqbmzyP
+         nihuFqb+9BTzns40owbm2R6fAYgmWVmITsujhlm6Nuiar4JlOrY6QpoSnmItuKZlCF
+         prZdQpz/dUtXD0bs3SZ+0r22y9m0Ise5qsLcmcq0gbQXMZrswjcxCwE/gQrcY3oxa8
+         tArufEqBFyKfQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 14277CE1147; Mon,  4 Dec 2023 20:23:01 -0800 (PST)
+Date:   Mon, 4 Dec 2023 20:23:01 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2] srcu: Use try-lock lockdep annotation for NMI-safe
+ access.
+Message-ID: <ff0b1784-f793-408f-b41c-e9521e9cb925@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231121123315.egrgopGN@linutronix.de>
+ <ZV5Dhjcb9Jd_lk0O@boqun-archlinux>
+ <20231130132729.niM5FJPc@linutronix.de>
 MIME-Version: 1.0
-References: <20231204102027.57185-1-ryan.roberts@arm.com> <20231204102027.57185-4-ryan.roberts@arm.com>
-In-Reply-To: <20231204102027.57185-4-ryan.roberts@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Tue, 5 Dec 2023 17:21:09 +1300
-Message-ID: <CAGsJ_4zU6pHOwEzCQxo9UWUFmHZp0pvfgF4pKbkFfDPCRyFwyw@mail.gmail.com>
-Subject: Re: [PATCH v8 03/10] mm: thp: Introduce multi-size THP sysfs interface
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231130132729.niM5FJPc@linutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 11:21=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> In preparation for adding support for anonymous multi-size THP,
-> introduce new sysfs structure that will be used to control the new
-> behaviours. A new directory is added under transparent_hugepage for each
-> supported THP size, and contains an `enabled` file, which can be set to
-> "inherit" (to inherit the global setting), "always", "madvise" or
-> "never". For now, the kernel still only supports PMD-sized anonymous
-> THP, so only 1 directory is populated.
->
-> The first half of the change converts transhuge_vma_suitable() and
-> hugepage_vma_check() so that they take a bitfield of orders for which
-> the user wants to determine support, and the functions filter out all
-> the orders that can't be supported, given the current sysfs
-> configuration and the VMA dimensions. If there is only 1 order set in
-> the input then the output can continue to be treated like a boolean;
-> this is the case for most call sites. The resulting functions are
-> renamed to thp_vma_suitable_orders() and thp_vma_allowable_orders()
-> respectively.
->
-> The second half of the change implements the new sysfs interface. It has
-> been done so that each supported THP size has a `struct thpsize`, which
-> describes the relevant metadata and is itself a kobject. This is pretty
-> minimal for now, but should make it easy to add new per-thpsize files to
-> the interface if needed in future (e.g. per-size defrag). Rather than
-> keep the `enabled` state directly in the struct thpsize, I've elected to
-> directly encode it into huge_anon_orders_[always|madvise|inherit]
-> bitfields since this reduces the amount of work required in
-> thp_vma_allowable_orders() which is called for every page fault.
->
-> See Documentation/admin-guide/mm/transhuge.rst, as modified by this
-> commit, for details of how the new sysfs interface works.
->
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+On Thu, Nov 30, 2023 at 02:27:29PM +0100, Sebastian Andrzej Siewior wrote:
+> It is claimed that srcu_read_lock_nmisafe() NMI-safe. However it
+> triggers a lockdep if used from NMI because lockdep expects a deadlock
+> since nothing disables NMIs while the lock is acquired.
+> 
+> This is because commit f0f44752f5f61 ("rcu: Annotate SRCU's update-side
+> lockdep dependencies") annotates synchronize_srcu() as a write lock
+> usage. This helps to detect a deadlocks such as
+> 	srcu_read_lock();
+> 	synchronize_srcu();
+> 	srcu_read_unlock();
+> 
+> The side effect is that the lock srcu_struct now has a USED usage in normal
+> contexts, so it conflicts with a USED_READ usage in NMI. But this shouldn't
+> cause a real deadlock because the write lock usage from synchronize_srcu() is a
+> fake one and only used for read/write deadlock detection.
+> 
+> Use a try-lock annotation for srcu_read_lock_nmisafe() to avoid lockdep
+> complains if used from NMI.
+> 
+> Fixes: f0f44752f5f61 ("rcu: Annotate SRCU's update-side lockdep dependencies")
+> Link: https://lore.kernel.org/r/20230927160231.XRCDDSK4@linutronix.de
+> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+Queued for v6.9 along with further review and testing, thank you both!
 
-> -khugepaged will be automatically started when
-> -transparent_hugepage/enabled is set to "always" or "madvise, and it'll
-> -be automatically shutdown if it's set to "never".
-> +khugepaged will be automatically started when one or more hugepage
-> +sizes are enabled (either by directly setting "always" or "madvise",
-> +or by setting "inherit" while the top-level enabled is set to "always"
-> +or "madvise"), and it'll be automatically shutdown when the last
-> +hugepage size is disabled (either by directly setting "never", or by
-> +setting "inherit" while the top-level enabled is set to "never").
->
->  Khugepaged controls
->  -------------------
->
-> +.. note::
-> +   khugepaged currently only searches for opportunities to collapse to
-> +   PMD-sized THP and no attempt is made to collapse to other THP
-> +   sizes.
+							Thanx, Paul
 
-For small-size THP, collapse is probably a bad idea. we like a one-shot
-try in Android especially we are using a 64KB and less large folio size. if
-PF succeeds in getting large folios, we map large folios, otherwise we
-give up as those memories can be quite unstably swapped-out, swapped-in
-and madvised to be DONTNEED.
-
-too many compactions will increase power consumption and decrease UI
-response.
-
-Thanks
-Barry
+> ---
+>  include/linux/rcupdate.h | 6 ++++++
+>  include/linux/srcu.h     | 2 +-
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index f7206b2623c98..31d523c4e0893 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -301,6 +301,11 @@ static inline void rcu_lock_acquire(struct lockdep_map *map)
+>  	lock_acquire(map, 0, 0, 2, 0, NULL, _THIS_IP_);
+>  }
+>  
+> +static inline void rcu_try_lock_acquire(struct lockdep_map *map)
+> +{
+> +	lock_acquire(map, 0, 1, 2, 0, NULL, _THIS_IP_);
+> +}
+> +
+>  static inline void rcu_lock_release(struct lockdep_map *map)
+>  {
+>  	lock_release(map, _THIS_IP_);
+> @@ -315,6 +320,7 @@ int rcu_read_lock_any_held(void);
+>  #else /* #ifdef CONFIG_DEBUG_LOCK_ALLOC */
+>  
+>  # define rcu_lock_acquire(a)		do { } while (0)
+> +# define rcu_try_lock_acquire(a)	do { } while (0)
+>  # define rcu_lock_release(a)		do { } while (0)
+>  
+>  static inline int rcu_read_lock_held(void)
+> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
+> index 127ef3b2e6073..236610e4a8fa5 100644
+> --- a/include/linux/srcu.h
+> +++ b/include/linux/srcu.h
+> @@ -229,7 +229,7 @@ static inline int srcu_read_lock_nmisafe(struct srcu_struct *ssp) __acquires(ssp
+>  
+>  	srcu_check_nmi_safety(ssp, true);
+>  	retval = __srcu_read_lock_nmisafe(ssp);
+> -	rcu_lock_acquire(&ssp->dep_map);
+> +	rcu_try_lock_acquire(&ssp->dep_map);
+>  	return retval;
+>  }
+>  
+> -- 
+> 2.43.0
