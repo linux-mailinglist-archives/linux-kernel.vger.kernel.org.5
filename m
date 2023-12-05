@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 220C3805C4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EE2805BB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345145AbjLEQvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
+        id S1345374AbjLEQvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235047AbjLEQvc (ORCPT
+        with ESMTP id S235076AbjLEQvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:51:32 -0500
+        Tue, 5 Dec 2023 11:51:33 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A211DD48
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:51:34 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD1DC433C9;
-        Tue,  5 Dec 2023 16:51:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F3AD66
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:51:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7E66C433C7;
+        Tue,  5 Dec 2023 16:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701795094;
-        bh=BQwIlG0oOgH2zbKU3AwqILoaXU3JMfSvJqswNhTlD0w=;
+        s=k20201202; t=1701795097;
+        bh=TRfwOBP1ct8dRqN5onbbksp9izfKksijyA3SFS57tL8=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=jqyb5YMtNSsewilq3YgjUOLKB+5TZZxOhPMYtacsADuHV8SBMnhdKtzSjTyhHZzEm
-         oHXzvNzWcQ35s5gb0XHhcwYsPuCIfmzAWUOjxccMbJ7aLMNYNu7h5m7yhO69cr6X8t
-         LsO6yW8ieiimIM9EXiu1nACFt0WA42BnELODdvKRUqRokUjAT/C5ykYMeifPEIqOBW
-         mIYJ54EZGqaRkHnYm0SqWHEbfLZ0M3trtrhBndFjMptqvobpIvoDWlQ9L2I03m/Cc+
-         5Wh2CroQRUBi4vwTtvYR6gBzWxLVb/qKP15pjJVdEWF2Zt2yeRzVQmoSGbJNUieP+I
-         Z810MDLonuF4w==
+        b=GJJAN/sdgW9lhyQnig67GRbm2cbkYg1U4DWRVPeKYiM3i/TYzLd3fPVDrGJgix8Mm
+         FuBQLMzYOSaV+7mhEBTPz/D64h/z+OILnf7FGbGHoIoS2O9bTg+jtz3Zr8Llno4q37
+         ehtoCLl5oGh1RMHo+nQnFi0A9hV+8MxUj9jDgjsOz0jasV4/l4WrTT/uVpL+PXCSdS
+         fyN/Ns30isTwXbF+AXafUWgi7Xkar4nRgzMZVDEETy2hX/GE/X51ze4nH4NP1EgXhS
+         Nj9hc00IafLWlUWBqfe7M6fzCkhGFjhCg/QCFPqCoQPxLCSAyJxerAGHlFMgjjjJmV
+         LR9AITvK6EAUQ==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Tue, 05 Dec 2023 16:48:05 +0000
-Subject: [PATCH v3 07/21] arm64/sysreg: Update HCRX_EL2 definition for
- DDI0601 2023-09
+Date:   Tue, 05 Dec 2023 16:48:06 +0000
+Subject: [PATCH v3 08/21] arm64/sysreg: Add definition for FPMR
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231205-arm64-2023-dpisa-v3-7-dbcbcd867a7f@kernel.org>
+Message-Id: <20231205-arm64-2023-dpisa-v3-8-dbcbcd867a7f@kernel.org>
 References: <20231205-arm64-2023-dpisa-v3-0-dbcbcd867a7f@kernel.org>
 In-Reply-To: <20231205-arm64-2023-dpisa-v3-0-dbcbcd867a7f@kernel.org>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -47,15 +46,15 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kvmarm@lists.linux.dev, linux-doc@vger.kernel.org,
         linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-5c066
-X-Developer-Signature: v=1; a=openpgp-sha256; l=666; i=broonie@kernel.org;
- h=from:subject:message-id; bh=BQwIlG0oOgH2zbKU3AwqILoaXU3JMfSvJqswNhTlD0w=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlb1TuD6frcSkllH1UYYR40YWIjqreDBRNueDypCOq
- XjYki6OJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZW9U7gAKCRAk1otyXVSH0BxSB/
- 9+aykVaLXXkovSxvPoWNp/dLjsV1+Cm+xxFo/z24bos92b6gHOP83wnIEddgbLtyoJtveduZ+hsSeY
- ZvnCX1wUSAZLjZhpk0cj+8IlJE+GzQjGOBch6dmNJyy6GxvrkJ7rgbtuzUcPbRRKC1awZTD+zZbthm
- deDPd8ar/7eFE3e+/XV6heK4bWGNaXJWPHZin6myifMPB5U5pES0DduUMSnGzZiFqX8Qg6jGZqOB29
- BgYGCxIQOyEwNsIHOblnca6qoeB9K3jKV+u6VV3dz4NqhWWYFSmOor2/jrtkJKriL0HyUcNpUb8NKt
- M2wHrXrpV/8B2oTE7OBLn+RVW6XABe
+X-Developer-Signature: v=1; a=openpgp-sha256; l=975; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=TRfwOBP1ct8dRqN5onbbksp9izfKksijyA3SFS57tL8=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlb1TvVsjO+1Ho6qAlj6qwCmPte6Bb7DMChC7dyCkd
+ PySIUMuJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZW9U7wAKCRAk1otyXVSH0Kt6B/
+ 9CefQbQVJNo9MwymwwWXuS68fFeyVNw2SeJiyB6yG6JaaIldk3ZEoHjyKVwthWwBkAlh0D+F4BgnSI
+ 0uqu35O4JMVRTn55wEe1Kz2+3C3g5n7/jfPsDfvEfdR+p3taYvvSJxUbMDoAGuorPot3y6ADVHTeMF
+ Rb/Ui71ogWxW1R+hAD9us2c1MluIM69SXC7SIxsdQDLWH/SZho9p5j1f6pXxiJ9081AQva7XhRR2j8
+ 5GRdYVyr1rQpclvsx4lsqZUjeZJWzER+bQSmPiAc17iKf27jKVmnjB6bhop2TipQYaohmgIyAOivVh
+ cK5nL8FVat4M64Cv/mMfygRV7eQlEV
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -68,29 +67,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DDI0601 2023-09 defines new fields in HCRX_EL2 controlling access to new
-system registers, update our definition of HCRX_EL2 to reflect this.
+DDI0601 2023-09 defines a new sysrem register FPMR (Floating Point Mode
+Register) which configures the new FP8 features. Add a definition of this
+register.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm64/tools/sysreg | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm64/tools/sysreg | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
 diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-index eea69bb48fa7..0b1a33a77074 100644
+index 0b1a33a77074..67173576115a 100644
 --- a/arch/arm64/tools/sysreg
 +++ b/arch/arm64/tools/sysreg
-@@ -2412,7 +2412,9 @@ Fields	ZCR_ELx
+@@ -2138,6 +2138,29 @@ Field	1	ZA
+ Field	0	SM
  EndSysreg
  
- Sysreg	HCRX_EL2	3	4	1	2	2
--Res0	63:23
-+Res0	63:25
-+Field	24	PACMEn
-+Field	23	EnFPM
- Field	22	GCSEn
- Field	21	EnIDCP128
- Field	20	EnSDERR
++Sysreg	FPMR	3	3	4	4	2
++Res0	63:38
++Field	37:32	LSCALE2
++Field	31:24	NSCALE
++Res0	23
++Field	22:16	LSCALE
++Field	15	OSC
++Field	14	OSM
++Res0	13:9
++UnsignedEnum	8:6	F8D
++	0b000	E5M2
++	0b001	E4M3
++EndEnum
++UnsignedEnum	5:3	F8S2
++	0b000	E5M2
++	0b001	E4M3
++EndEnum
++UnsignedEnum	2:0	F8S1
++	0b000	E5M2
++	0b001	E4M3
++EndEnum
++EndSysreg
++
+ SysregFields	HFGxTR_EL2
+ Field	63	nAMAIR2_EL1
+ Field	62	nMAIR2_EL1
 
 -- 
 2.30.2
