@@ -2,116 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7449806185
+	by mail.lfdr.de (Postfix) with ESMTP id 8F212806184
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346469AbjLEWPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 17:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
+        id S1346480AbjLEWPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 17:15:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbjLEWPB (ORCPT
+        with ESMTP id S230162AbjLEWPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 17:15:01 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F011BD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 14:15:07 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3331752d2b9so104216f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 14:15:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701814506; x=1702419306; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DD0DNj25uBQ/C17oozD5v/SE0XLXNTxkbhUNY2hqqrE=;
-        b=ldrO/XOwjHG4NlObybD1T3211udZtIX/tDNFD/piT/AP0GDM1xWEGR0fa/dHGc8aM5
-         JVDo6gwVV08L8Lr7x3ZAogx3GCdZO9WKx+viltHtZeoC83twY1YdyuBXzJbsLYPPb3wi
-         ss4uAibjvdpjfj2WMCR7/ZfqIPoHSfyinM6Dej8SZ4daIfadWQ0oefYHDokFSiHylgRv
-         qHr/UgQYR+Zy7EcKlcf/TbmttJKHj0RVZZV/a3s7H0s69JFO6IbrTsx/ajZudQ0+EbNx
-         dkhBCD0ViB5JNduxBU+Hw8xjBliYME728gTgNdlma/6qiZEwMiuxTD3DeQbA8KxtZeAN
-         As3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701814506; x=1702419306;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DD0DNj25uBQ/C17oozD5v/SE0XLXNTxkbhUNY2hqqrE=;
-        b=ndxnrym1/UVzYbachTusvnIlLnO6R4Gdg/fthbHCeHf4nlMtJIBnGuq0BUSkxRQZv3
-         7k2IyBupvAW+VyVlKj9vR3wMgzwKO+RWCCLpXzBGUhtvI42+nyCElj/F36UyeWWYVFOe
-         BGB6Eo0owAfidfR7CKtGq4TrKiyb9mxCUlHwd8uss0BEoV8qF4Fd8MW1lTgVhXj44oeY
-         3O/hTVJYo/iTOht5oOz7/AwBQO6IDwp0mAr4LZttpf1h7c+evOr7+8TuaFThGZqoVR+G
-         kMoyj+IIQr3OMDT8woiXJ9jZ2ZGD9rbZZRiGwHxBU18RtKNIEKUB6oxYODZkJ3nhw9K+
-         1m/Q==
-X-Gm-Message-State: AOJu0YykwabmnamsCB1xdeob9ArXPDcyor8cPz2giYTVJTse4rrdpBi5
-        vatJSPeWvQM8vKPD8TYzilbD09KPf1GunSgFYStVsg==
-X-Google-Smtp-Source: AGHT+IEIuFKrkoFvYNzPlxheppKvhm+ftQtjTc7AwFMq9skdDpEb1ZX2PjA9ALQOqeclZUUHHQS+hx4qWH0scPlWAGg=
-X-Received: by 2002:adf:f18f:0:b0:32f:7c6c:aa14 with SMTP id
- h15-20020adff18f000000b0032f7c6caa14mr6218857wro.37.1701814506175; Tue, 05
- Dec 2023 14:15:06 -0800 (PST)
-MIME-Version: 1.0
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205213807.GE1674809@ZenIV> <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
- <2023120608-ivy-snowdrop-890d@gregkh>
-In-Reply-To: <2023120608-ivy-snowdrop-890d@gregkh>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 5 Dec 2023 14:14:55 -0800
-Message-ID: <CAKwvOdmFJ=ZGN8ZScS5oQpXnAL0wwtTDCeNNGpBKZXzQ4kRAVA@mail.gmail.com>
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
-To:     Greg KH <greg@kroah.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, tanzirh@google.com,
+        Tue, 5 Dec 2023 17:15:19 -0500
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F016D181;
+        Tue,  5 Dec 2023 14:15:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=rZoIuLBpqfTTD+G5pnGLC4N3Ey8O5mo3kg+Q6utlpas=; b=jiyhtCeIWsiKOT/rohzO/I+nDh
+        AxEBv15Ye8BphlvJO+A+wMPPR/fAvFrUpGa0hCfwk91iGjGojhOa/ukdRiYT2jMYQAOi6pkgz5t0B
+        nvBO0F7sd6DrP6Kx+G/J2VHtEnjn2oJ6JIYkPWBn0DO2OsaoJUO2DrRQYwV5ClA/b1ngnNb4VhjLG
+        6QSimRhRuC2TZwPRh9k9x1Q6hTJrdF73bi+k2sHzqSc2o+AkzhWuylWi1R6INJYnkZBfyCUbZo3s4
+        qqwLnvZNdkivu7Fq8bZgazpXS9exwm0LLb+uMi6vntxf1+PMRQ2o7lQQXxGfH2KrvNtPRrlIfTdBR
+        WiW60Rvg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAdhJ-007U2Q-2b;
+        Tue, 05 Dec 2023 22:15:21 +0000
+Date:   Tue, 5 Dec 2023 22:15:21 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, tanzirh@google.com,
         Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy@kernel.org>,
         linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
         Nick DeSaulniers <nnn@google.com>,
         Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
+Message-ID: <20231205221521.GH1674809@ZenIV>
+References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
+ <20231205213807.GE1674809@ZenIV>
+ <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
+ <ZW-d1NZRIvmJlfcW@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZW-d1NZRIvmJlfcW@smile.fi.intel.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 1:59=E2=80=AFPM Greg KH <greg@kroah.com> wrote:
->
+On Wed, Dec 06, 2023 at 12:01:56AM +0200, Andy Shevchenko wrote:
 > On Tue, Dec 05, 2023 at 01:51:10PM -0800, Nick Desaulniers wrote:
-> > On Tue, Dec 5, 2023 at 1:38=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk=
-> wrote:
+> > On Tue, Dec 5, 2023 at 1:38 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> > > On Tue, Dec 05, 2023 at 08:58:53PM +0000, tanzirh@google.com wrote:
+> 
+> ...
+> 
+> > > > IWYU is implemented using the IWYUScripts github repository which is a tool that is
+> > > > currently undergoing development. These changes seek to improve build times.
+> > > >
+> > > > This change to lib/string.c resulted in a preprocessed size of
+> > > > lib/string.i from 26371 lines to 5232 lines (-80%).
 > > >
-> > > It also breeds includes of asm/*.h, by the look of the output, which =
-is
-> > > not a good thing in general ;-/  E.g. #include <asm/uaccess.h> *anywh=
-ere*
+> > > It also breeds includes of asm/*.h, by the look of the output, which is
+> > > not a good thing in general ;-/  E.g. #include <asm/uaccess.h> *anywhere*
 > > > outside of linux/uaccess.h is a bad idea.
-> >
+> > 
 > > It's not clear to me when it's ok to #include <asm/*.h>.  Is there a
 > > convention here that I'm missing?
->
-> General rule, NEVER include asm/*.h, there should be a include/*.h
-> instead that works.  So much so that checkpatch.pl should catch this,
-> right?
+> 
+> The mandatory ones can be used, but not all of them.
+> In some cases you even must include asm and not linux
+> (unaligned.h, byteorder.h, maybe others...).
+> 
+> As I told, it comes with experience, we lack of the
+> respective documentation (or file which is good for
+> automation checks, like with IWYU).
 
-ah, shoot, I was showing Tanzir how to use `b4` for patch development,
-and forgot to check this.  Indeed it does.
+It would certainly be nice to have such information in the tree;
+"where should I pick $SYMBOL from?" is something one needs to
+find out often enough.  To a large extent it's covered by "where
+in include/*.h do we have it defined?", but that's not all there
+is to it.  E.g. "get_user() => use linux/uaccess.h".
 
-I can see how the check works (scripts/checkpatch.pl L5881).  Decoding
-that will probably help us improve the tooling.
-
->
-> But of course, it doesn't always hold true, there are a few minor
-> exceptions, but they are rare.
-
-$ grep -r \\#include lib | grep asm
-
-shows quite a few exceptions, and just in lib/.
-
-For example, lib/math/int_log.c includes asm/bug.h.  Is that a case
-where lib/math/int_log.c should be #include 'ing linux/bug.h rather
-than asm/bug.h?
---=20
-Thanks,
-~Nick Desaulniers
+There's also stuff like "$SYMBOL should not be used outside of arch/*
+and include/*, better use $OTHER_SYMBOL", etc.
