@@ -2,184 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E2B804D25
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE157804D2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbjLEJE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:04:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49070 "EHLO
+        id S231804AbjLEJFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:05:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229980AbjLEJEY (ORCPT
+        with ESMTP id S229584AbjLEJFC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:04:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C640120
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:04:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701767071; x=1733303071;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=vIvQf07bm9CAu932FQA2fzcUIxXMoe9QYTWzA/UzqZU=;
-  b=l83yxiwdHk0YqFnFakNUBO/ynIw+49JdHX4X1q6orpaOK/W7cafMo6Hu
-   PnUuvoe76M/VB78GyHZG3C1WZ6jqvY6lBOFlwZAhiitno266SaJs9D+m4
-   l1221WoHJ/5yI97NqN0wHSmGei/2w0A+Q7DolI0fZnqa9fZq6Wam0pvrt
-   54hcO1HTJkEJTjngoPUI44iFAFAm2ICYc5S6jBiEb5E9bh0m214bgVETO
-   mpDCtYfmauar7KQ3moxmGQjcNfGUWUOGBVQf1WKtO3F9S9A3aoQ/eZklU
-   3av6Gnvyu6/pzF2rUoDdr4xZw29SsfUmE8dB6r+fPPNoqBbys9DY8pOFr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="7208191"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="7208191"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:04:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="894296798"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="894296798"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 05 Dec 2023 01:04:29 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rARLu-0008cM-1x;
-        Tue, 05 Dec 2023 09:04:26 +0000
-Date:   Tue, 5 Dec 2023 17:04:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kent Overstreet <kmo@daterainc.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: fs/bcachefs/btree_io.c:812:5-8: Unneeded variable: "ret". Return "
-  0" on line 900
-Message-ID: <202312051654.iKqsZSPl-lkp@intel.com>
+        Tue, 5 Dec 2023 04:05:02 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A661A138
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:05:07 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 14476E0003;
+        Tue,  5 Dec 2023 09:05:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701767105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sQ6L0iYnf9qAUnI5X5j3KYZuPXhLHFsRIqvKMaspN/4=;
+        b=iHfSpdpxXaXNZQp1y42w9bsjtCoNMZvfl+tYRRsfyK696yaAvRWdBCP3m0J7Z6G+Na4hC+
+        yaIhrzhHMvQremDZym2//Kqn+CBhe6EYi99siCll/IRSmTyaOJwB13GwvY3NUPimisvv4v
+        aa4iKRS81yTCskc+X9y45LdUdRXIJDKyprQ+EZqd6bxj8hDG3f/YBHTin6rtEX3jlwyj4g
+        kd346CnF4bDuNFII3rwGcDAgcV3t1dxRhhzTf2KBHKodXpjQ8g4K2oOlztysxp3iyXwf+7
+        6NN6X4TTxtIVjmyroVC/YzsMydlgADzJZm5CZQrFBhIK+/rH7cIy29M6q3oSGA==
+Date:   Tue, 5 Dec 2023 10:05:02 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     POPESCU Catalin <catalin.popescu@leica-geosystems.com>
+Cc:     "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>,
+        "michael@walle.cc" <michael@walle.cc>,
+        "rafal@milecki.pl" <rafal@milecki.pl>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        GEO-CHHER-bsp-development 
+        <bsp-development.geo@leica-geosystems.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>
+Subject: Re: [PATCH] nvmem: fix issue within nvmem_register with
+ fixed-layout.
+Message-ID: <20231205100502.623863ff@xps-13>
+In-Reply-To: <16c4c272-1a19-4fb8-8a2d-b2cf61ba37f2@leica-geosystems.com>
+References: <20231130162922.2989774-1-catalin.popescu@leica-geosystems.com>
+        <16c4c272-1a19-4fb8-8a2d-b2cf61ba37f2@leica-geosystems.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: 39fb2983c5862933798cdd1b59da180bc9642910 bcachefs: Kill bkey_type_successor
-date:   6 weeks ago
-config: x86_64-randconfig-104-20231204 (https://download.01.org/0day-ci/archive/20231205/202312051654.iKqsZSPl-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20231205/202312051654.iKqsZSPl-lkp@intel.com/reproduce)
+Hi Catalin,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051654.iKqsZSPl-lkp@intel.com/
++ GKH
++ Luca (who initially reported this issue)
 
-cocci warnings: (new ones prefixed by >>)
->> fs/bcachefs/btree_io.c:812:5-8: Unneeded variable: "ret". Return "  0" on line 900
+catalin.popescu@leica-geosystems.com wrote on Tue, 5 Dec 2023 08:48:27
++0000:
 
-vim +812 fs/bcachefs/btree_io.c
+> Adding more people.
+>=20
+> On 30.11.23 17:29, Catalin Popescu wrote:
+> > fixed-layout is natively supported by NVMEM framework.
+> > Yet, it's not been declared as a supported layout. As a
+> > result, nvmem_register always returns -EPROBE_DEFER if
+> > configuration has no layout and the NVMEM provider DT
+> > uses a fixed layout.
+> >
+> > As a fix, declare fixed-layout as a supported layout
+> > and use add_cells callback to parse the cells. This adds
+> > consistency over layouts parsing as fixed-layout parsing
+> > is handled in the same way than others nvmem layouts.
 
-   804	
-   805	static int validate_bset_keys(struct bch_fs *c, struct btree *b,
-   806				 struct bset *i, unsigned *whiteout_u64s,
-   807				 int write, bool have_retry)
-   808	{
-   809		unsigned version = le16_to_cpu(i->version);
-   810		struct bkey_packed *k, *prev = NULL;
-   811		bool seen_non_whiteout = false;
- > 812		int ret = 0;
-   813	
-   814		if (!BSET_SEPARATE_WHITEOUTS(i)) {
-   815			seen_non_whiteout = true;
-   816			*whiteout_u64s = 0;
-   817		}
-   818	
-   819		for (k = i->start;
-   820		     k != vstruct_last(i);) {
-   821			struct bkey_s u;
-   822			struct bkey tmp;
-   823			const char *invalid;
-   824	
-   825			if (btree_err_on(bkey_next(k) > vstruct_last(i),
-   826					 BTREE_ERR_FIXABLE, c, b, i,
-   827					 "key extends past end of bset")) {
-   828				i->u64s = cpu_to_le16((u64 *) k - i->_data);
-   829				break;
-   830			}
-   831	
-   832			if (btree_err_on(k->format > KEY_FORMAT_CURRENT,
-   833					 BTREE_ERR_FIXABLE, c, b, i,
-   834					 "invalid bkey format %u", k->format)) {
-   835				i->u64s = cpu_to_le16(le16_to_cpu(i->u64s) - k->u64s);
-   836				memmove_u64s_down(k, bkey_next(k),
-   837						  (u64 *) vstruct_end(i) - (u64 *) k);
-   838				continue;
-   839			}
-   840	
-   841			/* XXX: validate k->u64s */
-   842			if (!write)
-   843				bch2_bkey_compat(b->c.level, b->c.btree_id, version,
-   844					    BSET_BIG_ENDIAN(i), write,
-   845					    &b->format, k);
-   846	
-   847			u = __bkey_disassemble(b, k, &tmp);
-   848	
-   849			invalid = __bch2_bkey_invalid(c, u.s_c, btree_node_type(b)) ?:
-   850				bch2_bkey_in_btree_node(b, u.s_c) ?:
-   851				(write ? bch2_bkey_val_invalid(c, u.s_c) : NULL);
-   852			if (invalid) {
-   853				char buf[160];
-   854	
-   855				bch2_bkey_val_to_text(&PBUF(buf), c, u.s_c);
-   856				btree_err(BTREE_ERR_FIXABLE, c, b, i,
-   857					  "invalid bkey:\n%s\n%s", invalid, buf);
-   858	
-   859				i->u64s = cpu_to_le16(le16_to_cpu(i->u64s) - k->u64s);
-   860				memmove_u64s_down(k, bkey_next(k),
-   861						  (u64 *) vstruct_end(i) - (u64 *) k);
-   862				continue;
-   863			}
-   864	
-   865			if (write)
-   866				bch2_bkey_compat(b->c.level, b->c.btree_id, version,
-   867					    BSET_BIG_ENDIAN(i), write,
-   868					    &b->format, k);
-   869	
-   870			/*
-   871			 * with the separate whiteouts thing (used for extents), the
-   872			 * second set of keys actually can have whiteouts too, so we
-   873			 * can't solely go off bkey_whiteout()...
-   874			 */
-   875	
-   876			if (!seen_non_whiteout &&
-   877			    (!bkey_whiteout(k) ||
-   878			     (prev && bkey_iter_cmp(b, prev, k) > 0))) {
-   879				*whiteout_u64s = k->_data - i->_data;
-   880				seen_non_whiteout = true;
-   881			} else if (prev && bkey_iter_cmp(b, prev, k) > 0) {
-   882				char buf1[80];
-   883				char buf2[80];
-   884				struct bkey up = bkey_unpack_key(b, prev);
-   885	
-   886				bch2_bkey_to_text(&PBUF(buf1), &up);
-   887				bch2_bkey_to_text(&PBUF(buf2), u.k);
-   888	
-   889				bch2_dump_bset(b, i, 0);
-   890				btree_err(BTREE_ERR_FATAL, c, b, i,
-   891					  "keys out of order: %s > %s",
-   892					  buf1, buf2);
-   893				/* XXX: repair this */
-   894			}
-   895	
-   896			prev = k;
-   897			k = bkey_next_skip_noops(k, vstruct_last(i));
-   898		}
-   899	fsck_err:
- > 900		return ret;
-   901	}
-   902	
+I believe this patch (not taken yet) should fix your issue and should be
+queued to fixes.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Link: https://lore.kernel.org/lkml/20231124193814.360552-1-miquel.raynal@bo=
+otlin.com/
+
+However I like your approach which should probably be taken into
+consideration for the next cycle, as I think it fits Rafal's
+original idea pretty well.
+
+> >
+> > Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
+> > ---
+> >   drivers/nvmem/core.c | 24 +++++++++++++++++-------
+> >   1 file changed, 17 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> > index bf42b7e826db..3467c94207e8 100644
+> > --- a/drivers/nvmem/core.c
+> > +++ b/drivers/nvmem/core.c
+> > @@ -746,7 +746,9 @@ static int nvmem_add_cells_from_legacy_of(struct nv=
+mem_device *nvmem)
+> >   	return nvmem_add_cells_from_dt(nvmem, nvmem->dev.of_node);
+> >   }
+> >  =20
+> > -static int nvmem_add_cells_from_fixed_layout(struct nvmem_device *nvme=
+m)
+> > +static int nvmem_add_cells_from_fixed_layout(struct device *dev,
+> > +					     struct nvmem_device *nvmem,
+> > +					     struct nvmem_layout *layout)
+
+I've sent another series (on top of the fix mentioned above) to
+simplify a bit this list of parameters, so both will conflict. But that
+will be easy to solve.
+
+Link: https://lore.kernel.org/lkml/20231129163737.698317-1-miquel.raynal@bo=
+otlin.com/
+
+> >   {
+> >   	struct device_node *layout_np;
+> >   	int err =3D 0;
+> > @@ -755,8 +757,7 @@ static int nvmem_add_cells_from_fixed_layout(struct=
+ nvmem_device *nvmem)
+> >   	if (!layout_np)
+> >   		return 0;
+> >  =20
+> > -	if (of_device_is_compatible(layout_np, "fixed-layout"))
+> > -		err =3D nvmem_add_cells_from_dt(nvmem, layout_np);
+> > +	err =3D nvmem_add_cells_from_dt(nvmem, layout_np);
+> >  =20
+> >   	of_node_put(layout_np);
+> >  =20
+> > @@ -1003,10 +1004,6 @@ struct nvmem_device *nvmem_register(const struct=
+ nvmem_config *config)
+> >   			goto err_remove_cells;
+> >   	}
+> >  =20
+> > -	rval =3D nvmem_add_cells_from_fixed_layout(nvmem);
+> > -	if (rval)
+> > -		goto err_remove_cells;
+> > -
+> >   	rval =3D nvmem_add_cells_from_layout(nvmem);
+> >   	if (rval)
+> >   		goto err_remove_cells;
+> > @@ -2126,6 +2123,19 @@ const char *nvmem_dev_name(struct nvmem_device *=
+nvmem)
+> >   }
+> >   EXPORT_SYMBOL_GPL(nvmem_dev_name);
+> >  =20
+> > +static const struct of_device_id fixed_layout_of_match_table[] =3D {
+> > +	{ .compatible =3D "fixed-layout", },
+> > +	{},
+> > +};
+> > +MODULE_DEVICE_TABLE(of, fixed_layout_of_match_table);
+> > +
+> > +static struct nvmem_layout fixed_layout =3D {
+> > +	.name =3D "NVMEM fixed layout",
+> > +	.of_match_table =3D fixed_layout_of_match_table,
+> > +	.add_cells =3D nvmem_add_cells_from_fixed_layout,
+> > +};
+> > +module_nvmem_layout_driver(fixed_layout);
+> > +
+> >   static int __init nvmem_init(void)
+> >   {
+> >   	return bus_register(&nvmem_bus_type); =20
+>=20
+>=20
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+
+Thanks,
+Miqu=C3=A8l
