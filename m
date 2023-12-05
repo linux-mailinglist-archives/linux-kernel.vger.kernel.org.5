@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C26BD8053DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:12:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9158053E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:13:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbjLEMMQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 07:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S235118AbjLEMNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:13:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbjLEMMQ (ORCPT
+        with ESMTP id S231912AbjLEMNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:12:16 -0500
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE6AC3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:12:22 -0800 (PST)
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1fb1620a00eso710839fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:12:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701778342; x=1702383142;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K1huvNNeQ9UeMMl5w2SdOEQfS8q+089rdbok3L8xrR0=;
-        b=UTXxrwthkVwsfnbocwFp42bZ3ecSiNZZqcZVPlAJo0Jecor1F2VokNkEIiIPt0bKMM
-         5EtwBFN0Tbt780PgdnjqIYx34JJA+UfNXR1wQ0loRLsP6L9Krr+to2t1wy5OC6xbyVsW
-         e1SMDi2tU3y2l7fPL2xXNVXM3OGYU9qLwXveksQKY8AncPrZR03PuT+Hqvq8Ohp8PWd2
-         abbrS4HqvYGu2rc9D2PI5OAkTXSBZQNow5xJw9b4H/XdYNmEglSVCBXW9ZmcUgdwjUkN
-         edjR63KfxY/3RKKTxLgqtGwAyBp0WfdnCpzv3H2fw+sDA999KZMi809LX85V7KZXWb/k
-         Qtpw==
-X-Gm-Message-State: AOJu0Yzzhq6nu6whIK4g5NN4pEBgVYgQM07XdsaVcm+CgSEhT3vJ4Gd6
-        GX4WA4o4NwP7jWdKRm0h3R5SAlB78JfOxrnO0fc=
-X-Google-Smtp-Source: AGHT+IEfjIhWLRGwViH71x9Z7/YEug9pRMPSRVxDVnqDzOWTZYKroksfDKA8wBrscRpUy2dktOyw2iDCl8XMXcgdF9M=
-X-Received: by 2002:a05:6870:b60c:b0:1fb:5d05:685e with SMTP id
- cm12-20020a056870b60c00b001fb5d05685emr2893332oab.2.1701778342010; Tue, 05
- Dec 2023 04:12:22 -0800 (PST)
+        Tue, 5 Dec 2023 07:13:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBF2C3;
+        Tue,  5 Dec 2023 04:13:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701778423; x=1733314423;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MYqOhIpAjG+tcFzzzvBDM/zAZxf8GMMLxtt+rsWwboM=;
+  b=mDzI3Y7+SHNcFAaOAh9VsrFA3QixVH53hJ0F4PjAEktSYOCK8Y4dTM4c
+   yk8fv2NF3FRjGqa1qN0XgYfPWg4x5O3nTGl6t240YfTzLLkgX994VqZnH
+   kf8kWU6Vozc6AT2ihbggsuex5BJkeZUMimuh6w+zyEu4zii2M6o3XQmid
+   3OVWxBU0OmRg4k4n5zxdJf9Sk4AVvIh9Cwv7Eq+rsiEYhWjh9qtHintY7
+   lwHZr/pvVq1WMDh6u2rmyETjw29uJNQ0Qtl1NFuvx/9FlGM7OpcEJ57PV
+   XCnrLG1eZ4vG1C6ZSk9QlLIIYH9DPWnvlVAsXEL+naaP76buw7a/KE5u7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="378910566"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="378910566"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 04:13:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="12315536"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.31.68]) ([10.255.31.68])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 04:13:40 -0800
+Message-ID: <dfb350c8-b3e3-48ad-86b3-201205521153@linux.intel.com>
+Date:   Tue, 5 Dec 2023 20:13:37 +0800
 MIME-Version: 1.0
-References: <53bce76c5c60463eba1372df426a64b9@amazon.co.uk> <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org>
-In-Reply-To: <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Dec 2023 13:12:09 +0100
-Message-ID: <CAJZ5v0iVvMLK_VcPRJ4sW1eOh0EtfcFvKjH5j1y1GbA0Y6q--Q@mail.gmail.com>
-Subject: Re: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at performance
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     pdurrant@amazon.co.uk, bp@alien8.de, dave.hansen@intel.com,
-        dave.hansen@linux.intel.com, hdegoede@redhat.com, hpa@zytor.com,
-        jalliste@amazon.co.uk, juew@amazon.com, len.brown@intel.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, rafael.j.wysocki@intel.com,
-        rafael@kernel.org, tglx@linutronix.de, usama.arif@bytedance.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Yan Zhao <yan.y.zhao@intel.com>, iommu@lists.linux.dev,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 09/12] iommu: Make iommu_queue_iopf() more generic
+Content-Language: en-US
+To:     Yi Liu <yi.l.liu@intel.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+References: <20231115030226.16700-1-baolu.lu@linux.intel.com>
+ <20231115030226.16700-10-baolu.lu@linux.intel.com>
+ <e18c7c93-7184-4bbc-97cd-61fc0bc0aa3d@intel.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <e18c7c93-7184-4bbc-97cd-61fc0bc0aa3d@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 1:00 PM David Woodhouse <dwmw2@infradead.org> wrote:
->
->
-> Paul writes:
-> > The problem is that this will take effect even on a kexec and hence it is throttling
-> > a system that set ENERGY_PERF_BIAS_PERFORMANCE prior to the kexec.  We use kexec to
-> > live update the host kernel of our systems whilst leaving virtual machines running.
-> > This resetting of the perf bias is having a very detrimental effect on the downtime
-> > of our systems across the live update - about a 7 fold increase.
->
-> It isn't just about kexec, is it? Even in a clean boot why wouldn't we want to stay in performance mode until the kernel has *finished* booting?
+On 2023/12/5 15:13, Yi Liu wrote:
+>> @@ -157,8 +173,8 @@ int iommu_queue_iopf(struct iommu_fault *fault, 
+>> struct device *dev)
+>>       group->dev = dev;
+>>       group->last_fault.fault = *fault;
+>>       INIT_LIST_HEAD(&group->faults);
+>> +    group->domain = domain;
+>>       list_add(&group->last_fault.list, &group->faults);
+>> -    INIT_WORK(&group->work, iopf_handler);
+>>       /* See if we have partial faults for this group */
+>>       list_for_each_entry_safe(iopf, next, &iopf_param->partial, list) {
+>> @@ -167,9 +183,13 @@ int iommu_queue_iopf(struct iommu_fault *fault, 
+>> struct device *dev)
+>>               list_move(&iopf->list, &group->faults);
+>>       }
+>> -    queue_work(iopf_param->queue->wq, &group->work);
+>> -    return 0;
+>> +    mutex_unlock(&iopf_param->lock);
+>> +    ret = domain->iopf_handler(group);
+>> +    mutex_lock(&iopf_param->lock);
+> 
+> After this change, this function (iommu_queue_iopf) does not queue
+> anything. Should this function be renamed? Except this, I didn't see
+> other problem.
 
-Because it may overheat during that period.
+It's renamed in the next patch.
 
-> It's literally adding seconds to the startup time in some cases.
->
-> And yes, we *particularly* care in the kexec case because guests experience it as excessive steal time. But it ain't great in the general case either, surely?
+> 
+> Reviewed-by:Yi Liu <yi.l.liu@intel.com>
 
-So IMV it would be perfectly fine to add a command line arg to provide
-the initial value of energy_perf_bias for the ones who know what they
-are doing.
+Thank you!
+
+Best regards,
+baolu
