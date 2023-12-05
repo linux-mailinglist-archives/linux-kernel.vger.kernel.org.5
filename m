@@ -2,60 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 249E880440C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98068043F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343905AbjLEB1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 20:27:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48292 "EHLO
+        id S1343780AbjLEBWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 20:22:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346337AbjLEB05 (ORCPT
+        with ESMTP id S229575AbjLEBWd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 20:26:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F1418A
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:26:57 -0800 (PST)
+        Mon, 4 Dec 2023 20:22:33 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C58AF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:22:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701739617; x=1733275617;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=u1gb+xXuSLrs67n4B6W8q40HRhcbFjefDWfMBwrFYbE=;
-  b=WwosC1tF7difF/42duQS89tBujS6p6/yB5253cwVNu2HyBSOTBFuR7k7
-   JYij1OibK//jlsxs3NkXGi43TGMr94PjhjJLE2vpg4Pcprh7zqBoXvWIY
-   u3rHMGye3cNkQWj/q6yRxpe2F/b75p5XziV4E0ZpOcqxbxMqXnwGF967r
-   VAyRGm68sE/CVoysVWSZM0P7Hwz3cboURO/Evdw4AxNiww8TLplZ3P1Y+
-   KwHH69epjJuA5FSmBIh/SipqQNpY6mBoTMCZ5MGavpRQrZRrnLdalkc8Z
-   w4F8bb+Z+y1c4mXwgSgMNlbfqibPcBjAVEIJNniJgeEFtvmJqTOugnVpX
+  t=1701739359; x=1733275359;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=/KRnXauEAOtxAh8pRgl7NtYOoKySCCtw3a7e+b3zVG0=;
+  b=G6JZ+St9HScEWCU4jZc80EP4PGZM9O0yyA99zWu7YMRR8TJcl/lw4k2N
+   GyEc0grlYOrH1bp6uWfyvRZ2n6e6UFVpvIBgA7paLthohAqDwYcmepuuJ
+   TUM05OPwMGzGufRJdnHrw4mdTebZuWgbl1hAtVQGQvYRILjW6Cc4Qn5PR
+   +ej01rIMW8O0NdSu1Mulyc/cMKqlLSkrEBrcZMFAzm8IEeqo88+SE5zjN
+   zvFj7dgvs1BTGiXX8tmLIkQ+dacdE/Fx+hU4R7o+VaHopvz0OlBN7hz6g
+   ywKtP99BdIyaLwxXx9CJiopn9/ljqr+YLTP7Z5QYc/BS/PxBAfvcDH8QS
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="460313368"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="424982891"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="460313368"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:26:55 -0800
+   d="scan'208";a="424982891"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:22:39 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1102276337"
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="805089160"
 X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="1102276337"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmsmga005.fm.intel.com with ESMTP; 04 Dec 2023 17:26:53 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH v2 6/6] iommu/vt-d: Cleanup si_domain
-Date:   Tue,  5 Dec 2023 09:22:03 +0800
-Message-Id: <20231205012203.244584-7-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231205012203.244584-1-baolu.lu@linux.intel.com>
-References: <20231205012203.244584-1-baolu.lu@linux.intel.com>
-MIME-Version: 1.0
+   d="scan'208";a="805089160"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 17:22:39 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Dec 2023 17:22:38 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 17:22:38 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 4 Dec 2023 17:22:38 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i9EKMXhHTORsLHGaQs1tPev0O57QIBgotAHu28spi3pvl7pXOrdS1lnJ21eN3LadJUj/P+L69gMOXpi10HsMVeZGzOb38voVlxMnuZVdB0PKQAzro/SiAy67C+aUS/t9ZWF9NlBbvFuxwh1XSbVTrRn33dpbdmRSk5PF/l0ongrOu9lFg4ihH8LIx1R06u9ZjyL1jV51AAtGB9bx6oJ5M+M7Sy2a75ANNHp2/oaDSXFAVdi1x95XVZD1xxxVfamcsxI/l3YssL4LV6sqU3TeEqLeSjP6DtCP6mNkUc8KLfPlXUNY8AhwVFVM3EcIbrkGEQ9BUStyKLtTIHnyG0ZRAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rsoveNRYj9IEnYsjpcmWWEMQ1KU94lp3NVfwmulhFNs=;
+ b=QjihE/5ZUJXzBBxzri00WJDs9jS/JfIq1Pzm/8LugV5odMVpgp6QNl7ej92LY/XjMLliY308ZTsw1C2Frmb0WArFcAsW18aLVfVPFjB1n3bM+Iy1pugxNxSwfvume6a6oGZdQfNkK9X7LZ2rgb8VawfVQbnjkAU9X3nOnBy8bxd4/5rK3XYvKjWOIFYWe9HOF6XpFq2Qb/T/par8f+cTUdLecf9qsB6tRTWalBew1fROS8KPt5EHV3rD7Ua5sIEFmNLbJWpEeRddupAoW1YUq50oHa80qhbzUxJ41ureI67oLUa5lcXCiOBw4oHl6tW6k238ek6LYQaO3FJFXDxDlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
+ SJ2PR11MB7618.namprd11.prod.outlook.com (2603:10b6:a03:4cc::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
+ 2023 01:22:36 +0000
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::f105:47dd:6794:6821]) by DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::f105:47dd:6794:6821%4]) with mapi id 15.20.7046.033; Tue, 5 Dec 2023
+ 01:22:36 +0000
+From:   =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+To:     <intel-xe@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Michal Wajdeczko <michal.wajdeczko@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        =?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
+        =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+Subject: [PATCH v2 0/3] drm/managed: Add drmm_release_action
+Date:   Tue, 5 Dec 2023 02:22:07 +0100
+Message-ID: <20231205012210.1491532-1-michal.winiarski@intel.com>
+X-Mailer: git-send-email 2.43.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-ClientProxiedBy: FR5P281CA0038.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f3::8) To BL1PR11MB5365.namprd11.prod.outlook.com
+ (2603:10b6:208:308::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|SJ2PR11MB7618:EE_
+X-MS-Office365-Filtering-Correlation-Id: e7ba5a4f-a4c3-4963-2cee-08dbf530a9b2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Qa8mQnIJvFCvhBsh6c8J3wUkoCg7lQwWjxXFhWH/MdeiPxod6PqfP2hxme5egNWWR6TupxqQStZ91hbkjioSooMzr66GnxrRhirUQPIk0cTeSR06xVyw+w/RN51RGapu7JRctqMa7U6XCmRnZtWRMHkGr910STdnmyuTvLRNckGDQXSD76bqKdyaRdNyM6kke9eterAAVTmcaBhsPqHMOzwweDETYUJaGIgbLHg4YTp+kFXVKmkgBMkQ8S3EPHhofEtRUZmqdU3tFC8210nFZyX0nws52YTfLQY1VTv5qbsvKwdDQ+UFWeVo17vFBg1pxsK36xlUzs2eMZWkH8nOTzWCuKbl4JUo3e5bnukWRsJU5ageqf6m2ASFQS7VpaIlXjKh2p8sLbGwY/2x9wPbjpLsfwwgX3d96TebzeQEOCRtWbau4P41Nu+/muvXPkgI/laqHQMiPfSrSqjMRzsSC/VJLpSWZif52BQK10lIWuiYTF+q6oRU3JO2HsBk3YgJfahoTNai/2ICBMzjrYB3ARWlm0kzSV+45A5ZnD/xAnc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(39860400002)(346002)(376002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(5660300002)(4744005)(86362001)(4326008)(8676002)(8936002)(2906002)(7416002)(41300700001)(6512007)(36756003)(1076003)(6506007)(2616005)(82960400001)(6666004)(83380400001)(6486002)(478600001)(26005)(38100700002)(316002)(54906003)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K0JvL3RtUHExUDdXSDlFTmFGbTNTSll4aitUMnVqSXNxdUZSdGZBbVIxK2Fh?=
+ =?utf-8?B?MTFydjh6N2tnSytlMFJXMDl5aVJsSlh1R1NtdDE5clczV0tabUVmRTl3VVR0?=
+ =?utf-8?B?R3NxcTlSYVVIQ2ZyOHRPcmhPN2tWaXBtaFdzMjZhcDg4R1dscmlnSmtocGIx?=
+ =?utf-8?B?TzNZZktMcVB6YUF2OExqQXNlUmZmUUdNZ0NZaFJ4QS83TDM5WkJCNUltVnox?=
+ =?utf-8?B?aE9RRm5zdkxWcnh4Z3hmMUZjbXNmZTNQMWRPZWZRYWZQcXJqRERGT3ZoNW1G?=
+ =?utf-8?B?dHpXYU9YdW50ZGZBa3R6SlVoYU1NNy8reGdxMVhCZ1dmSXF3ZGFMa0Y1c291?=
+ =?utf-8?B?M2lzNWQyYnR0VWQ2clJEUkJkWllnVEc0R091WmdQV3Q3L3NoRURWR1FtcDI5?=
+ =?utf-8?B?anE3VjZNL21nOFFyeGd6MjdvS1NnVklDcTdNMDJ5Y1M2Z3d3NFEzdmlnSGhr?=
+ =?utf-8?B?RFg1QTB2aC9ZL0dudGt2QVFHU2JnVDZoa0hvWGE2ejNRU1gwbDhINEJMZVZV?=
+ =?utf-8?B?emlRUWFBS21ZSUcxK1loRjZ1OFNYM0VRL1NQcGR1N3dCdXJ3T0hLaUxydm9B?=
+ =?utf-8?B?a1lZVnJJWXRUTzM0OU5zajY5d0J0MGhSbTh5L1c2ci9ycGpCdXpaa2MyL0cz?=
+ =?utf-8?B?VjY4WEtDQkI5aDhzVXhKU256bnppR0xGZlpLVWRieUc3dWFDVGEzUlVqTXh4?=
+ =?utf-8?B?aHZkeXUvQU4zQnJZdnplcXA3ZTdZNzZtNEhOK2tpQ2JsR2swa09wSG1iZEN1?=
+ =?utf-8?B?b2EzTEhnYWVQVlc4NERyUXFrYzVUdmVRYU03eUpXNE9BaDBFQ0tuQzQ5c3dy?=
+ =?utf-8?B?TTBDdjgxWWhRdU1OQjAyVmtaMjFpUmhhNmFOK3VVYTVHZTZYbkhRSTNUd2RX?=
+ =?utf-8?B?WGJLRy9GZUc3cUFZSkRhc0JmcGRTTEh3Q1RqR2VrS0o3RVNSOHJnWTZtcEg5?=
+ =?utf-8?B?MjlXU3JyY2x0azc3U3d3S2NqR2l5UTQ1aW1zREpjT3dYUXBRUXNxNm5YL0hv?=
+ =?utf-8?B?cU9CQk1NQnhTZHhjT2EwcXd0SHlDTVBzbUVZeUhjdFdhekNxSTFCcllkb1ZN?=
+ =?utf-8?B?ZWRkcEJxQjAvUjJndDgzZzd3dVQ4UEFlR0JDSjFyaEVpZTkyNHRyczgwYk94?=
+ =?utf-8?B?UTNtZDlaL2FNMEhjNlB3dnl0ekNETkFVeWRUNW4vM3J2eHMvNUhqQ0w1aEFR?=
+ =?utf-8?B?TElBUWJMYkdSTXFuMWtZbnl4Tk5IL1VVdjJJTXRPaWErTUJIcVdZcDBBZ2xp?=
+ =?utf-8?B?UVlnYzhLZ0NlSmc4aVNPT25uUlQ5R1g5Z2I0TFQ4a2tkTGxUR01uR29henE1?=
+ =?utf-8?B?RWo3bk94Z2tDcXRYV2hvVHUwVWJCRVNzdUd4cmFSRGtLckZjTGJPc2VrUjRE?=
+ =?utf-8?B?RUdaQjN0Q3dRRGR6RkNnMEFPSXl2dDhUWnVjUnlqMTdQWmZRMHVUaU1aWGpI?=
+ =?utf-8?B?YkZOQWVSMUs4S1drbU5PcFBSbkJlWWlUZFphazM2anMrOG94MGgrU2IwamVR?=
+ =?utf-8?B?TEgvelZmTkliMnNOUXJvSE9xaXp0bk1JenNVR2FpK0h4b2tmZ0p2MUVUbEIv?=
+ =?utf-8?B?YjhWY1kwcnY0bkpEQzdnanJmZStNS3RXTDJlK2lPNFQ1WGhocU82Ymh3bWd5?=
+ =?utf-8?B?VmJjcEJxOFNkdkRvVDJlTVJnNjR3QkhmYVU5VzBLL2gwS1E1T0w1MGoyU2hU?=
+ =?utf-8?B?VlpqUEVNVVZDdytvLzRWL1FsNVBSTEpsL0RleUFUVjF0c2VKMzFzY1B1VDh5?=
+ =?utf-8?B?VlNxOThnQXVhdjRPNmhWNDI5ZnVsWVQ1bHh6cDZQb3FuR1RqWHJCOUg3enIy?=
+ =?utf-8?B?dUNld2VlOGhhbmpOaUk3emlTakt1L2NKeUp4bHJXT04xcFBUSkR2WjBlYUdy?=
+ =?utf-8?B?NkRiVGs2SndjTFpVOFZIcVBJaEd1U0NWWEdLYjdKQXUrYkpXYiszSDhReG4v?=
+ =?utf-8?B?YXJ4TDI5TVVuV1J6aVRQYy81ejJXOGxIZFpMWEgrN0xMU0ptRHV3bjJVZlR2?=
+ =?utf-8?B?SnkvWGorSHhsY210bXhPZWV4STdkdnNta0pRUnFJaHN6MzFGNzlZUlRTNUdR?=
+ =?utf-8?B?djJBb28wdG82STEySEMvSlBCbjVmWDJzQ21oc2Q1UERQWkcrelZMbkpFTGpB?=
+ =?utf-8?B?UEt6N0FLWUtvVVpveEcrU2NPekgwQTZaY0RkU0tCcGhoZGVHY1pkVVYyczBm?=
+ =?utf-8?B?bnc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7ba5a4f-a4c3-4963-2cee-08dbf530a9b2
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5365.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 01:22:36.6552
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PMUHkZFOxJ+Y5i/yfACQu1DezGz1YYcNnyEoQm97l6Ls4YusfDhIQqW6b+syRC4xkaI2K3K0MWI/LiaM6r9vzzzoa5lsKALB1bI74idb1go=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7618
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,243 +163,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The static identity domain has been introduced, rendering the si_domain
-obsolete. Remove si_domain and cleanup the code accordingly.
+Upcoming Intel Xe driver will need to have a more fine-grained control
+over DRM managed actions - namely, the ability to release a given
+action, triggering it manually at a different point in time than the
+final drm_dev_put().
+This series adds a drmm_release_action function (which is similar to
+devres devm_release_action) and a simple test that uses it.
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 118 +++++++-----------------------------
- 1 file changed, 23 insertions(+), 95 deletions(-)
+v1 -> v2:
+- Split the test changes (Maxime)
+- Simplify priv lifetime management (Maxime)
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 3c747d19495e..91443b34111b 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -97,15 +97,6 @@ static phys_addr_t root_entry_uctp(struct root_entry *re)
- 	return re->hi & VTD_PAGE_MASK;
- }
- 
--/*
-- * This domain is a statically identity mapping domain.
-- *	1. This domain creats a static 1:1 mapping to all usable memory.
-- * 	2. It maps to each iommu if successful.
-- *	3. Each iommu mapps to this domain if successful.
-- */
--static struct dmar_domain *si_domain;
--static int hw_pass_through = 1;
--
- struct dmar_rmrr_unit {
- 	struct list_head list;		/* list of rmrr units	*/
- 	struct acpi_dmar_header *hdr;	/* ACPI header		*/
-@@ -240,11 +231,6 @@ void free_pgtable_page(void *vaddr)
- 	free_page((unsigned long)vaddr);
- }
- 
--static int domain_type_is_si(struct dmar_domain *domain)
--{
--	return domain->domain.type == IOMMU_DOMAIN_IDENTITY;
--}
--
- static int domain_pfn_supported(struct dmar_domain *domain, unsigned long pfn)
- {
- 	int addr_width = agaw_to_width(domain->agaw) - VTD_PAGE_SHIFT;
-@@ -1795,9 +1781,6 @@ static int domain_context_mapping_one(struct dmar_domain *domain,
- 	struct context_entry *context;
- 	int agaw, ret;
- 
--	if (hw_pass_through && domain_type_is_si(domain))
--		translation = CONTEXT_TT_PASS_THROUGH;
--
- 	pr_debug("Set context mapping for %02x:%02x.%d\n",
- 		bus, PCI_SLOT(devfn), PCI_FUNC(devfn));
- 
-@@ -1816,34 +1799,24 @@ static int domain_context_mapping_one(struct dmar_domain *domain,
- 
- 	context_set_domain_id(context, did);
- 
--	if (translation != CONTEXT_TT_PASS_THROUGH) {
--		/*
--		 * Skip top levels of page tables for iommu which has
--		 * less agaw than default. Unnecessary for PT mode.
--		 */
--		for (agaw = domain->agaw; agaw > iommu->agaw; agaw--) {
--			ret = -ENOMEM;
--			pgd = phys_to_virt(dma_pte_addr(pgd));
--			if (!dma_pte_present(pgd))
--				goto out_unlock;
--		}
--
--		if (info && info->ats_supported)
--			translation = CONTEXT_TT_DEV_IOTLB;
--		else
--			translation = CONTEXT_TT_MULTI_LEVEL;
--
--		context_set_address_root(context, virt_to_phys(pgd));
--		context_set_address_width(context, agaw);
--	} else {
--		/*
--		 * In pass through mode, AW must be programmed to
--		 * indicate the largest AGAW value supported by
--		 * hardware. And ASR is ignored by hardware.
--		 */
--		context_set_address_width(context, iommu->msagaw);
-+	/*
-+	 * Skip top levels of page tables for iommu which has
-+	 * less agaw than default. Unnecessary for PT mode.
-+	 */
-+	for (agaw = domain->agaw; agaw > iommu->agaw; agaw--) {
-+		ret = -ENOMEM;
-+		pgd = phys_to_virt(dma_pte_addr(pgd));
-+		if (!dma_pte_present(pgd))
-+			goto out_unlock;
- 	}
- 
-+	if (info && info->ats_supported)
-+		translation = CONTEXT_TT_DEV_IOTLB;
-+	else
-+		translation = CONTEXT_TT_MULTI_LEVEL;
-+
-+	context_set_address_root(context, virt_to_phys(pgd));
-+	context_set_address_width(context, agaw);
- 	context_set_translation_type(context, translation);
- 	context_set_fault_enable(context);
- 	context_set_present(context);
-@@ -2077,14 +2050,10 @@ static void domain_context_clear_one(struct device_domain_info *info, u8 bus, u8
- 		return;
- 	}
- 
--	if (sm_supported(iommu)) {
--		if (hw_pass_through && domain_type_is_si(info->domain))
--			did_old = FLPT_DEFAULT_DID;
--		else
--			did_old = domain_id_iommu(info->domain, iommu);
--	} else {
--		did_old = context_domain_id(context);
--	}
-+	if (info->domain)
-+		did_old = domain_id_iommu(info->domain, iommu);
-+	else
-+		did_old = FLPT_DEFAULT_DID;
- 
- 	context_clear_entry(context);
- 	__iommu_flush_cache(iommu, context, sizeof(*context));
-@@ -2147,23 +2116,6 @@ static bool dev_is_real_dma_subdevice(struct device *dev)
- 	       pci_real_dma_dev(to_pci_dev(dev)) != to_pci_dev(dev);
- }
- 
--static int md_domain_init(struct dmar_domain *domain, int guest_width);
--
--static int __init si_domain_init(int hw)
--{
--	si_domain = alloc_domain(IOMMU_DOMAIN_IDENTITY);
--	if (!si_domain)
--		return -EFAULT;
--
--	if (md_domain_init(si_domain, DEFAULT_DOMAIN_ADDRESS_WIDTH)) {
--		domain_exit(si_domain);
--		si_domain = NULL;
--		return -EFAULT;
--	}
--
--	return 0;
--}
--
- static int dmar_domain_attach_device(struct dmar_domain *domain,
- 				     struct device *dev)
- {
-@@ -2185,8 +2137,6 @@ static int dmar_domain_attach_device(struct dmar_domain *domain,
- 
- 	if (!sm_supported(iommu))
- 		ret = domain_context_mapping(domain, dev);
--	else if (hw_pass_through && domain_type_is_si(domain))
--		ret = intel_pasid_setup_pass_through(iommu, dev, IOMMU_NO_PASID);
- 	else if (domain->use_first_level)
- 		ret = domain_setup_first_level(iommu, domain, dev, IOMMU_NO_PASID);
- 	else
-@@ -2197,8 +2147,7 @@ static int dmar_domain_attach_device(struct dmar_domain *domain,
- 		return ret;
- 	}
- 
--	if (sm_supported(info->iommu) || !domain_type_is_si(info->domain))
--		iommu_enable_pci_caps(info);
-+	iommu_enable_pci_caps(info);
- 
- 	return 0;
- }
-@@ -2548,8 +2497,6 @@ static int __init init_dmars(void)
- 			}
- 		}
- 
--		if (!ecap_pass_through(iommu->ecap))
--			hw_pass_through = 0;
- 		intel_svm_check(iommu);
- 	}
- 
-@@ -2572,10 +2519,6 @@ static int __init init_dmars(void)
- 
- 	check_tylersburg_isoch();
- 
--	ret = si_domain_init(hw_pass_through);
--	if (ret)
--		goto free_iommu;
--
- 	/*
- 	 * for each drhd
- 	 *   enable fault log
-@@ -2621,10 +2564,6 @@ static int __init init_dmars(void)
- 		disable_dmar_iommu(iommu);
- 		free_dmar_iommu(iommu);
- 	}
--	if (si_domain) {
--		domain_exit(si_domain);
--		si_domain = NULL;
--	}
- 
- 	return ret;
- }
-@@ -2999,12 +2938,6 @@ static int intel_iommu_add(struct dmar_drhd_unit *dmaru)
- 	if (ret)
- 		goto out;
- 
--	if (hw_pass_through && !ecap_pass_through(iommu->ecap)) {
--		pr_warn("%s: Doesn't support hardware pass through.\n",
--			iommu->name);
--		return -ENXIO;
--	}
--
- 	sp = domain_update_iommu_superpage(NULL, iommu) - 1;
- 	if (sp >= 0 && !(cap_super_page_val(iommu->cap) & (1 << sp))) {
- 		pr_warn("%s: Doesn't support large page.\n",
-@@ -3718,8 +3651,6 @@ static struct iommu_domain *intel_iommu_domain_alloc(unsigned type)
- 		domain->geometry.force_aperture = true;
- 
- 		return domain;
--	case IOMMU_DOMAIN_IDENTITY:
--		return &si_domain->domain;
- 	case IOMMU_DOMAIN_SVA:
- 		return intel_svm_domain_alloc();
- 	default:
-@@ -3779,8 +3710,7 @@ intel_iommu_domain_alloc_user(struct device *dev, u32 flags,
- 
- static void intel_iommu_domain_free(struct iommu_domain *domain)
- {
--	if (domain != &si_domain->domain)
--		domain_exit(to_dmar_domain(domain));
-+	domain_exit(to_dmar_domain(domain));
- }
- 
- int prepare_domain_attach_device(struct iommu_domain *domain,
-@@ -4487,9 +4417,7 @@ static int intel_iommu_set_dev_pasid(struct iommu_domain *domain,
- 	if (ret)
- 		goto out_free;
- 
--	if (domain_type_is_si(dmar_domain))
--		ret = intel_pasid_setup_pass_through(iommu, dev, pasid);
--	else if (dmar_domain->use_first_level)
-+	if (dmar_domain->use_first_level)
- 		ret = domain_setup_first_level(iommu, dmar_domain,
- 					       dev, pasid);
- 	else
+Michał Winiarski (3):
+  drm/managed: Add drmm_release_action
+  drm/tests: managed: Extract device initialization into test init
+  drm/tests: managed: Add a simple test for drmm_managed_release
+
+ drivers/gpu/drm/drm_managed.c            | 39 +++++++++++++++
+ drivers/gpu/drm/tests/drm_managed_test.c | 63 ++++++++++++++++++------
+ include/drm/drm_managed.h                |  4 ++
+ 3 files changed, 91 insertions(+), 15 deletions(-)
+
 -- 
-2.34.1
+2.43.0
 
