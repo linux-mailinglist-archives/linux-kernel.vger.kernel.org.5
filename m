@@ -2,122 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B805A8057D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318D38057C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345663AbjLEOn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:43:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235217AbjLEOnZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S235221AbjLEOnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 5 Dec 2023 09:43:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8609196
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701787410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5wm0ITqw2DU4e2VWwVFECygR4LDXbZjwyDzaWgvJfF0=;
-        b=U/l/138RQpVbF1uZ5NrwfRwjrdYiw1h83c2IFOIPqQB6xipG70glVN9GIFU9sfhVGA74IT
-        tYDCMlTH2JI+Xrf2xipZ4oa331Db8RwYTh17P1nQ5Cwmffsoc+L+GCRdZtKrZ/C8B0f4h3
-        uugMhfuEqbjodV5jIS2bfMAKt6Cavmo=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-12-Eu8kEfszOhizlqN9zftcNg-1; Tue, 05 Dec 2023 09:43:28 -0500
-X-MC-Unique: Eu8kEfszOhizlqN9zftcNg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a18a4b745b2so79478466b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 06:43:28 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232171AbjLEOnX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Dec 2023 09:43:23 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B3DA129;
+        Tue,  5 Dec 2023 06:43:29 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c07ed92fdso29342275e9.3;
+        Tue, 05 Dec 2023 06:43:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701787408; x=1702392208; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZGnImGdlNDTwdyaLU8r9UMvVcFSjoGXk6VpSezOFFzM=;
+        b=j3Tjv78IhlfcCX1l+elEUF5WlRR4Nph2hhju40c7BmXyv547NzQwsIRliNefjYxlHQ
+         A9WcYjyxV4rzK+q0mu/n5G0DbkRUe6c7z4/UZyOm03om5MHWAUPMVA/Y3YLqdwlFaBXL
+         NO3yIHKt13ZVyEJ2m/EH+uaKsGgqD8zWmckUZKvQ28M2wWLpd0zz6eYC43tLK2hxzftl
+         p1pHJZLkIvifYee4NEZYPtN8fDrkMlBBoEqRbR8ylTw32P2wP0/JNce+m04rGElczGIk
+         fPe9yX2KeSVb0fchKPiGV2wO0jeE1mSeJcv1DpzPMPkecUElBitSE9JzoERlbBwTtDwk
+         Os3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701787407; x=1702392207;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5wm0ITqw2DU4e2VWwVFECygR4LDXbZjwyDzaWgvJfF0=;
-        b=djLatyka0iwI5zbV/4bljrn56Qx50+qgKZqry4xxTj3DA3foVHtG0CYmmHeYPkMbJR
-         I1DQ7UFDJxlwRbCWiUGn7wm+a89oymNMBivEdwhWyZwF/bOKl5Kmh4rMtpsEiiRtVP4n
-         lVX5hyv8W+fvR37/GRSzcUH7eROe30xDruhgGWsJKy6N1HTSS0CK0b8CwtFsbh4bw9hV
-         7wyjkjUXK0ve2gngdJIcYqDjcquk2jl7k3n5sQ0SLbTPaK3oEgUi5jDlbbfXY1yMlwL0
-         ukQsJvJDiVFQygCXHJix7XiniEDu5SaCl68Nb6jy4iXP+efkb7zx9tzwM5FsgaD7A2Pa
-         9ZKw==
-X-Gm-Message-State: AOJu0YztlTz0Eo6ealKlEFsxjZU0LG4Lp5PLiMKRIjn3A0oAvdfWhWcf
-        zCnKfWXdksq5GAeE//3kg7XI5WXOzEsNuUqCZA6Ne1mjmsW+7dJhkU+CNe3596WuiOlhZ/CYt6p
-        q/lEPBqTDkkcwKur5+U7I+txT
-X-Received: by 2002:a17:906:3c4e:b0:a1c:7661:d603 with SMTP id i14-20020a1709063c4e00b00a1c7661d603mr1236188ejg.4.1701787407347;
+        d=1e100.net; s=20230601; t=1701787408; x=1702392208;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZGnImGdlNDTwdyaLU8r9UMvVcFSjoGXk6VpSezOFFzM=;
+        b=kzz/mPw/2pZBCor40/fzA++1OGSnzHgGl30b+20MKzqbDrUQuBJhXwBQGc4gzrKVny
+         rzHdr1X49/jCfSUfXHEz1hwIgVZ1vJ0+J2/PsgA1pDdFIC1fki7d5IoqFd4UQ8Eup5Ld
+         RO/gh3qsJkiDn4jcrMsHSXfW4/G0FkJv8Pi3kKtOahNI2+tVj32Nxs2GJVs3bUfFgw5K
+         dkUUdHLnvsicN0wM7nZlwAEBkhahXZsu0CpbsOe7ZRrxWnWjRW6FQEcVPAnz1Jl25oUX
+         DPCvN/Ck7qcmmD9F52ML0aoryQCdTC6U4+XVa6SRvopqOR35bkkakhDZTw9GdooEvJPn
+         c+LA==
+X-Gm-Message-State: AOJu0YyzS8a6Q9N+t90bZoyk+yTfLySa+lhrLy2bL53xMvhCAB9dCCDL
+        BD44lFrDCZ/MOPiZ6JhV4wk=
+X-Google-Smtp-Source: AGHT+IFYpdumJgRJ2s4LxEC0YV9JgVEmFxq0CuMbAQyVRpaTC+PUMGgdvyhwQyU1Xoobg5XhyKXjWg==
+X-Received: by 2002:a05:600c:4ec6:b0:40b:5e1e:b3b0 with SMTP id g6-20020a05600c4ec600b0040b5e1eb3b0mr559765wmq.46.1701787407594;
         Tue, 05 Dec 2023 06:43:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHTVwX4BoJTERHhYpuGgK7LnHRpXrWl+hzwooY5ZTjkhx74NN8Pxxz0TreVROkv5bngH7CHxQ==
-X-Received: by 2002:a17:906:3c4e:b0:a1c:7661:d603 with SMTP id i14-20020a1709063c4e00b00a1c7661d603mr1236173ejg.4.1701787406923;
-        Tue, 05 Dec 2023 06:43:26 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-241-54.dyn.eolo.it. [146.241.241.54])
-        by smtp.gmail.com with ESMTPSA id g26-20020a170906199a00b009fdd2c6d042sm6836584ejd.148.2023.12.05.06.43.25
+Received: from Ansuel-xps. (host-87-1-181-21.retail.telecomitalia.it. [87.1.181.21])
+        by smtp.gmail.com with ESMTPSA id d13-20020a05600c34cd00b0040b540ff0a5sm19050660wmq.19.2023.12.05.06.43.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 06:43:26 -0800 (PST)
-Message-ID: <e9939ee50ffefe518862bf5616252f84c4c22d5b.camel@redhat.com>
-Subject: Re: [EXT] Re: [PATCH] octeontx2-af: fix a use-after-free in
- rvu_npa_register_reporters
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Geethasowjanya Akula <gakula@marvell.com>
-Cc:     Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        Tue, 05 Dec 2023 06:43:27 -0800 (PST)
+Message-ID: <656f370f.050a0220.8c4c5.8d3f@mx.google.com>
+X-Google-Original-Message-ID: <ZW83DDRrX-zxf3kw@Ansuel-xps.>
+Date:   Tue, 5 Dec 2023 15:43:24 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        George Cherian <gcherian@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Zhipeng Lu <alexious@zju.edu.cn>
-Date:   Tue, 05 Dec 2023 15:43:24 +0100
-In-Reply-To: <DM6PR18MB2602D6C118100B0AC5F7D35FCD85A@DM6PR18MB2602.namprd18.prod.outlook.com>
-References: <20231202095902.3264863-1-alexious@zju.edu.cn>
-         <6bb19e86b3f5c83bbc85c09b845e52208ce424d7.camel@redhat.com>
-         <DM6PR18MB2602D6C118100B0AC5F7D35FCD85A@DM6PR18MB2602.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 08/12] net: phy: at803x: move specific at8031
+ WOL bits to dedicated function
+References: <20231201001423.20989-1-ansuelsmth@gmail.com>
+ <20231201001423.20989-9-ansuelsmth@gmail.com>
+ <bdbe618d4fd38469e4e139ce4ebd161766f2e4d5.camel@redhat.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bdbe618d4fd38469e4e139ce4ebd161766f2e4d5.camel@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-12-05 at 13:13 +0000, Geethasowjanya Akula wrote:
-> > -----Original Message-----
-> > From: Paolo Abeni <pabeni@redhat.com>
-> > Sent: Tuesday, December 5, 2023 6:05 PM
-> > LGTM
-> >=20
-> > Acked-by: Paolo Abeni <pabeni@redhat.com>
-> >=20
-> > but allow some little more time for Marvel's people to have a better lo=
-ok.
-> >=20
-> > Cheers,
-> >=20
-> > Paolo
-> Ack. Thanks for the patch.=20
+On Tue, Dec 05, 2023 at 10:32:55AM +0100, Paolo Abeni wrote:
+> On Fri, 2023-12-01 at 01:14 +0100, Christian Marangi wrote:
+> > Move specific at8031 WOL enable/disable to dedicated function to make
+> > at803x_set_wol more generic.
+> > 
+> > This is needed in preparation for PHY driver split as qca8081 share the
+> > same function to toggle WOL settings.
+> > 
+> > In this new implementation WOL module in at8031 is enabled after the
+> > generic interrupt is setup. This should not cause any problem as the
+> > WOL_INT has a separate implementation and only relay on MAC bits.
+> > 
+> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> > ---
+> >  drivers/net/phy/at803x.c | 42 ++++++++++++++++++++++++----------------
+> >  1 file changed, 25 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+> > index 02ac71f98466..2de7a59c0faa 100644
+> > --- a/drivers/net/phy/at803x.c
+> > +++ b/drivers/net/phy/at803x.c
+> > @@ -466,27 +466,11 @@ static int at803x_set_wol(struct phy_device *phydev,
+> >  			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
+> >  				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
+> >  
+> > -		/* Enable WOL function for 1588 */
+> > -		if (phydev->drv->phy_id == ATH8031_PHY_ID) {
+> > -			ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> > -					     AT803X_PHY_MMD3_WOL_CTRL,
+> > -					     0, AT803X_WOL_EN);
+> > -			if (ret)
+> > -				return ret;
+> > -		}
+> >  		/* Enable WOL interrupt */
+> >  		ret = phy_modify(phydev, AT803X_INTR_ENABLE, 0, AT803X_INTR_ENABLE_WOL);
+> >  		if (ret)
+> >  			return ret;
+> >  	} else {
+> > -		/* Disable WoL function for 1588 */
+> > -		if (phydev->drv->phy_id == ATH8031_PHY_ID) {
+> > -			ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> > -					     AT803X_PHY_MMD3_WOL_CTRL,
+> > -					     AT803X_WOL_EN, 0);
+> > -			if (ret)
+> > -				return ret;
+> > -		}
+> >  		/* Disable WOL interrupt */
+> >  		ret = phy_modify(phydev, AT803X_INTR_ENABLE, AT803X_INTR_ENABLE_WOL, 0);
+> >  		if (ret)
+> > @@ -1611,6 +1595,30 @@ static int at8031_config_init(struct phy_device *phydev)
+> >  	return at803x_config_init(phydev);
+> >  }
+> >  
+> > +static int at8031_set_wol(struct phy_device *phydev,
+> > +			  struct ethtool_wolinfo *wol)
+> > +{
+> > +	int ret;
+> > +
+> > +	/* First setup MAC address and enable WOL interrupt */
+> > +	ret = at803x_set_wol(phydev, wol);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (wol->wolopts & WAKE_MAGIC)
+> > +		/* Enable WOL function for 1588 */
+> > +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> > +				     AT803X_PHY_MMD3_WOL_CTRL,
+> > +				     0, AT803X_WOL_EN);
+> > +	else
+> > +		/* Disable WoL function for 1588 */
+> > +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
+> > +				     AT803X_PHY_MMD3_WOL_CTRL,
+> > +				     AT803X_WOL_EN, 0);
+> > +
+> > +	return ret;
+> 
+> If I read correctly, the above changes the order of some WoL
+> initialization steps: now WOL_CTRL is touched after
+> AT803X_INTR_ENABLE_WOL. Is that correct?
 
-Thanks for the review!=20
+Correct, as it was pointed out, in the previous revision the WOL was
+enabled before setting the MAC leaving some timeframe where we had
+interrupt that could be triggered by invalind MAC (and also in case MAC
+setup was failing the WOL was laved enabled)
 
-Next time, please use the formal tag:
+The current change should be safe enough as the WOL module is enabled at
+the end of all the required setup preventing any kind of
+misconfiguration if something fails before.
 
-Acked-by: <you> <your email address>=20
-
-so that the tools we use will propagate it automatically.
-
-Cheers,
-
-Paolo
-
+-- 
+	Ansuel
