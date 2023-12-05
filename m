@@ -2,55 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F33804BF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEAE804C03
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:13:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344750AbjLEIMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39078 "EHLO
+        id S234881AbjLEINL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:13:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346735AbjLEILG (ORCPT
+        with ESMTP id S234856AbjLEING (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:11:06 -0500
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [IPv6:2001:41d0:203:375::b0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D707187
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:11:11 -0800 (PST)
-Message-ID: <c9867365-3a44-4699-a2d3-717bae0d4853@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701763870;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c7tcXxVB37+e74YIJ/SoIf8Zq3/8qsP6opp7sTACB/E=;
-        b=JtHkQHyeKWUXLqCtj1D8woxmlUkmgsj3Um+0N3QTI3d/nMPguMeFOjwjbSAInQkyo3dw0D
-        7ZF4YwUoaQ7Wm4u+Abva2IoSi7um8PSW/xk+rytL9QW97nhEQrts6YnggQOIkjGr9NtkGO
-        AkrlZet2qEakUYb2N7eODaod68dWZW8=
-Date:   Tue, 5 Dec 2023 16:11:03 +0800
+        Tue, 5 Dec 2023 03:13:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C699192;
+        Tue,  5 Dec 2023 00:13:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701763991; x=1733299991;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   mime-version:in-reply-to;
+  bh=+5S4F3T/FBDoxciqj9rGoi4n0Xagz4XSh13nmg+mktk=;
+  b=Uq7Qf1RbDBwdNnTRTyDazhTfI+I00U9aGN9VEs78OrzmCyPdfYHl5vxM
+   MTawhsKgMtu3zDeNbo535aisirfXVmPZKnCf2Zt03zNA6nylwV8yYXJvt
+   SyiAAOSQ+cJbKW4wmFGZVCBKC8l3b9urYUrl55CH87WOAiZs5dn9ov7IE
+   3/NonXjDERdSzbeLT1wsre2IEbZVLz+vHm22/xsl3gaboE0WToAaaFgvn
+   192iVHEyGJ8VqG3lFOiJCrQWnLtZeI4IHro//O46yM/b3l/Fjq/GGfQYH
+   6jykj6I/s6KAzum8MgU+N/6mfZGyTrkta9KTwygmQhS2g5VzSQ9d/43dS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="425020290"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="asc'?scan'208";a="425020290"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 00:13:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1102374087"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="asc'?scan'208";a="1102374087"
+Received: from debian-skl.sh.intel.com (HELO debian-skl) ([10.239.160.45])
+  by fmsmga005.fm.intel.com with ESMTP; 05 Dec 2023 00:13:06 -0800
+Date:   Tue, 5 Dec 2023 16:12:08 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf/x86/uncore: fix a potential double-free in
+ uncore_type_init
+Message-ID: <ZW7bWGy+ZhcBUo73@debian-scheme>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20231205032709.9525-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] mm/slub: fix bulk alloc and free stats
-Content-Language: en-US
-To:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-References: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
- <20231204-slub-cleanup-hooks-v1-1-88b65f7cd9d5@suse.cz>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20231204-slub-cleanup-hooks-v1-1-88b65f7cd9d5@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="/cosUcUmE3dfT48V"
+Content-Disposition: inline
+In-Reply-To: <20231205032709.9525-1-dinghao.liu@zju.edu.cn>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,60 +77,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/5 03:34, Vlastimil Babka wrote:
-> The SLUB sysfs stats enabled CONFIG_SLUB_STATS have two deficiencies
-> identified wrt bulk alloc/free operations:
-> 
-> - Bulk allocations from cpu freelist are not counted. Add the
->   ALLOC_FASTPATH counter there.
-> 
-> - Bulk fastpath freeing will count a list of multiple objects with a
->   single FREE_FASTPATH inc. Add a stat_add() variant to count them all.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-Looks good to me!
+--/cosUcUmE3dfT48V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+On 2023.12.05 11:27:09 +0800, Dinghao Liu wrote:
+> When kzalloc for pmus[i].boxes fails, we should clean up pmus
+> to prevent memleak. However, when kzalloc for attr_group fails,
+> pmus has been assigned to type->pmus, and freeing will be done
+> later on by the callers. The chain is: uncore_type_init ->
+> uncore_types_init -> uncore_pci_init -> uncore_types_exit ->
+> uncore_type_exit. Therefore, freeing pmus in uncore_type_init
+> may cause a double-free. Fix this by setting type->pmus to
+> NULL after kfree.
 
+Change is ok but the call trace you wrote here is reversed or malformed??
+With that fixed or cleared.
+
+Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+
+>=20
+> Fixes: 629eb703d3e4 ("perf/x86/intel/uncore: Fix memory leaks on allocati=
+on failures")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 > ---
->  mm/slub.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 3f8b95757106..d7b0ca6012e0 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -396,6 +396,14 @@ static inline void stat(const struct kmem_cache *s, enum stat_item si)
->  #endif
+>  arch/x86/events/intel/uncore.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncor=
+e.c
+> index 01023aa5125b..d80445a24011 100644
+> --- a/arch/x86/events/intel/uncore.c
+> +++ b/arch/x86/events/intel/uncore.c
+> @@ -1041,6 +1041,7 @@ static int __init uncore_type_init(struct intel_unc=
+ore_type *type, bool setid)
+>  	for (i =3D 0; i < type->num_boxes; i++)
+>  		kfree(pmus[i].boxes);
+>  	kfree(pmus);
+> +	type->pmus =3D NULL;
+> =20
+>  	return -ENOMEM;
 >  }
->  
-> +static inline
-> +void stat_add(const struct kmem_cache *s, enum stat_item si, int v)
-> +{
-> +#ifdef CONFIG_SLUB_STATS
-> +	raw_cpu_add(s->cpu_slab->stat[si], v);
-> +#endif
-> +}
-> +
->  /*
->   * The slab lists for all objects.
->   */
-> @@ -4268,7 +4276,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
->  
->  		local_unlock(&s->cpu_slab->lock);
->  	}
-> -	stat(s, FREE_FASTPATH);
-> +	stat_add(s, FREE_FASTPATH, cnt);
->  }
->  #else /* CONFIG_SLUB_TINY */
->  static void do_slab_free(struct kmem_cache *s,
-> @@ -4545,6 +4553,7 @@ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
->  		c->freelist = get_freepointer(s, object);
->  		p[i] = object;
->  		maybe_wipe_obj_freeptr(s, p[i]);
-> +		stat(s, ALLOC_FASTPATH);
->  	}
->  	c->tid = next_tid(c->tid);
->  	local_unlock_irqrestore(&s->cpu_slab->lock, irqflags);
-> 
+> --=20
+> 2.17.1
+>=20
+
+--/cosUcUmE3dfT48V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCZW7bUwAKCRCxBBozTXgY
+J/bDAKCOA0aNY/nPoT08vmvKOA1I+3JF7QCgi4vd8mjY23YX1OMaIspmA7NwJLI=
+=n/Bj
+-----END PGP SIGNATURE-----
+
+--/cosUcUmE3dfT48V--
