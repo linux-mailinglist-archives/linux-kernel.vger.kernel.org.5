@@ -2,106 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A32D7805C83
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F183805B83
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbjLEQt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:49:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33630 "EHLO
+        id S1344948AbjLEQuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:50:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbjLEQtY (ORCPT
+        with ESMTP id S232124AbjLEQuK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:49:24 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD7019F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:49:30 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db547d41413so3801803276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 08:49:30 -0800 (PST)
+        Tue, 5 Dec 2023 11:50:10 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F780197;
+        Tue,  5 Dec 2023 08:50:15 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6d8481094f9so3522839a34.3;
+        Tue, 05 Dec 2023 08:50:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701794969; x=1702399769; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=il/zOOk1ULaSp4c3ZKjwASqI7JmWGklotUwSmWlNxts=;
-        b=MmthDo4GyoBmUhvDHGw72G01MDqlIvODa/hQIJaBYO9hgqqG53xzEtqM7gWzDs8U4N
-         VdXtcO7F5Bm4sWPPbsXjwi85nRkOqiy4X7W5o4hXuksGEWZvuab5ApIi0lg3dllLzM3y
-         /pFJ0yFA6vcJldgWu8d/Er50IQWisih7fMxW04E1+gA6tr9Dz6wRbfX7auCF1L+P5rWL
-         ArWdVjJA1EfOlHQ/r8DQ/Zq/QFwvnQFOt9ROehJpW0P9D3dw0kSzhY6b/dwUYb62jQGj
-         rLG/dcxCrKSO9vUodXOiOjhR1KdWQIlK5SeNWFSIbLMYlOUChqL3m1z24CEEM8/gI1jQ
-         QF9Q==
+        d=gmail.com; s=20230601; t=1701795015; x=1702399815; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=duhFd6gUglDph6GOTzZ0Ncrj+fI8X84602btwhxZmyA=;
+        b=KI91JGUIQrjI3hR3dq6fg1AZYUBYsVU9aOGREzKGMR1zmKfEnv+2lddusVqMbqSJh5
+         9qC7KDC3Saz2ghEWC0xdq/wc8D9C+cSdaYUSWJi3N9D9BTt2SICz98WxtRvp6sIJVQYL
+         fLtlupCZbeY3m/MybxdJ4lvlJfT3dkuwUDtdofTokSaJzd9ifUJRfM8aLqnovAQs1dSr
+         lQKyr8fhJT5Qmdbmkh6doOK37HJ7+FQbLXfexE3xApBYG74YuMK5GEmXhFlljhWBDIWh
+         CHSXPCtOQOBFjEMw86aKTfN6Z813fsF6RBhA8by27DKiwXiy3uevyBoYZsT9kQ5VY/5H
+         elqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701794969; x=1702399769;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=il/zOOk1ULaSp4c3ZKjwASqI7JmWGklotUwSmWlNxts=;
-        b=c0GZoqOYCzGUit58kkhahMjw6oH5LAux7rkwCxFVBwJzxKGKgzQPaDBD+KOUVAzDCq
-         5L29tC491xTGrOasXRkNDg6yLCK7m85Jbs7LtRtLVsEgsXikyV/lP9L+8pGGqjiSU3SY
-         uFyYqoJkhiLmugKUcMVurQYbrensMe4CmO7jb1HHVotHknXbkz8kYqChcLn12d6MvR+v
-         VeYXXGDVFl/SXT/Y5+g4fAdyFlFF4S0R8DlWcZGnWcDCA61SW/8pk7NZEblCpIQ5HSwx
-         CShQyaJZXYr2Vf2a68dw/9g7I7VyzbVI4vVrFgNlLrNiI37HbX/QoDXtUgk1ciYKjvFJ
-         Uxfw==
-X-Gm-Message-State: AOJu0Yx24n0RJFDY/QcnSIiIzRCl0faFQdscWYhcyjxAqWitPqHtWp7h
-        I2msJfSaJuR1VZ5BoFbptKmEsNT0jx4X
-X-Google-Smtp-Source: AGHT+IGoDtCBJ0f3p67GriPcyTyEC/v0B8VEJ3bmRMBIBhC7lrA/02mGuUcOOfRJOYzn2EGGrDTf4e+ilDDN
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:48b6:2578:1ca7:5287])
- (user=irogers job=sendgmr) by 2002:a05:6902:51:b0:da3:b467:af07 with SMTP id
- m17-20020a056902005100b00da3b467af07mr60835ybh.2.1701794969538; Tue, 05 Dec
- 2023 08:49:29 -0800 (PST)
-Date:   Tue,  5 Dec 2023 08:49:24 -0800
-Message-Id: <20231205164924.835682-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v1] perf test: Skip diff test if test_loop is missing
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701795015; x=1702399815;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=duhFd6gUglDph6GOTzZ0Ncrj+fI8X84602btwhxZmyA=;
+        b=CjW6oioi+z1fdHAF7NGfLiFwSYvpvoSpUD3GvVvea8kzRSUU4EDAAwvc0wYKGwKDlF
+         CQS0Z/QKcsUcK5Ev2yWJXfS7Jeb/Mm06hLf0bOt7epnDy6xWVri4MleEALtHNZOxojKQ
+         IY6pKMm4TfzDRMtT6udQjKjkko8rYsjTaASkU9xOZ9Ry0d4O02Q7/cs8PubQwJAUXKzX
+         ZMVSVRLRN6Xk1W6MqgmPJs2cvb1tlmFUoqBL1wTRaJxpWrKMDEgUOiBAg7JAN0G+21pY
+         615/iLSUU33auPLACOCsJ0f850ACRx9qny4bdIrUsBRzFEz4ERUznGMejptcny0SFn9C
+         JBRw==
+X-Gm-Message-State: AOJu0YyXO95UKKlQTN5G1Oz5y/ENFgmEiDZQsuZadyryDpS6R+wkV+JD
+        dLI8PafqiUTGdr4qxH2MIRM=
+X-Google-Smtp-Source: AGHT+IHx117Oe/EFLi2x1dEEecTCdGQpyVoMB4qRs2AFafHoFU/s2HAL6C3tUrXXUAqyYHKxxditJg==
+X-Received: by 2002:a05:6870:ac92:b0:1fb:75a:de5f with SMTP id ns18-20020a056870ac9200b001fb075ade5fmr8680210oab.77.1701795014934;
+        Tue, 05 Dec 2023 08:50:14 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id on7-20020a0568715a0700b001fb42001fa7sm1206269oac.36.2023.12.05.08.50.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 08:50:14 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 5 Dec 2023 08:50:13 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+Subject: Re: [PATCH 5.15 00/67] 5.15.142-rc1 review
+Message-ID: <9435ee4c-59a7-4956-9955-a434d467ced6@roeck-us.net>
+References: <20231205031519.853779502@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205031519.853779502@linuxfoundation.org>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The diff test depends on finding the symbol test_loop in perf and will
-fail if perf has been stripped and no debug object is available. In
-that case, skip the test instead.
+On Tue, Dec 05, 2023 at 12:16:45PM +0900, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.142 release.
+> There are 67 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
+> Anything received after that time might be too late.
+> 
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/tests/shell/diff.sh | 7 +++++++
- 1 file changed, 7 insertions(+)
+Build results:
+	total: 154 pass: 152 fail: 2
+Failed builds:
+	powerpc:defconfig
+	powerpc:allmodconfig
+Qemu test results:
+	total: 517 pass: 495 fail: 22
+Failed tests:
+	ppc64:mac99:ppc64_book3s_defconfig:smp:net=ne2k_pci:initrd
+	ppc64:mac99:ppc64_book3s_defconfig:smp:net=pcnet:ide:rootfs
+	ppc64:mac99:ppc64_book3s_defconfig:smp:net=e1000:sdhci-mmc:rootfs
+	ppc64:mac99:ppc64_book3s_defconfig:smp:net=e1000e:nvme:rootfs
+	ppc64:mac99:ppc64_book3s_defconfig:smp:net=virtio-net:scsi[DC395]:rootfs
+	ppc64:pseries:pseries_defconfig:big:smp2:net=pcnet:initrd
+	ppc64:pseries:pseries_defconfig:big:tpm-spapr:net=rtl8139:scsi:rootfs
+	ppc64:pseries:pseries_defconfig:big:net=e1000e:usb:rootfs
+	ppc64:pseries:pseries_defconfig:big:net=i82559a:sdhci-mmc:rootfs
+	ppc64:pseries:pseries_defconfig:big:net=virtio-net-old:nvme:rootfs
+	ppc64:pseries:pseries_defconfig:big:net=tulip:sata-sii3112:rootfs
+	ppc64:pseries:pseries_defconfig:big:net=e1000:virtio-pci:rootfs
+	ppc64:pseries:pseries_defconfig:big:net=e1000:virtio-pci-old:rootfs
+	ppc64:pseries:pseries_defconfig:little:net=rtl8139:initrd
+	ppc64:pseries:pseries_defconfig:little:tpm-spapr:net=e1000:scsi:rootfs
+	ppc64:pseries:pseries_defconfig:little:net=pcnet:usb:rootfs
+	ppc64:pseries:pseries_defconfig:little:net=e1000e:sata-sii3112:rootfs
+	ppc64:pseries:pseries_defconfig:little:net=virtio-net:scsi[MEGASAS]:rootfs
+	ppc64:pseries:pseries_defconfig:little:net=virtio-net-old:scsi[MEGASAS]:rootfs
+	ppc64:pseries:pseries_defconfig:little:net=i82562:scsi[FUSION]:rootfs
+	ppc64:pseries:pseries_defconfig:little:net=ne2k_pci:sdhci-mmc:rootfs
+	ppc64:pseries:pseries_defconfig:little:net=usb-ohci:nvme:rootfs
 
-diff --git a/tools/perf/tests/shell/diff.sh b/tools/perf/tests/shell/diff.sh
-index 213185763688..14b87af88703 100755
---- a/tools/perf/tests/shell/diff.sh
-+++ b/tools/perf/tests/shell/diff.sh
-@@ -9,8 +9,15 @@ perfdata1=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
- perfdata2=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
- perfdata3=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
- testprog="perf test -w thloop"
-+
-+shelldir=$(dirname "$0")
-+# shellcheck source=lib/perf_has_symbol.sh
-+. "${shelldir}"/lib/perf_has_symbol.sh
-+
- testsym="test_loop"
- 
-+skip_test_missing_symbol ${testsym}
-+
- cleanup() {
-   rm -rf "${perfdata1}"
-   rm -rf "${perfdata1}".old
--- 
-2.43.0.rc2.451.g8631bc7472-goog
+As reported by others:
 
+arch/powerpc/platforms/pseries/iommu.c: In function 'find_existing_ddw':
+arch/powerpc/platforms/pseries/iommu.c:908:49: error: 'struct dma_win' has no member named 'direct'
+
+Guenter
