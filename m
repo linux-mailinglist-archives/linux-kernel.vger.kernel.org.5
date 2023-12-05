@@ -2,281 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D01805128
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C65C6805126
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376687AbjLEKuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:50:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42518 "EHLO
+        id S1376672AbjLEKuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 05:50:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376569AbjLEKuS (ORCPT
+        with ESMTP id S1376569AbjLEKuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 05:50:18 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8BCB9;
-        Tue,  5 Dec 2023 02:50:23 -0800 (PST)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5ATarH008762;
-        Tue, 5 Dec 2023 10:49:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : subject : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=aUwHFs/kOANQOITnej+rb4yMlD3xDnhdEORkX4bGh9E=;
- b=OK4zaIEEYHRrUPxMxC/PxyNK2C24b3/Eg3U2F/s+w9kAIwamUQLYUoSh5Z3g+9RnUhH8
- rFoLZpzUI7lJwSKBwCz9VCHarsvfcAOTza1CFKXgmBDupxpETmiZYxHRp9HTIgkMrOai
- x8v+Ebu23cE98mnW8V2bIrCkcv0RFnLoM9IbgPEFc2gGllyGwiLmZkwKapKgq1WUl+W0
- TxMm/HiAIjcLkzrBKuCOfkLQQByp9XUr9ZWhEL5Y/pzfh7Du/kqKTiPMrSr9WIpFU39T
- OyldhJmElvQY4PZHPg9vNBD8YXfFiczFI4J6fs4AZsRcNuwwVnyz14JA/RI0QlgsZVo7 FQ== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ut0xw89pn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Dec 2023 10:49:57 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B59WqiM018432;
-        Tue, 5 Dec 2023 10:49:56 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu177yev-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Dec 2023 10:49:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U20oE5ksvJ8BYvveEXYHz9LnaPNCZs6afeFon5hkrwfSoBlg5XdlKTEGibTc/8I3z0DYFP1Ik5fl1Ryq5ak+YEUZllYwAsImdy9dRwSC9rFNwas62ESrR58pn6Qvvving/B4ggs+BSxMLvk/rxTZ0t78XDA/EZX2xqayPa1kcgNAHeCnQ9DKb2JEc5FuL9lgRdJA9DGOQWVNttSG7ss9qfqjeRdY5O/TBiuCPfEcSOJTlTOqJcgiBFMmblBEwXBRcu3zQu+lPzNGtLz0ARh83jdMMoIBtb62/UTTSKBRbixPSZJH3rni7VvgNMBlM3vLdkQF0uK8/zTKx90MgRWUNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aUwHFs/kOANQOITnej+rb4yMlD3xDnhdEORkX4bGh9E=;
- b=Zg0iKTlD4kefEYO4iFcq5jtThGyLqVPgjVJLFB6rVER8SH+wGuR56nFrEwr7wDXijXuI/7lbPaiK5c9wICD3seFHxtVqnXC9pMtWX+lov2bikRvBEr9K5tUdyGqPnrnPdN3wK/SV0zpSheDIbW9/wH0J6+a9EnSERh/UMDA8hz9ZaJqK2MKhGyp4OL3Xy7BD3N9AJ+ci/zk3tpDmy0PIqExAMon4LRgulk/XbV+kpACPaFab78B8JxR5UbwmyssbNbimu8rvnGQ9dIkzZJJzX+SrbSAYsAlBJALoOGBhXQx2auZxESw22jc9z0vAZd3gguDa4Ast+tLUvHp944pvrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aUwHFs/kOANQOITnej+rb4yMlD3xDnhdEORkX4bGh9E=;
- b=MsjBr4oSy8YggfVVvqD5WuU5A6puMlbokNCoM4MhgSiKxECZuBwRXB4G8J2sj/w3ishlA6l1iGlJrMFrNqFPXhp/BKQFPwfBXcKL//L26jLnCVjtQR0YpGPnY1S78fDWYUXKhtmixFQ6W4Pc75zDygQwJjJioqVdBWf82yV5mIg=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by SN7PR10MB7029.namprd10.prod.outlook.com (2603:10b6:806:346::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 10:49:54 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 10:49:54 +0000
-Message-ID: <c8ef6c57-5e3a-4c12-9f0f-a2e1b1e49ddc@oracle.com>
-Date:   Tue, 5 Dec 2023 10:49:49 +0000
-User-Agent: Mozilla Thunderbird
-From:   John Garry <john.g.garry@oracle.com>
-Subject: Re: [PATCH 10/21] block: Add fops atomic write support
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-11-john.g.garry@oracle.com> <ZW05th/c0sNbM2Zf@fedora>
- <03a87103-0721-412c-92f5-9fd605dc0c74@oracle.com> <ZW3DracIEH7uTyEA@fedora>
- <bd639010-2ad7-4379-ba0a-64b5f6ebec41@oracle.com> <ZW6A0R04Gk/04EHj@fedora>
-Content-Language: en-US
-Organization: Oracle Corporation
-In-Reply-To: <ZW6A0R04Gk/04EHj@fedora>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0049.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:60::13) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        Tue, 5 Dec 2023 05:50:12 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F118A122
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 02:50:18 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3E0421FB;
+        Tue,  5 Dec 2023 02:51:05 -0800 (PST)
+Received: from [10.57.73.130] (unknown [10.57.73.130])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A5B83F5A1;
+        Tue,  5 Dec 2023 02:50:15 -0800 (PST)
+Message-ID: <075826b4-2df8-4460-a8f2-c0581d098cff@arm.com>
+Date:   Tue, 5 Dec 2023 10:50:15 +0000
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SN7PR10MB7029:EE_
-X-MS-Office365-Filtering-Correlation-Id: e2f1ffe5-6b04-42b3-bb19-08dbf57fea2d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CfRYh11NyMV4zACCikr3CgbVmOzb3geUP+BOXW0+nnFk2nkXlOYoRJn8KYdsAcxBDTWnElHo6c+wbO9iNaOv/sTCVF8sFfvfaaC1aCmOMXYtABPGcdeQ8YLZ521I/vhNGKgjA27xNGUPzvKmkmaLaGstq8ihstV189I6LO5qmAtilMg5CKyfD7k8RbrKsTl5AqZVfDcGhS5MXsmRJqyj0oqSW61VrY2ulvG7fZo4K1ruV9mWpeckWA0n0xsigtfH+m/AAPesakW+UzLTW4I3JTkqAzXeHLl7/bKG33UpbKNcl2tw1rmdywvt7BMz1WBoTUmE+Fz9WzczmOklP3EeDFdAXEOGDUHXvkT0dtcXT1jlt0qGdoF4+FP/cbis2tx0+zH8p2d86A+PyJGBKb2luZNNkQhkf3qs/5VBO1FEgEtzqxc6xZo43MicB9rWftHAvaWxQs5rKz/FXBEo+QCLNlE0fwuUcpSDQXbhKonXzjoSOnPLiThDZ3GsVCObM8nWlRf4OncyLCOXnoEF1IhHyYe8oXiAXDVEIA/yuvYPEzudVs/cMb5PoZ3ieR/D2ptuE6tMmjRXEhJRgR9a95A8860iuzGSmFz6Pt78X9stEZSHnmKDv/4LbRG5wljVl0NgkCaGHXZjAQ9xnRWxnJ2ESA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(366004)(376002)(396003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(53546011)(2616005)(41300700001)(6512007)(36756003)(86362001)(83380400001)(31696002)(26005)(6486002)(316002)(6916009)(66476007)(66946007)(66556008)(6666004)(4326008)(8676002)(8936002)(36916002)(6506007)(478600001)(31686004)(38100700002)(7416002)(2906002)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RmtnZEQ5TzFkMTYvRm1SZmhRK0o2MVBKN1pvOEQzTXJOSUh4Y0RTRER6Vng1?=
- =?utf-8?B?RHNUd3NLaE1MOUJzVU9RaWRiWjFUMDRsS2VUK250dUIrajZXbnI3R0pFYml6?=
- =?utf-8?B?c1RKSmZCc21lanprQTNaSmVYRC9YRFlVY3Z6dTVnV1YrcW9WQld3dDlNNVRZ?=
- =?utf-8?B?bHh2R0UrTXZGd0NkVGtTNVZldk5CeE9oRmZacXlUWGFwTm5meFVZSDVnUnc3?=
- =?utf-8?B?K2Z0VlFQc1JLcDBMa2doY285bytCVDRjNGg1R2NURlcxbnhYTE40dWpNT0xr?=
- =?utf-8?B?Mm44MmYxQlpxUURDcENWbENOMkhzMFRWRXhwMFJEbEl5NVRpNXJEU0pRT1lF?=
- =?utf-8?B?V2wrR1F3ZWhuVmtMV1hFS3hHeDJSUkVpSHRmZHpVR1hlaGEzSUlCampJK2V6?=
- =?utf-8?B?RE52WUdWSWY4MUsxaDBRNVA4L05nN2hSNGl2SjBKVkxsQk1MNVViY0NZNnFy?=
- =?utf-8?B?cDlldVpkUWtTSjhtbUthS2NEbUdWWk14dlg0emJsbHprUm41S3BXNXZMNHBZ?=
- =?utf-8?B?cTQ5R1lHS0p5OHVwK3lrbjJxRzl4RDhHVSs1SDMrV0MyaVFYZWlxbmxKUEF3?=
- =?utf-8?B?VXlkdjA2bUNBekdNUHdMcWh6N2l2R25UREhoS1UrVTFXai9xWHdmcExXTFNo?=
- =?utf-8?B?d1M0SCtlVmhtUnNRN3FJdS82U0kvUzA0ZEFNY000eVJYdXNzZVFPMFdnYXh1?=
- =?utf-8?B?cFE2b2lUWjBXdWxrSlJyazZWUDRwemR5ZXdWUTVOcU1UM1FJK055SmppY1l2?=
- =?utf-8?B?b2lJOCt3N3hhaGx5TWlGTjVxWXFScXd1VlF5d0dYUUhvRndyNVJETGZ1UmRJ?=
- =?utf-8?B?ZkYxdWZINjBkQ0luTlJpTHl3eGdoVThVcHdEU0JEMHlGTVJVSGMwY1czOUMz?=
- =?utf-8?B?WUpLR1d4Nkd3dHErNzJKblhMczNaY0cyTmh2REdQRW9jeGpLSHFZS0FZUzZs?=
- =?utf-8?B?ZG83bUNKS3ZZaEc0TWVFblZPTzlGNHF6NGlkdmxDVnBTTjcvM05TRnpSVFNF?=
- =?utf-8?B?QU1kb014UlNXbmttZWhUTGdNendDWWtqWjFobVVHbGdHR2VRZFZ4aXlwd3ZX?=
- =?utf-8?B?d1JWc2VMSjArR0Z1bHBrVUJaNWl2M08vYmFxd3NXbDN1THFSeU0vWC9nS3ZD?=
- =?utf-8?B?QVliT3hGMUJyc3czYXB6anpxS3R2MGZJRFFWTVUzOGZjQUFyT2ZsdGEyOTJh?=
- =?utf-8?B?N1lDNXBNL0hFLzA4ZE5jZ01wb3dyNDRhTjBLWXlTTm5uWUduZEtIK0s4SDN5?=
- =?utf-8?B?WXFxNXQwZUhTRitpMGw3T2hPTkJVcjNSWjM2TGE5NGhhRzdPa1hmZTBOd3ho?=
- =?utf-8?B?UEdyNU1oQXBYYjhxK3FIYjFWRSsyNjNTVFB6UW9OaEpodldFWlZrYWpOWUpV?=
- =?utf-8?B?aXpyODVSdWZjb3VleFNxUFVNYllDclBueTNWVHRUL1B1ZWpRSU9rL3g1YXdy?=
- =?utf-8?B?Q1RUdTN4WXA5YVBrTkdZZU1kUCsyYlBLcTJxS205aUN3MWI4bExMTUkwZHhz?=
- =?utf-8?B?MGJSTWZQR0l0c0tSNXdsUlpOMkFWZmJHZDR5V0lKV0tUZzd2Y1V4SVRxbEVI?=
- =?utf-8?B?WGM3VXFjN2xNWkpaY3dOMFRRaUFqTFY4RzErR0lteTNMcjFFSi9KbFRYRVRK?=
- =?utf-8?B?allQWDc4MG9WWkZWZlQyeVZBY3RxQnc4amdJR3ZxQTFaUUZKMlNOQmNYNThJ?=
- =?utf-8?B?TFF5MmJydERzZmhPc3FPOGwxMk9vbStJVTBuTUhQREExTCs4YnFTNzVBL04w?=
- =?utf-8?B?bnVvYWd3S2Q5a3ZYV1JSSUNuTCtKU0dUU2dMOEErbVoxTEJBcVdvSzRiMllM?=
- =?utf-8?B?M1dwUndxc2k2TjQ2THV4dEZZQjFnY3JlMnFVL2hWbVFsMGJETFBXNWJNeHlW?=
- =?utf-8?B?VFJ0ZjljaGI1RnhoSTJnSStPcytJc3poWDc5Rlh0d3hZTkZhMERDTjhMUXJR?=
- =?utf-8?B?V2JDWk5NZDR5OEc1eUlJTFdjQWlOa3RpNU9pZ1d6SytqcDRiYnE1QzhJMUds?=
- =?utf-8?B?ZllSTXZRRUdRSFpKLy9NbURwOExBZEY4OXY4U2Q2end3RXhOVXVaMXU1UUw1?=
- =?utf-8?B?a0pQaTlFUy8wb0wwR3FhNmFjeFRVbWlQaWpHemdZSmJWeFkwTHpRN0J0cXRO?=
- =?utf-8?Q?+8mCx5iR+PZ0ZMf0lI1LL2nOo?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?aFlEMkIxSVhsZGxwUVNRcDJqM1FmVGpVeGlkVWZQNVBzYlM1NVJPTkxxcmVh?=
- =?utf-8?B?M3RhYkNheGJDa2FVZTRDZUVQWHAyKzU1NTVEY2Nxd3pFRjVGTkwwcXMwdm1k?=
- =?utf-8?B?TWRjc3FmeWNpMGxJaTFJdHlsS2tCM3RTSSttejBqZEhvMThZcjY4RUw1eEZF?=
- =?utf-8?B?Yk00OFNFYW0yazlYSmtrOHBWREphMWJrZys1eXVxRUtWdTJmWHZqTlJJSERC?=
- =?utf-8?B?bVJjcTVBdmpYU2xCSU5WaHFNTll5emh0SlY3WEJLOEUwbWFjdk52WEZLck9u?=
- =?utf-8?B?cmNlUUk0VURvNm9DejZtTTZQZ0RlMW9kUjZaMVY4czVwa2p5b2dHMWU0QzBW?=
- =?utf-8?B?TnRvalpSdUpheFFaektsVDE0T0hHSWwvYUEzb0ZObkNvbWd1ZU1PZzBkVDZP?=
- =?utf-8?B?VmdpMEJTaGdsbE93WFlIaVRVaElmUGRzTnR5Rmg3T09xZVJVTXFqWlBCeExr?=
- =?utf-8?B?aDJqSG9WaVVzeVYwR0ErMkttVkJDZXh4M1dCdDIxWUIrYnlLeEdVQWIwbCtQ?=
- =?utf-8?B?dFI1b01SSVhEK0NRSkt0a1pSeG9LaVBoMkYxUXpEUHFGWE5jbEFVa2NXL3N2?=
- =?utf-8?B?VEk4RnpOWW1kUWttVTNMZWcrK0hObEFUZnQ2RzZCenpjZGo0TzJzMmd0MFVD?=
- =?utf-8?B?S2g2OTJ4aFZtaFc5THlLaEdvWTVrcjdlaDR4V2pITEFzYjdHTkdjQmdlS2k4?=
- =?utf-8?B?dkJQa0pmY3hNeFNINFEyc21WMFpSTldJellSQTlHZWl4V1pPOXJhaUhiSWdL?=
- =?utf-8?B?d0h2RG5ERDhQUTJMT01NUmVpVjRjdDZqS2RpQXNNdytkQk1HU2kzRXdmbmNM?=
- =?utf-8?B?dFA3ZDIvdnUvaVBYWTg1WHkySGo2TzZQaGN5bkZwUUxtRjlMK3JVS2Q2YUhz?=
- =?utf-8?B?UkVvSHBYRDlrQko4STY2NkdQRlRoL2YxLy9CTE1lejh5UnY4V1Z6RFJ3VmFk?=
- =?utf-8?B?d0ZmN2RRV0NqS3ZZWW41c2JUTURDaHQyd0FNQWR4UEN0a28vMzBqREt1dGZM?=
- =?utf-8?B?NnhIelBkaEVqc2xNWXZzUHEyT1hiMlcweUhScUo5QW1mUkcyVjYvWnNYNkpI?=
- =?utf-8?B?ZE90c0lOenZqaHdodDBaOU9vMTNtUW1LS3dtZXNqS0ErQXBXdWN2TEtTeEI1?=
- =?utf-8?B?Q3U4aXVkSWZaMjJ1RlpYL0JGK1I1UlBpQS9QVUtLc1lwYWRoZkt4emYzTTND?=
- =?utf-8?B?V2pzTFNWdk5GcmxOd2p4dFkrb3E1WnYyRm1EOGNoSUlwbzJXWG5wVzlXZWkr?=
- =?utf-8?B?TjlzakhHMkc4NlZCaStwUHQ3aHBsMVlNUTR4ZDZyaE9McWxxcnlhSHVBVEdL?=
- =?utf-8?B?NXdwbzZxc25VcmRKck9NRUV1azVNK0tSSkJSalBWc21UY01kRkpCWFV0SjZy?=
- =?utf-8?B?Y05iZ0xDSHhyaGJZbVEvYjVGSEw1eUhUREp0Um5DK2dDNkljVnRXcXphN1JT?=
- =?utf-8?B?ZXpFWTY4QUM2amJSRWxsKzRUSUt1cWw1a2t6TEVnPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2f1ffe5-6b04-42b3-bb19-08dbf57fea2d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 10:49:54.3727
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OiOwUs5OLHM+Y0tHSs01DxXUS4GtFUQ0VLC3gt7rZVyJh8yJCr9xPIshFFhTWZxu3pZEUJRC2yok87QCHBGPSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB7029
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-05_05,2023-12-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312050086
-X-Proofpoint-ORIG-GUID: YFRaGwbod_tIGaYt3ja9Szj-47iLa6qz
-X-Proofpoint-GUID: YFRaGwbod_tIGaYt3ja9Szj-47iLa6qz
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 03/10] mm: thp: Introduce multi-size THP sysfs
+ interface
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Barry Song <21cnbao@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231204102027.57185-1-ryan.roberts@arm.com>
+ <20231204102027.57185-4-ryan.roberts@arm.com>
+ <CAGsJ_4zU6pHOwEzCQxo9UWUFmHZp0pvfgF4pKbkFfDPCRyFwyw@mail.gmail.com>
+ <8adbde1c-970b-4a26-81b0-91b913c4850b@arm.com>
+ <c97d60cc-6c31-4da1-b519-86516008bb4c@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <c97d60cc-6c31-4da1-b519-86516008bb4c@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 01:45, Ming Lei wrote:
->> Right, we do expect userspace to use a fixed block size, but we give scope
->> in the API to use variable size.
-> Maybe it is enough to just take atomic_write_unit_min_bytes
-> only, and allow length to be N * atomic_write_unit_min_bytes.
-> 
-> But it may violate atomic write boundary?
-
-About atomic boundary, we just don't allow a merge which will result in 
-a write which will straddle a boundary as there are no guarantees of 
-atomicity then.
-
-Having said this, atomic write boundary is just relevant to NVMe, so if 
-we don't have merges there, then we could just omit this code.
-
-> 
->>> The hardware should recognize unit size by start LBA, and check if length is
->>> valid, so probably the interface might be relaxed to:
+On 05/12/2023 09:57, David Hildenbrand wrote:
+> On 05.12.23 10:50, Ryan Roberts wrote:
+>> On 05/12/2023 04:21, Barry Song wrote:
+>>> On Mon, Dec 4, 2023 at 11:21 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> In preparation for adding support for anonymous multi-size THP,
+>>>> introduce new sysfs structure that will be used to control the new
+>>>> behaviours. A new directory is added under transparent_hugepage for each
+>>>> supported THP size, and contains an `enabled` file, which can be set to
+>>>> "inherit" (to inherit the global setting), "always", "madvise" or
+>>>> "never". For now, the kernel still only supports PMD-sized anonymous
+>>>> THP, so only 1 directory is populated.
+>>>>
+>>>> The first half of the change converts transhuge_vma_suitable() and
+>>>> hugepage_vma_check() so that they take a bitfield of orders for which
+>>>> the user wants to determine support, and the functions filter out all
+>>>> the orders that can't be supported, given the current sysfs
+>>>> configuration and the VMA dimensions. If there is only 1 order set in
+>>>> the input then the output can continue to be treated like a boolean;
+>>>> this is the case for most call sites. The resulting functions are
+>>>> renamed to thp_vma_suitable_orders() and thp_vma_allowable_orders()
+>>>> respectively.
+>>>>
+>>>> The second half of the change implements the new sysfs interface. It has
+>>>> been done so that each supported THP size has a `struct thpsize`, which
+>>>> describes the relevant metadata and is itself a kobject. This is pretty
+>>>> minimal for now, but should make it easy to add new per-thpsize files to
+>>>> the interface if needed in future (e.g. per-size defrag). Rather than
+>>>> keep the `enabled` state directly in the struct thpsize, I've elected to
+>>>> directly encode it into huge_anon_orders_[always|madvise|inherit]
+>>>> bitfields since this reduces the amount of work required in
+>>>> thp_vma_allowable_orders() which is called for every page fault.
+>>>>
+>>>> See Documentation/admin-guide/mm/transhuge.rst, as modified by this
+>>>> commit, for details of how the new sysfs interface works.
+>>>>
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 >>>
->>> 1) start lba is unit aligned, and this unit is in the supported unit
->>> range(power_2 in [unit_min, unit_max])
+>>> Reviewed-by: Barry Song <v-songbaohua@oppo.com>
+>>
+>> Thanks!
+>>
 >>>
->>> 2) length needs to be:
+>>>> -khugepaged will be automatically started when
+>>>> -transparent_hugepage/enabled is set to "always" or "madvise, and it'll
+>>>> -be automatically shutdown if it's set to "never".
+>>>> +khugepaged will be automatically started when one or more hugepage
+>>>> +sizes are enabled (either by directly setting "always" or "madvise",
+>>>> +or by setting "inherit" while the top-level enabled is set to "always"
+>>>> +or "madvise"), and it'll be automatically shutdown when the last
+>>>> +hugepage size is disabled (either by directly setting "never", or by
+>>>> +setting "inherit" while the top-level enabled is set to "never").
+>>>>
+>>>>   Khugepaged controls
+>>>>   -------------------
+>>>>
+>>>> +.. note::
+>>>> +   khugepaged currently only searches for opportunities to collapse to
+>>>> +   PMD-sized THP and no attempt is made to collapse to other THP
+>>>> +   sizes.
 >>>
->>> - N * this_unit_size
->>> - <= atomic_write_max_bytes
->> Please note that we also need to consider:
->> - any atomic write boundary (from NVMe)
-> Can you provide actual NVMe boundary value?
+>>> For small-size THP, collapse is probably a bad idea. we like a one-shot
+>>> try in Android especially we are using a 64KB and less large folio size. if
+>>> PF succeeds in getting large folios, we map large folios, otherwise we
+>>> give up as those memories can be quite unstably swapped-out, swapped-in
+>>> and madvised to be DONTNEED.
+>>>
+>>> too many compactions will increase power consumption and decrease UI
+>>> response.
+>>
+>> Understood; that's very useful information for the Android context. Multiple
+>> people have made comments about eventually needing khugepaged (or something
+>> similar) support in the server context though to async collapse to contpte size.
+>> Actually one suggestion was a user space daemon that scans and collapses with
+>> MADV_COLLAPSE. I suspect the key will be to ensure whatever solution we go for
+>> is flexible and can be enabled/disabled/configured for the different
+>> environments.
 > 
-> Firstly natural aligned write won't cross boundary, so boundary should
-> be >= write_unit_max,
+> There certainly is interest for 2 MiB THP on arm64 64k where the THP size would
+> normally be 512 MiB. In that scenario, khugepaged makes perfect sense.
 
-Correct
+Indeed
 
-> see blow code from patch 10/21:
-> 
-> +static bool bio_straddles_atomic_write_boundary(loff_t bi_sector,
-> +				unsigned int bi_size,
-> +				unsigned int boundary)
-> +{
-> +	loff_t start = bi_sector << SECTOR_SHIFT;
-> +	loff_t end = start + bi_size;
-> +	loff_t start_mod = start % boundary;
-> +	loff_t end_mod = end % boundary;
-> +
-> +	if (end - start > boundary)
-> +		return true;
-> +	if ((start_mod > end_mod) && (start_mod && end_mod))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> 
-> Then if the WRITE size is <= boundary, the above function should return
-> false, right? 
-
-Actually if WRITE > boundary then we must be crossing a boundary and 
-should return true, which is what the first condition checks.
-
-However 2x naturally-aligned atomic writes could be less than 
-atomic_write_max_bytes but still straddle if merged.
-
-> Looks like it is power_of(2) & aligned atomic_write_max_bytes?
-> 
->> - virt boundary (from NVMe)
-> virt boundary is applied on bv_offset and bv_len, and NVMe's virt
-> bounary is (4k - 1), it shouldn't be one issue in reality.
-
-On a related topic, as I understand, for NVMe we just split bios 
-according to virt boundary for PRP, but we won't always use PRP. So is 
-there value in not splitting bio according to PRP if SGL will actually 
-be used?
-
-> 
->> And, as I mentioned elsewhere, I am still not 100% comfortable that we don't
->> pay attention to regular max_sectors_kb...
-> max_sectors_kb should be bigger than atomic_write_max_bytes actually,
-> then what is your concern?
-
-My concern is that we don't enforce that, so we may issue atomic writes 
-which exceed max_sectors_kb.
-
-If we did enforce it, then atomic_write_unit_min_bytes, 
-atomic_write_unit_max_bytes, and atomic_write_max_bytes all need to be 
-limited according to max_sectors_kb.
-
-Thanks,
-John
