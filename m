@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CEA804516
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B21C80450F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376460AbjLECih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:38:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34096 "EHLO
+        id S1344101AbjLECiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:38:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376555AbjLECi0 (ORCPT
+        with ESMTP id S1343967AbjLECiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:38:26 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F8C119;
-        Mon,  4 Dec 2023 18:38:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=sPB/9nJhzupGe0X/gusduBPW1Y18K5OKiwVmvCOQ20k=; b=1dolqDJMGC30Q+yJXEdqjCZsGT
-        FC9Owmi66X277vtITRpMoiPso9WDx7YZk8iC6uT4AtKUEA6vksjXWyTYf4SPZnfPXbxCNMhlT5bIN
-        WSfIem3wT98SZk4j7a0osv51fh75BvyTr8SwCk8iHsn5GFW+3gdSLT3FmCq9lKN1anHU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1rALJr-0022eR-9b; Tue, 05 Dec 2023 03:37:55 +0100
-Date:   Tue, 5 Dec 2023 03:37:55 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v3 3/3] net: phy: add support for PHY package
- MMD read/write
-Message-ID: <51aae9d0-5100-41af-ade0-ecebeccbc418@lunn.ch>
-References: <20231128133630.7829-1-ansuelsmth@gmail.com>
- <20231128133630.7829-3-ansuelsmth@gmail.com>
- <20231204181752.2be3fd68@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204181752.2be3fd68@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 4 Dec 2023 21:38:03 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A31CA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:38:10 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5caf86963ecso72675467b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:38:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701743889; x=1702348689; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5EkC8tBFkc/bGatstNbW1R85aDFjsej7pU03fOLuo0o=;
+        b=YqFHc9Mjdi7mYPsWapFDKWQAk70FTbT7wnLxLJlLeOWG78PIkdEtVoK6/ZO3hsFJGK
+         Ds6heHaxh2i0+TS2EXOn0VBrgcrAQ8me9HXK3+Nuw0LCsm1rApYSFLBIIG4fdYi8mwR1
+         h09iFDXnEofrZEg65alXxmzk82cmHzub0QJfu7k56f/JrmiD0uzqdXU20ykn0SWRT0sc
+         YeSHvmSuYVkUs16RcQOUYEv0swN2kQYGNlxTDP7tKZ6B6gxNWeBh7cBBv047Rv8IloHm
+         5Ul0wDRHX65s1jWXV6Q3QlxMzz/gWPZ39oBy5q6vwo4PRPzuv/TCRgseIOkmU3KQkbDv
+         qwyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701743889; x=1702348689;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5EkC8tBFkc/bGatstNbW1R85aDFjsej7pU03fOLuo0o=;
+        b=U1N/aRmmsw+tXUoz3a0o7O6EroAOhCiehPnx7fTm1EbCtzs0ggw6BxXHwkTw1IpVch
+         b0zY2C+oknwaKgdbRmgwTEh3GMt0BuF0rm+XC5wj9eAx40c0sYpT1OsBs/L2foEuD9hf
+         kjorN0JCQU+u1uZ29373EPafWWMPuOPZHsN+QTgagpKkfgp2jpxQ7KZA/Alhng4nRYtr
+         lNe0Pdo0AeLnqfDNf2nKN0A3kflfmIe5kFMTdP6oBX1cqhl5UwdyRqih0FXxqqjhxDq7
+         ciDMJvsBHuqQI6lvDnSUEEbJEFrNS+wD06U/YZ/burz9qOumodO10U1ahVv5JWfyoXw7
+         T38A==
+X-Gm-Message-State: AOJu0YzGWg3bfuKcDdhr6nS5/T+xpGGhT/BnOfymCFbUcsG+SM55MDgG
+        X9DyF6AD7lC6VyPXMUxQuerb+N2yAPo=
+X-Google-Smtp-Source: AGHT+IH66c/DcXoUES/OjQFHfKfa4wp28KTZsImTGDG6MYhRnIRLKo451oU0sYuWQc272uiv+NUawl/qMJw=
+X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:5074:e7bb:c7b:6a8a])
+ (user=drosen job=sendgmr) by 2002:a05:690c:2509:b0:5d8:5d2c:121d with SMTP id
+ dt9-20020a05690c250900b005d85d2c121dmr102229ywb.7.1701743889565; Mon, 04 Dec
+ 2023 18:38:09 -0800 (PST)
+Date:   Mon,  4 Dec 2023 18:38:01 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231205023801.3669458-1-drosen@google.com>
+Subject: [PATCH v3] f2fs: Restrict max filesize for 16K f2fs
+From:   Daniel Rosenberg <drosen@google.com>
+To:     linux-f2fs-devel@lists.sourceforge.net
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 06:17:52PM -0800, Jakub Kicinski wrote:
-> On Tue, 28 Nov 2023 14:36:30 +0100 Christian Marangi wrote:
-> > +/**
-> > + * phy_package_write_mmd - Convenience function for writing a register
-> > + * on an MMD on a given PHY using the PHY package base addr, added of
-> > + * the addr_offset value.
-> > + * @phydev: The phy_device struct
-> > + * @addr_offset: The offset to be added to PHY package base_addr
-> > + * @devad: The MMD to read from
-> > + * @regnum: The register on the MMD to read
-> > + * @val: value to write to @regnum
-> > + *
-> > + * Same rules as for phy_write();
-> > + *
-> > + * NOTE: It's assumed that the entire PHY package is either C22 or C45.
-> > + */
-> 
-> > +/*
-> > + * phy_package_write_mmd - Convenience function for writing a register
-> > + * on an MMD on a given PHY using the PHY package base addr, added of
-> > + * the addr_offset value.
-> > + */
-> > +int phy_package_write_mmd(struct phy_device *phydev,
-> > +			  unsigned int addr_offset, int devad,
-> > +			  u32 regnum, u16 val);
-> 
-> Hm, I see there's some precedent here already for this duplicated
-> semi-kdoc. It seems a bit unusual. If I was looking for kdoc and 
-> found the header one I'd probably not look at the source file at all.
-> 
-> Andrew, WDYT?
+Blocks are tracked by u32, so the max permitted filesize is
+(U32_MAX + 1) * BLOCK_SIZE. Additionally, in order to support crypto
+data unit sizes of 4K with a 16K block with IV_INO_LBLK_{32,64}, we must
+further restrict max filesize to (U32_MAX + 1) * 4096. This does not
+affect 4K blocksize f2fs as the natural limit for files are well below
+that.
 
-I tend to agree. These functions should be documented once in kdoc,
-and only once. I don't really care if its in the header, or the C
-code, but not both.
+Fixes: d7e9a9037de2 ("f2fs: Support Block Size == Page Size")
+Signed-off-by: Daniel Rosenberg <drosen@google.com>
+---
+ fs/f2fs/super.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-      Andrew
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 033af907c3b1..5dfbc6b4c0ac 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -3364,6 +3364,14 @@ loff_t max_file_blocks(struct inode *inode)
+ 	leaf_count *= NIDS_PER_BLOCK;
+ 	result += leaf_count;
+ 
++	/*
++	 * For compatibility with FSCRYPT_POLICY_FLAG_IV_INO_LBLK_{64,32} with
++	 * a 4K crypto data unit, we must restrict the max filesize to what can
++	 * fit within U32_MAX + 1 data units.
++	 */
++
++	result = min(result, (((loff_t)U32_MAX + 1) * 4096) >> F2FS_BLKSIZE_BITS);
++
+ 	return result;
+ }
+ 
+
+base-commit: d346fa09abff46988de9267b67b6900d9913d5a2
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
+
