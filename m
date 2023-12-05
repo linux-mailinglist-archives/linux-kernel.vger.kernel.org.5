@@ -2,133 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E523805347
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF3A805348
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345204AbjLELqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:46:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        id S1347022AbjLELqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:46:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345202AbjLELqJ (ORCPT
+        with ESMTP id S1346996AbjLELqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:46:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7266FCA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:46:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B12E9C433C8;
-        Tue,  5 Dec 2023 11:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701776775;
-        bh=tI99Im86WnASOz4SHjHfEoqX8c1oRdAdwAQEPlCbyWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WOBggSjgHJ4KfWdeTTRc5eZWVFWRZlJwdADbSrFu3/PQ0lddCs4iHUyb0uE1iPaRA
-         o5yPJ8wnb3XA21G2wfJM/4HxBzfgh7/6Ju8iTwNV3RDIekOLLMjngZ2rJ970me5qFH
-         KtiyR8IZDcR7Pe7YLUYF/4BzSxO8b4Jl9dpZQgSLA4hVWq4ivpgKjmBcbsNbfTO11H
-         mgnLr4/Hy8lgSAnl0Vjw4gTOOMS+WHqAHffYlbesIwj5aj2XLo+dy5sA0HtHWDF2lR
-         SF3OCFW9s0alikkmnAC/qzMW8RNuwjDEMVn8osVh0hIDgkG7BSjD4L/OxvtwwdV/93
-         xRz7ZMLgusO5A==
-Date:   Tue, 5 Dec 2023 12:46:12 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, lkft-triage@lists.linaro.org,
-        regressions@lists.linux.dev, davidgow@google.com,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        airlied@gmail.com, daniel@ffwll.ch,
-        Linux Kernel Functional Testing <lkft@linaro.org>
-Subject: Re: Kunit drm_test_check_plane_state: EXPECTATION FAILED at
- drivers/gpu/drm/tests/drm_plane_helper_test.c:123
-Message-ID: <fgajgc7vp626nzeeqetkfbyadh53iti3mvoq4uck3zz3ysmvno@b3f7kxnwrwsd>
-References: <20231204173536.51003-1-naresh.kamboju@linaro.org>
- <rxv7jlfuwjib443pzdepbtgu454gdzemd3ojmmhbnhr4syneve@6me3bduyx2ee>
- <42d85b15-9ffd-4a08-b51e-a3367e57d128@suswa.mountain>
+        Tue, 5 Dec 2023 06:46:12 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8601C3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:46:17 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54c79968ffbso3774899a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 03:46:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701776776; x=1702381576; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fv78qdXer+K2cYsHj1Wda5sEYtJwVQWrxcN+J5upI+Q=;
+        b=EuMD1TofewDeAUqEMIg4A72gMZ1OGvd53+xhVudomnNN1DGXbPpT6ZJj6UpCzAd2AZ
+         obqAdGCsVdh8AK3aGABeoGmC+Toc8KSMxoc0C8XSqz3w1dWkOXJC83wlSiTQg0vMcEPI
+         MP2frd9zAADARan0NdZvaWbVrOBUDF104Hwxk9hV7RkJJOMliabuywau7VOrPgk8nG1P
+         MjpHeBw1WVdBPMTX2H15pTmoc62FWpO5Ss16RjTxAsA4bYoa4FnqYhSUbhwEj0J1oZ+Y
+         EYfeOdFPeXEjenhg+LLi6FOS2mDKNITBKTdFTr2PnD/l64LJb1r0Oxcig+Wx9z1x605/
+         lFJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701776776; x=1702381576;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fv78qdXer+K2cYsHj1Wda5sEYtJwVQWrxcN+J5upI+Q=;
+        b=e6nZXF5SLt6LM5dlZVGc7SDAFtROsx5Lx4CD1fKN7VJh7/SkS/98r1fK+kmRGcpqLO
+         zbV6JK6pxUeND3uHlb2eooSlUQ36qvsvyrkD6qUpJGtP6TvP02DthypVT5Ka4H83KrBJ
+         oRJS4ayGFWtwCxGo+ZKXP1o5AlXub1+RVt8pZFCcvCKTZGRS5qE2MFDVY8aYxJUkZUqg
+         cffRkbUjGtkqGSFMmDoVW9PUcUxybg5kPovN63kT/TSXd34yfG3e3VUFseKxb0gs/WFx
+         k4YStojmrivwaOvR5P8aT8gDbt1lH4OGsaqnqdSdRzxc8eAtKD2LbuGFDiL9jIwk2/nY
+         ZwHg==
+X-Gm-Message-State: AOJu0Yzw/rIjJI7ccOx1zU5rgmKrnnkO4Q6AlZ2gHSteBGCL2wME5EAN
+        ImtzxEWtYTn3b8GhDvtfS09EVw==
+X-Google-Smtp-Source: AGHT+IGWRKUvM5obHQLzcVz4hI2GDUBIk16ve2NIaGpESEDLDmAeTMDtHL5Fz2O+k/FiRyU3mEQFjQ==
+X-Received: by 2002:a17:906:ae98:b0:a04:837e:87af with SMTP id md24-20020a170906ae9800b00a04837e87afmr392643ejb.33.1701776776124;
+        Tue, 05 Dec 2023 03:46:16 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id um25-20020a170907cb1900b00a1c904675cfsm579010ejc.29.2023.12.05.03.46.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 03:46:15 -0800 (PST)
+Message-ID: <bd878b2a-0704-49dc-a991-e9660940cf08@linaro.org>
+Date:   Tue, 5 Dec 2023 12:46:13 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wuxjya7du2xfv7u4"
-Content-Disposition: inline
-In-Reply-To: <42d85b15-9ffd-4a08-b51e-a3367e57d128@suswa.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] dt-bindings: clock: sophgo: Add CV1800 bindings
+Content-Language: en-US
+To:     Inochi Amaoto <inochiama@outlook.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Chen Wang <unicorn_wang@outlook.com>,
+        Jisheng Zhang <jszhang@kernel.org>, qiujingbao.dlmu@gmail.com,
+        dlan@gentoo.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <05d17d6d-490e-4524-ab1c-4ccc27b0d7bc@linaro.org>
+ <IA1PR20MB4953F0086FB77F8DC46C8095BB85A@IA1PR20MB4953.namprd20.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <IA1PR20MB4953F0086FB77F8DC46C8095BB85A@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 05/12/2023 12:24, Inochi Amaoto wrote:
+>>
+>> On 05/12/2023 10:43, Inochi Amaoto wrote:
+>>> Add definition for the clock controller of the CV1800 series SoC.
+>>>
+>>
+>> If there is going to be resend:
+>>
+>> A nit, subject: drop second/last, redundant "bindings". The
+>> "dt-bindings" prefix is already stating that these are bindings.
+>>
+> 
+> OK, thanks.
+> 
+>>> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+>>> Link: https://github.com/milkv-duo/duo-files/blob/main/hardware/CV1800B/CV1800B-CV1801B-Preliminary-Datasheet-full-en.pdf
+>>> ---
+>>
+>>
+>>> diff --git a/include/dt-bindings/clock/sophgo,cv1800.h b/include/dt-bindings/clock/sophgo,cv1800.h
+>>> new file mode 100644
+>>> index 000000000000..6a9897b34978
+>>> --- /dev/null
+>>> +++ b/include/dt-bindings/clock/sophgo,cv1800.h
+>>> @@ -0,0 +1,174 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>
+>> Why not dual-license? Checkpatch complains about this, so are you sure
+>> you run it?
+>>
+> 
+> Yes, I have run it. It seems I misunderstood the warning message.
+> It only tells me it should be (GPL-2.0-only OR .*). And I think
+> GPL-2.0 is ok. Thanks for your explanation, I will fix this soon.
 
---wuxjya7du2xfv7u4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+GPL-2.0 still does not have OR.
 
-On Tue, Dec 05, 2023 at 12:05:02PM +0300, Dan Carpenter wrote:
-> On Tue, Dec 05, 2023 at 09:37:05AM +0100, Maxime Ripard wrote:
-> > Hi Naresh,
-> >=20
-> > Thanks for the report
-> >=20
-> > On Mon, Dec 04, 2023 at 11:05:36PM +0530, Naresh Kamboju wrote:
-> > > The Kunit drm_plane_helper failed on all devices running Linux next-2=
-0231204
-> > >=20
-> > > ## Test Regressions (compared to next-20231201)
-> > > * qemu-armv7, kunit and
-> > > * x86, kunit
-> > >   - drm_test_check_invalid_plane_state_downscaling_invalid
-> > >   - drm_test_check_invalid_plane_state_drm_plane_helper
-> > >   - drm_test_check_invalid_plane_state_drm_test_check_invalid_plane_s=
-tate
-> > >   - drm_test_check_invalid_plane_state_positioning_invalid
-> > >   - drm_test_check_invalid_plane_state_upscaling_invalid
-> > >   - drm_test_check_plane_state_clipping_rotate_reflect
-> > >   - drm_test_check_plane_state_clipping_simple
-> > >   - drm_test_check_plane_state_downscaling
-> > >   - drm_test_check_plane_state_drm_test_check_plane_state
-> > >   - drm_test_check_plane_state_positioning_simple
-> > >   - drm_test_check_plane_state_rounding1
-> > >   - drm_test_check_plane_state_rounding2
-> > >   - drm_test_check_plane_state_rounding3
-> > >   - drm_test_check_plane_state_rounding4
-> > >   - drm_test_check_plane_state_upscaling
-> >=20
-> > I found the source of failure to be f1e75da5364e ("drm/atomic: Loosen FB
-> > atomic checks").
-> >=20
-> > Fortunately for us, it's already been reverted yesterday for some
-> > unrelated reason, so it should be fixed in next-20231205 onward.
->=20
-> Sorry, that's a bummer that these patches were reverted.  :(  The whole
-> episode was a bit unfortunate...
->=20
-> Qualcom has been working on those patches for a year.  They must not be
-> using kunit testing as part of their QC...  It's some kind of
-> communication failure on our part.
+Best regards,
+Krzysztof
 
-That's definitely a communication failure, but that's mostly on us :)
-
-The reason these patches were reverted was completely unrelated to the
-kunit failures here: it failed the basic requirement we have on
-intel-gpu-tools tests and open-source userspace examples for new uAPIs.
-
-So whether or not kunit tests would have passed, these patches were
-applied due to inattention and would have been reverted anyway
-
-Maxime
-
---wuxjya7du2xfv7u4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZW8NhAAKCRDj7w1vZxhR
-xcWGAQDBxOux4QLD0euXH7Xp+Zu5/Zs2ypIGpLrB2r5TK3lb3gEAmdpM+yqNE4r0
-7XgB+RHu1Vq7uBRLhaz6uZ0GSdcCyAI=
-=x8h+
------END PGP SIGNATURE-----
-
---wuxjya7du2xfv7u4--
