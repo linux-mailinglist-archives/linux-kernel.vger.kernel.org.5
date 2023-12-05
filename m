@@ -2,149 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F242E80439F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B99798043A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343693AbjLEAyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 19:54:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
+        id S1343738AbjLEA5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjLEAyV (ORCPT
+        with ESMTP id S231618AbjLEA5p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:54:21 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58498109
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:54:27 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-58df571e612so3082938eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 16:54:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701737666; x=1702342466; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hgxh5iAkQdyDmjH/EP5y66lB0goZgK4wS9PHcerNRI0=;
-        b=Pks3QznimLGKgOlVmoOSK1Hg2E87f//xAmPKOlD3N8faGNH/ZgaZQML5/7/6KiEBrf
-         FvQVIemBTDzkWLTCya9boBSPl9ESBlDq7kriwCp8tjPmhvN3MnOHdsfmFJrnoJnboXlm
-         6Zwyo5nkezqMEMa50AymaVyv/aEsnuA5shTpQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701737666; x=1702342466;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hgxh5iAkQdyDmjH/EP5y66lB0goZgK4wS9PHcerNRI0=;
-        b=Qa/I+8T8kAWRSYJQJB+bMswHGXxsIc7beGMR5CzER1O2228thkj98mmMZE12KZdBea
-         v30ZFChVmz/lTsxL68wg+/7tNuoUEqtdJgvrw0h4Ffpwv82xX1a2DL4X12T7bM2p67Jj
-         kjhDGTPSmvIILfFvuGFGmbtZJ1TvcKKJxbh3RW/PHD2cheTh+A4Q8yGGwfZMAVdg+qNP
-         0bAPBlpsRhSNzM21P+4yvZUEiNOzbBGFhxJ87TYr0F0AuYJyngUrZxe56VHEbuv8KAry
-         nuKNSgWS1wMJgtR56XDLUu5nTd3h6DvCy6D09ma5eNRUT7DQNInldggqteft6f2zE0GG
-         ygpQ==
-X-Gm-Message-State: AOJu0YwONISdu5r2dUU6JAj1vGacPL2OZ6siFLXfWqeDZWxFVK+9LY5f
-        AZkEICUC2iBLAsbk+4soakWi6A==
-X-Google-Smtp-Source: AGHT+IHk7lmDVGKtnQfm4mq3bULDVD35esNQMJLK9nUyooFioS0fzVXAMAhL7+5oYc0V/vLwpRuwzA==
-X-Received: by 2002:a05:6358:7205:b0:16d:f46f:16a9 with SMTP id h5-20020a056358720500b0016df46f16a9mr8361301rwa.17.1701737666267;
-        Mon, 04 Dec 2023 16:54:26 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b67-20020a633446000000b005c67ca3c2c2sm3188911pga.21.2023.12.04.16.54.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 16:54:25 -0800 (PST)
-Date:   Mon, 4 Dec 2023 16:54:25 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Tony Luck <tony.luck@intel.com>,
-        linux-hardening@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/5] pstore: inode: Use cleanup.h for struct
- pstore_private
-Message-ID: <202312041649.C14F139F9@keescook>
-References: <20231202211535.work.571-kees@kernel.org>
- <20231202212217.243710-5-keescook@chromium.org>
- <20231202222706.GT38156@ZenIV>
+        Mon, 4 Dec 2023 19:57:45 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6334B102
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:57:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701737872; x=1733273872;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=GPEs8Xaj54ZIAaocNHkV6u9vU45MD0NtNKuAgrFkgRM=;
+  b=hoAn35/4HGj/sRNvQ28E0g/q9mNnEacNuOxVnbmE2kOpatPTcGDRhf4W
+   snRFUwrgII2mpn7OfS/H4pwrHtvaCYMVXjf5za9OHGp1GozhGtOVb3YvB
+   aeUI0Q+QlUdK226AlIL04FYnjYVc+OrBhbSJwDKDbwmZBt3o/VIR/YOlL
+   LTzwzjW8ANwx1WkOrXbgcH0rzvi+36U3NPXdZMC0aW7aDwuf/T3BAHfIJ
+   jf0gJroiKofIJz8WzS01D+PA2p6F3JAtg0ayPohWTeKgqozysh6Q8xCAD
+   Jd/lgcYyXCOgwuUJmGrCUD7YT1NqttnIoItZGaOQyHXsvk2kq/9Ttn9DC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="373266641"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="373266641"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:57:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="861570166"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="861570166"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 04 Dec 2023 16:57:48 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAJkw-0008F4-0w;
+        Tue, 05 Dec 2023 00:57:46 +0000
+Date:   Tue, 5 Dec 2023 08:56:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Luben Tuikov <luben.tuikov@amd.com>
+Subject: drivers/gpu/drm/scheduler/sched_main.c:266: warning: Function
+ parameter or member 'result' not described in 'drm_sched_job_done'
+Message-ID: <202312050753.wO5Zucbg-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231202222706.GT38156@ZenIV>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 02, 2023 at 10:27:06PM +0000, Al Viro wrote:
-> On Sat, Dec 02, 2023 at 01:22:15PM -0800, Kees Cook wrote:
-> 
-> >  static void *pstore_ftrace_seq_start(struct seq_file *s, loff_t *pos)
-> >  {
-> > @@ -338,9 +339,8 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
-> >  {
-> >  	struct dentry		*dentry;
-> >  	struct inode		*inode __free(iput) = NULL;
-> > -	int			rc = 0;
-> >  	char			name[PSTORE_NAMELEN];
-> > -	struct pstore_private	*private, *pos;
-> > +	struct pstore_private	*private __free(pstore_private) = NULL, *pos;
-> >  	size_t			size = record->size + record->ecc_notice_size;
-> >  
-> >  	if (WARN_ON(!inode_is_locked(d_inode(root))))
-> > @@ -356,7 +356,6 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
-> >  			return -EEXIST;
-> >  	}
-> >  
-> > -	rc = -ENOMEM;
-> >  	inode = pstore_get_inode(root->d_sb);
-> >  	if (!inode)
-> >  		return -ENOMEM;
-> > @@ -373,7 +372,7 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
-> >  
-> >  	dentry = d_alloc_name(root, name);
-> >  	if (!dentry)
-> > -		goto fail_private;
-> > +		return -ENOMEM;
-> >  
-> >  	private->dentry = dentry;
-> >  	private->record = record;
-> > @@ -386,13 +385,9 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
-> >  
-> >  	d_add(dentry, no_free_ptr(inode));
-> >  
-> > -	list_add(&private->list, &records_list);
-> > +	list_add(&(no_free_ptr(private))->list, &records_list);
-> 
-> That's really brittle.  It critically depends upon having no failure
-> exits past the assignment to ->i_private; once you've done that,
-> you have transferred the ownership of that thing to the inode
-> (look at your ->evict_inode()).
+Hi Christian,
 
-I guess so, but it was already that way, and it isn't assignment to
-i_private until everything else is "done", apart from adding to the
-dentry and the pstore internal list.
+FYI, the error/warning still remains.
 
-> But you can't say
->         inode->i_private = no_free_ptr(private);
-> since you are using private past that point.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 539f9ee4b52a8bec95ff064e22dd2fb1e258e818 drm/scheduler: properly forward fence errors
+date:   8 months ago
+config: x86_64-buildonly-randconfig-004-20230906 (https://download.01.org/0day-ci/archive/20231205/202312050753.wO5Zucbg-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312050753.wO5Zucbg-lkp@intel.com/reproduce)
 
-True. How about this reordering:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312050753.wO5Zucbg-lkp@intel.com/
 
-        if (record->time.tv_sec)
-                inode_set_mtime_to_ts(inode,
-                                      inode_set_ctime_to_ts(inode, record->time));
+All warnings (new ones prefixed by >>):
 
-        list_add(&private->list, &records_list);
-        inode->i_private = no_free_ptr(private);
-
-        d_add(dentry, no_free_ptr(inode));
+>> drivers/gpu/drm/scheduler/sched_main.c:266: warning: Function parameter or member 'result' not described in 'drm_sched_job_done'
 
 
-But none of this gets into how you'd like to see the iput handled. If
-you'd prefer, I can just define a pstore_iput handler and you don't have
-to look at it at all. :)
+vim +266 drivers/gpu/drm/scheduler/sched_main.c
 
--Kees
+08fb97de03aa22 Andrey Grodzovsky 2022-09-30  258  
+71173e787cab9d Luben Tuikov      2020-12-03  259  /**
+71173e787cab9d Luben Tuikov      2020-12-03  260   * drm_sched_job_done - complete a job
+71173e787cab9d Luben Tuikov      2020-12-03  261   * @s_job: pointer to the job which is done
+71173e787cab9d Luben Tuikov      2020-12-03  262   *
+71173e787cab9d Luben Tuikov      2020-12-03  263   * Finish the job's fence and wake up the worker thread.
+71173e787cab9d Luben Tuikov      2020-12-03  264   */
+539f9ee4b52a8b Christian König   2023-04-17  265  static void drm_sched_job_done(struct drm_sched_job *s_job, int result)
+71173e787cab9d Luben Tuikov      2020-12-03 @266  {
+71173e787cab9d Luben Tuikov      2020-12-03  267  	struct drm_sched_fence *s_fence = s_job->s_fence;
+71173e787cab9d Luben Tuikov      2020-12-03  268  	struct drm_gpu_scheduler *sched = s_fence->sched;
+71173e787cab9d Luben Tuikov      2020-12-03  269  
+71173e787cab9d Luben Tuikov      2020-12-03  270  	atomic_dec(&sched->hw_rq_count);
+f2f12eb9c32bc7 Christian König   2021-02-02  271  	atomic_dec(sched->score);
+71173e787cab9d Luben Tuikov      2020-12-03  272  
+71173e787cab9d Luben Tuikov      2020-12-03  273  	trace_drm_sched_process_job(s_fence);
+71173e787cab9d Luben Tuikov      2020-12-03  274  
+71173e787cab9d Luben Tuikov      2020-12-03  275  	dma_fence_get(&s_fence->finished);
+539f9ee4b52a8b Christian König   2023-04-17  276  	drm_sched_fence_finished(s_fence, result);
+71173e787cab9d Luben Tuikov      2020-12-03  277  	dma_fence_put(&s_fence->finished);
+71173e787cab9d Luben Tuikov      2020-12-03  278  	wake_up_interruptible(&sched->wake_up_worker);
+71173e787cab9d Luben Tuikov      2020-12-03  279  }
+71173e787cab9d Luben Tuikov      2020-12-03  280  
+
+:::::: The code at line 266 was first introduced by commit
+:::::: 71173e787cab9db4ca1fa6229477cb3d254bc285 drm/scheduler: Essentialize the job done callback
+
+:::::: TO: Luben Tuikov <luben.tuikov@amd.com>
+:::::: CC: Christian König <christian.koenig@amd.com>
 
 -- 
-Kees Cook
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
