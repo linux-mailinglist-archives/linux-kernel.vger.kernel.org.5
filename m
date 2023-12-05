@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF41805EF3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3409805EF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235124AbjLET6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:58:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
+        id S232202AbjLEUAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 15:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235028AbjLET6f (ORCPT
+        with ESMTP id S229569AbjLEUAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:58:35 -0500
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E5CA5;
-        Tue,  5 Dec 2023 11:58:41 -0800 (PST)
-Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-58df5988172so3644511eaf.0;
-        Tue, 05 Dec 2023 11:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701806321; x=1702411121; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ml+guyEFPChymz1fE4bXVI0RffgdmNpaE0/U4fT7luE=;
-        b=MmHKZPy9NFRv2aATElD12D8eQ8Be7F5njGfh9IHk/3yg0XmZtiX/Gw/uQPFhAcCrJ+
-         8tJKej5jajxcZKALG6h131tesVP52sJpCbG8sx2OIONghyIUGFmhOrvN0+ckNB8p71Fp
-         EXeY9+1FlooWBKdlUCNhr3z/jngkAHM/EkiY+AKqgxgNIZiFPgqkZKI6AqP4ROw7CYM8
-         422d3Uv/sjv3USo4/JqYliHOijYjsGUjqrRHtyq+oMNxthf9PG3z6g35NitG/MIfzYqg
-         DYJ4Ye6YJi0I6yW/6dX667txNhNWb65sAFwOoEpPTqS2+L1OztfOZoowawo/MT2IfM8K
-         dKCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701806321; x=1702411121;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ml+guyEFPChymz1fE4bXVI0RffgdmNpaE0/U4fT7luE=;
-        b=Ie5e6T1aUW6CweEgCgzQUMl+MeeBiBGZ2oBErRqSlZp8QPFAxaEXhrSgnJkc3uDPy9
-         9o8xIB6Sdpthx+XNJQ1LV/rv4l3vQ7l4NWN4CWoVVxIIjgjlYXnBLsFX+GE1M3PZlZMr
-         GcqEWVJhytIq3SSPUiDjSCDjUt140ttdQK2C7LGkCP7N6GIwAxUNSpUUMOzA7U0qJfZb
-         95bgkCrcG/PdpVdmZhxhfOYVNpZFnWR+r0hyI5k+ATXf8VaZZ5XhUlAU00U4Ak6H9p2F
-         pQy0PwT/UtrquV4CFgNsbDWNGn/v5EjSvcIn0VpL3J3SSmc4ZWIR46YrSiJnoKFtU2BK
-         0ysA==
-X-Gm-Message-State: AOJu0YyFMTbSL5iNKYyT3YkadkDxQZ0CgomnwIgDjuYej74QUuE/iRNY
-        nG3hrdlLM5Vt7u9zXcjFrwF9Pjl3TqgZb3jFa31PL3Fz
-X-Google-Smtp-Source: AGHT+IGBGHccfvZnPQQ1I+T2ua8n3xYLStXRcfEpETa3g5gIJLTKU3Ph1WZfXPuY0pCvTjsKJo5ZMmcJmTNuQ8ghi90=
-X-Received: by 2002:a05:6870:6122:b0:1fb:75b:131f with SMTP id
- s34-20020a056870612200b001fb075b131fmr7472252oae.113.1701806321123; Tue, 05
- Dec 2023 11:58:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20231022090633.792831-1-sergio.paracuellos@gmail.com>
- <513bc341-25b8-5a57-d760-861a3e88a4a1@linaro.org> <CAMhs-H8A0p=nFSnU9pRn=rTC_=CH6jXFQdYgZdimFNq9+dVqSw@mail.gmail.com>
- <ZVxlRE0tcAv1iaoA@alpha.franken.de> <CAMhs-H8bs89SFWPVOEJFT6B+zYh2Anf=DqCJXNaq=Tjiq5X5Ow@mail.gmail.com>
-In-Reply-To: <CAMhs-H8bs89SFWPVOEJFT6B+zYh2Anf=DqCJXNaq=Tjiq5X5Ow@mail.gmail.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Tue, 5 Dec 2023 20:58:29 +0100
-Message-ID: <CAMhs-H_ojHprCxsRwfXo_xavSYv9YH0eppg9ZobscvQamcDNxg@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Add myself as maintainer of the Ralink architecture
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
-        linux-mips@vger.kernel.org, john@phrozen.org,
+        Tue, 5 Dec 2023 15:00:12 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0487A5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:00:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99D6FC433C7;
+        Tue,  5 Dec 2023 20:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701806418;
+        bh=RBZVphrxSnYDxF8yl0ilHhdMH6viddnORNq4gQqJ+FE=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=XUHYATuQ/GyNS+eZhUMbDiK7+hG9idnMSxzD4uDk+N0wysPaKZguSD3hxd3LdWcyY
+         8BGn28THz+MZ85eeWikC1v1iUru28mUFQezzjs1YeYCNNEuNJN5qjBXQA8gSu+5b2h
+         T3zyBP9qC67eCgjpVaeRu1aAJgs3tqW4idua8mS58CpyIv5ClAvLgFWRXXuTr+LGEO
+         DAIJJMM0LyvLC87c9hDHMu8IDfnuyMgmpXzGrvxPRREjZFQNWCulayqLtPg9KIqNYh
+         X9Ii7VPijVx5+8btcMKc6vUApMk5MWU5l3GgR76xBHJPs36JnreWHhKWNO/+mhgYCN
+         Yf/JCBDHFQBsw==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Jeff Johnson <quic_jjohnson@quicinc.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>, ath10k@lists.infradead.org,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 4/4] wifi: ath11k: Use DECLARE_FLEX_ARRAY() for
+ ath11k_htc_record
+References: <20231127-flexarray-htc_record-v1-0-6be1f36126fd@quicinc.com>
+        <20231127-flexarray-htc_record-v1-4-6be1f36126fd@quicinc.com>
+        <4f2a486c-c6de-43e4-8bb6-bdd3f819b0a9@embeddedor.com>
+        <c5555ad6-6991-4fca-864f-355d2fae9ae1@quicinc.com>
+        <87edg0pt17.fsf@kernel.org>
+        <30ea9d68-e49e-4727-88aa-547b1b0feebf@embeddedor.com>
+Date:   Tue, 05 Dec 2023 22:00:14 +0200
+In-Reply-To: <30ea9d68-e49e-4727-88aa-547b1b0feebf@embeddedor.com> (Gustavo A.
+        R. Silva's message of "Tue, 5 Dec 2023 09:45:57 -0600")
+Message-ID: <875y1cpghd.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 1:43=E2=80=AFPM Sergio Paracuellos
-<sergio.paracuellos@gmail.com> wrote:
->
-> On Tue, Nov 21, 2023 at 10:02=E2=80=AFAM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> >
-> > On Mon, Nov 20, 2023 at 08:59:25PM +0100, Sergio Paracuellos wrote:
-> > > On Wed, Oct 25, 2023 at 2:58=E2=80=AFPM Philippe Mathieu-Daud=C3=A9
-> > > <philmd@linaro.org> wrote:
-> > > >
-> > > > On 22/10/23 11:06, Sergio Paracuellos wrote:
-> > > > > Its been a while since I am making contributions to this architec=
-ture.
-> > > > > Hence add myself as maintainer.
-> > > > >
-> > > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > > > ---
-> > > > > Hi John, if you are not ok with this please let me know. In other=
- case
-> > > > > please ack this patch. I can add myself as Reviewer if you prefer=
- to
-> > > > > maintain alone this.
-> > > > >
-> > > > > Thanks in advance for your time!
-> > > > >
-> > > > > Best regards,
-> > > > >      Sergio Paracuellos
-> > > > >
-> > > > >   MAINTAINERS | 1 +
-> > > > >   1 file changed, 1 insertion(+)
-> > > >
-> > > > Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
-> > > >
-> > >
-> > > Thomas, can you take this patch through the mips tree?
-> >
-> > sure
->
-> Thanks!
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> writes:
 
-Gentle ping for this patch :)
+> On 12/5/23 09:29, Kalle Valo wrote:
+>> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
+>> 
+>>> On 11/27/2023 8:23 AM, Gustavo A. R. Silva wrote:
+>>>
+>>>>
+>>>>
+>>>> On 11/27/23 10:14, Jeff Johnson wrote:
+>>>>> Transform the zero-length array in ath11k_htc_record into a proper
+>>>>> flexible array via the DECLARE_FLEX_ARRAY() macro. This helps with
+>>>>> ongoing efforts to globally enable -Warray-bounds.
+>>>>>
+>>>>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+>>>>> ---
+>>>>>    drivers/net/wireless/ath/ath11k/htc.h | 2 +-
+>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/net/wireless/ath/ath11k/htc.h b/drivers/net/wireless/ath/ath11k/htc.h
+>>>>> index 84971cc9251c..e0434b29df70 100644
+>>>>> --- a/drivers/net/wireless/ath/ath11k/htc.h
+>>>>> +++ b/drivers/net/wireless/ath/ath11k/htc.h
+>>>>> @@ -151,7 +151,7 @@ struct ath11k_htc_credit_report {
+>>>>>    struct ath11k_htc_record {
+>>>>>    	struct ath11k_htc_record_hdr hdr;
+>>>>>    	union {
+>>>>> -		struct ath11k_htc_credit_report credit_report[0];
+>>>>> +		DECLARE_FLEX_ARRAY(struct ath11k_htc_credit_report, credit_report);
+>>>>>    	};
+>>>>
+>>>> Why not removing the `union` and just do a direct transformation [0] -> [ ] ?
+>>>
+>>> No reason other than staying consistent with ath10k.
+>>> Will see if Kalle has an opinion on this.
+>> Yeah, I don't see the need for the union and I removed it in the
+>> pending
+>> branch:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath.git/commit/?h=pending&id=a2faeea1fe0635563187e7821a6d0baf7b40f2c6
+>> Does it look ok?
+>> 
+>
+> Nope.
+>
+> A direct transformation is just fine:
+>
+> -	union {
+> -		struct ath11k_htc_credit_report credit_report[0];
+> -	};
+> +	struct ath11k_htc_credit_report credit_report[];
+>
+> There is no need for DFA in this situation.
 
-Thanks,
-    Sergio Paracuellos
->
-> Best regards,
->     Sergio Paracuellos
->
-> >
-> > Thomas.
-> >
-> > --
-> > Crap can work. Given enough thrust pigs will fly, but it's not necessar=
-ily a
-> > good idea.                                                [ RFC1925, 2.=
-3 ]
+Sorry, I read your comments too hastily. Jeff, as I'm offline tomorrow
+would you mind submitting v2?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
