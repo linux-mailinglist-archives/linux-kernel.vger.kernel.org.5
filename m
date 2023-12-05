@@ -2,159 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC54C805BC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5A5805C82
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346205AbjLERdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48854 "EHLO
+        id S1346179AbjLERdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:33:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346112AbjLERds (ORCPT
+        with ESMTP id S229710AbjLERds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Dec 2023 12:33:48 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DF2196
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:33:54 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5Gj2N5002956;
-        Tue, 5 Dec 2023 17:33:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Lg9rk2bBS3KEXt7PHC7hgvUmJGgcsxPJ/w2bepRjO7o=;
- b=osWCiv1KE1vnkovnGsKIylVtfwRdEppBifgnP5S38LPhvYAfBH7jGid3NpBvMA/NCWFm
- LCEmnNCHJ4LVKLE5W5eSGuCpYWgWHkgsompiOQVTf7HF7NoKMmChLQdllHJRwF+/uSQX
- LvNscZzjTIA17FgXJTIyT0hcIfTuOt9mC/kUffQ7RmR2PLtbIn+z8ySbBGCNCVF8NcjV
- wNsYG0WF48pPvKogY9mkGswXfyVjjeAkTRdzP4g58PBy6ZV7PCB/LZz9qtUNDYqTnTtT
- XvuKWW75cDq++0nJjr5xSTjcMd4P6ZkPtz8WGZ2YrG+Mc85apL/SDeV1HttsG+W2VuCZ vA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3usmw02faf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 17:33:33 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B5HXWLg003747
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 5 Dec 2023 17:33:32 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
- 2023 09:33:29 -0800
-Message-ID: <f59c5d45-a689-8a94-a2ae-d2ffa835eedf@quicinc.com>
-Date:   Tue, 5 Dec 2023 09:33:28 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2081.outbound.protection.outlook.com [40.107.92.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E70ACA;
+        Tue,  5 Dec 2023 09:33:54 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cCQ8ZES3xUVa9UQJbJkFSfbMMu9o+wPNddZ8aKCb/bTMlT0Gxj7ul4jcp4/+ZRuAokFN6mlZD8QMbwHJi+JEFe8ZZPJMh6ALosswca+eV/WmI3i0nI9Pt0OGzCcE6BJf9Ak9MZ+Z+AJ3R0UNG1kQTJw09SeqZpYGoSX9FX3HKLgkaklLOAEKngFeCrDVnn8twIy+7XUu7HhFwGutlwRzGPq9NL7y+TfIpG1QAuUBsBLaJIkzfO1xJOHQx7AMfnIKCO0CugD3BDVhtKq4nv4m/bHq7lNXzRuolFZuHu7yeKIT9K7yTd6u5ArXx8P7BzfWQNlIiKaVFKif8oO5uOp8pA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hSSFQkGjCxebzXrGirArb1ftLbCoMCoHa2QKVy1RPC8=;
+ b=E2l5bYYW9d7lqL+7nmehtfEUiEtiImTbb9LEzg3vIFnauS1JhQV2ZvyJB+e1dc+uqgb2Xs2pQ5xnqOZ4CAGWAVZhhTlcMDs2LiF8q9uxrQrqrZ2yNLStWzw/+c0Zs+Ekg3e8sz6ppVPcc7dBVEY8GrfHnE2sNiW49n4oAIAcuQgEYukcOftpK5qtTsdx3wcJONdiXHd3OtDLNc8fLbDWUz0DZ+f4s0Pb/DNJ4fNnqAvvgB10Ufvi/hXL6vSP6RzmOMl37tu3Uhpzfrvf9pXLqGraXihp5aXuFlzyaMpnmFgMf7d8JKaJ7IcMAK6/3ck+NBPokzKP9VN93hKnSJZAoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hSSFQkGjCxebzXrGirArb1ftLbCoMCoHa2QKVy1RPC8=;
+ b=HOXYHOvJDmh6+naASUZ4hyQHFZDjD6kryOxiwGZ47Yc00yJYr7GiKEb5d8YZwBecE2mvsLrOwMah4vUGOmSxkGwwk+CaXFjwY/aCAsib7uvNNn04GCZeE1FQ40b8vOSnMCMeaw/3h78x3Gr8jYgzTYwdLOOqc8de1YW4BRJ6CJBI2HTJinhPhgJ+x/vHAftcB/8GXkNYeWojmvCbKuYL9dacgbtRTIlEC1Gazwat67Sm+iBZDTpbcBH5EBynr5F/nSH9bK5F5n5ZcK0/jYFcwVm2bNwynExMmPPyuIxiu702kXL0zsR14TO6MBIlBZWSCY48PK+zvVrZtr25riSQsA==
+Received: from PH0PR07CA0036.namprd07.prod.outlook.com (2603:10b6:510:e::11)
+ by CH0PR12MB5297.namprd12.prod.outlook.com (2603:10b6:610:d4::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 17:33:51 +0000
+Received: from SA2PEPF000015C9.namprd03.prod.outlook.com
+ (2603:10b6:510:e:cafe::f7) by PH0PR07CA0036.outlook.office365.com
+ (2603:10b6:510:e::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34 via Frontend
+ Transport; Tue, 5 Dec 2023 17:33:51 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ SA2PEPF000015C9.mail.protection.outlook.com (10.167.241.199) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7068.20 via Frontend Transport; Tue, 5 Dec 2023 17:33:50 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 5 Dec 2023
+ 09:33:34 -0800
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 5 Dec 2023
+ 09:33:33 -0800
+Received: from Asurada-Nvidia (10.127.8.13) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
+ Transport; Tue, 5 Dec 2023 09:33:32 -0800
+Date:   Tue, 5 Dec 2023 09:33:30 -0800
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Message-ID: <ZW9e6hxyDmkK8bfe@Asurada-Nvidia>
+References: <ZWe2PvatTkkyNCY5@Asurada-Nvidia>
+ <20231130000816.GB1389974@nvidia.com>
+ <ZWjzcEAAg8ptVH4A@Asurada-Nvidia>
+ <20231201004523.GJ1389974@nvidia.com>
+ <ZWlhLk3JVwX0hRt/@Asurada-Nvidia>
+ <20231201125538.GK1389974@nvidia.com>
+ <ZWo6z59tnmS8F2V7@Asurada-Nvidia>
+ <20231201204340.GA1493156@nvidia.com>
+ <ZWpaTD9dVge+suyv@Asurada-Nvidia>
+ <20231204144850.GC1493156@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: Kunit drm_test_check_plane_state: EXPECTATION FAILED at
- drivers/gpu/drm/tests/drm_plane_helper_test.c:123
-Content-Language: en-US
-To:     Maxime Ripard <mripard@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-CC:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        <kunit-dev@googlegroups.com>, <linux-kernel@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <lkft-triage@lists.linaro.org>,
-        <regressions@lists.linux.dev>, <davidgow@google.com>,
-        <maarten.lankhorst@linux.intel.com>, <tzimmermann@suse.de>,
-        <airlied@gmail.com>, <daniel@ffwll.ch>,
-        "Linux Kernel Functional Testing" <lkft@linaro.org>
-References: <20231204173536.51003-1-naresh.kamboju@linaro.org>
- <rxv7jlfuwjib443pzdepbtgu454gdzemd3ojmmhbnhr4syneve@6me3bduyx2ee>
- <42d85b15-9ffd-4a08-b51e-a3367e57d128@suswa.mountain>
- <fgajgc7vp626nzeeqetkfbyadh53iti3mvoq4uck3zz3ysmvno@b3f7kxnwrwsd>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <fgajgc7vp626nzeeqetkfbyadh53iti3mvoq4uck3zz3ysmvno@b3f7kxnwrwsd>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: D3PiGiOvbJnrwgPVR-o3XXv7mkveCrFd
-X-Proofpoint-GUID: D3PiGiOvbJnrwgPVR-o3XXv7mkveCrFd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-05_12,2023-12-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- spamscore=0 malwarescore=0 clxscore=1011 suspectscore=0 priorityscore=1501
- mlxscore=0 mlxlogscore=847 impostorscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2312050138
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231204144850.GC1493156@nvidia.com>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF000015C9:EE_|CH0PR12MB5297:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb559ea3-8dac-4ae7-3f91-08dbf5b85885
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: l385PzBUkGY2EcdrsgCSlrWHQ04Nl6SaeOGfAONtzRD2FtY3YvJ93Q6L2U+K9pKk+BMVyPV51tTexwr/Ox10orHcZRxbXWuFSEwVaWS9Vpp1EbiwnAfEIRZRrNlcBKAVzCYkLnUEPbbtfPOA5aIjkOkiDB+rIJc77abpXJWjHJgRib/IEnAs0ko00f48uaA7mdVdc9E/zZHXnWXjZ2H6v45sJXsrd0FQogRXZ5yRWYhRxFZOukbjQz/tXvBcJRbIwa7seUF7hrLItqj7pTZOA3AU1BnvnruKFPn2UfyH5XEdcI8ty8kKtfKl2egY7W7bkpaTbv4Q8s05V0gV/dv1FBq3OcB/0lvNyQG/54WjlFzTezLYTemTxAAgKFHtvJlN+7K2F71L/YB5aFZZiODSlelLA0qfDhcCX+fCRtU92GYbNb3StKhspJlRKx0FzWmJZU+ZlEyA8/t3DJcZj4PiO8eCnrJSty3AEpY+/3p6BMIDtpckQHgrf0TkVuAP4kC3Kc4nXJxxC/28deqGFVw3QJ34gDTgNm/wzy7MHYbLe/Fs+cKO/Amvmiq0wYZA4CxKZuoobFd/Qn6FmDKQdTk7uo7KXOlPRDNe0oaLMZ8p4QGNjxiNwSWCyi5oNoSMvvSimeWefDg88korSTWaet4GSPxCV6qaVaJ1zUCv24dek2xP1JAN1HvXgQXLnP7rby1bp/Y/j1mpGGalP1bhx7Gw142N4wrs8Td1REp1N1leCTc=
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(82310400011)(46966006)(36840700001)(40470700004)(8936002)(8676002)(6862004)(4326008)(26005)(9686003)(40460700003)(316002)(54906003)(6636002)(70586007)(70206006)(478600001)(41300700001)(4744005)(7416002)(5660300002)(33716001)(2906002)(86362001)(36860700001)(40480700001)(47076005)(82740400003)(356005)(55016003)(7636003)(426003)(83380400001)(336012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 17:33:50.9409
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb559ea3-8dac-4ae7-3f91-08dbf5b85885
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF000015C9.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5297
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/5/2023 3:46 AM, Maxime Ripard wrote:
-> On Tue, Dec 05, 2023 at 12:05:02PM +0300, Dan Carpenter wrote:
->> On Tue, Dec 05, 2023 at 09:37:05AM +0100, Maxime Ripard wrote:
->>> Hi Naresh,
->>>
->>> Thanks for the report
->>>
->>> On Mon, Dec 04, 2023 at 11:05:36PM +0530, Naresh Kamboju wrote:
->>>> The Kunit drm_plane_helper failed on all devices running Linux next-20231204
->>>>
->>>> ## Test Regressions (compared to next-20231201)
->>>> * qemu-armv7, kunit and
->>>> * x86, kunit
->>>>    - drm_test_check_invalid_plane_state_downscaling_invalid
->>>>    - drm_test_check_invalid_plane_state_drm_plane_helper
->>>>    - drm_test_check_invalid_plane_state_drm_test_check_invalid_plane_state
->>>>    - drm_test_check_invalid_plane_state_positioning_invalid
->>>>    - drm_test_check_invalid_plane_state_upscaling_invalid
->>>>    - drm_test_check_plane_state_clipping_rotate_reflect
->>>>    - drm_test_check_plane_state_clipping_simple
->>>>    - drm_test_check_plane_state_downscaling
->>>>    - drm_test_check_plane_state_drm_test_check_plane_state
->>>>    - drm_test_check_plane_state_positioning_simple
->>>>    - drm_test_check_plane_state_rounding1
->>>>    - drm_test_check_plane_state_rounding2
->>>>    - drm_test_check_plane_state_rounding3
->>>>    - drm_test_check_plane_state_rounding4
->>>>    - drm_test_check_plane_state_upscaling
->>>
->>> I found the source of failure to be f1e75da5364e ("drm/atomic: Loosen FB
->>> atomic checks").
->>>
->>> Fortunately for us, it's already been reverted yesterday for some
->>> unrelated reason, so it should be fixed in next-20231205 onward.
->>
->> Sorry, that's a bummer that these patches were reverted.  :(  The whole
->> episode was a bit unfortunate...
->>
->> Qualcom has been working on those patches for a year.  They must not be
->> using kunit testing as part of their QC...  It's some kind of
->> communication failure on our part.
+On Mon, Dec 04, 2023 at 10:48:50AM -0400, Jason Gunthorpe wrote:
+ 
+> > Or am I missing some point here?
 > 
-> That's definitely a communication failure, but that's mostly on us :)
+> It sounds Ok, we just have to understand what userspace should be
+> doing and how much of this the kernel should implement.
 > 
-> The reason these patches were reverted was completely unrelated to the
-> kunit failures here: it failed the basic requirement we have on
-> intel-gpu-tools tests and open-source userspace examples for new uAPIs.
-> 
-> So whether or not kunit tests would have passed, these patches were
-> applied due to inattention and would have been reverted anyway
-> 
-> Maxime
+> It seems to me that the error code should return the gerror and the
+> req_num should indicate the halted cons. The vmm should relay both
+> into the virtual registers.
 
-The patches were reverted because the corresponding IGT/compositor 
-changes were not posted yet. We will re-try applying once those are 
-accepted.
+I see your concern. I will take a closer look and see if we can
+add to the initial version of arm_smmu_cache_invalidate_user().
+Otherwise, we can add later.
 
-Regarding KUnit tests, no we did not run this test and yes you are 
-right, we were not running KUnit testing as the DRM CI mainly validates IGT.
+Btw, VT-d seems to want the error_code and reports in the VT-d
+specific invalidate entry structure, as Kevin and Yi had that
+discussion in the other side of the thread.
 
-We will certainly help to fix this failure. Most likely the KUnit tests 
-need to be fixed to allow for a NULL FB.
-
-If this is documented somewhere as a requirement, please share it and we 
-should add KUnit testing to our DRM CI as well so that atleast this kind 
-of failure will not repeat.
+Thanks
+Nicolin
