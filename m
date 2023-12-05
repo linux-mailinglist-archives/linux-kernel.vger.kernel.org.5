@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E2D805338
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4296080533C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345245AbjLELnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
+        id S1345275AbjLELnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:43:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345158AbjLELnL (ORCPT
+        with ESMTP id S1345204AbjLELnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:43:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AB3C6;
-        Tue,  5 Dec 2023 03:43:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701776597; x=1733312597;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kTMmsxIwvrRFNgPLBtZ6ROY9A+n4NFUXiCrfw96ydpw=;
-  b=WhTix8GJr+SA6lNoPycz2yZi8kNA4PLiIGvfXeH5tsFc54YRVTbcK16G
-   u7ht0G6JQC9nEAmkmax1KX6igmvhRLTktdYl1etiLnsDzzgAiAs2DCroZ
-   8MVQiyIQA7Hy7gP+uziuw7w5Ujei6gBRuQNxTeP8mfa8qnAW0yq6Ljyox
-   faL4LlppVy23mhDWHBl9n3FQJkWn3EaMAuaO1HZlRbIPJ4ORAFP27TdvF
-   lrMDSKPKjo++8SALPXtTkdvhjUW7KS9mq58rtU/YTnS1NbN83ffkKKGFQ
-   1mmwxIE/TnE60m4XUL42j2VzoDz6n4wJbNJDvzWDqfKG+Uv5vxEdFEtJJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="460370442"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="460370442"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 03:43:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="18936758"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 03:43:15 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 2504E120622;
-        Tue,  5 Dec 2023 13:43:11 +0200 (EET)
-Date:   Tue, 5 Dec 2023 11:43:11 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: dt-bindings: ov8856: add missing second link
- frequency in example
-Message-ID: <ZW8Mz3OWE1ELlFRC@kekkonen.localdomain>
-References: <20231205084835.15871-1-krzysztof.kozlowski@linaro.org>
- <ZW8DFbz3DqthC6fU@kekkonen.localdomain>
+        Tue, 5 Dec 2023 06:43:17 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A196CA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:43:24 -0800 (PST)
+Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0A9226607285;
+        Tue,  5 Dec 2023 11:43:20 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701776602;
+        bh=T5YH2R7k3v7oNwt6oxlEQ3qJ8fug5UIPB3Ee0qCYPyc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=C3BtgxMoFe4jZE8nI2I63xvj8t3qn7XmQ+fMUv9x6aoKQQGHY4pYwGpA2bnd+GKtF
+         7of7PgxiKl3Y3djyYR1+HPNFnL+dRNpa/Q5NJCrkGvl9SYuqLFgSk0Zwbq6ibSkISg
+         I5J+MjBw5ezTGAKEypX5Gv4BxTcc8pn6pS4cLSvy1koJpVCWAdUrx7piLT0kAfLJxl
+         0xDW6BUK7y9w6MTiD7d88ATIgI+JjfzOLU/4AkF4wHGfzjK7vSW+4PE9p+bhw6u7SE
+         If49Q5yOi/LminYeRZRGCARxlepcIDPUf2WSQOutSSwiWIwKvHkkmJN/vodUrFjuzp
+         BYJAncjgRQEvw==
+Message-ID: <161189c2-db65-2542-5d19-77a56b56cfac@collabora.com>
+Date:   Tue, 5 Dec 2023 14:43:16 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZW8DFbz3DqthC6fU@kekkonen.localdomain>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
+ functions
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
+ <20231124115911.79ab24af@collabora.com>
+ <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
+ <20231128133712.53a6f6cb@collabora.com>
+ <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
+ <20231129085330.7ccb35d3@collabora.com>
+ <ioqghyaeftyo7tuyfecn252ykxwgltrkhh2pwktjejqhewntbb@bym3rsjxnxfp>
+ <20231129144609.7544e773@collabora.com>
+ <6da6mzwfzwbn5rhiebypo5e2v6rhtpn2fovwvfnoo333zjgobf@bgtuwhum3trp>
+ <20231129164705.7461a294@collabora.com>
+ <jvhedgegvavn5mvvx2men2rxitvnq7u3dsxwfx3wokxldmysjz@y5av3l2w4gk6>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <jvhedgegvavn5mvvx2men2rxitvnq7u3dsxwfx3wokxldmysjz@y5av3l2w4gk6>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 11:01:41AM +0000, Sakari Ailus wrote:
-> Hi Krzysztof,
-> 
-> Thanks for the patch.
-> 
-> On Tue, Dec 05, 2023 at 09:48:35AM +0100, Krzysztof Kozlowski wrote:
-> > Bindings and Linux driver require two link frequencies, so correct the
-> > example:
-> > 
-> >   ov8856.example.dtb: camera@10: port:endpoint:link-frequencies:0: [360000000] is too short
-> > 
-> > Fixes: 066a94e28a23 ("media: dt-bindings: media: Use graph and video-interfaces schemas")
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > ---
-> >  Documentation/devicetree/bindings/media/i2c/ov8856.yaml | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > index 57f5e48fd8e0..bd1a55d767e7 100644
-> > --- a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
-> > @@ -126,7 +126,7 @@ examples:
-> >                  wcam_out: endpoint {
-> >                      remote-endpoint = <&mipi_in_wcam>;
-> >                      data-lanes = <1 2 3 4>;
-> > -                    link-frequencies = /bits/ 64 <360000000>;
-> > +                    link-frequencies = /bits/ 64 <360000000 180000000>;
-> 
-> There indeed seems to be a problem with the example as far as the bindings
-> are concerned but the primary issue seems to be in the bindings. Both of
-> these frequencies have significance from driver point of view only while
-> the device itself supports a (wider) range.
-> 
-> How about removing maxItems and items from the bindings instead?
+On 12/4/23 15:55, Maxime Ripard wrote:
+>> Okay, that means s/_locked/_nolock/ in drm_gem_shmem_helpers.{c,h}, I
+>> guess.
 
-There's also a similar issue with lanes: 1, 2 and 4 are supported.
+DRM subsys and majority of kernel uses common _locked postfix. We should
+retain the old naming scheme by using _locked() in DRM. It's not
+worthwhile changing the name to a much less popular variant for a no
+good reason.
+
+Maxime, are you okay with keeping the _locked name?
 
 -- 
-Sakari Ailus
+Best regards,
+Dmitry
+
