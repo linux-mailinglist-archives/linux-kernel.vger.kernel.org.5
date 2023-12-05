@@ -2,258 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E5B805EEF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CEC805EF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231904AbjLET5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:57:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55900 "EHLO
+        id S235062AbjLET6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbjLET5u (ORCPT
+        with ESMTP id S229710AbjLET63 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:57:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBB2D41;
-        Tue,  5 Dec 2023 11:57:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701806275; x=1733342275;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8+xl7o993QHoQJuM8EvkCoX7M+DgfwFuc3rXwdvt3a8=;
-  b=KEWneIBaf/JGo6gvgH/k6NYWz9INqKH/ElepsXUayuRGSH32iotlgkIu
-   8yHpvyD9h1E4edE2QY/r1yhIVFW86lVuYWhO3fz9F5doLlvwuxE3UiZLN
-   Vd42zfVI4urTPbf5KLeGqmFYcvcY8ZTmzY4pplwFqFd88A6uE5hnk9zey
-   ZiOOK9lBydNrnj+L04EUb0BpfrjmUZbqNUUWQ41euXCrD4dj2HZymgJh6
-   rcSCU/FPYSu+CxJQna3IXh/YKzdQvnkV0kPJnvlPToc6ApYrCaCj5to5F
-   zg7yy7CT3yZoCcWlnKrV15oorsYYaa+HPMLLkgJkZAzx5/Pdyns+uM+gf
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="378973721"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="378973721"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 11:57:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="12449683"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 05 Dec 2023 11:57:47 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAbY8-0009eY-2M;
-        Tue, 05 Dec 2023 19:57:44 +0000
-Date:   Wed, 6 Dec 2023 03:57:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Alexey Makhalov <amakhalov@vmware.com>,
-        linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
-        hpa@zytor.com, dave.hansen@linux.intel.co, bp@alien8.d,
-        mingo@redhat.com, tglx@linutronix.de
-Cc:     oe-kbuild-all@lists.linux.dev, x86@kernel.org,
-        netdev@vger.kernel.org, richardcochran@gmail.com,
-        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
-        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
-        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
-        akaher@vmware.com, jsipek@vmware.com,
-        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
-        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
-        maarten.lankhorst@linux.intel.com, horms@kernel.org
-Subject: Re: [PATCH v2 6/6] x86/vmware: Add TDX hypercall support
-Message-ID: <202312060350.Paq0JYin-lkp@intel.com>
-References: <20231201232452.220355-7-amakhalov@vmware.com>
+        Tue, 5 Dec 2023 14:58:29 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE07A5;
+        Tue,  5 Dec 2023 11:58:34 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B5Gj8g8032027;
+        Tue, 5 Dec 2023 19:58:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=c/wZAY+ddHkdVkk/Vxl590rR18m0rlnIQ0ZhfkdjWpE=;
+ b=cdpc7fldIFHxcvk+5soYY4pZIydLXNxMxyJVtBSEdooL7k/jnYLLX2eNuOViyW9vvNaJ
+ DsGVaZAAmUyrrc5O8i08AIG/zKpgU/F4BtzLjGcrj9h+Z0Br3Hbga1wzB11kgEAT0nwJ
+ xawdZoPfiJJKikGOxChPrGkdF8sZ8UY/mZNSXEJ+1139EG1oy2IJAdgqB7NDZIX9Q3lF
+ o2qM+o3l9Tbt3ca3qDyzo+b+MZKTD8kb9LhwElF3F+BK4gbpd7vkK50yVs/vuUKApNNs
+ 9Ivcu277Jx4u2MgFzDZ19U7OGOPBh/EX8fF8FCaQp6q+XMHbitw/N7VbsEV0NuMAvh9T 1g== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ut1a39dw4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 19:58:17 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B5JwGPT026819
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Dec 2023 19:58:16 GMT
+Received: from [10.110.89.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
+ 2023 11:58:15 -0800
+Message-ID: <91dcd8c3-ae86-4350-838d-62ddb62fa2bb@quicinc.com>
+Date:   Tue, 5 Dec 2023 11:58:14 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201232452.220355-7-amakhalov@vmware.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next PATCH v3 3/3] net: phy: add support for PHY package MMD
+ read/write
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Harini Katakam <harini.katakam@amd.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <workflows@vger.kernel.org>
+References: <20231128133630.7829-1-ansuelsmth@gmail.com>
+ <20231128133630.7829-3-ansuelsmth@gmail.com>
+ <20231204181752.2be3fd68@kernel.org>
+ <51aae9d0-5100-41af-ade0-ecebeccbc418@lunn.ch>
+ <656f37a6.5d0a0220.96144.356f@mx.google.com>
+ <adbe5299-de4a-4ac1-90d0-f7ae537287d0@lunn.ch>
+ <ZW89errbJWUt33vz@shell.armlinux.org.uk> <20231205072912.2d79a1d5@kernel.org>
+ <ZW9LroqqugXzqAY9@shell.armlinux.org.uk>
+ <d2762241-f60a-4d61-babe-ce9535d9adde@quicinc.com>
+ <ZW9oc9TO93kOq20s@shell.armlinux.org.uk>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <ZW9oc9TO93kOq20s@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: tD30F0z24fRN8-Nigg0r7H_OegAYate3
+X-Proofpoint-GUID: tD30F0z24fRN8-Nigg0r7H_OegAYate3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_15,2023-12-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ malwarescore=0 adultscore=0 spamscore=0 mlxlogscore=554 suspectscore=0
+ phishscore=0 priorityscore=1501 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2312050159
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexey,
+On 12/5/2023 10:14 AM, Russell King (Oracle) wrote:
+> On Tue, Dec 05, 2023 at 09:44:05AM -0800, Jeff Johnson wrote:
+>> So in my experience a function prototype IS the function definition, and
+>> the actual function is just the implementation of that definition.
+>>
+>> But that thinking obviously isn't shared by others.
+> 
+> Interestingly, the view that a function prototype is a function
+> definition does not seem to be shared by w3school, Microsoft, IBM,
+> and many more.
+> 
+> If we look at the C99 standard, then 6.9.1 Function definitions gives
+> the syntax as including a compound-statement, which is defined as
+> requiring the curley braces and contents. Therefore, a function
+> definition as defined by the C standard includes its body.
+> 
 
-kernel test robot noticed the following build errors:
+Note I was speaking in terms of functional languages in general, not C
+specifically. Perhaps I should have used the term "specification"
+instead of "definition" (which would align with the Ada terminology).
 
-[auto build test ERROR on drm-misc/drm-misc-next]
-[also build test ERROR on dtor-input/next dtor-input/for-linus linus/master v6.7-rc4 next-20231205]
-[cannot apply to tip/x86/vmware]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Having worked with closed-source systems, especially VxWorks, for many
+years (where the header files contain all the documentation), it just
+seems strange to embed the documentation in the .c files.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Alexey-Makhalov/x86-vmware-Move-common-macros-to-vmware-h/20231202-072821
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20231201232452.220355-7-amakhalov%40vmware.com
-patch subject: [PATCH v2 6/6] x86/vmware: Add TDX hypercall support
-config: x86_64-buildonly-randconfig-003-20231203 (https://download.01.org/0day-ci/archive/20231206/202312060350.Paq0JYin-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060350.Paq0JYin-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312060350.Paq0JYin-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   In file included from drivers/gpu/drm/vmwgfx/vmwgfx_msg_x86.h:38,
-                    from drivers/gpu/drm/vmwgfx/vmwgfx_msg.c:37:
->> arch/x86/include/asm/vmware.h:46:46: warning: 'struct tdx_module_args' declared inside parameter list will not be visible outside of this definition or declaration
-      46 | extern void vmware_tdx_hypercall_args(struct tdx_module_args *args);
-         |                                              ^~~~~~~~~~~~~~~
-   arch/x86/include/asm/vmware.h: In function 'vmware_tdx_hypercall':
->> arch/x86/include/asm/vmware.h:61:9: error: variable 'args' has initializer but incomplete type
-      61 |  struct tdx_module_args args = {
-         |         ^~~~~~~~~~~~~~~
->> arch/x86/include/asm/vmware.h:62:4: error: 'struct tdx_module_args' has no member named 'r10'
-      62 |   .r10 = VMWARE_TDX_VENDOR_LEAF,
-         |    ^~~
->> arch/x86/include/asm/vmware.h:43:32: warning: excess elements in struct initializer
-      43 | #define VMWARE_TDX_VENDOR_LEAF 0x1AF7E4909ULL
-         |                                ^~~~~~~~~~~~~~
-   arch/x86/include/asm/vmware.h:62:10: note: in expansion of macro 'VMWARE_TDX_VENDOR_LEAF'
-      62 |   .r10 = VMWARE_TDX_VENDOR_LEAF,
-         |          ^~~~~~~~~~~~~~~~~~~~~~
-   arch/x86/include/asm/vmware.h:43:32: note: (near initialization for 'args')
-      43 | #define VMWARE_TDX_VENDOR_LEAF 0x1AF7E4909ULL
-         |                                ^~~~~~~~~~~~~~
-   arch/x86/include/asm/vmware.h:62:10: note: in expansion of macro 'VMWARE_TDX_VENDOR_LEAF'
-      62 |   .r10 = VMWARE_TDX_VENDOR_LEAF,
-         |          ^~~~~~~~~~~~~~~~~~~~~~
->> arch/x86/include/asm/vmware.h:63:4: error: 'struct tdx_module_args' has no member named 'r11'
-      63 |   .r11 = VMWARE_TDX_HCALL_FUNC,
-         |    ^~~
-   arch/x86/include/asm/vmware.h:44:32: warning: excess elements in struct initializer
-      44 | #define VMWARE_TDX_HCALL_FUNC  1
-         |                                ^
-   arch/x86/include/asm/vmware.h:63:10: note: in expansion of macro 'VMWARE_TDX_HCALL_FUNC'
-      63 |   .r11 = VMWARE_TDX_HCALL_FUNC,
-         |          ^~~~~~~~~~~~~~~~~~~~~
-   arch/x86/include/asm/vmware.h:44:32: note: (near initialization for 'args')
-      44 | #define VMWARE_TDX_HCALL_FUNC  1
-         |                                ^
-   arch/x86/include/asm/vmware.h:63:10: note: in expansion of macro 'VMWARE_TDX_HCALL_FUNC'
-      63 |   .r11 = VMWARE_TDX_HCALL_FUNC,
-         |          ^~~~~~~~~~~~~~~~~~~~~
->> arch/x86/include/asm/vmware.h:64:4: error: 'struct tdx_module_args' has no member named 'r12'
-      64 |   .r12 = VMWARE_HYPERVISOR_MAGIC,
-         |    ^~~
-   arch/x86/include/asm/vmware.h:31:34: warning: excess elements in struct initializer
-      31 | #define VMWARE_HYPERVISOR_MAGIC  0x564D5868U
-         |                                  ^~~~~~~~~~~
-   arch/x86/include/asm/vmware.h:64:10: note: in expansion of macro 'VMWARE_HYPERVISOR_MAGIC'
-      64 |   .r12 = VMWARE_HYPERVISOR_MAGIC,
-         |          ^~~~~~~~~~~~~~~~~~~~~~~
-   arch/x86/include/asm/vmware.h:31:34: note: (near initialization for 'args')
-      31 | #define VMWARE_HYPERVISOR_MAGIC  0x564D5868U
-         |                                  ^~~~~~~~~~~
-   arch/x86/include/asm/vmware.h:64:10: note: in expansion of macro 'VMWARE_HYPERVISOR_MAGIC'
-      64 |   .r12 = VMWARE_HYPERVISOR_MAGIC,
-         |          ^~~~~~~~~~~~~~~~~~~~~~~
->> arch/x86/include/asm/vmware.h:65:4: error: 'struct tdx_module_args' has no member named 'r13'
-      65 |   .r13 = cmd,
-         |    ^~~
-   arch/x86/include/asm/vmware.h:65:10: warning: excess elements in struct initializer
-      65 |   .r13 = cmd,
-         |          ^~~
-   arch/x86/include/asm/vmware.h:65:10: note: (near initialization for 'args')
->> arch/x86/include/asm/vmware.h:66:4: error: 'struct tdx_module_args' has no member named 'rbx'
-      66 |   .rbx = in1,
-         |    ^~~
-   arch/x86/include/asm/vmware.h:66:10: warning: excess elements in struct initializer
-      66 |   .rbx = in1,
-         |          ^~~
-   arch/x86/include/asm/vmware.h:66:10: note: (near initialization for 'args')
->> arch/x86/include/asm/vmware.h:67:4: error: 'struct tdx_module_args' has no member named 'rdx'
-      67 |   .rdx = in3,
-         |    ^~~
-   arch/x86/include/asm/vmware.h:67:10: warning: excess elements in struct initializer
-      67 |   .rdx = in3,
-         |          ^~~
-   arch/x86/include/asm/vmware.h:67:10: note: (near initialization for 'args')
->> arch/x86/include/asm/vmware.h:68:4: error: 'struct tdx_module_args' has no member named 'rsi'
-      68 |   .rsi = in4,
-         |    ^~~
-   arch/x86/include/asm/vmware.h:68:10: warning: excess elements in struct initializer
-      68 |   .rsi = in4,
-         |          ^~~
-   arch/x86/include/asm/vmware.h:68:10: note: (near initialization for 'args')
->> arch/x86/include/asm/vmware.h:69:4: error: 'struct tdx_module_args' has no member named 'rdi'
-      69 |   .rdi = in5,
-         |    ^~~
-   arch/x86/include/asm/vmware.h:69:10: warning: excess elements in struct initializer
-      69 |   .rdi = in5,
-         |          ^~~
-   arch/x86/include/asm/vmware.h:69:10: note: (near initialization for 'args')
->> arch/x86/include/asm/vmware.h:70:4: error: 'struct tdx_module_args' has no member named 'r14'
-      70 |   .r14 = in6,
-         |    ^~~
-   arch/x86/include/asm/vmware.h:70:10: warning: excess elements in struct initializer
-      70 |   .r14 = in6,
-         |          ^~~
-   arch/x86/include/asm/vmware.h:70:10: note: (near initialization for 'args')
->> arch/x86/include/asm/vmware.h:61:25: error: storage size of 'args' isn't known
-      61 |  struct tdx_module_args args = {
-         |                         ^~~~
->> arch/x86/include/asm/vmware.h:61:25: warning: unused variable 'args' [-Wunused-variable]
+/jeff
 
 
-vim +/args +61 arch/x86/include/asm/vmware.h
-
-    42	
-  > 43	#define VMWARE_TDX_VENDOR_LEAF 0x1AF7E4909ULL
-    44	#define VMWARE_TDX_HCALL_FUNC  1
-    45	
-  > 46	extern void vmware_tdx_hypercall_args(struct tdx_module_args *args);
-    47	
-    48	/*
-    49	 * TDCALL[TDG.VP.VMCALL] uses rax (arg0) and rcx (arg2), while the use of
-    50	 * rbp (arg6) is discouraged by the TDX specification. Therefore, we
-    51	 * remap those registers to r12, r13 and r14, respectively.
-    52	 */
-    53	static inline
-    54	unsigned long vmware_tdx_hypercall(unsigned long cmd, unsigned long in1,
-    55					   unsigned long in3, unsigned long in4,
-    56					   unsigned long in5, unsigned long in6,
-    57					   uint32_t *out1, uint32_t *out2,
-    58					   uint32_t *out3, uint32_t *out4,
-    59					   uint32_t *out5, uint32_t *out6)
-    60	{
-  > 61		struct tdx_module_args args = {
-  > 62			.r10 = VMWARE_TDX_VENDOR_LEAF,
-  > 63			.r11 = VMWARE_TDX_HCALL_FUNC,
-  > 64			.r12 = VMWARE_HYPERVISOR_MAGIC,
-  > 65			.r13 = cmd,
-  > 66			.rbx = in1,
-  > 67			.rdx = in3,
-  > 68			.rsi = in4,
-  > 69			.rdi = in5,
-  > 70			.r14 = in6,
-    71		};
-    72	
-    73		vmware_tdx_hypercall_args(&args);
-    74	
-    75		if (out1)
-    76			*out1 = args.rbx;
-    77		if (out2)
-    78			*out2 = args.r13;
-    79		if (out3)
-    80			*out3 = args.rdx;
-    81		if (out4)
-    82			*out4 = args.rsi;
-    83		if (out5)
-    84			*out5 = args.rdi;
-    85		if (out6)
-    86			*out6 = args.r14;
-    87	
-    88		return args.r12;
-    89	}
-    90	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
