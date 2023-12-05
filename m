@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADAD8053E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26BD8053DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbjLEMM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50116 "EHLO
+        id S231972AbjLEMMQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 07:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347117AbjLEMKt (ORCPT
+        with ESMTP id S231871AbjLEMMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:10:49 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CC2C3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:10:54 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c9f4bb2e5eso39512111fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:10:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701778252; x=1702383052; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3d56aD4ZvOlwf3rQa8BE6a+ZHLUy7yitH/6f5sNjUAc=;
-        b=SfHfVYnOecitImpbyc2wCLQQQY+YExur+xxaRnDA2s+lOFi7RBX8IbGBP/T6H6wUd2
-         op67pPmYciuhdpH8qjHm3pTsgk1y5piMUMH3Kk1Q0SBqtoJbjh+U/xLySPnPSu+dyeLE
-         ja/6L8D1kdc8CiolGYWl8+luydwFHqynJWXHDbg/2tVgQPDZbt8J59eLFLYICEyRgrbS
-         s5SSURQ8+fQemzjU6Dxd8kq7z9aCLUfn8hG6ncsl1bmyJaBOmd8mUmA7HCy+CJyZ5bU3
-         783H0Y2lhfcSiTzKfzDZQu4+Bf+zWVMtwSk+RnrkGiimWkhqIe5dOZrWmq3K6bpD7R9K
-         gCnQ==
+        Tue, 5 Dec 2023 07:12:16 -0500
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE6AC3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:12:22 -0800 (PST)
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-1fb1620a00eso710839fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:12:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701778252; x=1702383052;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3d56aD4ZvOlwf3rQa8BE6a+ZHLUy7yitH/6f5sNjUAc=;
-        b=s/iNa7bGAY6oQkaLrMbjH9/fFUyfy/OLH/3bF7D/cU+fxZqpQ/BR/TDq9lGTy2EzEr
-         hJlVFySrMfQgRB3VLyPCUj5sj2bQRVbNT1utSsY1P1KTae+E/ks3gfy4hfJjQKeT44Vk
-         FvBbf+WbmkNnuroef1zDgCiqc/BxVx56RgSXXew9u98JlKFzEKnY/FS8Qpnqk+vzAafG
-         2haWdDCVnagCDUXunqAWkuWKyFgBOr9owzNRcLyTl2VGKQUwTL4pmHk+OQ65tHGkwFEk
-         VyF44sonlUA5c4DTZBpQTtQx6rrJed5nHbS0RiIebAAGdDOm4+8TRzVy8lICNH45LFXr
-         SQUA==
-X-Gm-Message-State: AOJu0Yy1xOXUwYvxcLd+uI36nu1fw1nbF/a6zjUcW2xfBnxAdMscfu17
-        UTnCHOs3O75kvvgz7j7470wC2A==
-X-Google-Smtp-Source: AGHT+IE+WjEqqHU2fdHdPRsbnB3CFXOLpcnW7QXcMtkl+6Oy/uQyfG5hwppL1Mvv/N+RgdCZ5vfsuQ==
-X-Received: by 2002:a05:651c:89:b0:2ca:3b1:1da8 with SMTP id 9-20020a05651c008900b002ca03b11da8mr1567631ljq.104.1701778252652;
-        Tue, 05 Dec 2023 04:10:52 -0800 (PST)
-Received: from [172.30.204.197] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id s22-20020a2e2c16000000b002c9f7c2635fsm956195ljs.1.2023.12.05.04.10.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 04:10:52 -0800 (PST)
-Message-ID: <44840b00-4016-43df-987a-5db0c46c70b0@linaro.org>
-Date:   Tue, 5 Dec 2023 13:10:51 +0100
+        d=1e100.net; s=20230601; t=1701778342; x=1702383142;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K1huvNNeQ9UeMMl5w2SdOEQfS8q+089rdbok3L8xrR0=;
+        b=UTXxrwthkVwsfnbocwFp42bZ3ecSiNZZqcZVPlAJo0Jecor1F2VokNkEIiIPt0bKMM
+         5EtwBFN0Tbt780PgdnjqIYx34JJA+UfNXR1wQ0loRLsP6L9Krr+to2t1wy5OC6xbyVsW
+         e1SMDi2tU3y2l7fPL2xXNVXM3OGYU9qLwXveksQKY8AncPrZR03PuT+Hqvq8Ohp8PWd2
+         abbrS4HqvYGu2rc9D2PI5OAkTXSBZQNow5xJw9b4H/XdYNmEglSVCBXW9ZmcUgdwjUkN
+         edjR63KfxY/3RKKTxLgqtGwAyBp0WfdnCpzv3H2fw+sDA999KZMi809LX85V7KZXWb/k
+         Qtpw==
+X-Gm-Message-State: AOJu0Yzzhq6nu6whIK4g5NN4pEBgVYgQM07XdsaVcm+CgSEhT3vJ4Gd6
+        GX4WA4o4NwP7jWdKRm0h3R5SAlB78JfOxrnO0fc=
+X-Google-Smtp-Source: AGHT+IEfjIhWLRGwViH71x9Z7/YEug9pRMPSRVxDVnqDzOWTZYKroksfDKA8wBrscRpUy2dktOyw2iDCl8XMXcgdF9M=
+X-Received: by 2002:a05:6870:b60c:b0:1fb:5d05:685e with SMTP id
+ cm12-20020a056870b60c00b001fb5d05685emr2893332oab.2.1701778342010; Tue, 05
+ Dec 2023 04:12:22 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] arm64: dts: qcom: sm8650: add ADSP audio codec
- macros
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>
-References: <20231204155746.302323-1-krzysztof.kozlowski@linaro.org>
- <20231204155746.302323-3-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231204155746.302323-3-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+References: <53bce76c5c60463eba1372df426a64b9@amazon.co.uk> <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org>
+In-Reply-To: <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 5 Dec 2023 13:12:09 +0100
+Message-ID: <CAJZ5v0iVvMLK_VcPRJ4sW1eOh0EtfcFvKjH5j1y1GbA0Y6q--Q@mail.gmail.com>
+Subject: Re: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at performance
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     pdurrant@amazon.co.uk, bp@alien8.de, dave.hansen@intel.com,
+        dave.hansen@linux.intel.com, hdegoede@redhat.com, hpa@zytor.com,
+        jalliste@amazon.co.uk, juew@amazon.com, len.brown@intel.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        peterz@infradead.org, rafael.j.wysocki@intel.com,
+        rafael@kernel.org, tglx@linutronix.de, usama.arif@bytedance.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Dec 5, 2023 at 1:00 PM David Woodhouse <dwmw2@infradead.org> wrote:
+>
+>
+> Paul writes:
+> > The problem is that this will take effect even on a kexec and hence it is throttling
+> > a system that set ENERGY_PERF_BIAS_PERFORMANCE prior to the kexec.  We use kexec to
+> > live update the host kernel of our systems whilst leaving virtual machines running.
+> > This resetting of the perf bias is having a very detrimental effect on the downtime
+> > of our systems across the live update - about a 7 fold increase.
+>
+> It isn't just about kexec, is it? Even in a clean boot why wouldn't we want to stay in performance mode until the kernel has *finished* booting?
 
+Because it may overheat during that period.
 
-On 12/4/23 16:57, Krzysztof Kozlowski wrote:
-> Add the Low Power Audio SubSystem (LPASS) / ADSP audio codec macros on
-> Qualcomm SM8650.  The nodes are very similar to SM8550.
-> 
-> Cc: Neil Armstrong <neil.armstrong@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> It's literally adding seconds to the startup time in some cases.
+>
+> And yes, we *particularly* care in the kexec case because guests experience it as excessive steal time. But it ain't great in the general case either, surely?
 
-Konrad
+So IMV it would be perfectly fine to add a command line arg to provide
+the initial value of energy_perf_bias for the ones who know what they
+are doing.
