@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 878288055B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDD88055BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345411AbjLENTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:19:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54122 "EHLO
+        id S1376948AbjLENUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:20:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345407AbjLENTB (ORCPT
+        with ESMTP id S1345407AbjLENUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:19:01 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44138197;
-        Tue,  5 Dec 2023 05:19:06 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sl1Fp4YsBz14L97;
-        Tue,  5 Dec 2023 21:14:06 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Dec 2023 21:19:03 +0800
-Message-ID: <cda525e9-0dac-9629-9c8e-d69d22811777@huawei.com>
-Date:   Tue, 5 Dec 2023 21:19:03 +0800
+        Tue, 5 Dec 2023 08:20:03 -0500
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F70F18C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:20:08 -0800 (PST)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5d3644ca426so54739077b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:20:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701782407; x=1702387207; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FisYxDa6iVbed3/U4DiESiIhhRteOZr0hHzROfMa1GQ=;
+        b=BTvZBEn+fMrc5kX651RlSw82Gkvv/RV4PrFNAW72PIqFLD6wMIj5mHjxtkX317ueZC
+         3B8TWQyxbFzg+mR7BIqkMvFhxFnxuitAqRY5CBLXiYQ00IuvqPqHHK1MvhXkU5Q/ez0I
+         2QvOmXSe8lOcC0r2tx9sctvpIoPfcWbn78zp48ay+MCreXB9+DIAWgBL6S3Gxul9oZcD
+         Dyg3gPL7sSxF4//uzOd3Iw5HcsLswOtmeU3VtX2UcJyFCoDAkgnjJ2YiXyUWmnrk+HlJ
+         MsvsYACf7y5gyc33fIYfLIHH7IhpYZduipcmNrpWi3phW7qXEgGX4qND3Wjcc/XxFxAX
+         b8+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701782407; x=1702387207;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FisYxDa6iVbed3/U4DiESiIhhRteOZr0hHzROfMa1GQ=;
+        b=BDOkRQrSZkX0rtvXWShM97RLfKQeexKihwlzOToCk//IuODDJ0vmbsTsOpME1xi3et
+         89D16QWcGj4hkz4bMuhhm38c8oICVQ8WWI0Wj2yWp//+jxSxQiUqEV0nKqa/E6EE9Hr2
+         jqK8F7i4RFd2AoffuNyPBzecYsvGzhrumWiDtmTbE1dEOj09hTzbs0BeVIl2tgaKI+2a
+         YNwounx6za2aPJBSvP05GCyoA5DQKpiRRvhpw1N7POjGe43jay4wHAp09Bfn3XFU5TOW
+         rrjJUVELoeGqHZZ3j7LBtQ89r8jby/NK3nom+PSAY9FoTIP46CrJ9sUjGrAgv801IcDv
+         RyMA==
+X-Gm-Message-State: AOJu0Yx/4eaZ10TMdHz8HIQDxYGCz/srykdskfcY2Mq7dx7629aX2+Rq
+        LBoUbQkbynGSZ0B845TkN5XJZfOdZEAUeala0RPEuA==
+X-Google-Smtp-Source: AGHT+IG6XUHsPD9ZiSDBI8UAZQbYN2B4l0jNcx7ezUGR9F0vkCQ5Oq/48R1cbboJIGT3keij9lruomLFQNOD1omAe7w=
+X-Received: by 2002:a81:ad0b:0:b0:5d7:1941:3556 with SMTP id
+ l11-20020a81ad0b000000b005d719413556mr3794472ywh.61.1701782407651; Tue, 05
+ Dec 2023 05:20:07 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>
-CC:     Jan Kara <jack@suse.cz>, <linux-mm@kvack.org>,
-        <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-        <willy@infradead.org>, <akpm@linux-foundation.org>,
-        <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>, <yangerkun@huawei.com>,
-        <yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
- <20231205041755.GG509422@mit.edu>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20231205041755.GG509422@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+References: <CGME20231205130643eucas1p283a5476b78a87997fa393d00f5172418@eucas1p2.samsung.com>
+ <20231205130631.3456986-1-m.szyprowski@samsung.com>
+In-Reply-To: <20231205130631.3456986-1-m.szyprowski@samsung.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 5 Dec 2023 15:19:56 +0200
+Message-ID: <CAA8EJpr3hNdB02avXrY+PQGGSjJTm4YT3Hct1OwsLuNQN_H9Xw@mail.gmail.com>
+Subject: Re: [PATCH] drm/debugfs: fix potential NULL pointer dereference
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,86 +75,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/5 12:17, Theodore Ts'o wrote:
-> On Mon, Dec 04, 2023 at 09:50:18PM +0800, Baokun Li wrote:
->> The problem is with a one-master-twoslave MYSQL database with three
->> physical machines, and using sysbench pressure testing on each of the
->> three machines, the problem occurs about once every two to three hours.
->>
->> The problem is with the relay log file, and when the problem occurs,
->> the middle dozens of bytes of the file are read as all zeros, while
->> the data on disk is not. This is a journal-like file where a write
->> process gets the data from the master node and writes it locally,
->> and another replay process reads the file and performs the replay
->> operation accordingly (some SQL statements).  The problem is that
->> when replaying, it finds that the data read is corrupted, not valid
->> SQL data, while the data on disk is normal.
-> You mentioned "scripts" --- are these locally developped scripts by
-> any chance?
-This refers to the sql commands to be replayed in the relay log file.
-  I don't know much about this file, but you can read the official
-documentation.
-https://dev.mysql.com/doc/refman/8.0/en/replica-logs-relaylog.html
-> The procedure suggested in a few places that I looked up
-> don't involve needing to read the replay log.   For example from[1]:
+On Tue, 5 Dec 2023 at 15:06, Marek Szyprowski <m.szyprowski@samsung.com> wr=
+ote:
 >
-> On the master server:
+> encoder->funcs entry might be NULL, so check it first before calling its
+> methods. This fixes NULL pointer dereference observed on Rasberry Pi
+> 3b/4b boards.
 >
-> root@repl-master:~# mysql -uroot -p;
-> mysql> CREATE USER ‘slave’@’12.34.56.789‘ IDENTIFIED BY ‘SLAVE_PASSWORD‘;
-> mysql> GRANT REPLICATION SLAVE ON . TO ‘slave’@’12.34.56.222 ‘;
-> mysql> FLUSH PRIVILEGES;
-> mysql> FLUSH TABLES WITH READ LOCK;
->
-> This will make the master server read-only, with all pending writes
-> flushed out (so you don't need to worry about the replay log), and
-> then you move the data from the master to slave:
->
-> root@repl-master:~# mysqldump -u root -p –all-databases –master-data > data.sql
-> root@repl-master:~# scp data.sql root@12.34.56.222
->
-> Then on the slave:
->
-> root@repl-slave:~# mysql -uroot -p < data.sql
-> root@repl-slave:~# mysql -uroot -p;
-> mysql> STOP SLAVE;
->
-> ... and then on the master:
->
-> root@repl-master:~# mysql -uroot -p;
-> mysql> UNLOCK TABLES;
->
-> ... and back on the slave:
->
-> root@repl-slave:~# mysql -uroot -p;
-> mysql> START SLAVE;
->
-> [1] https://hevodata.com/learn/mysql-master-slave-replication/
->
-> ... or you could buy the product advertised at [1] which is easier for
-> the database administrators, but results in $$$ flowing to the Hevo
-> company.  :-)
->
-> In any case, I'm pretty sure that the official documented way of
-> setting up a failover replication setup doesn't involve buffered reads
-> of the replay file.
->
-> It is certainly the case that mysqldump uses buffered reads, but
-> that's why you have to temporary make the database read-only using
-> "FLUSH TABLES WITH READ LOCK" before taking a database snapshot, and
-> then re-enable database updates the "UNLOCK TABLES" SQL commands.
->
-> Cheers,
->
-> 					- Ted
-Thank you very much for your detailed explanation!
-But the downstream users do have buffered reads to read the relay log
-file, as I confirmed with bpftrace. Here's an introduction to turning on
-relay logging, but I'm not sure if you can access this link:
-https://blog.csdn.net/javaanddonet/article/details/112596148
+> Fixes: caf525ed45b4 ("drm/encoder: register per-encoder debugfs dir")
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+> ---
+> This fixes the following issue observed on Raspberry Pi 4b:
+>
+> vc4-drm gpu: bound fe400000.hvs (ops vc4_hvs_ops [vc4])
+> vc4-drm gpu: bound fef00700.hdmi (ops vc4_hdmi_ops [vc4])
+> vc4-drm gpu: bound fef05700.hdmi (ops vc4_hdmi_ops [vc4])
+> vc4-drm gpu: bound fe004000.txp (ops vc4_txp_ops [vc4])
+> vc4-drm gpu: bound fe206000.pixelvalve (ops vc4_crtc_ops [vc4])
+> vc4-drm gpu: bound fe207000.pixelvalve (ops vc4_crtc_ops [vc4])
+> vc4-drm gpu: bound fe20a000.pixelvalve (ops vc4_crtc_ops [vc4])
+> vc4-drm gpu: bound fe216000.pixelvalve (ops vc4_crtc_ops [vc4])
+> 8<--- cut here ---
+> Unable to handle kernel NULL pointer dereference at virtual address 00000=
+010 when read
+> [00000010] *pgd=3D00000000
+> Internal error: Oops: 5 [#1] SMP ARM
+> Modules linked in: sha256_arm raspberrypi_hwmon cfg80211(+) hci_uart btbc=
+m bluetooth vc4(+) ecdh_generic ecc libaes snd_soc_hdmi_codec snd_soc_core =
+v3d drm_shmem_helper ac97_bus snd_pcm_dmaengine snd_pcm genet(+) gpu_sched =
+snd_timer snd bcm2711_thermal soundcore drm_dma_helper
+> CPU: 1 PID: 221 Comm: systemd-udevd Not tainted 6.7.0-rc4-next-20231205 #=
+14267
+> Hardware name: BCM2711
+> PC is at drm_debugfs_encoder_add+0x6c/0x98
+> LR is at 0x0
+> ...
+>  drm_debugfs_encoder_add from drm_encoder_register_all+0x20/0x60
+>  drm_encoder_register_all from drm_modeset_register_all+0x34/0x70
+>  drm_modeset_register_all from drm_dev_register+0x24c/0x28c
+>  drm_dev_register from vc4_drm_bind+0x21c/0x2d0 [vc4]
+>  vc4_drm_bind [vc4] from try_to_bring_up_aggregate_device+0x160/0x1bc
+>  try_to_bring_up_aggregate_device from component_master_add_with_match+0x=
+c4/0xf8
+>  component_master_add_with_match from vc4_platform_drm_probe+0xa0/0xc0 [v=
+c4]
+>  vc4_platform_drm_probe [vc4] from platform_probe+0x5c/0xb8
+>  platform_probe from really_probe+0xc8/0x2dc
+>  really_probe from __driver_probe_device+0x88/0x19c
+>  __driver_probe_device from driver_probe_device+0x30/0x104
+>  driver_probe_device from __driver_attach+0x90/0x174
+>  __driver_attach from bus_for_each_dev+0x6c/0xb4
+>  bus_for_each_dev from bus_add_driver+0xcc/0x1cc
+>  bus_add_driver from driver_register+0x7c/0x118
+>  driver_register from vc4_drm_register+0x44/0x1000 [vc4]
+>  vc4_drm_register [vc4] from do_one_initcall+0x40/0x1e0
+>  do_one_initcall from do_init_module+0x50/0x1e4
+>  do_init_module from init_module_from_file+0x90/0xbc
+>  init_module_from_file from sys_finit_module+0x144/0x258
+>  sys_finit_module from ret_fast_syscall+0x0/0x54
+> Exception stack(0xf0cf1fa8 to 0xf0cf1ff0)
+> ...
+> ---[ end trace 0000000000000000 ]---
+>
+> ---
+>  drivers/gpu/drm/drm_debugfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+
+--=20
+With best wishes
+Dmitry
