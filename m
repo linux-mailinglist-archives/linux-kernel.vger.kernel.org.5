@@ -2,152 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E837805668
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6751D80566E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442224AbjLENtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:49:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
+        id S1345552AbjLENuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:50:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345523AbjLENtj (ORCPT
+        with ESMTP id S1345418AbjLENuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:49:39 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A10F199;
-        Tue,  5 Dec 2023 05:49:45 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a1b6b65923eso312440066b.3;
-        Tue, 05 Dec 2023 05:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701784183; x=1702388983; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=su3JiBRDwbVj1xAUvi7p9QvTL0dh/tmm8/DJGL4OtkI=;
-        b=Clfg2T2XoNq+uHO/lT/hGWO3rgIC6DrRyfHmw2XMVkhq8OmGnLYXAPbMPcecZob5nY
-         qG7DxjrKHz2HxTkFlRvNQZegCAH3nWdokWppn8aryHa5k2C92Lh7pkzsXOrJT4Evt3Qa
-         dTVGEJFiqY95vF9my3IdV4/8sJsmI5ZGK1N7TsTcWE1owYnhm5GxRYzaWpMBUR8A4ohx
-         40jPvQX1FfZSnv/4y5mR98uARx39MokwezRWtFO2llKYtFkqD6EPjD8JH1Fj8yjvVgK+
-         0ey/6IBRthzkJ6z7BLHbpwJXlgVQ81byqgHTqD5/Dwuoddur4GgREy40uX7ujF6x1Neq
-         /M+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701784183; x=1702388983;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=su3JiBRDwbVj1xAUvi7p9QvTL0dh/tmm8/DJGL4OtkI=;
-        b=kf2onVefKvfk4kMigdLW0vDol41MAWBBGTG4VrVQc2kP2fiGkSr2X/nZlpXqNsaHJg
-         /at+2gruwQob2KT4bg5r8EqG9MGmmso4Un8pWh0aMBBLv8rLOaUBmxGBk2hV2KhmA64X
-         FNjXXSQjXHgDOJA7Qqv3l/VjisL4m9cOczwIHVkXUoN8n942v5x7Y354cWcfnVC9s9UR
-         ivHqLqnoS6kw0pEzLeEGBBbXQ4O+J9wbMF2Dt/WXy/18YQZWT3nMjuZfWFbIL8ZVie1Z
-         QmmMi+kfMiI8vb7bl0YGU/uYxDn99kY9RRE2EmelT1kqQughWCF61NbNZbrEHqFGdZjx
-         aMJg==
-X-Gm-Message-State: AOJu0YxNxoNclv4WLj8xVnA412st6HDv0npMybnkOcHwmJSE69jG4H2K
-        tbbCmX0GtLxKZHyXwsBWteQ=
-X-Google-Smtp-Source: AGHT+IERoivcMLsR85BC/oYIWQsZBhUjILXepkJNOvS8aSSqS25ruiNCxTIE/GTh5RYNtCROtTqLEg==
-X-Received: by 2002:a17:906:4e91:b0:a0d:39c6:1f67 with SMTP id v17-20020a1709064e9100b00a0d39c61f67mr337137eju.76.1701784183397;
-        Tue, 05 Dec 2023 05:49:43 -0800 (PST)
-Received: from [172.25.98.130] ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id o9-20020a17090637c900b00a1cdf29af64sm424678ejc.45.2023.12.05.05.49.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 05:49:42 -0800 (PST)
-Message-ID: <11eda58b-579c-4f50-85ea-fe3ac111d096@gmail.com>
-Date:   Tue, 5 Dec 2023 15:49:40 +0200
+        Tue, 5 Dec 2023 08:50:11 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1418B2;
+        Tue,  5 Dec 2023 05:50:17 -0800 (PST)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B56mS4S002076;
+        Tue, 5 Dec 2023 07:50:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=N
+        E5+DSXwGrCAGjdB6rJhza2qUwOx7ACzcoH8hLHpcnQ=; b=XDrKw9/F3oREtZz9N
+        cC5WHRnz86qoWZH6ISZPq8YQsWa3EpYsLtPHRuiuJdAeJVP6zg1HV56tdsUROkBa
+        5rUKq9Dj8F/CQ7nliYh1t2uC8bFYp51CSNYVYkC50BNMQl2WBKzoAM4DEiE98LQb
+        hvykX8lhF32I2I45kZiXfcRN+VhGq2YQae1Ljams7s4EA5M6CYZX6tSRvumQdebW
+        qVxAA8d+ndLxeX4dx3HQj8uSkJ+f74E90gjvw3wc9bZUYhfKxUUDp8C8TX39ARJO
+        TRS361G+rVs+KTi5EYGfIYnCd5CT+0Q16zTOff8v4911/rRR8G0MSB1pMaD4pceO
+        isRyA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ur2v237sf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 07:50:03 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
+ 2023 13:50:01 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
+ Transport; Tue, 5 Dec 2023 13:50:01 +0000
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.82])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8FCF711AB;
+        Tue,  5 Dec 2023 13:50:01 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
+        <peter.ujfalusi@linux.intel.com>,
+        <yung-chuan.liao@linux.intel.com>, <kai.vehmanen@linux.intel.com>,
+        <cezary.rojewski@intel.com>, <ranjani.sridharan@linux.intel.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Richard Fitzgerald" <rf@opensource.cirrus.com>
+Subject: [PATCH] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a speaker widget
+Date:   Tue, 5 Dec 2023 13:50:01 +0000
+Message-ID: <20231205135001.2506070-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/2] iio: adc: ad7173: add AD7173 driver
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231205134223.17335-1-mitrutzceclan@gmail.com>
- <20231205134223.17335-2-mitrutzceclan@gmail.com>
-Content-Language: en-US
-From:   Ceclan Dumitru <mitrutzceclan@gmail.com>
-In-Reply-To: <20231205134223.17335-2-mitrutzceclan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        MALFORMED_FREEMAIL,MISSING_HEADERS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: oAYrQxspCojOdylohofqRTq4nx-S8yUR
+X-Proofpoint-GUID: oAYrQxspCojOdylohofqRTq4nx-S8yUR
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hookup the CS35L56 DAPM_OUTPUT widgets to a DAPM_SPK widget so
+that there is a complete logical path to a speaker.
 
+There is no particular reason to use multiple speaker widgets.
+The CS35L56 are designed to work together as a set so they have
+all been connected to a single speaker widget.
 
-On 12/5/23 15:42, Dumitru Ceclan wrote:
-> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-> which can be used in high precision, low noise single channel
-> applications or higher speed multiplexed applications. The Sigma-Delta
-> ADC is intended primarily for measurement of signals close to DC but also
-> delivers outstanding performance with input bandwidths out to ~10kHz.
-> 
+Instead of a hardcoded list of codec widget names, the code walks
+through all the codecs on the dailink and for every cs35l56 it uses
+its name prefix to construct the source end of the route. This adds
+a small amount of overhead during probe but has the benefit that it
+isn't dependent on every system using the same prefixes.
 
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/intel/boards/sof_sdw_cs_amp.c | 30 +++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
-V6 -> V7
+diff --git a/sound/soc/intel/boards/sof_sdw_cs_amp.c b/sound/soc/intel/boards/sof_sdw_cs_amp.c
+index 98f6546f484b..f88c01552a92 100644
+--- a/sound/soc/intel/boards/sof_sdw_cs_amp.c
++++ b/sound/soc/intel/boards/sof_sdw_cs_amp.c
+@@ -9,15 +9,24 @@
+ #include <linux/errno.h>
+ #include <sound/soc.h>
+ #include <sound/soc-acpi.h>
++#include <sound/soc-dai.h>
+ #include "sof_sdw_common.h"
+ 
+ #define CODEC_NAME_SIZE	8
+ 
++static const struct snd_soc_dapm_widget sof_widgets[] = {
++	SND_SOC_DAPM_SPK("Speakers", NULL),
++};
++
+ static int cs_spk_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	const char *dai_name = rtd->dai_link->codecs->dai_name;
+ 	struct snd_soc_card *card = rtd->card;
+ 	char codec_name[CODEC_NAME_SIZE];
++	char widget_name[16];
++	struct snd_soc_dapm_route route = { "Speakers", NULL, widget_name };
++	struct snd_soc_dai *codec_dai;
++	int i, ret;
+ 
+ 	snprintf(codec_name, CODEC_NAME_SIZE, "%s", dai_name);
+ 	card->components = devm_kasprintf(card->dev, GFP_KERNEL,
+@@ -26,17 +35,34 @@ static int cs_spk_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (!card->components)
+ 		return -ENOMEM;
+ 
++	ret = snd_soc_dapm_new_controls(&card->dapm, sof_widgets,
++					ARRAY_SIZE(sof_widgets));
++	if (ret) {
++		dev_err(card->dev, "widgets addition failed: %d\n", ret);
++		return ret;
++	}
++
++	for_each_rtd_codec_dais(rtd, i, codec_dai) {
++		if (!strstr(codec_dai->name, "cs35l56"))
++			continue;
++
++		snprintf(widget_name, sizeof(widget_name), "%s SPK",
++			 codec_dai->component->name_prefix);
++		ret = snd_soc_dapm_add_routes(&card->dapm, &route, 1);
++		if (ret)
++			return ret;
++	}
++
+ 	return 0;
+ }
+ 
+-
+ int sof_sdw_cs_amp_init(struct snd_soc_card *card,
+ 			const struct snd_soc_acpi_link_adr *link,
+ 			struct snd_soc_dai_link *dai_links,
+ 			struct sof_sdw_codec_info *info,
+ 			bool playback)
+ {
+-	/* Count amp number and do init on playback link only. */
++	/* Do init on playback link only. */
+ 	if (!playback)
+ 		return 0;
+ 
+-- 
+2.30.2
 
- - format Kconfig supported models using '-'
-
- - include types.h instead of stddef.h
-
- - change device_info->num_gpios type to u8
-
- - reorder fields in ad7173_state, place ad_sigma_delta
-
- - reorder fields in ad7173_device_info, group by type
-
- - add default case in read_raw()
-
- - rename ad7173_debug() to ad7173_debug_reg_access()
-
- - remove explicit u8 cast
-
- - remove return 0; for offset in read_raw()
-
- - add '\n' to error messages
-
- - reorder probe variables -> reversed xmas tree
-
- - remove redundant inner commas in of_match and id_table
-
- - simplify selected reference code by setting default value and
-ignoring fwnode_property_read_string() error
-
- - use match_string() for finding selected reference
-
- - err on no channels specified
-
- - add missing fwnode_handle_put(child) on err return branches
-
- - remove spi_set_drvdata() from probe
-
- - remove offset variable from find_live_config(), not used
-
- - add comment showing a generic LRU implementation might be used if one
-will exist
-
-
-
- - MISC:  add blank line to chanel_config struct, trailing comma
-ref_sel_str[],
- remove blank line in update_scan_mode(), add spaces around '/'
