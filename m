@@ -2,121 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F038057C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2363C8057D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345664AbjLEOoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:44:02 -0500
+        id S1345690AbjLEOnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:43:49 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235514AbjLEOn5 (ORCPT
+        with ESMTP id S235549AbjLEOnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:43:57 -0500
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B671BE;
-        Tue,  5 Dec 2023 06:44:02 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 442705809BA;
-        Tue,  5 Dec 2023 09:43:59 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 05 Dec 2023 09:43:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701787439; x=1701794639; bh=BS
-        Hv0HRg2s93B8FPGN2syxnLQruwc1c3RDbBmnf0NEA=; b=u1IX5t1rodixlie6Mp
-        rRUGBkq+57oNX93kpP2WS0tc+JxK4MUExGO2BGRuFejA6BmZqnSeaTZiRIxRStDL
-        PQkXiXRkw9/hqC390WBM1S7CAdB4ZeuRU3fCqjtLTsAzg0iBX74PNC9gWve7FDcT
-        66Sxd5Ux/KhUHR2sJxHlUdfImBvKyrF1ZoNHQH8Ist/eIHOWwVxqHRD0QDhH9OgY
-        ui1N18qdxTUktEgpWUHksybaxQwrY/oUHRWVZAobZzqMzb2sqZaA2pT+SuyK2mSg
-        d3OVMe+wvWkw9pbnjOPUkws4CeWlZ4kICoKVv29QlJ4H9UZvFrq3ECN/JBDhQTRK
-        umxA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701787439; x=1701794639; bh=BSHv0HRg2s93B
-        8FPGN2syxnLQruwc1c3RDbBmnf0NEA=; b=FcbZZZvkeXMfqqU2ugxqiRbdUcPJ5
-        ymo1akoaXYdzDU7GzGTPnxzpiOwGl1wu0hJn3v0TqLY7lnrLXpWf8QMm0jsxivaj
-        gBJ3SV+YQz+K9y7x+StZJUm16xqa+k+WorwzZB3lHp3AmYm9bh/IxV1JT5ByY7i9
-        7sF8GdI5s+08I881coqR/RCg28ZLyeWQWjGLeEWqUIbbYcbEIGm2wFDTNltjQ6pO
-        eRwc6Tzva5UXZ5WVl5FDzUBd0pn4qK8hKXfjmqC9DpQHRh/gzz/LrX0IJo4xnxLc
-        fbSd44UIKgcoYIMwTBr+YpQ4732fj6MYbgUKgJ3Q+ZYU6x0nTnoQqsILQ==
-X-ME-Sender: <xms:LTdvZcvpIl9nji2P3RiYHhphpt4DMzJCaVK7AM6KPg_fib2z3zkSjw>
-    <xme:LTdvZZcJBLnEh0eNjavNkg8VpxX6P5xZMCA-cNlYioqXWr8EL-riDvKk3ORlRLH0M
-    n8g_wVvZ7eDYd9ZxCY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejkedgieekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:LTdvZXwX6ic-mqqBUJj0sx9IOyb_C9LkwN7Rju0hMc-z8fVrcaHYvA>
-    <xmx:LTdvZfPT-MJD9NhJI2meGxhrspJheC3U1AuuYVZRyKx6Xy4U6vP6Zg>
-    <xmx:LTdvZc9Upuw5ikljwzjowtCfY3LyBnMiIgy8KK43C7jSDCcwCh7QiQ>
-    <xmx:LzdvZWFPSNTis7SBLJWDFNa-ISdel0cTumosQ1q3sWkadBr4KCpGGA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 66E5AB60089; Tue,  5 Dec 2023 09:43:57 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
-MIME-Version: 1.0
-Message-Id: <cdb1188d-7379-45e2-b2ce-ffdfb21b644a@app.fastmail.com>
-In-Reply-To: <8ec1ae92206c090c79a9ab9586bd17349798b08f.camel@redhat.com>
-References: <20231204123834.29247-6-pstanner@redhat.com>
- <202312051813.09WbvusW-lkp@intel.com>
- <8ec1ae92206c090c79a9ab9586bd17349798b08f.camel@redhat.com>
-Date:   Tue, 05 Dec 2023 15:43:36 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Philipp Stanner" <pstanner@redhat.com>,
-        "kernel test robot" <lkp@intel.com>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        "Hanjun Guo" <guohanjun@huawei.com>, "Neil Brown" <neilb@suse.de>,
-        "Kent Overstreet" <kmo@daterainc.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        "Uladzislau Koshchanka" <koshchanka@gmail.com>,
-        "John Sanpe" <sanpeqf@gmail.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        "Masami Hiramatsu" <mhiramat@kernel.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "David Gow" <davidgow@google.com>,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "Shuah Khan" <skhan@linuxfoundation.org>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        "Yury Norov" <yury.norov@gmail.com>,
-        "Jason Baron" <jbaron@akamai.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Ben Dooks" <ben.dooks@codethink.co.uk>,
-        "Danilo Krummrich" <dakr@redhat.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        "Linux Memory Management List" <linux-mm@kvack.org>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] lib, pci: unify generic pci_iounmap()
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Dec 2023 09:43:45 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843F9196
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 06:43:49 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5ce16bc121aso93447867b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 06:43:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701787428; x=1702392228; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WZD0EM5cGaPHhEVDs6IeTDsFoonDp5ja1VtjJCTjqYs=;
+        b=A4CqEikT/b+9up74hPMLiEHnErlVVcPtYgrGhXNPnMZ2iUId46d7tz8w6LQSCCReq5
+         Nu2fqUNmLkcomVmQ2KjHG9cLgB/0Wi+C/8vMuU1KAunQbCFeTLjiu7PPuRwbrXXyHkla
+         G3ZwCeUXnYvDazt1xUGPVmQNzsBH1QMwkB8/4FeIpYVVj18IYzsTKF4p45xTtqYzkZ66
+         i9d6qnsU8t7CqxE/1yr+dJqy3+zEeFW9aUZE1GQZRDHkbcqmWDDse9zQC1uGsNAZ6uRx
+         UyCPN3K6g4NChrw89SubSjviNqVhmXOB7BMZLZK4hnDeY+xuu/fobOKa8zL6vwFrOAE5
+         kqZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701787428; x=1702392228;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WZD0EM5cGaPHhEVDs6IeTDsFoonDp5ja1VtjJCTjqYs=;
+        b=EW7xJlemFI4NT77i+GS2UCUctaA7kvzXhY27ti8SVPrNdaElVfUBpQp99FhJQqAvQ5
+         Gj04HFZd6SNGnKfy/LgbPRPZ+flCBk/OlT38rdw4Z4y5M5ZJiE3qvMpxHZLk/Z6wAVDt
+         ky/VGSZzs5TSLWCGRM+hV1vDMLa9hZlkr8DpsKvVDY5VW+HP4o5W/5YpiWJQEWwsF2et
+         aaUK+23u47A6DCW17p4DjzAYTO5n/MIsAopL7oLNkyjIJR0wGNzaKJr4LY9a66EHMS82
+         IsCynJmwN8ehPz4Je4sas/GsWV69MdoEfxtU7WD0IPZJMXIcUC0CHNV+G4sX17YDcFiY
+         88mA==
+X-Gm-Message-State: AOJu0YyvTQ9RW+iWWCBmXl6fMK93ln3tqYsJugYUriCW7XJzXUC6UGv/
+        6iyWRWPTIPRC84k3CXi0YChy6mW3m70p8LA=
+X-Google-Smtp-Source: AGHT+IFLoW8f1NTm+nyunXiLErD3gXbKIZlauqfO65/Y2nGSfW6R7tv3Sf+99fVBBvGIC3H+1wip5JAcV5jcBag=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a05:690c:2d06:b0:5d4:1e95:1e8a with SMTP
+ id eq6-20020a05690c2d0600b005d41e951e8amr288127ywb.4.1701787428477; Tue, 05
+ Dec 2023 06:43:48 -0800 (PST)
+Date:   Tue,  5 Dec 2023 14:43:45 +0000
+In-Reply-To: <bUU6jGtJ7KdkuVp8UPORb0cmDoU6sRjc1iVRMfgO34u5ySo44Z5MXrnYgE6pfQDFu4-V5CBAuhS8uZDoEA6CsIiLUiWJedNZ2CTf9cRATfQ=@proton.me>
+Mime-Version: 1.0
+References: <bUU6jGtJ7KdkuVp8UPORb0cmDoU6sRjc1iVRMfgO34u5ySo44Z5MXrnYgE6pfQDFu4-V5CBAuhS8uZDoEA6CsIiLUiWJedNZ2CTf9cRATfQ=@proton.me>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231205144345.308820-1-aliceryhl@google.com>
+Subject: Re: [PATCH 6/7] rust: file: add `DeferredFdCloser`
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     benno.lossin@proton.me, brauner@kernel.org
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
+        aliceryhl@google.com, arve@android.com, bjorn3_gh@protonmail.com,
+        boqun.feng@gmail.com, cmllamas@google.com,
+        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
+        gregkh@linuxfoundation.org, joel@joelfernandes.org,
+        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
+        peterz@infradead.org, rust-for-linux@vger.kernel.org,
+        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
+        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023, at 15:34, Philipp Stanner wrote:
-> Alright, so it seems that not all architectures provide ioport_unmap().
-> So I'll provide yet another preprocessor guard in v4. Wohooo, we love
-> them...
+Benno Lossin <benno.lossin@proton.me> writes:
+> On 12/1/23 12:35, Alice Ryhl wrote:
+>> Benno Lossin <benno.lossin@proton.me> writes:
+>>>> +        // SAFETY: The `inner` pointer points at a valid and fully initialized task work that is
+>>>> +        // ready to be scheduled.
+>>>> +        unsafe { bindings::task_work_add(current, inner, TWA_RESUME) };
+>>>
+>>> I am a bit confused, when does `do_close_fd` actually run? Does
+>>> `TWA_RESUME` mean that `inner` is scheduled to run after the current
+>>> task has been completed?
+>> 
+>> When the current syscall returns to userspace.
+> 
+> What happens when I use `DeferredFdCloser` outside of a syscall? Will
+> it never run? Maybe add some documentation about that?
 
-Right, I think CONFIG_HAS_IOPORT_MAP is the symbol you
-need to check here. There are a few targets that have inb/outb
-but can't map them to __iomem pointers for some reason, 
-as well as more that have neither CONFIG_HAS_IOPORT nor
-CONFIG_HAS_IOPORT_MAP.
+Christian Brauner, I think I need your help here.
 
-     Arnd
+I spent a bunch of time today trying to understand the correct way of
+closing an fd held with fdget, and I'm unsure what the best way is.
+
+So, first, `task_work_add` only really works when we're called from a
+syscall. For one, it's fallible, and for another, you shouldn't even
+attempt to use it from a kthread. (See e.g., the implementation of
+`fput` in `fs/file_table.c`.)
+
+To handle the above, we could fall back to the workqueue and schedule
+the `fput` there when we are on a kthread or `task_work_add` fails. And
+since I don't really care about the performance of this utility, let's
+say we just unconditionally use the workqueue to simplify the
+implementation.
+
+However, it's not clear to me that this is okay. Consider this
+execution: (please compare to `binder_deferred_fd_close`)
+
+    Thread A                Thread B (workqueue)
+    fdget()
+    close_fd_get_file()
+    get_file()
+    filp_close()
+    schedule_work(do_close_fd)
+    // we are preempted
+                            fput()
+    fdput()
+
+And now, since the workqueue can run before thread A returns to
+userspace, we are in trouble again, right? Unless I missed an upgrade
+to shared file descriptor somewhere that somehow makes this okay? I
+looked around the C code and couldn't find one and I guess such an
+upgrade has to happen before the call to `fdget` anyway?
+
+In Binder, the above is perfectly fine since it closes the fd from a
+context where `task_work_add` will always work, and a task work
+definitely runs after the `fdput`. But I added this as a utility in the
+shared kernel crate, and I want to avoid the situation where someone
+comes along later and uses it from a kthread, gets the fallback to
+workqueue, and then has an UAF due to the previously mentioned
+execution...
+
+What do you advise that I do?
+
+Maybe the answer is just that, if you're in a context where it makes
+sense to talk about an fd of the current task, then task_work_add will
+also definitely work? So if `task_work_add` won't work, then
+`close_fd_get_file` will return a null pointer and we never reach the
+`task_work_add`. This seems fragile though.
+
+Alice
