@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1191E805D92
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A3F805DAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345581AbjLESBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:01:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52716 "EHLO
+        id S1345738AbjLESBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345644AbjLESBm (ORCPT
+        with ESMTP id S1345718AbjLESBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:01:42 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E54E90;
-        Tue,  5 Dec 2023 10:01:48 -0800 (PST)
-Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id D3F3F66072EC;
-        Tue,  5 Dec 2023 18:01:41 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701799307;
-        bh=VwHWq49kjTDZ3UF6CffpL7rnWqXYoSvsZ2/8l2HARl4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=otLhxBWn+wz/7Hfc8AtWtVJRHG5bcDHllMU1uJjJTdQiBHYi9AY871hD/AP9jwOaT
-         3RcXR9XKK385uT6/VZq++0TvIgSCaK4+vhaecmaZzXFCtSyr2PXD1AlzM7otyZdcSK
-         OHBJKNl21TPaFg2iXjbhiw8UW51wJiEzFA2O7LxJNAoAiVGRTNgTYMpOJ8Zel6P9+J
-         Ar2ixBYuanGVjPJBBpRhnropxXrqLwMNvK/kUmnWgwKyho4g/pSTKj88kiGU7AkZ3G
-         QKM8eMXNRutHPKdX9yuQ67x3Ikebe7uXaCKVr2YK93fZhJn9smqAF3yxh1JqcpzV1f
-         jIRY+gSyCcXsg==
-Message-ID: <8a773fef-c3e4-44ec-931c-de2a92d2d835@collabora.com>
-Date:   Tue, 5 Dec 2023 15:01:41 -0300
+        Tue, 5 Dec 2023 13:01:49 -0500
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6B9D5B
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:01:53 -0800 (PST)
+Received: from [192.168.1.18] ([92.140.202.140])
+        by smtp.orange.fr with ESMTPA
+        id AZjvrRTwOSNyBAZjvr0n3q; Tue, 05 Dec 2023 19:01:51 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1701799311;
+        bh=hvbZ1hzkZAW9+ll+Cf0H0hMrUli14aQS6HIa8H1AiEs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=XoptdEkIyaphDGvNlkuK50h82d3TT88V3o4uepBihG58+UUJ9+WkFgg+i5GXukzuB
+         m6di0bERiVC9fyjAJbBYKflD1Uaoq9Q+yirlHlHFexeL4ircFJQC6pU7RWM1qE0bIh
+         bH1OZNcd/vrsuS+ieYI9rU0yqSbcePcmLZOUCAaoKh54B/ctCPvySPch5rf9U4IoMQ
+         ICZKlktLrX8zVPrOiGqDiIQSvNrgiQZCMPpwAZj59Rp3W/h4uYIyOFc4zQhyIvR0EC
+         AorPDR1vYKF9CbT1fjB07NijCvh11KyQRUjPpU9k5Zrh9m2BW5vpimmezFYsfizEvY
+         U+SAmVVoRm3AQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 05 Dec 2023 19:01:51 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <e6752370-7aba-4b47-90ff-7896a49ba84b@wanadoo.fr>
+Date:   Tue, 5 Dec 2023 19:01:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 09/10] drm/doc: ci: Add IGT version details for flaky
- tests
-Content-Language: en-US
-To:     Vignesh Raman <vignesh.raman@collabora.com>, airlied@gmail.com,
-        daniel@ffwll.ch
-Cc:     david.heidelberg@collabora.com, sergi.blanch.torne@collabora.com,
-        guilherme.gallo@collabora.com, daniels@collabora.com,
-        gustavo.padovan@collabora.com, emma@anholt.net,
-        robdclark@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-rockchip@lists.infradead.org, linux-arm-msm@vger.kernel.org
-References: <20231129121841.253223-1-vignesh.raman@collabora.com>
- <20231129121841.253223-10-vignesh.raman@collabora.com>
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20231129121841.253223-10-vignesh.raman@collabora.com>
+Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
+ driver
+To:     =?UTF-8?Q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        Dent Project <dentproject@linuxfoundation.org>
+References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
+ <20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
+ <6eeead27-e1b1-48e4-8a3b-857e1c33496b@wanadoo.fr>
+ <20231204231655.19baa1a4@kmaincent-XPS-13-7390>
+Content-Language: fr, en-US
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20231204231655.19baa1a4@kmaincent-XPS-13-7390>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Le 04/12/2023 à 23:16, Köry Maincent a écrit :
+> Thanks for your review!
+> 
+> On Sun, 3 Dec 2023 22:11:46 +0100
+> Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+> 
+>>> +
+>>> +	fwl = firmware_upload_register(THIS_MODULE, dev, dev_name(dev),
+>>> +				       &pd692x0_fw_ops, priv);
+>>> +	if (IS_ERR(fwl)) {
+>>> +		dev_err(dev, "Failed to register to the Firmware Upload
+>>> API\n");
+>>> +		ret = PTR_ERR(fwl);
+>>> +		return ret;
+>>
+>> Nit: return dev_err_probe()?
+> 
+> No EPROBE_DEFER error can be catch from firmware_upload_register() function, so
+> it's not needed.
 
+Hi,
 
-On 29/11/2023 09:18, Vignesh Raman wrote:
-> Document the IGT version in the flaky tests reporting template.
+up to you to take it or not, but dev_err_probe() also logs the error 
+code in a human readable way and it saves a few lines of code.
 
-Nice!
+If I remember correctly, it also saves some bytes in the .o file.
+
+Other than that, it is a matter of style.
+
+CJ
 
 > 
-> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> Regards,
 
-Acked-by: Helen Koike <helen.koike@collabora.com>
-
-Thanks
-Helen
-
-> ---
-> 
-> v6:
->    - Added a new patch in the series to update drm ci documentation
-> 
-> ---
->   Documentation/gpu/automated_testing.rst | 7 ++++---
->   1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/gpu/automated_testing.rst b/Documentation/gpu/automated_testing.rst
-> index 240e29d5ba68..2d5a28866afe 100644
-> --- a/Documentation/gpu/automated_testing.rst
-> +++ b/Documentation/gpu/automated_testing.rst
-> @@ -69,14 +69,15 @@ the result. They will still be run.
->   
->   Each new flake entry must be associated with a link to the email reporting the
->   bug to the author of the affected driver, the board name or Device Tree name of
-> -the board, the first kernel version affected, and an approximation of the
-> -failure rate.
-> +the board, the first kernel version affected, the IGT version used for tests,
-> +and an approximation of the failure rate.
->   
->   They should be provided under the following format::
->   
->     # Bug Report: $LORE_OR_PATCHWORK_URL
->     # Board Name: broken-board.dtb
-> -  # Version: 6.6-rc1
-> +  # Linux Version: 6.6-rc1
-> +  # IGT Version: 1.28-gd2af13d9f
->     # Failure Rate: 100
->     flaky-test
->   
