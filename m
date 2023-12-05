@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE27A8049F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3775D8049FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344360AbjLEGXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 01:23:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S1344370AbjLEGYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 01:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344338AbjLEGX2 (ORCPT
+        with ESMTP id S1344312AbjLEGYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 01:23:28 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CB7116;
-        Mon,  4 Dec 2023 22:23:34 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1d03bcf27e9so24006235ad.0;
-        Mon, 04 Dec 2023 22:23:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701757413; x=1702362213; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gSjayDyCBD98Wb3ZL9XCGG9UfLqRp3c6tP3XQeY4XSE=;
-        b=Wtk82fYT3BplLDsGYai/DPECT0mePlg0kT79F4He3QoN5LLVeUK1fPnZRZJEK5mgKT
-         2agSXSVWNiLrkTSVKeeZqJiqfdyqYmHwhVkEiB28/WBhAQvX1HSqGgG+tNRUBxwLpu4G
-         Kt3/RAdif7gTNBQdi1KVfj2hVosC6rKa4HUwOWzcplcblzrW4UPxAqC/+Nd8Y0BePG6H
-         yOSD15qf8uh5aP3a/591GeR+sA3Zx8z+oUjetUN/Wb5LqxjGdHmElfANJXcDZRKh6nKA
-         HjWEHZz1chm1ZWA4xpcJC2ty4GhbTO7RnP+dL9pZWOKNtzA1h2AIglf/A1795YwrS5iz
-         spDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701757413; x=1702362213;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gSjayDyCBD98Wb3ZL9XCGG9UfLqRp3c6tP3XQeY4XSE=;
-        b=PVDL9NY3T98r2ky60vxN611+qwVvD5xVLKRnTFOZOpyiPe7jXy/Ot/ngHnSAeMrvxK
-         zAvarQBLIa7etQ3xqy70uQpmOx1i1Lb04MmdKjClLt42Mc4/1SgPho2wTSxTjYBhirmH
-         74pLtmYF/QeqF1P/7j/Flo2E7R/PS6UpDZ8tDOGCIwLTUBh/hr/VQcpu7buY6B0VfgfT
-         SwsxGgK8pnCtfrOhF9LJFuh+HG/X+pLweGzCXp+K0vowZDu0eGyL/PQgm9eS4dXA4Tjs
-         ixblM1U3XpSJFXqUVio9h9XYQGT/X8nQWqewTl9N0NQjs/xrOObTy9GoTBElOe3nyJRa
-         jA7w==
-X-Gm-Message-State: AOJu0YwuBIsnRQ4uWpSwdBKD0AFZLQorlZXD1KMLgTdHkuYnAyZqAMRI
-        AZ9lAO766k1GJV5Iji0jhns=
-X-Google-Smtp-Source: AGHT+IF+x/FK0/seASZvgBWI2PXfsm4qMWEw5JrNlNUdaiCcON9pp80SGhQP/alYw7oADQOWHquXOA==
-X-Received: by 2002:a17:903:2584:b0:1d0:69ab:b0c8 with SMTP id jb4-20020a170903258400b001d069abb0c8mr3633879plb.6.1701757413434;
-        Mon, 04 Dec 2023 22:23:33 -0800 (PST)
-Received: from [192.168.255.10] ([43.132.98.41])
-        by smtp.gmail.com with ESMTPSA id v11-20020a1709028d8b00b001cc50146b43sm9424703plo.202.2023.12.04.22.23.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 22:23:32 -0800 (PST)
-Message-ID: <edbacce0-cbff-4351-be00-9cf7bf300864@gmail.com>
-Date:   Tue, 5 Dec 2023 14:23:29 +0800
+        Tue, 5 Dec 2023 01:24:49 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620F4116;
+        Mon,  4 Dec 2023 22:24:55 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B55lW3b019352;
+        Tue, 5 Dec 2023 06:24:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=eMAmggN/82w3oPaGSCpt4If+0kbeD2ZFTggrQHhI/DU=;
+ b=Lc9ijWPRBtASRdbBkKbneSdb8gsB749PBF2zt23jBdYAWA6Ot60Vpgm/+U2TSSDE+gWN
+ fgbsxPCJqb7BavxJG8JD8juMK0D2aO8/DNOdfqSbgO5Xjl7Wz4cHjYRM2/yI19BAgGet
+ iV7+MPK3Bgv/DzeyU8HJ+7j9L11F5GXoCSRJi53XTsSYJqYQl8gepAfXt+SIPLURBwNx
+ CXccgblk5BnMFGWXYqToqTNrHx2wzmxov74bkCEWAFMfIKzrrq75K9GVHd1ssQ8J+JeN
+ xjgrVhgb2A+CF4w+3XbqxJJQL2ZkSybN5Lz4ubq0TWD11OehpowOc4wMYfHjxX+FVjIY Gw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3us8wpk3c8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 06:24:27 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B56OQO4021404
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Dec 2023 06:24:26 GMT
+Received: from blr-ubuntu-253.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 4 Dec 2023 22:24:18 -0800
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <catalin.marinas@arm.com>, <ulf.hansson@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <ayan.kumar.halder@amd.com>, <j@jannau.net>,
+        <dmitry.baryshkov@linaro.org>, <nfraprado@collabora.com>,
+        <m.szyprowski@samsung.com>, <u-kumar1@ti.com>, <peng.fan@nxp.com>,
+        <lpieralisi@kernel.org>, <quic_rjendra@quicinc.com>,
+        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_tsoni@quicinc.com>,
+        <neil.armstrong@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>
+Subject: [PATCH V5 0/5] dts: qcom: Introduce X1E80100 platforms device tree
+Date:   Tue, 5 Dec 2023 11:53:58 +0530
+Message-ID: <20231205062403.14848-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/intr: Explicitly check NMI from guest to
- eliminate false positives
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231204074535.9567-1-likexu@tencent.com>
- <ZW32geNb18p9ibrR@google.com>
-Content-Language: en-US
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <ZW32geNb18p9ibrR@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 2qSrp9IdlIdGSZughCtZT3TzSoJuYpsH
+X-Proofpoint-ORIG-GUID: 2qSrp9IdlIdGSZughCtZT3TzSoJuYpsH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-05_03,2023-12-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 impostorscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2312050051
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/2023 11:55 pm, Sean Christopherson wrote:
-> On Mon, Dec 04, 2023, Like Xu wrote:
->> From: Like Xu <likexu@tencent.com>
->>
->> Explicitly checking the source of external interrupt is indeed NMI and not
->> other types in the kvm_arch_pmi_in_guest(), which prevents perf-kvm false
->> positive samples generated after vm-exit but before kvm_before_interrupt()
->> from being incorrectly labelled as guest samples:
-> 
-> ...
-> 
->> Fixes: 73cd107b9685 ("KVM: x86: Drop current_vcpu for kvm_running_vcpu + kvm_arch_vcpu variable")
-> 
-> The behavior is deliberate, and was added by commit dd60d217062f ("KVM: x86: Fix
-> perf timer mode IP reporting").  *If* we want to undo that, then the best "fix"
-> would be to effective reverting that commit by dropping the IRQ usage of
-> kvm_before_interrupt() and renaming the helpers kvm_{before,after}_nmi().  But
-> my understanding is that the behavior is necessary for select PMU usage.
+This series adds the initial (clocks, pinctrl, rpmhpd, regulator, interconnect,
+CPU, SoC and board compatibles) device tree support to boot to shell on the
+Qualcomm X1E80100 platform, aka Snapdragon X Elite.
 
-Thanks for your comment. Yes, the commit dd60d217062f should be tracked.
+Our v1 post of the patchsets adding support for Snapdragon X Elite SoC had
+the part number sc8380xp which is now updated to the new part number x1e80100
+based on the new branding scheme and refers to the exact same SoC.
 
-We don't have to undo the commit, and we also don't want to hurt
-either of the perf/core use cases (including perf NMI and timer modes).
+V5:
+* Rename gcc config to CLK_X1E80100_GCC [Krzysztof/Abel/Bryan].
+* Pickup Rbs.
 
-Thanks to the introduction of "enum kvm_intr_type", we can cover both cases
-instead of sacrificing one of two modes, how about:
+V4:
+* Have separate cluster_pd for each cluster. [Konrad]
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index c8c7e2475a18..5db607a564c6 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1868,8 +1868,16 @@ static inline int kvm_arch_flush_remote_tlbs_range(struct 
-kvm *kvm, gfn_t gfn,
-  }
-  #endif /* CONFIG_HYPERV */
+V3:
+* Add more detail to the commit msg describing Oryon. [Rob]
+* Add smem compatible and tcsr_hw nodes. [Abel]
+* Re-name l2-cache, remove hyphen in reserved region. [Konrad]
+* Describe certain secure gpios as unused. [Konrad]
+* Pickup Rbs.
 
-+enum kvm_intr_type {
-+	/* Values are arbitrary, but must be non-zero. */
-+	KVM_HANDLING_IRQ = 1,
-+	KVM_HANDLING_NMI,
-+};
-+
-+/* Linux always use NMI for PMU. */
-  #define kvm_arch_pmi_in_guest(vcpu) \
--	((vcpu) && (vcpu)->arch.handling_intr_from_guest)
-+	((vcpu) && (vcpu)->arch.handling_intr_from_guest && \
-+	 (in_nmi() == ((vcpu)->arch.handling_intr_from_guest == KVM_HANDLING_NMI)))
+v2:
+* Update the part number from sc8380xp to x1e80100.
+* Fixup ordering in the SoC/board bindings. [Krzysztof]
+* Add pdc node and add wakeup tlmm parent. [Rajendra]
+* Add cpu/cluster idle states. [Bjorn]
+* Document reserved gpios. [Konrad]
+* Remove L1 and add missing props to L2. [Konrad]
+* Remove region suffix. [Konrad]
+* Append digits to gcc node. [Konrad]
+* Add ICC_TAGS instead of leaving it unspecified. [Konrad]
+* Remove double space. [Konrad]
+* Leave the size index of memory node untouched. [Konrad]
+* Override the serial uart with "qcom,geni-debug-uart" in the board files. [Rajendra]
+* Add additional details to patch 5 commit message. [Konrad/Krzysztof]
 
-  void __init kvm_mmu_x86_module_init(void);
-  int kvm_mmu_vendor_module_init(void);
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 2f7e19166658..4dc38092d599 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -431,12 +431,6 @@ static inline bool kvm_notify_vmexit_enabled(struct kvm *kvm)
-  	return kvm->arch.notify_vmexit_flags & KVM_X86_NOTIFY_VMEXIT_ENABLED;
-  }
+Dependencies:
+clks: https://lore.kernel.org/lkml/20231117092737.28362-1-quic_sibis@quicinc.com/
+llcc: https://lore.kernel.org/lkml/20231117095315.2087-1-quic_sibis@quicinc.com/
+misc-bindings: https://lore.kernel.org/lkml/20231117105635.343-1-quic_sibis@quicinc.com/
 
--enum kvm_intr_type {
--	/* Values are arbitrary, but must be non-zero. */
--	KVM_HANDLING_IRQ = 1,
--	KVM_HANDLING_NMI,
--};
--
-  static __always_inline void kvm_before_interrupt(struct kvm_vcpu *vcpu,
-  						 enum kvm_intr_type intr)
-  {
+Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+
+
+Abel Vesa (1):
+  arm64: dts: qcom: x1e80100: Add Compute Reference Device
+
+Rajendra Nayak (4):
+  dt-bindings: arm: cpus: Add qcom,oryon compatible
+  dt-bindings: arm: qcom: Document X1E80100 SoC and boards
+  arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts
+  arm64: defconfig: Enable X1E80100 SoC base configs
+
+ .../devicetree/bindings/arm/cpus.yaml         |    1 +
+ .../devicetree/bindings/arm/qcom.yaml         |    8 +
+ arch/arm64/boot/dts/qcom/Makefile             |    2 +
+ arch/arm64/boot/dts/qcom/x1e80100-crd.dts     |  426 ++
+ arch/arm64/boot/dts/qcom/x1e80100-qcp.dts     |  401 ++
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi        | 3527 +++++++++++++++++
+ arch/arm64/configs/defconfig                  |    3 +
+ 7 files changed, 4368 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/x1e80100-crd.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/x1e80100-qcp.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/x1e80100.dtsi
+
 -- 
-2.43.0
+2.17.1
 
-I noticed that timer mode is used when perf-record uses SW events like 
-"cpu-clock" event,
-with or without hw-PMU support. My side of the tests no longer show false 
-positives and
-the above diff does not affect the use of perf timer mode as well. Any better move ?
