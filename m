@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F1180431D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67FEA80431E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234614AbjLEAGp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 19:06:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
+        id S1343567AbjLEAHM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Dec 2023 19:07:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343594AbjLEAGj (ORCPT
+        with ESMTP id S234764AbjLEAHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:06:39 -0500
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116C2119;
-        Mon,  4 Dec 2023 16:06:46 -0800 (PST)
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5c2b7ec93bbso2766440a12.2;
-        Mon, 04 Dec 2023 16:06:46 -0800 (PST)
+        Mon, 4 Dec 2023 19:07:10 -0500
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4988DB6;
+        Mon,  4 Dec 2023 16:07:15 -0800 (PST)
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-286d8f3a08bso347253a91.1;
+        Mon, 04 Dec 2023 16:07:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701734805; x=1702339605;
+        d=1e100.net; s=20230601; t=1701734835; x=1702339635;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1JcpNF/47E6R5fVAJEjKqFUfdaQxK8rB5P+pDp4ewSo=;
-        b=KNiwj4vAXfiP9hUaNz6SvCUELMKs/mMNyf40yv/xEE6LQJENVQ1+WtMW4I9EWYq3KD
-         Yic71LwTXfWG7v+7PKwhuZxUZAxO9hIqN1ZlmyLrLA6+I6uq+1NaaerAkH7sTX/k4QSe
-         +MyHjbnSdNfzxg2FD1vRLhG9LBwYCfhj5yQt1sG91+ofOZcO6OTAxiXvYvhvbo6sOkpA
-         cqL7kjSikE3XPIkV2+MlUAVh8kC2SKGWO0E2TSadF2zLrZz7+iPwuEy0Ok50v8r6Pf1v
-         6QSVbhGf0bFTc4JBtQ/BjU6pzCCcZYRPl5SNQ7MoZNXKcyR4FCoe2irg7Z9iQ9pirW2h
-         Iriw==
-X-Gm-Message-State: AOJu0YwWyG2i6Nxb+4tr2eyqHLVzP2ZdATrT3rUBKRGsRF2omiSufNEu
-        3bRQPQ+xfwYmDGNjhwrlgYkk5BsqcLzlp628HHA=
-X-Google-Smtp-Source: AGHT+IEKoxwq6A2/JicMDbM8aGodtHdUOuaUjdgyG7o7AHTJ4AAxIoojnOEyPkQS1Q7G8mOlw/GuW4y+dVRQsOx5Q3A=
-X-Received: by 2002:a17:90b:180b:b0:286:d42d:e6a with SMTP id
- lw11-20020a17090b180b00b00286d42d0e6amr413358pjb.28.1701734805437; Mon, 04
- Dec 2023 16:06:45 -0800 (PST)
+        bh=CXxRUBMltgF34LwxAb3e3DHyHstq0fsBeAaJoMUOcWA=;
+        b=W5OjHSKrJZvyCWnBljCl7adCsjXiDAbHaUgHvbDbbjMuQRRAovyc42z+Ta2XNxQKqm
+         KkDBcw7PdJrM7AAH7fkvBeLWZh/gg93ZxaypK5Q5cqTItkKxaQX93QzQBx7VdwIcRTWV
+         uEhGwXHfMXJIyRqRyi9odp0EThnZ+87xbOJ/NIGIVZqSwIdqsfkbEYzX4l8pKpJ3W+fz
+         ugeCAk3gBn2ztxipmxdO4cBJTNXypmWTAlDhqw7uJueMJ7VArpAtuQB/OjHkIF9YrjTw
+         tWxPxpFOQXj05Tgvi7XtFdrT/DyXBpRh3PIWXqotvsUOKpl2+mUao96gcMcTiZ1o2374
+         VREA==
+X-Gm-Message-State: AOJu0YxnxNYEv7zM8HqW8iDXrWCjP8zwSK5Dz3V7ZoGbo9R0RIblSgq9
+        wzn/fqerstGFL55TxQanzgeSd5YYK7bq2R/0TB4=
+X-Google-Smtp-Source: AGHT+IF9/LPawIP1YEm8gK6QD87oU95Do+mmLsroe4YfoU40ZSlR8NL53iMJJDPh0qLKlSxqzcsrKTO+zZ8NrAQx8ok=
+X-Received: by 2002:a17:90b:3509:b0:27c:f309:f381 with SMTP id
+ ls9-20020a17090b350900b0027cf309f381mr444092pjb.6.1701734834681; Mon, 04 Dec
+ 2023 16:07:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-20-irogers@google.com>
-In-Reply-To: <20231127220902.1315692-20-irogers@google.com>
+References: <20231127220902.1315692-1-irogers@google.com> <20231127220902.1315692-21-irogers@google.com>
+In-Reply-To: <20231127220902.1315692-21-irogers@google.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 4 Dec 2023 16:06:34 -0800
-Message-ID: <CAM9d7chpynqmnGpi+wpn0f3XvEtDNSisgdQcXQu_2LuHcLNuVA@mail.gmail.com>
-Subject: Re: [PATCH v5 19/50] perf maps: Do simple merge if given map doesn't overlap
+Date:   Mon, 4 Dec 2023 16:07:03 -0800
+Message-ID: <CAM9d7cjVreWV_8QW27YKpmTHSfbPq17rBAhwxa-AcsVHHa5psA@mail.gmail.com>
+Subject: Re: [PATCH v5 20/50] perf maps: Rename clone to copy from
 To:     Ian Rogers <irogers@google.com>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -92,51 +92,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Nov 27, 2023 at 2:10 PM Ian Rogers <irogers@google.com> wrote:
 >
-> Simplify merge in for the simple case of a non-overlapping map.
+> Rename maps__clone to maps__copy_from to be more intention revealing
+> of its behavior. Pass the underlying maps rather than the thread.
 >
 > Signed-off-by: Ian Rogers <irogers@google.com>
 
-A nitpick below.
-
-> ---
->  tools/perf/util/maps.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/tools/perf/util/maps.c b/tools/perf/util/maps.c
-> index 40df08dd9bf3..14e1a169433d 100644
-> --- a/tools/perf/util/maps.c
-> +++ b/tools/perf/util/maps.c
-> @@ -696,9 +696,20 @@ void maps__fixup_end(struct maps *maps)
->  int maps__merge_in(struct maps *kmaps, struct map *new_map)
->  {
->         struct map_rb_node *rb_node;
-> +       struct rb_node *first;
-> +       bool overlaps;
->         LIST_HEAD(merged);
->         int err = 0;
->
-> +       down_read(maps__lock(kmaps));
-> +       first = first_ending_after(kmaps, new_map);
-> +       overlaps = first &&
-> +               map__start(rb_entry(first, struct map_rb_node, rb_node)->map) < map__end(new_map);
-
-Can you please break this like below?
-
-    rb_node = first ? rb_entry(first, struct map_rb_node, rb_node) : NULL;
-    overlap = rb_node && map__start(rb_node->map) < map_end(new_map);
+Acked-by: Namhyung Kim <namhyung@kernel.org>
 
 Thanks,
 Namhyung
-
-
-> +       up_read(maps__lock(kmaps));
-> +
-> +       if (!overlaps)
-> +               return maps__insert(kmaps, new_map);
-> +
->         maps__for_each_entry(kmaps, rb_node) {
->                 struct map *old_map = rb_node->map;
->
-> --
-> 2.43.0.rc1.413.gea7ed67945-goog
->
