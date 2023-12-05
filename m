@@ -2,169 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA9980552F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8F8805534
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345306AbjLEMua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
+        id S1345324AbjLEMv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:51:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345305AbjLEMu2 (ORCPT
+        with ESMTP id S1345280AbjLEMv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:50:28 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7A710F;
-        Tue,  5 Dec 2023 04:50:33 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Sl0dY3gfQzFr8S;
-        Tue,  5 Dec 2023 20:46:09 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Dec 2023 20:50:30 +0800
-Message-ID: <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
-Date:   Tue, 5 Dec 2023 20:50:30 +0800
+        Tue, 5 Dec 2023 07:51:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA16A1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:51:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701780692; x=1733316692;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=yqBU4uMZOTuoM8vexIjTK+dTAG3NKg/dZ/f1dSzqbbI=;
+  b=e9kO1Jf/j70sP0ufbLryPe0wb+UJ7laoZnoRTcr6Uq4Rt+YFf4sxIaic
+   /SZjrKjD//K+hLvqGO15kHfuElopWiu4xPcP5Yck3sp8nSVBbWgFbDIVd
+   NCyHxvq+L73M/1hFs9aX1VLBgmx222eWgtAgiv9LSA1kbT+upZk2RuiT6
+   hYv+ChUV+c2UUEQEfEhJjogvMkb/3u1840WfmsBjFwx2yFkj06BgmEdS7
+   EYUGfNz2R3S6cKaDNHI0FZOO2YzTLEKrdAqmCcNM5isfV5tD6KUmxOcGk
+   k84eIIO9RTJ86EcO/eIsgrzbZ0TcLmJgFHy3XRVYFD1Hfyavhz9+d9uV7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="397785143"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="397785143"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 04:51:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="770903773"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="770903773"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 05 Dec 2023 04:51:30 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAUtc-0008zF-0I;
+        Tue, 05 Dec 2023 12:51:28 +0000
+Date:   Tue, 5 Dec 2023 20:51:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kalesh Singh <kaleshsingh@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>, Fuad Tabba <tabba@google.com>
+Subject: arch/arm64/kvm/hyp/nvhe/stacktrace.c:10:1: sparse: sparse: symbol
+ '__pcpu_scope_overflow_stack' was not declared. Should it be static?
+Message-ID: <202312052052.bATfAK4k-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Content-Language: en-US
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>,
-        <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <willy@infradead.org>,
-        <akpm@linux-foundation.org>, <ritesh.list@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
- <20231204144106.fk4yxc422gppifsz@quack3>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20231204144106.fk4yxc422gppifsz@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/4 22:41, Jan Kara wrote:
-> On Mon 04-12-23 21:50:18, Baokun Li wrote:
->> On 2023/12/4 20:11, Jan Kara wrote:
->>> On Sat 02-12-23 17:14:30, Baokun Li wrote:
->>>> Recently, while running some pressure tests on MYSQL, noticed that
->>>> occasionally a "corrupted data in log event" error would be reported.
->>>> After analyzing the error, I found that extending DIO write and buffered
->>>> read were competing, resulting in some zero-filled page end being read.
->>>> Since ext4 buffered read doesn't hold an inode lock, and there is no
->>>> field in the page to indicate the valid data size, it seems to me that
->>>> it is impossible to solve this problem perfectly without changing these
->>>> two things.
->>> Yes, combining buffered reads with direct IO writes is a recipe for
->>> problems and pretty much in the "don't do it" territory. So honestly I'd
->>> consider this a MYSQL bug. Were you able to identify why does MYSQL use
->>> buffered read in this case? It is just something specific to the test
->>> you're doing?
->> The problem is with a one-master-twoslave MYSQL database with three
->> physical machines, and using sysbench pressure testing on each of the
->> three machines, the problem occurs about once every two to three hours.
->>
->> The problem is with the relay log file, and when the problem occurs, the
->> middle dozens of bytes of the file are read as all zeros, while the data on
->> disk is not. This is a journal-like file where a write process gets the data
->> from
->> the master node and writes it locally, and another replay process reads the
->> file and performs the replay operation accordingly (some SQL statements).
->> The problem is that when replaying, it finds that the data read is
->> corrupted,
->> not valid SQL data, while the data on disk is normal.
->>
->> It's not confirmed that buffered reads vs direct IO writes is actually
->> causing this issue, but this is the only scenario that we can reproduce
->> with our local simplified scripts. Also, after merging in patch 1, the
->> MYSQL pressure test scenario has now been tested for 5 days and has not
->> been reproduced.
->>
->> I'll double-check the problem scenario, although buffered reads with
->> buffered writes doesn't seem to have this problem.
-> Yeah, from what you write it seems that the replay code is using buffered
-> reads on the journal file. I guess you could confirm that with a bit of
-> kernel tracing but the symptoms look pretty convincing. Did you try talking
-> to MYSQL guys about why they are doing this?
-The operations performed on the relay log file are buffered reads and 
-writes,
-which I confirmed with the following bpftrace script:
-```
-#include <linux/fs.h>
-#include <linux/path.h>
-#include <linux/dcache.h>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 548ec3336f323db56260b312c232ab37285f0284 KVM: arm64: On stack overflow switch to hyp overflow_stack
+date:   1 year, 4 months ago
+config: arm64-randconfig-r112-20231117 (https://download.01.org/0day-ci/archive/20231205/202312052052.bATfAK4k-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231205/202312052052.bATfAK4k-lkp@intel.com/reproduce)
 
-kprobe:generic_file_buffered_read /!strncmp(str(((struct kiocb 
-*)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
-     printf("read path: %s\n", str(((struct kiocb 
-*)arg0)->ki_filp->f_path.dentry->d_name.name));
-}
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312052052.bATfAK4k-lkp@intel.com/
 
-kprobe:ext4_buffered_write_iter /!strncmp(str(((struct kiocb 
-*)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
-     printf("write path: %s\n", str(((struct kiocb 
-*)arg0)->ki_filp->f_path.dentry->d_name.name));
-}
-```
-I suspect there are DIO writes causing the problem, but I haven't caught
-any DIO writes to such files via bpftrace.
->>>> In this series, the first patch reads the inode size twice, and takes the
->>>> smaller of the two values as the copyout limit to avoid copying data that
->>>> was not actually read (0-padding) into the user buffer and causing data
->>>> corruption. This greatly reduces the probability of problems under 4k
->>>> page. However, the problem is still easily triggered under 64k page.
->>>>
->>>> The second patch waits for the existing dio write to complete and
->>>> invalidate the stale page cache before performing a new buffered read
->>>> in ext4, avoiding data corruption by copying the stale page cache to
->>>> the user buffer. This makes it much less likely that the problem will
->>>> be triggered in a 64k page.
->>>>
->>>> Do we have a plan to add a lock to the ext4 buffered read or a field in
->>>> the page that indicates the size of the valid data in the page? Or does
->>>> anyone have a better idea?
->>> No, there are no plans to address this AFAIK. Because such locking will
->>> slow down all the well behaved applications to fix a corner case for
->>> application doing unsupported things. Sure we must not crash the kernel,
->>> corrupt the filesystem or leak sensitive (e.g. uninitialized) data if app
->>> combines buffered and direct IO but returning zeros instead of valid data
->>> is in my opinion fully within the range of acceptable behavior for such
->>> case.
->>>
->> I also feel that a scenario like buffered reads + DIO writes is strange.
->> But theoretically when read doesn't return an error, the data read
->> shouldn't be wrong.  And I tested that xfs guarantees data consistency in
->> this scenario, which is why I thought it might be buggy.
-> Yes, XFS has inherited stronger consistency guarantees from IRIX times than
-> Linux filesystems traditionally had. We generally don't even guarantee
-> buffered read vs buffered write atomicity (i.e., buffered read can see a
-> torn buffered write).
->
-> 								Honza
-I'm a bit confused here, buffered read vs buffered write uses the same 
-page and
-appears to be protected by a memory barrier, how does the inconsistency 
-occur?
+sparse warnings: (new ones prefixed by >>)
+>> arch/arm64/kvm/hyp/nvhe/stacktrace.c:10:1: sparse: sparse: symbol '__pcpu_scope_overflow_stack' was not declared. Should it be static?
 
+vim +/__pcpu_scope_overflow_stack +10 arch/arm64/kvm/hyp/nvhe/stacktrace.c
 
-Thanks!
+     9	
+  > 10	DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack)
+
 -- 
-With Best Regards,
-Baokun Li
-.
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
