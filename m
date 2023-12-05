@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A43805C3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDDF805C51
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346403AbjLEP4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:56:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
+        id S1346440AbjLEP5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:57:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232244AbjLEP4a (ORCPT
+        with ESMTP id S232244AbjLEP53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:56:30 -0500
+        Tue, 5 Dec 2023 10:57:29 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25924C3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:56:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B2F9C433C8;
-        Tue,  5 Dec 2023 15:56:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD10ABA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:57:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5137CC433C8;
+        Tue,  5 Dec 2023 15:57:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701791796;
-        bh=rxx7r4kYMIc5POiSPA+UFcBMnkPATUU27TPKjCSbTug=;
+        s=k20201202; t=1701791855;
+        bh=WgrVkII6Qt1b4rQxQZ7m71wjsB2HLj5ZsjzJ5yzkPuA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SrclWcSvdEp8X5JfZi9UsGROvTw1ITfTjKbxGAFZN6AWew4mS9aqtLuSwk5OnGQmo
-         HgNKBOeVjU+sSusuEmXpVu+aIGDM1EnHrrGR6ZrGAYQxhx07/7f6qgLu1/E7FmrMby
-         LrxF0Pxb3luwfKw7ik9R5Yi6zkSZH1hXkDTmHBql5O8mMlHv9rbeTRV6EIpDbaVCAW
-         artsmSS1QY6oLZNih6izkTTqOymOv3v/cxCPEtqsG1cOA34CFIvV/Oj7tpSs+OWDOm
-         CnVjAJHKi5aybKcR69es27jKbRIZivWHBAaebs6U9wSmK5VXdcXtxVvlgiPbEkm/ds
-         fgMKVN8t5cHWg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 8F63240094; Tue,  5 Dec 2023 12:56:34 -0300 (-03)
-Date:   Tue, 5 Dec 2023 12:56:34 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Chengen Du <chengen.du@canonical.com>, namhyung@kernel.org,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        adrian.hunter@intel.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf symbols: Parse NOTE segments until the build id is
- found
-Message-ID: <ZW9IMo44Q+jM4W7Q@kernel.org>
-References: <20231130135723.17562-1-chengen.du@canonical.com>
- <CAP-5=fWGfaTwhJRHWUZgRwb4Z16C=zdWWjb8eeQB6PReEtw9Sw@mail.gmail.com>
+        b=YTvBMMg8ecKR5ZF561HEQW/VK65TRDd+a3xGYtju8FHcPe/8cMjHfKM4OYNqz0D6b
+         Kc6XI+UgRd7zeyhKPc44yEmAQ7pPxwcrN205q2PRXktR4G1UvJ7oTnMHPl8XGrkvTq
+         h3LkYTQCyhwvz4Irb5h8AQCASxcBuUMWz6uSTmQaI39tib7uHCjh8t9dBPxoRSPWAD
+         b0rYqcM7H7Dr/d2HTR/hxHRrIxMW5PVlwb9w1ldpp51LQZ0yCoVSVZAkQWc+ahrXCa
+         TiXcJWlE/lYDH5/hgVpNZoK68XayvsJfW4zu4BCZse2Laqoep+CofdUzChw4V6CfCr
+         XiF1idyVJKOFA==
+Date:   Tue, 5 Dec 2023 15:57:28 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Kory Maincent <kory.maincent@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        Dent Project <dentproject@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
+ driver
+Message-ID: <88ed0c94-d052-4564-be0c-79a0f502eda8@sirena.org.uk>
+References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
+ <20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
+ <20231204225956.GG981228@pengutronix.de>
+ <20231205064527.GJ981228@pengutronix.de>
+ <4b96b8c8-7def-46e5-9c85-d9e925fb9251@sirena.org.uk>
+ <20231205140203.GK981228@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1jzDBs4dDTXFfKTt"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWGfaTwhJRHWUZgRwb4Z16C=zdWWjb8eeQB6PReEtw9Sw@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20231205140203.GK981228@pengutronix.de>
+X-Cookie: I've Been Moved!
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,18 +73,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 30, 2023 at 10:23:31AM -0800, Ian Rogers escreveu:
-> On Thu, Nov 30, 2023 at 5:57 AM Chengen Du <chengen.du@canonical.com> wrote:
-> >
-> > In the ELF file, multiple NOTE segments may exist.
-> > To locate the build id, the process shall persist
-> > in parsing NOTE segments until the build id is found.
-> >
-> > Signed-off-by: Chengen Du <chengen.du@canonical.com>
-> 
-> Acked-by: Ian Rogers <irogers@google.com>
 
-Thanks, applied to perf-tools-next.
+--1jzDBs4dDTXFfKTt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-- Arnaldo
+On Tue, Dec 05, 2023 at 03:02:03PM +0100, Oleksij Rempel wrote:
+> On Tue, Dec 05, 2023 at 12:55:18PM +0000, Mark Brown wrote:
+> > On Tue, Dec 05, 2023 at 07:45:27AM +0100, Oleksij Rempel wrote:
 
+> > > CC regulator devs here too.
+
+> > Again, I'm not sure what if any question there is?
+
+> PSE is kind of PMIC for Ethernet ports. I assume, it is good to let you
+> know at least about existence drivers.
+
+OK...  I mean, if they're not using the regulator framework I'm not sure
+it has much impact - there are plenty of internal regulators in devices
+already so it wouldn't be *too* unusual other than the fact that AFAICT
+this is somewhat split between devices within the subsystem?  Neither of
+the messages was super clear.
+
+--1jzDBs4dDTXFfKTt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVvSGcACgkQJNaLcl1U
+h9CZ9wf9HEE6iEOCJJpkzG8SBnMctFeBTnq/N662MsvQUGH/qkPPK4oVmr897esm
+HvW9VOSP95JsOrrQrjMEPwm8n4ZDJARuPmCJbh8uHnC3IQAzNYcxKdalN57NAZh+
+1rWfnT6i9rXV68+HB+UQPxhmdYxVAD4u7TfnY9O63FbgZgi8KocKSq61mECuIDf+
+8b51YRkK6SLebysFki+gFZU+e2dCjit9nt1c3o4CBERlAxhghRl2WrJD/HCaUwPC
+TiAsMFSalALFK1mzNjHp/7PW3HGYrhAU1R1EYgjy7FS4+x52of9utSuDoBrNTB60
+YiUS3lNVeG6kJiVJ5Ffw8B9JZOK1HQ==
+=0JPO
+-----END PGP SIGNATURE-----
+
+--1jzDBs4dDTXFfKTt--
