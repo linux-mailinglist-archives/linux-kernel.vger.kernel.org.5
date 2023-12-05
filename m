@@ -2,145 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 643EA805748
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:26:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFBD805749
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 15:26:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346883AbjLEO0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:26:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34204 "EHLO
+        id S1345916AbjLEO0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:26:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346875AbjLEOZt (ORCPT
+        with ESMTP id S235465AbjLEO0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:25:49 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C744D183;
-        Tue,  5 Dec 2023 06:25:54 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4159340E0173;
-        Tue,  5 Dec 2023 14:25:51 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id LWkzj2GtuatA; Tue,  5 Dec 2023 14:25:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701786348; bh=6F+/RPhB9lKVw4huSkDDXm/bjBM3T+9fTprCXpFgfjk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kgh5wyRVDx3Q+5phGnCP1FvPZByejUfqJ0E59NiY64BWKbMWLRVxc+LyEN93Kke10
-         PhahORLdeA/Ez/hruDwyBL6Q3rW7pPwQZNqIKK6cJQmMAkgIiTFvQG5WAEdRjOhdzo
-         +wh7DzuFfMJJLJ4WiGHwSavfGDnZ8UIdE9MxHevKoq5UOMAIHoT7KoLl8MNmzliXuP
-         eoLbyYGwJwgz6AIspFsHl8+VMJTXbgAB9+5x8gXIXPmNh5YizlYlxdlbnLsDGiOBNI
-         XwKPVnRclRhRZX/ny75i5dt578g2i1HyGwLwKEIoyjAEXFYXCFqHVHkieK2u75Thp7
-         mFFnES5CjAy7QAm8uJ9QZ3jnefWQe8S+g+f5KcgAhMw6O7P8nRXN0SWCRH5c8fVbWp
-         AmLDRsxrJZGXsuxwh7LnONvc6jfHKMhc8DWiAWELsd8+T0iF5u3t19KgKb0hSFS1pu
-         V53d0R+BUUa+rzFH0mr/WArU4CbY6bniO1tG+wB0yc8DIDBRkiaBirRHGFLTAKeXoP
-         KcA0UfL9cjgGA3Z2iU0F85UgyvZpPCwAKP76+piWyK4Hu7Hde5/1Qybqv5cqTWWNvq
-         C9V56lAjimDyAM7R03SpNMzsjjDx3ZstKmKczG2lh4qzhNkpdMahyEirnF8GrZ9W+7
-         COsIwD9U6XMDaMSE22AMHVQE=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2399C40E014B;
-        Tue,  5 Dec 2023 14:25:22 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 15:25:17 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
-        peterz@infradead.org, tony.luck@intel.com, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
-        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com
-Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
- #MC due to erratum
-Message-ID: <20231205142517.GBZW8yzVDEKIVTthSx@fat_crate.local>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
+        Tue, 5 Dec 2023 09:26:20 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54C290;
+        Tue,  5 Dec 2023 06:26:26 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40b5155e154so61390465e9.3;
+        Tue, 05 Dec 2023 06:26:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701786385; x=1702391185; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Op8EMMLSn4u+aBPhlPBNq3QMTgHXM3GBpRsFBgi0BfQ=;
+        b=Je+fNcYYEL+oFZXHBG4vyEm4q3MDARjCNpqHxjZnjM73qqZMRPVD7xWZibgPTy3/qZ
+         cZ8IXlBB5x0tjJMdxDVWKk3z3BjzFi3X1paWRN+UEdh+T3DddyG+cimxxBfEEFaBW6E/
+         ksHVOnfKLbiMXQk9AGNjof23UTBc9YcjXzmsaZH5pbEVa6P+wzBYPzH5cu7dKdJtrQMh
+         uKQ/r54G+UJpU6cqaRA3UmR9U7XTCcCTE2WMnHPL8Epk49F602I7KbEMwBGF1/hvwnNo
+         dOXjcZoiWBK9RZeYs5Fi76sJn4nFe7doVl6pARNwGz4QT1cIckkCePFkTQLeXxmbSHUG
+         gxHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701786385; x=1702391185;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Op8EMMLSn4u+aBPhlPBNq3QMTgHXM3GBpRsFBgi0BfQ=;
+        b=dzH6VgYL2LMwnS30vzjJhaVXTq31R7cx0QQDTbh92Wrco9v9OBnX8Lc8ST1acPKaPU
+         VZL56HFq97M/uWJv4ERUImKDOo6fdDRLu7zpBgqyaIdexAav3qJZKTAMLGQ9uoQki/cQ
+         NBQgparuqcNzUelqonsVzhTJ14wXb4vW8/nCt1jH0RaX9TuVEXKOnwxkvWCyGaIBlI8G
+         nwazp/4BLRmfxQePJgk1/I0Si5Rn6tCw1uHu+DLwT5m4wGOgACiGJ/nVLbei6YyBU80t
+         ezpCKatvYywYsIjnqgc74uQmGhwPUaoLT6/2yegvHwvIMYiegkfCj+DcvOs7zlByIMoy
+         2t+Q==
+X-Gm-Message-State: AOJu0YwzAzKu92baV5gGxaknFvOj9FhAHzuvVJJIljX+N/DtMD+DePBx
+        judPtpq3C2Tfz64Ke2OgfGhN0bjE6Q==
+X-Google-Smtp-Source: AGHT+IHHROYIemcb/wsY8oPQMU7gMIn1gsTtBT9VDn93wCGrv8ctub0VOQUxcGsJwZ8m28SEOnej3w==
+X-Received: by 2002:a05:600c:4f50:b0:40b:5e1f:6fd9 with SMTP id m16-20020a05600c4f5000b0040b5e1f6fd9mr501528wmq.46.1701786384964;
+        Tue, 05 Dec 2023 06:26:24 -0800 (PST)
+Received: from p183 ([46.53.254.107])
+        by smtp.gmail.com with ESMTPSA id t20-20020a05600c451400b004094e565e71sm19022491wmo.23.2023.12.05.06.26.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 06:26:24 -0800 (PST)
+Date:   Tue, 5 Dec 2023 17:26:22 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH] ELF: supply userspace with available page shifts
+ (AT_PAGE_SHIFT_LIST)
+Message-ID: <75344429-1f34-4a14-ab10-8613846d694e@p183>
+References: <6b399b86-a478-48b0-92a1-25240a8ede54@p183>
+ <87v89dvuxg.fsf@oldenburg.str.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
+In-Reply-To: <87v89dvuxg.fsf@oldenburg.str.redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 12:55:59AM +1300, Kai Huang wrote:
-> +static const char *mce_memory_info(struct mce *m)
-> +{
-> +	if (!m || !mce_is_memory_error(m) || !mce_usable_address(m))
-> +		return NULL;
-> +
-> +	/*
-> +	 * Certain initial generations of TDX-capable CPUs have an
-> +	 * erratum.  A kernel non-temporal partial write to TDX private
-> +	 * memory poisons that memory, and a subsequent read of that
-> +	 * memory triggers #MC.
-> +	 *
-> +	 * However such #MC caused by software cannot be distinguished
-> +	 * from the real hardware #MC.  Just print additional message
-> +	 * to show such #MC may be result of the CPU erratum.
-> +	 */
-> +	if (!boot_cpu_has_bug(X86_BUG_TDX_PW_MCE))
-> +		return NULL;
-> +
-> +	return !tdx_is_private_mem(m->addr) ? NULL :
-> +		"TDX private memory error. Possible kernel bug.";
-> +}
-> +
->  static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
->  {
->  	struct llist_node *pending;
->  	struct mce_evt_llist *l;
->  	int apei_err = 0;
-> +	const char *memmsg;
->  
->  	/*
->  	 * Allow instrumentation around external facilities usage. Not that it
-> @@ -283,6 +307,15 @@ static noinstr void mce_panic(const char *msg, struct mce *final, char *exp)
->  	}
->  	if (exp)
->  		pr_emerg(HW_ERR "Machine check: %s\n", exp);
-> +	/*
-> +	 * Confidential computing platforms such as TDX platforms
-> +	 * may occur MCE due to incorrect access to confidential
-> +	 * memory.  Print additional information for such error.
-> +	 */
-> +	memmsg = mce_memory_info(final);
-> +	if (memmsg)
-> +		pr_emerg(HW_ERR "Machine check: %s\n", memmsg);
-> +
+On Tue, Dec 05, 2023 at 10:51:39AM +0100, Florian Weimer wrote:
+> * Alexey Dobriyan:
+> 
+> > +/*
+> > + * Page sizes available for mmap(2) encoded as 1 page shift per byte in
+> > + * increasing order.
+> > + *
+> > + * Thus 32-bit systems get 4 shifts, 64-bit systems get 8 shifts tops.
+> 
+> Couldn't you use the bits in a long instead, to indicate which shifts
+> are present?  That's always going to be enough.
 
-No, this is not how this is done. First of all, this function should be
-called something like
+Yes!
 
-	mce_dump_aux_info()
+I was so proud of myself for this line:
 
-or so to state that it is dumping some auxiliary info.
+	val |= 21 << (s += 8);
 
-Then, it does:
-
-	if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
-		return tdx_get_mce_info();
-
-or so and you put that tdx_get_mce_info() function in TDX code and there
-you do all your picking apart of things, what needs to be dumped or what
-not, checking whether it is a memory error and so on.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Now it is boring bitmask again :-)
