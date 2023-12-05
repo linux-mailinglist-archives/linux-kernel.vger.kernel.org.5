@@ -2,155 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BC8804850
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2BB804852
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbjLEDxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 22:53:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
+        id S231624AbjLEDyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 22:54:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjLEDxW (ORCPT
+        with ESMTP id S229611AbjLEDyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 22:53:22 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7466AC6;
-        Mon,  4 Dec 2023 19:53:29 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-58e28e0461bso1723893eaf.1;
-        Mon, 04 Dec 2023 19:53:29 -0800 (PST)
+        Mon, 4 Dec 2023 22:54:01 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEDDC6;
+        Mon,  4 Dec 2023 19:54:08 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d0538d9bbcso33144485ad.3;
+        Mon, 04 Dec 2023 19:54:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701748409; x=1702353209; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=yMlipu20UYvgghTH7yK/DQyqHGpCso8cXNl7YDlvHV4=;
-        b=XuRrX+3qK4t3tsqm2W5a3uayy1o83YWRIhBqNqZkWFWFhxEBAFthbCVcvLKevCGBTh
-         Zh1TJaxYu0Ez4MQP3x+MowpSWTKtzVjRVHHxPMKsZKo+swd5aaZvZokVnT4yN3hS/11n
-         z1ysGAwhfIJdLp+0rpZivU2+DgDNAsHdVy1nswYcsWACtrWm30p5Vbf+/AFmD12DlvXp
-         XDCY6z1nrxTVw+o7sZ4ybgzAXEvnXa6LcGbsAyp8jB1ESM8j42KBuOL+ntKrrz3Mpc9q
-         32w8An1fXDXhwc1+nATwxU1e/DbRMVY6am8riFIyiG30gk4sRMarQ9EBSDAc0gwG1QDV
-         kdiA==
+        d=gmail.com; s=20230601; t=1701748447; x=1702353247; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mAbPD6wQF1oZm18W+YGadKrbUnABiAjudnkBSiNtMNk=;
+        b=j6K24kk71kbHS102yFwaK4HFznHq8/pUO0udCrOpXtSw873r5qkAQC3B6RUfFt1rF9
+         QhyoAG4jcTqs2lsZXV/zZTenqiB4CHm2lcKIUhY+wt7G5CeA4iEdHX073PYkvk+OSQZj
+         csJnyKsLjrQtXB1lCxO/19DQAxfrhNB0lU+Wz4htHDz4tNsNi+PEqHbd4dzydXRLRfwY
+         p2vix5GwkdlWykVMfqr69rH/7MoT4r8kZipAzIWUx7nXl12UenDMgMN8YVaG4s0ewRdc
+         2oQfp4aZH8beM5rjIK32DgyhR96JQrmGFhFVjEu4ubtJMuLgfnqQ8okPTsoe/f214kmg
+         UlUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701748409; x=1702353209;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yMlipu20UYvgghTH7yK/DQyqHGpCso8cXNl7YDlvHV4=;
-        b=Rn6EMByPIb7pNn5sZYeuUjGnyKDNOlFCccN0MFhK9v1GtNvkKeujDLApEfLVUTHLtJ
-         DVXNZKP0xpXJFEnaD5zD+q9l7paFrSr8+iYzIO5vdHgGxO4ix0ws/lqTdX8pdo06t1Ak
-         vUPWyu+d7PH/Wl1gwFcqLuU1bv1hgoHZWqgmV8QuRiNG98cK5HE1aU2UhGsPL3G5u3j0
-         C8bwhT6XIMY0v5WarOnzUHxc+9MY/rX4J/ojW7zX/jjoMVHeJqAlPltx1eB+9ZX0aD7p
-         NZ/cWDCelAjoqC10/k6+44nSS/AtESAcT3NltQzliwQIpSzejC6gwKgiy2X3MRO7btcb
-         1QDA==
-X-Gm-Message-State: AOJu0YzyYj6dJDqNrea47TPh3MNobFlSATBUi/4oNbJlEMgeb+PtrQ0E
-        aWZL4+n1DxoQqVaCWm8f4AM=
-X-Google-Smtp-Source: AGHT+IHU6n/h4gPzeKgRihvC/XsoaUJ238XyaynjfYs3PCK4g+2uVE7ZX15hbO0e9OJ+hevG6s8Fxw==
-X-Received: by 2002:a05:6870:1d09:b0:1fb:75a:6d44 with SMTP id pa9-20020a0568701d0900b001fb075a6d44mr5995704oab.107.1701748408675;
-        Mon, 04 Dec 2023 19:53:28 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id hl19-20020a0568701b1300b001fb1e7ec1besm1935723oab.39.2023.12.04.19.53.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Dec 2023 19:53:28 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <7ac20588-3816-4e53-be31-8cc4c0de7caa@roeck-us.net>
-Date:   Mon, 4 Dec 2023 19:53:26 -0800
+        d=1e100.net; s=20230601; t=1701748447; x=1702353247;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mAbPD6wQF1oZm18W+YGadKrbUnABiAjudnkBSiNtMNk=;
+        b=po4AiPXMwQQVEQjnrHOwCkqJ6mVPH7flUH2ofM/htk0vgi38humxDh9rjHXf78mMV0
+         NqmP2z2BNXhftoc4yyhrUFe0mmTcDxeO9qmnKy/RcSJKBFL9sxGAD1fgRkdM+ACJxkLF
+         XfJLWw747gP4yZaPdfVCrfS8d6qaZn6TvRdBkuxCDSIflmLsS8a65JHHXS69EBGw/vEN
+         h0/wmASqXszCSyEO1uLMldfLQGhL28u853KU5sxWNfayD9z6PVWXvlQNQlPpqJwv4Ttn
+         VUog6/wgeBWxQSibZzz+Upw2AQTpvLYyukurmtA3Pn2zBpdZYEsTxBbYpE4O/flyNZFb
+         ODLQ==
+X-Gm-Message-State: AOJu0YyRxZFefXdaAATEPlw48+iV7fhZuV4DTjONrVGzaSiApC0x9cnr
+        OxFmEYzMZNFgLNV2aYa/sx0=
+X-Google-Smtp-Source: AGHT+IFHkFZVcbXxpT9yPIquBFa0+sY7wZfP3KL5IkCETaB32tGMnTODGeGvGDme+trhJ5fdRZNd3A==
+X-Received: by 2002:a17:902:f54c:b0:1d0:6ffd:e2b0 with SMTP id h12-20020a170902f54c00b001d06ffde2b0mr6599717plf.74.1701748447380;
+        Mon, 04 Dec 2023 19:54:07 -0800 (PST)
+Received: from localhost.localdomain ([1.245.180.67])
+        by smtp.gmail.com with ESMTPSA id i8-20020a17090332c800b001b8b2a6c4a4sm9168837plr.172.2023.12.04.19.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 19:54:06 -0800 (PST)
+Date:   Tue, 5 Dec 2023 12:53:51 +0900
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 01/21] mm/slab, docs: switch mm-api docs generation
+ from slab.c to slub.c
+Message-ID: <ZW6ez8IvvS9ojnZx@localhost.localdomain>
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-1-9c9c70177183@suse.cz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.4 00/94] 5.4.263-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        allen.lkml@gmail.com
-References: <20231205031522.815119918@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231205031522.815119918@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120-slab-remove-slab-v2-1-9c9c70177183@suse.cz>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/4/23 19:16, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.263 release.
-> There are 94 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Nov 20, 2023 at 07:34:12PM +0100, Vlastimil Babka wrote:
+> The SLAB implementation is going to be removed, and mm-api.rst currently
+> uses mm/slab.c to obtain kerneldocs for some API functions. Switch it to
+> mm/slub.c and move the relevant kerneldocs of exported functions from
+> one to the other. The rest of kerneldocs in slab.c is for static SLAB
+> implementation-specific functions that don't have counterparts in slub.c
+> and thus can be simply removed with the implementation.
 > 
-> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  Documentation/core-api/mm-api.rst |  2 +-
+>  mm/slab.c                         | 21 ---------------------
+>  mm/slub.c                         | 21 +++++++++++++++++++++
+>  3 files changed, 22 insertions(+), 22 deletions(-)
+> 
+> diff --git a/Documentation/core-api/mm-api.rst b/Documentation/core-api/mm-api.rst
+> index 2d091c873d1e..af8151db88b2 100644
+> --- a/Documentation/core-api/mm-api.rst
+> +++ b/Documentation/core-api/mm-api.rst
+> @@ -37,7 +37,7 @@ The Slab Cache
+>  .. kernel-doc:: include/linux/slab.h
+>     :internal:
+>  
+> -.. kernel-doc:: mm/slab.c
+> +.. kernel-doc:: mm/slub.c
+>     :export:
+>  
+>  .. kernel-doc:: mm/slab_common.c
+> diff --git a/mm/slab.c b/mm/slab.c
+> index 9ad3d0f2d1a5..37efe3241f9c 100644
+> --- a/mm/slab.c
+> +++ b/mm/slab.c
+> @@ -3491,19 +3491,6 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+>  }
+>  EXPORT_SYMBOL(kmem_cache_alloc_bulk);
+>  
+> -/**
+> - * kmem_cache_alloc_node - Allocate an object on the specified node
+> - * @cachep: The cache to allocate from.
+> - * @flags: See kmalloc().
+> - * @nodeid: node number of the target node.
+> - *
+> - * Identical to kmem_cache_alloc but it will allocate memory on the given
+> - * node, which can improve the performance for cpu bound structures.
+> - *
+> - * Fallback to other node is possible if __GFP_THISNODE is not set.
+> - *
+> - * Return: pointer to the new object or %NULL in case of error
+> - */
+>  void *kmem_cache_alloc_node(struct kmem_cache *cachep, gfp_t flags, int nodeid)
+>  {
+>  	void *ret = slab_alloc_node(cachep, NULL, flags, nodeid, cachep->object_size, _RET_IP_);
+> @@ -3564,14 +3551,6 @@ void __kmem_cache_free(struct kmem_cache *cachep, void *objp,
+>  	__do_kmem_cache_free(cachep, objp, caller);
+>  }
+>  
+> -/**
+> - * kmem_cache_free - Deallocate an object
+> - * @cachep: The cache the allocation was from.
+> - * @objp: The previously allocated object.
+> - *
+> - * Free an object which was previously allocated from this
+> - * cache.
+> - */
+>  void kmem_cache_free(struct kmem_cache *cachep, void *objp)
+>  {
+>  	cachep = cache_from_obj(cachep, objp);
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 63d281dfacdb..3e01731783df 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3518,6 +3518,19 @@ void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
+>  			       caller, orig_size);
+>  }
+>  
+> +/**
+> + * kmem_cache_alloc_node - Allocate an object on the specified node
+> + * @s: The cache to allocate from.
+> + * @gfpflags: See kmalloc().
+> + * @node: node number of the target node.
+> + *
+> + * Identical to kmem_cache_alloc but it will allocate memory on the given
+> + * node, which can improve the performance for cpu bound structures.
+> + *
+> + * Fallback to other node is possible if __GFP_THISNODE is not set.
+> + *
+> + * Return: pointer to the new object or %NULL in case of error
+> + */
+>  void *kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags, int node)
+>  {
+>  	void *ret = slab_alloc_node(s, NULL, gfpflags, node, _RET_IP_, s->object_size);
+> @@ -3822,6 +3835,14 @@ void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller)
+>  	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, caller);
+>  }
+>  
+> +/**
+> + * kmem_cache_free - Deallocate an object
+> + * @s: The cache the allocation was from.
+> + * @x: The previously allocated object.
+> + *
+> + * Free an object which was previously allocated from this
+> + * cache.
+> + */
+>  void kmem_cache_free(struct kmem_cache *s, void *x)
+>  {
+>  	s = cache_from_obj(s, x);
 > 
 
-Building arm64:allmodconfig ... failed
---------------
-Error log:
-drivers/mmc/host/sdhci-sprd.c: In function 'sdhci_sprd_set_power':
-drivers/mmc/host/sdhci-sprd.c:393:17: error: implicit declaration of function 'mmc_regulator_disable_vqmmc'; did you mean 'mmc_regulator_set_vqmmc'? [-Werror=implicit-function-declaration]
-   393 |                 mmc_regulator_disable_vqmmc(mmc);
-       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-       |                 mmc_regulator_set_vqmmc
-drivers/mmc/host/sdhci-sprd.c:396:17: error: implicit declaration of function 'mmc_regulator_enable_vqmmc'; did you mean 'mmc_regulator_set_vqmmc'? [-Werror=implicit-function-declaration]
-   396 |                 mmc_regulator_enable_vqmmc(mmc);
-       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~
-       |                 mmc_regulator_set_vqmmc
+Looks good to me,
+Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 
-Commit 2b11e5bd4ac0 ("mmc: sdhci-sprd: Fix vqmmc not shutting down after
-the card was pulled") calls those functions without introducing them.
-
-Guenter
-
+> -- 
+> 2.42.1
+> 
+> 
