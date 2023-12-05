@@ -2,53 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A68804555
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA2E80455A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376333AbjLECuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:50:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
+        id S1376444AbjLECwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbjLECuS (ORCPT
+        with ESMTP id S1344119AbjLECwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:50:18 -0500
+        Mon, 4 Dec 2023 21:52:05 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DE7CD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:50:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2114DC433C7;
-        Tue,  5 Dec 2023 02:50:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701E6BF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:52:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CE33C433C7;
+        Tue,  5 Dec 2023 02:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701744625;
-        bh=0bZHE1UC4zNYDt6+dzC6pa74YJUhHbXyySy8ouGxeeQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=O/ZZ+2A4/LzMqjFfdifSg7FmWp8IuaJaF5goYRtggUZr2FxlhxL74HAHQHvY678k+
-         cErMQHndtAXNRr69OrECzH8FLEX42TWGVIxNmCdxX23HlzvVrhJPmiSRInNBLcAtzC
-         XFQVTzPjrooMd4Cvv8gQf5FfjwDpvT+sBgMBSnY+MhHvSneX5FFOF9ZMjbqt7MLaC1
-         Q6at5rKPopJg7k0LyhKzPB+KsiPDe0SzVo+fs+b8ZWCeEyEue1TQW3NrI9qdqbfIed
-         SL9wX5hjlJ8Ru6xYi7A//WGIuLpw5//1iNses7v5B6WynAw4jVcDW4Q5/movhACe7G
-         kh/SQ0yNRWvFw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 08101C41677;
-        Tue,  5 Dec 2023 02:50:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1701744732;
+        bh=EdPT0D7iQR/UUGO665qQNSALpBEJ+4Q7yzIggGYt+IY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qEl86zg3qrkgdVwO1uWAQ0QtcHS86eAhjAyo3Ut2ID/fjR4NsfF1zNAhvKXSseiCp
+         ppA7cOlhod8g9lYZt+hSF1pHHBfDxHhB5nuqsHOvJ2trZSPCPWW+LvLOzWCn30AOd3
+         smkPzXI57CHH9PjHLAPCFkANWCsuMeDT03stNBpgZUMEyBFVIpYdwgdTEp5vqzTYr9
+         KP8IRoU2g30RRmNvShYWSrlDaJh0dasDkShMwWMLTURdtIZGBp5MHKe446v0/EX6kt
+         TJNmdQRWr8pRvoeg4BNAGczkU06qRgojqRlrUqkSzQDR+NglaSIv5rmpUkPbfyt7vV
+         hcxWW9hnSer4w==
+Date:   Mon, 4 Dec 2023 18:52:10 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Aron Silverton <aron.silverton@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        David Ahern <dsahern@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+        Itay Avraham <itayavr@nvidia.com>,
+        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
+Message-ID: <20231204185210.030a72ca@kernel.org>
+In-Reply-To: <oxtcvxwbj2hzv4lxnxubo3hoxn7diyzhm2oj3tsw2toxbc3og4@ddglhm6r3oa5>
+References: <ZWTtTjgBrNxpd9IO@x130>
+        <20231127160719.4a8b2ad1@kernel.org>
+        <20231128044628.GA8901@u2004-local>
+        <20231128065321.53d4d5bb@kernel.org>
+        <20231128162413.GP436702@nvidia.com>
+        <20231128084421.6321b9b2@kernel.org>
+        <20231128175224.GR436702@nvidia.com>
+        <20231128103304.25c2c642@kernel.org>
+        <ZWZJGF7moDM_k6TU@x130>
+        <2023112922-lyricist-unclip-8e78@gregkh>
+        <oxtcvxwbj2hzv4lxnxubo3hoxn7diyzhm2oj3tsw2toxbc3og4@ddglhm6r3oa5>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/3] net: stmmac: EST implementation
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170174462502.4521.5357100428466208009.git-patchwork-notify@kernel.org>
-Date:   Tue, 05 Dec 2023 02:50:25 +0000
-References: <20231201055252.1302-1-rohan.g.thomas@intel.com>
-In-Reply-To: <20231201055252.1302-1-rohan.g.thomas@intel.com>
-To:     Rohan G Thomas <rohan.g.thomas@intel.com>
-Cc:     davem@davemloft.net, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, mcoquelin.stm32@gmail.com,
-        peppe.cavallaro@st.com, richardcochran@gmail.com,
-        linux@armlinux.org.uk, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, fancer.lancer@gmail.com,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,32 +66,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Fri,  1 Dec 2023 13:52:49 +0800 you wrote:
-> Hi,
-> This patchset extends EST interrupt handling support to DWXGMAC IP
-> followed by refactoring of EST implementation. Added a separate
-> module for EST and moved all EST related functions to the new module.
+On Mon, 4 Dec 2023 15:37:56 -0600 Aron Silverton wrote:
+> > To Jakub's point, no, we don't care about enterprise distros, they are a
+> > consumer of our releases and while some of them pay the salaries of our
+> > developers, they really don't have much influence over our development
+> > rules as they are just so far behind in releases that their releases
+> > look nothing like what we do in places (i.e. Linux "like" just like many
+> > Android systems.)
+> > 
+> > If the enterprise distros pop in here and give us their opinions of the
+> > patchset, I would GREATLY appreciate it, as having more people review
+> > code at this point in time would be most helpful instead of having to
+> > hear about how the interfaces are broken 2 years from now.  
 > 
-> Also added support for EST cycle-time-extension.
+> We will be happy to test and review v4 of this series.
 > 
-> [...]
+> Fully interactive debugging has become essential to getting to the root
+> cause of complex issues that arise between the types of devices being
+> discussed and their interactions with various software layers. Turning
+> knobs and dumping registers just isn't sufficient, and I wish we'd had
+> this capability long ago.
 
-Here is the summary with links:
-  - [net-next,v2,1/3] net: stmmac: xgmac: EST interrupts handling
-    https://git.kernel.org/netdev/net-next/c/58f3240b3b93
-  - [net-next,v2,2/3] net: stmmac: Refactor EST implementation
-    https://git.kernel.org/netdev/net-next/c/c3f3b97238f6
-  - [net-next,v2,3/3] net: stmmac: Add support for EST cycle-time-extension
-    https://git.kernel.org/netdev/net-next/c/9e95505fecb6
+Could you shed some light on what issues you were debugging, broadly?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Our customers have already benefited from the interactive debugging
+> capability that these patches provide, but the full potential won't be
+> realized until this is upstream.
 
-
+Can you elaborate on why "full potential won't be realized until this
+is upstream"? The driver looks very easy to ship as a standalone module.
