@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C485B804565
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C748804567
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 04:01:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343967AbjLEDBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 22:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
+        id S1344119AbjLEDBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 22:01:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjLEDBO (ORCPT
+        with ESMTP id S229658AbjLEDBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 22:01:14 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F14BF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 19:01:20 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d988d69812so7731847b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 19:01:20 -0800 (PST)
+        Mon, 4 Dec 2023 22:01:18 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92401CA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 19:01:24 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db53c05f802so3265626276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 19:01:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701745280; x=1702350080; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xlu9+t1DOTHoAK10hD5B5rkt19wvJuo0A6ryzFaunG0=;
-        b=JPfe9bXc+oGpxL0G2OHXkTGaqYTvLGNwpMHxvWnnH3pJnVoBX4bfjhIxxeyY7mcC8i
-         t4e2mvr4blH6qhnBKfzjwEomxOxNUo2KqcYRF9rsn0rEpxqVaKN3eBRDkex8qBNwcQ/B
-         eris3MxEYWK4TcA7oSTaOiiFrgVdpaPRgwaJBXLsoruMLsSzmSvPudcbRjWXxOR+nL6Z
-         0o8OCCen8K1HBeOIhpBPsyxCpR4bRyqqslCYoE4GBqv1HwLnvrWjlTczj3cv06nQ/MdW
-         QQXCPpTs19u/o1krOTmDmSKaFEZZgC68QofUhQGOvqJjy7H7fVULmgAokoKIaA4CCDHc
-         6vRA==
+        d=google.com; s=20230601; t=1701745284; x=1702350084; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVN/UyIKfUocTS971YedMZD71CaFzOVitN/DmVfXb7o=;
+        b=pLjwRiyPofMjLt+dbqCNQIV8FiXFgjEgJV3ty7RRKj08Fq7RS8c1yzSEInk9fyWPfC
+         0y190FA6IuDvTTein7GUb5D4UipMSzzx3CCpMYgbP8eABtLjW1nKavlXX1oxognqkCy6
+         1iKWrFA19LBDFt/lS19N6PmUKcV+iOiWXV9JZoDck+hBqHmzxyaSHEXnVBZ/xLCQk9K1
+         F8cVXZN9lV4+C0LsJoa+Y3rGKIYUY28zEUCfdHAyMZD+SX1bdJyzGuorCEGgkXS6jpJY
+         Fm7rmRcjC4YG4QOV0tgUh74c4dgPKKfGdabZSJ9z2E+BDlQ8vzHql1c1pC6Z/ePiDkvw
+         nLGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701745280; x=1702350080;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xlu9+t1DOTHoAK10hD5B5rkt19wvJuo0A6ryzFaunG0=;
-        b=w7R7C/6b1LXTcA4E7dVsxqSUNAWKB0DrQimQsCIq+wJOhWvWnlMSvPqi6CwV25Cntw
-         6Gtyv+NsSz6/fwKjuVZiD2Te2YWM5c0W4ICYNjMCp02t1BErfSCyl2lsD+goFzv8/e6N
-         ofOchEb3eh4pozDDJMMp32Nio8Mx2HbKRAyjt01LKINkV8mPZXAFu1lLmsmGcUFdn+WG
-         7W/fwm2vADsZQDTwJ3nSw4smMeljylf6E3oZMl5kpd7AQHLUpuB4yBfKbLggKZHFLR93
-         bG1HbuHiN4CJiyrEvguh/CoXQk4ovxTfYDGB57Zv0YPNL1FP5ONrYHhedVAAcnF0TtFb
-         eOsQ==
-X-Gm-Message-State: AOJu0YymCQSAqRQuyAJD+I/RxwdPW/meglXFstW8n7gSSmCBjWSwQZae
-        /6qbedrJ/+YF/YSH4S6oyf+wjEfuNMc6
-X-Google-Smtp-Source: AGHT+IFIaX5+NRoqRDR+X9oO3SfkvqsPc5su1wbudcbyofAFuYAu5FFuFg2nsfpjjnGJU/RNH+57gdAQ/snB
+        d=1e100.net; s=20230601; t=1701745284; x=1702350084;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVN/UyIKfUocTS971YedMZD71CaFzOVitN/DmVfXb7o=;
+        b=FFsItgsp0oE52rqLkJyezPr3tjcqiL7kravhY2wBg+MiwBRoax5BnrEarIHJzCllsC
+         CCQ6dD/zQv5FA08VnYmLknIaSge70n8sL7UIIMBUa4ceqEDoF1U8m9evqqvIAxs3L2g4
+         5Ny/GKGGjRXj7wS5CfEO2N+PcXMC+mMk2l51NG2vobX9Fum833R8DNdCAg9eNt8fQASo
+         XqYeANjZa0vdyLM4pB2PJx7O3O71hO9xFpidNbQiQg2mdnESRldoOoExth34DT/l/XaU
+         Ff+DfGu6t43PEFu/N2LMEvcuk5MAxgzcgPdk+qBgkwecGClp39uqpiAnDow0FPCcdWb4
+         ixyw==
+X-Gm-Message-State: AOJu0YzS7J+c9x8r9v/kApEP9I2/Dcg5UWwVa4Wc/ZlYupX39zlHLlra
+        ZB5ysc67zjGps5tu07LKOUygbSZb65vX
+X-Google-Smtp-Source: AGHT+IGr1CA0HYxMGxqnHV2w7hHHn8podQKfyMatY1A92sO17LKhvVGwcmkEByID4hmcE1VKawqjkCVaCxwa
 X-Received: from kyletso-p620lin01.ntc.corp.google.com ([2401:fa00:fc:202:ac51:a57:5e72:a957])
- (user=kyletso job=sendgmr) by 2002:a25:fb07:0:b0:db4:5d35:c5a3 with SMTP id
- j7-20020a25fb07000000b00db45d35c5a3mr1059913ybe.0.1701745279879; Mon, 04 Dec
- 2023 19:01:19 -0800 (PST)
-Date:   Tue,  5 Dec 2023 11:01:12 +0800
+ (user=kyletso job=sendgmr) by 2002:a25:da49:0:b0:da0:6216:7990 with SMTP id
+ n70-20020a25da49000000b00da062167990mr39881ybf.3.1701745283874; Mon, 04 Dec
+ 2023 19:01:23 -0800 (PST)
+Date:   Tue,  5 Dec 2023 11:01:13 +0800
+In-Reply-To: <20231205030114.1349089-1-kyletso@google.com>
 Mime-Version: 1.0
+References: <20231205030114.1349089-1-kyletso@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231205030114.1349089-1-kyletso@google.com>
-Subject: [PATCH v5 0/2] mutiple selectable capabilities in tcpm
+Message-ID: <20231205030114.1349089-2-kyletso@google.com>
+Subject: [PATCH v5 1/2] dt-bindings: connector: Add child nodes for multiple
+ PD capabilities
 From:   Kyle Tso <kyletso@google.com>
 To:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
         conor+dt@kernel.org, linux@roeck-us.net,
@@ -69,68 +72,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-updates in v5
+Commit 662a60102c12 ("usb: typec: Separate USB Power Delivery from USB
+Type-C") allows userspace to configure the PD of a port by selecting
+different set of predefined PD capabilities. Define the PD capability
+sets in DT for better configurability in device modules.
 
-dt-bindings: connector: Add child nodes for multiple PD capabilities
-  - Fixed DT_CHECK errors
+Define an optional child node "capabilities" to contain multiple USB
+Power Delivery capabilities.
 
-usb: typec: tcpm: Support multiple capabilities
-  - no change
+Define child nodes with pattern (e.g. caps-0, caps-1) under
+"capabilities". Each node contains PDO data of a selectable Power
+Delivery capability.
 
+Also define common properties for source-pdos, sink-pdos, and
+op-sink-microwatt that can be referenced.
+
+Signed-off-by: Kyle Tso <kyletso@google.com>
 ---
-updates in v4
+v4 -> v5:
+- Fixed DT_CHECK errors
 
-dt-bindings: connector: Add child nodes for multiple PD capabilities
-  - Modified the structure as corrected in v2
-  - Modified the commit message
+ .../bindings/connector/usb-connector.yaml     | 88 +++++++++++++------
+ 1 file changed, 59 insertions(+), 29 deletions(-)
 
-usb: typec: tcpm: Support multiple capabilities
-  - no change
-
----
-updates in v3
-
-dt-bindings: connector: Add child nodes for multiple PD capabilities
-  - Updated the commit message
-  - Remain unchanged for the comments about the property/node
-    refactor
-
-usb: typec: tcpm: Support multiple capabilities
-  - Changed the error handling and the usage of the APIs
-  - Updated the commit message
-
----
-updates in v2
-
-dt-bindings: connector: Add child nodes for multiple PD capabilities
-  - revised the dt-bindings
-
-usb: typec: tcpm: Support multiple capabilities
-  - Added missing cleanups in the function tcpm_port_unregister_pd
-
----
-Original cover letter:
-
-In commit a7cff92f0635 ("usb: typec: USB Power Delivery helpers for
-ports and partners"), typec_operations has two new ops .pd_get and
-.pd_set providing selection of different PD capabilities. This commit
-implements these two ops in tcpm.
-
-To support multiple capabilities, new dt-binding properties need to be
-defined to create a tree structure for the driver to get each set of
-capabilities one by one. The first tier of the child node under
-connector is called "capabilities". Under this child node lies several
-2nd tier of child nodes whose names are in the pattern of ^caps[0-9]+$.
-And the source and sink capabilities are placed in these nodes.
-
-Kyle Tso (2):
-  dt-bindings: connector: Add child nodes for multiple PD capabilities
-  usb: typec: tcpm: Support multiple capabilities
-
- .../bindings/connector/usb-connector.yaml     |  88 ++--
- drivers/usb/typec/tcpm/tcpm.c                 | 389 ++++++++++++++----
- 2 files changed, 362 insertions(+), 115 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+index 7c8a3e8430d3..7945d09d1f59 100644
+--- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
++++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+@@ -14,6 +14,8 @@ description:
+   of a USB interface controller or a separate node when it is attached to both
+   MUX and USB interface controller.
+ 
++$ref: "#/$defs/capabilities"
++
+ properties:
+   compatible:
+     oneOf:
+@@ -67,6 +69,15 @@ properties:
+       model it as a regulator. See bindings/regulator/fixed-regulator.yaml
+ 
+   # The following are optional properties for "usb-c-connector".
++  source-pdos:
++    $ref: "#/$defs/capabilities/properties/source-pdos"
++
++  sink-pdos:
++    $ref: "#/$defs/capabilities/properties/sink-pdos"
++
++  op-sink-microwatt:
++    $ref: "#/$defs/capabilities/properties/op-sink-microwatt"
++
+   power-role:
+     description: Determines the power role that the Type C connector will
+       support. "dual" refers to Dual Role Port (DRP).
+@@ -119,30 +130,6 @@ properties:
+ 
+   # The following are optional properties for "usb-c-connector" with power
+   # delivery support.
+-  source-pdos:
+-    description: An array of u32 with each entry providing supported power
+-      source data object(PDO), the detailed bit definitions of PDO can be found
+-      in "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.2
+-      Source_Capabilities Message, the order of each entry(PDO) should follow
+-      the PD spec chapter 6.4.1. Required for power source and power dual role.
+-      User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()
+-      defined in dt-bindings/usb/pd.h.
+-    minItems: 1
+-    maxItems: 7
+-    $ref: /schemas/types.yaml#/definitions/uint32-array
+-
+-  sink-pdos:
+-    description: An array of u32 with each entry providing supported power sink
+-      data object(PDO), the detailed bit definitions of PDO can be found in
+-      "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.3
+-      Sink Capabilities Message, the order of each entry(PDO) should follow the
+-      PD spec chapter 6.4.1. Required for power sink and power dual role. User
+-      can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO() defined
+-      in dt-bindings/usb/pd.h.
+-    minItems: 1
+-    maxItems: 7
+-    $ref: /schemas/types.yaml#/definitions/uint32-array
+-
+   sink-vdos:
+     description: An array of u32 with each entry, a Vendor Defined Message Object (VDO),
+       providing additional information corresponding to the product, the detailed bit
+@@ -166,11 +153,6 @@ properties:
+     maxItems: 6
+     $ref: /schemas/types.yaml#/definitions/uint32-array
+ 
+-  op-sink-microwatt:
+-    description: Sink required operating power in microwatt, if source can't
+-      offer the power, Capability Mismatch is set. Required for power sink and
+-      power dual role.
+-
+   port:
+     $ref: /schemas/graph.yaml#/properties/port
+     description: OF graph bindings modeling a data bus to the connector, e.g.
+@@ -231,6 +213,20 @@ properties:
+       SNK_READY for non-pd link.
+     type: boolean
+ 
++  capabilities:
++    description: A child node to contain all the selectable USB Power Delivery capabilities.
++    type: object
++
++    patternProperties:
++      "^caps-[0-9]+$":
++        description: Child nodes under "capabilities" node. Each node contains a selectable USB
++          Power Delivery capability.
++        type: object
++        $ref: "#/$defs/capabilities"
++        unevaluatedProperties: false
++
++    additionalProperties: false
++
+ dependencies:
+   sink-vdos-v1: [ sink-vdos ]
+   sink-vdos: [ sink-vdos-v1 ]
+@@ -238,6 +234,40 @@ dependencies:
+ required:
+   - compatible
+ 
++$defs:
++  capabilities:
++    type: object
++
++    properties:
++      source-pdos:
++        description: An array of u32 with each entry providing supported power
++          source data object(PDO), the detailed bit definitions of PDO can be found
++          in "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.2
++          Source_Capabilities Message, the order of each entry(PDO) should follow
++          the PD spec chapter 6.4.1. Required for power source and power dual role.
++          User can specify the source PDO array via PDO_FIXED/BATT/VAR/PPS_APDO()
++          defined in dt-bindings/usb/pd.h.
++        minItems: 1
++        maxItems: 7
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++
++      sink-pdos:
++        description: An array of u32 with each entry providing supported power sink
++          data object(PDO), the detailed bit definitions of PDO can be found in
++          "Universal Serial Bus Power Delivery Specification" chapter 6.4.1.3
++          Sink Capabilities Message, the order of each entry(PDO) should follow the
++          PD spec chapter 6.4.1. Required for power sink and power dual role. User
++          can specify the sink PDO array via PDO_FIXED/BATT/VAR/PPS_APDO() defined
++          in dt-bindings/usb/pd.h.
++        minItems: 1
++        maxItems: 7
++        $ref: /schemas/types.yaml#/definitions/uint32-array
++
++      op-sink-microwatt:
++        description: Sink required operating power in microwatt, if source can't
++          offer the power, Capability Mismatch is set. Required for power sink and
++          power dual role.
++
+ allOf:
+   - if:
+       properties:
 -- 
 2.43.0.472.g3155946c3a-goog
 
