@@ -2,76 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7FE8053B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 571188053B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345175AbjLEMAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:00:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
+        id S1442320AbjLEMAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:00:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345161AbjLEMAc (ORCPT
+        with ESMTP id S1347122AbjLEMAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:00:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34AA98
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:00:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID:In-Reply-To:Subject:CC:To:From:Date:Sender:Reply-To:
-        Content-ID:Content-Description:References;
-        bh=/eKJhgPMTMMY5RfTR6X1AJ44Ndjq/J/8VLPyF0xruWU=; b=QfDoArJdhDbZztII3tMJ1ynhkK
-        1XX3+6r4Oh3Yi54ykyfQQShKvX5us7FdMniDsEg3taV/89OoASvWIonKDHGg/lrnK01unE/OWpQk0
-        YXGEtcB9jNYnhnRfZoCWYSIG2eZ7E651BZOT4C5ho16w9Fpk3JgYERmNqCCu4UUooevXV16xC3BYO
-        MU1ZTQH7xB2ZHPQvdt34iAo3U/+1E8ay9o/71IXKV07vw85D8BHsdjYRJdX1MjR9iWWMu4E4CX94m
-        wYKbWsioCa6AyM+N8hBDnIpWEslkqgekQbtZDtrxghZkgQVFWfq2FSQ5P+Ov1Em4pPGi2kRN01+wt
-        NTj6oz3w==;
-Received: from [46.18.216.58] (helo=[127.0.0.1])
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1rAU5s-001py0-VY; Tue, 05 Dec 2023 12:00:05 +0000
-Date:   Tue, 05 Dec 2023 12:00:04 +0000
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     pdurrant@amazon.co.uk
-CC:     bp@alien8.de, dave.hansen@intel.com, dave.hansen@linux.intel.com,
-        hdegoede@redhat.com, hpa@zytor.com, jalliste@amazon.co.uk,
-        juew@amazon.com, len.brown@intel.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, rafael.j.wysocki@intel.com,
-        rafael@kernel.org, tglx@linutronix.de, usama.arif@bytedance.com,
-        x86@kernel.org
-Subject: =?US-ASCII?Q?RE=3A_=5BPATCH=5D_x86=3A_intel=5Fepb=3A_Add_earlyp?= =?US-ASCII?Q?aram_option_to_keep_bias_at_performance?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <53bce76c5c60463eba1372df426a64b9@amazon.co.uk>
-Message-ID: <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org>
+        Tue, 5 Dec 2023 07:00:43 -0500
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36057116
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:00:49 -0800 (PST)
+Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 3B5C0loc069588;
+        Tue, 5 Dec 2023 21:00:47 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
+ Tue, 05 Dec 2023 21:00:46 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 3B5C0k9V069585
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 5 Dec 2023 21:00:46 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <317e077b-71a7-4112-a7d0-5c49efce4f39@I-love.SAKURA.ne.jp>
+Date:   Tue, 5 Dec 2023 21:00:46 +0900
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [kernel?] possible deadlock in stack_depot_put
+Content-Language: en-US
+To:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+186b55175d8360728234@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Waiman Long <longman@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000784b1c060b0074a2@google.com>
+ <20231205113107.1324-1-hdanton@sina.com>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <20231205113107.1324-1-hdanton@sina.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/12/05 20:31, Hillf Danton wrote:
+> Unlike down_trylock(), mutex_trylock() is unable to trigger any lockdep
+> warning, so why is a binary semaphore prefered over mutex?
 
-Paul writes:
-> The problem is that this will take effect even on a kexec and hence it i=
-s throttling
-> a system that set ENERGY_PERF_BIAS_PERFORMANCE prior to the kexec=2E  We=
- use kexec to
-> live update the host kernel of our systems whilst leaving virtual machin=
-es running=2E
-> This resetting of the perf bias is having a very detrimental effect on t=
-he downtime
-> of our systems across the live update - about a 7 fold increase=2E
+The mutex has limitations which makes it impossible to use for console lock.
 
-It isn't just about kexec, is it? Even in a clean boot why wouldn't we wan=
-t to stay in performance mode until the kernel has *finished* booting? It's=
- literally adding seconds to the startup time in some cases=2E
+https://elixir.bootlin.com/linux/v6.7-rc4/source/kernel/locking/mutex.c#L537
 
-And yes, we *particularly* care in the kexec case because guests experienc=
-e it as excessive steal time=2E But it ain't great in the general case eith=
-er, surely?
+By the way, this is a KASAN bug saying "refcount_t: underflow; use-after-free.".
+Possibly a candidate for printk_deferred_enter() user?
+
