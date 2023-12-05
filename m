@@ -2,277 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7C380433D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117F4804336
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343688AbjLEAXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 19:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
+        id S1343646AbjLEAWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343660AbjLEAXS (ORCPT
+        with ESMTP id S229907AbjLEAWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:23:18 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 490D1B0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701735804; x=1733271804;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=YDqeFlsgdFWx7XOEAsHImKa3aTbzoQWa4OZlwEWjj+Q=;
-  b=FXXhv/XCon7VE9K+f4Gj2EnJOAAfSNek3uNM8X+EZdaNLd8BmhpYwpqC
-   ziV6Jr6XkSC4Wgoq4L58BQuve6DowPXLYZrf53xq12jXiLztPWfzyaubK
-   XAjk46tYiErUTUdIFvPcs0HTqZqgAoAiagaAV3/I6bwvTvmEnCwTBqWPO
-   pvoB/nkpKhZ4eF6906KoBs6RoyrEqGiIRn0I9Z9DL39FJB0mUXB8UX9pl
-   aSJLW2Z3V9LP8hNqIiWX7rCn+7nSliTORgpwoqymnLN5vDi+d3wt1RuWG
-   QsQd8zHdQVsGIC3GJeCX5dfDSH8gXSViVCjSmKzk/ViUVw+v9u9MUz+Uo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="691537"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="691537"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:23:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="720499136"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="720499136"
-Received: from akashams-mobl.amr.corp.intel.com (HELO [10.255.231.189]) ([10.255.231.189])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:23:22 -0800
-Message-ID: <90765ee0-a814-4852-9b2a-020cda98d930@linux.intel.com>
-Date:   Mon, 4 Dec 2023 18:22:02 -0600
+        Mon, 4 Dec 2023 19:22:13 -0500
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42C8BB;
+        Mon,  4 Dec 2023 16:22:19 -0800 (PST)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1fb33059466so1216050fac.2;
+        Mon, 04 Dec 2023 16:22:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701735739; x=1702340539; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AceSiloMzdXvIE2DaEevBBcic/LsMH6cBLoMMH2zSsQ=;
+        b=e0THresJi4EsBjzx1FHcR6oT2ZqDCFeIfUV3nRQudOkBac8hATihqgort2ubrZ9ZTo
+         ziLUQc5MIJKr6qCZMo+1DIGY+nxQkQkd4oipuuEKuaM1CN9zf4nIegIOHlQaeBtyLmNt
+         1w70KkWfxrLqf4MO5OniUzagrdYqqZI++n1PtZ8Jo2Tzb5KhCNeNoYtPyR3Eh9j8Lsvs
+         buG4A0WrqZ1oppiw3rh5gHJRYZPXseUSPkntJmhRHrOgayo+2sEL8l4EdS9FON+szYuu
+         B13p8v1YYXGXmZMhv9s6TOSzebFonxj/Iyba5jBuNWFg+tZoGRO8aB4uytHEUPvvWWjj
+         /xRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701735739; x=1702340539;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AceSiloMzdXvIE2DaEevBBcic/LsMH6cBLoMMH2zSsQ=;
+        b=oXCo2HmB1kKytA8cBhwShIMh50TNiT4uJzq8uohdtWOK6nVvf+h/gRdJsAwvryJu7U
+         I4Zv30KCqKAr0pRzY9CCschYSEi6ZMnRZsIGxs0phVVMLGbzrFBPAn/7XqB9r62HCban
+         sTs3mmoyHnsKIQQnxAYz+tm8nnU7ils5I62mKLsl33JRDA7uRpLnP1CYtO/9wENyoQXZ
+         Of4imq7ab7l2AamqPOd8+zypkUxLnKKVGnp1z25P5ETb//QVishpuGjA4/A+VKSh8zLZ
+         +4ygcF2nNF1h2dpZ/Fx5qUxCOM5eo2WwzO/b9rEwkJUkn5evPyjq3h42kSg1UmMqVb9A
+         BK/A==
+X-Gm-Message-State: AOJu0YzwVeUHrll7kuhrop7lNJ5ISybkMItfCtHl8ptSQpZEFDgm73mK
+        mqeZms7T+rzYB6x0m8872Xsng4HX6Zb9Yw==
+X-Google-Smtp-Source: AGHT+IGGpyH/uvDWZtUKbPGliRelSXQEiyxnYM/KxdFEwKMgIWFm+BsnmtfipMmVy4gfgRrC6v6CIg==
+X-Received: by 2002:a05:6871:4004:b0:1fa:26e7:c428 with SMTP id kx4-20020a056871400400b001fa26e7c428mr6236892oab.19.1701735738877;
+        Mon, 04 Dec 2023 16:22:18 -0800 (PST)
+Received: from localhost.localdomain ([122.8.183.87])
+        by smtp.gmail.com with ESMTPSA id o11-20020a9d404b000000b006d87f95566bsm1142899oti.51.2023.12.04.16.22.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 16:22:18 -0800 (PST)
+From:   Chen Wang <unicornxw@gmail.com>
+To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+        samuel.holland@sifive.com
+Cc:     Chen Wang <unicorn_wang@outlook.com>
+Subject: [PATCH v4 0/4] riscv: sophgo: add clock support for sg2042
+Date:   Tue,  5 Dec 2023 08:22:06 +0800
+Message-Id: <cover.1701734442.git.unicorn_wang@outlook.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ALSA: hda/tas2563: Add tas2563 HDA driver
-Content-Language: en-US
-To:     Gergo Koteles <soyer@irl.hu>, Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <cover.1701733441.git.soyer@irl.hu>
- <4a2f31d4eb8479789ceb1daf2e93ec0e25c23171.1701733441.git.soyer@irl.hu>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <4a2f31d4eb8479789ceb1daf2e93ec0e25c23171.1701733441.git.soyer@irl.hu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Chen Wang <unicorn_wang@outlook.com>
+
+This series adds clock controller support for sophgo sg2042.
+
+Thanks,
+Chen
+
+---
+Changes in v4:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [5].
+  - dt-bindings: fixed a dt_binding_check error.
+
+Changes in v3:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [3].
+  - DTS: don't use syscon but define sg2042 specific system control node. More
+    background info can read [4].
+  - Updating minor issues in dt-bindings as per input from reviews.
+
+Changes in v2:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [2].
+  - Squashed the patch adding clock definitions with the patch adding the
+    binding for the clock controller.
+  - Updating dt-binding for syscon, remove oneOf for property compatible;
+    define clock controller as child of syscon.
+  - DTS changes: merge sg2042-clock.dtsi into sg2042.dtsi; move clock-frequency
+    property of osc to board devicethree due to the oscillator is outside the
+    SoC.
+  - Fixed some bugs in driver code during testing, including removing warnings
+    for rv32_defconfig.
+  - Updated MAINTAINERS info.
+
+Changes in v1:
+  The patch series is based on v6.7-rc1. You can simply review or test the
+  patches at the link [1].
+
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v1 [1]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v2 [2]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v3 [3]
+Link: https://lore.kernel.org/linux-riscv/MA0P287MB03329AE180378E1A2E034374FE82A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM/ [4]
+Link: https://github.com/unicornx/linux-riscv/commits/upstream-sg2042-clock-v4 [5]
+
+---
+
+Chen Wang (4):
+  dt-bindings: soc: sophgo: Add Sophgo system control module
+  dt-bindings: clock: sophgo: Add SG2042 bindings
+  clk: sophgo: Add SG2042 clock generator driver
+  riscv: dts: add clock generator for Sophgo SG2042 SoC
+
+ .../clock/sophgo/sophgo,sg2042-clkgen.yaml    |   50 +
+ .../soc/sophgo/sophgo,sg2042-sysctrl.yaml     |   35 +
+ MAINTAINERS                                   |    7 +
+ .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  |    4 +
+ arch/riscv/boot/dts/sophgo/sg2042.dtsi        |   79 +
+ drivers/clk/Kconfig                           |    1 +
+ drivers/clk/Makefile                          |    1 +
+ drivers/clk/sophgo/Kconfig                    |    8 +
+ drivers/clk/sophgo/Makefile                   |    2 +
+ drivers/clk/sophgo/clk-sophgo-sg2042.c        | 1371 +++++++++++++++++
+ drivers/clk/sophgo/clk-sophgo-sg2042.h        |  226 +++
+ .../dt-bindings/clock/sophgo,sg2042-clkgen.h  |  169 ++
+ 12 files changed, 1953 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/sophgo/sophgo,sg2042-clkgen.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sysctrl.yaml
+ create mode 100644 drivers/clk/sophgo/Kconfig
+ create mode 100644 drivers/clk/sophgo/Makefile
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.c
+ create mode 100644 drivers/clk/sophgo/clk-sophgo-sg2042.h
+ create mode 100644 include/dt-bindings/clock/sophgo,sg2042-clkgen.h
 
 
-
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 9677c09cf7a9..1d3e9f77c9d4 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6770,7 +6770,7 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
->  	return !strcmp(d + n, tmp);
->  }
->  
-> -static int comp_match_tas2781_dev_name(struct device *dev,
-> +static int comp_match_tas2xxx_dev_name(struct device *dev,
->  	void *data)
->  {
->  	struct scodec_dev_name *p = data;
-> @@ -6823,7 +6823,7 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
->  	}
->  }
->  
-> -static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
-> +static void tas2xxx_generic_fixup(struct hda_codec *cdc, int action,
->  	const char *bus, const char *hid)
->  {
->  	struct device *dev = hda_codec_dev(cdc);
-> @@ -6841,7 +6841,7 @@ static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
->  		rec->index = 0;
->  		spec->comps[0].codec = cdc;
->  		component_match_add(dev, &spec->match,
-> -			comp_match_tas2781_dev_name, rec);
-> +			comp_match_tas2xxx_dev_name, rec);
->  		ret = component_master_add_with_match(dev, &comp_master_ops,
->  			spec->match);
->  		if (ret)
-> @@ -6888,7 +6888,13 @@ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
->  static void tas2781_fixup_i2c(struct hda_codec *cdc,
->  	const struct hda_fixup *fix, int action)
->  {
-> -	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
-> +	 tas2xxx_generic_fixup(cdc, action, "i2c", "TIAS2781");
-> +}
-
-this sort of rename should be part of a separate patch IMHO, it'd be
-easier to review.
-
-> +
-> +static void tas2563_fixup_i2c(struct hda_codec *cdc,
-> +	const struct hda_fixup *fix, int action)
-> +{
-> +	 tas2xxx_generic_fixup(cdc, action, "i2c", "INT8866");
-
-Any specific reason to use an Intel ACPI identifier? Why not use
-"TIAS2563" ?
-
-> +#define TAS2563_REG_INIT_N 12
-
-newline
-
-> +static const struct reg_default tas2563_reg_init[TAS2563_MAX_CHANNELS]
-> +	[TAS2563_REG_INIT_N] = {
-> +	{
-> +		{ TAS2562_TDM_CFG2, 0x5a },
-> +		{ TAS2562_TDM_CFG4, 0xf3 },
-> +		{ TAS2562_TDM_CFG5, 0x42 },
-> +		{ TAS2562_TDM_CFG6, 0x40 },
-> +		{ TAS2562_BOOST_CFG1, 0xd4 },
-> +		{ TAS2562_BOOST_CFG3, 0xa4 },
-> +		{ TAS2562_REG(0x00, 0x36), 0x0b },
-> +		{ TAS2562_REG(0x00, 0x38), 0x21 },
-> +		{ TAS2562_REG(0x00, 0x3c), 0x58 },
-> +		{ TAS2562_BOOST_CFG4, 0xb6 },
-> +		{ TAS2562_ASI_CONFIG3, 0x04},
-> +		{ TAS2562_REG(0x00, 0x47), 0xb1 },
-
-> +/* Update the calibrate data, including speaker impedance, f0, etc, into algo.
-
-update the calibration data,
-
-> + * Calibrate data is done by manufacturer in the factory. These data are used
-
-The manufacturer calibrates the data in the factory.
-
-> + * by Algo for calucating the speaker temperature, speaker membrance excursion
-
-calculating
-
-membrane
-
-
-> +static int tas2563_hda_i2c_probe(struct i2c_client *client)
-> +{
-> +	struct tas2563_data *tas2563;
-> +	int ret;
-> +
-> +	tas2563 = devm_kzalloc(&client->dev, sizeof(struct tas2563_data),
-> +		GFP_KERNEL);
-> +	if (!tas2563)
-> +		return -ENOMEM;
-> +	tas2563->dev = &client->dev;
-> +	tas2563->client = client;
-> +
-> +	dev_set_drvdata(tas2563->dev, tas2563);
-> +
-> +	ret = tas2563_read_acpi(tas2563);
-> +	if (ret)
-> +		return dev_err_probe(tas2563->dev, ret,
-> +			"Platform not supported\n");
-> +
-> +	for (int i = 0; i < tas2563->ndev; ++i) {
-> +		struct tas2563_dev *tasdev = &tas2563->tasdevs[i];
-> +
-> +		ret = tas2563_tasdev_read_efi(tas2563, tasdev);
-> +		if (ret)
-> +			return dev_err_probe(tas2563->dev, ret,
-> +				"Calibration data cannot be read from EFI\n");
-> +
-> +		ret = tas2563_tasdev_init_client(tas2563, tasdev);
-> +		if (ret)
-> +			return dev_err_probe(tas2563->dev, ret,
-> +				"Failed to init i2c client\n");
-> +
-> +		ret = tas2563_tasdev_init_regmap(tas2563, tasdev);
-> +		if (ret)
-> +			return dev_err_probe(tas2563->dev, ret,
-> +				"Failed to allocate register map\n");
-> +	}
-> +
-> +	ret = component_add(tas2563->dev, &tas2563_hda_comp_ops);
-> +	if (ret) {
-> +		return dev_err_probe(tas2563->dev, ret,
-> +			"Register component failed\n");
-> +	}
-
-I wonder how many of those tests actually depend on deferred probe, and
-if this isn't a case of copy-paste "just in case"?
-
-> +
-> +	pm_runtime_set_autosuspend_delay(tas2563->dev, 3000);
-> +	pm_runtime_use_autosuspend(tas2563->dev);
-> +	pm_runtime_mark_last_busy(tas2563->dev);
-> +	pm_runtime_set_active(tas2563->dev);
-> +	pm_runtime_get_noresume(tas2563->dev);
-> +	pm_runtime_enable(tas2563->dev);
-> +
-> +	pm_runtime_put_autosuspend(tas2563->dev);
-
-the sequence get_noresume/enable/put_autosuspend makes no sense to me.
-doing a get_noresume *before* enable should do exactly nothing, and
-releasing the resource would already be handled with autosuspend based
-on the last_busy mark.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static void tas2563_hda_i2c_remove(struct i2c_client *client)
-> +{
-> +	struct tas2563_data *tas2563 = dev_get_drvdata(&client->dev);
-> +
-> +	pm_runtime_get_sync(tas2563->dev);
-> +	pm_runtime_disable(tas2563->dev);
-> +
-> +	component_del(tas2563->dev, &tas2563_hda_comp_ops);
-> +
-> +	pm_runtime_put_noidle(tas2563->dev);
-
-that pm_runtime sequence also makes no sense to me, if you disable
-pm_runtime the last command is useless/no-op.
-
-> +}
-> +
-> +static int tas2563_system_suspend(struct device *dev)
-> +{
-> +	struct tas2563_data *tas2563 = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	dev_dbg(tas2563->dev, "System Suspend\n");
-> +
-> +	ret = pm_runtime_force_suspend(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int tas2563_system_resume(struct device *dev)
-> +{
-> +	int ret;
-> +	struct tas2563_data *tas2563 = dev_get_drvdata(dev);
-> +
-> +	dev_dbg(tas2563->dev, "System Resume\n");
-> +
-> +	ret = pm_runtime_force_resume(dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	for (int i = 0; i < tas2563->ndev; ++i)
-> +		tas2563_tasdev_setup(tas2563, &tas2563->tasdevs[i]);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops tas2563_hda_pm_ops = {
-> +	SYSTEM_SLEEP_PM_OPS(tas2563_system_suspend, tas2563_system_resume)
-
-where's the pm_runtime stuff?
-
-> +};
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+-- 
+2.25.1
 
