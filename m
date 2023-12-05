@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E66805BD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC667805BC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346453AbjLEPyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:54:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        id S1346887AbjLEPyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346407AbjLEPyF (ORCPT
+        with ESMTP id S1346407AbjLEPy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:54:05 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B236BC3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:54:11 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-db537948ea0so4127794276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 07:54:11 -0800 (PST)
+        Tue, 5 Dec 2023 10:54:29 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B861122
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:54:35 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3333a3a599fso1817815f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 07:54:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701791651; x=1702396451; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OpCZZN7ifzLhrwAYxkGqYDBB1FuZ2YnYQt+7H4zDU+Q=;
-        b=ZjZ2Ra2m9jCfp3zsDGaiueJ0GfvHiEPOHTWwRqGZ8tpVqnnWAuhjaJ2MxBVazJYwo+
-         AvqN3VKfF/m7dzicuf1H1AYbzhYSWM1LLAr2/AEYMoTlhtrVy0rtsv59pRNu+WirrgfW
-         t5Z6tUNjbsR6HEKGvk50G70sW/U+XJUT8hPTEPmdECqUXHa0F6CLEW0/P36hxi8zyWaI
-         aLVJfaSSm0lGJvzbDnn7ujPsWQQIL6E8N3pmut+fQyuccoJLvyzht/wlD6Di7PvEyBgo
-         qZiJRkgkul5MtSSx4Cdv0OrvQGdUKA89Px7RGKQcmcR7Z/ALRcTd/wnyUNV03y69/tS8
-         4+sg==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701791673; x=1702396473; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tqo9Y6wByno136zo48BkFSxhAKPxHUv7Wp3L8ZrdTEM=;
+        b=bAjpRaiVhmzYD7gkdz40m6XIt+2FQrzmq7tdZDufU9onna4t3YaRDLMk28JcGYMW01
+         R47sadeZrz+YJ+84GCxIztkJqpJBeJdQJ1DfV1xAHug72Y4/gaRxPzzlk5bXhxciCjLT
+         1kjB+hX7/3ng/5pSCxOxddVljomw/4XVc/Mvh/dNYZLYWPqPae0ArtBy2ROZF2Je4reM
+         FC81xo304R15DuzU4/GD0fhUx4qZKClSUO/WoStrjkyO/iJpnRMe9aCPB+vo8clgrCy+
+         U+H2T4GgKNcYIe/LNI2yIlxBJb8Dwy9lBPN+46HW7ywdKPwGgMm4r68sQK5ud2N/wgYa
+         q4Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701791651; x=1702396451;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1701791673; x=1702396473;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OpCZZN7ifzLhrwAYxkGqYDBB1FuZ2YnYQt+7H4zDU+Q=;
-        b=JgX7RmbuLWBdy8XTAgcFnwU8Fd2aeoZY0bL46mH0kqzAXLwQW4DZiJDR6HU31e5tRX
-         7Pweh3ABjBIfPvQLK3M8vqpBEyJPqQbIS12NR4RkmQzuKnZYaZv+Y7kwugmmCZAV7G1w
-         gLKo1rhXPmS+s6FcVpJ8TKl9e274vdw35rrF++wJZ8d9xrKp/bxjjIV2XajUIICMwI8C
-         ChvxjGc/ZWSkjtiyqV1zzM9oJXiTI5oIgry11CsEGZ6nOD0d1m7f1YEhbqgBCVbv7xDS
-         AdrMpVoj9+gmYxvdkJm3pqbRmyM4gUhXkPjKMtkqtzVctzjqk7tQ0iRQSaX3gZzJJ8dg
-         1HIQ==
-X-Gm-Message-State: AOJu0YxICVsiCFCrNgmfxLZWDkO8KDzNazix0end6W4OrDLQ4cAwsVeT
-        bLTr757rOON5fcqB5WG8vfit7wc306603P59SyAxGQ==
-X-Google-Smtp-Source: AGHT+IGCJb6NJTexBLiNBzgMwl8doc7Qk7WTAXljr3GKe9KFhu9oJQpIiiYrofNfQQq+O9e/tLSF6yqkhku8Pwwo5cc=
-X-Received: by 2002:a25:b293:0:b0:db7:dacf:59fc with SMTP id
- k19-20020a25b293000000b00db7dacf59fcmr4225994ybj.112.1701791650893; Tue, 05
- Dec 2023 07:54:10 -0800 (PST)
+        bh=tqo9Y6wByno136zo48BkFSxhAKPxHUv7Wp3L8ZrdTEM=;
+        b=glQW0nDxNhT5nwBMebrAqpvFIph+MgOHBSFI4f/M76a7QdT0JCcIEu0KeW5bHCLLe9
+         jVPeR5Nh0+8rhNpEXfIoJcw/RH/EWfw/1VUKalF9OlKDG2p8DT/+74uZbEt+UFR+RfYv
+         rM7xCzJ8T2E7EinHEsSqu0vnP59GrqgTVVWUwb4VTbyejIdEKwltUgF/y2hVY0ASqkJ9
+         4uzxzTvcw58EL3gOxHOrf9S990Ws2BLahlRVlPPi1hYGxz9mu//eUoEPnhThTVJVxcD5
+         qzpGWwRAI7MNLbggy2TzMwoudL10GZmejSbTL1oQNSzeDvh1lPrjIzOELFncY6+uG/Kk
+         wRHw==
+X-Gm-Message-State: AOJu0Yzmctt3zMpk+A6YGT43NyRIQGBZAew1x/i4M52mil4HjAaGEP6T
+        gKAkrQu0Mccrdr9ZHwei2ZjuVeJSc7RyQUVuong=
+X-Google-Smtp-Source: AGHT+IECqsfgRq8K6R184xNf+VSY/KGmg5NZsm3ozjh8A6tYGdUwKPJiHKqBa8dbr4M88/Gm61uUug==
+X-Received: by 2002:a05:600c:4a83:b0:40b:5e56:7b70 with SMTP id b3-20020a05600c4a8300b0040b5e567b70mr734511wmp.185.1701791673497;
+        Tue, 05 Dec 2023 07:54:33 -0800 (PST)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:2dd9:dce:96c5:9e9a])
+        by smtp.gmail.com with ESMTPSA id n10-20020a05600c4f8a00b0040b4b2a15ebsm18948318wmq.28.2023.12.05.07.54.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 07:54:33 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] gpio: sim: fix the email address in MODULE_AUTHOR()
+Date:   Tue,  5 Dec 2023 16:54:30 +0100
+Message-Id: <20231205155430.31761-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20231205031535.163661217@linuxfoundation.org>
-In-Reply-To: <20231205031535.163661217@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 5 Dec 2023 21:23:59 +0530
-Message-ID: <CA+G9fYuL_-Q67t+Y7ST5taYv1XkkoJegH2zBvw_ZUOhF9QRiOg@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/134] 6.6.5-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Johannes Berg <johannes.berg@intel.com>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com,
-        Netdev <netdev@vger.kernel.org>, linux-wireless@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Dec 2023 at 08:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.5 release.
-> There are 134 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 07 Dec 2023 03:14:57 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.5-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
+Fix unterminated angle brackets in the email address in MODULE_AUTHOR().
 
-The x86 allmodconfig with gcc-8 failed but passed with gcc-13.
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ drivers/gpio/gpio-sim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-x86_64: gcc-8-allmodconfig: FAILED
-x86_64: gcc-13-allmodconfig: PASS
+diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+index 1928209491e1..1e8b92e9df80 100644
+--- a/drivers/gpio/gpio-sim.c
++++ b/drivers/gpio/gpio-sim.c
+@@ -1546,6 +1546,6 @@ static void __exit gpio_sim_exit(void)
+ }
+ module_exit(gpio_sim_exit);
+ 
+-MODULE_AUTHOR("Bartosz Golaszewski <brgl@bgdev.pl");
++MODULE_AUTHOR("Bartosz Golaszewski <brgl@bgdev.pl>");
+ MODULE_DESCRIPTION("GPIO Simulator Module");
+ MODULE_LICENSE("GPL");
+-- 
+2.40.1
 
-Build error:
-------------
-In function 'nl80211_set_cqm_rssi.isra.44',
-    inlined from 'nl80211_set_cqm' at net/wireless/nl80211.c:12994:10:
-include/linux/fortify-string.h:57:29: error: '__builtin_memcpy'
-pointer overflow between offset 36 and size [-1, 9223372036854775807]
-[-Werror=array-bounds]
- #define __underlying_memcpy __builtin_memcpy
-                             ^
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Suspecting commit:
--------------
-wifi: cfg80211: fix CQM for non-range use
-commit 7e7efdda6adb385fbdfd6f819d76bc68c923c394 upstream.
-
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.4-135-gb0b05ccdd77d/testrun/21509070/suite/build/test/gcc-8-allmodconfig/log
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.4-135-gb0b05ccdd77d/testrun/21509070/suite/build/test/gcc-8-allmodconfig/history/
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.4-135-gb0b05ccdd77d/testrun/21509070/suite/build/test/gcc-8-allmodconfig/details/
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
