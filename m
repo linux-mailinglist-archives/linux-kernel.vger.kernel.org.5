@@ -2,122 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30D6E805C3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75422805BB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbjLEQRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:17:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52324 "EHLO
+        id S1345189AbjLEQSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:18:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbjLEQRb (ORCPT
+        with ESMTP id S231929AbjLEQRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:17:31 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A68129
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:17:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701793058; x=1733329058;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=z36ODLPbjUt7OD59RcZBPzOPxtY6kzsDKcMxRbWPUD8=;
-  b=McKfrH0GSmUIXPVgdd1HEy4R2MDC7yJNMFV9R1ZKYaUKBgJPW6VYrOMe
-   wJYutzvegiGuUkQRMwfJHrr/S/C1K3HV1Jcg42Px/gcIxwIdtXNvxVcMv
-   pT3pbyxCfpkrXqnanuiqa3bUWE9+RUacX/7VwD36xkL43Mmpjs0NLpM7S
-   npXaxluLS9Eq0xqPSbRaRhxU2UjG4m5cWRl4cFlDs4JdVEQl6+ACRodUC
-   LU9BxBMauDJ2yztgTGiI8gQAIwGGeRHZiTHKZWTQ901AC0+sg9Spvm2k+
-   p+wnKluaf+9Fc9qGJPd4Ty1ACX/VZxM+baVSV3l37t1aOdv38YnJ1yH3+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="7214667"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="7214667"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 08:17:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="770974216"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="770974216"
-Received: from nhickam-mobl.amr.corp.intel.com (HELO [10.255.230.231]) ([10.255.230.231])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 08:17:36 -0800
-Message-ID: <bcd1b113-94b7-41a9-a3f6-fde1dd54fc74@intel.com>
-Date:   Tue, 5 Dec 2023 08:17:36 -0800
+        Tue, 5 Dec 2023 11:17:50 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E8259E;
+        Tue,  5 Dec 2023 08:17:56 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B11791FBA0;
+        Tue,  5 Dec 2023 16:17:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701793074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=F+X1FS4EJPHW99NAS/crIp5NK2rxn9bC7c581YFf5qc=;
+        b=JTML6eEuiOLFbHESKHelXK2gVBkmcgWwzc7eOHh4LQ2sDNYnwdCBe+G83PvTpjtMbt4uKX
+        pzPD4aDol8SfVY+a1tDv8igXizUzzxCN+LQRZK7uo+f11b9rifUuJ55lURztvIFiGZ0Cct
+        /8DIAQ1crkrb73A9dLGqncctsmJpFI8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7649E13AFD;
+        Tue,  5 Dec 2023 16:17:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id sJ+FGzJNb2WtdwAAD6G6ig
+        (envelope-from <petr.pavlu@suse.com>); Tue, 05 Dec 2023 16:17:54 +0000
+From:   Petr Pavlu <petr.pavlu@suse.com>
+To:     rostedt@goodmis.org, mhiramat@kernel.org,
+        mathieu.desnoyers@efficios.com
+Cc:     zhengyejian1@huawei.com, linux-trace-kernel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Petr Pavlu <petr.pavlu@suse.com>
+Subject: [PATCH v2 3/3] tracing: Fix a possible race when disabling buffered events
+Date:   Tue,  5 Dec 2023 17:17:36 +0100
+Message-Id: <20231205161736.19663-4-petr.pavlu@suse.com>
+X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20231205161736.19663-1-petr.pavlu@suse.com>
+References: <20231205161736.19663-1-petr.pavlu@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] x86: intel_epb: Add earlyparam option to keep bias at
- performance
-Content-Language: en-US
-To:     Jack Allister <jalliste@amazon.com>, rafael@kernel.org
-Cc:     Paul Durrant <pdurrant@amazon.com>, Jue Wang <juew@amazon.com>,
-        Usama Arif <usama.arif@bytedance.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-References: <CAJZ5v0jYqQc4UztGzMDP5m5xKejrEQkMyyt12nsHdQ=qiULpTQ@mail.gmail.com>
- <20231205151403.76015-1-jalliste@amazon.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231205151403.76015-1-jalliste@amazon.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: 1.71
+X-Spamd-Result: default: False [1.71 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-0.19)[-0.933];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jack, I'd really appreciate if you could please slow down.
+Function trace_buffered_event_disable() is responsible for freeing pages
+backing buffered events and this process can run concurrently with
+trace_event_buffer_lock_reserve().
 
-I saw three versions of this patch between the time that I went to bed
-and the time I managed to wake up and get a single set of replies out.
-As a result, I don't think my feedback for v2 was incorporated for v4,
-condemning this to at least a v5.
+The following race is currently possible:
+* Function trace_buffered_event_disable() is called on CPU 0. It
+  increments trace_buffered_event_cnt on each CPU and waits via
+  synchronize_rcu() for each user of trace_buffered_event to complete.
+* After synchronize_rcu() is finished, function
+  trace_buffered_event_disable() has the exclusive access to
+  trace_buffered_event. All counters trace_buffered_event_cnt are at 1
+  and all pointers trace_buffered_event are still valid.
+* At this point, on a different CPU 1, the execution reaches
+  trace_event_buffer_lock_reserve(). The function calls
+  preempt_disable_notrace() and only now enters an RCU read-side
+  critical section. The function proceeds and reads a still valid
+  pointer from trace_buffered_event[CPU1] into the local variable
+  "entry". However, it doesn't yet read trace_buffered_event_cnt[CPU1]
+  which happens later.
+* Function trace_buffered_event_disable() continues. It frees
+  trace_buffered_event[CPU1] and decrements
+  trace_buffered_event_cnt[CPU1] back to 0.
+* Function trace_event_buffer_lock_reserve() continues. It reads and
+  increments trace_buffered_event_cnt[CPU1] from 0 to 1. This makes it
+  believe that it can use the "entry" that it already obtained but the
+  pointer is now invalid and any access results in a use-after-free.
+
+Fix the problem by making a second synchronize_rcu() call after all
+trace_buffered_event values are set to NULL. This waits on all potential
+users in trace_event_buffer_lock_reserve() that still read a previous
+pointer from trace_buffered_event.
+
+Fixes: 0fc1b09ff1ff ("tracing: Use temp buffer when filtering events")
+Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+---
+ kernel/trace/trace.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index dd45020fcdde..dc234b5dde47 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2833,13 +2833,17 @@ void trace_buffered_event_disable(void)
+ 		free_page((unsigned long)per_cpu(trace_buffered_event, cpu));
+ 		per_cpu(trace_buffered_event, cpu) = NULL;
+ 	}
++
+ 	/*
+-	 * Make sure trace_buffered_event is NULL before clearing
+-	 * trace_buffered_event_cnt.
++	 * Wait for all CPUs that potentially started checking if they can use
++	 * their event buffer only after the previous synchronize_rcu() call and
++	 * they still read a valid pointer from trace_buffered_event. It must be
++	 * ensured they don't see cleared trace_buffered_event_cnt else they
++	 * could wrongly decide to use the pointed-to buffer which is now freed.
+ 	 */
+-	smp_wmb();
++	synchronize_rcu();
+ 
+-	/* Do the work on each cpu */
++	/* For each CPU, relinquish the buffer */
+ 	on_each_cpu_mask(tracing_buffer_mask, enable_trace_buffered_event, NULL,
+ 			 true);
+ }
+-- 
+2.35.3
+
