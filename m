@@ -2,65 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 959FE805BAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59C6805C58
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442524AbjLEQA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:00:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        id S1442528AbjLEQBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:01:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346938AbjLEQAz (ORCPT
+        with ESMTP id S1346930AbjLEQBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:00:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E42120;
-        Tue,  5 Dec 2023 08:01:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701792061; x=1733328061;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jKYS+QhpoIvLq7GxMLGJgmwBA/2Fcl2kkmLSM/DkwU4=;
-  b=grH7XrSubjOtwEuUM+2eFg1FPpjHYI2mQzPJZClPeb+ZgH9VObZ+b4/+
-   F9njKKsorULMZViGdVMWgDYW6PRf1iE264mod7y/Ig+pMFf2RVf6i7hf4
-   TSlqNsofWmIrfPmQ7OdEVACOf6DYYeRUuca402aPF+Q4b8i8+hJQlCNDr
-   xC3fF/e+HCYOuQ0R5eLk2EP3lBz6e5GoPIlcNm8YCGBx/MqPK8WzKQHfB
-   4mamkHtrX2qZ7tbB95bfcVxpmlVzJ6w8NHCni8PAhnVUmioYY+lAVM7Xi
-   9wLh1pC8ncdMoi9/axFq2CyytEcykfmaaHpd2Op7cosXzxLjsFiw1gU6w
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="374100187"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="374100187"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 08:01:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="800008703"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="800008703"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 08:00:58 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1rAXqx-000000024w4-3d2g;
-        Tue, 05 Dec 2023 18:00:55 +0200
-Date:   Tue, 5 Dec 2023 18:00:55 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH] gpio: sim: fix the email address in MODULE_AUTHOR()
-Message-ID: <ZW9JN_khy9shJjOd@smile.fi.intel.com>
-References: <20231205155430.31761-1-brgl@bgdev.pl>
+        Tue, 5 Dec 2023 11:01:06 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35AB1AB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:01:12 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c032962c5so41945855e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 08:01:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701792071; x=1702396871; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EITfd3r5nf7P48LA181bNkau3CscdZfUTize8JbXHBE=;
+        b=bpZGeEk3IJu2/UJtLw5aX6mNw5LDaS30BUScuz+PjEXh4vgWn44QcPj5ehMsSdhwN6
+         HM9Tw0vBm7bEayFlgNcM7+1DRpjAFh4Clu+fY2hpkzgdFLZ9m6WtPahEWoadk0GJCxxG
+         39b/CYYYUppTxZO3yHZ0oTryYHm8mRgHy31z07lGzouSU/BeajoiF4wi0ik3/4zSjNWX
+         GDzMcsPrJp44vo5Nr4iU0ffyWkbIWLIi6dw8UXizVW+sjOmYtBNtdoLI5v8zFwCWROlw
+         f5RxQIRC1bnpC/jlhhuD5yqTNlEdiEwHRkBa9CDL8CYnjp3DFnUJKwz57B0PJBQtGVDh
+         J1xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701792071; x=1702396871;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EITfd3r5nf7P48LA181bNkau3CscdZfUTize8JbXHBE=;
+        b=Ki7M+QTqDeGPl0DTCgtIdt+145HcJRbioxO9JFWMCeXFAfhf53i+Fbul0Awh1OPWWu
+         bfFXJsn4ZsIHVkh0UM/seEJGQisQA9oobUS72EKSXjxrjKkF1ndVTh8Ss+25nrAjZw48
+         T0TldNlggPUWgxNG31cCBf3PEIKXxfLeHjf8Niwr5ubWybcllvgwtWJaaH7MCgm4JmAZ
+         /rD9KlmWX6nL67GHv3ffOZDRaIGi2CKuRdwx1ZRcpVAA1d6D7pROEapq+B67++/IFki+
+         Radq6szejpcqbB6dhhGCAu1TwvfuUkHs3Knj+wIQjMepYifldOOK4/PaA0HbfOrpVkp6
+         RzEQ==
+X-Gm-Message-State: AOJu0YzD96oqOgil6EbyAH2x6RxeN1BSgBnymqep8jDaZMVmdKxRC0gL
+        BN7Z1Jehd/IPVqHSFjC2qpq6Kg==
+X-Google-Smtp-Source: AGHT+IH9gChkUItZ8Bdn3aOa1zE9knEu7O0Iec2wEcQGBv+8gvgTNBUTm7//Mist2brtq83hisd4Rw==
+X-Received: by 2002:a05:600c:cb:b0:40c:b79:1f8 with SMTP id u11-20020a05600c00cb00b0040c0b7901f8mr454890wmm.229.1701792070246;
+        Tue, 05 Dec 2023 08:01:10 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id i17-20020a1709064fd100b00a1b70ff43e8sm3007438ejw.6.2023.12.05.08.01.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 08:01:09 -0800 (PST)
+Message-ID: <a5a7769c-4e35-4717-9cd8-33df11fc572e@linaro.org>
+Date:   Tue, 5 Dec 2023 17:01:04 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205155430.31761-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [DO NOT MERGE v5 04/37] dt-bindings: interrupt-controller: Add
+ header for Renesas SH3/4 INTC.
+Content-Language: en-US
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-sh@vger.kernel.org
+Cc:     Damien Le Moal <dlemoal@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Guo Ren <guoren@kernel.org>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Bin Meng <bmeng@tinylab.org>,
+        Max Filippov <jcmvbkbc@gmail.com>, Tom Rix <trix@redhat.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Jacky Huang <ychuang3@nuvoton.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+References: <cover.1701768028.git.ysato@users.sourceforge.jp>
+ <7b00e02e77d8c9fec4f5ecb5176e28837c87b062.1701768028.git.ysato@users.sourceforge.jp>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <7b00e02e77d8c9fec4f5ecb5176e28837c87b062.1701768028.git.ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,16 +175,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 04:54:30PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 05/12/2023 10:45, Yoshinori Sato wrote:
+> Renesas SH7751 Interrupt controller priority register define.
 > 
-> Fix unterminated angle brackets in the email address in MODULE_AUTHOR().
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+> ---
+>  .../interrupt-controller/sh7751-intc.h        | 21 +++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>  create mode 100644 include/dt-bindings/interrupt-controller/sh7751-intc.h
 
-Wondering if we have some tool to check this, as it's not the first time
-I see very similar fixes (missing >).
+Still missing vendor prefix. This applies to all your bindings.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> diff --git a/include/dt-bindings/interrupt-controller/sh7751-intc.h b/include/dt-bindings/interrupt-controller/sh7751-intc.h
+> new file mode 100644
+> index 000000000000..5783ec72d70f
+> --- /dev/null
+> +++ b/include/dt-bindings/interrupt-controller/sh7751-intc.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> + *
+> + * SH3/4 INTC EVT - IRQ conversion
+> + */
+> +
+> +#ifndef __DT_BINDINGS_RENESAS_SH7751_INTC
+> +#define __DT_BINDINGS_RENESAS_SH7751_INTC
+> +
+> +#define evt2irq(evt)		((evt) >> 5)
 
+Still not a binding.
+
+> +
+> +#define IPRA			0
+> +#define IPRB			4
+> +#define IPRC			8
+> +#define IPRD			12
+> +#define INTPRI00		256
+> +#define IPR_B12			12
+> +#define IPR_B8			8
+> +#define IPR_B4			4
+> +#define IPR_B0			0
+
+Neither these. Your commit msg says these are register values, so not
+bindings.
+
+
+Best regards,
+Krzysztof
 
