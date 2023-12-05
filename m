@@ -2,196 +2,654 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6FA804A81
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C116B804A86
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344332AbjLEGpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 01:45:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
+        id S1344428AbjLEGpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 01:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjLEGpV (ORCPT
+        with ESMTP id S231447AbjLEGpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 01:45:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445B9D3;
-        Mon,  4 Dec 2023 22:45:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701758727; x=1733294727;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=vnO/l0kmGjggmnjR6H5CzA0tIAUCMFeTA1ep0/eUD0M=;
-  b=R1+o5MUCOu4/7LUiaCspEUf6jIavx//FKoCbQ3StE2G3gnQk8+nHsres
-   zhjrsBocfPbQYmn84TrDYOIwRl/4kx8Ppg/9Cip6XjenqHe0TeC0me5U5
-   vlxaaMef4aXRVqkNtvj4FNEeo8b0MbyjbKK54+dPjBny0uXdb8WH3hR9S
-   UqmO583xogLr0t9D3qz4k/HefjIrGifqw6+/VKEaDP1fyN2f+5tsTjGHr
-   eVcuoI994rgxCJHRrL4EQWU5wN7SUCqJ0cTU0yrCM708dApHw3cKq6sTK
-   SGeTZuz10Aet6Iqip1qHqE6DVj20zh6cIsMEUtY3FziO0qkCoLd14dhhS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="396647797"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="396647797"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 22:45:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="12227964"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 22:45:27 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 22:45:25 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Dec 2023 22:45:25 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 4 Dec 2023 22:45:25 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 4 Dec 2023 22:45:24 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VoUiMY2G8GsCaOkn0C7FEUeLGPteA/fLsJySID2doiJInwIUqbXQobviET7E0EDCDH2kTMsK5IB0NVY52tW70/KZjJHrMD5Ch3otporEnmuybLobTJNXpPRYaC85U66EqwH7G4odZvTIZMg9h6tRsREgWWUxQRIak/IdFZCbhCIJmBs4ZAu9xRdrQZL08U+UHHDfFb+u+TvPc71TpSUCxyo6fLrdrnXQIgPdOtFJ7rFRNlseA94gZUsgbwbqOW3yq7mLEZmpAinx/6GeVPf9xUF+yFoGbBB4i2I4/gkfrkqFT6rWDoMd2hbRlXQS5CS8IYhZNGu6D9QxrNwtzm81lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jvdPS+9uWXI+EJq/k3ETApJeS6Dt7opu7SPqwybY868=;
- b=dL0R+QCvK+L0OW5kxx8+jRHvR88lRZss0ysOy9dObBXBMuExl8Uq9mo//h1VrBfhQhc1dEODI1aC97MrDOLeMyRcvL7CiC838pB9Q7fPvRh9S2WyNNGACR+J/izrTww/t8XpmJyC2zgi6cmKtiM1CXT3EGtnlL1Remi7RDvo4x+y72RpRayI1F3ickIdLzhKjoNLCwtGoKOu2tRg/3S68uW4zO/gd/PNXVuiypp+iBxzK+IkO6PW+S2xdUcGYVM71HG4BTupTiJRSdn8sn5JaS+6/PwzEgm5eQRUa4D5vaPBa1kNTEbkw1deQRvhYlJ/XNpC6sUUoSzjlD81PSYpGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by SA1PR11MB8349.namprd11.prod.outlook.com (2603:10b6:806:383::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 06:45:23 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 06:45:23 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     "Zhao, Yan Y" <yan.y.zhao@intel.com>,
-        Sean Christopherson <seanjc@google.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "Liu, Yi L" <yi.l.liu@intel.com>
-Subject: RE: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
-Thread-Topic: [RFC PATCH 00/42] Sharing KVM TDP to IOMMU
-Thread-Index: AQHaJQO3kBR+d+LKkUe3K6mDC1fRXbCZPU8AgAAZOoCAAJUZAIAAU9Pw
-Date:   Tue, 5 Dec 2023 06:45:22 +0000
-Message-ID: <BN9PR11MB5276AE6D59274C528F91781A8C85A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231202091211.13376-1-yan.y.zhao@intel.com>
- <20231204150800.GD1493156@nvidia.com> <ZW4AeZfCYgv6zcy4@google.com>
- <ZW59jO6FIVHI7Y6J@yzhao56-desk.sh.intel.com>
-In-Reply-To: <ZW59jO6FIVHI7Y6J@yzhao56-desk.sh.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SA1PR11MB8349:EE_
-x-ms-office365-filtering-correlation-id: 2edbabb4-8a31-478a-e8e9-08dbf55dc16e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zssJa+eLKAI/jl43piheGixSZFbELSycj7RyOlMW2eutbK+noivu8wjkr85TUEwKzkAGJ6HsD3+oW6Qh0aWo7g10dr5zhCxhLWvIcHQZH94FEtGyzDy29Sz42D46S/qA70ni7sJbh/Gp42N0Sg/1V7JS9+tPyOuAYSWNe9q/FBKBZ32QNtwxQa8U6JlO2jjSFRD0rGyS9P42pXdjKgpsVIeBTaoRWkDHTKQycrL8e5FSNQ/KbcuvmbxucRS6asE7t+aTi9IL2a638rS8rVjrUEATm6gtqN2sCkO7xzYhI7dKo53erpN+xbTZlNH5mzxAeyqNWnBth1TIkQCYwK7788c2lRVOz8gGZ0EhVWZrprE2TyvGqINGPGSkA20T8pL8l6UltmKfPZ+zIvkIzzYaCnwKXrz6N70QSiyP3YNrlQsnv9bce1baWEej4iXvVqC9rYtWwiuqs2lfPVWL59hnqY9wq6i7LjKl/BvNcPSGU9RlfIciEfLNy2j1eeWKwat73uD6NIdHKkblURsN8j1BZ8IS7+xeljuF4YjDebnrzs8JPGhxfASqByJ0rhVM6B7NWgKrpKlo92kmbzJFFg3Cw9mfJZo2f1XjpVFsnOjN4yM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(39860400002)(346002)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(5660300002)(52536014)(7416002)(86362001)(4326008)(8676002)(8936002)(2906002)(38070700009)(41300700001)(33656002)(9686003)(6506007)(82960400001)(478600001)(26005)(7696005)(71200400001)(38100700002)(55016003)(122000001)(110136005)(316002)(54906003)(64756008)(66446008)(66476007)(66556008)(76116006)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+Gi4t1NDP0rLPUEX91hHAKDwh5LC4Pw8VYJHnIgb3cOUam5miKooPIzAvHaC?=
- =?us-ascii?Q?JuavHrzY7G0deIZXZsTeYwXOpOMBcmmK7CXftaPpe8O+w4TTx01m27/m1FdW?=
- =?us-ascii?Q?YOzXc/2TNoagFUQWBtpKh8aoUv6mYFHp3GJ4FeFTcDXl8QECVKeZcsIcB4GG?=
- =?us-ascii?Q?GL7GlKTzKDPY/76BDTdGgH685eXl6vJAr/hZ5au1dW8vTlb8XGrZg2jMA0/L?=
- =?us-ascii?Q?X1x17kWz2pklVlK1RzRGTfzok9B19CkIkAm40ugIbF07+lFU1mifpCvY65p0?=
- =?us-ascii?Q?PCPlVpp/Knb0sZ2vLoK4AAZX/46wEP/N2L0JztyPEZ5QoIvwkD9A0vT266v6?=
- =?us-ascii?Q?9CJGgTGTx94xMYpyejC6G9jEuWfOx7cNATbQz8GU8dBPbPNn2u0LBOVfmx3b?=
- =?us-ascii?Q?rA+VVMCvU3j5CVNIMp0phWZj17eaE0hd2rliXTtp+gBMhsKBMY3OTEODhRDm?=
- =?us-ascii?Q?7DixgIPAS6YLZqtAarTJqvTkgKJC5D64cAqwOatVIBtqIya+dBYOkXJo6hKA?=
- =?us-ascii?Q?TiwsYXfZHAdU5n7iugT5674JzO6NRbVfUYSNuMDeoKp7kWPHGOLRWb+bwPw8?=
- =?us-ascii?Q?OY1C+aFU4CsNr/2JI/TMjR4MFvaeSUBwKQow2fMJKDT/ao29OKHDTBloL7lI?=
- =?us-ascii?Q?FlaNpbuydrz7sqbsjh6+roM/e3zDWuqjY5rwRQjpCu24GPGRnbm3IptDoQCB?=
- =?us-ascii?Q?tOzYrNP0KrRSrGTp42rr6zK/aXzspJrSV/ucmMW7Gy9GX2SGj7rhdGFye2RS?=
- =?us-ascii?Q?W6XPEGjzyAsRXtcFSbzUTCisCbNVC72D3YNhHZcu0yhxELq6JNvYHL55AfGh?=
- =?us-ascii?Q?nS1GuSGIOSmQBfeCjRbl//Fy3jkHRmH9vHOmv26Prgj6BGMX/5SMAPAi88n2?=
- =?us-ascii?Q?CYWq139umPskgiHSeeNIbFGdB1aSzEzitIMUVlyWbzuvX+QxfDL3SzQMELlg?=
- =?us-ascii?Q?1ksGprTefKONcnkL6ockuQKg2RsARYvO9NrTya0xf7s4V3QYouqGliqfbeio?=
- =?us-ascii?Q?TXlLuT3Defax69vYivGefSay19MPkT7tAWJN1GYmfL9/jKC19W8DkUIVAQbx?=
- =?us-ascii?Q?GkmZiluQ2YfOHlvexW+9HAg7t9Zy3vKnP2UI+VKVCE3CavlTsAZ/wy7pfBHO?=
- =?us-ascii?Q?s6twc1lDkIaYgOhmtdzdvfr9wATyNirrzVcQ19EgXAV7mwzfXVC18TPZK1QS?=
- =?us-ascii?Q?aJMBlciPG0yGQzWC5P9bGmKYK1UeMCdXPwONZJ9FEr7xEEuIeR5QABtOqN0W?=
- =?us-ascii?Q?2PoDXyRMvPwArkI85B6xGEtC3qoTalnWVkLx6ot4/YVkzJ0z2FiHmt6iNgs6?=
- =?us-ascii?Q?W5ntOSQNk4nuO8Xe0VYxb73dbUSCHRQZYlB2ArhT+24/wHDxqJI/E57YVzSi?=
- =?us-ascii?Q?aSsB4qFiTAZgzDB2E2DUyr6ZMTipp+BRLGWdSDryX4RAh+L/qlnXXjUNyoIG?=
- =?us-ascii?Q?cbzKADZpxr1v3Ed0SwHLQPhgOtPsaNTXikE0+ymDSwzN45Y2uHSxpO8hBSp3?=
- =?us-ascii?Q?VjtbI7BlB8XdMRgNZstDi+J5DiZq3JEAMYy9Cs84hNixFo+r+p1fj3MUJput?=
- =?us-ascii?Q?MLgWCny17hCPlzs4MP4vT5mdUCo+EoEPH6VWFMOL?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 5 Dec 2023 01:45:35 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65003FA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 22:45:40 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1rAPBQ-00018I-Tp; Tue, 05 Dec 2023 07:45:28 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1rAPBP-00DgU8-Ok; Tue, 05 Dec 2023 07:45:27 +0100
+Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1rAPBP-005LHf-LT; Tue, 05 Dec 2023 07:45:27 +0100
+Date:   Tue, 5 Dec 2023 07:45:27 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Kory Maincent <kory.maincent@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Russ Weight <russ.weight@linux.dev>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        Dent Project <dentproject@linuxfoundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH net-next v2 8/8] net: pse-pd: Add PD692x0 PSE controller
+ driver
+Message-ID: <20231205064527.GJ981228@pengutronix.de>
+References: <20231201-feature_poe-v2-0-56d8cac607fa@bootlin.com>
+ <20231201-feature_poe-v2-8-56d8cac607fa@bootlin.com>
+ <20231204225956.GG981228@pengutronix.de>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2edbabb4-8a31-478a-e8e9-08dbf55dc16e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2023 06:45:22.8596
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BYe+psa/TvlBGhGp4YEPtYO/EYqFUrIbn8AjS2NN0bueHut55yudN/3VqqevDxHULrOLbRpHdUzowWwW6KvKdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8349
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231204225956.GG981228@pengutronix.de>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Zhao, Yan Y <yan.y.zhao@intel.com>
-> Sent: Tuesday, December 5, 2023 9:32 AM
->=20
-> On Mon, Dec 04, 2023 at 08:38:17AM -0800, Sean Christopherson wrote:
-> > The number of possible TDP page tables used for nested VMs is well
-> bounded, but
-> > since devices obviously can't be nested VMs, I won't bother trying to
-> explain the
-> > the various possibilities (nested NPT on AMD is downright ridiculous).
-> In future, if possible, I wonder if we can export an TDP for nested VM to=
-o.
-> E.g. in scenarios where TDP is partitioned, and one piece is for L2 VM.
-> Maybe we can specify that and tell KVM the very piece of TDP to export.
->=20
+CC regulator devs here too.
 
-nesting is tricky.
+On Mon, Dec 04, 2023 at 11:59:56PM +0100, Oleksij Rempel wrote:
+> On Fri, Dec 01, 2023 at 06:10:30PM +0100, Kory Maincent wrote:
+> > Add a new driver for the PD692x0 I2C Power Sourcing Equipment controller.
+> > This driver only support i2c communication for now.
+> > 
+> > Sponsored-by: Dent Project <dentproject@linuxfoundation.org>
+> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > ---
+> > 
+> > This driver is based on the patch merged in an immutable branch from Jakub
+> > repo. It is Tagged at:
+> > git://git.kernel.org/pub/scm/linux/kernel/git/kuba/linux.git firmware_loader-add-upload-error
+> > 
+> > Change in v2:
+> > - Drop of_match_ptr
+> > - Follow the "c33" PoE prefix naming change.
+> > - Remove unused delay_recv variable. Then, remove struct pd692x0_msg_content
+> >   which is similar to struct pd692x0_msg.
+> > - Fix a weird sleep loop.
+> > - Improve pd692x0_recv_msg for better readability.
+> > - Fix a warning reported by Simon on a pd692x0_fw_write_line call.
+> > ---
+> >  MAINTAINERS                  |    1 +
+> >  drivers/net/pse-pd/Kconfig   |   11 +
+> >  drivers/net/pse-pd/Makefile  |    1 +
+> >  drivers/net/pse-pd/pd692x0.c | 1025 ++++++++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 1038 insertions(+)
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index b746684f3fd3..3cbafca0cdf4 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -14240,6 +14240,7 @@ M:	Kory Maincent <kory.maincent@bootlin.com>
+> >  L:	netdev@vger.kernel.org
+> >  S:	Maintained
+> >  F:	Documentation/devicetree/bindings/net/pse-pd/microchip,pd692x0.yaml
+> > +F:	drivers/net/pse-pd/pd692x0.c
+> >  
+> >  MICROCHIP POLARFIRE FPGA DRIVERS
+> >  M:	Conor Dooley <conor.dooley@microchip.com>
+> > diff --git a/drivers/net/pse-pd/Kconfig b/drivers/net/pse-pd/Kconfig
+> > index 687dec49c1e1..e3a6ba669f20 100644
+> > --- a/drivers/net/pse-pd/Kconfig
+> > +++ b/drivers/net/pse-pd/Kconfig
+> > @@ -20,4 +20,15 @@ config PSE_REGULATOR
+> >  	  Sourcing Equipment without automatic classification support. For
+> >  	  example for basic implementation of PoDL (802.3bu) specification.
+> >  
+> > +config PSE_PD692X0
+> > +	tristate "PD692X0 PSE controller"
+> > +	depends on I2C
+> > +	select FW_UPLOAD
+> > +	help
+> > +	  This module provides support for PD692x0 regulator based Ethernet
+> > +	  Power Sourcing Equipment.
+> > +
+> > +	  To compile this driver as a module, choose M here: the
+> > +	  module will be called pd692x0.
+> > +
+> >  endif
+> > diff --git a/drivers/net/pse-pd/Makefile b/drivers/net/pse-pd/Makefile
+> > index 1b8aa4c70f0b..9c12c4a65730 100644
+> > --- a/drivers/net/pse-pd/Makefile
+> > +++ b/drivers/net/pse-pd/Makefile
+> > @@ -4,3 +4,4 @@
+> >  obj-$(CONFIG_PSE_CONTROLLER) += pse_core.o
+> >  
+> >  obj-$(CONFIG_PSE_REGULATOR) += pse_regulator.o
+> > +obj-$(CONFIG_PSE_PD692X0) += pd692x0.o
+> > diff --git a/drivers/net/pse-pd/pd692x0.c b/drivers/net/pse-pd/pd692x0.c
+> > new file mode 100644
+> > index 000000000000..6d921dfcfb07
+> > --- /dev/null
+> > +++ b/drivers/net/pse-pd/pd692x0.c
+> > @@ -0,0 +1,1025 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Driver for the Microchip PD692X0 PoE PSE Controller driver (I2C bus)
+> > + *
+> > + * Copyright (c) 2023 Bootlin, Kory Maincent <kory.maincent@bootlin.com>
+> > + */
+> > +
+> > +#include <linux/module.h>
+> > +#include <linux/of.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/pse-pd/pse.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/firmware.h>
+> > +
+> > +#define PD692X0_PSE_NAME "pd692x0_pse"
+> > +
+> > +#define PD692X0_MAX_LOGICAL_PORTS	48
+> > +#define PD692X0_MAX_HW_PORTS	96
+> > +
+> > +#define PD69200_BT_PROD_VER	24
+> > +#define PD69210_BT_PROD_VER	26
+> > +#define PD69220_BT_PROD_VER	29
+> > +
+> > +#define PD692X0_FW_MAJ_VER	3
+> > +#define PD692X0_FW_MIN_VER	5
+> > +#define PD692X0_FW_PATCH_VER	5
+> > +
+> > +enum pd692x0_fw_state {
+> > +	PD692X0_FW_UNKNOWN,
+> > +	PD692X0_FW_OK,
+> > +	PD692X0_FW_BROKEN,
+> > +	PD692X0_FW_NEED_UPDATE,
+> > +	PD692X0_FW_PREPARE,
+> > +	PD692X0_FW_WRITE,
+> > +	PD692X0_FW_COMPLETE,
+> > +};
+> > +
+> > +struct pd692x0_msg {
+> > +	u8 key;
+> > +	u8 echo;
+> > +	u8 sub[3];
+> > +	u8 data[8];
+> > +	__be16 chksum;
+> > +} __packed;
+> > +
+> > +struct pd692x0_msg_ver {
+> > +	u8 prod;
+> > +	u8 maj_sw_ver;
+> > +	u8 min_sw_ver;
+> > +	u8 pa_sw_ver;
+> > +	u8 param;
+> > +	u8 build;
+> > +};
+> > +
+> > +enum {
+> > +	PD692X0_KEY_CMD,
+> > +	PD692X0_KEY_PRG,
+> > +	PD692X0_KEY_REQ,
+> > +	PD692X0_KEY_TLM,
+> > +	PD692X0_KEY_TEST,
+> > +	PD692X0_KEY_REPORT = 0x52
+> > +};
+> > +
+> > +enum {
+> > +	PD692X0_MSG_RESET,
+> > +	PD692X0_MSG_GET_SW_VER,
+> > +	PD692X0_MSG_SET_TMP_PORT_MATRIX,
+> > +	PD692X0_MSG_PRG_PORT_MATRIX,
+> > +	PD692X0_MSG_SET_PORT_PARAM,
+> > +	PD692X0_MSG_GET_PORT_STATUS,
+> > +	PD692X0_MSG_DOWNLOAD_CMD,
+> > +
+> > +	/* add new message above here */
+> > +	PD692X0_MSG_CNT
+> > +};
+> > +
+> > +struct pd692x0_priv {
+> > +	struct i2c_client *client;
+> > +	struct pse_controller_dev pcdev;
+> > +
+> > +	enum pd692x0_fw_state fw_state;
+> > +	struct fw_upload *fwl;
+> > +	bool cancel_request;
+> > +
+> > +	u8 msg_id;
+> > +	bool last_cmd_key;
+> > +	unsigned long last_cmd_key_time;
+> > +
+> > +	enum ethtool_c33_pse_admin_state admin_state[PD692X0_MAX_LOGICAL_PORTS];
+> > +};
+> > +
+> > +/* Template list of communication messages. The non-null bytes defined here
+> > + * constitute the fixed portion of the messages. The remaining bytes will
+> > + * be configured later within the functions. Refer to the "PD692x0 BT Serial
+> > + * Communication Protocol User Guide" for comprehensive details on messages
+> > + * content.
+> > + */
+> > +static const struct pd692x0_msg pd692x0_msg_template_list[PD692X0_MSG_CNT] = {
+> > +	[PD692X0_MSG_RESET] = {
+> > +		.key = PD692X0_KEY_CMD,
+> > +		.sub = {0x07, 0x55, 0x00},
+> > +		.data = {0x55, 0x00, 0x55, 0x4e,
+> > +			 0x4e, 0x4e, 0x4e, 0x4e},
+> > +	},
+> > +	[PD692X0_MSG_GET_SW_VER] = {
+> > +		.key = PD692X0_KEY_REQ,
+> > +		.sub = {0x07, 0x1e, 0x21},
+> > +		.data = {0x4e, 0x4e, 0x4e, 0x4e,
+> > +			 0x4e, 0x4e, 0x4e, 0x4e},
+> > +	},
+> > +	[PD692X0_MSG_SET_TMP_PORT_MATRIX] = {
+> > +		.key = PD692X0_KEY_CMD,
+> > +		.sub	 = {0x05, 0x43},
+> > +		.data = {   0, 0x4e, 0x4e, 0x4e,
+> > +			 0x4e, 0x4e, 0x4e, 0x4e},
+> > +	},
+> > +	[PD692X0_MSG_PRG_PORT_MATRIX] = {
+> > +		.key = PD692X0_KEY_CMD,
+> > +		.sub = {0x07, 0x43, 0x4e},
+> > +		.data = {0x4e, 0x4e, 0x4e, 0x4e,
+> > +			 0x4e, 0x4e, 0x4e, 0x4e},
+> > +	},
+> > +	[PD692X0_MSG_SET_PORT_PARAM] = {
+> > +		.key = PD692X0_KEY_CMD,
+> > +		.sub = {0x05, 0xc0},
+> > +		.data = {   0, 0xff, 0xff, 0xff,
+> > +			 0x4e, 0x4e, 0x4e, 0x4e},
+> > +	},
+> > +	[PD692X0_MSG_GET_PORT_STATUS] = {
+> > +		.key = PD692X0_KEY_REQ,
+> > +		.sub = {0x05, 0xc1},
+> > +		.data = {0x4e, 0x4e, 0x4e, 0x4e,
+> > +			 0x4e, 0x4e, 0x4e, 0x4e},
+> > +	},
+> > +	[PD692X0_MSG_DOWNLOAD_CMD] = {
+> > +		.key = PD692X0_KEY_PRG,
+> > +		.sub = {0xff, 0x99, 0x15},
+> > +		.data = {0x16, 0x16, 0x99, 0x4e,
+> > +			 0x4e, 0x4e, 0x4e, 0x4e},
+> > +	},
+> > +};
+> > +
+> > +static u8 pd692x0_build_msg(struct pd692x0_msg *msg, u8 echo)
+> > +{
+> > +	u8 *data = (u8 *)msg;
+> > +	u16 chksum = 0;
+> > +	int i;
+> > +
+> > +	msg->echo = echo++;
+> > +	if (echo == 0xff)
+> > +		echo = 0;
+> > +
+> > +	for (i = 0; i < sizeof(*msg) - sizeof(msg->chksum); i++)
+> > +		chksum += data[i];
+> > +
+> > +	msg->chksum = cpu_to_be16(chksum);
+> > +
+> > +	return echo;
+> > +}
+> > +
+> > +static int pd692x0_send_msg(struct pd692x0_priv *priv, struct pd692x0_msg *msg)
+> > +{
+> > +	const struct i2c_client *client = priv->client;
+> > +	int ret;
+> > +
+> > +	if (msg->key == PD692X0_KEY_CMD && priv->last_cmd_key) {
+> > +		int cmd_msleep;
+> > +
+> > +		cmd_msleep = 30 - jiffies_to_msecs(jiffies - priv->last_cmd_key_time);
+> > +		if (cmd_msleep > 0)
+> > +			msleep(cmd_msleep);
+> > +	}
+> > +
+> > +	/* Add echo and checksum bytes to the message */
+> > +	priv->msg_id = pd692x0_build_msg(msg, priv->msg_id);
+> > +
+> > +	ret = i2c_master_send(client, (u8 *)msg, sizeof(*msg));
+> > +	if (ret != sizeof(*msg))
+> > +		return -EIO;
+> 
+> This overwrites initial error message returned by the i2c_master_send().
+> 		return ret < 0 ? ret : -EIO;
+> 
+> > +	return 0;
+> > +}
+> > +
+> > +static int pd692x0_reset(struct pd692x0_priv *priv)
+> > +{
+> > +	const struct i2c_client *client = priv->client;
+> > +	struct pd692x0_msg msg, buf = {0};
+> > +	int ret;
+> > +
+> > +	msg = pd692x0_msg_template_list[PD692X0_MSG_RESET];
+> > +	ret = pd692x0_send_msg(priv, &msg);
+> > +	if (ret) {
+> > +		dev_err(&client->dev,
+> > +			"Failed to reset the controller (%pe)\n", ERR_PTR(ret));
+> > +		return ret;
+> > +	}
+> > +
+> > +	msleep(30);
+> > +
+> > +	ret = i2c_master_recv(client, (u8 *)&buf, sizeof(buf));
+> > +	if (ret != sizeof(buf))
+> > +		return ret < 0 ? ret : -EIO;
+> > +
+> > +	/* Is the reply a successful report message */
+> > +	if (buf.key != PD692X0_KEY_REPORT || buf.sub[0] || buf.sub[1])
+> > +		return -EIO;
+> > +
+> > +	msleep(300);
+> > +
+> > +	ret = i2c_master_recv(client, (u8 *)&buf, sizeof(buf));
+> > +	if (ret != sizeof(buf))
+> > +		return ret < 0 ? ret : -EIO;
+> > +
+> > +	/* Is the boot status without error */
+> > +	if (buf.key != 0x03 || buf.echo != 0xff || buf.sub[0] & 0x1) {
+> > +		dev_err(&client->dev, "PSE controller error\n");
+> 
+> May be better to have here a bit more verbose error message. For example
+> print values which we actually got?
+> 
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int pd692x0_try_recv_msg(const struct i2c_client *client,
+> > +				struct pd692x0_msg *msg,
+> > +				struct pd692x0_msg *buf)
+> > +{
+> > +	msleep(30);
+> 
+> It would be good to have some comments on sleeps. For example is it
+> based on documentation or on testing. It is related to all seeps in this
+> driver.
+> 
+> > +
+> > +	memset(buf, 0, sizeof(*buf));
+> > +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
+> 
+> i2c level errors are ignored.
+> 
+> > +	if (buf->key)
+> > +		return 1;
+> > +
+> > +	msleep(100);
+> > +
+> > +	memset(buf, 0, sizeof(*buf));
+> > +	i2c_master_recv(client, (u8 *)buf, sizeof(*buf));
+> 
+> same here. i2c level errors are ignored.
+> 
+> > +	if (buf->key)
+> > +		return 1;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/* Implementation of I2C communication, specifically addressing scenarios
+> > + * involving communication loss. Refer to the "Synchronization During
+> > + * Communication Loss" section in the Communication Protocol document for
+> > + * further details.
+> > + */
+> > +static int pd692x0_recv_msg(struct pd692x0_priv *priv,
+> > +			    struct pd692x0_msg *msg,
+> > +			    struct pd692x0_msg *buf)
+> > +{
+> > +	const struct i2c_client *client = priv->client;
+> > +	int ret;
+> > +
+> > +	ret = pd692x0_try_recv_msg(client, msg, buf);
+> > +	if (ret)
+> > +		goto out_success;
+> > +
+> > +	dev_warn(&client->dev,
+> > +		 "Communication lost, rtnl is locked until communication is back!");
+> > +
+> > +	ret = pd692x0_send_msg(priv, msg);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = pd692x0_try_recv_msg(client, msg, buf);
+> > +	if (ret)
+> > +		goto out_success;
+> > +
+> > +	msleep(10000);
+> > +
+> > +	ret = pd692x0_send_msg(priv, msg);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = pd692x0_try_recv_msg(client, msg, buf);
+> > +	if (ret)
+> > +		goto out_success;
+> > +
+> > +	return pd692x0_reset(priv);
+> > +
+> > +out_success:
+> > +	if (msg->key == PD692X0_KEY_CMD) {
+> > +		priv->last_cmd_key = true;
+> > +		priv->last_cmd_key_time = jiffies;
+> > +	} else {
+> > +		priv->last_cmd_key = false;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int pd692x0_sendrecv_msg(struct pd692x0_priv *priv,
+> > +				struct pd692x0_msg *msg,
+> > +				struct pd692x0_msg *buf)
+> > +{
+> > +	struct device *dev = &priv->client->dev;
+> > +	int ret;
+> > +
+> > +	ret = pd692x0_send_msg(priv, msg);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = pd692x0_recv_msg(priv, msg, buf);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (msg->echo != buf->echo) {
+> > +		dev_err(dev, "Wrong match in message ID\n");
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	/* If the reply is a report message is it successful */
+> > +	if (buf->key == PD692X0_KEY_REPORT &&
+> > +	    (buf->sub[0] || buf->sub[1])) {
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static struct pd692x0_priv *to_pd692x0_priv(struct pse_controller_dev *pcdev)
+> > +{
+> > +	return container_of(pcdev, struct pd692x0_priv, pcdev);
+> > +}
+> > +
+> > +static int pd692x0_fw_unavailable(struct pd692x0_priv *priv)
+> > +{
+> > +	switch (priv->fw_state) {
+> > +	case PD692X0_FW_OK:
+> > +		return 0;
+> > +	case PD692X0_FW_PREPARE:
+> > +	case PD692X0_FW_WRITE:
+> > +	case PD692X0_FW_COMPLETE:
+> > +		dev_err(&priv->client->dev, "Firmware update in progress!\n");
+> > +		return -EBUSY;
+> > +	case PD692X0_FW_BROKEN:
+> > +	case PD692X0_FW_NEED_UPDATE:
+> > +	default:
+> > +		dev_err(&priv->client->dev,
+> > +			"Firmware issue. Please update it!\n");
+> 
+> It will be better to export this messages to the user space with
+> NL_SET_ERR_MSG().
+> 
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +}
+> > +
+> > +static int pd692x0_ethtool_set_config(struct pse_controller_dev *pcdev,
+> > +				      unsigned long id,
+> > +				      struct netlink_ext_ack *extack,
+> > +				      const struct pse_control_config *config)
+> > +{
+> > +	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
+> > +	struct pd692x0_msg msg, buf = {0};
+> > +	int ret;
+> > +
+> > +	ret = pd692x0_fw_unavailable(priv);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (priv->admin_state[id] == config->c33_admin_control)
+> > +		return 0;
+> > +
+> > +	msg = pd692x0_msg_template_list[PD692X0_MSG_SET_PORT_PARAM];
+> > +	switch (config->c33_admin_control) {
+> > +	case ETHTOOL_C33_PSE_ADMIN_STATE_ENABLED:
+> > +		msg.data[0] = 0x1;
+> > +		break;
+> > +	case ETHTOOL_C33_PSE_ADMIN_STATE_DISABLED:
+> > +		msg.data[0] = 0x0;
+> > +		break;
+> > +	default:
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +
+> > +	msg.sub[2] = id;
+> > +	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	priv->admin_state[id] = config->c33_admin_control;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int pd692x0_ethtool_get_status(struct pse_controller_dev *pcdev,
+> > +				      unsigned long id,
+> > +				      struct netlink_ext_ack *extack,
+> > +				      struct pse_control_status *status)
+> > +{
+> > +	struct pd692x0_priv *priv = to_pd692x0_priv(pcdev);
+> > +	struct pd692x0_msg msg, buf = {0};
+> > +	int ret;
+> > +
+> > +	ret = pd692x0_fw_unavailable(priv);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	msg = pd692x0_msg_template_list[PD692X0_MSG_GET_PORT_STATUS];
+> > +	msg.sub[2] = id;
+> > +	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	/* Compare Port Status (Communication Protocol Document par. 7.1) */
+> > +	if ((buf.sub[0] & 0xf0) == 0x80 || (buf.sub[0] & 0xf0) == 0x90)
+> > +		status->c33_pw_status = ETHTOOL_C33_PSE_PW_D_STATUS_DELIVERING;
+> > +	else if (buf.sub[0] == 0x1b || buf.sub[0] == 0x22)
+> > +		status->c33_pw_status = ETHTOOL_C33_PSE_PW_D_STATUS_SEARCHING;
+> > +	else if (buf.sub[0] == 0x12)
+> > +		status->c33_pw_status = ETHTOOL_C33_PSE_PW_D_STATUS_FAULT;
+> > +	else
+> > +		status->c33_pw_status = ETHTOOL_C33_PSE_PW_D_STATUS_DISABLED;
+> > +
+> > +	if (buf.sub[1])
+> > +		status->c33_admin_state = ETHTOOL_C33_PSE_ADMIN_STATE_ENABLED;
+> > +	else
+> > +		status->c33_admin_state = ETHTOOL_C33_PSE_ADMIN_STATE_DISABLED;
+> > +
+> > +	priv->admin_state[id] = status->c33_admin_state;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static struct pd692x0_msg_ver pd692x0_get_sw_version(struct pd692x0_priv *priv)
+> > +{
+> > +	struct device *dev = &priv->client->dev;
+> > +	struct pd692x0_msg msg, buf = {0};
+> > +	struct pd692x0_msg_ver ver = {0};
+> > +	int ret;
+> > +
+> > +	msg = pd692x0_msg_template_list[PD692X0_MSG_GET_SW_VER];
+> > +	ret = pd692x0_sendrecv_msg(priv, &msg, &buf);
+> > +	if (ret < 0) {
+> > +		dev_err(dev, "Failed to get PSE version (%pe)\n", ERR_PTR(ret));
+> > +		return ver;
+> > +	}
+> > +
+> > +	/* Extract version from the message */
+> > +	ver.prod = buf.sub[2];
+> > +	ver.maj_sw_ver = (buf.data[0] << 8 | buf.data[1]) / 100;
+> > +	ver.min_sw_ver = ((buf.data[0] << 8 | buf.data[1]) / 10) % 10;
+> > +	ver.pa_sw_ver = (buf.data[0] << 8 | buf.data[1]) % 10;
+> > +	ver.param = buf.data[2];
+> > +	ver.build = buf.data[3];
+> > +
+> > +	return ver;
+> > +}
+> > +
+> > +static const struct pse_controller_ops pd692x0_ops = {
+> > +	.ethtool_get_status = pd692x0_ethtool_get_status,
+> > +	.ethtool_set_config = pd692x0_ethtool_set_config,
+> > +};
+> > +
+> > +struct matrix {
+> > +	u8 hw_port_a;
+> > +	u8 hw_port_b;
+> > +};
+> > +
+> > +static int
+> > +pd692x0_set_ports_matrix(struct pd692x0_priv *priv,
+> > +			 const struct matrix port_matrix[PD692X0_MAX_LOGICAL_PORTS])
+> > +{
+> > +	struct pd692x0_msg msg, buf;
+> > +	int ret, i;
 
-The reason why the sharing (w/o nesting) is logically ok is that both IOMMU
-and KVM page tables are for the same GPA address space created by
-the host.
+I assume port-matrix should be completely reworked as I suggested in the
+DT review. Except of the topology, each port seems to be a regulator.
+Even if we do not have direct influence on each regulator state, we have
+information about current state of them and will be able to represent regulator
+three to get more diagnostic information.
 
-for nested VM together with vIOMMU, the same sharing story holds if the
-stage-2 page table in both sides still translates GPA. It implies vIOMMU is
-enabled in nested translation mode and L0 KVM doesn't expose  vEPT to
-L1 VMM (which then uses shadow instead).=20
-
-things become tricky when vIOMMU is working in a shadowing mode or
-when L0 KVM exposes vEPT to L1 VMM. In either case the stage-2 page
-table of L0 IOMMU/KVM actually translates a guest address space then
-sharing becomes problematic (on figuring out whether both refers to the
-same guest address space while that fact might change at any time).
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
