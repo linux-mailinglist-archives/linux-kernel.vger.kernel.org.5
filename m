@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89487805475
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F587805480
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345335AbjLEMit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48486 "EHLO
+        id S1345118AbjLEMiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:38:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345181AbjLEMij (ORCPT
+        with ESMTP id S1345310AbjLEMir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:38:39 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE02135;
-        Tue,  5 Dec 2023 04:38:44 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sl0Sv6BWRz4f3kFX;
-        Tue,  5 Dec 2023 20:38:39 +0800 (CST)
+        Tue, 5 Dec 2023 07:38:47 -0500
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3459F18C;
+        Tue,  5 Dec 2023 04:38:46 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sl0St6GDFz4f3lDq;
+        Tue,  5 Dec 2023 20:38:38 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 0A8541A0C69;
-        Tue,  5 Dec 2023 20:38:42 +0800 (CST)
+        by mail.maildlp.com (Postfix) with ESMTP id 815291A0946;
+        Tue,  5 Dec 2023 20:38:43 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S10;
-        Tue, 05 Dec 2023 20:38:41 +0800 (CST)
+        by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S11;
+        Tue, 05 Dec 2023 20:38:42 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
         kent.overstreet@gmail.com, joern@lazybastard.org,
@@ -44,18 +44,18 @@ Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
         linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH -next RFC 06/14] scsicam: use bdev api in scsi_bios_ptable()
-Date:   Tue,  5 Dec 2023 20:37:20 +0800
-Message-Id: <20231205123728.1866699-7-yukuai1@huaweicloud.com>
+Subject: [PATCH -next RFC 07/14] bcachefs: remove dead function bdev_sectors()
+Date:   Tue,  5 Dec 2023 20:37:21 +0800
+Message-Id: <20231205123728.1866699-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDnNw7GGW9lr8E8Cw--.35507S10
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFW7Jry5ZFy8tw45tFykGrg_yoW3CFX_CF
-        WI9ryxWr1FkFs7Kw45tF43Zryvva15XF1I9FWSq34Svw1UXr95Kr4vvr17Zr47Gr4DJw1f
-        Cr17WrWakrsFgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: cCh0CgDnNw7GGW9lr8E8Cw--.35507S11
+X-Coremail-Antispam: 1UD129KBjvdXoWrZFyrKrWkuF1fAw4fZrWUurg_yoW3Wrc_KF
+        92vF18Ww4xZF1F93ZFqr1vvr4jv34UXrW2gFn0v3W7A3WDJ395ZFZ5KrW5ZrsrW397uFy2
+        q3yxXrW7uryFkjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbqkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
         IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
@@ -71,7 +71,7 @@ X-Coremail-Antispam: 1UD129KBjvdXoW7XFW7Jry5ZFy8tw45tFykGrg_yoW3CFX_CF
         0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUl
         2NtUUUUU=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,31 +82,29 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Avoid to access bd_inode directly, prepare to remove bd_inode from
-block_devcie.
+bdev_sectors() is not used hence remove it.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/scsi/scsicam.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/bcachefs/util.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/scsi/scsicam.c b/drivers/scsi/scsicam.c
-index e2c7d8ef205f..1c99b964a0eb 100644
---- a/drivers/scsi/scsicam.c
-+++ b/drivers/scsi/scsicam.c
-@@ -32,11 +32,10 @@
-  */
- unsigned char *scsi_bios_ptable(struct block_device *dev)
- {
--	struct address_space *mapping = bdev_whole(dev)->bd_inode->i_mapping;
- 	unsigned char *res = NULL;
- 	struct folio *folio;
+diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
+index b93d5f481c7e..932ca6f7a37b 100644
+--- a/fs/bcachefs/util.h
++++ b/fs/bcachefs/util.h
+@@ -541,11 +541,6 @@ static inline unsigned fract_exp_two(unsigned x, unsigned fract_bits)
+ void bch2_bio_map(struct bio *bio, void *base, size_t);
+ int bch2_bio_alloc_pages(struct bio *, size_t, gfp_t);
  
--	folio = read_mapping_folio(mapping, 0, NULL);
-+	folio = bdev_read_folio(bdev_whole(dev), 0);
- 	if (IS_ERR(folio))
- 		return NULL;
- 
+-static inline sector_t bdev_sectors(struct block_device *bdev)
+-{
+-	return bdev->bd_inode->i_size >> 9;
+-}
+-
+ #define closure_bio_submit(bio, cl)					\
+ do {									\
+ 	closure_get(cl);						\
 -- 
 2.39.2
 
