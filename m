@@ -2,131 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA22805BF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09B2805C3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345750AbjLEOxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:53:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54476 "EHLO
+        id S1345756AbjLEOyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:54:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345682AbjLEOxk (ORCPT
+        with ESMTP id S1345682AbjLEOyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:53:40 -0500
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2084.outbound.protection.outlook.com [40.107.101.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1425A183;
-        Tue,  5 Dec 2023 06:53:47 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LarG7QPpuZQRsUja7qmSahka4l2vFMzKQX9DBg483U9crfVdfJJ6+NN5z1hSORCqvrNVCP54Pp6DoA/IcI3IiJw1HsK9wt60CHYJv32JiOBt/MrLVgzN+LC3LrjkxFCksSKalZVie1jDM8IgZgGdb8Nehi4HYzWl3VZF+dLxfk4Cx73YTZBDqvanNyG7wWKg2yOAXfbt2JhAwjWcP0Cv9+2MeTxzNX/l5qZhN5enUfs06yuoPmXPoaZ4d/idchLyRbX6ikHg74SR2rlIYF6FuR9jhMysyf90+mWMUB5ZMXRxowdE0/+BKfkw1Xv0KaL/Hz4eMenZd71zIxSDyIYZhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+1VFyAdrqU+gZaRf2hA7rFQoVOCm4/6MYu79H/uQKPY=;
- b=CWtHs+8ccIwAsy4GVhsp5YWIHErNJKL1HRuqfOxbBPokCGtk4fqOOQEjTBSu/5wAZXcTzq1mKAlenky2O3aGT8TG+BXsKY24nnh1njwD5K6d9o3OeG0807h9ChtMEFnm6NuBXncNsESZ/uiLm73+45hD/qRH+TKhCMotGi/Udy55dV3Ll69LolJ5Ocbt9NlnvAh2tICaOSMSpZZe4Wc2zdtdXtLMr4rS4R0KFp9uOyFEFv05UJM8k+PnWGArek8hF0esVkku5faW87vTevJ19GJU7pmrBAwCqQMhzrTKIqYA3eJJh3Vvh1AEWM8kupBVvqEGJuQoe7JkcaaiTrIWCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+1VFyAdrqU+gZaRf2hA7rFQoVOCm4/6MYu79H/uQKPY=;
- b=SZVCGNiqGZPPtQ62jgt++Us8Pr5oxZMxi3XrIZPNOrWYYg6174BjoZNYLtqTHbmT597wspsiQ2x33RksECsiuWJ5h6tfRijFeSabGUM8wHR7fS+BA5GjLqfS2vlrkegPdE9pSH9Q4FjeIFSzZjDMX4YwjRB5P50LCM1RrNhWeUSGjLZ3ekAWEPw9wFl7P1L6BxoeGsBg41q216Zalp5gggayDrot/4PCZ55VxtI3fIxql9TllS1Z1G30O7y7PLv8ZgNP8FIwZpcYVGQkyNkhldqW2Bdj79E7iNATQX87i7qifR8YTuk7TSK4vkA10UDiw6yoQSiP7BGicgLrZIaDhA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SJ2PR12MB9243.namprd12.prod.outlook.com (2603:10b6:a03:578::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 14:53:42 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
- 14:53:42 +0000
-Date:   Tue, 5 Dec 2023 10:53:41 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alex.williamson@redhat.com,
-        pbonzini@redhat.com, seanjc@google.com, joro@8bytes.org,
-        will@kernel.org, robin.murphy@arm.com, kevin.tian@intel.com,
-        baolu.lu@linux.intel.com, dwmw2@infradead.org, yi.l.liu@intel.com
-Subject: Re: [RFC PATCH 16/42] iommufd: Enable device feature IOPF during
- device attachment to KVM HWPT
-Message-ID: <20231205145341.GF2787277@nvidia.com>
-References: <20231202091211.13376-1-yan.y.zhao@intel.com>
- <20231202092311.14392-1-yan.y.zhao@intel.com>
- <20231204183603.GN1493156@nvidia.com>
- <ZW7NwSCzswweHZh6@yzhao56-desk.sh.intel.com>
+        Tue, 5 Dec 2023 09:54:08 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0310C9;
+        Tue,  5 Dec 2023 06:54:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=aS+6Mc/VT/2j+J5fJogDFiX1PU1iHoMxy86IBJ3C6/I=; b=mYWzI8iMiL08atPYNN06Cc+NGc
+        NBj8ZaHxjOFkpVKIVt30yreNEm9kMF+z6KJ7s7Ms90yMM46UOFMHe2l+UkxkYWaOzEafyImYqfuKw
+        5dpqyLcXTwLCMT4fC7D7W5K0PrZwCEIb9XTwDloKNDguedQYNcScu+cT1Ur9afBDSEX/iJ2+cZrcu
+        Nxo0rBovQy5a7RquutTs6v4rpQs1A+DDHLK9jPsn9qQfoKOGDilT9MtfaKxktjCP+FOj+TkgIPiJQ
+        QigCHlF+jUn8rmPFaJvVzCuDQPu9gQxFdtoLoc6eHBnJBvSX379/NWymBSj/aUla5GbRXZCP5OEDt
+        xO7ll1kQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56866)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rAWoB-0006ux-1C;
+        Tue, 05 Dec 2023 14:53:59 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rAWoC-0001nk-Fm; Tue, 05 Dec 2023 14:54:00 +0000
+Date:   Tue, 5 Dec 2023 14:54:00 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Serge Semin <fancer.lancer@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 06/16] net: pcs: xpcs: Avoid creating dummy XPCS
+ MDIO device
+Message-ID: <ZW85iBGAAf5RAsN1@shell.armlinux.org.uk>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-7-fancer.lancer@gmail.com>
+ <ZW8pxM3RvyHJTwqH@shell.armlinux.org.uk>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZW7NwSCzswweHZh6@yzhao56-desk.sh.intel.com>
-X-ClientProxiedBy: BLAPR03CA0114.namprd03.prod.outlook.com
- (2603:10b6:208:32a::29) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ2PR12MB9243:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7be6020c-baa0-4b75-c379-08dbf5a1f934
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: C+PMaAofxZ1rPtcR8n2yluO72rNkzsB5kxkj/V8r3dFHSFygTZks6LpcGHqoqOxmTtjY3l923OIJqmZgLR9GdsT/h9Ok+mHUPMBzgQ39Wmp/d8tocabaQXO2eN6CgQumYdU0sG6ianxQDgfBn4vKXnxa3TScSklby6djVvv1X84vm2GaXaA9hqHmWG8EdK6Xe4hpaTBJQ1nRQk2Eoa3qK1g0DFi/Yh9UsepNhhywezFiBlaBq/+JRZl8GPmBf7R1AjJ7Hy3dMlU5oIsewEd8AJNqQyQccCc6V4I9IQhyKT5JDaoFEIpGEX4hyX8DuUf89oqwdxejoBPfRU7Z8w498gbVz6CuiifiU3VTxJc+64P/MYMH5FfZA+aek5eqkhAZ72QWSsm30lPksYIZwXYE+Uk5BP2V0mk5vO/Yo7BMrWs44BAz2iK5ZsMk8JElvgespRHQndJCNK+BoafquAoL6HLqjDdvf6oZ3buYF6/WEpau+zUi3KXdSmQMC2BwS7t6z9Ty0gh+QT++PvTtWCpmZWTbzS28U1Ey61AnuLGxhZHpOCxqPQCS0vZ3kdmN84ts
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(346002)(136003)(39860400002)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(66476007)(66946007)(316002)(6916009)(66556008)(478600001)(6486002)(7416002)(5660300002)(41300700001)(36756003)(558084003)(33656002)(2906002)(86362001)(8676002)(4326008)(8936002)(1076003)(2616005)(38100700002)(83380400001)(26005)(6506007)(6512007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?52iZaJ10FN49RvDXhAsdW0nQJCSBRZNxRRN092EgZHLn0eSDE9+ARv6SBmEO?=
- =?us-ascii?Q?kqy+ZlWgoP6nTTSOkkzm9LRhCFR4pBv1zA3ZuWUxWWqm5yWtuo4vjnSQazf2?=
- =?us-ascii?Q?YUYTi5xsJgbPjX6Q2eNN+H55F0nnDgSSF0hDRlFjfoa/VfYzVuNwPT+nDUxE?=
- =?us-ascii?Q?s/ds/vD9t0nvqJAatRj3dRw3zOYh2xU44w6qXghWmgxg1xxQBIxWVBOH/5Cn?=
- =?us-ascii?Q?IaInSShPimAStfbeSgoN3ZwkGwoZJw8rKJOtfB7g40GioWhPGW4Cio4bLr/F?=
- =?us-ascii?Q?2j+aq8q2Krdg7s5A1I5Q3IXvikoWAqHRkF59IzsgiiBHczJ3vEpa5nTyP1Qm?=
- =?us-ascii?Q?AIVUURFDMS/aqtCSXtzjqcGJHQ+znPPccxtM6MsQ4kdGPJM3anZ67sJemK8r?=
- =?us-ascii?Q?Ge4pg8Lbivi6yZ+1Jue4CVBQo+r2/QPp5uq+gV8d8gVnM6TzotbAvkoRoWfd?=
- =?us-ascii?Q?b8DNx7X5g1U97gdi3JOAiicyZgEG9FQsqhTgEHGxOWkzwHI25GVrjq4GMea9?=
- =?us-ascii?Q?BM+wgcbcZbjfOo28ID37K5UfnofNBSfNK/2/8zBWOgfVd6fjwlm160YIUpkv?=
- =?us-ascii?Q?FlwRoWGuWKsAfEJQwea1z7hhGRoN8ug27WDIxhSumgW5zr/1nHJ5b9tQTPE9?=
- =?us-ascii?Q?8HsWSc2r2mbUnbXt7sF2IRUhYE9s+aVH+AlVg9uDMHShdopd2uYqKwMh14Kj?=
- =?us-ascii?Q?My4tg0eNMbeRNEf9QwOTcdI4m5J4gEXGbW9X5Gmj686Cml/oUXbZLZ6X7zPd?=
- =?us-ascii?Q?XpefxpU1x9mjnn1hd544w743+ob6F46WTv0s3qh5Y8r9wDRTw4VFdsnexwSS?=
- =?us-ascii?Q?lZg33e/cxvZvt8R1/Yz9hGFHFzOMnIyD3q3TTKU/eQy8WY/HqsETAXYo9B9R?=
- =?us-ascii?Q?RswYf5fEfJqnD+lwImZyuWymLvt5ixKN5rvl52ycsNnGJ/iGcEGuR79xO4e+?=
- =?us-ascii?Q?GxDRyy0sR3lFv2MycCAnPJAKW7dDfCkfYfMSOFYlKg1F0LQHu2JCZC89TSM7?=
- =?us-ascii?Q?3htBe3cv9E5+3gYyTYuclGoBuuSp50WHoJrY47UnwXzWjZchcG3lVYtrZrgS?=
- =?us-ascii?Q?yz5g9latytPhvco/ZKkGwZEc2lYkDMQP9K5VKmQzpuYaUIfHYu96zQWcR+6Z?=
- =?us-ascii?Q?L/B3AeDiQNAqbZbewB1S1SEPqYrANobC+qjrrdiFWf3X8Z1lslSn2SQlBs7H?=
- =?us-ascii?Q?EkK/Debf0ZaUnC2QOWQsm5LnAHzcVzUhlRDXR82YFiMyBrMU3RJ6dfrcdenx?=
- =?us-ascii?Q?1gJjDYjfZUjCe3GPcUs6qWm+DYUzoYdrwydCLuJoJADr9yyCl+/N3aYa2b31?=
- =?us-ascii?Q?O4+u9YayZ+gTJtrqW4ccrgl2RYyS4RCB+7b5CAA92CDsULJMua40y4TQTZyM?=
- =?us-ascii?Q?4raGUqeC7X3m8HWJ94YojnYk3BfxIpYgfYC+mqBEtTbQAWrM5GNrCkHNABSm?=
- =?us-ascii?Q?7C7KxNAIr/i6vi8n751VujbJIFHWOBrKQ+i5YUIA90yD9jVjD7JKy5Jt2zji?=
- =?us-ascii?Q?fCCdXeqgOvN4cEFen2IIbYwDDIFAbIcl9eB5nBI2wu5RTTIMi/xDPiyIbQrD?=
- =?us-ascii?Q?L6RXDnENrhjvhehThq0+G2IN0JxzoR4S2tTZIkNx?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7be6020c-baa0-4b75-c379-08dbf5a1f934
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 14:53:42.3708
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /WvJE9sISbHV+tenJe+sMatNRNGWVcuVBS18nquIZBkYRZ1QSeE1ztaOZYQlO+Sx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9243
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <ZW8pxM3RvyHJTwqH@shell.armlinux.org.uk>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 03:14:09PM +0800, Yan Zhao wrote:
-
-> > I would like to remove IOMMU_DEV_FEAT_IOPF completely please
+On Tue, Dec 05, 2023 at 01:46:44PM +0000, Russell King (Oracle) wrote:
+> For your use case, it would be:
 > 
-> So, turn on device PRI during device attachment in IOMMU vendor driver?
+> 	mdiodev = bus->mdio_map[addr];
 
-If a fault requesting domain is attached then PRI should just be
-enabled in the driver
+By the way, this should be:
 
-Jason
+	mdiodev = mdiobus_find_device(bus, addr);
+	if (!mdiodev)
+		return ERR_PTR(-ENODEV);
+
+to avoid a layering violation. At some point, we should implement
+mdiobus_get_mdiodev() which also deals with the refcount.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
