@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBB5805335
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E2D805338
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345211AbjLELlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
+        id S1345245AbjLELnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:43:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345204AbjLELlR (ORCPT
+        with ESMTP id S1345158AbjLELnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:41:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5787A9A
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:41:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E85D8C433C8;
-        Tue,  5 Dec 2023 11:41:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701776483;
-        bh=39hIynYLxtwl/O23npHEkHvKhoLwLy7fzyGPOOqty9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FMJov2tcJS/7wL/pPXe3meTv6r3DI2KkeFBdH68DYYQ6tOUabE33M0QM7VH7HVNV7
-         p94elf+S/c5ZZTQ6sC4/qdAYFoJGrTmztWs/T2rak7Zi5FH2riyTetSCXQ8QTMIx12
-         BOWXOXEHXX6oJXKOKUMtTOt5d9hXGsTAL7rBfXBF/0qNEoRGiLtIM1qNQE0zBikHpX
-         zOSQY2ZM7dH24M+d+GMc5hb6VtdvRM9UU5yAgUfvyYvNcpzcwO7pHEkzQye9fAXDyd
-         0C0QHbw+lBZVRSsehi1ZgvBuBjZDx12acKI5T8BS+Fq5ugVe3WcPnjd2HRJHMcKtNi
-         MuP18QxZfnWCA==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1rAToU-0008Ud-2D;
-        Tue, 05 Dec 2023 12:42:06 +0100
-Date:   Tue, 5 Dec 2023 12:42:06 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alex Elder <elder@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: qrb5165-rb5: add a pin function
- for BT enable GPIO
-Message-ID: <ZW8Mjp9whA9rxam9@hovoldconsulting.com>
-References: <20231205112311.16391-1-brgl@bgdev.pl>
- <20231205112311.16391-2-brgl@bgdev.pl>
+        Tue, 5 Dec 2023 06:43:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9AB3C6;
+        Tue,  5 Dec 2023 03:43:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701776597; x=1733312597;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kTMmsxIwvrRFNgPLBtZ6ROY9A+n4NFUXiCrfw96ydpw=;
+  b=WhTix8GJr+SA6lNoPycz2yZi8kNA4PLiIGvfXeH5tsFc54YRVTbcK16G
+   u7ht0G6JQC9nEAmkmax1KX6igmvhRLTktdYl1etiLnsDzzgAiAs2DCroZ
+   8MVQiyIQA7Hy7gP+uziuw7w5Ujei6gBRuQNxTeP8mfa8qnAW0yq6Ljyox
+   faL4LlppVy23mhDWHBl9n3FQJkWn3EaMAuaO1HZlRbIPJ4ORAFP27TdvF
+   lrMDSKPKjo++8SALPXtTkdvhjUW7KS9mq58rtU/YTnS1NbN83ffkKKGFQ
+   1mmwxIE/TnE60m4XUL42j2VzoDz6n4wJbNJDvzWDqfKG+Uv5vxEdFEtJJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="460370442"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="460370442"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 03:43:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="18936758"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 03:43:15 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 2504E120622;
+        Tue,  5 Dec 2023 13:43:11 +0200 (EET)
+Date:   Tue, 5 Dec 2023 11:43:11 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: dt-bindings: ov8856: add missing second link
+ frequency in example
+Message-ID: <ZW8Mz3OWE1ELlFRC@kekkonen.localdomain>
+References: <20231205084835.15871-1-krzysztof.kozlowski@linaro.org>
+ <ZW8DFbz3DqthC6fU@kekkonen.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231205112311.16391-2-brgl@bgdev.pl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZW8DFbz3DqthC6fU@kekkonen.localdomain>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 12:23:10PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Tue, Dec 05, 2023 at 11:01:41AM +0000, Sakari Ailus wrote:
+> Hi Krzysztof,
 > 
-> Set up the pin function for the Bluetooth enable GPIO.
+> Thanks for the patch.
 > 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> On Tue, Dec 05, 2023 at 09:48:35AM +0100, Krzysztof Kozlowski wrote:
+> > Bindings and Linux driver require two link frequencies, so correct the
+> > example:
+> > 
+> >   ov8856.example.dtb: camera@10: port:endpoint:link-frequencies:0: [360000000] is too short
+> > 
+> > Fixes: 066a94e28a23 ("media: dt-bindings: media: Use graph and video-interfaces schemas")
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> >  Documentation/devicetree/bindings/media/i2c/ov8856.yaml | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > index 57f5e48fd8e0..bd1a55d767e7 100644
+> > --- a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > @@ -126,7 +126,7 @@ examples:
+> >                  wcam_out: endpoint {
+> >                      remote-endpoint = <&mipi_in_wcam>;
+> >                      data-lanes = <1 2 3 4>;
+> > -                    link-frequencies = /bits/ 64 <360000000>;
+> > +                    link-frequencies = /bits/ 64 <360000000 180000000>;
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> index ce6ae0771d34..ead0c45ba60c 100644
-> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-> @@ -1264,6 +1264,17 @@ &tlmm {
->  		"HST_WLAN_UART_TX",
->  		"HST_WLAN_UART_RX";
->  
-> +	bt_en_state: bt-default-state {
-> +		bt-en {
-> +			pins = "gpio21";
-> +			function = "gpio";
-> +
-> +			drive-strength = <16>;
-> +			output-low;
-> +			bias-pull-up;
-> +		};
-> +	};
-> +
->  	lt9611_irq_pin: lt9611-irq-state {
->  		pins = "gpio63";
->  		function = "gpio";
+> There indeed seems to be a problem with the example as far as the bindings
+> are concerned but the primary issue seems to be in the bindings. Both of
+> these frequencies have significance from driver point of view only while
+> the device itself supports a (wider) range.
+> 
+> How about removing maxItems and items from the bindings instead?
 
-This makes no sense as a separate patch and should be squashed with the
-final patch enabling bluetooth. Same for the first patch.
+There's also a similar issue with lanes: 1, 2 and 4 are supported.
 
-Johan
+-- 
+Sakari Ailus
