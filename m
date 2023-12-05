@@ -2,89 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEB580447D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:10:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 712BD804482
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376291AbjLECKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57258 "EHLO
+        id S231585AbjLECOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:14:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjLECKG (ORCPT
+        with ESMTP id S229575AbjLECOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:10:06 -0500
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com [209.85.167.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746FD10F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:10:12 -0800 (PST)
-Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b8b5221627so4115814b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:10:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701742212; x=1702347012;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FgfZZfyJWSdHuyV8ubdtxl0EppomZgVAi2DJM2XdXok=;
-        b=p66OPi7qMpztYCEC5p/Yk4xT4qMN+BtHr3+Uj7TrZHaHzEVRQYTQb4A3mD3Tf9UZhE
-         wBOQkqTzbux33WH3fTr/RrZ0kbRddkDWP/nunpKAoP4/vFiK4U+iH8on89rYtzaBvIfk
-         apkR7YSvjkdaGYReiHKEJVKX68c3yqVk5BIDzPeq9his4LVhvbq7jbKpubEdsgnaC6e/
-         OzOvxOxs3jWJJZBTh/3wzmtSvgeyLuQXZq6uzcDtWcddbUmglJ5MwcI6p3m3+Gh4dwJm
-         apM1rFkp32UbiyVmc+WnVNG7vdtcvLNogu5YkHRbGinJqykM2MKrknmHlvrj1dngNIL8
-         OWHg==
-X-Gm-Message-State: AOJu0YxaVMxp/YOfVdPZhdqX0Oq6zhqUmN0Dfpijl6RXKcFi9pSssTEZ
-        Zky1BtTIzGKp3WRzhwwJFWBZ24eoylmdXtui8j0uooFVo0+UbhQ=
-X-Google-Smtp-Source: AGHT+IFD4CJ6gTupwO+FpOS005LHtbPxayj/yX5KKnejFxx0cicx+ANIfuql7kEFS4rB1cjUu80QmkRruG32XQuHlflo90hcB/Oy
+        Mon, 4 Dec 2023 21:14:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D782109
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:14:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC604C433C7;
+        Tue,  5 Dec 2023 02:14:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701742448;
+        bh=Ptz0fJBcWbfsG0oxaIzA0E/svH7JZtCOrjX9y9bQLyM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gKx3XjHV3fTHtX9IMh4wMxd+mVu98af3QIcNrtzqEa3jNUUtHdGghmc6Z2WnBvkgy
+         EuauIQv3c4Q6CIXeFFVtbZqOuirDPCPCxrWOZONK6Hq0mQtvO7ahX7eCydaQOEVKDh
+         0XdHojXjflQkf+c0CZmhyLW2JAQmza7Php6CpJY+WXUINDPcWYxM+nBrGyTveFFx9s
+         ZPa6/HvB08+sl/dp/NyYdr44vhuwkJo9LfpGKtuzwcXyfsZm+ak9uZyjk2PrPR+vVA
+         9UIyHsq0OpwPVZd5YweB1/SIvaEAl1eYFVpFpnDORY01+Ffl89IFTmn8K5tecOWH3O
+         DyBqbwOU/D2AQ==
+Date:   Mon, 4 Dec 2023 18:14:06 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Charlie Jenkins <charlie@rivosinc.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] riscv: introduce RISCV_EFFICIENT_UNALIGNED_ACCESS
+Message-ID: <20231205021406.GD1168@sol.localdomain>
+References: <20231203135753.1575-1-jszhang@kernel.org>
+ <20231203135753.1575-2-jszhang@kernel.org>
+ <ZW4lUDpl0eZVNjrp@ghost>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2090:b0:3a7:5f99:9fe1 with SMTP id
- s16-20020a056808209000b003a75f999fe1mr3221758oiw.2.1701742211858; Mon, 04 Dec
- 2023 18:10:11 -0800 (PST)
-Date:   Mon, 04 Dec 2023 18:10:11 -0800
-In-Reply-To: <00000000000077c77f060b603f2d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000986fc060bb9bc3b@google.com>
-Subject: Re: [syzbot] [net?] INFO: rcu detected stall in sys_socket
-From:   syzbot <syzbot+de8e83db70e8beedd556@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZW4lUDpl0eZVNjrp@ghost>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Mon, Dec 04, 2023 at 11:15:28AM -0800, Charlie Jenkins wrote:
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index 7f8aa25457ba..0a76209e9b02 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -654,6 +654,18 @@ config RISCV_MISALIGNED
+> >  	  load/store for both kernel and userspace. When disable, misaligned
+> >  	  accesses will generate SIGBUS in userspace and panic in kernel.
+> >  
+> > +config RISCV_EFFICIENT_UNALIGNED_ACCESS
+> 
+> There already exists hwprobe for this purpose. If kernel code wants to
+> leverage the efficient unaligned accesses of hardware, it can use static
+> keys. I have a patch that will set this static key if the hardware was
+> detected to have fast unaligned accesses:
+> 
+> https://lore.kernel.org/linux-riscv/20231117-optimize_checksum-v11-2-7d9d954fe361@rivosinc.com/
 
-***
+Is the plan to make the get_unaligned* and put_unaligned* macros expand to code
+for both cases, and select between them using a static key?  Note that there are
+a very large number of callers of these macros in the kernel.  And what about
+kernel code that checks CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS directly?
 
-Subject: [net?] INFO: rcu detected stall in sys_socket
-Author: eadavis@qq.com
+AFAIK, no other Linux architecture supports kernel images where the unaligned
+access support is unknown at compile time.  It's not clear to me that such an
+approach is feasible.  A static key can easily be provided, but it's unclear
+what code would use it, given that currently lots of kernel code assumes that
+unaligned access support is known at compile time.
 
-please test rcu detected stall in sys_socket
+Meanwhile, there are people building kernels they know will only be deployed on
+systems where unaligned accesses are supported.  To me, it seems useful to
+provide a kconfig option for them to build a more efficient kernel.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 18d46e76d7c2
-
-diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index 31a8252bd09c..4bc377120ea0 100644
---- a/net/sched/sch_taprio.c
-+++ b/net/sched/sch_taprio.c
-@@ -843,6 +843,7 @@ static struct sk_buff *taprio_dequeue(struct Qdisc *sch)
- 
- 	rcu_read_lock();
- 	entry = rcu_dereference(q->current_entry);
-+	rcu_read_unlock();
- 	/* if there's no entry, it means that the schedule didn't
- 	 * start yet, so force all gates to be open, this is in
- 	 * accordance to IEEE 802.1Qbv-2015 Section 8.6.9.4.5
-@@ -869,8 +870,6 @@ static struct sk_buff *taprio_dequeue(struct Qdisc *sch)
- 	}
- 
- done:
--	rcu_read_unlock();
--
- 	return skb;
- }
- 
-
+- Eric
