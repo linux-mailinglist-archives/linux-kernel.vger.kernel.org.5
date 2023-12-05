@@ -2,55 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA73805BE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73055805BFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235094AbjLEQNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:13:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35350 "EHLO
+        id S231969AbjLEQQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:16:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbjLEQNy (ORCPT
+        with ESMTP id S231833AbjLEQQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:13:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC4B9E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:14:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BAF4C433C9;
-        Tue,  5 Dec 2023 16:13:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701792840;
-        bh=ru2Yf4e2J+5cS2zc1QOY6JOr4Q5ZMrCeka8oIoe8iAc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CkA/wmYSZZ4ekKAvd12zaT1b3VgxWrPSB/VMN5QvQQzuZh5GoehADzQVGrABSmUSk
-         sqC5OV922UTccz+YnMFpwCqWyosrrjhxs/x1f9D8H1rC+l//ey1XblksBplk4noFlW
-         L4bEs0arekh5l8tGAYd4ntf5ToSKcq+roU6Qio2IOWLj7CT0AN7QYsQbOmTvmmdGC4
-         BtjnuhDMjHv2B9o/L68tLpHFRhJkeo8sss+Bdw3zg1G1VYErimy8vCMU3U2xuZvy4a
-         2a6qKqavUaKIc+43DCIN3mWIl1Jup8yT6SBNig59OTvIV1H20NHiLDhxyiLaVSmjeb
-         Brc52So+XpBiA==
-Date:   Tue, 5 Dec 2023 16:13:55 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Gergo Koteles <soyer@irl.hu>, Shenghao Ding <shenghao-ding@ti.com>,
-        Kevin Lu <kevin-lu@ti.com>, Baojun Xu <baojun.xu@ti.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/2] ALSA: hda/tas2563: Add tas2563 HDA driver
-Message-ID: <aecaaaff-9a4c-4d1f-8457-5afdb7803d94@sirena.org.uk>
-References: <cover.1701733441.git.soyer@irl.hu>
- <4a2f31d4eb8479789ceb1daf2e93ec0e25c23171.1701733441.git.soyer@irl.hu>
- <90765ee0-a814-4852-9b2a-020cda98d930@linux.intel.com>
- <974d41f6c703d9b65ebcd75a2c659cecf13bd877.camel@irl.hu>
- <a530e70a-2491-4270-b582-cd493d1512b1@linux.intel.com>
+        Tue, 5 Dec 2023 11:16:13 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6410C3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:16:16 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1a496a73ceso576378666b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 08:16:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1701792975; x=1702397775; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fQzhIqn6N20Rb9xIg/ZWOpbjV4kaWzviVQteSO4jyfU=;
+        b=H2K8ACgRrRkoEP8aeAMagyOG8JafMmIoK+lpyiVhabAwp8i084b4goARvY83R/H4wm
+         Vue2ty0wYiKV6pBPUwPYyVwlhWM7EJcJuaS/sc4vtbv4T2gyZPsMC82LQ1KAd3niqgy/
+         e9wZlGOQcMB7i0S6kCwcHhuA+si5mCnNlf0X8dnO1ULqKy1pDC/KnKXL/Kg0qEaT1iRd
+         5wVgaBSCkGxK1mAskfiwCFsUM17nteO37h4QKmifHic47BgF2ABprlfJdtHRg4u9yGK2
+         0WWuzPq2pXFCq/Q0qgDksiHiuk0q+FZRwWIzlZcLfNa2QJZa4dbklqpf2S59TIDlYRjc
+         So1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701792975; x=1702397775;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fQzhIqn6N20Rb9xIg/ZWOpbjV4kaWzviVQteSO4jyfU=;
+        b=NcNaxM/On/Z3kmw8TSXro6QToS+JLSSc8m+FqsVdm+CJTGY+eexz+O0+n9C/A+bM7r
+         hdGODTl25TdHC7Z1oI6tGO+FLmNx7R+Ym1UnNJ6K7L4/Y8/FBw7DIQLeCDW6goOW+pzt
+         pTFo+JqppIwasj5PBzHjF3fObppp03MG3730/lOd5Gqon3z2AkKwK6JM3rdii9+/6cKx
+         /5CqZsySvhLRDQsZoH8wOEjPELuSHlQymy3w0G59AXkPuK7nwAghMPHa5LNpITH6RYSX
+         r00iuzbOalAfzQBGPnguqvSnAtT1q4AT/eCn0VOB+N8HNe8OG1aM2afXm/Aj6+T6XzoE
+         mBZw==
+X-Gm-Message-State: AOJu0YxtejAJbaLBSAwmJwag/ONpw44hM9NOn8kn3c5Gaak+5vNGnX32
+        VP9XL4d5M99OgKObz/l0Y+6joA==
+X-Google-Smtp-Source: AGHT+IEV7FDtROfnK2ZE025N5TruFAYgEWXqxKm3z65r6cifQme8jakJIoP6RonEEeqXbjdm0+ZnNw==
+X-Received: by 2002:a17:906:f0c4:b0:a00:772c:c879 with SMTP id dk4-20020a170906f0c400b00a00772cc879mr653564ejb.38.1701792975219;
+        Tue, 05 Dec 2023 08:16:15 -0800 (PST)
+Received: from [10.100.51.161] ([193.86.92.180])
+        by smtp.gmail.com with ESMTPSA id qc14-20020a170906d8ae00b009a9fbeb15f2sm6895238ejb.62.2023.12.05.08.16.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 08:16:14 -0800 (PST)
+Message-ID: <490c77e9-e3d4-4499-8471-128804fb2e7a@suse.com>
+Date:   Tue, 5 Dec 2023 17:16:13 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GodoWbeZVkkSioJV"
-Content-Disposition: inline
-In-Reply-To: <a530e70a-2491-4270-b582-cd493d1512b1@linux.intel.com>
-X-Cookie: I've Been Moved!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] tracing: Simplify and fix "buffered event"
+ synchronization
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+        zhengyejian1@huawei.com, linux-trace-kernel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231127151248.7232-1-petr.pavlu@suse.com>
+ <20231127151248.7232-2-petr.pavlu@suse.com>
+ <20231127124130.1041ffd4@gandalf.local.home>
+ <77037ca1-8116-4bc6-b286-67059db0848e@suse.com>
+ <20231128102748.23328618@gandalf.local.home>
+ <bb6c9771-1a7c-4367-bb14-63524d9c560a@suse.com>
+ <20231129095826.1aec6381@gandalf.local.home>
+ <d404113e-4ffe-4e9c-ab45-1b076c1f498c@suse.com>
+ <20231201094639.03a1913c@gandalf.local.home>
+Content-Language: en-US
+From:   Petr Pavlu <petr.pavlu@suse.com>
+In-Reply-To: <20231201094639.03a1913c@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,41 +84,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/1/23 15:46, Steven Rostedt wrote:
+> On Fri, 1 Dec 2023 15:17:35 +0100
+> Petr Pavlu <petr.pavlu@suse.com> wrote:
+> 
+>> Ok, keeping the current approach, my plan for v2 is to prepare the
+>> following patches:
+>>
+>> [...]
+>> * Fix the potential race between trace_buffered_event_enable() and
+>>   trace_event_buffer_lock_reserve() where the latter might already see
+>>   a valid trace_buffered_event pointer but not all initialization yet.
+>>
+>>   I think this might be actually best to address by using the same
+>>   maintenance exclusion as is implemented in
+>>   trace_buffered_event_disable(). It would make both maintenance
+>>   operations consistent but for the cost of making the enable operation
+>>   somewhat slower.
+> 
+> I wouldn't do them the same just to make them consistent. I think the
+> smp_wmb() is sufficient. Don't you think?
 
---GodoWbeZVkkSioJV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Looking at this again, I think it is actually a non-issue. Function
+trace_buffered_event_enable() only writes the header part of
+ring_buffer_event but that is never written nor read by the actual users
+which obtain the buffer from trace_event_buffer_lock_reserve().
 
-On Tue, Dec 05, 2023 at 10:01:08AM -0600, Pierre-Louis Bossart wrote:
+No change is then needed, it is left out in v2 of the series.
 
-> >>> +static const struct dev_pm_ops tas2563_hda_pm_ops = {
-> >>> +	SYSTEM_SLEEP_PM_OPS(tas2563_system_suspend, tas2563_system_resume)
-
-> >> where's the pm_runtime stuff?
-
-> > The amp stores its state in software shutdown mode.
-> > The tas2563_hda_playback_hook wakes/shutdowns the amp, not the
-> > pm_runtime.
-
-> My point was that you have all these pm_runtime_ calls in the code, but
-> nothing that provides pm_runtime suspend-resume functions so not sure
-> what exactly the result is?
-
-It *could* be ACPI doing something I guess...
-
---GodoWbeZVkkSioJV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVvTEIACgkQJNaLcl1U
-h9By3Af/UZHQo24BocMAB4/saETBOo5GGwsh7kVw55UIvFTRy65mXMVBsOnLmP3J
-x6TBjezeo/Zi6COh1+dtdzCfO2wEA5j6sW95WMvsIlj6Z1rpwKIfPTk4kXI7GxIz
-a3I/9acM3/W6UZizagHBWXK0QgQuCi/fL/1aVh8VYwCGKi+5MOQxNftGfiYrXpJh
-X4V8p+vTxR+ex/CRNi6lgrM2vEnk9fFfhAesugBjCN+J1KJ2gPO1oL+5SiHf/sJ/
-rjOebOBFlzOru4UhBUjaTSXCOoVFpgJ2eoimKQzmtgo4pHq1TmTKWlSYEo45wk4p
-QKIq5JCEqxA4Vl2tZ/3/KNmkckGbAw==
-=x4+9
------END PGP SIGNATURE-----
-
---GodoWbeZVkkSioJV--
+-- Petr
