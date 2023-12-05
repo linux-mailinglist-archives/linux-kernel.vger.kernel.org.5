@@ -2,132 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E236E805D97
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F02805DC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 19:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345840AbjLESFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 13:05:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
+        id S231933AbjLESGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 13:06:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjLESF3 (ORCPT
+        with ESMTP id S235098AbjLESGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 13:05:29 -0500
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6EBB2;
-        Tue,  5 Dec 2023 10:05:34 -0800 (PST)
-Received: from localhost.localdomain (unknown [46.242.8.170])
-        by mail.ispras.ru (Postfix) with ESMTPSA id 60EAF40F1DE8;
-        Tue,  5 Dec 2023 18:05:32 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 60EAF40F1DE8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1701799532;
-        bh=iSQFzh6kLnBCcudLetoO0SevfeUo1ajFojtQyoqXpBQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjGGvX+q5/okA2ccONfrW/JIILDtVsCtbi/3lK6KMl7/MKeXrk9Y7g1krpec6W8Q4
-         MeNVeYPnw637K1E2S+L0ZBw1Sj4vTg4eGXzUDMIoe2stuRvJ82adZVg/+lcNdXhrtu
-         LxQuq8jpwgyfD99rtJTxly4iAOqyk1RvNMLheh3I=
-From:   Fedor Pchelkin <pchelkin@ispras.ru>
-To:     Dominique Martinet <asmadeus@codewreck.org>
-Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: [PATCH v3] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
-Date:   Tue,  5 Dec 2023 21:05:22 +0300
-Message-ID: <20231205180523.11318-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <9f21f00b-0806-4811-8d0a-9b6175eaedeb-pchelkin@ispras.ru>
-References: 
+        Tue, 5 Dec 2023 13:06:04 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B956FD59
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 10:06:10 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c9f166581dso44487801fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:06:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701799567; x=1702404367; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yIfHQzLRNk16QqkBZwMJZjQhju2kwUVGG/rCp3aPtx0=;
+        b=G+SarQvP6GHYdl44fJGIL2EgnFTvIV3eZCIyBGXIfs7A9o8K9tBho54/E4WTnLQcSX
+         SHuDqow3ZoRISYK1zoXtVEKYul9bZtUiRV3pan01avgNhWjQVuOpdx6++PpnTEnZ2y3X
+         dE+t77xpIc7o/oTofcnkFHXu/oQVcRYz1Dl2k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701799567; x=1702404367;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yIfHQzLRNk16QqkBZwMJZjQhju2kwUVGG/rCp3aPtx0=;
+        b=dnuISg+EQKzj1HBk9HcimOlhTTM7wCRp9XMpPxlwN0UOYlpHktdtG9Z4s5xo05H7Ux
+         5RRfZE6JRihe45axq03PNRV7Nhg0i3QbvsU4gjzqbXt3FtvKwQyFtxeXpn7QyumVI0jZ
+         wbBbR3i7bGM0mZ1IcCnX3Zpj8oMalqn0pT+BkmnXCvc65O6jAaUGVRV92kqxv+1xjwru
+         deW+zVnQlnaLGbAM0IHEuxM+HklFLgwZLMINxYA3OrWjh0UfiZlZ5A04V1MJkab78WrB
+         6u78IuPOF3/rUNYhi5bTE0bwlKbobt6th3vki+uYOyjLEkUaC1HRBW4R/3csTMeLaelh
+         KI/Q==
+X-Gm-Message-State: AOJu0YxH5JnuMElcmNjS9yu2d1FVr1rAXchiHlXgoZgsTZ+x6q84wRqD
+        wGB1LcbOH8hbxt9Zsmmkek4ax8G2a75UIEE3OJX9q2E2
+X-Google-Smtp-Source: AGHT+IH/C+eDcc6za8EWITj3mr1sc0F2pf5SK4KQyHfS4EG2V5OZO6uHcNRXbZRva63f/BzsvVL5OQ==
+X-Received: by 2002:a2e:6819:0:b0:2ca:67:d3f7 with SMTP id c25-20020a2e6819000000b002ca0067d3f7mr1919654lja.63.1701799567351;
+        Tue, 05 Dec 2023 10:06:07 -0800 (PST)
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
+        by smtp.gmail.com with ESMTPSA id y10-20020a056402134a00b0054c86f882bcsm1399832edw.22.2023.12.05.10.06.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 10:06:07 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so2045e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 10:06:06 -0800 (PST)
+X-Received: by 2002:a7b:cb59:0:b0:40b:4221:4085 with SMTP id
+ v25-20020a7bcb59000000b0040b42214085mr551583wmj.1.1701799566754; Tue, 05 Dec
+ 2023 10:06:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231205123630.988663-1-treapking@chromium.org> <20231205123630.988663-2-treapking@chromium.org>
+In-Reply-To: <20231205123630.988663-2-treapking@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 5 Dec 2023 10:05:54 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=U_PpD=tsyP7QuXU2p-R24U6JXAWQONPT_ioMr1P7E-aw@mail.gmail.com>
+Message-ID: <CAD=FV=U_PpD=tsyP7QuXU2p-R24U6JXAWQONPT_ioMr1P7E-aw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] drm/panel-edp: Add powered_on_to_enable delay
+To:     Pin-yen Lin <treapking@chromium.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        Guenter Roeck <groeck@chromium.org>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If some of p9pdu_readf() calls inside case 'T' in p9pdu_vreadf() fails,
-the error path is not handled properly. *wnames or members of *wnames
-array may be left uninitialized and invalidly freed.
+Hi,
 
-In order not to complicate the code with array index processing, fix the
-problem with initializing *wnames to NULL in beginning of case 'T' and
-using kcalloc() to allocate and initialize the array. For assurance,
-nullify the failing *wnames element (the callee handles that already -
-e.g. see 's' case).
+On Tue, Dec 5, 2023 at 4:36=E2=80=AFAM Pin-yen Lin <treapking@chromium.org>=
+ wrote:
+>
+> Add the support of powered_on_to_enable delay as the minimum time that
+> needs to have passed between the panel powered on and enable may begin.
+>
+> This delay is seen in BOE panels as the minimum delay of T3+T4+T5+T6+T8
+> in the eDP timing diagrams.
+>
+> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> ---
+>
+>  drivers/gpu/drm/panel/panel-edp.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 
-Found by Linux Verification Center (linuxtesting.org).
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Fixes: ace51c4dd2f9 ("9p: add new protocol support code")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
-v2: I've missed that *wnames can also be left uninitialized. Please
-ignore the patch v1. As an answer to Dominique's comment: my
-organization marks this statement in all commits.
-v3: Simplify the patch by using kcalloc() instead of array indices
-manipulation per Christian Schoenebeck's remark. Update the commit
-message accordingly.
-
- net/9p/protocol.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/net/9p/protocol.c b/net/9p/protocol.c
-index 4e3a2a1ffcb3..7067fb49d713 100644
---- a/net/9p/protocol.c
-+++ b/net/9p/protocol.c
-@@ -394,13 +394,14 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
- 				uint16_t *nwname = va_arg(ap, uint16_t *);
- 				char ***wnames = va_arg(ap, char ***);
- 
-+				*wnames = NULL;
-+
- 				errcode = p9pdu_readf(pdu, proto_version,
- 								"w", nwname);
- 				if (!errcode) {
- 					*wnames =
--					    kmalloc_array(*nwname,
--							  sizeof(char *),
--							  GFP_NOFS);
-+					    kcalloc(*nwname, sizeof(char *),
-+						    GFP_NOFS);
- 					if (!*wnames)
- 						errcode = -ENOMEM;
- 				}
-@@ -414,8 +415,10 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
- 								proto_version,
- 								"s",
- 								&(*wnames)[i]);
--						if (errcode)
-+						if (errcode) {
-+							(*wnames)[i] = NULL;
- 							break;
-+						}
- 					}
- 				}
- 
-@@ -425,9 +428,9 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
- 
- 						for (i = 0; i < *nwname; i++)
- 							kfree((*wnames)[i]);
-+						kfree(*wnames);
-+						*wnames = NULL;
- 					}
--					kfree(*wnames);
--					*wnames = NULL;
- 				}
- 			}
- 			break;
--- 
-2.43.0
-
+This needs to bake a little while on the lists (1-2 weeks) before I
+apply it in case others have opinions.
