@@ -2,215 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E368805C0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483CC805B72
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232100AbjLERAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:00:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42696 "EHLO
+        id S1345124AbjLERAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:00:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbjLERAN (ORCPT
+        with ESMTP id S231910AbjLERAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:00:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEFEA9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:00:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701795618;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=73ItUJ6X7gBRGnFTkqu6MT50LunaIFjs5sccG6x1gvs=;
-        b=hV7ValbnwtWM0r5kM8lVwJeptJyNjUIzZKW79Ft02VwtKc2ZmAENiPGNrjZ2aIungeMZD7
-        nZIBeCOcSZ3v5KZE7h9KjXnt5cnRuvzsp76KftgnM9f5gegjYnrHzohdCjK0pK428lxEsg
-        jZFjeG+Z4o9h19crpcAhWlWM50uwhf4=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-343-p5pZjRjWMTWaGw74DqU4VQ-1; Tue, 05 Dec 2023 12:00:16 -0500
-X-MC-Unique: p5pZjRjWMTWaGw74DqU4VQ-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-333354a9242so1733183f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 09:00:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701795616; x=1702400416;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=73ItUJ6X7gBRGnFTkqu6MT50LunaIFjs5sccG6x1gvs=;
-        b=QFhh+yfLV1GWOM7v5BUGIHFBzoBRmA7yf8K2zKBPMBrQMDH+mVBtAv68VAS/Z9pxIZ
-         j+pUGweZCcNClxVMJFqtl0EzYYQ1TtqxfMnLzU9ajYnegYc9McbO1jyLUXkxtULoc0KZ
-         BujPFYLUl9q1qF3gk23g0BDDn9Lr/tr2e1fQz0MCFgKm3zRUAYgMsFFZh6rf90IaClTk
-         /BKZST/Q0JoupSRCqKiNFzxtPRqdJRCsC51jjm5VyIVs2tPAy7WUSNAsRoreQg7Xy6lo
-         DsBzloxGL8FMVDXa3Cpd0UijsSjO9fL3GvhqSc7qR309NJvma4AWxgaWpSltwkjsTyTJ
-         G8KA==
-X-Gm-Message-State: AOJu0YwR3nVxDBIrLvZU/svznCxZNf4s0ORKLaYzS/5IB/OBMZpb6JYz
-        RjS+m1V9iuZ+Nou7zO3vWFxam/QyNpu/L/apglZd5WusjTYTnN5ZbHin+c+2xglD3+i2aycRqoy
-        A/tZb2yfx4tsHNXKf8Xhfnq1T
-X-Received: by 2002:a05:600c:46c8:b0:40b:5e1f:c37f with SMTP id q8-20020a05600c46c800b0040b5e1fc37fmr772111wmo.21.1701795614208;
-        Tue, 05 Dec 2023 09:00:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHYHwZk2jkSUvfek4AZ+vf1sWX1nI3ih8AvGdhJ1N99yU4WbaE3O2x2XXs68NXZWz9gjas03Q==
-X-Received: by 2002:a05:600c:46c8:b0:40b:5e1f:c37f with SMTP id q8-20020a05600c46c800b0040b5e1fc37fmr772074wmo.21.1701795613247;
-        Tue, 05 Dec 2023 09:00:13 -0800 (PST)
-Received: from ?IPV6:2003:cb:c72f:300:1ec7:2962:8889:ef6? (p200300cbc72f03001ec7296288890ef6.dip0.t-ipconnect.de. [2003:cb:c72f:300:1ec7:2962:8889:ef6])
-        by smtp.gmail.com with ESMTPSA id e12-20020adffd0c000000b0033342338a24sm7510724wrr.6.2023.12.05.09.00.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 09:00:12 -0800 (PST)
-Message-ID: <22992b35-c6b6-4fcd-bfba-01a5f99198cd@redhat.com>
-Date:   Tue, 5 Dec 2023 18:00:11 +0100
-MIME-Version: 1.0
+        Tue, 5 Dec 2023 12:00:31 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2062.outbound.protection.outlook.com [40.107.220.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B082188;
+        Tue,  5 Dec 2023 09:00:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gxRo3b1ARmbH1ty5d7s2TJxcJUxUqwxIYY/4VGONousrNatZBc460yxcxUrxXdwL8hCh8n8kDHFgprQArH9TANhlEmhhZKloJtlZiLgkhCaPqUDdHZjerJ1PJwm0OsQgAu/chavGpTuXiOoFhVryvp0Yi3gNhljxlodrHcLRMcEvL8R5bE/7E0GLWvgJ9y20E1GeC5eAsM0eQdGlO5vPOlS6weDRcA/VvNFGAQSZHwaZzGlIK6Peb04h2tC6N9Z43qP1o3hBR/ESIVDMNp1PhpJB06HZfDqWOpRRfcHRwcUaej7rLpCghQHuGlNOM3a7CyoacIFZ64v4r8MFCR6NtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CKinrC7AuSgokzwvT73kVDTrojSsKGTIzPMr29xncwc=;
+ b=mJwwwUH7zZHho3eeFk/lcD1yEqHwEqawILWV5oKQ+5UYZlzBOOaRzcLGJzzZ5NZTssbplT3fMg3O+Mloh8jmHViG2vNBlFlpuJzW9RwLjvCCNQorCkedS1uzhk3Gou4cOhfLWmG3qfBPztBczTlMwRVrAJGqUI5ViP00LkiwQjoApEeFhT3GrDycITXNBbmnEoJ/LTOAdeyVvVfFy+FhW6YJKS6iIkCADNwRT9LL3j3PhYQMCCi8LbABb3Gv1Nbo3RJyarfT2Tqmcjn+tUmX/hl2tZFavCkvyaSDTShfQ0QQ1QR7QKo7lfTvaPib5yqcPLaJEIbtT6Y2tfOlzuyICQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CKinrC7AuSgokzwvT73kVDTrojSsKGTIzPMr29xncwc=;
+ b=LzPqGy5PwlkabwkTX/uUzfPeeNTjyNzzvEQ00/gc+wmwfmynvZ7NxndL0ZsQp4hBcoBOb7oZZUSIGohmmFRXWpkfOhEH/y1oMHILQAtJyXEqfF+42yVeh5U7eZh0eowy3Tfm3FhxSQzA6IdN7Y6Dw6hMcMpT8YymMgaZiaFQBIY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by PH8PR12MB7181.namprd12.prod.outlook.com (2603:10b6:510:22a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 17:00:33 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
+ 17:00:33 +0000
+Message-ID: <519ebaea-60ae-413f-8746-0f75574b8cb9@amd.com>
+Date:   Tue, 5 Dec 2023 11:00:31 -0600
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 05/10] selftests/mm/kugepaged: Restore thp settings at
- exit
+Subject: Re: [PATCH] x86/pci: Stop requiring MMCONFIG to be declared in E820,
+ ACPI or EFI for newer systems
 Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <20231204102027.57185-6-ryan.roberts@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231204102027.57185-6-ryan.roberts@arm.com>
+References: <20231205161713.GA674824@bhelgaas>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20231205161713.GA674824@bhelgaas>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR10CA0001.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::6) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|PH8PR12MB7181:EE_
+X-MS-Office365-Filtering-Correlation-Id: 539ded62-c04d-4576-ddee-08dbf5b3b1dc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6+0yxfsN0SUG9FqW1HOJ+dyeF/SWVO4d0ykVGXCNMlec5GLyJ1KPjKrHNBE2R4gJ3w82evxx2HUb7F49nRttmKZ+nmO1lWaM+bV4Dji77+y2XSecr/A3SQ362ucmyk0Llt7m3zvf94b7zCyazMwhwki95155SQDNpI1d3YHN+OoMw5XlUsVIXIrvDLOW4qXbTkrjM5+MIDxvcs7k3PXnx8fqTcwbLEw3LFYhjJcNqcORN1zMCgP8C1FB/rkvlusr0LrIo4VbYxeMWi6a6owiURUNmHFJP2Q2TRFyc9CGFCjSOMTfBixdFfEilbExkZjRa4+ovEzJlCdjgX/jmSfIb61xurg4XHUNX5xAdMp+aNRjSi7JsHrSvlKvYwZKUcqrg0HUlzsWfI9L9WyDmk7LNo0DKmTHyWXNgWMxMTWkgDUdN0IMH17duZXZMzE1RJP5/OV5qD06OaU2dumf+XvlwylSZVOTbMJjby25eUqGFl5oOpMbYztHgO9nnRRXXZfonIGTwbroOlETxqpY3AtrthQF3uimiqa0krZngZY3kFYFbv0Nc8pG93q7Rg5xKrnZc+v7R86E24bcCPMho3S8A/q15mDKVCfD0YFe+J5FxR7hODdLs020F6257NsjcFcQRmmDI84L7I6jDvlsKbWh9iYss0zFlQVfwh4hqcLyqLkwXHMI2dYEQxngWA6419kH
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(136003)(376002)(366004)(396003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(83380400001)(53546011)(966005)(478600001)(6486002)(6506007)(31686004)(8936002)(4326008)(6916009)(54906003)(66476007)(66556008)(316002)(8676002)(6512007)(2616005)(26005)(66946007)(38100700002)(44832011)(86362001)(31696002)(5660300002)(2906002)(36756003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QzRWWkpPUmZFRzh6T1NpTVFldlRkR1p4UUFoWGRHSWFLNDN1cW1DUDN0MkNC?=
+ =?utf-8?B?T0IzMFhFb3p1R1pkNkNHYlBtVkNMNytLVGdvc0hpLy82d3hRYm12SjRzbU5T?=
+ =?utf-8?B?eHFmekdKclRjY01FNmlQR2RuNG9WdTVCYjh6Q0pSMXZPc0creDNGS0lUVnBK?=
+ =?utf-8?B?a2MwRHJZemgvdFF3eTMzL2U0OGI5dXdUQU5MZXVhV3VkVUNKQVRrSnNVVVVz?=
+ =?utf-8?B?SFpJWW9sRFhHOFN6dngrRlZNQVhxYWRqb20wam9FN3FqQWZMQnY0N1YzM3dK?=
+ =?utf-8?B?cmxrOHh4SHVDYW9sWmJCTk9tRmlVZld3YWxFQVdlcno1VVkvS0wzSUNCVHlQ?=
+ =?utf-8?B?K05Ybys5SjQzalY5TVhpMzRmdW50WnJmUGNtSTJMRXFrd1RGMFpGMjA3d3dj?=
+ =?utf-8?B?YzdTUzVhSGEyQ1BISjJVaWt1TFIyWlM3RFczbHJPUTIrUmJQb3JsT1lIZVNq?=
+ =?utf-8?B?TnpVSUQwKzlJMjU4VnlyazI5THB3QUc4bEVyRVN5SWZXTjhNZ2E5c1UxMUlO?=
+ =?utf-8?B?Mk9KQ0E2aGhPY3haU1ZwU21ZdTVDdXNsWFRuOWZXM0kyN2R1V1FsL3FMTFBK?=
+ =?utf-8?B?WG45a2lWa04wd0RUTHBzK2xqKzJ0eTBDZFVTaGNaTUNNZDI2am9XbENhS0gz?=
+ =?utf-8?B?WHdkZzc1S0lpUTVxcy9qeVdzVTVwVUovV0F2eTc1eWh4YndMUlVjSEh1dWgy?=
+ =?utf-8?B?alN2US9WMnlHQ1dyY3RzN3F5Z3BCRTJQWnBDTGFDbVBINnd5MXloUmFKQnBs?=
+ =?utf-8?B?dno2bEdQdHppQ1RYZUdta1ZkVE5xeW0xbXpadjY1cFBzTzVUVFdDOXNnRG9F?=
+ =?utf-8?B?b1Y4bVRHTG82bWJlNlBjWFRBQXBwRW9Qd3E3cDdyamtzcFloTmtKMDBxczhD?=
+ =?utf-8?B?Nm4wNHlGWlpSSFRxcnZqZmF2ZUNMWFJDV3FhRGR6QU5sRlNmZE1FM3pFMGZL?=
+ =?utf-8?B?clJNWm1oa1ZrWEZ6My9nalNhcm9iYVAzZ2NaeUt0SExENXRzTkFDV2ZiaGhL?=
+ =?utf-8?B?K1hjdkxaSnVNRnlUQTZuYVB5ZjJ6VzlQMVFySjZreGZ6eUd2VDBsU2NZcGVp?=
+ =?utf-8?B?M2VIWUZ5aHZGQ01LdVA2Y1NLRTdkS0pVNWdVV3YyT2IxNDRGZUE4MS9YQzAv?=
+ =?utf-8?B?UlBMUFBQSjRSREVXY3VsOWhxc3IyU2VyTy83WWhjSHFKQnd4ZzJEOTFLZUU1?=
+ =?utf-8?B?Z1NFc1FrYWtnd1M4VGhKOW9BU05oV25QUldWVXFHemMzTVhWWkFjOVltRW1F?=
+ =?utf-8?B?YlNyVytUK1pkM3JkWmFJZDJ4dGg3L1pnMVg4MjIrazNKTHcrM3pMZFlUdjI1?=
+ =?utf-8?B?bXk4VjB6TGs0Q2tLZ1p2cmN1UDBHOGtUWHVoTWVtSVZYeXd6bjdyWFA1Z0hv?=
+ =?utf-8?B?UGxMUzFpV3lCNjM0Nm9DYm5QZjR5QlQ1and0TVg5TDYrTFkrSTBLaDRlbFBN?=
+ =?utf-8?B?ZnNYNGRGbkNCeUxoTUR2NVNiT0VMZVljOTBpdjJhMGprUlpnUFhnZEMvTGhU?=
+ =?utf-8?B?T0N6dFgzUkxIbXltT1hGQ0RuQXZyV000TjR4Q1pTQytJZU9ZL2l4WkdNUXI0?=
+ =?utf-8?B?WVN0dnJVN01IYmpkdlBua3RpcW5sV0lsSG91RStqbVRZNVFOL1FCTzFWc25j?=
+ =?utf-8?B?RUppdVVDbHdiVWdxZ0xJckluUFczaHJoUXg1cWphVEE5Tm02SXg2Ty9hR2FU?=
+ =?utf-8?B?QlRNVnZVQkQ0UDFyRWxiUlFqQUZaUGMzY2t3YUZrNXVoS2ROc2srMEd4dVpN?=
+ =?utf-8?B?TG9mWU5Gc3FSeXQyVmYzbk5BWEo0d0h6dmpEdEFkamYxeGFQZCtxWVIzd1JI?=
+ =?utf-8?B?NDIxSTk1ZE56ZUdkU2VYUXRTeXBES09QNmNTR3N0dGxGTWxneVI1clFuK29y?=
+ =?utf-8?B?eUNQRmtTSDBBT0FJbFVZdWN6QVppMkRjUnRhN2huS0U2b3pISUJ1OFNnNkJZ?=
+ =?utf-8?B?cWkwVkVLMU5RSnFrL3FZRmZTWjByN2M5Si9GV2VOT3hHYTlaTU0wMU5iaTRC?=
+ =?utf-8?B?YkZsbitvckxlL1FIUTJJZHI2ZnowMlVmS0M0d1JqZ25DMTZ6ME5rOGRMcEdB?=
+ =?utf-8?B?VVY1d2xPbnBaR2pTSEw3WEpYU0xDL3pPc28vYzlWLzNudWMzVEpvcGU2WGo3?=
+ =?utf-8?Q?hJS0sb7AFkV51vCTrlIUY8ZJs?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 539ded62-c04d-4576-ddee-08dbf5b3b1dc
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 17:00:33.6762
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BmfboL+II3oXdCvRtMofzOp1cNspT7Hpq4g4g9TZWjvCLkiRwkH686WGhl81XIuBi/0aAYfbmbFycql/A/EGEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7181
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.12.23 11:20, Ryan Roberts wrote:
-> Previously, the saved thp settings would be restored upon a signal or at
-> the natural end of the test suite. But there are some tests that
-> directly call exit() upon failure. In this case, the thp settings were
-> not being restored, which could then influence other tests.
+On 12/5/2023 10:17, Bjorn Helgaas wrote:
+> On Tue, Dec 05, 2023 at 09:48:45AM -0600, Mario Limonciello wrote:
+>> commit 7752d5cfe3d1 ("x86: validate against acpi motherboard resources")
+>> introduced checks for ensuring that MCFG table also has memory region
+>> reservations to ensure no conflicts were introduced from a buggy BIOS.
+>>
+>> This has proceeded over time to add other types of reservation checks
+>> for ACPI PNP resources and EFI MMIO memory type.  The PCI firmware spec
+>> however says that these checks are only required when the operating system
+>> doesn't comprehend the firmware region:
+>>
+>> ```
+>> If the operating system does not natively comprehend reserving the MMCFG
+>> region, the MMCFG region must be reserved by firmware. The address range
+>> reported in the MCFG table or by _CBA method (see Section 4.1.3) must be
+>> reserved by declaring a motherboard resource. For most systems, the
+>> motherboard resource would appear at the root of the ACPI namespace
+>> (under \_SB) in a node with a _HID of EISAID (PNP0C02), and the resources
+>> in this case should not be claimed in the root PCI bus’s _CRS. The
+>> resources can optionally be returned in Int15 E820h or EFIGetMemoryMap
+>> as reserved memory but must always be reported through ACPI as a
+>> motherboard resource.
+>> ```
 > 
-> Fix this by installing an atexit() handler to do the actual restore. The
-> signal handler can now just call exit() and the atexit handler is
-> invoked.
+> My understanding is that native comprehension would mean Linux knows
+> how to discover and/or configure the MMCFG base address and size in
+> the hardware and that Linux would then reserve that region so it's not
+> used for anything else.
 > 
-> Reviewed-by: Alistair Popple <apopple@nvidia.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->   tools/testing/selftests/mm/khugepaged.c | 17 +++++++++++------
->   1 file changed, 11 insertions(+), 6 deletions(-)
+> Linux doesn't have that, at least for x86.  It relies on the MCFG
+> table to discover the MMCFG region, and it relies on PNP0C02 _CRS to
+> reserve it.
+
+MCFG to discover it matches the PCI firmware spec, but as I point out 
+above the decision to reserve this region doesn't require 
+PNP0C01/PNP0C02 _CRS.
+
+This is a decision made by Linux historically.
+
 > 
-> diff --git a/tools/testing/selftests/mm/khugepaged.c b/tools/testing/selftests/mm/khugepaged.c
-> index 030667cb5533..fc47a1c4944c 100644
-> --- a/tools/testing/selftests/mm/khugepaged.c
-> +++ b/tools/testing/selftests/mm/khugepaged.c
-> @@ -374,18 +374,22 @@ static void pop_settings(void)
->   	write_settings(current_settings());
->   }
->   
-> -static void restore_settings(int sig)
-> +static void restore_settings_atexit(void)
->   {
->   	if (skip_settings_restore)
-> -		goto out;
-> +		return;
->   
->   	printf("Restore THP and khugepaged settings...");
->   	write_settings(&saved_settings);
->   	success("OK");
-> -	if (sig)
-> -		exit(EXIT_FAILURE);
-> -out:
-> -	exit(exit_status);
-> +
-> +	skip_settings_restore = true;
-> +}
-> +
-> +static void restore_settings(int sig)
-> +{
-> +	/* exit() will invoke the restore_settings_atexit handler. */
-> +	exit(sig ? EXIT_FAILURE : exit_status);
->   }
->   
->   static void save_settings(void)
-> @@ -415,6 +419,7 @@ static void save_settings(void)
->   
->   	success("OK");
->   
-> +	atexit(restore_settings_atexit);
->   	signal(SIGTERM, restore_settings);
->   	signal(SIGINT, restore_settings);
->   	signal(SIGHUP, restore_settings);
+>> Running this check causes problems with accessing extended PCI
+>> configuration space on OEM laptops that don't specify the region in PNP
+>> resources or in the EFI memory map. That later manifests as problems with
+>> dGPU and accessing resizable BAR.
+> 
+> Is there a problem report we can reference here?
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Nothing public to share. AMD BIOS team is in discussion with the OEM to 
+add the reservation in a BIOS upgrade so it works with things like the 
+LTS kernels.
 
-Might similarly come in handy for the cow tests. Can be done later.
+Knowing Windows works without it I feel this is still something that we 
+should be looking at fixing from an upstream perspective though which is 
+what prompted my patch and discussion.
 
--- 
-Cheers,
+> 
+> Does the problem still occur with this series?
+> https://lore.kernel.org/r/20231121183643.249006-1-helgaas@kernel.org
+> 
+> This appeared in linux-next 20231130.
 
-David / dhildenb
+Thanks for sharing that.  If I do respin a variation of this patch I'll 
+rebase on top of that.
+
+I had a try with that series on top of 6.7-rc4, but it doesn't fix the 
+issue (but obviously the patch I sent does).
+
+# journalctl -k | grep ECAM
+Dec 05 06:37:46 cl-fw-fedora kernel: PCI: ECAM [mem 
+0xe0000000-0xefffffff] (base 0xe0000000) for domain 0000 [bus 00-ff]
+Dec 05 06:37:46 cl-fw-fedora kernel: PCI: not using ECAM ([mem 
+0xe0000000-0xefffffff] not reserved)
+Dec 05 06:37:46 cl-fw-fedora kernel: PCI: ECAM [mem 
+0xe0000000-0xefffffff] (base 0xe0000000) for domain 0000 [bus 00-ff]
+Dec 05 06:37:46 cl-fw-fedora kernel: PCI: [Firmware Info]: ECAM [mem 
+0xe0000000-0xefffffff] not reserved in ACPI motherboard resources
+Dec 05 06:37:46 cl-fw-fedora kernel: PCI: not using ECAM ([mem 
+0xe0000000-0xefffffff] not reserved)
+
+> 
+>> Similar problems don't exist in Windows 11 with exact same
+>> laptop/firmware stack, and in discussion with AMD's BIOS team
+>> Windows doesn't have similar checks.
+> 
+> I would love to know AMD BIOS team's take on this.  Does the BIOS
+> reserve the MMCFG space in any way?
+
+On the AMD reference platform this OEM system is based on it is reserved 
+in the EFI memory map.  So on a 6.7 based kernel the reference system 
+you can see this emitted:
+
+PCI: MMCONFIG at [mem 0xe0000000-0xefffffff] reserved as EfiMemoryMappedIO
+
+But on the OEM system this is not reserved by EFI memory map or _CRS.
+
+That's why my assumption after reading the firmware spec and seeing the 
+behavior is that Windows makes the reservation *based on* what's in MCFG.
+
+> 
+>> As this series of checks was first introduced as a mitigation for buggy
+>> BIOS before EFI was introduced add a BIOS date range to only enforce the
+>> checks on hardware that predates the release of Windows 11.
+> 
+> Many of the MMCFG checks in Linux are historical artifacts that are
+> likely related to Linux defects, not BIOS defects, so I wouldn't
+> expect to see them in Windows.  But it's hard to remove them now.
+
+I guess I was hoping that by cutting a line in the sand we could avoid 
+breaking anything that was relying upon the older behavior.
+
+> 
+>> Link: https://members.pcisig.com/wg/PCI-SIG/document/15350
+>>        PCI Firmware Specification 3.3
+>>        Section 4.1.2 MCFG Table Description Note 2
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+>> ---
+>>   arch/x86/pci/mmconfig-shared.c | 10 +++++++---
+>>   1 file changed, 7 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+>> index 4b3efaa82ab7..e4594b181ebf 100644
+>> --- a/arch/x86/pci/mmconfig-shared.c
+>> +++ b/arch/x86/pci/mmconfig-shared.c
+>> @@ -570,9 +570,13 @@ static void __init pci_mmcfg_reject_broken(int early)
+>>   
+>>   	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
+>>   		if (pci_mmcfg_check_reserved(NULL, cfg, early) == 0) {
+>> -			pr_info(PREFIX "not using MMCONFIG\n");
+>> -			free_all_mmcfg();
+>> -			return;
+>> +			if (dmi_get_bios_year() >= 2021) {
+>> +				pr_info(PREFIX "MMCONFIG wasn't reserved by ACPI or EFI\n");
+> 
+> I think this leads to using the MMCONFIG area without reserving it
+> anywhere, so we may end up assigning that space to something else,
+> which won't work, i.e., the problem described here:
+> https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git/commit/?id=5cef3014e02d
+> 
+>> +			} else {
+>> +				pr_info(PREFIX "not using MMCONFIG\n");
+>> +				free_all_mmcfg();
+>> +				return;
+>> +			}
+>>   		}
+>>   	}
+>>   }
+>> -- 
+>> 2.34.1
+>>
 
