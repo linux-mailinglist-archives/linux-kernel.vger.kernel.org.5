@@ -2,65 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76877805BF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17131805BFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346096AbjLERWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:22:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        id S1345998AbjLERVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:21:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345778AbjLERWb (ORCPT
+        with ESMTP id S1345550AbjLERVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:22:31 -0500
-Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BE3188;
-        Tue,  5 Dec 2023 09:22:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701796909; cv=none; 
-        d=zohomail.in; s=zohoarc; 
-        b=cWT3Ly1xj+qjQiNaCukHUeUZ/2zObAP0yWVv4KUmiwC7fD+bQNxWhQVykEMMwrvH7us4xvjrnnW5aZXfKO41WZGcj+cZA9sZnVMMny4ybZJKsJus0vJyWM9ZqH2DB/FEk65hq68DpCr6N8VbWfRuGLbmbDVA8psMSd/9k3+k7J0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
-        t=1701796909; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-        bh=ZOT5stgB/PObSmgMtYkbkXCE93C5EKs6ibg38Dj4Wfw=; 
-        b=cc8n4CDq4pzr+q8szbJR0iIXjwXO341x8U1r0Hq0kjuY8OHVTbUUEFqLoZn5vlNhvfgT8ryd6Mi9FpesqOCGz6jgAto8ls8Z3bp8yGswO97O4VG0S5lbiQMk9xyL117uC0PfJzoHJwJgmzgzOXIBZlYev/RvFGH+xkBps6OGvvw=
-ARC-Authentication-Results: i=1; mx.zohomail.in;
-        dkim=pass  header.i=siddh.me;
-        spf=pass  smtp.mailfrom=code@siddh.me;
-        dmarc=pass header.from=<code@siddh.me>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1701796909;
-        s=zmail; d=siddh.me; i=code@siddh.me;
-        h=Date:Date:From:From:To:To:Cc:Cc:Message-ID:In-Reply-To:References:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=ZOT5stgB/PObSmgMtYkbkXCE93C5EKs6ibg38Dj4Wfw=;
-        b=uF76BNgZzLgo27lRSsBSb4pUafsEMAaCO/1hUsNVFbibwRCCO+um8HhpbeTs0/7q
-        P0oCRQwThoV8cV6LaSaV60LVYPSN7ynKsRb02GpV12XLtDUvPwXxWuOEDBeGLpZUW89
-        6JRH+z13qSZ9lRgXFt64wMlUhylSsXV3VbpFaL8o=
-Received: from mail.zoho.in by mx.zoho.in
-        with SMTP id 1701796877595248.52755350576115; Tue, 5 Dec 2023 22:51:17 +0530 (IST)
-Date:   Tue, 05 Dec 2023 22:51:17 +0530
-From:   Siddh Raman Pant <code@siddh.me>
-To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        "Suman Ghosh" <sumang@marvell.com>,
-        "netdev" <netdev@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>,
-        "syzbot+bbe84a4010eeea00982d" 
-        <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
-Message-ID: <18c3aff94ef.7cc78f6896702.921153651485959341@siddh.me>
-In-Reply-To: <fd709885-c489-4f84-83ab-53cfb4920094@linaro.org>
-References: <cover.1701627492.git.code@siddh.me>
- <4143dc4398aa4940a76d3f375ec7984e98891a11.1701627492.git.code@siddh.me> <fd709885-c489-4f84-83ab-53cfb4920094@linaro.org>
-Subject: Re: [PATCH net-next v3 1/2] nfc: llcp_core: Hold a ref to
- llcp_local->dev when holding a ref to llcp_local
+        Tue, 5 Dec 2023 12:21:30 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1ADBA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 09:21:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9187CC433C8;
+        Tue,  5 Dec 2023 17:21:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701796896;
+        bh=qQhFD5km7iam6ql60v2yvQ1cEjm2HjSDpoeTEUpsrRk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SVvOED5TQV7w6aix5CSUmAgTtyEnO62rBkggKujtvoSWaIHBF/KbD6e14Hk2JPqz6
+         3jXmvJUZek6eE5B+WZSrqApTnf1DIlnTzGjhSMK2NoICzENS/IKes8mJEFE1Wxoha8
+         qR+IyfxpQ1Faqi/sTdJ2HjSERHq0z1khOYRmfF8y/go/CicJFNQrVVx8vTzPsfDurZ
+         2lWey7UGuMC2z1W9gPskSHANViFPfSn8Dd/DWwCQIRZc0AYMthmCCwGeREnKHRcVgp
+         nlIIWKz6cR+Tc2xLEuqggbwBVW7MLF1jZm0aBfqAfPSPj7M9cRhbPBuUIV2Uw4xwO5
+         4KG2CE7WvT/ww==
+Date:   Tue, 5 Dec 2023 10:21:33 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Sylvestre Ledru <sylvestre@debian.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        lkft-triage@lists.linaro.org, Russell King <linux@armlinux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Matthias Klose <doko@debian.org>
+Subject: Re: clang-nightly: vdso/compat_gettimeofday.h:152:15: error:
+ instruction variant requires ARMv6 or later
+Message-ID: <20231205172133.GA462711@dev-arch.thelio-3990X>
+References: <CA+G9fYvD72Vpfs2g8R+OJ6L8w9p_uaWbXpWMvnGAx_AOLabatw@mail.gmail.com>
+ <20231204181304.GA2043538@dev-arch.thelio-3990X>
+ <20231204223317.GA2053629@dev-arch.thelio-3990X>
+ <36a25113-731c-4b28-a695-f3fbb0996d6e@app.fastmail.com>
+ <20231205150417.GA349053@dev-arch.thelio-3990X>
+ <3523ca62-be8b-4b08-8d0c-5b97ece9aad8@debian.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3523ca62-be8b-4b08-8d0c-5b97ece9aad8@debian.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,72 +63,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Dec 2023 22:10:00 +0530, Krzysztof Kozlowski wrote:
-> > @@ -180,6 +183,7 @@ int nfc_llcp_local_put(struct nfc_llcp_local *local)
-> >  	if (local == NULL)
-> >  		return 0;
-> >  
-> > +	nfc_put_device(local->dev);
+On Tue, Dec 05, 2023 at 04:13:29PM +0100, Sylvestre Ledru wrote:
+> Le 05/12/2023 à 16:04, Nathan Chancellor a écrit :
+> > On Tue, Dec 05, 2023 at 07:34:40AM +0100, Arnd Bergmann wrote:
+> > > On Mon, Dec 4, 2023, at 23:33, Nathan Chancellor wrote:
+> > > > On Mon, Dec 04, 2023 at 11:13:04AM -0700, Nathan Chancellor wrote:
+> > > > 
+> > > > > I am still investigating into what (if anything) can be done to resolve
+> > > > > this on the kernel side. We could potentially revert commit
+> > > > > ddc72c9659b5 ("kbuild: clang: do not use CROSS_COMPILE for target
+> > > > > triple") but I am not sure that will save us from that change, as
+> > > > > tuxmake's CROSS_COMPILE=arm-linux-gnueabihf will cause us to have an
+> > > > > armv7 CPU even though we may not be building for armv7.
+> > > > 
+> > > > Okay, this is a pretty awful situation the more I look into it :(
+> > > > 
+> > > > The arm64 compat vDSO build is easy enough to fix because we require use
+> > > > of the integrated assembler, which means we can add '-mcpu=generic' (the
+> > > > default in LLVM for those files based on my debugging) to those files
+> > > > and be done with it:
+> > > > 
+> > > > diff --git a/arch/arm64/kernel/vdso32/Makefile
+> > > > b/arch/arm64/kernel/vdso32/Makefile
+> > > > index 1f911a76c5af..5f5cb722cfc2 100644
+> > > > --- a/arch/arm64/kernel/vdso32/Makefile
+> > > > +++ b/arch/arm64/kernel/vdso32/Makefile
+> > > > @@ -9,6 +9,10 @@ include $(srctree)/lib/vdso/Makefile
+> > > >   ifeq ($(CONFIG_CC_IS_CLANG), y)
+> > > >   CC_COMPAT ?= $(CC)
+> > > >   CC_COMPAT += --target=arm-linux-gnueabi
+> > > > +# Some distributions (such as Debian) change the default CPU for the
+> > > > +# arm-linux-gnueabi target triple, which can break the build.
+> > > > Explicitly set
+> > > > +# the CPU to generic, which is the default for Linux in LLVM.
+> > > > +CC_COMPAT += -mcpu=generic
+> > > >   else
+> > > >   CC_COMPAT ?= $(CROSS_COMPILE_COMPAT)gcc
+> > > >   endif
+> > > 
+> > > I'm still trying to follow what is actually going on. I
+> > > see that we pass
+> > > 
+> > > VDSO_CAFLAGS += -march=armv8-a
+> > > 
+> > > which is meant to tell the compiler that we want it to
+> > > use ARMv8 compatible instructions. Is the problem that
+> > > clang ignores this flag, or do we not pass it correctly?
+> > > 
+> > > I would have expected -march=armv8-a to be better than
+> > > -mcpu=generic here, as it allows the compiler to use
+> > > a wider set of instructions that is still guaranteed to
+> > > be available on everything it will run on.
+> > 
+> > I should have made it clearer in that message that adding
+> > '-mcpu=generic' was only to avoid the logic added by that Debian LLVM
+> > change, not because I believe the kernel is doing something incorrectly
+> > now. From what I could tell following through LLVM's code, '-march='
+> > determines the default CPU, which is then used to further inform the
+> > full target triple and by overriding the CPU where that patch did, it
+> > was just blowing away the user's request. By providing an '-mcpu='
+> > option explicitly, it would avoid the default selection logic and we
+> > would get what we asked for.
+> > 
+> > > > Sylvestre, I strongly believe you should consider reverting that change
+> > > > or give us some compiler flag that allows us to fallback to upstream
+> > > > LLVM's default CPU selection logic. I think that hardcoding Debian's
+> > > > architecture defintions based on the target triple into the compiler
+> > > > could cause issues for other projects as well. For example,
+> > > > '--target=arm-linux-gnueabi -march=armv7-a' won't actually target ARMv7:
+> > > > 
+> > > >    $ echo 'int main(void) { asm("dsb"); return 0; }' | \
+> > > >          clang --target=arm-linux-gnueabi -march=armv7-a \
+> > > >          -x c -c -o /dev/null -v -
+> > > >    ...
+> > > >     "/usr/bin/clang-17" -cc1 -triple armv7-unknown-linux-gnueabi ...
+> > > >    ...
+> > > > 
+> > > > vs.
+> > > > 
+> > > >    $ echo 'int main(void) { asm("dsb"); return 0; }' | \
+> > > >          clang --target=arm-linux-gnueabi -march=armv7-a \
+> > > >          -x c -c -o /dev/null -v -
+> > > >    ...
+> > > >    "<prefix>/bin/clang-18" -cc1 -triple armv5e-unknown-linux-gnueabi ...
+> > > >    ...
+> > > 
+> > > Right, the kernel definitely relies on -march= taking
+> > > precedence over the default CPU, the same way that we
+> > > tell the compiler to pick a non-default endianess or ABI.
+> > 
+> > Agreed, I have yet to test the new version of the patch but I see you
+> > and Ard have given input on it, so hopefully it does not have any
+> > problems like this.
 > 
-> Mismatched order with get. Unwinding is always in reversed order. Or
-> maybe other order is here on purpose? Then it needs to be explained.
+> Matthias, as cc, pushed a potential fix for debian/ubuntu packages!
+> https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/-/commit/01a06b481e5a2610c7387149b58978c3ec281f2c
 
-Yes, local_release() will free local, so local->dev cannot be accessed.
-Will add a comment.
+Thanks, that version survives my basic testing of both ARCH=arm and
+ARCH=arm64 defconfig. I'll holler if our full matrix explodes later (we
+have another regression in LLVM right now so we are not testing the
+snapshots daily at the moment).
 
-> > @@ -959,8 +963,18 @@ static void nfc_llcp_recv_connect(struct nfc_llcp_local *local,
-> >  	}
-> >  
-> >  	new_sock = nfc_llcp_sock(new_sk);
-> > -	new_sock->dev = local->dev;
-> > +
-> >  	new_sock->local = nfc_llcp_local_get(local);
-> > +	if (!new_sock->local) {
-> 
-> There is already an cleanup path/label, so extend it. Existing code
-> needs some improvements in that matter as well.
-
-Sure.
-
-> > +		reason = LLCP_DM_REJ;
-> > +		release_sock(&sock->sk);
-> > +		sock_put(&sock->sk);
-> > +		sock_put(&new_sock->sk);
-> > +		nfc_llcp_sock_free(new_sock);
-> > +		goto fail;
-> > +	}
-> > +
-> > +	new_sock->dev = local->dev;
-> >  	new_sock->rw = sock->rw;
-> >  	new_sock->miux = sock->miux;
-> >  	new_sock->nfc_protocol = sock->nfc_protocol;
-> > @@ -1597,7 +1611,13 @@ int nfc_llcp_register_device(struct nfc_dev *ndev)
-> >  	if (local == NULL)
-> >  		return -ENOMEM;
-> >  
-> > -	local->dev = ndev;
-> > +	/* Hold a reference to the device. */
-> 
-> That's obvious. Instead write something not obvious - why you call
-> nfc_get_device() while not incrementing reference to llcp_local.
-
-Should I move it after kref_init()? Here, I'm bailing out early so we
-don't have to do unnecessary init first, and the rest of the function
-will never fail.
-
-> > +	local->dev = nfc_get_device(ndev->idx);
-> 
-> This looks confusing. If you can access ndev->idx, then ndev reference
-> was already increased. In such case iterating through all devices to
-> find it, is unnecessary and confusing.
-
-I agree, it was something I thought about as well. There should be a
-new function for refcount increment. Maybe the existing one could be
-renamed to nfc_get_device_from_idx() and a new nfc_get_device() be
-defined.
-
-I didn't want to introduce improvement patches in this UAF series, as
-that would be an independent unit of change.
-
-Thanks,
-Siddh
+Cheers,
+Nathan
