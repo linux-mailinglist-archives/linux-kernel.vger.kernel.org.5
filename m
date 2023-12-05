@@ -2,275 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0194F8048AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:38:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4070A8048BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344087AbjLEEig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 23:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35294 "EHLO
+        id S231629AbjLEEqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 23:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjLEEie (ORCPT
+        with ESMTP id S229611AbjLEEqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 23:38:34 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E39BE;
-        Mon,  4 Dec 2023 20:38:40 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6ce33234fd7so1370827b3a.0;
-        Mon, 04 Dec 2023 20:38:40 -0800 (PST)
+        Mon, 4 Dec 2023 23:46:20 -0500
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B46C0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 20:46:25 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5d7b1a8ec90so15994407b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 20:46:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701751120; x=1702355920; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z8za1LL9JYBxMQqZEFu+Ip+HiV0+LDHs+kobZXAkLSM=;
-        b=EEu0ZcSUm039tbXUSuuiNNOLZZlt2IVkUAAPQeAbDsYw0aq4tO11HM20fS6z/5Jy0f
-         YzBTlVAyND/Z3v05yS0/XWbNgvcdM5zv3g25Ib6YGzIKr3qyH1bIQLgC9XDyFrbcCXf0
-         xgH5gVKAkn7kxL8u7FLNv6eyK7rhviezUpT1wQr//URCf6Kz/e4VZEau9vpyM5zBwShL
-         eI8YKSBoPmTHfwaYkrIMd4axbP51sOhT3CA/ZjhEZW3H9d58rBTxk0rgozqIXnc7OXXm
-         h+XONHcnuwoFP2mqvNiMljs5pn36PytqHOqpfH5fZSwVeK12IhETR6LazzdG0JH3wGra
-         cgvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701751120; x=1702355920;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701751585; x=1702356385; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=z8za1LL9JYBxMQqZEFu+Ip+HiV0+LDHs+kobZXAkLSM=;
-        b=OMZrrGdLeGsiYoJ5CFcbIlb/VUFjYr4U+fG7FhGGAvLJclFMpKw8UGnZPwZ/N9fbSg
-         3q0OWDAMfhJfD3oRDrZEZoJM9YC49ms+YPKl6V2UAHOzefmCXzYy5ntfyXTb7kIOqXyX
-         CfXkILbr7tg1gTTzFzCkUjMgeehB0gAG/PgjPluSUS9YGQayipGKeEwG6/JTzAqeNbr2
-         DJklBu1wTCltDi2TF9x/NeVpqj5vM2PoSYSyKXivxdf8YIHK9JSKNEcZIhMGUU3+qAwc
-         CPKcwR80S0KUd8Bj5H+4pk5sbWBoXI0x1YePBvIQefSPhr6XfosxAXPOtxA3OQ3sOvTX
-         e3Lw==
-X-Gm-Message-State: AOJu0Ywd6aXpPdtalg/e+Ih4bvJkKSrvWxZdNuU8R3EKz/9tkeMrWgd5
-        biYkIcOJFzdXAmfdjRg/CGPldo1EDbI=
-X-Google-Smtp-Source: AGHT+IHSG+1Tgf/q/ZSVPAa40DZqAi1IiJXzl6rcBNCixCdC/TwLHWLbumoyWO7hnbLLdrrVcadqwg==
-X-Received: by 2002:a05:6a20:1586:b0:18f:97c:5b84 with SMTP id h6-20020a056a20158600b0018f097c5b84mr2423300pzj.82.1701751119663;
-        Mon, 04 Dec 2023 20:38:39 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id c13-20020a170903234d00b001cfcf3dd317sm9212738plh.61.2023.12.04.20.38.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 20:38:38 -0800 (PST)
-Date:   Tue, 5 Dec 2023 13:38:21 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 16/21] mm/slab: move kfree() from slab_common.c to
- slub.c
-Message-ID: <ZW6pPdvjOfaMmWxu@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-16-9c9c70177183@suse.cz>
+        bh=PTwiqtihyMWEpX2uUmOeVlr01B75EdpPvzVSzPHU6u0=;
+        b=EsROK7t2fvj77E3v8lpYat9bTzWtHVYaJcPb52a5KrlqsVq3JW81QWSCBdLY/dl0/D
+         C/7art0rHcG5IuKUkPCCGUCe1haQxMMNOwgLPnnFb3PtRK0gEujjXCd3AE7pnkT9UjeM
+         5poCjjwhoZGHum1E/4XJwFoD0Aeu5Wqx7p2NGF75Qom0a7y+t74kkxBZ7b3549VUBv8P
+         sGevK4G7nvSRxShty3Z3I104eT/Qu/mczt/+EZElP7LIb7Dk/bBuFK8TD7C9KnU7Bn4w
+         Rc6JUUS07y4PV5EzB+XpzCB4CeH7qB2shrpMoNoipHm3y0oUXBxmHGRyyKPP20EySsxr
+         WjvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701751585; x=1702356385;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PTwiqtihyMWEpX2uUmOeVlr01B75EdpPvzVSzPHU6u0=;
+        b=sHUmfcDeFb66dwU7q2ryh5HPk3u63+0tTFdsIw5VKNSWiB1D+7un2KkYU/vx/idWSl
+         fKnTT54MvL8Rzpi/1guMiKKMe2B49PNCtp0k1HmS61dd4mjBcY80s2U/Tfy+8yHFICjo
+         Th4lkzr4Wps0F2itl0fNWN6lVhl3ugrsEz5Hhkrd4cWykrLwctQ2NWmebfIKzlsGgETi
+         Ervbxa02vAtOBcyM/OBgomJPZ9+4kpr6vtJQydM1CpTP/XFzmEbj0iwpgUrhCGeim3zp
+         whEtor5SERfVO0BtQD4jpfTsfJUqZqCEkWZ4GTOvxiSvX9KX7gAxAIc5zNfa6NNGud6/
+         nYow==
+X-Gm-Message-State: AOJu0YyTw5t6wCDxihF9VNgKZO3TLkHKyeOMsBzt/q81MX7SSPreUEgy
+        RsX4u3zBl17+wUIfIBlFjbT+xKZD1iIXdi56RyV7LQ==
+X-Google-Smtp-Source: AGHT+IHB79SbOHLU+JRoXQHpNdBkCdmYdjIJ60fLZnJBIH3FURvlK43Sy3u4VAUNLryAKQaKl4/7/lDz2Im56Eiua14=
+X-Received: by 2002:a05:690c:8:b0:5d8:2f65:cf71 with SMTP id
+ bc8-20020a05690c000800b005d82f65cf71mr2583688ywb.86.1701751584910; Mon, 04
+ Dec 2023 20:46:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-16-9c9c70177183@suse.cz>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231121171643.3719880-1-surenb@google.com> <20231121171643.3719880-6-surenb@google.com>
+ <b3c882d2-0135-430c-8179-784f78be0902@arm.com> <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
+ <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com> <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
+ <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
+ <744be4e0-48e0-4c77-825c-711386dd205f@arm.com> <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
+ <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com> <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
+In-Reply-To: <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 4 Dec 2023 20:46:11 -0800
+Message-ID: <CAJuCfpG=seLkKbMRjwuWNQozGSQmP-JqKVUuCGRqMqxND2u18A@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 07:34:27PM +0100, Vlastimil Babka wrote:
-> This should result in better code. Currently kfree() makes a function
-> call between compilation units to __kmem_cache_free() which does its own
-> virt_to_slab(), throwing away the struct slab pointer we already had in
-> kfree(). Now it can be reused. Additionally kfree() can now inline the
-> whole SLUB freeing fastpath.
-> 
-> Also move over free_large_kmalloc() as the only callsites are now in
-> slub.c, and make it static.
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slab.h        |  4 ----
->  mm/slab_common.c | 45 ---------------------------------------------
->  mm/slub.c        | 51 ++++++++++++++++++++++++++++++++++++++++++++++-----
->  3 files changed, 46 insertions(+), 54 deletions(-)
-> 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 5ae6a978e9c2..35a55c4a407d 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -395,8 +395,6 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags, unsigned long caller);
->  void *__kmem_cache_alloc_node(struct kmem_cache *s, gfp_t gfpflags,
->  			      int node, size_t orig_size,
->  			      unsigned long caller);
-> -void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller);
-> -
->  gfp_t kmalloc_fix_flags(gfp_t flags);
->  
->  /* Functions provided by the slab allocators */
-> @@ -559,8 +557,6 @@ static inline int memcg_alloc_slab_cgroups(struct slab *slab,
->  }
->  #endif /* CONFIG_MEMCG_KMEM */
->  
-> -void free_large_kmalloc(struct folio *folio, void *object);
-> -
->  size_t __ksize(const void *objp);
->  
->  static inline size_t slab_ksize(const struct kmem_cache *s)
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index bbc2e3f061f1..f4f275613d2a 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -963,22 +963,6 @@ void __init create_kmalloc_caches(slab_flags_t flags)
->  	slab_state = UP;
->  }
->  
-> -void free_large_kmalloc(struct folio *folio, void *object)
-> -{
-> -	unsigned int order = folio_order(folio);
-> -
-> -	if (WARN_ON_ONCE(order == 0))
-> -		pr_warn_once("object pointer: 0x%p\n", object);
-> -
-> -	kmemleak_free(object);
-> -	kasan_kfree_large(object);
-> -	kmsan_kfree_large(object);
-> -
-> -	mod_lruvec_page_state(folio_page(folio, 0), NR_SLAB_UNRECLAIMABLE_B,
-> -			      -(PAGE_SIZE << order));
-> -	__free_pages(folio_page(folio, 0), order);
-> -}
-> -
->  static void *__kmalloc_large_node(size_t size, gfp_t flags, int node);
->  static __always_inline
->  void *__do_kmalloc_node(size_t size, gfp_t flags, int node, unsigned long caller)
-> @@ -1023,35 +1007,6 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
->  }
->  EXPORT_SYMBOL(__kmalloc_node_track_caller);
->  
-> -/**
-> - * kfree - free previously allocated memory
-> - * @object: pointer returned by kmalloc() or kmem_cache_alloc()
-> - *
-> - * If @object is NULL, no operation is performed.
-> - */
-> -void kfree(const void *object)
-> -{
-> -	struct folio *folio;
-> -	struct slab *slab;
-> -	struct kmem_cache *s;
-> -
-> -	trace_kfree(_RET_IP_, object);
-> -
-> -	if (unlikely(ZERO_OR_NULL_PTR(object)))
-> -		return;
-> -
-> -	folio = virt_to_folio(object);
-> -	if (unlikely(!folio_test_slab(folio))) {
-> -		free_large_kmalloc(folio, (void *)object);
-> -		return;
-> -	}
-> -
-> -	slab = folio_slab(folio);
-> -	s = slab->slab_cache;
-> -	__kmem_cache_free(s, (void *)object, _RET_IP_);
-> -}
-> -EXPORT_SYMBOL(kfree);
-> -
->  /**
->   * __ksize -- Report full size of underlying allocation
->   * @object: pointer to the object
-> diff --git a/mm/slub.c b/mm/slub.c
-> index cc801f8258fe..2baa9e94d9df 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -4197,11 +4197,6 @@ static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, void *x)
->  	return cachep;
->  }
->  
-> -void __kmem_cache_free(struct kmem_cache *s, void *x, unsigned long caller)
-> -{
-> -	slab_free(s, virt_to_slab(x), x, NULL, &x, 1, caller);
-> -}
-> -
->  /**
->   * kmem_cache_free - Deallocate an object
->   * @s: The cache the allocation was from.
-> @@ -4220,6 +4215,52 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
->  }
->  EXPORT_SYMBOL(kmem_cache_free);
->  
-> +static void free_large_kmalloc(struct folio *folio, void *object)
-> +{
-> +	unsigned int order = folio_order(folio);
-> +
-> +	if (WARN_ON_ONCE(order == 0))
-> +		pr_warn_once("object pointer: 0x%p\n", object);
-> +
-> +	kmemleak_free(object);
-> +	kasan_kfree_large(object);
-> +	kmsan_kfree_large(object);
-> +
-> +	mod_lruvec_page_state(folio_page(folio, 0), NR_SLAB_UNRECLAIMABLE_B,
-> +			      -(PAGE_SIZE << order));
-> +	__free_pages(folio_page(folio, 0), order);
-> +}
-> +
-> +/**
-> + * kfree - free previously allocated memory
-> + * @object: pointer returned by kmalloc() or kmem_cache_alloc()
-> + *
-> + * If @object is NULL, no operation is performed.
-> + */
-> +void kfree(const void *object)
-> +{
-> +	struct folio *folio;
-> +	struct slab *slab;
-> +	struct kmem_cache *s;
-> +	void *x = (void *)object;
-> +
-> +	trace_kfree(_RET_IP_, object);
-> +
-> +	if (unlikely(ZERO_OR_NULL_PTR(object)))
-> +		return;
-> +
-> +	folio = virt_to_folio(object);
-> +	if (unlikely(!folio_test_slab(folio))) {
-> +		free_large_kmalloc(folio, (void *)object);
-> +		return;
-> +	}
-> +
-> +	slab = folio_slab(folio);
-> +	s = slab->slab_cache;
-> +	slab_free(s, slab, x, NULL, &x, 1, _RET_IP_);
-> +}
-> +EXPORT_SYMBOL(kfree);
-> +
->  struct detached_freelist {
->  	struct slab *slab;
->  	void *tail;
+On Mon, Dec 4, 2023 at 10:44=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> On Mon, Dec 4, 2023 at 10:27=E2=80=AFAM David Hildenbrand <david@redhat.c=
+om> wrote:
+> >
+> > On 04.12.23 17:35, Suren Baghdasaryan wrote:
+> > > On Mon, Dec 4, 2023 at 1:27=E2=80=AFAM Ryan Roberts <ryan.roberts@arm=
+.com> wrote:
+> > >>
+> > >> On 04/12/2023 04:09, Suren Baghdasaryan wrote:
+> > >>> On Sat, Dec 2, 2023 at 2:11=E2=80=AFAM David Hildenbrand <david@red=
+hat.com> wrote:
+> > >>>>
+> > >>>> On 02.12.23 09:04, Ryan Roberts wrote:
+> > >>>>> On 01/12/2023 20:47, David Hildenbrand wrote:
+> > >>>>>> On 01.12.23 10:29, Ryan Roberts wrote:
+> > >>>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
+> > >>>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move so=
+urce
+> > >>>>>>>> into destination buffer while checking the contents of both af=
+ter
+> > >>>>>>>> the move. After the operation the content of the destination b=
+uffer
+> > >>>>>>>> should match the original source buffer's content while the so=
+urce
+> > >>>>>>>> buffer should be zeroed. Separate tests are designed for PMD a=
+ligned and
+> > >>>>>>>> unaligned cases because they utilize different code paths in t=
+he kernel.
+> > >>>>>>>>
+> > >>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > >>>>>>>> ---
+> > >>>>>>>>     tools/testing/selftests/mm/uffd-common.c     |  24 +++
+> > >>>>>>>>     tools/testing/selftests/mm/uffd-common.h     |   1 +
+> > >>>>>>>>     tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++=
+++++++++++++
+> > >>>>>>>>     3 files changed, 214 insertions(+)
+> > >>>>>>>>
+> > >>>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
+> > >>>>>>>> b/tools/testing/selftests/mm/uffd-common.c
+> > >>>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
+> > >>>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
+> > >>>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
+> > >>>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offs=
+et, bool wp)
+> > >>>>>>>>         return __copy_page(ufd, offset, false, wp);
+> > >>>>>>>>     }
+> > >>>>>>>>     +int move_page(int ufd, unsigned long offset, unsigned lon=
+g len)
+> > >>>>>>>> +{
+> > >>>>>>>> +    struct uffdio_move uffdio_move;
+> > >>>>>>>> +
+> > >>>>>>>> +    if (offset + len > nr_pages * page_size)
+> > >>>>>>>> +        err("unexpected offset %lu and length %lu\n", offset,=
+ len);
+> > >>>>>>>> +    uffdio_move.dst =3D (unsigned long) area_dst + offset;
+> > >>>>>>>> +    uffdio_move.src =3D (unsigned long) area_src + offset;
+> > >>>>>>>> +    uffdio_move.len =3D len;
+> > >>>>>>>> +    uffdio_move.mode =3D UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
+> > >>>>>>>> +    uffdio_move.move =3D 0;
+> > >>>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
+> > >>>>>>>> +        /* real retval in uffdio_move.move */
+> > >>>>>>>> +        if (uffdio_move.move !=3D -EEXIST)
+> > >>>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
+> > >>>>>>>> +                (int64_t)uffdio_move.move);
+> > >>>>>>>
+> > >>>>>>> Hi Suren,
+> > >>>>>>>
+> > >>>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
+> > >>>>>>>
+> > >>>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errn=
+o=3D16,
+> > >>>>>>> @uffd-common.c:648)
+> > >>>>>>>
+> > >>>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged any=
+ further, but
+> > >>>>>>> happy to go deeper if you can direct.
+> > >>>>>>
+> > >>>>>> Does it trigger reliably? Which pagesize is that kernel using?
+> > >>>>>
+> > >>>>> Yep, although very occasionally it fails with EAGAIN. 4K kernel; =
+see other email
+> > >>>>> for full config.
+> > >>>>>
+> > >>>>>>
+> > >>>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault(=
+) uses
+> > >>>>>> default_huge_page_size(), which reads the default hugetlb size.
+> > >>>>>
+> > >>>>> My kernel command line is explicitly seting the default huge page=
+ size to 2M.
+> > >>>>>
+> > >>>>
+> > >>>> Okay, so that likely won't affect it.
+> > >>>>
+> > >>>> I can only guess that it has to do with the alignment of the virtu=
+al
+> > >>>> area we are testing with, and that we do seem to get more odd patt=
+erns
+> > >>>> on arm64.
+> > >>>>
+> > >>>> uffd_move_test_common() is a bit more elaborate, but if we aligned=
+ the
+> > >>>> src+start area up, surely "step_count" cannot be left unmodified?
+> > >>>>
+> > >>>> So assuming we get either an unaligned source or an unaligned dst =
+from
+> > >>>> mmap(), I am not convinced that we won't be moving areas that are =
+not
+> > >>>> necessarily fully backed by PMDs and maybe don't even fall into th=
+e VMA
+> > >>>> of interest?
+> > >>>>
+> > >>>> Not sure if that could trigger the THP splitting issue, though.
+> > >>>>
+> > >>>> But I just quickly scanned that test setup, could be I am missing
+> > >>>> something. It might make sense to just print the mmap'ed range and=
+ the
+> > >>>> actual ranges we are trying to move. Maybe something "obvious" can=
+ be
+> > >>>> observed.
+> > >>>
+> > >>> I was able to reproduce the issue on an Android device and after
+> > >>> implementing David's suggestions to split the large folio and after
+> > >>> replacing default_huge_page_size() with read_pmd_pagesize(), the
+> > >>> move-pmd test started working for me. Ryan, could you please apply
+> > >>> attached patches (over mm-unstable) and try the test again?
+> > >>
+> > >> Yep, all fixed with those patches!
+> > >
+> > > Great! Thanks for testing and confirming. I'll post an updated
+> > > patchset later today and will ask Andrew to replace the current one
+> > > with it.
+> > > I'll also look into the reasons we need to split PMD on ARM64 in this
+> > > test. It's good that this happened and we were able to test the PMD
+> > > split path but I'm curious about the reason. It's possible my address
+> > > alignment calculations are  somehow incorrect.
+> >
+> > I only skimmed the diff briefly, but likely you also want to try
+> > splitting in move_pages_pte(), if you encounter an already-pte-mapped T=
+HP.
+>
+> Huh, good point. I might be able to move the folio splitting code into
+> pte-mapped case and do a retry after splitting. That should minimize
+> the additional code required. Will do and post a new set shortly.
+> Thanks!
 
-Looks good to me,
-Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Was planning to post an update today but need some more time. Will try
+to send it tomorrow.
 
-nit: mm/kfence/report.c checks if a function name starts with
-"__kmem_cache_free" which is removed by this patch.
-
-> 
-> -- 
-> 2.42.1
-> 
-> 
+>
+> >
+> > --
+> > Cheers,
+> >
+> > David / dhildenb
+> >
