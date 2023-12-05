@@ -2,159 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42666804C32
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44219804C40
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344804AbjLEIXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        id S231716AbjLEI0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:26:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjLEIXN (ORCPT
+        with ESMTP id S229615AbjLEI0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:23:13 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634C2138;
-        Tue,  5 Dec 2023 00:23:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701764597; x=1733300597;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gcfTZdhA5gWjXKrvaXBrEm3hhlOaQHfXwYwZPdM9PEM=;
-  b=gtiujLQ88TUa2gLcB7zFDT4/vJTF8IXajM02kDKEXqH8oLG/me8CfC3M
-   zsUpi9qKSBBn9V6dhQ2p9KsGov+Yw4+0cVGhcDmsBeJ9PAE6hEfGLNLa2
-   5Qjjpjt/hrNrGJkFM8bGySzpvBLPd+//XmIKpTNy17+HbzB5iISS2fYW8
-   68meM16kqc7biPywvIY7s8yPRxhINqpQU26yHSaPMosA72EdmNLMT367j
-   H8CnfMgVWV9nccnptF3QAncdbUxhxu7xXugHKEL8o0FmVIhz3kzgbH1AZ
-   y2aALm8bGTDSoMWfyLVdjxdg5g2AvjVZ5FfND5+Ll0GnCgukYj6qR3EBm
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="384259759"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="384259759"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 00:23:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764248993"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="764248993"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 05 Dec 2023 00:23:16 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAQi2-0008Zp-06;
-        Tue, 05 Dec 2023 08:23:14 +0000
-Date:   Tue, 5 Dec 2023 16:23:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     YangXin <yx.0xffff@gmail.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ___neigh_lookup_noref(): remove redundant parameters
-Message-ID: <202312051637.EOZ86jSh-lkp@intel.com>
-References: <20231204185943.68-1-yx.0xffff@gmail.com>
+        Tue, 5 Dec 2023 03:26:50 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2795811F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:26:56 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40b399a6529so39588195e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 00:26:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701764814; x=1702369614; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u8z1G//lxs01T/5lt3W2SRfFFQQSfR5y5qtuiOgOqS8=;
+        b=gV3y8UgZBIhUsKQs9gHG4Fooj8+llnpyKZ2iXe4gb0n2tDGjE81jzhc+DxNGyr4H+f
+         iY9kkUq9P6quJGe97r99ImEp4iDKnxglXBcsVWUfhDce2TXHeTZUhDq3PFDNTtcdaPhn
+         96Iyat5mbX50e9tBxmmz400L8GBAm+DEN2a57yCNY291En8a2SlQlBrfzIK8nWtpKvmE
+         MCPQp2oyx4pwebRXP6j4LKRSqaLoqfffnWXGvQdsUBAQGzzWneKgGnhkHesUhqcM/oPk
+         zVxFaAjtZw2k9cOkVdPmM3FciIih60wgnRtDoiOpGopLRa0oo6N9+3s6dIf91T/r1FgT
+         YJUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701764814; x=1702369614;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u8z1G//lxs01T/5lt3W2SRfFFQQSfR5y5qtuiOgOqS8=;
+        b=QRtw1IpxYbOh8mYP0udbAeqoQP9GdOgZewIcdTkCgLZzQWPxLZS5Xchd+KKk6W2y9I
+         R0+7O+vK63NPHDoQviIFM5jB0X0Itir2s4pL3txO+qgEvVw+4SeDMJw4KC+rhxq5mRNO
+         ykysZiazpu/jc5eIAQHfYOODNU0Lixi9ytikJoy/rVh/B7PpG8SY0JVkqoGvm1DBE5mc
+         pgs2pjdhGUYVpm4nXBcSBXmwX8regK/xydNS5dOmqVLCuKoh7blegn/iS3bdA7Aoh0mv
+         ZnNBjJB8OMuElLSwxiI77sSB2CBt5RqTTl7loJNHw3jyHcdoMnkwixw6Hyj7Y0ZudVzm
+         cBgQ==
+X-Gm-Message-State: AOJu0YzdJ0iwDJ3oVijkBZoyemmnUGyyvHHcEZWKFkwNaTKBPAL13eR3
+        H/qvo5+jRb33avD3E6Rqe5yoNw==
+X-Google-Smtp-Source: AGHT+IFCMMvrABPHwS0NJdVCcXSdpuq3NACgGkVh6j9EYUzk74mmdJWxN4/71i9g2VB1GlznRsJr2w==
+X-Received: by 2002:a05:600c:a02:b0:40b:5e56:7b6b with SMTP id z2-20020a05600c0a0200b0040b5e567b6bmr283025wmp.180.1701764814623;
+        Tue, 05 Dec 2023 00:26:54 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id d4-20020a05600c3ac400b0040b538047b4sm21329282wms.3.2023.12.05.00.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 00:26:54 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
+        kernel@pengutronix.de
+In-Reply-To: <20231123-drm-panel-ili9881c-am8001280g-v1-0-fdf4d624c211@pengutronix.de>
+References: <20231123-drm-panel-ili9881c-am8001280g-v1-0-fdf4d624c211@pengutronix.de>
+Subject: Re: [PATCH 0/3] drm/panel: ilitek-ili9881c: Support Ampire
+ AM8001280G LCD panel
+Message-Id: <170176481371.4073725.12586560786525230750.b4-ty@linaro.org>
+Date:   Tue, 05 Dec 2023 09:26:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204185943.68-1-yx.0xffff@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi YangXin,
+Hi,
 
-kernel test robot noticed the following build warnings:
+On Thu, 23 Nov 2023 18:08:04 +0100, Philipp Zabel wrote:
+> Add support for Ampire AM8001280G LCD panels to the Ilitek ILI9881C
+> driver.
+> 
+> Also set prepare_prev_first, to make sure that the DSI host controller
+> is initialized to LP-11 before the panel is powered up. Tested to work
+> with samsung-dsim on i.MX8MM after commit 0c14d3130654 ("drm: bridge:
+> samsung-dsim: Fix i.MX8M enable flow to meet spec").
+> 
+> [...]
 
-[auto build test WARNING on net-next/main]
-[also build test WARNING on net/main linus/master v6.7-rc4 next-20231205]
-[cannot apply to horms-ipvs/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/YangXin/net-___neigh_lookup_noref-remove-redundant-parameters/20231205-030205
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231204185943.68-1-yx.0xffff%40gmail.com
-patch subject: [PATCH] net: ___neigh_lookup_noref(): remove redundant parameters
-config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20231205/202312051637.EOZ86jSh-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051637.EOZ86jSh-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051637.EOZ86jSh-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/net/route.h:28,
-                    from include/net/ip.h:30,
-                    from include/net/busy_poll.h:18,
-                    from drivers/net/ethernet/sfc/falcon/net_driver.h:29,
-                    from drivers/net/ethernet/sfc/falcon/efx.c:21:
-   include/net/arp.h: In function '__ipv4_neigh_lookup_noref':
-   include/net/arp.h:27:64: error: passing argument 3 of '___neigh_lookup_noref' from incompatible pointer type [-Werror=incompatible-pointer-types]
-      27 |         return ___neigh_lookup_noref(&arp_tbl, neigh_key_eq32, &key, dev);
-         |                                                                ^~~~
-         |                                                                |
-         |                                                                u32 * {aka unsigned int *}
-   In file included from include/net/dst.h:20,
-                    from include/net/sock.h:66,
-                    from include/linux/tcp.h:19,
-                    from drivers/net/ethernet/sfc/falcon/efx.c:15:
-   include/net/neighbour.h:296:28: note: expected 'struct net_device *' but argument is of type 'u32 *' {aka 'unsigned int *'}
-     296 |         struct net_device *dev)
-         |         ~~~~~~~~~~~~~~~~~~~^~~
-   include/net/arp.h:27:16: error: too many arguments to function '___neigh_lookup_noref'
-      27 |         return ___neigh_lookup_noref(&arp_tbl, neigh_key_eq32, &key, dev);
-         |                ^~~~~~~~~~~~~~~~~~~~~
-   include/net/neighbour.h:293:33: note: declared here
-     293 | static inline struct neighbour *___neigh_lookup_noref(
-         |                                 ^~~~~~~~~~~~~~~~~~~~~
-   In file included from include/net/route.h:29:
-   include/net/ndisc.h: In function '__ipv6_neigh_lookup_noref':
->> include/net/ndisc.h:383:64: warning: passing argument 3 of '___neigh_lookup_noref' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     383 |         return ___neigh_lookup_noref(&nd_tbl, neigh_key_eq128, pkey, dev);
-         |                                                                ^~~~
-   include/net/neighbour.h:296:28: note: expected 'struct net_device *' but argument is of type 'const void *'
-     296 |         struct net_device *dev)
-         |         ~~~~~~~~~~~~~~~~~~~^~~
-   include/net/ndisc.h:383:16: error: too many arguments to function '___neigh_lookup_noref'
-     383 |         return ___neigh_lookup_noref(&nd_tbl, neigh_key_eq128, pkey, dev);
-         |                ^~~~~~~~~~~~~~~~~~~~~
-   include/net/neighbour.h:293:33: note: declared here
-     293 | static inline struct neighbour *___neigh_lookup_noref(
-         |                                 ^~~~~~~~~~~~~~~~~~~~~
-   include/net/ndisc.h: In function '__ipv6_neigh_lookup_noref_stub':
-   include/net/ndisc.h:390:74: warning: passing argument 3 of '___neigh_lookup_noref' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     390 |         return ___neigh_lookup_noref(ipv6_stub->nd_tbl, neigh_key_eq128, pkey, dev);
-         |                                                                          ^~~~
-   include/net/neighbour.h:296:28: note: expected 'struct net_device *' but argument is of type 'const void *'
-     296 |         struct net_device *dev)
-         |         ~~~~~~~~~~~~~~~~~~~^~~
-   include/net/ndisc.h:390:16: error: too many arguments to function '___neigh_lookup_noref'
-     390 |         return ___neigh_lookup_noref(ipv6_stub->nd_tbl, neigh_key_eq128, pkey, dev);
-         |                ^~~~~~~~~~~~~~~~~~~~~
-   include/net/neighbour.h:293:33: note: declared here
-     293 | static inline struct neighbour *___neigh_lookup_noref(
-         |                                 ^~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +383 include/net/ndisc.h
-
-   380	
-   381	static inline struct neighbour *__ipv6_neigh_lookup_noref(struct net_device *dev, const void *pkey)
-   382	{
- > 383		return ___neigh_lookup_noref(&nd_tbl, neigh_key_eq128, pkey, dev);
-   384	}
-   385	
+[1/3] drm/panel: ilitek-ili9881c: make use of prepare_prev_first
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=68c193c8d4a403222ce51c8b08bd1715f8b74274
+[2/3] dt-bindings: ili9881c: Add Ampire AM8001280G LCD panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=7ff02f82c3e9ddd5dd81957c8659d350261196ae
+[3/3] drm/panel: ilitek-ili9881c: Add Ampire AM8001280G LCD panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=2748848ceaf32671927c3b19672ba3104a1dba7e
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Neil
+
