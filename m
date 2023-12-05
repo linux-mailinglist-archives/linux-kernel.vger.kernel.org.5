@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C76F980517F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50060805189
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 12:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376663AbjLELFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 06:05:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52542 "EHLO
+        id S1376650AbjLELFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 06:05:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346615AbjLELFG (ORCPT
+        with ESMTP id S1346704AbjLELFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 06:05:06 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 48A0912C;
-        Tue,  5 Dec 2023 03:05:11 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A48AE139F;
-        Tue,  5 Dec 2023 03:05:57 -0800 (PST)
-Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACC663F5A1;
-        Tue,  5 Dec 2023 03:05:10 -0800 (PST)
-Date:   Tue, 5 Dec 2023 11:05:09 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Sumit Gupta <sumitg@nvidia.com>
-Cc:     Beata Michalska <beata.michalska@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, sudeep.holla@arm.covm, will@kernel.org,
-        catalin.marinas@arm.com, viresh.kumar@linaro.org,
-        rafael@kernel.org, yang@os.amperecomputing.com,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] cpufreq: Wire-up arch-flavored freq info into
- cpufreq_verify_current_freq
-Message-ID: <ZW8D5TfSwuJfdYeD@arm.com>
-References: <20231127160838.1403404-1-beata.michalska@arm.com>
- <20231127160838.1403404-3-beata.michalska@arm.com>
- <ZWXy0h/fFfQh+Rhy@arm.com>
- <3e6077bb-907c-057f-0896-d0a5814a4229@nvidia.com>
+        Tue, 5 Dec 2023 06:05:37 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D449E1A4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 03:05:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701774340; x=1733310340;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MtgjgihwtjovEHQJaw83fYIfiHql8sN/+5TOGRQ95Vs=;
+  b=A+cwSuOhS3p+qh2t6LqyJewOf0xHp8gWRLlHgRfmFOOz8daSaQ3y+nbm
+   lAHxKG/JvOpaIeIRXXL9kduI6YjbN54+J+Zao5MilDxwER5cZPAHFWaG7
+   XKnIw3DuZaFxhRXjtTGjjmDQcIWrHMmYCaEHjPSQo0G8B/yHp6qNwtVLj
+   bHJvyXgTdEpj8miTpSJw/0Za4cAiewtHbyG7yTmGBX05miuyBGBgo5teH
+   1u8YNjbxWsWaOfkB0SqRTfJIczEqEQKx1V01F7mfdKhzcVg7P2k5BSI52
+   urBaaICbdnpYxCyH01PO2gBbOx23l5VQ6xkGqBNHEZNVlVxPh27GYSjPa
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="940498"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="940498"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 03:05:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="747187522"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="747187522"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by orsmga006.jf.intel.com with ESMTP; 05 Dec 2023 03:05:36 -0800
+Received: from pkitszel-desk.tendawifi.com (adokucha-mobl3.ger.corp.intel.com [10.254.159.32])
+        by irvmail002.ir.intel.com (Postfix) with ESMTP id 53B90369EA;
+        Tue,  5 Dec 2023 11:05:33 +0000 (GMT)
+From:   Przemek Kitszel <przemyslaw.kitszel@intel.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Jacob Keller <jacob.e.keller@intel.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Przemek Kitszel <przemyslaw.kitszel@intel.com>
+Subject: [PATCH v2] checkpatch: don't complain on _Generic() use
+Date:   Tue,  5 Dec 2023 12:05:24 +0100
+Message-Id: <20231205110524.16561-1-przemyslaw.kitszel@intel.com>
+X-Mailer: git-send-email 2.38.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e6077bb-907c-057f-0896-d0a5814a4229@nvidia.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sumit,
+Improve CamelCase recognition logic to avoid reporting on _Generic() use.
 
-On Friday 01 Dec 2023 at 18:32:10 (+0530), Sumit Gupta wrote:
-> Hi Ionela,
-> 
-> > > --- a/drivers/cpufreq/cpufreq.c
-> > > +++ b/drivers/cpufreq/cpufreq.c
-> > > @@ -1756,7 +1756,8 @@ static unsigned int cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
-> > >   {
-> > >        unsigned int new_freq;
-> > > 
-> > > -     new_freq = cpufreq_driver->get(policy->cpu);
-> > > +     new_freq = arch_freq_get_on_cpu(policy->cpu);
-> > > +     new_freq = new_freq ?: cpufreq_driver->get(policy->cpu);
-> > 
-> > Given that arch_freq_get_on_cpu() is an average frequency, it does not
-> > seem right to me to trigger the sync & update process of
-> > cpufreq_verify_current_freq() based on it.
-> > 
-> > cpufreq_verify_current_freq() will at least modify the internal state of
-> > the policy and send PRE and POST notifications, if not do a full frequency
-> > update, based on this average frequency, which is likely different from
-> > the current frequency, even beyond the 1MHz threshold.
-> > 
-> > While I believe it's okay to return this average frequency in
-> > cpuinfo_cur_freq, I don't think it should be used as an indication of
-> > an accurate current frequency, which is what
-> > cpufreq_verify_current_freq() expects.
-> > 
-> > Sumit, can you give more details on the issue at [1] and why this change
-> > fixes it?
-> > 
-> > [1] https://lore.kernel.org/lkml/6a5710f6-bfbb-5dfd-11cd-0cd02220cee7@nvidia.com/
-> > 
-> > Thank you,
-> > Ionela.
-> > 
-> cpufreq_verify_current_freq() also updates 'policy->cur' in POST
-> notification if the frequency from hardware has more delta (out of sync).
-> 
-> As the value from 'cpufreq_driver->get()' is not reliable due to [1],
-> calling the 'get' hook can update the 'policy->cur' with a wrong value when
-> governor starts in cpufreq_start_governor().
-> And if the frequency is never changed after the governor starts during
-> boot e.g. when performance governor is set as default, then
-> 'scaling_cur_freq' always returns wrong value.
-> 
-> Instead, the arch_freq_get_on_cpu() API updates 'policy->cur' with a more
-> stable freq value.
-> 
-> [1] https://lore.kernel.org/lkml/20230418113459.12860-7-sumitg@nvidia.com/
+Other C keywords, such as _Bool, are intentionally omitted, as those
+should be rather avoided in new source code.
 
-Got it, many thanks! 
+Signed-off-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+---
+v2: _Static_assert dropped from the scope;
+    whole word match.
 
-As the code is right now in v2, arch_freq_get_on_cpu() is called on
-show_scaling_cur_freq(), so the problem you describe would not show up.
-policy->cur would still be incorrect, but 'scaling_cur_freq' would
-return the value from arch_freq_get_on_cpu().
+v1 link: https://lkml.org/lkml/2023/11/27/1055
+---
+ scripts/checkpatch.pl | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Would it be enough if arch_freq_get_on_cpu() gets also called from
-show_cpuinfo_cur_freq() instead of cpufreq_verify_current_freq()?
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 25fdb7fda112..1370f426949d 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5839,6 +5839,8 @@ sub process {
+ #CamelCase
+ 			if ($var !~ /^$Constant$/ &&
+ 			    $var =~ /[A-Z][a-z]|[a-z][A-Z]/ &&
++#Ignore C keywords
++			    $var !~ /^_Generic$/ &&
+ #Ignore some autogenerated defines and enum values
+ 			    $var !~ /^(?:[A-Z]+_){1,5}[A-Z]{1,3}[a-z]/ &&
+ #Ignore Page<foo> variants
 
-Thanks,
-Ionela.
+base-commit: 3706f141e5639d3034bd83448e929b8462362651
+-- 
+2.38.1
 
-> 
-> Best regards,
-> Sumit Gupta
-> 
-> > >        if (!new_freq)
-> > >                return 0;
-> > > 
-> > > --
-> > > 2.25.1
-> > > 
