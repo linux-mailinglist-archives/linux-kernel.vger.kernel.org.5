@@ -2,287 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AC0805BA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAE5805BB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232050AbjLEQew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 11:34:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        id S231941AbjLEQfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 11:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbjLEQeu (ORCPT
+        with ESMTP id S231847AbjLEQfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 11:34:50 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A573312C;
-        Tue,  5 Dec 2023 08:34:55 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 753F0139F;
-        Tue,  5 Dec 2023 08:35:41 -0800 (PST)
-Received: from [10.57.43.244] (unknown [10.57.43.244])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7DC363F6C4;
-        Tue,  5 Dec 2023 08:34:53 -0800 (PST)
-Message-ID: <0c423476-3126-4bc5-a6df-03c37f107717@arm.com>
-Date:   Tue, 5 Dec 2023 16:34:52 +0000
+        Tue, 5 Dec 2023 11:35:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B5B197
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 08:35:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701794125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=WAjSMM8S9duqQaTKyF8A+39oTGj2tsKJXjdXtV2uUE8=;
+        b=bcFXneO7Sa3Bu3q6UzW59o1W17xR6ecYyv8pmdek5iI8CbzINfeVib1uYWjDHm/vDkwzid
+        u7Z1MZ2FNsBK2WjP8hmqrN8eI0/OKusmCwbIM3adjIvprcN6vrigNQFrdn4iBRtKqPSxLx
+        kYBUfBsK3dFndzxCUG8ZLgwAogwW0C8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-549-oYC2SgQANLKXpICYpgu7_A-1; Tue, 05 Dec 2023 11:35:24 -0500
+X-MC-Unique: oYC2SgQANLKXpICYpgu7_A-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332e71b8841so4603419f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 08:35:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701794122; x=1702398922;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WAjSMM8S9duqQaTKyF8A+39oTGj2tsKJXjdXtV2uUE8=;
+        b=UeCu6oriKpB7VTSB/llytMwo+MM/OPEtd3g1rps3an1heVX0NtEPrWOPZrdU9btvPz
+         5Jq8SSfX5/HBxfa1IvJYkz9KKIuxkkbsda5ocsfhVO5Z3quCLNCmGREx8kOZROZzGOYq
+         NM/IGSU6N/ghtq5Z2ZyDktupueN7i05vRNRKj2NWeTR63ZFEUokcSv5zXiA70RHTrqO3
+         PhRNRl+LEZPxVHxpLH3+VtiFt3HtndX/Zme9EhAaEkz8SNvhP31/M51XYXUkfOH6YFdz
+         Lpqcl9igdD1iza2pCMVDxUSlzmRZ5rVK1vKPf4aXGeM+ekw8NM/jHmJ3gS7vV0VPVAoW
+         kIEg==
+X-Gm-Message-State: AOJu0YxPC4dhwKPsZrEg6qJigT9cg2E42gDcjRM8eOGgOi4QWecfH0I8
+        Xx92hqmiPaL+7tg+h/YQrx0RNDlktFFPLB+yfba+r/rCGPhMS4EQj2skYoUnXlsc1rA/kz7Al5T
+        tygt8al2aWcsY3R89XoAZF3ld
+X-Received: by 2002:a05:6000:14a:b0:333:3d2b:7d03 with SMTP id r10-20020a056000014a00b003333d2b7d03mr3089543wrx.133.1701794122269;
+        Tue, 05 Dec 2023 08:35:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHZFrpKLkRbWvkntQIIpVSy/jf+9XoUctTpD6c77+lw3yfwoVpNz/mIVsE7+b54YAYaoziLXw==
+X-Received: by 2002:a05:6000:14a:b0:333:3d2b:7d03 with SMTP id r10-20020a056000014a00b003333d2b7d03mr3089523wrx.133.1701794121960;
+        Tue, 05 Dec 2023 08:35:21 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72f:300:1ec7:2962:8889:ef6? (p200300cbc72f03001ec7296288890ef6.dip0.t-ipconnect.de. [2003:cb:c72f:300:1ec7:2962:8889:ef6])
+        by smtp.gmail.com with ESMTPSA id r12-20020a5d52cc000000b00333590f3bf9sm1964226wrv.19.2023.12.05.08.35.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 08:35:21 -0800 (PST)
+Message-ID: <1370c5b7-c914-4861-ad7a-90199723994a@redhat.com>
+Date:   Tue, 5 Dec 2023 17:35:20 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/3] arm64: perf: Add support for event counting
- threshold
-Content-Language: en-GB
-To:     James Clark <james.clark@arm.com>, Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        anshuman.khandual@arm.com, namhyung@gmail.com,
+Subject: Re: [PATCH v8 04/10] mm: thp: Support allocation of anonymous
+ multi-size THP
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-References: <20231124102857.1106453-1-james.clark@arm.com>
- <20231124102857.1106453-3-james.clark@arm.com>
- <20231205131414.GA18119@willie-the-truck>
- <1a74fef6-7f51-a518-4258-5f693b56add9@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1a74fef6-7f51-a518-4258-5f693b56add9@arm.com>
+References: <20231204102027.57185-1-ryan.roberts@arm.com>
+ <20231204102027.57185-5-ryan.roberts@arm.com>
+ <71040a8c-4ea1-4f21-8ac8-65f7c25c217e@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <71040a8c-4ea1-4f21-8ac8-65f7c25c217e@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 15:05, James Clark wrote:
+> Comment: Both will eventually loop over all orders, correct? Could
+> eventually be sped up in the future.
 > 
+> Nit: the orders = ... order = ... looks like this might deserve a helper
+> function that makes this easier to read.
 > 
-> On 05/12/2023 13:14, Will Deacon wrote:
->> On Fri, Nov 24, 2023 at 10:28:56AM +0000, James Clark wrote:
->>> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
->>> index 1d40d794f5e4..eb1ef84e1dbb 100644
->>> --- a/drivers/perf/arm_pmuv3.c
->>> +++ b/drivers/perf/arm_pmuv3.c
->>> @@ -15,6 +15,7 @@
->>>   #include <clocksource/arm_arch_timer.h>
->>>   
->>>   #include <linux/acpi.h>
->>> +#include <linux/bitfield.h>
->>>   #include <linux/clocksource.h>
->>>   #include <linux/of.h>
->>>   #include <linux/perf/arm_pmu.h>
->>> @@ -294,9 +295,20 @@ static const struct attribute_group armv8_pmuv3_events_attr_group = {
->>>   	.is_visible = armv8pmu_event_attr_is_visible,
->>>   };
->>>   
->>> +#define THRESHOLD_LOW		2
->>> +#define THRESHOLD_HIGH		13
->>> +#define THRESHOLD_CNT		14
->>> +#define THRESHOLD_CMP_LO	15
->>> +#define THRESHOLD_CMP_HI	16
->>
->> Do you think THWIDTH might extend beyond 12 bits in future? If so, it might
->> be worth juggling these bits around a bit so it's not sandwiched between
->> 'rdpmc' and 'threshold_compare'. I defer to your judgement, however.
->>
+> Nit: Why call thp_vma_suitable_orders if the orders are already 0?
+> Again, some helper might be reasonable where that is handled internally.
 > 
-> It's possible, both PMMIR.THWIDTH and PMEVTYPER.TH currently have unused
-> bits above them. I can easily move threshold to the end, I suppose that
-> covers us at least until someone adds a new field above that.
-> 
->>>   PMU_FORMAT_ATTR(event, "config:0-15");
->>>   PMU_FORMAT_ATTR(long, "config1:0");
->>>   PMU_FORMAT_ATTR(rdpmc, "config1:1");
->>> +PMU_FORMAT_ATTR(threshold, "config1:" __stringify(THRESHOLD_LOW) "-"
->>> +				      __stringify(THRESHOLD_HIGH));
->>> +PMU_FORMAT_ATTR(threshold_compare, "config1:" __stringify(THRESHOLD_CMP_LO) "-"
->>> +					      __stringify(THRESHOLD_CMP_HI));
->>> +PMU_FORMAT_ATTR(threshold_count, "config1:" __stringify(THRESHOLD_CNT));
->>>   
->>>   static int sysctl_perf_user_access __read_mostly;
->>>   
->>> @@ -310,10 +322,33 @@ static inline bool armv8pmu_event_want_user_access(struct perf_event *event)
->>>   	return event->attr.config1 & 0x2;
->>>   }
->>>   
->>> +static inline u32 armv8pmu_event_threshold(struct perf_event_attr *attr)
->>> +{
->>> +	return FIELD_GET(GENMASK(THRESHOLD_HIGH, THRESHOLD_LOW), attr->config1);
->>> +}
->>> +
->>> +static inline u8 armv8pmu_event_threshold_control(struct perf_event_attr *attr)
->>
->> You can drop the 'inline's for these functions (and, in fact, this whole
->> file could do with that cleanup :)
->>
-> 
-> Will do.
-> 
->>> +{
->>> +	u8 th_compare = FIELD_GET(GENMASK(THRESHOLD_CMP_HI, THRESHOLD_CMP_LO),
->>> +				  attr->config1);
->>> +	u8 th_count = FIELD_GET(BIT(THRESHOLD_CNT), attr->config1);
->>
->> I think this is correct, but you might want to look at how we handle this
->> in the SPE driver as I think it ends up looking cleaner and makes it pretty
->> obvious which bits correspond to the user ABI (i.e. config fields) and which
->> bits are part of architectural registers. I'm not saying you have to do it
->> that way, but please take a look if you haven't already.
->>
-> 
-> Yeah I could take the GEN_PMU_FORMAT_ATTR() etc macros out of there and
-> re-use them here too. And also for the other existing configs in
-> arm_pmuv3.c.
-> 
->>> +	/*
->>> +	 * The count bit is always the bottom bit of the full control field, and
->>> +	 * the comparison is the upper two bits, but it's not explicitly
->>> +	 * labelled in the Arm ARM. For the Perf interface we split it into two
->>> +	 * fields, so reconstruct it here.
->>> +	 */
->>> +	return (th_compare << 1) | th_count;
->>> +}
->>> +
->>>   static struct attribute *armv8_pmuv3_format_attrs[] = {
->>>   	&format_attr_event.attr,
->>>   	&format_attr_long.attr,
->>>   	&format_attr_rdpmc.attr,
->>> +	&format_attr_threshold.attr,
->>> +	&format_attr_threshold_compare.attr,
->>> +	&format_attr_threshold_count.attr,
->>>   	NULL,
->>>   };
->>>   
->>> @@ -365,10 +400,38 @@ static ssize_t bus_width_show(struct device *dev, struct device_attribute *attr,
->>>   
->>>   static DEVICE_ATTR_RO(bus_width);
->>>   
->>> +static u32 threshold_max(struct arm_pmu *cpu_pmu)
->>> +{
->>> +	/*
->>> +	 * PMMIR.THWIDTH is readable and non-zero on aarch32, but it would be
->>> +	 * impossible to write the threshold in the upper 32 bits of PMEVTYPER.
->>> +	 */
->>> +	if (IS_ENABLED(CONFIG_ARM))
->>> +		return 0;
->>> +
->>> +	/*
->>> +	 * The largest value that can be written to PMEVTYPER<n>_EL0.TH is
->>> +	 * (2 ^ PMMIR.THWIDTH) - 1.
->>> +	 */
->>> +	return (1 << FIELD_GET(ARMV8_PMU_THWIDTH, cpu_pmu->reg_pmmir)) - 1;
->>> +}
->>> +
->>> +static ssize_t threshold_max_show(struct device *dev,
->>> +				  struct device_attribute *attr, char *page)
->>> +{
->>> +	struct pmu *pmu = dev_get_drvdata(dev);
->>> +	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
->>> +
->>> +	return sysfs_emit(page, "0x%08x\n", threshold_max(cpu_pmu));
->>> +}
->>> +
->>> +static DEVICE_ATTR_RO(threshold_max);
->>> +
->>>   static struct attribute *armv8_pmuv3_caps_attrs[] = {
->>>   	&dev_attr_slots.attr,
->>>   	&dev_attr_bus_slots.attr,
->>>   	&dev_attr_bus_width.attr,
->>> +	&dev_attr_threshold_max.attr,
->>>   	NULL,
->>>   };
->>>   
->>> @@ -552,7 +615,7 @@ static void armv8pmu_write_counter(struct perf_event *event, u64 value)
->>>   		armv8pmu_write_hw_counter(event, value);
->>>   }
->>>   
->>> -static inline void armv8pmu_write_evtype(int idx, u32 val)
->>> +static inline void armv8pmu_write_evtype(int idx, unsigned long val)
->>>   {
->>>   	u32 counter = ARMV8_IDX_TO_COUNTER(idx);
->>>   	unsigned long mask = ARMV8_PMU_EVTYPE_EVENT |
->>> @@ -921,6 +984,10 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
->>>   				     struct perf_event_attr *attr)
->>>   {
->>>   	unsigned long config_base = 0;
->>> +	struct perf_event *perf_event = container_of(attr, struct perf_event,
->>> +						     attr);
->>> +	struct arm_pmu *cpu_pmu = to_arm_pmu(perf_event->pmu);
->>> +	u32 th, th_max;
->>>   
->>>   	if (attr->exclude_idle)
->>>   		return -EPERM;
->>> @@ -952,6 +1019,21 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
->>>   	if (attr->exclude_user)
->>>   		config_base |= ARMV8_PMU_EXCLUDE_EL0;
->>>   
->>> +	/*
->>> +	 * Insert event counting threshold (FEAT_PMUv3_TH) values. If
->>> +	 * FEAT_PMUv3_TH isn't implemented, then THWIDTH (threshold_max) will be
->>> +	 * 0 and no values will be written.
->>> +	 */
->>> +	th_max = threshold_max(cpu_pmu);
->>> +	if (IS_ENABLED(CONFIG_ARM64) && th_max) {
->>
->> Why is the IS_ENABLED() check needed here?
->>
-> 
-> The FIELD_PREP() below would cause a compilation error on arm32 because
-> TH and TC are above 32 bits. I can add a comment.
-> 
->>> +		th = min(armv8pmu_event_threshold(attr), th_max);
->>> +		if (th) {
->>
->> Why is it useful to take the minimum here? If userspace asks for a value
->> bigger than the maximum support threshold, shouldn't we return an error
->> rather than silently clamp it?
->>
-> 
-> I think it probably was just so I didn't have to think about what would
-> happen when the value varied between cores.
-> 
-> But you're right, it looks like I can add a validation function to
-> struct arm_pmu and call it from armpmu_event_init(). armpmu->map_event()
-> and armpmu->set_event_filter() are already called from there so I think
-> the validation could technically be added to one of those, but that's
-> probably a bit hacky. I don't know if you have any preference for where
-> the threshold validation should happen?
+> Comment: For order-0 we'll always perform a function call to both
+> thp_vma_allowable_orders() / thp_vma_suitable_orders(). We should
+> perform some fast and efficient check if any <PMD THP are even enabled
+> in the system / for this VMA, and in that case just fallback before
+> doing more expensive checks.
 
-I think the other reason was to make sure we never set those fields for
-something that doesn't support the feature ? (Given th_max is set to 0
-in that case). But I agree that validation is a better approach than
-silently masking it.
+Correction: only a call to thp_vma_allowable_orders(). I wonder if we 
+can move some of thp_vma_allowable_orders() into the header file where 
+we'd just check as fast and as efficiently for "no THP < PMD_THP 
+enabled" on this system.
 
-Suzuki
+-- 
+Cheers,
 
-
-
-> 
->>> +			config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TH, th);
->>> +			config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TC,
->>> +						  armv8pmu_event_threshold_control(attr));
->>> +		}
->>> +	}
->>> +
->>>   	/*
->>>   	 * Install the filter into config_base as this is used to
->>>   	 * construct the event type.
->>> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
->>> index ddd1fec86739..ccbc0f9a74d8 100644
->>> --- a/include/linux/perf/arm_pmuv3.h
->>> +++ b/include/linux/perf/arm_pmuv3.h
->>> @@ -258,6 +258,7 @@
->>>   #define ARMV8_PMU_BUS_SLOTS_MASK 0xff
->>>   #define ARMV8_PMU_BUS_WIDTH_SHIFT 16
->>>   #define ARMV8_PMU_BUS_WIDTH_MASK 0xf
->>> +#define ARMV8_PMU_THWIDTH GENMASK(23, 20)
->>
->> It's a bit messy having a mixture of GENMASK and MASK/SHIFT pairs. Please
->> can you either update what's there to use GENMASK, or use SHIFT/MASK for the
->> new addition?
->>
->> Will
->>
-> 
-> Yep will do. Thanks for the review.
-> 
-> James
+David / dhildenb
 
