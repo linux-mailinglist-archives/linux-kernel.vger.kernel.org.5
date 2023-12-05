@@ -2,166 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED39804490
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED767804493
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343898AbjLECT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:19:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        id S1343908AbjLECU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbjLECT1 (ORCPT
+        with ESMTP id S231860AbjLECUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:19:27 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C1C2A0;
-        Mon,  4 Dec 2023 18:19:33 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id 46e09a7af769-6d875809921so2069186a34.3;
-        Mon, 04 Dec 2023 18:19:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701742773; x=1702347573; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vphQhhcDfHQB3HrvKSiie3dMqka1KtYIdFVLBfGKx+s=;
-        b=PDcPDltkK3XmqtX/V+AweuAs1WKf5N9gnaTp6jv5I6q19AiCfp7Yzntj0em0SVtoQd
-         fQwsZYyzf/7B9J1uvHLjpXK3CGIAsQEtcqW3qoeHYaSDrMYMp01IVbcWhZPMUCSm1IJr
-         9GRq/PEQbgnTC9uTo3Ebutg+F2gszwDi/Qw7o6ahAYlRDuLW6ydpUKDrotbyqCs95wZH
-         cLuBgnIpJWMBnXBcTwEYOXiS6jQaDObTwgJvC1Jqi/5zRvu3QN0CMWOVjps8di+kNCEq
-         vY6IrKLvQffauejmTSuOlZd2waFT7YSepdJFOIW4tESrMtNJtnp1l4hhtfJZIWYbBSCA
-         EplA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701742773; x=1702347573;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vphQhhcDfHQB3HrvKSiie3dMqka1KtYIdFVLBfGKx+s=;
-        b=wbSz49U335EXQQtpwWBuOfoNeOJmshnPpeynR4AwW7GQZMLmOD2wX+nYJSOxTPh45z
-         cX84KM4vYWFXeae+3CUH5yhGRNW+EalOTD38CJQDCK1B8+/4SbzF+boGXQSNKK7MNiVf
-         DhoTWBLHTHnJ9Cy/2470XQTET8UjiPqTANSY2ucHghykVOfeDdmA/dviVXf4BG4r+L7c
-         /cbPUaIyFHmFzDf9s7BSYAy5VE/nWrJ2L1dFQNjnSaUmTZu2taTH3GefCwYeZLsSKdDo
-         uJMXNccRashu22cjdoCSBiRRHpNVWBy9eH0PFTWoDcLeEVgCbqnKEqgZMO/YQvdMCD5X
-         iQ1w==
-X-Gm-Message-State: AOJu0YyhZkcsFky+r7ES5nHJFJKlP7j1MAkrdt1L2gsM2O5Kw4Zmx2xh
-        0lD0Smpj95KTNCvsOMtun8xgS1o2iDqvBw==
-X-Google-Smtp-Source: AGHT+IG06+JMoeu4sFgUHtQtyNBz0W1pAaoueEKgoJMozYMM7eujxRkY4vw6BaonmhAg2cDw+XNDOA==
-X-Received: by 2002:a05:6830:719c:b0:6d3:132a:5350 with SMTP id el28-20020a056830719c00b006d3132a5350mr5429847otb.11.1701742772561;
-        Mon, 04 Dec 2023 18:19:32 -0800 (PST)
-Received: from abdel ([174.95.13.129])
-        by smtp.gmail.com with ESMTPSA id p3-20020a0ce183000000b0067a4f49a13csm4758176qvl.127.2023.12.04.18.19.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 18:19:32 -0800 (PST)
-Date:   Mon, 4 Dec 2023 21:19:22 -0500
-From:   Abdel Alkuor <alkuor@gmail.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     jic23@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        robh+dt@kernel.org, lars@metafoo.de, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: temperature: Add AMS AS6200
-Message-ID: <ZW6IqoelmMhTgjgW@abdel>
-References: <20231202041651.719963-1-alkuor@gmail.com>
- <20231203-wrecking-sneer-d34f19c39f04@spud>
+        Mon, 4 Dec 2023 21:20:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D112B4
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:20:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC5FAC433CA;
+        Tue,  5 Dec 2023 02:20:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701742831;
+        bh=yGVYTaY5WjmVroBLRmh/zaOtHpLdW1ToCiNR1/hpasM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TLKHfmQbCfpFnLjP1wbNoTuPQpWJKEO+Rv/acUOB1lJ0/tZ75jS9wif7367i41Bg/
+         odG9uQvrD8UIw+QJFe6SnxEDv2Y+bHaZ+8hJWp6xo9XAPaBU2HTXBSpGA9AQrd783i
+         KmcFzNtT/YBvFYWAdVKa9oOd7XMBeOtaKhkCspMmS6a8i/0wJ4hZJYRJcaqpmX+gqu
+         jl/UssF04+26mnA8UgIzB/B7P3YvBhn6Tu7Lek8Wq85Yy9Eaqd8SoPrQ2IbSFFPSRQ
+         7vxbffTpwkbtNCJ8slxlyGkAQ4Mc9Nvg0d0RIkFrvyYP/4GNpRBZVZwayM+BoW7SJC
+         mPvIA9fY8eLxA==
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so6400866a12.2;
+        Mon, 04 Dec 2023 18:20:30 -0800 (PST)
+X-Gm-Message-State: AOJu0YzvZYO/Cm4r8Q1ZooGiYo/w92pfTbbficQK8rt7YcyjgB9ieh2Q
+        x3oH1FfgWEX684rr8rTOdsHZzrcAI9Obd+Q3erM=
+X-Google-Smtp-Source: AGHT+IFZlQzjG1R+WCnQ0APvSI1FWHVxxlzrjPGayh4LKHdoF0kRjHnoDZhwhp2SZCjcparsiyJYD0pU2Ui4NlFVo3w=
+X-Received: by 2002:a50:d787:0:b0:54c:4837:7d3b with SMTP id
+ w7-20020a50d787000000b0054c48377d3bmr2455887edi.122.1701742829397; Mon, 04
+ Dec 2023 18:20:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231203-wrecking-sneer-d34f19c39f04@spud>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231116023036.2324371-1-maobibo@loongson.cn> <20231116023036.2324371-2-maobibo@loongson.cn>
+ <564a2fd3-ffba-3bc5-70b9-8a9fa9a0f1c6@loongson.cn>
+In-Reply-To: <564a2fd3-ffba-3bc5-70b9-8a9fa9a0f1c6@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 5 Dec 2023 10:20:17 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4P_JUewDM7R1ByNR4PZa97=xM_rAJ239J-wFSd6_+0GA@mail.gmail.com>
+Message-ID: <CAAhV-H4P_JUewDM7R1ByNR4PZa97=xM_rAJ239J-wFSd6_+0GA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/3] LoongArch: KVM: Remove SW timer switch when vcpu
+ is halt polling
+To:     zhaotianrui <zhaotianrui@loongson.cn>
+Cc:     Bibo Mao <maobibo@loongson.cn>, WANG Xuerui <kernel@xen0n.name>,
+        kvm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 03, 2023 at 11:24:31AM +0000, Conor Dooley wrote:
-> On Fri, Dec 01, 2023 at 11:16:50PM -0500, Abdel Alkuor wrote:
-> > as6200 is high accuracy temperature sensor of -/+ 0.4C degree
+This series looks good to me, If Paolo agrees, I will apply to
+loongarch-next after [1] is taken into the kvm tree (otherwise there
+will be build errors).
+
+[1] https://lore.kernel.org/loongarch/CAAhV-H63QkfSw+Esn8oW2PDEsCnTRPFqkj8X=
+-x8i9cH3AS0k9w@mail.gmail.com/T/#t
+
+On Mon, Dec 4, 2023 at 4:45=E2=80=AFPM zhaotianrui <zhaotianrui@loongson.cn=
+> wrote:
 >
-Hi Conor,
-> Is +/- 0.4 degrees really "high accuracy"?
+> Reviewed-by: Tianrui Zhao <zhaotianrui@loongson.cn>
 >
-That's what the datasheet says :D. I'll remove it.
-> > with a range between -40C to 125C degrees
-> > 
-> > Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
+> =E5=9C=A8 2023/11/16 =E4=B8=8A=E5=8D=8810:30, Bibo Mao =E5=86=99=E9=81=93=
+:
+> > With halt-polling supported, there is checking for pending events
+> > or interrupts when vcpu executes idle instruction. Pending interrupts
+> > include injected SW interrupts and passthrough HW interrupts, such as
+> > HW timer interrupts, since HW timer works still even if vcpu exists
+> > from VM mode.
+> >
+> > Since HW timer pending interrupt can be set directly with CSR status
+> > register, and pending HW timer interrupt checking is used in vcpu block
+> > checking function, it is not necessary to switch to sw timer during
+> > halt-polling. This patch adds preemption disabling in function
+> > kvm_cpu_has_pending_timer, and removes SW timer switching in idle
+> > instruction emulation function.
+> >
+> > Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 > > ---
-> > Changes in v2:
-> >   - Add vdd-supply
-> > 
-> >  .../bindings/iio/temperature/ams,as6200.yaml  | 49 +++++++++++++++++++
-> >  1 file changed, 49 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/temperature/ams,as6200.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/iio/temperature/ams,as6200.yaml b/Documentation/devicetree/bindings/iio/temperature/ams,as6200.yaml
-> > new file mode 100644
-> > index 000000000000..a1817795cdca
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/temperature/ams,as6200.yaml
-> > @@ -0,0 +1,49 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/temperature/ams,as6200.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >   arch/loongarch/kvm/exit.c  | 13 ++-----------
+> >   arch/loongarch/kvm/timer.c | 13 ++++++++++---
+> >   arch/loongarch/kvm/vcpu.c  |  9 ++++++++-
+> >   3 files changed, 20 insertions(+), 15 deletions(-)
+> >
+> > diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+> > index ce8de3fa472c..e708a1786d6b 100644
+> > --- a/arch/loongarch/kvm/exit.c
+> > +++ b/arch/loongarch/kvm/exit.c
+> > @@ -200,17 +200,8 @@ int kvm_emu_idle(struct kvm_vcpu *vcpu)
+> >       ++vcpu->stat.idle_exits;
+> >       trace_kvm_exit_idle(vcpu, KVM_TRACE_EXIT_IDLE);
+> >
+> > -     if (!kvm_arch_vcpu_runnable(vcpu)) {
+> > -             /*
+> > -              * Switch to the software timer before halt-polling/block=
+ing as
+> > -              * the guest's timer may be a break event for the vCPU, a=
+nd the
+> > -              * hypervisor timer runs only when the CPU is in guest mo=
+de.
+> > -              * Switch before halt-polling so that KVM recognizes an e=
+xpired
+> > -              * timer before blocking.
+> > -              */
+> > -             kvm_save_timer(vcpu);
+> > -             kvm_vcpu_block(vcpu);
+> > -     }
+> > +     if (!kvm_arch_vcpu_runnable(vcpu))
+> > +             kvm_vcpu_halt(vcpu);
+> >
+> >       return EMULATE_DONE;
+> >   }
+> > diff --git a/arch/loongarch/kvm/timer.c b/arch/loongarch/kvm/timer.c
+> > index 284bf553fefe..437e960d8fdb 100644
+> > --- a/arch/loongarch/kvm/timer.c
+> > +++ b/arch/loongarch/kvm/timer.c
+> > @@ -155,11 +155,18 @@ static void _kvm_save_timer(struct kvm_vcpu *vcpu=
+)
+> >                */
+> >               hrtimer_cancel(&vcpu->arch.swtimer);
+> >               hrtimer_start(&vcpu->arch.swtimer, expire, HRTIMER_MODE_A=
+BS_PINNED);
+> > -     } else
+> > +     } else if (vcpu->stat.generic.blocking) {
+> >               /*
+> > -              * Inject timer interrupt so that hall polling can dectec=
+t and exit
+> > +              * Inject timer interrupt so that hall polling can dectec=
+t and
+> > +              * exit.
+> > +              * VCPU is scheduled out already and sleeps in rcuwait qu=
+eue and
+> > +              * will not poll pending events again. kvm_queue_irq is n=
+ot
+> > +              * enough, hrtimer swtimer should be used here.
+> >                */
+> > -             kvm_queue_irq(vcpu, INT_TI);
+> > +             expire =3D ktime_add_ns(ktime_get(), 10);  // 10ns is eno=
+ugh here?
+> > +             vcpu->arch.expire =3D expire;
+> > +             hrtimer_start(&vcpu->arch.swtimer, expire, HRTIMER_MODE_A=
+BS_PINNED);
+> > +     }
+> >   }
+> >
+> >   /*
+> > diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+> > index 73d0c2b9c1a5..42663a345bd1 100644
+> > --- a/arch/loongarch/kvm/vcpu.c
+> > +++ b/arch/loongarch/kvm/vcpu.c
+> > @@ -187,8 +187,15 @@ int kvm_arch_vcpu_ioctl_translate(struct kvm_vcpu =
+*vcpu,
+> >
+> >   int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
+> >   {
+> > -     return kvm_pending_timer(vcpu) ||
+> > +     int ret;
 > > +
-> > +title: AMS AS6200 Temperature Sensor
+> > +     /* protect from TOD sync and vcpu_load/put */
+> > +     preempt_disable();
+> > +     ret =3D kvm_pending_timer(vcpu) ||
+> >               kvm_read_hw_gcsr(LOONGARCH_CSR_ESTAT) & (1 << INT_TI);
+> > +     preempt_enable();
 > > +
-> > +maintainers:
-> > +  - Abdel Alkuor <alkuor@gmail.com>
-> > +
-> > +description: |
-> 
-> Please add the text from your commit message (although perhaps dropping
-> the "high accuracy" section) here.
-> 
-> Otherwise, this looks okay to me.
-Sounds good. Will add it in v3.
-> 
-> Thanks,
-> Conor.
-> 
-Thanks,
-Abdel
-> > +  https://ams.com/documents/20143/36005/AS6200_DS000449_4-00.pdf
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: ams,as6200
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  vdd-supply: true
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - vdd-supply
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/irq.h>
-> > +    i2c {
-> > +        #address-cells = <1>;
-> > +        #size-cells = <0>;
-> > +
-> > +        temperature-sensor@48 {
-> > +            compatible = "ams,as6200";
-> > +            reg = <0x48>;
-> > +            vdd-supply = <&vdd>;
-> > +            interrupt-parent = <&gpio1>;
-> > +            interrupts = <17 IRQ_TYPE_EDGE_BOTH>;
-> > +        };
-> > +    };
-> > +...
-> > -- 
-> > 2.34.1
-> > 
-
-
+> > +     return ret;
+> >   }
+> >
+> >   int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu)
+>
+>
