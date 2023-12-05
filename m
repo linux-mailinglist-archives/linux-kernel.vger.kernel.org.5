@@ -2,145 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C25804C1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D32804C25
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:21:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbjLEIR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:17:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
+        id S1344751AbjLEIVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:21:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjLEIRY (ORCPT
+        with ESMTP id S229615AbjLEIVK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:17:24 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AAAD3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 00:17:30 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1a496a73ceso507010466b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 00:17:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701764249; x=1702369049; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mPz9jfaMy9WfW8hg0phqJVMwKyt+kROV74/4yAXSMZY=;
-        b=vQ+DxPlLquOkdYgvREoP5asjJkibHqEmit3FJ/TuyGUm56+tGgPI8vZ0idCSn9ENH/
-         8J72bC4ieq/tcEKXyIPVJ8J6j8/poGEnsQud2XlZRbS+0st1X2Gijom5f2cqwF3OdtYz
-         3OSWGyAX02KNvJz8rWCTzAzCUYcFgtT5txqDogigebQtnqz4x/3H//9zz+jqfpJtMylC
-         V97wBhoOrUKK3gKEDEyOvaP57Pqm3eVtTrYG+CvUFGwOTM5c4hxIwQ9Z1SMJIvas5ilW
-         kmb0CFgcOhHfoY9a8Q3JAt9YtjADxtbPA3hrcYhjn4LlvNKfhNfEsA2OttP+R0VOa/uH
-         u7oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701764249; x=1702369049;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mPz9jfaMy9WfW8hg0phqJVMwKyt+kROV74/4yAXSMZY=;
-        b=VlPMKdfm21Y3SZC5rqt8GFwgUSz9tOovrc7uSxcTFB1b5Q7HkJ4qXHZ8Pb5SfinY7E
-         Dy8IK1Qi+hy+mm+qoJy2kx7aWpxsmQ0D3Req45uUrk4eosCnsLY7VokKuwEc9TGtPxcq
-         pU7Dzj+QOIcqv10jKlxx8OeMP+hBGSRc8W5vADru+LQ/B2+RQRUUp6HBL/D1/nMCQScY
-         yrYM4ld3if91upYg9sIc184n/zs8w0K8fxeC4HItEsO//Y2Dv6wVFqg5EnzbG7hAdzQq
-         sBOaBkOX0AAPErkeKAv4TUg5B1z6OEDxQTAdhTXlM/g2dLhIrHM8K61DFwXh0IbzYsaU
-         jJMA==
-X-Gm-Message-State: AOJu0YxSTT6ZSTE9pr1WCIy3u5o3FKiEx4iSh2cFKXu/03wmb6L/7qkJ
-        qgN47vdBaDuUu8Fmspk5PbfL2g==
-X-Google-Smtp-Source: AGHT+IGTGq8eZUL21L0GK2BlMpKAGOWw5jstOd/ML65SceMiyLpFSFpWoNQeZKIFnXC3kBTLDlYjDw==
-X-Received: by 2002:a17:906:fd45:b0:a09:589f:8853 with SMTP id wi5-20020a170906fd4500b00a09589f8853mr260147ejb.66.1701764248814;
-        Tue, 05 Dec 2023 00:17:28 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id e20-20020a1709067e1400b00a10ec36ad10sm6208987ejr.204.2023.12.05.00.17.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 00:17:28 -0800 (PST)
-Message-ID: <c957a1fa-0189-425f-8333-f423c09161b1@linaro.org>
-Date:   Tue, 5 Dec 2023 09:17:27 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: phy: qcom,sc8280xp-qmp-usb3-uni: Add
- X1E80100 USB PHY binding
-Content-Language: en-US
-To:     Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Tue, 5 Dec 2023 03:21:10 -0500
+X-Greylist: delayed 155 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 00:21:14 PST
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC4ABA;
+        Tue,  5 Dec 2023 00:21:14 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1701764287; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=ZvhTPWrGAUnbqzvxi8/d3zjqsh+hsJYfbQQ/aCNX0i56rGUT+GmHvt/IyHHXnv2mC1
+    Wf4lPGYCFEe/Dt1hdLJrnaB25KCybSR6F3Pt1xUHMjFfnxqPDOsLwr38+bgvPrDoTk/e
+    BBmw5bYvt0bsP2uFP26kHz/+9TVFHf7MNokwZj7HFGa1w8XpiCJUzfpyZ1WKnv3Wwxb/
+    ypP2g8bTv/kY2Zest1H/QsdlAYzIhbDIk7hKDdz86oApFqYc6psLRoh3iWvBJDQD8BNp
+    3EI3lHuFjpFrTi6JS95SxLiDYghzELX+SPCYZCKmcT/RbRrX2Ryevx1FTxRqsJI9wglk
+    4jvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701764287;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=UIo0LOPdZ0hyfaT46apt2R+skxOQe6f0X6bP3Ofjdmg=;
+    b=pvyDzRRqEYeQ9UdOYHX7KNAPulbro+Cobexf4aN9Y30cRASdaH/3J+DtQWMS4Sk27c
+    hRaf7IjUSJgOLiLaap40Zg/zWgek99PL0bheS962TrWxielYyLC2We8I4eKF90qJM18q
+    Ek9TkXGIsq41GrrFCk//0nkltPWUxs3BG9/yEnssiLn4TgYKkDC36wzyp2HFG7/kNiD0
+    ODXRNTL2MpPw0G5F64jqkT+/M7KqZKx3jhxPxvl2lNsZ05odTC/T13IqCc9ui5vqsvv+
+    StV57mIcp4ejul4nmfWCv/racqWHviyLu+eWQ1IfewEcnSV1vElp3/TqllUx6oPcqBTw
+    lKIQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701764287;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=UIo0LOPdZ0hyfaT46apt2R+skxOQe6f0X6bP3Ofjdmg=;
+    b=VAyu8YqDdjKNbEQTXnYxR1ebcPLEXhh6f3WGHMBLQvXBL9skMjBrPj3m4bH+/qeeLt
+    4LCmDvs5psTBzQbCbfg/kCK4JI/URUSLw2mhhyyTTsQm5kvmBvyl3FXBgCAUpxk9/Pbf
+    Zsw0z4rWuEPaX+OMJSjhuRWo2LZYF5MerOds63H+J0+VI/J0vvt9i+4oiHycdCsS7cDj
+    95bhd3C+MNeZt8t1Gxwybmi3jx5vfkNaoS13vzhfAEN/FmzcNdqvOIjE4vrJmDSmEfWn
+    keFdEjORWwqn07wyzT7bselji3UGwGh5LvQl/5BBXHxdlIHA6Ik2+T0F/mjNwT+enF09
+    WoKg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701764287;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=UIo0LOPdZ0hyfaT46apt2R+skxOQe6f0X6bP3Ofjdmg=;
+    b=rgYhknTN5kCYaoTzgdf1Yza6aNg2Tj0Q7tTNZ4nlkxBC+ERBsoO5q6s7UMCLgwqFaL
+    913GtbkyINUxDNaU5ICA==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGeonQ="
+Received: from smtpclient.apple
+    by smtp.strato.de (RZmta 49.9.7 DYNA|AUTH)
+    with ESMTPSA id 6c76e8zB58I5OvJ
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 5 Dec 2023 09:18:05 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20231204182245.33683-2-afd@ti.com>
+Date:   Tue, 5 Dec 2023 09:17:55 +0100
+Cc:     Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        Adam Ford <aford173@gmail.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231122-phy-qualcomm-usb3-uniphy-x1e80100-v2-0-1a3e1d98564e@linaro.org>
- <20231122-phy-qualcomm-usb3-uniphy-x1e80100-v2-1-1a3e1d98564e@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231122-phy-qualcomm-usb3-uniphy-x1e80100-v2-1-1a3e1d98564e@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CFF198DA-5C42-425E-86F4-759629489ECB@goldelico.com>
+References: <20231204182245.33683-1-afd@ti.com>
+ <20231204182245.33683-2-afd@ti.com>
+To:     Andrew Davis <afd@ti.com>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2023 14:50, Abel Vesa wrote:
-> Add compatible string for Qualcomm QMP Super Speed (SS) UNI PHY found
-> in X1E80100.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+Hi Andrew,
+
+> Am 04.12.2023 um 19:22 schrieb Andrew Davis <afd@ti.com>:
+>=20
+> The Imagination PowerVR Series5 "SGX" GPU is part of several SoCs from
+> multiple vendors.
+
+Great and thanks for the new attempt to get at least the Device Tree =
+side
+upstream. Really appreciated!
+
+> Describe how the SGX GPU is integrated in these SoC,
+> including register space and interrupts.
+
+> Clocks, reset, and power domain
+> information is SoC specific.
+
+Indeed. This makes it understandable why you did not directly
+take our scheme from the openpvrsgx project.
+
+>=20
+> Signed-off-by: Andrew Davis <afd@ti.com>
 > ---
->  .../devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        | 3 +++
->  1 file changed, 3 insertions(+)
-> 
+> .../devicetree/bindings/gpu/img,powervr.yaml  | 69 +++++++++++++++++--
+> 1 file changed, 63 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/gpu/img,powervr.yaml =
+b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
+> index a13298f1a1827..9f036891dad0b 100644
+> --- a/Documentation/devicetree/bindings/gpu/img,powervr.yaml
+> +++ b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
+> @@ -11,11 +11,33 @@ maintainers:
+>   - Frank Binns <frank.binns@imgtec.com>
+>=20
+> properties:
+> +  $nodename:
+> +    pattern: '^gpu@[a-f0-9]+$'
+> +
+>   compatible:
+> -    items:
+> -      - enum:
+> -          - ti,am62-gpu
+> -      - const: img,img-axe # IMG AXE GPU model/revision is fully =
+discoverable
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - ti,am62-gpu
+> +          - const: img,img-axe # IMG AXE GPU model/revision is fully =
+discoverable
+> +      - items:
+> +          - enum:
+> +              - ti,omap3430-gpu # Rev 121
+> +              - ti,omap3630-gpu # Rev 125
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Is the "Rev 121" and "Rev 125" a property of the SoC integration =
+(clock/reset/power
+hookup etc.) or of the integrated SGX core?
 
-Best regards,
-Krzysztof
+In my understanding the Revs are different variants of the SGX core =
+(errata
+fixes, instruction set, pipeline size etc.). And therefore the current =
+driver code
+has to be configured by some macros to handle such cases.
 
+So the Rev should IMHO be part of the next line:
+
+> +          - const: img,powervr-sgx530
+
++          - enum:
++              - img,powervr-sgx530-121
++              - img,powervr-sgx530-125
+
+We have a similar definition in the openpvrsgx code.
+Example: compatible =3D "ti,omap3-sgx530-121", "img,sgx530-121", =
+"img,sgx530";
+
+(I don't mind about the powervr- prefix).
+
+This would allow a generic and universal sgx driver (loaded through just =
+matching
+"img,sgx530") to handle the errata and revision specifics at runtime =
+based on the
+compatible entry ("img,sgx530-121") and know about SoC integration =
+("ti,omap3-sgx530-121").
+
+And user-space can be made to load the right firmware variant based on =
+"img,sgx530-121"
+
+I don't know if there is some register which allows to discover the =
+revision long
+before the SGX subsystem is initialized and the firmware is up and =
+running.
+
+What I know is that it is possible to read out the revision after =
+starting the firmware
+but it may just echo the version number of the firmware binary provided =
+from user-space.
+
+> +      - items:
+> +          - enum:
+> +              - ingenic,jz4780-gpu # Rev 130
+> +              - ti,omap4430-gpu # Rev 120
+> +          - const: img,powervr-sgx540
+> +      - items:
+> +          - enum:
+> +              - allwinner,sun6i-a31-gpu # MP2 Rev 115
+> +              - ti,omap4470-gpu # MP1 Rev 112
+> +              - ti,omap5432-gpu # MP2 Rev 105
+> +              - ti,am5728-gpu # MP2 Rev 116
+> +              - ti,am6548-gpu # MP1 Rev 117
+> +          - const: img,powervr-sgx544
+>=20
+>   reg:
+>     maxItems: 1
+> @@ -40,8 +62,6 @@ properties:
+> required:
+>   - compatible
+>   - reg
+> -  - clocks
+> -  - clock-names
+>   - interrupts
+>=20
+> additionalProperties: false
+> @@ -56,6 +76,43 @@ allOf:
+>       properties:
+>         clocks:
+>           maxItems: 1
+> +      required:
+> +        - clocks
+> +        - clock-names
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: ti,am654-sgx544
+> +    then:
+> +      properties:
+> +        power-domains:
+> +          minItems: 1
+> +      required:
+> +        - power-domains
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: allwinner,sun6i-a31-gpu
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 2
+> +        clock-names:
+> +          minItems: 2
+> +      required:
+> +        - clocks
+> +        - clock-names
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: ingenic,jz4780-gpu
+> +    then:
+> +      required:
+> +        - clocks
+> +        - clock-names
+>=20
+> examples:
+>   - |
+> --=20
+> 2.39.2
+>=20
+
+BR and thanks,
+Nikolaus=
