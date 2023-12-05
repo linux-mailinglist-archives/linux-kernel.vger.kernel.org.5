@@ -2,66 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6751D80566E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:50:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80C280567E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345552AbjLENuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
+        id S1442307AbjLENun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:50:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345418AbjLENuL (ORCPT
+        with ESMTP id S1345540AbjLENuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:50:11 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1418B2;
-        Tue,  5 Dec 2023 05:50:17 -0800 (PST)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3B56mS4S002076;
-        Tue, 5 Dec 2023 07:50:04 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=N
-        E5+DSXwGrCAGjdB6rJhza2qUwOx7ACzcoH8hLHpcnQ=; b=XDrKw9/F3oREtZz9N
-        cC5WHRnz86qoWZH6ISZPq8YQsWa3EpYsLtPHRuiuJdAeJVP6zg1HV56tdsUROkBa
-        5rUKq9Dj8F/CQ7nliYh1t2uC8bFYp51CSNYVYkC50BNMQl2WBKzoAM4DEiE98LQb
-        hvykX8lhF32I2I45kZiXfcRN+VhGq2YQae1Ljams7s4EA5M6CYZX6tSRvumQdebW
-        qVxAA8d+ndLxeX4dx3HQj8uSkJ+f74E90gjvw3wc9bZUYhfKxUUDp8C8TX39ARJO
-        TRS361G+rVs+KTi5EYGfIYnCd5CT+0Q16zTOff8v4911/rRR8G0MSB1pMaD4pceO
-        isRyA==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ur2v237sf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Dec 2023 07:50:03 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
- 2023 13:50:01 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.40 via Frontend
- Transport; Tue, 5 Dec 2023 13:50:01 +0000
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.82])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8FCF711AB;
-        Tue,  5 Dec 2023 13:50:01 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
-        <peter.ujfalusi@linux.intel.com>,
-        <yung-chuan.liao@linux.intel.com>, <kai.vehmanen@linux.intel.com>,
-        <cezary.rojewski@intel.com>, <ranjani.sridharan@linux.intel.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Richard Fitzgerald" <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a speaker widget
-Date:   Tue, 5 Dec 2023 13:50:01 +0000
-Message-ID: <20231205135001.2506070-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: oAYrQxspCojOdylohofqRTq4nx-S8yUR
-X-Proofpoint-GUID: oAYrQxspCojOdylohofqRTq4nx-S8yUR
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        Tue, 5 Dec 2023 08:50:35 -0500
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A47481B1;
+        Tue,  5 Dec 2023 05:50:39 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1701784221; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=thU7GfXRdmud16hhoF4YyX4UyRq9xu8+0ec7eMtYZq6PzQHu9bU7+t16hQJyrbIY5w
+    GL43j8cVmLYgqOpbix8oO2ePrp7uxovZc3vowcCgLSSJB14r3n6NH21BEfkuKtIwDUJs
+    6DyteLESA4VghIobt5FAHd9lmURbVH2klx5IriG98W+NYPpIz+yT1pM738CqvV7VXAfp
+    5gzfvd/xV330osDp3h/PnCep6vj1KugCgQp/ER7Mq05AaZSUwC/k/HUPD7L6hIJxxtmm
+    sAebDLoA4UG3BTwTZS+sV7N2ydT4lBv4g+Wz4kIN3ChQJY9ydJeL4jl+YrxWIB2NxdBO
+    rIaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701784221;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=BevZB1eqZGl2+QcgqrpfzNR7Ri326ZukfU8Ti2ESIko=;
+    b=ZVpKj2lE6UPY6x3rSSrJ7NfyMfdvhGF9RIjIg0ZR9UUAlLlNvqo3Li8ta2mp9Y9VD6
+    XYvfWbbahV3E21QwqkRuQoVnz644/UhUfx5y/VZQeORB5E0a4fEZgPdrIXEUTwYlVzMb
+    yYyQWYCZH57WLtDsTbsyO1ujb9o432hTJrdb2NUpt7PlKGntO5X34mRuEelYXg7buC94
+    dio6zGF4RtTNQakUADFfxYYyAnqiWDbeaom9wvijddx+sr88vYCKdf8VYKIY/TaDoaSb
+    pErlX2aiGi+hoZTUbY5Wr3JRpILxWNMtL0hKujCg5NZqXMkeRJOx9p/CNURxOwKtw4pw
+    1oBQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701784221;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=BevZB1eqZGl2+QcgqrpfzNR7Ri326ZukfU8Ti2ESIko=;
+    b=gvUKaiKK2pMqJEih6X3qP5q2HE4diwktFDI0x2D7T7fTE+3LK06yJbr3OOZfOSt96k
+    m5a8zJuY6gCFs8CA77MgeV27eIUf05hISz6asZhErxc/2dD9SsipdOu4foe5N0TgSU6E
+    xoCttMcyStMKC4Hf8ZEij4D9M5JcAvsPmyfl4aPPhS1c62G77aG06mxzcDyvBnCd9Bll
+    iDIa55H0PNZy5EJb3vIbZ/JzzJASRlpBjicBFBWMQdZLPZHa46wHi7cJbrOi7/tYSAWZ
+    2CHggPsKZ3DF5C6+inhSN+EfKWRLeS6ORG/StvZfPif3VcQc4rYjy1huLMLkzmCb62b0
+    uJcw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701784221;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=BevZB1eqZGl2+QcgqrpfzNR7Ri326ZukfU8Ti2ESIko=;
+    b=x37upRaba5EaONfJgBtnk5313VU0c1csZgqbOTRvjE4ZsOoxVaOULDhgAPPuK6SxUl
+    0xGrW118EH0GxKq/L7DQ==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGeonQ="
+Received: from smtpclient.apple
+    by smtp.strato.de (RZmta 49.10.0 DYNA|AUTH)
+    with ESMTPSA id wfeb35zB5DoJ252
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Tue, 5 Dec 2023 14:50:19 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.200.91.1.1\))
+Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <vawv2mwhonuyvgmp7uox4rfgdcjwg5fa7hmbcfgl3wiase6e4p@tyavpclppfvu>
+Date:   Tue, 5 Dec 2023 14:50:08 +0100
+Cc:     Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        Adam Ford <aford173@gmail.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6BC60156-89E2-4734-BD00-B49A9A6C1D7A@goldelico.com>
+References: <20231204182245.33683-1-afd@ti.com>
+ <20231204182245.33683-2-afd@ti.com>
+ <23livt5mcc64bb6lkeec2uxp5cyn4wfekwaj6wzrjnrkndvwgj@6tveqglqpr4v>
+ <B3A1B8A7-0363-4ECB-AFBF-576FECA569FA@goldelico.com>
+ <vawv2mwhonuyvgmp7uox4rfgdcjwg5fa7hmbcfgl3wiase6e4p@tyavpclppfvu>
+To:     Maxime Ripard <mripard@kernel.org>
+X-Mailer: Apple Mail (2.3774.200.91.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,90 +111,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hookup the CS35L56 DAPM_OUTPUT widgets to a DAPM_SPK widget so
-that there is a complete logical path to a speaker.
+Hi,
 
-There is no particular reason to use multiple speaker widgets.
-The CS35L56 are designed to work together as a set so they have
-all been connected to a single speaker widget.
+> Am 05.12.2023 um 14:29 schrieb Maxime Ripard <mripard@kernel.org>:
+>=20
+> Hi,
+>=20
+> On Tue, Dec 05, 2023 at 09:18:58AM +0100, H. Nikolaus Schaller wrote:
+>>> Am 05.12.2023 um 07:57 schrieb Maxime Ripard <mripard@kernel.org>:
+>>>=20
+>>> On Mon, Dec 04, 2023 at 12:22:36PM -0600, Andrew Davis wrote:
+>>>> The Imagination PowerVR Series5 "SGX" GPU is part of several SoCs =
+from
+>>>> multiple vendors. Describe how the SGX GPU is integrated in these =
+SoC,
+>>>> including register space and interrupts. Clocks, reset, and power =
+domain
+>>>> information is SoC specific.
+>>>>=20
+>>>> Signed-off-by: Andrew Davis <afd@ti.com>
+>>>> ---
+>>>> .../devicetree/bindings/gpu/img,powervr.yaml  | 69 =
++++++++++++++++++--
+>>>> 1 file changed, 63 insertions(+), 6 deletions(-)
+>>>=20
+>>> I think it would be best to have a separate file for this, =
+img,sgx.yaml
+>>> maybe?
+>>=20
+>> Why?
+>=20
+> Because it's more convenient?
 
-Instead of a hardcoded list of codec widget names, the code walks
-through all the codecs on the dailink and for every cs35l56 it uses
-its name prefix to construct the source end of the route. This adds
-a small amount of overhead during probe but has the benefit that it
-isn't dependent on every system using the same prefixes.
+Is it?
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/intel/boards/sof_sdw_cs_amp.c | 30 +++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+>> The whole family of IMG GPUs is PowerVR and SGX and Rogue are =
+generations 5 and 6++:
+>>=20
+>> https://en.wikipedia.org/wiki/PowerVR
+>=20
+> That's not really relevant as far as bindings go.
 
-diff --git a/sound/soc/intel/boards/sof_sdw_cs_amp.c b/sound/soc/intel/boards/sof_sdw_cs_amp.c
-index 98f6546f484b..f88c01552a92 100644
---- a/sound/soc/intel/boards/sof_sdw_cs_amp.c
-+++ b/sound/soc/intel/boards/sof_sdw_cs_amp.c
-@@ -9,15 +9,24 @@
- #include <linux/errno.h>
- #include <sound/soc.h>
- #include <sound/soc-acpi.h>
-+#include <sound/soc-dai.h>
- #include "sof_sdw_common.h"
- 
- #define CODEC_NAME_SIZE	8
- 
-+static const struct snd_soc_dapm_widget sof_widgets[] = {
-+	SND_SOC_DAPM_SPK("Speakers", NULL),
-+};
-+
- static int cs_spk_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	const char *dai_name = rtd->dai_link->codecs->dai_name;
- 	struct snd_soc_card *card = rtd->card;
- 	char codec_name[CODEC_NAME_SIZE];
-+	char widget_name[16];
-+	struct snd_soc_dapm_route route = { "Speakers", NULL, widget_name };
-+	struct snd_soc_dai *codec_dai;
-+	int i, ret;
- 
- 	snprintf(codec_name, CODEC_NAME_SIZE, "%s", dai_name);
- 	card->components = devm_kasprintf(card->dev, GFP_KERNEL,
-@@ -26,17 +35,34 @@ static int cs_spk_init(struct snd_soc_pcm_runtime *rtd)
- 	if (!card->components)
- 		return -ENOMEM;
- 
-+	ret = snd_soc_dapm_new_controls(&card->dapm, sof_widgets,
-+					ARRAY_SIZE(sof_widgets));
-+	if (ret) {
-+		dev_err(card->dev, "widgets addition failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-+		if (!strstr(codec_dai->name, "cs35l56"))
-+			continue;
-+
-+		snprintf(widget_name, sizeof(widget_name), "%s SPK",
-+			 codec_dai->component->name_prefix);
-+		ret = snd_soc_dapm_add_routes(&card->dapm, &route, 1);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
--
- int sof_sdw_cs_amp_init(struct snd_soc_card *card,
- 			const struct snd_soc_acpi_link_adr *link,
- 			struct snd_soc_dai_link *dai_links,
- 			struct sof_sdw_codec_info *info,
- 			bool playback)
- {
--	/* Count amp number and do init on playback link only. */
-+	/* Do init on playback link only. */
- 	if (!playback)
- 		return 0;
- 
--- 
-2.30.2
+But maybe for choosing binding file names. Well they are machine =
+readable
+but sometimes humans work with them.
 
+> We have multiple
+> binding files for devices of the same generation, or single bindings
+> covering multiple generations.
+>=20
+> The important part is that every compatible is documented. It doesn't
+> really matter how or where.
+
+Yes, and that is why I would find it more convenient to have a single
+"img,powervr.yaml" for all variations unless it becomes filled with
+unrelated stuff (which isn't as far as I see).
+
+BR, Nikolaus=
