@@ -2,98 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B088053BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5F58053BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442330AbjLEMCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:02:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46562 "EHLO
+        id S1442338AbjLEMEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:04:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347078AbjLEMCn (ORCPT
+        with ESMTP id S1347038AbjLEMEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:02:43 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DCCA8;
-        Tue,  5 Dec 2023 04:02:49 -0800 (PST)
-Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8FC78844;
-        Tue,  5 Dec 2023 13:02:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701777728;
-        bh=sx5oWuUdn3t3qiK6cX/NTcFnWy6w1SumUl2/Cl/RrrU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=lqFB+RrgM6kWti3VP4kbZcUumh1Nvyt0ZdDoUYVwEsYxlr61/GY/1pzkKxQ9v7ZE1
-         5Ek1+pmTQS9HwSV1NMcfuxBxUh7lCF4Or2BhlwKQ7aYlGCMOrRSnGNXp3n09wL1ey1
-         aw+ViRS/sKnpj6pthqStJtDrBaWsM8hCnrsdxTPY=
-Message-ID: <b61d7adb-5b45-4366-a98c-d0de91d409c8@ideasonboard.com>
-Date:   Tue, 5 Dec 2023 14:02:44 +0200
+        Tue, 5 Dec 2023 07:04:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4A2A7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:04:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701777860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=jl52mxiCW+fUQJK9hXkJlcY9UhdIOXKKUh6Z+LnB7Y0=;
+        b=cr/Re+N8AthbEDjsJJYjcaE8Tp1ZYMiG8tpPJqGuioS2sFoqzAvglusnrQKRbrGCU6Mpif
+        q6S5HrjWTqGkkRyUqxwl8l3MCV5GwKQ93DErCNZh5/NaCaCiMl1cC7sqk9o6BVwZHy7Jrr
+        8htO1t//0vTbP+ssldK0c3Yvc3thtxQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-161-xantePofNd-YVoY22SmLMA-1; Tue, 05 Dec 2023 07:04:18 -0500
+X-MC-Unique: xantePofNd-YVoY22SmLMA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33343bb5dc2so1800918f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:04:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701777857; x=1702382657;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jl52mxiCW+fUQJK9hXkJlcY9UhdIOXKKUh6Z+LnB7Y0=;
+        b=agR7vKJ0h5mqR//Lo/iIn0NzV57REnhWWL2i4KDB2RmddvkD1X9UjJUMeZT+Q6XTSg
+         xOlj5n9ipzxuKwo9EfgeT8EL6BjE9u2QhkVSykdeZkD54Lxp93ae4s2nqb2u92+rJPCE
+         3yGkCUb40UT5MoGGWh1UG4RvliJg3PIZ6c1pwceR53XNHbVkumLjhA+//zWCetGteZy1
+         mACAaesliEMvl8F1Z1JEGo7X/fEX2uhEKtFiuQwN/idG096qBJhd1u6hh9EPVCBzGhia
+         8vxYpF+5mWzchG3S+Pg7MSpFQsMkhUzYCXIU9XThitvL8f6CP0zOMh7wQk/zi0x78VWk
+         JPyA==
+X-Gm-Message-State: AOJu0YwErALYLa0vWbgK+cMS5kyz6uUSATDuiojs+SKLy5noPGX6Qj84
+        2MzyreVRsAFTOGojFvbYdCAyJHFIq2ttxKdjfeCLbru2+Ubl/+DikL+t2Ez2Fr2/URZ8XyjnYZX
+        nO8f//OlsJZXsT4GNzQjyvKrs
+X-Received: by 2002:a05:600c:2186:b0:40b:5e59:ea08 with SMTP id e6-20020a05600c218600b0040b5e59ea08mr414049wme.167.1701777857316;
+        Tue, 05 Dec 2023 04:04:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG6TKCaPuh4FTLHwBXJWfGIYW8w8wk2Gc1SnoAdJUygGz+sRUpMPphWMfkCi2+CQzdy3mW0TQ==
+X-Received: by 2002:a05:600c:2186:b0:40b:5e59:ea08 with SMTP id e6-20020a05600c218600b0040b5e59ea08mr414024wme.167.1701777856853;
+        Tue, 05 Dec 2023 04:04:16 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72f:300:1ec7:2962:8889:ef6? (p200300cbc72f03001ec7296288890ef6.dip0.t-ipconnect.de. [2003:cb:c72f:300:1ec7:2962:8889:ef6])
+        by smtp.gmail.com with ESMTPSA id n10-20020a05600c4f8a00b0040b4b2a15ebsm18335786wmq.28.2023.12.05.04.04.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 04:04:16 -0800 (PST)
+Message-ID: <df99bb4e-f69d-4d94-baa5-2fc336df1a7b@redhat.com>
+Date:   Tue, 5 Dec 2023 13:04:15 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] media: rkisp1: Fix IRQ handler return values
+Subject: Re: [PATCH v3 01/15] mm: Batch-copy PTE ranges during fork()
 Content-Language: en-US
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231205-rkisp-irq-fix-v1-0-f4045c74ba45@ideasonboard.com>
- <20231205-rkisp-irq-fix-v1-2-f4045c74ba45@ideasonboard.com>
- <CAHCN7xJqw-hSD7rWfxFq5NWnF+=RrpCWR+js9358jAL0_WzVFw@mail.gmail.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <CAHCN7xJqw-hSD7rWfxFq5NWnF+=RrpCWR+js9358jAL0_WzVFw@mail.gmail.com>
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        Barry Song <21cnbao@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231204105440.61448-1-ryan.roberts@arm.com>
+ <20231204105440.61448-2-ryan.roberts@arm.com>
+ <a12ce4f8-feb0-4e35-8f55-9270fe5a808b@redhat.com>
+ <104de2d6-ecf9-4b0c-a982-5bd8e1aea758@redhat.com>
+ <5b8b9f8c-8e9b-42a5-b8b2-9b96903f3ada@redhat.com>
+ <a81dc390-8b10-4ce9-b72f-57f253e77af3@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <a81dc390-8b10-4ce9-b72f-57f253e77af3@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -101,72 +155,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 13:57, Adam Ford wrote:
-> On Tue, Dec 5, 2023 at 2:10 AM Tomi Valkeinen
-> <tomi.valkeinen@ideasonboard.com> wrote:
+On 05.12.23 12:30, Ryan Roberts wrote:
+> On 04/12/2023 17:27, David Hildenbrand wrote:
+>>>
+>>> With rmap batching from [1] -- rebased+changed on top of that -- we could turn
+>>> that into an effective (untested):
+>>>
+>>>            if (page && folio_test_anon(folio)) {
+>>> +               nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
+>>> +                                               pte, enforce_uffd_wp, &nr_dirty,
+>>> +                                               &nr_writable);
+>>>                    /*
+>>>                     * If this page may have been pinned by the parent process,
+>>>                     * copy the page immediately for the child so that we'll always
+>>>                     * guarantee the pinned page won't be randomly replaced in the
+>>>                     * future.
+>>>                     */
+>>> -               folio_get(folio);
+>>> -               if (unlikely(folio_try_dup_anon_rmap_pte(folio, page,
+>>> src_vma))) {
+>>> +               folio_ref_add(folio, nr);
+>>> +               if (unlikely(folio_try_dup_anon_rmap_ptes(folio, page, nr,
+>>> src_vma))) {
+>>>                            /* Page may be pinned, we have to copy. */
+>>> -                       folio_put(folio);
+>>> -                       return copy_present_page(dst_vma, src_vma, dst_pte,
+>>> src_pte,
+>>> -                                                addr, rss, prealloc, page);
+>>> +                       folio_ref_sub(folio, nr);
+>>> +                       ret = copy_present_page(dst_vma, src_vma, dst_pte,
+>>> +                                               src_pte, addr, rss, prealloc,
+>>> +                                               page);
+>>> +                       return ret == 0 ? 1 : ret;
+>>>                    }
+>>> -               rss[MM_ANONPAGES]++;
+>>> +               rss[MM_ANONPAGES] += nr;
+>>>            } else if (page) {
+>>> -               folio_get(folio);
+>>> -               folio_dup_file_rmap_pte(folio, page);
+>>> -               rss[mm_counter_file(page)]++;
+>>> +               nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr, end,
+>>> +                                               pte, enforce_uffd_wp, &nr_dirty,
+>>> +                                               &nr_writable);
+>>> +               folio_ref_add(folio, nr);
+>>> +               folio_dup_file_rmap_ptes(folio, page, nr);
+>>> +               rss[mm_counter_file(page)] += nr;
+>>>            }
+>>>
+>>>
+>>> We'll have to test performance, but it could be that we want to specialize
+>>> more on !folio_test_large(). That code is very performance-sensitive.
+>>>
+>>>
+>>> [1] https://lkml.kernel.org/r/20231204142146.91437-1-david@redhat.com
 >>
->> The IRQ handler rkisp1_isr() calls sub-handlers, all of which returns an
->> irqreturn_t value, but rkisp1_isr() ignores those values and always
->> returns IRQ_HANDLED.
->>
->> Fix this by collecting the return values, and returning IRQ_HANDLED or
->> IRQ_NONE as appropriate.
->>
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> ---
->>   drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 18 ++++++++++++++----
->>   1 file changed, 14 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->> index 76f93614b4cf..1d60f4b8bd09 100644
->> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
->> @@ -445,17 +445,27 @@ static int rkisp1_entities_register(struct rkisp1_device *rkisp1)
->>
->>   static irqreturn_t rkisp1_isr(int irq, void *ctx)
->>   {
->> +       irqreturn_t ret;
->> +
->>          /*
->>           * Call rkisp1_capture_isr() first to handle the frame that
->>           * potentially completed using the current frame_sequence number before
->>           * it is potentially incremented by rkisp1_isp_isr() in the vertical
->>           * sync.
->>           */
->> -       rkisp1_capture_isr(irq, ctx);
->> -       rkisp1_isp_isr(irq, ctx);
->> -       rkisp1_csi_isr(irq, ctx);
->>
->> -       return IRQ_HANDLED;
->> +       ret = IRQ_NONE;
->> +
->> +       if (rkisp1_capture_isr(irq, ctx) == IRQ_HANDLED)
->> +               ret = IRQ_HANDLED;
->> +
->> +       if (rkisp1_isp_isr(irq, ctx) == IRQ_HANDLED)
->> +               ret = IRQ_HANDLED;
->> +
->> +       if (rkisp1_csi_isr(irq, ctx) == IRQ_HANDLED)
->> +               ret = IRQ_HANDLED;
->> +
+>> So, on top of [1] without rmap batching but with a slightly modified version of
 > 
-> It seems like we're throwing away the value of ret each time the
-> subsequent if statement is evaluated.  Whether or not they return
-> didn't matter before, and the only one that seems using the return
-> code is the last one.
+> Can you clarify what you mean by "without rmap batching"? I thought [1]
+> implicitly adds rmap batching? (e.g. folio_dup_file_rmap_ptes(), which you've
+> added in the code snippet above).
+
+Not calling the batched variants but essentially doing what your code 
+does (with some minor improvements, like updating the rss counters only 
+once).
+
+The snipped above is only linked below. I had the performance numbers 
+for [1] ready, so I gave it a test on top of that.
+
+To keep it simple, you might just benchmark w and w/o your patches.
+
 > 
-> Wouldn't it be simpler to use ret = rkisp1_capture_isr(irq, ctx), ret
-> = rkisp1_isp_isr(irq, ctx) and ret = rkisp1_csi_isr(irq, ctx) if we
-> care about the return code?
+>> yours (that keeps the existing code structure as pointed out and e.g., updates
+>> counter updates), running my fork() microbenchmark with a 1 GiB of memory:
+>>
+>> Compared to [1], with all order-0 pages it gets 13--14% _slower_ and with all
+>> PTE-mapped THP (order-9) it gets ~29--30% _faster_.
 > 
-> How do you expect this to return if one of the first two don't return
-> IRQ_HANDLED?
+> What test are you running - I'd like to reproduce if possible, since it sounds
+> like I've got some work to do to remove the order-0 regression.
 
-I'm sorry, I don't quite follow what you mean. Can you elaborate a bit?
+Essentially just allocating 1 GiB of memory an measuring how long it 
+takes to call fork().
 
-We want the rkisp1_isr() to return IRQ_NONE if none of the sub-handlers 
-handled the interrupt. Otherwise, if any of the sub-handlers return 
-IRQ_HANDLED, rkisp1_isr() returns IRQ_HANDLED.
+order-0 benchmarks:
 
-  Tomi
+https://gitlab.com/davidhildenbrand/scratchspace/-/raw/main/order-0-benchmarks.c?ref_type=heads
+
+e.g.,: $ ./order-0-benchmarks fork 100
+
+
+pte-mapped-thp benchmarks:
+
+https://gitlab.com/davidhildenbrand/scratchspace/-/raw/main/pte-mapped-thp-benchmarks.c?ref_type=heads
+
+e.g.,: $ ./pte-mapped-thp-benchmarks fork 100
+
+
+Ideally, pin to one CPU and get stable performance numbers by disabling 
+SMT+turbo etc.
+
+> 
+>>
+>> So looks like we really want to have a completely seprate code path for
+>> "!folio_test_large()" to keep that case as fast as possible. And "Likely" we
+>> want to use "likely(!folio_test_large()". ;)
+> 
+> Yuk, but fair enough. If I can repro the perf numbers, I'll have a go a
+> reworking this.
+> 
+> I think you're also implicitly suggesting that this change needs to depend on
+> [1]? Which is a shame...
+
+Not necessarily. It certainly cleans up the code, but we can do that in 
+any order reasonable.
+
+> 
+> I guess I should also go through a similar exercise for patch 2 in this series.
+
+
+Yes. There are "unmap" and "pte-dontneed" benchmarks contained in both 
+files above.
+
+-- 
+Cheers,
+
+David / dhildenb
 
