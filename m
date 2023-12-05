@@ -2,173 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2195E805EAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB1E805EB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:38:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345557AbjLETeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:34:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
+        id S1345594AbjLETik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:38:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjLETeS (ORCPT
+        with ESMTP id S229569AbjLETii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:34:18 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB36AB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:34:23 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:a051:433:f7fa:99b4])
-        by andre.telenet-ops.be with bizsmtp
-        id JjaH2B00d0xLcQm01jaHy0; Tue, 05 Dec 2023 20:34:20 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1rAbB6-00B6ne-TW;
-        Tue, 05 Dec 2023 20:34:17 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1rAbBR-002zxt-FN;
-        Tue, 05 Dec 2023 20:34:17 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Louis Peens <louis.peens@corigine.com>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Simon Horman <horms@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Junio C Hamano <gitster@pobox.com>, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] checkpatch: Also accept commit ids with 13-40 chars of sha1
-Date:   Tue,  5 Dec 2023 20:34:16 +0100
-Message-Id: <62f82b0308de05f5aab913392049af15d53c777d.1701804489.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Tue, 5 Dec 2023 14:38:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ED0188
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:38:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B06BC433C8;
+        Tue,  5 Dec 2023 19:38:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701805123;
+        bh=QYY2sRMsdgFy9y2bOASOpdSBw0ICd1FgHT9FMN+VX5E=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=STv+u8LuSFvHUxHuc6SmugrIq8eoDg5SMYHTcehtIrZhDVdFsaTV4OWviuHOVaRS1
+         x69bPn29h+vCQYEb53y22nSyv5WkLAp5PnrF2WWkwLu5TKF9MB0LNh654xSXGNndIJ
+         1Nsc1w5nsEkIpv0gnDM29604rHrtOCXSJs7HSpbYYWxODJOUJpKNIJ2GQPeFIgiyRS
+         RQZiWemr3+Iam3ePePZPTdNYxRp7kGQZrZqx6IfzFoqVM5ziHcSEZzgcnUwm9n6lEx
+         BE1bsHIVaAlC+zL4TyXvVEszBEHYDDhk4pjkb/FDkdze1+G6ddXgfO1HiyvszIfi6O
+         34kK3qiFoLGZw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 074FCCE0C53; Tue,  5 Dec 2023 11:38:43 -0800 (PST)
+Date:   Tue, 5 Dec 2023 11:38:42 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
+        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
+        bristot@kernel.org, mathieu.desnoyers@efficios.com,
+        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
+        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+        krypton@ulrich-teichert.org, David.Laight@aculab.com,
+        richard@nod.at, mjguzik@gmail.com,
+        Simon Horman <horms@verge.net.au>,
+        Julian Anastasov <ja@ssi.bg>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
+Message-ID: <1375e409-2593-45e1-b27e-3699c17c47dd@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <e939c924-1dfa-4a6a-9309-2430f19467f5@paulmck-laptop>
+ <87wmu2ywrk.ffs@tglx>
+ <fa1249f7-9a5d-4696-9246-4913365b6715@paulmck-laptop>
+ <20231205100114.0bd3c4a2@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205100114.0bd3c4a2@gandalf.local.home>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation/dev-tools/checkpatch.rst says:
+On Tue, Dec 05, 2023 at 10:01:14AM -0500, Steven Rostedt wrote:
+> On Mon, 4 Dec 2023 17:01:21 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > On Tue, Nov 28, 2023 at 11:53:19AM +0100, Thomas Gleixner wrote:
+> > > Paul!
+> > > 
+> > > On Tue, Nov 21 2023 at 07:19, Paul E. McKenney wrote:  
+> > > > On Tue, Nov 21, 2023 at 10:00:59AM -0500, Steven Rostedt wrote:  
+> > > >> Right now, the use of cond_resched() is basically a whack-a-mole game where
+> > > >> we need to whack all the mole loops with the cond_resched() hammer. As
+> > > >> Thomas said, this is backwards. It makes more sense to just not preempt in
+> > > >> areas that can cause pain (like holding a mutex or in an RCU critical
+> > > >> section), but still have the general kernel be fully preemptable.  
+> > > >
+> > > > Which is quite true, but that whack-a-mole game can be ended without
+> > > > getting rid of build-time selection of the preemption model.  Also,
+> > > > that whack-a-mole game can be ended without eliminating all calls to
+> > > > cond_resched().  
+> > > 
+> > > Which calls to cond_resched() should not be eliminated?  
+> > 
+> > The ones which, if eliminated, will result in excessive latencies.
+> > 
+> > This question is going to take some time to answer.  One type of potential
+> > issue is where the cond_resched() precedes something like mutex_lock(),
+> > where that mutex_lock() takes the fast path and preemption follows
+> > shortly thereafter.  It would clearly have been better to have preempted
+> > before acquisition.
+> 
+> Note that the new preemption model is a new paradigm and we need to start
+> thinking a bit differently if we go to it.
 
-  **GIT_COMMIT_ID**
-    The proper way to reference a commit id is:
-    commit <12+ chars of sha1> ("<title line>")
+We can of course think differently, but existing hardware and software
+will probably be a bit more stubborn.
 
-However, scripts/checkpatch.pl has two different checks: one warning
-check accepting 12 characters exactly:
+> One thing I would like to look into with the new work is to have holding a
+> mutex ignore the NEED_RESCHED_LAZY (similar to what is done with spinlock
+> converted to mutex in the RT kernel). That way you are less likely to be
+> preempted while holding a mutex.
 
-    # Check Fixes: styles is correct
-    Please use correct Fixes: style 'Fixes: <12 chars of sha1> (\"<title line>\")'
+I like the concept, but those with mutex_lock() of rarely-held mutexes
+in their fastpaths might have workloads that have a contrary opinion.
 
-and a second error check accepting 12-40 characters:
+> > Another is the aforementioned situations where removing the cond_resched()
+> > increases latency.  Yes, capping the preemption latency is a wonderful
+> > thing, and the people I chatted with are all for that, but it is only
+> > natural that there would be a corresponding level of concern about the
+> > cases where removing the cond_resched() calls increases latency.
+> 
+> With the "capped preemption" I'm not sure that would still be the case.
+> cond_resched() currently only preempts if NEED_RESCHED is set. That means
+> the system had to already be in a situation that a schedule needs to
+> happen. There's lots of places in the kernel that run for over a tick
+> without any cond_resched(). The cond_resched() is usually added for
+> locations that show tremendous latency (where either a watchdog triggered,
+> or showed up in some analysis that had a latency that was much greater than
+> a tick).
 
-    # Check for git id commit length and improperly formed commit descriptions
-    # A correctly formed commit description is:
-    #    commit <SHA-1 hash length 12+ chars> ("Complete commit subject")
-    Please use git commit description style 'commit <12+ chars of sha1>
+For non-real-time workloads, the average case is important, not just the
+worst case.  In the new lazily preemptible mode of thought, a preemption
+by a non-real-time task will wait a tick.  Earlier, it would have waited
+for the next cond_resched().  Which, in the average case, might have
+arrived much sooner than one tick.
 
-Hence patches containing commit ids with more than 12 characters are
-flagged by checkpatch, and sometimes rejected by maintainers or
-reviewers.
+> The point is, if/when we switch to the new preemption model, we would need
+> to re-evaluate if any cond_resched() is needed. Yes, testing needs to be
+> done to prevent regressions. But the reasons I see cond_resched() being
+> added today, should no longer exist with this new model.
 
-Fix this by aligning the first check with the second check, and with the
-documentation.
+This I agree with.  Also, with the new paradigm and new mode of thought
+in place, it should be safe to drop any cond_resched() that is in a loop
+that consumes more than a tick of CPU time per iteration.
 
-Fixes: bd17e036b495bebb ("checkpatch: warn for non-standard fixes tag style")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Perhaps the time is ripe to increase the minimum from 12 to 16 chars
-(in a follow-up patch)?
+> > There might be others as well.  These are the possibilities that have
+> > come up thus far.
+> > 
+> > > They all suck and keeping some of them is just counterproductive as
+> > > again people will sprinkle them all over the place for the very wrong
+> > > reasons.  
+> > 
+> > Yes, but do they suck enough and are they counterproductive enough to
+> > be useful and necessary?  ;-)
+> 
+> They are only useful and necessary because of the way we handle preemption
+> today. With the new preemption model, they are all likely to be useless and
+> unnecessary ;-)
 
-Running git-unique-abbrev[1] on a tree containing v6.7-rc3 and all
-stable releases gives:
+The "all likely" needs some demonstration.  I agree that a great many
+of them would be useless and unnecessary.  Maybe even the vast majority.
+But that is different than "all".  ;-)
 
-    12000853 objects
-     4: 12000853 / 65536
-     5: 12000717 / 1048423
-     6: 6130888 / 2703295
-     7: 525025 / 260563
-     8: 33736 / 16861
-     9: 2106 / 1053
-    10: 160 / 80
-    11: 10 / 5
-    12: 0 / 0
-    21cf4d54d3c702ac20c6747fa6d4f64dee07dd11
-    21cf4d54d3ced8a3e752030e483d72997721076d
-    8a048bbf89528d45c604aed68f7e0f0ef957067d
-    8a048bbf895b1359e4a33b779ea6d7386cfe4de2
-    d3ac4e475103c4364ecb47a6a55c114d7c42a014
-    d3ac4e47510ec0753ebe1e418a334ad202784aa8
-    d597639e2036f04f0226761e2d818b31f2db7820
-    d597639e203a100156501df8a0756fd09573e2de
-    ef91b6e893a00d903400f8e1303efc4d52b710af
-    ef91b6e893afc4c4ca488453ea9f19ced5fa5861
+> > > > Additionally, if the end goal is to be fully preemptible as in
+> > > > eventually eliminating lazy preemption, you have a lot more
+> > > > convincing to do.  
+> > > 
+> > > That's absolutely not the case. Even RT uses the lazy mode to prevent
+> > > overeager preemption for non RT tasks.  
+> > 
+> > OK, that is very good to hear.
+> 
+> But the paradigm is changing. The kernel will be fully preemptible, it just
+> won't be preempting often. That is, if the CPU is running kernel code for
+> too long, and the scheduler tick wants a reschedule, the kernel has one
+> more tick to get back to user space before it will become fully
+> preemptible. That is, we force a "cond_resched()".
 
-12000853 is still smaller than sqrt(16^12) = 16777216, but the safety
-margin is getting smaller.  E.g. my main work tree already contains
-almost 18M objects.  Hence the Birthday Paradox states that collisions
-of 12 char sha1 values are imminent.
+And as stated quite a few times previously in this and earlier threads,
+yes, removing the need to drop cond_resched() into longer-than-average
+loops is a very good thing.
 
-Note that we standardized on 12 chars in commit d311cd44545f2f69
-("checkpatch: add test for commit id formatting style in commit log") in
-v3.17.  For comparison, running git-unique-abbrev on a tree with all
-(upstream + stable) releases from that era gives:
+> > > The whole point of the exercise is to keep the kernel always fully
+> > > preemptible, but only enforce the immediate preemption at the next
+> > > possible preemption point when necessary.
+> > > 
+> > > The decision when it is necessary is made by the scheduler and not
+> > > delegated to the whim of cond/might_resched() placement.  
+> > 
+> > I am not arguing that the developer placing a given cond_resched()
+> > always knows best, but you have some work to do to convince me that the
+> > scheduler always knows best.
+> 
+> The cond_resched() already expects the scheduler to know best. It doesn't
+> resched unless NEED_RESCHED is set and that's determined by the scheduler.
+> If the code knows best, then it should just call schedule() and be done
+> with it.
 
-    4052307 objects
-     4: 4052307 / 65536
-     5: 3966948 / 940963
-     6: 869691 / 417363
-     7: 61208 / 30523
-     8: 3979 / 1989
-     9: 258 / 129
-    10: 24 / 12
-    11: 6 / 3
-    12: 0 / 0
-    21cf4d54d3c702ac20c6747fa6d4f64dee07dd11
-    21cf4d54d3ced8a3e752030e483d72997721076d
-    d597639e2036f04f0226761e2d818b31f2db7820
-    d597639e203a100156501df8a0756fd09573e2de
-    ef91b6e893a00d903400f8e1303efc4d52b710af
-    ef91b6e893afc4c4ca488453ea9f19ced5fa5861
+A distinction without a difference.  After all, if the scheduler really
+knew best, it would be able to intuit the cond_resched() without that
+cond_resched() actually being there.  Which is arguably the whole point
+of this patch series, aside from mutexes, the possibility of extending
+what are now short preemption times, and who knows what all else.
 
-So the number of objects increased threefold during the last 9 years.
+> > > That is serving both worlds best IMO:
+> > > 
+> > >   1) LAZY preemption prevents the negative side effects of overeager
+> > >      preemption, aka. lock contention and pointless context switching.
+> > > 
+> > >      The whole thing behaves like a NONE kernel unless there are
+> > >      real-time tasks or a task did not comply to the lazy request within
+> > >      a given time.  
+> > 
+> > Almost, give or take the potential issues called out above for the
+> > possible downsides of removing all of the cond_resched() invocations.
+> 
+> I still don't believe there are any issues "called out above", as I called
+> out those called outs.
 
-Thanks for your comments!
+Well, you did write some words, if that is what you meant.  ;-)
 
-[1] https://blog.cuviper.com/2013/11/10/how-short-can-git-abbreviate/
----
- scripts/checkpatch.pl | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> > >   2) It does not prevent the scheduler from making decisions to preempt
+> > >      at the next possible preemption point in order to get some
+> > >      important computation on the CPU.
+> > > 
+> > >      A NONE kernel sucks vs. any sporadic [real-time] task. Just run
+> > >      NONE and watch the latencies. The latencies are determined by the
+> > >      interrupted context, the placement of the cond_resched() call and
+> > >      the length of the loop which is running.
+> > > 
+> > >      People have complained about that and the only way out for them is
+> > >      to switch to VOLUNTARY or FULL preemption and thereby paying the
+> > >      price for overeager preemption.
+> > > 
+> > >      A price which you don't want to pay for good reasons but at the
+> > >      same time you care about latencies in some aspects and the only
+> > >      answer you have for that is cond_resched() or similar which is not
+> > >      an answer at all.  
+> > 
+> > All good points, but none of them are in conflict with the possibility
+> > of leaving some cond_resched() calls behind if they ar needed.
+> 
+> The conflict is with the new paradigm (I love that word! It's so "buzzy").
+> As I mentioned above, cond_resched() is usually added when a problem was
+> seen. I really believe that those problems would never had been seen if
+> the new paradigm had already been in place.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 25fdb7fda1128aa9..a4e178a68f6d1d5f 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3209,7 +3209,7 @@ sub process {
- 				$tag_case = 0 if $tag eq "Fixes:";
- 				$tag_space = 0 if ($line =~ /^fixes:? [0-9a-f]{5,} ($balanced_parens)/i);
- 
--				$id_length = 0 if ($orig_commit =~ /^[0-9a-f]{12}$/i);
-+				$id_length = 0 if ($orig_commit =~ /^[0-9a-f]{12,40}$/i);
- 				$id_case = 0 if ($orig_commit !~ /[A-F]/);
- 
- 				# Always strip leading/trailing parens then double quotes if existing
-@@ -3226,7 +3226,7 @@ sub process {
- 			if ($ctitle ne $title || $tag_case || $tag_space ||
- 			    $id_length || $id_case || !$title_has_quotes) {
- 				if (WARN("BAD_FIXES_TAG",
--				     "Please use correct Fixes: style 'Fixes: <12 chars of sha1> (\"<title line>\")' - ie: 'Fixes: $cid (\"$ctitle\")'\n" . $herecurr) &&
-+				     "Please use correct Fixes: style 'Fixes: <12+ chars of sha1> (\"<title line>\")' - ie: 'Fixes: $cid (\"$ctitle\")'\n" . $herecurr) &&
- 				    $fix) {
- 					$fixed[$fixlinenr] = "Fixes: $cid (\"$ctitle\")";
- 				}
--- 
-2.34.1
+Indeed, that sort of wording does quite the opposite of raising my
+confidence levels.  ;-)
 
+You know, the ancient Romans would have had no problem dealing with the
+dot-com boom, cryptocurrency, some of the shadier areas of artificial
+intelligence and machine learning, and who knows what all else.  As the
+Romans used to say, "Beware of geeks bearing grifts."
+
+> > >   3) Looking at the initial problem Ankur was trying to solve there is
+> > >      absolutely no acceptable solution to solve that unless you think
+> > >      that the semantically invers 'allow_preempt()/disallow_preempt()'
+> > >      is anywhere near acceptable.  
+> > 
+> > I am not arguing for allow_preempt()/disallow_preempt(), so for that
+> > argument, you need to find someone else to argue with.  ;-)
+> 
+> Anyway, there's still a long path before cond_resched() can be removed. It
+> was a mistake by Ankur to add those removals this early (and he has
+> acknowledged that mistake).
+
+OK, that I can live with.  But that seems to be a bit different of a
+take than that of some earlier emails in this thread.  ;-)
+
+> First we need to get the new preemption modeled implemented. When it is, it
+> can be just a config option at first. Then when that config option is set,
+> you can enable the NONE, VOLUNTARY or FULL preemption modes, even switch
+> between them at run time as they are just a way to tell the scheduler when
+> to set NEED_RESCHED_LAZY vs NEED_RSECHED.
+
+Assuming CONFIG_PREEMPT_RCU=y, agreed.  With CONFIG_PREEMPT_RCU=n,
+the runtime switching needs to be limited to NONE and VOLUNTARY.
+Which is fine.
+
+> At that moment, when that config is set, the cond_resched() can turn into a
+> nop. This will allow for testing to make sure there are no regressions in
+> latency, even with the NONE mode enabled.
+
+And once it appears to be reasonably stable (in concept as well as
+implementation), heavy testing should get underway.
+
+> The real test is implementing the code and seeing how it affects things in
+> the real world. Us arguing about it isn't going to get anywhere.
+
+Indeed, the opinion of the objective universe always wins.  It all too
+often takes longer than necessary for the people arguing with each other
+to realize this, but such is life.
+
+>                                                                  I just
+> don't want blind NACK. A NACK to a removal of a cond_resched() needs to
+> show that there was a real regression with that removal.
+
+Fair enough, although a single commit bulk removing a large number of
+cond_resched() calls will likely get a bulk NAK.
+
+							Thanx, Paul
