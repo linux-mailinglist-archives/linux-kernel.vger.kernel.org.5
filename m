@@ -2,135 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A98680606A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 22:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177A4805EE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345673AbjLEVMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 16:12:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
+        id S232231AbjLET5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:57:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232334AbjLETzp (ORCPT
+        with ESMTP id S230162AbjLET5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:55:45 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1521A3;
-        Tue,  5 Dec 2023 11:55:51 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35d77fb7d94so6765345ab.0;
-        Tue, 05 Dec 2023 11:55:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701806150; x=1702410950; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=myAhoAL3FsWsxkQ1Fo/Fp0yF5gBJWm/J11tgIt7SwS0=;
-        b=NXVA6F5Kq8iECdIz8ih3eJGJUTdOZTnyAaKmsyK3IPpVx8kPPG77luSn7lf+DrKt9r
-         /McQmekR+g4iA+CakdT+Zu496nVaIGDIJFqG1DYpJbCVYytQ7FsV3a7eZrOVg2aJrlav
-         E6gNLl7zy/Jh+PiCvFs47OYCvw8JXAlPxdsQaIPGHOk37VOWjfJOwQAXdIBnHBEgZikL
-         IJQI5ji7G7EeGGZdJX6S8vTHTq4KXQuvkQUFtKIsQVajaXqNw/xS9NakipCfMC2OM+Ri
-         W4Sx9+9O8yp181bj0mXqhOKiI8djPCpFG0MzQVhJnuDIiDlhdUjmhRLMQNDO64wSgqzx
-         ZCmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701806150; x=1702410950;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=myAhoAL3FsWsxkQ1Fo/Fp0yF5gBJWm/J11tgIt7SwS0=;
-        b=LXpDUdvKMLgdOnZtRfj/HK1HArAtwA/72B7YVkmS6TGvp+DT9SYUem9H0uz/Tmb3F+
-         rEf/cAUPwYUg3H+49Z0Lt7NpKwagWKwes/FDiXBJ4VGYq8f5jFjQ1x4G7QjNVK9Z0W3/
-         +qyXbzUKrVk6hWYyyDFeMDgnrwDNXM4j5CLM0uhGCbixvQom3fMqZNmRda3yoJObqxAX
-         zoDfhkMD0vYmRJp3rUJuDauJDbgFt+i2Q3xn7RtFbMhEox8Ldymx91mmyiBATMGFnSdP
-         v9+v+Iy6e9dcnW8E12fMyvUsplJImkd0ge03tkURWUVSduu9+AlE4xeSbQO9k4PKnUcl
-         dfVw==
-X-Gm-Message-State: AOJu0Yz/U7nwlW7+zz9lxGMbZ/RubfMwaEyhHhpcBbS35jGyEE4vV/lp
-        iCp7pGr6bfs3f69mfBDEl8NjHIOHUgfL/tAm90M=
-X-Google-Smtp-Source: AGHT+IEIJimYnDks1iX4mpQMgslZjhDby25uudRaA2OQ2jItRpcRf05zbeSE0yU6CQvYUIc8pQiJmt3Wi7BmG9YEIvE=
-X-Received: by 2002:a05:6e02:1d18:b0:35d:6c9d:c339 with SMTP id
- i24-20020a056e021d1800b0035d6c9dc339mr5624662ila.65.1701806150474; Tue, 05
- Dec 2023 11:55:50 -0800 (PST)
+        Tue, 5 Dec 2023 14:57:07 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E74C9;
+        Tue,  5 Dec 2023 11:57:13 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F08AF40E01AD;
+        Tue,  5 Dec 2023 19:57:10 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id yUI_HMj3NT8T; Tue,  5 Dec 2023 19:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701806228; bh=0ed9OPSTfc1dN0NWcDDbS/2OlgMY/T1QuKWh5NkbUgg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OT/1DqtSzk7faj98jQBTLdFpMrsESxnG5QwmxeJTud1hoYYcnN2KAqMM9awCZaJP5
+         24Vui5SNtjuwlBCAm9ExcTolTnEmC3Fnd7gLOYWeVCKJzeaNYemx45zNUjCt7+C2ku
+         W8wSEErOV8qSNAZQ0dAWnSSKbNpGARghUvPPs9xVgmk2ThN2ErXXYTFZqbC05yoltP
+         0+GWfryX/e7wDN9nFUPizJ64TbE2TBg54GP31fhxdrNkGLLBlWgyfuKofMG1npua9W
+         aJmOrBRxHRApGIN0j+0d6Jdu0t5YhLRhy62iu6ERkIEbNKasC1xF5YNFqoKYL3T7em
+         hwz5J3VKUGfGjuyeZQJ2hnK8KVGfWm0H7vRt6WMvd8Ufj2Nsruj9tinM1fKQbaYIvs
+         2dcREWAejYsXoVojQtOyK63jxRYUJvAhEjVGCLz+L7wZ3nCY6HyKg7OEcl8lRpc7Fe
+         oHtmeubTzm9t6jYtkKpq1UxZrk3MmSsX0CjmbawlawH/oZAIWLF4AHU5T5Kxinkoev
+         Z9EpHkdzincnuzF6+qYwKhbim9iHzaLtx3S9KlyZPQU1ppWCZwpURrZY9HJvftQbOI
+         CqtWZ3SFmBYCrXHAqoSHy5pcmz0/jYc9c4MBk70PTqWj4VEgbmdsH/t0vlLmvc4OB0
+         Jb9xojiRyELUIvBIDmzxYWVE=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6BB7740E014B;
+        Tue,  5 Dec 2023 19:56:42 +0000 (UTC)
+Date:   Tue, 5 Dec 2023 20:56:37 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "sagis@google.com" <sagis@google.com>,
+        "imammedo@redhat.com" <imammedo@redhat.com>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v15 22/23] x86/mce: Improve error log of kernel space TDX
+ #MC due to erratum
+Message-ID: <20231205195637.GHZW+Add3H/gSefAVM@fat_crate.local>
+References: <cover.1699527082.git.kai.huang@intel.com>
+ <9e80873fac878aa5d697cbcd4d456d01e1009d1f.1699527082.git.kai.huang@intel.com>
+ <20231205142517.GBZW8yzVDEKIVTthSx@fat_crate.local>
+ <0db3de96d324710cef469040d88002db429c47e6.camel@intel.com>
 MIME-Version: 1.0
-References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-3-nphamcs@gmail.com>
- <CAJD7tka+e-RWVN8qkCLv52z8G0KAXNO87CqV3p5Wgkx6BvneLw@mail.gmail.com>
-In-Reply-To: <CAJD7tka+e-RWVN8qkCLv52z8G0KAXNO87CqV3p5Wgkx6BvneLw@mail.gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Tue, 5 Dec 2023 11:55:39 -0800
-Message-ID: <CAKEwX=MEJyX=Mavk3wRr3k4pTxsVrbwv3FJL2MPQVJ=3AgM35g@mail.gmail.com>
-Subject: Re: [PATCH v8 2/6] memcontrol: implement mem_cgroup_tryget_online()
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0db3de96d324710cef469040d88002db429c47e6.camel@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 10:03=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> On Thu, Nov 30, 2023 at 11:40=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wr=
-ote:
-> >
-> > This patch implements a helper function that try to get a reference to
-> > an memcg's css, as well as checking if it is online. This new function
-> > is almost exactly the same as the existing mem_cgroup_tryget(), except
-> > for the onlineness check. In the !CONFIG_MEMCG case, it always returns
-> > true, analogous to mem_cgroup_tryget(). This is useful for e.g to the
-> > new zswap writeback scheme, where we need to select the next online
-> > memcg as a candidate for the global limit reclaim.
-> >
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
->
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+On Tue, Dec 05, 2023 at 07:41:41PM +0000, Huang, Kai wrote:
+> -static const char *mce_memory_info(struct mce *m)
+> +static const char *mce_dump_aux_info(struct mce *m)
+>  {
+> -       if (!m || !mce_is_memory_error(m) || !mce_usable_address(m))
+> -               return NULL;
+> -
+>         /*
+> -        * Certain initial generations of TDX-capable CPUs have an
+> -        * erratum.  A kernel non-temporal partial write to TDX private
+> -        * memory poisons that memory, and a subsequent read of that
+> -        * memory triggers #MC.
+> -        *
+> -        * However such #MC caused by software cannot be distinguished
+> -        * from the real hardware #MC.  Just print additional message
+> -        * to show such #MC may be result of the CPU erratum.
+> +        * Confidential computing platforms such as TDX platforms
+> +        * may occur MCE due to incorrect access to confidential
+> +        * memory.  Print additional information for such error.
+>          */
+> -       if (!boot_cpu_has_bug(X86_BUG_TDX_PW_MCE))
+> +       if (!m || !mce_is_memory_error(m) || !mce_usable_address(m))
+>                 return NULL;
 
-Thanks for the review, Yosry :) Really appreciate the effort and your
-comments so far.
+What's the point of doing this on !TDX? None.
 
->
-> > ---
-> >  include/linux/memcontrol.h | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 7bdcf3020d7a..2bd7d14ace78 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -821,6 +821,11 @@ static inline bool mem_cgroup_tryget(struct mem_cg=
-roup *memcg)
-> >         return !memcg || css_tryget(&memcg->css);
-> >  }
-> >
-> > +static inline bool mem_cgroup_tryget_online(struct mem_cgroup *memcg)
-> > +{
-> > +       return !memcg || css_tryget_online(&memcg->css);
-> > +}
-> > +
-> >  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
-> >  {
-> >         if (memcg)
-> > @@ -1349,6 +1354,11 @@ static inline bool mem_cgroup_tryget(struct mem_=
-cgroup *memcg)
-> >         return true;
-> >  }
-> >
-> > +static inline bool mem_cgroup_tryget_online(struct mem_cgroup *memcg)
-> > +{
-> > +       return true;
-> > +}
-> > +
-> >  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
-> >  {
-> >  }
-> > --
-> > 2.34.1
+> -       return !tdx_is_private_mem(m->addr) ? NULL :
+> -               "TDX private memory error. Possible kernel bug.";
+> +       if (platform_tdx_enabled())
+
+So is this the "host is TDX" check?
+
+Not a X86_FEATURE flag but something homegrown. And Kirill is trying to
+switch the CC_ATTRs to X86_FEATURE_ flags for SEV but here you guys are
+using something homegrown.
+
+why not a X86_FEATURE_ flag?
+
+The CC_ATTR things are for guests, I guess, but the host feature checks
+should be X86_FEATURE_ flags things.
+
+Hmmm.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
