@@ -2,90 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF2F805C61
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B30EB805C89
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442499AbjLEPwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:52:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S1442509AbjLEPxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:53:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346378AbjLEPwo (ORCPT
+        with ESMTP id S1442523AbjLEPw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:52:44 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7027BA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:52:49 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-77efc30eee3so103261285a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 07:52:49 -0800 (PST)
+        Tue, 5 Dec 2023 10:52:59 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 738681A5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:53:04 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c9f4bb2e5eso43479901fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 07:53:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701791568; x=1702396368; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BrWHWTFaRknhgdb4x9no/GQPxrAlB7YYcLeiCxHpSTA=;
-        b=omH/MVU0AynBQig/jzB+n1U7MiiEU9Qv0lydXi7gyqffGCQQ9XcttjqfRtm9/JYZSd
-         Le5LLNgha9NIpjxcE8+cJRYVKauuJ2WU9GqzjKPjHwl24Gs09m0gk7s1dJj/o9n9wk1x
-         JgX3CFM0MCfsAPWlYPLsfaXEH3Ta5qtO7r+cUGO2jk5yke4lfaH0ANEOivsQ32N9HKh6
-         DdcUCR0hMgIyg0o68aOJrFUWkB6wsxwE8bBrkF6BP7UclqxliUgDneLDC7G6lK3eGVLy
-         6BSotzdqa8aHWyAMT7Cg6K/q5fJSd0EBjGeC5PF9GrdR3vRXOYWkLNjukGnpYPA2A4qD
-         od5g==
+        d=linaro.org; s=google; t=1701791582; x=1702396382; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cDxJvDUfGGoAE4V0Rw0wbOjptS0R1clPyfID4dJYLn0=;
+        b=v+svZS7VqHlIi7kicqdR+J7LAdbRnqqCZ9I2KO4+SNhhrD6toOoz7sxIQlXOZlJVU/
+         YCZs90MI5KpgWLSo+ricX/kaRdTbvKr1MS9zYisWjJ0SPP4Xl9FSoNgZrSIhKf1Wwj/t
+         NajyzGDopuYkaprM0lDEjHiBFY3JdMJ+qs8l9qadMoSfw8GScNZAiytfFiadvwnWy0hB
+         X1vcGy7BL5vP0rnpYzjyOIf1Mc3OdjxTElp0r3RkZveOQ5nEr4wm/77UlCE9Ii0oV43V
+         gOZ1vx2JqQHVz7cp3G6l6w+FRpZ31nCgOtlkIVsTI6Q8T2MFpP6bte81hNJWL3wslpVW
+         Voiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701791568; x=1702396368;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BrWHWTFaRknhgdb4x9no/GQPxrAlB7YYcLeiCxHpSTA=;
-        b=jiD1uhU0DmYSQJ67HZLIEI6e/fCOWwFI+CcyHHRQbDeq8ZybOn9QBSNTBfic9YB2n0
-         arH70zMBKqN2wO1a7pjdNA9BaOHN7esmRcY9A6lcD7m7Es5dWJvrD/Yh61pGkTfJ2PVz
-         FM87oluVr+tJv93bLSEOYa3/NcWcAme3KOKwiDKFKIEgT9pq9Sg5RhSl7ctkqizSoESy
-         JwwdIg8rwNcWsNhI+M4jklzRZKwv3emJRIcIDE6Hn69H8u0je0OPjZorr8msTkd+3CRd
-         eeTAv7ze5qRauOg2gn9/iv86JUT3kpP87c5nCmZqouN7Py17O0XrZUWXXBsg8I8ScnHO
-         Lccg==
-X-Gm-Message-State: AOJu0YxlNUP18v9OHwHizxT6veOrAXyJsSKbeCadswH9d0xhQpNheNn9
-        DqE9nOo1L9Bq9FMiFmE2VPy87g==
-X-Google-Smtp-Source: AGHT+IEWTjimK7HJTjtG4zURBrKJAMSWy2Q5Rd8yPZ4Mg4dhFMa48d0hohgGPIWQhH1eR0Unx2klsA==
-X-Received: by 2002:a05:620a:e84:b0:77d:992f:857e with SMTP id w4-20020a05620a0e8400b0077d992f857emr1354994qkm.61.1701791568321;
-        Tue, 05 Dec 2023 07:52:48 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id y18-20020a05620a44d200b0077da7a46b0fsm5189422qkp.69.2023.12.05.07.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 07:52:47 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1rAXj4-00BiMh-Cl;
-        Tue, 05 Dec 2023 11:52:46 -0400
-Date:   Tue, 5 Dec 2023 11:52:46 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Baolu Lu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 12/12] iommu: Improve iopf_queue_flush_dev()
-Message-ID: <20231205155246.GR1489931@ziepe.ca>
-References: <20231115030226.16700-13-baolu.lu@linux.intel.com>
- <20231201203536.GG1489931@ziepe.ca>
- <a0ef3a4f-88fc-40fe-9891-495d1b6b365b@linux.intel.com>
- <20231203141414.GJ1489931@ziepe.ca>
- <2354dd69-0179-4689-bc35-f4bf4ea5a886@linux.intel.com>
- <BN9PR11MB5276999D29A133F33C3C4FEA8C86A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231204132503.GL1489931@ziepe.ca>
- <BN9PR11MB5276908231BA164E4AF8806F8C85A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <20231205015306.GQ1489931@ziepe.ca>
- <BN9PR11MB527687FD2CD3EB17F04B22458C85A@BN9PR11MB5276.namprd11.prod.outlook.com>
+        d=1e100.net; s=20230601; t=1701791582; x=1702396382;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cDxJvDUfGGoAE4V0Rw0wbOjptS0R1clPyfID4dJYLn0=;
+        b=mWju1aGDRHZu8a8A16pwLUDAS/p3uj5GHyPfxpdtvvUwL8oH1D14ciYpE8jTYTQ0l6
+         fZYB/k308jmyP+slDG4HepDu1YDn/lPAKPnBun6oDlxxnrQK10Cprw0KJmEkxRAS/yXV
+         yoQ3RvhdwSoO/z9HUbJ5jzhza7D+fQCFk2LAzZotqlNEp5TCu0zq9A2nJ2zXZfUU8P0R
+         B2RzI/HSFrL6KB+hj31lsIMmv9mHWOWScVWj8fYpVHcWFfDUJKZMxlnA8ZvBeqTetfU4
+         V3GpyOR4PHbMPqSpLVD3NlqWhjmXa21zfXpUf/9c0pRmPNG82vtDsJmju9ZoiaLh5Hdb
+         KARw==
+X-Gm-Message-State: AOJu0YzHvHAaoZvtSE+DMe6VGJWgNIg6Z+5oWtbdoTA9dOKlAMsxi23j
+        pC1HurVkF6h9ox2GymTGgLLO6w==
+X-Google-Smtp-Source: AGHT+IG6O/aYWKjAUNCb7d4ebr/jCVbDyDaG4mDg0mrvAYqCEVBl4MCruC9gNCa5Xg9gnikHWEj59A==
+X-Received: by 2002:a2e:93d5:0:b0:2ca:cc:a6e7 with SMTP id p21-20020a2e93d5000000b002ca00cca6e7mr1921239ljh.32.1701791582677;
+        Tue, 05 Dec 2023 07:53:02 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id u23-20020a056402111700b0054c7a5a76b8sm1278876edv.0.2023.12.05.07.53.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 07:53:02 -0800 (PST)
+Message-ID: <a8f02782-375c-4b2c-9d09-fb5898c4f62d@linaro.org>
+Date:   Tue, 5 Dec 2023 16:52:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB527687FD2CD3EB17F04B22458C85A@BN9PR11MB5276.namprd11.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/4] dt-bindings: clock: sophgo: Add SG2042 bindings
+Content-Language: en-US
+To:     Chen Wang <unicorn_wang@outlook.com>,
+        Chen Wang <unicornxw@gmail.com>, aou@eecs.berkeley.edu,
+        chao.wei@sophgo.com, conor@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
+        guoren@kernel.org, jszhang@kernel.org, inochiama@outlook.com,
+        samuel.holland@sifive.com
+References: <cover.1701734442.git.unicorn_wang@outlook.com>
+ <188cd5e99394f358c0d103b8b95377f32c010161.1701734442.git.unicorn_wang@outlook.com>
+ <5412a9a2-38cd-4321-9ee6-b50dd060a08f@linaro.org>
+ <MA0P287MB0332E148B9F8922E01758A5CFE85A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <MA0P287MB0332E148B9F8922E01758A5CFE85A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,102 +129,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 03:23:05AM +0000, Tian, Kevin wrote:
-
-> > I didn't said the PRI would fail, I said the ATS would fail with a
-> > non-present.
-> > 
-> > It has to work this way or it is completely broken with respect to
-> > existing races in the mm side. Agents must retry non-present ATS
-> > answers until you get a present or a ATS failure.
+On 05/12/2023 15:15, Chen Wang wrote:
 > 
-> My understanding of the sequence is like below:
+> On 2023/12/5 16:08, Krzysztof Kozlowski wrote:
+>> On 05/12/2023 01:23, Chen Wang wrote:
+>>> From: Chen Wang <unicorn_wang@outlook.com>
+>>>
+>>> Add bindings for the clock generator on the SG2042 RISC-V SoC.
+>> ......
+>>> +      - const: sophgo,sg2042-clkgen
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  system-ctrl:
+>> Missing vendor prefix.
 > 
-> <'D' for device, 'I' for IOMMU>
+> hi, Krzysztof,
 > 
->   (D) send a ATS translation request
->   (I) respond translation result
->   (D) If success then sends DMA to the target page
->       otherwise send a PRI request
->         (I) raise an IOMMU interrupt allowing sw to fix the translation
->         (I) generate a PRI response to device
->         (D) if success then jump to the first step to retry
->             otherwise abort the current request
-> 
-> If mm changes the mapping after a success PRI response, mmu notifier
-> callback in iommu driver needs to wait for device tlb invalidation completion
-> which the device will order properly with outstanding DMA requests using
-> the old translation.
-> 
-> If you refer to the 'retry' after receiving a success PRI response, then yes.
-> 
-> but there is really no reason to retry upon a PRI response failure which
-> indicates that the faulting address is not a valid one which OS would like
-> to fix.
+> One question: under what circumstances is it necessary to add the vendor 
+> prefix when defining a property?
 
-Right
+Custom property, with exceptions of supplies, sometimes GPIOs. Please
+see my talks. Twice...
 
-> > Draining has to be ordered correctly with whatever the device is
-> > doing. Drain needs to come after FLR, for instance. It needs to come
-> > after a work queue reset, because drain doesn't make any sense unless
-> > it is coupled with a DMA stop at the device.
-> 
-> Okay that makes sense. As Baolu and you already agreed let's separate
-> this fix out of this series.
-> 
-> The minor interesting aspect is how to document this requirement
-> clearly so drivers won't skip calling it when sva is enabled. 
+Best regards,
+Krzysztof
 
-All changes to translation inside kernel drivers should only be done
-once the DMA is halted, otherwise things possibily become security
-troubled.
-
-We should document this clearly, it is already expected in common
-cases like using the DMA API and when removing() drivers. It also
-applies when the driver is manually changing a PASID.
-
-The issue is not drain, it is that the HW is still doing DMA on the
-PASID and the PASID may be assigned to a new process. This kernel
-*must* prevent this directly and strongly.
-
-If the device requires a drain to halt its DMA, then that is a device
-specific sequence. Otherwise it should simply halt its DMA in whatever
-device specific way it has.
-
-> > Hacking a DMA stop by forcing a blocking translation is not logically
-> > correct, with wrong ordering the device may see unexpected translation
-> > failures which may trigger AERs or bad things..
-> 
-> where is such hack? though the current implementation of draining
-> is not clean, it's put inside pasid-disable-sequence instead of forcing
-> a blocking translation implicitly in iommu driver i.e. it's still the driver
-> making decision for what translation to be used...
-
-It is mis-understanding the purpose of drain.
-
-In normal operating cases PRI just flows and the device will
-eventually, naturally, reach a stable terminal case. We don't provide
-any ordering guarentees across translation changes so PRI just follows
-that design. If you change the translation with ongoing DMA then you
-just don't know what order things will happen in.
-
-The main purpose of drain is to keep the PRI protocol itself in sync
-against events on the device side that cause it to forget about the
-tags it has already issued. Eg a FLR should reset the tag record. If a
-device then issues a new PRI with a tag that matches a tag that was
-outstanding prior to FLR we can get a corruption.
-
-So any drain sequence should start with the device halting new
-PRIs. We flush all PRI tags from the system completely, and then the
-device may resume issuing new PRIs.
-
-When the device resets it's tag labels is a property of the device.
-
-Notice none of this has anything to do with change of
-translation. Change of translation, or flush of ATC, does not
-invalidate the tags.
-
-A secondary case is to help devices halt their DMA when they cannot do
-this on their own.
-
-Jason
