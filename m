@@ -2,133 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA060804C92
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAB9804C8F
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 09:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376540AbjLEIgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 03:36:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
+        id S1344836AbjLEIgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 03:36:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376468AbjLEIgB (ORCPT
+        with ESMTP id S1344856AbjLEIfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 03:36:01 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90FDC0;
-        Tue,  5 Dec 2023 00:36:02 -0800 (PST)
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+        Tue, 5 Dec 2023 03:35:40 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3D69C;
+        Tue,  5 Dec 2023 00:35:46 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: pq)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 07E4A6602030;
-        Tue,  5 Dec 2023 08:35:59 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701765361;
-        bh=8TdCP7pQFoNlcwVYdlSyrN/w2A0Op/hrTEVYOXA+Iw4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=LkSk1UGtPGjufAME3Mo5tAbgHVeBIOwBZ5PZu3G7wj7t4DZlvsTBvBIzMenraa1FC
-         1Q8AIWZKMlhxDog7y3tv/QQylclu+6ZUb00FRevwFD5NHUWtAze/53aPhyBvfsezR0
-         SXPw5YjWlwn4nXbkDgzCMD2iAn/IT+pXs0DHqQqBAF2HMuvg0+V+kbvoeQe1IsUzO7
-         6pOqCw3N55TaWjnmDye7n5y73tL/qdosgLJzwP7Rn2oDdNBGsLpMbZVFrhze1+cCqo
-         NR+qf7CJXaPZa73hj+mZkD0aIZdDHjeb5OA2CMMOmuogPGcTq1QEvXu+GGQON8d8HN
-         BgwotuxI2wBKw==
-Date:   Tue, 5 Dec 2023 10:35:40 +0200
-From:   Pekka Paalanen <pekka.paalanen@collabora.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@gmail.com>, daniel@ffwll.ch,
-        Daniel Stone <daniel@fooishbar.org>,
-        'Marek =?UTF-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Michel =?UTF-8?B?RMOkbnplcg==?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: Re: [PATCH] drm/doc: Define KMS atomic state set
-Message-ID: <20231205103540.6b2583c8.pekka.paalanen@collabora.com>
-In-Reply-To: <dybgeyjqoh2rjjrvbb5nrnallx63tano2drmxgsgde6n5w6wza@23cfserg7mui>
-References: <20231130200740.53454-1-andrealmeid@igalia.com>
-        <x6cqert2tadgc46w3u2rfgcfaw6evxdeerl2mxvh2peycr4i7q@qf6oqymcti4j>
-        <20231201110616.30ad1468.pekka.paalanen@collabora.com>
-        <bry3w6w32uy2jlmbkcmbtthw6w6nwux7dwlcju5iuxac2wphku@md6njxjtsbvm>
-        <20231201120648.2ba706e1.pekka.paalanen@collabora.com>
-        <bgd5xuszaujdjg7lt24dpofvhx2v6gyxfjxnqfo7nmaecmn6om@fejhsggdlffo>
-        <20231201180348.4a42025b.pekka.paalanen@collabora.com>
-        <dybgeyjqoh2rjjrvbb5nrnallx63tano2drmxgsgde6n5w6wza@23cfserg7mui>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B5CCD21E40;
+        Tue,  5 Dec 2023 08:35:44 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A793E136CF;
+        Tue,  5 Dec 2023 08:35:44 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 8JPnKODgbmWjPAAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Tue, 05 Dec 2023 08:35:44 +0000
+Date:   Tue, 5 Dec 2023 09:35:44 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+Cc:     aneesh.kumar@linux.ibm.com, linux-cxl@vger.kernel.org,
+        linux-mm@kvack.org, dan.j.williams@intel.com, hannes@cmpxchg.org,
+        hasanalmaruf@fb.com, haowang3@fb.com, ying.huang@intel.com,
+        gregory.price@memverge.com, tj@kernel.org,
+        hezhongkun.hzk@bytedance.com, fvdl@google.com, john@jagalactic.com,
+        emirakhur@micron.com, vtavarespetr@micron.com,
+        Ravis.OpenSrc@micron.com, Jonathan.Cameron@huawei.com,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [EXT] Re: [RFC PATCH 0/2] Node migration between memory tiers
+Message-ID: <ZW7g4ExYF79gMEBU@tiehlicka>
+References: <20231130220422.2033-1-sthanneeru.opensrc@micron.com>
+ <ZW3zl2Fke5FtQCv3@tiehlicka>
+ <1db561a9-6984-418d-9305-a2a5ece93696@micron.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jC+ar+rxILck14dQcx1m77s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1db561a9-6984-418d-9305-a2a5ece93696@micron.com>
+X-Spamd-Bar: +++++++++++++++++++++
+X-Spam-Score: 21.50
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        spf=fail (smtp-out1.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
+X-Rspamd-Queue-Id: B5CCD21E40
+X-Spamd-Result: default: False [21.50 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_SPAM_SHORT(3.00)[0.999];
+         MIME_GOOD(-0.10)[text/plain];
+         MID_RHS_NOT_FQDN(0.50)[];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         RCPT_COUNT_TWELVE(0.00)[20];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jC+ar+rxILck14dQcx1m77s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue 05-12-23 01:26:07, Srinivasulu Thanneeru wrote:
+> 
+> 
+> On 12/4/2023 9:13 PM, Michal Hocko wrote:
+> > CAUTION: EXTERNAL EMAIL. Do not click links or open attachments unless you recognize the sender and were expecting this message.
+> > 
+> > 
+> > On Fri 01-12-23 03:34:20, sthanneeru.opensrc@micron.com wrote:
+> > > From: Srinivasulu Thanneeru <sthanneeru.opensrc@micron.com>
+> > > 
+> > > The memory tiers feature allows nodes with similar memory types
+> > > or performance characteristics to be grouped together in a
+> > > memory tier. However, there is currently no provision for
+> > > moving a node from one tier to another on demand.
+> > 
+> > Could you expand on why this is really needed/necessary? What is the
+> > actual usecase?
+> 
+> Hi Michal Hock,
+> 
+> Following two use-cases we have observed.
+> 1. It is not accurate to group similar memory types in the same tier,
+>    because even similar memory types may have different speed grades.
 
-On Mon, 4 Dec 2023 10:21:03 +0100
-Maxime Ripard <mripard@kernel.org> wrote:
+Presumably they are grouped based on a HW configuration. Does that mean
+that the configuration is wrong? Are you trying to workaround that by
+this interface?
 
-> Hi
->=20
-> On Fri, Dec 01, 2023 at 06:03:48PM +0200, Pekka Paalanen wrote:
-> > On Fri, 1 Dec 2023 14:20:55 +0100
-> > Maxime Ripard <mripard@kernel.org> wrote:
-> >  =20
-> > > On Fri, Dec 01, 2023 at 12:06:48PM +0200, Pekka Paalanen wrote: =20
+> 2. Some systems boots up with CXL devices and DRAM on the same memory-tier,
+> we need a way to move the CXL nodes to the correct tier from the user space.
 
-...
-
-> > Is it really "global" too? Or is it device-wide? Or is it just the bits
-> > that userspace bothered to mention in an atomic commit? =20
->=20
-> As far as I'm concerned, global =3D=3D "device-wide", so I'm not entirely
-> sure what is the distinction you want to raise here, so I might be off.
->=20
-> But to answer the latter part of your question, drm_atomic_state
-> contains the changes of all the objects affected by the commit userspace
-> mentioned to bother. Which is is why I found the "global" to be
-> confusing, because it's not a device-wide-global state, it's a
-> commit-global state.
-
-I think the word "global" should be simply avoided. Nothing here is
-truly global (machine wide? kernel instance wide? worldwide like
-UUID?), and its meaning varies by speaker and context.
-
-
-Thanks,
-pq
-
---Sig_/jC+ar+rxILck14dQcx1m77s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmVu4NwACgkQI1/ltBGq
-qqc3sw//bb9K65vkjrrJcpssVskZDbYksuveo42G5DC4huqcxDAyiz7rEEFWeIzv
-5hlZBDaHpODNsw4ncPtdfOp6eVF1uDC5dpAvItCDwu6OVQqOz3hRnKeYcJ5Fby8H
-erDqmAKl8lzaA4A8kcPMCFHJ2PbkJV3MuJhK9BeL3noqe1m6KzQ9tD36+/XR2kCy
-6ZxexJlEOxqxfTJY64fDS/tez4uyQ7Gy4p2QG1yCW3etSx29UCzkC6K78G1RdpRe
-RDHqefOoIBX6oo3mKWPEvnZ2olYubqocL6vdEAkcLukcsYSdLBfNl3SjxztPByNA
-K/2LekKvs4l/xKiwRQxFD6HxpN6NF8Btq1Au2bs2q3ZZ9L6Sz2vhkGJwWQAuFOML
-EQqk7WoiLz6LSGylnNF7uqxAi8rk5B0QrqSm3zleMMFOhL6emQXs4tT+86CgcMDF
-DDQ3nSZ/PiuCB0zf9SAFY+RkaUGmJoarMoQPud+by4qpXIdILtOctXH57TmJgHmQ
-LhrTD6Ox3nK0hshvqDYaJeQR973pXcEnsbqXWZipNiCp+OGcK7Bo95nhhLdPjDWE
-wFOQWQkTIJzqwoHBcKuN2TYa+65sOnGpDeTwYkUG2VTzZz1iF4XzEcRlkCpjSHCD
-kLyxM6LK5JPjbijJjXyuznLtxpbXtV5KUiYPBca7zLlEEF1jtQ0=
-=suh4
------END PGP SIGNATURE-----
-
---Sig_/jC+ar+rxILck14dQcx1m77s--
+Again, could you expand a bit more and explain why this cannot be
+configured automatically?
+-- 
+Michal Hocko
+SUSE Labs
