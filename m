@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1A2805F62
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C07805F67
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:27:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbjLEU0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 15:26:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        id S232332AbjLEU1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 15:27:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjLEU0a (ORCPT
+        with ESMTP id S229569AbjLEU1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 15:26:30 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE34D181
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 12:26:36 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d075392ff6so1326655ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 12:26:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701807996; x=1702412796; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Z74VK0/+6LO3YLMu3vX1pNpETdyfXDf+myVrrbMuLo=;
-        b=JG4DvRLtvWmVfw20cYFSjcl9zNlGRd5KelOqqOfkJcHjsr4Yu1GcbZ4/alONixRIXf
-         5gbOwbAObvGJwsYT5xBNidZrPOUWZgPGAXagnIxjP69lc208iXywdIz+wucnnAOb2mu5
-         0BAItnq4Al82m2lexHOwqDZyfi/tzBkA0miRQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701807996; x=1702412796;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Z74VK0/+6LO3YLMu3vX1pNpETdyfXDf+myVrrbMuLo=;
-        b=Pr1KldpturG4KPI8eqGkrFOm9G55KEfAYzOobGNUqU9MDVoIf4sA+k6oZCcq7QO8cN
-         nJ9ED9n1qMzrJVpv7AzR2uUdQQBN/4cCva3QadKYRD8V8vl7xU5vK9RjcFdbX8/VSX6o
-         rLcIP/Uz4iAh6ss7R8vRVi1H0ZtgADCvVE81uXMq6UxlpWqxqTb+fjRaUQF0oQuJmLft
-         pwVV4qYcZ6azglh25yyLc7ZkbyNUC4Ymt0IMqIQIlDMXTRrsFryiOprQNYka05RhuEcv
-         3zV/fvjy/UJvenBw4b4QH3Ke0dofxD8mXc0ViUJ8euQdFx6+AqpkWFFDUZr/JhmrJ+xM
-         TP8w==
-X-Gm-Message-State: AOJu0YzGCViQKSV0Q+cAU/aNIxv/WmPA5cTj1TA6k1rvptBFeAF71Tgl
-        LHdb7eKtBifftUcfe5a23DBe2Q==
-X-Google-Smtp-Source: AGHT+IHukR9UvjD9j4+NWOK/ZZO7ah/LCGSa2/TGIMPKzLjm0beERmGnqBUyNqFynnETTlRIEgT0Dw==
-X-Received: by 2002:a17:902:f545:b0:1d0:b3c4:a269 with SMTP id h5-20020a170902f54500b001d0b3c4a269mr2255897plf.13.1701807996133;
-        Tue, 05 Dec 2023 12:26:36 -0800 (PST)
-Received: from localhost ([2620:15c:9d:2:5038:905b:ae7e:e6da])
-        by smtp.gmail.com with UTF8SMTPSA id y11-20020a170902700b00b001cc29ffcd96sm4156496plk.192.2023.12.05.12.26.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 12:26:35 -0800 (PST)
-Date:   Tue, 5 Dec 2023 12:26:32 -0800
-From:   Brian Norris <briannorris@chromium.org>
-To:     David Lin <yu-hao.lin@nxp.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvalo@kernel.org, francesco@dolcini.it, tsung-hsien.hsieh@nxp.com
-Subject: Re: [PATCH] wifi: mwifiex: added extra delay for firmware ready.
-Message-ID: <ZW-HeGCvxpqzBukB@google.com>
-References: <20231128082544.613179-1-yu-hao.lin@nxp.com>
+        Tue, 5 Dec 2023 15:27:33 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BC3C6;
+        Tue,  5 Dec 2023 12:27:40 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F018040E0195;
+        Tue,  5 Dec 2023 20:27:37 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 0DbshhlbnEIz; Tue,  5 Dec 2023 20:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701808056; bh=uA2hJ4fVupdMziiNt0kfklNPGuoMpg4ALqlVG80QktE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y4QJXKFl4RtofbKfcrV8Od1c5MXix6a4l7FeCuYf8nvptijcUjjQHMFPuXKoz57/6
+         Kyce2V3ri7B+CzbjEB7H7UG0I8aFePTBPyz7/lCaqLLgtx0wsCJXWcDOPXr3kv4Cc6
+         CUAByGkaqOQEAj0kqj9/e9FqT86n9DhpVxiuPlGUM56csvruCA1M01J/ul50TpO5hq
+         yLSQHnIkH1zb+hWXLrm0zDPkUH2i2m01pjXO5QBqZlwq5AmyFGSsMllztFWXFiKZ7k
+         VROTu8ZdnO/IDjk0vkyyxBfoOESwWocsvqqFxCGaCDo+/ddWhcU8NshDBZWBcLS0GV
+         UYgD1HyEJzFZayMtWOLkcC/oTEowJKYuh4mwjzpkHfmGwyTBqFykoqsEU173p229IQ
+         GFT1I2sJjFYZe+pX/mI0D3FjIldJ/P4h1R9skZ+wDHoL/StmZ4qmqxI1uvwftn+E6k
+         rV2acJ5oSIlbQZLdxxJ8a2vUVVTvoSSNw3ftv1AbjpOt0lIz0eXYXaHWcljPl9yv6Z
+         P/C+ZqKvo2B9v9Kq4uM4Icgng7geUrNwu3jM/yEBQbJM82WwJXNwklHVt2YqVI2BuX
+         6/pIygb17U9sOzs/IqIkyeSQyPLdJ4RlQOlVj9C818BNJ1GMymh1MX1OhySCmD9eD/
+         kkI+j0u2Yj92vcJoQF5eGhVM=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C412340E014B;
+        Tue,  5 Dec 2023 20:27:08 +0000 (UTC)
+Date:   Tue, 5 Dec 2023 21:27:03 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Alexey Makhalov <amakhalov@vmware.com>
+Cc:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+        hpa@zytor.com, dave.hansen@linux.intel.co, bp@alien8.d,
+        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
+        netdev@vger.kernel.org, richardcochran@gmail.com,
+        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
+        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
+        akaher@vmware.com, jsipek@vmware.com,
+        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com, horms@kernel.org
+Subject: Re: [PATCH v2 5/6] drm/vmwgfx: Use vmware_hypercall API
+Message-ID: <20231205202703.GIZW+Hl814mKqEDy/m@fat_crate.local>
+References: <20231122233058.185601-8-amakhalov@vmware.com>
+ <20231201232452.220355-1-amakhalov@vmware.com>
+ <20231201232452.220355-6-amakhalov@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231128082544.613179-1-yu-hao.lin@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231201232452.220355-6-amakhalov@vmware.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 04:25:44PM +0800, David Lin wrote:
-> For SDIO IW416, in a corner case FW may return ready before complete full
-> initialization.
-> Command timeout may occur at driver load after reboot.
-
-Do you have any idea why? Is it specific to this chip and/or firmware?
-I'm hesitant to add magic sleeps to everything, just because you have
-one buggy chip/firmware.
-
-If it's a known issue with a single chip, it seems like you should add a
-flag to struct mwifiex_sdio_device / mwifiex_sdio_sd8978.
-
-Brian
-
-> Workaround by adding 100ms delay at checking FW status.
+On Fri, Dec 01, 2023 at 03:24:51PM -0800, Alexey Makhalov wrote:
+> Switch from VMWARE_HYPERCALL macro to vmware_hypercall API.
+> Eliminate arch specific code.
 > 
-> Signed-off-by: David Lin <yu-hao.lin@nxp.com>
+> drivers/gpu/drm/vmwgfx/vmwgfx_msg_arm64.h: implement arm64 variant
+> of vmware_hypercall here for now. The move of these functions to
+> arch/arm64/include/asm/vmware.h as well as removal of
+> drivers/gpu/drm/vmwgfx/vmwgfx_msg_{x86,arm64}.h header files will
+> be performed in the follow up patchset.
+
+Same note as for patch 1 - no commit order in git.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
