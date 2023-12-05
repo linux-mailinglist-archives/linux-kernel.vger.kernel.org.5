@@ -2,164 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B199805B81
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 427E8805C47
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346000AbjLEO6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 09:58:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32812 "EHLO
+        id S1345783AbjLEO5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 09:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346023AbjLEO6M (ORCPT
+        with ESMTP id S1345742AbjLEO5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 09:58:12 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323CA1B6;
-        Tue,  5 Dec 2023 06:58:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Niv+uFMMZ47PdYI45Y9AoLriOrLQtx81cAeZSJ25KPY=; b=ECiJfHJrsr/f0L+71GqdBnpXnC
-        lNdo5YsQfw3YwR5YsupiWzdR/S/Lzz8Oo81W0jeZ/BB+e6wGAQMJBGJUZo/X1Cc3c//0boPlHxrC9
-        Tds6aGdauv5GLQFy3nLOSw5BH7pHcLIRAaVqF6tV64N7xI3LjkMv7FItwu21vhjhdYvUNeKr2TYme
-        gr78D0OUB2OVMIfP6iBCP6ZKx3FFRFGgg8TsQLLlcB7gL+3eWh/c6/h4iAfxzd/YtJwmVoR1i4fps
-        01GQ2rAgoeBr8uyA82aCDmza9wcGEEh/GrGnK7oNGfbQeiSK82MFYntbBH6LvVkpTe+NGJispS/4Q
-        CwS1tqWg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36310)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rAWsF-0006vo-0d;
-        Tue, 05 Dec 2023 14:58:11 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rAWsH-0001nv-2u; Tue, 05 Dec 2023 14:58:13 +0000
-Date:   Tue, 5 Dec 2023 14:58:13 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 08/12] net: phy: at803x: move specific at8031
- WOL bits to dedicated function
-Message-ID: <ZW86hcgt8nhbSpfq@shell.armlinux.org.uk>
-References: <20231201001423.20989-1-ansuelsmth@gmail.com>
- <20231201001423.20989-9-ansuelsmth@gmail.com>
- <bdbe618d4fd38469e4e139ce4ebd161766f2e4d5.camel@redhat.com>
+        Tue, 5 Dec 2023 09:57:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5013C9;
+        Tue,  5 Dec 2023 06:57:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701788229; x=1733324229;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=mlZUqVzzz78kYGKI5cXqocVGJbtwH388Pqsjwxt8CGE=;
+  b=HJDY57ZuhNDJCR+XCRfL6Fd17/nPgoGudZfmJL82Mj3hrg8TuUsdVm0l
+   Ycq0cC4nTUnwXJ0a3q041FVthWTJbRn/hFdIuAgAa3+66SdjK8RbcxA+2
+   Zm1X2qZy6U7h1saetvUxQoFc4kTmgGMnmW3y4gcipg/mtgs77FglYNHje
+   JIFW362ErU5IhD+dqUX4MJXJpnylOyLZOXvWmslgx0kNK+2Ld2KFuieDs
+   ckQPGutPSS9LCh+mHw5FAP5pVEAjTvIHmBx5fHBXP9ON+Jpfq2Z7oPqGc
+   u9srmuKRztWlvLRoV0WfmIyMo2FqM6l1/b8Ur2EcQr5j+mi1u2Jb3jZwV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="378929719"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="378929719"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 06:57:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="799991881"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="799991881"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by orsmga008.jf.intel.com with ESMTP; 05 Dec 2023 06:57:06 -0800
+Message-ID: <f02353be-4e51-aad2-08ee-d44b3693f061@linux.intel.com>
+Date:   Tue, 5 Dec 2023 16:58:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bdbe618d4fd38469e4e139ce4ebd161766f2e4d5.camel@redhat.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To:     Yaxiong Tian <iambestgod@outlook.com>, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tianyaxiong@kylinos.cn
+References: <TYZPR01MB4784CB3058AC1B5787DB6601D586A@TYZPR01MB4784.apcprd01.prod.exchangelabs.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [PATCH] usb:xhci: Avoid hub_event() stuck when xHC restore state
+ timeout
+In-Reply-To: <TYZPR01MB4784CB3058AC1B5787DB6601D586A@TYZPR01MB4784.apcprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 10:32:55AM +0100, Paolo Abeni wrote:
-> On Fri, 2023-12-01 at 01:14 +0100, Christian Marangi wrote:
-> > Move specific at8031 WOL enable/disable to dedicated function to make
-> > at803x_set_wol more generic.
-> > 
-> > This is needed in preparation for PHY driver split as qca8081 share the
-> > same function to toggle WOL settings.
-> > 
-> > In this new implementation WOL module in at8031 is enabled after the
-> > generic interrupt is setup. This should not cause any problem as the
-> > WOL_INT has a separate implementation and only relay on MAC bits.
-> > 
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/net/phy/at803x.c | 42 ++++++++++++++++++++++++----------------
-> >  1 file changed, 25 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-> > index 02ac71f98466..2de7a59c0faa 100644
-> > --- a/drivers/net/phy/at803x.c
-> > +++ b/drivers/net/phy/at803x.c
-> > @@ -466,27 +466,11 @@ static int at803x_set_wol(struct phy_device *phydev,
-> >  			phy_write_mmd(phydev, MDIO_MMD_PCS, offsets[i],
-> >  				      mac[(i * 2) + 1] | (mac[(i * 2)] << 8));
-> >  
-> > -		/* Enable WOL function for 1588 */
-> > -		if (phydev->drv->phy_id == ATH8031_PHY_ID) {
-> > -			ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
-> > -					     AT803X_PHY_MMD3_WOL_CTRL,
-> > -					     0, AT803X_WOL_EN);
-> > -			if (ret)
-> > -				return ret;
-> > -		}
-> >  		/* Enable WOL interrupt */
-> >  		ret = phy_modify(phydev, AT803X_INTR_ENABLE, 0, AT803X_INTR_ENABLE_WOL);
-> >  		if (ret)
-> >  			return ret;
-> >  	} else {
-> > -		/* Disable WoL function for 1588 */
-> > -		if (phydev->drv->phy_id == ATH8031_PHY_ID) {
-> > -			ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
-> > -					     AT803X_PHY_MMD3_WOL_CTRL,
-> > -					     AT803X_WOL_EN, 0);
-> > -			if (ret)
-> > -				return ret;
-> > -		}
-> >  		/* Disable WOL interrupt */
-> >  		ret = phy_modify(phydev, AT803X_INTR_ENABLE, AT803X_INTR_ENABLE_WOL, 0);
-> >  		if (ret)
-> > @@ -1611,6 +1595,30 @@ static int at8031_config_init(struct phy_device *phydev)
-> >  	return at803x_config_init(phydev);
-> >  }
-> >  
-> > +static int at8031_set_wol(struct phy_device *phydev,
-> > +			  struct ethtool_wolinfo *wol)
-> > +{
-> > +	int ret;
-> > +
-> > +	/* First setup MAC address and enable WOL interrupt */
-> > +	ret = at803x_set_wol(phydev, wol);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (wol->wolopts & WAKE_MAGIC)
-> > +		/* Enable WOL function for 1588 */
-> > +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
-> > +				     AT803X_PHY_MMD3_WOL_CTRL,
-> > +				     0, AT803X_WOL_EN);
-> > +	else
-> > +		/* Disable WoL function for 1588 */
-> > +		ret = phy_modify_mmd(phydev, MDIO_MMD_PCS,
-> > +				     AT803X_PHY_MMD3_WOL_CTRL,
-> > +				     AT803X_WOL_EN, 0);
-> > +
-> > +	return ret;
+On 4.12.2023 10.02, Yaxiong Tian wrote:
+> From: Yaxiong Tian <tianyaxiong@kylinos.cn>
 > 
-> If I read correctly, the above changes the order of some WoL
-> initialization steps: now WOL_CTRL is touched after
-> AT803X_INTR_ENABLE_WOL. Is that correct?
+> when xHc restore state timeout,the xhci_reusme() return -ETIMEDOUT
 
-It is fine.
+Out of curiosity, have you tried if it still is possible to revive your
+xHC controller here?
 
-AT803X_INTR_ENABLE_WOL enables or disables whether the INT pin (which
-is used for any interrupt from the PHY) is used to signal WOL - it's
-the interrupt enable for the WoL function.
+Instead of returning -ETIMEDOUT, try setting " reinit_xhc = true", and
+jump to  "if (reinit_xhc) {"  where we reinitialize xHC in xhci_resume() due
+to other resume issues.
 
-The MMD3 WOL_EN bit controls whether the WoL function is enabled, and
-thus whether the WOL_INT pin will signal WoL. WOL_EN should not be
-set until we have initialised the WoL function, and thus that needs
-to happen _after_ the MAC address has been programmed.
+> instantly. After usb_hc_died() called ,they kick hub_wq to running
+> hub_event() but the wq is freezd. When suspend ends,hub_evnet realy
+> running and sticking.
+> Such as:
+> [  968.794016][ 2] [   T37] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [  968.802969][ 2] [   T37] kworker/2:3     D    0   999      2 0x00000028
+> [  968.809579][ 2] [   T37] Workqueue: usb_hub_wq hub_event
+> [  968.814885][ 2] [   T37] Call trace:
+> [  968.818455][ 2] [   T37]  __switch_to+0xd4/0x138
+> [  968.823067][ 2] [   T37]  __schedule+0x2dc/0x6a0
+> [  968.827680][ 2] [   T37]  schedule+0x34/0xb0
+> [  968.831947][ 2] [   T37]  schedule_timeout+0x1e0/0x298
+> [  968.837079][ 2] [   T37]  __wait_for_common+0xf0/0x208
+> [  968.842212][ 2] [   T37]  wait_for_completion+0x1c/0x28
+> [  968.847432][ 2] [   T37]  xhci_configure_endpoint+0x104/0x640
+> [  968.853173][ 2] [   T37]  xhci_check_bandwidth+0x140/0x2e0
+> [  968.858652][ 2] [   T37]  usb_hcd_alloc_bandwidth+0x1c8/0x348
+> [  968.864393][ 2] [   T37]  usb_disable_device+0x198/0x260
+> [  968.869698][ 2] [   T37]  usb_disconnect+0xdc/0x3a0
+> [  968.874571][ 2] [   T37]  usb_disconnect+0xbc/0x3a0
+> [  968.879441][ 2] [   T37]  hub_quiesce+0xa0/0x108
+> [  968.884053][ 2] [   T37]  hub_event+0x4d4/0x1558
+> [  968.888664][ 2] [   T37]  kretprobe_trampoline+0x0/0xc4
+> [  968.893884][ 2] [   T37]  worker_thread+0x4c/0x488
+> [  968.898668][ 2] [   T37]  kthread+0xf8/0x128
+> [  968.902933][ 2] [   T37]  ret_from_fork+0x10/0x18
+> 
+> The result is that you cannot suspend again.because the wq can't
+> be freezed.Also hard to reboot,when some application visited this
+> piece.
+> 
+> The reason of stuck is that some access related to xhci hardware
+> is being called.But xhci has problem,at least not running.(
+> when xhci_restore_registers(),the xhci will load op_regs.The
+> CMD_RUN will clear in xhci_suspend().)
+> 
 
-Clearing WOL_EN afterwards is not a problem because it will already
-have been setup, or is in its power-on default state.
+Nice catch and debugging work btw.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> So using XHCI_STATE_DYING flag,to avoid any code to touching
+> hardware immediately.hub_event() will complete.The usb_hc_died
+> tasks will be completed and some sys interfaces will be removed.
+
+The XHCI_STATE_DYING flag is currently only set in xhci_hc_died().
+So when this flag is set we could assume that the command ring and
+pending URBs are, or will be cleaned up. This would change with your patch.
+  
+We might need some other solution,
+Maybe set the set_bit(HCD_FLAG_HW_ACCESSIBLE, &hcd->flags) after
+CNR (Contorller Not Ready) is successfully cleared, and controller is
+actually accessible.
+
+We then would need to add checks to see if controller is accessible
+before queuing any commands to xHC hardware.
+
+Thanks
+Mathias
