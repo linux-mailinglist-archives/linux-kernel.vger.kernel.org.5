@@ -2,47 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6AF8805528
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C5B80552B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345212AbjLEMtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 07:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        id S1345285AbjLEMuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:50:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345119AbjLEMtp (ORCPT
+        with ESMTP id S1345119AbjLEMuS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:49:45 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D44A0;
-        Tue,  5 Dec 2023 04:49:51 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1rAUs0-0006bO-Oa; Tue, 05 Dec 2023 13:49:48 +0100
-Message-ID: <24aa7a8b-40ed-449b-a722-df4abf65f114@leemhuis.info>
-Date:   Tue, 5 Dec 2023 13:49:48 +0100
+        Tue, 5 Dec 2023 07:50:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7400CA0
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:50:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1636EC433C7;
+        Tue,  5 Dec 2023 12:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701780624;
+        bh=c3K5tJw47+N/W1nF4uxZF7+ilrykgTTkPU8dcFu2UbE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=f4SvzZfULqqut3U6Jxms3i7pKTKrOt88dpqXigdH2cFkQ+S1e5KvSWxLOVHtu5IQy
+         JT4qSqDpvcjT7oRc7HI2T/lvuaM234v0WIJzys1ryGpTVHAOiulV6EP/A3rNXBZExv
+         s53hGnsVOUn37Qmk4MPoeobMtba3sDmaBUKweqZSFowMjt0Vv1dqAT7cEPaBQvJvIt
+         VHImXnOur9e/nmsh0LhDiRY2lmm47/NBrjNMoy/aQKcv+cfBV2MRRBXxFMRbmxhgz2
+         jim19dFINaI8eFR3kKAMIJ8DUA22zDkS7lEmH2WKbIH/ZK8gZkv5ohCHuu4ripKSfP
+         IT2xJVXDelGYg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EE122C43170;
+        Tue,  5 Dec 2023 12:50:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [regressions] ntfs3: empty file on update without forced cache
- drop
-Content-Language: en-US, de-DE
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev,
-        Linux kernel regressions list <regressions@lists.linux.dev>,
-        Kari Argillander <kari.argillander@stargateuniverse.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <138ed123-0f84-4d7a-8a17-67fe2418cf29@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <138ed123-0f84-4d7a-8a17-67fe2418cf29@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701780592;01e3973a;
-X-HE-SMSGID: 1rAUs0-0006bO-Oa
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] xsk: skip polling event check for unbound socket
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170178062397.423.16825004727771471084.git-patchwork-notify@kernel.org>
+Date:   Tue, 05 Dec 2023 12:50:23 +0000
+References: <20231201061048.GA1510@libra05>
+In-Reply-To: <20231201061048.GA1510@libra05>
+To:     Yewon Choi <woni9911@gmail.com>
+Cc:     bjorn@kernel.org, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        threeearcat@gmail.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -51,87 +57,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[adding a bunch of people and two lists to the recipients, as Konstantin
-apparently hasn't sent any mail to any lists archived on lore for ~six
-weeks; maybe someone knows what's up or is willing to help out]
+Hello:
 
-On 27.11.23 07:18, Thorsten Leemhuis wrote:
-> Hi, Thorsten here, the Linux kernel's regression tracker.
-> 
-> Konstantin, I noticed a regression report in bugzilla.kernel.org.
-> Apparently it's cause by a change of yours.
-> 
-> As many (most?) kernel developers don't keep an eye on bugzilla, I
-> decided to forward it by mail. Note, you have to use bugzilla to reach
-> the reporter, as I sadly[1] can not CCed them in mails like this.
-> 
-> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218180 :
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Konstantin, are you still around? Would be great if you could look into
-this regression, as this sounds somewhat worrying.
+On Fri, 1 Dec 2023 15:10:52 +0900 you wrote:
+> In xsk_poll(), checking available events and setting mask bits should
+> be executed only when a socket has been bound. Setting mask bits for
+> unbound socket is meaningless.
+> Currently, it checks events even when xsk_check_common() failed.
+> To prevent this, we move goto location (skip_tx) after that checking.
+> 
+> Fixes: 1596dae2f17e ("xsk: check IFF_UP earlier in Tx path")
+> Signed-off-by: Yewon Choi <woni9911@gmail.com>
+> 
+> [...]
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+Here is the summary with links:
+  - [bpf] xsk: skip polling event check for unbound socket
+    https://git.kernel.org/bpf/bpf/c/e4d008d49a71
 
-#regzbot poke
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->> The problem I am facing is the following:
->> 1. I mount an NTFS partition via NTFS3
->> 2. I create a file
->> 3. I write to the file
->> 4. The file is empty
->> 5. I remount the partition
->> 6. The file has the changes I made before the remount
->>
->> I can avoid the remount by doing:
->> sudo sysctl vm.drop_caches=3
-> 
-> See the ticket for more details. It according to the report happens
-> still happens with 6.7-rc2, but not with 6.1.y. The reporter bisected
-> the problem to ad26a9c84510af ("fs/ntfs3: Fixing wrong logic in
-> attr_set_size and ntfs_fallocate") [v6.2-rc1].
-> 
-> Side note: while briefly checking lore for existing problems caused by
-> that change I noticed two syzbot reports about it that apparently nobody
-> looked into:
-> 
-> https://lore.kernel.org/all/000000000000bdf37505f1a7fc09@google.com/
-> https://lore.kernel.org/all/00000000000062174006016bc386@google.com/
-> 
-> [TLDR for the rest of this mail: I'm adding this report to the list of
-> tracked Linux kernel regressions; the text you find below is based on a
-> few templates paragraphs you might have encountered already in similar
-> form.]
-> 
-> BTW, let me use this mail to also add the report to the list of tracked
-> regressions to ensure it's doesn't fall through the cracks:
-> 
-> #regzbot introduced: ad26a9c84510af
-> https://bugzilla.kernel.org/show_bug.cgi?id=218180
-> #regzbot title: ntfs3: empty file on update without forced cache drop
-> #regzbot ignore-activity
-> 
-> This isn't a regression? This issue or a fix for it are already
-> discussed somewhere else? It was fixed already? You want to clarify when
-> the regression started to happen? Or point out I got the title or
-> something else totally wrong? Then just reply and tell me -- ideally
-> while also telling regzbot about it, as explained by the page listed in
-> the footer of this mail.
-> 
-> Developers: When fixing the issue, remember to add 'Link:' tags pointing
-> to the report (e.g. the buzgzilla ticket and maybe this mail as well, if
-> this thread sees some discussion). See page linked in footer for details.
-> 
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
-> 
-> [1] because bugzilla.kernel.org tells users upon registration their
-> "email address will never be displayed to logged out users"
-> 
-> 
+
