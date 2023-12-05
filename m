@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFCA804530
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B9F804531
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346389AbjLECn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:43:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
+        id S1346652AbjLECna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:43:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346186AbjLECn0 (ORCPT
+        with ESMTP id S1346337AbjLECn2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:43:26 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC237A4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:43:32 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-58cecfb4412so3525958eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:43:32 -0800 (PST)
+        Mon, 4 Dec 2023 21:43:28 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870DECD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:43:34 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6d87a83ec27so1843951a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:43:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701744211; x=1702349011; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701744213; x=1702349013; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+doFZUOdGHfe3e+JV/h+u6c2KRCECetYvlqoS/1QVjk=;
-        b=2RjRvL92eNsj8HtHxT7D/PACS/tbegyGv34eb3m75Tq7agd1G9fB20BKX5JjPW5CVS
-         DAb4/5p40HWJAMhtLajUsKBtxq5kAnZ1i8/2R/fp3GMx3UCfQViIA95TKmPV/GnGUkUd
-         mEcjOi4p3oSSBvTagb+1XE9rOVKy5jhnZFaL/3Pe8KSlXf9P4dISyI5x57vKDOS8Qd8t
-         SGc9mQz1YVsxSodHQm8Pb6977tfWUCKuLH6xMwmhynKtcXR9LlWmi2M9CXkiqEiY0jk9
-         84WG+9kQ47TgOtwhNPRsqjP5fG29G4tC1YWK8pi9J5c0ru1NofGlJNsdhVH1plQftle5
-         cukQ==
+        bh=ESe2+H6xRcIvQHZC4sCC1Ujc/nu3bNcuHE36+amdpNs=;
+        b=Y+ciD/tNCJQ8NcC2aGaOUHpwaeXN8Bf4qOEpdx8qdaMxXj+XhQ0CJGVcbaW2iopBha
+         EWPptcxKOXaAIF44bTipFnQAzSBJax29OwbCbYsdm96LVzlQqU34IvNM2H5mDmVLqJW9
+         ctBByOzacU7BTiAoLrbLg0SDJIktlQUEnFSX4nvhA/HGoXe2XF2M0rbLeYyqZg/Gvuht
+         AjCdMW3YlZt29/NrIT3WYz6bIbU/ERucE2PS0Qp6SNUk0hGWCXp2WGOwN6EO1aOGAgVm
+         S1T1NEUI/PzvYqnC0uBE6LbmffXt8h5AUhB/S1hoJNQPP3xlWCHjN1+RyJ8JL/bDnxTW
+         e3ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701744211; x=1702349011;
+        d=1e100.net; s=20230601; t=1701744213; x=1702349013;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+doFZUOdGHfe3e+JV/h+u6c2KRCECetYvlqoS/1QVjk=;
-        b=inmg4Ly4t+tI6lOpkGlA0t3MHEiENRuQhzjWQSqQEfZC1sCA3O+ZJrqdUWPXK7I8UR
-         HVlnhRT/oITy+IUSFVXwaqSvb44JcjtuI643R2h12xEsmgpxp6djfkVgrLLs2Tf+hVtI
-         surwnfGAco+5P6GXVvF+bYDcnXNtEt1JMS7WcYuI3Nw8cew7ZaVErSesCu2u4VtbU+6/
-         b1KMO6WkRvobbbTQuygrSeVcMNla25T5QKlFw2ORnSiJCfkJ4kIk2VbruKhKye3GSdt+
-         zqQf08E1f2xLXTXyMxhikYATiOCYjApCu9JGJFv+cpY+8duYHyHnNxu9CpwVH/a5ppKW
-         o7lA==
-X-Gm-Message-State: AOJu0Yy4rV5vvdgkoF1C/Vm7pdEu83IoE/kxhn4jWcp1F6pMW5cjpycM
-        W8Dlx4qm2Wu3QWs654ZpcxrQlKFbGhkhYkutF3Kfew==
-X-Google-Smtp-Source: AGHT+IESa+uIMlhGJ8omMCACn4oXC680NqScC0tWffrPykeRZIe5TFUQYcAdM2FafioZUI/dBXwO1w==
-X-Received: by 2002:a05:6820:2a09:b0:58e:1c48:1ee0 with SMTP id dr9-20020a0568202a0900b0058e1c481ee0mr3283907oob.18.1701744211227;
-        Mon, 04 Dec 2023 18:43:31 -0800 (PST)
+        bh=ESe2+H6xRcIvQHZC4sCC1Ujc/nu3bNcuHE36+amdpNs=;
+        b=Y8UMd3RLuQ6OYkGgT8X2uIS6XFEt+QUGz6Vs1h0+q7WyuYa1b1Cy7oMob6hWaXjbBd
+         J721jhi7HOR9e5CjFR76OcHIvXDtxF2625mxp2Y1gy3FnXTFLjX5ufDsZ6bCDwetse3k
+         Ey54usXnl/EzagBmO+4o0CfAk4+Jh/KznNdFwjYcsOjbkdTcTJsObxzMF7njxvTYcwqS
+         mzLW5O/hpwqh994dYt+U3q3leCsCgyyLd9zCCxcDlPm9GtxQvWTBgwWofeQ9bGSSIGbT
+         MYS7id8ndSj0312B/4AXt4o3dZM6pRmDqYW2ucMOMm9DQw2YWKKfy9z9T6JT64YOlWZQ
+         nMCw==
+X-Gm-Message-State: AOJu0YxSLW9bz/v7RfSTRlHIoXHLbw/BZYm4zAefD2eNuqjoGN+fjl5S
+        XWMRl9flzS3AZJNFy87PGPfMvRfvX2UsbeiE2usatw==
+X-Google-Smtp-Source: AGHT+IGEgSVldCBVjabdNWyXSrgKexmOSpdOUxfqb+i3/FDPH6nx8GslbA4iHobHadY6ni/KUBPIug==
+X-Received: by 2002:a9d:748b:0:b0:6d9:9ef8:84b7 with SMTP id t11-20020a9d748b000000b006d99ef884b7mr2852315otk.26.1701744213065;
+        Mon, 04 Dec 2023 18:43:33 -0800 (PST)
 Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id z17-20020a9d62d1000000b006b9848f8aa7sm2157655otk.45.2023.12.04.18.43.29
+        by smtp.gmail.com with ESMTPSA id z17-20020a9d62d1000000b006b9848f8aa7sm2157655otk.45.2023.12.04.18.43.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 18:43:30 -0800 (PST)
+        Mon, 04 Dec 2023 18:43:32 -0800 (PST)
 From:   Atish Patra <atishp@rivosinc.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Atish Patra <atishp@rivosinc.com>,
@@ -65,9 +65,9 @@ Cc:     Atish Patra <atishp@rivosinc.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Will Deacon <will@kernel.org>
-Subject: [RFC 1/9] RISC-V: Fix the typo in Scountovf CSR name
-Date:   Mon,  4 Dec 2023 18:43:02 -0800
-Message-Id: <20231205024310.1593100-2-atishp@rivosinc.com>
+Subject: [RFC 2/9] drivers/perf: riscv: Add a flag to indicate SBI v2.0 support
+Date:   Mon,  4 Dec 2023 18:43:03 -0800
+Message-Id: <20231205024310.1593100-3-atishp@rivosinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231205024310.1593100-1-atishp@rivosinc.com>
 References: <20231205024310.1593100-1-atishp@rivosinc.com>
@@ -83,44 +83,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The counter overflow CSR name is "scountovf" not "sscountovf".
-
-Fix the csr name.
-
-Fixes: 4905ec2fb7e6 ("RISC-V: Add sscofpmf extension support")
+SBI v2.0 added few functions to improve SBI PMU extension. In order
+to be backward compatible, the driver must use these functions only
+if SBI v2.0 is available.
 
 Signed-off-by: Atish Patra <atishp@rivosinc.com>
 ---
- arch/riscv/include/asm/csr.h         | 2 +-
- arch/riscv/include/asm/errata_list.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/perf/riscv_pmu_sbi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-index 306a19a5509c..88cdc8a3e654 100644
---- a/arch/riscv/include/asm/csr.h
-+++ b/arch/riscv/include/asm/csr.h
-@@ -281,7 +281,7 @@
- #define CSR_HPMCOUNTER30H	0xc9e
- #define CSR_HPMCOUNTER31H	0xc9f
+diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+index 16acd4dcdb96..40a335350d08 100644
+--- a/drivers/perf/riscv_pmu_sbi.c
++++ b/drivers/perf/riscv_pmu_sbi.c
+@@ -35,6 +35,8 @@
+ PMU_FORMAT_ATTR(event, "config:0-47");
+ PMU_FORMAT_ATTR(firmware, "config:63");
  
--#define CSR_SSCOUNTOVF		0xda0
-+#define CSR_SCOUNTOVF		0xda0
++static bool sbi_v2_available;
++
+ static struct attribute *riscv_arch_formats_attr[] = {
+ 	&format_attr_event.attr,
+ 	&format_attr_firmware.attr,
+@@ -1108,6 +1110,9 @@ static int __init pmu_sbi_devinit(void)
+ 		return 0;
+ 	}
  
- #define CSR_SSTATUS		0x100
- #define CSR_SIE			0x104
-diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
-index 83ed25e43553..7026fba12eeb 100644
---- a/arch/riscv/include/asm/errata_list.h
-+++ b/arch/riscv/include/asm/errata_list.h
-@@ -152,7 +152,7 @@ asm volatile(ALTERNATIVE_2(						\
- 
- #define ALT_SBI_PMU_OVERFLOW(__ovl)					\
- asm volatile(ALTERNATIVE(						\
--	"csrr %0, " __stringify(CSR_SSCOUNTOVF),			\
-+	"csrr %0, " __stringify(CSR_SCOUNTOVF),				\
- 	"csrr %0, " __stringify(THEAD_C9XX_CSR_SCOUNTEROF),		\
- 		THEAD_VENDOR_ID, ERRATA_THEAD_PMU,			\
- 		CONFIG_ERRATA_THEAD_PMU)				\
++	if (sbi_spec_version >= sbi_mk_version(2, 0))
++		sbi_v2_available = true;
++
+ 	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_RISCV_STARTING,
+ 				      "perf/riscv/pmu:starting",
+ 				      pmu_sbi_starting_cpu, pmu_sbi_dying_cpu);
 -- 
 2.34.1
 
