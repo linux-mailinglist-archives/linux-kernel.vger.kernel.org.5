@@ -2,185 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FFD804D6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5868804D6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:18:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbjLEJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:17:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S234966AbjLEJSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjLEJRw (ORCPT
+        with ESMTP id S229584AbjLEJSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:17:52 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F93C6;
-        Tue,  5 Dec 2023 01:17:58 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPA id 271311BF209;
-        Tue,  5 Dec 2023 09:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701767877;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p0q/m5JZa+81MKMuwCNwp5xuzKunJSbVF6gjFLpmzVo=;
-        b=LNe765YMnux7MK8ddMiwBbFZzHoejAofsMPr0uArVIAYHr2Cxap2phCX1VeQLy5sQP7xrs
-        3DIeVhqfUvbI9ReUDqM26HB1PYgJZ0AfmdCtXieDDV6Q/+/76xwdiaBkxxroBFdk8qJJ4F
-        NXpI7+IVz256/sbnBcKJZSwIcmDXPtEtEzVuSfUZMS04O4J7SpkPsqaM1P5fXgeR1/D8lz
-        ptnC8RLtGWnpAR77qBKHakk/woRu4nOoMs90ubbK+MPHBdPvEWr4fPLM39qfFR2QNOJntx
-        NiKqCotiBVfm8YfYUTqzqF6OA31nIAiuQSOCYH810/jxqIvke/4Pis9x1x36oQ==
-MIME-Version: 1.0
-Date:   Tue, 05 Dec 2023 10:17:56 +0100
-From:   Kamel BOUHARA <kamel.bouhara@bootlin.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Tue, 5 Dec 2023 04:18:11 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D607A138
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:18:16 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1915034144so648771966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:18:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riscv-rocks.de; s=google; t=1701767895; x=1702372695; darn=vger.kernel.org;
+        h=organization:user-agent:in-reply-to:content-disposition
+         :mime-version:references:mail-followup-to:reply-to:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NyyV7FDLLTugfQIqaxP8FNjfHS3S4eEzbgCWNE04/AY=;
+        b=RPil/7n23NNJXri+OQNHPb6RQpSGWxkcEW7Y6g1+BnhYoYY1U9ue3/xYWdKY2DSp+h
+         wI9duNOfEYRAWDigjv7cHSX1mAeAry/dT1q+rSrbRqPtx05XJzCOCuHUWI4el2GVWsoV
+         ZYuD0/S2WUQDVo2H01Agpqa2XhBa2yS7ESwjQxfyoxxqPEreqn58fTZpboO6x1lwNCGF
+         y+FGwletCLLutyN6WPvAxsDNFqqa5FkmpDZSJxOiaCG7P92M6422P/OKErICoX7FcAeV
+         7xAqCgVLiL7xXqVolUYXiQeHnzFxwme0oKIHHH7JfgEfOG9zelp7BhVAhuJSzD2ep14A
+         4IVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701767895; x=1702372695;
+        h=organization:user-agent:in-reply-to:content-disposition
+         :mime-version:references:mail-followup-to:reply-to:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NyyV7FDLLTugfQIqaxP8FNjfHS3S4eEzbgCWNE04/AY=;
+        b=FsUlxzEoXaIUVedED6GbCfTyPVjbO+TCSkFa4WBtmVni28Yp6J93P1qyXr7JiAZcdT
+         HRLvHsJMjQP0YROOOqJwKJU4bQHKX+3k+ZWQtgG2uVQC4mlpLQ9i/LP32a1ln7ZOrE1/
+         RLxE/bCAo6VbienGofUIthqvloxvVir4AVLsdHzQAmHXaLROChM2l/O/4qqE2M83UWrB
+         vuv+PLbXPTjcK/y4ekZACvZDRVNpQHkN3STipWN1G0Lpm5mL1oahtfUg7N3EVjgUbJOm
+         0AkSewssX9IvF79N4Z9xvAYdktEx94EqVNJb9jW/m3CvFaz7P2QreR9PIKuHV+/oAZlb
+         vasQ==
+X-Gm-Message-State: AOJu0YzC546/aVyC9VBYj3jGhLWu8Hfi5Xs23W0HztO+mDdwKeVX2/5N
+        hSgCIM2fVKizCGD6sybSuM0OMOwbnTzW8VLDZXMhLTC7
+X-Google-Smtp-Source: AGHT+IGqyRUTu9WLUc6nH2xCm42ZpYmhyLu5VkZd6XTvkBxqfK7IGfbNYY1unAPGXa7vSv96T8dnMQ==
+X-Received: by 2002:a17:906:243:b0:a19:a19b:c732 with SMTP id 3-20020a170906024300b00a19a19bc732mr3544020ejl.130.1701767895199;
+        Tue, 05 Dec 2023 01:18:15 -0800 (PST)
+Received: from fedora (p549451d5.dip0.t-ipconnect.de. [84.148.81.213])
+        by smtp.gmail.com with ESMTPSA id js22-20020a17090797d600b00a1b32663d7csm3271996ejc.102.2023.12.05.01.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 01:18:14 -0800 (PST)
+Date:   Tue, 5 Dec 2023 10:18:12 +0100
+From:   Damian Tometzki <damian@riscv-rocks.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Minda Chen <minda.chen@starfivetech.com>,
+        Conor Dooley <conor@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
         Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Marco Felsch <m.felsch@pengutronix.de>,
-        Jeff LaBundy <jeff@labundy.com>,
-        catalin.popescu@leica-geosystems.com,
-        mark.satterthwaite@touchnetix.com, bartp@baasheep.co.uk,
-        hannah.rossiter@touchnetix.com,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        bsp-development.geo@leica-geosystems.com
-Subject: Re: [PATCH v4 2/3] dt-bindings: input: Add TouchNetix axiom
- touchscreen
-In-Reply-To: <3ce65c3a-e781-4ba3-8436-8379e8e94d6b@linaro.org>
-References: <20231204140505.2838916-1-kamel.bouhara@bootlin.com>
- <20231204140505.2838916-3-kamel.bouhara@bootlin.com>
- <3ce65c3a-e781-4ba3-8436-8379e8e94d6b@linaro.org>
-Message-ID: <8ac4a9924e1d3b98c9f74dcb07b044b2@bootlin.com>
-X-Sender: kamel.bouhara@bootlin.com
-Organization: Bootlin
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: kamel.bouhara@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v11 0/20] Refactoring Microchip PCIe driver and add
+ StarFive PCIe
+Message-ID: <ZW7q1LEvEpVxoI4l@fedora>
+Reply-To: Damian Tometzki <damian@riscv-rocks.de>
+Mail-Followup-To: Bjorn Helgaas <helgaas@kernel.org>,
+        Minda Chen <minda.chen@starfivetech.com>,
+        Conor Dooley <conor@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>
+References: <c4154501-5b93-4eaf-8d2d-690809d26c57@starfivetech.com>
+ <20231204212807.GA629695@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204212807.GA629695@bhelgaas>
+User-Agent: Mutt
+X-Operating-System: Linux Fedora release 39 (Thirty Nine) (Kernel 6.7.0-rc4)
+Organization: Linux hacker
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 2023-12-05 09:15, Krzysztof Kozlowski a écrit :
-> On 04/12/2023 15:05, Kamel Bouhara wrote:
->> Add the TouchNetix axiom I2C touchscreen device tree bindings
->> documentation.
->> 
->> Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+On Mon, 04. Dec 15:28, Bjorn Helgaas wrote:
+> On Sat, Dec 02, 2023 at 09:17:24PM +0800, Minda Chen wrote:
+> > ...
+> > Please check this configuation.
+> > CONFIG_PHY_STARFIVE_JH7110_PCIE=y
+> > CONFIG_PINCTRL_STARFIVE_JH7110=y
+> > CONFIG_PINCTRL_STARFIVE_JH7110_SYS=y
+> > CONFIG_PINCTRL_STARFIVE_JH7110_AON=y
+> > 
+> > BTW, Maybe you can reply e-mail to me only.
 > 
->> +$id: 
->> http://devicetree.org/schemas/input/touchscreen/touchnetix,ax54a.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: TouchNetix Axiom series touchscreen controller
->> +
->> +maintainers:
->> +  - Kamel Bouhara <kamel.bouhara@bootlin.com>
->> +
+> There's usually no benefit to replying off-list.  The list archives
+> are very valuable for future maintenance because they help us
+> understand the reason things were done a certain way.
 > 
-> Why you do not have ref to touchscreen? Is it not a touchscreen?
+> Bjorn
+Hello together,
+the main problemwas was  to find the rquired CONFIG_* options for StarFive
+Board. It would be great to have an CONFIG_ Options with all required
+Dependencies.
 
-The common properties are not used or applicable here, should I still 
-ref touchscreen ?
+Best regards
+damian
+ 
 
-> 
-> 
->> +properties:
->> +  compatible:
->> +    const: touchnetix,ax54a
->> +
->> +  reg:
->> +    const: 0x66
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  reset-gpios:
->> +    maxItems: 1
->> +
->> +  poll-interval:
->> +    description: Poll interval time in milliseconds.
-> 
-> Missing type or missing ref to input. It seems you want to use existing
-> property thus no type, but you did not reference input.yaml
-> 
-
-Ok is this the right way to do it :
-
-allOf:
-   - $ref: input.yaml#
-
-properties:
-
-   poll-interval: true
-
->> +
->> +  VDDA-supply:
-> 
-> lowercase
-> 
->> +    description: Analog power supply regulator on VDDA pin
->> +
->> +  VDDI-supply:
-> 
-> lowercase
-> 
-
-Ack.
-
->> +    description: I/O power supply regulator on VDDI pin
->> +
->> +required:
->> +  - compatible
->> +  - reg
-> 
-> Supplies are usually required. Devices rarely can operate without  
-> power.
-
-Indeed, can I still have them optional in the driver ?
-
-I have fixed regulators and Im testing on x86 hence I
-would like to avoid having extra acpi code to supply them.
-
-> 
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/gpio/gpio.h>
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +    i2c {
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
-> 
-> Blank line
-
-Ack.
-
-> 
->> +      touchscreen@66 {
->> +        compatible = "touchnetix,ax54a";
->> +        reg = <0x66>;
->> +        interrupt-parent = <&gpio2>;
->> +        interrupts = <2 IRQ_TYPE_EDGE_FALLING>;
->> +        reset-gpios = <&gpio1 1 GPIO_ACTIVE_HIGH>;
->> +      };
-> 
-> Best regards,
-> Krzysztof
-
-Thanks
---
-Kamel Bouhara, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
