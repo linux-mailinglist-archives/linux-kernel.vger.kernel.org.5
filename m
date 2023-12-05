@@ -2,197 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 718BC8043D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD1E8043D2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343809AbjLEBOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 20:14:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52216 "EHLO
+        id S1343743AbjLEBPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 20:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234803AbjLEBOF (ORCPT
+        with ESMTP id S231567AbjLEBPm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 20:14:05 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B6AC9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:14:09 -0800 (PST)
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231205011406epoutp019979921ad120e5707c5e734ec86a5c66~dynb-UZE33129831298epoutp014
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:14:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231205011406epoutp019979921ad120e5707c5e734ec86a5c66~dynb-UZE33129831298epoutp014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701738846;
-        bh=MkGi/2ogU6WxSCf41iPNpXOwbjAlD6/TlSrozff2Drw=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=BxI+GVd53goM6hd9Ay76hIFfhYx9HAlPh/4MhqgIEf0qhskfhhhA+taIP2eXQCn/K
-         E6ytjpJcGnSBsPoSHBEMmwBFRdxgv7qXwABmj0jV+l4FA9Tphf+gCPdSr+1SXWy0LI
-         Zxnh+ZZTrd43Kd1AtYTfsdsEUCTfHL1f7s5mobSw=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20231205011406epcas1p4f1f7466d1447ea2e5a2044a7acf6e27b~dynbx-mDc0041700417epcas1p4o;
-        Tue,  5 Dec 2023 01:14:06 +0000 (GMT)
-Received: from epsmgec1p1-new.samsung.com (unknown [182.195.36.136]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SkjH13kWSz4x9Q7; Tue,  5 Dec
-        2023 01:14:05 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmgec1p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6B.48.19104.D597E656; Tue,  5 Dec 2023 10:14:05 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20231205011405epcas1p305aba0a2c2da590eec6553d35619b178~dynaeniBv0826208262epcas1p35;
-        Tue,  5 Dec 2023 01:14:05 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231205011405epsmtrp2767e7ea6ab21ec99cbee5275a34e1743~dynad8rjb2468824688epsmtrp2b;
-        Tue,  5 Dec 2023 01:14:05 +0000 (GMT)
-X-AuditID: b6c32a4c-80dff70000004aa0-43-656e795da982
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9A.91.08817.C597E656; Tue,  5 Dec 2023 10:14:04 +0900 (KST)
-Received: from cw00choi03 (unknown [10.113.111.106]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231205011404epsmtip2abc8003867aa919bece104c288f31125~dynaREQxu2040220402epsmtip2J;
-        Tue,  5 Dec 2023 01:14:04 +0000 (GMT)
-From:   "Chanwoo Choi" <cw00.choi@samsung.com>
-To:     <linux-kernel@vger.kernel.org>
-Cc:     "'Lukas Funke'" <lukas.funke-oss@weidmueller.com>,
-        "'Chanwoo Choi'" <chanwoo@kernel.org>,
-        "'MyungJoo Ham'" <myungjoo.ham@samsung.com>,
-        "'Reported-by: kernel test robot'" <lkp@intel.com>
-In-Reply-To: <02a701da2717$48abf150$da03d3f0$@samsung.com>
-Subject: RE: [PATCH v3] extcon: usbc-tusb320: Set interrupt polarity based
- on device-tree
-Date:   Tue, 5 Dec 2023 10:14:04 +0900
-Message-ID: <02b301da2718$56c488f0$044d9ad0$@samsung.com>
+        Mon, 4 Dec 2023 20:15:42 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1069101
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:15:47 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7c500dcdd7dso1105390241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 17:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701738947; x=1702343747; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y6OPJL50zxW+NLtfpJ/4wZLmjOQWjCZr7g4xDF4MxJM=;
+        b=CPZRFa0BvB7kIOR7G3j2eX5zmE0xBF9kexJCwKkHS2l75IhN7hmMEw8YeDZ9Bwze6v
+         pyerwuDUmXXcDicWYnCB78k762mq4fUbe4/DErsqFk+y/kAKld+VG6JPPrLtqBPes6EA
+         Tq4MTiLFFLeT31xhgf51qjux0rAyA9LMr3F+qX+mQ06vB2GU4P5DD1YW5BFidUUCCBoy
+         w9SkehXd/LCH/+siHyNAnmoknow+8WaWiicX+MNvFkP4jXxRYBvTBcsaOhUA39HFk0tK
+         hwDBxvnpDASQUR4gy7LILCjlhQxdE888Yc406Pi7r6DJBn///SPjJU1lgDQFEo0b1sEC
+         DbVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701738947; x=1702343747;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y6OPJL50zxW+NLtfpJ/4wZLmjOQWjCZr7g4xDF4MxJM=;
+        b=Em8/+j1fYsoki7l2bssIdyJoP3BNRO9VeTM7sCXbpUmzk1kWuVXOYJ+ib65rIvlkG3
+         OnsYeVsArLQV6iwGrD7fz0Op4E01mCkCaHbk8d85x8CNd+N53qbZ4QlQkzLs8ue6CXOi
+         apA/ap39JdCvFw2+9aHF/dnx0s2jXqsE3nG4RlBdHhS/mJv5HFCyT1DvAHMx/gaicsme
+         4+2SyEXshqEmyqBwy43eb0NUKAx/MVQlQRv4cFSr0UB/s81N3JXsndWiE/52VuaTeA2P
+         sx5fm/uCXzMIVDPBQwA1etLbbNvFm77r+CnZd/kaTWP0W+cUMrMTKLZQz6KrBg5KwcII
+         TzgA==
+X-Gm-Message-State: AOJu0YwacnCbrEZNFoDwXbKq1UbYCkwfWzGUU7ySvYbq328guTXVNa/y
+        xIlsbqDcRgF8FPCgDggaOyjktUQkD1Nmo33NKDk=
+X-Google-Smtp-Source: AGHT+IFW1PuSAm8mKEGdLxUG4/ewSPW1ZcY/qo3lMzsRhZUKGuFfik/5dyZF4LwrOmr9AUrfOELYrx/hm4Foih29CzY=
+X-Received: by 2002:a05:6122:1821:b0:4b2:c554:e3f4 with SMTP id
+ ay33-20020a056122182100b004b2c554e3f4mr1932612vkb.20.1701738946714; Mon, 04
+ Dec 2023 17:15:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHbId/uY71cZ8A+38Wz8TcnltFmcAHKn+mgsImXwQA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmrm5sZV6qwc9DMhYTb1xhsbi8aw6b
-        xavmR2wW2z/dZrW43biCzYHVY/Gel0wem1Z1snn0bVnF6PF5k5zHllWL2AJYo7JtMlITU1KL
-        FFLzkvNTMvPSbZW8g+Od403NDAx1DS0tzJUU8hJzU22VXHwCdN0yc4CWKymUJeaUAoUCEouL
-        lfTtbIryS0tSFTLyi0tslVILUnIKTAv0ihNzi0vz0vXyUkusDA0MjEyBChOyM94+Xcla8Fm4
-        Ys9E3gbGIwJdjJwcEgImEhNPTmLsYuTiEBLYwyix4mgzG4TziVHi+tGNrBDON0aJH2evs8O0
-        rD60F6plL6PEwnf/oVpeMkqc6G0BquLgYBPQkVjwIxSkQURASeL7tW5GEJtZ4CCjxNFrziA2
-        p4CVxOJta5hAbGGBaImbC5rBFrAIqEhsmLEYzOYVsJTYsfYDE4QtKHFy5hMWiDnyEtvfzmGG
-        OEhB4ufTZawQu6wkpn38yApRIyIxu7ONGeQ2CYFODomvk86yQjS4SLRtWscIYQtLvDq+Beoz
-        KYnP7/ayQTRMZpS4+Po1VPd6RomNK1ug1hlL7F86mQnkS2YBTYn1u/QhwooSO3/PhfqST+Ld
-        1x5WkBIJAV6JjjYhiBJlicsP7jJB2JISi9s72SYwKs1C8tssJL/NQvLDLIRlCxhZVjFKpRYU
-        56anJhsWGOrmpZbDYzw5P3cTIzhxavnsYPy+/q/eIUYmDsZDjBIczEoivPNuZacK8aYkVlal
-        FuXHF5XmpBYfYjQFhvhEZinR5Hxg6s4riTc0sTQwMTMyNrEwNDNUEueN+dSeIiSQnliSmp2a
-        WpBaBNPHxMEp1cCUyrR5X1nTw36FAHvWe8ebLoZdybrOd39FUMkM59lVu1b5vr4dWTzlZtrL
-        2/Mc4zJTk7RFA4sepc25EZLkbXDtBuvbSXPcXPV+mP6T1jqjIX+OaYWXz5XUa49lq/b1pU1f
-        GXq6aB9bpeYLzkkz9IL4JDzeXEtpyPznYeYs+/XJ75tMzw4zX4jommBn32bbrft+xRZptr6P
-        smebhfp4VY5P2eJySPrXyqyVy2t4jhocmcJ49JXK29o8hducma6VX9+s2zXVkmmD4YIph3Pn
-        s03bvP2fWlWQ4fsKyWVbH51ZaMhftPvJWrOzv8LNvBZJ5+ZMX7up5aOq//tvrffzTftOMHDq
-        8h3Yt+TuodqlejWqSizFGYmGWsxFxYkAGl2XsiUEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOLMWRmVeSWpSXmKPExsWy7bCSvG5MZV6qwdo35hYTb1xhsbi8aw6b
-        xavmR2wW2z/dZrW43biCzYHVY/Gel0wem1Z1snn0bVnF6PF5k5zHllWL2AJYo7hsUlJzMstS
-        i/TtErgy3j5dyVrwWbhiz0TeBsYjAl2MnBwSAiYSqw/tZexi5OIQEtjNKPFz2wtmiISkxLSL
-        R4FsDiBbWOLw4WKImueMEkeO/WICibMJ6Egs+BEKUi4ioCTx/Vo32BxmgcOMEit27GAHSQgJ
-        dDNK/L1ZCWJzClhJLN62hgnEFhaIlDiz4xkbiM0ioCKxYcZisHpeAUuJHWs/MEHYghInZz5h
-        AbGZBbQlnt58CmXLS2x/OwfqTgWJn0+XsUIcYSUx7eNHVogaEYnZnW3MExiFZyEZNQvJqFlI
-        Rs1C0rKAkWUVo2RqQXFuem6xYYFRXmq5XnFibnFpXrpecn7uJkZw3Ghp7WDcs+qD3iFGJg7G
-        Q4wSHMxKIrzzbmWnCvGmJFZWpRblxxeV5qQWH2KU5mBREuf99ro3RUggPbEkNTs1tSC1CCbL
-        xMEp1cCUprpKNW9PnO2xg+9DuDYdcjSzbMtq9PK4wn2ke2vcnoK6siVf+8TOHvhf4Xj5v/7c
-        baJLuiU2W+xUDvpQ9WWar8r7zstBdxr+8llLHdGcxlM9tzivcorqutuXvn/YfqSa58281xUH
-        r0alSXNWfNEVEolr3/VYMc5rx9JJr0/pvr8iNEX8fJeW67ynnbFffl12zQma6bLT/ciMT8+Y
-        nX6/eLooszCsv6ZaYt+y8yH3L2634LfVeHlA90Tf7fKD3O9ObPh0NFEp+NCNPW2F5c0dHky3
-        c94JbdzDsvmhpUFIVf6O2abdIUebbTVsD/XtKw5WCdjpcS5F4lgvC/OdHdvaXfMMbRiO3piy
-        lnHeHkc3JZbijERDLeai4kQA2BcM2QoDAAA=
-X-CMS-MailID: 20231205011405epcas1p305aba0a2c2da590eec6553d35619b178
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231205010631epcas1p48036e1b3f087f23807f69cc9c465cb07
-References: <CGME20231205010631epcas1p48036e1b3f087f23807f69cc9c465cb07@epcas1p4.samsung.com>
-        <02a701da2717$48abf150$da03d3f0$@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231204102027.57185-1-ryan.roberts@arm.com> <20231204102027.57185-5-ryan.roberts@arm.com>
+In-Reply-To: <20231204102027.57185-5-ryan.roberts@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Tue, 5 Dec 2023 09:15:34 +0800
+Message-ID: <CAGsJ_4zG6W_Z-u+3QcRDn4ByoeqUXjMusNS0RotfRMSqo8RCHg@mail.gmail.com>
+Subject: Re: [PATCH v8 04/10] mm: thp: Support allocation of anonymous
+ multi-size THP
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Chanwoo Choi <cw00.choi@samsung.com>
-> Sent: Tuesday, December 5, 2023 10:07 AM
-> To: linux-kernel@vger.kernel.org
-> Cc: 'Lukas Funke' <lukas.funke-oss@weidmueller.com>; 'Signed-off-by:
-> Chanwoo Choi' <cw00.choi@samsung.com>; 'Chanwoo Choi' <chanwoo@kernel.org>;
-> 'MyungJoo Ham' <myungjoo.ham@samsung.com>; 'Reported-by: kernel test robot'
-> <lkp@intel.com>
-> Subject: [PATCH v3] extcon: usbc-tusb320: Set interrupt polarity based on
-> device-tree
-> 
-> Remove 'IRQF_TRIGGER_FALLING' request which is not allowed on every
-> interrupt controller (i.e. arm64 GIC). Replace flag by a request that
-> depends on the actual device-tree setting.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes:
-> https://lore.kernel.org/oe-kbuild-all/202311221355.yxYpTIw3-lkp@intel.com/
-> Signed-off-by: Lukas Funke <lukas.funke@weidmueller.com>
-> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+On Mon, Dec 4, 2023 at 6:21=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com> =
+wrote:
+>
+> Introduce the logic to allow THP to be configured (through the new sysfs
+> interface we just added) to allocate large folios to back anonymous
+> memory, which are larger than the base page size but smaller than
+> PMD-size. We call this new THP extension "multi-size THP" (mTHP).
+>
+> mTHP continues to be PTE-mapped, but in many cases can still provide
+> similar benefits to traditional PMD-sized THP: Page faults are
+> significantly reduced (by a factor of e.g. 4, 8, 16, etc. depending on
+> the configured order), but latency spikes are much less prominent
+> because the size of each page isn't as huge as the PMD-sized variant and
+> there is less memory to clear in each page fault. The number of per-page
+> operations (e.g. ref counting, rmap management, lru list management) are
+> also significantly reduced since those ops now become per-folio.
+>
+> Some architectures also employ TLB compression mechanisms to squeeze
+> more entries in when a set of PTEs are virtually and physically
+> contiguous and approporiately aligned. In this case, TLB misses will
+> occur less often.
+>
+> The new behaviour is disabled by default, but can be enabled at runtime
+> by writing to /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled
+> (see documentation in previous commit). The long term aim is to change
+> the default to include suitable lower orders, but there are some risks
+> around internal fragmentation that need to be better understood first.
+>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
-> Changes from v2
-> - Use IRQF_TRIGGER_FALLING if there are no irq_data on devicetree
-> 
->  drivers/extcon/extcon-usbc-tusb320.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/extcon/extcon-usbc-tusb320.c
-> b/drivers/extcon/extcon-usbc-tusb320.c
-> index 4d08c2123e59..2eab341de6b7 100644
-> --- a/drivers/extcon/extcon-usbc-tusb320.c
-> +++ b/drivers/extcon/extcon-usbc-tusb320.c
-> @@ -17,6 +17,7 @@
->  #include <linux/usb/typec.h>
->  #include <linux/usb/typec_altmode.h>
->  #include <linux/usb/role.h>
-> +#include <linux/irq.h>
-> 
->  #define TUSB320_REG8				0x8
->  #define TUSB320_REG8_CURRENT_MODE_ADVERTISE	GENMASK(7, 6)
-> @@ -515,6 +516,8 @@ static int tusb320_probe(struct i2c_client *client)
->  	const void *match_data;
->  	unsigned int revision;
->  	int ret;
-> +	u32 irq_trigger_type = IRQF_TRIGGER_FALLING;
-> +	struct irq_data *irq_d;
-> 
->  	priv = devm_kzalloc(&client->dev, sizeof(*priv), GFP_KERNEL);
->  	if (!priv)
-> @@ -568,9 +571,13 @@ static int tusb320_probe(struct i2c_client *client)
->  		 */
->  		tusb320_state_update_handler(priv, true);
-> 
-> +	irq_d = irq_get_irq_data(client->irq);
-> +	if (irq_d)
-> +		irq_trigger_type = irqd_get_trigger_type(irq_d);
+>  include/linux/huge_mm.h |   6 ++-
+>  mm/memory.c             | 106 ++++++++++++++++++++++++++++++++++++----
+>  2 files changed, 101 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index bd0eadd3befb..91a53b9835a4 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -68,9 +68,11 @@ extern struct kobj_attribute shmem_enabled_attr;
+>  #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
+>
+>  /*
+> - * Mask of all large folio orders supported for anonymous THP.
+> + * Mask of all large folio orders supported for anonymous THP; all order=
+s up to
+> + * and including PMD_ORDER, except order-0 (which is not "huge") and ord=
+er-1
+> + * (which is a limitation of the THP implementation).
+>   */
+> -#define THP_ORDERS_ALL_ANON    BIT(PMD_ORDER)
+> +#define THP_ORDERS_ALL_ANON    ((BIT(PMD_ORDER + 1) - 1) & ~(BIT(0) | BI=
+T(1)))
+>
+>  /*
+>   * Mask of all large folio orders supported for file THP.
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 3ceeb0f45bf5..bf7e93813018 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4125,6 +4125,84 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>         return ret;
+>  }
+>
+> +static bool pte_range_none(pte_t *pte, int nr_pages)
+> +{
+> +       int i;
 > +
->  	ret = devm_request_threaded_irq(priv->dev, client->irq, NULL,
->  					tusb320_irq_handler,
-> -					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-> +					IRQF_ONESHOT | irq_trigger_type,
->  					client->name, priv);
->  	if (ret)
->  		tusb320_typec_remove(priv);
+> +       for (i =3D 0; i < nr_pages; i++) {
+> +               if (!pte_none(ptep_get_lockless(pte + i)))
+> +                       return false;
+> +       }
+> +
+> +       return true;
+> +}
+> +
+> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +static struct folio *alloc_anon_folio(struct vm_fault *vmf)
+> +{
+> +       gfp_t gfp;
+> +       pte_t *pte;
+> +       unsigned long addr;
+> +       struct folio *folio;
+> +       struct vm_area_struct *vma =3D vmf->vma;
+> +       unsigned long orders;
+> +       int order;
+> +
+> +       /*
+> +        * If uffd is active for the vma we need per-page fault fidelity =
+to
+> +        * maintain the uffd semantics.
+> +        */
+> +       if (userfaultfd_armed(vma))
+> +               goto fallback;
+> +
+> +       /*
+> +        * Get a list of all the (large) orders below PMD_ORDER that are =
+enabled
+> +        * for this vma. Then filter out the orders that can't be allocat=
+ed over
+> +        * the faulting address and still be fully contained in the vma.
+> +        */
+> +       orders =3D thp_vma_allowable_orders(vma, vma->vm_flags, false, tr=
+ue, true,
+> +                                         BIT(PMD_ORDER) - 1);
+> +       orders =3D thp_vma_suitable_orders(vma, vmf->address, orders);
+> +
+> +       if (!orders)
+> +               goto fallback;
+> +
+> +       pte =3D pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
+> +       if (!pte)
+> +               return ERR_PTR(-EAGAIN);
+> +
+> +       order =3D first_order(orders);
+> +       while (orders) {
+> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+> +               vmf->pte =3D pte + pte_index(addr);
+> +               if (pte_range_none(vmf->pte, 1 << order))
+> +                       break;
+> +               order =3D next_order(&orders, order);
+> +       }
+> +
+> +       vmf->pte =3D NULL;
+> +       pte_unmap(pte);
+> +
+> +       gfp =3D vma_thp_gfp_mask(vma);
+> +
+> +       while (orders) {
+> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
+> +               folio =3D vma_alloc_folio(gfp, order, vma, addr, true);
+> +               if (folio) {
+> +                       clear_huge_page(&folio->page, addr, 1 << order);
+
+Minor.
+
+Do we have to constantly clear a huge page? Is it possible to let
+post_alloc_hook()
+finish this job by using __GFP_ZERO/__GFP_ZEROTAGS as
+vma_alloc_zeroed_movable_folio() is doing?
+
+struct folio *vma_alloc_zeroed_movable_folio(struct vm_area_struct *vma,
+                                                unsigned long vaddr)
+{
+        gfp_t flags =3D GFP_HIGHUSER_MOVABLE | __GFP_ZERO;
+
+        /*
+         * If the page is mapped with PROT_MTE, initialise the tags at the
+         * point of allocation and page zeroing as this is usually faster t=
+han
+         * separate DC ZVA and STGM.
+         */
+        if (vma->vm_flags & VM_MTE)
+                flags |=3D __GFP_ZEROTAGS;
+
+        return vma_alloc_folio(flags, 0, vma, vaddr, false);
+}
+
+> +                       return folio;
+> +               }
+> +               order =3D next_order(&orders, order);
+> +       }
+> +
+> +fallback:
+> +       return vma_alloc_zeroed_movable_folio(vma, vmf->address);
+> +}
+> +#else
+> +#define alloc_anon_folio(vmf) \
+> +               vma_alloc_zeroed_movable_folio((vmf)->vma, (vmf)->address=
+)
+> +#endif
+> +
+>  /*
+>   * We enter with non-exclusive mmap_lock (to exclude vma changes,
+>   * but allow concurrent faults), and pte mapped but not yet locked.
+> @@ -4132,6 +4210,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>   */
+>  static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+>  {
+> +       int i;
+> +       int nr_pages =3D 1;
+> +       unsigned long addr =3D vmf->address;
+>         bool uffd_wp =3D vmf_orig_pte_uffd_wp(vmf);
+>         struct vm_area_struct *vma =3D vmf->vma;
+>         struct folio *folio;
+> @@ -4176,10 +4257,15 @@ static vm_fault_t do_anonymous_page(struct vm_fau=
+lt *vmf)
+>         /* Allocate our own private page. */
+>         if (unlikely(anon_vma_prepare(vma)))
+>                 goto oom;
+> -       folio =3D vma_alloc_zeroed_movable_folio(vma, vmf->address);
+> +       folio =3D alloc_anon_folio(vmf);
+> +       if (IS_ERR(folio))
+> +               return 0;
+>         if (!folio)
+>                 goto oom;
+>
+> +       nr_pages =3D folio_nr_pages(folio);
+> +       addr =3D ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
+> +
+>         if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
+>                 goto oom_free_page;
+>         folio_throttle_swaprate(folio, GFP_KERNEL);
+> @@ -4196,12 +4282,13 @@ static vm_fault_t do_anonymous_page(struct vm_fau=
+lt *vmf)
+>         if (vma->vm_flags & VM_WRITE)
+>                 entry =3D pte_mkwrite(pte_mkdirty(entry), vma);
+>
+> -       vmf->pte =3D pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->addre=
+ss,
+> -                       &vmf->ptl);
+> +       vmf->pte =3D pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf=
+->ptl);
+>         if (!vmf->pte)
+>                 goto release;
+> -       if (vmf_pte_changed(vmf)) {
+> -               update_mmu_tlb(vma, vmf->address, vmf->pte);
+> +       if ((nr_pages =3D=3D 1 && vmf_pte_changed(vmf)) ||
+> +           (nr_pages  > 1 && !pte_range_none(vmf->pte, nr_pages))) {
+> +               for (i =3D 0; i < nr_pages; i++)
+> +                       update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pt=
+e + i);
+>                 goto release;
+>         }
+>
+> @@ -4216,16 +4303,17 @@ static vm_fault_t do_anonymous_page(struct vm_fau=
+lt *vmf)
+>                 return handle_userfault(vmf, VM_UFFD_MISSING);
+>         }
+>
+> -       inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
+> -       folio_add_new_anon_rmap(folio, vma, vmf->address);
+> +       folio_ref_add(folio, nr_pages - 1);
+> +       add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
+> +       folio_add_new_anon_rmap(folio, vma, addr);
+>         folio_add_lru_vma(folio, vma);
+>  setpte:
+>         if (uffd_wp)
+>                 entry =3D pte_mkuffd_wp(entry);
+> -       set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
+> +       set_ptes(vma->vm_mm, addr, vmf->pte, entry, nr_pages);
+>
+>         /* No need to invalidate - it was non-present before */
+> -       update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
+> +       update_mmu_cache_range(vmf, vma, addr, vmf->pte, nr_pages);
+>  unlock:
+>         if (vmf->pte)
+>                 pte_unmap_unlock(vmf->pte, vmf->ptl);
 > --
 > 2.25.1
-
-Applied it. Thanks.
-
-Best Regards,
-Chanwoo Choi
-
-
+>
