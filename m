@@ -2,139 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F244805B62
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7703D805C19
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346094AbjLEPTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:19:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47708 "EHLO
+        id S1442364AbjLEPTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:19:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346056AbjLEPTb (ORCPT
+        with ESMTP id S1346143AbjLEPTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:19:31 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E874BF;
-        Tue,  5 Dec 2023 07:19:36 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B5FJL4I111898;
-        Tue, 5 Dec 2023 09:19:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701789561;
-        bh=taSSSLzsFEyMw97vXil/IpA9bfrEDvDHwDlD5KErnEI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=VmSXmc5OWCkNPPwWTjDdF5lholG6w4iBDvKIBIJLlPY7P4IipVPnpzBJ+eB9002aL
-         IOYqeQtCeXYOMmQH/98H/8/9qeXDv+tD5tF67+McXCd8iO8cqYZwY9MuyN13KzLYzv
-         GMsg4VTpkBLBMAsW9KDqNza9TDoZvcjagfcrUSEU=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B5FJLGt025895
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 5 Dec 2023 09:19:21 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
- Dec 2023 09:19:21 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 5 Dec 2023 09:19:21 -0600
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B5FJLhj083541;
-        Tue, 5 Dec 2023 09:19:21 -0600
-Date:   Tue, 5 Dec 2023 09:19:21 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>
-CC:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "donald.robson@imgtec.com" <donald.robson@imgtec.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sarah.walker@imgtec.com" <sarah.walker@imgtec.com>,
-        "kristo@kernel.org" <kristo@kernel.org>,
-        "vigneshr@ti.com" <vigneshr@ti.com>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH] arm64: dts: ti: k3-am62-main: Add GPU device node
-Message-ID: <20231205151921.orba632qpuf2nmxf@wildness>
-References: <20231204121522.47862-1-donald.robson@imgtec.com>
- <c20b213534667337f08b75a6c325fafec6526135.camel@siemens.com>
+        Tue, 5 Dec 2023 10:19:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B6A183
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701789586; x=1733325586;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=igrN7LROXl5mBA6tv2wFapPYleNv6JcnYw0ZO7xrn2s=;
+  b=ahIQHutEAG7ttwFUFgrFY5m9ZYNq17Vt3l+E1kTATHej+8rgS+LzJ2t0
+   CfyLQxjd7vH7HAh7lpYJJvbnti++KMq8ejcBfzG3Z5A9kjqTMlCuCLsu+
+   491LLHfs8d10EHy85SEqZlu7qY+DeDeD8QGh2YVuQHHon5CjHwfVjh56U
+   lwuzle9z18TuCLaASN1c0eIjfYfHNansunkGSfAFaZ1ySWI8Lo2elvquK
+   Q+vHFpQwoQ0yzV+hQJoMgwwIJ8ZEL6cz+u/2yuIxMQ6y8x9qCAWcvUW2V
+   T5xtz3gwWpjEbTXkrFwj0k9Fx669FcsPNmITrdxDuPx4FNFwp59NOnLY7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="378932951"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="378932951"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:19:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="799998674"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="799998674"
+Received: from nhickam-mobl.amr.corp.intel.com (HELO [10.255.230.231]) ([10.255.230.231])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:19:45 -0800
+Message-ID: <7070d14f-d35b-4b6a-9038-20dcbb984776@intel.com>
+Date:   Tue, 5 Dec 2023 07:19:44 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c20b213534667337f08b75a6c325fafec6526135.camel@siemens.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at
+ performance
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     pdurrant@amazon.co.uk, bp@alien8.de, dave.hansen@linux.intel.com,
+        hdegoede@redhat.com, hpa@zytor.com, jalliste@amazon.co.uk,
+        juew@amazon.com, len.brown@intel.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterz@infradead.org, rafael.j.wysocki@intel.com,
+        tglx@linutronix.de, usama.arif@bytedance.com, x86@kernel.org
+References: <53bce76c5c60463eba1372df426a64b9@amazon.co.uk>
+ <1D71D218-5EB6-47DE-A01B-3A66F9F4C74E@infradead.org>
+ <CAJZ5v0iVvMLK_VcPRJ4sW1eOh0EtfcFvKjH5j1y1GbA0Y6q--Q@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <CAJZ5v0iVvMLK_VcPRJ4sW1eOh0EtfcFvKjH5j1y1GbA0Y6q--Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11:15-20231205, Sverdlin, Alexander wrote:
-> Hi Donald, Sarah et al,
-> 
-> thanks for the patch!
-> 
-> On Mon, 2023-12-04 at 12:15 +0000, Donald Robson wrote:
-> > From: Sarah Walker <sarah.walker@imgtec.com>
-> > 
-> > Add the Series AXE GPU node to the AM62 device tree.
-> > 
-> > Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
-> > Signed-off-by: Donald Robson <donald.robson@imgtec.com>
-> 
-> powervr fd00000.gpu: [drm] loaded firmware powervr/rogue_33.15.11.3_v1.fw
-> powervr fd00000.gpu: [drm] FW version v1.0 (build 6503725 OS)
-> [drm] Initialized powervr 1.0.0 20230904 for fd00000.gpu on minor 0
-> 
-> In general it allows the driver to be probed on TI AM625 EK, so
-> Tested-by: Alexander Sverdlin <alexander.sverdlin@siemens.com>
-> 
-> But I'm not sure if you maybe want to disable it by default like
-> other HW blocks for the (potential) boards which don't have video at all.
+On 12/5/23 04:12, Rafael J. Wysocki wrote:
+>> And yes, we *particularly* care in the kexec case because guests experience it as excessive steal time. But it ain't great in the general case either, surely?
+> So IMV it would be perfectly fine to add a command line arg to provide
+> the initial value of energy_perf_bias for the ones who know what they
+> are doing.
 
-There is no board level dependency for GPU, so only place we have
-permitted status = "disabled" is when the node has specific board
-interface level (pinmux...) to  be operational completely.
+Let's say we're on a system where the default is "normal" and the user
+actually decides they want "performance"?  Is that rational?  Should the
+command-line be more general in specifying a desired performance level
+instead of just flipping the hack on and off?
 
-So, no, default shouldn't have a status = "disabled".
+We could, for instance just support this pair:
 
-> 
-> > ---
-> >  arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> > index e5c64c86d1d5..4338fd8ab2d7 100644
-> > --- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> > +++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-> > @@ -965,4 +965,13 @@ mcasp2: audio-controller@2b20000 {
-> >                 power-domains = <&k3_pds 192 TI_SCI_PD_EXCLUSIVE>;
-> >                 status = "disabled";
-> >         };
-> > +
-> > +       gpu: gpu@fd00000 {
-> > +               compatible = "ti,am62-gpu", "img,img-axe";
-> > +               reg = <0x00 0x0fd00000 0x00 0x20000>;
-> > +               clocks = <&k3_clks 187 0>;
-> > +               clock-names = "core";
-> > +               interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
-> > +               power-domains = <&k3_pds 187 TI_SCI_PD_EXCLUSIVE>;
-> > +       };
-> >  };
-> 
-> -- 
-> Alexander Sverdlin
-> Siemens AG
-> www.siemens.com
+	intel_epb=auto		(default, will hack performance=>normal)
+	intel_epb=preserve	(leave it alone)
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+for now.  That would give us the existing behavior and the override that
+folks want for kexec.  But it would also leave open the possibility to
+do things like this in the future:
+
+	intel_epb=normal	(always override to normal)
+	intel_epb=performance	(always override to performance)
