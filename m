@@ -2,129 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF26880487C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2A1804880
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 05:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbjLEESe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 23:18:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
+        id S231672AbjLEEUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 23:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjLEESd (ORCPT
+        with ESMTP id S229611AbjLEEUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 23:18:33 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32988FA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 20:18:39 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-111-98.bstnma.fios.verizon.net [173.48.111.98])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3B54HtgF018973
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Dec 2023 23:17:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1701749878; bh=1o/bCjAzFZcpDU/Upo0AbbDspDxX8m5wngzphZwiRqg=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=H10iMOp8jBXz1T7Z61RNNYKslJY5CKV5RMwsoIj9e4TDGASxctktv/iVv1QW+BMvg
-         jQYPIMpSWDkg5pI3OUhDZ2D/x9DU3kGX4qchiwQESXfI+wH0bVaYmVZVXQscdAhF2T
-         K1gjb9tWQCZf7J6pSjyu1A1wusFlDSDQUU+Svs2Il1zhQL1dQwOtQQ1smqxSFW6M6P
-         L78KDa/yQf1CX+O+KObZBDCazLk9OX7LNf5kl7DDXy7S5qY7fIPRJUcYTQ4lpWF0RI
-         h8AsQD/KUSnXWP1QznGiyfYHvtfDH25SzYXXmUupfpr3QvdKarrD/9RpALMnH60HiK
-         IDsfhqCNUNdcA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 5294A15C02E0; Mon,  4 Dec 2023 23:17:55 -0500 (EST)
-Date:   Mon, 4 Dec 2023 23:17:55 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org, adilger.kernel@dilger.ca,
-        willy@infradead.org, akpm@linux-foundation.org,
-        ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Message-ID: <20231205041755.GG509422@mit.edu>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+        Mon, 4 Dec 2023 23:20:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16266FA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 20:20:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B55C433C8;
+        Tue,  5 Dec 2023 04:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701750056;
+        bh=cYXfgEUnHpMfmOckZEUuZ8xDn9DXcjOAm8MCEgy+tNk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=CW8Sr/MJ5RZoHCQ69JfRgub52iftgGV0NccVxjHMH1NdUJviX1oxsNV2rBy8vCfJF
+         BZdSvhZ3Iiu4V9RPdIZyJJT51QYBCdmtHd04F9U9PNwuOxecdFzGS5y9IXBPtjPac2
+         5be745ra4n/uiCk4pWM4iAeST+lZsg1WP/QvLPr3OxsySx3tqReE9IuwCA9J7PNTH8
+         NqmlvkgDexMz1PzM5jgV7dFTyDgdiX5YoaV2anBwxbU9qxRfBzNZB0DVN2PQXEQ6uF
+         FBOXAvrNXqxSXSYEq/W8b0PJgJ12bZ57AuXmu/QkvaUoO1tZg6mJktQE5xK1uC9f5P
+         U8GP4La+svnHQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 12376CE1147; Mon,  4 Dec 2023 20:20:56 -0800 (PST)
+Date:   Mon, 4 Dec 2023 20:20:56 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Neeraj Upadhyay <neeraj.upadhyay@amd.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu <rcu@vger.kernel.org>
+Subject: Re: [PATCH 0/3] rcu/nocb updates v2
+Message-ID: <08b4d5bf-800b-4696-8c4d-fc86af741849@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231115191128.15615-1-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231115191128.15615-1-frederic@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 04, 2023 at 09:50:18PM +0800, Baokun Li wrote:
-> The problem is with a one-master-twoslave MYSQL database with three
-> physical machines, and using sysbench pressure testing on each of the
-> three machines, the problem occurs about once every two to three hours.
+On Wed, Nov 15, 2023 at 02:11:25PM -0500, Frederic Weisbecker wrote:
+> Hi,
 > 
-> The problem is with the relay log file, and when the problem occurs,
-> the middle dozens of bytes of the file are read as all zeros, while
-> the data on disk is not. This is a journal-like file where a write
-> process gets the data from the master node and writes it locally,
-> and another replay process reads the file and performs the replay
-> operation accordingly (some SQL statements).  The problem is that
-> when replaying, it finds that the data read is corrupted, not valid
-> SQL data, while the data on disk is normal.
+> Here is a re-issue of some leftovers from a previous patchset.
+> Changes since last time:
+> 
+> 1) Use rcu_get_jiffies_lazy_flush() instead of the raw variable (thanks Joel)
+> 2) Further comment ordering expectations between grace period end and
+>    callbacks execution.
 
-You mentioned "scripts" --- are these locally developped scripts by
-any chance?  The procedure suggested in a few places that I looked up
-don't involve needing to read the replay log.   For example from[1]:
+Hearing no objections, I have queued these for further review and testing.
 
-On the master server:
+							Thanx, Paul
 
-root@repl-master:~# mysql -uroot -p;
-mysql> CREATE USER ‘slave’@’12.34.56.789‘ IDENTIFIED BY ‘SLAVE_PASSWORD‘;
-mysql> GRANT REPLICATION SLAVE ON . TO ‘slave’@’12.34.56.222 ‘;
-mysql> FLUSH PRIVILEGES;
-mysql> FLUSH TABLES WITH READ LOCK;
-
-This will make the master server read-only, with all pending writes
-flushed out (so you don't need to worry about the replay log), and
-then you move the data from the master to slave:
-
-root@repl-master:~# mysqldump -u root -p –all-databases –master-data > data.sql
-root@repl-master:~# scp data.sql root@12.34.56.222
-
-Then on the slave:
-
-root@repl-slave:~# mysql -uroot -p < data.sql
-root@repl-slave:~# mysql -uroot -p;
-mysql> STOP SLAVE;
-
-... and then on the master:
-
-root@repl-master:~# mysql -uroot -p;
-mysql> UNLOCK TABLES;
-
-... and back on the slave:
-
-root@repl-slave:~# mysql -uroot -p;
-mysql> START SLAVE;
-
-[1] https://hevodata.com/learn/mysql-master-slave-replication/
-
-... or you could buy the product advertised at [1] which is easier for
-the database administrators, but results in $$$ flowing to the Hevo
-company.  :-)
-
-In any case, I'm pretty sure that the official documented way of
-setting up a failover replication setup doesn't involve buffered reads
-of the replay file.
-
-It is certainly the case that mysqldump uses buffered reads, but
-that's why you have to temporary make the database read-only using
-"FLUSH TABLES WITH READ LOCK" before taking a database snapshot, and
-then re-enable database updates the "UNLOCK TABLES" SQL commands.
-
-Cheers,
-
-					- Ted
+> Thanks.
+> 
+> Frederic Weisbecker (3):
+>   rcu: Rename jiffies_till_flush to jiffies_lazy_flush
+>   rcu/nocb: Remove needless LOAD-ACQUIRE
+>   rcu/nocb: Remove needless full barrier after callback advancing
+> 
+>  kernel/rcu/rcu.h       |  8 ++++----
+>  kernel/rcu/rcuscale.c  |  6 +++---
+>  kernel/rcu/tree.c      |  6 ++++++
+>  kernel/rcu/tree_nocb.h | 26 ++++++++++++--------------
+>  4 files changed, 25 insertions(+), 21 deletions(-)
+> 
+> -- 
+> 2.42.1
+> 
