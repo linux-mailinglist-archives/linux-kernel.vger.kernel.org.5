@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E09804B39
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3D2804B3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344619AbjLEHfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 02:35:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43242 "EHLO
+        id S1344626AbjLEHgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 02:36:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjLEHf2 (ORCPT
+        with ESMTP id S229615AbjLEHgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 02:35:28 -0500
+        Tue, 5 Dec 2023 02:36:04 -0500
 Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFDCC9;
-        Mon,  4 Dec 2023 23:35:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53094C9;
+        Mon,  4 Dec 2023 23:36:11 -0800 (PST)
 Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id AA5FA60354;
-        Tue,  5 Dec 2023 07:35:03 +0000 (UTC)
+        by mail5.25mail.st (Postfix) with ESMTPSA id C124C60354;
+        Tue,  5 Dec 2023 07:35:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1701761734;
-        bh=KP1Y9auzSXohgEBe/nM2pmeM9gWKTqhwu5purIjrJ30=;
+        s=25mailst; t=1701761770;
+        bh=fXSH3oMsVEjAG6Eqr9C167WFqrDgpOZtF9UGQTqSwU4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iiapsB0ixP6Lf5/Ezprk5y448kv3RZzHmd3IR5yz1x4boItzQnnZN11PbSNvN4enQ
-         lDKVr1994kakOMmX+ogP1Op4G+bxETd9sZFScCMmtNYjxc1UwE4+y2gdGMvfJwaE9s
-         V8kI5Jt0inhXmcn+M91J/uYeJpf4vh/NYcboNbJ4JUPcibvYlOIKc0IgVghIOL7FId
-         TkU901sjzOfjZBktm6wHzHswdJLjBfsRSQjvyiY4kqUFAIokWViTP25Dif4IJ6Bw2+
-         4iVNJ1o9hw3SqFTC2GeJa7rcONy9JExiEdV/pd1/gfybmm0MI3wnz+JJk5lfEvJxVj
-         z5jGjoOALQFpA==
+        b=dfOVSwKV+A03I7NcIu++5eksbifygpC+AGE8AH7L/hcrmxSYUyUxqCRGQzrZuG+D9
+         yMWaHvnJDLDgzb+9gZbeorWy2I7T1+gHnUPr4oPy6AwZ2mJFK3U6fOFkTdhv+useMZ
+         TIk4XA+NoO80oiaqyj59Qs6WnpiuB31TWWC+vRM+UXzgzHrfbsOisucKxIrHfQZ1T7
+         crXax9KkFI5IiZ/EfRYbp046VCSnvRjO+ptPcjgypTSynnohWD2AfFSyrCysJZd7b9
+         zpqMDOffXNue7nlh907Tedjh4LYVNPEyi6ifksOhUC0qGyUHBF8Da3Bpp4xqF3q8uk
+         hxCt+oSeruevg==
 From:   Tony Lindgren <tony@atomide.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>,
@@ -43,9 +43,9 @@ Cc:     "David S . Miller" <davem@davemloft.net>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v4 3/4] serial: core: Handle serial console options
-Date:   Tue,  5 Dec 2023 09:32:35 +0200
-Message-ID: <20231205073255.20562-4-tony@atomide.com>
+Subject: [PATCH v4 4/4] serial: 8250: Add preferred console in serial8250_isa_init_ports()
+Date:   Tue,  5 Dec 2023 09:32:36 +0200
+Message-ID: <20231205073255.20562-5-tony@atomide.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231205073255.20562-1-tony@atomide.com>
 References: <20231205073255.20562-1-tony@atomide.com>
@@ -61,113 +61,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to start moving the serial console quirks out of console_setup(),
-let's add parsing for the quirks to the serial core layer. We can use
-add_preferred_console_match() to handle the quirks.
+Prepare 8250 isa ports to drop kernel command line serial console
+handling from console_setup().
 
-At this point we can't drop the quirks from console_setup() because it
-would confuse add_preferred_console(). And try_enable_default_console()
-would get called before try_enable_preferred_console().
+We need to set the preferred console in serial8250_isa_init_ports().
+Otherwise the console gets initialized only later on when the hardware
+specific driver takes over, and console_setup() is no longer handling
+the ttyS related quirks.
 
-Note that eventually we may want to set up driver specific console quirk
-handling for the serial port device drivers to use. But we need to figure
-out which driver(s) need to call the quirk. So for now, we just handle the
-sparc quirk directly.
+Note that this mostly affects x86 as this happens based on define
+SERIAL_PORT_DFNS.
 
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- drivers/tty/serial/serial_base_bus.c | 67 ++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+ drivers/tty/serial/8250/8250_core.c | 32 +++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/drivers/tty/serial/serial_base_bus.c b/drivers/tty/serial/serial_base_bus.c
---- a/drivers/tty/serial/serial_base_bus.c
-+++ b/drivers/tty/serial/serial_base_bus.c
-@@ -207,6 +207,43 @@ void serial_base_port_device_remove(struct serial_port_device *port_dev)
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -15,6 +15,7 @@
+  */
  
- #ifdef CONFIG_SERIAL_CORE_CONSOLE
+ #include <linux/acpi.h>
++#include <linux/cleanup.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/ioport.h>
+@@ -517,6 +518,35 @@ static struct uart_8250_port *serial8250_setup_port(int index)
+ 	return up;
+ }
  
-+#ifdef __sparc__
++#ifdef CONFIG_SERIAL_8250_CONSOLE
 +
-+/* Handle Sparc ttya and ttyb options as done in console_setup() */
-+static int serial_base_add_sparc_console(struct uart_driver *drv,
-+					 struct uart_port *port)
++/*
++ * There is no struct device at this point, so let's not try to use
++ * serial_base_add_preferred_console().
++ */
++static void __init serial8250_isa_init_preferred_console(int idx)
 +{
-+	const char *name = NULL;
++	const char *name __free(kfree);
 +	int ret;
 +
-+	switch (port->line) {
-+	case 0:
-+		name = "ttya";
-+		break;
-+	case 1:
-+		name = "ttyb";
-+		break;
-+	default:
-+		return 0;
-+	}
++	name = kasprintf(GFP_KERNEL, "%s%i", serial8250_reg.dev_name, idx);
++	ret = add_preferred_console_match(name, serial8250_reg.dev_name, idx);
++	if (!ret || ret == -ENOENT)
++		return;
 +
-+	ret = add_preferred_console_match(name, drv->dev_name, port->line);
-+	if (ret && ret != -ENOENT)
-+		return ret;
-+
-+	return 0;
++	pr_err("Could not add preferred console for %s idx %i\n",
++	       serial8250_reg.dev_name, idx);
 +}
 +
 +#else
 +
-+static inline int serial_base_add_sparc_console(struct uart_driver *drv,
-+						struct uart_port *port)
++static inline void serial8250_isa_init_preferred_console(struct uart_port *port,
++							 int idx)
 +{
-+	return 0;
 +}
 +
 +#endif
 +
- static int serial_base_add_one_prefcon(const char *match, const char *dev_name,
- 				       int port_id)
+ static void __init serial8250_isa_init_ports(void)
  {
-@@ -240,12 +277,42 @@ int serial_base_add_preferred_console(struct uart_driver *drv,
- 				      struct uart_port *port)
- {
- 	const char *port_match __free(kfree);
-+	const char *char_match __free(kfree) = NULL;
-+	const char *nmbr_match __free(kfree) = NULL;
-+	int ret;
- 
- 	port_match = kasprintf(GFP_KERNEL, "%s:%i.%i", dev_name(port->dev),
- 			       port->ctrl_id, port->port_id);
- 	if (!port_match)
- 		return -ENOMEM;
- 
-+	char_match = kasprintf(GFP_KERNEL, "%s%i", drv->dev_name, port->line);
-+	if (!char_match)
-+		return -ENOMEM;
+ 	struct uart_8250_port *up;
+@@ -563,6 +593,8 @@ static void __init serial8250_isa_init_ports(void)
+ 		port->irqflags |= irqflag;
+ 		if (serial8250_isa_config != NULL)
+ 			serial8250_isa_config(i, &up->port, &up->capabilities);
 +
-+	/* Handle ttyS specific options */
-+	if (!strncmp(drv->dev_name, "ttyS", 4)) {
-+		/* No name, just a number */
-+		nmbr_match = kasprintf(GFP_KERNEL, "%i", port->line);
-+		if (!nmbr_match)
-+			return -ENODEV;
-+
-+		ret = serial_base_add_one_prefcon(nmbr_match, drv->dev_name,
-+						  port->line);
-+		if (ret)
-+			return ret;
-+
-+		/* Sparc ttya and ttyb */
-+		ret = serial_base_add_sparc_console(drv, port);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	/* Handle the traditional character device name style console=ttyS0 */
-+	ret = serial_base_add_one_prefcon(char_match, drv->dev_name, port->line);
-+	if (ret)
-+		return ret;
-+
- 	/* Translate a hardware addressing style console=DEVNAME:0.0 */
- 	return serial_base_add_one_prefcon(port_match, drv->dev_name, port->line);
++		serial8250_isa_init_preferred_console(i);
+ 	}
  }
+ 
 -- 
 2.43.0
