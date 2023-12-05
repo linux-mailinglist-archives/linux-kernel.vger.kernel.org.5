@@ -2,121 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 898A980439B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:53:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F242E80439F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343660AbjLEAxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 19:53:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S1343693AbjLEAyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:54:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjLEAxk (ORCPT
+        with ESMTP id S229575AbjLEAyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:53:40 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8CA101;
-        Mon,  4 Dec 2023 16:53:47 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7c5cb5eeab1so419141241.3;
-        Mon, 04 Dec 2023 16:53:47 -0800 (PST)
+        Mon, 4 Dec 2023 19:54:21 -0500
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58498109
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:54:27 -0800 (PST)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-58df571e612so3082938eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 16:54:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701737626; x=1702342426; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4bom4DFdTNhjf5vfq9g+CHJJAJnCgQXB/N4k2I2tO6w=;
-        b=EpZgSB8euazK5BNqrnBYQeVWKyAYv9tJwF+kx9De1+IQ+TDGZsHz2/165bnO+WM2L5
-         zJdb233Ej5VnF16wQCF1B7nAhexHXrnef4cpUXz3zkoCE/UQMTxvtwTWKvol4S7iHDeE
-         clr5y4hsbUWI48/tMecwPm140gHM8GZQ/lil/kQEVRLy0LnvQJCahguYlcGJ9G+CyEat
-         qzE8f/gUGIQvBp82SGa/pgydoi1sFJYeDngS5rghty+j3CRbgYBJIPa8OK5fJdxoSCsf
-         R5oIEDuIqHppbmtLbXZa4V0QrW+sZyNgMnbnClm24KHV2RdjwNhsQ0yA6o+720AyazZP
-         9FOQ==
+        d=chromium.org; s=google; t=1701737666; x=1702342466; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hgxh5iAkQdyDmjH/EP5y66lB0goZgK4wS9PHcerNRI0=;
+        b=Pks3QznimLGKgOlVmoOSK1Hg2E87f//xAmPKOlD3N8faGNH/ZgaZQML5/7/6KiEBrf
+         FvQVIemBTDzkWLTCya9boBSPl9ESBlDq7kriwCp8tjPmhvN3MnOHdsfmFJrnoJnboXlm
+         6Zwyo5nkezqMEMa50AymaVyv/aEsnuA5shTpQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701737626; x=1702342426;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4bom4DFdTNhjf5vfq9g+CHJJAJnCgQXB/N4k2I2tO6w=;
-        b=AAhdxpLhLYu5K/IAgfvDDv1Y3ccYxr46UXDaYTqn18CMwzQFnRJfH9nclZNw2VOOV8
-         d0HtX4KgVuFwkFjOcxuRfvNXk0PkR81obF6ApyhiDf1aKLGoScpleJqM9TqRkAccZagZ
-         hKKZs21jvp9uO8jMOGjVchicbwW4gznq/jnGOlYkzikeqxt5o4Nn6FgiAOdg5eQfNTsM
-         31xIY7ovJT+XLdDD+l1MKxFEhTjU05sMdBp7yXcT0m970uG46raUBEj64lvpqI6Zxi2C
-         m1ibIu3lbVy5qR9NHSdY1kNvVjA6aM7FFWfB/b3NV8dFo7l2zDKlIZa5XRLWlp4xW8UE
-         OOig==
-X-Gm-Message-State: AOJu0Ywsc/bp82BHIqxPve3EoqTpHGdJW2xIUbdfhZ04g3ZErIxTT/R6
-        3euR5b+UwaG1uDY3uQ/QmzKwVrzIgudIbgaEp10=
-X-Google-Smtp-Source: AGHT+IGGJKmV30jrY90xAW2tf9fsf31dnGtwnvjDNIps+nfOcsoGVT2k/ibW5/+U7zDWBtytJecaVWY0LhA+RKEgowg=
-X-Received: by 2002:a05:6102:3649:b0:464:4891:cce9 with SMTP id
- s9-20020a056102364900b004644891cce9mr2921864vsu.16.1701737626341; Mon, 04 Dec
- 2023 16:53:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701737666; x=1702342466;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hgxh5iAkQdyDmjH/EP5y66lB0goZgK4wS9PHcerNRI0=;
+        b=Qa/I+8T8kAWRSYJQJB+bMswHGXxsIc7beGMR5CzER1O2228thkj98mmMZE12KZdBea
+         v30ZFChVmz/lTsxL68wg+/7tNuoUEqtdJgvrw0h4Ffpwv82xX1a2DL4X12T7bM2p67Jj
+         kjhDGTPSmvIILfFvuGFGmbtZJ1TvcKKJxbh3RW/PHD2cheTh+A4Q8yGGwfZMAVdg+qNP
+         0bAPBlpsRhSNzM21P+4yvZUEiNOzbBGFhxJ87TYr0F0AuYJyngUrZxe56VHEbuv8KAry
+         nuKNSgWS1wMJgtR56XDLUu5nTd3h6DvCy6D09ma5eNRUT7DQNInldggqteft6f2zE0GG
+         ygpQ==
+X-Gm-Message-State: AOJu0YwONISdu5r2dUU6JAj1vGacPL2OZ6siFLXfWqeDZWxFVK+9LY5f
+        AZkEICUC2iBLAsbk+4soakWi6A==
+X-Google-Smtp-Source: AGHT+IHk7lmDVGKtnQfm4mq3bULDVD35esNQMJLK9nUyooFioS0fzVXAMAhL7+5oYc0V/vLwpRuwzA==
+X-Received: by 2002:a05:6358:7205:b0:16d:f46f:16a9 with SMTP id h5-20020a056358720500b0016df46f16a9mr8361301rwa.17.1701737666267;
+        Mon, 04 Dec 2023 16:54:26 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b67-20020a633446000000b005c67ca3c2c2sm3188911pga.21.2023.12.04.16.54.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 16:54:25 -0800 (PST)
+Date:   Mon, 4 Dec 2023 16:54:25 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Tony Luck <tony.luck@intel.com>,
+        linux-hardening@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 5/5] pstore: inode: Use cleanup.h for struct
+ pstore_private
+Message-ID: <202312041649.C14F139F9@keescook>
+References: <20231202211535.work.571-kees@kernel.org>
+ <20231202212217.243710-5-keescook@chromium.org>
+ <20231202222706.GT38156@ZenIV>
 MIME-Version: 1.0
-References: <20231203001501.126339-1-sxwjean@me.com> <20231203001501.126339-4-sxwjean@me.com>
-In-Reply-To: <20231203001501.126339-4-sxwjean@me.com>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Tue, 5 Dec 2023 09:53:34 +0900
-Message-ID: <CAB=+i9TVfzWk=anexu6ARPA21AC-uhjQjf4brZF0XDfVaWraWw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mm/slub: correct the default value of
- slub_min_objects in doc
-To:     sxwjean@me.com
-Cc:     vbabka@suse.cz, cl@linux.com, linux-mm@kvack.org,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        roman.gushchin@linux.dev, corbet@lwn.net, keescook@chromium.org,
-        arnd@arndb.de, akpm@linux-foundation.org,
-        gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiongwei Song <xiongwei.song@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231202222706.GT38156@ZenIV>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 3, 2023 at 9:16=E2=80=AFAM <sxwjean@me.com> wrote:
->
-> From: Xiongwei Song <xiongwei.song@windriver.com>
->
-> There is no a value assigned to slub_min_objects by default, it always
-> is 0 that is initialized by compiler if no assigned value by command line=
-.
-> min_objects is calculated based on processor numbers in calculate_order()=
-.
-> For more details, see commit 9b2cd506e5f2 ("slub: Calculate min_objects
-> based on number of processors.")
->
-> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+On Sat, Dec 02, 2023 at 10:27:06PM +0000, Al Viro wrote:
+> On Sat, Dec 02, 2023 at 01:22:15PM -0800, Kees Cook wrote:
+> 
+> >  static void *pstore_ftrace_seq_start(struct seq_file *s, loff_t *pos)
+> >  {
+> > @@ -338,9 +339,8 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+> >  {
+> >  	struct dentry		*dentry;
+> >  	struct inode		*inode __free(iput) = NULL;
+> > -	int			rc = 0;
+> >  	char			name[PSTORE_NAMELEN];
+> > -	struct pstore_private	*private, *pos;
+> > +	struct pstore_private	*private __free(pstore_private) = NULL, *pos;
+> >  	size_t			size = record->size + record->ecc_notice_size;
+> >  
+> >  	if (WARN_ON(!inode_is_locked(d_inode(root))))
+> > @@ -356,7 +356,6 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+> >  			return -EEXIST;
+> >  	}
+> >  
+> > -	rc = -ENOMEM;
+> >  	inode = pstore_get_inode(root->d_sb);
+> >  	if (!inode)
+> >  		return -ENOMEM;
+> > @@ -373,7 +372,7 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+> >  
+> >  	dentry = d_alloc_name(root, name);
+> >  	if (!dentry)
+> > -		goto fail_private;
+> > +		return -ENOMEM;
+> >  
+> >  	private->dentry = dentry;
+> >  	private->record = record;
+> > @@ -386,13 +385,9 @@ int pstore_mkfile(struct dentry *root, struct pstore_record *record)
+> >  
+> >  	d_add(dentry, no_free_ptr(inode));
+> >  
+> > -	list_add(&private->list, &records_list);
+> > +	list_add(&(no_free_ptr(private))->list, &records_list);
+> 
+> That's really brittle.  It critically depends upon having no failure
+> exits past the assignment to ->i_private; once you've done that,
+> you have transferred the ownership of that thing to the inode
+> (look at your ->evict_inode()).
 
-While slub_min_objects equals zero by default, 'min_objects' overrides it t=
-o
-4 * (fls(nr_cpus) + 1) when not set. so when slub_min_objects is not
-set, it would be
-equal to or higher than 4. I'm not sure this level of implementation
-detail is worth documenting.
+I guess so, but it was already that way, and it isn't assignment to
+i_private until everything else is "done", apart from adding to the
+dentry and the pstore internal list.
 
-Also, I think patch 2 should update Documentation/mm/slub.rst too.
-(slub_$param -> slab_param)
+> But you can't say
+>         inode->i_private = no_free_ptr(private);
+> since you are using private past that point.
 
-> ---
->  Documentation/mm/slub.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/mm/slub.rst b/Documentation/mm/slub.rst
-> index be75971532f5..1f4399581449 100644
-> --- a/Documentation/mm/slub.rst
-> +++ b/Documentation/mm/slub.rst
-> @@ -150,7 +150,7 @@ list_lock once in a while to deal with partial slabs.=
- That overhead is
->  governed by the order of the allocation for each slab. The allocations
->  can be influenced by kernel parameters:
->
-> -.. slub_min_objects=3Dx          (default 4)
-> +.. slub_min_objects=3Dx          (default 0)
->  .. slub_min_order=3Dx            (default 0)
->  .. slub_max_order=3Dx            (default 3 (PAGE_ALLOC_COSTLY_ORDER))
->
-> --
-> 2.34.1
->
+True. How about this reordering:
+
+        if (record->time.tv_sec)
+                inode_set_mtime_to_ts(inode,
+                                      inode_set_ctime_to_ts(inode, record->time));
+
+        list_add(&private->list, &records_list);
+        inode->i_private = no_free_ptr(private);
+
+        d_add(dentry, no_free_ptr(inode));
+
+
+But none of this gets into how you'd like to see the iput handled. If
+you'd prefer, I can just define a pstore_iput handler and you don't have
+to look at it at all. :)
+
+-Kees
+
+-- 
+Kees Cook
