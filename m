@@ -2,71 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A02C9805BC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD696805C6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346031AbjLERRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 12:17:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
+        id S1346038AbjLERSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 12:18:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235091AbjLERRf (ORCPT
+        with ESMTP id S235091AbjLERSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 12:17:35 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8414C1A5;
-        Tue,  5 Dec 2023 09:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=rZWO8O3rbEJ89oVb0TW+xEKhVkIpjIUUnu1HN5v2x/A=; b=nWU9bPuzRIs1NBesKFM+yxaRSy
-        yJD+9m9ybkN79+xyYan3g0+uPzCswjbsi5IZr97QDbzh6PBN9qG1HZi6hHDozPabO5T4iECywogQZ
-        aw2PvPV4+bcBVdGG2ewNFdKup3Bw+zCsOdJndw+g2WyCm08flD9L5dTlV3duyOoFjuy+FD4Lnd1cS
-        pPnn8VnUdYISvdW10TB2AFoR2d+AGqcnVK/LKKcChhp8lhTZ9tj/au+yfsban4WS8JJ33C+tariO8
-        DqZTsJi6PvCLvC6xyZ2bkX4Dg9ZJxhH5I+OC1Ybqnz/vqESHy8qk2n5a3wPIeQnLA/3fA/V9dAj0f
-        6hYyLxLQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAZ3G-008159-10;
-        Tue, 05 Dec 2023 17:17:42 +0000
-Message-ID: <50d8f1dd-4df2-446a-bd82-47d96637b507@infradead.org>
-Date:   Tue, 5 Dec 2023 09:17:41 -0800
+        Tue, 5 Dec 2023 12:18:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194E9C0;
+        Tue,  5 Dec 2023 09:18:22 -0800 (PST)
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="425085150"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="425085150"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 09:18:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="841545261"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="841545261"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 09:18:16 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1rAZ3k-000000026Ns-2qE0;
+        Tue, 05 Dec 2023 19:18:12 +0200
+Date:   Tue, 5 Dec 2023 19:18:12 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Ceclan Dumitru <mitrutzceclan@gmail.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Leonard =?iso-8859-1?Q?G=F6hrs?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 2/2] iio: adc: ad7173: add AD7173 driver
+Message-ID: <ZW9bVDLZl4-QLIbg@smile.fi.intel.com>
+References: <20231205134223.17335-1-mitrutzceclan@gmail.com>
+ <20231205134223.17335-2-mitrutzceclan@gmail.com>
+ <CAHp75VeKhR5y4AB=L5VVSrm=13Ruw7e86m+K9m9t-LZg5puDow@mail.gmail.com>
+ <e72085fd-3203-4166-afab-73707d27d174@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Dec 5 (soc/qcom/qcom_stats)
-Content-Language: en-US
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-References: <20231205135708.4a5a8413@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231205135708.4a5a8413@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e72085fd-3203-4166-afab-73707d27d174@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_SOFTFAIL,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/4/23 18:57, Stephen Rothwell wrote:
-> Hi all,
+On Tue, Dec 05, 2023 at 06:12:18PM +0200, Ceclan Dumitru wrote:
+> On 12/5/23 17:28, Andy Shevchenko wrote:
+> >> +               ref_label = ad7173_ref_sel_str[AD7173_SETUP_REF_SEL_INT_REF];
+> >> +
+> >> +               fwnode_property_read_string(child, "adi,reference-select",
+> >> +                                           &ref_label);
+> >> +               ref_sel = match_string(ad7173_ref_sel_str,
+> >> +                                      ARRAY_SIZE(ad7173_ref_sel_str), ref_label);
+> >> +               if (ref_sel < 0) {
+> > Can we use fwnode_property_match_property_string()?
 > 
-> Changes since 20231204:
-> 
+> fwnode_property_match_string() searches a given string in a device-tree
+> string array and returns the index. I do not think that this function
+> fits here as the DT attribute is a single string.
 
-on powerpc 32-bit:
+I'm not talking about that. I mentioned different API call.
 
-ERROR: modpost: "__udivdi3" [drivers/soc/qcom/qcom_stats.ko] undefined!
-
+/**
+ * fwnode_property_match_property_string - find a property string value in an array and return index
+ * @fwnode: Firmware node to get the property of
+ * @propname: Name of the property holding the string value
+ * @array: String array to search in
+ * @n: Size of the @array
+ *
+ * Find a property string value in a given @array and if it is found return
+ * the index back.
+ *
+ * Return: index, starting from %0, if the string value was found in the @array (success),
+ *         %-ENOENT when the string value was not found in the @array,
+ *         %-EINVAL if given arguments are not valid,
+ *         %-ENODATA if the property does not have a value,
+ *         %-EPROTO or %-EILSEQ if the property is not a string,
+ *         %-ENXIO if no suitable firmware interface is present.
+ */
 
 -- 
-~Randy
+With Best Regards,
+Andy Shevchenko
+
+
