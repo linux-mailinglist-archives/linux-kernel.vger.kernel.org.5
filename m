@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1D4805F27
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D93805F29
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 21:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345658AbjLEULg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 15:11:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42510 "EHLO
+        id S1345786AbjLEUM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 15:12:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232218AbjLEULe (ORCPT
+        with ESMTP id S229569AbjLEUMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 15:11:34 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D95D53;
-        Tue,  5 Dec 2023 12:11:35 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B5KBLaY070414;
-        Tue, 5 Dec 2023 14:11:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701807081;
-        bh=tykLgFAN0sBT/vZntrlheG7q4aoOYiXjvXxIPINHQbE=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=BJgOONCfowq1kcoBHDUWwNilYmJjkaeP8ezneBLiINgca8ukIQLLIzDq8j8odgFns
-         UpIhEfL1qxRtciTPYM7AjryfCI51e76LNOQ8Ngp65s6cTDOtytrNXXJByLGKS1L2MR
-         4J1PyHOGrXh52Ou8AUm3/3GM2mqYjootuUIq2QH0=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B5KBLcd008887
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 5 Dec 2023 14:11:21 -0600
-Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
- Dec 2023 14:11:21 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 5 Dec 2023 14:11:21 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B5KBLhB110808;
-        Tue, 5 Dec 2023 14:11:21 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jai Luthra <j-luthra@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Vaishnav Achath <vaishnav.a@ti.com>,
-        Julien Massot <julien.massot@collabora.com>,
-        Martyn Welch <martyn.welch@collabora.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: Re: [PATCH RESEND v3 0/9] arm64: dts: ti: Enable CSI cameras for AM62 family
-Date:   Tue, 5 Dec 2023 14:11:14 -0600
-Message-ID: <170180697250.3345832.2524014147786723166.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231201-csi_dts-v3-0-9f06f31080fe@ti.com>
-References: <20231201-csi_dts-v3-0-9f06f31080fe@ti.com>
+        Tue, 5 Dec 2023 15:12:24 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E0F2183;
+        Tue,  5 Dec 2023 12:12:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701807151; x=1733343151;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=VWt+YDT2+2XEQnfYLyBLCyZTvqe2lcEZJ569kJV6Xtk=;
+  b=AGQIXVkk15zusB7+0w09d2YSbvMUzwuBPhHr8/lM9u81rJuECrSgRr86
+   rX9+3iZFFMhaSFuneV57XncUsxGMLGy5DLpLus8WrRdlr2U6vL93UanLb
+   ZIQYoTpPQFQvOQT3tvmjXI5CdBX1bajOVxM56rQot+4gXb3x3VocnrvfD
+   k5Z0NZEUOmtUYvDgNPWx/bqS9VbczJtZiUuedWVLxLYiBTqv1iuabNrDl
+   rIm0dG6lO+O4E6xcaQmVJzTePk5HIdfoyeCxIPuceYTY6Rw2zy1JoIYH1
+   /dbHwof2twEbcnQSP+4V3JlZH2soqX6p+T2DqzEUNOYfxgRgeHqFpBrb5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="391120033"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="391120033"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 12:12:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="774742054"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="774742054"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.46.77])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 12:12:26 -0800
+Message-ID: <f83933d3-6426-425c-903e-abbd2691e84a@intel.com>
+Date:   Tue, 5 Dec 2023 22:12:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: rpmb: do not force a retune before RPMB switch
+Content-Language: en-US
+To:     Jorge Ramirez-Ortiz <jorge@foundries.io>, Avri.Altman@wdc.com,
+        ulf.hansson@linaro.org, christian.loehle@arm.com
+Cc:     jinpu.wang@ionos.com, axboe@kernel.dk, beanhuo@micron.com,
+        yibin.ding@unisoc.com, victor.shih@genesyslogic.com.tw,
+        asuk4.q@gmail.com, hkallweit1@gmail.com, yangyingliang@huawei.com,
+        yebin10@huawei.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231204150111.3320071-1-jorge@foundries.io>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231204150111.3320071-1-jorge@foundries.io>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,65 +69,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jai Luthra,
+On 4/12/23 17:01, Jorge Ramirez-Ortiz wrote:
+> Requesting a retune before switching to the RPMB partition has been
+> observed to cause CRC errors on the RPMB reads (-EILSEQ).
 
-On Fri, 01 Dec 2023 10:39:15 +0530, Jai Luthra wrote:
-> This series enables CSI camera support on BeaglePlay, SK-AM62 and
-> SK-AM62A, now that the dt-bindings and driver support for CSI-RX related
-> IPs is merged in v6.7-rc1.
+There are still 2 concerns:
+1) We don't really know the root cause.  Have you determined
+if here are CRC errors in the main partition also?
+2) Forcing this on everyone
+
+The original idea was that because re-tuning cannot be
+done in RPMB, the need to re-rune in RPMB could be avoided
+by always re-tuning before switching to RPMB and then switching
+straight back. IIRC re-tuning should guarantee at least 4MB
+more I/O without issue.
+
+The alternative to dropping re-tuning in this case could
+be to add a retry loop for MMC_DRV_OP_IOCTL_RPMB if the error
+is -EILSEQ
+
+
 > 
-> Along with the device tree nodes for CSI-RX, add new DT overlays for
-> different camera modules like RPiv2 (IMX219) or PCam5C (OV5640).
+> Since RPMB reads can not be retried, the clients would be directly
+> affected by the errors.
 > 
-> [...]
+> This commit disables the request prior to RPMB switching while allowing
+> the pause interface to still request a retune before the pause for other
+> use cases.
+> 
+> This was verified with the sdhci-of-arasan driver (ZynqMP) configured
+> for HS200 using two separate eMMC cards (DG4064 and 064GB2). In both
+> cases, the error was easy to reproduce triggering every few tenths of
+> reads.
+> 
+> Signed-off-by: Jorge Ramirez-Ortiz <jorge@foundries.io>
+> ---
+>  drivers/mmc/core/block.c | 2 +-
+>  drivers/mmc/core/host.c  | 7 ++++---
+>  drivers/mmc/core/host.h  | 2 +-
+>  3 files changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index f9a5cffa64b1..1d69078ad9b2 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -859,7 +859,7 @@ static int mmc_blk_part_switch_pre(struct mmc_card *card,
+>  			if (ret)
+>  				return ret;
+>  		}
+> -		mmc_retune_pause(card->host);
+> +		mmc_retune_pause(card->host, false);
+>  	}
+>  
+>  	return ret;
+> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+> index 096093f7be00..a9b95aaa2235 100644
+> --- a/drivers/mmc/core/host.c
+> +++ b/drivers/mmc/core/host.c
+> @@ -119,13 +119,14 @@ void mmc_retune_enable(struct mmc_host *host)
+>  
+>  /*
+>   * Pause re-tuning for a small set of operations.  The pause begins after the
+> - * next command and after first doing re-tuning.
+> + * next command and, if retune is set, after first doing re-tuning.
+>   */
+> -void mmc_retune_pause(struct mmc_host *host)
+> +void mmc_retune_pause(struct mmc_host *host, bool retune)
+>  {
+>  	if (!host->retune_paused) {
+>  		host->retune_paused = 1;
+> -		mmc_retune_needed(host);
+> +		if (retune)
+> +			mmc_retune_needed(host);
 
-I have applied the following to branch ti-k3-config-next on [1].
-Thank you!
+Better to just drop mmc_retune_needed(host);
 
-[1/9] arm64: defconfig: Enable AM62 CSI2RX
-      commit: bd62d91f42d015e173809214badaf750b75be2d1
+>  		mmc_retune_hold(host);
 
-I have applied the following to branch ti-k3-dts-next on [1]:
+There is still a small chance that re-tuning
+is needed anyway in which case it will still be done.
 
-[2/9] arm64: dts: ti: Enable CSI-RX on AM62
-      commit: 2017f5a610a998cd414c7d9e8b19051014f3126b
-[3/9] arm64: dts: ti: Enable CSI-RX on AM62A
-      commit: c45e3b54ad1e84f59b3193abc6f451a8cdf7d69f
-[4/9] arm64: dts: ti: k3-am625-beagleplay: Add overlays for OV5640
-      commit: defa1438c5b34af13fb56c7faefaeec648805530
-[5/9] arm64: dts: ti: k3-am62x-sk: Enable camera peripherals
-      commit: fed1e53ecf9f0ecf04bd931428287fd1002899ef
-[6/9] arm64: dts: ti: k3-am62x: Add overlays for OV5640
-      commit: 635ed97151945a7fdf104ef1227d86f0a9e3678e
-[7/9] arm64: dts: ti: k3-am62a7-sk: Enable camera peripherals
-      commit: 00d7f8f9efdbdf551e92683f5cd274145dce2c4b
-[8/9] arm64: dts: ti: k3-am62x: Add overlay for IMX219
-      commit: 4111db03dc05c49ded2d9ec21b52c0ca45b59303
-[9/9] arm64: dts: ti: Use OF_ALL_DTBS for combined blobs
-      commit: b0044823a6607e535fdb083c89f487fbf183b171
-
-with minor $subject and formatting updates to stay in sync with existing
-changes.
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+>  	}
+>  }
+> diff --git a/drivers/mmc/core/host.h b/drivers/mmc/core/host.h
+> index 48c4952512a5..321776b52270 100644
+> --- a/drivers/mmc/core/host.h
+> +++ b/drivers/mmc/core/host.h
+> @@ -18,7 +18,7 @@ void mmc_retune_disable(struct mmc_host *host);
+>  void mmc_retune_hold(struct mmc_host *host);
+>  void mmc_retune_release(struct mmc_host *host);
+>  int mmc_retune(struct mmc_host *host);
+> -void mmc_retune_pause(struct mmc_host *host);
+> +void mmc_retune_pause(struct mmc_host *host, bool retune);
+>  void mmc_retune_unpause(struct mmc_host *host);
+>  
+>  static inline void mmc_retune_clear(struct mmc_host *host)
 
