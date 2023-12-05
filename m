@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF42806222
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05607806224
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346531AbjLEWtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 17:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
+        id S1346492AbjLEWuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 17:50:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346511AbjLEWtp (ORCPT
+        with ESMTP id S1346254AbjLEWuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 17:49:45 -0500
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CFA4196
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 14:49:51 -0800 (PST)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5c85e8fdd2dso69545957b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 14:49:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701816590; x=1702421390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JrFaCxut1vMUHEQKCkObXuZTRmt2Q25+qM/Ls973otI=;
-        b=dQZ3IFubH9gI2jg/gp8HqU98fc7aBOrxFTcjz4dnBQUqkese2qhIhh7Y3OrkDHYWue
-         D92MYGMHfDqX+lEqf4cEBeqDBJ7iqjOBjzZ84vgwfJP3dFkZvXUpf4wu3M0gmy9Gd3H+
-         OcQW4yE3CS8Am4IXUG+ZbcjTVZyGY4GDwiUG02FQu8uS5ry+DX6yR1GNwdl1DQWKmquF
-         yhaeHQMZKOe1O+Os6kaR06a7jNXRehDVOPic99k3JNPdlY91NP6IZrV5gOV+INj4lRqR
-         ilMKgqjSySnvotwzQm8zWpjHXpez+ZG3wQQJoVh8otuvIjDDJd+wNx0Z5GmkMf9EFG76
-         1gJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701816590; x=1702421390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JrFaCxut1vMUHEQKCkObXuZTRmt2Q25+qM/Ls973otI=;
-        b=sfTjeEbVOep/8lxfJO4oQUa8t9u5cSoWSZPDsUOn5+1MRdNDBZa4nBY1nukQmKWo76
-         m25WcCogDKBU7H5sOgn7I078wKHjmqnycYzjrFUMvxFb6Mrfz7JyosKPtq/KQAeSXCKC
-         0NWtdZPEBa/5F0mMxPce0bl50rBGilcNqABYVynTzyBEZfoDAZP+hqg6ecdueuJ5hyio
-         XS+FmaU4r10E5tHTJZrKH86UzRCn8zTldCF8GSp+EwmOgozCMjJ1/KaUDHWasq2J7UbT
-         a1qKh2j6N7VuBrWtjGyvxmlQ2SGJN7TorOVt4zy8KTW1HJvYEX8MdHDcVh+joaX7ItSh
-         Zdow==
-X-Gm-Message-State: AOJu0YzKTvjq8WysLq0P50TcgqG0gkCa+ibSzNKF3bovY5jkmnq4ShPZ
-        oXfl9ylWgCqpRFQiKz+aZkBbwy/XiRwouxs02ietTCZgVDWs3zhF
-X-Google-Smtp-Source: AGHT+IFEmFb+hr6nRdjNrf1j/t6+1nDZojjY2YlEds/9G8SBs8lIXxIchM5+Ia+fLcw0ALQ/l3k+kJcKL5pmaaIPjXc=
-X-Received: by 2002:a81:b622:0:b0:5d7:1940:dd63 with SMTP id
- u34-20020a81b622000000b005d71940dd63mr5381287ywh.57.1701816590707; Tue, 05
- Dec 2023 14:49:50 -0800 (PST)
+        Tue, 5 Dec 2023 17:50:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F76A5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 14:50:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1AF0C433C7;
+        Tue,  5 Dec 2023 22:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701816615;
+        bh=5x+DUlQVMX4rI7C/lbZIjEUnEMm9TF3RtDPL84aa0IY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qzUuzTyXqMMGkKhJrn0avRKUlTtuVRfv/LG3aS+yYIyilDbFJlKiPBV4QT/OhAyvB
+         REmuJ97m0Ki7HhmIxYX3L0D26m+YeruHvP8BYlXfZ/dLY8ucBjEP9+vKTPwP2J16xT
+         KJpUroGmXr/ssEPipGeyjd5M1TGe8ld645GkOxgYCpbF+igL01H3sKvrGZ1aUpweC0
+         AiGMUlNIrvmDafNTG/4O/n/dCNabro47BUi6/sMduEXxnnqyGfbIK98p9vzNHWBSiE
+         4p+AHuLGe3tttS3KUX7Uhu+5fAh1zA6Af0RHboehlcZ6Ei3k14EB1vKs92lYRSGUX+
+         vHBVzdrjsfZ8w==
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40b2ddab817so64358935e9.3;
+        Tue, 05 Dec 2023 14:50:15 -0800 (PST)
+X-Gm-Message-State: AOJu0YyrjV7ARNHYi6uLmFHCb+25xQIkJBRIdgTKuUF3uH0lwyuGqtEO
+        jNTQYL7/YdDrM+YyW4T225zRVA9f1OANIaZIJJs=
+X-Google-Smtp-Source: AGHT+IGYT2ppXKePS26ax/2UBvv5gM94PgtHGfQeEYRZVI9vMWhldLMI2tj8QziTQ3Nn5fTMlBxU2W7RMAXv7ppzCbE=
+X-Received: by 2002:a05:600c:3093:b0:40b:5e59:da99 with SMTP id
+ g19-20020a05600c309300b0040b5e59da99mr21446wmn.172.1701816614079; Tue, 05 Dec
+ 2023 14:50:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20231204093509.19225-1-brgl@bgdev.pl>
-In-Reply-To: <20231204093509.19225-1-brgl@bgdev.pl>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 5 Dec 2023 23:49:38 +0100
-Message-ID: <CACRpkdYn16SbWtS=hSx0r=pmNR9MKYTKd5q9Btr=wft8n8CRFw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/10] gpio/pinctrl: replace gpiochip_is_requested()
- with a safer interface
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+ <20231204-const-sysctl-v2-13-7a5060b11447@weissschuh.net> <ZW+lQqOSYFfeh8z2@bombadil.infradead.org>
+ <4a93cdb4-031c-4f77-8697-ce7fb42afa4a@t-8ch.de>
+In-Reply-To: <4a93cdb4-031c-4f77-8697-ce7fb42afa4a@t-8ch.de>
+From:   Luis Chamberlain <mcgrof@kernel.org>
+Date:   Tue, 5 Dec 2023 14:50:01 -0800
+X-Gmail-Original-Message-ID: <CAB=NE6UCP05MgHF85TK+t2yvbOoaW_8Yu6QEyaYMdJcGayVjFQ@mail.gmail.com>
+Message-ID: <CAB=NE6UCP05MgHF85TK+t2yvbOoaW_8Yu6QEyaYMdJcGayVjFQ@mail.gmail.com>
+Subject: Re: [PATCH v2 13/18] sysctl: move sysctl type to ctl_table_header
+To:     =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Granados <j.granados@samsung.com>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,26 +65,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 10:35=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
-
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Tue, Dec 5, 2023 at 2:41=E2=80=AFPM Thomas Wei=C3=9Fschuh <linux@weisssc=
+huh.net> wrote:
 >
-> While reworking the locking in GPIOLIB I realized that locking the
-> descriptor with users still calling gpiochip_is_requested() will still
-> be buggy as it returns a pointer to a string that can be freed whenever
-> the descriptor is released. Let's provide a safer alternative in the
-> form of a function that returns a copy of the label.
+> On 2023-12-05 14:33:38-0800, Luis Chamberlain wrote:
+> > On Mon, Dec 04, 2023 at 08:52:26AM +0100, Thomas Wei=C3=9Fschuh wrote:
+> > > @@ -231,7 +231,8 @@ static int insert_header(struct ctl_dir *dir, str=
+uct ctl_table_header *header)
+> > >             return -EROFS;
+> > >
+> > >     /* Am I creating a permanently empty directory? */
+> > > -   if (sysctl_is_perm_empty_ctl_header(header)) {
+> > > +   if (header->ctl_table =3D=3D sysctl_mount_point ||
+> > > +       sysctl_is_perm_empty_ctl_header(header)) {
+> > >             if (!RB_EMPTY_ROOT(&dir->root))
+> > >                     return -EINVAL;
+> > >             sysctl_set_perm_empty_ctl_header(dir_h);
+> >
+> > While you're at it.
 >
-> Use it in all drivers and remove gpiochip_is_requested().
+> This hunk is completely gone in v3/the code that you merged.
 
-The series:
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+It is worse in that it is not obvious:
 
-> I plan to provide this series in an immutable branch for the pinctrl and
-> baytrail trees to pull.
++       if (table =3D=3D sysctl_mount_point)
++               sysctl_set_perm_empty_ctl_header(head);
 
-Nice! I'll pull it.
+> Which kind of unsafety do you envision here?
 
-Yours,
-Linus Walleij
+Making the code obvious during patch review hy this is needed /
+special, and if we special case this, why not remove enum, and make it
+specific to only that one table. The catch is that it is not
+immediately obvious that we actually call
+sysctl_set_perm_empty_ctl_header() in other places, and it begs the
+question if this can be cleaned up somehow.
+
+  Luis
