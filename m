@@ -2,62 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A58B804512
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:38:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 629088044E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376515AbjLECiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:38:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
+        id S1376314AbjLEC35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:29:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346447AbjLECiK (ORCPT
+        with ESMTP id S1346415AbjLEC3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:38:10 -0500
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333DD1726
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:29:38 -0800 (PST)
-Message-ID: <f3b16968-d55a-4b30-803f-261fda353775@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701743362;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ymMLu9FZ8CtZOyGQwaalZh7+0iVyegROhtwrn5KGHB4=;
-        b=rBnFTf7X21Q4cNhSaM8MqzICMe44z516qx66zq5Z6w5CwqtmCX3plbgQuWQ1hCNrqI0WUk
-        3WKu7/haEG+O2MStW7f6iHUOZppGPjNOI+ul/Og7Lahu3inHi79MCDKxEiB+fyHev+DmDm
-        GpH3C1ZZNsCzXdv7S4quXwwA1vd3TKU=
-Date:   Tue, 5 Dec 2023 10:28:50 +0800
+        Mon, 4 Dec 2023 21:29:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44D5D119
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:29:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E64EC433C8;
+        Tue,  5 Dec 2023 02:29:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701743342;
+        bh=WXN01WmS/1XYD2UM5/KTAA43TQV3rGLcmc9JJYlY+Zs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=czDr4W1jJnUWy8kd3v9RRDgKXCXocS82Li0EGVZit+a+g8qXwzJK/05JuPU5p59uI
+         mNL2MrdBevaxzcFe9SUk0wJieUBy2sg1eSkmpmOIA0Qc2ZRfkWt35h1cPGlJ69yRzW
+         Sx9+/Cj13S5asDVBKZxroJPRmcx9LxxB2cUxHQvTPTgS3xFmZYnoGexnc7epPeac1S
+         iThTWc/g1gGXleTQnCfBmYbFlU8i2+W1zghE1o3i30AaHfFXLgAEqusK8USGTudlis
+         8/qlW4IkjWwilJQPhgrS73lm7aOE5DVGzPtJDrSMrCKjSD/X5JpHTufF3EgT47HfKN
+         V0zZDLnwstUVw==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] mm/damon: export DAMON symbols and add sample loadable modules
+Date:   Tue,  5 Dec 2023 02:28:55 +0000
+Message-Id: <20231205022858.1540-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Subject: Re: [PATCH v8 1/6] list_lru: allows explicit memcg and NUMA node
- selection
-Content-Language: en-US
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-References: <20231130194023.4102148-1-nphamcs@gmail.com>
- <20231130194023.4102148-2-nphamcs@gmail.com>
- <ZWjpNr3ZzvU4TDC8@casper.infradead.org>
- <CAKEwX=MV-F50i_=sZ0unfbgjrdxSTio00c4xTM19113BAN3-wA@mail.gmail.com>
- <20231130203522.GC543908@cmpxchg.org>
- <e3e319f5-9bcd-4c35-92e6-6fdb33eaa080@linux.dev>
- <CAKEwX=OBHe12R6fTbRn_dNGrz+T4ekE4MSo5w+7i_NNoprmnkw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <CAKEwX=OBHe12R6fTbRn_dNGrz+T4ekE4MSo5w+7i_NNoprmnkw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,97 +47,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/5 01:48, Nhat Pham wrote:
-> On Mon, Dec 4, 2023 at 12:30 AM Chengming Zhou <chengming.zhou@linux.dev> wrote:
->>
->> On 2023/12/1 04:35, Johannes Weiner wrote:
->>> On Thu, Nov 30, 2023 at 12:07:41PM -0800, Nhat Pham wrote:
->>>> On Thu, Nov 30, 2023 at 11:57 AM Matthew Wilcox <willy@infradead.org> wrote:
->>>>>
->>>>> On Thu, Nov 30, 2023 at 11:40:18AM -0800, Nhat Pham wrote:
->>>>>> This patch changes list_lru interface so that the caller must explicitly
->>>>>> specify numa node and memcg when adding and removing objects. The old
->>>>>> list_lru_add() and list_lru_del() are renamed to list_lru_add_obj() and
->>>>>> list_lru_del_obj(), respectively.
->>>>>
->>>>> Wouldn't it be better to add list_lru_add_memcg() and
->>>>> list_lru_del_memcg() and have:
->>>>>
->>>>> +bool list_lru_del(struct list_lru *lru, struct list_head *item)
->>>>> +{
->>>>> +       int nid = page_to_nid(virt_to_page(item));
->>>>> +       struct mem_cgroup *memcg = list_lru_memcg_aware(lru) ?
->>>>> +               mem_cgroup_from_slab_obj(item) : NULL;
->>>>> +
->>>>> +       return list_lru_del_memcg(lru, item, nid, memcg);
->>>>> +}
->>>>>
->>>>> Seems like _most_ callers will want the original versions and only
->>>>> a few will want the explicit memcg/nid versions.  No?
->>>>>
->>>>
->>>> I actually did something along that line in earlier iterations of this
->>>> patch series (albeit with poorer naming - __list_lru_add() instead of
->>>> list_lru_add_memcg()). The consensus after some back and forth was
->>>> that the original list_lru_add() was not a very good design (the
->>>> better one was this new version that allows for explicit numa/memcg
->>>> selection). So I agreed to fix it everywhere as a prep patch.
->>>>
->>>> I don't have strong opinions here to be completely honest, but I do
->>>> think this new API makes more sense (at the cost of quite a bit of
->>>> elbow grease to fix every callsites and extra reviewing).
->>>
->>> Maybe I can shed some light since I was pushing for doing it this way.
->>>
->>> The quiet assumption that 'struct list_head *item' is (embedded in) a
->>> slab object that is also charged to a cgroup is a bit much, given that
->>> nothing in the name or documentation of the function points to that.
->>>
->>> It bit us in the THP shrinker where that list head is embedded in a
->>> tailpage (virt_to_page(page) is fun to debug). And it caused some
->>> confusion in this case as well, where the zswap entry is a slab object
->>> but not charged (the entry descriptor is not attractive for cgroup
->>> accounting, only the backing memory it points to.)
->>
->> Hi,
->>
->> I have a question, maybe I missed something since I haven't read all
->> the earlier versions.
->>
->> IIUC, the problem here is that "zswap_entry" has different memcg and node
->> than the "page", so I wonder if we can just charge "zswap_entry" to the
->> same memcg of the "page".
->>
->> Like we can do these when allocating the "zswap_entry":
->>
->>         old_memcg = set_active_memcg(memcg)
->>         kmem_cache_alloc_lru(zswap_entry_cache, lru, gfp)
->>         set_active_memcg(old_memcg)
->>
->> The good points are:
->>
->> 1. "zswap_entry" is charged to the memcg of "page", which is more sensible?
->>
->> 2. We can reuse the kmem_cache_alloc_lru() interface, which makes code simpler
->>    since we don't need to manage list_lru_memcg by ourselves.
->>
->> 3. Maybe the new list_lru_add() and list_lru_del() are not needed anymore?
->>    Since the "zswap_entry" is of the same memcg and node with the "page".
->>    But don't know if THP shrinker still need it.
->>
->> Thanks!
-> 
-> That idea was considered in earlier iterations/discussions of the
-> patch series as well. Charging things is not free - there is an
-> overhead associated with it, which is why we are usually selective
-> about whether to charge something. We were not super keen to do this
-> for zswap_entry just to plumb around the list_lru's restriction. Might
-> as well pay the price of extending the list_lru interface now.
-> 
-> If in the future, not charging the zswap entry causes a separate
-> isolation issue, we could revisit this decision and charge it.
-> Otherwise, IMHO we should just stick with this for now.
-> 
+Changes from RFC
+(https://lore.kernel.org/damon/20231121053604.60798-1-sj@kernel.org/)
+- Wordsmith commit message
+- Use GPL v2 for Makefile
+- Separate patch for each sample module
 
-Ok, I get it. Thanks much for your clear explanation!
+DAMON cannot be used from loadable modules since it is not exporting its
+symbols.  This makes use of DAMON unnecessarily tedious.  For example,
+basic usage of DAMON was presented at kernel summit 2021[1] by writing
+simple loadable DAMON application modules in live.  Because the time was
+limited (10 minutes) and the coding was to be done step by step, it had
+to make a downstream commit that exports DAMON symbols.  There were
+users asking why the source code is now not working.  It was mainly due
+to the absence of the symbols export patch on their tree, but also due
+to the updated DAMON programming interfaces.  There were also multiple
+users requesting support of loadable modules for easier deployment.
+
+There's no reason to avoid exporting DAMON symbols.  However, it would
+be better to have concrete use cases of the symbols in the tree
+together, for better maintenance of the interface and the use cases.
+The kernels summit 2021's live-coded modules could be used for the
+purpose.
+
+Expose DAMON API modules for supporting the minimum modules and add the
+kernel summit 2021's modules that updated for latest DAMON API under the
+samples directory.  The sample modules will be keep updated.  For
+exporting more symbols, requesters would be required to merge their
+modules using the symbols in the tree together, or updsate the sample
+modules to use the newly-exporting symbols in still simple but
+reasonable ways.
+
+[1] https://linuxplumbersconf.org/event/11/contributions/984/
+
+Signed-off-by: SeongJae Park <sj@kernel.org>
+
+SeongJae Park (3):
+  mm/damon/core: export symbols for supporting loadable modules
+  samples: add working set size estimation DAMON sample module
+  samples: add proactive reclamation DAMON sample module
+
+ MAINTAINERS                       |   1 +
+ mm/damon/core.c                   |  10 +++
+ samples/Kconfig                   |   2 +
+ samples/Makefile                  |   2 +
+ samples/damon/Kconfig             |  30 +++++++++
+ samples/damon/Makefile            |   3 +
+ samples/damon/damon_sample_prcl.c | 102 ++++++++++++++++++++++++++++++
+ samples/damon/damon_sample_wsse.c |  85 +++++++++++++++++++++++++
+ 8 files changed, 235 insertions(+)
+ create mode 100644 samples/damon/Kconfig
+ create mode 100644 samples/damon/Makefile
+ create mode 100644 samples/damon/damon_sample_prcl.c
+ create mode 100644 samples/damon/damon_sample_wsse.c
+
+
+base-commit: 7fcebba4a540e4508b923f00a3e9c5e4710f147f
+-- 
+2.34.1
 
