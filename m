@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DF6805C68
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D84805C75
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346945AbjLEPRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:17:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        id S1346075AbjLEPR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442364AbjLEPRC (ORCPT
+        with ESMTP id S1346868AbjLEPRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:17:02 -0500
+        Tue, 5 Dec 2023 10:17:06 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 628A4D4B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:17:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB449C433CC;
-        Tue,  5 Dec 2023 15:17:04 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BB2D5B
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:17:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DC45C433CA;
+        Tue,  5 Dec 2023 15:17:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701789426;
-        bh=u0cVlqpFIgozphn0YtMmI9Rg2WyYQkpa6+1c55rCtGQ=;
+        s=k20201202; t=1701789428;
+        bh=RbLg9T6AMJ5NL/D819BJlKf7wAYf0xJaQbaEvx+laAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DVPxDDVUw6LLgBi39Y8flaTz8ZCCZ7QiPkWL3GRS6G/voXLm0rD7sJ8VIvOS3vaMV
-         trQ6MvyyFlxMkhuxNY6udO6XIaCsg/X6RdvejTiUklrlEqtuf1HCQFjs5xtbP+Ggtq
-         z8SU7ZMiyWwaUzlUEIkmNZrLASsszr/HpnTLhNH+g8K7xU0shXpttOeOltkGgRUlyD
-         u2GKJK9TfFohG2zhefeHtrQ7DZ3KId6CoDvrn6oAuOLx8hDsKUCH+kNpzplTsXUo37
-         hcGZghH52jZ7uVNST4ugKEOrTDrYZyfU2MJfQI4cgtefy8cRLRrT0vc1Vg5+rlcfP4
-         d4FZKjIXEORfA==
+        b=Bw9LE1Wa/2C4T7BBITd2qcWq/ha/cEPhgIFiN2NgwWfkuMTfjK/JocYA4i/nrrz8E
+         vd9Zs0+X92gZRNGIT9HeziLtrtxBGbjKDfqS3rCUMuUL6XeWfVNQBw1RV8GcfbkVPs
+         +OhPlc+Rsn5xYw2wSK3w4c72rwCGuipPf2wSe1CsgaDbowPjF1LhhMP2ySkfynCupB
+         j4mJob5avu+hNYBD0ojoPvqIlA9mC146m0LlOs2QVbmK2yipP3KrTTVKpuMNFxgLOS
+         yyJhhnLDuGIw2XlU2U5St8A+N2Wrg3ZD84SqzUN2Wxq9/PzHRdX9veD3GgnzZjW8jO
+         9dfsFSV/eCH+Q==
 From:   Will Deacon <will@kernel.org>
-To:     catalin.marinas@arm.com,
-        Huang Shijie <shijie@os.amperecomputing.com>
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        rafael@kernel.org, linux-arch@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        arnd@arndb.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] arm64: irq: set the correct node for VMAP stack
-Date:   Tue,  5 Dec 2023 15:16:36 +0000
-Message-Id: <170178641072.13754.15163791015207648414.b4-ty@kernel.org>
+To:     Tsung-Han Lin <tsunghan.tw@gmail.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH] Dcoumentation/arch/arm64: fix typo
+Date:   Tue,  5 Dec 2023 15:16:37 +0000
+Message-Id: <170178649190.14021.17307806382838211619.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231124031513.81548-1-shijie@os.amperecomputing.com>
-References: <ZV-EA46rBJ9WK4UH@arm.com> <20231124031513.81548-1-shijie@os.amperecomputing.com>
+In-Reply-To: <20231203011804.27694-1-tsunghan.tw@gmail.com>
+References: <20231203011804.27694-1-tsunghan.tw@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,21 +52,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 24 Nov 2023 11:15:13 +0800, Huang Shijie wrote:
-> In current code, init_irq_stacks() will call cpu_to_node().
-> The cpu_to_node() depends on percpu "numa_node" which is initialized in:
->      arch_call_rest_init() --> rest_init() -- kernel_init()
-> 	--> kernel_init_freeable() --> smp_prepare_cpus()
+On Sun, 3 Dec 2023 09:18:04 +0800, Tsung-Han Lin wrote:
+> Should be 'if' here.
 > 
-> But init_irq_stacks() is called in init_IRQ() which is before
-> arch_call_rest_init().
 > 
-> [...]
 
-Applied to arm64 (for-next/mm), thanks!
+I, err, fixed the typo in the subject when applying this...
 
-[1/1] arm64: irq: set the correct node for VMAP stack
-      https://git.kernel.org/arm64/c/75b5e0bf90bf
+Applied to arm64 (for-next/misc), thanks!
+
+[1/1] Dcoumentation/arch/arm64: fix typo
+      https://git.kernel.org/arm64/c/365b1900c93a
 
 Cheers,
 -- 
