@@ -2,196 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BB94805B6D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CF8805C09
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346392AbjLEPwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:52:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
+        id S1346893AbjLEPwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:52:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346320AbjLEPwG (ORCPT
+        with ESMTP id S1346860AbjLEPwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:52:06 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DE4C3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:52:10 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-33348e711e0so1955592f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 07:52:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riscv-rocks.de; s=google; t=1701791529; x=1702396329; darn=vger.kernel.org;
-        h=organization:user-agent:in-reply-to:content-disposition
-         :mime-version:references:mail-followup-to:reply-to:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lVTdq6t/OSB6FE4R91UbvG7HbrsvSrimG/gzvVG23BM=;
-        b=d7LYvaVyAKeJ5LgT3KPvovxqsmkBOCySMB/kGudYfq9WQLBreCixXL/CwXNeeOPT+S
-         sx9Suz7uR5lMBJyO5CKXBGzZZ3y5KWv0RmIy3tfPO8v0G6DbbHBN1YAKzcD2vdTqWfXd
-         rTsVHguH/GFQWshhCSIv5cLvXBfjJBSp3wbPDBc7sKj/MCgAO9ytEcu1lBteCU08hlFY
-         Nay6iFi/jbw/gudz9qI++2RPLsBUZ0k/cbiaYtH9YtMRcztkXWgHQZWvZ6Cr1dJoPady
-         ax72eu0ugB2jZXi5tzyGd42CHNGVqloOlyBFop/gTwOLONPhDjUqd9bHo/5yc/zTEHnM
-         gUzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701791529; x=1702396329;
-        h=organization:user-agent:in-reply-to:content-disposition
-         :mime-version:references:mail-followup-to:reply-to:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lVTdq6t/OSB6FE4R91UbvG7HbrsvSrimG/gzvVG23BM=;
-        b=oz8nEd+3SA9MEc1mLuhoj0ZFqI0a1vrg5YKhcGd9KfNul9orS/pTrJoGzvYlMkuCoc
-         faC88Ow4t3c0CxpqyKi4wga9To/4xz28eMP7wWciaWlylO+f9KbIci+ZJsBWEqhTEQLN
-         vc54sCaLfjI4IXEAl+Pf5qZxVVUcddy59IlaOKO8WKbo2mx1MQYqDDtpMFUkw0su2sJn
-         x0Z2ClZ1oX7jZvEBEPzJhCJGNmMDkJJdff4WRV/ZlU8PHsuzEUGSdtAmkfDJ51Jyue4f
-         CLCee1eJ/AbJUQMinCaeUlAZpkD3auBBbL2hjtWhlm7zXz2EeU10eqMFKAmbskzhdeQh
-         LJgg==
-X-Gm-Message-State: AOJu0YzhzR3fY9aTiENmhx73kidkCToCQlaXDRVnNUjLOxZrC9Lez3F7
-        cujtPEG7t0scyy83x+3NsdnUBA==
-X-Google-Smtp-Source: AGHT+IElMdXrz89RurD2RJoKi2kjRNtKZuLwgqSlkGPsYKj4csSCF4Fnczw3b5nc0Y11T0hPeWp81Q==
-X-Received: by 2002:adf:f74c:0:b0:333:2fd2:51fc with SMTP id z12-20020adff74c000000b003332fd251fcmr4361255wrp.117.1701791528135;
-        Tue, 05 Dec 2023 07:52:08 -0800 (PST)
-Received: from fedora (p549451d5.dip0.t-ipconnect.de. [84.148.81.213])
-        by smtp.gmail.com with ESMTPSA id f20-20020a1709067f9400b009fd7bcd9054sm6963138ejr.147.2023.12.05.07.52.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 07:52:07 -0800 (PST)
-Date:   Tue, 5 Dec 2023 16:52:05 +0100
-From:   Damian Tometzki <damian@riscv-rocks.de>
-To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        Drew Fustini <dfustini@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 2/4] riscv: dts: thead: Add TH1520 mmc controllers and
- sdhci clock
-Message-ID: <ZW9HJdIk-8r918Ma@fedora>
-Reply-To: Damian Tometzki <damian@riscv-rocks.de>
-Mail-Followup-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Drew Fustini <dfustini@baylibre.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20231129-th1520_mmc_dts-v7-0-c77fc19caa6f@baylibre.com>
- <20231129-th1520_mmc_dts-v7-2-c77fc19caa6f@baylibre.com>
- <CAJM55Z-qc7gc0fO-K8byqvpOBjDxFD4dP57mFHuijvpOzBWObQ@mail.gmail.com>
- <ZW8zHoVWf94FDTx7@xhacker>
- <CAJM55Z9tPTu4N4UVCBs1AJYWrWxMUDL+8FpVZtGx4yQgKenWSQ@mail.gmail.com>
+        Tue, 5 Dec 2023 10:52:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66641D3;
+        Tue,  5 Dec 2023 07:52:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701791541; x=1733327541;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=FyQHcSf5fKXlK7ON7l+O2UQPMxMYRxdJd9SGFHqndCg=;
+  b=b6C1onvc07ITOtr+lbtQ46swdxeTBuHmhKz+oMMNAL+bg9YN9O1bnITX
+   6gAsR9Vndo94OCLl+LMO0P+u4QpqnqNTJONQIFhmDk84AWmPF8L+m8MrN
+   kLMH+nI/5wdhYDwW+U5MsyNlxk3RV5utVWB3orjDZcYjiKFs6tihT1E1h
+   S9bvsTTPt1AmWN/m7A6YVr9Ktvq+b1695+G/GV4aAIjq6alXgu5gk9APx
+   QaR31NgTQ48Tvjaauqta+kBzXWRA359joTyvYCnaLmTphZcbc7nF6ORv5
+   p7viEzU/3m4OJ1zWPebijDf/UkwWThW1tosgy3yr19a+xmaEjlheVCSYj
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="756697"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="756697"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 07:52:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="914843624"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="914843624"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Dec 2023 07:52:21 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 07:52:20 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 07:52:20 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 5 Dec 2023 07:52:20 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 5 Dec 2023 07:52:20 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ew4ICcCCgK2Gllt2Bj8SF1Ep3IvHORKBF03l3hWBsdkbUf9RypHaPAdtj6Dw4kdYhQX2F3pPCNqJmepegW8q/qD/Cr4OtGUNTuxZS9R1yIO9eelab2eBGOyFjdFm9oAhgQnOCOQ/ZqNA86YltwHjpFkI5L8zChQAO2XhotSwix9PhvQO18d2Ci1bxKEKAoRAWSA6x+DcXi579I2h0L2dm0fZ7kXUPhqiGER6l2E4TYS2Zcaj1qr4iks7qCH6T8AJjZkM+TLwSPr4UIvknvZ+xp911HWqYuBnR1W6+aC1zkWk1jSBByP5CIAl5tQChrxpaoZQq01AWr652nblT+YXzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fmDqDv2qdMypR3tHFnYwDQtDhziOR9/XzqQ+qByjvoo=;
+ b=KgmCeEOqPpbM5fsBWOYyJSn6WRFh2FAAMa5MlzeHtBGZadFoxWS6oXHoSfkMIkIxBbeq3eAhfZuXqmf2i22qNS1mr+qDTxH3/ZbWfThxiYPH8c/Lbs+Q3JPgr5Iv3GY2OhHJDiTxkdQyJEsIn6R7WVEOC3kUtsDo1piqA+pjZjtLqnxddhkcQGmxLt7sfSUJtrdnyUQvV1XVxFlzbNdI8PeGiQ98OHohSJKQFAV60/HLG3EJWNaVQX1nurMESDhXb66kKMo4Gd/r1vqggvDE4liu41rDh4cyCN3IOl1STRc8eazlS1HyRjIFN5/IL4llNYkrvjvYjCQCeZWGzLrLIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
+ by DS0PR11MB8161.namprd11.prod.outlook.com (2603:10b6:8:164::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 15:52:18 +0000
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1]) by PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::6f7b:337d:383c:7ad1%4]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
+ 15:52:18 +0000
+Message-ID: <2a193373-ccb2-458a-890f-d48c4b724e08@intel.com>
+Date:   Tue, 5 Dec 2023 08:52:14 -0700
+User-Agent: Betterbird (Linux)
+Subject: Re: [PATCH v11 14/14] dmaengine: idxd: Add support for device/wq
+ defaults
+To:     Rex Zhang <rex.zhang@intel.com>, <tom.zanussi@linux.intel.com>
+CC:     <davem@davemloft.net>, <dmaengine@vger.kernel.org>,
+        <fenghua.yu@intel.com>, <giovanni.cabiddu@intel.com>,
+        <herbert@gondor.apana.org.au>, <james.guilford@intel.com>,
+        <kanchana.p.sridhar@intel.com>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <pavel@ucw.cz>,
+        <tony.luck@intel.com>, <vinodh.gopal@intel.com>,
+        <vkoul@kernel.org>, <wajdi.k.feghali@intel.com>
+References: <20231201201035.172465-15-tom.zanussi@linux.intel.com>
+ <20231205092139.3682047-1-rex.zhang@intel.com>
+Content-Language: en-US
+From:   Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20231205092139.3682047-1-rex.zhang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0049.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::24) To PH7PR11MB5984.namprd11.prod.outlook.com
+ (2603:10b6:510:1e3::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJM55Z9tPTu4N4UVCBs1AJYWrWxMUDL+8FpVZtGx4yQgKenWSQ@mail.gmail.com>
-User-Agent: Mutt
-X-Operating-System: Linux Fedora release 39 (Thirty Nine) (Kernel 6.7.0-rc4)
-Organization: Linux hacker
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|DS0PR11MB8161:EE_
+X-MS-Office365-Filtering-Correlation-Id: 14cd1ff2-c811-4acd-dea3-08dbf5aa28c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tOK0UhXG8B/xDbo3wZ3vAaFus/mh9i7LAHjXwdXfeSlk5ni5XHjyTkY9M10IPCGCtGma/eIL2c56dagBJ2WVXfn7uEXiqdFmaHJ4x6LtrAMV7nbCg/22HvMktXzLpxpCcQPRqP2CE5AluFUqclS6HTayonYX0L8Jr2s8HVJETSWngTQLs79MbJm8WDkeKw75HWrpLWUxR6l7iAYnacZuvLF+tZCuTJVtWSPMg8ioMlMRReRDf+EbVHKox05vYjP8ATB7O3G/4oW67yNeDncM5q5T9Mv//226wNdm6sH2mGrdYF4YVrTIQHV16McYbc6gw/Ov7tyC+17sk+CZW+oYWR3WZitzAIUfgCIfOGYCLjAg8rKxP0efYEumi0Ym+MRCUaFs+ti4Nk7qNA0ccF3GMzhhZrwNC0kduEPvNZDO/O+WMOnCFFOyipJ74KT5zX73/vzfyqfSu8k3Blo4CCgOINDoLEFSIzM7JP4IEI3005y2UcFqmhFOH47NbnManRlcbXGNkJiEMFOLWFiKgzs9rujJBZ0R2nki3B/9llPqPkKa4ng7P4/N3Yjm+3y02w0spMr4uF+sPdHETiyM3ZP1WaXqWqjVlq6aXnMY5Ow8pP8xMJAIcVevtBMq0FYawiAf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(39860400002)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(38100700002)(82960400001)(31686004)(6506007)(478600001)(5660300002)(2906002)(44832011)(83380400001)(86362001)(31696002)(26005)(53546011)(2616005)(41300700001)(36756003)(6512007)(66946007)(66556008)(66476007)(316002)(8936002)(6666004)(8676002)(4326008)(6486002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QTBoWXZPbFZxeVh3aTI2RHVUS0c5elhZMVoweXJpWXYwZE02MjBJQmVRcjRJ?=
+ =?utf-8?B?SzhQQThzbGFhL3JRZ0lDOUZEMzdvOHc2U1AvbFNQYlQwdjV3RSt5MHIrV1BB?=
+ =?utf-8?B?QkVWZDFHQlllUHR1bC9zV3pjZ29WOW5rL1pKTUZKREFDUFplY3dBSlV6OGxC?=
+ =?utf-8?B?NDVBLy9BWjFtQ1d1YThlalJPaW5YTkZPUUpBY3l1dmZ2NGFZUzgxc0ZKQWJF?=
+ =?utf-8?B?UUdFa3cxeEFOWFRzZ3JUZ3B5cU1uVkx3ZmFhZ3FRcTQ5R0pESXFxempya09n?=
+ =?utf-8?B?K2xISSt6dkREV3p4NUdxa3k5UE9BL1JxRUxUY2xsbHlOZ05sKzBiY0lBZzhL?=
+ =?utf-8?B?SEsxSkM1SjQ2cm9hVGpld0ozSHArV2tIT1dJTytNYUE1UDBYQ1RZTXB4WURm?=
+ =?utf-8?B?KzFxNkN2dS9NNCtQRW52NTRDay83NDdjZytoOGZQOEJFTDBIeFU2TXhGUFpt?=
+ =?utf-8?B?Qk8xZno3V0hDaC8vWG94bjdvZytoc2dOMDVYR2duNTNxWjV6eXB5dzhEYnpD?=
+ =?utf-8?B?SlJrQXd3Z2pxczRrWnpuTDZ0NDFheXAyaXo3NTZNNktybkI0MjhId1VtcHdC?=
+ =?utf-8?B?MzlZZEJPeE1memwyZzRjRXhPdmdKU3Z4Unl6K2dkelRSUTdaZ1h0Vk9SeWtw?=
+ =?utf-8?B?T0dKbTl3WTNHclZoT0gvSXpOY1ZOQUd0djBzMVpMSmZGVlVQa0doSWkxRzRS?=
+ =?utf-8?B?RlZKZ0tyeHBBTnJNbkx4blRhcUY1WXhmemtwNmwzZldreEt5MXdQdWVjL1dM?=
+ =?utf-8?B?OEFBU2dNaXl4SWRZeFVWS1UzcktxdFRvNDdiNlN1dWhyMFBPc1p0cHAyQ1Fl?=
+ =?utf-8?B?MHpUMjN4NHlHcHJRWTlBNTZ4cVpta1VsL2tkZFBxcGJNQ3U1NnFaWVczOVRC?=
+ =?utf-8?B?cnlzN3lxdmVjeTJHaVVDZWdiM24rMWdwakpuRkFMQ3JyWWNWUVBmV1JDbFA0?=
+ =?utf-8?B?Q1BUQVFWZ0dVQ05EQjdHYUhFRW50UEFSM3JCZGZoVktrbnFlZTVnbjg4azJW?=
+ =?utf-8?B?TWRxTUl0dkcyTGFhMm9pYmt3Z2ErZjJ3d0VVMFdZeEdkWVJJQlZDc1BjTVZ4?=
+ =?utf-8?B?Q21wVFpsejRzRzRRcTVidy8yN3h0US9ENlBoVWNmQUdFS0hwS05RSUJvajlC?=
+ =?utf-8?B?TkcyMG1uSDAra2dMUWJvUnZiK25UNno5aENLMC9OTGk0VnV2ZnE5V1l1QTFr?=
+ =?utf-8?B?SUZ5VS9XZzE5cW5VZGZiTkRvYWJDZnBCUTZpS0s2ajM4VjZVdS8xNnpjOXpU?=
+ =?utf-8?B?b3VJREhMM0YxbUZUbURSNCtqRFVGN01tUFRxVUZhT3l6djRqZjNSeVBOOHdo?=
+ =?utf-8?B?cDVnamRTWHhua1Vtd1JSN2RUR3lYV3BpVkZ2TmZnNkFWZnZDRGo3cjRDdnky?=
+ =?utf-8?B?aTRMNXduRGVackJZckpTbkIweEVNeWxNRVQxaitHbWtRZmVVQXlsSnZqZFp3?=
+ =?utf-8?B?R2VrRm9VdWozZEtlSFU4YlZXMDNEQ2RaM1JUM0ZzNFgyb0F6MkllZEplM0ZD?=
+ =?utf-8?B?RFJBcnJHeFl2WDV3R2xvRnFIYTdPd21lcHZqQ0wxNVNlRUQ4eGF6YVdxOW5J?=
+ =?utf-8?B?eFFiVkRCdXRPaGMvRkdOK1VoTUZUQTFYK0VBZFFFbll5ZmxoS1o4SzZZcEQ0?=
+ =?utf-8?B?UWY4R2JPdEZPc2JDblNNQXhzNUdKcmk1QjVhVVA1dEdoS1VtaDFJUjh3aWJZ?=
+ =?utf-8?B?KzlCUStvWDBWOXhzdEo0Z3NkbG56LzF4OERIVGE3SXc3U3NHK01ENGxBb0ty?=
+ =?utf-8?B?a3Z4eUFuZHNhMWd4azFqZ2h5Mnh6bkI1a3UvUjBSTEhPcXZKMjk1aC9zc0F2?=
+ =?utf-8?B?Q082cWxQMWNONlFYVFU1aFJ2YVNyMVRZbHkrOWJQVjhUdTBBbU9UVllpMEFx?=
+ =?utf-8?B?enJXV2JFdzlmQ2dBelhjUjNWZ3pWMWZkbTc2Y29rdWtSZWs5UkRPY2JoNlkx?=
+ =?utf-8?B?UFpPSThJdXQ2QVFMQUQyOGZVRy9kVGFWcHZOekV0djV3YjlCYTdIVnR1bHRa?=
+ =?utf-8?B?bWp4ZEJkN0tYYm4wenoyN3pzS3hFWlJXVG5SZis1WW5HNmRBY1dEai9WVjc2?=
+ =?utf-8?B?b3c4WUJDZlFuQ1dGcWt5YXh2OThUek5xd0ZxcURRYjNRaEU5d1NvQ3V1U0sx?=
+ =?utf-8?Q?jHGSFIfn1nWAZb1iO6ENf/uHE?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14cd1ff2-c811-4acd-dea3-08dbf5aa28c3
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 15:52:18.2201
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i7F3Pz6KSW5rdz3Ehb05cMW/x5oKiSjQhmEQK5/B9LddGqZ0M1Wfr1qeIzK21M8tBsRG7J5QKYjR00NqB9c8TA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8161
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05. Dec 06:48, Emil Renner Berthing wrote:
-> Jisheng Zhang wrote:
-> > On Mon, Dec 04, 2023 at 01:47:45AM -0800, Emil Renner Berthing wrote:
-> > > Drew Fustini wrote:
-> > > > Add node for the SDHCI fixed clock. Add mmc0 node for the first mmc
-> > > > controller instance which is typically connected to the eMMC device.
-> > > > Add mmc1 node for the second mmc controller instance which is typically
-> > > > connected to microSD slot.
-> > > >
-> > > > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> > > > ---
-> > > >  arch/riscv/boot/dts/thead/th1520.dtsi | 25 +++++++++++++++++++++++++
-> > > >  1 file changed, 25 insertions(+)
-> > > >
-> > > > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > index ba4d2c673ac8..af4fdcd82e0b 100644
-> > > > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > @@ -146,6 +146,13 @@ uart_sclk: uart-sclk-clock {
-> > > >  		#clock-cells = <0>;
-> > > >  	};
-> > > >
-> > > > +	sdhci_clk: sdhci-clock {
-> > > > +		compatible = "fixed-clock";
-> > > > +		clock-frequency = <198000000>;
-> > > > +		clock-output-names = "sdhci_clk";
-> > > > +		#clock-cells = <0>;
-> > > > +	};
-> > > > +
-> > > >  	soc {
-> > > >  		compatible = "simple-bus";
-> > > >  		interrupt-parent = <&plic>;
-> > > > @@ -304,6 +311,24 @@ dmac0: dma-controller@ffefc00000 {
-> > > >  			status = "disabled";
-> > > >  		};
-> > > >
-> > > > +		mmc0: mmc@ffe7080000 {
-> > > > +			compatible = "thead,th1520-dwcmshc";
-> > > > +			reg = <0xff 0xe7080000 0x0 0x10000>;
-> > > > +			interrupts = <62 IRQ_TYPE_LEVEL_HIGH>;
-> > > > +			clocks = <&sdhci_clk>;
-> > > > +			clock-names = "core";
-> > > > +			status = "disabled";
-> > > > +		};
-> > > > +
-> > > > +		mmc1: mmc@ffe7090000 {
-> > > > +			compatible = "thead,th1520-dwcmshc";
-> > > > +			reg = <0xff 0xe7090000 0x0 0x10000>;
-> > > > +			interrupts = <64 IRQ_TYPE_LEVEL_HIGH>;
-> > > > +			clocks = <&sdhci_clk>;
-> > > > +			clock-names = "core";
-> > > > +			status = "disabled";
-> > > > +		};
-> > > > +
-> > >
-> > > Hi Drew,
-> > >
-> > > This doesn't seem to match the documentation shared here:
-> > > https://lore.kernel.org/linux-riscv/5f437109d2be2b8843f549a661054a2e3ec0d66e.camel@xry111.site/
-> > > From the TH1520 System User Manual.pdf in there, I'd expect something like
-> >
-> > >
-> > > 	emmc: mmc@ffe7080000 {
-> > > 		compatible = "thead,th1520-dwcmshc";
-> > > 		reg = <0xff 0xe7080000 0x0 0x10000>;
-> > > 		...
-> > > 	};
-> >
-> > Hi Emil,
-> >
-> > I think this isn't necessary. From other soc dts files, I see such
-> > naming, but lots socs just use mmc0, mmc1, and so on.
-> 
-> No it certainly isn't necessary. Those labels are purely for us humans to read
-> and are not present in the dtb. But that's exactly why I think it'd be a good
-> idea match the labels with the documentation, so it will easier for us humans
-> to match up the device tree source to documentation.
-Hello together,
 
-yes i agree to this too. It is easier for troubleshooting etc. 
 
-Damian
+On 12/5/23 02:21, Rex Zhang wrote:
+> Hi Tom,
+> 
+> On 2023-12-01 at 14:10:35 -0600, Tom Zanussi wrote:
+> 
+> [snip]
+> 
+>> +int idxd_load_iaa_device_defaults(struct idxd_device *idxd)
+>> +{
+>> +	struct idxd_engine *engine;
+>> +	struct idxd_group *group;
+>> +	struct idxd_wq *wq;
+>> +
+>> +	if (!test_bit(IDXD_FLAG_CONFIGURABLE, &idxd->flags))
+>> +		return 0;
+> In the virtualization case, it is not configurable in guest OS,
+> then the default work queue will not be enabled. Is it expected?
 
+I think what you can do is just set the attributes that are settable and the wq should auto enable. That may be the right approach to make it consistent with host.
+
+>> +
+>> +	wq = idxd->wqs[0];
+>> +
+>> +	if (wq->state != IDXD_WQ_DISABLED)
+>> +		return -EPERM;
+>> +
+>> +	/* set mode to "dedicated" */
+>> +	set_bit(WQ_FLAG_DEDICATED, &wq->flags);
+>> +	wq->threshold = 0;
+>> +
+>> +	/* only setting up 1 wq, so give it all the wq space */
+>> +	wq->size = idxd->max_wq_size;
+>> +
+>> +	/* set priority to 10 */
+>> +	wq->priority = 10;
+>> +
+>> +	/* set type to "kernel" */
+>> +	wq->type = IDXD_WQT_KERNEL;
+>> +
+>> +	/* set wq group to 0 */
+>> +	group = idxd->groups[0];
+>> +	wq->group = group;
+>> +	group->num_wqs++;
+>> +
+>> +	/* set name to "iaa_crypto" */
+>> +	memset(wq->name, 0, WQ_NAME_SIZE + 1);
+>> +	strscpy(wq->name, "iaa_crypto", WQ_NAME_SIZE + 1);
+>> +
+>> +	/* set driver_name to "crypto" */
+>> +	memset(wq->driver_name, 0, DRIVER_NAME_SIZE + 1);
+>> +	strscpy(wq->driver_name, "crypto", DRIVER_NAME_SIZE + 1);
+>> +
+>> +	engine = idxd->engines[0];
+>> +
+>> +	/* set engine group to 0 */
+>> +	engine->group = idxd->groups[0];
+>> +	engine->group->num_engines++;
+>> +
+>> +	return 0;
+>> +}
+>> diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
+>> index 62ea21b25906..47de3f93ff1e 100644
+>> --- a/drivers/dma/idxd/idxd.h
+>> +++ b/drivers/dma/idxd/idxd.h
+>> @@ -277,6 +277,8 @@ struct idxd_dma_dev {
+>>  	struct dma_device dma;
+>>  };
+>>  
+>> +typedef int (*load_device_defaults_fn_t) (struct idxd_device *idxd);
+>> +
+>>  struct idxd_driver_data {
+>>  	const char *name_prefix;
+>>  	enum idxd_type type;
+>> @@ -286,6 +288,7 @@ struct idxd_driver_data {
+>>  	int evl_cr_off;
+>>  	int cr_status_off;
+>>  	int cr_result_off;
+>> +	load_device_defaults_fn_t load_device_defaults;
+>>  };
+>>  
+>>  struct idxd_evl {
+>> @@ -730,6 +733,7 @@ void idxd_unregister_devices(struct idxd_device *idxd);
+>>  void idxd_wqs_quiesce(struct idxd_device *idxd);
+>>  bool idxd_queue_int_handle_resubmit(struct idxd_desc *desc);
+>>  void multi_u64_to_bmap(unsigned long *bmap, u64 *val, int count);
+>> +int idxd_load_iaa_device_defaults(struct idxd_device *idxd);
+>>  
+>>  /* device interrupt control */
+>>  irqreturn_t idxd_misc_thread(int vec, void *data);
+>> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
+>> index 0eb1c827a215..14df1f1347a8 100644
+>> --- a/drivers/dma/idxd/init.c
+>> +++ b/drivers/dma/idxd/init.c
+>> @@ -59,6 +59,7 @@ static struct idxd_driver_data idxd_driver_data[] = {
+>>  		.evl_cr_off = offsetof(struct iax_evl_entry, cr),
+>>  		.cr_status_off = offsetof(struct iax_completion_record, status),
+>>  		.cr_result_off = offsetof(struct iax_completion_record, error_code),
+>> +		.load_device_defaults = idxd_load_iaa_device_defaults,
+>>  	},
+>>  };
+>>  
+>> @@ -745,6 +746,12 @@ static int idxd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>>  		goto err;
+>>  	}
+>>  
+>> +	if (data->load_device_defaults) {
+>> +		rc = data->load_device_defaults(idxd);
+>> +		if (rc)
+>> +			dev_warn(dev, "IDXD loading device defaults failed\n");
+>> +	}
+>> +
+>>  	rc = idxd_register_devices(idxd);
+>>  	if (rc) {
+>>  		dev_err(dev, "IDXD sysfs setup failed\n");
 > 
-> > And IIRC, the host for sd and sdio can support both, IOW, below
-> > sdio0/sdio1 may be used for sdcard.
-> 
-> Yes, all of the EMMC, SDIO0 and SDIO1 seem to be instances of the same IP.
-> 
-> /Emil
+> Thanks,
+> Rex Zhang
+>> -- 
+>> 2.34.1
+>>
