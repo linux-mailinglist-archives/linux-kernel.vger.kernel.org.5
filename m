@@ -2,148 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A13805525
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6AF8805528
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 13:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345247AbjLEMsP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Dec 2023 07:48:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
+        id S1345212AbjLEMtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 07:49:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345119AbjLEMsN (ORCPT
+        with ESMTP id S1345119AbjLEMtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 07:48:13 -0500
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B2BA1
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 04:48:20 -0800 (PST)
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1fae54afb66so508719fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 04:48:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701780499; x=1702385299;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IO2l4IJjU9icOifnYG2PsMFmdqAsQXokH8ukawb7hHk=;
-        b=hw7foyWf+Be0pHOxyI7lfH6ZRsP3jH3O3l+CDCR4C2ZcxwOCvcZFEjxIcYspky2hqr
-         00xu+nJJ+qjiIMH5DdARpYqOZu4L4TTeVnsqNzRAu/isYmdU6p2VvDv5F7JUzaoEjouY
-         iazv5Jgi5/mHXDY9/Hd5Difo/RF+vBh4cHeZ0d9/7z+LQC3oRSGPl89EmSSO9710/IkO
-         cAlU5M8bROsxWkkmsL/+BuIX228HccV1S1SDzjr+bXNjtZ/IK41LerzgdKyUcdNw8xys
-         uS74pBw806anKgZLhb8+PzXzcVVmpDf9czOPPapUmBHAHEu0+WNqC/VaKZOH6D/0wNSX
-         i4Cw==
-X-Gm-Message-State: AOJu0YxOPE5C8CnK51UWgeLtf/u4SP8KgeMi0Ty4CDYCafDhwqqNX6E9
-        2edNN+uH1vN9ihL/Ewru70FUiINss9DupjgiPtw=
-X-Google-Smtp-Source: AGHT+IFdgiQ48wbfJUm+JMZxtfktBc8aYgDjxCE3DzP2lTj6+vTevIRUC21aeVVlrCizlZVsR6Af/Shv9jXw+ej1zTo=
-X-Received: by 2002:a05:6870:4d09:b0:1fb:19d6:8715 with SMTP id
- pn9-20020a0568704d0900b001fb19d68715mr10579229oab.4.1701780499551; Tue, 05
- Dec 2023 04:48:19 -0800 (PST)
+        Tue, 5 Dec 2023 07:49:45 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D44A0;
+        Tue,  5 Dec 2023 04:49:51 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1rAUs0-0006bO-Oa; Tue, 05 Dec 2023 13:49:48 +0100
+Message-ID: <24aa7a8b-40ed-449b-a722-df4abf65f114@leemhuis.info>
+Date:   Tue, 5 Dec 2023 13:49:48 +0100
 MIME-Version: 1.0
-References: <20231204172849.18753-1-jalliste@amazon.com>
-In-Reply-To: <20231204172849.18753-1-jalliste@amazon.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Dec 2023 13:48:07 +0100
-Message-ID: <CAJZ5v0izUiGa2rU_8Oiygj40434Bvr2tooUqOpyUBRrM4BekeA@mail.gmail.com>
-Subject: Re: [PATCH] x86: intel_epb: Add earlyparam option to keep bias at performance
-To:     Jack Allister <jalliste@amazon.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, rafael@kernel.org,
-        len.brown@intel.com, Paul Durrant <pdurrant@amazon.com>,
-        Jue Wang <juew@amazon.com>,
-        Usama Arif <usama.arif@bytedance.com>, x86@kernel.org,
-        Hans de Goede <hdegoede@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [regressions] ntfs3: empty file on update without forced cache
+ drop
+Content-Language: en-US, de-DE
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        Kari Argillander <kari.argillander@stargateuniverse.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <138ed123-0f84-4d7a-8a17-67fe2418cf29@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <138ed123-0f84-4d7a-8a17-67fe2418cf29@leemhuis.info>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701780592;01e3973a;
+X-HE-SMSGID: 1rAUs0-0006bO-Oa
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 6:30 PM Jack Allister <jalliste@amazon.com> wrote:
->
-> There are certain scenarios where it may be intentional that the EPB was
-> set at to 0/ENERGY_PERF_BIAS_PERFORMANCE on kernel boot. For example, in
-> data centers a kexec/live-update of the kernel may be performed regularly.
->
-> Usually this live-update is time critical and defaulting of the bias back
-> to ENERGY_PERF_BIAS_NORMAL may actually be detrimental to the overall
-> update time if processors' time to ramp up/boost are affected.
->
-> This patch introduces a kernel command line "intel_epb_keep_performance"
-> which will leave the EPB at performance if during the restoration code path
-> it is detected as such.
->
-> Signed-off-by: Jack Allister <jalliste@amazon.com>
-> Cc: Paul Durrant <pdurrant@amazon.com>
-> Cc: Jue Wang <juew@amazon.com>
-> Cc: Usama Arif <usama.arif@bytedance.com>
-> ---
->  arch/x86/kernel/cpu/intel_epb.c | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
-> index e4c3ba91321c..0c7dd092f723 100644
-> --- a/arch/x86/kernel/cpu/intel_epb.c
-> +++ b/arch/x86/kernel/cpu/intel_epb.c
-> @@ -50,7 +50,8 @@
->   * the OS will do that anyway.  That sometimes is problematic, as it may cause
->   * the system battery to drain too fast, for example, so it is better to adjust
->   * it on CPU bring-up and if the initial EPB value for a given CPU is 0, the
-> - * kernel changes it to 6 ('normal').
-> + * kernel changes it to 6 ('normal'). This however is overridable via
-> + * intel_epb_keep_performance if required.
->   */
->
->  static DEFINE_PER_CPU(u8, saved_epb);
-> @@ -75,6 +76,8 @@ static u8 energ_perf_values[] = {
->         [EPB_INDEX_POWERSAVE] = ENERGY_PERF_BIAS_POWERSAVE,
->  };
->
-> +static bool intel_epb_keep_performance __read_mostly;
-> +
->  static int intel_epb_save(void)
->  {
->         u64 epb;
-> @@ -107,8 +110,12 @@ static void intel_epb_restore(void)
->                  */
->                 val = epb & EPB_MASK;
->                 if (val == ENERGY_PERF_BIAS_PERFORMANCE) {
-> -                       val = energ_perf_values[EPB_INDEX_NORMAL];
-> -                       pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
-> +                       if (!intel_epb_keep_performance) {
+[adding a bunch of people and two lists to the recipients, as Konstantin
+apparently hasn't sent any mail to any lists archived on lore for ~six
+weeks; maybe someone knows what's up or is willing to help out]
 
-if (!intel_epb_keep_performance && val == ENERGY_PERF_BIAS_PERFORMANCE) {
+On 27.11.23 07:18, Thorsten Leemhuis wrote:
+> Hi, Thorsten here, the Linux kernel's regression tracker.
+> 
+> Konstantin, I noticed a regression report in bugzilla.kernel.org.
+> Apparently it's cause by a change of yours.
+> 
+> As many (most?) kernel developers don't keep an eye on bugzilla, I
+> decided to forward it by mail. Note, you have to use bugzilla to reach
+> the reporter, as I sadly[1] can not CCed them in mails like this.
+> 
+> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218180 :
 
-and you need not notify the sysadmin that the original value has
-returned - they have set the command line switch for this purpose
-after all.
+Konstantin, are you still around? Would be great if you could look into
+this regression, as this sounds somewhat worrying.
 
-> +                               val = energ_perf_values[EPB_INDEX_NORMAL];
-> +                               pr_warn_once("ENERGY_PERF_BIAS: Set to 'normal', was 'performance'\n");
-> +                       } else {
-> +                               pr_warn_once("ENERGY_PERF_BIAS: Kept at 'performance', no change\n");
-> +                       }
->                 }
->         }
->         wrmsrl(MSR_IA32_ENERGY_PERF_BIAS, (epb & ~EPB_MASK) | val);
-> @@ -213,6 +220,12 @@ static const struct x86_cpu_id intel_epb_normal[] = {
->         {}
->  };
->
-> +static __init int intel_epb_keep_performance_setup(char *str)
-> +{
-> +       return kstrtobool(str, &intel_epb_keep_performance);
-> +}
-> +early_param("intel_epb_keep_performance", intel_epb_keep_performance_setup);
-> +
->  static __init int intel_epb_init(void)
->  {
->         const struct x86_cpu_id *id = x86_match_cpu(intel_epb_normal);
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
+
+>> The problem I am facing is the following:
+>> 1. I mount an NTFS partition via NTFS3
+>> 2. I create a file
+>> 3. I write to the file
+>> 4. The file is empty
+>> 5. I remount the partition
+>> 6. The file has the changes I made before the remount
+>>
+>> I can avoid the remount by doing:
+>> sudo sysctl vm.drop_caches=3
+> 
+> See the ticket for more details. It according to the report happens
+> still happens with 6.7-rc2, but not with 6.1.y. The reporter bisected
+> the problem to ad26a9c84510af ("fs/ntfs3: Fixing wrong logic in
+> attr_set_size and ntfs_fallocate") [v6.2-rc1].
+> 
+> Side note: while briefly checking lore for existing problems caused by
+> that change I noticed two syzbot reports about it that apparently nobody
+> looked into:
+> 
+> https://lore.kernel.org/all/000000000000bdf37505f1a7fc09@google.com/
+> https://lore.kernel.org/all/00000000000062174006016bc386@google.com/
+> 
+> [TLDR for the rest of this mail: I'm adding this report to the list of
+> tracked Linux kernel regressions; the text you find below is based on a
+> few templates paragraphs you might have encountered already in similar
+> form.]
+> 
+> BTW, let me use this mail to also add the report to the list of tracked
+> regressions to ensure it's doesn't fall through the cracks:
+> 
+> #regzbot introduced: ad26a9c84510af
+> https://bugzilla.kernel.org/show_bug.cgi?id=218180
+> #regzbot title: ntfs3: empty file on update without forced cache drop
+> #regzbot ignore-activity
+> 
+> This isn't a regression? This issue or a fix for it are already
+> discussed somewhere else? It was fixed already? You want to clarify when
+> the regression started to happen? Or point out I got the title or
+> something else totally wrong? Then just reply and tell me -- ideally
+> while also telling regzbot about it, as explained by the page listed in
+> the footer of this mail.
+> 
+> Developers: When fixing the issue, remember to add 'Link:' tags pointing
+> to the report (e.g. the buzgzilla ticket and maybe this mail as well, if
+> this thread sees some discussion). See page linked in footer for details.
+> 
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
 > --
-> 2.40.1
->
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+> 
+> [1] because bugzilla.kernel.org tells users upon registration their
+> "email address will never be displayed to logged out users"
+> 
+> 
