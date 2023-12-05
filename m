@@ -2,94 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B728061C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 905278061C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 23:34:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346505AbjLEWcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 17:32:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43752 "EHLO
+        id S1346514AbjLEWdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 17:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346449AbjLEWcD (ORCPT
+        with ESMTP id S1346259AbjLEWdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 17:32:03 -0500
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9651AA;
-        Tue,  5 Dec 2023 14:32:08 -0800 (PST)
+        Tue, 5 Dec 2023 17:33:39 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D24196;
+        Tue,  5 Dec 2023 14:33:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OD1ItpAr/xwE+UpWJnM3+Hd/hQwe/hOCe/5jv7jdpPk=; b=o3XjrazSh2WGCShw9aY/0MdGor
-        WF/MV/1Do8TzOamoGOVtnVRhVIgvJskn2l6UJWaEeZEmj+4dwxL76HA0H++pOcs6oN1rBP4G3TAGM
-        O49edbXY/MAVM8YI8RYccB/BSkYD7R8cmfjcQQtbZdcHjpEeRBLvCfPy5/YBZVEs2EacTBwMiKz3F
-        EFnMjJy4sugxWkBqyUfIyGI/ful9aw733BnaYxs+d37x6zDXx7ETTYk1vM68ZoVsBlqit646m6ZXZ
-        jkfzHR7B6ixmSjlYeJA7jhB9clkviA6ryNnRG7gC3aushuA5OK3QKfv2wjAjor4svyZSR9LFbAhqu
-        LI2H81eQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAdxV-007UJ0-0T;
-        Tue, 05 Dec 2023 22:32:05 +0000
-Date:   Tue, 5 Dec 2023 22:32:05 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Andy Shevchenko <andy@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>, tanzirh@google.com,
-        Kees Cook <keescook@chromium.org>,
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description;
+        bh=PaxZkLLx0jxzIbcOPDTCZy8j45AuGDflCXboembxXDQ=; b=v/olVTT4L++PZOFWqMtE88KMip
+        2EqgzAkRcEL4VV0Xh9PDEdLyq19Uc4IeTpFgOdwceLpfv0J7hJhUZf8hQYU4Cu2mHvMH38WXBef0+
+        h4F2/MkMhCCiXIX94WdZFIBX/rtwuyiWDtq7GJL7B7JuhaoM2pr8s+O6JGPqmY9OPd+RkTQK/IbSn
+        luWLVLten9V9arZv5euLBno80sx9FJVnXohP8nmgl/n2sAWwc1+p6GHSp1Lbr2isSotmUDC9TnPr9
+        wxUF1Qx5x/yGum6b9RqP1BowU1SS+fli2TAMT6CJR1qkcKS4LPJijqSt+P4lrgHjwRIiQDfOA3JYB
+        GExdSYMw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAdz1-008WZd-01;
+        Tue, 05 Dec 2023 22:33:39 +0000
+Date:   Tue, 5 Dec 2023 14:33:38 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Granados <j.granados@samsung.com>,
         linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nick DeSaulniers <nnn@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH] lib/string: shrink lib/string.i via IWYU
-Message-ID: <20231205223205.GI1674809@ZenIV>
-References: <20231205-libstringheader-v1-1-7f9c573053a7@gmail.com>
- <20231205213807.GE1674809@ZenIV>
- <CAKwvOd=2VASkaLvjU+7kkbvhu2CimYn5KUGJBDRePyUhtrNK2Q@mail.gmail.com>
- <ZW-d1NZRIvmJlfcW@smile.fi.intel.com>
- <20231205221521.GH1674809@ZenIV>
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 13/18] sysctl: move sysctl type to ctl_table_header
+Message-ID: <ZW+lQqOSYFfeh8z2@bombadil.infradead.org>
+References: <20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net>
+ <20231204-const-sysctl-v2-13-7a5060b11447@weissschuh.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231205221521.GH1674809@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231204-const-sysctl-v2-13-7a5060b11447@weissschuh.net>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 10:15:21PM +0000, Al Viro wrote:
+On Mon, Dec 04, 2023 at 08:52:26AM +0100, Thomas Weißschuh wrote:
+> @@ -231,7 +231,8 @@ static int insert_header(struct ctl_dir *dir, struct ctl_table_header *header)
+>  		return -EROFS;
+>  
+>  	/* Am I creating a permanently empty directory? */
+> -	if (sysctl_is_perm_empty_ctl_header(header)) {
+> +	if (header->ctl_table == sysctl_mount_point ||
+> +	    sysctl_is_perm_empty_ctl_header(header)) {
+>  		if (!RB_EMPTY_ROOT(&dir->root))
+>  			return -EINVAL;
+>  		sysctl_set_perm_empty_ctl_header(dir_h);
 
-> It would certainly be nice to have such information in the tree;
-> "where should I pick $SYMBOL from?" is something one needs to
-> find out often enough.  To a large extent it's covered by "where
-> in include/*.h do we have it defined?", but that's not all there
-> is to it.  E.g. "get_user() => use linux/uaccess.h".
-> 
-> There's also stuff like "$SYMBOL should not be used outside of arch/*
-> and include/*, better use $OTHER_SYMBOL", etc.
+While you're at it.
 
-Speaking of...
+This just made me cringe, and curious if some other changes
+could be done to make this obviously clear during patch review
+that this is safe.
 
-arch/arm64/include/asm/asm-prototypes.h:18:#include <asm/uaccess.h>
-arch/powerpc/include/asm/inst.h:8:#include <asm/uaccess.h>
-arch/powerpc/kvm/book3s_xive_native.c:16:#include <asm/uaccess.h>
-arch/powerpc/mm/book3s64/radix_pgtable.c:31:#include <asm/uaccess.h>
-arch/riscv/kernel/sys_riscv.c:15:#include <asm/uaccess.h>
-arch/xtensa/include/asm/asm-prototypes.h:10:#include <asm/uaccess.h>
-include/linux/uaccess.h:11:#include <asm/uaccess.h>
-tools/testing/crypto/chacha20-s390/test-cipher.c:8:#include <asm/uaccess.h>
-
-Only one of those is legitimate (linux/uaccess.h); asm-prototypes.h
-ones are borderline, but probably should be pulling linux/uaccess.h,
-everything in *.c is really wrong.  Powerpc asm/inst.h is the really
-unpleasant one here - it's pulled by quite a few other places, including
-several asm/*.h.  Hell knows; might be worth splitting the
-{__,}{get_user_instr,copy_inst_from_kernel_nofault}() off to
-a separate header (asm/inst-uaccess.h?), to be included only by the
-files that use any of those (that would be
-arch/powerpc/kernel/{align,hw_breakpoint_constraints,module_32,traps,vecemu}.c
-and arch/powerpc/kernel/trace/{ftrace,ftrace_64_pg}.c - not a single header
-among them).  That header would pull linux/uaccess.h and asm/inst.h wouldn't
-need any uaccess at all; might spill into explicit includes of linux/uaccess.h
-in some of the places in arch/powerpc that pull asm/inst.h, directly or
-not...
+  Luis
