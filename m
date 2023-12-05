@@ -2,84 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD1E8043D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502018043DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 02:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343743AbjLEBPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 20:15:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
+        id S1343793AbjLEBQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 20:16:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbjLEBPm (ORCPT
+        with ESMTP id S231618AbjLEBQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 20:15:42 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1069101
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:15:47 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7c500dcdd7dso1105390241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 17:15:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701738947; x=1702343747; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y6OPJL50zxW+NLtfpJ/4wZLmjOQWjCZr7g4xDF4MxJM=;
-        b=CPZRFa0BvB7kIOR7G3j2eX5zmE0xBF9kexJCwKkHS2l75IhN7hmMEw8YeDZ9Bwze6v
-         pyerwuDUmXXcDicWYnCB78k762mq4fUbe4/DErsqFk+y/kAKld+VG6JPPrLtqBPes6EA
-         Tq4MTiLFFLeT31xhgf51qjux0rAyA9LMr3F+qX+mQ06vB2GU4P5DD1YW5BFidUUCCBoy
-         w9SkehXd/LCH/+siHyNAnmoknow+8WaWiicX+MNvFkP4jXxRYBvTBcsaOhUA39HFk0tK
-         hwDBxvnpDASQUR4gy7LILCjlhQxdE888Yc406Pi7r6DJBn///SPjJU1lgDQFEo0b1sEC
-         DbVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701738947; x=1702343747;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y6OPJL50zxW+NLtfpJ/4wZLmjOQWjCZr7g4xDF4MxJM=;
-        b=Em8/+j1fYsoki7l2bssIdyJoP3BNRO9VeTM7sCXbpUmzk1kWuVXOYJ+ib65rIvlkG3
-         OnsYeVsArLQV6iwGrD7fz0Op4E01mCkCaHbk8d85x8CNd+N53qbZ4QlQkzLs8ue6CXOi
-         apA/ap39JdCvFw2+9aHF/dnx0s2jXqsE3nG4RlBdHhS/mJv5HFCyT1DvAHMx/gaicsme
-         4+2SyEXshqEmyqBwy43eb0NUKAx/MVQlQRv4cFSr0UB/s81N3JXsndWiE/52VuaTeA2P
-         sx5fm/uCXzMIVDPBQwA1etLbbNvFm77r+CnZd/kaTWP0W+cUMrMTKLZQz6KrBg5KwcII
-         TzgA==
-X-Gm-Message-State: AOJu0YwacnCbrEZNFoDwXbKq1UbYCkwfWzGUU7ySvYbq328guTXVNa/y
-        xIlsbqDcRgF8FPCgDggaOyjktUQkD1Nmo33NKDk=
-X-Google-Smtp-Source: AGHT+IFW1PuSAm8mKEGdLxUG4/ewSPW1ZcY/qo3lMzsRhZUKGuFfik/5dyZF4LwrOmr9AUrfOELYrx/hm4Foih29CzY=
-X-Received: by 2002:a05:6122:1821:b0:4b2:c554:e3f4 with SMTP id
- ay33-20020a056122182100b004b2c554e3f4mr1932612vkb.20.1701738946714; Mon, 04
- Dec 2023 17:15:46 -0800 (PST)
+        Mon, 4 Dec 2023 20:16:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C109ED7
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 17:16:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701739016; x=1733275016;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=tUZHShn/KG6iKGAUA964vQfA/yq0nJLWpYHhbTjGRws=;
+  b=Z8gDM4uCX2gb6aMzBsIj4Q9pySxb6diZMExxx6pzvaik3kMIyniipXf7
+   iJTE5BDFhw2USHW8a6tKkMDCboTRa3pzs/vYeXr8wcSPCuw8zka7PaNRO
+   GGSjpHgWcBnrLYMKK5CbyEOoGMDL57oaMyTy4vDTVr6BEnhzBRYmapSZJ
+   BExJ6gQWh2qP/XS1mJEmtzq4KRAOWTwvkyRWgDDU0YncM6e6h6O0L/xLH
+   J+2tPKY8UevwRCQjaSqEnVp1zPT74ZB+KhM/0XNlmyzW6y0RxDc57jztS
+   NMLEzZlK4/6dvqfRPCEozGQgWOpGd+KfUlafRzZPCuHELotUZtYoWcb8L
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="458145355"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="458145355"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 17:16:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="1018038872"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="1018038872"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 17:16:55 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Dec 2023 17:16:54 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 4 Dec 2023 17:16:54 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 4 Dec 2023 17:16:54 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L9ILORWcCo8YLlDBkIROGJry/ckjfpi2XAuMVKxIEaddaPEscRnfXR+MnL4P6H0QzHPjusQsWNhttQlzkHJ8krMOrJ1iKE+EZLtswLwVvv9m2O9QQ8ouwFQF17pKJUXSyh8s9P4RpYJZ1Gbr0DeM7TD947RgFVfCj59/jX1+ETH2+gii5Ipj8SV2gs95gCvmFyttLWI8FWvyBsrLu7iNvh0onqgri0GAEWNUbQmBV0pz+68hLo3WDI83JymulplxKqGMwW3rb7mvBiV8Tab4TM9kwIsxaMxg1W4AveFvUZLFzQng5wR7axTzYMX112VDAd8nKYI2wbJE+mhCFXh6dA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y6Q8PyAOy9mFlkEWdsw6cUzAtI/ksX+aiH2K/5n5IUw=;
+ b=BD05AHiCxyGs6648ek/teJ8lik6DQCiVYmETEWucQ93fqkVgn2MFeG4ahhrlpw2ztRRUNLNcVkeCZuUXy64qOENSXQXyVF6GauWm7gEo1OMHpgDkwyQJdfGei8MJkDymXRnVsm5hMt1uu4fWvZpDd6uH2wb6XBRYg6JjmAkVVnKEO5VGECSENRRd9/JNcUlF88ySMMV4NWbx/bLnpu7BYaBiyHF/UBXoi8ha8yz8EcEF32672huUF9tEYb9HlevqgABib6E9ZQyEe//SNmdlzyuPdJSmrl8ps3iij13INOzyRBnzPVmt6JPKO+1TgIQptuuzY30C1AdyewSwiVnOhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
+ SJ2PR11MB7618.namprd11.prod.outlook.com (2603:10b6:a03:4cc::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
+ 2023 01:16:51 +0000
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::f105:47dd:6794:6821]) by DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::f105:47dd:6794:6821%4]) with mapi id 15.20.7046.033; Tue, 5 Dec 2023
+ 01:16:51 +0000
+Date:   Tue, 5 Dec 2023 02:16:48 +0100
+From:   =?utf-8?Q?Micha=C5=82?= Winiarski <michal.winiarski@intel.com>
+To:     Maxime Ripard <mripard@kernel.org>
+CC:     <intel-xe@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        "Michal Wajdeczko" <michal.wajdeczko@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Javier Martinez Canillas" <javierm@redhat.com>,
+        =?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
+Subject: Re: [PATCH 2/2] drm/tests: managed: Add a simple test for
+ drmm_managed_release
+Message-ID: <5ec7lc2cyrfchpudujcbhlka6oqjmaxc24oebzccge3733tugp@iutnntppwzk4>
+References: <20231129221412.1180549-1-michal.winiarski@intel.com>
+ <20231129221412.1180549-3-michal.winiarski@intel.com>
+ <3sio7356dxi5nbld2eupih3rzazvef4ebusrpdrhabnpg7pns4@5zxfnd4az4li>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3sio7356dxi5nbld2eupih3rzazvef4ebusrpdrhabnpg7pns4@5zxfnd4az4li>
+X-ClientProxiedBy: WA2P291CA0015.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1e::28) To DM4PR11MB5373.namprd11.prod.outlook.com
+ (2603:10b6:5:394::7)
 MIME-Version: 1.0
-References: <20231204102027.57185-1-ryan.roberts@arm.com> <20231204102027.57185-5-ryan.roberts@arm.com>
-In-Reply-To: <20231204102027.57185-5-ryan.roberts@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Tue, 5 Dec 2023 09:15:34 +0800
-Message-ID: <CAGsJ_4zG6W_Z-u+3QcRDn4ByoeqUXjMusNS0RotfRMSqo8RCHg@mail.gmail.com>
-Subject: Re: [PATCH v8 04/10] mm: thp: Support allocation of anonymous
- multi-size THP
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|SJ2PR11MB7618:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc934d0d-e1b4-4fbd-c648-08dbf52fdc7f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KdHY8Q9lbYWRwt2c96WjLkwFMlHQWVTQQdBZelhXtD3+bbj9tiZUhiv+T4F3GngvRM4O5TGxhzT9cSmxgzuo6qdeW+SMxxqNE+OhwurGRIchJarMFzpXtt3NPWS44mZ/161sJNZ89RBCY4yxxoIMy5W7KGY8gn/JjA8bOmIEWj4EFQYspR4l+9B0ldUkTsqd39B+3VFIT2boSNhb77Tgs3Za84dxlbvAWcHWApFnCBr5icBeMxnnScKMCkgscIr6kJpb4GQ9JzvjRSjNIDXaiJbMS9vH/AMVR9fu62FkMub8PVmZbm/BC6VtSSL75sTR62iEhCO8xNndUAv+UWZtmQNyV4zuPW6K8YshwZxjfKBDnnocbi2Kof9mGXZPEyprApoinkeBgUJYOS0ctLjSU1jFts1aeAdeKIjDwgFNc0KQprxVYC49HsmWeojNy3BkS+5nwcR3L9ixqhGWhY3wJTerTqRFw9+VfCTx8qZM42AKz2hnxeHc5BhTpsa3Bhi7hJ9LWW85bI4x1ZCf8uV/saqLPfXdMu3M4UaW+lDEF5U=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(39860400002)(346002)(376002)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(5660300002)(86362001)(4326008)(8676002)(8936002)(2906002)(7416002)(33716001)(41300700001)(6512007)(9686003)(6506007)(82960400001)(6666004)(83380400001)(6486002)(478600001)(26005)(38100700002)(316002)(54906003)(6916009)(66476007)(66556008)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkJyWDBKbTdRTm5TdE1pS2d3QTlYb2U1OXJmWC85eHR1cW55MDF1SEtQQkdY?=
+ =?utf-8?B?VFdSVStzZDVNSU9TYThMNGVGaUowbU5QWUMwYnlTb2ttMjN4alBmdlZGZHJL?=
+ =?utf-8?B?elFQL2pwSDZjb2xzanI5MGU3dWl1UXkxaU95UnN3M0dUWEx4ekovZjA1blBT?=
+ =?utf-8?B?R2JUeWlmRXJhMnZodFQ5ZC9vOVJKR0gyU1dDSFovRHBxVTVSemtESk1BRVpL?=
+ =?utf-8?B?VUtoTnB3SjhKekFlY3RMWkF4ZHFkdm0rVy9CSzNESkswcnVyMHJONzJjcmkz?=
+ =?utf-8?B?NTV5L2Y0Y2lld1E3TkFnQmh5Q04zREFaS1NHWEhFOUtLSDJYN1EzN0YxTjgy?=
+ =?utf-8?B?YVhxWGFsdGxyTDZheFBPV2UzZU5sa0RKUEZGMU5FOWZPSmxLYk41ZitwMnl5?=
+ =?utf-8?B?Qi9aMituTWZwQktFZWFoMGRiYjdUVkJjclV6R0tjbkFwSE9tdjVWellTVDFQ?=
+ =?utf-8?B?SkQ2T3NKU1dlZHFVWUZGYXQwVk9pTHVxZHZDUFM1ZVVsU0lvOFhyZEtGR0FW?=
+ =?utf-8?B?LzJ1SzFadUVwUHR5a1lpUE11ZDNXVDF2a09UVWUwblZRek91cFB6Ym13MXc4?=
+ =?utf-8?B?MXJxZ0srTmh2UjZKU2xtd0ZUeStiTzRRUEdWMkd4b1ZQU21zNnV6cVZCVFVJ?=
+ =?utf-8?B?Q1VzaS84anlYSnZNSE5YNDFqYlJrL0EvZVNtYWlPUmliTGpNeTdCSTVlZ0lS?=
+ =?utf-8?B?cTFNWC9RN0hoSy9sQk9aZGxOVU1GbmcwTDVBSUdJKzlRV3UxM29mNUpsaUpU?=
+ =?utf-8?B?UGRyUXY1VjR4QWdSSEtHKzB0UmlmMmFHUlpkK0FWb3crUmJtTFY4RUJiYUs2?=
+ =?utf-8?B?S29sYVMra3RBajZzcmhiZ3lsd3BISDhESmhidHd3NDBWRzZsVUh5b3dwVXg5?=
+ =?utf-8?B?MGNVdzN1ZWI3MFpZRWZzN2Rna1hIQlg1VCtTVkt2ZmU4eHcvNTI2U0FHNUNX?=
+ =?utf-8?B?cU13M0lyZnZLL2pYcXU2RVVjQW45bjNMTXpIVGR1Y1Zwc3Rja0ZRdjdwV1Bq?=
+ =?utf-8?B?NHVJRGNsamNmc0ZwWEl0MFlpd0U0RmgxRko2NU1YZ2FLSWEyaUV1MXJudExT?=
+ =?utf-8?B?ZGliNzFXMHYvV1V1dTNBNWZ6cTgrell6Nk1QZ1hrNDc1dmhuaDVYTk8zTTJK?=
+ =?utf-8?B?MEl4dFloUHRLZ1c5MFQyQnZTS2FMblJ4Zk54cVBZTjFKZUhiNkhVcE01aFJ4?=
+ =?utf-8?B?aVhKT25La2lNL3Z4S1ozL0hBaWFBdEVnTllTcUlwemdHdWJhcENueWMxcGpS?=
+ =?utf-8?B?UVhiaUNpNUN1alJoOTFXSFN1VEJwQnVKNUY4UFBaVlFJMVBHeENVZ0dnLzRi?=
+ =?utf-8?B?Z0FUbUp2SUI0cmFJOWsxWlZKdFV1ditiSnlpYTV5Q3ZFZ0wxWnNnZTVOTmRs?=
+ =?utf-8?B?TThxRXNrSkFXK1hrSzJpb2VHUVNRUWdNZTgxcWdibGZEeURWNDkzZlZIMjd5?=
+ =?utf-8?B?dlFQU0RtTHIwbElxZUx1cFhXN3EyQ0hiTHBFMzc0SVAzWGlOL3dYTlRqR1Vl?=
+ =?utf-8?B?NzVhY2dxS3owVEo5eW5pcU5jR0FVMm1vR2plTFlPbDEzNmNOSllwQUx4Wldi?=
+ =?utf-8?B?cG9ZTmxZUS9FcWx3YzJWN1o4aEw5Q2Nyb3hXZUY3cXNWNHgxQ2Y0Y3pwMVRo?=
+ =?utf-8?B?VWgvYkoxRGVGRTVjZUdQcDlEM2ZmOStsOEIydGhzSzNaQUlULzhNUldrZTJl?=
+ =?utf-8?B?WXZCRlpNNHZ4MWxEZ25zaDJHZ3pybUF1TEcvSTNWOWIvTU5CZElISEF0c1ZY?=
+ =?utf-8?B?YlFLcEdGWjQ4eXduU2tYRnN0SzdvdHRqdWV4V0VhdENSRlNuZDdIR1JtM1U1?=
+ =?utf-8?B?VDlGandWN2RLMWhIRVBiMklPUi9OS3M1VmRhQXk5ZXRFRmFFL2Y5c3ZCcFdx?=
+ =?utf-8?B?akUwRW41VThhM2NNK010b1JtVVJWbnh0VTlyNEdua1p2eENhL214Zm1abWJ5?=
+ =?utf-8?B?L1hHdEJqNmVWRTNrZ1ovVUhJRnhrNGRNSFpwTG1sT0dEUi83TExOR2wrc29k?=
+ =?utf-8?B?YUhnU2R4WUZwOFdBWHNudldJL21yRjgwN3ZnN3NCZmdHa0tJN0JjZ0lMbXh6?=
+ =?utf-8?B?MmppUk8vVTNNQVducTJpMjNVNkVQV3VqSHhmQVhaWUZrY0dBM0NrUHZWN3V3?=
+ =?utf-8?B?R2xDcjJzYVpvSmxjTWZERjJtQzBqUjdTdkJKWmxoSGtLTEEwU3ROQ3l1U25M?=
+ =?utf-8?B?dnc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc934d0d-e1b4-4fbd-c648-08dbf52fdc7f
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 01:16:51.6514
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D2aBqDb7AsVs7fEvbI63flpnLciXifWmIG8Op0ruZNNwjKn1Yl9tbJOeZ4QrLejPS4vsoXVDPn1/UyNy+/dXELfO6SEf2TO+tbAi9rarMbE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7618
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,253 +166,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 4, 2023 at 6:21=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com> =
-wrote:
->
-> Introduce the logic to allow THP to be configured (through the new sysfs
-> interface we just added) to allocate large folios to back anonymous
-> memory, which are larger than the base page size but smaller than
-> PMD-size. We call this new THP extension "multi-size THP" (mTHP).
->
-> mTHP continues to be PTE-mapped, but in many cases can still provide
-> similar benefits to traditional PMD-sized THP: Page faults are
-> significantly reduced (by a factor of e.g. 4, 8, 16, etc. depending on
-> the configured order), but latency spikes are much less prominent
-> because the size of each page isn't as huge as the PMD-sized variant and
-> there is less memory to clear in each page fault. The number of per-page
-> operations (e.g. ref counting, rmap management, lru list management) are
-> also significantly reduced since those ops now become per-folio.
->
-> Some architectures also employ TLB compression mechanisms to squeeze
-> more entries in when a set of PTEs are virtually and physically
-> contiguous and approporiately aligned. In this case, TLB misses will
-> occur less often.
->
-> The new behaviour is disabled by default, but can be enabled at runtime
-> by writing to /sys/kernel/mm/transparent_hugepage/hugepage-XXkb/enabled
-> (see documentation in previous commit). The long term aim is to change
-> the default to include suitable lower orders, but there are some risks
-> around internal fragmentation that need to be better understood first.
->
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  include/linux/huge_mm.h |   6 ++-
->  mm/memory.c             | 106 ++++++++++++++++++++++++++++++++++++----
->  2 files changed, 101 insertions(+), 11 deletions(-)
->
-> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> index bd0eadd3befb..91a53b9835a4 100644
-> --- a/include/linux/huge_mm.h
-> +++ b/include/linux/huge_mm.h
-> @@ -68,9 +68,11 @@ extern struct kobj_attribute shmem_enabled_attr;
->  #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
->
->  /*
-> - * Mask of all large folio orders supported for anonymous THP.
-> + * Mask of all large folio orders supported for anonymous THP; all order=
-s up to
-> + * and including PMD_ORDER, except order-0 (which is not "huge") and ord=
-er-1
-> + * (which is a limitation of the THP implementation).
->   */
-> -#define THP_ORDERS_ALL_ANON    BIT(PMD_ORDER)
-> +#define THP_ORDERS_ALL_ANON    ((BIT(PMD_ORDER + 1) - 1) & ~(BIT(0) | BI=
-T(1)))
->
->  /*
->   * Mask of all large folio orders supported for file THP.
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 3ceeb0f45bf5..bf7e93813018 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4125,6 +4125,84 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->         return ret;
->  }
->
-> +static bool pte_range_none(pte_t *pte, int nr_pages)
-> +{
-> +       int i;
-> +
-> +       for (i =3D 0; i < nr_pages; i++) {
-> +               if (!pte_none(ptep_get_lockless(pte + i)))
-> +                       return false;
-> +       }
-> +
-> +       return true;
-> +}
-> +
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> +static struct folio *alloc_anon_folio(struct vm_fault *vmf)
-> +{
-> +       gfp_t gfp;
-> +       pte_t *pte;
-> +       unsigned long addr;
-> +       struct folio *folio;
-> +       struct vm_area_struct *vma =3D vmf->vma;
-> +       unsigned long orders;
-> +       int order;
-> +
-> +       /*
-> +        * If uffd is active for the vma we need per-page fault fidelity =
-to
-> +        * maintain the uffd semantics.
-> +        */
-> +       if (userfaultfd_armed(vma))
-> +               goto fallback;
-> +
-> +       /*
-> +        * Get a list of all the (large) orders below PMD_ORDER that are =
-enabled
-> +        * for this vma. Then filter out the orders that can't be allocat=
-ed over
-> +        * the faulting address and still be fully contained in the vma.
-> +        */
-> +       orders =3D thp_vma_allowable_orders(vma, vma->vm_flags, false, tr=
-ue, true,
-> +                                         BIT(PMD_ORDER) - 1);
-> +       orders =3D thp_vma_suitable_orders(vma, vmf->address, orders);
-> +
-> +       if (!orders)
-> +               goto fallback;
-> +
-> +       pte =3D pte_offset_map(vmf->pmd, vmf->address & PMD_MASK);
-> +       if (!pte)
-> +               return ERR_PTR(-EAGAIN);
-> +
-> +       order =3D first_order(orders);
-> +       while (orders) {
-> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
-> +               vmf->pte =3D pte + pte_index(addr);
-> +               if (pte_range_none(vmf->pte, 1 << order))
-> +                       break;
-> +               order =3D next_order(&orders, order);
-> +       }
-> +
-> +       vmf->pte =3D NULL;
-> +       pte_unmap(pte);
-> +
-> +       gfp =3D vma_thp_gfp_mask(vma);
-> +
-> +       while (orders) {
-> +               addr =3D ALIGN_DOWN(vmf->address, PAGE_SIZE << order);
-> +               folio =3D vma_alloc_folio(gfp, order, vma, addr, true);
-> +               if (folio) {
-> +                       clear_huge_page(&folio->page, addr, 1 << order);
+On Thu, Nov 30, 2023 at 09:38:35AM +0100, Maxime Ripard wrote:
+> Hi,
+> 
+> Thanks for creating a test for that, that's really appreciated :)
+> 
+> On Wed, Nov 29, 2023 at 11:14:12PM +0100, Michał Winiarski wrote:
+> > Add a simple test that checks whether the action is indeed called right
+> > away and that it is not called on the final drm_dev_put().
+> > 
+> > Signed-off-by: Michał Winiarski <michal.winiarski@intel.com>
+> > ---
+> >  drivers/gpu/drm/tests/drm_managed_test.c | 65 ++++++++++++++++++------
+> >  1 file changed, 50 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/tests/drm_managed_test.c b/drivers/gpu/drm/tests/drm_managed_test.c
+> > index 1652dca11d30c..a645ea42aee56 100644
+> > --- a/drivers/gpu/drm/tests/drm_managed_test.c
+> > +++ b/drivers/gpu/drm/tests/drm_managed_test.c
+> > @@ -12,6 +12,8 @@
+> >  #define TEST_TIMEOUT_MS	100
+> >  
+> >  struct managed_test_priv {
+> > +	struct drm_device *drm;
+> > +	struct device *dev;
+> >  	bool action_done;
+> >  	wait_queue_head_t action_wq;
+> >  };
+> > @@ -26,42 +28,75 @@ static void drm_action(struct drm_device *drm, void *ptr)
+> >  
+> >  static void drm_test_managed_run_action(struct kunit *test)
+> >  {
+> > -	struct managed_test_priv *priv;
+> > -	struct drm_device *drm;
+> > -	struct device *dev;
+> > +	struct managed_test_priv *priv = test->priv;
+> >  	int ret;
+> >  
+> > -	priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
+> > -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv);
+> > -	init_waitqueue_head(&priv->action_wq);
+> > +	ret = drmm_add_action_or_reset(priv->drm, drm_action, priv);
+> > +	KUNIT_EXPECT_EQ(test, ret, 0);
+> >  
+> > -	dev = drm_kunit_helper_alloc_device(test);
+> > -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
+> > +	ret = drm_dev_register(priv->drm, 0);
+> > +	KUNIT_ASSERT_EQ(test, ret, 0);
+> > +
+> > +	drm_dev_unregister(priv->drm);
+> > +	drm_kunit_helper_free_device(test, priv->dev);
+> 
+> I think we'll need two patches here, one to convert to having an init
+> function, and one to actually add the new test, it's pretty confusing as
+> it is.
+> 
+> >  
+> > -	drm = __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0, DRIVER_MODESET);
+> > -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
+> > +	ret = wait_event_interruptible_timeout(priv->action_wq, priv->action_done,
+> > +					       msecs_to_jiffies(TEST_TIMEOUT_MS));
+> > +	KUNIT_EXPECT_GT(test, ret, 0);
+> > +}
+> >  
+> > -	ret = drmm_add_action_or_reset(drm, drm_action, priv);
+> > +static void drm_test_managed_release_action(struct kunit *test)
+> > +{
+> > +	struct managed_test_priv *priv = test->priv;
+> > +	int ret;
+> > +
+> > +	ret = drmm_add_action_or_reset(priv->drm, drm_action, priv);
+> >  	KUNIT_EXPECT_EQ(test, ret, 0);
+> >  
+> > -	ret = drm_dev_register(drm, 0);
+> > +	ret = drm_dev_register(priv->drm, 0);
+> >  	KUNIT_ASSERT_EQ(test, ret, 0);
+> >  
+> > -	drm_dev_unregister(drm);
+> > -	drm_kunit_helper_free_device(test, dev);
+> > +	drmm_release_action(priv->drm, drm_action, priv);
+> > +	KUNIT_EXPECT_TRUE(test, priv->action_done);
+> > +	priv->action_done = false;
+> > +
+> > +	drm_dev_unregister(priv->drm);
+> > +	drm_kunit_helper_free_device(test, priv->dev);
+> >  
+> >  	ret = wait_event_interruptible_timeout(priv->action_wq, priv->action_done,
+> >  					       msecs_to_jiffies(TEST_TIMEOUT_MS));
+> > -	KUNIT_EXPECT_GT(test, ret, 0);
+> > +	KUNIT_EXPECT_EQ(test, ret, 0);
+> > +}
+> > +
+> > +static int drm_managed_test_init(struct kunit *test)
+> > +{
+> > +	struct managed_test_priv *priv;
+> > +
+> > +	priv = kunit_kzalloc(test, sizeof(*priv), GFP_KERNEL);
+> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv);
+> > +	init_waitqueue_head(&priv->action_wq);
+> 
+> Also, I know that it was there before, but I'm not sure it's valid from
+> a lifetime point of view. Or at least, we have to think hard enough
+> about it to just remove that construct
+> 
+> > +	priv->dev = drm_kunit_helper_alloc_device(test);
+> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->dev);
+> > +
+> > +	priv->drm = __drm_kunit_helper_alloc_drm_device(test, priv->dev, sizeof(*priv->drm),
+> > +							0, DRIVER_MODESET);
+> > +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, priv->drm);
+> 
+> For example by storing the drm_device struct in the priv structure
+> directly, and thus everything will just work out.
 
-Minor.
+Sure, makes sense, I'll include it in the patch that moves device alloc
+to .init().
 
-Do we have to constantly clear a huge page? Is it possible to let
-post_alloc_hook()
-finish this job by using __GFP_ZERO/__GFP_ZEROTAGS as
-vma_alloc_zeroed_movable_folio() is doing?
+Thanks,
+-Michał
 
-struct folio *vma_alloc_zeroed_movable_folio(struct vm_area_struct *vma,
-                                                unsigned long vaddr)
-{
-        gfp_t flags =3D GFP_HIGHUSER_MOVABLE | __GFP_ZERO;
+> 
+> Maxime
 
-        /*
-         * If the page is mapped with PROT_MTE, initialise the tags at the
-         * point of allocation and page zeroing as this is usually faster t=
-han
-         * separate DC ZVA and STGM.
-         */
-        if (vma->vm_flags & VM_MTE)
-                flags |=3D __GFP_ZEROTAGS;
 
-        return vma_alloc_folio(flags, 0, vma, vaddr, false);
-}
-
-> +                       return folio;
-> +               }
-> +               order =3D next_order(&orders, order);
-> +       }
-> +
-> +fallback:
-> +       return vma_alloc_zeroed_movable_folio(vma, vmf->address);
-> +}
-> +#else
-> +#define alloc_anon_folio(vmf) \
-> +               vma_alloc_zeroed_movable_folio((vmf)->vma, (vmf)->address=
-)
-> +#endif
-> +
->  /*
->   * We enter with non-exclusive mmap_lock (to exclude vma changes,
->   * but allow concurrent faults), and pte mapped but not yet locked.
-> @@ -4132,6 +4210,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
->   */
->  static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
->  {
-> +       int i;
-> +       int nr_pages =3D 1;
-> +       unsigned long addr =3D vmf->address;
->         bool uffd_wp =3D vmf_orig_pte_uffd_wp(vmf);
->         struct vm_area_struct *vma =3D vmf->vma;
->         struct folio *folio;
-> @@ -4176,10 +4257,15 @@ static vm_fault_t do_anonymous_page(struct vm_fau=
-lt *vmf)
->         /* Allocate our own private page. */
->         if (unlikely(anon_vma_prepare(vma)))
->                 goto oom;
-> -       folio =3D vma_alloc_zeroed_movable_folio(vma, vmf->address);
-> +       folio =3D alloc_anon_folio(vmf);
-> +       if (IS_ERR(folio))
-> +               return 0;
->         if (!folio)
->                 goto oom;
->
-> +       nr_pages =3D folio_nr_pages(folio);
-> +       addr =3D ALIGN_DOWN(vmf->address, nr_pages * PAGE_SIZE);
-> +
->         if (mem_cgroup_charge(folio, vma->vm_mm, GFP_KERNEL))
->                 goto oom_free_page;
->         folio_throttle_swaprate(folio, GFP_KERNEL);
-> @@ -4196,12 +4282,13 @@ static vm_fault_t do_anonymous_page(struct vm_fau=
-lt *vmf)
->         if (vma->vm_flags & VM_WRITE)
->                 entry =3D pte_mkwrite(pte_mkdirty(entry), vma);
->
-> -       vmf->pte =3D pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->addre=
-ss,
-> -                       &vmf->ptl);
-> +       vmf->pte =3D pte_offset_map_lock(vma->vm_mm, vmf->pmd, addr, &vmf=
-->ptl);
->         if (!vmf->pte)
->                 goto release;
-> -       if (vmf_pte_changed(vmf)) {
-> -               update_mmu_tlb(vma, vmf->address, vmf->pte);
-> +       if ((nr_pages =3D=3D 1 && vmf_pte_changed(vmf)) ||
-> +           (nr_pages  > 1 && !pte_range_none(vmf->pte, nr_pages))) {
-> +               for (i =3D 0; i < nr_pages; i++)
-> +                       update_mmu_tlb(vma, addr + PAGE_SIZE * i, vmf->pt=
-e + i);
->                 goto release;
->         }
->
-> @@ -4216,16 +4303,17 @@ static vm_fault_t do_anonymous_page(struct vm_fau=
-lt *vmf)
->                 return handle_userfault(vmf, VM_UFFD_MISSING);
->         }
->
-> -       inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
-> -       folio_add_new_anon_rmap(folio, vma, vmf->address);
-> +       folio_ref_add(folio, nr_pages - 1);
-> +       add_mm_counter(vma->vm_mm, MM_ANONPAGES, nr_pages);
-> +       folio_add_new_anon_rmap(folio, vma, addr);
->         folio_add_lru_vma(folio, vma);
->  setpte:
->         if (uffd_wp)
->                 entry =3D pte_mkuffd_wp(entry);
-> -       set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
-> +       set_ptes(vma->vm_mm, addr, vmf->pte, entry, nr_pages);
->
->         /* No need to invalidate - it was non-present before */
-> -       update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
-> +       update_mmu_cache_range(vmf, vma, addr, vmf->pte, nr_pages);
->  unlock:
->         if (vmf->pte)
->                 pte_unmap_unlock(vmf->pte, vmf->ptl);
-> --
-> 2.25.1
->
