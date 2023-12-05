@@ -2,139 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D23805E95
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C39D805E96
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 20:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345460AbjLETYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 14:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
+        id S1345536AbjLETYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 14:24:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjLETYh (ORCPT
+        with ESMTP id S232005AbjLETYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 14:24:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FFBA5
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 11:24:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B199C433C7;
-        Tue,  5 Dec 2023 19:24:39 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 19:24:37 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
-        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-        lpieralisi@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <ZW949Tl3VmQfPk0L@arm.com>
-References: <20231205033015.10044-1-ankita@nvidia.com>
- <86fs0hatt3.wl-maz@kernel.org>
- <ZW8MP2tDt4_9ROBz@arm.com>
- <20231205130517.GD2692119@nvidia.com>
- <ZW9OSe8Z9gAmM7My@arm.com>
- <20231205164318.GG2692119@nvidia.com>
+        Tue, 5 Dec 2023 14:24:39 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A16AB;
+        Tue,  5 Dec 2023 11:24:45 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B5JOdwk083628;
+        Tue, 5 Dec 2023 13:24:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701804279;
+        bh=CugGYjygtP3a1bjNWWM8o75AxB6ThxiwybG+v9OdGec=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=mPM9GAsfYgV5Ovng6RfrX1r9SJZ91AGS7ffpieo7vsg7LiFbmdd2pNb//JXSzqlew
+         CpKhdTdLi7D0pi+A/PS6Xfdlz3N0Oj/CyIuEzfQxKTIuLF3GLP9WKs8m4Vo1sTFgda
+         lYx4WpQJUkJwqWs1M3EL6uU8n8w+FXxUQrEFfyL4=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B5JOdr4032684
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 5 Dec 2023 13:24:39 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
+ Dec 2023 13:24:38 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 5 Dec 2023 13:24:38 -0600
+Received: from [128.247.81.105] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B5JOcTV017496;
+        Tue, 5 Dec 2023 13:24:38 -0600
+Message-ID: <231e173e-2452-401a-8c11-5b555da59a2b@ti.com>
+Date:   Tue, 5 Dec 2023 13:24:38 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205164318.GG2692119@nvidia.com>
-X-TUID: nsHFPCYE/dW9
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] arm64: dts: ti: k3-j721s2-main: Add Itap Delay Value
+ For DDR50 speed mode
+Content-Language: en-US
+To:     Bhavya Kapoor <b-kapoor@ti.com>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <conor+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <robh+dt@kernel.org>, <kristo@kernel.org>, <vigneshr@ti.com>,
+        <nm@ti.com>
+References: <20231201082045.790478-1-b-kapoor@ti.com>
+ <20231201082045.790478-3-b-kapoor@ti.com>
+From:   Judith Mendez <jm@ti.com>
+In-Reply-To: <20231201082045.790478-3-b-kapoor@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 12:43:18PM -0400, Jason Gunthorpe wrote:
-> On Tue, Dec 05, 2023 at 04:22:33PM +0000, Catalin Marinas wrote:
-> > Yeah, I made this argument in the past. But it's a fair question to ask
-> > since the Arm world is different from x86. Just reusing an existing
-> > driver in a different context may break its expectations. Does Normal NC
-> > access complete by the time a TLBI (for Stage 2) and DSB (DVMsync) is
-> > completed? It does reach some point of serialisation with subsequent
-> > accesses to the same address but not sure how it is ordered with an
-> > access to a different location like the config space used for reset.
-> > Maybe it's not a problem at all or it is safe only for PCIe but it would
-> > be good to get to the bottom of this.
+Hi Bhavya,
+
+On 12/1/23 2:20 AM, Bhavya Kapoor wrote:
+> DDR50 speed mode is enabled for MMCSD in J721s2 but its Itap Delay
+> Value is not present in the device tree. Thus, add Itap Delay Value
+> for MMCSD High Speed DDR which is DDR50 speed mode for J721s2 SoC
+> according to datasheet for J721s2.
 > 
-> IMHO, the answer is you can't know architecturally. The specific
-> vfio-platform driver must do an analysis of it's specific SOC and
-> determine what exactly is required to order the reset. The primary
-> purpose of the vfio-platform drivers is to provide this reset!
+> [+] Refer to : section 7.10.5.17.2 MMC1/2 - SD/SDIO Interface,  in
+> 	J721s2 datasheet
+> - https://www.ti.com/lit/ds/symlink/tda4vl-q1.pdf
 > 
-> In most cases I would expect some reads from the device to be required
-> before the reset.
 
-I can see in the vfio_platform_common.c code that the reset is either
-handled by an ACPI _RST method or some custom function in case of DT.
-Let's consider the ACPI method for now, I assume the AML code pokes some
-device registers but we can't say much about the ordering it expects
-without knowing the details. The AML may assume that the ioaddr mapped
-as Device-nRnRE (ioremap()) in the kernel has the same attributes
-wherever else is mapped in user or guests. Note that currently the
-vfio_platform and vfio_pci drivers only allow pgprot_noncached() in
-user, so they wouldn't worry about other mismatched aliases.
+LGTM
 
-I think PCIe is slightly better documented but even here we'll have to
-rely on the TLBI+DSB to clear any prior writes on different CPUs.
+Reviewed-by: Judith Mendez <jm@ti.com>
 
-It can be argued that it's the responsibility of whoever grants device
-access to know the details. However, it would help if we give some
-guidance, any expectations broken if an alias is Normal-NC? It's easier
-to start with PCIe first until we get some concrete request for other
-types of devices.
-
-> > So, I think it would be easier to get this patch upstream if we limit
-> > the change to PCIe devices for now. We may relax this further in the
-> > future. Do you actually have a need for non-PCIe devices to support WC
-> > in the guest or it's more about the complexity of the logic to detect
-> > whether it's actually a PCIe BAR we are mapping into the guest? (I can
-> > see some Arm GPU folk asking for this but those devices are not easily
-> > virtualisable).
+> Signed-off-by: Bhavya Kapoor <b-kapoor@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> The complexity is my concern, and the disruption to the ecosystem with
-> some of the ideas given.
-> 
-> If there was a trivial way to convey in the VMA that it is safe then
-> sure, no objection from me.
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+> index b03731b53a26..e1255956288b 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+> @@ -766,6 +766,7 @@ main_sdhci1: mmc@4fb0000 {
+>   		ti,itap-del-sel-sd-hs = <0x0>;
+>   		ti,itap-del-sel-sdr12 = <0x0>;
+>   		ti,itap-del-sel-sdr25 = <0x0>;
+> +		ti,itap-del-sel-ddr50 = <0x2>;
+>   		ti,clkbuf-sel = <0x7>;
+>   		ti,trm-icp = <0x8>;
+>   		dma-coherent;
 
-I suggested a new VM_* flag or some way to probe the iomem_resources for
-PCIe ranges (if they are described in there, not sure). We can invent
-other tree searching for ranges that get registers from the vfio driver,
-I don't think it's that difficult.
-
-Question is, do we need to do this for other types of devices or it's
-mostly theoretical at this point (what's theoretical goes both ways
-really).
-
-A more complex way is to change vfio to allow Normal mappings and KVM
-would mimic them. You were actually planning to do this for Cacheable
-anyway.
-
-> I would turn it around and ask we find a way to restrict platform
-> devices when someone comes with a platform device that wants to use
-> secure kvm and has a single well defined HW problem that is solved by
-> this work.
-
-We end up with similar search/validation mechanism, so not sure we gain
-much.
-
-> What if we change vfio-pci to use pgprot_device() like it already
-> really should and say the pgprot_noncached() is enforced as
-> DEVICE_nGnRnE and pgprot_device() may be DEVICE_nGnRE or NORMAL_NC?
-> Would that be acceptable?
-
-pgprot_device() needs to stay as Device, otherwise you'd get speculative
-reads with potential side-effects.
-
--- 
-Catalin
+~ Judith
