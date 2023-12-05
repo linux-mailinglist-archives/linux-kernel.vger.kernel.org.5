@@ -2,208 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A25E68043A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EEF8043A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 01:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbjLEA5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 19:57:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S234801AbjLEA6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 19:58:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343717AbjLEA5q (ORCPT
+        with ESMTP id S231567AbjLEA6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 19:57:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B40109
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:57:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701737872; x=1733273872;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=5O0V6Bjm+DTrqGHC/asax/5ceN2FG4KozQ+qIfYM2bE=;
-  b=kdr9oVOQ5lGj96fBGfmB9AijY8OgiCd+o/QnLeVgfj0dB/n7XD3EROOL
-   JalpWuvLqP7N73FmVt3XvNgo3hNoeO6TacrNgXoTLbPx5TuChR9tbJcma
-   xOXarO3SEq+OJ0TdXfpQsIe6NY8Mf3c6Mx0ZlgJiqtXjSYa7XGih9O7If
-   kSpbVXq1qHafEHOLXaTofnZDqYePM70y9ZdEcCY6PIncyTNRZgT4K13/X
-   d/svczmW6vEv3QFBMMIS7MW9cDC9+DPd1BfQyHWYRMDZ42qX7vNc0E1kS
-   uRSnBqBZKV0Ul9pk7juaDTIpE0diGhCfzyfknLyVcLRCZ6nb1iF6ID61d
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="373266643"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="373266643"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 16:57:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="861570164"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="861570164"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 04 Dec 2023 16:57:48 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAJkw-0008F6-13;
-        Tue, 05 Dec 2023 00:57:46 +0000
-Date:   Tue, 5 Dec 2023 08:56:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Pravin B Shelar <pshelar@nicira.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jesse Gross <jesse@nicira.com>
-Subject: drivers/net/geneve.c:85:47: sparse: sparse: incorrect type in return
- expression (different base types)
-Message-ID: <202312050859.kt51OTo8-lkp@intel.com>
+        Mon, 4 Dec 2023 19:58:16 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA634109
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 16:58:20 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7c513dc5815so1736252241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 16:58:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701737900; x=1702342700; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m97CsDjIvuM5Yw/O14me8+/R6uFBIRKDK86GXz6XBIc=;
+        b=aeLWivWZrYqochOUTKe9jYs67fBz5GrqXCZfQqp2y4gBfFvZP+F8vD2D8FtI66mw0a
+         E57KtV5nqNDgZ97E9l+Z4FA8nKP78StPE3g2bH2GG1kYeDPSLR7WpsooM++vEDkeHulZ
+         /eOcMdPHpL4e+F3DGr/GwIT9d2MxUn1aLFIZAv6C4Q++UP8+sbBxMjTke+sp1rS0u5Mg
+         Lrm9NpeOsgEJhsytcMEC+apvskTmgh0ihPmyiGNbYQVqBzKHPwubaq1cAXq8PqA8NPei
+         goFNx6J8VEHeCbvmIoO14qoTlnutPJC4AMRY8P7qPATFVYZ80DPFHLtm/rmHB7RTJLMD
+         rPIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701737900; x=1702342700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m97CsDjIvuM5Yw/O14me8+/R6uFBIRKDK86GXz6XBIc=;
+        b=B/RFBqbCvC1GUocit2WQMJNrY/L1D88AkC/WEzptuoyzQcvz6IQFjlOOzTcMCKxc6B
+         vKUmbotHU/1W14AY5y6A+sLG1kQyJ+XMS15YkPg8qcvLm7rjJY8+wgaQmKW8BtZZt3tW
+         Bivoox7qOn7TEUYvqZcjFaD5bJn38huy4Wnec2IaYcCD2iszg8GzJ1ZKIPRo0hKUiQGL
+         R/9ZvWVq0PADmHvg0l9gpYxSW24hB3sK2JFG/+iJk9I0y1SNWiPXthyNI2Q9jaDUINoe
+         DXB/g5nluw81IrrAPOnhYS/sCWk0JpQEEQ8SIEzHkNFzadatAW0KdblFIZ01OLroZM+9
+         m3Yg==
+X-Gm-Message-State: AOJu0YwuJ1PqX4NwI0i08erWPnMFwupGjZXodX+PIAYM/olJGUabiFKq
+        2MPSQ+xpuzoxvq74JL3mk7o3DBsFAY61ktPDqhs=
+X-Google-Smtp-Source: AGHT+IF2q2TWOeMqSOd1vGhXRTy8XjsdY6/XzmUXxY7h4GGg4Ey5kD+gl45fWsULNkFj8TX/YlG/FDEoew2Vr7TxtGI=
+X-Received: by 2002:a67:e444:0:b0:464:a39f:c58b with SMTP id
+ n4-20020a67e444000000b00464a39fc58bmr595462vsm.62.1701737899771; Mon, 04 Dec
+ 2023 16:58:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231204102027.57185-1-ryan.roberts@arm.com> <20231204102027.57185-3-ryan.roberts@arm.com>
+In-Reply-To: <20231204102027.57185-3-ryan.roberts@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Tue, 5 Dec 2023 08:58:07 +0800
+Message-ID: <CAGsJ_4yyx2+BZS1-bgbJnYJ+FByrMbOqV_Aa3A-nAm2kUtPk+A@mail.gmail.com>
+Subject: Re: [PATCH v8 02/10] mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: 371bd1061d29562e6423435073623add8c475ee2 geneve: Consolidate Geneve functionality in single module.
-date:   8 years ago
-config: parisc-randconfig-r122-20231115 (https://download.01.org/0day-ci/archive/20231205/202312050859.kt51OTo8-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231205/202312050859.kt51OTo8-lkp@intel.com/reproduce)
+On Mon, Dec 4, 2023 at 6:20=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com> =
+wrote:
+>
+> In preparation for supporting anonymous multi-size THP, improve
+> folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
+> passed to it. In this case, all contained pages are accounted using the
+> order-0 folio (or base page) scheme.
+>
+> Reviewed-by: Yu Zhao <yuzhao@google.com>
+> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312050859.kt51OTo8-lkp@intel.com/
+Reviewed-by: Barry Song <v-songbaohua@oppo.com>
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/net/geneve.c:85:47: sparse: sparse: incorrect type in return expression (different base types) @@     expected restricted __be64 @@     got int @@
-   drivers/net/geneve.c:85:47: sparse:     expected restricted __be64
-   drivers/net/geneve.c:85:47: sparse:     got int
-   drivers/net/geneve.c: note: in included file:
-   include/net/geneve.h:62:34: sparse: sparse: array of flexible structures
->> drivers/net/geneve.c:599:33: sparse: sparse: restricted __be64 degrades to integer
-   drivers/net/geneve.c:600:33: sparse: sparse: restricted __be64 degrades to integer
-   In file included from include/linux/kernel.h:11,
-                    from drivers/net/geneve.c:13:
-   include/linux/log2.h:22:1: warning: ignoring attribute 'noreturn' because it conflicts with attribute 'const' [-Wattributes]
-      22 | int ____ilog2_NaN(void);
-         | ^~~
-   In file included from arch/parisc/include/asm/bug.h:92,
-                    from include/linux/bug.h:4,
-                    from include/linux/thread_info.h:11,
-                    from include/asm-generic/preempt.h:4,
-                    from arch/parisc/include/generated/asm/preempt.h:1,
-                    from include/linux/preempt.h:64,
-                    from include/linux/spinlock.h:50,
-                    from include/linux/seqlock.h:35,
-                    from include/linux/time.h:5,
-                    from include/linux/stat.h:18,
-                    from include/linux/module.h:10,
-                    from drivers/net/geneve.c:14:
-   include/linux/cpumask.h: In function 'cpumask_check':
-   include/linux/cpumask.h:117:26: warning: comparison of integer expressions of different signedness: 'unsigned int' and 'int' [-Wsign-compare]
-     117 |         WARN_ON_ONCE(cpu >= nr_cpumask_bits);
-         |                          ^~
-   include/asm-generic/bug.h:111:34: note: in definition of macro 'WARN_ON_ONCE'
-     111 |         int __ret_warn_once = !!(condition);                    31-      |                                  ^~~~~~~~~
-   In file included from include/linux/linkage.h:4,
-                    from include/linux/kernel.h:6:
-   arch/parisc/include/asm/uaccess.h: In function 'copy_from_user':
-   arch/parisc/include/asm/uaccess.h:249:63: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
-     249 |         if (likely(sz == -1 || !__builtin_constant_p(n) || sz >= n))
-         |                                                               ^~
-   include/linux/compiler.h:165:45: note: in definition of macro 'likely'
-     165 | # define likely(x)      __builtin_expect(!!(x), 1)
-         |                                             ^
-   In file included from include/linux/if_ether.h:23,
-                    from include/uapi/linux/ethtool.h:17,
-                    from include/linux/ethtool.h:16,
-                    from include/linux/netdevice.h:42,
-                    from drivers/net/geneve.c:15:
-   include/linux/skbuff.h: In function 'skb_add_data':
-   include/linux/skbuff.h:2561:58: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'unsigned int'} and 'int' [-Wsign-compare]
-    2561 |                                             &csum, from) == copy) {
-         |                                                          ^~
-   include/linux/skbuff.h:2565:67: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'unsigned int'} and 'int' [-Wsign-compare]
-    2565 |         } else if (copy_from_iter(skb_put(skb, copy), copy, from) == copy)
-         |                                                                   ^~
-   include/linux/skbuff.h: In function 'skb_can_coalesce':
-   include/linux/skbuff.h:2579:28: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
-    2579 |                        off == frag->page_offset + skb_frag_size(frag);
-         |                            ^~
-   include/linux/skbuff.h: In function 'memcpy_from_msg':
-   include/linux/skbuff.h:2762:58: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'unsigned int'} and 'int' [-Wsign-compare]
-    2762 |         return copy_from_iter(data, len, &msg->msg_iter) == len ? 0 : -EFAULT;
-         |                                                          ^~
-   include/linux/skbuff.h: In function 'memcpy_to_msg':
-   include/linux/skbuff.h:2767:56: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'unsigned int'} and 'int' [-Wsign-compare]
-    2767 |         return copy_to_iter(data, len, &msg->msg_iter) == len ? 0 : -EFAULT;
-         |                                                        ^~
-   include/linux/netdevice.h: In function '__skb_gro_checksum_validate_needed':
-   include/linux/netdevice.h:2322:48: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
-    2322 |                 skb_checksum_start_offset(skb) <
-         |                                                ^
-   include/linux/netdevice.h: In function 'get_netdev_rx_queue_index':
-   include/linux/netdevice.h:2940:22: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
-    2940 |         BUG_ON(index >= dev->num_rx_queues);
-         |                      ^~
-   include/linux/compiler.h:166:45: note: in definition of macro 'unlikely'
-     166 | # define unlikely(x)    __builtin_expect(!!(x), 0)
-         |                                             ^
-   include/linux/netdevice.h:2940:9: note: in expansion of macro 'BUG_ON'
-    2940 |         BUG_ON(index >= dev->num_rx_queues);
-         |         ^~~~~~
-   include/linux/netdevice.h: In function 'netif_msg_init':
-   include/linux/netdevice.h:3217:44: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
-    3217 |         if (debug_value < 0 || debug_value >= (sizeof(u32) * 8))
-         |                                            ^~
-   In file included from include/net/rtnetlink.h:5,
-                    from include/net/neighbour.h:29,
-                    from include/net/dst.h:17,
-                    from include/net/sock.h:67,
-                    from include/linux/tcp.h:22,
-                    from include/linux/ipv6.h:72,
-                    from include/net/dsfield.h:11,
-                    from include/net/ip_tunnels.h:9,
-                    from include/net/dst_metadata.h:5,
-                    from drivers/net/geneve.c:18:
-   include/net/netlink.h: In function 'nlmsg_ok':
-   include/net/netlink.h:337:32: warning: comparison of integer expressions of different signedness: '__u32' {aka 'unsigned int'} and 'int' [-Wsign-compare]
-     337 |                 nlh->nlmsg_len <= remaining);
-         |                                ^~
-   include/net/netlink.h: In function 'nlmsg_parse':
-   include/net/netlink.h:372:28: warning: comparison of integer expressions of different signedness: '__u32' {aka 'unsigned int'} and 'int' [-Wsign-compare]
-     372 |         if (nlh->nlmsg_len < nlmsg_msg_size(hdrlen))
-         |                            ^
-   include/net/netlink.h: In function 'nlmsg_validate':
-   include/net/netlink.h:405:28: warning: comparison of integer expressions of different signedness: '__u32' {aka 'unsigned int'} and 'int' [-Wsign-compare]
-     405 |         if (nlh->nlmsg_len < nlmsg_msg_size(hdrlen))
-         |                            ^
-   include/net/rtnetlink.h: In function 'rtnl_msg_family':
-   include/net/rtnetlink.h:20:28: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
-
-vim +85 drivers/net/geneve.c
-
-2d07dc79fe04a4 John W. Linville 2015-05-13  81  
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  82  static __be64 vni_to_tunnel_id(const __u8 *vni)
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  83  {
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  84  #ifdef __BIG_ENDIAN
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26 @85  	return (vni[0] << 16) | (vni[1] << 8) | vni[2];
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  86  #else
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  87  	return (__force __be64)(((__force u64)vni[0] << 40) |
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  88  				((__force u64)vni[1] << 48) |
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  89  				((__force u64)vni[2] << 56));
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  90  #endif
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  91  }
-e305ac6cf5a1e1 Pravin B Shelar  2015-08-26  92  
-
-:::::: The code at line 85 was first introduced by commit
-:::::: e305ac6cf5a1e1386aedce7ef9cb773635d5845c geneve: Add support to collect tunnel metadata.
-
-:::::: TO: Pravin B Shelar <pshelar@nicira.com>
-:::::: CC: David S. Miller <davem@davemloft.net>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  mm/rmap.c | 28 ++++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 8 deletions(-)
+>
+> diff --git a/mm/rmap.c b/mm/rmap.c
+> index 2a1e45e6419f..846fc79f3ca9 100644
+> --- a/mm/rmap.c
+> +++ b/mm/rmap.c
+> @@ -1335,32 +1335,44 @@ void page_add_anon_rmap(struct page *page, struct=
+ vm_area_struct *vma,
+>   * This means the inc-and-test can be bypassed.
+>   * The folio does not have to be locked.
+>   *
+> - * If the folio is large, it is accounted as a THP.  As the folio
+> + * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
+>   * is new, it's assumed to be mapped exclusively by a single process.
+>   */
+>  void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct =
+*vma,
+>                 unsigned long address)
+>  {
+> -       int nr;
+> +       int nr =3D folio_nr_pages(folio);
+>
+> -       VM_BUG_ON_VMA(address < vma->vm_start || address >=3D vma->vm_end=
+, vma);
+> +       VM_BUG_ON_VMA(address < vma->vm_start ||
+> +                       address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
+>         __folio_set_swapbacked(folio);
+> +       __folio_set_anon(folio, vma, address, true);
+>
+> -       if (likely(!folio_test_pmd_mappable(folio))) {
+> +       if (likely(!folio_test_large(folio))) {
+>                 /* increment count (starts at -1) */
+>                 atomic_set(&folio->_mapcount, 0);
+> -               nr =3D 1;
+> +               SetPageAnonExclusive(&folio->page);
+> +       } else if (!folio_test_pmd_mappable(folio)) {
+> +               int i;
+> +
+> +               for (i =3D 0; i < nr; i++) {
+> +                       struct page *page =3D folio_page(folio, i);
+> +
+> +                       /* increment count (starts at -1) */
+> +                       atomic_set(&page->_mapcount, 0);
+> +                       SetPageAnonExclusive(page);
+> +               }
+> +
+> +               atomic_set(&folio->_nr_pages_mapped, nr);
+>         } else {
+>                 /* increment count (starts at -1) */
+>                 atomic_set(&folio->_entire_mapcount, 0);
+>                 atomic_set(&folio->_nr_pages_mapped, COMPOUND_MAPPED);
+> -               nr =3D folio_nr_pages(folio);
+> +               SetPageAnonExclusive(&folio->page);
+>                 __lruvec_stat_mod_folio(folio, NR_ANON_THPS, nr);
+>         }
+>
+>         __lruvec_stat_mod_folio(folio, NR_ANON_MAPPED, nr);
+> -       __folio_set_anon(folio, vma, address, true);
+> -       SetPageAnonExclusive(&folio->page);
+>  }
+>
+>  /**
+> --
+> 2.25.1
+>
