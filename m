@@ -2,204 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E59804FF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5C4804F45
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346689AbjLEKNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 05:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
+        id S235471AbjLEJ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376795AbjLEJz5 (ORCPT
+        with ESMTP id S1346632AbjLEJ4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:55:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D056A1A4
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 01:56:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701770161;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=grTJ7yip744IhaQrVqj6sS9YQufy0rAAz+sVkwOzAuM=;
-        b=YEWCbMNP25xxxOSvu6/dI30+6A8pLlHMpyyy8SrRWRgXAjImqdVFK7KgjHy/KftOzKp8Wn
-        JmZzlV0TUa2MffnDPFMhbJMzCzpQp57GF++AnK3xs3OPFaHBkVJbGZ6c6Sj4dDFhK+Xw6p
-        m5OZVAPyNN3Lq/j1vrMtY9qY3+OCk3I=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-5AxjZjf1O_uMss01wNfd2g-1; Tue, 05 Dec 2023 04:55:59 -0500
-X-MC-Unique: 5AxjZjf1O_uMss01wNfd2g-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40b32faeb7eso41618495e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 01:55:59 -0800 (PST)
+        Tue, 5 Dec 2023 04:56:18 -0500
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E34D59;
+        Tue,  5 Dec 2023 01:56:12 -0800 (PST)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3316c6e299eso4725530f8f.1;
+        Tue, 05 Dec 2023 01:56:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701770159; x=1702374959;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=grTJ7yip744IhaQrVqj6sS9YQufy0rAAz+sVkwOzAuM=;
-        b=LvoZXu+RiJRub+wSjlPM1K0AZROjqm99k1ZFdgpFIOT9Pr7jMWmllEsiAZETQgR9wU
-         Q+W0c5JgH0hS6aiG6EYCFFBOMHO0vayErAvHyN6LSnzZ63muYEwcGMqO6DNVup2vzZMg
-         oJmixLI0ql5nfQFPgHRTfdt5OyoIRZBeoP0h+a3/+RuqiV/VLpBiBUDPd+BHDkmv8lgX
-         3y7kbpVOa8xVjOKzat+2j6k95vMKCSWTZKbSm/EgzYp4pLU2+v1aBXO2VAMkhjP4CvD0
-         ckjPw94iTNOEGFQs/98VnEhJOXOtBJjpL10aKWy7j+J3mYnx4QpxDtVCIySXWCCSqVCQ
-         9Nfw==
-X-Gm-Message-State: AOJu0Yz1Y+8Ec02PyVeUJiCqAfCDyDYVQs1P+iaYdcFvf/F2jIX3wIRw
-        ha0edYs4BEoOhNKm1I0gRsLbIukaOYpslJDKp3DXR13AJECE3IeOZWnXglcbJDznmDGaC2cYzFd
-        1uAno165C0wOy5F5OgFfIx0Wu
-X-Received: by 2002:a05:600c:190a:b0:40b:5e21:c5cc with SMTP id j10-20020a05600c190a00b0040b5e21c5ccmr219161wmq.154.1701770158746;
-        Tue, 05 Dec 2023 01:55:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFBmH3PIwabvFznw840nNF2cGI7f5mQAdKpdhuYFUSRcOVuCCbYycoWyZqBvpZBmhyg5/EPLg==
-X-Received: by 2002:a05:600c:190a:b0:40b:5e21:c5cc with SMTP id j10-20020a05600c190a00b0040b5e21c5ccmr219149wmq.154.1701770158440;
-        Tue, 05 Dec 2023 01:55:58 -0800 (PST)
-Received: from starship ([89.237.98.20])
-        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b0040b34720206sm18116954wmb.12.2023.12.05.01.55.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 01:55:58 -0800 (PST)
-Message-ID: <5a8c870875acc5c7e72eb3e885c12d6362f45243.camel@redhat.com>
-Subject: Re: [PATCH v7 04/26] x86/fpu/xstate: Introduce
- XFEATURE_MASK_KERNEL_DYNAMIC xfeature set
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     "Yang, Weijiang" <weijiang.yang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        dave.hansen@intel.com, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, chao.gao@intel.com,
-        rick.p.edgecombe@intel.com, john.allen@amd.com
-Date:   Tue, 05 Dec 2023 11:55:56 +0200
-In-Reply-To: <9a7052ca-9c67-45b5-ba23-dbd23e69722c@intel.com>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
-         <20231124055330.138870-5-weijiang.yang@intel.com>
-         <3c16bb90532fbd2ec95b5a3d42a93bbbf77c4d37.camel@redhat.com>
-         <9a7052ca-9c67-45b5-ba23-dbd23e69722c@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        d=1e100.net; s=20230601; t=1701770171; x=1702374971;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NCpUoGEbLa7UgEiPGpxMZ6i6kOTLzyq3xsvNy4X6SA0=;
+        b=oaPe+ADOiV/s8DuiBkkDxGtm0wPQ3WxYj3EEBIYI9j6tGkAHXYMs4VfxgI94GrXGw5
+         Nev9CjK6aEoys57LvBPj1VliltMusiWzwu6b3CIDI+NnuxclORB+yhewveGaPWAZyYck
+         r2vi9GcfGWVnfQR5yo58DNpmellxHnzCwheR2cSRy6vdb9KUZ00ijKZkEHYOFnkbBqBi
+         9c66EJEO9Cj2QkurpZNE/LtEoQcPio7AV6K/jFPBjNrTrXfML79VLR18oKGpjsb2/xVp
+         Jd8oMP6WbTt9ghCF2rEGBVb+dtwaBzodu8kFQf3lwbYSl9sgkiRVn/YTyaWmvRMV12Ov
+         +NBA==
+X-Gm-Message-State: AOJu0Yy9Bp2hMMHdVO0o5KZRmR1aFkU9gvZyQQo9ff7rDczI6wpC0Fhb
+        jjsLgkJoAgtmPAysZn6Q3YI=
+X-Google-Smtp-Source: AGHT+IErga5sMFcOAXTtwbBqiAzKsvmtb3tfiJ5mpDctNhrImPKy2RXAdmg4Zz6tiUMSv/PO7R35tQ==
+X-Received: by 2002:a05:600c:5013:b0:40b:5e21:c596 with SMTP id n19-20020a05600c501300b0040b5e21c596mr213614wmr.100.1701770170934;
+        Tue, 05 Dec 2023 01:56:10 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id bh12-20020a05600c3d0c00b0040b2976eb02sm18178185wmb.10.2023.12.05.01.56.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 01:56:10 -0800 (PST)
+Message-ID: <2c3824d7-0960-4de7-8fae-01478fdef8fe@kernel.org>
+Date:   Tue, 5 Dec 2023 10:56:09 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 7/7] tty: i3c: add TTY over I3C master support
+To:     Frank Li <Frank.Li@nxp.com>, miquel.raynal@bootlin.com
+Cc:     alexandre.belloni@bootlin.com, conor.culhane@silvaco.com,
+        imx@lists.linux.dev, joe@perches.com,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org,
+        zbigniew.lukwinski@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-serial@vger.kernel.org
+References: <20231130224408.3591288-1-Frank.Li@nxp.com>
+ <20231130224408.3591288-8-Frank.Li@nxp.com>
+Content-Language: en-US
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20231130224408.3591288-8-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-12-01 at 15:49 +0800, Yang, Weijiang wrote:
-> On 12/1/2023 1:33 AM, Maxim Levitsky wrote:
-> > On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
-> > > Define new XFEATURE_MASK_KERNEL_DYNAMIC set including the features can be
-> > I am not sure though that this name is correct, but I don't know if I can
-> > suggest a better name.
+On 30. 11. 23, 23:44, Frank Li wrote:
+> In typical embedded Linux systems, UART consoles require at least two pins,
+> TX and RX. In scenarios where I2C/I3C devices like sensors or PMICs are
+> present, we can save these two pins by using this driver. Pins is crucial
+> resources, especially in small chip packages.
 > 
-> It's a symmetry of XFEATURE_MASK_USER_DYNAMIC ;-)
-> > > optionally enabled by kernel components, i.e., the features are required by
-> > > specific kernel components. Currently it's used by KVM to configure guest
-> > > dedicated fpstate for calculating the xfeature and fpstate storage size etc.
-> > > 
-> > > The kernel dynamic xfeatures now only contain XFEATURE_CET_KERNEL, which is
-> > > supported by host as they're enabled in xsaves/xrstors operating xfeature set
-> > > (XCR0 | XSS), but the relevant CPU feature, i.e., supervisor shadow stack, is
-> > > not enabled in host kernel so it can be omitted for normal fpstate by default.
-> > > 
-> > > Remove the kernel dynamic feature from fpu_kernel_cfg.default_features so that
-> > > the bits in xstate_bv and xcomp_bv are cleared and xsaves/xrstors can be
-> > > optimized by HW for normal fpstate.
-> > > 
-> > > Suggested-by: Dave Hansen <dave.hansen@intel.com>
-> > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
-> > > ---
-> > >   arch/x86/include/asm/fpu/xstate.h | 5 ++++-
-> > >   arch/x86/kernel/fpu/xstate.c      | 1 +
-> > >   2 files changed, 5 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-> > > index 3b4a038d3c57..a212d3851429 100644
-> > > --- a/arch/x86/include/asm/fpu/xstate.h
-> > > +++ b/arch/x86/include/asm/fpu/xstate.h
-> > > @@ -46,9 +46,12 @@
-> > >   #define XFEATURE_MASK_USER_RESTORE	\
-> > >   	(XFEATURE_MASK_USER_SUPPORTED & ~XFEATURE_MASK_PKRU)
-> > >   
-> > > -/* Features which are dynamically enabled for a process on request */
-> > > +/* Features which are dynamically enabled per userspace request */
-> > >   #define XFEATURE_MASK_USER_DYNAMIC	XFEATURE_MASK_XTILE_DATA
-> > >   
-> > > +/* Features which are dynamically enabled per kernel side request */
-> > I suggest to explain this a bit better. How about something like that:
-> > 
-> > "Kernel features that are not enabled by default for all processes, but can
-> > be still used by some processes, for example to support guest virtualization"
+> This introduces support for using the I3C bus to transfer console tty data,
+> effectively replacing the need for dedicated UART pins. This not only
+> conserves valuable pin resources but also facilitates testing of I3C's
+> advanced features, including early termination, in-band interrupt (IBI)
+> support, and the creation of more complex data patterns. Additionally,
+> it aids in identifying and addressing issues within the I3C controller
+> driver.
 > 
-> It looks good to me, will apply it in next version, thanks!
-> 
-> > But feel free to keep it as is or propose something else. IMHO this will
-> > be confusing this way or another.
-> > 
-> > 
-> > Another question: kernel already has a notion of 'independent features'
-> > which are currently kernel features that are enabled in IA32_XSS but not present in 'fpu_kernel_cfg.max_features'
-> > 
-> > Currently only 'XFEATURE_LBR' is in this set. These features are saved/restored manually
-> > from independent buffer (in case of LBRs, perf code cares for this).
-> > 
-> > Does it make sense to add CET_S to there as well instead of having XFEATURE_MASK_KERNEL_DYNAMIC,
-> 
-> CET_S here refers to PL{0,1,2}_SSP, right?
-> 
-> IMHO, perf relies on dedicated code to switch LBR MSRs for various reason, e.g., overhead, the feature
-> owns dozens of MSRs, remove xfeature bit will offload the burden of common FPU/xsave framework.
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+...
+> --- a/drivers/tty/Kconfig
+> +++ b/drivers/tty/Kconfig
+> @@ -412,6 +412,19 @@ config RPMSG_TTY
+>   	  To compile this driver as a module, choose M here: the module will be
+>   	  called rpmsg_tty.
+>   
+> +config I3C_TTY
+> +	tristate "TTY over I3C"
+> +	depends on I3C
+> +	help
+> +	  Select this options if you'd like use TTY over I3C master controller
 
-This is true, but the question that begs to be asked, is what is the true purpose of the 'independent features' is
-from the POV of the kernel FPU framework. IMHO these are features that the framework is not aware of, except
-that it enables it in IA32_XSS (and in XCR0 in the future).
+this option
+to use
+add a period to the end.
 
-For the guest only features, like CET_S, it is also kind of the same thing (xsave but to guest state area only).
-I don't insist that we add CET_S to independent features, but I just gave an idea that maybe that is better
-from complexity point of view to add CET there. It's up to you to decide.
+> +
+> +	  This makes it possible for user-space programs to send and receive
+> +	  data as a standard tty protocol. I3C provide relatively higher data
+> +	  transfer rate and less pin numbers, SDA/SCL are shared with other
+> +	  devices.
+> +
+> +	  If unsure, say N
+> +
+>   endif # TTY
+>   
+>   source "drivers/tty/serdev/Kconfig"
+...
+> --- /dev/null
+> +++ b/drivers/tty/i3c_tty.c
+> @@ -0,0 +1,443 @@
+...
+> +struct ttyi3c_port {
+> +	struct tty_port port;
+> +	int minor;
+> +	spinlock_t xlock; /* protect xmit */
+> +	char tx_buff[I3C_TTY_TRANS_SIZE];
+> +	char rx_buff[I3C_TTY_TRANS_SIZE];
 
-Sean what do you think?
+These should be u8 as per the other changes throughout the tty layer.
 
-Best regards,
-	Maxim Levitsky
+> +	struct i3c_device *i3cdev;
+> +	struct work_struct txwork;
+> +	struct work_struct rxwork;
+> +	struct completion txcomplete;
+> +	unsigned long status;
+> +	int buf_overrun;
 
+Can this be ever negative?
 
-> 
-> But CET only has 3 supervisor MSRs and they need to be managed together with user mode MSRs.
-> Enabling it in common FPU framework would make the switch/swap much easier without additional
-> support code.
-> 
-> >   and maybe rename the
-> > 'XFEATURE_MASK_INDEPENDENT' to something like 'XFEATURES_THE_KERNEL_DOESNT_CARE_ABOUT'
-> > (terrible name, but you might think of a better name)
-> > 
-> > 
-> > > +#define XFEATURE_MASK_KERNEL_DYNAMIC	XFEATURE_MASK_CET_KERNEL
-> > > +
-> > >   /* All currently supported supervisor features */
-> > >   #define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID | \
-> > >   					    XFEATURE_MASK_CET_USER | \
-> > > diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-> > > index b57d909facca..ba4172172afd 100644
-> > > --- a/arch/x86/kernel/fpu/xstate.c
-> > > +++ b/arch/x86/kernel/fpu/xstate.c
-> > > @@ -824,6 +824,7 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
-> > >   	/* Clean out dynamic features from default */
-> > >   	fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
-> > >   	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
-> > > +	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_KERNEL_DYNAMIC;
-> > >   
-> > >   	fpu_user_cfg.default_features = fpu_user_cfg.max_features;
-> > >   	fpu_user_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
-> > 
-> > Best regards,
-> > 	Maxim Levitsky
-> > 
-> > 
-> > 
-> > 
+> +};
+> +
+> +struct workqueue_struct *workqueue;
 
+Is this related:
+     Still below items not be fixed (according to Jiri Slaby's comments)
+     - rxwork thread: need trigger from two position.
+     - common thread queue: need some suggestion
+?
 
+As I don't remember, could you elaborate again why you need your own 
+workqueue? You need to do it in the commit log anyway.
 
+...
+> +static ssize_t i3c_write(struct tty_struct *tty, const unsigned char *buf, size_t count)
+> +{
+> +	struct ttyi3c_port *sport = tty->driver_data;
+> +	unsigned long flags;
+> +	bool is_empty;
+> +	int ret;
+> +
+> +	spin_lock_irqsave(&sport->xlock, flags);
+> +	ret = kfifo_in(&sport->port.xmit_fifo, buf, count);
+> +	is_empty = kfifo_is_empty(&sport->port.xmit_fifo);
+> +	spin_unlock_irqrestore(&sport->xlock, flags);
+> +
+> +	if (!is_empty)
+> +		queue_work(workqueue, &sport->txwork);
+> +
+> +	return ret;
+> +}
+> +
+> +static int i3c_put_char(struct tty_struct *tty, unsigned char ch)
+> +{
+> +	struct ttyi3c_port *sport = tty->driver_data;
+> +	unsigned long flags;
+> +	int ret = 0;
+
+Unneeded initialization.
+
+> +
+> +	spin_lock_irqsave(&sport->xlock, flags);
+> +	ret = kfifo_put(&sport->port.xmit_fifo, ch);
+> +	spin_unlock_irqrestore(&sport->xlock, flags);
+> +
+> +	return ret;
+> +}
+...
+> +static void tty_i3c_rxwork(struct work_struct *work)
+> +{
+> +	struct ttyi3c_port *sport = container_of(work, struct ttyi3c_port, rxwork);
+> +	struct i3c_priv_xfer xfers;
+> +	int retry = I3C_TTY_RETRY;
+
+Likely, should be unsigned.
+
+> +	u16 status = BIT(0);
+> +	int ret;
+> +
+> +	memset(&xfers, 0, sizeof(xfers));
+> +	xfers.data.in = sport->rx_buff;
+> +	xfers.len = I3C_TTY_TRANS_SIZE;
+> +	xfers.rnw = 1;
+> +
+> +	do {
+> +		if (test_bit(I3C_TTY_RX_STOP, &sport->status))
+> +			break;
+> +
+> +		i3c_device_do_priv_xfers(sport->i3cdev, &xfers, 1);
+> +
+> +		if (xfers.actual_len) {
+> +			ret = tty_insert_flip_string(&sport->port, sport->rx_buff,
+> +						     xfers.actual_len);
+> +			if (ret < xfers.actual_len)
+> +				sport->buf_overrun++;
+> +
+> +			retry = I3C_TTY_RETRY;
+> +			continue;
+> +		}
+> +
+> +		status = BIT(0);
+> +		i3c_device_getstatus_format1(sport->i3cdev, &status);
+> +		/*
+> +		 * Target side needs some time to fill data into fifo. Target side may not
+> +		 * have hardware update status in real time. Software update status always
+> +		 * needs some delays.
+> +		 *
+> +		 * Generally, target side have circular buffer in memory, it will be moved
+> +		 * into FIFO by CPU or DMA. 'status' just show if circular buffer empty. But
+> +		 * there are gap, especially CPU have not response irq to fill FIFO in time.
+> +		 * So xfers.actual will be zero, wait for little time to avoid flood
+> +		 * transfer in i3c bus.
+> +		 */
+> +		usleep_range(I3C_TTY_YIELD_US, 10 * I3C_TTY_YIELD_US);
+> +		retry--;
+> +
+> +	} while (retry && (status & BIT(0)));
+> +
+> +	tty_flip_buffer_push(&sport->port);
+> +}
+> +
+> +static void tty_i3c_txwork(struct work_struct *work)
+> +{
+> +	struct ttyi3c_port *sport = container_of(work, struct ttyi3c_port, txwork);
+> +	struct i3c_priv_xfer xfers;
+> +	int retry = I3C_TTY_RETRY;
+
+Detto.
+
+> +	unsigned long flags;
+> +	int ret;
+> +
+> +	xfers.rnw = 0;
+> +	xfers.data.out = sport->tx_buff;
+> +
+> +	while (!kfifo_is_empty(&sport->port.xmit_fifo) && retry) {
+> +		xfers.len = kfifo_len(&sport->port.xmit_fifo);
+> +		xfers.len = min_t(u16, I3C_TTY_TRANS_SIZE, xfers.len);
+> +
+> +		xfers.len = kfifo_out_peek(&sport->port.xmit_fifo, sport->tx_buff, xfers.len);
+
+Can this simply be:
+xfers.len = kfifo_out_peek(&sport->port.xmit_fifo, sport->tx_buff, 
+I3C_TTY_TRANS_SIZE);
+?
+
+> +
+> +		ret = i3c_device_do_priv_xfers(sport->i3cdev, &xfers, 1);
+> +		if (ret) {
+> +			/*
+> +			 * Target side may not move data out of FIFO. delay can't resolve problem,
+> +			 * just reduce some possiblity. Target can't end I3C SDR mode write
+> +			 * transfer, discard data is reasonable when FIFO overrun.
+> +			 */
+> +			usleep_range(I3C_TTY_YIELD_US, 10 * I3C_TTY_YIELD_US);
+> +			retry--;
+> +		} else {
+> +			retry = I3C_TTY_RETRY;
+> +			ret = kfifo_out(&sport->port.xmit_fifo, sport->tx_buff, xfers.len);
+
+Just to make sure: xfers.len is nor overwritten by 
+i3c_device_do_priv_xfers(), right?
+
+> +		}
+> +	}
+> +
+> +	spin_lock_irqsave(&sport->xlock, flags);
+
+Why do you take the lock here, but not during the kfifo operations above?
+
+> +	if (kfifo_is_empty(&sport->port.xmit_fifo))
+> +		complete(&sport->txcomplete);
+> +	spin_unlock_irqrestore(&sport->xlock, flags);
+> +}
+
+> +static int __init i3c_tty_init(void)
+> +{
+> +	int ret;
+> +
+> +	i3c_tty_driver = tty_alloc_driver(I3C_TTY_MINORS,
+> +					  TTY_DRIVER_REAL_RAW | TTY_DRIVER_DYNAMIC_DEV);
+> +
+> +	if (IS_ERR(i3c_tty_driver))
+> +		return PTR_ERR(i3c_tty_driver);
+> +
+> +	i3c_tty_driver->driver_name = "ttyI3C";
+> +	i3c_tty_driver->name = "ttyI3C";
+> +	i3c_tty_driver->minor_start = 0,
+> +	i3c_tty_driver->type = TTY_DRIVER_TYPE_SERIAL,
+> +	i3c_tty_driver->subtype = SERIAL_TYPE_NORMAL,
+> +	i3c_tty_driver->init_termios = tty_std_termios;
+> +	i3c_tty_driver->init_termios.c_cflag = B9600 | CS8 | CREAD | HUPCL |
+> +					       CLOCAL;
+> +	i3c_tty_driver->init_termios.c_lflag = 0;
+> +
+> +	tty_set_operations(i3c_tty_driver, &i3c_tty_ops);
+> +
+> +	ret = tty_register_driver(i3c_tty_driver);
+> +	if (ret)
+> +		goto err_tty_register_driver;
+> +
+> +	ret = i3c_driver_register(&i3c_driver);
+> +	if (ret)
+> +		goto err_i3c_driver_register;
+> +
+> +	workqueue = alloc_workqueue("ttyI3C", 0, 0);
+
+Can it happen that you already queue something on this wq, while not 
+allocated yet? I mean: should this be done first in i3c_tty_init()?
+
+> +	if (!workqueue) {
+> +		ret = PTR_ERR(workqueue);
+> +		goto err_alloc_workqueue;
+> +	}
+> +
+> +	return 0;
+> +
+> +err_alloc_workqueue:
+> +	i3c_driver_unregister(&i3c_driver);
+> +
+> +err_i3c_driver_register:
+> +	tty_unregister_driver(i3c_tty_driver);
+> +
+> +err_tty_register_driver:
+> +	tty_driver_kref_put(i3c_tty_driver);
+> +
+> +	return ret;
+> +}
+> +
+> +static void __exit i3c_tty_exit(void)
+> +{
+> +	i3c_driver_unregister(&i3c_driver);
+> +	tty_unregister_driver(i3c_tty_driver);
+> +	tty_driver_kref_put(i3c_tty_driver);
+> +	idr_destroy(&i3c_tty_minors);
+
+What about the wq?
+
+> +}
+
+regards,
+-- 
+js
+suse labs
 
