@@ -2,243 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C546280559A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9494C80559D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 14:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345393AbjLENOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 08:14:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        id S1345396AbjLENO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 08:14:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345392AbjLENOQ (ORCPT
+        with ESMTP id S235396AbjLENO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 08:14:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E791A19F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:14:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7784AC433C8;
-        Tue,  5 Dec 2023 13:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701782061;
-        bh=O5GNZpS56vTlAeb2QJ111xlz1pBCEgIU0ujdWUZFmpA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XG1QSHPUMz2FdfO4n6ey+JrYawyIPlw9UzKgbVQiZwcmALK4NrjWj3tPzg4Y5TDXw
-         JzPs4x4iB1rDKTm9DiM5ClZgJMnoAdDlMj3tO550OgAQpvx3rOY6+O12icd+nDg4tD
-         Hx11t6Nb0xybNvMBB1pFuHhE52yoIzHBUjNq7JIJ1RyOJyWXFK10fMGf6/eqv4t2CU
-         hA1kLdtNprpW1oKEWHFPihWaAZOrepmA7QAy+7hhJTo2MhfjjVYm9NgjbgDOSecP+k
-         mMt1N5Nj8XNMPIrEIsehcYcKwRI0yNNnK94Hpze0BauiN+pYbWzXWvl9s6ZTzliJap
-         Xw65GcoiGpp+A==
-Date:   Tue, 5 Dec 2023 13:14:14 +0000
-From:   Will Deacon <will@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
-        mark.rutland@arm.com, anshuman.khandual@arm.com,
-        namhyung@gmail.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 2/3] arm64: perf: Add support for event counting
- threshold
-Message-ID: <20231205131414.GA18119@willie-the-truck>
-References: <20231124102857.1106453-1-james.clark@arm.com>
- <20231124102857.1106453-3-james.clark@arm.com>
+        Tue, 5 Dec 2023 08:14:26 -0500
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEDED4E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 05:14:30 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5d33574f64eso61627457b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 05:14:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701782069; x=1702386869; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RP6DoGJILfqmy1XRBZpJUGL68RBYKtscZDmXA9WTIyQ=;
+        b=v5loOkE0uN7F/gZGGVUqgv+yppnaNdKFzeNP2VXzba9TygENtiiRalniusrrE82f5b
+         f2rB8lGsWhE7sLlHlPS4WpReDpAoNOg+UYcR5v+cd46Y+qqu8LPlz/clKunazx8sGTXk
+         bppzeY8RR8mrPi4yF4xjl4SFls7yQivdA9fmdXsVDKBBOIRfyVbi5ILAVFe8qFAmXKwx
+         85VNQNcHKBeu/kXZFhEJpCbIWoUC7r9r3UDMKkbgPHJV43x6R9zf6zjvqG1swhOEY5BB
+         W613q8y54vkrlz5sMHRSp1aCpWFZFVeOCalNEKYadx6LoImZ11UwxhLRCZXFD7shoLc7
+         z4rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701782069; x=1702386869;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RP6DoGJILfqmy1XRBZpJUGL68RBYKtscZDmXA9WTIyQ=;
+        b=PVCYdw+A2DN6+hReKJ78iOTAEexxNvzaPHDF1NuGZBOLQIFw0UBPYK32GjGEXf4790
+         uuv6ejXF/VW2hl7g2+Y3DvxhQFoOZ5D68gYkLkpqZCWBcflaOobxcU3Jxfmxew6ogYh5
+         l/WsCwTRAEb87yM5O/GVIMioRcAslrLZIk0ydi7t32KJ3MtzcxRH1dWstfwN9cRYRC7R
+         2btDkmwAF7k5MdnKPesV/qhSyKU6seIuj8Z1WukGhuwWF13B41mtXYB/Dd/Eo53bmrYa
+         mdL56Qj2HHb5KdgxNhLPO9rSWVJzvSqBUIkauhuD14xUa1POc4veP17gFqzutJuGptHI
+         +/Xw==
+X-Gm-Message-State: AOJu0YxY4m1S/tmZ5IefYgEbEsLMIfsLSKHjhDxjzp2uDCQLyrZtRLA4
+        950hG8IwT6+rh9XASx1tixtw9vkrU94iHJv9QVIfWw==
+X-Google-Smtp-Source: AGHT+IHbSJqNsFEXveuMibmZBNRZsuf+9DC72phNshumYLwBucPL5ttq33PeU+/+iNM375ASYoUA54K2ADr/+cMlMyI=
+X-Received: by 2002:a81:f011:0:b0:5d7:1940:b39d with SMTP id
+ p17-20020a81f011000000b005d71940b39dmr4692636ywm.105.1701782069416; Tue, 05
+ Dec 2023 05:14:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231124102857.1106453-3-james.clark@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231204123315.28456-1-keith.zhao@starfivetech.com> <20231204123315.28456-7-keith.zhao@starfivetech.com>
+In-Reply-To: <20231204123315.28456-7-keith.zhao@starfivetech.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 5 Dec 2023 15:14:18 +0200
+Message-ID: <CAA8EJpqbQKjTeEdOpwNy7P+dJK-nnZzZYefyzoG+JWKVgsS=rw@mail.gmail.com>
+Subject: Re: [v3 6/6] drm/vs: simple encoder
+To:     Keith Zhao <keith.zhao@starfivetech.com>
+Cc:     devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        aou@eecs.berkeley.edu, suijingfeng@loongson.cn,
+        tzimmermann@suse.de, paul.walmsley@sifive.com, mripard@kernel.org,
+        xingyu.wu@starfivetech.com, jack.zhu@starfivetech.com,
+        palmer@dabbelt.com, krzysztof.kozlowski+dt@linaro.org,
+        william.qiu@starfivetech.com, shengyang.chen@starfivetech.com,
+        changhuang.liang@starfivetech.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 10:28:56AM +0000, James Clark wrote:
-> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
-> index 1d40d794f5e4..eb1ef84e1dbb 100644
-> --- a/drivers/perf/arm_pmuv3.c
-> +++ b/drivers/perf/arm_pmuv3.c
-> @@ -15,6 +15,7 @@
->  #include <clocksource/arm_arch_timer.h>
->  
->  #include <linux/acpi.h>
-> +#include <linux/bitfield.h>
->  #include <linux/clocksource.h>
->  #include <linux/of.h>
->  #include <linux/perf/arm_pmu.h>
-> @@ -294,9 +295,20 @@ static const struct attribute_group armv8_pmuv3_events_attr_group = {
->  	.is_visible = armv8pmu_event_attr_is_visible,
+On Mon, 4 Dec 2023 at 14:33, Keith Zhao <keith.zhao@starfivetech.com> wrote:
+>
+> add simple encoder for dsi bridge
+
+This doesn't look like a proper commit message.
+
+>
+> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
+> ---
+>  drivers/gpu/drm/verisilicon/Makefile        |   4 +-
+>  drivers/gpu/drm/verisilicon/vs_drv.c        |   2 +
+>  drivers/gpu/drm/verisilicon/vs_simple_enc.c | 195 ++++++++++++++++++++
+>  drivers/gpu/drm/verisilicon/vs_simple_enc.h |  23 +++
+>  4 files changed, 223 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/gpu/drm/verisilicon/vs_simple_enc.c
+>  create mode 100644 drivers/gpu/drm/verisilicon/vs_simple_enc.h
+>
+> diff --git a/drivers/gpu/drm/verisilicon/Makefile b/drivers/gpu/drm/verisilicon/Makefile
+> index 71fadafcee13..cd5d0a90bcfe 100644
+> --- a/drivers/gpu/drm/verisilicon/Makefile
+> +++ b/drivers/gpu/drm/verisilicon/Makefile
+> @@ -5,6 +5,8 @@ vs_drm-objs := vs_dc_hw.o \
+>                 vs_crtc.o \
+>                 vs_drv.o \
+>                 vs_modeset.o \
+> -               vs_plane.o
+> +               vs_plane.o \
+> +               vs_simple_enc.o
+> +
+>  vs_drm-$(CONFIG_DRM_VERISILICON_STARFIVE_HDMI) += starfive_hdmi.o
+>  obj-$(CONFIG_DRM_VERISILICON) += vs_drm.o
+> diff --git a/drivers/gpu/drm/verisilicon/vs_drv.c b/drivers/gpu/drm/verisilicon/vs_drv.c
+> index d7e5199fe293..946f137ab124 100644
+> --- a/drivers/gpu/drm/verisilicon/vs_drv.c
+> +++ b/drivers/gpu/drm/verisilicon/vs_drv.c
+> @@ -23,6 +23,7 @@
+>  #include "vs_drv.h"
+>  #include "vs_modeset.h"
+>  #include "vs_dc.h"
+> +#include "vs_simple_enc.h"
+>
+>  #define DRV_NAME       "verisilicon"
+>  #define DRV_DESC       "Verisilicon DRM driver"
+> @@ -217,6 +218,7 @@ static struct platform_driver *drm_sub_drivers[] = {
+>  #ifdef CONFIG_DRM_VERISILICON_STARFIVE_HDMI
+>         &starfive_hdmi_driver,
+>  #endif
+> +       &simple_encoder_driver,
 >  };
->  
-> +#define THRESHOLD_LOW		2
-> +#define THRESHOLD_HIGH		13
-> +#define THRESHOLD_CNT		14
-> +#define THRESHOLD_CMP_LO	15
-> +#define THRESHOLD_CMP_HI	16
+>
+>  static struct component_match *vs_drm_match_add(struct device *dev)
+> diff --git a/drivers/gpu/drm/verisilicon/vs_simple_enc.c b/drivers/gpu/drm/verisilicon/vs_simple_enc.c
+> new file mode 100644
+> index 000000000000..c5a8d82bc469
+> --- /dev/null
+> +++ b/drivers/gpu/drm/verisilicon/vs_simple_enc.c
+> @@ -0,0 +1,195 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 VeriSilicon Holdings Co., Ltd.
+> + */
+> +#include <linux/component.h>
+> +#include <linux/of_device.h>
+> +#include <linux/module.h>
+> +
+> +#include <drm/drm_atomic_helper.h>
+> +#include <drm/drm_bridge.h>
+> +#include <drm/drm_crtc_helper.h>
+> +#include <drm/drm_of.h>
+> +#include <linux/regmap.h>
+> +#include <linux/media-bus-format.h>
+> +#include <linux/mfd/syscon.h>
+> +
+> +#include "vs_crtc.h"
+> +#include "vs_simple_enc.h"
+> +
+> +static const struct simple_encoder_priv dsi_priv = {
 
-Do you think THWIDTH might extend beyond 12 bits in future? If so, it might
-be worth juggling these bits around a bit so it's not sandwiched between
-'rdpmc' and 'threshold_compare'. I defer to your judgement, however.
+Please use proper prefix for all the struct and function names.
+vs_simple_encoder sounds better. Or vs_dsi_encoder.
 
->  PMU_FORMAT_ATTR(event, "config:0-15");
->  PMU_FORMAT_ATTR(long, "config1:0");
->  PMU_FORMAT_ATTR(rdpmc, "config1:1");
-> +PMU_FORMAT_ATTR(threshold, "config1:" __stringify(THRESHOLD_LOW) "-"
-> +				      __stringify(THRESHOLD_HIGH));
-> +PMU_FORMAT_ATTR(threshold_compare, "config1:" __stringify(THRESHOLD_CMP_LO) "-"
-> +					      __stringify(THRESHOLD_CMP_HI));
-> +PMU_FORMAT_ATTR(threshold_count, "config1:" __stringify(THRESHOLD_CNT));
->  
->  static int sysctl_perf_user_access __read_mostly;
->  
-> @@ -310,10 +322,33 @@ static inline bool armv8pmu_event_want_user_access(struct perf_event *event)
->  	return event->attr.config1 & 0x2;
->  }
->  
-> +static inline u32 armv8pmu_event_threshold(struct perf_event_attr *attr)
+> +       .encoder_type = DRM_MODE_ENCODER_DSI
+> +};
+> +
+> +static inline struct simple_encoder *to_simple_encoder(struct drm_encoder *enc)
 > +{
-> +	return FIELD_GET(GENMASK(THRESHOLD_HIGH, THRESHOLD_LOW), attr->config1);
+> +       return container_of(enc, struct simple_encoder, encoder);
 > +}
 > +
-> +static inline u8 armv8pmu_event_threshold_control(struct perf_event_attr *attr)
-
-You can drop the 'inline's for these functions (and, in fact, this whole
-file could do with that cleanup :)
-
+> +static int encoder_parse_dt(struct device *dev)
 > +{
-> +	u8 th_compare = FIELD_GET(GENMASK(THRESHOLD_CMP_HI, THRESHOLD_CMP_LO),
-> +				  attr->config1);
-> +	u8 th_count = FIELD_GET(BIT(THRESHOLD_CNT), attr->config1);
-
-I think this is correct, but you might want to look at how we handle this
-in the SPE driver as I think it ends up looking cleaner and makes it pretty
-obvious which bits correspond to the user ABI (i.e. config fields) and which
-bits are part of architectural registers. I'm not saying you have to do it
-that way, but please take a look if you haven't already.
-
-> +	/*
-> +	 * The count bit is always the bottom bit of the full control field, and
-> +	 * the comparison is the upper two bits, but it's not explicitly
-> +	 * labelled in the Arm ARM. For the Perf interface we split it into two
-> +	 * fields, so reconstruct it here.
-> +	 */
-> +	return (th_compare << 1) | th_count;
+> +       struct simple_encoder *simple = dev_get_drvdata(dev);
+> +       unsigned int args[2];
+> +
+> +       simple->dss_regmap = syscon_regmap_lookup_by_phandle_args(dev->of_node,
+> +                                                                 "starfive,syscon",
+> +                                                                 2, args);
+> +
+> +       if (IS_ERR(simple->dss_regmap)) {
+> +               return dev_err_probe(dev, PTR_ERR(simple->dss_regmap),
+> +                                    "getting the regmap failed\n");
+> +       }
+> +
+> +       simple->offset = args[0];
+> +       simple->mask = args[1];
+> +
+> +       return 0;
 > +}
 > +
->  static struct attribute *armv8_pmuv3_format_attrs[] = {
->  	&format_attr_event.attr,
->  	&format_attr_long.attr,
->  	&format_attr_rdpmc.attr,
-> +	&format_attr_threshold.attr,
-> +	&format_attr_threshold_compare.attr,
-> +	&format_attr_threshold_count.attr,
->  	NULL,
->  };
->  
-> @@ -365,10 +400,38 @@ static ssize_t bus_width_show(struct device *dev, struct device_attribute *attr,
->  
->  static DEVICE_ATTR_RO(bus_width);
->  
-> +static u32 threshold_max(struct arm_pmu *cpu_pmu)
+> +void encoder_atomic_enable(struct drm_encoder *encoder,
+> +                          struct drm_atomic_state *state)
 > +{
-> +	/*
-> +	 * PMMIR.THWIDTH is readable and non-zero on aarch32, but it would be
-> +	 * impossible to write the threshold in the upper 32 bits of PMEVTYPER.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_ARM))
-> +		return 0;
+> +       struct simple_encoder *simple = to_simple_encoder(encoder);
 > +
-> +	/*
-> +	 * The largest value that can be written to PMEVTYPER<n>_EL0.TH is
-> +	 * (2 ^ PMMIR.THWIDTH) - 1.
-> +	 */
-> +	return (1 << FIELD_GET(ARMV8_PMU_THWIDTH, cpu_pmu->reg_pmmir)) - 1;
+> +       regmap_update_bits(simple->dss_regmap, simple->offset, simple->mask,
+> +                          simple->mask);
 > +}
 > +
-> +static ssize_t threshold_max_show(struct device *dev,
-> +				  struct device_attribute *attr, char *page)
+> +int encoder_atomic_check(struct drm_encoder *encoder,
+> +                        struct drm_crtc_state *crtc_state,
+> +                        struct drm_connector_state *conn_state)
 > +{
-> +	struct pmu *pmu = dev_get_drvdata(dev);
-> +	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
+> +       struct vs_crtc_state *vs_crtc_state = to_vs_crtc_state(crtc_state);
+> +       struct drm_connector *connector = conn_state->connector;
+> +       int ret = 0;
 > +
-> +	return sysfs_emit(page, "0x%08x\n", threshold_max(cpu_pmu));
+> +       struct drm_bridge *first_bridge = drm_bridge_chain_get_first_bridge(encoder);
+> +       struct drm_bridge_state *bridge_state = ERR_PTR(-EINVAL);
+> +
+> +       vs_crtc_state->encoder_type = encoder->encoder_type;
+> +
+> +       if (first_bridge && first_bridge->funcs->atomic_duplicate_state)
+> +               bridge_state = drm_atomic_get_bridge_state(crtc_state->state, first_bridge);
+
+Please don't poke into others' playground. This should go into your
+DSI bridge's atomic_check() instead.
+
+> +
+> +       if (IS_ERR(bridge_state)) {
+> +               if (connector->display_info.num_bus_formats)
+> +                       vs_crtc_state->output_fmt = connector->display_info.bus_formats[0];
+> +               else
+> +                       vs_crtc_state->output_fmt = MEDIA_BUS_FMT_FIXED;
+> +       } else {
+> +               vs_crtc_state->output_fmt = bridge_state->input_bus_cfg.format;
+> +       }
+> +
+> +       switch (vs_crtc_state->output_fmt) {
+> +       case MEDIA_BUS_FMT_FIXED:
+> +       case MEDIA_BUS_FMT_RGB565_1X16:
+> +       case MEDIA_BUS_FMT_RGB666_1X18:
+> +       case MEDIA_BUS_FMT_RGB888_1X24:
+> +       case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
+> +       case MEDIA_BUS_FMT_RGB101010_1X30:
+> +       case MEDIA_BUS_FMT_UYYVYY8_0_5X24:
+> +       case MEDIA_BUS_FMT_UYVY8_1X16:
+> +       case MEDIA_BUS_FMT_YUV8_1X24:
+> +       case MEDIA_BUS_FMT_UYYVYY10_0_5X30:
+> +       case MEDIA_BUS_FMT_UYVY10_1X20:
+> +       case MEDIA_BUS_FMT_YUV10_1X30:
+> +               ret = 0;
+> +               break;
+> +       default:
+> +               ret = -EINVAL;
+> +               break;
+> +       }
+> +
+> +       /* If MEDIA_BUS_FMT_FIXED, set it to default value */
+> +       if (vs_crtc_state->output_fmt == MEDIA_BUS_FMT_FIXED)
+> +               vs_crtc_state->output_fmt = MEDIA_BUS_FMT_RGB888_1X24;
+> +
+> +       return ret;
 > +}
 > +
-> +static DEVICE_ATTR_RO(threshold_max);
+> +static const struct drm_encoder_helper_funcs encoder_helper_funcs = {
+> +       .atomic_check = encoder_atomic_check,
+> +       .atomic_enable = encoder_atomic_enable,
+> +};
 > +
->  static struct attribute *armv8_pmuv3_caps_attrs[] = {
->  	&dev_attr_slots.attr,
->  	&dev_attr_bus_slots.attr,
->  	&dev_attr_bus_width.attr,
-> +	&dev_attr_threshold_max.attr,
->  	NULL,
->  };
->  
-> @@ -552,7 +615,7 @@ static void armv8pmu_write_counter(struct perf_event *event, u64 value)
->  		armv8pmu_write_hw_counter(event, value);
->  }
->  
-> -static inline void armv8pmu_write_evtype(int idx, u32 val)
-> +static inline void armv8pmu_write_evtype(int idx, unsigned long val)
->  {
->  	u32 counter = ARMV8_IDX_TO_COUNTER(idx);
->  	unsigned long mask = ARMV8_PMU_EVTYPE_EVENT |
-> @@ -921,6 +984,10 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
->  				     struct perf_event_attr *attr)
->  {
->  	unsigned long config_base = 0;
-> +	struct perf_event *perf_event = container_of(attr, struct perf_event,
-> +						     attr);
-> +	struct arm_pmu *cpu_pmu = to_arm_pmu(perf_event->pmu);
-> +	u32 th, th_max;
->  
->  	if (attr->exclude_idle)
->  		return -EPERM;
-> @@ -952,6 +1019,21 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
->  	if (attr->exclude_user)
->  		config_base |= ARMV8_PMU_EXCLUDE_EL0;
->  
-> +	/*
-> +	 * Insert event counting threshold (FEAT_PMUv3_TH) values. If
-> +	 * FEAT_PMUv3_TH isn't implemented, then THWIDTH (threshold_max) will be
-> +	 * 0 and no values will be written.
-> +	 */
-> +	th_max = threshold_max(cpu_pmu);
-> +	if (IS_ENABLED(CONFIG_ARM64) && th_max) {
-
-Why is the IS_ENABLED() check needed here?
-
-> +		th = min(armv8pmu_event_threshold(attr), th_max);
-> +		if (th) {
-
-Why is it useful to take the minimum here? If userspace asks for a value
-bigger than the maximum support threshold, shouldn't we return an error
-rather than silently clamp it?
-
-> +			config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TH, th);
-> +			config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TC,
-> +						  armv8pmu_event_threshold_control(attr));
-> +		}
-> +	}
+> +static int encoder_bind(struct device *dev, struct device *master, void *data)
+> +{
+> +       struct drm_device *drm_dev = data;
+> +       struct simple_encoder *simple = dev_get_drvdata(dev);
+> +       struct drm_encoder *encoder;
+> +       struct drm_bridge *bridge;
+> +       int ret;
 > +
->  	/*
->  	 * Install the filter into config_base as this is used to
->  	 * construct the event type.
-> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
-> index ddd1fec86739..ccbc0f9a74d8 100644
-> --- a/include/linux/perf/arm_pmuv3.h
-> +++ b/include/linux/perf/arm_pmuv3.h
-> @@ -258,6 +258,7 @@
->  #define ARMV8_PMU_BUS_SLOTS_MASK 0xff
->  #define ARMV8_PMU_BUS_WIDTH_SHIFT 16
->  #define ARMV8_PMU_BUS_WIDTH_MASK 0xf
-> +#define ARMV8_PMU_THWIDTH GENMASK(23, 20)
+> +       encoder = &simple->encoder;
+> +
+> +       ret = drmm_encoder_init(drm_dev, encoder, NULL, simple->priv->encoder_type, NULL);
+> +       if (ret)
+> +               return ret;
+> +
+> +       drm_encoder_helper_add(encoder, &encoder_helper_funcs);
+> +
+> +       encoder->possible_crtcs =
+> +                       drm_of_find_possible_crtcs(drm_dev, dev->of_node);
+> +
+> +       /* output port is port1*/
+> +       bridge = devm_drm_of_get_bridge(dev, dev->of_node, 1, 0);
+> +       if (IS_ERR(bridge))
+> +               return 0;
+> +
+> +       return drm_bridge_attach(encoder, bridge, NULL, 0);
+> +}
+> +
+> +static const struct component_ops encoder_component_ops = {
+> +       .bind = encoder_bind,
+> +};
+> +
+> +static const struct of_device_id simple_encoder_dt_match[] = {
+> +       { .compatible = "starfive,dsi-encoder", .data = &dsi_priv},
+> +       {},
+> +};
+> +MODULE_DEVICE_TABLE(of, simple_encoder_dt_match);
+> +
+> +static int encoder_probe(struct platform_device *pdev)
+> +{
+> +       struct device *dev = &pdev->dev;
+> +       struct simple_encoder *simple;
+> +       int ret;
+> +
+> +       simple = devm_kzalloc(dev, sizeof(*simple), GFP_KERNEL);
+> +       if (!simple)
+> +               return -ENOMEM;
+> +
+> +       simple->priv = of_device_get_match_data(dev);
+> +
+> +       simple->dev = dev;
+> +
+> +       dev_set_drvdata(dev, simple);
+> +
+> +       ret = encoder_parse_dt(dev);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return component_add(dev, &encoder_component_ops);
+> +}
+> +
+> +static int encoder_remove(struct platform_device *pdev)
+> +{
+> +       struct device *dev = &pdev->dev;
+> +
+> +       component_del(dev, &encoder_component_ops);
+> +       dev_set_drvdata(dev, NULL);
+> +
+> +       return 0;
+> +}
+> +
+> +struct platform_driver simple_encoder_driver = {
+> +       .probe = encoder_probe,
+> +       .remove = encoder_remove,
+> +       .driver = {
+> +               .name = "vs-simple-encoder",
+> +               .of_match_table = of_match_ptr(simple_encoder_dt_match),
+> +       },
+> +};
+> +
+> +MODULE_DESCRIPTION("Simple Encoder Driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/drivers/gpu/drm/verisilicon/vs_simple_enc.h b/drivers/gpu/drm/verisilicon/vs_simple_enc.h
+> new file mode 100644
+> index 000000000000..fb33ca9e18d6
+> --- /dev/null
+> +++ b/drivers/gpu/drm/verisilicon/vs_simple_enc.h
+> @@ -0,0 +1,23 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2022 VeriSilicon Holdings Co., Ltd.
+> + */
+> +
+> +#ifndef __VS_SIMPLE_ENC_H_
+> +#define __VS_SIMPLE_ENC_H_
+> +
+> +struct simple_encoder_priv {
+> +       unsigned char encoder_type;
+> +};
+> +
+> +struct simple_encoder {
+> +       struct drm_encoder encoder;
+> +       struct device *dev;
+> +       const struct simple_encoder_priv *priv;
+> +       struct regmap *dss_regmap;
+> +       unsigned int offset;
+> +       unsigned int mask;
+> +};
+> +
+> +extern struct platform_driver simple_encoder_driver;
+> +#endif /* __VS_SIMPLE_ENC_H_ */
+> --
+> 2.34.1
+>
 
-It's a bit messy having a mixture of GENMASK and MASK/SHIFT pairs. Please
-can you either update what's there to use GENMASK, or use SHIFT/MASK for the
-new addition?
 
-Will
+-- 
+With best wishes
+Dmitry
