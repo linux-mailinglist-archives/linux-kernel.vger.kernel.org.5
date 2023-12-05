@@ -2,105 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B21C80450F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEEE804517
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 03:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344101AbjLECiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Dec 2023 21:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59136 "EHLO
+        id S1344134AbjLECjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Dec 2023 21:39:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343967AbjLECiD (ORCPT
+        with ESMTP id S1343967AbjLECje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Dec 2023 21:38:03 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A31CA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:38:10 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5caf86963ecso72675467b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:38:10 -0800 (PST)
+        Mon, 4 Dec 2023 21:39:34 -0500
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB63ECA
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 18:39:40 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b8958b32a2so3043736b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Dec 2023 18:39:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701743889; x=1702348689; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5EkC8tBFkc/bGatstNbW1R85aDFjsej7pU03fOLuo0o=;
-        b=YqFHc9Mjdi7mYPsWapFDKWQAk70FTbT7wnLxLJlLeOWG78PIkdEtVoK6/ZO3hsFJGK
-         Ds6heHaxh2i0+TS2EXOn0VBrgcrAQ8me9HXK3+Nuw0LCsm1rApYSFLBIIG4fdYi8mwR1
-         h09iFDXnEofrZEg65alXxmzk82cmHzub0QJfu7k56f/JrmiD0uzqdXU20ykn0SWRT0sc
-         YeSHvmSuYVkUs16RcQOUYEv0swN2kQYGNlxTDP7tKZ6B6gxNWeBh7cBBv047Rv8IloHm
-         5Ul0wDRHX65s1jWXV6Q3QlxMzz/gWPZ39oBy5q6vwo4PRPzuv/TCRgseIOkmU3KQkbDv
-         qwyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701743889; x=1702348689;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+        d=bytedance.com; s=google; t=1701743980; x=1702348780; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=5EkC8tBFkc/bGatstNbW1R85aDFjsej7pU03fOLuo0o=;
-        b=U1N/aRmmsw+tXUoz3a0o7O6EroAOhCiehPnx7fTm1EbCtzs0ggw6BxXHwkTw1IpVch
-         b0zY2C+oknwaKgdbRmgwTEh3GMt0BuF0rm+XC5wj9eAx40c0sYpT1OsBs/L2foEuD9hf
-         kjorN0JCQU+u1uZ29373EPafWWMPuOPZHsN+QTgagpKkfgp2jpxQ7KZA/Alhng4nRYtr
-         lNe0Pdo0AeLnqfDNf2nKN0A3kflfmIe5kFMTdP6oBX1cqhl5UwdyRqih0FXxqqjhxDq7
-         ciDMJvsBHuqQI6lvDnSUEEbJEFrNS+wD06U/YZ/burz9qOumodO10U1ahVv5JWfyoXw7
-         T38A==
-X-Gm-Message-State: AOJu0YzGWg3bfuKcDdhr6nS5/T+xpGGhT/BnOfymCFbUcsG+SM55MDgG
-        X9DyF6AD7lC6VyPXMUxQuerb+N2yAPo=
-X-Google-Smtp-Source: AGHT+IH66c/DcXoUES/OjQFHfKfa4wp28KTZsImTGDG6MYhRnIRLKo451oU0sYuWQc272uiv+NUawl/qMJw=
-X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:5074:e7bb:c7b:6a8a])
- (user=drosen job=sendgmr) by 2002:a05:690c:2509:b0:5d8:5d2c:121d with SMTP id
- dt9-20020a05690c250900b005d85d2c121dmr102229ywb.7.1701743889565; Mon, 04 Dec
- 2023 18:38:09 -0800 (PST)
-Date:   Mon,  4 Dec 2023 18:38:01 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231205023801.3669458-1-drosen@google.com>
-Subject: [PATCH v3] f2fs: Restrict max filesize for 16K f2fs
-From:   Daniel Rosenberg <drosen@google.com>
-To:     linux-f2fs-devel@lists.sourceforge.net
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Daniel Rosenberg <drosen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        bh=H3tOJXY8IizW0u24gL21FfDp3aMmLoVYHrrK5m++rGY=;
+        b=EWTqBpeysG0Ffixnn6IDwVLVP7ZaTePIuc5EXLJvsOZRHSMM359zyD4v8jR1M7w3JY
+         Moi6RWYqRJJt1g+k6Tlz8ebdPZWpbdBFeqSIbo5oi/KgO0nuEDUprrwQqOSVdhpC8fql
+         EtrvCB+JUHTb3ilteiMCFEw5Rh5LWPnXSzAdFi4uQjLDDSyrVvHtIZe+tORknzn3ufPP
+         Vxvk3JgGjBQQw06h4fy/FzfdsvV7S28HrwizqtI8zZ2Ebd6kEm/AXnBsyhKkZpNCh95c
+         iP+AqfsmbPjTlsh039M8uITBQo5f1wf11Blivzl7iSqFrIENSIV8RDVPj1w9rBQ8Bhdg
+         T+eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701743980; x=1702348780;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H3tOJXY8IizW0u24gL21FfDp3aMmLoVYHrrK5m++rGY=;
+        b=oAoO/Oa3XoyzbZnzIppYGH2pgu1SYotJlFW18zTSvePaBNbYyE2nkSWSFM5OAvCLQS
+         Qls6tkUyYe6uaUsZfovnKPJx3d3cODrS1RlpHlQ8/4ZRbzjmJKX49Dn9Dy9Ew1b1FNV/
+         fBh+WY+DTzQgyNdAFs6SHqaK9lxevJcGBCYm0hKuU2B67mDWzMbNyVg+dcDXv1u5X9ci
+         ev0wh0dSKOO97Q+UcM4Uo0u+aREsyHPxa49ruSnF2MT05xx5SgAz6OQO6Au2bjMm4o9I
+         3E+FibXpvBPwWDTjhPjIRxk4IlyggEReA0wDFXc0gRAiFLjdk573mnGiMmyxgkNzTkJQ
+         a+lw==
+X-Gm-Message-State: AOJu0YxzEcMpc5w9fbknE9QxIAgjOfUAIfrFQ1yCA9Hqw0YlTQZjnJEs
+        akIGlJ6dG6AQy1jojcpZE41Y/g==
+X-Google-Smtp-Source: AGHT+IF6wyUzi1d6qZQ9qidrICNEvSECadlo+kwhV9QQutoYLrx7Xql9+XRRN62a5erALuknzEMtBA==
+X-Received: by 2002:a05:6808:1204:b0:3b8:b063:505f with SMTP id a4-20020a056808120400b003b8b063505fmr6332590oil.96.1701743980087;
+        Mon, 04 Dec 2023 18:39:40 -0800 (PST)
+Received: from [10.255.170.18] ([139.177.225.246])
+        by smtp.gmail.com with ESMTPSA id bm10-20020a056a00320a00b006cbafd6996csm8319731pfb.123.2023.12.04.18.39.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Dec 2023 18:39:39 -0800 (PST)
+Message-ID: <ef07f915-e598-402e-bb2b-011bb0aebd7f@bytedance.com>
+Date:   Tue, 5 Dec 2023 10:39:29 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 24/35] block: null_blk: fix opencoded
+ find_and_set_bit() in get_tag()
+Content-Language: en-US
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>,
+        linux-block@vger.kernel.org
+Cc:     Jan Kara <jack@suse.cz>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
+        Alexey Klimov <klimov.linux@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Sergey Shtylyov <s.shtylyov@omp.ru>
+References: <20231203192422.539300-1-yury.norov@gmail.com>
+ <20231203193307.542794-1-yury.norov@gmail.com>
+ <20231203193307.542794-23-yury.norov@gmail.com>
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <20231203193307.542794-23-yury.norov@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Blocks are tracked by u32, so the max permitted filesize is
-(U32_MAX + 1) * BLOCK_SIZE. Additionally, in order to support crypto
-data unit sizes of 4K with a 16K block with IV_INO_LBLK_{32,64}, we must
-further restrict max filesize to (U32_MAX + 1) * 4096. This does not
-affect 4K blocksize f2fs as the natural limit for files are well below
-that.
+On 2023/12/4 03:32, Yury Norov wrote:
+> get_tag() opencodes find_and_set_bit(). Switch the code to use the
+> dedicated function, and get rid of get_tag entirely.
+> 
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
 
-Fixes: d7e9a9037de2 ("f2fs: Support Block Size == Page Size")
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
----
- fs/f2fs/super.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Looks good to me!
 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 033af907c3b1..5dfbc6b4c0ac 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3364,6 +3364,14 @@ loff_t max_file_blocks(struct inode *inode)
- 	leaf_count *= NIDS_PER_BLOCK;
- 	result += leaf_count;
- 
-+	/*
-+	 * For compatibility with FSCRYPT_POLICY_FLAG_IV_INO_LBLK_{64,32} with
-+	 * a 4K crypto data unit, we must restrict the max filesize to what can
-+	 * fit within U32_MAX + 1 data units.
-+	 */
-+
-+	result = min(result, (((loff_t)U32_MAX + 1) * 4096) >> F2FS_BLKSIZE_BITS);
-+
- 	return result;
- }
- 
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
 
-base-commit: d346fa09abff46988de9267b67b6900d9913d5a2
--- 
-2.43.0.rc2.451.g8631bc7472-goog
-
+> ---
+>  drivers/block/null_blk/main.c | 41 +++++++++++------------------------
+>  1 file changed, 13 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/block/null_blk/main.c b/drivers/block/null_blk/main.c
+> index 3021d58ca51c..671dbb9ab928 100644
+> --- a/drivers/block/null_blk/main.c
+> +++ b/drivers/block/null_blk/main.c
+> @@ -760,19 +760,6 @@ static void put_tag(struct nullb_queue *nq, unsigned int tag)
+>  		wake_up(&nq->wait);
+>  }
+>  
+> -static unsigned int get_tag(struct nullb_queue *nq)
+> -{
+> -	unsigned int tag;
+> -
+> -	do {
+> -		tag = find_first_zero_bit(nq->tag_map, nq->queue_depth);
+> -		if (tag >= nq->queue_depth)
+> -			return -1U;
+> -	} while (test_and_set_bit_lock(tag, nq->tag_map));
+> -
+> -	return tag;
+> -}
+> -
+>  static void free_cmd(struct nullb_cmd *cmd)
+>  {
+>  	put_tag(cmd->nq, cmd->tag);
+> @@ -782,24 +769,22 @@ static enum hrtimer_restart null_cmd_timer_expired(struct hrtimer *timer);
+>  
+>  static struct nullb_cmd *__alloc_cmd(struct nullb_queue *nq)
+>  {
+> +	unsigned int tag = find_and_set_bit_lock(nq->tag_map, nq->queue_depth);
+>  	struct nullb_cmd *cmd;
+> -	unsigned int tag;
+> -
+> -	tag = get_tag(nq);
+> -	if (tag != -1U) {
+> -		cmd = &nq->cmds[tag];
+> -		cmd->tag = tag;
+> -		cmd->error = BLK_STS_OK;
+> -		cmd->nq = nq;
+> -		if (nq->dev->irqmode == NULL_IRQ_TIMER) {
+> -			hrtimer_init(&cmd->timer, CLOCK_MONOTONIC,
+> -				     HRTIMER_MODE_REL);
+> -			cmd->timer.function = null_cmd_timer_expired;
+> -		}
+> -		return cmd;
+> +
+> +	if (tag >= nq->queue_depth)
+> +		return NULL;
+> +
+> +	cmd = &nq->cmds[tag];
+> +	cmd->tag = tag;
+> +	cmd->error = BLK_STS_OK;
+> +	cmd->nq = nq;
+> +	if (nq->dev->irqmode == NULL_IRQ_TIMER) {
+> +		hrtimer_init(&cmd->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +		cmd->timer.function = null_cmd_timer_expired;
+>  	}
+>  
+> -	return NULL;
+> +	return cmd;
+>  }
+>  
+>  static struct nullb_cmd *alloc_cmd(struct nullb_queue *nq, struct bio *bio)
