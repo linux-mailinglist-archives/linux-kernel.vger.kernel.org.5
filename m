@@ -2,140 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6F58049A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973728049A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 07:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344283AbjLEGBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 01:01:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
+        id S1344266AbjLEGBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 01:01:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbjLEGBM (ORCPT
+        with ESMTP id S229611AbjLEGBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 01:01:12 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2078.outbound.protection.outlook.com [40.107.94.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87C1C0;
-        Mon,  4 Dec 2023 22:01:18 -0800 (PST)
+        Tue, 5 Dec 2023 01:01:51 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261A2C0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Dec 2023 22:01:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701756117; x=1733292117;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=TyUDS73daW/pq8VVNOAFKhiSYv08dVS3P96+YwOifA8=;
+  b=RRsCnRyn2M+v8OXZpRJKsGN9SxgP9rAMuATt7FsrpoB/hylMl2nTyKPg
+   OWN3nD9O3gFGHlzfxAS2TT0YVYurHzZej29sZ3yK6tenjKuwEBqCjlEbW
+   Vp/dmRtVFr29/zzb0XwlyPKM6BEZxi3mBYx4Kfo87FEtakgcQOK8GceKx
+   9zSqdjEqFuOkaTrUNVqQcAztlong22LbgGeMMDRqZbseSy3SvkFy1NBLv
+   WNctJQ5zb4teehg+a674hN26+4phvCd5m/3Hs1mlbpGbdwCSIWeuHgIxy
+   FRVRRPqimLbOX7xMT5maSIwOuDV26Mj7AjLtDEGrXN+7YUZ2T8sWXNSqs
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="726464"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="726464"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Dec 2023 22:01:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="770795590"
+X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
+   d="scan'208";a="770795590"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Dec 2023 22:01:56 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Dec 2023 22:01:56 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 4 Dec 2023 22:01:56 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 4 Dec 2023 22:01:56 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PUFfgkB3KhAo/JxtdZKmDv4N9AfLJptAAfh2lMDQv9Lv5xqvNx65IZmjMRQY2Qd8l61BkdgVuev2eW9IznJ+83zG4i0scD5qYZTKFC/0piX1LnNld3MyJXS6mqu8UtEPQiez5bdRGzSMRZd4glgkpTtafg1HgLzBUhP7SyZG+uPlncE+lPOg9c84Dj0BQ7pmbL4apJmPr8kxhMvogvMEDNdkkqVxpc0myF+a+xluiDYO6nY8OY15QMonFe5pidtjdHLJGib5Sude0qO5guKulEgl1Q+PYh6v+PJkJCxK6jjsEd2ATayn3ndqz87v+cT/gEnOSjZoacXxUnW2ZNZpgg==
+ b=i7KidtmNVWqFjowXwWbBvm/EmccCXVcE8Pm+6vA0iKF6y4cKswXnRsAShhAJvlqemL4kY/5JNDL/DWRL1c6/9lenP2r2anwVX+YfB5YxDH33OwM/TItj8/XIH99fKF8sMh9SZuWhktv+4SVnPnlOYEqVxJylpg+etxI6MM5pGgJYoJsnw/uGkmHer7D0CrJwoSIARVhXeTBGfghFGHm840h4QlR8YHLQi3iPd5s52n/QunYJNWrvzbJ0RzYnUZGskRBIjYM9ly4OjGnjcBx/BDm319gFgLE925M8S5RCz/Hsof8LNIs08eyb40J6CqLyUz5K/bxEn8Q/3ijSntQX2g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sGDUnf3thIZTWApbl3Q/eLgKEzL53lbGx9rbLEskH/k=;
- b=bNXToCwsOqTynqTlnmMrxlFxULLRSMuJr82c2wHeyDQT2NSguJCyH1W9NKrobAM2cb2jZzyHjyL/nBOujj0fATgR6E4O5dwaFEpjZn8cJFCM3FslR20En1XwGMpoAeGjbFI0Am4yJFP3C6wAdDS6OHACrHS5NIw2P1jR/RRBvpvQp45M5xiuFCSwL06n2b0fu3CB/yJhq8FSuqWhilQBNhXo2jRYozvffJjcpHw9m2ksmk9Bdu8fnfBcT3isX73XaWx9jjM+lXW0camoi6TIrEn5MeSUiLLNsBSLewfvoF7hBzcineDu1QbCDIsNApKDXS/rSsuGp9eblARHyQsfYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sGDUnf3thIZTWApbl3Q/eLgKEzL53lbGx9rbLEskH/k=;
- b=PVEw7jCZi8+7VFOdfJseoyOzqKHsbZVihTfxtQJrTManjMNCwrqs6QC8GxyIm+LL06SPw7hNQ2ZJ7Bg7oCYtI2iEWqMa6vqDvYVbNzEohZWi6guhQsYrfZfh8lb0uidUYxFOhfK/yxJdtJGnk5X+54PYWV4uh43LF6UMxEMOR3nCSIvjsDMcu60UcqV8xUI2jO+mJ4w9GaUL9hc7Rb0D/7BmozM1Cf4BEQzYeKA06qNbm3JTtpUGCDK81pitlBqkjRWtsYa84UIjo0argL3N+26Zx0tlu+ZA6W7HVHHnprA83P4SWvG/Slyo+DXRNXFNnSVC5uXr0lr0jRTZNJHM2g==
-Received: from BL1PR13CA0142.namprd13.prod.outlook.com (2603:10b6:208:2bb::27)
- by BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20) with
+ bh=gyZsjeDRwE4dH62R4bpTAklxdVGVCx9NmN3l6z2qzvg=;
+ b=X/gQMSuSXgxzTli5y5mYxy6sEyHVTvcLQ6jEYfTNeBtsZkVgw+/nZZVm+f8hPjTyqROXfhwXpNDij34j5BUzvBYyzKZEXckFeIUlVW4e3GIMB2hEXZd12sqMvPsthxm/sk+2DF3iWj7T8PV6RQt7jHwTMMzrVXWV+NBmLoXf5LqdVOiWLWcOeY5WI4b3/VhU+HXHtXCCfcFwDhy+zufVsUAyKMFGHCCTm/TrwLR36lYmWDLDy219cdrI6R5NQ0P4FTY5Xx0ULO3OnCXhn/WJ/UrhlqgNd5hCvIzKosIwyam2qn8ZG9zL7UPcJyQzeegrAwPNLoDdsMQ4AAjo/0wRww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
+ by DS0PR11MB6445.namprd11.prod.outlook.com (2603:10b6:8:c6::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
- 2023 06:01:16 +0000
-Received: from MN1PEPF0000ECD6.namprd02.prod.outlook.com
- (2603:10b6:208:2bb:cafe::a3) by BL1PR13CA0142.outlook.office365.com
- (2603:10b6:208:2bb::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.24 via Frontend
- Transport; Tue, 5 Dec 2023 06:01:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- MN1PEPF0000ECD6.mail.protection.outlook.com (10.167.242.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.20 via Frontend Transport; Tue, 5 Dec 2023 06:01:15 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 4 Dec 2023
- 22:01:00 -0800
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 4 Dec 2023 22:00:59 -0800
-Received: from amhetre.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 4 Dec 2023 22:00:57 -0800
-From:   Ashish Mhetre <amhetre@nvidia.com>
-To:     <amhetre@nvidia.com>, <krzysztof.kozlowski@linaro.org>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <rdunlap@infradead.org>, <sfr@canb.auug.org.au>
-Subject: [PATCH] memory: tegra: Protect SID override call under CONFIG_IOMMU_API
-Date:   Tue, 5 Dec 2023 11:30:45 +0530
-Message-ID: <20231205060045.7985-1-amhetre@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-X-NVConfidentiality: public
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Tue, 5 Dec
+ 2023 06:01:54 +0000
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::2f1a:e62e:9fff:ae67]) by BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::2f1a:e62e:9fff:ae67%5]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
+ 06:01:54 +0000
+Date:   Tue, 5 Dec 2023 14:01:46 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     kernel test robot <lkp@intel.com>
+CC:     Nicholas Piggin <npiggin@gmail.com>,
+        <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        Michal Marek <mmarek@suse.com>
+Subject: Re: fs/nilfs2/btree.c:1863: warning: No description found for
+ parameter 'btree'
+Message-ID: <ZW68yrp+tDpafdE1@rli9-mobl>
+References: <202312051316.CGxfBMux-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <202312051316.CGxfBMux-lkp@intel.com>
+X-ClientProxiedBy: SG2PR04CA0165.apcprd04.prod.outlook.com (2603:1096:4::27)
+ To BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECD6:EE_|BY5PR12MB4322:EE_
-X-MS-Office365-Filtering-Correlation-Id: 479b2d5c-2f74-4d9e-214a-08dbf55797c0
+X-MS-TrafficTypeDiagnostic: BL0PR11MB2995:EE_|DS0PR11MB6445:EE_
+X-MS-Office365-Filtering-Correlation-Id: b999a088-4503-47f7-9aa0-08dbf557ae4e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0J70BUGTjrUGcWm60DOnDYjndqdudwlmYpL/b/kuDnr5A0ZAFjsPp16X7ISKou9/Sq/g0PM+E1VcR3868zsfMpaFaTy8bJcX4tTY5UO+G8c/qz5e6leUrOJZzR3LASplk+pYCUVA0ckcchv+scQVUQeNDRC2ZHdOnapG1QPehWM+0tY3pnLXsKxugQ4UgxYHnSo7H33x0Lo8FDgV7GTSgwdvqxMhHRTyAxYuKzmQw6bNRBK/8IeVBIaFHNHZcqZtP9gWvYX+Ylwam7dSRKbovVrtNdDD5J+YB35coP68OTBi6FXS2PFtfI4FhDFOp5JsfVPg9JTQwgqhFzTyeZkkBYankkwlj7AwDY23dGHt4ISwYYCKjZxzCA4MgboxtFqwv4upM41iHSXwforgXMPQJLDuHqvuVFM2YYXt80TUcq3xoYIRq4IZ5FZkdvG/wjjb4y5xs14XZJp0C/FBgtbgrMHfao5aUmU0tPqdy/21XUs4Td/kSFLY4B1l0fAY/1v2qd9HdhQzhs63e30Yb2+maOCkk6t4cRboEImFjIcu9QWJQYvZAA2JF1tEO6yblOryQXNbNq/ERVHEpDHN0LZDeDHa9AhyMB52brAWgPvJkTqpc9UCnTeV/ZrnqTrWc4QhvKvtUdgJENvjV567lF2D+lFEhxEcteQ7Dy8Al4rENhCOsjtPaAxpSV6Uvt5/f2MC0ulHV+DDgZpnIhoNkhcAbEIQIHQQbqMuofc3NBCqtgXXEd3P42ke0NnSvCznY3Fy
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(39860400002)(396003)(376002)(230922051799003)(186009)(82310400011)(64100799003)(1800799012)(451199024)(36840700001)(40470700004)(46966006)(110136005)(54906003)(70586007)(70206006)(316002)(6636002)(478600001)(40460700003)(6666004)(5660300002)(41300700001)(36756003)(2906002)(86362001)(4326008)(8676002)(8936002)(1076003)(2616005)(36860700001)(83380400001)(40480700001)(47076005)(7636003)(356005)(26005)(336012)(82740400003)(426003)(7696005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 06:01:15.8093
+X-Microsoft-Antispam-Message-Info: j+oA3w44Hc+iIgbAEEk2vGY7s0JDfF7eQQR6mzGMvcD1bNMNDvnzYoLR+FmIksZmAKOlLWu69Pkc1geBsz2j+NCtCxTIMleMleId/VfZMNdduXU8yjlhS1xvDQu6H2hK2+cvfGLSgTCsN0zKPzguVg/z52eWpSpBEMCCcZ7CBTKw2mgBKHFcDUUHnVufhO+4gDUXCBa129crZtue2dR4BMdcLWSxr1w1LTNloLm070GlpjSB4i8yta55WNljv/NSg8xSRS12dYmCFgayuJAxEdEGV4AyO/+FdFHlZHQ+3xfm6CGxqMK86nKRFN9dlc5DJ0kwkvwaD4rBGshO2NgnhW9axq6jtQFZwcqZe6H0MMjh0FdO+BCZCohRBwFiaomAMQ1ZVz4eWYZP0st6z/KHJRcvQwhwK0klWXgHiWb4p2X4mKOsELk7cuwlT8WoEeiFVosYMMU9NFxNFZX6tk1jyydPtXJFw4yCJngPVx5icZFvP57dTF0ZG7k+RLxRa4yAy/VG6GEXjGXhMLZkBlZGfwYVi2p9A5xHb5gazfRAObr1jZ7eY/x6E+YD1RXr2cwDq8shmMSMXU5DhRrWysonRENiVMcinQ2uWRuvBUP35Z2W6lydff6TKREZa5xZ5BY//OwAwaSHdfoKLqgwlUWxq7dwCvEylh/nhrs+BZCtySnhUOWL4RI5L+BpGGoH6wqW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2995.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(136003)(376002)(39860400002)(366004)(346002)(230173577357003)(230273577357003)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(41300700001)(44832011)(30864003)(86362001)(6666004)(5660300002)(2906002)(83380400001)(66476007)(6862004)(4326008)(966005)(8936002)(316002)(8676002)(54906003)(66556008)(6636002)(66946007)(33716001)(6506007)(478600001)(6486002)(6512007)(9686003)(26005)(82960400001)(38100700002)(67856001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6VPmrPxEtaY+vO/dOOUWxWm2yHKZke5MzffbwlSFLvZPoViYLGBiz+MWaoTs?=
+ =?us-ascii?Q?7YwVnA64N6ccZ9/dXpdiJdtq8kmjYy2Uv/giEwJs2KVmp20gGibNzdCdlspR?=
+ =?us-ascii?Q?GKixLJh9z1X0hb4Vp6wVcuOJUB0IYys7RQKONEhBtD39OHpR1u3PdUBeo7u2?=
+ =?us-ascii?Q?XdJBbA7Dr++F6eWwiz/hXJTlWJWV9iecvOAy1fJoXAIEZqSmPSD/omPrEtgp?=
+ =?us-ascii?Q?spguSp7BQdyuwUhe9A/Ly1WJdw2krg69o7z22NlaEQ7bmesyjpH+7+myTQv9?=
+ =?us-ascii?Q?HGBhDlLjKMV8YB2uTe7gF0kV7esR5hrWQK3QE8nsfmNXkq267m26iQSdwxQB?=
+ =?us-ascii?Q?KKtuwRJE6yTAT9m42SOGrqc2uwuUgARCw4ZI4c0pS2M1NU54JOXHyP+K98CS?=
+ =?us-ascii?Q?ayyYpDmqVNSR0QzksGYVcJR3qSJdyzp+/wTXB7RxOJ4w/kmXemS9nKa87l+q?=
+ =?us-ascii?Q?7QUzvpLAmZHIguE3/QdewlcIUZnO0SmSasVXqTeGLOWGmv4qBKzS9S8kDuG6?=
+ =?us-ascii?Q?0fIno8L83dDvNKtFTz1RR+BgONHmzsppcDZ2vPM2dpCAm2xTOPs8lzJELhQ9?=
+ =?us-ascii?Q?wibB/CTl9aXleIp3lvx0vE0GhRoEdNz79GCYhidlnxLbfzgPgchEh/okCXr+?=
+ =?us-ascii?Q?xmWBslL8YpaTp0E6vtbvvpzq8JVem5G8l+nU57+b66MMbUXGsAFhJezVHRvq?=
+ =?us-ascii?Q?70N55wvQGUe/PsthxVzxl/hBwPDjXyDlK38CzNfMoxY3xDZI2gJWnbI2ShBV?=
+ =?us-ascii?Q?kOlgEjkoHRChiBD+BWxuVGGBaGdpyZK6ruZvW/IluH/MyxpoqSV9ZAoi3KYr?=
+ =?us-ascii?Q?TUZH6z5YxAE23dqcQ6uUOY2nvWLLs49f7auT3/vSQ2OTTQHweLtNLVhJ1cwS?=
+ =?us-ascii?Q?Xw/bWHou2WCm/5OYRIBnhi2cCw21X28IvET4VE7RsukLajGr+RYRDurwSfJY?=
+ =?us-ascii?Q?V2JOHmqN9HIjlPscwjVTvAiMDwyInetOcIgonHgAZ7CqxmrGR70OnGTy1tP4?=
+ =?us-ascii?Q?uPb8Dure7N1ELviHLluN6zLPYLj85pzprsD94Iv9rt56IRD24HWhQVIP7j4D?=
+ =?us-ascii?Q?zpPDRR0vrmSHw0/0sL0VkARGjfkeW+MGUsEpoRy/UlaS5AkUtPIBm5qfZlvB?=
+ =?us-ascii?Q?ckuwipfRmQZ+YmhPjP3PcH6M4O5v/TD0f6wb78PK4yjI5OkHfvOUhPSBQydm?=
+ =?us-ascii?Q?gP4jbJNZPAiYeQ7FUn9ulvP1Qn1AE99GpV4YDkJv3QAdk8M/YvhGxszCqckh?=
+ =?us-ascii?Q?HTI8NMuTA5OOjqfD/dqJfMMvaebocPKcI1I/grJeKPuzW6OsC1dYvV2jDp5h?=
+ =?us-ascii?Q?/TNYfntDcp/Bwe/OhsdZeTHx9N30oYBAG3CXFfp1zir6xBC/N2JdUeuo537E?=
+ =?us-ascii?Q?w8GDvsQBlIJcfAgF8sJpn9GkMeGmqmFtkSJlCjel8+5gey0EPyyRPg30M19g?=
+ =?us-ascii?Q?wWYU/ORLqzJJRbkSPVIQU7iLNadc/TQlJx3ufDFbO1Uu6Kg6XwBEjduGnCa0?=
+ =?us-ascii?Q?UvGymAVxn9QSrnbekGnt+Vn133tol34NTmbRGNgLfmDU+s+pd0IhZFSdO3rt?=
+ =?us-ascii?Q?m26ZX7pk2/eynEHJd9+FqDXSqLo2TgJr0OXZlI6/?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b999a088-4503-47f7-9aa0-08dbf557ae4e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2995.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2023 06:01:54.1778
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 479b2d5c-2f74-4d9e-214a-08dbf55797c0
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000ECD6.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4322
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZNTqv/u6Y4dWa4UtGa+r+8JH5r1Ztje5azo/zabFZ6s9Ap5vT1GnxxqbCfq9+mPevEKbqB8OI1bm8m4q7c5U2g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6445
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tegra186_mc_client_sid_override() is protected under CONFIG_IOMMU_API.
-Call to this function is being made from tegra186_mc_resume() without
-any protection which is leading to build failure when CONFIG_IOMMU_API
-is not set. Fix this by protecting SID override function call from
-tegra186_mc_resume() under CONFIG_IOMMU_API.
+On Tue, Dec 05, 2023 at 01:53:10PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+> commit: 4efca4ed05cbdfd13ec3e8cb623fb77d6e4ab187 kbuild: modversions for EXPORT_SYMBOL() for asm
+> date:   7 years ago
+> config: i386-buildonly-randconfig-005-20231120 (https://download.01.org/0day-ci/archive/20231205/202312051316.CGxfBMux-lkp@intel.com/config)
+> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051316.CGxfBMux-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
 
-Fixes: fe3b082a6eb8 ("memory: tegra: Add SID override programming for MC clients")
-Signed-off-by: Ashish Mhetre <amhetre@nvidia.com>
----
- drivers/memory/tegra/tegra186.c | 2 ++
- 1 file changed, 2 insertions(+)
+Kindly ignore this report, the found commit is not related to the warnings.
+Sorry about the false report.
 
-diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra186.c
-index d1f1dfb42716..0ff014a9d3cd 100644
---- a/drivers/memory/tegra/tegra186.c
-+++ b/drivers/memory/tegra/tegra186.c
-@@ -141,6 +141,7 @@ static int tegra186_mc_probe_device(struct tegra_mc *mc, struct device *dev)
- 
- static int tegra186_mc_resume(struct tegra_mc *mc)
- {
-+#if IS_ENABLED(CONFIG_IOMMU_API)
- 	unsigned int i;
- 
- 	for (i = 0; i < mc->soc->num_clients; i++) {
-@@ -148,6 +149,7 @@ static int tegra186_mc_resume(struct tegra_mc *mc)
- 
- 		tegra186_mc_client_sid_override(mc, client, client->sid);
- 	}
-+#endif
- 
- 	return 0;
- }
--- 
-2.17.1
-
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202312051316.CGxfBMux-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> fs/nilfs2/btree.c:1863: warning: No description found for parameter 'btree'
+> >> fs/nilfs2/btree.c:1863: warning: No description found for parameter 'key'
+> >> fs/nilfs2/btree.c:1863: warning: No description found for parameter 'ptr'
+> >> fs/nilfs2/btree.c:1863: warning: No description found for parameter 'keys'
+> >> fs/nilfs2/btree.c:1863: warning: No description found for parameter 'ptrs'
+> >> fs/nilfs2/btree.c:1863: warning: No description found for parameter 'n'
+> --
+>    arch/x86/include/asm/bitops.h: Assembler messages:
+>    arch/x86/include/asm/bitops.h:211: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+>    arch/x86/include/asm/bitops.h:211: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+>    arch/x86/include/asm/bitops.h:211: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+>    arch/x86/include/asm/bitops.h:211: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+> >> fs/nilfs2/btnode.c:167: warning: No description found for parameter 'btnc'
+> >> fs/nilfs2/btnode.c:167: warning: No description found for parameter 'ctxt'
+>    fs/nilfs2/btnode.c:237: warning: No description found for parameter 'btnc'
+>    fs/nilfs2/btnode.c:237: warning: No description found for parameter 'ctxt'
+>    fs/nilfs2/btnode.c:278: warning: No description found for parameter 'btnc'
+>    fs/nilfs2/btnode.c:278: warning: No description found for parameter 'ctxt'
+> --
+> >> fs/nilfs2/recovery.c:580: warning: No description found for parameter 'root'
+> --
+> >> fs/nilfs2/sufile.c:575: warning: No description found for parameter 'sustat'
+>    fs/nilfs2/sufile.c:575: warning: Excess function parameter 'stat' description in 'nilfs_sufile_get_stat'
+> --
+> >> fs/nilfs2/bmap.c:387: warning: No description found for parameter 'bh'
+>    fs/nilfs2/bmap.c:387: warning: Excess function parameter 'bhp' description in 'nilfs_bmap_assign'
+> --
+>    arch/x86/include/asm/bitops.h: Assembler messages:
+>    arch/x86/include/asm/bitops.h:211: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+> >> fs/nilfs2/ioctl.c:128: warning: No description found for parameter 'inode'
+> >> fs/nilfs2/ioctl.c:128: warning: No description found for parameter 'argp'
+>    fs/nilfs2/ioctl.c:139: warning: No description found for parameter 'inode'
+> >> fs/nilfs2/ioctl.c:139: warning: No description found for parameter 'filp'
+>    fs/nilfs2/ioctl.c:139: warning: No description found for parameter 'argp'
+>    fs/nilfs2/ioctl.c:193: warning: No description found for parameter 'inode'
+>    fs/nilfs2/ioctl.c:193: warning: No description found for parameter 'argp'
+> --
+> >> fs/nilfs2/super.c:124: warning: No description found for parameter 'sb'
+> >> fs/nilfs2/super.c:124: warning: No description found for parameter 'function'
+> >> fs/nilfs2/super.c:124: warning: No description found for parameter 'fmt'
+> --
+>    arch/x86/include/asm/bitops.h: Assembler messages:
+>    arch/x86/include/asm/bitops.h:257: Warning: no instruction mnemonic suffix given and no register operands; using default for `btr'
+>    arch/x86/include/asm/bitops.h:211: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+> >> fs/nilfs2/inode.c:81: warning: No description found for parameter 'inode'
+> >> fs/nilfs2/inode.c:81: warning: No description found for parameter 'blkoff'
+> >> fs/nilfs2/inode.c:81: warning: No description found for parameter 'bh_result'
+> >> fs/nilfs2/inode.c:81: warning: No description found for parameter 'create'
+> >> fs/nilfs2/inode.c:153: warning: No description found for parameter 'file'
+> >> fs/nilfs2/inode.c:153: warning: No description found for parameter 'page'
+>    fs/nilfs2/inode.c:167: warning: No description found for parameter 'file'
+> >> fs/nilfs2/inode.c:167: warning: No description found for parameter 'mapping'
+> >> fs/nilfs2/inode.c:167: warning: No description found for parameter 'pages'
+> >> fs/nilfs2/inode.c:167: warning: No description found for parameter 'nr_pages'
+> >> fs/nilfs2/inode.c:985: warning: No description found for parameter 'flags'
+> --
+> >> fs/nilfs2/cpfile.c:573: warning: No description found for parameter 'cpfile'
+> >> fs/nilfs2/cpfile.c:573: warning: No description found for parameter 'cnop'
+> >> fs/nilfs2/cpfile.c:573: warning: No description found for parameter 'mode'
+> >> fs/nilfs2/cpfile.c:573: warning: No description found for parameter 'buf'
+> >> fs/nilfs2/cpfile.c:573: warning: No description found for parameter 'cisz'
+> >> fs/nilfs2/cpfile.c:573: warning: No description found for parameter 'nci'
+>    fs/nilfs2/cpfile.c:590: warning: No description found for parameter 'cpfile'
+> >> fs/nilfs2/cpfile.c:590: warning: No description found for parameter 'cno'
+>    fs/nilfs2/cpfile.c:916: warning: No description found for parameter 'mode'
+>    fs/nilfs2/cpfile.c:916: warning: Excess function parameter 'status' description in 'nilfs_cpfile_change_cpmode'
+> >> fs/nilfs2/cpfile.c:955: warning: No description found for parameter 'cpstat'
+>    fs/nilfs2/cpfile.c:955: warning: Excess function parameter 'stat' description in 'nilfs_cpfile_get_stat'
+> --
+>    arch/x86/include/asm/bitops.h: Assembler messages:
+>    arch/x86/include/asm/bitops.h:211: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+> >> fs/nilfs2/gcinode.c:189: warning: No description found for parameter 'nilfs'
+> --
+> >> drivers/iio/dac/ad7303.c:50: warning: No description found for parameter 'vdd_reg'
+> >> drivers/iio/dac/ad7303.c:50: warning: No description found for parameter 'vref_reg'
+> >> drivers/iio/dac/ad7303.c:50: warning: No description found for parameter '____cacheline_aligned'
+> >> drivers/iio/dac/ad7303.c:50: warning: Excess struct/union/enum/typedef member 'data' description in 'ad7303_state'
+> ..
+> 
+> 
+> vim +/btree +1863 fs/nilfs2/btree.c
+> 
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1850  
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1851  /**
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1852   * nilfs_btree_convert_and_insert -
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1853   * @bmap:
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1854   * @key:
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1855   * @ptr:
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1856   * @keys:
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1857   * @ptrs:
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1858   * @n:
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1859   */
+> e7c274f8083793 Ryusuke Konishi 2010-07-10  1860  int nilfs_btree_convert_and_insert(struct nilfs_bmap *btree,
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1861  				   __u64 key, __u64 ptr,
+> 3033342a0b7604 Ryusuke Konishi 2009-05-24  1862  				   const __u64 *keys, const __u64 *ptrs, int n)
+> 17c76b0104e4a6 Koji Sato       2009-04-06 @1863  {
+> 4f05028f8d1af7 Ryusuke Konishi 2015-11-06  1864  	struct buffer_head *bh = NULL;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1865  	union nilfs_bmap_ptr_req dreq, nreq, *di, *ni;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1866  	struct nilfs_bmap_stats stats;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1867  	int ret;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1868  
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1869  	if (n + 1 <= NILFS_BTREE_ROOT_NCHILDREN_MAX) {
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1870  		di = &dreq;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1871  		ni = NULL;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1872  	} else if ((n + 1) <= NILFS_BTREE_NODE_NCHILDREN_MAX(
+> e7c274f8083793 Ryusuke Konishi 2010-07-10  1873  			   1 << btree->b_inode->i_blkbits)) {
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1874  		di = &dreq;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1875  		ni = &nreq;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1876  	} else {
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1877  		di = NULL;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1878  		ni = NULL;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1879  		BUG();
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1880  	}
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1881  
+> e7c274f8083793 Ryusuke Konishi 2010-07-10  1882  	ret = nilfs_btree_prepare_convert_and_insert(btree, key, di, ni, &bh,
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1883  						     &stats);
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1884  	if (ret < 0)
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1885  		return ret;
+> e7c274f8083793 Ryusuke Konishi 2010-07-10  1886  	nilfs_btree_commit_convert_and_insert(btree, key, ptr, keys, ptrs, n,
+> 3033342a0b7604 Ryusuke Konishi 2009-05-24  1887  					      di, ni, bh);
+> be667377a8b8cd Ryusuke Konishi 2011-03-05  1888  	nilfs_inode_add_blocks(btree->b_inode, stats.bs_nblocks);
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1889  	return 0;
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1890  }
+> 17c76b0104e4a6 Koji Sato       2009-04-06  1891  
+> 
+> :::::: The code at line 1863 was first introduced by commit
+> :::::: 17c76b0104e4a6513983777e1a17e0297a12b0c4 nilfs2: B-tree based block mapping
+> 
+> :::::: TO: Koji Sato <sato.koji@lab.ntt.co.jp>
+> :::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+> 
+> -- 
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
