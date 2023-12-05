@@ -2,122 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B049805C87
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB94805B6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 18:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442590AbjLEPv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 10:51:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
+        id S1346392AbjLEPwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 10:52:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442609AbjLEPvW (ORCPT
+        with ESMTP id S1346320AbjLEPwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 10:51:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8162B1AB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:51:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DF6DC433CA;
-        Tue,  5 Dec 2023 15:51:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701791488;
-        bh=cRtFwqVwGM/L5ElETR7/boeZZkQBM/dk1tSxRXa+SjE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RGyeU7QvMB9+MJb48ISbSvf4giVhpNA1dzt2x0ApFyux9D1hNyJs59V5235TZ2GG4
-         YmmscdTAvjHB2f/Dzabq6WldhzjojX/lu0bKk4lcksWKzdLuGoTrT7fvHU9LKRoqKD
-         S6fN3oMu6fGnXMPU4L/vZ6F9j9IuH35Qz5dhWGCkgVvbhBxiXlzpMFRGcGhkI0e2WY
-         ZE++rhJDKQDduO5iCBtpGGCA7cUvKwqeWnAIZbSrOqwWlHJRndZ6IL6Q7Lsq2ZPYiE
-         JTczBH9TsKFE66ZbfxdXRr6dqYK61eoQAS9hDwYl5X2RGRoSpJ3NNZMHrCdoArncrG
-         56cJ50OFSADtw==
-Date:   Tue, 5 Dec 2023 15:51:19 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "will@kernel.org" <will@kernel.org>
-Subject: Re: [PATCH RFT v4 2/5] fork: Add shadow stack support to clone3()
-Message-ID: <ed665d6f-66b0-4eeb-8cf8-db852e017d6a@sirena.org.uk>
-References: <20231128-clone3-shadow-stack-v4-0-8b28ffe4f676@kernel.org>
- <20231128-clone3-shadow-stack-v4-2-8b28ffe4f676@kernel.org>
- <61f80d032c6a630dd641c9b598b37c2eb40d51e8.camel@intel.com>
+        Tue, 5 Dec 2023 10:52:06 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DE4C3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 07:52:10 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-33348e711e0so1955592f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 07:52:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riscv-rocks.de; s=google; t=1701791529; x=1702396329; darn=vger.kernel.org;
+        h=organization:user-agent:in-reply-to:content-disposition
+         :mime-version:references:mail-followup-to:reply-to:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=lVTdq6t/OSB6FE4R91UbvG7HbrsvSrimG/gzvVG23BM=;
+        b=d7LYvaVyAKeJ5LgT3KPvovxqsmkBOCySMB/kGudYfq9WQLBreCixXL/CwXNeeOPT+S
+         sx9Suz7uR5lMBJyO5CKXBGzZZ3y5KWv0RmIy3tfPO8v0G6DbbHBN1YAKzcD2vdTqWfXd
+         rTsVHguH/GFQWshhCSIv5cLvXBfjJBSp3wbPDBc7sKj/MCgAO9ytEcu1lBteCU08hlFY
+         Nay6iFi/jbw/gudz9qI++2RPLsBUZ0k/cbiaYtH9YtMRcztkXWgHQZWvZ6Cr1dJoPady
+         ax72eu0ugB2jZXi5tzyGd42CHNGVqloOlyBFop/gTwOLONPhDjUqd9bHo/5yc/zTEHnM
+         gUzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701791529; x=1702396329;
+        h=organization:user-agent:in-reply-to:content-disposition
+         :mime-version:references:mail-followup-to:reply-to:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lVTdq6t/OSB6FE4R91UbvG7HbrsvSrimG/gzvVG23BM=;
+        b=oz8nEd+3SA9MEc1mLuhoj0ZFqI0a1vrg5YKhcGd9KfNul9orS/pTrJoGzvYlMkuCoc
+         faC88Ow4t3c0CxpqyKi4wga9To/4xz28eMP7wWciaWlylO+f9KbIci+ZJsBWEqhTEQLN
+         vc54sCaLfjI4IXEAl+Pf5qZxVVUcddy59IlaOKO8WKbo2mx1MQYqDDtpMFUkw0su2sJn
+         x0Z2ClZ1oX7jZvEBEPzJhCJGNmMDkJJdff4WRV/ZlU8PHsuzEUGSdtAmkfDJ51Jyue4f
+         CLCee1eJ/AbJUQMinCaeUlAZpkD3auBBbL2hjtWhlm7zXz2EeU10eqMFKAmbskzhdeQh
+         LJgg==
+X-Gm-Message-State: AOJu0YzhzR3fY9aTiENmhx73kidkCToCQlaXDRVnNUjLOxZrC9Lez3F7
+        cujtPEG7t0scyy83x+3NsdnUBA==
+X-Google-Smtp-Source: AGHT+IElMdXrz89RurD2RJoKi2kjRNtKZuLwgqSlkGPsYKj4csSCF4Fnczw3b5nc0Y11T0hPeWp81Q==
+X-Received: by 2002:adf:f74c:0:b0:333:2fd2:51fc with SMTP id z12-20020adff74c000000b003332fd251fcmr4361255wrp.117.1701791528135;
+        Tue, 05 Dec 2023 07:52:08 -0800 (PST)
+Received: from fedora (p549451d5.dip0.t-ipconnect.de. [84.148.81.213])
+        by smtp.gmail.com with ESMTPSA id f20-20020a1709067f9400b009fd7bcd9054sm6963138ejr.147.2023.12.05.07.52.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 07:52:07 -0800 (PST)
+Date:   Tue, 5 Dec 2023 16:52:05 +0100
+From:   Damian Tometzki <damian@riscv-rocks.de>
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>,
+        Drew Fustini <dfustini@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 2/4] riscv: dts: thead: Add TH1520 mmc controllers and
+ sdhci clock
+Message-ID: <ZW9HJdIk-8r918Ma@fedora>
+Reply-To: Damian Tometzki <damian@riscv-rocks.de>
+Mail-Followup-To: Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Drew Fustini <dfustini@baylibre.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20231129-th1520_mmc_dts-v7-0-c77fc19caa6f@baylibre.com>
+ <20231129-th1520_mmc_dts-v7-2-c77fc19caa6f@baylibre.com>
+ <CAJM55Z-qc7gc0fO-K8byqvpOBjDxFD4dP57mFHuijvpOzBWObQ@mail.gmail.com>
+ <ZW8zHoVWf94FDTx7@xhacker>
+ <CAJM55Z9tPTu4N4UVCBs1AJYWrWxMUDL+8FpVZtGx4yQgKenWSQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ofW00QD6kVu0wbQR"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <61f80d032c6a630dd641c9b598b37c2eb40d51e8.camel@intel.com>
-X-Cookie: I've Been Moved!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAJM55Z9tPTu4N4UVCBs1AJYWrWxMUDL+8FpVZtGx4yQgKenWSQ@mail.gmail.com>
+User-Agent: Mutt
+X-Operating-System: Linux Fedora release 39 (Thirty Nine) (Kernel 6.7.0-rc4)
+Organization: Linux hacker
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 05. Dec 06:48, Emil Renner Berthing wrote:
+> Jisheng Zhang wrote:
+> > On Mon, Dec 04, 2023 at 01:47:45AM -0800, Emil Renner Berthing wrote:
+> > > Drew Fustini wrote:
+> > > > Add node for the SDHCI fixed clock. Add mmc0 node for the first mmc
+> > > > controller instance which is typically connected to the eMMC device.
+> > > > Add mmc1 node for the second mmc controller instance which is typically
+> > > > connected to microSD slot.
+> > > >
+> > > > Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> > > > ---
+> > > >  arch/riscv/boot/dts/thead/th1520.dtsi | 25 +++++++++++++++++++++++++
+> > > >  1 file changed, 25 insertions(+)
+> > > >
+> > > > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
+> > > > index ba4d2c673ac8..af4fdcd82e0b 100644
+> > > > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
+> > > > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
+> > > > @@ -146,6 +146,13 @@ uart_sclk: uart-sclk-clock {
+> > > >  		#clock-cells = <0>;
+> > > >  	};
+> > > >
+> > > > +	sdhci_clk: sdhci-clock {
+> > > > +		compatible = "fixed-clock";
+> > > > +		clock-frequency = <198000000>;
+> > > > +		clock-output-names = "sdhci_clk";
+> > > > +		#clock-cells = <0>;
+> > > > +	};
+> > > > +
+> > > >  	soc {
+> > > >  		compatible = "simple-bus";
+> > > >  		interrupt-parent = <&plic>;
+> > > > @@ -304,6 +311,24 @@ dmac0: dma-controller@ffefc00000 {
+> > > >  			status = "disabled";
+> > > >  		};
+> > > >
+> > > > +		mmc0: mmc@ffe7080000 {
+> > > > +			compatible = "thead,th1520-dwcmshc";
+> > > > +			reg = <0xff 0xe7080000 0x0 0x10000>;
+> > > > +			interrupts = <62 IRQ_TYPE_LEVEL_HIGH>;
+> > > > +			clocks = <&sdhci_clk>;
+> > > > +			clock-names = "core";
+> > > > +			status = "disabled";
+> > > > +		};
+> > > > +
+> > > > +		mmc1: mmc@ffe7090000 {
+> > > > +			compatible = "thead,th1520-dwcmshc";
+> > > > +			reg = <0xff 0xe7090000 0x0 0x10000>;
+> > > > +			interrupts = <64 IRQ_TYPE_LEVEL_HIGH>;
+> > > > +			clocks = <&sdhci_clk>;
+> > > > +			clock-names = "core";
+> > > > +			status = "disabled";
+> > > > +		};
+> > > > +
+> > >
+> > > Hi Drew,
+> > >
+> > > This doesn't seem to match the documentation shared here:
+> > > https://lore.kernel.org/linux-riscv/5f437109d2be2b8843f549a661054a2e3ec0d66e.camel@xry111.site/
+> > > From the TH1520 System User Manual.pdf in there, I'd expect something like
+> >
+> > >
+> > > 	emmc: mmc@ffe7080000 {
+> > > 		compatible = "thead,th1520-dwcmshc";
+> > > 		reg = <0xff 0xe7080000 0x0 0x10000>;
+> > > 		...
+> > > 	};
+> >
+> > Hi Emil,
+> >
+> > I think this isn't necessary. From other soc dts files, I see such
+> > naming, but lots socs just use mmc0, mmc1, and so on.
+> 
+> No it certainly isn't necessary. Those labels are purely for us humans to read
+> and are not present in the dtb. But that's exactly why I think it'd be a good
+> idea match the labels with the documentation, so it will easier for us humans
+> to match up the device tree source to documentation.
+Hello together,
 
---ofW00QD6kVu0wbQR
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+yes i agree to this too. It is easier for troubleshooting etc. 
 
-On Tue, Dec 05, 2023 at 12:26:57AM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2023-11-28 at 18:22 +0000, Mark Brown wrote:
+Damian
 
-> > -=A0=A0=A0=A0=A0=A0=A0size =3D adjust_shstk_size(stack_size);
-> > +=A0=A0=A0=A0=A0=A0=A0size =3D adjust_shstk_size(size);
-> > =A0=A0=A0=A0=A0=A0=A0=A0addr =3D alloc_shstk(0, size, 0, false);
-
-> Hmm. I didn't test this, but in the copy_process(), copy_mm() happens
-> before this point. So the shadow stack would get mapped in current's MM
-> (i.e. the parent). So in the !CLONE_VM case with shadow_stack_size!=3D0
-> the SSP in the child will be updated to an area that is not mapped in
-> the child. I think we need to pass tsk->mm into alloc_shstk(). But such
-> an exotic clone usage does give me pause, regarding whether all of this
-> is premature.
-
-Hrm, right.  And we then can't use do_mmap() either.  I'd be somewhat
-tempted to disallow that specific case for now rather than deal with it
-though that's not really in the spirit of just always following what the
-user asked for.
-
---ofW00QD6kVu0wbQR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVvRvYACgkQJNaLcl1U
-h9DXGQf6AvheyqUPcMw3T4JTt1lwn5bDs4oC7fZ63uO+BX16gGSEx73amHIyNaGv
-p+FtTHrVU1xQTu+Bh5L5QjW68t6061HLlHW0E+RoX9HlyW4v6GsBwzHxAYfp1eNw
-zce0c49OZQlgDA42/CH/PbejjX8H1a3jlwW+zIxwHNDqWs8pe+pEaZ/jEhLLUQ1W
-vJGRdn/PtZRKo7APLWn3uTOUGUbI9hXU/XQvJwKEo3DvNbYkezmTGe8ExIBkWQV3
-5oecmztnkjUiARHVRvyxW3vjbljlNxG4ECGlrpchrZgpeanmraDINzcWNnwYIBHE
-lP5fF9Y4DIiSj/DAO0BKEO0x5wgfCw==
-=1erK
------END PGP SIGNATURE-----
-
---ofW00QD6kVu0wbQR--
+> 
+> > And IIRC, the host for sd and sdio can support both, IOW, below
+> > sdio0/sdio1 may be used for sdcard.
+> 
+> Yes, all of the EMMC, SDIO0 and SDIO1 seem to be instances of the same IP.
+> 
+> /Emil
