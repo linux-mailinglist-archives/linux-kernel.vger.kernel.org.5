@@ -2,95 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7EC804B95
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF888804B98
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 08:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjLEH5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 02:57:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
+        id S231713AbjLEH6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 02:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229615AbjLEH5x (ORCPT
+        with ESMTP id S231687AbjLEH6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 02:57:53 -0500
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29C8109;
-        Mon,  4 Dec 2023 23:57:59 -0800 (PST)
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-        by mail5.25mail.st (Postfix) with ESMTPSA id 9065F60354;
-        Tue,  5 Dec 2023 07:56:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-        s=25mailst; t=1701763079;
-        bh=h3c0XIZu8HbtvK19lq1dOZHqca7qeD59maL/gJhxeU4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OvctUa8QMANcluWAdRPNxxmD+MVnpSnWC7upoG4UBmVkldsPZDF5bG4K2pjCO2el1
-         k7PF1jodRp1xIPKpY9F/Sqd++pafBjiWkEUQ93eB4XUu5cBd+RWhmo94eBTBZeIcaf
-         yy6jzlahvKwGQYE/lZ+B0Jk1nAc5YcbFbC7mFp7lYigIiUf9iPyWjV4KXnIgf8oAKP
-         2RfpM3jym7Z1TlujzL9SLs34YjoJm6iXY5wnan1T7/oVqW5nLCnBrE0dt8jw0mjJBY
-         WzQI/kVtk+kMg0wLCQXW/2/tfZJaYH13Z3Ny/NY+o/tE3lOHdj9mEXGAhv57TgpRo7
-         bwBLsWKH9hgaQ==
-Date:   Tue, 5 Dec 2023 09:56:57 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Adam Ford <aford173@gmail.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-omap@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
-Message-ID: <20231205075657.GN5169@atomide.com>
-References: <20231204182245.33683-1-afd@ti.com>
- <20231204182245.33683-2-afd@ti.com>
- <b97f04f6-cda2-4e9b-b729-a5149e36f978@linaro.org>
+        Tue, 5 Dec 2023 02:58:10 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3244911F;
+        Mon,  4 Dec 2023 23:58:16 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50bee606265so2841880e87.2;
+        Mon, 04 Dec 2023 23:58:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701763094; x=1702367894; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mDaBQlGZ8UjeyvNNGC2XDs5wlZCfXV5wgyIn7Cj35I0=;
+        b=BUyMscos3p1dIHj8yoZ2M+4nlgLPQnWZXbDD1JPkl3uZBcGbVKfQmUej0vU5u4oHgL
+         rNbrtu9p6VamKz1EXMNagc2IwFvq2gGtFKtDrN6bknPXwH7yUWSTeklN5iqZKHETfq0Y
+         JpTWD+Y8wu5OZjoiHhyI4NbhiVXJGvhbCMXlu/MuhQjqyDqKkbkTxNlKR4ASO5ylYsph
+         X4uFhWE8Cwkm4iPXwx3wDdlOMTecARML++N6As+6a4UYLt4HH/T3llABCipXXTApspyv
+         bYZDj4jzeTJNRLDODFbjCnb5CkTn2mTMG+tAoi864EsQEwSlAqUAGXoQgf3n+HSA54NB
+         nCEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701763094; x=1702367894;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mDaBQlGZ8UjeyvNNGC2XDs5wlZCfXV5wgyIn7Cj35I0=;
+        b=Y47UCR6qCuA45sS15cEm3ZXTMtjvLZzD+F0T+q/XH3rKaaFlt4aKhXvJfpVYZX+Lfl
+         tFhpAiEzQkU7H2LWffCEX9NTc/dLBDKJJW/eXW6oTbvru42YEqX5G+S/DEn51oCHVZzz
+         0aEUFhcMberb2qzsk7UgiUpjIJoUIvPBFVDBUieQKAn70iaRnbNX3rxSWVVZxd++R02q
+         xHHGSDFyMSlLC3sUSO1jDn0X4DDmV3XmzGf7QefQcCHnhpKwYz5c2S4EdpoyWYLhCtIW
+         jSC3Nr58ULYchyDjXRcrzvbkxnfNAQ1MAvTJPYwFtxYQD+j7hWfkInFLDoRnVdhW/XHG
+         vFhA==
+X-Gm-Message-State: AOJu0YxgloMmyFvCl4m8PGCpCkBGdak/0CU8wTxFqPyrfzPpU/ddhEKv
+        AQiy7vJ+pTbbxdzIEbJcyilOE9V3k3T1ncbRHAI=
+X-Google-Smtp-Source: AGHT+IFB7AXgBvjJC6KXRzmHN5fiSmN/CqaafqDV8LUeWsssBRPFI6TrMLt6kXoA/HN17H0Nd9dUlNSsNYRV4on7U8I=
+X-Received: by 2002:a05:6512:3b8f:b0:50b:f019:366a with SMTP id
+ g15-20020a0565123b8f00b0050bf019366amr2333164lfv.109.1701763094196; Mon, 04
+ Dec 2023 23:58:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b97f04f6-cda2-4e9b-b729-a5149e36f978@linaro.org>
+References: <cover.1694421911.git.haibo1.xu@intel.com> <64e0637cd6f22dd7557ed44bd2242001e7830d1c.1694421911.git.haibo1.xu@intel.com>
+ <20230914-d2e594e7d84503ad14036e2d@orel> <CAJve8onhY534T=Hyncjfi4GfdZ+0D2xM+jRSaYCAWCdaKxPUcQ@mail.gmail.com>
+ <CAJve8omitHDpijJaLV_wHk+5LXpsBUWF8_eTD4MeWKM-807Siw@mail.gmail.com> <20231204-980c95cca344f718ac6a48b6@orel>
+In-Reply-To: <20231204-980c95cca344f718ac6a48b6@orel>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Tue, 5 Dec 2023 15:58:02 +0800
+Message-ID: <CAJve8okwyPwY3AZcA31=aoc1tyZN7hx_5AmF0KMmn-bZ1VnyHA@mail.gmail.com>
+Subject: Re: [PATCH v3 9/9] KVM: riscv: selftests: Add sstc timer test
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Thomas Huth <thuth@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> [231205 07:10]:
-> On 04/12/2023 19:22, Andrew Davis wrote:
-> > @@ -56,6 +76,43 @@ allOf:
-> >        properties:
-> >          clocks:
-> >            maxItems: 1
-> > +      required:
-> > +        - clocks
-> > +        - clock-names
-> 
-> You need to define the clocks for your variants or disallow them. The
-> original code should be fixed as well and make the clocks fixed for all
-> img-axe cases.
+On Mon, Dec 4, 2023 at 7:32=E2=80=AFPM Andrew Jones <ajones@ventanamicro.co=
+m> wrote:
+>
+> On Mon, Dec 04, 2023 at 10:42:24AM +0800, Haibo Xu wrote:
+> > On Fri, Sep 15, 2023 at 2:21=E2=80=AFPM Haibo Xu <xiaobo55x@gmail.com> =
+wrote:
+> > >
+> > > On Thu, Sep 14, 2023 at 5:52=E2=80=AFPM Andrew Jones <ajones@ventanam=
+icro.com> wrote:
+> > > >
+> > > > On Thu, Sep 14, 2023 at 09:37:03AM +0800, Haibo Xu wrote:
+> > > > > Add a KVM selftests to validate the Sstc timer functionality.
+> > > > > The test was ported from arm64 arch timer test.
+> > > >
+> > > > I just tried this test out. Running it over and over again on QEMU =
+I see
+> > > > it works sometimes, but it frequently fails with the
+> > > > GUEST_ASSERT_EQ(config_iter + 1, irq_iter) assert and at least once=
+ I
+> > > > also saw the __GUEST_ASSERT(xcnt >=3D cmp) assert.
+> > > >
+> > >
+> > > Good catch!
+> > >
+> > > I can also reproduce this issue and it is a common problem for both
+> > > arm64 and riscv because it also happens in a arm64 Qemu VM.
+> > >
+> > > It seems like a synchronization issue between host and guest shared
+> > > variables. Will double check the test code.
+> > >
+> > > > Thanks,
+> > > > drew
+> >
+> > Hi Andrew,
+> >
+> > After several rounds of regression testing, some findings:
+> > 1. The intermittent failure also happened on ARM64 Qemu VM, and even
+> > in the initial arch_timer commit(4959d8650e9f4).
+> > 2. it didn't happen on a ARM64 HW(but a different failure occured
+> > during stress test)
+> > 3. The failure have a close relationship with
+> > TIMER_TEST_ERR_MARGIN_US(default 100), and after increasing
+> >      the macro to 300, the failure couldn't reproduced in 1000 loops
+> > stress test in RISC-V Qemu VM
+> >
+> > So my suggestion is we can expose the TIMER_TEST_ERR_MARGIN_US
+> > parameter as an arch_timer test arg parameter
+> > and tune it based on a specific test environment.
+> >
+> > What's your opinion?
+>
+> The concept of "timeout for an interrupt to arrive" is always going to
+> leave us exposed to random failures. Your suggestion of making the
+> timeout user configurable is probably the best we can do. I would
+> suggest also adding more descriptive failure text and a hint about
+> trying to adjust the timeout.
+>
+> Or, one thing we do in kvm-unit-tests, is to reduce typical delays while
+> allowing expected delays to be longer by looping over a shorter delay and
+> a non-fatal check, i.e.
+>
+>  pass =3D false;
+>  for (i =3D 0; i < 10; i++) {
+>    udelay(100);
+>    if (check(...)) {
+>       pass =3D true;
+>       break;
+>    }
+>  }
+>  assert(pass);
+>
+> We could try that approach here too.
+>
+> Thanks,
+> drew
 
-To clarify, the clocks may be optional as they can be hardwired and coming
-from the interconnect target wrapper module and enabled with runtime PM.
-
-Regards,
-
-Tony
+Thanks for the feedback, I will send out patch set v4 soon!
