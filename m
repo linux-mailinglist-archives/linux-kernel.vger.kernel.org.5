@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7980804FE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 11:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAC8804F1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Dec 2023 10:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346529AbjLEJzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 04:55:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
+        id S1376854AbjLEJz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 04:55:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234872AbjLEJz1 (ORCPT
+        with ESMTP id S1344907AbjLEJz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 04:55:27 -0500
+        Tue, 5 Dec 2023 04:55:28 -0500
 Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4ECA49E;
-        Tue,  5 Dec 2023 01:55:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88CB1C9;
+        Tue,  5 Dec 2023 01:55:34 -0800 (PST)
 Received: from SIOS1075.ysato.name (ZM005235.ppp.dion.ne.jp [222.8.5.235])
-        by sakura.ysato.name (Postfix) with ESMTPSA id 2A0FC1C06F4;
-        Tue,  5 Dec 2023 18:46:50 +0900 (JST)
+        by sakura.ysato.name (Postfix) with ESMTPSA id 66F381C05DE;
+        Tue,  5 Dec 2023 18:46:52 +0900 (JST)
 From:   Yoshinori Sato <ysato@users.sourceforge.jp>
 To:     linux-sh@vger.kernel.org
 Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
@@ -77,9 +77,9 @@ Cc:     Yoshinori Sato <ysato@users.sourceforge.jp>,
         linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
         linux-fbdev@vger.kernel.org
-Subject: [DO NOT MERGE v5 24/37] dt-binding: sh: cpus: Add SH CPUs json-schema
-Date:   Tue,  5 Dec 2023 18:45:43 +0900
-Message-Id: <c796ca5adc21c55f92968070e7f13201fe5b3f4a.1701768028.git.ysato@users.sourceforge.jp>
+Subject: [DO NOT MERGE v5 25/37] dt-bindings: vendor-prefixes: Add iodata
+Date:   Tue,  5 Dec 2023 18:45:44 +0900
+Message-Id: <3e216003a768e06981cfda842d8fcf185f4ea9b7.1701768028.git.ysato@users.sourceforge.jp>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <cover.1701768028.git.ysato@users.sourceforge.jp>
 References: <cover.1701768028.git.ysato@users.sourceforge.jp>
@@ -94,93 +94,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Renesas SH series and compatible ISA CPUs.
+Add IO DATA DEVICE INC.
+https://www.iodata.com/
 
 Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 ---
- .../devicetree/bindings/sh/cpus.yaml          | 73 +++++++++++++++++++
- 1 file changed, 73 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sh/cpus.yaml
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sh/cpus.yaml b/Documentation/devicetree/bindings/sh/cpus.yaml
-new file mode 100644
-index 000000000000..eb57e76e2aa2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sh/cpus.yaml
-@@ -0,0 +1,73 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sh/cpus.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Renesas SuperH CPUs
-+
-+maintainers:
-+  - Yoshinori Sato <ysato@users.sourceforge.jp>
-+
-+description: |+
-+  The device tree allows to describe the layout of CPUs in a system through
-+  the "cpus" node, which in turn contains a number of subnodes (ie "cpu")
-+  defining properties for every cpu.
-+
-+  Bindings for CPU nodes follow the Devicetree Specification, available from:
-+
-+  https://www.devicetree.org/specifications/
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - renesas,sh2a
-+          - renesas,sh3
-+          - renesas,sh4
-+          - renesas,sh4a
-+          - jcore,j2
-+      - const: renesas,sh2
-+
-+  clock-frequency:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      CPU core clock freqency.
-+
-+  clocks: true
-+
-+  clock-names: true
-+
-+  reg:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    const: 0
-+
-+  device_type: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - device_type
-+
-+additionalProperties: true
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/sh7750.h>
-+    cpus {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        cpu: cpu@0 {
-+            compatible = "renesas,sh4", "renesas,sh2";
-+            device_type = "cpu";
-+            reg = <0>;
-+            clocks = <&cpg SH7750_CPG_ICK>;
-+            clock-names = "ick";
-+            icache-size = <16384>;
-+            icache-line-size = <32>;
-+            dcache-size = <32768>;
-+            dcache-line-size = <32>;
-+        };
-+    };
-+...
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 309b94c328c8..94ed63d9f7de 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -671,6 +671,8 @@ patternProperties:
+     description: Inventec
+   "^inversepath,.*":
+     description: Inverse Path
++  "^iodata,.*":
++    description: IO DATA DEVICE Inc.
+   "^iom,.*":
+     description: Iomega Corporation
+   "^irondevice,.*":
 -- 
 2.39.2
 
