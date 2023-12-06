@@ -2,110 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B70D806E16
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 287AC806E17
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377650AbjLFLfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41510 "EHLO
+        id S1377667AbjLFLfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377543AbjLFLf3 (ORCPT
+        with ESMTP id S1377628AbjLFLfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:35:29 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D48A10A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:35:33 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3333224c7b9so617874f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:35:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701862532; x=1702467332; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YFi3RIKaDzGCbVA6KICHAZ/fzez2DnzNL78+4AOaMUg=;
-        b=qTEqmaQl4jQyV1WEhUon5myflgy8sP2JOUSQ6KuBtPZkZ+M5SRZLG1dAkN+1RI8M3a
-         rNn1R9eB53QSvSYt5eG/ESGyOTDkGs4UyWf88zocXArcpjjgDLx+PvqMkRHParzXLOSf
-         ECDF3iPULQvsthKH9zsAzHSHRtrhVWQKm2KLIRPEi56K8d1idqS7SpRIp5F8Qz4rJNOS
-         stFERw5W/XfGslakE7wblcBg5CO22HNgh3N/EKBYvJ905hJ/rBTOO7vPf3EdckG9LfWM
-         3Qjgx/MtZq05kFBNPJU9KaHnflTue0JZpQHK79VOTsK49qWYf919vjBRQCoAOv0aQaBf
-         d4NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701862532; x=1702467332;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YFi3RIKaDzGCbVA6KICHAZ/fzez2DnzNL78+4AOaMUg=;
-        b=av8ZelEHWnT0QRBZU2rnbotiQSm221xI44cB91iFofzIr2+s2gJcQLO0/Mv+WWfCsk
-         dWWDCYKTBVrzEbbjPXeCSjy+mmDVYKkxcVA1oUYADjGeMegimVlRJMPUh45JvVZKNgto
-         I+EWDO5qn9/8WrkboYIrnaqlDEfE6JePzscA26w/fElgfZP0SY/dz8voE1zpiLewPS6c
-         4rfv0TNE6fbwLOT9vJENEZ8gJfmTeq5734kdPjiIxRSaeLFfK584FKvE4TjDRreKgtc0
-         lcyA7wUG/T7/jgUToqtsiMj7j5+E81ZYRsUDnkn12wVT7VIZz+Oc5oV0ieA5WBAknoL9
-         oiyg==
-X-Gm-Message-State: AOJu0Yzpq8hPxvlIjvPjHlxALpw0LRK8fYII9A66N3PlKeozAjJN4i4n
-        qLughyvCmLtFVkHuQpgny35nnA==
-X-Google-Smtp-Source: AGHT+IG1WDr950Oeo2ODHgV1WggcJ9DJetRbXRF39Itxtkz7EB5G09m3ExKEKMIjKUuFuvii6q+nHw==
-X-Received: by 2002:adf:f686:0:b0:333:5446:922a with SMTP id v6-20020adff686000000b003335446922amr432257wrp.32.1701862531641;
-        Wed, 06 Dec 2023 03:35:31 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id q18-20020a05600000d200b003334041c3edsm9983744wrx.41.2023.12.06.03.35.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 03:35:31 -0800 (PST)
-Message-ID: <54af71bb-60e8-4f9c-84d5-0d741e6964c8@linaro.org>
-Date:   Wed, 6 Dec 2023 12:35:30 +0100
+        Wed, 6 Dec 2023 06:35:30 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFADC9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:35:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A678C433C7;
+        Wed,  6 Dec 2023 11:35:32 +0000 (UTC)
+Message-ID: <43621420-2482-4634-9c3e-1a3278481540@xs4all.nl>
+Date:   Wed, 6 Dec 2023 12:35:31 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] thermal: sysfs: Rework the reading of trip point
- attributes
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-References: <12337662.O9o76ZdvQC@kreacher> <4854305.GXAFRqVoOG@kreacher>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <4854305.GXAFRqVoOG@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v6 5/8] media: qcom: camss: Add support for named
+ power-domains
+Content-Language: en-US, nl
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        laurent.pinchart@ideasonboard.com, Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        matti.lehtimaki@gmail.com, quic_grosikop@quicinc.com
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231123-b4-camss-named-power-domains-v6-0-3ec2fd9e8e36@linaro.org>
+ <20231123-b4-camss-named-power-domains-v6-5-3ec2fd9e8e36@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20231123-b4-camss-named-power-domains-v6-5-3ec2fd9e8e36@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 13:26, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 23/11/2023 18:03, Bryan O'Donoghue wrote:
+> Right now we use fixed indexes to assign power-domains, with a
+> requirement for the TOP GDSC to come last in the list.
 > 
-> Rework the _show() callback functions for the trip point temperature,
-> hysteresis and type attributes to avoid copying the values of struct
-> thermal_trip fields that they do not use and make them carry out the
-> same validation checks as the corresponding _store() callback functions.
+> Adding support for named power-domains means the declaration in the dtsi
+> can come in any order.
 > 
-> No intentional functional impact.
+> After this change we continue to support the old indexing - if a SoC
+> resource declaration or the in-use dtb doesn't declare power-domain names
+> we fall back to the default legacy indexing.
 > 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> From this point on though new SoC additions should contain named
+> power-domains, eventually we will drop support for legacy indexing.
+> 
+> Tested-by: Matti Lehtimäki <matti.lehtimaki@gmail.com>
+> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 > ---
+>  drivers/media/platform/qcom/camss/camss-vfe.c | 24 +++++++++++++++++++++++-
+>  drivers/media/platform/qcom/camss/camss.c     | 26 +++++++++++++++++++++-----
+>  drivers/media/platform/qcom/camss/camss.h     |  2 ++
+>  3 files changed, 46 insertions(+), 6 deletions(-)
 > 
-> v3 -> v4: Don't check trip_id against boundaries in the _show routines
->            for trip type, temperature and hysteresis (Daniel).
-> 
-> v2 -> v3: Drop a redundant 'ret' check at the end of trip_point_hyst_show.
-> 
-> v1 -> v2: Do not drop thermal zone locking from the _store() callback functions.
-> 
-> ---
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+> index 60c4730e7c9d1..083d1445a6e25 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+> @@ -1382,7 +1382,29 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
+>  	if (!res->line_num)
+>  		return -EINVAL;
+>  
+> -	if (res->has_pd) {
+> +	/* Power domain */
+> +
+> +	if (res->pd_name) {
+> +		vfe->genpd = dev_pm_domain_attach_by_name(camss->dev,
+> +							  res->pd_name);
+> +		if (IS_ERR(vfe->genpd)) {
+> +			ret = PTR_ERR(vfe->genpd);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	if (!vfe->genpd && res->has_pd) {
+> +		/*
+> +		 * Legacy magic index.
+> +		 * Requires
+> +		 * power-domain = <VFE_X>,
+> +		 *                <VFE_Y>,
+> +		 *                <TITAN_TOP>
+> +		 * id must correspondng to the index of the VFE which must
+> +		 * come before the TOP GDSC. VFE Lite has no individually
+> +		 * collapasible domain which is why id < vfe_num is a valid
+> +		 * check.
+> +		 */
+>  		vfe->genpd = dev_pm_domain_attach_by_id(camss->dev, id);
+>  		if (IS_ERR(vfe->genpd))
+>  			return PTR_ERR(vfe->genpd);
+> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+> index 35918cf837bdd..f2d2317c38b5b 100644
+> --- a/drivers/media/platform/qcom/camss/camss.c
+> +++ b/drivers/media/platform/qcom/camss/camss.c
+> @@ -1522,12 +1522,28 @@ static int camss_configure_pd(struct camss *camss)
+>  		return 0;
+>  
+>  	/*
+> -	 * VFE power domains are in the beginning of the list, and while all
+> -	 * power domains should be attached, only if TITAN_TOP power domain is
+> -	 * found in the list, it should be linked over here.
+> +	 * If a power-domain name is defined try to use it.
+> +	 * It is possible we are running a new kernel with an old dtb so
+> +	 * fallback to indexes even if a pd_name is defined but not found.
+>  	 */
+> -	camss->genpd = dev_pm_domain_attach_by_id(camss->dev, camss->genpd_num - 1);
+> -	if (IS_ERR(camss->genpd)) {
+> +	if (camss->res->pd_name) {
+> +		camss->genpd = dev_pm_domain_attach_by_name(camss->dev,
+> +							    camss->res->pd_name);
+> +		if (IS_ERR(camss->genpd)) {
+> +			ret = PTR_ERR(camss->genpd);
+> +			goto fail_pm;
+> +		}
+> +	}
+> +
+> +	if (!camss->genpd) {
+> +		/*
+> +		 * Legacy magic index. TITAN_TOP GDSC must be the last
+> +		 * item in the power-domain list.
+> +		 */
+> +		camss->genpd = dev_pm_domain_attach_by_id(camss->dev,
+> +							  camss->genpd_num - 1);
+> +	}
+> +	if (IS_ERR_OR_NULL(camss->genpd)) {
+>  		ret = PTR_ERR(camss->genpd);
 
-Reviewed-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+I get this smatch warning here:
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+drivers/media/platform/qcom/camss/camss.c:1555 camss_configure_pd() warn: passing zero to 'PTR_ERR'
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+I'm not really sure what the intent is here.
+
+If the fix is small, then I can change it myself, otherwise I need an updated patch.
+
+Regards,
+
+	Hans
+
+>  		goto fail_pm;
+>  	}
+> diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+> index 1ba824a2cb76c..cd8186fe1797b 100644
+> --- a/drivers/media/platform/qcom/camss/camss.h
+> +++ b/drivers/media/platform/qcom/camss/camss.h
+> @@ -48,6 +48,7 @@ struct camss_subdev_resources {
+>  	u32 clock_rate[CAMSS_RES_MAX][CAMSS_RES_MAX];
+>  	char *reg[CAMSS_RES_MAX];
+>  	char *interrupt[CAMSS_RES_MAX];
+> +	char *pd_name;
+>  	u8 line_num;
+>  	bool has_pd;
+>  	const void *ops;
+> @@ -84,6 +85,7 @@ enum icc_count {
+>  
+>  struct camss_resources {
+>  	enum camss_version version;
+> +	const char *pd_name;
+>  	const struct camss_subdev_resources *csiphy_res;
+>  	const struct camss_subdev_resources *csid_res;
+>  	const struct camss_subdev_resources *ispif_res;
+> 
 
