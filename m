@@ -2,195 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0FB807C9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B504807CF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 01:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbjLFX6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 18:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
+        id S1441859AbjLGAAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 19:00:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbjLFX6k (ORCPT
+        with ESMTP id S231135AbjLFX77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 18:58:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546D611F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 15:58:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701907125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iMfMtI/O0jIiZbunMjgS2xYQfG8mFWEFBfbJJAbpGQ8=;
-        b=bre9SM7gSQ1964IkHmGhTnxHUjmBOAv/z+sk8yxijsYj6jnaEUTteF3JPLbAu1K0Kvk4oj
-        3htT8/RRQ2VjwVYirKZn+DYwO17Kzg0PaJljbfFO0V84Ec4vRJInr47zQcHyfTrax0+mmJ
-        uXIP7jMAKw0orAUtvQphGxGaarD6q8c=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-255-RVrIJR0gO02hQe8zHc0EtA-1; Wed, 06 Dec 2023 18:58:43 -0500
-X-MC-Unique: RVrIJR0gO02hQe8zHc0EtA-1
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6d9aafe6575so428599a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 15:58:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701907123; x=1702511923;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iMfMtI/O0jIiZbunMjgS2xYQfG8mFWEFBfbJJAbpGQ8=;
-        b=r0+LbeJfYPVbyMA83G5tFfrPD8U4T6pZ+yxWspqUmst5WzKV8qIGGgyasmPQUzInNR
-         mOzj3aB2pFOl2lTyU0D9z7MZJ8GscXkVKkixsk2N8vM8wbIY19jkvFrkGkSQKgzfElT6
-         Gy0UGIWM4qYk3THO90Mww4xfrOg1U/0C6Vq/C06UG1QA8wYOWcrHn5tiT6F9VTvtmRyP
-         GQi3LeV5oom6LobmsWmIMRkPSf72QqdI7eYheESeYQJRv1UGKwyQfdQhrjS6o8CVQeTr
-         iKZY6IDIQEU+MLYLR38jlD959C78OUpnb+p3xb9kQGoxtIxfJxAf+VveaDzBlL6+1ING
-         JKdA==
-X-Gm-Message-State: AOJu0YybTHN2TNXKOXJPE/MpyuwsWYAkq3fI7EMlglGlOOnotKF1EAVB
-        WnpzLHzwDpnrv44eEXT61P7ouWnOPYpTjRB0DQkuw+EAzfp3mNiCwPsM5Cx1hsnOt2Gn3PdtSXe
-        kiGhVurnWuFAc2MSK2EtQSgsN
-X-Received: by 2002:a05:6830:7181:b0:6d8:20b3:b1db with SMTP id el1-20020a056830718100b006d820b3b1dbmr1816319otb.38.1701907123212;
-        Wed, 06 Dec 2023 15:58:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFmQIfsUa078g71FcFgEGySz43PAmZThnQyujRyHJ+s5jQA3gXSH1Xxl5XAcJeDcLqpXjZ6nQ==
-X-Received: by 2002:a05:6830:7181:b0:6d8:20b3:b1db with SMTP id el1-20020a056830718100b006d820b3b1dbmr1816307otb.38.1701907122992;
-        Wed, 06 Dec 2023 15:58:42 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::47])
-        by smtp.gmail.com with ESMTPSA id v7-20020ac87487000000b004255638e8b9sm37725qtq.79.2023.12.06.15.58.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 15:58:42 -0800 (PST)
-Date:   Wed, 6 Dec 2023 17:58:40 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH net-next v2] net: stmmac: don't create a MDIO bus if
- unnecessary
-Message-ID: <nmkpcss5pymkjitcf2o3pwu3r2rbu3kfy2ubtkpmktw6worj5p@rk5aljx6slwi>
-References: <20231206-stmmac-no-mdio-node-v2-1-333cae49b1ca@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206-stmmac-no-mdio-node-v2-1-333cae49b1ca@redhat.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 18:59:59 -0500
+Received: from irl.hu (irl.hu [95.85.9.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735861A5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 16:00:05 -0800 (PST)
+Received: from fedori.lan (51b690cd.dsl.pool.telekom.hu [::ffff:81.182.144.205])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 00000000000716BB.0000000065710B01.00118FFE; Thu, 07 Dec 2023 01:00:01 +0100
+From:   Gergo Koteles <soyer@irl.hu>
+To:     Shenghao Ding <shenghao-ding@ti.com>, Kevin Lu <kevin-lu@ti.com>,
+        Baojun Xu <baojun.xu@ti.com>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Gergo Koteles <soyer@irl.hu>
+Subject: [PATCH 00/16] ALSA: hda/tas2781: Add tas2563 support
+Date:   Thu,  7 Dec 2023 00:59:41 +0100
+Message-ID: <cover.1701903015.git.soyer@irl.hu>
+X-Mailer: git-send-email 2.43.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 05:46:09PM -0600, Andrew Halaney wrote:
-> The stmmac_dt_phy() function, which parses the devicetree node of the
-> MAC and ultimately causes MDIO bus allocation, misinterprets what
-> fixed-link means in relation to the MAC's MDIO bus. This results in
-> a MDIO bus being created in situations it need not be.
-> 
-> Currently a MDIO bus is created if the description is either:
-> 
->     1. Not fixed-link
->     2. fixed-link but contains a MDIO bus as well
-> 
-> The "1" case above isn't always accurate. If there's a phy-handle,
-> it could be referencing a phy on another MDIO controller's bus[1]. In
-> this case currently the MAC will make a MDIO bus and scan it all
-> anyways unnecessarily.
-> 
-> There's also a lot of upstream devicetrees[2] that expect a MDIO bus to
-> be created and scanned for a phy. This case can also be inferred from
-> the platform description by not having a phy-handle && not being
-> fixed-link. This hits case "1" in the current driver's logic.
-> 
-> Let's improve the logic to create a MDIO bus if either:
-> 
->     - Devicetree contains a MDIO bus
->     - !fixed-link && !phy-handle (legacy handling)
-> 
-> Below upstream devicetree snippets can be found that explain some of
-> the cases above more concretely.
-> 
-> Here's[0] a devicetree example where the MAC is both fixed-link and
-> driving a switch on MDIO (case "2" above). This needs a MDIO bus to
-> be created:
-> 
->     &fec1 {
->             phy-mode = "rmii";
-> 
->             fixed-link {
->                     speed = <100>;
->                     full-duplex;
->             };
-> 
->             mdio1: mdio {
->                     switch0: switch0@0 {
->                             compatible = "marvell,mv88e6190";
->                             pinctrl-0 = <&pinctrl_gpio_switch0>;
->                     };
->             };
->     };
-> 
-> Here's[1] an example where there is no MDIO bus or fixed-link for
-> the ethernet1 MAC, so no MDIO bus should be created since ethernet0
-> is the MDIO master for ethernet1's phy:
-> 
->     &ethernet0 {
->             phy-mode = "sgmii";
->             phy-handle = <&sgmii_phy0>;
-> 
->             mdio {
->                     compatible = "snps,dwmac-mdio";
->                     sgmii_phy0: phy@8 {
->                             compatible = "ethernet-phy-id0141.0dd4";
->                             reg = <0x8>;
->                             device_type = "ethernet-phy";
->                     };
-> 
->                     sgmii_phy1: phy@a {
->                             compatible = "ethernet-phy-id0141.0dd4";
->                             reg = <0xa>;
->                             device_type = "ethernet-phy";
->                     };
->             };
->     };
-> 
->     &ethernet1 {
->             phy-mode = "sgmii";
->             phy-handle = <&sgmii_phy1>;
->     };
-> 
-> Finally there's descriptions like this[2] which don't describe the
-> MDIO bus but expect it to be created and the whole address space
-> scanned for a phy since there's no phy-handle or fixed-link described:
-> 
->     &gmac {
->             phy-supply = <&vcc_lan>;
->             phy-mode = "rmii";
->             snps,reset-gpio = <&gpio3 RK_PB4 GPIO_ACTIVE_HIGH>;
->             snps,reset-active-low;
->             snps,reset-delays-us = <0 10000 1000000>;
->     };
-> 
-> [0] https://elixir.bootlin.com/linux/v6.5-rc5/source/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts
-> [1] https://elixir.bootlin.com/linux/v6.6-rc5/source/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
-> [2] https://elixir.bootlin.com/linux/v6.6-rc5/source/arch/arm64/boot/dts/rockchip/rk3368-r88.dts#L164
-> 
-> Co-developed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
-> ---
+The tas2781-hda driver can be modified to support tas2563 as well.
+Before knowing this information, I created another series for a
+new driver.
+https://lore.kernel.org/lkml/cover.1701733441.git.soyer@irl.hu/
 
-Gah, I failed to describe my changes since Bart's v1 when picking this
-up with b4 to make v2. Whoops!
+This series now extends tas2781-hda, addresses differences and
+fixes various bugs.
 
-Changes since v1:
-    - Handle the fixed-link + mdio case (Andrew Lunn)
-    - Reworded commit message
-    - Handle the "legacy" case still mentioned in the commit
-    - Bit further refactoring of the function
+The tas2563 is a smart amplifier. Similar to tas2562 but with DSP. Some
+Lenovo laptops have it to drive the bass speakers. By default, it is in
+software shutdown state.
+
+To make the DSP work it needs a firmware and some calibration data.
+The latter can be read from the EFI in Lenovo laptops.
+
+For the correct configuration it needs additional register data.
+It captured after running the Windows driver.
+
+The firmware can be extracted as TAS2563Firmware.bin from the Windows
+driver with innoextract.
+https://download.lenovo.com/consumer/mobiles/h5yd037fbfyy7kd0.exe
+
+The driver will search for it as TAS2XXX3870.bin with the 14ARB7.
+The captured registers extracted with TI's regtool:
+https://github.com/soyersoyer/tas2563rca/raw/main/INT8866RCA2.bin
+
+
+Gergo Koteles (16):
+  ASoC: tas2781: add support for fw version 0x0503
+  ALSA: hda/tas2781: leave hda_component in usable state
+  ASoC: tas2781: disable regmap regcache
+  ALSA: hda/tas2781: handle missing calibration data
+  ALSA: hda/tas2781: fix typos in comment
+  ASoC: tas2781: add ptrs to calibration functions
+  ALSA: hda/tas2781: load_calibration just load
+  ASoC: tas2781: add configurable global_addr
+  ALSA: hda/tas2781: add TAS2563 support for 14ARB7
+  ASoC: tas2781: check negative indexes
+  ASoC: tas2781: use 0 as default prog/conf index
+  ASoC: tas2781: move set_drv_data outside tasdevice_init
+  ALSA: hda/tas2781: remove sound controls in unbind
+  ALSA: hda/tas2781: call cleaner functions only once
+  ALSA: hda/tas2781: reset the amp before component_add
+  ALSA: hda/tas2781: configure the amp after firmware load
+
+ include/sound/tas2781.h           |   8 +
+ sound/pci/hda/tas2781_hda_i2c.c   | 364 +++++++++++++++++++-----------
+ sound/soc/codecs/tas2781-comlib.c |  23 +-
+ sound/soc/codecs/tas2781-fmwlib.c |  11 +-
+ sound/soc/codecs/tas2781-i2c.c    |   2 +
+ 5 files changed, 270 insertions(+), 138 deletions(-)
+
+
+base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+-- 
+2.43.0
 
