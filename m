@@ -2,87 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0818078CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9585B8078CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379387AbjLFToY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 14:44:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47790 "EHLO
+        id S1379376AbjLFTox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbjLFToX (ORCPT
+        with ESMTP id S1379386AbjLFTow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:44:23 -0500
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B4FD3;
-        Wed,  6 Dec 2023 11:44:29 -0800 (PST)
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1faf1ba2219so29983fac.0;
-        Wed, 06 Dec 2023 11:44:29 -0800 (PST)
+        Wed, 6 Dec 2023 14:44:52 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB2E122;
+        Wed,  6 Dec 2023 11:44:58 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5c2066accc5so81343a12.3;
+        Wed, 06 Dec 2023 11:44:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701891898; x=1702496698; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=34Cie9O+2NEe6JD/tiGhw5O8IQAQcami9IqZS5J2OMw=;
+        b=azE5hY6d7qYMc/I6yrPGUYSzyNOOxlobk2q2ie4iTlSPZ1WDvH4UcWU1GRaQsfBtUY
+         d0E9GlSiIPA7dOYk/vZpL5E6HMyguWGZIDejbbqc83k6bNpK4OwRAZ+PZpTEa17ftw5s
+         0I8ooyKPPJYz0jaXKAPPvs/5Ntp+jyoE7oZoV0AGlcBjeGLEDZR7jL98O2jIWFqhs9rE
+         IWswcenJovCTh2PjtWXt9/VfkDHY2QDAzbXgPyp3YHrO3MBLco3O6vdTBdvwKjcUvxW7
+         UhN9N8ULSidqvAiUSpv4AuHla/qBuWGbosvKfqCjSkAdnDdNYTNCBUswQgPnCE0NxtZp
+         ALDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701891869; x=1702496669;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701891898; x=1702496698;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=INtr6ESdMmvwrLweqn4CnFa4mFOayDNocnS5JvYQDSU=;
-        b=wlvDl2haPexeZEg8a6XMFZqY1lF7qOraFwEXtF/+uScFtCGnjMl+KD2eRjnBz0xZoj
-         xzVaDJRf/1J4Pu89Sm8BRm+C0isaaGl9rwb6oWkAoZ5s5FZXpWnTL/A0DaPyBYxItVVa
-         G0DJZ4LN73//nKSqtySyaZTRRGYT8p/jhrHuSFXpwbRowYjckaM/qGAFxEM3dXwk9iIs
-         Es6K2X5EOwezt2c/eeCqU/Rt/MQriwIfqtgy/AxijJpsaju5ejJ73B6ea4F1xTtv05eW
-         U0ybzQ4JRVXDYKqo1myXkgdY4KAo4LIh4ivKAWfRBstoaUELoraJhct+EtVv3J11gQXB
-         Nbqg==
-X-Gm-Message-State: AOJu0YxpDI6R1iMtbMBMmzj5MOBOzmC9In5uiBz59u2sdA9uqEMDf/fE
-        HRePGz3sKL1b9XQo2BiJmlMymHjErkFwpWQxd2I=
-X-Google-Smtp-Source: AGHT+IGfcNJZtvj9DnCjBMcbliiTnXjZvfx3KHgLDpGuqa+yvHvI5/TJ3VSssAQcSufAtX868tsRqdDp0XR0PnA3RQE=
-X-Received: by 2002:a05:6871:d30c:b0:1fa:db26:78a6 with SMTP id
- pn12-20020a056871d30c00b001fadb2678a6mr2734246oac.1.1701891868973; Wed, 06
- Dec 2023 11:44:28 -0800 (PST)
+        bh=34Cie9O+2NEe6JD/tiGhw5O8IQAQcami9IqZS5J2OMw=;
+        b=uf2Fo+nZC8uKlLesKJ7ILXBwWq3hQOzN6n5BXarnEjBkqqjkTIe/xoaVs5UpIH1wfv
+         g2MDLsDcw9yaxx++77b0LmvuL2fCmYSEmtX8k/xwkRT8da2bn7h2yMf5fTFY7pHsWPic
+         iNVyywFrtNNVHYZ0PUTyWzuZgU9owH1iagjKQWbqtPQjm/YnSG20YdHpNok2/4XEhFgN
+         c2PUm1pVqG68SsLItBYJvTF8qW42FJ6RAHqfJ8Irr95YOJMg8F8rc4zok9OXo5x5Xfgo
+         g5AeG5DwCJpn1Ed7kYlkJj3vIItfyUkpgp380oz9vXbStavT1SSZJYeYc8E9BzenZvC3
+         /1Lg==
+X-Gm-Message-State: AOJu0YywqzfiHQfukLAXcoESHKKcdv820cJhGX7/7rRbVOkul5FXSJqs
+        Nzlr/IaDnX14xVM5IZ30VQU=
+X-Google-Smtp-Source: AGHT+IGCtzIwuVYyOHM8v9z5Osc7F7Eb1bhTqHBysTeh63PqYeFOGQLL51YX7AuhnxO6tltAWmC3dg==
+X-Received: by 2002:a05:6a20:be9e:b0:18f:97c:4f58 with SMTP id gf30-20020a056a20be9e00b0018f097c4f58mr993500pzb.100.1701891898163;
+        Wed, 06 Dec 2023 11:44:58 -0800 (PST)
+Received: from localhost (fwdproxy-prn-001.fbsv.net. [2a03:2880:ff:1::face:b00c])
+        by smtp.gmail.com with ESMTPSA id s9-20020a056a00178900b006ce91d27c72sm344920pfg.175.2023.12.06.11.44.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 11:44:57 -0800 (PST)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: [PATCH v8 6/6] zswap: shrinks zswap pool based on memory pressure (fix)
+Date:   Wed,  6 Dec 2023 11:44:56 -0800
+Message-Id: <20231206194456.3234203-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231130194023.4102148-7-nphamcs@gmail.com>
+References: <20231130194023.4102148-7-nphamcs@gmail.com>
 MIME-Version: 1.0
-References: <20231123100617.28020-1-raag.jadav@intel.com>
-In-Reply-To: <20231123100617.28020-1-raag.jadav@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 20:44:18 +0100
-Message-ID: <CAJZ5v0h7rSY7cD18pGTy9GuNB5s5EvVCNWngPKBtCCXrrNNW5A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/5] Support _UID matching for integer types
-To:     Raag Jadav <raag.jadav@intel.com>
-Cc:     mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        rafael@kernel.org, lenb@kernel.org, robert.moore@intel.com,
-        ardb@kernel.org, will@kernel.org, mark.rutland@arm.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        acpica-devel@lists.linuxfoundation.org, linux-efi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 11:07 AM Raag Jadav <raag.jadav@intel.com> wrote:
->
-> This series updates the standard ACPI helpers to support _UID matching
-> for both integer and string types, and uses them in a couple of places.
->
-> Changes since v2:
-> - Drop __builtin functions to reduce complexity (Rafael)
-> - Update tags
->
-> Changes since v1:
-> - Fix build errors
->
-> Raag Jadav (5):
->   ACPI: bus: update acpi_dev_uid_match() to support multiple types
->   ACPI: bus: update acpi_dev_hid_uid_match() to support multiple types
->   ACPI: LPSS: use acpi_dev_uid_match() for matching _UID
->   efi: dev-path-parser: use acpi_dev_uid_match() for matching _UID
->   perf: arm_cspmu: drop redundant acpi_dev_uid_to_integer()
+Check shrinker enablement early, and use a less costly stat flushing.
 
-All applied as 6.8 material, but I renamed the auxiliary macros in the
-first patch and moved the kerneldoc comment below them.
+Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+Suggested-by: Chengming Zhou <chengming.zhou@linux.dev>
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+---
+ mm/zswap.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-TBH, I'm not entirely sure about the value of the second of those
-auxiliary macros, but then I don't particularly dislike it either.
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 27c749f6c1ba..d8ecd79120f3 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -596,13 +596,17 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+ 	struct zswap_pool *pool = shrinker->private_data;
+ 	bool encountered_page_in_swapcache = false;
+ 
++	if (!zswap_shrinker_enabled) {
++		sc->nr_scanned = 0;
++		return SHRINK_STOP;
++	}
++
+ 	nr_protected =
+ 		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+ 	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
+ 
+ 	/*
+-	 * Abort if the shrinker is disabled or if we are shrinking into the
+-	 * protected region.
++	 * Abort if we are shrinking into the protected region.
+ 	 *
+ 	 * This short-circuiting is necessary because if we have too many multiple
+ 	 * concurrent reclaimers getting the freeable zswap object counts at the
+@@ -611,7 +615,7 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+ 	 * objects (i.e the reclaimers will reclaim into the protected area of the
+ 	 * zswap LRU).
+ 	 */
+-	if (!zswap_shrinker_enabled || nr_protected >= lru_size - sc->nr_to_scan) {
++	if (nr_protected >= lru_size - sc->nr_to_scan) {
+ 		sc->nr_scanned = 0;
+ 		return SHRINK_STOP;
+ 	}
+@@ -633,8 +637,11 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
+ 	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
+ 
++	if (!zswap_shrinker_enabled)
++		return 0;
++
+ #ifdef CONFIG_MEMCG_KMEM
+-	cgroup_rstat_flush(memcg->css.cgroup);
++	mem_cgroup_flush_stats();
+ 	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+ 	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
+ #else
+@@ -643,7 +650,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ 	nr_stored = atomic_read(&pool->nr_stored);
+ #endif
+ 
+-	if (!zswap_shrinker_enabled || !nr_stored)
++	if (!nr_stored)
+ 		return 0;
+ 
+ 	nr_protected =
+-- 
+2.34.1
