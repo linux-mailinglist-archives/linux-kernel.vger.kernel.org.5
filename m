@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 366868069FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDADB806A08
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:46:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376940AbjLFInI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 03:43:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50416 "EHLO
+        id S1376953AbjLFIqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 03:46:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLFInF (ORCPT
+        with ESMTP id S229459AbjLFIqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:43:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C58B1A2;
-        Wed,  6 Dec 2023 00:43:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701852191; x=1733388191;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=qIdN+b2rLjTnQPYTeBHnfLQ8YM9/DljqKcBdpdxf2tc=;
-  b=KhipxHYxtQfkGpEXMcbRXpeq4pIEEO44i60kPdSKGfTah6wgvSTd0CDV
-   MWA0tagCzSEjo50cwScInpGgSBAywdLezmZSOIZSWGC6mRIA8RBIbdOrF
-   2HvM6HxrBeqIQnm970w5wFfOdMcl0KyKXXY+6q9BUuVFYlnv03D5jPfTL
-   54VL/SnmfcqQUdGLHSDEygSExRf9xYmB/2sKwHeyUQI4cHyb/gq5zikOZ
-   +EUEvuZhorO23Yjb4ZwG2QA9xgCtMlP540ZcKdgnM9ygeXXUoAOj3wNLb
-   SAP2oa5CDnOnDuvoBMUZstifdODgwKOVyanZXYEVjJ8fhlwGuzBexk98+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="460518072"
-X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
-   d="scan'208";a="460518072"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 00:43:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="800271912"
-X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
-   d="scan'208";a="800271912"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 00:43:06 -0800
-Message-ID: <83f502c2-3649-425a-8f02-9cd460755e5b@linux.intel.com>
-Date:   Wed, 6 Dec 2023 16:43:04 +0800
+        Wed, 6 Dec 2023 03:46:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38BEFA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:46:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F84DC433C7;
+        Wed,  6 Dec 2023 08:46:36 +0000 (UTC)
+Message-ID: <574bb65f-872d-4bf4-9d3d-a330133de884@xs4all.nl>
+Date:   Wed, 6 Dec 2023 09:46:35 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v17 018/116] KVM: TDX: x86: Add ioctl to get TDX
- systemwide parameters
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <cover.1699368322.git.isaku.yamahata@intel.com>
- <c0242f096fffd63d544c4fbdd3b2415ce94388c6.1699368322.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <c0242f096fffd63d544c4fbdd3b2415ce94388c6.1699368322.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v3,16/21] media: medkatek: vcodec: support one plane
+ capture buffer
+Content-Language: en-US, nl
+To:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Jeffrey Kardatzke <jkardatzke@google.com>,
+        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
+        <nfraprado@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Nathan Hebert <nhebert@chromium.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Steve Cho <stevecho@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <jstultz@google.com>,
+        "T . J . Mercier" <tjmercier@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
+ <20231206081538.17056-17-yunfei.dong@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20231206081538.17056-17-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,213 +65,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/12/2023 09:15, Yunfei Dong wrote:
+> The capture buffer has two planes for format MM21, but user space only
+> allocate secure memory for plane[0], and the size is Y data + uv data.
+> The driver need to support one plane decoder for svp mode.
 
+For a future v4: note the typo in the Subject line: medkatek -> mediatek.
+It's present in patches 16-20.
 
-On 11/7/2023 10:55 PM, isaku.yamahata@intel.com wrote:
-> From: Sean Christopherson <sean.j.christopherson@intel.com>
->
-> Implement an ioctl to get system-wide parameters for TDX.  Although the
-> function is systemwide, vm scoped mem_enc ioctl works for userspace VMM
-> like qemu and device scoped version is not define, re-use vm scoped
-> mem_enc.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+Regards,
+
+	Hans
+
+> 
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 > ---
-> v14 -> v15:
-> - ABI change: added supported_gpaw and reserved area,
-> ---
->   arch/x86/include/uapi/asm/kvm.h       | 24 ++++++++++
->   arch/x86/kvm/vmx/tdx.c                | 64 +++++++++++++++++++++++++++
->   tools/arch/x86/include/uapi/asm/kvm.h | 52 ++++++++++++++++++++++
->   3 files changed, 140 insertions(+)
->
-> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> index 615fb60b3717..3fbd43d5177b 100644
-> --- a/arch/x86/include/uapi/asm/kvm.h
-> +++ b/arch/x86/include/uapi/asm/kvm.h
-> @@ -593,4 +593,28 @@ struct kvm_tdx_cmd {
->   	__u64 error;
->   };
->   
-> +struct kvm_tdx_cpuid_config {
-> +	__u32 leaf;
-> +	__u32 sub_leaf;
-> +	__u32 eax;
-> +	__u32 ebx;
-> +	__u32 ecx;
-> +	__u32 edx;
-> +};
+>  .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  |  7 ++++-
+>  .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 26 ++++++++++---------
+>  .../decoder/vdec/vdec_h264_req_common.c       | 11 +++-----
+>  .../mediatek/vcodec/decoder/vdec_drv_if.c     |  4 +--
+>  4 files changed, 26 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> index 604fdc8ee3ce..ab922e8d2d37 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> @@ -653,7 +653,12 @@ static int vidioc_vdec_g_fmt(struct file *file, void *priv,
+>  		 * So we just return picinfo yet, and update picinfo in
+>  		 * stop_streaming hook function
+>  		 */
+> -		q_data->sizeimage[0] = ctx->picinfo.fb_sz[0];
 > +
-> +struct kvm_tdx_capabilities {
-> +	__u64 attrs_fixed0;
-> +	__u64 attrs_fixed1;
-> +	__u64 xfam_fixed0;
-> +	__u64 xfam_fixed1;
-> +#define TDX_CAP_GPAW_48	(1 << 0)
-> +#define TDX_CAP_GPAW_52	(1 << 1)
-> +	__u32 supported_gpaw;
-> +	__u32 padding;
-> +	__u64 reserved[251];
+> +		if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 1)
+> +			q_data->sizeimage[0] = ctx->picinfo.fb_sz[0] + ctx->picinfo.fb_sz[1];
+> +		else
+> +			q_data->sizeimage[0] = ctx->picinfo.fb_sz[0];
 > +
-> +	__u32 nr_cpuid_configs;
-> +	struct kvm_tdx_cpuid_config cpuid_configs[];
-> +};
-> +
->   #endif /* _ASM_X86_KVM_H */
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index ead229e34813..f9e80582865d 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -6,6 +6,7 @@
->   #include "capabilities.h"
->   #include "x86_ops.h"
->   #include "x86.h"
-> +#include "mmu.h"
->   #include "tdx.h"
->   
->   #undef pr_fmt
-> @@ -16,6 +17,66 @@
->   		offsetof(struct tdsysinfo_struct, cpuid_configs))	\
->   		/ sizeof(struct tdx_cpuid_config))
->   
-> +static int tdx_get_capabilities(struct kvm_tdx_cmd *cmd)
-> +{
-> +	struct kvm_tdx_capabilities __user *user_caps;
-> +	const struct tdsysinfo_struct *tdsysinfo;
-> +	struct kvm_tdx_capabilities *caps = NULL;
-> +	int ret = 0;
-> +
-> +	BUILD_BUG_ON(sizeof(struct kvm_tdx_cpuid_config) !=
-> +		     sizeof(struct tdx_cpuid_config));
-> +
-> +	if (cmd->flags)
-> +		return -EINVAL;
-> +
-> +	tdsysinfo = tdx_get_sysinfo();
-> +	if (!tdsysinfo)
-> +		return -EOPNOTSUPP;
-> +
-> +	caps = kmalloc(sizeof(*caps), GFP_KERNEL);
-> +	if (!caps)
-> +		return -ENOMEM;
-> +
-> +	user_caps = (void __user *)cmd->data;
-> +	if (copy_from_user(caps, user_caps, sizeof(*caps))) {
-> +		ret = -EFAULT;
-> +		goto out;
-> +	}
-> +
-> +	if (caps->nr_cpuid_configs < tdsysinfo->num_cpuid_config) {
-> +		ret = -E2BIG;
-> +		goto out;
-> +	}
-> +
-> +	*caps = (struct kvm_tdx_capabilities) {
-> +		.attrs_fixed0 = tdsysinfo->attributes_fixed0,
-> +		.attrs_fixed1 = tdsysinfo->attributes_fixed1,
-> +		.xfam_fixed0 = tdsysinfo->xfam_fixed0,
-> +		.xfam_fixed1 = tdsysinfo->xfam_fixed1,
-> +		.supported_gpaw = TDX_CAP_GPAW_48 |
-> +		(kvm_get_shadow_phys_bits() >= 52 &&
-> +		 cpu_has_vmx_ept_5levels()) ? TDX_CAP_GPAW_52 : 0,
-> +		.nr_cpuid_configs = tdsysinfo->num_cpuid_config,
-> +		.padding = 0,
-> +	};
-> +
-> +	if (copy_to_user(user_caps, caps, sizeof(*caps))) {
-> +		ret = -EFAULT;
-> +		goto out;
-> +	}
-> +	if (copy_to_user(user_caps->cpuid_configs, &tdsysinfo->cpuid_configs,
-> +			 tdsysinfo->num_cpuid_config *
-> +			 sizeof(struct tdx_cpuid_config))) {
-> +		ret = -EFAULT;
-> +	}
-> +
-> +out:
-> +	/* kfree() accepts NULL. */
-> +	kfree(caps);
-> +	return ret;
-> +}
-> +
->   int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
->   {
->   	struct kvm_tdx_cmd tdx_cmd;
-> @@ -29,6 +90,9 @@ int tdx_vm_ioctl(struct kvm *kvm, void __user *argp)
->   	mutex_lock(&kvm->lock);
->   
->   	switch (tdx_cmd.id) {
-> +	case KVM_TDX_CAPABILITIES:
-> +		r = tdx_get_capabilities(&tdx_cmd);
-> +		break;
->   	default:
->   		r = -EINVAL;
->   		goto out;
-> diff --git a/tools/arch/x86/include/uapi/asm/kvm.h b/tools/arch/x86/include/uapi/asm/kvm.h
-> index 1a6a1f987949..7a08723e99e2 100644
-> --- a/tools/arch/x86/include/uapi/asm/kvm.h
-> +++ b/tools/arch/x86/include/uapi/asm/kvm.h
-
-According to the discussion, Sean's preference is "never update KVM's
-uapi headers in tools/ in KVM's tree"
-https://lore.kernel.org/all/Y8bZ%2FJ98V5i3wG%2Fv@google.com/
-
-> @@ -562,4 +562,56 @@ struct kvm_pmu_event_filter {
->   /* x86-specific KVM_EXIT_HYPERCALL flags. */
->   #define KVM_EXIT_HYPERCALL_LONG_MODE	BIT(0)
->   
-> +/* Trust Domain eXtension sub-ioctl() commands. */
-> +enum kvm_tdx_cmd_id {
-> +	KVM_TDX_CAPABILITIES = 0,
-> +
-> +	KVM_TDX_CMD_NR_MAX,
-> +};
-> +
-> +struct kvm_tdx_cmd {
-> +	/* enum kvm_tdx_cmd_id */
-> +	__u32 id;
-> +	/* flags for sub-commend. If sub-command doesn't use this, set zero. */
-> +	__u32 flags;
-> +	/*
-> +	 * data for each sub-command. An immediate or a pointer to the actual
-> +	 * data in process virtual address.  If sub-command doesn't use it,
-> +	 * set zero.
-> +	 */
-> +	__u64 data;
-> +	/*
-> +	 * Auxiliary error code.  The sub-command may return TDX SEAMCALL
-> +	 * status code in addition to -Exxx.
-> +	 * Defined for consistency with struct kvm_sev_cmd.
-> +	 */
-> +	__u64 error;
-> +	/* Reserved: Defined for consistency with struct kvm_sev_cmd. */
-> +	__u64 unused;
-> +};
-> +
-> +struct kvm_tdx_cpuid_config {
-> +	__u32 leaf;
-> +	__u32 sub_leaf;
-> +	__u32 eax;
-> +	__u32 ebx;
-> +	__u32 ecx;
-> +	__u32 edx;
-> +};
-> +
-> +struct kvm_tdx_capabilities {
-> +	__u64 attrs_fixed0;
-> +	__u64 attrs_fixed1;
-> +	__u64 xfam_fixed0;
-> +	__u64 xfam_fixed1;
-> +#define TDX_CAP_GPAW_48		(1 << 0)
-> +#define TDX_CAP_GPAW_52		(1 << 1)
-> +	__u32 supported_gpaw;
-> +	__u32 padding;
-> +	__u64 reserved[251];
-> +
-> +	__u32 nr_cpuid_configs;
-> +	struct kvm_tdx_cpuid_config cpuid_configs[];
-> +};
-> +
->   #endif /* _ASM_X86_KVM_H */
+>  		q_data->sizeimage[1] = ctx->picinfo.fb_sz[1];
+>  		q_data->bytesperline[0] = ctx->last_decoded_picinfo.buf_w;
+>  		q_data->bytesperline[1] = ctx->last_decoded_picinfo.buf_w;
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
+> index cc42c942eb8a..707ed57a412e 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
+> @@ -285,14 +285,14 @@ static struct vdec_fb *vdec_get_cap_buffer(struct mtk_vcodec_dec_ctx *ctx)
+>  	framebuf = container_of(vb2_v4l2, struct mtk_video_dec_buf, m2m_buf.vb);
+>  
+>  	pfb = &framebuf->frame_buffer;
+> -	pfb->base_y.va = vb2_plane_vaddr(dst_buf, 0);
+> +	if (!ctx->is_secure_playback)
+> +		pfb->base_y.va = vb2_plane_vaddr(dst_buf, 0);
+>  	pfb->base_y.dma_addr = vb2_dma_contig_plane_dma_addr(dst_buf, 0);
+>  	pfb->base_y.size = ctx->q_data[MTK_Q_DATA_DST].sizeimage[0];
+>  
+> -	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2) {
+> +	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2 && !ctx->is_secure_playback) {
+>  		pfb->base_c.va = vb2_plane_vaddr(dst_buf, 1);
+> -		pfb->base_c.dma_addr =
+> -			vb2_dma_contig_plane_dma_addr(dst_buf, 1);
+> +		pfb->base_c.dma_addr = vb2_dma_contig_plane_dma_addr(dst_buf, 1);
+>  		pfb->base_c.size = ctx->q_data[MTK_Q_DATA_DST].sizeimage[1];
+>  	}
+>  	mtk_v4l2_vdec_dbg(1, ctx,
+> @@ -339,16 +339,18 @@ static void mtk_vdec_worker(struct work_struct *work)
+>  	mtk_v4l2_vdec_dbg(3, ctx, "[%d] (%d) id=%d, vb=%p", ctx->id,
+>  			  vb2_src->vb2_queue->type, vb2_src->index, vb2_src);
+>  
+> -	bs_src->va = vb2_plane_vaddr(vb2_src, 0);
+> -	bs_src->dma_addr = vb2_dma_contig_plane_dma_addr(vb2_src, 0);
+> -	bs_src->size = (size_t)vb2_src->planes[0].bytesused;
+> -	if (!bs_src->va) {
+> -		v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> -		mtk_v4l2_vdec_err(ctx, "[%d] id=%d source buffer is NULL", ctx->id,
+> -				  vb2_src->index);
+> -		return;
+> +	if (!ctx->is_secure_playback) {
+> +		bs_src->va = vb2_plane_vaddr(vb2_src, 0);
+> +		if (!bs_src->va) {
+> +			v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> +			mtk_v4l2_vdec_err(ctx, "[%d] id=%d source buffer is NULL", ctx->id,
+> +					  vb2_src->index);
+> +			return;
+> +		}
+>  	}
+>  
+> +	bs_src->dma_addr = vb2_dma_contig_plane_dma_addr(vb2_src, 0);
+> +	bs_src->size = (size_t)vb2_src->planes[0].bytesused;
+>  	mtk_v4l2_vdec_dbg(3, ctx, "[%d] Bitstream VA=%p DMA=%pad Size=%zx vb=%p",
+>  			  ctx->id, bs_src->va, &bs_src->dma_addr, bs_src->size, vb2_src);
+>  	/* Apply request controls. */
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.c
+> index 5ca20d75dc8e..2a57e689ec07 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.c
+> @@ -79,15 +79,12 @@ void mtk_vdec_h264_fill_dpb_info(struct mtk_vcodec_dec_ctx *ctx,
+>  		vb2_v4l2 = container_of(vb, struct vb2_v4l2_buffer, vb2_buf);
+>  		h264_dpb_info[index].field = vb2_v4l2->field;
+>  
+> -		h264_dpb_info[index].y_dma_addr =
+> -			vb2_dma_contig_plane_dma_addr(vb, 0);
+> +		h264_dpb_info[index].y_dma_addr = vb2_dma_contig_plane_dma_addr(vb, 0);
+>  		if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2)
+> +			h264_dpb_info[index].c_dma_addr = vb2_dma_contig_plane_dma_addr(vb, 1);
+> +		else if (!ctx->is_secure_playback)
+>  			h264_dpb_info[index].c_dma_addr =
+> -				vb2_dma_contig_plane_dma_addr(vb, 1);
+> -		else
+> -			h264_dpb_info[index].c_dma_addr =
+> -				h264_dpb_info[index].y_dma_addr +
+> -				ctx->picinfo.fb_sz[0];
+> +				h264_dpb_info[index].y_dma_addr + ctx->picinfo.fb_sz[0];
+>  	}
+>  }
+>  
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
+> index d0b459b1603f..fb3e4f75ed93 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
+> @@ -73,14 +73,14 @@ int vdec_if_decode(struct mtk_vcodec_dec_ctx *ctx, struct mtk_vcodec_mem *bs,
+>  {
+>  	int ret = 0;
+>  
+> -	if (bs) {
+> +	if (bs && !ctx->is_secure_playback) {
+>  		if ((bs->dma_addr & 63) != 0) {
+>  			mtk_v4l2_vdec_err(ctx, "bs dma_addr should 64 byte align");
+>  			return -EINVAL;
+>  		}
+>  	}
+>  
+> -	if (fb) {
+> +	if (fb && !ctx->is_secure_playback) {
+>  		if (((fb->base_y.dma_addr & 511) != 0) ||
+>  		    ((fb->base_c.dma_addr & 511) != 0)) {
+>  			mtk_v4l2_vdec_err(ctx, "frame buffer dma_addr should 512 byte align");
 
