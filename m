@@ -2,216 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B9A806987
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2293380698A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:23:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377127AbjLFIWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 03:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        id S1377148AbjLFIW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 03:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376876AbjLFIWC (ORCPT
+        with ESMTP id S1376876AbjLFIW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:22:02 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 395F8AC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:22:08 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9EF9021F48;
-        Wed,  6 Dec 2023 08:22:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1701850925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=YQczaXs8PKJ+its+cEaYffQ9Mwq4ldCbvUAPZAwc534=;
-        b=mV4xOWGw2T5J5ax10GThmWeABYx6pch8BQEmZ5yrLhZmZNfWVtWThWHBfEcwIxKU9ppSGe
-        orDw7h3T2qKUogSuUuHeenvLArkZHgfE8f9zI5yZstG/Qnp4sUbh5MI3z05Mx8i4fFeY+j
-        8/o7+QzcHJYO/5XKKI8P4jeH+a5B7Fw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1701850925;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=YQczaXs8PKJ+its+cEaYffQ9Mwq4ldCbvUAPZAwc534=;
-        b=otNOgmGelfaga99Kx+cx+WHqsZ3RS41Xt0j93KflHxtyrQ7PlrphIeYLj669a7CpfoS3tV
-        jgexPOuqQ0YyKIBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 82AC1133DD;
-        Wed,  6 Dec 2023 08:22:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id f9+SHi0vcGWFIAAAn2gu4w
-        (envelope-from <tzimmermann@suse.de>); Wed, 06 Dec 2023 08:22:05 +0000
-Message-ID: <77925c2e-8cb2-473b-9dd0-3ce60a909066@suse.de>
-Date:   Wed, 6 Dec 2023 09:22:04 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/plane: fix error handling in
- __drm_universal_plane_init
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>
-References: <20231206072701.13276-1-dinghao.liu@zju.edu.cn>
-Content-Language: en-US
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20231206072701.13276-1-dinghao.liu@zju.edu.cn>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------la2JX688VsqBrOuGQu0IBMkD"
-X-Spamd-Result: default: False [-4.29 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-         HAS_ATTACHMENT(0.00)[];
-         MIME_BASE64_TEXT_BOGUS(1.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         MIME_BASE64_TEXT(0.10)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,bootlin.com:url,zju.edu.cn:email];
-         SIGNED_PGP(-2.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Score: -4.29
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 03:22:56 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F2E18D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:23:02 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db547d41413so597251276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 00:23:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701850981; x=1702455781; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WCRvn/sz9XVm96oNWnMxAn3yHnXhHkzRkqQQYNeebWk=;
+        b=jiGsp8diuKYRABNDXqse482cb3kDzJNtGOGQmKQLRwZX0M9iKg33lE5nOkx+81RRxh
+         k4L+STcB6cReRyQhyWS1gVj41qUOwnnO0eXGf+hn0DvEKsJyX6bu/2U3xvVCvxg2LtUh
+         1sxXmYpBy2Cnr0LureaNj2RMAtSz5uUWdjoqHUjUZbDYTGBGQmHSOlt3FTH/NAoY01jf
+         4GzIvMqPomPERtafBTbSGh4jyTPxVRnllPQjKIQk1ZgEfOLxKsODzTR3UdJUI0Q0q/CP
+         87TSOZjMaJUxkEDOw/YesztP3lIkZD11stD+b7a6LbvOPqfQtWTNk9b1z900TXeEXSjl
+         BTMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701850981; x=1702455781;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WCRvn/sz9XVm96oNWnMxAn3yHnXhHkzRkqQQYNeebWk=;
+        b=uaa5AeYcHyp8KAZEJxNaH7ZOiyw+WcfnMvwi2ruS+gMHYJQqW+7fygsY2uhONpOymz
+         HrC58HZBMIYn7KKp7/SukbnJ31FtkT/XqfLg7O9AgVtauV0RJyXPbP8m8jbAPS+z4HCn
+         t12HMlG5u5b3Z62FK2qzSPpSTmgGikjez1M7YnxQTEvSleS/GazqjmcLMMx53otEdACA
+         i1y+k1oz5iB2xTfD5BevU+Y0h1kxgMJZ8AzfQ3OpxG3bBty1N+lzl0HCCbcx8Am9+qml
+         c+WFp+RYs+sa/nOZmhWAJ/Kk1HOj2vYZs+fhhuu3ikCHJiqne8mz3/q+eRIp/+qabhG2
+         eh9w==
+X-Gm-Message-State: AOJu0YxqIoCoQ9jkeT4Z5SE0Lx9yod8RX/5k6ZbES2s+/q3r3Co79Cb8
+        CD4/rnjLbSda0NwmrKGSC2ecKYZFH4wNKA==
+X-Google-Smtp-Source: AGHT+IHgN9snu5a/ppS7OlD3/ljvTemeLfF2mtBrbyVREwmLrAUt0HI19V0c0cnISxARtPjazI9Qq2Ace2v1QQ==
+X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
+ (user=davidgow job=sendgmr) by 2002:a05:6902:51:b0:da3:b467:af07 with SMTP id
+ m17-20020a056902005100b00da3b467af07mr82068ybh.2.1701850981627; Wed, 06 Dec
+ 2023 00:23:01 -0800 (PST)
+Date:   Wed,  6 Dec 2023 16:22:49 +0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231206082251.586204-1-davidgow@google.com>
+Subject: [PATCH] kunit: test: Use an action wrapper instead of a cast
+From:   David Gow <davidgow@google.com>
+To:     Rae Moar <rmoar@google.com>, Shuah Khan <skhan@linuxfoundation.org>
+Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------la2JX688VsqBrOuGQu0IBMkD
-Content-Type: multipart/mixed; boundary="------------WZzeJ0Ady0Fe1vY2SuGe7CgP";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Maxime Ripard <mripard@kernel.org>
-Message-ID: <77925c2e-8cb2-473b-9dd0-3ce60a909066@suse.de>
-Subject: Re: [PATCH] drm/plane: fix error handling in
- __drm_universal_plane_init
-References: <20231206072701.13276-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20231206072701.13276-1-dinghao.liu@zju.edu.cn>
+We missed one of the casts of kfree() to kunit_action_t in kunit-test,
+which was only enabled when debugfs was in use. This could potentially
+break CFI.
 
---------------WZzeJ0Ady0Fe1vY2SuGe7CgP
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Use the existing wrapper function instead.
 
-SGkNCg0KQW0gMDYuMTIuMjMgdW0gMDg6Mjcgc2NocmllYiBEaW5naGFvIExpdToNCj4gX19k
-cm1fdW5pdmVyc2FsX3BsYW5lX2luaXQoKSBmcmVlcyBwbGFuZS0+Zm9ybWF0X3R5cGVzIGFu
-ZA0KPiBwbGFuZS0+bW9kaWZpZXJzIG9uIGZhaWx1cmUuIEhvd2V2ZXIsIHNvbWV0aW1lcyBp
-dHMgY2FsbGVycw0KPiB3aWxsIGZyZWUgdGhlc2UgdHdvIHBvaW50ZXJzIGFnYWluLCB3aGlj
-aCBtYXkgbGVhZCB0byBhDQo+IGRvdWJsZS1mcmVlLiBPbmUgcG9zc2libGUgY2FsbCBjaGFp
-biBpczoNCj4gDQo+IG1kcDVfcGxhbmVfaW5pdA0KPiAgICB8LT4gZHJtX3VuaXZlcnNhbF9w
-bGFuZV9pbml0DQo+ICAgIHwgICAgIHwtPiBfX2RybV91bml2ZXJzYWxfcGxhbmVfaW5pdCAo
-Zmlyc3QgZnJlZSkNCj4gICAgfA0KPiAgICB8LT4gbWRwNV9wbGFuZV9kZXN0cm95DQo+ICAg
-ICAgICAgIHwtPiBkcm1fcGxhbmVfY2xlYW51cCAoc2Vjb25kIGZyZWUpDQo+IA0KPiBGaXgg
-dGhpcyBieSBzZXR0aW5nIHRoZSB0d28gcG9pbnRlcnMgdG8gTlVMTCBhZnRlciBrZnJlZS4N
-Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxkaW5naGFvLmxpdUB6anUuZWR1
-LmNuPg0KDQpSZXZpZXdlZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1
-c2UuZGU+DQoNCnRvIGdldCB0aGUgaW1tZWRpYXRlIGJ1ZyBmaXhlZC4NCg0KSG93ZXZlciwg
-SSBkb24ndCB0aGluayBpdCdzIHRoZSBjb3JyZWN0IHdheSBvZiBkb2luZyB0aGluZ3MgaW4g
-Z2VuZXJhbC4gDQpQbGFuZXMgc2hvdWxkIHByb2JhYmx5IG5vdCBhdHRlbXB0IHRvIGV2ZW4g
-bWFrZSBhIGNvcHksIGJ1dCB1c2UgdGhlIA0Kc3VwcGxpZWQgcG9pbnRlcnMuIExpZmV0aW1l
-IG9mIHRoZSBhcnJheXMgaXMgdGhlIHNhbWUgYXMgb2YgdGhlIHBsYW5lLiANClRoYXQncyBm
-b3IgYSBkaWZmZXJlbnQgcGF0Y2ggc2V0LCBvZiBjb3Vyc2UuICAoSSBkaWQgbm90IHJldmll
-dyB0aGUgRFJNIA0KY29kZSB3aGV0aGVyIHRoZSBpbnRlcm5hbCBjb3B5IGlzIHJlcXVpcmVk
-LikNCg0KRm9yIG5vdywgbWF5YmUgZHJtX3BsYW5lX2NsZWFudXAoKSBjb3VsZCB3YXJuIGlm
-IGZvcm1hdF90eXBlcyBlcXVhbHMgDQpOVUxMLiBbMV0gSXQgaW5kaWNhdGVzIHRoYXQgdGhl
-IHBsYW5lIGhhcyBub3QgYmVlbiBpbml0aWFsaXplZCBjb3JyZWN0bHkgDQphbmQgdGhlIGRy
-aXZlcidzIG1lbW9yeSBsaWZldGltZSBoYW5kbGluZyBpcyBzb21laG93IGJyb2tlbi4NCg0K
-QmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KWzFdIA0KaHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5j
-b20vbGludXgvbGF0ZXN0L3NvdXJjZS9kcml2ZXJzL2dwdS9kcm0vZHJtX3BsYW5lLmMjTDU0
-Mg0KDQo+IC0tLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9kcm1fcGxhbmUuYyB8IDMgKysrDQo+
-ICAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvZ3B1L2RybS9kcm1fcGxhbmUuYyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fcGxh
-bmUuYw0KPiBpbmRleCAyNGU3OTk4ZDE3MzEuLjEzMzFiODIyNDkyMCAxMDA2NDQNCj4gLS0t
-IGEvZHJpdmVycy9ncHUvZHJtL2RybV9wbGFuZS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2Ry
-bS9kcm1fcGxhbmUuYw0KPiBAQCAtMzA0LDYgKzMwNCw3IEBAIHN0YXRpYyBpbnQgX19kcm1f
-dW5pdmVyc2FsX3BsYW5lX2luaXQoc3RydWN0IGRybV9kZXZpY2UgKmRldiwNCj4gICAJaWYg
-KGZvcm1hdF9tb2RpZmllcl9jb3VudCAmJiAhcGxhbmUtPm1vZGlmaWVycykgew0KPiAgIAkJ
-RFJNX0RFQlVHX0tNUygib3V0IG9mIG1lbW9yeSB3aGVuIGFsbG9jYXRpbmcgcGxhbmVcbiIp
-Ow0KPiAgIAkJa2ZyZWUocGxhbmUtPmZvcm1hdF90eXBlcyk7DQo+ICsJCXBsYW5lLT5mb3Jt
-YXRfdHlwZXMgPSBOVUxMOw0KPiAgIAkJZHJtX21vZGVfb2JqZWN0X3VucmVnaXN0ZXIoZGV2
-LCAmcGxhbmUtPmJhc2UpOw0KPiAgIAkJcmV0dXJuIC1FTk9NRU07DQo+ICAgCX0NCj4gQEAg
-LTMxNyw2ICszMTgsOCBAQCBzdGF0aWMgaW50IF9fZHJtX3VuaXZlcnNhbF9wbGFuZV9pbml0
-KHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsDQo+ICAgCWlmICghcGxhbmUtPm5hbWUpIHsNCj4g
-ICAJCWtmcmVlKHBsYW5lLT5mb3JtYXRfdHlwZXMpOw0KPiAgIAkJa2ZyZWUocGxhbmUtPm1v
-ZGlmaWVycyk7DQo+ICsJCXBsYW5lLT5mb3JtYXRfdHlwZXMgPSBOVUxMOw0KPiArCQlwbGFu
-ZS0+bW9kaWZpZXJzID0gTlVMTDsNCj4gICAJCWRybV9tb2RlX29iamVjdF91bnJlZ2lzdGVy
-KGRldiwgJnBsYW5lLT5iYXNlKTsNCj4gICAJCXJldHVybiAtRU5PTUVNOw0KPiAgIAl9DQoN
-Ci0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNV
-U0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2
-LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVy
-cywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVl
-cm5iZXJnKQ0K
+Signed-off-by: David Gow <davidgow@google.com>
+---
+ lib/kunit/kunit-test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---------------WZzeJ0Ady0Fe1vY2SuGe7CgP--
+diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
+index 3e9c5192d095..ee6927c60979 100644
+--- a/lib/kunit/kunit-test.c
++++ b/lib/kunit/kunit-test.c
+@@ -559,7 +559,7 @@ static void kunit_log_test(struct kunit *test)
+ 	KUNIT_EXPECT_TRUE(test, test->log->append_newlines);
+ 
+ 	full_log = string_stream_get_string(test->log);
+-	kunit_add_action(test, (kunit_action_t *)kfree, full_log);
++	kunit_add_action(test, kfree_wrapper, full_log);
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+ 				     strstr(full_log, "put this in log."));
+ 	KUNIT_EXPECT_NOT_ERR_OR_NULL(test,
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
---------------la2JX688VsqBrOuGQu0IBMkD
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmVwLywFAwAAAAAACgkQlh/E3EQov+BE
-rw/7B0OUwP4s3ZZq2tOKgtd1RvaUlfezz4Lb2zuq1tBbdB3GZeJTj6FZuJcN6H9hKPsGlcmHbeWo
-hI3EhA2fWX9NyFxEm3U6wR2Zo8eDwCUqxxMmiNPbygrlcjk91Y4gFvUxKBaA4EL0Veds/l0vPKKU
-zpoU4alM7DAFZ25ih6IvVDHJKjcjMpyBf1Qp1wewebXOoue2Zob+LsuYBjmbRnoqcFXDUx/npkD/
-kC/9LMVR2vptAQ8t4Hpq1AQkLBBhAcbty9NKTUxLfkzKvkuGlrN0KSZ/p+FhQghlxeskyBYQ+187
-eY2Y5cntnc2iS779ZrjO2c3FbNNqdmmvE6e9drUABJxPn8vRudxhQpHHEHGFN5fH/WoZtBESu4ot
-DKVp9Gj8MNd3zVs45RvyKqmnJiNCGhvfy5QURrkVFGuvshmugvJo9aA/H7ctAWTNKSs7MS+j+wBU
-Va236FXnEqltAAdP4Bc7ztdAlQdeaki+gvBiN0ByuX00soX58bw5m+YPcV7iVyCO/euBkR3V9BrL
-vSW7QEvXwJgVJaACEVFUtWPsgROMoMmDGicoUtBXqjRNRPtCuCsnsuvaKKwin1lc0Ua76KWo7IIo
-m6jnhq8deiFTjKme6E2i974JfA9NInWneJFoiymyP8YEY3WApEcGzQMbwnGxHXCRWWNaK9HWBmVr
-esg=
-=QpfB
------END PGP SIGNATURE-----
-
---------------la2JX688VsqBrOuGQu0IBMkD--
