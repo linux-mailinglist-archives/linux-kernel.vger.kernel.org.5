@@ -2,113 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 210F18069A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:29:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E696A8069A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377186AbjLFI3G convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 03:29:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53384 "EHLO
+        id S1377164AbjLFIaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 03:30:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377123AbjLFI3E (ORCPT
+        with ESMTP id S229512AbjLFIaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:29:04 -0500
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5B6AB;
-        Wed,  6 Dec 2023 00:29:11 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5d34f8f211fso69924727b3.0;
-        Wed, 06 Dec 2023 00:29:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701851350; x=1702456150;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QSTEGLqyRD15bhDdDT/pKQ6YzOXQHX8vZxpxtwEw3ng=;
-        b=Im9xdehDYC2ieoOPmyEIkeFSMm0vS+qPi+wndQZm0HZm+Pu5uIepcQFP+Pj8izKYyz
-         e0hzysARAv4pzlbGtpr8ba/zFMZRhx4asdsWxmM0chwr+wsw0ykjnT1b/oQ64Fqq/TQa
-         13JYL/gdZWZUptIYcdJPpEImq3x9GRGcgXvbqnP7m548rzNvPOPfkRziYpHAE2OgQ+Ft
-         VBhKfp2ORKAllrD+45v8CVmqDpVM+xo+C+nNjffo+XjkISQr6anqQaeYSsJs8DOSE8Io
-         pvV/A+4NvCynLka/Lp5TiAM65gfluqCQUkUBkC00kgPpesA+hOxqFUb0Q9pocGjpV8oI
-         4kHw==
-X-Gm-Message-State: AOJu0YzG4C3GF6Skd1fb7U5JWQxVmCRz1E1Wf1PqADAGV72Znl2d7DuC
-        r1s33wg3DpuKSdp9SCRuZtc4yq3IXP7uVA==
-X-Google-Smtp-Source: AGHT+IF+CWhBF7IYQQshhdsRjuCXoK3e3vGq1P2gLL75NMz9RxGuCABZ6ahow4BsdAy7P1weiE7mLA==
-X-Received: by 2002:a81:c909:0:b0:59f:4bc3:3e9 with SMTP id o9-20020a81c909000000b0059f4bc303e9mr399627ywi.46.1701851350291;
-        Wed, 06 Dec 2023 00:29:10 -0800 (PST)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id l6-20020a0dc906000000b005add997ae53sm3868842ywd.81.2023.12.06.00.29.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 00:29:09 -0800 (PST)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-da819902678so4625090276.1;
-        Wed, 06 Dec 2023 00:29:09 -0800 (PST)
-X-Received: by 2002:a25:a383:0:b0:db6:1cb0:7754 with SMTP id
- e3-20020a25a383000000b00db61cb07754mr421927ybi.59.1701851349599; Wed, 06 Dec
- 2023 00:29:09 -0800 (PST)
+        Wed, 6 Dec 2023 03:30:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E67D47
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:30:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F00C433CC;
+        Wed,  6 Dec 2023 08:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701851424;
+        bh=2Ssj5YUmv6lG6OJxBgL50SSR8d7iwn+K/ZH1lXrYlrc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jqx5nB+rhml1pykCKfYXigHkaf1Nx69YuOAsVEBxz/FiBHYcT48elI7UV7fe9IkqR
+         TDBZHyRjo3VFm9IFTAk9fjNLa2cRgBp+Z3CgMEPjQsRdJY2iijfrKYRFrvASQXtxIX
+         36OpHvBymRrwFS7cpCKMw80EN/14XoEgUtj/sQGur4fP2mOPdiG/tqnIJJLOsaGNl7
+         /uZpu8tnod6Cme+p5IrG+MwxlpN4hxnyH5dLCo4KiRP5toxj4sYGyX8gYb8d/VvwA8
+         HjRsRyuk82fJXV7VvqMs6lhKdTnHDEP+dEtOoFi4pDpIqY6keXkuxFX8FN8r3m1NfC
+         QygRug+Zok4zw==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2c9f84533beso43326811fa.1;
+        Wed, 06 Dec 2023 00:30:23 -0800 (PST)
+X-Gm-Message-State: AOJu0YxFzyh+HStf3ueZi+IpXuzIM5+ASEl6FLyKsJLT1mkVxwAelG6W
+        J6OWErRpG+pFKLdEjavR0aOby6qUyIJTpGmcu6k=
+X-Google-Smtp-Source: AGHT+IF1OUe1/TjSE0apOYF5L1Q1hcoDIF0OrfSgzvb4nvicdqGHKa4iFhq04MNIFNKY0rvWn2zy1szgORvQ/lbkhrc=
+X-Received: by 2002:a2e:8088:0:b0:2ca:de:e2c5 with SMTP id i8-20020a2e8088000000b002ca00dee2c5mr338458ljg.57.1701851422228;
+ Wed, 06 Dec 2023 00:30:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20231206073712.17776-1-jirislaby@kernel.org> <20231206073712.17776-7-jirislaby@kernel.org>
-In-Reply-To: <20231206073712.17776-7-jirislaby@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 6 Dec 2023 09:28:58 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVcCpDJcBzf_g21AWfHON7=HtT+yBs--uL34UJpVRAW_Q@mail.gmail.com>
-Message-ID: <CAMuHMdVcCpDJcBzf_g21AWfHON7=HtT+yBs--uL34UJpVRAW_Q@mail.gmail.com>
-Subject: Re: [PATCH 06/27] tty: ami: use u8 for characters and flag
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231204031703.3102254-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20231204031703.3102254-1-yukuai1@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 6 Dec 2023 00:30:10 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4sF=jAyA+Q=2tFBBAApjcW=gWXndDNX6t3nrAfnk_zZA@mail.gmail.com>
+Message-ID: <CAPhsuW4sF=jAyA+Q=2tFBBAApjcW=gWXndDNX6t3nrAfnk_zZA@mail.gmail.com>
+Subject: Re: [PATCH -next] md: split MD_RECOVERY_NEEDED out of mddev_resume
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
+        dm-devel@lists.linux.dev, yukuai3@huawei.com,
+        janpieter.sollie@edpnet.be, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On Wed, Dec 6, 2023 at 8:37 AM Jiri Slaby (SUSE) <jirislaby@kernel.org> wrote:
-> Switch character types to u8. To conform to characters in the rest of
-> the tty layer.
+On Sun, Dec 3, 2023 at 7:18=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
+ote:
 >
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-
-Thanks for your patch!
-
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-> --- a/drivers/tty/amiserial.c
-> +++ b/drivers/tty/amiserial.c
-> @@ -81,7 +81,7 @@ struct serial_state {
->         int                     quot;
->         int                     IER;    /* Interrupt Enable Register */
->         int                     MCR;    /* Modem control register */
-> -       int                     x_char; /* xon/xoff character */
-> +       u8                      x_char; /* xon/xoff character */
->  };
+> From: Yu Kuai <yukuai3@huawei.com>
 >
->  static struct tty_driver *serial_driver;
-> @@ -178,7 +178,7 @@ static void receive_chars(struct serial_state *info)
->  {
->          int status;
->         int serdatr;
-> -       unsigned char ch, flag;
-> +       u8 ch, flag;
->         struct  async_icount *icount;
->         bool overrun = false;
+> New mddev_resume() calls are added to synchroniza IO with array
+> reconfiguration, however, this introduce a regression while adding it in
+> md_start_sync():
 >
+> 1) someone set MD_RECOVERY_NEEDED first;
+> 2) daemon thread grab reconfig_mutex, then clear MD_RECOVERY_NEEDED and
+>    queue a new sync work;
+> 3) daemon thread release reconfig_mutex;
+> 4) in md_start_sync
+>    a) check that there are spares that can be added/removed, then suspend
+>       the array;
+>    b) remove_and_add_spares may not be called, or called without really
+>       add/remove spares;
+>    c) resume the array, then set MD_RECOVERY_NEEDED again!
+>
+> Loop between 2 - 4, then mddev_suspend() will be called quite often, for
+> consequence, normal IO will be quite slow.
+>
+> Fix this problem by spliting MD_RECOVERY_NEEDED out of mddev_resume(), so
+> that md_start_sync() won't set such flag and hence the loop will be broke=
+n.
 
-I think it would make sense to fold this into "[PATCH 04/27] tty:
-make tty_operations::send_xchar accept u8 char".
+I hope we don't leak set_bit MD_RECOVERY_NEEDED to all call
+sites of mddev_resume().
 
-Gr{oetje,eeting}s,
+How about something like the following instead?
 
-                        Geert
+Please also incorporate feedback from Paul in the next version.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Thanks,
+Song
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+diff --git i/drivers/md/md.c w/drivers/md/md.c
+index c94373d64f2c..2d53e1b57070 100644
+--- i/drivers/md/md.c
++++ w/drivers/md/md.c
+@@ -490,7 +490,7 @@ int mddev_suspend(struct mddev *mddev, bool interruptib=
+le)
+ }
+ EXPORT_SYMBOL_GPL(mddev_suspend);
+
+-void mddev_resume(struct mddev *mddev)
++static void __mddev_resume(struct mddev *mddev, bool recovery_needed)
+ {
+        lockdep_assert_not_held(&mddev->reconfig_mutex);
+
+@@ -507,12 +507,18 @@ void mddev_resume(struct mddev *mddev)
+        percpu_ref_resurrect(&mddev->active_io);
+        wake_up(&mddev->sb_wait);
+
+-       set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
++       if (recovery_needed)
++               set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
+        md_wakeup_thread(mddev->thread);
+        md_wakeup_thread(mddev->sync_thread); /* possibly kick off a reshap=
+e */
+
+        mutex_unlock(&mddev->suspend_mutex);
+ }
++
++void mddev_resume(struct mddev *mddev)
++{
++       __mddev_resume(mddev, true);
++}
+ EXPORT_SYMBOL_GPL(mddev_resume);
+
+ /*
+@@ -9403,7 +9409,9 @@ static void md_start_sync(struct work_struct *ws)
+                goto not_running;
+        }
+
+-       suspend ? mddev_unlock_and_resume(mddev) : mddev_unlock(mddev);
++       mddev_unlock(mddev);
++       if (suspend)
++               __mddev_resume(mddev, false);
+        md_wakeup_thread(mddev->sync_thread);
+        sysfs_notify_dirent_safe(mddev->sysfs_action);
+        md_new_event();
+@@ -9415,7 +9423,9 @@ static void md_start_sync(struct work_struct *ws)
+        clear_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+        clear_bit(MD_RECOVERY_CHECK, &mddev->recovery);
+        clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+-       suspend ? mddev_unlock_and_resume(mddev) : mddev_unlock(mddev);
++       mddev_unlock(mddev);
++       if (suspend)
++               __mddev_resume(mddev, false);
+
+        wake_up(&resync_wait);
+        if (test_and_clear_bit(MD_RECOVERY_RECOVER, &mddev->recovery) &&
