@@ -2,92 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39698806A43
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E2A806A45
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377119AbjLFJB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:01:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
+        id S1346670AbjLFJCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:02:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLFJB5 (ORCPT
+        with ESMTP id S1377144AbjLFJCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:01:57 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9033A19AE;
-        Wed,  6 Dec 2023 01:02:01 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B68m20f018926;
-        Wed, 6 Dec 2023 09:02:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=ABnlKyy3xcPzTAvTlIEIOdRTL3YhRZabOC0JsEORLd8=;
- b=MV5/DkUatUooXjyUuW++zLHfO8BOVb4iviffw4yWhRwhXOxkg67a2OO/kFmNTwHS23a8
- oRq81BbaFiPTIzJXfubNExzwqjXCNraoLy/2N6pFgEvGj9oNDMGMtW4Y91gHHhdaYleS
- HgJ6uVL3Vy6Ou77KVBc8LIfWwDM0xpY+y8PKvyium+zjF4gSJVOq10gNOKlIm7lWe6hv
- L8bUQczFvJGhnjnes7UdLpCpoJBjty9VwphKlIfPbTC0O8BkHdUjWRZh85hp7gO2oTnO
- sVPHJSE5I4eGEBR96EI6lZ1pjvWoeRqjrYVtHkdUnVr7NAI62mPw1UHR2GQkk4YHrUwf ow== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3utnru0hgy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 09:01:59 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B68eIqv017788;
-        Wed, 6 Dec 2023 09:01:28 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3utav2b9xn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 09:01:28 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B691LO413238968
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Dec 2023 09:01:21 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BDAE2004B;
-        Wed,  6 Dec 2023 09:01:21 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7506A20040;
-        Wed,  6 Dec 2023 09:01:20 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.179.9.211])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed,  6 Dec 2023 09:01:20 +0000 (GMT)
-Date:   Wed, 6 Dec 2023 10:01:18 +0100
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux390-list@tuxmaker.boeblingen.de.ibm.com,
-        kvm390-list@tuxmaker.boeblingen.de.ibm.com, hca@linux.ibm.com,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, nrb@linux.ibm.com,
-        nsg@linux.ibm.com, svens@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com
-Subject: Re: [PATCH v1 1/1] s390: mm: convert pgste locking functions to C
-Message-ID: <ZXA4XkU0M1BZ5R5k@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-Mail-Followup-To: Alexander Gordeev <agordeev@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux390-list@tuxmaker.boeblingen.de.ibm.com,
-        kvm390-list@tuxmaker.boeblingen.de.ibm.com, hca@linux.ibm.com,
-        borntraeger@de.ibm.com, frankja@linux.ibm.com, nrb@linux.ibm.com,
-        nsg@linux.ibm.com, svens@linux.ibm.com, gor@linux.ibm.com,
-        gerald.schaefer@linux.ibm.com
-References: <20231205173252.62305-1-imbrenda@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205173252.62305-1-imbrenda@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 7xU8E8UIsYPsx-OAM8UiQ0nq83LgGxBi
-X-Proofpoint-GUID: 7xU8E8UIsYPsx-OAM8UiQ0nq83LgGxBi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_06,2023-12-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 mlxscore=0 adultscore=0 mlxlogscore=346 suspectscore=0
- phishscore=0 malwarescore=0 bulkscore=0 spamscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312060073
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 6 Dec 2023 04:02:50 -0500
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C345DD62;
+        Wed,  6 Dec 2023 01:02:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Content-Type:From:Mime-Version:Subject:Date:
+        Message-Id; bh=bSXEOtYvTrwoUoXd1xh88uMJIjGpO/qF5Wv13PfY9Rs=; b=c
+        gP78LhuN7x6FQstyZBJFesSlH0rZOkb8F6XwZdNye+SDrAo+BA/+Jt7UMHCgoSE1
+        gPVi888MJxHGdM2MmK7F7c4+hZMQbebG3ZSXxoHMNH/JkSqGxKvzGY+O/u9IsVkT
+        KaUC9SG6usfmg2b9Tcz+MuNRYa32SOZ9gnV4qgz73o=
+Received: from smtpclient.apple (unknown [223.104.132.42])
+        by zwqz-smtp-mta-g4-3 (Coremail) with SMTP id _____wAHD6+kOHBlnYMHDA--.36351S2;
+        Wed, 06 Dec 2023 17:02:30 +0800 (CST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Hao Ge <gehao618@163.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] fs/namei: Don't update atime when some errors occur in get_link
+Date:   Wed, 6 Dec 2023 17:02:18 +0800
+Message-Id: <C295D5E9-ED04-48AD-AA4F-70803429D289@163.com>
+References: <20231205-endstadium-teich-d8d0bc900e08@brauner>
+Cc:     Hao Ge <gehao@kylinos.cn>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231205-endstadium-teich-d8d0bc900e08@brauner>
+To:     Christian Brauner <brauner@kernel.org>
+X-Mailer: iPhone Mail (21A360)
+X-CM-TRANSID: _____wAHD6+kOHBlnYMHDA--.36351S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7XFyxWryfGr13Zw43Cr17Wrg_yoW3Xrg_uF
+        sY9a1vkw13JrW5A39rWF4Fyrs0qa93Wr1UJ3s8K3WUZF43X3ZxJr1rGayfArnrX39rKa4r
+        X3Wjvw1qqw13CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0nvtJUUUUU==
+X-Originating-IP: [223.104.132.42]
+X-CM-SenderInfo: 5jhkt0qwryqiywtou0bp/xS2Bgho+Flc67gXv7QABs1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,21 +55,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 06:32:52PM +0100, Claudio Imbrenda wrote:
 
-(Internal lists only)
 
-...
-> +	do {
-> +		value = __atomic64_or_barrier(PGSTE_PCL_BIT, ptr);
+> On Dec 5, 2023, at 19:07, Christian Brauner <brauner@kernel.org> wrote:
+>=20
+> =EF=BB=BFOn Tue, Dec 05, 2023 at 03:17:33PM +0800, Hao Ge wrote:
+>> Perhaps we have some errors occur(like security),then we don't update
+>> atime,because we didn't actually access it
+>>=20
+>> Signed-off-by: Hao Ge <gehao@kylinos.cn>
+>> ---
+>=20
+> We didn't follow the link but we accessed it. I guess it's not completey
+> clear what's correct here so I'd just leave it as is.
+Hi brauner
+Thank your for your reply.
+I just thought of a situation that user access a link failed due to some err=
+or(like permission issue),maybe report some error to user, actually user don=
+=E2=80=99t get anything,but atime still update.
+Maybe your are right,after all,we still tried to visit.
+Thanks
+Best Regards=20
+Hao=
 
-Would it make sense to cpu_relax() here, e.g with a follow-up patch?
-
-> +	} while (value & PGSTE_PCL_BIT);
-> +	value |= PGSTE_PCL_BIT;
->  #endif
-> -	return __pgste(new);
-> +	return __pgste(value);
->  }
-
-Thanks!
