@@ -2,268 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47123807A9F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D561807AA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:43:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377160AbjLFVjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:39:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
+        id S229679AbjLFVms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:42:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjLFVjn (ORCPT
+        with ESMTP id S229455AbjLFVmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:39:43 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB6AD1;
-        Wed,  6 Dec 2023 13:39:49 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1d03bcf27e9so2126685ad.0;
-        Wed, 06 Dec 2023 13:39:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701898788; x=1702503588; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QjTiKTTNoFwqsK54uc+2vEdGntF3HRgfWaG2KiC6D/8=;
-        b=V4pvCceCY5HpU9DplcgINfG3ZeBbsdOSu87k9nmgDc5VaVhNEjYWDbDadgBw0XVYCz
-         XzcT15uKLm+E+vTMXXrrwQDGxZPX8Qn+lbqR/TfvI6/uU7uxDwU3dLjXFtxo2ivafJbG
-         iXSWzVpoYLYX8OOenSts/njqC/lW8HMHNTTdHswlVVD+duciLhGMZwvLuM2510Kpp7G6
-         tZBdS6HqRNCOhIXPD3eS4USKqJVOFB9LU8IJBhuaCE7SJN1DeVNTdLcJwg+ycKtP8Gb3
-         VUOdPQ2VnCgcygj4t6dXxDm9qqkLeepK6Rn/Sv67JazwNvLTFvet1ifA6F4sDr0ACgaS
-         9WBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701898788; x=1702503588;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QjTiKTTNoFwqsK54uc+2vEdGntF3HRgfWaG2KiC6D/8=;
-        b=AJohKknTlhG6FKTJpLe4P2JrSF516euN6FDOgtB02ffVzf6BCTL/g9PlGJfNgLF4Jm
-         P2eJhZjR9BQPCxGzM+tKWo81R85lxBRlSdZmych4eTB+8WSpL4KWFszrSwWjZN2utQBJ
-         6zgO8fK+SdTcDw/r3aW2sriV/hyTuQO+somDcb5nmyJeplpyYQKpDq3+qQPdBDmpMdQG
-         5oA6OmQvsTZqC7HGcLb8mgKXTYzTg161XMT89OFva0moMpNNFMwg9/G89su2bDD6l+7k
-         MiM2HcY1/f6rqLEpRCvF21NVwLwbF7MEVf6/iB2Vw2VwMByDUg0bkwmvE16qK/vazVlI
-         MijQ==
-X-Gm-Message-State: AOJu0Yy+Gr1x57j4YIHzAFXde/85km5MUK7vJMzeLP+tHIv35ZAK7ma5
-        2jIKwXyCk2H1P6VKvz03QF8=
-X-Google-Smtp-Source: AGHT+IHM/gFxzc1tQXIr8ABWFmygLF1QVxfyQEtQjPFTvK42C40xPbStQ4FZyczTf3oRq2kwBC+QNg==
-X-Received: by 2002:a17:902:b90c:b0:1d0:b926:bbcd with SMTP id bf12-20020a170902b90c00b001d0b926bbcdmr1379659plb.54.1701898788518;
-        Wed, 06 Dec 2023 13:39:48 -0800 (PST)
-Received: from MacBook-Pro-49.local ([2620:10d:c090:500::4:8a5f])
-        by smtp.gmail.com with ESMTPSA id t12-20020a1709028c8c00b001d077c9a9acsm268249plo.185.2023.12.06.13.39.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 13:39:48 -0800 (PST)
-Date:   Wed, 6 Dec 2023 13:39:43 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-        Song Liu <songliubraving@meta.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <llvm@lists.linux.dev>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Joao Moreira <joao@overdrivepizza.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
-References: <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
- <20231204183354.GC7299@noisy.programming.kicks-ass.net>
- <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net>
- <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+        Wed, 6 Dec 2023 16:42:46 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FDB98;
+        Wed,  6 Dec 2023 13:42:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701898972; x=1733434972;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/wvQNefmrWV1INKaH/TuPyztXWQSTC9DZZffyWof5es=;
+  b=FqcD98ai6cGKTHjiQAaWpuC8k+vJvs89WF0qREJTs0FZ47GPBvFwzlQ9
+   oXcY0zD60Pg7QZmgFvwalJTt52KAiI9qZ0GlWD8/AUav/Gg6s5U+MWxmm
+   l5oGRn2EuGM/rh48Mi+PB6oM8DIJ46YPPY5dAIdoQL4TFHierdtEEywkS
+   bQas6jb33H9qf/LNDOfeiZ2W1btIhsF5471aodp+97gBxzwm6KvEJmS2U
+   Dsg+NeOEqLnvHTIYJR2SSlmmybmZaDSB6fObAd8P7+oWMZ/arvSmJAMC5
+   IClL2C4/B48ib2OEyofnQwF96WXxz1+jkLHg3v+7dyxj9zjQM1NWrkfUo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="384532494"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="384532494"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 13:42:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="19457631"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 06 Dec 2023 13:42:49 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAzfJ-000BSs-3D;
+        Wed, 06 Dec 2023 21:42:45 +0000
+Date:   Thu, 7 Dec 2023 05:41:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+        Josua Mayer <josua@solid-run.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        kernel@pengutronix.de,
+        Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH] net: rfkill: gpio: set GPIO direction
+Message-ID: <202312070522.71CNBJ25-lkp@intel.com>
+References: <20231206131336.3099727-1-r.czerwinski@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231206183713.GA35897@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231206131336.3099727-1-r.czerwinski@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 07:37:13PM +0100, Peter Zijlstra wrote:
-> On Wed, Dec 06, 2023 at 05:38:14PM +0100, Peter Zijlstra wrote:
-> > On Mon, Dec 04, 2023 at 05:18:31PM -0800, Alexei Starovoitov wrote:
-> > 
-> > > [   13.978497]  ? asm_exc_invalid_op+0x1a/0x20
-> > > [   13.978798]  ? tcp_set_ca_state+0x51/0xd0
-> > > [   13.979087]  tcp_v6_syn_recv_sock+0x45c/0x6c0
-> > > [   13.979401]  tcp_check_req+0x497/0x590
-> > 
-> > > The stack trace doesn't have any bpf, but it's a bpf issue too.
-> > > Here tcp_set_ca_state() calls
-> > > icsk->icsk_ca_ops->set_state(sk, ca_state);
-> > > which calls bpf prog via bpf trampoline.
-> > 
-> > 
-> > 
-> > Specifically, I think this is
-> > tools/testing/selftests/bpf/progs/bpf_cubic.c, which has:
-> > 
-> >         .set_state      = (void *)bpf_cubic_state,
-> > 
-> > which comes from:
-> > 
-> > BPF_STRUCT_OPS(bpf_cubic_state, struct sock *sk, __u8 *new_state)
-> > 
-> > which then wraps:
-> > 
-> > BPF_PROG()
-> > 
-> > which ends up generating:
-> > 
-> > static __always_inline ___bpf_cubic_state(unsigned long long *ctx, struct sock *sk, __u8 *new_state)
-> > {
-> > 	...
-> > }
-> > 
-> > void bpf_cubic_state(unsigned long long *ctx)
-> > {
-> > 	return ____bpf_cubic_state(ctx, ctx[0], ctx[1]);
-> > }
+Hi Rouven,
 
-Yep. That's correct.
+kernel test robot noticed the following build warnings:
 
-> > I think this then uses arch_prepare_bpf_trampoline(), but I'm entirely
-> > lost how this all comes together, because the way I understand it the
-> > whole bpf_trampoline is used to hook into an ftrace __fentry hook.
-> > 
-> > And a __fentry hook is very much not a function pointer. Help!?!?
-> 
-> kernel/bpf/bpf_struct_ops.c:bpf_struct_ops_prepare_trampoline()
-> 
-> And yeah, it seems to use the ftrace trampoline for indirect calls here,
-> *sigh*.
+[auto build test WARNING on 994d5c58e50e91bb02c7be4a91d5186292a895c8]
 
-Not quite.
-bpf_struct_ops_prepare_trampoline() prepares a trampoline that does conversion
-from native calling convention to bpf calling convention.
-We could have optimized it for the case of x86-64 and num_args <= 5 and it would
-be a nop trampoline, but so far it's generic and works on x86-64, arm64, etc.
-There were patches posted to make it work on 32-bit archs too (not landed yet).
-All native args are stored one by one into u64 ctx[0], u64 ctx[1], on stack
-and then bpf prog is called with a single ctx pointer.
-For example for the case of
-struct tcp_congestion_ops {
-  void (*set_state)(struct sock *sk, u8 new_state);
-}
-The translation of 'sk' into ctx[0] is based on 'struct btf_func_model' which
-is discovered from 'set_state' func prototype as stored in BTF.
-So the trampoline for set_state, copies %rdi into ctx[0] and %rsi into ctx[1]
-and _directly_ calls bpf_cubic_state().
-Note arch_prepare_bpf_trampoline() emits ENDBR as the first insn,
-because the pointer to this trampoline is directly stored in 'struct tcp_congestion_ops'.
-Later from TCP stack point of view 'icsk_ca_ops' are exactly the same for
-built-in cong controls (CCs), kernel module's CCs and bpf-based CCs.
-All calls to struct tcp_congestion_ops callbacks are normal indirect calls.
-Different CCs have different struct tcp_congestion_ops with their own
-pointers to functions, of course.
-There is no ftrace here at all. No .text live patching either.
+url:    https://github.com/intel-lab-lkp/linux/commits/Rouven-Czerwinski/net-rfkill-gpio-set-GPIO-direction/20231206-211525
+base:   994d5c58e50e91bb02c7be4a91d5186292a895c8
+patch link:    https://lore.kernel.org/r/20231206131336.3099727-1-r.czerwinski%40pengutronix.de
+patch subject: [PATCH] net: rfkill: gpio: set GPIO direction
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231207/202312070522.71CNBJ25-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231207/202312070522.71CNBJ25-lkp@intel.com/reproduce)
 
-All is ok until kCFI comes into picture.
-Here we probably need to teach arch_prepare_bpf_trampoline() to emit
-different __kcfi_typeid depending on kernel function proto,
-so that caller hash checking logic won't be tripped.
-I suspect that requires to reverse engineer an algorithm of computing kcfi from clang.
-other ideas?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312070522.71CNBJ25-lkp@intel.com/
 
-> > The other case:
-> > 
-> > For tools/testing/selftests/bpf/progs/bloom_filter_bench.c we have:
-> > 
-> >         bpf_for_each_map_elem(&array_map, bloom_callback, &data, 0);
-> > 
-> > and here bloom callback appears like a normal function:
-> > 
-> > static __u64
-> > bloom_callback(struct bpf_map *map, __u32 *key, void *val,
-> >                struct callback_ctx *data)
-> > 
-> > 
-> > But what do functions looks like in the JIT? What's the actual address
-> > that's then passed into the helper function. Given this seems to work
-> > without kCFI, it should at least have an ENDBR, but there's only 3 of
-> > those afaict:
+All warnings (new ones prefixed by >>):
 
-Right. That is very different from struct_ops/trampoline.
-There is no trampoline here at all.
-A bpf prog is JITed as normal, but its prototype is technically bpf_callback_t.
-We do the same JITing for all progs. Both main entry prog and subprograms.
-They all are treated as accepting 5 u64 args and returning single u64.
-For the main prog the prototype:
-bpf_prog_runX(u64 *regs, const struct bpf_insn *insn)
-is partially true, since 2nd arg is never used and the 1st arg is 'ctx'.
-So from x86-64 JIT pov there is no difference whether it's single 8-byte arg
-or five 8-byte args.
+>> net/rfkill/rfkill-gpio.c:129:6: warning: variable 'ret' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+     129 |         if (rfkill->reset_gpio)
+         |             ^~~~~~~~~~~~~~~~~~
+   net/rfkill/rfkill-gpio.c:131:6: note: uninitialized use occurs here
+     131 |         if (ret)
+         |             ^~~
+   net/rfkill/rfkill-gpio.c:129:2: note: remove the 'if' if its condition is always true
+     129 |         if (rfkill->reset_gpio)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~
+     130 |                 ret = gpiod_direction_output(rfkill->reset_gpio, true);
+         | ~~~~~~~~~~~~~~~~
+   net/rfkill/rfkill-gpio.c:82:9: note: initialize the variable 'ret' to silence this warning
+      82 |         int ret;
+         |                ^
+         |                 = 0
+   1 warning generated.
 
-In the case of bpf_for_each_map_elem() the 'bloom_callback' is a subprog
-of bpf_callback_t type.
-So the kernel is doing:
-                ret = callback_fn((u64)(long)map, (u64)(long)&key,
-                                  (u64)(long)val, (u64)(long)callback_ctx, 0);
-and that works on all archs including 32-bit.
-The kernel is doing conversion from native calling convention to bpf calling convention
-and for lucky archs like x86-64 the conversion is a true nop.
-It's a plain indirect call to JITed bpf prog.
-Note there is no interpreter support here. This works on archs with JITs only.
-No ftrace and no trampoline.
 
-This case is easier to make work with kCFI.
-The JIT will use:
-cfi_bpf_hash:
-      .long   __kcfi_typeid___bpf_prog_runX  
-like your patch already does.
-And will use
-extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
-cfi_bpf_subprog_hash:
-      .long   __kcfi_typeid___bpf_callback_fn
-to JIT all subprogs. See bpf_is_subprog().
-Which shouldn't be too difficult to add.
-We'd need to tweak the verifier to make sure bpf_for_each_map_elem and friends
-never callback the main subprog which is technically the case today.
-Just need to add more guardrails.
-I can work on this.
+vim +129 net/rfkill/rfkill-gpio.c
 
-btw there are two patchsets in progress that will touch core bits of JITs.
-This one:
-https://patchwork.kernel.org/project/netdevbpf/cover/20231201190654.1233153-1-song@kernel.org/
-and this one:
-https://patchwork.kernel.org/project/netdevbpf/cover/20231011152725.95895-1-hffilwlqm@gmail.com/
+    74	
+    75	static int rfkill_gpio_probe(struct platform_device *pdev)
+    76	{
+    77		struct rfkill_gpio_data *rfkill;
+    78		struct gpio_desc *gpio;
+    79		const char *name_property;
+    80		const char *type_property;
+    81		const char *type_name;
+    82		int ret;
+    83	
+    84		rfkill = devm_kzalloc(&pdev->dev, sizeof(*rfkill), GFP_KERNEL);
+    85		if (!rfkill)
+    86			return -ENOMEM;
+    87	
+    88		if (dev_of_node(&pdev->dev)) {
+    89			name_property = "label";
+    90			type_property = "radio-type";
+    91		} else {
+    92			name_property = "name";
+    93			type_property = "type";
+    94		}
+    95		device_property_read_string(&pdev->dev, name_property, &rfkill->name);
+    96		device_property_read_string(&pdev->dev, type_property, &type_name);
+    97	
+    98		if (!rfkill->name)
+    99			rfkill->name = dev_name(&pdev->dev);
+   100	
+   101		rfkill->type = rfkill_find_type(type_name);
+   102	
+   103		if (ACPI_HANDLE(&pdev->dev)) {
+   104			ret = rfkill_gpio_acpi_probe(&pdev->dev, rfkill);
+   105			if (ret)
+   106				return ret;
+   107		}
+   108	
+   109		rfkill->clk = devm_clk_get(&pdev->dev, NULL);
+   110	
+   111		gpio = devm_gpiod_get_optional(&pdev->dev, "reset", GPIOD_ASIS);
+   112		if (IS_ERR(gpio))
+   113			return PTR_ERR(gpio);
+   114	
+   115		rfkill->reset_gpio = gpio;
+   116	
+   117		gpio = devm_gpiod_get_optional(&pdev->dev, "shutdown", GPIOD_ASIS);
+   118		if (IS_ERR(gpio))
+   119			return PTR_ERR(gpio);
+   120	
+   121		rfkill->shutdown_gpio = gpio;
+   122	
+   123		/* Make sure at-least one GPIO is defined for this instance */
+   124		if (!rfkill->reset_gpio && !rfkill->shutdown_gpio) {
+   125			dev_err(&pdev->dev, "invalid platform data\n");
+   126			return -EINVAL;
+   127		}
+   128	
+ > 129		if (rfkill->reset_gpio)
+   130			ret = gpiod_direction_output(rfkill->reset_gpio, true);
+   131		if (ret)
+   132			return ret;
+   133	
+   134		if (rfkill->shutdown_gpio)
+   135			ret = gpiod_direction_output(rfkill->shutdown_gpio, true);
+   136		if (ret)
+   137			return ret;
+   138	
+   139		rfkill->rfkill_dev = rfkill_alloc(rfkill->name, &pdev->dev,
+   140						  rfkill->type, &rfkill_gpio_ops,
+   141						  rfkill);
+   142		if (!rfkill->rfkill_dev)
+   143			return -ENOMEM;
+   144	
+   145		ret = rfkill_register(rfkill->rfkill_dev);
+   146		if (ret < 0)
+   147			goto err_destroy;
+   148	
+   149		platform_set_drvdata(pdev, rfkill);
+   150	
+   151		dev_info(&pdev->dev, "%s device registered.\n", rfkill->name);
+   152	
+   153		return 0;
+   154	
+   155	err_destroy:
+   156		rfkill_destroy(rfkill->rfkill_dev);
+   157	
+   158		return ret;
+   159	}
+   160	
 
-so do you mind resending your current set with get_cfi_offset() change and
-I can land it into bpf-next, so we can fix one bug at a time,
-build on top, and avoid conflicts?
-The more we dig the more it looks like that the follow up you planned to do
-on top of this set isn't going to happen soon.
-So should be ok going through bpf-next and then you can follow up with x86 things
-after merge window?
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
