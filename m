@@ -2,66 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A15BB8067BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BB18067BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376837AbjLFGsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 01:48:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44118 "EHLO
+        id S1376871AbjLFGvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 01:51:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjLFGr6 (ORCPT
+        with ESMTP id S229520AbjLFGu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 01:47:58 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB211B5;
-        Tue,  5 Dec 2023 22:48:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701845285; x=1733381285;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=31X1TWrsJxin+f+eEFIJ23ndoGZuq9yKYHwAu/cTynM=;
-  b=QFXp1wcWYYCPxISuORclhkhCIQ2CwSGqLnuab7fEa8sftyYI/IIgm5Dn
-   A22BN736/SNM6VnbT5hmS8gVy8G7WDQ14KssSDM7oXu61Cwp+ZrFUrxii
-   GtxRqKRPIisODGvUxL0ip2GGdYTfXOzEyRBdlwGabgHy65m8DnAbXSLqG
-   NrUm7t7ppKVSqLKztH6l0j7Rhb1xv0s4hfG2w2/d3C502blzWvyWLuwff
-   FXpXdRMGE2G3D5t05EbPBfsDxEsSKKUOVZQvEmitHb0At/ptdXe+MOqFZ
-   O17wWLdHzwYIySTcp7tpnqYoVvyle5Qk6cDA0OBE/hEh/hcg7DnWO9uL/
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="458338509"
-X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
-   d="scan'208";a="458338509"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 22:48:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="774895857"
-X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
-   d="scan'208";a="774895857"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 22:48:01 -0800
-Message-ID: <dc599704-5e24-4cbd-8b47-48049b83b01f@linux.intel.com>
-Date:   Wed, 6 Dec 2023 14:47:58 +0800
+        Wed, 6 Dec 2023 01:50:58 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D7C1B5;
+        Tue,  5 Dec 2023 22:51:03 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SlSjG1jDFz4f3jRC;
+        Wed,  6 Dec 2023 14:50:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 64F101A09DB;
+        Wed,  6 Dec 2023 14:51:00 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgA3iA7QGXBlJV2DCw--.10265S3;
+        Wed, 06 Dec 2023 14:50:59 +0800 (CST)
+Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
+To:     Christoph Hellwig <hch@infradead.org>,
+        Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
+        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
+        willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
+        p.raghav@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+ <20231205123728.1866699-2-yukuai1@huaweicloud.com>
+ <ZXARKD0OmjLrvHmU@infradead.org>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <aafabc6e-fd98-f927-44d7-3ef76e2acaf8@huaweicloud.com>
+Date:   Wed, 6 Dec 2023 14:50:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v17 013/116] KVM: TDX: Add helper functions to print TDX
- SEAMCALL error
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1699368322.git.isaku.yamahata@intel.com>
- <c81e63be8ecaceb5df49d6355cc091c7966afe4e.1699368322.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <c81e63be8ecaceb5df49d6355cc091c7966afe4e.1699368322.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <ZXARKD0OmjLrvHmU@infradead.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgA3iA7QGXBlJV2DCw--.10265S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw4kZFWUAFyktr1fCw45KFg_yoW7Gr47pr
+        yUKFy5trWDJryI9rs2qw4UAw1Iqw1ftF4xZr93A3sxA390krn2kF48Kay5Cayxtw4vkF4q
+        vF4jvrW3Zr1j9rJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9I14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+        67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+        4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_
+        WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+        IYCTnIWIevJa73UjIFyTuYvjfUojjgUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,84 +86,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+ÔÚ 2023/12/06 14:14, Christoph Hellwig Ð´µÀ:
+>> +void invalidate_bdev_range(struct block_device *bdev, pgoff_t start,
+>> +			   pgoff_t end)
+>> +{
+>> +	invalidate_mapping_pages(bdev->bd_inode->i_mapping, start, end);
+>> +}
+>> +EXPORT_SYMBOL_GPL(invalidate_bdev_range);
+> 
+> All these could probably use kerneldoc comments.
 
-On 11/7/2023 10:55 PM, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
->
-> Add helper functions to print out errors from the TDX module in a uniform
-> manner.
+Ok, and thanks for reviewing the patchset!
+> 
+> For this one I really don't like it existing at all, but we'll have to
+> discuss that in the btrfs patch.
+> 
+>> +loff_t bdev_size(struct block_device *bdev)
+>> +{
+>> +	loff_t size;
+>> +
+>> +	spin_lock(&bdev->bd_size_lock);
+>> +	size = i_size_read(bdev->bd_inode);
+>> +	spin_unlock(&bdev->bd_size_lock);
+>> +
+>> +	return size;
+>> +}
+>> +EXPORT_SYMBOL_GPL(bdev_size);
+> 
+> No need for this one.  The callers can simply use bdev_nr_bytes.
 
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
->
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/Makefile        |  2 +-
->   arch/x86/kvm/vmx/tdx_error.c | 20 ++++++++++++++++++++
->   arch/x86/kvm/vmx/tdx_ops.h   |  5 +++++
->   3 files changed, 26 insertions(+), 1 deletion(-)
->   create mode 100644 arch/x86/kvm/vmx/tdx_error.c
->
-> diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-> index 4b01ab842ab7..e3354b784e10 100644
-> --- a/arch/x86/kvm/Makefile
-> +++ b/arch/x86/kvm/Makefile
-> @@ -25,7 +25,7 @@ kvm-$(CONFIG_KVM_SMM)	+= smm.o
->   kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
->   			   vmx/hyperv.o vmx/nested.o vmx/posted_intr.o vmx/main.o
->   kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
-> -kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o
-> +kvm-intel-$(CONFIG_INTEL_TDX_HOST)	+= vmx/tdx.o vmx/tdx_error.o
->   
->   kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
->   			   svm/sev.o svm/hyperv.o
-> diff --git a/arch/x86/kvm/vmx/tdx_error.c b/arch/x86/kvm/vmx/tdx_error.c
-> new file mode 100644
-> index 000000000000..d083c79a2331
-> --- /dev/null
-> +++ b/arch/x86/kvm/vmx/tdx_error.c
-> @@ -0,0 +1,20 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* functions to record TDX SEAMCALL error */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/bug.h>
-> +
-> +#include "tdx_ops.h"
-> +
-> +void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out)
-> +{
-> +	if (!out) {
-> +		pr_err_ratelimited("SEAMCALL[%lld] failed: 0x%llx\n",
-> +				   op, error_code);
-> +		return;
-> +	}
-> +
-> +#define MSG	"SEAMCALL[%lld] failed: 0x%llx RCX 0x%llx RDX 0x%llx R8 0x%llx R9 0x%llx R10 0x%llx R11 0x%llx\n"
-> +	pr_err_ratelimited(MSG, op, error_code, out->rcx, out->rdx, out->r8,
-> +			   out->r9, out->r10, out->r11);
-> +}
-> diff --git a/arch/x86/kvm/vmx/tdx_ops.h b/arch/x86/kvm/vmx/tdx_ops.h
-> index a55977626ae3..c9f74b2400a7 100644
-> --- a/arch/x86/kvm/vmx/tdx_ops.h
-> +++ b/arch/x86/kvm/vmx/tdx_ops.h
-> @@ -10,6 +10,7 @@
->   #include <asm/cacheflush.h>
->   #include <asm/asm.h>
->   #include <asm/kvm_host.h>
-> +#include <asm/tdx.h>
->   
->   #include "tdx_errno.h"
->   #include "tdx_arch.h"
-> @@ -57,6 +58,10 @@ static inline u64 tdx_seamcall(u64 op, u64 rcx, u64 rdx, u64 r8, u64 r9,
->   	return ret;
->   }
->   
-> +#ifdef CONFIG_INTEL_TDX_HOST
-> +void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out);
-> +#endif
-> +
->   static inline u64 tdh_mng_addcx(hpa_t tdr, hpa_t addr)
->   {
->   	clflush_cache_range(__va(addr), PAGE_SIZE);
+Ok, I'll replace it with bdev_nr_bytes.
+> 
+>> +struct folio *bdev_read_folio(struct block_device *bdev, pgoff_t index)
+>> +{
+>> +	return read_mapping_folio(bdev->bd_inode->i_mapping, index, NULL);
+>> +}
+>> +EXPORT_SYMBOL_GPL(bdev_read_folio);
+>> +
+>> +struct folio *bdev_read_folio_gfp(struct block_device *bdev, pgoff_t index,
+>> +				  gfp_t gfp)
+>> +{
+>> +	return mapping_read_folio_gfp(bdev->bd_inode->i_mapping, index, gfp);
+>> +}
+>> +EXPORT_SYMBOL_GPL(bdev_read_folio_gfp);
+> 
+> I think we can just drop bdev_read_folio_gfp. Half of the callers simply
+> pass GPK_KERNEL, and the other half passes GFP_NOFS and could just use
+> memalloc_nofs_save().
+
+I'm a litter confused, so there are 3 use cases:
+1) use GFP_USER, default gfp from bdev_alloc.
+2) use GFP_KERNEL
+3) use GFP_NOFS
+
+I understand that you're suggesting memalloc_nofs_save() to distinguish
+2 and 3, but how can I distinguish 1?
+> 
+>> +void bdev_balance_dirty_pages_ratelimited(struct block_device *bdev)
+>> +{
+>> +	return balance_dirty_pages_ratelimited(bdev->bd_inode->i_mapping);
+>> +}
+>> +EXPORT_SYMBOL_GPL(bdev_balance_dirty_pages_ratelimited);
+> 
+> Hmm, this is just used for block2mtd, and feels a little too low-level
+> to me, as block2mtd really should be using the normal fileread/write
+> APIs.  I guess we'll have to live with it for now if we want to expedite
+> killing off bd_inode.
+> 
+>> +void bdev_correlate_mapping(struct block_device *bdev,
+>> +			    struct address_space *mapping)
+>> +{
+>> +	mapping->host = bdev->bd_inode;
+>> +}
+>> +EXPORT_SYMBOL_GPL(bdev_correlate_mapping);
+> 
+> Maybe associated insted of correlate?  Either way this basically
+> fully exposes the bdev inode again :(
+> 
+>> +gfp_t bdev_gfp_constraint(struct block_device *bdev, gfp_t gfp)
+>> +{
+>> +	return mapping_gfp_constraint(bdev->bd_inode->i_mapping, gfp);
+>> +}
+>> +EXPORT_SYMBOL_GPL(bdev_gfp_constraint);
+> 
+> The right fix here is to:
+> 
+>   - use memalloc_nofs_save in extet instead of using
+>     mapping_gfp_constraint to clear it from the mapping flags
+>   - remove __ext4_sb_bread_gfp and just have buffer.c helper that does
+>     the right thing (either by changing the calling conventions of an
+>     existing one, or adding a new one).
+
+Thanks for the suggestions, but I'm not sure how to do this yet, I must
+read more ext4 code.
+> 
+>> +/*
+>> + * The del_gendisk() function uninitializes the disk-specific data
+>> + * structures, including the bdi structure, without telling anyone
+>> + * else.  Once this happens, any attempt to call mark_buffer_dirty()
+>> + * (for example, by ext4_commit_super), will cause a kernel OOPS.
+>> + * This is a kludge to prevent these oops until we can put in a proper
+>> + * hook in del_gendisk() to inform the VFS and file system layers.
+>> + */
+>> +int bdev_ejected(struct block_device *bdev)
+>> +{
+>> +	struct backing_dev_info *bdi = inode_to_bdi(bdev->bd_inode);
+>> +
+>> +	return bdi->dev == NULL;
+>> +}
+>> +EXPORT_SYMBOL_GPL(bdev_ejected);
+> 
+> And this code in ext4 should just go away entirely.  The bdi should
+> always be valid for a live bdev for years.
+Sounds good, I was confused about this code as well.
+
+> 
+>> --- a/block/bio.c
+>> +++ b/block/bio.c
+>> @@ -1119,6 +1119,7 @@ void bio_add_folio_nofail(struct bio *bio, struct folio *folio, size_t len,
+>>   	WARN_ON_ONCE(off > UINT_MAX);
+>>   	__bio_add_page(bio, &folio->page, len, off);
+>>   }
+>> +EXPORT_SYMBOL_GPL(bio_add_folio_nofail);
+> 
+> How is this realted?  The export is fine, but really should be a
+> separate, well-documented commit.
+
+This is used to replace __bio_add_page() in btrfs while converting page
+to folio, please let me know if I should keep this, if so, I'll split
+this into a new commit.
+> 
+>>   
+>> +static inline u8 block_bits(struct block_device *bdev)
+>> +{
+>> +	return bdev->bd_inode->i_blkbits;
+>> +}
+> 
+> Not sure we should need this.  i_blkbits comes from the blocksize
+> the fs set, so it should have other ways to get at it.
+
+Yes, this is now only used for erofs, and erofs do call
+sb_set_blocksize() while initializing, hence it's right there is other
+way to get blkbits and this helper is not needed.
+
+Thanks,
+Kuai
+
+> .
+> 
 
