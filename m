@@ -2,167 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60496806C4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0EC806C4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377483AbjLFKjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
+        id S1377487AbjLFKjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:39:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377470AbjLFKjf (ORCPT
+        with ESMTP id S1377470AbjLFKjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:39:35 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6E04C7;
-        Wed,  6 Dec 2023 02:39:41 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B68JCxc004087;
-        Wed, 6 Dec 2023 10:38:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=O6lzXcHn/rGUl971MrUkOTA15/uAlQhRI2IsHGhKpy4=;
- b=Gy2A7xkVmgcUsWMX6qnpV3riLaO08f2jUh4IyFJjwrYlhBQb13M2kwhJpUwQz0kkbzOd
- WqRoVWJlxB+PlAlhuaBtXhk5LnS3/Q5HdaGG5RrEY5O/3dVvL1DlkCBWb+RVUQ41udFP
- QzJ9HO+lr/MPATh1SGV4ZbWjP+IVqn0l8qWEo/3ZkQ3T9XZkYR7rqR1NZosBAij13uFl
- /j6lYAG2IrtATV3cMJA3QaeKJBjxW1UeHFiCe73AdoCdecP3Ohb2V0wIKQeymBpVg22Q
- 93McKxlOE2oJPYJVxwIKzdS4071FFyyNDmFfq33rjqusHoZ2RLf/MsVx3gDK/5sahChL gQ== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ute971582-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 10:38:58 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6Acv1d009486
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Dec 2023 10:38:57 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
- 2023 02:38:53 -0800
-Message-ID: <0d66efa6-7697-9314-b649-22cdc4d8fa59@quicinc.com>
-Date:   Wed, 6 Dec 2023 16:08:43 +0530
+        Wed, 6 Dec 2023 05:39:46 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19282D46
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:39:52 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-db979bbae81so2680577276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:39:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701859191; x=1702463991; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iQdifr2abX3HSlYGNn9HZ0F9hnYIWmyEvcln+QnyZu0=;
+        b=ZA0JY6sYzQ/jma2tyO02AcQA7bVyW6bB2WA00xr1dxomv8CTzVw9lCIAJu3BEWSiHt
+         4B7ZHctwldguKE6PEK9VfadO8oZ2KrQsSMzEEHSN7EgMIpJjgqaMdzMtGyZq7+ZKW2hs
+         G2m+o1q241/t1Q9Rq9KG5dq6VQwU4DkV9HuQnLMzh+Y177kuxgwTmoocyNK/qtn0m1+F
+         t92gf18JDNn3eUisFoH/WYKPXll7WXeg2qtd4PmMgTfDMv9+cwwqw7ITtwdCO8NDwx9y
+         3GXJYEedk056RgRkY1cLYo3qiAg6sZF1Nlb6o2TK0phsa1ld6jg8/6JjNZayj9qtD50x
+         61Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701859191; x=1702463991;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iQdifr2abX3HSlYGNn9HZ0F9hnYIWmyEvcln+QnyZu0=;
+        b=l40r+V0FG7z1jjWXGAfSa4iksy3pu9u0NM7zCfUkMYt/U1Mw3cRvnb2CywJyFrl1ve
+         PCy9BAXgbJNsliqTr3reK5ROiQzMknzVULnbKZZ0r6S5CARP9pcQVPcqrJf78Nvewc8h
+         JTteIm5m0i6VrppNVPTtHao2TJu/tj/8F6flZ3Q+avOZZl9hLhkleFQS82dSgTDXvME6
+         XYjb4pqa96eW4+Nx5+e5L+NH6AqPpTF63K3dBQq0luIiap1JF/cpd2EsPQ3qvPw79xIi
+         +nG9XmUFmb1TuRjX14ws0ea6RhrtEftrHYrPY3dUcqY7FgfBUDvy9JQa4iSQ7v/x+B2M
+         ZDMQ==
+X-Gm-Message-State: AOJu0YzN3yqf8qS+kG8jkLcH1Xv7mqwmZpXjO9Ug6qNkNJVmfUO2UYEi
+        FXu3PTPc8zJw3E5RIVPYVMjTKUMqqmnQigRpJ9YFRw==
+X-Google-Smtp-Source: AGHT+IER7xjB5IRLvMGcDEKuvEKxXZVwGUfdzV3VDT1Vsv/pO4A7HLd5GLlUs6A0WBOd00lfCGHWzJj94wiAk/VID7E=
+X-Received: by 2002:a25:1c2:0:b0:db7:dacf:4d65 with SMTP id
+ 185-20020a2501c2000000b00db7dacf4d65mr262941ybb.97.1701859190881; Wed, 06 Dec
+ 2023 02:39:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] soc: qcom: llcc: Fix dis_cap_alloc and retain_on_pc
- configuration
-Content-Language: en-US
-To:     Doug Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>
-CC:     Atul Dhudase <quic_adhudase@quicinc.com>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "andersson@kernel.org" <andersson@kernel.org>,
-        "konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>,
-        "isaacm@codeaurora.org" <isaacm@codeaurora.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231103105712.1159213-1-quic_adhudase@quicinc.com>
- <20231103193345.GY3553829@hu-bjorande-lv.qualcomm.com>
- <5e83d947-c77f-9318-4a4c-377a8304b8fd@quicinc.com>
- <CAE-0n50HwE+gNYotYXduer3b=O+c3ZWLC_8gEmpo0KQmtzmNvQ@mail.gmail.com>
- <d1e3adb5-b179-a119-fc0c-f92c2b84c7c2@quicinc.com>
- <SN4PR0201MB8806AF236D696E15CDC6400CF9A9A@SN4PR0201MB8806.namprd02.prod.outlook.com>
- <CAE-0n50kf82BLXPAAUN+kba9osA-gEetm96tS7aRVzUUNHbCgQ@mail.gmail.com>
- <CAD=FV=W7pjg=vfrkZg4i=YaKpoNT+_hX_3tgDz8VQiH+OquOTQ@mail.gmail.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <CAD=FV=W7pjg=vfrkZg4i=YaKpoNT+_hX_3tgDz8VQiH+OquOTQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: THxCwsxOmNU7qSAhhmmTYS1pOzhQRIDz
-X-Proofpoint-ORIG-GUID: THxCwsxOmNU7qSAhhmmTYS1pOzhQRIDz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_06,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 adultscore=0 impostorscore=0 suspectscore=0 mlxscore=0
- malwarescore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312060087
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231121171643.3719880-1-surenb@google.com> <20231121171643.3719880-6-surenb@google.com>
+ <b3c882d2-0135-430c-8179-784f78be0902@arm.com> <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
+ <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com> <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
+ <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
+ <744be4e0-48e0-4c77-825c-711386dd205f@arm.com> <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
+ <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com> <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
+ <CAJuCfpG=seLkKbMRjwuWNQozGSQmP-JqKVUuCGRqMqxND2u18A@mail.gmail.com>
+ <3ba0015b-b36e-449a-8445-0f6272694db5@redhat.com> <CAJuCfpFPtbZuD53o+jOac97qA6MnK4jTEe5qNrZsH5v-m62oZA@mail.gmail.com>
+In-Reply-To: <CAJuCfpFPtbZuD53o+jOac97qA6MnK4jTEe5qNrZsH5v-m62oZA@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 6 Dec 2023 02:39:39 -0800
+Message-ID: <CAJuCfpHpDKfqHPuxfy1trbeM0LaEGT3J3gH6+2X4+b6-F5fO1Q@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+To:     akpm@linux-foundation.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Ryan Roberts <ryan.roberts@arm.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 6, 2023 at 2:30=E2=80=AFAM Suren Baghdasaryan <surenb@google.co=
+m> wrote:
+>
+> On Wed, Dec 6, 2023 at 1:21=E2=80=AFAM David Hildenbrand <david@redhat.co=
+m> wrote:
+> >
+> > On 05.12.23 05:46, Suren Baghdasaryan wrote:
+> > > On Mon, Dec 4, 2023 at 10:44=E2=80=AFAM Suren Baghdasaryan <surenb@go=
+ogle.com> wrote:
+> > >>
+> > >> On Mon, Dec 4, 2023 at 10:27=E2=80=AFAM David Hildenbrand <david@red=
+hat.com> wrote:
+> > >>>
+> > >>> On 04.12.23 17:35, Suren Baghdasaryan wrote:
+> > >>>> On Mon, Dec 4, 2023 at 1:27=E2=80=AFAM Ryan Roberts <ryan.roberts@=
+arm.com> wrote:
+> > >>>>>
+> > >>>>> On 04/12/2023 04:09, Suren Baghdasaryan wrote:
+> > >>>>>> On Sat, Dec 2, 2023 at 2:11=E2=80=AFAM David Hildenbrand <david@=
+redhat.com> wrote:
+> > >>>>>>>
+> > >>>>>>> On 02.12.23 09:04, Ryan Roberts wrote:
+> > >>>>>>>> On 01/12/2023 20:47, David Hildenbrand wrote:
+> > >>>>>>>>> On 01.12.23 10:29, Ryan Roberts wrote:
+> > >>>>>>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
+> > >>>>>>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move=
+ source
+> > >>>>>>>>>>> into destination buffer while checking the contents of both=
+ after
+> > >>>>>>>>>>> the move. After the operation the content of the destinatio=
+n buffer
+> > >>>>>>>>>>> should match the original source buffer's content while the=
+ source
+> > >>>>>>>>>>> buffer should be zeroed. Separate tests are designed for PM=
+D aligned and
+> > >>>>>>>>>>> unaligned cases because they utilize different code paths i=
+n the kernel.
+> > >>>>>>>>>>>
+> > >>>>>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > >>>>>>>>>>> ---
+> > >>>>>>>>>>>      tools/testing/selftests/mm/uffd-common.c     |  24 +++
+> > >>>>>>>>>>>      tools/testing/selftests/mm/uffd-common.h     |   1 +
+> > >>>>>>>>>>>      tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++=
+++++++++++++++++
+> > >>>>>>>>>>>      3 files changed, 214 insertions(+)
+> > >>>>>>>>>>>
+> > >>>>>>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
+> > >>>>>>>>>>> b/tools/testing/selftests/mm/uffd-common.c
+> > >>>>>>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
+> > >>>>>>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
+> > >>>>>>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
+> > >>>>>>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long o=
+ffset, bool wp)
+> > >>>>>>>>>>>          return __copy_page(ufd, offset, false, wp);
+> > >>>>>>>>>>>      }
+> > >>>>>>>>>>>      +int move_page(int ufd, unsigned long offset, unsigned=
+ long len)
+> > >>>>>>>>>>> +{
+> > >>>>>>>>>>> +    struct uffdio_move uffdio_move;
+> > >>>>>>>>>>> +
+> > >>>>>>>>>>> +    if (offset + len > nr_pages * page_size)
+> > >>>>>>>>>>> +        err("unexpected offset %lu and length %lu\n", offs=
+et, len);
+> > >>>>>>>>>>> +    uffdio_move.dst =3D (unsigned long) area_dst + offset;
+> > >>>>>>>>>>> +    uffdio_move.src =3D (unsigned long) area_src + offset;
+> > >>>>>>>>>>> +    uffdio_move.len =3D len;
+> > >>>>>>>>>>> +    uffdio_move.mode =3D UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
+> > >>>>>>>>>>> +    uffdio_move.move =3D 0;
+> > >>>>>>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
+> > >>>>>>>>>>> +        /* real retval in uffdio_move.move */
+> > >>>>>>>>>>> +        if (uffdio_move.move !=3D -EEXIST)
+> > >>>>>>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
+> > >>>>>>>>>>> +                (int64_t)uffdio_move.move);
+> > >>>>>>>>>>
+> > >>>>>>>>>> Hi Suren,
+> > >>>>>>>>>>
+> > >>>>>>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
+> > >>>>>>>>>>
+> > >>>>>>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (e=
+rrno=3D16,
+> > >>>>>>>>>> @uffd-common.c:648)
+> > >>>>>>>>>>
+> > >>>>>>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged =
+any further, but
+> > >>>>>>>>>> happy to go deeper if you can direct.
+> > >>>>>>>>>
+> > >>>>>>>>> Does it trigger reliably? Which pagesize is that kernel using=
+?
+> > >>>>>>>>
+> > >>>>>>>> Yep, although very occasionally it fails with EAGAIN. 4K kerne=
+l; see other email
+> > >>>>>>>> for full config.
+> > >>>>>>>>
+> > >>>>>>>>>
+> > >>>>>>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fau=
+lt() uses
+> > >>>>>>>>> default_huge_page_size(), which reads the default hugetlb siz=
+e.
+> > >>>>>>>>
+> > >>>>>>>> My kernel command line is explicitly seting the default huge p=
+age size to 2M.
+> > >>>>>>>>
+> > >>>>>>>
+> > >>>>>>> Okay, so that likely won't affect it.
+> > >>>>>>>
+> > >>>>>>> I can only guess that it has to do with the alignment of the vi=
+rtual
+> > >>>>>>> area we are testing with, and that we do seem to get more odd p=
+atterns
+> > >>>>>>> on arm64.
+> > >>>>>>>
+> > >>>>>>> uffd_move_test_common() is a bit more elaborate, but if we alig=
+ned the
+> > >>>>>>> src+start area up, surely "step_count" cannot be left unmodifie=
+d?
+> > >>>>>>>
+> > >>>>>>> So assuming we get either an unaligned source or an unaligned d=
+st from
+> > >>>>>>> mmap(), I am not convinced that we won't be moving areas that a=
+re not
+> > >>>>>>> necessarily fully backed by PMDs and maybe don't even fall into=
+ the VMA
+> > >>>>>>> of interest?
+> > >>>>>>>
+> > >>>>>>> Not sure if that could trigger the THP splitting issue, though.
+> > >>>>>>>
+> > >>>>>>> But I just quickly scanned that test setup, could be I am missi=
+ng
+> > >>>>>>> something. It might make sense to just print the mmap'ed range =
+and the
+> > >>>>>>> actual ranges we are trying to move. Maybe something "obvious" =
+can be
+> > >>>>>>> observed.
+> > >>>>>>
+> > >>>>>> I was able to reproduce the issue on an Android device and after
+> > >>>>>> implementing David's suggestions to split the large folio and af=
+ter
+> > >>>>>> replacing default_huge_page_size() with read_pmd_pagesize(), the
+> > >>>>>> move-pmd test started working for me. Ryan, could you please app=
+ly
+> > >>>>>> attached patches (over mm-unstable) and try the test again?
+> > >>>>>
+> > >>>>> Yep, all fixed with those patches!
+> > >>>>
+> > >>>> Great! Thanks for testing and confirming. I'll post an updated
+> > >>>> patchset later today and will ask Andrew to replace the current on=
+e
+> > >>>> with it.
+> > >>>> I'll also look into the reasons we need to split PMD on ARM64 in t=
+his
+> > >>>> test. It's good that this happened and we were able to test the PM=
+D
+> > >>>> split path but I'm curious about the reason. It's possible my addr=
+ess
+> > >>>> alignment calculations are  somehow incorrect.
+> > >>>
+> > >>> I only skimmed the diff briefly, but likely you also want to try
+> > >>> splitting in move_pages_pte(), if you encounter an already-pte-mapp=
+ed THP.
+> > >>
+> > >> Huh, good point. I might be able to move the folio splitting code in=
+to
+> > >> pte-mapped case and do a retry after splitting. That should minimize
+> > >> the additional code required. Will do and post a new set shortly.
+> > >> Thanks!
+> > >
+> > > Was planning to post an update today but need some more time. Will tr=
+y
+> > > to send it tomorrow.
+> >
+> > It would be great to have tests that cover these cases (having to
+> > PTE-map a PMD-mapped THP, and stumbling over an already-PTE-mapped one)=
+.
+>
+> Agree. Let me post the new version so that mm-unstable does not
+> produce these failures and will start working on covering additional
+> cases in the tests. The new patchset is almost ready, just finishing
+> final tests.
 
+Posted v6 at https://lore.kernel.org/all/20231206103702.3873743-1-surenb@go=
+ogle.com/.
+Changes are listed in the cover letter.
 
-On 12/6/2023 3:34 AM, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Nov 9, 2023 at 12:34 PM Stephen Boyd <swboyd@chromium.org> wrote:
->>
->> Quoting Atul Dhudase (QUIC) (2023-11-07 07:27:54)
->>> Hi,
->>>
->>> On 11/7/2023 6:46 PM, Mukesh Ojha wrote:
->>>> On 11/7/2023 3:25 AM, Stephen Boyd wrote:
->>>>> Quoting Mukesh Ojha (2023-11-05 22:54:28)
->>>>>>
->>>>>>
->>>>>> On 11/4/2023 1:03 AM, Bjorn Andersson wrote:
->>>>>>> On Fri, Nov 03, 2023 at 04:27:12PM +0530, Atul Dhudase wrote:
->>>>>>>> While programming dis_cap_alloc and retain_on_pc, set a bit
->>>>>>>> corresponding to a specific SCID without disturbing the
->>>>>>>> previously configured bits.
->>>>>>>>
->>>>>>>
->>>>>>> As far as I can see, the only invocation of
->>>>>>> _qcom_llcc_cfg_program() comes from qcom_llcc_cfg_program(), which
->>>>>>> is only called once, from qcom_llcc_probe(), and here also seems
->>>>>>> to only be the single write to these two registers.
->>>>>>
->>>>>> It does not look to be single write but the write is for each slice
->>>>>> in the same register which was overriding other slices values.
->>>>>
->>>>> Can you add that detail to the commit text? What's the seriousness
->>>>> of the issue? Why should it be backported to stable? Is something
->>>>> seriously broken because a slice configuration is overwritten? Does
->>>>> it mean that some allocation made in a slice is being lost over
->>>>> power collapse (pc) when it shouldn't be?
->>>>
->>>> @Atul will update the commit text as per suggestion.
->>>>
->>>> And yes, without this change, retention feature will not work properly.
->>>>
->>>> -Mukesh
->>>
->>> Does this commit text make sense? If so, I will update patch accordingly.
->>>
->>> When configuring capacity based allocation and power collapse retention, writing to the same register for each slice caused overwriting of the values for other slices, leading to misconfiguration for majority of the slices.
->>> To address this, only modify the bits associated with each slice while retaining the values of the remaining bits, as they were prior to the Linux configuration.
->>
->> This commit text doesn't say what, if anything, is broken. Does it save
->> power when it didn't before? Why is it critical to backport this to
->> stable kernels? Was the driver overwriting other bits in this register
->> that were critical to power, performance, or correctness? Or was
->> everything working out because the last slice to be written was the only
->> important one?
-> 
-> Whatever happened to this patch? It seemed like it might be important
-> and it never landed. I guess the only thing that was blocking it from
-> landing was some commit text that explained _why_ it was important and
-> that never got written.
-> 
-> I guess Bjorn was also worried that any bits that weren't updated by
-> the kernel would now be left in their default state (however the
-> bootloader left them). It would be good to indicate in the commit text
-> if that matters and what is in those other bits.
+Andrew, could you please replace the current v5 version in mm-unstable
+with this new one?
+Thanks,
+Suren.
 
-Let me add that.
-Completely missed to track this change., Thanks for reminding..
-
--Mukesh
-
-> 
-> 
-> -Doug
+>
+> >
+> > --
+> > Cheers,
+> >
+> > David / dhildenb
+> >
