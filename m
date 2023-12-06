@@ -2,191 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BC78066A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 06:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE098066A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 06:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376716AbjLFFlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 00:41:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        id S1376719AbjLFFjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 00:39:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbjLFFk6 (ORCPT
+        with ESMTP id S230121AbjLFFjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 00:40:58 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81522D3;
-        Tue,  5 Dec 2023 21:41:04 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B64lO5A014334;
-        Wed, 6 Dec 2023 05:36:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=DSEsi6ha8d2Dap2LNtqekCrbHlg2RMsuNLxo/jOQbS4=;
- b=HUTmrx+ngT2R2pX+clnkwa8QshV9gvXuYR3aNBQeXdQF8XbjgpbyMIVpXZSYciofkhu/
- tbjpvN8TycYCUtxIMRF8sw+ZFz/JroVzsHq+dVRecwhknQez72X50IU3o+xDOic7eU8K
- e1eeKnf9Awujf1tH1C8q3RNlB3ZmqSGkX/+14qhWue7N2T/ST7zCD5DAH6xSJ/uHykEp
- acyik2seAgNu/w74BVxkeDDWqnSr7GTBgbPQDSeCNz+iPSkF7hE34DD1KmrLRn/70v1Y
- ec+XmyLWb6GVfHDnWJhz2eJwPDkr4hZBRyIWT6A8UtynTmXds2A6ujn7sBUi8yesNfz/ Ng== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utd1n0p7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 05:36:40 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3B65ablv009558;
-        Wed, 6 Dec 2023 05:36:37 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3uqwnkryxu-1;
-        Wed, 06 Dec 2023 05:36:37 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B65abDk009553;
-        Wed, 6 Dec 2023 05:36:37 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3B65aaCt009552;
-        Wed, 06 Dec 2023 05:36:37 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
-        id C868D5000B1; Wed,  6 Dec 2023 11:06:35 +0530 (+0530)
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, quic_cang@quicinc.com,
-        Nitin Rawat <quic_nitirawa@quicinc.com>,
-        Manish Pandey <quic_mapa@quicinc.com>
-Subject: [PATCH V1] scsi: ufs: core: store min and max clk freq from OPP table
-Date:   Wed,  6 Dec 2023 11:06:28 +0530
-Message-Id: <20231206053628.32169-1-quic_nitirawa@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: JcWSzxgYC0qjNSj5G2k8Q-T0vKclwx2B
-X-Proofpoint-GUID: JcWSzxgYC0qjNSj5G2k8Q-T0vKclwx2B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_04,2023-12-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 impostorscore=0
- priorityscore=1501 adultscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312060045
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Wed, 6 Dec 2023 00:39:10 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D54E1B5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 21:39:15 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40bd5eaa66cso56336475e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 21:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701841153; x=1702445953; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O4u7u9EhMLinCMKXbsJZZCgBovG/kdzoMMlzODKZOcY=;
+        b=jofVXjQav42skNKW3WVLcTJv9Yb1fCMYBw/D+5st8Aa31DdsPJk4pJiyMLALucbvKF
+         rID76S5sQtqqRQw4NkcsIB/vVfYCI7U6UNF3WSSA4RsDe9h20OiAPiso3EMnFtQYtopf
+         n6nMD+O4zp9upBcBtOhgzwj6qFNxXiduWVK1g090cklFyrxIo5yHPilfIr76pCsnUSiU
+         6i3uve0asHudlEEvWvQPNJNwCSvAjdpdX14D0HzdmjzbZ6fsg5tReDzvptCzO2UkB153
+         LCzmhWQRP/ply6rBAhlbsX8ZnmnnoZUp85/JTfvJsfFIGRBAJLAlVnq/xOi9C/37bLbe
+         Qo8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701841153; x=1702445953;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O4u7u9EhMLinCMKXbsJZZCgBovG/kdzoMMlzODKZOcY=;
+        b=DACCH0Ower2lhVtZ9NagBaqGO6g3cZ2sadzSUsjeigGdYWkzlGDeHJPmIOVh9oD/u1
+         WDeRkB1CIbYgRQ8pfx0p9Ap1QuKEgBvJm+HpmmejyA6NrQsHv5eVu1jyQ8yGl6z8W+45
+         plCqX/4xZoGWiCgIXDazvt2oMjljKxWP7rZYrocyL70ppQlG/5j1iWUQSPEQZsJXSfso
+         jgHYiIN+LFtwL4gQafsDmrq8ywgAlFoSB3JidSQNYD7rrAKMbJ88CSwSxQVt6j6VSAuk
+         SU9ZnCTTkwusPXzeWYaJE3U7KXFJhJiUL2N2bDM1zXicmuU+Tf39in8YSVNUYs/ILRbD
+         3BKg==
+X-Gm-Message-State: AOJu0YyEfYBQZo3looSTqs7tAQr2kB3Gx1gTpL2OOF35RDWFElGmXCJP
+        7SE8hUZtPW+VhIyeZOukxzba2g==
+X-Google-Smtp-Source: AGHT+IFAy6YDNnloe+CZg+064fYW1hphxl7Aimv9oj+A8PdlsOtVdmaSug/MC0yOqj37RYmzI49Gwg==
+X-Received: by 2002:a05:600c:4f15:b0:40c:192f:6ae8 with SMTP id l21-20020a05600c4f1500b0040c192f6ae8mr258952wmq.115.1701841153488;
+        Tue, 05 Dec 2023 21:39:13 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id fs16-20020a05600c3f9000b0040b48690c49sm20593171wmb.6.2023.12.05.21.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 21:39:13 -0800 (PST)
+Date:   Wed, 6 Dec 2023 08:39:10 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH v2 5/5] ASoC: codecs: Add WCD939x Codec driver
+Message-ID: <1a09512c-aaff-4fb6-914e-db755ce6e667@suswa.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201-topic-sm8650-upstream-wcd939x-codec-v2-5-94ed814b25aa@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OPP support will make use of OPP table in device tree and removes
-freq-table-hz property from device tree.
+Hi Neil,
 
-With OPP enabled in devicetree, clki->min_freq and clki->maxfreq
-currently is not getting updated and the value is set to 0.
+kernel test robot noticed the following build warnings:
 
-Soc vendors like qcom, mediatek uses clki->minfreq and clki->maxfreq
-in vendor specific file. These frequencies values are used to update
-vendor specific configurations. Since the value is 0, it is causing
-functional issue.
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Add code to store the min and max ufs clk frequency from OPP table.
+url:    https://github.com/intel-lab-lkp/linux/commits/Neil-Armstrong/ASoC-dt-bindings-document-WCD939x-Audio-Codec/20231202-000916
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+patch link:    https://lore.kernel.org/r/20231201-topic-sm8650-upstream-wcd939x-codec-v2-5-94ed814b25aa%40linaro.org
+patch subject: [PATCH v2 5/5] ASoC: codecs: Add WCD939x Codec driver
+config: powerpc64-randconfig-r081-20231204 (https://download.01.org/0day-ci/archive/20231206/202312060127.FLhplIP3-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231206/202312060127.FLhplIP3-lkp@intel.com/reproduce)
 
-Fixes: 72208ebe181e ("scsi: ufs: core: Add support for parsing OPP")
-Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
-Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
-Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
----
- drivers/ufs/host/ufshcd-pltfrm.c | 56 ++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202312060127.FLhplIP3-lkp@intel.com/
 
-diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
-index da2558e274b4..12fa6f7d6a97 100644
---- a/drivers/ufs/host/ufshcd-pltfrm.c
-+++ b/drivers/ufs/host/ufshcd-pltfrm.c
-@@ -13,6 +13,7 @@
- #include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
- #include <linux/of.h>
-+#include <linux/clk.h>
+New smatch warnings:
+sound/soc/codecs/wcd939x.c:3168 wcd939x_typec_mux_set() error: 'wcd939x' dereferencing possible ERR_PTR()
+sound/soc/codecs/wcd939x.c:3221 wcd939x_swap_gnd_mic() warn: signedness bug returning '(-22)'
 
- #include <ufs/ufshcd.h>
- #include "ufshcd-pltfrm.h"
-@@ -213,6 +214,55 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
- 	}
- }
+Old smatch warnings:
+sound/soc/codecs/wcd939x.c:3170 wcd939x_typec_mux_set() error: 'wcd939x' dereferencing possible ERR_PTR()
+sound/soc/codecs/wcd939x.c:3173 wcd939x_typec_mux_set() error: 'wcd939x' dereferencing possible ERR_PTR()
+sound/soc/codecs/wcd939x.c:3174 wcd939x_typec_mux_set() error: 'wcd939x' dereferencing possible ERR_PTR()
+sound/soc/codecs/wcd939x.c:3176 wcd939x_typec_mux_set() error: 'wcd939x' dereferencing possible ERR_PTR()
+sound/soc/codecs/wcd939x.c:3177 wcd939x_typec_mux_set() error: 'wcd939x' dereferencing possible ERR_PTR()
+sound/soc/codecs/wcd939x.c:3179 wcd939x_typec_mux_set() error: 'wcd939x' dereferencing possible ERR_PTR()
 
-+/**
-+ * ufshcd_config_min_max_clk_freq - update min and max freq
-+ * @hba: per adapter instance
-+ *
-+ * This function store min and max freq for all the clocks.
-+ *
-+ * Returns 0 for success and non-zero for failure
-+ */
-+static int ufshcd_config_min_max_clk_freq(struct ufs_hba *hba)
-+{
-+	struct list_head *head = &hba->clk_list_head;
-+	struct dev_pm_opp *opp;
-+	struct ufs_clk_info *clki;
-+	unsigned long freq;
-+	u8 idx = 0;
-+	int ret;
-+
-+	list_for_each_entry(clki, head, list) {
-+		if (!clki->name)
-+			continue;
-+
-+		clki->clk = devm_clk_get(hba->dev, clki->name);
-+		if (!IS_ERR_OR_NULL(clki->clk)) {
-+			/* Find Max Freq */
-+			freq = ULONG_MAX;
-+			opp = dev_pm_opp_find_freq_floor_indexed(hba->dev, &freq, idx);
-+			if (IS_ERR(opp)) {
-+				dev_err(hba->dev, "failed to find dev_pm_opp\n");
-+				ret = PTR_ERR(opp);
-+				return ret;
-+			}
-+			clki->max_freq = dev_pm_opp_get_freq_indexed(opp, idx);
-+
-+			/* Find Min Freq */
-+			freq = 0;
-+			opp = dev_pm_opp_find_freq_ceil_indexed(hba->dev, &freq, idx);
-+			if (IS_ERR(opp)) {
-+				dev_err(hba->dev, "failed to find dev_pm_opp\n");
-+				ret = PTR_ERR(opp);
-+				return ret;
-+			}
-+			clki->min_freq = dev_pm_opp_get_freq_indexed(opp, idx);
-+			idx++;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int ufshcd_parse_operating_points(struct ufs_hba *hba)
- {
- 	struct device *dev = hba->dev;
-@@ -279,6 +329,12 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
- 		return ret;
- 	}
+vim +/wcd939x +3168 sound/soc/codecs/wcd939x.c
 
-+	ret = ufshcd_config_min_max_clk_freq(hba);
-+	if (ret) {
-+		dev_err(dev, "Failed to get min max freq: %d\n", ret);
-+		return ret;
-+	}
-+
- 	hba->use_pm_opp = true;
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3164  static int wcd939x_typec_mux_set(struct typec_mux_dev *mux,
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3165  				 struct typec_mux_state *state)
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3166  {
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3167  	struct wcd939x_priv *wcd939x = typec_mux_get_drvdata(mux);
+6c302e2f95b1d1 Neil Armstrong 2023-12-01 @3168  	unsigned int previous_mode = wcd939x->typec_mode;
 
- 	return 0;
---
-2.17.1
+The Kconfig should probably depend on CONFIG_TYPEC to avoid a crash here.
+
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3169  
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3170  	if (!wcd939x->wcd_mbhc)
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3171  		return -EINVAL;
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3172  
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3173  	if (wcd939x->typec_mode != state->mode) {
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3174  		wcd939x->typec_mode = state->mode;
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3175  
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3176  		if (wcd939x->typec_mode == TYPEC_MODE_AUDIO)
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3177  			return wcd_mbhc_typec_report_plug(wcd939x->wcd_mbhc);
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3178  		else if (previous_mode == TYPEC_MODE_AUDIO)
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3179  			return wcd_mbhc_typec_report_unplug(wcd939x->wcd_mbhc);
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3180  	}
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3181  
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3182  	return 0;
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3183  }
+
+[ snip ]
+
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3216  static bool wcd939x_swap_gnd_mic(struct snd_soc_component *component, bool active)
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3217  {
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3218  	struct wcd939x_priv *wcd939x = snd_soc_component_get_drvdata(component);
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3219  
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3220  	if (!wcd939x->typec_analog_mux || !wcd939x->typec_switch)
+6c302e2f95b1d1 Neil Armstrong 2023-12-01 @3221  		return -EINVAL;
+
+This is type bool.  return false?
+
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3222  
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3223  	/* Report inversion via Type Switch of USBSS */
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3224  	return typec_switch_set(wcd939x->typec_switch,
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3225  				wcd939x->typec_orientation == TYPEC_ORIENTATION_REVERSE ?
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3226  					TYPEC_ORIENTATION_NORMAL : TYPEC_ORIENTATION_REVERSE);
+6c302e2f95b1d1 Neil Armstrong 2023-12-01  3227  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
