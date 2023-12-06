@@ -2,374 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 326D88065DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 460308065E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376351AbjLFDun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 22:50:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58624 "EHLO
+        id S1376461AbjLFDxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 22:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjLFDum (ORCPT
+        with ESMTP id S229570AbjLFDxK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 22:50:42 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04olkn2016.outbound.protection.outlook.com [40.92.45.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFEED40;
-        Tue,  5 Dec 2023 19:50:46 -0800 (PST)
+        Tue, 5 Dec 2023 22:53:10 -0500
+Received: from rcdn-iport-5.cisco.com (rcdn-iport-5.cisco.com [173.37.86.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E44018D;
+        Tue,  5 Dec 2023 19:53:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1841; q=dns/txt; s=iport;
+  t=1701834796; x=1703044396;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=JZhrDtKrJOBIabiyhzTmORAvpCnH1dYSUitnUNAqMZA=;
+  b=dEENiwROLubJgonYu95AwgtUlFHoIxQicgNHYc4Xaev9z/7K6wN+VAL+
+   WkyCYNBUIJoDhZ6yUmdYU8d17/k76ywf0+iWwP/p2Z4M99NH+/CDl6Vng
+   WbUhFBBwHrlHBsBWi1dR2zlImsVlUFC0+SSOmrKARNvc5+4obAtYP/eXK
+   c=;
+X-CSE-ConnectionGUID: 6+NGyz+/R/6br7OLKbjytg==
+X-CSE-MsgGUID: 1+B7K6nzS2aKfsHteUAPSw==
+X-IPAS-Result: =?us-ascii?q?A0AtAABS729lmJxdJa1QCh0BAQEBCQESAQUFAUAlgRYIA?=
+ =?us-ascii?q?QsBgWZSeVsqEkiIHgOETl+GRIIiA51+gSUDVg8BAQENAQFEBAEBhQYChykCJ?=
+ =?us-ascii?q?jQJDgECBAEBAQEDAgMBAQEBAQEBAgEBBQEBAQIBBwQUAQEBAQEBAQEeGQUOE?=
+ =?us-ascii?q?CeFdQiGPQEBAQECARIVEz8FCwIBCBEDAQIBHQEQMh0IAgQOBQgagl6CPCMDA?=
+ =?us-ascii?q?aJNAYFAAoooeIEBM4EBghUFsnmBSAGIDQGKDicbgg2BV4JoPoQWL4QSgi8Ei?=
+ =?us-ascii?q?RoHMoIhgykpkDF+R3AdAwcDfw8rBwQtGwcGCRQtIwZRBCghCRMSPgSBXYFSC?=
+ =?us-ascii?q?n8/Dw4Rgj4iAgc2NhlIglsVDDVKdRAqBBQXgRIEagUWEx43ERIXDQMIdB0CM?=
+ =?us-ascii?q?jwDBQMEMwoSDQshBRRCA0IGSQsDAhoFAwMEgTMFDR4CEBoGDCcDAxJJAhAUA?=
+ =?us-ascii?q?zsDAwYDCzEDMFVEDE8Dax82CTwLBAwfAhseDScjAixCAxEFEgIWAyQWBDYRC?=
+ =?us-ascii?q?QsoAy8GOAITDAYGCV4mFgkEJwMIBANhA0QdQAMLbT01FBsFBGRZBaMxaYIuE?=
+ =?us-ascii?q?kdHASmWI5oWlG0KhA+hQheEAYxzmRKYQqgvAgQCBAUCDgEBBoFjOoFbcBWDI?=
+ =?us-ascii?q?lIZD445k1h2OwIHCwEBAwmKYQEB?=
+IronPort-PHdr: A9a23:I+W4MBEaB0Kclaaltu4fM51Gfu4Y04WdBeZdwpMjj7QLdbys4NG+e
+ kfe/v5qylTOWNaT5/FFjr/Ourv7ESwb4JmHuWwfapEESRIfiMsXkgBhSM6IAEH2NrjrOgQxH
+ d9JUxlu+HToeVNNFpPGbkbJ6ma38SZUHxz+MQRvIeGgGYfIk8Wz3uOa8JzIaAIOjz24Mvt+K
+ RysplDJv9INyct6f78swwHApGdJfekeyWJzcFSUmRu9rsvl9594+CMWsPUkn/M=
+IronPort-Data: A9a23:1N+DyKvCW9VVpO4z8QvFMhxuk+fnVHZeMUV32f8akzHdYApBsoF/q
+ tZmKTiGPfeJMWGhLYogbdji8R5V78XVm9JiSlM/+SE2FHlHgMeUXt7xwmUckM+xwmwvaGo9s
+ q3yv/GZdJhcokf0/0rrav656yAkiclkf5KkYMbcICd9WAR4fykojBNnioYRj5Vh6TSDK1vlV
+ eja/YuHZDdJ5xYuajhPsvjb9ks21BjPkGpwUmIWNKgjUGD2zxH5PLpHTYmtIn3xRJVjH+LSb
+ 44vG5ngows1Vz90Yj+Uuu6Tnn8iG9Y+DiDS4pZiYJVOtzAZzsAEPgnXA9JHAatfo23hc9mcU
+ 7yhv7ToIesiFvWkdOjwz3C0HgkmVZCq9oMrLlDh8uq83l+FNEGrnf90U2YSHoca6/p4VDQmG
+ fwwcFjhbziZjO6whbm8UOQp24IoLdLgO8UUvXQIITPxVKl9B8ucBfSRo4YFgl/chegWdRraT
+ 8kQcyZuaB3DSxZOIVwQTpk5mY9Eg1GmLmEE8ArO/fFfD277lU9bj5uzNsjuINWpS951gkulj
+ 1r94DGsav0dHIfCkWXeqC3EavX0tSf6Xp8CUb617PhnhHWNyWEJTh4bT122pb++kEHWc9ZeL
+ VEEvzEltqka6kOmVJ/+Uge+rXrCuQQTM+e8CMUg4w2Lj6HT+QvcWy4PTyVKb5ots8peqSEWO
+ kGhwZDPKi198/qvDiyX7OiziRC4OzkJIjpXDcMbdjct797mqYA1qxvASNd/DaK45uEZ/xmum
+ 1hmSwBg390uYd436kmtwbzQb9uRSnXhVAU54EDcWXioq14/b4++bIvu4l/ehRqhEGp7Zgfb1
+ JTns5HChAzrMX1rvHDXKAnqNO3wj8tpyBWG3TZS82AJrlxBAUKLc4FK+y1ZL0x0KMsCcjKBS
+ BaM4VoBvMYLYybzPfMfj2eN5yICk/KI+TPNCKm8UzaySsEoHON61Hg3OhHOhziFfLYEyvhjY
+ P93jvpA/V5BVPw4l2DpLwvs+bQq3Ss5jXjCXoz2yg/v0LyVIhaopUQtbjOzghQCxPrc+m39q
+ o8HX+PTkkk3eLOlOEH/r9VMRW3m2FBmX/gaXeQNKL7aSuencUl8Y8LsLUQJItI/z/gPzLeZr
+ xlQmCZwkTLCuJEOEi3TAlhLY7L0VpE5pnU+VRHA937xs5T/Se5DNJsiSqY=
+IronPort-HdrOrdr: A9a23:zwYJjqlkxGKX0JoJGSTo4GPUp0PpDfNjiWdD5ihNYBxZY6Wkfp
+ +V7ZcmPE7P6Ar5BktApTnZAtj/fZq9z/JICYl4B8bFYOCUghrYEGgE1/qs/9SAIVyzygcz79
+ YbT0ETMqyVMbE+t7eE3ODaKadv/DDkytHUuQ629R4EJm8aCdAE0+46MHfmLqQcfng+OXNNLu
+ vm2iMxnUvZRZ14VLXdOlA1G8L4i5ngkpXgbRQaBxghxjWvoFqTgoLSIlyz5DtbdylA74sD3A
+ H+/jAR4J/Nj9iLjjvnk0PD5ZVfn9XsjvFZAtaXt8QTIjLwzi61eYVIQdS5zXAIidDqzGxvvM
+ jHoh8mMcg2wWjWZHuJrRzk3BSl+Coy6kXl1USTjRLY0I/ErXMBeoh8bLBiA1/kAnkbzZZBOW
+ VwriSkXq9sfFb9deLGloH1vl9R5xKJSDEZ4J4uZjRkIPgjgflq3M0iFIc/KuZbIMo8g7pXS9
+ VGHYXS4u1bfkidaG2ctm5zwMa0VnB2BRueRFMe0/blmAS+sUoJhnfw/vZv1kso5dY4Ud1J9u
+ 7EOqNnmPVHSdIXd7t0AKMETdGsAmLATBrQOCbKSG6XWZ0vKjbIsdr68b817OaldNgBy4Yzgo
+ 3IVBdduXQpc0zjBMWS1NlA8wzLQm+6QTPxo/suraRRq/n5Xv7mICeDQFchn4+ppOgeGNTSX7
+ KpNJdfE5bYXB3T8EZyrnrDsrVpWA0juZcuy6QGsnq107f2FrE=
+X-Talos-CUID: 9a23:KuSOEm6A6Xww7gC/FNssqg0yNdE3MTrniynaORCfLUVjSqyJRgrF
+X-Talos-MUID: 9a23:EMtqTgU6q/f1Sl3q/Gavrm5BasF62P6nK04WsYkLhuC8DjMlbg==
+X-IronPort-Anti-Spam-Filtered: true
+Received: from rcdn-core-5.cisco.com ([173.37.93.156])
+  by rcdn-iport-5.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 03:53:15 +0000
+Received: from alln-opgw-4.cisco.com (alln-opgw-4.cisco.com [173.37.147.252])
+        by rcdn-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 3B63rEMd010480
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Dec 2023 03:53:15 GMT
+X-CSE-ConnectionGUID: obTFe4sYQgalKHHxYlr5HA==
+X-CSE-MsgGUID: fQCau9YCRR6ru39t3LW00w==
+Authentication-Results: alln-opgw-4.cisco.com; dkim=pass (signature verified) header.i=@cisco.com; spf=Pass smtp.mailfrom=kartilak@cisco.com; dmarc=pass (p=quarantine dis=none) d=cisco.com
+X-IronPort-AV: E=Sophos;i="6.04,254,1695686400"; 
+   d="scan'208";a="11748177"
+Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
+  by alln-opgw-4.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 03:53:14 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lM3teHhSxqVhrJX9hTtfJWRqgeP3v3l2jGmcr7Q9ZCX/eW931dsmUP1yOunynS4WgFpE0r356FxZgu+dDZQj57nATqQWR5Fc7cICpH748KYRZo0oOFL4fG4ZQO9nxI4IqTolwpgXYg8O2eijQMr74JtTgbqTGu7140Aa6CsKusSnFdxYeOnaE9AJoxTp0HLm6FhK7BR8YnFBREyBAsFyxbSln8SeEvTUCRu+dwu8MntBBjp8x0SirVqD0TTb4pzulU+rgTYHtelfxiTVn8sIZeNq8QqFz+i7OP3YmQdmdMOiRsRonlrt7GrKfXbHlfD/e+CsxpA9+lE/nA7tiUzN0Q==
+ b=lZkwvboNcBhiXxMwBT8fUXTXWuzlsn7/guwN8zOKunlKockkrR3rP1N0zulh90dppAypWGO5PB3dSJvWTZm+oIwaA4UO4nrryPTRfgb+W4FQfyaQ5IjC0Lm7m7Y78lbWljFE+kSBY4qSZZqEkvR96X8XbpUjbiQoGtES13jSZ0ODYScdwuo9h2jZhLY1KoJZVdZ948uk0kblDIQhbpcGda0USJE9LiOTIivdTTsmpMf3VGXlhK+29JIK3ICiLuoYOUWAKRqtqmMzuYloNWCnqNiQUtePCI1pC08h8d1wXwgwmSrr30x+oV+rZ9ekQnP8J5sW5R/crNBMdLjAUcY1AA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vG/6z50X6p6ppi7eA/sSq2w5wF7VvOa5gNSKjBMobFQ=;
- b=mpRNA+oUfTanNl7lcrqiGpiBV23QNzdKkeU6QsuFTZoOfdQrTeU+v5wzG6BmEbWx2arpxPAo1/WkdihKGm2hq+TTLmiE0qz+EUm64jS86hn1TanB8n0rjlF8wG1zUkc/Ls2OWFT71Bc0r5eI+LrPNC3O/Dr5FGgtimC0jqCZ4ZRA8QEzyyCEire0oyU8QN72PElg0I+euaVNa0NGCLF+pZ61l/lhLdInj9mOslVxpVn0l4NFuLaq6E4V3Pp9lyslMdaIbW15oFbur5R2eo+KZZYdhX+BxwOhNRK2c46BfIcJNIsnroy1L660FvMH5Sw4EEwv2Vrp8acDfamtiDjm/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vG/6z50X6p6ppi7eA/sSq2w5wF7VvOa5gNSKjBMobFQ=;
- b=KhzDqOtsD2yqK+999Q3FcwNWqiitcLHRDnaamJUNiwRZIfniCS4sQPzSzVFyMvPI1mO8L1bztZ9NDDGp75RGzga30j2MRTsO7jZMrok/862BwZ+byYfljFVpVqsEwJSe7l8A8/sUx/76wgfN+X32noawy67KaQK4Jw1nxr4m1NYCC+HgjEAJou+8xDFFePlSXSULm1CZ/UK/uQFZt/H2PGSS9MsIRFNO2zaBEuys93zPeSTlRr0kAGt3xawZufSNg2nFFDI602FVzKHzl7n+QSWUZWFtur5cTyWJpHIGtfLuWG0wJWmFIF+d9WA+8ffPYr1cUxvU2wZBFAEznC+nVg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by DS0PR20MB6535.namprd20.prod.outlook.com (2603:10b6:8:15c::6) with
+ bh=GP2Ff6c+2LcGQxGD5Y2AX3h/2WUhhBs6GqesK+kG14I=;
+ b=ON/ii9LUwkaieWuB4Ge5oJ0Dfgn5UQsIBIaBG7MwohPIpWHCmNaBRr+TIRbOdPXvhx1OHDjVYT+ZXfLBD17vSLEhgDEdl2NF1BOE9ofXKiheEyKM+nuD82g+qr3WweTvkvzomxj7IeDY9KA+vEH8eFIQ20Ag61rllVLyNgvGqJD4TKHQcOsDoYuc1EepSkc+7X/LHwP+Atr+yj4NCKMqORnM1BTtHtsrDx7Kb4r/+YZN4ETq/9PsYFyv5YBRJSZ20MuOnJ049OL3tW6WtF1xTzYTjnFBEL+fY8/fGy8PN0/sdvzgRaFuTbV8gb7Q7RGd95jwFJ0q7JXdn9d3+I8tDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+Received: from SJ0PR11MB5896.namprd11.prod.outlook.com (2603:10b6:a03:42c::19)
+ by DM4PR11MB5277.namprd11.prod.outlook.com (2603:10b6:5:388::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
- 2023 03:50:45 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7046.024; Wed, 6 Dec 2023
- 03:50:44 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Chen Wang <unicorn_wang@outlook.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Jisheng Zhang <jszhang@kernel.org>, qiujingbao.dlmu@gmail.com,
-        dlan@gentoo.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: clock: sophgo: Add clock controller of CV1800 series SoC
-Date:   Wed,  6 Dec 2023 11:50:50 +0800
-Message-ID: <IA1PR20MB49534B8B9A3014560209D8FFBB84A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <MA0P287MB033292C3BBCDB66952BEBECDFE84A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-References: <MA0P287MB033292C3BBCDB66952BEBECDFE84A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [9OCW3s76VZDYSMnfO3pVndBR4kS0+HxZxPhnjF9IG7s=]
-X-ClientProxiedBy: TYAPR01CA0121.jpnprd01.prod.outlook.com
- (2603:1096:404:2d::13) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231206035050.398551-1-inochiama@outlook.com>
+ 2023 03:53:13 +0000
+Received: from SJ0PR11MB5896.namprd11.prod.outlook.com
+ ([fe80::24ee:3bbf:e40:6022]) by SJ0PR11MB5896.namprd11.prod.outlook.com
+ ([fe80::24ee:3bbf:e40:6022%7]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
+ 03:53:12 +0000
+From:   "Karan Tilak Kumar (kartilak)" <kartilak@cisco.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+CC:     "Sesidhar Baddela (sebaddel)" <sebaddel@cisco.com>,
+        "Arulprabhu Ponnusamy (arulponn)" <arulponn@cisco.com>,
+        "Dhanraj Jhawar (djhawar)" <djhawar@cisco.com>,
+        "Gian Carlo Boffa (gcboffa)" <gcboffa@cisco.com>,
+        "Masa Kai (mkai2)" <mkai2@cisco.com>,
+        "Satish Kharat (satishkh)" <satishkh@cisco.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 00/13] Introduce support for multiqueue (MQ) in fnic
+Thread-Topic: [PATCH v4 00/13] Introduce support for multiqueue (MQ) in fnic
+Thread-Index: AQHaIzW8spPreXFLkUWvW1Zcp94ae7CbnT3QgAAJcBA=
+Date:   Wed, 6 Dec 2023 03:53:12 +0000
+Message-ID: <SJ0PR11MB5896728CD14BD099A273C98BC384A@SJ0PR11MB5896.namprd11.prod.outlook.com>
+References: <20231130023402.802282-1-kartilak@cisco.com>
+ <yq14jgwm3gz.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <yq14jgwm3gz.fsf@ca-mkp.ca.oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ0PR11MB5896:EE_|DM4PR11MB5277:EE_
+x-ms-office365-filtering-correlation-id: e77ec6a9-7199-4937-0b8e-08dbf60ede73
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JZaHbDyPwYYmGCjpK8fSR/qXjGN8BIPYW/Y1Euwd7ISx42XCYVKu0mGRq/qrnbxsVIoclV5C85SylssvnWehuUE02FhtW5pdn68auyAElJW5coQu1KzMzxSbiTTBSAMAtPhBk+uHDba6c0DcPP6mNFDUtqubgqOdvN1q0Bs8sszZHIYMOxxNqoVutxcaWZ35RRQ67+Gj43vMWlkHJd3kFWOauTf66eyNYf6eRodCDjCschsLbjEKSGrsQ3ytGPCvs5lY0SjAxfKXouB1z9ukcwk+GxKZCFv335b46LbZpz6AaieDNn/D1ffacl4YNnTyMCYWyRBZKAMEevJNXVOSR5/4jtGMuj9b0v5Z2PMzt2UoTXjYuebWjEMGRWKwlFJPirVRqfvGgGJuSwsTyHBV+mTFgWqv1xBayX9bDpAaHk0zNtY8fjOV1EmlH0aY15dCJQp5bKT5LYlQwVzqyGYOE9LU9mTcDUYGl2EZG/kK3NtekVJUYZD0BlKoYhRXhFbAw1cir0T7SOIHv8vkO4DbbDhrPbjRLKC9p3IE3I6mdh2hz5z7jaFQ0vX/DTw0OspIMbsYxJGbPGTrJZg737mVcpko3ydOBadFQsre/PE2XfHEYWkN7UqgTBCbbHVUSu4w
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5896.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(366004)(346002)(39860400002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(478600001)(9686003)(6506007)(53546011)(7696005)(71200400001)(316002)(66476007)(64756008)(54906003)(6916009)(66446008)(66556008)(52536014)(86362001)(55016003)(41300700001)(8936002)(76116006)(38070700009)(66946007)(8676002)(4326008)(33656002)(2906002)(122000001)(5660300002)(38100700002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Fs87MuX3zyZ4yRWWddgaPGh3IRwVs46D2ZD0BGWXya2QUiW0cR+bDXmeDnok?=
+ =?us-ascii?Q?RE85AFAvBE6JXCKEMiR0LDR+PWxwJeuZiftiRu2W6c9F8WIGgWygHJQo1fOY?=
+ =?us-ascii?Q?9xwkkPbjzHOyubSCJVHuaJurhN+x3v3FB8uuigb4gh17nQTKL0v1a0/1FXHW?=
+ =?us-ascii?Q?ur9h+QC26i5TXW9AbLrb00+y5teOvKfz+mjqz8kDx1i0CjNlqA4eEPkQDI9k?=
+ =?us-ascii?Q?oJ2Dbv7u6jgUU8f5vd9+Q9WbGP0JLn+h7cS1A6DcMc5/IMGcVVvCQxRSK6sA?=
+ =?us-ascii?Q?H8DEyANmLhd29xLAkGzv5Z6PSE1k7Q9eFDVfZ+DdN7XkWI9GDWnkm+7PMnoL?=
+ =?us-ascii?Q?+TYtr6HxBxc9cnlAF5jFZsTmBsd5oqr7hImboB1FS9ztPESCI2Bv2gARfpRY?=
+ =?us-ascii?Q?1Hztv3yI4PwhQKVFiDq65vLGmSzXIM9ahfnZuP4G/jGlgmK57G9QjYL50tI/?=
+ =?us-ascii?Q?d5I0j23gPWXHHXUIGf2I4xjBeoYIdZx5ZO7uMKiSN4CA5YVvLqITpv4fMu7v?=
+ =?us-ascii?Q?FxAZguJFgrW6seVvLvaoaXSr5UpXn+Dv4IXgDEQ9WrZNWFsqVKCCx7UkOttP?=
+ =?us-ascii?Q?g/FY5qL5pm6Et9ZtML1Ic5Akyh7kuvxVkedeC7yu9fNAdlwZuV2ksnvF9wpS?=
+ =?us-ascii?Q?P0c3+xwt69/L7HjkE0mhL+WrCJI/LzVIz8yJmcbRxrDKOJ6xAAVdLK/AbTUk?=
+ =?us-ascii?Q?/v3R40J1wnkwiuKGDGU9p8M1+peTXms+4TGMAxluiW8kxEooSNpe8RryT0BG?=
+ =?us-ascii?Q?HT2sOHn2DuZgoetBOTHmKx+vzMRJgGwUoa/ciCTEbC7uXMgHcB0zph2vmas2?=
+ =?us-ascii?Q?gRn/7M6yyWt2hwEJ60z0H0XIk9bdL/+UWUyl+hLuIlSAyyEJ9YbKC3Td6AwC?=
+ =?us-ascii?Q?yYwHuuzxMD0yNV/vKMxII6olyb3ueNOm4AavKYmUH35AM3iWX8lr3gZNvjA4?=
+ =?us-ascii?Q?3Hce8xQXUfMT9LDY2xB/gkQQPpprg9G5bXd4qpVxYOm4p3LWichp4KSzaeSH?=
+ =?us-ascii?Q?bBTgoOOvBB5reByK8bmHSOAFHhCJNOFQWXjGXOP2+Kvq49oDB2QZOF363NTb?=
+ =?us-ascii?Q?F+pBa6n9x8P6VpcS3neMsvOIPryuDOfoqvd7tL8zGus+eLRhuyUCl/4Fduye?=
+ =?us-ascii?Q?An+wArEB6xW5i8vXneqe9nZRv2FshNJyvr/GvmKA9TnCYbICSIUIxqzz9cjR?=
+ =?us-ascii?Q?N+A41xYzD9tNsJD+5d+ACnqmWPAKS6XRQkE1JQSDGvtzZZlq49rATxEVzcn5?=
+ =?us-ascii?Q?vwQVAsHN3jU8OQaXCX5ABf3Z9//KrU4rLfuV0302VQnN6t/Cw5/jZGT+Jg68?=
+ =?us-ascii?Q?CLluwk8Cgot7i71mDW/v9u6w0BI3DXEJju+azPhK+3Jp0+7VjJ5UrVAZ+FT8?=
+ =?us-ascii?Q?GH6myOzeTycOwDXzwDe7xo/BuZwueMxVa6TcDzFszIWIQJNeR/w/2JzxodZv?=
+ =?us-ascii?Q?38ohu73p6JcmmLEcxmRDLQyioAULkRDMb9X7c0EETgNIQeyRvvRN5W4+G4K2?=
+ =?us-ascii?Q?4iVhatqe2HuEr2VVcBNsK9prlF+BAsQPq19nIuCYQQK+DhTr9tYJ0gG5xm7o?=
+ =?us-ascii?Q?vAyc9Gr59J8tUJth6Mkx93Aa1ZZaTkZB1oSuRqtHWA84xlTNAyMxsei0LgLH?=
+ =?us-ascii?Q?p514qLcvc56ZcJC1tIi/JVNINc6iYOQ6Qzj82FPVmOGg?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|DS0PR20MB6535:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6756f967-db50-48db-a6b4-08dbf60e8640
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wjGTRBbylyQH7t+lm/ilGQq5ddpGzQuSl5rD3tMNNKdLjn60k0f7G2K0IGKIZhI9A5bo7cko6nH6iWHRevHcRwxCfYQ+5AmbV9Wp9NfNWpeRR0vLsA5aHocG5F23lOFa8REkXLQQPFt9UvYmAvBitwXt24vfHm9ftiJXkzbxQY9bppMz6XoEQ5ES81CkBryWI1UzKXb/rq4uIserf/pFRD5HFb7X/FjITDiDonXdcJd0fye9O8Wn2o3UmNJQqi6kgnrffDAnWszGuMhKYqCYwpUSmXOM5IV7UgLX0ir5+uYp/jXD8JkjCfsxOZJesnbwN1zjg78KHFiqr7jLJSPIBVQqv5zhaQ1SHCDKl/NdKVDjzxMl9QT29TlNk8FJmGOM1/5nuPqqJ+bivqa8UZGP6c5myZXiUxNTBhqH8sri+VHXml1s2dgcnWDyQ+Fx3DzH9U95TdUYuGGT0QUhYaNckfCjs9VuafsVOjfU0IoI29ljfudwYpXtyVxd3taemfYPxg6zVygNHxgqlYJ6oQ2XeNoK7V1O2zQBedJlJyh2TY86qb0v9WWKwvpzdvryqtHGK0VelFzJwF6o7VYXHZskP+Xa3AXJitk/WEMD5jPie6yc4IhvvyARsZwleqM4yy3b
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Vj9TPY7stC1CEmF4IMEcg/X3dvNL9b4BqBjHhmGzHJk3QTIJ+/a8luyzL3PC?=
- =?us-ascii?Q?IsGAedSaUet+VzAI9T8MczRWcaTkxcvKuqPN1guv6hmDJA8iWs0j4eMXPGjE?=
- =?us-ascii?Q?863nbKtPW4OxRpN8T/9pQz4/2yR0+JkyCzXoagxamgDRrITdloCYX7xlMmle?=
- =?us-ascii?Q?GWABbPnqeGwxZZc+N/TjYlWUrbJGldCFErr5oPRChs1BdS0Y1mDrt/JW9dvI?=
- =?us-ascii?Q?+Ch5JQcbbVwbZOTCxPvdjF6oyYjETkiOMRQ9gDaE9oRV4W2Y5BDWRvRMNVQ0?=
- =?us-ascii?Q?gCyibz+uDYygQbE7ffXvKnXlzbXXXT5KRWXMF0sdS9uVtayu73Rjfp5VQN5F?=
- =?us-ascii?Q?Be1P9uwMwjYKotG+HmxAFMyow+Zk9iEG8s/Jc5WyKWL1OiAEmsaIW6RgbsAR?=
- =?us-ascii?Q?r6M4EAxvmJjeQiSasdDYnYV3S3kE00/iO9QaIcWK2VQ36S+DZd8eoKfyEinJ?=
- =?us-ascii?Q?iqKFAsNC4Qdvq7yS5sekCJ1AB8+GF+vReALVkmjjVtDZzwrpmU7h8f1n6BR0?=
- =?us-ascii?Q?TlTaysHZvt8+0tyi7ga2VfL1njL9aOtKSScnRbLu0Opw/j7E9tqMyEJdk4P9?=
- =?us-ascii?Q?7Ukqwr4H+UZfVcikXI2Cq7aEv16ivS4ObGCAkTDhMwEnSpBmHzktMzoHjxsB?=
- =?us-ascii?Q?Hwy9wDjHAIJjpFy36klqbcXURRsew1QS9w1FUuYfYhcBK7bhQLT1vNUMp78g?=
- =?us-ascii?Q?7zxv+lBgXZ2NyqBmJ2F91qJ4Gn31Ch5P4ZOPLMrIFGxu7KtbxNCD8lLrec7P?=
- =?us-ascii?Q?ufm5YHOX4uimngcgKJoXLbyYxQ5pweOtTc3f6WtDbmvj6XXpVtyt61hLN1e0?=
- =?us-ascii?Q?/tUzdpr4v337m9vsJlX0gxSEI0sEPtFhFyj1tZJpS9Q3XCiloxQ4jrTSJHDW?=
- =?us-ascii?Q?YwQ+ysNhYIGQC6qjTw4CdlGqgkovg9FSwKjWCPP+jrBiOJUL9arAoH5ROKIA?=
- =?us-ascii?Q?VRpy/uwn7UmYrPE45ErCABr0Ng3ZHLBa0/W3GXBHNzzYk52PNurzbPaOkkZi?=
- =?us-ascii?Q?xLFGxsezQ7LjJieGdR2N87e9rSDGrh+Rlg+DcYfj34sK8hVRySeI/wv0Pw/L?=
- =?us-ascii?Q?VBe0dJPJDf7mvEhw6QS9xkIRZtIozdUm36R0CSP2TzBNcqWym4yaYQLZvpRC?=
- =?us-ascii?Q?PmUkDp8zpkVgiH8NEgpze3u9Q+iTCQTEjVEpa0hTxzzlCAOCbFqMuv1XptKb?=
- =?us-ascii?Q?FOum+Et+nV40GFUt6480YhwgszkKHlYzbnccpRCk5Z9MfxBz7TkD1UK/vJE?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6756f967-db50-48db-a6b4-08dbf60e8640
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-OriginatorOrg: cisco.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 03:50:44.8690
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5896.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e77ec6a9-7199-4937-0b8e-08dbf60ede73
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2023 03:53:12.5090
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR20MB6535
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lZLH7BgCGRZURssUuP4oFRr70J4oABQ+MXz2Yl48aIkJvp/hOSWzQY8LPAw+n2Ef7icXIqCJvchpRDua+nyCaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5277
+X-Outbound-SMTP-Client: 173.37.147.252, alln-opgw-4.cisco.com
+X-Outbound-Node: rcdn-core-5.cisco.com
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 2023/12/5 19:55, Inochi Amaoto wrote:
->> Add definition for the clock controller of the CV1800 series SoC.
->>
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> Link: https://github.com/milkv-duo/duo-files/blob/main/hardware/CV1800B/CV1800B-CV1801B-Preliminary-Datasheet-full-en.pdf
->> ---
->>   .../bindings/clock/sophgo,cv1800-clk.yaml     |  53 ++++++
->With more and more sophgo products coming, I suggest add one subfolder "sophgo" for sophgo clock drivers, and this is what I am doing for sg2042, you can have a look of my patch.
-
-Can you share some more convincing reasons? Otherwise, I suggest you may
-change your file path. I have not noticed anyone doing this except sifive.
-And I still have some doubt on this.
-
->>   include/dt-bindings/clock/sophgo,cv1800.h     | 174 ++++++++++++++++++
->>   2 files changed, 227 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
->>   create mode 100644 include/dt-bindings/clock/sophgo,cv1800.h
->>
->> diff --git a/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml b/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
->> new file mode 100644
->> index 000000000000..388be5bfa163
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
->> @@ -0,0 +1,53 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/clock/sophgo,cv1800-clk.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Sophgo CV1800 Series Clock Controller
->> +
->> +maintainers:
->> +  - Inochi Amaoto <inochiama@outlook.com>
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - sophgo,cv1800-clk
->> +      - sophgo,cv1810-clk
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    items:
->> +      - description: Oscillator (25 MHz)
->> +
->> +  clock-names:
->> +    items:
->> +      - const: osc
->> +
->> +  "#clock-cells":
->> +    const: 1
->> +    description:
->> +      See <dt-bindings/clock/sophgo,cv1800.h> for valid indices.
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - clocks
->> +  - clock-names
->> +  - "#clock-cells"
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    clock-controller@3002000 {
->> +        compatible = "sophgo,cv1800-clk";
->> +        reg = <0x03002000 0x1000>;
->> +        clocks = <&osc>;
->> +        clock-names = "osc";
->> +        #clock-cells = <1>;
->> +    };
->> +
->> +...
->> diff --git a/include/dt-bindings/clock/sophgo,cv1800.h b/include/dt-bindings/clock/sophgo,cv1800.h
->> new file mode 100644
->> index 000000000000..a71ad2a93153
->> --- /dev/null
->> +++ b/include/dt-bindings/clock/sophgo,cv1800.h
->> @@ -0,0 +1,174 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
->> +/*
->> + * Copyright (C) 2023 Sophgo Ltd.
->> + */
->> +
->> +#ifndef __DT_BINDINGS_SOPHGO_CV1800_CLK_H__
->> +#define __DT_BINDINGS_SOPHGO_CV1800_CLK_H__
->> +
->> +#define CLK_MPLL            0
->> +#define CLK_TPLL            1
->> +#define CLK_FPLL            2
->> +#define CLK_MIPIMPLL            3
->> +#define CLK_A0PLL            4
->> +#define CLK_DISPPLL            5
->> +#define CLK_CAM0PLL            6
->> +#define CLK_CAM1PLL            7
->> +
->> +#define CLK_MIPIMPLL_D3            8
->> +#define CLK_CAM0PLL_D2            9
->> +#define CLK_CAM0PLL_D3            10
->> +
->> +#define CLK_TPU                11
->> +#define CLK_TPU_FAB            12
->> +#define CLK_AHB_ROM            13
->> +#define CLK_DDR_AXI_REG            14
->> +#define CLK_RTC_25M            15
->> +#define CLK_SRC_RTC_SYS_0        16
->> +#define CLK_TEMPSEN            17
->> +#define CLK_SARADC            18
->> +#define CLK_EFUSE            19
->> +#define CLK_APB_EFUSE            20
->> +#define CLK_DEBUG            21
->> +#define CLK_AP_DEBUG            22
->> +#define CLK_XTAL_MISC            23
->> +#define CLK_AXI4_EMMC            24
->> +#define CLK_EMMC            25
->> +#define CLK_EMMC_100K            26
->> +#define CLK_AXI4_SD0            27
->> +#define CLK_SD0                28
->> +#define CLK_SD0_100K            29
->> +#define CLK_AXI4_SD1            30
->> +#define CLK_SD1                31
->> +#define CLK_SD1_100K            32
->> +#define CLK_SPI_NAND            33
->> +#define CLK_ETH0_500M            34
->> +#define CLK_AXI4_ETH0            35
->> +#define CLK_ETH1_500M            36
->> +#define CLK_AXI4_ETH1            37
->> +#define CLK_APB_GPIO            38
->> +#define CLK_APB_GPIO_INTR        39
->> +#define CLK_GPIO_DB            40
->> +#define CLK_AHB_SF            41
->> +#define CLK_AHB_SF1            42
->> +#define CLK_A24M            43
->> +#define CLK_AUDSRC            44
->> +#define CLK_APB_AUDSRC            45
->> +#define CLK_SDMA_AXI            46
->> +#define CLK_SDMA_AUD0            47
->> +#define CLK_SDMA_AUD1            48
->> +#define CLK_SDMA_AUD2            49
->> +#define CLK_SDMA_AUD3            50
->> +#define CLK_I2C                51
->> +#define CLK_APB_I2C            52
->> +#define CLK_APB_I2C0            53
->> +#define CLK_APB_I2C1            54
->> +#define CLK_APB_I2C2            55
->> +#define CLK_APB_I2C3            56
->> +#define CLK_APB_I2C4            57
->> +#define CLK_APB_WDT            58
->> +#define CLK_PWM_SRC            59
->> +#define CLK_PWM                60
->> +#define CLK_SPI                61
->> +#define CLK_APB_SPI0            62
->> +#define CLK_APB_SPI1            63
->> +#define CLK_APB_SPI2            64
->> +#define CLK_APB_SPI3            65
->> +#define CLK_1M                66
->> +#define CLK_CAM0_200            67
->> +#define CLK_PM                68
->> +#define CLK_TIMER0            69
->> +#define CLK_TIMER1            70
->> +#define CLK_TIMER2            71
->> +#define CLK_TIMER3            72
->> +#define CLK_TIMER4            73
->> +#define CLK_TIMER5            74
->> +#define CLK_TIMER6            75
->> +#define CLK_TIMER7            76
->> +#define CLK_UART0            77
->> +#define CLK_APB_UART0            78
->> +#define CLK_UART1            79
->> +#define CLK_APB_UART1            80
->> +#define CLK_UART2            81
->> +#define CLK_APB_UART2            82
->> +#define CLK_UART3            83
->> +#define CLK_APB_UART3            84
->> +#define CLK_UART4            85
->> +#define CLK_APB_UART4            86
->> +#define CLK_APB_I2S0            87
->> +#define CLK_APB_I2S1            88
->> +#define CLK_APB_I2S2            89
->> +#define CLK_APB_I2S3            90
->> +#define CLK_AXI4_USB            91
->> +#define CLK_APB_USB            92
->> +#define CLK_USB_125M            93
->> +#define CLK_USB_33K            94
->> +#define CLK_USB_12M            95
->> +#define CLK_AXI4            96
->> +#define CLK_AXI6            97
->> +#define CLK_DSI_ESC            98
->> +#define CLK_AXI_VIP            99
->> +#define CLK_SRC_VIP_SYS_0        100
->> +#define CLK_SRC_VIP_SYS_1        101
->> +#define CLK_SRC_VIP_SYS_2        102
->> +#define CLK_SRC_VIP_SYS_3        103
->> +#define CLK_SRC_VIP_SYS_4        104
->> +#define CLK_CSI_BE_VIP            105
->> +#define CLK_CSI_MAC0_VIP        106
->> +#define CLK_CSI_MAC1_VIP        107
->> +#define CLK_CSI_MAC2_VIP        108
->> +#define CLK_CSI0_RX_VIP            109
->> +#define CLK_CSI1_RX_VIP            110
->> +#define CLK_ISP_TOP_VIP            111
->> +#define CLK_IMG_D_VIP            112
->> +#define CLK_IMG_V_VIP            113
->> +#define CLK_SC_TOP_VIP            114
->> +#define CLK_SC_D_VIP            115
->> +#define CLK_SC_V1_VIP            116
->> +#define CLK_SC_V2_VIP            117
->> +#define CLK_SC_V3_VIP            118
->> +#define CLK_DWA_VIP            119
->> +#define CLK_BT_VIP            120
->> +#define CLK_DISP_SRC_VIP        121
->> +#define CLK_DISP_VIP            122
->> +#define CLK_DSI_MAC_VIP            123
->> +#define CLK_LVDS0_VIP            124
->> +#define CLK_LVDS1_VIP            125
->> +#define CLK_PAD_VI_VIP            126
->> +#define CLK_PAD_VI1_VIP            127
->> +#define CLK_PAD_VI2_VIP            128
->> +#define CLK_CFG_REG_VIP            129
->> +#define CLK_VIP_IP0            130
->> +#define CLK_VIP_IP1            131
->> +#define CLK_VIP_IP2            132
->> +#define CLK_VIP_IP3            133
->> +#define CLK_IVE_VIP            134
->> +#define CLK_RAW_VIP            135
->> +#define CLK_OSDC_VIP            136
->> +#define CLK_CAM0_VIP            137
->> +#define CLK_AXI_VIDEO_CODEC        138
->> +#define CLK_VC_SRC0            139
->> +#define CLK_VC_SRC1            140
->> +#define CLK_VC_SRC2            141
->> +#define CLK_H264C            142
->> +#define CLK_APB_H264C            143
->> +#define CLK_H265C            144
->> +#define CLK_APB_H265C            145
->> +#define CLK_JPEG            146
->> +#define CLK_APB_JPEG            147
->> +#define CLK_CAM0            148
->> +#define CLK_CAM1            149
->> +#define CLK_WGN                150
->> +#define CLK_WGN0            151
->> +#define CLK_WGN1            152
->> +#define CLK_WGN2            153
->> +#define CLK_KEYSCAN            154
->> +#define CLK_CFG_REG_VC            155
->> +#define CLK_C906_0            156
->> +#define CLK_C906_1            157
->> +#define CLK_A53                158
->> +#define CLK_CPU_AXI0            159
->> +#define CLK_CPU_GIC            160
->> +#define CLK_XTAL_AP            161
->> +
->> +#endif /* __DT_BINDINGS_SOPHGO_CV1800_CLK_H__ */
->> --
->> 2.43.0
->>
+On Tuesday, December 5, 2023 7:11 PM, Martin K. Petersen <martin.petersen@o=
+racle.com> wrote:
 >
+>
+> Karan,
+>
+> > This cover letter describes the feature: add support for multiqueue
+> > (MQ) to fnic driver.
+>
+> This series doesn't apply to 6.8/scsi-queue.
+
+Okay. Thanks Martin.
+Please advise how I can proceed with getting the patch set accepted.
+
+> Also, for change entries for individual patches, please make sure you put=
+ them after a "---" separator so they don't end up in the commit history.
+>
+> Thanks!
+>
+> --
+
+Thanks Martin.
+
+I'll modify the commit entries in the individual patches in the patch set a=
+nd re-submit the patch set.
+Just to make sure I understand this correctly, this is what I will do for t=
+he individual patches in the entire patch set:
+
+  1 From 818867e64180c2456d3f33761cb7fb6e00679849 Mon Sep 17 00:00:00 2001
+  2 From: Karan Tilak Kumar <kartilak@cisco.com>
+  3 Date: Fri, 13 Oct 2023 13:38:09 -0700
+  4 Subject: [PATCH v4 02/13] scsi: fnic: Add and use fnic number
+  5
+  6 Add fnic_num in fnic.h to identify fnic in a multi-fnic environment.
+  7 Increment and set the fnic number during driver load in fnic_probe.
+  8 Replace the host number with fnic number in debugfs.
+  9
+ 10 Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
+ 11 Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
+ 12 Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
+ 13 ---								-> Introduce a separator between the commit and the change e=
+ntries
+ 14 Changes between v3 and v4:
+ 15     Incorporate review comments from Martin and Hannes:
+ 16     Undo the change to replace host number with fnic
+ 17     number in debugfs since kernel stack uses host number.
+ 18     Use ida_alloc to allocate ID for fnic number.
+
+Please let me know if I've missed anything.
+
+Regards,
+Karan
