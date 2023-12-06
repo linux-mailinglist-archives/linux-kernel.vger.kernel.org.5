@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77ED080716A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED93180716E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378726AbjLFN6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
+        id S1378731AbjLFN6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:58:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378633AbjLFN6N (ORCPT
+        with ESMTP id S1378713AbjLFN6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:58:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7960AD1
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:58:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701871098;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vng2/SnRgWTDDru8v8rtd+Rz3Crl3Lo3N7L+CSCh4JI=;
-        b=U6ndjGcMn8L5G/YRdiFGLeZsfJam5+XWaVaBEAwvPsFDMCjgaYVxJXKfBaHP/kDKM1vz/p
-        ulc5e/GpPwWqCKav8f79SH3+AG4ilhKuJRi0Ox+a0a5GxZlK9j02a8ZEsPLExFjaYbXFHZ
-        TtbVHgoMJ+b93n7kSvwG269XmGiON/M=
-Received: from mail-lf1-f72.google.com (mail-lf1-f72.google.com
- [209.85.167.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-613-Iy9N6ZvMNleouBPlHPkVRg-1; Wed, 06 Dec 2023 08:58:17 -0500
-X-MC-Unique: Iy9N6ZvMNleouBPlHPkVRg-1
-Received: by mail-lf1-f72.google.com with SMTP id 2adb3069b0e04-50bedc84260so3151914e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 05:58:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701871096; x=1702475896;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vng2/SnRgWTDDru8v8rtd+Rz3Crl3Lo3N7L+CSCh4JI=;
-        b=dxOvV/Ht8YetvTX65Uw970kx3UHgCyA+rML02xduYF3817pPs8gWK6RImpns7Kd7rM
-         WOe0aOZ8a23mUkXtQWyrDu21RDYkjqpvyvV6exCoN47MhJS0CTLjWUplrMfMlZBkbEeE
-         +m7HJqZWhf7ryX2jiy6AqMyrSmZS+L7e/2Z8Jq/tyIn4F4rPKIhfTlMv+3MAE+/7sBCM
-         CiKz/Z9c87ruU1Wg/WgkIEOUr4FdBu2jNmf2+gPSTw8L8I9gcEp0GYtBWHUiOKDaCElv
-         MBua3JBNHCw6TRBLDLJ8bBhwPfLP74P3QIAsCw/sXq7yvv+u1jLjfqnCi9TKrenrKqjk
-         qJcA==
-X-Gm-Message-State: AOJu0YyK2D6+qD1oJwnMOJcESamBSd7DYVBR1N1eSxtjZ3vYXZrAHeAp
-        6X3aVMP3+qHOwNb/KvSw9DWXX6X63iNsR0Tlzc2BHRx4cvkKgzMFop6PqdSQ5PnXlAF6m2L+be2
-        evtUNr+eXor4F+tzpglS8MHAhlwMoyMbZ6WSSrVDu
-X-Received: by 2002:a05:6512:3e0b:b0:50b:efa8:c518 with SMTP id i11-20020a0565123e0b00b0050befa8c518mr485155lfv.102.1701871095847;
-        Wed, 06 Dec 2023 05:58:15 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFbx/bUgoIEFkWQBTPj3Hmf5awFPNN9VUatDvKn08A1pfbHIt7BwQojoCII4CcgQhO88V7+7sV0bBg1vmXj87g=
-X-Received: by 2002:a05:6512:3e0b:b0:50b:efa8:c518 with SMTP id
- i11-20020a0565123e0b00b0050befa8c518mr485149lfv.102.1701871095525; Wed, 06
- Dec 2023 05:58:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20231206063549.2590305-1-srasheed@marvell.com>
-In-Reply-To: <20231206063549.2590305-1-srasheed@marvell.com>
-From:   Michal Schmidt <mschmidt@redhat.com>
-Date:   Wed, 6 Dec 2023 14:58:04 +0100
-Message-ID: <CADEbmW32rjDJgr4xEArasguWfsSNTJpw__AgsE9n8mwE3qXwFA@mail.gmail.com>
-Subject: Re: [PATCH net v1] octeon_ep: explicitly test for firmware ready value
-To:     Shinas Rasheed <srasheed@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hgani@marvell.com, vimleshk@marvell.com, egallen@redhat.com,
-        pabeni@redhat.com, horms@kernel.org, kuba@kernel.org,
-        davem@davemloft.net, wizhao@redhat.com, konguyen@redhat.com,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>,
+        Wed, 6 Dec 2023 08:58:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634E9A4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:58:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B72FC433C7;
+        Wed,  6 Dec 2023 13:58:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701871122;
+        bh=igbPsqBqoC6Yx2+ikp9QT1gV4CGkTMXJP7iKBjWdZ3o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NuZBxUDRhHT/RUByFl8OswuDT+o0oA7/OX5J4+UiSHxe2O6k9gLNxFAZtfXxO0uiq
+         R71x2H6o0RrTHC0eVqeJNL+K3VlpWwLf+zMNsf7i/JmNRHQNoFX9id6su73i+rqncg
+         dOrrWdyjbFbeY2LB+cHc0SE6yWdnoE+X80I68lpt+R3HI7km/6fSMLn1B5Lk6legQa
+         KVqqlpEk3X/wEyIG7ytGOPaaga7jCka2AWPIi3Ato9IfoM5t9OTFnrxbhg/x2xx/yc
+         nYdgYtarnKjk4VxveyJNg5pFi7OgQXomKaf5r/dUe3R1i0KcQCpWYe8NPGLK4e//bU
+         EA6jxYRGTg4+Q==
+Date:   Wed, 6 Dec 2023 14:58:36 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org, "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
-        Abhijit Ayarekar <aayarekar@marvell.com>,
-        Satananda Burla <sburla@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: Is xt_owner's owner_mt() racy with sock_orphan()? [worse with
+ new TYPESAFE_BY_RCU file lifetime?]
+Message-ID: <20231206-refinanzieren-werkhalle-22db5334f256@brauner>
+References: <CAG48ez0TfTAkaRWFCTb44x=TWP_sDZVx-5U2hvfQSFOhghNrCA@mail.gmail.com>
+ <CAG48ez1hXk_cffp3dy-bYMcoyCCj-EySYR5SzYrNiRHGD=hOUg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez1hXk_cffp3dy-bYMcoyCCj-EySYR5SzYrNiRHGD=hOUg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 7:36=E2=80=AFAM Shinas Rasheed <srasheed@marvell.com=
-> wrote:
->
-> The firmware ready value is 1, and get firmware ready status
-> function should explicitly test for that value. The firmware
-> ready value read will be 2 after driver load, and on unbind
-> till firmware rewrites the firmware ready back to 0, the value
-> seen by driver will be 2, which should be regarded as not ready.
->
-> Fixes: 10c073e40469 ("octeon_ep: defer probe if firmware not ready")
-> Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/octeon_ep/octep_main.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/driver=
-s/net/ethernet/marvell/octeon_ep/octep_main.c
-> index 552970c7dec0..b8ae269f6f97 100644
-> --- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-> +++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-> @@ -1258,7 +1258,8 @@ static bool get_fw_ready_status(struct pci_dev *pde=
-v)
->
->                 pci_read_config_byte(pdev, (pos + 8), &status);
->                 dev_info(&pdev->dev, "Firmware ready status =3D %u\n", st=
-atus);
-> -               return status;
-> +#define FW_STATUS_READY 1ULL
-> +               return (status =3D=3D FW_STATUS_READY) ? true : false;
+On Tue, Dec 05, 2023 at 06:08:29PM +0100, Jann Horn wrote:
+> On Tue, Dec 5, 2023 at 5:40 PM Jann Horn <jannh@google.com> wrote:
+> >
+> > Hi!
+> >
+> > I think this code is racy, but testing that seems like a pain...
+> >
+> > owner_mt() in xt_owner runs in context of a NF_INET_LOCAL_OUT or
+> > NF_INET_POST_ROUTING hook. It first checks that sk->sk_socket is
+> > non-NULL, then checks that sk->sk_socket->file is non-NULL, then
+> > accesses the ->f_cred of that file.
+> >
+> > I don't see anything that protects this against a concurrent
+> > sock_orphan(), which NULLs out the sk->sk_socket pointer, if we're in
+> 
+> Ah, and all the other users of ->sk_socket in net/netfilter/ do it
+> under the sk_callback_lock... so I guess the fix would be to add the
+> same in owner_mt?
 
-"status =3D=3D FW_STATUS_READY" is already the bool value you want. You
-don't need to use the ternary operator here.
+In your other mail you wrote:
 
->         }
->         return false;
->  }
-> --
-> 2.25.1
->
+> I also think we have no guarantee here that the socket's ->file won't
+> go away due to a concurrent __sock_release(), which could cause us to
+> continue reading file credentials out of a file whose refcount has
+> already dropped to zero?
 
+Is this an independent worry or can the concurrent __sock_release()
+issue only happen due to a sock_orphan() having happened first? I think
+that it requires a sock_orphan() having happend, presumably because the
+socket gets marked SOCK_DEAD and can thus be released via
+__sock_release() asynchronously?
+
+If so then taking sk_callback_lock() in owner_mt() should fix this.
+(Otherwise we might need an additional get_active_file() on
+sk->sk_socker->file in owner_mt() in addition to the other fix.)
