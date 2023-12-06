@@ -2,246 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 460308065E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E50A8065E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 04:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376461AbjLFDxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 22:53:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        id S1376424AbjLFDy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 22:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjLFDxK (ORCPT
+        with ESMTP id S229493AbjLFDyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 22:53:10 -0500
-Received: from rcdn-iport-5.cisco.com (rcdn-iport-5.cisco.com [173.37.86.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E44018D;
-        Tue,  5 Dec 2023 19:53:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1841; q=dns/txt; s=iport;
-  t=1701834796; x=1703044396;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=JZhrDtKrJOBIabiyhzTmORAvpCnH1dYSUitnUNAqMZA=;
-  b=dEENiwROLubJgonYu95AwgtUlFHoIxQicgNHYc4Xaev9z/7K6wN+VAL+
-   WkyCYNBUIJoDhZ6yUmdYU8d17/k76ywf0+iWwP/p2Z4M99NH+/CDl6Vng
-   WbUhFBBwHrlHBsBWi1dR2zlImsVlUFC0+SSOmrKARNvc5+4obAtYP/eXK
-   c=;
-X-CSE-ConnectionGUID: 6+NGyz+/R/6br7OLKbjytg==
-X-CSE-MsgGUID: 1+B7K6nzS2aKfsHteUAPSw==
-X-IPAS-Result: =?us-ascii?q?A0AtAABS729lmJxdJa1QCh0BAQEBCQESAQUFAUAlgRYIA?=
- =?us-ascii?q?QsBgWZSeVsqEkiIHgOETl+GRIIiA51+gSUDVg8BAQENAQFEBAEBhQYChykCJ?=
- =?us-ascii?q?jQJDgECBAEBAQEDAgMBAQEBAQEBAgEBBQEBAQIBBwQUAQEBAQEBAQEeGQUOE?=
- =?us-ascii?q?CeFdQiGPQEBAQECARIVEz8FCwIBCBEDAQIBHQEQMh0IAgQOBQgagl6CPCMDA?=
- =?us-ascii?q?aJNAYFAAoooeIEBM4EBghUFsnmBSAGIDQGKDicbgg2BV4JoPoQWL4QSgi8Ei?=
- =?us-ascii?q?RoHMoIhgykpkDF+R3AdAwcDfw8rBwQtGwcGCRQtIwZRBCghCRMSPgSBXYFSC?=
- =?us-ascii?q?n8/Dw4Rgj4iAgc2NhlIglsVDDVKdRAqBBQXgRIEagUWEx43ERIXDQMIdB0CM?=
- =?us-ascii?q?jwDBQMEMwoSDQshBRRCA0IGSQsDAhoFAwMEgTMFDR4CEBoGDCcDAxJJAhAUA?=
- =?us-ascii?q?zsDAwYDCzEDMFVEDE8Dax82CTwLBAwfAhseDScjAixCAxEFEgIWAyQWBDYRC?=
- =?us-ascii?q?QsoAy8GOAITDAYGCV4mFgkEJwMIBANhA0QdQAMLbT01FBsFBGRZBaMxaYIuE?=
- =?us-ascii?q?kdHASmWI5oWlG0KhA+hQheEAYxzmRKYQqgvAgQCBAUCDgEBBoFjOoFbcBWDI?=
- =?us-ascii?q?lIZD445k1h2OwIHCwEBAwmKYQEB?=
-IronPort-PHdr: A9a23:I+W4MBEaB0Kclaaltu4fM51Gfu4Y04WdBeZdwpMjj7QLdbys4NG+e
- kfe/v5qylTOWNaT5/FFjr/Ourv7ESwb4JmHuWwfapEESRIfiMsXkgBhSM6IAEH2NrjrOgQxH
- d9JUxlu+HToeVNNFpPGbkbJ6ma38SZUHxz+MQRvIeGgGYfIk8Wz3uOa8JzIaAIOjz24Mvt+K
- RysplDJv9INyct6f78swwHApGdJfekeyWJzcFSUmRu9rsvl9594+CMWsPUkn/M=
-IronPort-Data: A9a23:1N+DyKvCW9VVpO4z8QvFMhxuk+fnVHZeMUV32f8akzHdYApBsoF/q
- tZmKTiGPfeJMWGhLYogbdji8R5V78XVm9JiSlM/+SE2FHlHgMeUXt7xwmUckM+xwmwvaGo9s
- q3yv/GZdJhcokf0/0rrav656yAkiclkf5KkYMbcICd9WAR4fykojBNnioYRj5Vh6TSDK1vlV
- eja/YuHZDdJ5xYuajhPsvjb9ks21BjPkGpwUmIWNKgjUGD2zxH5PLpHTYmtIn3xRJVjH+LSb
- 44vG5ngows1Vz90Yj+Uuu6Tnn8iG9Y+DiDS4pZiYJVOtzAZzsAEPgnXA9JHAatfo23hc9mcU
- 7yhv7ToIesiFvWkdOjwz3C0HgkmVZCq9oMrLlDh8uq83l+FNEGrnf90U2YSHoca6/p4VDQmG
- fwwcFjhbziZjO6whbm8UOQp24IoLdLgO8UUvXQIITPxVKl9B8ucBfSRo4YFgl/chegWdRraT
- 8kQcyZuaB3DSxZOIVwQTpk5mY9Eg1GmLmEE8ArO/fFfD277lU9bj5uzNsjuINWpS951gkulj
- 1r94DGsav0dHIfCkWXeqC3EavX0tSf6Xp8CUb617PhnhHWNyWEJTh4bT122pb++kEHWc9ZeL
- VEEvzEltqka6kOmVJ/+Uge+rXrCuQQTM+e8CMUg4w2Lj6HT+QvcWy4PTyVKb5ots8peqSEWO
- kGhwZDPKi198/qvDiyX7OiziRC4OzkJIjpXDcMbdjct797mqYA1qxvASNd/DaK45uEZ/xmum
- 1hmSwBg390uYd436kmtwbzQb9uRSnXhVAU54EDcWXioq14/b4++bIvu4l/ehRqhEGp7Zgfb1
- JTns5HChAzrMX1rvHDXKAnqNO3wj8tpyBWG3TZS82AJrlxBAUKLc4FK+y1ZL0x0KMsCcjKBS
- BaM4VoBvMYLYybzPfMfj2eN5yICk/KI+TPNCKm8UzaySsEoHON61Hg3OhHOhziFfLYEyvhjY
- P93jvpA/V5BVPw4l2DpLwvs+bQq3Ss5jXjCXoz2yg/v0LyVIhaopUQtbjOzghQCxPrc+m39q
- o8HX+PTkkk3eLOlOEH/r9VMRW3m2FBmX/gaXeQNKL7aSuencUl8Y8LsLUQJItI/z/gPzLeZr
- xlQmCZwkTLCuJEOEi3TAlhLY7L0VpE5pnU+VRHA937xs5T/Se5DNJsiSqY=
-IronPort-HdrOrdr: A9a23:zwYJjqlkxGKX0JoJGSTo4GPUp0PpDfNjiWdD5ihNYBxZY6Wkfp
- +V7ZcmPE7P6Ar5BktApTnZAtj/fZq9z/JICYl4B8bFYOCUghrYEGgE1/qs/9SAIVyzygcz79
- YbT0ETMqyVMbE+t7eE3ODaKadv/DDkytHUuQ629R4EJm8aCdAE0+46MHfmLqQcfng+OXNNLu
- vm2iMxnUvZRZ14VLXdOlA1G8L4i5ngkpXgbRQaBxghxjWvoFqTgoLSIlyz5DtbdylA74sD3A
- H+/jAR4J/Nj9iLjjvnk0PD5ZVfn9XsjvFZAtaXt8QTIjLwzi61eYVIQdS5zXAIidDqzGxvvM
- jHoh8mMcg2wWjWZHuJrRzk3BSl+Coy6kXl1USTjRLY0I/ErXMBeoh8bLBiA1/kAnkbzZZBOW
- VwriSkXq9sfFb9deLGloH1vl9R5xKJSDEZ4J4uZjRkIPgjgflq3M0iFIc/KuZbIMo8g7pXS9
- VGHYXS4u1bfkidaG2ctm5zwMa0VnB2BRueRFMe0/blmAS+sUoJhnfw/vZv1kso5dY4Ud1J9u
- 7EOqNnmPVHSdIXd7t0AKMETdGsAmLATBrQOCbKSG6XWZ0vKjbIsdr68b817OaldNgBy4Yzgo
- 3IVBdduXQpc0zjBMWS1NlA8wzLQm+6QTPxo/suraRRq/n5Xv7mICeDQFchn4+ppOgeGNTSX7
- KpNJdfE5bYXB3T8EZyrnrDsrVpWA0juZcuy6QGsnq107f2FrE=
-X-Talos-CUID: 9a23:KuSOEm6A6Xww7gC/FNssqg0yNdE3MTrniynaORCfLUVjSqyJRgrF
-X-Talos-MUID: 9a23:EMtqTgU6q/f1Sl3q/Gavrm5BasF62P6nK04WsYkLhuC8DjMlbg==
-X-IronPort-Anti-Spam-Filtered: true
-Received: from rcdn-core-5.cisco.com ([173.37.93.156])
-  by rcdn-iport-5.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 03:53:15 +0000
-Received: from alln-opgw-4.cisco.com (alln-opgw-4.cisco.com [173.37.147.252])
-        by rcdn-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 3B63rEMd010480
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Dec 2023 03:53:15 GMT
-X-CSE-ConnectionGUID: obTFe4sYQgalKHHxYlr5HA==
-X-CSE-MsgGUID: fQCau9YCRR6ru39t3LW00w==
-Authentication-Results: alln-opgw-4.cisco.com; dkim=pass (signature verified) header.i=@cisco.com; spf=Pass smtp.mailfrom=kartilak@cisco.com; dmarc=pass (p=quarantine dis=none) d=cisco.com
-X-IronPort-AV: E=Sophos;i="6.04,254,1695686400"; 
-   d="scan'208";a="11748177"
-Received: from mail-dm6nam10lp2100.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.100])
-  by alln-opgw-4.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 03:53:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lZkwvboNcBhiXxMwBT8fUXTXWuzlsn7/guwN8zOKunlKockkrR3rP1N0zulh90dppAypWGO5PB3dSJvWTZm+oIwaA4UO4nrryPTRfgb+W4FQfyaQ5IjC0Lm7m7Y78lbWljFE+kSBY4qSZZqEkvR96X8XbpUjbiQoGtES13jSZ0ODYScdwuo9h2jZhLY1KoJZVdZ948uk0kblDIQhbpcGda0USJE9LiOTIivdTTsmpMf3VGXlhK+29JIK3ICiLuoYOUWAKRqtqmMzuYloNWCnqNiQUtePCI1pC08h8d1wXwgwmSrr30x+oV+rZ9ekQnP8J5sW5R/crNBMdLjAUcY1AA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GP2Ff6c+2LcGQxGD5Y2AX3h/2WUhhBs6GqesK+kG14I=;
- b=ON/ii9LUwkaieWuB4Ge5oJ0Dfgn5UQsIBIaBG7MwohPIpWHCmNaBRr+TIRbOdPXvhx1OHDjVYT+ZXfLBD17vSLEhgDEdl2NF1BOE9ofXKiheEyKM+nuD82g+qr3WweTvkvzomxj7IeDY9KA+vEH8eFIQ20Ag61rllVLyNgvGqJD4TKHQcOsDoYuc1EepSkc+7X/LHwP+Atr+yj4NCKMqORnM1BTtHtsrDx7Kb4r/+YZN4ETq/9PsYFyv5YBRJSZ20MuOnJ049OL3tW6WtF1xTzYTjnFBEL+fY8/fGy8PN0/sdvzgRaFuTbV8gb7Q7RGd95jwFJ0q7JXdn9d3+I8tDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-Received: from SJ0PR11MB5896.namprd11.prod.outlook.com (2603:10b6:a03:42c::19)
- by DM4PR11MB5277.namprd11.prod.outlook.com (2603:10b6:5:388::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
- 2023 03:53:13 +0000
-Received: from SJ0PR11MB5896.namprd11.prod.outlook.com
- ([fe80::24ee:3bbf:e40:6022]) by SJ0PR11MB5896.namprd11.prod.outlook.com
- ([fe80::24ee:3bbf:e40:6022%7]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 03:53:12 +0000
-From:   "Karan Tilak Kumar (kartilak)" <kartilak@cisco.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     "Sesidhar Baddela (sebaddel)" <sebaddel@cisco.com>,
-        "Arulprabhu Ponnusamy (arulponn)" <arulponn@cisco.com>,
-        "Dhanraj Jhawar (djhawar)" <djhawar@cisco.com>,
-        "Gian Carlo Boffa (gcboffa)" <gcboffa@cisco.com>,
-        "Masa Kai (mkai2)" <mkai2@cisco.com>,
-        "Satish Kharat (satishkh)" <satishkh@cisco.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 00/13] Introduce support for multiqueue (MQ) in fnic
-Thread-Topic: [PATCH v4 00/13] Introduce support for multiqueue (MQ) in fnic
-Thread-Index: AQHaIzW8spPreXFLkUWvW1Zcp94ae7CbnT3QgAAJcBA=
-Date:   Wed, 6 Dec 2023 03:53:12 +0000
-Message-ID: <SJ0PR11MB5896728CD14BD099A273C98BC384A@SJ0PR11MB5896.namprd11.prod.outlook.com>
-References: <20231130023402.802282-1-kartilak@cisco.com>
- <yq14jgwm3gz.fsf@ca-mkp.ca.oracle.com>
-In-Reply-To: <yq14jgwm3gz.fsf@ca-mkp.ca.oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB5896:EE_|DM4PR11MB5277:EE_
-x-ms-office365-filtering-correlation-id: e77ec6a9-7199-4937-0b8e-08dbf60ede73
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JZaHbDyPwYYmGCjpK8fSR/qXjGN8BIPYW/Y1Euwd7ISx42XCYVKu0mGRq/qrnbxsVIoclV5C85SylssvnWehuUE02FhtW5pdn68auyAElJW5coQu1KzMzxSbiTTBSAMAtPhBk+uHDba6c0DcPP6mNFDUtqubgqOdvN1q0Bs8sszZHIYMOxxNqoVutxcaWZ35RRQ67+Gj43vMWlkHJd3kFWOauTf66eyNYf6eRodCDjCschsLbjEKSGrsQ3ytGPCvs5lY0SjAxfKXouB1z9ukcwk+GxKZCFv335b46LbZpz6AaieDNn/D1ffacl4YNnTyMCYWyRBZKAMEevJNXVOSR5/4jtGMuj9b0v5Z2PMzt2UoTXjYuebWjEMGRWKwlFJPirVRqfvGgGJuSwsTyHBV+mTFgWqv1xBayX9bDpAaHk0zNtY8fjOV1EmlH0aY15dCJQp5bKT5LYlQwVzqyGYOE9LU9mTcDUYGl2EZG/kK3NtekVJUYZD0BlKoYhRXhFbAw1cir0T7SOIHv8vkO4DbbDhrPbjRLKC9p3IE3I6mdh2hz5z7jaFQ0vX/DTw0OspIMbsYxJGbPGTrJZg737mVcpko3ydOBadFQsre/PE2XfHEYWkN7UqgTBCbbHVUSu4w
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5896.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(366004)(346002)(39860400002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(478600001)(9686003)(6506007)(53546011)(7696005)(71200400001)(316002)(66476007)(64756008)(54906003)(6916009)(66446008)(66556008)(52536014)(86362001)(55016003)(41300700001)(8936002)(76116006)(38070700009)(66946007)(8676002)(4326008)(33656002)(2906002)(122000001)(5660300002)(38100700002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Fs87MuX3zyZ4yRWWddgaPGh3IRwVs46D2ZD0BGWXya2QUiW0cR+bDXmeDnok?=
- =?us-ascii?Q?RE85AFAvBE6JXCKEMiR0LDR+PWxwJeuZiftiRu2W6c9F8WIGgWygHJQo1fOY?=
- =?us-ascii?Q?9xwkkPbjzHOyubSCJVHuaJurhN+x3v3FB8uuigb4gh17nQTKL0v1a0/1FXHW?=
- =?us-ascii?Q?ur9h+QC26i5TXW9AbLrb00+y5teOvKfz+mjqz8kDx1i0CjNlqA4eEPkQDI9k?=
- =?us-ascii?Q?oJ2Dbv7u6jgUU8f5vd9+Q9WbGP0JLn+h7cS1A6DcMc5/IMGcVVvCQxRSK6sA?=
- =?us-ascii?Q?H8DEyANmLhd29xLAkGzv5Z6PSE1k7Q9eFDVfZ+DdN7XkWI9GDWnkm+7PMnoL?=
- =?us-ascii?Q?+TYtr6HxBxc9cnlAF5jFZsTmBsd5oqr7hImboB1FS9ztPESCI2Bv2gARfpRY?=
- =?us-ascii?Q?1Hztv3yI4PwhQKVFiDq65vLGmSzXIM9ahfnZuP4G/jGlgmK57G9QjYL50tI/?=
- =?us-ascii?Q?d5I0j23gPWXHHXUIGf2I4xjBeoYIdZx5ZO7uMKiSN4CA5YVvLqITpv4fMu7v?=
- =?us-ascii?Q?FxAZguJFgrW6seVvLvaoaXSr5UpXn+Dv4IXgDEQ9WrZNWFsqVKCCx7UkOttP?=
- =?us-ascii?Q?g/FY5qL5pm6Et9ZtML1Ic5Akyh7kuvxVkedeC7yu9fNAdlwZuV2ksnvF9wpS?=
- =?us-ascii?Q?P0c3+xwt69/L7HjkE0mhL+WrCJI/LzVIz8yJmcbRxrDKOJ6xAAVdLK/AbTUk?=
- =?us-ascii?Q?/v3R40J1wnkwiuKGDGU9p8M1+peTXms+4TGMAxluiW8kxEooSNpe8RryT0BG?=
- =?us-ascii?Q?HT2sOHn2DuZgoetBOTHmKx+vzMRJgGwUoa/ciCTEbC7uXMgHcB0zph2vmas2?=
- =?us-ascii?Q?gRn/7M6yyWt2hwEJ60z0H0XIk9bdL/+UWUyl+hLuIlSAyyEJ9YbKC3Td6AwC?=
- =?us-ascii?Q?yYwHuuzxMD0yNV/vKMxII6olyb3ueNOm4AavKYmUH35AM3iWX8lr3gZNvjA4?=
- =?us-ascii?Q?3Hce8xQXUfMT9LDY2xB/gkQQPpprg9G5bXd4qpVxYOm4p3LWichp4KSzaeSH?=
- =?us-ascii?Q?bBTgoOOvBB5reByK8bmHSOAFHhCJNOFQWXjGXOP2+Kvq49oDB2QZOF363NTb?=
- =?us-ascii?Q?F+pBa6n9x8P6VpcS3neMsvOIPryuDOfoqvd7tL8zGus+eLRhuyUCl/4Fduye?=
- =?us-ascii?Q?An+wArEB6xW5i8vXneqe9nZRv2FshNJyvr/GvmKA9TnCYbICSIUIxqzz9cjR?=
- =?us-ascii?Q?N+A41xYzD9tNsJD+5d+ACnqmWPAKS6XRQkE1JQSDGvtzZZlq49rATxEVzcn5?=
- =?us-ascii?Q?vwQVAsHN3jU8OQaXCX5ABf3Z9//KrU4rLfuV0302VQnN6t/Cw5/jZGT+Jg68?=
- =?us-ascii?Q?CLluwk8Cgot7i71mDW/v9u6w0BI3DXEJju+azPhK+3Jp0+7VjJ5UrVAZ+FT8?=
- =?us-ascii?Q?GH6myOzeTycOwDXzwDe7xo/BuZwueMxVa6TcDzFszIWIQJNeR/w/2JzxodZv?=
- =?us-ascii?Q?38ohu73p6JcmmLEcxmRDLQyioAULkRDMb9X7c0EETgNIQeyRvvRN5W4+G4K2?=
- =?us-ascii?Q?4iVhatqe2HuEr2VVcBNsK9prlF+BAsQPq19nIuCYQQK+DhTr9tYJ0gG5xm7o?=
- =?us-ascii?Q?vAyc9Gr59J8tUJth6Mkx93Aa1ZZaTkZB1oSuRqtHWA84xlTNAyMxsei0LgLH?=
- =?us-ascii?Q?p514qLcvc56ZcJC1tIi/JVNINc6iYOQ6Qzj82FPVmOGg?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 5 Dec 2023 22:54:55 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED411BF
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 19:55:01 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5d7346442d4so40176587b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 19:55:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701834900; x=1702439700; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BsR8qY+uS6/BsLD1U3jPPzDAagYHPNv5M9ReQzqjMkA=;
+        b=UXm8uYZ/Xl/VBZ/flQFs+9dAjL8MxLfaV1SwXude+vyG7dViCJ20LbYT4CQUaXdQFr
+         fetTd2xYcTrMmRoc2jpfsvdKFz+fBWlPhE4CEIuG1FJ7VLs5Iu3/o6sr2F61CeOPnDky
+         7TVjn+/jo9MjtLIgnTeHDtHwyNNDRS6XzCia8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701834900; x=1702439700;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BsR8qY+uS6/BsLD1U3jPPzDAagYHPNv5M9ReQzqjMkA=;
+        b=p9me7O5YRBeEMWgSb/KbRgjqd4o+9hGpNzG5RkJHAkFgikUNVkD4hgpC8ymhEf/Mkl
+         vpvSqYR/WiOPAudXcq8gZLUS0kdSGgXh91hoEyiDPbKtSaLtZy6QIWBnspNAkJNwANV7
+         BKT05ocWELxZnZD4JVU0Xf4mHdfiMfJkiBanV30eigf111pjxrG5zxw3KPxDWFxfXvpy
+         ywkQ0ubMtXuKj2ut+Wy+BgLupoDFcvA+wDtAOReFIJySfPyBZnlAX4sEEXHHBvQx9WyC
+         qdWX2brlbOfzCvnGQCpUKA/OA8o/9z2D2Ym0FmDEgrKfvs3j2i7WNRAGkpCmTgPwTlrP
+         0x/g==
+X-Gm-Message-State: AOJu0YxtPaG2tDLzZguiuy2Ta4JiCHAZyYGMT/mawh+N+LYHfjZ/AwmZ
+        xFh6xbs/5kMtGmfUQylq2PlsfADzpIqirBbrGm8fMw==
+X-Google-Smtp-Source: AGHT+IHoRbTJaveVc4lI5CNcK45wkIN9hGVufXmpLxm2ne2EuM6HpHaABsrXS8hPPj5d6lQhPotGKPmzPUEdXOur9Ro=
+X-Received: by 2002:a81:6dce:0:b0:5d7:3104:5649 with SMTP id
+ i197-20020a816dce000000b005d731045649mr174139ywc.3.1701834900083; Tue, 05 Dec
+ 2023 19:55:00 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: cisco.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5896.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e77ec6a9-7199-4937-0b8e-08dbf60ede73
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2023 03:53:12.5090
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lZLH7BgCGRZURssUuP4oFRr70J4oABQ+MXz2Yl48aIkJvp/hOSWzQY8LPAw+n2Ef7icXIqCJvchpRDua+nyCaA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5277
-X-Outbound-SMTP-Client: 173.37.147.252, alln-opgw-4.cisco.com
-X-Outbound-Node: rcdn-core-5.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231202035511.487946-1-sjg@chromium.org> <20231202035511.487946-3-sjg@chromium.org>
+ <92a3e3b4-6f4d-4ca4-947f-db905f328d4c@pengutronix.de>
+In-Reply-To: <92a3e3b4-6f4d-4ca4-947f-db905f328d4c@pengutronix.de>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Tue, 5 Dec 2023 20:54:41 -0700
+Message-ID: <CAPnjgZ3QZh3+2PtmSvje=KAw1n1o_jmhgC1ZnhM9JBoEjLG+fQ@mail.gmail.com>
+Subject: Re: [PATCH v9 2/2] arm64: boot: Support Flat Image Tree
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Tom Rini <trini@konsulko.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>, Will Deacon <will@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, workflows@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_SPF_WL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, December 5, 2023 7:11 PM, Martin K. Petersen <martin.petersen@o=
-racle.com> wrote:
->
->
-> Karan,
->
-> > This cover letter describes the feature: add support for multiqueue
-> > (MQ) to fnic driver.
->
-> This series doesn't apply to 6.8/scsi-queue.
+Hi Ahmad,
 
-Okay. Thanks Martin.
-Please advise how I can proceed with getting the patch set accepted.
-
-> Also, for change entries for individual patches, please make sure you put=
- them after a "---" separator so they don't end up in the commit history.
+On Tue, 5 Dec 2023 at 04:48, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 >
-> Thanks!
+> Hello Simon,
 >
-> --
+> On 02.12.23 04:54, Simon Glass wrote:
+> > Add a script which produces a Flat Image Tree (FIT), a single file
+> > containing the built kernel and associated devicetree files.
+> > Compression defaults to gzip which gives a good balance of size and
+> > performance.
+> >
+> > The files compress from about 86MB to 24MB using this approach.
+> >
+> > The FIT can be used by bootloaders which support it, such as U-Boot
+> > and Linuxboot. It permits automatic selection of the correct
+> > devicetree, matching the compatible string of the running board with
+> > the closest compatible string in the FIT. There is no need for
+> > filenames or other workarounds.
+> >
+> > Add a 'make image.fit' build target for arm64, as well. Use
+> > FIT_COMPRESSION to select a different algorithm.
+> >
+> > The FIT can be examined using 'dumpimage -l'.
+> >
+> > This features requires pylibfdt (use 'pip install libfdt'). It also
+> > requires compression utilities for the algorithm being used. Supported
+> > compression options are the same as the Image.xxx files. For now there
+> > is no way to change the compression other than by editing the rule for
+> > $(obj)/image.fit
+> >
+> > While FIT supports a ramdisk / initrd, no attempt is made to support
+> > this here, since it must be built separately from the Linux build.
+> >
+> > Signed-off-by: Simon Glass <sjg@chromium.org>
+>
+> kernel_noload support is now in barebox next branch and I tested this
+> series against it:
+>
+> Tested-by: Ahmad Fatoum <a.fatoum@pengutronix.de> # barebox
+>
 
-Thanks Martin.
+OK great thank you.
 
-I'll modify the commit entries in the individual patches in the patch set a=
-nd re-submit the patch set.
-Just to make sure I understand this correctly, this is what I will do for t=
-he individual patches in the entire patch set:
+> > +"""Build a FIT containing a lot of devicetree files
+> > +
+> > +Usage:
+> > +    make_fit.py -A arm64 -n 'Linux-6.6' -O linux
+> > +        -f arch/arm64/boot/image.fit -k /tmp/kern/arch/arm64/boot/image.itk
+> > +        /tmp/kern/arch/arm64/boot/dts/ -E -c gzip
+> > +
+> > +Creates a FIT containing the supplied kernel and a directory containing the
+> > +devicetree files.
+> > +
+> > +Use -E to generate an external FIT (where the data is placed after the
+> > +FIT data structure). This allows parsing of the data without loading
+> > +the entire FIT.
+> > +
+> > +Use -c to compress the data, using bzip2, gzip, lz4, lzma, lzo and
+> > +zstd algorithms.
+> > +
+> > +The resulting FIT can be booted by bootloaders which support FIT, such
+> > +as U-Boot, Linuxboot, Tianocore, etc.
+>
+> Feel free to add barebox to the list. Did you check whether Linuxboot and
+> Tianocore support kernel_noload?
 
-  1 From 818867e64180c2456d3f33761cb7fb6e00679849 Mon Sep 17 00:00:00 2001
-  2 From: Karan Tilak Kumar <kartilak@cisco.com>
-  3 Date: Fri, 13 Oct 2023 13:38:09 -0700
-  4 Subject: [PATCH v4 02/13] scsi: fnic: Add and use fnic number
-  5
-  6 Add fnic_num in fnic.h to identify fnic in a multi-fnic environment.
-  7 Increment and set the fnic number during driver load in fnic_probe.
-  8 Replace the host number with fnic number in debugfs.
-  9
- 10 Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
- 11 Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
- 12 Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
- 13 ---								-> Introduce a separator between the commit and the change e=
-ntries
- 14 Changes between v3 and v4:
- 15     Incorporate review comments from Martin and Hannes:
- 16     Undo the change to replace host number with fnic
- 17     number in debugfs since kernel stack uses host number.
- 18     Use ida_alloc to allocate ID for fnic number.
+Only what I was told by people in those projects. They may not even
+look at the load address, but I am not an expert on that.
 
-Please let me know if I've missed anything.
+>
+> > +        fsw.property_u32('load', 0)
+> > +        fsw.property_u32('entry', 0)
+>
+> I still think load and entry dummy values are confusing and should be dropped.
+
+This is what the spec requires at present. But I agree we should
+change it. I will dig into that at some point to see what is needed.
+
+>
+> > +    with fsw.add_node(f'fdt-{seq}'):
+> > +        # Get the compatible / model information
+> > +        with open(fname, 'rb') as inf:
+> > +            data = inf.read()
+> > +        fdt = libfdt.FdtRo(data)
+> > +        model = fdt.getprop(0, 'model').as_str()
+> > +        compat = fdt.getprop(0, 'compatible')
+> > +
+> > +        fsw.property_string('description', model)
+> > +        fsw.property_string('type', 'flat_dt')
+> > +        fsw.property_string('arch', arch)
+> > +        fsw.property_string('compression', compress)
+> > +        fsw.property('compatible', bytes(compat))
+> > +
+> > +        with open(fname, 'rb') as inf:
+> > +            compressed = compress_data(inf, compress)
+> > +        fsw.property('data', compressed)
+> > +    return model, compat
+>
+> After Doug's elaboration, extracting multiple compatibles is fine by me.
+
+OK good.
 
 Regards,
-Karan
+Simon
