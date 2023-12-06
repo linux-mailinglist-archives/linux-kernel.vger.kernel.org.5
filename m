@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B24280747E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A3E807482
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442646AbjLFQE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:04:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S1442688AbjLFQE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442703AbjLFQEQ (ORCPT
+        with ESMTP id S1442679AbjLFQEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:04:16 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0B31700;
-        Wed,  6 Dec 2023 08:04:19 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B6G45ZW003754;
-        Wed, 6 Dec 2023 10:04:05 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701878645;
-        bh=SNmMVSD0WdKAZnR9jxmtFYXTQ6KqIggd063vB1LY1j4=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=vcI6hQHULz+Qe7Qjqj5S4kehx0xiMRpajDgGbVvYPjI85pFvvVZ48DlBk1fX7OzIc
-         TTX9Q9aVIj+45hZrf5t01dKCq3smvlRSdfODPmyjfuXZ6NybCvo46LSmN+f8zVPyVw
-         nrOIoVZcLeCj7ETvO+HD2zHfU+KYkPDdMZmRmlPk=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B6G45Rl010967
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Dec 2023 10:04:05 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
- Dec 2023 10:04:04 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 6 Dec 2023 10:04:04 -0600
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B6G44ca020938;
-        Wed, 6 Dec 2023 10:04:04 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Francesco Dolcini <francesco@dolcini.it>
-CC:     Nishanth Menon <nm@ti.com>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] arm64: dts: ti: add verdin am62 mallow board
-Date:   Wed, 6 Dec 2023 10:04:03 -0600
-Message-ID: <170187863264.4898.11481701414086150455.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231205184605.35225-1-francesco@dolcini.it>
-References: <20231205184605.35225-1-francesco@dolcini.it>
+        Wed, 6 Dec 2023 11:04:50 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B04FD6E;
+        Wed,  6 Dec 2023 08:04:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=jWu5AuL7yKoNx7WS0OkakDQa71S04QtMUM2UIOzUW6s=; b=ceVNIdGl0TNS5phcFLE3/WITrs
+        +6VC9FcJpVAcEXcWHMX1NPQ5JYv+Z671QrQkD3aDpj4QT7n5H3xb4/Ee0aQ9NdHDIIN9uaIS2/hMl
+        q7URm2LkRa8SeWybTtkrDWUStgQhShA+GtuxLFOEvw+AvC+vT0xD1ugYI0oy1S9SyRbM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1rAuO1-002Dzb-6k; Wed, 06 Dec 2023 17:04:33 +0100
+Date:   Wed, 6 Dec 2023 17:04:33 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Heiko Stuebner <heiko.stuebner@cherry.de>
+Subject: Re: [PATCH] net: mdio: enable optional clock when registering a phy
+ from devicetree
+Message-ID: <853c30b2-afb9-4f86-87bb-ce79cbca1960@lunn.ch>
+References: <20231201142453.324697-1-heiko@sntech.de>
+ <84c102fa-e3f4-4454-82c9-95eea7eeb941@lunn.ch>
+ <b36e07f0-a8d6-4623-8531-4c3eef5dece6@theobroma-systems.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b36e07f0-a8d6-4623-8531-4c3eef5dece6@theobroma-systems.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Francesco Dolcini,
-
-On Tue, 05 Dec 2023 19:46:02 +0100, Francesco Dolcini wrote:
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> I was just wondering about this as well. Right now, we put the reset on the
+> MAC controller device tree node for our board (c.f. https://lore.kernel.org/linux-arm-kernel/20231201191103.343097-1-heiko@sntech.de/)
+> because otherwise it doesn't work.
 > 
-> Add Toradex Verdin AM62 Mallow carrier board support. Mallow is a
-> low-cost carrier board in the Verdin family with a small form factor and
-> build for volume production making it ideal for industrial and embedded
-> applications.
+> I assume this is because the phy net subsystem is not handling the reset at
+> the proper time (it does so before probing the PHY driver, which is too late
+> because the auto-detection mechanism has already run before and the MAC
+> couldn't find the PHY ID since the PHY wasn't reset properly at that time).
 > 
-> [...]
+> I think essentially we would need to have both the reset assert/deassert and
+> clock enabling/disabling in the same location as this patch is suggesting to
+> make all of this work.
+> 
+> I'll not investigate this, because Florian NACK'ed the whole thing. I do not
+> personally have an interest in fixing only the reset, because we need the
+> clock to be enabled for the auto-detection mechanism to work.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+There was a couple of discussions at LPC this year about resources
+needed to be enabled before bus discovered would work. I missed the
+first talk, but was in the second. That concentrated more on PCI,
+despite it being a generic problem.
 
-[1/3] arm64: dts: ti: verdin-am62: improve spi1 chip-select pinctrl
-      commit: fcb335934c5132f6f0646475ece5db729fcfbf84
-[2/3] dt-bindings: arm: ti: add verdin am62 mallow board
-      commit: f9b5aae471dca94de2ea525136a59927e9b1d7cf
-[3/3] arm64: dts: ti: add verdin am62 mallow board
-      commit: 7698622fbcf4fef2ec7e2fcbae35eb5e503dfddf
+Ideally we want some way to list all the resources and ordering and
+delays etc, so that a generic block of code could get the device into
+an enumerable state. But there was a general push back on this idea
+from GregKH and the PM Maintainer, but i think the MMC Maintainer was
+for it, since the MMC subsystem has something which could be made
+generic. The outcome of the session was a PCI only solution.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+I still don't think we should be solving this in phylib, so for the
+moment, we need to keep with ID values in DT, so the driver gets
+probed. Anything we add to phylib is just going to make it harder to
+adopt a generic solution, if it ever gets agreed on.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+      Andrew
