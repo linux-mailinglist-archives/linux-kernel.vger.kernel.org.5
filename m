@@ -2,126 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D59806F75
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2811D806F48
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377817AbjLFMIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:08:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
+        id S1377874AbjLFL56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378525AbjLFL4I (ORCPT
+        with ESMTP id S1377792AbjLFL55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:56:08 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F8210FA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:56:02 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a1da1017a09so69165866b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:56:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701863760; x=1702468560; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Eqp0r5NlTJ7o8I/M/MizGyJ+nqk9rTJ9IDo9o5OxHEo=;
-        b=PVa4TU3Cy3nZhVnEFZ8GjkYZgRAPzVQ8loyJVJxQ4XsHsCvLg6mhMIPZcwVZ8uMsUz
-         ZFgcl+cjlPpAckrmpASSQ4wA0n0UM0KM+jEQjrposIpteh4FHYVWE5Ye4BT5pDQG/j74
-         skDYAqJbZwVrFNCOJiRiXwbFJF4WJQYEp+q4nsUnq/xJ3iYWViDEyYB9AOscLkgtxT1B
-         zhtVp/C9tNgW/0zUPRBueAK9TOpfPTeTyl7Rmv0ckP9ei0P4oC2OEHgiPZOMG0dwRRmb
-         GzvK1B+QR7JJveVzcmrc1zoENo7ox8MtBgzim90IYXoo6g1wVP8hhNzujz5ZWQRogKvb
-         dgZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701863760; x=1702468560;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Eqp0r5NlTJ7o8I/M/MizGyJ+nqk9rTJ9IDo9o5OxHEo=;
-        b=ptOY/69JIXWSB9R5CQje2sMEoIbZiPjxWgiiA0x9lfANmqB9cxpo4tpmWgXeS1Fizo
-         9T6+3HzmI3SqdnJCLi3/r6Go7PzBVZKAhVRO5ycJcaHARgYZcQXOXroxxrbzNQeL0iDv
-         cy2trY7H5ti0qP+Swz9kmiv9jZQLsxC+AlaxFSCPC/GPIMpvG5qmMGZp40sLgmqChur5
-         qQ7ikDikB5W+hqeaLLArY+KIsgkbPPRzQ2Dj0ZA7kZm4+FlBu8dtSt2maPE6gFcsZazx
-         GF0HhHGUNP9/W02h1lWNhF5+LbV/8qnpFw7pPA5lpKq74XdQGGTZY/c6r1P0pUYqhNdA
-         h2tg==
-X-Gm-Message-State: AOJu0YzJogVc/JAVntSPm9HN8YYJtW4Wbub1KnZ6+pPl4avfBjfa6aFG
-        8qVsektVBSQLjF9B0dMg+9VnPnSqG62Ivjg2qxE=
-X-Google-Smtp-Source: AGHT+IG4CM/p0PI24Ntm4tbAJzUr2EP3bwZR+6jwVC2TrWmmh0lVS52GmDJgVpYpGWRMDjKuRGvlKA==
-X-Received: by 2002:a17:906:18c:b0:a1c:f370:e891 with SMTP id 12-20020a170906018c00b00a1cf370e891mr543715ejb.94.1701863760454;
-        Wed, 06 Dec 2023 03:56:00 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id kw2-20020a170907770200b00a1a53e9f401sm6209895ejc.132.2023.12.06.03.55.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 03:55:59 -0800 (PST)
-Message-ID: <82593653-1c12-484e-bfb0-3b20e23fb84e@linaro.org>
-Date:   Wed, 6 Dec 2023 12:55:57 +0100
+        Wed, 6 Dec 2023 06:57:57 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDD38F;
+        Wed,  6 Dec 2023 03:58:02 -0800 (PST)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SlbQT5QCfzShKJ;
+        Wed,  6 Dec 2023 19:53:37 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Dec 2023 19:57:58 +0800
+Message-ID: <51afdb12-0075-02a3-87ef-0ed54e8d2588@huawei.com>
+Date:   Wed, 6 Dec 2023 19:57:58 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: msm8996: Fix 'in-ports' is a
- required property
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
+ DIO write race with buffered read
 Content-Language: en-US
-To:     Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang <quic_taozha@quicinc.com>
-References: <20231205082922.32149-1-quic_jinlmao@quicinc.com>
- <20231205082922.32149-3-quic_jinlmao@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231205082922.32149-3-quic_jinlmao@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+To:     Dave Chinner <david@fromorbit.com>
+CC:     Jan Kara <jack@suse.cz>, <linux-mm@kvack.org>,
+        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>, <willy@infradead.org>,
+        <akpm@linux-foundation.org>, <ritesh.list@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+        Baokun Li <libaokun1@huawei.com>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
+ <20231204121120.mpxntey47rluhcfi@quack3>
+ <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+ <ZXAyV/rlfvBBuDL1@dread.disaster.area>
+From:   Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <ZXAyV/rlfvBBuDL1@dread.disaster.area>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.177.174]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -129,30 +60,213 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 09:29, Mao Jinlong wrote:
-> Add the inport of funnel@3023000 to fix 'in-ports' is a required property
-> warning.
-> 
-> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
-> ---
->  arch/arm64/boot/dts/qcom/msm8996.dtsi | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> index 6ba9da9e6a8b..e7d93d0b4f3b 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> @@ -444,6 +444,20 @@ memory@80000000 {
->  		reg = <0x0 0x80000000 0x0 0x0>;
->  	};
->  
-> +	modem-etm0 {
+On 2023/12/6 16:35, Dave Ch inner wrote:
+> On Mon, Dec 04, 2023 at 09:50:18PM +0800, Baokun Li wrote:
+>> On 2023/12/4 20:11, Jan Kara wrote:
+>>> Hello!
+>> Thank you for your reply!
+>>> On Sat 02-12-23 17:14:30, Baokun Li wrote:
+>>>> Recently, while running some pressure tests on MYSQL, noticed that
+>>>> occasionally a "corrupted data in log event" error would be reported.
+>>>> After analyzing the error, I found that extending DIO write and buffered
+>>>> read were competing, resulting in some zero-filled page end being read.
+>>>> Since ext4 buffered read doesn't hold an inode lock, and there is no
+>>>> field in the page to indicate the valid data size, it seems to me that
+>>>> it is impossible to solve this problem perfectly without changing these
+>>>> two things.
+>>> Yes, combining buffered reads with direct IO writes is a recipe for
+>>> problems and pretty much in the "don't do it" territory. So honestly I'd
+>>> consider this a MYSQL bug. Were you able to identify why does MYSQL use
+>>> buffered read in this case? It is just something specific to the test
+>>> you're doing?
+>> The problem is with a one-master-twoslave MYSQL database with three
+>> physical machines, and using sysbench pressure testing on each of the
+>> three machines, the problem occurs about once every two to three hours.
+>>
+>> The problem is with the relay log file, and when the problem occurs, the
+>> middle dozens of bytes of the file are read as all zeros, while the data on
+>> disk is not. This is a journal-like file where a write process gets the data
+>> from
+>> the master node and writes it locally, and another replay process reads the
+>> file and performs the replay operation accordingly (some SQL statements).
+>> The problem is that when replaying, it finds that the data read is
+>> corrupted,
+>> not valid SQL data, while the data on disk is normal.
+>>
+>> It's not confirmed that buffered reads vs direct IO writes is actually
+>> causing
+>> this issue, but this is the only scenario that we can reproduce with our
+>> local
+>> simplified scripts. Also, after merging in patch 1, the MYSQL pressure test
+>> scenario has now been tested for 5 days and has not been reproduced.
+> Mixing overlapping buffered read with direct writes - especially partial block
+> extending DIO writes - is a recipe for data corruption. It's not a
+> matter of if, it's a matter of when.
+>
+> Fundamentally, when you have overlapping write IO involving DIO, the
+> result of the overlapping IOs is undefined. One cannot control
+> submission order, the order that the overlapping IO hit the
+> media, or completion ordering that might clear flags like unwritten
+> extents. The only guarantee that we give in this case is that we
+> won't expose stale data from the disk to the user read.
+>
+> As such, it is the responsibility of the application to avoid
+> overlapping IOs when doing direct IO. The fact that you['ve observed
+> data corruption due to overlapping IO ranges from the one
+> application indicates that this is, indeed, an application level
+> problem and can only be solved by fixing the application....
+OK, thank you very much for your detailed explanation!
+>> I'll double-check the problem scenario, although buffered reads with
+>> buffered
+>> writes doesn't seem to have this problem.
+>>>> In this series, the first patch reads the inode size twice, and takes the
+>>>> smaller of the two values as the copyout limit to avoid copying data that
+>>>> was not actually read (0-padding) into the user buffer and causing data
+>>>> corruption. This greatly reduces the probability of problems under 4k
+>>>> page. However, the problem is still easily triggered under 64k page.
+>>>>
+>>>> The second patch waits for the existing dio write to complete and
+>>>> invalidate the stale page cache before performing a new buffered read
+>>>> in ext4, avoiding data corruption by copying the stale page cache to
+>>>> the user buffer. This makes it much less likely that the problem will
+>>>> be triggered in a 64k page.
+>>>>
+>>>> Do we have a plan to add a lock to the ext4 buffered read or a field in
+>>>> the page that indicates the size of the valid data in the page? Or does
+>>>> anyone have a better idea?
+>>> No, there are no plans to address this AFAIK. Because such locking will
+>>> slow down all the well behaved applications to fix a corner case for
+>>> application doing unsupported things. Sure we must not crash the kernel,
+>>> corrupt the filesystem or leak sensitive (e.g. uninitialized) data if app
+>>> combines buffered and direct IO but returning zeros instead of valid data
+>>> is in my opinion fully within the range of acceptable behavior for such
+>>> case.
+>>>
+>>> 								Honza
+>> I also feel that a scenario like buffered reads + DIO writes is strange. But
+>> theoretically when read doesn't return an error, the data read shouldn't be
+>> wrong.
+> The data that was read isn't wrong - it just wasn't what the
+> application expected.
+>
+>> And I tested that xfs guarantees data consistency in this scenario, which is
+>> why I
+>> thought it might be buggy.
+> XFS certainly does not guarantee data consistency between buffered
+> reads and DIO writes, especially for overlapping IO ranges using DIO
+> (see above).
+>
+> IOWs, the fact that the data inconsistency doesn't reproduce on XFS
+> doesn't mean that XFS is providing some guarantee of consistency for
+> this IO pattern. All it means is that ext4 and XFS behave differently
+> in an situation where the operational result is indeterminate and all
+> we guarantee is that we won't expose stale data read from disk....
+>
+> Cheers,
+>
+> Dave.
+Here's my test script, just put all three shell scripts in the same 
+directory,
+change the disk and dir, then run `sh test-io.sh`, and the inconsistency is
+reproduced under ext4 in just one round, and after switching the
+filesystem to xfs, the problem is no longer reproduced. So it looks like
+xfs guarantees consistency in this scenario. But you're right, a test case
+can't trigger a problem doesn't mean the problem doesn't exist.
+Thank you very much for the correction.
 
-etm {
-or
-etm-0 {
+------ test-write.sh
+disk="/dev/sda"
+dir="/tmp/test"
 
+write_t()
+{
+     pos=0
+     touch $dir/writefile
+     while [ $pos -lt 16777216 ]
+     do
+         xfs_io -c "open -d $dir/writefile" -c "pwrite -q -b 1024 -i 
+$dir/testfile -s $pos $pos 1024" &> /dev/null
+         pos=`ls -l $dir/writefile | awk '{print $5}'`
+     done
+}
+write_t
+------------------------------------------------------------
 
-Best regards,
-Krzysztof
+------ test-read.sh
+disk="/dev/sda"
+dir="/tmp/test"
 
+read_t()
+{
+     pos=0
+     touch $dir/readfile
+     while [ $pos -lt 16777216 ]
+     do
+         xfs_io -c "open -d $dir/readfile" -c "pwrite -q -b 65536 -i 
+$dir/writefile -s $pos $pos 65536" &> /dev/null
+         pos=`ls -l $dir/readfile | awk '{print $5}'`
+     done
+}
+read_t
+------------------------------------------------------------
+
+------ test-io.sh
+disk="/dev/sda"
+dir="/tmp/test"
+
+mkdir -p $dir
+umount $dir
+mkfs.ext4 -F $disk
+#mkfs.xfs -f -m crc=1,rmapbt=0,reflink=0 $disk
+mount $disk $dir
+
+xfs_io -f -c "pwrite -S 0xff 0 16777216" $dir/testfile
+sync
+
+round=0
+while true
+do
+     while true
+     do
+         echo "******* round $round ********"
+
+         touch $dir/writefile
+         taskset 0x00000001 sh test-read.sh &
+         pid_read=$!
+         taskset 0x0000000f sh test-write.sh &
+         pid_write=$!
+
+         wait $pid_read
+         wait $pid_write
+         sync
+
+         md_raw=`md5sum $dir/testfile | awk '{print $1}'`
+         md_write=`md5sum $dir/writefile | awk '{print $1}'`
+         md_read=`md5sum $dir/readfile | awk '{print $1}'`
+         if [ $md_write != $md_raw ]
+         then
+             echo "write error csum"
+             echo "raw csum: $md_raw"
+             echo "write csum: $md_write"
+             exit 1
+         elif [ $md_read != $md_write ]
+         then
+             echo "raed error csum"
+             echo "write csum: $md_write"
+             echo "read csum: $md_read"
+             exit 1
+         fi
+
+         rm -f $dir/writefile
+         rm -f $dir/readfile
+         sync
+         round=$(($round+1))
+     done
+done
+------------------------------------------------------------
+
+Thanks!
+-- 
+With Best Regards,
+Baokun Li
+.
