@@ -2,140 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7EE806BF1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF06B806BF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377449AbjLFKcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
+        id S1377454AbjLFKd1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 05:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377418AbjLFKcF (ORCPT
+        with ESMTP id S1377418AbjLFKdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:32:05 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE25118F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:32:11 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-33340c50af9so606560f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:32:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701858730; x=1702463530; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ouux16XZ+Qxb5EsDM7Joudi1AdrJFEAcn4DpLCm36OU=;
-        b=rqM2BvfVRVhqXdO61FsZSOL+QwqAREvLnM5Apw/EUtqxbLunNnOmz7cjXcwrqu1i34
-         IlyEbjB+MI6z6+tlfXD9GNfjzpQFsbD9PNz0vONa2kJ4uyYXqq+4T57CDaWmbqvKcopA
-         LNCpP3wEEWE9qgLSWi8fvEdweYKfJW4UHnh3yxrLPR0t5QYSAEzV9gqG4W96/kTlXjBC
-         UYirnB0acfN0KY2k7eS/jNyx8a8APdSz20PhwHjobjnfbTN4NLl1XNHLK9T9j+/pSdDb
-         QZoqdBqmFMnrEcLp4rxx3zb1ZiOWPVY58WqUJ0yFM4vN4COqHiICtEDgWJ24r9BuHM6Z
-         kDZw==
+        Wed, 6 Dec 2023 05:33:25 -0500
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4236120;
+        Wed,  6 Dec 2023 02:33:31 -0800 (PST)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-db539f21712so652903276.1;
+        Wed, 06 Dec 2023 02:33:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701858730; x=1702463530;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ouux16XZ+Qxb5EsDM7Joudi1AdrJFEAcn4DpLCm36OU=;
-        b=Lbj5c/bzKahGVVH0oe8wdABJ87ZizHoqbMqC3MgKGfbMxjggCdkcdX+vw4i47sgX6E
-         05qPUozoNJX6myjmz8l/XxwRlWScXEuoPqHaXBZKmY9ef4rdYZDBhQG1RO+sI4vBSmav
-         zkKsXN8rWTPbcHkaYBjwygdCN+f7J0D9qFVzy7y2tnJo3BHwNWeUB1ysBcKdDpFUZc6Z
-         PPoll33j6hUvfEYXSOsv/8qqGyAWLqDSbGz3jIMH68lL6IXTJsXZ/HGMmCjb95hcXUVK
-         bxfQJdGZOwCP3SqxuY1ED1OvdXZcL+nsiy6Dmt022jjJ8pJuWQxv3s3jsrj97WKxHh1t
-         Q/ew==
-X-Gm-Message-State: AOJu0Yy/qwnsoTgB4Veb+RfUrqR2AYS7EmkgxOntL9V7AApaIRwCVoEq
-        MAvPv5USTanQ6yZiXhXcAs6urw==
-X-Google-Smtp-Source: AGHT+IEvG+C+j0HWHfO3donybV+MlTT4aR8LQ7B/eZbJ8E0u34bBoDKPH21mUvPBQN0RzbGWthxfMw==
-X-Received: by 2002:adf:e491:0:b0:333:1b9e:6246 with SMTP id i17-20020adfe491000000b003331b9e6246mr305252wrm.48.1701858730158;
-        Wed, 06 Dec 2023 02:32:10 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id f9-20020adff8c9000000b003333d2c6420sm10864547wrq.74.2023.12.06.02.32.08
+        d=1e100.net; s=20230601; t=1701858811; x=1702463611;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ppJZHeeq4GSLMzo9BpRtzV0XWoMwWQg5YLkR/Wat1cc=;
+        b=K8k5k5sOYoug2XUHkcx6KvsW0Nd1WuEGpsy3ggnh4knAlOt+kLdjEaDoQef6TD1I6e
+         AsF6wBYdgWlUMz4kDicjgprNyyM/qJvsPYgamcfWOFhi8PxMzNMett9SnAQPYDUIBC+m
+         M6LKIGmFeHXPw0X1ekr0t0pzh+XnA3Zntwk893ykxZ5Yj+zZX5cWRCJnXsEfP/FeMBNP
+         /t1BGmCd6BOO65BoUoAb89L4Jwcn1ENIcWCo3vtlUf/pBh+z3Jc/y0ttCy9oimYpSrCh
+         1VxaKeU4e6aRElFYaTBJ8xGUALE8L3MoB6B/UcNJwcozwLFoGlGAL6X204Og0SOMzp8X
+         NIQQ==
+X-Gm-Message-State: AOJu0YxQ9MKje57m5dn/WUmA49vE6SRlVfJzlefl0vtL/G8WrjAD3HTN
+        V8bMFdHbZL09TU5QVJX19oiM8IZFGRv8rw==
+X-Google-Smtp-Source: AGHT+IFj3vKNwuS8BPb5D5X8gceRBPbMXcMarr7GKumB/3oi0KM+Cjt+rjPFFUBhbVdQzEH9mlrGvA==
+X-Received: by 2002:a25:ae4b:0:b0:db9:8713:14f6 with SMTP id g11-20020a25ae4b000000b00db9871314f6mr1749784ybe.31.1701858810701;
+        Wed, 06 Dec 2023 02:33:30 -0800 (PST)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
+        by smtp.gmail.com with ESMTPSA id p127-20020a252985000000b00db3fa34142bsm3785711ybp.49.2023.12.06.02.33.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 02:32:09 -0800 (PST)
-Message-ID: <58b77bd2-84fc-4e94-807f-1600d0053938@linaro.org>
-Date:   Wed, 6 Dec 2023 11:32:07 +0100
+        Wed, 06 Dec 2023 02:33:29 -0800 (PST)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5cdc0b3526eso6576337b3.1;
+        Wed, 06 Dec 2023 02:33:29 -0800 (PST)
+X-Received: by 2002:a81:ad49:0:b0:5d7:e2b8:bcca with SMTP id
+ l9-20020a81ad49000000b005d7e2b8bccamr505400ywk.18.1701858809241; Wed, 06 Dec
+ 2023 02:33:29 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch v5 01/11] dt-bindings: media: s5p-mfc: Add mfcv12 variant
-Content-Language: en-US
-To:     Aakarsh Jain <aakarsh.jain@samsung.com>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     m.szyprowski@samsung.com, andrzej.hajda@intel.com,
-        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        conor+dt@kernel.org, linux-samsung-soc@vger.kernel.org,
-        andi@etezian.org, gost.dev@samsung.com, alim.akhtar@samsung.com,
-        aswani.reddy@samsung.com, pankaj.dubey@samsung.com,
-        ajaykumar.rs@samsung.com, linux-fsd@tesla.com
-References: <20231206063045.97234-1-aakarsh.jain@samsung.com>
- <CGME20231206063108epcas5p1af3d9d0442c8abebe91d769cc68284d5@epcas5p1.samsung.com>
- <20231206063045.97234-2-aakarsh.jain@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231206063045.97234-2-aakarsh.jain@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231120070024.4079344-1-claudiu.beznea.uj@bp.renesas.com> <20231120070024.4079344-12-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20231120070024.4079344-12-claudiu.beznea.uj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Dec 2023 11:33:17 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUbKe=yiXWNmk5BJFLtF2psx9khiDRGasT9WsnHz4RWsg@mail.gmail.com>
+Message-ID: <CAMuHMdUbKe=yiXWNmk5BJFLtF2psx9khiDRGasT9WsnHz4RWsg@mail.gmail.com>
+Subject: Re: [PATCH 11/14] arm64: renesas: rzg3s-smarc-som: Invert the logic
+ for SW_SD2_EN macro
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux@armlinux.org.uk, geert+renesas@glider.be,
+        magnus.damm@gmail.com, mturquette@baylibre.com, sboyd@kernel.org,
+        linus.walleij@linaro.org, p.zabel@pengutronix.de, arnd@arndb.de,
+        m.szyprowski@samsung.com, alexandre.torgue@foss.st.com, afd@ti.com,
+        broonie@kernel.org, alexander.stein@ew.tq-group.com,
+        eugen.hristev@collabora.com, sergei.shtylyov@gmail.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 07:30, Aakarsh Jain wrote:
-> Add Tesla FSD MFC(MFC v12) compatible.
-> 
-> Cc: linux-fsd@tesla.com
-> Signed-off-by: Aakarsh Jain <aakarsh.jain@samsung.com>
-> ---
+Hi Claudiu,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Mon, Nov 20, 2023 at 8:03 AM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> The intention of SW_SD2_EN macro was to reflect the state of SW_CONFIG3
+> switch available on RZ/G3S Smarc Module. According to documentation SD2
+> is enabled when switch is in OFF state. For this, changed the logic of
+> marco to map value 0 to switch's OFF state and value 1 to switch's ON
+> state. Along with this update the description for each state for better
+> understanding.
+>
+> The value of SW_SD2_EN macro was not changed in file because, according to
+> documentation, the default state for this switch is ON.
+>
+> Fixes: adb4f0c5699c ("arm64: dts: renesas: Add initial support for RZ/G3S SMARC SoM")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Best regards,
-Krzysztof
+Thanks for your patch!
 
+> --- a/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+> @@ -14,8 +14,8 @@
+>   *     0 - SD0 is connected to eMMC
+>   *     1 - SD0 is connected to uSD0 card
+>   * @SW_SD2_EN:
+> - *     0 - SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
+> - *     1 - SD2 is connected to SoC
+> + *     0 - (switch OFF) SD2 is connected to SoC
+> + *     1 - (switch ON)  SCIF1, SSI0, IRQ0, IRQ1 connected to SoC
+
+I think this is still confusing: SW_SD2_EN refers to an active-low signal
+(SW_SD2_EN#) in the schematics.
+
+Before, SW_SD2_EN used assertion-logic (1 is enabled), and didn't
+match the physical signal level.
+After your patch, SW_SD2_EN matches the active-low physical level, but
+this is not reflected in the name...
+
+>   */
+>  #define SW_SD0_DEV_SEL 1
+>  #define SW_SD2_EN      1
+> @@ -25,7 +25,7 @@ / {
+>
+>         aliases {
+>                 mmc0 = &sdhi0;
+> -#if SW_SD2_EN
+> +#if !SW_SD2_EN
+
+... so this condition looks really weird.
+
+>                 mmc2 = &sdhi2;
+>  #endif
+>         };
+> @@ -116,7 +116,7 @@ &sdhi0 {
+>  };
+>  #endif
+>
+> -#if SW_SD2_EN
+> +#if !SW_SD2_EN
+>  &sdhi2 {
+>         pinctrl-0 = <&sdhi2_pins>;
+>         pinctrl-names = "default";
+
+So I think SW_SD2_EN should be renamed to SW_SD2_EN_N.
+
+Cfr. SW_ET0_EN_N on RZ/G2UL:
+
+arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * DIP-Switch SW1 setting
+arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * 1 : High; 0: Low
+arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * SW1-2 :
+SW_SD0_DEV_SEL    (0: uSD; 1: eMMC)
+arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * SW1-3 :
+SW_ET0_EN_N               (0: ETHER0; 1: CAN0, CAN1, SSI1, RSPI1)
+arch/arm64/boot/dts/renesas/r9a07g043u11-smarc.dts- * Please change
+below macros according to SW1 setting on the SoM
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
