@@ -2,167 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E17E80795D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7EB807960
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379539AbjLFU0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
+        id S1379512AbjLFU2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjLFU0v (ORCPT
+        with ESMTP id S1379405AbjLFU2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:26:51 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D299AD1;
-        Wed,  6 Dec 2023 12:26:57 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701894416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kqh7GJ3rdYwLUSDYgl+gNKDmu46Ojy1zKysyN8CB3PA=;
-        b=Dx3zUkXnBMm4PIrqdahEibZhO1yy5UJQsEexfAvFuyvV+nW6+zBezgyCZo+LL6QhzGrqSu
-        TSfYMIh9rn+gK/uOHTyzZbDwudn2yF9Ai82oaYimTHIvldekh+tLWACpNm9g/wmnRmxC38
-        07CpNlabWYsqEF/CUR7K+s12Y8RbfhU/4juyiJJv9Qbx/1PtvxwHNOgiWlkq9B6fqAfoeX
-        VgCo8h7aCC2yd6opZKrtTgQnNdXzvLNU2TOSkscwChU89zqDgbnPA9uPeLrF7KnZo41W2U
-        IkqGyjVPLXedUpPK2UEr+dmBCUJfb3Cn778WjDuw9yEwwqnEc/BzukSPVyeNPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701894416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kqh7GJ3rdYwLUSDYgl+gNKDmu46Ojy1zKysyN8CB3PA=;
-        b=cm4lSW9GTi7RqBu3Yh/KXEw7CN9Ktdug13v2YXI4gYKAtP8Ow02khQivs91iaWtlha6u1V
-        fsm8DveWhxUy1NAQ==
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
-        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
-        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
-        peterz@infradead.org, seanjc@google.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: Re: [PATCH RFC 13/13] iommu/vt-d: Enable posted mode for device MSIs
-In-Reply-To: <20231112041643.2868316-14-jacob.jun.pan@linux.intel.com>
-References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
- <20231112041643.2868316-14-jacob.jun.pan@linux.intel.com>
-Date:   Wed, 06 Dec 2023 21:26:55 +0100
-Message-ID: <87zfynt6uo.ffs@tglx>
+        Wed, 6 Dec 2023 15:28:46 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 946F012F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:28:52 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2851a2b30a2so197448a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 12:28:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701894532; x=1702499332; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XTBTLAqDXor1l6sg34c9kbUSBjJSEI8UiBBYr9CwL2Q=;
+        b=mBSvMCBnLy7316/Qzf9Xd5nmH/+fsGN1n1j+8Fc1nUYVCrxpCr6MxloLVw01Wc9HQe
+         3IIobqpHYYGBZvVcvjlmukokNk7MbrHRonhcvwLh6vFndFxS166Ez8Ul+OLOSEgh7/to
+         YYkDNXgbiFtLGGw7knY39odkVNoiK40VLKFjo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701894532; x=1702499332;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XTBTLAqDXor1l6sg34c9kbUSBjJSEI8UiBBYr9CwL2Q=;
+        b=D3Y3ylcecCqTGkkpRI0N0gvPPBASevHg1V+gzzcUFKbgoZ9ulK7HV11emXr59WzLuz
+         Nq35UjC93jGfQMPJelRs45XKtogIfhp8Jbrhs3765mfoOSkxMj9CJUwbL5vPxcFePM6C
+         9BhzpdoPD+hxDMHp9XwJTab8kBPi9k0ITJxtCWTTbR6cSk4VV3D6l893AB2m5aTsG8Hv
+         TjBJtf4OwI8yjiU+nrIb25OA4tN6AbF0W2wyvAJq/0R/j/S2XB1QZG1i/w59Q1jOmEBW
+         U21QNYCCqC0E/QqKzES+hnlklZjAAiQbNNoFGgvVw/vi9qEnVF8R8gJdDTrd+/uNDyLe
+         nykg==
+X-Gm-Message-State: AOJu0Yzd53Z4bUfMwfa8Q3v1LawxDCY149Q5er/t1tQR4L6d5j9MQl9Z
+        /71QzqSRMgnpr+/GFxlsW5kLrA==
+X-Google-Smtp-Source: AGHT+IGCJW9aAT/9l5dWk1euSiHsIcWqvf5+MSkN2kUSEvXz1J47cG2MljPvGZxmFTZ5NhzqTZhnjg==
+X-Received: by 2002:a17:90a:d796:b0:286:d42d:e7e with SMTP id z22-20020a17090ad79600b00286d42d0e7emr1213709pju.3.1701894532050;
+        Wed, 06 Dec 2023 12:28:52 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id fz20-20020a17090b025400b00280a2275e4bsm280195pjb.27.2023.12.06.12.28.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 12:28:51 -0800 (PST)
+Date:   Wed, 6 Dec 2023 12:28:50 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     samitolvanen@google.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-riscv@lists.infradead.org,
+        llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] riscv: Increase mmap_rnd_bits_max on Sv48/57
+Message-ID: <202312061228.B953DE8CA@keescook>
+References: <20230929211155.3910949-4-samitolvanen@google.com>
+ <mhng-f0a257c6-a1f5-41db-b1c4-c178a77a79e9@palmer-ri-x1c9>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-f0a257c6-a1f5-41db-b1c4-c178a77a79e9@palmer-ri-x1c9>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11 2023 at 20:16, Jacob Pan wrote:
->  #ifdef CONFIG_X86_POSTED_MSI
->  
->  static u64 get_pi_desc_addr(struct irq_data *irqd)
-> @@ -1133,6 +1144,29 @@ static u64 get_pi_desc_addr(struct irq_data *irqd)
->  
->  	return __pa(per_cpu_ptr(&posted_interrupt_desc, cpu));
->  }
-> +
-> +static void intel_ir_reconfigure_irte_posted(struct irq_data *irqd)
-> +{
-> +	struct intel_ir_data *ir_data = irqd->chip_data;
-> +	struct irte *irte = &ir_data->irte_entry;
-> +	struct irte irte_pi;
-> +	u64 pid_addr;
-> +
-> +	pid_addr = get_pi_desc_addr(irqd);
-> +
-> +	memset(&irte_pi, 0, sizeof(irte_pi));
-> +
-> +	/* The shared IRTE already be set up as posted during alloc_irte */
+On Wed, Dec 06, 2023 at 05:14:26AM -0800, Palmer Dabbelt wrote:
+> On Fri, 29 Sep 2023 14:11:56 PDT (-0700), samitolvanen@google.com wrote:
+> > Hi all,
+> > 
+> > We noticed that 64-bit RISC-V kernels limit mmap_rnd_bits to 24
+> > even if the hardware supports a larger virtual address space size
+> > [1]. These two patches allow mmap_rnd_bits_max to be changed during
+> > init, and bumps up the maximum randomness if we end up setting up
+> > 4/5-level paging at boot.
+> 
+> Sorry for missing this, I'm just poking through old stuff in patchwork.  As
+> far as I can tell this is still relevant, the discussions are just on the
+> mmap() bits (but we'd already screwed that one up and have since fixed it).
+> 
+> So
+> 
+> Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> 
+> in case someone else wants to take it, but I'm OK taking that MM patch with
+> Kees' review.
 
--ENOPARSE
+Yes, thanks! Please do. I already +1ed it:
+https://lore.kernel.org/all/202309291454.436E19663@keescook
 
-> +	dmar_copy_shared_irte(&irte_pi, irte);
-> +
-> +	irte_pi.pda_l = (pid_addr >> (32 - PDA_LOW_BIT)) & ~(-1UL << PDA_LOW_BIT);
-> +	irte_pi.pda_h = (pid_addr >> 32) & ~(-1UL << PDA_HIGH_BIT);
-> +
-> +	modify_irte(&ir_data->irq_2_iommu, &irte_pi);
-> +}
-> +
-> +#else
-> +static inline void intel_ir_reconfigure_irte_posted(struct irq_data *irqd) {}
->  #endif
->  
->  static void intel_ir_reconfigure_irte(struct irq_data *irqd, bool force)
-> @@ -1148,8 +1182,9 @@ static void intel_ir_reconfigure_irte(struct irq_data *irqd, bool force)
->  	irte->vector = cfg->vector;
->  	irte->dest_id = IRTE_DEST(cfg->dest_apicid);
->  
-> -	/* Update the hardware only if the interrupt is in remapped mode. */
-> -	if (force || ir_data->irq_2_iommu.mode == IRQ_REMAPPING)
-> +	if (ir_data->irq_2_iommu.posted_msi)
-> +		intel_ir_reconfigure_irte_posted(irqd);
-> +	else if (force || ir_data->irq_2_iommu.mode == IRQ_REMAPPING)
->  		modify_irte(&ir_data->irq_2_iommu, irte);
->  }
->  
-> @@ -1203,7 +1238,7 @@ static int intel_ir_set_vcpu_affinity(struct irq_data *data, void *info)
->  	struct intel_ir_data *ir_data = data->chip_data;
->  	struct vcpu_data *vcpu_pi_info = info;
->  
-> -	/* stop posting interrupts, back to remapping mode */
-> +	/* stop posting interrupts, back to the default mode */
->  	if (!vcpu_pi_info) {
->  		modify_irte(&ir_data->irq_2_iommu, &ir_data->irte_entry);
->  	} else {
-> @@ -1300,10 +1335,14 @@ static void intel_irq_remapping_prepare_irte(struct intel_ir_data *data,
->  {
->  	struct irte *irte = &data->irte_entry;
->  
-> -	prepare_irte(irte, irq_cfg->vector, irq_cfg->dest_apicid);
-> +	if (data->irq_2_iommu.mode == IRQ_POSTING)
-> +		prepare_irte_posted(irte);
-> +	else
-> +		prepare_irte(irte, irq_cfg->vector, irq_cfg->dest_apicid);
->  
->  	switch (info->type) {
->  	case X86_IRQ_ALLOC_TYPE_IOAPIC:
-> +		prepare_irte(irte, irq_cfg->vector, irq_cfg->dest_apicid);
+-Kees
 
-What? This is just wrong. Above you have:
-
-> +	if (data->irq_2_iommu.mode == IRQ_POSTING)
-> +		prepare_irte_posted(irte);
-> +	else
-> +		prepare_irte(irte, irq_cfg->vector, irq_cfg->dest_apicid);
-
-Can you spot the fail?
-
->  		/* Set source-id of interrupt request */
->  		set_ioapic_sid(irte, info->devid);
->  		apic_printk(APIC_VERBOSE, KERN_DEBUG "IOAPIC[%d]: Set IRTE entry (P:%d FPD:%d Dst_Mode:%d Redir_hint:%d Trig_Mode:%d Dlvry_Mode:%X Avail:%X Vector:%02X Dest:%08X SID:%04X SQ:%X SVT:%X)\n",
-> @@ -1315,10 +1354,18 @@ static void intel_irq_remapping_prepare_irte(struct intel_ir_data *data,
->  		sub_handle = info->ioapic.pin;
->  		break;
->  	case X86_IRQ_ALLOC_TYPE_HPET:
-> +		prepare_irte(irte, irq_cfg->vector, irq_cfg->dest_apicid);
->  		set_hpet_sid(irte, info->devid);
->  		break;
->  	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
->  	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
-> +		if (posted_msi_supported()) {
-> +			prepare_irte_posted(irte);
-> +			data->irq_2_iommu.posted_msi = 1;
-> +		} else {
-> +			prepare_irte(irte, irq_cfg->vector, irq_cfg->dest_apicid);
-> +		}
-
-Here it gets even more hilarious.
+-- 
+Kees Cook
