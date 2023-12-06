@@ -2,228 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CD1807522
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6560E807532
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442605AbjLFQf4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 11:35:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
+        id S1379347AbjLFQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442672AbjLFQfq (ORCPT
+        with ESMTP id S1378708AbjLFQhX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:35:46 -0500
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67FDD5F;
-        Wed,  6 Dec 2023 08:35:51 -0800 (PST)
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-58dd5193db4so592109eaf.1;
-        Wed, 06 Dec 2023 08:35:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701880551; x=1702485351;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RnltdkPvqiE0SLkWecJ3YZb5+WkHMQll5p7sUNdf2Nw=;
-        b=KLFYnSj5A2GEi0815JIOu16WVwyCM4TwKUg0CkAKkBuXmMHSPAqf8hCSY4HsJKE5Uz
-         duZTaMnz7yUc2dDboSo49kjntBpifWo/DRCe+J3yUqZIAovkgc5PkBeAZ4sjKUT8WHZE
-         il090OiPf5XdhulAOkV1WPHkpJxBc1ClNKN/FE5kxb5iXaQmUromJV+IbDcn78k1R+pl
-         qqu2FHGwjP9a5ROly3LUeQL/itbzqQRxZ0lxj7w8hRS3KdGvg3z1j4Np3BL/t+8Q9ild
-         QXgLUO9T3k2dBGDaOKiFZyANrdjCh5BlckfBYt0fUeqzCbpnkgH6F6vWEmxq+OjppM85
-         kQtQ==
-X-Gm-Message-State: AOJu0Ywxmj6d/jMCFQPbYBulspPhWDYpMBoIz6cHU6FlxVD9hALLYcxa
-        X7HYUJQRu4O9BnMjqIS3sUNccFnykVB2wlFYHEo=
-X-Google-Smtp-Source: AGHT+IFpMFlVK/t1b9fMj+2PJaVuQaOhHx6XBFAUEimHYj1Jk1xeQUg3ZGuroBcDfz+Jv7tTpUepQpBmwwfHs/85uO4=
-X-Received: by 2002:a05:6870:b4a0:b0:1fb:5e42:5096 with SMTP id
- y32-20020a056870b4a000b001fb5e425096mr1917272oap.5.1701880551180; Wed, 06 Dec
- 2023 08:35:51 -0800 (PST)
+        Wed, 6 Dec 2023 11:37:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84D7D44
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:37:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701880648;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=NysT7udZ8xwFGddZRwdc9/Qlsmga0cd28a63wrp2AsA=;
+        b=Mq2BtzkxG9hdQapps9SMsS9+XnFNuxDs0vQquMqmJRH4ypPIjheOlbCVyWAW4Gg/Gd/NXF
+        OJtUk0bVG/T+dhlixANd4eGB0O6/sy9OMpbPDRGn2R3iBo+k8fTwNLqduyfGAINZ6oAfTN
+        k7mJjNJpJGEQEI0NX31ElJv/BnsF+X8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-47-8U8hwTEyN2Cz1TXlS0v0JQ-1; Wed, 06 Dec 2023 11:37:13 -0500
+X-MC-Unique: 8U8hwTEyN2Cz1TXlS0v0JQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 418FE85CBA4;
+        Wed,  6 Dec 2023 16:35:53 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.224.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2666F1C060AF;
+        Wed,  6 Dec 2023 16:35:51 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Alexander Graf <graf@amazon.de>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Joerg Roedel <jroedel@suse.de>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [PATCH RFC] x86/sev: Temporary disable CPU re-onlining for SEV-SNP
+Date:   Wed,  6 Dec 2023 17:35:50 +0100
+Message-ID: <20231206163550.1454453-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20231115091612.580685-1-LeoLiu-oc@zhaoxin.com> <20231115091612.580685-2-LeoLiu-oc@zhaoxin.com>
-In-Reply-To: <20231115091612.580685-2-LeoLiu-oc@zhaoxin.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 17:35:38 +0100
-Message-ID: <CAJZ5v0ig2+uv4kF0SjAByvcmBF9auhY_1OVrJvjKTVJK23=cSg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ACPI/APEI: Add hest_parse_pcie_aer()
-To:     LeoLiu-oc <LeoLiu-oc@zhaoxin.com>
-Cc:     rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
-        tony.luck@intel.com, bp@alien8.de, bhelgaas@google.com,
-        robert.moore@intel.com, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        acpica-devel@lists.linux.dev, CobeChen@zhaoxin.com,
-        TonyWWang@zhaoxin.com, ErosZhang@zhaoxin.com, LeoLiu@zhaoxin.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:16 AM LeoLiu-oc <LeoLiu-oc@zhaoxin.com> wrote:
->
-> From: leoliu-oc <leoliu-oc@zhaoxin.com>
->
-> The purpose of the function apei_hest_parse_aer() is used to parse and
-> extract register value from HEST PCIe AER structures.
->
-> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
-> ---
->  drivers/acpi/apei/hest.c | 77 ++++++++++++++++++++++++++++++++++++++--
->  include/acpi/actbl1.h    |  7 ++++
->  include/acpi/apei.h      |  8 +++++
->  3 files changed, 90 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
-> index 6aef1ee5e1bd..7fb797fdc1b1 100644
-> --- a/drivers/acpi/apei/hest.c
-> +++ b/drivers/acpi/apei/hest.c
-> @@ -22,6 +22,7 @@
->  #include <linux/kdebug.h>
->  #include <linux/highmem.h>
->  #include <linux/io.h>
-> +#include <linux/pci.h>
->  #include <linux/platform_device.h>
->  #include <acpi/apei.h>
->  #include <acpi/ghes.h>
-> @@ -86,9 +87,81 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
->         return len;
->  };
->
-> -typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
-> +#ifdef CONFIG_ACPI_APEI
-> +static bool hest_match_pci_devfn(struct acpi_hest_aer_common *p,
-> +                               struct pci_dev *dev)
-> +{
-> +       return ACPI_HEST_SEGMENT(p->bus) == pci_domain_nr(dev->bus) &&
-> +               ACPI_HEST_BUS(p->bus) == dev->bus->number &&
-> +               p->device == PCI_SLOT(dev->devfn) &&
-> +               p->function == PCI_FUNC(dev->devfn);
-> +}
-> +
-> +static bool hest_source_is_pcie_aer(struct acpi_hest_header *hest_hdr,
-> +                               struct pci_dev *dev)
-> +{
-> +       u16 hest_type = hest_hdr->type;
-> +       u8 pcie_type = pci_pcie_type(dev);
-> +       struct acpi_hest_aer_common *common;
-> +
-> +       common = (struct acpi_hest_aer_common *)(hest_hdr + 1);
-> +
-> +       switch (hest_type) {
-> +       case ACPI_HEST_TYPE_AER_ROOT_PORT:
-> +               if (pcie_type != PCI_EXP_TYPE_ROOT_PORT)
-> +                       return false;
-> +       break;
-> +       case ACPI_HEST_TYPE_AER_ENDPOINT:
-> +               if (pcie_type != PCI_EXP_TYPE_ENDPOINT)
-> +                       return false;
-> +       break;
-> +       case ACPI_HEST_TYPE_AER_BRIDGE:
-> +               if (pcie_type != PCI_EXP_TYPE_PCI_BRIDGE &&
-> +                   pcie_type != PCI_EXP_TYPE_PCIE_BRIDGE)
-> +                       return false;
-> +       break;
-> +       default:
-> +               return false;
-> +       break;
-> +       }
-> +
-> +       if (common->flags & ACPI_HEST_GLOBAL)
-> +               return true;
-> +
-> +       if (hest_match_pci_devfn(common, dev))
-> +               return true;
-> +
-> +       return false;
-> +}
-> +
-> +int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
-> +{
-> +       struct hest_parse_aer_info *info = data;
-> +
-> +       if (!hest_source_is_pcie_aer(hest_hdr, info->pci_dev))
-> +               return 0;
-> +
-> +       switch (hest_hdr->type) {
-> +       case ACPI_HEST_TYPE_AER_ROOT_PORT:
-> +               info->hest_aer_root_port = (struct acpi_hest_aer_root *)hest_hdr;
-> +               return 1;
-> +       break;
-> +       case ACPI_HEST_TYPE_AER_ENDPOINT:
-> +               info->hest_aer_endpoint = (struct acpi_hest_aer *)hest_hdr;
-> +               return 1;
-> +       break;
-> +       case ACPI_HEST_TYPE_AER_BRIDGE:
-> +               info->hest_aer_bridge = (struct acpi_hest_aer_bridge *)hest_hdr;
-> +               return 1;
-> +       break;
-> +       default:
-> +               return 0;
-> +       break;
-> +       }
-> +}
-> +#endif
->
-> -static int apei_hest_parse(apei_hest_func_t func, void *data)
-> +int apei_hest_parse(apei_hest_func_t func, void *data)
->  {
->         struct acpi_hest_header *hest_hdr;
->         int i, rc, len;
-> diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-> index a33375e055ad..90c27dc5325f 100644
-> --- a/include/acpi/actbl1.h
-> +++ b/include/acpi/actbl1.h
+It was discovered that an attempt to re-online a CPU in a SEV-SNP enabled
+instance in AWS leads to the immediate reboot upon SVM_VMGEXIT_AP_CREATE
+VMGEXIT. While support for SEV-SNP in KVM is not yet upstream, it is
+unclear whether the problem is guest related or if the hypervisor is not
+handling the case correctly. Note, currently Linux doesn't do
+SVM_VMGEXIT_AP_DESTROY upon CPU offlining but it is also not entirely clear
+from the specification whether this is a must or a nice-to-have
+action. When done prior to SVM_VMGEXIT_AP_CREATE on AWS, guest reboot is no
+longer observed. Unfortunately, CPU still fails to come up ("CPU1 failed
+to report alive state").
 
-This is an ACPICA header and it cannot be modified just like this.
+Note, SEV-SNP feature on Hyper-V uses a different CPU wakeup
+path (see hv_snp_boot_ap() in arch/x86/hyperv/ivm.c) which uses a
+hypercall. This one does not seem to have any issues with CPU re-onlining,
+at least on publicly available Azure instances.
 
-The way to do that is to submit a pull request with the desired change
-to the upstream ACPICA project on GitHub and add a Link tag pointing
-to the upstream PR to the corresponding Linux patch.  Then, the Linux
-patch can only be applied after the corresponding upstream PR has been
-merged.
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+---
+ RFC: I'm using this silly patch (which makes the problem a bit less severe
+ though) to ask if there are plans to make this work, either on the host or
+ on the guest side. Thanks!
+---
+ arch/x86/kernel/sev.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Thanks!
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 70472eebe719..f7e56cae05c5 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -1005,6 +1005,10 @@ static int wakeup_cpu_via_vmgexit(u32 apic_id, unsigned long start_ip)
+ 
+ 	cur_vmsa = per_cpu(sev_vmsa, cpu);
+ 
++	/* Re-onlining CPUs is currently unsupported */
++	if (cur_vmsa)
++		return -EOPNOTSUPP;
++
+ 	/*
+ 	 * A new VMSA is created each time because there is no guarantee that
+ 	 * the current VMSA is the kernels or that the vCPU is not running. If
+-- 
+2.43.0
 
-> @@ -1629,6 +1629,13 @@ struct acpi_hest_generic_status {
->         u32 error_severity;
->  };
->
-> +struct hest_parse_aer_info {
-> +       struct pci_dev *pci_dev;
-> +       struct acpi_hest_aer *hest_aer_endpoint;
-> +       struct acpi_hest_aer_root *hest_aer_root_port;
-> +       struct acpi_hest_aer_bridge *hest_aer_bridge;
-> +};
-> +
->  /* Values for block_status flags above */
->
->  #define ACPI_HEST_UNCORRECTABLE             (1)
-> diff --git a/include/acpi/apei.h b/include/acpi/apei.h
-> index dc60f7db5524..d12e6b6c4546 100644
-> --- a/include/acpi/apei.h
-> +++ b/include/acpi/apei.h
-> @@ -33,10 +33,18 @@ void __init acpi_ghes_init(void);
->  static inline void acpi_ghes_init(void) { }
->  #endif
->
-> +typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
-> +int apei_hest_parse(apei_hest_func_t func, void *data);
-> +
->  #ifdef CONFIG_ACPI_APEI
->  void __init acpi_hest_init(void);
-> +int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data);
->  #else
->  static inline void acpi_hest_init(void) { }
-> +static inline int hest_parse_pcie_aer(struct acpi_hest_header *hest_hdr, void *data)
-> +{
-> +       return 0;
-> +}
->  #endif
->
->  int erst_write(const struct cper_record_header *record);
-> --
-> 2.34.1
->
