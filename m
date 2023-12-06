@@ -2,154 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A979A80781E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4FE80781A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379371AbjLFSux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
+        id S1442785AbjLFSvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442820AbjLFSuq (ORCPT
+        with ESMTP id S1379299AbjLFSux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:50:46 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B8610C6;
-        Wed,  6 Dec 2023 10:50:37 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UqxS5DbEH8sTIZ4p5Ma2s9Nk/3CJlrAfYRd/5CRuOZm2p8wFBViAoOKr3yBzZl3U8PV6BhKS1kxaWBC/fjDpi3zaoNlz6KYU92Hx5zucqVEjhsqw4SiYj3wtPZGRFmlsP94VU3ILgO1NdNgaW40agEnH2bw2CdYuuZ+9yPjR9JfV2Ph1AWak5viv38qQk+OiuGlXo3Vy+/EKEmQ3v7xhWzhbt04ethFTX/Ey6p61rUWX7kOJI8jGf848FHIXyqMQAhUS0EG90q/unZPv7m5li33eFpcgCESOjOjeuco0qvr566HVgUyPkARPxYuOTDwSxFRrND6gXtRt4w6SC+vxuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SatkdO+hNE2tu2QrTSOMjkTks5OvAKaScLVkTEWvIKE=;
- b=QV29APwhdfKzxspoAl+/P9bjBe07QjCY22NM8yq3AJePbEG/rXyROP4612Y/X4YpqyfZpypQWFNep+JTas6+U1OMWzNFxUJILZzVRj35ctS9vHAHet1/VdiuVz3Hao+IgR1B5GgbJTC+7UNV4VGZYAT9+C7vlJ7bGBV6xA9m4N9WDRo/38mv+viWVsSZRohdhEGZiD2NIwXECHCuDuuQKP3+HPmXrWtFL2BzwVvRbC1Z2saNa7cAmc2YA0/Nu1QSUgqy9HeYu+cfR+4wYWROwufghHrNgUlH3Vttcs8fuhWWcBpe9OUY9v2GccjXtvhqMBL+nMc1jMR+4NEF1XKNwA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SatkdO+hNE2tu2QrTSOMjkTks5OvAKaScLVkTEWvIKE=;
- b=QXlC+IZ2Wvn5B3bDa5AOhbMDbZjvyL/gSvJdu9OItYTPtGCuffo8qFSuWtiSOvEzEUcNLJkhPrVRsCn5tZGPjLQ+Ww/C/l9suHVOrbtNxjnJSPuV1r22P3+AoiAUMucoWtJEFXi8wgwc6YxHO7lz3pNdNmhpuakjnep+Fp/lBXZ9EaLZ1TIXAjuiPRT5/2XM80Ui6fvErsyVGj5acOuIzHTAqZSz1hZDGv6C9AymWwLOKjLuO2leepuasLzZ7mFQMox6ns8enbOQ+ZXQeeMXF4e4ipjft9vyhxIFXoL+7F65/E7Y3EU+3PoxKHf0AZ+zSqpfUaCejtWyPfuPZsawaw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by PH7PR12MB9152.namprd12.prod.outlook.com (2603:10b6:510:2ec::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
- 2023 18:50:33 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 18:50:32 +0000
-Date:   Wed, 6 Dec 2023 14:50:31 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
-        alex.williamson@redhat.com, kevin.tian@intel.com,
-        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
-        eric.auger@redhat.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
-        peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: Re: [PATCH v6 1/6] iommu: Add cache_invalidate_user op
-Message-ID: <20231206185031.GB2692119@nvidia.com>
-References: <20231117130717.19875-1-yi.l.liu@intel.com>
- <20231117130717.19875-2-yi.l.liu@intel.com>
- <20231206183209.GZ2692119@nvidia.com>
- <ZXDA1uUzvxmLf/o4@Asurada-Nvidia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXDA1uUzvxmLf/o4@Asurada-Nvidia>
-X-ClientProxiedBy: MN2PR16CA0065.namprd16.prod.outlook.com
- (2603:10b6:208:234::34) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Wed, 6 Dec 2023 13:50:53 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAAC011F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:50:52 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50bf1de91c6so302e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:50:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701888651; x=1702493451; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MiEVffTns7PIqQ/RAadvgn3sb/RobCrYF2AQlXdHHDA=;
+        b=CQ1/DmfurmbzdEo7Xg/Y72BzCXhXjbnZuLRy9f/R5ZsmXwT3crBN9sMU93OTxkMgxK
+         QXhAzJjvuj+Fmj4LYXx5lOviOoXpZ6cQhJ8CIsaKG+ZziLMcGYqzP4Niv6PQJ3ID1GFJ
+         GiFS9sKXuj1pVp8PxKr+fJTjRHi/uxM3bGV55g6E6S07aX0RnXJAIUgyAiJTBb9ymNAB
+         GMqkh2rxrJJqNNIxCSJThN+0iQgyTo7UCSL06AyZZVq6pUH/QvFqGny1bMzt+wHY+RcW
+         GpGuOCe77BgGfMx9Wuzf0fZCUFNnU2aKg2cI32K+j4Ys8OQ3/3MunKVg+cfqW701r66U
+         r3qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701888651; x=1702493451;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MiEVffTns7PIqQ/RAadvgn3sb/RobCrYF2AQlXdHHDA=;
+        b=ATOWbgkFeRrk6MrBOjpUbRytweqH9/zV9moW2q7KtOeU2vqXvPmnwiY7pqeF/njxZL
+         eO8C+qFBzTkufCIA5c5Ms0GiQAMhfjCIZ7vqsAv7P5JhAxlZa5GK+Gu3YflqCslFCEP3
+         A02Y8MgONNn8GiTE7gerjBchSkHMkhPI+2LcZVnoY4iKpVNb7bKH+9bZoXMz/9jic05P
+         MvzwEkog6vTCGnlKKcKZCGzihq558fad+NRxbjo0QARzf6wVzmsCkZgzAOwZgsQ+nMe5
+         1k4M5ICVb0iVY1gtMzc94UrMsNBFf4fuZkXxcEcytBySg9YL8ua9A3P5l5XN6E1B3Pv2
+         Pg5Q==
+X-Gm-Message-State: AOJu0Yyxg5muvbi+8d6NKOS1k4iLPKzT8Du4xw+6PwK11B5iSqDgpc+M
+        yq0GFn75+EYCvSf3FDUL+HJOWrAjc/HWN6/n2xVJHQ==
+X-Google-Smtp-Source: AGHT+IF1NKwWhmuZPkZcFo+RgjaoJj8x930q4YdMfIeeSSthD+3IZUr3jkeZx0WAFgBi7l4yz1zEFi145oH2+YCDCv0=
+X-Received: by 2002:a05:6512:3452:b0:50b:f51a:2999 with SMTP id
+ j18-20020a056512345200b0050bf51a2999mr74435lfr.4.1701888650850; Wed, 06 Dec
+ 2023 10:50:50 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB9152:EE_
-X-MS-Office365-Filtering-Correlation-Id: d80301f4-1b72-4497-5df1-08dbf68c39b0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XDgCs/KbTMuf4bWdjH3COZu/Jv1IW2MynqDWAF3KSVPC/2wtuSxl6MDlmfDBMmngTgGxLN99/eMCQM41/6ZYBZWoI9PXyfFuQb3i0whxCfrICtXo+re5a1OHJeAexdz1BfocdTSJpSwn4likAnNgCrjas4D25IHs2hdFqyxnPhR3uGrLDqrprnv0cAyfTJB4qtuGkK0tLKKS2XMjQ+j/IjKU7xwZfeMDijibcK4RD664GwXNLV+gFOLgQsjB/K4uQHlcg2gnnpZJeuIKNhAqCX78Z6mX9oJzrO/wnQoVBN7Ip1BAxGb8SDRBz5HjtKhTAtvr7E1w3psy0V6n6FKZ5Y5aqOH4PeXfZ0fC6ojlN0WVkIq641mMl+exDt0gXFnF6G/3fJy9yJcN0k7yKgAEoIWnWGw1xEtEOLgfSMYm0Ovj8B7Aev0EFET6BgTQbmu9tm5eAtdNotyK0sGPPs+rptXi5IKwrxPIlhx8aa9/K5yOrEmvGjX0Srd+mli3yNaX0f1JN0ZdqR7bxzFCQNpYOiCF23lsAmeOpjKUJRZ8yGY2vvYB9Drk5lTnqiKln8ba
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(136003)(396003)(346002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(6512007)(6506007)(8936002)(2616005)(6486002)(26005)(1076003)(66556008)(4326008)(66476007)(8676002)(6862004)(66946007)(37006003)(6636002)(316002)(83380400001)(38100700002)(7416002)(33656002)(478600001)(36756003)(2906002)(5660300002)(41300700001)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?edxxcNqAi3vwqB5kKA2ONn01Huk9XHgjcV+QyuzFW21okKB8PE9QEpWZYWlS?=
- =?us-ascii?Q?IcNGuPqNtpCQPiFjMIc2KhRPH4qKGb8GKxoAmr60P0Jcp79/MAz4CbogwZez?=
- =?us-ascii?Q?diEQRXQsgAraMZydYvwkFSLXNQ9lgsZ6Yng6qOslLsxIKbkxU3bhQxN2l9Sa?=
- =?us-ascii?Q?asKtP51esXLqxS3p3BJNCUHYeev4YZD9YgVDI9NAzO/YIriiIJkcCt9REU85?=
- =?us-ascii?Q?qunTFMCQFF/ixdvcFHhy3/hySB8Z5Hq7xXsd5q+2G2OIf6ASt/BubzpjMAg5?=
- =?us-ascii?Q?pXDXSUx4+RJGulLp84i3bQhPJrMydntbHYVaDXqChHxtg3zhabGR65MhaW+n?=
- =?us-ascii?Q?wRDQpQSFLzVPFrvp7cYEupAIgGuwvpz8fgHifDJcJ+nsE0DVXptHO5dURxsA?=
- =?us-ascii?Q?D3TcjXgBQhsYf+tjAie3KsPODDIyXfRpIT+PNZUdNzjB6iWcb9V0SwPksxev?=
- =?us-ascii?Q?FUtae3c4ggiHn7R6SCHIVOFa0HwmU4lLYjs7prFze6alprC8BV1+0f/DAnLu?=
- =?us-ascii?Q?w8eDvU0HS/EARt+ez5717lX9X+CMjXb5sc73aitso8M8Y4zbZyKA5MYFwXAS?=
- =?us-ascii?Q?v9kA9lS1bLkz3VVZWZlkw3w/Tba0T8HN7i7Jxlg1SCdZFGwyy5e693YbLnTo?=
- =?us-ascii?Q?RtEuf3jSy6Z6BDGNYIoI6hSAXF9ZPMYlrv779SdM2w4YTfunq2M8n5TnbMtH?=
- =?us-ascii?Q?M1rfNnusagMKmZGFRqNGGhCrdZc/O5lw5HI4H+4zdCC9e/ExAYs2VyrivwwN?=
- =?us-ascii?Q?93n9jr4MiRpt0go0+LwoTSbQa2LGy5uKolssbMwFbjvEiQ2l0LRcAvZD7ZbK?=
- =?us-ascii?Q?8NfhXYZYd0Qo9de4wN0LLmStDasLe8SHJFw4uw1Y6j+c6E4DIZy9WIsMYxIn?=
- =?us-ascii?Q?ClxHpjPr4oiuNFPSuVeO1qdDrgVob0DEUTahsOd21CNBtEqffwAKE12mXeq+?=
- =?us-ascii?Q?pldpg6ToUEQo2H9fOVIoELvt4XZ1fJCjfgvWIBrwVUkdDx8+EIGZzot3Eh7I?=
- =?us-ascii?Q?aTV+8EIeZoQeyA0HezWQ3aS/WuNlY78wNcXkjCvejwbKwpwt283DxE2KyZfh?=
- =?us-ascii?Q?2HqlGIeIliHvgfiL/C60lOhR0hyCaByznO5SOKRozj3UtRGGHnpyGl44JSQ5?=
- =?us-ascii?Q?MvRggO5G3fmB5wS9YlxcSnRBP1vTTG8nuLUIrexgTzMrF20pFDNbrX2XBrjt?=
- =?us-ascii?Q?97+o4KdCuXbsgWBJy01A8enEx0iQjbVKt8e0IzrlC6Kk/UuOVU9lh13uXtyk?=
- =?us-ascii?Q?H44Z87yDZdpjjIRFnl4JJyCw4s2cfgH2Bk2uE+QhiXUjfbuk3J70nWPm+n1J?=
- =?us-ascii?Q?jhqPs9ymf9wiCf4Y3VZOJ86wZ/3rAoVNN+zsdPEUUKs9qG9STOO4IsQvBq9f?=
- =?us-ascii?Q?m5DfuUxx1obriqT+WbEEwM7afjLFEewZ54JUxvd8gpEPYCFQNDS1nU6i0bjT?=
- =?us-ascii?Q?1k/FfE1Qgj7V1bahRviOKV6h4/2ZrjGhSnRRBaTOTaz56JD7Hywc4Pb6zoWj?=
- =?us-ascii?Q?kzwWcb5cdS6UKGJxYWZio5ZbEDHSoW+H8ZwZyuxbwD7FocHQoKdAV1Vl/4Yp?=
- =?us-ascii?Q?vVwZHPNy8p2YopwNCRBOAz4ra9l4NgVFqCUs6aus?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d80301f4-1b72-4497-5df1-08dbf68c39b0
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 18:50:32.8174
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UGa0nsXNt3+vEf/j0jgUo0t92/J4UDPsDlmgzeUozc/DGyQA+2Y3+Brwq55GZHYW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9152
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20230614090710.680330-1-sandipan.das@amd.com> <1320e6e3-c029-2a8c-e8b7-2cfbb781518a@amd.com>
+ <ZXByT1K6enTh2EHT@kernel.org> <CAP-5=fUoD=s9yyVPgV7tqGwZsJVQMSmHKd8MV_vJW438AcK9qQ@mail.gmail.com>
+ <ZXC1U8y4JAUaQ6lm@kernel.org>
+In-Reply-To: <ZXC1U8y4JAUaQ6lm@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 6 Dec 2023 10:50:39 -0800
+Message-ID: <CAP-5=fW_2iWEyOKao8MpMZWu7AQNX6-UKN1nEhr=mMxk0fUJKg@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Retry without grouping for all metrics test
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ayush Jain <ayush.jain3@amd.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        peterz@infradead.org, Ingo Molnar <mingo@kernel.org>,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>, kjain@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, barnali@linux.ibm.com,
+        ananth.narayan@amd.com, ravi.bangoria@amd.com,
+        santosh.shukla@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 10:43:34AM -0800, Nicolin Chen wrote:
-> On Wed, Dec 06, 2023 at 02:32:09PM -0400, Jason Gunthorpe wrote:
-> > On Fri, Nov 17, 2023 at 05:07:12AM -0800, Yi Liu wrote:
->  
-> > > @@ -465,6 +492,9 @@ struct iommu_domain_ops {
-> > >  			      size_t size);
-> > >  	void (*iotlb_sync)(struct iommu_domain *domain,
-> > >  			   struct iommu_iotlb_gather *iotlb_gather);
-> > > +	int (*cache_invalidate_user)(struct iommu_domain *domain,
-> > > +				     struct iommu_user_data_array *array,
-> > > +				     u32 *error_code);
-> > 
-> > Regarding the other conversation I worry a u32 error_code is too small.
-> > 
-> > Unfortunately there is no obvious place to put something better so if
-> > we reach it we will have to add more error_code space via normal
-> > extension.
-> > 
-> > Maybe expand this to u64? That is 64 bits of error register data and
-> > the consumer index. It should do for SMMUv3 at least?
-> 
-> I think Yi is moving the error_code to the entry data structure,
-> where we can even define a list of error_codes as a driver data
-> needs. So, I assume this u32 pointer would be gone too.
+On Wed, Dec 6, 2023 at 9:54=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> Em Wed, Dec 06, 2023 at 08:35:23AM -0800, Ian Rogers escreveu:
+> > On Wed, Dec 6, 2023 at 5:08=E2=80=AFAM Arnaldo Carvalho de Melo <acme@k=
+ernel.org> wrote:
+> > > Humm, I'm not being able to reproduce here the problem, before applyi=
+ng
+> > > this patch:
+>
+> > Please don't apply the patch. The patch masks a bug in metrics/PMUs
+>
+> I didn't
+>
+> > and the proper fix was:
+> > 8d40f74ebf21 perf vendor events amd: Fix large metrics
+> > https://lore.kernel.org/r/20230706063440.54189-1-sandipan.das@amd.com
+>
+> that is upstream:
+>
+> =E2=AC=A2[acme@toolbox perf-tools-next]$ git log tools/perf/pmu-events/ar=
+ch/x86/amdzen1/recommended.json
+> commit 8d40f74ebf217d3b9e9b7481721e6236b857cc55
+> Author: Sandipan Das <sandipan.das@amd.com>
+> Date:   Thu Jul 6 12:04:40 2023 +0530
+>
+>     perf vendor events amd: Fix large metrics
+>
+>     There are cases where a metric requires more events than the number o=
+f
+>     available counters. E.g. AMD Zen, Zen 2 and Zen 3 processors have fou=
+r
+>     data fabric counters but the "nps1_die_to_dram" metric has eight even=
+ts.
+>
+>     By default, the constituent events are placed in a group and since th=
+e
+>     events cannot be scheduled at the same time, the metric is not comput=
+ed.
+>     The "all metrics" test also fails because of this.
+>
+>     Use the NO_GROUP_EVENTS constraint for such metrics which anyway expe=
+ct
+>     the user to run perf with "--metric-no-group".
+>
+>     E.g.
+>
+>       $ sudo perf test -v 101
+>
+>     Before:
+>
+>       101: perf all metrics test                                         =
+  :
+>       --- start ---
+>       test child forked, pid 37131
+>       Testing branch_misprediction_ratio
+>       Testing all_remote_links_outbound
+>       Testing nps1_die_to_dram
+>       Metric 'nps1_die_to_dram' not printed in:
+>       Error:
+>       Invalid event (dram_channel_data_controller_4) in per-thread mode, =
+enable system wide with '-a'.
+>       Testing macro_ops_dispatched
+>       Testing all_l2_cache_accesses
+>       Testing all_l2_cache_hits
+>       Testing all_l2_cache_misses
+>       Testing ic_fetch_miss_ratio
+>       Testing l2_cache_accesses_from_l2_hwpf
+>       Testing l2_cache_misses_from_l2_hwpf
+>       Testing op_cache_fetch_miss_ratio
+>       Testing l3_read_miss_latency
+>       Testing l1_itlb_misses
+>       test child finished with -1
+>       ---- end ----
+>       perf all metrics test: FAILED!
+>
+>     After:
+>
+>       101: perf all metrics test                                         =
+  :
+>       --- start ---
+>       test child forked, pid 43766
+>       Testing branch_misprediction_ratio
+>       Testing all_remote_links_outbound
+>       Testing nps1_die_to_dram
+>       Testing macro_ops_dispatched
+>       Testing all_l2_cache_accesses
+>       Testing all_l2_cache_hits
+>       Testing all_l2_cache_misses
+>       Testing ic_fetch_miss_ratio
+>       Testing l2_cache_accesses_from_l2_hwpf
+>       Testing l2_cache_misses_from_l2_hwpf
+>       Testing op_cache_fetch_miss_ratio
+>       Testing l3_read_miss_latency
+>       Testing l1_itlb_misses
+>       test child finished with 0
+>       ---- end ----
+>       perf all metrics test: Ok
+>
+>     Reported-by: Ayush Jain <ayush.jain3@amd.com>
+>     Suggested-by: Ian Rogers <irogers@google.com>
+>     Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+>     Acked-by: Ian Rogers <irogers@google.com>
+>     Cc: Adrian Hunter <adrian.hunter@intel.com>
+>     Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>     Cc: Ananth Narayan <ananth.narayan@amd.com>
+>     Cc: Ingo Molnar <mingo@redhat.com>
+>     Cc: Jiri Olsa <jolsa@kernel.org>
+>     Cc: Mark Rutland <mark.rutland@arm.com>
+>     Cc: Namhyung Kim <namhyung@kernel.org>
+>     Cc: Peter Zijlstra <peterz@infradead.org>
+>     Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+>     Cc: Santosh Shukla <santosh.shukla@amd.com>
+>     Link: https://lore.kernel.org/r/20230706063440.54189-1-sandipan.das@a=
+md.com
+>     Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com
+>
+> > > Ian, I also stumbled on this:
+>
+> > > [root@five ~]# perf stat -M dram_channel_data_controller_4
+> > > Cannot find metric or group `dram_channel_data_controller_4'
+> > > ^C
+> > >  Performance counter stats for 'system wide':
+>
+> > >         284,908.91 msec cpu-clock                        #   32.002 C=
+PUs utilized
+> > >          6,485,456      context-switches                 #   22.763 K=
+/sec
+> > >                719      cpu-migrations                   #    2.524 /=
+sec
+> > >             32,800      page-faults                      #  115.125 /=
+sec
+>
+> <SNIP>
+>
+> > > I.e. -M should bail out at that point (Cannot find metric or group `d=
+ram_channel_data_controller_4'), no?
+>
+> > We could. I suspect the code has always just not bailed out. I'll put
+> > together a patch adding the bail out.
+>
+> Great, thanks,
 
-Oh, lets see that then..
+Sent:
+https://lore.kernel.org/lkml/20231206183533.972028-1-irogers@google.com/
 
-Jason
+Thanks,
+Ian
+
+> - Arnaldo
