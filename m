@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E412807C87
+	by mail.lfdr.de (Postfix) with ESMTP id 3A605807C85
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441823AbjLFXoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 18:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        id S1441829AbjLFXoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 18:44:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbjLFXoL (ORCPT
+        with ESMTP id S1441806AbjLFXoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 18:44:11 -0500
+        Wed, 6 Dec 2023 18:44:13 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE46C6;
-        Wed,  6 Dec 2023 15:44:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE5BA4;
+        Wed,  6 Dec 2023 15:44:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701906257; x=1733442257;
+  t=1701906258; x=1733442258;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=eriwFjI3LNv4Js6dYZ339bbItfpw+p66ws9NjKsufBg=;
-  b=JPifSw5jbe5g4tlKdLQF3bShiBfSaOlCXeeyPxUn0Jim8/u8ySmxkcei
-   siQaFx5MNM5HY3/HfLXbbgD6Ol3o21d4PJslDweuCH/QXV4oGr8m69CWc
-   ADnSEl5GY7xCJOVwQD16HaC5EiT59EkwZ64O5XDnuVmSUeO4xWQiC7cZ8
-   92N42/n6anG0nTYxqV5U5jKUmzerqXGsQOXKkVajg2kJw57i8w5+lJ+5z
-   sQc8a5hbN7P1V8+glO/cXdz8tbdHxLG12RwCpAA7Yj0y8Hl/xHwOwxpGp
-   j+rwNbqxPXM/9Q988aBenLZ5/4nL6AwnMpn1pm+KCP2lcIQjmjZpcu9VD
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="373634455"
+  bh=aBQ3UsUdaTX6qmXYeXuurT+R78I2+gSlJN8HCaWvth4=;
+  b=CQgwjxD9HcnYPuyVQSGjnkGlDz3xB8e3DyHf6Eyu4pX8iJE4pz0d5q+0
+   IiJ5qXaPFedvmcCzP0t07GkaeglGN/1zSJJKjKJNrmKFh0KZedkajkFS0
+   JHCkQ9VrGzxIeouxlj51K5uPF0xLXdu9YvqoG0tqelHNcSx6Mo/ez52GX
+   oIR5uBoiz+i24ABMrIne9U7RFKbyFEiiHNE09o+OfMpnSPXXCTIqpFzJ3
+   9+TVDpHUNti2vXfnS3vQJi8+5g/4h/5UaQYGySx1O0vemF8juzPi9snLg
+   ejunWJyGO5YODRl1Fy/iO4IFK8SmlNRW6oaLPgCeizOcmwjyDIDwD9XbG
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="373634476"
 X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="373634455"
+   d="scan'208";a="373634476"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 15:44:16 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1018737712"
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1018737711"
 X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="1018737712"
+   d="scan'208";a="1018737711"
 Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
   by fmsmga006.fm.intel.com with ESMTP; 06 Dec 2023 15:44:09 -0800
 Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1rB1Yk-000Bb4-30;
+        id 1rB1Yk-000Bb2-2w;
         Wed, 06 Dec 2023 23:44:06 +0000
-Date:   Thu, 7 Dec 2023 07:43:14 +0800
+Date:   Thu, 7 Dec 2023 07:43:15 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Yunfei Dong <yunfei.dong@mediatek.com>,
         Jeffrey Kardatzke <jkardatzke@google.com>,
@@ -55,7 +55,8 @@ To:     Yunfei Dong <yunfei.dong@mediatek.com>,
         <angelogioacchino.delregno@collabora.com>,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>,
         Nathan Hebert <nhebert@chromium.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Chen-Yu Tsai <wenst@chromium.org>,
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        Chen-Yu Tsai <wenst@chromium.org>,
         Yong Wu <yong.wu@mediatek.com>,
         Hsin-Yi Wang <hsinyi@chromium.org>,
         Fritz Koenig <frkoenig@chromium.org>,
@@ -74,7 +75,7 @@ Cc:     oe-kbuild-all@lists.linux.dev, Chen-Yu Tsai <wenst@chromium.org>,
         linux-mediatek@lists.infradead.org,
         Project_Global_Chrome_Upstream_Group@mediatek.com
 Subject: Re: [PATCH] media: medkatek: vcodec: support tee decoder
-Message-ID: <202312070717.a86rODYn-lkp@intel.com>
+Message-ID: <202312070723.APrpMLj9-lkp@intel.com>
 References: <20231206081538.17056-21-yunfei.dong@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -104,34 +105,38 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Yunfei-Dong/media-medkate
 base:   git://linuxtv.org/media_tree.git master
 patch link:    https://lore.kernel.org/r/20231206081538.17056-21-yunfei.dong%40mediatek.com
 patch subject: [PATCH] media: medkatek: vcodec: support tee decoder
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231207/202312070717.a86rODYn-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231207/202312070717.a86rODYn-lkp@intel.com/reproduce)
+config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231207/202312070723.APrpMLj9-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231207/202312070723.APrpMLj9-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312070717.a86rODYn-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312070723.APrpMLj9-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c: In function 'fops_vcodec_release':
->> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:313:16: error: 'struct mtk_vcodec_dec_ctx' has no member named 'is_secure_playback'
+>> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:313:11: error: no member named 'is_secure_playback' in 'struct mtk_vcodec_dec_ctx'
      313 |         if (ctx->is_secure_playback)
-         |                ^~
->> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:314:17: error: implicit declaration of function 'mtk_vcodec_dec_optee_release'; did you mean 'mtk_vcodec_dec_release'? [-Werror=implicit-function-declaration]
+         |             ~~~  ^
+>> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:314:3: error: call to undeclared function 'mtk_vcodec_dec_optee_release'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      314 |                 mtk_vcodec_dec_optee_release(dev->optee_private);
-         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                 mtk_vcodec_dec_release
->> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:314:49: error: 'struct mtk_vcodec_dec_dev' has no member named 'optee_private'
+         |                 ^
+   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:314:3: note: did you mean 'mtk_vcodec_dec_release'?
+   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h:88:6: note: 'mtk_vcodec_dec_release' declared here
+      88 | void mtk_vcodec_dec_release(struct mtk_vcodec_dec_ctx *ctx);
+         |      ^
+>> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:314:37: error: no member named 'optee_private' in 'struct mtk_vcodec_dec_dev'
      314 |                 mtk_vcodec_dec_optee_release(dev->optee_private);
-         |                                                 ^~
-   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c: In function 'mtk_vcodec_probe':
->> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:472:15: error: implicit declaration of function 'mtk_vcodec_dec_optee_private_init'; did you mean 'mtk_vcodec_dec_queue_init'? [-Werror=implicit-function-declaration]
+         |                                              ~~~  ^
+>> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:472:8: error: call to undeclared function 'mtk_vcodec_dec_optee_private_init'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
      472 |         ret = mtk_vcodec_dec_optee_private_init(dev);
-         |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |               mtk_vcodec_dec_queue_init
-   cc1: some warnings being treated as errors
+         |               ^
+   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:472:8: note: did you mean 'mtk_vcodec_dec_queue_init'?
+   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h:85:5: note: 'mtk_vcodec_dec_queue_init' declared here
+      85 | int mtk_vcodec_dec_queue_init(void *priv, struct vb2_queue *src_vq,
+         |     ^
+   4 errors generated.
 
 
 vim +313 drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
