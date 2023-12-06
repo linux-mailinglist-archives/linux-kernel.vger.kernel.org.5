@@ -2,106 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C11FF807707
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512278076FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442743AbjLFRxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:53:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
+        id S1442736AbjLFRwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442726AbjLFRxM (ORCPT
+        with ESMTP id S1379751AbjLFRwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:53:12 -0500
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A81E122
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:53:18 -0800 (PST)
-Received: from cwcc.thunk.org (pool-173-48-122-214.bstnma.fios.verizon.net [173.48.122.214])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3B6Hodj2022646
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Dec 2023 12:50:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1701885052; bh=VZDVHdtsTza1iBjsN4e9taxM8QQIzumJOYNTH51fhro=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=BH8TRkxS2KVaitLmv0fUh5MfTnRi8kxhm2QxRnobVHqRnCkm5tdQJ4YU7KzmgN2o9
-         OrT5ijrdbqD+8Tpl+UWv5WlzoZ4FfBRwcoZtXGHipfp3BKDuVw8Wb3OV8JHdDL++WR
-         fchowN0SphtUdvT2S+alJWDJDljYoM4HhCP8Oe9wGQPXflEuR9UupnRUlKWI1Qe2kg
-         kWiBMGCDi9IQPUcNW0bRqxHb1k7h5ks+vYGOrOHkVBn6CgZz1YTgrm04q9GDpzs5AE
-         AW77xm7xSTCpwyFB4QBf7egNa0Hpu3J4Iea+sXKNE2nV9yZ8sAlE3vS7vnXmXBUfDj
-         Vli7wjfFyI1og==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id F04EC15C057B; Wed,  6 Dec 2023 12:50:38 -0500 (EST)
-Date:   Wed, 6 Dec 2023 12:50:38 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
-        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
-        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, nico@fluxnic.net,
-        xiang@kernel.org, chao@kernel.org, adilger.kernel@dilger.ca,
-        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-        willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-        p.raghav@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-Message-ID: <20231206175038.GJ509422@mit.edu>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
- <ZXARKD0OmjLrvHmU@infradead.org>
+        Wed, 6 Dec 2023 12:52:02 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023F9D5A;
+        Wed,  6 Dec 2023 09:52:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=xtEyYJ2fL6Bd/0ZQMBJdBd4JHYGCVwVdwTisB+sS+6c=; b=zH/nzGG9C8Rq19EuObrG0yz4pf
+        R93eD9OUVT4C3HY1QMdnol7HJPeIhWZROomiVjeEA5vOZl+0VpkragNpePVgochBymEUcb4tqXCE3
+        +cjT7SYIHITZerFDewzgXH17u0OEX74lJJgr1l0RhzVh/6LqsKCJhwiwCF7e2roBz4pIBnMbfKqer
+        rsm1nvLceBhbmqXohGYuaIJpwIMyIwAia2po95HwUoKD2VVBzltSdO2VPi64RXLRe2cWd+jlWTZg7
+        LkNLQNz1yJGIvo73+eEPhriyAPciIpXk+54b0oGxPr5VdsfZ3ol0O1LZA6f3oOXKHIkbRLhsIHA6d
+        4E4Aed3w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45446)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rAw3e-0000CW-1J;
+        Wed, 06 Dec 2023 17:51:38 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rAw3a-0002uY-MH; Wed, 06 Dec 2023 17:51:34 +0000
+Date:   Wed, 6 Dec 2023 17:51:34 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH v2 3/8] net: pcs: pcs-mtk-lynxi: add platform driver
+ for MT7988
+Message-ID: <ZXC0pq2C6iRmeF4B@shell.armlinux.org.uk>
+References: <cover.1701826319.git.daniel@makrotopia.org>
+ <68bb81ac6bf99393c8de256f42e5715626590af8.1701826319.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXARKD0OmjLrvHmU@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <68bb81ac6bf99393c8de256f42e5715626590af8.1701826319.git.daniel@makrotopia.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 10:14:00PM -0800, Christoph Hellwig wrote:
-> > +/*
-> > + * The del_gendisk() function uninitializes the disk-specific data
-> > + * structures, including the bdi structure, without telling anyone
-> > + * else.  Once this happens, any attempt to call mark_buffer_dirty()
-> > + * (for example, by ext4_commit_super), will cause a kernel OOPS.
-> > + * This is a kludge to prevent these oops until we can put in a proper
-> > + * hook in del_gendisk() to inform the VFS and file system layers.
-> > + */
-> > +int bdev_ejected(struct block_device *bdev)
-> > +{
-> > +	struct backing_dev_info *bdi = inode_to_bdi(bdev->bd_inode);
-> > +
-> > +	return bdi->dev == NULL;
-> > +}
-> > +EXPORT_SYMBOL_GPL(bdev_ejected);
-> 
-> And this code in ext4 should just go away entirely.  The bdi should
-> always be valid for a live bdev for years.
+On Wed, Dec 06, 2023 at 01:44:17AM +0000, Daniel Golle wrote:
+> +struct phylink_pcs *mtk_pcs_lynxi_select_pcs(struct device_node *np, phy_interface_t mode)
+> +{
+> +	struct platform_device *pdev;
+> +	struct mtk_pcs_lynxi *mpcs;
+> +
+> +	if (!np)
+> +		return NULL;
+> +
+> +	if (!of_device_is_available(np))
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	if (!of_match_node(mtk_pcs_lynxi_of_match, np))
+> +		return ERR_PTR(-EINVAL);
+> +
+> +	pdev = of_find_device_by_node(np);
+> +	if (!pdev || !platform_get_drvdata(pdev)) {
+> +		if (pdev)
+> +			put_device(&pdev->dev);
+> +		return ERR_PTR(-EPROBE_DEFER);
+> +	}
+> +
+> +	mpcs = platform_get_drvdata(pdev);
+> +	put_device(&pdev->dev);
+> +
+> +	return &mpcs->pcs;
+> +}
+> +EXPORT_SYMBOL(mtk_pcs_lynxi_select_pcs);
 
-This was added because pulling a mounted a USB thumb drive (or a HDD
-drops off the SATA bus) while the file system is mounted and actively
-in use, would result in a kernel OOPS.  If that's no longer true,
-that's great, but it would be good to test to make sure this is the
-case....
+If you're going to play games like this, then you must mark the driver
+with .suppress_bind_attrs = true to remove the bind/unbind attributes
+in userspace that could wreak havoc with the above - because there is
+_nothing_ that guarantees that the memory you're returning from this
+function will remain intact. Basically, it's racy.
 
-If we really want to remove it, I'd suggest doing this as a separate
-commit, so that after we see syzbot reports, or users complaining
-about kernel crashes, we can revert the removal if necessary.
+Also, I'm not sure I approve of using the "select_pcs" suffix (I
+haven't spotted _where_ you use this, but returning EPROBE_DEFER to
+phylink's mac_select_pcs() method doesn't do anything to defer any
+probe, so that's an entirely misleading error code.
 
-Cheers,
+If we are going to have device drivers for PCS, then we need to
+seriously think about how we look up PCS and return the phylink_pcs
+pointer - and also how we handle the PCS device going away. None of
+that should be coded into _any_ PCS driver.
 
-					- Ted
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
