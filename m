@@ -2,73 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27361806E2F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2E4806E30
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377715AbjLFLi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46338 "EHLO
+        id S1377736AbjLFLjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:39:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377628AbjLFLiz (ORCPT
+        with ESMTP id S1377727AbjLFLjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:38:55 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8228F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:39:01 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-11-VR77vVbMOGemeyUZCeX2uw-1; Wed, 06 Dec 2023 11:38:59 +0000
-X-MC-Unique: VR77vVbMOGemeyUZCeX2uw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 6 Dec
- 2023 11:38:45 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Wed, 6 Dec 2023 11:38:45 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jens Axboe' <axboe@kernel.dk>,
-        Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-CC:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: RE: [PATCH v4] tee: Use iov_iter to better support shared buffer
- registration
-Thread-Topic: [PATCH v4] tee: Use iov_iter to better support shared buffer
- registration
-Thread-Index: AQHaJ6OPtlOyPWs+/0ib6E4SGjqISbCcH7JQ
-Date:   Wed, 6 Dec 2023 11:38:45 +0000
-Message-ID: <7582460ba52e413eaab26d37fb56beed@AcuMS.aculab.com>
-References: <20231129164439.1130903-1-arnaud.pouliquen@foss.st.com>
- <CAFA6WYP=_BPt_x1FxeVdAdB_mMjdz8QzvkfFXx-5msy8PZG6nA@mail.gmail.com>
- <60b67bd5-36c3-4318-9a2b-bcf172681d45@foss.st.com>
- <CAFA6WYN9eJ1vGTKfGXy7M709=aGkg1oF3odK7iGRUBokbKtqzw@mail.gmail.com>
- <40902a86-3b88-45bc-bb6f-2de0eb48dc9d@foss.st.com>
- <CAFA6WYPGkpVN-XP7eAzLXMReRi7FBp3boKzhMfasasuE=XWBow@mail.gmail.com>
- <438a8b44-ea5f-4e13-bd7e-e1c2e2a481c4@kernel.dk>
- <cf00a996-c262-4457-93de-ca7960ad6df6@kernel.dk>
- <a1f4e290-34ad-4606-9a95-350d00727483@foss.st.com>
- <dfa547c0-e889-4ac6-94c5-344905a6644f@kernel.dk>
- <c9d5c8b8-ca5e-4593-b7ff-707f21dee91f@foss.st.com>
- <206b634d-1d10-4057-ad8d-93e29fda5d6e@kernel.dk>
-In-Reply-To: <206b634d-1d10-4057-ad8d-93e29fda5d6e@kernel.dk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        Wed, 6 Dec 2023 06:39:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19FB109
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:39:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41B43C433C9;
+        Wed,  6 Dec 2023 11:39:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701862746;
+        bh=VACpM7Rme6S0irInDKWgO8xLCrPsqk274n5MkiWmcsw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JG5xMnLV5Sd+LjMbCFz5yXzqsLubGU2gW7YaIunlRH/fySYpyxfDxa4lZpjMcjveL
+         lZ6d4XPF4vvtPie7R0QCZlbF5t7ZQslO2toupZKR4nEwTzwEb79AR+eInyZiUh/hKu
+         66NFewRMMsnzSXyIZYomW2tGpjJsuP4V4k3QyoHFSw2gkX9szLSP26C+qZ2t6XX+5t
+         ALJMhmdcZLXgeNSn/snBfLrt1Ni3K3qJXpRyK44cXrI67dE8bkwv8PkEUD552kUDUt
+         yw7rc7ZIr4DmbDAeXtQ+2hzYvgJ3uh9VrSgy80P39hgCEcY11xUJ1uTWgU2r/2I4Br
+         vBqudpbAgwXTw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1rAqF5-001rsK-Ld;
+        Wed, 06 Dec 2023 11:39:03 +0000
+Date:   Wed, 06 Dec 2023 11:39:03 +0000
+Message-ID: <868r67blwo.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        lpieralisi@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and NORMAL_NC for IO memory
+In-Reply-To: <ZW9uqu7yOtyZfmvC@arm.com>
+References: <20231205033015.10044-1-ankita@nvidia.com>
+        <86fs0hatt3.wl-maz@kernel.org>
+        <ZW8MP2tDt4_9ROBz@arm.com>
+        <20231205130517.GD2692119@nvidia.com>
+        <ZW9OSe8Z9gAmM7My@arm.com>
+        <20231205164318.GG2692119@nvidia.com>
+        <86bkb4bn2v.wl-maz@kernel.org>
+        <ZW9ezSGSDIvv5MsQ@arm.com>
+        <86a5qobkt8.wl-maz@kernel.org>
+        <ZW9uqu7yOtyZfmvC@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: catalin.marinas@arm.com, jgg@nvidia.com, ankita@nvidia.com, shameerali.kolothum.thodi@huawei.com, oliver.upton@linux.dev, suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org, ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com, aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com, mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org, lpieralisi@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,19 +79,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiA+IEFzIEplbnMgV2lrbGFuZGVyIGhhcyBwcm9wb3NlZCB1c2luZyBpb3ZfaXRlcl91YnVmKCkg
-aW5zdGVhZCBvZg0KPiA+IGltcG9ydF91YnVmKCksIHNob3VsZCBJIHByb3Bvc2UgYSBwYXRjaCB1
-cGRhdGluZyBpbXBvcnRfdWJ1ZigpIGFuZA0KPiA+IGltcG9ydF9zaW5nbGVfcmFuZ2UoKT8gT3Ig
-d291bGQgeW91IHByZWZlciB0aGF0IHdlIGtlZXAgdGhlIGZ1bmN0aW9ucw0KPiA+IHVuY2hhbmdl
-ZCBmb3IgdGhlIHRpbWUgYmVpbmc/DQo+IA0KPiBBcmd1YWJseSBpdCBzaG91bGQgYmUgY29uc2lz
-dGVudCB3aXRoIGlvdmVjIGltcG9ydHMsIHdoaWNoIHJldHVybiB0aGUNCj4gbGVuZ3RoIChvciBl
-cnJvcikuIEJ1dCBpdCBtaWdodCBiZSBzYWZlciB0byBqdXN0IGNoZWNrIGFjY2Vzc19vaygpDQo+
-IGZpcnN0IGFuZCB0aGVuIHRydW5jYXRlIGF0IGxlYXN0LCB2cyB3aGF0IGlzIHRoZXJlIG5vdy4N
-Cg0KSXMgdGhlIGFjY2Vzc19vaygpIGNoZWNrIGV2ZW4gbmVlZGVkIHdoZW4gc2V0dGluZyB1cCBh
-biBpb3ZfaXRlcj8NCkl0IGlzIGFsd2F5cyBjaGVja2VkIGFnYWluIHdoZW4gdGhlIGFjdHVhbCBj
-b3B5IGlzIGRvbmUuDQoNCkkgbG9va2VkIGF0IHRoaXMgYSB3aGlsZSBiYWNrIGFuZCBjb3VsZG4n
-dCBzZWUgYW55IGNvZGUgcGF0aHMgdGhhdA0KcmVsaWVkIG9uIHRoZSBlYXJseSBhY2Nlc3Nfb2so
-KSBjaGVjay4NCk1heWJlIGl0IGlzIGhpc3RvcmljPw0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJl
-ZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXlu
-ZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Tue, 05 Dec 2023 18:40:42 +0000,
+Catalin Marinas <catalin.marinas@arm.com> wrote:
+> 
+> On Tue, Dec 05, 2023 at 05:50:27PM +0000, Marc Zyngier wrote:
+> > On Tue, 05 Dec 2023 17:33:01 +0000,
+> > Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > Ideally we should do this for vfio only but we don't have an easy
+> > > way to convey this to KVM.
+> > 
+> > But if we want to limit this to PCIe, we'll have to find out. The
+> > initial proposal (a long while ago) had a flag conveying some
+> > information, and I'd definitely feel more confident having something
+> > like that.
+> 
+> We can add a VM_PCI_IO in the high vma flags to be set by
+> vfio_pci_core_mmap(), though it limits it to 64-bit architectures. KVM
+> knows this is PCI and relaxes things a bit. It's not generic though if
+> we need this later for something else.
 
+Either that, or something actually describing the attributes that VFIO
+wants.
+
+And I very much want it to be a buy-in behaviour, not something that
+automagically happens and changes the default behaviour for everyone
+based on some hand-wavy assertions.
+
+If that means a userspace change, fine by me. The VMM better know what
+is happening.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
