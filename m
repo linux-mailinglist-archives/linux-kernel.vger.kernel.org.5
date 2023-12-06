@@ -2,146 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 860E4807957
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:23:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 489C3807959
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:24:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442871AbjLFUXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:23:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        id S1442900AbjLFUYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:24:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379532AbjLFUX2 (ORCPT
+        with ESMTP id S1379461AbjLFUYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:23:28 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B69D4E;
-        Wed,  6 Dec 2023 12:23:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=84Czrtcy2ZdOY4+h79KmMJFEB0OGPN7K+ECAl/hY/XY=; b=C9nleJc1D1bnud5B+/8Tbghh79
-        whvs/4LG4gjAT74s1zNKdFPzP2rpGW1WNOONIwcQFF6R8nwUnXfqJJxJEqYSjCujDFjyUD0fdmZ1R
-        7xciKN5L3S4tBmCXvvz/19t8huMZX2axs7ZnS/rRI1ZdJMyB+yo+lNKt1KaRdVcKmKz6Z0koWdkMV
-        N8HioUfsQQZg/qqAtdQWlnhYgL1WdktiFzm3vgjDSopFhfnbnZNY7FS+X1bPHdKeel6hJvf91js9A
-        g0LpCzOtUsgdNvTbTYynMD+f4JUvSsnUv4ilS0tvcKB8gdbDUQBQwZ5mHzz6DWr732tlzlkoA6M7b
-        ptUrlNvw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35882)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1rAyQG-0000MN-09;
-        Wed, 06 Dec 2023 20:23:08 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1rAyQD-00030c-I2; Wed, 06 Dec 2023 20:23:05 +0000
-Date:   Wed, 6 Dec 2023 20:23:05 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH v2 8/8] net: ethernet: mtk_eth_soc: add paths and
- SerDes modes for MT7988
-Message-ID: <ZXDYKeXsMuJZlzWB@shell.armlinux.org.uk>
-References: <cover.1701826319.git.daniel@makrotopia.org>
- <3ccc33fa14310ab47e90ff8e6ce46f1562bb838e.1701826319.git.daniel@makrotopia.org>
- <ZXDDtmRklS6o994V@shell.armlinux.org.uk>
- <ZXDQ94Xh3gzL3IR9@makrotopia.org>
+        Wed, 6 Dec 2023 15:24:21 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D034E9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:24:27 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40b35199f94so14045e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 12:24:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701894266; x=1702499066; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cLC4g0QAR1KTCpF/vWrK4BIctaHe951zqqCOPkqNXTI=;
+        b=mlEunK0wb1B0uEObAouYZIN7Fs9JPVhu1xe4uLBmjKROCsVeXeLmC0B0pcXLtI9rwe
+         gaTQ1SEtAgc7BBqHsy0YWF70KcVLwu+I7qXjfcNlp0RKZ7tYDVKe97GgRWMkNnRnh6wg
+         EIWVLPBrjQPUcP3zggpCexZPtDed2fXcyuLQt8depw6uQfKHSHC8pUyffoBmTnsQ69/K
+         X21KZkIy28zjeuymAtv87vkU9AqrhmF7ZlZ29acK7cX8M9+Zx1tGF3hewc/AMUg11A53
+         itBpYyQmsynQgj45BOJEp17v6J0Z99tdTpi45FJ8SOmlAHs9Dyox6URjou+QERwCnG/P
+         9WNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701894266; x=1702499066;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cLC4g0QAR1KTCpF/vWrK4BIctaHe951zqqCOPkqNXTI=;
+        b=e/rHIwwqkrPjBTLTg0yWzLKaEYvcrLpGTSRgC+lbj6+4YWhRMLsAlmn1Il7SQ6xFL5
+         v+uR0kUwOJAYYbe2Hb8Z8sYDjV74x9Stdx1kGeGaZD34gNStwiX3OiKwAn4sra2GcJ6l
+         pgPHVIjMb4X+7MhilVMORck17Y0X4KU8n47RWGM4zYlDmlNmVMMd0YkWtHdN5aiAFGgG
+         sOqCff8Lp65JshyvzWv4ymdDRaLshJn/gceFpVXDeN404SrMa4BOCEhVfw/i1Ns4KMc3
+         JkCrkdPh2w7IaKwe8L1W1n2SCm4CBWJ9TcQndbD6129/z7a2D46YA1yQ5MWC+V193IQC
+         WP2w==
+X-Gm-Message-State: AOJu0Yz8LMmTpJ8RkWTD4JOZ1s0sHvJxoMxgc/Z0zCJQqB1Z85x1OJV1
+        ZfCVXSxL+51rKAMTshGSYfw69DDK2LTz+QPete0WTg==
+X-Google-Smtp-Source: AGHT+IGpaSmH2SwseasenHdJbHupg+4hENlP3bAotBM+AhFS4zuurIIXkP6sO/G4INzoYgeHL8Kvm9T2DqCiypI9dcU=
+X-Received: by 2002:a05:600c:3baa:b0:40c:329:d498 with SMTP id
+ n42-20020a05600c3baa00b0040c0329d498mr104199wms.1.1701894265833; Wed, 06 Dec
+ 2023 12:24:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXDQ94Xh3gzL3IR9@makrotopia.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231206172844.1756871-1-jannh@google.com> <20231206195814.GDZXDSVgtCWspEJx8Q@fat_crate.local>
+In-Reply-To: <20231206195814.GDZXDSVgtCWspEJx8Q@fat_crate.local>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 6 Dec 2023 21:23:48 +0100
+Message-ID: <CAG48ez3weAU-Uti0QyBSDNRv8xYqCJ5UbgJvssEWAWpvyon0DA@mail.gmail.com>
+Subject: Re: [PATCH] x86/microcode: Be more verbose, especially about loading errors
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 07:52:23PM +0000, Daniel Golle wrote:
-> On Wed, Dec 06, 2023 at 06:55:50PM +0000, Russell King (Oracle) wrote:
-> > On Wed, Dec 06, 2023 at 01:45:17AM +0000, Daniel Golle wrote:
-> > > @@ -516,6 +538,21 @@ static struct phylink_pcs *mtk_mac_select_pcs(struct phylink_config *config,
-> > >  	struct mtk_eth *eth = mac->hw;
-> > >  	unsigned int sid;
-> > >  
-> > > +	if (mtk_is_netsys_v3_or_greater(eth)) {
-> > > +		switch (interface) {
-> > > +		case PHY_INTERFACE_MODE_1000BASEX:
-> > > +		case PHY_INTERFACE_MODE_2500BASEX:
-> > > +		case PHY_INTERFACE_MODE_SGMII:
-> > > +			return mtk_pcs_lynxi_select_pcs(mac->sgmii_pcs_of_node, interface);
-> > > +		case PHY_INTERFACE_MODE_5GBASER:
-> > > +		case PHY_INTERFACE_MODE_10GBASER:
-> > > +		case PHY_INTERFACE_MODE_USXGMII:
-> > > +			return mtk_usxgmii_select_pcs(mac->usxgmii_pcs_of_node, interface);
-> > 
-> > From what I can see, neither of these two "select_pcs" methods that
-> > you're calling makes any use of the "interface" you pass to them.
-> > I'm not sure what they _could_ do with it either, given that what
-> > you're effectively doing here is getting the phylink_pcs structure from
-> > the driver, and each one only has a single phylink_pcs.
-> 
-> Yes, you are right, the interface parameter isn't used, I will drop
-> it from both mtk_*_select_pcs() prototypes.
-> 
-> In the long run we may want something like
-> struct phylink_pcs *of_pcs_get(struct device_node *np, phy_interface_t interface)
-> provided by a to-be-built drivers/net/pcs/core.c...
+On Wed, Dec 6, 2023 at 8:58=E2=80=AFPM Borislav Petkov <bp@alien8.de> wrote=
+:
+> On Wed, Dec 06, 2023 at 06:28:44PM +0100, Jann Horn wrote:
+> > The AMD ucode loader contains several checks for corrupted ucode blobs =
+that
+> > only log with pr_debug(); make them pr_err(), corrupted ucode blobs are
+> > bad.
+> >
+> > Also make both microcode loaders a bit more verbose about whether they
+> > found ucode blobs at all and whether they found ucode for the specific =
+CPU.
+>
+> So far, so good.
+>
+> The only thing I'm missing here is the *why*.
+>
+> There's merit in not complaining about corrupted microcode blobs because
+> they won't be loaded anyway: no harm, no foul.
 
-Again... it's not as simple as that. As soon as we get into the
-situation that some _other_ driver becomes responsible for providing
-the struct phylink_pcs pointer, we _then_ need to have some way of
-dealing with that device going away.
-
-By that I mean that the memory pointed to returned from such a function
-that you are proposing above could be freed - or worse could be unmapped
-from the kernel address space, and the same goes for the operations
-structure as well - even more so if the "ops" are part of module data
-and the module is unloaded.
-
-As I know how these discussions go (it's not my first time bringing up
-these kinds of multi-driver interations), no, locking the module into
-memory doesn't work, and shows a lack of a full understanding of the
-problem.
-
-We need to have a way that when a PCS device is removed, that is
-propagated up the management levels and causes the PCS to be gracefully
-removed from the network driver (in other words, from phylink).
-
-I won't accept a hack that sticky-plasters around the problem - not for
-code that I am involved in actively maintaining - and sticky-plastering
-around this class of problem seems to happen all too often in the
-kernel.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Well, yes, except that if no microcode blob is loaded, you're not
+gonna have the errata fixes and/or security mitigations that you might
+expect to have.
