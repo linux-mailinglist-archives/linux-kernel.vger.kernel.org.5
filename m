@@ -2,238 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5BB18067BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3828067CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376871AbjLFGvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 01:51:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
+        id S1376893AbjLFGxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 01:53:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbjLFGu6 (ORCPT
+        with ESMTP id S231991AbjLFGx3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 01:50:58 -0500
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D7C1B5;
-        Tue,  5 Dec 2023 22:51:03 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SlSjG1jDFz4f3jRC;
-        Wed,  6 Dec 2023 14:50:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 64F101A09DB;
-        Wed,  6 Dec 2023 14:51:00 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgA3iA7QGXBlJV2DCw--.10265S3;
-        Wed, 06 Dec 2023 14:50:59 +0800 (CST)
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-To:     Christoph Hellwig <hch@infradead.org>,
-        Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-        kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
-        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-        willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-        p.raghav@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
- <ZXARKD0OmjLrvHmU@infradead.org>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <aafabc6e-fd98-f927-44d7-3ef76e2acaf8@huaweicloud.com>
-Date:   Wed, 6 Dec 2023 14:50:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 6 Dec 2023 01:53:29 -0500
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B632C135;
+        Tue,  5 Dec 2023 22:53:34 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id DC3203200B13;
+        Wed,  6 Dec 2023 01:53:30 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 06 Dec 2023 01:53:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1701845610; x=1701932010; bh=PW
+        66L1dPgZW8LDxXB4sVa/5vk2EkvICnU+1XTg3NMCw=; b=QfPx6a9GTa1f8QF0e9
+        lEuKcFsJPTVPzqFVzdlUGuPbTX1bXF+m0OSM+YNNfRN1dBbSz3fYmLlgBf+4qu50
+        MSc3XV6QJBw/wNLDMYH0KHgRRX++edlijcqtOR4DqA4Ea4CgvszljPYzldmUD26q
+        X3QGbL/vfndBP62fcpHygQeXYNT4laXNuAZ9+yI/mu2Zr1wAHJzcWNi/vCh6laQS
+        zIadvRovi+y6hW9eDsJ4ps08lv51m+a/UswS+91VJGQW3/7P5fGNEGyNm7mmao6Y
+        VYt6MlBaRPA0p7V67U8kA+AsECGyy9Vy4akvg0ruNp+JfnaQjW1PN3/7Fop5WikR
+        fb/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701845610; x=1701932010; bh=PW66L1dPgZW8L
+        DxXB4sVa/5vk2EkvICnU+1XTg3NMCw=; b=GH+CucaS/2CicMAeMT4S2qz+0QUxW
+        siBhRM00FdK7bQYs0lqFqLWVH9ZhljqfelKYSu8lZZkIjExFiG4mE5HSbFn9TVcb
+        btqbpsjRCPqgqFDCm8m1HhMEB1avddz+lKBrKr5XHAhwMwrTuXU51xCEwPXtAqzh
+        s13xg4Mjp0wQ8tFG0xuX7CYR5Z8RYQ5pM7u4P6puIwTGKTpHlN6yAwiynTfzeQVT
+        d6r8qyJ362D6BWSC1M5lh3CmkQeFxV+pI63VXlBDG6vvZlJlrbOu+aHT68GwQNrJ
+        YmdSSyJWOGUJffDa9EAVThSRmPpUSy4a+g3N182uNx7YNX6SYa1XicWYA==
+X-ME-Sender: <xms:aRpwZR_vUtWbJQM2foiiiZyKFQR3HaPMIprLyJIT7duQYU_vi8kxSw>
+    <xme:aRpwZVvGr_Fh3c2gmaIvLahauUx3siYA3pFKtK_HJCaw2eLIFeH6xVVemPJn8brff
+    3HX3_tbFcpcQM3WdvI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejledgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:aRpwZfCOUZHZkntdpX7ADkGLEOJJ-EDgM_1SmHXZ6mf2Np6EmQi0ZQ>
+    <xmx:aRpwZVfoSFCHWUo_VIyqeD5DKi5Tg8Bt0cLOGDJSd2C1Wnih5_wCJA>
+    <xmx:aRpwZWPbQI4CiTpCOsJ6vNoQRmxO0vRyePMO8I6SXlp9Y24mCU3trw>
+    <xmx:ahpwZd2ZWm_fEU9gcGqpRlAFAr7FWC0RGK6dqA6-uokNMj0btiqozQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5AAB1B60089; Wed,  6 Dec 2023 01:53:29 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 MIME-Version: 1.0
-In-Reply-To: <ZXARKD0OmjLrvHmU@infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgA3iA7QGXBlJV2DCw--.10265S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCw4kZFWUAFyktr1fCw45KFg_yoW7Gr47pr
-        yUKFy5trWDJryI9rs2qw4UAw1Iqw1ftF4xZr93A3sxA390krn2kF48Kay5Cayxtw4vkF4q
-        vF4jvrW3Zr1j9rJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9I14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-        4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_
-        WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-        IYCTnIWIevJa73UjIFyTuYvjfUojjgUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Message-Id: <f712a65b-4984-46e8-bd43-1309b5cd41f0@app.fastmail.com>
+In-Reply-To: <5f1caaf8-1edf-444a-b017-c4d08e52213b@infradead.org>
+References: <202312041909.lwhcU35R-lkp@intel.com>
+ <5f1caaf8-1edf-444a-b017-c4d08e52213b@infradead.org>
+Date:   Wed, 06 Dec 2023 07:52:58 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Randy Dunlap" <rdunlap@infradead.org>,
+        "kernel test robot" <lkp@intel.com>,
+        "Masahiro Yamada" <masahiroy@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        "Nicolas Schier" <nicolas@fjasle.eu>,
+        "Jiaxun Yang" <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Subject: Re: pm.c:undefined reference to `i8042_command'
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Dec 6, 2023, at 06:24, Randy Dunlap wrote:
+>> All errors (new ones prefixed by >>):
+>> 
+>>    mips64el-linux-ld: arch/mips/loongson2ef/lemote-2f/pm.o: in function `setup_wakeup_events':
+>>>> pm.c:(.text+0x118): undefined reference to `i8042_command'
+>>>> mips64el-linux-ld: pm.c:(.text+0x154): undefined reference to `i8042_command'
+>
+>
+> How do we feel about this?
+> I suppose that an ARCH or mach or board should know what it requires.
+>
+>
+> ---
+>  arch/mips/loongson2ef/Kconfig |    3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff -- a/arch/mips/loongson2ef/Kconfig b/arch/mips/loongson2ef/Kconfig
+> --- a/arch/mips/loongson2ef/Kconfig
+> +++ b/arch/mips/loongson2ef/Kconfig
+> @@ -40,6 +40,9 @@ config LEMOTE_MACH2F
+>  	select ARCH_HAS_PHYS_TO_DMA
+>  	select ARCH_MIGHT_HAVE_PC_PARPORT
+>  	select ARCH_MIGHT_HAVE_PC_SERIO
+> +	select INPUT
+> +	select SERIO
+> +	select SERIO_I8042
+>  	select BOARD_SCACHE
+>  	select BOOT_ELF32
 
-ÔÚ 2023/12/06 14:14, Christoph Hellwig Ð´µÀ:
->> +void invalidate_bdev_range(struct block_device *bdev, pgoff_t start,
->> +			   pgoff_t end)
->> +{
->> +	invalidate_mapping_pages(bdev->bd_inode->i_mapping, start, end);
->> +}
->> +EXPORT_SYMBOL_GPL(invalidate_bdev_range);
-> 
-> All these could probably use kerneldoc comments.
+I think it's bad style to force-select an optional subsystem.
+How about making the entire file optional? It seems that there
+are already __weak functions in its place.
 
-Ok, and thanks for reviewing the patchset!
-> 
-> For this one I really don't like it existing at all, but we'll have to
-> discuss that in the btrfs patch.
-> 
->> +loff_t bdev_size(struct block_device *bdev)
->> +{
->> +	loff_t size;
->> +
->> +	spin_lock(&bdev->bd_size_lock);
->> +	size = i_size_read(bdev->bd_inode);
->> +	spin_unlock(&bdev->bd_size_lock);
->> +
->> +	return size;
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_size);
-> 
-> No need for this one.  The callers can simply use bdev_nr_bytes.
+--- a/arch/mips/loongson2ef/lemote-2f/Makefile
++++ b/arch/mips/loongson2ef/lemote-2f/Makefile
+@@ -8,5 +8,6 @@ obj-y += clock.o machtype.o irq.o reset.o dma.o ec_kb3310b.o
+ #
+ # Suspend Support
+ #
+-
++ifdef CONFIG_SERIO_I8042
+ obj-$(CONFIG_SUSPEND) += pm.o
++endif
 
-Ok, I'll replace it with bdev_nr_bytes.
-> 
->> +struct folio *bdev_read_folio(struct block_device *bdev, pgoff_t index)
->> +{
->> +	return read_mapping_folio(bdev->bd_inode->i_mapping, index, NULL);
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_read_folio);
->> +
->> +struct folio *bdev_read_folio_gfp(struct block_device *bdev, pgoff_t index,
->> +				  gfp_t gfp)
->> +{
->> +	return mapping_read_folio_gfp(bdev->bd_inode->i_mapping, index, gfp);
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_read_folio_gfp);
-> 
-> I think we can just drop bdev_read_folio_gfp. Half of the callers simply
-> pass GPK_KERNEL, and the other half passes GFP_NOFS and could just use
-> memalloc_nofs_save().
-
-I'm a litter confused, so there are 3 use cases:
-1) use GFP_USER, default gfp from bdev_alloc.
-2) use GFP_KERNEL
-3) use GFP_NOFS
-
-I understand that you're suggesting memalloc_nofs_save() to distinguish
-2 and 3, but how can I distinguish 1?
-> 
->> +void bdev_balance_dirty_pages_ratelimited(struct block_device *bdev)
->> +{
->> +	return balance_dirty_pages_ratelimited(bdev->bd_inode->i_mapping);
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_balance_dirty_pages_ratelimited);
-> 
-> Hmm, this is just used for block2mtd, and feels a little too low-level
-> to me, as block2mtd really should be using the normal fileread/write
-> APIs.  I guess we'll have to live with it for now if we want to expedite
-> killing off bd_inode.
-> 
->> +void bdev_correlate_mapping(struct block_device *bdev,
->> +			    struct address_space *mapping)
->> +{
->> +	mapping->host = bdev->bd_inode;
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_correlate_mapping);
-> 
-> Maybe associated insted of correlate?  Either way this basically
-> fully exposes the bdev inode again :(
-> 
->> +gfp_t bdev_gfp_constraint(struct block_device *bdev, gfp_t gfp)
->> +{
->> +	return mapping_gfp_constraint(bdev->bd_inode->i_mapping, gfp);
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_gfp_constraint);
-> 
-> The right fix here is to:
-> 
->   - use memalloc_nofs_save in extet instead of using
->     mapping_gfp_constraint to clear it from the mapping flags
->   - remove __ext4_sb_bread_gfp and just have buffer.c helper that does
->     the right thing (either by changing the calling conventions of an
->     existing one, or adding a new one).
-
-Thanks for the suggestions, but I'm not sure how to do this yet, I must
-read more ext4 code.
-> 
->> +/*
->> + * The del_gendisk() function uninitializes the disk-specific data
->> + * structures, including the bdi structure, without telling anyone
->> + * else.  Once this happens, any attempt to call mark_buffer_dirty()
->> + * (for example, by ext4_commit_super), will cause a kernel OOPS.
->> + * This is a kludge to prevent these oops until we can put in a proper
->> + * hook in del_gendisk() to inform the VFS and file system layers.
->> + */
->> +int bdev_ejected(struct block_device *bdev)
->> +{
->> +	struct backing_dev_info *bdi = inode_to_bdi(bdev->bd_inode);
->> +
->> +	return bdi->dev == NULL;
->> +}
->> +EXPORT_SYMBOL_GPL(bdev_ejected);
-> 
-> And this code in ext4 should just go away entirely.  The bdi should
-> always be valid for a live bdev for years.
-Sounds good, I was confused about this code as well.
-
-> 
->> --- a/block/bio.c
->> +++ b/block/bio.c
->> @@ -1119,6 +1119,7 @@ void bio_add_folio_nofail(struct bio *bio, struct folio *folio, size_t len,
->>   	WARN_ON_ONCE(off > UINT_MAX);
->>   	__bio_add_page(bio, &folio->page, len, off);
->>   }
->> +EXPORT_SYMBOL_GPL(bio_add_folio_nofail);
-> 
-> How is this realted?  The export is fine, but really should be a
-> separate, well-documented commit.
-
-This is used to replace __bio_add_page() in btrfs while converting page
-to folio, please let me know if I should keep this, if so, I'll split
-this into a new commit.
-> 
->>   
->> +static inline u8 block_bits(struct block_device *bdev)
->> +{
->> +	return bdev->bd_inode->i_blkbits;
->> +}
-> 
-> Not sure we should need this.  i_blkbits comes from the blocksize
-> the fs set, so it should have other ways to get at it.
-
-Yes, this is now only used for erofs, and erofs do call
-sb_set_blocksize() while initializing, hence it's right there is other
-way to get blkbits and this helper is not needed.
-
-Thanks,
-Kuai
-
-> .
-> 
-
+     Arnd
