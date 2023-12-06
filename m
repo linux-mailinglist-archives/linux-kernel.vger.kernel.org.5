@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB688806D7B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F784806D7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378018AbjLFLJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
+        id S1378033AbjLFLKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:10:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377895AbjLFLJz (ORCPT
+        with ESMTP id S1378049AbjLFLKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:09:55 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D736810D4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:09:53 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c9f8faf57bso50289691fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:09:53 -0800 (PST)
+        Wed, 6 Dec 2023 06:10:14 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E47A181
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:10:20 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a1e116f2072so16448366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:10:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701860992; x=1702465792; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701861018; x=1702465818; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zeqhuKsjP7E0SGywqdf5T1tdbUiD3QRekqAg5e4K7cI=;
-        b=hbUNPpA7/Pq3GvW4hXh8mCfl3IikSL8dDqs3qkPEwbraZCTVYYKWRx2qCRc5x7NJWt
-         lWPjl7Yod2efOZbKqd26iUu6Ik740v0DgwyQrRlkNRYgm5aoyqmwZxYHvGDePI2A6u0Q
-         VRneoduklLNfbLzPM06dqkRZfRUjYfWLnV/kpCl2IwpPlaARGTA/QaQIxDqgtV9dfnUt
-         aLKeiuGZKrSJorCcuCZwnjFLtDpg6m2i6ZnfN8gyi0TpuR6v+w1UK6QBOWImfoPw1MVy
-         Q+CUFkNg8dG+ANw6u4jLpcKMA0blivB/X2B+3mER/3bl9IL5t9SdHC1TZ+cHkjF/lwpe
-         eq9g==
+        bh=vLZuJpf6TZUfQI5IaI4gkbPlIAbKt/Dduks4Ejr5adY=;
+        b=MQNY2QrhiJjtEYxM6HUoQggM5xQ8RNHOOM5EL+CULWCmL7F0q1RxLHkUe3q4xp6e9S
+         /9H3pfPvUZv+Zgu76W1QSvY0unDpHF/yRcQujNpLEThiXDcND7EjEiGVaHy5eUcO4RRG
+         ZLoQjb8lBwVuuMMaRV/NBqkyrL1+jQJjyt/w1ao2qmvg7hI+yGOV8tVJBjurqGI/ac3A
+         mt0NFS7tmPRs70/r9PKDGQSuSSVrtjmVQTXU6Vcp2ztxDnr6mTG6ScLY71FqQg4QrosO
+         AOUm0wuHJ/jqWDwAGFi9yKIjk4SiDRTR2Qj8jVbLW/Db6ZnI1rKPLmp4+WZ9zb/HZsdF
+         7Rfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701860992; x=1702465792;
+        d=1e100.net; s=20230601; t=1701861018; x=1702465818;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zeqhuKsjP7E0SGywqdf5T1tdbUiD3QRekqAg5e4K7cI=;
-        b=jF7oBGNvsuuISa9282CvqLa102sT9M8yryRVSBBzgM0gfo026wAWo4bo6M1MrG8BKz
-         EydNTUmiZ1dETnQz7bCxOj1XkCptPhLvF7vXcDw8s/DriypBP8X7xrWjzVwgXX8CTstY
-         IHmaXnMZlt78O7S7t9VD1JByoPDAg1AazUW+Mp9xNw0GCtWe3YCvr4zK1k4PUBTLunzx
-         Y0Uvi/cne3cnnxwu24F6Dxgw/9XWZtYcEATRIw82rVhkpmiCsoSMZbGo2azAZn+r9a6P
-         DglAnmC2bYzmJdrF3NN3tGdwGo6GkMeYYIHW9f+kAQQW9HIPKhbUUCbK6obThVpD79DK
-         afvA==
-X-Gm-Message-State: AOJu0YwW5TsCsi01PfQwhQDe7wTvJEw6xgpZ4hWs1A/V4bOHO4uOLlh0
-        ltwh4inRKFpQUD/ldIjCvqLquQ==
-X-Google-Smtp-Source: AGHT+IHGqiZVssd1SM7AwiG2Q1JOkY2hneHgkU/xkOCLwzWqGsL3sxt58yuDTR1SzEaUWXXde7reBg==
-X-Received: by 2002:a2e:8884:0:b0:2c9:f0e8:bb5f with SMTP id k4-20020a2e8884000000b002c9f0e8bb5fmr493392lji.40.1701860992066;
-        Wed, 06 Dec 2023 03:09:52 -0800 (PST)
+        bh=vLZuJpf6TZUfQI5IaI4gkbPlIAbKt/Dduks4Ejr5adY=;
+        b=cja3YFYpurDb3cTcB2b9lzZ/zV9MRQ8q7237Dg35RZ7K89xnR/Tvq0NbgPErywSzEU
+         zOLeXc8A7YyOZgPYyNZ2tUAKQ0h3i0erypH5In8/9wuBGuEHrgynQCFWyYHukkg/9vd6
+         Dkc6BWH4YweotOVlssh9vIaI5wDzEFDJgTPDW60qbi7/8itlLhHwMQ6oTOuUq3AkBk8v
+         9IamUP4+DqFoSxx8c/JYwn6ikEfzvyfU5AQ2JjTEvFPdGZXYE5uK+U1Kg+4Zt9NHU/IO
+         WNH9lswyxmfvEVYR/GCVvKIq1DlXcZQBP6nvUDiGGU5oX2doklbsEVHy7uVkW3wvjSvh
+         RtkA==
+X-Gm-Message-State: AOJu0YyPE/LH3VUsOeOlCDGH6L1rqU1Ofo2Q/dZ+7yDsmfY/5xyc4nQ6
+        7ZcKS4L+8UNby8Viwb5hpIzNcA==
+X-Google-Smtp-Source: AGHT+IHsN5FkWcTNrv4m1t3Lihnd0GLHwx0X51FkuquXzQAq8+Qf8QVqD+63Bp+cfrW4cG9NuZoCAQ==
+X-Received: by 2002:a17:906:2088:b0:a1e:4b3:2a6d with SMTP id 8-20020a170906208800b00a1e04b32a6dmr238180ejq.30.1701861018391;
+        Wed, 06 Dec 2023 03:10:18 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id sa12-20020a1709076d0c00b00a0a5a794575sm8086693ejc.216.2023.12.06.03.09.49
+        by smtp.gmail.com with ESMTPSA id sa12-20020a1709076d0c00b00a0a5a794575sm8086693ejc.216.2023.12.06.03.10.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 03:09:51 -0800 (PST)
-Message-ID: <7844ca22-df53-458d-9e3b-7b0758a80455@linaro.org>
-Date:   Wed, 6 Dec 2023 12:09:49 +0100
+        Wed, 06 Dec 2023 03:10:18 -0800 (PST)
+Message-ID: <e63906cf-9f76-4fed-91b0-1a9168b179bd@linaro.org>
+Date:   Wed, 6 Dec 2023 12:10:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] memory: brcmstb_dpfe: introduce version-specific
- compatible strings
+Subject: Re: [PATCH 3/4] memory: brcmstb_dpfe: support DPFE API v4
 Content-Language: en-US
 To:     Markus Mayer <mmayer@broadcom.com>,
         Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -65,7 +64,7 @@ Cc:     Linux ARM Kernel List <linux-arm-kernel@lists.infradead.org>,
         Device Tree Mailing List <devicetree@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 References: <20231205184741.3092376-1-mmayer@broadcom.com>
- <20231205184741.3092376-3-mmayer@broadcom.com>
+ <20231205184741.3092376-4-mmayer@broadcom.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,7 +110,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231205184741.3092376-3-mmayer@broadcom.com>
+In-Reply-To: <20231205184741.3092376-4-mmayer@broadcom.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -125,33 +124,29 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 05/12/2023 19:47, Markus Mayer wrote:
-> Introduce compatible strings brcm,dpfe-cpu-v1 through brcm,dpfe-cpu-v3
-> to the Broadcom DPFE driver.
-
-No, why?
-
+> Add support for version 4 of the DPFE API. This new version is largely
+> identical to version 3. The main difference is that all commands now
+> take the MHS version number as the first argument. Any other arguments
+> have been pushed down by one (i.e. what used to be arg0 in v3 is arg1 in
+> v4).
 > 
 > Signed-off-by: Markus Mayer <mmayer@broadcom.com>
 > ---
->  drivers/memory/brcmstb_dpfe.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/memory/brcmstb_dpfe.c b/drivers/memory/brcmstb_dpfe.c
-> index a7ab3d377206..66876b409e59 100644
-> --- a/drivers/memory/brcmstb_dpfe.c
-> +++ b/drivers/memory/brcmstb_dpfe.c
-> @@ -924,6 +924,12 @@ static const struct of_device_id brcmstb_dpfe_of_match[] = {
->  	{ .compatible = "brcm,bcm7271-dpfe-cpu", .data = &dpfe_api_old_v2 },
->  	{ .compatible = "brcm,bcm7278-dpfe-cpu", .data = &dpfe_api_old_v2 },
->  	{ .compatible = "brcm,bcm7211-dpfe-cpu", .data = &dpfe_api_new_v2 },
+
+...
+
 > +
-> +	/* Match specific DCPU versions */
-> +	{ .compatible = "brcm,dpfe-cpu-v1", .data = &dpfe_api_old_v2 },
-> +	{ .compatible = "brcm,dpfe-cpu-v2", .data = &dpfe_api_new_v2 },
-> +	{ .compatible = "brcm,dpfe-cpu-v3", .data = &dpfe_api_v3 },
+>  static const char *get_error_text(unsigned int i)
+>  {
+>  	static const char * const error_text[] = {
+> @@ -929,8 +954,12 @@ static const struct of_device_id brcmstb_dpfe_of_match[] = {
+>  	{ .compatible = "brcm,dpfe-cpu-v1", .data = &dpfe_api_old_v2 },
+>  	{ .compatible = "brcm,dpfe-cpu-v2", .data = &dpfe_api_new_v2 },
+>  	{ .compatible = "brcm,dpfe-cpu-v3", .data = &dpfe_api_v3 },
+> +	{ .compatible = "brcm,dpfe-cpu-v4", .data = &dpfe_api_v4 },
+>  
 
-Pointless change.
-
+No, use SoC specific compatible.
 
 Best regards,
 Krzysztof
