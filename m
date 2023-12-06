@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB5C806C51
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51717806CA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:50:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377500AbjLFKkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:40:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S1377786AbjLFKud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:50:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377467AbjLFKkH (ORCPT
+        with ESMTP id S1377759AbjLFKuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:40:07 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06A6D45;
-        Wed,  6 Dec 2023 02:40:12 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B67uskL023735;
-        Wed, 6 Dec 2023 10:40:04 GMT
+        Wed, 6 Dec 2023 05:50:17 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6294ED45;
+        Wed,  6 Dec 2023 02:50:23 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B66wMVf032210;
+        Wed, 6 Dec 2023 10:50:16 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
  mime-version : subject : to : cc : references : from : in-reply-to :
  content-type : content-transfer-encoding; s=qcppdkim1;
- bh=yv4DBGc+tbpkWvzCMU3OJ92GavYlVxoKi15dx20+z+o=;
- b=YRT7CHjONfi17iGYqE0fwH3oz598x7cZANj7taQ1sYDDEXp1n8npJBxWW/+3tyWLhRN9
- 8cb92BpVfMFX+fic4sCALlYBnwSCKeUeiWoOwExxPDoJbJJAdO81WJ3JXDAjLupHZYlf
- bJLecVos3RxgvOHXBlORVhmlLq44JPZ0RWxdNPMhyUi+BwIdIEJZCB4ty7hIHR65yPbp
- h+F2XaBXyQc2nWO80Zdp07SiIWC74WNvIU7F+IYofC3PboP1J5nKXXuMUmmAoXRur8Dk
- e6c0bEl2FggxqNzFwQBQI6Uz9dp3oX/ggMMgaBjYOTdLOJv7y5Hjq82Xw73lcz21VmQ6 Rg== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utd1wh953-1
+ bh=wx7I4Q/ahI52IqB1mE9VrV2DOdMksjwilFVcGZF+YJg=;
+ b=mlth7RhV0x6n3mFFWwYLmsV2f4f4cYJWiWbCnlO/DZuX8c8veI+N2MPzy39hKoLEi8Hy
+ ZHW7qWVIPB5vdQxhFJERdagjeNKPIxAWpUANhLJAtEK7H8sfUC+e4/xVAjOQC2QcD9DB
+ hO/haYIgja2GckUtbAoM6pvUbwv0BUigKwBWx+Urt6EsQRw3WhgrUxN/EeyYBV29s4nL
+ ketTkRbHt0pxeHSSOBrCoNTVTOAlj8q9kC26GjXZ1ngWPZku7rjhkN6VoqdBdSGaZqjA
+ qhz7+VoDrPt/cJje9fEVlnrUcy8jvwtUvxPhCYf+9JJvTBq2ET0sL4b39Hz/quOMnziM VA== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utdcas8yw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 10:40:03 +0000
+        Wed, 06 Dec 2023 10:50:15 +0000
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6Ae2Za010869
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6AoFEg006011
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Dec 2023 10:40:02 GMT
+        Wed, 6 Dec 2023 10:50:15 GMT
 Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
  (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
- 2023 02:39:59 -0800
-Message-ID: <486d6d25-77e6-5fe4-4110-7256c20ba742@quicinc.com>
-Date:   Wed, 6 Dec 2023 16:09:56 +0530
+ 2023 02:40:12 -0800
+Message-ID: <75e59a18-5d23-332e-c5f6-0690a918fa46@quicinc.com>
+Date:   Wed, 6 Dec 2023 16:10:09 +0530
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
@@ -60,27 +60,27 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: jYwQoNc9aNaATkIEFM4QwysUXicozOFq
-X-Proofpoint-ORIG-GUID: jYwQoNc9aNaATkIEFM4QwysUXicozOFq
+X-Proofpoint-GUID: uaWSN-36L6oEmPEREvz_Aso1N54JENQt
+X-Proofpoint-ORIG-GUID: uaWSN-36L6oEmPEREvz_Aso1N54JENQt
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-06_06,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxscore=0 phishscore=0 clxscore=1011 impostorscore=0
- adultscore=0 mlxlogscore=999 suspectscore=0 spamscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 suspectscore=0 spamscore=0 malwarescore=0 priorityscore=1501
+ mlxscore=0 impostorscore=0 mlxlogscore=999 clxscore=1015 phishscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312060087
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+ engine=8.12.0-2311290000 definitions=main-2312060089
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gentle reminder..
+Friendly reminder..
 
 -Mukesh
 
