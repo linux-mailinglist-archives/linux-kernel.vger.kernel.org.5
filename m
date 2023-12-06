@@ -2,316 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C83806B4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CC4806B4C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377381AbjLFKIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
+        id S1377392AbjLFKIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377291AbjLFKIA (ORCPT
+        with ESMTP id S1377385AbjLFKID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:08:00 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AB6FAFA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:08:05 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38CF71474;
-        Wed,  6 Dec 2023 02:08:51 -0800 (PST)
-Received: from [10.57.73.130] (unknown [10.57.73.130])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D6DD3F762;
-        Wed,  6 Dec 2023 02:08:01 -0800 (PST)
-Message-ID: <82068e6a-937b-43db-8496-76fdf3158080@arm.com>
-Date:   Wed, 6 Dec 2023 10:08:00 +0000
+        Wed, 6 Dec 2023 05:08:03 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7D8109;
+        Wed,  6 Dec 2023 02:08:08 -0800 (PST)
+Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9B964E45;
+        Wed,  6 Dec 2023 11:07:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701857244;
+        bh=XYVNV7G4X7YzqJ49hmgXShVAk3zY/kjKTxOWrKENMz4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ejFFmGl7bYIEd00VbGSNJVOBmRnVux/HBu5EK8nX1AhVeMCHObhj6efqrWfNm2p1M
+         nES/yTI6Uj951BAPIlUjL95YkOfh4u5iyao+NE+ZU7JqYNvMO75ZX//hXUz27qiMI5
+         wIRUMKsR7k+FrBvgbhtKuQW7nBPMzjpEU3mIFaeA=
+Message-ID: <c7117713-bc98-459c-a475-2ec838215cd9@ideasonboard.com>
+Date:   Wed, 6 Dec 2023 12:08:00 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 00/10] Multi-size THP for anonymous memory
-Content-Language: en-GB
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231204102027.57185-1-ryan.roberts@arm.com>
- <b8f5a47a-af1e-44ed-a89b-460d0be56d2c@huawei.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <b8f5a47a-af1e-44ed-a89b-460d0be56d2c@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 4/4] media: rkisp1: Fix IRQ disable race issue
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
+        aford173@gmail.com, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231205-rkisp-irq-fix-v1-0-f4045c74ba45@ideasonboard.com>
+ <20231205-rkisp-irq-fix-v1-4-f4045c74ba45@ideasonboard.com>
+ <20231205121355.GE17394@pendragon.ideasonboard.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231205121355.GE17394@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 14:19, Kefeng Wang wrote:
+On 05/12/2023 14:13, Laurent Pinchart wrote:
+> Hi Tomi,
 > 
+> Thank you for the patch.
 > 
-> On 2023/12/4 18:20, Ryan Roberts wrote:
->> Hi All,
+> On Tue, Dec 05, 2023 at 10:09:35AM +0200, Tomi Valkeinen wrote:
+>> In rkisp1_isp_stop() and rkisp1_csi_disable() the driver masks the
+>> interrupts and then apparently assumes that the interrupt handler won't
+>> be running, and proceeds in the stop procedure. This is not the case, as
+>> the interrupt handler can already be running, which would lead to the
+>> ISP being disabled while the interrupt handler handling a captured
+>> frame.
 >>
->> A new week, a new version, a new name... This is v8 of a series to implement
->> multi-size THP (mTHP) for anonymous memory (previously called "small-sized THP"
->> and "large anonymous folios"). Matthew objected to "small huge" so hopefully
->> this fares better.
->>
->> The objective of this is to improve performance by allocating larger chunks of
->> memory during anonymous page faults:
->>
->> 1) Since SW (the kernel) is dealing with larger chunks of memory than base
->>     pages, there are efficiency savings to be had; fewer page faults, batched PTE
->>     and RMAP manipulation, reduced lru list, etc. In short, we reduce kernel
->>     overhead. This should benefit all architectures.
->> 2) Since we are now mapping physically contiguous chunks of memory, we can take
->>     advantage of HW TLB compression techniques. A reduction in TLB pressure
->>     speeds up kernel and user space. arm64 systems have 2 mechanisms to coalesce
->>     TLB entries; "the contiguous bit" (architectural) and HPA (uarch).
->>
->> This version changes the name and tidies up some of the kernel code and test
->> code, based on feedback against v7 (see change log for details).
->>
->> By default, the existing behaviour (and performance) is maintained. The user
->> must explicitly enable multi-size THP to see the performance benefit. This is
->> done via a new sysfs interface (as recommended by David Hildenbrand - thanks to
->> David for the suggestion)! This interface is inspired by the existing
->> per-hugepage-size sysfs interface used by hugetlb, provides full backwards
->> compatibility with the existing PMD-size THP interface, and provides a base for
->> future extensibility. See [8] for detailed discussion of the interface.
->>
->> This series is based on mm-unstable (715b67adf4c8).
->>
->>
->> Prerequisites
->> =============
->>
->> Some work items identified as being prerequisites are listed on page 3 at [9].
->> The summary is:
->>
->> | item                          | status                  |
->> |:------------------------------|:------------------------|
->> | mlock                         | In mainline (v6.7)      |
->> | madvise                       | In mainline (v6.6)      |
->> | compaction                    | v1 posted [10]          |
->> | numa balancing                | Investigated: see below |
->> | user-triggered page migration | In mainline (v6.7)      |
->> | khugepaged collapse           | In mainline (NOP)       |
->>
->> On NUMA balancing, which currently ignores any PTE-mapped THPs it encounters,
->> John Hubbard has investigated this and concluded that it is A) not clear at the
->> moment what a better policy might be for PTE-mapped THP and B) questions whether
->> this should really be considered a prerequisite given no regression is caused
->> for the default "multi-size THP disabled" case, and there is no correctness
->> issue when it is enabled - its just a potential for non-optimal performance.
->>
->> If there are no disagreements about removing numa balancing from the list (none
->> were raised when I first posted this comment against v7), then that just leaves
->> compaction which is in review on list at the moment.
->>
->> I really would like to get this series (and its remaining comapction
->> prerequisite) in for v6.8. I accept that it may be a bit optimistic at this
->> point, but lets see where we get to with review?
->>
->>
->> Testing
->> =======
->>
->> The series includes patches for mm selftests to enlighten the cow and khugepaged
->> tests to explicitly test with multi-size THP, in the same way that PMD-sized
->> THP is tested. The new tests all pass, and no regressions are observed in the mm
->> selftest suite. I've also run my usual kernel compilation and java script
->> benchmarks without any issues.
->>
->> Refer to my performance numbers posted with v6 [6]. (These are for multi-size
->> THP only - they do not include the arm64 contpte follow-on series).
->>
->> John Hubbard at Nvidia has indicated dramatic 10x performance improvements for
->> some workloads at [11]. (Observed using v6 of this series as well as the arm64
->> contpte series).
->>
->> Kefeng Wang at Huawei has also indicated he sees improvements at [12] although
->> there are some latency regressions also.
+>> It is not clear to me if this problem causes a real issue, but shutting
+>> down the ISP while an interrupt handler is running sounds rather bad.
 > 
-> Hi Ryan,
+> Agreed.
 > 
-> Here is some test results based on v6.7-rc1 +
-> [PATCH v7 00/10] Small-sized THP for anonymous memory +
-> [PATCH v2 00/14] Transparent Contiguous PTEs for User Mappings
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>> ---
+>>   drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c | 14 +++++++++++++-
+>>   drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c | 20 +++++++++++++++++---
+>>   2 files changed, 30 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+>> index f6b54654b435..f0cef766fc0c 100644
+>> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+>> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-csi.c
+>> @@ -125,8 +125,20 @@ static void rkisp1_csi_disable(struct rkisp1_csi *csi)
+>>   	struct rkisp1_device *rkisp1 = csi->rkisp1;
+>>   	u32 val;
+>>   
+>> -	/* Mask and clear interrupts. */
+>> +	/* Mask MIPI interrupts. */
+>>   	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_IMSC, 0);
+>> +
+>> +	/* Flush posted writes */
+>> +	rkisp1_read(rkisp1, RKISP1_CIF_MIPI_IMSC);
+>> +
+>> +	/*
+>> +	 * Wait until the IRQ handler has ended. The IRQ handler may get called
+>> +	 * even after this, but it will return immediately as the MIPI
+>> +	 * interrupts have been masked.
+>> +	 */
 > 
-> case1: basepage 64K
-> case2: basepage 4K + thp=64k + PAGE_ALLOC_COSTLY_ORDER = 3
-> case3: basepage 4K + thp=64k + PAGE_ALLOC_COSTLY_ORDER = 4
+> This comment will need to be updated if patch 3/4 gets replaced by a
+> patch that drops IRQF_SHARED.
 
-Thanks for sharing these results. With the exception of a few outliers, It looks
-like the ~rough conclusion is that bandwidth improves, but not as much as 64K
-base pages, and latency regresses, but also not as much as 64K base pages?
+I don't think it needs an update, as the irq handling is divided into 
+multiple parts. The handler here may get called due to a MI or ISP 
+interrupt, and vice versa.
 
-I expect that over time, as we add more optimizations, we will get bandwidth
-closer to 64K base pages; one crucial one is getting executable file-backed
-memory into contpte mappings, for example.
-
-It's probably not time to switch PAGE_ALLOC_COSTLY_ORDER quite yet; but
-something to keep an eye on and consider down the road?
-
-Thanks,
-Ryan
+  Tomi
 
 > 
-> The results is compared with basepage 4K on Kunpeng920.
+>> +	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MIPI]);
+>> +
+>> +	/* Clear MIPI interrupt status */
+>>   	rkisp1_write(rkisp1, RKISP1_CIF_MIPI_ICR, ~0);
+>>   
+>>   	val = rkisp1_read(rkisp1, RKISP1_CIF_MIPI_CTRL);
+>> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+>> index d6b8786661ad..a6dd497c884c 100644
+>> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+>> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
+>> @@ -364,11 +364,25 @@ static void rkisp1_isp_stop(struct rkisp1_isp *isp)
+>>   	 * ISP(mi) stop in mi frame end -> Stop ISP(mipi) ->
+>>   	 * Stop ISP(isp) ->wait for ISP isp off
+>>   	 */
+>> -	/* stop and clear MI and ISP interrupts */
+>> -	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
+>> -	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
+>>   
+>> +	/* Mask MI and ISP interrupts */
+>> +	rkisp1_write(rkisp1, RKISP1_CIF_ISP_IMSC, 0);
+>>   	rkisp1_write(rkisp1, RKISP1_CIF_MI_IMSC, 0);
+>> +
+>> +	/* Flush posted writes */
+>> +	rkisp1_read(rkisp1, RKISP1_CIF_MI_IMSC);
+>> +
+>> +	/*
+>> +	 * Wait until the IRQ handler has ended. The IRQ handler may get called
+>> +	 * even after this, but it will return immediately as the MI and ISP
+>> +	 * interrupts have been masked.
+>> +	 */
 > 
-> Note,
-> - The test based on ext4 filesystem and THP=2M is disabled.
-> - The results were not analyzed, it is for reference only,
->   as some values of test items are not consistent.
+> Same here.
 > 
-> 1) Unixbench 1core
-> Index_Values_1core                       case1       case2    case3
-> Dhrystone_2_using_register_variables     0.28%      0.39%     0.17%
-> Double-Precision_Whetstone              -0.01%      0.00%     0.00%
-> Execl_Throughput                        *21.13%*    2.16%     3.01%
-> File_Copy_1024_bufsize_2000_maxblocks   -0.51%     *8.33%*   *8.76%*
-> File_Copy_256_bufsize_500_maxblocks      0.78%     *11.89%*  *10.85%*
-> File_Copy_4096_bufsize_8000_maxblocks    7.42%      7.27%    *10.66%*
-> Pipe_Throughput                         -0.24%     *6.82%*   *5.08%*
-> Pipe-based_Context_Switching             1.38%     *13.49%*  *9.91%*
-> Process_Creation                        *32.46%*    4.30%    *8.54%*
-> Shell_Scripts_(1_concurrent)            *31.67%*    1.92%     2.60%
-> Shell_Scripts_(8_concurrent)            *40.59%*    1.30%    *5.29%*
-> System_Call_Overhead                     3.92%     *8.13%     2.96%
+>> +	synchronize_irq(rkisp1->irqs[RKISP1_IRQ_ISP]);
+>> +	if (rkisp1->irqs[RKISP1_IRQ_ISP] != rkisp1->irqs[RKISP1_IRQ_MI])
+>> +		synchronize_irq(rkisp1->irqs[RKISP1_IRQ_MI]);
 > 
-> System_Benchmarks_Index_Score           10.66%      5.39%     5.58%
+> It would be nice if we could avoid the double synchronize_irq() for
+> platforms where RKISP1_IRQ_MIPI and RKISP1_IRQ_ISP are identical, but I
+> understand that would be difficult.
 > 
-> For 1core,
-> - case1 wins on Execl_Throughput/Process_Creation/Shell_Scripts
->   a lot, and score higher 10.66% vs basepage 4K.
-> - case2/3 wins on File_Copy/Pipe and score higher 5%+ than basepage 4K,
->   also case3 looks better on Shell_Scripts_(8_concurrent) than case2.
-> 
-> 2) Unixbench 128core
-> Index_Values_128core                    case1     case2     case3
-> Dhrystone_2_using_register_variables    2.07%    -0.03%    -0.11%
-> Double-Precision_Whetstone             -0.03%     0.00%    0.00%
-> Execl_Throughput                       *39.28%*  -4.23%    1.93%
-> File_Copy_1024_bufsize_2000_maxblocks   5.46%     1.30%    4.20%
-> File_Copy_256_bufsize_500_maxblocks    -8.89%    *6.56%   *5.02%*
-> File_Copy_4096_bufsize_8000_maxblocks   3.43%   *-5.46%*   0.56%
-> Pipe_Throughput                         3.80%    *7.69%   *7.80%*
-> Pipe-based_Context_Switching           *7.62%*    0.95%    4.69%
-> Process_Creation                       *28.11%*  -2.79%    2.40%
-> Shell_Scripts_(1_concurrent)           *39.68%*   1.86%   *5.30%*
-> Shell_Scripts_(8_concurrent)           *41.35%*   2.49%   *7.16%*
-> System_Call_Overhead                   -1.55%    -0.04%   *8.23%*
-> 
-> System_Benchmarks_Index_Score          12.08%     0.63%    3.88%
-> 
-> For 128core,
-> - case1 wins on Execl_Throughput/Process_Creation/Shell_Scripts
->   a lot, also good at Pipe-based_Context_Switching, and score higher
->   12.08% vs basepage 4K.
-> - case2/case3 wins on File_Copy_256/Pipe_Throughput, but case2 is
->   not better than basepage 4K, case3 wins 3.88%.
-> 
-> 3) Lmbench Processor_processes
-> Processor_Processes    case1      case2      case3
-> null_call              1.76%      0.40%     0.65%
-> null_io               -0.76%     -0.38%    -0.23%
-> stat                 *-16.09%*  *-12.49%*   4.22%
-> open_close            -2.69%      4.51%     3.21%
-> slct_TCP              -0.56%      0.00%    -0.44%
-> sig_inst              -1.54%      0.73%     0.70%
-> sig_hndl              -2.85%      0.01%     1.85%
-> fork_proc            *23.31%*     8.77%    -5.42%
-> exec_proc            *13.22%*    -0.30%     1.09%
-> sh_proc              *14.04%*    -0.10%     1.09%
-> 
-> - case1 is much better than basepage 4K, same as Unixbench test,
->   case2 is better on fork_proc, but case3 is worse
-> - note: the variance of fork/exec/sh is bigger than others
-> 
-> 4) Lmbench Context_switching_ctxsw
-> Context_switching_ctxsw  case1     case2         case3
-> 2p/0K                   -12.16%    -5.29%       -1.86%
-> 2p/16K                  -11.26%    -3.71%       -4.53%
-> 2p/64K                  -2.60%      3.84%       -1.98%
-> 8p/16K                  -7.56%     -1.21%       -0.88%
-> 8p/64K                   5.10%      4.88%        1.19%
-> 16p/16K                 -5.81%     -2.44%       -3.84%
-> 16p/64K                  4.29%     -1.94%       -2.50%
-> - case1/2/3 worse than basepage 4K and case1 is the worst.
-> 
-> 4) Lmbench Local_latencies
-> Local_latencies      case1      case2     case3
-> Pipe                -9.23%      0.58%    -4.34%
-> AF_UNIX             -5.34%     -1.76%     3.03%
-> UDP                 -6.70%     -5.96%    -9.81%
-> TCP                 -7.95%     -7.58%    -5.63%
-> TCP_conn            -213.99%   -227.78%  -659.67%
-> - TCP_conn is very unreliable, ignore it
-> - case1/2/3 slower than basepage 4K
-> 
-> 5) Lmbench File_&_VM_latencies
-> File_&_VM_latencies    case1     case2        case3
-> 10K_File_Create        2.60%    -0.52%         2.66%
-> 10K_File_Delete       -2.91%    -5.20%        -2.11%
-> 10K_File_Create       10.23%     1.18%         0.12%
-> 10K_File_Delete      -17.76%    -2.97%        -1.49%
-> Mmap_Latency         *63.05%*    2.57%        -0.96%
-> Prot_Fault            10.41%    -3.21%       *-19.11%*
-> Page_Fault          *-132.01%*   2.35%        -0.79%
-> 100fd_selct          -1.20%      0.10%         0.31%
-> - case1 is very good at Mmap_Latency and not good at Page_fault
-> - case2/3 slower on Prot_Faul/10K_FILE_Delete vs basepage 4k,
->   the rest doesn't look much different.
-> 
-> 6) Lmbench Local_bandwidths
-> Local_bandwidths    case1   case2       case3
-> Pipe               265.22%   15.44%     11.33%
-> AF_UNIX            13.41%   -2.66%      2.63%
-> TCP               -1.30%     25.90%     2.48%
-> File_reread        14.79%    31.52%    -14.16%
-> Mmap_reread        27.47%    49.00%    -0.11%
-> Bcopy(libc)        2.58%     2.45%      2.46%
-> Bcopy(hand)        25.78%    22.56%     22.68%
-> Mem_read           38.26%    36.80%     36.49%
-> Mem_write          10.93%    3.44%      3.12%
-> 
-> - case1 is very good at bandwidth, case2 is better than basepage 4k
->   but lower than case1, case3 is bad at File_reread
-> 
-> 7)Lmbench Memory_latencies
-> Memory_latencies    case1     case2     case3
-> L1_$                0.02%     0.00%    -0.03%
-> L2_$               -1.56%    -2.65%    -1.25%
-> Main_mem           50.82%     32.51%    33.47%
-> Rand_mem           15.29%    -8.79%    -8.80%
-> 
-> - case1 also good at Main/Rand mem access latencies,
-> - case2/case3 is better at Main_mem, but worse at Rand_mem.
-> 
-> Tested-by: Kefeng Wang <wangkefeng.wang@huawei.com>
-> 
-> 
-> 
-> 
-> 
-> 
+>> +
+>> +	/* Clear MI and ISP interrupt status */
+>> +	rkisp1_write(rkisp1, RKISP1_CIF_ISP_ICR, ~0);
+>>   	rkisp1_write(rkisp1, RKISP1_CIF_MI_ICR, ~0);
+>>   
+>>   	/* stop ISP */
 > 
 
