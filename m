@@ -2,227 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CD34807BB1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F24C5807BB3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377818AbjLFWyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:54:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
+        id S231145AbjLFW6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377430AbjLFWyT (ORCPT
+        with ESMTP id S229590AbjLFW6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:54:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E2C18D;
-        Wed,  6 Dec 2023 14:54:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701903265; x=1733439265;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=JX/oMvpTI/2qT6JJCaAT7HVae/ammdoaCW90BVpkcJI=;
-  b=XRt3udaPTt6Ew68tPdULZIpYzcWK6KjhPhg0uY9GTwyb+HiqE1XLKhdZ
-   v1VutHAfD3yHXhE4vxIGvG/fGPT77/+vlXYpIeNJqJ1xGYP694fsEnOg3
-   QQNKDGi8g+86wA6A7HcDngDW1i1I0Gh/A7lFDLUjkUuDEs7PyQmc3GIZF
-   oGarW7RPt0kigptDlvrwZiuHi/Qr4XebhfRRQznJrso0F5L1fBvhSorW5
-   5pXjX9QDolKcFmo+gjn7p/IU2chCLNHHYEifiui9CCShRJykiP9c1DYLa
-   +R6xEcMqVEqMtMaMBNLMLcT7TtbV/VYUYl9K8+9YadOtJDuY62SFyDCO4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="458464949"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="458464949"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 14:54:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="862255152"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="862255152"
-Received: from eborisov-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.46.36])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 14:54:17 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 1455110A3F5; Thu,  7 Dec 2023 01:54:15 +0300 (+03)
-Date:   Thu, 7 Dec 2023 01:54:15 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Cc:     "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
-Message-ID: <20231206225415.zxfm2ndpwsmthc6e@box.shutemov.name>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <DM8PR11MB575090573031AD9888D4738AE786A@DM8PR11MB5750.namprd11.prod.outlook.com>
- <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
- <20231205105407.vp2rejqb5avoj7mx@box.shutemov.name>
- <0c4e33f0-6207-448d-a692-e81391089bea@linux.microsoft.com>
+        Wed, 6 Dec 2023 17:58:19 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3C8D4B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 14:58:24 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cea0fd9b53so41117b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 14:58:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701903504; x=1702508304; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rlRwxrjO/fwpJbdnxlIZRwQlN6+I20Mp4XVwBmKHsZs=;
+        b=XEycvlSLVhHjwQQEo0A3dAfC92LbsY7kCx9Yy2e90+kQlFXZ1JjVu7inbpKPDiwit0
+         +MBeV+wBPzjfsV25hGxHD4lLfFb5nd6uWvebbMmUDwFvTs0HgeybJTL/L5bfGF2wkYdn
+         Fm00IYR7WcyXKpm9C8iLzqq9b4RUPFkfN17Bc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701903504; x=1702508304;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rlRwxrjO/fwpJbdnxlIZRwQlN6+I20Mp4XVwBmKHsZs=;
+        b=TIJbJrJi1zoXXyrC/hBSxoegHHvllPAJfw9utNnsRxfMJwgbNMR0uObQLbfQhSmBXy
+         8537W4PKO9j4kfdwfqZ5yRZ5r4FoKq1Q2KuCJqTRwYa03BexaWyl/FKre2jyXn/NObvg
+         MgEgtBeltdV3l15eMT4R0xMwolxFh9qExQL0q2ILju275nGL5MqH66dwKGxB3QQGRgiT
+         t2//2u0w+lGMAI8tXNUzgD74Mmu49r/6Vb88iqqhmueJ+Xao7Ra8B+rV2j2zqzGl2pSZ
+         /HysW47H9tfxNKKggWLp8XyP450vjkfeugZXGUMjUa1L+MXphCxLvTaWvG1Cxp8nMz8d
+         egqQ==
+X-Gm-Message-State: AOJu0YysuqMO2lQfQSQAu6o/wGlaSHh1OPURjqZvzl/euq/z9trKMy8e
+        Nx4igoYk8nQxfTo2Ag/6PluBYQ==
+X-Google-Smtp-Source: AGHT+IF21TEfSUWNryCsppjMZp7UZtzSTndkR8MeQxDsRI0Vo9gwMzOLX3f62R0JkmE2aAtvmNiKUw==
+X-Received: by 2002:a05:6a21:6d9d:b0:18a:b5c3:55c1 with SMTP id wl29-20020a056a216d9d00b0018ab5c355c1mr1334523pzb.57.1701903504112;
+        Wed, 06 Dec 2023 14:58:24 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t24-20020a17090ad51800b00286d44e0c59sm336823pju.36.2023.12.06.14.58.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 14:58:23 -0800 (PST)
+Date:   Wed, 6 Dec 2023 14:58:23 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Eric Biederman <ebiederm@xmission.com>, linux-mm@kvack.org
+Subject: Re: [PATCH v3] ELF: document some de-facto PT_* ABI quirks
+Message-ID: <202312061456.2103DA1@keescook>
+References: <2acb586c-08a9-42d9-a41e-7986cc1383ea@p183>
+ <e262ea00-a027-9073-812e-7e034d75e718@infradead.org>
+ <c4233c97-306c-4db8-9667-34fc31ec4aed@p183>
+ <87edp7jyu4.fsf@meer.lwn.net>
+ <88d3f1bb-f4e0-4c40-9304-3843513a1262@p183>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0c4e33f0-6207-448d-a692-e81391089bea@linux.microsoft.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <88d3f1bb-f4e0-4c40-9304-3843513a1262@p183>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 06:49:11PM +0100, Jeremi Piotrowski wrote:
-> On 05/12/2023 11:54, Kirill A. Shutemov wrote:
-> > On Mon, Dec 04, 2023 at 08:07:38PM +0100, Jeremi Piotrowski wrote:
-> >> On 04/12/2023 10:17, Reshetova, Elena wrote:
-> >>>> Check for additional CPUID bits to identify TDX guests running with Trust
-> >>>> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
-> >>>> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
-> >>>>
-> >>>> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is
-> >>>> visible
-> >>>> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
-> >>>> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
-> >>>> aware mechanisms for what's left. So currently such guests do not have
-> >>>> X86_FEATURE_TDX_GUEST set.
-> >>>
-> >>> Back to this concrete patch. Why cannot L1 VMM emulate the correct value of
-> >>> the TDX_CPUID_LEAF_ID to L2 VM? It can do this per TDX partitioning arch.
-> >>> How do you handle this and other CPUID calls call currently in L1? Per spec,
-> >>> all CPUIDs calls from L2 will cause L2 --> L1 exit, so what do you do in L1?
-> >> The disclaimer here is that I don't have access to the paravisor (L1) code. But
-> >> to the best of my knowledge the L1 handles CPUID calls by calling into the TDX
-> >> module, or synthesizing a response itself. TDX_CPUID_LEAF_ID is not provided to
-> >> the L2 guest in order to discriminate a guest that is solely responsible for every
-> >> TDX mechanism (running at L1) from one running at L2 that has to cooperate with L1.
-> >> More below.
-> >>
-> >>>
-> >>> Given that you do that simple emulation, you already end up with TDX guest
-> >>> code being activated. Next you can check what features you wont be able to
-> >>> provide in L1 and create simple emulation calls for the TDG calls that must be
-> >>> supported and cannot return error. The biggest TDG call (TDVMCALL) is already
-> >>> direct call into L0 VMM, so this part doesn’t require L1 VMM support. 
-> >>
-> >> I don't see anything in the TD-partitioning spec that gives the TDX guest a way
-> >> to detect if it's running at L2 or L1, or check whether TDVMCALLs go to L0/L1.
-> >> So in any case this requires an extra cpuid call to establish the environment.
-> >> Given that, exposing TDX_CPUID_LEAF_ID to the guest doesn't help.
-> >>
-> >> I'll give some examples of where the idea of emulating a TDX environment
-> >> without attempting L1-L2 cooperation breaks down.
-> >>
-> >> hlt: if the guest issues a hlt TDVMCALL it goes to L0, but if it issues a classic hlt
-> >> it traps to L1. The hlt should definitely go to L1 so that L1 has a chance to do
-> >> housekeeping.
-> > 
-> > Why would L2 issue HLT TDVMCALL? It only happens in response to #VE, but
-> > if partitioning enabled #VEs are routed to L1 anyway.
+*thread necromancy* Question below...
+
+On Sat, Apr 15, 2023 at 08:37:29PM +0300, Alexey Dobriyan wrote:
+> Turns out rules about PT_INTERP, PT_GNU_STACK and PT_GNU_PROPERTY
+> program headers are slightly different.
 > 
-> What about tdx_safe_halt? When X86_FEATURE_TDX_GUEST is defined I see
-> "using TDX aware idle routing" in dmesg.
-
-Yeah. I forgot about this one. My bad. :/
-
-I think it makes a case for more fine-grained control on where TDVMCALL
-routed: to L1 or to L0. I think TDX module can do that.
-
-BTW, what kind of housekeeping do you do in L1 for HLT case?
-
-> >> map gpa: say the guest uses MAP_GPA TDVMCALL. This goes to L0, not L1 which is the actual
-> >> entity that needs to have a say in performing the conversion. L1 can't act on the request
-> >> if L0 would forward it because of the CoCo threat model. So L1 and L2 get out of sync.
-> >> The only safe approach is for L2 to use a different mechanism to trap to L1 explicitly.
-> > 
-> > Hm? L1 is always in loop on share<->private conversion. I don't know why
-> > you need MAP_GPA for that.
-> > 
-> > You can't rely on MAP_GPA anyway. It is optional (unfortunately). Conversion
-> > doesn't require MAP_GPA call.
-> > 
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> ---
 > 
-> I'm sorry, I don't quite follow. I'm reading tdx_enc_status_changed():
-> - TDVMCALL_MAP_GPA is issued for all transitions
-> - TDX_ACCEPT_PAGE is issued for shared->private transitions
-
-I am talking about TDX architecture. It doesn't require MAP_GPA call.
-Just setting shared bit and touching the page will do the conversion.
-MAP_GPA is "being nice" on the guest behalf.
-
-Linux do MAP_GPA all the time. Or tries to. I had bug where I converted
-page by mistake this way. It was pain to debug.
-
-My point is that if you *must* catch all conversions in L1, MAP_GPA is not
-reliable way.
-
-> This doesn't work in partitioning when TDVMCALLs go to L0: TDVMCALL_MAP_GPA bypasses
-> L1 and TDX_ACCEPT_PAGE is L1 responsibility.
+> 	v3: move to Documentation/userspace-api/
+> 	v2: integrate into documentation build system
 > 
-> If you want to see how this is currently supported take a look at arch/x86/hyperv/ivm.c.
-> All memory starts as private and there is a hypercall to notify the paravisor for both
-> TDX (when partitioning) and SNP (when VMPL). This guarantees that all page conversions
-> go through L1.
-
-But L1 guest control anyway during page conversion and it has to manage
-aliases with TDG.MEM.PAGE.ATTR.RD/WR. Why do you need MAP_GPA for that?
-
-> >> Having a paravisor is required to support a TPM and having TDVMCALLs go to L0 is
-> >> required to make performance viable for real workloads.
-> >>
-> >>>
-> >>> Until we really see what breaks with this approach, I don’t think it is worth to
-> >>> take in the complexity to support different L1 hypervisors view on partitioning.
-> >>>
-> >>
-> >> I'm not asking to support different L1 hypervisors view on partitioning, I want to
-> >> clean up the code (by fixing assumptions that no longer hold) for the model that I'm
-> >> describing that: the kernel already supports, has an implementation that works and
-> >> has actual users. This is also a model that Intel intentionally created the TD-partitioning
-> >> spec to support.
-> >>
-> >> So lets work together to make X86_FEATURE_TDX_GUEST match reality.
-> > 
-> > I think the right direction is to make TDX architecture good enough
-> > without that. If we need more hooks in TDX module that give required
-> > control to L1, let's do that. (I don't see it so far)
-> > 
+>  Documentation/userspace-api/ELF.rst   |   34 ++++++++++++++++++++++++++++++++++
+>  Documentation/userspace-api/index.rst |    1 +
+>  2 files changed, 35 insertions(+)
 > 
-> I'm not the right person to propose changes to the TDX module, I barely know anything about
-> TDX. The team that develops the paravisor collaborates with Intel on it and was also consulted
-> in TD-partitioning design.
+> new file mode 100644
+> --- /dev/null
+> +++ b/Documentation/userspace-api/ELF.rst
+> @@ -0,0 +1,34 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=================================
+> +Linux-specific ELF idiosyncrasies
+> +=================================
+> +
+> +Definitions
+> +===========
+> +
+> +"First" program header is the one with the smallest offset in the file:
+> +e_phoff.
+> +
+> +"Last" program header is the one with the biggest offset in the file:
+> +e_phoff + (e_phnum - 1) * sizeof(Elf_Phdr).
+> +
+> +PT_INTERP
+> +=========
+> +
+> +First PT_INTERP program header is used to locate the filename of ELF
+> +interpreter. Other PT_INTERP headers are ignored (since Linux 2.4.11).
+> +
+> +PT_GNU_STACK
+> +============
+> +
+> +Last PT_GNU_STACK program header defines userspace stack executability
+> +(since Linux 2.6.6). Other PT_GNU_STACK headers are ignored.
+> +
+> +PT_GNU_PROPERTY
+> +===============
+> +
+> +ELF interpreter's last PT_GNU_PROPERTY program header is used (since
+> +Linux 5.8). If interpreter doesn't have one, then the last PT_GNU_PROPERTY
+> +program header of an executable is used. Other PT_GNU_PROPERTY headers
+> +are ignored.
 
-One possible change I mentioned above: make TDVMCALL exit to L1 for some
-TDVMCALL leafs (or something along the line).
-
-I would like to keep it transparent for enlightened TDX Linux guest. It
-should not care if it runs as L1 or as L2 in your environment.
-
-> I'm also not sure what kind of changes you envision. Everything is supported by the
-> kernel already and the paravisor ABI is meant to stay vendor independent.
-> 
-> What I'm trying to accomplish is better integration with the non-partitioning side of TDX
-> so that users don't see "Memory Encryption Features active: AMD SEV" when running on Intel
-> TDX with a paravisor.
-
-This part is cosmetics and doesn't make much difference.
+Should we perhaps solve some of these in some way? What would folks
+prefer the behaviors be? (I like to have things been "as expected", but
+it's not very obvious here for redundant headers...)
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Kees Cook
