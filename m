@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE43980798B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B668807990
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379573AbjLFUiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        id S1441799AbjLFUiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:38:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379519AbjLFUiL (ORCPT
+        with ESMTP id S1379519AbjLFUip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:38:11 -0500
+        Wed, 6 Dec 2023 15:38:45 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E21135
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:38:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A710AC433C7;
-        Wed,  6 Dec 2023 20:38:15 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89C8CA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:38:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D950C433C7;
+        Wed,  6 Dec 2023 20:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701895095;
-        bh=meN9n/82QvNIZ0XZeo0x+kgGBx2QTXK1BuA2HRAZVMY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=DPyz8OOuAwbuu/cl+E9ayk4j5gvjJpirBq/4Xu8nb8onM5g5duJeZIu1YMLR7QyUT
-         fqSfPtTCoVsfdsWQuHlCvq5wtAr0vVoY5tNDu+mlDnLfstD4HV7e/tv++O/FyXACsg
-         M9OswCuM0Lc30eA2OyPgEGRuN67kH4+GaYatByxZtV2ekh4DQX3Vs4FyMg/3A8le3+
-         Y7y7zKnL6jyGWo34wrZA27y//XLIUciHKT+tdM/het8Tyva69Csxx02FUyfhLE6URX
-         gUzcN+4BUDLlaJRZXTJCypQTwd69i7sH1kK/hJK9st+6i2YTqtXiIw3LVjxPwDw+i2
-         zHYWsD4byUt0A==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3B12FCE0CC4; Wed,  6 Dec 2023 12:38:15 -0800 (PST)
-Date:   Wed, 6 Dec 2023 12:38:15 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Subject: Re: kernel/context_tracking.c:80: warning: Function parameter or
- member 'state' not described in '__ct_user_enter'
-Message-ID: <da7a3d32-e4f5-48d5-a7fb-f604f390c158@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <202312041922.YZCcEPYD-lkp@intel.com>
- <8e26257d-2809-4965-9f7d-aadbbb3def6f@paulmck-laptop>
- <fb36c8ea-02d7-408a-8354-f35712cdd510@infradead.org>
+        s=k20201202; t=1701895131;
+        bh=cQz7nqAhJZLeNLfbhuwDJLQndqN6EGPd06sE/qHTxl8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a3ZLEOI6PlyPKjcBOzbvg/uWztpxbKN5SsnZQQ0mKemEGbPgXokQ796Pi+GsuTCs4
+         K1XZeQgGkhlSUs0ryripNmigxDsf5W2ZLO82+jbRHd8dmyUL5WLYaAir2w9hB6h8un
+         ViRMa7bySqAP2uONoVEX22zWsUrOvdB1NOrqA05rmJs5RBadH8V6DA/RMc5sJz3746
+         /+pcGNJEnzBl9jezENsKgt4p/xtynH/P0qiKYxmWthtAARxRgRwpoDqP6qqYJsDWxb
+         uJ5YYV+0bG/Y3Ul4lXZkzQOnx9cjHCor6KyZTctKAmGquJAqfLe5h8NgC2GXraZ0e2
+         WifWGUersqUDw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2A44B403EF; Wed,  6 Dec 2023 17:38:48 -0300 (-03)
+Date:   Wed, 6 Dec 2023 17:38:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kan.liang@linux.intel.com
+Cc:     irogers@google.com, peterz@infradead.org, mingo@redhat.com,
+        namhyung@kernel.org, jolsa@kernel.org, adrian.hunter@intel.com,
+        john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 6/6] perf mem: Remove useless header files for X86
+Message-ID: <ZXDb2Gs1ECjejSbn@kernel.org>
+References: <20231206201324.184059-1-kan.liang@linux.intel.com>
+ <20231206201324.184059-7-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fb36c8ea-02d7-408a-8354-f35712cdd510@infradead.org>
+In-Reply-To: <20231206201324.184059-7-kan.liang@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,81 +59,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 02:15:54PM -0800, Randy Dunlap wrote:
+Em Wed, Dec 06, 2023 at 12:13:24PM -0800, kan.liang@linux.intel.com escreveu:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> 
-> On 12/4/23 20:38, Paul E. McKenney wrote:
-> > On Mon, Dec 04, 2023 at 08:02:33PM +0800, kernel test robot wrote:
-> >> Hi Frederic,
-> >>
-> >> FYI, the error/warning still remains.
-> >>
-> >> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> >> head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-> >> commit: e67198cc05b8ecbb7b8e2d8ef9fb5c8d26821873 context_tracking: Take idle eqs entrypoints over RCU
-> >> date:   1 year, 5 months ago
-> >> config: x86_64-buildonly-randconfig-006-20230906 (https://download.01.org/0day-ci/archive/20231204/202312041922.YZCcEPYD-lkp@intel.com/config)
-> >> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> >> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231204/202312041922.YZCcEPYD-lkp@intel.com/reproduce)
-> >>
-> >> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> >> the same patch/commit), kindly add following tags
-> >> | Reported-by: kernel test robot <lkp@intel.com>
-> >> | Closes: https://lore.kernel.org/oe-kbuild-all/202312041922.YZCcEPYD-lkp@intel.com/
-> >>
-> >> All warnings (new ones prefixed by >>):
-> >>
-> >>>> kernel/context_tracking.c:80: warning: Function parameter or member 'state' not described in '__ct_user_enter'
-> >>>> kernel/context_tracking.c:184: warning: Function parameter or member 'state' not described in '__ct_user_exit'
-> > 
-> > Does the patch below help?
-> 
-> Yes. Thanks.
-> 
-> Tested-by: Randy Dunlap <rdunlap@infradead.org>
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+> The X86 mem-events.c only has perf_mem_events array now. Remove useless
+> header files.
 
-Thank you!  I will apply these on my next rebase.
+It would be great that those were removed while you made the cleanups,
+i.e. removed the need for one of them, remove it together with the
+refactorings, etc.
 
-							Thanx, Paul
+But I don't think this is a requirement, just would make it cleaner.
 
-> > ------------------------------------------------------------------------
-> > 
-> > commit 9d879548a8cc89e5fdb0d806fc20887d67991c10
-> > Author: Paul E. McKenney <paulmck@kernel.org>
-> > Date:   Mon Dec 4 20:34:58 2023 -0800
-> > 
-> >     context_tracking: Fix kerneldoc headers for __ct_user_{enter,exit}()
-> >     
-> >     Document the "state" parameter of both of these functions.
-> >     
-> >     Reported-by: kernel test robot <lkp@intel.com>
-> >     Closes: https://lore.kernel.org/oe-kbuild-all/202312041922.YZCcEPYD-lkp@intel.com/
-> >     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> >     Cc: Frederic Weisbecker <frederic@kernel.org>
-> > 
-> > diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-> > index 6ef0b35fc28c..70ae70d03823 100644
-> > --- a/kernel/context_tracking.c
-> > +++ b/kernel/context_tracking.c
-> > @@ -458,6 +458,8 @@ static __always_inline void context_tracking_recursion_exit(void)
-> >   * __ct_user_enter - Inform the context tracking that the CPU is going
-> >   *		     to enter user or guest space mode.
-> >   *
-> > + * @state: userspace context-tracking state to enter.
-> > + *
-> >   * This function must be called right before we switch from the kernel
-> >   * to user or guest space, when it's guaranteed the remaining kernel
-> >   * instructions to execute won't use any RCU read side critical section
-> > @@ -595,6 +597,8 @@ NOKPROBE_SYMBOL(user_enter_callable);
-> >   * __ct_user_exit - Inform the context tracking that the CPU is
-> >   *		    exiting user or guest mode and entering the kernel.
-> >   *
-> > + * @state: userspace context-tracking state being exited from.
-> > + *
-> >   * This function must be called after we entered the kernel from user or
-> >   * guest space before any use of RCU read side critical section. This
-> >   * potentially include any high level kernel code like syscalls, exceptions,
+Will wait for reviews now.
+
+- Arnaldo
+ 
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  tools/perf/arch/x86/util/mem-events.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 > 
+> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
+> index 71ffe16de751..62df03e91c7e 100644
+> --- a/tools/perf/arch/x86/util/mem-events.c
+> +++ b/tools/perf/arch/x86/util/mem-events.c
+> @@ -1,11 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -#include "util/pmu.h"
+> -#include "util/pmus.h"
+> -#include "util/env.h"
+> -#include "map_symbol.h"
+> -#include "mem-events.h"
+>  #include "linux/string.h"
+> -#include "env.h"
+> +#include "util/map_symbol.h"
+> +#include "util/mem-events.h"
+> +#include "mem-events.h"
+> +
+>  
+>  #define MEM_LOADS_AUX		0x8203
+>  
 > -- 
-> ~Randy
+> 2.35.1
+> 
+
+-- 
+
+- Arnaldo
