@@ -2,152 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4816C806AB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE9F806ABC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377214AbjLFJbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:31:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
+        id S1377224AbjLFJcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:32:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346728AbjLFJbi (ORCPT
+        with ESMTP id S1377138AbjLFJcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:31:38 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B412AA4;
-        Wed,  6 Dec 2023 01:31:44 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-286867cac72so2090651a91.2;
-        Wed, 06 Dec 2023 01:31:44 -0800 (PST)
+        Wed, 6 Dec 2023 04:32:18 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632ABA4;
+        Wed,  6 Dec 2023 01:32:24 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so508024b3a.1;
+        Wed, 06 Dec 2023 01:32:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701855104; x=1702459904; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2NfF/vadIJxiqQtkbCE9WfDn53uC8FiCtOLYYf2Xy1I=;
-        b=OYmJvRAttszd0DUFROeAGFOcvSG6+iE4FlUAyNo8VGikFaNaYD46eA1QwpdHYBPEZY
-         YY6MC3V5wMYouXJhi+/asjAPh1e9p3pFojx3tjbvmLtJPWInPWxTeKlanE5e97hLrUjq
-         u4M43ahXGHxyzd+O3LRMXDobySVHl5dqqDQWU0R9XdFOPhQKSRnUWdSYpS96MsdCkYcG
-         S5rrOSS9lxYpAKnc28mZ18BkgNz5U5RhGlHAIxvjy5IC1HKXxjblo2O44zTkhxL5DJfG
-         bNfS+YFttaY+ogAQEtQ3rDM5Jqnpx/gqaVfhrsZTZJFj0fk9wcxcMw4Ex4LVXq/bH2Wf
-         iwxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701855104; x=1702459904;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701855144; x=1702459944; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2NfF/vadIJxiqQtkbCE9WfDn53uC8FiCtOLYYf2Xy1I=;
-        b=i4dcVQ70qkueRfJWZbXzpNJZ7Fj/4DOXDgjwoizwKWwmP7UVBH5u6mtvfcjyT0QzeI
-         2czCa/S9IoyBrxjlJEX5kUIRm0rWoO+johDz6QybsDrpwFTnkAfi/ZVSLbNJY6u2Av1t
-         5BwhGmf8W85yh1WpXjlHDRV4UA11kWarbBFsEuZ4z3fggXNiWhUB27IwH9yF9PFKNX+r
-         m7hlKnVouvLjIHvYzEbTAIu4UTenPBstBwSl8UWWFo0HsmFREG6EpD1vvXWX++YWEkd6
-         f/8yFGMCxj9zO8SJskvCCZv3MQ6X8VZ2COb32FGxL1KzL57X4Z81Xod0nzuL/iY+V16s
-         zQFw==
-X-Gm-Message-State: AOJu0YyiXBDktS6qWEXXVLDNyC6PSWH85eJ/3xhltLjypyPMmnIQ75IQ
-        DNdOvCiiaLQi0dpB+VLVHc4=
-X-Google-Smtp-Source: AGHT+IHWZraUS2fL1t578+dOE5+ZAg5+kiBEP0Z2wrhG0oFboAypDmBWWMm9Rea+ExbM5+j4C17AYg==
-X-Received: by 2002:a17:90a:18e:b0:286:a501:26eb with SMTP id 14-20020a17090a018e00b00286a50126ebmr430755pjc.48.1701855103984;
-        Wed, 06 Dec 2023 01:31:43 -0800 (PST)
-Received: from localhost.localdomain ([1.245.180.67])
-        by smtp.gmail.com with ESMTPSA id w5-20020a17090aea0500b00286d686b3d9sm2062111pjy.17.2023.12.06.01.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 01:31:42 -0800 (PST)
-Date:   Wed, 6 Dec 2023 18:31:24 +0900
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 09/21] mm/slab: remove mm/slab.c and slab_def.h
-Message-ID: <ZXA+Ur55OR1EU/5L@localhost.localdomain>
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-9-9c9c70177183@suse.cz>
+        bh=hLmPofgWOpu3C4jj3H2nG/YpvFLIZNIe7xgeFG2pVlQ=;
+        b=nrRc5h8BzyP24yAiq/bNluHSMe3Kv8VdUTj1dusGF6F3vcgXujY5NYmhhVPruA8HRu
+         GfNU9PTm6QObEYvDVrmMgp8AWWUB2To2EYucaHJSKnvZga5v2kRpcsqUU/rwFPqDMyaq
+         FUOw4k/SO+8UOVsvQNvzbqYgA6b5su2Bdz6T/Hdr0VJSpWZzulUayxzSYYv9PgPafH+H
+         hiavbm30yp2TUosqMPWdqaJtQY8W1pj9Ssvs8vd/1lf4ibPQ7+ssoX9IQQ1KZeq3eIkE
+         oqg0Qkd0DlYJjZ+VhxF4Dy6oXBc7JfmYST6ODP9xf5Y5p3vF/aCw/5KmGHEOKJUaxz2h
+         R9lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701855144; x=1702459944;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hLmPofgWOpu3C4jj3H2nG/YpvFLIZNIe7xgeFG2pVlQ=;
+        b=vIzcpWs0tjE8M6bOdHZqzcdZAG+orbwWEGM8345O9i78jUq1y0N1jqCrTW4c6mn8aO
+         M3EnLFPcE5ckJqgtz3U9g+HLFnXbRdPW37GXvrY8jlyhaZuN+se37UH05Y/IQXKKOgIM
+         aG/D6JqA3pd0KFR2dq3dCeN6issfPqeX/5ntWXpqPDauaUmlzrb41NVbwwsHTj3jzIAN
+         YMtJdfgJULOoZkLHf2bjSnmZKwSYtcet1+Z45lcBsdtrZGx6sSzs3diEEc/PGj4IN+wB
+         40cuPdCyX6dynYvEV1ExD+pe6YHTfmB+lwLiMxuyn83SpLcHzj3HCYqAoc6BwnLn+np9
+         PdUA==
+X-Gm-Message-State: AOJu0YxpcdfQ1IU3F+JsbybXVZ/W7/Gdzln5oreyw7qZ/pfjzyN5dKgu
+        obTTQY+EzoPr8NWQ6v3G85mL86K7cdV21/1PNak=
+X-Google-Smtp-Source: AGHT+IEPQ3KFPasE8HpV5QWHJngXsaB3BoK3YhCzFQvPWEbqrOJpVeDej+DuCiWVYV6j3tET406Fag/SJZwJSzFve/M=
+X-Received: by 2002:a05:6a20:261d:b0:187:29f9:e12e with SMTP id
+ i29-20020a056a20261d00b0018729f9e12emr729597pze.29.1701855143759; Wed, 06 Dec
+ 2023 01:32:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120-slab-remove-slab-v2-9-9c9c70177183@suse.cz>
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231102121623.31924-1-kaiwei.liu@unisoc.com> <ZWCg9hmfvexyn7xK@matsya>
+In-Reply-To: <ZWCg9hmfvexyn7xK@matsya>
+From:   liu kaiwei <liukaiwei086@gmail.com>
+Date:   Wed, 6 Dec 2023 17:32:12 +0800
+Message-ID: <CAOgAA6FzZ4q=rdmh8ySJRhojkGCgyV4PVjT6JAOUix+CF9PFtw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dmaengine: sprd: delete enable opreation in probe
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Kaiwei Liu <kaiwei.liu@unisoc.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wenming Wu <wenming.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 07:34:20PM +0100, Vlastimil Babka wrote:
-> Remove the SLAB implementation. Update CREDITS.
-> Also update and properly sort the SLOB entry there.
-> 
-> RIP SLAB allocator (1996 - 2024)
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  CREDITS                  |   12 +-
->  include/linux/slab_def.h |  124 --
->  mm/slab.c                | 4005 ----------------------------------------------
->  3 files changed, 8 insertions(+), 4133 deletions(-)
-
-Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-
-> diff --git a/CREDITS b/CREDITS
-> index f33a33fd2371..943a73e96149 100644
-> --- a/CREDITS
-> +++ b/CREDITS
-> @@ -9,10 +9,6 @@
->  			Linus
->  ----------
->  
-> -N: Matt Mackal
-> -E: mpm@selenic.com
-> -D: SLOB slab allocator
-
-by the way I just realized that commit 16e943bf8db
-("MAINTAINERS: SLAB maintainer update") incorrectly put her lastname
-(Mackall is correct), maybe update that too?
-
->  N: Matti Aarnio
->  E: mea@nic.funet.fi
->  D: Alpha systems hacking, IPv6 and other network related stuff
-> @@ -1572,6 +1568,10 @@ S: Ampferstr. 50 / 4
->  S: 6020 Innsbruck
->  S: Austria
->  
-> +N: Mark Hemment
-> +E: markhe@nextd.demon.co.uk
-> +D: SLAB allocator implementation
-> +
->  N: Richard Henderson
->  E: rth@twiddle.net
->  E: rth@cygnus.com
-> @@ -2437,6 +2437,10 @@ D: work on suspend-to-ram/disk, killing duplicates from ioctl32,
->  D: Altera SoCFPGA and Nokia N900 support.
->  S: Czech Republic
->  
-> +N: Olivia Mackal
-> +E: olivia@selenic.com
-> +D: SLOB slab allocator
-> +
->  N: Paul Mackerras
->  E: paulus@samba.org
->  D: PPP driver
+On Fri, Nov 24, 2023 at 9:11=E2=80=AFPM Vinod Koul <vkoul@kernel.org> wrote=
+:
 >
-> -- 
-> 2.42.1
-> 
-> 
+> On 02-11-23, 20:16, Kaiwei Liu wrote:
+> > From: "kaiwei.liu" <kaiwei.liu@unisoc.com>
+>
+> Typo is subject line
+>
+> >
+> > In the probe of dma, it will allocate device memory and do some
+> > initalization settings. All operations are only at the software
+> > level and don't need the DMA hardware power on. It doesn't need
+> > to resume the device and set the device active as well. here
+> > delete unnecessary operation.
+>
+> Don't you need to read or write to the device? Without enable that wont
+> work right?
+>
+
+Yes, it doesn't need to read or write to the device in the probe of DMA.
+We will enable the DMA when allocating the DMA channel.
+
+> Lastly patches appear disjoint, pls thread them properly
+>
+> >
+> > Signed-off-by: kaiwei.liu <kaiwei.liu@unisoc.com>
+> > ---
+> >  drivers/dma/sprd-dma.c | 19 ++-----------------
+> >  1 file changed, 2 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/drivers/dma/sprd-dma.c b/drivers/dma/sprd-dma.c
+> > index 08fcf1ec368c..8ab5a9082fc5 100644
+> > --- a/drivers/dma/sprd-dma.c
+> > +++ b/drivers/dma/sprd-dma.c
+> > @@ -1203,21 +1203,11 @@ static int sprd_dma_probe(struct platform_devic=
+e *pdev)
+> >       }
+> >
+> >       platform_set_drvdata(pdev, sdev);
+> > -     ret =3D sprd_dma_enable(sdev);
+> > -     if (ret)
+> > -             return ret;
+> > -
+> > -     pm_runtime_set_active(&pdev->dev);
+> > -     pm_runtime_enable(&pdev->dev);
+> > -
+> > -     ret =3D pm_runtime_get_sync(&pdev->dev);
+> > -     if (ret < 0)
+> > -             goto err_rpm;
+> >
+> >       ret =3D dma_async_device_register(&sdev->dma_dev);
+> >       if (ret < 0) {
+> >               dev_err(&pdev->dev, "register dma device failed:%d\n", re=
+t);
+> > -             goto err_register;
+> > +             return ret;
+> >       }
+> >
+> >       sprd_dma_info.dma_cap =3D sdev->dma_dev.cap_mask;
+> > @@ -1226,16 +1216,11 @@ static int sprd_dma_probe(struct platform_devic=
+e *pdev)
+> >       if (ret)
+> >               goto err_of_register;
+> >
+> > -     pm_runtime_put(&pdev->dev);
+> > +     pm_runtime_enable(&pdev->dev);
+> >       return 0;
+> >
+> >  err_of_register:
+> >       dma_async_device_unregister(&sdev->dma_dev);
+> > -err_register:
+> > -     pm_runtime_put_noidle(&pdev->dev);
+> > -     pm_runtime_disable(&pdev->dev);
+> > -err_rpm:
+> > -     sprd_dma_disable(sdev);
+> >       return ret;
+> >  }
+> >
+> > --
+> > 2.17.1
+>
+> --
+> ~Vinod
