@@ -2,137 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D050180711C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 763EE80711D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378539AbjLFNrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
+        id S1378552AbjLFNrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:47:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378494AbjLFNrD (ORCPT
+        with ESMTP id S1378530AbjLFNrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:47:03 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B902EC7;
-        Wed,  6 Dec 2023 05:47:09 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-6ce26a03d9eso2945573b3a.0;
-        Wed, 06 Dec 2023 05:47:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701870429; x=1702475229; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=indVg3iJe1bUmDftGyXLEFS478Gs8luViEtcG78izGA=;
-        b=Rqij4ofu6i9zykU6O7BNl06GG1qNAZD4LERI9AgfSiRY2vijCrtjYMSwZC+xJ0/XZN
-         eBCUNl2FfvTD5Uq+8Oh1cRvRIHVp+1TcpzyThQjdqqV93HjyIls1WPY+7xS1EW0gbfmn
-         apCzmIiegP9x7aAOi0zfy5HfZ6BtO86CEhWgA6B4BMoZebWTAGHd1YK44JSuZcikJHRu
-         BWzvom9thHTaaP1REsWko1WXZ5S7TaDvWICT+9gDDS+JdgenNUQ4I1xJQJgFKPAm/Th7
-         z41lWfQ23hkwVPwbu+zYLYVjzO8CYjBOqUHiIRoPROPtLMKTY0Ucvsmsv8HDSCxx8ddV
-         LZIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701870429; x=1702475229;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=indVg3iJe1bUmDftGyXLEFS478Gs8luViEtcG78izGA=;
-        b=FVLoJ3obHcQz134I2nKxOMTIUTl3Mt6Kuwue5xuWYbiLJxQTXDFSFVD/bcgv8T1Bh6
-         DhtE2Bw49FA3iXP8G5dvrbQknpAp1tc8K6oj9zqsOLoi3Z7nOM4vRGC0T5vK+i/nzBYt
-         UERfU8yxMxZTsNLQKwQh4qCFyD6xgQI4nC14wqxKO4Z154E5sMy4oirW7yOjcFAUBO9L
-         mLQd+/WJ4prE0GPnXWYzucNiTiCvF8pgsMsiXU41MbBoYdZ4VbRO+nsLsJnwuByGLR9c
-         HQdW/MsHypDSrrme20w6m3cjporgZpifIsv1iOmxCs6bo8pnE9e7N/z5BfAdQ6ZTsnOI
-         PhaQ==
-X-Gm-Message-State: AOJu0YyEMTjCTVfjIbC5WAhI1Bx7TiqP3U9gioFl3GNcYBNqGZ2/xb6Y
-        A+sIVW9TiBjCnRyKdmCcAd0=
-X-Google-Smtp-Source: AGHT+IE7Id75EsCrlMdTpxA69hAH3GctF3TfPfA9wGdP5BlXGfsKjpbKppHc7MbvOzUGiatKJFAK5A==
-X-Received: by 2002:a05:6a00:6ca8:b0:6ce:4c5b:4c97 with SMTP id jc40-20020a056a006ca800b006ce4c5b4c97mr567521pfb.56.1701870428881;
-        Wed, 06 Dec 2023 05:47:08 -0800 (PST)
-Received: from dawn-virtual-machine.localdomain ([183.198.59.249])
-        by smtp.gmail.com with ESMTPSA id f7-20020a056a0022c700b006cb574445efsm7287038pfj.88.2023.12.06.05.47.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 05:47:08 -0800 (PST)
-From:   Li peiyu <579lpy@gmail.com>
-To:     jic23@kernel.org
-Cc:     javier.carrasco.cruz@gmail.com, lars@metafoo.de,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Li peiyu <579lpy@gmail.com>
-Subject: [PATCH v4 0/4] iio: humidity: Add driver for ti HDC302x humidity sensors
-Date:   Wed,  6 Dec 2023 21:46:55 +0800
-Message-Id: <20231206134655.559474-1-579lpy@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 6 Dec 2023 08:47:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB459C3
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:47:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98621C433C7;
+        Wed,  6 Dec 2023 13:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701870430;
+        bh=ib/KhT6CRE/Dl/IG1bo0ffAo1R+XUpJpRoCSE1xk+GM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jYFh1nYid3rxZZz5/+kjM3nXYMw6bVGEewjinV2oOagGeDF0CzRQHqrbjcB+Tv9Cg
+         4reI89we9LR67SvVk4r8A0jqZUTVPa5/NPpOS6u521MejXp/8Q/2D7+jNOFMuKitvG
+         BZts2e9VsTtT+j75DCksBDU5DpmXZX6i4W3KL3xlRv5SALMCTS7FIxmULkK+tom16x
+         33e1sGkqQWmki0Ple1VBECEUfsXPXn5I7DlEf6fMtTnMlu5/Eey7HfUMejhRcIZr2p
+         kvN7uNAfe3MENuNjSdJH7PLgNPJMCxNqH252Styiky0g0fgWon3Bns4ko2+OkaSyKM
+         4G5JvBDTwyoNQ==
+Date:   Wed, 6 Dec 2023 19:17:03 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, Manish Pandey <quic_mapa@quicinc.com>
+Subject: Re: [PATCH V4] scsi: ufs: core: store min and max clk freq from OPP
+ table
+Message-ID: <20231206134703.GF12802@thinkpad>
+References: <20231206133812.21488-1-quic_nitirawa@quicinc.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231206133812.21488-1-quic_nitirawa@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for HDC302x integrated capacitive based relative
-humidity (RH) and temperature sensor.
-This driver supports reading values, reading the maximum and
-minimum of values and controlling the integrated heater of
-the sensor.
+On Wed, Dec 06, 2023 at 07:08:12PM +0530, Nitin Rawat wrote:
+> OPP support added by commit 72208ebe181e ("scsi: ufs: core: Add support
+> for parsing OPP") doesn't update the min_freq and max_freq of each clocks
+> in 'struct ufs_clk_info'.
+> 
+> But these values are used by the host drivers internally for controller
+> configuration. When the OPP support is enabled in devicetree, these
+> values will be 0, causing boot issues on the respective platforms.
+> 
+> So add support to parse the min_freq and max_freq of all clocks while
+> parsing the OPP table.
+> 
+> Fixes: 72208ebe181e ("scsi: ufs: core: Add support for parsing OPP")
+> Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
+> Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
 
-Signed-off-by: Li peiyu <579lpy@gmail.com>
----
-changes in v4:
-	iio core:
-	  - Add an IIO_CHAN_INFO_TROUGH modifier for minimum values.
-	iio ABI:
-	  - Document the new _TROUGH modifier.
-	sensor driver:
-	  - Add MAINTAINERS.
-	  - Use new IIO_CHAN_INFO_TROUGH modifier.
-	  - Support the complete heater range.
-	  - Remove measurement values from the data structure.
-	  - Use guard(mutex)(...), make the code simpler
-	  - Removed buffer mode and direct mode conversion code
-	  - Minor coding-style fixes.
-	dt-bindings:
-	  - removed unnecessary example
-	  - add vdd-supply to the example
-changes in v3:
-	sensor driver:
-	  - Removed the custom ABI
-	  - Give up calculating values in the driver
-	  - Use read_avail callback to get available parameters
-	  - Changed the scope of the lock to make the code more concise
-	  - Fixed the code format issue
-	dt-bindings:
-	  - Use a fallback compatible
-changes in v2:
-	sensor driver:
-	  - Added static modification to global variables
-	  - change the methord to read peak value
-	dt-bindings:
-	  - change the maintainers to me.
-	  - hdc3020,hdc3021,hdc3022 are compatible,I've changed the dirver.
-	  - change the node name to humidity-sensor.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
----
-Javier Carrasco (2):
-      iio: core: introduce trough modifier for minimum values
-      iio: ABI: document temperature and humidity peak/trough raw attributes
+Martin, please queue this patch for 6.7-rcS.
 
-Li peiyu (2):
-      dt-bindings: iio: humidity: Add TI HDC302x support
-      iio: humidity: Add driver for TI HDC302x humidity sensors
+- Mani
 
- Documentation/ABI/testing/sysfs-bus-iio            |  13 +-
- .../bindings/iio/humidity/ti,hdc3020.yaml          |  55 +++
- MAINTAINERS                                        |   8 +
- drivers/iio/humidity/Kconfig                       |  12 +
- drivers/iio/humidity/Makefile                      |   1 +
- drivers/iio/humidity/hdc3020.c                     | 468 +++++++++++++++++++++
- drivers/iio/industrialio-core.c                    |   1 +
- include/linux/iio/types.h                          |   1 +
- 8 files changed, 558 insertions(+), 1 deletion(-)
- ---
-base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
+> ---
+> Changes from v3:
+> - updated commit description and comment to address christoph's comment
+> 
+> Changes from v2:
+> - increment idx in dev_pm_opp_get_freq_indexed
+> 
+> Changes from v1:
+> As per Manivannan's comment:
+> - Updated commmit description
+> - Sort include file alphabetically
+> - Added missing dev_pm_opp_put
+> - updated function name and documention
+> - removed ret variable
+> ---
+>  drivers/ufs/host/ufshcd-pltfrm.c | 53 ++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+> 
+> diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
+> index da2558e274b4..0983cee6355e 100644
+> --- a/drivers/ufs/host/ufshcd-pltfrm.c
+> +++ b/drivers/ufs/host/ufshcd-pltfrm.c
+> @@ -8,6 +8,7 @@
+>   *	Vinayak Holikatti <h.vinayak@samsung.com>
+>   */
+> 
+> +#include <linux/clk.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_opp.h>
+> @@ -213,6 +214,54 @@ static void ufshcd_init_lanes_per_dir(struct ufs_hba *hba)
+>  	}
+>  }
+> 
+> +/**
+> + * ufshcd_parse_clock_min_max_freq  - Parse MIN and MAX clocks freq
+> + * @hba: per adapter instance
+> + *
+> + * This function parses MIN and MAX frequencies of all clocks required
+> + * by the host drivers.
+> + *
+> + * Returns 0 for success and non-zero for failure
+> + */
+> +static int ufshcd_parse_clock_min_max_freq(struct ufs_hba *hba)
+> +{
+> +	struct list_head *head = &hba->clk_list_head;
+> +	struct ufs_clk_info *clki;
+> +	struct dev_pm_opp *opp;
+> +	unsigned long freq;
+> +	u8 idx = 0;
+> +
+> +	list_for_each_entry(clki, head, list) {
+> +		if (!clki->name)
+> +			continue;
+> +
+> +		clki->clk = devm_clk_get(hba->dev, clki->name);
+> +		if (!IS_ERR(clki->clk)) {
+> +			/* Find Max Freq */
+> +			freq = ULONG_MAX;
+> +			opp = dev_pm_opp_find_freq_floor_indexed(hba->dev, &freq, idx);
+> +			if (IS_ERR(opp)) {
+> +				dev_err(hba->dev, "Failed to find OPP for MAX frequency\n");
+> +				return PTR_ERR(opp);
+> +			}
+> +			clki->max_freq = dev_pm_opp_get_freq_indexed(opp, idx);
+> +			dev_pm_opp_put(opp);
+> +
+> +			/* Find Min Freq */
+> +			freq = 0;
+> +			opp = dev_pm_opp_find_freq_ceil_indexed(hba->dev, &freq, idx);
+> +			if (IS_ERR(opp)) {
+> +				dev_err(hba->dev, "Failed to find OPP for MIN frequency\n");
+> +				return PTR_ERR(opp);
+> +			}
+> +			clki->min_freq = dev_pm_opp_get_freq_indexed(opp, idx++);
+> +			dev_pm_opp_put(opp);
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+>  {
+>  	struct device *dev = hba->dev;
+> @@ -279,6 +328,10 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
+>  		return ret;
+>  	}
+> 
+> +	ret = ufshcd_parse_clock_min_max_freq(hba);
+> +	if (ret)
+> +		return ret;
+> +
+>  	hba->use_pm_opp = true;
+> 
+>  	return 0;
+> --
+> 2.17.1
+> 
 
-Best regards,
+-- 
+மணிவண்ணன் சதாசிவம்
