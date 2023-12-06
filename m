@@ -2,96 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA43807891
+	by mail.lfdr.de (Postfix) with ESMTP id B8F4F807893
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379257AbjLFT1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33686 "EHLO
+        id S1379313AbjLFT14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378759AbjLFT13 (ORCPT
+        with ESMTP id S1379354AbjLFT1v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:27:29 -0500
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B73BC1BD
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 11:27:35 -0800 (PST)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-58ce8513da1so60748eaf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 11:27:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701890855; x=1702495655; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=dFmA2oj7DydOQis/5pnKChGhB5lB4thJZtXd8sMcBkc=;
-        b=B6f5gY/dgKfgvPfQX4Vs+NfY/CbF4gPO2UzUGdg7TEyCJ2EJnmd0ryCjzho/BDtsRX
-         dLQUchnIbQCQztOgqsHxkhvi1v8Pe6hTSfnQ3i86nrnxr9uv7YxKEX2qPCRECbKI6Iuv
-         JZeX7G7xP+Ezc8TcEGgIuqtOeXZaKGink4W+MfDNNcC5/uIh/jSnY/yRGGRKAPAsUrR3
-         5Sqcn9vKQHMC0X+zYOcSpFIDuCnCJAs76qmF6sE3S6UM4wXfVJmObs6eFg9NMiUniG0V
-         in45Tki08cKfWKnJV8jhAUDRBV2e/gkLSdwQkp42buuBWt1CTx8eCrRDXkqklFhxkfg1
-         h0PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701890855; x=1702495655;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dFmA2oj7DydOQis/5pnKChGhB5lB4thJZtXd8sMcBkc=;
-        b=Td+WmHhM7zSf+P8erWRrCd+Y7kDBwL5eU/TVqsbebPCjpUJwc2AU8SLp0SnXJU5hj4
-         322ornB+lZLegUs4TvvHw29EzL2feu5w1CtUfzU38iXFo3yztptmQEjWXpsWJVs+mOaO
-         bF32OqBEtQBLa6Lx23HG3cvsBhKcQhqboBjdoYmNPSCVL2f0xUN1KKTz4lDYAh0twEw2
-         VFxVVmMTfwsI82npSIzEZ5aOUX6CbbJhBg29ZeoefoMGY6bBSJTjW7tgEXqr4rCyOuI7
-         +vcZVZXZJmR5mbdt2pPS2FclyboZSnVPnZQdte9/PE/Ge3Rswmtn0MoGO866dFwABwMT
-         cmsA==
-X-Gm-Message-State: AOJu0YzhcFpQZH5i00N3XZw7FsEPbstQ5cCSF4tPbYySuoseN1TJ9BpX
-        FKaxHwIjVec3cOzsJ0IDGYg=
-X-Google-Smtp-Source: AGHT+IHe3xAg61xtUO1zc6I3jf5YPnH9sExYXliRjKkgvoBKBXTJGRt0EkrBmYArNKwZJj/kBV20zQ==
-X-Received: by 2002:a05:6359:6b0:b0:16b:fa51:4862 with SMTP id ei48-20020a05635906b000b0016bfa514862mr1550312rwb.29.1701890854897;
-        Wed, 06 Dec 2023 11:27:34 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id p1-20020a63b801000000b005c19c586cb7sm255367pge.33.2023.12.06.11.27.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 11:27:34 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 6 Dec 2023 09:27:33 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] workqueue fixes for v6.7-rc4
-Message-ID: <ZXDLJZ42TGL9LlM9@slm.duckdns.org>
+        Wed, 6 Dec 2023 14:27:51 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8345BD5A;
+        Wed,  6 Dec 2023 11:27:57 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4EA5C21D33;
+        Wed,  6 Dec 2023 19:27:55 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 774D713403;
+        Wed,  6 Dec 2023 19:27:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id jgDGGzrLcGUeYAAAn2gu4w
+        (envelope-from <mkoutny@suse.com>); Wed, 06 Dec 2023 19:27:54 +0000
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, cake@lists.bufferbloat.net
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
+        Martin Wilck <mwilck@suse.com>
+Subject: [PATCH 0/3] net/sched: Load modules via alias
+Date:   Wed,  6 Dec 2023 20:27:49 +0100
+Message-ID: <20231206192752.18989-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out1.suse.de: domain of mkoutny@suse.com does not designate 2a07:de40:b281:104:10:150:64:98 as permitted sender) smtp.mailfrom=mkoutny@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         BAYES_HAM(-3.00)[100.00%];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.20)[-0.981];
+         RCPT_COUNT_TWELVE(0.00)[28];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: 4EA5C21D33
+X-Spam: Yes
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit a12deb44f9734dc25970c266249b272e44d3d1b5:
+These modules may be loaded lazily without user's awareness and
+control. Add respective aliases to modules and request them under these
+aliases so that modprobe's blacklisting mechanism (through aliases)
+works for them. (The same pattern exists e.g. for filesystem
+modules.)
 
-  Merge tag 'input-for-v6.7-rc0' of git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input (2023-11-09 14:18:42 -0800)
+Original module names remain unchanged.
 
-are available in the Git repository at:
+Patches were generated with the help of Coccinelle scripts like:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git/ tags/wq-for-6.7-rc4-fixes
+cat >scripts/coccinelle/misc/tcf_alias.cocci <<EOD
+virtual patch
+virtual report
 
-for you to fetch changes up to 4a6c5607d4502ccd1b15b57d57f17d12b6f257a7:
+@ haskernel @
+@@
 
-  workqueue: Make sure that wq_unbound_cpumask is never empty (2023-11-22 06:17:26 -1000)
+@ tcf_has_kind depends on report && haskernel @
+identifier ops;
+constant K;
+@@
 
-----------------------------------------------------------------
-workqueue: Fixes for v6.7-rc4
+  static struct tcf_proto_ops ops = {
+    .kind = K,
+    ...
+  };
++char module_alias = K;
+EOD
 
-Just one patch to fix a bug which can crash the kernel if the housekeeping
-and wq_unbound_cpu cpumask configuration combination leaves the latter
-empty.
+/usr/bin/spatch -D report --cocci-file scripts/coccinelle/misc/tcf_alias.cocci \
+	--dir . \
+	-I ./arch/x86/include -I ./arch/x86/include/generated -I ./include \
+	-I ./arch/x86/include/uapi -I ./arch/x86/include/generated/uapi \
+	-I ./include/uapi -I ./include/generated/uapi \
+	--include ./include/linux/compiler-version.h --include ./include/linux/kconfig.h \
+	--jobs 8 --chunksize 1 2>/dev/null | \
+	sed 's/char module_alias = "\([^"]*\)";/MODULE_ALIAS_TCF("\1");/'
 
-----------------------------------------------------------------
-Tejun Heo (1):
-      workqueue: Make sure that wq_unbound_cpumask is never empty
+Changes from v1 (https://lore.kernel.org/r/20231121175640.9981-1-mkoutny@suse.com)
+- Treat sch_ and act_ modules analogously to cls_
 
- kernel/workqueue.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
+Michal Koutný (3):
+  net/sched: cls: Load net classifier modules via alias
+  net/sched: sch: Load qdisc modules via alias
+  net/sched: act: Load TC action modules via alias
+
+ include/net/act_api.h      | 1 +
+ include/net/pkt_cls.h      | 1 +
+ include/net/pkt_sched.h    | 1 +
+ net/sched/act_api.c        | 2 +-
+ net/sched/act_bpf.c        | 1 +
+ net/sched/act_connmark.c   | 1 +
+ net/sched/act_csum.c       | 1 +
+ net/sched/act_ct.c         | 1 +
+ net/sched/act_ctinfo.c     | 1 +
+ net/sched/act_gact.c       | 1 +
+ net/sched/act_gate.c       | 1 +
+ net/sched/act_ife.c        | 1 +
+ net/sched/act_ipt.c        | 2 ++
+ net/sched/act_mirred.c     | 1 +
+ net/sched/act_mpls.c       | 1 +
+ net/sched/act_nat.c        | 1 +
+ net/sched/act_pedit.c      | 1 +
+ net/sched/act_police.c     | 1 +
+ net/sched/act_sample.c     | 1 +
+ net/sched/act_simple.c     | 1 +
+ net/sched/act_skbedit.c    | 1 +
+ net/sched/act_skbmod.c     | 1 +
+ net/sched/act_tunnel_key.c | 1 +
+ net/sched/act_vlan.c       | 1 +
+ net/sched/cls_api.c        | 2 +-
+ net/sched/cls_basic.c      | 1 +
+ net/sched/cls_bpf.c        | 1 +
+ net/sched/cls_cgroup.c     | 1 +
+ net/sched/cls_flow.c       | 1 +
+ net/sched/cls_flower.c     | 1 +
+ net/sched/cls_fw.c         | 1 +
+ net/sched/cls_matchall.c   | 1 +
+ net/sched/cls_route.c      | 1 +
+ net/sched/cls_u32.c        | 1 +
+ net/sched/sch_api.c        | 2 +-
+ net/sched/sch_cake.c       | 1 +
+ net/sched/sch_cbs.c        | 1 +
+ net/sched/sch_choke.c      | 1 +
+ net/sched/sch_codel.c      | 1 +
+ net/sched/sch_drr.c        | 1 +
+ net/sched/sch_etf.c        | 1 +
+ net/sched/sch_ets.c        | 1 +
+ net/sched/sch_fq.c         | 1 +
+ net/sched/sch_fq_codel.c   | 1 +
+ net/sched/sch_gred.c       | 1 +
+ net/sched/sch_hfsc.c       | 1 +
+ net/sched/sch_hhf.c        | 1 +
+ net/sched/sch_htb.c        | 1 +
+ net/sched/sch_ingress.c    | 2 ++
+ net/sched/sch_mqprio.c     | 1 +
+ net/sched/sch_multiq.c     | 1 +
+ net/sched/sch_netem.c      | 1 +
+ net/sched/sch_pie.c        | 1 +
+ net/sched/sch_plug.c       | 1 +
+ net/sched/sch_prio.c       | 1 +
+ net/sched/sch_qfq.c        | 1 +
+ net/sched/sch_red.c        | 1 +
+ net/sched/sch_sfb.c        | 1 +
+ net/sched/sch_sfq.c        | 1 +
+ net/sched/sch_skbprio.c    | 1 +
+ net/sched/sch_taprio.c     | 1 +
+ net/sched/sch_tbf.c        | 1 +
+ 62 files changed, 64 insertions(+), 3 deletions(-)
+
+-- 
+2.42.1
+
