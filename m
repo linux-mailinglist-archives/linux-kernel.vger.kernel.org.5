@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B668807990
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBC58079A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:41:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441799AbjLFUiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:38:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
+        id S230289AbjLFUlN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 15:41:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379519AbjLFUip (ORCPT
+        with ESMTP id S230291AbjLFUlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:38:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89C8CA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:38:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D950C433C7;
-        Wed,  6 Dec 2023 20:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701895131;
-        bh=cQz7nqAhJZLeNLfbhuwDJLQndqN6EGPd06sE/qHTxl8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a3ZLEOI6PlyPKjcBOzbvg/uWztpxbKN5SsnZQQ0mKemEGbPgXokQ796Pi+GsuTCs4
-         K1XZeQgGkhlSUs0ryripNmigxDsf5W2ZLO82+jbRHd8dmyUL5WLYaAir2w9hB6h8un
-         ViRMa7bySqAP2uONoVEX22zWsUrOvdB1NOrqA05rmJs5RBadH8V6DA/RMc5sJz3746
-         /+pcGNJEnzBl9jezENsKgt4p/xtynH/P0qiKYxmWthtAARxRgRwpoDqP6qqYJsDWxb
-         uJ5YYV+0bG/Y3Ul4lXZkzQOnx9cjHCor6KyZTctKAmGquJAqfLe5h8NgC2GXraZ0e2
-         WifWGUersqUDw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2A44B403EF; Wed,  6 Dec 2023 17:38:48 -0300 (-03)
-Date:   Wed, 6 Dec 2023 17:38:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     kan.liang@linux.intel.com
-Cc:     irogers@google.com, peterz@infradead.org, mingo@redhat.com,
-        namhyung@kernel.org, jolsa@kernel.org, adrian.hunter@intel.com,
-        john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
-        mike.leach@linaro.org, leo.yan@linaro.org,
-        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
-        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 6/6] perf mem: Remove useless header files for X86
-Message-ID: <ZXDb2Gs1ECjejSbn@kernel.org>
-References: <20231206201324.184059-1-kan.liang@linux.intel.com>
- <20231206201324.184059-7-kan.liang@linux.intel.com>
+        Wed, 6 Dec 2023 15:41:11 -0500
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964B3135;
+        Wed,  6 Dec 2023 12:41:17 -0800 (PST)
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1fb00ea5e5fso36422fac.1;
+        Wed, 06 Dec 2023 12:41:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701895277; x=1702500077;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FlhVPOODXTOWxGwKg9e3DDYoZLed8F9HR5wooT/tC2c=;
+        b=QLC4wXqyj/T8ERSCaT7olfK+3lA8UwpoXB7yz0AAwp9s41jtJEIZ0nGNDNqkf9IKaX
+         pO3DYMFWoN/hEYFHyxxsxn70XMsvBAewB85IPXIkiGG6HsDQBxyouDKpANkE8mG/e01z
+         F9UZoa186LfyntFwwBseS4ZLUyI4Tgl2H8sYOXmY/Icn/dXAtxPfcx6Vpar6/snBLd/9
+         EXghDuJcMZUaMRdow4CBWUDhevVBzJ5L7RXdTn/xd0sFhZwxq+PqerIUYOi7RVDcDj6Q
+         YBu5M469OzMmEuVSMVjo6G0BTlPOKjKhYNPWPPVP24aB3yhSAYVbkGZDozU53PFSIUar
+         qCtA==
+X-Gm-Message-State: AOJu0YyC/X50n+EwCgqqu/iNslLDPh4wo3dUVPTCzL8KXtxzKldPFF2Z
+        gzcURKA5Dz9s8ldd9QO4yGjlnJ5z/MfxR/SJ5gs=
+X-Google-Smtp-Source: AGHT+IH29a0cqz8yIEZIWDtTFVH9l0IVy1IzNJ+5GfLNckU6RPGEogazu+hpKFXH3CqXxC153jfnqv5q+7dvgNmnksA=
+X-Received: by 2002:a05:6870:b4a0:b0:1fb:5e42:5096 with SMTP id
+ y32-20020a056870b4a000b001fb5e425096mr2586685oap.5.1701895276869; Wed, 06 Dec
+ 2023 12:41:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206201324.184059-7-kan.liang@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231127160838.1403404-1-beata.michalska@arm.com> <20231127160838.1403404-3-beata.michalska@arm.com>
+In-Reply-To: <20231127160838.1403404-3-beata.michalska@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 6 Dec 2023 21:41:05 +0100
+Message-ID: <CAJZ5v0jh3mG3hyFS6war=0bk3PvsVtTwZ1_YwwWov36Bmz7q0w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] cpufreq: Wire-up arch-flavored freq info into cpufreq_verify_current_freq
+To:     Beata Michalska <beata.michalska@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, sumitg@nvidia.com, sudeep.holla@arm.covm,
+        will@kernel.org, catalin.marinas@arm.com, viresh.kumar@linaro.org,
+        rafael@kernel.org, ionela.voinescu@arm.com,
+        yang@os.amperecomputing.com, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Dec 06, 2023 at 12:13:24PM -0800, kan.liang@linux.intel.com escreveu:
-> From: Kan Liang <kan.liang@linux.intel.com>
-> 
-> The X86 mem-events.c only has perf_mem_events array now. Remove useless
-> header files.
+On Mon, Nov 27, 2023 at 5:09 PM Beata Michalska <beata.michalska@arm.com> wrote:
+>
+> From: Sumit Gupta <sumitg@nvidia.com>
+>
+> When available, use arch_freq_get_on_cpu to obtain current frequency
+> (usually an average reported over given period of time)
+> to better align the cpufreq's view on the current state of affairs.
 
-It would be great that those were removed while you made the cleanups,
-i.e. removed the need for one of them, remove it together with the
-refactorings, etc.
+And why is this a good idea?
 
-But I don't think this is a requirement, just would make it cleaner.
+Any problem statement?
 
-Will wait for reviews now.
+> This also automatically pulls in the update for cpuinfo_cur_freq sysfs
+> attribute, aligning it with the scaling_cur_freq one, and thus providing
+> consistent view on relevant platforms.
 
-- Arnaldo
- 
-> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+I have no idea what the above is supposed to mean, sorry.
+
+> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+> [BM: Subject & commit msg]
+> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
 > ---
->  tools/perf/arch/x86/util/mem-events.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/util/mem-events.c
-> index 71ffe16de751..62df03e91c7e 100644
-> --- a/tools/perf/arch/x86/util/mem-events.c
-> +++ b/tools/perf/arch/x86/util/mem-events.c
-> @@ -1,11 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -#include "util/pmu.h"
-> -#include "util/pmus.h"
-> -#include "util/env.h"
-> -#include "map_symbol.h"
-> -#include "mem-events.h"
->  #include "linux/string.h"
-> -#include "env.h"
-> +#include "util/map_symbol.h"
-> +#include "util/mem-events.h"
-> +#include "mem-events.h"
-> +
->  
->  #define MEM_LOADS_AUX		0x8203
->  
-> -- 
-> 2.35.1
-> 
+>  drivers/cpufreq/cpufreq.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 8c4f9c2f9c44..109559438f45 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -1756,7 +1756,8 @@ static unsigned int cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
+>  {
+>         unsigned int new_freq;
+>
+> -       new_freq = cpufreq_driver->get(policy->cpu);
+> +       new_freq = arch_freq_get_on_cpu(policy->cpu);
+> +       new_freq = new_freq ?: cpufreq_driver->get(policy->cpu);
 
--- 
+Please don't use ?: in general and it is not even useful here AFAICS.
 
-- Arnaldo
+What would be wrong with
+
+new_freq = arch_freq_get_on_cpu(policy->cpu);
+if (!new_freq)
+        new_freq = cpufreq_driver->get(policy->cpu);
+
+?
+
+>         if (!new_freq)
+>                 return 0;
+>
+> --
