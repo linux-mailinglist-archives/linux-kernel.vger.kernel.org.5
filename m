@@ -2,39 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EB28064F5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B868064F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:33:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbjLFCSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 21:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43018 "EHLO
+        id S230310AbjLFCTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 21:19:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbjLFCSF (ORCPT
+        with ESMTP id S230037AbjLFCTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 21:18:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E69318B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 18:18:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E18FEC433C8;
-        Wed,  6 Dec 2023 02:18:09 +0000 (UTC)
-Date:   Tue, 5 Dec 2023 21:18:36 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        dmaluka@google.com, Sean Paul <seanpaul@chromium.org>,
-        Arun Easi <aeasi@marvell.com>, Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH v2] tracing: Allow creating instances with specified system
- events
-Message-ID: <20231205211836.458fc57d@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 5 Dec 2023 21:19:06 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E94188;
+        Tue,  5 Dec 2023 18:19:13 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B620API020062;
+        Wed, 6 Dec 2023 02:19:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-11-20;
+ bh=2WDCQOIkVbzMzmxPVZQ5b4RdLh5XrTDpATcNV6cUQ+c=;
+ b=XuYAyVAOdu/cAbu1TbXENGCgNYKtkOqjAff777mhNEByeSPgcfNy0ymIkZPFqOf7gHKa
+ zeZWuCCIskhJsSC/pllX1oM6FwpaP/4JZQbY6EEz3Oy39WxQMOhTEetCOdK1/5Wf2vFA
+ CHlgGcnVZD5tHI4NVwbfsRXj4KYzY9tOb1tbUrh4GGM+UQMI/GdDAaYF3dAD6Ybuxepf
+ 6D7ZzIs7YXCzY00x6JwczJfud+JgcydBawyDz/59DRtKoTSnVhldd1/jCgCYa78hz7su
+ QDlTB9B7Edolhv3br7TLEAMzHB8Re6bOdo+haEBUPVUHOr3JPM5SxRXW8U5rP3QGV4kI 2Q== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3utdc185hj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Dec 2023 02:19:04 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B608ASh034481;
+        Wed, 6 Dec 2023 02:19:03 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3utan94jg0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Dec 2023 02:19:03 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mM7ZReBKjkNuRQmm+GL4AOzryc1rJZX7c+PKCHj+ghnAkCTskPLfez/r6Qu1mG9B4L5IEIhfHfFY29LWIsCJLTZJKOpc3XYxBcqzUExW/R3pLAke75F4CRoxsc1gsIqzaIXOShwTpS0tFqiiYuYnujawtbpNYXkP6eNtcflyQtryt73WTqLwMO4WtFRtPLVVzSisCIb07TI1hgVge/16bmOgUwXLd01ydImP7oVoHGFxD1Pq6tSYH9Ka+UjXFxqwxYoHEkMUt5nG9932lFA7tq7tfnm0Sl1TZi9FifQ9QlnqEdrPE59J4hov+wjhZsxUL0qwGyG9UI6fIywQYQ0cDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2WDCQOIkVbzMzmxPVZQ5b4RdLh5XrTDpATcNV6cUQ+c=;
+ b=dv41/WPVCbHj1g/w9VSM2lMMQhQfoppxeEIIUEVxBnN7jn+9625el5aa6k969lFlf8Uk0sXZgZDX+BlgXpvU0dz6LGl21sB/T5fWVop0At2D6AfK+70bY1R4vjxyqpqwHSN+INYaYdIgsdwJNPWoQscl1OC92Yq4DVOnn08hjfXt5VvNgJPv7Dd0qOvUalvB2f/eWFeOhuucpyHu7fSIGrCTY4Yk8QUG4Gdiv1HJRL7MbrU+oKd5VxMVyegQUIs6IFqbw2cmHyQs9sX1LkvdaNSbAtDcntm3ajCcD8jquJy+XxRTt1EFI7Fq3yA0Uet2KwM3SaD8gY8cHM3we3G87g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2WDCQOIkVbzMzmxPVZQ5b4RdLh5XrTDpATcNV6cUQ+c=;
+ b=Lnm+jrck1DduCXnbR2pmo3XMWjU1lvtzR2C1Db5VK2kthc1xdgxmSWMfnUSKxcap/IHSPVsAoDKPDqUnxvHYnBEHnXk+x0mq5PtX7QadwWbef21KskLKot1mnmExQvY7ntpEtiBMjPXIGJ8pgMDK8H+bm4pf9CdgG4uaNqqdtDw=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH7PR10MB6628.namprd10.prod.outlook.com (2603:10b6:510:20b::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 02:19:01 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2b0c:62b3:f9a9:5972]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2b0c:62b3:f9a9:5972%3]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
+ 02:19:01 +0000
+To:     Su Hui <suhui@nfschina.com>
+Cc:     dan.carpenter@linaro.org, hare@suse.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] scsi: aic7xxx: fix some problem of return value
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq134wgnkdy.fsf@ca-mkp.ca.oracle.com>
+References: <20231201025955.1584260-1-suhui@nfschina.com>
+Date:   Tue, 05 Dec 2023 21:18:56 -0500
+In-Reply-To: <20231201025955.1584260-1-suhui@nfschina.com> (Su Hui's message
+        of "Fri, 1 Dec 2023 10:59:53 +0800")
+Content-Type: text/plain
+X-ClientProxiedBy: LO2P265CA0032.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:61::20) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|PH7PR10MB6628:EE_
+X-MS-Office365-Filtering-Correlation-Id: 19ff28ce-bbff-4fcb-a3dc-08dbf601b5dd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CngdYwn/SgcG5XFRMX8wKMjf5o2nGkSexWY64M+cCCFpai+eLv4aYbEMgUlNc6FOdnthoDfoZ4n55nAs9vlut2aOuDVCRkTUiBKI4AK4PKc+k+YdtfzdP0gpTrKPyN7pe0N87zx5mwWPoe9BKSJ4IMIjDYEf6fDLcvBEBFdth+Q+uv6QGBnk9kLZYUjiiQNBRH/igI8BWr2B+uePcm8Gx8z4BFqsdWl1Qz12BZust3843VauWLCU0l40/FuC0D/URDzTRR3BVr6is0+zhIB0AGpuq8kWA+LtiHq0/lSim7yqX6p7V1GojyD59rMIiA99KGr405tG4OWV1xV6hhsDQQ+wg30ox0OadOB9KOux7tlq3YuWrgOMctgBfTAT8OS0DJ5zc+8p5AI8D30GFcStGuzmFLzpKefCz0blLxjScL2vyg7IgKlFPY/5wsVAUb4ddEJVVCj6zalj5k/uZmdOVDVeZNegF5CXvSsyawztw/gv0kUiISRo0vMSUtqNaplJTQA1yUh/GfLsaSZ7ke6aERsagjsPB+2Kv2Oex+PYCA15I8/idyhv52Ec3nYjo3PA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(39860400002)(396003)(136003)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(478600001)(6512007)(6666004)(4326008)(8936002)(8676002)(66556008)(66946007)(66476007)(38100700002)(6916009)(316002)(26005)(6506007)(36916002)(6486002)(2906002)(5660300002)(86362001)(558084003)(41300700001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yO4eGAxjyIDNIeJ6AjU8d4zMugLPuHCIVes+JAZim7qGnBHPErBAvx0keoSx?=
+ =?us-ascii?Q?mLJeb3OJFaZsOAZWlsSyWrjycgHeD6dEcRruoKpIPRbQGkFWP2K33SlFMC8R?=
+ =?us-ascii?Q?wVtQe8TOBmIaYg0w6syTSo2gruXZEpTaijvqMYcXOlI3niNnxDljxIm9invN?=
+ =?us-ascii?Q?e4T0EUqCLQ2tPRlP2m+nlbjwt0GQyknn8QLlhKbt5RWxeMLE8QFVvmBq6k8V?=
+ =?us-ascii?Q?hAGND7/eiZ7A9FLx2bL3xaqTMOK+uxW/8lSf3dq88zCBOdSS5W6s+PfIxh8w?=
+ =?us-ascii?Q?jz4wRA0/dq9Q3ALNq3dZbEEhIJfgfllBUW7S1ijtME574eKmpcFmPLl1qw4q?=
+ =?us-ascii?Q?+afJR72FZo0qeOqDLjnQD89ZCmaTpcVvf3BRoUSLNthkTRYOHN0TO+Z2KXz6?=
+ =?us-ascii?Q?nEi5p8PTUS0p07l5upVfpm0TWCETIYSvDpPblTrDoaji4avvms5a3Rac1gE9?=
+ =?us-ascii?Q?Zh3nJygLNSNRhfYWQhzWBsTTTSvHRtn9jp9117y0CodNmnxKnoeVDU9CPdSh?=
+ =?us-ascii?Q?iIdMtlo+EDHsIoB4wBJkednmX/yCIeYXrqILKa5Ykz6BLCia/yhfjN89/zLc?=
+ =?us-ascii?Q?EscQw7uc8RNQC4xQmY/ge92/XocauiKGGHnQmNM8hw7n79ncI4k1h6sApOc0?=
+ =?us-ascii?Q?Gtdx/jBYByHch+e2l3FBLF8c+dC3B9ZWaX0x7D5oiqdSma6UO4ujy5F8x2Ib?=
+ =?us-ascii?Q?otvv9eLhWHoRExUaJqceBFUuGKjtceqO0FQL6h5TXY8/gfd7LeratkoCFf6k?=
+ =?us-ascii?Q?5TZaRhvk4UQ8xXw9INO27999yCHTDetLcTmx0yWdosyKPTTybnDUkl1WnluP?=
+ =?us-ascii?Q?VVmuRS6k8X1RvR/J8ifPnE1wa9stjONXe2jhJc55ANW3sp64CH1S4BU9HIQu?=
+ =?us-ascii?Q?E8gwJESETrEeiVJCaI17MxIgPJ0AlrZFyUjnpUvlo8FyBVz/PjBJLy88a7ax?=
+ =?us-ascii?Q?OtaVejHN9B/kyJstRDB0OJiahdajrEjEkmUGxG96VjncuV21cbEbWkQDB+8i?=
+ =?us-ascii?Q?hLQsTTRlc//3MrDLy7wXB7nHAQBnStgP1z43Raatra6iLc+CVxNIkw4ZHJMM?=
+ =?us-ascii?Q?9QPBnF6M/s0k0G2yPwu25XYOapEh9g0QsSaPtrdSAM8BCsZsrlFFz6KjzKA6?=
+ =?us-ascii?Q?53Tg61H53afZu+SWhHKCUIvALkeJJrDI4wKc0YAB6nLjh0xDo0hzW+7MDgxA?=
+ =?us-ascii?Q?/rSac0LIhFJXxuuF1y6CrCeACOoPOgcvIEblBga356WkHSj/ejBNIofNUrLO?=
+ =?us-ascii?Q?R8WEXdo3ynylhePnL1fck8ow+qbhYOJtfW0zRhIbKMkyMG2uYQ0KFHJi4UoN?=
+ =?us-ascii?Q?49VSp4S8fiRlHcHDF6nzZpRGMGZ8n20Qt4yL/sgLkZELncLPKWsNMb9bF+lL?=
+ =?us-ascii?Q?v7G56Z/gjyVAeFC1G60Jb+9jgUpoSYqArtBnnkmZsQ6D1ABvxVfKdVRdyxwe?=
+ =?us-ascii?Q?URnITxkgNeR7t2n+Kz2R6oVi9UbPOpNttmrlb4hF394PSMdNSwEe19dogc2Z?=
+ =?us-ascii?Q?pssPJnUZooFd12r6OUoMNr8P8IREozQi8zydG91fadTGGd8/7gHsVSmS9Mi1?=
+ =?us-ascii?Q?G0XN9X+sd9ej87jFA3Yjd0d9nGYjeXTkXPdRz0LOAypdsKw3kkXja0+jR915?=
+ =?us-ascii?Q?YQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: MlsgFdsVzgXJRNld3im+rB9zOQBo0EcfoMaJ4lcXrOISvY9rwr+U/wfZ7DaxspmSELxMWJM3WIzkXBM0SI9fiFuPvPsJBq208s2vg1+Zml3EowuBrwWJGaeIHfkQ97M2V5VGeK7twbSp87GOTB7CQe2K4Ele3UBDQeAHJ1qX4YyKeBVCtAdm4ZoLHjFMdHDo3PciRhrdivykUVG9YsJCsaahB88aBGtKlXhibz89DTEZIhHaqlrUJjrmGd4O1F93UjGov4EkZBXVmS6A2FMrP40n8PPuF0osycF+hynignQv4wE/5CFuyEuFimu3YDsfutyXnnhwZwUX5wF0Z+uflaKddS0G5Dppoyrsy+/pk0Hiv9yOM1bK+InAeI4GVpqhnz9cYbNg4ndtYFGU82fWTsH5q68w+oPTZ08d6BeEQhPaR3b6U48v4AtYenvTmY7jeeNedOYVdx4DcIAau235AGosulTzBM06h6V9j4OYfCqOOfije86P9Nm0ZwwseIZignLJFWNwAne3Zx2tVwI96ZSFmz5T79QjNL64RwuYgiLIcIV9R350WSX06yxtq0+ulcjxlWoJ+D5algKylezfUjagG9fau8iQoqMeXb9WxsY6ss9bCV8adjC9hQHfffLSsovA3ErstQJaY5l6IVBclsgNitHHlXpquAHwetbLdWRkwutkgOp7rUxGyrCnWom4pCFsKOfWHBQUkvhcv3nhhOK+MR3EAiYagqdqASlM/rHIvzOoPL2c845plc2accVD+B7pJRwxiSvdCK28ko7PmlTeSSpHJEcaIGCBH0B5CjB8kTYSCIgoxL09iK4byUJniU1olFZn4FedLdV+09bK8HaBwrCbDDfbdSblhLrwQnW+9svOYIUd+3EosLZ3hYfC
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19ff28ce-bbff-4fcb-a3dc-08dbf601b5dd
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 02:19:01.0763
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0eLSiELnTqYhz+aabO4hp61itW2TOreOYB9lmfproR/WyZwfLAIoKM5GgE0go9xR8rRPgbCCUCDL7BqKl34U4mo8cgVCUWLl7VX+xmIGwPs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB6628
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_01,2023-12-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0
+ mlxlogscore=695 suspectscore=0 adultscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312060018
+X-Proofpoint-GUID: Uo7HdfLPyReQZVD1iKTMGy8Yz15FfZCT
+X-Proofpoint-ORIG-GUID: Uo7HdfLPyReQZVD1iKTMGy8Yz15FfZCT
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -42,286 +148,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-A trace instance may only need to enable specific events. As the eventfs
-directory of an instance currently creates all events which adds overhead,
-allow internal instances to be created with just the events in systems
-that they care about. This currently only deals with systems and not
-individual events, but this should bring down the overhead of creating
-instances for specific use cases quite bit.
+Su,
 
-The trace_array_get_by_name() now has another parameter "systems". This
-parameter is a const string pointer of a comma/space separated list of
-event systems that should be created by the trace_array. (Note if the
-trace_array already exists, this parameter is ignored).
+> v2:
+>  - fix some problems and split v1 patch into this patch set.(Thanks to
+>    Dan)
 
-The list of systems is saved and if a module is loaded, its events will
-not be added unless the system for those events also match the systems
-string.
+Applied to 6.8/scsi-staging, thanks!
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v1: https://lore.kernel.org/all/20231128122117.2276f4a7@gandalf.local.home/
-
-- Made it so that dynamic events need to be specified in order to add
-  to the instance. They are no longer automatically allowed.
-
- drivers/scsi/qla2xxx/qla_os.c       |  2 +-
- include/linux/trace.h               |  4 +--
- kernel/trace/trace.c                | 23 +++++++++++---
- kernel/trace/trace.h                |  1 +
- kernel/trace/trace_boot.c           |  2 +-
- kernel/trace/trace_events.c         | 48 +++++++++++++++++++++++++++--
- samples/ftrace/sample-trace-array.c |  2 +-
- 7 files changed, 70 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index 03348f605c2e..dd674378f2f3 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -2889,7 +2889,7 @@ static void qla2x00_iocb_work_fn(struct work_struct *work)
- static void
- qla_trace_init(void)
- {
--	qla_trc_array = trace_array_get_by_name("qla2xxx");
-+	qla_trc_array = trace_array_get_by_name("qla2xxx", NULL);
- 	if (!qla_trc_array) {
- 		ql_log(ql_log_fatal, NULL, 0x0001,
- 		       "Unable to create qla2xxx trace instance, instance logging will be disabled.\n");
-diff --git a/include/linux/trace.h b/include/linux/trace.h
-index 2a70a447184c..fdcd76b7be83 100644
---- a/include/linux/trace.h
-+++ b/include/linux/trace.h
-@@ -51,7 +51,7 @@ int trace_array_printk(struct trace_array *tr, unsigned long ip,
- 		       const char *fmt, ...);
- int trace_array_init_printk(struct trace_array *tr);
- void trace_array_put(struct trace_array *tr);
--struct trace_array *trace_array_get_by_name(const char *name);
-+struct trace_array *trace_array_get_by_name(const char *name, const char *systems);
- int trace_array_destroy(struct trace_array *tr);
- 
- /* For osnoise tracer */
-@@ -84,7 +84,7 @@ static inline int trace_array_init_printk(struct trace_array *tr)
- static inline void trace_array_put(struct trace_array *tr)
- {
- }
--static inline struct trace_array *trace_array_get_by_name(const char *name)
-+static inline struct trace_array *trace_array_get_by_name(const char *name, const char *systems)
- {
- 	return NULL;
- }
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index fbcd3bafb93e..31fb03d105e9 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9480,7 +9480,8 @@ static int trace_array_create_dir(struct trace_array *tr)
- 	return ret;
- }
- 
--static struct trace_array *trace_array_create(const char *name)
-+static struct trace_array *
-+trace_array_create_systems(const char *name, const char *systems)
- {
- 	struct trace_array *tr;
- 	int ret;
-@@ -9500,6 +9501,12 @@ static struct trace_array *trace_array_create(const char *name)
- 	if (!zalloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
- 		goto out_free_tr;
- 
-+	if (systems) {
-+		tr->system_names = kstrdup_const(systems, GFP_KERNEL);
-+		if (!tr->system_names)
-+			goto out_free_tr;
-+	}
-+
- 	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
- 
- 	cpumask_copy(tr->tracing_cpumask, cpu_all_mask);
-@@ -9546,12 +9553,18 @@ static struct trace_array *trace_array_create(const char *name)
- 	free_trace_buffers(tr);
- 	free_cpumask_var(tr->pipe_cpumask);
- 	free_cpumask_var(tr->tracing_cpumask);
-+	kfree_const(tr->system_names);
- 	kfree(tr->name);
- 	kfree(tr);
- 
- 	return ERR_PTR(ret);
- }
- 
-+static struct trace_array *trace_array_create(const char *name)
-+{
-+	return trace_array_create_systems(name, NULL);
-+}
-+
- static int instance_mkdir(const char *name)
- {
- 	struct trace_array *tr;
-@@ -9577,6 +9590,7 @@ static int instance_mkdir(const char *name)
- /**
-  * trace_array_get_by_name - Create/Lookup a trace array, given its name.
-  * @name: The name of the trace array to be looked up/created.
-+ * @system: A list of systems to create event directories for (NULL for all)
-  *
-  * Returns pointer to trace array with given name.
-  * NULL, if it cannot be created.
-@@ -9590,7 +9604,7 @@ static int instance_mkdir(const char *name)
-  * trace_array_put() is called, user space can not delete it.
-  *
-  */
--struct trace_array *trace_array_get_by_name(const char *name)
-+struct trace_array *trace_array_get_by_name(const char *name, const char *systems)
- {
- 	struct trace_array *tr;
- 
-@@ -9602,7 +9616,7 @@ struct trace_array *trace_array_get_by_name(const char *name)
- 			goto out_unlock;
- 	}
- 
--	tr = trace_array_create(name);
-+	tr = trace_array_create_systems(name, systems);
- 
- 	if (IS_ERR(tr))
- 		tr = NULL;
-@@ -9649,6 +9663,7 @@ static int __remove_instance(struct trace_array *tr)
- 
- 	free_cpumask_var(tr->pipe_cpumask);
- 	free_cpumask_var(tr->tracing_cpumask);
-+	kfree_const(tr->system_names);
- 	kfree(tr->name);
- 	kfree(tr);
- 
-@@ -10367,7 +10382,7 @@ __init static void enable_instances(void)
- 		if (IS_ENABLED(CONFIG_TRACER_MAX_TRACE))
- 			do_allocate_snapshot(tok);
- 
--		tr = trace_array_get_by_name(tok);
-+		tr = trace_array_get_by_name(tok, NULL);
- 		if (!tr) {
- 			pr_warn("Failed to create instance buffer %s\n", curr_str);
- 			continue;
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index b7f4ea25a194..97b01dfd7070 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -377,6 +377,7 @@ struct trace_array {
- 	unsigned char		trace_flags_index[TRACE_FLAGS_MAX_SIZE];
- 	unsigned int		flags;
- 	raw_spinlock_t		start_lock;
-+	const char		*system_names;
- 	struct list_head	err_log;
- 	struct dentry		*dir;
- 	struct dentry		*options;
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index 7ccc7a8e155b..dbe29b4c6a7a 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -633,7 +633,7 @@ trace_boot_init_instances(struct xbc_node *node)
- 		if (!p || *p == '\0')
- 			continue;
- 
--		tr = trace_array_get_by_name(p);
-+		tr = trace_array_get_by_name(p, NULL);
- 		if (!tr) {
- 			pr_err("Failed to get trace instance %s\n", p);
- 			continue;
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index f29e815ca5b2..b70d03818038 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2896,6 +2896,27 @@ void trace_event_eval_update(struct trace_eval_map **map, int len)
- 	up_write(&trace_event_sem);
- }
- 
-+static bool event_in_systems(struct trace_event_call *call,
-+			     const char *systems)
-+{
-+	const char *system;
-+	const char *p;
-+
-+	if (!systems)
-+		return true;
-+
-+	system = call->class->system;
-+	p = strstr(systems, system);
-+	if (!p)
-+		return false;
-+
-+	if (p != systems && !isspace(*(p - 1)) && *(p - 1) != ',')
-+		return false;
-+
-+	p += strlen(system);
-+	return !*p || isspace(*p) || *p == ',';
-+}
-+
- static struct trace_event_file *
- trace_create_new_event(struct trace_event_call *call,
- 		       struct trace_array *tr)
-@@ -2905,9 +2926,12 @@ trace_create_new_event(struct trace_event_call *call,
- 	struct trace_event_file *file;
- 	unsigned int first;
- 
-+	if (!event_in_systems(call, tr->system_names))
-+		return NULL;
-+
- 	file = kmem_cache_alloc(file_cachep, GFP_TRACE);
- 	if (!file)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	pid_list = rcu_dereference_protected(tr->filtered_pids,
- 					     lockdep_is_held(&event_mutex));
-@@ -2972,8 +2996,17 @@ __trace_add_new_event(struct trace_event_call *call, struct trace_array *tr)
- 	struct trace_event_file *file;
- 
- 	file = trace_create_new_event(call, tr);
-+	/*
-+	 * trace_create_new_event() returns ERR_PTR(-ENOMEM) if failed
-+	 * allocation, or NULL if the event is not part of the tr->system_names.
-+	 * When the event is not part of the tr->system_names, return zero, not
-+	 * an error.
-+	 */
- 	if (!file)
--		return -ENOMEM;
-+		return 0;
-+
-+	if (IS_ERR(file))
-+		return PTR_ERR(file);
- 
- 	if (eventdir_initialized)
- 		return event_create_dir(tr->event_dir, file);
-@@ -3012,8 +3045,17 @@ __trace_early_add_new_event(struct trace_event_call *call,
- 	int ret;
- 
- 	file = trace_create_new_event(call, tr);
-+	/*
-+	 * trace_create_new_event() returns ERR_PTR(-ENOMEM) if failed
-+	 * allocation, or NULL if the event is not part of the tr->system_names.
-+	 * When the event is not part of the tr->system_names, return zero, not
-+	 * an error.
-+	 */
- 	if (!file)
--		return -ENOMEM;
-+		return 0;
-+
-+	if (IS_ERR(file))
-+		return PTR_ERR(file);
- 
- 	ret = event_define_fields(call);
- 	if (ret)
-diff --git a/samples/ftrace/sample-trace-array.c b/samples/ftrace/sample-trace-array.c
-index 6aba02a31c96..d0ee9001c7b3 100644
---- a/samples/ftrace/sample-trace-array.c
-+++ b/samples/ftrace/sample-trace-array.c
-@@ -105,7 +105,7 @@ static int __init sample_trace_array_init(void)
- 	 * NOTE: This function increments the reference counter
- 	 * associated with the trace array - "tr".
- 	 */
--	tr = trace_array_get_by_name("sample-instance");
-+	tr = trace_array_get_by_name("sample-instance", "sched,timer,kprobes");
- 
- 	if (!tr)
- 		return -1;
 -- 
-2.42.0
-
+Martin K. Petersen	Oracle Linux Engineering
