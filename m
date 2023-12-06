@@ -2,113 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75F8807479
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F5880747D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442659AbjLFQEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:04:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
+        id S1442629AbjLFQER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:04:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379475AbjLFQEA (ORCPT
+        with ESMTP id S1442663AbjLFQEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:04:00 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5826D71;
-        Wed,  6 Dec 2023 08:04:00 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B6G3ihD003706;
-        Wed, 6 Dec 2023 10:03:44 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701878624;
-        bh=Onl2Pjga12ym5tHj9jDAx0aP83MUjlvXBY3HS9c47g8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=uvS8nZ/fvllT/u8mWP4sp8N/3sOIMdhStvrNz1Zh3rQvSUKMcA4UXWdOA5Rdrfjmy
-         9NEud3LtaJdGyuDZrLA0DPfx3TeQWwIWakxbZ+iXl6NWa4L52i7o+0hokRljU9RH19
-         xVVrK7OJVRDkv1N3MK7BhUUhkbumMk0FUtGuIQ5A=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B6G3i77010718
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Dec 2023 10:03:44 -0600
-Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
- Dec 2023 10:03:44 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 6 Dec 2023 10:03:44 -0600
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B6G3i6B071849;
-        Wed, 6 Dec 2023 10:03:44 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     <vigneshr@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <w.egorov@phytec.de>, Garrett Giordano <ggiordano@phytec.com>
-CC:     Nishanth Menon <nm@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <upstream@lists.phytec.de>
-Subject: Re: [PATCH 1/3] arm64: dts: ti: k3-am625-phyboard-lyra-rdk: Lower I2C1 frequency
-Date:   Wed, 6 Dec 2023 10:03:42 -0600
-Message-ID: <170187855182.4369.10040429085945945592.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231204222811.2344460-1-ggiordano@phytec.com>
-References: <20231204222811.2344460-1-ggiordano@phytec.com>
+        Wed, 6 Dec 2023 11:04:13 -0500
+Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B435A10CF;
+        Wed,  6 Dec 2023 08:04:03 -0800 (PST)
+Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
+        by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 8D9FB520422;
+        Wed,  6 Dec 2023 17:04:01 +0100 (CET)
+Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
+ (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 6 Dec
+ 2023 17:04:01 +0100
+Date:   Wed, 6 Dec 2023 17:03:56 +0100
+From:   Hardik Gajjar <hgajjar@de.adit-jv.com>
+To:     John Keeping <john@keeping.me.uk>
+CC:     Hardik Gajjar <hgajjar@de.adit-jv.com>,
+        <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <erosca@de.adit-jv.com>, <jlayton@kernel.org>, <brauner@kernel.org>
+Subject: Re: [PATCH v2] usb: gadget: f_fs: Add the missing get_alt callback
+Message-ID: <20231206160356.GA3006@vmlxhi-118.adit-jv.com>
+References: <20231201145234.97452-1-hgajjar@de.adit-jv.com>
+ <ZWtEY0oKS-PcaJ0c@keeping.me.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZWtEY0oKS-PcaJ0c@keeping.me.uk>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [10.72.93.77]
+X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
+ hi2exch02.adit-jv.com (10.72.92.28)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Garrett Giordano,
-
-On Mon, 04 Dec 2023 14:28:09 -0800, Garrett Giordano wrote:
-> The gpio-expander on i2c-1 has a maximum frequency of 100kHz. Update our
-> main_i2c1 frequency to allow the nxp,pcf8574 gpio-expander to function
-> properly.
+On Sat, Dec 02, 2023 at 02:51:15PM +0000, John Keeping wrote:
+> On Fri, Dec 01, 2023 at 03:52:34PM +0100, Hardik Gajjar wrote:
+> > The Apple CarLife iAP gadget has a descriptor with two alternate
+> > settings. The host sends the set_alt request to configure alt_setting
+> > 0 or 1, and this is verified by the subsequent get_alt request.
+> > 
+> > This patch implements and sets the get_alt callback. Without the
+> > get_alt callback, composite.c abruptly concludes the
+> > USB_REQ_GET/SET_INTERFACE request, assuming only one alt setting
+> > for the endpoint.
+> > 
+> > Signed-off-by: Hardik Gajjar <hgajjar@de.adit-jv.com>
+> > ---
+> > changes since version 1:
+> > 	- improve commit message to indicate why the get_alt callback
+> > 	  is necessary
+> > 	- Link to v1 - https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_all_20231124164435.74727-2D1-2Dhgajjar-40de.adit-2Djv.com_&d=DwICAg&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=HVW16RXWO_lhdf8dGUC8lUHmcMmonwJgRYsnIBtUkIvOKiQCwdrs5RXMJKo9Qhh9&s=tbwPiQ25PgliLyyD75FDRJqiFxR-1ExoOMIXOD4WEZI&e=
 > 
+> This doesn't address my questions about v1 - I understand what the
+> get_alt callback does, but I don't see how this is sufficient to make it
+> work in all circumstances.
 > 
+> To use your example of having settings 0 and 1, what happens if the host
+> requests setting 2?
+> 
+> Without this patch, when .get_alt is not set, composite_setup() will
+> reject all settings except 0 so there is no need for ffs_func_set_alt()
+> to filter its input.  But if .get_alt is set, don't we need to filter
+> for valid input here?
+> 
+> I also do not see how it is acceptable to change alt setting without
+> notifying userspace in the general case.  If it works for your specific
+> use case, that is one thing, but nothing requires the endpoint setup to
+> be the same across alt settings and the userspace component likely needs
+> to know if the setup changes.
+> 
+> For examples, look at afunc_set_alt() or tcm_set_alt() in other gadget
+> functions.  If either of these were to be implemented in userspace then
+> simply accepting the alt setting is not enough - there are changes that
+> must be made to the functionality.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Indeed, we require a filter for the alt value, and my suggestion is to set the filter to allow alt values up to two.
 
-[1/3] arm64: dts: ti: k3-am625-phyboard-lyra-rdk: Lower I2C1 frequency
-      commit: 9c316d58c238e58d6346458462e8b0fd308e7332
-[2/3] arm64: dts: ti: k3-am625-phyboard-lyra-rdk: Add HDMI support
-      commit: bac441710306a84c52f0f9a561aa9839b91caa14
-[3/3] arm64: dts: ti: k3-am625-phyboard-lyra-rdk: Remove HDMI Reset Line Name
-      commit: fecdf6de7e47849504d0edaaff55fa0baadef420
+The set_alt callback function in the f_fs driver is currently resetting the associated endpoints by disabling and enabling them again for positive alt values.
+Additionally, it sets ffs_event FUNCTIONFS_ENABLE, which provide userspaces notifications about some change.
+It appears that the same event mechanism is used when there is a request to set the alt setting to -1, notifying by FUNCTIONFS_DISABLE.
+For example, you can find the link to the Android USB daemon utilizing this FFS event in userspace.
+https://gerrit.pixelexperience.org/plugins/gitiles/system_core/+/b36b54cf796d722653ad9bea11284815a3f5eda5/adb/daemon/usb.cpp#331
 
-For future reference: using a cover-letter (though not mandatory)
-helps reviewers provide a ack/ other tag on cover letter to apply to
-all patches and b4 can easily figure it out.
+It's evident that the f_fs driver significantly differs from other gadget drivers (e.g., ncm, uac), where major control resides in userspace.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+I believe there's no need for a mechanism to notify userspace for the f_fs driver.
+Userspace triggers the data read, eventually called by usb_ep_queue() in f_fs.
+As soon as set_alt resets the associated endpoint, the UDC driver should call the endpoint callback with an error, smoothly terminating the userspace system call with the appropriate error.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I couldn't find any userspace notification implementation in tcm_set_alt.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Please let me correct if sounds inappropriate.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+Thanks,
+Hardik
+ 
+> 
+> > ---
+> >  drivers/usb/gadget/function/f_fs.c | 16 +++++++++++++++-
+> >  1 file changed, 15 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+> > index efe3e3b85769..37c47c11f57a 100644
+> > --- a/drivers/usb/gadget/function/f_fs.c
+> > +++ b/drivers/usb/gadget/function/f_fs.c
+> > @@ -75,6 +75,7 @@ struct ffs_function {
+> >  	short				*interfaces_nums;
+> >  
+> >  	struct usb_function		function;
+> > +	int				cur_alt[MAX_CONFIG_INTERFACES];
+> >  };
+> >  
+> >  
+> > @@ -98,6 +99,7 @@ static int __must_check ffs_func_eps_enable(struct ffs_function *func);
+> >  static int ffs_func_bind(struct usb_configuration *,
+> >  			 struct usb_function *);
+> >  static int ffs_func_set_alt(struct usb_function *, unsigned, unsigned);
+> > +static int ffs_func_get_alt(struct usb_function *f, unsigned int intf);
+> >  static void ffs_func_disable(struct usb_function *);
+> >  static int ffs_func_setup(struct usb_function *,
+> >  			  const struct usb_ctrlrequest *);
+> > @@ -3232,6 +3234,15 @@ static void ffs_reset_work(struct work_struct *work)
+> >  	ffs_data_reset(ffs);
+> >  }
+> >  
+> > +static int ffs_func_get_alt(struct usb_function *f,
+> > +			    unsigned int interface)
+> > +{
+> > +	struct ffs_function *func = ffs_func_from_usb(f);
+> > +	int intf = ffs_func_revmap_intf(func, interface);
+> > +
+> > +	return (intf < 0) ? intf : func->cur_alt[interface];
+> > +}
+> > +
+> >  static int ffs_func_set_alt(struct usb_function *f,
+> >  			    unsigned interface, unsigned alt)
+> >  {
+> > @@ -3266,8 +3277,10 @@ static int ffs_func_set_alt(struct usb_function *f,
+> >  
+> >  	ffs->func = func;
+> >  	ret = ffs_func_eps_enable(func);
+> > -	if (ret >= 0)
+> > +	if (ret >= 0) {
+> >  		ffs_event_add(ffs, FUNCTIONFS_ENABLE);
+> > +		func->cur_alt[interface] = alt;
+> > +	}
+> >  	return ret;
+> >  }
+> >  
+> > @@ -3574,6 +3587,7 @@ static struct usb_function *ffs_alloc(struct usb_function_instance *fi)
+> >  	func->function.bind    = ffs_func_bind;
+> >  	func->function.unbind  = ffs_func_unbind;
+> >  	func->function.set_alt = ffs_func_set_alt;
+> > +	func->function.get_alt = ffs_func_get_alt;
+> >  	func->function.disable = ffs_func_disable;
+> >  	func->function.setup   = ffs_func_setup;
+> >  	func->function.req_match = ffs_func_req_match;
+> > -- 
+> > 2.17.1
+> > 
