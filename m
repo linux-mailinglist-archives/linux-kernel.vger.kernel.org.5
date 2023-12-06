@@ -2,117 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3BB806CCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5270E806CD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:58:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377840AbjLFK50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:57:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44680 "EHLO
+        id S1377839AbjLFK6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377508AbjLFK5Y (ORCPT
+        with ESMTP id S1377508AbjLFK6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:57:24 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 513FDA4;
-        Wed,  6 Dec 2023 02:57:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=AiRXDpNXIfs5EZ5Lp3a9zJWQNeoM5F+3ORGaNxIHk1Q=; b=jNp6Fmd7/DrxioOrhec5GompK9
-        91DPtXLB5PUnoPftHmhZr3HO6bortfBNuENewCaetPhtQUxhpGBTgKX7O7tnflBPNwUjl3qyEdzZH
-        EVaEMX8mHEkmCSwPqCUjO8BiMoYlIyYqHtb9F9zgsIm2j/cjZCe4jJ5dwwRHbN9/jzbO1ddu2L3nY
-        EJye0oWg+BOtgudG/id+gEMwWMplBcfXbSV/3ukLpjlDUySLg7QVng55TMBq6Uj8TuMb32vwnkbeC
-        tAVvIhC+ARr3/kvZszBj6e4YyJ4F8xNCmX9V83mS73mLpG8B7fB6P2f1oTe7fmkWWx7vT+y7B8s9G
-        2z2XSmkg==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1rApab-000Coo-F7; Wed, 06 Dec 2023 11:57:13 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1rApaa-0002zw-QJ; Wed, 06 Dec 2023 11:57:12 +0100
-Subject: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
- information to user
-To:     Feng Zhou <zhoufeng.zf@bytedance.com>,
-        Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
-        wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
-References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
- <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
- <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
- <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
- <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
- <2a829a9c-69a6-695d-d3df-59190b161787@iogearbox.net>
- <b7053425-65eb-46a0-abd9-59ade5e78211@bytedance.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d75ffdd9-203a-94a3-57c1-69b1561d808e@iogearbox.net>
-Date:   Wed, 6 Dec 2023 11:57:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Wed, 6 Dec 2023 05:58:04 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4C99C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:58:10 -0800 (PST)
+Date:   Wed, 6 Dec 2023 11:58:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701860288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O0BPpnkeIBWztkssLgKJ5OKX3kt+/0R/h8JTeiGvo70=;
+        b=3RGXAT0wefHrWBk6g5pfEh8YMH7owzQNQFu133LvqHw/K5zZ04q7WbM8F3S8mamBO22gns
+        Km+cmDK7TeTCfx9smjPuxFq05RuoeeTalOvuZ4+5/YxVjkWxiHOyqCpoJM7BRbh0iLk4My
+        hJi9HTsqSz7rnpdd2ZW4gSIaIxM36XrbXRbVt9gKbF+Bu/wwLv0NtFEPCPV+Of6rxo+iuu
+        xrJAdOI7+X47vha5nn2c67HaBj92unsIEUNAa2R5Y5QqzrDlC39irwf+YMqtQYMH5E1VP4
+        JljM27RMpMX/+y7wvOhloy5XfytCvwozKZ0mBdkkZo3I1mYzVj1sh+NyX2T9Og==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701860288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=O0BPpnkeIBWztkssLgKJ5OKX3kt+/0R/h8JTeiGvo70=;
+        b=5mE8OU0hgpYwCEwq27o8MAoYyMm+F86TFPOuKD9uh3zYLxTAsMRPW0Cukf9+ZjB675ucBD
+        /oZxrq/tRdv2qNDg==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v9 27/32] timers: Check if timers base is handled already
+Message-ID: <20231206105806.e4A02OHA@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-28-anna-maria@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <b7053425-65eb-46a0-abd9-59ade5e78211@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27115/Wed Dec  6 09:44:21 2023)
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231201092654.34614-28-anna-maria@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/23 7:59 AM, Feng Zhou wrote:
-> 在 2023/12/4 23:22, Daniel Borkmann 写道:
->> Thanks, so the netkit_get_link_ksettings is optional. 
+On 2023-12-01 10:26:49 [+0100], Anna-Maria Behnsen wrote:
+> Due to the conversion of the NOHZ timer placement to a pull at expiry
+> time model, the per CPU timer bases with non pinned timers are no
+> longer handled only by the local CPU. In case a remote CPU already
+> expires the non pinned timers base of the local cpu, nothing more
+                                                  CPU
+
+so it is consistent with the other.
+
+> needs to be done by the local CPU. A check at the begin of the expire
+> timers routine is required, because timer base lock is dropped before
+> executing the timer callback function.
 > 
-> Yes, netkit_get_link_ksettings really not necessary, I just added it in line with veth.
+> This is a preparatory work, but has no functional impact right now.
 > 
-> I don't quite
->> follow what you
->> mean with regards to your business logic in veth to obtain peer ifindex. What does
->> the script do exactly with the peer ifindex (aka /why/ is it needed), could you
->> elaborate some more - it's still somewhat too vague? 🙂 E.g. why it does not suffice
->> to look at the device type or other kind of attributes?
-> 
-> The scripting logic of the business colleagues should just be simple logging records, using ethtool. Then they saw that netkit has this missing, so raised this requirement, so I sent this patch, wanting to hear your opinions. If you don't think it's necessary, let the business colleagues modify it.
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-So it is basically only logging the peer_ifindex data from ethtool but nothing
-more is done with it? Meaning, this was raised as a requirement because this was
-missing from the logging data, or was there anything more to it?
-
-The peer ifindex is already available via IFLA_LINK (which does dev_get_iflink()
-internally to fetch the peer's ifindex). This is also what you see in iproute2:
-
-# ip l
-[...]
-163: nk0@nk1: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
-     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
-164: nk1@nk0: <BROADCAST,MULTICAST,NOARP,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
-     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff
-[...]
-# ip netns add blue
-# ip link set nk1 netns blue
-# ip l
-[...]
-163: nk0@if164: <BROADCAST,MULTICAST,NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
-     link/ether 00:00:00:00:00:00 brd ff:ff:ff:ff:ff:ff link-netns blue
-[...]
-
-The `if164` denotes the peer's ifindex and `link-netns blue` provides info on the netns of the peer.
-This is much better and more generic than the ethtool hack. I would suggest changing the logic to
-rather look at data populated by rtnl_fill_link_netnsid() instead.
-
-Thanks,
-Daniel
+Sebastian
