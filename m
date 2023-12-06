@@ -2,49 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FFE806412
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 02:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CE1806418
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 02:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbjLFBV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:21:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33114 "EHLO
+        id S1376409AbjLFBWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjLFBVY (ORCPT
+        with ESMTP id S1376405AbjLFBWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:21:24 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C781AA;
-        Tue,  5 Dec 2023 17:21:29 -0800 (PST)
-X-QQ-mid: bizesmtp68t1701825671tkvj01k2
-Received: from localhost.localdomain ( [219.147.0.78])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 06 Dec 2023 09:20:54 +0800 (CST)
-X-QQ-SSF: 01200000000000B0J000000A0000000
-X-QQ-FEAT: C46Rb8GPIEdQevORz54Ns4TE4UnwfxCC0E13jQg+0AJuwH4J+RvoDvhcR29qZ
-        fd0I2Ya2QhUAnVu/XxurUCK+OByf5q1TR0Hu5nCKXHaNMwwHUUTkJO7SCYNczNTCXxaR500
-        0uxLbSKqY7gbYJ77VPDhHYDpbA/HqgvojNLcHXj50CeNMyO+UMgvqku3YGgz9dV8Fee5LuR
-        Drj+X0E+7G91YYjQWovG3fFKB4UJ1zjPOosS5hOxNkCqMliB24gi25duq3jL0bHbhE1GLHm
-        ZZO1TFyhqJ52D1uDR9CkbztAnnUsGK3/lCbxidLYcd4wrGIMnSmcW7ToygoVOsryUMbQYj0
-        pScmh8LSKGGbj7U1YQTjprvkSyZHO8bvrt1RHK3bsApOPZbUCQ=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 16475695321451035816
-From:   Jialu Xu <xujialu@vimux.org>
-To:     nathan@kernel.org
-Cc:     justinstitt@google.com, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        masahiroy@kernel.org, morbo@google.com, ndesaulniers@google.com,
-        xujialu@vimux.org
-Subject: [PATCH v3] gen_compile_commands.py: fix path resolve with symlinks in it
-Date:   Wed,  6 Dec 2023 09:20:36 +0800
-Message-Id: <20231206012034.833057-2-xujialu@vimux.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231205165648.GA391810@dev-arch.thelio-3990X>
-References: <20231205165648.GA391810@dev-arch.thelio-3990X>
+        Tue, 5 Dec 2023 20:22:31 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F73D1A4;
+        Tue,  5 Dec 2023 17:22:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701825757; x=1733361757;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YygeRsuBpeLkRrcyXXjICZLGAaAyfBRAuKmnlwjKokc=;
+  b=OD9hokcNLIEbXgd2tMPyu/B48LU08yM6J0acuE+yS/pDvUx+lc7OF8/q
+   O/yhhRDywBEa73+2BvP5DS7jGWxZbey0OZmNTTbEax1kBURllCAV0raVy
+   7y1m2zvf3xbXA/h/bwgOmsTmXaX+JBzmGCrcBbo1eoGktYMa3llBiudFE
+   rw1qQgfIOl2cE/7dkJxw5EPmASaS7KU8WRQsUN9lLNXNnqPd9n54Zgj8R
+   mh/zWw7kTJgPlVz1TFXsxYvcJTxR8Bb7jAMDZNjWJ9tKkdZCTpoumYu2K
+   l2wrZjagHwyaVpaJNmLkGqB1XYXMx31z7i2yIOFedyeKgOFjdHxPdTbqR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="396777238"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="396777238"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 17:22:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="944462196"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="944462196"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 05 Dec 2023 17:22:29 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAgcM-000A0v-1U;
+        Wed, 06 Dec 2023 01:22:26 +0000
+Date:   Wed, 6 Dec 2023 09:21:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jijie Shao <shaojijie@huawei.com>, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        shenjian15@huawei.com, wangjie125@huawei.com,
+        liuyonglong@huawei.com, shaojijie@huawei.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net 2/2] net: hns: fix fake link up on xge port
+Message-ID: <202312060909.F00QN1zB-lkp@intel.com>
+References: <20231201102703.4134592-3-shaojijie@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:vimux.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231201102703.4134592-3-shaojijie@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,75 +70,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a path contains relative symbolic links, os.path.abspath() might
-not follow the symlinks and instead return the absolute path with just
-the relative paths resolved, resulting in an incorrect path.
+Hi Jijie,
 
-1. Say "drivers/hdf/" has some symlinks:
+kernel test robot noticed the following build warnings:
 
-    # ls -l drivers/hdf/
-    total 364
-    drwxrwxr-x 2 ...   4096 ... evdev
-    lrwxrwxrwx 1 ...     44 ... framework -> ../../../../../../drivers/hdf_core/framework
-    -rw-rw-r-- 1 ... 359010 ... hdf_macro_test.h
-    lrwxrwxrwx 1 ...     55 ... inner_api -> ../../../../../../drivers/hdf_core/interfaces/inner_api
-    lrwxrwxrwx 1 ...     53 ... khdf -> ../../../../../../drivers/hdf_core/adapter/khdf/linux
-    -rw-r--r-- 1 ...     74 ... Makefile
-    drwxrwxr-x 3 ...   4096 ... wifi
+[auto build test WARNING on net/main]
 
-2. One .cmd file records that:
+url:    https://github.com/intel-lab-lkp/linux/commits/Jijie-Shao/net-hns-fix-wrong-head-when-modify-the-tx-feature-when-sending-packets/20231201-183325
+base:   net/main
+patch link:    https://lore.kernel.org/r/20231201102703.4134592-3-shaojijie%40huawei.com
+patch subject: [PATCH net 2/2] net: hns: fix fake link up on xge port
+config: i386-buildonly-randconfig-001-20231202 (https://download.01.org/0day-ci/archive/20231206/202312060909.F00QN1zB-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060909.F00QN1zB-lkp@intel.com/reproduce)
 
-    # head -1 ./framework/core/manager/src/.devmgr_service.o.cmd
-    cmd_drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.o := ... \
-    /path/to/out/drivers/hdf/khdf/manager/../../../../framework/core/manager/src/devmgr_service.c
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312060909.F00QN1zB-lkp@intel.com/
 
-3. os.path.abspath returns "/path/to/out/framework/core/manager/src/devmgr_service.c", not correct:
+All warnings (new ones prefixed by >>):
 
-    # ./scripts/clang-tools/gen_compile_commands.py
-    INFO: Could not add line from ./framework/core/manager/src/.devmgr_service.o.cmd: File \
-        /path/to/out/framework/core/manager/src/devmgr_service.c not found
+>> drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c:69:6: warning: no previous prototype for function 'hns_mac_link_anti_shake' [-Wmissing-prototypes]
+   void hns_mac_link_anti_shake(struct mac_driver *mac_ctrl_drv, u32 *link_status)
+        ^
+   drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c:69:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   void hns_mac_link_anti_shake(struct mac_driver *mac_ctrl_drv, u32 *link_status)
+   ^
+   static 
+   1 warning generated.
 
-Use pathlib.Path.resolve(), which resolves the symlinks and normalizes
-the paths correctly.
 
-    # cat compile_commands.json
-    ...
-    {
-      "command": ...
-      "directory": ...
-      "file": "/path/to/blabla/drivers/hdf_core/framework/core/manager/src/devmgr_service.c"
-    },
-    ...
+vim +/hns_mac_link_anti_shake +69 drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
----
- scripts/clang-tools/gen_compile_commands.py | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+    68	
+  > 69	void hns_mac_link_anti_shake(struct mac_driver *mac_ctrl_drv, u32 *link_status)
+    70	{
+    71	#define HNS_MAC_LINK_WAIT_TIME 5
+    72	#define HNS_MAC_LINK_WAIT_CNT 40
+    73	
+    74		int i;
+    75	
+    76		if (!mac_ctrl_drv->get_link_status) {
+    77			*link_status = 0;
+    78			return;
+    79		}
+    80	
+    81		for (i = 0; i < HNS_MAC_LINK_WAIT_CNT; i++) {
+    82			msleep(HNS_MAC_LINK_WAIT_TIME);
+    83			mac_ctrl_drv->get_link_status(mac_ctrl_drv, link_status);
+    84			if (!*link_status)
+    85				break;
+    86		}
+    87	}
+    88	
 
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index 180952fb91c1b..99e28b7152c19 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -11,6 +11,7 @@ import argparse
- import json
- import logging
- import os
-+from pathlib import Path
- import re
- import subprocess
- import sys
-@@ -172,8 +173,9 @@ def process_line(root_directory, command_prefix, file_path):
-     # by Make, so this code replaces the escaped version with '#'.
-     prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
- 
--    # Use os.path.abspath() to normalize the path resolving '.' and '..' .
--    abs_path = os.path.abspath(os.path.join(root_directory, file_path))
-+    # Make the path absolute, resolving all symlinks on the way and also normalizing it.
-+    # Convert Path object to a string because 'PosixPath' is not JSON serializable.
-+    abs_path = str(Path(root_directory, file_path).resolve())
-     if not os.path.exists(abs_path):
-         raise ValueError('File %s not found' % abs_path)
-     return {
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
