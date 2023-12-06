@@ -2,282 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0EC806C4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB5C806C51
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377487AbjLFKjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38628 "EHLO
+        id S1377500AbjLFKkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:40:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377470AbjLFKjq (ORCPT
+        with ESMTP id S1377467AbjLFKkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:39:46 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19282D46
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:39:52 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-db979bbae81so2680577276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:39:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701859191; x=1702463991; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iQdifr2abX3HSlYGNn9HZ0F9hnYIWmyEvcln+QnyZu0=;
-        b=ZA0JY6sYzQ/jma2tyO02AcQA7bVyW6bB2WA00xr1dxomv8CTzVw9lCIAJu3BEWSiHt
-         4B7ZHctwldguKE6PEK9VfadO8oZ2KrQsSMzEEHSN7EgMIpJjgqaMdzMtGyZq7+ZKW2hs
-         G2m+o1q241/t1Q9Rq9KG5dq6VQwU4DkV9HuQnLMzh+Y177kuxgwTmoocyNK/qtn0m1+F
-         t92gf18JDNn3eUisFoH/WYKPXll7WXeg2qtd4PmMgTfDMv9+cwwqw7ITtwdCO8NDwx9y
-         3GXJYEedk056RgRkY1cLYo3qiAg6sZF1Nlb6o2TK0phsa1ld6jg8/6JjNZayj9qtD50x
-         61Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701859191; x=1702463991;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iQdifr2abX3HSlYGNn9HZ0F9hnYIWmyEvcln+QnyZu0=;
-        b=l40r+V0FG7z1jjWXGAfSa4iksy3pu9u0NM7zCfUkMYt/U1Mw3cRvnb2CywJyFrl1ve
-         PCy9BAXgbJNsliqTr3reK5ROiQzMknzVULnbKZZ0r6S5CARP9pcQVPcqrJf78Nvewc8h
-         JTteIm5m0i6VrppNVPTtHao2TJu/tj/8F6flZ3Q+avOZZl9hLhkleFQS82dSgTDXvME6
-         XYjb4pqa96eW4+Nx5+e5L+NH6AqPpTF63K3dBQq0luIiap1JF/cpd2EsPQ3qvPw79xIi
-         +nG9XmUFmb1TuRjX14ws0ea6RhrtEftrHYrPY3dUcqY7FgfBUDvy9JQa4iSQ7v/x+B2M
-         ZDMQ==
-X-Gm-Message-State: AOJu0YzN3yqf8qS+kG8jkLcH1Xv7mqwmZpXjO9Ug6qNkNJVmfUO2UYEi
-        FXu3PTPc8zJw3E5RIVPYVMjTKUMqqmnQigRpJ9YFRw==
-X-Google-Smtp-Source: AGHT+IER7xjB5IRLvMGcDEKuvEKxXZVwGUfdzV3VDT1Vsv/pO4A7HLd5GLlUs6A0WBOd00lfCGHWzJj94wiAk/VID7E=
-X-Received: by 2002:a25:1c2:0:b0:db7:dacf:4d65 with SMTP id
- 185-20020a2501c2000000b00db7dacf4d65mr262941ybb.97.1701859190881; Wed, 06 Dec
- 2023 02:39:50 -0800 (PST)
+        Wed, 6 Dec 2023 05:40:07 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06A6D45;
+        Wed,  6 Dec 2023 02:40:12 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B67uskL023735;
+        Wed, 6 Dec 2023 10:40:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yv4DBGc+tbpkWvzCMU3OJ92GavYlVxoKi15dx20+z+o=;
+ b=YRT7CHjONfi17iGYqE0fwH3oz598x7cZANj7taQ1sYDDEXp1n8npJBxWW/+3tyWLhRN9
+ 8cb92BpVfMFX+fic4sCALlYBnwSCKeUeiWoOwExxPDoJbJJAdO81WJ3JXDAjLupHZYlf
+ bJLecVos3RxgvOHXBlORVhmlLq44JPZ0RWxdNPMhyUi+BwIdIEJZCB4ty7hIHR65yPbp
+ h+F2XaBXyQc2nWO80Zdp07SiIWC74WNvIU7F+IYofC3PboP1J5nKXXuMUmmAoXRur8Dk
+ e6c0bEl2FggxqNzFwQBQI6Uz9dp3oX/ggMMgaBjYOTdLOJv7y5Hjq82Xw73lcz21VmQ6 Rg== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utd1wh953-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 10:40:03 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6Ae2Za010869
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 6 Dec 2023 10:40:02 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
+ 2023 02:39:59 -0800
+Message-ID: <486d6d25-77e6-5fe4-4110-7256c20ba742@quicinc.com>
+Date:   Wed, 6 Dec 2023 16:09:56 +0530
 MIME-Version: 1.0
-References: <20231121171643.3719880-1-surenb@google.com> <20231121171643.3719880-6-surenb@google.com>
- <b3c882d2-0135-430c-8179-784f78be0902@arm.com> <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
- <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com> <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
- <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
- <744be4e0-48e0-4c77-825c-711386dd205f@arm.com> <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
- <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com> <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
- <CAJuCfpG=seLkKbMRjwuWNQozGSQmP-JqKVUuCGRqMqxND2u18A@mail.gmail.com>
- <3ba0015b-b36e-449a-8445-0f6272694db5@redhat.com> <CAJuCfpFPtbZuD53o+jOac97qA6MnK4jTEe5qNrZsH5v-m62oZA@mail.gmail.com>
-In-Reply-To: <CAJuCfpFPtbZuD53o+jOac97qA6MnK4jTEe5qNrZsH5v-m62oZA@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Wed, 6 Dec 2023 02:39:39 -0800
-Message-ID: <CAJuCfpHpDKfqHPuxfy1trbeM0LaEGT3J3gH6+2X4+b6-F5fO1Q@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-To:     akpm@linux-foundation.org
-Cc:     David Hildenbrand <david@redhat.com>,
-        Ryan Roberts <ryan.roberts@arm.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        lokeshgidra@google.com, peterx@redhat.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4] PM / devfreq: Synchronize device_monitor_[start/stop]
+Content-Language: en-US
+To:     <myungjoo.ham@samsung.com>, <kyungmin.park@samsung.com>,
+        <cw00.choi@samsung.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <huangzaiyang@oppo.com>
+References: <1700860318-4025-1-git-send-email-quic_mojha@quicinc.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <1700860318-4025-1-git-send-email-quic_mojha@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: jYwQoNc9aNaATkIEFM4QwysUXicozOFq
+X-Proofpoint-ORIG-GUID: jYwQoNc9aNaATkIEFM4QwysUXicozOFq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_06,2023-12-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxscore=0 phishscore=0 clxscore=1011 impostorscore=0
+ adultscore=0 mlxlogscore=999 suspectscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312060087
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 2:30=E2=80=AFAM Suren Baghdasaryan <surenb@google.co=
-m> wrote:
->
-> On Wed, Dec 6, 2023 at 1:21=E2=80=AFAM David Hildenbrand <david@redhat.co=
-m> wrote:
-> >
-> > On 05.12.23 05:46, Suren Baghdasaryan wrote:
-> > > On Mon, Dec 4, 2023 at 10:44=E2=80=AFAM Suren Baghdasaryan <surenb@go=
-ogle.com> wrote:
-> > >>
-> > >> On Mon, Dec 4, 2023 at 10:27=E2=80=AFAM David Hildenbrand <david@red=
-hat.com> wrote:
-> > >>>
-> > >>> On 04.12.23 17:35, Suren Baghdasaryan wrote:
-> > >>>> On Mon, Dec 4, 2023 at 1:27=E2=80=AFAM Ryan Roberts <ryan.roberts@=
-arm.com> wrote:
-> > >>>>>
-> > >>>>> On 04/12/2023 04:09, Suren Baghdasaryan wrote:
-> > >>>>>> On Sat, Dec 2, 2023 at 2:11=E2=80=AFAM David Hildenbrand <david@=
-redhat.com> wrote:
-> > >>>>>>>
-> > >>>>>>> On 02.12.23 09:04, Ryan Roberts wrote:
-> > >>>>>>>> On 01/12/2023 20:47, David Hildenbrand wrote:
-> > >>>>>>>>> On 01.12.23 10:29, Ryan Roberts wrote:
-> > >>>>>>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
-> > >>>>>>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move=
- source
-> > >>>>>>>>>>> into destination buffer while checking the contents of both=
- after
-> > >>>>>>>>>>> the move. After the operation the content of the destinatio=
-n buffer
-> > >>>>>>>>>>> should match the original source buffer's content while the=
- source
-> > >>>>>>>>>>> buffer should be zeroed. Separate tests are designed for PM=
-D aligned and
-> > >>>>>>>>>>> unaligned cases because they utilize different code paths i=
-n the kernel.
-> > >>>>>>>>>>>
-> > >>>>>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > >>>>>>>>>>> ---
-> > >>>>>>>>>>>      tools/testing/selftests/mm/uffd-common.c     |  24 +++
-> > >>>>>>>>>>>      tools/testing/selftests/mm/uffd-common.h     |   1 +
-> > >>>>>>>>>>>      tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++=
-++++++++++++++++
-> > >>>>>>>>>>>      3 files changed, 214 insertions(+)
-> > >>>>>>>>>>>
-> > >>>>>>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
-> > >>>>>>>>>>> b/tools/testing/selftests/mm/uffd-common.c
-> > >>>>>>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
-> > >>>>>>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
-> > >>>>>>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
-> > >>>>>>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long o=
-ffset, bool wp)
-> > >>>>>>>>>>>          return __copy_page(ufd, offset, false, wp);
-> > >>>>>>>>>>>      }
-> > >>>>>>>>>>>      +int move_page(int ufd, unsigned long offset, unsigned=
- long len)
-> > >>>>>>>>>>> +{
-> > >>>>>>>>>>> +    struct uffdio_move uffdio_move;
-> > >>>>>>>>>>> +
-> > >>>>>>>>>>> +    if (offset + len > nr_pages * page_size)
-> > >>>>>>>>>>> +        err("unexpected offset %lu and length %lu\n", offs=
-et, len);
-> > >>>>>>>>>>> +    uffdio_move.dst =3D (unsigned long) area_dst + offset;
-> > >>>>>>>>>>> +    uffdio_move.src =3D (unsigned long) area_src + offset;
-> > >>>>>>>>>>> +    uffdio_move.len =3D len;
-> > >>>>>>>>>>> +    uffdio_move.mode =3D UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
-> > >>>>>>>>>>> +    uffdio_move.move =3D 0;
-> > >>>>>>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
-> > >>>>>>>>>>> +        /* real retval in uffdio_move.move */
-> > >>>>>>>>>>> +        if (uffdio_move.move !=3D -EEXIST)
-> > >>>>>>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
-> > >>>>>>>>>>> +                (int64_t)uffdio_move.move);
-> > >>>>>>>>>>
-> > >>>>>>>>>> Hi Suren,
-> > >>>>>>>>>>
-> > >>>>>>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
-> > >>>>>>>>>>
-> > >>>>>>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (e=
-rrno=3D16,
-> > >>>>>>>>>> @uffd-common.c:648)
-> > >>>>>>>>>>
-> > >>>>>>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged =
-any further, but
-> > >>>>>>>>>> happy to go deeper if you can direct.
-> > >>>>>>>>>
-> > >>>>>>>>> Does it trigger reliably? Which pagesize is that kernel using=
-?
-> > >>>>>>>>
-> > >>>>>>>> Yep, although very occasionally it fails with EAGAIN. 4K kerne=
-l; see other email
-> > >>>>>>>> for full config.
-> > >>>>>>>>
-> > >>>>>>>>>
-> > >>>>>>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fau=
-lt() uses
-> > >>>>>>>>> default_huge_page_size(), which reads the default hugetlb siz=
-e.
-> > >>>>>>>>
-> > >>>>>>>> My kernel command line is explicitly seting the default huge p=
-age size to 2M.
-> > >>>>>>>>
-> > >>>>>>>
-> > >>>>>>> Okay, so that likely won't affect it.
-> > >>>>>>>
-> > >>>>>>> I can only guess that it has to do with the alignment of the vi=
-rtual
-> > >>>>>>> area we are testing with, and that we do seem to get more odd p=
-atterns
-> > >>>>>>> on arm64.
-> > >>>>>>>
-> > >>>>>>> uffd_move_test_common() is a bit more elaborate, but if we alig=
-ned the
-> > >>>>>>> src+start area up, surely "step_count" cannot be left unmodifie=
-d?
-> > >>>>>>>
-> > >>>>>>> So assuming we get either an unaligned source or an unaligned d=
-st from
-> > >>>>>>> mmap(), I am not convinced that we won't be moving areas that a=
-re not
-> > >>>>>>> necessarily fully backed by PMDs and maybe don't even fall into=
- the VMA
-> > >>>>>>> of interest?
-> > >>>>>>>
-> > >>>>>>> Not sure if that could trigger the THP splitting issue, though.
-> > >>>>>>>
-> > >>>>>>> But I just quickly scanned that test setup, could be I am missi=
-ng
-> > >>>>>>> something. It might make sense to just print the mmap'ed range =
-and the
-> > >>>>>>> actual ranges we are trying to move. Maybe something "obvious" =
-can be
-> > >>>>>>> observed.
-> > >>>>>>
-> > >>>>>> I was able to reproduce the issue on an Android device and after
-> > >>>>>> implementing David's suggestions to split the large folio and af=
-ter
-> > >>>>>> replacing default_huge_page_size() with read_pmd_pagesize(), the
-> > >>>>>> move-pmd test started working for me. Ryan, could you please app=
-ly
-> > >>>>>> attached patches (over mm-unstable) and try the test again?
-> > >>>>>
-> > >>>>> Yep, all fixed with those patches!
-> > >>>>
-> > >>>> Great! Thanks for testing and confirming. I'll post an updated
-> > >>>> patchset later today and will ask Andrew to replace the current on=
-e
-> > >>>> with it.
-> > >>>> I'll also look into the reasons we need to split PMD on ARM64 in t=
-his
-> > >>>> test. It's good that this happened and we were able to test the PM=
-D
-> > >>>> split path but I'm curious about the reason. It's possible my addr=
-ess
-> > >>>> alignment calculations are  somehow incorrect.
-> > >>>
-> > >>> I only skimmed the diff briefly, but likely you also want to try
-> > >>> splitting in move_pages_pte(), if you encounter an already-pte-mapp=
-ed THP.
-> > >>
-> > >> Huh, good point. I might be able to move the folio splitting code in=
-to
-> > >> pte-mapped case and do a retry after splitting. That should minimize
-> > >> the additional code required. Will do and post a new set shortly.
-> > >> Thanks!
-> > >
-> > > Was planning to post an update today but need some more time. Will tr=
-y
-> > > to send it tomorrow.
-> >
-> > It would be great to have tests that cover these cases (having to
-> > PTE-map a PMD-mapped THP, and stumbling over an already-PTE-mapped one)=
-.
->
-> Agree. Let me post the new version so that mm-unstable does not
-> produce these failures and will start working on covering additional
-> cases in the tests. The new patchset is almost ready, just finishing
-> final tests.
+Gentle reminder..
 
-Posted v6 at https://lore.kernel.org/all/20231206103702.3873743-1-surenb@go=
-ogle.com/.
-Changes are listed in the cover letter.
+-Mukesh
 
-Andrew, could you please replace the current v5 version in mm-unstable
-with this new one?
-Thanks,
-Suren.
-
->
-> >
-> > --
-> > Cheers,
-> >
-> > David / dhildenb
-> >
+On 11/25/2023 2:41 AM, Mukesh Ojha wrote:
+> There is a chance if a frequent switch of the governor
+> done in a loop result in timer list corruption where
+> timer cancel being done from two place one from
+> cancel_delayed_work_sync() and followed by expire_timers()
+> can be seen from the traces[1].
+> 
+> while true
+> do
+>          echo "simple_ondemand" > /sys/class/devfreq/1d84000.ufshc/governor
+>          echo "performance" > /sys/class/devfreq/1d84000.ufshc/governor
+> done
+> 
+> It looks to be issue with devfreq driver where
+> device_monitor_[start/stop] need to synchronized so that
+> delayed work should get corrupted while it is either
+> being queued or running or being cancelled.
+> 
+> Let's use polling flag and devfreq lock to synchronize the
+> queueing the timer instance twice and work data being
+> corrupted.
+> 
+> [1]
+> ...
+> ..
+> <idle>-0    [003]   9436.209662:  timer_cancel   timer=0xffffff80444f0428
+> <idle>-0    [003]   9436.209664:  timer_expire_entry   timer=0xffffff80444f0428  now=0x10022da1c  function=__typeid__ZTSFvP10timer_listE_global_addr  baseclk=0x10022da1c
+> <idle>-0    [003]   9436.209718:  timer_expire_exit   timer=0xffffff80444f0428
+> kworker/u16:6-14217    [003]   9436.209863:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da2b  now=0x10022da1c  flags=182452227
+> vendor.xxxyyy.ha-1593    [004]   9436.209888:  timer_cancel   timer=0xffffff80444f0428
+> vendor.xxxyyy.ha-1593    [004]   9436.216390:  timer_init   timer=0xffffff80444f0428
+> vendor.xxxyyy.ha-1593    [004]   9436.216392:  timer_start   timer=0xffffff80444f0428  function=__typeid__ZTSFvP10timer_listE_global_addr  expires=0x10022da2c  now=0x10022da1d  flags=186646532
+> vendor.xxxyyy.ha-1593    [005]   9436.220992:  timer_cancel   timer=0xffffff80444f0428
+> xxxyyyTraceManag-7795    [004]   9436.261641:  timer_cancel   timer=0xffffff80444f0428
+> 
+> [2]
+> 
+>   9436.261653][    C4] Unable to handle kernel paging request at virtual address dead00000000012a
+> [ 9436.261664][    C4] Mem abort info:
+> [ 9436.261666][    C4]   ESR = 0x96000044
+> [ 9436.261669][    C4]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [ 9436.261671][    C4]   SET = 0, FnV = 0
+> [ 9436.261673][    C4]   EA = 0, S1PTW = 0
+> [ 9436.261675][    C4] Data abort info:
+> [ 9436.261677][    C4]   ISV = 0, ISS = 0x00000044
+> [ 9436.261680][    C4]   CM = 0, WnR = 1
+> [ 9436.261682][    C4] [dead00000000012a] address between user and kernel address ranges
+> [ 9436.261685][    C4] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+> [ 9436.261701][    C4] Skip md ftrace buffer dump for: 0x3a982d0
+> ...
+> 
+> [ 9436.262138][    C4] CPU: 4 PID: 7795 Comm: TraceManag Tainted: G S      W  O      5.10.149-android12-9-o-g17f915d29d0c #1
+> [ 9436.262141][    C4] Hardware name: Qualcomm Technologies, Inc.  (DT)
+> [ 9436.262144][    C4] pstate: 22400085 (nzCv daIf +PAN -UAO +TCO BTYPE=--)
+> [ 9436.262161][    C4] pc : expire_timers+0x9c/0x438
+> [ 9436.262164][    C4] lr : expire_timers+0x2a4/0x438
+> [ 9436.262168][    C4] sp : ffffffc010023dd0
+> [ 9436.262171][    C4] x29: ffffffc010023df0 x28: ffffffd0636fdc18
+> [ 9436.262178][    C4] x27: ffffffd063569dd0 x26: ffffffd063536008
+> [ 9436.262182][    C4] x25: 0000000000000001 x24: ffffff88f7c69280
+> [ 9436.262185][    C4] x23: 00000000000000e0 x22: dead000000000122
+> [ 9436.262188][    C4] x21: 000000010022da29 x20: ffffff8af72b4e80
+> [ 9436.262191][    C4] x19: ffffffc010023e50 x18: ffffffc010025038
+> [ 9436.262195][    C4] x17: 0000000000000240 x16: 0000000000000201
+> [ 9436.262199][    C4] x15: ffffffffffffffff x14: ffffff889f3c3100
+> [ 9436.262203][    C4] x13: ffffff889f3c3100 x12: 00000000049f56b8
+> [ 9436.262207][    C4] x11: 00000000049f56b8 x10: 00000000ffffffff
+> [ 9436.262212][    C4] x9 : ffffffc010023e50 x8 : dead000000000122
+> [ 9436.262216][    C4] x7 : ffffffffffffffff x6 : ffffffc0100239d8
+> [ 9436.262220][    C4] x5 : 0000000000000000 x4 : 0000000000000101
+> [ 9436.262223][    C4] x3 : 0000000000000080 x2 : ffffff889edc155c
+> [ 9436.262227][    C4] x1 : ffffff8001005200 x0 : ffffff80444f0428
+> [ 9436.262232][    C4] Call trace:
+> [ 9436.262236][    C4]  expire_timers+0x9c/0x438
+> [ 9436.262240][    C4]  __run_timers+0x1f0/0x330
+> [ 9436.262245][    C4]  run_timer_softirq+0x28/0x58
+> [ 9436.262255][    C4]  efi_header_end+0x168/0x5ec
+> [ 9436.262265][    C4]  __irq_exit_rcu+0x108/0x124
+> [ 9436.262274][    C4]  __handle_domain_irq+0x118/0x1e4
+> [ 9436.262282][    C4]  gic_handle_irq.30369+0x6c/0x2bc
+> [ 9436.262286][    C4]  el0_irq_naked+0x60/0x6c
+> 
+> Reported-by: Joyyoung Huang <huangzaiyang@oppo.com>
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> ---
+> Huang,
+> 
+> Would be looking for your tested-by..
+> 
+> -Mukesh
+> 
+> 
+> Changes in v4: https://lore.kernel.org/lkml/1700238027-20518-1-git-send-email-quic_mojha@quicinc.com/
+>   - Mistakenly put cancel work under devfreq lock which could result in deadlock
+>     reported by [Joyyoung Huang]
+>     https://lore.kernel.org/lkml/KL1PR02MB8141D1A307457AF69EBB6AFBA3B8A@KL1PR02MB8141.apcprd02.prod.outlook.com/
+> 
+> Changes in v3: https://lore.kernel.org/lkml/1700235522-31105-1-git-send-email-quic_mojha@quicinc.com/
+>   - Remove the unexpected 'twice' from the subject.
+> 
+> Changes in v2: https://lore.kernel.org/lkml/1699957648-31299-1-git-send-email-quic_mojha@quicinc.com/
+>   - Changed subject.
+>   - Added lock to avoid work data corruption due to
+>     parallel calls to devfreq_monitor_start while work
+>     is queued in flight.
+>   - Added lock to cover the same as above case while the
+>     work is being cancelled.
+>   - Added Reported-by for similar issue reported at
+>     https://lore.kernel.org/lkml/SEYPR02MB565398175FA093AC3E63EE7BA3B0A@SEYPR02MB5653.apcprd02.prod.outlook.com/
+> 
+>   drivers/devfreq/devfreq.c | 24 ++++++++++++++++++++++--
+>   1 file changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index b3a68d5833bd..cb1c24721a37 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -461,10 +461,14 @@ static void devfreq_monitor(struct work_struct *work)
+>   	if (err)
+>   		dev_err(&devfreq->dev, "dvfs failed with (%d) error\n", err);
+>   
+> +	if (devfreq->stop_polling)
+> +		goto out;
+> +
+>   	queue_delayed_work(devfreq_wq, &devfreq->work,
+>   				msecs_to_jiffies(devfreq->profile->polling_ms));
+> -	mutex_unlock(&devfreq->lock);
+>   
+> +out:
+> +	mutex_unlock(&devfreq->lock);
+>   	trace_devfreq_monitor(devfreq);
+>   }
+>   
+> @@ -483,6 +487,10 @@ void devfreq_monitor_start(struct devfreq *devfreq)
+>   	if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
+>   		return;
+>   
+> +	mutex_lock(&devfreq->lock);
+> +	if (delayed_work_pending(&devfreq->work))
+> +		goto out;
+> +
+>   	switch (devfreq->profile->timer) {
+>   	case DEVFREQ_TIMER_DEFERRABLE:
+>   		INIT_DEFERRABLE_WORK(&devfreq->work, devfreq_monitor);
+> @@ -491,12 +499,16 @@ void devfreq_monitor_start(struct devfreq *devfreq)
+>   		INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
+>   		break;
+>   	default:
+> -		return;
+> +		goto out;
+>   	}
+>   
+>   	if (devfreq->profile->polling_ms)
+>   		queue_delayed_work(devfreq_wq, &devfreq->work,
+>   			msecs_to_jiffies(devfreq->profile->polling_ms));
+> +
+> +out:
+> +	devfreq->stop_polling = false;
+> +	mutex_unlock(&devfreq->lock);
+>   }
+>   EXPORT_SYMBOL(devfreq_monitor_start);
+>   
+> @@ -513,6 +525,14 @@ void devfreq_monitor_stop(struct devfreq *devfreq)
+>   	if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
+>   		return;
+>   
+> +	mutex_lock(&devfreq->lock);
+> +	if (devfreq->stop_polling) {
+> +		mutex_unlock(&devfreq->lock);
+> +		return;
+> +	}
+> +
+> +	devfreq->stop_polling = true;
+> +	mutex_unlock(&devfreq->lock);
+>   	cancel_delayed_work_sync(&devfreq->work);
+>   }
+>   EXPORT_SYMBOL(devfreq_monitor_stop);
