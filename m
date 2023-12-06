@@ -2,190 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB4C80638C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA973806392
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376308AbjLFAjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52192 "EHLO
+        id S1376320AbjLFAlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:41:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346659AbjLFAjH (ORCPT
+        with ESMTP id S1346659AbjLFAlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:39:07 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2028.outbound.protection.outlook.com [40.92.19.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFF7D3;
-        Tue,  5 Dec 2023 16:39:11 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nE9FNr3TqvU5S0uUGWEcrPUB+Z3LX5EALreeEI0Jzx0hZT0wIpXes9y0FG0WQJZ/HNpsFjf8TtxXfzku/eV8ktE/UiF/8NeknRZU7+JaF8MkzbT8Gb0YBciN/HZtAZxKKopwF4TNjBe8NGNppUCG9S8xBlsTjYSWFUoZR3z9/8HjllgjD94koyaSO3ag6zS2H3ZTFScTd7Go+b35r26L29ejTHOsmPHZPnPWHwh3yExLBL734uyE1b70UCUz7ihXhs663415trwTCfVRp6w+l/qc66C2gxFr+WfegaLrITxkuyLWQHik2JWkDF+VlQCbKcLJZeKUv4eqvailed+ngg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WXeEunOxPkYTsv8l86vP8gSM5RwHQh0MZDPvc6kt9XI=;
- b=jt/7nbw+xY4dyx68G1oL6ai7Ip0HvfG9BWYSZDS1er2YNl2Jm0HhG9LtTI2TwMmMdNd+ojA6X+yAf3McR43tRalXm0A0OheSKcuFSa4d1LWlaDIi+NxQ/gG3xxbHacgTM/aAU6rw+k5DrPtTZsbwhVhWb3b0Zv/zxt7UswYEa6kZtghR9sZXcrzgzrCbaXIXbOLVcv1lsfppWls8bNxFc9ff1UP6oHZjaV9FWVml3Yn0ACtEXd5NesY7xIF5omNSX369ZbGJjoNUH6JvLKmuVI8uano+O6koj2CvWS8rsbU1G/3zBg2ZIHKMcYKEld4yhkKHFg/qcsl3UCQsPHU94Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WXeEunOxPkYTsv8l86vP8gSM5RwHQh0MZDPvc6kt9XI=;
- b=NCI/1ObvdG7D7sN7J8tzvQ9h+ExLxy+GmVTt6cGYiCSsic01kQKSPu6Fnvl/bOTaMhkPF80MFfhSletI2IW/JS4k3mM1alDxt9SolnXi13BTjE4hymXWFWNizzK24l+26WfVW0cnlPp1tE+yOXl6+IICw69L8HA/kmJkBd7CsvTqjMaeSvHUEqEKIVNcYiciHMXy52GoQ1WAoHgYsNjXaOYnLz1nIeWLVPNSQyvIEqUk2iBOqQ9BDEXEIzPJnmq63O0FpPwtgx1GY62N6Pe5UYjuhY6nGVcpMsyjVfb93bq/eg5pStuScSptFZXhzVBE1x7dv7jy3tLpkLUJqNkUAw==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by IA1PR20MB4956.namprd20.prod.outlook.com (2603:10b6:208:3ac::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Wed, 6 Dec
- 2023 00:39:08 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7046.024; Wed, 6 Dec 2023
- 00:39:08 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        Jisheng Zhang <jszhang@kernel.org>, qiujingbao.dlmu@gmail.com,
-        dlan@gentoo.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: clock: sophgo: Add clock controller of CV1800 series SoC
-Date:   Wed,  6 Dec 2023 08:39:14 +0800
-Message-ID: <IA1PR20MB4953BFA99F4C91EA525BF03FBB84A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231205-chump-ravage-2c5478289421@spud>
-References: <20231205-chump-ravage-2c5478289421@spud>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [2TewSEC5JSj+RKcDqmLJ3W4lNb8dt/9Q/U18a6fOzTs=]
-X-ClientProxiedBy: BY5PR17CA0067.namprd17.prod.outlook.com
- (2603:10b6:a03:167::44) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231206003914.130206-1-inochiama@outlook.com>
+        Tue, 5 Dec 2023 19:41:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7B03135
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:41:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701823270; x=1733359270;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=4Lgj0BPaS1V9htaB3BAuDxFenX4raVWmyMrGsG6EByU=;
+  b=lxbAIAmwknMI+PxXWLU0VOV3YK2eP8vi1f6ncqVBoC4yR5dR9WaqBB+D
+   j0XmCF4hXXXt6a7NHFyx+8VDfqZJ4UOvKVR17TeuApSfjUNKwAzxZmGZE
+   gsMXSTNi9JwV6/EgRLFpmMss0tmM8HZVl2ZMGAui8foEnogwAerQuU37e
+   lPAOgdyM8i06L+3QA7axcqIWKufTMa85T0ybGRCeusq8+2yqPWpHFi+gk
+   goQNDMq/nTQpavkH4m2y4Ixyx4uY2nhuclQ0hcTf31KX1V8sBhJZRK2ce
+   +yE+yEynUedN1qsSL76+S+PwoSad3HOCDlVjTQ2bNBdHQGUlVNlA56D8Q
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="12698164"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="12698164"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 16:41:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="841650111"
+X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
+   d="scan'208";a="841650111"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 05 Dec 2023 16:41:04 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAfyI-0009xy-1B;
+        Wed, 06 Dec 2023 00:41:02 +0000
+Date:   Wed, 6 Dec 2023 08:40:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:104:58: sparse:
+ sparse: incorrect type in argument 2 (different address spaces)
+Message-ID: <202312060821.g8eqRm9E-lkp@intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|IA1PR20MB4956:EE_
-X-MS-Office365-Filtering-Correlation-Id: 17fbe00e-0993-406b-a5cd-08dbf5f3c206
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: h2Uy0POvtbDBMDdERke/78WK5Kf2VpGGeqSPX56wf1vw3GeGIt9/kKAc6E/NUR7Dud8pjzlZFOy/pvjxggyyowyLlPBIY+XwIY4cEGU2PLMf27aUu1MUbqhhsioJIKHhLKUEqd1PdXJFWFp8hVWy2PX6Y8ImjXqdqlu7grGQKMh8objFIJkiSEBqQChNoOftkpOZFrxIxV9u3HEFyKz8FBaL/C0yT1MaXlL2y6nfQGYAR5RFHketFcc9dfUMbGM1X56IWeWMe23kJMYVZV2A4uq2TQqJvTSpiG2c98MlXBW1Tm/EuIcWCCNESdo1cXleH3ylzh/7CBFHObd4A/NA1869r/baVyK4nT6Rxo4nDnUA/cv/ew8txE2eiacR+tbIcsUBOMKzBif8aWw2qFVjb8Ym7jpBkhT93fVxBxBlRMQggKV7bBi3aN0I8p5gjn7DJjrKhb0AgI4a5VIBQgIGZzMynv3QIFnHOQKw1apsvVk4oqi/7KHnm1XXY7J8qezxQUmorU+lqZVklHGv3JBHjexN7ccUh9RVEPNP8Q0q4+73L8k2fjDptyIXc3sFmTEd5x0HNcPU8cgVkvZz/zqRsS2++ZMrwuGZo0dwAyfO/YPgLRc+neHSuwlYI8ZE6RzN
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oe9vhbGrouSdGNuBxyqU8JBuYSHDEdbTaFu06DTea9axc005k/KOY6uIKU+e?=
- =?us-ascii?Q?PsCI7S2AG9cYDZM0AA0oWMq7NT+8cA+Qv4ZAaNs/vS+C4W6CS0eZCR5RbVYu?=
- =?us-ascii?Q?UshXRxJrwhGBwu42KGB9Xe2rpFBQPOGzapplt/zIqqOh4+exGSieEnEQUnhV?=
- =?us-ascii?Q?u9KdH90+JKKxmLKnZNWf/eyX48zeFRFZQBTCyZpVJAqN9jE6cMYSX10ISla2?=
- =?us-ascii?Q?SCUMkFrSJWwRy66WKPYLeVaQXghW4n2eIHPV6cEPibgj3K73ZOm+hp3DD6EL?=
- =?us-ascii?Q?pVulKC+HIwQEEtlQQ67+L0nf1TJgESwLiplmX3aTdJqVwQiWqfAeN5Av/rI4?=
- =?us-ascii?Q?WollOzC21u5eOTjQvd8UWIoLpS1i9qiM9W/TaDBLbKoPnnFbw/j9afW42l4G?=
- =?us-ascii?Q?r4VDnztXGNIjHq4Jz4mcE+OnpAuHjPFmvbYsM9mqixBGGQ+OtRGPmW6DAtJt?=
- =?us-ascii?Q?m4iK9NhgV5NeXcs/iFn5a6ZYX3VDgvgjWNFAloxTgXzUdbYpNrUF/5hGgYC+?=
- =?us-ascii?Q?0R+0ioXsjJFoJoKEORkcPlSmx0KCh1Wy+DpBkXQsNVyNpsEMiBzl/Yz9yylf?=
- =?us-ascii?Q?UkJgV1kwoUc/IRt2vBmBnbPU6L3YlXcNmWJKIkrabEyv3ptsyfTFq3dJ/6js?=
- =?us-ascii?Q?3YjvhJ20HSgzf4cmyp3cFaBEjsiJcWlUT5n7gOdupL1Uvj2CJVIrhZfAtOi+?=
- =?us-ascii?Q?2jnc3KjlcYaIQyDi4ZlqXtAj2BMvf1Banea6me6ngp4MMd5pr+CwsfQfQ7y6?=
- =?us-ascii?Q?+yjrYEBiyLsa09sum0sGc8J2RcHd+34MpuWL6MpZz0FFa5ZXSt+Z8rkZcv5M?=
- =?us-ascii?Q?IN/4oDg1xETA/M2/oziW09TnFDPngEab2QDFyDdgzOkFGWj+QKtjypgMgHg7?=
- =?us-ascii?Q?KbA0cEnGr1a9uOuu5of8dh74slrdU6Beb0HaNnlG+EFpiprUWALGwAg/AcEV?=
- =?us-ascii?Q?aOfMenOWshYdVK8MO12c0WoF3Ya9yuGOS+YG0pAaBJaAOE1GUjeIbU/rU8vt?=
- =?us-ascii?Q?qpQ62fIV9UbGcU6y+mfBEWCdoKuV6y9jwd8UfQ2wcroWMjvD9vC/YsPjcUvc?=
- =?us-ascii?Q?MQcvqGLBaFgZ5RWkjARVjoMyC3vi+Idlu3P5FbbE4G2ZpStdDabyHr3YUCv6?=
- =?us-ascii?Q?SbZOOh2Njmyb7MIuTZ63epyxZlBq4Q8KwAOrnrg9isN2F3UH4A7iXcpuSCM0?=
- =?us-ascii?Q?J9ndl4RRWBqeqzqykrkJjuv3uVow09efcfUMzqNIyP/Tb3qBl6tZeHsQmcA?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17fbe00e-0993-406b-a5cd-08dbf5f3c206
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 00:39:08.8044
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR20MB4956
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On Tue, Dec 05, 2023 at 07:55:50PM +0800, Inochi Amaoto wrote:
->> Add definition for the clock controller of the CV1800 series SoC.
->>
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> Link: https://github.com/milkv-duo/duo-files/blob/main/hardware/CV1800B/CV1800B-CV1801B-Preliminary-Datasheet-full-en.pdf
->> ---
->>  .../bindings/clock/sophgo,cv1800-clk.yaml     |  53 ++++++
->>  include/dt-bindings/clock/sophgo,cv1800.h     | 174 ++++++++++++++++++
->>  2 files changed, 227 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
->>  create mode 100644 include/dt-bindings/clock/sophgo,cv1800.h
->>
->> diff --git a/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml b/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
->> new file mode 100644
->> index 000000000000..388be5bfa163
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/clock/sophgo,cv1800-clk.yaml
->> @@ -0,0 +1,53 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/clock/sophgo,cv1800-clk.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Sophgo CV1800 Series Clock Controller
->> +
->> +maintainers:
->> +  - Inochi Amaoto <inochiama@outlook.com>
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - sophgo,cv1800-clk
->> +      - sophgo,cv1810-clk
->
->I'm not reading 1000s of lines of driver code to figure it out, what
->differs in the programming model for these two devices?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
+commit: 894fa235eb4ca0bfa692dbe4932c2f940cdc8c1e powerpc: inline iomap accessors
+date:   3 years ago
+config: powerpc-randconfig-r113-20231106 (https://download.01.org/0day-ci/archive/20231206/202312060821.g8eqRm9E-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231206/202312060821.g8eqRm9E-lkp@intel.com/reproduce)
 
-In fact, they have no different in the programming model. The only
-different between them is that cv1810 have one extra clock.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312060821.g8eqRm9E-lkp@intel.com/
 
->You should
->mention in your commit message why the cv1810 has an incompatible
->programming model if you are adding multiple devices in one commit
->message.
->
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:104:58: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void * @@
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:104:58: sparse:     expected void [noderef] __iomem *addr
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:104:58: sparse:     got void *
+>> drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:110:58: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const [noderef] __iomem *addr @@     got void * @@
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:110:58: sparse:     expected void const [noderef] __iomem *addr
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:110:58: sparse:     got void *
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:157:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *[assigned] emap @@
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:157:25: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:157:25: sparse:     got void *[assigned] emap
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:174:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *map @@     got void [noderef] __iomem * @@
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:174:19: sparse:     expected void *map
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:174:19: sparse:     got void [noderef] __iomem *
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:225:28: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void [noderef] __iomem * @@     got void *map @@
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:225:28: sparse:     expected void [noderef] __iomem *
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:225:28: sparse:     got void *map
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:233:28: sparse: sparse: incorrect type in return expression (different address spaces) @@     expected void [noderef] __iomem * @@     got void *map @@
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:233:28: sparse:     expected void [noderef] __iomem *
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:233:28: sparse:     got void *map
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:240:21: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void [noderef] __iomem *map @@     got void *map @@
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:240:21: sparse:     expected void [noderef] __iomem *map
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:240:21: sparse:     got void *map
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:327:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *[assigned] map @@
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:327:25: sparse:     expected void volatile [noderef] __iomem *addr
+   drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c:327:25: sparse:     got void *[assigned] map
 
-OK, I will
+vim +104 drivers/gpu/drm/nouveau/nvkm/subdev/instmem/nv50.c
 
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    items:
->> +      - description: Oscillator (25 MHz)
->
->This could just be "maxItems: 1".
->
+07bbc1c5f49b643 Ben Skeggs 2017-11-01  100  
+be55287aa5ba689 Ben Skeggs 2017-11-01  101  static void
+be55287aa5ba689 Ben Skeggs 2017-11-01  102  nv50_instobj_wr32(struct nvkm_memory *memory, u64 offset, u32 data)
+be55287aa5ba689 Ben Skeggs 2017-11-01  103  {
+be55287aa5ba689 Ben Skeggs 2017-11-01 @104  	iowrite32_native(data, nv50_instobj(memory)->map + offset);
+be55287aa5ba689 Ben Skeggs 2017-11-01  105  }
+be55287aa5ba689 Ben Skeggs 2017-11-01  106  
+be55287aa5ba689 Ben Skeggs 2017-11-01  107  static u32
+be55287aa5ba689 Ben Skeggs 2017-11-01  108  nv50_instobj_rd32(struct nvkm_memory *memory, u64 offset)
+be55287aa5ba689 Ben Skeggs 2017-11-01  109  {
+be55287aa5ba689 Ben Skeggs 2017-11-01 @110  	return ioread32_native(nv50_instobj(memory)->map + offset);
+be55287aa5ba689 Ben Skeggs 2017-11-01  111  }
+be55287aa5ba689 Ben Skeggs 2017-11-01  112  
 
-OK, thanks.
+:::::: The code at line 104 was first introduced by commit
+:::::: be55287aa5ba6895e9d4d3ed2f08a1be7a065957 drm/nouveau/imem/nv50: embed nvkm_instobj directly into nv04_instobj
 
->> +
->> +  clock-names:
->> +    items:
->> +      - const: osc
->
->You have one clock, why do you need a name?
+:::::: TO: Ben Skeggs <bskeggs@redhat.com>
+:::::: CC: Ben Skeggs <bskeggs@redhat.com>
 
-I am not pretty familiar with this. I just wrote this binding by
-referencing others. Maybe use "maxItems: 1" is just fine?
-
->
->Otherwise, this looks okay, thanks.
->
->
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
