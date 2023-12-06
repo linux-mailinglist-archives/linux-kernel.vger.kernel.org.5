@@ -2,222 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8EA807BB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD34807BB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbjLFW6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:58:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
+        id S1377818AbjLFWyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:54:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjLFW6O (ORCPT
+        with ESMTP id S1377430AbjLFWyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:58:14 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592AB18D;
-        Wed,  6 Dec 2023 14:58:18 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 5BD2210008C;
-        Thu,  7 Dec 2023 01:58:15 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5BD2210008C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1701903495;
-        bh=GR8f5v1JtQpcmatJwQW8QuK09rw3Xh9UYk7P6i0iyVM=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=AzQhnpoOzA4m2YKkhoWWERtGsDzcrnUQe3FV5rtHJyV1bYtfWo6T318SQ5w0eC5uk
-         7X07K3w3BmjqaYSTzRcSunBOejtlSfUw9artgMdP+5g6urR4maqCMd9vHJoBjCsWlX
-         v55Jg4FzRTpQPQGsIL1rKB/sMS/eROUhypQi1psETG1O1zvx9t8K0sSxcel7lPnIhe
-         6p1blDrLGQ+a80Jm3uu164REeEIpmUTii7I550b2PONkcjVuAuWcK6mjbSF2YVKGVE
-         AxezUAY4My3w8AyoakHMgwTul5Rzy7BOQxsNcmx2ZT35jBv3ExgsMuiK6q9SSBPYsU
-         cJPVsa3N/ugbw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu,  7 Dec 2023 01:58:15 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 7 Dec 2023 01:58:14 +0300
-Message-ID: <d30a1df7-ecda-652d-8c98-853308a560c9@salutedevices.com>
-Date:   Thu, 7 Dec 2023 01:50:05 +0300
+        Wed, 6 Dec 2023 17:54:19 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E2C18D;
+        Wed,  6 Dec 2023 14:54:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701903265; x=1733439265;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=JX/oMvpTI/2qT6JJCaAT7HVae/ammdoaCW90BVpkcJI=;
+  b=XRt3udaPTt6Ew68tPdULZIpYzcWK6KjhPhg0uY9GTwyb+HiqE1XLKhdZ
+   v1VutHAfD3yHXhE4vxIGvG/fGPT77/+vlXYpIeNJqJ1xGYP694fsEnOg3
+   QQNKDGi8g+86wA6A7HcDngDW1i1I0Gh/A7lFDLUjkUuDEs7PyQmc3GIZF
+   oGarW7RPt0kigptDlvrwZiuHi/Qr4XebhfRRQznJrso0F5L1fBvhSorW5
+   5pXjX9QDolKcFmo+gjn7p/IU2chCLNHHYEifiui9CCShRJykiP9c1DYLa
+   +R6xEcMqVEqMtMaMBNLMLcT7TtbV/VYUYl9K8+9YadOtJDuY62SFyDCO4
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="458464949"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="458464949"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 14:54:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="862255152"
+X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
+   d="scan'208";a="862255152"
+Received: from eborisov-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.46.36])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 14:54:17 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 1455110A3F5; Thu,  7 Dec 2023 01:54:15 +0300 (+03)
+Date:   Thu, 7 Dec 2023 01:54:15 +0300
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc:     "Reshetova, Elena" <elena.reshetova@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Michael Kelley <mhkelley58@gmail.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Cui, Dexuan" <decui@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
+        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
+        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
+        "cascardo@canonical.com" <cascardo@canonical.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
+ TDX init
+Message-ID: <20231206225415.zxfm2ndpwsmthc6e@box.shutemov.name>
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+ <DM8PR11MB575090573031AD9888D4738AE786A@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
+ <20231205105407.vp2rejqb5avoj7mx@box.shutemov.name>
+ <0c4e33f0-6207-448d-a692-e81391089bea@linux.microsoft.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v7 3/4] virtio/vsock: fix logic which reduces
- credit update messages
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20231206211849.2707151-1-avkrasnov@salutedevices.com>
- <20231206211849.2707151-4-avkrasnov@salutedevices.com>
- <20231206165045-mutt-send-email-mst@kernel.org>
- <d9d1ec6a-dd9b-61d9-9211-52e9437cbb1f@salutedevices.com>
- <20231206170640-mutt-send-email-mst@kernel.org>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <20231206170640-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181917 [Dec 06 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/06 20:57:00 #22623256
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0c4e33f0-6207-448d-a692-e81391089bea@linux.microsoft.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 07.12.2023 01:08, Michael S. Tsirkin wrote:
-> On Thu, Dec 07, 2023 at 12:52:51AM +0300, Arseniy Krasnov wrote:
->>
->>
->> On 07.12.2023 00:53, Michael S. Tsirkin wrote:
->>> On Thu, Dec 07, 2023 at 12:18:48AM +0300, Arseniy Krasnov wrote:
->>>> Add one more condition for sending credit update during dequeue from
->>>> stream socket: when number of bytes in the rx queue is smaller than
->>>> SO_RCVLOWAT value of the socket. This is actual for non-default value
->>>> of SO_RCVLOWAT (e.g. not 1) - idea is to "kick" peer to continue data
->>>> transmission, because we need at least SO_RCVLOWAT bytes in our rx
->>>> queue to wake up user for reading data (in corner case it is also
->>>> possible to stuck both tx and rx sides, this is why 'Fixes' is used).
->>>> Also handle case when 'fwd_cnt' wraps, while 'last_fwd_cnt' is still
->>>> not.
->>>>
->>>> Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
->>>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->>>> ---
->>>>  Changelog:
->>>>  v6 -> v7:
->>>>   * Handle wrap of 'fwd_cnt'.
->>>>   * Do to send credit update when 'fwd_cnt' == 'last_fwd_cnt'.
->>>>
->>>>  net/vmw_vsock/virtio_transport_common.c | 18 +++++++++++++++---
->>>>  1 file changed, 15 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>> index e137d740804e..39f8660d825d 100644
->>>> --- a/net/vmw_vsock/virtio_transport_common.c
->>>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>> @@ -558,6 +558,8 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>  	struct virtio_vsock_sock *vvs = vsk->trans;
->>>>  	size_t bytes, total = 0;
->>>>  	struct sk_buff *skb;
->>>> +	u32 fwd_cnt_delta;
->>>> +	bool low_rx_bytes;
->>>>  	int err = -EFAULT;
->>>>  	u32 free_space;
->>>>  
->>>> @@ -601,7 +603,15 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>  		}
->>>>  	}
->>>>  
->>>> -	free_space = vvs->buf_alloc - (vvs->fwd_cnt - vvs->last_fwd_cnt);
->>>> +	/* Handle wrap of 'fwd_cnt'. */
->>>> +	if (vvs->fwd_cnt < vvs->last_fwd_cnt)
->>>> +		fwd_cnt_delta = vvs->fwd_cnt + (U32_MAX - vvs->last_fwd_cnt);
->>>
->>> Are you sure there's no off by one here? for example if fwd_cnt is 0
->>> and last_fwd_cnt is 0xfffffffff then apparently delta is 0.
->>
->> Seems yes, I need +1 here
+On Wed, Dec 06, 2023 at 06:49:11PM +0100, Jeremi Piotrowski wrote:
+> On 05/12/2023 11:54, Kirill A. Shutemov wrote:
+> > On Mon, Dec 04, 2023 at 08:07:38PM +0100, Jeremi Piotrowski wrote:
+> >> On 04/12/2023 10:17, Reshetova, Elena wrote:
+> >>>> Check for additional CPUID bits to identify TDX guests running with Trust
+> >>>> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
+> >>>> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
+> >>>>
+> >>>> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is
+> >>>> visible
+> >>>> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
+> >>>> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
+> >>>> aware mechanisms for what's left. So currently such guests do not have
+> >>>> X86_FEATURE_TDX_GUEST set.
+> >>>
+> >>> Back to this concrete patch. Why cannot L1 VMM emulate the correct value of
+> >>> the TDX_CPUID_LEAF_ID to L2 VM? It can do this per TDX partitioning arch.
+> >>> How do you handle this and other CPUID calls call currently in L1? Per spec,
+> >>> all CPUIDs calls from L2 will cause L2 --> L1 exit, so what do you do in L1?
+> >> The disclaimer here is that I don't have access to the paravisor (L1) code. But
+> >> to the best of my knowledge the L1 handles CPUID calls by calling into the TDX
+> >> module, or synthesizing a response itself. TDX_CPUID_LEAF_ID is not provided to
+> >> the L2 guest in order to discriminate a guest that is solely responsible for every
+> >> TDX mechanism (running at L1) from one running at L2 that has to cooperate with L1.
+> >> More below.
+> >>
+> >>>
+> >>> Given that you do that simple emulation, you already end up with TDX guest
+> >>> code being activated. Next you can check what features you wont be able to
+> >>> provide in L1 and create simple emulation calls for the TDG calls that must be
+> >>> supported and cannot return error. The biggest TDG call (TDVMCALL) is already
+> >>> direct call into L0 VMM, so this part doesn’t require L1 VMM support. 
+> >>
+> >> I don't see anything in the TD-partitioning spec that gives the TDX guest a way
+> >> to detect if it's running at L2 or L1, or check whether TDVMCALLs go to L0/L1.
+> >> So in any case this requires an extra cpuid call to establish the environment.
+> >> Given that, exposing TDX_CPUID_LEAF_ID to the guest doesn't help.
+> >>
+> >> I'll give some examples of where the idea of emulating a TDX environment
+> >> without attempting L1-L2 cooperation breaks down.
+> >>
+> >> hlt: if the guest issues a hlt TDVMCALL it goes to L0, but if it issues a classic hlt
+> >> it traps to L1. The hlt should definitely go to L1 so that L1 has a chance to do
+> >> housekeeping.
+> > 
+> > Why would L2 issue HLT TDVMCALL? It only happens in response to #VE, but
+> > if partitioning enabled #VEs are routed to L1 anyway.
 > 
-> And then you will get a nop, because assigning U32_MAX + 1 to u32
-> gives you 0. Adding () does nothing to change the result,
-> + and - are commutative.
+> What about tdx_safe_halt? When X86_FEATURE_TDX_GUEST is defined I see
+> "using TDX aware idle routing" in dmesg.
 
-Ahh, unsigned here, yes.
+Yeah. I forgot about this one. My bad. :/
 
-@Stefano, what did You mean about wrapping here?
+I think it makes a case for more fine-grained control on where TDVMCALL
+routed: to L1 or to L0. I think TDX module can do that.
 
-I think Michael is right, for example
+BTW, what kind of housekeeping do you do in L1 for HLT case?
 
-vvs->fwd_cnt wraps and now == 5
-vvs->last_fwd_cnt == 0xffffffff
-
-now delta before this patch will be 6 - correct value
-
-May be I didn't get your idea, so implement it very naive?
-
-Thanks, Arseniy
-
+> >> map gpa: say the guest uses MAP_GPA TDVMCALL. This goes to L0, not L1 which is the actual
+> >> entity that needs to have a say in performing the conversion. L1 can't act on the request
+> >> if L0 would forward it because of the CoCo threat model. So L1 and L2 get out of sync.
+> >> The only safe approach is for L2 to use a different mechanism to trap to L1 explicitly.
+> > 
+> > Hm? L1 is always in loop on share<->private conversion. I don't know why
+> > you need MAP_GPA for that.
+> > 
+> > You can't rely on MAP_GPA anyway. It is optional (unfortunately). Conversion
+> > doesn't require MAP_GPA call.
+> > 
 > 
+> I'm sorry, I don't quite follow. I'm reading tdx_enc_status_changed():
+> - TDVMCALL_MAP_GPA is issued for all transitions
+> - TDX_ACCEPT_PAGE is issued for shared->private transitions
+
+I am talking about TDX architecture. It doesn't require MAP_GPA call.
+Just setting shared bit and touching the page will do the conversion.
+MAP_GPA is "being nice" on the guest behalf.
+
+Linux do MAP_GPA all the time. Or tries to. I had bug where I converted
+page by mistake this way. It was pain to debug.
+
+My point is that if you *must* catch all conversions in L1, MAP_GPA is not
+reliable way.
+
+> This doesn't work in partitioning when TDVMCALLs go to L0: TDVMCALL_MAP_GPA bypasses
+> L1 and TDX_ACCEPT_PAGE is L1 responsibility.
 > 
->>>
->>>
->>>> +	else
->>>> +		fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt;
->>>
->>> I actually don't see what is wrong with just
->>> 	fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt
->>> 32 bit unsigned math will I think handle wrap around correctly.
->>>
->>> And given buf_alloc is also u32 - I don't see where the bug is in
->>> the original code.
->>
->> I think problem is when fwd_cnt wraps, while last_fwd_cnt is not. In this
->> case fwd_cnt_delta will be too big, so we won't send credit update which
->> leads to stall for sender
->>
->> Thanks, Arseniy
+> If you want to see how this is currently supported take a look at arch/x86/hyperv/ivm.c.
+> All memory starts as private and there is a hypercall to notify the paravisor for both
+> TDX (when partitioning) and SNP (when VMPL). This guarantees that all page conversions
+> go through L1.
+
+But L1 guest control anyway during page conversion and it has to manage
+aliases with TDG.MEM.PAGE.ATTR.RD/WR. Why do you need MAP_GPA for that?
+
+> >> Having a paravisor is required to support a TPM and having TDVMCALLs go to L0 is
+> >> required to make performance viable for real workloads.
+> >>
+> >>>
+> >>> Until we really see what breaks with this approach, I don’t think it is worth to
+> >>> take in the complexity to support different L1 hypervisors view on partitioning.
+> >>>
+> >>
+> >> I'm not asking to support different L1 hypervisors view on partitioning, I want to
+> >> clean up the code (by fixing assumptions that no longer hold) for the model that I'm
+> >> describing that: the kernel already supports, has an implementation that works and
+> >> has actual users. This is also a model that Intel intentionally created the TD-partitioning
+> >> spec to support.
+> >>
+> >> So lets work together to make X86_FEATURE_TDX_GUEST match reality.
+> > 
+> > I think the right direction is to make TDX architecture good enough
+> > without that. If we need more hooks in TDX module that give required
+> > control to L1, let's do that. (I don't see it so far)
+> > 
 > 
-> Care coming up with an example?
+> I'm not the right person to propose changes to the TDX module, I barely know anything about
+> TDX. The team that develops the paravisor collaborates with Intel on it and was also consulted
+> in TD-partitioning design.
+
+One possible change I mentioned above: make TDVMCALL exit to L1 for some
+TDVMCALL leafs (or something along the line).
+
+I would like to keep it transparent for enlightened TDX Linux guest. It
+should not care if it runs as L1 or as L2 in your environment.
+
+> I'm also not sure what kind of changes you envision. Everything is supported by the
+> kernel already and the paravisor ABI is meant to stay vendor independent.
 > 
-> 
->>>
->>>
->>>> +
->>>> +	free_space = vvs->buf_alloc - fwd_cnt_delta;
->>>> +	low_rx_bytes = (vvs->rx_bytes <
->>>> +			sock_rcvlowat(sk_vsock(vsk), 0, INT_MAX));
->>>>  
->>>>  	spin_unlock_bh(&vvs->rx_lock);
->>>>  
->>>> @@ -611,9 +621,11 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>  	 * too high causes extra messages. Too low causes transmitter
->>>>  	 * stalls. As stalls are in theory more expensive than extra
->>>>  	 * messages, we set the limit to a high value. TODO: experiment
->>>> -	 * with different values.
->>>> +	 * with different values. Also send credit update message when
->>>> +	 * number of bytes in rx queue is not enough to wake up reader.
->>>>  	 */
->>>> -	if (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
->>>> +	if (fwd_cnt_delta &&
->>>> +	    (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE || low_rx_bytes))
->>>>  		virtio_transport_send_credit_update(vsk);
->>>>  
->>>>  	return total;
->>>> -- 
->>>> 2.25.1
->>>
-> 
+> What I'm trying to accomplish is better integration with the non-partitioning side of TDX
+> so that users don't see "Memory Encryption Features active: AMD SEV" when running on Intel
+> TDX with a paravisor.
+
+This part is cosmetics and doesn't make much difference.
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
