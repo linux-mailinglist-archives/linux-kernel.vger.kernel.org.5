@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB94807A6D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6795B807A71
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442929AbjLFV3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        id S1442941AbjLFVaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379643AbjLFV3c (ORCPT
+        with ESMTP id S1379643AbjLFVad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:29:32 -0500
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2305E9A;
-        Wed,  6 Dec 2023 13:29:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1701898179; x=1733434179;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=5HJP+OvAweUdlyGi6FjxSOpC7bXvuAVZyiPxqhEDhgk=;
-  b=iFw/PJZXmEm24WyvgENakFBq97km5lUcBbPerx2jJ6OBMkj5Bq0xmZYx
-   j5vlky5IdrvqgfylrUf2KGIgQvvdpsIhPkq0F7LDFZ015ZUf64RccSBRi
-   a82VfQll22REqukpqO67Ncr5wJOid8pFdzE0bL93/1C0ejACIgDSh2REK
-   Y=;
-X-IronPort-AV: E=Sophos;i="6.04,256,1695686400"; 
-   d="scan'208";a="257298014"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-cadc3fbd.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 21:29:36 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-        by email-inbound-relay-pdx-2b-m6i4x-cadc3fbd.us-west-2.amazon.com (Postfix) with ESMTPS id 9C941A1429;
-        Wed,  6 Dec 2023 21:29:35 +0000 (UTC)
-Received: from EX19MTAUWB001.ant.amazon.com [10.0.7.35:14960]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.47.163:2525] with esmtp (Farcaster)
- id 374507ae-c91b-4abe-b8d4-79d3953b12f9; Wed, 6 Dec 2023 21:29:35 +0000 (UTC)
-X-Farcaster-Flow-ID: 374507ae-c91b-4abe-b8d4-79d3953b12f9
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 6 Dec 2023 21:29:34 +0000
-Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
- (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
- 2023 21:29:32 +0000
-Message-ID: <1ab3656e-bfed-441a-aa8c-c3bd816303e1@amazon.com>
-Date:   Wed, 6 Dec 2023 22:29:30 +0100
+        Wed, 6 Dec 2023 16:30:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2120798
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:30:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2283AC433C7;
+        Wed,  6 Dec 2023 21:30:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701898238;
+        bh=EOp+MGij0g64WAy1COWNmioZgirQtGqmKjfocQx8jHM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=twVx/ShlYhgK/Jw/IDceo1jDbIcb0cSb+M8yO5GcsOjsQ2kdr0g/GOYVkbqjRwkFx
+         b/zG9FpZTmLkINbm5aoNb5RZELRSbA8ycJqWzBKFx9erYRhpvvK4trl9IgC/yzDayu
+         2XTlYYmi0PG7P9+Me8EYw7uP8hogrguvsmrEw1eMhitz4f+/w8ogmlUq1mAmSDvKvT
+         xPPeaeZmPjnwUOFK6U3i+qqh8HByM2tjk8D+G8iel4kUaPHpyK+ys3tRNimAtxKdvv
+         IsxXcwPffiAzdruSl4RNlAH4Pooq6lCxuG4RfsxZCNmRuxucM0p7Hv5LarOpTCi7U4
+         1yhzZ+pvwledg==
+Date:   Wed, 6 Dec 2023 21:30:33 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Shifeng Li <lishifeng1992@126.com>
+Cc:     Shifeng Li <lishifeng@sangfor.com.cn>, saeedm@nvidia.com,
+        leon@kernel.org, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, ogerlitz@mellanox.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dinghui@sangfor.com.cn
+Subject: Re: [PATCH] net/mlx5e: Fix slab-out-of-bounds in
+ mlx5_query_nic_vport_mac_list()
+Message-ID: <20231206213033.GB50400@kernel.org>
+References: <20231130094656.894412-1-lishifeng@sangfor.com.cn>
+ <20231203175015.GP50400@kernel.org>
+ <35e833bf-8aa6-48bd-999c-6b4c9a4fe7f0@126.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] initramfs: Expose retained initrd as sysfs file
-Content-Language: en-US
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Jan_H=2ESch=C3=B6nherr?= <jschoenh@amazon.de>,
-        James Gowans <jgowans@amazon.com>
-References: <20231206141627.91659-1-graf@amazon.com>
- <20231206120020.215a51251cba5a2c4fa51df2@linux-foundation.org>
-From:   Alexander Graf <graf@amazon.com>
-In-Reply-To: <20231206120020.215a51251cba5a2c4fa51df2@linux-foundation.org>
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D038UWB001.ant.amazon.com (10.13.139.148) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <35e833bf-8aa6-48bd-999c-6b4c9a4fe7f0@126.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ck9uIDA2LjEyLjIzIDIxOjAwLCBBbmRyZXcgTW9ydG9uIHdyb3RlOgo+IE9uIFdlZCwgNiBEZWMg
-MjAyMyAxNDoxNjoyNyArMDAwMCBBbGV4YW5kZXIgR3JhZiA8Z3JhZkBhbWF6b24uY29tPiB3cm90
-ZToKPgo+PiBXaGVuIHRoZSBrZXJuZWwgY29tbWFuZCBsaW5lIG9wdGlvbiAicmV0YWluX2luaXRy
-ZCIgaXMgc2V0LCB3ZSBkbyBub3QKPj4gZnJlZSB0aGUgaW5pdHJkIG1lbW9yeS4gSG93ZXZlciwg
-d2UgYWxzbyBkb24ndCBleHBvc2UgaXQgdG8gYW55b25lIGZvcgo+PiBjb25zdW1wdGlvbi4gVGhh
-dCBsZWF2ZXMgdXMgaW4gYSB3ZWlyZCBzaXR1YXRpb24gd2hlcmUgdGhlIG9ubHkgdXNlciBvZgo+
-PiB0aGlzIGZlYXR1cmUgaXMgcHBjNjQgYW5kIGFybTY0IHNwZWNpZmljIGtleGVjIHRvb2xpbmcu
-Cj4+Cj4+IFRvIG1ha2UgaXQgbW9yZSBnZW5lcmFsbHkgdXNlZnVsLCB0aGlzIHBhdGNoIGFkZHMg
-YSBrb2JqZWN0IHRvIHRoZQo+PiBmaXJtd2FyZSBvYmplY3QgdGhhdCBjb250YWlucyB0aGUgaW5p
-dHJkIGNvbnRleHQgd2hlbiAicmV0YWluX2luaXRyZCIKPj4gaXMgc2V0LiBUaGF0IHdheSwgd2Ug
-Y2FuIGFjY2VzcyB0aGUgaW5pdHJkIGFueSB0aW1lIGFmdGVyIGJvb3QgZnJvbQo+PiB1c2VyIHNw
-YWNlIGFuZCBmb3IgZXhhbXBsZSBoYW5kIGl0IGludG8ga2V4ZWMgYXMgLS1pbml0cmQgcGFyYW1l
-dGVyCj4+IGlmIHdlIHdhbnQgdG8gcmVib290IHRoZSBzYW1lIGluaXRyZC4gT3IgaW5zcGVjdCBp
-dCBkaXJlY3RseSBsb2NhbGx5Lgo+IEkgdGhpbmsgaXQgd291bGQgYmUgaGVscGZ1bCBpZiB0aGUg
-Y2hhbmdlbG9nIHdlcmUgbWVudGlvbiBhbmQgZGVzY3JpYmUKPiB0aGUgbmV3IC9zeXMvZmlybXdh
-cmUvaW5pdHJkLiAgQW5kIEkgYXNzdW1lIHdlIHNob3VsZCBhZGQgYQo+IERvY3VtZW50YXRpb24v
-QUJJL3Rlc3Rpbmcvc3lzZnMtZmlybXdhcmUtaW5pdHJkLgoKClRoYW5rcyBhIGJ1bmNoIGZvciB0
-aGUgc3VnZ2VzdGlvbnMgLSBsZXQgbWUgc2VuZCB2MiB3aXRoIGJvdGggYWRkcmVzc2VkIDopCgpB
-bGV4CgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdlcm1hbnkgR21iSApLcmF1c2Vuc3Ry
-LiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5nOiBDaHJpc3RpYW4gU2NobGFlZ2Vy
-LCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRzZ2VyaWNodCBDaGFybG90dGVuYnVy
-ZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVzdC1JRDogREUgMjg5IDIzNyA4NzkK
-Cgo=
+On Mon, Dec 04, 2023 at 10:30:14AM +0800, Shifeng Li wrote:
+> On 2023/12/4 1:50, Simon Horman wrote:
+> > On Thu, Nov 30, 2023 at 01:46:56AM -0800, Shifeng Li wrote:
+> > > Out_sz that the size of out buffer is calculated using query_nic_vport
+> > > _context_in structure when driver query the MAC list. However query_nic
+> > > _vport_context_in structure is smaller than query_nic_vport_context_out.
+> > > When allowed_list_size is greater than 96, calling ether_addr_copy() will
+> > > trigger an slab-out-of-bounds.
+> > > 
+> > > [ 1170.055866] BUG: KASAN: slab-out-of-bounds in mlx5_query_nic_vport_mac_list+0x481/0x4d0 [mlx5_core]
+> > > [ 1170.055869] Read of size 4 at addr ffff88bdbc57d912 by task kworker/u128:1/461
+> > > [ 1170.055870]
+> > > [ 1170.055932] Workqueue: mlx5_esw_wq esw_vport_change_handler [mlx5_core]
+> > > [ 1170.055936] Call Trace:
+> > > [ 1170.055949]  dump_stack+0x8b/0xbb
+> > > [ 1170.055958]  print_address_description+0x6a/0x270
+> > > [ 1170.055961]  kasan_report+0x179/0x2c0
+> > > [ 1170.056061]  mlx5_query_nic_vport_mac_list+0x481/0x4d0 [mlx5_core]
+> > > [ 1170.056162]  esw_update_vport_addr_list+0x2c5/0xcd0 [mlx5_core]
+> > > [ 1170.056257]  esw_vport_change_handle_locked+0xd08/0x1a20 [mlx5_core]
+> > > [ 1170.056377]  esw_vport_change_handler+0x6b/0x90 [mlx5_core]
+> > > [ 1170.056381]  process_one_work+0x65f/0x12d0
+> > > [ 1170.056383]  worker_thread+0x87/0xb50
+> > > [ 1170.056390]  kthread+0x2e9/0x3a0
+> > > [ 1170.056394]  ret_from_fork+0x1f/0x40
+> > > 
+> > > Fixes: e16aea2744ab ("net/mlx5: Introduce access functions to modify/query vport mac lists")
+> > > Cc: Ding Hui <dinghui@sangfor.com.cn>
+> > > Signed-off-by: Shifeng Li <lishifeng@sangfor.com.cn>
+> > 
+> > Hi,
+> > 
+> > I am unsure how you calculated the 96 figure above.
+> > But in any case I agree that the cited patch introduced
+> > the mismatch that you describe.
+> > 
+> out_sz = MLX5_ST_SZ_BYTES(query_nic_vport_context_in) + req_list_size * MLX5_ST_SZ_BYTES(mac_address_layout)
+>        = 0x80/8 + 128 * 0x40/8 = 0x410 (bytes)
+> 
+> nic_vport_ctx = MLX5_ADDR_OF(query_nic_vport_context_out, out, nic_vport_context)
+>               = 0x880/8 = 0x110 (bytes)
+> mac_addr = MLX5_ADDR_OF(nic_vport_context, nic_vport_ctx, current_uc_mac_address[96]) + 2
+>          = 0x110 + 96 * 8 + 2
+>          = 0x412 (bytes)
+> 
+> When i is 96,  the mac_addr offset is 0x412 but the out_sz is 0x410.
+> And that will trigger an slab-out-of-bounds.
 
+Thanks for the clarification, this looks good to me.
+
+> > Reviewed-by: Simon Horman <horms@kernel.org>
