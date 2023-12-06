@@ -2,83 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3FE806CBA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A75806DD6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377799AbjLFKzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:55:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
+        id S1377441AbjLFL0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377508AbjLFKzH (ORCPT
+        with ESMTP id S1377871AbjLFKzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:55:07 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF4EA4;
-        Wed,  6 Dec 2023 02:55:13 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso4302714a12.3;
-        Wed, 06 Dec 2023 02:55:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701860113; x=1702464913; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RVR7pUQEG31iVUA6cUrPPhiUlLhN1EKerFQpUeOEhog=;
-        b=Gd5ilIFE4uXRWCXECZ+y9gk8maLrBJ0AdVT7ZVwx1VhCSxVjDXYd/STQMo/sP//+jG
-         nXTx1APQtGy8/retsCSItnFgTqQMNFLJp0tul5AYfyhrKI5skEWPJVCHdVcnsIH4Y/ar
-         G7W08bwN0CMSv9c36mWOadsxrTMD6hGGxxJhfpWEL3fI/Ivx6k2nUWtQ4lI/f89BiHzv
-         vqlECT05LT1SmFDapcez2p6nVMCIcggjNfzlCf7gu4t4EwvuSBm2zoYogh84e9DqtRu1
-         W0zqoWM2CcHXhtPWC15ZmmU6ryAxXQTr+5MK+jbsR1aEsm/6AEURh1F+Qbjhe/CNJa9G
-         HgWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701860113; x=1702464913;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RVR7pUQEG31iVUA6cUrPPhiUlLhN1EKerFQpUeOEhog=;
-        b=c9/kabUzYPtHN2Ccap+vnYZ42GTaPEDH6ot5MlEpUezZ5zobIxGNyp3WnAQTZX6eUh
-         V4B4yNi8ogHs2A1a3bOZUCslOR9SS1kawNqQtQBHSCPc/KVlMVjg1sTTCGSWxBohajc/
-         RBtjUc6s22mpx3Q4N66g4f2WWI7WrqVPrXCMyVJP0cGqNODvde5oDMS3JSvUYxLX1SCL
-         hmAVZPBafBbwtjQBA9PksxmvgA8XR1k61pBfyHOG7wq/0vpcpXHtASlvy5rzIpXqnH/c
-         3AOhQ9wuwpQNhtGnaQKbOkRo1gMKzoETdRMGlb/aKV8YS2vEx7PNSr/G3ImHCExzq92E
-         Y89Q==
-X-Gm-Message-State: AOJu0YyMe8XiVr555xBIPNmoDq/6/XfSgbI7u7n1yD0PBPj9KHUrVQFz
-        E6r1nRorPLSh4NFKSisDsfs=
-X-Google-Smtp-Source: AGHT+IESses2OjCKH8DRICbCXlwOPOIHyhoN8Q/4BmDcufBDXhskt81/WbSakD3Cag1iV+W2ROrNyA==
-X-Received: by 2002:a05:6a21:7891:b0:18f:e3fb:8cf2 with SMTP id bf17-20020a056a21789100b0018fe3fb8cf2mr271957pzc.84.1701860112787;
-        Wed, 06 Dec 2023 02:55:12 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id gx4-20020a056a001e0400b006ce41b1ba8csm6153534pfb.131.2023.12.06.02.55.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 02:55:11 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 4EA0210418A9B; Wed,  6 Dec 2023 17:55:09 +0700 (WIB)
-Date:   Wed, 6 Dec 2023 17:55:09 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Cc:     Linux CGroups <cgroups@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mrunal Patel <mpatel@redhat.com>,
-        Ryan Phillips <rphillips@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>,
-        Cestmir Kalina <ckalina@redhat.com>
-Subject: Re: [PATCH-cgroup v2] cgroup/cpuset: Include isolated cpuset CPUs in
- cpu_is_isolated() check
-Message-ID: <ZXBTDZtbpOZlooea@archie.me>
-References: <20231205222114.773446-1-longman@redhat.com>
+        Wed, 6 Dec 2023 05:55:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F93A9
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:55:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F62C433C8;
+        Wed,  6 Dec 2023 10:55:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701860153;
+        bh=CvKE1IH3LYnXGhtee6s3Q9ZQyTzdlpf3P98EaHJKW/4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aW9tMVZ8X8hTnrUJt2kVZEBKg3OqNJNF0L0l9tspUrRzVceWE6yMFP6tQoDrVXCxS
+         iCME7Z7Qty6HE/6uXnIIgyae9s4cz+fEO2d6Lo4r8ekJbk/kcjW614pX+O89Pe5U6C
+         iIRU0EdtdDOjQLkyrMNfsn43pzlI0SY88bTXl1TrL69nLzjkTdasDdPtJl28UKNVnu
+         HAfQW8pTkpCGrZ0Hl3RPFhAZ2ofQXkphd0sXu4uWRVXogGv1ZAkUrS68h3RWLBNTaq
+         O3MKr2UvcxTM9qUxiTgAYwWmEoF52mUmJzFUwryYHIVfDi32fy4EAOVUuX7dOoxcKY
+         jRFsD/yQvBtpg==
+Date:   Wed, 6 Dec 2023 10:55:48 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Subject: Re: [PATCH] drivers: perf: constify the ctl_table argument of the
+ riscv user access handler
+Message-ID: <20231206-flanking-frill-fffeca740221@spud>
+References: <CGME20231206084652eucas1p1fd6025710032f3a4a64b05dab67a2a17@eucas1p1.samsung.com>
+ <20231206084642.802053-1-m.szyprowski@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7yiVXI7aBtIVC8K1"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bllXRtefT9FoHVhp"
 Content-Disposition: inline
-In-Reply-To: <20231205222114.773446-1-longman@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231206084642.802053-1-m.szyprowski@samsung.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,126 +63,36 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7yiVXI7aBtIVC8K1
-Content-Type: text/plain; charset=utf-8
+--bllXRtefT9FoHVhp
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 05, 2023 at 05:21:14PM -0500, Waiman Long wrote:
-> Currently, the cpu_is_isolated() function checks only the statically
-> isolated CPUs specified via the "isolcpus" and "nohz_full" kernel
-> command line options. This function is used by vmstat and memcg to
-> reduce interference with isolated CPUs by not doing stat flushing
-> or scheduling works on those CPUs.
+On Wed, Dec 06, 2023 at 09:46:42AM +0100, Marek Szyprowski wrote:
 >=20
-> Workloads running on isolated CPUs within isolated cpuset
-> partitions should receive the same treatment to reduce unnecessary
-> interference. This patch introduces a new cpuset_cpu_is_isolated()
-> function to be called by cpu_is_isolated() so that the set of dynamically
-> created cpuset isolated CPUs will be included in the check.
+> Fix riscv build break after commit c8be9e66ca1e ("sysctl: treewide:
+> constify the ctl_table argument of handlers").
 >=20
-> Assuming that testing a bit in a cpumask is atomic, no synchronization
-> primitive is currently used to synchronize access to the cpuset's
-> isolated_cpus mask.
->=20
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  include/linux/cpuset.h          |  6 ++++++
->  include/linux/sched/isolation.h |  4 +++-
->  kernel/cgroup/cpuset.c          | 11 +++++++++++
->  3 files changed, 20 insertions(+), 1 deletion(-)
->=20
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index d629094fac6e..875d12598bd2 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -77,6 +77,7 @@ extern void cpuset_lock(void);
->  extern void cpuset_unlock(void);
->  extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *m=
-ask);
->  extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
-> +extern bool cpuset_cpu_is_isolated(int cpu);
->  extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
->  #define cpuset_current_mems_allowed (current->mems_allowed)
->  void cpuset_init_current_mems_allowed(void);
-> @@ -207,6 +208,11 @@ static inline bool cpuset_cpus_allowed_fallback(stru=
-ct task_struct *p)
->  	return false;
->  }
-> =20
-> +static inline bool cpuset_cpu_is_isolated(int cpu)
-> +{
-> +	return false;
-> +}
-> +
->  static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
->  {
->  	return node_possible_map;
-> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolat=
-ion.h
-> index fe1a46f30d24..2b461129d1fa 100644
-> --- a/include/linux/sched/isolation.h
-> +++ b/include/linux/sched/isolation.h
-> @@ -2,6 +2,7 @@
->  #define _LINUX_SCHED_ISOLATION_H
-> =20
->  #include <linux/cpumask.h>
-> +#include <linux/cpuset.h>
->  #include <linux/init.h>
->  #include <linux/tick.h>
-> =20
-> @@ -67,7 +68,8 @@ static inline bool housekeeping_cpu(int cpu, enum hk_ty=
-pe type)
->  static inline bool cpu_is_isolated(int cpu)
->  {
->  	return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
-> -		 !housekeeping_test_cpu(cpu, HK_TYPE_TICK);
-> +	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK) ||
-> +	       cpuset_cpu_is_isolated(cpu);
->  }
-> =20
->  #endif /* _LINUX_SCHED_ISOLATION_H */
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 2a16df86c55c..dfbb16aca9f4 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1518,6 +1518,17 @@ static void update_unbound_workqueue_cpumask(bool =
-isolcpus_updated)
->  	WARN_ON_ONCE(ret < 0);
->  }
-> =20
-> +/**
-> + * cpuset_cpu_is_isolated - Check if the given CPU is isolated
-> + * @cpu: the CPU number to be checked
-> + * Return: true if CPU is used in an isolated partition, false otherwise
-> + */
-> +bool cpuset_cpu_is_isolated(int cpu)
-> +{
-> +	return cpumask_test_cpu(cpu, isolated_cpus);
-> +}
-> +EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
-> +
->  /*
->   * compute_effective_exclusive_cpumask - compute effective exclusive CPUs
->   * @cs: cpuset
+> Fixes: c8be9e66ca1e ("sysctl: treewide: constify the ctl_table argument o=
+f handlers")
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
+This breaks the build when applied to the RISC-V tree. I'm going to mark
+it "handled elsewhere" in patchwork since it needs to go into whatever
+tree has the broken commit.
 
-No regressions when booting the kernel with this patch applied.
+Thanks,
+Conor.
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---7yiVXI7aBtIVC8K1
+--bllXRtefT9FoHVhp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZXBTCQAKCRD2uYlJVVFO
-o0SOAPsGLs57YKlqeW0mamVOu9pFNmDonfvm0YtiCd+JhtIgiAD9HULH9VkRcoiO
-FrFVJ5r7BQXi1aof2ssYAYE2qG3UWgc=
-=+L7D
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZXBTNAAKCRB4tDGHoIJi
+0g+CAPwJ49hgJ9JEla24sr8w7HMLc1m/NehzyP5r8yTlkre2TQEA7SZee3gvdL7i
+80kwXZlyHO6IsP9BRkSoWLYBnpaxKAw=
+=NaDC
 -----END PGP SIGNATURE-----
 
---7yiVXI7aBtIVC8K1--
+--bllXRtefT9FoHVhp--
