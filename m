@@ -2,172 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A132F8064F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:33:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FE08064F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjLFCZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 21:25:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
+        id S229645AbjLFC0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 21:26:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLFCZW (ORCPT
+        with ESMTP id S229493AbjLFC0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 21:25:22 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFEA183;
-        Tue,  5 Dec 2023 18:25:28 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B60pgVZ031137;
-        Wed, 6 Dec 2023 02:25:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=L19f+ajkxWRfKvLtDMERO9Kn8Y9ELWUmoU2rLGScHyo=;
- b=G1XHVcY1aU5u93YzciAFeiioC60SiLWCvGpthsRnwJaDLevdujFWTLhNFC0+aBAaV+yM
- JrYNIG/+btPKM+wxrlaaWPIOoRQMxYdXk4K/NOWa/GCDlrhTcVGvmPiUJXJi3qAR04pk
- W0VIterumwt6TcztdsXvJpAYV0EKIwgMrp7tsafYy5dja1NNTJ84+asJ8XYLSfw1XAq8
- aJ1A1Tjc8sZQ03AVJk/ft/Mb103LVuXSHPVnmi3nLJqobQtPdzVO6CqTKaPrZO52JN6t
- sA11Ig8GxLjfooM3FQop3f9XlA+qxHXCqJQplZfoPlBdT6bdf8ytFlq0uUkHSjSkajiZ 0Q== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utd0qgccx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 02:25:17 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B62PHnd031217
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Dec 2023 02:25:17 GMT
-Received: from [10.253.14.249] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Dec
- 2023 18:25:15 -0800
-Message-ID: <9873ee7b-7ef1-4327-8e22-49e1cd3872f1@quicinc.com>
-Date:   Wed, 6 Dec 2023 10:25:12 +0800
+        Tue, 5 Dec 2023 21:26:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E280A183;
+        Tue,  5 Dec 2023 18:26:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701829580; x=1733365580;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wYF7RpbeB8g+ke68CCl/dlzrv8SelrNRCEz/XWFPejw=;
+  b=Neo1MBIx+b/mLlSdYNdMKUzR18NHKRYmBAQlhxVqP8xYefhFXqoHzJcQ
+   SgAOVlsuAtTlUvGJwIIz0cmN9b2D5dis7uebVcJzDvGLhpnoGdcihfDPm
+   P+W3FQh93vngmgncW1PS6+09SSmyBt4nSjhtD7xv68JuNODR4RkyZFOg/
+   iVSVvmUl61RL+GM7DY0OpBORpP67P+eUgdfV5gkzUvwlRWlYjZpuKiO9J
+   GQYlPGq6aQaifnw/yuY3g2aY7uJMiJ2WbtHtURe3/j6u/L6j/Qwwq7Xve
+   /SZbr0PsJI/J6dWWzbnGW2j1bW7OgZP5bVXknDI9zfDwpULEeoBf25pwv
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="384396868"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="384396868"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 18:26:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="1018415924"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="1018415924"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 05 Dec 2023 18:26:17 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1rAhc6-000A5O-38;
+        Wed, 06 Dec 2023 02:26:14 +0000
+Date:   Wed, 6 Dec 2023 10:25:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Weongyo Jeong <weongyo.linux@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
+        Jesper Brouer <jesper@cloudflare.com>
+Subject: Re: [PATCH v2 net-next] packet: add a generic drop reason for receive
+Message-ID: <202312061012.2LbT2aSi-lkp@intel.com>
+References: <ZWobMUp22oTpP3FW@debian.debian>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/4] bus: mhi: host: Drop chan lock before queuing
- buffers
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     <quic_jhugo@quicinc.com>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_cang@quicinc.com>, <quic_mrana@quicinc.com>
-References: <1699939661-7385-1-git-send-email-quic_qianyu@quicinc.com>
- <1699939661-7385-3-git-send-email-quic_qianyu@quicinc.com>
- <20231124100403.GA4536@thinkpad>
- <639d6008-bdfa-4b6e-b622-e916003ec908@quicinc.com>
- <20231128133252.GX3088@thinkpad>
- <5eb0a521-0b72-4d15-9a65-429c4c123833@quicinc.com>
- <20231130053157.GB3043@thinkpad>
-From:   Qiang Yu <quic_qianyu@quicinc.com>
-In-Reply-To: <20231130053157.GB3043@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Ai0hCukKgEy8vzX3NDT88uu5EAFybPoP
-X-Proofpoint-ORIG-GUID: Ai0hCukKgEy8vzX3NDT88uu5EAFybPoP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_01,2023-12-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- impostorscore=0 bulkscore=0 mlxlogscore=750 lowpriorityscore=0 spamscore=0
- adultscore=0 priorityscore=1501 suspectscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312060018
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWobMUp22oTpP3FW@debian.debian>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Yan,
 
-On 11/30/2023 1:31 PM, Manivannan Sadhasivam wrote:
-> On Wed, Nov 29, 2023 at 11:29:07AM +0800, Qiang Yu wrote:
->> On 11/28/2023 9:32 PM, Manivannan Sadhasivam wrote:
->>> On Mon, Nov 27, 2023 at 03:13:55PM +0800, Qiang Yu wrote:
->>>> On 11/24/2023 6:04 PM, Manivannan Sadhasivam wrote:
->>>>> On Tue, Nov 14, 2023 at 01:27:39PM +0800, Qiang Yu wrote:
->>>>>> Ensure read and write locks for the channel are not taken in succession by
->>>>>> dropping the read lock from parse_xfer_event() such that a callback given
->>>>>> to client can potentially queue buffers and acquire the write lock in that
->>>>>> process. Any queueing of buffers should be done without channel read lock
->>>>>> acquired as it can result in multiple locks and a soft lockup.
->>>>>>
->>>>> Is this patch trying to fix an existing issue in client drivers or a potential
->>>>> issue in the future drivers?
->>>>>
->>>>> Even if you take care of disabled channels, "mhi_event->lock" acquired during
->>>>> mhi_mark_stale_events() can cause deadlock, since event lock is already held by
->>>>> mhi_ev_task().
->>>>>
->>>>> I'd prefer not to open the window unless this patch is fixing a real issue.
->>>>>
->>>>> - Mani
->>>> In [PATCH v4 1/4] bus: mhi: host: Add spinlock to protect WP access when
->>>> queueing
->>>> TREs,  we add
->>>> write_lock_bh(&mhi_chan->lock)/write_unlock_bh(&mhi_chan->lock)
->>>> in mhi_gen_tre, which may be invoked as part of mhi_queue in client xfer
->>>> callback,
->>>> so we have to use read_unlock_bh(&mhi_chan->lock) here to avoid acquiring
->>>> mhi_chan->lock
->>>> twice.
->>>>
->>>> Sorry for confusing you. Do you think we need to sqush this two patch into
->>>> one?
->>> Well, if patch 1 is introducing a potential deadlock, then we should fix patch
->>> 1 itself and not introduce a follow up patch.
->>>
->>> But there is one more issue that I pointed out in my previous reply.
->> Sorry, I can not understand why "mhi_event->lock" acquired during
->> mhi_mark_stale_events() can cause deadlock. In mhi_ev_task(), we will
->> not invoke mhi_mark_stale_events(). Can you provide some interpretation?
-> Going by your theory that if a channel gets disabled while processing the event,
-> the process trying to disable the channel will try to acquire "mhi_event->lock"
-> which is already held by the process processing the event.
->
-> - Mani
-OK, I get you. Thank you for kind explanation. Hopefully I didn't 
-intrude too much.
->
->>> Also, I'm planning to cleanup the locking mess within MHI in the coming days.
->>> Perhaps we can revisit this series at that point of time. Will that be OK for
->>> you?
->> Sure, that will be great.
->>> - Mani
->>>
->>>>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
->>>>>> ---
->>>>>>     drivers/bus/mhi/host/main.c | 4 ++++
->>>>>>     1 file changed, 4 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
->>>>>> index 6c6d253..c4215b0 100644
->>>>>> --- a/drivers/bus/mhi/host/main.c
->>>>>> +++ b/drivers/bus/mhi/host/main.c
->>>>>> @@ -642,6 +642,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
->>>>>>     			mhi_del_ring_element(mhi_cntrl, tre_ring);
->>>>>>     			local_rp = tre_ring->rp;
->>>>>> +			read_unlock_bh(&mhi_chan->lock);
->>>>>> +
->>>>>>     			/* notify client */
->>>>>>     			mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
->>>>>> @@ -667,6 +669,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
->>>>>>     					kfree(buf_info->cb_buf);
->>>>>>     				}
->>>>>>     			}
->>>>>> +
->>>>>> +			read_lock_bh(&mhi_chan->lock);
->>>>>>     		}
->>>>>>     		break;
->>>>>>     	} /* CC_EOT */
->>>>>> -- 
->>>>>> 2.7.4
->>>>>>
->>>>>>
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on net-next/main]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Yan-Zhai/packet-add-a-generic-drop-reason-for-receive/20231202-014515
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/ZWobMUp22oTpP3FW%40debian.debian
+patch subject: [PATCH v2 net-next] packet: add a generic drop reason for receive
+config: x86_64-randconfig-121-20231202 (https://download.01.org/0day-ci/archive/20231206/202312061012.2LbT2aSi-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312061012.2LbT2aSi-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312061012.2LbT2aSi-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   net/packet/af_packet.c: In function 'packet_rcv':
+>> net/packet/af_packet.c:2130:7: warning: variable 'is_drop_n_account' set but not used [-Wunused-but-set-variable]
+    2130 |  bool is_drop_n_account = false;
+         |       ^~~~~~~~~~~~~~~~~
+   net/packet/af_packet.c: In function 'tpacket_rcv':
+   net/packet/af_packet.c:2255:7: warning: variable 'is_drop_n_account' set but not used [-Wunused-but-set-variable]
+    2255 |  bool is_drop_n_account = false;
+         |       ^~~~~~~~~~~~~~~~~
+
+
+vim +/is_drop_n_account +2130 net/packet/af_packet.c
+
+16cc1400456a4d Willem de Bruijn         2016-02-03  2108  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2109  /*
+62ab0812137ec4 Eric Dumazet             2010-12-06  2110   * This function makes lazy skb cloning in hope that most of packets
+62ab0812137ec4 Eric Dumazet             2010-12-06  2111   * are discarded by BPF.
+62ab0812137ec4 Eric Dumazet             2010-12-06  2112   *
+62ab0812137ec4 Eric Dumazet             2010-12-06  2113   * Note tricky part: we DO mangle shared skb! skb->data, skb->len
+62ab0812137ec4 Eric Dumazet             2010-12-06  2114   * and skb->cb are mangled. It works because (and until) packets
+62ab0812137ec4 Eric Dumazet             2010-12-06  2115   * falling here are owned by current CPU. Output packets are cloned
+62ab0812137ec4 Eric Dumazet             2010-12-06  2116   * by dev_queue_xmit_nit(), input packets are processed by net_bh
+0e4161d0eda56e Wang Hai                 2021-03-24  2117   * sequentially, so that if we return skb to original state on exit,
+62ab0812137ec4 Eric Dumazet             2010-12-06  2118   * we will not harm anyone.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2119   */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2120  
+40d4e3dfc2f56a Eric Dumazet             2009-07-21  2121  static int packet_rcv(struct sk_buff *skb, struct net_device *dev,
+40d4e3dfc2f56a Eric Dumazet             2009-07-21  2122  		      struct packet_type *pt, struct net_device *orig_dev)
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2123  {
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2124  	struct sock *sk;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2125  	struct sockaddr_ll *sll;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2126  	struct packet_sock *po;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2127  	u8 *skb_head = skb->data;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2128  	int skb_len = skb->len;
+dbcb5855d108b7 David S. Miller          2007-01-24  2129  	unsigned int snaplen, res;
+da37845fdce24e Weongyo Jeong            2016-04-14 @2130  	bool is_drop_n_account = false;
+e31e10cea16faa Yan Zhai                 2023-12-01  2131  	enum skb_drop_reason drop_reason = SKB_CONSUMED;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2132  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2133  	if (skb->pkt_type == PACKET_LOOPBACK)
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2134  		goto drop;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2135  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2136  	sk = pt->af_packet_priv;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2137  	po = pkt_sk(sk);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2138  
+09ad9bc752519c Octavian Purdila         2009-11-25  2139  	if (!net_eq(dev_net(dev), sock_net(sk)))
+d12d01d6b4d197 Denis V. Lunev           2007-11-19  2140  		goto drop;
+d12d01d6b4d197 Denis V. Lunev           2007-11-19  2141  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2142  	skb->dev = dev;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2143  
+d549699048b4b5 Eyal Birger              2020-11-21  2144  	if (dev_has_header(dev)) {
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2145  		/* The device has an explicit notion of ll header,
+62ab0812137ec4 Eric Dumazet             2010-12-06  2146  		 * exported to higher levels.
+62ab0812137ec4 Eric Dumazet             2010-12-06  2147  		 *
+62ab0812137ec4 Eric Dumazet             2010-12-06  2148  		 * Otherwise, the device hides details of its frame
+62ab0812137ec4 Eric Dumazet             2010-12-06  2149  		 * structure, so that corresponding packet head is
+62ab0812137ec4 Eric Dumazet             2010-12-06  2150  		 * never delivered to user.
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2151  		 */
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2152  		if (sk->sk_type != SOCK_DGRAM)
+98e399f82ab3a6 Arnaldo Carvalho de Melo 2007-03-19  2153  			skb_push(skb, skb->data - skb_mac_header(skb));
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2154  		else if (skb->pkt_type == PACKET_OUTGOING) {
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2155  			/* Special case: outgoing packets have ll header at head */
+bbe735e4247dba Arnaldo Carvalho de Melo 2007-03-10  2156  			skb_pull(skb, skb_network_offset(skb));
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2157  		}
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2158  	}
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2159  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2160  	snaplen = skb->len;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2161  
+dbcb5855d108b7 David S. Miller          2007-01-24  2162  	res = run_filter(skb, sk, snaplen);
+dbcb5855d108b7 David S. Miller          2007-01-24  2163  	if (!res)
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2164  		goto drop_n_restore;
+e31e10cea16faa Yan Zhai                 2023-12-01  2165  
+e31e10cea16faa Yan Zhai                 2023-12-01  2166  	/* skb will only be "consumed" not "dropped" before this */
+e31e10cea16faa Yan Zhai                 2023-12-01  2167  	drop_reason = SKB_DROP_REASON_PACKET_SOCK_ERROR;
+e31e10cea16faa Yan Zhai                 2023-12-01  2168  
+dbcb5855d108b7 David S. Miller          2007-01-24  2169  	if (snaplen > res)
+dbcb5855d108b7 David S. Miller          2007-01-24  2170  		snaplen = res;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2171  
+0fd7bac6b6157e Eric Dumazet             2011-12-21  2172  	if (atomic_read(&sk->sk_rmem_alloc) >= sk->sk_rcvbuf)
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2173  		goto drop_n_acct;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2174  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2175  	if (skb_shared(skb)) {
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2176  		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2177  		if (nskb == NULL)
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2178  			goto drop_n_acct;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2179  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2180  		if (skb_head != skb->data) {
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2181  			skb->data = skb_head;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2182  			skb->len = skb_len;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2183  		}
+abc4e4fa29eb81 Eric Dumazet             2012-04-19  2184  		consume_skb(skb);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2185  		skb = nskb;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2186  	}
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2187  
+b4772ef879a8f7 Eyal Birger              2015-03-01  2188  	sock_skb_cb_check_size(sizeof(*PACKET_SKB_CB(skb)) + MAX_ADDR_LEN - 8);
+ffbc61117d32dc Herbert Xu               2007-02-04  2189  
+ffbc61117d32dc Herbert Xu               2007-02-04  2190  	sll = &PACKET_SKB_CB(skb)->sa.ll;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2191  	sll->sll_hatype = dev->type;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2192  	sll->sll_pkttype = skb->pkt_type;
+ee5675ecdf7a4e Eric Dumazet             2023-03-16  2193  	if (unlikely(packet_sock_flag(po, PACKET_SOCK_ORIGDEV)))
+80feaacb8a6400 Peter P. Waskiewicz Jr   2007-04-20  2194  		sll->sll_ifindex = orig_dev->ifindex;
+80feaacb8a6400 Peter P. Waskiewicz Jr   2007-04-20  2195  	else
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2196  		sll->sll_ifindex = dev->ifindex;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2197  
+b95cce3576813a Stephen Hemminger        2007-09-26  2198  	sll->sll_halen = dev_parse_header(skb, sll->sll_addr);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2199  
+2472d7613bd3ba Eyal Birger              2015-03-01  2200  	/* sll->sll_family and sll->sll_protocol are set in packet_recvmsg().
+2472d7613bd3ba Eyal Birger              2015-03-01  2201  	 * Use their space for storing the original skb length.
+2472d7613bd3ba Eyal Birger              2015-03-01  2202  	 */
+2472d7613bd3ba Eyal Birger              2015-03-01  2203  	PACKET_SKB_CB(skb)->sa.origlen = skb->len;
+8dc41944741596 Herbert Xu               2007-02-04  2204  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2205  	if (pskb_trim(skb, snaplen))
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2206  		goto drop_n_acct;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2207  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2208  	skb_set_owner_r(skb, sk);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2209  	skb->dev = NULL;
+adf30907d63893 Eric Dumazet             2009-06-02  2210  	skb_dst_drop(skb);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2211  
+84531c24f27b02 Phil Oester              2005-07-12  2212  	/* drop conntrack reference */
+895b5c9f206eb7 Florian Westphal         2019-09-29  2213  	nf_reset_ct(skb);
+84531c24f27b02 Phil Oester              2005-07-12  2214  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2215  	spin_lock(&sk->sk_receive_queue.lock);
+ee80fbf301adac Daniel Borkmann          2013-04-19  2216  	po->stats.stats1.tp_packets++;
+3bc3b96f3b455b Eyal Birger              2015-03-01  2217  	sock_skb_set_dropcount(sk, skb);
+27942a15209f56 Martin KaFai Lau         2022-03-02  2218  	skb_clear_delivery_time(skb);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2219  	__skb_queue_tail(&sk->sk_receive_queue, skb);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2220  	spin_unlock(&sk->sk_receive_queue.lock);
+676d23690fb62b David S. Miller          2014-04-11  2221  	sk->sk_data_ready(sk);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2222  	return 0;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2223  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2224  drop_n_acct:
+da37845fdce24e Weongyo Jeong            2016-04-14  2225  	is_drop_n_account = true;
+8e8e2951e30957 Eric Dumazet             2019-06-12  2226  	atomic_inc(&po->tp_drops);
+7091fbd82cd568 Willem de Bruijn         2011-09-30  2227  	atomic_inc(&sk->sk_drops);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2228  
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2229  drop_n_restore:
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2230  	if (skb_head != skb->data && skb_shared(skb)) {
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2231  		skb->data = skb_head;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2232  		skb->len = skb_len;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2233  	}
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2234  drop:
+e31e10cea16faa Yan Zhai                 2023-12-01  2235  	kfree_skb_reason(skb, drop_reason);
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2236  	return 0;
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2237  }
+^1da177e4c3f41 Linus Torvalds           2005-04-16  2238  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
