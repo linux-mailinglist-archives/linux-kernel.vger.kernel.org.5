@@ -2,123 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3AB806620
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 05:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5AD80661F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 05:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbjLFEYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 23:24:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        id S1376572AbjLFEYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 23:24:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjLFEYe (ORCPT
+        with ESMTP id S229493AbjLFEYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 23:24:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94F6D45;
-        Tue,  5 Dec 2023 20:24:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701836681; x=1733372681;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YsZ2Q4U8UY65YpbcLnRP1WWpz/335NVd/R5/RmX/Y3c=;
-  b=FWNbUgRQV1vgu/BOYWaCl5CObPemBgUhideRaOYvW1W2VMaVuu48J9RK
-   HF46g3XIviUebVanBY01zI5Rnp0B7JJCRysRI0AqVJmwRPtXt7xu093Gr
-   20SQre029e+vn/V6QvpuyTOftncEN5/iSHxtGR6yh98cVuAObdlSeJAMS
-   uCDIWE8Jw3Vv9UNIsJ8ZaMxwnVmo5uvlI+6bAVntk71ygxiaEGRdqsewZ
-   P81lkeIv6VkfR4Txe4g+Agqqm4hxtdUtZWAp9iHwuGUagZJaUxzDMfFxo
-   kmn2MDj7X8fiYtOfseVNH+CNX5Sstine2caPn9YDgxrYt0+2f5bOYw7cs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="1097561"
-X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
-   d="scan'208";a="1097561"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 20:24:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="774864744"
-X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
-   d="scan'208";a="774864744"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Dec 2023 20:24:35 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAjSb-000AFc-0h;
-        Wed, 06 Dec 2023 04:24:33 +0000
-Date:   Wed, 6 Dec 2023 12:23:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kory Maincent <kory.maincent@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Dent Project <dentproject@linuxfoundation.org>,
-        Kory Maincent <kory.maincent@bootlin.com>
-Subject: Re: [PATCH net-next v2 2/8] ethtool: Expand Ethernet Power Equipment
- with c33 (PoE) alongside PoDL
-Message-ID: <202312061223.iHikO4O3-lkp@intel.com>
-References: <20231201-feature_poe-v2-2-56d8cac607fa@bootlin.com>
+        Tue, 5 Dec 2023 23:24:13 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2054.outbound.protection.outlook.com [40.107.93.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FC9D3;
+        Tue,  5 Dec 2023 20:24:19 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l54j/Y4y5y+MXCY9AK1kwG6w48U6ezSC2CeYstMZl0Fmak9Fool0C9iSbzF8/mTfKAmNR7BHeK2gg7HUQi2T97mGUq0LOP5qMqMC5VdeInzzcVnNVAXUxc7HT8EXrF1lTXUm5Avm3ncafHUbG02Oo56or1fZZa1XCSn0u9U/lLLAwiSE6l/OEGRA24iumbV8aPIzM1QmYh9PziSOekkcQRczjPOh0JeVfmzeL+4SDvbD7qUnb1vcGA+/YjTszhviPmgy1tf2X8PpD/Dbwd3ZP/dS4G0WYH7EAEtGlApskZejcFEM0ByCi9WhOKk4OEAkAINmlDAyfK5pj7qi7RZkfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1aUX/OlAYHqj9Jo3Q9LaDhaLTme4+EK+9qaxX7Wwlvc=;
+ b=oEbsn3tePhX6lEKORSNQWyP2RirsiD4//F2ovCuLTgGA7QjgIB9JwjrMMmbFaPaNCWyEr+u1b0/Mgq/0B8Csj5hsj2Ui5+1YHpx8tLw5pC6t53LQY4EZAg7Vb9tdQW+vsSLdIhphrqgFTwV/2RLsT1S7waOG7tyvJ9w2WFMGwrG/6vthB7MHm1ck12+inffRVq4fW+hIudi1dHAp01iOBaZTrDeUhQ2jrVYRqm8RQkuTYy5xrMeRyDzcdwhESm+bEFe5h2W4s4DrEXf38r0RDxPK+6zp+u+f/njDq4/AnhW9hXwNvuInnILyShru5ga9pVsUIuAQ53iGP/BCIfABwQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1aUX/OlAYHqj9Jo3Q9LaDhaLTme4+EK+9qaxX7Wwlvc=;
+ b=1YaWU1CF0VsdG2dQDog2av83idAtq5GF1Ni2LvXqJ5LXMxug3kOkweK9rN9rQQHZb7jDWe1KFoBV4J9MjmV1HmI/cbVfCL+ex/rjQahowIk+Km1kPoIUaTnlTJ7FXTw4PWsbO6UEcJhv+7ODgKU+rwj5fCr6Dx4Glixq89T8raM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com (2603:10b6:8:96::19) by
+ MW4PR12MB7429.namprd12.prod.outlook.com (2603:10b6:303:21b::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.34; Wed, 6 Dec 2023 04:24:14 +0000
+Received: from DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::d320:6e6c:d4c4:7fda]) by DS7PR12MB6309.namprd12.prod.outlook.com
+ ([fe80::d320:6e6c:d4c4:7fda%3]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
+ 04:24:14 +0000
+Message-ID: <b95083a1-71f2-490d-8d08-eefb875bc3fc@amd.com>
+Date:   Wed, 6 Dec 2023 09:54:03 +0530
+User-Agent: Mozilla Thunderbird
+Reply-To: nikunj@amd.com
+Subject: Re: [PATCH v6 07/16] x86/sev: Move and reorganize sev guest request
+ api
+To:     Dionna Amalie Glaze <dionnaglaze@google.com>
+Cc:     linux-kernel@vger.kernel.org, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, bp@alien8.de,
+        mingo@redhat.com, tglx@linutronix.de, dave.hansen@linux.intel.com,
+        pgonda@google.com, seanjc@google.com, pbonzini@redhat.com
+References: <20231128125959.1810039-1-nikunj@amd.com>
+ <20231128125959.1810039-8-nikunj@amd.com>
+ <CAAH4kHabej_mYshdBZsscpwfRASzD3U24+0wUNFLUUPubXDR+Q@mail.gmail.com>
+Content-Language: en-US
+From:   "Nikunj A. Dadhania" <nikunj@amd.com>
+In-Reply-To: <CAAH4kHabej_mYshdBZsscpwfRASzD3U24+0wUNFLUUPubXDR+Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0224.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:ea::19) To DS7PR12MB6309.namprd12.prod.outlook.com
+ (2603:10b6:8:96::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201-feature_poe-v2-2-56d8cac607fa@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB6309:EE_|MW4PR12MB7429:EE_
+X-MS-Office365-Filtering-Correlation-Id: 78a56e74-3558-47f0-5fa8-08dbf61333c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U0NsL5K+Eu0ZfvIqc++70hiaM5vtU5MzCanxK61oaNsOTjPscLmNBz+ZLpA1XxdpptHjfUcs+AYx3uGA7E0cBsOjNfTdhgxRLGmB0KYrnwWVjAvMfkstEN28B8EWqAwMFSVfQ0oBq5P7pLh9EySvvIzFdxE6SZ0Xj8SWXbO/1Brw4iAFF6fHem2rTxOg9I9mLrxz4B3psxmPADGRrY3yl6ztEcwccoTmv/IJ4keEPAMzz2ihCBcH4ikacSTOFdDmyXiW9kqaXsmDOSsI4wIap1eHvzq1b2UMvhMnDFdV2fevnkzR+/qcQez2gax3UPsZaNsHgIF7M97AXDw+bR67EbFXSvW6Xe0oVP3/dXlaHKVFGgM/j4BdHciJ6kACcmcF2U/5dot82aZOS0Fpjabj6XFCEdnll5bvfGXYMfw4BdZmAucIdHo5GK1HO4QAd/CDayHLiDVz/B3JJg7HpgQ7H1txCAWuhu//Km7fLNdOISzLsPqGb7Bl244ZnWBEUajs6LBlCQOq0pui54iGM8U7WThP+XzilGfpRsk5sQp2oQJjRioRfzQyGtdcszVS3tFTVAd9qF5u+W+xdE4pxg28Z0kxaZcUmiT2AA6hKnDcjbsYxWuKa7pJ8hqPLhrmdN4bTBYTgdiQ5BhdHEX0f9bVKg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB6309.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(39860400002)(396003)(366004)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(3450700001)(7416002)(2906002)(6666004)(4744005)(6486002)(478600001)(8936002)(4326008)(8676002)(66556008)(66476007)(66946007)(31696002)(316002)(6916009)(5660300002)(31686004)(38100700002)(26005)(6512007)(41300700001)(6506007)(53546011)(83380400001)(36756003)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cmxDeDVYNVk1SE5JcjZSb0ordHMvZ1NDSTVPdFVzYU1CUkIyTXZtdGJvV0J5?=
+ =?utf-8?B?ajVMUGhvd0pxMzIxL0tRS29FM2VGWE9ROFZuZHFtZ3RMNjB1cXRIM2RGNzM1?=
+ =?utf-8?B?UUc4dlBmU1FSZGRuMFdzSWZxdkw0dCt0Y1ZjdUo1cFdFT0xBY0xQR05sMTRH?=
+ =?utf-8?B?YzFxa3ZWT1pEMFBvcVhmTWExQjNuNGloZjE1VkxibHRjd1hLWVlQa2Vkalpn?=
+ =?utf-8?B?ekxsMnIzeVpNSGhCZ1lwbnVDeWxwTGtxZDVER3N4SWJBWDRWUE1ISTVoTllo?=
+ =?utf-8?B?Tlp5NndIazd2dFhoZWcyRmFybi81d3E5QTIyMCsweHBpbkovZCt4ditXQWUy?=
+ =?utf-8?B?S0hhUDE0VUZ2ZGkxUTFBcDNpZHB1WDFLRGdPUGRDcVBhdVVNWTNKRmlzL0kz?=
+ =?utf-8?B?NXpYeWNoUlo1d0xzVUVER1hFUGhGZ0ZRSjJ3RGNkNmRCaEg0MTlGL0U2L3FY?=
+ =?utf-8?B?REhkb1RhWmlTdXJhODBYUWdhTmFFKzJwMlVDSUM5OVNVUkd6N3lhcHZWK3hp?=
+ =?utf-8?B?ajc0bkhvZ2h1RVVjSUJRTWQyQWI2S1YyengrSTlXeFZYS2dRYkhzcm90K1hk?=
+ =?utf-8?B?WitHbFMwcmp1eStHbmM1ZGUzUkM5UFNsTU9jS0g4YjFkOXlabVpxdHBYd0dn?=
+ =?utf-8?B?TFFVYi9STkx3WlQxRjBmbjBmaFdNOGFjbUJBN0hYSGtSdlovQWlrdFQveFVj?=
+ =?utf-8?B?TFp5dWpreERWQnRkRGpYQmRWN0hja3YzVDJoSHNKNENmMVZkRUliTmJWZ09N?=
+ =?utf-8?B?VVZmNDAraFBmYm5KRXp0Si9vNXRCL09VaDJwS1BzQnhjRW9IeE9XZFFFdWZX?=
+ =?utf-8?B?MVVoVm1mdENpNENscEJXWHlvMlF6Wld6WU9LN1RONmpSaTRuVVMvUDFkTkha?=
+ =?utf-8?B?ek9iK2wrMy9YQWpCYkF4S21JVDk3a1U3SkNTVEc3b0JVTThDcGZwc1FlNWxs?=
+ =?utf-8?B?eDNnODBVRVBLK0JwZDNwMW01dzNheXVST09ibXM0ZUU3LytRdEdFWFJYYVBz?=
+ =?utf-8?B?UlZLK2NIVkpWaFFOcE1sQ1RCSW00aTh3emgxUmhrVGFzeXNiR1BwY2U3UVJR?=
+ =?utf-8?B?c29ocXVYcjZvM0FkZ2ZoU1d1VWhtMFlhNEVhMTliNzYvSmxFV1Uyd3FIRTJZ?=
+ =?utf-8?B?ZHhBQlpoeThVd29uRTJNZG43TWJzRXRTektLNzFRS2NpR1hpR2sxOVV2QVdX?=
+ =?utf-8?B?elZEbnZ5dTZDOFBQeXZzU29wY3dXaFJoYXBaTEtRVjI5N0l3ZDd5ZjBzSE5y?=
+ =?utf-8?B?S2hWR0NQajJkS0VnRGRvRFM5NklxcUFnYm9Mck14Qk5OVXZ5a05SUW1pNkh6?=
+ =?utf-8?B?QllBenRrdEhma3JlWnZQQTkwMzNtenlxSXdFWGM1RzhTSUpWZ3Fpa1VhNGJq?=
+ =?utf-8?B?MHNOWHhobi9UeGhXTlZlMmNQVUxtbzVhbTlwRXhxUURkelJOaDZsblpSeGVX?=
+ =?utf-8?B?UHFGMW5Ic2RnMG9FWU5IaXBjWGRDWlo5a3RmWk9oUlpXZjVaaTU2RWswamsz?=
+ =?utf-8?B?TDV1ajd6OTRidHl6bmhlZXdDL080WWNkcnp2Y0pFNC9kcTZkaEUzdFpmV29J?=
+ =?utf-8?B?emdLWDdhSVFkRmg5eUNYSnRkcFhCbzJpMWhDUGFNY2xpTFgvNmNRcXZkR1VM?=
+ =?utf-8?B?WTNIeXNGTUtXcjNPYUZtM09uWmVsb0hYd21GR05xVWd5aDc0SG5YSUY3NEdL?=
+ =?utf-8?B?bmRSSTAyajBOWWsrbU85ZHRPMDBQczVERGRmTmkyazZlUE5yMERoWngyaXVC?=
+ =?utf-8?B?M1I5TW8zVTFub1V4V3BIVSttS3plOU1CeWNNOE5aL1ZOb2RvU1I3TEx0ZHlE?=
+ =?utf-8?B?N2FwajNBRHpUVWY5SGtZeEZLOWhBejNrV0Fab3E3ai82ZWtYWmZ3RTRtekxT?=
+ =?utf-8?B?c1JKWkluZlF0ODlsY3hzUUQxWVhtT3NoQzNuZVVmMnNiV0dheVNQbkNSbTVt?=
+ =?utf-8?B?TVdQL1JNaEV5ajFZN1N2QUlEajNMUkViVSsyYkNwZ3VMSlNSdVJFa0h0VStN?=
+ =?utf-8?B?ekFucmt6ZVhKZURwKzJ0cXVXUUMxMDZnaW8zYzFSMXVmZzFmVzRTUkJpQ2th?=
+ =?utf-8?B?aTZ1R1hBRHprb3BWR1UwYUNIN3lac1E2RENNQUNRQjVYaS9pa3JkUDh3NlJs?=
+ =?utf-8?Q?Zhszqwh39goZ4Fy2aNAXUvN9P?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78a56e74-3558-47f0-5fa8-08dbf61333c3
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB6309.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 04:24:13.9608
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 6gtgNzvUv8z5UgnTTwdHJ13XyB7PF4KKpILHjC0Cm386/9RQ4Gqzm3HkTCPSVvUvZd9oK+fgK1nHe+SNdWcUjg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7429
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kory,
+On 12/5/2023 10:43 PM, Dionna Amalie Glaze wrote:
+> On Tue, Nov 28, 2023 at 5:01 AM Nikunj A Dadhania <nikunj@amd.com> wrote:
+>>
+>> +int snp_setup_psp_messaging(struct snp_guest_dev *snp_dev)
+>> +{
+>> +       struct sev_guest_platform_data *pdata;
+>> +       int ret;
+>> +
+>> +       if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
+> 
+> Note that this may be going away in favor of an
+> cpu_feature_enabled(X86_FEATURE_...) check given Kirill's "[PATCH]
+> x86/coco, x86/sev: Use cpu_feature_enabled() to detect SEV guest
+> flavor"
 
-kernel test robot noticed the following build warnings:
+I do not see a conclusion on that yet, so we should wait.
 
-[auto build test WARNING on net-next/main]
+>> +bool snp_assign_vmpck(struct snp_guest_dev *dev, unsigned int vmpck_id)
+>> +{
+>> +       if (WARN_ON(vmpck_id > 3))
+> 
+> This constant 3 should be #define'd, I believe.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Kory-Maincent/ethtool-Expand-Ethernet-Power-Equipment-with-c33-PoE-alongside-PoDL/20231202-021033
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231201-feature_poe-v2-2-56d8cac607fa%40bootlin.com
-patch subject: [PATCH net-next v2 2/8] ethtool: Expand Ethernet Power Equipment with c33 (PoE) alongside PoDL
-reproduce: (https://download.01.org/0day-ci/archive/20231206/202312061223.iHikO4O3-lkp@intel.com/reproduce)
+Sure, I am working on few changes related to mutex per vmpck that Tom had suggested offline, that will also need a #define.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312061223.iHikO4O3-lkp@intel.com/
+Thanks
+Nikunj
 
-All warnings (new ones prefixed by >>):
-
->> Documentation/networking/pse-pd/introduction.rst:56: WARNING: Title underline too short.
-
-vim +56 Documentation/networking/pse-pd/introduction.rst
-
-    46	
-    47	- For general PSE (PoE) code, use "c33_pse" key words. For example:
-    48	  ``enum ethtool_c33_pse_admin_state c33_admin_control;``.
-    49	  This aligns with Clause 33, encompassing various PoE forms.
-    50	
-    51	- For PoDL PSE - specific code, use "podl_pse". For example:
-    52	  ``enum ethtool_podl_pse_admin_state podl_admin_control;`` to differentiate
-    53	  PoDL PSE settings according to Clause 104.
-    54	
-    55	Summary of Clause 33: Data Terminal Equipment (DTE) Power via Media Dependent Interface (MDI)
-  > 56	-------------------------------------------------------------------------------------------
-    57	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
