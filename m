@@ -2,271 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2811D806F48
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:58:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A99A806F50
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:59:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377874AbjLFL56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:57:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34390 "EHLO
+        id S1377889AbjLFL7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377792AbjLFL55 (ORCPT
+        with ESMTP id S1377792AbjLFL7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:57:57 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDD38F;
-        Wed,  6 Dec 2023 03:58:02 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SlbQT5QCfzShKJ;
-        Wed,  6 Dec 2023 19:53:37 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Dec 2023 19:57:58 +0800
-Message-ID: <51afdb12-0075-02a3-87ef-0ed54e8d2588@huawei.com>
-Date:   Wed, 6 Dec 2023 19:57:58 +0800
+        Wed, 6 Dec 2023 06:59:23 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CAC112;
+        Wed,  6 Dec 2023 03:59:29 -0800 (PST)
+Received: from [100.122.216.38] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 166CD6607365;
+        Wed,  6 Dec 2023 11:59:27 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701863967;
+        bh=NQVRc6GiFEVTdKMxJaUtDzeg9fI0AYeC0jB8pgFpeUw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=YWeG38ivXhQAXgqNhclFEjHJTFB+oP5vWkd1sKkLh0un3upmJX4Oiil5sHcYDYnVz
+         HG3jXdqC1s67QcP8DLBd8wZrzwuqrybVTMdE4s5DEucJ0NiZxpDI3n0ChYOz0cxzWX
+         GAOXcwFHwzW+ZM+J+ddpOYf/rVfs+J/kVzBI6m6kGvtOuv8EH/oj5TCXGgCZ9SAA8D
+         FLze+zn4clZOOlxuTtb64Zk2826QeW2oFIhuv9QhtU2h8Ep8iEEnPXuDcxTXcbjISk
+         s3JqoXrTsTQb2OEreh0iaT+wKxA7j9cr2QT6Nn9koR501kZiOZUWXN+Um0GljfjfIP
+         YjMzlKRPzT6mg==
+Message-ID: <34558f91-4253-4a1f-997c-1c8b02786fcb@collabora.com>
+Date:   Wed, 6 Dec 2023 12:59:24 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] videobuf2: core: Rename min_buffers_needed field
+ to vb2_queue
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, tfiga@chromium.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com
+References: <20231206085608.33246-1-benjamin.gaignard@collabora.com>
+ <20231206085608.33246-2-benjamin.gaignard@collabora.com>
+ <a2011bd9-8d1d-486d-8a54-794193dc99ec@suswa.mountain>
 Content-Language: en-US
-To:     Dave Chinner <david@fromorbit.com>
-CC:     Jan Kara <jack@suse.cz>, <linux-mm@kvack.org>,
-        <linux-ext4@vger.kernel.org>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <willy@infradead.org>,
-        <akpm@linux-foundation.org>, <ritesh.list@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-        <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
- <ZXAyV/rlfvBBuDL1@dread.disaster.area>
-From:   Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <ZXAyV/rlfvBBuDL1@dread.disaster.area>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <a2011bd9-8d1d-486d-8a54-794193dc99ec@suswa.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/12/6 16:35, Dave Ch inner wrote:
-> On Mon, Dec 04, 2023 at 09:50:18PM +0800, Baokun Li wrote:
->> On 2023/12/4 20:11, Jan Kara wrote:
->>> Hello!
->> Thank you for your reply!
->>> On Sat 02-12-23 17:14:30, Baokun Li wrote:
->>>> Recently, while running some pressure tests on MYSQL, noticed that
->>>> occasionally a "corrupted data in log event" error would be reported.
->>>> After analyzing the error, I found that extending DIO write and buffered
->>>> read were competing, resulting in some zero-filled page end being read.
->>>> Since ext4 buffered read doesn't hold an inode lock, and there is no
->>>> field in the page to indicate the valid data size, it seems to me that
->>>> it is impossible to solve this problem perfectly without changing these
->>>> two things.
->>> Yes, combining buffered reads with direct IO writes is a recipe for
->>> problems and pretty much in the "don't do it" territory. So honestly I'd
->>> consider this a MYSQL bug. Were you able to identify why does MYSQL use
->>> buffered read in this case? It is just something specific to the test
->>> you're doing?
->> The problem is with a one-master-twoslave MYSQL database with three
->> physical machines, and using sysbench pressure testing on each of the
->> three machines, the problem occurs about once every two to three hours.
+
+Le 06/12/2023 à 10:54, Dan Carpenter a écrit :
+> On Wed, Dec 06, 2023 at 09:56:07AM +0100, Benjamin Gaignard wrote:
+>> Rename min_buffers_needed into min_queued_buffers and update
+>> the documentation about it.
 >>
->> The problem is with the relay log file, and when the problem occurs, the
->> middle dozens of bytes of the file are read as all zeros, while the data on
->> disk is not. This is a journal-like file where a write process gets the data
->> from
->> the master node and writes it locally, and another replay process reads the
->> file and performs the replay operation accordingly (some SQL statements).
->> The problem is that when replaying, it finds that the data read is
->> corrupted,
->> not valid SQL data, while the data on disk is normal.
->>
->> It's not confirmed that buffered reads vs direct IO writes is actually
->> causing
->> this issue, but this is the only scenario that we can reproduce with our
->> local
->> simplified scripts. Also, after merging in patch 1, the MYSQL pressure test
->> scenario has now been tested for 5 days and has not been reproduced.
-> Mixing overlapping buffered read with direct writes - especially partial block
-> extending DIO writes - is a recipe for data corruption. It's not a
-> matter of if, it's a matter of when.
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> [ snip ]
 >
-> Fundamentally, when you have overlapping write IO involving DIO, the
-> result of the overlapping IOs is undefined. One cannot control
-> submission order, the order that the overlapping IO hit the
-> media, or completion ordering that might clear flags like unwritten
-> extents. The only guarantee that we give in this case is that we
-> won't expose stale data from the disk to the user read.
+>> diff --git a/drivers/media/pci/zoran/zoran_driver.c b/drivers/media/pci/zoran/zoran_driver.c
+>> index fa672cc8bc67..2c91f75e8d79 100644
+>> --- a/drivers/media/pci/zoran/zoran_driver.c
+>> +++ b/drivers/media/pci/zoran/zoran_driver.c
+>> @@ -749,9 +749,6 @@ static int zr_vb2_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers, unsi
+>>   
+>>   	zr->buf_in_reserve = 0;
+>>   
+>> -	if (*nbuffers < vq->min_buffers_needed)
+>> -		*nbuffers = vq->min_buffers_needed;
+>> -
+>>   	if (*nplanes) {
+>>   		if (sizes[0] < size)
+>>   			return -EINVAL;
+> This was not mentioned in the commit message.  And anyway, please do
+> that as a separate commit.
+
+It is a mistake, I don't want to change the drivers code.
+I will restore these lines in next version.
+
+Same for vdec driver below.
+
+Regards,
+Benjamin
+
 >
-> As such, it is the responsibility of the application to avoid
-> overlapping IOs when doing direct IO. The fact that you['ve observed
-> data corruption due to overlapping IO ranges from the one
-> application indicates that this is, indeed, an application level
-> problem and can only be solved by fixing the application....
-OK, thank you very much for your detailed explanation!
->> I'll double-check the problem scenario, although buffered reads with
->> buffered
->> writes doesn't seem to have this problem.
->>>> In this series, the first patch reads the inode size twice, and takes the
->>>> smaller of the two values as the copyout limit to avoid copying data that
->>>> was not actually read (0-padding) into the user buffer and causing data
->>>> corruption. This greatly reduces the probability of problems under 4k
->>>> page. However, the problem is still easily triggered under 64k page.
->>>>
->>>> The second patch waits for the existing dio write to complete and
->>>> invalidate the stale page cache before performing a new buffered read
->>>> in ext4, avoiding data corruption by copying the stale page cache to
->>>> the user buffer. This makes it much less likely that the problem will
->>>> be triggered in a 64k page.
->>>>
->>>> Do we have a plan to add a lock to the ext4 buffered read or a field in
->>>> the page that indicates the size of the valid data in the page? Or does
->>>> anyone have a better idea?
->>> No, there are no plans to address this AFAIK. Because such locking will
->>> slow down all the well behaved applications to fix a corner case for
->>> application doing unsupported things. Sure we must not crash the kernel,
->>> corrupt the filesystem or leak sensitive (e.g. uninitialized) data if app
->>> combines buffered and direct IO but returning zeros instead of valid data
->>> is in my opinion fully within the range of acceptable behavior for such
->>> case.
->>>
->>> 								Honza
->> I also feel that a scenario like buffered reads + DIO writes is strange. But
->> theoretically when read doesn't return an error, the data read shouldn't be
->> wrong.
-> The data that was read isn't wrong - it just wasn't what the
-> application expected.
+> regards,
+> dan carpenter
 >
->> And I tested that xfs guarantees data consistency in this scenario, which is
->> why I
->> thought it might be buggy.
-> XFS certainly does not guarantee data consistency between buffered
-> reads and DIO writes, especially for overlapping IO ranges using DIO
-> (see above).
->
-> IOWs, the fact that the data inconsistency doesn't reproduce on XFS
-> doesn't mean that XFS is providing some guarantee of consistency for
-> this IO pattern. All it means is that ext4 and XFS behave differently
-> in an situation where the operational result is indeterminate and all
-> we guarantee is that we won't expose stale data read from disk....
->
-> Cheers,
->
-> Dave.
-Here's my test script, just put all three shell scripts in the same 
-directory,
-change the disk and dir, then run `sh test-io.sh`, and the inconsistency is
-reproduced under ext4 in just one round, and after switching the
-filesystem to xfs, the problem is no longer reproduced. So it looks like
-xfs guarantees consistency in this scenario. But you're right, a test case
-can't trigger a problem doesn't mean the problem doesn't exist.
-Thank you very much for the correction.
-
------- test-write.sh
-disk="/dev/sda"
-dir="/tmp/test"
-
-write_t()
-{
-     pos=0
-     touch $dir/writefile
-     while [ $pos -lt 16777216 ]
-     do
-         xfs_io -c "open -d $dir/writefile" -c "pwrite -q -b 1024 -i 
-$dir/testfile -s $pos $pos 1024" &> /dev/null
-         pos=`ls -l $dir/writefile | awk '{print $5}'`
-     done
-}
-write_t
-------------------------------------------------------------
-
------- test-read.sh
-disk="/dev/sda"
-dir="/tmp/test"
-
-read_t()
-{
-     pos=0
-     touch $dir/readfile
-     while [ $pos -lt 16777216 ]
-     do
-         xfs_io -c "open -d $dir/readfile" -c "pwrite -q -b 65536 -i 
-$dir/writefile -s $pos $pos 65536" &> /dev/null
-         pos=`ls -l $dir/readfile | awk '{print $5}'`
-     done
-}
-read_t
-------------------------------------------------------------
-
------- test-io.sh
-disk="/dev/sda"
-dir="/tmp/test"
-
-mkdir -p $dir
-umount $dir
-mkfs.ext4 -F $disk
-#mkfs.xfs -f -m crc=1,rmapbt=0,reflink=0 $disk
-mount $disk $dir
-
-xfs_io -f -c "pwrite -S 0xff 0 16777216" $dir/testfile
-sync
-
-round=0
-while true
-do
-     while true
-     do
-         echo "******* round $round ********"
-
-         touch $dir/writefile
-         taskset 0x00000001 sh test-read.sh &
-         pid_read=$!
-         taskset 0x0000000f sh test-write.sh &
-         pid_write=$!
-
-         wait $pid_read
-         wait $pid_write
-         sync
-
-         md_raw=`md5sum $dir/testfile | awk '{print $1}'`
-         md_write=`md5sum $dir/writefile | awk '{print $1}'`
-         md_read=`md5sum $dir/readfile | awk '{print $1}'`
-         if [ $md_write != $md_raw ]
-         then
-             echo "write error csum"
-             echo "raw csum: $md_raw"
-             echo "write csum: $md_write"
-             exit 1
-         elif [ $md_read != $md_write ]
-         then
-             echo "raed error csum"
-             echo "write csum: $md_write"
-             echo "read csum: $md_read"
-             exit 1
-         fi
-
-         rm -f $dir/writefile
-         rm -f $dir/readfile
-         sync
-         round=$(($round+1))
-     done
-done
-------------------------------------------------------------
-
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
+> _______________________________________________
+> Kernel mailing list -- kernel@mailman.collabora.com
+> To unsubscribe send an email to kernel-leave@mailman.collabora.com
