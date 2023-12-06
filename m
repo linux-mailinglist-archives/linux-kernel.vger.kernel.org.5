@@ -2,239 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2443807676
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB8C8076AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378131AbjLFRXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:23:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
+        id S1378566AbjLFReU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLFRXJ (ORCPT
+        with ESMTP id S1378537AbjLFReT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:23:09 -0500
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA86CC3;
-        Wed,  6 Dec 2023 09:23:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1701883394; x=1733419394;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=hoPk5DjHDNN7ngBJZ65wXNCMvoqThxzFslm47zVNbg4=;
-  b=zLUQAmdS+nvRDMOiycUxD6KS0+e8e3g3AIOsI/cIHml8b4aHRwC1ZGhZ
-   IY+8BMkN7/DtB+xTRpAbS4tknNhKSMwxfTFqVcDXWmnF9ASy3Y1tVwl5Q
-   ZdoXAE/eh0JbKfWbNBZU2yvW2DgJHKb56xi19ev8w9RcN40AQEtWsBwqm
-   u87ehJPyqnZzKJStKmWCm+SkAxtsjgwDamHadtYilZkJT8qC3Y64SRLo0
-   WtQjfpuV4gq8jkMqabQH0MyVLz9VNbuLPP7Tbpq01homxzesN5XWxtHVe
-   MM1QsIPZ/DdamnTAtWCjw2pSj58mJW47uMaYLmRKtiy8b2J+ZTmiV6CbZ
-   g==;
-X-CSE-ConnectionGUID: XhDziRSWQKS37Ky+Ah4YpA==
-X-CSE-MsgGUID: AupFpxXQQeupeeqB5V1Lcg==
-X-ThreatScanner-Verdict: Negative
-X-IronPort-AV: E=Sophos;i="6.04,255,1695711600"; 
-   d="scan'208";a="12808188"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Dec 2023 10:23:12 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Dec 2023 10:23:02 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.72) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 6 Dec 2023 10:23:02 -0700
+        Wed, 6 Dec 2023 12:34:19 -0500
+X-Greylist: delayed 667 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 06 Dec 2023 09:34:21 PST
+Received: from refb01.tmes.trendmicro.eu (refb01.tmes.trendmicro.eu [18.185.115.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E78E6D51
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:34:21 -0800 (PST)
+Received: from 104.47.7.169_.trendmicro.com (unknown [172.21.9.37])
+        by refb01.tmes.trendmicro.eu (Postfix) with ESMTPS id 297BC10B6FB72
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 17:23:15 +0000 (UTC)
+Received: from 104.47.7.169_.trendmicro.com (unknown [172.21.179.251])
+        by repost01.tmes.trendmicro.eu (Postfix) with SMTP id DAC72100004E9;
+        Wed,  6 Dec 2023 17:23:11 +0000 (UTC)
+X-TM-MAIL-RECEIVED-TIME: 1701883391.559000
+X-TM-MAIL-UUID: 4d506196-66da-49a0-8eaa-adebe54fe412
+Received: from DEU01-BE0-obe.outbound.protection.outlook.com (unknown [104.47.7.169])
+        by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 88A8F10000312;
+        Wed,  6 Dec 2023 17:23:11 +0000 (UTC)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dnyRmUw66ZGtdPyV3OhSjC7t7xGeOFOPQSOpVhsRO/MT645BexZNAwi4BtIhB8sMHx/tZykdC1fFt+QNE0No07w2EqAjBMSgCD6Q8+BUOPLIjYyWTtxkU8lf2ZAM/a2WdX4mSZgMYiShbte8w2jffagaRQiz/PRFQs1X5WcK0pEM27yvZ6W1A9ElRJjc+vD3/0DNnToxBaERNGsd8DkQrYnJ72uIFgzSVYYLnRdAqKQHmyMdkcxsjViZCwzbBRYUejnYsMsK7MgfARKsaoDwjHkUx7xkKVzH21xBQ4eTbYt3wzyjeo4VbRHp9xcTErHjQKxjujStGB0UecdUvasLvw==
+ b=AaVd5hK7ne7111VGrUVpXtve9gy4CfWvah8RzjT10lQl/KCaLlbTzlTfChequcbsYAjWW738S2Q9Tlsxc92u2qiWdaE6MYxnoPQZ5oWYql+19Cqr6G8C677zs2MecmN4EtRxHIYjsX1fW6h4y9VLHMt+jcuB2XPGqe6NYPPfFqEq0VOaAcRmYp7dggqNfjSIVwW6+BzFAxT8Ann4bdAsJ59QcoR96uxpZIi37yHlWW1hrPjjJ2vwFPZmb2RmCg4nsNpCaJkCaAvrXH1Hn9QaiG66vhiZ33xEftAga0LYgdmLFFczMhRy1D9XIvmk7sQ1eQ9flszr7G/qhd4p6YGLoQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aOnLfMCIH1LtpiSEGdWlQRehXPmkCyNuAOyavyUbD1g=;
- b=RfiCO3RoUQ06QjLO2q2ONQ6UisndTvksk9cdRyYZdCrKqsN+QbSWAoqEsU9s3GLFOIX2qWqPzen6RS+QGQN4s98eX7kojipic9XwT6Tkx/Rs07qXINmTQnPlhnpXx3epxV4Oiumx7nSc9FpMR7FFFU2FHm+WEWKOrS3PjCwUF26CkZgsCU53UBYVEcBFI6/7wjIGCsp5uaSt0Pzr5HcDk+GXkeCgawiVSjCrvWhU11eH6d60F5bA4UwbDBEiudhJrKq75ZDUJYwbU9M89db2tBEHvk2SviHbf2yA2led1ETLagFEfEmUtlafUOuuEHyKNhw8t18Rb3AjvQfEL4o/jw==
+ bh=CX2lqi4XghnX4++871xLu3BO0SndIcAeIg33HcF+3jg=;
+ b=CtrR9U+P2H3juxG0Z9TEkj1ZQFBbpC5Wv2fgm2we+4ZPIsn4/U7pNE1gJnruaBU2gmgA7VaUFmfUjhi/jvM3wl9kn5RJPIgUsMuYtT+FwidqO2kx3cs06FyUqcUYFoTO1zPg1DzxLA2lIrwTq37Zw0DeohgGiOyRa1OIo4ii4v/JUywcq7F3draMZ8fiFTaQUvlOTQMOzgsb09w3o/ji/gGVQykpAZ6TaXmqJ3L/YMvDiWTKk4WZ3+SRnFx7032WUIW7dhNNCbQ3O/fK7o/OBLGtXrdffJfnWlvhMXbsrj0JU5GIP0rV2ueFsVkyLUjws8rWyMFYC2ZQwhrVK8+/ig==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aOnLfMCIH1LtpiSEGdWlQRehXPmkCyNuAOyavyUbD1g=;
- b=XO/BC8xEWrTRiWkOrEtSdYrFwpvT5tYqLbaL5AoVwe+AN9jVJ9TXy60ciLbjtsTtPhbR6SCplkWBMWHzAWaSU/ZUt0xIgIBi34oEjrBJVBnL8k9FVTTPDwAY5/L+6mGtjEYAKgPltD90gi2CeIiNGRMRBzrctnDTxT1er+VdArLV7Gh2vZvbOsRffmhWvbnhHJGnJ9gLaEfgEFS7KBJZpLd/i+VVljtUGpwW68bGzwbdpLo57Vdgakt4bFUUCjOJnWCbjXDsgsEQ046oTVGHpx1ZHLrGB3k12QEHZdu8pKX0LH+ZQtDhMaKbRQUjps0uZTz7FPDRD9Qjz3p0pFJ6GQ==
-Received: from DM6PR11MB4124.namprd11.prod.outlook.com (2603:10b6:5:4::13) by
- PH8PR11MB6804.namprd11.prod.outlook.com (2603:10b6:510:1bc::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.34; Wed, 6 Dec 2023 17:22:56 +0000
-Received: from DM6PR11MB4124.namprd11.prod.outlook.com
- ([fe80::af51:1aed:6d1c:6d64]) by DM6PR11MB4124.namprd11.prod.outlook.com
- ([fe80::af51:1aed:6d1c:6d64%6]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 17:22:56 +0000
-From:   <Madhuri.Sripada@microchip.com>
-To:     <sean@geanix.com>, <Woojung.Huh@microchip.com>,
-        <UNGLinuxDriver@microchip.com>, <andrew@lunn.ch>,
-        <f.fainelli@gmail.com>, <olteanv@gmail.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <Arun.Ramadoss@microchip.com>, <ceggers@arri.de>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 net] net: dsa: microchip: provide a list of valid
- protocols for xmit handler
-Thread-Topic: [PATCH v2 net] net: dsa: microchip: provide a list of valid
- protocols for xmit handler
-Thread-Index: AQHaKBRhZLeoCpYepkqcVAzm+JG6R7CcgKEg
-Date:   Wed, 6 Dec 2023 17:22:55 +0000
-Message-ID: <DM6PR11MB4124D98726836442169C2C55E184A@DM6PR11MB4124.namprd11.prod.outlook.com>
-References: <20231206071655.1626479-1-sean@geanix.com>
-In-Reply-To: <20231206071655.1626479-1-sean@geanix.com>
-Accept-Language: en-US
+ smtp.mailfrom=opensynergy.com; dmarc=pass action=none
+ header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=opensynergy.com;
+Message-ID: <75e473b2-f4d2-476c-8d1c-1085446d8b41@opensynergy.com>
+Date:   Wed, 6 Dec 2023 18:23:08 +0100
+Subject: Re: [RFC PATCH v1 3/3] SPI: Add virtio SPI driver (V4 draft
+ specification).
+To:     Mark Brown <broonie@kernel.org>
+Cc:     virtio-dev@lists.oasis-open.org,
+        Haixu Cui <quic_haixcui@quicinc.com>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Harald.Mommer@gmail.com, quic_ztu@quicinc.com,
+        Matti Moell <Matti.Moell@opensynergy.com>,
+        Mikhail Golubev <Mikhail.Golubev@opensynergy.com>
+References: <20231027161016.26625-1-Harald.Mommer@opensynergy.com>
+ <20231027161016.26625-4-Harald.Mommer@opensynergy.com>
+ <ZUjuxfKdwRQgbfdb@finisterre.sirena.org.uk>
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR11MB4124:EE_|PH8PR11MB6804:EE_
-x-ms-office365-filtering-correlation-id: 9f86a7a9-5eef-48cb-eb64-08dbf67ffc6f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mxaiNqH3XdW5QNwmdtCnRvpxqdqOoSSCKTOrMX9JIWs0s0lQq3I/KDlsbsa8Od2a37LwAyJkjSR6nh9zTiQnpW6kcaJU6uKqC3pg8RawTvL2LZhtVR0Z4khWwlEDk00c0Pf2hnnh17isia1JkvDW+FEuCUyQzE1NvYFlglAM2DlM7al3pWJFQoUCoYnZP/8d68Z58uZ40nVczV5RoJneGM7e04OCCsVWdyP2wbAq7KYjGkRawRv7sopDyYiiwYPx7K81beBwRA3pRu+nI6jIPobSl6aNAyM9T48wGmx2CmRjC9LO43afMgjXOREHhUUtPjY0xcjBKpmIBqZ0Bu/7n986WBSDhdmRkArVjtIts2tWWG1QQpVHj707e6RlRu68C1KZWdipVlI0SixOHyp9Y2yNVbtLtwTAFiw/+AusHsU/eshSaTzm861EIdzo7JE+vPg74++xj7ubsAWuqeOEZDE5RFuMZB+cykNPg10XCpZavw56iHLIvqva/JMlWzjcRUDvMu9fxWAXZPpFuVBqCpznJTMKQtN76b+GtkicW59INvmmAc3nwCQPn1bugVvbVIoqYZMqcfzt/gnvXzqvLHDlNAr99Xgq+8BaCnluHJ4SBTVEDMxw+jwiXwsJep09Fy7W6uav1sTqbZfwO3DJDoTlG4zV4HUXKDY0FldCUZM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4124.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(366004)(396003)(39860400002)(230273577357003)(230173577357003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(122000001)(38100700002)(55016003)(7696005)(71200400001)(53546011)(9686003)(6506007)(966005)(478600001)(110136005)(54906003)(64756008)(66946007)(66446008)(66556008)(66476007)(316002)(26005)(83380400001)(4326008)(8676002)(8936002)(76116006)(5660300002)(7416002)(52536014)(921008)(2906002)(33656002)(38070700009)(41300700001)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ky33LOPRgDMERNTKYggubkeib6En+i9mrn2Eko67Gv/LuYqYcz2j8okIHoQc?=
- =?us-ascii?Q?ep2+M42by9i4eDZnGp8NuDjfoz61tYyULydGt67oj7uAVDjidaBKhxd+Sd2k?=
- =?us-ascii?Q?+Pen9lCJSKcvAtlo49YANPJQycvT+nguNCBX0ZgBaMYKb1HuVtgr9s6NNDkD?=
- =?us-ascii?Q?LVMnUcK/IcUi2oGIS5dJ2xThqi/cl1IAyrLEpvKdOAbls+6I7BGYIC6GkvkS?=
- =?us-ascii?Q?aIJ14xZkmk32jd1VLPGSSDHv3d6ARjfAh4MK4WnYlK1cdivBxUMxet11fX/w?=
- =?us-ascii?Q?Z3Y2dxFz9Rmt7TCvoY8dhlbZOQck6RvsQUUcNe8JxgIDSNQH9oTePith6eYI?=
- =?us-ascii?Q?kp4DQsIigsNUmo//6+vFEVgc5+iLyRDpaN7okzWfSs7zhVki2twUVBnSIPle?=
- =?us-ascii?Q?QdlEQ/4vvbuA882MkZ0MXFzCb7gwsnRVRtgMAnVjE+fmTzF1FVfOqtXJEI/3?=
- =?us-ascii?Q?sQJ4VdUfxRM31CtgCl+wKzHSxW9YaOzN4ZZjTIc4RrZ7e5BRh6Zltc5LTRp4?=
- =?us-ascii?Q?Bd/Kopky69K/e0uvvTAIOGsxT3ARp3FtgQghP27/tqtkrc8kmCnbzRKhdT1p?=
- =?us-ascii?Q?3/ibTLhvGxQudNg3oxzJ0kCqQ6/e+a76dhPzUHhjHU33ch3Ni7ux2RZrB4wl?=
- =?us-ascii?Q?r/4FNIQJQBsJ4jltUDeKzV+xoV3F2JYbehrwi5Ds/5elEp4sxgJujeBtQSkT?=
- =?us-ascii?Q?laiuVBUxxf9c9sDjlZ9pWYb2vBKv/6rgr6zQFUn6eAT4jntUodJKk0FOjo9o?=
- =?us-ascii?Q?ePu1/8FoXPMWnkRBX8NFYK6Qs7AnarCa8K1MY0LzG1hj+34yOwRDhqYWi6lN?=
- =?us-ascii?Q?odMTE8Crhtpq7LO7WbyHnxPqr1atnlOCsW4+fT5Hs50ZBoS+65RpNo/D7rTu?=
- =?us-ascii?Q?BiWcj5Mo2APZFTsCjKZ5Rm4HNm2WdyOPyzuWcih5wO6HiRhCSfLZZ4aQrCz1?=
- =?us-ascii?Q?w81WVO6UgFAEFW1DsC7L9skORuT051cg+WmU5xFV8TKpEvocTVjbHafjltZB?=
- =?us-ascii?Q?C/zK0xo2rh3nRI4oX7sHeuYA8xB3g03pzOTSgWgmy40J3zbYm3haRtKqy4Eu?=
- =?us-ascii?Q?W4SLwPk7tpBHb/JKSSd+QOyOnMkE+KS4R0w+cTejdRmQsx6wy+X+dopFv/Q0?=
- =?us-ascii?Q?iV/TWkXaowgj2wbVth1MVwb7FxQONUZaYQBtXN7wxBPK4UXPvK8Cowd92H9E?=
- =?us-ascii?Q?SYUB41D0nbIG6u3ZumhaL+twnHRKj5QDJiBmiYwSCiAF4lNwC35fuER5CACM?=
- =?us-ascii?Q?5WgEh3/Fv4n8jMmXvRPoQYYDfwCe0mv4MrKKzchMLUtufH0lJHMvzNY6D9Ho?=
- =?us-ascii?Q?c0vsEgtSOMIWrpRjxm5oRGjA0a8jxPedK/F4CyvfYrxnMKsmT7jxYHJM33Z1?=
- =?us-ascii?Q?tYwQLE2U5z3/Ly6VlNVrmVXAvIQpDQyx08XpP5mXg//552mwxLwjLNPWAS54?=
- =?us-ascii?Q?Poa4Vwn9jACuda5m/VkNMDKDaDX54GJGkpeNduBKlSvpop/O3cBm2Kr1+EGV?=
- =?us-ascii?Q?wezSg9VYy/qy7dcyrYaKQgnuJ3ldBOoaBlgU32duo6EgJZ40lO/B5RuN/qiW?=
- =?us-ascii?Q?54yd/Z4dmqjkfiCTAtxvU15/GXVc7HDaKOboST6ZErO0zD6HTHh16mpJMbg6?=
- =?us-ascii?Q?LQ=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From:   Harald Mommer <harald.mommer@opensynergy.com>
+In-Reply-To: <ZUjuxfKdwRQgbfdb@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0034.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1c::20) To BE1P281MB3400.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:4a::9)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BE1P281MB3400:EE_|FR0P281MB2121:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3363d888-cebe-4d2d-ac60-08dbf68004b8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jCaIzUt+huhZPMwWvlDmfXwwRTy5bnZp7QkS4xFYkbs0UpPLV/yj+1IuMg6bahx4GsDwCDqj+cqjYlP5x0diC4AF4Ro7ZqYO3+4sn7JLqeSUEIt2Hwq66DN50g/FaYteL0s6ejQ1rmyRGnfNpe9Zx0jm0Pc9vobR2hq53tz3bmejER3Incxo1gpSCX3CzYPXp9t5h3ZB0LpkwyseyWPfGiB4hq7BQk7WyvKYux9J0V9uZItMw8dpGzJi942kCKcbNyWaASHMZHRml8tlr2aShbJx/uGatruNPkoFMwcHZg9vnGlq6zO/2+egocMXQw7TzWfjHZNpFuSugV+IRHJd2H1KEQ6xsEbaH7RKZo9IrkPzr+U4mk8QvXru3spVFYKunoeoe99IXcf1WPh23GfGtFD48U6mAbFNb8hwJtKO55eadYXhx8QDKjlStzh2Z7lrj/0Vw9Robox9adL3LlLYnEWYS34Va9sDaPoJnROm1mE9T/GSsTKS/99uwH/ptGRRVyBqgnYYDd4+lupslipURB1VikYZsoQdc4JuU5NU4QZTPONY3ab0XfEOmqMqq/OyRnAmuXKipfvvHmoNr2PWJN+q1/JWrDDj2pbGw3tkLVI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BE1P281MB3400.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(396003)(39840400004)(366004)(136003)(376002)(346002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(2906002)(5660300002)(8676002)(38100700002)(36756003)(41300700001)(44832011)(31686004)(86362001)(4326008)(8936002)(316002)(66556008)(6916009)(54906003)(66946007)(66476007)(42186006)(478600001)(31696002)(83380400001)(26005)(53546011)(107886003)(2616005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MEVOaXJYb1VEZFUzbVN6dTRiZ3BNaTYxS0hROHVpKzB6SWxZcnExNG9wZkRi?=
+ =?utf-8?B?cWQyWlg4dGtJSFBnNGRzc215TGswWGRiam5KNTZ2TWxhYkVzeGRCeEZkcXcx?=
+ =?utf-8?B?L2xTSUp3TEM4N2kwdzh3SDZwcjh6bUpmTURjb2phK003QXdLR3p5UXZ5UzJj?=
+ =?utf-8?B?TFV1ZEl6SFgxTlVFQ0tnMEsza2d1SnFXMmNDWHRMU2NKREQxdnp3cVI0Y3lM?=
+ =?utf-8?B?RjdGSyt0cDZNRThVaDZWYlNLTm1rdWxJdEdDU2RkSndLMitEWWVYVGtEa1dk?=
+ =?utf-8?B?b3BuWXZjQTcvZTR2NDZmL2ppSHNhUUxRMys1a0xMT1lWTVErWmFySEJhNXRx?=
+ =?utf-8?B?NkI0bmxVQWtYZWRrYnZDSk16MlMyeUd5MzY5SjNUN3cyeERmODZrdGZMWmt5?=
+ =?utf-8?B?RXR4MThrK1UveGJEMWFpTGxlZ0EzbzF1dHQzSmwwSXhKdGNiOGFnaENyclk3?=
+ =?utf-8?B?TWlobVo4OHpzU0V5dVZINlVWNVZjTmJ6ZTNFd2VnbDFTNHBXRmVmNHdPcmlj?=
+ =?utf-8?B?MlBvQUV6a0xVRUVHV1dldW9SSHlDaEY1V2dzSXREenpVTEgwTFhHbm1kUWls?=
+ =?utf-8?B?R1JXMjNZSEtuK1hQeW0yTUZZb1pIcXppYmZHWGVkem9zK1NKTExBdHBQaTVL?=
+ =?utf-8?B?TkVYczV5SCs3cGhhSkVyc1lEc0VBbWJsL0YxM3JUWHhpVWRPbjZPLzdaaWhP?=
+ =?utf-8?B?cGRnb0hFMjMvbFozZmNvaFN5TllIR2pDZGFZbWk2bEg0OVo1LzZOVzkzQnBr?=
+ =?utf-8?B?cEtxbmhQeXlXNnFRVG9xd3JmR0ZIMHRhaDRVU3hnd3pzZHVTendZNmtOUng1?=
+ =?utf-8?B?Sjl2dVlNVFA0RGZadGsxcTgyUFhlaWtOMWt1a0RlbEg0Wm1QN0ZYdnhMcE1o?=
+ =?utf-8?B?aXBIc3hKSEkrd3Nyb0haSXNXQ09LTFdYNXJ1Umtmak11MlZSamM2Wlp5OEdi?=
+ =?utf-8?B?cVR2NEVPM1UvMlVpL3JybFU0YkFsYW5DbDlwTFFPdUtrZUROTEx6bUg1aHE0?=
+ =?utf-8?B?amlsMW1kK2Y3VUdWTk9UbnBMT3Z6TEZOMit5MmdVVWxjdnBvaW4vVUQ3Tzli?=
+ =?utf-8?B?R0tNbGcwNnFNalFObmJ5UDlJL3AwYmwrQTVoelZJSnk1aDlFdnRZY2h4OWls?=
+ =?utf-8?B?ci84UTB4c0wvbEd5RDEvb2J2YzJyaFl4bmE3QXJ6djRpeUIwVFdaQmRsWURM?=
+ =?utf-8?B?RElMUGpScy93S3dsVXI4VEoybHlwaDFUMlYxdWtYWFdMdWxhSHhuUk9lbHZI?=
+ =?utf-8?B?cGxYMVVFTXEyM3ZZYWZZSnZhbklwMDRNOFlMc3g0cXdsY3JSNzUvcy91bE91?=
+ =?utf-8?B?aTIyQzRLSkdvZSsxNyt1YXpkNFRqWkRWU21nWGlRSkJPWlRPWlptLzlIRzVl?=
+ =?utf-8?B?aVNscGt3NWpvUmQrWGtadWJxQWhYdVd3bnpCU2JGYkM1THJFVExPd3pMYlhv?=
+ =?utf-8?B?ZkdrZHduVTF3WERrUjdRUFNNSkpaVU9yc2diK2tjWTZVMTNPcldTalNJWFdi?=
+ =?utf-8?B?RGswK1VXSVFXc2hOMGFqa295MGZCTjNha1VtbEJxNW5oVERKbHArWDlSOUpV?=
+ =?utf-8?B?Qk05QkpNK0wvMHA1WXRUTUVlYjBReDZNUFNZUHI0OXFjQmpmSnRlSGN3elhT?=
+ =?utf-8?B?aXA3NGkzNExyd2QwcERWOHZiRCtwbkZyaEk4OHp6N3ZRTEFWT0dTVVEvZXhs?=
+ =?utf-8?B?Y3pIZTdkZnBUOWc5bkhqNXZBSXZBQktsaHQzcyt0MFhTYU9sRGI1YWFFWVB1?=
+ =?utf-8?B?ZFVwd2JTWU8wWGx5d3BGSTBTV2lsQzRHcFhuRFl0MlZkNXlhckExcDd6ZExQ?=
+ =?utf-8?B?cGlYamRiYXM1KzZSQ2tobXVORE1oOThMTUNKeUt1R2dNdnRITGJ0THYwOGI3?=
+ =?utf-8?B?VStsMVdmL3lDRVZGNUNPcTdNenZwZ0JyRTV5VkNHQ1RDUUhMaDlkbUhjTVI3?=
+ =?utf-8?B?Z1d4d09WbGFNcjZmMkVUNGNZUWFIcWxFRVNydHZmZlgrZ1NwVmdqREEyN1Nx?=
+ =?utf-8?B?YjhUa3cyWm5mUVhTb0JvaEFhanJ4bTB0bFNQaEw1UCs3V1h1dTZaRjQrVHcw?=
+ =?utf-8?B?YmlGeVNyOGdNYzZTMmg3dktZRElOT1BuZTZNUzJtaGU2MExHcWtmcFpYaWN1?=
+ =?utf-8?Q?D8C6BlWRMXfsDUy/hJjTUcJZT?=
+X-OriginatorOrg: opensynergy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3363d888-cebe-4d2d-ac60-08dbf68004b8
+X-MS-Exchange-CrossTenant-AuthSource: BE1P281MB3400.DEUP281.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4124.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f86a7a9-5eef-48cb-eb64-08dbf67ffc6f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2023 17:22:55.9503
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 17:23:10.0588
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3H3dItfloQBJg+zFZWrcHreM84s6MVvhJmySXZnxXvXgm4AluJxqXMcnAmzA40PrCH+CuIdwRtWuYkPAzrq/pyF8Wnlk4RpVfauuPIJoEmU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6804
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KuIW2RVTv21R6oOCSKmjCVrqxpvoVaQdUPmKM3+gpZghvjq4XyZvQGbTUSnySiZWZUB+73NAWQfWuSSWJIcjdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR0P281MB2121
+X-TM-AS-ERS: 104.47.7.169-0.0.0.0
+X-TMASE-Version: StarCloud-1.3-9.1.1015-28042.001
+X-TMASE-Result: 10--25.198100-4.000000
+X-TMASE-MatchedRID: 9d2LtCNB3NL5ETspAEX/ngw4DIWv1jSVbU+XbFYs1xIug34e93J3tnkS
+        2NLbu9vrULbG0rixd+E36a72PkONVNLnVLHHb0BJCWdkPey/ud0mYiLmWG1HXbQNCmAbUSvDZXX
+        36/BmC080NJHPQN9UArP4c0qfJoGz7d+xf/FbvJfPEeDcxvUDjBdg35AjTNkx5aLISmJsQyVoAM
+        7p/7Q4FgngCytgDOwu3wndydrxpzGBhoOMWK4RiyVDHvrOXL2je7c6tEkXezt4MCaOUDLFfUjE5
+        FbJIU5rM/JSAap9TdfZ3LjxMJJFV4rPk06BAVBX11qnBW8yYK9izPYC140hyBNYAPMgIJLFYnC7
+        ZbHmwKhhoj1DnvABVppsX71XTVcqni8H5yYlKS9B8QeybLLpAnADCJNicMiEQmKE8OTMVIjDmdn
+        LZf43Hu6BDVJFY6GhqjNFYgU2//vQKj5kaEbfmcVNAYApHGPk2j7jyCKpnCcSCDdzAMeX/Wp2VX
+        UuZsR8A/lH/MvdoiYmkrgX3CciJpBlLa6MK1y4
+X-TMASE-XGENCLOUD: f7729641-1367-4071-a5b0-841cd88d8349-0-0-200-0
+X-TM-Deliver-Signature: 515AE1AA957D086FE9F6D2EC2F937B0D
+X-TM-Addin-Auth: 8D9F/B+St5jXmQUxWpVJlCYzMw7jn3/wpkdo2ShA1w7uO1Ib+Lem1YItyBT
+        B0MhZSCQDCLyhTmbmXEz8+hiokkhUMlaxlF987t+q5iqjQ1p02hSTIKx/wkNmZO2w4lHciDtbW5
+        kGjRJenBdCa6xSL3ZoynqfJf3Q4N3rCIyHLRhD8CD//xNPWRoBV57IbxlkQp2ycAKEsulFujRqn
+        bEpox2yv+BS3Q8a/bPv2L58i1tjS6QQ1ZBnYTAghr6ghHIn+nCZ/SYLS8ziUPrcAbkP3i+ddeyJ
+        QDKyIQjtoElAJAs=.3OUKeFwKTcpJapU9O4Q2NJ7ZB++eWl02FAE5U/ECH7OGhWnH5bimikHVFY
+        1LYCX+Mqk7NoHPw0QEJiK3NbkJkca/dfqU9/TfdhhDLwFHmUNzymN3PA5+tRmQfw13XuSo9a9jK
+        wGp+VefQNODH5pXrH5WGHptV14WIgjb4ky7LEvT+t/5CWrBGDAwHgOXGLnqnmXwXS8ceYPiwjiE
+        eivzaz3NNhaUDzJprVvH32FAc9CejqVp8GXxz8Cmgzp4fQItDVG9Ss9KWBkacLHtIkchjlQtfxt
+        QiprrihY+0Fw3Qc8ay4HG0KdUFxpGkuBcGcCvsX7bf72eLVc5N8rArExrlw==
+X-TM-Addin-ProductCode: EMS
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=opensynergy.com;
+        s=TM-DKIM-20210503141657; t=1701883391;
+        bh=hSdNxp4lSJ6+QKXhyHS2u9CczwmApyKAiidnKo5xYXk=; l=3661;
+        h=Date:To:From;
+        b=XB8YJv2ebS7LpgY1QzMi14bVfxD2lYV6PO5Mg+xQOSjzWRhdO0XDyrZxqP0pt4Ov0
+         qsCZnsmo2rsOQ0hRK0YvNkev5y9gRIXzF1ob3Tlh5Q22j9TFsjXNcepGxOOyCHpTgY
+         NFUR+cG5s6ZXKoFWgm3FgFHSjnxRgHCP4jM03heQr6ms7AuuWCkaNV4RTGl0U/crYw
+         rnprsz++mb0uxXROYyR2uPHPfGTlw/rVscyQxOuB96VizozucUXsIazyXm1p1ZnAu7
+         MhpetrGNVCVDYkKOVeP2XhcPfLM+/rl+0qCE7b2O2HpZJcLtSWTKGqUjRKMLEQ0g+F
+         jVrcef6X/NPlA==
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+On 06.11.23 14:48, Mark Brown wrote:
+> On Fri, Oct 27, 2023 at 06:10:16PM +0200, Harald Mommer wrote:
+>
+>> +config SPI_VIRTIO
+>> +	tristate "Virtio SPI SPI Controller"
+>> +	depends on VIRTIO
+>> +	help
+>> +	  This enables the Virtio SPI driver.
+>> +
+>> +	  Virtio SPI is an SPI driver for virtual machines using Virtio.
+>> +
+>> +	  If your Linux is a virtual machine using Virtio, say Y here.
+>> +
+> This advice is going to be inappropriate for the majortiy of guests.
+Reminder for me: Need still to address this, but this is not code I'm 
+currently working on, so comes later.
+>> +	// clang-format off
+>> +	struct spi_transfer_head transfer_head	____cacheline_aligned;
+>> +	const uint8_t *tx_buf			____cacheline_aligned;
+>> +	uint8_t *rx_buf				____cacheline_aligned;
+>> +	struct spi_transfer_result result	____cacheline_aligned;
+>> +	// clang-format on
+> Remove this clang-format stuff.
+Not needed any more, will be removed. Maybe I should remove this 
+____cacheline_aligned. It's only there because I looked too deeply into 
+struct virtio_i2c_req, not because I think this ____cacheline_aligned is 
+decisive here.
+>> +static struct spi_board_info board_info = {
+>> +	.modalias = "spi-virtio",
+>> +	.max_speed_hz = 125000000, /* Arbitrary very high limit */
+>> +	.bus_num = 0, /* Patched later during initialization */
+>> +	.chip_select = 0, /* Patched later during initialization */
+>> +	.mode = SPI_MODE_0,
+>> +};
+>> +/* Compare with file i2c_virtio.c structure virtio_i2c_msg_done */
+> In what way is one supposed to compare with the i2c driver?  What
+> happens if the I2C driver changes?  It would be better to ensure that
+> the code can be read and understood as a standalone thing.
+It was a reminder for me from where I got some inspiration and to reveal 
+that not everything was invented by me. Served it's purpose, all such 
+comment references to foreign code is being removed.
+>> +	/* Fill struct spi_transfer_head */
+>> +	th->slave_id = spi->chip_select;
+> If the spec just copied the Linux terminology it'd have few issues :(
+Spec changed this in the meantime so I can do also.
+>> +	th->bits_per_word = spi->bits_per_word;
+>> +	th->cs_change = xfer->cs_change;
+> The virtio spec for cs_change is *not* what the Linux cs_change field
+> does, this will not do the right thing.
 
-> -----Original Message-----
-> From: Sean Nyekjaer <sean@geanix.com>
-> Sent: Wednesday, December 6, 2023 12:47 PM
-> To: Woojung Huh - C21699 <Woojung.Huh@microchip.com>;
-> UNGLinuxDriver <UNGLinuxDriver@microchip.com>; Andrew Lunn
-> <andrew@lunn.ch>; Florian Fainelli <f.fainelli@gmail.com>; Vladimir Oltea=
-n
-> <olteanv@gmail.com>; David S. Miller <davem@davemloft.net>; Eric Dumazet
-> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
-> <pabeni@redhat.com>; Arun Ramadoss - I17769
-> <Arun.Ramadoss@microchip.com>; Christian Eggers <ceggers@arri.de>
-> Cc: Sean Nyekjaer <sean@geanix.com>; netdev@vger.kernel.org; linux-
-> kernel@vger.kernel.org
-> Subject: [PATCH v2 net] net: dsa: microchip: provide a list of valid prot=
-ocols for
-> xmit handler
->=20
-> [Some people who received this message don't often get email from
-> sean@geanix.com. Learn why this is important at
-> https://aka.ms/LearnAboutSenderIdentification ]
->=20
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
-e
-> content is safe
->=20
-> Provide a list of valid protocols for which the driver will provide it's =
-deferred
-> xmit handler.
->=20
-> When using DSA_TAG_PROTO_KSZ8795 protocol, it does not provide a
-> "connect" method, therefor ksz_connect() is not allocating ksz_tagger_dat=
-a.
->=20
-> This avoids the following null pointer dereference:
->  ksz_connect_tag_protocol from dsa_register_switch+0x9ac/0xee0
-> dsa_register_switch from ksz_switch_register+0x65c/0x828
-> ksz_switch_register from ksz_spi_probe+0x11c/0x168  ksz_spi_probe from
-> spi_probe+0x84/0xa8  spi_probe from really_probe+0xc8/0x2d8
->=20
-> Fixes: ab32f56a4100 ("net: dsa: microchip: ptp: add packet transmission
-> timestamping")
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> ---
-> https://lore.kernel.org/netdev/20231205124636.1345761-1-
-> sean@geanix.com/#R
-> Changes since v1:
->  - Provided a list of valid protocols
->=20
->  drivers/net/dsa/microchip/ksz_common.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/net/dsa/microchip/ksz_common.c
-> b/drivers/net/dsa/microchip/ksz_common.c
-> index 42db7679c360..286e20f340e5 100644
-> --- a/drivers/net/dsa/microchip/ksz_common.c
-> +++ b/drivers/net/dsa/microchip/ksz_common.c
-> @@ -2624,10 +2624,18 @@ static int ksz_connect_tag_protocol(struct
-> dsa_switch *ds,  {
->         struct ksz_tagger_data *tagger_data;
->=20
-> -       tagger_data =3D ksz_tagger_data(ds);
-> -       tagger_data->xmit_work_fn =3D ksz_port_deferred_xmit;
-> -
-> -       return 0;
-> +       switch (proto) {
-> +       case DSA_TAG_PROTO_KSZ8795:
-> +               return 0;
-> +       case DSA_TAG_PROTO_KSZ9893:
-> +       case DSA_TAG_PROTO_KSZ9477:
-> +       case DSA_TAG_PROTO_LAN937X:
-> +               tagger_data =3D ksz_tagger_data(ds);
-> +               tagger_data->xmit_work_fn =3D ksz_port_deferred_xmit;
+This is a hard one. Linux says (spi.h):
 
+"@cs_change: affects chipselect after this transfer completes
 
-NULL check is missing here.
+...
 
-> +               return 0;
-> +       default:
-> +               return -EPROTONOSUPPORT;
-> +       }
->  }
->=20
->  static int ksz_port_vlan_filtering(struct dsa_switch *ds, int port,
-> --
-> 2.42.0
+All SPI transfers start with the relevant chipselect active. Normally
+it stays selected until after the last transfer in a message. Drivers
+can affect the chipselect signal using cs_change."
+
+V8 of the draft spec says:
+
+"cs_change indicates whether to deselect device before starting the next 
+SPI transfer, 0 means chipselect
+keep asserted and 1 means chipselect deasserted then asserted again."
+
+What I understand here (unfortunately in both texts) is
+
+- at the start of a transfer CS is made active
+
+- it is kept active during the transfer
+
+- when cs_change is 0 after the transfer CS is kept active (not changed)
+
+- when cs_change is 1 after the transfer CS is de-asserted
+
+So if cs_change is 0 keep CS asserted after transfer, otherwise 
+de-assert after transfer.
+
+I fear there is some subtle thing I haven't gotten yet but I don't 
+understand / see it.What is it?
+
+>> +	th->tx_nbits = xfer->tx_nbits;
+>> +	th->rx_nbits = xfer->rx_nbits;
+>> +	th->reserved[0] = 0;
+>> +	th->reserved[1] = 0;
+>> +	th->reserved[2] = 0;
+>> +
+>> +#if (VIRTIO_SPI_CPHA != SPI_CPHA)
+>> +#error VIRTIO_SPI_CPHA != SPI_CPHA
+>> +#endif
+> BUILD_BUG_ON()
+
+Thanks for this one, didn't know yet.
 
