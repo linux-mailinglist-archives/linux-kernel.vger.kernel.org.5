@@ -2,62 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1339807BA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CE6807BA8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377680AbjLFWqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57522 "EHLO
+        id S1377710AbjLFWtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjLFWqF (ORCPT
+        with ESMTP id S229642AbjLFWtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:46:05 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4309A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 14:46:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFD94C433CC;
-        Wed,  6 Dec 2023 22:46:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701902772;
-        bh=8X83r5OTQETJP3BACOnnNmvlcihfILbuzFscWCAxC/E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DBITz3Evb8Pwetp5R1BX/tFnkZoyAtKKUV/uWrwF7tABe7ICWL3lGLG9fGeJRNEh2
-         hIAMeKvSoWhjBrD4nKn2NWSbVgPCWdnY9ceLFo7AAlnHqqdp1hfdZol1ciWCOeWYRk
-         OxJiPudSZ6CT+S/HHLd/56imUBovQ5/bcBj8n6KOEXm5dPqchdhBXKnOhyxFt8n8Da
-         B6sgEDnIXTEZnSf/qI77+lTdDMC0NljfrbIakg8olJFkf2/GQl81wNy4SxqGPNRcmd
-         1AYuSo/VkMYO6IPK9N0CA0G4+84nrBd/W5FIjMfgoq+sr0CILC8JN9Fkl4P5lghfGK
-         YzrPfzXhS0Qbg==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50bfd7be487so31240e87.0;
-        Wed, 06 Dec 2023 14:46:11 -0800 (PST)
-X-Gm-Message-State: AOJu0YxxielvOk4tzptiIZEbRZ5p7eH80M3dYbMyI1fJbTcePWGaf7En
-        8dauot9twohfk8lhgR1unH1iolK2DVN8EaBQMQ==
-X-Google-Smtp-Source: AGHT+IETBh4KfKssDYyvEIq/NaALVdw46jfGTFoCN6msOKDqdRYDMgd6Fi1n8WkusjpxfTjwzi1IHW56DDYo3kVPYHI=
-X-Received: by 2002:a05:6512:2251:b0:50b:f0df:57bb with SMTP id
- i17-20020a056512225100b0050bf0df57bbmr1074743lfu.49.1701902769936; Wed, 06
- Dec 2023 14:46:09 -0800 (PST)
+        Wed, 6 Dec 2023 17:49:13 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A5718D;
+        Wed,  6 Dec 2023 14:49:18 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5D79221D58;
+        Wed,  6 Dec 2023 22:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701902957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XDqpg+LUdyOlEWaBHsub44B0wZvESYFrEQIjfsMYOcQ=;
+        b=nexB1Co3kCo16eDdcRZbb3sDYY7j4Z69EWGxdzZAgFwlsNG4nCUKukmwMMoezEqTacJFC/
+        cal/QC5PdQXJxX4IMpYvSGkyV83dGAwRAgVOKecuLfvRVBZAagyGtrRcXejEz8xa5AAcVU
+        y8XM2i6nkKOkooimHA7rzwv/RuBIt/U=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E01313403;
+        Wed,  6 Dec 2023 22:49:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id yN7CEGz6cGWIDAAAn2gu4w
+        (envelope-from <mkoutny@suse.com>); Wed, 06 Dec 2023 22:49:16 +0000
+Date:   Wed, 6 Dec 2023 23:49:14 +0100
+From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To:     Stephen Hemminger <stephen@networkplumber.org>
+Cc:     Pedro Tammela <pctammela@mojatatu.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        cake@lists.bufferbloat.net,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
+        Martin Wilck <mwilck@suse.com>
+Subject: Re: [PATCH 0/3] net/sched: Load modules via alias
+Message-ID: <53ohvb547tegxv2vuvurhuwqunamfiy22sonog7gll54h3czht@3dnijc44xilq>
+References: <20231206192752.18989-1-mkoutny@suse.com>
+ <7789659d-b3c5-4eef-af86-540f970102a4@mojatatu.com>
+ <vk6uhf4r2turfxt2aokp66x5exzo5winal55253czkl2pmkkuu@77bhdfwfk5y3>
+ <20231206142857.38403344@hermes.local>
 MIME-Version: 1.0
-References: <20231130191815.2421978-1-robh@kernel.org> <CAOMZO5AZNz1cRg+aYQjDmpZ75ATJQUTWmC5mx+vgaYcBL6M+2w@mail.gmail.com>
- <CAL_JsqKLFpPo8xTh_vgWvDXSY5J8tQJZh9SrkW2EiK5V_ZNeeA@mail.gmail.com> <CAJ+vNU1DiFbQivka8gA1URiLMD2mWJnWSdn-77bEo8Uz0Liqcg@mail.gmail.com>
-In-Reply-To: <CAJ+vNU1DiFbQivka8gA1URiLMD2mWJnWSdn-77bEo8Uz0Liqcg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 6 Dec 2023 16:45:57 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJmK5UDN_xKjJHac1L4Wsrx1GLDmeek5=K7gm=W9XPkOw@mail.gmail.com>
-Message-ID: <CAL_JsqJmK5UDN_xKjJHac1L4Wsrx1GLDmeek5=K7gm=W9XPkOw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: imx8mm-venice: Fix PCI bus nodes
-To:     Tim Harvey <tharvey@gateworks.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="66n2qidccontofol"
+Content-Disposition: inline
+In-Reply-To: <20231206142857.38403344@hermes.local>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -1.45
+X-Spamd-Result: default: False [-1.45 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-0.05)[59.33%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.20)[multipart/signed,text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-0.20)[-0.999];
+         RCPT_COUNT_TWELVE(0.00)[29];
+         SIGNED_PGP(-2.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:~];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[mojatatu.com,vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,suse.cz,suse.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,59 +114,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 12:13=E2=80=AFPM Tim Harvey <tharvey@gateworks.com> =
-wrote:
->
-> On Thu, Nov 30, 2023 at 2:33=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
-te:
-> >
-> > On Thu, Nov 30, 2023 at 1:28=E2=80=AFPM Fabio Estevam <festevam@gmail.c=
-om> wrote:
-> > >
-> > > Hi Rob,
-> > >
-> > > On Thu, Nov 30, 2023 at 4:18=E2=80=AFPM Rob Herring <robh@kernel.org>=
- wrote:
-> > > >
-> > > > The imx8mm-venice boards PCI bus nodes are a complete mess. The
-> > > > unit-addresses are wrong. The PCI bridge nodes are incomplete missi=
-ng
-> > > > "device_type" and "ranges" and just wrong for "#address-cells" and
-> > > > "#size-cells" values.
-> > > >
-> > > > All of these issues are reported warnings if anyone bothered to pay
-> > > > attention. Sigh.
->
-> Rob,
->
-> Sorry about that. At the time the dt was submitted there were still so
-> many dt warnings it wasn't very clear what was a legitimate issue and
-> the PCI bindings are not that easy to understand.
->
-> > >
-> > > The warnings are gone in linux-next:
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/c=
-ommit/arch/arm64/boot/dts/freescale?h=3Dnext-20231130&id=3Dd61c5068729a76a6=
-183a897bcad4bf26e8d3d674
-> >
-> > Linux-next is wrong. The ethernet device should have a node name of
-> > 'ethernet'. The 'pcie' node name and 'device_type =3D "pci"' is for PCI
-> > buses/bridges only.
->
-> So as Fabio has tried to fix this with a patch that landed in
-> linux-next this patch won't apply. I'll submit one that covers your
-> changes.
 
-Thanks.
+--66n2qidccontofol
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> It's always been unfortunate to have to have this level of detail in a
-> device-tree just to allow boot firmware to populate the mac address of
-> a PCI ethernet device.
+On Wed, Dec 06, 2023 at 02:28:57PM -0800, Stephen Hemminger <stephen@networkplumber.org> wrote:
+> It is not clear to me what this patchset is trying to fix.
+> Autoloading happens now, but it does depend on the name not alias.
 
-More unfortunate are incomplete h/w designs lacking the MAC address. :(
+There are some more details in the thread of v1 [1] [2].
+Does it clarify?
 
-Not really any way around it I think if you want something that works
-for any device and any number of devices.
+Thanks,
+Michal
 
-Rob
+[1] https://lore.kernel.org/r/yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75/
+[2] Oh, I realize I forgot to add v2 to today's posting.
+
+
+
+--66n2qidccontofol
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZXD6YQAKCRAGvrMr/1gc
+jqKFAQDa7o9BcCuJ6Pa60x4aCDwIHPwW8c0plGxYwzl/GytgSwEA69HAX+Do+75V
+ojElrep1jaK+lwg9eIeAo2Oof7/dTwM=
+=i4t/
+-----END PGP SIGNATURE-----
+
+--66n2qidccontofol--
