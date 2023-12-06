@@ -2,199 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83904807656
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F43807664
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378693AbjLFRRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:17:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        id S1378761AbjLFRUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:20:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378558AbjLFRRd (ORCPT
+        with ESMTP id S1378608AbjLFRU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:17:33 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2BDBD3;
-        Wed,  6 Dec 2023 09:17:38 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6Gobej005795;
-        Wed, 6 Dec 2023 17:17:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=TuD823XscZsfxPwMTeL+xSPd2hR3A8VvEP1hgp+thd4=;
- b=h8+jvW9f48LtM2Gj6lRnIT775QRpHYk0V+JeE1s6Cn4WPAdKWARNLcjPfLbDNF0Xzz3E
- VMJGe4s/XNfi10l5JSIDOldz72qEBcIfZeaXrHu/iBVEiX25rHXct54SWgF1SFR/ZI6N
- nMxUqx37ySBTVRH6NNcY1+V4o7vcnhHqzQU1NUnYJ0jKONclTARy8ljKZlz+e9Oz2vaf
- 1h9WVQjVtKPoiHEVNmwnYIElON0gSwJcIGb7yVmNHHjQ8t2SajD0RcrbCWMs8Nvcd4Tf
- OTmrNi1JbiKQSSI//PissqA4x+S5XW/gyE5Qamy/ewS9UaqQ4Yh2la7jYJhQGnNJebl9 sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3utv6r1umw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 17:17:36 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B6HBZuP018160;
-        Wed, 6 Dec 2023 17:17:35 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3utv6r1uma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 17:17:35 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6G7guN027096;
-        Wed, 6 Dec 2023 17:17:34 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3utav2wtxr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 17:17:34 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B6HHTm79896632
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Dec 2023 17:17:29 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5781120043;
-        Wed,  6 Dec 2023 17:17:29 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E1E7A20040;
-        Wed,  6 Dec 2023 17:17:28 +0000 (GMT)
-Received: from li-ce58cfcc-320b-11b2-a85c-85e19b5285e0 (unknown [9.155.209.75])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  6 Dec 2023 17:17:28 +0000 (GMT)
-Date:   Wed, 6 Dec 2023 18:17:27 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Harald Freudenberger <freude@linux.ibm.com>
-Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com,
-        Reinhard Buendgen <BUENDGEN@de.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
-Message-ID: <20231206181727.376c3d67.pasic@linux.ibm.com>
-In-Reply-To: <d780a15a7c073e7d437f8120a72e8d29@linux.ibm.com>
-References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
-        <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
-        <1f4720d7-93f1-4e38-a3ad-abaf99596e7c@linux.ibm.com>
-        <05cfc382-d01d-4370-b8bb-d3805e957f2e@linux.ibm.com>
-        <20231204171506.42aa687f.pasic@linux.ibm.com>
-        <d780a15a7c073e7d437f8120a72e8d29@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Wed, 6 Dec 2023 12:20:28 -0500
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5496D40
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:20:34 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EDBFA40E00C7;
+        Wed,  6 Dec 2023 17:20:32 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id FIKI1gkZHfAe; Wed,  6 Dec 2023 17:20:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701883230; bh=SEuXI2V3X/3Kx/69zzGav63YjHB73NgqtYnRloB+IFk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dla+lMacDWjBuJyMsEJsWRG24Y0kGMEcbY8gFoVhi47w9IzpBkylGZyzo/3M+WxIg
+         WU3FxK6VxTVdx/LORD2NVamUqrFFXn3lPOJ/2cwLhu7c2+5o+920mMglDo/17+cs7F
+         rpDhDKUxhO5JEPTMKAcL130wM4FHFE8YmR2dMWTGuHfhdOL8xBvsiQPBAAp26YHcQe
+         OxqiT5dnPGCDJfFfy6L+FiObOmQirp7KljlqFNT1QtzBrzqhwVkdBjzc/hGg9qwnzF
+         6aT7jbSCEmPgHEuGWJAgUzUJtGAzYXUMTaDJmPBou51wfvASS4mcwZh7GNJ5GLD9xF
+         TkgeOFlfEO1Asau7M8v5LHPbYcsaIng3QYo1qdyTZXNdVqVM+AkfTXq9AJoJazr2pL
+         ySM7+sHX7gR5xgmXQRUv6rLhF9ZQWDE9xwZ7comppATf9bqrSFcgo9Cc2pmApWDW3I
+         jRTGgGX9/S7ub+Kn7Gq0qtL6ANDHIV6DeFnFe00u03JIQur2ySTaAiQI//xOZnBK31
+         58q9rka8Jt3m8vqsfbYWeCc/KLjF8S29CvPmiHucQ1dejNp1ijxH3wKh08kzBF0jiu
+         YrAX4TLdWcY9yxL4m0HHdacHHkp1aK0ygo4q0g8AB7uurbhkJNDONrGHIBO0tQiutb
+         pcb1aVaicsjC4UO8RKvTBUtw=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2A7CE40E00C6;
+        Wed,  6 Dec 2023 17:20:27 +0000 (UTC)
+Date:   Wed, 6 Dec 2023 18:20:22 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: [PATCH -v2] x86/ia32: State that IA32 emulation is disabled
+Message-ID: <20231206172022.GCZXCtVoZtt4t2TLpe@fat_crate.local>
+References: <20231130155213.1407-1-bp@alien8.de>
+ <20231130160903.GJZWizn+dPaaViFVKN@fat_crate.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yXcsIFIvJEknM7sR-QqjBu7T3tpcRrZK
-X-Proofpoint-GUID: usnzt_QVGwn7s8AFfRzXlXJotrMoU-sF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_15,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 impostorscore=0
- suspectscore=0 priorityscore=1501 bulkscore=0 spamscore=0 mlxlogscore=999
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312060140
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231130160903.GJZWizn+dPaaViFVKN@fat_crate.local>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Dec 2023 09:04:23 +0100
-Harald Freudenberger <freude@linux.ibm.com> wrote:
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
+Date: Thu, 30 Nov 2023 16:39:33 +0100
 
-> On 2023-12-04 17:15, Halil Pasic wrote:
-> > On Mon, 4 Dec 2023 16:16:31 +0100
-> > Christian Borntraeger <borntraeger@linux.ibm.com> wrote:
-> >   
-> >> Am 04.12.23 um 15:53 schrieb Tony Krowiak:  
-> >> >
-> >> >
-> >> > On 11/29/23 12:12, Christian Borntraeger wrote:  
-> >> >> Am 29.11.23 um 15:35 schrieb Tony Krowiak:  
-> >> >>> In the current implementation, response code 01 (AP queue number not valid)
-> >> >>> is handled as a default case along with other response codes returned from
-> >> >>> a queue reset operation that are not handled specifically. Barring a bug,
-> >> >>> response code 01 will occur only when a queue has been externally removed
-> >> >>> from the host's AP configuration; nn this case, the queue must
-> >> >>> be reset by the machine in order to avoid leaking crypto data if/when the
-> >> >>> queue is returned to the host's configuration. The response code 01 case
-> >> >>> will be handled specifically by logging a WARN message followed by cleaning
-> >> >>> up the IRQ resources.
-> >> >>>  
-> >> >>
-> >> >> To me it looks like this can be triggered by the LPAR admin, correct? So it
-> >> >> is not desireable but possible.
-> >> >> In that case I prefer to not use WARN, maybe use dev_warn or dev_err instead.
-> >> >> WARN can be a disruptive event if panic_on_warn is set.  
-> >> >
-> >> > Yes, it can be triggered by the LPAR admin. I can't use dev_warn here because we don't have a reference to any device, but I can use pr_warn if that suffices.  
-> >> 
-> >> Ok, please use pr_warn then.  
-> > 
-> > Shouldn't we rather make this an 'info'. I mean we probably do not want
-> > people complaining about this condition. Yes it should be a best 
-> > practice
-> > to coordinate such things with the guest, and ideally remove the 
-> > resource
-> > from the guest first. But AFAIU our stack is supposed to be able to
-> > handle something like this. IMHO issuing a warning is excessive 
-> > measure.
-> > I know Reinhard and Tony probably disagree with the last sentence
-> > though.  
-> 
-> Halil, Tony, the thing about about info versus warning versus error is 
-> our
-> own stuff. Keep in mind that these messages end up in the "debug 
-> feature"
-> as FFDC data. So it comes to the point which FFDC data do you/Tony want 
-> to
-> see there ? It should be enough to explain to a customer what happened
-> without the need to "recreate with higher debug level" if something 
-> serious
-> happened. So my private decision table is:
-> 1) is it something serious, something exceptional, something which may 
-> not
->     come up again if tried to recreate ? Yes -> make it visible on the 
-> first
->     occurrence as error msg.
-> 2) is it something you want to read when a customer hits it and you tell 
-> him
->     to extract and examine the debug feature data ? Yes -> make it a 
-> warning
->     and make sure your debug feature by default records warnings.
-> 3) still serious, but may flood the debug feature. Good enough and high
->     probability to reappear on a recreate ? Yes -> make it an info 
-> message
->     and live with the risk that you may not be able to explain to a 
-> customer
->     what happened without a recreate and higher debug level.
-> 4) not 1-3, -> maybe a debug msg but still think about what happens when 
-> a
->     customer enables "debug feature" with highest level. Does it squeeze 
-> out
->     more important stuff ? Maybe make it dynamic debug with pr_debug() 
-> (see
->     kernel docu admin-guide/dynamic-debug-howto.rst).
+Issue a short message once, on the first try to load a 32-bit process to
+save people time when wondering why it won't load and trying to execute
+it, would say:
 
-AFAIU the default log level of the S390 Debug Feature is 3 that is
-error. So warnings do not help us there by default. And if we are 
-already asking the reporter to crank up the loglevel of the debug
-feature, we can as the reporter to crank it up to 5, assumed there
-is not too much stuff that log level 5 in that area... How much
-info stuff do we have for the 'ap' debug facility (I hope
-that is the facility used by vfio_ap)? 
+  -bash: ./strsep32: cannot execute binary file: Exec format error
 
-I think log levels are supposed to be primarily about severity, and
-and I'm not sure that a queue becoming unavailable in G1 without
-fist re-configuring the G2 so that it no more has access to the
-given queue is not really a warning severity thing. IMHO if we
-really do want people complaining about this should they ever see it,
-yes it should be a warning. If not then probably not.
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Cc: Nikolay Borisov <nik.borisov@suse.com>
+---
+ arch/x86/include/asm/elf.h  |  2 +-
+ arch/x86/include/asm/ia32.h | 11 ++++++++++-
+ 2 files changed, 11 insertions(+), 2 deletions(-)
 
-Regards,
-Halil
+diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
+index a0234dfd1031..1e16bd5ac781 100644
+--- a/arch/x86/include/asm/elf.h
++++ b/arch/x86/include/asm/elf.h
+@@ -150,7 +150,7 @@ do {						\
+ 	((x)->e_machine == EM_X86_64)
+ 
+ #define compat_elf_check_arch(x)					\
+-	((elf_check_arch_ia32(x) && ia32_enabled()) ||			\
++	((elf_check_arch_ia32(x) && ia32_enabled_verbose()) ||		\
+ 	 (IS_ENABLED(CONFIG_X86_X32_ABI) && (x)->e_machine == EM_X86_64))
+ 
+ static inline void elf_common_init(struct thread_struct *t,
+diff --git a/arch/x86/include/asm/ia32.h b/arch/x86/include/asm/ia32.h
+index 5a2ae24b1204..094886a8717e 100644
+--- a/arch/x86/include/asm/ia32.h
++++ b/arch/x86/include/asm/ia32.h
+@@ -2,7 +2,6 @@
+ #ifndef _ASM_X86_IA32_H
+ #define _ASM_X86_IA32_H
+ 
+-
+ #ifdef CONFIG_IA32_EMULATION
+ 
+ #include <linux/compat.h>
+@@ -84,4 +83,14 @@ static inline bool ia32_enabled(void)
+ 
+ #endif
+ 
++static inline bool ia32_enabled_verbose(void)
++{
++	bool enabled = ia32_enabled();
++
++	if (IS_ENABLED(CONFIG_IA32_EMULATION) && !enabled)
++		pr_notice_once("32-bit emulation disabled. You can reenable with ia32_emulation=on\n");
++
++	return enabled;
++}
++
+ #endif /* _ASM_X86_IA32_H */
+-- 
+2.42.0.rc0.25.ga82fb66fed25
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
