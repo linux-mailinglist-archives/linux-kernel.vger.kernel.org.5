@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 110D280737A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCD480737B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442505AbjLFPOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:14:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
+        id S1442522AbjLFPOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379228AbjLFPOC (ORCPT
+        with ESMTP id S1379249AbjLFPOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:14:02 -0500
-Received: from relayaws-01.paragon-software.com (relayaws-01.paragon-software.com [35.157.23.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CCDD50;
-        Wed,  6 Dec 2023 07:14:07 -0800 (PST)
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayaws-01.paragon-software.com (Postfix) with ESMTPS id 6E1C01E1A;
-        Wed,  6 Dec 2023 15:07:41 +0000 (UTC)
+        Wed, 6 Dec 2023 10:14:04 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8490D62;
+        Wed,  6 Dec 2023 07:14:10 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1a496a73ceso123330666b.2;
+        Wed, 06 Dec 2023 07:14:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1701875261;
-        bh=/4I47So9TsCFHrAhRoQV8zzXSeAqCb/39siaVWL+gX0=;
-        h=Date:Subject:From:To:CC:References:In-Reply-To;
-        b=kN9J13WYKnTwM0/sOLGjGLDz5CC0z/k/AWpQjtIuyS78sqffL6F87LGiEKPYmwkL7
-         XsjaUGyF0vm3bNzJtlU1jEwm+8I+J8WbK9Qb1LZvwz2k8okN3eA6tNWNsW0vDDrybY
-         zpr03m2YeMhs+FawFYMsmtMwLO398U/xikV1iWiY=
-Received: from [172.16.192.129] (192.168.211.144) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 6 Dec 2023 18:14:05 +0300
-Message-ID: <9cfeb726-0b6a-48bc-a640-435bcb6e359a@paragon-software.com>
-Date:   Wed, 6 Dec 2023 18:14:05 +0300
+        d=gmail.com; s=20230601; t=1701875649; x=1702480449; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a83R07oS+INQ3myN3O4+icnOpm8uIwZadLNuNVFfdVM=;
+        b=Ij4BOyWwrl7sh40mewst8pwpP5fwmlo7tBgE2Wxv1yIqMDfDD2YPvjYFOdYAFdgsTb
+         h23OrX/NpHaYSverZ9Xu5JJoIjfB/HXVqaSyJOXTrPoY9hqqRydDU/igYqOJajg7rNJ/
+         ErvkGs3A9a6TAS8Wz8AnojsKP1V7kxt/kyzLfog5Bh11TCJG6K60dqfJ69ROKLFV1yBt
+         ljUB9RhXBq6oRz7qYa2JVzZX21Ltgc23XhZ3jgXB7YVPVRPyz258etN7D2RiENBdU3cO
+         QhkAbG+cNxFIpM56BA/C1R2TtrQe7ulvIC5QJsfWnZyZ4F/0eUHXF+YZdMPUQxzJm0WE
+         z4rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701875649; x=1702480449;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a83R07oS+INQ3myN3O4+icnOpm8uIwZadLNuNVFfdVM=;
+        b=V4UKzA0mUUkD6VVlXwbXQIQrclBsmvGfoTagLgEl7JoCRawjaQA23mhqyBaHpPMCf+
+         TIU1QBVW37WtvvV94hlMs1ZM+L+10/Q/MlaD38yXRXXebnLPHj8NXZYh+L1EgUWaf+Lo
+         3yRLyrbR/HFlpOGDGdgmAdRF2wFzOpl3aSHROh+Z5JyV62kW7yFmqw8CW9RHgWkNA8Pi
+         JHxGuJS4/+KFmVtV2TXxx5FDXGS4/ZuFBFAuiSSopVghEZsrqfaM5CHJKdfqLJYBIbFm
+         PyKLSK32ByZv5W7O/JiWvK9fCIMT3z8fOjn9l0cwx49MvUxwOrBn6qNhBLRzknLMLPvy
+         CRpQ==
+X-Gm-Message-State: AOJu0YyPb235Tfbd/h6Ty8hW+tZdQxinJ4rv139tLeC2YbUweKiZEWtv
+        8owLgCy84ftCEozcNFQypt4=
+X-Google-Smtp-Source: AGHT+IGz9bNU02Gx1n56NJmqtRZSx7SY4N5m/lQPWBpwNuTo7J4Xxd5pzbHVc4j1AVcwi3FLtt0O6Q==
+X-Received: by 2002:a17:906:97:b0:a19:a19b:78d6 with SMTP id 23-20020a170906009700b00a19a19b78d6mr728296ejc.153.1701875648876;
+        Wed, 06 Dec 2023 07:14:08 -0800 (PST)
+Received: from skbuf ([188.27.185.68])
+        by smtp.gmail.com with ESMTPSA id bl17-20020a170906c25100b00a1ce98016b6sm43962ejb.97.2023.12.06.07.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 07:14:08 -0800 (PST)
+Date:   Wed, 6 Dec 2023 17:14:06 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v1 3/3] net: dsa: microchip: Fix PHY loopback
+ configuration for KSZ8794 and KSZ8873
+Message-ID: <20231206151406.75eglqtsrrb4vegf@skbuf>
+References: <20231121152426.4188456-1-o.rempel@pengutronix.de>
+ <20231121152426.4188456-3-o.rempel@pengutronix.de>
+ <35045f6ef6a5b274063186c065a8215088b94cd5.camel@redhat.com>
+ <20231206085520.GA1293736@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH 14/16] fs/ntfs3: Add and fix comments
-Content-Language: en-US
-From:   Konstantin Komarovc <almaz.alexandrovich@paragon-software.com>
-To:     <ntfs3@lists.linux.dev>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-References: <00fd1558-fda5-421b-be43-7de69e32cb4e@paragon-software.com>
-In-Reply-To: <00fd1558-fda5-421b-be43-7de69e32cb4e@paragon-software.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.211.144]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206085520.GA1293736@pengutronix.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 06, 2023 at 09:55:20AM +0100, Oleksij Rempel wrote:
+> On Thu, Nov 23, 2023 at 11:52:57AM +0100, Paolo Abeni wrote:
+> > Hi,
+> > 
+> > On Tue, 2023-11-21 at 16:24 +0100, Oleksij Rempel wrote:
+> > > Correct the PHY loopback bit handling in the ksz8_w_phy_bmcr and
+> > > ksz8_r_phy_bmcr functions for KSZ8794 and KSZ8873 variants in the ksz8795
+> > > driver. Previously, the code erroneously used Bit 7 of port register 0xD
+> > > for both chip variants, which is actually for LED configuration. This
+> > > update ensures the correct registers and bits are used for the PHY
+> > > loopback feature:
+> > > 
+> > > - For KSZ8794: Use 0xF / Bit 7.
+> > > - For KSZ8873: Use 0xD / Bit 0.
+> > > 
+> > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > 
+> > This looks like a bugfix, so possibly worth a Fixes tag? Given the
+> > dependency on the previous refactor, I think we can take it via net-
+> > next.
+> > 
+> > @Andrew, Florian, Vladimir: do you have any specific preference here?
+> 
+> I do not think any one cares about supporting this switch variant in
+> stable :)
+> 
+> Regards,
+> Oleksij
 
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
-  fs/ntfs3/dir.c     | 4 +++-
-  fs/ntfs3/fsntfs.c  | 2 +-
-  fs/ntfs3/ntfs.h    | 2 +-
-  fs/ntfs3/ntfs_fs.h | 2 +-
-  4 files changed, 6 insertions(+), 4 deletions(-)
+Sorry, this simply fell through the cracks.
 
-diff --git a/fs/ntfs3/dir.c b/fs/ntfs3/dir.c
-index 726122ecd39b..9f6dd445eb04 100644
---- a/fs/ntfs3/dir.c
-+++ b/fs/ntfs3/dir.c
-@@ -536,8 +536,10 @@ static int ntfs_dir_count(struct inode *dir, bool 
-*is_empty, size_t *dirs,
-              e = Add2Ptr(hdr, off);
-              e_size = le16_to_cpu(e->size);
-              if (e_size < sizeof(struct NTFS_DE) ||
--                off + e_size > end)
-+                off + e_size > end) {
-+                /* Looks like corruption. */
-                  break;
-+            }
+How is PHY loopback even supposed to be triggered? User space flips
+NETIF_F_LOOPBACK on the netdev, driver ndo_set_features() catches it and
+calls phy_loopback() and this calls into phylib's phydev->drv->set_loopback()
+or the generic genphy_loopback()?
 
-              if (de_is_last(e))
-                  break;
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index 350461d8cece..321978019407 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -2129,8 +2129,8 @@ int ntfs_insert_security(struct ntfs_sb_info *sbi,
-              if (le32_to_cpu(d_security->size) == new_sec_size &&
-                  d_security->key.hash == hash_key.hash &&
-                  !memcmp(d_security + 1, sd, size_sd)) {
--                *security_id = d_security->key.sec_id;
-                  /* Such security already exists. */
-+                *security_id = d_security->key.sec_id;
-                  err = 0;
-                  goto out;
-              }
-diff --git a/fs/ntfs3/ntfs.h b/fs/ntfs3/ntfs.h
-index 13e96fc63dae..c8981429c721 100644
---- a/fs/ntfs3/ntfs.h
-+++ b/fs/ntfs3/ntfs.h
-@@ -523,7 +523,7 @@ struct ATTR_LIST_ENTRY {
-      __le64 vcn;        // 0x08: Starting VCN of this attribute.
-      struct MFT_REF ref;    // 0x10: MFT record number with attribute.
-      __le16 id;        // 0x18: struct ATTRIB ID.
--    __le16 name[];        // 0x1A: Just to align. To get real name can 
-use name_off.
-+    __le16 name[];        // 0x1A: To get real name use name_off.
+I don't see DSA implementing ndo_set_features(), nor offering NETIF_F_LOOPBACK.
+The PHY is integrated, so DSA is the only relevant netdev driver. Is
+there any other way to test this functionality?
 
-  }; // sizeof(0x20)
+If not, I think it's a case of "tree falling in the woods and nobody
+hearing it". Not "stable" material. But it definitely has nothing to do
+with not caring about the switch variant.
 
-diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-index 7510875efef6..abbc7182554a 100644
---- a/fs/ntfs3/ntfs_fs.h
-+++ b/fs/ntfs3/ntfs_fs.h
-@@ -874,7 +874,7 @@ int ntfs_init_acl(struct mnt_idmap *idmap, struct 
-inode *inode,
-
-  int ntfs_acl_chmod(struct mnt_idmap *idmap, struct dentry *dentry);
-  ssize_t ntfs_listxattr(struct dentry *dentry, char *buffer, size_t size);
--extern const struct xattr_handler * const ntfs_xattr_handlers[];
-+extern const struct xattr_handler *const ntfs_xattr_handlers[];
-
-  int ntfs_save_wsl_perm(struct inode *inode, __le16 *ea_size);
-  void ntfs_get_wsl_perm(struct inode *inode);
--- 
-2.34.1
-
+If my analysis is correct, then I actually have a suggestion for you,
+Oleksij. Using the F word ("fix") can work against you, if you don't
+have enough proof that you're really fixing something which has a user
+visible impact. So either do a thorough analysis of the impact in the
+commit message, or don't use the F word.
