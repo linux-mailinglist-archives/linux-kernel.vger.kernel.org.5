@@ -2,94 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D136F8070A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 418408070A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378426AbjLFNMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:12:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
+        id S1378435AbjLFNNU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 08:13:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378368AbjLFNMq (ORCPT
+        with ESMTP id S1378416AbjLFNNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:12:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F70AC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:12:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28E6FC433C7;
-        Wed,  6 Dec 2023 13:12:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701868372;
-        bh=EStk6AojKy4VrHDz7eSOQKX/7HbeZy7ZzJ/2crabbHk=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=pUHMnBj0fpV+uqC8lC/kqLL2SDwI80ZQvcD8acliYpy+7Mx25yFwsyR8EnLmLATER
-         DJNzK3a6Z8osyx1yUzskQq8PAGIfJQHZqEg4ND/T9pSa4fMwrCj7MKAaWnpAKrnE1s
-         UPHRFLp/CvVHDqYRczUb7LpV5Hw+E/F3MlJ9gp4qmJ9f9BeTly+H68k3m5WnYKqVBb
-         ykdzlvyp/Oig+Mj/ZdrrYgBYjbpkvFSgGvqtE0ypoPsVADMwYAtCZNHPbyXv5TGVZq
-         fj3/ZeUSAb32tMlZ0DuJM3o8I5ghrDV8QYkSVwbz8x5hycvMQ3Mgjei4KI9vs2qQq2
-         ypjE16CzHOXgQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     pierre-louis.bossart@linux.intel.com,
-        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
-        kai.vehmanen@linux.intel.com, cezary.rojewski@intel.com,
-        ranjani.sridharan@linux.intel.com,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20231205135001.2506070-1-rf@opensource.cirrus.com>
-References: <20231205135001.2506070-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a
- speaker widget
-Message-Id: <170186836988.22386.11650594415666700683.b4-ty@kernel.org>
-Date:   Wed, 06 Dec 2023 13:12:49 +0000
+        Wed, 6 Dec 2023 08:13:19 -0500
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725C0122;
+        Wed,  6 Dec 2023 05:13:25 -0800 (PST)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5d400779f16so7643657b3.0;
+        Wed, 06 Dec 2023 05:13:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701868404; x=1702473204;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QpA0ectE+0fOxvKG7PAumxgR/vsxQ2Vp0KirOSeTgT4=;
+        b=VCg5QEuSkjpVPQ9S5NNQB0Yi+fFG8AY8/prZKKKHayfYBf/vXR9n3hFzhemy8BaVx8
+         Lr/mg+CQwx/EGwv6PetCU/x/gHNWCZgmBOeI6WfdD3RuGRbEg1zWLeqmsjzZJyVsN1fr
+         nC7ASNLRS+SXcb3pfpTTk6bHw4+HfgOwpRhDFKinQtMMhiD+We3nnUA4Z5j/CKuzqmf7
+         aC2rkmcsFaklxlyAtneTAERj68O/9Zljb+Dg72izWkOvI0aebWs5z8fAb44Sy5hJzz6i
+         it+Xt+4ZEQIJF+At2iZMYVnqmyz4HsjFSBfg3hZqtinBk7K6A13T63jW0BV0TYPi7CM5
+         RBcQ==
+X-Gm-Message-State: AOJu0Yx/0qeqIlrLiQnuUXXJ0L99uvDRDX26nj1+fWEyzNKdDiN6C6ar
+        jpCOB6mSRb8QKITx32H89EvJ173NlOso6Q==
+X-Google-Smtp-Source: AGHT+IGHjHeQp5S9UvTqYD7nYMwo/R4n6sauUfCRxRxR/sBTzIK8FJDMVzipE2Kl2/qDZgrVTcFImA==
+X-Received: by 2002:a81:b646:0:b0:5cd:ef57:ce3a with SMTP id h6-20020a81b646000000b005cdef57ce3amr506826ywk.0.1701868404480;
+        Wed, 06 Dec 2023 05:13:24 -0800 (PST)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id p67-20020a819846000000b005d379110c89sm4792304ywg.8.2023.12.06.05.13.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 05:13:22 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-db548da6e3bso762757276.0;
+        Wed, 06 Dec 2023 05:13:22 -0800 (PST)
+X-Received: by 2002:a25:d289:0:b0:db3:523f:2351 with SMTP id
+ j131-20020a25d289000000b00db3523f2351mr2026647ybg.10.1701868402141; Wed, 06
+ Dec 2023 05:13:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-5c066
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231201131551.201503-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20231201131551.201503-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20231201131551.201503-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 6 Dec 2023 14:13:10 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUiaL__+CDaFxRbUFgrz69SYBNfZm4JvY_qQRKLMTCY0w@mail.gmail.com>
+Message-ID: <CAMuHMdUiaL__+CDaFxRbUFgrz69SYBNfZm4JvY_qQRKLMTCY0w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] pinctrl: renesas: rzg2l: Include pinmap in
+ RZG2L_GPIO_PORT_PACK() macro
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-gpio@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Dec 2023 13:50:01 +0000, Richard Fitzgerald wrote:
-> Hookup the CS35L56 DAPM_OUTPUT widgets to a DAPM_SPK widget so
-> that there is a complete logical path to a speaker.
-> 
-> There is no particular reason to use multiple speaker widgets.
-> The CS35L56 are designed to work together as a set so they have
-> all been connected to a single speaker widget.
-> 
-> [...]
+Hi Prabhakar,
 
-Applied to
+On Fri, Dec 1, 2023 at 2:16 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Currently we assume all the port pins are sequential ie always PX_0 to
+> PX_n (n=1..7) exist, but on RZ/Five SoC we have additional pins P19_1 to
+> P28_5 which have holes in them, for example only one pin on port19 is
+> available and that is P19_1 and not P19_0. So to handle such cases
+> include pinmap for each port which would indicate the pin availability
+> on each port. As the pincount can be calculated based on pinmap drop this
+> from RZG2L_GPIO_PORT_PACK() macro and update RZG2L_GPIO_PORT_GET_PINCNT()
+> macro.
+>
+> Previously we had a max of 7 pins on each port but on RZ/Five Port-20
+> has 8 pins, so move the single pin configuration to BIT(63).
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+Thanks for your patch!
 
-Thanks!
+> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+> @@ -80,15 +80,17 @@
+>   * n indicates number of pins in the port, a is the register index
+>   * and f is pin configuration capabilities supported.
+>   */
+> -#define RZG2L_GPIO_PORT_PACK(n, a, f)  (((n) << 28) | ((a) << 20) | (f))
+> -#define RZG2L_GPIO_PORT_GET_PINCNT(x)  (((x) & GENMASK(30, 28)) >> 28)
+> +#define RZG2L_GPIO_PORT_PACK(n, a, f)  (((n) > 0 ? ((u64)(GENMASK_ULL(((n) - 1 + 28), 28))) : 0) | \
 
-[1/1] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a speaker widget
-      commit: 138a4e2a26ec73197e22fe64ee3957b1594eabb3
+The mask creation can be simplified to
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+    ((1ULL << (n)) - 1) << 28
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+but see below...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +                                        ((a) << 20) | (f))
+> +#define RZG2L_GPIO_PORT_GET_PINMAP(x)  (((x) & GENMASK_ULL(35, 28)) >> 28)
+> +#define RZG2L_GPIO_PORT_GET_PINCNT(x)  (hweight8(RZG2L_GPIO_PORT_GET_PINMAP((x))))
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I think we've reached the point where it would be easier for the
+casual reviewer to #define PIN_CFG_*_MASK for all fields, and use
+FIELD_{PREP,GET}() to pack resp. extract values.  That would also
+make it more obvious which bits are in use, and how many bits are
+still available for future use.
 
-Thanks,
-Mark
+>
+>  /*
+> - * BIT(31) indicates dedicated pin, p is the register index while
+> + * BIT(63) indicates dedicated pin, p is the register index while
+>   * referencing to SR/IEN/IOLH/FILxx registers, b is the register bits
+>   * (b * 8) and f is the pin configuration capabilities supported.
+>   */
+> -#define RZG2L_SINGLE_PIN               BIT(31)
+> +#define RZG2L_SINGLE_PIN               BIT_ULL(63)
+>  #define RZG2L_SINGLE_PIN_PACK(p, b, f) (RZG2L_SINGLE_PIN | \
+>                                          ((p) << 24) | ((b) << 20) | (f))
+>  #define RZG2L_SINGLE_PIN_GET_BIT(x)    (((x) & GENMASK(22, 20)) >> 20)
 
+Likewise.
+
+> @@ -180,12 +182,12 @@ struct rzg2l_hwcfg {
+>
+>  struct rzg2l_dedicated_configs {
+>         const char *name;
+> -       u32 config;
+> +       u64 config;
+>  };
+
+The rest LGTM.  It's a pity we have to switch to 64 bits, but I'm
+afraid there is not much we can do about that...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
