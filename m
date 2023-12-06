@@ -2,149 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABA880654E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D613C806550
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:58:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjLFC5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 21:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
+        id S229992AbjLFC6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 21:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLFC53 (ORCPT
+        with ESMTP id S229493AbjLFC6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 21:57:29 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D961A5;
-        Tue,  5 Dec 2023 18:57:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701831454;
-        bh=Xew00TzhJeX9h8OoFc9MuWr95HLDQ8hDCzCA6kpkblA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tfJoT5UcFg9R+rGCLulA+8B5wHpmvHkdEfDK6zaJ2qIWAd1l1lVWztrvL/299aLOv
-         wMxfh/t7qWjsPR/X1UN/7v/3fS4ORS+i/LASkm+PgkLSBZm+D8b0K6mbFLAmkmYWXn
-         jee/spt99D7Wu8Mpcynd275SdevIJ+WwqzLRy85eAM4l21oKShFTF4AmCsoLxGyV67
-         Mg0MtYHIHKAzTu/1Sx8KAbgmk5f2jZnX8o31Az6jbTsBU0JVYjXq0X09YxugeRxmJE
-         U0bLAQTqhCta+JlYQGyn7udaiCSKaveGBv+yigRJ3vhabGMLj4sKMRLpso3FIoUhgO
-         9YdQNHM5aYzbw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SlMWx498Qz4wd7;
-        Wed,  6 Dec 2023 13:57:33 +1100 (AEDT)
-Date:   Wed, 6 Dec 2023 13:57:32 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>
-Subject: linux-next: manual merge of the sysctl tree with the userns tree
-Message-ID: <20231206135732.46d1b2b9@canb.auug.org.au>
+        Tue, 5 Dec 2023 21:58:07 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF831B5
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 18:58:13 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-423dcd5d060so2728871cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 18:58:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1701831492; x=1702436292; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E+W/qJKZ4cbrJ9KJlY0HysuZCkaE03MWjevhyEtd/+k=;
+        b=C043Y/o3nmZqO5drW/ytixLfQ3/Yg2tetNJ0mozl0W+LJt8PrvkZDAAIKO//77o7xS
+         0vqPrnh0AqwIRYO3RKVoC5ULQcJfkvb/hru7xXNasnVGsAPahqk16ksdIVuzY9m7ZPUf
+         re6qs37H9QdFVzcLsxMv/4Ias8TG8Qd/jvNo8H4/2IcQN9MMZn/cSe+z1fFc/AOMpi9n
+         x8wq5qimJhIL8H4RTe1di1VNm1dSN2c6r0v68/rRjx1+NtfNHJ8swQDXd5oHh8enH4Mr
+         N8/keY1Gykp3G+pSqxTDs5MRp9GN0a8yzS7JrndjN7fO4b3X3N6pGougdIX03jUMTvQn
+         ZXRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701831492; x=1702436292;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E+W/qJKZ4cbrJ9KJlY0HysuZCkaE03MWjevhyEtd/+k=;
+        b=nNz3Gq8DU2q0rYGTQ/i33p5jxSTd1plRMcuXmPDuBRzEgwqWdBVoyWK2tXiS+mOVUE
+         fVh7i8B5ka1SxIcGpvNXVEA3kaQkBtA/WsfPoZau5+fgZPt4RcVpA2CLApmMU/Clq+8S
+         B/uE0z/AESKDUuKxoFvGS1UQuX29TmsiffwbEGWSbJM4BlekBJzfIZ45ZPGURi5VK0zc
+         D6CI18K8VAqvJr6GQptNXh+qP/WXTcIUkdtXtFJ5nnds5UInYYJFJ61Te4UgGh5c7skB
+         FVX+boDHSZr57oFMq6t0D0avMw8XFQ4F+R6CSmcp73GR2vt0PAc+UxQ2u2MRpjf/84so
+         uBcQ==
+X-Gm-Message-State: AOJu0YyWC9Kn2Py6MhGvdmg9lsT4kNTupCdQWUad0YOgg+ucCFIObsei
+        t1w/K1PblfOX4h6aDsdLSSEB/+rWAThodKnChH6dRQ==
+X-Google-Smtp-Source: AGHT+IF/PbeDPHGTwTbaA2pV4mOFvfRBSKmJB7XTO8IsjUWL5YNJ6TW8QV1NfT/POdd4ka0OvkcYQJe1EpzjjtkHa0g=
+X-Received: by 2002:a05:622a:1315:b0:425:4420:c176 with SMTP id
+ v21-20020a05622a131500b004254420c176mr3223260qtk.27.1701831492370; Tue, 05
+ Dec 2023 18:58:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/vnGLMUvy2kcP/dSEqZio71j";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231205223118.3575485-1-souravpanda@google.com> <2023120648-droplet-slit-0e31@gregkh>
+In-Reply-To: <2023120648-droplet-slit-0e31@gregkh>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 5 Dec 2023 21:57:36 -0500
+Message-ID: <CA+CK2bARjZgnMBL9bOD7p1u=02-fGgWwfiGvsFVpsJWL-VR2ng@mail.gmail.com>
+Subject: Re: [PATCH v6 0/1] mm: report per-page metadata information
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sourav Panda <souravpanda@google.com>, corbet@lwn.net,
+        rafael@kernel.org, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com, muchun.song@linux.dev, rppt@kernel.org,
+        david@redhat.com, rdunlap@infradead.org, chenlinxuan@uniontech.com,
+        yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com,
+        bhelgaas@google.com, ivan@cloudflare.com, yosryahmed@google.com,
+        hannes@cmpxchg.org, shakeelb@google.com,
+        kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com,
+        adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, willy@infradead.org, weixugc@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/vnGLMUvy2kcP/dSEqZio71j
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Greg,
 
-Hi all,
+Sourav removed the new field from sys/device../nodeN/meminfo as you
+requested; however, in nodeN/vmstat fields still get appended, as
+there is code that displays every item in zone_stat_item,
+node_stat_item without option to opt-out. I mentioned it to you at
+LPC.
 
-Today's linux-next merge of the sysctl tree got a conflict in:
+In my IOMMU [1] series, there are also fields that are added to
+node_stat_item that as result are appended to nodeN/vmstat.
 
-  ipc/ipc_sysctl.c
+Pasha
 
-between commit:
+[1] https://lore.kernel.org/all/20231130201504.2322355-1-pasha.tatashin@sol=
+een.com
 
-  54e1011bd95a ("sysctl: Allow change system v ipc sysctls inside ipc names=
-pace")
-
-from the userns tree and commit:
-
-  a6dd7f5a787b ("sysctl: treewide: constify ctl_table_root::permissions")
-
-from the sysctl tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc ipc/ipc_sysctl.c
-index 01c4a50d22b2,d876f96f5992..000000000000
---- a/ipc/ipc_sysctl.c
-+++ b/ipc/ipc_sysctl.c
-@@@ -14,11 -14,10 +14,11 @@@
-  #include <linux/ipc_namespace.h>
-  #include <linux/msg.h>
-  #include <linux/slab.h>
- +#include <linux/cred.h>
-  #include "util.h"
- =20
-- static int proc_ipc_dointvec_minmax_orphans(struct ctl_table *table, int =
-write,
-- 		void *buffer, size_t *lenp, loff_t *ppos)
-+ static int proc_ipc_dointvec_minmax_orphans(const struct ctl_table *table,
-+ 		int write, void *buffer, size_t *lenp, loff_t *ppos)
-  {
-  	struct ipc_namespace *ns =3D
-  		container_of(table->data, struct ipc_namespace, shm_rmid_forced);
-@@@ -191,21 -190,7 +191,21 @@@ static int set_is_seen(struct ctl_table
-  	return &current->nsproxy->ipc_ns->ipc_set =3D=3D set;
-  }
- =20
- +static void ipc_set_ownership(struct ctl_table_header *head,
-- 			      struct ctl_table *table,
-++			      const struct ctl_table *table,
- +			      kuid_t *uid, kgid_t *gid)
- +{
- +	struct ipc_namespace *ns =3D
- +		container_of(head->set, struct ipc_namespace, ipc_set);
- +
- +	kuid_t ns_root_uid =3D make_kuid(ns->user_ns, 0);
- +	kgid_t ns_root_gid =3D make_kgid(ns->user_ns, 0);
- +
- +	*uid =3D uid_valid(ns_root_uid) ? ns_root_uid : GLOBAL_ROOT_UID;
- +	*gid =3D gid_valid(ns_root_gid) ? ns_root_gid : GLOBAL_ROOT_GID;
- +}
- +
-- static int ipc_permissions(struct ctl_table_header *head, struct ctl_tabl=
-e *table)
-+ static int ipc_permissions(struct ctl_table_header *head, const struct ct=
-l_table *table)
-  {
-  	int mode =3D table->mode;
- =20
-
---Sig_/vnGLMUvy2kcP/dSEqZio71j
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVv4xwACgkQAVBC80lX
-0GyJNQgAiWO/K7L2+KjmAFLk4pg11cH/ucDqiwQPtAI1OY6Kvc6ubjgWKiEpdZjb
-JzKLev/6kALbH4lk1Ch3dpuNmt74b+muukh3h87RIXz+KQuTSO1iYsXhklyLgDwn
-0xBphoed1pWUYkmssRgrrgTQHXyhsXgLVt1ZKQhv8jkKPFv0lqDZ0NhI1LbynW5j
-OC5qROlEryuQWZiPduDTDA3pY+Coi5O0wnMXWYWkXrxd/s2xJ4RkOFhPXyrQtDza
-76JJgfaGY/amqcntB252jS39LQBx9WVez/k7vxjvwQSHrWgla3TXh2o7GifvUC4r
-xB5YO/3fR7gP+g53WpEh6SLvEiE4zQ==
-=3LaM
------END PGP SIGNATURE-----
-
---Sig_/vnGLMUvy2kcP/dSEqZio71j--
+On Tue, Dec 5, 2023 at 9:36=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org>=
+ wrote:
+>
+> On Tue, Dec 05, 2023 at 02:31:17PM -0800, Sourav Panda wrote:
+> > Changelog:
+> > v6:
+> >       - Interface changes
+> >               - Added per-node nr_page_metadata and
+> >                 nr_page_metadata_boot fields that are exported
+> >                 in /sys/devices/system/node/nodeN/vmstat
+>
+> Again, please do not add any new fields to existing sysfs files, that's
+> not going to work well.  You can add a new sysfs file, that's file, but
+> do not continue the abuse of the sysfs api in this file.
+>
+> thanks,
+>
+> greg k-h
