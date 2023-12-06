@@ -2,178 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3B8807494
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E27807491
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbjLFQMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:12:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S229820AbjLFQLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:11:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjLFQML (ORCPT
+        with ESMTP id S229754AbjLFQLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:12:11 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3026A3;
-        Wed,  6 Dec 2023 08:12:16 -0800 (PST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6Fm1ef002321;
-        Wed, 6 Dec 2023 16:11:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=TirS9AB+02GzCC/ZaT3LtdSlY0QQT78AikkNU0XEjlE=;
- b=Cts1C9t4gvRUGFNjdY/Grg8/HujBcGuE5tzUci4EhA0sIV9ZNRPB4DsRtWz07QyJ1WA1
- c04paI7fa6XXk5RyzpDaRVgWz0HEHTw7l0teEk3s8Sf4sL39UNE6exXk8EphXCgyg9fn
- aMj7wjsONEl///4Iu4SdDqKFQneaiMJh4BFztVOZ6l/8GB5cQj5ggEIq66tp0cywMGPi
- uvpsVT8Tu4rFGHjAivMSHmIQxRzJauNeLTgNdDkJjlf0arnRu3EzW7ZGyrJ9REKCYUow
- 8FjUmRelGLkj+E03dem1e4E9U7uf807VSjY7Hc8EAL7f9+HQE0zWxMfFKxGymPIx4wYJ tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3utuwn8x04-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 16:11:13 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3B6Fn94v007176;
-        Wed, 6 Dec 2023 16:11:12 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3utuwn8wyn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 16:11:12 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6G73nb004688;
-        Wed, 6 Dec 2023 16:11:11 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3utav4deqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 16:11:11 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3B6GBB6m15663660
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Dec 2023 16:11:11 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F190858050;
-        Wed,  6 Dec 2023 16:11:10 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C3F9B58045;
-        Wed,  6 Dec 2023 16:11:08 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.99.183])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Wed,  6 Dec 2023 16:11:08 +0000 (GMT)
-Message-ID: <7aefd87764ba8962de85250ff92b82800550401b.camel@linux.ibm.com>
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Wed, 06 Dec 2023 11:11:08 -0500
-In-Reply-To: <d608edb80efe03b62698ab33cbee1eea856a0422.camel@huaweicloud.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
-         <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
-         <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
-         <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
-         <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
-         <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
-         <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
-         <CAHC9VhROnfBoaOy2MurdSpcE_poo_6Qy9d2U3g6m2NRRHaqz4Q@mail.gmail.com>
-         <5f441267b6468b98e51a08d247a7ae066a60ff0c.camel@huaweicloud.com>
-         <d608edb80efe03b62698ab33cbee1eea856a0422.camel@huaweicloud.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
-Mime-Version: 1.0
+        Wed, 6 Dec 2023 11:11:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5553FAA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701879107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+QIrSHc0OS1gT3GJGWQJ2lAnVJcygVUhXHGYVV067ts=;
+        b=gYcF3asOa2EU04S4FWJ8E4MAaXc/YaA873EK96jbH0P8720kxxnePlbMkImZDlWIFn6zsl
+        FOGUZHZmLe1kZeIHwIgNjM1D3ddY0IulHV5nxtOdGDaa7rrMG+4QLdwiCdRHQxCIpfBnAG
+        ycu36seXa5XWZBgHOYwVj0Z65EyaE9s=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-486-UPu8K0iXNZSzmhsl7oXlXQ-1; Wed, 06 Dec 2023 11:11:43 -0500
+X-MC-Unique: UPu8K0iXNZSzmhsl7oXlXQ-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33344663fbcso879152f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:11:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701879102; x=1702483902;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+QIrSHc0OS1gT3GJGWQJ2lAnVJcygVUhXHGYVV067ts=;
+        b=L8Xc47Vsq+chUyDg7lt5KpP7NmQKwcCgGn/Z0a3jCVgy50SsGUNnpiogT3XZHliPeI
+         sgTCiOCzcr843zs7shIk4elrfrcQri4B7K9MuWdorZNesnGi3erNhB+v10nrzDgPC+FU
+         KAlvVd2kBWd4egZ5KrWZDUPiq0QmGurLeFBTcUnSAuKIQgnyGXSS2eiC2HKYUEl/7uLd
+         T6iMgwWh73e170Z7Svvb3b1c37tygWhl7EE0cCs3HZrRnkTd+PFaii+aT70ZOPxDXD+p
+         frk7EE8/5KQLsIUdJyGt/ekMWJeaLvO2VfHpyhb4cpqAc6WejGNq59kOgZjmQc9hAHTt
+         ssQg==
+X-Gm-Message-State: AOJu0YytaisBvb/aqakoqfdGBxrKsK7gQk+6GzOS3+83PCDTAsmRYeCw
+        dDnmfBBqBbE8EKwDXIx9YndRiHjOsOkYISvbgrG0zSBDej5dexQ/CDBOabVUk205rEU6bCL4FYi
+        L2Zs0oxm/z31hWGx+DvT9NpSw
+X-Received: by 2002:a05:6000:194f:b0:333:40e8:7697 with SMTP id e15-20020a056000194f00b0033340e87697mr423440wry.135.1701879102261;
+        Wed, 06 Dec 2023 08:11:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGQLBgfunVDvE5rWJp3G7NjNdXU8eyubgsURu9UsjnJkHVDnpjucEROHimsPOJSnt0b4/P9Yg==
+X-Received: by 2002:a05:6000:194f:b0:333:40e8:7697 with SMTP id e15-20020a056000194f00b0033340e87697mr423428wry.135.1701879101858;
+        Wed, 06 Dec 2023 08:11:41 -0800 (PST)
+Received: from starship ([89.237.98.20])
+        by smtp.gmail.com with ESMTPSA id r4-20020a5d52c4000000b0033363342041sm47968wrv.23.2023.12.06.08.11.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 08:11:41 -0800 (PST)
+Message-ID: <8e7b64f06fe2a8132a8f9f76d673ac663ecfd854.camel@redhat.com>
+Subject: Re: [PATCH v7 04/26] x86/fpu/xstate: Introduce
+ XFEATURE_MASK_KERNEL_DYNAMIC xfeature set
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     "Yang, Weijiang" <weijiang.yang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        dave.hansen@intel.com, pbonzini@redhat.com, seanjc@google.com,
+        peterz@infradead.org, chao.gao@intel.com,
+        rick.p.edgecombe@intel.com, john.allen@amd.com
+Date:   Wed, 06 Dec 2023 18:11:39 +0200
+In-Reply-To: <888fc0db-a8de-4d42-bcd5-84479c3a8f5e@intel.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+         <20231124055330.138870-5-weijiang.yang@intel.com>
+         <3c16bb90532fbd2ec95b5a3d42a93bbbf77c4d37.camel@redhat.com>
+         <9a7052ca-9c67-45b5-ba23-dbd23e69722c@intel.com>
+         <5a8c870875acc5c7e72eb3e885c12d6362f45243.camel@redhat.com>
+         <888fc0db-a8de-4d42-bcd5-84479c3a8f5e@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Y28njRj7zR3cjjYOzyBPbBfJWG3Qmg_U
-X-Proofpoint-GUID: 5uBuPgG_9R1M1ich1n8oG8dyH5r9Eh7W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_14,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 mlxlogscore=934 suspectscore=0 mlxscore=0
- clxscore=1015 spamscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312060131
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-12-06 at 14:10 +0100, Roberto Sassu wrote:
-> On Mon, 2023-12-04 at 14:26 +0100, Roberto Sassu wrote:
+On Wed, 2023-12-06 at 11:00 +0800, Yang, Weijiang wrote:
+> On 12/5/2023 5:55 PM, Maxim Levitsky wrote:
+> > On Fri, 2023-12-01 at 15:49 +0800, Yang, Weijiang wrote:
+> > > On 12/1/2023 1:33 AM, Maxim Levitsky wrote:
+> > > > On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
+> > > > > Define new XFEATURE_MASK_KERNEL_DYNAMIC set including the features can be
+> > > > I am not sure though that this name is correct, but I don't know if I can
+> > > > suggest a better name.
+> > > It's a symmetry of XFEATURE_MASK_USER_DYNAMIC ;-)
+> > > > > optionally enabled by kernel components, i.e., the features are required by
+> > > > > specific kernel components. Currently it's used by KVM to configure guest
+> > > > > dedicated fpstate for calculating the xfeature and fpstate storage size etc.
+> > > > > 
+> > > > > The kernel dynamic xfeatures now only contain XFEATURE_CET_KERNEL, which is
+> > > > > supported by host as they're enabled in xsaves/xrstors operating xfeature set
+> > > > > (XCR0 | XSS), but the relevant CPU feature, i.e., supervisor shadow stack, is
+> > > > > not enabled in host kernel so it can be omitted for normal fpstate by default.
+> > > > > 
+> > > > > Remove the kernel dynamic feature from fpu_kernel_cfg.default_features so that
+> > > > > the bits in xstate_bv and xcomp_bv are cleared and xsaves/xrstors can be
+> > > > > optimized by HW for normal fpstate.
+> > > > > 
+> > > > > Suggested-by: Dave Hansen <dave.hansen@intel.com>
+> > > > > Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+> > > > > ---
+> > > > >    arch/x86/include/asm/fpu/xstate.h | 5 ++++-
+> > > > >    arch/x86/kernel/fpu/xstate.c      | 1 +
+> > > > >    2 files changed, 5 insertions(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
+> > > > > index 3b4a038d3c57..a212d3851429 100644
+> > > > > --- a/arch/x86/include/asm/fpu/xstate.h
+> > > > > +++ b/arch/x86/include/asm/fpu/xstate.h
+> > > > > @@ -46,9 +46,12 @@
+> > > > >    #define XFEATURE_MASK_USER_RESTORE	\
+> > > > >    	(XFEATURE_MASK_USER_SUPPORTED & ~XFEATURE_MASK_PKRU)
+> > > > >    
+> > > > > -/* Features which are dynamically enabled for a process on request */
+> > > > > +/* Features which are dynamically enabled per userspace request */
+> > > > >    #define XFEATURE_MASK_USER_DYNAMIC	XFEATURE_MASK_XTILE_DATA
+> > > > >    
+> > > > > +/* Features which are dynamically enabled per kernel side request */
+> > > > I suggest to explain this a bit better. How about something like that:
+> > > > 
+> > > > "Kernel features that are not enabled by default for all processes, but can
+> > > > be still used by some processes, for example to support guest virtualization"
+> > > It looks good to me, will apply it in next version, thanks!
+> > > 
+> > > > But feel free to keep it as is or propose something else. IMHO this will
+> > > > be confusing this way or another.
+> > > > 
+> > > > 
+> > > > Another question: kernel already has a notion of 'independent features'
+> > > > which are currently kernel features that are enabled in IA32_XSS but not present in 'fpu_kernel_cfg.max_features'
+> > > > 
+> > > > Currently only 'XFEATURE_LBR' is in this set. These features are saved/restored manually
+> > > > from independent buffer (in case of LBRs, perf code cares for this).
+> > > > 
+> > > > Does it make sense to add CET_S to there as well instead of having XFEATURE_MASK_KERNEL_DYNAMIC,
+> > > CET_S here refers to PL{0,1,2}_SSP, right?
+> > > 
+> > > IMHO, perf relies on dedicated code to switch LBR MSRs for various reason, e.g., overhead, the feature
+> > > owns dozens of MSRs, remove xfeature bit will offload the burden of common FPU/xsave framework.
+> > This is true, but the question that begs to be asked, is what is the true purpose of the 'independent features' is
+> > from the POV of the kernel FPU framework. IMHO these are features that the framework is not aware of, except
+> > that it enables it in IA32_XSS (and in XCR0 in the future).
+> 
+> This is the origin intention for introducing independent features(firstly called dynamic feature, renamed later), from the
+> changelog the major concern is overhead:
 
-...
-> > If the result of this patch set should be that IMA and EVM become
-> > proper LSMs without the shared integrity layer, instead of collapsing
-> > all changes in this patch set, I think we should first verify if IMA
-> > and EVM can be really independent. Once we guarantee that, we can
-> > proceed making the proper LSMs.
-> > 
-> > These are the changes I have in mind:
-> > 
-> > 1) Fix evm_verifyxattr(), and make it work without integrity_iint_cache
-> > 2) Remove the integrity_iint_cache parameter from evm_verifyxattr(),
-> >    since the other callers are not going to use it
-> 
-> Ehm, I checked better.
-> 
-> integrity_inode_get() is public too (although it is not exported). So,
-> a caller (not IMA) could do:
-> 
-> iint = integrity_inode_get(inode);
-> status = evm_verifyxattr(..., iint);
-> 
-> However, it should not call integrity_inode_free(), which is also in
-> include/linux/integrity.h, since this is going to be called by
-> security_inode_free() (currently).
+Yes, and to some extent the reason why we want to have CET supervisor state not saved on normal thread's FPU state is also overhead,
+because in theory if the kernel did save it, the MSRs will be in INIT state and thus XSAVES shouldn't have any functional impact,
+even if it saves/restores them for nothing.
 
-Calling integrity_inode_free() directly would release the iint early.  
-As a result, IMA would then need to re-allocate it on next access. 
-Other than impacting IMA's performance, is this a problem?
+In other words, as I said, independent features = features that FPU state doesn't manage, and are just optionally enabled,
+so that a custom code can do a custom xsave(s)/xrstor(s), likely from/to a custom area to save/load these features.
 
-> > 3) Create an internal function with the original parameters to be used
-> >    by IMA
-> > 4) Introduce evm_post_path_mknod(), which similarly to
-> >    ima_post_path_mknod(), sets IMA_NEW_FILE for new files
+It might make sense to rename independent features again to something like 'unmanaged features' or 'manual features' or something
+like that.
+
+
+Another interesting question that arises here, is once KVM supports arch LBRs, it will likely need to expose the XFEATURE_LBR
+to the guest and will need to context switch it similar to CET_S state, which strengthens the argument that CET_S should
+be in the same group as the 'independent features'.
+
+Depending on the performance impact, XFEATURE_LBR might even need to be dynamically allocated.
+
+
+For the reference this is the patch series that introduced the arch LBRs to KVM:
+https://www.spinics.net/lists/kvm/msg296507.html
+
+
+Best regards,
+	Maxim Levitsky
+
 > 
-> I just realized that also this is changing the current behavior.
+> commit f0dccc9da4c0fda049e99326f85db8c242fd781f
+> Author: Kan Liang <kan.liang@linux.intel.com>
+> Date:   Fri Jul 3 05:49:26 2020 -0700
 > 
-> IMA would clear IMA_NEW_FILE in ima_check_last_writer(), while EVM
-> wouldn't (unless we implement the file_release hook in EVM too).
-
-True
-
-Mimi
-
-> > 5) Add hardcoded call to evm_post_path_mknod() after
-> >    ima_post_path_mknod() in security.c
-> > 
-> > If we think that this is good enough, we proceed with the move of IMA
-> > and EVM functions to the LSM infrastructure (patches v7 19-21).
-> > 
-> > The next patches are going to be similar to patches v6 22-23, but
-> > unlike those, their goal would be simply to split metadata, not to make
-> > IMA and EVM independent, which at this point has been addressed
-> > separately in the prerequisite patches.
-> > 
-> > The final patch is to remove the 'integrity' LSM and the integrity
-> > metadata management code, which now is not used anymore.
-> > 
-> > Would that work?
+>      x86/fpu/xstate: Support dynamic supervisor feature for LBR
 > 
-> We are not making much progress, I'm going to follow any recommendation
-> that would move this forward.
+> "However, the kernel should not save/restore the LBR state component at
+> each context switch, like other state components, because of the
+> following unique features of LBR:
+> - The LBR state component only contains valuable information when LBR
+>    is enabled in the perf subsystem, but for most of the time, LBR is
+>    disabled.
+> - The size of the LBR state component is huge. For the current
+>    platform, it's 808 bytes.
+> If the kernel saves/restores the LBR state at each context switch, for
+> most of the time, it is just a waste of space and cycles."
+> 
+> > For the guest only features, like CET_S, it is also kind of the same thing (xsave but to guest state area only).
+> > I don't insist that we add CET_S to independent features, but I just gave an idea that maybe that is better
+> > from complexity point of view to add CET there. It's up to you to decide.
+> > 
+> > Sean what do you think?
+> > 
+> > Best regards,
+> > 	Maxim Levitsky
+> > 
+> > 
+> > > But CET only has 3 supervisor MSRs and they need to be managed together with user mode MSRs.
+> > > Enabling it in common FPU framework would make the switch/swap much easier without additional
+> > > support code.
+> > > 
+> > > >    and maybe rename the
+> > > > 'XFEATURE_MASK_INDEPENDENT' to something like 'XFEATURES_THE_KERNEL_DOESNT_CARE_ABOUT'
+> > > > (terrible name, but you might think of a better name)
+> > > > 
+> > > > 
+> > > > > +#define XFEATURE_MASK_KERNEL_DYNAMIC	XFEATURE_MASK_CET_KERNEL
+> > > > > +
+> > > > >    /* All currently supported supervisor features */
+> > > > >    #define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID | \
+> > > > >    					    XFEATURE_MASK_CET_USER | \
+> > > > > diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> > > > > index b57d909facca..ba4172172afd 100644
+> > > > > --- a/arch/x86/kernel/fpu/xstate.c
+> > > > > +++ b/arch/x86/kernel/fpu/xstate.c
+> > > > > @@ -824,6 +824,7 @@ void __init fpu__init_system_xstate(unsigned int legacy_size)
+> > > > >    	/* Clean out dynamic features from default */
+> > > > >    	fpu_kernel_cfg.default_features = fpu_kernel_cfg.max_features;
+> > > > >    	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+> > > > > +	fpu_kernel_cfg.default_features &= ~XFEATURE_MASK_KERNEL_DYNAMIC;
+> > > > >    
+> > > > >    	fpu_user_cfg.default_features = fpu_user_cfg.max_features;
+> > > > >    	fpu_user_cfg.default_features &= ~XFEATURE_MASK_USER_DYNAMIC;
+> > > > Best regards,
+> > > > 	Maxim Levitsky
+> > > > 
+> > > > 
+> > > > 
+> > > > 
+> > 
+> > 
+
 
