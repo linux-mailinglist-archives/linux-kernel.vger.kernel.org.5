@@ -2,315 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B1980697E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C35E806978
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377151AbjLFIRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 03:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
+        id S1377239AbjLFIQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 03:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377339AbjLFIQv (ORCPT
+        with ESMTP id S1377221AbjLFIQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:16:51 -0500
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F1719B6;
-        Wed,  6 Dec 2023 00:16:18 -0800 (PST)
-X-UUID: b6228a86940f11ee8051498923ad61e6-20231206
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=fkKb5yQu6eO4lpu8D+KYAkmtnU9wVZAoaiHbbjuUHtM=;
-        b=nLsq66PVRaWr2fSoiq+WhRgjwDW/rCwuZlwIs5JLYggoaTzVhLQwjADw2bVPm9YPggr8dyI7dkWziTzXUoLtKiH9f8xuDSyUrB7rFT67CJ3ejRTZE97QdI0HuLuSrHb/GynFDsCLDUDlKq6q6t0AJZk20kUFccye8rgpYnKM/X8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.34,REQID:31d90100-0b0f-4061-9618-e2e446142fba,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:abefa75,CLOUDID:b02d59fd-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: b6228a86940f11ee8051498923ad61e6-20231206
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1117160729; Wed, 06 Dec 2023 16:16:09 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 6 Dec 2023 16:16:07 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 6 Dec 2023 16:16:06 +0800
-From:   Yunfei Dong <yunfei.dong@mediatek.com>
-To:     Jeffrey Kardatzke <jkardatzke@google.com>,
-        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
-        <nfraprado@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-CC:     Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>,
-        "Hsin-Yi Wang" <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "Brian Starkey" <Brian.Starkey@arm.com>,
-        John Stultz <jstultz@google.com>,
-        "T . J . Mercier" <tjmercier@google.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linaro-mm-sig@lists.linaro.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v3,21/21] media: mediatek: vcodec: move vdec init interface to setup callback
-Date:   Wed, 6 Dec 2023 16:15:38 +0800
-Message-ID: <20231206081538.17056-22-yunfei.dong@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231206081538.17056-1-yunfei.dong@mediatek.com>
-References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
+        Wed, 6 Dec 2023 03:16:27 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEE310F5
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:16:08 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-28647f4ebd9so4423329a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 00:16:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701850568; x=1702455368; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BVirJMyPevVIgzIpiwvmS8AQpGiAuX4zW9DZNPcO3bw=;
+        b=wAf17vlbCWUDHkHwv3CWbrZbKxLvzalr0UVnG6+Ryf77CWXeZrUGbg1684tlI06Njn
+         QKcvt1/u5/FauZ4gUaTPH0jEiO4Z88QcADNaDOBWaLGPZREk6cM7KCZ3hfLkSQSLQC4Q
+         sU71M9KbIIvZdYCWgrmSXlK3i2gF+gftPII2fU1b6v3Yzg4PC/3AQ1VFmvVjwZW9veQ5
+         KCx26J13a9Fq6JTj3il0H5yzTZ4sTYKRNzjfCCO+6GcrdxkmxD6/XwvH31kkPwupcIph
+         0nUrtNGRBtDHTHQJUImaUf7/Yq5L0RwCgb4RjPOyF6f0WdF1AswplXvHSFAgo1HCz+uP
+         VEMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701850568; x=1702455368;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BVirJMyPevVIgzIpiwvmS8AQpGiAuX4zW9DZNPcO3bw=;
+        b=SXa9TVOU2FGn/zO2ug+F1Ws/Q1aryZMtd9lykGO37Zq+aCADNaWNPZJZP/B+Q1vIEF
+         gfm53BmwTVNyUTQDRedxuk22vFVmb5undwibrNm5n78pNC6UE3w3cI6IGXw6pKImBBR5
+         zr1D4nSm/BvtgPf4Z/rnbBubtttTihkk+u0v1GutMQ7Yl6fbxzLW52mTPBv/4xeyRg12
+         NFoVuVZRaQR8Mq8mEskJVe+jcJlLTd+5zoS4f9pB6c8rMYNiItyHLC/zMFOAtIcIeTab
+         voub78RRnky4E2Qh5fQUNcYkBXcxhquqAYNPcJMaNN2TBQ4l/99/L8+L2pWzStAdj2h3
+         jpgw==
+X-Gm-Message-State: AOJu0Yy+iO+2vfbPfaLmroUp7Gg/ABr4pmI4RykE48/ysslVSvXjcxg+
+        mq/P16kgoPvp5NOFMATfI8ZiVA==
+X-Google-Smtp-Source: AGHT+IFSfT6V9PieGVxLQ0jzN0gmpf040pMnGvleNScmRHV5uFBPZW+tOcTFxYmRoUAPPO9G/z8W1w==
+X-Received: by 2002:a17:90b:30cb:b0:286:c398:841b with SMTP id hi11-20020a17090b30cb00b00286c398841bmr391653pjb.58.1701850568162;
+        Wed, 06 Dec 2023 00:16:08 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id hg6-20020a17090b300600b00286ead49257sm1993982pjb.21.2023.12.06.00.16.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 00:16:07 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1rAn4e-004XpP-2g;
+        Wed, 06 Dec 2023 19:16:04 +1100
+Date:   Wed, 6 Dec 2023 19:16:04 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
+Message-ID: <ZXAtxBKZmKhFxwYB@dread.disaster.area>
+References: <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
+ <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
+ <ZWaHG09fY2BYjyGD@P9FQF9L96D.corp.robot.car>
+ <ZWcBDglmDKUJdwMv@tiehlicka>
+ <20231129231147.7msiocerq7phxnyu@moria.home.lan>
+ <04f63966-af72-43ef-a65c-ff927064a3e4@bytedance.com>
+ <20231130032149.ynap4ai47dj62fy3@moria.home.lan>
+ <ZWjcA4BA5vZe57Eh@P9FQF9L96D.corp.robot.car>
+ <ZWk0dI0PISWBbbKr@dread.disaster.area>
+ <ZWo7ncdgPsj6rP7_@P9FQF9L96D.corp.robot.car>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--3.356300-8.000000
-X-TMASE-MatchedRID: EDRXIQlfXt//ybP4IWJkikKcYi5Qw/RVFpw9gj8mywrfUZT83lbkENro
-        EGQiudNyiYTHezvcK04K3OrJWcpBViwmW5mXIeVjzfqlpbtmcWi50iD18ixmy/gnJH5vm2+gZ2X
-        jE62VgUUxZUOt0FF52sKXwA+sRKv1Gj8XjDB40G5Na4UOfkJSNH0tCKdnhB589yM15V5aWpj6C0
-        ePs7A07fhmFHnZFzVqMy6bDKK4NkHdcJT5YYQWyMMV4WK4hhsonPk1U1ip1fFxAqP9WRFBCYAqt
-        ckHv8VFsP9RRQG7ErZPWfegSDaC08hohL0hluIT8jae4OD13tAV7Mc+rowcVKtX/F0pBwVJjSV5
-        hDFby7ZnIxZyJs78kg==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--3.356300-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 3A487E5DD73C21F27353616BBD3FB3362469D0F8B1A852A975DAB46E5A1DDCBF2000:8
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWo7ncdgPsj6rP7_@P9FQF9L96D.corp.robot.car>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Getting secure video playback (svp) flag when request output buffer, then
-calling init interface to init svp parameters in optee-os.
+On Fri, Dec 01, 2023 at 12:01:33PM -0800, Roman Gushchin wrote:
+> On Fri, Dec 01, 2023 at 12:18:44PM +1100, Dave Chinner wrote:
+> > On Thu, Nov 30, 2023 at 11:01:23AM -0800, Roman Gushchin wrote:
+> > > On Wed, Nov 29, 2023 at 10:21:49PM -0500, Kent Overstreet wrote:
+> > > > On Thu, Nov 30, 2023 at 11:09:42AM +0800, Qi Zheng wrote:
+> > > > > For non-bcachefs developers, who knows what those statistics mean?
+> > 
+> > > Ok, a simple question then:
+> > > why can't you dump /proc/slabinfo after the OOM?
+> > 
+> > Taken to it's logical conclusion, we arrive at:
+> > 
+> > 	OOM-kill doesn't need to output anything at all except for
+> > 	what it killed because we can dump
+> > 	/proc/{mem,zone,vmalloc,buddy,slab}info after the OOM....
+> > 
+> > As it is, even asking such a question shows that you haven't looked
+> > at the OOM kill output for a long time - it already reports the slab
+> > cache usage information for caches that are reclaimable.
+> > 
+> > That is, if too much accounted slab cache based memory consumption
+> > is detected at OOM-kill, it will calldump_unreclaimable_slab() to
+> > dump all the SLAB_RECLAIM_ACCOUNT caches (i.e. those with shrinkers)
+> > to the console as part of the OOM-kill output.
+> 
+> You are right, I missed that, partially because most of OOM's I had to deal
+> with recently were memcg OOM's.
+> 
+> This changes my perspective at Kent's patches, if we dump this information
+> already, it might be not a bad idea to do it nicer. So I take my words back
+> here.
+> 
+> > 
+> > The problem Kent is trying to address is that this output *isn't
+> > sufficient to debug shrinker based memory reclaim issues*. It hasn't
+> > been for a long time, and so we've all got our own special debug
+> > patches and methods for checking that shrinkers are doing what they
+> > are supposed to. Kent is trying to formalise one of the more useful
+> > general methods for exposing that internal information when OOM
+> > occurs...
+> > 
+> > Indeed, I can think of several uses for a shrinker->to_text() output
+> > that we simply cannot do right now.
+> > 
+> > Any shrinker that does garbage collection on something that is not a
+> > pure slab cache (e.g. xfs buffer cache, xfs inode gc subsystem,
+> > graphics memory allocators, binder, etc) has no visibility of the
+> > actuall memory being used by the subsystem in the OOM-kill output.
+> > This information isn't in /proc/slabinfo, it's not accounted by a
+> > SLAB_RECLAIM_ACCOUNT cache, and it's not accounted by anything in
+> > the core mm statistics.
+> > 
+> > e.g. How does anyone other than a XFS expert know that the 500k of
+> > active xfs_buf handles in the slab cache actually pins 15GB of
+> > cached metadata allocated directly from the page allocator, not just
+> > the 150MB of slab cache the handles take up?
+> > 
+> > Another example is that an inode can pin lots of heap memory (e.g.
+> > for in-memory extent lists) and that may not be freeable until the
+> > inode is reclaimed. So while the slab cache might not be excesively
+> > large, we might have an a million inodes with a billion cumulative
+> > extents cached in memory and it is the heap memory consumed by the
+> > cached extents that is consuming the 30GB of "missing" kernel memory
+> > that is causing OOM-kills to occur.
+> > 
+> > How is a user or developer supposed to know when one of these
+> > situations has occurred given the current lack of memory usage
+> > introspection into subsystems?
+> 
+> What would be the proper solution to this problem from your point of view?
+> What functionality/API mm can provide to make the life of fs developers
+> better here?
 
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
----
- .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 144 ++++++++++++------
- 1 file changed, 94 insertions(+), 50 deletions(-)
+What can we do better?
 
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-index ab922e8d2d37..3639beac20cb 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-@@ -184,6 +184,74 @@ void mtk_vcodec_dec_set_default_params(struct mtk_vcodec_dec_ctx *ctx)
- 	q_data->bytesperline[1] = q_data->coded_width;
- }
- 
-+static int mtk_vcodec_dec_init_pic_info(struct mtk_vcodec_dec_ctx *ctx, enum v4l2_buf_type type)
-+{
-+	const struct mtk_vcodec_dec_pdata *dec_pdata = ctx->dev->vdec_pdata;
-+	struct mtk_q_data *q_data;
-+	int ret;
-+
-+	if (!ctx->current_codec)
-+		return 0;
-+
-+	if (V4L2_TYPE_IS_OUTPUT(type) && ctx->state == MTK_STATE_FREE) {
-+		q_data = mtk_vdec_get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
-+		if (!q_data)
-+			return -EINVAL;
-+
-+		ret = vdec_if_init(ctx, q_data->fmt->fourcc);
-+		if (ret) {
-+			mtk_v4l2_vdec_err(ctx, "[%d]: vdec_if_init() fail ret=%d",
-+					  ctx->id, ret);
-+			return -EINVAL;
-+		}
-+		ctx->state = MTK_STATE_INIT;
-+	}
-+
-+	if (!dec_pdata->uses_stateless_api)
-+		return 0;
-+
-+	/*
-+	 * If get pic info fail, need to use the default pic info params, or
-+	 * v4l2-compliance will fail
-+	 */
-+	ret = vdec_if_get_param(ctx, GET_PARAM_PIC_INFO, &ctx->picinfo);
-+	if (ret) {
-+		mtk_v4l2_vdec_err(ctx, "[%d]Error!! Get GET_PARAM_PICTURE_INFO Fail",
-+				  ctx->id);
-+	}
-+
-+	ctx->last_decoded_picinfo = ctx->picinfo;
-+
-+	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 1) {
-+		ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =
-+			ctx->picinfo.fb_sz[0] +
-+			ctx->picinfo.fb_sz[1];
-+		ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =
-+			ctx->picinfo.buf_w;
-+	} else {
-+		if (ctx->is_secure_playback)
-+			ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =
-+				ctx->picinfo.fb_sz[0] + ctx->picinfo.fb_sz[1];
-+		else
-+			ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] = ctx->picinfo.fb_sz[0];
-+
-+		ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] = ctx->picinfo.buf_w;
-+		ctx->q_data[MTK_Q_DATA_DST].sizeimage[1] = ctx->picinfo.fb_sz[1];
-+		ctx->q_data[MTK_Q_DATA_DST].bytesperline[1] = ctx->picinfo.buf_w;
-+	}
-+
-+	ctx->q_data[MTK_Q_DATA_DST].coded_width = ctx->picinfo.buf_w;
-+	ctx->q_data[MTK_Q_DATA_DST].coded_height = ctx->picinfo.buf_h;
-+	mtk_v4l2_vdec_dbg(2, ctx,
-+			  "[%d] init() plane:%d wxh=%dx%d pic wxh=%dx%d sz=0x%x_0x%x",
-+			  ctx->id, q_data->fmt->num_planes,
-+			  ctx->picinfo.buf_w, ctx->picinfo.buf_h,
-+			  ctx->picinfo.pic_w, ctx->picinfo.pic_h,
-+			  ctx->q_data[MTK_Q_DATA_DST].sizeimage[0],
-+			  ctx->q_data[MTK_Q_DATA_DST].sizeimage[1]);
-+	return 0;
-+}
-+
- static int vidioc_vdec_qbuf(struct file *file, void *priv,
- 			    struct v4l2_buffer *buf)
- {
-@@ -479,17 +547,7 @@ static int vidioc_vdec_s_fmt(struct file *file, void *priv,
- 		ctx->ycbcr_enc = pix_mp->ycbcr_enc;
- 		ctx->quantization = pix_mp->quantization;
- 		ctx->xfer_func = pix_mp->xfer_func;
--
- 		ctx->current_codec = fmt->fourcc;
--		if (ctx->state == MTK_STATE_FREE) {
--			ret = vdec_if_init(ctx, q_data->fmt->fourcc);
--			if (ret) {
--				mtk_v4l2_vdec_err(ctx, "[%d]: vdec_if_init() fail ret=%d",
--						  ctx->id, ret);
--				return -EINVAL;
--			}
--			ctx->state = MTK_STATE_INIT;
--		}
- 	} else {
- 		ctx->capture_fourcc = fmt->fourcc;
- 	}
-@@ -502,46 +560,11 @@ static int vidioc_vdec_s_fmt(struct file *file, void *priv,
- 		ctx->picinfo.pic_w = pix_mp->width;
- 		ctx->picinfo.pic_h = pix_mp->height;
- 
--		/*
--		 * If get pic info fail, need to use the default pic info params, or
--		 * v4l2-compliance will fail
--		 */
--		ret = vdec_if_get_param(ctx, GET_PARAM_PIC_INFO, &ctx->picinfo);
--		if (ret) {
--			mtk_v4l2_vdec_err(ctx, "[%d]Error!! Get GET_PARAM_PICTURE_INFO Fail",
--					  ctx->id);
--		}
--
--		ctx->last_decoded_picinfo = ctx->picinfo;
--
--		if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 1) {
--			ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =
--				ctx->picinfo.fb_sz[0] +
--				ctx->picinfo.fb_sz[1];
--			ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =
--				ctx->picinfo.buf_w;
--		} else {
--			ctx->q_data[MTK_Q_DATA_DST].sizeimage[0] =
--				ctx->picinfo.fb_sz[0];
--			ctx->q_data[MTK_Q_DATA_DST].bytesperline[0] =
--				ctx->picinfo.buf_w;
--			ctx->q_data[MTK_Q_DATA_DST].sizeimage[1] =
--				ctx->picinfo.fb_sz[1];
--			ctx->q_data[MTK_Q_DATA_DST].bytesperline[1] =
--				ctx->picinfo.buf_w;
--		}
--
--		ctx->q_data[MTK_Q_DATA_DST].coded_width = ctx->picinfo.buf_w;
--		ctx->q_data[MTK_Q_DATA_DST].coded_height = ctx->picinfo.buf_h;
--		mtk_v4l2_vdec_dbg(2, ctx,
--				  "[%d] init() plane:%d wxh=%dx%d pic wxh=%dx%d sz=0x%x_0x%x",
--				  ctx->id, pix_mp->num_planes,
--				  ctx->picinfo.buf_w, ctx->picinfo.buf_h,
--				  ctx->picinfo.pic_w, ctx->picinfo.pic_h,
--				  ctx->q_data[MTK_Q_DATA_DST].sizeimage[0],
--				  ctx->q_data[MTK_Q_DATA_DST].sizeimage[1]);
-+		if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE)
-+			ret = mtk_vcodec_dec_init_pic_info(ctx, f->type);
- 	}
--	return 0;
-+
-+	return ret;
- }
- 
- static int vidioc_enum_framesizes(struct file *file, void *priv,
-@@ -722,7 +745,7 @@ int vb2ops_vdec_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
- {
- 	struct mtk_vcodec_dec_ctx *ctx = vb2_get_drv_priv(vq);
- 	struct mtk_q_data *q_data;
--	unsigned int i;
-+	unsigned int i, ret;
- 
- 	q_data = mtk_vdec_get_q_data(ctx, vq->type);
- 
-@@ -731,6 +754,25 @@ int vb2ops_vdec_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
- 		return -EINVAL;
- 	}
- 
-+	if (vq->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE) {
-+		ret = mtk_vcodec_dec_init_pic_info(ctx, vq->type);
-+		if (ret) {
-+			mtk_v4l2_vdec_err(ctx, "Failed to init picture information");
-+			return ret;
-+		}
-+
-+		if (vq->secure_mem && !ctx->is_secure_playback) {
-+			ret = mtk_vcodec_dec_optee_open(ctx->dev->optee_private);
-+			if (ret) {
-+				mtk_v4l2_vdec_err(ctx, "Failed to open decoder optee os");
-+				return ret;
-+			}
-+			ctx->is_secure_playback = vq->secure_mem;
-+			mtk_v4l2_vdec_dbg(1, ctx, "Getting secure decoder mode:%d",
-+					  ctx->is_secure_playback);
-+		}
-+	}
-+
- 	if (*nplanes) {
- 		if (vq->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
- 			if (*nplanes != q_data->fmt->num_planes)
-@@ -980,6 +1022,7 @@ int mtk_vcodec_dec_queue_init(void *priv, struct vb2_queue *src_vq,
- 	src_vq->lock		= &ctx->dev->dev_mutex;
- 	src_vq->dev             = &ctx->dev->plat_dev->dev;
- 	src_vq->allow_cache_hints = 1;
-+	src_vq->allow_secure_mem = 1;
- 
- 	ret = vb2_queue_init(src_vq);
- 	if (ret) {
-@@ -996,6 +1039,7 @@ int mtk_vcodec_dec_queue_init(void *priv, struct vb2_queue *src_vq,
- 	dst_vq->lock		= &ctx->dev->dev_mutex;
- 	dst_vq->dev             = &ctx->dev->plat_dev->dev;
- 	dst_vq->allow_cache_hints = 1;
-+	dst_vq->allow_secure_mem = 1;
- 
- 	ret = vb2_queue_init(dst_vq);
- 	if (ret)
+The first thing we can do better that comes to mind is to merge
+Kent's patches that allow the shrinker owner to output debug
+information when requested by the infrastructure.
+
+Then we - the shrinker implementers - have some control of our own
+destiny.  We can add whatever we need to solve shrinker and OOM
+problems realted to our shrinkers not doing the right thing.
+
+But without that callout from the infrastructure and the
+infrastructure to drive it at appropriate times, we will make zero
+progress improving the situation. 
+
+Yes, the code may not be perfect and, yes, it may not be useful to
+mm developers, but for the people who have to debug shrinker related
+problems in production systems we need all the help we can get. We
+certainly don't care if it isn't perfect, just having something we
+can partially tailor to our iindividual needs is far, far better
+than the current situation of nothing at all...
+
+-Dave.
 -- 
-2.18.0
-
+Dave Chinner
+david@fromorbit.com
