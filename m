@@ -2,58 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F478074A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:14:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450418074A4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbjLFQNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        id S229661AbjLFQOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378358AbjLFQNp (ORCPT
+        with ESMTP id S229471AbjLFQOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:13:45 -0500
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74689D62
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:13:50 -0800 (PST)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4SljBX2kFZz9vCD;
-        Wed,  6 Dec 2023 17:13:40 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3FYUCo95Fuy9; Wed,  6 Dec 2023 17:13:40 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4SljBR3YHLz9vCL;
-        Wed,  6 Dec 2023 17:13:35 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 766AF8B768;
-        Wed,  6 Dec 2023 17:13:35 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id v283c70XfHb5; Wed,  6 Dec 2023 17:13:35 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.233.46])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA1F58B774;
-        Wed,  6 Dec 2023 17:13:34 +0100 (CET)
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v1 4/4] powerpc: Stop using of_root
-Date:   Wed,  6 Dec 2023 17:13:35 +0100
-Message-ID: <b2f23f982ef414f0eaf7c55ccb79f30bec3c86cd.1701878821.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <e6cf01d41502b15e688b6f5aa5c3b68c62b8ac64.1701878821.git.christophe.leroy@csgroup.eu>
-References: <e6cf01d41502b15e688b6f5aa5c3b68c62b8ac64.1701878821.git.christophe.leroy@csgroup.eu>
+        Wed, 6 Dec 2023 11:14:41 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2A912F;
+        Wed,  6 Dec 2023 08:14:47 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EFCCD1FD16;
+        Wed,  6 Dec 2023 16:14:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701879286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DkhA2HHkFoqZbckox6DnGjYS+3CIXWrTjgL648Eh+A=;
+        b=rVDYHIo4hZl3CgAy/qvw7vEZtNRCRdfTESHbRMBQO8VBw0d0rNW63/XBf/Nt+0AcZrcAvP
+        7HHyoUUwu3H20JUtUchQvUVY2ao79AoQvoa75kb0Jbhj+X8fvkrg+bAKD80BaszybU2aiN
+        aFpGKzpH5mVjokxaZEddOKTMp0FlU4w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701879286;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1DkhA2HHkFoqZbckox6DnGjYS+3CIXWrTjgL648Eh+A=;
+        b=wGcezhoFzNi07PvT4U4IYxRR6woz2UoJW+32KxW2B60ApVQRCkCpS9Zgns9dneDTvNVNSi
+        xV3jnu9YFjbjnaDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C1E9213408;
+        Wed,  6 Dec 2023 16:14:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id ULPVLvWdcGWHXgAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Wed, 06 Dec 2023 16:14:45 +0000
+Message-ID: <75a71276-dff8-ad3a-d238-fcfa3ab39413@suse.cz>
+Date:   Wed, 6 Dec 2023 17:14:45 +0100
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701879211; l=7716; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=77K0delwMi3OukRKKy6/1eRhfB22ltpHavBgqxRwed0=; b=FikTP9d7zk0WKhQnlHzOxXVSIGyQ2yiTKRltLPzyysffyCZU06/ORHO/bhHbHJxpiDyUN9IB7 HXx+K1oL00MD2Li2OjqP0XRY+7WMLtTspSWxZUMVgMBxwdcbi2Fl0cV
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v2 2/3] mm/slub: unify all sl[au]b parameters with
+ "slab_$param"
+Content-Language: en-US
+To:     sxwjean@me.com, 42.hyeyoo@gmail.com, cl@linux.com,
+        linux-mm@kvack.org
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        roman.gushchin@linux.dev, corbet@lwn.net, keescook@chromium.org,
+        arnd@arndb.de, akpm@linux-foundation.org,
+        gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Xiongwei Song <xiongwei.song@windriver.com>
+References: <20231203001501.126339-1-sxwjean@me.com>
+ <20231203001501.126339-3-sxwjean@me.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231203001501.126339-3-sxwjean@me.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: -0.60
+X-Spamd-Result: default: False [-0.60 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com,me.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         SUBJECT_HAS_CURRENCY(1.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[16];
+         FREEMAIL_TO(0.00)[me.com,gmail.com,linux.com,kvack.org];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,216 +106,171 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace all usages of of_root by of_find_node_by_path("/")
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/secure_boot.c        |  8 ++++++--
- arch/powerpc/kexec/ranges.c              |  8 +++++---
- arch/powerpc/mm/drmem.c                  | 10 +++++-----
- arch/powerpc/mm/numa.c                   |  6 ++++--
- arch/powerpc/platforms/52xx/efika.c      |  4 +++-
- arch/powerpc/platforms/pasemi/pci.c      |  4 +++-
- arch/powerpc/platforms/pseries/lparcfg.c |  6 +++++-
- arch/powerpc/platforms/pseries/setup.c   | 12 +++++++++---
- 8 files changed, 40 insertions(+), 18 deletions(-)
+On 12/3/23 01:15, sxwjean@me.com wrote:
+> From: Xiongwei Song <xiongwei.song@windriver.com>
+> 
+> Since the SLAB allocator has been removed, so we need to clean up the
 
-diff --git a/arch/powerpc/kernel/secure_boot.c b/arch/powerpc/kernel/secure_boot.c
-index f9af305d9579..9e0efb657f39 100644
---- a/arch/powerpc/kernel/secure_boot.c
-+++ b/arch/powerpc/kernel/secure_boot.c
-@@ -32,8 +32,10 @@ bool is_ppc_secureboot_enabled(void)
- 	if (enabled)
- 		goto out;
- 
--	if (!of_property_read_u32(of_root, "ibm,secure-boot", &secureboot))
-+	node = of_find_node_by_path("/");
-+	if (!of_property_read_u32(node, "ibm,secure-boot", &secureboot))
- 		enabled = (secureboot > 1);
-+	of_node_put(node);
- 
- out:
- 	pr_info("Secure boot mode %s\n", enabled ? "enabled" : "disabled");
-@@ -54,8 +56,10 @@ bool is_ppc_trustedboot_enabled(void)
- 	if (enabled)
- 		goto out;
- 
--	if (!of_property_read_u32(of_root, "ibm,trusted-boot", &trustedboot))
-+	node = of_find_node_by_path("/");
-+	if (!of_property_read_u32(node, "ibm,trusted-boot", &trustedboot))
- 		enabled = (trustedboot > 0);
-+	of_node_put(node);
- 
- out:
- 	pr_info("Trusted boot mode %s\n", enabled ? "enabled" : "disabled");
-diff --git a/arch/powerpc/kexec/ranges.c b/arch/powerpc/kexec/ranges.c
-index fb3e12f15214..33b780049aaf 100644
---- a/arch/powerpc/kexec/ranges.c
-+++ b/arch/powerpc/kexec/ranges.c
-@@ -385,14 +385,16 @@ int add_opal_mem_range(struct crash_mem **mem_ranges)
- int add_reserved_mem_ranges(struct crash_mem **mem_ranges)
- {
- 	int n_mem_addr_cells, n_mem_size_cells, i, len, cells, ret = 0;
-+	struct device_node *root = of_find_node_by_path("/");
- 	const __be32 *prop;
- 
--	prop = of_get_property(of_root, "reserved-ranges", &len);
-+	prop = of_get_property(root, "reserved-ranges", &len);
-+	n_mem_addr_cells = of_n_addr_cells(root);
-+	n_mem_size_cells = of_n_size_cells(root);
-+	of_node_put(root);
- 	if (!prop)
- 		return 0;
- 
--	n_mem_addr_cells = of_n_addr_cells(of_root);
--	n_mem_size_cells = of_n_size_cells(of_root);
- 	cells = n_mem_addr_cells + n_mem_size_cells;
- 
- 	/* Each reserved range is an (address,size) pair */
-diff --git a/arch/powerpc/mm/drmem.c b/arch/powerpc/mm/drmem.c
-index fde7790277f7..c110ab8fa8a3 100644
---- a/arch/powerpc/mm/drmem.c
-+++ b/arch/powerpc/mm/drmem.c
-@@ -393,17 +393,17 @@ static const __be32 *of_get_usable_memory(struct device_node *dn)
- int walk_drmem_lmbs(struct device_node *dn, void *data,
- 		    int (*func)(struct drmem_lmb *, const __be32 **, void *))
- {
-+	struct device_node *root = of_find_node_by_path("/");
- 	const __be32 *prop, *usm;
- 	int ret = -ENODEV;
- 
--	if (!of_root)
-+	if (!root)
- 		return ret;
- 
- 	/* Get the address & size cells */
--	of_node_get(of_root);
--	n_root_addr_cells = of_n_addr_cells(of_root);
--	n_root_size_cells = of_n_size_cells(of_root);
--	of_node_put(of_root);
-+	n_root_addr_cells = of_n_addr_cells(root);
-+	n_root_size_cells = of_n_size_cells(root);
-+	of_node_put(root);
- 
- 	if (init_drmem_lmb_size(dn))
- 		return ret;
-diff --git a/arch/powerpc/mm/numa.c b/arch/powerpc/mm/numa.c
-index f6c4ace3b221..a490724e84ad 100644
---- a/arch/powerpc/mm/numa.c
-+++ b/arch/powerpc/mm/numa.c
-@@ -1111,7 +1111,7 @@ static void __init setup_node_data(int nid, u64 start_pfn, u64 end_pfn)
- 
- static void __init find_possible_nodes(void)
- {
--	struct device_node *rtas;
-+	struct device_node *rtas, *root;
- 	const __be32 *domains = NULL;
- 	int prop_length, max_nodes;
- 	u32 i;
-@@ -1132,10 +1132,12 @@ static void __init find_possible_nodes(void)
- 	 * If the LPAR is migratable, new nodes might be activated after a LPM,
- 	 * so we should consider the max number in that case.
- 	 */
--	if (!of_get_property(of_root, "ibm,migratable-partition", NULL))
-+	root = of_find_node_by_path("/");
-+	if (!of_get_property(root, "ibm,migratable-partition", NULL))
- 		domains = of_get_property(rtas,
- 					  "ibm,current-associativity-domains",
- 					  &prop_length);
-+	of_node_put(root);
- 	if (!domains) {
- 		domains = of_get_property(rtas, "ibm,max-associativity-domains",
- 					&prop_length);
-diff --git a/arch/powerpc/platforms/52xx/efika.c b/arch/powerpc/platforms/52xx/efika.c
-index aa82e6b437f3..37a67120f257 100644
---- a/arch/powerpc/platforms/52xx/efika.c
-+++ b/arch/powerpc/platforms/52xx/efika.c
-@@ -195,8 +195,10 @@ static void __init efika_setup_arch(void)
- 
- static int __init efika_probe(void)
- {
--	const char *model = of_get_property(of_root, "model", NULL);
-+	struct device_node *root = of_find_node_by_path("/");
-+	const char *model = of_get_property(root, "model", NULL);
- 
-+	of_node_put(root);
- 	if (model == NULL)
- 		return 0;
- 	if (strcmp(model, "EFIKA5K2"))
-diff --git a/arch/powerpc/platforms/pasemi/pci.c b/arch/powerpc/platforms/pasemi/pci.c
-index f27d31414737..60f990a336c4 100644
---- a/arch/powerpc/platforms/pasemi/pci.c
-+++ b/arch/powerpc/platforms/pasemi/pci.c
-@@ -270,16 +270,18 @@ static int __init pas_add_bridge(struct device_node *dev)
- 
- void __init pas_pci_init(void)
- {
-+	struct device_node *root = of_find_node_by_path("/");
- 	struct device_node *np;
- 	int res;
- 
- 	pci_set_flags(PCI_SCAN_ALL_PCIE_DEVS);
- 
--	np = of_find_compatible_node(of_root, NULL, "pasemi,rootbus");
-+	np = of_find_compatible_node(root, NULL, "pasemi,rootbus");
- 	if (np) {
- 		res = pas_add_bridge(np);
- 		of_node_put(np);
- 	}
-+	of_node_put(root);
- }
- 
- void __iomem *__init pasemi_pci_getcfgaddr(struct pci_dev *dev, int offset)
-diff --git a/arch/powerpc/platforms/pseries/lparcfg.c b/arch/powerpc/platforms/pseries/lparcfg.c
-index 1c151d77e74b..f73c4d1c26af 100644
---- a/arch/powerpc/platforms/pseries/lparcfg.c
-+++ b/arch/powerpc/platforms/pseries/lparcfg.c
-@@ -346,9 +346,13 @@ static int read_rtas_lpar_name(struct seq_file *m)
-  */
- static int read_dt_lpar_name(struct seq_file *m)
- {
-+	struct device_node *root = of_find_node_by_path("/");
- 	const char *name;
-+	int ret;
- 
--	if (of_property_read_string(of_root, "ibm,partition-name", &name))
-+	ret = of_property_read_string(root, "ibm,partition-name", &name);
-+	of_node_put(root);
-+	if (ret)
- 		return -ENOENT;
- 
- 	seq_printf(m, "partition_name=%s\n", name);
-diff --git a/arch/powerpc/platforms/pseries/setup.c b/arch/powerpc/platforms/pseries/setup.c
-index ecea85c74c43..284a6fa04b0c 100644
---- a/arch/powerpc/platforms/pseries/setup.c
-+++ b/arch/powerpc/platforms/pseries/setup.c
-@@ -1029,9 +1029,11 @@ static void __init pseries_add_hw_description(void)
- 		return;
- 	}
- 
--	if (of_property_read_bool(of_root, "ibm,powervm-partition") ||
--	    of_property_read_bool(of_root, "ibm,fw-net-version"))
-+	dn = of_find_node_by_path("/");
-+	if (of_property_read_bool(dn, "ibm,powervm-partition") ||
-+	    of_property_read_bool(dn, "ibm,fw-net-version"))
- 		seq_buf_printf(&ppc_hw_desc, "hv:phyp ");
-+	of_node_put(dn);
- }
- 
- /*
-@@ -1091,7 +1093,11 @@ static void pseries_power_off(void)
- 
- static int __init pSeries_probe(void)
- {
--	if (!of_node_is_type(of_root, "chrp"))
-+	struct device_node *root = of_find_node_by_path("/");
-+	bool ret = of_node_is_type(root, "chrp");
-+
-+	of_node_put(root);
-+	if (!ret)
- 		return 0;
- 
- 	/* Cell blades firmware claims to be chrp while it's not. Until this
--- 
-2.41.0
+"we can clean up", as we don't really "need"
+
+> sl[au]b_$params. However, the "slab/SLAB" terms should be keep for
+> long-term rather than "slub/SLUB". Hence, we should use "slab_$param"
+
+I'd phrase it: With only one slab allocator left, it's better to use the
+generic "slab" term instead of "slub" which is an implementation detail.
+Hence ...
+
+> as the primary prefix, which is pointed out by Vlastimil Babka. For more
+> information please see [1].
+> 
+> This patch is changing the following slab parameters
+> - slub_max_order
+> - slub_min_order
+> - slub_min_objects
+> - slub_debug
+> to
+> - slab_max_order
+> - slab_min_order
+> - slab_min_objects
+> - slab_debug
+> as the primary slab parameters in
+> Documentation/admin-guide/kernel-parameters.txt and source, and rename all
+> setup functions of them too. Meanwhile, "slub_$params" can also be passed
+
+Not sure about renaming the code at this point, I would just rename the
+user-visible parameters and their documentation and any comment that refers
+to the parameters. Functions and variables can come later as part of wider
+slub/slab change if we decide to do so?
+
+> by command line, which is to keep backward compatibility. Also mark all
+> "slub_$params" as legacy.
+> 
+> The function
+>     static int __init setup_slub_debug(char *str);
+> , which is to setup debug flags inside a slab during kernel init, is
+> changed to setup_slab_debug_flags(), which is to prevent the name
+> conflict. Because there is another function
+>     void setup_slab_debug(struct kmem_cache *s, struct slab *slab,
+>     		void *addr);
+> , which is to poison slab space, would have name conflict with the prior
+> one.
+
+Another reason to defer code naming changes.
+
+> For parameter "slub_debug", beside replacing it with "slab_debug", there
+> are several global variables, local variables and functions which are
+> related with the parameter, let's rename them all.
+> 
+> Remove the separate descriptions for slub_[no]merge, append legacy tip
+> for them at the end of descriptions of slab_[no]merge.
+> 
+> I didn't change the parameters in Documentation/mm/slub.rst because the
+> file name is still "slub.rst", and slub_$params still can be used in
+> kernel command line to keep backward compatibility.
+> 
+> [1] https://lore.kernel.org/linux-mm/7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz/
+> 
+> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  44 +++---
+>  drivers/misc/lkdtm/heap.c                     |   2 +-
+>  mm/Kconfig.debug                              |   6 +-
+>  mm/slab.h                                     |  16 +-
+>  mm/slab_common.c                              |   8 +-
+>  mm/slub.c                                     | 142 +++++++++---------
+>  6 files changed, 109 insertions(+), 109 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 9f94baeb2f82..d01c12e2a247 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5869,6 +5869,8 @@
+>  	slab_merge	[MM]
+>  			Enable merging of slabs with similar size when the
+>  			kernel is built without CONFIG_SLAB_MERGE_DEFAULT.
+> +			(slub_merge is accepted too, but it's supported for
+> +			legacy)
+
+How about a shorter note (and always start on new line)
+
+		(slub_merge legacy name also accepted for now)
+
+>  
+>  	slab_nomerge	[MM]
+>  			Disable merging of slabs with similar size. May be
+> @@ -5882,47 +5884,41 @@
+>  			unchanged). Debug options disable merging on their
+>  			own.
+>  			For more information see Documentation/mm/slub.rst.
+> +			(slub_nomerge is accepted too, but it's supported for
+> +			legacy)
+>  
+> -	slab_max_order=	[MM, SLAB]
+> -			Determines the maximum allowed order for slabs.
+> -			A high setting may cause OOMs due to memory
+> -			fragmentation.  Defaults to 1 for systems with
+> -			more than 32MB of RAM, 0 otherwise.
+> -
+> -	slub_debug[=options[,slabs][;[options[,slabs]]...]	[MM, SLUB]
+> -			Enabling slub_debug allows one to determine the
+> +	slab_debug[=options[,slabs][;[options[,slabs]]...]	[MM]
+
+I think we should re-sort alphabetically after the slub_ -> slab_ change.
+
+> +			Enabling slab_debug allows one to determine the
+>  			culprit if slab objects become corrupted. Enabling
+> -			slub_debug can create guard zones around objects and
+> +			slab_debug can create guard zones around objects and
+>  			may poison objects when not in use. Also tracks the
+>  			last alloc / free. For more information see
+> -			Documentation/mm/slub.rst.
+> +			Documentation/mm/slub.rst. (slub_debug is accepted
+> +			too, but it's supported for legacy)
+>  
+> -	slub_max_order= [MM, SLUB]
+> +	slab_max_order= [MM]
+>  			Determines the maximum allowed order for slabs.
+>  			A high setting may cause OOMs due to memory
+>  			fragmentation. For more information see
+> -			Documentation/mm/slub.rst.
+> +			Documentation/mm/slub.rst. (slub_max_order is
+> +			accepted too, but it's supported for legacy)
+>  
+> -	slub_min_objects=	[MM, SLUB]
+> +	slab_min_objects=	[MM]
+>  			The minimum number of objects per slab. SLUB will
+> -			increase the slab order up to slub_max_order to
+> +			increase the slab order up to slab_max_order to
+>  			generate a sufficiently large slab able to contain
+>  			the number of objects indicated. The higher the number
+>  			of objects the smaller the overhead of tracking slabs
+>  			and the less frequently locks need to be acquired.
+>  			For more information see Documentation/mm/slub.rst.
+> +			(slub_min_objects is accepted too, but it's supported
+> +			for legacy)
+>  
+> -	slub_min_order=	[MM, SLUB]
+> +	slab_min_order=	[MM]
+>  			Determines the minimum page order for slabs. Must be
+> -			lower than slub_max_order.
+> -			For more information see Documentation/mm/slub.rst.
+> -
+> -	slub_merge	[MM, SLUB]
+> -			Same with slab_merge.
+> -
+> -	slub_nomerge	[MM, SLUB]
+> -			Same with slab_nomerge. This is supported for legacy.
+> -			See slab_nomerge for more information.
+> +			lower than slab_max_order. For more information see
+
+		"lower or equal to" (more precise, while at it)
+
+> +			Documentation/mm/slub.rst. (slub_min_order is accepted
+> +			too, but it's supported for legacy)
+>  
+>  	smart2=		[HW]
+>  			Format: <io1>[,<io2>[,...,<io8>]]
+
+Thanks!
 
