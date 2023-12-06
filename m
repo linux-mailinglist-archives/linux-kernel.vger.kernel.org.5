@@ -2,150 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D638079E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFB38079F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379468AbjLFU7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:59:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51068 "EHLO
+        id S1379538AbjLFVBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:01:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbjLFU7G (ORCPT
+        with ESMTP id S229780AbjLFVBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:59:06 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582E6DC
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:59:12 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cfb30ce241so1805335ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 12:59:12 -0800 (PST)
+        Wed, 6 Dec 2023 16:01:21 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF9AD68
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:01:26 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bed6c1716so1060e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 13:01:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701896352; x=1702501152; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=J93fduvsJM9IBDskoI9RKo4tnycXW8hW3zH9yUjvMQk=;
-        b=jZZw9mI7YrxEPgI+aIObpwp94vnWw09sNo7OJ/9O8MwgjocHUrmcfZpMxhmTZjk3CF
-         SZ0XlZj4Tt8IneivqQgFUq6XcOuf9wDJds7WEv3FQKLaytYyPTknLrpB1dfzqRfHHL4X
-         kXCU7iBrV3JBcbRr1LsgX3tMkuE4Y+1zGEvic=
+        d=google.com; s=20230601; t=1701896484; x=1702501284; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jTMXuJCEqJHPLeXHn67bXo6PdSm/hRexkrXp0Gjs9Qo=;
+        b=wTdUuk6k9qP/kYQesLiOVFwqMAWXAynKzdPdwtKWR2TzBo0OzNtjs7uz8rMp6rhcjZ
+         nvFI2CXIPISpwdBu0fKSg3Trqh9g4bYsog2GLjZFXGq9ABrzcTy+gN7EBekPhDsLEZNg
+         rQ+U9HOJm7bY7+UwHT1O/685+uh1QMgQpBU+u+N7gvQZBbXplWXNCSnov5pSJM6skCX6
+         Fpv9Wx3lYYUC3EOlzosuUBhGEkWbElyvyP9rrOyh4bUbaexuFWrnydzFxT/FwYXhKiQM
+         kbrlTcUM/XNQx3f9ATGOgUu5UZhqGlH9G/XWTCSACJZ2o+q5pnwwUtTm068mEp9m6/oo
+         r4VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701896352; x=1702501152;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J93fduvsJM9IBDskoI9RKo4tnycXW8hW3zH9yUjvMQk=;
-        b=akQZDf5QVMCkc7pZSihnumEzfclZDPXJCfpRZPL7jIKUe52rBU81n7ZHD6KyrWPOvR
-         VApO7bwBUDZBn/qPkeDSHoZNP0J3BWwx3BA77JC5gUrcFz6JOK89H6OX6vTnJZAoxWij
-         m2bYYR0oDhiy+tXGYKduvHJ655Xe9ORqrPPmS8WQFcJfFn4QiUKT/k5WYlGnRxAD+6sw
-         mx+wyj0vl8n1WqFjWOZqBoR6LCohJq21vxOHcgmYZdbawb2BjCAlEF1J5z+UD8qySSiy
-         9jtWf3mJ4JglUe7kgcoe2cNwalT6ok9a4TzJvWJuRL2Q14um8Sd7X57IY0BOua2qWLnk
-         FgMw==
-X-Gm-Message-State: AOJu0Yw5ElpqwiFgcxOG1MJZUFEYiX4PTAjSPk1sVec6WMUTS5K71owF
-        nQfpFVchz9p1omfYQN00/nihMw==
-X-Google-Smtp-Source: AGHT+IFvswkhjo/IRJgksME8nSDfGlm3ijJw/G6gOtT77V36Y3AGjjCCSiF/AeJmBG3/ZUhfEybY+w==
-X-Received: by 2002:a17:902:ce8c:b0:1d0:5efb:852e with SMTP id f12-20020a170902ce8c00b001d05efb852emr1894519plg.40.1701896351898;
-        Wed, 06 Dec 2023 12:59:11 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g15-20020a1709029f8f00b001cffe1e7374sm241121plq.214.2023.12.06.12.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 12:59:11 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        kernel test robot <lkp@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Michael Walle <mwalle@kernel.org>,
-        Max Schulze <max.schulze@online.de>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v3] netlink: Return unsigned value for nla_len()
-Date:   Wed,  6 Dec 2023 12:59:07 -0800
-Message-Id: <20231206205904.make.018-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1701896484; x=1702501284;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jTMXuJCEqJHPLeXHn67bXo6PdSm/hRexkrXp0Gjs9Qo=;
+        b=PbSRdzTkYCMIWOQDmmA9lUESyQqNyCW5V7UAgG5o4pY5kWLFSU+DcC6ZGLQbvjVjN4
+         whVcF61yQFQ4Ky4TtygmbYpXB50Fr/F2uT0z0uUVVTBhcCrynjwFtLEO2czoIRaAqmtr
+         vS2E13qnT6NCLh/227stZlDrfGmWvwH8XmnxB+aRR5cQ0Pn//eRNfCRHqHPJsN6h7Xu0
+         UuPRk9uNZ6GIKcejbhIhHP4TgTHEo6bVDjlAJPoflxzFYdGnbMKLFw1xzOVQFNX0IIcG
+         ek9Kr4rNpOcfDFP8etln9DgZB7KEIIkmoWaiybkWbGMopggV304h0JfGvP1H0wCxiT+v
+         AyrA==
+X-Gm-Message-State: AOJu0YyuKwkwG29MK3KfdscfDMsZ7UzoNw8w5JOcSFGKxc9cPHtH4Vuq
+        DubkswIr2srWHZ9UDfU+OzKey1Ux7lRkIi6DnYOoww==
+X-Google-Smtp-Source: AGHT+IFhw3nzwc7N4hOSx4Ms83EqUqIgbK+VAvDT2QBLn7SOyO4tGTAOakXgIdsTy6PZYygQYPnrKSis5reQJ4O6iLU=
+X-Received: by 2002:a05:6512:e81:b0:50b:ea5c:2823 with SMTP id
+ bi1-20020a0565120e8100b0050bea5c2823mr91354lfb.2.1701896483955; Wed, 06 Dec
+ 2023 13:01:23 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2690; i=keescook@chromium.org;
- h=from:subject:message-id; bh=pLbf9+8/Dl6ABNGi9y3vSm6UF9GJMzpseYPTOTsyx3s=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlcOCb/xqKImyOG8B5tSBdCnmYR3X3y0Fpi6OPz
- +IJ//WINgGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZXDgmwAKCRCJcvTf3G3A
- Jla8D/4u3zQcCSzbtxkzBPPv06VCqIqEjWUmThCDWb+7VGajZMflRwumsBIenZhrHpN5F5aclOO
- 4VuHTW8AM5MPLgfRnMQ4JvuUp2Upru5NZQjfGbfMVR8helKPFcBr9hc04VO1f92ifYptZRN/LKb
- jOKQWB3KCZMuQasgWFlbpupkYVvuSZVid0v4uHPmr+XPVJHMHShYG5uojmi79M+Ublpsz9iH88S
- lbfK82rcT0UN8FROEBI2dTwMS5WlKw4KrykUQbatRuSyFrU7vSM2SFxoT55PrI419GzCH35Rvqc
- gz7Zap2Sr3KnVwn21KhkpdXtzjiX8Y/hOeWFpfSnhS/PlKtOUWwS84KMSfBCuqIWqBo62i0+zGT
- tyELRq341AAVcM5zvGvxbytPFkyPSbNR7dZJ2STXBR6LM0NKhVEqnpQXcXn2zq5bhpj25epO8cJ
- 5rHqEuJaVlT0U7t1RHlp3tkdieB2VJpkHjx9vnAMrB7aXV+30hKEZZvtgIpv6UXRdfnBYXufLpw
- hPjF2ZyQ7BEW3wi3OqKe0Hw0rZrzOYmCRZ5s/oUW5icBLeD2zNyTioD8elQ+oFohpwdafgXuy/v
- 9qOsRL44DGAAZ+T1MUSWBz+xvuCU2vKWiUkQWVbeT+otZYhXiojiclK7j+OVH8jbd3TIghZHF6P
- 3UCxxmr ZBhWuGBg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231206201324.184059-1-kan.liang@linux.intel.com> <20231206201324.184059-2-kan.liang@linux.intel.com>
+In-Reply-To: <20231206201324.184059-2-kan.liang@linux.intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 6 Dec 2023 13:01:12 -0800
+Message-ID: <CAP-5=fWD9EVHxR+2KE5JPGw_-+rDUbFVE04LNK+n1b3Mo53jqw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] perf mem: Add mem_events into the supported perf_pmu
+To:     kan.liang@linux.intel.com
+Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        namhyung@kernel.org, jolsa@kernel.org, adrian.hunter@intel.com,
+        john.g.garry@oracle.com, will@kernel.org, james.clark@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        yuhaixin.yhx@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+        tmricht@linux.ibm.com, ravi.bangoria@amd.com,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The return value from nla_len() is never expected to be negative, and can
-never be more than struct nlattr::nla_len (a u16). Adjust the prototype
-on the function. This will let GCC's value range optimization passes
-know that the return can never be negative, and can never be larger than
-u16. As recently discussed[1], this silences the following warning in
-GCC 12+:
+On Wed, Dec 6, 2023 at 12:13=E2=80=AFPM <kan.liang@linux.intel.com> wrote:
+>
+> From: Kan Liang <kan.liang@linux.intel.com>
+>
+> With the mem_events, perf doesn't need to read sysfs for each PMU to
+> find the mem-events-supported PMU. The patch also makes it possible to
+> clean up the related __weak functions later.
+>
+> The patch is only to add the mem_events into the perf_pmu for all ARCHs.
+> It will be used in the later cleanup patches.
+>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 
-net/wireless/nl80211.c: In function 'nl80211_set_cqm_rssi.isra':
-net/wireless/nl80211.c:12892:17: warning: 'memcpy' specified bound 18446744073709551615 exceeds maximum object size 9223372036854775807 [-Wstringop-overflow=]
-12892 |                 memcpy(cqm_config->rssi_thresholds, thresholds,
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-12893 |                        flex_array_size(cqm_config, rssi_thresholds,
-      |                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-12894 |                                        n_thresholds));
-      |                                        ~~~~~~~~~~~~~~
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-A future change would be to clamp the subtraction to make sure it never
-wraps around if nla_len is somehow less than NLA_HDRLEN, which would
-have the additional benefit of being defensive in the face of nlattr
-corruption or logic errors.
+> ---
+>  tools/perf/arch/arm64/util/mem-events.c | 4 ++--
+>  tools/perf/arch/arm64/util/mem-events.h | 7 +++++++
+>  tools/perf/arch/arm64/util/pmu.c        | 6 ++++++
+>  tools/perf/arch/s390/util/pmu.c         | 3 +++
+>  tools/perf/arch/x86/util/mem-events.c   | 4 ++--
+>  tools/perf/arch/x86/util/mem-events.h   | 9 +++++++++
+>  tools/perf/arch/x86/util/pmu.c          | 7 +++++++
+>  tools/perf/util/mem-events.c            | 2 +-
+>  tools/perf/util/mem-events.h            | 1 +
+>  tools/perf/util/pmu.c                   | 4 +++-
+>  tools/perf/util/pmu.h                   | 7 +++++++
+>  11 files changed, 48 insertions(+), 6 deletions(-)
+>  create mode 100644 tools/perf/arch/arm64/util/mem-events.h
+>  create mode 100644 tools/perf/arch/x86/util/mem-events.h
+>
+> diff --git a/tools/perf/arch/arm64/util/mem-events.c b/tools/perf/arch/ar=
+m64/util/mem-events.c
+> index 3bcc5c7035c2..aaa4804922b4 100644
+> --- a/tools/perf/arch/arm64/util/mem-events.c
+> +++ b/tools/perf/arch/arm64/util/mem-events.c
+> @@ -4,7 +4,7 @@
+>
+>  #define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
+>
+> -static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] =3D {
+> +struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX] =3D {
+>         E("spe-load",   "arm_spe_0/ts_enable=3D1,pa_enable=3D1,load_filte=
+r=3D1,store_filter=3D0,min_latency=3D%u/",       "arm_spe_0"),
+>         E("spe-store",  "arm_spe_0/ts_enable=3D1,pa_enable=3D1,load_filte=
+r=3D0,store_filter=3D1/",                      "arm_spe_0"),
+>         E("spe-ldst",   "arm_spe_0/ts_enable=3D1,pa_enable=3D1,load_filte=
+r=3D1,store_filter=3D1,min_latency=3D%u/",       "arm_spe_0"),
+> @@ -17,7 +17,7 @@ struct perf_mem_event *perf_mem_events__ptr(int i)
+>         if (i >=3D PERF_MEM_EVENTS__MAX)
+>                 return NULL;
+>
+> -       return &perf_mem_events[i];
+> +       return &perf_mem_events_arm[i];
+>  }
+>
+>  const char *perf_mem_events__name(int i, const char *pmu_name __maybe_un=
+used)
+> diff --git a/tools/perf/arch/arm64/util/mem-events.h b/tools/perf/arch/ar=
+m64/util/mem-events.h
+> new file mode 100644
+> index 000000000000..5fc50be4be38
+> --- /dev/null
+> +++ b/tools/perf/arch/arm64/util/mem-events.h
+> @@ -0,0 +1,7 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ARM64_MEM_EVENTS_H
+> +#define _ARM64_MEM_EVENTS_H
+> +
+> +extern struct perf_mem_event perf_mem_events_arm[PERF_MEM_EVENTS__MAX];
+> +
+> +#endif /* _ARM64_MEM_EVENTS_H */
+> diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/uti=
+l/pmu.c
+> index 2a4eab2d160e..69673fcf4a61 100644
+> --- a/tools/perf/arch/arm64/util/pmu.c
+> +++ b/tools/perf/arch/arm64/util/pmu.c
+> @@ -8,6 +8,12 @@
+>  #include <api/fs/fs.h>
+>  #include <math.h>
+>
+> +void perf_pmu__arch_init(struct perf_pmu *pmu)
+> +{
+> +       if (strcmp(pmu->name, "arm_spe_0"))
+> +               pmu->mem_events =3D perf_mem_events_arm;
+> +}
+> +
+>  const struct pmu_metrics_table *pmu_metrics_table__find(void)
+>  {
+>         struct perf_pmu *pmu;
+> diff --git a/tools/perf/arch/s390/util/pmu.c b/tools/perf/arch/s390/util/=
+pmu.c
+> index 886c30e001fa..225d7dc2379c 100644
+> --- a/tools/perf/arch/s390/util/pmu.c
+> +++ b/tools/perf/arch/s390/util/pmu.c
+> @@ -19,4 +19,7 @@ void perf_pmu__arch_init(struct perf_pmu *pmu)
+>             !strcmp(pmu->name, S390_PMUPAI_EXT) ||
+>             !strcmp(pmu->name, S390_PMUCPUM_CF))
+>                 pmu->selectable =3D true;
+> +
+> +       if (pmu->is_core)
+> +               pmu->mem_events =3D perf_mem_events;
+>  }
+> diff --git a/tools/perf/arch/x86/util/mem-events.c b/tools/perf/arch/x86/=
+util/mem-events.c
+> index 191b372f9a2d..2b81d229982c 100644
+> --- a/tools/perf/arch/x86/util/mem-events.c
+> +++ b/tools/perf/arch/x86/util/mem-events.c
+> @@ -16,13 +16,13 @@ static char mem_stores_name[100];
+>
+>  #define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
+>
+> -static struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX]=
+ =3D {
+> +struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX] =3D {
+>         E("ldlat-loads",        "%s/mem-loads,ldlat=3D%u/P",      "%s/eve=
+nts/mem-loads"),
+>         E("ldlat-stores",       "%s/mem-stores/P",              "%s/event=
+s/mem-stores"),
+>         E(NULL,                 NULL,                           NULL),
+>  };
+>
+> -static struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] =
+=3D {
+> +struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX] =3D {
+>         E(NULL,         NULL,           NULL),
+>         E(NULL,         NULL,           NULL),
+>         E("mem-ldst",   "ibs_op//",     "ibs_op"),
+> diff --git a/tools/perf/arch/x86/util/mem-events.h b/tools/perf/arch/x86/=
+util/mem-events.h
+> new file mode 100644
+> index 000000000000..3959e427f482
+> --- /dev/null
+> +++ b/tools/perf/arch/x86/util/mem-events.h
+> @@ -0,0 +1,9 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _X86_MEM_EVENTS_H
+> +#define _X86_MEM_EVENTS_H
+> +
+> +extern struct perf_mem_event perf_mem_events_intel[PERF_MEM_EVENTS__MAX]=
+;
+> +
+> +extern struct perf_mem_event perf_mem_events_amd[PERF_MEM_EVENTS__MAX];
+> +
+> +#endif /* _X86_MEM_EVENTS_H */
+> diff --git a/tools/perf/arch/x86/util/pmu.c b/tools/perf/arch/x86/util/pm=
+u.c
+> index 469555ae9b3c..7e69f4f2e363 100644
+> --- a/tools/perf/arch/x86/util/pmu.c
+> +++ b/tools/perf/arch/x86/util/pmu.c
+> @@ -15,6 +15,7 @@
+>  #include "../../../util/pmu.h"
+>  #include "../../../util/fncache.h"
+>  #include "../../../util/pmus.h"
+> +#include "mem-events.h"
+>  #include "env.h"
+>
+>  void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+> @@ -30,6 +31,12 @@ void perf_pmu__arch_init(struct perf_pmu *pmu __maybe_=
+unused)
+>                 pmu->selectable =3D true;
+>         }
+>  #endif
+> +
+> +       if (x86__is_amd_cpu()) {
+> +               if (strcmp(pmu->name, "ibs_op"))
+> +                       pmu->mem_events =3D perf_mem_events_amd;
+> +       } else if (pmu->is_core)
+> +               pmu->mem_events =3D perf_mem_events_intel;
+>  }
+>
+>  int perf_pmus__num_mem_pmus(void)
+> diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+> index 3a2e3687878c..0a8f415f5efe 100644
+> --- a/tools/perf/util/mem-events.c
+> +++ b/tools/perf/util/mem-events.c
+> @@ -19,7 +19,7 @@ unsigned int perf_mem_events__loads_ldlat =3D 30;
+>
+>  #define E(t, n, s) { .tag =3D t, .name =3D n, .sysfs_name =3D s }
+>
+> -static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] =3D {
+> +struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] =3D {
+>         E("ldlat-loads",        "cpu/mem-loads,ldlat=3D%u/P",     "cpu/ev=
+ents/mem-loads"),
+>         E("ldlat-stores",       "cpu/mem-stores/P",             "cpu/even=
+ts/mem-stores"),
+>         E(NULL,                 NULL,                           NULL),
+> diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
+> index b40ad6ea93fc..8c5694b2d0b0 100644
+> --- a/tools/perf/util/mem-events.h
+> +++ b/tools/perf/util/mem-events.h
+> @@ -34,6 +34,7 @@ enum {
+>  };
+>
+>  extern unsigned int perf_mem_events__loads_ldlat;
+> +extern struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX];
+>
+>  int perf_mem_events__parse(const char *str);
+>  int perf_mem_events__init(void);
+> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+> index 3c9609944a2f..3d4373b8ab63 100644
+> --- a/tools/perf/util/pmu.c
+> +++ b/tools/perf/util/pmu.c
+> @@ -986,8 +986,10 @@ static int pmu_max_precise(int dirfd, struct perf_pm=
+u *pmu)
+>  }
+>
+>  void __weak
+> -perf_pmu__arch_init(struct perf_pmu *pmu __maybe_unused)
+> +perf_pmu__arch_init(struct perf_pmu *pmu)
+>  {
+> +       if (pmu->is_core)
+> +               pmu->mem_events =3D perf_mem_events;
+>  }
+>
+>  struct perf_pmu *perf_pmu__lookup(struct list_head *pmus, int dirfd, con=
+st char *name)
+> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
+> index 424c3fee0949..e35d985206db 100644
+> --- a/tools/perf/util/pmu.h
+> +++ b/tools/perf/util/pmu.h
+> @@ -10,6 +10,8 @@
+>  #include <stdio.h>
+>  #include "parse-events.h"
+>  #include "pmu-events/pmu-events.h"
+> +#include "map_symbol.h"
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311090752.hWcJWAHL-lkp@intel.com/ [1]
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Michael Walle <mwalle@kernel.org>
-Cc: Max Schulze <max.schulze@online.de>
-Cc: netdev@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org
-Link: https://lore.kernel.org/r/20231202202539.it.704-kees@kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- v3: do not cast NLA_HDRLEN to u16 (nicolas.dichtel)
- v2: https://lore.kernel.org/all/20231202202539.it.704-kees@kernel.org/
- v1: https://lore.kernel.org/all/20231130200058.work.520-kees@kernel.org/
----
- include/net/netlink.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+nit: unused?
 
-diff --git a/include/net/netlink.h b/include/net/netlink.h
-index 83bdf787aeee..7678a596a86b 100644
---- a/include/net/netlink.h
-+++ b/include/net/netlink.h
-@@ -1200,7 +1200,7 @@ static inline void *nla_data(const struct nlattr *nla)
-  * nla_len - length of payload
-  * @nla: netlink attribute
-  */
--static inline int nla_len(const struct nlattr *nla)
-+static inline u16 nla_len(const struct nlattr *nla)
- {
- 	return nla->nla_len - NLA_HDRLEN;
- }
--- 
-2.34.1
-
+> +#include "mem-events.h"
+>
+>  struct evsel_config_term;
+>  struct perf_cpu_map;
+> @@ -162,6 +164,11 @@ struct perf_pmu {
+>                  */
+>                 bool exclude_guest;
+>         } missing_features;
+> +
+> +       /**
+> +        * @mem_events: List of the supported mem events
+> +        */
+> +       struct perf_mem_event *mem_events;
+>  };
+>
+>  /** @perf_pmu__fake: A special global PMU used for testing. */
+> --
+> 2.35.1
+>
