@@ -2,220 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AA8807885
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6F8807890
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442786AbjLFTWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:22:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
+        id S1379349AbjLFT1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379257AbjLFTWX (ORCPT
+        with ESMTP id S1378759AbjLFT1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:22:23 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68AFB2;
-        Wed,  6 Dec 2023 11:22:29 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YkUKs9AcmOfR8S04vIticFX0gAIPLFx3UaigZWM6KTRxQZFKA3VOZPOfdGh20yzSlJrGGH4k21bsoRpvt+B3pDQm5A+tr4Is0zv47j5Q3nRZ8FB/QBeDc9trUvsx3DFsGs9N3+2mVjd3B8LaXzPe657SKRjKQsI5KqgD/vgVNe2vA4eY2DMgdmIct/xnM4D2CVb+Tblnkuzidm17frXB368MK3yQdQlRzftm9/t/aLxqntSMlzSygqkKcBG9HK1AU1nBT8SbbZExbi5BGRTDcqe0g5X/KGnRWexwDIT9TyxEjHt41DNPoAxzkt8C05leVuf+HtLk7dNXkPD/CzRpyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9c6brYtxmRs0AJ6VN5ZISbBnl2ZOCThHDzwIo6sWYRA=;
- b=V1NwYtDRoRPZIMjkq3yWrN1n2UuhD38vx2ZTHm4BJzxAmKPz2cOW6ojIgMHbemYz6BjOHFNl/rG7f2dgcf1wGHVN/MilwlQ8bWKJHrAiUtRH56YQzzXyTmmaA3l1AbEaNMa1CZd5hJ9BJKdiVtVuZSRtY5NINdDWKzmmsUqQv7Su8laE+iyn0pl+eOK1lUTuqQR8/MQDYC6BjWC3feyfLX7s9H5oQufra3FLnzA0WhNh/BCrVLr7IIOsniuMs6vcPUHTbXqVRDdvsdP44O6KcL/QizvpBDM9JEOUIIRUSlft2+cSznaDj7tn3WOGPmsOYVWwDBkG9NScHoV6EuJF0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9c6brYtxmRs0AJ6VN5ZISbBnl2ZOCThHDzwIo6sWYRA=;
- b=YGXhD3o0OwEdFLGOSCf5bTKgCX8+e5EfMvx/wACq8HGKwApZK1X5RBa1LxmP9V9sslgGrPlBUr0kXqyztz0huQ2HumGduMebJzzbt0jMH9ykz2KrR8cS9tIgZfmHzEiXYbjarTZWsTZP8tcbTYd6INNQvzE/Yy/CzxuLRlViWPA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by DS7PR12MB6168.namprd12.prod.outlook.com (2603:10b6:8:97::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.29; Wed, 6 Dec 2023 19:22:27 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7068.025; Wed, 6 Dec 2023
- 19:22:27 +0000
-Message-ID: <abc96443-ed27-4021-afa9-280be027e355@amd.com>
-Date:   Wed, 6 Dec 2023 13:22:25 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Input: i8042: Quiet down probe failure messages
-Content-Language: en-US
-To:     Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Cc:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231206175818.2568-1-mario.limonciello@amd.com>
- <87zfyngoe4.fsf@nvidia.com>
-From:   Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <87zfyngoe4.fsf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA9PR10CA0017.namprd10.prod.outlook.com
- (2603:10b6:806:a7::22) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+        Wed, 6 Dec 2023 14:27:47 -0500
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFD0D51;
+        Wed,  6 Dec 2023 11:27:51 -0800 (PST)
+Received: from [127.0.0.1] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 3B6JQkxV3836341
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Wed, 6 Dec 2023 11:26:47 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 3B6JQkxV3836341
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023111101; t=1701890808;
+        bh=akiKjejgbWa4nCSIVifqNGjMe3xFffE8uHQIGGi+Tmg=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=2+/t+vpuANyD6qq8PPN2cUrZovPTWNgYU0O/WPJnJZmoHDj1/j+I7qvQPyI0VaT6t
+         PSnVYQWuzdVuA3b1kH6DsVHUrcR3wA4eYFygUFpjP6aXetHOqaKj15KkrtjTZRQYjQ
+         YpeSTK34gwlSx1+XbnAcu4d4G2eIwbPWDJWdtlr3/PiZRjMHTTOX0+2Cs8ie+XZh5P
+         rb1lNwWqo1U2evWTWEka2bZwFSzkGEwdpz7EEHUZnCLsHnPuJfMlIoc14jRDtlPBOO
+         4/iZHfhzxHPxmpsW0gIv4oBh8cgpK3x+u+umIzkid2ELnJ9ZS9WB6TSHDQosiLbDrt
+         svj+gr1RwqNRQ==
+Date:   Wed, 06 Dec 2023 11:26:43 -0800
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     "Li, Xin3" <xin3.li@intel.com>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Gross, Jurgen" <jgross@suse.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "Kang, Shan" <shan.kang@intel.com>
+Subject: RE: [PATCH v13 26/35] x86/fred: FRED entry/exit and dispatch code
+User-Agent: K-9 Mail for Android
+In-Reply-To: <SA1PR11MB673472A25E72022F68882869A884A@SA1PR11MB6734.namprd11.prod.outlook.com>
+References: <20231205105030.8698-1-xin3.li@intel.com> <20231205105030.8698-27-xin3.li@intel.com> <f260ddf9-be67-48e0-8121-6f58d46f7978@citrix.com> <SA1PR11MB67343544B0CEB6C82002790DA884A@SA1PR11MB6734.namprd11.prod.outlook.com> <4e41b658-f49e-424c-8a86-08c8ab8e384d@citrix.com> <SA1PR11MB673472A25E72022F68882869A884A@SA1PR11MB6734.namprd11.prod.outlook.com>
+Message-ID: <F6CF8AB8-F5DB-44BD-B8A4-1A76E02CDCFA@zytor.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS7PR12MB6168:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18155d7c-7c9f-49cb-e0a9-08dbf690af02
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RYJypmINTER9SHwsRbcYTSDJ5hqM3arqORGQOS+1crnUBZWRLIkhTt7vviSy9eUCh2baWcDhUCzS+pqYrlTPn7JB2NEn1SapgMtdEQ3IkZjeeAS6ooj/oljAtRGQOGDHk4Fao4IJMr/uWDNYwNzhauzAg+TnsLMpLFz0UIHHCa7ygawLv5MEyer5eNGYs5tVXT8wh+hzm+IENw2Gz+C/j6Rn2OsOIZhzZhW6ZLGYpc0agbNMpQotHEMwh+FERm/b6gTgoE+NNN4iHMHMB4Q/c8iua/XWh9lqUXf6pa07K/lL6o90w9W0D5sN7axBLqGacD/pQGXw7uFTBFUCXNScnja8Pt8/UnKOpN0Ma/6A05aKE0pI9bSG6yCm4kc3eyUekrE/yn9dx7ckCX0lx6JzwMn56eD4Od3BPlqf3nntCfstgkpVnO3TyJul8K93ApR4wegEiaVNLtS85uTYqsUJb4CdJ3lC4jKUGgLr42WO7Dg/nilH2nVJbsC1TeqIZjoXRPNt3Mg8bIFVjhjvTeWIbhiR2vpsIWnIMy8vj+q3cUsJVYNXdf60ZCzvgEUvJ89+8+5tmOQf1PPD2Sx71J+B3FgsKRgn3568jEnaE655yR+eCr24AqcM7Q9iI6mPUY6m3nvJtnp/WtF4FzLabJZyD2Um0SZFBmoLk3kyySyFA3G5OoRF0bWjfBfXMoRvucMU
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(376002)(366004)(230273577357003)(230922051799003)(230173577357003)(1800799012)(451199024)(64100799003)(186009)(31686004)(2616005)(26005)(53546011)(6512007)(6486002)(6506007)(478600001)(38100700002)(31696002)(86362001)(36756003)(5660300002)(2906002)(44832011)(41300700001)(83380400001)(15650500001)(8936002)(8676002)(4326008)(66556008)(66476007)(66946007)(6916009)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OUxtR0h0enZGWmJ0U1dyY1E4ZDVyS3lXM3duQytleGx4eGxVb2VNS2V3ZUJH?=
- =?utf-8?B?Q0NvOEdmSEVpTTJPQm4zdkN3MytuZnYrZkJrN2k2Z1RSREhGelFZTFdxRStZ?=
- =?utf-8?B?MFo2MTlTdXBMajJrK0JtV09rMGl0OEZjQTJ4ZVpEaEdXY1pQZFFibktZTXdU?=
- =?utf-8?B?UTkzK1g1ajAvemxnRm9xejJKY3NISGlNdzM0T0NMRUM2V3NqZjRZekNML29V?=
- =?utf-8?B?VGtMRVIwdmRZWnYxWUc2VnpHNkFYYXJudU1ySzlOYkRQR0YxZSsvQm5pUWFJ?=
- =?utf-8?B?S2hGcGpoVG0wVnRibjlLdUxva1ordTBBek12dG5oU2lwWmV3UEJOSy9yeDY5?=
- =?utf-8?B?UnR6eHNndG4zNUkyK1pvSkF2OGdUbkZJcFRYODI4WDBsNVBKbXhldEJSTngr?=
- =?utf-8?B?eDM0ZjlFbXF5TTFLbjdrUXFQRXdLYzFtY3kxUjdsZGZTQW9MNW1EQkwzMmls?=
- =?utf-8?B?Q2lPeENtN2ZuWnV1eTcvN29wcS92c1hhK0kzUHJ4K0VDN3VMSEtjbmVoaXZ3?=
- =?utf-8?B?d0o5dW1NTHM2OVE4dWhIQnBQdjExZDBXQ0hMaEhhYThjRkRXZzRpdVpMWjlh?=
- =?utf-8?B?VStzRnYxVFBiaVgxOWRuK3oxelUxUUh0aGxVcUd3bjEzVExsZndlQ1d2azU1?=
- =?utf-8?B?aWhpekxtMFJHQ1VjczJMSFBLaWpjVmV4YkI4N1N2bXRCOXhCM0xZeHZnaytk?=
- =?utf-8?B?d3lMVFhaVkJwNHhCUFZ6TXpERWJPcTdQYklVRmsyUDhyakNhdVJEb0dZbHMv?=
- =?utf-8?B?ZWlJM3NyMlFzRzR2cWRXVzNnUy85TC9Iek1JSTF3czVLWXFaTWtKcWEySW9W?=
- =?utf-8?B?blVDcW1kSFVvM2FaMm5uU0gvNlU0UitwN2o4U0ZCT3cySGFRUnZxaEd1NDZ5?=
- =?utf-8?B?clhOUWVlZ2RId2xsMGs2UFdwSEptTThuRExUaU4zWmNiWWN6OHhVeWNBaHJM?=
- =?utf-8?B?bkNvZ3Z3YVo2a2dta0lRN3pKRDRJNlZTNGJ0WHJYakhIOHVmYXZMb2hhZEdK?=
- =?utf-8?B?bWozTkcyYmNNajFZOTlZTVVtWDRFN2dSWHhSaUVKQmpNS3lpaTJQS2xSc0l1?=
- =?utf-8?B?L1FHVzB1bER2ejZnMHhsOG1ZYjRlelhhZllhdlFNUXhzUzJ1bDFuZksxenM2?=
- =?utf-8?B?RDkvZ3lxRUZDdHdOc1pac1UyYWJJbFVTZ0lGalBJeWh1OFk2RzVaWXZHU011?=
- =?utf-8?B?bTczZ1JxRkVOQUF0S05rblRqcEIvMU1kamFhMHI5MkJXcThnT0QvY2FmVEUx?=
- =?utf-8?B?WjlvUDhtWlBRalo2dW51a3A1YmZZdzJuWjJ0VDlJVlBZY205ZTdnQitlWDdy?=
- =?utf-8?B?ZjAva0M4OTlXbVJNUUNlQndCcWgxK3o1UWtLanNxRDcrRnp4ZFVYZ0lnR2hx?=
- =?utf-8?B?Y3lyd25DZGJ6bithZWRzREoxdXZ3d25MblhXM0h0ZTRqWWNIUWFkbGRSM0J2?=
- =?utf-8?B?OEhKQ1dGQXFpcEh0clo2blBNZ1ZLaE1oc1RKVURGN0VVdDZTVDRMdTV3YVMw?=
- =?utf-8?B?RGJ4WFBZYmkzV2RLbnZYN3RlOGFkeXNmUnVrWnRHM0VpeXI0b2M2OERXdERs?=
- =?utf-8?B?YUNXMmhOMmNnTjhYalh0YlgzUERDTzYvYXBQcXF4cDg4bzlVdk1USXFYS0dx?=
- =?utf-8?B?b29ZdEZXZHJjeVVybzhpUkRUTUFpaEtMWWNqSlhVSXh1RTVQc1pqaTBPdTd3?=
- =?utf-8?B?dFRHWFdON2dvdUpBSGFTREVNNTVhNzlYWTdOSmxmNTVrelNuWUZmd091eDFW?=
- =?utf-8?B?VUxsUXJyMWNNNUVlZVowNitRMFFsUnJWbGJIcVFaRE5zRWJvanFKbU9oUXpt?=
- =?utf-8?B?Mk5pd3FZMzhqMEhJWTlpNXBkY2pJekVhQWI3MVBla1ZFRHFiaEdCeVY1dUR0?=
- =?utf-8?B?a2JUbUJYaEl4b2ZxZkhmNDdCdmNqMlllYzNlak9CMlI1S1NveStyOEZiaWRu?=
- =?utf-8?B?dHl3QjNHZnpURExXcFRja0lXNXcxTDlCU2tteXpxbUlTcGE5bXNFQUpjRnMr?=
- =?utf-8?B?NWtia0hxVVRrR1BsUm14RzVyaTZLS3UrQTdiMnhCN3B3dnYyZDRicjVFYUJi?=
- =?utf-8?B?WVJXbzk0bTh4Q1grOGQ2bDVQblp2c21WdTV1dmhYdks4UXJCL3o3RHpvNHpl?=
- =?utf-8?Q?EUInj39jWqaTqteVQBcjUc4K0?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18155d7c-7c9f-49cb-e0a9-08dbf690af02
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 19:22:27.6543
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EhBNeUEZU4pvK9ljlSirp5gmldXI+cblbIAs09f26T68GodtXVChtoXklkGtzYuNW4By1MFmg5GfhCuv/tNgtg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6168
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/6/2023 12:46, Rahul Rameshbabu wrote:
-> On Wed, 06 Dec, 2023 11:58:18 -0600 Mario Limonciello <mario.limonciello@amd.com> wrote:
->> The Framework 16" laptop doesn't have a PS/2 keyboard. At bootup the
->> following messages are emitted:
->>
->> i8042: PNP: No PS/2 controller found.
->> i8042: PNP: Probing ports directly.
->> i8042: Can't read CTR while initializing i8042
->> i8042: probe of i8042 failed with error -5
->>
->> The last two messages are ERR and WARN respectively.  These messages
->> might be useful for one boot while diagnosing a problem for someone
->> but as there is no PS/2 controller in PNP or on the machine they're
->> needlessly noisy to emit every boot.
->>
->> Downgrade the CTR message to debug and change the error code for the
->> failure so that the base device code doesn't emit a warning.
->>
->> If someone has problems with i8042 and they need this information,
->> they can turn on dynamic debugging to get these messages.
->>
->> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
->> ---
-> 
-> For the Framework 16, I think the following should be done.
-> 
-> Use SERIO_QUIRK_NOPNP for the device to avoid the PS/2 controller
-> probing. You can find examples in drivers/input/serio/i8042-acpipnpio.h
-> under the i8042_dmi_quirk_table. This will prevent emitting the first
-> two messages in the shared snippet.
+On December 6, 2023 11:19:26 AM PST, "Li, Xin3" <xin3=2Eli@intel=2Ecom> wro=
+te:
+>> >>> +	case X86_TRAP_OF:
+>> >>> +		exc_overflow(regs);
+>> >>> +		return;
+>> >>> +
+>> >>> +	/* INT3 */
+>> >>> +	case X86_TRAP_BP:
+>> >>> +		exc_int3(regs);
+>> >>> +		return;
+>> >> =2E=2E=2E neither OF nor BP will ever enter fred_intx() because they=
+'re
+>> >> type SWEXC not SWINT=2E
+>> > Per FRED spec 5=2E0, section 7=2E3 Software Interrupts and Related In=
+structions:
+>> > INT n (opcode CD followed by an immediate byte): There are 256 such
+>> > software interrupt instructions, one for each value n of the immediat=
+e
+>> > byte (0=E2=80=93255)=2E
+>> >
+>> > And appendix B Event Stack Levels:
+>> > If the event is an execution of INT n (opcode CD n for 8-bit value n)=
+,
+>> > the event stack level is 0=2E The event type is 4 (software interrupt=
+)
+>> > and the vector is n=2E
+>> >
+>> > So int $0x4 and int $0x3 (use asm("=2Ebyte 0xCD, 0x03")) get here=2E
+>> >
+>> > But into (0xCE) and int3 (0xCC) do use event type SWEXC=2E
+>> >
+>> > BTW, into is NOT allowed in 64-bit mode but "int $0x4" is allowed=2E
+>>=20
+>> There is certainly fun to be had with CD 03 and CD 04 byte patterns, bu=
+t if you
+>> meant to mean those here, then the comments are wrong=2E
+>>=20
+>> Vectors 3 and 4 are installed with DPL3 because that is necessary to ma=
+ke CC and
+>> CE function in userspace=2E=C2=A0 It also suggests that the SWINT vs SW=
+EXC distinction
+>> was retrofitted to architecture after the 286, because exceptions don't=
+ check DPL
+>> and ICEBP delivers #DB from userspace even when Vector 1 has a DPL of 0=
+=2E
+>>=20
+>> While CC is for most cases indistinguishable from CD 03, CE behaves ent=
+irely
+>> differently to CD 04=2E=C2=A0 CD 04 doesn't #UD in 64bit mode, and will=
+ trigger
+>> exc_overflow() irrespective of the state of EFLAGS=2EOF=2E
+>>=20
+>>=20
+>> The SDM goes out of it's way to say not to use the CD 03 byte pattern (=
+and it
+>> does take effort to emit this byte pattern - e=2Eg=2E GAS will silently=
+ translate "int $3"
+>> to "int3"), and there's no plausible way software is using CD 04 in pla=
+ce of CE=2E
+>>=20
+>> So why do we care about containing to make mistakes of the IDT era work=
+ in a
+>> FRED world?
+>
+>First, I agree with you because it makes things simple and neat=2E
+>
+>However, the latest SDM and FRED spec 5=2E0 both doesn't disallow it, so =
+it
+>becomes an OS implementation choice=2E
+>
+>>=20
+>> Is there anything (other than perhaps the selftests) which would even n=
+otice?
+>
+>I'm just conservative :)
+>
+>If a user app can do it with IDT, we should still allow it when FRED is
+>enabled=2E  But if all key stakeholders don't care whatever gets broken
+>due to the change and agree to change it=2E
+>
+>> >>> +		instrumentation_end();
+>> >>> +		irqentry_exit(regs, state);
+>> >>> +	} else {
+>> >>> +		common_interrupt(regs, vector);
+>> >>> +	}
+>> >>> +}
+>> >>> +
+>> >>> +static noinstr void fred_exception(struct pt_regs *regs, unsigned
+>> >>> +long error_code) {
+>> >>> +	/* Optimize for #PF=2E That's the only exception which matters
+>> >>> +performance
+>> >> wise */
+>> >>> +	if (likely(regs->fred_ss=2Evector =3D=3D X86_TRAP_PF)) {
+>> >>> +		exc_page_fault(regs, error_code);
+>> >>> +		return;
+>> >>> +	}
+>> >>> +
+>> >>> +	switch (regs->fred_ss=2Evector) {
+>> >>> +	case X86_TRAP_DE: return exc_divide_error(regs);
+>> >>> +	case X86_TRAP_DB: return fred_exc_debug(regs);
+>> >>> +	case X86_TRAP_BP: return exc_int3(regs);
+>> >>> +	case X86_TRAP_OF: return exc_overflow(regs);
+>> >> Depending on what you want to do with BP/OF vs fred_intx(), this may
+>> >> need adjusting=2E
+>> >>
+>> >> If you are cross-checking type and vector, then these should be
+>> >> rejected for not being of type HWEXC=2E
+>> > You're right, the event type needs to be SWEXC for into and int3=2E
+>> >
+>> > However, would it be overkilling?  Assuming hardware and VMM are sane=
+=2E
+>>=20
+>> You either care about cross checking, or not=2E=C2=A0 Right now, this p=
+atch is a mix of the
+>> two approaches=2E
+>>=20
+>> In my opinion, cross-checking is the better approach, because it means =
+that
+>> violations of the assumptions get noticed more quickly, and hopefully b=
+y
+>> whomever is working on the new feature which alters the assumptions=2E
+>
+>Yeah, I can make the change=2E
+>
+>Thanks!
+>    Xin
+>
 
-I had tried this initially, and yes those first two messages are 
-removed.  But TBH I'm not too worried about those as they're INFO. 
-Adding a quirk just switches them over to a new INFO message.
-
-But the ERR and WARN messages still come up.  The 3 messages that show 
-up are:
-
-i8042: PNP detection disabled
-i8042: Can't read CTR while initializing i8042
-i8042: probe of i8042 failed with error -5
-
-I'm more concerned that ERR and WARN messages show up making you think 
-there is a problem to look into.
-
-> 
-> 
->>   drivers/input/serio/i8042.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
->> index 9fbb8d31575a..95dd585fdc1a 100644
->> --- a/drivers/input/serio/i8042.c
->> +++ b/drivers/input/serio/i8042.c
->> @@ -1008,8 +1008,8 @@ static int i8042_controller_init(void)
->>   			udelay(50);
->>   
->>   		if (i8042_command(&ctr[n++ % 2], I8042_CMD_CTL_RCTR)) {
->> -			pr_err("Can't read CTR while initializing i8042\n");
->> -			return i8042_probe_defer ? -EPROBE_DEFER : -EIO;
->> +			pr_debug("Can't read CTR while initializing\n");
-> 
-> I also think this error message should be pr_err in the situation that
-> the SERIO_QUIRK_PROBE_DEFER quirk is not used. I think what you are
-> likely looking for is avoiding emitting this message when the
-> SERIO_QUIRK_PROBE_DEFER quirk is used for noise reduction purposes.
-
-SERIO_QUIRK_PROBE_DEFER isn't set on this machine.
-
-> 
->> +			return i8042_probe_defer ? -EPROBE_DEFER : -ENXIO;
-> 
-> I do not think this change makes sense to me personally. It is indeed an
-> I/O issue with the i8042 controller on the Framework motherboard, so the
-> error should be -EIO when i8042_probe_defer is not set.
-
-With i8042.debug enabled I can see that the error is a wait read 
-timeout.  So I had thought -ENXIO ("No such device or address") made 
-sense here.
-
-If you feel strongly that the errors and warnings should stay as is I I 
-wonder if this should be looked at from i8042_pnp_init().
-
-In the no PNP device declared case it still probes, why isn't PNP trusted?
-
-> 
->>   		}
->>   
->>   	} while (n < 2 || ctr[0] != ctr[1]);
-> 
-> --
-> Thanks,
-> 
-> Rahul Rameshbabu
-
-
+The intent is to not break userspace even if userspace does something fund=
+amentally stupid=2E
