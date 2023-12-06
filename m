@@ -2,134 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 761E480783A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A979A80781E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378762AbjLFS5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:57:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        id S1379371AbjLFSux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:50:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbjLFS5B (ORCPT
+        with ESMTP id S1442820AbjLFSuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:57:01 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E88F135
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:57:07 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c0fc1cf3dso1438015e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:57:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701889025; x=1702493825; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ziRU2FnN4POMxpTQvqS7/l9aFbYDIfKx6N/Y5jodgA8=;
-        b=YFGSboD2WDgQZSZ9kt55DiEtbQCu3KBwgvwIbSeLMzQRBp3BW39D6NzEu2uzta3h82
-         371YptCROA6BFj04+OycpHJs2sM5LAkes8C2c+64C+zOMXgsqOawnokxd+157VnIlbCe
-         8Qg/KdtXHK4bBI23P+1Zy5rSP+5yBrRfdFWY0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701889025; x=1702493825;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ziRU2FnN4POMxpTQvqS7/l9aFbYDIfKx6N/Y5jodgA8=;
-        b=Y+FRI8J2rZXnbvE8biG75mITD7KnZ3ukKXF0cm2j9Qjt+5QNx8MdQ3ojkZr6uCA1gy
-         lvImw6TKFhNJ/BEPisGwB52N8yqZjN56XV8ngGL/7wOmpZ9CbH5uLdxzv9lYiDtH858D
-         8StZ3AEGDLFRQskDlFxeBBi8VHOQAmj9kKPyCpjYIPA0qSQYN+H4L/fvaLxNQkeHaFl9
-         NYd1p7ufPzA6vcQXgNzrJcRqinMxl+0Zn7gCEak4U7wLkGoOkZCVfn+jMi1q3t4J4SEb
-         gCe/Un3KcxqtBNdhFk2tWtwyy79Eo/XUF7qkp7bahIPsthlTYqcZYfpaptLudI+k+Hur
-         Xt7A==
-X-Gm-Message-State: AOJu0Yxkcr3LSXXUSZcxdFxj6UZlKAO4opNV87SlcPit01UAUfpbv2P8
-        Sb+iylibi9OBdheIDAcNuHM8lxUjx6VO99F5RZGoV0MV
-X-Google-Smtp-Source: AGHT+IE9FOeFsYz/ziUbZBq+Qy8tZeSNrxgsQ6ikIqUKQy0uTldhiWi2jb1aFozlRML2GRY9wMVPKw==
-X-Received: by 2002:a05:600c:190e:b0:408:37aa:4766 with SMTP id j14-20020a05600c190e00b0040837aa4766mr977720wmq.5.1701889025704;
-        Wed, 06 Dec 2023 10:57:05 -0800 (PST)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id t10-20020a1709066bca00b00a1dc4307ecfsm283573ejs.188.2023.12.06.10.57.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 10:57:05 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-54c77d011acso1227a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:57:05 -0800 (PST)
-X-Received: by 2002:a50:aacf:0:b0:54b:321:ef1a with SMTP id
- r15-20020a50aacf000000b0054b0321ef1amr125503edc.6.1701888584617; Wed, 06 Dec
- 2023 10:49:44 -0800 (PST)
+        Wed, 6 Dec 2023 13:50:46 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B8610C6;
+        Wed,  6 Dec 2023 10:50:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UqxS5DbEH8sTIZ4p5Ma2s9Nk/3CJlrAfYRd/5CRuOZm2p8wFBViAoOKr3yBzZl3U8PV6BhKS1kxaWBC/fjDpi3zaoNlz6KYU92Hx5zucqVEjhsqw4SiYj3wtPZGRFmlsP94VU3ILgO1NdNgaW40agEnH2bw2CdYuuZ+9yPjR9JfV2Ph1AWak5viv38qQk+OiuGlXo3Vy+/EKEmQ3v7xhWzhbt04ethFTX/Ey6p61rUWX7kOJI8jGf848FHIXyqMQAhUS0EG90q/unZPv7m5li33eFpcgCESOjOjeuco0qvr566HVgUyPkARPxYuOTDwSxFRrND6gXtRt4w6SC+vxuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SatkdO+hNE2tu2QrTSOMjkTks5OvAKaScLVkTEWvIKE=;
+ b=QV29APwhdfKzxspoAl+/P9bjBe07QjCY22NM8yq3AJePbEG/rXyROP4612Y/X4YpqyfZpypQWFNep+JTas6+U1OMWzNFxUJILZzVRj35ctS9vHAHet1/VdiuVz3Hao+IgR1B5GgbJTC+7UNV4VGZYAT9+C7vlJ7bGBV6xA9m4N9WDRo/38mv+viWVsSZRohdhEGZiD2NIwXECHCuDuuQKP3+HPmXrWtFL2BzwVvRbC1Z2saNa7cAmc2YA0/Nu1QSUgqy9HeYu+cfR+4wYWROwufghHrNgUlH3Vttcs8fuhWWcBpe9OUY9v2GccjXtvhqMBL+nMc1jMR+4NEF1XKNwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SatkdO+hNE2tu2QrTSOMjkTks5OvAKaScLVkTEWvIKE=;
+ b=QXlC+IZ2Wvn5B3bDa5AOhbMDbZjvyL/gSvJdu9OItYTPtGCuffo8qFSuWtiSOvEzEUcNLJkhPrVRsCn5tZGPjLQ+Ww/C/l9suHVOrbtNxjnJSPuV1r22P3+AoiAUMucoWtJEFXi8wgwc6YxHO7lz3pNdNmhpuakjnep+Fp/lBXZ9EaLZ1TIXAjuiPRT5/2XM80Ui6fvErsyVGj5acOuIzHTAqZSz1hZDGv6C9AymWwLOKjLuO2leepuasLzZ7mFQMox6ns8enbOQ+ZXQeeMXF4e4ipjft9vyhxIFXoL+7F65/E7Y3EU+3PoxKHf0AZ+zSqpfUaCejtWyPfuPZsawaw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH7PR12MB9152.namprd12.prod.outlook.com (2603:10b6:510:2ec::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 18:50:33 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
+ 18:50:32 +0000
+Date:   Wed, 6 Dec 2023 14:50:31 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     Yi Liu <yi.l.liu@intel.com>, joro@8bytes.org,
+        alex.williamson@redhat.com, kevin.tian@intel.com,
+        robin.murphy@arm.com, baolu.lu@linux.intel.com, cohuck@redhat.com,
+        eric.auger@redhat.com, kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.y.sun@linux.intel.com,
+        peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
+        xin.zeng@intel.com, yan.y.zhao@intel.com
+Subject: Re: [PATCH v6 1/6] iommu: Add cache_invalidate_user op
+Message-ID: <20231206185031.GB2692119@nvidia.com>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231117130717.19875-2-yi.l.liu@intel.com>
+ <20231206183209.GZ2692119@nvidia.com>
+ <ZXDA1uUzvxmLf/o4@Asurada-Nvidia>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXDA1uUzvxmLf/o4@Asurada-Nvidia>
+X-ClientProxiedBy: MN2PR16CA0065.namprd16.prod.outlook.com
+ (2603:10b6:208:234::34) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-References: <20231206033913.1290566-1-judyhsiao@chromium.org>
- <20231206093917.04fd57b5@hermes.local> <efd58582-31b6-47f0-ba14-bf369fddd1c0@kernel.org>
-In-Reply-To: <efd58582-31b6-47f0-ba14-bf369fddd1c0@kernel.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 6 Dec 2023 10:49:29 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UgPZoXsGTgLV_4X9x2hGTMouO3Tpe9_WkwhU7Bsvav2Q@mail.gmail.com>
-Message-ID: <CAD=FV=UgPZoXsGTgLV_4X9x2hGTMouO3Tpe9_WkwhU7Bsvav2Q@mail.gmail.com>
-Subject: Re: [PATCH v2] neighbour: Don't let neigh_forced_gc() disable
- preemption for long
-To:     David Ahern <dsahern@kernel.org>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Judy Hsiao <judyhsiao@chromium.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Simon Horman <horms@kernel.org>,
-        Brian Haley <haleyb.dev@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joel Granados <joel.granados@gmail.com>,
-        Julian Anastasov <ja@ssi.bg>,
-        Leon Romanovsky <leon@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB9152:EE_
+X-MS-Office365-Filtering-Correlation-Id: d80301f4-1b72-4497-5df1-08dbf68c39b0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XDgCs/KbTMuf4bWdjH3COZu/Jv1IW2MynqDWAF3KSVPC/2wtuSxl6MDlmfDBMmngTgGxLN99/eMCQM41/6ZYBZWoI9PXyfFuQb3i0whxCfrICtXo+re5a1OHJeAexdz1BfocdTSJpSwn4likAnNgCrjas4D25IHs2hdFqyxnPhR3uGrLDqrprnv0cAyfTJB4qtuGkK0tLKKS2XMjQ+j/IjKU7xwZfeMDijibcK4RD664GwXNLV+gFOLgQsjB/K4uQHlcg2gnnpZJeuIKNhAqCX78Z6mX9oJzrO/wnQoVBN7Ip1BAxGb8SDRBz5HjtKhTAtvr7E1w3psy0V6n6FKZ5Y5aqOH4PeXfZ0fC6ojlN0WVkIq641mMl+exDt0gXFnF6G/3fJy9yJcN0k7yKgAEoIWnWGw1xEtEOLgfSMYm0Ovj8B7Aev0EFET6BgTQbmu9tm5eAtdNotyK0sGPPs+rptXi5IKwrxPIlhx8aa9/K5yOrEmvGjX0Srd+mli3yNaX0f1JN0ZdqR7bxzFCQNpYOiCF23lsAmeOpjKUJRZ8yGY2vvYB9Drk5lTnqiKln8ba
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(376002)(136003)(396003)(346002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(6512007)(6506007)(8936002)(2616005)(6486002)(26005)(1076003)(66556008)(4326008)(66476007)(8676002)(6862004)(66946007)(37006003)(6636002)(316002)(83380400001)(38100700002)(7416002)(33656002)(478600001)(36756003)(2906002)(5660300002)(41300700001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?edxxcNqAi3vwqB5kKA2ONn01Huk9XHgjcV+QyuzFW21okKB8PE9QEpWZYWlS?=
+ =?us-ascii?Q?IcNGuPqNtpCQPiFjMIc2KhRPH4qKGb8GKxoAmr60P0Jcp79/MAz4CbogwZez?=
+ =?us-ascii?Q?diEQRXQsgAraMZydYvwkFSLXNQ9lgsZ6Yng6qOslLsxIKbkxU3bhQxN2l9Sa?=
+ =?us-ascii?Q?asKtP51esXLqxS3p3BJNCUHYeev4YZD9YgVDI9NAzO/YIriiIJkcCt9REU85?=
+ =?us-ascii?Q?qunTFMCQFF/ixdvcFHhy3/hySB8Z5Hq7xXsd5q+2G2OIf6ASt/BubzpjMAg5?=
+ =?us-ascii?Q?pXDXSUx4+RJGulLp84i3bQhPJrMydntbHYVaDXqChHxtg3zhabGR65MhaW+n?=
+ =?us-ascii?Q?wRDQpQSFLzVPFrvp7cYEupAIgGuwvpz8fgHifDJcJ+nsE0DVXptHO5dURxsA?=
+ =?us-ascii?Q?D3TcjXgBQhsYf+tjAie3KsPODDIyXfRpIT+PNZUdNzjB6iWcb9V0SwPksxev?=
+ =?us-ascii?Q?FUtae3c4ggiHn7R6SCHIVOFa0HwmU4lLYjs7prFze6alprC8BV1+0f/DAnLu?=
+ =?us-ascii?Q?w8eDvU0HS/EARt+ez5717lX9X+CMjXb5sc73aitso8M8Y4zbZyKA5MYFwXAS?=
+ =?us-ascii?Q?v9kA9lS1bLkz3VVZWZlkw3w/Tba0T8HN7i7Jxlg1SCdZFGwyy5e693YbLnTo?=
+ =?us-ascii?Q?RtEuf3jSy6Z6BDGNYIoI6hSAXF9ZPMYlrv779SdM2w4YTfunq2M8n5TnbMtH?=
+ =?us-ascii?Q?M1rfNnusagMKmZGFRqNGGhCrdZc/O5lw5HI4H+4zdCC9e/ExAYs2VyrivwwN?=
+ =?us-ascii?Q?93n9jr4MiRpt0go0+LwoTSbQa2LGy5uKolssbMwFbjvEiQ2l0LRcAvZD7ZbK?=
+ =?us-ascii?Q?8NfhXYZYd0Qo9de4wN0LLmStDasLe8SHJFw4uw1Y6j+c6E4DIZy9WIsMYxIn?=
+ =?us-ascii?Q?ClxHpjPr4oiuNFPSuVeO1qdDrgVob0DEUTahsOd21CNBtEqffwAKE12mXeq+?=
+ =?us-ascii?Q?pldpg6ToUEQo2H9fOVIoELvt4XZ1fJCjfgvWIBrwVUkdDx8+EIGZzot3Eh7I?=
+ =?us-ascii?Q?aTV+8EIeZoQeyA0HezWQ3aS/WuNlY78wNcXkjCvejwbKwpwt283DxE2KyZfh?=
+ =?us-ascii?Q?2HqlGIeIliHvgfiL/C60lOhR0hyCaByznO5SOKRozj3UtRGGHnpyGl44JSQ5?=
+ =?us-ascii?Q?MvRggO5G3fmB5wS9YlxcSnRBP1vTTG8nuLUIrexgTzMrF20pFDNbrX2XBrjt?=
+ =?us-ascii?Q?97+o4KdCuXbsgWBJy01A8enEx0iQjbVKt8e0IzrlC6Kk/UuOVU9lh13uXtyk?=
+ =?us-ascii?Q?H44Z87yDZdpjjIRFnl4JJyCw4s2cfgH2Bk2uE+QhiXUjfbuk3J70nWPm+n1J?=
+ =?us-ascii?Q?jhqPs9ymf9wiCf4Y3VZOJ86wZ/3rAoVNN+zsdPEUUKs9qG9STOO4IsQvBq9f?=
+ =?us-ascii?Q?m5DfuUxx1obriqT+WbEEwM7afjLFEewZ54JUxvd8gpEPYCFQNDS1nU6i0bjT?=
+ =?us-ascii?Q?1k/FfE1Qgj7V1bahRviOKV6h4/2ZrjGhSnRRBaTOTaz56JD7Hywc4Pb6zoWj?=
+ =?us-ascii?Q?kzwWcb5cdS6UKGJxYWZio5ZbEDHSoW+H8ZwZyuxbwD7FocHQoKdAV1Vl/4Yp?=
+ =?us-ascii?Q?vVwZHPNy8p2YopwNCRBOAz4ra9l4NgVFqCUs6aus?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d80301f4-1b72-4497-5df1-08dbf68c39b0
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 18:50:32.8174
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UGa0nsXNt3+vEf/j0jgUo0t92/J4UDPsDlmgzeUozc/DGyQA+2Y3+Brwq55GZHYW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9152
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Dec 06, 2023 at 10:43:34AM -0800, Nicolin Chen wrote:
+> On Wed, Dec 06, 2023 at 02:32:09PM -0400, Jason Gunthorpe wrote:
+> > On Fri, Nov 17, 2023 at 05:07:12AM -0800, Yi Liu wrote:
+>  
+> > > @@ -465,6 +492,9 @@ struct iommu_domain_ops {
+> > >  			      size_t size);
+> > >  	void (*iotlb_sync)(struct iommu_domain *domain,
+> > >  			   struct iommu_iotlb_gather *iotlb_gather);
+> > > +	int (*cache_invalidate_user)(struct iommu_domain *domain,
+> > > +				     struct iommu_user_data_array *array,
+> > > +				     u32 *error_code);
+> > 
+> > Regarding the other conversation I worry a u32 error_code is too small.
+> > 
+> > Unfortunately there is no obvious place to put something better so if
+> > we reach it we will have to add more error_code space via normal
+> > extension.
+> > 
+> > Maybe expand this to u64? That is 64 bits of error register data and
+> > the consumer index. It should do for SMMUv3 at least?
+> 
+> I think Yi is moving the error_code to the entry data structure,
+> where we can even define a list of error_codes as a driver data
+> needs. So, I assume this u32 pointer would be gone too.
 
-On Wed, Dec 6, 2023 at 9:51=E2=80=AFAM David Ahern <dsahern@kernel.org> wro=
-te:
->
-> On 12/6/23 10:39 AM, Stephen Hemminger wrote:
-> > On Wed,  6 Dec 2023 03:38:33 +0000
-> > Judy Hsiao <judyhsiao@chromium.org> wrote:
-> >
-> >> diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-> >> index df81c1f0a570..552719c3bbc3 100644
-> >> --- a/net/core/neighbour.c
-> >> +++ b/net/core/neighbour.c
-> >> @@ -253,9 +253,11 @@ static int neigh_forced_gc(struct neigh_table *tb=
-l)
-> >>  {
-> >>      int max_clean =3D atomic_read(&tbl->gc_entries) -
-> >>                      READ_ONCE(tbl->gc_thresh2);
-> >> +    u64 tmax =3D ktime_get_ns() + NSEC_PER_MSEC;
-> >>      unsigned long tref =3D jiffies - 5 * HZ;
-> >>      struct neighbour *n, *tmp;
-> >>      int shrunk =3D 0;
-> >> +    int loop =3D 0;
-> >>
-> >>      NEIGH_CACHE_STAT_INC(tbl, forced_gc_runs);
-> >>
-> >> @@ -278,11 +280,16 @@ static int neigh_forced_gc(struct neigh_table *t=
-bl)
-> >>                              shrunk++;
-> >>                      if (shrunk >=3D max_clean)
-> >>                              break;
-> >> +                    if (++loop =3D=3D 16) {
-> >
-> > Overall looks good.
-> > Minor comments:
-> >       - loop count should probably be unsigned
-> >         - the magic constant 16 should be a sysctl tuneable
->
-> A tunable is needed here; the loop counter is just to keep the overhead
-> of the ktime_get_ns call in check.
+Oh, lets see that then..
 
-From context, I'm going to assume you meant a tunable is _NOT_ needed here.=
- ;-)
-
--Doug
+Jason
