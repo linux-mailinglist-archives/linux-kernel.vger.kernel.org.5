@@ -2,423 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FC3807512
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9155380751B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379320AbjLFQdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:33:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52246 "EHLO
+        id S1379327AbjLFQfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378777AbjLFQdv (ORCPT
+        with ESMTP id S1378300AbjLFQfd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:33:51 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E72D5E;
-        Wed,  6 Dec 2023 08:33:57 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6EtWQc020915;
-        Wed, 6 Dec 2023 08:33:48 -0800
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3utu530cwj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 08:33:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DaSOm55bln4OtFsDFmJJm4zlhoObosafIM5rd4fOjh/1LocQK5jrAAQoJkQ8xaTSPg2TFt2iyw2a7rp8lFnuyX5b1jmvqYiDAOn1LqgxvG/4xwLbSirmS3s9y48nLKopHVmY16bBJG7XM8i8Xspa/ME0n5u9KSNOs6p1PbSB9HsWT8ttNVGYpN+bt9XfnB+WW0c9pAaAhY0gYnkIUMITB7mSZat7smfBS4oPT3YCSmRGKfPn6yMJPo/PO/8kXDRtqjn6Wb2EFNDVvEpxlc6f+CoR7SkC/mCMuxc4BHfwIw2SqL7qbu50Sg2fWO2cx7hF0IGaEC1LWiBd00gdWUn4TA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uG+P3HqyBk1LTJknLwpvXLZlrRJfXEOlfN7nfJCP6K4=;
- b=mKCNDzUMBVMhKZTMi+TtIVafkTbNutTgHiJQGS+n5FK25BkKqfgzlGL6ouap5+xPpLyORAFpEp6PMbWBK1Ys3n0h9ejMN6GchvR/pzLOfd3c7/xuT21gePIkpcsS8NisjQz8cbeLCqubXyaOGhKL1xIZLO0N+WWAWyNlCNMWoy5xRi+xtWJEzdEvI8AIEFJZxLRGWT08bLZgmI3qRq2WtG69V3LJAmFIS2mNhR/SKJAyfHmoNq69cGbmFS6/+5y7vmP9NQNH7v1pLqoEaBjAbZsoFe/x9GuhCEL4Gte1jnLMf/WvBygsNfvQAT0qFwvYPvOECpTo37iHVVWPBqc6wA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        Wed, 6 Dec 2023 11:35:33 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B66D4B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:35:37 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40b422a274dso89155e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:35:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uG+P3HqyBk1LTJknLwpvXLZlrRJfXEOlfN7nfJCP6K4=;
- b=rdQ/APtHM1ue0H1t8W9sgbFmiPBx/VX8bfsvnstXc6TE7DWm3wyGEV2KvE4h5UcVOb/ry5Ha4RR4ENoBKQaqBSbkjhb3ybal0pQgrjpDaVCJAonaXTyHCaeqy3qUu8EA+Fb8UztV11k850z3CWKNXQ9Vpo0leFGt0ExsS2CC6VQ=
-Received: from SJ0PR18MB5216.namprd18.prod.outlook.com (2603:10b6:a03:430::6)
- by CO6PR18MB3940.namprd18.prod.outlook.com (2603:10b6:5:348::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.25; Wed, 6 Dec
- 2023 16:33:44 +0000
-Received: from SJ0PR18MB5216.namprd18.prod.outlook.com
- ([fe80::6a4f:cb8d:70fd:ef2]) by SJ0PR18MB5216.namprd18.prod.outlook.com
- ([fe80::6a4f:cb8d:70fd:ef2%4]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 16:33:44 +0000
-From:   Suman Ghosh <sumang@marvell.com>
-To:     Paolo Abeni <pabeni@redhat.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Hariprasad Kelam <hkelam@marvell.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linu Cherian <lcherian@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        "horms@kernel.org" <horms@kernel.org>,
-        "wojciech.drewek@intel.com" <wojciech.drewek@intel.com>
-Subject: RE: [EXT] Re: [net-next PATCH v6 1/2] octeontx2-af: Add new mbox to
- support multicast/mirror offload
-Thread-Topic: [EXT] Re: [net-next PATCH v6 1/2] octeontx2-af: Add new mbox to
- support multicast/mirror offload
-Thread-Index: AQHaJr0M+Oof0Np2U0G7sY/+jjAPSrCcGNMAgABcQCA=
-Date:   Wed, 6 Dec 2023 16:33:44 +0000
-Message-ID: <SJ0PR18MB5216F4E57D57AD4DF5013D15DB84A@SJ0PR18MB5216.namprd18.prod.outlook.com>
-References: <20231204141956.3956942-1-sumang@marvell.com>
-         <20231204141956.3956942-2-sumang@marvell.com>
- <f18fdc337f58317b85acb45a0ac694f9140fc022.camel@redhat.com>
-In-Reply-To: <f18fdc337f58317b85acb45a0ac694f9140fc022.camel@redhat.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
- =?utf-8?B?bk5jYzNWdFlXNW5YR0Z3Y0dSaGRHRmNjbTloYldsdVoxd3dPV1E0TkRsaU5p?=
- =?utf-8?B?MHpNbVF6TFRSaE5EQXRPRFZsWlMwMllqZzBZbUV5T1dVek5XSmNiWE5uYzF4?=
- =?utf-8?B?dGMyY3RNelkzTXpobVltVXRPVFExTlMweE1XVmxMV0kyWm1ZdE9EUXhORFJr?=
- =?utf-8?B?WldWaE5UUmpYR0Z0WlMxMFpYTjBYRE0yTnpNNFptTXdMVGswTlRVdE1URmxa?=
- =?utf-8?B?UzFpTm1abUxUZzBNVFEwWkdWbFlUVTBZMkp2WkhrdWRIaDBJaUJ6ZWowaU5E?=
- =?utf-8?B?RXhNaUlnZEQwaU1UTXpORFl6TlRRd01qRXhPVFkwTkRrNElpQm9QU0pKVmt0?=
- =?utf-8?B?VFJsZGlaWGg2SzJ0bWJDdGxSVWMwYW1ZeFl6bHNWRlU5SWlCcFpEMGlJaUJp?=
- =?utf-8?B?YkQwaU1DSWdZbTg5SWpFaUlHTnBQU0pqUVVGQlFVVlNTRlV4VWxOU1ZVWk9R?=
- =?utf-8?B?MmRWUVVGQ1oxZEJRVUpUTW5ONk5GbFRhbUZCVVZaRmRtMURjVUo2UXpsQ1ZW?=
- =?utf-8?B?TXJXVXR2U0UxTU1GcEJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlNFRkJRVUZDZFVSM1FVRXpaemhCUVVSdlIwRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UlVGQlVVVkNRVUZCUVRsU1pXNU1kME5CUVZGQlFVRkJRVUZCUVVGQlFVbzBR?=
- =?utf-8?B?VUZCUW1oQlIxRkJXa0ZDZVVGSFZVRmpkMEo2UVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZGUVVGQlFVRkJRVUZCUVdk?=
- =?utf-8?B?QlFVRkJRVUZ1WjBGQlFVZE5RV1JSUW5wQlNGRkJZbmRDZEVGR09FRmpRVUpz?=
- =?utf-8?B?UVVoSlFXTjNRblpCUnpSQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRlJRVUZCUVVGQlFVRkJRVUZCUVVGQlVVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVTkJRVUZCUVVGRFpVRkJRVUZaZDBJeFFVaE5RV1JCUW5aQlJ6?=
- =?utf-8?B?QkJXSGRDZDBGSFowRmlkMEoxUVVkVlFXSm5RakZCUnpCQldXZENiRUZJU1VG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRa0ZCUVVGQlFVRkJRVUZKUVVGQlFVRkJTalJCUVVGQ2FrRklWVUZq?=
- =?utf-8?B?ZDBJd1FVYzRRV0pSUW1aQlNFMUJZM2RDZFVGR09FRmFRVUpvUVVoTlFXRkJR?=
- =?utf-8?B?bVpCU0ZsQlRVRkJlVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?Q?FBQUFB?=
-x-dg-refone: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVGQlowRkJRVUZCUVc1blFVRkJSMDFC?=
- =?utf-8?B?WkZGQ2VrRklVVUZpZDBKMFFVWTRRV04zUW5wQlJ6UkJXSGRDY2tGSFZVRmxV?=
- =?utf-8?B?VUl6UVVjNFFXTm5RbXRCU0UxQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRlJRVUZCUVVGQlFVRkJRMEZCUVVGQlFV?=
- =?utf-8?B?TmxRVUZCUVZsM1FqRkJTRTFCWkVGQ2RrRkhNRUZZZDBKNlFVaE5RV0puUW1a?=
- =?utf-8?B?QlJ6UkJZbmRDYTBGSFZVRmlRVUp3UVVjd1FXRlJRakJCUjFWQlkyZENaa0ZJ?=
- =?utf-8?B?V1VGTlFVRjVRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZDUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVsQlFVRkJRVUZLTkVGQlFVSnFRVWhWUVdOM1FqQkJSemhCWWxGQ1prRklU?=
- =?utf-8?B?VUZqZDBKMVFVWTRRV04zUW5kQlIwVkJXWGRDYkVGR09FRmtaMEYzUVVSSlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlJV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRm5RVUZCUVVGQmJtZEJRVUZIVVVGaVFVSjNRVVk0UVdO?=
- =?utf-8?B?M1FuSkJTR3RCWTBGQ2JFRkdPRUZaZDBKdlFVZEZRV1JCUW1aQlJ6QkJXbEZD?=
- =?utf-8?B?ZWtGSVRVRlpVVUp1UVVkVlFWaDNRakpCUkVGQlRXZEJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVkZCUVVGQlFVRkJRVUZEUVVGQlFVRkJRMlZCUVVGQldrRkNj?=
- =?utf-8?B?MEZJUVVGWWQwSjZRVWQzUVZsUlFtcEJSM05CV0hkQ2FrRkhaMEZaVVVJd1FV?=
- =?utf-8?B?WTRRV0pSUW14QlNFMUJZM2RDYUVGSFkwRmFVVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?Q?FBQUFB?=
-x-dg-reftwo: =?utf-8?B?UVVGQlFVRkJRVUZCUVVKQlFVRkJRVUZCUVVGQlNVRkJRVUZCUVVvMFFVRkJR?=
- =?utf-8?B?bXRCUjNkQlkwRkNaa0ZJVVVGYVVVSm9RVWN3UVdOM1FtWkJSemhCWW1kQ2JF?=
- =?utf-8?B?RkhVVUZqWjBKd1FVaFpRVnBSUW1aQlIxbEJZVkZDYzBGSFZVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkZRVUZCUVVGQlFVRkJRV2RCUVVG?=
- =?utf-8?B?QlFVRnVaMEZCUVVkVlFXSlJRbWhCUjJ0QllrRkNaa0ZIUlVGYVFVSnJRVWhK?=
- =?utf-8?B?UVZwUlFucEJTRTFCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGM1FVRkJRVUZCUVVGQlFVRkJRVUZCVVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVOQlFVRkJRVUZEWlVGQlFVRmlVVUpvUVVoSlFXUm5RbXhCUjNkQldI?=
- =?utf-8?B?ZENkMEZJU1VGaWQwSnhRVWRWUVZsM1FqQkJSamhCWW1kQ2FFRkhNRUZhVVVK?=
- =?utf-8?B?NlFVWTRRVmwzUW5aQlJ6UkJXbWRDY0VGSFVVRmFVVUoxUVVoUlFXRlJRbWhC?=
- =?utf-8?B?UjNkQldIZENhRUZIZDBGaWQwSjFRVWRWUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFrRkJRVUZCUVVGQlFVRkpRVUZCUVVGQlNqUkJRVUZDZEVGSFJVRmpaMEl5?=
- =?utf-8?B?UVVkVlFXSkJRbVpCU0VGQlkyZENka0ZIYjBGYVVVSnFRVWhSUVZoM1FuVkJS?=
- =?utf-8?B?MFZCWWxGQ2JFRklUVUZZZDBKNVFVZFZRV04zUWpCQlNFbEJZVkZDYWtGSVVV?=
- =?utf-8?B?RmFVVUpyUVVZNFFWbFJRbk5CUnpoQlltZENiRUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVVZCUVVGQlFVRkJRVUZCWjBGQlFVRkJRVzVuUVVGQlJ6?=
- =?utf-8?B?QkJXVkZDZVVGSVdVRmFVVUp6UVVZNFFXTkJRbmxCUnpoQllXZENiRUZIVFVG?=
- =?utf-8?B?a1FVSm1RVWMwUVZsUlFuUkJSMVZCWTNkQ1prRklTVUZhVVVKNlFVaFJRV05u?=
- =?utf-8?B?UW5CQlIwMUJaRUZDYkVGSFVVRllkMEp2UVVkVlFXVkJRbXBCUnpoQldrRkNi?=
- =?utf-8?B?RUZJVFVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGUlFVRkJRVUZCUVVGQlEwRkJRVUZC?=
- =?utf-8?B?UVVObFFVRkJRV0pSUW1oQlNFbEJaR2RDYkVGSGQwRmlRVUptUVVkRlFXTm5R?=
- =?utf-8?B?blJCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?Q?FBQUFB?=
-x-dg-rorf: true
-x-dg-refthree: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkNRVUZCUVVGQlFVRkJRVWxC?=
- =?utf-8?B?UVVGQlFVRktORUZCUVVKMFFVZEZRV05uUWpKQlIxVkJZa0ZDYzBGR09FRmFk?=
- =?utf-8?B?MEoyUVVjNFFWcDNRbk5CUjFWQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUlVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGblFVRkJRVUZCYm1kQlFVRkhNRUZaVVVKNVFVaFpRVnBSUW5O?=
- =?utf-8?B?QlIzZEJXSGRDZDBGSVNVRmlkMEp4UVVkVlFWbDNRakJCUmpoQldYZENka0ZI?=
- =?utf-8?B?VVVGYVVVSjZRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFWRkJRVUZCUVVGQlFVRkRRVUZCUVVGQlEyVkJRVUZCWWxGQ2FFRklT?=
- =?utf-8?B?VUZrWjBKc1FVZDNRV0pCUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVoUlFW?=
- =?utf-8?B?aDNRbXBCUnpoQldrRkNiRUZJVFVGWWQwSnJRVWRyUVZsM1FqQkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUpCUVVGQlFVRkJRVUZCU1VGQlFVRkJRVW8wUVVG?=
- =?utf-8?B?QlFuUkJSMFZCWTJkQ01rRkhWVUZpUVVKelFVWTRRV05CUW5sQlJ6aEJZV2RD?=
- =?utf-8?B?YkVGSFRVRmtRVUptUVVjMFFWbFJRblJCUjFWQlkzZENaa0ZIVFVGaWQwSjFR?=
- =?utf-8?B?VWRaUVdGUlFtdEJSMVZCWW1kQ01FRkhhMEZaVVVKelFVWTRRV0pSUW1oQlNF?=
- =?utf-8?B?bEJaR2RDYkVGSGQwRmlRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGRlFVRkJRVUZCUVVGQlFXZEJR?=
- =?utf-8?B?VUZCUVVGdVowRkJRVWN3UVZsUlFubEJTRmxCV2xGQ2MwRkhkMEZZZDBKM1FV?=
- =?utf-8?B?aEpRV0ozUW5GQlIxVkJXWGRDTUVGR09FRmlaMEpvUVVjd1FWcFJRbnBCUmpo?=
- =?utf-8?B?QldYZENka0ZITkVGYVowSndRVWRSUVZwUlFuVkJTRkZCWVZGQ2FFRkhkMEZZ?=
- =?utf-8?B?ZDBKMFFVZEZRV05uUWpKQlIxVkJZa0ZDYzBGR09FRmlkMEo1UVVZNFFWbFJR?=
- =?utf-8?B?bmxCUnpCQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?Q?FBQUFB?=
-x-dg-reffour: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJVVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VU5CUVVGQlFVRkRaVUZCUVVGaVVVSm9RVWhKUVdSblFteEJSM2RCWWtGQ1pr?=
- =?utf-8?B?RklRVUZqWjBKMlFVZHZRVnBSUW1wQlNGRkJXSGRDZFVGSFJVRmlVVUpzUVVo?=
- =?utf-8?B?TlFWaDNRbXBCUnpoQlltZENiVUZIYTBGYVFVSnNRVWMwUVdSQlFuQkJSMFZC?=
- =?utf-8?B?WWtGQ1prRkhNRUZaVVVKNVFVaFpRVnBSUW5OQlIzZEJXSGRDZGtGSVNVRllk?=
- =?utf-8?B?MEp1UVVjNFFXSjNRbTVCUjNkQldsRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUWtG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGSlFVRkJRVUZCU2pSQlFVRkNkRUZIUlVGalowSXlRVWRW?=
- =?utf-8?B?UVdKQlFuTkJSamhCWTBGQ2VVRkhPRUZoWjBKc1FVZE5RV1JCUW1aQlJ6UkJX?=
- =?utf-8?B?VkZDZEVGSFZVRmpkMEptUVVoSlFWcFJRbnBCU0ZGQlkyZENjRUZIVFVGa1FV?=
- =?utf-8?B?SnNRVWRSUVZoM1FuUkJSMFZCWTJkQ01rRkhWVUZpUVVKelFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVVkJRVUZCUVVGQlFVRkJaMEZCUVVGQlFXNW5RVUZCUnpCQldW?=
- =?utf-8?B?RkNlVUZJV1VGYVVVSnpRVWQzUVZoM1FuZEJTRWxCWW5kQ2NVRkhWVUZaZDBJ?=
- =?utf-8?B?d1FVWTRRV0puUW1oQlJ6QkJXbEZDZWtGR09FRmpaMEpzUVVoTlFXUkJRbmxC?=
- =?utf-8?B?UjJ0QldYZENNRUZIVlVGYVFVSm1RVWN3UVZsUlFubEJTRmxCV2xGQ2MwRkhk?=
- =?utf-8?B?MEZZZDBKMlFVaEpRVmgzUW1oQlNFbEJZbEZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZSUVVGQlFVRkJRVUZCUTBGQlFVRkJRVU5s?=
- =?utf-8?B?UVVGQlFXSlJRbWhCU0VsQlpHZENiRUZIZDBGaVFVSm1RVWhSUVZwUlFubEJS?=
- =?utf-8?B?ekJCWVZGQ2RVRklWVUZqZDBGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQ1FVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?bEJRVUZCUVVGS05FRkJRVUowUVVkRlFXTm5RakpCUjFWQllrRkNjMEZHT0VG?=
- =?utf-8?B?a2QwSjJRVWhKUVZwQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
- =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
- =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZC?=
- =?utf-8?B?UVVGQlFVRkJRVUZuUVVGQlFVRkJUMmRaUVVGQlFVRkJRVUZKUVVGQlFVRkJR?=
- =?utf-8?B?VUZCUVdkQlFVRkJRVUZCUVVGRFFVRkJRVUZCUVVGQlFXRkNaMEZCUjFGQlFV?=
- =?utf-8?Q?FCZ0FB?=
-x-dg-reffive: =?utf-8?B?UVVGQlFVRkJRVmxSUW10QlIxRkJZMmRDYkVGSVRVRmpkMEZCUVVOUlFVRkJR?=
- =?utf-8?B?VUpCUVVGQldYZENNVUZJVFVGa1FVSjJRVWN3UVZoM1FuZEJSMVZCWTJkQ2Vr?=
- =?utf-8?B?RkhPRUZpWjBGQlFVTTBRVUZCUVVGQlFVRkJXWGRDTVVGSVRVRmtRVUoyUVVj?=
- =?utf-8?B?d1FWaDNRbmRCUjJkQlluZENkVUZIVlVGaVowSXhRVWN3UVZsblFteEJTRWxC?=
- =?utf-8?B?UVVGQmQwRkJRVUZCUVVGQlFVZE5RV1JSUW5wQlNGRkJZbmRDZEVGR09FRmpk?=
- =?utf-8?B?MEo2UVVjMFFWaDNRbXRCUjBWQlkzZENiMEZHT0VGa1owRjNRVVJKUVVGQlFY?=
- =?utf-8?B?ZEJRVUZCUVVGQlFVRkhUVUZrVVVKNlFVaFJRV0ozUW5SQlJqaEJZM2RDZWtG?=
- =?utf-8?B?SE5FRllkMEp5UVVkVlFXVlJRak5CUnpoQlkyZENhMEZJVFVGQlFVRXJRVUZC?=
- =?utf-8?B?UVVGQlFVRkJSMDFCWkZGQ2VrRklVVUZpZDBKMFFVWTRRV04zUW5wQlJ6UkJX?=
- =?utf-8?B?SGRDZFVGSE9FRmFRVUpzUVVkM1FXRlJRblJCUjJ0QlpFRkNiRUZJU1VGWWQw?=
- =?utf-8?B?SXlRVVJCUVUxblFVRkJSRWxCUVVGQlFVRkJRVUZaZDBJeFFVaE5RV1JCUW5a?=
- =?utf-8?B?QlJ6QkJXSGRDZWtGSVRVRmlaMEptUVVoTlFXTkJRbWhCUjAxQldsRkNaa0ZJ?=
- =?utf-8?B?V1VGTlFVRjVRVUZCUVZCblFVRkJRVUZCUVVGQ2EwRkhkMEZqUVVKbVFVaE5R?=
- =?utf-8?B?V0YzUWpWQlNFRkJXbEZDWmtGSFRVRmhRVUpvUVVoUlFWaDNRblJCUjFWQlkz?=
- =?utf-8?B?ZENla0ZIUlVGYWQwSnNRVVk0UVdSblFYZEJSRWxCUVVGQk1rRkJRVUZCUVVG?=
- =?utf-8?B?QlFVZFJRV0pCUW5kQlJqaEJZM2RDYzBGSFJVRlpkMEp5UVVZNFFWbDNRbTlC?=
- =?utf-8?B?UjBWQlpFRkNaa0ZITUVGYVVVSjZRVWhOUVZsUlFtNUJSMVZCUVVGQk5FRkJR?=
- =?utf-8?B?VUZCUVVGQlFVZFJRV0pCUW5kQlJqaEJaRUZDYkVGSFJVRmlVVUo2UVVZNFFX?=
- =?utf-8?B?SjNRblZCUjFWQldrRkNlVUZIYTBGa1owSnNRVVk0UVZwblFuQkJSM2RCV2xG?=
- =?utf-8?B?QlFVRkRVVUZCUVVGRVFVRkJRVnBSUW5SQlIwVkJZVkZDYzBGR09FRlpVVUpy?=
- =?utf-8?B?UVVkUlFXTm5RbXhCU0UxQlkzZEJRVUZHWjBGQlFVRkJRVUZCUVdKUlFtaEJT?=
- =?utf-8?B?RWxCWkdkQ2JFRkhkMEZZZDBKM1FVaEpRV0ozUW5GQlIxVkJXWGRDTUVGR09F?=
- =?utf-8?B?RmlaMEpvUVVjd1FWcFJRbnBCUmpoQldYZENka0ZITkVGYVowSndRVWRSUVZw?=
- =?utf-8?B?UlFuVkJTRkZCWVZGQ2FFRkhkMEZZZDBKb1FVZDNRV0ozUW5WQlIxVkJRVUZD?=
- =?utf-8?B?VlVGQlFVRkJRVUZCUVVjd1FWbFJRbmxCU0ZsQldsRkNjMEZHT0VGalFVSjVR?=
- =?utf-8?B?VWM0UVdGblFteEJSMDFCWkVGQ1prRkhORUZaVVVKMFFVZFZRV04zUW1aQlNF?=
- =?utf-8?B?bEJXbEZDZWtGSVVVRmpaMEp3UVVkTlFXUkJRbXhCUjFGQldIZENhRUZIZDBG?=
- =?utf-8?B?aWQwSjFRVWRWUVVGQlFtRkJRVUZCUVVGQlFVRkhNRUZaVVVKNVFVaFpRVnBS?=
- =?utf-8?B?UW5OQlJqaEJZMEZDZVVGSE9FRmhaMEpzUVVkTlFXUkJRbVpCUnpSQldWRkNk?=
- =?utf-8?B?RUZIVlVGamQwSm1RVWhKUVZwUlFucEJTRkZCWTJkQ2NFRkhUVUZrUVVKc1FV?=
- =?utf-8?B?ZFJRVmgzUW05QlIxVkJaVUZDYWtGSE9FRmFRVUpzUVVoTlFVRkJRV2RCUVVG?=
- =?utf-8?B?QlFVRkJRVUZITUVGWlVVSjVRVWhaUVZwUlFuTkJSM2RCV0hkQ2FFRklTVUZp?=
- =?utf-8?B?VVVGQlFVTlpRVUZCUVVGQlFVRkJZbEZDYUVGSVNVRmtaMEpzUVVkM1FXSkJR?=
- =?utf-8?B?bVpCUjJOQlluZENka0ZIWTBGaVFVSnNRVUZCUVU1QlFVRkJRVUZCUVVGQ2RF?=
- =?utf-8?Q?FHRUFj?=
-x-dg-refsix: =?utf-8?B?WjBJeVFVZFZRV0pCUW5OQlJqaEJZMEZDZVVGSE9FRmhaMEpzUVVkTlFXUkJR?=
- =?utf-8?B?bVpCUjAxQlluZENhMEZIVlVGamQwRkJRVVEwUVVGQlFVRkJRVUZCWWxGQ2FF?=
- =?utf-8?B?RklTVUZrWjBKc1FVZDNRV0pCUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVo?=
- =?utf-8?B?UlFWaDNRbXBCUnpoQldrRkNiRUZJVFVGWWQwSnJRVWRyUVZsM1FqQkJRVUZC?=
- =?utf-8?B?V0dkQlFVRkJRVUZCUVVKMFFVZEZRV05uUWpKQlIxVkJZa0ZDYzBGR09FRmpR?=
- =?utf-8?B?VUo1UVVjNFFXRm5RbXhCUjAxQlpFRkNaa0ZITkVGWlVVSjBRVWRWUVdOM1Ft?=
- =?utf-8?B?WkJSMDFCWW5kQ2RVRkhXVUZoVVVKclFVZFZRV0puUWpCQlIydEJXVkZDYzBG?=
- =?utf-8?B?R09FRmlVVUpvUVVoSlFXUm5RbXhCUjNkQllrRkJRVUZIZDBGQlFVRkJRVUZC?=
- =?utf-8?B?UVdKUlFtaEJTRWxCWkdkQ2JFRkhkMEZpUVVKbVFVaEJRV05uUW5aQlIyOUJX?=
- =?utf-8?B?bEZDYWtGSVVVRllkMEoxUVVkRlFXSlJRbXhCU0UxQldIZENha0ZIT0VGaVow?=
- =?utf-8?B?SnRRVWRyUVZwQlFteEJSelJCWkVGQ2NFRkhSVUZpUVVKbVFVY3dRVmxSUW5s?=
- =?utf-8?B?QlNGbEJXbEZDYzBGSGQwRllkMEoyUVVoSlFWaDNRbWhCU0VsQllsRkJRVUZJ?=
- =?utf-8?B?U1VGQlFVRkJRVUZCUVdKUlFtaEJTRWxCWkdkQ2JFRkhkMEZpUVVKbVFVaEJR?=
- =?utf-8?B?V05uUW5aQlIyOUJXbEZDYWtGSVVVRllkMEoxUVVkRlFXSlJRbXhCU0UxQldI?=
- =?utf-8?B?ZENha0ZIT0VGaVowSnRRVWRyUVZwQlFteEJSelJCWkVGQ2NFRkhSVUZpUVVK?=
- =?utf-8?B?bVFVY3dRVmxSUW5sQlNGbEJXbEZDYzBGSGQwRllkMEoyUVVoSlFWaDNRbTVC?=
- =?utf-8?B?UnpoQlluZENia0ZIZDBGYVVVRkJRVVp2UVVGQlFVRkJRVUZCWWxGQ2FFRklT?=
- =?utf-8?B?VUZrWjBKc1FVZDNRV0pCUW1aQlNFRkJZMmRDZGtGSGIwRmFVVUpxUVVoUlFW?=
- =?utf-8?B?aDNRblZCUjBWQllsRkNiRUZJVFVGWWQwSjVRVWRWUVdOM1FqQkJTRWxCWVZG?=
- =?utf-8?B?Q2FrRklVVUZhVVVKclFVWTRRV0pSUW1oQlNFbEJaR2RDYkVGSGQwRmlRVUZC?=
- =?utf-8?B?UVVkblFVRkJRVUZCUVVGQllsRkNhRUZJU1VGa1owSnNRVWQzUVdKQlFtWkJT?=
- =?utf-8?B?RUZCWTJkQ2RrRkhiMEZhVVVKcVFVaFJRVmgzUW5WQlIwVkJZbEZDYkVGSVRV?=
- =?utf-8?B?RllkMEo1UVVkVlFXTjNRakJCU0VsQllWRkNha0ZJVVVGYVVVSnJRVVk0UVdK?=
- =?utf-8?B?UlFtaEJTRWxCWkdkQ2JFRkhkMEZpUVVKbVFVYzRRV05uUW1aQlIwVkJZMmRD?=
- =?utf-8?B?ZEVGQlFVRkxaMEZCUVVGQlFVRkJRblJCUjBWQlkyZENNa0ZIVlVGaVFVSnpR?=
- =?utf-8?B?VVk0UVdSQlFteEJTRWxCWWxGQ2NFRkhORUZrVVVKNlFVRkJRVWxuUVVGQlFV?=
- =?utf-8?B?RkJRVUZDZEVGSFJVRmpaMEl5UVVkVlFXSkJRbk5CUmpoQlpIZENka0ZJU1VG?=
- =?utf-8?Q?aQUFBQUE9PSIvPjwvbWV0YT4=3D?=
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR18MB5216:EE_|CO6PR18MB3940:EE_
-x-ms-office365-filtering-correlation-id: 29c8b715-ca52-4ef7-bfa3-08dbf6791d12
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rS55oS9Lxe1cnFNIC4R4OOdoKAVgZPhyKWlWCBc7UHeYrCjL258DRig7HqYXWBi/757Zh8034rBMAs3Wwe2BxUs+zelCXY2+XuiUaMIRF63bMUZLDyAotadOApMnUAZKU3WgGHgixoi5edQMD5z2TVqh3eBlMx2g9rA5qBHp+hKEHu+wOcvJypgghEUDXdmJSDSd+RJCn+unENcm1MYa3B+Kr6Yyb+2nAUCrx9+HMPFGouf8aFHw/G9s9CzpVwPRvdTCJrwHT8QJRPgUbP3XCWjgWLEJYZLlmFIXSgbT/O3BzeqwDYVpiYwauzvWAuAqyPv963+sS0VIBkdPRDsmS7S3iZGLY+qR9JSEGM/HS/a0wmSG0V48/1ju5QkE1xXmIWNPKbQqVXQ6noBmeLcqCs1Mfa+Thgu+YZ81siOEZmtQcPNrC0M+HXUCxxv9QzZGcJQPR8iQ7k3umBrKKgc2PUV44T9Q2tnhFlhvWi6eVIFo3wjJavqrfUldmeZkEpgkQJM1Orjepy+ERzqOqa9roEO0eiobuNcxKLK6dZhE8jhp4t7FUKOs+w74FfpsObWrFjL6He1R3vkWlpN77xnqeIj7CDm45TnJ4Yi91vRABkZpqwgE37RyceFBgNx0uGTNMyb+OvyUM32r4rSOuy6dxw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB5216.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(39860400002)(346002)(136003)(396003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(55016003)(83380400001)(478600001)(71200400001)(9686003)(26005)(6506007)(7696005)(64756008)(316002)(66476007)(66556008)(66946007)(66446008)(76116006)(8936002)(8676002)(52536014)(110136005)(38100700002)(122000001)(5660300002)(2906002)(41300700001)(86362001)(38070700009)(921008)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UzQwTlAwWFhqcG9ObVMzaFZlK2RYZ2ZvdjhKY2MxUCtWOXpleE9JVXB4eE9U?=
- =?utf-8?B?L2F0MnB2dGVQeGF2Z2E4dHZNaW9FekJGZUFFTVZUeG9ieldiMFI2ZlBaR1JM?=
- =?utf-8?B?WFFMbjA2Z3VEL29FaGNtQ09lcWhKWm5nTDhEWHc0WHJXSm5kenpqSHBmNk1N?=
- =?utf-8?B?NERxS1VmYWFmODFmYVFEVUVNUHhqeUV2QWI2SEpjc25Hb21FV1JDM1lITjRP?=
- =?utf-8?B?YmJRUXY5TlVTZlZETnR6TE1Hd2VRT3dNbFQyR3RNeFluUzZKeTVlWWZLd2dU?=
- =?utf-8?B?dDkrOEFtbkRKT3F1UTlvd1lOYTNidmdObE5zZk1RdVVjT3ZJQU9CdHVCY0Vs?=
- =?utf-8?B?aG1HdzJmRytCQXp2cThodGpDNFFVdzMvYVpHT29mVC8zQlNXK1cwZkZWc2lL?=
- =?utf-8?B?OENSaUM5N0dpTzNDRlpHMlVXY2hubnlXb0hUN1I3c3RhVDJ2b0ZsbDBEZGZJ?=
- =?utf-8?B?M0VUc2ljeGdzL3dhdnJGYjZUUElRY0pYTzZsK2RsanQrQnY0cGFyWG0rSzd6?=
- =?utf-8?B?Y2F0NUhrQm5qakpMS3ZhTS9aTitIVDBwUUtmSzBzUHRJMjRNZDIrbE9zY3c1?=
- =?utf-8?B?Tm1hVEhYSW42UlBHVm0wYllSd0FuTXJKTGg1L1hpR0YveDlyVWp5cUkyZ3hh?=
- =?utf-8?B?ekxoM2FSUXJHZXVSMjlHejJzU3pFUzBnRlpoR0ZKa1NIQ29paDVjUXJDUmtm?=
- =?utf-8?B?SGZHWDhIUU9QbnpuSXA5OW5KTEhyWHVFSjMvdHdZRlhDeFdRN2F3RUVIZFdt?=
- =?utf-8?B?TVhLVm9rMDVIYXJ3WGtyMDVNUGh4eWROMytJaWlUT1pjUXo2Y2NUbE9iQlhS?=
- =?utf-8?B?aFk5MWNTemRTaXFzcFRxWDJ2Q2dDTThpZVBiaHpFTU01VmNMSVhRdkVBU20v?=
- =?utf-8?B?UTk2VFFackNiSXBjYTRoc1FMTFg2Mko5blRMOTNFNlF5cjhrQ3lhUUdpSkI3?=
- =?utf-8?B?TVdjSDBVR21BZ1d1SnM2Q2xGSE9BNnFVTWpMRGhXQUViRXVTUTN6QVRhYnd5?=
- =?utf-8?B?OXlIaHN6ZFBibzRaRHJ1YXJsNE9VRkZieWRNcnFQb0pQY2ZxazlFSEhNYjJ5?=
- =?utf-8?B?VXUrRGtlQjE1L2hSOVNmSjRidHRIMDYxS2ZHRDU5RmRBUzVacXhJZ3FaTktD?=
- =?utf-8?B?RGF5WFRRV0FQUG8ySlVycnorS2tGdzI1UDNqanIvYmRqR01EZU54OUhlN0pO?=
- =?utf-8?B?SWU1Ylp6NFl4R0V4UzZMTEpOSWxKbEdMSzJiMXVrck1BQ1dCU2J0Q0FVRUtO?=
- =?utf-8?B?c0hGZTBsdTN1RkxYcjZvUm5rVXNnYlhWd2dvZDM4VGZ1LytJRWxZa0l1amtN?=
- =?utf-8?B?aS9PakdLWnpMb3FCdS9lMmR3MHlUbVdsQXVQYkhudVEvWHBzZWgvUmZDblhE?=
- =?utf-8?B?bXhDdFJOTTJqRmJETGVBTnJoT3BVMnpxdmJHdGRLWFptQU9KTEtLTFVWcHZI?=
- =?utf-8?B?MzJnQ0I4VDJEbUNGUUNLUlRZaU5qdXRRZTVLeU04TTVqZnAzQVlNVnNWRHAw?=
- =?utf-8?B?OVY4eE1od2NqYzdZaWRhQXNEK2JENVkxdTlyMitBaHB6Y1I3SUFYbHB2emhI?=
- =?utf-8?B?bDJMZnY0bkRKRHp2ek9RdEVVYnMxZElPM3NQaWg5OGJweHFKTGVZbTQwZ01k?=
- =?utf-8?B?SlVSNEl4VTNZc251SHY2Umd1eldPakJ5UUpQRkI4SGlkRjZIOUJjNkVvZXBW?=
- =?utf-8?B?N3VaeFJVejkwTE9udG5aaHkrcm5CWWh0VEo2RG9hVmdQOW1JWFE2WDRBUWw3?=
- =?utf-8?B?ejZTL0F1UTFHaUpKVzAzeDhPZHRVTitnbEtIcmdJZm83allYMFlJMjk3ZEZ6?=
- =?utf-8?B?MXpNT1lzR2dmZFM1MFYwYU4yY1JmeWR1cGk4WUViellEcU5ncEExSGR1SDFi?=
- =?utf-8?B?MWE5NEZ4d1h3ZDJwd2RoeHBqY2xXS2pyMEludG9lZFNyU3hoSzcwOXZSZExQ?=
- =?utf-8?B?aFhjZnlWYjFoc1NDeWFBRE5qWnN4c1FVaUIwK2ZSdEQ5OGxuSERXOG5ET09R?=
- =?utf-8?B?ajI3M3JYbGdpeThUR282K0VlVW9BZGp1bUpCZStyMWRSUXJ5SXR2bndHMXZM?=
- =?utf-8?B?MFg4WDd4ZE5YQzQ0Nkxtb3RFSUJnbk96UC84S2JJSVZVLzdGRW9MdGdsVGg2?=
- =?utf-8?Q?sN0+fjhpownxNKUP5YGJ9xXrb?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=google.com; s=20230601; t=1701880536; x=1702485336; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZwXChD+JHtHoNewTIq7HYYHZALw78wtpVyKJu1FT1Lk=;
+        b=SdOs6O0osffINaMxi8LnooBm4HilVcu/sNKWgg0rPlSNpajM1yxb6tzdSyfit2oujM
+         P4rzVyXLZ1LDUcMQC+DZeKpi+bXbVembUJeiGvAB3XS35j9INSUe7xWldDLkRiolXFI5
+         ajCeVZ7R8IaQt5OJADd+ag0CGZuYXLw7DuFrD++9rfOjyX2+dkVWDNTRN2wXVpeREa8V
+         nn9gMGrT/LYoAmHkd0GiLV64axFSh5rTfsE64Pwd6s7hIoa/A125fgd2b43cmCPBuGtT
+         vIxP5vFsK6ahW2/m91/kxYCCIfybcB7yTdM0PJmd3GqNuRG50y3a5paHg1vTyNV59WBX
+         +Utg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701880536; x=1702485336;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZwXChD+JHtHoNewTIq7HYYHZALw78wtpVyKJu1FT1Lk=;
+        b=gX8EURNSUKPYGkCthz68nMbGJ979KTDpQ2e+95jli5n8EkXNcogpMnWTadCvBR6baT
+         hnNEOpGLK398cOeVFyqqakNhbvegiaiHyaqfA8JrUaFgkT612XYx1URGgnCetFZPGmLL
+         aWuj6fROM/NJPx4AFflTAe3Bl6QF61qsZriHo2Ak4SuKsqgLOrpQ81QEIV0WcM4M/pkX
+         QDPUnxDkC5OAFIctbWnlHLzu1X/NqNcY/2fUgxYy/mY0GsfZwgmQYF1zfys4N+b3pzs9
+         RaZEkf+AGlcpSvPgc1QFFLh6inXu2I1DAu9MT5doJDVOOFpca4dWfqMaNgWVsXoMuZ5u
+         qcPQ==
+X-Gm-Message-State: AOJu0YwZB3/v2SYhyu24joY2itFbUNWetLpUTsjx9VM7nbGcKYRchC3P
+        SY8JcnUq1iMAI3sINcQvBRHSMoL9XpyUh+x6aBVHUA==
+X-Google-Smtp-Source: AGHT+IEasvFjjpDTNupV2KZHiyAZK/rOGxC1f33ZRbIA7wVMo6yktInLqOLX0shy4Qu6vYRpuxVZtqoJm9BwaRJf29k=
+X-Received: by 2002:a05:600c:231a:b0:405:320a:44f9 with SMTP id
+ 26-20020a05600c231a00b00405320a44f9mr80482wmo.5.1701880535614; Wed, 06 Dec
+ 2023 08:35:35 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB5216.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 29c8b715-ca52-4ef7-bfa3-08dbf6791d12
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2023 16:33:44.2029
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: htzqwVP8ftUUdKcGBxxJaw7iInHALH5W+c30sWfO1i1SFQgDE5uG/I79GKTB1IJ0BVZVI51IM1q4iRE4pZ8b+Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR18MB3940
-X-Proofpoint-ORIG-GUID: psvvfGJrdowbtNpFzm5fWPMBYsUwFQFO
-X-Proofpoint-GUID: psvvfGJrdowbtNpFzm5fWPMBYsUwFQFO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_14,2023-12-06_01,2023-05-22_02
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230614090710.680330-1-sandipan.das@amd.com> <1320e6e3-c029-2a8c-e8b7-2cfbb781518a@amd.com>
+ <ZXByT1K6enTh2EHT@kernel.org>
+In-Reply-To: <ZXByT1K6enTh2EHT@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 6 Dec 2023 08:35:23 -0800
+Message-ID: <CAP-5=fUoD=s9yyVPgV7tqGwZsJVQMSmHKd8MV_vJW438AcK9qQ@mail.gmail.com>
+Subject: Re: [PATCH] perf test: Retry without grouping for all metrics test
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ayush Jain <ayush.jain3@amd.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        peterz@infradead.org, Ingo Molnar <mingo@kernel.org>,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>, kjain@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, barnali@linux.ibm.com,
+        ananth.narayan@amd.com, ravi.bangoria@amd.com,
+        santosh.shukla@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pk9uIE1vbiwgMjAyMy0xMi0wNCBhdCAxOTo0OSArMDUzMCwgU3VtYW4gR2hvc2ggd3JvdGU6DQo+
-PiBBIG5ldyBtYWlsYm94IGlzIGFkZGVkIHRvIHN1cHBvcnQgb2ZmbG9hZGluZyBvZiBtdWx0aWNh
-c3QvbWlycm9yDQo+PiBmdW5jdGlvbmFsaXR5LiBUaGUgbWFpbGJveCBhbHNvIHN1cHBvcnRzIGR5
-bmFtaWMgdXBkYXRpb24gb2YgdGhlDQo+PiBtdWx0aWNhc3QvbWlycm9yIGxpc3QuDQo+Pg0KPj4g
-U2lnbmVkLW9mZi1ieTogU3VtYW4gR2hvc2ggPHN1bWFuZ0BtYXJ2ZWxsLmNvbT4NCj4+IFJldmll
-d2VkLWJ5OiBXb2pjaWVjaCBEcmV3ZWsgPHdvamNpZWNoLmRyZXdla0BpbnRlbC5jb20+DQo+PiBS
-ZXZpZXdlZC1ieTogU2ltb24gSG9ybWFuIDxob3Jtc0BrZXJuZWwub3JnPg0KPg0KPk5vdGUgdGhh
-dCB2NSB3YXMgYWxyZWFkeSBhcHBsaWVkIHRvIG5ldC1uZXh0LiBCdXQgSSBzdGlsbCBoYXZlIGEN
-Cj5yZWxldmFudCBub3RlLCBzZWUgYmVsb3cuDQo+DQo+PiBAQCAtNTc5NywzICs2MTI3LDMzNyBA
-QCBpbnQNCj4+IHJ2dV9tYm94X2hhbmRsZXJfbml4X2JhbmRwcm9mX2dldF9od2luZm8oc3RydWN0
-IHJ2dSAqcnZ1LCBzdHJ1Y3QNCj4+IG1zZ19yZXEgKnJlDQo+Pg0KPj4gIAlyZXR1cm4gMDsNCj4+
-ICB9DQo+PiArDQo+PiArc3RhdGljIHN0cnVjdCBuaXhfbWNhc3RfZ3JwX2VsZW0gKnJ2dV9uaXhf
-bWNhc3RfZmluZF9ncnBfZWxlbShzdHJ1Y3QNCj5uaXhfbWNhc3RfZ3JwICptY2FzdF9ncnAsDQo+
-PiArCQkJCQkJCSAgICAgIHUzMiBtY2FzdF9ncnBfaWR4KQ0KPj4gK3sNCj4+ICsJc3RydWN0IG5p
-eF9tY2FzdF9ncnBfZWxlbSAqaXRlcjsNCj4+ICsJYm9vbCBpc19mb3VuZCA9IGZhbHNlOw0KPj4g
-Kw0KPj4gKwltdXRleF9sb2NrKCZtY2FzdF9ncnAtPm1jYXN0X2dycF9sb2NrKTsNCj4+ICsJbGlz
-dF9mb3JfZWFjaF9lbnRyeShpdGVyLCAmbWNhc3RfZ3JwLT5tY2FzdF9ncnBfaGVhZCwgbGlzdCkg
-ew0KPj4gKwkJaWYgKGl0ZXItPm1jYXN0X2dycF9pZHggPT0gbWNhc3RfZ3JwX2lkeCkgew0KPj4g
-KwkJCWlzX2ZvdW5kID0gdHJ1ZTsNCj4+ICsJCQlicmVhazsNCj4+ICsJCX0NCj4+ICsJfQ0KPj4g
-KwltdXRleF91bmxvY2soJm1jYXN0X2dycC0+bWNhc3RfZ3JwX2xvY2spOw0KPg0KPkFGQUlDUywg
-YXQgdGhpcyBwb2ludCBhbm90aGVyIHRocmVhZC9DUFUgY291bGQga2ljay1pbiBhbmQgcnVuDQo+
-cnZ1X21ib3hfaGFuZGxlcl9uaXhfbWNhc3RfZ3JwX2Rlc3Ryb3koKSB1cCB0byBjb21wbGV0aW9u
-LCBmcmVlaW5nDQo+J2l0ZXInIGJlZm9yZSBpdCdzIGxhdGVyIHVzZWQgYnkgdGhlIGN1cnJlbnQg
-dGhyZWFkLg0KPg0KPldoYXQgcHJldmVudHMgc3VjaCBzY2VuYXJpbz8NCj4NCj5fSWZfIGV2ZXJ5
-IG1jYXN0IGdyb3VwIG1hbmlwdWxhdGlvbiBoYXBwZW5zIHVuZGVyIHRoZSBydG5sIGxvY2ssIHRo
-ZW4NCj55b3UgY291bGQgYXMgd2VsbCBjb21wbGV0ZWx5IHJlbW92ZSB0aGUgY29uZnVzaW5nIG1j
-YXN0X2dycF9sb2NrLg0KPg0KPkNoZWVycywNCj4NCj5QYW9sbw0KW1N1bWFuXSBJIGFkZGVkIHRo
-aXMgbG9jayBiZWNhdXNlLCB0aGVzZSByZXF1ZXN0cyBjYW4gY29tZSBmcm9tIHNvbWUgdXNlci1z
-cGFjZSBhcHBsaWNhdGlvbiBhbHNvLiBJbiB0aGF0IGNhc2UsIGFwcGxpY2F0aW9uIHdpbGwgc2Vu
-ZCBhIG1haWxib3ggdG8ga2VybmVsIHRvYWQvZGVsDQpNdWx0aWNhc3Qgbm9kZXMuIEJ1dCBJIGdv
-dCB5b3VyIHBvaW50IGFuZCB0aGVyZSBpcyBpbmRlZWQgY2hhbmNlcyBvZiByYWNlLiBMZXQgbWUg
-dGhpbmsgdGhyb3VnaCBpdCBhbmQgcHVzaCBhIGZpeC4gU28sIHdoYXQgcHJvY2VzcyBzaG91bGQg
-YmUgZm9sbG93ZWQgaGVyZT8gQXJlIHlvdSBnb2luZyB0byByZXZlcnQgdGhlIGNoYW5nZT8gT3Ig
-SSBjYW4gcHVzaCBhIHNlcGFyYXRlIGZpeCBvbiBuZXQgdHJlZT8NCg0K
+On Wed, Dec 6, 2023 at 5:08=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> Em Wed, Jun 14, 2023 at 05:08:21PM +0530, Ayush Jain escreveu:
+> > On 6/14/2023 2:37 PM, Sandipan Das wrote:
+> > > There are cases where a metric uses more events than the number of
+> > > counters. E.g. AMD Zen, Zen 2 and Zen 3 processors have four data fab=
+ric
+> > > counters but the "nps1_die_to_dram" metric has eight events. By defau=
+lt,
+> > > the constituent events are placed in a group. Since the events cannot=
+ be
+> > > scheduled at the same time, the metric is not computed. The all metri=
+cs
+> > > test also fails because of this.
+>
+> Humm, I'm not being able to reproduce here the problem, before applying
+> this patch:
+>
+> [root@five ~]# grep -m1 "model name" /proc/cpuinfo
+> model name      : AMD Ryzen 9 5950X 16-Core Processor
+> [root@five ~]# perf test -vvv "perf all metrics test"
+> 104: perf all metrics test                                           :
+> --- start ---
+> test child forked, pid 1379713
+> Testing branch_misprediction_ratio
+> Testing all_remote_links_outbound
+> Testing nps1_die_to_dram
+> Testing macro_ops_dispatched
+> Testing all_l2_cache_accesses
+> Testing all_l2_cache_hits
+> Testing all_l2_cache_misses
+> Testing ic_fetch_miss_ratio
+> Testing l2_cache_accesses_from_l2_hwpf
+> Testing l2_cache_misses_from_l2_hwpf
+> Testing op_cache_fetch_miss_ratio
+> Testing l3_read_miss_latency
+> Testing l1_itlb_misses
+> test child finished with 0
+> ---- end ----
+> perf all metrics test: Ok
+> [root@five ~]#
+
+Please don't apply the patch. The patch masks a bug in metrics/PMUs
+and the proper fix was:
+8d40f74ebf21 perf vendor events amd: Fix large metrics
+https://lore.kernel.org/r/20230706063440.54189-1-sandipan.das@amd.com
+
+> [root@five ~]# perf stat -M nps1_die_to_dram -a sleep 2
+>
+>  Performance counter stats for 'system wide':
+>
+>                  0      dram_channel_data_controller_4   #  10885.3 MiB  =
+nps1_die_to_dram       (49.96%)
+>         31,334,338      dram_channel_data_controller_1                   =
+                       (50.01%)
+>                  0      dram_channel_data_controller_6                   =
+                       (50.04%)
+>         54,679,601      dram_channel_data_controller_3                   =
+                       (50.04%)
+>         38,420,402      dram_channel_data_controller_0                   =
+                       (50.04%)
+>                  0      dram_channel_data_controller_5                   =
+                       (49.99%)
+>         54,012,661      dram_channel_data_controller_2                   =
+                       (49.96%)
+>                  0      dram_channel_data_controller_7                   =
+                       (49.96%)
+>
+>        2.001465439 seconds time elapsed
+>
+> [root@five ~]#
+>
+> [root@five ~]# perf stat -v -M nps1_die_to_dram -a sleep 2
+> Using CPUID AuthenticAMD-25-21-0
+> metric expr dram_channel_data_controller_0 + dram_channel_data_controller=
+_1 + dram_channel_data_controller_2 + dram_channel_data_controller_3 + dram=
+_channel_data_controller_4 + dram_channel_data_controller_5 + dram_channel_=
+data_controller_6 + dram_channel_data_controller_7 for nps1_die_to_dram
+> found event dram_channel_data_controller_4
+> found event dram_channel_data_controller_1
+> found event dram_channel_data_controller_6
+> found event dram_channel_data_controller_3
+> found event dram_channel_data_controller_0
+> found event dram_channel_data_controller_5
+> found event dram_channel_data_controller_2
+> found event dram_channel_data_controller_7
+> Parsing metric events 'dram_channel_data_controller_4/metric-id=3Ddram_ch=
+annel_data_controller_4/,dram_channel_data_controller_1/metric-id=3Ddram_ch=
+annel_data_controller_1/,dram_channel_data_controller_6/metric-id=3Ddram_ch=
+annel_data_controller_6/,dram_channel_data_controller_3/metric-id=3Ddram_ch=
+annel_data_controller_3/,dram_channel_data_controller_0/metric-id=3Ddram_ch=
+annel_data_controller_0/,dram_channel_data_controller_5/metric-id=3Ddram_ch=
+annel_data_controller_5/,dram_channel_data_controller_2/metric-id=3Ddram_ch=
+annel_data_controller_2/,dram_channel_data_controller_7/metric-id=3Ddram_ch=
+annel_data_controller_7/'
+> dram_channel_data_controller_4 -> amd_df/metric-id=3Ddram_channel_data_co=
+ntroller_4,dram_channel_data_controller_4/
+> dram_channel_data_controller_1 -> amd_df/metric-id=3Ddram_channel_data_co=
+ntroller_1,dram_channel_data_controller_1/
+> Multiple errors dropping message: Cannot find PMU `dram_channel_data_cont=
+roller_1'. Missing kernel support? (<no help>)
+> dram_channel_data_controller_6 -> amd_df/metric-id=3Ddram_channel_data_co=
+ntroller_6,dram_channel_data_controller_6/
+> Multiple errors dropping message: Cannot find PMU `dram_channel_data_cont=
+roller_6'. Missing kernel support? (<no help>)
+> dram_channel_data_controller_3 -> amd_df/metric-id=3Ddram_channel_data_co=
+ntroller_3,dram_channel_data_controller_3/
+> Multiple errors dropping message: Cannot find PMU `dram_channel_data_cont=
+roller_3'. Missing kernel support? (<no help>)
+> dram_channel_data_controller_0 -> amd_df/metric-id=3Ddram_channel_data_co=
+ntroller_0,dram_channel_data_controller_0/
+> Multiple errors dropping message: Cannot find PMU `dram_channel_data_cont=
+roller_0'. Missing kernel support? (<no help>)
+> dram_channel_data_controller_5 -> amd_df/metric-id=3Ddram_channel_data_co=
+ntroller_5,dram_channel_data_controller_5/
+> Multiple errors dropping message: Cannot find PMU `dram_channel_data_cont=
+roller_5'. Missing kernel support? (<no help>)
+> dram_channel_data_controller_2 -> amd_df/metric-id=3Ddram_channel_data_co=
+ntroller_2,dram_channel_data_controller_2/
+> Multiple errors dropping message: Cannot find PMU `dram_channel_data_cont=
+roller_2'. Missing kernel support? (<no help>)
+> dram_channel_data_controller_7 -> amd_df/metric-id=3Ddram_channel_data_co=
+ntroller_7,dram_channel_data_controller_7/
+> Matched metric-id dram_channel_data_controller_4 to dram_channel_data_con=
+troller_4
+> Matched metric-id dram_channel_data_controller_1 to dram_channel_data_con=
+troller_1
+> Matched metric-id dram_channel_data_controller_6 to dram_channel_data_con=
+troller_6
+> Matched metric-id dram_channel_data_controller_3 to dram_channel_data_con=
+troller_3
+> Matched metric-id dram_channel_data_controller_0 to dram_channel_data_con=
+troller_0
+> Matched metric-id dram_channel_data_controller_5 to dram_channel_data_con=
+troller_5
+> Matched metric-id dram_channel_data_controller_2 to dram_channel_data_con=
+troller_2
+> Matched metric-id dram_channel_data_controller_7 to dram_channel_data_con=
+troller_7
+> Control descriptor is not initialized
+> dram_channel_data_controller_4: 0 2001175127 999996394
+> dram_channel_data_controller_1: 32346663 2001169897 1000709803
+> dram_channel_data_controller_6: 0 2001168377 1001193443
+> dram_channel_data_controller_3: 47551247 2001166947 1001198122
+> dram_channel_data_controller_0: 38975242 2001165217 1001182923
+> dram_channel_data_controller_5: 0 2001163067 1000464054
+> dram_channel_data_controller_2: 49934162 2001160907 999974934
+> dram_channel_data_controller_7: 0 2001150317 999968825
+>
+>  Performance counter stats for 'system wide':
+>
+>                  0      dram_channel_data_controller_4   #  10297.2 MiB  =
+nps1_die_to_dram       (49.97%)
+>         32,346,663      dram_channel_data_controller_1                   =
+                       (50.01%)
+>                  0      dram_channel_data_controller_6                   =
+                       (50.03%)
+>         47,551,247      dram_channel_data_controller_3                   =
+                       (50.03%)
+>         38,975,242      dram_channel_data_controller_0                   =
+                       (50.03%)
+>                  0      dram_channel_data_controller_5                   =
+                       (49.99%)
+>         49,934,162      dram_channel_data_controller_2                   =
+                       (49.97%)
+>                  0      dram_channel_data_controller_7                   =
+                       (49.97%)
+>
+>        2.001196512 seconds time elapsed
+>
+> [root@five ~]#
+>
+> What am I missing?
+>
+> Ian, I also stumbled on this:
+>
+> [root@five ~]# perf stat -M dram_channel_data_controller_4
+> Cannot find metric or group `dram_channel_data_controller_4'
+> ^C
+>  Performance counter stats for 'system wide':
+>
+>         284,908.91 msec cpu-clock                        #   32.002 CPUs =
+utilized
+>          6,485,456      context-switches                 #   22.763 K/sec
+>                719      cpu-migrations                   #    2.524 /sec
+>             32,800      page-faults                      #  115.125 /sec
+>    189,779,273,552      cycles                           #    0.666 GHz  =
+                       (83.33%)
+>      2,893,165,259      stalled-cycles-frontend          #    1.52% front=
+end cycles idle        (83.33%)
+>     24,807,157,349      stalled-cycles-backend           #   13.07% backe=
+nd cycles idle         (83.33%)
+>     99,286,488,807      instructions                     #    0.52  insn =
+per cycle
+>                                                   #    0.25  stalled cycl=
+es per insn     (83.33%)
+>     24,120,737,678      branches                         #   84.661 M/sec=
+                       (83.33%)
+>      1,907,540,278      branch-misses                    #    7.91% of al=
+l branches             (83.34%)
+>
+>        8.902784776 seconds time elapsed
+>
+>
+> [root@five ~]#
+> [root@five ~]# perf stat -e dram_channel_data_controller_4
+> ^C
+>  Performance counter stats for 'system wide':
+>
+>                  0      dram_channel_data_controller_4
+>
+>        1.189638741 seconds time elapsed
+>
+>
+> [root@five ~]#
+>
+> I.e. -M should bail out at that point (Cannot find metric or group `dram_=
+channel_data_controller_4'), no?
+
+We could. I suspect the code has always just not bailed out. I'll put
+together a patch adding the bail out.
+
+Thanks,
+Ian
+
+> - Arnaldo
+>
+> > > Before announcing failure, the test can try multiple options for each
+> > > available metric. After system-wide mode fails, retry once again with
+> > > the "--metric-no-group" option.
+> > >
+> > > E.g.
+> > >
+> > >    $ sudo perf test -v 100
+> > >
+> > > Before:
+> > >
+> > >    100: perf all metrics test                                        =
+   :
+> > >    --- start ---
+> > >    test child forked, pid 672731
+> > >    Testing branch_misprediction_ratio
+> > >    Testing all_remote_links_outbound
+> > >    Testing nps1_die_to_dram
+> > >    Metric 'nps1_die_to_dram' not printed in:
+> > >    Error:
+> > >    Invalid event (dram_channel_data_controller_4) in per-thread mode,=
+ enable system wide with '-a'.
+> > >    Testing macro_ops_dispatched
+> > >    Testing all_l2_cache_accesses
+> > >    Testing all_l2_cache_hits
+> > >    Testing all_l2_cache_misses
+> > >    Testing ic_fetch_miss_ratio
+> > >    Testing l2_cache_accesses_from_l2_hwpf
+> > >    Testing l2_cache_misses_from_l2_hwpf
+> > >    Testing op_cache_fetch_miss_ratio
+> > >    Testing l3_read_miss_latency
+> > >    Testing l1_itlb_misses
+> > >    test child finished with -1
+> > >    ---- end ----
+> > >    perf all metrics test: FAILED!
+> > >
+> > > After:
+> > >
+> > >    100: perf all metrics test                                        =
+   :
+> > >    --- start ---
+> > >    test child forked, pid 672887
+> > >    Testing branch_misprediction_ratio
+> > >    Testing all_remote_links_outbound
+> > >    Testing nps1_die_to_dram
+> > >    Testing macro_ops_dispatched
+> > >    Testing all_l2_cache_accesses
+> > >    Testing all_l2_cache_hits
+> > >    Testing all_l2_cache_misses
+> > >    Testing ic_fetch_miss_ratio
+> > >    Testing l2_cache_accesses_from_l2_hwpf
+> > >    Testing l2_cache_misses_from_l2_hwpf
+> > >    Testing op_cache_fetch_miss_ratio
+> > >    Testing l3_read_miss_latency
+> > >    Testing l1_itlb_misses
+> > >    test child finished with 0
+> > >    ---- end ----
+> > >    perf all metrics test: Ok
+> > >
+> >
+> > Issue gets resolved after applying this patch
+> >
+> >   $ ./perf test 102 -vvv
+> >   $102: perf all metrics test                                          =
+ :
+> >   $--- start ---
+> >   $test child forked, pid 244991
+> >   $Testing branch_misprediction_ratio
+> >   $Testing all_remote_links_outbound
+> >   $Testing nps1_die_to_dram
+> >   $Testing all_l2_cache_accesses
+> >   $Testing all_l2_cache_hits
+> >   $Testing all_l2_cache_misses
+> >   $Testing ic_fetch_miss_ratio
+> >   $Testing l2_cache_accesses_from_l2_hwpf
+> >   $Testing l2_cache_misses_from_l2_hwpf
+> >   $Testing l3_read_miss_latency
+> >   $Testing l1_itlb_misses
+> >   $test child finished with 0
+> >   $---- end ----
+> >   $perf all metrics test: Ok
+> >
+> > > Reported-by: Ayush Jain <ayush.jain3@amd.com>
+> > > Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+> >
+> > Tested-by: Ayush Jain <ayush.jain3@amd.com>
+> >
+> > > ---
+> > >   tools/perf/tests/shell/stat_all_metrics.sh | 7 +++++++
+> > >   1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/tools/perf/tests/shell/stat_all_metrics.sh b/tools/perf/=
+tests/shell/stat_all_metrics.sh
+> > > index 54774525e18a..1e88ea8c5677 100755
+> > > --- a/tools/perf/tests/shell/stat_all_metrics.sh
+> > > +++ b/tools/perf/tests/shell/stat_all_metrics.sh
+> > > @@ -16,6 +16,13 @@ for m in $(perf list --raw-dump metrics); do
+> > >     then
+> > >       continue
+> > >     fi
+> > > +  # Failed again, possibly there are not enough counters so retry sy=
+stem wide
+> > > +  # mode but without event grouping.
+> > > +  result=3D$(perf stat -M "$m" --metric-no-group -a sleep 0.01 2>&1)
+> > > +  if [[ "$result" =3D~ ${m:0:50} ]]
+> > > +  then
+> > > +    continue
+> > > +  fi
+> > >     # Failed again, possibly the workload was too small so retry with=
+ something
+> > >     # longer.
+> > >     result=3D$(perf stat -M "$m" perf bench internals synthesize 2>&1=
+)
+> >
+> > Thanks & Regards,
+> > Ayush Jain
+>
+> --
+>
+> - Arnaldo
