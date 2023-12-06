@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C938078D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39F88078D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442796AbjLFTra convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 14:47:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
+        id S1442805AbjLFTrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:47:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379391AbjLFTr2 (ORCPT
+        with ESMTP id S1379274AbjLFTrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:47:28 -0500
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED5D122;
-        Wed,  6 Dec 2023 11:47:32 -0800 (PST)
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1fb2b83986cso34897fac.0;
-        Wed, 06 Dec 2023 11:47:32 -0800 (PST)
+        Wed, 6 Dec 2023 14:47:40 -0500
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EADB3D46;
+        Wed,  6 Dec 2023 11:47:45 -0800 (PST)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4b313cda01cso54708e0c.0;
+        Wed, 06 Dec 2023 11:47:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701892065; x=1702496865; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=V3Uq7Eb3LQAhmgOwGxl2uUmTACv20Da6IjMtrl5hh2k=;
+        b=Tg4mUD4Uduc4OenqQ/cF1Fwxb2AawTvkTDuOkJ9NOr30g8gFTWSgHFEzrvn9OTEJso
+         k6uKZLU6Ny0oxt14j+VYVNLJo6crcBPgrEWAzYHV76yDLrTlz2b3kRK5bUIbIsaWFIfg
+         mugfPS970KNHKcabe8uGcEA1w772jUnpmLIGYhecZmdDrsep8v3j6nK2LLkW1f4X2vUw
+         Kxwqvf4i2Iluy0CByuwFurAE2Gm6IzcDc4Ax4+vKeiJXR3J6iLgF873xJuhO9xkEOzsa
+         Dw59SXI5nYYnXuaMhxCbhHfEhWNWnwgzNbHEfzbVrrS+p+knRwqJYXz58JIAAy/a/EoN
+         r5cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701892052; x=1702496852;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Eye1pIVAzvd8vmh6Sf9HoBroJHBM9TBK6FZNnnZG10=;
-        b=gaWEWd0w8/eDrKR4JQtRo8HKUbpPb+8W4YcS7t+8JjwTOoL+gkq3+L1H3sZk/Cl690
-         TrURp9laYUua5tBqsDrv/vMNCQ0JalgX7Hq+4XgjuhBcZRxFII/5LyVgBz904SUYbzWO
-         q5FyzB4Z6TN6wesZxzt+LqEM7dajL8a8lweL9oPD9ydvLE81rTklmIzC3hncbr+ltK8C
-         3sY3eK3vvB03SMWsFgqn7BoszpZ/nd7vzBkDeXN+W8oO4a7W+hd+/7D5x7YqC9R9/yMm
-         Y0g+L/XqPHePSfZx5DyNYfp7KtLheLoQqCOXDICC0YsWevu4VWdxaWvpKmfRJSZimXnj
-         N4hQ==
-X-Gm-Message-State: AOJu0YzC7T8rIu/9Zby0w0L2z8U2XYHB9ust3YFN9FNp9N40x9w+flb7
-        dUNZBHLgUhU/EkqIOpWv2wXkivRDiBJ10D/5GRY=
-X-Google-Smtp-Source: AGHT+IHo/L1CPdCP43tGzl06TrRk3U5YvZ+Z9eWKpqVkyvdNdAOdh9PH9K46tvxbm2gvrJFY/cDjEP/aDJy2zTpMhx0=
-X-Received: by 2002:a05:6871:5d1:b0:1fb:30b8:bb5c with SMTP id
- v17-20020a05687105d100b001fb30b8bb5cmr2696263oan.3.1701892051808; Wed, 06 Dec
- 2023 11:47:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701892065; x=1702496865;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V3Uq7Eb3LQAhmgOwGxl2uUmTACv20Da6IjMtrl5hh2k=;
+        b=HYpK6pPeSNXcS/JZX+O4L9gxbO1InWuO9Aylht+IDp/WbPZxr/CBqJcZgxRjgJPs1E
+         EWsjRZVvIavhyjIfFQeIt+ClXE2UliOv0XcuBMSMJpXIFushmMSSZaUdsPRKkv3ZDQmF
+         qOds686zDDr/FSH2U1wI6l6AGH1kcktv6b3bSG8brx5DkJ6hP4NAp8KcnwtPvS6CvUNO
+         E30z9ebe5HTD3zw4WYwZg2k0Mv2ldYqNkL0Hm7XCt2obn8brotJiu41rdK7H5cmbctfU
+         e+zMxaEn10vG/eAiXHfVHkHmvCHrMTbGGtaZkZ22RTlSM0bEgTA5FTzf5PV1ruOk1164
+         C+Pg==
+X-Gm-Message-State: AOJu0Yzogesvm+M3NXTLbRfpkl1Mbci8ggVK5ZG93kMZ2FeC7fl9vmoJ
+        iafRGEL/TtbR3/FSGHH0yYiDs0Q+c/X8tMeYsw0tNbokSIE=
+X-Google-Smtp-Source: AGHT+IHYl1yzcNVSMG13aCy+iy0WYAPTgpbzn6h590/aczcT1C5kVNrn6NnMKuR9NVMHNIVY9l96rBQikhUQLjE3ruQ=
+X-Received: by 2002:a05:6102:5106:b0:464:8ba6:2a62 with SMTP id
+ bm6-20020a056102510600b004648ba62a62mr1631158vsb.28.1701892064936; Wed, 06
+ Dec 2023 11:47:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20231120114143.95305-1-ytcoode@gmail.com> <CAJZ5v0ijJeOLJo=ooru9raj0n=iiGybFCud42Z+EEtncgNk47A@mail.gmail.com>
- <575e4395-dfe1-4399-9706-cc02f56d7ebe@intel.com>
-In-Reply-To: <575e4395-dfe1-4399-9706-cc02f56d7ebe@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 20:47:20 +0100
-Message-ID: <CAJZ5v0gRbPBij961wTgCzVZL3ie6ru4niQzYip8a9p64BaSKjQ@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: Correct and clean up the logic of acpi_parse_entries_array()
-To:     Dave Jiang <dave.jiang@intel.com>, Yuntao Wang <ytcoode@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231130194023.4102148-1-nphamcs@gmail.com> <20231130194023.4102148-7-nphamcs@gmail.com>
+ <ed2792de-24cc-4037-9ee1-966cc07df57a@linux.dev> <CAJD7tkbiWqXs1PEZjMHO0gj5uSaaB-KNUNCiUz25MuPvzeb=wg@mail.gmail.com>
+ <CAKEwX=M8YThH8qOdHt5TV1E4PCiw2FSv7815O3fhqXNVMt5ezg@mail.gmail.com>
+In-Reply-To: <CAKEwX=M8YThH8qOdHt5TV1E4PCiw2FSv7815O3fhqXNVMt5ezg@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Wed, 6 Dec 2023 11:47:33 -0800
+Message-ID: <CAKEwX=OkZsPiv-A3Rg7Wh2TKcf0aKd-1Yi9wRyEzJK6o9=zXQA@mail.gmail.com>
+Subject: Re: [PATCH v8 6/6] zswap: shrinks zswap pool based on memory pressure
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Chengming Zhou <chengming.zhou@linux.dev>,
+        akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, sjenning@redhat.com,
+        ddstreet@ieee.org, vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 6:02 PM Dave Jiang <dave.jiang@intel.com> wrote:
+[...]
 >
+> Hmm so how should we proceed from here? How about this:
 >
+> a) I can send a fixlet to move the enablement check above the stats
+> flushing + use mem_cgroup_flush_stats
+> b) Then maybe, you can send a fixlet to update this new callsite?
 >
-> On 12/6/23 09:42, Rafael J. Wysocki wrote:
-> > On Mon, Nov 20, 2023 at 12:42 PM Yuntao Wang <ytcoode@gmail.com> wrote:
-> >>
-> >> The original intention of acpi_parse_entries_array() is to return the
-> >> number of all matching entries on success. This number may be greater than
-> >> the value of the max_entries parameter. When this happens, the function
-> >> will output a warning message, indicating that `count - max_entries`
-> >> matching entries remain unprocessed and have been ignored.
-> >>
-> >> However, commit 4ceacd02f5a1 ("ACPI / table: Always count matched and
-> >> successfully parsed entries") changed this logic to return the number of
-> >> entries successfully processed by the handler. In this case, when the
-> >> max_entries parameter is not zero, the number of entries successfully
-> >> processed can never be greater than the value of max_entries. In other
-> >> words, the expression `count > max_entries` will always evaluate to false.
-> >> This means that the logic in the final if statement will never be executed.
-> >>
-> >> Commit 99b0efd7c886 ("ACPI / tables: do not report the number of entries
-> >> ignored by acpi_parse_entries()") mentioned this issue, but it tried to fix
-> >> it by removing part of the warning message. This is meaningless because the
-> >> pr_warn statement will never be executed in the first place.
-> >>
-> >> Commit 8726d4f44150 ("ACPI / tables: fix acpi_parse_entries_array() so it
-> >> traverses all subtables") introduced an errs variable, which is intended to
-> >> make acpi_parse_entries_array() always traverse all of the subtables,
-> >> calling as many of the callbacks as possible. However, it seems that the
-> >> commit does not achieve this goal. For example, when a handler returns an
-> >> error, none of the handlers will be called again in the subsequent
-> >> iterations. This result appears to be no different from before the change.
-> >>
-> >> This patch corrects and cleans up the logic of acpi_parse_entries_array(),
-> >> making it return the number of all matching entries, rather than the number
-> >> of entries successfully processed by handlers. Additionally, if an error
-> >> occurs when executing a handler, the function will return -EINVAL immediately.
-> >>
-> >> This patch should not affect existing users of acpi_parse_entries_array().
-> >>
-> >> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> >
-> > This needs to be ACKed by Dave Jiang or Dan Williams.
->
-> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> Does that sound reasonable?
 
-Applied as 6.8 material, thanks!
+I just sent out the fixlet. Yosry and Chengming, let me know if that
+looks good. Thank you both for detecting this issue and proposing the
+fix!
