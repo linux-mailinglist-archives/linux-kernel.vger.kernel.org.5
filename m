@@ -2,153 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F039D806BB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2484806BBD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:18:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377636AbjLFKRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:17:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
+        id S1377632AbjLFKSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377549AbjLFKRR (ORCPT
+        with ESMTP id S1377549AbjLFKSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:17:17 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA77112
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:17:22 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40c18e9d7c0so5896175e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:17:22 -0800 (PST)
+        Wed, 6 Dec 2023 05:18:39 -0500
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DD98F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:18:45 -0800 (PST)
+Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-46495e57cdeso578913137.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:18:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701857841; x=1702462641; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sWyvgy1TdeV0DVsJPDLWkrf/rSqR8TtA4Yp6VgZDT/o=;
-        b=pgtAuoOGYSFQ3w8DrLk3BdFdQFj2vxo+kPvQ/7LCqj3gQps19zTjobg+e5nmC0B+DI
-         kydQbqaQmKq7ORqt20u4JiIKg2BYYP+Yf+eQsfAORXwxJ/tYvRYqGX1gKJPjHNeelMDI
-         XtBFZqThNDiBOMrfkNMkZ+N3wdCqtXGaDN7vopqxq4LiD1PpQrS9VyjU+LDkXfsyQdVy
-         pvJ+KJzXiCynA+UfIEBINoqbmJ81QqNvM20+uSPTdLiaKtXU1IiE7WCFIGcb9FkjpATy
-         uzFcIoOJaoP2atBpDnVIF/8G2Fm0TjgHApdvEb6jc8W+L1n+Q61dapNb5zyiPKu1uJLI
-         jRfw==
+        d=gmail.com; s=20230601; t=1701857925; x=1702462725; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PB5sZ5MSZmZsnlatsjzNG0ijjFc2lOy26kZJCTP898Q=;
+        b=RZGcPZqXMA0agsSEY6/QfvG6mKWhOvS/+WAb0TiZJb8urUGJYVq8nnDRaDetc6kfBe
+         iOWp26tO2gqJmZXBGFRwdMxmtEJTVLS/FgzyceOhuUYSx/C/EN4EufnwzQ85d0IQOt9H
+         uvU4sch2u36DP8SxzZUuMIZwPqlowIkDFciWFQyRdeupUyh1CdAT3oJHy4s+J7YdE7/o
+         8IIVclnUVFkV0yNFRhT4+8Q2Aje485zdVPXf5MNv4sG2gCK/HRTRgYtero3JyGnnrjTv
+         98DQR9BpejKCVI4FlTvgNCNk1oQXPLeGQ80cKATZ5WDMEcdqAVWjRU/D0vvIFcYm2oMH
+         tC1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701857841; x=1702462641;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sWyvgy1TdeV0DVsJPDLWkrf/rSqR8TtA4Yp6VgZDT/o=;
-        b=YCxdxq/Eo+QpHFb+mdnh/ZuAUcwUv7EjidRS1D8AwRP4YqBx3t1X9Q5aPJhW0uP8lb
-         XhCbtR9XAfd3pgzgqBD3r5RxzgRe7w9lNBU6wbGa4LWydF5KMl1UrU/48Q/7IYYojvUc
-         8dD9MRQAy9qVKXtl4loyCnq9yuo8M+NIzjw9ZOIZ19WPvAAWOOdMjygUTk13WmodrRXq
-         zeEc9Rs3G5iP1Sz6sRGD/0ueAp50QJyjvLADzt8pPIebUjGPCzevqY/uloNLrcmRNAIV
-         IDRMV7SVi3z3U2wKv7h6osZ3osPoAsxgjlmuIMWM9QPG7z3s57EzLNn9xaQ8M7Y0c0/K
-         OMLQ==
-X-Gm-Message-State: AOJu0YwUqeM/gGgit0gRMf5Bfp5CXFx40fM0yLzgu5Krl4RVSrhBYwJl
-        tpgQuD2xFmN0X9C7UlG+O/XOEw==
-X-Google-Smtp-Source: AGHT+IFawGY6+6fHO+cR5L8Hk60iACl/6NxfFmP6jJ5BxTvXxAhyf6JKbdqwB4Q2ogxjgUL7IUWBNQ==
-X-Received: by 2002:a05:600c:20e:b0:40c:18d5:2198 with SMTP id 14-20020a05600c020e00b0040c18d52198mr410632wmi.149.1701857841287;
-        Wed, 06 Dec 2023 02:17:21 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id r20-20020a05600c35d400b0040c05c768afsm14204160wmq.9.2023.12.06.02.17.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 02:17:20 -0800 (PST)
-Message-ID: <c006dd3a-07a2-4d14-899b-72373540ad37@linaro.org>
-Date:   Wed, 6 Dec 2023 11:17:19 +0100
+        d=1e100.net; s=20230601; t=1701857925; x=1702462725;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PB5sZ5MSZmZsnlatsjzNG0ijjFc2lOy26kZJCTP898Q=;
+        b=s8QDwFBuQ3Q1V0C3rKA6ws26dL9NkZueO1elg8judCqNYxJYaxYvb5/KNlB2sIQ+AE
+         lH9JvH1T2XB2Q7g1bpPxvtdhfDneEUK7VbNpGreQrjGhgdATcQbivU4zyygOwQKss3A3
+         Z7exspeIuxHDqnT6RzkQIFPWKswHoQ8sYcTbqzjxFFlDolmfOmM8f+8Wjyes9p2NKwyH
+         N/5/IgAWXpgFQvHAy6duXLh076jNqQV5S8GoaCynThJNCpGFePXJNyfEVtKSFCbanW5l
+         pPFfqaRPgnKRCqEswRs9LsHBKsOqa/T4MFZ7rtt4NCdMdisk+GEvaGGS/PyHAzsfT0o7
+         cT+Q==
+X-Gm-Message-State: AOJu0YxE/63sUga4Ga4lb8wB6MoqFm7T2GUFRUTWno7fTK4YSOlCw8Ua
+        O5w4qOkIDBXpxcROxV661DnLOB3ga2Bq/yioNMM=
+X-Google-Smtp-Source: AGHT+IFh+MMuiWe4LiMzv/KJTqc5ICpDaA5Y7AOzgAcrrvz+FZPl+kGnCbxOkUR4ACPrCPbILgIpjx0Mmm/ihmaWg+I=
+X-Received: by 2002:a05:6102:7b8:b0:464:95d9:8d39 with SMTP id
+ x24-20020a05610207b800b0046495d98d39mr170221vsg.27.1701857924667; Wed, 06 Dec
+ 2023 02:18:44 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: rng: starfive: Add jh8100 compatible
- string
-Content-Language: en-US
-To:     Jia Jie Ho <jiajie.ho@starfivetech.com>,
-        Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231206014236.1109832-1-jiajie.ho@starfivetech.com>
- <20231206014236.1109832-2-jiajie.ho@starfivetech.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231206014236.1109832-2-jiajie.ho@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231129104530.63787-1-v-songbaohua@oppo.com> <079610c2-04ed-4495-8eb7-518b04f911f7@linux.alibaba.com>
+In-Reply-To: <079610c2-04ed-4495-8eb7-518b04f911f7@linux.alibaba.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 6 Dec 2023 23:18:32 +1300
+Message-ID: <CAGsJ_4y4Me8=sgujeg6zSz2c_LmnSEg=Z+Q1C7_Wug=k0bGaug@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: compaction: avoid fast_isolate_freepages blindly
+ choose improper pageblock
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, david@redhat.com,
+        shikemeng@huaweicloud.com, willy@infradead.org,
+        mgorman@techsingularity.net, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
+        Zhanyuan Hu <huzhanyuan@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 02:42, Jia Jie Ho wrote:
-> Add compatible string for StarFive JH8100 trng.
-> 
-> Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
-> ---
->  .../devicetree/bindings/rng/starfive,jh7110-trng.yaml         | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/rng/starfive,jh7110-trng.yaml b/Documentation/devicetree/bindings/rng/starfive,jh7110-trng.yaml
-> index 2b76ce25acc4..d275bdc4d009 100644
-> --- a/Documentation/devicetree/bindings/rng/starfive,jh7110-trng.yaml
-> +++ b/Documentation/devicetree/bindings/rng/starfive,jh7110-trng.yaml
-> @@ -11,7 +11,9 @@ maintainers:
->  
->  properties:
->    compatible:
-> -    const: starfive,jh7110-trng
-> +    enum:
-> +      - starfive,jh7110-trng
-> +      - starfive,jh8100-trng
+On Wed, Dec 6, 2023 at 10:54=E2=80=AFPM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+>
+>
+> On 11/29/2023 6:45 PM, Barry Song wrote:
+> > Testing shows fast_isolate_freepages can blindly choose an unsuitable
+> > pageblock from time to time particularly while the min mark is used
+> > from XXX path:
+> >   if (!page) {
+> >           cc->fast_search_fail++;
+> >           if (scan_start) {
+> >                   /*
+> >                    * Use the highest PFN found above min. If one was
+> >                    * not found, be pessimistic for direct compaction
+> >                    * and use the min mark.
+> >                    */
+> >                   if (highest >=3D min_pfn) {
+> >                           page =3D pfn_to_page(highest);
+> >                           cc->free_pfn =3D highest;
+> >                   } else {
+> >                           if (cc->direct_compaction && pfn_valid(min_pf=
+n)) { /* XXX */
+> >                                   page =3D pageblock_pfn_to_page(min_pf=
+n,
+> >                                           min(pageblock_end_pfn(min_pfn=
+),
+> >                                               zone_end_pfn(cc->zone)),
+> >                                           cc->zone);
+> >                                   cc->free_pfn =3D min_pfn;
+> >                           }
+> >                   }
+> >           }
+> >   }
+>
+> Yes, the min_pfn can be an unsuitable migration target. But I think we
+> can just add the suitable_migration_target() validation into 'min_pfn'
+> case? Since other cases must be suitable target which found from
+> MIGRATE_MOVABLE free list. Something like below:
+>
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 01ba298739dd..4e8eb4571909 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1611,6 +1611,8 @@ static void fast_isolate_freepages(struct
+> compact_control *cc)
+>
+> min(pageblock_end_pfn(min_pfn),
+>
+> zone_end_pfn(cc->zone)),
+>                                                  cc->zone);
+> +                                       if
+> (!suitable_migration_target(cc, page))
+> +                                               page =3D NULL;
+>                                          cc->free_pfn =3D min_pfn;
+>                                  }
+>                          }
+>
 
-Your driver change suggests these are compatible, so express this here
-and drop driver change.
+yes. this makes more senses.
 
-Best regards,
-Krzysztof
+> By the way, I wonder if this patch can improve the efficiency of
+> compaction in your test case?
 
+This happens not quite often. when running 25 machines for
+one night, most of them can hit this unexpected code path.
+but the frequency isn't  many times in one second. it might
+be one time in a couple of hours.
+
+so it is very difficult to measure the visible performance impact
+in my machines though the affection of choosing the unsuitable
+migration_target should be negative.
+
+I feel like it's worth fixing this to at least make the code theoretically
+self-explanatory? as it is quite odd unsuitable_migration_target can
+be still migration_target?
+
+>
+> > In contrast, slow path is skipping unsuitable pageblocks in a decent wa=
+y.
+> >
+> > I don't know if it is an intended design or just an oversight. But
+> > it seems more sensible to skip unsuitable pageblock.
+> >
+> > Reported-by: Zhanyuan Hu <huzhanyuan@oppo.com>
+> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> > ---
+> >   mm/compaction.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
+> >
+> > diff --git a/mm/compaction.c b/mm/compaction.c
+> > index 01ba298739dd..98c485a25614 100644
+> > --- a/mm/compaction.c
+> > +++ b/mm/compaction.c
+> > @@ -1625,6 +1625,12 @@ static void fast_isolate_freepages(struct compac=
+t_control *cc)
+> >       cc->total_free_scanned +=3D nr_scanned;
+> >       if (!page)
+> >               return;
+> > +     /*
+> > +      * Otherwise, we can blindly choose an improper pageblock especia=
+lly
+> > +      * while using the min mark
+> > +      */
+> > +     if (!suitable_migration_target(cc, page))
+> > +             return;
+> >
+> >       low_pfn =3D page_to_pfn(page);
+> >       fast_isolate_around(cc, low_pfn);
+
+Thanks
+Barry
