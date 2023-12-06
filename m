@@ -2,58 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA79806F2B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 627DC806F32
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378069AbjLFLxr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 06:53:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S1377857AbjLFLyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:54:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378071AbjLFLx3 (ORCPT
+        with ESMTP id S1377863AbjLFLyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:53:29 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60A49172A;
-        Wed,  6 Dec 2023 03:52:53 -0800 (PST)
-Received: from dggpemm500008.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SlbNX5kmdzWj91;
-        Wed,  6 Dec 2023 19:51:56 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggpemm500008.china.huawei.com (7.185.36.136) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Dec 2023 19:52:51 +0800
-Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
- dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2507.035;
- Wed, 6 Dec 2023 19:52:51 +0800
-From:   "Gonglei (Arei)" <arei.gonglei@huawei.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        wangyangxin <wangyangxin1@huawei.com>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: [PATCH v2] crypto: virtio-crypto: Handle dataq logic  with tasklet
-Thread-Topic: [PATCH v2] crypto: virtio-crypto: Handle dataq logic  with
- tasklet
-Thread-Index: AdooOneOWI65hKIST2yjTeZdqptiyQ==
-Date:   Wed, 6 Dec 2023 11:52:51 +0000
-Message-ID: <ad8c946eb2294a7bb9eef26066c06b72@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.149.11]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 6 Dec 2023 06:54:03 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA301700
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:53:37 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54cde11d0f4so4046850a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:53:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701863616; x=1702468416; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8nauikIQC7YgzkRjGeFoZ+8iTBhi7DuAheS3y1mR8dE=;
+        b=XPFHUqoy2XB1pPsc6ZuGGtH9Hs55urMJufFfMZ+FmQlTKhG4ULAKEF0xQfT57J5y8Q
+         D1CHnrlh1AvoXbxEFEypGLaTSHXrcegK6JSYmFa8RkAM7E4DxFMMoxG0iMYC1FF5qoEn
+         6xMAnnkjMw9XtKMSrjZtaCeqQPev6dnjPqE9Buk5oVvUyJlUoyxkTmqf8jWvAoAc4+RV
+         flnTYtcrdHMqlTrpAQVoWRjvsTs7iDNIqPBFYq3z2rlNFAZS+9lFq66y3BZFQFJJXwdZ
+         zoWPCqeTzDdY1vxR3F2GkI6EEqUk9EmvaayXV9BaV88e/A6qYsIiVfsIL9zDkoaFWvP5
+         TrWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701863616; x=1702468416;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8nauikIQC7YgzkRjGeFoZ+8iTBhi7DuAheS3y1mR8dE=;
+        b=Q1Q6Lkk+PcsRfE/GXBJS4/Fb3YagQ3VqW6avQRdL4YM9XoxXLzTGYQ2raQSXXipTHO
+         QaHZtgHV3kRo+qcZ3okJfsih4Ff35MZr8C6n3U6bsDPG2WGgYGiUgkqDGdVcqlX+fBnr
+         LyoqrYu/4kWADPbFDmIWonJi3JaCXbrVE1qSKoELhJi9y31GPbD2WGwl6moeSZzdLd7w
+         7u7CRgPDDJfxTuDgga4zgQZx3iEHVnfZgeq1VowWWeY2QDn5tHA9FAne35swXYsd8BS1
+         H3n3Wx2J5pAqCVEKY4AluEjnZMSf/hvC4Zvk1eCg5qbaitF19VvpnOtX6Nhn1SHJ5Yw5
+         catw==
+X-Gm-Message-State: AOJu0Yxa1gT1do9CXCdOupuzUo/dRFZOaVnqvaPTqxh2QeH37S1GzMSH
+        YlLSHJEGnD0CzYtYWV8qydCGSg==
+X-Google-Smtp-Source: AGHT+IHa6v0yaCt0cJFUr8Ih/Usy4jigMYT+UvQ5JWdEbTwSd7YSYSp3IjXIZbVXCTVHM9tGyNWWLw==
+X-Received: by 2002:a05:6402:291b:b0:54c:8104:cd20 with SMTP id ee27-20020a056402291b00b0054c8104cd20mr534682edb.19.1701863615861;
+        Wed, 06 Dec 2023 03:53:35 -0800 (PST)
+Received: from krzk-bin.. ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id i13-20020a056402054d00b0054c4fdb42e5sm2337326edx.74.2023.12.06.03.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 03:53:35 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mao Jinlong <quic_jinlmao@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        Tao Zhang <quic_taozha@quicinc.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/3] dt-bindings: arm: coresight: restrict single port subnodes
+Date:   Wed,  6 Dec 2023 12:53:30 +0100
+Message-Id: <20231206115332.22712-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,108 +82,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Doing ipsec produces a spinlock recursion warning.
-This is due to crypto_finalize_request() being called in the upper half.
-Move virtual data queue processing of virtio-crypto driver to tasklet.
+"in-ports" and "out-ports" with single "port" subnode should use
+"additionalProperties: false" to disallow any other properties mentioned
+by graph schema which are not applicable for this case, e.g.
+"address-cells".
 
-Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
-Reported-by: Halil Pasic <pasic@linux.ibm.com>
-Signed-off-by: wangyangxin <wangyangxin1@huawei.com>
-Signed-off-by: Gonglei <arei.gonglei@huawei.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- v2: calling tasklet_kill() in virtcrypto_remove(), thanks for MST.
+ .../devicetree/bindings/arm/arm,coresight-dummy-sink.yaml        | 1 +
+ .../devicetree/bindings/arm/arm,coresight-dummy-source.yaml      | 1 +
+ Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml   | 1 +
+ Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml   | 1 +
+ 4 files changed, 4 insertions(+)
 
- drivers/crypto/virtio/virtio_crypto_common.h |  2 ++
- drivers/crypto/virtio/virtio_crypto_core.c   | 26 ++++++++++++++++----------
- 2 files changed, 18 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/crypto/virtio/virtio_crypto_common.h b/drivers/crypto/virtio/virtio_crypto_common.h
-index 154590e..7059bbe 100644
---- a/drivers/crypto/virtio/virtio_crypto_common.h
-+++ b/drivers/crypto/virtio/virtio_crypto_common.h
-@@ -10,6 +10,7 @@
- #include <linux/virtio.h>
- #include <linux/crypto.h>
- #include <linux/spinlock.h>
-+#include <linux/interrupt.h>
- #include <crypto/aead.h>
- #include <crypto/aes.h>
- #include <crypto/engine.h>
-@@ -28,6 +29,7 @@ struct data_queue {
- 	char name[32];
+diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-dummy-sink.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-dummy-sink.yaml
+index c960c8e0a9a5..61143907bcde 100644
+--- a/Documentation/devicetree/bindings/arm/arm,coresight-dummy-sink.yaml
++++ b/Documentation/devicetree/bindings/arm/arm,coresight-dummy-sink.yaml
+@@ -41,6 +41,7 @@ properties:
  
- 	struct crypto_engine *engine;
-+	struct tasklet_struct done_task;
- };
+   in-ports:
+     $ref: /schemas/graph.yaml#/properties/ports
++    additionalProperties: false
  
- struct virtio_crypto {
-diff --git a/drivers/crypto/virtio/virtio_crypto_core.c b/drivers/crypto/virtio/virtio_crypto_core.c
-index 43a0838..b909c6a 100644
---- a/drivers/crypto/virtio/virtio_crypto_core.c
-+++ b/drivers/crypto/virtio/virtio_crypto_core.c
-@@ -72,27 +72,28 @@ int virtio_crypto_ctrl_vq_request(struct virtio_crypto *vcrypto, struct scatterl
- 	return 0;
- }
+     properties:
+       port:
+diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-dummy-source.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-dummy-source.yaml
+index 6745b4cc8f1c..a71a05c58cc6 100644
+--- a/Documentation/devicetree/bindings/arm/arm,coresight-dummy-source.yaml
++++ b/Documentation/devicetree/bindings/arm/arm,coresight-dummy-source.yaml
+@@ -40,6 +40,7 @@ properties:
  
--static void virtcrypto_dataq_callback(struct virtqueue *vq)
-+static void virtcrypto_done_task(unsigned long data)
- {
--	struct virtio_crypto *vcrypto = vq->vdev->priv;
-+	struct data_queue *data_vq = (struct data_queue *)data;
-+	struct virtqueue *vq = data_vq->vq;
- 	struct virtio_crypto_request *vc_req;
--	unsigned long flags;
- 	unsigned int len;
--	unsigned int qid = vq->index;
+   out-ports:
+     $ref: /schemas/graph.yaml#/properties/ports
++    additionalProperties: false
  
--	spin_lock_irqsave(&vcrypto->data_vq[qid].lock, flags);
- 	do {
- 		virtqueue_disable_cb(vq);
- 		while ((vc_req = virtqueue_get_buf(vq, &len)) != NULL) {
--			spin_unlock_irqrestore(
--				&vcrypto->data_vq[qid].lock, flags);
- 			if (vc_req->alg_cb)
- 				vc_req->alg_cb(vc_req, len);
--			spin_lock_irqsave(
--				&vcrypto->data_vq[qid].lock, flags);
- 		}
- 	} while (!virtqueue_enable_cb(vq));
--	spin_unlock_irqrestore(&vcrypto->data_vq[qid].lock, flags);
-+}
-+
-+static void virtcrypto_dataq_callback(struct virtqueue *vq)
-+{
-+	struct virtio_crypto *vcrypto = vq->vdev->priv;
-+	struct data_queue *dq = &vcrypto->data_vq[vq->index];
-+
-+	tasklet_schedule(&dq->done_task);
- }
+     properties:
+       port:
+diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
+index ea3c5db6b52d..e55f69c2ff38 100644
+--- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
+@@ -76,6 +76,7 @@ properties:
+     description: |
+       Output connections from the TPDA to legacy CoreSight trace bus.
+     $ref: /schemas/graph.yaml#/properties/ports
++    additionalProperties: false
  
- static int virtcrypto_find_vqs(struct virtio_crypto *vi)
-@@ -150,6 +151,8 @@ static int virtcrypto_find_vqs(struct virtio_crypto *vi)
- 			ret = -ENOMEM;
- 			goto err_engine;
- 		}
-+		tasklet_init(&vi->data_vq[i].done_task, virtcrypto_done_task,
-+				(unsigned long)&vi->data_vq[i]);
- 	}
+     properties:
+       port:
+diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
+index 61ddc3b5b247..6984003485e8 100644
+--- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
+@@ -72,6 +72,7 @@ properties:
+     description: |
+       Output connections from the TPDM to coresight funnel/TPDA.
+     $ref: /schemas/graph.yaml#/properties/ports
++    additionalProperties: false
  
- 	kfree(names);
-@@ -497,12 +500,15 @@ static void virtcrypto_free_unused_reqs(struct virtio_crypto *vcrypto)
- static void virtcrypto_remove(struct virtio_device *vdev)
- {
- 	struct virtio_crypto *vcrypto = vdev->priv;
-+	int i;
- 
- 	dev_info(&vdev->dev, "Start virtcrypto_remove.\n");
- 
- 	flush_work(&vcrypto->config_work);
- 	if (virtcrypto_dev_started(vcrypto))
- 		virtcrypto_dev_stop(vcrypto);
-+	for (i = 0; i < vcrypto->max_data_queues; i++)
-+		tasklet_kill(&vcrypto->data_vq[i].done_task);
- 	virtio_reset_device(vdev);
- 	virtcrypto_free_unused_reqs(vcrypto);
- 	virtcrypto_clear_crypto_engines(vcrypto);
+     properties:
+       port:
 -- 
-1.8.3.1
+2.34.1
+
