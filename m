@@ -2,136 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A469A806A3E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6812C806A3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377135AbjLFJAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:00:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        id S1377137AbjLFJA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:00:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbjLFJAD (ORCPT
+        with ESMTP id S230357AbjLFJAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:00:03 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C812221396
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:00:02 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3332e351670so486059f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:00:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701853201; x=1702458001; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JBvPr0PZUw4iL8VewNbXoGCLGjcXLwTfxDXr0QEOcN4=;
-        b=VuZU/dxiuF1u+CJJh+L33p48X/00qPNIxClT58TIjvjdToZbyPWyra+xX93l7Ohg9e
-         iUfHvuZbKev7NxMjHFGZLPQvJc34cMttcsoGl6PGrlllTRZBsCgdh13aEnSG9oapoZHF
-         iirkdClGtiF9NBV3NZL4/0FyOnzOdyMTPnSKyb9vEeVM9pumaH9fvUFhHUyjFnqhF+Hm
-         iGakYh9mLi8hdL2lpiMZQKY5kcZ1NuguCpiTT8dtYWGqA21l3VtISmwhxmuIzzSkVcq9
-         dHpK0OUbo/h/TbtmMkh0kqJBGO/mokGAw8vasMjlOBbX0rkOXroDN3+AkJ44Z27qklpe
-         NRTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701853201; x=1702458001;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JBvPr0PZUw4iL8VewNbXoGCLGjcXLwTfxDXr0QEOcN4=;
-        b=b2tJrq0I6Ub2Fi+fwitUJ5MQXhOY1iMIVKsSgwCmv998MSf5cEO7o+jaGSZpTa+qUp
-         8vN0rHJtcqJPxp9566E3Id7eJSvGG3qUFwRz/TN4mpTurfdwQthSl1HYM5tA8kSURCIH
-         O8rd3t2V9HpJ8MyIedc0QRjOoVs0LUblNF9o1pe7mqPK3ncYBLrLzWHxL+499ALz0QcO
-         fWEQvn76876vtL+vGJPQgg/5F/pHm3rgcFbUa2ENBa2TYzDY2zBnhdyxllXH1tco45f1
-         lTZsnw6gxD6Toqoi8WgY+X33RzeC7iotpu2WWcDCV/0E6FYiQe4U/kJiW1GhVqlebMP8
-         pb7A==
-X-Gm-Message-State: AOJu0Yyun27VzMCbSpkR/oLKpjaQ2GRw2vpuVC1Lg5FP3f2UTMXFiwCe
-        +nUUoqJnxVusoYES+0BftVRmLw==
-X-Google-Smtp-Source: AGHT+IHL02/F68rsAj1m9y5YPgBGNVLtZiIoHgkZPY9K89mPetYsux6h9+XcW2vWd1enK/4XjY+JeQ==
-X-Received: by 2002:a05:600c:600f:b0:40b:5f03:b42d with SMTP id az15-20020a05600c600f00b0040b5f03b42dmr201110wmb.335.1701853201119;
-        Wed, 06 Dec 2023 01:00:01 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id o18-20020a05600c511200b004064e3b94afsm24839147wms.4.2023.12.06.00.59.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 01:00:00 -0800 (PST)
-Message-ID: <957060a5-1d99-4dee-a83d-004622e79262@linaro.org>
-Date:   Wed, 6 Dec 2023 09:59:58 +0100
+        Wed, 6 Dec 2023 04:00:51 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5756C1048D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:00:53 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B29F139F;
+        Wed,  6 Dec 2023 01:01:38 -0800 (PST)
+Received: from e126645.nice.arm.com (e126645.nice.arm.com [10.34.100.101])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 88BD73F762;
+        Wed,  6 Dec 2023 01:00:50 -0800 (PST)
+From:   Pierre Gondois <pierre.gondois@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Qais Yousef <qyousef@layalina.io>,
+        Pierre Gondois <pierre.gondois@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>
+Subject: [PATCH v3] sched/fair: Use all little CPUs for CPU-bound workload
+Date:   Wed,  6 Dec 2023 10:00:43 +0100
+Message-Id: <20231206090043.634697-1-pierre.gondois@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/2] pinctl: qcom: sm4450: Add SM4450 pinctrl driver
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linus.walleij@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
-References: <20231206020840.33228-1-quic_tengfan@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231206020840.33228-1-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 03:08, Tengfei Fan wrote:
-> Add SM4450 pinctrl driver for support enable uart console.
-> 
-> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
-> v5 -> v6:
->   - squash the fixups into the newly added driver
->   - drop reviewed-by due to update patch as new comments
+Running n CPU-bound tasks on an n CPUs platform:
+- with asymmetric CPU capacity
+- not being a DynamIq system (i.e. having a PKG level sched domain
+  without the SD_SHARE_PKG_RESOURCES flag set)
+might result in a task placement where two tasks run on a big CPU
+and none on a little CPU. This placement could be more optimal by
+using all CPUs.
 
-Really? Why? What exactly changed in the patch you dropped my review?
+Testing platform:
+Juno-r2:
+- 2 big CPUs (1-2), maximum capacity of 1024
+- 4 little CPUs (0,3-5), maximum capacity of 383
 
-Best regards,
-Krzysztof
+Testing workload ([1]):
+Spawn 6 CPU-bound tasks. During the first 100ms (step 1), each tasks
+is affine to a CPU, except for:
+- one little CPU which is left idle.
+- one big CPU which has 2 tasks affine.
+After the 100ms (step 2), remove the cpumask affinity.
+
+Before patch:
+During step 2, the load balancer running from the idle CPU tags sched
+domains as:
+- little CPUs: 'group_has_spare'. Cf. group_has_capacity() and
+  group_is_overloaded(), 3 CPU-bound tasks run on a 4 CPUs
+  sched-domain, and the idle CPU provides enough spare capacity
+  regarding the imbalance_pct
+- big CPUs: 'group_overloaded'. Indeed, 3 tasks run on a 2 CPUs
+  sched-domain, so the following path is used:
+  group_is_overloaded()
+  \-if (sgs->sum_nr_running <= sgs->group_weight) return true;
+
+  The following path which would change the migration type to
+  'migrate_task' is not taken:
+  calculate_imbalance()
+  \-if (env->idle != CPU_NOT_IDLE && env->imbalance == 0)
+  as the local group has some spare capacity, so the imbalance
+  is not 0.
+
+The migration type requested is 'migrate_util' and the busiest
+runqueue is the big CPU's runqueue having 2 tasks (each having a
+utilization of 512). The idle little CPU cannot pull one of these
+task as its capacity is too small for the task. The following path
+is used:
+detach_tasks()
+\-case migrate_util:
+  \-if (util > env->imbalance) goto next;
+
+After patch:
+As the number of failed balancing attempts grows (with
+'nr_balance_failed'), progressively make it easier to migrate
+a big task to the idling little CPU. A similar mechanism is
+used for the 'migrate_load' migration type.
+
+Improvement:
+Running the testing workload [1] with the step 2 representing
+a ~10s load for a big CPU:
+Before patch: ~19.3s
+After patch: ~18s (-6.7%)
+
+Similar issue reported at:
+https://lore.kernel.org/lkml/20230716014125.139577-1-qyousef@layalina.io/
+
+v1:
+https://lore.kernel.org/all/20231110125902.2152380-1-pierre.gondois@arm.com/
+v2:
+https://lore.kernel.org/all/20231124153323.3202444-1-pierre.gondois@arm.com/
+
+Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+---
+
+Notes:
+    v2:
+    - Used Vincent's approach.
+    v3:
+    - Updated commit message.
+    - Added Reviewed-by tags
+
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index d7a3c63a2171..9481b8cff31b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9060,7 +9060,7 @@ static int detach_tasks(struct lb_env *env)
+ 		case migrate_util:
+ 			util = task_util_est(p);
+ 
+-			if (util > env->imbalance)
++			if (shr_bound(util, env->sd->nr_balance_failed) > env->imbalance)
+ 				goto next;
+ 
+ 			env->imbalance -= util;
+-- 
+2.25.1
 
