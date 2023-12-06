@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B44C8071DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A54C8071DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378822AbjLFOLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 09:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58936 "EHLO
+        id S1378846AbjLFOLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 09:11:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378713AbjLFOLI (ORCPT
+        with ESMTP id S1378808AbjLFOLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 09:11:08 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7BFD45
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 06:11:14 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50be9e6427dso4889544e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 06:11:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701871873; x=1702476673; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XNzSYcIp8QiaOcjyvcNVi0Ch8I0a7jbAWmfX7Yhtpd0=;
-        b=CZbk6fxU0jY15FaedogZhImHt12+o6NU7wlBOEgAEP4zV4kavjKuPk8R7W4cE+wWY9
-         PfdLsv2dNGu/cMXHzzCsw+kT0VNmTjrrT13XzRptPurskGOVhf3nCIPourUNeanX4uO9
-         G4oYyUw7U5lgh5BRn106IUqrRa7JQQ8FDv0VipM/ubGRiH23c7SSByCYUJKYLMHF3dso
-         Pm6w1icYJ854xKEHXWiRPy/QRFz+0S7BW4Rn+9BB6dHkYrantDgtWmfbmvdxNBhRK68z
-         LF19U6Fm8OfeSS+g49bOHI0RE3swDWzErhmCLgVhPuyTCqE26M4qqFMIRdomPSmNGFIb
-         FvMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701871873; x=1702476673;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XNzSYcIp8QiaOcjyvcNVi0Ch8I0a7jbAWmfX7Yhtpd0=;
-        b=KqAfqKrLMbnlCSNJiNHA3U710I0XS/s+Bsj3Lkbw+O1jaqUaCa5LgTVjM0noSzl14r
-         5XRD0SZBG4yKDHSl8Ai3beP5G49lV/A9tEhrwfyAYbZlbGHOP3je1eej6AiiCaBlDKrr
-         SyhuU9p0ls6of5Bw7pDhouHqPI4mpJy5xafE/XMr886KzDmIbECdbSNCvdWMipEwUJxd
-         UVBX5trbglZkFgLlXiEfi/xPPFBnzXw4vb1IdHcYohZWXHEMSKM+F5LnwAT231C8RVov
-         pHiAGZrjELvciXu7GKhBSXVqMK6bczZ7nOamX8//ocUS/h/RweTcURJOREetSUEIBbqu
-         XUkQ==
-X-Gm-Message-State: AOJu0Yzf6DLYyHmSGTDxMmMSbCnChLAp8q58w/lgucrhMzU0zRcN1c/J
-        Q8z0pfm6jE2kDCuO8nFdtGg=
-X-Google-Smtp-Source: AGHT+IFr8mTzAYUk/xKHbWpYQfDpnWc+Vbj0Hs9YDHLul5k8eoZUKHHTYZrUliaLKJTpZbBsj2McDg==
-X-Received: by 2002:ac2:4839:0:b0:50b:f82e:6d5a with SMTP id 25-20020ac24839000000b0050bf82e6d5amr580036lft.73.1701871872294;
-        Wed, 06 Dec 2023 06:11:12 -0800 (PST)
-Received: from andrea ([31.189.124.152])
-        by smtp.gmail.com with ESMTPSA id j10-20020aa7c0ca000000b0054cea9f91e9sm16557edp.20.2023.12.06.06.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 06:11:11 -0800 (PST)
-Date:   Wed, 6 Dec 2023 15:11:07 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     mathieu.desnoyers@efficios.com, paulmck@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
-Message-ID: <ZXCA+4WyI6D+Somy@andrea>
-References: <ZWe+ljzCUQQVu7oD@andrea>
- <mhng-40f43849-e610-410b-92b5-7571838ce9f5@palmer-ri-x1c9>
+        Wed, 6 Dec 2023 09:11:39 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38B2D4D;
+        Wed,  6 Dec 2023 06:11:42 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 2B5FD8118;
+        Wed,  6 Dec 2023 22:11:34 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 22:11:34 +0800
+Received: from [192.168.1.115] (180.164.60.184) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 22:11:33 +0800
+Message-ID: <40cdd3c7-174e-4611-9ea6-22cb56d1f62b@starfivetech.com>
+Date:   Wed, 6 Dec 2023 22:11:33 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <mhng-40f43849-e610-410b-92b5-7571838ce9f5@palmer-ri-x1c9>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v3 5/6] drm/vs: Add hdmi driver
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        William Qiu <william.qiu@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>
+References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
+ <20231204123315.28456-6-keith.zhao@starfivetech.com>
+ <esetsiqgqpk35zue4c6aq7l6zn4kezhxkqqa7ompaz2vhdy3lr@4d5awfqgs2ss>
+ <94a1f9fc-82fb-4a04-a44b-f9b20c2bdfdd@starfivetech.com>
+ <abdl6kmighvpwojvafq443q7grn6w3abwpvw7zwbna4jvtsvjf@fa42rv46n2wh>
+From:   Keith Zhao <keith.zhao@starfivetech.com>
+In-Reply-To: <abdl6kmighvpwojvafq443q7grn6w3abwpvw7zwbna4jvtsvjf@fa42rv46n2wh>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I see
+
+
+On 2023/12/6 20:56, Maxime Ripard wrote:
+> On Wed, Dec 06, 2023 at 08:02:55PM +0800, Keith Zhao wrote:
+>> >> +static const struct of_device_id starfive_hdmi_dt_ids[] = {
+>> >> +	{ .compatible = "starfive,jh7110-inno-hdmi",},
+>> > 
+>> > So it's inno hdmi, just like Rockchip then?
+>> > 
+>> > This should be a common driver.
+>>
+>> Rockchip has a inno hdmi IP. and Starfive has a inno hdmi IP.
+>> but the harewawre difference of them is big , it is not easy to use the common driver
+>> maybe i need the inno hdmi version here to make a distinction
 > 
-> $ git grep "config MEMBARRIER" fab957c11efe2f405e08b9f0d080524bc2631428
-> fab957c11efe2f405e08b9f0d080524bc2631428:init/Kconfig:config MEMBARRIER
+> I just had a look at the rockchip header file: all the registers but the
+> STARFIVE_* ones are identical.
 > 
-> so IMO this is just one of those forever bugs.  So I'd lean towards
+> There's no need to have two identical drivers then, please use the
+> rockchip driver instead.
 > 
->    Fixes: fab957c11efe ("RISC-V: Atomic and Locking Code")
+> Maxime
 
-Works for me, will apply in v2.
+ok, have a simple test , edid can get . i will continue 
 
-
-> (or anything in that original patch set).  It's not that big of a backport,
-> so I think it's safe enough?
-
-Indeed, I think so.
-
-The final version of this fix will likely depend on some machinery/code
-introduced by 3ccfebedd8cf54 ("powerpc, membarrier: Skip memory barrier
-in switch_mm()"); but, yes, nothing we can't safely adjust I think.
-
-Thanks,
-  Andrea
