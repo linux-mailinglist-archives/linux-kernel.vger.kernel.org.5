@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 650B9806F79
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF34806F7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377869AbjLFMJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54352 "EHLO
+        id S1377982AbjLFMKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:10:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377832AbjLFMJg (ORCPT
+        with ESMTP id S1377870AbjLFMKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:09:36 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BFCA5;
-        Wed,  6 Dec 2023 04:09:42 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1rAqii-0003FX-Qw; Wed, 06 Dec 2023 13:09:40 +0100
-Message-ID: <a9c14dfd-3269-4758-9174-4710bef07088@leemhuis.info>
-Date:   Wed, 6 Dec 2023 13:09:40 +0100
+        Wed, 6 Dec 2023 07:10:04 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9671BD;
+        Wed,  6 Dec 2023 04:10:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=leiOy4pfs2M7Gc5q5SIIOyBYtiFRTNEgwnrs/Ad5pAc=; b=yqoCcLppPJTBsAE3D8LSk+hlFa
+        XTvoZx7fDjty1f96GFi7c/aSmmdqS+CIZrp0j2gds1FCZnpK69YVk6Tptc/0HF1rWFrK/6S8LCmRE
+        LjU6+Jcmw3kTjRcp40nn+dfetAavwOrIk2xn30qxw7a6Hx0RMIwLeRGNWu4CYdE75QwaiqoZXYYYw
+        evYhOB58/PP6Af/LOUoqCjSPGjxkiVrH2ERem72TqvXs601wg7yGzxkEQLg2wafHglC130cXvPhVY
+        ZjxRvag9C31bvyV3CbE7FIALTOlVJpWSeAEMhcrCuC3pmGMR6oq3/JU6kOl02AFTbtd6z8ASQpv0b
+        8ubIIDUA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAqj9-00ADve-2q;
+        Wed, 06 Dec 2023 12:10:07 +0000
+Date:   Wed, 6 Dec 2023 04:10:07 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_cang@quicinc.com, Manish Pandey <quic_mapa@quicinc.com>
+Subject: Re: [PATCH V2] scsi: ufs: core: store min and max clk freq from OPP
+ table
+Message-ID: <ZXBkn/VkkTSDtknP@infradead.org>
+References: <20231206114659.13009-1-quic_nitirawa@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: [REGRESSION] Perf (userspace) broken on big.LITTLE systems since
- v6.5
-Content-Language: en-US, de-DE
-To:     Linux perf Profiling <linux-perf-users@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <08f1f185-e259-4014-9ca4-6411d5c1bc65@marcan.st>
- <ZV1AnNB2CSbAUFVg@archie.me>
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-In-Reply-To: <ZV1AnNB2CSbAUFVg@archie.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701864582;e01a8d62;
-X-HE-SMSGID: 1rAqii-0003FX-Qw
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206114659.13009-1-quic_nitirawa@quicinc.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[TLDR: This mail in primarily relevant for Linux kernel regression
-tracking. See link in footer if these mails annoy you.]
+On Wed, Dec 06, 2023 at 05:16:59PM +0530, Nitin Rawat wrote:
+> But these values are used by the vendor host drivers internally for
 
-On 22.11.23 00:43, Bagas Sanjaya wrote:
-> On Tue, Nov 21, 2023 at 09:08:48PM +0900, Hector Martin wrote:
->> Perf broke on all Apple ARM64 systems (tested almost everything), and
->> according to maz also on Juno (so, probably all big.LITTLE) since v6.5.
+There is no such thing as a "vendor" driver.  Please be precise with
+your wording.
 
-#regzbot fix: perf parse-events: Make legacy events lower priority than
-sysfs/JSON
-#regzbot ignore-activity
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
