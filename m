@@ -2,95 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACBC8079E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6CD8079E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbjLFU63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:58:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        id S1379510AbjLFU6k convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 15:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbjLFU62 (ORCPT
+        with ESMTP id S229780AbjLFU6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:58:28 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D4A1A5
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 12:58:32 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-50be10acaf9so272589e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 12:58:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1701896311; x=1702501111; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hkBTFydFN1nOSzt1n3Rcusw0wfyqULgHkbuf/PZSmKs=;
-        b=u0eAYeqIhbe/rA1Lo4nDnm0RBi6nWm0/IYD6WEbWO68zibTH1SStvAO4sjGVZ/djcq
-         MBSXsACH4PdSUk8n0oeRmRItEtOBxsrJ+mrNcid+meii/NtV2A3w1h1nAa/CcOjcKS/e
-         3yUXJC64w7wYnmlBV28GKOCC2paB4RNlcil6ZtaWUnnl9+AiajopsS7fvugTHxYoo5Rn
-         ApyWXOEXiyr+6MLf3yPMiQLLJqZyiMvoB7BG3nDwyFPjJEYktwwWZqTDbRJK7KiTKdb/
-         cfH/pBR0tqhEXN3vSwPYVSiFr58kBhI7jIS8QGIsLKq6yi4ttSmfZTIfnpV8QefAgA7p
-         HM+A==
+        Wed, 6 Dec 2023 15:58:37 -0500
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A628DC;
+        Wed,  6 Dec 2023 12:58:44 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-58de9deec94so21994eaf.0;
+        Wed, 06 Dec 2023 12:58:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701896311; x=1702501111;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hkBTFydFN1nOSzt1n3Rcusw0wfyqULgHkbuf/PZSmKs=;
-        b=lpfJGw1b1kYSshOXnQAYNJrbs1MLnqyExfripGKjPiO62Mo0WbwASpvIycJt3uXhK3
-         EVNzZqYeLOHJ2e1oYHrgwa0pW03X9KAqjHDENrJUJYBdXtgfZ+ZOGWaW1fOv9Tmhj4wI
-         tlxQp85AsOPf6H7qQnmc/nKBi/SVpp/fN5ecu0alG1FFWG8Ib6CPVRgMHvzXQUJkT0Cs
-         WpGx/yj6fWqCmx7uJspbzbtLRzXB6BsOLzvXWr2mIdKURFg6fyMxPck/MxDA0oDxNuSb
-         VbjSPQ1kGScB+A/B7KE1f1focz6OCdU/YaZ3KHTzadrsbltSjm6aFNiBZ3v05ruzxGRL
-         Zdww==
-X-Gm-Message-State: AOJu0YyJCTQIqvy9w8zo9mH3B/c6gqz+LAXJVVCZYsaQ/vcGkim54HPk
-        8ya8oYBXwFsChJGO1CKYNRXCcjeGOXUeNHxPdts=
-X-Google-Smtp-Source: AGHT+IFTNDQW2rib02jc7CQw8isgEbt5aN4TJbPLvy4HkaAkT3eMJ8mpiMj6cBZIaRTQ2B/WpzMAiQ==
-X-Received: by 2002:a05:6512:ac7:b0:50b:f038:16f2 with SMTP id n7-20020a0565120ac700b0050bf03816f2mr3063941lfu.6.1701896310846;
-        Wed, 06 Dec 2023 12:58:30 -0800 (PST)
-Received: from debian (c83-248-56-68.bredband.tele2.se. [83.248.56.68])
-        by smtp.gmail.com with ESMTPSA id g34-20020a0565123ba200b0050c05ad6252sm581412lfv.283.2023.12.06.12.58.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 12:58:29 -0800 (PST)
-Date:   Wed, 6 Dec 2023 21:58:27 +0100
-From:   =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
-        <ramon.nordin.rodriguez@ferroamp.se>
-To:     =?iso-8859-1?Q?F=E9lix_Pi=E9dallu?= <felix@piedallu.me>
-Cc:     andrew@lunn.ch, davem@davemloft.net, edumazet@google.com,
-        hkallweit1@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
-        netdev@vger.kernel.org, pabeni@redhat.com
-Subject: Re:
-Message-ID: <ZXDgczrh7GznTOj2@debian>
-References: <f25ed798-e116-4f6f-ad3c-5060c7d540d0@lunn.ch>
- <20231205102039.2917039-1-felix@piedallu.me>
+        d=1e100.net; s=20230601; t=1701896323; x=1702501123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VteboLc0PuWVvYglmZVfyeUmWI8ColgUVaYDoWTMUuk=;
+        b=IEAciPc5rtiIfN024Ww/2B0YoAxwZcs8rycx7ueswpPW2tUMNsKbJZm8NAZeAVskzm
+         Qm9Ssy7s81GKMhVmm9xgzwcnBUzQLYyw5TypPWMUoK4LwS/huI/364XpKyAxOEg24LW/
+         lmvUjniR3e4tYdyDFJf+Dwd1lMqlVFE20kgsRG7YeRbykPQqb9yTIZ3rbZ1PnDjr/7Z0
+         +xgU4GvKbBtxtNMleUdLNcb+KVsmIcqhIX1/llWn8zsZa7meEywDYHn3mIENjRL2hjEO
+         b+EbmWcCTMZHgJb/aRDBkKHP3L1JjGh1Ueq9H7+gBgBgnN/arNGgoBAFL8jZWgrdia1V
+         XYVw==
+X-Gm-Message-State: AOJu0YyRnFEFXs9fkfN03t2Dd0gGkqwK4bbjnvNr6e9BOWchCUXBL9Hg
+        6ofylTTLsCMAM4odkhWH6U8+EQuSJzcuLOZTFpE=
+X-Google-Smtp-Source: AGHT+IFo94aQzIA1juguyuAHtJCCdYflVfUEjabXs6GmVmLiIxNMiKEEABWlyYvFUGS5UrmDXUsjl2IIqLYbp7pTkqo=
+X-Received: by 2002:a05:6870:9e84:b0:1fa:f195:e3b4 with SMTP id
+ pu4-20020a0568709e8400b001faf195e3b4mr3122262oab.2.1701896323415; Wed, 06 Dec
+ 2023 12:58:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231205102039.2917039-1-felix@piedallu.me>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231205063537.872834-1-li.meng@amd.com> <20231205063537.872834-5-li.meng@amd.com>
+In-Reply-To: <20231205063537.872834-5-li.meng@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 6 Dec 2023 21:58:32 +0100
+Message-ID: <CAJZ5v0ju-Thhz2_rQVbTosTsBaRoyQW2kjtPWWTsiT_Yi2DbsQ@mail.gmail.com>
+Subject: Re: [PATCH V12 4/7] cpufreq: Add a notification message that the
+ highest perf has changed
+To:     Meng Li <li.meng@amd.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org,
+        Nathan Fontenot <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        Perry Yuan <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > So there is a gap in the revisions. Maybe a B2 exists?
-> 
-> Actually, probably not. Some search gives this datasheet:
-> 
-> https://ww1.microchip.com/downloads/aemDocuments/documents/AIS/ProductDocuments/DataSheets/LAN8670-1-2-Data-Sheet-60001573.pdf
-> 
-> And page 2 (table 1) shows only revisions A0 (rev0), B1, (rev2), C1 (rev4).
-> Not sure about why only even revision numbers are released ?
-> 
-> Page 193 (table 10-1) also shows only B1 and C1. So you can be confident that only those exist.
-> 
+On Tue, Dec 5, 2023 at 7:38â€¯AM Meng Li <li.meng@amd.com> wrote:
+>
+> ACPI 6.5 section 8.4.6.1.1.1 specifies that Notify event 0x85 can be
+> emmitted to cause the the OSPM to re-evaluate the highest performance
 
-Thanks for clearing that up!
+Typos above.  Given the number of iterations of this patch, this is
+kind of disappointing.
 
-> @Ramón, thank you for your work on this driver!
+> register. Add support for this event.
 
-Much appreciated
-R
+Also it would be nice to describe how this is supposed to work at
+least roughly, so it is not necessary to reverse-engineer the patch to
+find out that.
+
+> Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> Reviewed-by: Huang Rui <ray.huang@amd.com>
+> Reviewed-by: Perry Yuan <perry.yuan@amd.com>
+> Signed-off-by: Meng Li <li.meng@amd.com>
+> Link: https://uefi.org/specs/ACPI/6.5/05_ACPI_Software_Programming_Model.html#processor-device-notification-values
+> ---
+>  drivers/acpi/processor_driver.c |  6 ++++++
+>  drivers/cpufreq/cpufreq.c       | 13 +++++++++++++
+>  include/linux/cpufreq.h         |  5 +++++
+>  3 files changed, 24 insertions(+)
+>
+> diff --git a/drivers/acpi/processor_driver.c b/drivers/acpi/processor_driver.c
+> index 4bd16b3f0781..29b2fb68a35d 100644
+> --- a/drivers/acpi/processor_driver.c
+> +++ b/drivers/acpi/processor_driver.c
+> @@ -27,6 +27,7 @@
+>  #define ACPI_PROCESSOR_NOTIFY_PERFORMANCE 0x80
+>  #define ACPI_PROCESSOR_NOTIFY_POWER    0x81
+>  #define ACPI_PROCESSOR_NOTIFY_THROTTLING       0x82
+> +#define ACPI_PROCESSOR_NOTIFY_HIGEST_PERF_CHANGED      0x85
+>
+>  MODULE_AUTHOR("Paul Diefenbaugh");
+>  MODULE_DESCRIPTION("ACPI Processor Driver");
+> @@ -83,6 +84,11 @@ static void acpi_processor_notify(acpi_handle handle, u32 event, void *data)
+>                 acpi_bus_generate_netlink_event(device->pnp.device_class,
+>                                                   dev_name(&device->dev), event, 0);
+>                 break;
+> +       case ACPI_PROCESSOR_NOTIFY_HIGEST_PERF_CHANGED:
+> +               cpufreq_update_highest_perf(pr->id);
+
+And the design appears to be a bit ad-hoc here.
+
+Because why does it have anything to do with cpufreq?
+
+> +               acpi_bus_generate_netlink_event(device->pnp.device_class,
+> +                                                 dev_name(&device->dev), event, 0);
+> +               break;
+>         default:
+>                 acpi_handle_debug(handle, "Unsupported event [0x%x]\n", event);
+>                 break;
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 934d35f570b7..14a4cbc6dd05 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -2717,6 +2717,19 @@ void cpufreq_update_limits(unsigned int cpu)
+>  }
+>  EXPORT_SYMBOL_GPL(cpufreq_update_limits);
+>
+> +/**
+> + * cpufreq_update_highest_perf - Update highest performance for a given CPU.
+> + * @cpu: CPU to update the highest performance for.
+> + *
+> + * Invoke the driver's ->update_highest_perf callback if present
+> + */
+> +void cpufreq_update_highest_perf(unsigned int cpu)
+> +{
+> +       if (cpufreq_driver->update_highest_perf)
+> +               cpufreq_driver->update_highest_perf(cpu);
+> +}
+> +EXPORT_SYMBOL_GPL(cpufreq_update_highest_perf);
+> +
+>  /*********************************************************************
+>   *               BOOST                                              *
+>   *********************************************************************/
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index 1c5ca92a0555..f62257b2a42f 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -235,6 +235,7 @@ int cpufreq_get_policy(struct cpufreq_policy *policy, unsigned int cpu);
+>  void refresh_frequency_limits(struct cpufreq_policy *policy);
+>  void cpufreq_update_policy(unsigned int cpu);
+>  void cpufreq_update_limits(unsigned int cpu);
+> +void cpufreq_update_highest_perf(unsigned int cpu);
+>  bool have_governor_per_policy(void);
+>  bool cpufreq_supports_freq_invariance(void);
+>  struct kobject *get_governor_parent_kobj(struct cpufreq_policy *policy);
+> @@ -263,6 +264,7 @@ static inline bool cpufreq_supports_freq_invariance(void)
+>         return false;
+>  }
+>  static inline void disable_cpufreq(void) { }
+> +static inline void cpufreq_update_highest_perf(unsigned int cpu) { }
+>  #endif
+>
+>  #ifdef CONFIG_CPU_FREQ_STAT
+> @@ -380,6 +382,9 @@ struct cpufreq_driver {
+>         /* Called to update policy limits on firmware notifications. */
+>         void            (*update_limits)(unsigned int cpu);
+>
+> +       /* Called to update highest performance on firmware notifications. */
+> +       void            (*update_highest_perf)(unsigned int cpu);
+> +
+>         /* optional */
+>         int             (*bios_limit)(int cpu, unsigned int *limit);
+>
+> --
+> 2.34.1
+>
+>
