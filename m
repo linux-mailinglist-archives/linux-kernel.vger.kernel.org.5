@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E2A806A45
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D65C806A44
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346670AbjLFJCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        id S1377140AbjLFJCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:02:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377144AbjLFJCu (ORCPT
+        with ESMTP id S1377108AbjLFJCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:02:50 -0500
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.216])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C345DD62;
-        Wed,  6 Dec 2023 01:02:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Content-Type:From:Mime-Version:Subject:Date:
-        Message-Id; bh=bSXEOtYvTrwoUoXd1xh88uMJIjGpO/qF5Wv13PfY9Rs=; b=c
-        gP78LhuN7x6FQstyZBJFesSlH0rZOkb8F6XwZdNye+SDrAo+BA/+Jt7UMHCgoSE1
-        gPVi888MJxHGdM2MmK7F7c4+hZMQbebG3ZSXxoHMNH/JkSqGxKvzGY+O/u9IsVkT
-        KaUC9SG6usfmg2b9Tcz+MuNRYa32SOZ9gnV4qgz73o=
-Received: from smtpclient.apple (unknown [223.104.132.42])
-        by zwqz-smtp-mta-g4-3 (Coremail) with SMTP id _____wAHD6+kOHBlnYMHDA--.36351S2;
-        Wed, 06 Dec 2023 17:02:30 +0800 (CST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Hao Ge <gehao618@163.com>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] fs/namei: Don't update atime when some errors occur in get_link
-Date:   Wed, 6 Dec 2023 17:02:18 +0800
-Message-Id: <C295D5E9-ED04-48AD-AA4F-70803429D289@163.com>
-References: <20231205-endstadium-teich-d8d0bc900e08@brauner>
-Cc:     Hao Ge <gehao@kylinos.cn>, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231205-endstadium-teich-d8d0bc900e08@brauner>
-To:     Christian Brauner <brauner@kernel.org>
-X-Mailer: iPhone Mail (21A360)
-X-CM-TRANSID: _____wAHD6+kOHBlnYMHDA--.36351S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XFyxWryfGr13Zw43Cr17Wrg_yoW3Xrg_uF
-        sY9a1vkw13JrW5A39rWF4Fyrs0qa93Wr1UJ3s8K3WUZF43X3ZxJr1rGayfArnrX39rKa4r
-        X3Wjvw1qqw13CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0nvtJUUUUU==
-X-Originating-IP: [223.104.132.42]
-X-CM-SenderInfo: 5jhkt0qwryqiywtou0bp/xS2Bgho+Flc67gXv7QABs1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 04:02:44 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0BBFA;
+        Wed,  6 Dec 2023 01:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ESwEwJpMWsb1q1d00f+KoCLpSfEhMR+fcQ8QnG0nZoY=; b=zdO2H/GFM5zuA/L5PBl09vu4SX
+        Nj1NPCIO6UpL1CS1ZiK7pZAgkEAouwfOHdWjaB/UIFvNCMcmrJzg3APPhDLPBs5EBJHDMwWrzKYQb
+        YXmIEu+cyobQvPWugKFg1wrytc6fzHyAchYm/YclQc5hNhlB1ejYW+R8HC3rcO0QbfJf4IupBinJb
+        o+Gy9bIuZuAG6iUsl02KdeBjw/2gDvuFrRBxpaGBlugOAhNAcWn79lMAgdFOOf4MKaZvaz1hA7gqT
+        RXkliwsSHWURz6Sp/+N0ZdxyHmni68VHPgNY1K1gj2ixWQQJ7CDTkUboZgKMJM5GlVA+YZxcOIEjZ
+        I8v77+EA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1rAnnn-009VGi-1H;
+        Wed, 06 Dec 2023 09:02:43 +0000
+Date:   Wed, 6 Dec 2023 01:02:43 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Baokun Li <libaokun1@huawei.com>, Jan Kara <jack@suse.cz>,
+        linux-mm@kvack.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, willy@infradead.org,
+        akpm@linux-foundation.org, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
+ DIO write race with buffered read
+Message-ID: <ZXA4swgzsHbkm/uB@infradead.org>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
+ <20231204121120.mpxntey47rluhcfi@quack3>
+ <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+ <ZXAyV/rlfvBBuDL1@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXAyV/rlfvBBuDL1@dread.disaster.area>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 06, 2023 at 07:35:35PM +1100, Dave Chinner wrote:
+> Mixing overlapping buffered read with direct writes - especially partial block
+> extending DIO writes - is a recipe for data corruption. It's not a
+> matter of if, it's a matter of when.
+> 
+> Fundamentally, when you have overlapping write IO involving DIO, the
+> result of the overlapping IOs is undefined. One cannot control
+> submission order, the order that the overlapping IO hit the
+> media, or completion ordering that might clear flags like unwritten
+> extents. The only guarantee that we give in this case is that we
+> won't expose stale data from the disk to the user read.
 
+Btw, one thing we could do to kill these races forever is to track if
+there are any buffered openers for an inode and just fall back to
+buffered I/O for that case.  With that and and inode_dio_wait for
+when opening for buffered I/O we'd avoid the races an various crazy
+workarounds entirely.
 
-> On Dec 5, 2023, at 19:07, Christian Brauner <brauner@kernel.org> wrote:
->=20
-> =EF=BB=BFOn Tue, Dec 05, 2023 at 03:17:33PM +0800, Hao Ge wrote:
->> Perhaps we have some errors occur(like security),then we don't update
->> atime,because we didn't actually access it
->>=20
->> Signed-off-by: Hao Ge <gehao@kylinos.cn>
->> ---
->=20
-> We didn't follow the link but we accessed it. I guess it's not completey
-> clear what's correct here so I'd just leave it as is.
-Hi brauner
-Thank your for your reply.
-I just thought of a situation that user access a link failed due to some err=
-or(like permission issue),maybe report some error to user, actually user don=
-=E2=80=99t get anything,but atime still update.
-Maybe your are right,after all,we still tried to visit.
-Thanks
-Best Regards=20
-Hao=
+nfs and ocfs2 do (or did, I haven't checked for a while) something
+like that.
 
