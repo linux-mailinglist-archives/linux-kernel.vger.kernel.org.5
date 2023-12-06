@@ -2,175 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF90806664
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 05:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE43806670
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 06:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376564AbjLFEzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 23:55:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
+        id S1376671AbjLFFKm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 00:10:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbjLFEzi (ORCPT
+        with ESMTP id S229463AbjLFFKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 23:55:38 -0500
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3948D122;
-        Tue,  5 Dec 2023 20:55:44 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VxwkXh6_1701838535;
-Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VxwkXh6_1701838535)
-          by smtp.aliyun-inc.com;
-          Wed, 06 Dec 2023 12:55:42 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Juhyung Park <qkrwngud825@gmail.com>,
-        stable <stable@vger.kernel.org>
-Subject: [PATCH v2] erofs: fix lz4 inplace decompression
-Date:   Wed,  6 Dec 2023 12:55:34 +0800
-Message-Id: <20231206045534.3920847-1-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 00:10:40 -0500
+X-Greylist: delayed 774 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 21:10:45 PST
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978B7188;
+        Tue,  5 Dec 2023 21:10:45 -0800 (PST)
+Received: from localhost ([80.209.221.177]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MuUvU-1rRa6d307e-00rVDB; Wed, 06 Dec 2023 05:57:37 +0100
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 06 Dec 2023 05:57:37 +0100
+Message-Id: <CXGZGEBGA58J.3CX7BKVV2EUHK@holesch.de>
+Cc:     "Valentina Manea" <valentina.manea.m@gmail.com>,
+        "Shuah Khan" <shuah@kernel.org>, "Hongren Zheng" <i@zenithal.me>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] usbip: Don't submit special requests twice
+From:   "Simon Holesch" <simon@holesch.de>
+To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+X-Mailer: aerc 0.15.2
+References: <20231130231650.22410-1-simon@holesch.de>
+ <2023120641-krypton-presume-a375@gregkh>
+In-Reply-To: <2023120641-krypton-presume-a375@gregkh>
+X-Provags-ID: V03:K1:tCHZ4gb+sEMuSuuvLLnYBL4UZRAdD1wYRUP9ZQGMkCK8d2KqZgN
+ l9ZDICCFETLpD/ixLbnSMS8BaraDvXphGU1Dtn3KYm8D8sTNLzlHXpJbUlXTbCO1c8Rxufv
+ n04T80XeBbLB+pKOyeJJdtRX/RWtRwdIhlk9ep+ct9BN8kIwM5z23gI6Z4vefBpF0Vvgs4w
+ hL4OMCdahx6Ktjrz344jw==
+UI-OutboundReport: notjunk:1;M01:P0:jmQnVkyOyQg=;s138cwMb8b1W3fDoAnPcRP2w4R5
+ Z6K6fBOnVaJJC7b0YTpLdNKs1C3mvuE3iuRqnZLk/mNrkiVEB/1kpmBB5D62tcawTHMxs7rlQ
+ ryoLySywKmVQYehFvb+6H9rhLLsjJKDmQm4wN/Lf4eEXgF1lfMEoLzh27a6Kd+GrnWOz6GyDf
+ OBuw7J2nueqO8TnHAqOvvlnPO3Y1T8+hlbJNrR/A2RafBCs0pAht+zzKhy+zxRfQKuiQCeA1i
+ XYghmfm8bGRNTgmJMcxnCPjPcqRfa9ZGB0FHWSFeG0TQNcYo1pH2BZyR6GiVxh4e/6RdVSUZZ
+ 3LzG3Erg+xW+aIw9posMhY9vB2YKLrc4lLLZ00Eoc0Q9vGNjx8p59HT2L3DCrwCIRCbidYe19
+ 8jv1KnH04EsBAlbVxGqTcyDrm2d815vYb7k20iwMwSnlizTBzveIo6zr5pv2Pb+9YgDld7nEg
+ e7widnPWLTY3PWXZxkPOVjjNxyKzonEaDFaaq8vRHI7nWZ6adXqTu0MSFIlDBxGqEzgM/78yW
+ ZO4H5MbZfFnZY9qlNAgIGVGjt2Uu9uLYfU9gn+hMpADvsM59bHg9Vrmx6BUVf3klbprOgr5SH
+ G1f2Ux94LqELdHoWL2N2l6NkU+ahi0F/c1xLeONuJrK6DPr2umVREZOORurxPU0tiqHPCZQ0v
+ riJchyFTprc+LvFs+nLb7iAXq8Rbk26jh3uSGVhexTWTP0lbRuEplNKL8pnSUBtvNSd295wSI
+ LIwbjD4CdWqSyOsuqnuWZdnbFpWddxGmfPFxJiyB9oqXvnSZ8wTOZjRC9zz0tGjuzl12gdWcd
+ ktxhjeHhCMy2vNMQSjygsyLSGanLJLxVfyq9R2PYxmVXb/Zo5wqh49gNrXgPPYigCx9F+Gfk2
+ +Iu6w2sbKrmkKvA==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently EROFS can map another compressed buffer for inplace
-decompression, that was used to handle the cases that some pages of
-compressed data are actually not in-place I/O.
+On Wed Dec 6, 2023 at 4:38 AM CET, Greg Kroah-Hartman wrote:
+> On Fri, Dec 01, 2023 at 12:10:13AM +0100, Simon Holesch wrote:
+> > -	if (usb_lock_device_for_reset(sdev->udev, NULL) < 0) {
+> > +	err = usb_lock_device_for_reset(sdev->udev, NULL)
+>
+> You didn't actually build this change, so how was it tested?
 
-However, like most simple LZ77 algorithms, LZ4 expects the compressed
-data is arranged at the end of the decompressed buffer and it
-explicitly uses memmove() to handle overlapping:
-  __________________________________________________________
- |_ direction of decompression --> ____ |_ compressed data _|
+Last thing I did was update the comment of tweak_special_requests().
+Must have hit undo once too often, because I've seen (and fixed) this
+error. Really sorry about that. I'll send a v4 with a detailed test
+description.
 
-Although EROFS arranges compressed data like this, it typically maps two
-individual virtual buffers so the relative order is uncertain.
-Previously, it was hardly observed since LZ4 only uses memmove() for
-short overlapped literals and x86/arm64 memmove implementations seem to
-completely cover it up and they don't have this issue.  Juhyung reported
-that EROFS data corruption can be found on a new Intel x86 processor.
-After some analysis, it seems that recent x86 processors with the new
-FSRM feature expose this issue with "rep movsb".
+Simon
 
-Let's strictly use the decompressed buffer for lz4 inplace
-decompression for now.  Later, as an useful improvement, we could try
-to tie up these two buffers together in the correct order.
-
-Reported-and-tested-by: Juhyung Park <qkrwngud825@gmail.com>
-Closes: https://lore.kernel.org/r/CAD14+f2AVKf8Fa2OO1aAUdDNTDsVzzR6ctU_oJSmTyd6zSYR2Q@mail.gmail.com
-Fixes: 0ffd71bcc3a0 ("staging: erofs: introduce LZ4 decompression inplace")
-Fixes: 598162d05080 ("erofs: support decompress big pcluster for lz4 backend")
-Cc: stable <stable@vger.kernel.org> # 5.4+
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
-changes since v1:
- - address some nits pointed out by Juhyung.
-
- fs/erofs/decompressor.c | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
-
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 5ec11f5024b7..d08a6ee23ac5 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -121,11 +121,11 @@ static int z_erofs_lz4_prepare_dstpages(struct z_erofs_lz4_decompress_ctx *ctx,
- }
- 
- static void *z_erofs_lz4_handle_overlap(struct z_erofs_lz4_decompress_ctx *ctx,
--			void *inpage, unsigned int *inputmargin, int *maptype,
--			bool may_inplace)
-+			void *inpage, void *out, unsigned int *inputmargin,
-+			int *maptype, bool may_inplace)
- {
- 	struct z_erofs_decompress_req *rq = ctx->rq;
--	unsigned int omargin, total, i, j;
-+	unsigned int omargin, total, i;
- 	struct page **in;
- 	void *src, *tmp;
- 
-@@ -135,12 +135,13 @@ static void *z_erofs_lz4_handle_overlap(struct z_erofs_lz4_decompress_ctx *ctx,
- 		    omargin < LZ4_DECOMPRESS_INPLACE_MARGIN(rq->inputsize))
- 			goto docopy;
- 
--		for (i = 0; i < ctx->inpages; ++i) {
--			DBG_BUGON(rq->in[i] == NULL);
--			for (j = 0; j < ctx->outpages - ctx->inpages + i; ++j)
--				if (rq->out[j] == rq->in[i])
--					goto docopy;
--		}
-+		for (i = 0; i < ctx->inpages; ++i)
-+			if (rq->out[ctx->outpages - ctx->inpages + i] !=
-+			    rq->in[i])
-+				goto docopy;
-+		kunmap_local(inpage);
-+		*maptype = 3;
-+		return out + ((ctx->outpages - ctx->inpages) << PAGE_SHIFT);
- 	}
- 
- 	if (ctx->inpages <= 1) {
-@@ -148,7 +149,6 @@ static void *z_erofs_lz4_handle_overlap(struct z_erofs_lz4_decompress_ctx *ctx,
- 		return inpage;
- 	}
- 	kunmap_local(inpage);
--	might_sleep();
- 	src = erofs_vm_map_ram(rq->in, ctx->inpages);
- 	if (!src)
- 		return ERR_PTR(-ENOMEM);
-@@ -204,12 +204,12 @@ int z_erofs_fixup_insize(struct z_erofs_decompress_req *rq, const char *padbuf,
- }
- 
- static int z_erofs_lz4_decompress_mem(struct z_erofs_lz4_decompress_ctx *ctx,
--				      u8 *out)
-+				      u8 *dst)
- {
- 	struct z_erofs_decompress_req *rq = ctx->rq;
- 	bool support_0padding = false, may_inplace = false;
- 	unsigned int inputmargin;
--	u8 *headpage, *src;
-+	u8 *out, *headpage, *src;
- 	int ret, maptype;
- 
- 	DBG_BUGON(*rq->in == NULL);
-@@ -230,11 +230,12 @@ static int z_erofs_lz4_decompress_mem(struct z_erofs_lz4_decompress_ctx *ctx,
- 	}
- 
- 	inputmargin = rq->pageofs_in;
--	src = z_erofs_lz4_handle_overlap(ctx, headpage, &inputmargin,
-+	src = z_erofs_lz4_handle_overlap(ctx, headpage, dst, &inputmargin,
- 					 &maptype, may_inplace);
- 	if (IS_ERR(src))
- 		return PTR_ERR(src);
- 
-+	out = dst + rq->pageofs_out;
- 	/* legacy format could compress extra data in a pcluster. */
- 	if (rq->partial_decoding || !support_0padding)
- 		ret = LZ4_decompress_safe_partial(src + inputmargin, out,
-@@ -265,7 +266,7 @@ static int z_erofs_lz4_decompress_mem(struct z_erofs_lz4_decompress_ctx *ctx,
- 		vm_unmap_ram(src, ctx->inpages);
- 	} else if (maptype == 2) {
- 		erofs_put_pcpubuf(src);
--	} else {
-+	} else if (maptype != 3) {
- 		DBG_BUGON(1);
- 		return -EFAULT;
- 	}
-@@ -308,7 +309,7 @@ static int z_erofs_lz4_decompress(struct z_erofs_decompress_req *rq,
- 	}
- 
- dstmap_out:
--	ret = z_erofs_lz4_decompress_mem(&ctx, dst + rq->pageofs_out);
-+	ret = z_erofs_lz4_decompress_mem(&ctx, dst);
- 	if (!dst_maptype)
- 		kunmap_local(dst);
- 	else if (dst_maptype == 2)
--- 
-2.39.3
+> {sigh}
+>
+> greg k-h
 
