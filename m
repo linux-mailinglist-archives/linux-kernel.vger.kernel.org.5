@@ -2,142 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6480D806CD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DF2806CEC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377882AbjLFK6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:58:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
+        id S1377962AbjLFK7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377877AbjLFK6M (ORCPT
+        with ESMTP id S1377896AbjLFK7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:58:12 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2075.outbound.protection.outlook.com [40.92.22.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520DCB2;
-        Wed,  6 Dec 2023 02:58:18 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FHcG/viNDxIrDQmN12kNB4D+2SvzffH8P7mjXmjfD7u0IneKY2W0NffBZUWUEd2ye8YvUC+QFCQQDmObFsZ+33T6thXvd9NmUFIqH4fdzcNOnb5DPg7AOOj3knvlIeunQp6yPsMrrLKLW/nxuTkm3uxvWEVF5rb0+A32l+7k/2K8khq3nop+HbFtWYaB5KsE2J36o2AUb3iGF4a4J6LQNE2MHJ42sByFgNlRWs6BcRxlZwtv4FKvn6q9o4V8Em/r+VpsfO85jnDva9x9NwVZKEJYn3WEHxPBTfcia7Znzc8w4Yn0zs1pkYVmtrLMQk3NWryM7hxdGMq01czIZb8AnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DV2Je5NXPF65eLH605WcDrI/xhr/d1YXzYC85nKp0fA=;
- b=DzI6gQjBLt6zHyZgsi/wCSx5LlgVxSc+45eeh0jWv43zGsVDOXCfr3TuO/BRPT6xY0HDKl0iUv0qjJoQl/iXgoS4R5jUwKfbjZElUMAx9cMKpTnV7TQgPzq4GzQQlAxfb2IP9WZXSB6bjBgxwWOeF9n4s4xOA2ZN2237Mk6T//OY07EGVIcjGn++KV8wduX1ZXMdOo/9o5sZe/QXi8M3hOuPD6IT/TzI/GRyog37AozwabL7bTa7s4DGAC4LRlwzejyAbhEm6VLK68SvENFZ/QM4tEwbAZmrZJvfplKfdN4qBaDV/qByYxMm2queBujAyGAE03W+VG3Qvfy61yJ+jQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DV2Je5NXPF65eLH605WcDrI/xhr/d1YXzYC85nKp0fA=;
- b=nyfJb7QQ+9/7AS5Ey8QcYpknItgDz89gG3D0l5guIaYyrPYHFvW+zOI9QbeXMPRn0LBE9Sdc0kXSIF9YcUpQUSaruw/7b/NvAkZyhGms/wbsWq8uum30U+m/dF+BkiV7L90nF23kLjHmKlDZwAq16exDVoTpxTCDcIe2glD1MtmVHiM4DYHRv+ysKXAqQ7ie9DdNehZrwgY7oWYqxXn84gjSbfddqTh3P1szx+mQUO3RKyRUyl0BjKfOl0d7u5Gq6DBUX/9GQ5uJdefcegCofMezs3YzZLciZPVArnzQ7o8Z4DaGo1XUxXmqvAhBG1EJb9y3ucfJUZG9qlOun4U5VA==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by MN0PR20MB4863.namprd20.prod.outlook.com (2603:10b6:208:3c1::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
- 2023 10:58:16 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.7046.024; Wed, 6 Dec 2023
- 10:58:16 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor@kernel.org>
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Wed, 6 Dec 2023 05:59:01 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77172B2;
+        Wed,  6 Dec 2023 02:58:53 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id E57E37F98;
+        Wed,  6 Dec 2023 18:58:42 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 18:58:42 +0800
+Received: from ubuntu.localdomain (183.27.97.199) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 18:58:41 +0800
+From:   Minda Chen <minda.chen@starfivetech.com>
+To:     Conor Dooley <conor@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        Jisheng Zhang <jszhang@kernel.org>, qiujingbao.dlmu@gmail.com,
-        dlan@gentoo.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: clock: sophgo: Add clock controller of CV1800 series SoC
-Date:   Wed,  6 Dec 2023 18:58:11 +0800
-Message-ID: <IA1PR20MB4953C55E94B9F020872FFE90BB84A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <f42248f1-c8fa-4ca1-806a-94c06cba8689@linaro.org>
-References: <f42248f1-c8fa-4ca1-806a-94c06cba8689@linaro.org>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [Nw/7bhyGp8sYetpLAoOeNzhvvTLRBJKXHhDmXwakh1M=]
-X-ClientProxiedBy: BY5PR04CA0026.namprd04.prod.outlook.com
- (2603:10b6:a03:1d0::36) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231206105811.781975-1-inochiama@outlook.com>
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        "Daire McNamara" <daire.mcnamara@microchip.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Kevin Xie <kevin.xie@starfivetech.com>,
+        Minda Chen <minda.chen@starfivetech.com>
+Subject: [PATCH v12 0/21] Refactoring Microchip PCIe driver and add StarFive PCIe
+Date:   Wed, 6 Dec 2023 18:58:18 +0800
+Message-ID: <20231206105839.25805-1-minda.chen@starfivetech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|MN0PR20MB4863:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9684a1a2-c52b-42f0-e9c5-08dbf64a3f46
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rp6u9tD6sqn4+d3Lp02DBTt2YWK2aTP7VU8loGUy4qW3zo+4Te2durbZpppE8pnIrBV7kNMkjaj5tM25y9rTqwTNZ5C/1o7qf+mbpdH/T5CwRfNRjLsTim2vGRh18JLuzEW97xawUUWOjJu6N/ZMLZGghTmGD40QI7Wm1VvheomjMXwQEmD/CGIkpi2Oy1NW3ZyJQFn62mMjuRa2OFyQ+h9rnE5MJakirMNimhLgsJaBI79+GMe3l/zkHle7mAFZJwtdajdwxvcZ7D/DnIzmb2HI57WKfdfcSXh8DDOR/XCoHENdPcn7TcZLBHyFxCRScCoqmQ87lXMVdVBoHYqWBFt1o2IqITOKhjmW533DdrBmPlf0whXzVMWU341UnR6/2XoCgHeWLxlGTF2BKi9GhgqKK/4EWSyo0oPKSOendaFae9BZi+ewZQ3/cvsFyA2xkl6xeueDe/5EakwHNImdjnZaJnmUvvEJleFKxPaNEWwWRYd6rOCdHFdDQ4BGhuEz19DaIHY1XS2PBnFltP5Ofns3nMUpsreCwz5sYNic1KYDHJTMV1xLmTiHbsxTENsnB2lubvoQpgr8VzGH84E1nP3aUn/4K/zduFONJB6+GvJhbQtMIq48VNJD5PGRLsFc
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6okzgXVzc6EUk3JEPNq8ifWBx4mrjcesSHvpta8yueU6P+njSVXk5FMbE5kc?=
- =?us-ascii?Q?33aPL8p8zmVB2dcOGFMX4Ba98382MlrsdpxihEcg9y2yqIqDKWa+eKvuUP1n?=
- =?us-ascii?Q?SYaFDiDBesVoNvqWU8osVZuZKh7e5qh2/L1UNFUFeotG4e2bEEd5fimmZesh?=
- =?us-ascii?Q?4YpSgbfMxWi1hsdb6qKAb24sdirlaSSNtl5O20B4SWerKPkFxEvVWY3zq1Ed?=
- =?us-ascii?Q?ZFKyu3jYKqMluYf/U2yEZMKE3p5OBzrp6b0JDIILapytp1TVG9SuiLpo2+/f?=
- =?us-ascii?Q?sdKEkcKFY1zKQdI80v5AVZ2Av1Fly2bIH9sHngQX+ka9K1ei4zZL3dmN8Q6m?=
- =?us-ascii?Q?P1poobwSpSSPYDd6A+paLbMbWuOXw/LsON9FSJpmarYJrmUK1GQf+M+lSoOG?=
- =?us-ascii?Q?YYGX752ICV9KXw7JY6DxFDj/Q7DVei7yaCHU7WmJ9TVCPAtJ9mpDkO5Y+niz?=
- =?us-ascii?Q?Xjmb0GkUubgC7I8cpInu1FvIB1/T1grLnQZ2uC+5UM0rvCKSQOoFbC7yWn0S?=
- =?us-ascii?Q?7HyiNWiqR9vRbdY4dbnItgjKrimUu+QqJdYAaTcz+rfhTYSAJEB4p254nik0?=
- =?us-ascii?Q?HA0Q+IOzKrfH0nt92/vJkfdjP0GrDn8U1b+RASb/RO7Elgvud2i7aoAr3D1m?=
- =?us-ascii?Q?T9bfJyj6q1ue+RCt8zHSon1osIylechQ9Janxd+0SZH555AsPd6NzMS4n8el?=
- =?us-ascii?Q?ucspxSdK38GO7dOjkysuoBMzCTE6sC1rApZASpVBEHB7ywAiKjc8sQ/tsMJB?=
- =?us-ascii?Q?MiB1C9jzFCa9o+mQGVr2RAfqp+OeH3ZsVHzZJWA1R5FLVQDcL7nvTds+GuMU?=
- =?us-ascii?Q?9syyr8/JUoqDLajLPj43eqOi8mELPNyMOXMGoQfK1avAVJR3Ug9DJOK3A7he?=
- =?us-ascii?Q?WgH/mqfbtIxbg3hpowSV0WIAFspwo4pSUxe30TT0RHYFibUYBJN5BxJVe5Kp?=
- =?us-ascii?Q?I7YwgUlgNXBxbzJDkDQWP9Q4z4TQxSkhDYxE2jxUx3+E8jJ7vzTe6VhpV9cE?=
- =?us-ascii?Q?lOio1++CfUGe4DY/0iR7CLmA9zzOx65lteMsrpNguQCn17o4w5X53iFvPgoi?=
- =?us-ascii?Q?nrsI0473QrRZ1pONoAS69KOdAkvtqdo9JXFX/cR6ZvxlEz5RpZF30nFkTZzb?=
- =?us-ascii?Q?Hkx1ahxmRywwggx90UAIgXU9KActQQ7eX42NMFCKVevW0V2pRIxQcjL6X+ng?=
- =?us-ascii?Q?0r5FSAEEDpcfr3FfEDTUSBW+kVlYplyuGYz7gwb75pqXkdf0jQhAsW5Cmj4?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9684a1a2-c52b-42f0-e9c5-08dbf64a3f46
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 10:58:15.6282
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR20MB4863
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [183.27.97.199]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 06/12/2023 03:04, Inochi Amaoto wrote:
->>>>> +
->>>>> +  clock-names:
->>>>> +    items:
->>>>> +      - const: osc
->>>>
->>>> You have one clock, why do you need a name?
->>>
->>> I am not pretty familiar with this. I just wrote this binding by
->>> referencing others. Maybe use "maxItems: 1" is just fine?
->
->No, just drop clock-names and get clocks by indices in the driver.
->
+This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+same IP and have commit their codes, which are mixed with PLDA
+controller codes and Microchip platform codes.
 
-OK, thanks, I will remove it.
+For re-use the PLDA controller codes, I request refactoring microchip
+codes, move PLDA common codes to PLDA files.
+Desigware and Cadence is good example for refactoring codes.
 
->>>
->>
->> I have referenced this name in the clk_parent_data as the global clock
->> parent. Removing this will cause driver broken.
->
->It's not related.
->
->Best regards,
->Krzysztof
->
->
+----------------------------------------------------------
+The refactoring patches total number is 16,(patch 1-16)
+which do NOT contain changing logic of codes.
+
+These patches just contain three type basic operations.
+(rename, modify codes to support starfive platform, and moving to common file)
+If these patched are all be reviewed. They can be accepted first.
+
+Refactoring patches can be devided to different groups
+1. (patch 1- 3 is the prepare work of refactoring)
+patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
+       docs from microchip,pcie-host.yaml
+patch2 is move PolarFire codes to PLDA directory.
+patch3 is move PLDA IP register macros to plda-pcie.h
+
+2. (patch4 - 6 is processing and re-use PCIe host instance)
+patch4 is add bridge_addr field to PCIe host instance.
+patch5 is rename data structure in microchip codes.
+patch6 is moving two data structures to head file
+
+3. (patch 7 - 9 are for re-use two PCIe setup function)
+patch7 is rename two setup functions in microchip codes, prepare to move
+to common file.
+patch8 is change the arguments of plda_pcie_setup_iomems()
+patch9 is move the two setup functions to common file pcie-plda-host.c
+
+4.(patch 10 - 16 are for re-use interupt processing codes)
+patch10 is rename the IRQ related functions, prepare to move to
+pcie-plda-host.c
+patch 11 - 15 is modify the interrupt event codes, preparing for support starfive
+and microchip two platforms.
+patch16 is move IRQ related functions to pcie-plda-host.c
+
+------------------------------------------------------------
+The remainder patches (patch 17 -21) are not refactoring patch.
+They are for adding StarFive codes and dont modify the microchip's
+codes.
+
+patch17 is Add PLDA event interrupt codes and host init/deinit functions.
+patch18 is add StarFive JH7110 PCIe dt-binding doc.
+patch19 is Add a PCIe delay time macro
+patch20 is add StarFive JH7110 Soc PCIe codes.
+patch21 is Starfive dts config
+
+This patchset is base on v6.7-rc4
+
+previous version:
+v6:https://patchwork.kernel.org/project/linux-pci/cover/20230915102243.59775-1-minda.chen@starfivetech.com/
+v7:https://patchwork.kernel.org/project/linux-pci/cover/20230927100802.46620-1-minda.chen@starfivetech.com/
+v8:https://patchwork.kernel.org/project/linux-pci/cover/20231011110514.107528-1-minda.chen@starfivetech.com/
+v9:https://patchwork.kernel.org/project/linux-pci/cover/20231020104341.63157-1-minda.chen@starfivetech.com/
+v10:https://patchwork.kernel.org/project/linux-pci/cover/20231031115430.113586-1-minda.chen@starfivetech.com/
+v11:https://patchwork.kernel.org/project/linux-pci/cover/20231115114912.71448-1-minda.chen@starfivetech.com/
+
+change:
+  v12:
+   patch17: modify the commit message and add starfive review tag.
+   Add PCIE_RESET_CONFIG_DEVICE_WAIT_MS to patch 19.
+   patch20: Add disable runtime pm function in starfive_pcie_remove()
+            Add "depens on ARCH_STARFIVE || COMPILE_TEST" in Starfive PCie Kconfig
+
+  v11:
+     check and modify some commit messages again.
+     All the codes are the same with v10.   
+
+  v10:
+   All the commit message set to fit in 75 columns.
+   All the codes fit in less than 80 colunms.
+   patch 14: 
+	Commit message changes suggested by Conor.
+   patch 20:
+        Add 100 ms delay macro to pci.h
+	generic phy pointer related codes moving to pcie-starfive.c
+	This patch Change pcie-starfive only, bus_ops move to patch 16.
+	Some Codes changes suggested by Bjorn.
+
+  v9:
+   v8 patch 10 squash to v9 patch 12, v8 patch 18 squash to v9 patch 16.
+   patch 4 - 16: Add new review tags and add more accurate commit messages.
+   patch 17: move the plda_pcie_host_init/deinit from patch 19. Make
+             plda driver become to whole driver.
+
+  v8:
+    The patch description in cover-letter has been changed.
+
+    v7 patch 4 split to v8 patch 4 - 6.
+        (It is patches about re-use pcie host data structure, new patches just contain one
+	function modification. It is more reguluar and easier to review).
+
+    patch 7- 9: modify the commit messages and add reason of
+		modifcation.
+    patch10- 16 :
+             Add review tag and add more commit messages to declear the
+	     reason of modifying the codes.
+    patch17: plda_handle_events() using bit mask macro. The function are
+	     easier to read.
+
+  v7:
+    patch17: fix the build warning.
+    patch20: Some format changes (Emil's comment)
+    patch21: change the pcie node sequences by alphabetical
+             delete the "interupt-parent" in pcie node.
+
+  v6:
+    v5 patch 4 split to patch 4 -9. New patches just contain one function modification. It is more reguluar.
+
+    patch 9: Just move the two setup functions only
+    patch 19 : draw a graph of PLDA local register, make it easier to
+               review the codes.
+    v5 patch 7 split to patch 10- 16. Each patch just contain one
+                function modification. It is more regular.
+    patch 10: rename IRQ related functions.
+    patch 11 - 15 : modify the events codes, total five patch.
+    patch 16: move IRQ related functions to pcie-plda-host.c
+    patch 20- 21 using "linux,pci-domain" dts setting.
+
+
+Kevin Xie (1):
+  PCI: Add PCIE_RESET_CONFIG_DEVICE_WAIT_MS waiting time value
+
+Minda Chen (20):
+  dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
+  PCI: microchip: Move pcie-microchip-host.c to plda directory
+  PCI: microchip: Move PLDA IP register macros to pcie-plda.h
+  PCI: microchip: Add bridge_addr field to struct mc_pcie
+  PCI: microchip: Rename two PCIe data structures
+  PCI: microchip: Move PCIe host data structures to plda-pcie.h
+  PCI: microchip: Rename two setup functions
+  PCI: microchip: Change the argument of plda_pcie_setup_iomems()
+  PCI: microchip: Move setup functions to pcie-plda-host.c
+  PCI: microchip: Rename interrupt related functions
+  PCI: microchip: Add num_events field to struct plda_pcie_rp
+  PCI: microchip: Add request_event_irq() callback function
+  PCI: microchip: Add INTx and MSI event num to struct plda_event
+  PCI: microchip: Add get_events() callback function
+  PCI: microchip: Add event IRQ domain ops to struct plda_event
+  PCI: microchip: Move IRQ functions to pcie-plda-host.c
+  PCI: plda: Add event interrupt codes and host init/deinit functions
+  dt-bindings: PCI: Add StarFive JH7110 PCIe controller
+  PCI: starfive: Add JH7110 PCIe controller
+  riscv: dts: starfive: add PCIe dts configuration for JH7110
+
+ .../bindings/pci/microchip,pcie-host.yaml     |  55 +-
+ .../pci/plda,xpressrich3-axi-common.yaml      |  75 ++
+ .../bindings/pci/starfive,jh7110-pcie.yaml    | 120 ++++
+ MAINTAINERS                                   |  19 +-
+ .../jh7110-starfive-visionfive-2.dtsi         |  64 ++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      |  86 +++
+ drivers/pci/controller/Kconfig                |   9 +-
+ drivers/pci/controller/Makefile               |   2 +-
+ drivers/pci/controller/plda/Kconfig           |  30 +
+ drivers/pci/controller/plda/Makefile          |   4 +
+ .../{ => plda}/pcie-microchip-host.c          | 602 ++--------------
+ drivers/pci/controller/plda/pcie-plda-host.c  | 657 ++++++++++++++++++
+ drivers/pci/controller/plda/pcie-plda.h       | 266 +++++++
+ drivers/pci/controller/plda/pcie-starfive.c   | 462 ++++++++++++
+ drivers/pci/pci.h                             |  16 +
+ 15 files changed, 1863 insertions(+), 604 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
+ create mode 100644 drivers/pci/controller/plda/Kconfig
+ create mode 100644 drivers/pci/controller/plda/Makefile
+ rename drivers/pci/controller/{ => plda}/pcie-microchip-host.c (54%)
+ create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
+ create mode 100644 drivers/pci/controller/plda/pcie-plda.h
+ create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
+
+
+base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
+-- 
+2.17.1
+
