@@ -2,124 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9612C806B04
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F189806B08
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377358AbjLFJqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:46:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
+        id S1377264AbjLFJrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:47:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377321AbjLFJqn (ORCPT
+        with ESMTP id S1377348AbjLFJrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:46:43 -0500
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EDDD67
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:46:47 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-Date:   Wed, 06 Dec 2023 09:46:30 +0000
-Subject: [PATCH 7/7] mm/zswap: cleanup zswap_reclaim_entry()
+        Wed, 6 Dec 2023 04:47:41 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4E110D4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:47:39 -0800 (PST)
+Date:   Wed, 6 Dec 2023 10:47:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701856057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dZL4xpIW5Xbtis3hnUiCyn0G7mTR94oGieX73+hE5Tk=;
+        b=RemarrlJFGANeBLplMKNzkZVPTgIXVgK0dnGTqZRpWRUqYuPNg/igS6wMk7e9a0ywmooih
+        E8hIqIr8R7+MShTnVtcZAT52YYNbPlrbT7WnPcUGXKSxK8qlpV0HB6PBAPLKMYreUbN7l/
+        kXGyL+1mc6S8vz/bZy53JD0DxWMzleHzS9WqHZ/Ua6g3x7veJh2bNdp0zsT8QwBtqiImuU
+        ePXAGipjEoSKs5jrQgk6DZspsnsspss9zmjvXdcBBXROPv3BxwEWN7rbXk2j+VkkaftBO3
+        5dEzCBM7PruJi5aRi+CN1bBDQPjmWGIEmcGgPZZjzUJuFqYPGoQXGUOooewa6Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701856057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dZL4xpIW5Xbtis3hnUiCyn0G7mTR94oGieX73+hE5Tk=;
+        b=z4zP1RhM6n+SbF00Fk8AL8K/95cDBJ1CT8SFh0vLFGW1f56DUpS23k285R6aMNF9pyEemp
+        Eol2yJnCC/pv0/Dg==
+From:   Sebastian Siewior <bigeasy@linutronix.de>
+To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        John Stultz <jstultz@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Eric Dumazet <edumazet@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Arjan van de Ven <arjan@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Giovanni Gherdovich <ggherdovich@suse.cz>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Richard Cochran <richardcochran@gmail.com>
+Subject: Re: [PATCH v9 23/32] timers: Retrieve next expiry of
+ pinned/non-pinned timers separately
+Message-ID: <20231206094735.HMFIZlHa@linutronix.de>
+References: <20231201092654.34614-1-anna-maria@linutronix.de>
+ <20231201092654.34614-24-anna-maria@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231206-zswap-lock-optimize-v1-7-e25b059f9c3a@bytedance.com>
-References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
-In-Reply-To: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Nhat Pham <nphamcs@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Chengming Zhou <zhouchengming@bytedance.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701855988; l=1963;
- i=zhouchengming@bytedance.com; s=20231204; h=from:subject:message-id;
- bh=WQp3TO7eGK4NEJ2KSQiW8NgcHiI75uDxqzzNLxV8SyA=;
- b=cX50JTACBKj/y4OSJ3fqN9XlNGNG8ePq/CbHqPflo46e6ZMG5upWYYRApku021YWMN1SgS3i9
- B/xOj7S/bMGBm4R4og7jAUlPoBl15i7PcZIVp5JnUC1yxy4hhNQBj7H
-X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
- pk=xFTmRtMG3vELGJBUiml7OYNdM393WOMv0iWWeQEVVdA=
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231201092654.34614-24-anna-maria@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also after the common decompress part goes to __zswap_load(), we can
-cleanup the zswap_reclaim_entry() a little.
+On 2023-12-01 10:26:45 [+0100], Anna-Maria Behnsen wrote:
+> For the conversion of the NOHZ timer placement to a pull at expiry time
+> model it's required to have separate expiry times for the pinned and the
+> non-pinned (movable) timers. Therefore struct timer_events is introduced.
+>=20
+> No functional change
+>=20
+> Originally-by: Richard Cochran (linutronix GmbH) <richardcochran@gmail.co=
+m>
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+=E2=80=A6
+> index 366ea26ce3ba..0d53d853ae22 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+=E2=80=A6
+> @@ -2022,13 +2028,31 @@ static inline u64 __get_next_timer_interrupt(unsi=
+gned long basej, u64 basem,
+> =20
+>  	nextevt =3D local_first ? nextevt_local : nextevt_global;
+> =20
+> -	if (base_local->timers_pending || base_global->timers_pending) {
+> +	/*
+> +	 * If the @nextevt is at max. one tick away, use @nextevt and store
+> +	 * it in the local expiry value. The next global event is irrelevant in
+> +	 * this case and can be left as KTIME_MAX.
+> +	 */
+> +	if (time_before_eq(nextevt, basej + 1)) {
+>  		/* If we missed a tick already, force 0 delta */
+>  		if (time_before(nextevt, basej))
+>  			nextevt =3D basej;
+> -		expires =3D basem + (u64)(nextevt - basej) * TICK_NSEC;
+> +		tevt.local =3D basem + (u64)(nextevt - basej) * TICK_NSEC;
+> +		goto unlock;
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- mm/zswap.c | 23 +++++------------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
+You claim "No functional change" in the patch description. However if
+you take the shortcut here you don't update `idle' if set and you don't
+__forward_timer_base(). The `idle` parameter doesn't matter because it
+was false and will remain false as per current logic.
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 50405811cd7b..d3fedda0d774 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1438,7 +1438,6 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- 	struct page *page;
- 	struct mempolicy *mpol;
- 	bool page_was_allocated;
--	int ret;
- 	struct writeback_control wbc = {
- 		.sync_mode = WB_SYNC_NONE,
- 	};
-@@ -1447,16 +1446,13 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- 	mpol = get_task_policy(current);
- 	page = __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
- 				NO_INTERLEAVE_INDEX, &page_was_allocated, true);
--	if (!page) {
--		ret = -ENOMEM;
--		goto fail;
--	}
-+	if (!page)
-+		return -ENOMEM;
- 
- 	/* Found an existing page, we raced with load/swapin */
- 	if (!page_was_allocated) {
- 		put_page(page);
--		ret = -EEXIST;
--		goto fail;
-+		return -EEXIST;
- 	}
- 
- 	/*
-@@ -1470,8 +1466,7 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- 	if (zswap_rb_search(&tree->rbroot, swp_offset(entry->swpentry)) != entry) {
- 		spin_unlock(&tree->lock);
- 		delete_from_swap_cache(page_folio(page));
--		ret = -ENOMEM;
--		goto fail;
-+		return -ENOMEM;
- 	}
- 	spin_unlock(&tree->lock);
- 
-@@ -1492,15 +1487,7 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- 	__swap_writepage(page, &wbc);
- 	put_page(page);
- 
--	return ret;
--
--fail:
--	/*
--	 * If we get here because the page is already in swapcache, a
--	 * load may be happening concurrently. It is safe and okay to
--	 * not free the entry. It is also okay to return !0.
--	 */
--	return ret;
-+	return 0;
- }
- 
- static int zswap_is_page_same_filled(void *ptr, unsigned long *value)
+But what about the forward of the timer base? It is probably not real
+problem since the next add/mod timer call will forward it.
 
--- 
-b4 0.10.1
+Sebastian
