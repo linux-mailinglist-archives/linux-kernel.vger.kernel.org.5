@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131DC8068B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C528068BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376643AbjLFHip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:38:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43636 "EHLO
+        id S1376915AbjLFHiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:38:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbjLFHiR (ORCPT
+        with ESMTP id S232148AbjLFHiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:38:17 -0500
+        Wed, 6 Dec 2023 02:38:21 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE1D1BC8
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BA71C433C7;
-        Wed,  6 Dec 2023 07:37:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF791BDB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2524FC433D9;
+        Wed,  6 Dec 2023 07:37:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701848268;
-        bh=0jDTkca+DoCNT4GBW0SaHvJh6RK6c14dHl2xTDM0lig=;
+        s=k20201202; t=1701848270;
+        bh=1ogJNRCRUSjNVsxhxIxRKhd/3MM0E+QpvFM4Un0/0KI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bN4zps1VD14WaQ7L+ufCWjTlw7qYPRgdosdPmuF09qDmDabVcxBfBql5PfmRlNf04
-         acw8RjjRDLADlERmXTH33hG0KFUYN3Ud+D83B7WzaSZxzwxaPe7lzxamEwECIL6rWo
-         UGQOfo/WgWHqi8mzdueDhb69q7nMF11EQ4D9eCpTqd7++hRMXwxI+QR02HastM8vdi
-         YUjFzsUkoCGYz1Zua5hORZfqrlsKtduoDb0cAwujsSdND7nm88zNemME1jLsGf4+9a
-         cN7gQtcoC5kafJNT2l0VO+eSoxiAR2eSVFfKzIP0HBqRW+YG73/X1RJx9h3zghZPag
-         GC+G1rowjVVEA==
+        b=YYRRTJ2Ex+COXZInEvSuWRBkCj4G2MDfBBEm10lA/6YWME/zUfsKGjeiIcbMF7H7S
+         VLRXViRHFcM99MJo4maY01ypfdfSRY6mo6b3CKNQ4x2lmjDZYoRVbLGkXL0rz/jBuj
+         FwqHudifLvhhqB2Zk2yQ1EOEnoezkMg31Z8DvnYSAlfUzN1ulFLoXtSbVyp6m7wb8M
+         DMJmKjDVFHeRJ7KCAeMMskuXzDs/OKe0aKoT5RFN2aQq14xId7E8M/zJGKEyFkpv51
+         KIUWiCmI3f2ODm5M2WtjKWEpU4mPQF0ZVCV24Q4raYZuGK4Oo5eScD7UV6qeaesYk8
+         QbF1R2OmgsiQA==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        industrypack-devel@lists.sourceforge.net
-Subject: [PATCH 13/27] tty: ipoctal: convert to u8 and size_t
-Date:   Wed,  6 Dec 2023 08:36:58 +0100
-Message-ID: <20231206073712.17776-14-jirislaby@kernel.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Subject: [PATCH 14/27] tty: m68k: nfcon: convert to u8 and size_t
+Date:   Wed,  6 Dec 2023 08:36:59 +0100
+Message-ID: <20231206073712.17776-15-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
 References: <20231206073712.17776-1-jirislaby@kernel.org>
@@ -56,62 +55,28 @@ Switch character types to u8 and sizes to size_t. To conform to
 characters/sizes in the rest of the tty layer.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Cc: Jens Taprogge <jens.taprogge@taprogge.org>
-Cc: industrypack-devel@lists.sourceforge.net
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: linux-m68k@lists.linux-m68k.org
 ---
- drivers/ipack/devices/ipoctal.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ arch/m68k/emu/nfcon.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ipack/devices/ipoctal.c b/drivers/ipack/devices/ipoctal.c
-index da308be6c487..ba2e9e52d72b 100644
---- a/drivers/ipack/devices/ipoctal.c
-+++ b/drivers/ipack/devices/ipoctal.c
-@@ -158,9 +158,7 @@ static int ipoctal_get_icount(struct tty_struct *tty,
- static void ipoctal_irq_rx(struct ipoctal_channel *channel, u8 sr)
+diff --git a/arch/m68k/emu/nfcon.c b/arch/m68k/emu/nfcon.c
+index 3a74d493eb3e..17b2987c2bf5 100644
+--- a/arch/m68k/emu/nfcon.c
++++ b/arch/m68k/emu/nfcon.c
+@@ -23,9 +23,9 @@ static int stderr_id;
+ static struct tty_port nfcon_tty_port;
+ static struct tty_driver *nfcon_tty_driver;
+ 
+-static void nfputs(const char *str, unsigned int count)
++static void nfputs(const u8 *str, size_t count)
  {
- 	struct tty_port *port = &channel->tty_port;
--	unsigned char value;
--	unsigned char flag;
--	u8 isr;
-+	u8 isr, value, flag;
+-	char buf[68];
++	u8 buf[68];
+ 	unsigned long phys = virt_to_phys(buf);
  
- 	do {
- 		value = ioread8(&channel->regs->r.rhr);
-@@ -202,8 +200,8 @@ static void ipoctal_irq_rx(struct ipoctal_channel *channel, u8 sr)
- 
- static void ipoctal_irq_tx(struct ipoctal_channel *channel)
- {
--	unsigned char value;
- 	unsigned int *pointer_write = &channel->pointer_write;
-+	u8 value;
- 
- 	if (channel->nb_bytes == 0)
- 		return;
-@@ -436,11 +434,11 @@ static int ipoctal_inst_slot(struct ipoctal *ipoctal, unsigned int bus_nr,
- 	return res;
- }
- 
--static inline int ipoctal_copy_write_buffer(struct ipoctal_channel *channel,
--					    const u8 *buf, int count)
-+static inline size_t ipoctal_copy_write_buffer(struct ipoctal_channel *channel,
-+					       const u8 *buf, size_t count)
- {
- 	unsigned long flags;
--	int i;
-+	size_t i;
- 	unsigned int *pointer_read = &channel->pointer_read;
- 
- 	/* Copy the bytes from the user buffer to the internal one */
-@@ -462,7 +460,7 @@ static ssize_t ipoctal_write_tty(struct tty_struct *tty, const u8 *buf,
- 				 size_t count)
- {
- 	struct ipoctal_channel *channel = tty->driver_data;
--	unsigned int char_copied;
-+	size_t char_copied;
- 
- 	char_copied = ipoctal_copy_write_buffer(channel, buf, count);
- 
+ 	buf[64] = 0;
 -- 
 2.43.0
 
