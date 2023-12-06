@@ -2,96 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D332A80719B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6368071BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378744AbjLFOCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 09:02:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52938 "EHLO
+        id S1378783AbjLFOFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 09:05:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378788AbjLFOBy (ORCPT
+        with ESMTP id S1378713AbjLFOFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 09:01:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815DB10D4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 06:01:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11A0AC433C7;
-        Wed,  6 Dec 2023 14:01:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701871305;
-        bh=/smgYwrNiywTTOUBDU8u9NXotG8+d5x1VH+6Q14bcgE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QIYY42O737W5KvHlLRD+NnFnvcHBU33Xptq4n48C+y6W77vkWAo68OhPytfSqCW5m
-         mLcO4qS6/jTSNIFEq0MhxxXSgvzM3lonJOMDjXfk0k55MblKghDkztH3vy7CA2FD6y
-         Q0BKCKolqdkocKPkjTLQRJEArUATMFlxNmdqKsJJoOINLfayFlJhSUv3D3fU2a/lJR
-         45tRqIldjL7Ee+QFVIj+x0uUr/XP/lHzzmLzpmUIJ6gMezgEU1cpnu9p99x6I6kEIZ
-         qvAifQtP8tO4cmadQQ4l8SbU42+uj4iishys2xEKIAfUMDYyxBplKTNRKBC31aEkNb
-         h6W2JzWIW0aGg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Bloch <mbloch@nvidia.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, Shun Hao <shunh@nvidia.com>
-Subject: [PATCH mlx5-next v1 0/5] Expose c0 and SW encap ICM for RDMA
-Date:   Wed,  6 Dec 2023 16:01:33 +0200
-Message-ID: <cover.1701871118.git.leon@kernel.org>
-X-Mailer: git-send-email 2.43.0
+        Wed, 6 Dec 2023 09:05:21 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB255D1;
+        Wed,  6 Dec 2023 06:05:27 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B68bbfK026852;
+        Wed, 6 Dec 2023 14:04:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=QG7okk0DW5cV2WX4FjsH7Jm7c1uVFG7K9CMd5t4kVqM=;
+ b=R/EGB0VQNpyP9G8YGeD+aYjHJrPIZ87QLxDYt9FULf6eovzWHcl2GY1i0n2VDA/1UTjs
+ 1QlfpucLmuR7ky+kKyqdCLOgeN0l2LZ2oFZIXMEFyrmxop3EgFqgGoma/dT+WiAlbKYR
+ Ek2Yh33hMuvU4PiYFkhVAea0D2r2+hpI0f03DLa8AbIJzb/O50TsHHK/cym9sCFvVaT9
+ l5/+wSqbXa9Gonryq3rz5CUuOYGUeE1ycfUIG4OoY3lXpgzfG6LQYcvD8MVcvGT3NTSl
+ UK4NyeTiwh/F/4wYDz0DncNzI/xrxNqBzoUCmBzgH33Ez/aE/GVXoP/nowRQLXuZyLDv xw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utd1n1yy2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 14:04:19 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6E4HoZ025004
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 6 Dec 2023 14:04:18 GMT
+Received: from [10.218.37.200] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
+ 2023 06:02:57 -0800
+Message-ID: <b9373252-710c-4a54-95cc-046314796960@quicinc.com>
+Date:   Wed, 6 Dec 2023 19:32:54 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 1/3] ufs: core: Add CPU latency QoS support for ufs
+ driver
+Content-Language: en-US
+To:     Bart Van Assche <bvanassche@acm.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Peter Wang <peter.wang@mediatek.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, <chu.stanley@gmail.com>
+CC:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_cang@quicinc.com>,
+        <quic_nguyenb@quicinc.com>, Nitin Rawat <quic_nitirawa@quicinc.com>
+References: <20231204143101.64163-1-quic_mnaresh@quicinc.com>
+ <20231204143101.64163-2-quic_mnaresh@quicinc.com>
+ <590ade27-b4da-49be-933b-e9959aa0cd4c@acm.org>
+ <692cd503-5b14-4be6-831d-d8e9c282a95e@quicinc.com>
+ <5e7c5c75-cb5f-4afe-9d57-b0cab01a6f26@acm.org>
+From:   Naresh Maramaina <quic_mnaresh@quicinc.com>
+In-Reply-To: <5e7c5c75-cb5f-4afe-9d57-b0cab01a6f26@acm.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: jNdJXZIgOmEwSo1frEafsf1-O-ipzEFK
+X-Proofpoint-GUID: jNdJXZIgOmEwSo1frEafsf1-O-ipzEFK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_10,2023-12-06_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 adultscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2312060113
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
 
-Changelog:
-v1:
- * Reordered patches
-v0: https://lore.kernel.org/all/cover.1701172481.git.leon@kernel.org
 
------------------------------------------------------------------------
-Hi,
+On 12/5/2023 10:41 PM, Bart Van Assche wrote:
+> On 12/4/23 21:58, Naresh Maramaina wrote:
+>> On 12/5/2023 12:30 AM, Bart Van Assche wrote:
+>>> On 12/4/23 06:30, Maramaina Naresh wrote:
+>>>> +    /* This capability allows the host controller driver to use the 
+>>>> PM QoS
+>>>> +     * feature.
+>>>> +     */
+>>>> +    UFSHCD_CAP_PM_QOS                = 1 << 13,
+>>>>   };
+>>>
+>>> Why does it depend on the host driver whether or not PM QoS is
+>>> enabled? Why isn't it enabled unconditionally?
+>>
+>> For some platform vendors power KPI might be more important than 
+>> random io KPI. Hence this flag is disabled by default and can be 
+>> enabled based on platform requirement.
+> 
+> How about leaving this flag out unless if a host vendor asks explicitly
+> for this flag?
 
-These two series from Mark and Shun extend RDMA mlx5 API.
+IMHO, instead of completely removing this flag, how about having
+flag like "UFSHCD_CAP_DISABLE_PM_QOS" which will make PMQOS enable
+by default and if some host vendor wants to disable it explicitly,
+they can enable that flag.
+Please let me know your opinion.
 
-Mark's series provides c0 register used to match egress
-traffic sent by local device.
+>>>
+>>>> + * @pm_qos_req: PM QoS request handle
+>>>> + * @pm_qos_init: flag to check if pm qos init completed
+>>>>    */
+>>>
+>>> Documentation for pm_qos_init is missing.
+>>>
+>> Sorry, i didn't get your comment, i have already added documentation 
+>> for @pm_qos_init, @pm_qos_req variable as above. Do you want me to add 
+>> this information some where else as well?
+> 
+> Oops, I meant 'qos_vote'.
 
-Shun's series adds new type for ICM area.
+Sure. I'll take of this in next patchset.
 
-Thanks
+> 
+> Thanks,
+> 
+> Bart.
+> 
 
-Mark Bloch (2):
-  net/mlx5: E-Switch, expose eswitch manager vport
-  RDMA/mlx5: Expose register c0 for RDMA device
-
-Shun Hao (3):
-  net/mlx5: Introduce indirect-sw-encap ICM properties
-  RDMA/mlx5: Support handling of SW encap ICM area
-  net/mlx5: Manage ICM type of SW encap
-
- drivers/infiniband/hw/mlx5/dm.c               |  5 +++
- drivers/infiniband/hw/mlx5/main.c             | 24 ++++++++++++
- drivers/infiniband/hw/mlx5/mr.c               |  1 +
- .../net/ethernet/mellanox/mlx5/core/eswitch.h |  7 ----
- .../net/ethernet/mellanox/mlx5/core/lib/dm.c  | 38 ++++++++++++++++++-
- include/linux/mlx5/driver.h                   |  1 +
- include/linux/mlx5/eswitch.h                  |  8 ++++
- include/linux/mlx5/mlx5_ifc.h                 |  9 ++++-
- include/uapi/rdma/mlx5-abi.h                  |  2 +
- include/uapi/rdma/mlx5_user_ioctl_verbs.h     |  1 +
- 10 files changed, 86 insertions(+), 10 deletions(-)
-
--- 
-2.43.0
-
+Thanks,
+Naresh
