@@ -2,139 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EC5806A94
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC68806A97
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbjLFJVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:21:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
+        id S235186AbjLFJWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLFJVQ (ORCPT
+        with ESMTP id S229459AbjLFJWi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:21:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BAA1BDA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:21:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701854481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=C15e7/LIYcrGWdbNEaRKjqFcMT5GroD4qDzg3I8vY9E=;
-        b=bW4qtMBDWM6tXQeTlPIYnSvWHOMkWfXtRyQbRk3sqGJKhCmfKGIYaw//u17MNfDJ5+y88h
-        l/h3QpWkBi4ZbAdwKY8RFPaA6S5T2kpW4LA1r+LWGe8nStf19YG+ieAWZydAavzXiige7e
-        eDhBApEeacxxo005zYJelTovkZHql00=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-488-h0GcTty3MZqkASa7xIKW-g-1; Wed, 06 Dec 2023 04:21:20 -0500
-X-MC-Unique: h0GcTty3MZqkASa7xIKW-g-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-332e2f70092so539575f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:21:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701854479; x=1702459279;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C15e7/LIYcrGWdbNEaRKjqFcMT5GroD4qDzg3I8vY9E=;
-        b=WjqSsyj20/dg/AQqxM4Ce0bAV78wM5IO0JCnT2FZ74T7dqd9UukGYJqNqwbRgL9NXG
-         KKjkLb6iebByyRJ9pU7iVRyiqYxciBHDBGsol4jmI26GS8lPN1iZ4i0McOgHVyPoeiKa
-         ZXy+C/C4Eu5MgpF8jrQ/Bzfg5SL4BFSlzxAFVXgjue9lafuDSx/wXjHhxxaIxTohz9cp
-         fRuZfF/zgRuqgriKXUfmDld5/96CcpPkTE98kVsLVCf9d/CE0C2B1HdmHzwmfG5nQhcW
-         PrXQKXXr70EFpUQaAlkA+k2EdVSXzbDHl+5f3oZGdq8zAMNG0EJUod433DZwJWQKUtLF
-         BWEA==
-X-Gm-Message-State: AOJu0YyJ4CsYRD49bBYgfM+omFinUWHtpjCg2AkegzRfrO/Dh9/yBpSg
-        nzpEoghHBMj8/lGP3AnTCmiPA1hNvcWS45Nyu43d0DXcm+1aN6QRfGXcQcyJ30erIYJ9KF0Q7E0
-        m7Tr5JHnA14TUwYlSCPlV+Wp3
-X-Received: by 2002:a5d:6a0a:0:b0:333:1d9c:c34b with SMTP id m10-20020a5d6a0a000000b003331d9cc34bmr291841wru.41.1701854479089;
-        Wed, 06 Dec 2023 01:21:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGJt64TQXsdMHsdf9ZDWJDQBSkounTEA5bVNSVXlVfWZRWe3DfgUgzdli/2NceZuDUSqkkReA==
-X-Received: by 2002:a5d:6a0a:0:b0:333:1d9c:c34b with SMTP id m10-20020a5d6a0a000000b003331d9cc34bmr291831wru.41.1701854478657;
-        Wed, 06 Dec 2023 01:21:18 -0800 (PST)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id g7-20020a5d4887000000b003335ebde680sm2792854wrq.75.2023.12.06.01.21.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 01:21:18 -0800 (PST)
-Message-ID: <3ba0015b-b36e-449a-8445-0f6272694db5@redhat.com>
-Date:   Wed, 6 Dec 2023 10:21:16 +0100
-MIME-Version: 1.0
+        Wed, 6 Dec 2023 04:22:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B9B122;
+        Wed,  6 Dec 2023 01:22:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701854564; x=1733390564;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=m58+OABhMImQxmHMZHpjqE6dhmyAvQdJ8qj6gnb8R1I=;
+  b=DL2I/8hRrAZyWDeLvxdAvi1q4zX3Ox/J18FdwFsrlmRcjHwJXrYEwLAS
+   LL9JAZDdaSgxFfrUIIwDgTfgo4w9xhwwom64LJ7iTarxbA9KldjeP4O91
+   BjG8F+SV2cuNwVZK5+/kFDaN3A05qn6Ur+pBVaqmQpJxKm4ixCbzbeq2j
+   swFmMIXt3P7QbV5jzHYFBeatmUWpKR76sehKYTmMsz3C7fI3L4m0cfaAv
+   B65VkR69W8ebnbF0dUCapDx0Ve5Tr8sAsgU+0AYo3ScF0vC8s31+5e9Pp
+   +S4C59rl5hweHN7s9IlcF/xr0V2wDtedwcD8bmvGVG3KX/RxYX9RJeZhE
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="425185680"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="425185680"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 01:22:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="889282312"
+X-IronPort-AV: E=Sophos;i="6.04,254,1695711600"; 
+   d="scan'208";a="889282312"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Dec 2023 01:22:44 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Dec 2023 01:22:43 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Dec 2023 01:22:43 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 6 Dec 2023 01:22:43 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 6 Dec 2023 01:22:42 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iXSn2fEkME8GzpqswuksGGbrowwyaiZmFdMBhxFJvTOPOLJkS3sQNjD+x+jOyk1DuWMaXwlN3eijGUHNsmuq2Ef137l42LZu1VE2TQL/9xARspGntRze+PLPpQy/sKXbcB/AKLzGVbQXtJvg+bZ7r3acQaRecoGf0IBddl3uV4LQDt/gJb0fPi4OSaEOkz5jyoBz47ejYc8W3HpC++DeoIVyY0wvLG9aH7s2QqzQNIMDRm8lNlrzFdlb7DvY95w2jEaw0oA7zrH8kU+IqcBl8klVQlmV4l0tu/0cBA6qcr7By81oubsuq8LRtmlyS0QkrsaaziGYuiSGb8n5i3mvCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=03FtxWgcW+sETWc+uZAaZ7iq8kmeiZHAGsN7Wq8VazY=;
+ b=ZB+rylnHj9BrzqRVt7rrgnZWo3kW82AlCQBCH9wH9bbWBM+RUBHv+cUB0bBWUJ6Lpr50AS2pOrxeSxBZv8NWjDYtHNqDeJs3OqjbZmg+A6zuhLFTSb5VK94zLlb/i4Iy01LvCL6tfauZz5w63ggKbSUWk6h/d+gBzKvAgWL4hNnGIO+9Wk9wlcxICsl23hcVlydP+OnFlPE6rAWYL0JXxHg6teT/bOTtiveewPbSMO8MuZtmQXmIOtPwElrx0twptWbLxH4At6I0/FURx6YXOWJAnAiPmqSgYqvEP0ON13Ott+UNp+L4jx9x4IalHxloSSTG0qDmbtOJtMHXDIoj9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by PH0PR11MB7522.namprd11.prod.outlook.com (2603:10b6:510:289::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 09:22:40 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7046.033; Wed, 6 Dec 2023
+ 09:22:40 +0000
+Message-ID: <73119078-7483-42e0-bb1f-b696932b6cd2@intel.com>
+Date:   Wed, 6 Dec 2023 17:22:29 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+Subject: Re: [PATCH v7 26/26] KVM: nVMX: Enable CET support for nested guest
 Content-Language: en-US
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <20231121171643.3719880-1-surenb@google.com>
- <20231121171643.3719880-6-surenb@google.com>
- <b3c882d2-0135-430c-8179-784f78be0902@arm.com>
- <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
- <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com>
- <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
- <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
- <744be4e0-48e0-4c77-825c-711386dd205f@arm.com>
- <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
- <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com>
- <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
- <CAJuCfpG=seLkKbMRjwuWNQozGSQmP-JqKVUuCGRqMqxND2u18A@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAJuCfpG=seLkKbMRjwuWNQozGSQmP-JqKVUuCGRqMqxND2u18A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+CC:     <seanjc@google.com>, <pbonzini@redhat.com>,
+        <dave.hansen@intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <peterz@infradead.org>,
+        <chao.gao@intel.com>, <rick.p.edgecombe@intel.com>,
+        <john.allen@amd.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+ <20231124055330.138870-27-weijiang.yang@intel.com>
+ <2e280f545e8b15500fc4a2a77f6000a51f6f8bbd.camel@redhat.com>
+ <e7d399a2-a4ff-4e27-af09-a8611985648a@intel.com>
+ <8a2216b0c1a945e33a18a981cbce7737a07de52d.camel@redhat.com>
+From:   "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <8a2216b0c1a945e33a18a981cbce7737a07de52d.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR04CA0170.apcprd04.prod.outlook.com (2603:1096:4::32)
+ To PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|PH0PR11MB7522:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63344200-ea4a-4f55-6acc-08dbf63ce4df
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0ZkgahDMwsmrS0eSDpH2uOpukGaYRRhpk7TBJdl0ajOQlogrPZgVEdJnKwX4Rb9bO+w9+I3BMLu67VB06OWoDLX1YeF8pqvkNpEtRWf31+mVg4dS7GEDF5XAlfad+92oRScs/O2g4l7hmCTecQwvF6u4aNyaaBSeWDdXe1PHwmaEVOUcuI0HPCWC3sfDq7wxD44VMVj2fg9u952uhWYg/Odsx4jkqofbz1WBL04bRYIJrWuuho2hUyj1dZDPAE2fBXs3P+/7p0IrOdGtBvyghukzc2C+hoIqEG5si9++NYPsAgIC1h27N3GF36g4AcVv3/mhySh0dqMTuS2oB9KDXR570l74fPovZhQ4osr8yiHyUnMQ3yRFBnuxe4Wvg9k3S35lwwrpFQ9VAGlcGESmU6J5OPW08R34HdZVX1FUCcGfq8t7us6Tq7/Tek/LLeRtaxodLr+jFSukTRLBEYZKca4X32mIbsuVvpWCd4XLMQJR/94OfElL9MsOhBBcvYRekAajuUk2IFT99dn9rsregS1exOFAqhVrvXkNW+Y7v3u3IynH3A9K9rEiMia+mg4v+h2yZ1b6jnVgFsqGNiop4kaWgbLRPCcbZW9HVV3DV63fpvbZxIpeo4Vyq7mApDKjaEXAj3NZ3iTOypQcaBptCA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39860400002)(396003)(366004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(82960400001)(6512007)(83380400001)(53546011)(2616005)(26005)(36756003)(86362001)(31696002)(2906002)(4326008)(8676002)(8936002)(41300700001)(5660300002)(6916009)(66476007)(66946007)(66556008)(316002)(6506007)(6666004)(478600001)(6486002)(38100700002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bjR1d1c0b1dFanBPN2JuQ1FFcEdWRmF5Ym9nQ1JHc1dNaC9yS0dBaXF3Vktu?=
+ =?utf-8?B?Q3JXYzMrWkc3NndldTFQc3R3VnVFNjEvQ0pncHZ4dEZ3L2p5aTJLNXRtaTM0?=
+ =?utf-8?B?QTlMMjlpbmQ0OURoRFEwU1pZU2sycjZVOFRvR05EN2Y1alp1dWc5UWJ5UXNm?=
+ =?utf-8?B?NERHWldnaXpTeUVHR2hkSGcxNi9ZWVlwbmlCSkhpQnpOcVdENzFJWlRaWHVW?=
+ =?utf-8?B?dU40eWRmUkVVWGVCSnM4bGozR09EQ3JvNXdRZzRjMzN1U09DR1ExRE1lamJW?=
+ =?utf-8?B?emZYTVl6R05WZGwrZmtOdDZsK29QU3duL3lyVDU3TFR4SFhRYUxWdDIvazVi?=
+ =?utf-8?B?YUsxcEQ0RUI1NFgybEY1UzZpNC9XNFJGK2lxcnBKaTBSWFJUZ3ExdG13MGlx?=
+ =?utf-8?B?TlVCajh0NXNmUkJSQkVBRE01L2kvTWhzV3VZbFZGRGpsRzVWOUV4aDF0d0Nl?=
+ =?utf-8?B?TVI3Z0Ztemt6UjVCNm9PZkR2dEJldVlUNmxySXhrQk1acWRoRmp5VVQ5UzdN?=
+ =?utf-8?B?aEdZaWw4SytBRmhYamRMV3poUVlqWUlHbXFMZWtodmt4OWl0bnJiQlhQN0w4?=
+ =?utf-8?B?SzgzQUFzUTlTUjFFN1dJUllmRXRrRjY4ZnlsZlhVeXBGVEJoTDVLSUNLOEJ0?=
+ =?utf-8?B?VURPN01Ga1V1YXJmY25UUzYwdzFpNkdMU1M0bDNXK2VrZUt3Wjk0UFc5ZGFC?=
+ =?utf-8?B?VU9td2lFcTlxVzJWSXdRZGNycGlJT2tuOXdMa3dDanQ0Vk5Rd3ZhNG9yeHVK?=
+ =?utf-8?B?R2JrVDhRTVBMS3NHUTlUZkdybmJlOHZncGhHZVRqWmRXQzhxYUVNamh0eUE2?=
+ =?utf-8?B?Uk4rWTQxdWhuSnBIend3cDdETmV0NUJrRmhMNUw2MUJIOEVxUERManZaazI5?=
+ =?utf-8?B?NVh6V2daZXUrWVo3SEpoSkZES2hhNTNPYnVINmc4dXBrZ1ZHdjJaMWxjZUhM?=
+ =?utf-8?B?elQxRHE3c2R2eVJ2b2MxTzN3TTVTV1pLemsrN202TC9sQ3RDckp2aEdMSkdw?=
+ =?utf-8?B?TUZxQnl6RGJzZlBQM0xsb2xyWlZLRjU5Z3d2MHFObnNiK3FMbWxOY2VncUc4?=
+ =?utf-8?B?dnl2TUhBK0JLRk5Rd0pwaXVGbENtSUJ5ZS9KM1JlL1JVWmh2V0J5eVpuclll?=
+ =?utf-8?B?a2VyRXpEb3RvYUt6ZE4rd2RJY0dUdkRlYzJwNnc5Z2diYVhLajVHbytyWUpv?=
+ =?utf-8?B?K3J0WXp2OXYrQ1BRMjdBdmhGVEVjSVJiZ1NseTlVMTQrTGVzR3dsN051cGow?=
+ =?utf-8?B?YmwzcTgvMXlGbjhQeEQ4OHZNWEtPOHpOWUg5b2M0bFB0VE5OUzVLN2VrQWtk?=
+ =?utf-8?B?eXpUVEdsY3cvaFNFVk4rNzdnQ1Z0Y0tKVmNtY2tBVFRNK2Y3VnhFT2x1cVBy?=
+ =?utf-8?B?MlQ4dTZxcnVNcnhPU1hQTGxhQkROYVJGZytuNS9yMUdhRGlCTWt3enFjQzdN?=
+ =?utf-8?B?Qzh0SUN0SzJVSkZML0NVU0t6ZkxqbEN3VFNJcnpNUEVUQzNMYzhwZUQyUWJt?=
+ =?utf-8?B?ZFVjdVlTS0RGT0VoeXVXZDdBWEgrRTdmRTVDemIvdWM1Q0xZQWE3bThNOXB2?=
+ =?utf-8?B?czRsVWEyRk81dzE4QjBpNkZtVy9qaXhYNnRIVjdmelpDZVlSMllkTlZwSGFR?=
+ =?utf-8?B?T2dpTzdrZTExNzBGeUhoQVdzNm5LUEdYaGY1S1N2SVJvcDZOdThxSVRwbjZU?=
+ =?utf-8?B?Wmg0QS8za2E3aUxyOW9FTnFYY2U0bkJORFcrUEhSM3FuQ2xJUi9SU2EwRm5w?=
+ =?utf-8?B?OVZJaU1DMUZZQ3lHTTdHWUh0eWd5K3hlMlluWU9qK0R4bGlGTFcvSXVReFJW?=
+ =?utf-8?B?ZmN2MmhWUm03OXZYMFdKaEhidkljTWxYdTdBcWFQWk50YjA4UnUxNWdFUEhy?=
+ =?utf-8?B?bTkzOFlLSXVWOU82K3ovT2RkbnF3bTQyOWhJc0VHbFRzbnJwY1NQK05DSjJo?=
+ =?utf-8?B?WjNIZzRMK2VjeE1KL1UxTWlUaEtjOVZVRi9RbVdEdkZueWcwbFJ0bXFPT2FM?=
+ =?utf-8?B?OVM3UjA2djdPUjFWKzlIL1FxTXF5YXlsOCswcnA2RkxENVdGb2JZbG12emlF?=
+ =?utf-8?B?MWt2b3lWOU9vTjRyVi9TN2taR3IvYWZ5RkV2MTZQNVhKdy9oVng1RGRJRVN2?=
+ =?utf-8?B?QWVjcWhOMnJYU0MrRVF0SG85dlltNTViRXZ0R1hBY3M3cEZQRHVUMENKaXNR?=
+ =?utf-8?B?ZGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63344200-ea4a-4f55-6acc-08dbf63ce4df
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 09:22:40.4964
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EOyCTUIHfOFH693Jl1b3DGGY79NvtLTBOdvS0NYLS3bVqbDkC+0WeqCu7afTqjkiXGdLOp4Fv8ySOtGMcRs7Eg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7522
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
@@ -146,135 +168,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.12.23 05:46, Suren Baghdasaryan wrote:
-> On Mon, Dec 4, 2023 at 10:44 AM Suren Baghdasaryan <surenb@google.com> wrote:
->>
->> On Mon, Dec 4, 2023 at 10:27 AM David Hildenbrand <david@redhat.com> wrote:
->>>
->>> On 04.12.23 17:35, Suren Baghdasaryan wrote:
->>>> On Mon, Dec 4, 2023 at 1:27 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>
->>>>> On 04/12/2023 04:09, Suren Baghdasaryan wrote:
->>>>>> On Sat, Dec 2, 2023 at 2:11 AM David Hildenbrand <david@redhat.com> wrote:
->>>>>>>
->>>>>>> On 02.12.23 09:04, Ryan Roberts wrote:
->>>>>>>> On 01/12/2023 20:47, David Hildenbrand wrote:
->>>>>>>>> On 01.12.23 10:29, Ryan Roberts wrote:
->>>>>>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
->>>>>>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
->>>>>>>>>>> into destination buffer while checking the contents of both after
->>>>>>>>>>> the move. After the operation the content of the destination buffer
->>>>>>>>>>> should match the original source buffer's content while the source
->>>>>>>>>>> buffer should be zeroed. Separate tests are designed for PMD aligned and
->>>>>>>>>>> unaligned cases because they utilize different code paths in the kernel.
->>>>>>>>>>>
->>>>>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->>>>>>>>>>> ---
->>>>>>>>>>>      tools/testing/selftests/mm/uffd-common.c     |  24 +++
->>>>>>>>>>>      tools/testing/selftests/mm/uffd-common.h     |   1 +
->>>>>>>>>>>      tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
->>>>>>>>>>>      3 files changed, 214 insertions(+)
->>>>>>>>>>>
->>>>>>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
->>>>>>>>>>> b/tools/testing/selftests/mm/uffd-common.c
->>>>>>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
->>>>>>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
->>>>>>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
->>>>>>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
->>>>>>>>>>>          return __copy_page(ufd, offset, false, wp);
->>>>>>>>>>>      }
->>>>>>>>>>>      +int move_page(int ufd, unsigned long offset, unsigned long len)
->>>>>>>>>>> +{
->>>>>>>>>>> +    struct uffdio_move uffdio_move;
->>>>>>>>>>> +
->>>>>>>>>>> +    if (offset + len > nr_pages * page_size)
->>>>>>>>>>> +        err("unexpected offset %lu and length %lu\n", offset, len);
->>>>>>>>>>> +    uffdio_move.dst = (unsigned long) area_dst + offset;
->>>>>>>>>>> +    uffdio_move.src = (unsigned long) area_src + offset;
->>>>>>>>>>> +    uffdio_move.len = len;
->>>>>>>>>>> +    uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
->>>>>>>>>>> +    uffdio_move.move = 0;
->>>>>>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
->>>>>>>>>>> +        /* real retval in uffdio_move.move */
->>>>>>>>>>> +        if (uffdio_move.move != -EEXIST)
->>>>>>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
->>>>>>>>>>> +                (int64_t)uffdio_move.move);
->>>>>>>>>>
->>>>>>>>>> Hi Suren,
->>>>>>>>>>
->>>>>>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
->>>>>>>>>>
->>>>>>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (errno=16,
->>>>>>>>>> @uffd-common.c:648)
->>>>>>>>>>
->>>>>>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged any further, but
->>>>>>>>>> happy to go deeper if you can direct.
->>>>>>>>>
->>>>>>>>> Does it trigger reliably? Which pagesize is that kernel using?
->>>>>>>>
->>>>>>>> Yep, although very occasionally it fails with EAGAIN. 4K kernel; see other email
->>>>>>>> for full config.
->>>>>>>>
->>>>>>>>>
->>>>>>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault() uses
->>>>>>>>> default_huge_page_size(), which reads the default hugetlb size.
->>>>>>>>
->>>>>>>> My kernel command line is explicitly seting the default huge page size to 2M.
->>>>>>>>
->>>>>>>
->>>>>>> Okay, so that likely won't affect it.
->>>>>>>
->>>>>>> I can only guess that it has to do with the alignment of the virtual
->>>>>>> area we are testing with, and that we do seem to get more odd patterns
->>>>>>> on arm64.
->>>>>>>
->>>>>>> uffd_move_test_common() is a bit more elaborate, but if we aligned the
->>>>>>> src+start area up, surely "step_count" cannot be left unmodified?
->>>>>>>
->>>>>>> So assuming we get either an unaligned source or an unaligned dst from
->>>>>>> mmap(), I am not convinced that we won't be moving areas that are not
->>>>>>> necessarily fully backed by PMDs and maybe don't even fall into the VMA
->>>>>>> of interest?
->>>>>>>
->>>>>>> Not sure if that could trigger the THP splitting issue, though.
->>>>>>>
->>>>>>> But I just quickly scanned that test setup, could be I am missing
->>>>>>> something. It might make sense to just print the mmap'ed range and the
->>>>>>> actual ranges we are trying to move. Maybe something "obvious" can be
->>>>>>> observed.
->>>>>>
->>>>>> I was able to reproduce the issue on an Android device and after
->>>>>> implementing David's suggestions to split the large folio and after
->>>>>> replacing default_huge_page_size() with read_pmd_pagesize(), the
->>>>>> move-pmd test started working for me. Ryan, could you please apply
->>>>>> attached patches (over mm-unstable) and try the test again?
->>>>>
->>>>> Yep, all fixed with those patches!
->>>>
->>>> Great! Thanks for testing and confirming. I'll post an updated
->>>> patchset later today and will ask Andrew to replace the current one
->>>> with it.
->>>> I'll also look into the reasons we need to split PMD on ARM64 in this
->>>> test. It's good that this happened and we were able to test the PMD
->>>> split path but I'm curious about the reason. It's possible my address
->>>> alignment calculations are  somehow incorrect.
->>>
->>> I only skimmed the diff briefly, but likely you also want to try
->>> splitting in move_pages_pte(), if you encounter an already-pte-mapped THP.
->>
->> Huh, good point. I might be able to move the folio splitting code into
->> pte-mapped case and do a retry after splitting. That should minimize
->> the additional code required. Will do and post a new set shortly.
->> Thanks!
-> 
-> Was planning to post an update today but need some more time. Will try
-> to send it tomorrow.
+On 12/5/2023 6:12 PM, Maxim Levitsky wrote:
+> On Mon, 2023-12-04 at 16:50 +0800, Yang, Weijiang wrote:
 
-It would be great to have tests that cover these cases (having to 
-PTE-map a PMD-mapped THP, and stumbling over an already-PTE-mapped one).
+[...]
 
--- 
-Cheers,
+>>>>    	vmx->nested.force_msr_bitmap_recalc = false;
+>>>> @@ -2469,6 +2491,18 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>>>>    		if (kvm_mpx_supported() && vmx->nested.nested_run_pending &&
+>>>>    		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_BNDCFGS))
+>>>>    			vmcs_write64(GUEST_BNDCFGS, vmcs12->guest_bndcfgs);
+>>>> +
+>>>> +		if (vmx->nested.nested_run_pending &&
+>>> I don't think that nested.nested_run_pending check is needed.
+>>> prepare_vmcs02_rare is not going to be called unless the nested run is pending.
+>> But there're other paths along to call prepare_vmcs02_rare(), e.g., vmx_set_nested_state()-> nested_vmx_enter_non_root_mode()-> prepare_vmcs02_rare(), especially when L1 instead of L2 was running. In this case, nested.nested_run_pending == false,
+>> we don't need to update vmcs02's fields at the point until L2 is being resumed.
+> - If we restore VM from migration stream when L2 is *not running*, then prepare_vmcs02_rare won't be called,
+> because nested_vmx_enter_non_root_mode will not be called, because in turn there is no nested vmcs to load.
+>
+> - If we restore VM from migration stream when L2 is *about to run* (KVM emulated the VMRESUME/VMLAUNCH,
+> but we didn't do the actual hardware VMLAUNCH/VMRESUME on vmcs02, then the 'nested_run_pending' will be true, it will be restored
+> from the migration stream.
+>
+> - If we migrate while nested guest was run once but didn't VMEXIT to L1 yet, then yes, nested.nested_run_pending will be false indeed,
+> but we still need to setup vmcs02, otherwise it will be left with default zero values.
 
-David / dhildenb
+Thanks a lot for recapping these cases! I overlooked some nested flags before. It makes sense to remove nested.nested_run_pending.
+> Remember that prior to setting nested state the VM wasn't running even once usually, unlike when the guest enters nested state normally.
+>
+>>>> +		    (vmcs12->vm_entry_controls & VM_ENTRY_LOAD_CET_STATE)) {
+>>>> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
+>>>> +				vmcs_writel(GUEST_SSP, vmcs12->guest_ssp);
+>>>> +				vmcs_writel(GUEST_INTR_SSP_TABLE,
+>>>> +					    vmcs12->guest_ssp_tbl);
+>>>> +			}
+>>>> +			if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
+>>>> +			    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT))
+>>>> +				vmcs_writel(GUEST_S_CET, vmcs12->guest_s_cet);
+>>>> +		}
+>>>>    	}
+>>>>    
+>>>>    	if (nested_cpu_has_xsaves(vmcs12))
+>>>> @@ -4300,6 +4334,15 @@ static void sync_vmcs02_to_vmcs12_rare(struct kvm_vcpu *vcpu,
+>>>>    	vmcs12->guest_pending_dbg_exceptions =
+>>>>    		vmcs_readl(GUEST_PENDING_DBG_EXCEPTIONS);
+>>>>    
+>>>> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK)) {
+>>>> +		vmcs12->guest_ssp = vmcs_readl(GUEST_SSP);
+>>>> +		vmcs12->guest_ssp_tbl = vmcs_readl(GUEST_INTR_SSP_TABLE);
+>>>> +	}
+>>>> +	if (guest_can_use(&vmx->vcpu, X86_FEATURE_SHSTK) ||
+>>>> +	    guest_can_use(&vmx->vcpu, X86_FEATURE_IBT)) {
+>>>> +		vmcs12->guest_s_cet = vmcs_readl(GUEST_S_CET);
+>>>> +	}
+>>> The above code should be conditional on VM_ENTRY_LOAD_CET_STATE - if the guest (L2) state
+>>> was loaded, then it must be updated on exit - this is usually how VMX works.
+>> I think this is not for L2 VM_ENTRY_LOAD_CET_STATE, it happens in prepare_vmcs02_rare(). IIUC, the guest registers will be saved into VMCS fields unconditionally when vm-exit happens,
+>> so these fields for L2 guest should be synced to L1 unconditionally.
+> "the guest registers will be saved into VMCS fields unconditionally"
+> This is not true, unless there is a bug.
+
+I checked the latest SDM, there's no such kind of wording regarding CET entry/exit control bits. The wording comes from
+the individual CET spec.:
+"10.6 VM Exit
+On processors that support CET, the VM exit saves the state of IA32_S_CET, SSP and IA32_INTERRUPT_SSP_TABLE_ADDR MSR to the VMCS guest-state area unconditionally."
+But since it doesn't appear in SDM, I shouldn't take it for granted.
+
+> the vmcs12 VM_ENTRY_LOAD_CET_STATE should be passed through as is to vmcs02, so if the nested guest doesn't set this bit
+> the entry/exit using vmcs02 will not touch the CET state, which is unusual but allowed by the spec I think - a nested hypervisor can opt for example to save/load
+> this state manually or use msr load/store lists instead.
+
+Right although the use case should be rare, will modify the code to check VM_ENTRY_LOAD_CET_STATE. Thanks!
+> Regardless of this,
+> if the guest didn't set VM_ENTRY_LOAD_CET_STATE, then vmcs12 guest fields should neither be loaded on VM entry (copied to vmcs02) nor updated on VM exit,
+> (that is copied back to vmcs12) this is what is written in the VMX spec.
+
+What's the VMX spec. your're referring to here?
+
 
