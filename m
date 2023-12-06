@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D4E80688D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D3C806891
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376689AbjLFHhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:37:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41990 "EHLO
+        id S231563AbjLFHhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:37:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjLFHhT (ORCPT
+        with ESMTP id S230402AbjLFHhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:37:19 -0500
+        Wed, 6 Dec 2023 02:37:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C3DD44
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 935E3C433CA;
-        Wed,  6 Dec 2023 07:37:23 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333281BD
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 716DFC433C8;
+        Wed,  6 Dec 2023 07:37:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701848245;
-        bh=au2qVoU5EGZL30OW66lkI/5jEIUbbaf09JZzLT3iJUg=;
+        s=k20201202; t=1701848246;
+        bh=Ukprb5PhFT14ziQTaeRyUiVmJt5daqc4bA2YTTuvN/g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g8tz2A1oQC/+OIygUHzxU9xtNKIx5eyfn2meA3opHbAaDXKIic+FxOJ6vx3/Rl+QZ
-         NMM4HEmvw9oprmXzS+aTJL4zEXmsVA6hp90YJEt5IGgsMi6KlOJeA8UiWpKV4iUeIb
-         /habrDPXEnmzRJ0rs46KOdacSQtqCwJ7Ywjs0HfFrnntLnaYJv9M+sObG5ig62bQ3g
-         jer1OPoO74nevnfLWU/B9iZumUSRWeCCa2DyvBVWy4JmpBz1WEmz3b9YFYCNMXT9A+
-         WbBxcGGIVTe2+hXHiZLHAGaORQIX5CUIZDDnbyJuZ1zOvbXn6+/XozE1+O8tO7n2jz
-         SUQcHquOkWK8Q==
+        b=kiAJ9ZnE/0SeG1sPJvu0yDeIk03vlZgnsyPIvBWLB/dZkKeBDmpFrWHdF+UP1kY7m
+         2VNKVqzoYMUWrSQWfaRGJGJZXCI3nQBk8Qn2995h/XH6urPfqfYrIsPwFcIjxclOoO
+         biA0KnckEXwumf6gSpT8yFSfuCKveraUROgSExoeaDxiqmttgut/FemNlEDDKHAmTA
+         LVs8XrPkktWJ4cNxqj9JJFm779q80TgTtFOYWeUzIVETVHhF+RUAhJkntmgd9+W8uC
+         j/ZKtNJESRei9Fe1qkHqyUWBSwf8HQdXSqDtz59fe7I5LOj71emfG2gxWaMOZlxScx
+         UM+QMEBLnk8pg==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Subject: [PATCH 02/27] tty: mmc: sdio_uart: switch sdio_in() to return u8
-Date:   Wed,  6 Dec 2023 08:36:47 +0100
-Message-ID: <20231206073712.17776-3-jirislaby@kernel.org>
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Subject: [PATCH 03/27] tty: switch tty_port::xmit_* to u8
+Date:   Wed,  6 Dec 2023 08:36:48 +0100
+Message-ID: <20231206073712.17776-4-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
 References: <20231206073712.17776-1-jirislaby@kernel.org>
@@ -50,82 +49,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sdio_in() returns a value returned from sdio_readb(). The latter returns
-u8. So should the former. Therefore, switch sdio_in() return type to u8
-and all its callers too.
+Both xmit_buf and xmit_fifo of struct tty_port should be u8. To conform
+to characters in the rest of the tty layer.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-mmc@vger.kernel.org
 ---
- drivers/mmc/core/sdio_uart.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ drivers/tty/tty_port.c   | 2 +-
+ include/linux/tty_port.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mmc/core/sdio_uart.c b/drivers/mmc/core/sdio_uart.c
-index ef38dcd3a887..a05322f15771 100644
---- a/drivers/mmc/core/sdio_uart.c
-+++ b/drivers/mmc/core/sdio_uart.c
-@@ -178,11 +178,9 @@ static inline void sdio_uart_release_func(struct sdio_uart_port *port)
- 		sdio_release_host(port->func);
- }
- 
--static inline unsigned int sdio_in(struct sdio_uart_port *port, int offset)
-+static inline u8 sdio_in(struct sdio_uart_port *port, int offset)
- {
--	unsigned char c;
--	c = sdio_readb(port->func, port->regs_offset + offset, NULL);
--	return c;
-+	return sdio_readb(port->func, port->regs_offset + offset, NULL);
- }
- 
- static inline void sdio_out(struct sdio_uart_port *port, int offset, int value)
-@@ -192,8 +190,8 @@ static inline void sdio_out(struct sdio_uart_port *port, int offset, int value)
- 
- static unsigned int sdio_uart_get_mctrl(struct sdio_uart_port *port)
- {
--	unsigned char status;
- 	unsigned int ret;
-+	u8 status;
- 
- 	/* FIXME: What stops this losing the delta bits and breaking
- 	   sdio_uart_check_modem_status ? */
-@@ -354,14 +352,13 @@ static void sdio_uart_stop_rx(struct sdio_uart_port *port)
- 	sdio_out(port, UART_IER, port->ier);
- }
- 
--static void sdio_uart_receive_chars(struct sdio_uart_port *port,
--				    unsigned int *status)
-+static void sdio_uart_receive_chars(struct sdio_uart_port *port, u8 *status)
- {
--	unsigned int ch, flag;
-+	unsigned int flag;
- 	int max_count = 256;
- 
- 	do {
--		ch = sdio_in(port, UART_RX);
-+		u8 ch = sdio_in(port, UART_RX);
- 		flag = TTY_NORMAL;
- 		port->icount.rx++;
- 
-@@ -449,8 +446,8 @@ static void sdio_uart_transmit_chars(struct sdio_uart_port *port)
- 
- static void sdio_uart_check_modem_status(struct sdio_uart_port *port)
- {
--	int status;
- 	struct tty_struct *tty;
-+	u8 status;
- 
- 	status = sdio_in(port, UART_MSR);
- 
-@@ -499,7 +496,7 @@ static void sdio_uart_check_modem_status(struct sdio_uart_port *port)
- static void sdio_uart_irq(struct sdio_func *func)
- {
- 	struct sdio_uart_port *port = sdio_get_drvdata(func);
--	unsigned int iir, lsr;
-+	u8 iir, lsr;
- 
- 	/*
- 	 * In a few places sdio_uart_irq() is called directly instead of
+diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
+index ef72d2e4b928..14cca33d2269 100644
+--- a/drivers/tty/tty_port.c
++++ b/drivers/tty/tty_port.c
+@@ -247,7 +247,7 @@ int tty_port_alloc_xmit_buf(struct tty_port *port)
+ 	/* We may sleep in get_zeroed_page() */
+ 	mutex_lock(&port->buf_mutex);
+ 	if (port->xmit_buf == NULL) {
+-		port->xmit_buf = (unsigned char *)get_zeroed_page(GFP_KERNEL);
++		port->xmit_buf = (u8 *)get_zeroed_page(GFP_KERNEL);
+ 		if (port->xmit_buf)
+ 			kfifo_init(&port->xmit_fifo, port->xmit_buf, PAGE_SIZE);
+ 	}
+diff --git a/include/linux/tty_port.h b/include/linux/tty_port.h
+index 3276311a7f38..1b861f2100b6 100644
+--- a/include/linux/tty_port.h
++++ b/include/linux/tty_port.h
+@@ -114,8 +114,8 @@ struct tty_port {
+ 	unsigned char		console:1;
+ 	struct mutex		mutex;
+ 	struct mutex		buf_mutex;
+-	unsigned char		*xmit_buf;
+-	DECLARE_KFIFO_PTR(xmit_fifo, unsigned char);
++	u8			*xmit_buf;
++	DECLARE_KFIFO_PTR(xmit_fifo, u8);
+ 	unsigned int		close_delay;
+ 	unsigned int		closing_wait;
+ 	int			drain_delay;
 -- 
 2.43.0
 
