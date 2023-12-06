@@ -2,179 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE28E8072E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C728072EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379184AbjLFOqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 09:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
+        id S1442439AbjLFOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 09:46:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379165AbjLFOpt (ORCPT
+        with ESMTP id S1379089AbjLFOp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 09:45:49 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261C219AE;
-        Wed,  6 Dec 2023 06:45:32 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6CNYur000496;
-        Wed, 6 Dec 2023 14:45:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=O8G/wda6BFaQVkzBoWMdtyiVqTBihnOqQRD4FjYIZlM=;
- b=hhG8CZtOB8WY/Dxi4ljzjRehEvwisB0TePasr5DUtm71M7EtD0Tqu7BW73iPRdOuDN7B
- Mggsodg7CRc0GXBw2BY9O+qZmwFwlab2qJvcKm5D82iblO/jWnuxTwcZ99RcfEVfdTYM
- K/ZmsioYaEKitAcVd1HuQZtJr9+9LF3QbrsehEyHQ5nilD58278/ouKQ0ESFhlyEfM1/
- Q7dh9RzwJuRFVStuBFT10fO1XdpjXZtH40UKV9+eujfXUzr1CksNN35eOTDAKz8C69yt
- SyKipdRTKY1OEk4SuAM6YVziPaT3fuRmrz7utVOfGlyUOVCzGLakH2aUQY9FpL+Ifq2f Sg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utrwq0c9c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 14:45:08 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6Ej7jH008378
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Dec 2023 14:45:07 GMT
-Received: from [10.216.30.166] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
- 2023 06:44:59 -0800
-Message-ID: <feee5e5b-565e-8575-2bbe-61b35fa8f1dd@quicinc.com>
-Date:   Wed, 6 Dec 2023 20:14:56 +0530
+        Wed, 6 Dec 2023 09:45:57 -0500
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59541BC0
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 06:45:39 -0800 (PST)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-4649d22b78aso597446137.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 06:45:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701873938; x=1702478738; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RvuRYbFdpoGcm/YpWzxHjiZOvKmQglmv2U2Hz0xPJx8=;
+        b=MdCruztsGfzor59nRnYv+CxH//8yiFYSNbReYqh+RLkqv7zXJoYfse68eHtdq6gowM
+         MM3oBM5Ruio8ZComLRCZcU0TZ+cNnXcLBLiAG4Rjges1CodFB1iA6ne7TqzjA3QehlrV
+         b+WjKyl32l4KtqzRuuVm/WABuxCZtq0vcHL2nHepXPXOEXNFz2rAp/fc/nPrW9PwgBKi
+         EMYDx8Ox+XAvhSeiRz0kOOoI2OOhnx75HLXp4s3AtiFabOlriwkNNVOTHVBZsqN2e5fK
+         6sl8zmSbhRw7GMl0MD4zsyJzXOTLhE8QLQqr2v6or5685LM10NrX+Gxyno8CQ3bWacME
+         p+vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701873938; x=1702478738;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RvuRYbFdpoGcm/YpWzxHjiZOvKmQglmv2U2Hz0xPJx8=;
+        b=saMhYbVEoISwdzaoF4iIFIq1xHCEA91eAsYB8mk3kbg4Lm/wYKiaa7uykDOqO43tLk
+         RQrsO142uOgOJNbHEMquZN5rBsgjaI72Px1yJ5KhGZlcIq9luEsfvOzjBVJDv/cEOn/C
+         uHZMHw3xrt9cm8oJJOadf5odnm2WEGpBuHu+JYvr/K6nr5hJ9QiuYb7il5VQ20lHA48x
+         psU6Yeg/8VKcnDAaveViHMQjxq0C99ddkDvc9g03ZAhRhYt7pu7bS7bfX4jhhjh6A671
+         73WTxMdjPBZ5OaAomQjDgEXHAdxwiqkMb+rweTJ3w9zYEZFM6mK7jR8aq0CUy3Yt05fO
+         udrw==
+X-Gm-Message-State: AOJu0Yx2RugE/0AQ21uw5sYBud2ppk/OOn+eUOcAZ3y0JmG+eE97Ljan
+        KZiW2pQCMlAe145DRhACtTm2fsnDcDelQwj/ivytrA==
+X-Google-Smtp-Source: AGHT+IEgL5yvB/HTZPlguEGLqaPQzS0tF7ycaxggqTmtRTi/HtiNen24cxKjMyhwMWV/GacNHVs8A8iBwvtM4AFSvUI=
+X-Received: by 2002:a05:6102:1901:b0:464:9f88:8310 with SMTP id
+ jk1-20020a056102190100b004649f888310mr511241vsb.10.1701873938446; Wed, 06 Dec
+ 2023 06:45:38 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [RFC,v14 0/5] Add DT based PCIe wake support in PCI core driver
-Content-Language: en-US
-To:     Manikanta Maddireddy <mmaddireddy@nvidia.com>,
-        <bhelgaas@google.com>, <thierry.reding@gmail.com>,
-        <petlozup@nvidia.com>, <rafael.j.wysocki@intel.com>,
-        <lpieralisi@kernel.org>, <robh@kernel.org>,
-        <jeffy.chen@rock-chips.com>
-CC:     <krzysztof.kozlowski+dt@linaro.org>, <jonathanh@nvidia.com>,
-        <dmitry.osipenko@collabora.com>, <viresh.kumar@linaro.org>,
-        <gregkh@linuxfoundation.org>, <steven.price@arm.com>,
-        <kw@linux.com>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <vidyas@nvidia.com>
-References: <20230208111645.3863534-1-mmaddireddy@nvidia.com>
-From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20230208111645.3863534-1-mmaddireddy@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: OHSJrnn0ox_p4kpjO5kiG8M_WkqfhsSJ
-X-Proofpoint-GUID: OHSJrnn0ox_p4kpjO5kiG8M_WkqfhsSJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_12,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
- adultscore=0 lowpriorityscore=0 bulkscore=0 mlxlogscore=870 malwarescore=0
- suspectscore=0 mlxscore=0 priorityscore=1501 clxscore=1011 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312060118
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231204-slub-cleanup-hooks-v1-0-88b65f7cd9d5@suse.cz>
+ <20231204-slub-cleanup-hooks-v1-4-88b65f7cd9d5@suse.cz> <44421a37-4343-46d0-9e5c-17c2cd038cf2@linux.dev>
+ <79e29576-12a2-a423-92f3-d8a7bcd2f0ce@suse.cz> <fdd11528-b0f8-48af-8141-15c4b1b01c65@linux.dev>
+In-Reply-To: <fdd11528-b0f8-48af-8141-15c4b1b01c65@linux.dev>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 6 Dec 2023 15:44:59 +0100
+Message-ID: <CANpmjNO1_LxE9w4m_Wa5xxc1R87LhnJSZ3DV59ia3-SdQUmtpw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mm/slub: free KFENCE objects in slab_free_hook()
+To:     Chengming Zhou <chengming.zhou@linux.dev>,
+        Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Manikanta,
+On Wed, 6 Dec 2023 at 14:02, Chengming Zhou <chengming.zhou@linux.dev> wrote:
+>
+> On 2023/12/6 17:58, Vlastimil Babka wrote:
+> > On 12/5/23 14:27, Chengming Zhou wrote:
+> >> On 2023/12/5 03:34, Vlastimil Babka wrote:
+> >>> When freeing an object that was allocated from KFENCE, we do that in the
+> >>> slowpath __slab_free(), relying on the fact that KFENCE "slab" cannot be
+> >>> the cpu slab, so the fastpath has to fallback to the slowpath.
+> >>>
+> >>> This optimization doesn't help much though, because is_kfence_address()
+> >>> is checked earlier anyway during the free hook processing or detached
+> >>> freelist building. Thus we can simplify the code by making the
+> >>> slab_free_hook() free the KFENCE object immediately, similarly to KASAN
+> >>> quarantine.
+> >>>
+> >>> In slab_free_hook() we can place kfence_free() above init processing, as
+> >>> callers have been making sure to set init to false for KFENCE objects.
+> >>> This simplifies slab_free(). This places it also above kasan_slab_free()
+> >>> which is ok as that skips KFENCE objects anyway.
+> >>>
+> >>> While at it also determine the init value in slab_free_freelist_hook()
+> >>> outside of the loop.
+> >>>
+> >>> This change will also make introducing per cpu array caches easier.
+> >>>
+> >>> Tested-by: Marco Elver <elver@google.com>
+> >>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> >>> ---
+> >>>  mm/slub.c | 22 ++++++++++------------
+> >>>  1 file changed, 10 insertions(+), 12 deletions(-)
+> >>>
+> >>> diff --git a/mm/slub.c b/mm/slub.c
+> >>> index ed2fa92e914c..e38c2b712f6c 100644
+> >>> --- a/mm/slub.c
+> >>> +++ b/mm/slub.c
+> >>> @@ -2039,7 +2039,7 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> >>>   * production configuration these hooks all should produce no code at all.
+> >>>   *
+> >>>   * Returns true if freeing of the object can proceed, false if its reuse
+> >>> - * was delayed by KASAN quarantine.
+> >>> + * was delayed by KASAN quarantine, or it was returned to KFENCE.
+> >>>   */
+> >>>  static __always_inline
+> >>>  bool slab_free_hook(struct kmem_cache *s, void *x, bool init)
+> >>> @@ -2057,6 +2057,9 @@ bool slab_free_hook(struct kmem_cache *s, void *x, bool init)
+> >>>             __kcsan_check_access(x, s->object_size,
+> >>>                                  KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ASSERT);
+> >>>
+> >>> +   if (kfence_free(kasan_reset_tag(x)))
+> >>
+> >> I'm wondering if "kasan_reset_tag()" is needed here?
+> >
+> > I think so, because AFAICS the is_kfence_address() check in kfence_free()
+> > could be a false negative otherwise. In fact now I even question some of the
+>
+> Ok.
+>
+> > other is_kfence_address() checks in mm/slub.c, mainly
+> > build_detached_freelist() which starts from pointers coming directly from
+> > slab users. Insight from KASAN/KFENCE folks appreciated :)
+> >
+> I know very little about KASAN/KFENCE, looking forward to their insight. :)
+>
+> Just saw a check in __kasan_slab_alloc():
+>
+>         if (is_kfence_address(object))
+>                 return (void *)object;
+>
+> So thought it seems that a kfence object would be skipped by KASAN.
 
-I don't see any update on this series after comments.
+The is_kfence_address() implementation tolerates tagged addresses,
+i.e. if it receives a tagged non-kfence address, it will never return
+true.
 
-Is there  any plans to take up this series.
+The KASAN_HW_TAGS patches and KFENCE patches were in development
+concurrently, and at the time there was some conflict resolution that
+happened when both were merged. The
+is_kfence_address(kasan_reset_tag(..)) initially came from [1] but was
+squashed into 2b8305260fb.
 
-Thanks & Regards,
+[1] https://lore.kernel.org/all/9dc196006921b191d25d10f6e611316db7da2efc.1611946152.git.andreyknvl@google.com/
 
-Krishna Chaitanya.
-
-On 2/8/2023 4:46 PM, Manikanta Maddireddy wrote:
-> Below series [1] attempted to support DT based PCIe wake feature in generic
-> PCI core driver. This series was left at v13 and final comments are not
-> addressed. I am continuing this series from v14 by addressing all comments
-> in v13. I dropped rockchip device tree patch because I don't have hardware
-> to verify it. Instead, I verified these patches on NVIDIA Jetson AGX Orin
-> Developer Kit and included its device tree changes in this series.
->
-> [1] https://lore.kernel.org/all/20171226023646.17722-1-jeffy.chen@rock-chips.com/
->
-> Changes in v14:
-> Updated commit message for DT bindings patch to reflect that DT properties
-> are tied to PCI-PCI Bridge.
-> Addressed review comments on PCI interrupt parsing patch.
-> Dropped rockchip device tree patch.
-> Added Jetson AGX OrinDeveloper Kit device tree and Tegra PMC patches.
->
-> Changes in v13:
-> Fix compiler error reported by kbuild test robot <fengguang.wu@intel.com>
->
-> Changes in v12:
-> Only add irq definitions for PCI devices and rewrite the commit message.
-> Enable the wake irq in noirq stage to avoid possible irq storm.
->
-> Changes in v11:
-> Address Brian's comments.
-> Only support 1-per-device PCIe WAKE# pin as suggested.
-> Move to pcie port as Brian suggested.
->
-> Changes in v10:
-> Use device_set_wakeup_capable() instead of device_set_wakeup_enable(),
-> since dedicated wakeirq will be lost in device_set_wakeup_enable(false).
->
-> Changes in v9:
-> Add section for PCI devices and rewrite the commit message.
-> Fix check error in .cleanup().
-> Move dedicated wakeirq setup to setup() callback and use
-> device_set_wakeup_enable() to enable/disable.
-> Rewrite the commit message.
->
-> Changes in v8:
-> Add optional "pci", and rewrite commit message.
-> Add pci-of.c and use platform_pm_ops to handle the PCIe WAKE# signal.
-> Rewrite the commit message.
->
-> Changes in v7:
-> Move PCIE_WAKE handling into pci core.
->
-> Changes in v6:
-> Fix device_init_wake error handling, and add some comments.
->
-> Changes in v5:
-> Move to pci.txt
-> Rebase.
-> Use "wakeup" instead of "wake"
->
-> Changes in v3:
-> Fix error handling.
->
-> Changes in v2:
-> Use dev_pm_set_dedicated_wake_irq.
->
-> Jeffy Chen (3):
->    dt-bindings: PCI: Add definition of PCIe WAKE# irq and PCI irq
->    of/irq: Adjust of_pci_irq parsing for multiple interrupts
->    PCI / PM: Add support for the PCIe WAKE# signal for OF
->
-> Manikanta Maddireddy (2):
->    arm64: tegra: Add PCIe port node with PCIe WAKE# for C1 controller
->    soc/tegra: pmc: Add Tegra234 PCIe wake event
->
->   Documentation/devicetree/bindings/pci/pci.txt |  8 +++
->   .../nvidia/tegra234-p3737-0000+p3701-0000.dts | 11 ++++
->   drivers/pci/of.c                              | 63 ++++++++++++++++++-
->   drivers/pci/pci-driver.c                      | 10 +++
->   drivers/pci/pci.c                             |  7 +++
->   drivers/pci/pci.h                             |  8 +++
->   drivers/soc/tegra/pmc.c                       |  1 +
->   7 files changed, 105 insertions(+), 3 deletions(-)
->
+Andrey, do you recall what issue you encountered that needed kasan_reset_tag()?
