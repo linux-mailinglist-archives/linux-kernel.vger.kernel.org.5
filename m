@@ -2,99 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367F8807847
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:58:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AE4F80784A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379068AbjLFS6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:58:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
+        id S1379117AbjLFS6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378756AbjLFS6i (ORCPT
+        with ESMTP id S1379188AbjLFS6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:58:38 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B824684
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:58:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B/13hdmqNR23VolDYTjF35n+60xsd3OI19AsLPEeAsM=; b=nFENwXmbHLBNEliqj1iolE2GRH
-        3AhlLrfAaz6ImwVamFKO8jxuGzIh5+5TSxmnWkMVn3ouIEPi+gWu40wSHmfz0HNisAXzWYn/6ImX6
-        br1bMeJBv0O6sk7CBo5m1w3aay7lb5juveDUtECS/XQ3yboe+Gaz9hI7rj97amWR9Ydqk+MHEI+9M
-        s6VXUkVgxNMgtbP+c4VH/NqdE+Tc8EvwWvOyzEl7Ub5TBqV1xkD59zo5d4FKzAGDtkzfj/jOsGVym
-        kGh12NAsjLwP07OF9rpDio8M87zus49tvvx7nZpmAl3qbuQl6sGr9UgS+sqLDGERM2NcSWctZw91+
-        wRtKsgEg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAx6T-005Euo-2F;
-        Wed, 06 Dec 2023 18:58:38 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 58F1630057E; Wed,  6 Dec 2023 19:58:37 +0100 (CET)
-Date:   Wed, 6 Dec 2023 19:58:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mintu Patel <mintupatel89@gmail.com>
-Cc:     badolevishal1116@gmail.com, chinmoyghosh2001@gmail.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        rostedt@goodmis.org, vimal.kumar32@gmail.com, will@kernel.org
-Subject: Re: [PATCH v2] rt_spin_lock: To list the correct owner of
- rt_spin_lock
-Message-ID: <20231206185837.GB9899@noisy.programming.kicks-ass.net>
-References: <20220619142038.1274-1-mintupatel89@gmail.com>
- <20220627161136.3468-1-mintupatel89@gmail.com>
+        Wed, 6 Dec 2023 13:58:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B351BD66
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:58:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19114C433C8;
+        Wed,  6 Dec 2023 18:58:46 +0000 (UTC)
+Date:   Wed, 6 Dec 2023 18:58:44 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
+        Shameerali Kolothum Thodi 
+        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
+        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
+        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
+        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
+        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
+        lpieralisi@kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
+ NORMAL_NC for IO memory
+Message-ID: <ZXDEZO6sS1dE_to9@arm.com>
+References: <20231205164318.GG2692119@nvidia.com>
+ <86bkb4bn2v.wl-maz@kernel.org>
+ <ZW9ezSGSDIvv5MsQ@arm.com>
+ <86a5qobkt8.wl-maz@kernel.org>
+ <ZW9uqu7yOtyZfmvC@arm.com>
+ <868r67blwo.wl-maz@kernel.org>
+ <ZXBlmt88dKmZLCU9@arm.com>
+ <20231206151603.GR2692119@nvidia.com>
+ <ZXCh9N2xp0efHcpE@arm.com>
+ <20231206172035.GU2692119@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220627161136.3468-1-mintupatel89@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231206172035.GU2692119@nvidia.com>
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 09:41:38PM +0530, Mintu Patel wrote:
->    rt_spin_lock is actually mutex on RT Kernel so it goes for contention
->    for lock. Currently owners of rt_spin_lock are decided before actual
->    acquiring of lock. This patch would depict the correct owner of
->    rt_spin_lock. The patch would help in solving crashes and deadlock
->    due to race condition of lock
+On Wed, Dec 06, 2023 at 01:20:35PM -0400, Jason Gunthorpe wrote:
+> On Wed, Dec 06, 2023 at 04:31:48PM +0000, Catalin Marinas wrote:
+> > > This would be fine, as would a VMA flag. Please pick one :)
+> > > 
+> > > I think a VMA flag is simpler than messing with pgprot.
+> > 
+> > I guess one could write a patch and see how it goes ;).
 > 
-> acquiring rt_spin_lock        acquired the lock       released the lock
->                     <-------->                <------->
->                     contention period         Held period
-> 
-> Thread1                             Thread2
-> _try_to_take_rt_mutex+0x95c+0x74    enqueue_task_dl+0x8cc/0x8dc
-> rt_spin_lock_slowlock_locked+0xac+2 rt_mutex_setprio+0x28c/0x574
-> rt_spin_lock_slowlock+0x5c/0x90     task_blocks_rt_mutex+0x240/0x310
-> rt_spin_lock+0x58/0x5c              rt_spin_lock_slowlock_locked+0xac/0x2
-> driverA_acquire_lock+0x28/0x56      rt_spin_lock_slowlock+0x5c/0x90
-> 				    rt_spin_lock+0x58/0x5c
->                                     driverB_acquire_lock+0x48/0x6c
-> 
-> As per above call traces sample, Thread1 acquired the rt_spin_lock and
-> went to critical section on the other hand Thread2 kept trying to acquire
-> the same rt_spin_lock held by Thread1 ie contention period is too high.
-> Finally Thread2 entered to dl queue due to high held time of the lock by
-> Thread1. The below patch would help us to know the correct owner of
-> rt_spin_lock and point us the driver's critical section. Respective
-> driver need to be debugged for longer held period of lock.
-> 
->    ex: cat /sys/kernel/debug/tracing/trace
-> 
->    kworker/u13:0-150   [003] .....11   202.761025: rt_spinlock_acquire:
-> Process: kworker/u13:0 is acquiring lock: &kbdev->hwaccess_lock
->    kworker/u13:0-150   [003] .....11   202.761039: rt_spinlock_acquired:
-> Process: kworker/u13:0 has acquired lock: &kbdev->hwaccess_lock
->    kworker/u13:0-150   [003] .....11   202.761042: rt_spinlock_released:
-> Process: kworker/u13:0 has released lock: &kbdev->hwaccess_lock
-> 
+> A lot of patches have been sent on this already :(
 
-The above is word salad and makes no sense. No other lock has special
-tracing like this, so rt_lock doesn't need it either.
+But not one with a VM_* flag. I guess we could also add a VM_VFIO flag
+which implies KVM has less restrictions on the memory type. I think
+that's more bike-shedding.
 
+The key point is that we don't want to relax this for whatever KVM may
+map in the guest but only for certain devices. Just having a vma may not
+be sufficient, we can't tell where that vma came from.
 
+So for the vfio bits, completely untested:
+
+-------------8<----------------------------
+diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+index 1929103ee59a..b89d2dfcd534 100644
+--- a/drivers/vfio/pci/vfio_pci_core.c
++++ b/drivers/vfio/pci/vfio_pci_core.c
+@@ -1863,7 +1863,7 @@ int vfio_pci_core_mmap(struct vfio_device *core_vdev, struct vm_area_struct *vma
+ 	 * See remap_pfn_range(), called from vfio_pci_fault() but we can't
+ 	 * change vm_flags within the fault handler.  Set them now.
+ 	 */
+-	vm_flags_set(vma, VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
++	vm_flags_set(vma, VM_VFIO | VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP);
+ 	vma->vm_ops = &vfio_pci_mmap_ops;
+
+ 	return 0;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 418d26608ece..6df46fd7836a 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -391,6 +391,13 @@ extern unsigned int kobjsize(const void *objp);
+ # define VM_UFFD_MINOR		VM_NONE
+ #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
+
++#ifdef CONFIG_64BIT
++#define VM_VFIO_BIT		39
++#define VM_VFIO			BIT(VM_VFIO_BIT)
++#else
++#define VM_VFIO			VM_NONE
++#endif
++
+ /* Bits set in the VMA until the stack is in its final location */
+ #define VM_STACK_INCOMPLETE_SETUP (VM_RAND_READ | VM_SEQ_READ | VM_STACK_EARLY)
+-------------8<----------------------------
+
+In KVM, Akita's patch would take this into account, not just rely on
+"device==true".
+
+> > > > If we want the VMM to drive this entirely, we could add a new mmap()
+> > > > flag like MAP_WRITECOMBINE or PROT_WRITECOMBINE. They do feel a bit
+> > > 
+> > > As in the other thread, we cannot unconditionally map NORMAL_NC into
+> > > the VMM.
+> > 
+> > I'm not suggesting this but rather the VMM map portions of the BAR with
+> > either Device or Normal-NC, concatenate them (MAP_FIXED) and pass this
+> > range as a memory slot (or multiple if a slot doesn't allow multiple
+> > vmas).
+> 
+> The VMM can't know what to do. We already talked about this. The VMM
+> cannot be involved in the decision to make pages NORMAL_NC or
+> not. That idea ignores how actual devices work.
+[...]
+> > Are the Device/Normal offsets within a BAR fixed, documented in e.g. the
+> > spec or this is something configurable via some MMIO that the guest
+> > does.
+> 
+> No, it is fully dynamic on demand with firmware RPCs.
+
+I think that's a key argument. The VMM cannot, on its own, configure the
+BAR and figure a way to communicate this to the guest. We could invent
+some para-virtualisation/trapping mechanism but that's unnecessarily
+complicated. In the DPDK case, DPDK both configures and interacts with
+the device. In the VMM/VM case, we need the VM to do this, we can't
+split the configuration in VMM and interaction with the device in the
+VM.
+
+-- 
+Catalin
