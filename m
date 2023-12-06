@@ -2,168 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 930228075A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D234B8075A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379359AbjLFQsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
+        id S1379475AbjLFQsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:48:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378367AbjLFQsB (ORCPT
+        with ESMTP id S1378367AbjLFQsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:48:01 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2079.outbound.protection.outlook.com [40.107.212.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82072D3;
-        Wed,  6 Dec 2023 08:48:07 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QWfoXd5+TAIII3Lz8U2uyDbCohWMjh0TLLWSCrv2YSkjDqIQPoDaLwDTnYlk+dsZ0icDho7zcuUehxmXOA8YHVxneR3v0i9exv40iiHWGGRnlHSYts061GqKSFJ01GXJ+WT48GdyqEmDMVzT41LjlGDsHCmbd0PoqbBrdVJ55+FWctYq1QfP9k/GGGe17HZFnlmEGhIGnrndomUoNhjft5Q5l1xKHA4k6KEC8o/BJAEJzgueGqmCMv45IaNDfkba6dCSWECfKVxaPoW9QywpHGVfsxYAUKohgFx6erNB0cJkd0vmTcZgOa8OyF//JEEEg0bdcqF1FjR7HCXGOmYInQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cPXFmOM2k3qyPi62hYgnnEkkF8MPM3VteBX9M4Q4HIg=;
- b=NQzORgGEqFYxfe0hHA3rtS8OEcS8aa8MyhoUhKb3EJT9YF+EymmuUJfqW0CBAle4S7Ah6sntpQlS7QGcNQZRGATOS4wzyZ+GQ0V+FdY9Z7SDnGnTusLy+wyruf9n6Q0+Oea5A8Jhsw79KQ8tKJT244K0PlzCKiAJAKCdQLE89bexUSYWJ2kBK3xp/JgW05HnKUuqEjJyHIVI1JBs6RReV4HwMf5jcXspqafvKkKEfkHNxdtIEGaMkd/Ms/nB0HxG4C3DEqbBIQe7Zki7HaU1P1pxntr3kgMqi2xyixIWFtLgAA5c5UKxKIkYzhCYll5dGMjmvhPP6NKRQwT6z6yC+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cPXFmOM2k3qyPi62hYgnnEkkF8MPM3VteBX9M4Q4HIg=;
- b=GpTJ9gaBZfwQNlpAYwlX4p+zuyaBkWYgHZsBMCtMwkhpsjRA6SGZZGswKKMR6MxkipqMlQZFmRug6/lWhlZClXkt5b9jdt0PSMF7NwkE9sOJtbXge59mAifo+v616oIaHenbkK+QRWqTGOT7AkeTWObXOyVrsilkCRf0ggjgJrLC3gSD4axKv4aXi/cWzytefBRQf1YiC2oWghIVOw5LqrV9suSgYnwyv2iysdElzn9qWfxnPWvyvIDKiIk5AbOsdF3sdJmnRkTGbfGhg+ca1wzlHZYaYk3Cf/8gj9c4nNjhX1rUhBHE6ZCifnl456TRSHnTt9gTXf//2Va1UYPQVw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by SJ1PR12MB6171.namprd12.prod.outlook.com (2603:10b6:a03:45a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Wed, 6 Dec
- 2023 16:48:03 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 16:48:03 +0000
-Date:   Wed, 6 Dec 2023 12:48:02 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, ankita@nvidia.com,
-        Shameerali Kolothum Thodi 
-        <shameerali.kolothum.thodi@huawei.com>, oliver.upton@linux.dev,
-        suzuki.poulose@arm.com, yuzenghui@huawei.com, will@kernel.org,
-        ardb@kernel.org, akpm@linux-foundation.org, gshan@redhat.com,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        mochs@nvidia.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 1/1] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <20231206164802.GT2692119@nvidia.com>
-References: <20231205130517.GD2692119@nvidia.com>
- <ZW9OSe8Z9gAmM7My@arm.com>
- <20231205164318.GG2692119@nvidia.com>
- <ZW949Tl3VmQfPk0L@arm.com>
- <20231205194822.GL2692119@nvidia.com>
- <ZXCJ3pVbKuHJ3LTz@arm.com>
- <20231206150556.GQ2692119@nvidia.com>
- <ZXCQrTbf6q0BIhSw@lpieralisi>
- <20231206153809.GS2692119@nvidia.com>
- <ZXCf_e-ACqrj6VrV@arm.com>
+        Wed, 6 Dec 2023 11:48:04 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5E3FA;
+        Wed,  6 Dec 2023 08:48:10 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50be24167efso6062022e87.3;
+        Wed, 06 Dec 2023 08:48:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701881288; x=1702486088; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WGSzAZDHU/n9n4Kl/KgrYsUZ99ohOk5K4a9HJ2xbUCo=;
+        b=EaxK1idd2SlFs/60Z5wj/1EyJxXOuMvGDZoBxHrA0BaMFswSL8CIfsVFlg9V4wge/7
+         vQsM6bXfZJyUjB3A5NNIJqlx38ouRUIJ3DjyR+9eXvHDjlPS4yxzKfPW+4jcGhJR1UOs
+         n1bJ0eznGhjL2zlcNwAzOYp5jzflA75x4G4hIhcXeWH6IUYpl/DWxiLtJp99ElGmYJCV
+         p3R/9EMpMv2PbX35EXly56LF5e3D77MWwGhWIs5oX6Mr02SXoqxKxeQ9LS0Pex0wO/y+
+         jLCEklPN/0lRFoKL9JjomKO4ilkjFj9w03YKIA6k70ZUcutPiUffon3PSz+tPIu8v/tI
+         M5Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701881288; x=1702486088;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WGSzAZDHU/n9n4Kl/KgrYsUZ99ohOk5K4a9HJ2xbUCo=;
+        b=HIKrYLyoneuqZu1mpXXZAcRZNYJL//mEfkaMXFgPPaeJRR++WrmXKrNL6r3XNCyNQA
+         tN4rKJuAjGRVGfHtbDq74KFKHSOQlUXthwJ7C34r7ZockmoT/cexyh12gmFioqNzbPvU
+         0FZ+0hPTPd9lw5LbnjwGS2Y9rXoOKAKo8B9vu1wj0XiiLJBeSIc93lqZyTahPLLlTdFp
+         woB5GKgJLUcnbL8JLOAg6h7fozvzQmIRKpEuHR4dcTTlqDNQO5GxczSb/N4tOV+Ix1Lz
+         TUxrGeWf4QXEFP/IqusqQ2o6KUIhuf2uCzhfHCUjo8C4Tlvun+zXUplE8t1EvQshdQ6Q
+         XF3Q==
+X-Gm-Message-State: AOJu0YzTevaXQLbS8romBEgj9/lV/aamPwaqf9jUPDj1Qv/K/jP5UoN9
+        bHl0pb5cKpsWueooFLs4B2c=
+X-Google-Smtp-Source: AGHT+IGGsCsfCn951B9opx/elkmniv97coLdGTP1IxFSUUNeCLwVpJYe73n4VNAi886eyirSlSS2Sg==
+X-Received: by 2002:ac2:5928:0:b0:50b:fdc0:acbb with SMTP id v8-20020ac25928000000b0050bfdc0acbbmr390516lfi.138.1701881288167;
+        Wed, 06 Dec 2023 08:48:08 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id n16-20020ac242d0000000b0050bde64af5esm1442481lfl.174.2023.12.06.08.48.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 08:48:07 -0800 (PST)
+Date:   Wed, 6 Dec 2023 19:48:05 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 09/16] net: mdio: Add Synopsys DW XPCS
+ management interface support
+Message-ID: <cv6oo27tqbfst3jrgtkg7bcxmeshadtzoomn2xgnzh2arz4nwy@wq5k7oygto6n>
+References: <20231205103559.9605-1-fancer.lancer@gmail.com>
+ <20231205103559.9605-10-fancer.lancer@gmail.com>
+ <20231205133205.3309ab91@device.home>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZXCf_e-ACqrj6VrV@arm.com>
-X-ClientProxiedBy: MN2PR15CA0063.namprd15.prod.outlook.com
- (2603:10b6:208:237::32) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ1PR12MB6171:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3866fe20-9d9b-4d36-a84b-08dbf67b1d01
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xy55FX6KsUfxybQC1kYqU37S1uHzQxNYSF+dCQ/ule99YsUs+B+bKs5KA3ADzVoVXjEXD5zPUkbQRkax6Cxg+RBoqrczc0GaV4UYN0RypLCy9GYtJp4nVBQd/prTbxUv2MFPc0ccCFrTq1dwDhvgeVdbjzIOpXh1Wh2OE67c1mG9ohpSA2FzvA/OetbSxgyQNn9tThJ19Wx4OtuT3MlePGYcKRViJUXtFzOsYP8gvQLkM0Xey3zbWejaNFlJAETuZnGMmK0EwvZrnxbOsFKCow7yJurZ5L1PG6tNkcT4yV0MjH2ZLWK6dvkTkaR3Bhu/CbrgvET/UAGzAUrj6aYJTvMtYdvx2GI8HuPivwFvF1nxzAC4ewiWEFX/q7tbewITm1QCKIXPlT2YMIsjjy1OnUvWj6xOGDlQX1NapQKvnoknsvwyoUIkrhLAJdxFL8RqpN/Zlg/pdFPb52YweMx4/SpKGUDhrEZyGPLreSqQ4T5gzFYoruq/KdeBC/fET+LfSYN8zvxsxbytBW16EupK+XzlD8EphKx3bN9JxsoVStuxAQWKqSCKV8njReoH0DOm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(39860400002)(396003)(346002)(230922051799003)(1800799012)(451199024)(186009)(64100799003)(6916009)(38100700002)(86362001)(6506007)(5660300002)(8676002)(4326008)(66476007)(54906003)(7416002)(66946007)(478600001)(316002)(41300700001)(6512007)(33656002)(2906002)(36756003)(8936002)(26005)(66556008)(1076003)(6486002)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vgXhN8xZjUaXP/Jkn9+XSSJYKDQAFzhMBnBi9G6IWC5NbmgalQB0qi0Pl+fh?=
- =?us-ascii?Q?sPtKfcSaY5+6v8faQ/AjmA6Q5Ll5Jjei4uy4jljyJOztwPSS841ZGKC+c7IF?=
- =?us-ascii?Q?4GaPd4QTEV/rfwfGefYzjfq/n6+z7qKMikiF/Uj7zofkItqarD/yYp3oXKCi?=
- =?us-ascii?Q?xeC8lJ9kfqE1kKIkmgh6yspm3I7f5jCcJLty3MQCLVwfTu+T8umI6QAo81eG?=
- =?us-ascii?Q?W5dC44SEnuyj0WT3K3b7k4DafT54sS6luWWI/JdJ0rHPKzKmc/8h7TRcJys6?=
- =?us-ascii?Q?Zk7Ta5EzSbMSmzhqeG7gcufymiBXBdU90GiceTvZsCgUTGC0AlWlM8mvANeF?=
- =?us-ascii?Q?tMgFztutzr7smddQRjJqRPMvniBVJdAb1yd714V7HkeIwQFzRsSS4mubECu4?=
- =?us-ascii?Q?6obYHSg3gxy3bPwF9Ic0uzKDMi7ZQ1A/tmOwJCHKEBdt4pSmxZL6NSDamWQp?=
- =?us-ascii?Q?GPk3AlK6vSeNNN1srxgTELIgh/t7hA6PdFH5Hm3o2Lw69t3VQYzvP+cdhXCw?=
- =?us-ascii?Q?TbJrt+3lLqfCD/dWaMR8GmVxxElc5v8NCpNJeUtiqUUnLtAv6Y/n6LDedNmo?=
- =?us-ascii?Q?+R1c5ZueFU9PHfelIaFJ8dQUhOWGi31u2CHiiziyx7hWHx1Umxp8ydjXowei?=
- =?us-ascii?Q?UlbBK/UubxdIJ0BaXEa6usOSTKqClM2Y2+Nnqxzs/7DUxxEEtVkLXl8Tk2W1?=
- =?us-ascii?Q?np1ZVmGMgIMJoB/bJu8K6TF6FzcJOyaitZlI8sPnbzoyFvSUM55At3AQvPv7?=
- =?us-ascii?Q?xNpkO1RFDfe3CuBw7SOw0Pa00L+jrnULLtq6nP3tb9AEoIJOBZ82fC4C/1bU?=
- =?us-ascii?Q?SIgukHP9HJ3xpjN52g0HEIYCYlO1TArUfhLk09uCYETg9gFUxfwTX6qPhu39?=
- =?us-ascii?Q?0q1wIqidLBGp+mVEtmlW5v3O7WOQuKPJ4QHjgtZ+Ude6VReDQsPjiCq0cB4+?=
- =?us-ascii?Q?zmyRab23UZtUnb8E2kNgOnDcZ7EZn+/Yao/Us1lEfVDDfRDhyjkGDXgD3xSx?=
- =?us-ascii?Q?YzzRDURZuiVwpdB5oFhVhAru6/8H/Rc4QsWBIs27lMbcjwaDw5ab8UegPsgn?=
- =?us-ascii?Q?rdsOIyNSqxGXe4Z5JlC1aq20gBLAhEiftpk7nzjRl0LpDe0a/sKm32Q3htcG?=
- =?us-ascii?Q?Mi2q+kuqavA2QtiHXYuHeXQhqD2LRfkydw3fO+sTd0smo9JURentJmj6n48H?=
- =?us-ascii?Q?aS3+eVPkQt1Q0T4nqmEma2ixNDXEaelVp1/xDuWLFKldLC66FW7RAllVJU9q?=
- =?us-ascii?Q?dx3u9QiDOcd0wQ6K+xesYbmKWNJCqPD9UAug+4DzJ895WAy0SHNoIffogq4Z?=
- =?us-ascii?Q?Yl2ToX3XgXzfIPR92Ij0wTdlCuFN8Oi6NpidAuwEK7BdSyF4Oyey6Wkot9Kb?=
- =?us-ascii?Q?/P/RGo4d/OJIqlxff/UKSQRqSJnPeiDQdrGNo2oQHO685g4e+2xetIfCGfgT?=
- =?us-ascii?Q?AFc9Iz7VokhAo47ZqAYduktFOrrjngL61a7WHtQIpGKc8zC7PRnaG7TfbFD6?=
- =?us-ascii?Q?Jw7ksQYeY8sRaK0dP7aessAMYl3awZsUPt6TrZdks3xUiEKZP0+MYD22xgNU?=
- =?us-ascii?Q?TY3DR24Cns9LNjmWQtJ4Us0B0mrNgabKuVW5Fc0J?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3866fe20-9d9b-4d36-a84b-08dbf67b1d01
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 16:48:03.3145
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gwBaVBxLkcJYB8Vl88lNk0uBtFZaU+27YDo7zSdcKDI0f/b1zDhTZhSTYhHYlVnX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6171
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20231205133205.3309ab91@device.home>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 04:23:25PM +0000, Catalin Marinas wrote:
-> On Wed, Dec 06, 2023 at 11:38:09AM -0400, Jason Gunthorpe wrote:
-> > On Wed, Dec 06, 2023 at 04:18:05PM +0100, Lorenzo Pieralisi wrote:
-> > > On Wed, Dec 06, 2023 at 11:05:56AM -0400, Jason Gunthorpe wrote:
-> > > > On Wed, Dec 06, 2023 at 02:49:02PM +0000, Catalin Marinas wrote:
-> > > > > BTW, on those Mellanox devices that require different attributes within
-> > > > > a BAR, do they have a problem with speculative reads causing
-> > > > > side-effects? 
-> > > > 
-> > > > Yes. We definitely have had that problem in the past on older
-> > > > devices. VFIO must map the BAR using pgprot_device/noncached() into
-> > > > the VMM, no other choice is functionally OK.
-> > > 
-> > > Were those BARs tagged as prefetchable or non-prefetchable ? I assume the
-> > > latter but please let me know if I am guessing wrong.
-> > 
-> > I don't know it was quite old HW. Probably.
-> > 
-> > Just because a BAR is not marked as prefetchable doesn't mean that the
-> > device can't use NORMAL_NC on subsets of it.
+Hi Maxime,
+
+On Tue, Dec 05, 2023 at 01:32:05PM +0100, Maxime Chevallier wrote:
+> Hi Serge,
 > 
-> What about the other way around - would we have a prefetchable BAR that
-> has portions which are unprefetchable?
+> On Tue,  5 Dec 2023 13:35:30 +0300
+> Serge Semin <fancer.lancer@gmail.com> wrote:
+> 
+> > Synopsys DesignWare XPCS IP-core can be synthesized with the device CSRs
+> > being accessible over MCI or APB3 interface instead of the MDIO bus (see
+> > the CSR_INTERFACE HDL parameter). Thus all the PCS registers can be just
+> > memory mapped and be a subject of standard MMIO operations of course
+> > taking into account the way the Clause C45 CSRs mapping is defined. This
+> > commit is about adding a device driver for the DW XPCS Management
+> > Interface platform device and registering it in the framework of the
+> > kernel MDIO subsystem.
+> > 
+> > DW XPCS platform device is supposed to be described by the respective
+> > compatible string "snps,dw-xpcs-mi", CSRs memory space and optional
+> > peripheral bus clock source. Note depending on the INDIRECT_ACCESS DW XPCS
+> > IP-core synthesize parameter the memory-mapped reg-space can be
+> > represented as either directly or indirectly mapped Clause 45 space. In
+> > the former case the particular address is determined based on the MMD
+> > device and the registers offset (5 + 16 bits all together) within the
+> > device reg-space. In the later case there is only 256 lower address bits
+> > are utilized for the registers mapping. The upper bits are supposed to be
+> > written into the respective viewport CSR in order to reach the entire C45
+> > space.
+> 
 
-I would say possibly.
+> Too bad the mdio-regmap driver can't be re-used here, it would deal
+> with reg width for you, for example. I guess the main reason would be
+> the direct vs indirect accesses ?
 
-Prefetch is a dead concept in PCIe, it was obsoleted in PCI-X about 20
-years ago. No PCIe system has ever done prefetch.
+Right, it's one of the reasons. I could have used the mdio-regmap
+here, but that would have meant to implement an additional abstraction
+layer: regspace<->regmap<->mdio-regmap<->mii_bus, instead of just
+regspace<->mii_bus. This would have also required to patch the
+mdio-remap module somehow in order to have the c45 ops supported. It
+would have been much easier to do before the commit 99d5fe9c7f3d ("net:
+mdio: Remove support for building C45 muxed addresses"). But since
+then MDIO reg-address has no longer had muxed dev-address. Of course I
+could have got it back to the mdio-regmap driver only, mix the C22/C45
+address in the regmap 'addr' argument, then extract the MMD (for C45)
+and reg addresses from the regmap IO ops argument and perform the
+respective MMIO access. But as you can see it is much hardware and
+would cause additional steps for the address translations, than
+just directly implement the C22/C45 IO ops and register the MDIO bus
+for them. I couldn't find much benefits to follow that road, sorry.
 
-There is a strong incentive to mark BAR's as prefetchable because it
-allows 64 bit addressing in configurations with bridges.
+> 
+> I do have a comment tough :
+> 
+> [...]
+> 
+> > +static inline ptrdiff_t dw_xpcs_mmio_addr_format(int dev, int reg)
+> > +{
+> > +	return FIELD_PREP(0x1f0000, dev) | FIELD_PREP(0xffff, reg);
+> > +}
+> > +
+> > +static inline u16 dw_xpcs_mmio_addr_page(ptrdiff_t csr)
+> > +{
+> > +	return FIELD_GET(0x1fff00, csr);
+> > +}
+> > +
+> > +static inline ptrdiff_t dw_xpcs_mmio_addr_offset(ptrdiff_t csr)
+> > +{
+> > +	return FIELD_GET(0xff, csr);
+> > +}
+> 
 
-So.. I would expect people have done interesting things here.
+> You shouldn't use inline in C files, only in headers.
 
-Jason
+Could you please clarify why? I failed to find such requirement in the
+coding style doc. Moreover there are multiple examples of using the
+static-inline-ers in the C files in the kernel including the net/mdio
+subsystem.
+
+-Serge(y)
+
+> 
+> Maxime
