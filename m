@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D92B88064DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2FE80649D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376573AbjLFBoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59148 "EHLO
+        id S235227AbjLFBof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:44:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376574AbjLFBoU (ORCPT
+        with ESMTP id S235348AbjLFBoa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:44:20 -0500
+        Tue, 5 Dec 2023 20:44:30 -0500
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E6FD72;
-        Tue,  5 Dec 2023 17:44:24 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA58CD47;
+        Tue,  5 Dec 2023 17:44:34 -0800 (PST)
 Received: from local
         by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
          (Exim 4.96.2)
         (envelope-from <daniel@makrotopia.org>)
-        id 1rAgxP-0002fY-0B;
-        Wed, 06 Dec 2023 01:44:12 +0000
-Date:   Wed, 6 Dec 2023 01:44:08 +0000
+        id 1rAgxY-0002gh-22;
+        Wed, 06 Dec 2023 01:44:21 +0000
+Date:   Wed, 6 Dec 2023 01:44:17 +0000
 From:   Daniel Golle <daniel@makrotopia.org>
 To:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -51,8 +51,9 @@ To:     "David S. Miller" <davem@davemloft.net>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: [RFC PATCH v2 2/8] phy: add driver for MediaTek pextp 10GE SerDes PHY
-Message-ID: <63636378a52dd1ea7370dbf0ca3037a7d24004b9.1701826319.git.daniel@makrotopia.org>
+Subject: [RFC PATCH v2 3/8] net: pcs: pcs-mtk-lynxi: add platform driver for
+ MT7988
+Message-ID: <68bb81ac6bf99393c8de256f42e5715626590af8.1701826319.git.daniel@makrotopia.org>
 References: <cover.1701826319.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -67,453 +68,299 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver for MediaTek's pextp 10 Gigabit/s Ethernet SerDes PHY which
-can be found in the MT7988 SoC.
-
-The PHY can operates only in PHY_MODE_ETHERNET, the submode is one of
-PHY_INTERFACE_MODE_* corresponding to the supported modes:
-
- * USXGMII
- * 10GBase-R
- * 5GBase-R
- * 2500Base-X
- * 1000Base-X
- * Cisco SGMII (MAC side)
-
-In order to work-around a performance issue present on the first of
-two PEXTP present in MT7988 special tuning is applied which can be
-selected by adding the mediatek,usxgmii-performance-errata property to
-the device tree node.
-
-There is no documentation what-so-ever for the pextp registers and
-this driver is based on a GPL licensed implementation found in
-MediaTek's SDK.
+Introduce a proper platform MFD driver for the LynxI (H)SGMII PCS which
+is going to initially be used for the MT7988 SoC.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- MAINTAINERS                          |   1 +
- drivers/phy/mediatek/Kconfig         |  11 +
- drivers/phy/mediatek/Makefile        |   1 +
- drivers/phy/mediatek/phy-mtk-pextp.c | 365 +++++++++++++++++++++++++++
- 4 files changed, 378 insertions(+)
- create mode 100644 drivers/phy/mediatek/phy-mtk-pextp.c
+ drivers/net/pcs/pcs-mtk-lynxi.c   | 170 ++++++++++++++++++++++++++++--
+ include/linux/pcs/pcs-mtk-lynxi.h |   1 +
+ 2 files changed, 160 insertions(+), 11 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1ef2a16370619..1ea4555013a4d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13497,6 +13497,7 @@ L:	netdev@vger.kernel.org
- S:	Maintained
- F:	drivers/net/phy/mediatek-ge-soc.c
- F:	drivers/net/phy/mediatek-ge.c
-+F:	drivers/phy/mediatek/phy-mtk-pextp.c
+diff --git a/drivers/net/pcs/pcs-mtk-lynxi.c b/drivers/net/pcs/pcs-mtk-lynxi.c
+index 8501dd365279b..558d6351399b5 100644
+--- a/drivers/net/pcs/pcs-mtk-lynxi.c
++++ b/drivers/net/pcs/pcs-mtk-lynxi.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2018-2019 MediaTek Inc.
+-/* A library for MediaTek SGMII circuit
++/* A library and platform driver for the MediaTek LynxI SGMII circuit
+  *
+  * Author: Sean Wang <sean.wang@mediatek.com>
+  * Author: Alexander Couzens <lynxis@fe80.eu>
+@@ -8,11 +8,16 @@
+  *
+  */
  
- MEDIATEK I2C CONTROLLER DRIVER
- M:	Qii Wang <qii.wang@mediatek.com>
-diff --git a/drivers/phy/mediatek/Kconfig b/drivers/phy/mediatek/Kconfig
-index 3125ecb5d119f..a7749a6d96541 100644
---- a/drivers/phy/mediatek/Kconfig
-+++ b/drivers/phy/mediatek/Kconfig
-@@ -13,6 +13,17 @@ config PHY_MTK_PCIE
- 	  callback for PCIe GEN3 port, it supports software efuse
- 	  initialization.
- 
-+config PHY_MTK_PEXTP
-+	tristate "MediaTek PEXTP Driver"
-+	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	depends on OF && OF_ADDRESS
-+	depends on HAS_IOMEM
-+	select GENERIC_PHY
-+	help
-+	  Say 'Y' here to add support for MediaTek pextp PHY driver.
-+	  The driver provides access to the Ethernet SerDes PHY supporting
-+	  various 1GE, 2.5GE, 5GE and 10GE modes.
-+
- config PHY_MTK_TPHY
- 	tristate "MediaTek T-PHY Driver"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-diff --git a/drivers/phy/mediatek/Makefile b/drivers/phy/mediatek/Makefile
-index c9a50395533eb..ca60c7b9b02ac 100644
---- a/drivers/phy/mediatek/Makefile
-+++ b/drivers/phy/mediatek/Makefile
-@@ -8,6 +8,7 @@ obj-$(CONFIG_PHY_MTK_PCIE)		+= phy-mtk-pcie.o
- obj-$(CONFIG_PHY_MTK_TPHY)		+= phy-mtk-tphy.o
- obj-$(CONFIG_PHY_MTK_UFS)		+= phy-mtk-ufs.o
- obj-$(CONFIG_PHY_MTK_XSPHY)		+= phy-mtk-xsphy.o
-+obj-$(CONFIG_PHY_MTK_PEXTP)		+= phy-mtk-pextp.o
- 
- phy-mtk-hdmi-drv-y			:= phy-mtk-hdmi.o
- phy-mtk-hdmi-drv-y			+= phy-mtk-hdmi-mt2701.o
-diff --git a/drivers/phy/mediatek/phy-mtk-pextp.c b/drivers/phy/mediatek/phy-mtk-pextp.c
-new file mode 100644
-index 0000000000000..e5bfab86f95a5
---- /dev/null
-+++ b/drivers/phy/mediatek/phy-mtk-pextp.c
-@@ -0,0 +1,365 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/* MediaTek 10GE SerDes PHY driver
-+ *
-+ * Copyright (c) 2023 Daniel Golle <daniel@makrotopia.org>
-+ * based on mtk_usxgmii.c found in MediaTek's SDK released under GPL-2.0
-+ * Copyright (c) 2022 MediaTek Inc.
-+ * Author: Henry Yen <henry.yen@mediatek.com>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/netdevice.h>
-+#include <linux/platform_device.h>
-+#include <linux/of.h>
-+#include <linux/io.h>
 +#include <linux/clk.h>
+ #include <linux/mdio.h>
++#include <linux/mfd/syscon.h>
+ #include <linux/of.h>
++#include <linux/of_platform.h>
+ #include <linux/pcs/pcs-mtk-lynxi.h>
+ #include <linux/phylink.h>
++#include <linux/platform_device.h>
+ #include <linux/regmap.h>
 +#include <linux/reset.h>
-+#include <linux/phy.h>
-+#include <linux/phy/phy.h>
+ 
+ /* SGMII subsystem config registers */
+ /* BMCR (low 16) BMSR (high 16) */
+@@ -65,6 +70,8 @@
+ #define SGMII_PN_SWAP_MASK		GENMASK(1, 0)
+ #define SGMII_PN_SWAP_TX_RX		(BIT(0) | BIT(1))
+ 
++#define MTK_NETSYS_V3_AMA_RGC3		0x128
 +
-+struct mtk_pextp_phy {
-+	void __iomem		*base;
-+	struct device		*dev;
-+	struct reset_control	*reset;
-+	struct clk		*clk[2];
-+	bool			da_war;
-+};
-+
-+static bool mtk_interface_mode_is_xgmii(phy_interface_t interface)
+ /* struct mtk_pcs_lynxi -  This structure holds each sgmii regmap andassociated
+  *                         data
+  * @regmap:                The register map pointing at the range used to setup
+@@ -81,6 +88,10 @@ struct mtk_pcs_lynxi {
+ 	phy_interface_t		interface;
+ 	struct			phylink_pcs pcs;
+ 	u32			flags;
++	struct reset_control	*rstc;
++	struct clk		*sgmii_sel;
++	struct clk		*sgmii_rx;
++	struct clk		*sgmii_tx;
+ };
+ 
+ static struct mtk_pcs_lynxi *pcs_to_mtk_pcs_lynxi(struct phylink_pcs *pcs)
+@@ -102,6 +113,17 @@ static void mtk_pcs_lynxi_get_state(struct phylink_pcs *pcs,
+ 					 FIELD_GET(SGMII_LPA, adv));
+ }
+ 
++static void mtk_sgmii_reset(struct mtk_pcs_lynxi *mpcs)
 +{
-+	switch (interface) {
-+	case PHY_INTERFACE_MODE_INTERNAL:
-+	case PHY_INTERFACE_MODE_USXGMII:
-+	case PHY_INTERFACE_MODE_10GBASER:
-+	case PHY_INTERFACE_MODE_5GBASER:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
++	if (!mpcs->rstc)
++		return;
 +
-+static void mtk_pextp_setup(struct mtk_pextp_phy *pextp, phy_interface_t interface)
-+{
-+	bool is_10g = (interface == PHY_INTERFACE_MODE_10GBASER ||
-+		       interface == PHY_INTERFACE_MODE_USXGMII);
-+	bool is_2p5g = (interface == PHY_INTERFACE_MODE_2500BASEX);
-+	bool is_5g = (interface == PHY_INTERFACE_MODE_5GBASER);
-+
-+	dev_dbg(pextp->dev, "setting up for mode %s\n", phy_modes(interface));
-+
-+	/* Setup operation mode */
-+	if (is_10g)
-+		iowrite32(0x00C9071C, pextp->base + 0x9024);
-+	else
-+		iowrite32(0x00D9071C, pextp->base + 0x9024);
-+
-+	if (is_5g)
-+		iowrite32(0xAAA5A5AA, pextp->base + 0x2020);
-+	else
-+		iowrite32(0xAA8585AA, pextp->base + 0x2020);
-+
-+	if (is_2p5g || is_5g || is_10g) {
-+		iowrite32(0x0C020707, pextp->base + 0x2030);
-+		iowrite32(0x0E050F0F, pextp->base + 0x2034);
-+		iowrite32(0x00140032, pextp->base + 0x2040);
-+	} else {
-+		iowrite32(0x0C020207, pextp->base + 0x2030);
-+		iowrite32(0x0E05050F, pextp->base + 0x2034);
-+		iowrite32(0x00200032, pextp->base + 0x2040);
-+	}
-+
-+	if (is_2p5g || is_10g)
-+		iowrite32(0x00C014AA, pextp->base + 0x50F0);
-+	else if (is_5g)
-+		iowrite32(0x00C018AA, pextp->base + 0x50F0);
-+	else
-+		iowrite32(0x00C014BA, pextp->base + 0x50F0);
-+
-+	if (is_5g) {
-+		iowrite32(0x3777812B, pextp->base + 0x50E0);
-+		iowrite32(0x005C9CFF, pextp->base + 0x506C);
-+		iowrite32(0x9DFAFAFA, pextp->base + 0x5070);
-+		iowrite32(0x273F3F3F, pextp->base + 0x5074);
-+		iowrite32(0xA8883868, pextp->base + 0x5078);
-+		iowrite32(0x14661466, pextp->base + 0x507C);
-+	} else {
-+		iowrite32(0x3777C12B, pextp->base + 0x50E0);
-+		iowrite32(0x005F9CFF, pextp->base + 0x506C);
-+		iowrite32(0x9D9DFAFA, pextp->base + 0x5070);
-+		iowrite32(0x27273F3F, pextp->base + 0x5074);
-+		iowrite32(0xA7883C68, pextp->base + 0x5078);
-+		iowrite32(0x11661166, pextp->base + 0x507C);
-+	}
-+
-+	if (is_2p5g || is_10g) {
-+		iowrite32(0x0E000AAF, pextp->base + 0x5080);
-+		iowrite32(0x08080D0D, pextp->base + 0x5084);
-+		iowrite32(0x02030909, pextp->base + 0x5088);
-+	} else if (is_5g) {
-+		iowrite32(0x0E001ABF, pextp->base + 0x5080);
-+		iowrite32(0x080B0D0D, pextp->base + 0x5084);
-+		iowrite32(0x02050909, pextp->base + 0x5088);
-+	} else {
-+		iowrite32(0x0E000EAF, pextp->base + 0x5080);
-+		iowrite32(0x08080E0D, pextp->base + 0x5084);
-+		iowrite32(0x02030B09, pextp->base + 0x5088);
-+	}
-+
-+	if (is_5g) {
-+		iowrite32(0x0C000000, pextp->base + 0x50E4);
-+		iowrite32(0x04000000, pextp->base + 0x50E8);
-+	} else {
-+		iowrite32(0x0C0C0000, pextp->base + 0x50E4);
-+		iowrite32(0x04040000, pextp->base + 0x50E8);
-+	}
-+
-+	if (is_2p5g || mtk_interface_mode_is_xgmii(interface))
-+		iowrite32(0x0F0F0C06, pextp->base + 0x50EC);
-+	else
-+		iowrite32(0x0F0F0606, pextp->base + 0x50EC);
-+
-+	if (is_5g) {
-+		iowrite32(0x50808C8C, pextp->base + 0x50A8);
-+		iowrite32(0x18000000, pextp->base + 0x6004);
-+	} else {
-+		iowrite32(0x506E8C8C, pextp->base + 0x50A8);
-+		iowrite32(0x18190000, pextp->base + 0x6004);
-+	}
-+
-+	if (is_10g)
-+		iowrite32(0x01423342, pextp->base + 0x00F8);
-+	else if (is_5g)
-+		iowrite32(0x00A132A1, pextp->base + 0x00F8);
-+	else if (is_2p5g)
-+		iowrite32(0x009C329C, pextp->base + 0x00F8);
-+	else
-+		iowrite32(0x00FA32FA, pextp->base + 0x00F8);
-+
-+	/* Force SGDT_OUT off and select PCS */
-+	if (mtk_interface_mode_is_xgmii(interface))
-+		iowrite32(0x80201F20, pextp->base + 0x00F4);
-+	else
-+		iowrite32(0x80201F21, pextp->base + 0x00F4);
-+
-+	/* Force GLB_CKDET_OUT */
-+	iowrite32(0x00050C00, pextp->base + 0x0030);
-+
-+	/* Force AEQ on */
-+	iowrite32(0x02002800, pextp->base + 0x0070);
-+	ndelay(1020);
-+
-+	/* Setup DA default value */
-+	iowrite32(0x00000020, pextp->base + 0x30B0);
-+	iowrite32(0x00008A01, pextp->base + 0x3028);
-+	iowrite32(0x0000A884, pextp->base + 0x302C);
-+	iowrite32(0x00083002, pextp->base + 0x3024);
-+	if (mtk_interface_mode_is_xgmii(interface)) {
-+		iowrite32(0x00022220, pextp->base + 0x3010);
-+		iowrite32(0x0F020A01, pextp->base + 0x5064);
-+		iowrite32(0x06100600, pextp->base + 0x50B4);
-+		if (interface == PHY_INTERFACE_MODE_USXGMII)
-+			iowrite32(0x40704000, pextp->base + 0x3048);
-+		else
-+			iowrite32(0x47684100, pextp->base + 0x3048);
-+	} else {
-+		iowrite32(0x00011110, pextp->base + 0x3010);
-+		iowrite32(0x40704000, pextp->base + 0x3048);
-+	}
-+
-+	if (!mtk_interface_mode_is_xgmii(interface) && !is_2p5g)
-+		iowrite32(0x0000C000, pextp->base + 0x3064);
-+
-+	if (interface == PHY_INTERFACE_MODE_USXGMII) {
-+		iowrite32(0xA8000000, pextp->base + 0x3050);
-+		iowrite32(0x000000AA, pextp->base + 0x3054);
-+	} else if (mtk_interface_mode_is_xgmii(interface)) {
-+		iowrite32(0x00000000, pextp->base + 0x3050);
-+		iowrite32(0x00000000, pextp->base + 0x3054);
-+	} else {
-+		iowrite32(0xA8000000, pextp->base + 0x3050);
-+		iowrite32(0x000000AA, pextp->base + 0x3054);
-+	}
-+
-+	if (mtk_interface_mode_is_xgmii(interface))
-+		iowrite32(0x00000F00, pextp->base + 0x306C);
-+	else if (is_2p5g)
-+		iowrite32(0x22000F00, pextp->base + 0x306C);
-+	else
-+		iowrite32(0x20200F00, pextp->base + 0x306C);
-+
-+	if (interface == PHY_INTERFACE_MODE_10GBASER && pextp->da_war)
-+		iowrite32(0x0007B400, pextp->base + 0xA008);
-+
-+	if (mtk_interface_mode_is_xgmii(interface))
-+		iowrite32(0x00040000, pextp->base + 0xA060);
-+	else
-+		iowrite32(0x00050000, pextp->base + 0xA060);
-+
-+	if (is_10g)
-+		iowrite32(0x00000001, pextp->base + 0x90D0);
-+	else if (is_5g)
-+		iowrite32(0x00000003, pextp->base + 0x90D0);
-+	else if (is_2p5g)
-+		iowrite32(0x00000005, pextp->base + 0x90D0);
-+	else
-+		iowrite32(0x00000007, pextp->base + 0x90D0);
-+
-+	/* Release reset */
-+	iowrite32(0x0200E800, pextp->base + 0x0070);
-+	usleep_range(150, 500);
-+
-+	/* Switch to P0 */
-+	iowrite32(0x0200C111, pextp->base + 0x0070);
-+	ndelay(1020);
-+	iowrite32(0x0200C101, pextp->base + 0x0070);
-+	usleep_range(15, 50);
-+
-+	if (mtk_interface_mode_is_xgmii(interface)) {
-+		/* Switch to Gen3 */
-+		iowrite32(0x0202C111, pextp->base + 0x0070);
-+	} else {
-+		/* Switch to Gen2 */
-+		iowrite32(0x0201C111, pextp->base + 0x0070);
-+	}
-+	ndelay(1020);
-+	if (mtk_interface_mode_is_xgmii(interface))
-+		iowrite32(0x0202C101, pextp->base + 0x0070);
-+	else
-+		iowrite32(0x0201C101, pextp->base + 0x0070);
++	reset_control_assert(mpcs->rstc);
 +	usleep_range(100, 500);
-+	iowrite32(0x00000030, pextp->base + 0x30B0);
-+	if (mtk_interface_mode_is_xgmii(interface))
-+		iowrite32(0x80201F00, pextp->base + 0x00F4);
-+	else
-+		iowrite32(0x80201F01, pextp->base + 0x00F4);
-+
-+	iowrite32(0x30000000, pextp->base + 0x3040);
-+	usleep_range(400, 1000);
++	reset_control_deassert(mpcs->rstc);
++	mdelay(10);
 +}
 +
-+static int mtk_pextp_set_mode(struct phy *phy, enum phy_mode mode, int submode)
+ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
+ 				phy_interface_t interface,
+ 				const unsigned long *advertising,
+@@ -147,6 +169,7 @@ static int mtk_pcs_lynxi_config(struct phylink_pcs *pcs, unsigned int neg_mode,
+ 				SGMII_PHYA_PWD);
+ 
+ 		/* Reset SGMII PCS state */
++		mtk_sgmii_reset(mpcs);
+ 		regmap_set_bits(mpcs->regmap, SGMSYS_RESERVED_0,
+ 				SGMII_SW_RESET);
+ 
+@@ -233,10 +256,29 @@ static void mtk_pcs_lynxi_link_up(struct phylink_pcs *pcs,
+ 	}
+ }
+ 
++static int mtk_pcs_lynxi_enable(struct phylink_pcs *pcs)
 +{
-+	struct mtk_pextp_phy *pextp = phy_get_drvdata(phy);
++	struct mtk_pcs_lynxi *mpcs = pcs_to_mtk_pcs_lynxi(pcs);
 +
-+	if (mode != PHY_MODE_ETHERNET)
-+		return -EINVAL;
-+
-+	switch (submode) {
-+	case PHY_INTERFACE_MODE_1000BASEX:
-+	case PHY_INTERFACE_MODE_2500BASEX:
-+	case PHY_INTERFACE_MODE_SGMII:
-+	case PHY_INTERFACE_MODE_5GBASER:
-+	case PHY_INTERFACE_MODE_10GBASER:
-+	case PHY_INTERFACE_MODE_USXGMII:
-+		mtk_pextp_setup(pextp, submode);
-+		return 0;
-+	default:
-+		return -EINVAL;
++	if (mpcs->sgmii_tx && mpcs->sgmii_rx) {
++		clk_prepare_enable(mpcs->sgmii_rx);
++		clk_prepare_enable(mpcs->sgmii_tx);
 +	}
-+}
-+
-+static int mtk_pextp_reset(struct phy *phy)
-+{
-+	struct mtk_pextp_phy *pextp = phy_get_drvdata(phy);
-+
-+	reset_control_assert(pextp->reset);
-+	usleep_range(100, 500);
-+	reset_control_deassert(pextp->reset);
-+	usleep_range(1, 10);
 +
 +	return 0;
 +}
 +
-+static int mtk_pextp_power_on(struct phy *phy)
-+{
-+	struct mtk_pextp_phy *pextp = phy_get_drvdata(phy);
-+	int ret;
+ static void mtk_pcs_lynxi_disable(struct phylink_pcs *pcs)
+ {
+ 	struct mtk_pcs_lynxi *mpcs = pcs_to_mtk_pcs_lynxi(pcs);
+ 
++	regmap_set_bits(mpcs->regmap, SGMSYS_QPHY_PWR_STATE_CTRL, SGMII_PHYA_PWD);
 +
-+	ret = clk_prepare_enable(pextp->clk[0]);
-+	if (ret)
-+		return ret;
++	if (mpcs->sgmii_tx && mpcs->sgmii_rx) {
++		clk_disable_unprepare(mpcs->sgmii_tx);
++		clk_disable_unprepare(mpcs->sgmii_rx);
++	}
 +
-+	return clk_prepare_enable(pextp->clk[1]);
-+}
-+
-+static int mtk_pextp_power_off(struct phy *phy)
-+{
-+	struct mtk_pextp_phy *pextp = phy_get_drvdata(phy);
-+
-+	clk_disable_unprepare(pextp->clk[1]);
-+	clk_disable_unprepare(pextp->clk[0]);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops mtk_pextp_ops = {
-+	.power_on	= mtk_pextp_power_on,
-+	.power_off	= mtk_pextp_power_off,
-+	.set_mode	= mtk_pextp_set_mode,
-+	.reset		= mtk_pextp_reset,
-+	.owner		= THIS_MODULE,
+ 	mpcs->interface = PHY_INTERFACE_MODE_NA;
+ }
+ 
+@@ -246,11 +288,12 @@ static const struct phylink_pcs_ops mtk_pcs_lynxi_ops = {
+ 	.pcs_an_restart = mtk_pcs_lynxi_restart_an,
+ 	.pcs_link_up = mtk_pcs_lynxi_link_up,
+ 	.pcs_disable = mtk_pcs_lynxi_disable,
++	.pcs_enable = mtk_pcs_lynxi_enable,
+ };
+ 
+-struct phylink_pcs *mtk_pcs_lynxi_create(struct device *dev,
+-					 struct regmap *regmap, u32 ana_rgc3,
+-					 u32 flags)
++static struct phylink_pcs *mtk_pcs_lynxi_init(struct device *dev, struct regmap *regmap,
++					      u32 ana_rgc3, u32 flags,
++					      struct mtk_pcs_lynxi *prealloc)
+ {
+ 	struct mtk_pcs_lynxi *mpcs;
+ 	u32 id, ver;
+@@ -258,29 +301,33 @@ struct phylink_pcs *mtk_pcs_lynxi_create(struct device *dev,
+ 
+ 	ret = regmap_read(regmap, SGMSYS_PCS_DEVICE_ID, &id);
+ 	if (ret < 0)
+-		return NULL;
++		return ERR_PTR(ret);
+ 
+ 	if (id != SGMII_LYNXI_DEV_ID) {
+ 		dev_err(dev, "unknown PCS device id %08x\n", id);
+-		return NULL;
++		return ERR_PTR(-ENODEV);
+ 	}
+ 
+ 	ret = regmap_read(regmap, SGMSYS_PCS_SCRATCH, &ver);
+ 	if (ret < 0)
+-		return NULL;
++		return ERR_PTR(ret);
+ 
+ 	ver = FIELD_GET(SGMII_DEV_VERSION, ver);
+ 	if (ver != 0x1) {
+ 		dev_err(dev, "unknown PCS device version %04x\n", ver);
+-		return NULL;
++		return ERR_PTR(-ENODEV);
+ 	}
+ 
+ 	dev_dbg(dev, "MediaTek LynxI SGMII PCS (id 0x%08x, ver 0x%04x)\n", id,
+ 		ver);
+ 
+-	mpcs = kzalloc(sizeof(*mpcs), GFP_KERNEL);
+-	if (!mpcs)
+-		return NULL;
++	if (prealloc) {
++		mpcs = prealloc;
++	} else {
++		mpcs = kzalloc(sizeof(*mpcs), GFP_KERNEL);
++		if (!mpcs)
++			return ERR_PTR(-ENOMEM);
++	};
+ 
+ 	mpcs->ana_rgc3 = ana_rgc3;
+ 	mpcs->regmap = regmap;
+@@ -291,6 +338,13 @@ struct phylink_pcs *mtk_pcs_lynxi_create(struct device *dev,
+ 	mpcs->interface = PHY_INTERFACE_MODE_NA;
+ 
+ 	return &mpcs->pcs;
 +};
 +
-+static int mtk_pextp_probe(struct platform_device *pdev)
++struct phylink_pcs *mtk_pcs_lynxi_create(struct device *dev,
++					 struct regmap *regmap, u32 ana_rgc3,
++					 u32 flags)
 +{
-+	struct device_node *np = pdev->dev.of_node;
-+	struct phy_provider *phy_provider;
-+	struct mtk_pextp_phy *pextp;
-+	struct phy *phy;
++	return mtk_pcs_lynxi_init(dev, regmap, ana_rgc3, flags, NULL);
+ }
+ EXPORT_SYMBOL(mtk_pcs_lynxi_create);
+ 
+@@ -303,4 +357,98 @@ void mtk_pcs_lynxi_destroy(struct phylink_pcs *pcs)
+ }
+ EXPORT_SYMBOL(mtk_pcs_lynxi_destroy);
+ 
++static int mtk_pcs_lynxi_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct device_node *np = dev->of_node;
++	struct mtk_pcs_lynxi *mpcs;
++	struct phylink_pcs *pcs;
++	struct regmap *regmap;
++	u32 flags = 0;
 +
-+	if (!np)
-+		return -ENODEV;
-+
-+	pextp = devm_kzalloc(&pdev->dev, sizeof(*pextp), GFP_KERNEL);
-+	if (!pextp)
++	mpcs = devm_kzalloc(dev, sizeof(*mpcs), GFP_KERNEL);
++	if (!mpcs)
 +		return -ENOMEM;
 +
-+	pextp->base = devm_of_iomap(&pdev->dev, np, 0, NULL);
-+	if (!pextp->base)
-+		return -EIO;
++	regmap = syscon_node_to_regmap(np->parent);
++	if (IS_ERR(regmap))
++		return PTR_ERR(regmap);
 +
-+	pextp->dev = &pdev->dev;
-+	pextp->clk[0] = devm_clk_get(&pdev->dev, "topxtal");
-+	if (IS_ERR(pextp->clk[0]))
-+		return PTR_ERR(pextp->clk[0]);
++	if (of_property_read_bool(np->parent, "mediatek,pnswap"))
++		flags |= MTK_SGMII_FLAG_PN_SWAP;
 +
-+	pextp->clk[1] = devm_clk_get(&pdev->dev, "xfipll");
-+	if (IS_ERR(pextp->clk[1]))
-+		return PTR_ERR(pextp->clk[1]);
++	mpcs->rstc = of_reset_control_get_shared(np->parent, NULL);
++	if (IS_ERR(mpcs->rstc))
++		return PTR_ERR(mpcs->rstc);
 +
-+	pextp->reset = devm_reset_control_get_exclusive(&pdev->dev, NULL);
-+	if (IS_ERR(pextp->reset))
-+		return PTR_ERR(pextp->reset);
++	reset_control_deassert(mpcs->rstc);
++	mpcs->sgmii_sel = devm_clk_get_enabled(dev, "sgmii_sel");
++	if (IS_ERR(mpcs->sgmii_sel))
++		return PTR_ERR(mpcs->sgmii_sel);
 +
-+	pextp->da_war = of_property_read_bool(np, "mediatek,usxgmii-performance-errata");
++	mpcs->sgmii_rx = devm_clk_get(dev, "sgmii_rx");
++	if (IS_ERR(mpcs->sgmii_rx))
++		return PTR_ERR(mpcs->sgmii_rx);
 +
-+	phy = devm_phy_create(&pdev->dev, NULL, &mtk_pextp_ops);
-+	if (IS_ERR(phy))
-+		return PTR_ERR(phy);
++	mpcs->sgmii_tx = devm_clk_get(dev, "sgmii_tx");
++	if (IS_ERR(mpcs->sgmii_tx))
++		return PTR_ERR(mpcs->sgmii_tx);
 +
-+	phy_set_drvdata(phy, pextp);
++	pcs = mtk_pcs_lynxi_init(dev, regmap, (uintptr_t)of_device_get_match_data(dev),
++				 flags, mpcs);
++	if (IS_ERR(pcs))
++		return PTR_ERR(pcs);
 +
-+	phy_provider = devm_of_phy_provider_register(&pdev->dev, of_phy_simple_xlate);
++	regmap_set_bits(mpcs->regmap, SGMSYS_QPHY_PWR_STATE_CTRL, SGMII_PHYA_PWD);
 +
-+	return PTR_ERR_OR_ZERO(phy_provider);
++	platform_set_drvdata(pdev, mpcs);
++
++	return 0;
 +}
 +
-+static const struct of_device_id mtk_pextp_match[] = {
-+	{ .compatible = "mediatek,mt7988-xfi-pextp", },
-+	{ }
++static const struct of_device_id mtk_pcs_lynxi_of_match[] = {
++	{ .compatible = "mediatek,mt7988-sgmii", .data = (void *)MTK_NETSYS_V3_AMA_RGC3 },
++	{ /* sentinel */ },
 +};
-+MODULE_DEVICE_TABLE(of, mtk_pextp_match);
++MODULE_DEVICE_TABLE(of, mtk_pcs_lynxi_of_match);
 +
-+static struct platform_driver mtk_pextp_driver = {
-+	.probe = mtk_pextp_probe,
++struct phylink_pcs *mtk_pcs_lynxi_select_pcs(struct device_node *np, phy_interface_t mode)
++{
++	struct platform_device *pdev;
++	struct mtk_pcs_lynxi *mpcs;
++
++	if (!np)
++		return NULL;
++
++	if (!of_device_is_available(np))
++		return ERR_PTR(-ENODEV);
++
++	if (!of_match_node(mtk_pcs_lynxi_of_match, np))
++		return ERR_PTR(-EINVAL);
++
++	pdev = of_find_device_by_node(np);
++	if (!pdev || !platform_get_drvdata(pdev)) {
++		if (pdev)
++			put_device(&pdev->dev);
++		return ERR_PTR(-EPROBE_DEFER);
++	}
++
++	mpcs = platform_get_drvdata(pdev);
++	put_device(&pdev->dev);
++
++	return &mpcs->pcs;
++}
++EXPORT_SYMBOL(mtk_pcs_lynxi_select_pcs);
++
++static struct platform_driver mtk_pcs_lynxi_driver = {
 +	.driver = {
-+		.name = "mtk-pextp",
-+		.of_match_table = mtk_pextp_match,
++		.name = "mtk-pcs-lynxi",
++		.of_match_table = mtk_pcs_lynxi_of_match,
 +	},
++	.probe = mtk_pcs_lynxi_probe,
 +};
-+module_platform_driver(mtk_pextp_driver);
++module_platform_driver(mtk_pcs_lynxi_driver);
 +
-+MODULE_DESCRIPTION("MediaTek pextp SerDes PHY driver");
 +MODULE_AUTHOR("Daniel Golle <daniel@makrotopia.org>");
-+MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("MediaTek LynxI HSGMII PCS");
+ MODULE_LICENSE("GPL");
+diff --git a/include/linux/pcs/pcs-mtk-lynxi.h b/include/linux/pcs/pcs-mtk-lynxi.h
+index be3b4ab32f4a7..5db19d6a7261f 100644
+--- a/include/linux/pcs/pcs-mtk-lynxi.h
++++ b/include/linux/pcs/pcs-mtk-lynxi.h
+@@ -10,4 +10,5 @@ struct phylink_pcs *mtk_pcs_lynxi_create(struct device *dev,
+ 					 struct regmap *regmap,
+ 					 u32 ana_rgc3, u32 flags);
+ void mtk_pcs_lynxi_destroy(struct phylink_pcs *pcs);
++struct phylink_pcs *mtk_pcs_lynxi_select_pcs(struct device_node *np, phy_interface_t mode);
+ #endif
 -- 
 2.43.0
