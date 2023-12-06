@@ -2,255 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5AD8076BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6AF28076BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379706AbjLFRhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
+        id S1379722AbjLFRhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:37:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379719AbjLFRhC (ORCPT
+        with ESMTP id S1379740AbjLFRhT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:37:02 -0500
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48DDD40
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:37:07 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-58d5979c676so4462754eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 09:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701884227; x=1702489027; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l8r+v6tMeUDCVlJaWSk9+hoM+kWRX7cXcWkYHpDL0vQ=;
-        b=m9awIHJbuXZdlC2WQz593Dy9S6gXrBkf4JMMeqkJPhbn5PtIlXvrS3m/va+zmYL7WT
-         rMydSRMfn+37OfdRq1zw5VEocB68uy1kTWt5yX1lDWA/etC8xp4eqkGfo/fF7znB93hk
-         npGfhzoTYWMJsukxgjCgnB5DPHkQYzNiLgoKLlYZPsdbb4/tVBntUq0VtBf20jwxzthY
-         8fa3XjR5nZ/9d2m1igWXpmPeK/cU0m9Kb6J/86QlhUfTes07F3LnLsuo85orwiQQhvE/
-         2P0XYzd6YiQo8//Lf+f+5gvi9+wT/Hc3Lt1kg4HmiHujpGQOUto5Pw17pUBp5qe4Y/nK
-         yn0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701884227; x=1702489027;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l8r+v6tMeUDCVlJaWSk9+hoM+kWRX7cXcWkYHpDL0vQ=;
-        b=jSjuQ3EbSjWomMOo6uqUeiXBL+hc4M4sBYWZN5Hj/8k6TqQMwku0ptxp9NmFf9eemW
-         hmkpeSRQtn8xad/agGLQbnpruO9qHnlevZORbogvVjmz94WN3owbIG6Rc3cXRgiLvQBS
-         x6FSSRKmaj5fCvWrlxaVTLK9r+MOafLTLEgNJ06NS6rXYF3a0o02/wbs+RfD3PKO7DbA
-         ZFtdQ47oX8Xn5VW7DDn0cbaEJlY6b2XT4N6Zijx0xvTH2t8JlHQa9q2MnPavUauoQivP
-         wG1Q/rAb+eS6THMcYmYX6q34Ng7DMssRJiA9GPKx03/osbRBr+8ERNeOo/EbOIRijO01
-         /8ZA==
-X-Gm-Message-State: AOJu0YyJDGSjuXBuKJzfepC3NI0YmYm4C08cQuHhjui+4WxWR7zIkZht
-        0VCnGBBdp4KhjHznlmsAcpk=
-X-Google-Smtp-Source: AGHT+IEcMG1ujmNbsAkgAGFMm3Dqk6uL+Gee6W1iN+ec3nLV0x0pzvSwek5MJNSKRawI6CUz4TMiBA==
-X-Received: by 2002:a05:6358:e49f:b0:16f:eb57:af02 with SMTP id by31-20020a056358e49f00b0016feb57af02mr1610911rwb.16.1701884226626;
-        Wed, 06 Dec 2023 09:37:06 -0800 (PST)
-Received: from Mahakal ([2401:4900:1f29:c257:c420:b0b9:2714:1ae5])
-        by smtp.gmail.com with ESMTPSA id s28-20020a63af5c000000b0059d34fb9ccasm175837pgo.2.2023.12.06.09.37.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Dec 2023 09:37:06 -0800 (PST)
-Date:   Wed, 6 Dec 2023 23:07:00 +0530
-From:   "<Vishal Badole>" <badolevishal1116@gmail.com>
-To:     peterz@infradead.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Mintu Patel <mintupatel89@gmail.com>,
-        chinmoyghosh2001@gmail.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, peterz@infradead.org, vimal.kumar32@gmail.com,
-        will@kernel.org
-Subject: Re: [PATCH v2] rt_spin_lock: To list the correct owner of
- rt_spin_lock
-Message-ID: <20231206173659.GA8874@Mahakal>
-References: <20220619142038.1274-1-mintupatel89@gmail.com>
- <20220627161136.3468-1-mintupatel89@gmail.com>
- <20220708162158.03c82f47@gandalf.local.home>
+        Wed, 6 Dec 2023 12:37:19 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783EBD66;
+        Wed,  6 Dec 2023 09:37:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eroBN9tV71H2+b5HW3maaAEufdQp1Hs5EYETYa7S8+UYZ7IcEmUtCYBoPWAhhSidIbs2VdlPAbFR5/2q4NRmSzxtRwrAjGAe5FgvORELj05uDR5bmIahJXefrZI+AvQNSXt73ltWkHyKYJaXr80G9Jd9oDCK4orseedq9XN7dZ6czvvolngVPck+WvEQrWMcWD2wUBd7RId6aB+y5dckw9mXi3gcV9CrBonYdJyCvm7dFY0stfQM6uI0PApHhxyjNt5nNd1KvI6xs8/q67yDC4B79rzvIsxV/gMdBgghLqwlu5S0irC9f3msaUq+LufgO8GC8/2ETrrtVw7b+/IpjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VUsGFccPMUzvxpPDQAu2JWmlHp+JsbL8eOHBo85W1Uw=;
+ b=KN3hzmVH0R5hWCMui5ya4MY7hxxsw/Z6/Rr/PIDXO8umzsVvoD0Igx5qfxobPqeeIdyb3Kt0KDxv8MMDjwujDFEsXV0Eg3PVig9YoAiZsjXH10cNepCaTr3S0Kt41WZnogjl8aZiY6/x3tro4CR61h4ISykTp5bcDP3SXK0VL69/kRDQCEQz+tivy0Z5rwIRUOFOLqBWx9UZ3Bit+6whDv1RIY9bEoMu+LHB5V1aY1cjWCmPHCRWXclKAQIoGpiyCFJ/ventTrJaBUXwOO74YRhy0vZ9d6BI61txxIwv2faONOKbvShs8DxUadPy/K6+4zy05cbJH5TqJb4vmhiaeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VUsGFccPMUzvxpPDQAu2JWmlHp+JsbL8eOHBo85W1Uw=;
+ b=j0mBHfN+n5I4rELYClTOzQbcX0JamImik3xIeHa4/w9BjMBTK/4uSIMr81pdothrMuvymnR/6yuDtMfySDR1QSmv2ZR4YFu0Ggerb5fNAsjigYboBT/iXc3ASur8umzUgxlypJQOuLYieCgT5s3Si0eQhgszrCw71XoZ/JAct6U=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com (2603:10b6:303:2c::19)
+ by MW6PR12MB7085.namprd12.prod.outlook.com (2603:10b6:303:238::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 17:37:22 +0000
+Received: from MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::1549:8c93:8585:ca1b]) by MW3PR12MB4553.namprd12.prod.outlook.com
+ ([fe80::1549:8c93:8585:ca1b%5]) with mapi id 15.20.7068.025; Wed, 6 Dec 2023
+ 17:37:22 +0000
+Message-ID: <746f6e3f-db20-453a-b9d0-41d0d398d5cf@amd.com>
+Date:   Wed, 6 Dec 2023 11:37:18 -0600
+User-Agent: Mozilla Thunderbird
+Reply-To: babu.moger@amd.com
+Subject: Re: [PATCH 01/15] x86/resctrl: Remove hard-coded memory bandwidth
+ limit
+Content-Language: en-US
+To:     Reinette Chatre <reinette.chatre@intel.com>, corbet@lwn.net,
+        fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Cc:     x86@kernel.org, hpa@zytor.com, paulmck@kernel.org,
+        rdunlap@infradead.org, tj@kernel.org, peterz@infradead.org,
+        seanjc@google.com, kim.phillips@amd.com, jmattson@google.com,
+        ilpo.jarvinen@linux.intel.com, jithu.joseph@intel.com,
+        kan.liang@linux.intel.com, nikunj@amd.com,
+        daniel.sneddon@linux.intel.com, pbonzini@redhat.com,
+        rick.p.edgecombe@intel.com, rppt@kernel.org,
+        maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, eranian@google.com,
+        peternewman@google.com, dhagiani@amd.com
+References: <20231201005720.235639-1-babu.moger@amd.com>
+ <20231201005720.235639-2-babu.moger@amd.com>
+ <4bca7ca1-d452-4cb7-b721-b2273f9a71b5@intel.com>
+ <90245ee3-8357-4375-b735-66acfe89ff90@amd.com>
+ <68f2c64b-9d46-4077-a183-0abc21ff0535@intel.com>
+From:   "Moger, Babu" <babu.moger@amd.com>
+In-Reply-To: <68f2c64b-9d46-4077-a183-0abc21ff0535@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR10CA0004.namprd10.prod.outlook.com
+ (2603:10b6:5:60::17) To MW3PR12MB4553.namprd12.prod.outlook.com
+ (2603:10b6:303:2c::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220708162158.03c82f47@gandalf.local.home>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FROM_MISSP_FREEMAIL,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,TO_NO_BRKTS_FROM_MSSP,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW3PR12MB4553:EE_|MW6PR12MB7085:EE_
+X-MS-Office365-Filtering-Correlation-Id: facaa0cb-845d-47a4-ab05-08dbf6820108
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OpkQnZes24fLallr2VlusRVypHl9YqU1z0FhAkLAVSFt514gK/7pxXN5HE9i5ADbpGtbJVyaU/hYP+OT1EFLxAW8tdzWqGf6qW1GUny39dG1goCp15MUHPEvM2+JL7DfZUkBy45jDzFAHvbG9ZJGc7Zqq2LSqIfmf5RVb8xfTUWmnfDfdBYTgAw1sVB/ZxTAh7R1kT9vylCiAZcYBoKPmKfSKZt+8tf8LER6vNYsXEzf682ugLoqb8A7cn4C/UDpHxRrNnV+DzjDWXRoWRsUrC70J9xCre41ek9ju3SAhku39HWiUWkda+F1F5Cs1ZfNx9NFGLaLuNJS6vOCzV1R6aSS4P3ZuaC1NMkmzVxhuyKXoHQwMMBk+jCXmGQ9AwBxWXd0mtPhAOELjTIm58P7G0oJsVkH6Kj6ZIWsQHPhhZv95wlvof7inOXTHZtkSVuNiUoUJK06UqzYf/RgBmDFADvkpJwK20Q7KVY0VnbLztAtsDwzpW5V3FA64/HqVcsZkIwbYBC4SrQPTC2Jb4gXX4azur32bT7FN1HanSbXYtt4KgjUGm+PRdeSek7oFxqCA+eeuKGavZPcUJMs3qVzg9oUURY4Obr6XRAXcIi67a0tG0ZszWzr4RlQ8S7nCH7B4j7QF6LcGQGJelb5lmaBMY5Q3hEb0kjj1kyZ0NJrUPDs62/dA1dBtlTby+b05eIh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR12MB4553.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(376002)(39860400002)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(41300700001)(36756003)(5660300002)(2906002)(3450700001)(7416002)(86362001)(2616005)(6666004)(478600001)(6512007)(53546011)(6506007)(83380400001)(26005)(966005)(31696002)(6486002)(38100700002)(8936002)(4326008)(8676002)(66946007)(66556008)(66476007)(31686004)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U2Z5MUd4VkV1MnE0SUZvdlI2eHBxUlhNMmRKbGJtbm42dDB1Z3p5YnVQL0hG?=
+ =?utf-8?B?RExXMVFveHJySkNmYmwxZVYzOFIrQ2NlMm44bnNIL2xEL1VvNEVNU2V6dWJ0?=
+ =?utf-8?B?clF4OHFOeld6OTd3eU1Tem5KZUxXM2ZXaUFXNTdGOFA5WW0zVHRkUnFST29y?=
+ =?utf-8?B?MHpqSXRhZzBubjlBUUM4NHR2WFI5N2hDMUh1Qm1Sb3dkc2Mrc2o1RDF3aHBW?=
+ =?utf-8?B?L2ZZZ2FHanRjSCs0UWxXdCtFSy9CVVBpcGlNZWJqTCtIMlhEdkQrWXE5SmFV?=
+ =?utf-8?B?T2dVZnkvc01nRFF6bDBlSXhiMFFreUtZRHFlNXlXWWM1MWpYcmIrc0ZhU2tl?=
+ =?utf-8?B?cnBmK3FxSkFlbHhqb2c0ZWM0bXVMWkVVQjlsQ0E5Zk9KYlRoaWhjSjZPNHgz?=
+ =?utf-8?B?aS9rQTVWTkNXNE9BSTg5NTEvQWtCMTFpYVppamhCNHI3UEg2NHphY0RqQ3RH?=
+ =?utf-8?B?dHBxVFl3bUIvWFpIOEk4d284SDR4clVBM0pUbVN4SS9yV01lU29FWmhIYmln?=
+ =?utf-8?B?Q252NCsydVBDU210TDZvUGtjYlY3QXlKeXU5c1ZVQ3l2ZUZCa2tkd21BZ0o4?=
+ =?utf-8?B?SDRmMVBsbklIVnhVTE53ekQrZ3QwU2hyVCtWOENoUDVYYTdUMU93aTE5azVO?=
+ =?utf-8?B?THlzck5jNE9WVzdxTHRtTGhUM2dqZUpmYlJXa21wUEFKKy9CZ3FZZjZIZXlk?=
+ =?utf-8?B?NFlrdkYwYktxSExXL0hVeGJtTDI3a2JWZFZkWnNwRmVsRXNsb1RxaDYzVk5w?=
+ =?utf-8?B?dU9qa0QxZ0J6OTJFaW9hQkhDcno5RkJDLzY3SnZNa3FLVHNhbElCenpmc1hj?=
+ =?utf-8?B?ZFQvS1lZZzBRL2VSRXdtMlhsdlZOa2tKMnVZNEdGbE5xUHEwbFNIcmczWnB1?=
+ =?utf-8?B?bjJTdEtZTDZWeGVuVTZ2T05VUHVaQ3NuZzQ0U2FZSFJRc0tKeE8wb3pGSGdP?=
+ =?utf-8?B?K1FJYjd6VXpBRFJ3WWl2eFV3YUloMHAvVTdiejJTSCtQeklJWGlsS0NWNVQ2?=
+ =?utf-8?B?Qnh3QTR1WGRrN2UxZnhBUEl1MHgrV0Vub2ZQc0JlR0RXUWVuMHhyQWdjeU8z?=
+ =?utf-8?B?Z05CRThBWmx2R0IvaTA4cE1lYnVMTnk5MlEvWUdWQ3A4aVArVHVmSHBwZjFR?=
+ =?utf-8?B?SVVFL0d4RW9kbHBudmVaeUFaZEJmZHFPTnNncmVSOGRHNVhQQS9INno1M25F?=
+ =?utf-8?B?Um0zdDNVSXgvRU9RQVl4R1NEK2Frb21WejUwdU5kVUpOUmlQRTFBSWhTT05x?=
+ =?utf-8?B?VENjZ2tpNks3RWNpb3ErOFFNUnQ3bjU1NUcrK3JValpJWVg3cndodmprLytz?=
+ =?utf-8?B?Q1FyOE8yV01OTVRtblBTSjlzVVlESlhrTCtGc29hY0hnUFNVUmlwTVdGN2dx?=
+ =?utf-8?B?YnJVNVdnTjBueVE3b1BzQlBrcmxRZmtWUUdXN0d0eEFyMkZLOElZMGJjNzE1?=
+ =?utf-8?B?UEtaNnBnZlFXd09CUkpodnhSTndYa3N4bnhvR29IMDZOWTVOZWo4WWdTZHFG?=
+ =?utf-8?B?dzBMUTdqZUtrVnlqREJabkcrNUthUkY4VTNVMlRuVVpKckJWa1V2REp1SnQy?=
+ =?utf-8?B?ajl0aEtCS1RVYlUzbzc3czZBcmlvSzhIY2doeENtYnRRVWlLRkx6Uit0RXYr?=
+ =?utf-8?B?TFZZeUdXcEtGN1RBa1NBUlNGV0lObGd6emY2cWt5Y3pndGptdnQ0b1VmWldD?=
+ =?utf-8?B?SkRlQzhNRDFuUGhiMnArVlRGbFlWdDlHRkVXdWZDeTIwcndXR01CT0krWWhN?=
+ =?utf-8?B?eGpsZ2ZGRzJ0RDFDbDJ6anVRMUFmZWJ6OStoUHZ5QnNKcmNqTVRlOFNnYWh4?=
+ =?utf-8?B?c0tJV1puNk5JNGQwTW9rZzZqT09ja24ranJaMk1vdkM1MWU2OXk2c0lVZnps?=
+ =?utf-8?B?NG5XTk5aTk10dXQ0QmZQYUFQWVBzUGxKN1hON2J0cXcvNHJoaUNDT0dGWjRv?=
+ =?utf-8?B?b3pZSjAyZW40aERmRmJFcDlVY0x4V243VVluY01OWlNVWXpsY2VyekdzWm5R?=
+ =?utf-8?B?cXB3OU1mQVA3ZEpPTDhSU3ZqMVZaaHl1NEVaSWxFc1dOV2NKWkUxNVpHcmhy?=
+ =?utf-8?B?KzAwU203NHltOFpQeEVwWms5WGwxSGJKeTJCRExxSjJlb0pMa2VNT3VBYVVt?=
+ =?utf-8?Q?GBts=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: facaa0cb-845d-47a4-ab05-08dbf6820108
+X-MS-Exchange-CrossTenant-AuthSource: MW3PR12MB4553.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 17:37:22.7875
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7Ig+bYQq/y5ax2Eg81aOSLv0IG12OHQYQS7akEgP4xCUC54kINUtSIwjtDPgUanY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB7085
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 08, 2022 at 04:21:58PM -0400, Steven Rostedt wrote:
-> On Mon, 27 Jun 2022 21:41:38 +0530
-> Mintu Patel <mintupatel89@gmail.com> wrote:
-> 
-> Hi Mintu,
-> 
-> FYI, a v2 should never be a reply to the v1. It should always start its own
-> thread, otherwise tooling and such will miss it.
-> 
-> >    rt_spin_lock is actually mutex on RT Kernel so it goes for contention
-> >    for lock. Currently owners of rt_spin_lock are decided before actual
-> >    acquiring of lock. This patch would depict the correct owner of
-> >    rt_spin_lock. The patch would help in solving crashes and deadlock
-> >    due to race condition of lock
-> > 
-> > acquiring rt_spin_lock        acquired the lock       released the lock
-> >                     <-------->                <------->
-> >                     contention period         Held period
-> > 
-> > Thread1                             Thread2
-> > _try_to_take_rt_mutex+0x95c+0x74    enqueue_task_dl+0x8cc/0x8dc
-> > rt_spin_lock_slowlock_locked+0xac+2 rt_mutex_setprio+0x28c/0x574
-> > rt_spin_lock_slowlock+0x5c/0x90     task_blocks_rt_mutex+0x240/0x310
-> > rt_spin_lock+0x58/0x5c              rt_spin_lock_slowlock_locked+0xac/0x2
-> > driverA_acquire_lock+0x28/0x56      rt_spin_lock_slowlock+0x5c/0x90
-> > 				    rt_spin_lock+0x58/0x5c
-> >                                     driverB_acquire_lock+0x48/0x6c
-> > 
-> > As per above call traces sample, Thread1 acquired the rt_spin_lock and
-> > went to critical section on the other hand Thread2 kept trying to acquire
-> > the same rt_spin_lock held by Thread1 ie contention period is too high.
-> > Finally Thread2 entered to dl queue due to high held time of the lock by
-> > Thread1. The below patch would help us to know the correct owner of
-> > rt_spin_lock and point us the driver's critical section. Respective
-> > driver need to be debugged for longer held period of lock.
-> > 
-> >    ex: cat /sys/kernel/debug/tracing/trace
-> > 
-> >    kworker/u13:0-150   [003] .....11   202.761025: rt_spinlock_acquire:
-> > Process: kworker/u13:0 is acquiring lock: &kbdev->hwaccess_lock
-> >    kworker/u13:0-150   [003] .....11   202.761039: rt_spinlock_acquired:
-> > Process: kworker/u13:0 has acquired lock: &kbdev->hwaccess_lock
-> >    kworker/u13:0-150   [003] .....11   202.761042: rt_spinlock_released:
-> > Process: kworker/u13:0 has released lock: &kbdev->hwaccess_lock
-> > 
-> > Signed-off-by: Mintu Patel <mintupatel89@gmail.com>
-> > Signed-off-by: Chinmoy Ghosh <chinmoyghosh2001@gmail.com>
-> > Signed-off-by: Vishal Badole <badolevishal1116@gmail.com>
-> > Signed-off-by: Vimal Kumar <vimal.kumar32@gmail.com>
-> > ---
-> >  include/trace/events/lock.h     | 38 +++++++++++++++++++++++++++++++++
-> >  kernel/locking/rtmutex.c        |  4 ++++
-> >  kernel/locking/rtmutex_common.h | 14 ++++++++++++
-> >  3 files changed, 56 insertions(+)
-> > 
-> > diff --git a/include/trace/events/lock.h b/include/trace/events/lock.h
-> > index d7512129a324..0564474341c8 100644
-> > --- a/include/trace/events/lock.h
-> > +++ b/include/trace/events/lock.h
-> > @@ -36,6 +36,44 @@ TRACE_EVENT(lock_acquire,
-> >  		  __get_str(name))
-> >  );
-> >  
-> > +DECLARE_EVENT_CLASS(rt_lock_class,
-> > +
-> > +	TP_PROTO(struct lockdep_map *lock, struct task_struct *pname),
-> > +
-> > +	TP_ARGS(lock, pname),
-> > +
-> > +	TP_STRUCT__entry(
-> > +		__string(name, lock->name)
-> > +		__string(process_name, pname->comm)
-> > +	),
-> > +
-> > +	TP_fast_assign(
-> > +		__assign_str(name, lock->name);
-> > +		__assign_str(process_name, pname->comm);
-> > +	),
-> > +
-> > +	TP_printk("Process: %s is acquiring lock: %s", __get_str(process_name),
-> > +		__get_str(name))
-> > +);
-> > +
-> > +DEFINE_EVENT(rt_lock_class, rt_spinlock_acquire,
-> > +	TP_PROTO(struct lockdep_map *lock, struct task_struct *pname),
-> > +	TP_ARGS(lock, pname));
-> > +
-> > +DEFINE_EVENT_PRINT(rt_lock_class, rt_spinlock_acquired,
-> > +	TP_PROTO(struct lockdep_map *lock, struct task_struct *pname),
-> > +	TP_ARGS(lock, pname),
-> > +	TP_printk("Process: %s has acquired lock: %s", __get_str(process_name),
-> > +		__get_str(name))
-> > +	);
-> > +
-> > +DEFINE_EVENT_PRINT(rt_lock_class, rt_spinlock_released,
-> > +	TP_PROTO(struct lockdep_map *lock, struct task_struct *pname),
-> > +	TP_ARGS(lock, pname),
-> > +	TP_printk("Process: %s has released lock: %s", __get_str(process_name),
-> > +		__get_str(name))
-> > +	);
-> > +
-> >  DECLARE_EVENT_CLASS(lock,
-> >  
-> >  	TP_PROTO(struct lockdep_map *lock, unsigned long ip),
-> > diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-> > index 602eb7821a1b..80ba2c0d7923 100644
-> > --- a/kernel/locking/rtmutex.c
-> > +++ b/kernel/locking/rtmutex.c
-> > @@ -26,6 +26,7 @@
-> >  #include <linux/timer.h>
-> >  #include <linux/ww_mutex.h>
-> >  #include <linux/blkdev.h>
-> > +#include <trace/events/lock.h>
-> >  
-> >  #include "rtmutex_common.h"
-> >  
-> > @@ -1144,7 +1145,9 @@ void __lockfunc rt_spin_lock(spinlock_t *lock)
-> >  	rcu_read_lock();
-> >  	migrate_disable();
-> >  	spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);
-> > +	do_trace_rt_spinlock_acquire(lock, current);
-> >  	rt_spin_lock_fastlock(&lock->lock, rt_spin_lock_slowlock);
-> > +	do_trace_rt_spinlock_acquired(lock, current);
-> >  }
-> >  EXPORT_SYMBOL(rt_spin_lock);
-> >  
-> > @@ -1169,6 +1172,7 @@ void __lockfunc rt_spin_unlock(spinlock_t *lock)
-> >  {
-> >  	/* NOTE: we always pass in '1' for nested, for simplicity */
-> >  	spin_release(&lock->dep_map, 1, _RET_IP_);
-> > +	do_trace_rt_spinlock_released(lock, current);
-> >  	rt_spin_lock_fastunlock(&lock->lock, rt_spin_lock_slowunlock);
-> >  	migrate_enable();
-> >  	rcu_read_unlock();
-> > diff --git a/kernel/locking/rtmutex_common.h b/kernel/locking/rtmutex_common.h
-> > index 546aaf058b9e..185ffc1e7015 100644
-> > --- a/kernel/locking/rtmutex_common.h
-> > +++ b/kernel/locking/rtmutex_common.h
-> > @@ -25,6 +25,20 @@
-> >   * @pi_tree_entry:	pi node to enqueue into the mutex owner waiters tree
-> >   * @task:		task reference to the blocked task
-> >   */
-> > +
-> > +#ifdef CONFIG_RT_SPIN_LOCK_TRACING
-> > +#define do_trace_rt_spinlock_acquire(lock, task) \
-> > +	trace_rt_spinlock_acquire(&lock->dep_map, task)
-> > +#define do_trace_rt_spinlock_acquired(lock, task) \
-> > +	trace_rt_spinlock_acquired(&lock->dep_map, task)
-> > +#define do_trace_rt_spinlock_released(lock, task) \
-> > +	trace_rt_spinlock_released(&lock->dep_map, task)
-> > +#else
-> > +#define do_trace_rt_spinlock_acquire(lock, task) do {} while(0)
-> > +#define do_trace_rt_spinlock_acquired(lock, task) do {} while(0)
-> > +#define do_trace_rt_spinlock_released(lock, task) do {} while(0)
-> > +#endif
-> > +
-> 
-> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> 
-> Although it will need to be accepted by Peter Zijlstra.
-> 
-> -- Steve
-> 
-> 
-> >  struct rt_mutex_waiter {
-> >  	struct rb_node          tree_entry;
-> >  	struct rb_node          pi_tree_entry;
->
-Hi Peter,
-Could you please review this patch.
+Hi Reinetee,
 
-Regards,
-Vishal Badole
+On 12/6/23 11:09, Reinette Chatre wrote:
+> Hi Babu,
+> 
+> On 12/6/2023 8:29 AM, Moger, Babu wrote:
+>> On 12/5/23 17:18, Reinette Chatre wrote:
+>>> On 11/30/2023 4:57 PM, Babu Moger wrote:
+> 
+>>>> Signed-off-by: Babu Moger <babu.moger@amd.com>
+>>>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
+>>>> ---
+>>>>  arch/x86/kernel/cpu/resctrl/core.c     | 2 +-
+>>>>  arch/x86/kernel/cpu/resctrl/internal.h | 1 -
+>>>>  2 files changed, 1 insertion(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+>>>> index 19e0681f0435..3fbae10b662d 100644
+>>>> --- a/arch/x86/kernel/cpu/resctrl/core.c
+>>>> +++ b/arch/x86/kernel/cpu/resctrl/core.c
+>>>> @@ -243,7 +243,7 @@ static bool __rdt_get_mem_config_amd(struct rdt_resource *r)
+>>>>  
+>>>>  	cpuid_count(0x80000020, subleaf, &eax.full, &ebx, &ecx, &edx.full);
+>>>>  	hw_res->num_closid = edx.split.cos_max + 1;
+>>>> -	r->default_ctrl = MAX_MBA_BW_AMD;
+>>>> +	r->default_ctrl = 1 << eax.full;
+>>>
+>>> This does not seem appropriate. You are using eax because it
+>>> it convenient but if you take a look at its definition it does not
+>>> match the AMD CPUID instruction output at all.
+>>
+>> Not sure where you see it. Here it is.
+>> https://bugzilla.kernel.org/attachment.cgi?id=303986
+>>
+>> Here is the definition.
+>>
+>> CPUID_Fn80000020_EAX_x01 [Platform QoS Enforcement for Memory Bandwidth]
+>> (Core::X86::Cpuid::PqeBandwidthEax1)
+>> Read-only. Reset: 0000_000Bh.
+>> _ccd[11:0]_lthree0_core[7:0]_thread[1:0]; CPUID_Fn80000020_EAX_x01
+>> Bits Description
+>> 31:0 BW_LEN: QOS Memory Bandwidth Enforcement Limit Size. Read-only.
+>> Reset: 0000_000Bh. Size of the QOS Memory Bandwidth Enforcement Limit.
+>>
+>> In this case, limit size is 12 (0BH) bits. Max limit is 1 << 12.
+>>
+> 
+> I see it in the definition of the data type you are using. Specifically
+> it is:
+> 
+> 	/* CPUID.(EAX=10H, ECX=ResID=3).EAX */
+> 	union cpuid_0x10_3_eax {
+> 		struct {
+> 			unsigned int max_delay:12;
+> 		} split;
+> 		unsigned int full;
+> 	};
+> 
+> How the kernel interprets the register does not match with what you paste
+> from the spec. This is an AMD specific function, __rdt_get_mem_config_amd().
+> Tt does not seem appropriate to use the register definition of Intel
+> systems if the Intel and AMD registers do not have the same format.
+> Yes. You are right. Our current code has the problem already.
+
+        union cpuid_0x10_3_eax eax;
+        union cpuid_0x10_x_edx edx;
+        u32 ebx, ecx, subleaf;
+
+Will fix both. Just "u32 eax, edx" should be fine for AMD.
+Thanks for pointing.
+
+-- 
+Thanks
+Babu Moger
