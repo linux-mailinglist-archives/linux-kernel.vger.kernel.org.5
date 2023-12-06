@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3BB80677A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC39806783
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376841AbjLFGgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 01:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44206 "EHLO
+        id S1376856AbjLFGg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 01:36:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376829AbjLFGgl (ORCPT
+        with ESMTP id S1376845AbjLFGgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 01:36:41 -0500
+        Wed, 6 Dec 2023 01:36:51 -0500
 Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D9B1B6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 22:36:47 -0800 (PST)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231206063645epoutp01ba402956e95a14e3c8090e87e91afd8d~eKqbpsxnd2442024420epoutp01K
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 06:36:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231206063645epoutp01ba402956e95a14e3c8090e87e91afd8d~eKqbpsxnd2442024420epoutp01K
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A82510C4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 22:36:56 -0800 (PST)
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231206063654epoutp011a0d1ad97381be60ba2bbf653ab29b3c~eKqkDNd6a2441024410epoutp01j
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 06:36:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231206063654epoutp011a0d1ad97381be60ba2bbf653ab29b3c~eKqkDNd6a2441024410epoutp01j
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701844605;
-        bh=BuzCw9s44y8vOCjVUfZWEiQy85UK4HFZlEIF9gRnXwA=;
+        s=mail20170921; t=1701844614;
+        bh=ZBAl/HNYuuxGQfLFUXbfQ7Rq5dNJRy0YKnMEv/Z9Bfk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KSo4AeoMrB1FRJNkfmglzzVBaPXYkVcVFHVdREHpi8+7aFs7Qnh4sPYMnITqQeA4G
-         Q/0pXFexhqVCYRbf+7m19KLe+nsN87pnJTKsQhMjsZ94lqV3DNdste5wKL/Tn60PSV
-         bGqyWTn2euvMiurzCadV0G1BGIfCC9aiubnkz0JY=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        b=oUddpJYX6ixng9xfs5PmwsxVXzSTwG1oiBepfMPbo38jhaSlLbYzQ0m5qV9CN/c+/
+         pTibMQTAlJDhJPQe96XATuGIKhGHW8QimAnImy9GWNlBOo++R7pSk9g8ssR4EXMe6c
+         ftgNPNZLq6Ts48rdItHNcQ1ke39M1/aC6hc1GRCI=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
         epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20231206063644epcas5p1a01f89836d3531cfa002fa80c141f057~eKqbBw_F20519405194epcas5p1i;
-        Wed,  6 Dec 2023 06:36:44 +0000 (GMT)
-Received: from epsmges5p3new.samsung.com (unknown [182.195.38.178]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4SlSNq0Mdjz4x9Pt; Wed,  6 Dec
-        2023 06:36:43 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        BE.F5.09672.A7610756; Wed,  6 Dec 2023 15:36:42 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231206063121epcas5p17a110abeea781dcb8760b4da4c8e4074~eKluRWSjj1697916979epcas5p1_;
-        Wed,  6 Dec 2023 06:31:21 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231206063121epsmtrp29cce8d0cf74c69e8c00eef230f33c898~eKluQedM81483514835epsmtrp2M;
-        Wed,  6 Dec 2023 06:31:21 +0000 (GMT)
-X-AuditID: b6c32a4b-60bfd700000025c8-5a-6570167a889b
+        20231206063654epcas5p19de7ba8aeeca03c4bd9e34590b9f94b7~eKqjuRbzI1242012420epcas5p1E;
+        Wed,  6 Dec 2023 06:36:54 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.182]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4SlSP01pvdz4x9Pt; Wed,  6 Dec
+        2023 06:36:52 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B6.1B.10009.48610756; Wed,  6 Dec 2023 15:36:52 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231206063125epcas5p2c5d07f51ba83198ccb8fbab005bab8f6~eKlxY58sy0993309933epcas5p2N;
+        Wed,  6 Dec 2023 06:31:25 +0000 (GMT)
+Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231206063125epsmtrp188308a3c077d98679037f971adc42b64~eKlxYEJHn1597215972epsmtrp1v;
+        Wed,  6 Dec 2023 06:31:25 +0000 (GMT)
+X-AuditID: b6c32a4a-ff1ff70000002719-77-65701684aa20
 Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        56.5C.08755.93510756; Wed,  6 Dec 2023 15:31:21 +0900 (KST)
+        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E2.A6.18939.D3510756; Wed,  6 Dec 2023 15:31:25 +0900 (KST)
 Received: from cheetah.sa.corp.samsungelectronics.net (unknown
         [107.109.115.53]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231206063117epsmtip25945e5393b6f324d0a4c47eeda35fcb9~eKlqkB1Wy3211232112epsmtip2Z;
-        Wed,  6 Dec 2023 06:31:17 +0000 (GMT)
+        20231206063122epsmtip25788e1272f6e3a4361e5745c1c3065a9~eKluZl3r_0453504535epsmtip26;
+        Wed,  6 Dec 2023 06:31:21 +0000 (GMT)
 From:   Aakarsh Jain <aakarsh.jain@samsung.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
@@ -63,57 +63,55 @@ Cc:     m.szyprowski@samsung.com, andrzej.hajda@intel.com,
         aswani.reddy@samsung.com, pankaj.dubey@samsung.com,
         ajaykumar.rs@samsung.com, aakarsh.jain@samsung.com,
         linux-fsd@tesla.com, Smitha T Murthy <smithatmurthy@gmail.com>
-Subject: [Patch v5 05/11] media: s5p-mfc: Add support for rate controls in
- MFCv12
-Date:   Wed,  6 Dec 2023 12:00:39 +0530
-Message-Id: <20231206063045.97234-6-aakarsh.jain@samsung.com>
+Subject: [Patch v5 06/11] media: s5p-mfc: Add support for UHD encoding.
+Date:   Wed,  6 Dec 2023 12:00:40 +0530
+Message-Id: <20231206063045.97234-7-aakarsh.jain@samsung.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231206063045.97234-1-aakarsh.jain@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDJsWRmVeSWpSXmKPExsWy7bCmum6VWEGqQUOftcXTHTNZLQ68P8hi
-        8WDeNjaLxT+eM1ncX/yZxeLQ5q3sFmv2nmOymH/kHKvFzQM7mSwuzrzLYtH34iGzxabH11gt
-        Hr4Kt7i8aw6bRc+GrawWM87vY7JYe+Quu8WyTX+YLBZt/cJu0br3CLtFS+MSVgdRj+tLPjF7
-        7Jx1l91j8Z6XTB6bVnWyedy5tofNY/OSeo++LasYPf41zWX3+LxJzuPU18/sAVxR2TYZqYkp
-        qUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QD8qKZQl5pQChQIS
-        i4uV9O1sivJLS1IVMvKLS2yVUgtScgpMCvSKE3OLS/PS9fJSS6wMDQyMTIEKE7Izfry9xl7w
-        U6Bi0Z+jbA2MU/i6GDk5JARMJI5eucbUxcjFISSwm1Fix6UHjBDOJ0aJzs+97BDON0aJlbsW
-        scG0zN2zlBnEFhLYyyhxe3s9RFErk8SmuTeAOjg42AR0Jc5uzwGpERFoZJR43FECUsMscJxZ
-        YsGEmSwgCWGBYIkPK6eDDWURUJVYeWYhE4jNK2ArseHOFHaIZfISqzccAFvGKWAnMWXNAlaQ
-        QRICVzgkLlyZA1XkIrF6wgpGCFtY4tXxLVBxKYnP7/ZCXZ0s8XjRS2YIO0di/Z4pLBC2vcSB
-        K3NYQI5mFtCUWL9LHyIsKzH11Dqwe5gF+CR6fz9hgojzSuyYB2OrScy584MVwpaROLx6KdQJ
-        HhKNzV9ZIQE0kVFiw9GyCYxysxA2LGBkXMUomVpQnJueWmxaYJyXWg6PtOT83E2M4GSs5b2D
-        8dGDD3qHGJk4GA8xSnAwK4nw5pzPTxXiTUmsrEotyo8vKs1JLT7EaAoMv4nMUqLJ+cB8kFcS
-        b2hiaWBiZmZmYmlsZqgkzvu6dW6KkEB6YklqdmpqQWoRTB8TB6dUA9PqIytPvPTczM22iuGn
-        yseHanucz3pJtkYuiro7c6rXyusS8/dUrnn85qmaCFf58VP7v1/QWX4q1+Gtoo3RwlW6mirh
-        RqXCPzRj+g2XxgrbOM6ff+LZ/AdqL86pnf+cGbpATM9GZsnViNVfdBQ32hUZ7H85y+kil3LY
-        XPGEqtQXMXtm8rIt9RAX8XQ8bbpqXk7WRqvJD7MKvu9kZ2vKKElb2KPNsV3tXKaU9/ozkybr
-        zfr6oqVsud93lvo9pwODOFMTdLo6JvpPmJfQu0A16t9N7pLPu4I072XP5Cws0jvKoV93WoFN
-        pP040zLBf+rvePftaDI/V55iP0nYirfMMe6zRFWrpsmCKd72PNkTA5RYijMSDbWYi4oTAbLJ
-        1qtPBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMLMWRmVeSWpSXmKPExsWy7bCSvK6laEGqwaydJhZPd8xktTjw/iCL
+X-Brightmail-Tracker: H4sIAAAAAAAAA0WTe0xbZRjG951z2h5IiocC87PRjTXChAxoZ8EPBXSTwGFbYrdlTp2GVTih
+        hN7sacHLorANZCAFZJswua7sknJdgQ0QWCkojIWLShgSUEingxl2ATELIrG0Zf73ey9P3uf9
+        LiQu6OIKyVS1ntGp5UoR15O43hcUFHJ6q5YR3+nzRL+3l3GQ9WEvgWYrr3OR6ck9DP1mWiaQ
+        raWNh+q7RzBU1T/CQb9YOzD0Y9kMgYzzcziy2Cc4aO7+UfRzZzkXfdXcxkGloz0Yauif4aHL
+        ljUMXWz7i4eyu/t56HRWLecNP/pO7RJOd1yY4dGmrgWMtpjPcOnpiS4u3VL7BW1sNQN6/WQF
+        j162bKOHVpZ5Ms/30qIUjDyZ0fkz6iRNcqo6JVq0/3Dim4nhEWJJiCQSvSLyV8tVTLQo9oAs
+        JC5V6dhR5J8uVxocKZmcZUVhMVE6jUHP+Cs0rD5axGiTlVqpNpSVq1iDOiVUzehflYjFu8Md
+        jcfTFCudY7j2tvfHN79eJzLBrFce8CAhJYVX2qs4ecCTFFDfATh5agC4giUAr+bPE08D49VF
+        fFMy2mXiugodANZMT7ol2Rhsq6hySEiSS4XA4RvKDYEvlQWgPVe/0YNTAzisLiojNgo+VDy8
+        MmXCN/oJKgCWtry2keZT0dBWvIa5hm2Hdc1W52APKgaera92eoXUGAmXWxp4rqZYeKuv3M0+
+        8P5Aq5uFcKEwx81J0H5xwb2BEjZ1nSVc/Dq0jpc7PeNUEGzqDHOlX4DnhhqdHnDKCxb8c9ft
+        hw/bKzc5EJZPP+G4+HnYV3cJuJiGM8VfOllAFQPYUx9TBLZd+H9CNQBm8ByjZVUpDBuu3a1m
+        Mp5eWpJGZQHOZxy8rx3MzT4KtQGMBDYASVzky1eOahgBP1n+yaeMTpOoMygZ1gbCHcdXjAv9
+        kjSOf6DWJ0qkkWJpRESENPLlCInoWf6f2RXJAipFrmfSGEbL6DZ1GOkhzMQa5g6N/3viyKBR
+        N6bJ2jvIVi/hTMlk/4F37wUc3PGDLGrlA+MUnRD3bc9bPvGFq58tIbvw2t+07VfDyXUPRabn
+        jZHBU8Tj+GzsmcP+t72nyPzCjImEgm9W++137Zlru3Y9qB24VW42rgaaGhevfWT3GU5IP3g8
+        cgbMT5E7Ot//Y4vHvuhcFaesuuZcrK8scnQ5YelYZYDppaPpzQ9HvS2kVGb43CbEc/K63z5j
+        3WP1qyrZ/05MjLD30vkTuTfNlamXa37KTPg+Q1lUd4TbVJcjVpx/Mb9K3jBWsnVcUqMaHsot
+        aA9trRQ3Lh4zBwZrevv2Dn342Kv0wR7JzkT+lrA4waPtIoJVyCXBuI6V/wfuC3VtTwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPLMWRmVeSWpSXmKPExsWy7bCSvK6taEGqwYmVvBZPd8xktTjw/iCL
         xYN529gsFv94zmRxf/FnFotDm7eyW6zZe47JYv6Rc6wWNw/sZLK4OPMui0Xfi4fMFpseX2O1
         ePgq3OLyrjlsFj0btrJazDi/j8li7ZG77BbLNv1hsli09Qu7ReveI+wWLY1LWB1EPa4v+cTs
         sXPWXXaPxXteMnlsWtXJ5nHn2h42j81L6j36tqxi9PjXNJfd4/MmOY9TXz+zB3BFcdmkpOZk
-        lqUW6dslcGX8eHuNveCnQMWiP0fZGhin8HUxcnJICJhIzN2zlLmLkYtDSGA3o8Tr1ZtZIBIy
-        Ev/bjrFD2MISK/89B7OFBJqZJKZ/1+li5OBgE9CVOLs9B6RXRKCVUeL6yk4mEIdZ4DazxKYJ
-        D8EahAUCJS6tPsEMYrMIqEqsPLOQCcTmFbCV2HBnCtQCeYnVGw6A1XAK2ElMWbOAFWSBEFDN
-        ypOOExj5FjAyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECI4XLc0djNtXfdA7xMjE
-        wXiIUYKDWUmEN+d8fqoQb0piZVVqUX58UWlOavEhRmkOFiVxXvEXvSlCAumJJanZqakFqUUw
-        WSYOTqkGJnOpY7Hy532NeHXt2iaoC09pn/dyqjHPPyahyXU5CzvZ9Jui52zh44kUWi+UrfIp
-        81fZ5uPJqY9LjlZ/WD219qxH7AFNjk/ffmRdct1j0HbZ+k1G3ZONahaLVzOudtpWFG7+dUN7
-        V9Hr3qcGR5k27le6eVFv6fmfE5Z7Oc7UqWuT4Zrb1qTwW3Ny5dk7PAx5ru3vkm5oLz4zO0Nx
-        bpjyrK8BaRUPaq8fWeggWrf8TuzT298+Sp8If7O7YTl70OG/kzqFi9xXr3zQfyg0x+HMM6WY
-        GPmf9Q/DlgsZ57CKHzx4zGPXinfZUrPrLp66yP2b3bjgX25E7n3/X5dT85y0duvZO7+MmhyV
-        MWONOr/IYSWW4oxEQy3mouJEACApMQcGAwAA
-X-CMS-MailID: 20231206063121epcas5p17a110abeea781dcb8760b4da4c8e4074
+        lqUW6dslcGV83XWBueC0YMX+Sf9YGhgf8HUxcnJICJhInN+zmK2LkYtDSGA7o8ShZ1eZIRIy
+        Ev/bjrFD2MISK/89Z4coamaSmHBnLVMXIwcHm4CuxNntOSBxEYFWRonrKzuZQBxmgdvMEpsm
+        PATrFhZwl1h+azEzSAOLgKrEjM3WIGFeAVuJQxP/MEEskJdYveEA2GJOATuJKWsWsIKUCwHV
+        rDzpOIGRbwEjwypG0dSC4tz03OQCQ73ixNzi0rx0veT83E2M4DjRCtrBuGz9X71DjEwcjIcY
+        JTiYlUR4c87npwrxpiRWVqUW5ccXleakFh9ilOZgURLnVc7pTBESSE8sSc1OTS1ILYLJMnFw
+        SjUwSTPv+/4wSEpB2zPW5p2UbcCeBemL5JniDlXPWXJsepZWW93vU8HPNJ72ZcRfENr1w6zt
+        3rYjem3zahi/9p24c/TksnRbJXOe3Rdblv17Xnz3yMsvq2ffnMfbF+v3WdNkBf+lzI+vzz0L
+        3HW89OBRNvEkmzXh+ZPZ1T1+HlwVVcnMbCiz0NRwTkx9gjcjU/5UnoD6RsPNc0QsPOvM5367
+        c2G7qUtPx8Xa+rdJmk/5G+emu/xO8dumPD/WWk7vIJOJ1+RJlW0GkqZqltzrny5T4ZVrkLMI
+        LcpxL3ywVO2VwZygKhHV2ieXHm/g3BZUo+7U9sq688SRjdM5X88x/+n/uc3Ab8OXH/f3TS8K
+        9i9TYinOSDTUYi4qTgQAeA263AIDAAA=
+X-CMS-MailID: 20231206063125epcas5p2c5d07f51ba83198ccb8fbab005bab8f6
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: REQ_APPROVE
 CMS-TYPE: 105P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231206063121epcas5p17a110abeea781dcb8760b4da4c8e4074
+X-CMS-RootMailID: 20231206063125epcas5p2c5d07f51ba83198ccb8fbab005bab8f6
 References: <20231206063045.97234-1-aakarsh.jain@samsung.com>
-        <CGME20231206063121epcas5p17a110abeea781dcb8760b4da4c8e4074@epcas5p1.samsung.com>
+        <CGME20231206063125epcas5p2c5d07f51ba83198ccb8fbab005bab8f6@epcas5p2.samsung.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
@@ -125,62 +123,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In MFCv12, the rc configs are changed with support for CBR loose,
-CBR tight and Variable Bitrate (VBR) added.
+MFC driver had restriction on max resolution of 1080p, updated it for
+UHD. Added corresponding support to set recommended profile and level
+for H264 in UHD scenario.
 
 Cc: linux-fsd@tesla.com
 Signed-off-by: Smitha T Murthy <smithatmurthy@gmail.com>
 Signed-off-by: Aakarsh Jain <aakarsh.jain@samsung.com>
 ---
- .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c | 22 +++++++++++++++----
- .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.h |  1 +
- 2 files changed, 19 insertions(+), 4 deletions(-)
+ drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c |  9 ++++++---
+ .../media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c  | 12 ++++++++++++
+ 2 files changed, 18 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
+index 6b495a738291..b01b9511e50c 100644
+--- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
++++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_enc.c
+@@ -1461,9 +1461,12 @@ static int vidioc_try_fmt(struct file *file, void *priv, struct v4l2_format *f)
+ 			mfc_err("Unsupported format by this MFC version.\n");
+ 			return -EINVAL;
+ 		}
+-
+-		v4l_bound_align_image(&pix_fmt_mp->width, 8, 1920, 1,
+-			&pix_fmt_mp->height, 4, 1080, 1, 0);
++		if (IS_MFCV12(dev))
++			v4l_bound_align_image(&pix_fmt_mp->width, 8, 3840, 1, &pix_fmt_mp
++					->height, 4, 2160, 1, 0);
++		else
++			v4l_bound_align_image(&pix_fmt_mp->width, 8, 1920, 1, &pix_fmt_mp
++					->height, 4, 1080, 1, 0);
+ 	} else {
+ 		mfc_err("invalid buf type\n");
+ 		return -EINVAL;
 diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-index 36aebca11313..4a0d0e228e78 100644
+index 4a0d0e228e78..572293f3b190 100644
 --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
 +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-@@ -992,10 +992,24 @@ static int s5p_mfc_set_enc_params(struct s5p_mfc_ctx *ctx)
+@@ -1071,6 +1071,18 @@ static int s5p_mfc_set_enc_params_h264(struct s5p_mfc_ctx *ctx)
+ 	reg |= ((p->num_b_frame & 0x3) << 16);
+ 	writel(reg, mfc_regs->e_gop_config);
  
- 	/* reaction coefficient */
- 	if (p->rc_frame) {
--		if (p->rc_reaction_coeff < TIGHT_CBR_MAX) /* tight CBR */
--			writel(1, mfc_regs->e_rc_mode);
--		else					  /* loose CBR */
--			writel(2, mfc_regs->e_rc_mode);
-+		if (IS_MFCV12(dev)) {
-+			/* loose CBR */
-+			if (p->rc_reaction_coeff < LOOSE_CBR_MAX)
-+				writel(1, mfc_regs->e_rc_mode);
-+			/* tight CBR */
-+			else if (p->rc_reaction_coeff < TIGHT_CBR_MAX)
-+				writel(0, mfc_regs->e_rc_mode);
-+			/* VBR */
-+			else
-+				writel(2, mfc_regs->e_rc_mode);
-+		} else {
-+			/* tight CBR */
-+			if (p->rc_reaction_coeff < TIGHT_CBR_MAX)
-+				writel(1, mfc_regs->e_rc_mode);
-+			/* loose CBR */
-+			else
-+				writel(2, mfc_regs->e_rc_mode);
++	/* UHD encoding case */
++	if (ctx->img_width == 3840 && ctx->img_height == 2160) {
++		if (p_h264->level < 51) {
++			mfc_debug(2, "Set Level 5.1 for UHD\n");
++			p_h264->level = 51;
 +		}
- 	}
- 
- 	/* seq header ctrl */
-diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.h b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.h
-index ff582eea4217..94ecb0e6e7c7 100644
---- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.h
-+++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.h
-@@ -40,6 +40,7 @@
- #define ENC_H264_LEVEL_MAX		42
- #define ENC_MPEG4_VOP_TIME_RES_MAX	((1 << 16) - 1)
- #define FRAME_DELTA_H264_H263		1
-+#define LOOSE_CBR_MAX			5
- #define TIGHT_CBR_MAX			10
- #define ENC_HEVC_RC_FRAME_RATE_MAX	((1 << 16) - 1)
- #define ENC_HEVC_QP_INDEX_MIN		-12
++		if (p_h264->profile != 0x2) {
++			mfc_debug(2, "Set High profile for UHD\n");
++			p_h264->profile = 0x2;
++		}
++	}
++
+ 	/* profile & level */
+ 	reg = 0;
+ 	/** level */
 -- 
 2.17.1
 
