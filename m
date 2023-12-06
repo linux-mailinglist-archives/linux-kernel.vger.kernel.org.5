@@ -2,107 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7531D807AD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF1B807AEF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377311AbjLFVwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:52:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
+        id S1377473AbjLFWBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:01:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377373AbjLFVwt (ORCPT
+        with ESMTP id S1377646AbjLFWA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:52:49 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D4F10C4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:52:54 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-db539f21712so301964276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 13:52:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1701899573; x=1702504373; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ad4QKqllEurVWf/Pv2WnyL7sj04ktRUEA1KwimHLGBw=;
-        b=A0FaZ5VPghmIMOFtE7VI5ktxGozz3Olwlubi9g38u8YjHjJ4FQqmsMbHx5O5owP402
-         MCvGx1UDIadD/hB9HuYVtFRO/iIwo0dNq0lSiw4mz8KYluLoEdNgvKuQQgFIuh8Nv1eB
-         kYposvN9K5OwVDmbRa3Gv9n912+wMYAeAfqA632ImawSese1WvEBzRAEmcBfENMmAHDE
-         LJudlvpdo32+Q65nFFXz1GnhCjH075c+xgvoc/efJW9ZJesqy2nIpO9HcSJ8dBAPDRyQ
-         yZGac/GZ9q3ZVNEXO8rmyC7iA0zgf+Vwi80FNnTTU73Q8ksqhIGRg/Y6vOxjZt64WSWi
-         yKYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701899573; x=1702504373;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ad4QKqllEurVWf/Pv2WnyL7sj04ktRUEA1KwimHLGBw=;
-        b=FS1eBMC7y3Ztul0Q/0QYoeWsGUwVY31Z+z/5tfAXzIfVDDKPwhQbPHwumLr0DmUlmX
-         5AdtUFba5yvagZ4SkVa6GpK8BnulJnmfMP9tospoIGAlDrwMczZtxGaSeTLPRMlvOj+i
-         YgRsFoytjVc1uVbrLLPvpm0rp/96uHtQsagsSJOK0z/w5aaWsHMt9JyVCf+H/uFjVZLV
-         YvuinFiUxTwpckEzBxGF+RUGsU9xVu080BTNWgp5ENeEA/K/Rdn/+0Z61slwy34hF/uO
-         SVSbLotEYypBD9Q6tDZeIWiS5KEZtiltRZpYmXTy7u468K6oN/7NacUhUdYFWqfbQxuD
-         mM8w==
-X-Gm-Message-State: AOJu0YwbtI8iF/eUvQ4c73dG1dZU4rwFZ2N6MK1og8kAE6vTxcHbBO/p
-        1jLQbhUKNF7PlVPGXYNBf6mS/kFoqg6nRsNozmb/
-X-Google-Smtp-Source: AGHT+IEj7nPBQx69pTJuIU/DScLOgVaCvMx3IAuTkYQQJ5vMAh2Hehp1yFZ/6ct0anbgpUrLprVHp8nDNRkJVZqoN6c=
-X-Received: by 2002:a25:ab66:0:b0:db7:98ba:2468 with SMTP id
- u93-20020a25ab66000000b00db798ba2468mr1505130ybi.28.1701899573074; Wed, 06
- Dec 2023 13:52:53 -0800 (PST)
+        Wed, 6 Dec 2023 17:00:59 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386D912F;
+        Wed,  6 Dec 2023 14:01:03 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id D29A010008C;
+        Thu,  7 Dec 2023 01:01:01 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D29A010008C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1701900061;
+        bh=JzyNiWl2gdrVX1kXonULVJjTpsF0XVhmt7tbHR+gCQ8=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=jYw/YYl5JDz6vOJ0EiUCq5glEAvDGf1geLPpWaNn+IFtHe8YR94K5nqNdIYZqy/BG
+         29FrgTmTVkabKkwDvfuo+m4pfVBVukFVmabVLyw4Z1UF/0NfQA/Gw+0svDCoxRrB2f
+         uPUA9ngLQeOx4tjl05W0gCk0uXkNB+QyYSZveV+pdowX5J+XyZykN9AB18+DL2bnnM
+         wGLa/QOytvopSmv1B8Rx47aV5DaX565g1otzYXZ103XzNRvqg+h+6mSBjTnKxYeQJR
+         c8AeCT/YT022y6yvZ3wt0+IQo1CcU2+sB2V/dwhB1WDeAQ9iGH6YaWcJd0V9ftluOe
+         Zf1j4TxZC0Asw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu,  7 Dec 2023 01:01:01 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 7 Dec 2023 01:01:01 +0300
+Message-ID: <d9d1ec6a-dd9b-61d9-9211-52e9437cbb1f@salutedevices.com>
+Date:   Thu, 7 Dec 2023 00:52:51 +0300
 MIME-Version: 1.0
-References: <20231206060629.2827226-1-david@fromorbit.com> <20231206060629.2827226-6-david@fromorbit.com>
-In-Reply-To: <20231206060629.2827226-6-david@fromorbit.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Wed, 6 Dec 2023 16:52:42 -0500
-Message-ID: <CAHC9VhTP3hRAkmp7wOKGrEzY5OXXJpnuofTG_+KdXDku18vkeA@mail.gmail.com>
-Subject: Re: [PATCH 05/11] selinux: use dlist for isec inode list
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-cachefs@redhat.com, dhowells@redhat.com,
-        gfs2@lists.linux.dev, dm-devel@lists.linux.dev,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v7 3/4] virtio/vsock: fix logic which reduces
+ credit update messages
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20231206211849.2707151-1-avkrasnov@salutedevices.com>
+ <20231206211849.2707151-4-avkrasnov@salutedevices.com>
+ <20231206165045-mutt-send-email-mst@kernel.org>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20231206165045-mutt-send-email-mst@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181917 [Dec 06 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/06 19:07:00 #22622451
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 1:07=E2=80=AFAM Dave Chinner <david@fromorbit.com> w=
-rote:
->
-> From: Dave Chinner <dchinner@redhat.com>
->
-> Because it's a horrible point of lock contention under heavily
-> concurrent directory traversals...
->
->   - 12.14% d_instantiate
->      - 12.06% security_d_instantiate
->         - 12.13% selinux_d_instantiate
->            - 12.16% inode_doinit_with_dentry
->               - 15.45% _raw_spin_lock
->                  - do_raw_spin_lock
->                       14.68% __pv_queued_spin_lock_slowpath
->
->
-> Signed-off-by: Dave Chinner <dchinner@redhat.com>
-> ---
->  include/linux/dlock-list.h        |  9 ++++
->  security/selinux/hooks.c          | 72 +++++++++++++++----------------
->  security/selinux/include/objsec.h |  6 +--
->  3 files changed, 47 insertions(+), 40 deletions(-)
 
-In the cover letter you talk about testing, but I didn't see any
-mention of testing with SELinux enabled.  Given the lock contention
-stats in the description above I'm going to assume you did test this
-and pass along my ACK, but if you haven't tested the changes below
-please do before sending this anywhere important.
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+On 07.12.2023 00:53, Michael S. Tsirkin wrote:
+> On Thu, Dec 07, 2023 at 12:18:48AM +0300, Arseniy Krasnov wrote:
+>> Add one more condition for sending credit update during dequeue from
+>> stream socket: when number of bytes in the rx queue is smaller than
+>> SO_RCVLOWAT value of the socket. This is actual for non-default value
+>> of SO_RCVLOWAT (e.g. not 1) - idea is to "kick" peer to continue data
+>> transmission, because we need at least SO_RCVLOWAT bytes in our rx
+>> queue to wake up user for reading data (in corner case it is also
+>> possible to stuck both tx and rx sides, this is why 'Fixes' is used).
+>> Also handle case when 'fwd_cnt' wraps, while 'last_fwd_cnt' is still
+>> not.
+>>
+>> Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
+>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> ---
+>>  Changelog:
+>>  v6 -> v7:
+>>   * Handle wrap of 'fwd_cnt'.
+>>   * Do to send credit update when 'fwd_cnt' == 'last_fwd_cnt'.
+>>
+>>  net/vmw_vsock/virtio_transport_common.c | 18 +++++++++++++++---
+>>  1 file changed, 15 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>> index e137d740804e..39f8660d825d 100644
+>> --- a/net/vmw_vsock/virtio_transport_common.c
+>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>> @@ -558,6 +558,8 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>  	struct virtio_vsock_sock *vvs = vsk->trans;
+>>  	size_t bytes, total = 0;
+>>  	struct sk_buff *skb;
+>> +	u32 fwd_cnt_delta;
+>> +	bool low_rx_bytes;
+>>  	int err = -EFAULT;
+>>  	u32 free_space;
+>>  
+>> @@ -601,7 +603,15 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>  		}
+>>  	}
+>>  
+>> -	free_space = vvs->buf_alloc - (vvs->fwd_cnt - vvs->last_fwd_cnt);
+>> +	/* Handle wrap of 'fwd_cnt'. */
+>> +	if (vvs->fwd_cnt < vvs->last_fwd_cnt)
+>> +		fwd_cnt_delta = vvs->fwd_cnt + (U32_MAX - vvs->last_fwd_cnt);
+> 
+> Are you sure there's no off by one here? for example if fwd_cnt is 0
+> and last_fwd_cnt is 0xfffffffff then apparently delta is 0.
 
---=20
-paul-moore.com
+Seems yes, I need +1 here
+
+> 
+> 
+>> +	else
+>> +		fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt;
+> 
+> I actually don't see what is wrong with just
+> 	fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt
+> 32 bit unsigned math will I think handle wrap around correctly.
+> 
+> And given buf_alloc is also u32 - I don't see where the bug is in
+> the original code.
+
+I think problem is when fwd_cnt wraps, while last_fwd_cnt is not. In this
+case fwd_cnt_delta will be too big, so we won't send credit update which
+leads to stall for sender
+
+Thanks, Arseniy
+
+> 
+> 
+>> +
+>> +	free_space = vvs->buf_alloc - fwd_cnt_delta;
+>> +	low_rx_bytes = (vvs->rx_bytes <
+>> +			sock_rcvlowat(sk_vsock(vsk), 0, INT_MAX));
+>>  
+>>  	spin_unlock_bh(&vvs->rx_lock);
+>>  
+>> @@ -611,9 +621,11 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>  	 * too high causes extra messages. Too low causes transmitter
+>>  	 * stalls. As stalls are in theory more expensive than extra
+>>  	 * messages, we set the limit to a high value. TODO: experiment
+>> -	 * with different values.
+>> +	 * with different values. Also send credit update message when
+>> +	 * number of bytes in rx queue is not enough to wake up reader.
+>>  	 */
+>> -	if (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
+>> +	if (fwd_cnt_delta &&
+>> +	    (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE || low_rx_bytes))
+>>  		virtio_transport_send_credit_update(vsk);
+>>  
+>>  	return total;
+>> -- 
+>> 2.25.1
+> 
