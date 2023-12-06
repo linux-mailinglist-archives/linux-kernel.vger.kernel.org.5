@@ -2,214 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 085CF8079F7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A85D88079F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379584AbjLFVCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:02:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379565AbjLFVCI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1379576AbjLFVCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 6 Dec 2023 16:02:08 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB9BD5F;
-        Wed,  6 Dec 2023 13:02:13 -0800 (PST)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6KMuXZ004301;
-        Wed, 6 Dec 2023 21:02:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=A/TdFogqS98WsB2VdzA9zHOz7vrXoiXkxMW3XDsQTvA=;
- b=J/s/eqVVWUmM7wih7vlBzxjMHzaBK1yrcf8WioWBdJDspIa6XqwQCdCUv2CemfdBS05b
- 7cZ9JB50VhWneVhHwksqu210JFLn+PPBZ7DHNqxniX3qtquncBM1RNzr2Xsp3TKTjQbw
- 3QtFkLCka/GDxq/A826FsjoOQWlK+FTuCHAg1n0/T8/j3QOjaFoK/+xY3owVg+bwy5j2
- mbUc4jUkIDfKaTYNa2xpjjegq59r+38gjIKYbe40wCcowjCZ0uM4IRz3Iu3aF2N4/UDS
- wArkWUJeqotDIAVc3yFsUYzKaqD5FLTiGb8L5Oz3LTDfsNV3CR+JjHnvX+9iDEP417bP 8A== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utd0qk3ga-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 21:02:05 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6L24s6028235
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Dec 2023 21:02:04 GMT
-Received: from [10.71.109.77] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
- 2023 13:02:03 -0800
-Message-ID: <27074b58-25ed-dbcc-1048-dbd9ba3135c9@quicinc.com>
-Date:   Wed, 6 Dec 2023 13:02:01 -0800
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230424AbjLFVCH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Dec 2023 16:02:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F428D46
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:02:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701896532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yHW20tuEOrmNp4P41P/HLfeGuZPZFZ5btUUMCBjAyAo=;
+        b=BhGer3Z86GXC+Tnl+fTXl52r3JXYI66KRdkrD7hfeQr19pu9KBzdsquAnNx3Gv+W+r6Rjd
+        wzQvG9kHLuFc6WiQZWdbKqEIO8X8CydvoHVKG8sn2I6d7cSwMEkCQGgAEvDuUlGh1Pw5EX
+        6GUdFivxhr4aYej8bLnQZ+JaXY69P4k=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-58-Tr0n8Aj5Or-lbiOYGgyS8w-1; Wed, 06 Dec 2023 16:02:07 -0500
+X-MC-Unique: Tr0n8Aj5Or-lbiOYGgyS8w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A252F8353F2;
+        Wed,  6 Dec 2023 21:02:04 +0000 (UTC)
+Received: from [10.22.34.92] (unknown [10.22.34.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B2EEB111E404;
+        Wed,  6 Dec 2023 21:02:02 +0000 (UTC)
+Message-ID: <469f44fb-2371-4b3b-bc1c-d09ec35a5ec8@redhat.com>
+Date:   Wed, 6 Dec 2023 16:02:02 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 07/16] drm/msm/dpu: add cdm blocks to RM
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/10] devm-helpers: introduce devm_mutex_init
 Content-Language: en-US
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <quic_khsieh@quicinc.com>, <quic_parellan@quicinc.com>,
-        <quic_jesszhan@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Sean Paul <sean@poorly.run>
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com>
- <20230830224910.8091-8-quic_abhinavk@quicinc.com>
- <CAA8EJpoRcdHtyp3mym5HB2A=O6V4qUNTpnMkvm+OiSt7nHuXJw@mail.gmail.com>
- <5bcbb092-1d29-f795-3be4-5ab1c708cba0@quicinc.com>
-In-Reply-To: <5bcbb092-1d29-f795-3be4-5ab1c708cba0@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Hans de Goede <hdegoede@redhat.com>,
+        George Stark <gnstark@salutedevices.com>, pavel@ucw.cz,
+        lee@kernel.org, vadimp@nvidia.com, mpe@ellerman.id.au,
+        npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        mazziesaccount@gmail.com, andy.shevchenko@gmail.com,
+        jic23@kernel.org, peterz@infradead.org
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kernel@salutedevices.com
+References: <20231204180603.470421-1-gnstark@salutedevices.com>
+ <20231204180603.470421-2-gnstark@salutedevices.com>
+ <81798fe5-f89e-482f-b0d0-674ccbfc3666@redhat.com>
+ <29584eb6-fa10-4ce0-9fa3-0c409a582445@salutedevices.com>
+ <580ecff0-b335-4cc0-b928-a99fe73741ca@redhat.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <580ecff0-b335-4cc0-b928-a99fe73741ca@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Uh0pt5t0JoG5-gBSUVzKlZjor24-Zu7e
-X-Proofpoint-ORIG-GUID: Uh0pt5t0JoG5-gBSUVzKlZjor24-Zu7e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_14,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- impostorscore=0 bulkscore=0 mlxlogscore=981 lowpriorityscore=0 spamscore=0
- adultscore=0 priorityscore=1501 suspectscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312060140
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 12/6/23 14:55, Hans de Goede wrote:
+> Hi,
+>
+> On 12/6/23 19:58, George Stark wrote:
+>> Hello Hans
+>>
+>> Thanks for the review.
+>>
+>> On 12/6/23 18:01, Hans de Goede wrote:
+>>> Hi George,
+>>>
+>>> On 12/4/23 19:05, George Stark wrote:
+>>>> Using of devm API leads to certain order of releasing resources.
+>>>> So all dependent resources which are not devm-wrapped should be deleted
+>>>> with respect to devm-release order. Mutex is one of such objects that
+>>>> often is bound to other resources and has no own devm wrapping.
+>>>> Since mutex_destroy() actually does nothing in non-debug builds
+>>>> frequently calling mutex_destroy() is just ignored which is safe for now
+>>>> but wrong formally and can lead to a problem if mutex_destroy() is
+>>>> extended so introduce devm_mutex_init().
+>>>>
+>>>> Signed-off-by: George Stark <gnstark@salutedevices.com>
+>>>> ---
+>>>>    include/linux/devm-helpers.h | 18 ++++++++++++++++++
+>>>>    1 file changed, 18 insertions(+)
+>>>>
+>>>> diff --git a/include/linux/devm-helpers.h b/include/linux/devm-helpers.h
+>>>> index 74891802200d..2f56e476776f 100644
+>>>> --- a/include/linux/devm-helpers.h
+>>>> +++ b/include/linux/devm-helpers.h
+>>>> @@ -76,4 +76,22 @@ static inline int devm_work_autocancel(struct device *dev,
+>>>>        return devm_add_action(dev, devm_work_drop, w);
+>>>>    }
+>>>>    +static inline void devm_mutex_release(void *res)
+>>>> +{
+>>>> +    mutex_destroy(res);
+>>>> +}
+>>>> +
+>>>> +/**
+>>>> + * devm_mutex_init - Resource-managed mutex initialization
+>>>> + * @dev:    Device which lifetime work is bound to
+>>>> + * @lock:    Pointer to a mutex
+>>>> + *
+>>>> + * Initialize mutex which is automatically destroyed when driver is detached.
+>>>> + */
+>>>> +static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
+>>>> +{
+>>>> +    mutex_init(lock);
+>>>> +    return devm_add_action_or_reset(dev, devm_mutex_release, lock);
+>>>> +}
+>>>> +
+>>>>    #endif
+>>> mutex_destroy() only actually does anything if CONFIG_DEBUG_MUTEXES
+>>> is set, otherwise it is an empty inline-stub.
+>>>
+>>> Adding a devres resource to the device just to call an empty inline
+>>> stub which is a no-op seems like a waste of resources. IMHO it
+>>> would be better to change this to:
+>>>
+>>> static inline int devm_mutex_init(struct device *dev, struct mutex *lock)
+>>> {
+>>>      mutex_init(lock);
+>>> #ifdef CONFIG_DEBUG_MUTEXES
+>>>      return devm_add_action_or_reset(dev, devm_mutex_release, lock);
+>>> #else
+>>>      return 0;
+>>> #endif
+>>> }
+>>>
+>>> To avoid the unnecessary devres allocation when
+>>> CONFIG_DEBUG_MUTEXES is not set.
+>> Honestly saying I don't like unnecessary devres allocation either but the proposed approach has its own price:
+>>
+>> 1) we'll have more than one place with branching if mutex_destroy is empty or not using  indirect condition. If suddenly mutex_destroy is extended for non-debug code (in upstream branch or e.g. by someone for local debug) than there'll be a problem.
+>>
+>> 2) If mutex_destroy is empty or not depends on CONFIG_PREEMPT_RT option too. When CONFIG_PREEMPT_RT is on mutex_destroy is always empty.
+>>
+>> As I see it only the mutex interface (mutex.h) has to say definitely if mutex_destroy must be called. Probably we could add some define to include/linux/mutex.h,like IS_MUTEX_DESTROY_REQUIRED and declare it near mutex_destroy definition itself.
+> That (a  IS_MUTEX_DESTROY_REQUIRED define) is an interesting idea. Lets see for v3 if the mutex maintainers will accept that and if not then I guess we will just need to live with the unnecessary devres allocation.
 
+The purpose of calling mutex_destroy() is to mark a mutex as being 
+destroyed so that any subsequent call to mutex_lock/unlock will cause a 
+warning to be printed when CONFIG_DEBUG_MUTEXES is defined. I would not 
+say that mutex_destroy() is required. Rather it is a nice to have for 
+catching programming error.
 
-On 11/30/2023 3:47 PM, Abhinav Kumar wrote:
-> 
-> 
-> On 8/30/2023 4:48 PM, Dmitry Baryshkov wrote:
->> On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar 
->> <quic_abhinavk@quicinc.com> wrote:
->>>
->>> Add the RM APIs necessary to initialize and allocate CDM
->>> blocks by the rest of the DPU pipeline.
->>
->> ... to be used by the rest?
->>
-> 
-> Yes, thanks.
-> 
-> 
->>>
->>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
->>> ---
->>>   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 17 +++++++++++++++++
->>>   drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h |  2 ++
->>>   2 files changed, 19 insertions(+)
->>>
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c 
->>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->>> index f9215643c71a..7b6444a3fcb1 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
->>> @@ -8,6 +8,7 @@
->>>   #include "dpu_kms.h"
->>>   #include "dpu_hw_lm.h"
->>>   #include "dpu_hw_ctl.h"
->>> +#include "dpu_hw_cdm.h"
->>>   #include "dpu_hw_pingpong.h"
->>>   #include "dpu_hw_sspp.h"
->>>   #include "dpu_hw_intf.h"
->>> @@ -90,6 +91,9 @@ int dpu_rm_destroy(struct dpu_rm *rm)
->>>                  }
->>>          }
->>>
->>> +       if (rm->cdm_blk)
->>> +               dpu_hw_cdm_destroy(to_dpu_hw_cdm(rm->cdm_blk));
->>> +
->>>          for (i = 0; i < ARRAY_SIZE(rm->hw_wb); i++)
->>>                  dpu_hw_wb_destroy(rm->hw_wb[i]);
->>>
->>> @@ -240,6 +244,19 @@ int dpu_rm_init(struct dpu_rm *rm,
->>>                  rm->hw_sspp[sspp->id - SSPP_NONE] = hw;
->>>          }
->>>
->>> +       if (cat->cdm) {
->>> +               struct dpu_hw_cdm *hw;
->>> +
->>> +               hw = dpu_hw_cdm_init(cat->cdm, mmio);
->>> +               /* CDM is optional so no need to bail out */
->>> +               if (IS_ERR(hw)) {
->>> +                       rc = PTR_ERR(hw);
->>> +                       DPU_DEBUG("failed cdm object creation: err 
->>> %d\n", rc);
->>
->> No. If it is a part of the catalog, we should fail here as we do in 
->> other cases.
->>
-> 
-> I guess, the only reason for not failing here was other hw blocks are 
-> needed even for basic display to come up but cdm is only for YUV formats.
-> 
-> Thats the only reason to mark this a failure which is "OK" to ignore.
-> 
-> But I see your point that if someone is listing this in the catalog but 
-> still RM fails thats an error.
-> 
-> Hence, ack.
-> 
->>
->>> +               } else {
->>> +                       rm->cdm_blk = &hw->base;
->>> +               }
->>> +       }
->>> +
->>>          return 0;
->>>
->>>   fail:
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h 
->>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
->>> index 2b551566cbf4..29b221491926 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h
->>> @@ -22,6 +22,7 @@ struct dpu_global_state;
->>>    * @hw_wb: array of wb hardware resources
->>>    * @dspp_blks: array of dspp hardware resources
->>>    * @hw_sspp: array of sspp hardware resources
->>> + * @cdm_blk: cdm hardware resource
->>>    */
->>>   struct dpu_rm {
->>>          struct dpu_hw_blk *pingpong_blks[PINGPONG_MAX - PINGPONG_0];
->>> @@ -33,6 +34,7 @@ struct dpu_rm {
->>>          struct dpu_hw_blk *merge_3d_blks[MERGE_3D_MAX - MERGE_3D_0];
->>>          struct dpu_hw_blk *dsc_blks[DSC_MAX - DSC_0];
->>>          struct dpu_hw_sspp *hw_sspp[SSPP_MAX - SSPP_NONE];
->>> +       struct dpu_hw_blk *cdm_blk;
->>
->> struct dpu_hw_cdm *cdm (or cdm_blk), please.
-> 
-> Ack.
-> 
+Cheers,
+Longman
 
-I was going through this more. I think its better we leave this as a 
-dpu_hw_blk because if you see the other blks in struct dpu_rm, all the 
-blocks which are allocated dynamically / can change dynamically are of 
-dpu_hw_blk type. That way the dpu_rm_get_assigned_resources() remains 
-generic. Hence I would prefer to leave it this way.
-
->>
->>>   };
->>>
->>>   /**
->>> -- 
->>> 2.40.1
->>>
->>
->>
->> -- 
->> With best wishes
->> Dmitry
