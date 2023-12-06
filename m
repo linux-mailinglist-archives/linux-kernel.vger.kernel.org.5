@@ -2,151 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6368071BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BB28071B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 15:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378783AbjLFOFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 09:05:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
+        id S1378788AbjLFODq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 09:03:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378713AbjLFOFV (ORCPT
+        with ESMTP id S1378713AbjLFODp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 09:05:21 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB255D1;
-        Wed,  6 Dec 2023 06:05:27 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B68bbfK026852;
-        Wed, 6 Dec 2023 14:04:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=QG7okk0DW5cV2WX4FjsH7Jm7c1uVFG7K9CMd5t4kVqM=;
- b=R/EGB0VQNpyP9G8YGeD+aYjHJrPIZ87QLxDYt9FULf6eovzWHcl2GY1i0n2VDA/1UTjs
- 1QlfpucLmuR7ky+kKyqdCLOgeN0l2LZ2oFZIXMEFyrmxop3EgFqgGoma/dT+WiAlbKYR
- Ek2Yh33hMuvU4PiYFkhVAea0D2r2+hpI0f03DLa8AbIJzb/O50TsHHK/cym9sCFvVaT9
- l5/+wSqbXa9Gonryq3rz5CUuOYGUeE1ycfUIG4OoY3lXpgzfG6LQYcvD8MVcvGT3NTSl
- UK4NyeTiwh/F/4wYDz0DncNzI/xrxNqBzoUCmBzgH33Ez/aE/GVXoP/nowRQLXuZyLDv xw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3utd1n1yy2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Dec 2023 14:04:19 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3B6E4HoZ025004
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 6 Dec 2023 14:04:18 GMT
-Received: from [10.218.37.200] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 6 Dec
- 2023 06:02:57 -0800
-Message-ID: <b9373252-710c-4a54-95cc-046314796960@quicinc.com>
-Date:   Wed, 6 Dec 2023 19:32:54 +0530
+        Wed, 6 Dec 2023 09:03:45 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E313181;
+        Wed,  6 Dec 2023 06:03:50 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1rAsVA-0006aQ-6t; Wed, 06 Dec 2023 15:03:48 +0100
+Message-ID: <8ca2c199-b1cf-468e-8182-f590ac0afb3c@leemhuis.info>
+Date:   Wed, 6 Dec 2023 15:03:47 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 1/3] ufs: core: Add CPU latency QoS support for ufs
- driver
-Content-Language: en-US
-To:     Bart Van Assche <bvanassche@acm.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Peter Wang <peter.wang@mediatek.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, <chu.stanley@gmail.com>
-CC:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <quic_cang@quicinc.com>,
-        <quic_nguyenb@quicinc.com>, Nitin Rawat <quic_nitirawa@quicinc.com>
-References: <20231204143101.64163-1-quic_mnaresh@quicinc.com>
- <20231204143101.64163-2-quic_mnaresh@quicinc.com>
- <590ade27-b4da-49be-933b-e9959aa0cd4c@acm.org>
- <692cd503-5b14-4be6-831d-d8e9c282a95e@quicinc.com>
- <5e7c5c75-cb5f-4afe-9d57-b0cab01a6f26@acm.org>
-From:   Naresh Maramaina <quic_mnaresh@quicinc.com>
-In-Reply-To: <5e7c5c75-cb5f-4afe-9d57-b0cab01a6f26@acm.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH v2] Revert "fuse: Apply flags2 only when userspace set the
+ FUSE_INIT_EXT"
+Content-Language: en-US, de-DE
+To:     =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Cc:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Paul Lawrence <paullawrence@google.com>,
+        Daniel Rosenberg <drosen@google.com>,
+        Alessio Balsini <balsini@android.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Bernd Schubert <bschubert@ddn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <717fd97a-6d14-4dc9-808c-d752d718fb80@ddn.com>
+ <fa3510f3-d3cc-45d2-b38e-e8717e2a9f83@ddn.com>
+ <1b03f355170333f20ee20e47c5f355dc73d3a91c.camel@linaro.org>
+ <9afc3152-5448-42eb-a7f4-4167fc8bc589@ddn.com>
+ <5cd87a64-c506-46f2-9fed-ac8a74658631@ddn.com>
+ <8ae8ce4d-6323-4160-848a-5e94895ae60e@leemhuis.info>
+ <CAOssrKdvy9qTGSwwPVqYLAYYEk0jbqhGg4Lz=jEff7U58O4Yqw@mail.gmail.com>
+ <2023102731-wobbly-glimpse-97f5@gregkh>
+ <CAOssrKfNkMmHB2oHHO8gWbzDX27vS--e9dZoh_Mjv-17mSUTBw@mail.gmail.com>
+ <2023102740-think-hatless-ab87@gregkh>
+ <CAOssrKd-O1JKEPzvnM1VkQ0-oTpDv0RfY6B5oF5p63AtQ4HoqA@mail.gmail.com>
+ <689f677b84b484636b673b362b17a6501a056968.camel@linaro.org>
+ <CAOssrKfP+t-cy322ujizQofgZkPZsBu1H4+zfbWNEFCmTsXwug@mail.gmail.com>
+ <afe378bf254f6c4ac73bb55be3fa7422f2da3f5f.camel@linaro.org>
+ <CAOssrKeJB7BZ7fA6Uqo6rHohybmgovc6rVwDeHbegvweSyZeeA@mail.gmail.com>
+ <7df24b0e-ea98-4dc7-9e1b-dfc29d0fa1b1@leemhuis.info>
+ <61be0ebb17ae0f01ea0e88a225cbfa07ff661060.camel@linaro.org>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <61be0ebb17ae0f01ea0e88a225cbfa07ff661060.camel@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: jNdJXZIgOmEwSo1frEafsf1-O-ipzEFK
-X-Proofpoint-GUID: jNdJXZIgOmEwSo1frEafsf1-O-ipzEFK
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-06_10,2023-12-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 clxscore=1015 impostorscore=0
- priorityscore=1501 adultscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312060113
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701871430;7228451f;
+X-HE-SMSGID: 1rAsVA-0006aQ-6t
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 08.11.23 11:31, André Draszik wrote:
+> [...]
+> But I agree, it seems we're stuck and I'm not sure how to resolve this
+> either, Miklos has his points, Android has a different position.
 
+FWIW, this thread died down without any agreement if this is an
+regression or not. Continuing to track it as one likely is not worth the
+effort, hence I'll remove it from the list of tracked issues. If anyone
+still thinks this is something that should be fixed I'd say that person
+should revive this thread and bring Linus in (but FWIW, I pointed him at
+this thread once already).
 
-On 12/5/2023 10:41 PM, Bart Van Assche wrote:
-> On 12/4/23 21:58, Naresh Maramaina wrote:
->> On 12/5/2023 12:30 AM, Bart Van Assche wrote:
->>> On 12/4/23 06:30, Maramaina Naresh wrote:
->>>> +    /* This capability allows the host controller driver to use the 
->>>> PM QoS
->>>> +     * feature.
->>>> +     */
->>>> +    UFSHCD_CAP_PM_QOS                = 1 << 13,
->>>>   };
->>>
->>> Why does it depend on the host driver whether or not PM QoS is
->>> enabled? Why isn't it enabled unconditionally?
->>
->> For some platform vendors power KPI might be more important than 
->> random io KPI. Hence this flag is disabled by default and can be 
->> enabled based on platform requirement.
-> 
-> How about leaving this flag out unless if a host vendor asks explicitly
-> for this flag?
+#regzbot inconclusive: people can't agree if this is a regression or not
+and it seems people stopped caring
+#regzbot ignore-activity
 
-IMHO, instead of completely removing this flag, how about having
-flag like "UFSHCD_CAP_DISABLE_PM_QOS" which will make PMQOS enable
-by default and if some host vendor wants to disable it explicitly,
-they can enable that flag.
-Please let me know your opinion.
-
->>>
->>>> + * @pm_qos_req: PM QoS request handle
->>>> + * @pm_qos_init: flag to check if pm qos init completed
->>>>    */
->>>
->>> Documentation for pm_qos_init is missing.
->>>
->> Sorry, i didn't get your comment, i have already added documentation 
->> for @pm_qos_init, @pm_qos_req variable as above. Do you want me to add 
->> this information some where else as well?
-> 
-> Oops, I meant 'qos_vote'.
-
-Sure. I'll take of this in next patchset.
-
-> 
-> Thanks,
-> 
-> Bart.
-> 
-
-Thanks,
-Naresh
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
