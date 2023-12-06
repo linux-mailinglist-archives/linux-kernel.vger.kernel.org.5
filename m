@@ -2,173 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4777E806B18
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA32806B1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377303AbjLFJ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:56:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40124 "EHLO
+        id S1377343AbjLFJ4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:56:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjLFJz5 (ORCPT
+        with ESMTP id S1377306AbjLFJ4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:55:57 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C24109;
-        Wed,  6 Dec 2023 01:56:03 -0800 (PST)
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 42E7E21F3E;
-        Wed,  6 Dec 2023 09:55:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701856557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=38oqPwid60kS6euzFAYt5HgeBK7Z4xKSWiLADq6sPMY=;
-        b=FKeU3LMZDT6YmQll0fLvK+UGD/SN8T7VGmFqsMDJZ9gc7NNDpRzn0VjFzbOasPnTTTwXm8
-        xPVqFHyCbTZoR93GW8VwteHKafJJLTvb8OSsW9IsNoI+X0Eqqx1X8Q9Bl9H/XbIz9boQoX
-        ZDeYZXSjELH22O3pRsNY1WMUbqC3LoU=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2839E2C153;
-        Wed,  6 Dec 2023 09:55:51 +0000 (UTC)
-Date:   Wed, 6 Dec 2023 10:55:51 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 07/10] printk: Remove the now superfluous sentinel
- elements from ctl_table array
-Message-ID: <ZXBFJ3G9ERfI55Sc@alley>
-References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
- <20231107-jag-sysctl_remove_empty_elem_kernel-v1-7-e4ce1388dfa0@samsung.com>
- <CGME20231128140754eucas1p2cf2c17554954e94d0dc14967e1f5e750@eucas1p2.samsung.com>
- <ZWX0L4lV8TWOgcpv@alley>
- <20231204085628.pf7yxppacf4pm2cv@localhost>
+        Wed, 6 Dec 2023 04:56:43 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A099BFA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:56:49 -0800 (PST)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1rAoe1-0001Jn-NU; Wed, 06 Dec 2023 10:56:41 +0100
+Message-ID: <fb0fda6a-3750-4e1b-893f-97a3e402b9af@leemhuis.info>
+Date:   Wed, 6 Dec 2023 10:56:40 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204085628.pf7yxppacf4pm2cv@localhost>
-X-Spam-Score: 22.12
-X-Spamd-Result: default: False [22.12 / 50.00];
-         RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[149.44.160.134:from];
-         RDNS_NONE(1.00)[];
-         TO_DN_SOME(0.00)[];
-         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
-         HFILTER_HELO_IP_A(1.00)[relay2.suse.de];
-         HFILTER_HELO_NORES_A_OR_MX(0.30)[relay2.suse.de];
-         MX_GOOD(-0.01)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FORGED_RECIPIENTS(2.00)[m:mgorman@suse.de,s:mgorman@imap.suse.de];
-         BAYES_HAM(-3.00)[100.00%];
-         RDNS_DNSFAIL(0.00)[];
-         ARC_NA(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         FROM_HAS_DN(0.00)[];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         NEURAL_SPAM_SHORT(2.12)[0.707];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         TO_MATCH_ENVRCPT_SOME(0.00)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         VIOLATED_DIRECT_SPF(3.50)[];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         RCPT_COUNT_TWELVE(0.00)[46];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[kernel.org,infradead.org,joshtriplett.org,chromium.org,xmission.com,google.com,goodmis.org,arm.com,linutronix.de,amacapital.net,redhat.com,linaro.org,suse.de,linux.ibm.com,intel.com,davemloft.net,gmail.com,iogearbox.net,linux.dev,vger.kernel.org,lists.infradead.org];
-         HFILTER_HOSTNAME_UNKNOWN(2.50)[];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Spamd-Bar: ++++++++++++++++++++++
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-        spf=fail (smtp-out1.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
-X-Rspamd-Queue-Id: 42E7E21F3E
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Bug#1054514: linux-image-6.1.0-13-amd64: Debian VM with qxl
+ graphics freezes frequently
+Content-Language: en-US, de-DE
+To:     Gerd Hoffmann <kraxel@redhat.com>
+Cc:     1054514@bugs.debian.org, Dave Airlie <airlied@redhat.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev,
+        Timo Lindfors <timo.lindfors@iki.fi>,
+        Salvatore Bonaccorso <carnil@debian.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <alpine.DEB.2.20.2310242308150.28457@mail.home>
+ <ZTgydqRlK6WX_b29@eldamar.lan>
+ <alpine.DEB.2.20.2310250027230.28685@mail.home>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <alpine.DEB.2.20.2310250027230.28685@mail.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1701856609;f9e47c69;
+X-HE-SMSGID: 1rAoe1-0001Jn-NU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2023-12-04 09:56:28, Joel Granados wrote:
-> Hey Petr
+Hi, Thorsten here, the Linux kernel's regression tracker. Top-posting
+for once, to make this easily accessible to everyone.
+
+Gerd, it seems this regression[1] fell through the cracks. Could you
+please take a look? Or is there a good reason why this can't be
+addressed? Or was it dealt with and I just missed it?
+
+[1] apparently caused by 5a838e5d5825c8 ("drm/qxl: simplify
+qxl_fence_wait") [v5.13-rc1] from Gerd; for details see
+https://lore.kernel.org/regressions/ZTgydqRlK6WX_b29@eldamar.lan/
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
+
+On 24.10.23 23:39, Timo Lindfors wrote:
+> Hi,
 > 
-> I missed this message somehow....
+> On Tue, 24 Oct 2023, Salvatore Bonaccorso wrote:
+>> Thanks for the excelent constructed report! I think it's best to
+>> forward this directly to upstream including the people for the
+>> bisected commit to get some idea.
 > 
-> On Tue, Nov 28, 2023 at 03:07:43PM +0100, Petr Mladek wrote:
-> > On Tue 2023-11-07 14:45:07, Joel Granados via B4 Relay wrote:
-> > > From: Joel Granados <j.granados@samsung.com>
-> > > 
-> > > This commit comes at the tail end of a greater effort to remove the
-> > > empty elements at the end of the ctl_table arrays (sentinels) which
-> > > will reduce the overall build time size of the kernel and run time
-> > > memory bloat by ~64 bytes per sentinel (further information Link :
-> > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> > > 
-> > > rm sentinel element from printk_sysctls
-> > > 
-> > > Signed-off-by: Joel Granados <j.granados@samsung.com>
-> > 
-> > I am a bit sceptical if the size and time reduction is worth the
-> > effort. I feel that this change makes the access a bit less secure.
-> In what way "less secure"? Can you expand on that?
+> Thanks for the quick reply!
 > 
-> Notice that if you pass a pointer to the register functions, you will
-> get a warning/error on compilation.
-
-I have vague memories that some arrays were not static or the length
-has been somehow manipulated. But I might be wrong.
-
-You are right that it should be safe with the static arrays.
-And the NULL sentinel might be more error-prone after all.
-
-Let's forget my mumbles.
-
-Best Regards,
-Petr
+>> Can you reproduce the issue with 6.5.8-1 in unstable as well?
+> 
+> Unfortunately yes:
+> 
+> ansible@target:~$ uname -r
+> 6.5.0-3-amd64
+> ansible@target:~$ time sudo ./reproduce.bash
+> Wed 25 Oct 2023 12:27:00 AM EEST starting round 1
+> Wed 25 Oct 2023 12:27:24 AM EEST starting round 2
+> Wed 25 Oct 2023 12:27:48 AM EEST starting round 3
+> bug was reproduced after 3 tries
+> 
+> real    0m48.838s
+> user    0m1.115s
+> sys     0m45.530s
+> 
+> I also tested upstream tag v6.6-rc6:
+> 
+> ...
+> + detected_version=6.6.0-rc6
+> + '[' 6.6.0-rc6 '!=' 6.6.0-rc6 ']'
+> + exec ssh target sudo ./reproduce.bash
+> Wed 25 Oct 2023 12:37:16 AM EEST starting round 1
+> Wed 25 Oct 2023 12:37:42 AM EEST starting round 2
+> Wed 25 Oct 2023 12:38:10 AM EEST starting round 3
+> Wed 25 Oct 2023 12:38:36 AM EEST starting round 4
+> Wed 25 Oct 2023 12:39:01 AM EEST starting round 5
+> Wed 25 Oct 2023 12:39:27 AM EEST starting round 6
+> bug was reproduced after 6 tries
+> 
+> 
+> For completeness, here is also the grub_set_default_version.bash script
+> that I had to write to automate this (maybe these could be in debian
+> wiki?):
+> 
+> #!/bin/bash
+> set -x
+> 
+> version="$1"
+> 
+> idx=$(expr $(grep "menuentry " /boot/grub/grub.cfg | sed 1d |grep -n
+> "'Debian GNU/Linux, with Linux $version'"|cut -d: -f1) - 1)
+> exec sudo grub-set-default "1>$idx"
+> 
+> 
+> 
+> -Timo
+> 
+> 
+> 
