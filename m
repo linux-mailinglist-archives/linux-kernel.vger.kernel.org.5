@@ -2,79 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C2B806B0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B16806B13
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:53:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377280AbjLFJuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:50:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        id S1377284AbjLFJxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377254AbjLFJuR (ORCPT
+        with ESMTP id S1377254AbjLFJxM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:50:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9D8109
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:50:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F2E84C433C9;
-        Wed,  6 Dec 2023 09:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701856224;
-        bh=IYirpk9Zuv663jhWbzf8HfLvsoJDvN1k0rophts0q9I=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cwXPedNz3opDAYq+xJxJX5vFliJiGNkcoW/FuI4Eu/irzT1TJhylZSClp1303uG8K
-         kQPtsVJwbzgvtRXW3V5hPt/zN+r91cJQEis9DkeJChu3YulKX6JhTaFtFwoJCfSJNb
-         EozKE+WLvtn70OufSSfIy9Lpi7ZeZKmRsl8+e17Fk03jAxtdaTPx0bT6V8o0wjyUxI
-         tCKxRJH/6TSVfeX2Fuv4OOLqE+mfnxWVRDegzg8bRZjvxFeQN8EoSvghdMfwyCMd30
-         dt7ZboR+t4LO8bzXNOzyO1MZCQp7GrFn72f3N9ID39zvI9DwVvA2B10TBi8Zm5td7t
-         y0MpcIDTbOtkQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DC267DD4F1F;
-        Wed,  6 Dec 2023 09:50:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Wed, 6 Dec 2023 04:53:12 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 619B4FA
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:53:18 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d048c171d6so47508845ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:53:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701856398; x=1702461198; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P3PUdeMTp59iLacU8h6b17A8a616BgKJZLMgjfjDCJ8=;
+        b=IEgt7kxqxbqo/TBZoiA+nRtGnEoiS3Tlkls62oS9wXXh/R6yP/g/WSbLenC4PYrZQZ
+         6UXMBV83QIHOe4WMikjMiVAnBDUIPFOvJmH5lo6gjUwMCuocGdm4dER7Bfv7gQMTpO53
+         q6mwpjTcpdUPRfgnyoBvcgYooNFDJ//XDav30=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701856398; x=1702461198;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P3PUdeMTp59iLacU8h6b17A8a616BgKJZLMgjfjDCJ8=;
+        b=l8iYS0pDN1C6jFheeF5Ggat03tbYqkU5WTCdfx4Pcu6BTOZLH//xL/R8ejEwRn4sdm
+         gE8rNoxMk2Fa67zarfCvbuAYntrG3xIf2Mk3v5v6Xr8g0a+jR1oiTCZSBXSyFi/N75jF
+         XoET7VRb6r6eTbuao2GQwOxD1QCMBVGVqU1T53EU06uEega5RCEYEfUpksqWrVjBLmO2
+         AEuUejxV0y7OvPhu4wRulM3g1viCC1SBWbDx3M1CiyKafTeHe3oHEuV8QSloXkpUe7eC
+         X/vPz0RH07HRFYl1GwlnGtpwkxAbjO7c06qEIRYTiKwiMieR0qTZoBt3lksgQ+dID6fu
+         0oog==
+X-Gm-Message-State: AOJu0YzTQCkUiZ7fo5hnB0GfBsXYdWsForBTq1emFDQspYHFkb0k/FA8
+        C2kVUfH57kluNSnhW+42/h+ITg==
+X-Google-Smtp-Source: AGHT+IENFyDVZppLzGhHMaJfmkH9S35XgHAMM7k7iWJLU/LdoSeCM37CpI1va9qGVzPeXWiqg4Zlgg==
+X-Received: by 2002:a17:903:22cf:b0:1d0:4d29:59fe with SMTP id y15-20020a17090322cf00b001d04d2959femr692480plg.11.1701856397742;
+        Wed, 06 Dec 2023 01:53:17 -0800 (PST)
+Received: from google.com ([2401:fa00:8f:203:95bb:1e40:3d62:d431])
+        by smtp.gmail.com with ESMTPSA id i4-20020a17090332c400b001d071d58e85sm7869159plr.98.2023.12.06.01.53.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 01:53:17 -0800 (PST)
+Date:   Wed, 6 Dec 2023 18:53:12 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Dongyun Liu <dongyun.liu3@gmail.com>, minchan@kernel.org,
+        senozhatsky@chromium.org, axboe@kernel.dk,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        lincheng.yang@transsion.com, jiajun.ling@transsion.com,
+        ldys2014@foxmail.com, Dongyun Liu <dongyun.liu@transsion.com>
+Subject: Re: [PATCH] zram: Using GFP_ATOMIC instead of GFP_KERNEL to allocate
+ bitmap memory in backing_dev_store (fwd)
+Message-ID: <20231206095312.GA333238@google.com>
+References: <8bb6e568-1c79-6410-5893-781621b71331@inria.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] r8152: add vendor/device ID pair for ASUS USB-C2500
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170185622389.11676.14511333566632987056.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Dec 2023 09:50:23 +0000
-References: <20231203011712.6314-1-kelly@hawknetworks.com>
-In-Reply-To: <20231203011712.6314-1-kelly@hawknetworks.com>
-To:     Kelly Kane <kelly@hawknetworks.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8bb6e568-1c79-6410-5893-781621b71331@inria.fr>
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi,
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Sat,  2 Dec 2023 17:17:12 -0800 you wrote:
-> The ASUS USB-C2500 is an RTL8156 based 2.5G Ethernet controller.
+On (23/12/06 10:33), Julia Lawall wrote:
+> Hello,
 > 
-> Add the vendor and product ID values to the driver. This makes Ethernet
-> work with the adapter.
+> The warning is because kvfree is used to free memory that was allocated
+> using kmalloc; kfree would be fine.  But I think that the only way you can
+> get to out is with bitmap being NULL, so there is no need to free it at
+> all.
 > 
-> Signed-off-by: Kelly Kane <kelly@hawknetworks.com>
+> Furthermore, it could be safer in the long term to use different labels
+> for the different amounts of things that need to be freed, as done in most
+> other kernel code, rather than using a single label "out".
+
+[..]
+
+> Date: Wed, 6 Dec 2023 16:08:49 +0800
+> From: kernel test robot <lkp@intel.com>
+> To: oe-kbuild@lists.linux.dev
+> Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
+> Subject: Re: [PATCH] zram: Using GFP_ATOMIC instead of GFP_KERNEL to allocate
+>     bitmap memory in backing_dev_store
 > 
-> [...]
+> BCC: lkp@intel.com
+> CC: oe-kbuild-all@lists.linux.dev
+> In-Reply-To: <20231130152047.200169-1-dongyun.liu@transsion.com>
+> References: <20231130152047.200169-1-dongyun.liu@transsion.com>
+> TO: Dongyun Liu <dongyun.liu3@gmail.com>
+> TO: minchan@kernel.org
+> TO: senozhatsky@chromium.org
+> TO: axboe@kernel.dk
+> CC: linux-kernel@vger.kernel.org
+> CC: linux-block@vger.kernel.org
+> CC: lincheng.yang@transsion.com
+> CC: jiajun.ling@transsion.com
+> CC: ldys2014@foxmail.com
+> CC: Dongyun Liu <dongyun.liu@transsion.com>
+> 
+> Hi Dongyun,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on axboe-block/for-next]
+> [also build test WARNING on linus/master v6.7-rc4 next-20231206]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Dongyun-Liu/zram-Using-GFP_ATOMIC-instead-of-GFP_KERNEL-to-allocate-bitmap-memory-in-backing_dev_store/20231130-233042
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+> patch link:    https://lore.kernel.org/r/20231130152047.200169-1-dongyun.liu%40transsion.com
+> patch subject: [PATCH] zram: Using GFP_ATOMIC instead of GFP_KERNEL to allocate bitmap memory in backing_dev_store
 
-Here is the summary with links:
-  - r8152: add vendor/device ID pair for ASUS USB-C2500
-    https://git.kernel.org/netdev/net/c/7037d95a047c
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+This patch won't land upstream. It was NAK-ed.
