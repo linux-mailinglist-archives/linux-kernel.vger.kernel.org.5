@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EAA4806724
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:10:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF97F80672B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:10:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377051AbjLFGHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 01:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
+        id S1376954AbjLFGGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 01:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376911AbjLFGGk (ORCPT
+        with ESMTP id S1376902AbjLFGGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 01:06:40 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ECE910D3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 22:06:40 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c66988c2eeso399911a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 22:06:40 -0800 (PST)
+        Wed, 6 Dec 2023 01:06:34 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1BE4D67
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 22:06:37 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5c659db0ce2so3399984a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 22:06:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701842799; x=1702447599; darn=vger.kernel.org;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701842797; x=1702447597; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rdb9xvX76/xANEogpQRhxIokBrxEBw+rSVcTgSipqa8=;
-        b=kuoM7EmEWDdEqIKN8PcgL+FALJqsEhHgZOoMjXlxKXkW6Tnwr2qqTNBjHhUb1gU36y
-         WALXNcQPAOvMx/uaf4IgZwfEMKF+6JtdlWMVO0lP4fB4yL6cWGBfZS90bY8mnP+BtfZG
-         bXaRHjWZB3VEMDp6mh3RcS3IWzgJhpMNcyUAygik6u1ESFJAVbVC+d46UvhF4lVdJI5x
-         gVaoQaNxcXuw6FnXl3BovN3q/Z9Yo140FTTzq0HCLsi3wmrOFhXbK2Y+NPM6jOnz9mN8
-         G6HzpAd3Q3zFhG3sfgPEFEPDb6BdaGPeYfyMQ0mvXMb/38KP0BWlkl3s+7C+myZ6NcRO
-         I15Q==
+        bh=k4fn8znMBnHx32svyrnbDfUnHhzlVQ7G5pzlVkycieA=;
+        b=vueYdWwmYeDx3LEn4Nye1xXvMy+5G/E9jQShJCw83qUlCniD1y2t9oPEohyUqOoltY
+         BjztqHStsw58EMoS2Fzudh7ZaOmxKl+XuDLNgEERc24vCJmuRpwn4ATB7dw2ZJa2gU7V
+         GbtC74J7H1chY2cXaAU40V1cAXazNakqkxvvq3ZuFN2OpBuW+MBVe46LKfN7qnsZQKZr
+         h5YOvGSFHgiVt6fK7J+ktLmvqMMG8QFe32Ok1HGAFWKmqrGJN+5gcFJkJVGNqHR68nP1
+         fK/GzXz9L8qquvU9zCn4hnzaF09K7Ci+9Qh5nsk3oJMkO1gWs8LmURpMWBFBCX9xMGI/
+         /fkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701842799; x=1702447599;
+        d=1e100.net; s=20230601; t=1701842797; x=1702447597;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Rdb9xvX76/xANEogpQRhxIokBrxEBw+rSVcTgSipqa8=;
-        b=Z5oLqlBtFCIple1YplEtueVM7fASo/VxbVNGwtHlzwVG+4N1xgX5Hbn0ptiLtPfvo8
-         HQDT1Vn6uVhSGh5brv+Vf0CLselqzFNbFjekMY78kHWrhDY9/fYXQkonjrlrjd9eXZh4
-         zaEmY+QME1H5vMHqqHtzL1EV5hMLUupiK6+uxRQ+7lXdSLtxATAC6dwjX62Zk8XTMLVc
-         TQkIzXiIGta5arilpmLbQrZcv6DcZJQK6Jjl0x4PQ6No1bDmIUOQMUeN70AexiCXpJO4
-         c9XxUzRQpG3r8LTfV4fCRj7uHkNdvWbGJdC0C6OkvOTolPWXh0e/Pdlqjq4Rpjsx9rtf
-         zh3Q==
-X-Gm-Message-State: AOJu0YzTo+6lihntfnKQlcwqKG9tNlZX9OBx4Tw3B0WfxFJLOzPcPAM9
-        YIJcvDrKAm3EFhDVHouKPV7p5Q==
-X-Google-Smtp-Source: AGHT+IGb5kg0aJnp7AHr6GQcXW1g5UZsc3Lyt04QtAqwhanWpaLLG0z7OKR8itApXUZbOpyN0KCWcA==
-X-Received: by 2002:a17:90b:1650:b0:286:d498:1ad with SMTP id il16-20020a17090b165000b00286d49801admr507619pjb.3.1701842799111;
-        Tue, 05 Dec 2023 22:06:39 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id iy3-20020a170903130300b001cfed5524easm7574769plb.288.2023.12.05.22.06.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=k4fn8znMBnHx32svyrnbDfUnHhzlVQ7G5pzlVkycieA=;
+        b=U/dv5weYklLZgYEsLFs3K8X4UoeybGYVz6LS0TWtVPb5oCKoZbI+Tz3thxTic28Fiw
+         kmCGnYqufAWS8cNV4AXttGU/hZBrRX90sHQXgl8clCPl2N0adsi82cDXDs1E+vjgMj9/
+         LRVvGBZEbP34WPk1n9uTRULM5qPcxTwjwxV56r/1FDA4soZqVOSHqo7ZbdAA4Mdtob78
+         3Gx+fQEqng2hXj5E3ecFe1juaWAth/KRTtlC7khEYehkq6u5zcI7xkdDiCoUawyDbrSw
+         5TRTaOiwfKor7tFqsc45VINHsClSR5WEsLXO7XCkkQZ7xXCkcOLdXNsm9QGaAaDzuG9h
+         l2jw==
+X-Gm-Message-State: AOJu0YxBDZ9UUlC/XX4HDYeu+yU4eeaGfvwoUA7LQIg6wNcfZaK8Hv30
+        1o/zx/bQnyi9SQVHmvGnvDpdLA==
+X-Google-Smtp-Source: AGHT+IHh3TFL/DzofTOA4bttY6oq6gSidAZO08x8CTr+BDDGslel3+9RSP1rqlq7aRu9sSclIqBRzA==
+X-Received: by 2002:a17:902:7795:b0:1d0:5806:f45d with SMTP id o21-20020a170902779500b001d05806f45dmr351927pll.42.1701842796981;
         Tue, 05 Dec 2023 22:06:36 -0800 (PST)
+Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
+        by smtp.gmail.com with ESMTPSA id k10-20020a170902c40a00b001d087f68ef8sm2308763plk.37.2023.12.05.22.06.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 22:06:34 -0800 (PST)
 Received: from [192.168.253.23] (helo=devoid.disaster.area)
         by dread.disaster.area with esmtp (Exim 4.96)
         (envelope-from <dave@fromorbit.com>)
-        id 1rAl3I-004VPB-1D;
+        id 1rAl3I-004VPF-1Q;
         Wed, 06 Dec 2023 17:06:32 +1100
 Received: from dave by devoid.disaster.area with local (Exim 4.97-RC0)
         (envelope-from <dave@devoid.disaster.area>)
-        id 1rAl3H-0000000BrVk-3uln;
-        Wed, 06 Dec 2023 17:06:31 +1100
+        id 1rAl3H-0000000BrVp-49wq;
+        Wed, 06 Dec 2023 17:06:32 +1100
 From:   Dave Chinner <david@fromorbit.com>
 To:     linux-fsdevel@vger.kernel.org
 Cc:     linux-block@vger.kernel.org, linux-cachefs@redhat.com,
         dhowells@redhat.com, gfs2@lists.linux.dev,
         dm-devel@lists.linux.dev, linux-security-module@vger.kernel.org,
         selinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/11] list_bl: don't use bit locks for PREEMPT_RT or lockdep
-Date:   Wed,  6 Dec 2023 17:05:39 +1100
-Message-ID: <20231206060629.2827226-11-david@fromorbit.com>
+Subject: [PATCH 11/11] hlist-bl: introduced nested locking for dm-snap
+Date:   Wed,  6 Dec 2023 17:05:40 +1100
+Message-ID: <20231206060629.2827226-12-david@fromorbit.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231206060629.2827226-1-david@fromorbit.com>
 References: <20231206060629.2827226-1-david@fromorbit.com>
@@ -85,256 +85,129 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Chinner <dchinner@redhat.com>
 
-hash-bl nests spinlocks inside the bit locks. This causes problems
-for CONFIG_PREEMPT_RT which converts spin locks to sleeping locks,
-and we're not allowed to sleep while holding a spinning lock.
+Testing with lockdep enabled threw this warning from generic/081 in
+fstests:
 
-Further, lockdep does not support bit locks, so we lose lockdep
-coverage of the inode hash table with the hash-bl conversion.
+[ 2369.724151] ============================================
+[ 2369.725805] WARNING: possible recursive locking detected
+[ 2369.727125] 6.7.0-rc2-dgc+ #1952 Not tainted
+[ 2369.728647] --------------------------------------------
+[ 2369.730197] systemd-udevd/389493 is trying to acquire lock:
+[ 2369.732378] ffff888116a1a320 (&(et->table + i)->lock){+.+.}-{2:2}, at: snapshot_map+0x13e/0x7f0
+[ 2369.736197]
+               but task is already holding lock:
+[ 2369.738657] ffff8881098a4fd0 (&(et->table + i)->lock){+.+.}-{2:2}, at: snapshot_map+0x136/0x7f0
+[ 2369.742118]
+               other info that might help us debug this:
+[ 2369.744403]  Possible unsafe locking scenario:
 
-To enable these configs to work, add an external per-chain spinlock
-to the hlist_bl_head() and add helpers to use this instead of the
-bit spinlock when preempt_rt or lockdep are enabled.
+[ 2369.746814]        CPU0
+[ 2369.747675]        ----
+[ 2369.748496]   lock(&(et->table + i)->lock);
+[ 2369.749877]   lock(&(et->table + i)->lock);
+[ 2369.751241]
+                *** DEADLOCK ***
 
-This converts all users of hlist-bl to use the external spinlock in
-these situations, so we also gain lockdep coverage of things like
-the dentry cache hash table with this change.
+[ 2369.753173]  May be due to missing lock nesting notation
+
+[ 2369.754963] 4 locks held by systemd-udevd/389493:
+[ 2369.756124]  #0: ffff88811b3a1f48 (mapping.invalidate_lock#2){++++}-{3:3}, at: page_cache_ra_unbounded+0x69/0x190
+[ 2369.758516]  #1: ffff888121ceff10 (&md->io_barrier){.+.+}-{0:0}, at: dm_get_live_table+0x52/0xd0
+[ 2369.760888]  #2: ffff888110240078 (&s->lock#2){++++}-{3:3}, at: snapshot_map+0x12e/0x7f0
+[ 2369.763254]  #3: ffff8881098a4fd0 (&(et->table + i)->lock){+.+.}-{2:2}, at: snapshot_map+0x136/0x7f0
+[ 2369.765896]
+               stack backtrace:
+[ 2369.767429] CPU: 3 PID: 389493 Comm: systemd-udevd Not tainted 6.7.0-rc2-dgc+ #1952
+[ 2369.770203] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+[ 2369.773771] Call Trace:
+[ 2369.774657]  <TASK>
+[ 2369.775494]  dump_stack_lvl+0x5c/0xc0
+[ 2369.776765]  dump_stack+0x10/0x20
+[ 2369.778031]  print_deadlock_bug+0x220/0x2f0
+[ 2369.779568]  __lock_acquire+0x1255/0x2180
+[ 2369.781013]  lock_acquire+0xb9/0x2c0
+[ 2369.782456]  ? snapshot_map+0x13e/0x7f0
+[ 2369.783927]  ? snapshot_map+0x136/0x7f0
+[ 2369.785240]  _raw_spin_lock+0x34/0x70
+[ 2369.786413]  ? snapshot_map+0x13e/0x7f0
+[ 2369.787482]  snapshot_map+0x13e/0x7f0
+[ 2369.788462]  ? lockdep_init_map_type+0x75/0x250
+[ 2369.789650]  __map_bio+0x1d7/0x200
+[ 2369.790364]  dm_submit_bio+0x17d/0x570
+[ 2369.791387]  __submit_bio+0x4a/0x80
+[ 2369.792215]  submit_bio_noacct_nocheck+0x108/0x350
+[ 2369.793357]  submit_bio_noacct+0x115/0x450
+[ 2369.794334]  submit_bio+0x43/0x60
+[ 2369.795112]  mpage_readahead+0xf1/0x130
+[ 2369.796037]  ? blkdev_write_begin+0x30/0x30
+[ 2369.797007]  blkdev_readahead+0x15/0x20
+[ 2369.797893]  read_pages+0x5c/0x230
+[ 2369.798703]  page_cache_ra_unbounded+0x143/0x190
+[ 2369.799810]  force_page_cache_ra+0x9a/0xc0
+[ 2369.800754]  page_cache_sync_ra+0x2e/0x50
+[ 2369.801704]  filemap_get_pages+0x112/0x630
+[ 2369.802696]  ? __lock_acquire+0x413/0x2180
+[ 2369.803663]  filemap_read+0xfc/0x3a0
+[ 2369.804527]  ? __might_sleep+0x42/0x70
+[ 2369.805443]  blkdev_read_iter+0x6d/0x150
+[ 2369.806370]  vfs_read+0x1a6/0x2d0
+[ 2369.807148]  ksys_read+0x71/0xf0
+[ 2369.807936]  __x64_sys_read+0x19/0x20
+[ 2369.808810]  do_syscall_64+0x3c/0xe0
+[ 2369.809746]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+[ 2369.810914] RIP: 0033:0x7f9f14dbb03d
+
+Turns out that dm-snap holds two hash-bl locks at the same time,
+so we need nesting semantics to ensure lockdep understands what is
+going on.
 
 Signed-off-by: Dave Chinner <dchinner@redhat.com>
 ---
- include/linux/list_bl.h    | 126 ++++++++++++++++++++++++++++---------
- include/linux/rculist_bl.h |  13 ++++
- 2 files changed, 110 insertions(+), 29 deletions(-)
+ drivers/md/dm-snap.c    |  2 +-
+ include/linux/list_bl.h | 10 ++++++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/md/dm-snap.c b/drivers/md/dm-snap.c
+index bf7a574499a3..cd97d5cb295d 100644
+--- a/drivers/md/dm-snap.c
++++ b/drivers/md/dm-snap.c
+@@ -645,7 +645,7 @@ static void dm_exception_table_lock_init(struct dm_snapshot *s, chunk_t chunk,
+ static void dm_exception_table_lock(struct dm_exception_table_lock *lock)
+ {
+ 	hlist_bl_lock(lock->complete_slot);
+-	hlist_bl_lock(lock->pending_slot);
++	hlist_bl_lock_nested(lock->pending_slot, SINGLE_DEPTH_NESTING);
+ }
+ 
+ static void dm_exception_table_unlock(struct dm_exception_table_lock *lock)
 diff --git a/include/linux/list_bl.h b/include/linux/list_bl.h
-index 8ee2bf5af131..990ad8e24e0b 100644
+index 990ad8e24e0b..0e3e60c10563 100644
 --- a/include/linux/list_bl.h
 +++ b/include/linux/list_bl.h
-@@ -4,14 +4,27 @@
+@@ -83,6 +83,11 @@ static inline void hlist_bl_lock(struct hlist_bl_head *b)
+ 	spin_lock(&b->lock);
+ }
  
- #include <linux/list.h>
- #include <linux/bit_spinlock.h>
-+#include <linux/spinlock.h>
- 
- /*
-  * Special version of lists, where head of the list has a lock in the lowest
-  * bit. This is useful for scalable hash tables without increasing memory
-  * footprint overhead.
-  *
-- * For modification operations, the 0 bit of hlist_bl_head->first
-- * pointer must be set.
-+ * Whilst the general use of bit spin locking is considered safe, PREEMPT_RT
-+ * introduces a problem with nesting spin locks inside bit locks: spin locks
-+ * become sleeping locks, and we can't sleep inside spinning locks such as bit
-+ * locks. However, for RTPREEMPT, performance is less of an issue than
-+ * correctness, so we trade off the memory and cache footprint of a spinlock per
-+ * list so the list locks are converted to sleeping locks and work correctly
-+ * with PREEMPT_RT kernels.
-+ *
-+ * An added advantage of this is that we can use the same trick when lockdep is
-+ * enabled (again, performance doesn't matter) and gain lockdep coverage of all
-+ * the hash-bl operations.
-+ *
-+ * For modification operations when using pure bit locking, the 0 bit of
-+ * hlist_bl_head->first pointer must be set.
-  *
-  * With some small modifications, this can easily be adapted to store several
-  * arbitrary bits (not just a single lock bit), if the need arises to store
-@@ -30,16 +43,21 @@
- #define LIST_BL_BUG_ON(x)
- #endif
- 
-+#undef LIST_BL_USE_SPINLOCKS
-+#if defined(CONFIG_PREEMPT_RT) || defined(CONFIG_LOCKDEP)
-+#define LIST_BL_USE_SPINLOCKS	1
-+#endif
- 
- struct hlist_bl_head {
- 	struct hlist_bl_node *first;
-+#ifdef LIST_BL_USE_SPINLOCKS
-+	spinlock_t lock;
-+#endif
- };
- 
- struct hlist_bl_node {
- 	struct hlist_bl_node *next, **pprev;
- };
--#define INIT_HLIST_BL_HEAD(ptr) \
--	((ptr)->first = NULL)
- 
- static inline void INIT_HLIST_BL_NODE(struct hlist_bl_node *h)
++static inline void hlist_bl_lock_nested(struct hlist_bl_head *b, int subclass)
++{
++	spin_lock_nested(&b->lock, subclass);
++}
++
+ static inline void hlist_bl_unlock(struct hlist_bl_head *b)
  {
-@@ -54,6 +72,69 @@ static inline bool  hlist_bl_unhashed(const struct hlist_bl_node *h)
- 	return !h->pprev;
+ 	spin_unlock(&b->lock);
+@@ -125,6 +130,11 @@ static inline void hlist_bl_lock(struct hlist_bl_head *b)
+ 	bit_spin_lock(0, (unsigned long *)b);
  }
  
-+#ifdef LIST_BL_USE_SPINLOCKS
-+#define INIT_HLIST_BL_HEAD(ptr) do { \
-+	(ptr)->first = NULL; \
-+	spin_lock_init(&(ptr)->lock); \
-+} while (0)
-+
-+static inline void hlist_bl_lock(struct hlist_bl_head *b)
++static inline void hlist_bl_lock_nested(struct hlist_bl_head *b, int subclass)
 +{
-+	spin_lock(&b->lock);
++	hlist_bl_lock(b);
 +}
 +
-+static inline void hlist_bl_unlock(struct hlist_bl_head *b)
-+{
-+	spin_unlock(&b->lock);
-+}
-+
-+static inline bool hlist_bl_is_locked(struct hlist_bl_head *b)
-+{
-+	return spin_is_locked(&b->lock);
-+}
-+
-+static inline struct hlist_bl_node *hlist_bl_first(struct hlist_bl_head *h)
-+{
-+	return h->first;
-+}
-+
-+static inline void hlist_bl_set_first(struct hlist_bl_head *h,
-+					struct hlist_bl_node *n)
-+{
-+	h->first = n;
-+}
-+
-+static inline void hlist_bl_set_before(struct hlist_bl_node **pprev,
-+					struct hlist_bl_node *n)
-+{
-+	WRITE_ONCE(*pprev, n);
-+}
-+
-+static inline bool hlist_bl_empty(const struct hlist_bl_head *h)
-+{
-+	return !READ_ONCE(h->first);
-+}
-+
-+#else /* !LIST_BL_USE_SPINLOCKS */
-+
-+#define INIT_HLIST_BL_HEAD(ptr) \
-+	((ptr)->first = NULL)
-+
-+static inline void hlist_bl_lock(struct hlist_bl_head *b)
-+{
-+	bit_spin_lock(0, (unsigned long *)b);
-+}
-+
-+static inline void hlist_bl_unlock(struct hlist_bl_head *b)
-+{
-+	__bit_spin_unlock(0, (unsigned long *)b);
-+}
-+
-+static inline bool hlist_bl_is_locked(struct hlist_bl_head *b)
-+{
-+	return bit_spin_is_locked(0, (unsigned long *)b);
-+}
-+
- static inline struct hlist_bl_node *hlist_bl_first(struct hlist_bl_head *h)
+ static inline void hlist_bl_unlock(struct hlist_bl_head *b)
  {
- 	return (struct hlist_bl_node *)
-@@ -69,11 +150,21 @@ static inline void hlist_bl_set_first(struct hlist_bl_head *h,
- 	h->first = (struct hlist_bl_node *)((unsigned long)n | LIST_BL_LOCKMASK);
- }
- 
-+static inline void hlist_bl_set_before(struct hlist_bl_node **pprev,
-+					struct hlist_bl_node *n)
-+{
-+	WRITE_ONCE(*pprev,
-+		   (struct hlist_bl_node *)
-+			((uintptr_t)n | ((uintptr_t)*pprev & LIST_BL_LOCKMASK)));
-+}
-+
- static inline bool hlist_bl_empty(const struct hlist_bl_head *h)
- {
- 	return !((unsigned long)READ_ONCE(h->first) & ~LIST_BL_LOCKMASK);
- }
- 
-+#endif /* LIST_BL_USE_SPINLOCKS */
-+
- static inline void hlist_bl_add_head(struct hlist_bl_node *n,
- 					struct hlist_bl_head *h)
- {
-@@ -94,11 +185,7 @@ static inline void hlist_bl_add_before(struct hlist_bl_node *n,
- 	n->pprev = pprev;
- 	n->next = next;
- 	next->pprev = &n->next;
--
--	/* pprev may be `first`, so be careful not to lose the lock bit */
--	WRITE_ONCE(*pprev,
--		   (struct hlist_bl_node *)
--			((uintptr_t)n | ((uintptr_t)*pprev & LIST_BL_LOCKMASK)));
-+	hlist_bl_set_before(pprev, n);
- }
- 
- static inline void hlist_bl_add_behind(struct hlist_bl_node *n,
-@@ -119,11 +206,7 @@ static inline void __hlist_bl_del(struct hlist_bl_node *n)
- 
- 	LIST_BL_BUG_ON((unsigned long)n & LIST_BL_LOCKMASK);
- 
--	/* pprev may be `first`, so be careful not to lose the lock bit */
--	WRITE_ONCE(*pprev,
--		   (struct hlist_bl_node *)
--			((unsigned long)next |
--			 ((unsigned long)*pprev & LIST_BL_LOCKMASK)));
-+	hlist_bl_set_before(pprev, next);
- 	if (next)
- 		next->pprev = pprev;
- }
-@@ -165,21 +248,6 @@ static inline bool hlist_bl_fake(struct hlist_bl_node *n)
- 	return n->pprev == &n->next;
- }
- 
--static inline void hlist_bl_lock(struct hlist_bl_head *b)
--{
--	bit_spin_lock(0, (unsigned long *)b);
--}
--
--static inline void hlist_bl_unlock(struct hlist_bl_head *b)
--{
--	__bit_spin_unlock(0, (unsigned long *)b);
--}
--
--static inline bool hlist_bl_is_locked(struct hlist_bl_head *b)
--{
--	return bit_spin_is_locked(0, (unsigned long *)b);
--}
--
- /**
-  * hlist_bl_for_each_entry	- iterate over list of given type
-  * @tpos:	the type * to use as a loop cursor.
-diff --git a/include/linux/rculist_bl.h b/include/linux/rculist_bl.h
-index 0b952d06eb0b..2d5eb5153121 100644
---- a/include/linux/rculist_bl.h
-+++ b/include/linux/rculist_bl.h
-@@ -8,6 +8,18 @@
- #include <linux/list_bl.h>
- #include <linux/rcupdate.h>
- 
-+#ifdef LIST_BL_USE_SPINLOCKS
-+static inline void hlist_bl_set_first_rcu(struct hlist_bl_head *h,
-+					struct hlist_bl_node *n)
-+{
-+	rcu_assign_pointer(h->first, n);
-+}
-+
-+static inline struct hlist_bl_node *hlist_bl_first_rcu(struct hlist_bl_head *h)
-+{
-+	return rcu_dereference_check(h->first, hlist_bl_is_locked(h));
-+}
-+#else /* !LIST_BL_USE_SPINLOCKS */
- static inline void hlist_bl_set_first_rcu(struct hlist_bl_head *h,
- 					struct hlist_bl_node *n)
- {
-@@ -23,6 +35,7 @@ static inline struct hlist_bl_node *hlist_bl_first_rcu(struct hlist_bl_head *h)
- 	return (struct hlist_bl_node *)
- 		((unsigned long)rcu_dereference_check(h->first, hlist_bl_is_locked(h)) & ~LIST_BL_LOCKMASK);
- }
-+#endif /* LIST_BL_USE_SPINLOCKS */
- 
- /**
-  * hlist_bl_del_rcu - deletes entry from hash list without re-initialization
+ 	__bit_spin_unlock(0, (unsigned long *)b);
 -- 
 2.42.0
 
