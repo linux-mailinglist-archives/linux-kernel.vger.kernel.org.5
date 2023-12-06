@@ -2,181 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A828076F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1498B8076F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442718AbjLFRtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
+        id S1442728AbjLFRuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:50:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379746AbjLFRtO (ORCPT
+        with ESMTP id S1378776AbjLFRuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:49:14 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 40A0ED50;
-        Wed,  6 Dec 2023 09:49:20 -0800 (PST)
-Received: from [192.168.178.49] (dynamic-adsl-84-220-28-122.clienti.tiscali.it [84.220.28.122])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E05E020B74C0;
-        Wed,  6 Dec 2023 09:49:12 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E05E020B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701884959;
-        bh=fdR3ND6srPYvib8II0FgNBO6VSaEommUDv/ciiWxLMo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=etZrPFxiZcXIZsGhguAUl+MqXiO/y4XO0YnqkS/CY59bkO2ayurtbE67EJXZ6ndGQ
-         enBcx4H8aYwZCs96EZ+eVpxYD9os9OAjzK9ILC9kPd6NWR7PD1k2hftMnoFluz1AiF
-         efPUoJ+tZ8TOhZfAOTbZUf91N6WpLqkis9BmlyMg=
-Message-ID: <0c4e33f0-6207-448d-a692-e81391089bea@linux.microsoft.com>
-Date:   Wed, 6 Dec 2023 18:49:11 +0100
+        Wed, 6 Dec 2023 12:50:00 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9C3D44
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:50:06 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54917ef6c05so74009a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 09:50:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701885005; x=1702489805; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OnB/pZwqKGUMreunlrpcEChm3w0duvNE2K6RYHvDVWs=;
+        b=GiDMfU/fjiBzt7naWXFtfF9uH2kEpHhk07f/NQtEe86BksSKPD2d3G4/5Y+LPw1vhO
+         CND5Oce1YcYVyjfAAEdwFzTJ3wRpfyS6aT8kLn3QNRmXn7KBX68PNWRgsYZGP8CjUefT
+         uVmgUyZKMiCGVlLc6UH92wbqj4Az8fVxPZ27EB8quE/NAgdu6vOyyJwh5thrzCW790Y9
+         JPc69k2T1IiXnkT8p2QFhwQjfGuLZh03+9pkouVGxQZLs1vKeZDR8bmMLeVlfKbbUvMa
+         uQUVp9jq3VRpoG1acxhqgaPSjmb1AHS38fmz/VBkmB1LJAjqkoXlT6FeSHqGPzpOO4C+
+         +nyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701885005; x=1702489805;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OnB/pZwqKGUMreunlrpcEChm3w0duvNE2K6RYHvDVWs=;
+        b=c9B7cizurHVR1etAtipEg5QjuG+VxRqkXUymxrcg2pPh7/cxp01KsO+BcpB7xFvHfP
+         WiipAvz1m7Eglodt2tlGx+745OCdzarxi1enJgTrk5HlXG8AYE6fH9auI7NVUvv3q7Oz
+         DV+fCCpt6JkLfGAALDb7F8OpWSW+QYiehRhD7p4WOccLTpBnMSMYKdqsRe0OllihHCFh
+         bjqJbLMoxwrZDRNo0Q1IIHOMTI3pbGyv8YdykcqQktsIYW8uZzYOEaHitfhnNpClBain
+         ZsIJi6DuwpMP7xqwZ++5il6LA2BerwDjq83fEc+B6eUo+hRocAriBDFXIsUPMFoldN2I
+         ecgQ==
+X-Gm-Message-State: AOJu0Yz/2qo8PEEFw4Hni87wSUXiMtyXsIrgdwymZt1DD+CGD0OqlOJQ
+        iASFKcG0p5KFy/lNMZmWf29u2w==
+X-Google-Smtp-Source: AGHT+IFyxkopgO+0RjCaNN4boeFAqOxV8pGjpl1yz2CCNa32uEuUCHVlG9ZxJWDqOQFfufEnaqG6sQ==
+X-Received: by 2002:a05:6402:2070:b0:54c:47cc:caef with SMTP id bd16-20020a056402207000b0054c47cccaefmr548288edb.53.1701885005016;
+        Wed, 06 Dec 2023 09:50:05 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id u13-20020a056402064d00b0054bde4df7f0sm218309edx.66.2023.12.06.09.50.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 09:50:04 -0800 (PST)
+Message-ID: <6c268dcd-81b4-451c-99f8-87090558e9dc@linaro.org>
+Date:   Wed, 6 Dec 2023 18:50:02 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
- TDX init
+Subject: Re: [PATCH v3 1/3] dt-bindings: phy: qcom,qmp: Add PCIe
+ qcom,refclk-always-on property
 Content-Language: en-US
-To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     "Reshetova, Elena" <elena.reshetova@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Michael Kelley <mhkelley58@gmail.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "stefan.bader@canonical.com" <stefan.bader@canonical.com>,
-        "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        "roxana.nicolescu@canonical.com" <roxana.nicolescu@canonical.com>,
-        "cascardo@canonical.com" <cascardo@canonical.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
- <DM8PR11MB575090573031AD9888D4738AE786A@DM8PR11MB5750.namprd11.prod.outlook.com>
- <9ab71fee-be9f-4afc-8098-ad9d6b667d46@linux.microsoft.com>
- <20231205105407.vp2rejqb5avoj7mx@box.shutemov.name>
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20231205105407.vp2rejqb5avoj7mx@box.shutemov.name>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_ramkri@quicinc.com,
+        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
+        quic_vpernami@quicinc.com, quic_parass@quicinc.com
+References: <20231127-refclk_always_on-v3-0-26d969fa8f1d@quicinc.com>
+ <20231127-refclk_always_on-v3-1-26d969fa8f1d@quicinc.com>
+ <78815f1b-7390-40de-8afd-ac71806f4051@linaro.org>
+ <24fae40a-453b-b14c-923f-88758a246aa7@quicinc.com>
+ <20231201060716.GJ4009@thinkpad>
+ <166d307e-7d1b-48b5-90db-9b6df01d87c2@linaro.org>
+ <20231201111033.GL4009@thinkpad>
+ <f844cd1e-7e4f-4836-bc9a-2e1ed13f064f@linaro.org>
+ <20231201123054.GM4009@thinkpad>
+ <3a7376aa-18a2-41cb-a4c9-680e735ce75b@linaro.org>
+ <20231206131009.GD12802@thinkpad>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231206131009.GD12802@thinkpad>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/12/2023 11:54, Kirill A. Shutemov wrote:
-> On Mon, Dec 04, 2023 at 08:07:38PM +0100, Jeremi Piotrowski wrote:
->> On 04/12/2023 10:17, Reshetova, Elena wrote:
->>>> Check for additional CPUID bits to identify TDX guests running with Trust
->>>> Domain (TD) partitioning enabled. TD partitioning is like nested virtualization
->>>> inside the Trust Domain so there is a L1 TD VM(M) and there can be L2 TD VM(s).
->>>>
->>>> In this arrangement we are not guaranteed that the TDX_CPUID_LEAF_ID is
->>>> visible
->>>> to Linux running as an L2 TD VM. This is because a majority of TDX facilities
->>>> are controlled by the L1 VMM and the L2 TDX guest needs to use TD partitioning
->>>> aware mechanisms for what's left. So currently such guests do not have
->>>> X86_FEATURE_TDX_GUEST set.
+On 06/12/2023 14:10, Manivannan Sadhasivam wrote:
 >>>
->>> Back to this concrete patch. Why cannot L1 VMM emulate the correct value of
->>> the TDX_CPUID_LEAF_ID to L2 VM? It can do this per TDX partitioning arch.
->>> How do you handle this and other CPUID calls call currently in L1? Per spec,
->>> all CPUIDs calls from L2 will cause L2 --> L1 exit, so what do you do in L1?
->> The disclaimer here is that I don't have access to the paravisor (L1) code. But
->> to the best of my knowledge the L1 handles CPUID calls by calling into the TDX
->> module, or synthesizing a response itself. TDX_CPUID_LEAF_ID is not provided to
->> the L2 guest in order to discriminate a guest that is solely responsible for every
->> TDX mechanism (running at L1) from one running at L2 that has to cooperate with L1.
->> More below.
+>>> If you say they are wrong, why are they approved in the first place?
+>> Because we don't have time to keep digging what the driver is doing and
+>> what is claimed in DT. Some people don't even CC us on the driver.
 >>
->>>
->>> Given that you do that simple emulation, you already end up with TDX guest
->>> code being activated. Next you can check what features you wont be able to
->>> provide in L1 and create simple emulation calls for the TDG calls that must be
->>> supported and cannot return error. The biggest TDG call (TDVMCALL) is already
->>> direct call into L0 VMM, so this part doesn’t require L1 VMM support. 
->>
->> I don't see anything in the TD-partitioning spec that gives the TDX guest a way
->> to detect if it's running at L2 or L1, or check whether TDVMCALLs go to L0/L1.
->> So in any case this requires an extra cpuid call to establish the environment.
->> Given that, exposing TDX_CPUID_LEAF_ID to the guest doesn't help.
->>
->> I'll give some examples of where the idea of emulating a TDX environment
->> without attempting L1-L2 cooperation breaks down.
->>
->> hlt: if the guest issues a hlt TDVMCALL it goes to L0, but if it issues a classic hlt
->> it traps to L1. The hlt should definitely go to L1 so that L1 has a chance to do
->> housekeeping.
 > 
-> Why would L2 issue HLT TDVMCALL? It only happens in response to #VE, but
-> if partitioning enabled #VEs are routed to L1 anyway.
-
-What about tdx_safe_halt? When X86_FEATURE_TDX_GUEST is defined I see
-"using TDX aware idle routing" in dmesg.
-
-> 
->> map gpa: say the guest uses MAP_GPA TDVMCALL. This goes to L0, not L1 which is the actual
->> entity that needs to have a say in performing the conversion. L1 can't act on the request
->> if L0 would forward it because of the CoCo threat model. So L1 and L2 get out of sync.
->> The only safe approach is for L2 to use a different mechanism to trap to L1 explicitly.
-> 
-> Hm? L1 is always in loop on share<->private conversion. I don't know why
-> you need MAP_GPA for that.
-> 
-> You can't rely on MAP_GPA anyway. It is optional (unfortunately). Conversion
-> doesn't require MAP_GPA call.
+> OK. How about, "qcom,broken-refclk"? This reflects the fact that the default
+> refclk operation is broken on this platform, so the OS should be prepared for
+> it (by keeping it always on).
 > 
 
-I'm sorry, I don't quite follow. I'm reading tdx_enc_status_changed():
-- TDVMCALL_MAP_GPA is issued for all transitions
-- TDX_ACCEPT_PAGE is issued for shared->private transitions
+Sounds very good to me.
 
-This doesn't work in partitioning when TDVMCALLs go to L0: TDVMCALL_MAP_GPA bypasses
-L1 and TDX_ACCEPT_PAGE is L1 responsibility.
+Best regards,
+Krzysztof
 
-If you want to see how this is currently supported take a look at arch/x86/hyperv/ivm.c.
-All memory starts as private and there is a hypercall to notify the paravisor for both
-TDX (when partitioning) and SNP (when VMPL). This guarantees that all page conversions
-go through L1.
-
->> Having a paravisor is required to support a TPM and having TDVMCALLs go to L0 is
->> required to make performance viable for real workloads.
->>
->>>
->>> Until we really see what breaks with this approach, I don’t think it is worth to
->>> take in the complexity to support different L1 hypervisors view on partitioning.
->>>
->>
->> I'm not asking to support different L1 hypervisors view on partitioning, I want to
->> clean up the code (by fixing assumptions that no longer hold) for the model that I'm
->> describing that: the kernel already supports, has an implementation that works and
->> has actual users. This is also a model that Intel intentionally created the TD-partitioning
->> spec to support.
->>
->> So lets work together to make X86_FEATURE_TDX_GUEST match reality.
-> 
-> I think the right direction is to make TDX architecture good enough
-> without that. If we need more hooks in TDX module that give required
-> control to L1, let's do that. (I don't see it so far)
-> 
-
-I'm not the right person to propose changes to the TDX module, I barely know anything about
-TDX. The team that develops the paravisor collaborates with Intel on it and was also consulted
-in TD-partitioning design.
-
-I'm also not sure what kind of changes you envision. Everything is supported by the
-kernel already and the paravisor ABI is meant to stay vendor independent.
-
-What I'm trying to accomplish is better integration with the non-partitioning side of TDX
-so that users don't see "Memory Encryption Features active: AMD SEV" when running on Intel
-TDX with a paravisor.
