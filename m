@@ -2,184 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15ECD80712D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB9580712E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378617AbjLFNtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:49:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
+        id S1378621AbjLFNuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378530AbjLFNtu (ORCPT
+        with ESMTP id S1378530AbjLFNuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:49:50 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D5EBD44
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:49:53 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B6BDB1F8D7;
-        Wed,  6 Dec 2023 13:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701870591; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=64C5QQ6eD3zVjkzNd+FfGYCQlWWqe1ZkIuBmjwdiWno=;
-        b=UWpI+xvhxHqJUS47LW1yHDaap4t8CnMIeLqxuDuX0b1xg2KWDlKejiMrUWasp8XyNKTcG2
-        sZyyVhZutFRLcNkaZvQ+I2ms5gKv3z0iWRvTtjwdbSLgQoQ8ubH5h/5+mw9iDrPSUVnK+5
-        G3NAma4WyzoLUTZhXOVu7rfnWmsOjrk=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 91DA813408;
-        Wed,  6 Dec 2023 13:49:51 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id mHSJIP97cGXjJwAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Wed, 06 Dec 2023 13:49:51 +0000
-Date:   Wed, 6 Dec 2023 14:49:50 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Philipp Rudo <prudo@redhat.com>
-Cc:     Baoquan He <bhe@redhat.com>, Donald Dutile <ddutile@redhat.com>,
-        Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
-        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
-        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        David Hildenbrand <dhildenb@redhat.com>
-Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
-Message-ID: <ZXB7_rbC0GAkIp7p@tiehlicka>
-References: <ZWf64BowWrYqA2Rf@MiWiFi-R3L-srv>
- <ZWhg_b3O6piZtkQ-@tiehlicka>
- <ZWh6ax8YmkhxAzIf@MiWiFi-R3L-srv>
- <ZWiAsJlLookvCI+h@MiWiFi-R3L-srv>
- <ZWiQ-II9CvGv8EWK@tiehlicka>
- <20231201123353.2b3db7fa@rotkaeppchen>
- <ZWnJyArAmFo_uYPA@tiehlicka>
- <20231201165113.43211a48@rotkaeppchen>
- <ZWoQ1k2AikSiMjys@tiehlicka>
- <20231206120805.4fdcb8ab@rotkaeppchen>
+        Wed, 6 Dec 2023 08:50:22 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B4CD44
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:50:27 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7c495bec2f7so1435617241.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 05:50:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701870626; x=1702475426; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T1BAIjik9oTj09NNiSlzlo6ZrWVwsHGjHjL12aXAbcU=;
+        b=RraM5P2DnwZdpgz+znpFwoBQhT3z1f9JHV29x93o6fW93U2z5SaSU9Y+Mi7VxkEEaf
+         5FnRIS/EgS9ciRvrYKCeuz/2Un6tt3dBEGQYA/NC6V6628OR2Q79HlK90xoz0vW1Bg0u
+         PqSiT6vYZzxUJqfbyehWQKyWNDqP09NRRGhEiPl9/nGavy9zu0nqzRF2AL6+ijctxXPI
+         vg9dk0QroWL7PcmlYQUxIwWQO6bFEdrukD7Jst9ikxhSPjatnGAIixsIKVyIygMLJMCT
+         yc0tyRkSo8rztc24I4RxfCQz2dgiAjGxGvssquhD1HFiUJ2zecH4XpFUlz7CP90qj9bq
+         d4JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701870626; x=1702475426;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T1BAIjik9oTj09NNiSlzlo6ZrWVwsHGjHjL12aXAbcU=;
+        b=GzbKGkikaDO3G96gRlpZpmd3E4Fp6CASsQR4dViXwl9VRvjGEITpJSV5n8Ke/2cfiF
+         Pwfo5Dhzj5KB9SCMM17EwwGJFC2jevNwdIbamI6iDFPI7rCpnxeIyA3zAYDdTIlgSzwp
+         sPnoV32ZW2gcgvfAtJEYGvB0nTitjFn4sMZlh040m3OkpJe/vRLx7WRXw3tb6naW91kZ
+         P9u5pEB66WJPlBYrcLHohU2gnpnMhwrHFJiMqTfjmCd+qTiFfP/t3djIhEjAjS4OG/hZ
+         hcpTbjadnLoZhIx/RrSzCuzGVRhPdJdPDlmXdK7pMDLIR7k8Qg0lmdjzxfWVALVton9f
+         3N/Q==
+X-Gm-Message-State: AOJu0Yx7Jeydv1Ojtnq6xallU4Iau1t0kdnB5KcOOAEaykD7yM8xDpwk
+        +I16HlTPaWl0RtlVdJxwj8I8Rbp8IEgAJK0iJ13aRA==
+X-Google-Smtp-Source: AGHT+IFCHoT3X5T8cHfrBHVSfTA7dsZwWY82Djuo29t0Svrr6ZOibGhfeCDgYY98HIowh3TZA6jdedhUpLZiicw/vuY=
+X-Received: by 2002:a05:6102:512c:b0:464:53e4:fec3 with SMTP id
+ bm44-20020a056102512c00b0046453e4fec3mr417945vsb.22.1701870626607; Wed, 06
+ Dec 2023 05:50:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206120805.4fdcb8ab@rotkaeppchen>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Score: -2.60
-X-Spamd-Result: default: False [-2.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
+ <20231206-alice-file-v2-5-af617c0d9d94@google.com> <20231206123402.GE30174@noisy.programming.kicks-ass.net>
+ <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com> <20231206134041.GG30174@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231206134041.GG30174@noisy.programming.kicks-ass.net>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Wed, 6 Dec 2023 14:50:15 +0100
+Message-ID: <CAH5fLghoyZHynwN7DK84sJERtDbuo_SbSty-0T8_xo2Dhj9Msw@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06-12-23 12:08:05, Philipp Rudo wrote:
-> On Fri, 1 Dec 2023 17:59:02 +0100
-> Michal Hocko <mhocko@suse.com> wrote:
-> 
-> > On Fri 01-12-23 16:51:13, Philipp Rudo wrote:
-> > > On Fri, 1 Dec 2023 12:55:52 +0100
-> > > Michal Hocko <mhocko@suse.com> wrote:
-> > >   
-> > > > On Fri 01-12-23 12:33:53, Philipp Rudo wrote:
-> > > > [...]  
-> > > > > And yes, those are all what-if concerns but unfortunately that is all
-> > > > > we have right now.    
-> > > > 
-> > > > Should theoretical concerns without an actual evidence (e.g. multiple
-> > > > drivers known to be broken) become a roadblock for this otherwise useful
-> > > > feature?   
-> > > 
-> > > Those concerns aren't just theoretical. They are experiences we have
-> > > from a related feature that suffers exactly the same problem regularly
-> > > which wouldn't exist if everybody would simply work "properly".  
-> > 
-> > What is the related feature?
-> 
-> kexec
+On Wed, Dec 6, 2023 at 2:40=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
+> wrote:
+> > I can reimplement these specific functions as inline Rust functions,
+>
+> That would be good, but how are you going to do that without duplicating
+> the horror that is struct task_struct ?
 
-OK, but that is a completely different thing, no? crashkernel parameter
-doesn't affect kexec. Or what is the actual relation?
+That shouldn't be an issue. The bindgen tool takes care of generating
+a Rust version of struct task_struct for us at build time. The only
+thing it can't handle is inline functions and #defines.
 
-> > > And yes, even purely theoretical concerns can become a roadblock for a
-> > > feature when the cost of those theoretical concerns exceed the benefit
-> > > of the feature. The thing is that bugs will be reported against kexec.
-> > > So _we_ need to figure out which of the shitty drivers caused the
-> > > problem. That puts additional burden on _us_. What we are trying to
-> > > evaluate at the moment is if the benefit outweighs the extra burden
-> > > with the information we have at the moment.  
-> > 
-> > I do understand your concerns! But I am pretty sure you do realize that
-> > it is really hard to argue theoreticals.  Let me restate what I consider
-> > facts. Hopefully we can agree on these points
-> > 	- the CMA region can be used by user space memory which is a
-> > 	  great advantage because the memory is not wasted and our
-> > 	  experience has shown that users do care about this a lot. We
-> > 	  _know_ that pressure on making those reservations smaller
-> > 	  results in a less reliable crashdump and more resources spent
-> > 	  on tuning and testing (especially after major upgrades).  A
-> > 	  larger reservation which is not completely wasted for the
-> > 	  normal runtime is addressing that concern.
-> > 	- There is no other known mechanism to achieve the reusability
-> > 	  of the crash kernel memory to stop the wastage without much
-> > 	  more intrusive code/api impact (e.g. a separate zone or
-> > 	  dedicated interface to prevent any hazardous usage like RDMA).
-> > 	- implementation wise the patch has a very small footprint. It
-> > 	  is using an existing infrastructure (CMA) and it adds a
-> > 	  minimal hooking into crashkernel configuration.
-> > 	- The only identified risk so far is RDMA acting on this memory
-> > 	  without using proper pinning interface. If it helps to have a
-> > 	  statement from RDMA maintainers/developers then we can pull
-> > 	  them in for a further discussion of course.
-> > 	- The feature requires an explicit opt-in so this doesn't bring
-> > 	  any new risk to existing crash kernel users until they decide
-> > 	  to use it. AFAIU there is no way to tell that the crash kernel
-> > 	  memory used to be CMA based in the primary kernel. If you
-> > 	  believe that having that information available for
-> > 	  debugability would help then I believe this shouldn't be hard
-> > 	  to add.  I think it would even make sense to mark this feature
-> > 	  experimental to make it clear to users that this needs some
-> > 	  time before it can be marked production ready.
-> > 
-> > I hope I haven't really missed anything important. The final
-> 
-> If I understand Documentation/core-api/pin_user_pages.rst correctly you
-> missed case 1 Direct IO. In that case "short term" DMA is allowed for
-> pages without FOLL_LONGTERM. Meaning that there is a way you can
-> corrupt the CMA and with that the crash kernel after the production
-> kernel has panicked.
+I'll respond to the other things later. But thank you for the thorough
+explanation!
 
-Could you expand on this? How exactly direct IO request survives across
-into the kdump kernel? I do understand the RMDA case because the IO is
-async and out of control of the receiving end.
-
-Also if direct IO is a problem how come this is not a problem for kexec
-in general. The new kernel usually shares all the memory with the 1st
-kernel.
-
-/me confused.
--- 
-Michal Hocko
-SUSE Labs
+Alice
