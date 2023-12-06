@@ -2,395 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A605807C85
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D694C807C8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1441829AbjLFXoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 18:44:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51528 "EHLO
+        id S1441826AbjLFXqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 18:46:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1441806AbjLFXoN (ORCPT
+        with ESMTP id S230512AbjLFXqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 18:44:13 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE5BA4;
-        Wed,  6 Dec 2023 15:44:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701906258; x=1733442258;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aBQ3UsUdaTX6qmXYeXuurT+R78I2+gSlJN8HCaWvth4=;
-  b=CQgwjxD9HcnYPuyVQSGjnkGlDz3xB8e3DyHf6Eyu4pX8iJE4pz0d5q+0
-   IiJ5qXaPFedvmcCzP0t07GkaeglGN/1zSJJKjKJNrmKFh0KZedkajkFS0
-   JHCkQ9VrGzxIeouxlj51K5uPF0xLXdu9YvqoG0tqelHNcSx6Mo/ez52GX
-   oIR5uBoiz+i24ABMrIne9U7RFKbyFEiiHNE09o+OfMpnSPXXCTIqpFzJ3
-   9+TVDpHUNti2vXfnS3vQJi8+5g/4h/5UaQYGySx1O0vemF8juzPi9snLg
-   ejunWJyGO5YODRl1Fy/iO4IFK8SmlNRW6oaLPgCeizOcmwjyDIDwD9XbG
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="373634476"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="373634476"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 15:44:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10916"; a="1018737711"
-X-IronPort-AV: E=Sophos;i="6.04,256,1695711600"; 
-   d="scan'208";a="1018737711"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 06 Dec 2023 15:44:09 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rB1Yk-000Bb2-2w;
-        Wed, 06 Dec 2023 23:44:06 +0000
-Date:   Thu, 7 Dec 2023 07:43:15 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Jeffrey Kardatzke <jkardatzke@google.com>,
-        =?iso-8859-1?Q?N=EDcolas_F_=2E_R_=2E_A_=2E?= Prado 
-        <nfraprado@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <jstultz@google.com>,
-        "T . J . Mercier" <tjmercier@google.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH] media: medkatek: vcodec: support tee decoder
-Message-ID: <202312070723.APrpMLj9-lkp@intel.com>
-References: <20231206081538.17056-21-yunfei.dong@mediatek.com>
+        Wed, 6 Dec 2023 18:46:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C27E122
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 15:46:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701906380;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8esKVkgkdO38qfOOlPF2GDuWhXzWAxbw0J892C+UC7Y=;
+        b=gTZVBEzA7eNmgI4iUx3i5yXgZYBlR6AQa1CCVSAJX1XXwQMTnhFHngolz8mg7rKv2G28pL
+        /hCPLquzeSMY7fCeeTJcjtlGcZSVi0KopQxWyoMaWZEHMC6W/cv1WRwQotvn25Bxk2Fz/Y
+        OcBRm9ADIU2MULWQwKQ6BBZ8fsYxG6E=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-357-CXa9C8nRO6-uSjN3KEgS1g-1; Wed, 06 Dec 2023 18:46:19 -0500
+X-MC-Unique: CXa9C8nRO6-uSjN3KEgS1g-1
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-58dad14ab40so94711eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 15:46:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701906378; x=1702511178;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8esKVkgkdO38qfOOlPF2GDuWhXzWAxbw0J892C+UC7Y=;
+        b=avGKs9GnSs2B1upVnOKs0kbYep0EViNhTj4tGjnuY8+w5IcnWtK0b8ILTaEa/UuhKt
+         2WcQJ7KT8MKojOfp/X8RUWfhOfhzovneioQGpCwCWzFU4tU5d5bASr8XB5C5I+WZMYsK
+         HqD2xN1RLFC+SOWv8nkMyrODREN4LkpoxVJD7tvGF3ePJes4VPCIABg6u5wN0XGiGpeL
+         nEy2ESzo/agfKy8Etm3DP2bEM3WWjad1vcf+sPaH7GeRZ1k7icN9XT45DDGLpNasBSL2
+         KnjGbxszcsXWEMrJ0e/QJSOYX8HiA7GfoOLWEwH7DHBZU/eVXRSDUtHTmixChr+AoJ7Y
+         IcVw==
+X-Gm-Message-State: AOJu0YzZlikXirLVGskj9huVLkJeSq+Hn+kC6/cZlwBRGOAXpuZtJFpK
+        5KxwKdbwv8ez30JV5OIZ7fLWCmkkGSGcT+WUvFxFpK8BYAmARdt0FMbQLDEqxJvJxFUxEGhzzgX
+        3eIUdAzxYCDYyAC5ZOk0XzfFFN1CwyCZh
+X-Received: by 2002:a05:6358:2910:b0:16d:bbb3:69c6 with SMTP id y16-20020a056358291000b0016dbbb369c6mr2398878rwb.13.1701906377933;
+        Wed, 06 Dec 2023 15:46:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEAsIygwOoQKZlum7cq8klqlJozHBJy1wvtOxVzB6Tfsb98hdv5DwTkASEhC5ZBOAlTAOdQBA==
+X-Received: by 2002:a05:6358:2910:b0:16d:bbb3:69c6 with SMTP id y16-20020a056358291000b0016dbbb369c6mr2398863rwb.13.1701906377591;
+        Wed, 06 Dec 2023 15:46:17 -0800 (PST)
+Received: from [192.168.1.164] ([2600:1700:1ff0:d0e0::47])
+        by smtp.gmail.com with ESMTPSA id lg21-20020a056214549500b0067a14238fa9sm11568qvb.94.2023.12.06.15.46.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 15:46:17 -0800 (PST)
+From:   Andrew Halaney <ahalaney@redhat.com>
+Date:   Wed, 06 Dec 2023 17:46:09 -0600
+Subject: [PATCH net-next v2] net: stmmac: don't create a MDIO bus if
+ unnecessary
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206081538.17056-21-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231206-stmmac-no-mdio-node-v2-1-333cae49b1ca@redhat.com>
+X-B4-Tracking: v=1; b=H4sIAMAHcWUC/z2MwQqDMBBEf0X23BU31lY99T9KD9FdNWASSYII4
+ r839NDTzGOYd0KUYCRCX5wQZDfReJdB3QoYF+1mQcOZQVWqJlJPjMlaPaLzaNn4nCxIPHSsW60
+ a7iA/tyCTOX7WNzhJ6ORI8MnLFLzFtATRf2vVVi3l0txLokdTI+EQ5vU1zCx7ua1wXV/b0uTPp
+ gAAAA==
+To:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andrew Halaney <ahalaney@redhat.com>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunfei,
+The stmmac_dt_phy() function, which parses the devicetree node of the
+MAC and ultimately causes MDIO bus allocation, misinterprets what
+fixed-link means in relation to the MAC's MDIO bus. This results in
+a MDIO bus being created in situations it need not be.
 
-kernel test robot noticed the following build errors:
+Currently a MDIO bus is created if the description is either:
 
-[auto build test ERROR on media-tree/master]
-[also build test ERROR on linus/master v6.7-rc4 next-20231206]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+    1. Not fixed-link
+    2. fixed-link but contains a MDIO bus as well
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yunfei-Dong/media-medkatek-vcodec-support-tee-decoder/20231206-201843
-base:   git://linuxtv.org/media_tree.git master
-patch link:    https://lore.kernel.org/r/20231206081538.17056-21-yunfei.dong%40mediatek.com
-patch subject: [PATCH] media: medkatek: vcodec: support tee decoder
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20231207/202312070723.APrpMLj9-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231207/202312070723.APrpMLj9-lkp@intel.com/reproduce)
+The "1" case above isn't always accurate. If there's a phy-handle,
+it could be referencing a phy on another MDIO controller's bus[1]. In
+this case currently the MAC will make a MDIO bus and scan it all
+anyways unnecessarily.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312070723.APrpMLj9-lkp@intel.com/
+There's also a lot of upstream devicetrees[2] that expect a MDIO bus to
+be created and scanned for a phy. This case can also be inferred from
+the platform description by not having a phy-handle && not being
+fixed-link. This hits case "1" in the current driver's logic.
 
-All errors (new ones prefixed by >>):
+Let's improve the logic to create a MDIO bus if either:
 
->> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:313:11: error: no member named 'is_secure_playback' in 'struct mtk_vcodec_dec_ctx'
-     313 |         if (ctx->is_secure_playback)
-         |             ~~~  ^
->> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:314:3: error: call to undeclared function 'mtk_vcodec_dec_optee_release'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     314 |                 mtk_vcodec_dec_optee_release(dev->optee_private);
-         |                 ^
-   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:314:3: note: did you mean 'mtk_vcodec_dec_release'?
-   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h:88:6: note: 'mtk_vcodec_dec_release' declared here
-      88 | void mtk_vcodec_dec_release(struct mtk_vcodec_dec_ctx *ctx);
-         |      ^
->> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:314:37: error: no member named 'optee_private' in 'struct mtk_vcodec_dec_dev'
-     314 |                 mtk_vcodec_dec_optee_release(dev->optee_private);
-         |                                              ~~~  ^
->> drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:472:8: error: call to undeclared function 'mtk_vcodec_dec_optee_private_init'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     472 |         ret = mtk_vcodec_dec_optee_private_init(dev);
-         |               ^
-   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c:472:8: note: did you mean 'mtk_vcodec_dec_queue_init'?
-   drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.h:85:5: note: 'mtk_vcodec_dec_queue_init' declared here
-      85 | int mtk_vcodec_dec_queue_init(void *priv, struct vb2_queue *src_vq,
-         |     ^
-   4 errors generated.
+    - Devicetree contains a MDIO bus
+    - !fixed-link && !phy-handle (legacy handling)
 
+Below upstream devicetree snippets can be found that explain some of
+the cases above more concretely.
 
-vim +313 drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
+Here's[0] a devicetree example where the MAC is both fixed-link and
+driving a switch on MDIO (case "2" above). This needs a MDIO bus to
+be created:
 
-   291	
-   292	static int fops_vcodec_release(struct file *file)
-   293	{
-   294		struct mtk_vcodec_dec_dev *dev = video_drvdata(file);
-   295		struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(file->private_data);
-   296	
-   297		mtk_v4l2_vdec_dbg(0, ctx, "[%d] decoder", ctx->id);
-   298		mutex_lock(&dev->dev_mutex);
-   299	
-   300		/*
-   301		 * Call v4l2_m2m_ctx_release before mtk_vcodec_dec_release. First, it
-   302		 * makes sure the worker thread is not running after vdec_if_deinit.
-   303		 * Second, the decoder will be flushed and all the buffers will be
-   304		 * returned in stop_streaming.
-   305		 */
-   306		v4l2_m2m_ctx_release(ctx->m2m_ctx);
-   307		mtk_vcodec_dec_release(ctx);
-   308	
-   309		v4l2_fh_del(&ctx->fh);
-   310		v4l2_fh_exit(&ctx->fh);
-   311		v4l2_ctrl_handler_free(&ctx->ctrl_hdl);
-   312	
- > 313		if (ctx->is_secure_playback)
- > 314			mtk_vcodec_dec_optee_release(dev->optee_private);
-   315	
-   316		mtk_vcodec_dbgfs_remove(dev, ctx->id);
-   317		list_del_init(&ctx->list);
-   318		kfree(ctx);
-   319		mutex_unlock(&dev->dev_mutex);
-   320		return 0;
-   321	}
-   322	
-   323	static const struct v4l2_file_operations mtk_vcodec_fops = {
-   324		.owner		= THIS_MODULE,
-   325		.open		= fops_vcodec_open,
-   326		.release	= fops_vcodec_release,
-   327		.poll		= v4l2_m2m_fop_poll,
-   328		.unlocked_ioctl	= video_ioctl2,
-   329		.mmap		= v4l2_m2m_fop_mmap,
-   330	};
-   331	
-   332	static void mtk_vcodec_dec_get_chip_name(struct mtk_vcodec_dec_dev *vdec_dev)
-   333	{
-   334		struct device *dev = &vdec_dev->plat_dev->dev;
-   335	
-   336		if (of_device_is_compatible(dev->of_node, "mediatek,mt8173-vcodec-dec"))
-   337			vdec_dev->chip_name = MTK_VDEC_MT8173;
-   338		else if (of_device_is_compatible(dev->of_node, "mediatek,mt8183-vcodec-dec"))
-   339			vdec_dev->chip_name = MTK_VDEC_MT8183;
-   340		else if (of_device_is_compatible(dev->of_node, "mediatek,mt8192-vcodec-dec"))
-   341			vdec_dev->chip_name = MTK_VDEC_MT8192;
-   342		else if (of_device_is_compatible(dev->of_node, "mediatek,mt8195-vcodec-dec"))
-   343			vdec_dev->chip_name = MTK_VDEC_MT8195;
-   344		else if (of_device_is_compatible(dev->of_node, "mediatek,mt8186-vcodec-dec"))
-   345			vdec_dev->chip_name = MTK_VDEC_MT8186;
-   346		else if (of_device_is_compatible(dev->of_node, "mediatek,mt8188-vcodec-dec"))
-   347			vdec_dev->chip_name = MTK_VDEC_MT8188;
-   348		else
-   349			vdec_dev->chip_name = MTK_VDEC_INVAL;
-   350	}
-   351	
-   352	static int mtk_vcodec_probe(struct platform_device *pdev)
-   353	{
-   354		struct mtk_vcodec_dec_dev *dev;
-   355		struct video_device *vfd_dec;
-   356		phandle rproc_phandle;
-   357		enum mtk_vcodec_fw_type fw_type;
-   358		int i, ret;
-   359	
-   360		dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
-   361		if (!dev)
-   362			return -ENOMEM;
-   363	
-   364		INIT_LIST_HEAD(&dev->ctx_list);
-   365		dev->plat_dev = pdev;
-   366	
-   367		mtk_vcodec_dec_get_chip_name(dev);
-   368		if (dev->chip_name == MTK_VDEC_INVAL) {
-   369			dev_err(&pdev->dev, "Failed to get decoder chip name");
-   370			return -EINVAL;
-   371		}
-   372	
-   373		dev->vdec_pdata = of_device_get_match_data(&pdev->dev);
-   374		if (!of_property_read_u32(pdev->dev.of_node, "mediatek,vpu",
-   375					  &rproc_phandle)) {
-   376			fw_type = VPU;
-   377		} else if (!of_property_read_u32(pdev->dev.of_node, "mediatek,scp",
-   378						 &rproc_phandle)) {
-   379			fw_type = SCP;
-   380		} else {
-   381			dev_dbg(&pdev->dev, "Could not get vdec IPI device");
-   382			return -ENODEV;
-   383		}
-   384		dma_set_max_seg_size(&pdev->dev, UINT_MAX);
-   385	
-   386		dev->fw_handler = mtk_vcodec_fw_select(dev, fw_type, DECODER);
-   387		if (IS_ERR(dev->fw_handler))
-   388			return PTR_ERR(dev->fw_handler);
-   389	
-   390		ret = mtk_vcodec_init_dec_resources(dev);
-   391		if (ret) {
-   392			dev_err(&pdev->dev, "Failed to init dec resources");
-   393			goto err_dec_pm;
-   394		}
-   395	
-   396		if (IS_VDEC_LAT_ARCH(dev->vdec_pdata->hw_arch)) {
-   397			dev->core_workqueue =
-   398				alloc_ordered_workqueue("core-decoder",
-   399							WQ_MEM_RECLAIM | WQ_FREEZABLE);
-   400			if (!dev->core_workqueue) {
-   401				dev_dbg(&pdev->dev, "Failed to create core workqueue");
-   402				ret = -EINVAL;
-   403				goto err_res;
-   404			}
-   405		}
-   406	
-   407		for (i = 0; i < MTK_VDEC_HW_MAX; i++)
-   408			mutex_init(&dev->dec_mutex[i]);
-   409		mutex_init(&dev->dev_mutex);
-   410		spin_lock_init(&dev->irqlock);
-   411	
-   412		snprintf(dev->v4l2_dev.name, sizeof(dev->v4l2_dev.name), "%s",
-   413			"[/MTK_V4L2_VDEC]");
-   414	
-   415		ret = v4l2_device_register(&pdev->dev, &dev->v4l2_dev);
-   416		if (ret) {
-   417			dev_err(&pdev->dev, "v4l2_device_register err=%d", ret);
-   418			goto err_core_workq;
-   419		}
-   420	
-   421		vfd_dec = video_device_alloc();
-   422		if (!vfd_dec) {
-   423			dev_err(&pdev->dev, "Failed to allocate video device");
-   424			ret = -ENOMEM;
-   425			goto err_dec_alloc;
-   426		}
-   427		vfd_dec->fops		= &mtk_vcodec_fops;
-   428		vfd_dec->ioctl_ops	= &mtk_vdec_ioctl_ops;
-   429		vfd_dec->release	= video_device_release;
-   430		vfd_dec->lock		= &dev->dev_mutex;
-   431		vfd_dec->v4l2_dev	= &dev->v4l2_dev;
-   432		vfd_dec->vfl_dir	= VFL_DIR_M2M;
-   433		vfd_dec->device_caps	= V4L2_CAP_VIDEO_M2M_MPLANE |
-   434				V4L2_CAP_STREAMING;
-   435	
-   436		snprintf(vfd_dec->name, sizeof(vfd_dec->name), "%s",
-   437			MTK_VCODEC_DEC_NAME);
-   438		video_set_drvdata(vfd_dec, dev);
-   439		dev->vfd_dec = vfd_dec;
-   440		platform_set_drvdata(pdev, dev);
-   441	
-   442		dev->m2m_dev_dec = v4l2_m2m_init(&mtk_vdec_m2m_ops);
-   443		if (IS_ERR((__force void *)dev->m2m_dev_dec)) {
-   444			dev_err(&pdev->dev, "Failed to init mem2mem dec device");
-   445			ret = PTR_ERR((__force void *)dev->m2m_dev_dec);
-   446			goto err_dec_alloc;
-   447		}
-   448	
-   449		dev->decode_workqueue =
-   450			alloc_ordered_workqueue(MTK_VCODEC_DEC_NAME,
-   451				WQ_MEM_RECLAIM | WQ_FREEZABLE);
-   452		if (!dev->decode_workqueue) {
-   453			dev_err(&pdev->dev, "Failed to create decode workqueue");
-   454			ret = -EINVAL;
-   455			goto err_event_workq;
-   456		}
-   457	
-   458		if (dev->vdec_pdata->is_subdev_supported) {
-   459			ret = of_platform_populate(pdev->dev.of_node, NULL, NULL,
-   460						   &pdev->dev);
-   461			if (ret) {
-   462				dev_err(&pdev->dev, "Main device of_platform_populate failed.");
-   463				goto err_reg_cont;
-   464			}
-   465		} else {
-   466			set_bit(MTK_VDEC_CORE, dev->subdev_bitmap);
-   467		}
-   468	
-   469		atomic_set(&dev->dec_active_cnt, 0);
-   470		memset(dev->vdec_racing_info, 0, sizeof(dev->vdec_racing_info));
-   471		mutex_init(&dev->dec_racing_info_mutex);
- > 472		ret = mtk_vcodec_dec_optee_private_init(dev);
-   473		if (ret) {
-   474			dev_err(&pdev->dev, "Failed to init svp private.");
-   475			goto err_reg_cont;
-   476		}
-   477	
-   478		ret = video_register_device(vfd_dec, VFL_TYPE_VIDEO, -1);
-   479		if (ret) {
-   480			dev_err(&pdev->dev, "Failed to register video device");
-   481			goto err_reg_cont;
-   482		}
-   483	
-   484		if (dev->vdec_pdata->uses_stateless_api) {
-   485			v4l2_disable_ioctl(vfd_dec, VIDIOC_DECODER_CMD);
-   486			v4l2_disable_ioctl(vfd_dec, VIDIOC_TRY_DECODER_CMD);
-   487	
-   488			dev->mdev_dec.dev = &pdev->dev;
-   489			strscpy(dev->mdev_dec.model, MTK_VCODEC_DEC_NAME,
-   490				sizeof(dev->mdev_dec.model));
-   491	
-   492			media_device_init(&dev->mdev_dec);
-   493			dev->mdev_dec.ops = &mtk_vcodec_media_ops;
-   494			dev->v4l2_dev.mdev = &dev->mdev_dec;
-   495	
-   496			ret = v4l2_m2m_register_media_controller(dev->m2m_dev_dec, dev->vfd_dec,
-   497								 MEDIA_ENT_F_PROC_VIDEO_DECODER);
-   498			if (ret) {
-   499				dev_err(&pdev->dev, "Failed to register media controller");
-   500				goto err_dec_mem_init;
-   501			}
-   502	
-   503			ret = media_device_register(&dev->mdev_dec);
-   504			if (ret) {
-   505				dev_err(&pdev->dev, "Failed to register media device");
-   506				goto err_media_reg;
-   507			}
-   508	
-   509			dev_dbg(&pdev->dev, "media registered as /dev/media%d", vfd_dec->minor);
-   510		}
-   511	
-   512		mtk_vcodec_dbgfs_init(dev, false);
-   513		dev_dbg(&pdev->dev, "decoder registered as /dev/video%d", vfd_dec->minor);
-   514	
-   515		return 0;
-   516	
-   517	err_media_reg:
-   518		v4l2_m2m_unregister_media_controller(dev->m2m_dev_dec);
-   519	err_dec_mem_init:
-   520		video_unregister_device(vfd_dec);
-   521	err_reg_cont:
-   522		if (dev->vdec_pdata->uses_stateless_api)
-   523			media_device_cleanup(&dev->mdev_dec);
-   524		destroy_workqueue(dev->decode_workqueue);
-   525	err_event_workq:
-   526		v4l2_m2m_release(dev->m2m_dev_dec);
-   527	err_dec_alloc:
-   528		v4l2_device_unregister(&dev->v4l2_dev);
-   529	err_core_workq:
-   530		if (IS_VDEC_LAT_ARCH(dev->vdec_pdata->hw_arch))
-   531			destroy_workqueue(dev->core_workqueue);
-   532	err_res:
-   533		if (!dev->vdec_pdata->is_subdev_supported)
-   534			pm_runtime_disable(dev->pm.dev);
-   535	err_dec_pm:
-   536		mtk_vcodec_fw_release(dev->fw_handler);
-   537		return ret;
-   538	}
-   539	
+    &fec1 {
+            phy-mode = "rmii";
 
+            fixed-link {
+                    speed = <100>;
+                    full-duplex;
+            };
+
+            mdio1: mdio {
+                    switch0: switch0@0 {
+                            compatible = "marvell,mv88e6190";
+                            pinctrl-0 = <&pinctrl_gpio_switch0>;
+                    };
+            };
+    };
+
+Here's[1] an example where there is no MDIO bus or fixed-link for
+the ethernet1 MAC, so no MDIO bus should be created since ethernet0
+is the MDIO master for ethernet1's phy:
+
+    &ethernet0 {
+            phy-mode = "sgmii";
+            phy-handle = <&sgmii_phy0>;
+
+            mdio {
+                    compatible = "snps,dwmac-mdio";
+                    sgmii_phy0: phy@8 {
+                            compatible = "ethernet-phy-id0141.0dd4";
+                            reg = <0x8>;
+                            device_type = "ethernet-phy";
+                    };
+
+                    sgmii_phy1: phy@a {
+                            compatible = "ethernet-phy-id0141.0dd4";
+                            reg = <0xa>;
+                            device_type = "ethernet-phy";
+                    };
+            };
+    };
+
+    &ethernet1 {
+            phy-mode = "sgmii";
+            phy-handle = <&sgmii_phy1>;
+    };
+
+Finally there's descriptions like this[2] which don't describe the
+MDIO bus but expect it to be created and the whole address space
+scanned for a phy since there's no phy-handle or fixed-link described:
+
+    &gmac {
+            phy-supply = <&vcc_lan>;
+            phy-mode = "rmii";
+            snps,reset-gpio = <&gpio3 RK_PB4 GPIO_ACTIVE_HIGH>;
+            snps,reset-active-low;
+            snps,reset-delays-us = <0 10000 1000000>;
+    };
+
+[0] https://elixir.bootlin.com/linux/v6.5-rc5/source/arch/arm/boot/dts/nxp/vf/vf610-zii-ssmb-dtu.dts
+[1] https://elixir.bootlin.com/linux/v6.6-rc5/source/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+[2] https://elixir.bootlin.com/linux/v6.6-rc5/source/arch/arm64/boot/dts/rockchip/rk3368-r88.dts#L164
+
+Co-developed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+---
+ .../net/ethernet/stmicro/stmmac/stmmac_platform.c  | 85 ++++++++++------------
+ 1 file changed, 37 insertions(+), 48 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index 1ffde555da47..7da461fe93f6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -296,69 +296,39 @@ static int stmmac_mtl_setup(struct platform_device *pdev,
+ }
+ 
+ /**
+- * stmmac_dt_phy - parse device-tree driver parameters to allocate PHY resources
+- * @plat: driver data platform structure
+- * @np: device tree node
+- * @dev: device pointer
+- * Description:
+- * The mdio bus will be allocated in case of a phy transceiver is on board;
+- * it will be NULL if the fixed-link is configured.
+- * If there is the "snps,dwmac-mdio" sub-node the mdio will be allocated
+- * in any case (for DSA, mdio must be registered even if fixed-link).
+- * The table below sums the supported configurations:
+- *	-------------------------------
+- *	snps,phy-addr	|     Y
+- *	-------------------------------
+- *	phy-handle	|     Y
+- *	-------------------------------
+- *	fixed-link	|     N
+- *	-------------------------------
+- *	snps,dwmac-mdio	|
+- *	  even if	|     Y
+- *	fixed-link	|
+- *	-------------------------------
++ * stmmac_of_get_mdio() - Gets the MDIO bus from the devicetree
++ * @np: devicetree node
+  *
+- * It returns 0 in case of success otherwise -ENODEV.
++ * The MDIO bus will be searched for in the following ways:
++ * 1. The compatible is "snps,dwc-qos-ethernet-4.10" && a "mdio" named
++ *    child node exists
++ * 2. A child node with the "snps,dwmac-mdio" compatible is present
++ *
++ * Return: The MDIO node if present otherwise NULL
+  */
+-static int stmmac_dt_phy(struct plat_stmmacenet_data *plat,
+-			 struct device_node *np, struct device *dev)
++static struct device_node *stmmac_of_get_mdio(struct device_node *np)
+ {
+-	bool mdio = !of_phy_is_fixed_link(np);
+ 	static const struct of_device_id need_mdio_ids[] = {
+ 		{ .compatible = "snps,dwc-qos-ethernet-4.10" },
+ 		{},
+ 	};
++	struct device_node *mdio_node = NULL;
+ 
+ 	if (of_match_node(need_mdio_ids, np)) {
+-		plat->mdio_node = of_get_child_by_name(np, "mdio");
++		mdio_node = of_get_child_by_name(np, "mdio");
+ 	} else {
+ 		/**
+ 		 * If snps,dwmac-mdio is passed from DT, always register
+ 		 * the MDIO
+ 		 */
+-		for_each_child_of_node(np, plat->mdio_node) {
+-			if (of_device_is_compatible(plat->mdio_node,
++		for_each_child_of_node(np, mdio_node) {
++			if (of_device_is_compatible(mdio_node,
+ 						    "snps,dwmac-mdio"))
+ 				break;
+ 		}
+ 	}
+ 
+-	if (plat->mdio_node) {
+-		dev_dbg(dev, "Found MDIO subnode\n");
+-		mdio = true;
+-	}
+-
+-	if (mdio) {
+-		plat->mdio_bus_data =
+-			devm_kzalloc(dev, sizeof(struct stmmac_mdio_bus_data),
+-				     GFP_KERNEL);
+-		if (!plat->mdio_bus_data)
+-			return -ENOMEM;
+-
+-		plat->mdio_bus_data->needs_reset = true;
+-	}
+-
+-	return 0;
++	return mdio_node;
+ }
+ 
+ /**
+@@ -417,6 +387,7 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct plat_stmmacenet_data *plat;
+ 	struct stmmac_dma_cfg *dma_cfg;
++	bool legacy_mdio;
+ 	int phy_mode;
+ 	void *ret;
+ 	int rc;
+@@ -471,10 +442,28 @@ stmmac_probe_config_dt(struct platform_device *pdev, u8 *mac)
+ 	if (of_property_read_u32(np, "snps,phy-addr", &plat->phy_addr) == 0)
+ 		dev_warn(&pdev->dev, "snps,phy-addr property is deprecated\n");
+ 
+-	/* To Configure PHY by using all device-tree supported properties */
+-	rc = stmmac_dt_phy(plat, np, &pdev->dev);
+-	if (rc)
+-		return ERR_PTR(rc);
++	plat->mdio_node = stmmac_of_get_mdio(np);
++	if (plat->mdio_node)
++		dev_dbg(&pdev->dev, "Found MDIO subnode\n");
++
++	/* Legacy devicetrees allowed for no MDIO bus description and expect
++	 * the bus to be scanned for devices. If there's no phy or fixed-link
++	 * described assume this is the case since there must be something
++	 * connected to the MAC.
++	 */
++	legacy_mdio = !of_phy_is_fixed_link(np) && !plat->phy_node;
++	if (legacy_mdio)
++		dev_info(&pdev->dev, "Deprecated MDIO bus assumption used\n");
++
++	if (plat->mdio_node || legacy_mdio) {
++		plat->mdio_bus_data = devm_kzalloc(&pdev->dev,
++						   sizeof(struct stmmac_mdio_bus_data),
++						   GFP_KERNEL);
++		if (!plat->mdio_bus_data)
++			return ERR_PTR(-ENOMEM);
++
++		plat->mdio_bus_data->needs_reset = true;
++	}
+ 
+ 	of_property_read_u32(np, "tx-fifo-depth", &plat->tx_fifo_size);
+ 
+
+---
+base-commit: fd8a79b63710acb84321be3ce74be23c876873fb
+change-id: 20231127-stmmac-no-mdio-node-1db9da8a25d9
+
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Andrew Halaney <ahalaney@redhat.com>
+
