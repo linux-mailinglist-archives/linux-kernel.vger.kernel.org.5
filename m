@@ -2,112 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CE6807BA8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8EA807BB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 23:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377710AbjLFWtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 17:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
+        id S230202AbjLFW6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 17:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229642AbjLFWtN (ORCPT
+        with ESMTP id S229590AbjLFW6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 17:49:13 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A5718D;
-        Wed,  6 Dec 2023 14:49:18 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Wed, 6 Dec 2023 17:58:14 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592AB18D;
+        Wed,  6 Dec 2023 14:58:18 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 5BD2210008C;
+        Thu,  7 Dec 2023 01:58:15 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5BD2210008C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1701903495;
+        bh=GR8f5v1JtQpcmatJwQW8QuK09rw3Xh9UYk7P6i0iyVM=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=AzQhnpoOzA4m2YKkhoWWERtGsDzcrnUQe3FV5rtHJyV1bYtfWo6T318SQ5w0eC5uk
+         7X07K3w3BmjqaYSTzRcSunBOejtlSfUw9artgMdP+5g6urR4maqCMd9vHJoBjCsWlX
+         v55Jg4FzRTpQPQGsIL1rKB/sMS/eROUhypQi1psETG1O1zvx9t8K0sSxcel7lPnIhe
+         6p1blDrLGQ+a80Jm3uu164REeEIpmUTii7I550b2PONkcjVuAuWcK6mjbSF2YVKGVE
+         AxezUAY4My3w8AyoakHMgwTul5Rzy7BOQxsNcmx2ZT35jBv3ExgsMuiK6q9SSBPYsU
+         cJPVsa3N/ugbw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5D79221D58;
-        Wed,  6 Dec 2023 22:49:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701902957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XDqpg+LUdyOlEWaBHsub44B0wZvESYFrEQIjfsMYOcQ=;
-        b=nexB1Co3kCo16eDdcRZbb3sDYY7j4Z69EWGxdzZAgFwlsNG4nCUKukmwMMoezEqTacJFC/
-        cal/QC5PdQXJxX4IMpYvSGkyV83dGAwRAgVOKecuLfvRVBZAagyGtrRcXejEz8xa5AAcVU
-        y8XM2i6nkKOkooimHA7rzwv/RuBIt/U=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E01313403;
-        Wed,  6 Dec 2023 22:49:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id yN7CEGz6cGWIDAAAn2gu4w
-        (envelope-from <mkoutny@suse.com>); Wed, 06 Dec 2023 22:49:16 +0000
-Date:   Wed, 6 Dec 2023 23:49:14 +0100
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Pedro Tammela <pctammela@mojatatu.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        cake@lists.bufferbloat.net,
-        "David S . Miller" <davem@davemloft.net>,
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu,  7 Dec 2023 01:58:15 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 7 Dec 2023 01:58:14 +0300
+Message-ID: <d30a1df7-ecda-652d-8c98-853308a560c9@salutedevices.com>
+Date:   Thu, 7 Dec 2023 01:50:05 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v7 3/4] virtio/vsock: fix logic which reduces
+ credit update messages
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>,
-        Martin Wilck <mwilck@suse.com>
-Subject: Re: [PATCH 0/3] net/sched: Load modules via alias
-Message-ID: <53ohvb547tegxv2vuvurhuwqunamfiy22sonog7gll54h3czht@3dnijc44xilq>
-References: <20231206192752.18989-1-mkoutny@suse.com>
- <7789659d-b3c5-4eef-af86-540f970102a4@mojatatu.com>
- <vk6uhf4r2turfxt2aokp66x5exzo5winal55253czkl2pmkkuu@77bhdfwfk5y3>
- <20231206142857.38403344@hermes.local>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="66n2qidccontofol"
-Content-Disposition: inline
-In-Reply-To: <20231206142857.38403344@hermes.local>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -1.45
-X-Spamd-Result: default: False [-1.45 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-0.05)[59.33%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-0.20)[-0.999];
-         RCPT_COUNT_TWELVE(0.00)[29];
-         SIGNED_PGP(-2.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:~];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[mojatatu.com,vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,suse.cz,suse.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20231206211849.2707151-1-avkrasnov@salutedevices.com>
+ <20231206211849.2707151-4-avkrasnov@salutedevices.com>
+ <20231206165045-mutt-send-email-mst@kernel.org>
+ <d9d1ec6a-dd9b-61d9-9211-52e9437cbb1f@salutedevices.com>
+ <20231206170640-mutt-send-email-mst@kernel.org>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <20231206170640-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181917 [Dec 06 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/12/06 20:57:00 #22623256
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -115,34 +97,127 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---66n2qidccontofol
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Dec 06, 2023 at 02:28:57PM -0800, Stephen Hemminger <stephen@networkplumber.org> wrote:
-> It is not clear to me what this patchset is trying to fix.
-> Autoloading happens now, but it does depend on the name not alias.
+On 07.12.2023 01:08, Michael S. Tsirkin wrote:
+> On Thu, Dec 07, 2023 at 12:52:51AM +0300, Arseniy Krasnov wrote:
+>>
+>>
+>> On 07.12.2023 00:53, Michael S. Tsirkin wrote:
+>>> On Thu, Dec 07, 2023 at 12:18:48AM +0300, Arseniy Krasnov wrote:
+>>>> Add one more condition for sending credit update during dequeue from
+>>>> stream socket: when number of bytes in the rx queue is smaller than
+>>>> SO_RCVLOWAT value of the socket. This is actual for non-default value
+>>>> of SO_RCVLOWAT (e.g. not 1) - idea is to "kick" peer to continue data
+>>>> transmission, because we need at least SO_RCVLOWAT bytes in our rx
+>>>> queue to wake up user for reading data (in corner case it is also
+>>>> possible to stuck both tx and rx sides, this is why 'Fixes' is used).
+>>>> Also handle case when 'fwd_cnt' wraps, while 'last_fwd_cnt' is still
+>>>> not.
+>>>>
+>>>> Fixes: b89d882dc9fc ("vsock/virtio: reduce credit update messages")
+>>>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>>>> ---
+>>>>  Changelog:
+>>>>  v6 -> v7:
+>>>>   * Handle wrap of 'fwd_cnt'.
+>>>>   * Do to send credit update when 'fwd_cnt' == 'last_fwd_cnt'.
+>>>>
+>>>>  net/vmw_vsock/virtio_transport_common.c | 18 +++++++++++++++---
+>>>>  1 file changed, 15 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>>> index e137d740804e..39f8660d825d 100644
+>>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>>> @@ -558,6 +558,8 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>>>  	struct virtio_vsock_sock *vvs = vsk->trans;
+>>>>  	size_t bytes, total = 0;
+>>>>  	struct sk_buff *skb;
+>>>> +	u32 fwd_cnt_delta;
+>>>> +	bool low_rx_bytes;
+>>>>  	int err = -EFAULT;
+>>>>  	u32 free_space;
+>>>>  
+>>>> @@ -601,7 +603,15 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>>>  		}
+>>>>  	}
+>>>>  
+>>>> -	free_space = vvs->buf_alloc - (vvs->fwd_cnt - vvs->last_fwd_cnt);
+>>>> +	/* Handle wrap of 'fwd_cnt'. */
+>>>> +	if (vvs->fwd_cnt < vvs->last_fwd_cnt)
+>>>> +		fwd_cnt_delta = vvs->fwd_cnt + (U32_MAX - vvs->last_fwd_cnt);
+>>>
+>>> Are you sure there's no off by one here? for example if fwd_cnt is 0
+>>> and last_fwd_cnt is 0xfffffffff then apparently delta is 0.
+>>
+>> Seems yes, I need +1 here
+> 
+> And then you will get a nop, because assigning U32_MAX + 1 to u32
+> gives you 0. Adding () does nothing to change the result,
+> + and - are commutative.
 
-There are some more details in the thread of v1 [1] [2].
-Does it clarify?
+Ahh, unsigned here, yes.
 
-Thanks,
-Michal
+@Stefano, what did You mean about wrapping here?
 
-[1] https://lore.kernel.org/r/yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75/
-[2] Oh, I realize I forgot to add v2 to today's posting.
+I think Michael is right, for example
 
+vvs->fwd_cnt wraps and now == 5
+vvs->last_fwd_cnt == 0xffffffff
 
+now delta before this patch will be 6 - correct value
 
---66n2qidccontofol
-Content-Type: application/pgp-signature; name="signature.asc"
+May be I didn't get your idea, so implement it very naive?
 
------BEGIN PGP SIGNATURE-----
+Thanks, Arseniy
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZXD6YQAKCRAGvrMr/1gc
-jqKFAQDa7o9BcCuJ6Pa60x4aCDwIHPwW8c0plGxYwzl/GytgSwEA69HAX+Do+75V
-ojElrep1jaK+lwg9eIeAo2Oof7/dTwM=
-=i4t/
------END PGP SIGNATURE-----
-
---66n2qidccontofol--
+> 
+> 
+>>>
+>>>
+>>>> +	else
+>>>> +		fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt;
+>>>
+>>> I actually don't see what is wrong with just
+>>> 	fwd_cnt_delta = vvs->fwd_cnt - vvs->last_fwd_cnt
+>>> 32 bit unsigned math will I think handle wrap around correctly.
+>>>
+>>> And given buf_alloc is also u32 - I don't see where the bug is in
+>>> the original code.
+>>
+>> I think problem is when fwd_cnt wraps, while last_fwd_cnt is not. In this
+>> case fwd_cnt_delta will be too big, so we won't send credit update which
+>> leads to stall for sender
+>>
+>> Thanks, Arseniy
+> 
+> Care coming up with an example?
+> 
+> 
+>>>
+>>>
+>>>> +
+>>>> +	free_space = vvs->buf_alloc - fwd_cnt_delta;
+>>>> +	low_rx_bytes = (vvs->rx_bytes <
+>>>> +			sock_rcvlowat(sk_vsock(vsk), 0, INT_MAX));
+>>>>  
+>>>>  	spin_unlock_bh(&vvs->rx_lock);
+>>>>  
+>>>> @@ -611,9 +621,11 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>>>  	 * too high causes extra messages. Too low causes transmitter
+>>>>  	 * stalls. As stalls are in theory more expensive than extra
+>>>>  	 * messages, we set the limit to a high value. TODO: experiment
+>>>> -	 * with different values.
+>>>> +	 * with different values. Also send credit update message when
+>>>> +	 * number of bytes in rx queue is not enough to wake up reader.
+>>>>  	 */
+>>>> -	if (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE)
+>>>> +	if (fwd_cnt_delta &&
+>>>> +	    (free_space < VIRTIO_VSOCK_MAX_PKT_BUF_SIZE || low_rx_bytes))
+>>>>  		virtio_transport_send_credit_update(vsk);
+>>>>  
+>>>>  	return total;
+>>>> -- 
+>>>> 2.25.1
+>>>
+> 
