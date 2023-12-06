@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B30807C09
+	by mail.lfdr.de (Postfix) with ESMTP id AC677807C0A
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377813AbjLFXDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 18:03:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57978 "EHLO
+        id S1379557AbjLFXEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 18:04:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379612AbjLFXDw (ORCPT
+        with ESMTP id S1379626AbjLFXD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 18:03:52 -0500
+        Wed, 6 Dec 2023 18:03:59 -0500
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82481D72
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 15:03:57 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 879433200ABA;
-        Wed,  6 Dec 2023 18:03:56 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915FC10CB
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 15:04:01 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 836EB320046F;
+        Wed,  6 Dec 2023 18:04:00 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 06 Dec 2023 18:03:57 -0500
+  by compute5.internal (MEProxy); Wed, 06 Dec 2023 18:04:00 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1701903836; x=
-        1701990236; bh=Ts4cLhYYzzok3kwgsMOTCxxx9gZzMOek+V++hFjm8cU=; b=S
-        Av3A07SdHtRfyBIMQDtmao1jF8edpQDgM81AqugmQMg9GDU4qSjYLp+Q9C+0NNpr
-        sJUKIeMI1vwu4iJyapBarXH9M2FBu8gGfSCwvBDkp1icDwGZfyaMSQZckT6x6ON9
-        BS0cUtWUEdCWTk9M4ufqoDMzM/19y48ZNcHJI5n4f3WZ1lqi4yhIW1M7W/Dxi0Ma
-        XtmEbCjfYqqXtUX/9Fjng9oh0qO4ECqR8/6pq/v5mkyfZaFZGJ+CeE/J/k/PXwMM
-        82NZatDhI4KO9g3Hdf8so/7Ej8EW30uLLO9KiQ/5TSyhkvkOAR9k7Xx9iZiTE9lG
-        LNkXlWuEXqnUjplXZq09A==
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1701903840; x=
+        1701990240; bh=LdvIlOAXoikrOB54goWHhb+eiW1iC/9ih0Hj6Tkkyn4=; b=k
+        Oy4359qatBNbDIsupmBK00MrFd8XTNEXDMDwEWk1QIASpjibIJE8hvFcpEO3HqPp
+        +ZIc9kHZ7SY9/Scos7vLYk3mS/QlFA9GpF8C4VACBjsUrP5qobSqJiyF7TUJAOwm
+        o5hqWfg0m70ZxWCkqjwhIG1fTLB8YqtMZgqCT3Fabw463yn7xS+bI2AGjrFlDWz1
+        gYUQI6OTLWAY3ve7rwCODXDtnL53g1G7xN+qDecHiEEYl3uMo5MziAkM7Lz26AgA
+        3eU45bApCFJHDSd6wNBWpQ8dYyZKyd0RJNcnvZLQk5t62VfrCv8aNHwLSymyMp4T
+        YO0r/OmARHXpeJ71eCEnQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1701903836; x=
-        1701990236; bh=Ts4cLhYYzzok3kwgsMOTCxxx9gZzMOek+V++hFjm8cU=; b=H
-        UGOS+RwixbYuXhQ1whIJBm+FYXIfbUldw6NvwBPWBz/36LcbLGKucjtPRvHetB1g
-        8THaHYJsRR2VlvGQOeIDEQHURA9wO451Ktq4lmZkL7cJM+MV5kyLTy7UKRqjBdRH
-        RI19zYZJgtXtVs+iefTPLH/txLMz7m9yUD5oB4MWeF/l+DuUf7AUT/bn6eJ0XDRG
-        iExoQ/07a+2eZgpKSIrTtnmzEjcmVlYyE4K9pYGzb/KVCGbwuQNZ2MwMd4flnfNM
-        lphy+eY7zy+HhQMvxucBsPsqY1L9RMmYKgzx/Sk6VT4N+V9X0nfsrGxuCpgvbrzd
-        uszCQcTaoJ23EPJe5ljkw==
-X-ME-Sender: <xms:2_1wZdq8TNEcrNqMKG719wKMvN9VgYURkLM-sGCNVyUQLb84ZDAOUw>
-    <xme:2_1wZfpgRnyDEmnY0PDA24g3G04IY6SxNpbpED0o85cFEIgirZeEqaKvYMW5VWBH9
-    dlb_hoBEYSpRI1sLCA>
-X-ME-Received: <xmr:2_1wZaM-8E6IyO1pFg0bUFBSMZnmz0SpZnvoNGxWxPt7WRXZQwEzJLNRW6RHkpQD5cJFiUgglwar1tC6wlY9hB45WMfz0NNyWhYCf3IHb6k>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1701903840; x=
+        1701990240; bh=LdvIlOAXoikrOB54goWHhb+eiW1iC/9ih0Hj6Tkkyn4=; b=z
+        kweNvXlu6OHiZJWvqMxaKN7RSmZgtF6hbMUJ/447f9D/ta2+eB2zh5mhEe/EmXdd
+        0/I2Zq+8qGfbafI4mLF2P4Qrx5HksTd0GuE9NjrrP8rEqvLFSf9+9inrOhXSJIef
+        e6KAYQrS0sKCOLSiG7zbtJlW8b6QjE0431I/+Y94czD8hJf1axcdrqk/YDMvS3Ko
+        6f1cmB568tXSVgf47/52jtCqhQ4jHXrgXWtfiEq6UCVmHyaEztjwls6k5FwYbaUD
+        Db9vVfDSktZ9sQkjYceHaw2bXetLW8D80T3Df6r6hvHkX9D16XRiP0k6Tv+SGz9x
+        0wONE2wPpdUcYWDeLAHwA==
+X-ME-Sender: <xms:3_1wZQsFOdl1eOEZ28ha0rgBaldOEhqyUzJbT2t2uS4-K0Y16jtpww>
+    <xme:3_1wZdcj6S9UQQs-9uAhDrdZs8GUH1HM0IZELZVTcY3To_gu3hy54BqAYnzLOPZbJ
+    3_HgrAO2If2pdN78RQ>
+X-ME-Received: <xmr:3_1wZbzEC1Di2jI8T5a9gVnvuGapPD8lU6ewJ4_ednqB3E75jXsBqFcws7XWDgkYM3ndCR4p-8wX9b3o2wbmIpnjIdc9q3yVc9umjPCysdY>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudekuddgtdehucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpefirghrhicutfhoohhkrghrugcuoehgrghrhihrohhokhgr
-    rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepkeeuvdffueduke
-    egieeuffejhefgkeetfeehueelfeduuefgveellefhfefgjedvnecuvehluhhsthgvrhfu
-    ihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghgrrhihrhhoohhkrghrugesfh
-    grshhtmhgrihhlrdhorhhg
-X-ME-Proxy: <xmx:2_1wZY6JuNHtBm5XLa45-_CFhv4-yivHA6A2xm6cKF0yLFG07NiqLg>
-    <xmx:2_1wZc7pU0ZdNUgeoLKBbBD8E2Lc00MTTHyzlC-AlQpuMjw3NVOQWw>
-    <xmx:2_1wZQg9mASJQ9BieEIDnPMddlZyKL-DRe6-6mAh_46Z_ZFguojr3g>
-    <xmx:3P1wZak7WNVDwSEjcxnnUczmpUWUz82dEgWzXR_sPqDcLtbVRdNTWA>
+    rhgusehfrghsthhmrghilhdrohhrgheqnecuggftrfgrthhtvghrnhepvdevtdeigfduvd
+    euhefguddutdeijedtvdejvdevvdfgvdetudehvefhhefgieeknecuffhomhgrihhnpegs
+    shhshhhtrdgsugenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehgrghrhihrohhokhgrrhgusehfrghsthhmrghilhdrohhrgh
+X-ME-Proxy: <xmx:3_1wZTMY91FxscAUnvyZD-vSjduJw7cGBu6ItV_jRniISPhhZi6D2g>
+    <xmx:3_1wZQ_kOqvY1ZuHS-hebKSv6r-l0avc3ufmEXvXgRiips0y90rcEA>
+    <xmx:3_1wZbUws5FXRolTi0nU6xNTi7X8vlcm58DgVoc0PdtjKvjaw1g7ng>
+    <xmx:4P1wZfYXK242KPLFq_vxW_f5814ZSYkeN-zsnvL6sh-A4lE8cZv1CQ>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Dec 2023 18:03:55 -0500 (EST)
+ 6 Dec 2023 18:03:59 -0500 (EST)
 From:   Gary Rookard <garyrookard@fastmail.org>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH 2/5] staging: rtl8192e: renamed variable bAMPDUEnable
-Date:   Wed,  6 Dec 2023 18:04:01 -0500
-Message-ID: <20231206230404.1721-3-garyrookard@fastmail.org>
+Subject: [PATCH 3/5] staging: rtl8192e: renamed variable AMPDU_Factor
+Date:   Wed,  6 Dec 2023 18:04:02 -0500
+Message-ID: <20231206230404.1721-4-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231206230404.1721-1-garyrookard@fastmail.org>
 References: <20231206230404.1721-1-garyrookard@fastmail.org>
@@ -87,116 +87,63 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Coding style issue, checkpatch Avoid CamelCase,
-rename it. bAMPDUEnable -> ampdu_enable
+rename it. AMPDU_Factor -> ampdu_factor
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
 ---
- drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 2 +-
- drivers/staging/rtl8192e/rtl819x_HT.h          | 2 +-
- drivers/staging/rtl8192e/rtl819x_HTProc.c      | 4 ++--
- drivers/staging/rtl8192e/rtllib.h              | 2 +-
- drivers/staging/rtl8192e/rtllib_tx.c           | 8 ++++----
- 5 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HT.h     | 2 +-
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-index 13e3f26279aa..fe48cc6b7132 100644
---- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-@@ -883,7 +883,7 @@ void  rtl92e_fill_tx_desc(struct net_device *dev, struct tx_desc *pdesc,
- 	pTxFwInfo->Short = _rtl92e_query_is_short(pTxFwInfo->TxHT,
- 						  pTxFwInfo->TxRate, cb_desc);
- 
--	if (cb_desc->bAMPDUEnable) {
-+	if (cb_desc->ampdu_enable) {
- 		pTxFwInfo->AllowAggregation = 1;
- 		pTxFwInfo->RxMF = cb_desc->ampdu_factor;
- 		pTxFwInfo->RxAMD = cb_desc->ampdu_density;
 diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
-index e02fa40262bd..7a3e36db849c 100644
+index 7a3e36db849c..c01ccf252924 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HT.h
 +++ b/drivers/staging/rtl8192e/rtl819x_HT.h
-@@ -111,7 +111,7 @@ struct rt_hi_throughput {
- 	u16 amsdu_max_size;
- 	u8 bCurrent_AMSDU_Support;
+@@ -113,7 +113,7 @@ struct rt_hi_throughput {
  	u16 nCurrent_AMSDU_MaxSize;
--	u8 bAMPDUEnable;
-+	u8 ampdu_enable;
+ 	u8 ampdu_enable;
  	u8 current_ampdu_enable;
- 	u8 AMPDU_Factor;
+-	u8 AMPDU_Factor;
++	u8 ampdu_factor;
  	u8 CurrentAMPDUFactor;
+ 	u8 MPDU_Density;
+ 	u8 current_mpdu_density;
 diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index b2f2e1c0cf6b..9841af15089f 100644
+index 9841af15089f..0f044356e428 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -84,7 +84,7 @@ void ht_update_default_setting(struct rtllib_device *ieee)
- 	ht_info->amsdu_max_size = 7935UL;
+@@ -85,7 +85,7 @@ void ht_update_default_setting(struct rtllib_device *ieee)
  	ht_info->amsdu_support = 0;
  
--	ht_info->bAMPDUEnable = 1;
-+	ht_info->ampdu_enable = 1;
- 	ht_info->AMPDU_Factor = 2;
+ 	ht_info->ampdu_enable = 1;
+-	ht_info->AMPDU_Factor = 2;
++	ht_info->ampdu_factor = 2;
  	ht_info->MPDU_Density = 0;
  
-@@ -498,7 +498,7 @@ void HTOnAssocRsp(struct rtllib_device *ieee)
- 	else
- 		ht_info->nCurrent_AMSDU_MaxSize = ht_info->amsdu_max_size;
+ 	ht_info->self_mimo_ps = 3;
+@@ -507,11 +507,11 @@ void HTOnAssocRsp(struct rtllib_device *ieee)
+ 	}
  
--	ht_info->current_ampdu_enable = ht_info->bAMPDUEnable;
-+	ht_info->current_ampdu_enable = ht_info->ampdu_enable;
- 	if (ieee->rtllib_ap_sec_type &&
- 	    (ieee->rtllib_ap_sec_type(ieee) & (SEC_ALG_WEP | SEC_ALG_TKIP))) {
- 		if ((ht_info->IOTPeer == HT_IOT_PEER_ATHEROS) ||
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 47da9b1a8682..6bad7d410075 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -118,7 +118,7 @@ struct cb_desc {
- 	u8 bUseShortGI:1;
- 	u8 bUseShortPreamble:1;
- 	u8 bTxEnableFwCalcDur:1;
--	u8 bAMPDUEnable:1;
-+	u8 ampdu_enable:1;
- 	u8 bRTSSTBC:1;
- 	u8 RTSSC:1;
+ 	if (!ht_info->reg_rt2rt_aggregation) {
+-		if (ht_info->AMPDU_Factor > pPeerHTCap->MaxRxAMPDUFactor)
++		if (ht_info->ampdu_factor > pPeerHTCap->MaxRxAMPDUFactor)
+ 			ht_info->CurrentAMPDUFactor =
+ 						 pPeerHTCap->MaxRxAMPDUFactor;
+ 		else
+-			ht_info->CurrentAMPDUFactor = ht_info->AMPDU_Factor;
++			ht_info->CurrentAMPDUFactor = ht_info->ampdu_factor;
  
-diff --git a/drivers/staging/rtl8192e/rtllib_tx.c b/drivers/staging/rtl8192e/rtllib_tx.c
-index a79f9d8c9162..5a69f4c6d0c9 100644
---- a/drivers/staging/rtl8192e/rtllib_tx.c
-+++ b/drivers/staging/rtl8192e/rtllib_tx.c
-@@ -312,7 +312,7 @@ static void rtllib_tx_query_agg_cap(struct rtllib_device *ieee,
- 				goto FORCED_AGG_SETTING;
- 		}
- 		if (ieee->iw_mode == IW_MODE_INFRA) {
--			tcb_desc->bAMPDUEnable = true;
-+			tcb_desc->ampdu_enable = true;
- 			tcb_desc->ampdu_factor = ht_info->CurrentAMPDUFactor;
- 			tcb_desc->ampdu_density = ht_info->current_mpdu_density;
- 		}
-@@ -323,13 +323,13 @@ static void rtllib_tx_query_agg_cap(struct rtllib_device *ieee,
- 		break;
+ 	} else {
+ 		if (ieee->current_network.bssht.bd_rt2rt_aggregation) {
+@@ -571,7 +571,7 @@ void HTInitializeHTInfo(struct rtllib_device *ieee)
+ 	ht_info->bCurrent_AMSDU_Support = false;
+ 	ht_info->nCurrent_AMSDU_MaxSize = ht_info->amsdu_max_size;
+ 	ht_info->current_mpdu_density = ht_info->MPDU_Density;
+-	ht_info->CurrentAMPDUFactor = ht_info->AMPDU_Factor;
++	ht_info->CurrentAMPDUFactor = ht_info->ampdu_factor;
  
- 	case HT_AGG_FORCE_ENABLE:
--		tcb_desc->bAMPDUEnable = true;
-+		tcb_desc->ampdu_enable = true;
- 		tcb_desc->ampdu_density = ht_info->forced_mpdu_density;
- 		tcb_desc->ampdu_factor = ht_info->forced_ampdu_factor;
- 		break;
- 
- 	case HT_AGG_FORCE_DISABLE:
--		tcb_desc->bAMPDUEnable = false;
-+		tcb_desc->ampdu_enable = false;
- 		tcb_desc->ampdu_density = 0;
- 		tcb_desc->ampdu_factor = 0;
- 		break;
-@@ -454,7 +454,7 @@ static void rtllib_query_protectionmode(struct rtllib_device *ieee,
- 			tcb_desc->bRTSEnable = true;
- 			break;
- 		}
--		if (tcb_desc->bAMPDUEnable) {
-+		if (tcb_desc->ampdu_enable) {
- 			tcb_desc->rts_rate = MGN_24M;
- 			tcb_desc->bRTSEnable = false;
- 			break;
+ 	memset((void *)(&ht_info->SelfHTCap), 0,
+ 	       sizeof(ht_info->SelfHTCap));
 -- 
 2.41.0
 
