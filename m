@@ -2,275 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 450418074A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FCC8074AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:16:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbjLFQOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
+        id S1378254AbjLFQQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:16:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbjLFQOl (ORCPT
+        with ESMTP id S229471AbjLFQQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:14:41 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2A912F;
-        Wed,  6 Dec 2023 08:14:47 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EFCCD1FD16;
-        Wed,  6 Dec 2023 16:14:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1701879286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1DkhA2HHkFoqZbckox6DnGjYS+3CIXWrTjgL648Eh+A=;
-        b=rVDYHIo4hZl3CgAy/qvw7vEZtNRCRdfTESHbRMBQO8VBw0d0rNW63/XBf/Nt+0AcZrcAvP
-        7HHyoUUwu3H20JUtUchQvUVY2ao79AoQvoa75kb0Jbhj+X8fvkrg+bAKD80BaszybU2aiN
-        aFpGKzpH5mVjokxaZEddOKTMp0FlU4w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1701879286;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1DkhA2HHkFoqZbckox6DnGjYS+3CIXWrTjgL648Eh+A=;
-        b=wGcezhoFzNi07PvT4U4IYxRR6woz2UoJW+32KxW2B60ApVQRCkCpS9Zgns9dneDTvNVNSi
-        xV3jnu9YFjbjnaDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C1E9213408;
-        Wed,  6 Dec 2023 16:14:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id ULPVLvWdcGWHXgAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Wed, 06 Dec 2023 16:14:45 +0000
-Message-ID: <75a71276-dff8-ad3a-d238-fcfa3ab39413@suse.cz>
-Date:   Wed, 6 Dec 2023 17:14:45 +0100
+        Wed, 6 Dec 2023 11:16:08 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95A9122;
+        Wed,  6 Dec 2023 08:16:13 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3B6GFSLJ010708;
+        Wed, 6 Dec 2023 10:15:28 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701879328;
+        bh=aaEOnLvVa7qfwFIn7wOtUQ9a7L3RjZtWVhy9LotV1y4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=wyFHeQ653VSHz5cy2RH/tJzTLkUK3dDtom6lStSJbZwufmD2646cXCxAKdbIBAR4i
+         +F+6IP+afRDXzm4mKfwdSiuNoXwfTi7ltsHeeKLxXFblrRwTt8P5jM53IrH5aTgHKJ
+         d+nXGWdzUWMDCHtbquX+rrNUjbkWyDmncQVWbc+E=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3B6GFSGb093935
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Dec 2023 10:15:28 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 6
+ Dec 2023 10:15:27 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 6 Dec 2023 10:15:28 -0600
+Received: from [10.249.36.163] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3B6GFQqs123291;
+        Wed, 6 Dec 2023 10:15:26 -0600
+Message-ID: <8328bec9-a963-4f8a-ae03-a531749a30db@ti.com>
+Date:   Wed, 6 Dec 2023 10:15:26 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v2 2/3] mm/slub: unify all sl[au]b parameters with
- "slab_$param"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+To:     Conor Dooley <conor@kernel.org>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+CC:     Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        Adam Ford <aford173@gmail.com>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-sunxi@lists.linux.dev>, <linux-omap@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>
+References: <20231204182245.33683-1-afd@ti.com>
+ <20231204182245.33683-2-afd@ti.com>
+ <CFF198DA-5C42-425E-86F4-759629489ECB@goldelico.com>
+ <cb590a13-e0ff-49d9-8583-be613ad50dc5@ti.com>
+ <FE0DBA5E-95A5-4C27-9F69-D1D8BDF56EC3@goldelico.com>
+ <20231206-wolverine-paprika-0674ca01e1f2@spud>
 Content-Language: en-US
-To:     sxwjean@me.com, 42.hyeyoo@gmail.com, cl@linux.com,
-        linux-mm@kvack.org
-Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        roman.gushchin@linux.dev, corbet@lwn.net, keescook@chromium.org,
-        arnd@arndb.de, akpm@linux-foundation.org,
-        gregkh@linuxfoundation.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiongwei Song <xiongwei.song@windriver.com>
-References: <20231203001501.126339-1-sxwjean@me.com>
- <20231203001501.126339-3-sxwjean@me.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231203001501.126339-3-sxwjean@me.com>
-Content-Type: text/plain; charset=UTF-8
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20231206-wolverine-paprika-0674ca01e1f2@spud>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Score: -0.60
-X-Spamd-Result: default: False [-0.60 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com,me.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         SUBJECT_HAS_CURRENCY(1.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         RCPT_COUNT_TWELVE(0.00)[16];
-         FREEMAIL_TO(0.00)[me.com,gmail.com,linux.com,kvack.org];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 12/3/23 01:15, sxwjean@me.com wrote:
-> From: Xiongwei Song <xiongwei.song@windriver.com>
+On 12/6/23 10:02 AM, Conor Dooley wrote:
+> On Tue, Dec 05, 2023 at 07:04:05PM +0100, H. Nikolaus Schaller wrote:
+>>> Am 05.12.2023 um 18:33 schrieb Andrew Davis <afd@ti.com>:
+>>>
+>>> On 12/5/23 2:17 AM, H. Nikolaus Schaller wrote:
+>>>>> +          - enum:
+>>>>> +              - ti,omap3430-gpu # Rev 121
+>>>>> +              - ti,omap3630-gpu # Rev 125
+>>>> Is the "Rev 121" and "Rev 125" a property of the SoC integration (clock/reset/power
+>>>> hookup etc.) or of the integrated SGX core?
+>>>
+>>> The Rev is a property of the SGX core, not the SoC integration.
+>>
+>> Then, it should belong there and not be a comment of the ti,omap*-gpu record.
+>> In this way it does not seem to be a proper hardware description.
+>>
+>> BTW: there are examples where the revision is part of the compatible string, even
+>> if the (Linux) driver makes no use of it:
+>>
+>> drivers/net/ethernet/xilinx/xilinx_emaclite.c
 > 
-> Since the SLAB allocator has been removed, so we need to clean up the
-
-"we can clean up", as we don't really "need"
-
-> sl[au]b_$params. However, the "slab/SLAB" terms should be keep for
-> long-term rather than "slub/SLUB". Hence, we should use "slab_$param"
-
-I'd phrase it: With only one slab allocator left, it's better to use the
-generic "slab" term instead of "slub" which is an implementation detail.
-Hence ...
-
-> as the primary prefix, which is pointed out by Vlastimil Babka. For more
-> information please see [1].
+> AFAICT these Xilinx devices that put the revisions in the compatible are
+> a different case - they're "soft" IP intended for use in the fabric of
+> an FPGA, and assigning a device specific compatible there does not make
+> sense.
 > 
-> This patch is changing the following slab parameters
-> - slub_max_order
-> - slub_min_order
-> - slub_min_objects
-> - slub_debug
-> to
-> - slab_max_order
-> - slab_min_order
-> - slab_min_objects
-> - slab_debug
-> as the primary slab parameters in
-> Documentation/admin-guide/kernel-parameters.txt and source, and rename all
-> setup functions of them too. Meanwhile, "slub_$params" can also be passed
-
-Not sure about renaming the code at this point, I would just rename the
-user-visible parameters and their documentation and any comment that refers
-to the parameters. Functions and variables can come later as part of wider
-slub/slab change if we decide to do so?
-
-> by command line, which is to keep backward compatibility. Also mark all
-> "slub_$params" as legacy.
+> In this case it appears that the revision is completely known once you
+> see "ti,omap3630-gpu", so encoding the extra "121" into the compatible
+> string is not required.
 > 
-> The function
->     static int __init setup_slub_debug(char *str);
-> , which is to setup debug flags inside a slab during kernel init, is
-> changed to setup_slab_debug_flags(), which is to prevent the name
-> conflict. Because there is another function
->     void setup_slab_debug(struct kmem_cache *s, struct slab *slab,
->     		void *addr);
-> , which is to poison slab space, would have name conflict with the prior
-> one.
-
-Another reason to defer code naming changes.
-
-> For parameter "slub_debug", beside replacing it with "slab_debug", there
-> are several global variables, local variables and functions which are
-> related with the parameter, let's rename them all.
+>>
+>>> But it seems that
+>>> compatible string is being used to define both (as we see being debated in the other
+>>> thread on this series).
+>>>
+>>>> In my understanding the Revs are different variants of the SGX core (errata
+>>>> fixes, instruction set, pipeline size etc.). And therefore the current driver code
+>>>> has to be configured by some macros to handle such cases.
+>>>> So the Rev should IMHO be part of the next line:
+>>>>> +          - const: img,powervr-sgx530
+>>>> +          - enum:
+>>>> +              - img,powervr-sgx530-121
+>>>> +              - img,powervr-sgx530-125
+>>>> We have a similar definition in the openpvrsgx code.
+>>>> Example: compatible = "ti,omap3-sgx530-121", "img,sgx530-121", "img,sgx530";
+>>>> (I don't mind about the powervr- prefix).
+>>>> This would allow a generic and universal sgx driver (loaded through just matching
+>>>> "img,sgx530") to handle the errata and revision specifics at runtime based on the
+>>>> compatible entry ("img,sgx530-121") and know about SoC integration ("ti,omap3-sgx530-121").
 > 
-> Remove the separate descriptions for slub_[no]merge, append legacy tip
-> for them at the end of descriptions of slab_[no]merge.
+> The "raw" sgx530 compatible does not seem helpful if the sgx530-121 or
+> sgx530-125 compatibles are also required to be present for the driver to
+> actually function. The revision specific compatibles I would not object
+> to, but everything in here has different revisions anyway - does the
+> same revision actually appear in multiple devices? If it doesn't then I
+> don't see any value in the suffixed compatibles either.
 > 
-> I didn't change the parameters in Documentation/mm/slub.rst because the
-> file name is still "slub.rst", and slub_$params still can be used in
-> kernel command line to keep backward compatibility.
+
+Everything here has different revisions because any device that uses
+the same revision can also use the same base compatible string. For
+instance AM335x SoCs use the SGX530 revision 125, same as OMAP3630,
+so I simply reuse that compatible in their DT as you can see in
+patch [5/10]. I didn't see the need for a new compatible string
+for identical (i.e. "compatible") IP and integration.
+
+The first device to use that IP/revision combo gets the named
+compatible, all others re-use the same compatible where possible.
+
+Andrew
+
+>>>> And user-space can be made to load the right firmware variant based on "img,sgx530-121"
+>>>> I don't know if there is some register which allows to discover the revision long
+>>>> before the SGX subsystem is initialized and the firmware is up and running.
+>>>> What I know is that it is possible to read out the revision after starting the firmware
+>>>> but it may just echo the version number of the firmware binary provided from user-space.
+>>>
+>>> We should be able to read out the revision (register EUR_CR_CORE_REVISION), the problem is
+>>> today the driver is built for a given revision at compile time.
+>>
+>> Yes, that is something we had planned to get rid of for a long time by using different compatible
+>> strings and some variant specific struct like many others drivers are doing it.
+>> But it was a to big task so nobody did start with it.
+>>
+>>> That is a software issue,
+>>> not something that we need to encode in DT. While the core ID (SGX5xx) can be also detected
+>>> (EUR_CR_CORE_ID), the location of that register changes, and so it does need encoded in
+>>> DT compatible.
+>>
+>> Ok, I didn't know about such registers as there is not much public information available.
+>> Fair enough, there are some error reports about in different forums.
+>>
+>> On the other hand we then must read out this register in more or less early initialization
+>> stages. Even if we know this information to be static and it could be as simple as a list
+>> of compatible strings in the driver.
+>>
+>>> The string "ti,omap3430-gpu" tells us the revision if we cannot detect it (as in the current
+>>> driver), and the SoC integration is generic anyway (just a reg and interrupt).
+>>
+>> It of course tells, but may need a translation table that needs to be maintained in a
+>> different format. Basically the same what the comments show in a non-machine readable
+>> format.
+>>
+>> I just wonder why the specific version can or should not become simply part of the DTS
+>> and needs this indirection.
+>>
+>> Basically it is a matter of openness for future (driver) development and why it needs
+>> careful decisions.
+>>
+>> So in other words: I would prefer to see the comments about versions encoded in the device
+>> tree binary to make it machine readable.
 > 
-> [1] https://lore.kernel.org/linux-mm/7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz/
+> It's already machine readable if it is invariant on an SoC given the
+> patch had SoC-specific compatibles.
 > 
-> Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
-> ---
->  .../admin-guide/kernel-parameters.txt         |  44 +++---
->  drivers/misc/lkdtm/heap.c                     |   2 +-
->  mm/Kconfig.debug                              |   6 +-
->  mm/slab.h                                     |  16 +-
->  mm/slab_common.c                              |   8 +-
->  mm/slub.c                                     | 142 +++++++++---------
->  6 files changed, 109 insertions(+), 109 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 9f94baeb2f82..d01c12e2a247 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -5869,6 +5869,8 @@
->  	slab_merge	[MM]
->  			Enable merging of slabs with similar size when the
->  			kernel is built without CONFIG_SLAB_MERGE_DEFAULT.
-> +			(slub_merge is accepted too, but it's supported for
-> +			legacy)
-
-How about a shorter note (and always start on new line)
-
-		(slub_merge legacy name also accepted for now)
-
->  
->  	slab_nomerge	[MM]
->  			Disable merging of slabs with similar size. May be
-> @@ -5882,47 +5884,41 @@
->  			unchanged). Debug options disable merging on their
->  			own.
->  			For more information see Documentation/mm/slub.rst.
-> +			(slub_nomerge is accepted too, but it's supported for
-> +			legacy)
->  
-> -	slab_max_order=	[MM, SLAB]
-> -			Determines the maximum allowed order for slabs.
-> -			A high setting may cause OOMs due to memory
-> -			fragmentation.  Defaults to 1 for systems with
-> -			more than 32MB of RAM, 0 otherwise.
-> -
-> -	slub_debug[=options[,slabs][;[options[,slabs]]...]	[MM, SLUB]
-> -			Enabling slub_debug allows one to determine the
-> +	slab_debug[=options[,slabs][;[options[,slabs]]...]	[MM]
-
-I think we should re-sort alphabetically after the slub_ -> slab_ change.
-
-> +			Enabling slab_debug allows one to determine the
->  			culprit if slab objects become corrupted. Enabling
-> -			slub_debug can create guard zones around objects and
-> +			slab_debug can create guard zones around objects and
->  			may poison objects when not in use. Also tracks the
->  			last alloc / free. For more information see
-> -			Documentation/mm/slub.rst.
-> +			Documentation/mm/slub.rst. (slub_debug is accepted
-> +			too, but it's supported for legacy)
->  
-> -	slub_max_order= [MM, SLUB]
-> +	slab_max_order= [MM]
->  			Determines the maximum allowed order for slabs.
->  			A high setting may cause OOMs due to memory
->  			fragmentation. For more information see
-> -			Documentation/mm/slub.rst.
-> +			Documentation/mm/slub.rst. (slub_max_order is
-> +			accepted too, but it's supported for legacy)
->  
-> -	slub_min_objects=	[MM, SLUB]
-> +	slab_min_objects=	[MM]
->  			The minimum number of objects per slab. SLUB will
-> -			increase the slab order up to slub_max_order to
-> +			increase the slab order up to slab_max_order to
->  			generate a sufficiently large slab able to contain
->  			the number of objects indicated. The higher the number
->  			of objects the smaller the overhead of tracking slabs
->  			and the less frequently locks need to be acquired.
->  			For more information see Documentation/mm/slub.rst.
-> +			(slub_min_objects is accepted too, but it's supported
-> +			for legacy)
->  
-> -	slub_min_order=	[MM, SLUB]
-> +	slab_min_order=	[MM]
->  			Determines the minimum page order for slabs. Must be
-> -			lower than slub_max_order.
-> -			For more information see Documentation/mm/slub.rst.
-> -
-> -	slub_merge	[MM, SLUB]
-> -			Same with slab_merge.
-> -
-> -	slub_nomerge	[MM, SLUB]
-> -			Same with slab_nomerge. This is supported for legacy.
-> -			See slab_nomerge for more information.
-> +			lower than slab_max_order. For more information see
-
-		"lower or equal to" (more precise, while at it)
-
-> +			Documentation/mm/slub.rst. (slub_min_order is accepted
-> +			too, but it's supported for legacy)
->  
->  	smart2=		[HW]
->  			Format: <io1>[,<io2>[,...,<io8>]]
-
-Thanks!
-
