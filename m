@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 998EC8070A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D136F8070A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378441AbjLFNMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
+        id S1378426AbjLFNMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:12:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378432AbjLFNMv (ORCPT
+        with ESMTP id S1378368AbjLFNMq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:12:51 -0500
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008911A5;
-        Wed,  6 Dec 2023 05:12:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-        Content-ID:Content-Description;
-        bh=vxtmr3/Bwam30pObqH1YX57aCpkWmHrysVP1c64/fRo=; b=V1tRkFcXtqHcFzkrirDzwuGS5g
-        X53OZxy+/kYcGkilHA7nhcpH0OwF5wEKrM6Gud6EbyVfqYto9SNxUtxXl9aWuFKLMbXVz0/0/3VGm
-        XwY1z5eu1HH+9GOUwBxDzQxG4Jcpxp3/vxi1z7cV8WqlvawLjFsJDVUe1sCRNxMyYj8hTLE5aUc4j
-        irPuSPiKo/xZJLRwjvc18BRIxm1ZBik9Le9l6EFQQgIGQzkgU85H70Fz7OJHsJTPCDrJHSD4bbY7Z
-        QpCUbO6dsVRUyeVvVXL9URvDP2D2GcXXOYWT/rmnoTi5+zrT89COJgAFNfRF3SZAU3rFPaPobBsXn
-        m6nHfwABby6FbYLVc5bxW3LVXXKASP99v9qkWeIKvW0CxS7Og7aMmZJmKTkE35IHww86HqkibC2Nr
-        aEheYq6uqS3gsunD4XdL/SydAt3J01K7N06/VMueWHbiGKpM/YTkEPbwEl29Pi9IPQYXaMF/Dphun
-        Ca5goSHTTYhgwvfxhDkouc6ZX8rjWPFCcLW+v3m/xrUJ3CDEsWgdRhZkSGlBvtnROrpF3Q0Y2Jv6E
-        ztbPYsOG0fXxTjMagx1EmWLzjAz12RX+mx0zZXBvVonoRbxXmycH5xqn44/MQZqrAaXSmGBzS9x3l
-        vkfO4oEi0eEc2VULzzO7wDO66eUQLoYcFl0cmWHd8=;
-From:   Christian Schoenebeck <linux_oss@crudebyte.com>
-To:     Dominique Martinet <asmadeus@codewreck.org>,
-        Fedor Pchelkin <pchelkin@ispras.ru>
-Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: Re: [PATCH v3] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
-Date:   Wed, 06 Dec 2023 14:12:37 +0100
-Message-ID: <10981267.HhOBSzzNiN@silver>
-In-Reply-To: <20231205180523.11318-1-pchelkin@ispras.ru>
-References: <20231205180523.11318-1-pchelkin@ispras.ru>
+        Wed, 6 Dec 2023 08:12:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F70AC
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 05:12:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28E6FC433C7;
+        Wed,  6 Dec 2023 13:12:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701868372;
+        bh=EStk6AojKy4VrHDz7eSOQKX/7HbeZy7ZzJ/2crabbHk=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=pUHMnBj0fpV+uqC8lC/kqLL2SDwI80ZQvcD8acliYpy+7Mx25yFwsyR8EnLmLATER
+         DJNzK3a6Z8osyx1yUzskQq8PAGIfJQHZqEg4ND/T9pSa4fMwrCj7MKAaWnpAKrnE1s
+         UPHRFLp/CvVHDqYRczUb7LpV5Hw+E/F3MlJ9gp4qmJ9f9BeTly+H68k3m5WnYKqVBb
+         ykdzlvyp/Oig+Mj/ZdrrYgBYjbpkvFSgGvqtE0ypoPsVADMwYAtCZNHPbyXv5TGVZq
+         fj3/ZeUSAb32tMlZ0DuJM3o8I5ghrDV8QYkSVwbz8x5hycvMQ3Mgjei4KI9vs2qQq2
+         ypjE16CzHOXgQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     pierre-louis.bossart@linux.intel.com,
+        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        kai.vehmanen@linux.intel.com, cezary.rojewski@intel.com,
+        ranjani.sridharan@linux.intel.com,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+In-Reply-To: <20231205135001.2506070-1-rf@opensource.cirrus.com>
+References: <20231205135001.2506070-1-rf@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a
+ speaker widget
+Message-Id: <170186836988.22386.11650594415666700683.b4-ty@kernel.org>
+Date:   Wed, 06 Dec 2023 13:12:49 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-5c066
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, December 5, 2023 7:05:22 PM CET Fedor Pchelkin wrote:
-> If some of p9pdu_readf() calls inside case 'T' in p9pdu_vreadf() fails,
-> the error path is not handled properly. *wnames or members of *wnames
-> array may be left uninitialized and invalidly freed.
+On Tue, 05 Dec 2023 13:50:01 +0000, Richard Fitzgerald wrote:
+> Hookup the CS35L56 DAPM_OUTPUT widgets to a DAPM_SPK widget so
+> that there is a complete logical path to a speaker.
 > 
-> In order not to complicate the code with array index processing, fix the
-> problem with initializing *wnames to NULL in beginning of case 'T' and
-> using kcalloc() to allocate and initialize the array. For assurance,
-> nullify the failing *wnames element (the callee handles that already -
-> e.g. see 's' case).
+> There is no particular reason to use multiple speaker widgets.
+> The CS35L56 are designed to work together as a set so they have
+> all been connected to a single speaker widget.
 > 
-> Found by Linux Verification Center (linuxtesting.org).
-> 
-> Fixes: ace51c4dd2f9 ("9p: add new protocol support code")
-> Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
-> ---
-> v2: I've missed that *wnames can also be left uninitialized. Please
-> ignore the patch v1. As an answer to Dominique's comment: my
-> organization marks this statement in all commits.
-> v3: Simplify the patch by using kcalloc() instead of array indices
-> manipulation per Christian Schoenebeck's remark. Update the commit
-> message accordingly.
-> 
->  net/9p/protocol.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/9p/protocol.c b/net/9p/protocol.c
-> index 4e3a2a1ffcb3..7067fb49d713 100644
-> --- a/net/9p/protocol.c
-> +++ b/net/9p/protocol.c
-> @@ -394,13 +394,14 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  				uint16_t *nwname = va_arg(ap, uint16_t *);
->  				char ***wnames = va_arg(ap, char ***);
->  
-> +				*wnames = NULL;
-> +
->  				errcode = p9pdu_readf(pdu, proto_version,
->  								"w", nwname);
->  				if (!errcode) {
->  					*wnames =
-> -					    kmalloc_array(*nwname,
-> -							  sizeof(char *),
-> -							  GFP_NOFS);
-> +					    kcalloc(*nwname, sizeof(char *),
-> +						    GFP_NOFS);
+> [...]
 
-Context of this code is transmitting directory entries, e.g. thousands of
-array elements. So this would always introduce performance costs. The error
-cases this patch addresses should happen rather rarely BTW.
+Applied to
 
-Another option (instead of clearing the entire array) would be just setting
-the last entry in the array to NULL, and the loop freeing the elements would
-stop at the first NULL entry. That way you don't have to worry about carrying
-`i` along and `i` being correctly intitalized. Would require array size +1
-though.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-In general I agree that this code section calls out to be simplified, but I
-doubt that clearing the entire array is the best way to go here.
+Thanks!
 
->  					if (!*wnames)
->  						errcode = -ENOMEM;
->  				}
-> @@ -414,8 +415,10 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  								proto_version,
->  								"s",
->  								&(*wnames)[i]);
-> -						if (errcode)
-> +						if (errcode) {
-> +							(*wnames)[i] = NULL;
->  							break;
-> +						}
->  					}
->  				}
->  
-> @@ -425,9 +428,9 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
->  
->  						for (i = 0; i < *nwname; i++)
->  							kfree((*wnames)[i]);
-> +						kfree(*wnames);
-> +						*wnames = NULL;
->  					}
-> -					kfree(*wnames);
-> -					*wnames = NULL;
->  				}
->  			}
->  			break;
-> 
+[1/1] ASoC: Intel: sof_sdw_cs_amp: Connect outputs to a speaker widget
+      commit: 138a4e2a26ec73197e22fe64ee3957b1594eabb3
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
