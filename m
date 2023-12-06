@@ -2,107 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E87806A3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A469A806A3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377112AbjLFI7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 03:59:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53408 "EHLO
+        id S1377135AbjLFJAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLFI7t (ORCPT
+        with ESMTP id S231734AbjLFJAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:59:49 -0500
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0A91736
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:59:49 -0800 (PST)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 161D4227A8E; Wed,  6 Dec 2023 09:59:46 +0100 (CET)
-Date:   Wed, 6 Dec 2023 09:59:45 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [PATCH v3 4/4] nvme: add csi, ms and nuse to sysfs
-Message-ID: <20231206085945.GC24484@lst.de>
-References: <20231206081244.32733-1-dwagner@suse.de> <20231206081244.32733-5-dwagner@suse.de>
+        Wed, 6 Dec 2023 04:00:03 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C812221396
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:00:02 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3332e351670so486059f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:00:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701853201; x=1702458001; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JBvPr0PZUw4iL8VewNbXoGCLGjcXLwTfxDXr0QEOcN4=;
+        b=VuZU/dxiuF1u+CJJh+L33p48X/00qPNIxClT58TIjvjdToZbyPWyra+xX93l7Ohg9e
+         iUfHvuZbKev7NxMjHFGZLPQvJc34cMttcsoGl6PGrlllTRZBsCgdh13aEnSG9oapoZHF
+         iirkdClGtiF9NBV3NZL4/0FyOnzOdyMTPnSKyb9vEeVM9pumaH9fvUFhHUyjFnqhF+Hm
+         iGakYh9mLi8hdL2lpiMZQKY5kcZ1NuguCpiTT8dtYWGqA21l3VtISmwhxmuIzzSkVcq9
+         dHpK0OUbo/h/TbtmMkh0kqJBGO/mokGAw8vasMjlOBbX0rkOXroDN3+AkJ44Z27qklpe
+         NRTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701853201; x=1702458001;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JBvPr0PZUw4iL8VewNbXoGCLGjcXLwTfxDXr0QEOcN4=;
+        b=b2tJrq0I6Ub2Fi+fwitUJ5MQXhOY1iMIVKsSgwCmv998MSf5cEO7o+jaGSZpTa+qUp
+         8vN0rHJtcqJPxp9566E3Id7eJSvGG3qUFwRz/TN4mpTurfdwQthSl1HYM5tA8kSURCIH
+         O8rd3t2V9HpJ8MyIedc0QRjOoVs0LUblNF9o1pe7mqPK3ncYBLrLzWHxL+499ALz0QcO
+         fWEQvn76876vtL+vGJPQgg/5F/pHm3rgcFbUa2ENBa2TYzDY2zBnhdyxllXH1tco45f1
+         lTZsnw6gxD6Toqoi8WgY+X33RzeC7iotpu2WWcDCV/0E6FYiQe4U/kJiW1GhVqlebMP8
+         pb7A==
+X-Gm-Message-State: AOJu0Yyun27VzMCbSpkR/oLKpjaQ2GRw2vpuVC1Lg5FP3f2UTMXFiwCe
+        +nUUoqJnxVusoYES+0BftVRmLw==
+X-Google-Smtp-Source: AGHT+IHL02/F68rsAj1m9y5YPgBGNVLtZiIoHgkZPY9K89mPetYsux6h9+XcW2vWd1enK/4XjY+JeQ==
+X-Received: by 2002:a05:600c:600f:b0:40b:5f03:b42d with SMTP id az15-20020a05600c600f00b0040b5f03b42dmr201110wmb.335.1701853201119;
+        Wed, 06 Dec 2023 01:00:01 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id o18-20020a05600c511200b004064e3b94afsm24839147wms.4.2023.12.06.00.59.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 01:00:00 -0800 (PST)
+Message-ID: <957060a5-1d99-4dee-a83d-004622e79262@linaro.org>
+Date:   Wed, 6 Dec 2023 09:59:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206081244.32733-5-dwagner@suse.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 0/2] pinctl: qcom: sm4450: Add SM4450 pinctrl driver
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        linus.walleij@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
+References: <20231206020840.33228-1-quic_tengfan@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231206020840.33228-1-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 09:12:44AM +0100, Daniel Wagner wrote:
-> libnvme is using the sysfs for enumarating the nvme resources. Though
-> there are few missing attritbutes in the sysfs. For these libnvme issues
-> commands during discovering.
+On 06/12/2023 03:08, Tengfei Fan wrote:
+> Add SM4450 pinctrl driver for support enable uart console.
 > 
-> As the kernel already knows all these attributes and we would like to
-> avoid libnvme to issue commands all the time, expose these missing
-> attributes.
-> 
-> The nuse value is updated on request because the nuse is a volatile
-> value. Since any user can read the sysfs attribute, a very simple rate
-> limit is added (update max every 5 seconds). A more sophisticated update
-> strategy can be added later if there is actually a need for it.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 > ---
->  drivers/nvme/host/core.c  | 28 ++++++++++++++++++++++++++++
->  drivers/nvme/host/nvme.h  |  2 ++
->  drivers/nvme/host/sysfs.c | 31 +++++++++++++++++++++++++++++++
->  3 files changed, 61 insertions(+)
-> 
-> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-> index caa52c2f57c8..e7dd64ee1653 100644
-> --- a/drivers/nvme/host/core.c
-> +++ b/drivers/nvme/host/core.c
-> @@ -1663,6 +1663,33 @@ static void nvme_ns_release(struct nvme_ns *ns)
->  	nvme_put_ns(ns);
->  }
->  
-> +int nvme_ns_update_nuse(struct nvme_ns_head *head)
-> +{
-> +	static DEFINE_RATELIMIT_STATE(_rs, 5 * HZ, 1);
-> +	struct nvme_id_ns *id;
-> +	struct nvme_ns *ns;
-> +	int srcu_idx, ret = -EWOULDBLOCK;
-> +
-> +	if (__ratelimit(&_rs))
-> +		return 0;
+> v5 -> v6:
+>   - squash the fixups into the newly added driver
+>   - drop reviewed-by due to update patch as new comments
 
-Can you add a comment on the ratelimiting here?
+Really? Why? What exactly changed in the patch you dropped my review?
 
-> +
-> +	srcu_idx = srcu_read_lock(&head->srcu);
-> +	ns = nvme_find_path(head);
-> +	if (!ns)
-> +		goto out_unlock;
-> +
-> +	ret = nvme_identify_ns(ns->ctrl, head->ns_id, &id);
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	head->nuse = le64_to_cpu(id->nuse);
-
-This looks like the wrong thing to do for the non-multipath nodes,
-which should be able to go straight to the ns.
-
-I'd move this to sysfs.c, and then do a similar trick to say
-nvme_send_pr_command to directly use the ns for the non-multipath
-nodes, and do what you're doing here for the multipath nodes.
-
->  static struct attribute *nvme_ns_id_attrs[] = {
-
-And I duess the _id is not correct now, I'd just drop it.
+Best regards,
+Krzysztof
 
