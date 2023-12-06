@@ -2,141 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD506807406
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3028807404
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442550AbjLFPyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:54:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
+        id S1442464AbjLFPy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:54:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379416AbjLFPym (ORCPT
+        with ESMTP id S1379416AbjLFPy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:54:42 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B008EDE
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 07:54:47 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rAuEU-0005eJ-Fi; Wed, 06 Dec 2023 16:54:42 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rAuES-00DzeT-4b; Wed, 06 Dec 2023 16:54:40 +0100
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1rAuES-005aMs-1i; Wed, 06 Dec 2023 16:54:40 +0100
-Date:   Wed, 6 Dec 2023 16:54:40 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next v1 3/3] net: dsa: microchip: Fix PHY loopback
- configuration for KSZ8794 and KSZ8873
-Message-ID: <20231206155440.GA1324895@pengutronix.de>
-References: <20231121152426.4188456-1-o.rempel@pengutronix.de>
- <20231121152426.4188456-3-o.rempel@pengutronix.de>
- <35045f6ef6a5b274063186c065a8215088b94cd5.camel@redhat.com>
- <20231206085520.GA1293736@pengutronix.de>
- <20231206151406.75eglqtsrrb4vegf@skbuf>
+        Wed, 6 Dec 2023 10:54:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9C3DC
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 07:54:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B672CC433C8;
+        Wed,  6 Dec 2023 15:54:32 +0000 (UTC)
+Date:   Wed, 6 Dec 2023 10:55:00 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
+Subject: Re: [PATCH v7] bus: mhi: host: Add tracing support
+Message-ID: <20231206105500.148ea367@gandalf.local.home>
+In-Reply-To: <20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com>
+References: <20231206-ftrace_support-v7-1-aca49a04268b@quicinc.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231206151406.75eglqtsrrb4vegf@skbuf>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 05:14:06PM +0200, Vladimir Oltean wrote:
-> On Wed, Dec 06, 2023 at 09:55:20AM +0100, Oleksij Rempel wrote:
-> > On Thu, Nov 23, 2023 at 11:52:57AM +0100, Paolo Abeni wrote:
-> > > Hi,
-> > > 
-> > > On Tue, 2023-11-21 at 16:24 +0100, Oleksij Rempel wrote:
-> > > > Correct the PHY loopback bit handling in the ksz8_w_phy_bmcr and
-> > > > ksz8_r_phy_bmcr functions for KSZ8794 and KSZ8873 variants in the ksz8795
-> > > > driver. Previously, the code erroneously used Bit 7 of port register 0xD
-> > > > for both chip variants, which is actually for LED configuration. This
-> > > > update ensures the correct registers and bits are used for the PHY
-> > > > loopback feature:
-> > > > 
-> > > > - For KSZ8794: Use 0xF / Bit 7.
-> > > > - For KSZ8873: Use 0xD / Bit 0.
-> > > > 
-> > > > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > > 
-> > > This looks like a bugfix, so possibly worth a Fixes tag? Given the
-> > > dependency on the previous refactor, I think we can take it via net-
-> > > next.
-> > > 
-> > > @Andrew, Florian, Vladimir: do you have any specific preference here?
-> > 
-> > I do not think any one cares about supporting this switch variant in
-> > stable :)
-> > 
-> > Regards,
-> > Oleksij
-> 
-> Sorry, this simply fell through the cracks.
-> 
-> How is PHY loopback even supposed to be triggered? User space flips
-> NETIF_F_LOOPBACK on the netdev, driver ndo_set_features() catches it and
-> calls phy_loopback() and this calls into phylib's phydev->drv->set_loopback()
-> or the generic genphy_loopback()?
+On Wed, 6 Dec 2023 21:12:57 +0530
+Krishna chaitanya chundru <quic_krichai@quicinc.com> wrote:
 
-correct.
+> diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
+> index f78aefd2d7a3..6acb85f4c5f8 100644
+> --- a/drivers/bus/mhi/host/init.c
+> +++ b/drivers/bus/mhi/host/init.c
+> @@ -20,6 +20,9 @@
+>  #include <linux/wait.h>
+>  #include "internal.h"
+>  
+> +#define CREATE_TRACE_POINTS
+> +#include "trace.h"
+> +
+>  static DEFINE_IDA(mhi_controller_ida);
+>  
+>  const char * const mhi_ee_str[MHI_EE_MAX] = {
+> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+> index dcf627b36e82..507cf3351a97 100644
+> --- a/drivers/bus/mhi/host/main.c
+> +++ b/drivers/bus/mhi/host/main.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/skbuff.h>
+>  #include <linux/slab.h>
+>  #include "internal.h"
+> +#include "trace.h"
+>  
+>  int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
+>  			      void __iomem *base, u32 offset, u32 *out)
+> @@ -491,11 +492,9 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
+>  
+>  	state = mhi_get_mhi_state(mhi_cntrl);
+>  	ee = mhi_get_exec_env(mhi_cntrl);
+> -	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
+> -		TO_MHI_EXEC_STR(mhi_cntrl->ee),
+> -		mhi_state_str(mhi_cntrl->dev_state),
+> -		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
+>  
+> +	trace_mhi_intvec_states(mhi_cntrl->mhi_dev->name, mhi_cntrl->ee,
+> +				mhi_cntrl->dev_state, ee, state);
 
-> I don't see DSA implementing ndo_set_features(), nor offering NETIF_F_LOOPBACK.
-> The PHY is integrated, so DSA is the only relevant netdev driver. Is
-> there any other way to test this functionality?
+I'm not sure if this was discussed before, but why not just pass in the
+mhi_cntrl pointer and do the assigning in the TRACE_EVENT()
+TP_fast_assign() portion?
 
-yes - net_selftest()
+It will save on setting up the parameters.
 
-> If not, I think it's a case of "tree falling in the woods and nobody
-> hearing it". Not "stable" material. But it definitely has nothing to do
-> with not caring about the switch variant.
+>  	if (state == MHI_STATE_SYS_ERR) {
+>  		dev_dbg(dev, "System error detected\n");
+>  		pm_state = mhi_tryset_pm_state(mhi_cntrl,
+> @@ -832,6 +831,10 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
+>  	while (dev_rp != local_rp) {
+>  		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+>  
+> +		trace_mhi_ctrl_event(mhi_cntrl->mhi_dev->name, local_rp,
+> +				     local_rp->ptr, local_rp->dword[0],
+> +				     local_rp->dword[1]);
 
-Sorry, my intention is not to criticize anyone. I am not getting
-feedbacks or bug reports for ksz88xx variants, so it seems like not many
-people use it in upstream.
+And here..
 
-When I have time slots to work on this driver, I try to use them to do
-fixes and also clean up the code. Since there is some sort of fog of
-uncertainty about when I get the next time slot, or even if I get it at
-all, I am trying to push both fixes and cleanups together.
+> +
+>  		switch (type) {
+>  		case MHI_PKT_TYPE_BW_REQ_EVENT:
+>  		{
+> @@ -997,6 +1000,9 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
+>  	while (dev_rp != local_rp && event_quota > 0) {
+>  		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
+>  
+> +		trace_mhi_data_event(mhi_cntrl->mhi_dev->name, local_rp, local_rp->ptr,
+> +				     local_rp->dword[0], local_rp->dword[1]);
 
-But, you are right, it is not a good reason for not caring about stable :)
+and here..
 
-What is the decision about this patch set?
+for the local_rp. Especially since you are just repeating what you send
+into the two events. You can consolidate it down to just adding that in the
+TP_fast_assign() of the shared DECLARE_EVENT_CLASS().
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> +
+>  		chan = MHI_TRE_GET_EV_CHID(local_rp);
+>  
+>  		WARN_ON(chan >= mhi_cntrl->max_chan);
+> @@ -1235,6 +1241,8 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
+>  	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
+>  	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
+>  
+> +	trace_mhi_gen_tre(mhi_cntrl->mhi_dev->name, mhi_chan->chan, mhi_tre,
+> +			  mhi_tre->ptr, mhi_tre->dword[0], mhi_tre->dword[1]);
+
+Same here. You can pass in the mhi_tre pointer.
+
+>  	/* increment WP */
+>  	mhi_add_ring_element(mhi_cntrl, tre_ring);
+>  	mhi_add_ring_element(mhi_cntrl, buf_ring);
+> @@ -1327,9 +1335,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>  	enum mhi_cmd_type cmd = MHI_CMD_NOP;
+>  	int ret;
+>  
+> -	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
+> -		TO_CH_STATE_TYPE_STR(to_state));
+> -
+> +	trace_mhi_channel_command_start(mhi_cntrl->mhi_dev->name, mhi_chan->chan, to_state);
+
+And here..
+
+>  	switch (to_state) {
+>  	case MHI_CH_STATE_TYPE_RESET:
+>  		write_lock_irq(&mhi_chan->lock);
+> @@ -1396,9 +1402,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
+>  		write_unlock_irq(&mhi_chan->lock);
+>  	}
+>  
+> -	dev_dbg(dev, "%d: Channel state change to %s successful\n",
+> -		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
+> -
+> +	trace_mhi_channel_command_end(mhi_cntrl->mhi_dev->name, mhi_chan->chan, to_state);
+
+and here..
+
+Where you can also update the DECLARE_EVENT_CLASS() to directly access the
+mhi_cntrl and mhi_chan pointers. Sometimes it's better to do the
+dereference from inside the TP_fast_assign. That way, things like eprobes
+and bpf tracing can also have access to the full structure if needed.
+
+-- Steve
