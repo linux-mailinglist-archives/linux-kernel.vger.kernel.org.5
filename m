@@ -2,137 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 510D580673E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7421B806748
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376968AbjLFGPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 01:15:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40214 "EHLO
+        id S1376733AbjLFG11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 01:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376980AbjLFGPl (ORCPT
+        with ESMTP id S229808AbjLFG1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 01:15:41 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FAFAA8
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 22:15:44 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c09f4bea8so32988395e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 22:15:43 -0800 (PST)
+        Wed, 6 Dec 2023 01:27:25 -0500
+Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6481137;
+        Tue,  5 Dec 2023 22:27:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701843342; x=1702448142; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j7sEYNm1NIi6fuTcFjAL1SvEUmLyjhdH04JqlSC9wHY=;
-        b=JELCR676ijetLaSbfXkXdmhGKDSE80HlfI8HzpljhMI/ko7phz93VlML7EUsWyTjKh
-         n0+hnKSzsq/BoBP90w0JfSW4ZvUbDDdXzyGankeJreQzxNe9nXf4JZAc7RAFpHKocYua
-         LA1Ff87aiImBZyq32t01hemiqLj+FJq/r1ZbwwaqG77kxiEVxkNenk4SASTQ2o5888v5
-         gF/ZlKskhneK1egIIcugYdjUKe11fo56qHDtpnubkdGrZal+SVdBD5kvDF9w5cD/MgUD
-         U39KscmPXHng7JQjLOMCzc8jcr/FqBEcI5C82DoWs17w3rPlsKWb7cnI/7lDb3mBWMo1
-         /+zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701843342; x=1702448142;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7sEYNm1NIi6fuTcFjAL1SvEUmLyjhdH04JqlSC9wHY=;
-        b=IjDznblIJxEhPOmJyTaDx540B2xjMRaH8UPfzXM4Q91mzXQrxJmWQuOJRWVejLtbjg
-         /yh9BLMu+OhXGSLGHaL9w249GXDbo+2/YH71M7WCvQTng+QGzV+M+1Rv5d35dVOOLMxY
-         rvrEJ/S+b5E8p7RtbRWhrWpwisEnET7PRXvt0EZLybZIuGEVqE3w2LMg/G8Lk77pZUGa
-         0Pl/khsTEHMAalgb4FUu6AuwxnFUpSJ86qYUylfzwYhtwJRWdpy5PeHU5EblCknGvvhC
-         F0txK/iCjFSj+YhhJCgeHEZjCU8DTiX+KdOXx8YQ3eTpP5IEWuM7xjdcywAmFcd7i1oz
-         V1VA==
-X-Gm-Message-State: AOJu0YxqA4S6HBMJ2r8U7/cQIew0IEYrRUNvGyFF58cJf220X6YAR4LZ
-        thy++s8cXg15dWY/WKRweel/cYArMg==
-X-Google-Smtp-Source: AGHT+IEiyWHIPjrFf8SGzOlHwgeuFlN5+FpUAx++O6Nwp6xfT0Zqp/m5zUkReysn6V/PyYos9/Mvpg==
-X-Received: by 2002:a05:600c:3093:b0:40b:5e59:da99 with SMTP id g19-20020a05600c309300b0040b5e59da99mr224245wmn.172.1701843342151;
-        Tue, 05 Dec 2023 22:15:42 -0800 (PST)
-Received: from p183 ([46.53.253.86])
-        by smtp.gmail.com with ESMTPSA id iv11-20020a05600c548b00b0040b4cb14d40sm24535902wmb.19.2023.12.05.22.15.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 22:15:41 -0800 (PST)
-Date:   Wed, 6 Dec 2023 09:15:39 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86_64: test xmm/ymm register state after execve(2)
-Message-ID: <7bbef366-c897-4cd2-ae69-d3e8019c5b3a@p183>
-References: <ea599d98-7d26-4278-9d79-a115650289df@p183>
- <cd27c804-a289-4b6f-9dd1-5c4b3bdc564b@intel.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701844053; x=1733380053;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=URrKC2syfT3NOO+9W05M8GidiFZ7ofUg/IW+ajEM/7w=;
+  b=po4AQ53T55fCTq+LA04QBjNthlbs4Kn9Qvz/AdoyKVPTZWjvEFNFXE+B
+   7XRwfQrt3VwS7V1DdERgIcSibEJxbmxfdDkmob/EEF95sLLbYH22TXGg9
+   UntFRt6wMvptpbXk/qi3L6aWYXkF6/T6+l4KBrq/w9vN1Ji7lStQ44II6
+   4=;
+X-IronPort-AV: E=Sophos;i="6.04,254,1695686400"; 
+   d="scan'208";a="170252860"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-b538c141.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 06:27:31 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+        by email-inbound-relay-iad-1e-m6i4x-b538c141.us-east-1.amazon.com (Postfix) with ESMTPS id C0F3FA3DFB;
+        Wed,  6 Dec 2023 06:27:27 +0000 (UTC)
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.7.35:48660]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.214:2525] with esmtp (Farcaster)
+ id da322ed0-0adf-49eb-a4b8-2f69e33d60e6; Wed, 6 Dec 2023 06:27:26 +0000 (UTC)
+X-Farcaster-Flow-ID: da322ed0-0adf-49eb-a4b8-2f69e33d60e6
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 06:27:26 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.119.13.242) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 06:27:22 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <eadavis@qq.com>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>,
+        <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>,
+        <syzkaller-bugs@googlegroups.com>, <kuniyu@amazon.com>
+Subject: Re: [PATCH] llc: fix uninit-value in __llc_lookup_established
+Date:   Wed, 6 Dec 2023 15:27:12 +0900
+Message-ID: <20231206062712.41467-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <tencent_269592755DA55D9B19384F870D9D25B18D07@qq.com>
+References: <tencent_269592755DA55D9B19384F870D9D25B18D07@qq.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cd27c804-a289-4b6f-9dd1-5c4b3bdc564b@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.119.13.242]
+X-ClientProxiedBy: EX19D042UWA003.ant.amazon.com (10.13.139.44) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023 at 12:39:32PM -0800, Dave Hansen wrote:
-> On 12/5/23 06:21, Alexey Dobriyan wrote:
-> > Test that xmm/ymm registers are cleared immediately after execve(2).
-> > 
-> > It is opportunistically named "check_xmm_ymm_zmm" because I don't have
-> > AVX-512 machine but it will be trivial to extend without renaming stuff.
+From: Edward Adam Davis <eadavis@qq.com>
+Date: Wed,  6 Dec 2023 09:55:15 +0800
+> llc only supports ETH_P_802_2 protocol, so drop the skb when the protocol is 
+> not it.
+
+This is not true.  ETH_P_TR_802_2 is also processed by llc_rcv().
+
+Let me post this formally.
+https://lore.kernel.org/netdev/20231206005340.11534-1-kuniyu@amazon.com/
+
 > 
-> Hi Alexey,
+> Reported-by: syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  net/llc/llc_input.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> This looks pretty useful.  I know we've had bugs in this area in the
-> past.  Was there any recent motivation for this, though?  Just curious.
-
-I found check_initial_reg_state.c with cool assembly but only general
-registers being checked.
-
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/x86/check_xmm_ymm_zmm.c
-> > @@ -0,0 +1,176 @@
-> > +/*
-> > + * Copyright (c) 2023 Alexey Dobriyan <adobriyan@gmail.com>
-> > + *
-> > + * Permission to use, copy, modify, and distribute this software for any
-> > + * purpose with or without fee is hereby granted, provided that the above
-> > + * copyright notice and this permission notice appear in all copies.
-> > + *
-> > + * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-> > + * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-> > + * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-> > + * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-> > + * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-> > + * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-> > + * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-> > + */
-> > +/* Test that xmm, ymm registers are cleared immediately after execve(2). */
-> 
-> Can this be trimmed down to a nice SPDX header?
-
-I'd rather not.
-
-This is standalone test program, not part of kernel proper, so if it's
-copied somewhere than copyrights are retained. Another project might not
-even use SPDX scheme.
-
-> > +#include <stdio.h>
-> > +#include <string.h>
-> > +
-> > +#if   defined __amd64__
-> > +#elif defined __i386__
-> > +#error "fix register count, SSE2 detection"
-> > +#else
-> > +#error
-> > +#endif
-
-> > +".Ltest_xmm:"
-> > +	"movdqu %xmm0, xmm + 16 * 0;"
-> > +	"movdqu %xmm1, xmm + 16 * 1;"
-> 
-> Does this work on systems without XMMs?  I know it's not common these
-> days but it's possible, especially in VMs.
-
-No. But I think all x86_64 systems have SSE2. So it is up to whoever will
-port this test to i386.
+> diff --git a/net/llc/llc_input.c b/net/llc/llc_input.c
+> index 51bccfb00a9c..16b2c57f38c2 100644
+> --- a/net/llc/llc_input.c
+> +++ b/net/llc/llc_input.c
+> @@ -141,7 +141,8 @@ static inline int llc_fixup_skb(struct sk_buff *skb)
+>  			return 0;
+>  		if (unlikely(pskb_trim_rcsum(skb, data_size)))
+>  			return 0;
+> -	}
+> +	} else
+> +		return 0;
+>  	return 1;
+>  }
+>  
+> -- 
+> 2.43.0
