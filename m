@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 870F3807A80
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64475807A8F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:36:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbjLFVdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
+        id S230399AbjLFVfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:35:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjLFVdV (ORCPT
+        with ESMTP id S230383AbjLFVfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:33:21 -0500
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65ACD5C;
-        Wed,  6 Dec 2023 13:33:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1701898408; x=1733434408;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=olXMY6IT8d9dmgacsnRgFeTZm0WgXJ1U7yVx5NNY3To=;
-  b=YxvzotlqmijvJgPVVPwxfkQbUystmXG3eLx/7xmblqPL4tGk6E3KCrU8
-   JvuqXH2aDvDVhsVM0EnYOYjFvWpinKe4sP8HCtVMrC3HG7SJBbhrOGU9X
-   HfRPRyI3681O3GRWMnMgLRdwyZA6RUyTqsI/VC3Hur4Gydyq3kNxgX6nj
-   s=;
-X-IronPort-AV: E=Sophos;i="6.04,256,1695686400"; 
-   d="scan'208";a="257298916"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 21:33:28 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
-        by email-inbound-relay-pdx-2b-m6i4x-ed19f671.us-west-2.amazon.com (Postfix) with ESMTPS id 32CEA82660;
-        Wed,  6 Dec 2023 21:33:27 +0000 (UTC)
-Received: from EX19MTAUWA002.ant.amazon.com [10.0.7.35:14806]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.214:2525] with esmtp (Farcaster)
- id 9e65d653-7053-45d0-8def-e5b76986597e; Wed, 6 Dec 2023 21:33:26 +0000 (UTC)
-X-Farcaster-Flow-ID: 9e65d653-7053-45d0-8def-e5b76986597e
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 6 Dec 2023 21:33:26 +0000
-Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
- EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 6 Dec 2023 21:33:25 +0000
-From:   Alexander Graf <graf@amazon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <linux-doc@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Jan=20H=20=2E=20Sch=C3=B6nherr?= <jschoenh@amazon.de>,
-        James Gowans <jgowans@amazon.com>
-Subject: [PATCH v2] initramfs: Expose retained initrd as sysfs file
-Date:   Wed, 6 Dec 2023 21:33:23 +0000
-Message-ID: <20231206213323.78233-1-graf@amazon.com>
-X-Mailer: git-send-email 2.40.1
+        Wed, 6 Dec 2023 16:35:41 -0500
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F93098;
+        Wed,  6 Dec 2023 13:35:46 -0800 (PST)
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6d9d21959aaso150889a34.2;
+        Wed, 06 Dec 2023 13:35:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701898545; x=1702503345;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bUl/NKtFWY2Pbxm24jhjwpwyECFZQPzTNZTNK5JPvSo=;
+        b=hnXaAU2AuAhrz8U9ShrH4M2Y/U6T4h04qH1Cpd2fqRz3Z8UxBAAEN55sufyv6dfn5O
+         Qd84nHen+GOdtp4/5Ak6CYXk0A+7MYMVIL51oCzy8EJ/G6NnElkAmVmMrykWteAoTRDj
+         3Df7XDjfqKaPGeIpEoIfz9tmUirb7WV0yqlWCgxhKcSFXRcogjv/b2MvkChfS1hJWsIp
+         8lYgBkWkvQp0eNbm9A1uvz7LDBi0m6ndiYc+KSOJP+OTeqki52q/2GJ4UMObITEy2Des
+         wDBbld1ZH++GdNDS/jzWWc7kF5DS4L2eQjYTFDcSrdtc+UnM9N4ErnJxdK9bzK78wz7F
+         tOpA==
+X-Gm-Message-State: AOJu0YzdR0RgcMX6j26SNMqXRACEf+Qk/xoe9aJFSyicCeX+QSevoyYH
+        iqxwAP63J0YVWm8FbKjJuA==
+X-Google-Smtp-Source: AGHT+IGHBQtY2ZCMQH40OjOJ13+Qp+jdVac/J+rmapcPibZzkALYHXrCY/oe6cfQHnvMLu7oUDa+xg==
+X-Received: by 2002:a05:6870:7e01:b0:1fb:75b:2baf with SMTP id wx1-20020a0568707e0100b001fb075b2bafmr1430168oab.107.1701898545570;
+        Wed, 06 Dec 2023 13:35:45 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id x4-20020a05683000c400b006d8811cbc3csm116925oto.29.2023.12.06.13.35.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 13:35:45 -0800 (PST)
+Received: (nullmailer pid 3364587 invoked by uid 1000);
+        Wed, 06 Dec 2023 21:35:43 -0000
+Date:   Wed, 6 Dec 2023 15:35:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, frowand.list@gmail.com,
+        dinguyen@kernel.org, chenhuacai@kernel.org,
+        tsbogend@alpha.franken.de, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+        mpe@ellerman.id.au, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        chris@zankel.net, jcmvbkbc@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        kernel@quicinc.com
+Subject: Re: [RFC PATCH v2 0/6] Dynamic allocation of reserved_mem array.
+Message-ID: <20231206213543.GB3345785-robh@kernel.org>
+References: <20231204185409.19615-1-quic_obabatun@quicinc.com>
 MIME-Version: 1.0
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D036UWB004.ant.amazon.com (10.13.139.170) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204185409.19615-1-quic_obabatun@quicinc.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,123 +72,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the kernel command line option "retain_initrd" is set, we do not
-free the initrd memory. However, we also don't expose it to anyone for
-consumption. That leaves us in a weird situation where the only user of
-this feature is ppc64 and arm64 specific kexec tooling.
+On Mon, Dec 04, 2023 at 10:54:03AM -0800, Oreoluwa Babatunde wrote:
+> The reserved_mem array is used to store the data of the different
+> reserved memory regions specified in the DT of a device.
+> The array stores information such as the name, node, starting address,
+> and size of a reserved memory region.
+> 
+> The array is currently statically allocated with a size of
+> MAX_RESERVED_REGIONS(64). This means that any system that specifies a
+> number of reserved memory regions greater than MAX_RESERVED_REGIONS(64)
+> will not have enough space to store the information for all the regions.
+> 
+> Therefore, this series extends the use of a static array for
+> reserved_mem, and introduces a dynamically allocated array using
+> memblock_alloc() based on the number of reserved memory regions
+> specified in the DT.
+> 
+> Memory gotten from memblock_alloc() is only writable after paging_init()
+> is called, but the reserved memory regions need to be reserved before
+> then so that the system does not create page table mappings for them.
+> 
+> Reserved memory regions can be divided into 2 groups.
+> i) Statically-placed reserved memory regions
+> i.e. regions defined in the DT using the @reg property.
+> ii) Dynamically-placed reserved memory regions.
+> i.e. regions specified in the DT using the @alloc_ranges
+>     and @size properties.
+> 
+> It is possible to call memblock_reserve() and memblock_mark_nomap() on
+> the statically-placed reserved memory regions and not need to save them
+> to the array until after paging_init(), but this is not possible for the
+> dynamically-placed reserved memory because the starting address of these
+> regions need to be stored somewhere after they are allocated.
+> 
+> Therefore, this series achieves the allocation and population of the
+> reserved_mem array in two steps:
+> 
+> 1. Before paging_init()
+>    Before paging_init() is called, iterate through the reserved_mem
+>    nodes in the DT and do the following:
+>    - Allocate memory for dynamically-placed reserved memory regions and
+>      store their starting address in the static allocated reserved_mem
+>      array.
+>    - Call memblock_reserve() and memblock_mark_nomap() on all the
+>      reserved memory regions as needed.
+>    - Count the total number of reserved_mem nodes in the DT.
+> 
+> 2. After paging_init()
+>    After paging_init() is called:
+>    - Allocate new memory for the reserved_mem array based on the number
+>      of reserved memory nodes in the DT.
+>    - Transfer all the information that was stored in the static array
+>      into the new array.
+>    - Store the rest of the reserved_mem regions in the new array.
+>      i.e. the statically-placed regions.
+> 
+> The static array is no longer needed after this point, but there is
+> currently no obvious way to free the memory. Therefore, the size of the
+> initial static array is now defined using a config option.
 
-To make it more generally useful, this patch adds a kobject to the
-firmware object that contains the initrd context when "retain_initrd"
-is set. That way, we can access the initrd any time after boot from
-user space and for example hand it into kexec as --initrd parameter
-if we want to reboot the same initrd. Or inspect it directly locally.
+A config option is not going to work here.
 
-With this patch applied, there is a new /sys/firmware/initrd file when
-the kernel was booted with an initrd and "retain_initrd" command line
-option is set.
+> Because the array is used only before paging_init() to store the
+> dynamically-placed reserved memory regions, the required size can vary
+> from device to device. Therefore, scaling it can help get some memory
+> savings.
+> 
+> A possible solution to freeing the memory for the static array will be
+> to mark it as __initdata. This will automatically free the memory once
+> the init process is done running.
+> The reason why this is not pursued in this series is because of
+> the possibility of a use-after-free.
+> If the dynamic allocation of the reserved_mem array fails, then future
+> accesses of the reserved_mem array will still be referencing the static
+> array. When the init process ends and the memory is freed up, any
+> further attempts to use the reserved_mem array will result in a
+> use-after-free.
 
-Signed-off-by: Alexander Graf <graf@amazon.com>
+If memory allocation for the reserved_mem array fails so early in boot, 
+you've got much bigger problems. Use __initdata, and just WARN if 
+allocation fails and continue on (so hopefully the console is brought 
+up and someone can see the WARN).
 
----
-
-v1 -> v2:
-
-  - Reword commit message to explain the new file path
-  - Add a Documentation/ABI/testing/sysfs-firmware-initrd file
----
- .../ABI/testing/sysfs-firmware-initrd          |  8 ++++++++
- .../admin-guide/kernel-parameters.txt          |  5 +++--
- init/initramfs.c                               | 18 +++++++++++++++++-
- 3 files changed, 28 insertions(+), 3 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-firmware-initrd
-
-diff --git a/Documentation/ABI/testing/sysfs-firmware-initrd b/Documentation/ABI/testing/sysfs-firmware-initrd
-new file mode 100644
-index 000000000000..20bf7cf77a19
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-firmware-initrd
-@@ -0,0 +1,8 @@
-+What:		/sys/firmware/initrd
-+Date:		December 2023
-+Contact:	Alexander Graf <graf@amazon.com>
-+Description:
-+		When the kernel was booted with an initrd and the
-+		"retain_initrd" option is set on the kernel command
-+		line, /sys/firmware/initrd contains the contents of the
-+		initrd that the kernel was booted with.
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 65731b060e3f..51575cd31741 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2438,7 +2438,7 @@
- 			between unregistering the boot console and initializing
- 			the real console.
- 
--	keepinitrd	[HW,ARM]
-+	keepinitrd	[HW,ARM] See retain_initrd.
- 
- 	kernelcore=	[KNL,X86,IA-64,PPC]
- 			Format: nn[KMGTPE] | nn% | "mirror"
-@@ -5580,7 +5580,8 @@
- 			Useful for devices that are detected asynchronously
- 			(e.g. USB and MMC devices).
- 
--	retain_initrd	[RAM] Keep initrd memory after extraction
-+	retain_initrd	[RAM] Keep initrd memory after extraction. After boot, it will
-+			be accessible via /sys/firmware/initrd.
- 
- 	retbleed=	[X86] Control mitigation of RETBleed (Arbitrary
- 			Speculative Code Execution with Return Instructions)
-diff --git a/init/initramfs.c b/init/initramfs.c
-index 8d0fd946cdd2..25244e2a5739 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -574,6 +574,16 @@ extern unsigned long __initramfs_size;
- #include <linux/initrd.h>
- #include <linux/kexec.h>
- 
-+static ssize_t raw_read(struct file *file, struct kobject *kobj,
-+			struct bin_attribute *attr, char *buf,
-+			loff_t pos, size_t count)
-+{
-+	memcpy(buf, attr->private + pos, count);
-+	return count;
-+}
-+
-+static BIN_ATTR(initrd, 0440, raw_read, NULL, 0);
-+
- void __init reserve_initrd_mem(void)
- {
- 	phys_addr_t start;
-@@ -715,8 +725,14 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
- 	 * If the initrd region is overlapped with crashkernel reserved region,
- 	 * free only memory that is not part of crashkernel region.
- 	 */
--	if (!do_retain_initrd && initrd_start && !kexec_free_initrd())
-+	if (!do_retain_initrd && initrd_start && !kexec_free_initrd()) {
- 		free_initrd_mem(initrd_start, initrd_end);
-+	} else if (do_retain_initrd) {
-+		bin_attr_initrd.size = initrd_end - initrd_start;
-+		bin_attr_initrd.private = (void *)initrd_start;
-+		if (sysfs_create_bin_file(firmware_kobj, &bin_attr_initrd))
-+			pr_err("Failed to create initrd sysfs file");
-+	}
- 	initrd_start = 0;
- 	initrd_end = 0;
- 
--- 
-2.40.1
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+Rob
