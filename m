@@ -2,180 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 957CE80778C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C03C807790
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 19:29:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378362AbjLFS0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 13:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43964 "EHLO
+        id S1378356AbjLFS3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 13:29:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjLFS0i (ORCPT
+        with ESMTP id S229454AbjLFS3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 13:26:38 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C773122;
-        Wed,  6 Dec 2023 10:26:44 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-7b6e9f335dcso2390239f.1;
-        Wed, 06 Dec 2023 10:26:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701887203; x=1702492003; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZySKQCUH2RPxJ6tJdSkxJbwaT6/swy656+RmrGV9Kg=;
-        b=TKb/E3hCKNvdTGEVHRBSH3EGiwRrO1Li5kThVkzbUz3rY1/r3Txc+UbB5zVWfjaSLB
-         kngPK1ZRnb2Fyut7Lu+C1o3hDEdN/WFKiwXjm0qLSZZ8IraaAeoZKzad+NKRH9+kM9zV
-         CvCHo0UYHF/esnxovM5YloNrlyynJJmDXWfZ+vQbWsPFtpVEEwfo9axt77yS4w6y3dcN
-         GYThyfpbBvPjZMgmb7X5UMzP6qbo9N6eIs/o24b/w4jJQ3wDBuV++DAnfOUqL0YlLoqd
-         f+7hgAvBaAYgzm1NF3v75gWjkGTJjFPJX0htoz88D0fepLejbJLiiPgY6+AfhIx0OnpR
-         b/Ow==
+        Wed, 6 Dec 2023 13:29:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C837122
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 10:29:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701887366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jnuem6msgUvZR/qtC3Ankzp7FYXj3vJHjUZIQQCp0oc=;
+        b=T0UWAugJnsP5TV8zl9TjmQRbJXcKPZXPHLDYd2sBdRqp54+qrv086+SUtxgNnHQGI6g9wS
+        6VRM2gtGvK6Y1DaKlV+/yEm+DQ8+C9L285r56M/Yiq5UpvTA2LNr1QoGRtyicFtjGpooyp
+        ethlcj45YeArUCUY1iDQz62+0csaXdM=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-325-5YG3lvnZPnSi3ZzsEOgZSQ-1; Wed, 06 Dec 2023 13:28:33 -0500
+X-MC-Unique: 5YG3lvnZPnSi3ZzsEOgZSQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3334b1055fbso69182f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 10:28:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701887203; x=1702492003;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ZySKQCUH2RPxJ6tJdSkxJbwaT6/swy656+RmrGV9Kg=;
-        b=EbfYjoCtFj8MkWc1a6/sMaTscLqgEJ2SfeQJDFkJpQKpb/knWbAm6kemyxoBOejnET
-         o1i2WDlke6MRyyacztXmIbCnf+6nxjuJCHG0cT2r/QBAhNR1kMvR/A744DjKgLS2q4NP
-         YRfQBJns7watvIzbT3G30pz4LYF4nzcmTMtXi7LLq37ZefL9i9FBLq7Vz9melB6LoBAT
-         OCGWM5mNav3G6ZclJGsRWTDjI8kY2vP8sA9nj+D6416q4WFewLuN4KUNmgFTTv4HvqzM
-         9ur211F0OvfGEOct+YxZQueo6IVnD1OGRzS/wTRUd2tj/OTLbetLGS8lzqYDVwRcNeqq
-         affQ==
-X-Gm-Message-State: AOJu0Yy9wH9f6nK94rX4pPJLFTPuHaXL+ZWoDLAfsuzMCm5e8qMa10wU
-        JcvDZX6VtIZ07IIBDf9F1Po=
-X-Google-Smtp-Source: AGHT+IE6PzZN0GIbW9nhkBhrktDqmhUZc6UrKi9VtszWP0ZuOdttejlhzjzvWT7tR5TZYs8u772HPA==
-X-Received: by 2002:a05:6e02:12a2:b0:35d:6aa4:d5d8 with SMTP id f2-20020a056e0212a200b0035d6aa4d5d8mr1673892ilr.37.1701887203568;
-        Wed, 06 Dec 2023 10:26:43 -0800 (PST)
-Received: from ?IPV6:2001:470:42c4:101:3fb7:1e39:b284:286f? ([2001:470:42c4:101:3fb7:1e39:b284:286f])
-        by smtp.gmail.com with ESMTPSA id j29-20020a02cb1d000000b00468f1305e4esm84031jap.21.2023.12.06.10.26.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 10:26:43 -0800 (PST)
-Message-ID: <d38540c5-79a8-0582-87b9-0e99bf3044d5@gmail.com>
-Date:   Wed, 6 Dec 2023 11:26:40 -0700
+        d=1e100.net; s=20230601; t=1701887304; x=1702492104;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jnuem6msgUvZR/qtC3Ankzp7FYXj3vJHjUZIQQCp0oc=;
+        b=E/VJXsNZJ+hH2YEblw/ZctS3iEPTYE4TRZZubvgJZFMjp5hIoMVVB9P3N1QU4VKsVq
+         nt63TceTIw4vKmz0FXVjRTGXdJwS8aC9mNUWM6mI0MlIwLrXxK3tUHzD84yup/xgzLVS
+         tcNopQnt3DUcf1MQTcq3c1oi1oquyXc665imOswiH6IKbYdpoHR4Y/BHq5YYDFZ4z0je
+         x7mvBrF60caQ+oggDA2BVSU7+jiTTSHR89AMkicD8MIHg8MGCUKTL5yOu6kRMdhMRX3/
+         wf834Td0sWFcCLtVqZfH91IKoZzCZPDLYTVWc/h4Y+OwsqUmCmfeFRzZTUOgOIGxv8YX
+         +2NQ==
+X-Gm-Message-State: AOJu0YzTIKCO9UDNNpTnocMLSCvVLSICvPGL4fsnfxpchbxBxPAqQZ9s
+        mVcDj0XFjRP+V2REtpAvXvEI8VWNPAolon8ak9eqMf5gVKC6Z/2l9Yk/FBVygal4XU5D5YvFjs7
+        Tvc9zJtH9llW5V+/FGQpe4saF
+X-Received: by 2002:adf:f752:0:b0:333:2fd2:3be2 with SMTP id z18-20020adff752000000b003332fd23be2mr563995wrp.155.1701887303900;
+        Wed, 06 Dec 2023 10:28:23 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGPfF7salzTJo8Tl0XEOHa4Kq1FjBjVSq+If3zpML0Un6nfo5ZCrIh/61l68acpETq59NVYPA==
+X-Received: by 2002:adf:f752:0:b0:333:2fd2:3be2 with SMTP id z18-20020adff752000000b003332fd23be2mr563984wrp.155.1701887303527;
+        Wed, 06 Dec 2023 10:28:23 -0800 (PST)
+Received: from redhat.com ([2.55.57.48])
+        by smtp.gmail.com with ESMTPSA id lg18-20020a170906f89200b00a1b7f4c22a7sm267591ejb.82.2023.12.06.10.28.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 10:28:22 -0800 (PST)
+Date:   Wed, 6 Dec 2023 13:28:18 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        virtualization@lists.linux.dev,
+        Arseniy Krasnov <avkrasnov@salutedevices.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net] vsock/virtio: fix "comparison of distinct pointer
+ types lacks a cast" warning
+Message-ID: <20231206132803-mutt-send-email-mst@kernel.org>
+References: <20231206164143.281107-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RESEND PATCH] arm64: dts: rockchip: Add PCIe pinctrls to Turing
- RK1
-Content-Language: en-US
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        =?UTF-8?Q?Daniel_Kukie=c5=82a?= <daniel@kukiela.pl>,
-        Sven Rademakers <sven.rademakers@gmail.com>,
-        Joshua Riek <jjriek@verizon.net>
-References: <20231205202900.4617-1-CFSworks@gmail.com>
- <3331042.e9J7NaK4W3@diego>
-From:   Sam Edwards <cfsworks@gmail.com>
-In-Reply-To: <3331042.e9J7NaK4W3@diego>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206164143.281107-1-sgarzare@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/6/23 07:55, Heiko Stübner wrote:
-> Am Dienstag, 5. Dezember 2023, 21:28:59 CET schrieb Sam Edwards:
->> The RK3588 PCIe 3.0 controller seems to have unpredictable behavior when
->> no CLKREQ/PERST/WAKE pins are configured in the pinmux. In particular, it
->> will sometimes (varying between specific RK3588 chips, not over time) shut
->> off the DBI block, and reads to this range will instead stall
->> indefinitely.
->>
->> When this happens, it will prevent Linux from booting altogether. The
->> PCIe driver will stall the CPU core once it attempts to read the version
->> information from the DBI range.
->>
->> Fix this boot hang by adding the correct pinctrl configuration to the
->> PCIe 3.0 device node, which is the proper thing to do anyway. While
->> we're at it, also add the necessary configuration to the PCIe 2.0 node,
->> which may or may not fix the equivalent problem over there -- but is the
->> proper thing to do anyway. :)
->>
->> Fixes: 2806a69f3fef6 ("arm64: dts: rockchip: Add Turing RK1 SoM support")
->> Signed-off-by: Sam Edwards <CFSworks@gmail.com>
->> ---
->>   .../arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi | 14 ++------------
->>   1 file changed, 2 insertions(+), 12 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
->> index 9570b34aca2e..129f14dbd42f 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3588-turing-rk1.dtsi
->> @@ -214,7 +214,7 @@ rgmii_phy: ethernet-phy@1 {
->>   &pcie2x1l1 {
->>   	linux,pci-domain = <1>;
->>   	pinctrl-names = "default";
->> -	pinctrl-0 = <&pcie2_reset>;
->> +	pinctrl-0 = <&pcie30x1m1_pins>;
->>   	reset-gpios = <&gpio4 RK_PA2 GPIO_ACTIVE_HIGH>;
->>   	status = "okay";
->>   };
->> @@ -226,7 +226,7 @@ &pcie30phy {
->>   &pcie3x4 {
->>   	linux,pci-domain = <0>;
->>   	pinctrl-names = "default";
->> -	pinctrl-0 = <&pcie3_reset>;
->> +	pinctrl-0 = <&pcie30x4m1_pins>;
-
-Hi Heiko,
-
+On Wed, Dec 06, 2023 at 05:41:43PM +0100, Stefano Garzarella wrote:
+> After backporting commit 581512a6dc93 ("vsock/virtio: MSG_ZEROCOPY
+> flag support") in CentOS Stream 9, CI reported the following error:
 > 
-> also, why are you throwing out the pinctrl for the reset pin.
-> That seems not related to the regular pins and you could instead just do
+>     In file included from ./include/linux/kernel.h:17,
+>                      from ./include/linux/list.h:9,
+>                      from ./include/linux/preempt.h:11,
+>                      from ./include/linux/spinlock.h:56,
+>                      from net/vmw_vsock/virtio_transport_common.c:9:
+>     net/vmw_vsock/virtio_transport_common.c: In function ???virtio_transport_can_zcopy???:
+>     ./include/linux/minmax.h:20:35: error: comparison of distinct pointer types lacks a cast [-Werror]
+>        20 |         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+>           |                                   ^~
+>     ./include/linux/minmax.h:26:18: note: in expansion of macro ???__typecheck???
+>        26 |                 (__typecheck(x, y) && __no_side_effects(x, y))
+>           |                  ^~~~~~~~~~~
+>     ./include/linux/minmax.h:36:31: note: in expansion of macro ???__safe_cmp???
+>        36 |         __builtin_choose_expr(__safe_cmp(x, y), \
+>           |                               ^~~~~~~~~~
+>     ./include/linux/minmax.h:45:25: note: in expansion of macro ???__careful_cmp???
+>        45 | #define min(x, y)       __careful_cmp(x, y, <)
+>           |                         ^~~~~~~~~~~~~
+>     net/vmw_vsock/virtio_transport_common.c:63:37: note: in expansion of macro ???min???
+>        63 |                 int pages_to_send = min(pages_in_iov, MAX_SKB_FRAGS);
 > 
-> +	pinctrl-0 = <&pcie30x4m1_pins>, <&pcie3_reset>;
+> We could solve it by using min_t(), but this operation seems entirely
+> unnecessary, because we also pass MAX_SKB_FRAGS to iov_iter_npages(),
+> which performs almost the same check, returning at most MAX_SKB_FRAGS
+> elements. So, let's eliminate this unnecessary comparison.
+> 
+> Fixes: 581512a6dc93 ("vsock/virtio: MSG_ZEROCOPY flag support")
+> Cc: avkrasnov@salutedevices.com
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
 
-The pcie30x4m1_pins def does include pinmuxing `4 RK_PB6` to the DW 
-controller already. The v2 patch should probably instead remove the 
-reset-gpios property, since an out-of-band GPIO reset is not needed when 
-the controller can do it.
 
-I'm still looking into the story with the PCIe 2.0 pins, since 2.0x1's 
-PERST# is definitely 4A2. I'll ask around and try to find out where the 
-corresponding CLKREQ# is going.
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
+>  net/vmw_vsock/virtio_transport_common.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> Thanks
-> Heiko
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index f6dc896bf44c..c8e162c9d1df 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -59,8 +59,7 @@ static bool virtio_transport_can_zcopy(const struct virtio_transport *t_ops,
+>  	t_ops = virtio_transport_get_ops(info->vsk);
+>  
+>  	if (t_ops->can_msgzerocopy) {
+> -		int pages_in_iov = iov_iter_npages(iov_iter, MAX_SKB_FRAGS);
+> -		int pages_to_send = min(pages_in_iov, MAX_SKB_FRAGS);
+> +		int pages_to_send = iov_iter_npages(iov_iter, MAX_SKB_FRAGS);
+>  
+>  		/* +1 is for packet header. */
+>  		return t_ops->can_msgzerocopy(pages_to_send + 1);
+> -- 
+> 2.43.0
 
-Likewise,
-Sam
-
-> 
->>   	reset-gpios = <&gpio4 RK_PB6 GPIO_ACTIVE_HIGH>;
->>   	vpcie3v3-supply = <&vcc3v3_pcie30>;
->>   	status = "okay";
->> @@ -245,17 +245,7 @@ hym8563_int: hym8563-int {
->>   		};
->>   	};
->>   
->> -	pcie2 {
->> -		pcie2_reset: pcie2-reset {
->> -			rockchip,pins = <4 RK_PA2 RK_FUNC_GPIO &pcfg_pull_none>;
->> -		};
->> -	};
->> -
->>   	pcie3 {
->> -		pcie3_reset: pcie3-reset {
->> -			rockchip,pins = <4 RK_PB6 RK_FUNC_GPIO &pcfg_pull_none>;
->> -		};
->> -
->>   		vcc3v3_pcie30_en: pcie3-reg {
->>   			rockchip,pins = <2 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
->>   		};
->>
-> 
-> 
-> 
-> 
