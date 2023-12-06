@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CF8806FCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77467806FCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378287AbjLFMdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37280 "EHLO
+        id S1378269AbjLFMdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378058AbjLFMdU (ORCPT
+        with ESMTP id S1378248AbjLFMdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:33:20 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80C4D3
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:33:25 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2ca208940b3so8910331fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 04:33:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701866004; x=1702470804; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i3zRu4zCL27OConZJ/dXxv4eky6lJ797ekbzBQIQO04=;
-        b=IXNKmmkALdUYmNCaLPOkOPzqsmIR7eY3on8YPuaVQt9Wr0q/dtToVesgPg4MUPA+ZJ
-         z+U9mfFROvwRFGAxIkSDReE9QHMz4qlVvmMommnBQH1+C276M1WErDuG7IhR4nTLZ+hT
-         GFrdf9wvNA9ODHi9inf9verkrEekHGwv2qzVmrE7rvIJp8Ec5QH1ZcaFGq5KZNA+c58V
-         qLJ+k/Jt4lUUNQDrBwjpSLMtohQcQmzVjzRwzRjpBMhZwFquFk+B+YD5ua0a20DgJHsM
-         h/ck/AQlpHSqyn+avhpilp+LgLnNBK970InRUxwkXzUAPl4DijmCl9UtY+LCsqU6z4AH
-         TCoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701866004; x=1702470804;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i3zRu4zCL27OConZJ/dXxv4eky6lJ797ekbzBQIQO04=;
-        b=mZDU1bPIDlbB5UAp5zXoY70uvA1JREn2KH00iYVpQNxPe2pNDZ0OUR4AgYgDVoBUua
-         353/rjbZHAlolAa+94PEdYTpYOkrvCyw9rfMHwzhwyXsipdpqA1AgXkzWED6g9PAIZUn
-         QX2mjUlf9hXp/IuQMIXpaJAia/rE3j0voshhPD8q4x1Fw/+wNMb9y3gOrJCCO21tsR6W
-         q2SSBkiyL5KAIfJZ3IIDV1PRv2OBqq+maqXUSrr0dVhaXrXc10N8N4xXS59aMobdtK03
-         8zwje9X54eQXR0Vj3C7Mrydj1Ol1P+NVMFwZnOFmEyapdGcuzdPRY8OJp32lHsD3XNA5
-         6b8Q==
-X-Gm-Message-State: AOJu0YzjmVhm6Yc2/UaicloNSigwXRrN5EidOegxYRGst/rCgsnYzPPx
-        Cv7eE+OibslP6zGyjjvpg4MsSQ==
-X-Google-Smtp-Source: AGHT+IFoYrIWZweW4wNRjzDa/vyq7mAaeL49kvARBEPAN6JpcwCEEcJFFsb4LcNLy+7tTIH6iLUxbg==
-X-Received: by 2002:a2e:9b15:0:b0:2c9:fe01:7014 with SMTP id u21-20020a2e9b15000000b002c9fe017014mr515733lji.62.1701866003949;
-        Wed, 06 Dec 2023 04:33:23 -0800 (PST)
-Received: from [172.30.205.186] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id t21-20020a2e8e75000000b002c9f82eb099sm1267851ljk.113.2023.12.06.04.33.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 04:33:23 -0800 (PST)
-Message-ID: <88432969-a4ea-4fa4-a2c6-93d5fc9e8af8@linaro.org>
-Date:   Wed, 6 Dec 2023 13:33:21 +0100
+        Wed, 6 Dec 2023 07:33:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ADE6181
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:33:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBAACC433C7;
+        Wed,  6 Dec 2023 12:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701866027;
+        bh=jP8oTQYcoTQ/+jzJe9HomCjknj3ke/BfjtCVDvJLPxA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H4zM4TYqeShLinEyDI2UvMarRD2zz4PARkf24a/dah9LQ2qAKA1kf7TE9gYro6Q/y
+         EIk2Wspbx28eTBl7OpsnqTnjI6PMO8jAm1B37+h2Bhjr9XkiFdK8xZD5z/DMu5nUN0
+         2e2o6j1GeAqsEQlQWjDNsNakPJx1WtGYcwF1JmHdC9W7GgvYdaIZf7orH491B/nMA1
+         L0NJz/hDAniZrFKP3JmVxS2tHyxUjH7Ed2aj29Pf6j+XB5CdaKYKrREI54JnfHEnrT
+         SlONgRaXybAXNEavCZ76hjpWExGaZ0x3MjyHOVeq5WaZaygoaP/EEd90beryR2VIFc
+         v7vOW7Rp2aL0A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 71025403EF; Wed,  6 Dec 2023 09:33:45 -0300 (-03)
+Date:   Wed, 6 Dec 2023 09:33:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the perf tree
+Message-ID: <ZXBqKaGRF8y/2K9b@kernel.org>
+References: <20231206091433.68f59ba1@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ARM: dts: qcom: use defines for interrupts
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231205153317.346109-1-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231205153317.346109-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206091433.68f59ba1@canb.auug.org.au>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Wed, Dec 06, 2023 at 09:14:33AM +1100, Stephen Rothwell escreveu:
+> Commit
+ 
+>   08b953508560 ("perf evsel: Fallback to "task-clock" when not system wide")
+ 
+> is missing a Signed-off-by from its author.
 
+Thanks for the report, fixed, the issue was that Ian's S-o-B was after a
 
-On 12/5/23 16:33, Krzysztof Kozlowski wrote:
-> Replace hard-coded interrupt parts (GIC, flags) with standard defines
-> for readability.  No changes in resulting DTBs.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> ---
-> 
-> Changes in v2:
-> 1. Convert few more values to defines (GIC_PPI) - the tedious part which
->     Konrad wanted.
-> ---
-Thanks!
+--- line and thus git-am chopped it up :-\
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+===============================================================================
 
-Konrad
+When the cycles event isn't available evsel will fallback to the
+cpu-clock software event. task-clock is similar to cpu-clock but only
+runs when the process is running. Falling back to cpu-clock when not
+system wide leads to confusion, by falling back to task-clock it is
+hoped the confusion is less.
+
+Pass the target to determine if task-clock is more appropriate. Update
+a nearby comment and debug string for the change.
+
+---
+v2. Use target__has_cpu as suggested by Namhyung.
+https://lpc.events/event/17/contributions/1556/
+
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/builtin-record.c |  2 +-
+ tools/perf/builtin-stat.c   |  2 +-
+ tools/perf/builtin-top.c    |  2 +-
+ tools/perf/util/evsel.c     | 18 ++++++++++--------
+ tools/perf/util/evsel.h     |  3 ++-
+ 5 files changed, 15 insertions(+), 12 deletions(-
+
+--
+===============================================================================
+
+I'll check my pre-commit hooks to see why this didn't get flagged...
+
+- Arnaldo
