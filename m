@@ -2,55 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85058807673
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2443807676
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229516AbjLFRW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:22:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
+        id S1378131AbjLFRXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:23:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjLFRW1 (ORCPT
+        with ESMTP id S229449AbjLFRXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:22:27 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FBE5D3;
-        Wed,  6 Dec 2023 09:22:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=IkWMgsAMR6Agcl+tIup9tcwkstloKvFzTgKc+Se18o4=; b=RQcgTGxd0fkHmW8w72vKz8PFbJ
-        Y8X3TmD3AkQNwxBUQRTuLgNTcXu67FlGWsrpztbt3tmqEOI09bjeNMWwCOUNMmhDbdyNAOV+mFYev
-        MRYUF3gDx11dxuZZKgzUrk4kN9zHsm4QWw8w0oDBVed+fiy1md2mX9tMARmCY6WsP6F78g+OppKpp
-        G0WgTEgIZee7+3SAQp7mWpAJCLKTrPGMVPS1Qgv8U4r+4zhYXqd0mBaQostTAJWLiPcagtWrz5oOE
-        9siZ7O4p8QCJScytyVupOY2jlJxTrFpyQeANQbKBccOPM5B8E8WxqrDWawa/CrA/l/WN26MZYxY3W
-        aU33sHbA==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAvbU-00AsZq-0P;
-        Wed, 06 Dec 2023 17:22:32 +0000
-Message-ID: <2172ccea-0749-44fa-942e-195333dacb62@infradead.org>
-Date:   Wed, 6 Dec 2023 09:22:31 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: typec: nb7vpq904m: add CONFIG_OF dependency
+        Wed, 6 Dec 2023 12:23:09 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA86CC3;
+        Wed,  6 Dec 2023 09:23:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1701883394; x=1733419394;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=hoPk5DjHDNN7ngBJZ65wXNCMvoqThxzFslm47zVNbg4=;
+  b=zLUQAmdS+nvRDMOiycUxD6KS0+e8e3g3AIOsI/cIHml8b4aHRwC1ZGhZ
+   IY+8BMkN7/DtB+xTRpAbS4tknNhKSMwxfTFqVcDXWmnF9ASy3Y1tVwl5Q
+   ZdoXAE/eh0JbKfWbNBZU2yvW2DgJHKb56xi19ev8w9RcN40AQEtWsBwqm
+   u87ehJPyqnZzKJStKmWCm+SkAxtsjgwDamHadtYilZkJT8qC3Y64SRLo0
+   WtQjfpuV4gq8jkMqabQH0MyVLz9VNbuLPP7Tbpq01homxzesN5XWxtHVe
+   MM1QsIPZ/DdamnTAtWCjw2pSj58mJW47uMaYLmRKtiy8b2J+ZTmiV6CbZ
+   g==;
+X-CSE-ConnectionGUID: XhDziRSWQKS37Ky+Ah4YpA==
+X-CSE-MsgGUID: AupFpxXQQeupeeqB5V1Lcg==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,255,1695711600"; 
+   d="scan'208";a="12808188"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Dec 2023 10:23:12 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 6 Dec 2023 10:23:02 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 6 Dec 2023 10:23:02 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dnyRmUw66ZGtdPyV3OhSjC7t7xGeOFOPQSOpVhsRO/MT645BexZNAwi4BtIhB8sMHx/tZykdC1fFt+QNE0No07w2EqAjBMSgCD6Q8+BUOPLIjYyWTtxkU8lf2ZAM/a2WdX4mSZgMYiShbte8w2jffagaRQiz/PRFQs1X5WcK0pEM27yvZ6W1A9ElRJjc+vD3/0DNnToxBaERNGsd8DkQrYnJ72uIFgzSVYYLnRdAqKQHmyMdkcxsjViZCwzbBRYUejnYsMsK7MgfARKsaoDwjHkUx7xkKVzH21xBQ4eTbYt3wzyjeo4VbRHp9xcTErHjQKxjujStGB0UecdUvasLvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aOnLfMCIH1LtpiSEGdWlQRehXPmkCyNuAOyavyUbD1g=;
+ b=RfiCO3RoUQ06QjLO2q2ONQ6UisndTvksk9cdRyYZdCrKqsN+QbSWAoqEsU9s3GLFOIX2qWqPzen6RS+QGQN4s98eX7kojipic9XwT6Tkx/Rs07qXINmTQnPlhnpXx3epxV4Oiumx7nSc9FpMR7FFFU2FHm+WEWKOrS3PjCwUF26CkZgsCU53UBYVEcBFI6/7wjIGCsp5uaSt0Pzr5HcDk+GXkeCgawiVSjCrvWhU11eH6d60F5bA4UwbDBEiudhJrKq75ZDUJYwbU9M89db2tBEHvk2SviHbf2yA2led1ETLagFEfEmUtlafUOuuEHyKNhw8t18Rb3AjvQfEL4o/jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aOnLfMCIH1LtpiSEGdWlQRehXPmkCyNuAOyavyUbD1g=;
+ b=XO/BC8xEWrTRiWkOrEtSdYrFwpvT5tYqLbaL5AoVwe+AN9jVJ9TXy60ciLbjtsTtPhbR6SCplkWBMWHzAWaSU/ZUt0xIgIBi34oEjrBJVBnL8k9FVTTPDwAY5/L+6mGtjEYAKgPltD90gi2CeIiNGRMRBzrctnDTxT1er+VdArLV7Gh2vZvbOsRffmhWvbnhHJGnJ9gLaEfgEFS7KBJZpLd/i+VVljtUGpwW68bGzwbdpLo57Vdgakt4bFUUCjOJnWCbjXDsgsEQ046oTVGHpx1ZHLrGB3k12QEHZdu8pKX0LH+ZQtDhMaKbRQUjps0uZTz7FPDRD9Qjz3p0pFJ6GQ==
+Received: from DM6PR11MB4124.namprd11.prod.outlook.com (2603:10b6:5:4::13) by
+ PH8PR11MB6804.namprd11.prod.outlook.com (2603:10b6:510:1bc::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.34; Wed, 6 Dec 2023 17:22:56 +0000
+Received: from DM6PR11MB4124.namprd11.prod.outlook.com
+ ([fe80::af51:1aed:6d1c:6d64]) by DM6PR11MB4124.namprd11.prod.outlook.com
+ ([fe80::af51:1aed:6d1c:6d64%6]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
+ 17:22:56 +0000
+From:   <Madhuri.Sripada@microchip.com>
+To:     <sean@geanix.com>, <Woojung.Huh@microchip.com>,
+        <UNGLinuxDriver@microchip.com>, <andrew@lunn.ch>,
+        <f.fainelli@gmail.com>, <olteanv@gmail.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <Arun.Ramadoss@microchip.com>, <ceggers@arri.de>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 net] net: dsa: microchip: provide a list of valid
+ protocols for xmit handler
+Thread-Topic: [PATCH v2 net] net: dsa: microchip: provide a list of valid
+ protocols for xmit handler
+Thread-Index: AQHaKBRhZLeoCpYepkqcVAzm+JG6R7CcgKEg
+Date:   Wed, 6 Dec 2023 17:22:55 +0000
+Message-ID: <DM6PR11MB4124D98726836442169C2C55E184A@DM6PR11MB4124.namprd11.prod.outlook.com>
+References: <20231206071655.1626479-1-sean@geanix.com>
+In-Reply-To: <20231206071655.1626479-1-sean@geanix.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231206123828.587065-1-arnd@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231206123828.587065-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR11MB4124:EE_|PH8PR11MB6804:EE_
+x-ms-office365-filtering-correlation-id: 9f86a7a9-5eef-48cb-eb64-08dbf67ffc6f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mxaiNqH3XdW5QNwmdtCnRvpxqdqOoSSCKTOrMX9JIWs0s0lQq3I/KDlsbsa8Od2a37LwAyJkjSR6nh9zTiQnpW6kcaJU6uKqC3pg8RawTvL2LZhtVR0Z4khWwlEDk00c0Pf2hnnh17isia1JkvDW+FEuCUyQzE1NvYFlglAM2DlM7al3pWJFQoUCoYnZP/8d68Z58uZ40nVczV5RoJneGM7e04OCCsVWdyP2wbAq7KYjGkRawRv7sopDyYiiwYPx7K81beBwRA3pRu+nI6jIPobSl6aNAyM9T48wGmx2CmRjC9LO43afMgjXOREHhUUtPjY0xcjBKpmIBqZ0Bu/7n986WBSDhdmRkArVjtIts2tWWG1QQpVHj707e6RlRu68C1KZWdipVlI0SixOHyp9Y2yNVbtLtwTAFiw/+AusHsU/eshSaTzm861EIdzo7JE+vPg74++xj7ubsAWuqeOEZDE5RFuMZB+cykNPg10XCpZavw56iHLIvqva/JMlWzjcRUDvMu9fxWAXZPpFuVBqCpznJTMKQtN76b+GtkicW59INvmmAc3nwCQPn1bugVvbVIoqYZMqcfzt/gnvXzqvLHDlNAr99Xgq+8BaCnluHJ4SBTVEDMxw+jwiXwsJep09Fy7W6uav1sTqbZfwO3DJDoTlG4zV4HUXKDY0FldCUZM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4124.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(366004)(396003)(39860400002)(230273577357003)(230173577357003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(122000001)(38100700002)(55016003)(7696005)(71200400001)(53546011)(9686003)(6506007)(966005)(478600001)(110136005)(54906003)(64756008)(66946007)(66446008)(66556008)(66476007)(316002)(26005)(83380400001)(4326008)(8676002)(8936002)(76116006)(5660300002)(7416002)(52536014)(921008)(2906002)(33656002)(38070700009)(41300700001)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Ky33LOPRgDMERNTKYggubkeib6En+i9mrn2Eko67Gv/LuYqYcz2j8okIHoQc?=
+ =?us-ascii?Q?ep2+M42by9i4eDZnGp8NuDjfoz61tYyULydGt67oj7uAVDjidaBKhxd+Sd2k?=
+ =?us-ascii?Q?+Pen9lCJSKcvAtlo49YANPJQycvT+nguNCBX0ZgBaMYKb1HuVtgr9s6NNDkD?=
+ =?us-ascii?Q?LVMnUcK/IcUi2oGIS5dJ2xThqi/cl1IAyrLEpvKdOAbls+6I7BGYIC6GkvkS?=
+ =?us-ascii?Q?aIJ14xZkmk32jd1VLPGSSDHv3d6ARjfAh4MK4WnYlK1cdivBxUMxet11fX/w?=
+ =?us-ascii?Q?Z3Y2dxFz9Rmt7TCvoY8dhlbZOQck6RvsQUUcNe8JxgIDSNQH9oTePith6eYI?=
+ =?us-ascii?Q?kp4DQsIigsNUmo//6+vFEVgc5+iLyRDpaN7okzWfSs7zhVki2twUVBnSIPle?=
+ =?us-ascii?Q?QdlEQ/4vvbuA882MkZ0MXFzCb7gwsnRVRtgMAnVjE+fmTzF1FVfOqtXJEI/3?=
+ =?us-ascii?Q?sQJ4VdUfxRM31CtgCl+wKzHSxW9YaOzN4ZZjTIc4RrZ7e5BRh6Zltc5LTRp4?=
+ =?us-ascii?Q?Bd/Kopky69K/e0uvvTAIOGsxT3ARp3FtgQghP27/tqtkrc8kmCnbzRKhdT1p?=
+ =?us-ascii?Q?3/ibTLhvGxQudNg3oxzJ0kCqQ6/e+a76dhPzUHhjHU33ch3Ni7ux2RZrB4wl?=
+ =?us-ascii?Q?r/4FNIQJQBsJ4jltUDeKzV+xoV3F2JYbehrwi5Ds/5elEp4sxgJujeBtQSkT?=
+ =?us-ascii?Q?laiuVBUxxf9c9sDjlZ9pWYb2vBKv/6rgr6zQFUn6eAT4jntUodJKk0FOjo9o?=
+ =?us-ascii?Q?ePu1/8FoXPMWnkRBX8NFYK6Qs7AnarCa8K1MY0LzG1hj+34yOwRDhqYWi6lN?=
+ =?us-ascii?Q?odMTE8Crhtpq7LO7WbyHnxPqr1atnlOCsW4+fT5Hs50ZBoS+65RpNo/D7rTu?=
+ =?us-ascii?Q?BiWcj5Mo2APZFTsCjKZ5Rm4HNm2WdyOPyzuWcih5wO6HiRhCSfLZZ4aQrCz1?=
+ =?us-ascii?Q?w81WVO6UgFAEFW1DsC7L9skORuT051cg+WmU5xFV8TKpEvocTVjbHafjltZB?=
+ =?us-ascii?Q?C/zK0xo2rh3nRI4oX7sHeuYA8xB3g03pzOTSgWgmy40J3zbYm3haRtKqy4Eu?=
+ =?us-ascii?Q?W4SLwPk7tpBHb/JKSSd+QOyOnMkE+KS4R0w+cTejdRmQsx6wy+X+dopFv/Q0?=
+ =?us-ascii?Q?iV/TWkXaowgj2wbVth1MVwb7FxQONUZaYQBtXN7wxBPK4UXPvK8Cowd92H9E?=
+ =?us-ascii?Q?SYUB41D0nbIG6u3ZumhaL+twnHRKj5QDJiBmiYwSCiAF4lNwC35fuER5CACM?=
+ =?us-ascii?Q?5WgEh3/Fv4n8jMmXvRPoQYYDfwCe0mv4MrKKzchMLUtufH0lJHMvzNY6D9Ho?=
+ =?us-ascii?Q?c0vsEgtSOMIWrpRjxm5oRGjA0a8jxPedK/F4CyvfYrxnMKsmT7jxYHJM33Z1?=
+ =?us-ascii?Q?tYwQLE2U5z3/Ly6VlNVrmVXAvIQpDQyx08XpP5mXg//552mwxLwjLNPWAS54?=
+ =?us-ascii?Q?Poa4Vwn9jACuda5m/VkNMDKDaDX54GJGkpeNduBKlSvpop/O3cBm2Kr1+EGV?=
+ =?us-ascii?Q?wezSg9VYy/qy7dcyrYaKQgnuJ3ldBOoaBlgU32duo6EgJZ40lO/B5RuN/qiW?=
+ =?us-ascii?Q?54yd/Z4dmqjkfiCTAtxvU15/GXVc7HDaKOboST6ZErO0zD6HTHh16mpJMbg6?=
+ =?us-ascii?Q?LQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4124.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f86a7a9-5eef-48cb-eb64-08dbf67ffc6f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2023 17:22:55.9503
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 3H3dItfloQBJg+zFZWrcHreM84s6MVvhJmySXZnxXvXgm4AluJxqXMcnAmzA40PrCH+CuIdwRtWuYkPAzrq/pyF8Wnlk4RpVfauuPIJoEmU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB6804
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,50 +150,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sean,
 
-
-On 12/6/23 04:38, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> DRM_AUX_BRIDGE depends on CONFIG_OF, so the same dependency is needed
-> here to avoid a build failure:
-> 
-> WARNING: unmet direct dependencies detected for DRM_AUX_BRIDGE
->   Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && OF [=n]
->   Selected by [y]:
->   - TYPEC_MUX_NB7VPQ904M [=y] && USB_SUPPORT [=y] && TYPEC [=y] && I2C [=y] && (DRM [=y] || DRM [=y]=n) && DRM_BRIDGE [=y]
-> x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_register':
-> aux-bridge.c:(.text+0x13b): undefined reference to `auxiliary_device_init'
-> x86_64-linux-ld: aux-bridge.c:(.text+0x14d): undefined reference to `__auxiliary_device_add'
-> x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_drv_init':
-> aux-bridge.c:(.init.text+0x15): undefined reference to `__auxiliary_driver_register'
-> x86_64-linux-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_drv_exit':
-> aux-bridge.c:(.exit.text+0x9): undefined reference to `auxiliary_driver_unregister'
-> 
-> Fixes: c5d296bad640 ("usb: typec: nb7vpq904m: switch to DRM_AUX_BRIDGE")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
+> -----Original Message-----
+> From: Sean Nyekjaer <sean@geanix.com>
+> Sent: Wednesday, December 6, 2023 12:47 PM
+> To: Woojung Huh - C21699 <Woojung.Huh@microchip.com>;
+> UNGLinuxDriver <UNGLinuxDriver@microchip.com>; Andrew Lunn
+> <andrew@lunn.ch>; Florian Fainelli <f.fainelli@gmail.com>; Vladimir Oltea=
+n
+> <olteanv@gmail.com>; David S. Miller <davem@davemloft.net>; Eric Dumazet
+> <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo Abeni
+> <pabeni@redhat.com>; Arun Ramadoss - I17769
+> <Arun.Ramadoss@microchip.com>; Christian Eggers <ceggers@arri.de>
+> Cc: Sean Nyekjaer <sean@geanix.com>; netdev@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Subject: [PATCH v2 net] net: dsa: microchip: provide a list of valid prot=
+ocols for
+> xmit handler
+>=20
+> [Some people who received this message don't often get email from
+> sean@geanix.com. Learn why this is important at
+> https://aka.ms/LearnAboutSenderIdentification ]
+>=20
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
+e
+> content is safe
+>=20
+> Provide a list of valid protocols for which the driver will provide it's =
+deferred
+> xmit handler.
+>=20
+> When using DSA_TAG_PROTO_KSZ8795 protocol, it does not provide a
+> "connect" method, therefor ksz_connect() is not allocating ksz_tagger_dat=
+a.
+>=20
+> This avoids the following null pointer dereference:
+>  ksz_connect_tag_protocol from dsa_register_switch+0x9ac/0xee0
+> dsa_register_switch from ksz_switch_register+0x65c/0x828
+> ksz_switch_register from ksz_spi_probe+0x11c/0x168  ksz_spi_probe from
+> spi_probe+0x84/0xa8  spi_probe from really_probe+0xc8/0x2d8
+>=20
+> Fixes: ab32f56a4100 ("net: dsa: microchip: ptp: add packet transmission
+> timestamping")
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 > ---
->  drivers/usb/typec/mux/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
-> index 5120942f309d..818624f59120 100644
-> --- a/drivers/usb/typec/mux/Kconfig
-> +++ b/drivers/usb/typec/mux/Kconfig
-> @@ -40,6 +40,7 @@ config TYPEC_MUX_NB7VPQ904M
->  	tristate "On Semiconductor NB7VPQ904M Type-C redriver driver"
->  	depends on I2C
->  	depends on DRM || DRM=n
-> +	depends on OF
->  	select DRM_AUX_BRIDGE if DRM_BRIDGE
->  	select REGMAP_I2C
->  	help
+> https://lore.kernel.org/netdev/20231205124636.1345761-1-
+> sean@geanix.com/#R
+> Changes since v1:
+>  - Provided a list of valid protocols
+>=20
+>  drivers/net/dsa/microchip/ksz_common.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/net/dsa/microchip/ksz_common.c
+> b/drivers/net/dsa/microchip/ksz_common.c
+> index 42db7679c360..286e20f340e5 100644
+> --- a/drivers/net/dsa/microchip/ksz_common.c
+> +++ b/drivers/net/dsa/microchip/ksz_common.c
+> @@ -2624,10 +2624,18 @@ static int ksz_connect_tag_protocol(struct
+> dsa_switch *ds,  {
+>         struct ksz_tagger_data *tagger_data;
+>=20
+> -       tagger_data =3D ksz_tagger_data(ds);
+> -       tagger_data->xmit_work_fn =3D ksz_port_deferred_xmit;
+> -
+> -       return 0;
+> +       switch (proto) {
+> +       case DSA_TAG_PROTO_KSZ8795:
+> +               return 0;
+> +       case DSA_TAG_PROTO_KSZ9893:
+> +       case DSA_TAG_PROTO_KSZ9477:
+> +       case DSA_TAG_PROTO_LAN937X:
+> +               tagger_data =3D ksz_tagger_data(ds);
+> +               tagger_data->xmit_work_fn =3D ksz_port_deferred_xmit;
 
--- 
-~Randy
+
+NULL check is missing here.
+
+> +               return 0;
+> +       default:
+> +               return -EPROTONOSUPPORT;
+> +       }
+>  }
+>=20
+>  static int ksz_port_vlan_filtering(struct dsa_switch *ds, int port,
+> --
+> 2.42.0
+
