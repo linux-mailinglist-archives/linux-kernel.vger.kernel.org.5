@@ -2,117 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C4A8078E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088B88078E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442808AbjLFTti convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 14:49:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
+        id S1442809AbjLFTuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:50:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379274AbjLFTth (ORCPT
+        with ESMTP id S1379411AbjLFTuV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:49:37 -0500
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A76FA;
-        Wed,  6 Dec 2023 11:49:42 -0800 (PST)
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3b9b5b254e2so31526b6e.1;
-        Wed, 06 Dec 2023 11:49:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701892182; x=1702496982;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hp7+4/skeq3z1JjM3KigvsLSXGvrXr1gskXOMgpelSY=;
-        b=CysehOvfQJu5YxK3jdN2InAl6O8JpAI0enLtXaC7iJjaIs1J13bs/dCoGzlqf6dtZ+
-         MqdFbC6K3OWPmaqptAuWlEzx7fwyHa6NkPJYdUUROQNfLNVnXo440wTDMR7KGLUkQCNF
-         wayscpiXYsASJbSoOfdGGIUG9HrxQYu7osnW+0oF4zn/dUs1Mv4s7J81NbxUBxUy0FLf
-         lyDgBVzdQiyKHEZLQsBxguMUaR82kf+5byieayAk6OWyGdo5DznYHEb7Biv9WAzDUaU3
-         7jNLjohIk0wgxMqk52hTzGg4tMXFMkxQIRfR6AdrdqosmH5aYSCN5h//k5u2WjOp8CYA
-         5VJg==
-X-Gm-Message-State: AOJu0YyIv02B5IokNNAfm7iDorOhcWOz2wYPIM23QSs7aivIvBNAhlXC
-        XesLK39CVrhRA9BA+eyJxtk71a+YxUVs1Ahaexg=
-X-Google-Smtp-Source: AGHT+IExIFz0Wd6u8xUoM+mJ2csD63ycuSkUyWPAXV3GY072wzEGAsU15EY9wikRo0era7uyehQBhU1ZBS4x7XKxo1M=
-X-Received: by 2002:a05:6870:b69a:b0:1fb:9b:3d4c with SMTP id
- cy26-20020a056870b69a00b001fb009b3d4cmr2791355oab.0.1701892181729; Wed, 06
- Dec 2023 11:49:41 -0800 (PST)
+        Wed, 6 Dec 2023 14:50:21 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A2CFA;
+        Wed,  6 Dec 2023 11:50:27 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701892225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Dhk4+zCj2bSVdaz1f+DwCjhCz2nloe+08Lq1HubewE=;
+        b=v+urtsd1FTU9ZhLnfNMCVE4t5FHdgO9qBV8ZKGd9TpMRxHH/CEWRGbEy4B+0vGbO4suTau
+        wkZdYWlpRePNfzJLQy0BJa0Rh5RCB44e1qerQk/+rqH2Kuxw1JD5rXXd38vUPHy/UaNfD7
+        CuB044qCEi9KUXNO4sdAO5+XlNWUFZr+rKjuYaZ45SI2Tr1BVqhKMx/ElfSYpG8SqoBKQl
+        i5d9YiXVBrEUTzLU+M+B8U1EhdRdYXYjwtG+Inz5kqy416Tc2thKlKAt2VcOgX5ZLSfzzD
+        av1/CKw9UkzTHaJ5OGGwop03VQVPbDBCweKuV1mA0BYPlLNulU2MD3+7iOvLag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701892225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Dhk4+zCj2bSVdaz1f+DwCjhCz2nloe+08Lq1HubewE=;
+        b=lGzQtl9x+ofH+fpqUAxl6pXbPHwEXsgGEzAYM7ctVOK90MAjAnLeYQaVWkrQ4Jcv/RiiwP
+        ECczWzS12VAPxEBA==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
+        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
+        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
+        seanjc@google.com, Robin Murphy <robin.murphy@arm.com>
+Subject: Re: [PATCH RFC 09/13] x86/irq: Install posted MSI notification handler
+In-Reply-To: <20231115125624.GF3818@noisy.programming.kicks-ass.net>
+References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
+ <20231112041643.2868316-10-jacob.jun.pan@linux.intel.com>
+ <20231115125624.GF3818@noisy.programming.kicks-ass.net>
+Date:   Wed, 06 Dec 2023 20:50:24 +0100
+Message-ID: <87cyvjun3z.ffs@tglx>
 MIME-Version: 1.0
-References: <20231127055858.41004-1-ytcoode@gmail.com>
-In-Reply-To: <20231127055858.41004-1-ytcoode@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 20:49:30 +0100
-Message-ID: <CAJZ5v0h-7mhSP5BAig6fj-pax6V_m=u2ygjYU4DxMypJfqv5Cg@mail.gmail.com>
-Subject: Re: [PATCH] ACPICA: Remove unused struct field and incorrect comments
-To:     Yuntao Wang <ytcoode@gmail.com>
-Cc:     Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        acpica-devel@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 6:59 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+On Wed, Nov 15 2023 at 13:56, Peter Zijlstra wrote:
 >
-> The return_object_type field in `struct acpi_evaluate_info` is unused,
-> so remove it.
+> Would it not make more sense to write things something like:
 >
-> There are also some issues in the comments of acpi_ps_execute_method().
-> First, the parameter_type field has already been removed from
-> `struct acpi_evaluate_info`, so the corresponding field description in
-> the comments should also be removed. Second, the return_object field
-> description in the comments is duplicated. Remove these incorrect comments.
+> bool handle_pending_pir()
+> {
+> 	bool handled = false;
+> 	u64 pir_copy[4];
 >
-> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-> ---
->  drivers/acpi/acpica/acstruct.h | 1 -
->  drivers/acpi/acpica/psxface.c  | 3 ---
->  2 files changed, 4 deletions(-)
+> 	for (i = 0; i < 4; i++) {
+> 		if (!pid-pir_l[i]) {
+> 			pir_copy[i] = 0;
+> 			continue;
+> 		}
+>
+> 		pir_copy[i] = arch_xchg(&pir->pir_l[i], 0);
+> 		handled |= true;
+> 	}
+>
+> 	if (!handled)
+> 		return handled;
+>
+> 	for_each_set_bit()
+> 		....
+>
+> 	return handled.
+> }
 
-This is ACPICA code which comes from a separate project.
+I don't understand what the whole copy business is about. It's
+absolutely not required.
 
-The way to change it is to submit a pull request with the desired change
-to the upstream ACPICA project on GitHub and add a Link tag pointing
-to the upstream PR to the corresponding Linux patch.  Then, the Linux
-patch can only be applied after the corresponding upstream PR has been
-merged.
+static bool handle_pending_pir(unsigned long *pir)
+{
+        unsigned int idx, vec;
+	bool handled = false;
+        unsigned long pend;
+        
+        for (idx = 0; offs < 4; idx++) {
+                if (!pir[idx])
+                	continue;
+		pend = arch_xchg(pir + idx, 0);
+                for_each_set_bit(vec, &pend, 64)
+			call_irq_handler(vec + idx * 64, NULL);
+                handled = true;
+	}
+        return handled;
+}
 
-Thanks!
+No?
 
-> diff --git a/drivers/acpi/acpica/acstruct.h b/drivers/acpi/acpica/acstruct.h
-> index f8fee94ba708..fe57c3a16e59 100644
-> --- a/drivers/acpi/acpica/acstruct.h
-> +++ b/drivers/acpi/acpica/acstruct.h
-> @@ -169,7 +169,6 @@ struct acpi_evaluate_info {
->         u16 param_count;        /* Count of the input argument list */
->         u16 node_flags;         /* Same as Node->Flags */
->         u8 pass_number;         /* Parser pass number */
-> -       u8 return_object_type;  /* Object type of the returned object */
->         u8 flags;               /* General flags */
->  };
+> sysvec_posted_blah_blah()
+> {
+> 	bool done = false;
+> 	bool handled;
 >
-> diff --git a/drivers/acpi/acpica/psxface.c b/drivers/acpi/acpica/psxface.c
-> index 6f4eace0ba69..df5679bbc510 100644
-> --- a/drivers/acpi/acpica/psxface.c
-> +++ b/drivers/acpi/acpica/psxface.c
-> @@ -70,9 +70,6 @@ acpi_debug_trace(const char *name, u32 debug_level, u32 debug_layer, u32 flags)
->   *                                    NULL if no parameters are being passed.
->   *                  return_object   - Where to put method's return value (if
->   *                                    any). If NULL, no value is returned.
-> - *                  parameter_type  - Type of Parameter list
-> - *                  return_object   - Where to put method's return value (if
-> - *                                    any). If NULL, no value is returned.
->   *                  pass_number     - Parse or execute pass
->   *
->   * RETURN:      Status
-> --
-> 2.43.0
+> 	for (;;) {
+> 		handled = handle_pending_pir();
+> 		if (done)
+> 			break;
+> 		if (!handled || ++loops > MAX_LOOPS) {
+
+That does one loop too many. Should be ++loops == MAX_LOOPS. No?
+
+> 			pi_clear_on(pid);
+> 			/* once more after clear_on */
+> 			done = true;
+> 		}
+> 	}
+> }
 >
 >
+> Hmm?
+
+I think that can be done less convoluted.
+
+{
+	struct pi_desc *pid = this_cpu_ptr(&posted_interrupt_desc);
+	struct pt_regs *old_regs = set_irq_regs(regs);
+        int loops;
+
+	for (loops = 0;;) {
+        	bool handled = handle_pending_pir((unsigned long)pid->pir);
+
+                if (++loops > MAX_LOOPS)
+                	break;
+
+                if (!handled || loops == MAX_LOOPS) {
+                	pi_clear_on(pid);
+                        /* Break the loop after handle_pending_pir()! */
+                        loops = MAX_LOOPS;
+                }
+	}
+
+	...
+	set_irq_regs(old_regs);
+}
+
+Hmm? :)
