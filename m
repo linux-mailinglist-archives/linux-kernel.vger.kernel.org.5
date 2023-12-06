@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 627DC806F32
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:54:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC814806F3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:55:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377857AbjLFLyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:54:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
+        id S1377854AbjLFLzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:55:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377863AbjLFLyD (ORCPT
+        with ESMTP id S1377853AbjLFLzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:54:03 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA301700
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:53:37 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54cde11d0f4so4046850a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:53:37 -0800 (PST)
+        Wed, 6 Dec 2023 06:55:09 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FE7819B6
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:53:39 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50be8ced3ddso5057666e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 03:53:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701863616; x=1702468416; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8nauikIQC7YgzkRjGeFoZ+8iTBhi7DuAheS3y1mR8dE=;
-        b=XPFHUqoy2XB1pPsc6ZuGGtH9Hs55urMJufFfMZ+FmQlTKhG4ULAKEF0xQfT57J5y8Q
-         D1CHnrlh1AvoXbxEFEypGLaTSHXrcegK6JSYmFa8RkAM7E4DxFMMoxG0iMYC1FF5qoEn
-         6xMAnnkjMw9XtKMSrjZtaCeqQPev6dnjPqE9Buk5oVvUyJlUoyxkTmqf8jWvAoAc4+RV
-         flnTYtcrdHMqlTrpAQVoWRjvsTs7iDNIqPBFYq3z2rlNFAZS+9lFq66y3BZFQFJJXwdZ
-         zoWPCqeTzDdY1vxR3F2GkI6EEqUk9EmvaayXV9BaV88e/A6qYsIiVfsIL9zDkoaFWvP5
-         TrWQ==
+        d=linaro.org; s=google; t=1701863618; x=1702468418; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=79i0nr6Mx6SDbEcWLjAX+WhVuGqRhzWJkAvdfcMiEaU=;
+        b=p3QqQYRsXWnbie5anhv/gEkVbmXP+eNkMWIqF0qOZJjof3kLrph+lqB5F0Bc2Gxr0j
+         rxNHvLYAXfmdFv/k886Unc/++nB1yCsa4Vqa4nzO8FQvKJmZibNRNMndsIdVX+xGQ0xP
+         vdV+nkfWmR1PkxvPyJqGoKkL55KqdzYfSOjx4WrVeBIGQo6Et9DXfxqvwnkkleQYHpLT
+         iFda1dgJGvEzAMxnF+YZmGxfS0uMNtExTzbV78MjzsbXGEn0vtyZdh2nvaeJJdJ9Q02b
+         nN6aR0Rto3AXzUVgE7J84UMxRFbac2QfYTed2E8Yw1HtEWDvbjgUMb6H6RFRTxDKPTGA
+         vEWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701863616; x=1702468416;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8nauikIQC7YgzkRjGeFoZ+8iTBhi7DuAheS3y1mR8dE=;
-        b=Q1Q6Lkk+PcsRfE/GXBJS4/Fb3YagQ3VqW6avQRdL4YM9XoxXLzTGYQ2raQSXXipTHO
-         QaHZtgHV3kRo+qcZ3okJfsih4Ff35MZr8C6n3U6bsDPG2WGgYGiUgkqDGdVcqlX+fBnr
-         LyoqrYu/4kWADPbFDmIWonJi3JaCXbrVE1qSKoELhJi9y31GPbD2WGwl6moeSZzdLd7w
-         7u7CRgPDDJfxTuDgga4zgQZx3iEHVnfZgeq1VowWWeY2QDn5tHA9FAne35swXYsd8BS1
-         H3n3Wx2J5pAqCVEKY4AluEjnZMSf/hvC4Zvk1eCg5qbaitF19VvpnOtX6Nhn1SHJ5Yw5
-         catw==
-X-Gm-Message-State: AOJu0Yxa1gT1do9CXCdOupuzUo/dRFZOaVnqvaPTqxh2QeH37S1GzMSH
-        YlLSHJEGnD0CzYtYWV8qydCGSg==
-X-Google-Smtp-Source: AGHT+IHa6v0yaCt0cJFUr8Ih/Usy4jigMYT+UvQ5JWdEbTwSd7YSYSp3IjXIZbVXCTVHM9tGyNWWLw==
-X-Received: by 2002:a05:6402:291b:b0:54c:8104:cd20 with SMTP id ee27-20020a056402291b00b0054c8104cd20mr534682edb.19.1701863615861;
-        Wed, 06 Dec 2023 03:53:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701863618; x=1702468418;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=79i0nr6Mx6SDbEcWLjAX+WhVuGqRhzWJkAvdfcMiEaU=;
+        b=RXlancLx2sUgOLrAXUTMh04hJv5zfrV9eaI2Urw8xTfFJsPgyB66fxBiMZfm/eXIBQ
+         9NeYT10xWA08aezNRTdR5QWVzQuL7ZW+I8yIAVSLl9Eo+MXc7uLLc5ash8R0LcdXkg3y
+         yazrf12E+KHulvSN2gAQH5HH8yLxFsT4JUhxPNbA+zo7B42TwQWOr0Sq+zo98CY8OXgb
+         1NsECMByUA/1ULnifA8HS8d1Np+N6fbAlcN8LR9AnwgCQtkln7mj8veS2EJQ7zW4XyFT
+         W2xV94Dv+nDP/aDnUCEWEZj5uUFLtsIDNPId5pV2xrTqlbOFH7wFBB3TPfYJ7D2tzpb8
+         /cOw==
+X-Gm-Message-State: AOJu0Yw5UQqv3lV6orhzO3iwi1NGz6QfjYgb1lvgbqJEAob0WKxQj06m
+        jZAATJUEoN80/2n3cqAeo1OwTQ==
+X-Google-Smtp-Source: AGHT+IE2TaPbtSnOjycRibKiMQ7n6YkJuP7QLfBLSQHgPk0U78Z5dIgqJ7F7+2AJZOkjIqFCKRcb3A==
+X-Received: by 2002:ac2:5511:0:b0:50b:f82e:6d54 with SMTP id j17-20020ac25511000000b0050bf82e6d54mr496504lfk.20.1701863617804;
+        Wed, 06 Dec 2023 03:53:37 -0800 (PST)
 Received: from krzk-bin.. ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id i13-20020a056402054d00b0054c4fdb42e5sm2337326edx.74.2023.12.06.03.53.34
+        by smtp.gmail.com with ESMTPSA id i13-20020a056402054d00b0054c4fdb42e5sm2337326edx.74.2023.12.06.03.53.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 03:53:35 -0800 (PST)
+        Wed, 06 Dec 2023 03:53:37 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
         Mike Leach <mike.leach@linaro.org>,
@@ -66,10 +67,12 @@ To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 1/3] dt-bindings: arm: coresight: restrict single port subnodes
-Date:   Wed,  6 Dec 2023 12:53:30 +0100
-Message-Id: <20231206115332.22712-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/3] dt-bindings: arm: qcom,coresight-tpda: drop redundant type from ports
+Date:   Wed,  6 Dec 2023 12:53:31 +0100
+Message-Id: <20231206115332.22712-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231206115332.22712-1-krzysztof.kozlowski@linaro.org>
+References: <20231206115332.22712-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -82,67 +85,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"in-ports" and "out-ports" with single "port" subnode should use
-"additionalProperties: false" to disallow any other properties mentioned
-by graph schema which are not applicable for this case, e.g.
-"address-cells".
+"in-ports" and "out-ports" are defined by graph schema, so defining its
+type is redundant.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../devicetree/bindings/arm/arm,coresight-dummy-sink.yaml        | 1 +
- .../devicetree/bindings/arm/arm,coresight-dummy-source.yaml      | 1 +
- Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml   | 1 +
- Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml   | 1 +
- 4 files changed, 4 insertions(+)
+ Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-dummy-sink.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-dummy-sink.yaml
-index c960c8e0a9a5..61143907bcde 100644
---- a/Documentation/devicetree/bindings/arm/arm,coresight-dummy-sink.yaml
-+++ b/Documentation/devicetree/bindings/arm/arm,coresight-dummy-sink.yaml
-@@ -41,6 +41,7 @@ properties:
- 
-   in-ports:
-     $ref: /schemas/graph.yaml#/properties/ports
-+    additionalProperties: false
- 
-     properties:
-       port:
-diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-dummy-source.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-dummy-source.yaml
-index 6745b4cc8f1c..a71a05c58cc6 100644
---- a/Documentation/devicetree/bindings/arm/arm,coresight-dummy-source.yaml
-+++ b/Documentation/devicetree/bindings/arm/arm,coresight-dummy-source.yaml
-@@ -40,6 +40,7 @@ properties:
- 
-   out-ports:
-     $ref: /schemas/graph.yaml#/properties/ports
-+    additionalProperties: false
- 
-     properties:
-       port:
 diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
-index ea3c5db6b52d..e55f69c2ff38 100644
+index e55f69c2ff38..66d291b56019 100644
 --- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
 +++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpda.yaml
-@@ -76,6 +76,7 @@ properties:
+@@ -66,13 +66,11 @@ properties:
+       - const: apb_pclk
+ 
+   in-ports:
+-    type: object
+     description: |
+       Input connections from TPDM to TPDA
+     $ref: /schemas/graph.yaml#/properties/ports
+ 
+   out-ports:
+-    type: object
      description: |
        Output connections from the TPDA to legacy CoreSight trace bus.
      $ref: /schemas/graph.yaml#/properties/ports
-+    additionalProperties: false
- 
-     properties:
-       port:
-diff --git a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
-index 61ddc3b5b247..6984003485e8 100644
---- a/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom,coresight-tpdm.yaml
-@@ -72,6 +72,7 @@ properties:
-     description: |
-       Output connections from the TPDM to coresight funnel/TPDA.
-     $ref: /schemas/graph.yaml#/properties/ports
-+    additionalProperties: false
- 
-     properties:
-       port:
 -- 
 2.34.1
 
