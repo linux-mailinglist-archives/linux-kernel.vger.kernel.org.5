@@ -2,51 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70386807928
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:09:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C36BC807926
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 21:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442869AbjLFUJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 15:09:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
+        id S1442867AbjLFUJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 15:09:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442850AbjLFUJb (ORCPT
+        with ESMTP id S1442850AbjLFUJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 15:09:31 -0500
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D7718D;
-        Wed,  6 Dec 2023 12:09:35 -0800 (PST)
-Received: from localhost.ispras.ru (unknown [10.10.165.5])
-        by mail.ispras.ru (Postfix) with ESMTPSA id EE2E540F1DDC;
-        Wed,  6 Dec 2023 20:09:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru EE2E540F1DDC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1701893372;
-        bh=c3U7NlHX7ms/NKOXt6QI/vyo4/wqXOpsspJ9q0DqZV8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dkc0FpIoSUrJWebyTaDD+QfyhNW3e5ZMH7xdQN2r6+1XxXqKyspx1owYEVT3YJ09z
-         Anm7Vc4LVNIOwJdgvc6cBRnvWkSqn7Sv0reu8keyrCkaaPhfyYoSgi2QNNl2gv1W3w
-         vzMp8vC4cdJw7vAnsedMnPNV3lUu6kbpKS0ITja8=
-From:   Fedor Pchelkin <pchelkin@ispras.ru>
-To:     Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>
-Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, v9fs@lists.linux.dev,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: [PATCH v4] net: 9p: avoid freeing uninit memory in p9pdu_vreadf
-Date:   Wed,  6 Dec 2023 23:09:13 +0300
-Message-ID: <20231206200913.16135-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <10981267.HhOBSzzNiN@silver>
-References: 
+        Wed, 6 Dec 2023 15:09:13 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E8FDC6;
+        Wed,  6 Dec 2023 12:09:19 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701893358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7dbW0vrOnX4IbvYPSelJWPZTu1xdvo3BzQO97dlKHxY=;
+        b=qeV8sL4NtDdpC+v98nxJ4YFKVOOWfHp2g6n3wWz51mR3auxn6LBI0HtkY4MvRXiDWwNVoP
+        wNpoHq/gBo82SQ6AAblKYvofi0cnZSmpkGq+AJgot54INj94Wsb7mnVGhhS7TWa4aBA0ro
+        XZh/QZPNCZgbSR68EModhMZezBhyZYqi50JYNEbFW7YGIoxwicQc6OW327a/9s0kmYvbIt
+        L6VsFYRDQfBpTt/alXFH1z9XxlwgKo6yaVs477xVLupTh6J/7Pwzlb1NcwQpJMdVuc+oN8
+        98LsEDjHF5IjePvq9BSSpYXSKNgCObJMxVu8faYOVYl54tC684CMmgwiz2fObg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701893358;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7dbW0vrOnX4IbvYPSelJWPZTu1xdvo3BzQO97dlKHxY=;
+        b=wO9GqRfsT0j4miTOei94cHhFBtNkngyWls/haTanPD0XtoG5yo1CZiFdGQTTKhwHhkTvkZ
+        +Egma6PkYZuw3mBQ==
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
+        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
+        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
+        peterz@infradead.org, seanjc@google.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [PATCH RFC 10/13] x86/irq: Handle potential lost IRQ during
+ migration and CPU offline
+In-Reply-To: <20231112041643.2868316-11-jacob.jun.pan@linux.intel.com>
+References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
+ <20231112041643.2868316-11-jacob.jun.pan@linux.intel.com>
+Date:   Wed, 06 Dec 2023 21:09:17 +0100
+Message-ID: <87a5qnum8i.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,89 +66,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If some of p9pdu_readf() calls inside case 'T' in p9pdu_vreadf() fails,
-the error path is not handled properly. *wnames or members of *wnames
-array may be left uninitialized and invalidly freed.
+On Sat, Nov 11 2023 at 20:16, Jacob Pan wrote:
+> Though IRTE modification for IRQ affinity change is a atomic operation,
+> it does not guarantee the timing of IRQ posting at PID.
 
-Initialize *wnames to NULL in beginning of case 'T'. Initialize the first
-*wnames array element to NULL and nullify the failing *wnames element so
-that the error path freeing loop stops on the first NULL element and
-doesn't proceed further.
+No acronyms please.
 
-Found by Linux Verification Center (linuxtesting.org).
+> considered the following scenario:
+> 	Device		system agent		iommu		memory 		CPU/LAPIC
+> 1	FEEX_XXXX
+> 2			Interrupt request
+> 3						Fetch IRTE	->
+> 4						->Atomic Swap PID.PIR(vec)
+> 						Push to Global Observable(GO)
+> 5						if (ON*)
+> 	i						done;*
+> 						else
+> 6							send a notification ->
+>
+> * ON: outstanding notification, 1 will suppress new notifications
+>
+> If IRQ affinity change happens between 3 and 5 in IOMMU, old CPU's PIR could
+> have pending bit set for the vector being moved. We must check PID.PIR
+> to prevent the lost of interrupts.
 
-Fixes: ace51c4dd2f9 ("9p: add new protocol support code")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
----
-v2: I've missed that *wnames can also be left uninitialized. Please
-ignore the patch v1. As an answer to Dominique's comment: my
-organization marks this statement in all commits.
-v3: Simplify the patch by using kcalloc() instead of array indices
-manipulation per Christian Schoenebeck's remark. Update the commit
-message accordingly.
-v4: Per Christian's suggestion, apply another strategy: mark failing
-array element as NULL and move in the freeing loop until it is found.
-Update the commit message accordingly. If v4 is more appropriate than the
-version at
-https://github.com/martinetd/linux/commit/69cc23eb3a0b79538e9b5face200c4cd5cd32ae0
-then please use it, otherwise, I don't think we can provide more
-convenient solution here than the one already queued at github.
+We must check nothing. We must ensure that the code is correct, right?
 
- net/9p/protocol.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> ---
+>  arch/x86/kernel/apic/vector.c |  8 +++++++-
+>  arch/x86/kernel/irq.c         | 20 +++++++++++++++++---
+>  2 files changed, 24 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/x86/kernel/apic/vector.c b/arch/x86/kernel/apic/vector.c
+> index 319448d87b99..14fc33cfdb37 100644
+> --- a/arch/x86/kernel/apic/vector.c
+> +++ b/arch/x86/kernel/apic/vector.c
+> @@ -19,6 +19,7 @@
+>  #include <asm/apic.h>
+>  #include <asm/i8259.h>
+>  #include <asm/desc.h>
+> +#include <asm/posted_intr.h>
+>  #include <asm/irq_remapping.h>
+>  
+>  #include <asm/trace/irq_vectors.h>
+> @@ -978,9 +979,14 @@ static void __vector_cleanup(struct vector_cleanup *cl, bool check_irr)
+>  		 * Do not check IRR when called from lapic_offline(), because
+>  		 * fixup_irqs() was just called to scan IRR for set bits and
+>  		 * forward them to new destination CPUs via IPIs.
+> +		 *
+> +		 * If the vector to be cleaned is delivered as posted intr,
+> +		 * it is possible that the interrupt has been posted but
+> +		 * not made to the IRR due to coalesced notifications.
 
-diff --git a/net/9p/protocol.c b/net/9p/protocol.c
-index 4e3a2a1ffcb3..0e6603b1ec90 100644
---- a/net/9p/protocol.c
-+++ b/net/9p/protocol.c
-@@ -394,6 +394,8 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
- 				uint16_t *nwname = va_arg(ap, uint16_t *);
- 				char ***wnames = va_arg(ap, char ***);
- 
-+				*wnames = NULL;
-+
- 				errcode = p9pdu_readf(pdu, proto_version,
- 								"w", nwname);
- 				if (!errcode) {
-@@ -403,6 +405,8 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
- 							  GFP_NOFS);
- 					if (!*wnames)
- 						errcode = -ENOMEM;
-+					else
-+						(*wnames)[0] = NULL;
- 				}
- 
- 				if (!errcode) {
-@@ -414,8 +418,10 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
- 								proto_version,
- 								"s",
- 								&(*wnames)[i]);
--						if (errcode)
-+						if (errcode) {
-+							(*wnames)[i] = NULL;
- 							break;
-+						}
- 					}
- 				}
- 
-@@ -423,11 +429,14 @@ p9pdu_vreadf(struct p9_fcall *pdu, int proto_version, const char *fmt,
- 					if (*wnames) {
- 						int i;
- 
--						for (i = 0; i < *nwname; i++)
-+						for (i = 0; i < *nwname; i++) {
-+							if (!(*wnames)[i])
-+								break;
- 							kfree((*wnames)[i]);
-+						}
-+						kfree(*wnames);
-+						*wnames = NULL;
- 					}
--					kfree(*wnames);
--					*wnames = NULL;
- 				}
- 			}
- 			break;
--- 
-2.43.0
+not made to?
+
+> +		 * Therefore, check PIR to see if the interrupt was posted.
+>  		 */
+>  		irr = check_irr ? apic_read(APIC_IRR + (vector / 32 * 0x10)) : 0;
+> -		if (irr & (1U << (vector % 32))) {
+> +		if (irr & (1U << (vector % 32)) || is_pi_pending_this_cpu(vector)) {
+
+The comment above this code clearly explains what check_irr is
+about. Why would the PIR pending check have different rules? Just
+because its PIR, right?
+
+>  
+> +/*
+> + * Check if a given vector is pending in APIC IRR or PIR if posted interrupt
+> + * is enabled for coalesced interrupt delivery (CID).
+> + */
+> +static inline bool is_vector_pending(unsigned int vector)
+> +{
+> +	unsigned int irr;
+> +
+> +	irr = apic_read(APIC_IRR + (vector / 32 * 0x10));
+> +	if (irr  & (1 << (vector % 32)))
+> +		return true;
+> +
+> +	return is_pi_pending_this_cpu(vector);
+> +}
+
+Why is this outside of the #ifdef region? Just because there was space
+to put it, right?
+
+And of course we need the same thing open coded in two locations.
+
+What's wrong with using this inline function in __vector_cleanup() too?
+
+	if (check_irr && vector_is_pending(vector)) {
+        	pr_warn_once(...);
+                ....
+        }
+
+That would make the logic of __vector_cleanup() correct _AND_ share the
+code.
 
