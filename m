@@ -2,265 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8364806C11
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:36:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF886806C25
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377462AbjLFKgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:36:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44316 "EHLO
+        id S1377519AbjLFKhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:37:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377463AbjLFKgW (ORCPT
+        with ESMTP id S1377511AbjLFKhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:36:22 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6393137;
-        Wed,  6 Dec 2023 02:36:27 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-58d5979c676so4210258eaf.1;
-        Wed, 06 Dec 2023 02:36:27 -0800 (PST)
+        Wed, 6 Dec 2023 05:37:01 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E312D5B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:37:06 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db4004a8aa9so5859236276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:37:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701858987; x=1702463787; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GSHguhdYXTBvbS9uaUvEUspYNKYDJXD8tRJJNaYtm/4=;
-        b=DFrKtgoTssqiNxW2xH5rTZQmfY3nRBSyW02+5tZEM7FcNAreaT3fRgNoyRh10AOa4m
-         N6VcjBzYdBTnHKKta396F3qSbYfxRRtgtMDXRkR8n4vQ4yPkKgyxUnJ2Eiqsxcxwsymr
-         fx8qeYqYRnrKga36f8LcWzN0PzzRlgu8p/EA8dyE1CWdhOdNNVXRRAkwdBKoJAiEz+5l
-         B2ORaQN9Mlunl7CUfZDxHdWw0uQBc3gnrAixV9kD1deZb9YiQXtzieVm5miHUWBznZMa
-         lkjlfv9Jm98w0z+u2LvQ8BQLQ+Rn+nJRVirGq9nt9gvuVaD1PImzAU16dvRhY8x9sPXZ
-         WctA==
+        d=google.com; s=20230601; t=1701859025; x=1702463825; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FxlG0oVhx7l6aAIFZank0vcfXNA460Cs8dZ1eOg/7zo=;
+        b=IREjungvDe0PtEhGyieiEaNTmGZ6eq6Lpz+EMIZYkXOa/94l9OofsU3GOYdXN6dK4Z
+         MmvH9SNpa5/5DG8KA0N6sdjU8heFJQNGDGOwKMWvZ+ENb29mJ8Bx75N5+C6KvpGLPX63
+         wuktdVwsAEGieH6S+oVCZS2XxvcPnqz0+ZdFixJ80Zv60HbXa0M/xU3pjxrjxMm9UyoY
+         Ss2ooF5/lfzpPw012IAtcP80jrzASkGp46zb06UslxHM9ff0nAU1uw33z3IObamZJ1HZ
+         yKpZBx9tM1rKmIEE3uyDFM1u+wl9YKiGLGU626vtTXH0S7x5cT2Bi8QOkW3S4CLnTN1u
+         rwGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701858987; x=1702463787;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GSHguhdYXTBvbS9uaUvEUspYNKYDJXD8tRJJNaYtm/4=;
-        b=kmYkzGTQKnCXRCnDd/5G3e6RyAD8PpcD4G4Ur5EpEkEiOC7E9Xz0M/cxOeZmsR5N/4
-         H5tNm2YJTEmOQfg2VcbYrROCLlD0y+bkilrcNGsl80Vj6aikraegqRiC314ccvOGX4S+
-         WhsrF+/8vSn+9lH+SrLu5XDq5Ya7KZEzz5Os8Y8UR+gbi4b6gbcN+alXtMCuAjQQI/9a
-         ZQfxJhanDxLl9xbswaBHQlytpafmOmDnzhSwdvIfOt/89IooqsiihuucAj7vrStTpSta
-         bLXN6D+8yDppKG8ZoyLnnAQ1yA3Qdf9sjt1bEWBhrJWgHoFfCQ3wl1/hK0sHjUf2KmpY
-         4cpw==
-X-Gm-Message-State: AOJu0YzL81lVu9jtWLQh9GVw/AYvdkizFxTcO37Iv9OO3D8jTGqP1Iib
-        DPI97KCEJsZAXhlYHe+YXw7SDezI6Th0V1n1kR0=
-X-Google-Smtp-Source: AGHT+IEOZ+MLiRmb/S6EqV/xSpTjmcXgIZjhtYgimuOsEADFi9rhPAoRfej2QsU8ydHLGgNRSK30svnwV1AzhgNSH5s=
-X-Received: by 2002:a05:6358:3399:b0:16e:29a9:f5af with SMTP id
- i25-20020a056358339900b0016e29a9f5afmr960782rwd.27.1701858986997; Wed, 06 Dec
- 2023 02:36:26 -0800 (PST)
-MIME-Version: 1.0
-References: <1700637838-6743-1-git-send-email-shengjiu.wang@nxp.com> <a318e512-393c-477d-b1db-72c75855b962@xs4all.nl>
-In-Reply-To: <a318e512-393c-477d-b1db-72c75855b962@xs4all.nl>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Wed, 6 Dec 2023 18:36:15 +0800
-Message-ID: <CAA+D8APy4aUDgPBM0+BVmUWtHvP5g75vSMZTTzxTUASjBhY_AA@mail.gmail.com>
-Subject: Re: [PATCH v11 00/15] Add audio support in v4l2 framework
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
+        d=1e100.net; s=20230601; t=1701859025; x=1702463825;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FxlG0oVhx7l6aAIFZank0vcfXNA460Cs8dZ1eOg/7zo=;
+        b=PBnHbjeCvdp0AZc44xH3aGL1uJpuVkfNua5VSP2FhY3sJ2sjS6BYni83d40GmCQRjE
+         GWtDyfgDvGPGjvye0CpxU7wwJ2MlXTGLt1BgcR+Z6KqBIyJpb6KoEt/adl9FA2t3mn0w
+         IasiZsrBS/j4OmH5O93hjOJOLKDE8KTLDm7olfaJ+ELjflSEO8XOu9AblrpW2EkU7Fwe
+         NyFz7GR6lSqbR0FUHG6k+rbNUFuot4EpAYapcvOTBzTI6WwinGOYhPOW491NzJIti6Hm
+         AgPJt9vjUWQIsg3AaAr+FOIigk900UyLqIhy2TPbfnbFkRuVDV7VvwBEs65m0BrhHchz
+         wizg==
+X-Gm-Message-State: AOJu0Yw7Z9KncAhAsxzcQa+RfzregGCqIlg0yKEdG3Fg+u924GVrhhgn
+        D0e25WDmClnSNSHaYkOZlAbxjuxNxwA=
+X-Google-Smtp-Source: AGHT+IEkSUtl8wasf/Jyp1yJHr+p7ux/2trAktce9koTGehM5Wzewh8p0pFAxAq+pBZWeY5MeY5cPB2JxEQ=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:73f6:b5e2:415:6ba5])
+ (user=surenb job=sendgmr) by 2002:a25:cf8c:0:b0:db5:3e3d:700c with SMTP id
+ f134-20020a25cf8c000000b00db53e3d700cmr5714ybg.1.1701859025469; Wed, 06 Dec
+ 2023 02:37:05 -0800 (PST)
+Date:   Wed,  6 Dec 2023 02:36:54 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231206103702.3873743-1-surenb@google.com>
+Subject: [PATCH v6 0/5] userfaultfd move option
+From:   Suren Baghdasaryan <surenb@google.com>
+To:     akpm@linux-foundation.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        david@redhat.com, ryan.roberts@arm.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        surenb@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 4:09=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> wr=
-ote:
->
-> Hi Shengjiu,
->
-> On 22/11/2023 08:23, Shengjiu Wang wrote:
-> > Audio signal processing also has the requirement for memory to
-> > memory similar as Video.
-> >
-> > This asrc memory to memory (memory ->asrc->memory) case is a non
-> > real time use case.
-> >
-> > User fills the input buffer to the asrc module, after conversion, then =
-asrc
-> > sends back the output buffer to user. So it is not a traditional ALSA p=
-layback
-> > and capture case.
-> >
-> > It is a specific use case,  there is no reference in current kernel.
-> > v4l2 memory to memory is the closed implementation,  v4l2 current
-> > support video, image, radio, tuner, touch devices, so it is not
-> > complicated to add support for this specific audio case.
-> >
-> > Because we had implemented the "memory -> asrc ->i2s device-> codec"
-> > use case in ALSA.  Now the "memory->asrc->memory" needs
-> > to reuse the code in asrc driver, so the first 3 patches is for refinin=
-g
-> > the code to make it can be shared by the "memory->asrc->memory"
-> > driver.
-> >
-> > The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
-> > user applications only use the ioctl of v4l2 framework.
-> >
-> > Other change is to add memory to memory support for two kinds of i.MX A=
-SRC
-> > module.
->
-> I just wanted to let you know that this will have to be postponed until v=
-6.8.
-> I need more time to work on the v4l-utils changes, esp. for the fraction =
-bits
-> feature, and realistically that is not going to happen before my Christma=
-s
-> vacation starts.
+This patch series introduces UFFDIO_MOVE feature to userfaultfd, which
+has long been implemented and maintained by Andrea in his local tree [1],
+but was not upstreamed due to lack of use cases where this approach would
+be better than allocating a new page and copying the contents. Previous
+upstraming attempts could be found at [6] and [7].
 
-No problem. Have a good vacation!
-Thanks.
+UFFDIO_COPY performs ~20% better than UFFDIO_MOVE when the application
+needs pages to be allocated [2]. However, with UFFDIO_MOVE, if pages are
+available (in userspace) for recycling, as is usually the case in heap
+compaction algorithms, then we can avoid the page allocation and memcpy
+(done by UFFDIO_COPY). Also, since the pages are recycled in the
+userspace, we avoid the need to release (via madvise) the pages back to
+the kernel [3].
+We see over 40% reduction (on a Google pixel 6 device) in the compacting
+thread=E2=80=99s completion time by using UFFDIO_MOVE vs. UFFDIO_COPY. This=
+ was
+measured using a benchmark that emulates a heap compaction implementation
+using userfaultfd (to allow concurrent accesses by application threads).
+More details of the usecase are explained in [3].
 
-Best Regards
-Shengjiu Wang
->
-> Apologies for the delay.
->
->
-> Regards,
->
->         Hans
->
-> >
-> > changes in v11
-> > - add add-fixed-point-test-controls in vivid.
-> > - add v4l2_ctrl_fp_compose() helper function for min and max
-> >
-> > changes in v10
-> > - remove FIXED_POINT type
-> > - change code base on media: v4l2-ctrls: add support for fraction_bits
-> > - fix issue reported by kernel test robot
-> > - remove module_alias
-> >
-> > changes in v9:
-> > - add MEDIA_ENT_F_PROC_AUDIO_RESAMPLER.
-> > - add MEDIA_INTF_T_V4L_AUDIO
-> > - add media controller support
-> > - refine the vim2m-audio to support 8k<->16k conversion.
-> >
-> > changes in v8:
-> > - refine V4L2_CAP_AUDIO_M2M to be 0x00000008
-> > - update doc for FIXED_POINT
-> > - address comments for imx-asrc
-> >
-> > changes in v7:
-> > - add acked-by from Mark
-> > - separate commit for fixed point, m2m audio class, audio rate controls
-> > - use INTEGER_MENU for rate,  FIXED_POINT for rate offset
-> > - remove used fmts
-> > - address other comments for Hans
-> >
-> > changes in v6:
-> > - use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
-> >   m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_par=
-t_two.
-> > - change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
-> > - fix warning by kernel test rebot
-> > - remove some unused format V4L2_AUDIO_FMT_XX
-> > - Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
-> > - rename audm2m to viaudm2m.
-> >
-> > changes in v5:
-> > - remove V4L2_AUDIO_FMT_LPCM
-> > - define audio pixel format like V4L2_AUDIO_FMT_S8...
-> > - remove rate and format in struct v4l2_audio_format.
-> > - Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
-> > - updata document accordingly.
-> >
-> > changes in v4:
-> > - update document style
-> > - separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commi=
-t
-> >
-> > changes in v3:
-> > - Modify documents for adding audio m2m support
-> > - Add audio virtual m2m driver
-> > - Defined V4L2_AUDIO_FMT_LPCM format type for audio.
-> > - Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
-> > - with modification in v4l-utils, pass v4l2-compliance test.
-> >
-> > changes in v2:
-> > - decouple the implementation in v4l2 and ALSA
-> > - implement the memory to memory driver as a platfrom driver
-> >   and move it to driver/media
-> > - move fsl_asrc_common.h to include/sound folder
-> >
-> > Shengjiu Wang (15):
-> >   ASoC: fsl_asrc: define functions for memory to memory usage
-> >   ASoC: fsl_easrc: define functions for memory to memory usage
-> >   ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
-> >   ASoC: fsl_asrc: register m2m platform device
-> >   ASoC: fsl_easrc: register m2m platform device
-> >   media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
-> >   media: v4l2: Add audio capture and output support
-> >   media: uapi: Define audio sample format fourcc type
-> >   media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
-> >   media: uapi: Add audio rate controls support
-> >   media: uapi: Declare interface types for Audio
-> >   media: uapi: Add an entity type for audio resampler
-> >   media: vivid: add fixed point test controls
-> >   media: imx-asrc: Add memory to memory driver
-> >   media: vim2m-audio: add virtual driver for audio memory to memory
-> >
-> >  .../media/mediactl/media-types.rst            |   11 +
-> >  .../userspace-api/media/v4l/buffer.rst        |    6 +
-> >  .../userspace-api/media/v4l/common.rst        |    1 +
-> >  .../media/v4l/dev-audio-mem2mem.rst           |   71 +
-> >  .../userspace-api/media/v4l/devices.rst       |    1 +
-> >  .../media/v4l/ext-ctrls-audio-m2m.rst         |   41 +
-> >  .../userspace-api/media/v4l/pixfmt-audio.rst  |   87 ++
-> >  .../userspace-api/media/v4l/pixfmt.rst        |    1 +
-> >  .../media/v4l/vidioc-enum-fmt.rst             |    2 +
-> >  .../media/v4l/vidioc-g-ext-ctrls.rst          |    4 +
-> >  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
-> >  .../media/v4l/vidioc-querycap.rst             |    3 +
-> >  .../media/videodev2.h.rst.exceptions          |    3 +
-> >  .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
-> >  drivers/media/platform/nxp/Kconfig            |   13 +
-> >  drivers/media/platform/nxp/Makefile           |    1 +
-> >  drivers/media/platform/nxp/imx-asrc.c         | 1264 +++++++++++++++++
-> >  drivers/media/test-drivers/Kconfig            |   11 +
-> >  drivers/media/test-drivers/Makefile           |    1 +
-> >  drivers/media/test-drivers/vim2m-audio.c      |  799 +++++++++++
-> >  drivers/media/test-drivers/vivid/vivid-core.h |    2 +
-> >  .../media/test-drivers/vivid/vivid-ctrls.c    |   26 +
-> >  drivers/media/v4l2-core/v4l2-compat-ioctl32.c |    9 +
-> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   10 +
-> >  drivers/media/v4l2-core/v4l2-dev.c            |   21 +
-> >  drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
-> >  drivers/media/v4l2-core/v4l2-mem2mem.c        |   13 +-
-> >  include/media/v4l2-ctrls.h                    |    3 +
-> >  include/media/v4l2-dev.h                      |    2 +
-> >  include/media/v4l2-ioctl.h                    |   34 +
-> >  .../fsl =3D> include/sound}/fsl_asrc_common.h   |   60 +
-> >  include/uapi/linux/media.h                    |    2 +
-> >  include/uapi/linux/v4l2-controls.h            |    9 +
-> >  include/uapi/linux/videodev2.h                |   41 +
-> >  sound/soc/fsl/fsl_asrc.c                      |  144 ++
-> >  sound/soc/fsl/fsl_asrc.h                      |    4 +-
-> >  sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
-> >  sound/soc/fsl/fsl_easrc.c                     |  233 +++
-> >  sound/soc/fsl/fsl_easrc.h                     |    6 +-
-> >  39 files changed, 3008 insertions(+), 7 deletions(-)
-> >  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem=
-2mem.rst
-> >  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-aud=
-io-m2m.rst
-> >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.=
-rst
-> >  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
-> >  create mode 100644 drivers/media/test-drivers/vim2m-audio.c
-> >  rename {sound/soc/fsl =3D> include/sound}/fsl_asrc_common.h (60%)
-> >
->
+Furthermore, UFFDIO_MOVE enables moving swapped-out pages without
+touching them within the same vma. Today, it can only be done by mremap,
+however it forces splitting the vma.
+
+
+TODOs for follow-up improvements:
+- cross-mm support. Known differences from single-mm and missing pieces:
+	- memcg recharging (might need to isolate pages in the process)
+	- mm counters
+	- cross-mm deposit table moves
+	- cross-mm test
+	- document the address space where src and dest reside in struct
+	  uffdio_move
+
+- TLB flush batching. Will require extensive changes to PTL locking in
+move_pages_pte(). OTOH that might let us reuse parts of mremap code.
+
+Changes since v5 [10]:
+- added logic to split large folios in move_pages_pte(),
+per David Hildenbrand
+- added check for PAE before split_huge_pmd() to avoid the split if the
+move operation can't be done
+- replaced calls to default_huge_page_size() with read_pmd_pagesize() in
+uffd_move_pmd test, per David Hildenbrand
+- fixed the condition in uffd_move_test_common() checking if area
+alignment is needed
+
+Changes since v4 [9]:
+- added Acked-by in patch 1, per Peter Xu
+- added description for ctx, mm and mode parameters of move_pages(),
+per kernel test robot
+- added Reviewed-by's, per Peter Xu and Axel Rasmussen
+- removed unused operations in uffd_test_case_ops
+- refactored uffd-unit-test changes to avoid using global variables and
+handle pmd moves without page size overrides, per Peter Xu
+
+Changes since v3 [8]:
+- changed retry path in folio_lock_anon_vma_read() to unlock and then
+relock RCU, per Peter Xu
+- removed cross-mm support from initial patchset, per David Hildenbrand
+- replaced BUG_ONs with VM_WARN_ON or WARN_ON_ONCE, per David Hildenbrand
+- added missing cache flushing, per Lokesh Gidra and Peter Xu
+- updated manpage text in the patch description, per Peter Xu
+- renamed internal functions from "remap" to "move", per Peter Xu
+- added mmap_changing check after taking mmap_lock, per Peter Xu
+- changed uffd context check to ensure dst_mm is registered onto uffd we
+are operating on, Peter Xu and David Hildenbrand
+- changed to non-maybe variants of maybe*_mkwrite(), per David Hildenbrand
+- fixed warning for CONFIG_TRANSPARENT_HUGEPAGE=3Dn, per kernel test robot
+- comments cleanup, per David Hildenbrand and Peter Xu
+- checks for VM_IO,VM_PFNMAP,VM_HUGETLB,..., per David Hildenbrand
+- prevent moving pinned pages, per Peter Xu
+- changed uffd tests to call move uffd_test_ctx_clear() at the end of the
+test run instead of in the beginning of the next run
+- added support for testcase-specific ops
+- added test for moving PMD-aligned blocks
+
+Changes since v2 [5]:
+- renamed UFFDIO_REMAP to UFFDIO_MOVE, per David Hildenbrand
+- rebase over mm-unstable to use folio_move_anon_rmap(),
+per David Hildenbrand
+- added text for manpage explaining DONTFORK and KSM requirements for this
+feature, per David Hildenbrand
+- check for anon_vma changes in the fast path of folio_lock_anon_vma_read,
+per Peter Xu
+- updated the title and description of the first patch,
+per David Hildenbrand
+- updating comments in folio_lock_anon_vma_read() explaining the need for
+anon_vma checks, per David Hildenbrand
+- changed all mapcount checks to PageAnonExclusive, per Jann Horn and
+David Hildenbrand
+- changed counters in remap_swap_pte() from MM_ANONPAGES to MM_SWAPENTS,
+per Jann Horn
+- added a check for PTE change after folio is locked in remap_pages_pte(),
+per Jann Horn
+- added handling of PMD migration entries and bailout when pmd_devmap(),
+per Jann Horn
+- added checks to ensure both src and dst VMAs are writable, per Peter Xu
+- added UFFD_FEATURE_MOVE, per Peter Xu
+- removed obsolete comments, per Peter Xu
+- renamed remap_anon_pte to remap_present_pte, per Peter Xu
+- added a comment for folio_get_anon_vma() explaining the need for
+anon_vma checks, per Peter Xu
+- changed error handling in remap_pages() to make it more clear,
+per Peter Xu
+- changed EFAULT to EAGAIN to retry when a hugepage appears or disappears
+from under us, per Peter Xu
+- added links to previous upstreaming attempts, per David Hildenbrand
+
+Changes since v1 [4]:
+- add mmget_not_zero in userfaultfd_remap, per Jann Horn
+- removed extern from function definitions, per Matthew Wilcox
+- converted to folios in remap_pages_huge_pmd, per Matthew Wilcox
+- use PageAnonExclusive in remap_pages_huge_pmd, per David Hildenbrand
+- handle pgtable transfers between MMs, per Jann Horn
+- ignore concurrent A/D pte bit changes, per Jann Horn
+- split functions into smaller units, per David Hildenbrand
+- test for folio_test_large in remap_anon_pte, per Matthew Wilcox
+- use pte_swp_exclusive for swapcount check, per David Hildenbrand
+- eliminated use of mmu_notifier_invalidate_range_start_nonblock,
+per Jann Horn
+- simplified THP alignment checks, per Jann Horn
+- refactored the loop inside remap_pages, per Jann Horn
+- additional clarifying comments, per Jann Horn
+
+Main changes since Andrea's last version [1]:
+- Trivial translations from page to folio, mmap_sem to mmap_lock
+- Replace pmd_trans_unstable() with pte_offset_map_nolock() and handle its
+possible failure
+- Move pte mapping into remap_pages_pte to allow for retries when source
+page or anon_vma is contended. Since pte_offset_map_nolock() start RCU
+read section, we can't block anymore after mapping a pte, so have to unmap
+the ptesm do the locking and retry.
+- Add and use anon_vma_trylock_write()  to avoid blocking while in RCU
+read section.
+- Accommodate changes in mmu_notifier_range_init() API, switch to
+mmu_notifier_invalidate_range_start_nonblock() to avoid blocking while in
+RCU read section.
+- Open-code now removed __swp_swapcount()
+- Replace pmd_read_atomic() with pmdp_get_lockless()
+- Add new selftest for UFFDIO_MOVE
+
+[1] https://gitlab.com/aarcange/aa/-/commit/2aec7aea56b10438a3881a20a411aa4=
+b1fc19e92
+[2] https://lore.kernel.org/all/1425575884-2574-1-git-send-email-aarcange@r=
+edhat.com/
+[3] https://lore.kernel.org/linux-mm/CA+EESO4uO84SSnBhArH4HvLNhaUQ5nZKNKXqx=
+RCyjniNVjp0Aw@mail.gmail.com/
+[4] https://lore.kernel.org/all/20230914152620.2743033-1-surenb@google.com/
+[5] https://lore.kernel.org/all/20230923013148.1390521-1-surenb@google.com/
+[6] https://lore.kernel.org/all/1425575884-2574-21-git-send-email-aarcange@=
+redhat.com/
+[7] https://lore.kernel.org/all/cover.1547251023.git.blake.caldwell@colorad=
+o.edu/
+[8] https://lore.kernel.org/all/20231009064230.2952396-1-surenb@google.com/
+[9] https://lore.kernel.org/all/20231028003819.652322-1-surenb@google.com/
+[10] https://lore.kernel.org/all/20231121171643.3719880-1-surenb@google.com=
+/
+
+Andrea Arcangeli (2):
+  mm/rmap: support move to different root anon_vma in
+    folio_move_anon_rmap()
+  userfaultfd: UFFDIO_MOVE uABI
+
+Suren Baghdasaryan (3):
+  selftests/mm: call uffd_test_ctx_clear at the end of the test
+  selftests/mm: add uffd_test_case_ops to allow test case-specific
+    operations
+  selftests/mm: add UFFDIO_MOVE ioctl test
+
+ Documentation/admin-guide/mm/userfaultfd.rst |   3 +
+ fs/userfaultfd.c                             |  72 +++
+ include/linux/rmap.h                         |   5 +
+ include/linux/userfaultfd_k.h                |  11 +
+ include/uapi/linux/userfaultfd.h             |  29 +-
+ mm/huge_memory.c                             | 122 ++++
+ mm/khugepaged.c                              |   3 +
+ mm/rmap.c                                    |  30 +
+ mm/userfaultfd.c                             | 614 +++++++++++++++++++
+ tools/testing/selftests/mm/uffd-common.c     |  39 +-
+ tools/testing/selftests/mm/uffd-common.h     |   9 +
+ tools/testing/selftests/mm/uffd-stress.c     |   5 +-
+ tools/testing/selftests/mm/uffd-unit-tests.c | 192 ++++++
+ 13 files changed, 1130 insertions(+), 4 deletions(-)
+
+--=20
+2.43.0.rc2.451.g8631bc7472-goog
+
