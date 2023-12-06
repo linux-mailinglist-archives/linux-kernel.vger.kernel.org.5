@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 596668068BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F3F8068BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:39:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376938AbjLFHjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:39:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56706 "EHLO
+        id S1377002AbjLFHjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:39:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbjLFHiZ (ORCPT
+        with ESMTP id S1377033AbjLFHic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:38:25 -0500
+        Wed, 6 Dec 2023 02:38:32 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73E71BEA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:52 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02493C433CD;
-        Wed,  6 Dec 2023 07:37:50 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C831FC3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:37:54 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AA96C43391;
+        Wed,  6 Dec 2023 07:37:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701848272;
-        bh=ca5oZR3Z/IhdfX0APKb53oRCnzdx5d5CBkRj2hy/ASY=;
+        s=k20201202; t=1701848273;
+        bh=sL9jADnOH5s9rXM78Nf+CIz2brDSijTdhq+NDPBkjUk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BMhtaGNOBrG38TV6foFHCSkoltzMauWUjoUeaDVHPuRG8fMUsJBWAbDf8DxOwYWts
-         SEjxd9hgOVGcJd9cQQXU+EkIp9JecT14LGBqg49oZ1aQ4nrnjgX2yUkvGhjqEjOyl5
-         fCEuFl8yJjhobXfbHjZ3T+hdm/l7yePI6kZpUMv8zTc09eMWEtbUZ7Ai/pWm/BZMXH
-         1uL++wmUkvTq83AWv0WnTpGswnflvG8SSnZQsDxRLOpS6zW1sDrccjAw30SeZRX9p/
-         xNwQT14M4vLmtx1kayXlmakvhQcYJ1PcqropU7yczRj/Xi9NYDj4unJgGD7veOaCGU
-         fQ5qCACVPjksQ==
+        b=AII4ZFvk5eHb0lgbdW0f+lYVXKurtgSL/1tSJ7gtopSCrC7Fpkwiq1yWfg7XHLh45
+         L32NfbbtWCZpdml4zrjxwLKv8CXgBEZ4R6/gpCTVoa4Mn8dryRO8hTvnCenEh1zhR/
+         PwL+BUlb3LyiMs1+x9/LoSPDfgayqvnJ3lruwsSpnG+R94MBSZqFLqjhgYKdUUh+7d
+         FfvpodAenm6UEjzS8awFwPCeXTcBgsCw7IOUAlh2pL1iJ/eSQa1/N/iBnWEdDfRyhL
+         646oO2lSNqMllxML3quTiZ0Jd6NSOU4roAa+o4ytL8CeFM+VsSp2cThv8zboKLDOHN
+         DIZmZu1AzsQgA==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 15/27] tty: mips_ejtag_fdc: use u8 for character pointers
-Date:   Wed,  6 Dec 2023 08:37:00 +0100
-Message-ID: <20231206073712.17776-16-jirislaby@kernel.org>
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Subject: [PATCH 16/27] tty: mmc: sdio: use u8 for flag
+Date:   Wed,  6 Dec 2023 08:37:01 +0100
+Message-ID: <20231206073712.17776-17-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
 References: <20231206073712.17776-1-jirislaby@kernel.org>
@@ -49,49 +50,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mips_ejtag_fdc_encode() and mips_ejtag_fdc_put_chan() declare arrays of
-pointers to characters. Switch their types from char to u8 to conform
-to the current tty layer types for characters.
+Switch character types to u8. To conform to characters in the rest of
+the tty layer.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: linux-mmc@vger.kernel.org
 ---
- drivers/tty/mips_ejtag_fdc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mmc/core/sdio_uart.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/tty/mips_ejtag_fdc.c b/drivers/tty/mips_ejtag_fdc.c
-index 369ec71c24ef..aac80b69a069 100644
---- a/drivers/tty/mips_ejtag_fdc.c
-+++ b/drivers/tty/mips_ejtag_fdc.c
-@@ -213,16 +213,16 @@ struct fdc_word {
-  */
+diff --git a/drivers/mmc/core/sdio_uart.c b/drivers/mmc/core/sdio_uart.c
+index 370fadf1d6d1..575ebbce378e 100644
+--- a/drivers/mmc/core/sdio_uart.c
++++ b/drivers/mmc/core/sdio_uart.c
+@@ -354,12 +354,11 @@ static void sdio_uart_stop_rx(struct sdio_uart_port *port)
  
- /* ranges >= 1 && sizes[0] >= 1 */
--static struct fdc_word mips_ejtag_fdc_encode(const char **ptrs,
-+static struct fdc_word mips_ejtag_fdc_encode(const u8 **ptrs,
- 					     unsigned int *sizes,
- 					     unsigned int ranges)
+ static void sdio_uart_receive_chars(struct sdio_uart_port *port, u8 *status)
  {
- 	struct fdc_word word = { 0, 0 };
--	const char **ptrs_end = ptrs + ranges;
-+	const u8 **ptrs_end = ptrs + ranges;
+-	unsigned int flag;
+ 	int max_count = 256;
  
- 	for (; ptrs < ptrs_end; ++ptrs) {
--		const char *ptr = *(ptrs++);
--		const char *end = ptr + *(sizes++);
-+		const u8 *ptr = *(ptrs++);
-+		const u8 *end = ptr + *(sizes++);
+ 	do {
+ 		u8 ch = sdio_in(port, UART_RX);
+-		flag = TTY_NORMAL;
++		u8 flag = TTY_NORMAL;
+ 		port->icount.rx++;
  
- 		for (; ptr < end; ++ptr) {
- 			word.word |= (u8)*ptr << (8*word.bytes);
-@@ -417,7 +417,7 @@ static unsigned int mips_ejtag_fdc_put_chan(struct mips_ejtag_fdc_tty *priv,
- {
- 	struct mips_ejtag_fdc_tty_port *dport;
- 	struct tty_struct *tty;
--	const char *ptrs[2];
-+	const u8 *ptrs[2];
- 	unsigned int sizes[2] = { 0 };
- 	struct fdc_word word = { .bytes = 0 };
- 	unsigned long flags;
+ 		if (unlikely(*status & (UART_LSR_BI | UART_LSR_PE |
 -- 
 2.43.0
 
