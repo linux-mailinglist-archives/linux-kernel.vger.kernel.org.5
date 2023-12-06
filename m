@@ -2,218 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A809E8078BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A91588078BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442781AbjLFTh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:37:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
+        id S1442794AbjLFTiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:38:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379101AbjLFTh4 (ORCPT
+        with ESMTP id S1379286AbjLFTiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:37:56 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1060F8E;
-        Wed,  6 Dec 2023 11:38:02 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 48FC91FD36;
-        Wed,  6 Dec 2023 19:37:58 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 2604113403;
-        Wed,  6 Dec 2023 19:37:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id 7a8+CZbNcGVAYgAAn2gu4w
-        (envelope-from <jack@suse.cz>); Wed, 06 Dec 2023 19:37:58 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 6DDF7A07E0; Wed,  6 Dec 2023 20:37:57 +0100 (CET)
-Date:   Wed, 6 Dec 2023 20:37:57 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Baokun Li <libaokun1@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, willy@infradead.org,
-        akpm@linux-foundation.org, ritesh.list@gmail.com,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Message-ID: <20231206193757.k5cppxqew6zjmbx3@quack3>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
- <20231204144106.fk4yxc422gppifsz@quack3>
- <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
+        Wed, 6 Dec 2023 14:38:15 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE389D4B;
+        Wed,  6 Dec 2023 11:38:21 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-28654179ec0so177993a91.2;
+        Wed, 06 Dec 2023 11:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701891501; x=1702496301; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b3hX5NMSuRdxJ6nAzp41n5iuA2rkZ/CQ1l6SQPd6Q7g=;
+        b=d4qR34YVC9b1wITAkmfFN+2RQEV++342zHZ0ErpTxHxjQHvVTNpgGM23T0Udm2HG0A
+         69WOBg6osPLeuLKQj2ywcuwqxLHj/KxS/b/zbafnmQPy9sF7iAfJIjBhpsj5vbzmkSNk
+         PzMPY+tVO1GxTue+skG4c7qOznJqshVRbyLjYMmfW6VIq8SPb+S24lxN0LbEs3k1j8gZ
+         R1Ai9UHZha3Axdp9VUrdt4PPz37wYMIMJ3pK/GG2r/yzWbn1G6Y4BGBTJ6nAo5IFprGA
+         t8+PDgzk6KYGIbrlGDkVmpAlJZ0Dgo8a2PKiE11045FTfNNtp+uSGuEWXd7UOgkY5SND
+         T9Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701891501; x=1702496301;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b3hX5NMSuRdxJ6nAzp41n5iuA2rkZ/CQ1l6SQPd6Q7g=;
+        b=DWW6WuJYindsaAo2IGryjBXsldmkknIbXtPJ93/Ed5Ej0anqqUS6aoImeyP6YxmbgR
+         k4HxqkNanNFWxt0aEFxT+9l+8jrVse44sSVFE8BkgM6qwiWnHqDgeFCd+cCEDrhfQYF/
+         VHv+TuiR8/8dizf+CtdGb2IH9yvexGCEOosYJuN9z6oIrrzweL5ACAjsqDaO/+Kz19cI
+         sv1g3XrUM6ng0X68FINhxMw46gGB4Holp7tKMWvXhb1GhibMPoDcqIfFHMl/BwcD2m9o
+         L6J8hPWRXJIFBOkTIz99nnkp5atlNk4PyK0C2n8iw2e6eYosutbf8l7H0Ru9VbR0NfOY
+         oFQA==
+X-Gm-Message-State: AOJu0YwFyMeSGpaP3FUQ67+Dk+8+ut2Qebv5PRB6TFWt0AF3Y4mwfmBT
+        Eh3UGEA9Y29Z3J3GFu0BHBs=
+X-Google-Smtp-Source: AGHT+IF3psGFqZBe6gBP6OT1d+U1ZmQ7dTO+uxp+N8sF/rl1Rz8qYHZ0CwADi5hVhHP6btYP0zd8YA==
+X-Received: by 2002:a17:90a:d48c:b0:286:c7af:b68e with SMTP id s12-20020a17090ad48c00b00286c7afb68emr1577344pju.72.1701891501198;
+        Wed, 06 Dec 2023 11:38:21 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id fs3-20020a17090af28300b002801ca4fad2sm247255pjb.10.2023.12.06.11.38.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 11:38:20 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 6 Dec 2023 09:38:19 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mrunal Patel <mpatel@redhat.com>,
+        Ryan Phillips <rphillips@redhat.com>,
+        Brent Rowsell <browsell@redhat.com>,
+        Peter Hunt <pehunt@redhat.com>,
+        Cestmir Kalina <ckalina@redhat.com>
+Subject: Re: [PATCH-cgroup v2] cgroup/cpuset: Include isolated cpuset CPUs in
+ cpu_is_isolated() check
+Message-ID: <ZXDNq6n1XtY8U7Vp@slm.duckdns.org>
+References: <20231205222114.773446-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
-X-Spamd-Bar: ++++++++++
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=none;
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [10.21 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(4.60)[~all];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-0.17)[-0.862];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-3.00)[100.00%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(1.20)[suse.cz];
-         NEURAL_SPAM_LONG(3.49)[0.997];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[suse.cz,kvack.org,vger.kernel.org,mit.edu,dilger.ca,infradead.org,linux-foundation.org,gmail.com,huawei.com];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 10.21
-X-Rspamd-Queue-Id: 48FC91FD36
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231205222114.773446-1-longman@redhat.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-12-23 20:50:30, Baokun Li wrote:
-> On 2023/12/4 22:41, Jan Kara wrote:
-> > On Mon 04-12-23 21:50:18, Baokun Li wrote:
-> > > On 2023/12/4 20:11, Jan Kara wrote:
-> > > > On Sat 02-12-23 17:14:30, Baokun Li wrote:
-> > > > > Recently, while running some pressure tests on MYSQL, noticed that
-> > > > > occasionally a "corrupted data in log event" error would be reported.
-> > > > > After analyzing the error, I found that extending DIO write and buffered
-> > > > > read were competing, resulting in some zero-filled page end being read.
-> > > > > Since ext4 buffered read doesn't hold an inode lock, and there is no
-> > > > > field in the page to indicate the valid data size, it seems to me that
-> > > > > it is impossible to solve this problem perfectly without changing these
-> > > > > two things.
-> > > > Yes, combining buffered reads with direct IO writes is a recipe for
-> > > > problems and pretty much in the "don't do it" territory. So honestly I'd
-> > > > consider this a MYSQL bug. Were you able to identify why does MYSQL use
-> > > > buffered read in this case? It is just something specific to the test
-> > > > you're doing?
-> > > The problem is with a one-master-twoslave MYSQL database with three
-> > > physical machines, and using sysbench pressure testing on each of the
-> > > three machines, the problem occurs about once every two to three hours.
-> > > 
-> > > The problem is with the relay log file, and when the problem occurs, the
-> > > middle dozens of bytes of the file are read as all zeros, while the data on
-> > > disk is not. This is a journal-like file where a write process gets the data
-> > > from
-> > > the master node and writes it locally, and another replay process reads the
-> > > file and performs the replay operation accordingly (some SQL statements).
-> > > The problem is that when replaying, it finds that the data read is
-> > > corrupted,
-> > > not valid SQL data, while the data on disk is normal.
-> > > 
-> > > It's not confirmed that buffered reads vs direct IO writes is actually
-> > > causing this issue, but this is the only scenario that we can reproduce
-> > > with our local simplified scripts. Also, after merging in patch 1, the
-> > > MYSQL pressure test scenario has now been tested for 5 days and has not
-> > > been reproduced.
-> > > 
-> > > I'll double-check the problem scenario, although buffered reads with
-> > > buffered writes doesn't seem to have this problem.
-> > Yeah, from what you write it seems that the replay code is using buffered
-> > reads on the journal file. I guess you could confirm that with a bit of
-> > kernel tracing but the symptoms look pretty convincing. Did you try talking
-> > to MYSQL guys about why they are doing this?
->
-> The operations performed on the relay log file are buffered reads and
-> writes, which I confirmed with the following bpftrace script:
-> ```
-> #include <linux/fs.h>
-> #include <linux/path.h>
-> #include <linux/dcache.h>
+On Tue, Dec 05, 2023 at 05:21:14PM -0500, Waiman Long wrote:
+> Currently, the cpu_is_isolated() function checks only the statically
+> isolated CPUs specified via the "isolcpus" and "nohz_full" kernel
+> command line options. This function is used by vmstat and memcg to
+> reduce interference with isolated CPUs by not doing stat flushing
+> or scheduling works on those CPUs.
 > 
-> kprobe:generic_file_buffered_read /!strncmp(str(((struct kiocb
-> *)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
->     printf("read path: %s\n", str(((struct kiocb
-> *)arg0)->ki_filp->f_path.dentry->d_name.name));
-> }
+> Workloads running on isolated CPUs within isolated cpuset
+> partitions should receive the same treatment to reduce unnecessary
+> interference. This patch introduces a new cpuset_cpu_is_isolated()
+> function to be called by cpu_is_isolated() so that the set of dynamically
+> created cpuset isolated CPUs will be included in the check.
 > 
-> kprobe:ext4_buffered_write_iter /!strncmp(str(((struct kiocb
-> *)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
->     printf("write path: %s\n", str(((struct kiocb
-> *)arg0)->ki_filp->f_path.dentry->d_name.name));
-> }
-> ```
-> I suspect there are DIO writes causing the problem, but I haven't caught
-> any DIO writes to such files via bpftrace.
-
-Interesting. Not sure how your partially zeroed-out buffers could happen
-with fully buffered IO.
-
-> > > > > In this series, the first patch reads the inode size twice, and takes the
-> > > > > smaller of the two values as the copyout limit to avoid copying data that
-> > > > > was not actually read (0-padding) into the user buffer and causing data
-> > > > > corruption. This greatly reduces the probability of problems under 4k
-> > > > > page. However, the problem is still easily triggered under 64k page.
-> > > > > 
-> > > > > The second patch waits for the existing dio write to complete and
-> > > > > invalidate the stale page cache before performing a new buffered read
-> > > > > in ext4, avoiding data corruption by copying the stale page cache to
-> > > > > the user buffer. This makes it much less likely that the problem will
-> > > > > be triggered in a 64k page.
-> > > > > 
-> > > > > Do we have a plan to add a lock to the ext4 buffered read or a field in
-> > > > > the page that indicates the size of the valid data in the page? Or does
-> > > > > anyone have a better idea?
-> > > > No, there are no plans to address this AFAIK. Because such locking will
-> > > > slow down all the well behaved applications to fix a corner case for
-> > > > application doing unsupported things. Sure we must not crash the kernel,
-> > > > corrupt the filesystem or leak sensitive (e.g. uninitialized) data if app
-> > > > combines buffered and direct IO but returning zeros instead of valid data
-> > > > is in my opinion fully within the range of acceptable behavior for such
-> > > > case.
-> > > > 
-> > > I also feel that a scenario like buffered reads + DIO writes is strange.
-> > > But theoretically when read doesn't return an error, the data read
-> > > shouldn't be wrong.  And I tested that xfs guarantees data consistency in
-> > > this scenario, which is why I thought it might be buggy.
-> > Yes, XFS has inherited stronger consistency guarantees from IRIX times than
-> > Linux filesystems traditionally had. We generally don't even guarantee
-> > buffered read vs buffered write atomicity (i.e., buffered read can see a
-> > torn buffered write).
+> Assuming that testing a bit in a cpumask is atomic, no synchronization
+> primitive is currently used to synchronize access to the cpuset's
+> isolated_cpus mask.
 > 
-> I'm a bit confused here, buffered read vs buffered write uses the same
-> page and appears to be protected by a memory barrier, how does the
-> inconsistency occur?
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Within the same page buffered reads and writes should be consistent because
-they are synchronized by the page lock. However once reads and writes
-involve multiple pages, there is no serialization so you can get contents
-of some pages before write and some pages after being written. However this
-doesn't seem to be your particular case here. I just wanted to point out
-that in general even buffered reads vs writes are not fully consistent.
+Applied to cgroup/for-6.8.
 
-								Honza
+Thanks.
 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+tejun
