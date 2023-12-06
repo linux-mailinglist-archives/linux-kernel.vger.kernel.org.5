@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D32807A44
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5421807A49
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442942AbjLFVWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        id S1379749AbjLFVXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:23:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442930AbjLFVVz (ORCPT
+        with ESMTP id S1379747AbjLFVXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:21:55 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D1DD5B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:22:01 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3F5A740E00C5;
-        Wed,  6 Dec 2023 21:21:59 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3UUOiSt2RwgL; Wed,  6 Dec 2023 21:21:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701897717; bh=GCZsoylEfcEdwCDgWMGB98cf6QKJY7fub7FE4C2RG/Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j/AoVz+GqAZwdRu/cmElvK6ULSbWUCxNGSLZDDOSjGO4T+BzPVvrD8Vtc56uIfa8A
-         Y12C6vE7hfnuIkAje1JNt081OFegiMu7hP2omrCUgErkKI9lxF446ghZ+wp2a+XW1t
-         fOaVmWi/57fR2fXU3xw/BCSVSudCNBAyqowuTM9j81A9dPdLZCg9jn280R/1hVoqPR
-         oiTHYu86MU1imJCs1kSNAAIZG4RsZEsNDgg1hSFOLHdihBRGIxvzCdkTEcte2POPqP
-         dvVctFNaF1ZFJUEv5IIU7gNqF7W/yvFundPIxpqbKAJ4ORGYKG/up0GXWCoKPOAkX7
-         rpkmic/K5PF7R9N6l5hzPkVfFbwIUh+2JSjLuomFZW2GyDzcwNhuhehT4jGErchQlG
-         o/1KAfJsKzjgcMhJ+18PHehiBZZjarmSTo3LDe86TG3fzY+6d4lz7NG3ZbSXmZA/Ku
-         0+iKtNxM21l/CcuLNToRHPk+k+7+iGRErClOSOoycWWgyQBjCCVeyt5W11IQm3pD/T
-         vnD9Nn4ph1AKrVnpAarUXNA75BKNdAmefQNr/lgv9spBY3DcaQ2albVijEt2ek2MaO
-         jyI6gQPdd0l06AbAWmKUoKi7JXNAS4r4e6BSD6GpD3OoaPh364+mUnkaQIMuEWYbMd
-         pRSTisjE62nq/YtDvsNG2Acs=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5A47740E00A9;
-        Wed,  6 Dec 2023 21:21:50 +0000 (UTC)
-Date:   Wed, 6 Dec 2023 22:21:45 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jann Horn <jannh@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/microcode: Be more verbose, especially about loading
- errors
-Message-ID: <20231206212145.GGZXDl6f/ho5olxNvq@fat_crate.local>
-References: <20231206172844.1756871-1-jannh@google.com>
- <20231206195814.GDZXDSVgtCWspEJx8Q@fat_crate.local>
- <CAG48ez3weAU-Uti0QyBSDNRv8xYqCJ5UbgJvssEWAWpvyon0DA@mail.gmail.com>
- <20231206203158.GEZXDaPslvxtOS/gze@fat_crate.local>
- <CAG48ez3FwbqaU+hP6cAZEGWdHDJdEMuDyqW7SiYrDFf+rOt=bA@mail.gmail.com>
+        Wed, 6 Dec 2023 16:23:31 -0500
+Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ADF2D69
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:23:35 -0800 (PST)
+Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
+        by cmsmtp with ESMTPS
+        id AwVGr9wTjWcCIAzMlrxgoX; Wed, 06 Dec 2023 21:23:35 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id AzMkrVCh81b9NAzMkr4xE5; Wed, 06 Dec 2023 21:23:34 +0000
+X-Authority-Analysis: v=2.4 cv=FLYIesks c=1 sm=1 tr=0 ts=6570e656
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=c601a17RXwP2wWhsnozrzA==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=e2cXIFwxEfEA:10 a=wYkD_t78qR0A:10 a=COk6AnOGAAAA:8
+ a=VwQbUJbxAAAA:8 a=_Wotqz80AAAA:8 a=cm27Pg_UAAAA:8 a=jzDRcfw_wAzovSFxW3EA:9
+ a=QEXdDO2ut3YA:10 a=TjNXssC_j7lpFel5tvFf:22 a=AjGcO6oz07-iQ99wixmX:22
+ a=buJP51TR1BpY-zbLSsyS:22 a=xmb-EsYY8bH0VWELuYED:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Z89JbXvFtxvpHgG4/D9TvUPfBOX7E1w1eYXh8GBdDDg=; b=wK+2HNzmisO4AOviFMz6pFLxZv
+        x5za6lFwlYdRe0LTXGbkDAoy3uHP03x6WQMPjzUArkHQFU0vlSa6f/cgkDrqkorNWDTOpgZxxd+MO
+        aUwSlLvSKv0H1BHTwaeTW1BK5/af50yVTOUPQDZasXrXtsFAG4ayPBekTLlXaNli0XkKUpza0ds06
+        WxHbLiW5h7IWvo/jp4EZtKYuz3ms8ahCOG1qbgcxMw9qJNJFw1UjIGgFs/DqHUtanU/5NSiBPVc5z
+        bv4cLz47JSY4+1cxw4iAmoyny7Ppr5MGLGoP2cfmQsOAccFpbBJAL4369hZ5kQZ7kperBj30ANg9n
+        nIfaBQQw==;
+Received: from 187.184.159.186.cable.dyn.cableonline.com.mx ([187.184.159.186]:15648 helo=[192.168.0.10])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1rAzMj-002Gl6-1K;
+        Wed, 06 Dec 2023 15:23:33 -0600
+Message-ID: <69be3198-16f1-45ec-8262-1ed269f1f6ea@embeddedor.com>
+Date:   Wed, 6 Dec 2023 15:23:31 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAG48ez3FwbqaU+hP6cAZEGWdHDJdEMuDyqW7SiYrDFf+rOt=bA@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] wifi: ath11k: Fix ath11k_htc_record flexible record
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     Kalle Valo <kvalo@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231205-flexarray-htc_record-v2-1-fbb56d436951@quicinc.com>
+ <202312061254.085B4755@keescook>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <202312061254.085B4755@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.184.159.186
+X-Source-L: No
+X-Exim-ID: 1rAzMj-002Gl6-1K
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187.184.159.186.cable.dyn.cableonline.com.mx ([192.168.0.10]) [187.184.159.186]:15648
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 1
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfC2h6vt5FaslSdRvBtZFd9lpCf1EoYWg4IkpRrnTilLVgyxCq03tjshF0bGakb3CwsbHORMvkQ63d20OO7rqOrcn5YJLVTUdfQjudIE66Oc5aDi/eImE
+ 4di2e5bzM+zwa0v3QMM0h9wAsVUWHxg6JlFIvZuitUCXZWen7CY3eTAtdQ/feYovDx9v6O4YOoEPWjAL/IHD44X6eJkZhDmqZzZpkgYRD4Gfgf0oXzJ2Rv0k
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 09:51:58PM +0100, Jann Horn wrote:
-> Ah, right. I guess that's decent for diagnostics, though I think it
-> would be nice to have a more explicit message about not finding a
-> microcode update, since otherwise you'd have to read the kernel
-> sources to figure out that you have to check for a missing second
-> line.
-
-I keep preaching scripting something around:
-
-$ grep microcode /proc/cpuinfo | sort | uniq -c
-     16 microcode       : 0x800820d
-
-We also have:
-
-$ grep -r . /sys/devices/system/cpu/vulnerabilities/
-/sys/devices/system/cpu/vulnerabilities/spectre_v2:Mitigation: Retpolines, IBPB: conditional, STIBP: disabled, RSB filling, PBRSB-eIBRS: Not affected
-...
-
-You could make sure that this says "no microcode" in the microcode
-missing case or so and then grep that on large fleets, massage results
-and dig into dmesg only on those which fail. Hopefully a small number.
-
-> Yeah, fair, I guess that's a fairly visible indicator that something's
-> wrong with microcode. (Though it doesn't tell you whether your
-> microcode is just outdated or you have no microcode for the CPU
-> family.)
-
-So what you could do on AMD (probably similar on Intel too) is to fetch
-
-git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
-
-scan the microcode blobs in amd-ucode/
-
-==========================================================
-|  inst_cpu  |   err_msk  |   err_cmp  | eq_cpu |   res  |
-==========================================================
-| 0x00800f82 | 0x00000000 | 0x00000000 | 0x8082 | 0x0000 |
-| 0x00830f10 | 0x00000000 | 0x00000000 | 0x8310 | 0x0000 |
-| 0x008a0f00 | 0x00000000 | 0x00000000 | 0x8a00 | 0x0000 |
-| 0x00800f12 | 0x00000000 | 0x00000000 | 0x8012 | 0x0000 |
-| 0x00000000 | 0x00000000 | 0x00000000 | 0x0000 | 0x0000 |
-----------------------------------------------------------
-   ID: 0x0800820d, CPU rev ID: 0x00008082
-   ID: 0x0830107b, CPU rev ID: 0x00008310
-   ID: 0x08a00008, CPU rev ID: 0x00008a00
-   ID: 0x0800126e, CPU rev ID: 0x00008012
 
 
-ID are the latest released patch revisions. You then compare them to the
-revision on the respective machine using that CPU rev ID which can be
-computed from CPUID(1).EAX (inst_cpu) using the table above. Table is
-also in the blob.
+On 12/6/23 14:55, Kees Cook wrote:
+> On Tue, Dec 05, 2023 at 01:00:17PM -0800, Jeff Johnson wrote:
+>> Transform the zero-length ath11k_htc_record::credit_report array into
+>> a proper flexible array. Since this is the only array in
+>> ath11k_htc_record, remove the unnecessary union.
+>>
+>> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> 
+> Heh, looks good. I wonder why this was a union to begin with?
 
-In the example above my workstation has microcode revision 0x800820d and
-CPUID(1).EAX on it is 0x00800f82.
+It used to contain a couple of members:
 
-So all up to date. :-)
+https://lore.kernel.org/linux-wireless/20231127-flexarray-htc_record-v1-3-6be1f36126fd@quicinc.com/
+https://lore.kernel.org/linux-wireless/4f2a486c-c6de-43e4-8bb6-bdd3f819b0a9@embeddedor.com/
 
-See, easy peasy. :-P
+--
+Gustavo
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
