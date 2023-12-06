@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD033806C67
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DBCE806C70
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377552AbjLFKoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:44:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47802 "EHLO
+        id S1377588AbjLFKqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377467AbjLFKoH (ORCPT
+        with ESMTP id S1377576AbjLFKqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:44:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77D212B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:44:12 -0800 (PST)
-Date:   Wed, 6 Dec 2023 11:44:09 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701859451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z+kDKxHX12JlyMFJ6Fwr7VrEw2RqXj2PWYxwiKRqpvI=;
-        b=Ul2mb0vCslqqLW0F0jUulkrp7u9VjaPLeGrCEjeKWcBnmgASZ3xc5exePNwQcq4LNYvrwS
-        2MZtTAE3sKfEH3sJi37VSLfHj9WzFnJKvFaOrLNZioKwxw3sTJrOBcX2HA389PRhWMvVO2
-        ghaR7BX2fJaoHWbiSwRBm4IrRqZw/hx+J8F614mkLeD0i/LR+tYGTU3bzx/9ESxIGG61TX
-        r+3sDuf58C1mb7+spXANcMPmcaBg4LSlNtAA+yPCDWY79lzXHgNVziVs4HUmLTjUZPB+LU
-        zyL8vsmwDtCrd9Nk8l8aqD1t0RMlCRPvKQedkCmup1TdUnXAa7uMT1jPGJyhFw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701859451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=z+kDKxHX12JlyMFJ6Fwr7VrEw2RqXj2PWYxwiKRqpvI=;
-        b=XO4NjLLjGyLR8KCppb3bLn57Aug8GsVWoFB3d5b1Xxc4pOxPwOeuSBJy1pX5RkELGcbb59
-        UifM81kGT5J86kDA==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v9 25/32] timers: Add get next timer interrupt
- functionality for remote CPUs
-Message-ID: <20231206104409.mcNIiNBs@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-26-anna-maria@linutronix.de>
+        Wed, 6 Dec 2023 05:46:03 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30316D6D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:46:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E13FCC433C7;
+        Wed,  6 Dec 2023 10:46:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701859567;
+        bh=MP5Osqlk3WWNvfz1umQL4sknHomsrrNZ86F+mX66gqk=;
+        h=From:Subject:Date:To:Cc:From;
+        b=Vv8bVqp2O73pOUsQgqYfaeWi+3TOeCIJt97guWPdh9zct6Y6R1QAWpa3khsidJCQJ
+         f6C++TP6HtzbWRI7TSTbsz+SfBuJa4L3Gpwtel6yd1PDTr46b3r/eNnEb73w11a5cy
+         vIAW486Cq5wgeDtTEwiJ3XkVQRbc0n+UNU2MPJo1Y0c0ZJgGpMuLOjt21h01k04pXn
+         7PqFMnUbZUZso+VsI7DG4FBNi10PEPlpOsg99SO6nN3Q4vnDrX5D1zu/k1oMXPHA/4
+         7BgLlxAAjo0tDlbFfvvrHMBeKUXcH4GoLjXtlnnHSBOxJBD94igHQ0vGTilgBtQuoN
+         iyWd52/MeHgGQ==
+From:   Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH v2 00/15] selftests/hid: tablets fixes
+Date:   Wed, 06 Dec 2023 11:45:51 +0100
+Message-Id: <20231206-wip-selftests-v2-0-c0350c2f5986@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231201092654.34614-26-anna-maria@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAN9QcGUC/13MywrCMBCF4VcpszaSiXdXvod0kbaTdrA0JROiU
+ vLuxoIbl/+B8y0gFJgErtUCgRIL+6mE2VTQDnbqSXFXGow2O0SD6smzEhpdJImitEbb7s2J9Pk
+ I5TMHcvxavXtdemCJPrxXPuF3/UmXPymh0qqxeLDoCBvd3R4UJhq3PvRQ55w/jlbesqsAAAA=
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>
+Cc:     linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Benjamin Tissoires <bentiss@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701859565; l=2588;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=MP5Osqlk3WWNvfz1umQL4sknHomsrrNZ86F+mX66gqk=;
+ b=yRG7lL0VsLWZfjQjVIZklm361Zje0ATbNRtCMBXruossTn9s51/kgTVezacnjtazhcOJjaZkV
+ 5JZMgPzMqo3AaOi3Ew/NYH3WcFjwgDJgzT50o4hikvwTwsRdUYja/l+
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,43 +62,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-01 10:26:47 [+0100], Anna-Maria Behnsen wrote:
-> To prepare for the conversion of the NOHZ timer placement to a pull at
-> expiry time model it's required to have functionality available getting the
-> next timer interrupt on a remote CPU.
-> 
-> Locking of the timer bases and getting the information for the next timer
-> interrupt functionality is split into separate functions. This is required
-> to be compliant with lock ordering when the new model is in place.
-> 
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Hi,
 
-Please fold the hunk below, it keeps sparse happy.
+the main trigger of this series was the XP-Pen issue[0].
+Basically, the tablets tests were good-ish but couldn't
+handle that tablet both in terms of emulation or in terms
+of detection of issues.
 
-------->8---------
+So rework the tablets test a bit to be able to include the
+XP-Pen patch later, once I have a kernel fix for it (right
+now I only have a HID-BPF fix, meaning that the test will
+fail if I include them).
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 2cff43c103295..00420d8faa042 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -2075,6 +2075,8 @@ void fetch_next_timer_interrupt_remote(unsigned long basej, u64 basem,
-  * Unlocks the remote timer bases.
-  */
- void timer_unlock_remote_bases(unsigned int cpu)
-+	__releases(timer_bases[BASE_LOCAL]->lock)
-+	__releases(timer_bases[BASE_GLOBAL]->lock)
- {
- 	struct timer_base *base_local, *base_global;
- 
-@@ -2092,6 +2094,8 @@ void timer_unlock_remote_bases(unsigned int cpu)
-  * Locks the remote timer bases.
-  */
- void timer_lock_remote_bases(unsigned int cpu)
-+	__acquires(timer_bases[BASE_LOCAL]->lock)
-+	__acquires(timer_bases[BASE_GLOBAL]->lock)
- {
- 	struct timer_base *base_local, *base_global;
- 
+Also, vmtest.sh needed a little bit of care, because
+boot2container moved, and I made it easier to reuse in a CI
+environment.
 
-Sebastian
+Cheers,
+Benjamin
+
+Note: I got the confirmation off-list from Peter that his
+rev-by applied to the whole series.
+
+[0] https://lore.kernel.org/all/nycvar.YFH.7.76.2311012033290.29220@cbobk.fhfr.pm/
+
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Changes in v2:
+- took Peter's review into account
+- Added a few patches to make mypy and ruff happy given that
+  I had to add a couple of type hints here and there
+- Link to v1: https://lore.kernel.org/r/20231129-wip-selftests-v1-0-ba15a1fe1b0d@kernel.org
+
+---
+Benjamin Tissoires (15):
+      selftests/hid: vmtest.sh: update vm2c and container
+      selftests/hid: vmtest.sh: allow finer control on the build steps
+      selftests/hid: base: allow for multiple skip_if_uhdev
+      selftests/hid: tablets: remove unused class
+      selftests/hid: tablets: move the transitions to PenState
+      selftests/hid: tablets: move move_to function to PenDigitizer
+      selftests/hid: tablets: do not set invert when the eraser is used
+      selftests/hid: tablets: set initial data for tilt/twist
+      selftests/hid: tablets: define the elements of PenState
+      selftests/hid: tablets: add variants of states with buttons
+      selftests/hid: tablets: convert the primary button tests
+      selftests/hid: tablets: add a secondary barrel switch test
+      selftests/hid: tablets: be stricter for some transitions
+      selftests/hid: fix mypy complains
+      selftests/hid: fix ruff linter complains
+
+ tools/testing/selftests/hid/tests/base.py          |   7 +-
+ tools/testing/selftests/hid/tests/test_mouse.py    |  14 +-
+ tools/testing/selftests/hid/tests/test_tablet.py   | 764 ++++++++++++++-------
+ .../selftests/hid/tests/test_wacom_generic.py      |   6 +-
+ tools/testing/selftests/hid/vmtest.sh              |  46 +-
+ 5 files changed, 567 insertions(+), 270 deletions(-)
+---
+base-commit: 4ea4ed22b57846facd9cb4af5f67cb7bd2792cf3
+change-id: 20231121-wip-selftests-001ac427e086
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
+
