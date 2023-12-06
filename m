@@ -2,123 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCDB807A3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:21:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6E7807A43
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379659AbjLFVVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:21:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S1442926AbjLFVVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:21:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379534AbjLFVVJ (ORCPT
+        with ESMTP id S1379534AbjLFVVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:21:09 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 444E8D5B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:21:15 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54da61eb366so300965a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 13:21:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701897674; x=1702502474; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6eHL/dN/qRcrKzFWjeWh9PSQOYj5S62HkgJQDrTF094=;
-        b=F/UIDWYYvkwgRW/g4H4VCgNJnooVoPAX7Ws2YHmoX8xyhvQsnztByB+rd3q9p/aPiw
-         lk6IUzSX/Zwf5kfwcdVhdDBhql1UYwiAIHZ+omAxTxJnbMICRF7SYcMOxNlqvVQKBXMf
-         RrOsP94OuBW9Cb/Zg+uUqgJIF6lJe9Xqd7b8j/ihEucJ7AdruP7PIlqDTZeKgH8rpK9I
-         fal03+LzIg16hkdKqsIs4crVVNWrN0LaBJFw2jhDpv9ezWRok/pUbMampyJv72+mibnS
-         RIaiCVEqYTQB83l+m1CluYRwvx8Z6ZRb+8y1MK55yQxsLfS7zNJf0g8HWzB5w8P74y63
-         Glzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701897674; x=1702502474;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6eHL/dN/qRcrKzFWjeWh9PSQOYj5S62HkgJQDrTF094=;
-        b=njj8asLvU6x+EixKwRkPQKYHRq7Zh4zIrv8haTJ1xYp42FRFWEj8o4FkEJ42MR8oet
-         VDBcwrp5Sh/fGJP0X8Bc0RZmBXO3AXVoLVZ4bybh/C6vyXwFdA3McGYfh1iu5fKvNq+4
-         sydltoN8BiHUkin9ePZyr9Ku1erXV+B/CIg4dtxETTexs4A3ss8VAa10LLHtmmV7+NIi
-         1w/aJmyoADEjcnD8GUSYgqh0zfMgbNbouXfGZXcv1NyyhTZ+6BldVCqVN8Fp659LlGOo
-         NXJ/odNkHB2K7YEezD7fmVqEfY/W0dpwWlZkSZYclKSPlEz+f6KHRnPxlnKjR+sFMHLO
-         R5qA==
-X-Gm-Message-State: AOJu0YwxPjm4hZVxg3uGfrqib4nq44+bD1VbLLCE1YohUZRXEdLxuzLd
-        b5GLhUWLmk6z+uGvJKM0RMGwOw==
-X-Google-Smtp-Source: AGHT+IGc+dDMW9dkb1ZkmEGUnnVdZSMIE832JsEWrrD5zfx3lvPWRNCWR48Ww5HEZRT+9SQfWvkV0A==
-X-Received: by 2002:a05:6402:17c5:b0:54c:e632:e629 with SMTP id s5-20020a05640217c500b0054ce632e629mr881004edy.44.1701897673701;
-        Wed, 06 Dec 2023 13:21:13 -0800 (PST)
-Received: from ?IPV6:2001:1c06:2302:5600:366d:ca8f:f3af:381? (2001-1c06-2302-5600-366d-ca8f-f3af-0381.cable.dynamic.v6.ziggo.nl. [2001:1c06:2302:5600:366d:ca8f:f3af:381])
-        by smtp.gmail.com with ESMTPSA id f11-20020aa7d84b000000b0054c7dfc63b4sm385980eds.43.2023.12.06.13.21.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 13:21:13 -0800 (PST)
-Message-ID: <a058827a-b025-4ee5-b2a4-d6c8963a6b73@linaro.org>
-Date:   Wed, 6 Dec 2023 22:21:11 +0100
+        Wed, 6 Dec 2023 16:21:51 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2047.outbound.protection.outlook.com [40.107.223.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB4BD5B;
+        Wed,  6 Dec 2023 13:21:57 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VblodD+fbGsZ4x/VacJQMiyYvk0RzPgdEpzy6fdNU4eUxM67sONYxfOVfey5Xkv2vbMDLFbKNAlVcVeWtlSHkBnJNc0ULsxX2tQbgxQoh4p4BWgO4IXJ1EN4eb4r/E64Co1+WnHMj/FeNvZykezFXNfoN+QgIR64DiKA7a7utLjxJHqAjY9+PhegjRWgk8Y7V8+QjF0pWpRha4Cuyv7+PZEq+dY6mKxXncDolILZZ+gyFERABKLP0ZIR4RAZZd+26RSLLAsaXoXteC3qA1lHuybO8xbi65KPpbHpZXcDiCCmH+KpbW7q1Cpxx7kwtyNKRhSnCkQk5JssHiChlWCT8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=au2cpbVPtCOztqv182LcRqwqRxVcvEX43ihrmpNCi7Y=;
+ b=J1eLZryCckEXN4rgzTB3+r4CGPmndKCNN/H7eWT7JZJ/7sIge4p0OB8LsVGFt+WY2Nflk0UZP47REG09Kn0Ckk+zzFIeY2Jdwx1Y395TBPtGVI1s1m2PmQc8IHHX0UGuD8kuXv1G02dQQK0Ax+drXji8NZg8HDJ8avp4Lkm/FmZpbNNLMaCpmW+QWNcq++22vie9qH3k7h7sq40h9jfPOA3vxkxl9U6tLjPqmeKQM+5cRmViHzZOf+RfPxOPx0QBmZ004+n7Wmv+JN2CFqS4pcNgrh9H1/476hSV4Vr8apJkglxgqkVXCLExqNoeL84Xm8vKp5KC/WW0+UXDq5nM6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=au2cpbVPtCOztqv182LcRqwqRxVcvEX43ihrmpNCi7Y=;
+ b=BqlF9JxRtpEEZhXJaYsTlZ7FE3DuQ3X2AL/LSTrjWqYJmQr/yAKRD0KRJd1Ubc19gfpJYo1l7NNz1ftBIYte6r0K0tVEBrKUiHCC3iJnknCsWOyTz1ZhLERqmHmijCBuIGA8k7SlhLDDIxo5ogiWjjcT0N1Y9QnScONjD8z7udY=
+Received: from DS7PR03CA0241.namprd03.prod.outlook.com (2603:10b6:5:3b3::6) by
+ MW6PR12MB8757.namprd12.prod.outlook.com (2603:10b6:303:239::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
+ 2023 21:21:55 +0000
+Received: from DS3PEPF000099DD.namprd04.prod.outlook.com
+ (2603:10b6:5:3b3:cafe::2a) by DS7PR03CA0241.outlook.office365.com
+ (2603:10b6:5:3b3::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33 via Frontend
+ Transport; Wed, 6 Dec 2023 21:21:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099DD.mail.protection.outlook.com (10.167.17.199) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7068.26 via Frontend Transport; Wed, 6 Dec 2023 21:21:55 +0000
+Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 6 Dec
+ 2023 15:21:54 -0600
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     <dmitry.torokhov@gmail.com>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <rrameshbabu@nvidia.com>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Subject: [PATCH v2 1/2] Input: i8042: Avoid probing if no keyboard and mouse are set in quirks
+Date:   Wed, 6 Dec 2023 15:21:39 -0600
+Message-ID: <20231206212140.7458-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: typec: qcom-pmic: add CONFIG_OF dependency
-Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>
-References: <20231206172037.12072-1-rdunlap@infradead.org>
- <d0323841-a3a7-45b7-b702-0a08f9250c55@roeck-us.net>
- <0c1bb5e8-1ad2-4bda-b038-456d9791f9b7@infradead.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <0c1bb5e8-1ad2-4bda-b038-456d9791f9b7@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099DD:EE_|MW6PR12MB8757:EE_
+X-MS-Office365-Filtering-Correlation-Id: 087f0af4-0778-42e2-0c3d-08dbf6a15f53
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ts6PYfKW9vEXHr33KjD6oteaBZpHHuVhZMxlZrI0VulOxMnoar2tIcc3IwKg2j+hJLGaIE5HpTUylfYG5Pq9BR91o06kQ2SopqXSHcOWkQkuYygWnGL25rmJwY+o/I17daoUAXK14ILuyJK7yw81rm2YeIWTqpC5uPG2vx45tv62ekWKCZ3MHg8nOJjCNZQG2zyJgV+DTmNH81Vm3sHG7zG7DwPmC1lRWfuaRNqRQuettmuA+fuP+WC4GYLBEVVMd16PgHKkqmp9VH4ehwthCGSB/qf0oyv4phIogOvBFwowgxrcNykDWiGW1O/06GJnqLDa0AaYeze+4BL6LDoghWjJMNaRHqB7cLgG6UeUUWcWdZ8Jb+ItWGqnCDCnJkGV7bfc+aajSkWgq1ToncrMHxVUTd3lpONu5ILU4KCuPu9EoyPQr3WP/A6gzAo4kqLJdzCpofdjdhup3SYJWq8uDY8oIOvV8Kgzuc8/ek4nNcysttdBJ3v5A7dGFlgv2eyDcinvL8PJfitMXqFRMSqXprOLa/TuaPbkIB68IPkNBbUbPxhmgUXA3mcR7XgiPxlbz8VvajEDLlTLOaRY7DOeZ66CwhkPphXxNb/jGsWUG2VXTlcc1Mcop1egHbblZN8AkOu1Lqd3qXidsyN4lZvn2JUm5iOEp4AS1dfGfc2dg62nbDDXw/aPaaQYG4hPcu+9cxvXgCwyyPbHk5glZqecPYtjhwp60W8pLrHj1M7Qd+Q2uphSsCzYbxp/tRthQsuT9phT73cJVIU/TM+hxlLS+g==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(396003)(39860400002)(136003)(230922051799003)(1800799012)(82310400011)(186009)(64100799003)(451199024)(36840700001)(46966006)(40470700004)(36860700001)(6666004)(7696005)(40480700001)(478600001)(54906003)(356005)(70586007)(70206006)(81166007)(316002)(26005)(16526019)(2616005)(47076005)(1076003)(4326008)(8676002)(8936002)(6916009)(426003)(336012)(40460700003)(82740400003)(44832011)(5660300002)(4744005)(2906002)(41300700001)(86362001)(36756003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 21:21:55.1721
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 087f0af4-0778-42e2-0c3d-08dbf6a15f53
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099DD.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8757
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 20:46, Randy Dunlap wrote:
-> 
-> 
-> On 12/6/23 10:49, Guenter Roeck wrote:
->> On Wed, Dec 06, 2023 at 09:20:37AM -0800, Randy Dunlap wrote:
->>> DRM_AUX_BRIDGE depends on CONFIG_OF, so that is also needed here
->>> to fix a kconfig warning:
->>>
->>> WARNING: unmet direct dependencies detected for DRM_AUX_HPD_BRIDGE
->>>    Depends on [n]: HAS_IOMEM [=y] && DRM_BRIDGE [=y] && OF [=n]
->>>    Selected by [y]:
->>>    - TYPEC_QCOM_PMIC [=y] && USB_SUPPORT [=y] && TYPEC [=y] && TYPEC_TCPM [=y] && (ARCH_QCOM || COMPILE_TEST [=y]) && (DRM [=y] || DRM [=y]=n) && DRM_BRIDGE [=y]
->>>
->>
->> All but impossible for me to determine if this patch or
->> https://lore.kernel.org/all/20231205-drm_aux_bridge-fixes-v1-2-d242a0ae9df4@kernel.org/
->> is more appropriate.
->>
->> Guenter
-> 
-> I guess that Bryan is the person to ask about that.
-> 
-> I don't see anything wrong with Nathan's patch. It should clear up the kconfig warning,
-> so as long as it builds cleanly, it seems OK.
-> 
+Some laptops have an i8042 controller in the SOC, nothing mentioned in
+ACPI PNP and nothing connected to the controller. Add the ability to
+skip probing in this case.
 
-So, I see both versions of this fix
-
-Nathan's
-drivers/gpu/drm/renesas/rcar-du/Kconfig
-
-Yours
-drivers/gpu/drm/tve200/Kconfig
-
-and virtually equivalent commit text. I think we agree its 1:1
-
-So, maybe stick with Nathan's since he posted first.
-
+Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 ---
-bod
+ drivers/input/serio/i8042-acpipnpio.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/input/serio/i8042-acpipnpio.h b/drivers/input/serio/i8042-acpipnpio.h
+index 9c39553d30fa..0fd88bbfaee1 100644
+--- a/drivers/input/serio/i8042-acpipnpio.h
++++ b/drivers/input/serio/i8042-acpipnpio.h
+@@ -1707,6 +1707,9 @@ static int __init i8042_platform_init(void)
+ 		"");
+ #endif
+ 
++	if (i8042_nokbd && i8042_noaux)
++		return -ENODEV;
++
+ 	retval = i8042_pnp_init();
+ 	if (retval)
+ 		return retval;
+-- 
+2.34.1
+
