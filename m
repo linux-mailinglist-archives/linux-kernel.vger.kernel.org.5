@@ -2,127 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2674806BEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:29:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F540806BF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377417AbjLFK27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
+        id S1377433AbjLFKaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377325AbjLFK26 (ORCPT
+        with ESMTP id S1377418AbjLFKag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:28:58 -0500
-Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com [209.85.160.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6884112B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:29:04 -0800 (PST)
-Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1fb36840642so6052447fac.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:29:04 -0800 (PST)
+        Wed, 6 Dec 2023 05:30:36 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E597012F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:30:41 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-db549f869a3so5335509276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:30:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701858641; x=1702463441; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oJAfBJe//jMp144Bh2ybimjx6ISuOne+BJIc9JPDue0=;
+        b=s5NfzDY6S0KcpnPU5ek/CTs7xvn0+fFhbf/dLr7qSR9E9uxw/sN5Ztfq9MmjD9ByvO
+         Dcp9McBlxJLZhbBO1PMbBI8Y0GCxvzSkyaGgb5DbfV3wCpkvqJ6o05aCdJ39Um3CJWv3
+         1oGxoT0ric7Ezm5vcLv7pylzl5/FxcPSGn30BWNSjXcW9slLphriIG9ARdRjzGj8oiuB
+         x3sqT6Z6Xrbv0swjaBFH7zkggGqkjUsdSWZTxoSpVsKxflb9+TKLo0xsmINhH7s6T0Lg
+         wNJYeZpVfkidV3cpGt9eGfKepmuTHxslAlk3pNkK4ufuxwTsFwvLJfkpeli/pn7+fnvX
+         AbWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701858543; x=1702463343;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T9Y7+TXaBsP3Hgd3/gwu8p6ZrI+EBLCOyy3VD3SsoLQ=;
-        b=TQZPqJa07bopJ/kbXxEuX5CiSs012bmgoUlhZXTOz3G/oa0tWHnAD8nL8UNbsSoXTe
-         WZ7kJWJ2GL++SQVnQmqWPsCFUXb1VbqLCDDZdDpt9mLEh/Z7cZ8wGjyR6sgPCV1neE7V
-         qvcQesS2G6HFZm5b66he1b2VfMR5LiUZpzT4VPI8S3XSuPRA9WSOGyXBWNeMswtOJ3Kh
-         fopPKliLrI9/AsQnszfPVbA2GG7GdDKOzBY2kLjTWwy36VPHxYcGpGvMx4x3nm06acZH
-         V2epGzhADj78XfQQstdl2oKuE8zl4RnLt6Eg34qyRLna1cpEuo0I03CLvhER94RtntMs
-         yjEA==
-X-Gm-Message-State: AOJu0YxxnpNIDPHDuH3Uwn92sMcdNXHnnrz7wMWjLKL84gRW/bKkGI3+
-        TyDBt+1LQXZpu+2RpLnlqPQJKWF9gtOAEpIkhGowlU03ntSr
-X-Google-Smtp-Source: AGHT+IF8WOQUPBa8F0OTeC5s8sgGhwiE/W1E9WHHTh2TYGcGEWmwY8R0/7cgn0n5usE/d8A2L1e6FmUCQKamkK6/vGIIEi76QfBu
+        d=1e100.net; s=20230601; t=1701858641; x=1702463441;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oJAfBJe//jMp144Bh2ybimjx6ISuOne+BJIc9JPDue0=;
+        b=huUccapOiu+kRQo4e12T6x79kwI+qZIV0Y+/p/ovMc1ss6D8uX8XgH+TIJnbB1X+q7
+         cNz+a2Hy03bT5MxFNo4Fsri4TU1UYaWu4mor4i432yGmzYGdtQ/3Qd/c9EO6PLuXuUBa
+         Upg4wHjyLzbdKTP1bcbquuOkwfPzbML2Z0kyB05QhTvm4aePZhgf7wOIcO4W423n1dib
+         Mjsy+LVetXH2uSQSh0WC1cSVgz/I07Vl5XgMtXkNOhWR5yNBJMtAhIKa94xaRdZYQkrn
+         N4/LP7lvE+Sb9HjsKDsUYzikIc3epUrMzqwEPuZxhANytxkwDImwsz/FVuaBbjkpX+wN
+         1A7Q==
+X-Gm-Message-State: AOJu0YzyD5GXzQ7F6R4/yAbSTs3XksrUL4nhcdgj7KbFzgAdqM2SDxTr
+        Bqs8CS4lRHx2ddUYcQZXi/zjEOfbLxVnl3cDoFZ7BQ==
+X-Google-Smtp-Source: AGHT+IFsrLqiAiOECeAi7vlVllrb2MVHSSJ0Sh4PmyzU4danP7PT/4yH1PAFrlzNyaMRm/sQgpHe+/mNLpSaLyYq/Oc=
+X-Received: by 2002:a25:c7cd:0:b0:db5:45f4:ec83 with SMTP id
+ w196-20020a25c7cd000000b00db545f4ec83mr416954ybe.43.1701858640812; Wed, 06
+ Dec 2023 02:30:40 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:ac08:b0:1fb:3bfc:a07e with SMTP id
- kw8-20020a056870ac0800b001fb3bfca07emr774468oab.6.1701858543753; Wed, 06 Dec
- 2023 02:29:03 -0800 (PST)
-Date:   Wed, 06 Dec 2023 02:29:03 -0800
-In-Reply-To: <tencent_832FC96FC0960CE862ED52CF3079966C4C0A@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f56247060bd4d11c@google.com>
-Subject: Re: [syzbot] [net?] KMSAN: uninit-value in __llc_lookup_established
-From:   syzbot <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20231121171643.3719880-1-surenb@google.com> <20231121171643.3719880-6-surenb@google.com>
+ <b3c882d2-0135-430c-8179-784f78be0902@arm.com> <a41c759f-78d8-44ed-b708-1bb737a8e6c1@redhat.com>
+ <cb3d3b12-abf3-4eda-8d9a-944684d05505@arm.com> <ccdb1080-7a2e-4f98-a4e8-e864fa2db299@redhat.com>
+ <CAJuCfpHS63bXkRGE1_G4z-2fDe72BeLka8t5ioSg2OXjbUrHXg@mail.gmail.com>
+ <744be4e0-48e0-4c77-825c-711386dd205f@arm.com> <CAJuCfpHpbz4fWawmYU=B1D5pPE4+x0Wj0V-514Dja9UWcwiL9A@mail.gmail.com>
+ <a52284a4-2b8c-4118-965d-04c472fbee05@redhat.com> <CAJuCfpEbxPksw3WtLWRT9mmGUCSZ431E4vaWMtbu8OrXmMxCdw@mail.gmail.com>
+ <CAJuCfpG=seLkKbMRjwuWNQozGSQmP-JqKVUuCGRqMqxND2u18A@mail.gmail.com> <3ba0015b-b36e-449a-8445-0f6272694db5@redhat.com>
+In-Reply-To: <3ba0015b-b36e-449a-8445-0f6272694db5@redhat.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 6 Dec 2023 02:30:28 -0800
+Message-ID: <CAJuCfpFPtbZuD53o+jOac97qA6MnK4jTEe5qNrZsH5v-m62oZA@mail.gmail.com>
+Subject: Re: [PATCH v5 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Dec 6, 2023 at 1:21=E2=80=AFAM David Hildenbrand <david@redhat.com>=
+ wrote:
+>
+> On 05.12.23 05:46, Suren Baghdasaryan wrote:
+> > On Mon, Dec 4, 2023 at 10:44=E2=80=AFAM Suren Baghdasaryan <surenb@goog=
+le.com> wrote:
+> >>
+> >> On Mon, Dec 4, 2023 at 10:27=E2=80=AFAM David Hildenbrand <david@redha=
+t.com> wrote:
+> >>>
+> >>> On 04.12.23 17:35, Suren Baghdasaryan wrote:
+> >>>> On Mon, Dec 4, 2023 at 1:27=E2=80=AFAM Ryan Roberts <ryan.roberts@ar=
+m.com> wrote:
+> >>>>>
+> >>>>> On 04/12/2023 04:09, Suren Baghdasaryan wrote:
+> >>>>>> On Sat, Dec 2, 2023 at 2:11=E2=80=AFAM David Hildenbrand <david@re=
+dhat.com> wrote:
+> >>>>>>>
+> >>>>>>> On 02.12.23 09:04, Ryan Roberts wrote:
+> >>>>>>>> On 01/12/2023 20:47, David Hildenbrand wrote:
+> >>>>>>>>> On 01.12.23 10:29, Ryan Roberts wrote:
+> >>>>>>>>>> On 21/11/2023 17:16, Suren Baghdasaryan wrote:
+> >>>>>>>>>>> Add tests for new UFFDIO_MOVE ioctl which uses uffd to move s=
+ource
+> >>>>>>>>>>> into destination buffer while checking the contents of both a=
+fter
+> >>>>>>>>>>> the move. After the operation the content of the destination =
+buffer
+> >>>>>>>>>>> should match the original source buffer's content while the s=
+ource
+> >>>>>>>>>>> buffer should be zeroed. Separate tests are designed for PMD =
+aligned and
+> >>>>>>>>>>> unaligned cases because they utilize different code paths in =
+the kernel.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> >>>>>>>>>>> ---
+> >>>>>>>>>>>      tools/testing/selftests/mm/uffd-common.c     |  24 +++
+> >>>>>>>>>>>      tools/testing/selftests/mm/uffd-common.h     |   1 +
+> >>>>>>>>>>>      tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++=
+++++++++++++++
+> >>>>>>>>>>>      3 files changed, 214 insertions(+)
+> >>>>>>>>>>>
+> >>>>>>>>>>> diff --git a/tools/testing/selftests/mm/uffd-common.c
+> >>>>>>>>>>> b/tools/testing/selftests/mm/uffd-common.c
+> >>>>>>>>>>> index fb3bbc77fd00..b0ac0ec2356d 100644
+> >>>>>>>>>>> --- a/tools/testing/selftests/mm/uffd-common.c
+> >>>>>>>>>>> +++ b/tools/testing/selftests/mm/uffd-common.c
+> >>>>>>>>>>> @@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long off=
+set, bool wp)
+> >>>>>>>>>>>          return __copy_page(ufd, offset, false, wp);
+> >>>>>>>>>>>      }
+> >>>>>>>>>>>      +int move_page(int ufd, unsigned long offset, unsigned l=
+ong len)
+> >>>>>>>>>>> +{
+> >>>>>>>>>>> +    struct uffdio_move uffdio_move;
+> >>>>>>>>>>> +
+> >>>>>>>>>>> +    if (offset + len > nr_pages * page_size)
+> >>>>>>>>>>> +        err("unexpected offset %lu and length %lu\n", offset=
+, len);
+> >>>>>>>>>>> +    uffdio_move.dst =3D (unsigned long) area_dst + offset;
+> >>>>>>>>>>> +    uffdio_move.src =3D (unsigned long) area_src + offset;
+> >>>>>>>>>>> +    uffdio_move.len =3D len;
+> >>>>>>>>>>> +    uffdio_move.mode =3D UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
+> >>>>>>>>>>> +    uffdio_move.move =3D 0;
+> >>>>>>>>>>> +    if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
+> >>>>>>>>>>> +        /* real retval in uffdio_move.move */
+> >>>>>>>>>>> +        if (uffdio_move.move !=3D -EEXIST)
+> >>>>>>>>>>> +            err("UFFDIO_MOVE error: %"PRId64,
+> >>>>>>>>>>> +                (int64_t)uffdio_move.move);
+> >>>>>>>>>>
+> >>>>>>>>>> Hi Suren,
+> >>>>>>>>>>
+> >>>>>>>>>> FYI this error is triggering in mm-unstable (715b67adf4c8):
+> >>>>>>>>>>
+> >>>>>>>>>> Testing move-pmd on anon... ERROR: UFFDIO_MOVE error: -16 (err=
+no=3D16,
+> >>>>>>>>>> @uffd-common.c:648)
+> >>>>>>>>>>
+> >>>>>>>>>> I'm running in a VM on Apple M2 (arm64). I haven't debugged an=
+y further, but
+> >>>>>>>>>> happy to go deeper if you can direct.
+> >>>>>>>>>
+> >>>>>>>>> Does it trigger reliably? Which pagesize is that kernel using?
+> >>>>>>>>
+> >>>>>>>> Yep, although very occasionally it fails with EAGAIN. 4K kernel;=
+ see other email
+> >>>>>>>> for full config.
+> >>>>>>>>
+> >>>>>>>>>
+> >>>>>>>>> I can spot that uffd_move_pmd_test()/uffd_move_pmd_handle_fault=
+() uses
+> >>>>>>>>> default_huge_page_size(), which reads the default hugetlb size.
+> >>>>>>>>
+> >>>>>>>> My kernel command line is explicitly seting the default huge pag=
+e size to 2M.
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> Okay, so that likely won't affect it.
+> >>>>>>>
+> >>>>>>> I can only guess that it has to do with the alignment of the virt=
+ual
+> >>>>>>> area we are testing with, and that we do seem to get more odd pat=
+terns
+> >>>>>>> on arm64.
+> >>>>>>>
+> >>>>>>> uffd_move_test_common() is a bit more elaborate, but if we aligne=
+d the
+> >>>>>>> src+start area up, surely "step_count" cannot be left unmodified?
+> >>>>>>>
+> >>>>>>> So assuming we get either an unaligned source or an unaligned dst=
+ from
+> >>>>>>> mmap(), I am not convinced that we won't be moving areas that are=
+ not
+> >>>>>>> necessarily fully backed by PMDs and maybe don't even fall into t=
+he VMA
+> >>>>>>> of interest?
+> >>>>>>>
+> >>>>>>> Not sure if that could trigger the THP splitting issue, though.
+> >>>>>>>
+> >>>>>>> But I just quickly scanned that test setup, could be I am missing
+> >>>>>>> something. It might make sense to just print the mmap'ed range an=
+d the
+> >>>>>>> actual ranges we are trying to move. Maybe something "obvious" ca=
+n be
+> >>>>>>> observed.
+> >>>>>>
+> >>>>>> I was able to reproduce the issue on an Android device and after
+> >>>>>> implementing David's suggestions to split the large folio and afte=
+r
+> >>>>>> replacing default_huge_page_size() with read_pmd_pagesize(), the
+> >>>>>> move-pmd test started working for me. Ryan, could you please apply
+> >>>>>> attached patches (over mm-unstable) and try the test again?
+> >>>>>
+> >>>>> Yep, all fixed with those patches!
+> >>>>
+> >>>> Great! Thanks for testing and confirming. I'll post an updated
+> >>>> patchset later today and will ask Andrew to replace the current one
+> >>>> with it.
+> >>>> I'll also look into the reasons we need to split PMD on ARM64 in thi=
+s
+> >>>> test. It's good that this happened and we were able to test the PMD
+> >>>> split path but I'm curious about the reason. It's possible my addres=
+s
+> >>>> alignment calculations are  somehow incorrect.
+> >>>
+> >>> I only skimmed the diff briefly, but likely you also want to try
+> >>> splitting in move_pages_pte(), if you encounter an already-pte-mapped=
+ THP.
+> >>
+> >> Huh, good point. I might be able to move the folio splitting code into
+> >> pte-mapped case and do a retry after splitting. That should minimize
+> >> the additional code required. Will do and post a new set shortly.
+> >> Thanks!
+> >
+> > Was planning to post an update today but need some more time. Will try
+> > to send it tomorrow.
+>
+> It would be great to have tests that cover these cases (having to
+> PTE-map a PMD-mapped THP, and stumbling over an already-PTE-mapped one).
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KMSAN: uninit-value in llc_rcv
+Agree. Let me post the new version so that mm-unstable does not
+produce these failures and will start working on covering additional
+cases in the tests. The new patchset is almost ready, just finishing
+final tests.
 
-syz-executor.0 uses obsolete (PF_INET,SOCK_PACKET)
-=====================================================
-BUG: KMSAN: uninit-value in pskb_may_pull_reason include/linux/skbuff.h:2667 [inline]
-BUG: KMSAN: uninit-value in pskb_may_pull include/linux/skbuff.h:2681 [inline]
-BUG: KMSAN: uninit-value in llc_fixup_skb net/llc/llc_input.c:135 [inline]
-BUG: KMSAN: uninit-value in llc_rcv+0x10b9/0x1480 net/llc/llc_input.c:178
- pskb_may_pull_reason include/linux/skbuff.h:2667 [inline]
- pskb_may_pull include/linux/skbuff.h:2681 [inline]
- llc_fixup_skb net/llc/llc_input.c:135 [inline]
- llc_rcv+0x10b9/0x1480 net/llc/llc_input.c:178
- __netif_receive_skb_one_core net/core/dev.c:5527 [inline]
- __netif_receive_skb+0x1a6/0x5a0 net/core/dev.c:5641
- netif_receive_skb_internal net/core/dev.c:5727 [inline]
- netif_receive_skb+0x58/0x660 net/core/dev.c:5786
- tun_rx_batched+0x3ee/0x980 drivers/net/tun.c:1555
- tun_get_user+0x53af/0x66d0 drivers/net/tun.c:2002
- tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
- call_write_iter include/linux/fs.h:2020 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x8ef/0x1490 fs/read_write.c:584
- ksys_write+0x20f/0x4c0 fs/read_write.c:637
- __do_sys_write fs/read_write.c:649 [inline]
- __se_sys_write fs/read_write.c:646 [inline]
- __x64_sys_write+0x93/0xd0 fs/read_write.c:646
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
- slab_alloc_node mm/slub.c:3478 [inline]
- kmem_cache_alloc_node+0x5e9/0xb10 mm/slub.c:3523
- kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
- __alloc_skb+0x318/0x740 net/core/skbuff.c:651
- alloc_skb include/linux/skbuff.h:1286 [inline]
- alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6331
- sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2780
- tun_alloc_skb drivers/net/tun.c:1531 [inline]
- tun_get_user+0x1e8a/0x66d0 drivers/net/tun.c:1846
- tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
- call_write_iter include/linux/fs.h:2020 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x8ef/0x1490 fs/read_write.c:584
- ksys_write+0x20f/0x4c0 fs/read_write.c:637
- __do_sys_write fs/read_write.c:649 [inline]
- __se_sys_write fs/read_write.c:646 [inline]
- __x64_sys_write+0x93/0xd0 fs/read_write.c:646
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 1 PID: 5454 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-14500-g1c41041124bd-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-=====================================================
-
-
-Tested on:
-
-commit:         1c410411 Merge tag 'i3c/for-6.7' of git://git.kernel.o..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=111c2586e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=956549bd1d1e9efd
-dashboard link: https://syzkaller.appspot.com/bug?extid=b5ad66046b913bc04c6f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=140e7c4ce80000
-
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
