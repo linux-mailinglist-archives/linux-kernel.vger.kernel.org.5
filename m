@@ -2,127 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7306180784C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 312FC807852
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378895AbjLFTAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:00:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        id S1379188AbjLFTC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:02:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378848AbjLFTAX (ORCPT
+        with ESMTP id S1378848AbjLFTCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:00:23 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E565B193;
-        Wed,  6 Dec 2023 11:00:29 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-286e676ffa0so152592a91.1;
-        Wed, 06 Dec 2023 11:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701889229; x=1702494029; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gzbohbzVePtQAWojGFBvS0mVM42OxJTLPxt60AU1LYc=;
-        b=FS8F1NjiwZT8FmM7L617gO7Pg9H/a9IsBa6ryAYBD4jiO1WTUnSvyUckmdGBum8KoU
-         BQqzUl4X+XiSavCZD23wmdSBkZm40X2ifg5//zD7HOgc5oS3dgr11nD2i6aAHCSkQ+AI
-         O4YYx9bJ6tQbEETsnEVL2KE31GE3XOPPj5Wh5f2BFiQDYLIWPUEjwxUBOzIEovyxUGP/
-         HbaNsnwVVpLZXgydQAzGyYLOaieeVRDG6Hb6KTLgCymnFYQH627ESJzTxzTaRptwUATm
-         mwyCNoSQbKP9Txzuls6Cn83PCzzeyHAK287RZOOI+L0VIS/vwQ+OiQ9MH/A1SE20JJEF
-         qfgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701889229; x=1702494029;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gzbohbzVePtQAWojGFBvS0mVM42OxJTLPxt60AU1LYc=;
-        b=J3yDwY4OM8LEWo4JMseQp1VFQIAHnGPuKUczxobyEXiBqXq6vTzMktKGSuybmTzmOY
-         tz1WrLnEhH4S+tPh7EyK/wHJBhDknBM49i06Y76uD8KvCnU84CAjM+dA505T6fH0MCDi
-         THm/G42Zqr5ot8bakN2AqCVQTdLZglEGTZa00hfyjVRN1+qEjTAELdQepC5ivMbliH66
-         ++EX1u3raIz1Putgyr99oCVuTJZX8NYLykTMVmkPUpVYEBWsICmfz2/2K0hS5MqHDLq0
-         pxVzpLgKLP8lXl4jYjOKBD87US5pSCic14Y3iRpknjVIS+7lFAg9oKA5rudG3mBkwF19
-         WDUg==
-X-Gm-Message-State: AOJu0YxvZWL9mmz1co0FluPCZO4CgleudRJCBRunVeje4IRT1nxM7Sgw
-        bkZGni4YHUO0/UtYY/vDTc4=
-X-Google-Smtp-Source: AGHT+IGt2RkwoEJvnNo596uficEOJHOXr2g3TtQ4DOJL5NzM/DY50pjdwYSQUW8PI8sB4O4FfCwApg==
-X-Received: by 2002:a17:90b:38c5:b0:286:aded:d5de with SMTP id nn5-20020a17090b38c500b00286adedd5demr1064920pjb.15.1701889229200;
-        Wed, 06 Dec 2023 11:00:29 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:27ef])
-        by smtp.gmail.com with ESMTPSA id w4-20020a1709027b8400b001d049cc4c9asm169921pll.7.2023.12.06.11.00.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 11:00:28 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 6 Dec 2023 09:00:27 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Dennis Zhou <dennis@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 0/2] riscv: Enable percpu page first chunk allocator
-Message-ID: <ZXDEyzVcBOPUCCpg@slm.duckdns.org>
-References: <20231110140721.114235-1-alexghiti@rivosinc.com>
- <f259088f-a590-454e-b322-397e63071155@ghiti.fr>
+        Wed, 6 Dec 2023 14:02:55 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D3684;
+        Wed,  6 Dec 2023 11:03:00 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701889379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Uendxf/jowTS9LGYuYHBvubM7ESVge9EsyeuiLQyeQ=;
+        b=NAl/1SmbFM7n/y8d/m6HtA8j8xq9DaEoRraEShtTyWrD33rdQjeS5Sch7gnW4+VfCDwyoM
+        WfHYuO7ZrQ2YqT7O7fKQNjlZeqOvIb7gZwEwb5eGrQ0hcAdrhIDwU2ERUjGwRf4UDZxvvE
+        3TVdMvLxbzKJ2PRoPlquAILAHwhF+IyO8d3AbUfcvrZtSWL6lAVK4IuNf06rosnJi1X0/1
+        hwHb/DPoTTUPE/YT79wtt7Km1WH4MMEXot6uBk1fFcrnREOdFsNP+OIa/k2x0DTyYvDadJ
+        nmwHyN9Ue1r/4DtV244b6VCI+oXZtmEsF0z32t4oW4wSvDbd3ZMxGuLlNICGUw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701889379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5Uendxf/jowTS9LGYuYHBvubM7ESVge9EsyeuiLQyeQ=;
+        b=2+VnuYp627Xrq/4voPsnP5pt1wB5MDLdjYYI2IxY9MR4F1tsOwbjhnupr9rPW8c1PM9A71
+        uqQLIPjVAQjWW9BQ==
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
+        iommu@lists.linux.dev, Lu Baolu <baolu.lu@linux.intel.com>,
+        kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, maz@kernel.org,
+        peterz@infradead.org, seanjc@google.com,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [PATCH RFC 07/13] x86/irq: Add helpers for checking Intel PID
+In-Reply-To: <20231112041643.2868316-8-jacob.jun.pan@linux.intel.com>
+References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
+ <20231112041643.2868316-8-jacob.jun.pan@linux.intel.com>
+Date:   Wed, 06 Dec 2023 20:02:58 +0100
+Message-ID: <87il5bupb1.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f259088f-a590-454e-b322-397e63071155@ghiti.fr>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 11:08:20AM +0100, Alexandre Ghiti wrote:
-> Hi Tejun,
-> 
-> On 10/11/2023 15:07, Alexandre Ghiti wrote:
-> > While working with pcpu variables, I noticed that riscv did not support
-> > first chunk allocation in the vmalloc area which may be needed as a fallback
-> > in case of a sparse NUMA configuration.
-> > 
-> > patch 1 starts by introducing a new function flush_cache_vmap_early() which
-> > is needed since a new vmalloc mapping is established and directly accessed:
-> > on riscv, this would likely fail in case of a reordered access or if the
-> > uarch caches invalid entries in TLB.
-> > 
-> > patch 2 simply enables the page percpu first chunk allocator in riscv.
-> > 
-> > Alexandre Ghiti (2):
-> >    mm: Introduce flush_cache_vmap_early() and its riscv implementation
-> >    riscv: Enable pcpu page first chunk allocator
-> > 
-> >   arch/riscv/Kconfig                  | 2 ++
-> >   arch/riscv/include/asm/cacheflush.h | 3 ++-
-> >   arch/riscv/include/asm/tlbflush.h   | 2 ++
-> >   arch/riscv/mm/kasan_init.c          | 8 ++++++++
-> >   arch/riscv/mm/tlbflush.c            | 5 +++++
-> >   include/asm-generic/cacheflush.h    | 6 ++++++
-> >   mm/percpu.c                         | 8 +-------
-> >   7 files changed, 26 insertions(+), 8 deletions(-)
-> > 
-> 
-> Any feedback regarding this?
+On Sat, Nov 11 2023 at 20:16, Jacob Pan wrote:
 
-On cursory look, it looked fine to me but Dennis is maintaining the percpu
-tree now. Dennis?
+That 'Intel PID' in the subject line sucks. What's wrong with writing
+things out?
 
-Thanks.
+       x86/irq: Add accessors for posted interrupt descriptors
 
--- 
-tejun
+Hmm?
+
+> Intel posted interrupt descriptor (PID) stores pending interrupts in its
+> posted interrupt requests (PIR) bitmap.
+>
+> Add helper functions to check individual vector status and the entire bitmap.
+>
+> They are used for interrupt migration and runtime demultiplexing posted MSI
+> vectors.
+
+This is all backwards.
+
+  Posted interrupts are controlled by and pending interrupts are marked in
+  the posted interrupt descriptor. The upcoming support for host side
+  posted interrupts requires accessors to check for pending vectors.
+
+  Add ....
+
+>  #ifdef CONFIG_X86_POSTED_MSI
+> +/*
+> + * Not all external vectors are subject to interrupt remapping, e.g. IOMMU's
+> + * own interrupts. Here we do not distinguish them since those vector bits in
+> + * PIR will always be zero.
+> + */
+> +static inline bool is_pi_pending_this_cpu(unsigned int vector)
+
+Can you please use a proper name space pi_.....() instead of this
+is_...() muck which is horrible to grep for. It's documented ....
+
+> +{
+> +	struct pi_desc *pid;
+> +
+> +	if (WARN_ON(vector > NR_VECTORS || vector < FIRST_EXTERNAL_VECTOR))
+> +		return false;
+
+Haha. So much about your 'can use the full vector space' dreams .... And
+WARN_ON_ONCE() please.
+
+> +
+> +	pid = this_cpu_ptr(&posted_interrupt_desc);
+
+Also this can go into the declaration line.
+
+> +
+> +	return (pid->pir[vector >> 5] & (1 << (vector % 32)));
+
+  __test_bit() perhaps?
+
+> +}
+
+> +static inline bool is_pir_pending(struct pi_desc *pid)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < 4; i++) {
+> +		if (pid->pir_l[i])
+> +			return true;
+> +	}
+> +
+> +	return false;
+
+This is required because pi_is_pir_empty() is checking the other way
+round, right?
+
+> +}
+> +
+>  extern void intel_posted_msi_init(void);
+>  
+>  #else
+> +static inline bool is_pi_pending_this_cpu(unsigned int vector) {return false; }
+
+lacks space before 'return'
+
+> +
+>  static inline void intel_posted_msi_init(void) {};
+>  
+>  #endif /* X86_POSTED_MSI */
