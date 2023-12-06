@@ -2,74 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCEE80633A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CBE80633C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376275AbjLFAKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33364 "EHLO
+        id S1376259AbjLFALe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:11:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346679AbjLFAKh (ORCPT
+        with ESMTP id S1346650AbjLFALc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:10:37 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A9DD49
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:10:43 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-77dccb3e4baso403788385a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 16:10:43 -0800 (PST)
+        Tue, 5 Dec 2023 19:11:32 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE221AA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:11:38 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6cde4aeea29so4595715b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 16:11:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1701821442; x=1702426242; darn=vger.kernel.org;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qa4PwVpFGb6B1rPKqVSw2dIPpEG5hZm8nLLBZDfAUKI=;
-        b=RuWQqsaQ/px4QjBIhJh5aGxiIfVELAFE1FfqU72hRQf1Bx7oNIUtn41jdAr3pLDVJH
-         DHGFKhJ55EEFAOS1bjNNaAxdRMZnSMyZHQe2Cm1k1OWPPiEnWh92vYjx6ZS8xAcwwtsb
-         cgAif6Pp9fsFWXMB5Pi+7JQtQdVccJHraTiUk=
+        d=broadcom.com; s=google; t=1701821498; x=1702426298; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:autocrypt
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=pm1oKkCoalX6tSM3viOGGKNp/mvUUBDfYSLYSsiYzPk=;
+        b=Ue8Xl2FPJRy7AMcXsJhQ3CRTfZiJIakyYasTanU1aZXJ7EjV9sfjFDhTL+Qw10IGYL
+         5eC76jIIdgwvDm8sJcj3YQ2WGHW1/dsPlaR1NKNdOi++fCDc418N6wqTkAoPCLUI3IEk
+         a+H0OkC5nfb69ibEvuH2Sl9/3pXi+AaIwYlUI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701821442; x=1702426242;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qa4PwVpFGb6B1rPKqVSw2dIPpEG5hZm8nLLBZDfAUKI=;
-        b=iPiYQ3WCKeXkGopeiESsNAZdAVoAXS8gL6OaKCVFVjmRsfpyhPddYMsZWFb5egXwES
-         eUcsIfVze++lstsSEAn6zxejVlLaTVli8S4AwlZv1uohFMJPXg1f/WQ3zRFssynt8S0W
-         s9qQrzSCguaYM0JdjtnBZDBRrAyxV/1s3+ZNxBf4Kt30O2c6dHDdSi5UVkhWqPWvPK1q
-         rJHmL/FEMMf0Po6aBLqmVF7sFlXhZXTBkJERRK6Ci0g3+noEZEhfu6MtwHfmGneDhPsj
-         3M3PSc8Sxwc1I8DM8zHe9oUl0vetidKoCIGggvsCMbyu7QlLx/5qliKQfeQfVQXwIAyP
-         hNww==
-X-Gm-Message-State: AOJu0YytSV9oEjbPiMnIiAp4sVgvUtUIHcQ//1CppepTYQpYCoz1YpoK
-        U5C0cv/zz4O6/1HhaIW2C2EBBb1g7KXXKYyEweobWA==
-X-Google-Smtp-Source: AGHT+IFo+J55/fIilTSkB3PvHbM48OvUdpaqjZRKE4/M1EujfRhxpICPcakNNdceCFKcdPrI3TCHQQ==
-X-Received: by 2002:a05:620a:9047:b0:77e:fba3:93b3 with SMTP id rl7-20020a05620a904700b0077efba393b3mr57978qkn.149.1701821442503;
-        Tue, 05 Dec 2023 16:10:42 -0800 (PST)
-Received: from [10.69.71.77] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id bq42-20020a05620a46aa00b0077d6443ae82sm5445992qkb.83.2023.12.05.16.10.39
+        d=1e100.net; s=20230601; t=1701821498; x=1702426298;
+        h=content-transfer-encoding:content-language:in-reply-to:autocrypt
+         :from:references:cc:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pm1oKkCoalX6tSM3viOGGKNp/mvUUBDfYSLYSsiYzPk=;
+        b=LeoFwgvqXRDXb91t++hz9BJRDKyvsjrx9B0qdggcgjVyR4xnaPkSmjl7qb0Z4WAfsZ
+         WOy2mrztlkFc9LRvpB0vDdhC1LM98v5L0/yLTTAdjv2krVd0V3v83oj6tFA4Ztobsi71
+         L3Dh+IsRzPiCqi0pxNKPLcKVd4PjaLzSKbBq3/9JMhfnKny9o0OG3eNwsNRTmOd7hBhX
+         6z+7G4A8hJxzy0P8zcTQaJFMzc+9A6r/eQyqBR0B9MBXCc88GxYIivJ/vQOcSeO81MY+
+         QFMD4o22twk3sbb41UFGGPlu+xbT0hqsUwotWedfY/hT6FAtjFgJa6qFCQuSSQ+w7CsZ
+         pmBA==
+X-Gm-Message-State: AOJu0YyR9xIkqWCtkRzuGsNRz/cs4hln16SOelG8dsACQj/8zpdmjkNL
+        isrbp99G72ysOzbUMQbJDYG4Sm7YClof6DHnwK+OIQ3ISOf076cXDt7UdDKQNpBVIgHyfDut8EC
+        Pqfj9wp2WGcnucec=
+X-Google-Smtp-Source: AGHT+IEb+Acv3cakXZQFUMyjIsQ7ofAHzX30eBJGLQZu6hOH9JL8wjrO7j7FjKvQ1xRrcLJENjA8mw==
+X-Received: by 2002:a05:6a00:4409:b0:6ce:2732:294 with SMTP id br9-20020a056a00440900b006ce27320294mr8060pfb.67.1701821497102;
+        Tue, 05 Dec 2023 16:11:37 -0800 (PST)
+Received: from [10.62.14.168] ([128.177.82.146])
+        by smtp.gmail.com with ESMTPSA id y198-20020a62cecf000000b006ce7e65159bsm516328pfg.28.2023.12.05.16.11.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 16:10:41 -0800 (PST)
-Message-ID: <55a08719-cd18-4a01-9a2a-0115065c06a6@broadcom.com>
-Date:   Tue, 5 Dec 2023 16:10:38 -0800
+        Tue, 05 Dec 2023 16:11:33 -0800 (PST)
+Message-ID: <ef8d3e17-7028-47fd-ad31-54dadbb6796d@broadcom.com>
+Date:   Tue, 5 Dec 2023 16:11:29 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: phy: Only resume phy if it is suspended
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        florian.fainelli@broadcom.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231205234229.274601-1-justin.chen@broadcom.com>
- <7e3208aa-3adf-47ec-9e95-3c88a121e8a3@lunn.ch>
-From:   Justin Chen <justin.chen@broadcom.com>
-In-Reply-To: <7e3208aa-3adf-47ec-9e95-3c88a121e8a3@lunn.ch>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000091c421060bcc2ef4"
+Subject: Re: [PATCH v2 6/6] x86/vmware: Add TDX hypercall support
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Alexey Makhalov <amakhalov@vmware.com>
+Cc:     linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+        hpa@zytor.com, dave.hansen@linux.intel.co, bp@alien8.d,
+        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
+        netdev@vger.kernel.org, richardcochran@gmail.com,
+        linux-input@vger.kernel.org, dmitry.torokhov@gmail.com,
+        zackr@vmware.com, linux-graphics-maintainer@vmware.com,
+        pv-drivers@vmware.com, namit@vmware.com, timothym@vmware.com,
+        akaher@vmware.com, jsipek@vmware.com,
+        dri-devel@lists.freedesktop.org, daniel@ffwll.ch,
+        airlied@gmail.com, tzimmermann@suse.de, mripard@kernel.org,
+        maarten.lankhorst@linux.intel.com, horms@kernel.org
+References: <20231122233058.185601-8-amakhalov@vmware.com>
+ <20231201232452.220355-1-amakhalov@vmware.com>
+ <20231201232452.220355-7-amakhalov@vmware.com>
+ <20231204103100.GYZW2qZE9tbGMtuVgY@fat_crate.local>
+ <c2519c9a-8518-403a-9bca-cb79a5f2a6e9@intel.com>
+ <204f743d-2901-4ad2-bbcc-a7857a8644e7@broadcom.com>
+ <bbb6225f-3610-4fcf-86e6-f7468f743d76@intel.com>
+From:   Alexey Makhalov <alexey.makhalov@broadcom.com>
+Autocrypt: addr=alexey.makhalov@broadcom.com; keydata=
+ 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 EuY0
+In-Reply-To: <bbb6225f-3610-4fcf-86e6-f7468f743d76@intel.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,112 +133,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000091c421060bcc2ef4
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
 
+On 12/5/23 3:03 PM, Dave Hansen wrote:
+> On 12/5/23 13:41, Alexey Makhalov wrote:
+>>> I don't really like it much.=C2=A0 This does a generic thing (make a TD=
+X
+>>> hypercall) with a specific name ("vmware_").=C2=A0 If you want to make =
+an
+>>> argument that a certain chunk of the __tdx_hypercall() space is just fo=
+r
+>>> VMWare and you also add a VMWare-specific check and then export *that*,
+>>> it might be acceptable.
+>>>
+>>> But I don't want random modules able to make random, unrestricted TDX
+>>> hypercalls.=C2=A0 That's asking for trouble.
+>>
+>> Considering exporting of __tdx_hypercall for random modules is not an
+>> option, what VMware specific checks you are suggesting?
+>=20
+> Make sure it can only be called running on VMWare guests.  A check for
+> X86_HYPER_VMWARE seems simple enough.
+>=20
+> Second, unless the space is *HUGE*, you want to be exporting things like
+> __vmware_platform() or vmware_legacy_x2apic_available(), *NOT* the
+> underlying hypercall functions.
+>=20
+> We want to make sure that the interfaces are well defined and bounded.
 
-On 12/5/23 4:03 PM, Andrew Lunn wrote:
-> On Tue, Dec 05, 2023 at 03:42:29PM -0800, Justin Chen wrote:
->> Resuming the phy can take quite a bit of time. Lets only resume the
->> phy if it is suspended.
-> 
-> Humm...
-> 
-> https://lore.kernel.org/netdev/6d45f4da-c45e-4d35-869f-85dd4ec37b31@lunn.ch/T/
-> 
-> If Broadcom PHYs are slow to resume, maybe you should solve this in
-> the broadcom resume handler, read the status from the hardware and
-> only do the resume if the hardware is suspended.
-> 
->       Andrew
+Thanks Dave and Tim for your suggestions. I followed Dave recommendation=20
+to have a simple check for X86_HYPER_VMWARE.
 
-Right... Guess this won't work. It is odd that during resume we call 
-__phy_resume twice. Once from phy_resume() and another at phy_start(). 
-Let me rethink this. Thanks for the feedback.
+Please review patch 6, which I'll send shortly.
 
-Justin
+Thanks,
+--Alexey
 
---00000000000091c421060bcc2ef4
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-NhTY3E+cXCB11wty89QStajwXdhGJTYEvUgvsq1h8CwJj9w/38ldAQf5WjhPmApYeJR2ewFrBMCM
-4lHkdRJ6TDc9nXoEkypUfjJkJHe7Eal06tosh6JpAgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
-BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
-Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
-NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
-A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
-aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
-cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
-MBqBGGp1c3Rpbi5jaGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUIWGeYuaTsnIada5Xx8TR3cheUbgw
-DQYJKoZIhvcNAQELBQADggEBAHNQlMqQOFYPYFO71A+8t+qWMmtOdd2iGswSOvpSZ/pmGlfw8ZvY
-dRTkl27m37la84AxRkiVMes14JyOZJoMh/g7fbgPlU14eBc6WQWkIA6AmNkduFWTr1pRezkjpeo6
-xVmdBLM4VY1TFDYj7S8H2adPuypd62uHMY/MZi+BIUys4uAFA+N3NuUBNjcVZXYPplYxxKEuIFq6
-sDL+OV16G+F9CkNMN3txsym8Nnx5WAYZb6+rBUIhMGz70V05xsHQfzvo2s7f0J1tJ5BoRlPPhL0h
-VOnWA3h71u9TfSsv+PXVm3P21TfOS2uc1hbzEqyENCP4i5XQ0rv0TmPW42GZ0o4xggJtMIICaQIB
-ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
-bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwj8BKLXNpALfemdRAwDQYJ
-YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJUlclD43HzF3rBSW41+SRgIEWh967lRpsmX
-ZllvHWriMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIwNjAw
-MTA0MlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
-AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
-BgkqhkiG9w0BAQEFAASCAQBtlMWKzaQU1ICXflgHyzsi6FzsqcXpzHFm9RgItOx55/ZM3l3CbSsY
-ugUm7aguFTy8jm8AXDLuh7os0mIQYenSsmEJsLi+caCKsFBLeARPXYUtnH6kiqU4oRM+tBKCihPU
-Kxrylva07GD9Qk6oYmHLVcz34XD4LoQ8mCQ/00N7hdky7HRRBJ+U8wxBVctbjkkOAJdJdgrYB71U
-ZKjWhEVY6cBZSnpUkBUE1zHg1jVWfQI1/KJd/TfAOZpGoKdS6q/rjp3BMzu8XBTN5xsZ38qArVa3
-QLH3LPDvF0g2wg0+ZRpc6TT7d3NvksbRZQMLlDgvVntMSu3yuddBQM/W9K/a
---00000000000091c421060bcc2ef4--
+--=20
+This electronic communication and the information and any files transmitted=
+=20
+with it, or attached to it, are confidential and are intended solely for=20
+the use of the individual or entity to whom it is addressed and may contain=
+=20
+information that is confidential, legally privileged, protected by privacy=
+=20
+laws, or otherwise restricted from disclosure to anyone else. If you are=20
+not the intended recipient or the person responsible for delivering the=20
+e-mail to the intended recipient, you are hereby notified that any use,=20
+copying, distributing, dissemination, forwarding, printing, or copying of=
+=20
+this e-mail is strictly prohibited. If you received this e-mail in error,=
+=20
+please return the e-mail to the sender, delete it from your computer, and=
+=20
+destroy any printed copy of it.
