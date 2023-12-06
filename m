@@ -2,50 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B638064A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DD18064C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 03:12:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376541AbjLFBmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:42:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56740 "EHLO
+        id S1376458AbjLFBdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:33:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376507AbjLFBmq (ORCPT
+        with ESMTP id S1376424AbjLFBdW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:42:46 -0500
-X-Greylist: delayed 588 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Dec 2023 17:42:50 PST
-Received: from mail-m25491.xmail.ntesmail.com (mail-m25491.xmail.ntesmail.com [103.129.254.91])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE32B1B9;
-        Tue,  5 Dec 2023 17:42:50 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=AaurLE93EkPtxzsiE2lc3GGq8jzl/D4grIG8JIVgkIitxQAg/LPM2VhiQMzVz6lWBj6YfmFwRft3ss1PeS95se6vHNs0PhocLhaNnV9z7CHVI//OF84CTUGfSDi7rSZnzbieU2ECm0gBLOdRniBhHddNWo7nW4IU7M3t+FQeNr8=;
-        s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
-        bh=v4SJYmtYRkvhafgduYRH51SkhMDvfniryqNGMH783sY=;
-        h=date:mime-version:subject:message-id:from;
-Received: from DESKTOP-TIABR87.localdomain (unknown [58.22.7.114])
-        by mail-m12745.qiye.163.com (Hmail) with ESMTPA id E6F2B9A04DF;
-        Wed,  6 Dec 2023 09:32:41 +0800 (CST)
-From:   Jason Zhang <jason.zhang@rock-chips.com>
-To:     perex@perex.cz, tiwai@suse.com
-Cc:     linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Zhang <jason.zhang@rock-chips.com>
-Subject: [PATCH] ALSA: pcm: fix out-of-bounds in snd_pcm_state_names
-Date:   Wed,  6 Dec 2023 09:31:39 +0800
-Message-Id: <20231206013139.20506-1-jason.zhang@rock-chips.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Dec 2023 20:33:22 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C7C91B9;
+        Tue,  5 Dec 2023 17:33:27 -0800 (PST)
+Received: from loongson.cn (unknown [10.20.42.173])
+        by gateway (Coremail) with SMTP id _____8Bxyeplz29lWC8_AA--.51037S3;
+        Wed, 06 Dec 2023 09:33:25 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7y9hz29lMwtWAA--.58800S3;
+        Wed, 06 Dec 2023 09:33:23 +0800 (CST)
+Subject: Re: [PATCH v2 2/2] LoongArch: KVM: Add LASX support
+To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
+        Mark Brown <broonie@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Oliver Upton <oliver.upton@linux.dev>
+References: <20231201084619.2255983-1-zhaotianrui@loongson.cn>
+ <20231201084619.2255983-3-zhaotianrui@loongson.cn>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <b3fc2c52-4bc6-b46d-1f5a-83a37eb1204b@loongson.cn>
+Date:   Wed, 6 Dec 2023 09:33:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20231201084619.2255983-3-zhaotianrui@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGh1LQ1YdH0saS0JPS09JTUlVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
-        tLWQY+
-X-HM-Tid: 0a8c3cc17acab218kuuue6f2b9a04df
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NFE6Cyo6LTwxLAIQUTMeOQIB
-        TkhPFDNVSlVKTEtKQ0lNSE1JTk9CVTMWGhIXVREaCBQVVQETGhUcOwkUGBBWGBMSCwhVGBQWRVlX
-        WRILWUFZTkNVSUlVTFVKSk9ZV1kIAVlBT0pMSTcG
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
-        SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE autolearn=no
+X-CM-TRANSID: AQAAf8Cx7y9hz29lMwtWAA--.58800S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxKF4DJrWDtr1xAr47Wry8Zwc_yoWfJF4rpF
+        Zrurn0ya18WFn293srJ3Wq9rn8ZrZ2gryIga9rta4fGF1qqry5XF4kKrWDXFWrGw1rJFyS
+        qF1rJr15ZayUJwbCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
+        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
+        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
+        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
+        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,73 +72,243 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pcm state can be SNDRV_PCM_STATE_DISCONNECTED at disconnect
-callback, and there is not an entry of SNDRV_PCM_STATE_DISCONNECTED
-in snd_pcm_state_names.
 
-This patch adds the missing entry to resolve this issue.
 
-cat /proc/asound/card2/pcm0p/sub0/status
-That results in stack traces like the following:
-
-[   99.702732][ T5171] Unexpected kernel BRK exception at EL1
-[   99.702774][ T5171] Internal error: BRK handler: f2005512 [#1] PREEMPT SMP
-[   99.703858][ T5171] Modules linked in: bcmdhd(E) (...)
-[   99.747425][ T5171] CPU: 3 PID: 5171 Comm: cat Tainted: G         C OE     5.10.189-android13-4-00003-g4a17384380d8-ab11086999 #1
-[   99.748447][ T5171] Hardware name: Rockchip RK3588 CVTE V10 Board (DT)
-[   99.749024][ T5171] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-[   99.749616][ T5171] pc : snd_pcm_substream_proc_status_read+0x264/0x2bc
-[   99.750204][ T5171] lr : snd_pcm_substream_proc_status_read+0xa4/0x2bc
-[   99.750778][ T5171] sp : ffffffc0175abae0
-[   99.751132][ T5171] x29: ffffffc0175abb80 x28: ffffffc009a2c498
-[   99.751665][ T5171] x27: 0000000000000001 x26: ffffff810cbae6e8
-[   99.752199][ T5171] x25: 0000000000400cc0 x24: ffffffc0175abc60
-[   99.752729][ T5171] x23: 0000000000000000 x22: ffffff802f558400
-[   99.753263][ T5171] x21: ffffff81d8d8ff00 x20: ffffff81020cdc00
-[   99.753795][ T5171] x19: ffffff802d110000 x18: ffffffc014fbd058
-[   99.754326][ T5171] x17: 0000000000000000 x16: 0000000000000000
-[   99.754861][ T5171] x15: 000000000000c276 x14: ffffffff9a976fda
-[   99.755392][ T5171] x13: 0000000065689089 x12: 000000000000d72e
-[   99.755923][ T5171] x11: ffffff802d110000 x10: 00000000000000e0
-[   99.756457][ T5171] x9 : 9c431600c8385d00 x8 : 0000000000000008
-[   99.756990][ T5171] x7 : 0000000000000000 x6 : 000000000000003f
-[   99.757522][ T5171] x5 : 0000000000000040 x4 : ffffffc0175abb70
-[   99.758056][ T5171] x3 : 0000000000000001 x2 : 0000000000000001
-[   99.758588][ T5171] x1 : 0000000000000000 x0 : 0000000000000000
-[   99.759123][ T5171] Call trace:
-[   99.759404][ T5171]  snd_pcm_substream_proc_status_read+0x264/0x2bc
-[   99.759958][ T5171]  snd_info_seq_show+0x54/0xa4
-[   99.760370][ T5171]  seq_read_iter+0x19c/0x7d4
-[   99.760770][ T5171]  seq_read+0xf0/0x128
-[   99.761117][ T5171]  proc_reg_read+0x100/0x1f8
-[   99.761515][ T5171]  vfs_read+0xf4/0x354
-[   99.761869][ T5171]  ksys_read+0x7c/0x148
-[   99.762226][ T5171]  __arm64_sys_read+0x20/0x30
-[   99.762625][ T5171]  el0_svc_common+0xd0/0x1e4
-[   99.763023][ T5171]  el0_svc+0x28/0x98
-[   99.763358][ T5171]  el0_sync_handler+0x8c/0xf0
-[   99.763759][ T5171]  el0_sync+0x1b8/0x1c0
-[   99.764118][ T5171] Code: d65f03c0 b9406102 17ffffae 94191565 (d42aa240)
-[   99.764715][ T5171] ---[ end trace 1eeffa3e17c58e10 ]---
-[   99.780720][ T5171] Kernel panic - not syncing: BRK handler: Fatal exception
-
-Signed-off-by: Jason Zhang <jason.zhang@rock-chips.com>
----
- sound/core/pcm.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 20bb2d7c8d4b..6d0c9c37796c 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -253,6 +253,7 @@ static const char * const snd_pcm_state_names[] = {
- 	STATE(DRAINING),
- 	STATE(PAUSED),
- 	STATE(SUSPENDED),
-+	STATE(DISCONNECTED),
- };
- 
- static const char * const snd_pcm_access_names[] = {
--- 
-2.25.1
+On 2023/12/1 下午4:46, Tianrui Zhao wrote:
+> This patch adds LASX support for LoongArch KVM.
+> There will be LASX exception in KVM when guest use the LASX
+> instruction. KVM will enable LASX and restore the vector
+> registers for guest then return to guest to continue running.
+> 
+> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> ---
+>   arch/loongarch/include/asm/kvm_host.h |  6 ++++
+>   arch/loongarch/include/asm/kvm_vcpu.h | 10 ++++++
+>   arch/loongarch/kernel/fpu.S           |  2 ++
+>   arch/loongarch/kvm/exit.c             | 18 +++++++++++
+>   arch/loongarch/kvm/switch.S           | 15 +++++++++
+>   arch/loongarch/kvm/trace.h            |  4 ++-
+>   arch/loongarch/kvm/vcpu.c             | 46 ++++++++++++++++++++++++++-
+>   7 files changed, 99 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
+> index a53b47093f4..dc817481b30 100644
+> --- a/arch/loongarch/include/asm/kvm_host.h
+> +++ b/arch/loongarch/include/asm/kvm_host.h
+> @@ -97,6 +97,7 @@ enum emulation_result {
+>   #define KVM_LARCH_SWCSR_LATEST	(0x1 << 1)
+>   #define KVM_LARCH_HWCSR_USABLE	(0x1 << 2)
+>   #define KVM_LARCH_LSX		(0x1 << 3)
+> +#define KVM_LARCH_LASX		(0x1 << 4)
+>   
+>   struct kvm_vcpu_arch {
+>   	/*
+> @@ -183,6 +184,11 @@ static inline bool kvm_guest_has_lsx(struct kvm_vcpu_arch *arch)
+>   	return arch->cpucfg[2] & CPUCFG2_LSX;
+>   }
+>   
+> +static inline bool kvm_guest_has_lasx(struct kvm_vcpu_arch *arch)
+> +{
+> +	return arch->cpucfg[2] & CPUCFG2_LASX;
+> +}
+> +
+>   /* Debug: dump vcpu state */
+>   int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
+>   
+> diff --git a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
+> index c629771e122..4f87f160185 100644
+> --- a/arch/loongarch/include/asm/kvm_vcpu.h
+> +++ b/arch/loongarch/include/asm/kvm_vcpu.h
+> @@ -67,6 +67,16 @@ static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
+>   static inline void kvm_restore_lsx_upper(struct loongarch_fpu *fpu) { }
+>   #endif
+>   
+> +#ifdef CONFIG_CPU_HAS_LASX
+> +void kvm_own_lasx(struct kvm_vcpu *vcpu);
+> +void kvm_save_lasx(struct loongarch_fpu *fpu);
+> +void kvm_restore_lasx(struct loongarch_fpu *fpu);
+> +#else
+> +static inline void kvm_own_lasx(struct kvm_vcpu *vcpu) { }
+> +static inline void kvm_save_lasx(struct loongarch_fpu *fpu) { }
+> +static inline void kvm_restore_lasx(struct loongarch_fpu *fpu) { }
+> +#endif
+> +
+>   void kvm_acquire_timer(struct kvm_vcpu *vcpu);
+>   void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
+>   void kvm_reset_timer(struct kvm_vcpu *vcpu);
+> diff --git a/arch/loongarch/kernel/fpu.S b/arch/loongarch/kernel/fpu.S
+> index d53ab10f464..4382e36ae3d 100644
+> --- a/arch/loongarch/kernel/fpu.S
+> +++ b/arch/loongarch/kernel/fpu.S
+> @@ -349,6 +349,7 @@ SYM_FUNC_START(_restore_lsx_upper)
+>   	lsx_restore_all_upper a0 t0 t1
+>   	jr	ra
+>   SYM_FUNC_END(_restore_lsx_upper)
+> +EXPORT_SYMBOL(_restore_lsx_upper)
+>   
+>   SYM_FUNC_START(_init_lsx_upper)
+>   	lsx_init_all_upper t1
+> @@ -384,6 +385,7 @@ SYM_FUNC_START(_restore_lasx_upper)
+>   	lasx_restore_all_upper a0 t0 t1
+>   	jr	ra
+>   SYM_FUNC_END(_restore_lasx_upper)
+> +EXPORT_SYMBOL(_restore_lasx_upper)
+>   
+>   SYM_FUNC_START(_init_lasx_upper)
+>   	lasx_init_all_upper t1
+> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+> index 1b1c58ccc83..57bd5bf562a 100644
+> --- a/arch/loongarch/kvm/exit.c
+> +++ b/arch/loongarch/kvm/exit.c
+> @@ -676,6 +676,23 @@ static int kvm_handle_lsx_disabled(struct kvm_vcpu *vcpu)
+>   	return RESUME_GUEST;
+>   }
+>   
+> +/*
+> + * kvm_handle_lasx_disabled() - Guest used LASX while disabled in root.
+> + * @vcpu:	Virtual CPU context.
+> + *
+> + * Handle when the guest attempts to use LASX when it is disabled in the root
+> + * context.
+> + */
+> +static int kvm_handle_lasx_disabled(struct kvm_vcpu *vcpu)
+> +{
+> +	if (!kvm_guest_has_lasx(&vcpu->arch))
+> +		kvm_queue_exception(vcpu, EXCCODE_INE, 0);
+> +	else
+> +		kvm_own_lasx(vcpu);
+> +
+> +	return RESUME_GUEST;
+> +}
+> +
+>   /*
+>    * LoongArch KVM callback handling for unimplemented guest exiting
+>    */
+> @@ -705,6 +722,7 @@ static exit_handle_fn kvm_fault_tables[EXCCODE_INT_START] = {
+>   	[EXCCODE_TLBM]			= kvm_handle_write_fault,
+>   	[EXCCODE_FPDIS]			= kvm_handle_fpu_disabled,
+>   	[EXCCODE_LSXDIS]                = kvm_handle_lsx_disabled,
+> +	[EXCCODE_LASXDIS]               = kvm_handle_lasx_disabled,
+>   	[EXCCODE_GSPR]			= kvm_handle_gspr,
+>   };
+>   
+> diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
+> index 6c48f7d1ca5..215c70b2de3 100644
+> --- a/arch/loongarch/kvm/switch.S
+> +++ b/arch/loongarch/kvm/switch.S
+> @@ -266,6 +266,21 @@ SYM_FUNC_START(kvm_restore_lsx_upper)
+>   SYM_FUNC_END(kvm_restore_lsx_upper)
+>   #endif
+>   
+> +#ifdef CONFIG_CPU_HAS_LASX
+> +SYM_FUNC_START(kvm_save_lasx)
+> +	fpu_save_csr    a0 t1
+> +	fpu_save_cc     a0 t1 t2
+> +	lasx_save_data  a0 t1
+> +	jr              ra
+> +SYM_FUNC_END(kvm_save_lasx)
+> +
+> +SYM_FUNC_START(kvm_restore_lasx)
+> +	lasx_restore_data a0 t1
+> +	fpu_restore_cc    a0 t1 t2
+> +	fpu_restore_csr   a0 t1 t2
+> +	jr                ra
+> +SYM_FUNC_END(kvm_restore_lasx)
+> +#endif
+>   	.section ".rodata"
+>   SYM_DATA(kvm_exception_size, .quad kvm_exc_entry_end - kvm_exc_entry)
+>   SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - kvm_enter_guest)
+> diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
+> index 7da4e230e89..c2484ad4cff 100644
+> --- a/arch/loongarch/kvm/trace.h
+> +++ b/arch/loongarch/kvm/trace.h
+> @@ -103,6 +103,7 @@ TRACE_EVENT(kvm_exit_gspr,
+>   
+>   #define KVM_TRACE_AUX_FPU		1
+>   #define KVM_TRACE_AUX_LSX		2
+> +#define KVM_TRACE_AUX_LASX		3
+>   
+>   #define kvm_trace_symbol_aux_op				\
+>   	{ KVM_TRACE_AUX_SAVE,		"save" },	\
+> @@ -113,7 +114,8 @@ TRACE_EVENT(kvm_exit_gspr,
+>   
+>   #define kvm_trace_symbol_aux_state			\
+>   	{ KVM_TRACE_AUX_FPU,     "FPU" },		\
+> -	{ KVM_TRACE_AUX_LSX,     "LSX" }
+> +	{ KVM_TRACE_AUX_LSX,     "LSX" },		\
+> +	{ KVM_TRACE_AUX_LASX,    "LASX" }
+>   
+>   TRACE_EVENT(kvm_aux,
+>   	    TP_PROTO(struct kvm_vcpu *vcpu, unsigned int op,
+> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+> index 4820c95091f..7802ae68197 100644
+> --- a/arch/loongarch/kvm/vcpu.c
+> +++ b/arch/loongarch/kvm/vcpu.c
+> @@ -329,6 +329,13 @@ static int kvm_get_cpucfg_supported(int id, u64 *v)
+>   		 */
+>   		if (cpu_has_lsx)
+>   			*v |= CPUCFG2_LSX;
+> +		/*
+> +		 * if LASX is supported by CPU, it is also supported by KVM,
+> +		 * as we implement it.
+> +		 */
+> +		if (cpu_has_lasx)
+> +			*v |= CPUCFG2_LASX;
+> +
+>   		break;
+>   	default:
+>   		ret = -EINVAL;
+> @@ -653,12 +660,49 @@ void kvm_own_lsx(struct kvm_vcpu *vcpu)
+>   }
+>   #endif
+>   
+> +#ifdef CONFIG_CPU_HAS_LASX
+> +/* Enable LASX for guest and restore context */
+> +void kvm_own_lasx(struct kvm_vcpu *vcpu)
+> +{
+> +	preempt_disable();
+> +
+> +	set_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN | CSR_EUEN_LASXEN);
+> +	switch (vcpu->arch.aux_inuse & (KVM_LARCH_FPU | KVM_LARCH_LSX)) {
+> +	case KVM_LARCH_LSX | KVM_LARCH_FPU:
+> +	case KVM_LARCH_LSX:
+> +		/* Guest LSX state already loaded, only restore upper LASX state */
+> +		_restore_lasx_upper(&vcpu->arch.fpu);
+> +		break;
+> +	case KVM_LARCH_FPU:
+> +		/* Guest FP state already loaded, only restore 64~256 LASX state */
+> +		kvm_restore_lsx_upper(&vcpu->arch.fpu);
+> +		_restore_lasx_upper(&vcpu->arch.fpu);
+> +		break;
+> +	default:
+> +		/* Neither FP or LSX already active, restore full LASX state */
+> +		kvm_restore_lasx(&vcpu->arch.fpu);
+> +		break;
+> +	}
+> +
+> +	trace_kvm_aux(vcpu, KVM_TRACE_AUX_RESTORE, KVM_TRACE_AUX_LASX);
+> +	vcpu->arch.aux_inuse |= KVM_LARCH_LASX | KVM_LARCH_LSX | KVM_LARCH_FPU;
+> +	preempt_enable();
+> +}
+> +#endif
+> +
+>   /* Save context and disable FPU */
+>   void kvm_lose_fpu(struct kvm_vcpu *vcpu)
+>   {
+>   	preempt_disable();
+>   
+> -	if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
+> +	if (vcpu->arch.aux_inuse & KVM_LARCH_LASX) {
+> +		kvm_save_lasx(&vcpu->arch.fpu);
+> +		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU | KVM_LARCH_LASX);
+> +		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LASX);
+> +
+> +		/* Disable LASX & LSX & FPU */
+> +		clear_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN | CSR_EUEN_LASXEN);
+> +	} else if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
+>   		kvm_save_lsx(&vcpu->arch.fpu);
+>   		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU);
+>   		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LSX);
+> 
+Reviewed-by: Bibo Mao <maobibo@loongson.cn>
 
