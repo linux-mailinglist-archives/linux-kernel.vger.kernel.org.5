@@ -2,44 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA3180675A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43004806768
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 07:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376821AbjLFGeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 01:34:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46474 "EHLO
+        id S1376820AbjLFGgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 01:36:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376801AbjLFGee (ORCPT
+        with ESMTP id S1376802AbjLFGgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 01:34:34 -0500
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC868D4F
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 22:34:39 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701844478;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0lDBFEoz+SUMLKMlohSt70DLpSaHMM5qAM0YknDYPRc=;
-        b=Jki4iV4V+jHYrHoOxnxxlqEsZzBkU+FuKWila9Z99n4hUwLNHQz0EzSQUNjYBhRnHw23yW
-        CUMJhz/RW0ZCwzxGFYA7Yk1DyIAXDz1Ed0NWI5KHEaWVs4uDdRijRVZyDyzgaagPe9iJKp
-        o0VTbdgdDU9d5P5u4enkXVbOxZI+2CQ=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH v2 2/2] sched/rt: Return NULL when rt entity isn't a task in rt_task_of()
-Date:   Wed,  6 Dec 2023 14:34:00 +0800
-Message-Id: <20231206063400.3206346-3-yajun.deng@linux.dev>
-In-Reply-To: <20231206063400.3206346-1-yajun.deng@linux.dev>
-References: <20231206063400.3206346-1-yajun.deng@linux.dev>
+        Wed, 6 Dec 2023 01:36:02 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC46D46;
+        Tue,  5 Dec 2023 22:36:07 -0800 (PST)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B65ddqp023836;
+        Tue, 5 Dec 2023 22:35:54 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=C2Vbd6JnDAfhgxbHY/teR4Hm++QYeBA9A+zn+kRvmgQ=;
+ b=fbP6on6jCeqDu+3KP4c3c12eBlb+wTZBUnHJeSGSBWpHSusAFauYmiNF1SCOKypgQr9D
+ Qr3GJxqUuH3gbYqgUtiSoNgpF3RBXGTd6jqKLplvspO+90YLclIJdxDZSb8vdCaF0yH/
+ lYe6haOq51/RA/cF7ae19B/qwWgLuAVXlcs7RUPMcdy4Yz72oW1umVJFv47jblyYv4Bq
+ 2Nm2tjdXzUX8BQqqZQwc4DJekaLPHVczwqgkX2bPDcWdGdwCkQgUBaR0EHafXcEcWRW3
+ BHykKewB4JWXSCOqhoqk9F4Qa02CZQOqjJz/EHFeO14PtpIniRC05OXm37j5EH+9tq3Q AA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3utd0p95tf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 05 Dec 2023 22:35:54 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 5 Dec
+ 2023 22:35:52 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Tue, 5 Dec 2023 22:35:52 -0800
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id D640E3F704E;
+        Tue,  5 Dec 2023 22:35:51 -0800 (PST)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
+        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
+        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
+        <konguyen@redhat.com>, Shinas Rasheed <srasheed@marvell.com>,
+        "Veerasenareddy Burru" <vburru@marvell.com>,
+        Sathesh Edara <sedara@marvell.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Abhijit Ayarekar <aayarekar@marvell.com>,
+        "Satananda Burla" <sburla@marvell.com>
+Subject: [PATCH net v1] octeon_ep: explicitly test for firmware ready value
+Date:   Tue, 5 Dec 2023 22:35:49 -0800
+Message-ID: <20231206063549.2590305-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-Proofpoint-GUID: U6H81ENnbgqaAmserLKIWBlR8Vi0D_Ch
+X-Proofpoint-ORIG-GUID: U6H81ENnbgqaAmserLKIWBlR8Vi0D_Ch
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_04,2023-12-05_01,2023-05-22_02
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -50,143 +72,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before calling rt_task_of(), we need to make sure that the rt entity is
-a task. There is also a warning in rt_task_of() if the rt entity isn't a
-task. That means we need to check the rt entity twice. If the rt entity
-isn't a task, return the task struct is meaningless.
+The firmware ready value is 1, and get firmware ready status
+function should explicitly test for that value. The firmware
+ready value read will be 2 after driver load, and on unbind
+till firmware rewrites the firmware ready back to 0, the value
+seen by driver will be 2, which should be regarded as not ready.
 
-Return NULL when rt entity isn't a task in rt_task_of(), and call
-rt_task_of() instead of rt_entity_is_task() when we need a task_struct.
-
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+Fixes: 10c073e40469 ("octeon_ep: defer probe if firmware not ready")
+Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
 ---
-v2: fix 'struct rt_rq' no member named 'highest_prio'.
-v1: https://lore.kernel.org/all/20231201022704.3526377-1-yajun.deng@linux.dev/
----
- kernel/sched/rt.c | 60 ++++++++++++++---------------------------------
- 1 file changed, 17 insertions(+), 43 deletions(-)
+ drivers/net/ethernet/marvell/octeon_ep/octep_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 40d24f64b444..061f5f005c35 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -169,9 +169,9 @@ static void destroy_rt_bandwidth(struct rt_bandwidth *rt_b)
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+index 552970c7dec0..b8ae269f6f97 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+@@ -1258,7 +1258,8 @@ static bool get_fw_ready_status(struct pci_dev *pdev)
  
- static inline struct task_struct *rt_task_of(struct sched_rt_entity *rt_se)
- {
--#ifdef CONFIG_SCHED_DEBUG
--	WARN_ON_ONCE(!rt_entity_is_task(rt_se));
--#endif
-+	if (!rt_entity_is_task(rt_se))
-+		return NULL;
-+
- 	return container_of(rt_se, struct task_struct, rt);
+ 		pci_read_config_byte(pdev, (pos + 8), &status);
+ 		dev_info(&pdev->dev, "Firmware ready status = %u\n", status);
+-		return status;
++#define FW_STATUS_READY 1ULL
++		return (status == FW_STATUS_READY) ? true : false;
+ 	}
+ 	return false;
  }
- 
-@@ -1266,54 +1266,34 @@ static void __delist_rt_entity(struct sched_rt_entity *rt_se, struct rt_prio_arr
- 	rt_se->on_list = 0;
- }
- 
--static inline struct sched_statistics *
--__schedstats_from_rt_se(struct sched_rt_entity *rt_se)
--{
--#ifdef CONFIG_RT_GROUP_SCHED
--	/* schedstats is not supported for rt group. */
--	if (!rt_entity_is_task(rt_se))
--		return NULL;
--#endif
--
--	return &rt_task_of(rt_se)->stats;
--}
--
- static inline void
- update_stats_wait_start_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se)
- {
--	struct sched_statistics *stats;
--	struct task_struct *p = NULL;
-+	struct task_struct *p;
- 
- 	if (!schedstat_enabled())
- 		return;
- 
--	if (rt_entity_is_task(rt_se))
--		p = rt_task_of(rt_se);
--
--	stats = __schedstats_from_rt_se(rt_se);
--	if (!stats)
-+	p = rt_task_of(rt_se);
-+	if (!p)
- 		return;
- 
--	__update_stats_wait_start(rq_of_rt_rq(rt_rq), p, stats);
-+	__update_stats_wait_start(rq_of_rt_rq(rt_rq), p, &p->stats);
- }
- 
- static inline void
- update_stats_enqueue_sleeper_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se)
- {
--	struct sched_statistics *stats;
--	struct task_struct *p = NULL;
-+	struct task_struct *p;
- 
- 	if (!schedstat_enabled())
- 		return;
- 
--	if (rt_entity_is_task(rt_se))
--		p = rt_task_of(rt_se);
--
--	stats = __schedstats_from_rt_se(rt_se);
--	if (!stats)
-+	p = rt_task_of(rt_se);
-+	if (!p)
- 		return;
- 
--	__update_stats_enqueue_sleeper(rq_of_rt_rq(rt_rq), p, stats);
-+	__update_stats_enqueue_sleeper(rq_of_rt_rq(rt_rq), p, &p->stats);
- }
- 
- static inline void
-@@ -1330,34 +1310,28 @@ update_stats_enqueue_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se,
- static inline void
- update_stats_wait_end_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se)
- {
--	struct sched_statistics *stats;
--	struct task_struct *p = NULL;
-+	struct task_struct *p;
- 
- 	if (!schedstat_enabled())
- 		return;
- 
--	if (rt_entity_is_task(rt_se))
--		p = rt_task_of(rt_se);
--
--	stats = __schedstats_from_rt_se(rt_se);
--	if (!stats)
-+	p = rt_task_of(rt_se);
-+	if (!p)
- 		return;
- 
--	__update_stats_wait_end(rq_of_rt_rq(rt_rq), p, stats);
-+	__update_stats_wait_end(rq_of_rt_rq(rt_rq), p, &p->stats);
- }
- 
- static inline void
- update_stats_dequeue_rt(struct rt_rq *rt_rq, struct sched_rt_entity *rt_se,
- 			int flags)
- {
--	struct task_struct *p = NULL;
-+	struct task_struct *p;
- 
- 	if (!schedstat_enabled())
- 		return;
- 
--	if (rt_entity_is_task(rt_se))
--		p = rt_task_of(rt_se);
--
-+	p = rt_task_of(rt_se);
- 	if ((flags & DEQUEUE_SLEEP) && p) {
- 		unsigned int state;
- 
 -- 
 2.25.1
 
