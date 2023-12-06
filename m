@@ -2,342 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C23D18070FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:38:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9BD807105
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378589AbjLFNiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:38:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
+        id S1378561AbjLFNlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:41:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378513AbjLFNiO (ORCPT
+        with ESMTP id S1378587AbjLFNlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:38:14 -0500
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28AC9D50;
-        Wed,  6 Dec 2023 05:38:19 -0800 (PST)
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-58d06bfadf8so4780276eaf.1;
-        Wed, 06 Dec 2023 05:38:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701869898; x=1702474698;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wXJLPYyl6Xf8EJB98w2kLHC6dz7zDdmjsJDaz1+tWDQ=;
-        b=bJRRh14wQkJ7+C15rKWoxLLgZOB1xQeyCaqxJr+cBnJMrXCFwBcbCeoFVoMrkv2spd
-         ZPloG6uLUbAA8XmAzTaqVK0HuozEXbg3nhd3NRPCuGgE8pfKuRzivaE7hPgSPy2DjwHg
-         sl9zYltBJFtbapkiAPOqKq5ALxnhdnCFMTntL8ewW9fJFSvvdochMAUjRYDlO5+rTNQs
-         R5D+ug9iZ/BzNF87w+tJUjvr25/87dxRdhUYoSQ4iURC/AW/VlWIwEfylCsCqNUYa0Cb
-         ZeM8YeAO+q1w5E/od+VD5SX5Qt3/VnhOXKmFzA+tfZQWoBvusCi4e7T5yXpcB+lbHkyl
-         knQQ==
-X-Gm-Message-State: AOJu0YzBwwaONAqp8CA+aflP7fSqLLNcEBhjvl631aT0erEri5SAb3WG
-        Zdew7g6ijuFjaTxC7pTYCg==
-X-Google-Smtp-Source: AGHT+IF/LAcnj1J3TR60tozX4/oUnmK8PyZL0iXhjSaODyz/Go3KIoK2mX4OzhZOy/BkcsaB8Zqq1g==
-X-Received: by 2002:a4a:9197:0:b0:58e:3275:3e4b with SMTP id d23-20020a4a9197000000b0058e32753e4bmr752179ooh.19.1701869898302;
-        Wed, 06 Dec 2023 05:38:18 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id v14-20020a4a8c4e000000b005840b5783a1sm2764109ooj.43.2023.12.06.05.38.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 05:38:17 -0800 (PST)
-Received: (nullmailer pid 1955863 invoked by uid 1000);
-        Wed, 06 Dec 2023 13:38:16 -0000
-Date:   Wed, 6 Dec 2023 07:38:16 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Qingfang Deng <dqfext@gmail.com>,
-        SkyLake Huang <SkyLake.Huang@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH v2 7/8] dt-bindings: net: mediatek,net: fix and
- complete mt7988-eth binding
-Message-ID: <20231206133816.GA1914715-robh@kernel.org>
-References: <cover.1701826319.git.daniel@makrotopia.org>
- <567c6aaa64ecb4872056bc0105c70153fd9d9b50.1701826319.git.daniel@makrotopia.org>
+        Wed, 6 Dec 2023 08:41:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BCEC7;
+        Wed,  6 Dec 2023 05:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=HCaDhHjqMUm7iZFzDCXLcNgiTgr4z8Ne9p0cOAccwCU=; b=oEWAA+ljNDN4NFWDfhVL7YvkG+
+        hh4O78O3JT4GNvGm0wMfgUvzeuHvqj/baNlyfPbrzjgbvYuNvSGOSH5PTBS+meMPeIao12JYtv8RC
+        AjdV5pzJIHyNmGxqAok1AsAWkdYvmCXqNjehjVRF/SHjgE4vP0pE5XYp6Xw/O4E2LEW8hm3JxEs2f
+        gzJuEjgaFwUIubAVbZSCYxLm2wQ26U2y2MumVLGBS3o3NE7iHV09/1LycihISc25fEIFWl9x3/M9E
+        PhrslYJhK8oE8jMQDtUr2x894gnwPDmlbm3CrCM5VL53MH2dUTD0msT/fMneWcypUVUmRuzHafRf4
+        /uH5ICOg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1rAs8p-002wdo-3u; Wed, 06 Dec 2023 13:40:43 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7975C300451; Wed,  6 Dec 2023 14:40:41 +0100 (CET)
+Date:   Wed, 6 Dec 2023 14:40:41 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alice Ryhl <aliceryhl@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] rust: file: add `Kuid` wrapper
+Message-ID: <20231206134041.GG30174@noisy.programming.kicks-ass.net>
+References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
+ <20231206-alice-file-v2-5-af617c0d9d94@google.com>
+ <20231206123402.GE30174@noisy.programming.kicks-ass.net>
+ <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <567c6aaa64ecb4872056bc0105c70153fd9d9b50.1701826319.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH5fLgh+0G85Acf4-zqr_9COB5DUtt6ifVpZP-9V06hjJgd_jQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 01:45:02AM +0000, Daniel Golle wrote:
-> Complete support for MT7988 which comes with 3 MACs, SRAM for DMA
-> descriptors and uses a dedicated PCS for the SerDes units.
+On Wed, Dec 06, 2023 at 01:57:52PM +0100, Alice Ryhl wrote:
+> On Wed, Dec 6, 2023 at 1:34 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Wed, Dec 06, 2023 at 11:59:50AM +0000, Alice Ryhl wrote:
+> >
+> > > diff --git a/rust/helpers.c b/rust/helpers.c
+> > > index fd633d9db79a..58e3a9dff349 100644
+> > > --- a/rust/helpers.c
+> > > +++ b/rust/helpers.c
+> > > @@ -142,6 +142,51 @@ void rust_helper_put_task_struct(struct task_struct *t)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(rust_helper_put_task_struct);
+> > >
+> > > +kuid_t rust_helper_task_uid(struct task_struct *task)
+> > > +{
+> > > +     return task_uid(task);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(rust_helper_task_uid);
+> > > +
+> > > +kuid_t rust_helper_task_euid(struct task_struct *task)
+> > > +{
+> > > +     return task_euid(task);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(rust_helper_task_euid);
+> >
+> > So I still object to these on the ground that they're obvious and
+> > trivial speculation gadgets.
+> >
+> > We should not have (exported) functions that are basically a single
+> > dereference of a pointer argument.
+> >
+> > And I do not appreciate my feedback on the previous round being ignored.
 > 
-> Fixes: c94a9aabec36 ("dt-bindings: net: mediatek,net: add mt7988-eth binding")
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->  .../devicetree/bindings/net/mediatek,net.yaml | 148 +++++++++++++++++-
->  1 file changed, 146 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> index 030d106bc7d3f..ca0667c51c1c2 100644
-> --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
-> @@ -28,7 +28,10 @@ properties:
->        - ralink,rt5350-eth
->  
->    reg:
-> -    maxItems: 1
-> +    minItems: 1
-> +    items:
-> +      - description: Base of registers used to program the ethernet controller
-> +      - description: SRAM region used for DMA descriptors
+> I'm sorry about that. I barely know what speculation gadgets are, so I
+> didn't really know what to respond. But I should have responded by
+> saying that.
 
-Is this a dedicated SRAM for this purpose, or a common one partitioned 
-up. mmio-sram and a phandle is how to do the latter.
+Sigh... how many years since Meltdown are we now? Oh well, the basic
+idea is to abuse the basic speculative execution of the CPU to make it
+disclose secrets. The way this is done is by training the various branch
+predictors such that you gain control over the speculative control flow.
 
->  
->    clocks: true
->    clock-names: true
-> @@ -115,6 +118,9 @@ allOf:
->                - mediatek,mt7623-eth
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 1
-> +
->          interrupts:
->            maxItems: 3
->  
-> @@ -149,6 +155,9 @@ allOf:
->                - mediatek,mt7621-eth
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 1
-> +
->          interrupts:
->            maxItems: 1
->  
-> @@ -174,6 +183,9 @@ allOf:
->              const: mediatek,mt7622-eth
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 1
-> +
->          interrupts:
->            maxItems: 3
->  
-> @@ -215,6 +227,9 @@ allOf:
->              const: mediatek,mt7629-eth
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 1
-> +
->          interrupts:
->            maxItems: 3
->  
-> @@ -257,6 +272,9 @@ allOf:
->              const: mediatek,mt7981-eth
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 1
-> +
->          interrupts:
->            minItems: 4
->  
-> @@ -295,6 +313,9 @@ allOf:
->              const: mediatek,mt7986-eth
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 1
-> +
->          interrupts:
->            minItems: 4
->  
-> @@ -333,8 +354,13 @@ allOf:
->              const: mediatek,mt7988-eth
->      then:
->        properties:
-> +        reg:
-> +          maxItems: 2
+You then use this control to cause micro-architectural side-effects to
+observe state, eg. cache state.
 
-Don't need maxItems here. That's already the max.
+In the case above, if you train the indirect branch predictor to jump to
+the above functions after you've loaded a secret into %rdi (first
+argument) then it will dereference your pointer + offset.
 
-> +          minItems: 2
-> +
->          interrupts:
->            minItems: 4
-> +          maxItems: 4
->  
->          clocks:
->            minItems: 24
-> @@ -368,7 +394,7 @@ allOf:
->              - const: top_netsys_warp_sel
->  
->  patternProperties:
-> -  "^mac@[0-1]$":
-> +  "^mac@[0-2]$":
->      type: object
->      unevaluatedProperties: false
->      allOf:
-> @@ -382,6 +408,9 @@ patternProperties:
->        reg:
->          maxItems: 1
->  
-> +      phys:
-> +        maxItems: 1
-> +
->      required:
->        - reg
->        - compatible
-> @@ -559,3 +588,118 @@ examples:
->          };
->        };
->      };
-> +
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/clock/mediatek,mt7988-clk.h>
+This causes the CPU to populate the cacheline, even if the actual
+execution path never does this.
+
+So by wiping the cache, doing your tricky thing, and then probing the
+cache to find out which line is present, you can infer the secret value.
+
+Anywhoo, the longer a function is, the harder it becomes, since you need
+to deal with everything a function does and consider the specuation
+window length. So trivial functions like the above that do an immediate
+dereference and are (and must be) a valid indirect target (because
+EXPORT) are ideal.
+
+> I can reimplement these specific functions as inline Rust functions,
+
+That would be good, but how are you going to do that without duplicating
+the horror that is struct task_struct ?
+
+> but I don't think I can give you a general solution to the
+> rust_helper_* problem in this patch series.
+
+Well, I really wish the Rust community would address the C
+interoperability in a hurry. Basically make it a requirement for
+in-kernel Rust.
+
+I mean, how hard can it be to have clang parse the C headers and inject
+them into the Rust IR as if they're external FFI things.
 
 
-Why is fixing the binding needing a new example? Is this example really 
-different enough to justify a whole other example?
-
-> +
-> +    soc {
-> +      #address-cells = <2>;
-> +      #size-cells = <2>;
-> +
-> +      ethernet@15100000 {
-> +        compatible = "mediatek,mt7988-eth";
-> +        reg = <0 0x15100000 0 0x80000>, <0 0x15400000 0 0x380000>;
-> +        interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +        clocks = <&ethsys CLK_ETHDMA_XGP1_EN>,
-> +                 <&ethsys CLK_ETHDMA_XGP2_EN>,
-> +                 <&ethsys CLK_ETHDMA_XGP3_EN>,
-> +                 <&ethsys CLK_ETHDMA_FE_EN>,
-> +                 <&ethsys CLK_ETHDMA_GP2_EN>,
-> +                 <&ethsys CLK_ETHDMA_GP1_EN>,
-> +                 <&ethsys CLK_ETHDMA_GP3_EN>,
-> +                 <&ethsys CLK_ETHDMA_ESW_EN>,
-> +                 <&ethsys CLK_ETHDMA_CRYPT0_EN>,
-> +                 <&ethwarp CLK_ETHWARP_WOCPU2_EN>,
-> +                 <&ethwarp CLK_ETHWARP_WOCPU1_EN>,
-> +                 <&ethwarp CLK_ETHWARP_WOCPU0_EN>,
-> +                 <&topckgen CLK_TOP_ETH_GMII_SEL>,
-> +                 <&topckgen CLK_TOP_ETH_REFCK_50M_SEL>,
-> +                 <&topckgen CLK_TOP_ETH_SYS_200M_SEL>,
-> +                 <&topckgen CLK_TOP_ETH_SYS_SEL>,
-> +                 <&topckgen CLK_TOP_ETH_XGMII_SEL>,
-> +                 <&topckgen CLK_TOP_ETH_MII_SEL>,
-> +                 <&topckgen CLK_TOP_NETSYS_SEL>,
-> +                 <&topckgen CLK_TOP_NETSYS_500M_SEL>,
-> +                 <&topckgen CLK_TOP_NETSYS_PAO_2X_SEL>,
-> +                 <&topckgen CLK_TOP_NETSYS_SYNC_250M_SEL>,
-> +                 <&topckgen CLK_TOP_NETSYS_PPEFB_250M_SEL>,
-> +                 <&topckgen CLK_TOP_NETSYS_WARP_SEL>;
-> +
-> +        clock-names = "xgp1", "xgp2", "xgp3", "fe", "gp2", "gp1",
-> +                      "gp3", "esw", "crypto",
-> +                      "ethwarp_wocpu2", "ethwarp_wocpu1",
-> +                      "ethwarp_wocpu0", "top_eth_gmii_sel",
-> +                      "top_eth_refck_50m_sel", "top_eth_sys_200m_sel",
-> +                      "top_eth_sys_sel", "top_eth_xgmii_sel",
-> +                      "top_eth_mii_sel", "top_netsys_sel",
-> +                      "top_netsys_500m_sel", "top_netsys_pao_2x_sel",
-> +                      "top_netsys_sync_250m_sel",
-> +                      "top_netsys_ppefb_250m_sel",
-> +                      "top_netsys_warp_sel";
-> +        assigned-clocks = <&topckgen CLK_TOP_NETSYS_2X_SEL>,
-> +                          <&topckgen CLK_TOP_NETSYS_GSW_SEL>,
-> +                          <&topckgen CLK_TOP_USXGMII_SBUS_0_SEL>,
-> +                          <&topckgen CLK_TOP_USXGMII_SBUS_1_SEL>,
-> +                          <&topckgen CLK_TOP_SGM_0_SEL>,
-> +                          <&topckgen CLK_TOP_SGM_1_SEL>;
-> +        assigned-clock-parents = <&apmixedsys CLK_APMIXED_NET2PLL>,
-> +                                 <&topckgen CLK_TOP_NET1PLL_D4>,
-> +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
-> +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
-> +                                 <&apmixedsys CLK_APMIXED_SGMPLL>,
-> +                                 <&apmixedsys CLK_APMIXED_SGMPLL>;
-> +        mediatek,ethsys = <&ethsys>;
-> +        mediatek,infracfg = <&topmisc>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        mac@0 {
-> +          compatible = "mediatek,eth-mac";
-> +          reg = <0>;
-> +          phy-mode = "internal"; /* CPU port of built-in 1GE switch */
-> +
-> +          fixed-link {
-> +            speed = <10000>;
-> +            full-duplex;
-> +            pause;
-> +          };
-> +        };
-> +
-> +        mac@1 {
-> +          compatible = "mediatek,eth-mac";
-> +          reg = <1>;
-> +          phy-handle = <&int_2p5g_phy>;
-> +        };
-> +
-> +        mac@2 {
-> +          compatible = "mediatek,eth-mac";
-> +          reg = <2>;
-> +          pcs-handle = <&usxgmiisys0>;
-> +          phy-handle = <&phy0>;
-> +        };
-> +
-> +        mdio_bus: mdio-bus {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +
-> +          /* external PHY */
-> +          phy0: ethernet-phy@0 {
-> +            reg = <0>;
-> +            compatible = "ethernet-phy-ieee802.3-c45";
-> +          };
-> +
-> +          /* internal 2.5G PHY */
-> +          int_2p5g_phy: ethernet-phy@15 {
-> +            reg = <15>;
-> +            compatible = "ethernet-phy-ieee802.3-c45";
-> +            phy-mode = "internal";
-> +          };
-> +        };
-> +      };
-> +    };
-> -- 
-> 2.43.0
