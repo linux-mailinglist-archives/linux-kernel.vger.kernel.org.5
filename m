@@ -2,71 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2F4807683
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:24:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CD7807687
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378236AbjLFRYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:24:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
+        id S1378265AbjLFRZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:25:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjLFRYg (ORCPT
+        with ESMTP id S229594AbjLFRZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:24:36 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D84584
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:24:43 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id ca18e2360f4ac-7b3905b1b86so377635139f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 09:24:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701883482; x=1702488282; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YFtw+JoIilNzXGrK1+eC18U9vk6uZG0kOBjgadIHka0=;
-        b=MnejqmE5jBPm6sWmE608gloSJO4EShWcmsUSzBtgQvR8LOxXX2ctJ33TDvKkjCj/Ua
-         E6Z2pawZpE/iQCOy+xFnuOHjRfULnuq0HuveKvGmaYwan4p1vjPwsV1MJvMFCWrC7fRt
-         x2urupDDM2scNO5yNeXMIlMEsmf2MMHY+/b5IXzJNBO6WjLSKoLYE5LfOSm+IXcxzqVS
-         rzdmJMPs7w9+Iw3Rudxapr0dwfeq5dACX/CMVQNGtEjxU1XmNGhAePj+z5qaS4vDEt/E
-         g4QxUPA8OYAwN5JMIYc5vQxKwrb07MHMbtDI0efmlq+5bzCAXemt1lax227z3xX/FAUr
-         daPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701883482; x=1702488282;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YFtw+JoIilNzXGrK1+eC18U9vk6uZG0kOBjgadIHka0=;
-        b=wYUxfGIoYl2r1GEyadSdeCDS0z3DIlu4zkKfuKIqQHHl2YuxfTYtd9i9ea7wRKjEZi
-         C5pvrEhgRtq0hrKVdBPqh0XIrGN888kiPJXc3smaugtlQkUajLA3/06zQ+gTiFSX5IRU
-         yvYh9T5HdB5msb5AeU3tIbb2pG3mrFXV98OrX1g9q0lth4MNJLaI6VCyTrhMk/CtgCca
-         fL0tRPkl/2n5miUyMYEJj/7bXGmjLU6iNLaIaRcSFWlUiprvuubpL+e9YgtcME/Xy2Tc
-         vclQDXcmYzO/wQt1NCo3FVBevi7PiEwqo+2BhfcE0tvs27zyCTOtcw6XZiJtZwrZaCUL
-         FPbw==
-X-Gm-Message-State: AOJu0YyPBUhj8k1TbWoH36YP4OXREbycBJamnS5DjvvgJju40lCNm3/k
-        hbCIYnzYq3pQgGDnzQwaYjbFNIi8JdJDagR+9+c=
-X-Google-Smtp-Source: AGHT+IH7S9uNub8N0q1SiSQSHC7lCi8nYYBBtFWhavsWZKjHB+uJudW8tQXA6tPZhyR9gH09WSBlAsXlpppM4xUVtFA=
-X-Received: by 2002:a05:6602:29ca:b0:7b3:95d6:62df with SMTP id
- z10-20020a05660229ca00b007b395d662dfmr1830560ioq.21.1701883482412; Wed, 06
- Dec 2023 09:24:42 -0800 (PST)
+        Wed, 6 Dec 2023 12:25:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A661311F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 09:25:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49F90C433C8;
+        Wed,  6 Dec 2023 17:25:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701883508;
+        bh=cTsb/UUe/7c50IQGHlJ5frauXTjRzXHTTCqGuvYx7Ys=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Sc/mjRZUJ3dnU4TEueWhY5Cesz7wCFYS63sbRpDT9rWZmeozgUxdqIpQNIGGCrPon
+         8JIg3kcscEdyrOZAkrsHryihS8evbvVSgFuKEPDNZkOX7B3MT5S7HEl2iiO2ESNzfF
+         0vuheCGXJXy0So23AgNzGz6vcXLexnSDoE+JVdCPYBhNzC91TFi780rWYqBgn6TtTz
+         2FIedVRgbZr97ESDnjDa3M+0ZTybzcfdmHHiUzQg2u8kXPmnclQClq7MnOKkHELdaZ
+         hAjaok80KERa/QERWVrN4nfhY0mf6EDOLM4vMJ5LVDW0xdJUUV4HiWSavZlRDMmQAN
+         COSt6ZQYO48zg==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50bef9b7a67so1172e87.1;
+        Wed, 06 Dec 2023 09:25:08 -0800 (PST)
+X-Gm-Message-State: AOJu0YwSOrinNPz2qMJSxukWF8+gel4sP8REi5kDD8E9PIfqpXxCar8M
+        I/ceISx3plXTN4M3ZSwJHI/+WqSnRnLgQSCvqkc=
+X-Google-Smtp-Source: AGHT+IHT1kpTKlXAwY6gHfg8PdXTVmwgYffVePOsfH7VO3lnRkQcNzkn7H0RXNt5Jg6sS0YQO0gWte3wMHqntnZPKbU=
+X-Received: by 2002:a05:6512:33cf:b0:50b:eedd:edd0 with SMTP id
+ d15-20020a05651233cf00b0050beeddedd0mr962504lfg.105.1701883506495; Wed, 06
+ Dec 2023 09:25:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
-In-Reply-To: <20231206-zswap-lock-optimize-v1-0-e25b059f9c3a@bytedance.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Wed, 6 Dec 2023 09:24:31 -0800
-Message-ID: <CAKEwX=NXcY3_GuKbh0=Ceg9wj=7u4y0NgmfSVEG3-+deY0jiWQ@mail.gmail.com>
-Subject: Re: [PATCH 0/7] mm/zswap: optimize the scalability of zswap rb-tree
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Chris Li <chrisl@kernel.org>
+References: <20231204031703.3102254-1-yukuai1@huaweicloud.com>
+ <CAPhsuW4sF=jAyA+Q=2tFBBAApjcW=gWXndDNX6t3nrAfnk_zZA@mail.gmail.com> <269ac5cb-aa09-02ca-4150-c90cd5a72e06@huaweicloud.com>
+In-Reply-To: <269ac5cb-aa09-02ca-4150-c90cd5a72e06@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 6 Dec 2023 09:24:54 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7US8f7gR+Eo=hYU0RF+L8YkF6ebiWG+FDO6frAxoBarw@mail.gmail.com>
+Message-ID: <CAPhsuW7US8f7gR+Eo=hYU0RF+L8YkF6ebiWG+FDO6frAxoBarw@mail.gmail.com>
+Subject: Re: [PATCH -next] md: split MD_RECOVERY_NEEDED out of mddev_resume
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     agk@redhat.com, snitzer@kernel.org, mpatocka@redhat.com,
+        dm-devel@lists.linux.dev, janpieter.sollie@edpnet.be,
+        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        "yukuai (C)" <yukuai3@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,76 +62,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Chris Li
+On Wed, Dec 6, 2023 at 3:36=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> wr=
+ote:
+>
+> Hi,
+>
+> =E5=9C=A8 2023/12/06 16:30, Song Liu =E5=86=99=E9=81=93:
+> > On Sun, Dec 3, 2023 at 7:18=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com=
+> wrote:
+> >>
+> >> From: Yu Kuai <yukuai3@huawei.com>
+> >>
+> >> New mddev_resume() calls are added to synchroniza IO with array
+> >> reconfiguration, however, this introduce a regression while adding it =
+in
+> >> md_start_sync():
+> >>
+> >> 1) someone set MD_RECOVERY_NEEDED first;
+> >> 2) daemon thread grab reconfig_mutex, then clear MD_RECOVERY_NEEDED an=
+d
+> >>     queue a new sync work;
+> >> 3) daemon thread release reconfig_mutex;
+> >> 4) in md_start_sync
+> >>     a) check that there are spares that can be added/removed, then sus=
+pend
+> >>        the array;
+> >>     b) remove_and_add_spares may not be called, or called without real=
+ly
+> >>        add/remove spares;
+> >>     c) resume the array, then set MD_RECOVERY_NEEDED again!
+> >>
+> >> Loop between 2 - 4, then mddev_suspend() will be called quite often, f=
+or
+> >> consequence, normal IO will be quite slow.
+> >>
+> >> Fix this problem by spliting MD_RECOVERY_NEEDED out of mddev_resume(),=
+ so
+> >> that md_start_sync() won't set such flag and hence the loop will be br=
+oken.
+> >
+> > I hope we don't leak set_bit MD_RECOVERY_NEEDED to all call
+> > sites of mddev_resume().
+>
+> There are also some other mddev_resume() that is added later and don't
+> need recovery, so md_start_sync() is not the only place:
+>
+>   - md_setup_drive
+>   - rdev_attr_store
+>   - suspend_lo_store
+>   - suspend_hi_store
+>   - autorun_devices
+>   - md_ioct
+>   - r5c_disable_writeback_async
+>   - error path from new_dev_store(), ...
+>
+> I'm not sure add a new helper is a good idea, because all above apis
+> should use new helper as well.
 
-Chris, I vaguely remember from our last conversation that you have
-some concurrent efforts to use xarray here right?
+I think for most of these call sites, it is OK to set MD_RECOVERY_NEEDED
+(although it is not needed), and md_start_sync() is the only one that may
+trigger "loop between 2 - 4" scenario. Did I miss something?
 
-On Wed, Dec 6, 2023 at 1:46=E2=80=AFAM Chengming Zhou
-<zhouchengming@bytedance.com> wrote:
->
-> Hi everyone,
->
-> This patch series is based on the linux-next 20231205, which depends on
-> the "workload-specific and memory pressure-driven zswap writeback" series
-> from Nhat Pham.
->
-> When testing the zswap performance by using kernel build -j32 in a tmpfs
-> directory, I found the scalability of zswap rb-tree is not good, which
-> is protected by the only spinlock. That would cause heavy lock contention
-> if multiple tasks zswap_store/load concurrently.
->
-> So a simple solution is to split the only one zswap rb-tree into multiple
-> rb-trees, each corresponds to SWAP_ADDRESS_SPACE_PAGES (64M). This idea i=
-s
-> from the commit 4b3ef9daa4fc ("mm/swap: split swap cache into 64MB trunks=
-").
->
-> Although this method can't solve the spinlock contention completely, it
-> can mitigate much of that contention.
->
-> Another problem when testing the zswap using our default zsmalloc is that
-> zswap_load() and zswap_writeback_entry() have to malloc a temporary memor=
-y
-> to support !zpool_can_sleep_mapped().
->
-> Optimize it by reusing the percpu crypto_acomp_ctx->dstmem, which is also
-> used by zswap_store() and protected by the same percpu crypto_acomp_ctx->=
-mutex.
->
-> Thanks for review and comment!
->
-> To: Andrew Morton <akpm@linux-foundation.org>
-> To: Seth Jennings <sjenning@redhat.com>
-> To: Dan Streetman <ddstreet@ieee.org>
-> To: Vitaly Wool <vitaly.wool@konsulko.com>
-> To: Nhat Pham <nphamcs@gmail.com>
-> To: Johannes Weiner <hannes@cmpxchg.org>
-> To: Yosry Ahmed <yosryahmed@google.com>
-> To: Michal Hocko <mhocko@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->
-> ---
-> Chengming Zhou (7):
->       mm/zswap: make sure each swapfile always have zswap rb-tree
->       mm/zswap: split zswap rb-tree
->       mm/zswap: reuse dstmem when decompress
->       mm/zswap: change dstmem size to one page
->       mm/zswap: refactor out __zswap_load()
->       mm/zswap: cleanup zswap_load()
->       mm/zswap: cleanup zswap_reclaim_entry()
->
->  include/linux/zswap.h |   4 +-
->  mm/swapfile.c         |  10 ++-
->  mm/zswap.c            | 233 +++++++++++++++++++++-----------------------=
-------
->  3 files changed, 106 insertions(+), 141 deletions(-)
-> ---
-> base-commit: 0f5f12ac05f36f117e793656c3f560625e927f1b
-> change-id: 20231206-zswap-lock-optimize-06f45683b02b
->
-> Best regards,
-> --
-> Chengming Zhou <zhouchengming@bytedance.com>
+It is already rc4, so we need to send the fix soon.
+
+Thanks,
+Song
