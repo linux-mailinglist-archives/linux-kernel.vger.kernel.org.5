@@ -2,175 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A21F80757A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE7F80757C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229663AbjLFQmZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 11:42:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
+        id S1378343AbjLFQmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjLFQmX (ORCPT
+        with ESMTP id S229644AbjLFQmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:42:23 -0500
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D97FA;
-        Wed,  6 Dec 2023 08:42:29 -0800 (PST)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-58dd5193db4so593381eaf.1;
-        Wed, 06 Dec 2023 08:42:29 -0800 (PST)
+        Wed, 6 Dec 2023 11:42:38 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7355D4E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:42:43 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7bb3e55c120so2067724241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:42:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701880963; x=1702485763; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U8vjKdo8RtK9sF2zFHnjxxHr37Mkrh0m1wUp2s63Svc=;
+        b=ujodJ7JU9IgtG962SsMEjXzR6OBrYNqON6p9GLOidwYPR2d3bQZoJAT3qX9T11QyCN
+         qvMnHK7zP7Rw/BaTJcv5HELGDiawKkraqP0MTtFmrP5G/TEFIwNcrVCbnEdt6JHj97rY
+         xIMpyMk1zqECXDyB183vn3KCQgrgC8Ci9vyOjVR8yI6Ky6LO2tu+gQp3PTXS4X/9/MrU
+         9as3bBiJKI3eXeSYhNhINee9f7Kxz+azk08tuEZ9EVPbdavGjFRQpSreUkTu4fCEtDDn
+         +PUQBzftUS/2cdKbVN1DPI96y/puz4DTTORMNBbe4D4XDuW95nJo0nyMJHf5T3I4SZVC
+         i/Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701880949; x=1702485749;
+        d=1e100.net; s=20230601; t=1701880963; x=1702485763;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OIMxSzHR3qe9Kpm2WxCB7U+8a2fot2Cq5eXT0G3opo8=;
-        b=SymsvCjQpV+N/1iiNY8gtAWu6dysHek206tip0KT4Kuo+KVTiK69Oc9ypgxj2ucRiz
-         jHGgKFVkh4mIDEztWqC+eJRsK/frp1m9KKxtOs/rN7+R0CGkwKD0ZMS0gvrV0l++e1OE
-         QICWMXFibwSJXK/3g4Sf6hQFHDW3Au/jJq8x/HoNl1w/tqvdiFCP8OsmO6cUOBfqJzIR
-         cnQuHBkMOFICC3R3RcKp9AXL8s5C/X2G8GMVVgA5DQRfOSOyBiaHRImAULbyHTyMGVin
-         sCppIT+xyu0utkKMsGzD/r1vFpUyqBh6yL/0DsYBybpJE7e2Vhupx/GZFfgzQ3hTBCCV
-         LJIQ==
-X-Gm-Message-State: AOJu0YzREgrCDe2MXkmltxuOnJbjHMGOHT5XGz22AfWQCGBwm35ixLZ4
-        nzM9yp7YK8bpBXCkC/WIpvcLLl2gOK6ucz94SkI=
-X-Google-Smtp-Source: AGHT+IF+3Ncf78ciIJeaNwWxRt+lcWpdhggiA3DAS/EzgAxn6GAxK1TNZCKnSlGnWwIZVQUmD20k7Sw8beVn2OvHVvE=
-X-Received: by 2002:a05:6870:1481:b0:1fb:1d07:86a6 with SMTP id
- k1-20020a056870148100b001fb1d0786a6mr2047259oab.3.1701880948896; Wed, 06 Dec
- 2023 08:42:28 -0800 (PST)
+        bh=U8vjKdo8RtK9sF2zFHnjxxHr37Mkrh0m1wUp2s63Svc=;
+        b=UCMBs3NX89kav4jNIQFbsm2mnwCINSjjqywFeuQ26yQJGlKohUtGt0HitGGI9/xvzB
+         99/ZAp5lVkYYKW/61/iHkCUi24DegoH5LsIA+S/Lm2KYEBsP48dUObblTwJwHRWICaDy
+         EwgQm0nQewTMjo0r1fwv/jVvM1dx+xxqd9eADnTnatDuQGtVsfvmg3CIyY2gBRSN+EuB
+         JAFQGO2l05OO1EPTfqaTTLyd7QLox84vOfTuAcqcmZ9EmM4Pu9uYPV2F4PHOpO2Mjstl
+         nLp6v5vBLqHy04GhNGEMTxNihe0IbvkD8jTGkaJb/0SusOSALK9JKZ+m4QgHMDaBPxAi
+         Dwyw==
+X-Gm-Message-State: AOJu0YzTbE/KsH9rULOl+t0dRaaAuM9uTe7HAqxuYgkhXQmlD7Dgd8kf
+        3ba1XofjquYRGGsIlEr2lpKKUDGwjha5La9yHqJWhw==
+X-Google-Smtp-Source: AGHT+IFmX95hKsT+x9B1U9JgLud4gOx76wZ9d0sOYGnTy01xJB/RnRNZ08pYM4rj0hN9VQAvFzXxLZTCMqBtU1eTpHQ=
+X-Received: by 2002:a05:6122:3c54:b0:4b2:dbb5:bc58 with SMTP id
+ fv20-20020a0561223c5400b004b2dbb5bc58mr1380918vkb.29.1701880962567; Wed, 06
+ Dec 2023 08:42:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20231120114143.95305-1-ytcoode@gmail.com>
-In-Reply-To: <20231120114143.95305-1-ytcoode@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 6 Dec 2023 17:42:15 +0100
-Message-ID: <CAJZ5v0ijJeOLJo=ooru9raj0n=iiGybFCud42Z+EEtncgNk47A@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: Correct and clean up the logic of acpi_parse_entries_array()
-To:     Yuntao Wang <ytcoode@gmail.com>, Dave Jiang <dave.jiang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20231206-rb-new-condvar-methods-v1-0-33a4cab7fdaa@google.com>
+ <20231206-rb-new-condvar-methods-v1-2-33a4cab7fdaa@google.com>
+ <ZXChjmoKPj3XnJgG@Boquns-Mac-mini.home> <20231206163945.GC36423@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231206163945.GC36423@noisy.programming.kicks-ass.net>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Wed, 6 Dec 2023 17:42:29 +0100
+Message-ID: <CAH5fLgi56i70MaFaoLcWVw+nf-ZvOLpmA8bHNVX=VXTBkcSa4Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rust: sync: add `CondVar::wait_timeout`
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 20, 2023 at 12:42 PM Yuntao Wang <ytcoode@gmail.com> wrote:
+On Wed, Dec 6, 2023 at 5:39=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
+> wrote:
 >
-> The original intention of acpi_parse_entries_array() is to return the
-> number of all matching entries on success. This number may be greater than
-> the value of the max_entries parameter. When this happens, the function
-> will output a warning message, indicating that `count - max_entries`
-> matching entries remain unprocessed and have been ignored.
+> On Wed, Dec 06, 2023 at 08:30:06AM -0800, Boqun Feng wrote:
+> > On Wed, Dec 06, 2023 at 10:09:24AM +0000, Alice Ryhl wrote:
+> > [...]
+> > > +
+> > > +/// The return type of `wait_timeout`.
+> > > +pub enum CondVarTimeoutResult {
+> > > +    /// The timeout was reached.
+> > > +    Timeout,
+> > > +    /// Somebody woke us up.
+> > > +    Woken {
+> > > +        /// Remaining sleep duration.
+> > > +        jiffies: u64,
+> >
+> > I have a Jiffies definition in the my upcoming timer patchset:
+> >
+> > /// The time unit of Linux kernel. One jiffy equals (1/HZ) second.
+> > pub type Jiffies =3D core::ffi::c_ulong;
+> >
+> > Maybe you can add that (in a separate patch) in kernel::time?
 >
-> However, commit 4ceacd02f5a1 ("ACPI / table: Always count matched and
-> successfully parsed entries") changed this logic to return the number of
-> entries successfully processed by the handler. In this case, when the
-> max_entries parameter is not zero, the number of entries successfully
-> processed can never be greater than the value of max_entries. In other
-> words, the expression `count > max_entries` will always evaluate to false.
-> This means that the logic in the final if statement will never be executed.
->
-> Commit 99b0efd7c886 ("ACPI / tables: do not report the number of entries
-> ignored by acpi_parse_entries()") mentioned this issue, but it tried to fix
-> it by removing part of the warning message. This is meaningless because the
-> pr_warn statement will never be executed in the first place.
->
-> Commit 8726d4f44150 ("ACPI / tables: fix acpi_parse_entries_array() so it
-> traverses all subtables") introduced an errs variable, which is intended to
-> make acpi_parse_entries_array() always traverse all of the subtables,
-> calling as many of the callbacks as possible. However, it seems that the
-> commit does not achieve this goal. For example, when a handler returns an
-> error, none of the handlers will be called again in the subsequent
-> iterations. This result appears to be no different from before the change.
->
-> This patch corrects and cleans up the logic of acpi_parse_entries_array(),
-> making it return the number of all matching entries, rather than the number
-> of entries successfully processed by handlers. Additionally, if an error
-> occurs when executing a handler, the function will return -EINVAL immediately.
->
-> This patch should not affect existing users of acpi_parse_entries_array().
->
-> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> Urgh, why are we using jiffies in 2023?
 
-This needs to be ACKed by Dave Jiang or Dan Williams.
+I assumed that the correct thing here would be to accept the same unit
+as what schedule_timeout takes. Should I be doing something else?
 
-> ---
->  lib/fw_table.c | 30 +++++++++---------------------
->  1 file changed, 9 insertions(+), 21 deletions(-)
->
-> diff --git a/lib/fw_table.c b/lib/fw_table.c
-> index b51f30a28e47..b655e6f4b647 100644
-> --- a/lib/fw_table.c
-> +++ b/lib/fw_table.c
-> @@ -85,11 +85,6 @@ acpi_get_subtable_type(char *id)
->         return ACPI_SUBTABLE_COMMON;
->  }
->
-> -static __init_or_acpilib bool has_handler(struct acpi_subtable_proc *proc)
-> -{
-> -       return proc->handler || proc->handler_arg;
-> -}
-> -
->  static __init_or_acpilib int call_handler(struct acpi_subtable_proc *proc,
->                                           union acpi_subtable_headers *hdr,
->                                           unsigned long end)
-> @@ -133,7 +128,6 @@ acpi_parse_entries_array(char *id, unsigned long table_size,
->         unsigned long table_end, subtable_len, entry_len;
->         struct acpi_subtable_entry entry;
->         int count = 0;
-> -       int errs = 0;
->         int i;
->
->         table_end = (unsigned long)table_header + table_header->length;
-> @@ -145,25 +139,19 @@ acpi_parse_entries_array(char *id, unsigned long table_size,
->             ((unsigned long)table_header + table_size);
->         subtable_len = acpi_get_subtable_header_length(&entry);
->
-> -       while (((unsigned long)entry.hdr) + subtable_len  < table_end) {
-> -               if (max_entries && count >= max_entries)
-> -                       break;
-> -
-> +       while (((unsigned long)entry.hdr) + subtable_len < table_end) {
->                 for (i = 0; i < proc_num; i++) {
->                         if (acpi_get_entry_type(&entry) != proc[i].id)
->                                 continue;
-> -                       if (!has_handler(&proc[i]) ||
-> -                           (!errs &&
-> -                            call_handler(&proc[i], entry.hdr, table_end))) {
-> -                               errs++;
-> -                               continue;
-> -                       }
-> +
-> +                       if (!max_entries || count < max_entries)
-> +                               if (call_handler(&proc[i], entry.hdr, table_end))
-> +                                       return -EINVAL;
->
->                         proc[i].count++;
-> +                       count++;
->                         break;
->                 }
-> -               if (i != proc_num)
-> -                       count++;
->
->                 /*
->                  * If entry->length is 0, break from this loop to avoid
-> @@ -180,9 +168,9 @@ acpi_parse_entries_array(char *id, unsigned long table_size,
->         }
->
->         if (max_entries && count > max_entries) {
-> -               pr_warn("[%4.4s:0x%02x] found the maximum %i entries\n",
-> -                       id, proc->id, count);
-> +               pr_warn("[%4.4s:0x%02x] ignored %i entries of %i found\n",
-> +                       id, proc->id, count - max_entries, count);
->         }
->
-> -       return errs ? -EINVAL : count;
-> +       return count;
->  }
-> --
+Alice
