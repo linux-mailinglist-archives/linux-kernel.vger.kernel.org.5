@@ -2,149 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D00680713B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FC6807144
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 14:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378642AbjLFNv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 08:51:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        id S1378641AbjLFNwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 08:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378509AbjLFNv4 (ORCPT
+        with ESMTP id S1378633AbjLFNwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 08:51:56 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440F7D44;
-        Wed,  6 Dec 2023 05:52:02 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id d9443c01a7336-1d0ccda19eeso11750645ad.1;
-        Wed, 06 Dec 2023 05:52:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701870722; x=1702475522; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lm+D5jKJ17HuWeeaSzfoieBbBFG7aIweWno7P45cPZU=;
-        b=C6BuFcl3wnlf0GgKMlAhHqf3iVxS/XwSHI5485/K/M4FlDk1E9DnTUnOgSfWhTCLou
-         Hfe8ofl2zm6gzw4jj7m7857a/WFNC6I8KNx+y6UyIILpoUf2W8eyRHctOjo8f6edk1Md
-         dtz226NhCo1jdrXFMDm2gVkUmNHiOkp+9bzgorCIFbcFHI7hWPSl/8LLQ7ETF41TQcJF
-         goJNrkFYkbaM/W3TJvH/wLMz7iHG1GnhdeVREBsLVbzsqnrUsRyDv2gVvJH6XWb73xPI
-         rcYH8GyiP5A/P82pyUjPHgGWPVDE66E3EdflG2lSncU3h8UUUwVsFR4ty9toMLOu2bYV
-         C6UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701870722; x=1702475522;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Lm+D5jKJ17HuWeeaSzfoieBbBFG7aIweWno7P45cPZU=;
-        b=bn7VLPzMQJG4CPfcSumsQ+GJFRKre2yKZxtJyaN+XDCADo3D4MJ8tdzqguINcZmgyf
-         xg/TYHYl3mOLxqQ0oYR5buWZRYhVcoS2X6ncRnHvpl8iufzQ6LQRp1fNlVw0OsATGnkO
-         FxU7wuZMOqXsVooIb4SldeSmzD/4IOLnAnWngxi+3xtIGuiFjKFUefY/I9PdIcCfeesG
-         d7JQAdAXdrPw+qLvvq1zv7/kdYozjQVeQSczT8hDskifVWKDvJfx1rX8mQZK3ieSN4+y
-         +oGa5oc0PBLDAs4CFt6SNm/axBoibbRN3Qw76WJD0dPzzaMmbdfjajeQa+I06ISusPfQ
-         ddCw==
-X-Gm-Message-State: AOJu0YziKsM5elM7kJVxlJi9INCyWmlDr+L0dJ8Wf2+DCSZJilgauK4C
-        Pzl3knCf8a3JplUxu+D/IBM=
-X-Google-Smtp-Source: AGHT+IHGSFwRWfYX+lMdYGWOxubT0DY/bPjf6h9lituNkPiE+Arv9DNEp8vfXIzXqoEDyKmciyIYlA==
-X-Received: by 2002:a17:903:1250:b0:1d0:6ffe:1e81 with SMTP id u16-20020a170903125000b001d06ffe1e81mr638593plh.100.1701870721529;
-        Wed, 06 Dec 2023 05:52:01 -0800 (PST)
-Received: from dawn-virtual-machine.localdomain ([183.198.59.249])
-        by smtp.gmail.com with ESMTPSA id d8-20020a170902cec800b001d0af279a1fsm5122701plg.182.2023.12.06.05.51.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 05:52:00 -0800 (PST)
-From:   Li peiyu <579lpy@gmail.com>
-To:     jic23@kernel.org
-Cc:     javier.carrasco.cruz@gmail.com, lars@metafoo.de,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Li peiyu <579lpy@gmail.com>
-Subject: [PATCH v4 4/4] iio: humidity: Add TI HDC302x support
-Date:   Wed,  6 Dec 2023 21:51:48 +0800
-Message-Id: <20231206135148.559564-1-579lpy@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231206134655.559474-1-579lpy@gmail.com>
-References: <20231206134655.559474-1-579lpy@gmail.com>
+        Wed, 6 Dec 2023 08:52:34 -0500
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B547F12B;
+        Wed,  6 Dec 2023 05:52:40 -0800 (PST)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6DYq3f021830;
+        Wed, 6 Dec 2023 05:52:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=mf2VUIogGD9WROPqEUdLuGXNPzy/Kl00mkGnzkqjjJk=;
+ b=Odkcvdrpa5R3KLnIZsIfqy5/fWAxonkNDoG32NPqYTX1MMVlwd0p57ZQABHS0Epi1nQF
+ 44SaGquiDlM4CNBIxnXKaKFge/VZgrDqUNBV6jbmbOoVuF9QqLJoHIVw3CLnkCe1k6KZ
+ 8jE2QLViWxEonNKzeuwy2X/OuLqpC8PpP2HHzpLd3LTiIqCP3tScdORqfYTuDZMTTNwq
+ /zlwVKMQGQvXJTQYX7ijzt8YmECDO1mBWd1ExABb1fw6HDA17ncFb0lS35v4nSezuxPd
+ vvk5QR80PuXQAAPmFE1w+oM9fDHF9IV4Hwbokf8WTBbq2zjJtXtAw1/JK7Y5Jv/XF4qK eQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3utd0pae8c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 06 Dec 2023 05:52:32 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 6 Dec
+ 2023 05:52:30 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Wed, 6 Dec 2023 05:52:30 -0800
+Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
+        by maili.marvell.com (Postfix) with ESMTP id ECBCD3F70A0;
+        Wed,  6 Dec 2023 05:52:29 -0800 (PST)
+From:   Shinas Rasheed <srasheed@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
+        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
+        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
+        <konguyen@redhat.com>, Shinas Rasheed <srasheed@marvell.com>,
+        "Veerasenareddy Burru" <vburru@marvell.com>,
+        Sathesh Edara <sedara@marvell.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: [PATCH net v3] octeon_ep: initialise control mbox tasks before using APIs
+Date:   Wed, 6 Dec 2023 05:52:27 -0800
+Message-ID: <20231206135228.2591659-1-srasheed@marvell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Proofpoint-GUID: n6LfMkp4Wfy_1ZovDgVfQ6r1PH1seTSe
+X-Proofpoint-ORIG-GUID: n6LfMkp4Wfy_1ZovDgVfQ6r1PH1seTSe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_11,2023-12-06_01,2023-05-22_02
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for HDC3020/HDC3021/HDC3022 humidity and
-temperature sensors.
+Initialise various workqueue tasks and queue interrupt poll task
+before the first invocation of any control net APIs. Since
+octep_ctrl_net_get_info was called before the control net receive
+work task was initialised or even the interrupt poll task was
+queued, the function call wasn't returning actual firmware
+info queried from Octeon.
 
-Signed-off-by: Li peiyu <579lpy@gmail.com>
+Fixes: 8d6198a14e2b ("octeon_ep: support to fetch firmware info")
+Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
 ---
- .../bindings/iio/humidity/ti,hdc3020.yaml     | 55 +++++++++++++++++++
- 1 file changed, 55 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
+V3:
+  - Included Fixes line in commit log.
+  - Corrected typo in print statement.
 
-diff --git a/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml b/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
-new file mode 100644
-index 000000000000..f04b09fdca5e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
-@@ -0,0 +1,55 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/humidity/ti,hdc3020.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+V2: https://lore.kernel.org/all/20231205130625.2586755-1-srasheed@marvell.com/
+  - Updated changelog.
+  - Handled error return for octep_ctrl_net_get_info
+
+V1: https://lore.kernel.org/all/20231202150807.2571103-1-srasheed@marvell.com/
+
+ .../ethernet/marvell/octeon_ep/octep_main.c   | 22 +++++++++++--------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+index b8ae269f6f97..dbab878b4d76 100644
+--- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
++++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
+@@ -1193,6 +1193,13 @@ int octep_device_setup(struct octep_device *oct)
+ 	if (ret)
+ 		return ret;
+ 
++	INIT_WORK(&oct->tx_timeout_task, octep_tx_timeout_task);
++	INIT_WORK(&oct->ctrl_mbox_task, octep_ctrl_mbox_task);
++	INIT_DELAYED_WORK(&oct->intr_poll_task, octep_intr_poll_task);
++	oct->poll_non_ioq_intr = true;
++	queue_delayed_work(octep_wq, &oct->intr_poll_task,
++			   msecs_to_jiffies(OCTEP_INTR_POLL_TIME_MSECS));
 +
-+title: HDC3020/HDC3021/HDC3022 humidity and temperature iio sensors
-+
-+maintainers:
-+  - Li peiyu <579lpy@gmail.com>
-+  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
-+
-+description:
-+  https://www.ti.com/lit/ds/symlink/hdc3020.pdf
-+
-+  The HDC302x is an integrated capacitive based relative humidity (RH)
-+  and temperature sensor.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - ti,hdc3021
-+              - ti,hdc3022
-+          - const: ti,hdc3020
-+      - items:
-+          - const: ti,hdc3020
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  vdd-supply: true
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        humidity-sensor@47 {
-+            compatible = "ti,hdc3021", "ti,hdc3020";
-+            reg = <0x47>;
-+            vdd-supply = <&vcc_3v3>;
-+        };
-+    };
+ 	atomic_set(&oct->hb_miss_cnt, 0);
+ 	INIT_DELAYED_WORK(&oct->hb_task, octep_hb_timeout_task);
+ 
+@@ -1326,21 +1333,18 @@ static int octep_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		goto err_octep_config;
+ 	}
+ 
+-	octep_ctrl_net_get_info(octep_dev, OCTEP_CTRL_NET_INVALID_VFID,
+-				&octep_dev->conf->fw_info);
++	err = octep_ctrl_net_get_info(octep_dev, OCTEP_CTRL_NET_INVALID_VFID,
++				      &octep_dev->conf->fw_info);
++	if (err) {
++		dev_err(&pdev->dev, "Failed to get firmware info\n");
++		goto register_dev_err;
++	}
+ 	dev_info(&octep_dev->pdev->dev, "Heartbeat interval %u msecs Heartbeat miss count %u\n",
+ 		 octep_dev->conf->fw_info.hb_interval,
+ 		 octep_dev->conf->fw_info.hb_miss_count);
+ 	queue_delayed_work(octep_wq, &octep_dev->hb_task,
+ 			   msecs_to_jiffies(octep_dev->conf->fw_info.hb_interval));
+ 
+-	INIT_WORK(&octep_dev->tx_timeout_task, octep_tx_timeout_task);
+-	INIT_WORK(&octep_dev->ctrl_mbox_task, octep_ctrl_mbox_task);
+-	INIT_DELAYED_WORK(&octep_dev->intr_poll_task, octep_intr_poll_task);
+-	octep_dev->poll_non_ioq_intr = true;
+-	queue_delayed_work(octep_wq, &octep_dev->intr_poll_task,
+-			   msecs_to_jiffies(OCTEP_INTR_POLL_TIME_MSECS));
+-
+ 	netdev->netdev_ops = &octep_netdev_ops;
+ 	octep_set_ethtool_ops(netdev);
+ 	netif_carrier_off(netdev);
 -- 
-2.34.1
+2.25.1
 
