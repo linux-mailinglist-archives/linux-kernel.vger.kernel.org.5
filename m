@@ -2,355 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08872806C35
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3EA806C3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 11:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377471AbjLFKhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 05:37:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
+        id S1377495AbjLFKi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 05:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377570AbjLFKhT (ORCPT
+        with ESMTP id S1377473AbjLFKiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 05:37:19 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BA810EB
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:37:17 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-db401df7735so6088264276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:37:17 -0800 (PST)
+        Wed, 6 Dec 2023 05:38:15 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B621BE8
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 02:37:53 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c07ed92fdso39022155e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 02:37:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701859037; x=1702463837; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iVIa5cg328sO4f63WvwXvkSZbx/mUmzDkh+gAL5+Ahc=;
-        b=J3zB7IfaNdCJnb/481Bb+YzU5Ah6AMBuAJidOqRQU9cgrF1R4FaR8tCPnCnIBtVdQE
-         IperrvS0vn5GxHC/qu0wNV2RFYis5gEx3Do6+ZOnAratB1lR6bLxREjKUU1bMXre6c1x
-         M6Z/DnIL7NPRg+c2g0wdFT5LGzKFmI8Mw03xEZJE9BZgd9FPPdQSiBOPCF/HY3TwF9xk
-         yPAqabrheVyubUf258wNB/NABUqcBxxNtDrauN/2deBRu5HSTJPaH7Pj2cmYdKHsBtR3
-         6Nm8HDys4X5KhLfOAx1+B0jIwjOHy+FwMQBsECaCPXAe5JZKehLOFi7iy8/MTsPaQeqj
-         FnVA==
+        d=linaro.org; s=google; t=1701859071; x=1702463871; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CQuVCNirRe4aag9NFC52gi3i42BmYuL6ayZ4P1JiWgc=;
+        b=bSZWCwttuP1D8suTrBjZmL5i1xc8ckpk8GIWHDAPkld/rdv49+ljf3m/DD34PGWdRR
+         rcnWHZOjgtlvbejq0aHR3gJA3mDzliXxmuw4I9yLi+lpATPPfIFvFsVHqqoW04Jo9yHs
+         6qToBwW5UJ0FNtx0CHDrKY+NLmzb0U5M0xK5txUTpXh+LpfdeMuXyjXsHVCK8Sqodmyt
+         Xjqy63ph2Kzg72XiVLn7QKBxGyfREkah/yGuH5WHU9zv7v3w6tdwua+kNsYCBim5cnpD
+         XZfEieoQX4Z8Y0BGlRJlD5BaM5K1mez6Yn0yrKtjtfiqHeh1vV+Pfy2Biv3f437e9iDO
+         QPfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701859037; x=1702463837;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iVIa5cg328sO4f63WvwXvkSZbx/mUmzDkh+gAL5+Ahc=;
-        b=NT2gaTJ8KKFeeilh/o62WyDSV91daoTAQulx4iiG7gp0593Ua6oF+l4uMwzygNFm9D
-         rNtVPSolcZ5EcSZgSi/yU7I2tl6O4edSegtZKpkIPffcsF6Knl5qC8zGk9Y0AAeeBJVz
-         fO4PBBM9a/ipG9rxJcw9RWEnJoqS16XwX1gWTYdfX6/EOSfW6bdKh2fJ/XH0+RLLcG3p
-         mWqKW4CGEcA2rjL9N1sd4b/z2hMJCmaPzDl8rCu02b9H2kvlva8lOJXhEqqmkyDd4hdx
-         QMBG9UdOBlcUuSSLh7xz6N5bTprqUaxXzSQ1PfmyBAPZkBvAiLD6+gAgNPd99JNE5FIG
-         JN1w==
-X-Gm-Message-State: AOJu0YziRUso9p862tsHcAighNs9Ur9RlKvutEsQ6EWmCbYVcjFK+bJB
-        f41iB76bS5l80AtUmaNqUZPkD5rndjM=
-X-Google-Smtp-Source: AGHT+IGkgKbxoygTMvEFVetsgh/4I8+posq2zTqpEUJ0xsC7qcK0racQMhZFneM9yrLm1+Uko2/h58wIowE=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:73f6:b5e2:415:6ba5])
- (user=surenb job=sendgmr) by 2002:a25:e097:0:b0:db3:fa34:50b0 with SMTP id
- x145-20020a25e097000000b00db3fa3450b0mr4837ybg.4.1701859036922; Wed, 06 Dec
- 2023 02:37:16 -0800 (PST)
-Date:   Wed,  6 Dec 2023 02:36:59 -0800
-In-Reply-To: <20231206103702.3873743-1-surenb@google.com>
-Mime-Version: 1.0
-References: <20231206103702.3873743-1-surenb@google.com>
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Message-ID: <20231206103702.3873743-6-surenb@google.com>
-Subject: [PATCH v6 5/5] selftests/mm: add UFFDIO_MOVE ioctl test
-From:   Suren Baghdasaryan <surenb@google.com>
-To:     akpm@linux-foundation.org
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        david@redhat.com, ryan.roberts@arm.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        surenb@google.com, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701859071; x=1702463871;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CQuVCNirRe4aag9NFC52gi3i42BmYuL6ayZ4P1JiWgc=;
+        b=e8lByLUMgtBgixzu52PK1mUW3SoWPBjYTBpgHPI5QDQAUlrA8MqHJHIYnMJXC5vVKQ
+         Nw4Pm6ehkF6mB0NolCWxvGVvBLPDX3uEug02fWFkBLrvFoxF/ECHmP+xrf2/149SMNgL
+         kbOt5LBbTT/1jvumYt6jG3R3UafioTgtzSdr3npRpq4ltwPggh2Q9YjyfUIUOLP++mwR
+         kXrqZI2QRKYHkquhJyMmuWayEpernrVZ9dMN2u1hgP/0mB6qYr5UM/HqxFsenAYNC9/f
+         1C+SsKTsXPhgty772W1gTdgJkCqWNpNOdPnioHuK9ku/vOzW1HpWutYIPwWE/Av6NHKp
+         LBsA==
+X-Gm-Message-State: AOJu0Yyi3/+obnyROMw3v4A/0RYGJWmyxJcacHlpO3VWrmkKpYGbrBb1
+        ya8aLZjCUNxlPq9MPbR17hfL0PBu/7nmi75N73g=
+X-Google-Smtp-Source: AGHT+IElbJK+qwEWYCL6Spp7LhtvGkhlzcdvXetdM5c5vo7GZ1QuGod4jOnY6xs73XUkwgcLVEgLag==
+X-Received: by 2002:a05:600c:1989:b0:408:3d91:8251 with SMTP id t9-20020a05600c198900b004083d918251mr489406wmq.5.1701859071080;
+        Wed, 06 Dec 2023 02:37:51 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.27])
+        by smtp.gmail.com with ESMTPSA id bi10-20020a05600c3d8a00b0040b4c7e1a65sm25125668wmb.13.2023.12.06.02.37.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 02:37:50 -0800 (PST)
+Message-ID: <6e8a6fc2-88c2-4655-a8f0-45ece45170e2@linaro.org>
+Date:   Wed, 6 Dec 2023 11:37:48 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] dt-bindings: input: Add Himax HX83102J touchscreen
+Content-Language: en-US
+To:     Allen_Lin <allencl_lin@hotmail.com>, dmitry.torokhov@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231205100552.723620-1-allencl_lin@hotmail.com>
+ <TY0PR06MB56116A355D2A5BF665FA0D899E85A@TY0PR06MB5611.apcprd06.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <TY0PR06MB56116A355D2A5BF665FA0D899E85A@TY0PR06MB5611.apcprd06.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tests for new UFFDIO_MOVE ioctl which uses uffd to move source
-into destination buffer while checking the contents of both after
-the move. After the operation the content of the destination buffer
-should match the original source buffer's content while the source
-buffer should be zeroed. Separate tests are designed for PMD aligned and
-unaligned cases because they utilize different code paths in the kernel.
+On 05/12/2023 11:05, Allen_Lin wrote:
+> Add the HX83102j touchscreen device tree bindings documents.
+> 
+> Signed-off-by: Allen_Lin <allencl_lin@hotmail.com>
+> ---
+>  .../bindings/input/himax,hx8310xx.yaml        | 70 +++++++++++++++++++
+>  MAINTAINERS                                   |  6 ++
+>  2 files changed, 76 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/himax,hx8310xx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/input/himax,hx8310xx.yaml b/Documentation/devicetree/bindings/input/himax,hx8310xx.yaml
+> new file mode 100644
+> index 000000000000..1cc65e9bd267
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/input/himax,hx8310xx.yaml
 
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- tools/testing/selftests/mm/uffd-common.c     |  24 +++
- tools/testing/selftests/mm/uffd-common.h     |   1 +
- tools/testing/selftests/mm/uffd-unit-tests.c | 189 +++++++++++++++++++
- 3 files changed, 214 insertions(+)
+Filename like compatible, so himax,hx83102j.yaml
 
-diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
-index fb3bbc77fd00..b0ac0ec2356d 100644
---- a/tools/testing/selftests/mm/uffd-common.c
-+++ b/tools/testing/selftests/mm/uffd-common.c
-@@ -631,6 +631,30 @@ int copy_page(int ufd, unsigned long offset, bool wp)
- 	return __copy_page(ufd, offset, false, wp);
- }
- 
-+int move_page(int ufd, unsigned long offset, unsigned long len)
-+{
-+	struct uffdio_move uffdio_move;
-+
-+	if (offset + len > nr_pages * page_size)
-+		err("unexpected offset %lu and length %lu\n", offset, len);
-+	uffdio_move.dst = (unsigned long) area_dst + offset;
-+	uffdio_move.src = (unsigned long) area_src + offset;
-+	uffdio_move.len = len;
-+	uffdio_move.mode = UFFDIO_MOVE_MODE_ALLOW_SRC_HOLES;
-+	uffdio_move.move = 0;
-+	if (ioctl(ufd, UFFDIO_MOVE, &uffdio_move)) {
-+		/* real retval in uffdio_move.move */
-+		if (uffdio_move.move != -EEXIST)
-+			err("UFFDIO_MOVE error: %"PRId64,
-+			    (int64_t)uffdio_move.move);
-+		wake_range(ufd, uffdio_move.dst, len);
-+	} else if (uffdio_move.move != len) {
-+		err("UFFDIO_MOVE error: %"PRId64, (int64_t)uffdio_move.move);
-+	} else
-+		return 1;
-+	return 0;
-+}
-+
- int uffd_open_dev(unsigned int flags)
- {
- 	int fd, uffd;
-diff --git a/tools/testing/selftests/mm/uffd-common.h b/tools/testing/selftests/mm/uffd-common.h
-index 774595ee629e..cb055282c89c 100644
---- a/tools/testing/selftests/mm/uffd-common.h
-+++ b/tools/testing/selftests/mm/uffd-common.h
-@@ -119,6 +119,7 @@ void wp_range(int ufd, __u64 start, __u64 len, bool wp);
- void uffd_handle_page_fault(struct uffd_msg *msg, struct uffd_args *args);
- int __copy_page(int ufd, unsigned long offset, bool retry, bool wp);
- int copy_page(int ufd, unsigned long offset, bool wp);
-+int move_page(int ufd, unsigned long offset, unsigned long len);
- void *uffd_poll_thread(void *arg);
- 
- int uffd_open_dev(unsigned int flags);
-diff --git a/tools/testing/selftests/mm/uffd-unit-tests.c b/tools/testing/selftests/mm/uffd-unit-tests.c
-index debc423bdbf4..d8091523c2df 100644
---- a/tools/testing/selftests/mm/uffd-unit-tests.c
-+++ b/tools/testing/selftests/mm/uffd-unit-tests.c
-@@ -23,6 +23,9 @@
- #define  MEM_ALL  (MEM_ANON | MEM_SHMEM | MEM_SHMEM_PRIVATE | \
- 		   MEM_HUGETLB | MEM_HUGETLB_PRIVATE)
- 
-+#define ALIGN_UP(x, align_to) \
-+	((__typeof__(x))((((unsigned long)(x)) + ((align_to)-1)) & ~((align_to)-1)))
-+
- struct mem_type {
- 	const char *name;
- 	unsigned int mem_flag;
-@@ -1064,6 +1067,178 @@ static void uffd_poison_test(uffd_test_args_t *targs)
- 	uffd_test_pass();
- }
- 
-+static void
-+uffd_move_handle_fault_common(struct uffd_msg *msg, struct uffd_args *args,
-+			      unsigned long len)
-+{
-+	unsigned long offset;
-+
-+	if (msg->event != UFFD_EVENT_PAGEFAULT)
-+		err("unexpected msg event %u", msg->event);
-+
-+	if (msg->arg.pagefault.flags &
-+	    (UFFD_PAGEFAULT_FLAG_WP | UFFD_PAGEFAULT_FLAG_MINOR | UFFD_PAGEFAULT_FLAG_WRITE))
-+		err("unexpected fault type %llu", msg->arg.pagefault.flags);
-+
-+	offset = (char *)(unsigned long)msg->arg.pagefault.address - area_dst;
-+	offset &= ~(len-1);
-+
-+	if (move_page(uffd, offset, len))
-+		args->missing_faults++;
-+}
-+
-+static void uffd_move_handle_fault(struct uffd_msg *msg,
-+				   struct uffd_args *args)
-+{
-+	uffd_move_handle_fault_common(msg, args, page_size);
-+}
-+
-+static void uffd_move_pmd_handle_fault(struct uffd_msg *msg,
-+				       struct uffd_args *args)
-+{
-+	uffd_move_handle_fault_common(msg, args, read_pmd_pagesize());
-+}
-+
-+static void
-+uffd_move_test_common(uffd_test_args_t *targs, unsigned long chunk_size,
-+		      void (*handle_fault)(struct uffd_msg *msg, struct uffd_args *args))
-+{
-+	unsigned long nr;
-+	pthread_t uffd_mon;
-+	char c;
-+	unsigned long long count;
-+	struct uffd_args args = { 0 };
-+	char *orig_area_src, *orig_area_dst;
-+	unsigned long step_size, step_count;
-+	unsigned long src_offs = 0;
-+	unsigned long dst_offs = 0;
-+
-+	/* Prevent source pages from being mapped more than once */
-+	if (madvise(area_src, nr_pages * page_size, MADV_DONTFORK))
-+		err("madvise(MADV_DONTFORK) failure");
-+
-+	if (uffd_register(uffd, area_dst, nr_pages * page_size,
-+			  true, false, false))
-+		err("register failure");
-+
-+	args.handle_fault = handle_fault;
-+	if (pthread_create(&uffd_mon, NULL, uffd_poll_thread, &args))
-+		err("uffd_poll_thread create");
-+
-+	step_size = chunk_size / page_size;
-+	step_count = nr_pages / step_size;
-+
-+	if (chunk_size > page_size) {
-+		char *aligned_src = ALIGN_UP(area_src, chunk_size);
-+		char *aligned_dst = ALIGN_UP(area_dst, chunk_size);
-+
-+		if (aligned_src != area_src || aligned_dst != area_dst) {
-+			src_offs = (aligned_src - area_src) / page_size;
-+			dst_offs = (aligned_dst - area_dst) / page_size;
-+			step_count--;
-+		}
-+		orig_area_src = area_src;
-+		orig_area_dst = area_dst;
-+		area_src = aligned_src;
-+		area_dst = aligned_dst;
-+	}
-+
-+	/*
-+	 * Read each of the pages back using the UFFD-registered mapping. We
-+	 * expect that the first time we touch a page, it will result in a missing
-+	 * fault. uffd_poll_thread will resolve the fault by moving source
-+	 * page to destination.
-+	 */
-+	for (nr = 0; nr < step_count * step_size; nr += step_size) {
-+		unsigned long i;
-+
-+		/* Check area_src content */
-+		for (i = 0; i < step_size; i++) {
-+			count = *area_count(area_src, nr + i);
-+			if (count != count_verify[src_offs + nr + i])
-+				err("nr %lu source memory invalid %llu %llu\n",
-+				    nr + i, count, count_verify[src_offs + nr + i]);
-+		}
-+
-+		/* Faulting into area_dst should move the page or the huge page */
-+		for (i = 0; i < step_size; i++) {
-+			count = *area_count(area_dst, nr + i);
-+			if (count != count_verify[dst_offs + nr + i])
-+				err("nr %lu memory corruption %llu %llu\n",
-+				    nr, count, count_verify[dst_offs + nr + i]);
-+		}
-+
-+		/* Re-check area_src content which should be empty */
-+		for (i = 0; i < step_size; i++) {
-+			count = *area_count(area_src, nr + i);
-+			if (count != 0)
-+				err("nr %lu move failed %llu %llu\n",
-+				    nr, count, count_verify[src_offs + nr + i]);
-+		}
-+	}
-+	if (step_size > page_size) {
-+		area_src = orig_area_src;
-+		area_dst = orig_area_dst;
-+	}
-+
-+	if (write(pipefd[1], &c, sizeof(c)) != sizeof(c))
-+		err("pipe write");
-+	if (pthread_join(uffd_mon, NULL))
-+		err("join() failed");
-+
-+	if (args.missing_faults != step_count || args.minor_faults != 0)
-+		uffd_test_fail("stats check error");
-+	else
-+		uffd_test_pass();
-+}
-+
-+static void uffd_move_test(uffd_test_args_t *targs)
-+{
-+	uffd_move_test_common(targs, page_size, uffd_move_handle_fault);
-+}
-+
-+static void uffd_move_pmd_test(uffd_test_args_t *targs)
-+{
-+	uffd_move_test_common(targs, read_pmd_pagesize(),
-+			      uffd_move_pmd_handle_fault);
-+}
-+
-+static int prevent_hugepages(const char **errmsg)
-+{
-+	/* This should be done before source area is populated */
-+	if (madvise(area_src, nr_pages * page_size, MADV_NOHUGEPAGE)) {
-+		/* Ignore only if CONFIG_TRANSPARENT_HUGEPAGE=n */
-+		if (errno != EINVAL) {
-+			if (errmsg)
-+				*errmsg = "madvise(MADV_NOHUGEPAGE) failed";
-+			return -errno;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int request_hugepages(const char **errmsg)
-+{
-+	/* This should be done before source area is populated */
-+	if (madvise(area_src, nr_pages * page_size, MADV_HUGEPAGE)) {
-+		if (errmsg) {
-+			*errmsg = (errno == EINVAL) ?
-+				"CONFIG_TRANSPARENT_HUGEPAGE is not set" :
-+				"madvise(MADV_HUGEPAGE) failed";
-+		}
-+		return -errno;
-+	}
-+	return 0;
-+}
-+
-+struct uffd_test_case_ops uffd_move_test_case_ops = {
-+	.post_alloc = prevent_hugepages,
-+};
-+
-+struct uffd_test_case_ops uffd_move_test_pmd_case_ops = {
-+	.post_alloc = request_hugepages,
-+};
-+
- /*
-  * Test the returned uffdio_register.ioctls with different register modes.
-  * Note that _UFFDIO_ZEROPAGE is tested separately in the zeropage test.
-@@ -1141,6 +1316,20 @@ uffd_test_case_t uffd_tests[] = {
- 		.mem_targets = MEM_ALL,
- 		.uffd_feature_required = 0,
- 	},
-+	{
-+		.name = "move",
-+		.uffd_fn = uffd_move_test,
-+		.mem_targets = MEM_ANON,
-+		.uffd_feature_required = UFFD_FEATURE_MOVE,
-+		.test_case_ops = &uffd_move_test_case_ops,
-+	},
-+	{
-+		.name = "move-pmd",
-+		.uffd_fn = uffd_move_pmd_test,
-+		.mem_targets = MEM_ANON,
-+		.uffd_feature_required = UFFD_FEATURE_MOVE,
-+		.test_case_ops = &uffd_move_test_pmd_case_ops,
-+	},
- 	{
- 		.name = "wp-fork",
- 		.uffd_fn = uffd_wp_fork_test,
--- 
-2.43.0.rc2.451.g8631bc7472-goog
+> @@ -0,0 +1,70 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/input/himax,hx8310xx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: himax hx8310xx touchscreen
+
+Himax? HiMax? lowercase "himax" seems wrong and your commit msg also
+suggest different capitalization. The same for "hx8310xx". And it is not
+"xx" but 2J.
+
+> +
+> +maintainers:
+> +  - Allen Lin <allencl_lin@hotmail.com>
+> +
+> +description:
+> +  Supports the himax hx8310xx touchscreen.
+
+Drop sentence, instead describe hardware like "Himax HX83102J is a
+touchscreen connected over SPI ...."
+
+> +  This touchscreen uses the spi-hid protocol but has some non-standard
+> +  power sequencing required.
+> +
+> +allOf:
+> +  - $ref: /schemas/input/touchscreen/touchscreen.yaml#
+
+Missing ref to spi-peripheral-props
+
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - himax,hx83102j
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    maxItems: 1
+> +
+> +  spi-cpha: true
+> +
+> +  spi-cpol: true
+> +
+> +  spi-max-frequency: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - reset-gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,rpmh.h>
+
+Why? Drop
+
+
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    spi {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      hid_himax_spi@0 {
+
+No underscores in node names.
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&touch_int0 &touch_reset>;
+> +        reg = <0>;
+
+Oh damn... ok, so compatible is always the first property. Reg is second.
+
+> +        spi-max-frequency = <12500000>;
+> +        status = "okay";
+
+Drop
+
+> +        compatible = "himax,hx83102j";
+> +        reset-gpios = <&gpio1 8 GPIO_ACTIVE_LOW>;
+> +        spi-cpha;
+> +        spi-cpol;
+> +        interrupt-parent = <&gpio1>;
+> +        interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+> +      };
+> +    };
+
+
+
+Best regards,
+Krzysztof
 
