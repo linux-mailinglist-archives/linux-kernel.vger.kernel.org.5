@@ -2,87 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 295B3806F87
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA93806F8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378057AbjLFMRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
+        id S1378212AbjLFMT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:19:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377846AbjLFMRg (ORCPT
+        with ESMTP id S1377846AbjLFMT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:17:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E419A
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:17:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701865061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eB959rdqwj3McpopDWbd2KITPsbXVjh5QYy/Nwyj7gY=;
-        b=LDNy3lDAHufF7P/X1ceFVZHDVENsTsJorh751Y3eJ4noh/SvPFgGhyPLj7hcB2enuOKChh
-        3GNQiHevgnCrHUcdkerBmhcyX69vI/Po5z/li3tG4ooPkF/bh8ht6GqgEZj7QTsuGy2Ubj
-        oXz6EbFriVdCXwaYgB7V7NQxMF1s6rg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-553-oRHB5hP9Ot2hTUPZpvAgvg-1; Wed, 06 Dec 2023 07:17:38 -0500
-X-MC-Unique: oRHB5hP9Ot2hTUPZpvAgvg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8CCD685CBA5;
-        Wed,  6 Dec 2023 12:17:37 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.193.237])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4998D111E3EE;
-        Wed,  6 Dec 2023 12:17:34 +0000 (UTC)
-From:   Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To:     stern@rowland.harvard.edu
-Cc:     davem@davemloft.net, edumazet@google.com, greg@kroah.com,
-        jtornosm@redhat.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        oneukum@suse.com, pabeni@redhat.com, stable@vger.kernel.org
-Subject: Re: [PATCH v4] net: usb: ax88179_178a: avoid failed operations when device is disconnected
-Date:   Wed,  6 Dec 2023 13:17:32 +0100
-Message-ID: <20231206121732.7154-1-jtornosm@redhat.com>
-In-Reply-To: <624ad05b-0b90-4d1c-b06b-7a75473401c3@rowland.harvard.edu>
-References: <624ad05b-0b90-4d1c-b06b-7a75473401c3@rowland.harvard.edu>
+        Wed, 6 Dec 2023 07:19:57 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9B812B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:20:01 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2ca0f21e48cso34105451fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 04:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701865200; x=1702470000; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+i4Ygk68LEIXvF8ovwCDnUeBvBPCrOF9ltM3kyzBELs=;
+        b=PF1ziB2SIg4qc/OE5MV0auQAj/lWiY3/ZBafxRKxFSVH/WUD9JzLLdMy8jDb9/DnMB
+         5MADX6vbvWyhfx1It6PvZJe+qhOp4apenPvNou5cm1WnhCHAgz8GptVOxlPD85FK1n+K
+         ptDipsmIuNCrM8f1BH0wh7XiMM1VlkdkAsw5jVfcMmP0akwDye0CXlcfZdhbA1bkxHFK
+         /bcRZuB+/9UtwphSDtzxTGd/mvkrgilmrBmwe76Rk7u0bKT7TP2Q8USQzz/eh1S6+m2L
+         nYlsfnBnfTyBRQA3MWRH1i1pfXJNmILB3LZ3yxq21FZcQdMT6i8VAA/Oa4fdnh1/xa9M
+         ezWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701865200; x=1702470000;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+i4Ygk68LEIXvF8ovwCDnUeBvBPCrOF9ltM3kyzBELs=;
+        b=MnvRNCmbuiO4n23gJ1CnKEGWMEPQ95FFPNVgGPm21aXJljYDdKKpvDexB4AEio76/I
+         dRtNUNG/VFShLaKM05yJ0KZozTcsUI3VitFb9VXFwFV1wZ6M5oR1VZdpVCAqP0L2f0PY
+         RJeDWFtaPHqj+siSPsaCvN7fEvejEPFpjfwEa/Ij3We5Yx9+sk4e8XbXxjslUSbq7WTd
+         S2AxMoyIAWgh2RoD1ZrK+R6//wg29ZO7IxDnTE5GTlmxgo+eTMknXUSpNUyMGgE617jA
+         0U3ZQndYDJQJzeZ3ZNRNzBzQxk0WvjDN8WCQqLr/Bqe/u2L4zMwPuxWaRWiBhY6WSsPc
+         hXTg==
+X-Gm-Message-State: AOJu0YzefclcDjGqfhKck/ccdWgsRECh0sNhXKOM9YGi0FbNbbCN6QqZ
+        Qhy7xm6WvVGnUEvk12sTyPKQ/A==
+X-Google-Smtp-Source: AGHT+IGDUAakGvSrTeFgi2nx9gIOE1y209ymR5Qb+p1nSlHQs/zqcKybiK8Xz1Q0AbYMBjC+NnL+xQ==
+X-Received: by 2002:a2e:3514:0:b0:2ca:18de:5c63 with SMTP id z20-20020a2e3514000000b002ca18de5c63mr553729ljz.72.1701865199839;
+        Wed, 06 Dec 2023 04:19:59 -0800 (PST)
+Received: from [172.30.205.186] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id z23-20020a05651c023700b002c9f8d8e5f4sm1209955ljn.41.2023.12.06.04.19.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 04:19:59 -0800 (PST)
+Message-ID: <81b4f158-41e7-43b6-a762-1a05a0994d6e@linaro.org>
+Date:   Wed, 6 Dec 2023 13:19:56 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFT] interconnect: qcom: icc-rpm: Fix peak rate
+ calculation
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+References: <20231205-qcom_icc_calc_rate-typo-v1-1-9d4378dcf53e@quicinc.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231205-qcom_icc_calc_rate-typo-v1-1-9d4378dcf53e@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alan,
 
-> The __ax88179_read_cmd() and __ax88179_write_cmd() routines are 
-> asynchronous with respect to ax88179_disconnect(), right?  Or at least, 
-> they are if they run as a result of the user closing the network 
-> interface.  Otherwise there wouldn't be any memory ordering issues.
-Yes, I think so, they could be asynchronous regarding ax88179_disconnect.
 
-> But the memory barriers you added are not the proper solution.  What you 
-> need here is _synchronization_, not _ordering_.  As it is, the memory 
-> barriers you have added don't do anything; they shouldn't be in the 
-> patch.
-Ok, thank you for the helpful clarification, let me check it better,
-I understood it in a wrong way.
+On 12/5/23 23:14, Bjorn Andersson wrote:
+> Per the commit message of commit 'dd014803f260 ("interconnect: qcom:
+> icc-rpm: Add AB/IB calculations coefficients")', the peak rate should be
+> 100/ib_percent. But, in what looks like a typical typo, the numerator
+> value is discarded in the calculation.
+> 
+> Update the implementation to match the described intention.
+> 
+> Fixes: dd014803f260 ("interconnect: qcom: icc-rpm: Add AB/IB calculations coefficients")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+> Spotted while reading the code, patch is untested.
+> ---
+>   drivers/interconnect/qcom/icc-rpm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/interconnect/qcom/icc-rpm.c b/drivers/interconnect/qcom/icc-rpm.c
+> index fb54e78f8fd7..a8ed435f696c 100644
+> --- a/drivers/interconnect/qcom/icc-rpm.c
+> +++ b/drivers/interconnect/qcom/icc-rpm.c
+> @@ -307,7 +307,7 @@ static u64 qcom_icc_calc_rate(struct qcom_icc_provider *qp, struct qcom_icc_node
+>   
+>   	if (qn->ib_coeff) {
+>   		agg_peak_rate = qn->max_peak[ctx] * 100;
+> -		agg_peak_rate = div_u64(qn->max_peak[ctx], qn->ib_coeff);
+> +		agg_peak_rate = div_u64(agg_peak_rate, qn->ib_coeff);
+Oh fun.. I'dve assumed the compiler is smart enough to catch this
 
-> If you would like a more in-depth explanation, let me know.
-Thank you for your help, I will try first, I really appreciate this.
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Best regards
-José Ignacio
-
+Konrad
