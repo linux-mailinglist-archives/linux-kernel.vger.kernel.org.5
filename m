@@ -2,144 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5E48079FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F598079FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 22:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379596AbjLFVCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 16:02:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
+        id S1379603AbjLFVC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 16:02:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379443AbjLFVCg (ORCPT
+        with ESMTP id S1379443AbjLFVCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 16:02:36 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD3BD5C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 13:02:42 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54c79cca895so3546a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 13:02:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701896561; x=1702501361; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z+uaQdQz6QrhFhwF1BGDVo3HvtsF0av/JrsCNPWP0H8=;
-        b=xA6JrMKK7zq5t7NH0UhLIEyiI/WUR5uZQNJY5T7XDC3iR77qkbVZXgbn8VaVtKzGiH
-         9PrKVtVZdUrIDLfASfqYgYXsB2Q12BgcFnm+dOWmW4LSOWnejnN57gitRSfmKTNX5baB
-         lhDPriynQtfAADCa1Dohny7W8ToV0ZVUZwRprq8l+amgVkRxcnvLRUvib+dcj5LRjLTs
-         DzMUUcH0Puc1XuZxsm48ywpEh8aCJXwgPUew1iTZ7Ga9tEQ+VJefFoHFQTcheJOWbBQ0
-         OtS6DNLHudhbxb4dc+PoW4C5dlLeW2rAC5BauAvd4wD3H7F7ySifEpCaoxLBnv26bPx/
-         Iosg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701896561; x=1702501361;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z+uaQdQz6QrhFhwF1BGDVo3HvtsF0av/JrsCNPWP0H8=;
-        b=wIsTajnytJ5drzuzRmfUnEfXk/GedfApG/IW0IT+30xquWRa/s9z30w6WYkYLd5PiV
-         HI6uPk2gBCIWM1G1DDA2dseHhfHyZxvsLXgXSaAusC+6y5sofLIXbHjwsera2SbpzMms
-         exGw6QjjqHvBZ1PNyq8unetsl9g6mhDYMUF5u23nxbJ9zHlN2scXhB+OQ3/PGtsZELus
-         EKuYI+FOtUEQzddSp8dQplUrZmtNJiPh1gIZFzrVrfAA51zUY38BVa05V0QirYlmvYvT
-         gk/ROrUYPrmgOPpcf8gw67AhTUR9E1Mzs/beON2ZSTSQi0CW0q4+Em53/wLwgS081SMy
-         u+1Q==
-X-Gm-Message-State: AOJu0YztBxkomwiKuu/3Z6MGl1/uDcF6vrPoAp3NK9duopKRePU9++y8
-        rNjXWgngU6Rwt1FRwghZxpnr9kEHi5bJXc9Eu1CgLQ==
-X-Google-Smtp-Source: AGHT+IGaFpPeOUa5pJ8acL4jNk8ba2S6zn80/0RY0+ToikBAjDYwgKXjIIG+inhLt+24e/6pD2aIRpWsch8xjOOWqFw=
-X-Received: by 2002:a50:baae:0:b0:545:279:d075 with SMTP id
- x43-20020a50baae000000b005450279d075mr115598ede.1.1701896560601; Wed, 06 Dec
- 2023 13:02:40 -0800 (PST)
-MIME-Version: 1.0
-References: <CAG48ez0TfTAkaRWFCTb44x=TWP_sDZVx-5U2hvfQSFOhghNrCA@mail.gmail.com>
- <CAG48ez1hXk_cffp3dy-bYMcoyCCj-EySYR5SzYrNiRHGD=hOUg@mail.gmail.com>
- <ZW+Yv6TR+EMBp03f@orbyte.nwl.cc> <CAG48ez2G4q-50242WRE01iaKfAhd0D+XT9Ry0uS767ceHEzHXA@mail.gmail.com>
- <ZXDctabBrEFMVxg2@orbyte.nwl.cc>
-In-Reply-To: <ZXDctabBrEFMVxg2@orbyte.nwl.cc>
-From:   Jann Horn <jannh@google.com>
-Date:   Wed, 6 Dec 2023 22:02:04 +0100
-Message-ID: <CAG48ez1ixOapt330sDoCfhnVhN0VmO=i9H8cSQontGkvi_NT7A@mail.gmail.com>
-Subject: Re: Is xt_owner's owner_mt() racy with sock_orphan()? [worse with new
- TYPESAFE_BY_RCU file lifetime?]
-To:     Phil Sutter <phil@nwl.cc>, Jann Horn <jannh@google.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org, Christian Brauner <brauner@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 16:02:54 -0500
+Received: from a11-4.smtp-out.amazonses.com (a11-4.smtp-out.amazonses.com [54.240.11.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED75D5F;
+        Wed,  6 Dec 2023 13:02:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=rjayupzefgi7e6fmzxcxe4cv4arrjs35; d=jagalactic.com; t=1701896579;
+        h=Subject:From:To:Cc:Date:Mime-Version:Content-Type:Content-Transfer-Encoding:References:Message-Id;
+        bh=+9I3ssw05QPbGD2vToTePjOyEAM+Xe9Zko7u06tK2yE=;
+        b=f9/W7JcrR3cFrLt6udhD74cwrVj4ciy1WGoPmtyHvEa5heG+eMiD3catYYuZ9oep
+        56tzi12nl8AkDK3KGXnv/t4iAPbJCK+1Qd2/MG4vPPrb0V6q+Mnx+PvsnZ4S/ylyY3n
+        j8Wgnj7QgXDIX8I3s4fYg4WNOk3ebaG5uWLPEQwI=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1701896579;
+        h=Subject:From:To:Cc:Date:Mime-Version:Content-Type:Content-Transfer-Encoding:References:Message-Id:Feedback-ID;
+        bh=+9I3ssw05QPbGD2vToTePjOyEAM+Xe9Zko7u06tK2yE=;
+        b=V1rD3ZwxYZoGSUBn0hC7+MbX838HmsYWTXA2HzTIi4YseeP2yp3c5e5vSeDVtTIY
+        T8dCpeDiymCSMz3kOmNsTPovyx1ENYbOsJ5R14/MQ7Rxmp2+sX69CkdSDGqR8mcAKH6
+        5Rlfk0q3rQnBQU3wtU7bblvMPx0UsYXrR9lsbNI8=
+Subject: [PATCH RFC 0/4] dev_dax_iomap: introduce iomap for /dev/dax
+From:   =?UTF-8?Q?John_Groves?= <john@jagalactic.com>
+To:     =?UTF-8?Q?Dan_Williams?= <dan.j.williams@intel.com>,
+        =?UTF-8?Q?John_Groves?= <jgroves@micron.com>,
+        =?UTF-8?Q?John_Groves?= <john@jagalactic.com>
+Cc:     =?UTF-8?Q?Vishal_Verma?= <vishal.l.verma@intel.com>,
+        =?UTF-8?Q?Dave_Jiang?= <dave.jiang@intel.com>,
+        =?UTF-8?Q?nvdimm=40lists=2E?= =?UTF-8?Q?linux=2Edev?= 
+        <nvdimm@lists.linux.dev>,
+        =?UTF-8?Q?linux-cxl=40v?= =?UTF-8?Q?ger=2Ekernel=2Eorg?= 
+        <linux-cxl@vger.kernel.org>,
+        =?UTF-8?Q?linux-kernel=40vger=2Ekernel=2Eorg?= 
+        <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?linux-fsdevel=40vger=2Ekernel=2Eorg?= 
+        <linux-fsdevel@vger.kernel.org>,
+        =?UTF-8?Q?John_Groves?= <john@groves.net>
+Date:   Wed, 6 Dec 2023 21:02:58 +0000
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <20231206210252.52107-1-john@jagalactic.com>
+X-Mailer: Amazon WorkMail
+Thread-Index: AQHaKIeW9Nsmb4x1TnOasHllAnJBRA==
+Thread-Topic: [PATCH RFC 0/4] dev_dax_iomap: introduce iomap for /dev/dax
+X-Wm-Sent-Timestamp: 1701896577
+X-Original-Mailer: git-send-email 2.39.3 (Apple Git-145)
+Message-ID: <0100018c40f0e6d8-e9683548-4dde-4320-8ff3-3fd4103c7274-000000@email.amazonses.com>
+Feedback-ID: 1.us-east-1.LF00NED762KFuBsfzrtoqw+Brn/qlF9OYdxWukAhsl8=:AmazonSES
+X-SES-Outgoing: 2023.12.06-54.240.11.4
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 6, 2023 at 9:42=E2=80=AFPM Phil Sutter <phil@nwl.cc> wrote:
->
-> On Wed, Dec 06, 2023 at 05:28:44PM +0100, Jann Horn wrote:
-> > On Tue, Dec 5, 2023 at 10:40=E2=80=AFPM Phil Sutter <phil@nwl.cc> wrote=
-:
-> > > On Tue, Dec 05, 2023 at 06:08:29PM +0100, Jann Horn wrote:
-> > > > On Tue, Dec 5, 2023 at 5:40=E2=80=AFPM Jann Horn <jannh@google.com>=
- wrote:
-> > > > >
-> > > > > Hi!
-> > > > >
-> > > > > I think this code is racy, but testing that seems like a pain...
-> > > > >
-> > > > > owner_mt() in xt_owner runs in context of a NF_INET_LOCAL_OUT or
-> > > > > NF_INET_POST_ROUTING hook. It first checks that sk->sk_socket is
-> > > > > non-NULL, then checks that sk->sk_socket->file is non-NULL, then
-> > > > > accesses the ->f_cred of that file.
-> > > > >
-> > > > > I don't see anything that protects this against a concurrent
-> > > > > sock_orphan(), which NULLs out the sk->sk_socket pointer, if we'r=
-e in
-> > > >
-> > > > Ah, and all the other users of ->sk_socket in net/netfilter/ do it
-> > > > under the sk_callback_lock... so I guess the fix would be to add th=
-e
-> > > > same in owner_mt?
-> > >
-> > > Sounds reasonable, although I wonder how likely a socket is to
-> > > orphan while netfilter is processing a packet it just sent.
-> > >
-> > > How about the attached patch? Not sure what hash to put into a Fixes:
-> > > tag given this is a day 1 bug and ipt_owner/ip6t_owner predate git.
-> >
-> > Looks mostly reasonable to me; though I guess it's a bit weird to have
-> > two separate bailout paths for checking whether sk->sk_socket is NULL,
-> > where the first check can race, and the second check uses different
-> > logic for determining the return value; I don't know whether that
-> > actually matters semantically. But I'm not sure how to make it look
-> > nicer either.
->
-> I find the code pretty confusing since it combines three matches (socket
-> UID, socket GID and socket existence) via binary ops. The second bail
-> disregards socket existence bits, I assumed it was deliberate and thus
-> decided to leave the first part as-is.
->
-> > I guess you could add a READ_ONCE() around the first read to signal
-> > that that's a potentially racy read, but I don't feel strongly about
-> > that.
->
-> Is this just annotation or do you see a practical effect of using
-> READ_ONCE() there?
+From: John Groves <john@groves.net>
 
-I mostly just meant that as an annotation. My understanding is that in
-theory, racy reads can cause the compiler to do some terrible things
-to your code (https://lore.kernel.org/all/CAG48ez2nFks+yN1Kp4TZisso+rjvv_4U=
-W0FTo8iFUd4Qyq1qDw@mail.gmail.com/),
-but that's almost certainly not going to happen here.
+This patch set is not intended to be merged; I'm hoping to get some
+clarification as to the correct approach (especialy from Dan). 
 
-(Well, I guess doing a READ_ONCE() at one side without doing
-WRITE_ONCE() on the other side is also unclean...)
+This work is related to famfs, which is a dax file system for shared
+fabric-attached memory (FAM). Famfs is "coming soon" as an RFC, but
+the concept and requirements were presented at LPC 2023. See
+https://lpc.events/event/17/contributions/1455/ and
+https://www.youtube.com/watch?v=aA_DgO95gLo. My expectation is that
+a future (fully working) version of this patch will be folded into the
+famfs
+patches.
+
+Unlike the current set of fs-dax file systems, famfs does not need a block
+(pmem) device, and should really run on a /dev/dax character device since
+that's how sharable fabric-attached cxl memory will surface. But
+/dev/dax character devices are missing some functionality that is provided
+by the block /dev/pmem driver - specifically struct dax_operations pointer
+in struct dax_device.
+
+This patch, when CONFIG_DEV_DAX_IOMAP=y, populates dax_dev->ops for
+character dax devices. The added operations differ (currently) from
+/dev/pmem's dev_dax->ops in that they don't use memremap but instead
+provide a physical address in response to the dev_dax->direct_access()
+method. 
+
+The dax_operations are direct_access() (which resolves a dax dev offset
+to an address), zero_page_range() and recovery_write(). I'm not sure yet
+how to test the latter two, but the direct_access() method works in
+conjunciton with famfs - but only for mmaped files.
+
+But Posix reads fail. Specifically dax_iomap_iter() calls
+dax_copy_to_iter(), which declines to copy the data for some reason in
+one of the lower level copy_to_user variants. I've tried to isolate the
+reason for the failure with a VM under gdb, but no luck there yet. I'm
+wondering if there is some flag or attribute that needs to be applied to
+these addresses/pages somehow to allow this to work.
+
+The failing copy_to_user() differs from the same path with pmem fs-dax,
+in that pmem does a memremap (which I think generates one contiguous
+range, even if the device had more than one range - is this right, and
+does this mean it's consuming some of the vmap/vmalloc range?)
+
+I spent some time attempting a memremap, but I haven't figured out the
+magic for that. However, I like the simplicity of resolving to phys if
+that's not a non-starter for some reason.
+
+I hope this is enough context for a meaningful review and suggestions as to
+what a working dev_dax->dax_operations implementation should look like.
+
+Thanks for any tips!
+
+
+John Groves (4):
+  Add add_dax_ops() func for fs-dax to provide dax holder_ops
+  Temporary hacks due to linkage issues
+  Add dax_operations to /dev/dax struct dax_device
+  Add CONFIG_DEV_DAX_IOMAP kernel build parameter
+
+ drivers/dax/Kconfig |   6 ++
+ drivers/dax/bus.c   | 155 ++++++++++++++++++++++++++++++++++++++++++++
+ drivers/dax/super.c |  16 +++++
+ include/linux/dax.h |   5 ++
+ 4 files changed, 182 insertions(+)
+
+-- 
+2.40.1
+
