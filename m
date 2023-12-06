@@ -2,191 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BA8280735C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 050E4807360
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 16:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442402AbjLFPHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 10:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37728 "EHLO
+        id S1442422AbjLFPIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 10:08:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379115AbjLFPHm (ORCPT
+        with ESMTP id S1442302AbjLFPH6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 10:07:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62302D46
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 07:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701875267;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/JBJQVO5XBoc9lUdPYm1Dkdtmlp9iMHA1ds5P3k5wtk=;
-        b=JNeHjo0Zqd9VpCbcepdiHQ/VtVqFsj8d7hTLCtMGjOVyw3IGmXb9keZTr8jGvdbft/XHr+
-        V7EsqIt77n6wqBkAL29HMKBqFIC856VV1JYWHY6nzypNsdYW2uM5/XkG9W0qUTZnb+964q
-        d2eAR+TaHSiM6fDA5lrd7KZ//SVYNVw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-320-AU8IRVTjNYqiuh7hhJ6ozg-1; Wed, 06 Dec 2023 10:07:43 -0500
-X-MC-Unique: AU8IRVTjNYqiuh7hhJ6ozg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332e71b8841so800651f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 07:07:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701875258; x=1702480058;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/JBJQVO5XBoc9lUdPYm1Dkdtmlp9iMHA1ds5P3k5wtk=;
-        b=mzwJnfibU39gaPoOT8TZG3ZbjLjUnCw5cWOHKNnrrLB293/tgnxy5xsizpisti53dP
-         ScyczTXzWcGbOtbOEeVsASXqmycoQ4rou6kHDG4gvHVwbNGsa7ulMvRm1mNxtOmfe+Gl
-         kr0f7Aq5ZwHRszsBKxGqch0wz/DTkQ/NVnXF2fi2Ge6YCot0mPpZcvC9J9/tu5CTR84n
-         ZDZjAAtA/mq0cJyNCNZxpzO017cm+UIqFcbjcP3lPz6CQWUGXmab/BVrwmU6bK30PUl2
-         NuKeJLcPoqT4w5pgWVfODeUIjm6dG01LD8m4JUREdgyu4rgK2DuTV13snSrmm76N3glc
-         XGgg==
-X-Gm-Message-State: AOJu0YzArj3lvFMGD4vgDHS6s/90KJz+pERYru+c+R56AwSorcyrsEHu
-        24CJhzmTmMdSsZ3CGHGqfFSGO5i6bfC29yy9v557srR7HcVepBg53My5ZM8Zt47fHHyIH5uRrSU
-        4bKlqqNrBioeSrXln2w1kGQo=
-X-Received: by 2002:a5d:4009:0:b0:333:5258:68ef with SMTP id n9-20020a5d4009000000b00333525868efmr692840wrp.68.1701875258351;
-        Wed, 06 Dec 2023 07:07:38 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHLa1/yFQDJ3QsgPuJIOsVfygTgkEWMxKZQhHwYBT6FHhXNXPic4hIBJCiXWvnVGxjbXDr5Dw==
-X-Received: by 2002:a5d:4009:0:b0:333:5258:68ef with SMTP id n9-20020a5d4009000000b00333525868efmr692834wrp.68.1701875257975;
-        Wed, 06 Dec 2023 07:07:37 -0800 (PST)
-Received: from klayman.redhat.com (net-2-34-30-38.cust.vodafonedsl.it. [2.34.30.38])
-        by smtp.gmail.com with ESMTPSA id c1-20020adfa301000000b003333a216682sm11896497wrb.97.2023.12.06.07.07.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 07:07:37 -0800 (PST)
-From:   Marco Pagani <marpagan@redhat.com>
-To:     Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Jinjie Ruan <ruanjinjie@huawei.com>,
-        Rae Moar <rmoar@google.com>
-Cc:     Marco Pagani <marpagan@redhat.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] kunit: run test suites only after module initialization completes
-Date:   Wed,  6 Dec 2023 16:07:28 +0100
-Message-ID: <20231206150729.54604-1-marpagan@redhat.com>
-X-Mailer: git-send-email 2.43.0
+        Wed, 6 Dec 2023 10:07:58 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D905D59;
+        Wed,  6 Dec 2023 07:08:02 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3B6F7aSxA3678221, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3B6F7aSxA3678221
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 6 Dec 2023 23:07:36 +0800
+Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
+ RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.32; Wed, 6 Dec 2023 23:07:36 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Wed, 6 Dec 2023 23:07:36 +0800
+Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
+ RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
+ 15.01.2375.007; Wed, 6 Dec 2023 23:07:36 +0800
+From:   =?utf-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support for Realtek DHC SoCs
+Thread-Topic: [PATCH v2 1/6] dt-bindings: interrupt-controller: Add support
+ for Realtek DHC SoCs
+Thread-Index: AQHaGXMHJnbDooY4VkyEcMH4aisPjrCBFAaAgAG3OTCAE2RqMIABC34AgACK6PD//42bAIADJhOw//98noCAAgAXEA==
+Date:   Wed, 6 Dec 2023 15:07:36 +0000
+Message-ID: <612d61f5fae0415f9c8eb93b12f49645@realtek.com>
+References: <20231117162709.1096585-1-james.tai@realtek.com>
+ <20231117162709.1096585-2-james.tai@realtek.com>
+ <c3a98e2c-ba62-4798-a0d0-a8bc1fe5bb6b@linaro.org>
+ <7959920acf004f3cb8072de1e17439fa@realtek.com>
+ <e1490203387d4c48a5f8c4040ece038a@realtek.com>
+ <6250c57b-6d38-4085-9a79-58e4e5ed1e3d@linaro.org>
+ <cf2f9fd124514cb9832e942e16b8fa6e@realtek.com>
+ <5134d2c7-b499-400d-bec8-ae0de1eff7db@linaro.org>
+ <f27cb5d8943e44b597a13d7655edf4d0@realtek.com>
+ <3356a35c-0c50-4539-a955-01d2e67b4eca@linaro.org>
+In-Reply-To: <3356a35c-0c50-4539-a955-01d2e67b4eca@linaro.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [36.230.190.14]
+x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-kunit_free_suite_set()") fixed a wild-memory-access bug that could have
-happened during the loading phase of test suites built and executed as
-loadable modules. However, it also introduced a problematic side effect
-that causes test suites modules to crash when they attempt to register
-fake devices.
-
-When a module is loaded, it traverses the MODULE_STATE_UNFORMED and
-MODULE_STATE_COMING states before reaching the normal operating state
-MODULE_STATE_LIVE. Finally, when the module is removed, it moves to
-MODULE_STATE_GOING before being released. However, if the loading
-function load_module() fails between complete_formation() and
-do_init_module(), the module goes directly from MODULE_STATE_COMING to
-MODULE_STATE_GOING without passing through MODULE_STATE_LIVE.
-
-This behavior was causing kunit_module_exit() to be called without
-having first executed kunit_module_init(). Since kunit_module_exit() is
-responsible for freeing the memory allocated by kunit_module_init()
-through kunit_filter_suites(), this behavior was resulting in a
-wild-memory-access bug.
-
-Commit 2810c1e99867 ("kunit: Fix wild-memory-access bug in
-kunit_free_suite_set()") fixed this issue by running the tests when the
-module is still in MODULE_STATE_COMING. However, modules in that state
-are not fully initialized, lacking sysfs kobjects. Therefore, if a test
-module attempts to register a fake device, it will inevitably crash.
-
-This patch proposes a different approach to fix the original
-wild-memory-access bug while restoring the normal module execution flow
-by making kunit_module_exit() able to detect if kunit_module_init() has
-previously initialized the tests suite set. In this way, test modules
-can once again register fake devices without crashing.
-
-This behavior is achieved by checking whether mod->kunit_suites is a
-virtual or direct mapping address. If it is a virtual address, then
-kunit_module_init() has allocated the suite_set in kunit_filter_suites()
-using kmalloc_array(). On the contrary, if mod->kunit_suites is still
-pointing to the original address that was set when looking up the
-.kunit_test_suites section of the module, then the loading phase has
-failed and there's no memory to be freed.
-
-v3:
-- add a comment to clarify why the start address is checked
-v2:
-- add include <linux/mm.h>
-
-Fixes: 2810c1e99867 ("kunit: Fix wild-memory-access bug in kunit_free_suite_set()")
-Tested-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
----
- lib/kunit/test.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 7aceb07a1af9..3263e0d5e0f6 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -16,6 +16,7 @@
- #include <linux/panic.h>
- #include <linux/sched/debug.h>
- #include <linux/sched.h>
-+#include <linux/mm.h>
- 
- #include "debugfs.h"
- #include "hooks-impl.h"
-@@ -775,12 +776,19 @@ static void kunit_module_exit(struct module *mod)
- 	};
- 	const char *action = kunit_action();
- 
-+	/*
-+	 * Check if the start address is a valid virtual address to detect
-+	 * if the module load sequence has failed and the suite set has not
-+	 * been initialized and filtered.
-+	 */
-+	if (!suite_set.start || !virt_addr_valid(suite_set.start))
-+		return;
-+
- 	if (!action)
- 		__kunit_test_suites_exit(mod->kunit_suites,
- 					 mod->num_kunit_suites);
- 
--	if (suite_set.start)
--		kunit_free_suite_set(suite_set);
-+	kunit_free_suite_set(suite_set);
- }
- 
- static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
-@@ -790,12 +798,12 @@ static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
- 
- 	switch (val) {
- 	case MODULE_STATE_LIVE:
-+		kunit_module_init(mod);
- 		break;
- 	case MODULE_STATE_GOING:
- 		kunit_module_exit(mod);
- 		break;
- 	case MODULE_STATE_COMING:
--		kunit_module_init(mod);
- 		break;
- 	case MODULE_STATE_UNFORMED:
- 		break;
-
-base-commit: 33cc938e65a98f1d29d0a18403dbbee050dcad9a
--- 
-2.43.0
-
+SGkgS3J6eXN6dG9mLA0KDQo+Pj4+Pj4+Pj4gKyAgaW50ZXJydXB0cy1leHRlbmRlZDoNCj4+Pj4+
+Pj4+DQo+Pj4+Pj4+PiBpbnRlcnJ1cHRzIGluc3RlYWQuDQo+Pj4+Pj4+Pg0KPj4+Pj4+Pj4gQW55
+d2F5LCB5b3UgbXVzdCBkZXNjcmliZSB0aGUgaXRlbXMuIFdoeSB0aGlzIGlzIG5vdCBmaXhlZCBi
+dXQNCj5mbGV4aWJsZT8NCj4+Pj4+Pj4+IEhhcmR3YXJlIGhhcyBkaWZmZXJlbnQgbnVtYmVyIG9m
+IHBpbnM/IFRoYXQncyB1bmxpa2VseS4NCj4+Pj4+Pj4+DQo+Pj4+Pj4+IEkgd2lsbCByZXBsYWNl
+IGl0IHdpdGggJ2ludGVycnVwdHMnLiBTaW5jZSBvdXIgSW50ZXJydXB0DQo+Pj4+Pj4+IGNvbnRy
+b2xsZXIgYXJjaGl0ZWN0dXJlIGRvZXNuJ3QgaW52b2x2ZSBtdWx0aXBsZSBpbnRlcnJ1cHQgc291
+cmNlcywgdXNpbmcNCj4naW50ZXJydXB0cycNCj4+Pj4+IHNob3VsZCBzdWZmaWNlLg0KPj4+Pj4+
+Pg0KPj4+Pj4+DQo+Pj4+Pj4gRHVlIHRvIGNoYW5nZXMgaW4gaGFyZHdhcmUgZGVzaWduLCBzb21l
+IHBlcmlwaGVyYWwgaW50ZXJydXB0cyBwaW4NCj4+Pj4+PiBpbml0aWFsbHkNCj4+Pj4+IGNvbm5l
+Y3RlZCB0byB0aGUgUmVhbHRlayBpbnRlcnJ1cHQgY29udHJvbGxlciB3ZXJlIHJlZGlyZWN0ZWQg
+dG8gdGhlIEdJQy4NCj4+Pj4+PiBIb3dldmVyLCB0aGUgYXNzb2NpYXRlZCBmaWVsZHMgYW5kIHN0
+YXR1c2VzIGluIHRoZSBSZWFsdGVrDQo+Pj4+Pj4gaW50ZXJydXB0IGNvbnRyb2xsZXINCj4+Pj4+
+IHJlZ2lzdGVycyB3ZXJlIG5vdCByZW1vdmVkLg0KPj4+Pj4+IEFzIGEgcmVzdWx0LCB0aGVzZSBp
+bnRlcnJ1cHRzIGNhbm5vdCBiZSBjbGVhcmVkIGJ5IHBlcmlwaGVyYWwNCj4+Pj4+PiByZWdpc3Rl
+ciwgYW5kIHRoZWlyDQo+Pj4+PiBzdGF0dXMgY2xlYXJpbmcgaXMgc3RpbGwgbmVlZGluZyB0aGUg
+UmVhbHRlayBpbnRlcnJ1cHQgY29udHJvbGxlcg0KPj4+Pj4gZHJpdmVyIHRvDQo+Pj4gbWFuYWdl
+Lg0KPj4+Pj4+DQo+Pj4+Pj4gVGhhdCdzIHdoeSBmbGV4aWJpbGl0eSBpcyBuZWNlc3NhcnkuDQo+
+Pj4+Pg0KPj4+Pj4gVGhpcyBkb2VzIG5vdCBleHBsYWluIHdoeSB0aGlzIGlzIG5vdCBmaXhlZCBw
+ZXIgdmFyaWFudC4NCj4+Pj4+DQo+Pj4+DQo+Pj4+IERvZXMgdGhlIGRlZmluaXRpb24gb2YgImZp
+eGVkIiB5b3UgbWVudGlvbmVkIHJlZmVyIHRvIGZpeGVkDQo+Pj4+IGludGVycnVwdCBwaW5zPyBJ
+ZiBub3QsIGNvdWxkIHlvdSBwbGVhc2UgZ2l2ZSBtZSBhbiBleGFtcGxlIGFuZCBsZXQNCj4+Pj4g
+bWUga25vdyB3aGF0IHlvdSBtZWFuIGJ5ICJmaXhlZCI/DQo+Pj4NCj4+PiBOdW1iZXIgb2YgdGhl
+IGludGVycnVwdHMgcGVyIGVhY2ggZGV2aWNlIG9yIHZhcmlhbnQgc2hvdWxkIGJlDQo+Pj4gc3Ry
+aWN0bHkgZGVmaW5lZCwgbm90IHZhcmlhYmxlLg0KPj4NCj4+IFRoYW5rIHlvdSBmb3IgeW91ciBl
+eHBsYW5hdGlvbi4NCj4+DQo+PiBUaGUgREhDIHBsYXRmb3JtcyBjb250YWluIHR3byBpbnRlcnJ1
+cHQgY29udHJvbGxlcnMsIGVhY2ggaGFuZGxpbmcgcGVyaXBoZXJhbA0KPmRldmljZSBpbnRlcnJ1
+cHRzIGluIHRoZSB0d28gcG93ZXIgZG9tYWlucy4NCj4+IFdoaWxlIGVhY2ggaGFzIGEgZml4ZWQg
+SVJRIG51bWJlcnMsIHRoZSBzcGVjaWZpYyBJUlEgdmFyaWVzIGRlcGVuZGluZyBvbiB0aGUNCj4+
+cGxhdGZvcm0uDQo+DQo+U3JzbHksIHdoYXQgInNwZWNpZmljIElSUSIgaGFzIGFueXRoaW5nIHRv
+IGRvIHdpdGggIm51bWJlciBvZiBpbnRlcnJ1cHRzIHBlcg0KPmVhY2ggZGV2aWNlIG9yIHZhcmlh
+bnQiPw0KDQpFYWNoIFJlYWx0ZWsgaW50ZXJydXB0IGNvbnRyb2xsZXIgaXMgYXNzaWduZWQgYSBm
+aXhlZCBJUlEsIHdoaWNoIGdhdGhlcnMgaW50ZXJydXB0cyBmcm9tIHBlcmlwaGVyYWwgZGV2aWNl
+cyBzdWNoIGFzIGkyYywgc3BpLCBldGhlcm5ldCBwaHksIHRpbWVyLCB1YXJ0LCB3YXRjaGRvZywg
+cnRjLCBwd20sIGV0Yy4NCg0KRHVlIHRvIG1vZGlmaWNhdGlvbnMgaW4gdGhlIGhhcmR3YXJlIGNp
+cmN1aXQsIGNlcnRhaW4gcGVyaXBoZXJhbCBkZXZpY2UgaW50ZXJydXB0cyBpbmNsdWRpbmcgd2F0
+Y2hkb2csIHJ0YywgdWFydDEsIGFuZCB1YXJ0MiBhcmUgbm93IHJlZGlyZWN0ZWQgdG8gdGhlIEdJ
+Qy4gDQpDb25zZXF1ZW50bHksIHRoZXNlIGRldmljZXMgY2Fubm90IGNsZWFyIGludGVycnVwdCBz
+dGF0dXNlcyB0aHJvdWdoIHRoZWlyIG93biByZWdpc3RlcnMuIFRvIHJlc29sdmUgdGhpcywgd2Ug
+bWFuYWdlIHRoZWlyIGludGVycnVwdHMgdGhyb3VnaCB0aGUgUmVhbHRlayBpbnRlcnJ1cHQgY29u
+dHJvbGxlci4NCg0KVGhpcyByZXN1bHRzIGluIGEgdmFyaWF0aW9uIGluIHRoZSBudW1iZXIgb2Yg
+SVJRcyByZWdpc3RlcmVkIGJ5IHRoZSBpbnRlcnJ1cHQgY29udHJvbGxlcnMgb2YgSVNPIChpc29s
+YXRpb24pIGFuZCBNU0lDIChtaXNjZWxsYW5lb3VzKS4NCg0KSW4gdGhlIERUUyBleGFtcGxlcyBw
+cm92aWRlZCBpbiB0aGUgaW5pdGlhbCBwYXRjaCByZWxlYXNlLCBJUlFzIDQxIGFuZCA0MiBhcmUg
+YXNzaWduZWQgdG8gdGhlIFJlYWx0ZWsgaW50ZXJydXB0IGNvbnRyb2xsZXIuIA0KQXMgd2F0Y2hk
+b2csIHJ0YywgdWFydDEsIGFuZCB1YXJ0MiBpbnRlcnJ1cHRzIG5vIGxvbmdlciB1c2UgSVJRcyA0
+MSBvciA0MiwgdGhlaXIgSVJRcyAoMCwgMzksIDg5LCA5MCkgYXJlIGFzc2lnbmVkIHRvIGJlIHJl
+Z2lzdGVyZWQgYnkgdGhlIFJlYWx0ZWsgaW50ZXJydXB0IGNvbnRyb2xsZXIuDQoNCkZpeGVkIElS
+UXM6DQotIDQxOiBwZXJpcGhlcmFsIGRldmljZXMgKGlzbyBwb3dlciBkb21haW4pDQotIDQyOiBw
+ZXJpcGhlcmFsIGRldmljZXMgKG1pc2MgcG93ZXIgZG9tYWluKQ0KDQpTcGVjaWZpYyBJUlFzOg0K
+LSAwOiB3YXRjaGRvZyAoaXNvIHBvd2VyIGRvbWFpbikNCi0gMzk6IHJ0YyAobWlzYyBwb3dlciBk
+b21haW4pDQotIDg5OiB1YXJ0MSAobWlzYyBwb3dlciBkb21haW4pDQotIDkwOiB1YXJ0MiAobWlz
+YyBwb3dlciBkb21haW4pDQoNCkV4YW1wbGVzKHYxIHBhdGNoZXMpOg0KICAgIGlzb19pcnFfbXV4
+OiBpc29faXJxX211eEA0MCB7DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTMxOS1p
+bnRjLWlzbyI7DQogICAgICByZWcgPSA8MHgwMCAweDQwPjsNCiAgICAgIGludGVycnVwdHMtZXh0
+ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQxIElSUV9UWVBFX0xFVkVMX0hJR0g+LA0KICAgICAgICAg
+ICAgICAgICAgICAgICAgPCZnaWMgR0lDX1NQSSAzOSBJUlFfVFlQRV9MRVZFTF9ISUdIPjsNCiAg
+ICAgIGludGVycnVwdC1jb250cm9sbGVyOw0KICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MD47DQog
+ICAgICAjaW50ZXJydXB0LWNlbGxzID0gPDE+Ow0KICAgIH07DQoNCiAgICBtaXNjX2lycV9tdXg6
+IG1pc2NfaXJxX211eEA4MCB7DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTMxOS1p
+bnRjLW1pc2MiOw0KICAgICAgcmVnID0gPDB4MDAgMHg4MD47DQogICAgICBpbnRlcnJ1cHRzLWV4
+dGVuZGVkID0gPCZnaWMgR0lDX1NQSSA0MCBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAgICAgICAg
+ICAgICAgICAgICAgICAgIDwmZ2ljIEdJQ19TUEkgMCBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAg
+ICAgICAgICAgICAgICAgICAgICAgIDwmZ2ljIEdJQ19TUEkgODkgSVJRX1RZUEVfTEVWRUxfSElH
+SD4sDQogICAgICAgICAgICAgICAgICAgICAgICA8JmdpYyBHSUNfU1BJIDkwIElSUV9UWVBFX0xF
+VkVMX0hJR0g+Ow0KICAgICAgaW50ZXJydXB0LWNvbnRyb2xsZXI7DQogICAgICAjYWRkcmVzcy1j
+ZWxscyA9IDwwPjsNCiAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQogICAgfTsNCg0KICAg
+IGlzb19pcnFfbXV4OiBpc29faXJxX211eEA0MCB7DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0
+ZWsscnRkMTMxOWQtaW50Yy1pc28iOw0KICAgICAgcmVnID0gPDB4MDAgMHg0MD47DQogICAgICBp
+bnRlcnJ1cHRzLWV4dGVuZGVkID0gPCZnaWMgR0lDX1NQSSA0MSBJUlFfVFlQRV9MRVZFTF9ISUdI
+PiwNCiAgICAgICAgICAgICAgICAgICAgICAgICA8JmdpYyBHSUNfU1BJIDAgSVJRX1RZUEVfTEVW
+RUxfSElHSD47DQogICAgICBpbnRlcnJ1cHQtY29udHJvbGxlcjsNCiAgICAgICNhZGRyZXNzLWNl
+bGxzID0gPDA+Ow0KICAgICAgI2ludGVycnVwdC1jZWxscyA9IDwxPjsNCiAgICB9Ow0KDQogICAg
+bWlzY19pcnFfbXV4OiBtaXNjX2lycV9tdXhAODAgew0KICAgICAgY29tcGF0aWJsZSA9ICJyZWFs
+dGVrLHJ0ZDEzMTlkLWludGMtbWlzYyI7DQogICAgICByZWcgPSA8MHgwMCAweDgwPjsNCiAgICAg
+IGludGVycnVwdHMtZXh0ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQwIElSUV9UWVBFX0xFVkVMX0hJ
+R0g+LA0KICAgICAgICAgICAgICAgICAgICAgICAgPCZnaWMgR0lDX1NQSSA4OSBJUlFfVFlQRV9M
+RVZFTF9ISUdIPiwNCiAgICAgICAgICAgICAgICAgICAgICAgIDwmZ2ljIEdJQ19TUEkgOTAgSVJR
+X1RZUEVfTEVWRUxfSElHSD4sDQogICAgICAgICAgICAgICAgICAgICAgICA8JmdpYyBHSUNfU1BJ
+IDM5IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KICAgICAgaW50ZXJydXB0LWNvbnRyb2xsZXI7DQog
+ICAgICAjYWRkcmVzcy1jZWxscyA9IDwwPjsNCiAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47
+DQogICAgfTsNCg0KICAgIGlzb19pcnFfbXV4OiBpc29faXJxX211eEA0MCB7DQogICAgICBjb21w
+YXRpYmxlID0gInJlYWx0ZWsscnRkMTMyNS1pbnRjLWlzbyI7DQogICAgICByZWcgPSA8MHgwMCAw
+eDQwPjsNCiAgICAgIGludGVycnVwdHMtZXh0ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQxIElSUV9U
+WVBFX0xFVkVMX0hJR0g+LA0KICAgICAgICAgICAgICAgICAgICAgICAgPCZnaWMgR0lDX1NQSSAw
+IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KICAgICAgaW50ZXJydXB0LWNvbnRyb2xsZXI7DQogICAg
+ICAjYWRkcmVzcy1jZWxscyA9IDwwPjsNCiAgICAgICNpbnRlcnJ1cHQtY2VsbHMgPSA8MT47DQog
+ICAgfTsNCg0KICAgIG1pc2NfaXJxX211eDogbWlzY19pcnFfbXV4QDgwIHsNCiAgICAgIGNvbXBh
+dGlibGUgPSAicmVhbHRlayxydGQxMzI1LWludGMtbWlzYyI7DQogICAgICByZWcgPSA8MHgwMCAw
+eDgwPjsNCiAgICAgIGludGVycnVwdHMtZXh0ZW5kZWQgPSA8JmdpYyBHSUNfU1BJIDQwIElSUV9U
+WVBFX0xFVkVMX0hJR0g+LA0KICAgICAgICAgICAgICAgICAgICAgICAgPCZnaWMgR0lDX1NQSSA4
+OSBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAgICAgICAgICAgICAgICAgICAgICAgIDwmZ2ljIEdJ
+Q19TUEkgOTAgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQogICAgICAgICAgICAgICAgICAgICAgICA8
+JmdpYyBHSUNfU1BJIDM5IElSUV9UWVBFX0xFVkVMX0hJR0g+Ow0KICAgICAgaW50ZXJydXB0LWNv
+bnRyb2xsZXI7DQogICAgICAjYWRkcmVzcy1jZWxscyA9IDwwPjsNCiAgICAgICNpbnRlcnJ1cHQt
+Y2VsbHMgPSA8MT47DQogICAgfTsNCg0KICAgIGlzb19pcnFfbXV4OiBpc29faXJxX211eEA0MCB7
+DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTYxOWItaW50Yy1pc28iOw0KICAgICAg
+cmVnID0gPDB4MDAgMHg0MD47DQogICAgICBpbnRlcnJ1cHRzLWV4dGVuZGVkID0gPCZnaWMgR0lD
+X1NQSSA0MSBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAgICAgICAgICAgICAgICAgICAgICAgIDwm
+Z2ljIEdJQ19TUEkgMCBJUlFfVFlQRV9MRVZFTF9ISUdIPjsNCiAgICAgIGludGVycnVwdC1jb250
+cm9sbGVyOw0KICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MD47DQogICAgICAjaW50ZXJydXB0LWNl
+bGxzID0gPDE+Ow0KICAgIH07DQoNCiAgICBtaXNjX2lycV9tdXg6IG1pc2NfaXJxX211eEA4MCB7
+DQogICAgICBjb21wYXRpYmxlID0gInJlYWx0ZWsscnRkMTYxOWItaW50Yy1taXNjIjsNCiAgICAg
+IHJlZyA9IDwweDAwIDB4ODA+Ow0KICAgICAgaW50ZXJydXB0cy1leHRlbmRlZCA9IDwmZ2ljIEdJ
+Q19TUEkgNDAgSVJRX1RZUEVfTEVWRUxfSElHSD4sDQogICAgICAgICAgICAgICAgICAgICAgICA8
+JmdpYyBHSUNfU1BJIDg5IElSUV9UWVBFX0xFVkVMX0hJR0g+LA0KICAgICAgICAgICAgICAgICAg
+ICAgICAgPCZnaWMgR0lDX1NQSSA5MCBJUlFfVFlQRV9MRVZFTF9ISUdIPiwNCiAgICAgIGludGVy
+cnVwdC1jb250cm9sbGVyOw0KICAgICAgI2FkZHJlc3MtY2VsbHMgPSA8MD47DQogICAgICAjaW50
+ZXJydXB0LWNlbGxzID0gPDE+Ow0KICAgIH07DQoNCj4NCj5Mb29rIGF0IGFsbCBvdGhlciBiaW5k
+aW5ncyBjb3ZlcmluZyBtdWx0aXBsZSBkZXZpY2VzIGFuZCB0aGVpcg0KPmNsb2Nrcy9pbnRlcnJ1
+cHRzL2ludGVyY29ubmVjdHMvcmVnIGV0Yy4NCg0KTWF5IEkgYWRvcHQgdGhlIGFwcHJvYWNoIHVz
+ZWQgaW4gdGhpcyBZQU1MIGZvciBteSBjYXNlPw0KaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2Mv
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3RpbWVyL2FsbHdpbm5lciUyQ3N1bjRp
+LWExMC10aW1lci55YW1sDQoNClRoYW5rIHlvdSBmb3IgeW91ciBmZWVkYmFjay4NCg0KUmVnYXJk
+cywNCkphbWVzDQo=
