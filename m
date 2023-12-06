@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD615806413
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 02:26:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7772E80640F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 02:26:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjLFBOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 20:14:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52806 "EHLO
+        id S230059AbjLFBVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 20:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbjLFBOr (ORCPT
+        with ESMTP id S229617AbjLFBVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 20:14:47 -0500
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC6CB181
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 17:14:53 -0800 (PST)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b8b5b4edd8so4778421b6e.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 17:14:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701825293; x=1702430093;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i+ChXmEFDAIC815JXF2BVBznoutLyvt3bx+aps0Cz7w=;
-        b=JnFvRz7/gDURl9k6zww5ak8WR1brnDdWh970JxefyRL/Sqa8WXUDDkrE52ab4OfMdI
-         BODMI6hkW7IheXQJxvO+kPXEdYroSWFXrheuSr0oMGhZ8NBufqOzf3/Fm2rlcuE6BMWC
-         Ce1Gc5Y4evHwEP5mW23k7i4XXGYrsevvdBZOhh4i8Q3m5UVZYmJM8ZQV6JkzGpn1Aqbv
-         dH804YkLuoIxpyNqb1lzZPdk4dNSt9Nb3zUbKyUj39w5KzuTnbr/+3XbvABf1TYjOUQg
-         x2g1yeLIn/kXcU16pwGkpTmUaNjbu6x5EJsJjlaHGh5M3R25hW15Wqh++pd/2Bij1/qS
-         Ftuw==
-X-Gm-Message-State: AOJu0YwYTUxFgfdFnV/Ldg3fXeH8DaeRmlWMmApmKGek7L+eDzZ2aG32
-        sD5uQ2nnSxfdluPJTh9nrj6A1+KOKp+Ka9tVUOApMN6qRrn3eJ4=
-X-Google-Smtp-Source: AGHT+IG6kxLsXvaGuuCIFp4oUXZlFVatOMBVwMDmXoy/qq9DL0PxKUJxZzbexafVKtVZN/39VtZIGEYmL+dhULvEBO5+9YEx9lr9
+        Tue, 5 Dec 2023 20:21:03 -0500
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7786E196;
+        Tue,  5 Dec 2023 17:21:09 -0800 (PST)
+X-QQ-mid: bizesmtp68t1701825652tqn6a9bj
+Received: from localhost.localdomain ( [219.147.0.78])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 06 Dec 2023 09:20:49 +0800 (CST)
+X-QQ-SSF: 01200000000000B0J000000A0000000
+X-QQ-FEAT: /5D9664O2EUSvgP0XxT6g0eaGNcEG1H8I6GjK/tnLlRnh1xvWCndohvKG1n7j
+        kjnnoHFErTEr7I9aeIskimiOkJk2VOMq+XwpfaDLhCVX9fLm0qgjUCclZypQBJoUPhVzgcM
+        O6NZVg9E8qEMQHgXCLttrNTGlTYN/A0c4RQHNkH6l6txf3PMjya0CYYsSVQPX+g8s69H7jP
+        IZFImoY/IjWWgsRMq93R9LGvdBpCASWN+VAajUXEb95jt/s3job82hab+iF1iX2cVM3u+Vy
+        J8BFrWosr0j+S+KUxD6FUxSrffT2naQPBWVZ4+SDUbmXDsoa+lBoZWRsLw1e7WLICmpjMpE
+        ErbQQYSsVrq3+JIoQD8teTNkxtWBQ==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13065259714944715131
+From:   Jialu Xu <xujialu@vimux.org>
+To:     nathan@kernel.org
+Cc:     justinstitt@google.com, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        masahiroy@kernel.org, morbo@google.com, ndesaulniers@google.com,
+        xujialu@vimux.org
+Subject: Re: [PATCH v2] gen_compile_commands.py: fix path resolve with symlinks in it
+Date:   Wed,  6 Dec 2023 09:20:34 +0800
+Message-Id: <20231206012034.833057-1-xujialu@vimux.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231205165648.GA391810@dev-arch.thelio-3990X>
+References: <20231205165648.GA391810@dev-arch.thelio-3990X>
 MIME-Version: 1.0
-X-Received: by 2002:aca:1c19:0:b0:3b8:b1e3:c576 with SMTP id
- c25-20020aca1c19000000b003b8b1e3c576mr149070oic.5.1701825293314; Tue, 05 Dec
- 2023 17:14:53 -0800 (PST)
-Date:   Tue, 05 Dec 2023 17:14:53 -0800
-In-Reply-To: <0000000000001b9bed060bc75cbc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000013f13b060bcd149d@google.com>
-Subject: Re: [syzbot] [net?] KMSAN: uninit-value in __llc_lookup_established
-From:   syzbot <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:vimux.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=1.8 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_PBL,RCVD_IN_XBL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Hi Nathan,
 
-***
+>On Tue, Dec 05, 2023 at 10:15:26AM +0800, Jialu Xu wrote:
+>> When symbolic links are involved in the path, os.path.abspath might not
+>> resolve the symlinks and instead return the absolute path with the
+>> symlinks intact.
+>> 
+>> Use pathlib.Path resolve() instead of os.path.abspath()
+>> 
+>> Signed-off-by: Jialu Xu <xujialu@vimux.org>
+>
+>Thanks for the clarification in your previous message [1], I suppose
+>that makes sense as to why nobody has reported this to us because that
+>is a rather odd situation that the upstream kernel would not experience.
+>
+>I think that some of those details should be in the commit message,
+>along with a short example like you provided, so that we know exactly
+>what the situation was and how this patch resolves it.
+>
+>Perhaps something like (please feel free to correct or reword as you
+>feel necessary):
+>
+>"When a path contains relative symbolic links, os.path.abspath() might
+>not follow the symlinks and instead return the absolute path with just
+>the relative paths resolved, resulting in an incorrect path.
+>
+><broken example>
+>
+>Use pathlib.Path.resolve(), which resolves the symlinks and normalizes
+>the paths correctly.
+>
+><working example>"
+>
+>The actual fix seems fine to me. Feel free to add
+>
+>  Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+>
+>to the subsequent submission and please include both
+>
+>  Masahiro Yamada <masahiroy@kernel.org>
+>  linux-kbuild@vger.kernel.org
+>
+>on it in addition to the people you have here, as he is the one who
+>actually applies gen_compile_commands.py changes (I am going to send a
+>MAINTAINERS change for this).
+>
+>[1]: https://lore.kernel.org/20231205021523.4152128-1-xujialu@vimux.org/
+>
 
-Subject: [net?] KMSAN: uninit-value in __llc_lookup_established
-Author: eadavis@qq.com
+Thanks for the very detailed help!
 
-please test uninit-value in __llc_lookup_established
+Patch update as v3.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1c41041124bd
+Cheers,
+Jialu
 
-diff --git a/net/llc/llc_input.c b/net/llc/llc_input.c
-index 51bccfb00a9c..58e0b8ab41b7 100644
---- a/net/llc/llc_input.c
-+++ b/net/llc/llc_input.c
-@@ -126,6 +126,7 @@ static inline int llc_fixup_skb(struct sk_buff *skb)
- 
- 	skb->transport_header += llc_len;
- 	skb_pull(skb, llc_len);
-+	printk("3sp: %d\n", skb->protocol);
- 	if (skb->protocol == htons(ETH_P_802_2)) {
- 		__be16 pdulen;
- 		s32 data_size;
-@@ -141,7 +142,8 @@ static inline int llc_fixup_skb(struct sk_buff *skb)
- 			return 0;
- 		if (unlikely(pskb_trim_rcsum(skb, data_size)))
- 			return 0;
--	}
-+	} else
-+		return 0;
- 	return 1;
- }
- 
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index afa5497f7c35..bff910513fc3 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1900,6 +1900,7 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
- 		skb->protocol = eth_type_trans(skb, tun->dev);
- 		break;
- 	}
-+	printk("sp: %d\n", skb->protocol);
- 
- 	/* copy skb_ubuf_info for callback when skb has no error */
- 	if (zerocopy) {
-@@ -1999,6 +2000,7 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
- 
- 		local_bh_enable();
- 	} else if (!IS_ENABLED(CONFIG_4KSTACKS)) {
-+		printk("2sp: %d\n", skb->protocol);
- 		tun_rx_batched(tun, tfile, skb, more);
- 	} else {
- 		netif_rx(skb);
 
