@@ -2,212 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C242580632D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24230806330
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346616AbjLFAHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
+        id S1346651AbjLFAIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:08:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346563AbjLFAHN (ORCPT
+        with ESMTP id S1346563AbjLFAIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:07:13 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE6D1A2
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:07:17 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5ca2a6f07b6so101006877b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 16:07:17 -0800 (PST)
+        Tue, 5 Dec 2023 19:08:21 -0500
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE22218F;
+        Tue,  5 Dec 2023 16:08:27 -0800 (PST)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4b2c0ba26f1so217728e0c.0;
+        Tue, 05 Dec 2023 16:08:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701821237; x=1702426037; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B09jNl/6ew1fQLf1zTOLuFX5OzlF3p6K7osCTShEz6M=;
-        b=xR8t6mUk4YlLTCwB3wzAVW+pbILw5/x9O7C9Ot8cC5Eacn2DbevSTZUw1/uk8+IUH3
-         ffDD6LfXxy26tQN5nZ4m39/EejSIRlbTV4iqOHFSpdCOfyzh739uRUElkDNCbyoZuwMv
-         AHB0kMv9w7K++aVN+nE15SYKf7zPrbiahaCSr0uRgHu8ePf3J22npjoBHA4mTmvilEdj
-         iwZdtCjfY0NkJV7Tlyggt7tWKF3O0IUUgHh3WP7o3GyRpwTrhQa3VYU3Cx51Wpwfx4Il
-         pdiv6B2MkJUK+vU10QGQM+bRZ4/HzOK+a/BXGCDcvrocDdU0hhW2R5Qpw3CajRXprFqM
-         P+Ng==
+        d=gmail.com; s=20230601; t=1701821307; x=1702426107; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mZmoOpShnlOr1bQVRrl+GknWd+PtQJEUK3TXoeEYCts=;
+        b=LrJybr/CBMhzbHfZld0/dVZM5b0i8Yv1hjr8wNJ48/rdGbwhNSSNscCxDZPWjsLL5S
+         1zrT/Ig/Fx+vPSMqtbb3WXAf9hmWWNuBe5jhG9SYXG6LdM7aV4kd4VmlJk1DeMmnbsgw
+         NlkHas/Ekjq64iwIPCEQYIJfqoZvl/vLXTfBqKu7b/iHjCn/8GPZOESayR1tilvL0DLC
+         +YnkIVmC10bJ9MUY17pzOGnJ2tqaGt5J26OIpCJTmB9MDOxq3EYa0DjJfnWDxfgdP/29
+         YAOHXw1vAz9Cdf8t3U9f5CiHK1Gh6tDMSZgo5YPRBwgQHyNOnfiskG/1BcRKn7uxPRpW
+         j99w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701821237; x=1702426037;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=B09jNl/6ew1fQLf1zTOLuFX5OzlF3p6K7osCTShEz6M=;
-        b=Q1bBr83+bo7v1I5c/NrDVjNfpNPJV7yKD7BfZekfSNZ7O142gPO6FJecdg727UgjJ5
-         pd5ItaCjeph2zWrPXqV8HPHacXH0O8xJRB60jvApIF3LeZdFRgRQKYydU7qSF0QPGY3N
-         0g5nVVo+x+xB3vUlYxLoMWzfxk/R5fasWTbbhpHDhpRSmo/1ibImi2Lm3m3YCtHtHtAT
-         yzv+yxX2JCdAyfmj1OMVHfV6p/a3BADm/jzB5sODrHb1ZgJL4TTMbqjpomYMRHlUxzo4
-         7IdE4tbSf+VxisdGwEkR9TBLfM3dd4wj75xRd4Dv2YQEyEnscgCtmuqgCjfpTNlk0jaa
-         Tl8g==
-X-Gm-Message-State: AOJu0YzbINxnVkafTKETUcJ03N0jpL5zudrwlcIR44fxkJKsYPOEfCTe
-        LUnNnm0KDgLT9Dj22Wc8KTHngBaLgHY=
-X-Google-Smtp-Source: AGHT+IGlfl1pdAmtDrLxND8bxut+yVt9lXSa4fXaozYVUGEQmSGwKI62StziH/FVo2cPUM7O/ofYJDYTrcI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:2f0b:b0:5d4:3013:25d4 with SMTP id
- ev11-20020a05690c2f0b00b005d4301325d4mr282162ywb.5.1701821237087; Tue, 05 Dec
- 2023 16:07:17 -0800 (PST)
-Date:   Tue, 5 Dec 2023 16:07:15 -0800
-In-Reply-To: <fc09fec34a89ba7655f344a31174d078a8248182.camel@redhat.com>
-Mime-Version: 1.0
-References: <20231108111806.92604-1-nsaenz@amazon.com> <20231108111806.92604-6-nsaenz@amazon.com>
- <f4495d1f697cf9a7ddfb786eaeeac90f554fc6db.camel@redhat.com>
- <CXD4TVV5QWUK.3SH495QSBTTUF@amazon.com> <ZWoKlJUKJGGhRRgM@google.com>
- <CXD5HJ5LQMTE.11XP9UB9IL8LY@amazon.com> <ZWocI-2ajwudA-S5@google.com>
- <CXD7AW5T9R7G.2REFR2IRSVRVZ@amazon.com> <ZW94T8Fx2eJpwKQS@google.com> <fc09fec34a89ba7655f344a31174d078a8248182.camel@redhat.com>
-Message-ID: <ZW-7Mwev4Ilf541L@google.com>
-Subject: Re: [RFC 05/33] KVM: x86: hyper-v: Introduce VTL call/return
- prologues in hypercall page
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, anelkz@amazon.com,
-        graf@amazon.com, dwmw@amazon.co.uk, jgowans@amazon.com,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        x86@kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
+        d=1e100.net; s=20230601; t=1701821307; x=1702426107;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mZmoOpShnlOr1bQVRrl+GknWd+PtQJEUK3TXoeEYCts=;
+        b=VFBqNWKIc+YjQDsIxtmtYjZSJQn6YCZXgND32owQ7kS8HwYDDELvbOU/piQEVo825n
+         LKjqtIJPQKZlEFYRehmRWuZ8iVGmFM+XhoIw9dP+u12slnl58g5GykK2wQVhbXlOLkOD
+         4oBJ7yMNwUVsBnQq33xME6gsTmWPD0zD570idHFm+XY+auXb6xk54LKq5hipqrHGtfQ8
+         KohXwfCuA04dhC6yejsqA7ZFxvwByKlb5MXglKQzlV5/2PY6NCicETEWXaCGLs44JzNu
+         Eob5N8/9mx82irqDiS5yq/1IP+GnBuePawGZqNVX+mMUYuEImg61ZqxjX9VVXxRGyEJp
+         LzoA==
+X-Gm-Message-State: AOJu0YySxV6VrkygQfSf0t8SjhaHMJmTiOlD+s9pK0gQZnlrZ1Br3gHT
+        bkNNl417t9wm8H59eGpZTKYgm3/YESeUwrH4TQ0=
+X-Google-Smtp-Source: AGHT+IHe47styOpdF2IwNLQKmxh275Vb5ERuMYIfHI30HlMr+3ER7uJ9XJJ7Bag/XCKqrpbPzhICRkVEtagiFq7m0LE=
+X-Received: by 2002:a05:6122:3187:b0:49d:20fb:c899 with SMTP id
+ ch7-20020a056122318700b0049d20fbc899mr2686639vkb.4.1701821306644; Tue, 05 Dec
+ 2023 16:08:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-2-9c9c70177183@suse.cz> <ZW6j6aTpuJF0keS7@localhost.localdomain>
+ <93a8a67c-9cb7-0d36-6b14-ce15a30bea3f@suse.cz>
+In-Reply-To: <93a8a67c-9cb7-0d36-6b14-ce15a30bea3f@suse.cz>
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Date:   Wed, 6 Dec 2023 09:08:16 +0900
+Message-ID: <CAB=+i9Q_FWy3CvJAJPx_ZGncezSOLSST9BX_dZ901=8oemrSUA@mail.gmail.com>
+Subject: Re: [PATCH v2 02/21] mm/slab: remove CONFIG_SLAB from all Kconfig and Makefile
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 05, 2023, Maxim Levitsky wrote:
-> On Tue, 2023-12-05 at 11:21 -0800, Sean Christopherson wrote:
-> > On Fri, Dec 01, 2023, Nicolas Saenz Julienne wrote:
-> > > On Fri Dec 1, 2023 at 5:47 PM UTC, Sean Christopherson wrote:
-> > > > On Fri, Dec 01, 2023, Nicolas Saenz Julienne wrote:
-> > > > > On Fri Dec 1, 2023 at 4:32 PM UTC, Sean Christopherson wrote:
-> > > > > > On Fri, Dec 01, 2023, Nicolas Saenz Julienne wrote:
-> > > > > > > > To support this I think that we can add a userspace msr fil=
-ter on the HV_X64_MSR_HYPERCALL,
-> > > > > > > > although I am not 100% sure if a userspace msr filter overr=
-ides the in-kernel msr handling.
-> > > > > > >=20
-> > > > > > > I thought about it at the time. It's not that simple though, =
-we should
-> > > > > > > still let KVM set the hypercall bytecode, and other quirks li=
-ke the Xen
-> > > > > > > one.
-> > > > > >=20
-> > > > > > Yeah, that Xen quirk is quite the killer.
-> > > > > >=20
-> > > > > > Can you provide pseudo-assembly for what the final page is supp=
-osed to look like?
-> > > > > > I'm struggling mightily to understand what this is actually try=
-ing to do.
-> > > > >=20
-> > > > > I'll make it as simple as possible (diregard 32bit support and th=
-at xen
-> > > > > exists):
-> > > > >=20
-> > > > > vmcall             <-  Offset 0, regular Hyper-V hypercalls enter=
- here
-> > > > > ret
-> > > > > mov rax,rcx  <-  VTL call hypercall enters here
-> > > >=20
-> > > > I'm missing who/what defines "here" though.  What generates the CAL=
-L that points
-> > > > at this exact offset?  If the exact offset is dictated in the TLFS,=
- then aren't
-> > > > we screwed with the whole Xen quirk, which inserts 5 bytes before t=
-hat first VMCALL?
-> > >=20
-> > > Yes, sorry, I should've included some more context.
-> > >=20
-> > > Here's a rundown (from memory) of how the first VTL call happens:
-> > >  - CPU0 start running at VTL0.
-> > >  - Hyper-V enables VTL1 on the partition.
-> > >  - Hyper-V enabled VTL1 on CPU0, but doesn't yet switch to it. It pas=
-ses
-> > >    the initial VTL1 CPU state alongside the enablement hypercall
-> > >    arguments.
-> > >  - Hyper-V sets the Hypercall page overlay address through
-> > >    HV_X64_MSR_HYPERCALL. KVM fills it.
-> > >  - Hyper-V gets the VTL-call and VTL-return offset into the hypercall
-> > >    page using the VP Register HvRegisterVsmCodePageOffsets (VP regist=
-er
-> > >    handling is in user-space).
-> >=20
-> > Ah, so the guest sets the offsets by "writing" HvRegisterVsmCodePageOff=
-sets via
-> > a HvSetVpRegisters() hypercall.
->=20
-> No, you didn't understand this correctly.=20
->=20
-> The guest writes the HV_X64_MSR_HYPERCALL, and in the response hyperv fil=
-ls
-
-When people say "Hyper-V", do y'all mean "root partition"?  If so, can we j=
-ust
-say "root partition"?  Part of my confusion is that I don't instinctively k=
-now
-whether things like "Hyper-V enables VTL1 on the partition" are talking abo=
-ut the
-root partition (or I guess parent partition?) or the hypervisor.  Functiona=
-lly it
-probably doesn't matter, it's just hard to reconcile things with the TLFS, =
-which
-is written largely to describe the hypervisor's behavior.
-
-> the hypercall page, including the VSM thunks.
+On Tue, Dec 5, 2023 at 7:14=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wro=
+te:
 >
-> Then the guest can _read_ the offsets, hyperv chose there by issuing anot=
-her hypercall.=20
+> On 12/5/23 05:15, Hyeonggon Yoo wrote:
+> > On Mon, Nov 20, 2023 at 07:34:13PM +0100, Vlastimil Babka wrote:
+> >
+> > Looks good to me,
+> > Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+>
+> Thanks.
+>
+> > Nit:
+> >
+> > - Some arch configs enables DEBUG_SLAB
+> > - Some documentations refers to {DEBUG_,}SLAB config (i.e. "enable
+> > DEBUG_SLAB for debugging", or "use SLUB instead of SLAB for reducing OS
+> > jitter", ... etc)
+> > - fs/orangefs/orangefs-kernel.h uses #if (defined CONFIG_DEBUG_SLAB)
+> >
+> > $ git grep DEBUG_SLAB arch/
+> > arch/arm/configs/ep93xx_defconfig:CONFIG_DEBUG_SLAB=3Dy
+> > arch/arm/configs/tegra_defconfig:CONFIG_DEBUG_SLAB=3Dy
+> > arch/microblaze/configs/mmu_defconfig:CONFIG_DEBUG_SLAB=3Dy
+> >
+> > $ git grep SLAB Documentation/
+> >
+> > [... some unrelated lines removed ...]
+>
+> Yep, I've wrote in the cover letter that to keep the series reasonable an=
+d
+> limit Ccing other subsystems on some patches, not everything is cleaned u=
+p
+> thoroughly
 
-Hrm, now I'm really confused.  Ah, the TLFS contradicts itself.  The blurb =
-for
-AccessVpRegisters says:
+Ah, I see, Okay.
 
-  The partition can invoke the hypercalls HvSetVpRegisters and HvGetVpRegis=
-ters.
+>  and is left for further work (some already started coming in
+> from others) that can be submitted to relevant subsystems.
 
-And HvSetVpRegisters confirms that requirement:
+I'll focus more on correctness rather than doing further work while reviewi=
+ng.
 
-  The caller must either be the parent of the partition specified by Partit=
-ionId,
-  or the partition specified must be =E2=80=9Cself=E2=80=9D and the partiti=
-on must have the
-  AccessVpRegisters privilege
-
-But it's absent from HvGetVpRegisters:
-
-  The caller must be the parent of the partition specified by PartitionId o=
-r the
-  partition specifying its own partition ID.
-
-> In the current implementation, the offsets that the kernel choose are fir=
-st
-> exposed to the userspace via new ioctl, and then the userspace exposes th=
-ese
-> offsets to the guest via that 'another hypercall' (reading a pseudo parti=
-tion
-> register 'HvRegisterVsmCodePageOffsets')
->=20
-> I personally don't know for sure anymore if the userspace or kernel based
-> hypercall page is better here, it's ugly regardless :(
-
-Hrm.  Requiring userspace to intercept the WRMSR will be a mess because the=
-n KVM
-will have zero knowledge of the hypercall page, e.g. userspace would be for=
-ced to
-intercept HV_X64_MSR_GUEST_OS_ID as well.  That's not the end of the world,=
- but
-it's not exactly ideal either.
-
-What if we exit to userspace with a new kvm_hyperv_exit reason that require=
-s
-completion?  I.e. punt to userspace if VSM is enabled, but still record the=
- data
-in KVM?  Ugh, but even that's a mess because kvm_hv_set_msr_pw() is deep in=
- the
-WRMSR emulation call stack and can't easily signal that an exit to userspac=
-e is
-needed.  Blech.
+> > Documentation/admin-guide/cgroup-v1/cpusets.rst:PFA_SPREAD_SLAB, and ap=
+propriately marked slab caches will allocate
+> > Documentation/admin-guide/cgroup-v1/memory.rst:  pages allocated by the=
+ SLAB or SLUB allocator are tracked. A copy
+> > Documentation/admin-guide/kernel-per-CPU-kthreads.rst:          CONFIG_=
+SLAB=3Dy, thus avoiding the slab allocator's periodic
+> > Documentation/admin-guide/mm/pagemap.rst:   The page is managed by the =
+SLAB/SLUB kernel memory allocator.
+> > Documentation/dev-tools/kasan.rst:For slab, both software KASAN modes s=
+upport SLUB and SLAB allocators, while
+> > Documentation/dev-tools/kfence.rst:of the sample interval, the next all=
+ocation through the main allocator (SLAB or
+> > Documentation/mm/slub.rst:The basic philosophy of SLUB is very differen=
+t from SLAB. SLAB
+> > Documentation/mm/slub.rst:                      Sorry SLAB legacy issue=
+s)
+> > Documentation/process/4.Coding.rst: - DEBUG_SLAB can find a variety of =
+memory allocation and use errors; it
+> > Documentation/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, `=
+`CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> > Documentation/scsi/ChangeLog.lpfc:        CONFIG_DEBUG_SLAB set).
+> > Documentation/translations/it_IT/process/4.Coding.rst: - DEBUG_SLAB pu=
+=C3=B2 trovare svariati errori di uso e di allocazione di memoria;
+> > Documentation/translations/it_IT/process/submit-checklist.rst:    ``CON=
+FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> > Documentation/translations/ja_JP/SubmitChecklist:12: CONFIG_PREEMPT, CO=
+NFIG_DEBUG_PREEMPT, CONFIG_DEBUG_SLAB,
+> > Documentation/translations/zh_CN/dev-tools/kasan.rst:=E5=AF=B9=E4=BA=8E=
+slab=EF=BC=8C=E4=B8=A4=E7=A7=8D=E8=BD=AF=E4=BB=B6KASAN=E6=A8=A1=E5=BC=8F=E9=
+=83=BD=E6=94=AF=E6=8C=81SLUB=E5=92=8CSLAB=E5=88=86=E9=85=8D=E5=99=A8=EF=BC=
+=8C=E8=80=8C=E5=9F=BA=E4=BA=8E=E7=A1=AC=E4=BB=B6=E6=A0=87=E7=AD=BE=E7=9A=84
+> > Documentation/translations/zh_CN/process/4.Coding.rst: - DEBUG_SLAB =E5=
+=8F=AF=E4=BB=A5=E5=8F=91=E7=8E=B0=E5=90=84=E7=A7=8D=E5=86=85=E5=AD=98=E5=88=
+=86=E9=85=8D=E5=92=8C=E4=BD=BF=E7=94=A8=E9=94=99=E8=AF=AF=EF=BC=9B=E5=AE=83=
+=E5=BA=94=E8=AF=A5=E7=94=A8=E4=BA=8E=E5=A4=A7=E5=A4=9A=E6=95=B0=E5=BC=80=E5=
+=8F=91=E5=86=85=E6=A0=B8=E3=80=82
+> > Documentation/translations/zh_CN/process/submit-checklist.rst:    ``CON=
+FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> > Documentation/translations/zh_TW/dev-tools/kasan.rst:=E5=B0=8D=E6=96=BC=
+slab=EF=BC=8C=E5=85=A9=E7=A8=AE=E8=BB=9F=E4=BB=B6KASAN=E6=A8=A1=E5=BC=8F=E9=
+=83=BD=E6=94=AF=E6=8C=81SLUB=E5=92=8CSLAB=E5=88=86=E9=85=8D=E5=99=A8=EF=BC=
+=8C=E8=80=8C=E5=9F=BA=E6=96=BC=E7=A1=AC=E4=BB=B6=E6=A8=99=E7=B1=A4=E7=9A=84
+> > Documentation/translations/zh_TW/process/4.Coding.rst: - DEBUG_SLAB =E5=
+=8F=AF=E4=BB=A5=E7=99=BC=E7=8F=BE=E5=90=84=E7=A8=AE=E5=85=A7=E5=AD=98=E5=88=
+=86=E9=85=8D=E5=92=8C=E4=BD=BF=E7=94=A8=E9=8C=AF=E8=AA=A4=EF=BC=9B=E5=AE=83=
+=E6=87=89=E8=A9=B2=E7=94=A8=E6=96=BC=E5=A4=A7=E5=A4=9A=E6=95=B8=E9=96=8B=E7=
+=99=BC=E5=85=A7=E6=A0=B8=E3=80=82
+> > Documentation/translations/zh_TW/process/submit-checklist.rst:    ``CON=
+FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
+> >
+> > --
+> > Hyeonggon
+>
