@@ -2,72 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F189806B08
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C2B806B0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377264AbjLFJrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:47:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
+        id S1377280AbjLFJuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:50:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377348AbjLFJrl (ORCPT
+        with ESMTP id S1377254AbjLFJuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:47:41 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4E110D4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:47:39 -0800 (PST)
-Date:   Wed, 6 Dec 2023 10:47:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701856057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dZL4xpIW5Xbtis3hnUiCyn0G7mTR94oGieX73+hE5Tk=;
-        b=RemarrlJFGANeBLplMKNzkZVPTgIXVgK0dnGTqZRpWRUqYuPNg/igS6wMk7e9a0ywmooih
-        E8hIqIr8R7+MShTnVtcZAT52YYNbPlrbT7WnPcUGXKSxK8qlpV0HB6PBAPLKMYreUbN7l/
-        kXGyL+1mc6S8vz/bZy53JD0DxWMzleHzS9WqHZ/Ua6g3x7veJh2bNdp0zsT8QwBtqiImuU
-        ePXAGipjEoSKs5jrQgk6DZspsnsspss9zmjvXdcBBXROPv3BxwEWN7rbXk2j+VkkaftBO3
-        5dEzCBM7PruJi5aRi+CN1bBDQPjmWGIEmcGgPZZjzUJuFqYPGoQXGUOooewa6Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701856057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dZL4xpIW5Xbtis3hnUiCyn0G7mTR94oGieX73+hE5Tk=;
-        b=z4zP1RhM6n+SbF00Fk8AL8K/95cDBJ1CT8SFh0vLFGW1f56DUpS23k285R6aMNF9pyEemp
-        Eol2yJnCC/pv0/Dg==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        John Stultz <jstultz@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Eric Dumazet <edumazet@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Arjan van de Ven <arjan@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCH v9 23/32] timers: Retrieve next expiry of
- pinned/non-pinned timers separately
-Message-ID: <20231206094735.HMFIZlHa@linutronix.de>
-References: <20231201092654.34614-1-anna-maria@linutronix.de>
- <20231201092654.34614-24-anna-maria@linutronix.de>
+        Wed, 6 Dec 2023 04:50:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9D8109
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:50:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F2E84C433C9;
+        Wed,  6 Dec 2023 09:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701856224;
+        bh=IYirpk9Zuv663jhWbzf8HfLvsoJDvN1k0rophts0q9I=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cwXPedNz3opDAYq+xJxJX5vFliJiGNkcoW/FuI4Eu/irzT1TJhylZSClp1303uG8K
+         kQPtsVJwbzgvtRXW3V5hPt/zN+r91cJQEis9DkeJChu3YulKX6JhTaFtFwoJCfSJNb
+         EozKE+WLvtn70OufSSfIy9Lpi7ZeZKmRsl8+e17Fk03jAxtdaTPx0bT6V8o0wjyUxI
+         tCKxRJH/6TSVfeX2Fuv4OOLqE+mfnxWVRDegzg8bRZjvxFeQN8EoSvghdMfwyCMd30
+         dt7ZboR+t4LO8bzXNOzyO1MZCQp7GrFn72f3N9ID39zvI9DwVvA2B10TBi8Zm5td7t
+         y0MpcIDTbOtkQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DC267DD4F1F;
+        Wed,  6 Dec 2023 09:50:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231201092654.34614-24-anna-maria@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] r8152: add vendor/device ID pair for ASUS USB-C2500
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170185622389.11676.14511333566632987056.git-patchwork-notify@kernel.org>
+Date:   Wed, 06 Dec 2023 09:50:23 +0000
+References: <20231203011712.6314-1-kelly@hawknetworks.com>
+In-Reply-To: <20231203011712.6314-1-kelly@hawknetworks.com>
+To:     Kelly Kane <kelly@hawknetworks.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,47 +53,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-12-01 10:26:45 [+0100], Anna-Maria Behnsen wrote:
-> For the conversion of the NOHZ timer placement to a pull at expiry time
-> model it's required to have separate expiry times for the pinned and the
-> non-pinned (movable) timers. Therefore struct timer_events is introduced.
->=20
-> No functional change
->=20
-> Originally-by: Richard Cochran (linutronix GmbH) <richardcochran@gmail.co=
-m>
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-=E2=80=A6
-> index 366ea26ce3ba..0d53d853ae22 100644
-> --- a/kernel/time/timer.c
-> +++ b/kernel/time/timer.c
-=E2=80=A6
-> @@ -2022,13 +2028,31 @@ static inline u64 __get_next_timer_interrupt(unsi=
-gned long basej, u64 basem,
-> =20
->  	nextevt =3D local_first ? nextevt_local : nextevt_global;
-> =20
-> -	if (base_local->timers_pending || base_global->timers_pending) {
-> +	/*
-> +	 * If the @nextevt is at max. one tick away, use @nextevt and store
-> +	 * it in the local expiry value. The next global event is irrelevant in
-> +	 * this case and can be left as KTIME_MAX.
-> +	 */
-> +	if (time_before_eq(nextevt, basej + 1)) {
->  		/* If we missed a tick already, force 0 delta */
->  		if (time_before(nextevt, basej))
->  			nextevt =3D basej;
-> -		expires =3D basem + (u64)(nextevt - basej) * TICK_NSEC;
-> +		tevt.local =3D basem + (u64)(nextevt - basej) * TICK_NSEC;
-> +		goto unlock;
+Hello:
 
-You claim "No functional change" in the patch description. However if
-you take the shortcut here you don't update `idle' if set and you don't
-__forward_timer_base(). The `idle` parameter doesn't matter because it
-was false and will remain false as per current logic.
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-But what about the forward of the timer base? It is probably not real
-problem since the next add/mod timer call will forward it.
+On Sat,  2 Dec 2023 17:17:12 -0800 you wrote:
+> The ASUS USB-C2500 is an RTL8156 based 2.5G Ethernet controller.
+> 
+> Add the vendor and product ID values to the driver. This makes Ethernet
+> work with the adapter.
+> 
+> Signed-off-by: Kelly Kane <kelly@hawknetworks.com>
+> 
+> [...]
 
-Sebastian
+Here is the summary with links:
+  - r8152: add vendor/device ID pair for ASUS USB-C2500
+    https://git.kernel.org/netdev/net/c/7037d95a047c
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
