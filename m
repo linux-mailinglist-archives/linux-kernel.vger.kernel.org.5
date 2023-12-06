@@ -2,207 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA3E806E3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 342CD806E3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377744AbjLFLmv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 06:42:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50654 "EHLO
+        id S1377752AbjLFLnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 06:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377700AbjLFLmu (ORCPT
+        with ESMTP id S1377700AbjLFLns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:42:50 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D268F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 03:42:55 -0800 (PST)
-Received: from kwepemi500023.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Slb531M4hzShvp;
-        Wed,  6 Dec 2023 19:38:31 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- kwepemi500023.china.huawei.com (7.221.188.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 6 Dec 2023 19:42:52 +0800
-Received: from dggpemm500006.china.huawei.com ([7.185.36.236]) by
- dggpemm500006.china.huawei.com ([7.185.36.236]) with mapi id 15.01.2507.035;
- Wed, 6 Dec 2023 19:42:52 +0800
-From:   "Gonglei (Arei)" <arei.gonglei@huawei.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        kernel test robot <lkp@intel.com>
-CC:     "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: drivers/crypto/virtio/virtio_crypto_common.h:116:13: warning:
- variable 'cpu' set but not used
-Thread-Topic: drivers/crypto/virtio/virtio_crypto_common.h:116:13: warning:
- variable 'cpu' set but not used
-Thread-Index: AQHaJiLRicCCC7Kd2kaW9jApNQwiILCXe7+AgASpWRA=
-Date:   Wed, 6 Dec 2023 11:42:52 +0000
-Message-ID: <3befffb631604bc4bf7fcb67970736df@huawei.com>
-References: <202312040315.kPrI1OCE-lkp@intel.com>
- <20231203152646-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231203152646-mutt-send-email-mst@kernel.org>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.149.11]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 6 Dec 2023 06:43:48 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9BD8F;
+        Wed,  6 Dec 2023 03:43:55 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-28647f4ebd9so4541349a91.3;
+        Wed, 06 Dec 2023 03:43:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701863035; x=1702467835; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FskP6Tcyso/BvrhInHyE19EqzBIb+M3DVcP4qDTnmbo=;
+        b=iLicdjpJ5HiyJf2hF5Xy6vEH8zmSvxLwIKgQLE2f6lWOMm/Q/JPpO6UKMF3b691qbb
+         V/mKVe3P2c2aG8IW11WF6nsLr8kntGC/SNWf09aCZhXmHhOPRWv5+OWI19M3XZDKwxWl
+         Ajo05plEI6we6dpfaAPEX2+HunN2RSyhHwV0siyeSJE4kCFFHslAH1DG1cKFtmEeIEc1
+         tnRnDjC+95JWrGWRkAJTEjrOZhPYh4CCAdj3vcdrs/a7ql6HFUhmuDibvQd0nbZEEP/n
+         E//QlvlTnujWUDgGXe2BL0gNX8wiuA7wX9IWFM//4OQGboPh8ZEBQSha+zIGMbCcjJQz
+         SBSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701863035; x=1702467835;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FskP6Tcyso/BvrhInHyE19EqzBIb+M3DVcP4qDTnmbo=;
+        b=A6CxAmhOdp/QM7dKx5BOCTwbS+WAmR/63tw+2OYnrTr/9gpoBWwRyfI1raa8uIjyiO
+         EeletBw3zbUeAemCzeYOUSqShyMc1X2fRffNQ7ew0xoJ+veCCzxDMAIy/Epn+/y0gFio
+         LiaKmQw1V2mzVb0O258noKxcFeKeMN8BgsdfF2pQ8Q+KartM1O1PnihkFq5TujqkmaVk
+         keWVXiscz9oY7QU7Elf8PKAdvtEe2Cc1mkY8HVxRSoph9cpWJ+H5iVocNslJTYnwHebb
+         hd4mPHuOcnEHCm6GraWNH6d+mCkXM7wMe4CO9+snuvk0ZqWDIHLwMy1a/TtHKGN5WLTv
+         5FfQ==
+X-Gm-Message-State: AOJu0YzUgOJccm9tepxDyn4EbD49QPCaIXR07yW6g0XzWEMIo7MjzkDp
+        dsbz/o0bt8HGDXKFS/vcAxOmt9awuuCSEzECr40=
+X-Google-Smtp-Source: AGHT+IH89gC21/pnQQIk9gERyRAG/HzH0EvNaTRDDhniP3jL3wxZJeZNXYO6du/iRzWS/NSLwXen7cT7N0NlZh/5vwU=
+X-Received: by 2002:a17:90a:18f:b0:286:6cc1:5fb3 with SMTP id
+ 15-20020a17090a018f00b002866cc15fb3mr554714pjc.54.1701863034627; Wed, 06 Dec
+ 2023 03:43:54 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231206-rkisp-irq-fix-v2-0-6ba4185eeb1f@ideasonboard.com>
+In-Reply-To: <20231206-rkisp-irq-fix-v2-0-6ba4185eeb1f@ideasonboard.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 6 Dec 2023 05:43:43 -0600
+Message-ID: <CAHCN7xLgOVPMhFWty8Yofsy4F-rFgTT=PuzD4UrA3kOsPQaYUQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] media: rkisp1: Fix IRQ related issues
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Dafna Hirschfeld <dafna@fastmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        kieran.bingham@ideasonboard.com, umang.jain@ideasonboard.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 6, 2023 at 4:12=E2=80=AFAM Tomi Valkeinen
+<tomi.valkeinen@ideasonboard.com> wrote:
+>
+> These fix a few IRQ related issues I noticed when testing i.MX8MP. These
+> are based on Paul's recently sent "[PATCH v4 00/11] media: rkisp1: Add
+> support for i.MX8MP" series, but could also be rebased on top of
+> mainline if needed.
+>
+I applied the whole series on top of your DMA patch and the series
+from Paul porting the rkisp1 to the imx8mp and ran the camera for 15
+minutes streaming to my monitor.  I didn't see any glitches or video
+distortion at 640x480.
 
+For the series...
 
-> -----Original Message-----
-> From: Michael S. Tsirkin [mailto:mst@redhat.com]
-> Sent: Monday, December 4, 2023 4:27 AM
-> To: kernel test robot <lkp@intel.com>
-> Cc: Gonglei (Arei) <arei.gonglei@huawei.com>; oe-kbuild-all@lists.linux.dev;
-> linux-kernel@vger.kernel.org
-> Subject: Re: drivers/crypto/virtio/virtio_crypto_common.h:116:13: warning:
-> variable 'cpu' set but not used
-> 
-> On Mon, Dec 04, 2023 at 03:55:43AM +0800, kernel test robot wrote:
-> > Hi Gonglei,
-> >
-> > FYI, the error/warning still remains.
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> master
-> > head:   33cc938e65a98f1d29d0a18403dbbee050dcad9a
-> > commit: dbaf0624ffa57ae6e7d87a823185ccd9a7852d3c crypto: add
-> virtio-crypto driver
-> > date:   7 years ago
-> > config: x86_64-randconfig-015-20231011
-> > (https://download.01.org/0day-ci/archive/20231204/202312040315.kPrI1OC
-> > E-lkp@intel.com/config)
-> > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0 reproduce (this is a W=1
-> > build):
-> > (https://download.01.org/0day-ci/archive/20231204/202312040315.kPrI1OC
-> > E-lkp@intel.com/reproduce)
-> >
-> > If you fix the issue in a separate patch/commit (i.e. not just a new
-> > version of the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes:
-> > | https://lore.kernel.org/oe-kbuild-all/202312040315.kPrI1OCE-lkp@inte
-> > | l.com/
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> >    In file included from drivers/crypto/virtio/virtio_crypto_algs.c:28:
-> >    drivers/crypto/virtio/virtio_crypto_common.h: In function
-> 'virtio_crypto_get_current_node':
-> > >> drivers/crypto/virtio/virtio_crypto_common.h:116:13: warning:
-> > >> variable 'cpu' set but not used [-Wunused-but-set-variable]
-> >      116 |         int cpu, node;
-> >          |             ^~~
-> > --
-> >    In file included from drivers/crypto/virtio/virtio_crypto_core.c:25:
-> >    drivers/crypto/virtio/virtio_crypto_common.h: In function
-> 'virtio_crypto_get_current_node':
-> > >> drivers/crypto/virtio/virtio_crypto_common.h:116:13: warning:
-> > >> variable 'cpu' set but not used [-Wunused-but-set-variable]
-> >      116 |         int cpu, node;
-> >          |             ^~~
+Tested-by: Adam Ford <aford173@gmail.com>  #imx8mp-beacon
 
-The warning occurs when CONFIG_SMG is not set. Will fix it later.
-
-
-> >    In file included from drivers/crypto/virtio/virtio_crypto_core.c:20:
-> >    drivers/crypto/virtio/virtio_crypto_core.c: At top level:
-> >    include/linux/module.h:132:13: warning: 'init_module' specifies less
-> restrictive attribute than its target 'virtio_crypto_driver_init': 'cold'
-> [-Wmissing-attributes]
-> >      132 |         int init_module(void) __attribute__((alias(#initfn)));
-> >          |             ^~~~~~~~~~~
-> >    include/linux/device.h:1463:1: note: in expansion of macro 'module_init'
-> >     1463 | module_init(__driver##_init); \
-> >          | ^~~~~~~~~~~
-> >    include/linux/virtio.h:190:9: note: in expansion of macro 'module_driver'
-> >      190 |         module_driver(__virtio_driver, register_virtio_driver, \
-> >          |         ^~~~~~~~~~~~~
-> >    drivers/crypto/virtio/virtio_crypto_core.c:471:1: note: in expansion of
-> macro 'module_virtio_driver'
-> >      471 | module_virtio_driver(virtio_crypto_driver);
-> >          | ^~~~~~~~~~~~~~~~~~~~
-> >    In file included from include/linux/virtio.h:8,
-> >                     from include/linux/virtio_config.h:6,
-> >                     from drivers/crypto/virtio/virtio_crypto_core.c:21:
-> >    drivers/crypto/virtio/virtio_crypto_core.c:471:22: note: 'init_module'
-> target declared here
-> >      471 | module_virtio_driver(virtio_crypto_driver);
-> >          |                      ^~~~~~~~~~~~~~~~~~~~
-> >    include/linux/device.h:1459:19: note: in definition of macro
-> 'module_driver'
-> >     1459 | static int __init __driver##_init(void) \
-> >          |                   ^~~~~~~~
-> >    drivers/crypto/virtio/virtio_crypto_core.c:471:1: note: in expansion of
-> macro 'module_virtio_driver'
-> >      471 | module_virtio_driver(virtio_crypto_driver);
-> >          | ^~~~~~~~~~~~~~~~~~~~
-> >    include/linux/module.h:138:14: warning: 'cleanup_module' specifies less
-> restrictive attribute than its target 'virtio_crypto_driver_exit': 'cold'
-> [-Wmissing-attributes]
-> >      138 |         void cleanup_module(void)
-> __attribute__((alias(#exitfn)));
-> >          |              ^~~~~~~~~~~~~~
-> >    include/linux/device.h:1468:1: note: in expansion of macro 'module_exit'
-> >     1468 | module_exit(__driver##_exit);
-> >          | ^~~~~~~~~~~
-> >    include/linux/virtio.h:190:9: note: in expansion of macro 'module_driver'
-> >      190 |         module_driver(__virtio_driver, register_virtio_driver, \
-> >          |         ^~~~~~~~~~~~~
-> >    drivers/crypto/virtio/virtio_crypto_core.c:471:1: note: in expansion of
-> macro 'module_virtio_driver'
-> >      471 | module_virtio_driver(virtio_crypto_driver);
-> >          | ^~~~~~~~~~~~~~~~~~~~
-> >    drivers/crypto/virtio/virtio_crypto_core.c:471:22: note:
-> 'cleanup_module' target declared here
-> >      471 | module_virtio_driver(virtio_crypto_driver);
-> >          |                      ^~~~~~~~~~~~~~~~~~~~
-> >    include/linux/device.h:1464:20: note: in definition of macro
-> 'module_driver'
-> >     1464 | static void __exit __driver##_exit(void) \
-> >          |                    ^~~~~~~~
-> >    drivers/crypto/virtio/virtio_crypto_core.c:471:1: note: in expansion of
-> macro 'module_virtio_driver'
-> >      471 | module_virtio_driver(virtio_crypto_driver);
-> >          | ^~~~~~~~~~~~~~~~~~~~
-> >
-Actually those warnings were fixed by upstream commit a6e60d84989.
-
-> >
-> > vim +/cpu +116 drivers/crypto/virtio/virtio_crypto_common.h
-> >
-> >    113
-> >    114	static inline int virtio_crypto_get_current_node(void)
-> >    115	{
-> >  > 116		int cpu, node;
-> >    117
-> >    118		cpu = get_cpu();
-> >    119		node = topology_physical_package_id(cpu);
-> >    120		put_cpu();
-> >    121
-> >    122		return node;
-> >    123	}
-> >    124
-> >
-> > --
-> > 0-DAY CI Kernel Test Service
-> > https://github.com/intel/lkp-tests/wiki
-> 
-> Seems easy to fix. Gonglei?
-> 
-
-Regards,
--Gonglei
-
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+> Changes in v2:
+> - New patch: "media: rkisp1: Drop IRQF_SHARED"
+> - Update "media: rkisp1: Fix IRQ handler return values" according to
+>   Laurent's comment.
+> - Drop "media: rkisp1: Fix IRQ handling due to shared interrupts"
+> - Update description for "media: rkisp1: Fix IRQ disable race issue"
+> - Link to v1: https://lore.kernel.org/r/20231205-rkisp-irq-fix-v1-0-f4045=
+c74ba45@ideasonboard.com
+>
+> ---
+> Tomi Valkeinen (4):
+>       media: rkisp1: Drop IRQF_SHARED
+>       media: rkisp1: Fix IRQ handler return values
+>       media: rkisp1: Store IRQ lines
+>       media: rkisp1: Fix IRQ disable race issue
+>
+>  .../media/platform/rockchip/rkisp1/rkisp1-common.h | 11 ++++++-
+>  .../media/platform/rockchip/rkisp1/rkisp1-csi.c    | 14 +++++++-
+>  .../media/platform/rockchip/rkisp1/rkisp1-dev.c    | 37 ++++++++++++++++=
+------
+>  .../media/platform/rockchip/rkisp1/rkisp1-isp.c    | 20 ++++++++++--
+>  4 files changed, 67 insertions(+), 15 deletions(-)
+> ---
+> base-commit: dd19f89b915c203d49e3b23ca02446d4fb05d955
+> change-id: 20231205-rkisp-irq-fix-e123a8a6732f
+>
+> Best regards,
+> --
+> Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>
