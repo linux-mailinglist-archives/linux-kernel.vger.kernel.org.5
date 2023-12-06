@@ -2,288 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06676806F58
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B2A806F5D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378257AbjLFMAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:00:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
+        id S1378259AbjLFMCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 07:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378284AbjLFMAT (ORCPT
+        with ESMTP id S1377841AbjLFMCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:00:19 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0E01BF
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:00:22 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d8f69da4c8so40715997b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 04:00:22 -0800 (PST)
+        Wed, 6 Dec 2023 07:02:05 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E03181
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:02:11 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b5155e154so74052605e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 04:02:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701864021; x=1702468821; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kbE17RqH74sTr8G98jh3hq0E2+R+y1BNKFvou61O0+I=;
-        b=wDMV9MeshFO6aZZl07J9DO/uXq2MCY576huZTrqxAhmU/tXsisul+3HkhGQYdxJ62y
-         4fWQLYw26tux+uVog7c/RkcygPjdiIhXhRSBxEVPDjLzPdBpmjqGVAHKyvgxf8huCJ9b
-         muSq8DjZ9CzTMy3e50sH7H4oew0d5DONSpE/G3iCn+O10DI91hAQ0SnsfOLFPWnNEMk/
-         ic1MmWjX8ftYQZhZpUA0Z+OqkBO0rftHdaM4TOssNOg01vkYgYpDE7OAzeI1sOyb99/t
-         JZ0lgeMAksHkzYijPvOyV/2uWaDyRbMZiQJ4ey9Nmcxyrf//rJWNEyhDupezS1Mkwcg0
-         O3Wg==
+        d=linaro.org; s=google; t=1701864130; x=1702468930; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=C9luEiqd3rNZRXjehlbFdnQ2e1wzzmxPWamwzOSoC4I=;
+        b=jYzdGNcdyUC1zTZyUjENMm1D9CEv1oooXRegryqyxYLT6v2+rFO/HoiYPaQF8kWBUc
+         9nSCZN2cqkI17HsYsCJUGiVKvZ46sbXo+9oNhgXsJ5y8LVUiUcPqVXnOHlDSdvB+o/SY
+         SP2gWuNLiQ0ZEslR9b+0bOYT38N9bVD9lBakC0Cu2UZzxUwMzuL5h3EUd+p4ujpRASOv
+         e8s1ZKIIlpNOEhyIONU9dHG4GkAWoJbwRve4zawfOsm/N95U7BxCuEzMpFzZjNErwm4W
+         eo1EgMxKGfC5kqdXAUfSxSWlG//0Pl9gGC/+9Suksi0W6vNWVykGGo7kwiH1gFlM55e5
+         0z1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701864021; x=1702468821;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kbE17RqH74sTr8G98jh3hq0E2+R+y1BNKFvou61O0+I=;
-        b=lXSgAZRfFapxbxExkczHjC27fj2KVM8w/2ijJYhcb28/zbVjv49FA0r71p3MWGp7kW
-         wGQ0smwr/9bgI4qMTLMNRgguIh9MAExagl65JHcLRXWc9RsBZwoK8R1mwjsAbW34ZzLH
-         Pw37kXT4ljyDFdpmohHv6i6JQZp5FoHJkluL05jShcTxayDv0Yenjm9WwhiRvOvPorgy
-         A2a1AQJ0Zli2cVT8iFAZ2LcQGx42/NtucG8/Kvx0BQHCEMUswaSBljcELobNFqC4AXHq
-         1OPNvm7xf9LP6ju5Vnxc22znIO3FV3dR/efa2ZTrFVHAVGSoS9ceT7njOTZjG0sKugoI
-         K8nA==
-X-Gm-Message-State: AOJu0YwcagF1F14H7RY8wWNaZGUvjoEHeUS3bWz7heAad1bd7OQJsFm0
-        MWmslizZ3z7CqmhI5qYHls8Rm9iQbfXMtys=
-X-Google-Smtp-Source: AGHT+IFZCvODtOTMGqKTf2LP1GyZaL8gCaAllaeklYLrqzRuLzK7/6ELcPd548BgS0OBnodcOSDaIsvNGxSMrY8=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:690c:98d:b0:5d3:e8b8:e1fe with SMTP
- id ce13-20020a05690c098d00b005d3e8b8e1femr9234ywb.0.1701864021191; Wed, 06
- Dec 2023 04:00:21 -0800 (PST)
-Date:   Wed, 06 Dec 2023 11:59:52 +0000
-In-Reply-To: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
-Mime-Version: 1.0
-References: <20231206-alice-file-v2-0-af617c0d9d94@google.com>
-X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6796; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=EL7Hu6623848TCiQNxfsHyxyizMwk0mqsq7s9i/TwCw=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlcGI8P0hMAGaRy9KCnNF8/Rf30Q66IkTKoCZi8
- 6ZTQpLf1gGJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZXBiPAAKCRAEWL7uWMY5
- Rp9/EACTkUp06YLSWQxRsvx+FQYTA7HvD9AIkv0Yw5/edduRrb6jQNOg/JSS3OcufcC+IG+gzyL
- +22S87vRlsgE4lHkmAuhxbFu9Wq6Slfq4maIlUKoEAJODe4u0GkvirSVb2QmIGcG58twcs0TCT/
- 8kxZ6QdBlqymny0WMWvz/8ifSG3yUPQ6BHCWzZWmp2iaFMSOR2+szQQaYWATPrMA62sB7a74BjG
- QZTu95IzdTFkNK9x2V3625cl/Z3uK6/AUb+XTyOsVtxfgcFJj7lsjr3syJUk7lv4uhOW598Sfaj
- 2hgJlIckhdAMlg2CHb9i4MlfDKdxXP9XI+Jb6TbMNsVlH7UQQwli8uaQMX6vSBzjLmLYOKxh8Sj
- YELcYkL3nZHKB633At+X9T689xQSzmhKkigiHshCC9bbt4GnGCqUWYo+Sfgqk8BIKmkM2T9MZEA
- mjEwyuDR4GrvFfwqAcrlG/fqfOdVPxN+N5fbFz3NYPV9mtGnzKaJLrq+EVMm1zYaiKgitLk7rui
- wfIlzXX5V3r3IGg3PRN9+zQcW4RrTThXvruchNWaMyejdJDv9SEk7qUUxfV9lbUH+LeTmkKeyco
- xW6gRArDgBcrOeH+LDT/7+IlXPEYZ7ZLktHi0qGpW50qjVzv2E3JjY9D5YrPjTUTpzSpBRt2GjZ 6Usj49NJrkuHilA==
-X-Mailer: b4 0.13-dev-26615
-Message-ID: <20231206-alice-file-v2-7-af617c0d9d94@google.com>
-Subject: [PATCH v2 7/7] rust: file: add abstraction for `poll_table`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        "=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Alice Ryhl <aliceryhl@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701864130; x=1702468930;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C9luEiqd3rNZRXjehlbFdnQ2e1wzzmxPWamwzOSoC4I=;
+        b=PG6PX4o2jNgbp5rCEeDgjfh3K4oyMkFsLYBihdBmViHRQT8+9nSDbNzaCeNoaV/VaJ
+         1iZ/UEuxmzvn+Yann0dRbC3AiVb64wB5QiAIyyByUz5a93RKqu35P1ItTjPBAoRFNA/7
+         VAl2TMkJVBUhk4uYk61VrMqLOVMyNjcs//9Z2IIw/PZcchdHVopiZddWKXiMIOkmojw2
+         zdnBxJNOmtHEa454rzcxgAUZIesoelNDOkTR8TUxnRL2/KsKuHQ+TPPdG+Pn4I6l84r2
+         ddZnGXb4yqcP1dFonqOZkk8ZuLyFvLPolr5CUs+UnnQQ5BHZlzgDPH7f/Fz85uFjRYmE
+         ri8w==
+X-Gm-Message-State: AOJu0YwgimUuWPfzEejpajt90sIzHFPik6GGX9wAcjkkgfWM5qIgd3Ok
+        6aTRGUBZBGWVqkiaEbdJ+4cpMg==
+X-Google-Smtp-Source: AGHT+IFJokEpInd+DiAKxLDKJAGHst4aJ50KC/hLVyMjr37BE7LjVcnWh8PkujsMGpwy/wk3eMm1WA==
+X-Received: by 2002:a7b:cd0d:0:b0:40b:5e4a:4072 with SMTP id f13-20020a7bcd0d000000b0040b5e4a4072mr523452wmj.146.1701864129773;
+        Wed, 06 Dec 2023 04:02:09 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id w17-20020a05600c475100b0040b45356b72sm25543935wmo.33.2023.12.06.04.02.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 04:02:09 -0800 (PST)
+Date:   Wed, 6 Dec 2023 15:02:05 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] drm/msm/dp: Fix platform_get_irq() check
+Message-ID: <c12bb69b-d676-4345-9712-48aab48f2b48@moroto.mountain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing `CondVar` abstraction is a wrapper around `wait_list`, but
-it does not support all use-cases of the C `wait_list` type. To be
-specific, a `CondVar` cannot be registered with a `struct poll_table`.
-This limitation has the advantage that you do not need to call
-`synchronize_rcu` when destroying a `CondVar`.
+The platform_get_irq() function returns negative error codes.  It never
+returns zero.  Fix the check accordingly.
 
-However, we need the ability to register a `poll_table` with a
-`wait_list` in Rust Binder. To enable this, introduce a type called
-`PollCondVar`, which is like `CondVar` except that you can register a
-`poll_table`. We also introduce `PollTable`, which is a safe wrapper
-around `poll_table` that is intended to be used with `PollCondVar`.
-
-The destructor of `PollCondVar` unconditionally calls `synchronize_rcu`
-to ensure that the removal of epoll waiters has fully completed before
-the `wait_list` is destroyed.
-
-That said, `synchronize_rcu` is rather expensive and is not needed in
-all cases: If we have never registered a `poll_table` with the
-`wait_list`, then we don't need to call `synchronize_rcu`. (And this is
-a common case in Binder - not all processes use Binder with epoll.) The
-current implementation does not account for this, but if we find that it
-is necessary to improve this, a future patch could change store a
-boolean next to the `wait_list` to keep track of whether a `poll_table`
-has ever been registered.
-
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+Fixes: 82c2a5751227 ("drm/msm/dp: tie dp_display_irq_handler() with dp driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- rust/bindings/bindings_helper.h |   2 +
- rust/bindings/lib.rs            |   1 +
- rust/kernel/sync.rs             |   1 +
- rust/kernel/sync/poll.rs        | 103 ++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 107 insertions(+)
+ drivers/gpu/drm/msm/dp/dp_display.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index c8daee341df6..14f84aeef62d 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -13,6 +13,7 @@
- #include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/pid_namespace.h>
-+#include <linux/poll.h>
- #include <linux/security.h>
- #include <linux/slab.h>
- #include <linux/refcount.h>
-@@ -25,3 +26,4 @@
- const size_t BINDINGS_ARCH_SLAB_MINALIGN = ARCH_SLAB_MINALIGN;
- const gfp_t BINDINGS_GFP_KERNEL = GFP_KERNEL;
- const gfp_t BINDINGS___GFP_ZERO = __GFP_ZERO;
-+const __poll_t BINDINGS_POLLFREE = POLLFREE;
-diff --git a/rust/bindings/lib.rs b/rust/bindings/lib.rs
-index 9bcbea04dac3..eeb291cc60db 100644
---- a/rust/bindings/lib.rs
-+++ b/rust/bindings/lib.rs
-@@ -51,3 +51,4 @@ mod bindings_helper {
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 61b7103498a7..d80cb3d14c6b 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -1166,9 +1166,9 @@ static int dp_display_request_irq(struct dp_display_private *dp)
+ 	struct platform_device *pdev = dp->dp_display.pdev;
  
- pub const GFP_KERNEL: gfp_t = BINDINGS_GFP_KERNEL;
- pub const __GFP_ZERO: gfp_t = BINDINGS___GFP_ZERO;
-+pub const POLLFREE: __poll_t = BINDINGS_POLLFREE;
-diff --git a/rust/kernel/sync.rs b/rust/kernel/sync.rs
-index d219ee518eff..84726f80c406 100644
---- a/rust/kernel/sync.rs
-+++ b/rust/kernel/sync.rs
-@@ -11,6 +11,7 @@
- mod condvar;
- pub mod lock;
- mod locked_by;
-+pub mod poll;
+ 	dp->irq = platform_get_irq(pdev, 0);
+-	if (!dp->irq) {
++	if (dp->irq < 0) {
+ 		DRM_ERROR("failed to get irq\n");
+-		return -EINVAL;
++		return dp->irq;
+ 	}
  
- pub use arc::{Arc, ArcBorrow, UniqueArc};
- pub use condvar::CondVar;
-diff --git a/rust/kernel/sync/poll.rs b/rust/kernel/sync/poll.rs
-new file mode 100644
-index 000000000000..e1dded9b7b9d
---- /dev/null
-+++ b/rust/kernel/sync/poll.rs
-@@ -0,0 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Utilities for working with `struct poll_table`.
-+
-+use crate::{
-+    bindings,
-+    file::File,
-+    prelude::*,
-+    sync::{CondVar, LockClassKey},
-+    types::Opaque,
-+};
-+use core::ops::Deref;
-+
-+/// Creates a [`PollCondVar`] initialiser with the given name and a newly-created lock class.
-+#[macro_export]
-+macro_rules! new_poll_condvar {
-+    ($($name:literal)?) => {
-+        $crate::file::PollCondVar::new($crate::optional_name!($($name)?), $crate::static_lock_class!())
-+    };
-+}
-+
-+/// Wraps the kernel's `struct poll_table`.
-+#[repr(transparent)]
-+pub struct PollTable(Opaque<bindings::poll_table>);
-+
-+impl PollTable {
-+    /// Creates a reference to a [`PollTable`] from a valid pointer.
-+    ///
-+    /// # Safety
-+    ///
-+    /// The caller must ensure that for the duration of 'a, the pointer will point at a valid poll
-+    /// table, and that it is only accessed via the returned reference.
-+    pub unsafe fn from_ptr<'a>(ptr: *mut bindings::poll_table) -> &'a mut PollTable {
-+        // SAFETY: The safety requirements guarantee the validity of the dereference, while the
-+        // `PollTable` type being transparent makes the cast ok.
-+        unsafe { &mut *ptr.cast() }
-+    }
-+
-+    fn get_qproc(&self) -> bindings::poll_queue_proc {
-+        let ptr = self.0.get();
-+        // SAFETY: The `ptr` is valid because it originates from a reference, and the `_qproc`
-+        // field is not modified concurrently with this call since we have an immutable reference.
-+        unsafe { (*ptr)._qproc }
-+    }
-+
-+    /// Register this [`PollTable`] with the provided [`PollCondVar`], so that it can be notified
-+    /// using the condition variable.
-+    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
-+        if let Some(qproc) = self.get_qproc() {
-+            // SAFETY: The pointers to `self` and `file` are valid because they are references.
-+            //
-+            // Before the wait list is destroyed, the destructor of `PollCondVar` will clear
-+            // everything in the wait list, so the wait list is not used after it is freed.
-+            unsafe { qproc(file.as_ptr() as _, cv.wait_list.get(), self.0.get()) };
-+        }
-+    }
-+}
-+
-+/// A wrapper around [`CondVar`] that makes it usable with [`PollTable`].
-+///
-+/// # Invariant
-+///
-+/// If `needs_synchronize_rcu` is false, then there is nothing registered with `register_wait`.
-+///
-+/// [`CondVar`]: crate::sync::CondVar
-+#[pin_data(PinnedDrop)]
-+pub struct PollCondVar {
-+    #[pin]
-+    inner: CondVar,
-+}
-+
-+impl PollCondVar {
-+    /// Constructs a new condvar initialiser.
-+    pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self> {
-+        pin_init!(Self {
-+            inner <- CondVar::new(name, key),
-+        })
-+    }
-+}
-+
-+// Make the `CondVar` methods callable on `PollCondVar`.
-+impl Deref for PollCondVar {
-+    type Target = CondVar;
-+
-+    fn deref(&self) -> &CondVar {
-+        &self.inner
-+    }
-+}
-+
-+#[pinned_drop]
-+impl PinnedDrop for PollCondVar {
-+    fn drop(self: Pin<&mut Self>) {
-+        // Clear anything registered using `register_wait`.
-+        //
-+        // SAFETY: The pointer points at a valid wait list.
-+        unsafe { bindings::__wake_up_pollfree(self.inner.wait_list.get()) };
-+
-+        // Wait for epoll items to be properly removed.
-+        //
-+        // SAFETY: Just an FFI call.
-+        unsafe { bindings::synchronize_rcu() };
-+    }
-+}
-
+ 	rc = devm_request_irq(&pdev->dev, dp->irq, dp_display_irq_handler,
 -- 
-2.43.0.rc2.451.g8631bc7472-goog
+2.42.0
 
