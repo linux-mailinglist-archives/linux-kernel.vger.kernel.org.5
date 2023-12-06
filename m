@@ -2,222 +2,484 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A66E880703C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:52:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF909807042
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 13:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378150AbjLFMwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 07:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41896 "EHLO
+        id S1378171AbjLFMxS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 07:53:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378112AbjLFMwH (ORCPT
+        with ESMTP id S1378112AbjLFMxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 07:52:07 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF93AD3
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 04:52:12 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6d8d28e4bbeso2600354a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 04:52:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1701867132; x=1702471932; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u2u6Xixa1YAjeH/4C/qasYXYlNm9UNg6+7+FVH6S5Jo=;
-        b=2TGgnzKkW6nN0nLX+kf0jFILnoeRb3I5NTqsr0TNr1BB9w9aptrxo7OgcieLBY7TMD
-         i03gNEZ+UnYllLb2pC9onzspa1i1814/75dPO3CIUl8ewV3S+ZRZnnKmkI1DAw7GOrCq
-         lPA3kZhfH1kQpA2ABPT/a4M5gQUcH8pCwI2M1CdkkLutD4b40SHZELvAswQ38X++8H5l
-         5/VKb8aHHd8Hl/IDyuKKQ468UuBmxOY/ObHA+gCak3UwP0bop+nM397ycdRplenersvd
-         x0jSTuhhusGYWIt+KifETJJN2QZ5siOvq3ZtN8J3N0m56oNALDIilBFSXZH/u94EuI4M
-         qpow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701867132; x=1702471932;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u2u6Xixa1YAjeH/4C/qasYXYlNm9UNg6+7+FVH6S5Jo=;
-        b=UyYW2ShK5E6VhL+bOf1EEWTudjOdGspzwYcAIHi5d/p76N/B1l7o7i2S0XRJeUK6xk
-         gdkHtme/p2LNJaabKg578zqYgPeMv3FFsIiMlPkh4FmuTaGbmT7zEitICtGZqUSmCL4r
-         Hse6AkEotcpKu5bEXF38EyMZlv1nmuCBvfXi5qqDp8M9Fgkicm+qy+jjbZj3/epM9epS
-         ayd62QsD7v1fvGxQi1RWci2qbCzNxqIqLvJfsgMP+tfolNh0469wfxdcdL2uvoy9GASZ
-         7D8Tqxc/fL59t+7lehJ05mvtB/2tb27kW75KTtRf/CA5Ml+BQIu7gXv1NJEXfDyZbjz2
-         p/QA==
-X-Gm-Message-State: AOJu0YydC9vjFnO7oEHP3xwaM3u/u2muKRs521iYTLFaA0TYo2CBbiSe
-        hImGv/KLcJd3nRDijFF37lw6mw==
-X-Google-Smtp-Source: AGHT+IFo8cQfWhV8swbKEf3islhCo6malnup6YNIbLn5q10GsK1yfkvEG2E/lOLG+1vPBZPzBrA2sA==
-X-Received: by 2002:a9d:7358:0:b0:6d9:cec2:aa66 with SMTP id l24-20020a9d7358000000b006d9cec2aa66mr283337otk.30.1701867131750;
-        Wed, 06 Dec 2023 04:52:11 -0800 (PST)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id az15-20020a056830458f00b006d94fa88156sm1459097otb.14.2023.12.06.04.52.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 04:52:11 -0800 (PST)
-Date:   Wed, 06 Dec 2023 04:52:11 -0800 (PST)
-X-Google-Original-Date: Wed, 06 Dec 2023 04:52:08 PST (-0800)
-Subject:     Re: [RFT 1/2] RISC-V: handle missing "no-map" properties for OpenSBI's PMP protected regions
-In-Reply-To: <20230810-crewless-pampers-6f51aafb8cff@wendy>
-CC:     Atish Patra <atishp@rivosinc.com>, Conor Dooley <conor@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        apatel@ventanamicro.com, alexghiti@rivosinc.com,
-        Bjorn Topel <bjorn@rivosinc.com>, suagrfillet@gmail.com,
-        jeeheng.sia@starfivetech.com, petrtesarik@huaweicloud.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Conor Dooley <conor.dooley@microchip.com>, geert+renesas@glider.be
-Message-ID: <mhng-550dee8b-a2fb-485b-ad4d-2763e94191b4@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 6 Dec 2023 07:53:16 -0500
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD1B2FA;
+        Wed,  6 Dec 2023 04:53:20 -0800 (PST)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id F1B7080C5;
+        Wed,  6 Dec 2023 20:53:13 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 20:53:13 +0800
+Received: from [192.168.1.115] (180.164.60.184) by EXMBX061.cuchost.com
+ (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 20:53:13 +0800
+Message-ID: <ed66711a-4c24-40d1-8361-40325ae915f5@starfivetech.com>
+Date:   Wed, 6 Dec 2023 20:53:12 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v3 4/6] drm/vs: Add KMS crtc&plane
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        William Qiu <william.qiu@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "suijingfeng@loongson.cn" <suijingfeng@loongson.cn>
+References: <20231204123315.28456-1-keith.zhao@starfivetech.com>
+ <20231204123315.28456-5-keith.zhao@starfivetech.com>
+ <o4ica2jg2rqfx6znir6j7mkoojoqzejjuqvlwcnehanw5mvop6@a3t6vi7c55tz>
+From:   Keith Zhao <keith.zhao@starfivetech.com>
+In-Reply-To: <o4ica2jg2rqfx6znir6j7mkoojoqzejjuqvlwcnehanw5mvop6@a3t6vi7c55tz>
+Content-Type: text/plain; charset="UTF-8"
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
+ (172.16.6.61)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Aug 2023 02:07:10 PDT (-0700), Conor Dooley wrote:
-> On Wed, Aug 09, 2023 at 02:01:07AM -0700, Atish Kumar Patra wrote:
->> On Tue, Aug 8, 2023 at 6:39 AM Conor Dooley <conor@kernel.org> wrote:
->> >
->> > On Tue, Aug 08, 2023 at 12:54:11AM -0700, Atish Kumar Patra wrote:
->> > > On Wed, Aug 2, 2023 at 4:14 AM Conor Dooley <conor.dooley@microchip.com> wrote:
->> > > >
->> > > > Add an erratum for versions [v0.8 to v1.3) of OpenSBI which fail to add
->> > > > the "no-map" property to the reserved memory nodes for the regions it
->> > > > has protected using PMPs.
->> > > >
->> > > > Our existing fix sweeping hibernation under the carpet by marking it
->> > > > NONPORTABLE is insufficient as there are other ways to generate
->> > > > accesses to these reserved memory regions, as Petr discovered [1]
->> > > > while testing crash kernels & kdump.
->> > > >
->> > > > Intercede during the boot process when the afflicted versions of OpenSBI
->> > > > are present & set the "no-map" property in all "mmode_resv" nodes before
->> > > > the kernel does its reserved memory region initialisation.
->> > > >
->> > >
->> > > We have different mechanisms of DT being passed to the kernel.
->> > >
->> > > 1. A prior stage(e.g U-Boot SPL) to M-mode runtime firmware (e.g.
->> > > OpenSBI, rustSBI) passes the DT to M-mode runtime firmware and it
->> > > passes to the next stage.
->> > > In this case, M-mode runtime firmware gets a chance to update the
->> > > no-map property in DT that the kernel can parse.
->> > >
->> > > 2. User loads the DT from the boot loader (e.g EDK2, U-Boot proper).
->> > > Any DT patching done by the M-mode firmware is useless. If these DTBs
->> > > don't have the no-map
->> > > property, hibernation or EFI booting will have issues as well.
->> > >
->> >
->> > > We are trying to solve only one part of problem #1 in this patch.
->> >
->> > Correct.
->> >
->> > If someone's second stage is also providing an incorrect devicetree
->> > then, yeah, this approach would fall apart - but it's the firmware
->> > provided devicetree being incorrect that I am trying to account for
->> > here. If a person incorrectly constructed one, I am not really sure what
->> > we can do for them, they incorrect described their hardware /shrug
->> > My patch should of course help in some of the scenarios you mention above
->> > if the name of the reserved memory region from OpenSBI is propagated by
->> > the second-stage bootloader, but that is just an extension of case 1,
->> > not case 2.
->> >
->> > > I
->> > > don't think any other M-mode runtime firmware patches DT with no-map
->> > > property as well.
->> > > Please let me know if I am wrong about that. The problem is not
->> > > restricted to [v0.8 to v1.3) of OpenSBI.
->> >
->> > It comes down to Alex's question - do we want to fix this kind of
->> > firmware issue in the kernel? Ultimately this is a policy decision that
->> > "somebody" has to make. Maybe the list of firmwares that need this
->> 
->> IMO, we shouldn't as this is a slippery slope. Kernel can't fix every
->> firmware bug by having erratas.
->> I agree with your point below about firmware in shipping products. I
->> am not aware of any official products shipping anything other than
->> OpenSBI either.
->
->> However, I have seen users using other firmwares in their dev
->> environment.
->
-> If someone's already changed their boards firmware, I have less sympathy
-> for them, as they should be able to make further changes. Punters buying
-> SBCs to install Fedora or Debian w/o having to consider their firmware
-> are who I am more interested in helping.
->
->> IMHO, this approach sets a bad precedent for the future especially
->> when it only solves one part of the problem.
->
-> Yeah, I'm certainly wary of setting an unwise precedent here.
-> Inevitably we will need to have firmware-related errata and it'd be good
-> to have a policy for what is (or more importantly what isn't
-> acceptable). Certainly we have said that known-broken version of OpenSBI
-> that T-Head puts in their SDK is not supported by the mainline kernel.
-> On the latter part, I'm perfectly happy to expand the erratum to cover
-> all affected firmwares, but I wasn't even sure if my fix worked
-> properly, hence the request for testing from those who encountered the
-> problem.
->
->> We shouldn't hide firmware bugs in the kernel when an upgraded
->> firmware is already available.
->
-> Just to note, availability of an updated firmware upstream does not
-> necessarily mean that corresponding update is possible for affected
-> hardware.
 
-Yep.  I think we're been in a very hobbist-centric world in RISC-V land, 
-but in general trying to get people to update firmware is hard.  Part of 
-the whole "kernel updates don't break users" thing is what's underneath 
-the kernel, it's not just a uABI thing.
 
->> This bug is well documented in various threads and fixed in the latest
->> version of OpenSBI.
->> I am assuming other firmwares will follow it as well.
->> 
->> Anybody facing hibernation or efi related booting issues should just
->> upgrade to the latest version of firmware (e.g OpenSBI v1.3)
->> Latest version of Qemu will support(if not happened already) the
->> latest version of OpenSBI.
->> 
->> This issue will only manifest in kernels 6.4 or higher. Any user
->> facing these with the latest kernel can also upgrade the firmware.
->> Do you see any issue with that ?
->
-> I don't think it is fair to compare the ease of upgrading the kernel
-> to that required to upgrade a boards firmware, with the latter being
-> far, far more inconvenient on pretty much all of the boards that I have.
+On 2023/12/6 16:55, Maxime Ripard wrote:
+> On Mon, Dec 04, 2023 at 08:33:13PM +0800, Keith Zhao wrote:
+>> +static const struct vs_plane_info dc_hw_planes_rev0[PLANE_NUM] = {
+>> +	{
+>> +		.name			= "Primary",
+>> +		.id			= PRIMARY_PLANE_0,
+>> +		.type			= DRM_PLANE_TYPE_PRIMARY,
+>> +		.num_formats		= ARRAY_SIZE(primary_overlay_format0),
+>> +		.formats		= primary_overlay_format0,
+>> +		.num_modifiers		= ARRAY_SIZE(format_modifier0),
+>> +		.modifiers		= format_modifier0,
+>> +		.min_width		= 0,
+>> +		.min_height		= 0,
+>> +		.max_width		= 4096,
+>> +		.max_height		= 4096,
+>> +		.rotation		= DRM_MODE_ROTATE_0 |
+>> +					  DRM_MODE_ROTATE_90 |
+>> +					  DRM_MODE_ROTATE_180 |
+>> +					  DRM_MODE_ROTATE_270 |
+>> +					  DRM_MODE_REFLECT_X |
+>> +					  DRM_MODE_REFLECT_Y,
+>> +		.blend_mode		= BIT(DRM_MODE_BLEND_PIXEL_NONE) |
+>> +					  BIT(DRM_MODE_BLEND_PREMULTI) |
+>> +					  BIT(DRM_MODE_BLEND_COVERAGE),
+>> +		.color_encoding		= BIT(DRM_COLOR_YCBCR_BT709) |
+>> +					  BIT(DRM_COLOR_YCBCR_BT2020),
+>> +		.degamma_size		= DEGAMMA_SIZE,
+>> +		.min_scale		= FRAC_16_16(1, 3),
+>> +		.max_scale		= FRAC_16_16(10, 1),
+>> +		.zpos			= 0,
+>> +		.watermark		= true,
+>> +		.color_mgmt		= true,
+>> +		.roi			= true,
+>> +	},
+>> +	{
+>> +		.name			= "Overlay",
+>> +		.id			= OVERLAY_PLANE_0,
+>> +		.type			= DRM_PLANE_TYPE_OVERLAY,
+>> +		.num_formats		= ARRAY_SIZE(primary_overlay_format0),
+>> +		.formats		= primary_overlay_format0,
+>> +		.num_modifiers		= ARRAY_SIZE(format_modifier0),
+>> +		.modifiers		= format_modifier0,
+>> +		.min_width		= 0,
+>> +		.min_height		= 0,
+>> +		.max_width		= 4096,
+>> +		.max_height		= 4096,
+>> +		.rotation		= DRM_MODE_ROTATE_0 |
+>> +					  DRM_MODE_ROTATE_90 |
+>> +					  DRM_MODE_ROTATE_180 |
+>> +					  DRM_MODE_ROTATE_270 |
+>> +					  DRM_MODE_REFLECT_X |
+>> +					  DRM_MODE_REFLECT_Y,
+>> +		.blend_mode		= BIT(DRM_MODE_BLEND_PIXEL_NONE) |
+>> +					  BIT(DRM_MODE_BLEND_PREMULTI) |
+>> +					  BIT(DRM_MODE_BLEND_COVERAGE),
+>> +		.color_encoding		= BIT(DRM_COLOR_YCBCR_BT709) |
+>> +					  BIT(DRM_COLOR_YCBCR_BT2020),
+>> +		.degamma_size		= DEGAMMA_SIZE,
+>> +		.min_scale		= FRAC_16_16(1, 3),
+>> +		.max_scale		= FRAC_16_16(10, 1),
+>> +		.zpos			= 1,
+>> +		.watermark		= true,
+>> +		.color_mgmt		= true,
+>> +		.roi			= true,
+>> +	},
+>> +	{
+>> +		.name			= "Overlay_1",
+>> +		.id			= OVERLAY_PLANE_1,
+>> +		.type			= DRM_PLANE_TYPE_OVERLAY,
+>> +		.num_formats		= ARRAY_SIZE(primary_overlay_format0),
+>> +		.formats		= primary_overlay_format0,
+>> +		.num_modifiers		= ARRAY_SIZE(secondary_format_modifiers),
+>> +		.modifiers		= secondary_format_modifiers,
+>> +		.min_width		= 0,
+>> +		.min_height		= 0,
+>> +		.max_width		= 4096,
+>> +		.max_height		= 4096,
+>> +		.rotation		= 0,
+>> +		.blend_mode		= BIT(DRM_MODE_BLEND_PIXEL_NONE) |
+>> +					  BIT(DRM_MODE_BLEND_PREMULTI) |
+>> +					  BIT(DRM_MODE_BLEND_COVERAGE),
+>> +		.color_encoding		= BIT(DRM_COLOR_YCBCR_BT709) |
+>> +					  BIT(DRM_COLOR_YCBCR_BT2020),
+>> +		.degamma_size		= DEGAMMA_SIZE,
+>> +		.min_scale		= DRM_PLANE_NO_SCALING,
+>> +		.max_scale		= DRM_PLANE_NO_SCALING,
+>> +		.zpos			= 2,
+>> +		.watermark		= true,
+>> +		.color_mgmt		= true,
+>> +		.roi			= true,
+>> +	},
+>> +	{
+>> +		.name			= "Primary_1",
+>> +		.id			= PRIMARY_PLANE_1,
+>> +		.type			= DRM_PLANE_TYPE_PRIMARY,
+>> +		.num_formats		= ARRAY_SIZE(primary_overlay_format0),
+>> +		.formats		= primary_overlay_format0,
+>> +		.num_modifiers		= ARRAY_SIZE(format_modifier0),
+>> +		.modifiers		= format_modifier0,
+>> +		.min_width		= 0,
+>> +		.min_height		= 0,
+>> +		.max_width		= 4096,
+>> +		.max_height		= 4096,
+>> +		.rotation		= DRM_MODE_ROTATE_0 |
+>> +					  DRM_MODE_ROTATE_90 |
+>> +					  DRM_MODE_ROTATE_180 |
+>> +					  DRM_MODE_ROTATE_270 |
+>> +					  DRM_MODE_REFLECT_X |
+>> +					  DRM_MODE_REFLECT_Y,
+>> +		.blend_mode		= BIT(DRM_MODE_BLEND_PIXEL_NONE) |
+>> +					  BIT(DRM_MODE_BLEND_PREMULTI) |
+>> +					  BIT(DRM_MODE_BLEND_COVERAGE),
+>> +		.color_encoding		= BIT(DRM_COLOR_YCBCR_BT709) |
+>> +					  BIT(DRM_COLOR_YCBCR_BT2020),
+>> +		.degamma_size		= DEGAMMA_SIZE,
+>> +		.min_scale		= FRAC_16_16(1, 3),
+>> +		.max_scale		= FRAC_16_16(10, 1),
+>> +		.zpos			= 3,
+>> +		.watermark		= true,
+>> +		.color_mgmt		= true,
+>> +		.roi			= true,
+>> +	},
+>> +	{
+>> +		.name			= "Overlay_2",
+>> +		.id			= OVERLAY_PLANE_2,
+>> +		.type			= DRM_PLANE_TYPE_OVERLAY,
+>> +		.num_formats		= ARRAY_SIZE(primary_overlay_format0),
+>> +		.formats		= primary_overlay_format0,
+>> +		.num_modifiers		= ARRAY_SIZE(format_modifier0),
+>> +		.modifiers		= format_modifier0,
+>> +		.min_width		= 0,
+>> +		.min_height		= 0,
+>> +		.max_width		= 4096,
+>> +		.max_height		= 4096,
+>> +		.rotation		= DRM_MODE_ROTATE_0 |
+>> +					  DRM_MODE_ROTATE_90 |
+>> +					  DRM_MODE_ROTATE_180 |
+>> +					  DRM_MODE_ROTATE_270 |
+>> +					  DRM_MODE_REFLECT_X |
+>> +					  DRM_MODE_REFLECT_Y,
+>> +		.blend_mode		= BIT(DRM_MODE_BLEND_PIXEL_NONE) |
+>> +					  BIT(DRM_MODE_BLEND_PREMULTI) |
+>> +					  BIT(DRM_MODE_BLEND_COVERAGE),
+>> +		.color_encoding		= BIT(DRM_COLOR_YCBCR_BT709) |
+>> +					  BIT(DRM_COLOR_YCBCR_BT2020),
+>> +		.degamma_size		= DEGAMMA_SIZE,
+>> +		.min_scale		= FRAC_16_16(1, 3),
+>> +		.max_scale		= FRAC_16_16(10, 1),
+>> +		.zpos			= 4,
+>> +		.watermark		= true,
+>> +		.color_mgmt		= true,
+>> +		.roi			= true,
+>> +	},
+>> +	{
+>> +		.name			= "Overlay_3",
+>> +		.id			= OVERLAY_PLANE_3,
+>> +		.type			= DRM_PLANE_TYPE_OVERLAY,
+>> +		.num_formats		= ARRAY_SIZE(primary_overlay_format0),
+>> +		.formats		= primary_overlay_format0,
+>> +		.num_modifiers		= ARRAY_SIZE(secondary_format_modifiers),
+>> +		.modifiers		= secondary_format_modifiers,
+>> +		.min_width		= 0,
+>> +		.min_height		= 0,
+>> +		.max_width		= 4096,
+>> +		.max_height		= 4096,
+>> +		.rotation		= 0,
+>> +		.blend_mode		= BIT(DRM_MODE_BLEND_PIXEL_NONE) |
+>> +					  BIT(DRM_MODE_BLEND_PREMULTI) |
+>> +					  BIT(DRM_MODE_BLEND_COVERAGE),
+>> +		.color_encoding		= BIT(DRM_COLOR_YCBCR_BT709) |
+>> +					  BIT(DRM_COLOR_YCBCR_BT2020),
+>> +		.degamma_size		= DEGAMMA_SIZE,
+>> +		.min_scale		= DRM_PLANE_NO_SCALING,
+>> +		.max_scale		= DRM_PLANE_NO_SCALING,
+>> +		.zpos			= 5,
+>> +		.watermark		= true,
+>> +		.color_mgmt		= true,
+>> +		.roi			= true,
+>> +	},
+>> +	{
+>> +		.name			= "Cursor",
+>> +		.id			= CURSOR_PLANE_0,
+>> +		.type			= DRM_PLANE_TYPE_CURSOR,
+>> +		.num_formats		= ARRAY_SIZE(cursor_formats),
+>> +		.formats		= cursor_formats,
+>> +		.num_modifiers		= 0,
+>> +		.modifiers		= NULL,
+>> +		.min_width		= 32,
+>> +		.min_height		= 32,
+>> +		.max_width		= 64,
+>> +		.max_height		= 64,
+>> +		.rotation		= 0,
+>> +		.degamma_size		= 0,
+>> +		.min_scale		= DRM_PLANE_NO_SCALING,
+>> +		.max_scale		= DRM_PLANE_NO_SCALING,
+>> +		.zpos			= 255,
+>> +		.watermark		= false,
+>> +		.color_mgmt		= false,
+>> +		.roi			= false,
+>> +	},
+>> +	{
+>> +		.name			= "Cursor_1",
+>> +		.id			= CURSOR_PLANE_1,
+>> +		.type			= DRM_PLANE_TYPE_CURSOR,
+>> +		.num_formats		= ARRAY_SIZE(cursor_formats),
+>> +		.formats		= cursor_formats,
+>> +		.num_modifiers		= 0,
+>> +		.modifiers		= NULL,
+>> +		.min_width		= 32,
+>> +		.min_height		= 32,
+>> +		.max_width		= 64,
+>> +		.max_height		= 64,
+>> +		.rotation		= 0,
+>> +		.degamma_size		= 0,
+>> +		.min_scale		= DRM_PLANE_NO_SCALING,
+>> +		.max_scale		= DRM_PLANE_NO_SCALING,
+>> +		.zpos			= 255,
+>> +		.watermark		= false,
+>> +		.color_mgmt		= false,
+>> +		.roi			= false,
+>> +	},
+>> +};
+>> +
+>> +static const struct vs_dc_info dc8200_info = {
+>> +	.name			= "DC8200",
+>> +	.panel_num		= 2,
+>> +	.plane_num		= 8,
+>> +	.planes			= dc_hw_planes_rev0,
+>> +	.layer_num		= 6,
+>> +	.max_bpc		= 10,
+>> +	.color_formats		= DRM_COLOR_FORMAT_RGB444 |
+>> +				  DRM_COLOR_FORMAT_YCBCR444 |
+>> +				  DRM_COLOR_FORMAT_YCBCR422 |
+>> +				  DRM_COLOR_FORMAT_YCBCR420,
+>> +	.gamma_size		= GAMMA_EX_SIZE,
+>> +	.gamma_bits		= 12,
+>> +	.pitch_alignment	= 128,
+>> +	.pipe_sync		= false,
+>> +	.background		= true,
+>> +	.panel_sync		= true,
+>> +	.cap_dec		= true,
+>> +};
+> 
+> I really think that entire thing is to workaround a suboptimal device
+> tree binding. You should have two CRTCs in the device tree, you'll probe
+> twice, and you won't get to do that whole dance.
+> 
 
-IMO we're in the same spot as every other port here, and generally they 
-work around firmware bugs when they've rolled out into production 
-somewhere that firmware updates aren't likely to happen quickly.  I'm 
-not sure if there's any sort of exact rules written down anywhere, but 
-IMO if the bug is going to impact users then we should deal with it.
+i got you means “two CRTCs in the device tree，probe twice"
+maybe also I can split the common ctrc helper fun into 2 , 
 
-That applies for hardware bugs, but also firmware bugs (at a certain 
-point we won't be able to tell the difference).  We're sort of doing 
-this with the misaligned access handling, for example.
+current the driver probe once and map 2 port as ctrc node ,
 
-> I'm perfectly happy to drop this series though, if people generally are
-> of the opinion that this sort of firmware workaround is ill-advised.
-> We are unaffected by it, so I certainly have no pressure to have
-> something working here. It's my desire not to be user-hostile that
-> motivated this patch.
+> 
+>> +struct dc_hw_plane_reg {
+>> +	u32 y_address;
+>> +	u32 u_address;
+>> +	u32 v_address;
+>> +	u32 y_stride;
+>> +	u32 u_stride;
+>> +	u32 v_stride;
+>> +	u32 size;
+>> +	u32 top_left;
+>> +	u32 bottom_right;
+>> +	u32 scale_factor_x;
+>> +	u32 scale_factor_y;
+>> +	u32 h_filter_coef_index;
+>> +	u32 h_filter_coef_data;
+>> +	u32 v_filter_coef_index;
+>> +	u32 v_filter_coef_data;
+>> +	u32 init_offset;
+>> +	u32 color_key;
+>> +	u32 color_key_high;
+>> +	u32 clear_value;
+>> +	u32 color_table_index;
+>> +	u32 color_table_data;
+>> +	u32 scale_config;
+>> +	u32 water_mark;
+>> +	u32 degamma_index;
+>> +	u32 degamma_data;
+>> +	u32 degamma_ex_data;
+>> +	u32 src_global_color;
+>> +	u32 dst_global_color;
+>> +	u32 blend_config;
+>> +	u32 roi_origin;
+>> +	u32 roi_size;
+>> +	u32 yuv_to_rgb_coef0;
+>> +	u32 yuv_to_rgb_coef1;
+>> +	u32 yuv_to_rgb_coef2;
+>> +	u32 yuv_to_rgb_coef3;
+>> +	u32 yuv_to_rgb_coef4;
+>> +	u32 yuv_to_rgb_coefd0;
+>> +	u32 yuv_to_rgb_coefd1;
+>> +	u32 yuv_to_rgb_coefd2;
+>> +	u32 y_clamp_bound;
+>> +	u32 uv_clamp_bound;
+>> +	u32 rgb_to_rgb_coef0;
+>> +	u32 rgb_to_rgb_coef1;
+>> +	u32 rgb_to_rgb_coef2;
+>> +	u32 rgb_to_rgb_coef3;
+>> +	u32 rgb_to_rgb_coef4;
+>> +};
+> 
+> That's your plane state.
+> 
+>> +struct dc_hw_fb {
+>> +	u32 y_address;
+>> +	u32 u_address;
+>> +	u32 v_address;
+>> +	u32 clear_value;
+>> +	u32 water_mark;
+>> +	u16 y_stride;
+>> +	u16 u_stride;
+>> +	u16 v_stride;
+>> +	u16 width;
+>> +	u16 height;
+>> +	u8	format;
+>> +	u8	tile_mode;
+>> +	u8	rotation;
+>> +	u8	yuv_color_space;
+>> +	u8	swizzle;
+>> +	u8	uv_swizzle;
+>> +	u8	zpos;
+>> +	u8	display_id;
+>> +	bool	clear_enable;
+>> +	bool	dec_enable;
+>> +	bool	enable;
+>> +	bool	dirty;
+>> +};
+> 
+> Your framebuffer
+> 
+>> +struct dc_hw_scale {
+>> +	u32 scale_factor_x;
+>> +	u32 scale_factor_y;
+>> +	bool	enable;
+>> +	bool	dirty;
+>> +};
+>> +
+>> +struct dc_hw_position {
+>> +	u16 start_x;
+>> +	u16 start_y;
+>> +	u16 end_x;
+>> +	u16 end_y;
+>> +	bool	dirty;
+>> +};
+>> +
+>> +struct dc_hw_blend {
+>> +	u8	alpha;
+>> +	u8	blend_mode;
+>> +	bool	dirty;
+>> +};
+>> +
+>> +struct dc_hw_colorkey {
+>> +	u32 colorkey;
+>> +	u32 colorkey_high;
+>> +	u8	transparency;
+>> +	bool dirty;
+>> +};
+> 
+> Your CRTC state.
+> 
+>> +struct dc_hw_roi {
+>> +	u16 x;
+>> +	u16 y;
+>> +	u16 width;
+>> +	u16 height;
+>> +	bool enable;
+>> +	bool dirty;
+>> +};
+>> +
+>> +struct dc_hw_cursor {
+>> +	u32 address;
+>> +	u16 x;
+>> +	u16 y;
+>> +	u16 hot_x;
+>> +	u16 hot_y;
+>> +	u8	size;
+>> +	u8	display_id;
+>> +	bool	enable;
+>> +	bool	dirty;
+>> +};
+>> +
+>> +struct dc_hw_display {
+>> +	u32 bus_format;
+>> +	u16 h_active;
+>> +	u16 h_total;
+>> +	u16 h_sync_start;
+>> +	u16 h_sync_end;
+>> +	u16 v_active;
+>> +	u16 v_total;
+>> +	u16 v_sync_start;
+>> +	u16 v_sync_end;
+>> +	u8	id;
+>> +	bool	h_sync_polarity;
+>> +	bool	v_sync_polarity;
+>> +	bool	enable;
+>> +};
+> 
+> Your display mode.
+> 
+> Really, you have the huge majority of those informations already
+> available, there's no need to duplicate it. And chances are you'll
+> create bugs in the process.
+> Maxime
+ok let me try it, 
+This will be another relatively big change.
 
-IIUC you guys and Reneas are the only ones who have hardware that might 
-be in a spot where users aren't able to update the firmware (ie, it's 
-out in production somewhere).  So I'm adding Geert, though he probably 
-saw this months ago...
-
-On that note: It's been ~4 months and it look like nobody's tested 
-anything (and the comments aren't really things that would preculde 
-testing).  So maybe we just pick that second patch up into for-next and 
-see what happens?  IIUC that will result in broken systems for users who 
-haven't updated their firmware.
-
-I agree that's a user-hostile way to do things, which is generally a bad 
-way to go, but if it's really true that there's no users then we're 
-safe.  Probably also worth calling it out on sw-dev just to be safe.
