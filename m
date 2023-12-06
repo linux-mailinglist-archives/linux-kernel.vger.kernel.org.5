@@ -2,151 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1ADA8063A7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEF18063AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:54:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376360AbjLFAvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
+        id S1376359AbjLFAyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376345AbjLFAvA (ORCPT
+        with ESMTP id S1376332AbjLFAyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:51:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3ED0C9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:51:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701823864; x=1733359864;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=A0643l07M794niF7N/B9EOXsl7Zsisy4aQA/I48mxKo=;
-  b=R3Zu8Yz5h8tPFkQEg0SenGK2N1zw5fiS5y+/n2uslYPjM4UH2yGZ/ZQ7
-   uFdEP+6n24i0zRGjPJ5ONebO4y+rVz7keiLdr4+DgVXA5hLfuYsUdE5x9
-   kItiu1I9mCsS0dgUUPkkdELrarGemWikeMNUyVEjPymxkyI5/RJTociGc
-   +SS3jydZy0GH9xzIqzeQReMcjkoVUS+0ihB1EHrkU1OpX2ImGkxALfHJJ
-   kcWMGeREzWdSB8iY5n2JahBvQI+yrCEDrZCFBp5I+XtXGA0Io7uIvqoAj
-   kOlXdq4oPg3ax2WeZWwWEhkpny6xKsmLcnEahPWj9paOGkOOoeyz+w6Ni
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="12698972"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="12698972"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 16:51:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="841652277"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="841652277"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Dec 2023 16:51:01 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1rAg7v-0009yv-1D;
-        Wed, 06 Dec 2023 00:50:59 +0000
-Date:   Wed, 6 Dec 2023 08:50:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Johannes Berg <johannes.berg@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Luca Coelho <luciano.coelho@intel.com>
-Subject: drivers/net/wireless/intel/iwlwifi/fw/dbg.c:86: warning: Excess
- struct/union/enum/typedef member 'trans_len' description in
- 'iwl_fw_dump_ptrs'
-Message-ID: <202312060810.QT9zourt-lkp@intel.com>
+        Tue, 5 Dec 2023 19:54:10 -0500
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCEBC6;
+        Tue,  5 Dec 2023 16:54:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701824057; x=1733360057;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=1+toNEd6sJyTVAzItwkGE2GFEaCVIxst9NVhvx21Yx0=;
+  b=tf3em3NZa1AtnRxMS7Uzh9OgtdlXjoDEhUJojrD4JBhVs42czDX6BV4a
+   aru8MijSi280D+pCtqcMedD1NzlrW6JiSeWqhtaRaN2Hi8C2JDzShAvKh
+   J9x/DtXV7FRJYVdx2CNU9qxmsS0JFATksWskzdXLTMuL+y2qLnY/nk/0P
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.04,253,1695686400"; 
+   d="scan'208";a="620027210"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 00:54:15 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
+        by email-inbound-relay-pdx-2a-m6i4x-1197e3af.us-west-2.amazon.com (Postfix) with ESMTPS id 0EFEF10475D;
+        Wed,  6 Dec 2023 00:54:11 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:36668]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.6.101:2525] with esmtp (Farcaster)
+ id 915ed644-9b82-4c55-925c-77a86dfa36d9; Wed, 6 Dec 2023 00:54:11 +0000 (UTC)
+X-Farcaster-Flow-ID: 915ed644-9b82-4c55-925c-77a86dfa36d9
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 00:54:11 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.119.13.242) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 00:54:05 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.com>
+To:     <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>,
+        <kuniyu@amazon.com>
+Subject: Re: [syzbot] [net?] KMSAN: uninit-value in __llc_lookup_established
+Date:   Wed, 6 Dec 2023 09:53:40 +0900
+Message-ID: <20231206005340.11534-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <0000000000001b9bed060bc75cbc@google.com>
+References: <0000000000001b9bed060bc75cbc@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.119.13.242]
+X-ClientProxiedBy: EX19D041UWA003.ant.amazon.com (10.13.139.105) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johannes,
+From: syzbot <syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com>
+Date: Tue, 05 Dec 2023 10:25:31 -0800
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    1c41041124bd Merge tag 'i3c/for-6.7' of git://git.kernel.o..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10429eeb680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=956549bd1d1e9efd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=b5ad66046b913bc04c6f
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b6a00f680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=121471ef680000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/20fd86e677f1/disk-1c410411.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/ccd39cb0b7b6/vmlinux-1c410411.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/156fc60f97bc/bzImage-1c410411.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+b5ad66046b913bc04c6f@syzkaller.appspotmail.com
+> 
+> syz-executor994 uses obsolete (PF_INET,SOCK_PACKET)
+> =====================================================
+> BUG: KMSAN: uninit-value in __llc_lookup_established+0xe9d/0xf90
+>  __llc_lookup_established+0xe9d/0xf90
+>  __llc_lookup net/llc/llc_conn.c:611 [inline]
+>  llc_conn_handler+0x4bd/0x1360 net/llc/llc_conn.c:791
+>  llc_rcv+0xfbb/0x14a0 net/llc/llc_input.c:206
+>  __netif_receive_skb_one_core net/core/dev.c:5527 [inline]
+>  __netif_receive_skb+0x1a6/0x5a0 net/core/dev.c:5641
+>  netif_receive_skb_internal net/core/dev.c:5727 [inline]
+>  netif_receive_skb+0x58/0x660 net/core/dev.c:5786
+>  tun_rx_batched+0x3ee/0x980 drivers/net/tun.c:1555
+>  tun_get_user+0x53af/0x66d0 drivers/net/tun.c:2002
+>  tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
+>  call_write_iter include/linux/fs.h:2020 [inline]
+>  new_sync_write fs/read_write.c:491 [inline]
+>  vfs_write+0x8ef/0x1490 fs/read_write.c:584
+>  ksys_write+0x20f/0x4c0 fs/read_write.c:637
+>  __do_sys_write fs/read_write.c:649 [inline]
+>  __se_sys_write fs/read_write.c:646 [inline]
+>  __x64_sys_write+0x93/0xd0 fs/read_write.c:646
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> 
+> Local variable daddr created at:
+>  llc_conn_handler+0x53/0x1360 net/llc/llc_conn.c:783
+>  llc_rcv+0xfbb/0x14a0 net/llc/llc_input.c:206
+> 
+> CPU: 1 PID: 5004 Comm: syz-executor994 Not tainted 6.6.0-syzkaller-14500-g1c41041124bd #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+> =====================================================
 
-FYI, the error/warning still remains.
+llc_pdu_decode_[sd]a() initialises addr.mac only for ETH_P_802_2.
+Otherwise, llc_estab_match() reads an uninit value form both [sd]addr.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   bee0e7762ad2c6025b9f5245c040fcc36ef2bde8
-commit: 7174beb60c53209c6e98c9cee20efdee97ef880f iwlwifi: refactor firmware debug code
-date:   6 years ago
-config: powerpc-randconfig-003-20231123 (https://download.01.org/0day-ci/archive/20231206/202312060810.QT9zourt-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060810.QT9zourt-lkp@intel.com/reproduce)
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 1c41041124bd
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312060810.QT9zourt-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/bug.h:4:0,
-                    from arch/powerpc/include/asm/cmpxchg.h:8,
-                    from arch/powerpc/include/asm/atomic.h:10,
-                    from include/linux/atomic.h:4,
-                    from include/linux/debug_locks.h:5,
-                    from include/linux/lockdep.h:25,
-                    from include/linux/spinlock_types.h:18,
-                    from include/linux/mutex.h:15,
-                    from include/linux/kernfs.h:13,
-                    from include/linux/sysfs.h:15,
-                    from include/linux/kobject.h:21,
-                    from include/linux/device.h:17,
-                    from include/linux/devcoredump.h:23,
-                    from drivers/net/wireless/intel/iwlwifi/fw/dbg.c:65:
-   include/linux/dma-mapping.h: In function 'dma_map_resource':
-   arch/powerpc/include/asm/page.h:129:32: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
-    #define pfn_valid(pfn)  ((pfn) >= ARCH_PFN_OFFSET && (pfn) < max_mapnr)
-                                   ^
-   arch/powerpc/include/asm/bug.h:75:27: note: in definition of macro 'BUG_ON'
-     if (__builtin_constant_p(x)) {    \
-                              ^
-   include/linux/dma-mapping.h:307:9: note: in expansion of macro 'pfn_valid'
-     BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
-            ^~~~~~~~~
-   arch/powerpc/include/asm/page.h:129:32: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
-    #define pfn_valid(pfn)  ((pfn) >= ARCH_PFN_OFFSET && (pfn) < max_mapnr)
-                                   ^
-   arch/powerpc/include/asm/bug.h:76:7: note: in definition of macro 'BUG_ON'
-      if (x)      \
-          ^
-   include/linux/dma-mapping.h:307:9: note: in expansion of macro 'pfn_valid'
-     BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
-            ^~~~~~~~~
-   arch/powerpc/include/asm/page.h:129:32: warning: comparison of unsigned expression >= 0 is always true [-Wtype-limits]
-    #define pfn_valid(pfn)  ((pfn) >= ARCH_PFN_OFFSET && (pfn) < max_mapnr)
-                                   ^
-   arch/powerpc/include/asm/bug.h:84:25: note: in definition of macro 'BUG_ON'
-        "r" ((__force long)(x)));   \
-                            ^
-   include/linux/dma-mapping.h:307:9: note: in expansion of macro 'pfn_valid'
-     BUG_ON(pfn_valid(PHYS_PFN(phys_addr)));
-            ^~~~~~~~~
->> drivers/net/wireless/intel/iwlwifi/fw/dbg.c:86: warning: Excess struct/union/enum/typedef member 'trans_len' description in 'iwl_fw_dump_ptrs'
-
-
-vim +86 drivers/net/wireless/intel/iwlwifi/fw/dbg.c
-
-    72	
-    73	/**
-    74	 * struct iwl_fw_dump_ptrs - set of pointers needed for the fw-error-dump
-    75	 *
-    76	 * @fwrt_ptr: pointer to the buffer coming from fwrt
-    77	 * @trans_ptr: pointer to struct %iwl_trans_dump_data which contains the
-    78	 *	transport's data.
-    79	 * @trans_len: length of the valid data in trans_ptr
-    80	 * @fwrt_len: length of the valid data in fwrt_ptr
-    81	 */
-    82	struct iwl_fw_dump_ptrs {
-    83		struct iwl_trans_dump_data *trans_ptr;
-    84		void *fwrt_ptr;
-    85		u32 fwrt_len;
-  > 86	};
-    87	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/net/llc/llc_conn.c b/net/llc/llc_conn.c
+index 0a3f5e0bec00..730561e186ce 100644
+--- a/net/llc/llc_conn.c
++++ b/net/llc/llc_conn.c
+@@ -780,7 +780,7 @@ static struct sock *llc_create_incoming_sock(struct sock *sk,
+ 
+ void llc_conn_handler(struct llc_sap *sap, struct sk_buff *skb)
+ {
+-	struct llc_addr saddr, daddr;
++	struct llc_addr saddr = {}, daddr = {};
+ 	struct sock *sk;
+ 
+ 	llc_pdu_decode_sa(skb, saddr.mac);
