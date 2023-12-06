@@ -2,173 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 253F08078B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A809E8078BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 20:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379363AbjLFTgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 14:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        id S1442781AbjLFTh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 14:37:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379274AbjLFTgf (ORCPT
+        with ESMTP id S1379101AbjLFTh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 14:36:35 -0500
-Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 337751BD;
-        Wed,  6 Dec 2023 11:36:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1701891401; x=1733427401;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=lw4m3tZWoCjQul7waFqM4TgwGNlGq97XE+Qxa5VQJ8Q=;
-  b=p879OKXZgFRmuA8Fr21yxfQJ4fYJPm7BRTLStVCKS4ssmS39ygRInZyI
-   1PdoUOfHlFb/f889/Aoyq8arnw3xLf0LibFH9e2Vw3AWdnlR2bAfHaNTh
-   QxsZ7s2Lk04YxmXvqr8G+ZJMampr5sgQp6lcL/ofWLLYVo5w+24W3xM6T
-   Xuwp7KCrnMSMIo23ytRYfuYkYGneOpGiLeuFuKy2iNG3dabvFU3l9+1qc
-   29mYJXPzJU0yhvrBQ2p5CQkIUG/QVJbJ1SAEWnVtyNe9se/rAn528ze2/
-   6BdOgd4qnVC6dVLDG239ynQQbb65EQFhljCW1rfVo3XzLeT3AZEhEnhLx
-   g==;
-X-CSE-ConnectionGUID: gCu+TCKDSqeKtM7nkp9Oqw==
-X-CSE-MsgGUID: +UUhVSuuRHmnFDvyfahLwg==
-X-IronPort-AV: E=Sophos;i="6.04,256,1695657600"; 
-   d="scan'208";a="4041478"
-Received: from mail-bn1nam02lp2041.outbound.protection.outlook.com (HELO NAM02-BN1-obe.outbound.protection.outlook.com) ([104.47.51.41])
-  by ob1.hgst.iphmx.com with ESMTP; 07 Dec 2023 03:36:38 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QcNNtzT/b1C8ZcFkCIFIxhsNnvKv/l77Ks1zMjo/3/sWfWsbP25d/RoBv5OGOgnVSdpiOP7RaToxpFvN0JbCFI/icZQQbx6BSQdiqzRCl4ly6ZpiUiAB8SztbllYLA7fd69YeHnKl984DmV2Y0qCLKm6BBkRE496GxZo2YD3LZBoKqH3ReSyDzdObpXd/XZH9UnxDMnZQ/VUsc4v/SBs62Mmf1iHrefDRTDyIX4P0udun8W1eyOLFMzxrxKbSuede3SPhATI/6RtDxl817pmQmLq5eyxI6Vmgmi3DfCVvdO6NRnbLH80EdVIPMbm2fpK4zG2deMt8DrftZIh2CIVxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lw4m3tZWoCjQul7waFqM4TgwGNlGq97XE+Qxa5VQJ8Q=;
- b=IdYXzQMmkXGXzDlL0+FgG3ItO5hblpTb5zhgo63XGAFSt/7+XLJ/dhQlDOx7U1BrGiRkdLuR5hHsh1qRC/gyl/Zt7xRAuGGqU9AtlJN4BjHbnufNu2DRI2u1mGfTFoJHMl/W3Kc/BV9CrVoTdKZK3IABNCGgaPZLEhYDbmZRIsxxInQMhgF5t6xMtJ2Nuvav0K3is8I+J7msyW6R65NDG63ytNm3xKZv+42P1A+n6hoqpx65OzHb2ZDvPg3Isc9Sopg8zgtM4VRAOXs4sTuqsIl+MXHbBLvQYXm38RsKE5Cvkojoaq7DcsFG1H08qDXjxsJSD6VYH9M7szmIG3o6pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lw4m3tZWoCjQul7waFqM4TgwGNlGq97XE+Qxa5VQJ8Q=;
- b=yZHzfAD89Q3gvHpxjt2P5GhQ+5tbd+KQW5G1HTuTuRUtKrNkp2wbAZpOk7srI49/uDZP4vognFyVYty+zo3Y3OjUmitNDs2a4XLrq679GrslvgGrUUut6tYkp8XiVUaz7AAxumb8jLSOh1Vrh5M4kSlP32ro2Q82iFrpWyJ2SYY=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB7019.namprd04.prod.outlook.com (2603:10b6:5:246::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.34; Wed, 6 Dec 2023 19:36:35 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::7d7a:2cd1:54e5:ebc4]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::7d7a:2cd1:54e5:ebc4%6]) with mapi id 15.20.7046.034; Wed, 6 Dec 2023
- 19:36:35 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Bean Huo <beanhuo@iokpp.de>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "mani@kernel.org" <mani@kernel.org>,
-        "quic_cang@quicinc.com" <quic_cang@quicinc.com>,
-        "quic_asutoshd@quicinc.com" <quic_asutoshd@quicinc.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "thomas@t-8ch.de" <thomas@t-8ch.de>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mikebi@micron.com" <mikebi@micron.com>,
-        "lporzio@micron.com" <lporzio@micron.com>
-Subject: RE: [PATCH v3 1/3] scsi: ufs: core: Add ufshcd_is_ufs_dev_busy()
-Thread-Topic: [PATCH v3 1/3] scsi: ufs: core: Add ufshcd_is_ufs_dev_busy()
-Thread-Index: AQHaJTkGejfbpfVnekmuyXhz+odsM7CcrHDA
-Date:   Wed, 6 Dec 2023 19:36:35 +0000
-Message-ID: <DM6PR04MB6575DEAB9D4937C9126819D7FC84A@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20231202160227.766529-1-beanhuo@iokpp.de>
- <20231202160227.766529-2-beanhuo@iokpp.de>
-In-Reply-To: <20231202160227.766529-2-beanhuo@iokpp.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR04MB6575:EE_|DM6PR04MB7019:EE_
-x-ms-office365-filtering-correlation-id: 1726d969-13d2-4f45-4af8-08dbf692a846
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eUZESwwGOzK+K9F1VMao0fLx4CT7lE/3c/b94MK5NcGeprzzExSU2i1fUuuXCA8+9YoNYCx5+2hIvdd/JIrHEublvnuTmgNQIEsdePTXbFCvwzSd5wwMCqRsluYnhWQirbNaWTht5d0X4GqJD8e6AIUA+0bgqC4n8Zdc45+TlkEjZqZpoAkTjyKPXmkw0Ev7jpVwQRywke2B9zYPW/9lo2CVVS3WwY04GtmgJj4eGuJ42p8+kwNIrPWF3BtbnXqMJLp3HKr2e/xxdkt8uvJifql3W+/9UGhGaMmDJhQbe9WFoHnQrw6xu68ooZwkTKZpPUYVSYUknoRB3oQvXX7Zc0QGcuIxUHOO751cOyYPuiyZ38Q2yXELCXWRT3OZXgrXThPDHnUpZCJJnu02RqNIorqvTPjfxbtfiJkVDp/TC3uWRa4bgd7nx0v0LwXuNNbdZiUNlvqteKdi1Bll9AE+0HhE/CN+7y/wxxBBgLwYVKUsNvqfg4MG0acBN6TcvtRMhmlY25dOZz5rfGGaXTu9eOaRDrXqL1TjJa8QMmaQLvT1BpePyaAr++RmpQIkibP3+1RzoV+vNg/fdlk99tLoOoAC21NKqTuJXl11HyRMOmKw9okPaP4i2itbWQIxK4D5GPqDzasN3I6l1RArR3b2QQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(136003)(366004)(396003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(9686003)(82960400001)(26005)(38100700002)(6506007)(7696005)(122000001)(55016003)(478600001)(71200400001)(76116006)(66946007)(66476007)(66556008)(66446008)(64756008)(54906003)(110136005)(316002)(8676002)(8936002)(4326008)(33656002)(2906002)(558084003)(921008)(41300700001)(38070700009)(52536014)(86362001)(7416002)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?EzQKARuV4VVwdCFJ+Oi2SAkdSOXUT8hJWb1UTkGhLGvWpEAkV1Rxw7k8pg1p?=
- =?us-ascii?Q?ggjOgKHqUVRke4VHYm+uE9gQhAxM7xCQUIU57JaCW04ZaFPQUzl/ZpUc+en/?=
- =?us-ascii?Q?cozg8xigv0RkzR2GJmCCIO6n3Ow2QVmAUVe+8ObEcJX6/cy6w6CXnYrVcLh4?=
- =?us-ascii?Q?1MP3bjw374ziHt/QzZQFWAv3iAGi+GQH1M89v6tR7JfjjIlF8yjtt0i3KgmS?=
- =?us-ascii?Q?P5tUvi+rs9oSZdMZk4uGWMo50bO0iw1w2iocD/ApDP98XaXkNlGDBrrD9XA4?=
- =?us-ascii?Q?5weuQ4mojLzu5M/S3qY9LAIY5T6RCzI4YJatBQkIHrD5fAGOxJ5YtsRWcLGa?=
- =?us-ascii?Q?1ickTNHfg7Y9aomkQFvdKgbyfTJmu4F48JQ8VplHpzMQvpbMC+OENRP1jrum?=
- =?us-ascii?Q?KDtfZP1uLqMH0Te49a/kreID4GLYBiANrUCMOyspiP/yzmADxQH5msYqiZDl?=
- =?us-ascii?Q?frLDsDDHc4ZDK09LEnSqom3W60GcFFd1rU5xqWGMH3P9HflV6W7NpHpwi64u?=
- =?us-ascii?Q?WDT9mWf8m+Hxt3hNIzsLUSVHHz7+Q8LCIIoYJgrJ9ycpl1wSaN8ZgB4IgIF/?=
- =?us-ascii?Q?6yPmhGHjqp8VWU9daNyvcMXzIXr8aWOgBGkceEAm5QK36wYRhn6KwrfiWp1c?=
- =?us-ascii?Q?Et1p+eyCQxEb4ees4GNWDoWuSdHYnYcUYVHYeLM5dVM+t79qYnRwJF104NhC?=
- =?us-ascii?Q?yhtz9uNUxis8DIdKvIs5KxoTUOqkse3Xc5Axsj30x1ziwRg4MMGuDriBgq96?=
- =?us-ascii?Q?YaceGlhkQzZkYkWLMgOkdExUbkArylwRCxpvNVo2arSikJdCV0Wdps9uJd8m?=
- =?us-ascii?Q?ekpej2at9M+evIs9CxOp4GmbXuUKM58L7l0MMo4WzCIBeVu+PfnBmFeYkXNe?=
- =?us-ascii?Q?ugBb4WETh7HEEGflgWCoDOrKuiIUIgtBMvI/JbLEb8gWc4mbQXav4F3Y7Qii?=
- =?us-ascii?Q?E2xcUBzKAkowiuT60yZGIg6pz9XEdzrJIaPoDXl/0C+XPW9GIBJlKSW65SBT?=
- =?us-ascii?Q?ZfeMsDvwggkGuaB0NOtTnRQIQHX1KgxVq0CSG/rpBPIcAKK1awBrVwJkfW7J?=
- =?us-ascii?Q?lx20MteuQosF7vfy3/Ies3ExiDPaL/O0Z733f4E7ZgqA84Pa+Y8FnDsm2eQE?=
- =?us-ascii?Q?gUm7F4ZXnGvpeVqIbrQqmDTr6C+lA4BMHH+OVpOSUQoom+Si6oCYqYNYxgOo?=
- =?us-ascii?Q?d6mNP3AjDKbSnL16q726oO+6Bl3JZpUz9zEZkNGdbS5nTusoXm1zXjByPbhn?=
- =?us-ascii?Q?ApYEwrLRPBZ84zgno2+CpUW2Y7kdhDnw6bwI7Yro85WaQwMKSMR9EVQNbXPG?=
- =?us-ascii?Q?/NTpJCNuyLyq1dk/iGtlrxgiOnPw00bJG1vRaRgy95vdXb+lGcwfbmeDctvM?=
- =?us-ascii?Q?e/F7mdHi+w+IGNzjPyoeU/awJVE3Vx3HRx3ieRbC8u1Flo8MM/QnqKK/ti2R?=
- =?us-ascii?Q?IxDIbgS9/f5v8AX9ZKsYWrXMgvRKRJnWZXJrDFBkFh/btvMB4n5/+o1IEOvg?=
- =?us-ascii?Q?7yq4PrwyuNYf6mEI4PvVh8JRYA5rrTq91NsDcP8te2c/MnZ/dV/Z6vVTNcFD?=
- =?us-ascii?Q?MQMbo4BPMQ+r21EPGBGFrUGWJyQhdqKnn+fPqkzQ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 6 Dec 2023 14:37:56 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1060F8E;
+        Wed,  6 Dec 2023 11:38:02 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 48FC91FD36;
+        Wed,  6 Dec 2023 19:37:58 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 2604113403;
+        Wed,  6 Dec 2023 19:37:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id 7a8+CZbNcGVAYgAAn2gu4w
+        (envelope-from <jack@suse.cz>); Wed, 06 Dec 2023 19:37:58 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 6DDF7A07E0; Wed,  6 Dec 2023 20:37:57 +0100 (CET)
+Date:   Wed, 6 Dec 2023 20:37:57 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Baokun Li <libaokun1@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
+        linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, willy@infradead.org,
+        akpm@linux-foundation.org, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
+ DIO write race with buffered read
+Message-ID: <20231206193757.k5cppxqew6zjmbx3@quack3>
+References: <20231202091432.8349-1-libaokun1@huawei.com>
+ <20231204121120.mpxntey47rluhcfi@quack3>
+ <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
+ <20231204144106.fk4yxc422gppifsz@quack3>
+ <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?2pgNjHw3cHMLeG0T871hKA71cQVI7q9zDhmNkVyEHB2Zfmmz7Ogh3v2auv6N?=
- =?us-ascii?Q?3AH5iLxkrhJClQrBXnsN1wp7HG4tKl+Ujbqgxqo7PzXTE5zR3lz18n5+N6Jn?=
- =?us-ascii?Q?bqW1+Daql7vXJu4j0WaEyqazv4j6WLmd5FTUUPb4mYTM4am9X8MtO1Fob9He?=
- =?us-ascii?Q?9RrElw9MiRTmQSjlXzKGDOZX5WKWtYhGq/scBwQ7afBlrTeSK6CybOYbDexd?=
- =?us-ascii?Q?Lp7GIa+Sk8JlfcoCeVWgd7QvTqzXCBDR5pu+g6rlQmfo8Xp5d4Yk2W9RLPwg?=
- =?us-ascii?Q?IGOvTXo6lleijaZt4QPJzAezdjK4yFV1hEvrlGaLn10ixzJ4sXTkSW6jtZCy?=
- =?us-ascii?Q?huQiMeI07K/lpN1pPkxDCww77M+3yudtdXZ4ucfGF4KnS/qFzDtk6YAfYA0C?=
- =?us-ascii?Q?uH5D0Ay9ZCp9XTv5Y/RjTEUyDbi1zBPtdC+nJWTcCQGe8yUBgUGib2J4OA3E?=
- =?us-ascii?Q?S8IPSfxvlNAa7uAU3ymyeyoINxFVZY36bqFz9KvNpCLjTxHlDfLpskTPAt6o?=
- =?us-ascii?Q?P8zD16wwI0mCkyJVKxcdPGfEi0xIagDEJ6cpcSNZoiGDZZ4lqj3MJFewlMWF?=
- =?us-ascii?Q?95idFavNngnp0bXYWuBp6ERDN4NWU1SVboab5fcZf26mya0Aq9Cq3RaAZ9Tx?=
- =?us-ascii?Q?qEezO3wa+khaqMQu1OZ3An8962OChlDXsQHD4rUSZzhROKsucDuA75Z6HRSs?=
- =?us-ascii?Q?WtWxv+bziIhcYrrX3BHpXHvODyhJ/nBOLL6U9J7RAPJ6w1VOdPEN9zyDbr3x?=
- =?us-ascii?Q?eoKNbkUAwTLZCfu/NpAt68/FAxoe6VcZTv6DXo6B6MvCjhXgcekH8VQ5vPYk?=
- =?us-ascii?Q?bHHyFfmzXBXhgA/OWCmC0V76D8ghPGFlKlsKqDPo/1LPc5H/qU7vpgeyUG1K?=
- =?us-ascii?Q?CiwsXDhm63ilrIJfuCq5VAvlDAjAhxZIoof4GLznbILKLS+0MGP7cy3sZv4S?=
- =?us-ascii?Q?QQpAIPhXEIEvj6RX0GlEsx+Ni2bzWSTsDcIlary/1K/ZC0ja7SXrskIfdP/L?=
- =?us-ascii?Q?dKdNMSUVbc2hBPWyow8LLEpPAbMO3zfKynDCD1HDrf2uT2c=3D?=
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1726d969-13d2-4f45-4af8-08dbf692a846
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Dec 2023 19:36:35.1434
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: X9jaBupsxNeXVKJMz0VH691b27mu8l2Lc9I/vvpvl6WrItjIsMLClMZpLbxkFPKxNbCOJ4ISPk7cHTsT/NrCLg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB7019
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
+X-Spamd-Bar: ++++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [10.21 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.17)[-0.862];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         NEURAL_SPAM_LONG(3.49)[0.997];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[suse.cz,kvack.org,vger.kernel.org,mit.edu,dilger.ca,infradead.org,linux-foundation.org,gmail.com,huawei.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 10.21
+X-Rspamd-Queue-Id: 48FC91FD36
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
-> From: Bean Huo <beanhuo@micron.com>
->=20
-> Add helper inline for retrieving whether UFS device is busy or not.
->=20
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
+On Tue 05-12-23 20:50:30, Baokun Li wrote:
+> On 2023/12/4 22:41, Jan Kara wrote:
+> > On Mon 04-12-23 21:50:18, Baokun Li wrote:
+> > > On 2023/12/4 20:11, Jan Kara wrote:
+> > > > On Sat 02-12-23 17:14:30, Baokun Li wrote:
+> > > > > Recently, while running some pressure tests on MYSQL, noticed that
+> > > > > occasionally a "corrupted data in log event" error would be reported.
+> > > > > After analyzing the error, I found that extending DIO write and buffered
+> > > > > read were competing, resulting in some zero-filled page end being read.
+> > > > > Since ext4 buffered read doesn't hold an inode lock, and there is no
+> > > > > field in the page to indicate the valid data size, it seems to me that
+> > > > > it is impossible to solve this problem perfectly without changing these
+> > > > > two things.
+> > > > Yes, combining buffered reads with direct IO writes is a recipe for
+> > > > problems and pretty much in the "don't do it" territory. So honestly I'd
+> > > > consider this a MYSQL bug. Were you able to identify why does MYSQL use
+> > > > buffered read in this case? It is just something specific to the test
+> > > > you're doing?
+> > > The problem is with a one-master-twoslave MYSQL database with three
+> > > physical machines, and using sysbench pressure testing on each of the
+> > > three machines, the problem occurs about once every two to three hours.
+> > > 
+> > > The problem is with the relay log file, and when the problem occurs, the
+> > > middle dozens of bytes of the file are read as all zeros, while the data on
+> > > disk is not. This is a journal-like file where a write process gets the data
+> > > from
+> > > the master node and writes it locally, and another replay process reads the
+> > > file and performs the replay operation accordingly (some SQL statements).
+> > > The problem is that when replaying, it finds that the data read is
+> > > corrupted,
+> > > not valid SQL data, while the data on disk is normal.
+> > > 
+> > > It's not confirmed that buffered reads vs direct IO writes is actually
+> > > causing this issue, but this is the only scenario that we can reproduce
+> > > with our local simplified scripts. Also, after merging in patch 1, the
+> > > MYSQL pressure test scenario has now been tested for 5 days and has not
+> > > been reproduced.
+> > > 
+> > > I'll double-check the problem scenario, although buffered reads with
+> > > buffered writes doesn't seem to have this problem.
+> > Yeah, from what you write it seems that the replay code is using buffered
+> > reads on the journal file. I guess you could confirm that with a bit of
+> > kernel tracing but the symptoms look pretty convincing. Did you try talking
+> > to MYSQL guys about why they are doing this?
+>
+> The operations performed on the relay log file are buffered reads and
+> writes, which I confirmed with the following bpftrace script:
+> ```
+> #include <linux/fs.h>
+> #include <linux/path.h>
+> #include <linux/dcache.h>
+> 
+> kprobe:generic_file_buffered_read /!strncmp(str(((struct kiocb
+> *)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
+>     printf("read path: %s\n", str(((struct kiocb
+> *)arg0)->ki_filp->f_path.dentry->d_name.name));
+> }
+> 
+> kprobe:ext4_buffered_write_iter /!strncmp(str(((struct kiocb
+> *)arg0)->ki_filp->f_path.dentry->d_name.name), "relay", 5)/ {
+>     printf("write path: %s\n", str(((struct kiocb
+> *)arg0)->ki_filp->f_path.dentry->d_name.name));
+> }
+> ```
+> I suspect there are DIO writes causing the problem, but I haven't caught
+> any DIO writes to such files via bpftrace.
+
+Interesting. Not sure how your partially zeroed-out buffers could happen
+with fully buffered IO.
+
+> > > > > In this series, the first patch reads the inode size twice, and takes the
+> > > > > smaller of the two values as the copyout limit to avoid copying data that
+> > > > > was not actually read (0-padding) into the user buffer and causing data
+> > > > > corruption. This greatly reduces the probability of problems under 4k
+> > > > > page. However, the problem is still easily triggered under 64k page.
+> > > > > 
+> > > > > The second patch waits for the existing dio write to complete and
+> > > > > invalidate the stale page cache before performing a new buffered read
+> > > > > in ext4, avoiding data corruption by copying the stale page cache to
+> > > > > the user buffer. This makes it much less likely that the problem will
+> > > > > be triggered in a 64k page.
+> > > > > 
+> > > > > Do we have a plan to add a lock to the ext4 buffered read or a field in
+> > > > > the page that indicates the size of the valid data in the page? Or does
+> > > > > anyone have a better idea?
+> > > > No, there are no plans to address this AFAIK. Because such locking will
+> > > > slow down all the well behaved applications to fix a corner case for
+> > > > application doing unsupported things. Sure we must not crash the kernel,
+> > > > corrupt the filesystem or leak sensitive (e.g. uninitialized) data if app
+> > > > combines buffered and direct IO but returning zeros instead of valid data
+> > > > is in my opinion fully within the range of acceptable behavior for such
+> > > > case.
+> > > > 
+> > > I also feel that a scenario like buffered reads + DIO writes is strange.
+> > > But theoretically when read doesn't return an error, the data read
+> > > shouldn't be wrong.  And I tested that xfs guarantees data consistency in
+> > > this scenario, which is why I thought it might be buggy.
+> > Yes, XFS has inherited stronger consistency guarantees from IRIX times than
+> > Linux filesystems traditionally had. We generally don't even guarantee
+> > buffered read vs buffered write atomicity (i.e., buffered read can see a
+> > torn buffered write).
+> 
+> I'm a bit confused here, buffered read vs buffered write uses the same
+> page and appears to be protected by a memory barrier, how does the
+> inconsistency occur?
+
+Within the same page buffered reads and writes should be consistent because
+they are synchronized by the page lock. However once reads and writes
+involve multiple pages, there is no serialization so you can get contents
+of some pages before write and some pages after being written. However this
+doesn't seem to be your particular case here. I just wanted to point out
+that in general even buffered reads vs writes are not fully consistent.
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
