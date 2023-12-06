@@ -2,201 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDADB806A08
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C68806A0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:47:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376953AbjLFIqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 03:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        id S229512AbjLFIqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 03:46:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjLFIqg (ORCPT
+        with ESMTP id S229493AbjLFIqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:46:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38BEFA
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:46:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F84DC433C7;
-        Wed,  6 Dec 2023 08:46:36 +0000 (UTC)
-Message-ID: <574bb65f-872d-4bf4-9d3d-a330133de884@xs4all.nl>
-Date:   Wed, 6 Dec 2023 09:46:35 +0100
+        Wed, 6 Dec 2023 03:46:54 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E275E11F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 00:46:56 -0800 (PST)
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231206084653euoutp0208d65c95720c51a26b711d61d7c4c5d0~eMcDVnmbk2728827288euoutp02J
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:46:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231206084653euoutp0208d65c95720c51a26b711d61d7c4c5d0~eMcDVnmbk2728827288euoutp02J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701852413;
+        bh=q4PDyyNqpXrVYosR/HC3mCzskrZhduX/SJA9wFZBRGQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=norDNfMz9S/Nh3vaYyTm4VbDjjG8HNp0TKznQRQB9Lt7O1zQ2hDWbk2/MCjTXL2f4
+         ymfrcRx3K64hR2Fj7QlsQW5GiVDelQ8RrYPa7KAFaUXeshEc/5d/fMMoODNCNz+ovf
+         1vb0YyoHEtBKlnRjkiXK1qB6ZxLVoIGB/cPkLJvc=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231206084653eucas1p134fc27cc2ae2ffa9e188dc16ec92124f~eMcDA9mPa1222412224eucas1p12;
+        Wed,  6 Dec 2023 08:46:53 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 13.8E.09814.DF430756; Wed,  6
+        Dec 2023 08:46:53 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231206084652eucas1p1fd6025710032f3a4a64b05dab67a2a17~eMcCjv-FX1414014140eucas1p1n;
+        Wed,  6 Dec 2023 08:46:52 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231206084652eusmtrp1d620095f901b15e13a8be0efb99d76c0~eMcCiyr-G3235332353eusmtrp1m;
+        Wed,  6 Dec 2023 08:46:52 +0000 (GMT)
+X-AuditID: cbfec7f4-711ff70000002656-24-657034fd7a96
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 0E.66.09146.CF430756; Wed,  6
+        Dec 2023 08:46:52 +0000 (GMT)
+Received: from AMDC4653.digital.local (unknown [106.120.51.32]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231206084651eusmtip2f53b5a0cf2e7c5c077a9d3d4f416831d~eMcBy9Z122879728797eusmtip2P;
+        Wed,  6 Dec 2023 08:46:51 +0000 (GMT)
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH] drivers: perf: constify the ctl_table argument of the riscv
+ user access handler
+Date:   Wed,  6 Dec 2023 09:46:42 +0100
+Message-Id: <20231206084642.802053-1-m.szyprowski@samsung.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3,16/21] media: medkatek: vcodec: support one plane
- capture buffer
-Content-Language: en-US, nl
-To:     Yunfei Dong <yunfei.dong@mediatek.com>,
-        Jeffrey Kardatzke <jkardatzke@google.com>,
-        =?UTF-8?Q?N=C3=ADcolas_F_=2E_R_=2E_A_=2E_Prado?= 
-        <nfraprado@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Nathan Hebert <nhebert@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Steve Cho <stevecho@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <jstultz@google.com>,
-        "T . J . Mercier" <tjmercier@google.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
- <20231206081538.17056-17-yunfei.dong@mediatek.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20231206081538.17056-17-yunfei.dong@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrEKsWRmVeSWpSXmKPExsWy7djPc7p/TQpSDd4sZ7Zo+fCO1WLr71ns
+        Fh3n3CzOdOdabHp8jdXi8q45bBbbPrewWfz+8YzJYu2Ru+wWS69fZLK4MeEpo8XLyz3MFm2z
+        +C1a7pg68HmsmbeG0eNax0YWj6m/z7B4zG64yOLx5uVLFo/DHV/YPTat6mTz2Lyk3qNvyypG
+        j0vN19k9Pm+S8+jvPsYewBPFZZOSmpNZllqkb5fAlbGzVbJgCnvFqwkVDYyNbF2MnBwSAiYS
+        n5fNArK5OIQEVjBKfF76jhXC+cIocXlZIxOE85lR4sXSZawwLTv2/YCqWs4ocah/GjNIAqzl
+        /1JLEJtNwFCi620X2A4RgUyJA49mgDUwC+xllti2fDojSEJYIEli/u1HYM0sAqoSL2+tB9vA
+        K2An0Tb7DQvENnmJ/QfPMkPEBSVOznwCFmcGijdvnc0MMlRC4AeHRNu+FiaIBheJ0ztmQX0n
+        LPHq+BZ2CFtG4vTkHhaIhnZGiQW/7zNBOBMYJRqe32KEqLKWuHPuF1A3B9AKTYn1u/Qhwo4S
+        Ox4vYgEJSwjwSdx4KwhxBJ/EpG3TmSHCvBIdbUIQ1WoSs46vg1t78MIlZgjbQ2L3q1eMkMCK
+        lXiy9THrBEaFWUhem4XktVkINyxgZF7FKJ5aWpybnlpslJdarlecmFtcmpeul5yfu4kRmOxO
+        /zv+ZQfj8lcf9Q4xMnEwHmKU4GBWEuHNOZ+fKsSbklhZlVqUH19UmpNafIhRmoNFSZxXNUU+
+        VUggPbEkNTs1tSC1CCbLxMEp1cC06ek8e22P99aLPqky9Au82OEvL/uCbYlvZ+7buj8sQp/O
+        Ncyct2rnprnz1z1i0KiTLoh/sK7p/+HA7qTW6ish8eLVlXxM3HcLOM/Eqlf/+Hom9enk6brv
+        30Z5ru/cViZ65sjCbwZGnOqiLn79AhIq07azMYQdYo3ulY4+vHKrPeuswh9pbVVu4S6XHDuD
+        Q131o3WWP80X7Sq6teB//rktVW/urzPa7PBY+QxvS/auZZp2jSaNObM2TneQ3q+bv1pbR43j
+        nNR9c4MnWhybKpbW/o3P17olwyl22OHq9KKYdTOM1l/MO1Gqpp22u/bzvAov2dV6QTplxwuN
+        /Tkvbo/KTt24wFli3bE9DpJKXEosxRmJhlrMRcWJAGGMYfLlAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsVy+t/xe7p/TApSDbZsULJo+fCO1WLr71ns
+        Fh3n3CzOdOdabHp8jdXi8q45bBbbPrewWfz+8YzJYu2Ru+wWS69fZLK4MeEpo8XLyz3MFm2z
+        +C1a7pg68HmsmbeG0eNax0YWj6m/z7B4zG64yOLx5uVLFo/DHV/YPTat6mTz2Lyk3qNvyypG
+        j0vN19k9Pm+S8+jvPsYewBOlZ1OUX1qSqpCRX1xiqxRtaGGkZ2hpoWdkYqlnaGwea2VkqqRv
+        Z5OSmpNZllqkb5egl7GzVbJgCnvFqwkVDYyNbF2MnBwSAiYSO/b9YO1i5OIQEljKKLH04FMm
+        iISMxMlpDawQtrDEn2tdbBBFnxglmn7MYQRJsAkYSnS97QKbJCKQLbH98wR2kCJmgaPMEtNW
+        vgabJCyQIHHp5XIwm0VAVeLlrfVgU3kF7CTaZr9hgdggL7H/4FlmiLigxMmZT8DizEDx5q2z
+        mScw8s1CkpqFJLWAkWkVo0hqaXFuem6xoV5xYm5xaV66XnJ+7iZGYJRtO/Zz8w7Gea8+6h1i
+        ZOJgPMQowcGsJMKbcz4/VYg3JbGyKrUoP76oNCe1+BCjKdB9E5mlRJPzgXGeVxJvaGZgamhi
+        ZmlgamlmrCTO61nQkSgkkJ5YkpqdmlqQWgTTx8TBKdXAtPKcUm3ppeyeL72xRsYvNk/3En21
+        LHPn8TL26X098TJOe9cU61xuez7HyCu9UyflxiLbTSUt8prPHrJUH/L55fHuY4HttMd1//aX
+        ZG+RLfOK4os0fZ32TFPhpdERbsmzB6QdHplYewl/2cg7w1O/K+mxd8TyqvqpCxwXXDhS+MLk
+        1dHSlU2fQ9dkhKqv7gwrX/dK+kdHQVFIyro74f+WK7Xvr9vuqrfx+LoHE2Zkqn1bXOIadzt5
+        1tInLLmLdDeuz3YRVW+ftvbbt5etp6fMjeX8flhccZVESu2SrvRDG7keV9wuj5msF7j7yUz3
+        34vZBIWP3PR/NWmm78wFckk98y0WmD62F64PnSz1nyUgVomlOCPRUIu5qDgRAG1C6e07AwAA
+X-CMS-MailID: 20231206084652eucas1p1fd6025710032f3a4a64b05dab67a2a17
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231206084652eucas1p1fd6025710032f3a4a64b05dab67a2a17
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231206084652eucas1p1fd6025710032f3a4a64b05dab67a2a17
+References: <CGME20231206084652eucas1p1fd6025710032f3a4a64b05dab67a2a17@eucas1p1.samsung.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 09:15, Yunfei Dong wrote:
-> The capture buffer has two planes for format MM21, but user space only
-> allocate secure memory for plane[0], and the size is Y data + uv data.
-> The driver need to support one plane decoder for svp mode.
 
-For a future v4: note the typo in the Subject line: medkatek -> mediatek.
-It's present in patches 16-20.
+Fix riscv build break after commit c8be9e66ca1e ("sysctl: treewide:
+constify the ctl_table argument of handlers").
 
-Regards,
+Fixes: c8be9e66ca1e ("sysctl: treewide: constify the ctl_table argument of handlers")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/perf/riscv_pmu_sbi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	Hans
-
-> 
-> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
-> ---
->  .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  |  7 ++++-
->  .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 26 ++++++++++---------
->  .../decoder/vdec/vdec_h264_req_common.c       | 11 +++-----
->  .../mediatek/vcodec/decoder/vdec_drv_if.c     |  4 +--
->  4 files changed, 26 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-> index 604fdc8ee3ce..ab922e8d2d37 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-> @@ -653,7 +653,12 @@ static int vidioc_vdec_g_fmt(struct file *file, void *priv,
->  		 * So we just return picinfo yet, and update picinfo in
->  		 * stop_streaming hook function
->  		 */
-> -		q_data->sizeimage[0] = ctx->picinfo.fb_sz[0];
-> +
-> +		if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 1)
-> +			q_data->sizeimage[0] = ctx->picinfo.fb_sz[0] + ctx->picinfo.fb_sz[1];
-> +		else
-> +			q_data->sizeimage[0] = ctx->picinfo.fb_sz[0];
-> +
->  		q_data->sizeimage[1] = ctx->picinfo.fb_sz[1];
->  		q_data->bytesperline[0] = ctx->last_decoded_picinfo.buf_w;
->  		q_data->bytesperline[1] = ctx->last_decoded_picinfo.buf_w;
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
-> index cc42c942eb8a..707ed57a412e 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.c
-> @@ -285,14 +285,14 @@ static struct vdec_fb *vdec_get_cap_buffer(struct mtk_vcodec_dec_ctx *ctx)
->  	framebuf = container_of(vb2_v4l2, struct mtk_video_dec_buf, m2m_buf.vb);
->  
->  	pfb = &framebuf->frame_buffer;
-> -	pfb->base_y.va = vb2_plane_vaddr(dst_buf, 0);
-> +	if (!ctx->is_secure_playback)
-> +		pfb->base_y.va = vb2_plane_vaddr(dst_buf, 0);
->  	pfb->base_y.dma_addr = vb2_dma_contig_plane_dma_addr(dst_buf, 0);
->  	pfb->base_y.size = ctx->q_data[MTK_Q_DATA_DST].sizeimage[0];
->  
-> -	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2) {
-> +	if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2 && !ctx->is_secure_playback) {
->  		pfb->base_c.va = vb2_plane_vaddr(dst_buf, 1);
-> -		pfb->base_c.dma_addr =
-> -			vb2_dma_contig_plane_dma_addr(dst_buf, 1);
-> +		pfb->base_c.dma_addr = vb2_dma_contig_plane_dma_addr(dst_buf, 1);
->  		pfb->base_c.size = ctx->q_data[MTK_Q_DATA_DST].sizeimage[1];
->  	}
->  	mtk_v4l2_vdec_dbg(1, ctx,
-> @@ -339,16 +339,18 @@ static void mtk_vdec_worker(struct work_struct *work)
->  	mtk_v4l2_vdec_dbg(3, ctx, "[%d] (%d) id=%d, vb=%p", ctx->id,
->  			  vb2_src->vb2_queue->type, vb2_src->index, vb2_src);
->  
-> -	bs_src->va = vb2_plane_vaddr(vb2_src, 0);
-> -	bs_src->dma_addr = vb2_dma_contig_plane_dma_addr(vb2_src, 0);
-> -	bs_src->size = (size_t)vb2_src->planes[0].bytesused;
-> -	if (!bs_src->va) {
-> -		v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
-> -		mtk_v4l2_vdec_err(ctx, "[%d] id=%d source buffer is NULL", ctx->id,
-> -				  vb2_src->index);
-> -		return;
-> +	if (!ctx->is_secure_playback) {
-> +		bs_src->va = vb2_plane_vaddr(vb2_src, 0);
-> +		if (!bs_src->va) {
-> +			v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
-> +			mtk_v4l2_vdec_err(ctx, "[%d] id=%d source buffer is NULL", ctx->id,
-> +					  vb2_src->index);
-> +			return;
-> +		}
->  	}
->  
-> +	bs_src->dma_addr = vb2_dma_contig_plane_dma_addr(vb2_src, 0);
-> +	bs_src->size = (size_t)vb2_src->planes[0].bytesused;
->  	mtk_v4l2_vdec_dbg(3, ctx, "[%d] Bitstream VA=%p DMA=%pad Size=%zx vb=%p",
->  			  ctx->id, bs_src->va, &bs_src->dma_addr, bs_src->size, vb2_src);
->  	/* Apply request controls. */
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.c
-> index 5ca20d75dc8e..2a57e689ec07 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_common.c
-> @@ -79,15 +79,12 @@ void mtk_vdec_h264_fill_dpb_info(struct mtk_vcodec_dec_ctx *ctx,
->  		vb2_v4l2 = container_of(vb, struct vb2_v4l2_buffer, vb2_buf);
->  		h264_dpb_info[index].field = vb2_v4l2->field;
->  
-> -		h264_dpb_info[index].y_dma_addr =
-> -			vb2_dma_contig_plane_dma_addr(vb, 0);
-> +		h264_dpb_info[index].y_dma_addr = vb2_dma_contig_plane_dma_addr(vb, 0);
->  		if (ctx->q_data[MTK_Q_DATA_DST].fmt->num_planes == 2)
-> +			h264_dpb_info[index].c_dma_addr = vb2_dma_contig_plane_dma_addr(vb, 1);
-> +		else if (!ctx->is_secure_playback)
->  			h264_dpb_info[index].c_dma_addr =
-> -				vb2_dma_contig_plane_dma_addr(vb, 1);
-> -		else
-> -			h264_dpb_info[index].c_dma_addr =
-> -				h264_dpb_info[index].y_dma_addr +
-> -				ctx->picinfo.fb_sz[0];
-> +				h264_dpb_info[index].y_dma_addr + ctx->picinfo.fb_sz[0];
->  	}
->  }
->  
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
-> index d0b459b1603f..fb3e4f75ed93 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec_drv_if.c
-> @@ -73,14 +73,14 @@ int vdec_if_decode(struct mtk_vcodec_dec_ctx *ctx, struct mtk_vcodec_mem *bs,
->  {
->  	int ret = 0;
->  
-> -	if (bs) {
-> +	if (bs && !ctx->is_secure_playback) {
->  		if ((bs->dma_addr & 63) != 0) {
->  			mtk_v4l2_vdec_err(ctx, "bs dma_addr should 64 byte align");
->  			return -EINVAL;
->  		}
->  	}
->  
-> -	if (fb) {
-> +	if (fb && !ctx->is_secure_playback) {
->  		if (((fb->base_y.dma_addr & 511) != 0) ||
->  		    ((fb->base_c.dma_addr & 511) != 0)) {
->  			mtk_v4l2_vdec_err(ctx, "frame buffer dma_addr should 512 byte align");
+diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+index 16acd4dcdb96..97e345f7d25d 100644
+--- a/drivers/perf/riscv_pmu_sbi.c
++++ b/drivers/perf/riscv_pmu_sbi.c
+@@ -986,7 +986,7 @@ static void riscv_pmu_update_counter_access(void *info)
+ 		csr_write(CSR_SCOUNTEREN, 0x2);
+ }
+ 
+-static int riscv_pmu_proc_user_access_handler(struct ctl_table *table,
++static int riscv_pmu_proc_user_access_handler(const struct ctl_table *table,
+ 					      int write, void *buffer,
+ 					      size_t *lenp, loff_t *ppos)
+ {
+-- 
+2.34.1
 
