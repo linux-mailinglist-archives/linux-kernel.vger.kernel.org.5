@@ -2,101 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C87806ACD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7AA806AD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 10:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377268AbjLFJgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 04:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40286 "EHLO
+        id S1377206AbjLFJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 04:37:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377344AbjLFJfz (ORCPT
+        with ESMTP id S1377117AbjLFJhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 04:35:55 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171ED9C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 01:36:01 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c0a074e71so32177845e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 01:36:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701855359; x=1702460159; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V085j9b1+XGSVNMOHyQlbtD0/ESoGyPOPlyN1ExIKto=;
-        b=WlX0byvmYb01vGpV+6wNwO233nwn5CkRViNi6GhDt8qdOialTe+ink6sAPDXZXy68w
-         pwCx026IuldVzFO+on4Sxpo0M7NBxQ1afQLoPQrFRioha/tttkXC6MzF+ewi3vk6W8f9
-         HwAyZAYTVjsDoxrY4RcJcaPKyaNZP6fmlSbSu3hUv+mT3SkYIfo1mFSQFFGU+0A9LdFL
-         /jvJjiNWaUQadpt5hVdB+fTpPlDqLc0SLETK/pXTA8jonGl6EwmyTXyMgIaksAQ9b9+r
-         MJfqJBMZHALxYqv1B6ISrWbe69vlwtl8XYp1QTFQV6PIbZ0YkKvoWAXOFGrFzkQdp96u
-         aPCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701855359; x=1702460159;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V085j9b1+XGSVNMOHyQlbtD0/ESoGyPOPlyN1ExIKto=;
-        b=J24VddhMVZJZTBMdw0RDcCAzrkoo9gnlNbkV+tEcPplFHIm8Bw2I47k+kBtp5TggCo
-         75D18fRayap29OG/ZAXKYQ2W8lV2TKL8IJksxH0/F4YBfmP+c5idS9FlWszlvBRfu1nV
-         Xa4vSYNmtBvPptvCgZA5cewv36vbhbqT2kIfCOSmYAfa3IHCOVNJAnhBtxC3Zk4Liypm
-         uJXtLNDpFQxj+eiDtb+20xK6RqwHIaLWDYyxK7sOps+cXnD9vd6vzn+g3Di3nSXcvRxN
-         ZRPzkzk+fE5MmDNmuHyPOBrbeeVSbBcHDtYIlpCu+wND/Gtgz7HLpp6fSFyp66Ehh4Bd
-         U6Qw==
-X-Gm-Message-State: AOJu0Yxeb0eW+lQt7yBz+dOdGbms6GfHcw2dtvz1FHXDO/5BjwtLiJeq
-        99AlAbaHeVP3MzeIFjtclq0fag==
-X-Google-Smtp-Source: AGHT+IGsQVqjgraYuEaAzvkja+x5HQZdl5VNixjgL2N4QDKNZjYPEClOfVdf+H10b2QMCazqQTunJw==
-X-Received: by 2002:a7b:cb95:0:b0:40c:1855:1c27 with SMTP id m21-20020a7bcb95000000b0040c18551c27mr384050wmi.103.1701855359427;
-        Wed, 06 Dec 2023 01:35:59 -0800 (PST)
-Received: from ?IPV6:2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0? ([2a05:6e02:1041:c10:c49e:e1a5:3210:b8c0])
-        by smtp.googlemail.com with ESMTPSA id o15-20020a05600c510f00b004064cd71aa8sm20095541wms.34.2023.12.06.01.35.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Dec 2023 01:35:59 -0800 (PST)
-Message-ID: <581d7e03-7415-49f7-b348-f4f6dc1c336b@linaro.org>
-Date:   Wed, 6 Dec 2023 10:35:58 +0100
+        Wed, 6 Dec 2023 04:37:02 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8E8BA;
+        Wed,  6 Dec 2023 01:37:08 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0548921A3B;
+        Wed,  6 Dec 2023 09:37:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1701855426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0RhjCKHQblZR+lvAtLCjbDfVvYyouCwUYRk6G4t7QCw=;
+        b=YMsDkGCglFuNtIk6OYP5Nkgu1unaIh0mmQwUe9gAm7q9dbPWDaLphkFivI3balS/8oWwy0
+        0ixjx2/jtpqQUWEGJCBloCqp6Jj2epxuby50+D6Rj2wISFdwidDK6wjTUo4MfDppOKIayh
+        gQV1UDyxh0U+cp7RYM6V5dsR/Pui+h0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1701855426;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0RhjCKHQblZR+lvAtLCjbDfVvYyouCwUYRk6G4t7QCw=;
+        b=jc5yeaY2Sy9PUvC/9LM2FGBscljcQxAmngzs8qK/s5JX3Lk9DF/7HxEydGv0YAptOELLhw
+        tQZ0qNFCtG/G/FDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CA3E313408;
+        Wed,  6 Dec 2023 09:37:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id OgMBMcFAcGXVRgAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Wed, 06 Dec 2023 09:37:05 +0000
+Message-ID: <15e22e38-6eee-3a55-df27-51b7bc0c5976@suse.cz>
+Date:   Wed, 6 Dec 2023 10:37:05 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clocksource: cadence-ttc: fix some kernel-doc warnings
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 09/21] mm/slab: remove mm/slab.c and slab_def.h
 Content-Language: en-US
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Michal Simek <michal.simek@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-arm-kernel@lists.infradead.org
-References: <20231205230448.772-1-rdunlap@infradead.org>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20231205230448.772-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
+ <20231120-slab-remove-slab-v2-9-9c9c70177183@suse.cz>
+ <ZXA+Ur55OR1EU/5L@localhost.localdomain>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <ZXA+Ur55OR1EU/5L@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [0.20 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[23];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[chromium.org:email,suse.cz:email,selenic.com:email];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[google.com,linux.com,kernel.org,lge.com,linux-foundation.org,linux.dev,gmail.com,arm.com,cmpxchg.org,chromium.org,kvack.org,vger.kernel.org,googlegroups.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 0.20
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2023 00:04, Randy Dunlap wrote:
-> Fix some function kernel-doc warnings to placate scripts/kernel-doc.
+On 12/6/23 10:31, Hyeonggon Yoo wrote:
+> On Mon, Nov 20, 2023 at 07:34:20PM +0100, Vlastimil Babka wrote:
+>> Remove the SLAB implementation. Update CREDITS.
+>> Also update and properly sort the SLOB entry there.
+>> 
+>> RIP SLAB allocator (1996 - 2024)
+>> 
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
+>>  CREDITS                  |   12 +-
+>>  include/linux/slab_def.h |  124 --
+>>  mm/slab.c                | 4005 ----------------------------------------------
+>>  3 files changed, 8 insertions(+), 4133 deletions(-)
 > 
-> timer-cadence-ttc.c:79: warning: Function parameter or member 'clk_rate_change_nb' not described in 'ttc_timer'
-> timer-cadence-ttc.c:158: warning: Function parameter or member 'cs' not described in '__ttc_clocksource_read'
-> timer-cadence-ttc.c:194: warning: expecting prototype for ttc_set_{shutdown|oneshot|periodic}(). Prototype was for ttc_shutdown() instead
-> timer-cadence-ttc.c:196: warning: No description found for return value of 'ttc_shutdown'
-> timer-cadence-ttc.c:212: warning: No description found for return value of 'ttc_set_periodic'
+> Acked-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Michal Simek <michal.simek@amd.com>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: linux-arm-kernel@lists.infradead.org
-> ---
+>> diff --git a/CREDITS b/CREDITS
+>> index f33a33fd2371..943a73e96149 100644
+>> --- a/CREDITS
+>> +++ b/CREDITS
+>> @@ -9,10 +9,6 @@
+>>  			Linus
+>>  ----------
+>>  
+>> -N: Matt Mackal
+>> -E: mpm@selenic.com
+>> -D: SLOB slab allocator
+> 
+> by the way I just realized that commit 16e943bf8db
+> ("MAINTAINERS: SLAB maintainer update") incorrectly put her lastname
+> (Mackall is correct), maybe update that too?
 
-Applied, thanks
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Right, thanks a lot for noticing, will fix.
 
