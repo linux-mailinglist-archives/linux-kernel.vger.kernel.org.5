@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5021C807C3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9925D807C38
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Dec 2023 00:18:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379675AbjLFXRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 18:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        id S1379696AbjLFXRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 18:17:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379617AbjLFXRa (ORCPT
+        with ESMTP id S230304AbjLFXRb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 18:17:30 -0500
+        Wed, 6 Dec 2023 18:17:31 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D218BD69
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 15:17:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3424CC433CB;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5786F181
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 15:17:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95DC0C433CD;
         Wed,  6 Dec 2023 23:17:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1701904656;
-        bh=8uz7AK/6yHawqaJPcw4bg1vliKDTq/KL8xQPTh+RBhQ=;
+        bh=6JfBdb+tpPHhDepnCfkjAjsjvnC4Fs4rfNHqqamKfJI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ldO8y0aaCAI30pGHZ+jGi3ri+gv6J7mHp87soVwGOCnw7hGcQgtXzAK6BzELZoYXT
-         EkEFX2BuYSZfAhST/kM4KnpgfrUHGV4vAsB7+Ouh4jfVeliyoFM5Qhy/H7rOju9C5n
-         fW2tyyccaFPGkmXsN/rlupyXFxMt0EKFplWPVCQy/CmqxlalQSkr7GtccdcDSbvVNR
-         3wy2y6YX/LW2rtq8M5iliwsM/Fx8Pg4+Ge8xxfSFebR//VvU94kwwBFAKUZaoVgj79
-         MUX+xlMD1xRnCl2NeZL2/zAlrXEnZasnuLWe3loDsHzSUMGaKwJFLs9qgItr2iDKaP
-         ESqXecPm63nDg==
+        b=HtlXVGsXz2TXYLBoQPOAOPi787gCgqWL0dRemgzUi9stC6047e0TTgEULxWGYZ7f0
+         iaiqNBG6FrMll4RjwFeMNXFdUTGAnToZWWVgrPXsF9yxR4n2Sp9sOAGD+aFo9hrHHc
+         cu+HbZQvyeOA0YfIZDgHO1kqdXGKTucbZW4CA5X2qKNvC5sEM/lYeJR5rzIuB9l4Aq
+         PiZkf9wm+IHPtUxkjlqgzLFiqykvibjO2aRGqavaMr5PmTnKR/p4BqE09aEXUj04DC
+         WvdjFe05QBGozxmRaGgdFq0Kucz0ciJD6x7X3Q6QVMerITsNgRlpiJ+6yLDkmHwmWK
+         i6HfCK2B3bwvg==
 From:   Stephen Boyd <sboyd@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Fei Shao <fshao@chromium.org>, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 5/8] spmi: mtk-pmif: Reorder driver remove sequence
-Date:   Wed,  6 Dec 2023 15:17:28 -0800
-Message-ID: <20231206231733.4031901-6-sboyd@kernel.org>
+        patches@lists.linux.dev
+Subject: [PATCH 6/8] spmi: hisi-spmi-controller: Use devm_spmi_controller_add()
+Date:   Wed,  6 Dec 2023 15:17:29 -0800
+Message-ID: <20231206231733.4031901-7-sboyd@kernel.org>
 X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 In-Reply-To: <20231206231733.4031901-1-sboyd@kernel.org>
 References: <20231206231733.4031901-1-sboyd@kernel.org>
@@ -53,33 +51,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Fei Shao <fshao@chromium.org>
 
-This driver enables clocks and then adds SPMI controller in probing, so
-we expect the reversed sequence in removal.
-Fix the order in the remove callback.
+Convert to the device-managed version of spmi_controller_add() and
+delete the unnecessary driver remove callback.
 
 Signed-off-by: Fei Shao <fshao@chromium.org>
-Link: https://lore.kernel.org/r/20230824104101.4083400-4-fshao@chromium.org
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Link: https://lore.kernel.org/r/20230824104101.4083400-5-fshao@chromium.org
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
- drivers/spmi/spmi-mtk-pmif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/spmi/hisi-spmi-controller.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/drivers/spmi/spmi-mtk-pmif.c b/drivers/spmi/spmi-mtk-pmif.c
-index 6ebc6901490a..cc660da6a037 100644
---- a/drivers/spmi/spmi-mtk-pmif.c
-+++ b/drivers/spmi/spmi-mtk-pmif.c
-@@ -515,9 +515,9 @@ static void mtk_spmi_remove(struct platform_device *pdev)
- 	struct spmi_controller *ctrl = platform_get_drvdata(pdev);
- 	struct pmif *arb = spmi_controller_get_drvdata(ctrl);
+diff --git a/drivers/spmi/hisi-spmi-controller.c b/drivers/spmi/hisi-spmi-controller.c
+index a5525902656a..674a350cc676 100644
+--- a/drivers/spmi/hisi-spmi-controller.c
++++ b/drivers/spmi/hisi-spmi-controller.c
+@@ -308,7 +308,7 @@ static int spmi_controller_probe(struct platform_device *pdev)
+ 	ctrl->read_cmd = spmi_read_cmd;
+ 	ctrl->write_cmd = spmi_write_cmd;
  
-+	spmi_controller_remove(ctrl);
- 	clk_bulk_disable_unprepare(arb->nclks, arb->clks);
- 	clk_bulk_put(arb->nclks, arb->clks);
--	spmi_controller_remove(ctrl);
+-	ret = spmi_controller_add(ctrl);
++	ret = devm_spmi_controller_add(&pdev->dev, ctrl);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "spmi_controller_add failed with error %d!\n", ret);
+ 		return ret;
+@@ -317,13 +317,6 @@ static int spmi_controller_probe(struct platform_device *pdev)
+ 	return 0;
  }
  
- static const struct of_device_id mtk_spmi_match_table[] = {
+-static void spmi_del_controller(struct platform_device *pdev)
+-{
+-	struct spmi_controller *ctrl = platform_get_drvdata(pdev);
+-
+-	spmi_controller_remove(ctrl);
+-}
+-
+ static const struct of_device_id spmi_controller_match_table[] = {
+ 	{
+ 		.compatible = "hisilicon,kirin970-spmi-controller",
+@@ -334,7 +327,6 @@ MODULE_DEVICE_TABLE(of, spmi_controller_match_table);
+ 
+ static struct platform_driver spmi_controller_driver = {
+ 	.probe		= spmi_controller_probe,
+-	.remove_new	= spmi_del_controller,
+ 	.driver		= {
+ 		.name	= "hisi_spmi_controller",
+ 		.of_match_table = spmi_controller_match_table,
 -- 
 https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
 https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
