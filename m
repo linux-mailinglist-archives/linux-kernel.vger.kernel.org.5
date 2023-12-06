@@ -2,61 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8457C8075EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5590A8075EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:00:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbjLFQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:59:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
+        id S1442602AbjLFQ7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:59:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjLFQ7t (ORCPT
+        with ESMTP id S229470AbjLFQ7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:59:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F13C9
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:59:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62A39C433C8;
+        Wed, 6 Dec 2023 11:59:50 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFE1D3;
+        Wed,  6 Dec 2023 08:59:56 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 688321FCEC;
         Wed,  6 Dec 2023 16:59:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701881995;
-        bh=xdGLbLZlKz6hqDzxxH4MqX0sG3ItG6KAFGtCvH4gnsg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=MJOLyo52HSa1ezkiZilGDaJk8L3Ol+4TVWOFf2jN/7JZLdwsFDlmL2DvKVIonkRdi
-         3fh5GT7VbTejQ/xnXDT4CHQXfs6JwDdajAVQGRpWv+BrPWR7T16yt2bI4sh8QmVU/U
-         NEO/F5c0EVGAgGrAcr3sMeLNty1noQR5qil2W0V/kYk4ci4M97mv8ecRo/e3l1V5zV
-         qQ3TqEMfeJaGNX2XEBnCPKj/J36uThgLrbIM6SOC3ilUXEAdNQ0LdOvybK/ykg4Dw2
-         rC8p+XzXdMWcPRwjqqjvFnFbWkbQLhfKpf7lnFWNAdDNZK7wI9Ib3eWTm5C1dlEzeU
-         1tWiAKmXvvduw==
-Date:   Wed, 6 Dec 2023 10:59:53 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     imx@lists.linux.dev, Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:PCI DRIVER FOR IMX6" <linux-pci@vger.kernel.org>,
-        "moderated list:PCI DRIVER FOR IMX6" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/9] PCI: imx6: Using "linux,pci-domain" as slot ID
-Message-ID: <20231206165953.GA717921@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXCmSOwTWR6AVpGB@lizhi-Precision-Tower-5810>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 32AAA136CD;
+        Wed,  6 Dec 2023 16:59:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id lGvfCouocGUfbgAAD6G6ig
+        (envelope-from <tiwai@suse.de>); Wed, 06 Dec 2023 16:59:55 +0000
+Date:   Wed, 06 Dec 2023 17:59:54 +0100
+Message-ID: <871qbz2rn9.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Ivan Orlov <ivan.orlov0322@gmail.com>
+Cc:     tiwai@suse.com, perex@perex.cz, linux-sound@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ALSA: pcmtest: stop timer in the hw_free callback
+In-Reply-To: <20231206151046.25773-1-ivan.orlov0322@gmail.com>
+References: <20231206151046.25773-1-ivan.orlov0322@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of tiwai@suse.de) smtp.mailfrom=tiwai@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.23 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCPT_COUNT_FIVE(0.00)[5];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_SPAM_SHORT(2.47)[0.824];
+         NEURAL_SPAM_LONG(3.47)[0.992];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 15.23
+X-Rspamd-Queue-Id: 688321FCEC
+X-Spam: Yes
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,72 +86,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 11:50:16AM -0500, Frank Li wrote:
-> On Wed, Dec 06, 2023 at 10:36:56AM -0600, Bjorn Helgaas wrote:
-> > In subject, maybe you mean "Use 'linux,pci-domain' as slot ID"?
-> > "Using" is the wrong verb form here.
-> > 
-> > On Wed, Dec 06, 2023 at 10:58:58AM -0500, Frank Li wrote:
-> > > Avoid use get slot id by compared with register physical address. If there
-> > > are more than 2 slots, compared logic will become complex.
-> > 
-> > But this doesn't say anything about "linux,pci-domain", and I don't
-> > see anything about a register physical address in the patch.
-> > 
-> > Maybe this commit log was meant for a different patch?  I'm confused.
-> > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  drivers/pci/controller/dwc/pci-imx6.c | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> > > index 62d77fabd82a..239ef439ba70 100644
-> > > --- a/drivers/pci/controller/dwc/pci-imx6.c
-> > > +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> > > @@ -33,6 +33,7 @@
-> > >  #include <linux/pm_domain.h>
-> > >  #include <linux/pm_runtime.h>
-> > >  
-> > > +#include "../../pci.h"
-> > >  #include "pcie-designware.h"
-> > >  
-> > >  #define IMX8MQ_GPR_PCIE_REF_USE_PAD		BIT(9)
-> > > @@ -1333,6 +1334,11 @@ static int imx6_pcie_probe(struct platform_device *pdev)
-> > >  					     "Failed to get PCIEPHY reset control\n");
-> > >  	}
-> > >  
-> > > +	/* Using linux,pci-domain as PCI slot id */
-> > > +	imx6_pcie->controller_id = of_get_pci_domain_nr(node);
-> > > +	if (imx6_pcie->controller_id)
-> > > +		imx6_pcie->controller_id = 0;
-> > 
-> > I don't understand what this is doing.  It looks the same as just:
+On Wed, 06 Dec 2023 16:10:46 +0100,
+Ivan Orlov wrote:
 > 
-> Good capture. It should be 
-> if (imx6_pcie->controller_id < 0)
-> 	imx6_pcie->controller_id = 0;
-> 
-> for only one PCI controller case. I just tested first one slot before send
-> patch, so not met problem.
-> 
-> Previously, we use below logic
-> 	if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> 		imx6_pcie->controller_id = 1;
-> 
-> It is not good to depend on register's base address. If there are 3
-> controllers, check logic will becomoe ugly.
+> Stop timer in the 'hw_free' callback instead of the 'close' callback
+> since we want the timer to be stopped before the DMA buffer is released.
+> Otherwise, it could trigger a kernel panic in some circumstances, for
+> instance when the DMA buffer is already released but the timer callback
+> is still running.
 
-Makes sense.  If the previous code depended on the base address, this
-patch would make more sense if it contained both the addition of the
-of_get_pci_domain_nr() call and the removal of the base address code.
+You can't call timer_shutdown_sync() at hw_free.  The PCM stream is
+still there and you can re-setup via hw_params without closing.  But,
+after timer_shutdown_sync(), the timer instance must not be used any
+longer.
 
-> > Maybe this is a typo?  As written, it doesn't look like there's any
-> > point in calling of_get_pci_domain_nr().
-> > 
-> > >  	switch (imx6_pcie->drvdata->variant) {
-> > >  	case IMX7D:
-> > >  		if (dbi_base->start == IMX8MQ_PCIE2_BASE_ADDR)
-> > > -- 
-> > > 2.34.1
-> > > 
+A more proper way would be to call timer_delete() (no sync) at trigger
+STOP, then call timer_delete_sync() at sync_stop op in addition.  This
+assures the immediate stop and the sync before changing to another PCM
+state.
+
+timer_shutdown_sync() can be kept at the close op to be sure.
+
+
+thanks,
+
+Takashi
+
+> 
+> Signed-off-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+> ---
+> V1 -> V2:
+> - Remove useless NULLing of v_iter->substream. It will be released in
+> 'close' callback.
+> 
+>  sound/drivers/pcmtest.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/drivers/pcmtest.c b/sound/drivers/pcmtest.c
+> index b59b78a09224..8a78fa56106f 100644
+> --- a/sound/drivers/pcmtest.c
+> +++ b/sound/drivers/pcmtest.c
+> @@ -396,8 +396,6 @@ static int snd_pcmtst_pcm_close(struct snd_pcm_substream *substream)
+>  {
+>  	struct pcmtst_buf_iter *v_iter = substream->runtime->private_data;
+>  
+> -	timer_shutdown_sync(&v_iter->timer_instance);
+> -	v_iter->substream = NULL;
+>  	playback_capture_test = !v_iter->is_buf_corrupted;
+>  	kfree(v_iter);
+>  	return 0;
+> @@ -499,6 +497,10 @@ static int snd_pcmtst_pcm_hw_params(struct snd_pcm_substream *substream,
+>  
+>  static int snd_pcmtst_pcm_hw_free(struct snd_pcm_substream *substream)
+>  {
+> +	struct pcmtst_buf_iter *v_iter = substream->runtime->private_data;
+> +
+> +	timer_shutdown_sync(&v_iter->timer_instance);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.34.1
+> 
