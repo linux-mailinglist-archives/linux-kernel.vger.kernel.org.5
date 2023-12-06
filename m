@@ -2,149 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86199806EDF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B6F806EE9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 12:50:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377775AbjLFLtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 06:49:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S1377779AbjLFLuP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Dec 2023 06:50:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377634AbjLFLti (ORCPT
+        with ESMTP id S1377762AbjLFLuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 06:49:38 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on20619.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eb2::619])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3668F;
-        Wed,  6 Dec 2023 03:49:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fWDLwzeRSeuhyI66R6ohDQdhFg2q+kIvTCsaZIHAum0fN2qi6vQ58SQN8aAjw3Da0TCgCuHR7hFdiqYqPW+EjNXpNFdSBY+/XWg7CKNzgz8Tid/E3gF6jpn4+PHMYHc/t254KHv7CFISCh4C+NvaqJ8NuYix+PWZyxnHw5/8GcLRp028lMWrYWrvd8IbVTKxhdT7M+dw+ZMsNIfjT9+Mw2noHhC1w5MzI43HQfosodHfynf0piaCGp9R3XgrSYOmE9dwsrxSiJ1DAYoItDtT4iOfrRNb60zo383p53dsTy7nvxRnJTh/vqZnkahJgTX+LPLk/Ls2bFPiAOY5xXvhAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TthpMvKGWktYcfjH4mr5Jbm3HDz+hnAjUtKCGMp19bs=;
- b=Y37FWjtz/I7u+yW2bCi8aqjQKUNNSRTy5/zD+nNmHYse9EtdZ8ZY2EPCky+dZiGn8bTalaMI37y+PYnzKn59ct0z8AVKCoyYwf6JnWZbUjffqnTLehNGWTsIA/tH68cDH8nQWh8PQcNw0hZdxCf9AbsRVT1gqaGkmcukHCVBnvwBXVMLJS9GvJeCDmBLw5EnVeTtXzIfFWXs532NHDNijU2ihmirrq6tzgsRUQBrcJ/orbo3AinRglp89zD0dEjP8al+rkXww8SgOxV+Y11lSCzY9t7jSSmoHpQegCXivlLmGAvNAXxuPBJf0v7qzzLJh8SROiA69eLSASNZ1jwVRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TthpMvKGWktYcfjH4mr5Jbm3HDz+hnAjUtKCGMp19bs=;
- b=go4qKEWvlOJj234xlG0F4AJYu7DJGtrPlvl346LFFFZhZaML9W9hM2aWIpXwkUquqjmBNsopkD05YythexqadcigxwSN2i5AQCmb/rywugef7w6A2lheEGv6CH6l3ObsXx+vtuqufVwBZJ4D2mGNP+u/4iPtFWQGL/1SXC/9SHJpbrgcRo+H+ykZfbnUkRwodgm5iuR5JOi3XoZRpMSg0/FhHErUzKmjmQpcYFE/8PnNqSRrtbJCl/Sbs2L8ZO0EnRIfuDbTaBKRzt1DAInGscuzKdrB5zOTE2DCSDJl3MOqp0Mfuc9ldWmjmFRmZ10DocjldEN+sGBZ28Uw1Stm5g==
-Received: from CYZPR14CA0006.namprd14.prod.outlook.com (2603:10b6:930:8f::21)
- by SJ0PR12MB6781.namprd12.prod.outlook.com (2603:10b6:a03:44b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Wed, 6 Dec
- 2023 11:49:39 +0000
-Received: from CY4PEPF0000FCC1.namprd03.prod.outlook.com
- (2603:10b6:930:8f:cafe::88) by CYZPR14CA0006.outlook.office365.com
- (2603:10b6:930:8f::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34 via Frontend
- Transport; Wed, 6 Dec 2023 11:49:39 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CY4PEPF0000FCC1.mail.protection.outlook.com (10.167.242.103) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.26 via Frontend Transport; Wed, 6 Dec 2023 11:49:39 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 6 Dec 2023
- 03:49:29 -0800
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Wed, 6 Dec 2023 03:49:29 -0800
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Wed, 6 Dec 2023 03:49:29 -0800
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.4 00/90] 5.4.263-rc3 review
-In-Reply-To: <20231205183241.636315882@linuxfoundation.org>
-References: <20231205183241.636315882@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Wed, 6 Dec 2023 06:50:11 -0500
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ABAA1BD;
+        Wed,  6 Dec 2023 03:50:15 -0800 (PST)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id AAD0924E2F7;
+        Wed,  6 Dec 2023 19:50:12 +0800 (CST)
+Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 6 Dec
+ 2023 19:50:12 +0800
+Received: from jsia-virtual-machine.localdomain (175.136.135.142) by
+ EXMBX066.cuchost.com (172.16.6.66) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.42; Wed, 6 Dec 2023 19:50:05 +0800
+From:   Sia Jee Heng <jeeheng.sia@starfivetech.com>
+To:     <kernel@esmil.dk>, <conor@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <paul.walmsley@sifive.com>,
+        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <p.zabel@pengutronix.de>, <emil.renner.berthing@canonical.com>,
+        <hal.feng@starfivetech.com>, <xingyu.wu@starfivetech.com>
+CC:     <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <jeeheng.sia@starfivetech.com>, <leyfoon.tan@starfivetech.com>
+Subject: [PATCH v1 00/16] Basic clock and reset support for StarFive JH8100 RISC-V SoC
+Date:   Wed, 6 Dec 2023 19:49:44 +0800
+Message-ID: <20231206115000.295825-1-jeeheng.sia@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Message-ID: <7b75fa54-0a77-45d8-945e-6769b6228091@drhqmail201.nvidia.com>
-Date:   Wed, 6 Dec 2023 03:49:29 -0800
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCC1:EE_|SJ0PR12MB6781:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7be5a9e5-9904-4ddd-106e-08dbf6516dcc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r20Ff48+w47NQnt0bOGqUPgx6eqJXSavd2cHJTwdU0gNbT6bHtd31odR1mo49roe9H49dF8fhrriEulIzqPKJT1WCRJl0eQFpcSyAZrMSpKc4Dd4rqcZMN6DxpFFRf1f4Oi265b3uUGUcL+26ocZcpPnX2tB7Q++Z8+n+Oq2nJCZxdBsEVGyViNBdFREyhEIDdoiZmFYda6/zj+ax9BHGRY25XnWyXAvzbUpK6Ng3NpiLe/3NTetFq2dA5fVcla5JHGfGroPbHBup3vD6IqMLT2nX4LZCJA308wEZIS5iFx1bDIPYZpzROOT2zN7Cp0NiuQ8qeoi8gjwq8ikcv2HPMCrz/c2nx/jzcT9JilP8J4gBsiOhga0RoG3T3CaFwQn0DgEG4yRoTZTW7vlj7PCg5pkmYUARMzzpDvgx9/SsXEbuxYVpgdYHJ8+M4GfcthkyfyAqz9ryGmHfPFQgmdMNIjHsYCjxtyrOWd/9sFlh968VtpOBo0uiQ/M7FfYbbv3QTMiwTB2V5NctrK1X4Vxr+KhbroTPGYAZuATpFUmTJRVrkiBWDLVNOazlqhC2KMSwurQb5YcMiZ8EI+u1Rje/7LWAuA/V5B4SaxHl4mOB8LoxXnQ4C/7X0JRkfYrHj0tiXxn37RRQauB74zvuvWPI5Jx33IML/wWy4/iz/P8NgvZsxO/ZEcdtjT4D2uVffpeoOwsyAEA6DWb3Pftr31SfIVxrzPafzqm86vsIt+Ot4YoUaFv39Oo8lauTxN7p+kdRHaIJCjCVO4TcWK0OHJyLFUl8yRJCHJGMH4oqWGWOMg=
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(376002)(136003)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(82310400011)(36840700001)(40470700004)(46966006)(41300700001)(31696002)(7416002)(40460700003)(5660300002)(2906002)(86362001)(40480700001)(82740400003)(26005)(426003)(336012)(966005)(478600001)(47076005)(356005)(7636003)(36860700001)(31686004)(8676002)(4326008)(8936002)(6916009)(316002)(70586007)(70206006)(54906003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Dec 2023 11:49:39.6993
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7be5a9e5-9904-4ddd-106e-08dbf6516dcc
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000FCC1.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6781
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [175.136.135.142]
+X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX066.cuchost.com
+ (172.16.6.66)
+X-YovoleRuleAgent: yovoleflag
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Dec 2023 04:22:16 +0900, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.263 release.
-> There are 90 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 07 Dec 2023 18:32:16 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.263-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+This patch series enabled basic clock & reset support for StarFive
+JH8100 SoC.
 
-All tests passing for Tegra ...
+This patch series depends on the Initial device tree support for
+StarFive JH8100 SoC patch series which can be found at below link:
+https://lore.kernel.org/lkml/20231201121410.95298-1-jeeheng.sia@starfivetech.com/
 
-Test results for stable-v5.4:
-    10 builds:	10 pass, 0 fail
-    24 boots:	24 pass, 0 fail
-    54 tests:	54 pass, 0 fail
+StarFive JH8100 shares a similar clock and reset design with JH7110.
+To facilitate the reuse of the file and its functionalities, files
+containing the 'jh71x0' naming convention are renamed to use the
+'common' wording. Internal functions that contain the 'jh71x0'
+naming convention are renamed to use 'starfive.' This is accomplished
+through patches 1, 2, 3, and 4.
 
-Linux version:	5.4.263-rc3-g97430ed51c91
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
 
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
+Patch 5 adds documentation to describe System (SYSCRG) Clock & Reset
+binding.
+Patch 6 adds SYSCRG clock driver.
 
-Jon
+patch 7 adds documentation to describe System-North-West (SYSCRG-NW)
+Clock & Reset binding.
+Patch 8 adds SYSCRG-NW clock driver.
+
+patch 9 adds documentation to describe System-North-East (SYSCRG-NE)
+Clock & Reset binding.
+Patch 10 adds SYSCRG-NE clock driver.
+
+patch 11 adds documentation to describe System-South-West (SYSCRG-SW)
+Clock & Reset binding.
+Patch 12 adds SYSCRG-SW clock driver.
+
+patch 13 adds documentation to describe Always-On (AON)
+Clock & Reset binding.
+Patch 14 adds AON clock driver.
+
+Patch 15 adds support for the auxiliary reset driver.
+
+Patch 16 adds clocks and reset nodes to the JH8100 device tree.
+
+Sia Jee Heng (16):
+  reset: starfive: Rename file name "jh71x0" to "common"
+  reset: starfive: Convert the word "jh71x0" to "starfive"
+  clk: starfive: Rename file name "jh71x0" to "common"
+  clk: starfive: Convert the word "jh71x0" to "starfive"
+  dt-bindings: clock: Add StarFive JH8100 System clock and reset
+    generator
+  clk: starfive: Add JH8100 System clock generator driver
+  dt-bindings: clock: Add StarFive JH8100 System-North-West clock and
+    reset generator
+  clk: starfive: Add JH8100 System-North-West clock generator driver
+  dt-bindings: clock: Add StarFive JH8100 System-North-East clock and
+    reset generator
+  clk: starfive: Add JH8100 System-North-East clock generator driver
+  dt-bindings: clock: Add StarFive JH8100 System-South-West clock and
+    reset generator
+  clk: starfive: Add JH8100 System-South-West clock generator driver
+  dt-bindings: clock: Add StarFive JH8100 Always-On clock and reset
+    generator
+  clk: starfive: Add JH8100 Always-On clock generator driver
+  reset: starfive: Add StarFive JH8100 reset driver
+  riscv: dts: starfive: jh8100: Add clocks and resets nodes
+
+ .../clock/starfive,jh8100-aoncrg.yaml         |  77 +++
+ .../clock/starfive,jh8100-syscrg-ne.yaml      | 158 +++++
+ .../clock/starfive,jh8100-syscrg-nw.yaml      | 119 ++++
+ .../clock/starfive,jh8100-syscrg-sw.yaml      |  66 ++
+ .../clock/starfive,jh8100-syscrg.yaml         |  66 ++
+ MAINTAINERS                                   |  15 +
+ arch/riscv/boot/dts/starfive/jh8100-clk.dtsi  | 180 ++++++
+ arch/riscv/boot/dts/starfive/jh8100.dtsi      | 115 ++++
+ drivers/clk/starfive/Kconfig                  |  49 +-
+ drivers/clk/starfive/Makefile                 |   3 +-
+ drivers/clk/starfive/clk-starfive-common.c    | 327 ++++++++++
+ drivers/clk/starfive/clk-starfive-common.h    | 130 ++++
+ .../clk/starfive/clk-starfive-jh7100-audio.c  | 127 ++--
+ drivers/clk/starfive/clk-starfive-jh7100.c    | 503 ++++++++--------
+ .../clk/starfive/clk-starfive-jh7110-aon.c    |  62 +-
+ .../clk/starfive/clk-starfive-jh7110-isp.c    |  72 +--
+ .../clk/starfive/clk-starfive-jh7110-stg.c    |  94 +--
+ .../clk/starfive/clk-starfive-jh7110-sys.c    | 523 ++++++++--------
+ .../clk/starfive/clk-starfive-jh7110-vout.c   |  74 +--
+ drivers/clk/starfive/clk-starfive-jh7110.h    |   4 +-
+ drivers/clk/starfive/clk-starfive-jh71x0.c    | 327 ----------
+ drivers/clk/starfive/clk-starfive-jh71x0.h    | 123 ----
+ drivers/clk/starfive/jh8100/Makefile          |   7 +
+ drivers/clk/starfive/jh8100/clk-aon.c         | 275 +++++++++
+ .../clk/starfive/jh8100/clk-starfive-jh8100.h |  11 +
+ drivers/clk/starfive/jh8100/clk-sys-ne.c      | 566 ++++++++++++++++++
+ drivers/clk/starfive/jh8100/clk-sys-nw.c      | 268 +++++++++
+ drivers/clk/starfive/jh8100/clk-sys-sw.c      | 136 +++++
+ drivers/clk/starfive/jh8100/clk-sys.c         | 455 ++++++++++++++
+ drivers/reset/starfive/Kconfig                |  14 +-
+ drivers/reset/starfive/Makefile               |   4 +-
+ ...rfive-jh71x0.c => reset-starfive-common.c} |  68 +--
+ .../reset/starfive/reset-starfive-common.h    |  14 +
+ .../reset/starfive/reset-starfive-jh7100.c    |   4 +-
+ .../reset/starfive/reset-starfive-jh7110.c    |   8 +-
+ .../reset/starfive/reset-starfive-jh71x0.h    |  14 -
+ .../reset/starfive/reset-starfive-jh8100.c    | 102 ++++
+ .../dt-bindings/clock/starfive,jh8100-crg.h   | 430 +++++++++++++
+ .../dt-bindings/reset/starfive,jh8100-crg.h   | 127 ++++
+ ...rfive-jh71x0.h => reset-starfive-common.h} |  10 +-
+ 40 files changed, 4485 insertions(+), 1242 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh8100-aoncrg.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh8100-syscrg-ne.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh8100-syscrg-nw.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh8100-syscrg-sw.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/starfive,jh8100-syscrg.yaml
+ create mode 100644 arch/riscv/boot/dts/starfive/jh8100-clk.dtsi
+ create mode 100644 drivers/clk/starfive/clk-starfive-common.c
+ create mode 100644 drivers/clk/starfive/clk-starfive-common.h
+ delete mode 100644 drivers/clk/starfive/clk-starfive-jh71x0.c
+ delete mode 100644 drivers/clk/starfive/clk-starfive-jh71x0.h
+ create mode 100644 drivers/clk/starfive/jh8100/Makefile
+ create mode 100644 drivers/clk/starfive/jh8100/clk-aon.c
+ create mode 100644 drivers/clk/starfive/jh8100/clk-starfive-jh8100.h
+ create mode 100644 drivers/clk/starfive/jh8100/clk-sys-ne.c
+ create mode 100644 drivers/clk/starfive/jh8100/clk-sys-nw.c
+ create mode 100644 drivers/clk/starfive/jh8100/clk-sys-sw.c
+ create mode 100644 drivers/clk/starfive/jh8100/clk-sys.c
+ rename drivers/reset/starfive/{reset-starfive-jh71x0.c => reset-starfive-common.c} (55%)
+ create mode 100644 drivers/reset/starfive/reset-starfive-common.h
+ delete mode 100644 drivers/reset/starfive/reset-starfive-jh71x0.h
+ create mode 100644 drivers/reset/starfive/reset-starfive-jh8100.c
+ create mode 100644 include/dt-bindings/clock/starfive,jh8100-crg.h
+ create mode 100644 include/dt-bindings/reset/starfive,jh8100-crg.h
+ rename include/soc/starfive/{reset-starfive-jh71x0.h => reset-starfive-common.h} (50%)
+
+-- 
+2.34.1
+
