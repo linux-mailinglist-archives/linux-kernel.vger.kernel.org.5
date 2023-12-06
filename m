@@ -2,184 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24230806330
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9035806333
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 01:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346651AbjLFAIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Dec 2023 19:08:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54314 "EHLO
+        id S1346654AbjLFAJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Dec 2023 19:09:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346563AbjLFAIV (ORCPT
+        with ESMTP id S1346563AbjLFAJy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Dec 2023 19:08:21 -0500
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE22218F;
-        Tue,  5 Dec 2023 16:08:27 -0800 (PST)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4b2c0ba26f1so217728e0c.0;
-        Tue, 05 Dec 2023 16:08:27 -0800 (PST)
+        Tue, 5 Dec 2023 19:09:54 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EB718F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 16:10:00 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-daf702bde7eso3993254276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Dec 2023 16:10:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701821307; x=1702426107; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mZmoOpShnlOr1bQVRrl+GknWd+PtQJEUK3TXoeEYCts=;
-        b=LrJybr/CBMhzbHfZld0/dVZM5b0i8Yv1hjr8wNJ48/rdGbwhNSSNscCxDZPWjsLL5S
-         1zrT/Ig/Fx+vPSMqtbb3WXAf9hmWWNuBe5jhG9SYXG6LdM7aV4kd4VmlJk1DeMmnbsgw
-         NlkHas/Ekjq64iwIPCEQYIJfqoZvl/vLXTfBqKu7b/iHjCn/8GPZOESayR1tilvL0DLC
-         +YnkIVmC10bJ9MUY17pzOGnJ2tqaGt5J26OIpCJTmB9MDOxq3EYa0DjJfnWDxfgdP/29
-         YAOHXw1vAz9Cdf8t3U9f5CiHK1Gh6tDMSZgo5YPRBwgQHyNOnfiskG/1BcRKn7uxPRpW
-         j99w==
+        d=google.com; s=20230601; t=1701821399; x=1702426199; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9/6P2wyn6Tp4auG0R2mfgrmmsVCBDCHzfDL1PUHTUpE=;
+        b=SFRwWQDXqmdZQTYEauTFevPCgZKE6s4AtWvtQtVQuQM4J2vObpEtmH7eL8cRgYIfJk
+         563Jy/8pxYO2FLrDmPIHNobYpnEWOH436hxodfp55uSCaEOWEZf92zdeecccHQgStMBj
+         9Tvnytrz/0Q78udyc5KZja/JKUd5rg37SwT/g0Vu6JaHQyMhruPQAOoAUYGeS3/6ix6l
+         kwfjhJRzJBAMDXPFCDygvQk1XN8wQfD5PvHxoFFlu+lfaYGsdQh3TsJQbhi7+Ei7Z6j2
+         LYQ/++PkzR/WziJz3CBg8TZcaYgWN/SnQYCHP2DtMKYGj0Q3IAlhIFN19vrBTjyolkY2
+         YLgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701821307; x=1702426107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mZmoOpShnlOr1bQVRrl+GknWd+PtQJEUK3TXoeEYCts=;
-        b=VFBqNWKIc+YjQDsIxtmtYjZSJQn6YCZXgND32owQ7kS8HwYDDELvbOU/piQEVo825n
-         LKjqtIJPQKZlEFYRehmRWuZ8iVGmFM+XhoIw9dP+u12slnl58g5GykK2wQVhbXlOLkOD
-         4oBJ7yMNwUVsBnQq33xME6gsTmWPD0zD570idHFm+XY+auXb6xk54LKq5hipqrHGtfQ8
-         KohXwfCuA04dhC6yejsqA7ZFxvwByKlb5MXglKQzlV5/2PY6NCicETEWXaCGLs44JzNu
-         Eob5N8/9mx82irqDiS5yq/1IP+GnBuePawGZqNVX+mMUYuEImg61ZqxjX9VVXxRGyEJp
-         LzoA==
-X-Gm-Message-State: AOJu0YySxV6VrkygQfSf0t8SjhaHMJmTiOlD+s9pK0gQZnlrZ1Br3gHT
-        bkNNl417t9wm8H59eGpZTKYgm3/YESeUwrH4TQ0=
-X-Google-Smtp-Source: AGHT+IHe47styOpdF2IwNLQKmxh275Vb5ERuMYIfHI30HlMr+3ER7uJ9XJJ7Bag/XCKqrpbPzhICRkVEtagiFq7m0LE=
-X-Received: by 2002:a05:6122:3187:b0:49d:20fb:c899 with SMTP id
- ch7-20020a056122318700b0049d20fbc899mr2686639vkb.4.1701821306644; Tue, 05 Dec
- 2023 16:08:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz>
- <20231120-slab-remove-slab-v2-2-9c9c70177183@suse.cz> <ZW6j6aTpuJF0keS7@localhost.localdomain>
- <93a8a67c-9cb7-0d36-6b14-ce15a30bea3f@suse.cz>
-In-Reply-To: <93a8a67c-9cb7-0d36-6b14-ce15a30bea3f@suse.cz>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Wed, 6 Dec 2023 09:08:16 +0900
-Message-ID: <CAB=+i9Q_FWy3CvJAJPx_ZGncezSOLSST9BX_dZ901=8oemrSUA@mail.gmail.com>
-Subject: Re: [PATCH v2 02/21] mm/slab: remove CONFIG_SLAB from all Kconfig and Makefile
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701821399; x=1702426199;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9/6P2wyn6Tp4auG0R2mfgrmmsVCBDCHzfDL1PUHTUpE=;
+        b=Ht5kRaMWN4oDspCLoM+zlhKKX/YnbrF24voA4EERxrfzxfNXVHcGz+0tNX+jo7kCaY
+         sTjKtJUfKmPJKyzDgRomRIMZ0CPnUmTh5md2w3lPMm6DE4YuCaKNl5OHRSafOUg9rogl
+         Q8JXWo/8PcVGk1Ya+I1APVHTmsCgtomVxk0lHA5mQWIr7/eFG0lZ4LHYvZtXE/V3oaf+
+         hamQgcR2VzQipIk04vtjFKVN3mJbdg9rcsk7JPNnu6EXy9HMaBZTixe0sxPoEGEHW0ID
+         02OZNKnHm0YXDmFPFSuwzXp1cHtVbGwlkbpc5R6GKjcjNWdu878Z5aBIs/p2vxYkGNTs
+         R5hQ==
+X-Gm-Message-State: AOJu0YxhO6bs2+diUyycZwt2/O/p+WAeiTs83f79MSnWrUzDFB4AfVN8
+        wQpeu8V4LDNFyI0ZGPeJq5r5ONeRK+s=
+X-Google-Smtp-Source: AGHT+IH4C4oAQE3PPjBrAx5GHXCbwzyXQ/CRPUBNvUMevnTM9O0XpfBdd0lSzsjL0Gpcy4iEwVPPe7hEN58=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:d401:0:b0:db5:47bd:8b14 with SMTP id
+ m1-20020a25d401000000b00db547bd8b14mr364391ybf.4.1701821399697; Tue, 05 Dec
+ 2023 16:09:59 -0800 (PST)
+Date:   Tue, 5 Dec 2023 16:09:58 -0800
+In-Reply-To: <edbacce0-cbff-4351-be00-9cf7bf300864@gmail.com>
+Mime-Version: 1.0
+References: <20231204074535.9567-1-likexu@tencent.com> <ZW32geNb18p9ibrR@google.com>
+ <edbacce0-cbff-4351-be00-9cf7bf300864@gmail.com>
+Message-ID: <ZW-71hINZPdposgb@google.com>
+Subject: Re: [PATCH] KVM: x86/intr: Explicitly check NMI from guest to
+ eliminate false positives
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 7:14=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wro=
-te:
->
-> On 12/5/23 05:15, Hyeonggon Yoo wrote:
-> > On Mon, Nov 20, 2023 at 07:34:13PM +0100, Vlastimil Babka wrote:
-> >
-> > Looks good to me,
-> > Reviewed-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
->
-> Thanks.
->
-> > Nit:
-> >
-> > - Some arch configs enables DEBUG_SLAB
-> > - Some documentations refers to {DEBUG_,}SLAB config (i.e. "enable
-> > DEBUG_SLAB for debugging", or "use SLUB instead of SLAB for reducing OS
-> > jitter", ... etc)
-> > - fs/orangefs/orangefs-kernel.h uses #if (defined CONFIG_DEBUG_SLAB)
-> >
-> > $ git grep DEBUG_SLAB arch/
-> > arch/arm/configs/ep93xx_defconfig:CONFIG_DEBUG_SLAB=3Dy
-> > arch/arm/configs/tegra_defconfig:CONFIG_DEBUG_SLAB=3Dy
-> > arch/microblaze/configs/mmu_defconfig:CONFIG_DEBUG_SLAB=3Dy
-> >
-> > $ git grep SLAB Documentation/
-> >
-> > [... some unrelated lines removed ...]
->
-> Yep, I've wrote in the cover letter that to keep the series reasonable an=
-d
-> limit Ccing other subsystems on some patches, not everything is cleaned u=
-p
-> thoroughly
+On Tue, Dec 05, 2023, Like Xu wrote:
+> On 4/12/2023 11:55 pm, Sean Christopherson wrote:
+> > On Mon, Dec 04, 2023, Like Xu wrote:
+> > > From: Like Xu <likexu@tencent.com>
+> > > 
+> > > Explicitly checking the source of external interrupt is indeed NMI and not
+> > > other types in the kvm_arch_pmi_in_guest(), which prevents perf-kvm false
+> > > positive samples generated after vm-exit but before kvm_before_interrupt()
+> > > from being incorrectly labelled as guest samples:
+> > 
+> > ...
+> > 
+> > > Fixes: 73cd107b9685 ("KVM: x86: Drop current_vcpu for kvm_running_vcpu + kvm_arch_vcpu variable")
+> > 
+> > The behavior is deliberate, and was added by commit dd60d217062f ("KVM: x86: Fix
+> > perf timer mode IP reporting").  *If* we want to undo that, then the best "fix"
+> > would be to effective reverting that commit by dropping the IRQ usage of
+> > kvm_before_interrupt() and renaming the helpers kvm_{before,after}_nmi().  But
+> > my understanding is that the behavior is necessary for select PMU usage.
+> 
+> Thanks for your comment. Yes, the commit dd60d217062f should be tracked.
+> 
+> We don't have to undo the commit, and we also don't want to hurt
+> either of the perf/core use cases (including perf NMI and timer modes).
+> 
+> Thanks to the introduction of "enum kvm_intr_type", we can cover both cases
+> instead of sacrificing one of two modes, how about:
 
-Ah, I see, Okay.
+Hmm, yeah, that should work.  It's not the prettiest thing, but I don't see an
+easy way to remedy that (I tried).  False positives are still possible, but it's
+a clear improvement over what we have.
 
->  and is left for further work (some already started coming in
-> from others) that can be submitted to relevant subsystems.
-
-I'll focus more on correctness rather than doing further work while reviewi=
-ng.
-
-> > Documentation/admin-guide/cgroup-v1/cpusets.rst:PFA_SPREAD_SLAB, and ap=
-propriately marked slab caches will allocate
-> > Documentation/admin-guide/cgroup-v1/memory.rst:  pages allocated by the=
- SLAB or SLUB allocator are tracked. A copy
-> > Documentation/admin-guide/kernel-per-CPU-kthreads.rst:          CONFIG_=
-SLAB=3Dy, thus avoiding the slab allocator's periodic
-> > Documentation/admin-guide/mm/pagemap.rst:   The page is managed by the =
-SLAB/SLUB kernel memory allocator.
-> > Documentation/dev-tools/kasan.rst:For slab, both software KASAN modes s=
-upport SLUB and SLAB allocators, while
-> > Documentation/dev-tools/kfence.rst:of the sample interval, the next all=
-ocation through the main allocator (SLAB or
-> > Documentation/mm/slub.rst:The basic philosophy of SLUB is very differen=
-t from SLAB. SLAB
-> > Documentation/mm/slub.rst:                      Sorry SLAB legacy issue=
-s)
-> > Documentation/process/4.Coding.rst: - DEBUG_SLAB can find a variety of =
-memory allocation and use errors; it
-> > Documentation/process/submit-checklist.rst:    ``CONFIG_DEBUG_SLAB``, `=
-`CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
-> > Documentation/scsi/ChangeLog.lpfc:        CONFIG_DEBUG_SLAB set).
-> > Documentation/translations/it_IT/process/4.Coding.rst: - DEBUG_SLAB pu=
-=C3=B2 trovare svariati errori di uso e di allocazione di memoria;
-> > Documentation/translations/it_IT/process/submit-checklist.rst:    ``CON=
-FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
-> > Documentation/translations/ja_JP/SubmitChecklist:12: CONFIG_PREEMPT, CO=
-NFIG_DEBUG_PREEMPT, CONFIG_DEBUG_SLAB,
-> > Documentation/translations/zh_CN/dev-tools/kasan.rst:=E5=AF=B9=E4=BA=8E=
-slab=EF=BC=8C=E4=B8=A4=E7=A7=8D=E8=BD=AF=E4=BB=B6KASAN=E6=A8=A1=E5=BC=8F=E9=
-=83=BD=E6=94=AF=E6=8C=81SLUB=E5=92=8CSLAB=E5=88=86=E9=85=8D=E5=99=A8=EF=BC=
-=8C=E8=80=8C=E5=9F=BA=E4=BA=8E=E7=A1=AC=E4=BB=B6=E6=A0=87=E7=AD=BE=E7=9A=84
-> > Documentation/translations/zh_CN/process/4.Coding.rst: - DEBUG_SLAB =E5=
-=8F=AF=E4=BB=A5=E5=8F=91=E7=8E=B0=E5=90=84=E7=A7=8D=E5=86=85=E5=AD=98=E5=88=
-=86=E9=85=8D=E5=92=8C=E4=BD=BF=E7=94=A8=E9=94=99=E8=AF=AF=EF=BC=9B=E5=AE=83=
-=E5=BA=94=E8=AF=A5=E7=94=A8=E4=BA=8E=E5=A4=A7=E5=A4=9A=E6=95=B0=E5=BC=80=E5=
-=8F=91=E5=86=85=E6=A0=B8=E3=80=82
-> > Documentation/translations/zh_CN/process/submit-checklist.rst:    ``CON=
-FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
-> > Documentation/translations/zh_TW/dev-tools/kasan.rst:=E5=B0=8D=E6=96=BC=
-slab=EF=BC=8C=E5=85=A9=E7=A8=AE=E8=BB=9F=E4=BB=B6KASAN=E6=A8=A1=E5=BC=8F=E9=
-=83=BD=E6=94=AF=E6=8C=81SLUB=E5=92=8CSLAB=E5=88=86=E9=85=8D=E5=99=A8=EF=BC=
-=8C=E8=80=8C=E5=9F=BA=E6=96=BC=E7=A1=AC=E4=BB=B6=E6=A8=99=E7=B1=A4=E7=9A=84
-> > Documentation/translations/zh_TW/process/4.Coding.rst: - DEBUG_SLAB =E5=
-=8F=AF=E4=BB=A5=E7=99=BC=E7=8F=BE=E5=90=84=E7=A8=AE=E5=85=A7=E5=AD=98=E5=88=
-=86=E9=85=8D=E5=92=8C=E4=BD=BF=E7=94=A8=E9=8C=AF=E8=AA=A4=EF=BC=9B=E5=AE=83=
-=E6=87=89=E8=A9=B2=E7=94=A8=E6=96=BC=E5=A4=A7=E5=A4=9A=E6=95=B8=E9=96=8B=E7=
-=99=BC=E5=85=A7=E6=A0=B8=E3=80=82
-> > Documentation/translations/zh_TW/process/submit-checklist.rst:    ``CON=
-FIG_DEBUG_SLAB``, ``CONFIG_DEBUG_PAGEALLOC``, ``CONFIG_DEBUG_MUTEXES``,
-> >
-> > --
-> > Hyeonggon
->
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index c8c7e2475a18..5db607a564c6 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1868,8 +1868,16 @@ static inline int
+> kvm_arch_flush_remote_tlbs_range(struct kvm *kvm, gfn_t gfn,
+>  }
+>  #endif /* CONFIG_HYPERV */
+> 
+> +enum kvm_intr_type {
+> +	/* Values are arbitrary, but must be non-zero. */
+> +	KVM_HANDLING_IRQ = 1,
+> +	KVM_HANDLING_NMI,
+> +};
+> +
+> +/* Linux always use NMI for PMU. */
+>  #define kvm_arch_pmi_in_guest(vcpu) \
+> -	((vcpu) && (vcpu)->arch.handling_intr_from_guest)
+> +	((vcpu) && (vcpu)->arch.handling_intr_from_guest && \
+> +	 (in_nmi() == ((vcpu)->arch.handling_intr_from_guest == KVM_HANDLING_NMI)))
+> 
+>  void __init kvm_mmu_x86_module_init(void);
+>  int kvm_mmu_vendor_module_init(void);
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 2f7e19166658..4dc38092d599 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -431,12 +431,6 @@ static inline bool kvm_notify_vmexit_enabled(struct kvm *kvm)
+>  	return kvm->arch.notify_vmexit_flags & KVM_X86_NOTIFY_VMEXIT_ENABLED;
+>  }
+> 
+> -enum kvm_intr_type {
+> -	/* Values are arbitrary, but must be non-zero. */
+> -	KVM_HANDLING_IRQ = 1,
+> -	KVM_HANDLING_NMI,
+> -};
+> -
+>  static __always_inline void kvm_before_interrupt(struct kvm_vcpu *vcpu,
+>  						 enum kvm_intr_type intr)
+>  {
+> -- 
+> 2.43.0
+> 
+> I noticed that timer mode is used when perf-record uses SW events like
+> "cpu-clock" event,
+> with or without hw-PMU support. My side of the tests no longer show false
+> positives and
+> the above diff does not affect the use of perf timer mode as well. Any better move ?
