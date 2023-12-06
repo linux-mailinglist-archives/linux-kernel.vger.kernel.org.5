@@ -2,338 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263468074F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8106D8074EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 17:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378324AbjLFQ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 11:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        id S1378036AbjLFQ26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 11:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378459AbjLFQ33 (ORCPT
+        with ESMTP id S229573AbjLFQ24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 11:29:29 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5444218D;
-        Wed,  6 Dec 2023 08:29:34 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77f37772ab6so18406785a.0;
-        Wed, 06 Dec 2023 08:29:34 -0800 (PST)
+        Wed, 6 Dec 2023 11:28:56 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 924C3D44
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Dec 2023 08:29:02 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id 46e09a7af769-6d9ae075e5fso495828a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Dec 2023 08:29:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701880173; x=1702484973; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xwZWXH9p+0yJMhMBcVvnwovBBLZBIMZ/gK454l8lM54=;
-        b=eN87Stqdk0xTY199iNxX2W06S+DqBvTtXgBJmQyKamhbagGrqppT3QBN6ISTexmy+Y
-         CMEjL/R5EqJvNvS3ep8tkEy2X8VIXOFRHYJAe3p4JB30w1UBsGQrZ3hS/tY662pmeN6x
-         FilaZH4t4sW4+cQ7PEY9KweWRSZHQQE3+f0LuGPIidlAO1QJXR2//tJBeIVtcu3Q3vja
-         GLWY/LFElUPp1oaRj76w2tUFlNV5DOYbvfi9wayqzhpXyzc/r7BdveImadxDefwi2ePz
-         PB7EHWtOZ2SCcZPM0wlc9Zp+kDFYyGRFCKIIz2g3KEbb4uJOVjnAkYO6axZ2OI5/Z3FG
-         EZ0g==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701880142; x=1702484942; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B5ZbGGmoH/lFlZhMRZN1vjFtS/EFqjm5PsB2wakbCe8=;
+        b=JUP9Q7hQu9MmC8qT+pvq4Rvvq1eyIaYqOLTyljMFCuaeJS7pJri5kF+MfbVN26lg8h
+         NbQAtypwudwKwgAnl4F2e4YIGPKgeXQvCYWKRhvhrePNzfDBNQjnAmx3w0yttDn3Oh3u
+         ELEA6s41uIP/aJhbtXh+sPC9yDZT9uIzzw8hYMBOlmldIVohtdFSayFtHKXNaNvqL5pG
+         9tblrpZ2IEvFHK9wSOzSLLFgV4RzVHl/wk4ZebAjuD4uzFEHnsFLXVCabYheSQxM0mcF
+         YHN8LrpFy1MRsuxZMFzIztIK7s5iEy3vvBvlIQEWH2LK3ZJgZDe+ojzcDzEyyNwMYljO
+         5Fmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701880173; x=1702484973;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xwZWXH9p+0yJMhMBcVvnwovBBLZBIMZ/gK454l8lM54=;
-        b=J9LETmCD09XRUtYgCx7SfcyNucAgfq8j8/eV+Ko5f1QlX9FMQNUnO0KTiaCFk+AIM8
-         VaAFu3ST+V2AI8FLRJA4lNYdz4+4r82N8AfOWRrWmiVAVvC9CRBfKBHE2GK0z2oGZGa+
-         y7w8k+GAfegPHSDOalxmenzZY8XekXjb/ahO1BlVuwsuQQjWfW2jKa4hvDk3XY9JJV26
-         7cHk8rJcLw8ylUiSvH1/3YJYFxLCg9C7dgCKdXVHc/lpoZvHEA8pToM6y0qEmG4/FVeq
-         Pw1/gU5BmEKTF0V4Oj+feIaIYrgghUb0KkCPcpkYtx5k3zVavi3SPLOLS7jhlm1NRxqV
-         V9Cw==
-X-Gm-Message-State: AOJu0Yxa8SP2lj7g/wM98duA7AIEHBErxMclof3o3wSOaCxVUimJCg/e
-        XOQoLKcs9tNxt+BR4dKpkTE=
-X-Google-Smtp-Source: AGHT+IGx8a7EzNCQyfTSNswNgSliYrYf9H/wfyFTvaT8dR4sDl26fZNTIsdIibcVYXFPjl6D4wV8QA==
-X-Received: by 2002:a05:620a:66c:b0:77e:fba3:81e5 with SMTP id a12-20020a05620a066c00b0077efba381e5mr1148000qkh.123.1701880173098;
-        Wed, 06 Dec 2023 08:29:33 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::6:c65f])
-        by smtp.gmail.com with ESMTPSA id br32-20020a05620a462000b0077dd520f844sm65807qkb.84.2023.12.06.08.29.32
+        d=1e100.net; s=20230601; t=1701880142; x=1702484942;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B5ZbGGmoH/lFlZhMRZN1vjFtS/EFqjm5PsB2wakbCe8=;
+        b=q8k+lSms88OqR/t389FDYUMlFGtmqA0jOgee4G9i2D8O8pW55fT5j63yf30WYrwfO5
+         2d/gECgI4AArpdfJxpL6KVBHVahNlCI7ZPfKHhpa6Vitt1z5x41hXVMPa+yTGNVKcJ+X
+         38qUHThWv0baslRb1j7t2YDdDQXnRxCaNUXFnLiTx83W+hFXOPaWKgnXH2jfPa5un83e
+         7QvgzMO6Q/9DpNVpBFoNqPaTpS3efesUfqruyT1sFH6Z/fRoxB2Njt17vsLoNe8SxW0v
+         W0ZZnhr+sCW2D//3Z7KYGW0qj+BmuFrql/dTmjxAiuD6O7x8yZ8CKjYP9YJnNB2z65MB
+         MnyA==
+X-Gm-Message-State: AOJu0YxbDJGNaP7CQxhB+FHVRX3sDRrbrrio6DbXyzZQdmI2MwLvK0FR
+        goyhYaTa7aXCb5RshZA50QQ3QA==
+X-Google-Smtp-Source: AGHT+IGn8NLklrz8gfLpf4ZROBA91oSNRaf0+Ba33U1gJX5IEC3OyhkihvKkTQRDR3ZHIRtV5+wHCg==
+X-Received: by 2002:a9d:6385:0:b0:6d9:9ed9:f0e0 with SMTP id w5-20020a9d6385000000b006d99ed9f0e0mr559336otk.14.1701880141802;
+        Wed, 06 Dec 2023 08:29:01 -0800 (PST)
+Received: from localhost ([192.184.165.199])
+        by smtp.gmail.com with ESMTPSA id c25-20020a9d6859000000b006d9a0bf775asm24697oto.7.2023.12.06.08.29.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 08:29:32 -0800 (PST)
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: [PATCH 1/1] mm: add swapiness= arg to memory.reclaim
-Date:   Wed,  6 Dec 2023 08:28:56 -0800
-Message-Id: <20231206162900.1571025-2-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231206162900.1571025-1-schatzberg.dan@gmail.com>
-References: <20231206162900.1571025-1-schatzberg.dan@gmail.com>
-MIME-Version: 1.0
+        Wed, 06 Dec 2023 08:29:01 -0800 (PST)
+Date:   Wed, 06 Dec 2023 08:29:01 -0800 (PST)
+X-Google-Original-Date: Wed, 06 Dec 2023 08:28:59 PST (-0800)
+Subject:     Re: [PATCH v2] selftests: sud_test: return correct emulated syscall value on RISC-V
+In-Reply-To: <20231206134438.473166-1-cleger@rivosinc.com>
+CC:     shuah@kernel.org, krisman@collabora.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, cleger@rivosinc.com,
+        Bjorn Topel <bjorn@rivosinc.com>
+From:   Palmer Dabbelt <palmer@rivosinc.com>
+To:     cleger@rivosinc.com, tglx@linutronix.de
+Message-ID: <mhng-bd5d2bdb-99ab-464a-a043-bdfc34b96b71@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow proactive reclaimers to submit an additional swappiness=<val>
-argument to memory.reclaim. This overrides the global or per-memcg
-swappiness setting for that reclaim attempt.
+On Wed, 06 Dec 2023 05:44:37 PST (-0800), cleger@rivosinc.com wrote:
+> Currently, the sud_test expects the emulated syscall to return the
+> emulated syscall number. This assumption only works on architectures
+> were the syscall calling convention use the same register for syscall
+> number/syscall return value. This is not the case for RISC-V and thus
+> the return value must be also emulated using the provided ucontext.
+>
+> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+> Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+>
+> ---
+>
+> Changes in V2:
+>  - Changes comment to be more explicit
+>  - Use A7 syscall arg rather than hardcoding MAGIC_SYSCALL_1
+>
+> ---
+>  .../selftests/syscall_user_dispatch/sud_test.c     | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>
+> diff --git a/tools/testing/selftests/syscall_user_dispatch/sud_test.c b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+> index b5d592d4099e..d975a6767329 100644
+> --- a/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+> +++ b/tools/testing/selftests/syscall_user_dispatch/sud_test.c
+> @@ -158,6 +158,20 @@ static void handle_sigsys(int sig, siginfo_t *info, void *ucontext)
+>
+>  	/* In preparation for sigreturn. */
+>  	SYSCALL_DISPATCH_OFF(glob_sel);
+> +
+> +	/*
+> +	 * The tests for argument handling assume that `syscall(x) == x`. This
+> +	 * is a NOP on x86 because the syscall number is passed in %rax, which
+> +	 * happens to also be the function ABI return register.  Other
+> +	 * architectures may need to swizzle the arguments around.
+> +	 */
+> +#if defined(__riscv)
+> +/* REG_A7 is not defined in libc headers */
+> +# define REG_A7 (REG_A0 + 7)
+> +
+> +	((ucontext_t *)ucontext)->uc_mcontext.__gregs[REG_A0] =
+> +			((ucontext_t *)ucontext)->uc_mcontext.__gregs[REG_A7];
+> +#endif
+>  }
+>
+>  TEST(dispatch_and_return)
 
-For example:
+Thanks.
 
-echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
-
-will perform reclaim on the rootcg with a swappiness setting of 0 (no
-swap) regardless of the vm.swappiness sysctl setting.
-
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 15 ++++++-
- include/linux/swap.h                    |  3 +-
- mm/memcontrol.c                         | 55 ++++++++++++++++++++-----
- mm/vmscan.c                             | 13 +++++-
- 4 files changed, 70 insertions(+), 16 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..fc2b379dbd0f 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1282,8 +1282,8 @@ PAGE_SIZE multiple when read back.
- 	This is a simple interface to trigger memory reclaim in the
- 	target cgroup.
- 
--	This file accepts a single key, the number of bytes to reclaim.
--	No nested keys are currently supported.
-+	This file accepts a string which containers thhe number of bytes
-+	to reclaim.
- 
- 	Example::
- 
-@@ -1304,6 +1304,17 @@ PAGE_SIZE multiple when read back.
- 	This means that the networking layer will not adapt based on
- 	reclaim induced by memory.reclaim.
- 
-+	This file also allows the user to specify the swappiness value
-+	to be used for the reclaim. For example:
-+
-+	  echo "1G swappiness=60" > memory.reclaim
-+
-+	The above instructs the kernel to perform the reclaim with
-+	a swappiness value of 60. Note that this has the same semantics
-+	as the vm.swappiness sysctl - it sets the relative IO cost of
-+	reclaiming anon vs file memory but does not allow for reclaiming
-+	specific amounts of anon or file memory.
-+
-   memory.peak
- 	A read-only single value file which exists on non-root
- 	cgroups.
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index f6dd6575b905..c6e309199f10 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -410,7 +410,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 						  unsigned long nr_pages,
- 						  gfp_t gfp_mask,
--						  unsigned int reclaim_options);
-+						  unsigned int reclaim_options,
-+						  int *swappiness);
- extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
- 						gfp_t gfp_mask, bool noswap,
- 						pg_data_t *pgdat,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1c1061df9cd1..ba1c89455ab0 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -63,6 +63,7 @@
- #include <linux/resume_user_mode.h>
- #include <linux/psi.h>
- #include <linux/seq_buf.h>
-+#include <linux/parser.h>
- #include <linux/sched/isolation.h>
- #include "internal.h"
- #include <net/sock.h>
-@@ -2449,7 +2450,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 		psi_memstall_enter(&pflags);
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							gfp_mask,
--							MEMCG_RECLAIM_MAY_SWAP);
-+							MEMCG_RECLAIM_MAY_SWAP, NULL);
- 		psi_memstall_leave(&pflags);
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
- 		 !mem_cgroup_is_root(memcg));
-@@ -2740,7 +2741,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
--						    gfp_mask, reclaim_options);
-+						    gfp_mask, reclaim_options, NULL);
- 	psi_memstall_leave(&pflags);
- 
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -3660,7 +3661,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		}
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP)) {
-+					memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP, NULL)) {
- 			ret = -EBUSY;
- 			break;
- 		}
-@@ -3774,7 +3775,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 			return -EINTR;
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--						  MEMCG_RECLAIM_MAY_SWAP))
-+						  MEMCG_RECLAIM_MAY_SWAP, NULL))
- 			nr_retries--;
- 	}
- 
-@@ -6720,7 +6721,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		}
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP);
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL);
- 
- 		if (!reclaimed && !nr_retries--)
- 			break;
-@@ -6769,7 +6770,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 
- 		if (nr_reclaims) {
- 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP))
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL))
- 				nr_reclaims--;
- 			continue;
- 		}
-@@ -6895,6 +6896,16 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+enum {
-+	MEMORY_RECLAIM_SWAPPINESS = 0,
-+	MEMORY_RECLAIM_NULL,
-+};
-+
-+static const match_table_t if_tokens = {
-+	{ MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
-+	{ MEMORY_RECLAIM_NULL, NULL },
-+};
-+
- static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, loff_t off)
- {
-@@ -6902,12 +6913,33 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
- 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
- 	unsigned int reclaim_options;
--	int err;
-+	char *old_buf, *start;
-+	substring_t args[MAX_OPT_ARGS];
-+	int swappiness = -1;
- 
- 	buf = strstrip(buf);
--	err = page_counter_memparse(buf, "", &nr_to_reclaim);
--	if (err)
--		return err;
-+
-+	old_buf = buf;
-+	nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
-+	if (buf == old_buf)
-+		return -EINVAL;
-+
-+	buf = strstrip(buf);
-+
-+	while ((start = strsep(&buf, " ")) != NULL) {
-+		if (!strlen(start))
-+			continue;
-+		switch (match_token(start, if_tokens, args)) {
-+		case MEMORY_RECLAIM_SWAPPINESS:
-+			if (match_int(&args[0], &swappiness))
-+				return -EINVAL;
-+			if (swappiness < 0 || swappiness > 200)
-+				return -EINVAL;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+	}
- 
- 	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
- 	while (nr_reclaimed < nr_to_reclaim) {
-@@ -6926,7 +6958,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
- 
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
- 					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
--					GFP_KERNEL, reclaim_options);
-+					GFP_KERNEL, reclaim_options,
-+					swappiness == -1 ? NULL : &swappiness);
- 
- 		if (!reclaimed && !nr_retries--)
- 			return -EAGAIN;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 506f8220c5fe..546704ea01e1 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -136,6 +136,9 @@ struct scan_control {
- 	/* Always discard instead of demoting to lower tier memory */
- 	unsigned int no_demotion:1;
- 
-+	/* Swappiness value for reclaim, if NULL use memcg/global value */
-+	int *swappiness;
-+
- 	/* Allocation order */
- 	s8 order;
- 
-@@ -2327,7 +2330,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 	unsigned long anon_cost, file_cost, total_cost;
--	int swappiness = mem_cgroup_swappiness(memcg);
-+	int swappiness = sc->swappiness ?
-+		*sc->swappiness : mem_cgroup_swappiness(memcg);
- 	u64 fraction[ANON_AND_FILE];
- 	u64 denominator = 0;	/* gcc */
- 	enum scan_balance scan_balance;
-@@ -2608,6 +2612,9 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
- 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
- 		return 0;
- 
-+	if (sc->swappiness)
-+		return *sc->swappiness;
-+
- 	return mem_cgroup_swappiness(memcg);
- }
- 
-@@ -6433,7 +6440,8 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 					   unsigned long nr_pages,
- 					   gfp_t gfp_mask,
--					   unsigned int reclaim_options)
-+					   unsigned int reclaim_options,
-+					   int *swappiness)
- {
- 	unsigned long nr_reclaimed;
- 	unsigned int noreclaim_flag;
-@@ -6448,6 +6456,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
- 		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
-+		.swappiness = swappiness,
- 	};
- 	/*
- 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
--- 
-2.34.1
-
+Thomas: looks like you picked up all the commits that touched this?  No 
+rush on my end, just LMK if you want me to pick it up -- I'm going to 
+leave it alone for now.
