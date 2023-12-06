@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0339B8068C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B26368068C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 08:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377095AbjLFHjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 02:39:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56532 "EHLO
+        id S1376845AbjLFHja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 02:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235240AbjLFHim (ORCPT
+        with ESMTP id S1376742AbjLFHiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 02:38:42 -0500
+        Wed, 6 Dec 2023 02:38:46 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368A210F0
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:38:03 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE21DC43397;
-        Wed,  6 Dec 2023 07:37:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92722110
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Dec 2023 23:38:02 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 531E7C433C9;
+        Wed,  6 Dec 2023 07:38:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701848279;
-        bh=l5iN5w+Qmzs518Y0sHzrhIhEOFTWt8IKcNzWere7ujs=;
+        s=k20201202; t=1701848281;
+        bh=kDcj/obqX+Hi8m/kqT3v8vxYxZC41xF3arHR+tQ9eys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KMB/hg4vc99E3LPXhipYInLEwv756k+4acAyRvlgOyp7K+2MwUqdj5ijXC5Jd2FTk
-         LolnDSwT7/SLuC54yJ1USxMMKpYHWOGU0fQH1cdfeFA3EoHVwsJkfsQeY4QnsQYryN
-         Cj40z6Ejac+7sDp+EV4NiWA/egZ+50VfPkRt3ealLf6ZsuYewnNT1cKIrI8CVZo5PR
-         S6+Cmrvqg+PZ4qVVVGri5UpQ41POlA0ciY6AvR+uL4knwJ8KfKiWsFyjAsaf6dqvM5
-         TiFb244I5413Jk6p0Iz7SyXz78awwr4AKWiQo5EFFSqSx9Cu0oygGrPpz8Du1IGxFK
-         UDXpeVs+OCBcg==
+        b=jGBST3C5fev0tTfqKBcXCSSmiediXRM76ze4uONt5GZWQcCB6hVifuHbmioYvB5Vp
+         8kgZBqCGZsy/SjSIlZXKFIk71KUUxc/LlB0GE70myk0WVBI+hqP/frkIQ0jV0UVsBd
+         P/frzHjXu9fyLVSMIduUQjSW1w/88/yvFa+yVlX+zIc13kCn94HRUXYwl/uf2AoeNT
+         Ij4itpLT3YlHJW1uuCf37jTGQwHZ/vnzeq5/2Suc6ZSdfsEgNSkoa4nsilnsTxsMLH
+         ctiDTTSVV52TL7UJNF5V7364YYJiKfi2XO7T4NWOhQHIBRZqitSYPRxSr7KoaXA1oA
+         GCDJ66oRoxdTA==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 20/27] tty: n_hdlc: convert to u8 and size_t
-Date:   Wed,  6 Dec 2023 08:37:05 +0100
-Message-ID: <20231206073712.17776-21-jirislaby@kernel.org>
+Subject: [PATCH 21/27] tty: nozomi: convert to u8 and size_t
+Date:   Wed,  6 Dec 2023 08:37:06 +0100
+Message-ID: <20231206073712.17776-22-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231206073712.17776-1-jirislaby@kernel.org>
 References: <20231206073712.17776-1-jirislaby@kernel.org>
@@ -52,59 +52,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Switch character types to u8 and sizes to size_t. To conform to
 characters/sizes in the rest of the tty layer.
 
-Note u8 is already both passed in and expected on output.
-
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/n_hdlc.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/tty/nozomi.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/tty/n_hdlc.c b/drivers/tty/n_hdlc.c
-index a670419efe79..1615f074ab86 100644
---- a/drivers/tty/n_hdlc.c
-+++ b/drivers/tty/n_hdlc.c
-@@ -109,8 +109,8 @@
- 
- struct n_hdlc_buf {
- 	struct list_head  list_item;
--	int		  count;
--	char		  buf[];
-+	size_t		  count;
-+	u8		  buf[];
- };
- 
- struct n_hdlc_buf_list {
-@@ -263,9 +263,9 @@ static int n_hdlc_tty_open(struct tty_struct *tty)
-  */
- static void n_hdlc_send_frames(struct n_hdlc *n_hdlc, struct tty_struct *tty)
+diff --git a/drivers/tty/nozomi.c b/drivers/tty/nozomi.c
+index b247341bd12f..e28a921c1637 100644
+--- a/drivers/tty/nozomi.c
++++ b/drivers/tty/nozomi.c
+@@ -783,11 +783,10 @@ static int receive_data(enum port_type index, struct nozomi *dc)
+ 			tty_insert_flip_char(&port->port, buf[0], TTY_NORMAL);
+ 			size = 0;
+ 		} else if (size < RECEIVE_BUF_MAX) {
+-			size -= tty_insert_flip_string(&port->port,
+-					(char *)buf, size);
++			size -= tty_insert_flip_string(&port->port, buf, size);
+ 		} else {
+-			i = tty_insert_flip_string(&port->port,
+-					(char *)buf, RECEIVE_BUF_MAX);
++			i = tty_insert_flip_string(&port->port, buf,
++						   RECEIVE_BUF_MAX);
+ 			size -= i;
+ 			offset += i;
+ 		}
+@@ -1584,10 +1583,10 @@ static void ntty_hangup(struct tty_struct *tty)
+ static ssize_t ntty_write(struct tty_struct *tty, const u8 *buffer,
+ 			  size_t count)
  {
--	register int actual;
+-	int rval = -EINVAL;
+ 	struct nozomi *dc = get_dc_by_tty(tty);
+ 	struct port *port = tty->driver_data;
  	unsigned long flags;
- 	struct n_hdlc_buf *tbuf;
-+	ssize_t actual;
++	size_t rval;
  
- check_again:
- 
-@@ -281,7 +281,7 @@ static void n_hdlc_send_frames(struct n_hdlc *n_hdlc, struct tty_struct *tty)
- 
- 	tbuf = n_hdlc_buf_get(&n_hdlc->tx_buf_list);
- 	while (tbuf) {
--		pr_debug("sending frame %p, count=%d\n", tbuf, tbuf->count);
-+		pr_debug("sending frame %p, count=%zu\n", tbuf, tbuf->count);
- 
- 		/* Send the next block of data to device */
- 		set_bit(TTY_DO_WRITE_WAKEUP, &tty->flags);
-@@ -521,9 +521,9 @@ static ssize_t n_hdlc_tty_write(struct tty_struct *tty, struct file *file,
- 				const u8 *data, size_t count)
- {
- 	struct n_hdlc *n_hdlc = tty->disc_data;
--	int error = 0;
- 	DECLARE_WAITQUEUE(wait, current);
- 	struct n_hdlc_buf *tbuf;
-+	ssize_t error = 0;
- 
- 	pr_debug("%s() called count=%zd\n", __func__, count);
- 
+ 	if (!dc || !port)
+ 		return -ENODEV;
 -- 
 2.43.0
 
