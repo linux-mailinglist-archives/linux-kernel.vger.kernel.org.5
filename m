@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E673280697D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2C080697C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 09:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377329AbjLFIR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 03:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50076 "EHLO
+        id S1377326AbjLFIR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 03:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377225AbjLFIQs (ORCPT
+        with ESMTP id S1377315AbjLFIQr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 03:16:48 -0500
+        Wed, 6 Dec 2023 03:16:47 -0500
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF8E19AB;
-        Wed,  6 Dec 2023 00:16:17 -0800 (PST)
-X-UUID: b44d2342940f11ee8051498923ad61e6-20231206
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5576E199E;
+        Wed,  6 Dec 2023 00:16:16 -0800 (PST)
+X-UUID: b4edff10940f11ee8051498923ad61e6-20231206
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=oUOfVeRKnJ1zcg5WgLZGiIN5J1sZ37QJ5q0Qif+5X/Q=;
-        b=ckww2BIzOiTl0/6YD/tqTg+XjO+zyrhjgV8LfrTw6OBOn804q+gUeKudviy8hIvOCHZrgQcFm8sfkgeRbzsP+kY2z8rCjQ99CBFI4vLIXowJGjXXeJ+sCOKFhcnoINhPMSShI6RT7Iqae/o0BImftKaBubraH9iIX1/12wJ5eAE=;
+        h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=kC7KzWLgDHvbqhzMWnc/8P0WK0I0J12Fa3NbbNqI088=;
+        b=DRgY0xCz2XKjDEUTrQLh5nBlVtY87KqKA/vZ1ToLL9WmUItuVnxQpasK9nM0ldv7Y/kkWe5z8ag7jL/1fjbHBBqG3P3bIhs3ng3zEoSWUoWC6qXg8HVJ9JFvqzplyKrOTg5L7QrdC6tBAnpXG4WiegqyYhI5kXm7S9pGqrZhUzc=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.34,REQID:b9359682-2a90-4534-b2d4-f493192a0ea2,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:abefa75,CLOUDID:137ae060-c89d-4129-91cb-8ebfae4653fc,B
+X-CID-O-INFO: VERSION:1.1.34,REQID:0b6040a7-3dbc-4ac0-bb21-ed69f2d0860c,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-25
+X-CID-META: VersionHash:abefa75,CLOUDID:bf863596-10ce-4e4b-85c2-c9b5229ff92b,B
         ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
         RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
         DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0,NGT
 X-CID-BAS: 0,NGT,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: b44d2342940f11ee8051498923ad61e6-20231206
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
+X-UUID: b4edff10940f11ee8051498923ad61e6-20231206
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw02.mediatek.com
         (envelope-from <yunfei.dong@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1359399713; Wed, 06 Dec 2023 16:16:06 +0800
+        with ESMTP id 991676486; Wed, 06 Dec 2023 16:16:07 +0800
 Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 6 Dec 2023 16:16:05 +0800
+ 15.2.1118.26; Wed, 6 Dec 2023 16:16:06 +0800
 Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
  mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 6 Dec 2023 16:16:03 +0800
+ 15.2.1118.26 via Frontend Transport; Wed, 6 Dec 2023 16:16:05 +0800
 From:   Yunfei Dong <yunfei.dong@mediatek.com>
 To:     Jeffrey Kardatzke <jkardatzke@google.com>,
         =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
@@ -53,13 +53,13 @@ To:     Jeffrey Kardatzke <jkardatzke@google.com>,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>,
         Nathan Hebert <nhebert@chromium.org>
 CC:     Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
+        "Hsin-Yi Wang" <hsinyi@chromium.org>,
         Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        "Daniel Vetter" <daniel@ffwll.ch>,
         Steve Cho <stevecho@chromium.org>,
         Yunfei Dong <yunfei.dong@mediatek.com>,
         Sumit Semwal <sumit.semwal@linaro.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
+        "Brian Starkey" <Brian.Starkey@arm.com>,
         John Stultz <jstultz@google.com>,
         "T . J . Mercier" <tjmercier@google.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
@@ -70,15 +70,27 @@ CC:     Chen-Yu Tsai <wenst@chromium.org>, Yong Wu <yong.wu@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v3,19/21] media: medkatek: vcodec: disable wait interrupt for svp mode
-Date:   Wed, 6 Dec 2023 16:15:36 +0800
-Message-ID: <20231206081538.17056-20-yunfei.dong@mediatek.com>
+Subject: [PATCH v3,20/21] media: medkatek: vcodec: support tee decoder
+Date:   Wed, 6 Dec 2023 16:15:37 +0800
+Message-ID: <20231206081538.17056-21-yunfei.dong@mediatek.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231206081538.17056-1-yunfei.dong@mediatek.com>
 References: <20231206081538.17056-1-yunfei.dong@mediatek.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10-3.006200-8.000000
+X-TMASE-MatchedRID: WVKpczY/zoTtAxjyNphE0new7fOv9rv4Kx5ICGp/WtF6unVYJJS8BvlY
+        oV6p/cSxF8u8dQXnFzmAbmfpXu2gQmUlOh2o2oTOFYJUGv4DL3yt4laWdJbsDBL6MU7t349bW9o
+        SzMAtdLLi8zVgXoAltsIJ+4gwXrEtwrbXMGDYqV+HuSUEBMGDjCgTieNKzl0v+c+7T33Au3DNuA
+        ezS6+buStXMlZOFFSrjrE02BmFeIfvcrH62iIKGAXWfB7vcPOFv+VreHCTJr8xLORmmfnUyqMnT
+        JRI0XInfXwUEm1ouDzLDYxFC1/7rjCBQDy1BJSc7ndUHUMmXu5+3BndfXUhXQ==
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10-3.006200-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP: 2E252DE02EC8D4257050ACF60994A700FF1332821D343220C9073F792B30A9112000:8
 X-MTK:  N
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -91,172 +103,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Waiting interrupt in optee-os for svp mode, need to disable it in kernel
-in case of interrupt is cleaned.
+Initialize tee private data to support secure decoder.
+Release tee related information for each instance when decoder
+done.
 
 Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 ---
- .../vcodec/decoder/mtk_vcodec_dec_hw.c        | 34 +++++------
- .../vcodec/decoder/mtk_vcodec_dec_pm.c        |  6 +-
- .../decoder/vdec/vdec_h264_req_multi_if.c     | 57 +++++++++++--------
- 3 files changed, 54 insertions(+), 43 deletions(-)
+ .../platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_hw.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_hw.c
-index 881d5de41e05..1982c088c6da 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_hw.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_hw.c
-@@ -72,26 +72,28 @@ static irqreturn_t mtk_vdec_hw_irq_handler(int irq, void *priv)
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
+index f47c98faf068..08e7d250487b 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
++++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_drv.c
+@@ -310,6 +310,9 @@ static int fops_vcodec_release(struct file *file)
+ 	v4l2_fh_exit(&ctx->fh);
+ 	v4l2_ctrl_handler_free(&ctx->ctrl_hdl);
  
- 	ctx = mtk_vcodec_get_curr_ctx(dev->main_dev, dev->hw_idx);
- 
--	/* check if HW active or not */
--	cg_status = readl(dev->reg_base[VDEC_HW_SYS] + VDEC_HW_ACTIVE_ADDR);
--	if (cg_status & VDEC_HW_ACTIVE_MASK) {
--		mtk_v4l2_vdec_err(ctx, "vdec active is not 0x0 (0x%08x)", cg_status);
--		return IRQ_HANDLED;
--	}
-+	if (!ctx->is_secure_playback) {
-+		/* check if HW active or not */
-+		cg_status = readl(dev->reg_base[VDEC_HW_SYS] + VDEC_HW_ACTIVE_ADDR);
-+		if (cg_status & VDEC_HW_ACTIVE_MASK) {
-+			mtk_v4l2_vdec_err(ctx, "vdec active is not 0x0 (0x%08x)", cg_status);
-+			return IRQ_HANDLED;
-+		}
- 
--	dec_done_status = readl(vdec_misc_addr);
--	if ((dec_done_status & MTK_VDEC_IRQ_STATUS_DEC_SUCCESS) !=
--	    MTK_VDEC_IRQ_STATUS_DEC_SUCCESS)
--		return IRQ_HANDLED;
-+		dec_done_status = readl(vdec_misc_addr);
-+		if ((dec_done_status & MTK_VDEC_IRQ_STATUS_DEC_SUCCESS) !=
-+		    MTK_VDEC_IRQ_STATUS_DEC_SUCCESS)
-+			return IRQ_HANDLED;
- 
--	/* clear interrupt */
--	writel(dec_done_status | VDEC_IRQ_CFG, vdec_misc_addr);
--	writel(dec_done_status & ~VDEC_IRQ_CLR, vdec_misc_addr);
-+		/* clear interrupt */
-+		writel(dec_done_status | VDEC_IRQ_CFG, vdec_misc_addr);
-+		writel(dec_done_status & ~VDEC_IRQ_CLR, vdec_misc_addr);
- 
--	wake_up_dec_ctx(ctx, MTK_INST_IRQ_RECEIVED, dev->hw_idx);
-+		wake_up_dec_ctx(ctx, MTK_INST_IRQ_RECEIVED, dev->hw_idx);
- 
--	mtk_v4l2_vdec_dbg(3, ctx, "wake up ctx %d, dec_done_status=%x",
--			  ctx->id, dec_done_status);
-+		mtk_v4l2_vdec_dbg(3, ctx, "wake up ctx %d, dec_done_status=%x",
-+				  ctx->id, dec_done_status);
-+	}
- 
- 	return IRQ_HANDLED;
- }
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_pm.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_pm.c
-index aefd3e9e3061..a94eda936f16 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_pm.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_pm.c
-@@ -238,7 +238,8 @@ void mtk_vcodec_dec_enable_hardware(struct mtk_vcodec_dec_ctx *ctx, int hw_idx)
- 		mtk_vcodec_dec_child_dev_on(ctx->dev, MTK_VDEC_LAT0);
- 	mtk_vcodec_dec_child_dev_on(ctx->dev, hw_idx);
- 
--	mtk_vcodec_dec_enable_irq(ctx->dev, hw_idx);
-+	if (!ctx->is_secure_playback)
-+		mtk_vcodec_dec_enable_irq(ctx->dev, hw_idx);
- 
- 	if (IS_VDEC_INNER_RACING(ctx->dev->dec_capability))
- 		mtk_vcodec_load_racing_info(ctx);
-@@ -250,7 +251,8 @@ void mtk_vcodec_dec_disable_hardware(struct mtk_vcodec_dec_ctx *ctx, int hw_idx)
- 	if (IS_VDEC_INNER_RACING(ctx->dev->dec_capability))
- 		mtk_vcodec_record_racing_info(ctx);
- 
--	mtk_vcodec_dec_disable_irq(ctx->dev, hw_idx);
-+	if (!ctx->is_secure_playback)
-+		mtk_vcodec_dec_disable_irq(ctx->dev, hw_idx);
- 
- 	mtk_vcodec_dec_child_dev_off(ctx->dev, hw_idx);
- 	if (IS_VDEC_LAT_ARCH(ctx->dev->vdec_pdata->hw_arch) &&
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_multi_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_multi_if.c
-index 2dfb3043493e..3e2270399b6c 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_multi_if.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_h264_req_multi_if.c
-@@ -593,14 +593,16 @@ static int vdec_h264_slice_core_decode(struct vdec_lat_buf *lat_buf)
- 		goto vdec_dec_end;
- 	}
- 
--	/* wait decoder done interrupt */
--	timeout = mtk_vcodec_wait_for_done_ctx(inst->ctx, MTK_INST_IRQ_RECEIVED,
--					       WAIT_INTR_TIMEOUT_MS, MTK_VDEC_CORE);
--	if (timeout)
--		mtk_vdec_err(ctx, "core decode timeout: pic_%d", ctx->decoded_frame_cnt);
--	inst->vsi_core->dec.timeout = !!timeout;
--
--	vpu_dec_core_end(vpu);
-+	if (!ctx->is_secure_playback) {
-+		/* wait decoder done interrupt */
-+		timeout = mtk_vcodec_wait_for_done_ctx(inst->ctx, MTK_INST_IRQ_RECEIVED,
-+						       WAIT_INTR_TIMEOUT_MS, MTK_VDEC_CORE);
-+		if (timeout)
-+			mtk_vdec_err(ctx, "core decode timeout: pic_%d", ctx->decoded_frame_cnt);
-+		inst->vsi_core->dec.timeout = !!timeout;
++	if (ctx->is_secure_playback)
++		mtk_vcodec_dec_optee_release(dev->optee_private);
 +
-+		vpu_dec_core_end(vpu);
-+	}
- 	mtk_vdec_debug(ctx, "pic[%d] crc: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x",
- 		       ctx->decoded_frame_cnt,
- 		       inst->vsi_core->dec.crc[0], inst->vsi_core->dec.crc[1],
-@@ -724,14 +726,16 @@ static int vdec_h264_slice_lat_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
- 		vdec_msg_queue_qbuf(&inst->ctx->msg_queue.core_ctx, lat_buf);
- 	}
- 
--	/* wait decoder done interrupt */
--	timeout = mtk_vcodec_wait_for_done_ctx(inst->ctx, MTK_INST_IRQ_RECEIVED,
--					       WAIT_INTR_TIMEOUT_MS, MTK_VDEC_LAT0);
--	if (timeout)
--		mtk_vdec_err(inst->ctx, "lat decode timeout: pic_%d", inst->slice_dec_num);
--	inst->vsi->dec.timeout = !!timeout;
-+	if (!inst->ctx->is_secure_playback) {
-+		/* wait decoder done interrupt */
-+		timeout = mtk_vcodec_wait_for_done_ctx(inst->ctx, MTK_INST_IRQ_RECEIVED,
-+						       WAIT_INTR_TIMEOUT_MS, MTK_VDEC_LAT0);
-+		if (timeout)
-+			mtk_vdec_err(inst->ctx, "lat decode timeout: pic_%d", inst->slice_dec_num);
-+		inst->vsi->dec.timeout = !!timeout;
- 
--	err = vpu_dec_end(vpu);
-+		err = vpu_dec_end(vpu);
-+	}
- 	if (err == SLICE_HEADER_FULL || err == TRANS_BUFFER_FULL) {
- 		if (!IS_VDEC_INNER_RACING(inst->ctx->dev->dec_capability))
- 			vdec_msg_queue_qbuf(&inst->ctx->msg_queue.lat_ctx, lat_buf);
-@@ -831,16 +835,19 @@ static int vdec_h264_slice_single_decode(void *h_vdec, struct mtk_vcodec_mem *bs
- 	if (err)
- 		goto err_free_fb_out;
- 
--	/* wait decoder done interrupt */
--	err = mtk_vcodec_wait_for_done_ctx(inst->ctx, MTK_INST_IRQ_RECEIVED,
--					   WAIT_INTR_TIMEOUT_MS, MTK_VDEC_CORE);
--	if (err)
--		mtk_vdec_err(inst->ctx, "decode timeout: pic_%d", inst->ctx->decoded_frame_cnt);
--
--	inst->vsi->dec.timeout = !!err;
--	err = vpu_dec_end(vpu);
--	if (err)
--		goto err_free_fb_out;
-+	if (!inst->ctx->is_secure_playback) {
-+		/* wait decoder done interrupt */
-+		err = mtk_vcodec_wait_for_done_ctx(inst->ctx, MTK_INST_IRQ_RECEIVED,
-+						   WAIT_INTR_TIMEOUT_MS, MTK_VDEC_CORE);
-+		if (err)
-+			mtk_vdec_err(inst->ctx, "decode timeout: pic_%d",
-+				     inst->ctx->decoded_frame_cnt);
-+
-+		inst->vsi->dec.timeout = !!err;
-+		err = vpu_dec_end(vpu);
-+		if (err)
-+			goto err_free_fb_out;
+ 	mtk_vcodec_dbgfs_remove(dev, ctx->id);
+ 	list_del_init(&ctx->list);
+ 	kfree(ctx);
+@@ -466,6 +469,11 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+ 	atomic_set(&dev->dec_active_cnt, 0);
+ 	memset(dev->vdec_racing_info, 0, sizeof(dev->vdec_racing_info));
+ 	mutex_init(&dev->dec_racing_info_mutex);
++	ret = mtk_vcodec_dec_optee_private_init(dev);
++	if (ret) {
++		dev_err(&pdev->dev, "Failed to init svp private.");
++		goto err_reg_cont;
 +	}
  
- 	memcpy(&inst->vsi_ctx, inst->vpu.vsi, sizeof(inst->vsi_ctx));
- 	mtk_vdec_debug(inst->ctx, "pic[%d] crc: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x",
+ 	ret = video_register_device(vfd_dec, VFL_TYPE_VIDEO, -1);
+ 	if (ret) {
 -- 
 2.18.0
 
