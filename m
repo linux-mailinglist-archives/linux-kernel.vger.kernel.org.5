@@ -2,88 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC17B80771F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39018807729
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Dec 2023 18:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379013AbjLFR6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Dec 2023 12:58:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45080 "EHLO
+        id S1379776AbjLFR6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Dec 2023 12:58:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjLFR6G (ORCPT
+        with ESMTP id S1379053AbjLFR6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Dec 2023 12:58:06 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA2FD44;
-        Wed,  6 Dec 2023 09:58:12 -0800 (PST)
+        Wed, 6 Dec 2023 12:58:22 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DFE2D42;
+        Wed,  6 Dec 2023 09:58:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Snap78XnwhxghrXH/x5DQQflOIE581aXjQMNJjr942g=; b=jhEd/dydrVcA4CqjenXKvBzOhR
-        81C86OaTSZvOMqak9GSj26Gk4YbmuiZYqP7Inoay495Qv5aZdhoCk8XtjbZygZ3zFO1MW8qKrFi2H
-        jyJUerjxpHvoYivz2Tw0Fom0GZl5ibZD6cI47f6RLNKkoLSSNt8ndPXabCTs9v50CaHUmh6n8EwdV
-        h3a11wO9KMQTDIeK5z9Ompws1FrJbStRk/+i8NoSwEjnMVM2d8/eYZK+A65e+FB9FyAW6cFULMbV3
-        D4ZCe0VCUv3C54OOIhpqqs0icRWLiCRtInXdBESqtPRpMCqUFSNmSUQ2owjCoBA1ulhjzpRpsIDuc
-        qR59KN6w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1rAw9b-00AzA5-00;
-        Wed, 06 Dec 2023 17:57:47 +0000
-Date:   Wed, 6 Dec 2023 09:57:46 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
-        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
-        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
-        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
-        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com, nico@fluxnic.net,
-        xiang@kernel.org, chao@kernel.org, adilger.kernel@dilger.ca,
-        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
-        willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-        p.raghav@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-        yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH -next RFC 01/14] block: add some bdev apis
-Message-ID: <ZXC2Gg7NPWu9MULx@infradead.org>
-References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
- <20231205123728.1866699-2-yukuai1@huaweicloud.com>
- <ZXARKD0OmjLrvHmU@infradead.org>
- <20231206175038.GJ509422@mit.edu>
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3ZZNNhGyoTwRHgS/bMWVfX3vw+ZZ4cEePiAqrrIcnwM=; b=0HbX49InVIrrypsWfM0ZmrDswH
+        hUiEYIwZ/X0y6/g3n9MfR/Xe2G5AdEZwo+6WoFCG9muiQqjrdSwuIWlOmpA/dcAwSSIDNPabftXNo
+        uUNE6oM3plQH/R0YwGvoVXykOm1A4uJeGpKeG2xQ6OpBt4v6vuNKuyUgCJLK2gEMd+nzY3h0O6rqU
+        lVYOBys6d13VTBf1WTZRBZfPGgizzwR9LYBtitOMb3NgrraS95ziohm/QKnnBx5eXCTQ1NEWNAn6r
+        jZStgPtTaO+kCOGSkHoMhAr3HpiHeQ3UkPTPRTIclBzQAngtVpzIr9Moie2tqITHv3pZ/w+4X8vqF
+        3QJptGVQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56612)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1rAw9w-0000E0-0u;
+        Wed, 06 Dec 2023 17:58:08 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1rAw9w-0002uo-Va; Wed, 06 Dec 2023 17:58:08 +0000
+Date:   Wed, 6 Dec 2023 17:58:08 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
+Cc:     Daniel Golle <daniel@makrotopia.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Qingfang Deng <dqfext@gmail.com>,
+        SkyLake Huang <SkyLake.Huang@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH v2 5/8] net: pcs: add driver for MediaTek USXGMII PCS
+Message-ID: <ZXC2MFn7pVX/KNmJ@shell.armlinux.org.uk>
+References: <cover.1701826319.git.daniel@makrotopia.org>
+ <3cd8af5e44554c2db2d7898494ee813967206bd9.1701826319.git.daniel@makrotopia.org>
+ <20231206105838.069ae288@device.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231206175038.GJ509422@mit.edu>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231206105838.069ae288@device.home>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 06, 2023 at 12:50:38PM -0500, Theodore Ts'o wrote:
-> This was added because pulling a mounted a USB thumb drive (or a HDD
-> drops off the SATA bus) while the file system is mounted and actively
-> in use, would result in a kernel OOPS.  If that's no longer true,
-> that's great, but it would be good to test to make sure this is the
-> case....
+On Wed, Dec 06, 2023 at 10:58:38AM +0100, Maxime Chevallier wrote:
+> On Wed, 6 Dec 2023 01:44:38 +0000
+> Daniel Golle <daniel@makrotopia.org> wrote:
+> > +	/* Read USXGMII link status */
+> > +	state->link = FIELD_GET(RG_PCS_RX_LINK_STATUS,
+> > +				mtk_r32(mpcs, RG_PCS_RX_STATUS0));
+> > +
+> > +	/* Continuously repeat re-configuration sequence until link comes up */
+> > +	if (!state->link) {
+> > +		mtk_usxgmii_pcs_config(pcs, mpcs->neg_mode,
+> > +				       state->interface, NULL, false);
+> > +		return;
+> 
+> .pcs_get_state() isn't called only for link state polling,but also when querying
+> the link state from ethtool, from phylink_ethtool_ksettings_get().
+> 
+> As mtk_usxgmii_pcs_config triggers a pcs reset and reconfiguration, won't this disrupt
+> the link ? 
 
-And, surprise, surprise - that didn't just affect ext4.  So I ended
-up fixing this properly in the block layer.
+Highly likely if there's a race, but note that mtk_usxgmii_pcs_config()
+only gets called if the link is *down*. I guess some IPs need a bit of
+kicking to work properly.
 
-> If we really want to remove it, I'd suggest doing this as a separate
-> commit, so that after we see syzbot reports, or users complaining
-> about kernel crashes, we can revert the removal if necessary.
-
-Yes, this should of course be separate, well documented commit.
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
